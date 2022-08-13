@@ -1,26 +1,26 @@
-function initColorControlTextbox(slider)
+function initColorControlTextbox(control)
 {
-    slider.textbox = createTextbox('colorControlTextbox');
-    slider.textbox.slider = slider;
+    control.textbox = createTextbox('colorControlTextbox');
+    control.textbox.slider = control;
     
 
 
-    slider.textbox.addEventListener('pointerdown', e =>
+    control.textbox.addEventListener('pointerdown', e =>
     {
         e.stopPropagation();
     });
 
 
 
-    slider.textbox.addEventListener('pointermove', e =>
+    control.textbox.addEventListener('pointermove', e =>
     {
         e.stopPropagation();
-        slider.textbox.style.cursor = 'default';
+        control.textbox.style.cursor = 'default';
     });
 
 
 
-    slider.textbox.addEventListener('keydown', e =>
+    control.textbox.addEventListener('keydown', e =>
     {
         e.stopPropagation();
 
@@ -34,36 +34,36 @@ function initColorControlTextbox(slider)
 
         else if (e.code == 'KeyV'
               && getCtrlKey(e)
-              && !slider.readOnly)
+              && !control.readOnly)
         {
             // by doing nothing here I let the OS do its thing
         }
         
         else if (   (   e.code == 'Enter'
                      || e.code == 'NumpadEnter')
-                 && !slider.readOnly)
+                 && !control.readOnly)
         {
-            slider.textbox.keyBlur = true;
-            slider.textbox.finish(true);
+            control.textbox.keyBlur = true;
+            control.textbox.finish(true);
         }
 
         else if (e.code == 'Escape')
         {
-            slider.textbox.keyBlur = true;
-            slider.textbox.finish(false);
+            control.textbox.keyBlur = true;
+            control.textbox.finish(false);
         }
         else if (e.code == 'Tab')
         {
             e.preventDefault();
             e.stopPropagation();
             
-            if (slider.param)
+            if (control.param)
             {
-                const params = slider.param.node.params;
-                let   index  = slider.param.index;
+                const params = control.param.node.params;
+                let   index  = control.param.index;
 
-                slider.textbox.keyBlur = true;
-                slider.textbox.finish(true, false);
+                control.textbox.keyBlur = true;
+                control.textbox.finish(true, false);
 
                 if (   e.shiftKey 
                     && index > 0)
@@ -102,17 +102,17 @@ function initColorControlTextbox(slider)
 
         else if ((   e.key == 'ArrowUp'
                   || e.key == 'ArrowDown')
-              && !slider.readOnly)
+              && !control.readOnly)
         {
             e.preventDefault();
 
-            let text = slider.textbox.value;
+            let text = control.textbox.value;
 
-            if (slider.textbox.selectionStart != slider.textbox.selectionEnd)
-                slider.textbox.selectionStart =  slider.textbox.selectionEnd;
+            if (control.textbox.selectionStart != control.textbox.selectionEnd)
+                control.textbox.selectionStart =  control.textbox.selectionEnd;
 
             const pos = Math.min(
-                slider.textbox.selectionStart,
+                control.textbox.selectionStart,
                 text.length);
 
             const revPos = text.length - pos;
@@ -133,8 +133,8 @@ function initColorControlTextbox(slider)
                     if (e.shiftKey) 
                         dec *= 10;
 
-                    slider.setValue((val + sign * dec) / slider.valueScale);
-                    slider.updateTextbox();
+                    control.setValue((val + sign * dec) / control.valueScale);
+                    control.updateTextbox();
                 }
                 else // floating point
                 {
@@ -148,18 +148,18 @@ function initColorControlTextbox(slider)
                     if (e.shiftKey) 
                         dec *= 10;
 
-                    slider.displayDec = text.length-1 - decIndex;
-                    slider.setValue((val + sign * dec) / slider.valueScale);
-                    slider.updateTextbox();
+                    control.displayDec = text.length-1 - decIndex;
+                    control.setValue((val + sign * dec) / control.valueScale);
+                    control.updateTextbox();
                 }
 
-                slider.textbox.selectionStart =
-                slider.textbox.selectionEnd   = slider.textbox.savedValue.length - revPos;
+                control.textbox.selectionStart =
+                control.textbox.selectionEnd   = control.textbox.savedValue.length - revPos;
             }
         }
         else 
         {
-            let curVal = slider.textbox.value;
+            let curVal = control.textbox.value;
 
             if (      e.key.length == 1
                    && e.key != '?'
@@ -168,69 +168,69 @@ function initColorControlTextbox(slider)
                    && !(   ((      e.code == 'Minus'
                                 || e.code == 'NumpadSubtract')
                              && !curVal.includes('-'))
-                        && slider.min < 0)
-                ||     slider.readOnly
+                        && control.min < 0)
+                ||     control.readOnly
                    && !isArrowKey(e.code))
                 e.preventDefault();
 
             curVal =
                 curVal == INVALID
                 ? ''
-                :   curVal.substring(0, slider.textbox.selectionStart) 
-                  + curVal.substring(slider.textbox.selectionEnd, curVal.length);
+                :   curVal.substring(0, control.textbox.selectionStart) 
+                  + curVal.substring(control.textbox.selectionEnd, curVal.length);
 
                   
             const nextVal = parseFloat(curVal + e.key);
 
-            if (   nextVal < slider.min - 0.001
-                || nextVal > slider.max)
+            if (   nextVal < control.min - 0.001
+                || nextVal > control.max)
                 e.preventDefault();            
         }
     });
 
 
 
-    slider.textbox.addEventListener('paste', function(e)
+    control.textbox.addEventListener('paste', function(e)
     {
         e.preventDefault();
 
         const str = e.clipboardData.getData('text/plain');
 
         let val = 
-            slider.showHex
+            control.showHex
             ? parseInt(str, 16)
             : parseFloat(str);
 
-        val = Math.min(Math.max(slider.min, val), slider.max);
+        val = Math.min(Math.max(control.min, val), control.max);
 
-        slider.textbox.value = isNaN(val) ? '' : val;
+        control.textbox.value = isNaN(val) ? '' : val;
     });
 
 
 
-    slider.textbox.addEventListener('focusout', function()
+    control.textbox.addEventListener('focusout', function()
     {
-        //console.log('slider.successOnFocusOut', slider.successOnFocusOut);
+        //console.log('control.successOnFocusOut', control.successOnFocusOut);
 
-        if (!slider.textbox.keyBlur) slider.textbox.finish(true);
-        else                         slider.textbox.keyBlur = false;
+        if (!control.textbox.keyBlur) control.textbox.finish(true);
+        else                         control.textbox.keyBlur = false;
 
-        if (slider.savedSuccessOnFocusOut != null)
+        if (control.savedSuccessOnFocusOut != null)
         {
-            slider.successOnFocusOut      = slider.savedSuccessOnFocusOut;
-            slider.savedSuccessOnFocusOut = null;
+            control.successOnFocusOut      = control.savedSuccessOnFocusOut;
+            control.savedSuccessOnFocusOut = null;
         }
 
-        slider.parentNode.removeChild(slider.textbox);
-        slider.clicked = false;
+        control.parentNode.removeChild(control.textbox);
+        control.clicked = false;
     });
     
 
 
-    slider.textbox.finish = function(success, focusSlider = true)
+    control.textbox.finish = function(success, focusControl = true)
     {
-        let   value      = slider.textbox.value;
-        const savedValue = slider.textbox.savedValue;
+        let   value      = control.textbox.value;
+        const savedValue = control.textbox.savedValue;
 
         let rgb      = value     .indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(value     );
         let savedRgb = savedValue.indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(savedValue);
@@ -242,87 +242,87 @@ function initColorControlTextbox(slider)
             'oldValue':        savedValue,
             'preventSetValue': false }});
 
-        slider.dispatchEvent(e);
+        control.dispatchEvent(e);
 
 
         if (!e.preventSetValue)
         {
             if (success) 
             {
-                slider.setValue(
+                control.setValue(
                       value.trim() != '' 
                     ? GColorValue.createFromRgb(rgb) 
                     : GColorValue.createFromRgb(savedRgb));
             }
             else
-                slider.setValue(savedRgb);
+                control.setValue(savedRgb);
         }
          
         
-        slider.textbox.blur();
+        control.textbox.blur();
 
-        slider.text.style.display = 'block';
+        control.text.style.display = 'block';
 
-        if (   slider.inFocus
-            && focusSlider)
-            slider.focus();
+        if (   control.inFocus
+            && focusControl)
+            control.focus();
     };    
     
     
 
-    slider.showTextbox = function()
+    control.showTextbox = function()
     {
-        slider.text.style.display = 'none';
+        control.text.style.display = 'none';
 
-        slider.inFocus = 
-               hasFocus(slider)
-            && !slider.clicked;
+        control.inFocus = 
+               hasFocus(control)
+            && !control.clicked;
     
-        slider.textbox.style.position  = 'absolute';
-        slider.textbox.style.left      = '50%';
-        slider.textbox.style.transform = 'translate(-50%)';
-        slider.textbox.style.top       = slider.offsetTop    + 1;
-        slider.textbox.style.width     = slider.offsetWidth  - 2;
-        slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
-        slider.textbox.style.outline   = 'none';
-        slider.textbox.style.textAlign = 'center';
-        slider.textbox.style.color     = isDarkMode() ? 'white' : 'black';
+        control.textbox.style.position  = 'absolute';
+        control.textbox.style.left      = '50%';
+        control.textbox.style.transform = 'translate(-50%)';
+        control.textbox.style.top       = control.offsetTop    + 1;
+        control.textbox.style.width     = control.offsetWidth  - 2;
+        control.textbox.style.height    = control.offsetHeight - 2;
+        control.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
+        control.textbox.style.outline   = 'none';
+        control.textbox.style.textAlign = 'center';
+        control.textbox.style.color     = isDarkMode() ? 'white' : 'black';
 
 
         const isConnected =    
-               slider.param != null
-            && slider.param.input
-            && slider.param.input.connected;
+               control.param != null
+            && control.param.input
+            && control.param.input.connected;
 
         enableElementText(
-            slider.textbox, 
-               !slider.readOnly
+            control.textbox, 
+               !control.readOnly
             && !isConnected);
 
-        slider.updateTextbox();
+        control.updateTextbox();
         
-        slider.parentNode.appendChild(slider.textbox);
+        control.parentNode.appendChild(control.textbox);
         
-        slider.textbox.focus();
-        slider.textbox.select();
+        control.textbox.focus();
+        control.textbox.select();
 
-        slider.textbox.style.cursor = 'default';
+        control.textbox.style.cursor = 'default';
     }
 
 
 
-    slider.updateTextbox = function()
+    control.updateTextbox = function()
     {
-        const rgb = dataColor2rgb(slider.value.toDataColor());
+        const rgb = dataColor2rgb(control.value.toDataColor());
 
-        slider.textbox.value =
-            !slider.value.isValid()
+        control.textbox.value =
+            !control.value.isValid()
             ? DISPLAY_INVALID
             : rgb2hex(rgb).toUpperCase();
                            
-        slider.textbox.savedValue  = slider.textbox.value;
+        control.textbox.savedValue  = control.textbox.value;
 
-        slider.textbox.style.color = isDark(rgb) ? '#fff' : '#000'
+        control.textbox.style.color = isDark(rgb) ? '#fff' : '#000'
     };
 }

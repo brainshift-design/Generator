@@ -1,23 +1,23 @@
-function initNumberControlEvents(slider)
+function initNumberControlEvents(control)
 {
-    slider.addEventListener('pointerdown', function(e)
+    control.addEventListener('pointerdown', function(e)
     {
         if (graphView.spaceDown)
             return;
 
         if (e.button == 0)
         {
-            if (!slider.pointerEvents)
+            if (!control.pointerEvents)
             {
                 e.stopPropagation();
                 return;
             }
     
             let nodeDiv = 
-                   slider.parentNode
-                && slider.parentNode.parentNode
-                && slider.parentNode.parentNode.parentNode
-                ? slider.parentNode.parentNode.parentNode
+                   control.parentNode
+                && control.parentNode.parentNode
+                && control.parentNode.parentNode.parentNode
+                ? control.parentNode.parentNode.parentNode
                 : null;
 
             if (   nodeDiv 
@@ -28,42 +28,42 @@ function initNumberControlEvents(slider)
             e.preventDefault(); // this is fine since I lock the pointer anyway
             e.stopPropagation();
                 
-            slider.buttonDown0  = true;
-            slider.buttonDown0_ = true;
-            slider.moved        = false;
-            slider.clientX      = e.clientX;
-            slider.movedX       = 0;
+            control.buttonDown0  = true;
+            control.buttonDown0_ = true;
+            control.moved        = false;
+            control.clientX      = e.clientX;
+            control.movedX       = 0;
 
 
-            if (!slider.readOnly)
+            if (!control.readOnly)
             {
-                slider.oldValue   = slider.value;
-                slider.startValue = slider.value;
-                slider.prevValue  = slider.value;
-                slider.sx         = e.clientX;
+                control.oldValue   = control.value;
+                control.startValue = control.value;
+                control.prevValue  = control.value;
+                control.sx         = e.clientX;
 
-                slider.clickTimer = setTimeout(() => 
+                control.clickTimer = setTimeout(() => 
                 {
                     if (!document.menuHadFocus)
                     {
-                        slider.moved = true;
-                        slider.lockPointer(e.pointerId);
+                        control.moved = true;
+                        control.lockPointer(e.pointerId);
                     }
                 }, 
                 500);
             }
 
 
-            if (   !slider.param
-                || !slider.param.node.selected)
-                slider.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+            if (   !control.param
+                || !control.param.node.selected)
+                control.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
 
             else
             {
-                slider.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+                control.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
                     
-                if (slider.param.index < slider.param.node.params.length-1)
-                    slider.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+                if (control.param.index < control.param.node.params.length-1)
+                    control.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
             }
 
 
@@ -71,35 +71,35 @@ function initNumberControlEvents(slider)
             document.activeElement.blur();
 
 
-            if (slider.param)
-                slider.param.noUpdate = true;  
+            if (control.param)
+                control.param.noUpdate = true;  
         }
         else if (e.button == 1)
         {
             e.preventDefault();
-            slider.buttonDown1 = true;
+            control.buttonDown1 = true;
         }
         else if (e.button == 2)
         {
             e.preventDefault();
-            slider.buttonDown2 = true;
+            control.buttonDown2 = true;
         }
     });
 
 
 
-    slider.addEventListener('pointerenter', function(e)
+    control.addEventListener('pointerenter', function(e)
     {
         if (   !graphView.spaceDown
-            && slider.pointerEvents)
+            && control.pointerEvents)
         {
             if (graphView.tempConn)
-                slider.style.cursor = 'default';
+                control.style.cursor = 'default';
             
             else
-                slider.style.cursor = 
-                       slider.readOnly 
-                    || containsChild(slider, slider.textbox) 
+                control.style.cursor = 
+                       control.readOnly 
+                    || containsChild(control, control.textbox) 
                     ? 'default'
                     : 'ew-resize';
 
@@ -109,70 +109,70 @@ function initNumberControlEvents(slider)
                 ? 'rgba(255, 255, 255, 0.1)'
                 : 'rgba(0, 0, 0, 0.1)';
 
-            if (slider.param)
+            if (control.param)
             {
-                slider.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
+                control.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
 
-                if (    slider.param.node
-                    &&  slider.param.node.params.includes(slider.param)
-                    && !isLastInArray(slider.param.node.params, slider.param))
-                    slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+                if (    control.param.node
+                    &&  control.param.node.params.includes(control.param)
+                    && !isLastInArray(control.param.node.params, control.param))
+                    control.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
             }
             else
             {
-                slider.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+                control.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
             }
 
 
-            slider.focus.style.visibility = 'visible';
-            slider.focus.style.opacity    = '100%';
+            control.focus.style.visibility = 'visible';
+            control.focus.style.opacity    = '100%';
     
-            slider.update();
+            control.update();
         }
     });
 
 
 
-    slider.addEventListener('pointermove', e =>
+    control.addEventListener('pointermove', e =>
     {
-        if (!slider.pointerEvents)
+        if (!control.pointerEvents)
             return;
         
 
-        let rect = boundingRect(slider);
+        let rect = boundingRect(control);
         
-        slider.mouseOver = 
+        control.mouseOver = 
                e.clientX >= rect.left
             && e.clientX <  rect.right
             && e.clientY >= rect.top                                     
             && e.clientY <  rect.bottom;
 
 
-        slider.clientX = e.clientX;
+        control.clientX = e.clientX;
 
         
-        if (    slider.buttonDown0
-            && !slider.readOnly)
+        if (    control.buttonDown0
+            && !control.readOnly)
         {
-            if (slider.isPointerLocked())
+            if (control.isPointerLocked())
             {
-                slider.movedX += e.movementX;
+                control.movedX += e.movementX;
                 
-                if (!isNaN(slider.value))
+                if (!isNaN(control.value))
                 {
-                    const dx       = slider.movedX * (slider.dragReverse ? -1 : 1);
-                    const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
-                    const grain    = Math.pow(10, -slider.dec);
-                    const drag     = grain * sqr(slider.dragScale);
+                    const dx       = control.movedX * (control.dragReverse ? -1 : 1);
+                    const adaptive = 10 * Math.pow(Math.abs(dx), control.acc);
+                    const grain    = Math.pow(10, -control.dec);
+                    const drag     = grain * sqr(control.dragScale);
 
-                    const val      = slider.startValue + dx * drag * adaptive;
+                    const val      = control.startValue + dx * drag * adaptive;
 
                     
                     // reset slider movement at the limits for better UX
-                    const min = getCtrlKey(e) ? slider.min : slider.displayMin;
-                    const max = getCtrlKey(e) ? slider.max : slider.displayMax;
+                    const min = getCtrlKey(e) ? control.min : control.displayMin;
+                    const max = getCtrlKey(e) ? control.max : control.displayMax;
 
-                    slider.setValue(
+                    control.setValue(
                         Math.round(val / grain) * grain, 
                         true, 
                         false, 
@@ -183,31 +183,31 @@ function initNumberControlEvents(slider)
                     if (   val <= min
                         || val >= max)
                     {
-                        slider.movedX     = 0;
-                        slider.startValue = slider.value;
-                        slider.sx         = e.clientX;
+                        control.movedX     = 0;
+                        control.startValue = control.value;
+                        control.sx         = e.clientX;
                     }
 
 
-                    if (slider.value != slider.prevValue)
-                        pushUpdateFromParam([slider.param.node], slider.param);
+                    if (control.value != control.prevValue)
+                        pushUpdateFromParam([control.param.node], control.param);
 
-                    slider.prevValue = slider.value;
+                    control.prevValue = control.value;
                 }
             }
             else
             {
-                if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
+                if (Math.abs(e.clientX - control.sx) > control.clickSize/2)
                 {
-                    slider.moved = true;
-                    slider.lockPointer(e.pointerId);
+                    control.moved = true;
+                    control.lockPointer(e.pointerId);
 
-                    slider.dispatchEvent(slider.onstartchange);
+                    control.dispatchEvent(control.onstartchange);
                 }
             }
         }
         else if (graphView.tempConn
-              && slider.param)
+              && control.param)
         {
             let savedInput = 
                 graphView.savedConn
@@ -215,36 +215,36 @@ function initNumberControlEvents(slider)
                 : null;
 
             if (    graphView.tempConn.output
-                &&  slider.param.input
-                &&  slider.param.input.types.includes(graphView.tempConn.output.type)
-                && !graphView.tempConn.output.node.follows(slider.param.node)
-                && (  !slider.param.input.connected // not already connected to this input
-                    || slider.param.input.connectedOutput != graphView.tempConn.output
-                    || slider.param.input == savedInput))
+                &&  control.param.input
+                &&  control.param.input.types.includes(graphView.tempConn.output.type)
+                && !graphView.tempConn.output.node.follows(control.param.node)
+                && (  !control.param.input.connected // not already connected to this input
+                    || control.param.input.connectedOutput != graphView.tempConn.output
+                    || control.param.input == savedInput))
             {
-                graphView.overInput = slider.param.input;
+                graphView.overInput = control.param.input;
                     
-                slider.param.input.mouseOver = true;
-                slider.param.input.updateControl();
+                control.param.input.mouseOver = true;
+                control.param.input.updateControl();
 
-                const rect = boundingRect(slider.param.input.control);
+                const rect = boundingRect(control.param.input.control);
 
                 graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - controlBar.offsetHeight);
             }
             else if ( graphView.tempConn.input
-                  &&  slider.param.output
-                  &&  graphView.tempConn.input.types.includes(slider.param.output.type)
-                  && !slider.param.node.follows(graphView.tempConn.input.node))
+                  &&  control.param.output
+                  &&  graphView.tempConn.input.types.includes(control.param.output.type)
+                  && !control.param.node.follows(graphView.tempConn.input.node))
             {
-                graphView.overOutput = slider.param.output;
+                graphView.overOutput = control.param.output;
                     
-                slider.param.output.mouseOver = true;
-                slider.param.output.updateControl();
+                control.param.output.mouseOver = true;
+                control.param.output.updateControl();
 
 
-                const rect = boundingRect(slider.param.output.control);
+                const rect = boundingRect(control.param.output.control);
 
                 graphView.tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
@@ -254,28 +254,28 @@ function initNumberControlEvents(slider)
                 graphView.tempConn.input.updateControl();
             }
         }
-        else if (slider.readOnly)
+        else if (control.readOnly)
         {
-            slider.moved = true;
+            control.moved = true;
         }
     });
     
     
     
-    slider.addEventListener('pointerleave', function(e)
+    control.addEventListener('pointerleave', function(e)
     {
-        slider.style.cursor           = 'default';
+        control.style.cursor           = 'default';
         
-        slider.focus.style.visibility = 'hidden';
-        slider.focus.style.opacity    = 0;
+        control.focus.style.visibility = 'hidden';
+        control.focus.style.opacity    = 0;
 
-        slider.update();
+        control.update();
 
 
         if (graphView.tempConn)
         {
             if (   graphView.tempConn.output
-                && graphView.tempConn.output.node != slider.param.node)
+                && graphView.tempConn.output.node != control.param.node)
             {
                 const input = graphView.overInput;
                 
@@ -290,7 +290,7 @@ function initNumberControlEvents(slider)
                 graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
-                  && graphView.tempConn.input.node != slider.param.node)
+                  && graphView.tempConn.input.node != control.param.node)
             {
                 const output = graphView.overOutput;
                 
@@ -310,33 +310,33 @@ function initNumberControlEvents(slider)
 
 
 
-    slider.addEventListener('losecapture', function()
+    control.addEventListener('losecapture', function()
     {
-        slider.buttonDown0 = false;
-        slider.buttonDown1 = false;
-        slider.buttonDown2 = false;
-        slider.mouseOver   = false;
-        slider.update();
+        control.buttonDown0 = false;
+        control.buttonDown1 = false;
+        control.buttonDown2 = false;
+        control.mouseOver   = false;
+        control.update();
     });
 
 
 
-    slider.addEventListener('pointerup', function(e)
+    control.addEventListener('pointerup', function(e)
     {
-        clearTimeout(slider.clickTimer);
+        clearTimeout(control.clickTimer);
 
 
         if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
-                && !graphView.tempConn.output.node.follows(slider.param.node)
+                && !graphView.tempConn.output.node.follows(control.param.node)
                 &&  graphView.overInput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if (graphView.tempConn.input
-                && !slider.param.node.follows(graphView.tempConn.input.node)
+                && !control.param.node.follows(graphView.tempConn.input.node)
                 &&  graphView.overOutput)
             {
                 graphView.endConnection(e.pointerId);
@@ -344,28 +344,28 @@ function initNumberControlEvents(slider)
             }
         }
         
-        else if (   slider.moved
+        else if (   control.moved
             || document.menuHadFocus)
         {
-            slider.unlockPointer(e.pointerId);
+            control.unlockPointer(e.pointerId);
 
-            if (slider.param)
-                slider.param.noUpdate = false;  
+            if (control.param)
+                control.param.noUpdate = false;  
 
             return;            
         }
 
-        else if (slider.buttonDown0_)
+        else if (control.buttonDown0_)
         {
-            slider.clicked = true;
-            slider.showTextbox();
+            control.clicked = true;
+            control.showTextbox();
         }
 
-             if (e.button == 0) slider.buttonDown0 = false;
-        else if (e.button == 1) slider.buttonDown1 = false;
-        else if (e.button == 2) slider.buttonDown2 = false;
+             if (e.button == 0) control.buttonDown0 = false;
+        else if (e.button == 1) control.buttonDown1 = false;
+        else if (e.button == 2) control.buttonDown2 = false;
 
-        slider.buttonDown0_ = false;
+        control.buttonDown0_ = false;
     });    
 
 
@@ -373,12 +373,12 @@ function initNumberControlEvents(slider)
     document.addEventListener('pointerup', function(e)
     {
         if (   e.button == 0 
-            && slider.buttonDown0)
+            && control.buttonDown0)
         {
-            slider.buttonDown0 = false;
-            slider.unlockPointer(e.pointerId);
+            control.buttonDown0 = false;
+            control.unlockPointer(e.pointerId);
 
-            slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            control.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
             // if (    slider.value != slider.oldValue
             //     && !slider.readOnly)
@@ -393,9 +393,9 @@ function initNumberControlEvents(slider)
 
 
     
-    slider.addEventListener('wheel', e =>
+    control.addEventListener('wheel', e =>
     {
-        if (!slider.pointerEvents)
+        if (!control.pointerEvents)
             return;
 
 
@@ -411,32 +411,32 @@ function initNumberControlEvents(slider)
         }
 
 
-        const dWheelX = e.deltaX /  20 * (slider.dragReverse ? -1 : 1);
-        const dWheelY = e.deltaY / 100 * (slider.dragReverse ? -1 : 1);
+        const dWheelX = e.deltaX /  20 * (control.dragReverse ? -1 : 1);
+        const dWheelY = e.deltaY / 100 * (control.dragReverse ? -1 : 1);
 
 
         if (   !getCtrlKey(e)
-            && !slider.buttonDown1)
+            && !control.buttonDown1)
         {
             e.stopPropagation();
 
-            if (!slider.readOnly)
+            if (!control.readOnly)
             {
                 if (   document.activeElement
                     && document.activeElement.tagName.toLowerCase() == 'input'
                     && document.activeElement.slider)
                     document.activeElement.slider.textbox.finish(true, false);
 
-                slider.oldValue = slider.value;
+                control.oldValue = control.value;
 
-                const dec = Math.pow(10, -slider.dec);
+                const dec = Math.pow(10, -control.dec);
 
                 const val =
                     isTouchpad
-                    ? slider.value -  dWheelX               * slider.wheelScale * dec
-                    : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
+                    ? control.value -  dWheelX               * control.wheelScale * dec
+                    : control.value + (dWheelY > 0 ? -1 : 1) * control.wheelScale * dec;
                 
-                slider.setValue(val, true, true, false, false);
+                control.setValue(val, true, true, false, false);
             }
         }
     });
@@ -493,11 +493,11 @@ function initNumberControlEvents(slider)
     
     
     
-    slider.addEventListener('keydown', e =>
+    control.addEventListener('keydown', e =>
     {
         if (   e.code == 'Enter'
             || e.code == 'NumpadEnter')
-            slider.showTextbox();
+            control.showTextbox();
 
         // else if (e.code == 'Space')
         //     setCursor(panCursor, true);
@@ -505,11 +505,11 @@ function initNumberControlEvents(slider)
 
 
 
-    slider.addEventListener('focus', function()
+    control.addEventListener('focus', function()
     {
         if (   !graphView.spaceDown
-            && !slider.buttonDown1
-            && slider.pointerEvents)
-            slider.showTextbox();
+            && !control.buttonDown1
+            && control.pointerEvents)
+            control.showTextbox();
     });
 }

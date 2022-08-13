@@ -79,7 +79,7 @@ function initNumberControlTextbox(slider)
                 }
             }
 
-            // let tabs  = document.querySelectorAll('.numberControl, .selectSlider, .select, .menuSelect, button, .menuButton');
+            // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
             // let index = slider.tabIndex;
 
             // for (let i = 0; i < tabs.length; i++) 

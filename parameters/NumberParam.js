@@ -16,11 +16,11 @@ extends NumberParamBase
                 showName,
                 hasInput,
                 hasOutput,
-                value     = 0, 
-                min       = Number.MIN_SAFE_INTEGER, 
-                max       = Number.MAX_SAFE_INTEGER,
-                decimals  = 0,
-                dragScale = 0.05)
+                defaultValue = 0, 
+                min          = Number.MIN_SAFE_INTEGER, 
+                max          = Number.MAX_SAFE_INTEGER,
+                decimals     = 0,
+                dragScale    = 0.05)
     {
         super(NUMBER, id, name);
 
@@ -29,7 +29,7 @@ extends NumberParamBase
         this.control.param  = this;
         this.control.zIndex = 0;
    
-        this.defaultValue   = value;
+        this.defaultValue   = defaultValue;
 
 
         initNumberControl(
@@ -42,7 +42,7 @@ extends NumberParamBase
             showName,
             min,
             max,
-            value,      // default
+            defaultValue,      // default
             decimals,   // decimals
             dragScale); // drag scale
 

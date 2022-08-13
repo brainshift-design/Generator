@@ -1,173 +1,173 @@
-function initNumberControlChildren(slider)
+function initNumberControlChildren(control)
 {
-    slider.bar   = createDiv('numberControlBar');
-    slider.text  = createDiv('numberControlText');
-    slider.focus = createDiv('numberControlFocus');
+    control.bar   = createDiv('numberControlBar');
+    control.text  = createDiv('numberControlText');
+    control.focus = createDiv('numberControlFocus');
 
-    slider.appendChild(slider.bar);
-    slider.appendChild(slider.text);
-    slider.appendChild(slider.focus);
+    control.appendChild(control.bar);
+    control.appendChild(control.text);
+    control.appendChild(control.focus);
 }
 
 
 
-function initNumberControl(param, slider, width, height, id, name, showName, min, max, defValue, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+function initNumberControl(param, control, width, height, id, name, showName, min, max, defValue, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
 {
-    slider.param                  = param;
+    control.param                  = param;
      
-    slider.className              = 'numberControl';
+    control.className              = 'numberControl';
      
-    slider.width                  = width;
-    slider.height                 = height;
+    control.width                  = width;
+    control.height                 = height;
              
-    slider.style.width            = width;
-    slider.style.height           = height;
+    control.style.width            = width;
+    control.style.height           = height;
              
-    slider.min                    = min;
-    slider.max                    = max;
-    slider.value                  = defValue;
-    slider.acc                    = acc;
+    control.min                    = min;
+    control.max                    = max;
+    control.value                  = defValue;
+    control.acc                    = acc;
      
-    slider.dec                    =
-    slider.displayDec             = dec;
+    control.dec                    =
+    control.displayDec             = dec;
          
-    slider.displayMin             = min;
-    slider.displayMax             = max;
-    slider.valueScale             = 1;
+    control.displayMin             = min;
+    control.displayMax             = max;
+    control.valueScale             = 1;
                 
-    slider.id                     = id;
-    slider.name                   = name;
-    slider.suffix                 = suffix;
-    slider.valueCanContainSuffix  = false;
+    control.id                     = id;
+    control.name                   = name;
+    control.suffix                 = suffix;
+    control.valueCanContainSuffix  = false;
      
-    slider.dragReverse            = false;
-    slider.dragScale              = dragScale;
-    slider.wheelScale             = wheelScale;
+    control.dragReverse            = false;
+    control.dragScale              = dragScale;
+    control.wheelScale             = wheelScale;
              
-    slider.backColorLight         = 'transparent';
-    slider.valueColorLight        = '#7772';
-    slider.textColorLight         = '#000';
+    control.backColorLight         = 'transparent';
+    control.valueColorLight        = '#7772';
+    control.textColorLight         = '#000';
                 
-    slider.backColorDark          = 'transparent';
-    slider.valueColorDark         = '#ffffff30';
-    slider.textColorDark          = '#eee';
+    control.backColorDark          = 'transparent';
+    control.valueColorDark         = '#ffffff30';
+    control.textColorDark          = '#eee';
                 
-    slider.fontSize               = 11;
+    control.fontSize               = 11;
              
-    slider.style.display          = 'inline';
+    control.style.display          = 'inline';
              
-    slider.mouseOver              = false;
-    slider.buttonDown0            = false;
-    slider.buttonDown1            = false;
+    control.mouseOver              = false;
+    control.buttonDown0            = false;
+    control.buttonDown1            = false;
              
-    slider.clickSize              = 4;
-    slider.moved                  = false;
+    control.clickSize              = 4;
+    control.moved                  = false;
          
-    slider.tabIndex               = 0;
-    slider.inFocus                = false;
-    slider.clicked                = false;
+    control.tabIndex               = 0;
+    control.inFocus                = false;
+    control.clicked                = false;
  
-    slider.startValue             = 0;
-    slider.oldValue; 
+    control.startValue             = 0;
+    control.oldValue; 
  
-    slider.wrapValue              = false;
+    control.wrapValue              = false;
      
-    slider.showName               = showName;
-    slider.showHex                = false;
+    control.showName               = showName;
+    control.showHex                = false;
          
-    slider.enableChangeEvent      = true;
+    control.enableChangeEvent      = true;
     
-    slider.successOnFocusOut      = false;
-    slider.keyBlur                = false;
+    control.successOnFocusOut      = false;
+    control.keyBlur                = false;
     
-    slider.pointerEvents          = true;
-    slider.readOnly               = false;
+    control.pointerEvents          = true;
+    control.readOnly               = false;
      
-    slider.valueText              = '';
+    control.valueText              = '';
      
-    slider.barTop                 = 0;
-    slider.barBottom              = 1;
+    control.barTop                 = 0;
+    control.barBottom              = 1;
      
-    slider.ranges                 = [];
-    slider.rangeDivs              = [];
+    control.ranges                 = [];
+    control.rangeDivs              = [];
      
-    slider.options                = []; // if dec == 0, show named choices instead of a value
+    control.options                = []; // if dec == 0, show named choices instead of a value
  
      
-    slider.onstartchange          = new Event('startchange');
-    slider.onchange               = new Event('change');
-    slider.onconfirm              = new Event('confirm');
+    control.onstartchange          = new Event('startchange');
+    control.onchange               = new Event('change');
+    control.onconfirm              = new Event('confirm');
 
 
-    initNumberControlChildren(slider);    
-    initNumberControlTextbox(slider);
-    initNumberControlEvents(slider);
+    initNumberControlChildren(control);    
+    initNumberControlTextbox(control);
+    initNumberControlEvents(control);
 
 
 
-    slider.setName = function(name)
+    control.setName = function(name)
     {
-        slider.name = name;
-        slider.update();
+        control.name = name;
+        control.update();
     };
 
 
 
-    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+    control.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
     {
-        const oldValue = slider.value;
+        const oldValue = control.value;
 
 
-        const dec = Math.pow(10, Math.abs(slider.dec));
+        const dec = Math.pow(10, Math.abs(control.dec));
 
         value = Math.round(value * dec) / dec;
 
-        if (slider.wrapValue)
+        if (control.wrapValue)
         {
-            while (value < slider.displayMin) value += slider.displayMax - slider.displayMin;
-            while (value > slider.displayMax) value -= slider.displayMax - slider.displayMin;
+            while (value < control.displayMin) value += control.displayMax - control.displayMin;
+            while (value > control.displayMax) value -= control.displayMax - control.displayMin;
         }
         else if (fullRange)
-            value = Math.min(Math.max(slider.min, value), slider.max);
+            value = Math.min(Math.max(control.min, value), control.max);
         else
-            value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
+            value = Math.min(Math.max(control.displayMin, value), control.displayMax);
 
 
         if (    isNaN(value) && !isNaN(oldValue)
             || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)
         {
-            slider.value = value;
+            control.value = value;
 
-            slider.update();
+            control.update();
 
             if (   fireChangeEvent
-                && slider.enableChangeEvent
-                && value != slider.prevValue)
-                slider.dispatchEvent(slider.onchange);
+                && control.enableChangeEvent
+                && value != control.prevValue)
+                control.dispatchEvent(control.onchange);
 
             if (   confirm
-                && slider.enableChangeEvent
+                && control.enableChangeEvent
                 && value != oldValue)
-                slider.dispatchEvent(slider.onconfirm);
+                control.dispatchEvent(control.onconfirm);
         }
     };
 
 
 
 
-    slider.setSuffix = function(suffix, valueCanContainSuffix = false)
+    control.setSuffix = function(suffix, valueCanContainSuffix = false)
     {
-        slider.suffix                = suffix;
-        slider.valueCanContainSuffix = valueCanContainSuffix;
+        control.suffix                = suffix;
+        control.valueCanContainSuffix = valueCanContainSuffix;
     };
     
 
 
-    slider.setMin = (min, dispatchEvents = true) =>
+    control.setMin = (min, dispatchEvents = true) =>
     {
-        slider.min        = min;
-        slider.displayMin = min;
+        control.min        = min;
+        control.displayMin = min;
 
         // if (slider.value < min) 
         //     slider.setValue(min, true, true, dispatchEvents);
@@ -175,10 +175,10 @@ function initNumberControl(param, slider, width, height, id, name, showName, min
 
 
 
-    slider.setMax = (max, dispatchEvents = true) =>
+    control.setMax = (max, dispatchEvents = true) =>
     {
-        slider.max        = max;
-        slider.displayMax = max;
+        control.max        = max;
+        control.displayMax = max;
 
         // if (max < slider.value) 
         //     slider.setValue(max, true, true, dispatchEvents);
@@ -186,144 +186,144 @@ function initNumberControl(param, slider, width, height, id, name, showName, min
 
 
 
-    slider.setDecimals = (dec, dspDec = dec) =>
+    control.setDecimals = (dec, dspDec = dec) =>
     {
-        slider.dec        = dec;
-        slider.displayDec = dspDec;
+        control.dec        = dec;
+        control.displayDec = dspDec;
     };
 
 
 
-    slider.update = function()
+    control.update = function()
     {
-        const sx = slider.getOffsetLeft();
-        const sw = slider.getClientWidth();
-        const sh = slider.getClientHeight();
+        const sx = control.getOffsetLeft();
+        const sw = control.getClientWidth();
+        const sh = control.getClientHeight();
 
-        const cx = -slider.displayMin / (slider.displayMax - slider.displayMin) * sw;
-        const v  =  slider.value      / (slider.displayMax - slider.displayMin);
+        const cx = -control.displayMin / (control.displayMax - control.displayMin) * sw;
+        const v  =  control.value      / (control.displayMax - control.displayMin);
 
-        slider.updateBar(sx, cx, v, sw, sh);
-        slider.updateColors();
-        slider.updateText();
-        slider.updateFocus(sw, sh);
+        control.updateBar(sx, cx, v, sw, sh);
+        control.updateColors();
+        control.updateText();
+        control.updateFocus(sw, sh);
         
-        updateSliderRanges(slider, sw, sh);
+        updateControlRanges(control, sw, sh);
 
 
-        slider.cachedOffsetLeft   = null;
-        slider.cachedClientWidth  = null;
-        slider.cachedClientHeight = null;
+        control.cachedOffsetLeft   = null;
+        control.cachedClientWidth  = null;
+        control.cachedClientHeight = null;
     };
 
 
 
-    slider.updateBar = function(sx, cx, v, sw, sh)
+    control.updateBar = function(sx, cx, v, sw, sh)
     {
-        if (slider.dragReverse)
+        if (control.dragReverse)
             v *= -1;
 
             
-        if (isNaN(slider.value))
-            slider.bar.style.display = 'none';
+        if (isNaN(control.value))
+            control.bar.style.display = 'none';
 
         else
         {
-            slider.bar.style.display = 'block';
+            control.bar.style.display = 'block';
 
             const x = 
                 v >= 0
                 ? sx + cx
                 : sx + cx + v * sw;
 
-            slider.bar.style.left   = Math.max(0, x);
-            slider.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), slider.offsetWidth);
+            control.bar.style.left   = Math.max(0, x);
+            control.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), control.offsetWidth);
 
-            slider.bar.style.top    = sh * slider.barTop;
-            slider.bar.style.height = sh * (slider.barBottom - slider.barTop);
+            control.bar.style.top    = sh * control.barTop;
+            control.bar.style.height = sh * (control.barBottom - control.barTop);
         }
     };
 
 
 
-    slider.updateColors = function()
+    control.updateColors = function()
     {
-        slider     .style.background = isDarkMode() ? slider.backColorDark  : slider.backColorLight;
-        slider.bar .style.background = isDarkMode() ? slider.valueColorDark : slider.valueColorLight;
-        slider.text.style.color      = isDarkMode() ? slider.textColorDark  : slider.textColorLight;
+        control     .style.background = isDarkMode() ? control.backColorDark  : control.backColorLight;
+        control.bar .style.background = isDarkMode() ? control.valueColorDark : control.valueColorLight;
+        control.text.style.color      = isDarkMode() ? control.textColorDark  : control.textColorLight;
     };
 
 
 
-    slider.updateText = function()
+    control.updateText = function()
     {
-        slider.text.innerHTML = '';
+        control.text.innerHTML = '';
         
-        if (   slider.name.length > 0
-            && slider.showName)
-            slider.text.innerHTML += '<span class="numberControlName">' + slider.name + "</span>&nbsp;&nbsp;";
+        if (   control.name.length > 0
+            && control.showName)
+            control.text.innerHTML += '<span class="numberControlName">' + control.name + "</span>&nbsp;&nbsp;";
 
-        slider.text.innerHTML += slider.getValueText() + slider.suffix;
+        control.text.innerHTML += control.getValueText() + control.suffix;
     };
 
 
 
-    slider.updateFocus = function(sw, sh)
+    control.updateFocus = function(sw, sh)
     {
-        slider.focus.style.left   = 0;
-        slider.focus.style.top    = 0;
-        slider.focus.style.width  = sw;
-        slider.focus.style.height = sh;
+        control.focus.style.left   = 0;
+        control.focus.style.top    = 0;
+        control.focus.style.width  = sw;
+        control.focus.style.height = sh;
     };
 
 
 
-    slider.getValueText = function()
+    control.getValueText = function()
     {
-        if (   slider.options.length > 0
-            && slider.displayDec == 0)
+        if (   control.options.length > 0
+            && control.displayDec == 0)
         {
-            if (   slider.value <  0 
-                || slider.value >= slider.options.length)
+            if (   control.value <  0 
+                || control.value >= control.options.length)
                 return DISPLAY_INVALID;
             else
-                return slider.options[Math.round(slider.value)];
+                return control.options[Math.round(control.value)];
         }
-        else if (slider.valueText != '')
+        else if (control.valueText != '')
         {
-            return slider.valueText;
+            return control.valueText;
         }
         else
         {
-            return isNaN(slider.value)
+            return isNaN(control.value)
                    ? DISPLAY_INVALID
-                   : Math.abs(slider.value * slider.valueScale) > 999999
-                     ? (slider.value * slider.valueScale).toExponential(1)
+                   : Math.abs(control.value * control.valueScale) > 999999
+                     ? (control.value * control.valueScale).toExponential(1)
                      : numToString(
-                           slider.value * slider.valueScale, 
-                           slider.displayDec, 
-                           slider.showHex
+                           control.value * control.valueScale, 
+                           control.displayDec, 
+                           control.showHex
                        ).toUpperCase();
         }
     };
 
 
 
-    slider.lockPointer = function(pointerId)
+    control.lockPointer = function(pointerId)
     {
-        clearTimeout(slider.clickTimer);
+        clearTimeout(control.clickTimer);
 
-        slider.requestPointerLock =    
-               slider.      requestPointerLock 
-            || slider.   mozRequestPointerLock
-            || slider.webkitRequestPointerLock;
+        control.requestPointerLock =    
+               control.      requestPointerLock 
+            || control.   mozRequestPointerLock
+            || control.webkitRequestPointerLock;
 
-        slider.requestPointerLock();
+        control.requestPointerLock();
     };
 
 
 
-    slider.unlockPointer = function(pointerId)
+    control.unlockPointer = function(pointerId)
     {
         document.exitPointerLock =    
                document.      exitPointerLock    
@@ -335,20 +335,20 @@ function initNumberControl(param, slider, width, height, id, name, showName, min
 
 
 
-    slider.isPointerLocked = function()
+    control.isPointerLocked = function()
     {
-        return (document.      pointerLockElement === slider 
-             || document.   mozPointerLockElement === slider
-             || document.webkitPointerLockElement === slider);
+        return (document.      pointerLockElement === control 
+             || document.   mozPointerLockElement === control
+             || document.webkitPointerLockElement === control);
     }
 
 
 
-    slider.getOffsetLeft   = () => slider.cachedOffsetLeft   = slider.cachedOffsetLeft   || slider.offsetLeft;
-    slider.getClientWidth  = () => slider.cachedClientWidth  = slider.cachedClientWidth  || slider.clientWidth;
-    slider.getClientHeight = () => slider.cachedClientHeight = slider.cachedClientHeight || slider.clientHeight;
+    control.getOffsetLeft   = () => control.cachedOffsetLeft   = control.cachedOffsetLeft   || control.offsetLeft;
+    control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.clientWidth;
+    control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.clientHeight;
 
 
 
-    slider.update();
+    control.update();
 }

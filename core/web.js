@@ -31,7 +31,7 @@ function createDiv(className = '')
 {
     const div = document.createElement('div');
     
-    if (className.trim() != '')
+    if (className != '')
         div.className = className;
     
     return div;

@@ -2118,7 +2118,7 @@ function createDiv(className = '')
 {
     const div = document.createElement('div');
     
-    if (className.trim() != '')
+    if (className != '')
         div.className = className;
     
     return div;
@@ -4589,7 +4589,7 @@ extends GType
 
 
 
-    constructor(fill     = GColorValue.NaN,
+    constructor(fill     = GColorFillValue.NaN,
                 position = GNumberValue   .NaN)
     {
         super(COLOR_STOP_VALUE);

@@ -1,183 +1,183 @@
-function initColorControlChildren(slider)
+function initColorControlChildren(control)
 {
-    slider.text  = createDiv('colorControlText');
-    slider.focus = createDiv('colorControlFocus');
+    control.text  = createDiv('colorControlText');
+    control.focus = createDiv('colorControlFocus');
 
-    slider.appendChild(slider.text);
-    slider.appendChild(slider.focus);
+    control.appendChild(control.text);
+    control.appendChild(control.focus);
 }
 
 
-function initColorControl(param, slider, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0)
+function initColorControl(param, control, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0)
 {
-    slider.param                  = param;
+    control.param                  = param;
      
-    slider.className              = 'colorControl';
+    control.className              = 'colorControl';
      
-    slider.width                  = width;
-    slider.height                 = height;
+    control.width                  = width;
+    control.height                 = height;
              
-    slider.style.width            = width;
-    slider.style.height           = height;
+    control.style.width            = width;
+    control.style.height           = height;
              
-    slider.value                  = def;
-    slider.acc                    = acc;
+    control.value                  = def;
+    control.acc                    = acc;
      
-    slider.id                     = id;
-    slider.name                   = name;
+    control.id                     = id;
+    control.name                   = name;
      
-    slider.dragReverse            = false;
-    slider.dragScale              = dragScale;
-    slider.wheelScale             = wheelScale;
+    control.dragReverse            = false;
+    control.dragScale              = dragScale;
+    control.wheelScale             = wheelScale;
              
-    slider.backColorLight         = 'transparent';
-    slider.valueColorLight        = '#7772';
-    slider.textColorLight         = '#000';
+    control.backColorLight         = 'transparent';
+    control.valueColorLight        = '#7772';
+    control.textColorLight         = '#000';
                 
-    slider.backColorDark          = 'transparent';
-    slider.valueColorDark         = '#fff4';
-    slider.textColorDark          = '#eee';
+    control.backColorDark          = 'transparent';
+    control.valueColorDark         = '#fff4';
+    control.textColorDark          = '#eee';
                 
-    slider.fontSize               = 11;
+    control.fontSize               = 11;
              
-    slider.style.display          = 'inline';
+    control.style.display          = 'inline';
              
-    slider.mouseOver              = false;
-    slider.buttonDown0            = false;
-    slider.buttonDown1            = false;
+    control.mouseOver              = false;
+    control.buttonDown0            = false;
+    control.buttonDown1            = false;
              
-    slider.clickSize              = 4;
-    slider.moved                  = false;
+    control.clickSize              = 4;
+    control.moved                  = false;
          
-    slider.tabIndex               = 0;
-    slider.inFocus                = false;
-    slider.clicked                = false;
+    control.tabIndex               = 0;
+    control.inFocus                = false;
+    control.clicked                = false;
  
-    slider.startValue             = 0;
-    slider.oldValue; 
+    control.startValue             = 0;
+    control.oldValue; 
  
-    slider.wrapValue              = false;
+    control.wrapValue              = false;
      
-    slider.showName               = showName;
-    slider.showHex                = false;
+    control.showName               = showName;
+    control.showHex                = false;
          
-    slider.enableChangeEvent      = true;
+    control.enableChangeEvent      = true;
     
-    slider.successOnFocusOut      = false;
-    slider.keyBlur                = false;
+    control.successOnFocusOut      = false;
+    control.keyBlur                = false;
     
-    slider.pointerEvents          = true;
-    slider.readOnly               = false;
+    control.pointerEvents          = true;
+    control.readOnly               = false;
      
-    slider.valueText              = '';
+    control.valueText              = '';
      
-    slider.onstartchange          = new Event('startchange');
-    slider.onchange               = new Event('change');
-    slider.onconfirm              = new Event('confirm');
+    control.onstartchange          = new Event('startchange');
+    control.onchange               = new Event('change');
+    control.onconfirm              = new Event('confirm');
 
 
-    initColorControlChildren(slider);    
-    initColorControlTextbox(slider);
-    initColorControlEvents(slider);
+    initColorControlChildren(control);    
+    initColorControlTextbox(control);
+    initColorControlEvents(control);
 
 
 
-    slider.setName = function(name)
+    control.setName = function(name)
     {
-        slider.name = name;
-        slider.update();
+        control.name = name;
+        control.update();
     };
 
 
 
-    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+    control.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
     {
-        const oldValue = slider.value.copy();
+        const oldValue = control.value.copy();
 
-        slider.value = value.copy();
+        control.value = value.copy();
 
-        slider.update();
+        control.update();
 
         if (   fireChangeEvent
-            && slider.enableChangeEvent
-            && value != slider.prevValue)
-            slider.dispatchEvent(slider.onchange);
+            && control.enableChangeEvent
+            && value != control.prevValue)
+            control.dispatchEvent(control.onchange);
 
         if (   confirm
-            && slider.enableChangeEvent
+            && control.enableChangeEvent
             && value != oldValue)
-            slider.dispatchEvent(slider.onconfirm);
+            control.dispatchEvent(control.onconfirm);
     };
 
 
 
 
-    slider.update = function()
+    control.update = function()
     {
-        const sw = slider.getClientWidth();
-        const sh = slider.getClientHeight();
+        const sw = control.getClientWidth();
+        const sh = control.getClientHeight();
 
 
-        slider.updateColors();
-        slider.updateText();
-        slider.updateFocus(sw, sh);
+        control.updateColors();
+        control.updateText();
+        control.updateFocus(sw, sh);
         
 
-        slider.cachedOffsetLeft   = null;
-        slider.cachedClientWidth  = null;
-        slider.cachedClientHeight = null;
+        control.cachedOffsetLeft   = null;
+        control.cachedClientWidth  = null;
+        control.cachedClientHeight = null;
     };
 
 
 
-    slider.updateColors = function()
+    control.updateColors = function()
     {
-        const rgb = dataColor2rgb(slider.value.toDataColor());
+        const rgb = dataColor2rgb(control.value.toDataColor());
 
-        slider     .style.background = colorStyleRgb(rgb);
-        slider.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
+        control     .style.background = colorStyleRgb(rgb);
+        control.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
     };
 
 
 
-    slider.updateText = function()
+    control.updateText = function()
     {
-        slider.text.innerHTML = '';
+        control.text.innerHTML = '';
         
-        if (   slider.name.length > 0
-            && slider.showName)
-            slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="colorControlName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
+        if (   control.name.length > 0
+            && control.showName)
+            control.text.innerHTML += (control.name.trim() != '' ? '<span class="colorControlName">' + control.name + '</span>&nbsp;&nbsp;' : '');
 
-        slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.value.toDataColor()));
+        control.text.innerHTML += rgb2hex(dataColor2rgb(control.value.toDataColor()));
     };
 
 
 
-    slider.updateFocus = function(sw, sh)
+    control.updateFocus = function(sw, sh)
     {
-        slider.focus.style.left   = 0;
-        slider.focus.style.top    = 0;
-        slider.focus.style.width  = sw;
-        slider.focus.style.height = sh;
+        control.focus.style.left   = 0;
+        control.focus.style.top    = 0;
+        control.focus.style.width  = sw;
+        control.focus.style.height = sh;
     };
 
 
 
-    slider.lockPointer = function(pointerId)
+    control.lockPointer = function(pointerId)
     {
-        clearTimeout(slider.clickTimer);
+        clearTimeout(control.clickTimer);
 
-        slider.requestPointerLock =    
-               slider.      requestPointerLock 
-            || slider.   mozRequestPointerLock
-            || slider.webkitRequestPointerLock;
+        control.requestPointerLock =    
+               control.      requestPointerLock 
+            || control.   mozRequestPointerLock
+            || control.webkitRequestPointerLock;
 
-        slider.requestPointerLock();
+        control.requestPointerLock();
     };
 
 
 
-    slider.unlockPointer = function(pointerId)
+    control.unlockPointer = function(pointerId)
     {
         document.exitPointerLock =    
                document.      exitPointerLock    
@@ -189,20 +189,20 @@ function initColorControl(param, slider, width, height, id, name, showName, def,
 
 
 
-    slider.isPointerLocked = function()
+    control.isPointerLocked = function()
     {
-        return (document.      pointerLockElement === slider 
-             || document.   mozPointerLockElement === slider
-             || document.webkitPointerLockElement === slider);
+        return (document.      pointerLockElement === control 
+             || document.   mozPointerLockElement === control
+             || document.webkitPointerLockElement === control);
     }
 
 
 
-    slider.getOffsetLeft   = () => slider.cachedOffsetLeft   = slider.cachedOffsetLeft   || slider.offsetLeft;
-    slider.getClientWidth  = () => slider.cachedClientWidth  = slider.cachedClientWidth  || slider.clientWidth;
-    slider.getClientHeight = () => slider.cachedClientHeight = slider.cachedClientHeight || slider.clientHeight;
+    control.getOffsetLeft   = () => control.cachedOffsetLeft   = control.cachedOffsetLeft   || control.offsetLeft;
+    control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.clientWidth;
+    control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.clientHeight;
 
 
 
-    slider.update();
+    control.update();
 }

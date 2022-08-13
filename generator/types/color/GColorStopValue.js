@@ -6,7 +6,7 @@ extends GType
 
 
 
-    constructor(fill     = GColorValue.NaN,
+    constructor(fill     = GColorFillValue.NaN,
                 position = GNumberValue   .NaN)
     {
         super(COLOR_STOP_VALUE);

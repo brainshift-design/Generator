@@ -23,50 +23,50 @@ class NumberControlRange
 
 
 
-function updateSliderRanges(slider, sliderWidth, sliderHeight)
+function updateControlRanges(control, controlWidth, controlHeight)
 {
-    if (slider.ranges.length == slider.rangeDivs.length) // update
+    if (control.ranges.length == control.rangeDivs.length) // update
     {
-        for (let i = 0; i < slider.ranges.length; i++)
+        for (let i = 0; i < control.ranges.length; i++)
         {
-            updateSliderRangeDiv(
-                slider.ranges   [i],
-                slider.rangeDivs[i],
-                sliderWidth,
-                sliderHeight);
+            updateControlRangeDiv(
+                control.ranges   [i],
+                control.rangeDivs[i],
+                controlWidth,
+                controlHeight);
         }
     }
     else // recreate
     {
-        resetSliderRangeDivs(slider);
+        resetControlRangeDivs(control);
 
-        for (let i = 0; i < slider.ranges.length; i++)
+        for (let i = 0; i < control.ranges.length; i++)
         {
-            const range = slider.ranges[i];
+            const range = control.ranges[i];
 
             const div = createDiv('numberControlRange');
             div.style.zIndex = 0;
-            slider.rangeDivs.push(div);
-            slider.appendChild(div);
+            control.rangeDivs.push(div);
+            control.appendChild(div);
         
-            updateSliderRangeDiv(range, div, sliderWidth, sliderHeight);
+            updateControlRangeDiv(range, div, controlWidth, controlHeight);
         }
     }
 };
 
 
 
-function updateSliderRangeDiv(range, div, sliderWidth, sliderHeight)
+function updateControlRangeDiv(range, div, controlWidth, controlHeight)
 {
     if (range.start == range.end)
         div.style.display = 'none';
     else
     {
         div.style.display    = 'block';
-        div.style.left       = sliderWidth * range.start;  
-        div.style.top        = range.top * sliderHeight;
-        div.style.width      = sliderWidth * (range.end - range.start);
-        div.style.height     = (range.bottom - range.top) * sliderHeight;
+        div.style.left       = controlWidth * range.start;  
+        div.style.top        = range.top * controlHeight;
+        div.style.width      = controlWidth * (range.end - range.start);
+        div.style.height     = (range.bottom - range.top) * controlHeight;
         div.style.background = range.background;
     }
 };
@@ -76,12 +76,12 @@ function updateSliderRangeDiv(range, div, sliderWidth, sliderHeight)
 function resetSliderRanges(slider)
 {
     slider.ranges = [];
-    resetSliderRangeDivs(slider);        
+    resetControlRangeDivs(slider);        
 };
 
 
 
-function resetSliderRangeDivs(slider)
+function resetControlRangeDivs(slider)
 {
     for (const div of slider.rangeDivs)
         if (slider.contains(div))

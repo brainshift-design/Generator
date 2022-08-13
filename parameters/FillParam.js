@@ -45,11 +45,22 @@ extends Parameter
         this.defaultValue          = defaultValue;
 
 
-        initFillControl(
+        initColorControl(
             this,
             this.colorControl,
-            120, // width
-            20,  // height
+            85, // width
+            20, // height
+            this.id,
+            this.name, 
+            showName,
+            defaultValue,
+            dragScale);
+
+        initNumberControl(
+            this,
+            this.opacityControl,
+            35, // width
+            20, // height
             this.id,
             this.name, 
             showName,
@@ -58,7 +69,8 @@ extends Parameter
 
         // this.control.successOnFocusOut = true;
 
-        this.div.appendChild(this.colorControl);
+        this.div.appendChild(this.  colorControl);
+        this.div.appendChild(this.opacityControl);
 
        
         if (hasInput)  this.initInput ([COLOR_FILL, COLOR_FILL_VALUE, COLOR, COLOR_VALUE]);

@@ -3947,7 +3947,7 @@ function createDiv(className = '')
 {
     const div = document.createElement('div');
     
-    if (className.trim() != '')
+    if (className != '')
         div.className = className;
     
     return div;
@@ -6418,7 +6418,7 @@ extends GType
 
 
 
-    constructor(fill     = GColorValue.NaN,
+    constructor(fill     = GColorFillValue.NaN,
                 position = GNumberValue   .NaN)
     {
         super(COLOR_STOP_VALUE);
@@ -13946,7 +13946,7 @@ function createDiv(className = '')
 {
     const div = document.createElement('div');
     
-    if (className.trim() != '')
+    if (className != '')
         div.className = className;
     
     return div;
@@ -17844,7 +17844,7 @@ extends GType
 
 
 
-    constructor(fill     = GColorValue.NaN,
+    constructor(fill     = GColorFillValue.NaN,
                 position = GNumberValue   .NaN)
     {
         super(COLOR_STOP_VALUE);
@@ -19358,26 +19358,26 @@ function createToggleButton(width, height)
 }
 
 
-function initNumberControlEvents(slider)
+function initNumberControlEvents(control)
 {
-    slider.addEventListener('pointerdown', function(e)
+    control.addEventListener('pointerdown', function(e)
     {
         if (graphView.spaceDown)
             return;
 
         if (e.button == 0)
         {
-            if (!slider.pointerEvents)
+            if (!control.pointerEvents)
             {
                 e.stopPropagation();
                 return;
             }
     
             let nodeDiv = 
-                   slider.parentNode
-                && slider.parentNode.parentNode
-                && slider.parentNode.parentNode.parentNode
-                ? slider.parentNode.parentNode.parentNode
+                   control.parentNode
+                && control.parentNode.parentNode
+                && control.parentNode.parentNode.parentNode
+                ? control.parentNode.parentNode.parentNode
                 : null;
 
             if (   nodeDiv 
@@ -19388,42 +19388,42 @@ function initNumberControlEvents(slider)
             e.preventDefault(); // this is fine since I lock the pointer anyway
             e.stopPropagation();
                 
-            slider.buttonDown0  = true;
-            slider.buttonDown0_ = true;
-            slider.moved        = false;
-            slider.clientX      = e.clientX;
-            slider.movedX       = 0;
+            control.buttonDown0  = true;
+            control.buttonDown0_ = true;
+            control.moved        = false;
+            control.clientX      = e.clientX;
+            control.movedX       = 0;
 
 
-            if (!slider.readOnly)
+            if (!control.readOnly)
             {
-                slider.oldValue   = slider.value;
-                slider.startValue = slider.value;
-                slider.prevValue  = slider.value;
-                slider.sx         = e.clientX;
+                control.oldValue   = control.value;
+                control.startValue = control.value;
+                control.prevValue  = control.value;
+                control.sx         = e.clientX;
 
-                slider.clickTimer = setTimeout(() => 
+                control.clickTimer = setTimeout(() => 
                 {
                     if (!document.menuHadFocus)
                     {
-                        slider.moved = true;
-                        slider.lockPointer(e.pointerId);
+                        control.moved = true;
+                        control.lockPointer(e.pointerId);
                     }
                 }, 
                 500);
             }
 
 
-            if (   !slider.param
-                || !slider.param.node.selected)
-                slider.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+            if (   !control.param
+                || !control.param.node.selected)
+                control.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
 
             else
             {
-                slider.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+                control.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
                     
-                if (slider.param.index < slider.param.node.params.length-1)
-                    slider.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+                if (control.param.index < control.param.node.params.length-1)
+                    control.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
             }
 
 
@@ -19431,35 +19431,35 @@ function initNumberControlEvents(slider)
             document.activeElement.blur();
 
 
-            if (slider.param)
-                slider.param.noUpdate = true;  
+            if (control.param)
+                control.param.noUpdate = true;  
         }
         else if (e.button == 1)
         {
             e.preventDefault();
-            slider.buttonDown1 = true;
+            control.buttonDown1 = true;
         }
         else if (e.button == 2)
         {
             e.preventDefault();
-            slider.buttonDown2 = true;
+            control.buttonDown2 = true;
         }
     });
 
 
 
-    slider.addEventListener('pointerenter', function(e)
+    control.addEventListener('pointerenter', function(e)
     {
         if (   !graphView.spaceDown
-            && slider.pointerEvents)
+            && control.pointerEvents)
         {
             if (graphView.tempConn)
-                slider.style.cursor = 'default';
+                control.style.cursor = 'default';
             
             else
-                slider.style.cursor = 
-                       slider.readOnly 
-                    || containsChild(slider, slider.textbox) 
+                control.style.cursor = 
+                       control.readOnly 
+                    || containsChild(control, control.textbox) 
                     ? 'default'
                     : 'ew-resize';
 
@@ -19469,70 +19469,70 @@ function initNumberControlEvents(slider)
                 ? 'rgba(255, 255, 255, 0.1)'
                 : 'rgba(0, 0, 0, 0.1)';
 
-            if (slider.param)
+            if (control.param)
             {
-                slider.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
+                control.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
 
-                if (    slider.param.node
-                    &&  slider.param.node.params.includes(slider.param)
-                    && !isLastInArray(slider.param.node.params, slider.param))
-                    slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+                if (    control.param.node
+                    &&  control.param.node.params.includes(control.param)
+                    && !isLastInArray(control.param.node.params, control.param))
+                    control.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
             }
             else
             {
-                slider.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+                control.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
             }
 
 
-            slider.focus.style.visibility = 'visible';
-            slider.focus.style.opacity    = '100%';
+            control.focus.style.visibility = 'visible';
+            control.focus.style.opacity    = '100%';
     
-            slider.update();
+            control.update();
         }
     });
 
 
 
-    slider.addEventListener('pointermove', e =>
+    control.addEventListener('pointermove', e =>
     {
-        if (!slider.pointerEvents)
+        if (!control.pointerEvents)
             return;
         
 
-        let rect = boundingRect(slider);
+        let rect = boundingRect(control);
         
-        slider.mouseOver = 
+        control.mouseOver = 
                e.clientX >= rect.left
             && e.clientX <  rect.right
             && e.clientY >= rect.top                                     
             && e.clientY <  rect.bottom;
 
 
-        slider.clientX = e.clientX;
+        control.clientX = e.clientX;
 
         
-        if (    slider.buttonDown0
-            && !slider.readOnly)
+        if (    control.buttonDown0
+            && !control.readOnly)
         {
-            if (slider.isPointerLocked())
+            if (control.isPointerLocked())
             {
-                slider.movedX += e.movementX;
+                control.movedX += e.movementX;
                 
-                if (!isNaN(slider.value))
+                if (!isNaN(control.value))
                 {
-                    const dx       = slider.movedX * (slider.dragReverse ? -1 : 1);
-                    const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
-                    const grain    = Math.pow(10, -slider.dec);
-                    const drag     = grain * sqr(slider.dragScale);
+                    const dx       = control.movedX * (control.dragReverse ? -1 : 1);
+                    const adaptive = 10 * Math.pow(Math.abs(dx), control.acc);
+                    const grain    = Math.pow(10, -control.dec);
+                    const drag     = grain * sqr(control.dragScale);
 
-                    const val      = slider.startValue + dx * drag * adaptive;
+                    const val      = control.startValue + dx * drag * adaptive;
 
                     
                     // reset slider movement at the limits for better UX
-                    const min = getCtrlKey(e) ? slider.min : slider.displayMin;
-                    const max = getCtrlKey(e) ? slider.max : slider.displayMax;
+                    const min = getCtrlKey(e) ? control.min : control.displayMin;
+                    const max = getCtrlKey(e) ? control.max : control.displayMax;
 
-                    slider.setValue(
+                    control.setValue(
                         Math.round(val / grain) * grain, 
                         true, 
                         false, 
@@ -19543,31 +19543,31 @@ function initNumberControlEvents(slider)
                     if (   val <= min
                         || val >= max)
                     {
-                        slider.movedX     = 0;
-                        slider.startValue = slider.value;
-                        slider.sx         = e.clientX;
+                        control.movedX     = 0;
+                        control.startValue = control.value;
+                        control.sx         = e.clientX;
                     }
 
 
-                    if (slider.value != slider.prevValue)
-                        pushUpdateFromParam([slider.param.node], slider.param);
+                    if (control.value != control.prevValue)
+                        pushUpdateFromParam([control.param.node], control.param);
 
-                    slider.prevValue = slider.value;
+                    control.prevValue = control.value;
                 }
             }
             else
             {
-                if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
+                if (Math.abs(e.clientX - control.sx) > control.clickSize/2)
                 {
-                    slider.moved = true;
-                    slider.lockPointer(e.pointerId);
+                    control.moved = true;
+                    control.lockPointer(e.pointerId);
 
-                    slider.dispatchEvent(slider.onstartchange);
+                    control.dispatchEvent(control.onstartchange);
                 }
             }
         }
         else if (graphView.tempConn
-              && slider.param)
+              && control.param)
         {
             let savedInput = 
                 graphView.savedConn
@@ -19575,36 +19575,36 @@ function initNumberControlEvents(slider)
                 : null;
 
             if (    graphView.tempConn.output
-                &&  slider.param.input
-                &&  slider.param.input.types.includes(graphView.tempConn.output.type)
-                && !graphView.tempConn.output.node.follows(slider.param.node)
-                && (  !slider.param.input.connected // not already connected to this input
-                    || slider.param.input.connectedOutput != graphView.tempConn.output
-                    || slider.param.input == savedInput))
+                &&  control.param.input
+                &&  control.param.input.types.includes(graphView.tempConn.output.type)
+                && !graphView.tempConn.output.node.follows(control.param.node)
+                && (  !control.param.input.connected // not already connected to this input
+                    || control.param.input.connectedOutput != graphView.tempConn.output
+                    || control.param.input == savedInput))
             {
-                graphView.overInput = slider.param.input;
+                graphView.overInput = control.param.input;
                     
-                slider.param.input.mouseOver = true;
-                slider.param.input.updateControl();
+                control.param.input.mouseOver = true;
+                control.param.input.updateControl();
 
-                const rect = boundingRect(slider.param.input.control);
+                const rect = boundingRect(control.param.input.control);
 
                 graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - controlBar.offsetHeight);
             }
             else if ( graphView.tempConn.input
-                  &&  slider.param.output
-                  &&  graphView.tempConn.input.types.includes(slider.param.output.type)
-                  && !slider.param.node.follows(graphView.tempConn.input.node))
+                  &&  control.param.output
+                  &&  graphView.tempConn.input.types.includes(control.param.output.type)
+                  && !control.param.node.follows(graphView.tempConn.input.node))
             {
-                graphView.overOutput = slider.param.output;
+                graphView.overOutput = control.param.output;
                     
-                slider.param.output.mouseOver = true;
-                slider.param.output.updateControl();
+                control.param.output.mouseOver = true;
+                control.param.output.updateControl();
 
 
-                const rect = boundingRect(slider.param.output.control);
+                const rect = boundingRect(control.param.output.control);
 
                 graphView.tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
@@ -19614,28 +19614,28 @@ function initNumberControlEvents(slider)
                 graphView.tempConn.input.updateControl();
             }
         }
-        else if (slider.readOnly)
+        else if (control.readOnly)
         {
-            slider.moved = true;
+            control.moved = true;
         }
     });
     
     
     
-    slider.addEventListener('pointerleave', function(e)
+    control.addEventListener('pointerleave', function(e)
     {
-        slider.style.cursor           = 'default';
+        control.style.cursor           = 'default';
         
-        slider.focus.style.visibility = 'hidden';
-        slider.focus.style.opacity    = 0;
+        control.focus.style.visibility = 'hidden';
+        control.focus.style.opacity    = 0;
 
-        slider.update();
+        control.update();
 
 
         if (graphView.tempConn)
         {
             if (   graphView.tempConn.output
-                && graphView.tempConn.output.node != slider.param.node)
+                && graphView.tempConn.output.node != control.param.node)
             {
                 const input = graphView.overInput;
                 
@@ -19650,7 +19650,7 @@ function initNumberControlEvents(slider)
                 graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
-                  && graphView.tempConn.input.node != slider.param.node)
+                  && graphView.tempConn.input.node != control.param.node)
             {
                 const output = graphView.overOutput;
                 
@@ -19670,33 +19670,33 @@ function initNumberControlEvents(slider)
 
 
 
-    slider.addEventListener('losecapture', function()
+    control.addEventListener('losecapture', function()
     {
-        slider.buttonDown0 = false;
-        slider.buttonDown1 = false;
-        slider.buttonDown2 = false;
-        slider.mouseOver   = false;
-        slider.update();
+        control.buttonDown0 = false;
+        control.buttonDown1 = false;
+        control.buttonDown2 = false;
+        control.mouseOver   = false;
+        control.update();
     });
 
 
 
-    slider.addEventListener('pointerup', function(e)
+    control.addEventListener('pointerup', function(e)
     {
-        clearTimeout(slider.clickTimer);
+        clearTimeout(control.clickTimer);
 
 
         if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
-                && !graphView.tempConn.output.node.follows(slider.param.node)
+                && !graphView.tempConn.output.node.follows(control.param.node)
                 &&  graphView.overInput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if (graphView.tempConn.input
-                && !slider.param.node.follows(graphView.tempConn.input.node)
+                && !control.param.node.follows(graphView.tempConn.input.node)
                 &&  graphView.overOutput)
             {
                 graphView.endConnection(e.pointerId);
@@ -19704,28 +19704,28 @@ function initNumberControlEvents(slider)
             }
         }
         
-        else if (   slider.moved
+        else if (   control.moved
             || document.menuHadFocus)
         {
-            slider.unlockPointer(e.pointerId);
+            control.unlockPointer(e.pointerId);
 
-            if (slider.param)
-                slider.param.noUpdate = false;  
+            if (control.param)
+                control.param.noUpdate = false;  
 
             return;            
         }
 
-        else if (slider.buttonDown0_)
+        else if (control.buttonDown0_)
         {
-            slider.clicked = true;
-            slider.showTextbox();
+            control.clicked = true;
+            control.showTextbox();
         }
 
-             if (e.button == 0) slider.buttonDown0 = false;
-        else if (e.button == 1) slider.buttonDown1 = false;
-        else if (e.button == 2) slider.buttonDown2 = false;
+             if (e.button == 0) control.buttonDown0 = false;
+        else if (e.button == 1) control.buttonDown1 = false;
+        else if (e.button == 2) control.buttonDown2 = false;
 
-        slider.buttonDown0_ = false;
+        control.buttonDown0_ = false;
     });    
 
 
@@ -19733,12 +19733,12 @@ function initNumberControlEvents(slider)
     document.addEventListener('pointerup', function(e)
     {
         if (   e.button == 0 
-            && slider.buttonDown0)
+            && control.buttonDown0)
         {
-            slider.buttonDown0 = false;
-            slider.unlockPointer(e.pointerId);
+            control.buttonDown0 = false;
+            control.unlockPointer(e.pointerId);
 
-            slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            control.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
             // if (    slider.value != slider.oldValue
             //     && !slider.readOnly)
@@ -19753,9 +19753,9 @@ function initNumberControlEvents(slider)
 
 
     
-    slider.addEventListener('wheel', e =>
+    control.addEventListener('wheel', e =>
     {
-        if (!slider.pointerEvents)
+        if (!control.pointerEvents)
             return;
 
 
@@ -19771,32 +19771,32 @@ function initNumberControlEvents(slider)
         }
 
 
-        const dWheelX = e.deltaX /  20 * (slider.dragReverse ? -1 : 1);
-        const dWheelY = e.deltaY / 100 * (slider.dragReverse ? -1 : 1);
+        const dWheelX = e.deltaX /  20 * (control.dragReverse ? -1 : 1);
+        const dWheelY = e.deltaY / 100 * (control.dragReverse ? -1 : 1);
 
 
         if (   !getCtrlKey(e)
-            && !slider.buttonDown1)
+            && !control.buttonDown1)
         {
             e.stopPropagation();
 
-            if (!slider.readOnly)
+            if (!control.readOnly)
             {
                 if (   document.activeElement
                     && document.activeElement.tagName.toLowerCase() == 'input'
                     && document.activeElement.slider)
                     document.activeElement.slider.textbox.finish(true, false);
 
-                slider.oldValue = slider.value;
+                control.oldValue = control.value;
 
-                const dec = Math.pow(10, -slider.dec);
+                const dec = Math.pow(10, -control.dec);
 
                 const val =
                     isTouchpad
-                    ? slider.value -  dWheelX               * slider.wheelScale * dec
-                    : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
+                    ? control.value -  dWheelX               * control.wheelScale * dec
+                    : control.value + (dWheelY > 0 ? -1 : 1) * control.wheelScale * dec;
                 
-                slider.setValue(val, true, true, false, false);
+                control.setValue(val, true, true, false, false);
             }
         }
     });
@@ -19853,11 +19853,11 @@ function initNumberControlEvents(slider)
     
     
     
-    slider.addEventListener('keydown', e =>
+    control.addEventListener('keydown', e =>
     {
         if (   e.code == 'Enter'
             || e.code == 'NumpadEnter')
-            slider.showTextbox();
+            control.showTextbox();
 
         // else if (e.code == 'Space')
         //     setCursor(panCursor, true);
@@ -19865,12 +19865,12 @@ function initNumberControlEvents(slider)
 
 
 
-    slider.addEventListener('focus', function()
+    control.addEventListener('focus', function()
     {
         if (   !graphView.spaceDown
-            && !slider.buttonDown1
-            && slider.pointerEvents)
-            slider.showTextbox();
+            && !control.buttonDown1
+            && control.pointerEvents)
+            control.showTextbox();
     });
 }
 
@@ -19900,50 +19900,50 @@ class NumberControlRange
 
 
 
-function updateSliderRanges(slider, sliderWidth, sliderHeight)
+function updateControlRanges(control, controlWidth, controlHeight)
 {
-    if (slider.ranges.length == slider.rangeDivs.length) // update
+    if (control.ranges.length == control.rangeDivs.length) // update
     {
-        for (let i = 0; i < slider.ranges.length; i++)
+        for (let i = 0; i < control.ranges.length; i++)
         {
-            updateSliderRangeDiv(
-                slider.ranges   [i],
-                slider.rangeDivs[i],
-                sliderWidth,
-                sliderHeight);
+            updateControlRangeDiv(
+                control.ranges   [i],
+                control.rangeDivs[i],
+                controlWidth,
+                controlHeight);
         }
     }
     else // recreate
     {
-        resetSliderRangeDivs(slider);
+        resetControlRangeDivs(control);
 
-        for (let i = 0; i < slider.ranges.length; i++)
+        for (let i = 0; i < control.ranges.length; i++)
         {
-            const range = slider.ranges[i];
+            const range = control.ranges[i];
 
             const div = createDiv('numberControlRange');
             div.style.zIndex = 0;
-            slider.rangeDivs.push(div);
-            slider.appendChild(div);
+            control.rangeDivs.push(div);
+            control.appendChild(div);
         
-            updateSliderRangeDiv(range, div, sliderWidth, sliderHeight);
+            updateControlRangeDiv(range, div, controlWidth, controlHeight);
         }
     }
 };
 
 
 
-function updateSliderRangeDiv(range, div, sliderWidth, sliderHeight)
+function updateControlRangeDiv(range, div, controlWidth, controlHeight)
 {
     if (range.start == range.end)
         div.style.display = 'none';
     else
     {
         div.style.display    = 'block';
-        div.style.left       = sliderWidth * range.start;  
-        div.style.top        = range.top * sliderHeight;
-        div.style.width      = sliderWidth * (range.end - range.start);
-        div.style.height     = (range.bottom - range.top) * sliderHeight;
+        div.style.left       = controlWidth * range.start;  
+        div.style.top        = range.top * controlHeight;
+        div.style.width      = controlWidth * (range.end - range.start);
+        div.style.height     = (range.bottom - range.top) * controlHeight;
         div.style.background = range.background;
     }
 };
@@ -19953,12 +19953,12 @@ function updateSliderRangeDiv(range, div, sliderWidth, sliderHeight)
 function resetSliderRanges(slider)
 {
     slider.ranges = [];
-    resetSliderRangeDivs(slider);        
+    resetControlRangeDivs(slider);        
 };
 
 
 
-function resetSliderRangeDivs(slider)
+function resetControlRangeDivs(slider)
 {
     for (const div of slider.rangeDivs)
         if (slider.contains(div))
@@ -20049,7 +20049,7 @@ function initNumberControlTextbox(slider)
                 }
             }
 
-            // let tabs  = document.querySelectorAll('.numberControl, .selectSlider, .select, .menuSelect, button, .menuButton');
+            // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
             // let index = slider.tabIndex;
 
             // for (let i = 0; i < tabs.length; i++) 
@@ -20318,176 +20318,176 @@ function initNumberControlTextbox(slider)
 }
 
 
-function initNumberControlChildren(slider)
+function initNumberControlChildren(control)
 {
-    slider.bar   = createDiv('numberControlBar');
-    slider.text  = createDiv('numberControlText');
-    slider.focus = createDiv('numberControlFocus');
+    control.bar   = createDiv('numberControlBar');
+    control.text  = createDiv('numberControlText');
+    control.focus = createDiv('numberControlFocus');
 
-    slider.appendChild(slider.bar);
-    slider.appendChild(slider.text);
-    slider.appendChild(slider.focus);
+    control.appendChild(control.bar);
+    control.appendChild(control.text);
+    control.appendChild(control.focus);
 }
 
 
 
-function initNumberControl(param, slider, width, height, id, name, showName, min, max, defValue, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+function initNumberControl(param, control, width, height, id, name, showName, min, max, defValue, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
 {
-    slider.param                  = param;
+    control.param                  = param;
      
-    slider.className              = 'numberControl';
+    control.className              = 'numberControl';
      
-    slider.width                  = width;
-    slider.height                 = height;
+    control.width                  = width;
+    control.height                 = height;
              
-    slider.style.width            = width;
-    slider.style.height           = height;
+    control.style.width            = width;
+    control.style.height           = height;
              
-    slider.min                    = min;
-    slider.max                    = max;
-    slider.value                  = defValue;
-    slider.acc                    = acc;
+    control.min                    = min;
+    control.max                    = max;
+    control.value                  = defValue;
+    control.acc                    = acc;
      
-    slider.dec                    =
-    slider.displayDec             = dec;
+    control.dec                    =
+    control.displayDec             = dec;
          
-    slider.displayMin             = min;
-    slider.displayMax             = max;
-    slider.valueScale             = 1;
+    control.displayMin             = min;
+    control.displayMax             = max;
+    control.valueScale             = 1;
                 
-    slider.id                     = id;
-    slider.name                   = name;
-    slider.suffix                 = suffix;
-    slider.valueCanContainSuffix  = false;
+    control.id                     = id;
+    control.name                   = name;
+    control.suffix                 = suffix;
+    control.valueCanContainSuffix  = false;
      
-    slider.dragReverse            = false;
-    slider.dragScale              = dragScale;
-    slider.wheelScale             = wheelScale;
+    control.dragReverse            = false;
+    control.dragScale              = dragScale;
+    control.wheelScale             = wheelScale;
              
-    slider.backColorLight         = 'transparent';
-    slider.valueColorLight        = '#7772';
-    slider.textColorLight         = '#000';
+    control.backColorLight         = 'transparent';
+    control.valueColorLight        = '#7772';
+    control.textColorLight         = '#000';
                 
-    slider.backColorDark          = 'transparent';
-    slider.valueColorDark         = '#ffffff30';
-    slider.textColorDark          = '#eee';
+    control.backColorDark          = 'transparent';
+    control.valueColorDark         = '#ffffff30';
+    control.textColorDark          = '#eee';
                 
-    slider.fontSize               = 11;
+    control.fontSize               = 11;
              
-    slider.style.display          = 'inline';
+    control.style.display          = 'inline';
              
-    slider.mouseOver              = false;
-    slider.buttonDown0            = false;
-    slider.buttonDown1            = false;
+    control.mouseOver              = false;
+    control.buttonDown0            = false;
+    control.buttonDown1            = false;
              
-    slider.clickSize              = 4;
-    slider.moved                  = false;
+    control.clickSize              = 4;
+    control.moved                  = false;
          
-    slider.tabIndex               = 0;
-    slider.inFocus                = false;
-    slider.clicked                = false;
+    control.tabIndex               = 0;
+    control.inFocus                = false;
+    control.clicked                = false;
  
-    slider.startValue             = 0;
-    slider.oldValue; 
+    control.startValue             = 0;
+    control.oldValue; 
  
-    slider.wrapValue              = false;
+    control.wrapValue              = false;
      
-    slider.showName               = showName;
-    slider.showHex                = false;
+    control.showName               = showName;
+    control.showHex                = false;
          
-    slider.enableChangeEvent      = true;
+    control.enableChangeEvent      = true;
     
-    slider.successOnFocusOut      = false;
-    slider.keyBlur                = false;
+    control.successOnFocusOut      = false;
+    control.keyBlur                = false;
     
-    slider.pointerEvents          = true;
-    slider.readOnly               = false;
+    control.pointerEvents          = true;
+    control.readOnly               = false;
      
-    slider.valueText              = '';
+    control.valueText              = '';
      
-    slider.barTop                 = 0;
-    slider.barBottom              = 1;
+    control.barTop                 = 0;
+    control.barBottom              = 1;
      
-    slider.ranges                 = [];
-    slider.rangeDivs              = [];
+    control.ranges                 = [];
+    control.rangeDivs              = [];
      
-    slider.options                = []; // if dec == 0, show named choices instead of a value
+    control.options                = []; // if dec == 0, show named choices instead of a value
  
      
-    slider.onstartchange          = new Event('startchange');
-    slider.onchange               = new Event('change');
-    slider.onconfirm              = new Event('confirm');
+    control.onstartchange          = new Event('startchange');
+    control.onchange               = new Event('change');
+    control.onconfirm              = new Event('confirm');
 
 
-    initNumberControlChildren(slider);    
-    initNumberControlTextbox(slider);
-    initNumberControlEvents(slider);
+    initNumberControlChildren(control);    
+    initNumberControlTextbox(control);
+    initNumberControlEvents(control);
 
 
 
-    slider.setName = function(name)
+    control.setName = function(name)
     {
-        slider.name = name;
-        slider.update();
+        control.name = name;
+        control.update();
     };
 
 
 
-    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+    control.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
     {
-        const oldValue = slider.value;
+        const oldValue = control.value;
 
 
-        const dec = Math.pow(10, Math.abs(slider.dec));
+        const dec = Math.pow(10, Math.abs(control.dec));
 
         value = Math.round(value * dec) / dec;
 
-        if (slider.wrapValue)
+        if (control.wrapValue)
         {
-            while (value < slider.displayMin) value += slider.displayMax - slider.displayMin;
-            while (value > slider.displayMax) value -= slider.displayMax - slider.displayMin;
+            while (value < control.displayMin) value += control.displayMax - control.displayMin;
+            while (value > control.displayMax) value -= control.displayMax - control.displayMin;
         }
         else if (fullRange)
-            value = Math.min(Math.max(slider.min, value), slider.max);
+            value = Math.min(Math.max(control.min, value), control.max);
         else
-            value = Math.min(Math.max(slider.displayMin, value), slider.displayMax);
+            value = Math.min(Math.max(control.displayMin, value), control.displayMax);
 
 
         if (    isNaN(value) && !isNaN(oldValue)
             || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)
         {
-            slider.value = value;
+            control.value = value;
 
-            slider.update();
+            control.update();
 
             if (   fireChangeEvent
-                && slider.enableChangeEvent
-                && value != slider.prevValue)
-                slider.dispatchEvent(slider.onchange);
+                && control.enableChangeEvent
+                && value != control.prevValue)
+                control.dispatchEvent(control.onchange);
 
             if (   confirm
-                && slider.enableChangeEvent
+                && control.enableChangeEvent
                 && value != oldValue)
-                slider.dispatchEvent(slider.onconfirm);
+                control.dispatchEvent(control.onconfirm);
         }
     };
 
 
 
 
-    slider.setSuffix = function(suffix, valueCanContainSuffix = false)
+    control.setSuffix = function(suffix, valueCanContainSuffix = false)
     {
-        slider.suffix                = suffix;
-        slider.valueCanContainSuffix = valueCanContainSuffix;
+        control.suffix                = suffix;
+        control.valueCanContainSuffix = valueCanContainSuffix;
     };
     
 
 
-    slider.setMin = (min, dispatchEvents = true) =>
+    control.setMin = (min, dispatchEvents = true) =>
     {
-        slider.min        = min;
-        slider.displayMin = min;
+        control.min        = min;
+        control.displayMin = min;
 
         // if (slider.value < min) 
         //     slider.setValue(min, true, true, dispatchEvents);
@@ -20495,10 +20495,10 @@ function initNumberControl(param, slider, width, height, id, name, showName, min
 
 
 
-    slider.setMax = (max, dispatchEvents = true) =>
+    control.setMax = (max, dispatchEvents = true) =>
     {
-        slider.max        = max;
-        slider.displayMax = max;
+        control.max        = max;
+        control.displayMax = max;
 
         // if (max < slider.value) 
         //     slider.setValue(max, true, true, dispatchEvents);
@@ -20506,144 +20506,144 @@ function initNumberControl(param, slider, width, height, id, name, showName, min
 
 
 
-    slider.setDecimals = (dec, dspDec = dec) =>
+    control.setDecimals = (dec, dspDec = dec) =>
     {
-        slider.dec        = dec;
-        slider.displayDec = dspDec;
+        control.dec        = dec;
+        control.displayDec = dspDec;
     };
 
 
 
-    slider.update = function()
+    control.update = function()
     {
-        const sx = slider.getOffsetLeft();
-        const sw = slider.getClientWidth();
-        const sh = slider.getClientHeight();
+        const sx = control.getOffsetLeft();
+        const sw = control.getClientWidth();
+        const sh = control.getClientHeight();
 
-        const cx = -slider.displayMin / (slider.displayMax - slider.displayMin) * sw;
-        const v  =  slider.value      / (slider.displayMax - slider.displayMin);
+        const cx = -control.displayMin / (control.displayMax - control.displayMin) * sw;
+        const v  =  control.value      / (control.displayMax - control.displayMin);
 
-        slider.updateBar(sx, cx, v, sw, sh);
-        slider.updateColors();
-        slider.updateText();
-        slider.updateFocus(sw, sh);
+        control.updateBar(sx, cx, v, sw, sh);
+        control.updateColors();
+        control.updateText();
+        control.updateFocus(sw, sh);
         
-        updateSliderRanges(slider, sw, sh);
+        updateControlRanges(control, sw, sh);
 
 
-        slider.cachedOffsetLeft   = null;
-        slider.cachedClientWidth  = null;
-        slider.cachedClientHeight = null;
+        control.cachedOffsetLeft   = null;
+        control.cachedClientWidth  = null;
+        control.cachedClientHeight = null;
     };
 
 
 
-    slider.updateBar = function(sx, cx, v, sw, sh)
+    control.updateBar = function(sx, cx, v, sw, sh)
     {
-        if (slider.dragReverse)
+        if (control.dragReverse)
             v *= -1;
 
             
-        if (isNaN(slider.value))
-            slider.bar.style.display = 'none';
+        if (isNaN(control.value))
+            control.bar.style.display = 'none';
 
         else
         {
-            slider.bar.style.display = 'block';
+            control.bar.style.display = 'block';
 
             const x = 
                 v >= 0
                 ? sx + cx
                 : sx + cx + v * sw;
 
-            slider.bar.style.left   = Math.max(0, x);
-            slider.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), slider.offsetWidth);
+            control.bar.style.left   = Math.max(0, x);
+            control.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), control.offsetWidth);
 
-            slider.bar.style.top    = sh * slider.barTop;
-            slider.bar.style.height = sh * (slider.barBottom - slider.barTop);
+            control.bar.style.top    = sh * control.barTop;
+            control.bar.style.height = sh * (control.barBottom - control.barTop);
         }
     };
 
 
 
-    slider.updateColors = function()
+    control.updateColors = function()
     {
-        slider     .style.background = isDarkMode() ? slider.backColorDark  : slider.backColorLight;
-        slider.bar .style.background = isDarkMode() ? slider.valueColorDark : slider.valueColorLight;
-        slider.text.style.color      = isDarkMode() ? slider.textColorDark  : slider.textColorLight;
+        control     .style.background = isDarkMode() ? control.backColorDark  : control.backColorLight;
+        control.bar .style.background = isDarkMode() ? control.valueColorDark : control.valueColorLight;
+        control.text.style.color      = isDarkMode() ? control.textColorDark  : control.textColorLight;
     };
 
 
 
-    slider.updateText = function()
+    control.updateText = function()
     {
-        slider.text.innerHTML = '';
+        control.text.innerHTML = '';
         
-        if (   slider.name.length > 0
-            && slider.showName)
-            slider.text.innerHTML += '<span class="numberControlName">' + slider.name + "</span>&nbsp;&nbsp;";
+        if (   control.name.length > 0
+            && control.showName)
+            control.text.innerHTML += '<span class="numberControlName">' + control.name + "</span>&nbsp;&nbsp;";
 
-        slider.text.innerHTML += slider.getValueText() + slider.suffix;
+        control.text.innerHTML += control.getValueText() + control.suffix;
     };
 
 
 
-    slider.updateFocus = function(sw, sh)
+    control.updateFocus = function(sw, sh)
     {
-        slider.focus.style.left   = 0;
-        slider.focus.style.top    = 0;
-        slider.focus.style.width  = sw;
-        slider.focus.style.height = sh;
+        control.focus.style.left   = 0;
+        control.focus.style.top    = 0;
+        control.focus.style.width  = sw;
+        control.focus.style.height = sh;
     };
 
 
 
-    slider.getValueText = function()
+    control.getValueText = function()
     {
-        if (   slider.options.length > 0
-            && slider.displayDec == 0)
+        if (   control.options.length > 0
+            && control.displayDec == 0)
         {
-            if (   slider.value <  0 
-                || slider.value >= slider.options.length)
+            if (   control.value <  0 
+                || control.value >= control.options.length)
                 return DISPLAY_INVALID;
             else
-                return slider.options[Math.round(slider.value)];
+                return control.options[Math.round(control.value)];
         }
-        else if (slider.valueText != '')
+        else if (control.valueText != '')
         {
-            return slider.valueText;
+            return control.valueText;
         }
         else
         {
-            return isNaN(slider.value)
+            return isNaN(control.value)
                    ? DISPLAY_INVALID
-                   : Math.abs(slider.value * slider.valueScale) > 999999
-                     ? (slider.value * slider.valueScale).toExponential(1)
+                   : Math.abs(control.value * control.valueScale) > 999999
+                     ? (control.value * control.valueScale).toExponential(1)
                      : numToString(
-                           slider.value * slider.valueScale, 
-                           slider.displayDec, 
-                           slider.showHex
+                           control.value * control.valueScale, 
+                           control.displayDec, 
+                           control.showHex
                        ).toUpperCase();
         }
     };
 
 
 
-    slider.lockPointer = function(pointerId)
+    control.lockPointer = function(pointerId)
     {
-        clearTimeout(slider.clickTimer);
+        clearTimeout(control.clickTimer);
 
-        slider.requestPointerLock =    
-               slider.      requestPointerLock 
-            || slider.   mozRequestPointerLock
-            || slider.webkitRequestPointerLock;
+        control.requestPointerLock =    
+               control.      requestPointerLock 
+            || control.   mozRequestPointerLock
+            || control.webkitRequestPointerLock;
 
-        slider.requestPointerLock();
+        control.requestPointerLock();
     };
 
 
 
-    slider.unlockPointer = function(pointerId)
+    control.unlockPointer = function(pointerId)
     {
         document.exitPointerLock =    
                document.      exitPointerLock    
@@ -20655,45 +20655,45 @@ function initNumberControl(param, slider, width, height, id, name, showName, min
 
 
 
-    slider.isPointerLocked = function()
+    control.isPointerLocked = function()
     {
-        return (document.      pointerLockElement === slider 
-             || document.   mozPointerLockElement === slider
-             || document.webkitPointerLockElement === slider);
+        return (document.      pointerLockElement === control 
+             || document.   mozPointerLockElement === control
+             || document.webkitPointerLockElement === control);
     }
 
 
 
-    slider.getOffsetLeft   = () => slider.cachedOffsetLeft   = slider.cachedOffsetLeft   || slider.offsetLeft;
-    slider.getClientWidth  = () => slider.cachedClientWidth  = slider.cachedClientWidth  || slider.clientWidth;
-    slider.getClientHeight = () => slider.cachedClientHeight = slider.cachedClientHeight || slider.clientHeight;
+    control.getOffsetLeft   = () => control.cachedOffsetLeft   = control.cachedOffsetLeft   || control.offsetLeft;
+    control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.clientWidth;
+    control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.clientHeight;
 
 
 
-    slider.update();
+    control.update();
 }
 
 
-function initColorControlEvents(slider)
+function initColorControlEvents(control)
 {
-    slider.addEventListener('pointerdown', function(e)
+    control.addEventListener('pointerdown', function(e)
     {
         if (graphView.spaceDown)
             return;
 
         if (e.button == 0)
         {
-            if (!slider.pointerEvents)
+            if (!control.pointerEvents)
             {
                 e.stopPropagation();
                 return;
             }
     
             let nodeDiv = 
-                   slider.parentNode
-                && slider.parentNode.parentNode
-                && slider.parentNode.parentNode.parentNode
-                ? slider.parentNode.parentNode.parentNode
+                   control.parentNode
+                && control.parentNode.parentNode
+                && control.parentNode.parentNode.parentNode
+                ? control.parentNode.parentNode.parentNode
                 : null;
 
             if (nodeDiv && nodeDiv.className == 'node') 
@@ -20703,42 +20703,42 @@ function initColorControlEvents(slider)
             e.preventDefault(); // this is fine since I lock the pointer anyway
             e.stopPropagation();
                 
-            slider.buttonDown0  = true;
-            slider.buttonDown0_ = true;
-            slider.moved        = false;
-            slider.clientX      = e.clientX;
-            slider.movedX       = 0;
+            control.buttonDown0  = true;
+            control.buttonDown0_ = true;
+            control.moved        = false;
+            control.clientX      = e.clientX;
+            control.movedX       = 0;
 
 
-            if (!slider.readOnly)
+            if (!control.readOnly)
             {
-                slider.oldValue   = slider.value;
-                slider.startValue = slider.value;
-                slider.prevValue  = slider.value;
-                slider.sx         = e.clientX;
+                control.oldValue   = control.value;
+                control.startValue = control.value;
+                control.prevValue  = control.value;
+                control.sx         = e.clientX;
 
-                slider.clickTimer = setTimeout(() => 
+                control.clickTimer = setTimeout(() => 
                 {
                     if (!document.menuHadFocus)
                     {
-                        slider.moved = true;
-                        slider.lockPointer(e.pointerId);
+                        control.moved = true;
+                        control.lockPointer(e.pointerId);
                     }
                 }, 
                 500);
             }
 
 
-            if (   !slider.param
-                || !slider.param.node.selected)
-                slider.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+            if (   !control.param
+                || !control.param.node.selected)
+                control.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
 
             else
             {
-                slider.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+                control.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
                     
-                if (slider.param.index < slider.param.node.params.length-1)
-                    slider.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+                if (control.param.index < control.param.node.params.length-1)
+                    control.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
             }
 
 
@@ -20746,27 +20746,27 @@ function initColorControlEvents(slider)
             document.activeElement.blur();
 
 
-            if (slider.param)
-                slider.param.noUpdate = true;  
+            if (control.param)
+                control.param.noUpdate = true;  
         }
         else if (e.button == 1)
         {
             e.preventDefault();
-            slider.buttonDown1 = true;
+            control.buttonDown1 = true;
         }
         else if (e.button == 2)
         {
             e.preventDefault();
-            slider.buttonDown2 = true;
+            control.buttonDown2 = true;
         }
     });
 
 
 
-    slider.addEventListener('pointerenter', function(e)
+    control.addEventListener('pointerenter', function(e)
     {
         if (   !graphView.spaceDown
-            && slider.pointerEvents)
+            && control.pointerEvents)
         {
             // if (graphView.tempConn)
             //     slider.style.cursor = 'default';
@@ -20784,70 +20784,70 @@ function initColorControlEvents(slider)
                 ? 'rgba(255, 255, 255, 0.1)'
                 : 'rgba(0, 0, 0, 0.1)';
 
-            if (slider.param)
+            if (control.param)
             {
-                slider.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
+                control.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
 
-                if (    slider.param.node
-                    &&  slider.param.node.params.includes(slider.param)
-                    && !isLastInArray(slider.param.node.params, slider.param))
-                    slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+                if (    control.param.node
+                    &&  control.param.node.params.includes(control.param)
+                    && !isLastInArray(control.param.node.params, control.param))
+                    control.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
             }
             else
             {
-                slider.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+                control.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
             }
 
 
-            slider.focus.style.visibility = 'visible';
-            slider.focus.style.opacity    = '100%';
+            control.focus.style.visibility = 'visible';
+            control.focus.style.opacity    = '100%';
     
-            slider.update();
+            control.update();
         }
     });
 
 
 
-    slider.addEventListener('pointermove', e =>
+    control.addEventListener('pointermove', e =>
     {
-        if (!slider.pointerEvents)
+        if (!control.pointerEvents)
             return;
         
 
-        let rect = boundingRect(slider);
+        let rect = boundingRect(control);
         
-        slider.mouseOver = 
+        control.mouseOver = 
                e.clientX >= rect.left
             && e.clientX <  rect.right
             && e.clientY >= rect.top                                     
             && e.clientY <  rect.bottom;
 
 
-        slider.clientX = e.clientX;
+        control.clientX = e.clientX;
 
         
-        if (    slider.buttonDown0
-            && !slider.readOnly)
+        if (    control.buttonDown0
+            && !control.readOnly)
         {
-            if (slider.isPointerLocked())
+            if (control.isPointerLocked())
             {
-                slider.movedX += e.movementX;
+                control.movedX += e.movementX;
                 
-                if (!isNaN(slider.value))
+                if (!isNaN(control.value))
                 {
-                    const dx       = slider.movedX * (slider.dragReverse ? -1 : 1);
-                    const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
-                    const grain    = Math.pow(10, -slider.dec);
-                    const drag     = grain * sqr(slider.dragScale);
+                    const dx       = control.movedX * (control.dragReverse ? -1 : 1);
+                    const adaptive = 10 * Math.pow(Math.abs(dx), control.acc);
+                    const grain    = Math.pow(10, -control.dec);
+                    const drag     = grain * sqr(control.dragScale);
 
-                    const val      = slider.startValue + dx * drag * adaptive;
+                    const val      = control.startValue + dx * drag * adaptive;
 
                     
                     // reset slider movement at the limits for better UX
-                    const min = getCtrlKey(e) ? slider.min : slider.displayMin;
-                    const max = getCtrlKey(e) ? slider.max : slider.displayMax;
+                    const min = getCtrlKey(e) ? control.min : control.displayMin;
+                    const max = getCtrlKey(e) ? control.max : control.displayMax;
 
-                    slider.setValue(
+                    control.setValue(
                         Math.round(val / grain) * grain, 
                         true, 
                         false, 
@@ -20858,31 +20858,31 @@ function initColorControlEvents(slider)
                     if (   val <= min
                         || val >= max)
                     {
-                        slider.movedX     = 0;
-                        slider.startValue = slider.value;
-                        slider.sx         = e.clientX;
+                        control.movedX     = 0;
+                        control.startValue = control.value;
+                        control.sx         = e.clientX;
                     }
 
 
-                    if (slider.value != slider.prevValue)
-                        pushUpdateFromParam([slider.param.node], slider.param);
+                    if (control.value != control.prevValue)
+                        pushUpdateFromParam([control.param.node], control.param);
 
-                    slider.prevValue = slider.value;
+                    control.prevValue = control.value;
                 }
             }
             else
             {
-                if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
+                if (Math.abs(e.clientX - control.sx) > control.clickSize/2)
                 {
-                    slider.moved = true;
-                    slider.lockPointer(e.pointerId);
+                    control.moved = true;
+                    control.lockPointer(e.pointerId);
 
-                    slider.dispatchEvent(slider.onstartchange);
+                    control.dispatchEvent(control.onstartchange);
                 }
             }
         }
         else if (graphView.tempConn
-              && slider.param)
+              && control.param)
         {
             let savedInput = 
                 graphView.savedConn
@@ -20890,36 +20890,36 @@ function initColorControlEvents(slider)
                 : null;
 
             if (    graphView.tempConn.output
-                &&  slider.param.input
-                &&  slider.param.input.types.includes(graphView.tempConn.output.type)
-                && !graphView.tempConn.output.node.follows(slider.param.node)
-                && (  !slider.param.input.connected // not already connected to this input
-                    || slider.param.input.connectedOutput != graphView.tempConn.output
-                    || slider.param.input == savedInput))
+                &&  control.param.input
+                &&  control.param.input.types.includes(graphView.tempConn.output.type)
+                && !graphView.tempConn.output.node.follows(control.param.node)
+                && (  !control.param.input.connected // not already connected to this input
+                    || control.param.input.connectedOutput != graphView.tempConn.output
+                    || control.param.input == savedInput))
             {
-                graphView.overInput = slider.param.input;
+                graphView.overInput = control.param.input;
                     
-                slider.param.input.mouseOver = true;
-                slider.param.input.updateControl();
+                control.param.input.mouseOver = true;
+                control.param.input.updateControl();
 
-                const rect = boundingRect(slider.param.input.control);
+                const rect = boundingRect(control.param.input.control);
 
                 graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - controlBar.offsetHeight);
             }
             else if ( graphView.tempConn.input
-                  &&  slider.param.output
-                  &&  graphView.tempConn.input.types.includes(slider.param.output.type)
-                  && !slider.param.node.follows(graphView.tempConn.input.node))
+                  &&  control.param.output
+                  &&  graphView.tempConn.input.types.includes(control.param.output.type)
+                  && !control.param.node.follows(graphView.tempConn.input.node))
             {
-                graphView.overOutput = slider.param.output;
+                graphView.overOutput = control.param.output;
                     
-                slider.param.output.mouseOver = true;
-                slider.param.output.updateControl();
+                control.param.output.mouseOver = true;
+                control.param.output.updateControl();
 
 
-                const rect = boundingRect(slider.param.output.control);
+                const rect = boundingRect(control.param.output.control);
 
                 graphView.tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
@@ -20929,28 +20929,28 @@ function initColorControlEvents(slider)
                 graphView.tempConn.input.updateControl();
             }
         }
-        else if (slider.readOnly)
+        else if (control.readOnly)
         {
-            slider.moved = true;
+            control.moved = true;
         }
     });
     
     
     
-    slider.addEventListener('pointerleave', function(e)
+    control.addEventListener('pointerleave', function(e)
     {
-        slider.style.cursor           = 'default';
+        control.style.cursor           = 'default';
         
-        slider.focus.style.visibility = 'hidden';
-        slider.focus.style.opacity    = 0;
+        control.focus.style.visibility = 'hidden';
+        control.focus.style.opacity    = 0;
 
-        slider.update();
+        control.update();
 
 
         if (graphView.tempConn)
         {
             if (   graphView.tempConn.output
-                && graphView.tempConn.output.node != slider.param.node)
+                && graphView.tempConn.output.node != control.param.node)
             {
                 const input = graphView.overInput;
                 
@@ -20965,7 +20965,7 @@ function initColorControlEvents(slider)
                 graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
-                  && graphView.tempConn.input.node != slider.param.node)
+                  && graphView.tempConn.input.node != control.param.node)
             {
                 const output = graphView.overOutput;
                 
@@ -20985,33 +20985,33 @@ function initColorControlEvents(slider)
 
 
 
-    slider.addEventListener('losecapture', function()
+    control.addEventListener('losecapture', function()
     {
-        slider.buttonDown0 = false;
-        slider.buttonDown1 = false;
-        slider.buttonDown2 = false;
-        slider.mouseOver   = false;
-        slider.update();
+        control.buttonDown0 = false;
+        control.buttonDown1 = false;
+        control.buttonDown2 = false;
+        control.mouseOver   = false;
+        control.update();
     });
 
 
 
-    slider.addEventListener('pointerup', function(e)
+    control.addEventListener('pointerup', function(e)
     {
-        clearTimeout(slider.clickTimer);
+        clearTimeout(control.clickTimer);
 
 
         if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
-                && !graphView.tempConn.output.node.follows(slider.param.node)
+                && !graphView.tempConn.output.node.follows(control.param.node)
                 &&  graphView.overInput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if (graphView.tempConn.input
-                && !slider.param.node.follows(graphView.tempConn.input.node)
+                && !control.param.node.follows(graphView.tempConn.input.node)
                 &&  graphView.overOutput)
             {
                 graphView.endConnection(e.pointerId);
@@ -21019,28 +21019,28 @@ function initColorControlEvents(slider)
             }
         }
         
-        else if (   slider.moved
+        else if (   control.moved
             || document.menuHadFocus)
         {
-            slider.unlockPointer(e.pointerId);
+            control.unlockPointer(e.pointerId);
 
-            if (slider.param)
-                slider.param.noUpdate = false;  
+            if (control.param)
+                control.param.noUpdate = false;  
 
             return;            
         }
 
-        else if (slider.buttonDown0_)
+        else if (control.buttonDown0_)
         {
-            slider.clicked = true;
-            slider.showTextbox();
+            control.clicked = true;
+            control.showTextbox();
         }
 
-             if (e.button == 0) slider.buttonDown0 = false;
-        else if (e.button == 1) slider.buttonDown1 = false;
-        else if (e.button == 2) slider.buttonDown2 = false;
+             if (e.button == 0) control.buttonDown0 = false;
+        else if (e.button == 1) control.buttonDown1 = false;
+        else if (e.button == 2) control.buttonDown2 = false;
 
-        slider.buttonDown0_ = false;
+        control.buttonDown0_ = false;
     });    
 
 
@@ -21048,12 +21048,12 @@ function initColorControlEvents(slider)
     document.addEventListener('pointerup', function(e)
     {
         if (   e.button == 0 
-            && slider.buttonDown0)
+            && control.buttonDown0)
         {
-            slider.buttonDown0 = false;
-            slider.unlockPointer(e.pointerId);
+            control.buttonDown0 = false;
+            control.unlockPointer(e.pointerId);
 
-            slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+            control.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
             // if (    slider.value != slider.oldValue
             //     && !slider.readOnly)
@@ -21068,9 +21068,9 @@ function initColorControlEvents(slider)
 
 
     
-    slider.addEventListener('wheel', e =>
+    control.addEventListener('wheel', e =>
     {
-        if (!slider.pointerEvents)
+        if (!control.pointerEvents)
             return;
 
 
@@ -21086,16 +21086,16 @@ function initColorControlEvents(slider)
         }
 
 
-        const dWheelX = e.deltaX /  20 * (slider.dragReverse ? -1 : 1);
-        const dWheelY = e.deltaY / 100 * (slider.dragReverse ? -1 : 1);
+        const dWheelX = e.deltaX /  20 * (control.dragReverse ? -1 : 1);
+        const dWheelY = e.deltaY / 100 * (control.dragReverse ? -1 : 1);
 
 
         if (   !getCtrlKey(e)
-            && !slider.buttonDown1)
+            && !control.buttonDown1)
         {
             e.stopPropagation();
 
-            if (!slider.readOnly)
+            if (!control.readOnly)
             {
                 // if (   document.activeElement
                 //     && document.activeElement.tagName.toLowerCase() == 'input'
@@ -21168,11 +21168,11 @@ function initColorControlEvents(slider)
     
     
     
-    slider.addEventListener('keydown', e =>
+    control.addEventListener('keydown', e =>
     {
         if (   e.code == 'Enter'
             || e.code == 'NumpadEnter')
-            slider.showTextbox();
+            control.showTextbox();
 
         // else if (e.code == 'Space')
         //     setCursor(panCursor, true);
@@ -21180,39 +21180,39 @@ function initColorControlEvents(slider)
 
 
 
-    slider.addEventListener('focus', function()
+    control.addEventListener('focus', function()
     {
         if (   !graphView.spaceDown
-            && !slider.buttonDown1
-            && slider.pointerEvents)
-            slider.showTextbox();
+            && !control.buttonDown1
+            && control.pointerEvents)
+            control.showTextbox();
     });
 }
 
 
-function initColorControlTextbox(slider)
+function initColorControlTextbox(control)
 {
-    slider.textbox = createTextbox('colorControlTextbox');
-    slider.textbox.slider = slider;
+    control.textbox = createTextbox('colorControlTextbox');
+    control.textbox.slider = control;
     
 
 
-    slider.textbox.addEventListener('pointerdown', e =>
+    control.textbox.addEventListener('pointerdown', e =>
     {
         e.stopPropagation();
     });
 
 
 
-    slider.textbox.addEventListener('pointermove', e =>
+    control.textbox.addEventListener('pointermove', e =>
     {
         e.stopPropagation();
-        slider.textbox.style.cursor = 'default';
+        control.textbox.style.cursor = 'default';
     });
 
 
 
-    slider.textbox.addEventListener('keydown', e =>
+    control.textbox.addEventListener('keydown', e =>
     {
         e.stopPropagation();
 
@@ -21226,36 +21226,36 @@ function initColorControlTextbox(slider)
 
         else if (e.code == 'KeyV'
               && getCtrlKey(e)
-              && !slider.readOnly)
+              && !control.readOnly)
         {
             // by doing nothing here I let the OS do its thing
         }
         
         else if (   (   e.code == 'Enter'
                      || e.code == 'NumpadEnter')
-                 && !slider.readOnly)
+                 && !control.readOnly)
         {
-            slider.textbox.keyBlur = true;
-            slider.textbox.finish(true);
+            control.textbox.keyBlur = true;
+            control.textbox.finish(true);
         }
 
         else if (e.code == 'Escape')
         {
-            slider.textbox.keyBlur = true;
-            slider.textbox.finish(false);
+            control.textbox.keyBlur = true;
+            control.textbox.finish(false);
         }
         else if (e.code == 'Tab')
         {
             e.preventDefault();
             e.stopPropagation();
             
-            if (slider.param)
+            if (control.param)
             {
-                const params = slider.param.node.params;
-                let   index  = slider.param.index;
+                const params = control.param.node.params;
+                let   index  = control.param.index;
 
-                slider.textbox.keyBlur = true;
-                slider.textbox.finish(true, false);
+                control.textbox.keyBlur = true;
+                control.textbox.finish(true, false);
 
                 if (   e.shiftKey 
                     && index > 0)
@@ -21294,17 +21294,17 @@ function initColorControlTextbox(slider)
 
         else if ((   e.key == 'ArrowUp'
                   || e.key == 'ArrowDown')
-              && !slider.readOnly)
+              && !control.readOnly)
         {
             e.preventDefault();
 
-            let text = slider.textbox.value;
+            let text = control.textbox.value;
 
-            if (slider.textbox.selectionStart != slider.textbox.selectionEnd)
-                slider.textbox.selectionStart =  slider.textbox.selectionEnd;
+            if (control.textbox.selectionStart != control.textbox.selectionEnd)
+                control.textbox.selectionStart =  control.textbox.selectionEnd;
 
             const pos = Math.min(
-                slider.textbox.selectionStart,
+                control.textbox.selectionStart,
                 text.length);
 
             const revPos = text.length - pos;
@@ -21325,8 +21325,8 @@ function initColorControlTextbox(slider)
                     if (e.shiftKey) 
                         dec *= 10;
 
-                    slider.setValue((val + sign * dec) / slider.valueScale);
-                    slider.updateTextbox();
+                    control.setValue((val + sign * dec) / control.valueScale);
+                    control.updateTextbox();
                 }
                 else // floating point
                 {
@@ -21340,18 +21340,18 @@ function initColorControlTextbox(slider)
                     if (e.shiftKey) 
                         dec *= 10;
 
-                    slider.displayDec = text.length-1 - decIndex;
-                    slider.setValue((val + sign * dec) / slider.valueScale);
-                    slider.updateTextbox();
+                    control.displayDec = text.length-1 - decIndex;
+                    control.setValue((val + sign * dec) / control.valueScale);
+                    control.updateTextbox();
                 }
 
-                slider.textbox.selectionStart =
-                slider.textbox.selectionEnd   = slider.textbox.savedValue.length - revPos;
+                control.textbox.selectionStart =
+                control.textbox.selectionEnd   = control.textbox.savedValue.length - revPos;
             }
         }
         else 
         {
-            let curVal = slider.textbox.value;
+            let curVal = control.textbox.value;
 
             if (      e.key.length == 1
                    && e.key != '?'
@@ -21360,69 +21360,69 @@ function initColorControlTextbox(slider)
                    && !(   ((      e.code == 'Minus'
                                 || e.code == 'NumpadSubtract')
                              && !curVal.includes('-'))
-                        && slider.min < 0)
-                ||     slider.readOnly
+                        && control.min < 0)
+                ||     control.readOnly
                    && !isArrowKey(e.code))
                 e.preventDefault();
 
             curVal =
                 curVal == INVALID
                 ? ''
-                :   curVal.substring(0, slider.textbox.selectionStart) 
-                  + curVal.substring(slider.textbox.selectionEnd, curVal.length);
+                :   curVal.substring(0, control.textbox.selectionStart) 
+                  + curVal.substring(control.textbox.selectionEnd, curVal.length);
 
                   
             const nextVal = parseFloat(curVal + e.key);
 
-            if (   nextVal < slider.min - 0.001
-                || nextVal > slider.max)
+            if (   nextVal < control.min - 0.001
+                || nextVal > control.max)
                 e.preventDefault();            
         }
     });
 
 
 
-    slider.textbox.addEventListener('paste', function(e)
+    control.textbox.addEventListener('paste', function(e)
     {
         e.preventDefault();
 
         const str = e.clipboardData.getData('text/plain');
 
         let val = 
-            slider.showHex
+            control.showHex
             ? parseInt(str, 16)
             : parseFloat(str);
 
-        val = Math.min(Math.max(slider.min, val), slider.max);
+        val = Math.min(Math.max(control.min, val), control.max);
 
-        slider.textbox.value = isNaN(val) ? '' : val;
+        control.textbox.value = isNaN(val) ? '' : val;
     });
 
 
 
-    slider.textbox.addEventListener('focusout', function()
+    control.textbox.addEventListener('focusout', function()
     {
-        //console.log('slider.successOnFocusOut', slider.successOnFocusOut);
+        //console.log('control.successOnFocusOut', control.successOnFocusOut);
 
-        if (!slider.textbox.keyBlur) slider.textbox.finish(true);
-        else                         slider.textbox.keyBlur = false;
+        if (!control.textbox.keyBlur) control.textbox.finish(true);
+        else                         control.textbox.keyBlur = false;
 
-        if (slider.savedSuccessOnFocusOut != null)
+        if (control.savedSuccessOnFocusOut != null)
         {
-            slider.successOnFocusOut      = slider.savedSuccessOnFocusOut;
-            slider.savedSuccessOnFocusOut = null;
+            control.successOnFocusOut      = control.savedSuccessOnFocusOut;
+            control.savedSuccessOnFocusOut = null;
         }
 
-        slider.parentNode.removeChild(slider.textbox);
-        slider.clicked = false;
+        control.parentNode.removeChild(control.textbox);
+        control.clicked = false;
     });
     
 
 
-    slider.textbox.finish = function(success, focusSlider = true)
+    control.textbox.finish = function(success, focusControl = true)
     {
-        let   value      = slider.textbox.value;
-        const savedValue = slider.textbox.savedValue;
+        let   value      = control.textbox.value;
+        const savedValue = control.textbox.savedValue;
 
         let rgb      = value     .indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(value     );
         let savedRgb = savedValue.indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(savedValue);
@@ -21434,272 +21434,272 @@ function initColorControlTextbox(slider)
             'oldValue':        savedValue,
             'preventSetValue': false }});
 
-        slider.dispatchEvent(e);
+        control.dispatchEvent(e);
 
 
         if (!e.preventSetValue)
         {
             if (success) 
             {
-                slider.setValue(
+                control.setValue(
                       value.trim() != '' 
                     ? GColorValue.createFromRgb(rgb) 
                     : GColorValue.createFromRgb(savedRgb));
             }
             else
-                slider.setValue(savedRgb);
+                control.setValue(savedRgb);
         }
          
         
-        slider.textbox.blur();
+        control.textbox.blur();
 
-        slider.text.style.display = 'block';
+        control.text.style.display = 'block';
 
-        if (   slider.inFocus
-            && focusSlider)
-            slider.focus();
+        if (   control.inFocus
+            && focusControl)
+            control.focus();
     };    
     
     
 
-    slider.showTextbox = function()
+    control.showTextbox = function()
     {
-        slider.text.style.display = 'none';
+        control.text.style.display = 'none';
 
-        slider.inFocus = 
-               hasFocus(slider)
-            && !slider.clicked;
+        control.inFocus = 
+               hasFocus(control)
+            && !control.clicked;
     
-        slider.textbox.style.position  = 'absolute';
-        slider.textbox.style.left      = '50%';
-        slider.textbox.style.transform = 'translate(-50%)';
-        slider.textbox.style.top       = slider.offsetTop    + 1;
-        slider.textbox.style.width     = slider.offsetWidth  - 2;
-        slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
-        slider.textbox.style.outline   = 'none';
-        slider.textbox.style.textAlign = 'center';
-        slider.textbox.style.color     = isDarkMode() ? 'white' : 'black';
+        control.textbox.style.position  = 'absolute';
+        control.textbox.style.left      = '50%';
+        control.textbox.style.transform = 'translate(-50%)';
+        control.textbox.style.top       = control.offsetTop    + 1;
+        control.textbox.style.width     = control.offsetWidth  - 2;
+        control.textbox.style.height    = control.offsetHeight - 2;
+        control.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
+        control.textbox.style.outline   = 'none';
+        control.textbox.style.textAlign = 'center';
+        control.textbox.style.color     = isDarkMode() ? 'white' : 'black';
 
 
         const isConnected =    
-               slider.param != null
-            && slider.param.input
-            && slider.param.input.connected;
+               control.param != null
+            && control.param.input
+            && control.param.input.connected;
 
         enableElementText(
-            slider.textbox, 
-               !slider.readOnly
+            control.textbox, 
+               !control.readOnly
             && !isConnected);
 
-        slider.updateTextbox();
+        control.updateTextbox();
         
-        slider.parentNode.appendChild(slider.textbox);
+        control.parentNode.appendChild(control.textbox);
         
-        slider.textbox.focus();
-        slider.textbox.select();
+        control.textbox.focus();
+        control.textbox.select();
 
-        slider.textbox.style.cursor = 'default';
+        control.textbox.style.cursor = 'default';
     }
 
 
 
-    slider.updateTextbox = function()
+    control.updateTextbox = function()
     {
-        const rgb = dataColor2rgb(slider.value.toDataColor());
+        const rgb = dataColor2rgb(control.value.toDataColor());
 
-        slider.textbox.value =
-            !slider.value.isValid()
+        control.textbox.value =
+            !control.value.isValid()
             ? DISPLAY_INVALID
             : rgb2hex(rgb).toUpperCase();
                            
-        slider.textbox.savedValue  = slider.textbox.value;
+        control.textbox.savedValue  = control.textbox.value;
 
-        slider.textbox.style.color = isDark(rgb) ? '#fff' : '#000'
+        control.textbox.style.color = isDark(rgb) ? '#fff' : '#000'
     };
 }
 
 
-function initColorControlChildren(slider)
+function initColorControlChildren(control)
 {
-    slider.text  = createDiv('colorControlText');
-    slider.focus = createDiv('colorControlFocus');
+    control.text  = createDiv('colorControlText');
+    control.focus = createDiv('colorControlFocus');
 
-    slider.appendChild(slider.text);
-    slider.appendChild(slider.focus);
+    control.appendChild(control.text);
+    control.appendChild(control.focus);
 }
 
 
-function initColorControl(param, slider, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0)
+function initColorControl(param, control, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0)
 {
-    slider.param                  = param;
+    control.param                  = param;
      
-    slider.className              = 'colorControl';
+    control.className              = 'colorControl';
      
-    slider.width                  = width;
-    slider.height                 = height;
+    control.width                  = width;
+    control.height                 = height;
              
-    slider.style.width            = width;
-    slider.style.height           = height;
+    control.style.width            = width;
+    control.style.height           = height;
              
-    slider.value                  = def;
-    slider.acc                    = acc;
+    control.value                  = def;
+    control.acc                    = acc;
      
-    slider.id                     = id;
-    slider.name                   = name;
+    control.id                     = id;
+    control.name                   = name;
      
-    slider.dragReverse            = false;
-    slider.dragScale              = dragScale;
-    slider.wheelScale             = wheelScale;
+    control.dragReverse            = false;
+    control.dragScale              = dragScale;
+    control.wheelScale             = wheelScale;
              
-    slider.backColorLight         = 'transparent';
-    slider.valueColorLight        = '#7772';
-    slider.textColorLight         = '#000';
+    control.backColorLight         = 'transparent';
+    control.valueColorLight        = '#7772';
+    control.textColorLight         = '#000';
                 
-    slider.backColorDark          = 'transparent';
-    slider.valueColorDark         = '#fff4';
-    slider.textColorDark          = '#eee';
+    control.backColorDark          = 'transparent';
+    control.valueColorDark         = '#fff4';
+    control.textColorDark          = '#eee';
                 
-    slider.fontSize               = 11;
+    control.fontSize               = 11;
              
-    slider.style.display          = 'inline';
+    control.style.display          = 'inline';
              
-    slider.mouseOver              = false;
-    slider.buttonDown0            = false;
-    slider.buttonDown1            = false;
+    control.mouseOver              = false;
+    control.buttonDown0            = false;
+    control.buttonDown1            = false;
              
-    slider.clickSize              = 4;
-    slider.moved                  = false;
+    control.clickSize              = 4;
+    control.moved                  = false;
          
-    slider.tabIndex               = 0;
-    slider.inFocus                = false;
-    slider.clicked                = false;
+    control.tabIndex               = 0;
+    control.inFocus                = false;
+    control.clicked                = false;
  
-    slider.startValue             = 0;
-    slider.oldValue; 
+    control.startValue             = 0;
+    control.oldValue; 
  
-    slider.wrapValue              = false;
+    control.wrapValue              = false;
      
-    slider.showName               = showName;
-    slider.showHex                = false;
+    control.showName               = showName;
+    control.showHex                = false;
          
-    slider.enableChangeEvent      = true;
+    control.enableChangeEvent      = true;
     
-    slider.successOnFocusOut      = false;
-    slider.keyBlur                = false;
+    control.successOnFocusOut      = false;
+    control.keyBlur                = false;
     
-    slider.pointerEvents          = true;
-    slider.readOnly               = false;
+    control.pointerEvents          = true;
+    control.readOnly               = false;
      
-    slider.valueText              = '';
+    control.valueText              = '';
      
-    slider.onstartchange          = new Event('startchange');
-    slider.onchange               = new Event('change');
-    slider.onconfirm              = new Event('confirm');
+    control.onstartchange          = new Event('startchange');
+    control.onchange               = new Event('change');
+    control.onconfirm              = new Event('confirm');
 
 
-    initColorControlChildren(slider);    
-    initColorControlTextbox(slider);
-    initColorControlEvents(slider);
+    initColorControlChildren(control);    
+    initColorControlTextbox(control);
+    initColorControlEvents(control);
 
 
 
-    slider.setName = function(name)
+    control.setName = function(name)
     {
-        slider.name = name;
-        slider.update();
+        control.name = name;
+        control.update();
     };
 
 
 
-    slider.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+    control.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
     {
-        const oldValue = slider.value.copy();
+        const oldValue = control.value.copy();
 
-        slider.value = value.copy();
+        control.value = value.copy();
 
-        slider.update();
+        control.update();
 
         if (   fireChangeEvent
-            && slider.enableChangeEvent
-            && value != slider.prevValue)
-            slider.dispatchEvent(slider.onchange);
+            && control.enableChangeEvent
+            && value != control.prevValue)
+            control.dispatchEvent(control.onchange);
 
         if (   confirm
-            && slider.enableChangeEvent
+            && control.enableChangeEvent
             && value != oldValue)
-            slider.dispatchEvent(slider.onconfirm);
+            control.dispatchEvent(control.onconfirm);
     };
 
 
 
 
-    slider.update = function()
+    control.update = function()
     {
-        const sw = slider.getClientWidth();
-        const sh = slider.getClientHeight();
+        const sw = control.getClientWidth();
+        const sh = control.getClientHeight();
 
 
-        slider.updateColors();
-        slider.updateText();
-        slider.updateFocus(sw, sh);
+        control.updateColors();
+        control.updateText();
+        control.updateFocus(sw, sh);
         
 
-        slider.cachedOffsetLeft   = null;
-        slider.cachedClientWidth  = null;
-        slider.cachedClientHeight = null;
+        control.cachedOffsetLeft   = null;
+        control.cachedClientWidth  = null;
+        control.cachedClientHeight = null;
     };
 
 
 
-    slider.updateColors = function()
+    control.updateColors = function()
     {
-        const rgb = dataColor2rgb(slider.value.toDataColor());
+        const rgb = dataColor2rgb(control.value.toDataColor());
 
-        slider     .style.background = colorStyleRgb(rgb);
-        slider.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
+        control     .style.background = colorStyleRgb(rgb);
+        control.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
     };
 
 
 
-    slider.updateText = function()
+    control.updateText = function()
     {
-        slider.text.innerHTML = '';
+        control.text.innerHTML = '';
         
-        if (   slider.name.length > 0
-            && slider.showName)
-            slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="colorControlName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
+        if (   control.name.length > 0
+            && control.showName)
+            control.text.innerHTML += (control.name.trim() != '' ? '<span class="colorControlName">' + control.name + '</span>&nbsp;&nbsp;' : '');
 
-        slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.value.toDataColor()));
+        control.text.innerHTML += rgb2hex(dataColor2rgb(control.value.toDataColor()));
     };
 
 
 
-    slider.updateFocus = function(sw, sh)
+    control.updateFocus = function(sw, sh)
     {
-        slider.focus.style.left   = 0;
-        slider.focus.style.top    = 0;
-        slider.focus.style.width  = sw;
-        slider.focus.style.height = sh;
+        control.focus.style.left   = 0;
+        control.focus.style.top    = 0;
+        control.focus.style.width  = sw;
+        control.focus.style.height = sh;
     };
 
 
 
-    slider.lockPointer = function(pointerId)
+    control.lockPointer = function(pointerId)
     {
-        clearTimeout(slider.clickTimer);
+        clearTimeout(control.clickTimer);
 
-        slider.requestPointerLock =    
-               slider.      requestPointerLock 
-            || slider.   mozRequestPointerLock
-            || slider.webkitRequestPointerLock;
+        control.requestPointerLock =    
+               control.      requestPointerLock 
+            || control.   mozRequestPointerLock
+            || control.webkitRequestPointerLock;
 
-        slider.requestPointerLock();
+        control.requestPointerLock();
     };
 
 
 
-    slider.unlockPointer = function(pointerId)
+    control.unlockPointer = function(pointerId)
     {
         document.exitPointerLock =    
                document.      exitPointerLock    
@@ -21711,1083 +21711,1083 @@ function initColorControl(param, slider, width, height, id, name, showName, def,
 
 
 
-    slider.isPointerLocked = function()
+    control.isPointerLocked = function()
     {
-        return (document.      pointerLockElement === slider 
-             || document.   mozPointerLockElement === slider
-             || document.webkitPointerLockElement === slider);
+        return (document.      pointerLockElement === control 
+             || document.   mozPointerLockElement === control
+             || document.webkitPointerLockElement === control);
     }
 
 
 
-    slider.getOffsetLeft   = () => slider.cachedOffsetLeft   = slider.cachedOffsetLeft   || slider.offsetLeft;
-    slider.getClientWidth  = () => slider.cachedClientWidth  = slider.cachedClientWidth  || slider.clientWidth;
-    slider.getClientHeight = () => slider.cachedClientHeight = slider.cachedClientHeight || slider.clientHeight;
+    control.getOffsetLeft   = () => control.cachedOffsetLeft   = control.cachedOffsetLeft   || control.offsetLeft;
+    control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.clientWidth;
+    control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.clientHeight;
 
 
 
-    slider.update();
+    control.update();
 }
 
 
-function initFillControlEvents(slider)
-{
-    slider.addEventListener('pointerdown', function(e)
-    {
-        if (graphView.spaceDown)
-            return;
+// function initFillControlEvents(slider)
+// {
+//     slider.addEventListener('pointerdown', function(e)
+//     {
+//         if (graphView.spaceDown)
+//             return;
 
-        if (e.button == 0)
-        {
-            if (!slider.pointerEvents)
-            {
-                e.stopPropagation();
-                return;
-            }
+//         if (e.button == 0)
+//         {
+//             if (!slider.pointerEvents)
+//             {
+//                 e.stopPropagation();
+//                 return;
+//             }
     
-            let nodeDiv = 
-                   slider.parentNode
-                && slider.parentNode.parentNode
-                && slider.parentNode.parentNode.parentNode
-                ? slider.parentNode.parentNode.parentNode
-                : null;
+//             let nodeDiv = 
+//                    slider.parentNode
+//                 && slider.parentNode.parentNode
+//                 && slider.parentNode.parentNode.parentNode
+//                 ? slider.parentNode.parentNode.parentNode
+//                 : null;
 
-            if (nodeDiv && nodeDiv.className == 'node') 
-                graphView.putNodeOnTop(nodeDiv.node);
+//             if (nodeDiv && nodeDiv.className == 'node') 
+//                 graphView.putNodeOnTop(nodeDiv.node);
 
 
-            e.preventDefault(); // this is fine since I lock the pointer anyway
-            e.stopPropagation();
+//             e.preventDefault(); // this is fine since I lock the pointer anyway
+//             e.stopPropagation();
                 
-            slider.buttonDown0  = true;
-            slider.buttonDown0_ = true;
-            slider.moved        = false;
-            slider.clientX      = e.clientX;
-            slider.movedX       = 0;
+//             slider.buttonDown0  = true;
+//             slider.buttonDown0_ = true;
+//             slider.moved        = false;
+//             slider.clientX      = e.clientX;
+//             slider.movedX       = 0;
 
 
-            if (!slider.readOnly)
-            {
-                slider.oldValue   = slider.value;
-                slider.startValue = slider.value;
-                slider.prevValue  = slider.value;
-                slider.sx         = e.clientX;
+//             if (!slider.readOnly)
+//             {
+//                 slider.oldValue   = slider.value;
+//                 slider.startValue = slider.value;
+//                 slider.prevValue  = slider.value;
+//                 slider.sx         = e.clientX;
 
-                slider.clickTimer = setTimeout(() => 
-                {
-                    if (!document.menuHadFocus)
-                    {
-                        slider.moved = true;
-                        slider.lockPointer(e.pointerId);
-                    }
-                }, 
-                500);
-            }
+//                 slider.clickTimer = setTimeout(() => 
+//                 {
+//                     if (!document.menuHadFocus)
+//                     {
+//                         slider.moved = true;
+//                         slider.lockPointer(e.pointerId);
+//                     }
+//                 }, 
+//                 500);
+//             }
 
 
-            if (   !slider.param
-                || !slider.param.node.selected)
-                slider.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
+//             if (   !slider.param
+//                 || !slider.param.node.selected)
+//                 slider.focus.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand) inset';
 
-            else
-            {
-                slider.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
+//             else
+//             {
+//                 slider.focus.style.boxShadow = '0 1px 0 0 var(--figma-color-bg-brand) inset';
                     
-                if (slider.param.index < slider.param.node.params.length-1)
-                    slider.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
-            }
+//                 if (slider.param.index < slider.param.node.params.length-1)
+//                     slider.focus.style.boxShadow += ', 0 -1px 0 0 var(--figma-color-bg-brand) inset';
+//             }
 
 
-            // I don't want to focus here, but I do want to take focus away from elsewhere
-            document.activeElement.blur();
+//             // I don't want to focus here, but I do want to take focus away from elsewhere
+//             document.activeElement.blur();
 
 
-            if (slider.param)
-                slider.param.noUpdate = true;  
-        }
-        else if (e.button == 1)
-        {
-            e.preventDefault();
-            slider.buttonDown1 = true;
-        }
-        else if (e.button == 2)
-        {
-            e.preventDefault();
-            slider.buttonDown2 = true;
-        }
-    });
+//             if (slider.param)
+//                 slider.param.noUpdate = true;  
+//         }
+//         else if (e.button == 1)
+//         {
+//             e.preventDefault();
+//             slider.buttonDown1 = true;
+//         }
+//         else if (e.button == 2)
+//         {
+//             e.preventDefault();
+//             slider.buttonDown2 = true;
+//         }
+//     });
 
 
 
-    slider.addEventListener('pointerenter', function(e)
-    {
-        if (   !graphView.spaceDown
-            && slider.pointerEvents)
-        {
-            if (graphView.tempConn)
-                slider.style.cursor = 'default';
+//     slider.addEventListener('pointerenter', function(e)
+//     {
+//         if (   !graphView.spaceDown
+//             && slider.pointerEvents)
+//         {
+//             if (graphView.tempConn)
+//                 slider.style.cursor = 'default';
             
-            else
-                slider.style.cursor = 
-                       slider.readOnly 
-                    || containsChild(slider, slider.textbox) 
-                    ? 'default'
-                    : 'ew-resize';
+//             else
+//                 slider.style.cursor = 
+//                        slider.readOnly 
+//                     || containsChild(slider, slider.textbox) 
+//                     ? 'default'
+//                     : 'ew-resize';
 
                     
-            const colShadow = 
-                isDarkMode()
-                ? 'rgba(255, 255, 255, 0.1)'
-                : 'rgba(0, 0, 0, 0.1)';
+//             const colShadow = 
+//                 isDarkMode()
+//                 ? 'rgba(255, 255, 255, 0.1)'
+//                 : 'rgba(0, 0, 0, 0.1)';
 
-            if (slider.param)
-            {
-                slider.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
+//             if (slider.param)
+//             {
+//                 slider.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
 
-                if (    slider.param.node
-                    &&  slider.param.node.params.includes(slider.param)
-                    && !isLastInArray(slider.param.node.params, slider.param))
-                    slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
-            }
-            else
-            {
-                slider.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
-            }
+//                 if (    slider.param.node
+//                     &&  slider.param.node.params.includes(slider.param)
+//                     && !isLastInArray(slider.param.node.params, slider.param))
+//                     slider.focus.style.boxShadow += ', 0 -1px 0 0 ' + colShadow + ' inset';
+//             }
+//             else
+//             {
+//                 slider.focus.style.boxShadow  = '0 0 0 1px ' + colShadow + ' inset ';
+//             }
 
 
-            slider.focus.style.visibility = 'visible';
-            slider.focus.style.opacity    = '100%';
+//             slider.focus.style.visibility = 'visible';
+//             slider.focus.style.opacity    = '100%';
     
-            slider.update();
-        }
-    });
+//             slider.update();
+//         }
+//     });
 
 
 
-    slider.addEventListener('pointermove', e =>
-    {
-        if (!slider.pointerEvents)
-            return;
+//     slider.addEventListener('pointermove', e =>
+//     {
+//         if (!slider.pointerEvents)
+//             return;
         
 
-        let rect = boundingRect(slider);
+//         let rect = boundingRect(slider);
         
-        slider.mouseOver = 
-               e.clientX >= rect.left
-            && e.clientX <  rect.right
-            && e.clientY >= rect.top                                     
-            && e.clientY <  rect.bottom;
+//         slider.mouseOver = 
+//                e.clientX >= rect.left
+//             && e.clientX <  rect.right
+//             && e.clientY >= rect.top                                     
+//             && e.clientY <  rect.bottom;
 
 
-        slider.clientX = e.clientX;
+//         slider.clientX = e.clientX;
 
         
-        if (    slider.buttonDown0
-            && !slider.readOnly)
-        {
-            if (slider.isPointerLocked())
-            {
-                slider.movedX += e.movementX;
+//         if (    slider.buttonDown0
+//             && !slider.readOnly)
+//         {
+//             if (slider.isPointerLocked())
+//             {
+//                 slider.movedX += e.movementX;
                 
-                if (!isNaN(slider.value))
-                {
-                    const dx       = slider.movedX * (slider.dragReverse ? -1 : 1);
-                    const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
-                    const grain    = Math.pow(10, -slider.dec);
-                    const drag     = grain * sqr(slider.dragScale);
+//                 if (!isNaN(slider.value))
+//                 {
+//                     const dx       = slider.movedX * (slider.dragReverse ? -1 : 1);
+//                     const adaptive = 10 * Math.pow(Math.abs(dx), slider.acc);
+//                     const grain    = Math.pow(10, -slider.dec);
+//                     const drag     = grain * sqr(slider.dragScale);
 
-                    const val      = slider.startValue + dx * drag * adaptive;
+//                     const val      = slider.startValue + dx * drag * adaptive;
 
                     
-                    // reset slider movement at the limits for better UX
-                    const min = getCtrlKey(e) ? slider.min : slider.displayMin;
-                    const max = getCtrlKey(e) ? slider.max : slider.displayMax;
+//                     // reset slider movement at the limits for better UX
+//                     const min = getCtrlKey(e) ? slider.min : slider.displayMin;
+//                     const max = getCtrlKey(e) ? slider.max : slider.displayMax;
 
-                    slider.setValue(
-                        Math.round(val / grain) * grain, 
-                        true, 
-                        false, 
-                        false,
-                        getCtrlKey(e));
-
-
-                    if (   val <= min
-                        || val >= max)
-                    {
-                        slider.movedX     = 0;
-                        slider.startValue = slider.value;
-                        slider.sx         = e.clientX;
-                    }
+//                     slider.setValue(
+//                         Math.round(val / grain) * grain, 
+//                         true, 
+//                         false, 
+//                         false,
+//                         getCtrlKey(e));
 
 
-                    if (slider.value != slider.prevValue)
-                        pushUpdateFromParam([slider.param.node], slider.param);
+//                     if (   val <= min
+//                         || val >= max)
+//                     {
+//                         slider.movedX     = 0;
+//                         slider.startValue = slider.value;
+//                         slider.sx         = e.clientX;
+//                     }
 
-                    slider.prevValue = slider.value;
-                }
-            }
-            else
-            {
-                if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
-                {
-                    slider.moved = true;
-                    slider.lockPointer(e.pointerId);
 
-                    slider.dispatchEvent(slider.onstartchange);
-                }
-            }
-        }
-        else if (graphView.tempConn
-              && slider.param)
-        {
-            let savedInput = 
-                graphView.savedConn
-                ? graphView.savedConn.input
-                : null;
+//                     if (slider.value != slider.prevValue)
+//                         pushUpdateFromParam([slider.param.node], slider.param);
 
-            if (    graphView.tempConn.output
-                &&  slider.param.input
-                &&  slider.param.input.types.includes(graphView.tempConn.output.type)
-                && !graphView.tempConn.output.node.follows(slider.param.node)
-                && (  !slider.param.input.connected // not already connected to this input
-                    || slider.param.input.connectedOutput != graphView.tempConn.output
-                    || slider.param.input == savedInput))
-            {
-                graphView.overInput = slider.param.input;
+//                     slider.prevValue = slider.value;
+//                 }
+//             }
+//             else
+//             {
+//                 if (Math.abs(e.clientX - slider.sx) > slider.clickSize/2)
+//                 {
+//                     slider.moved = true;
+//                     slider.lockPointer(e.pointerId);
+
+//                     slider.dispatchEvent(slider.onstartchange);
+//                 }
+//             }
+//         }
+//         else if (graphView.tempConn
+//               && slider.param)
+//         {
+//             let savedInput = 
+//                 graphView.savedConn
+//                 ? graphView.savedConn.input
+//                 : null;
+
+//             if (    graphView.tempConn.output
+//                 &&  slider.param.input
+//                 &&  slider.param.input.types.includes(graphView.tempConn.output.type)
+//                 && !graphView.tempConn.output.node.follows(slider.param.node)
+//                 && (  !slider.param.input.connected // not already connected to this input
+//                     || slider.param.input.connectedOutput != graphView.tempConn.output
+//                     || slider.param.input == savedInput))
+//             {
+//                 graphView.overInput = slider.param.input;
                     
-                slider.param.input.mouseOver = true;
-                slider.param.input.updateControl();
+//                 slider.param.input.mouseOver = true;
+//                 slider.param.input.updateControl();
 
-                const rect = boundingRect(slider.param.input.control);
+//                 const rect = boundingRect(slider.param.input.control);
 
-                graphView.tempConn.wire.inputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - controlBar.offsetHeight);
-            }
-            else if ( graphView.tempConn.input
-                  &&  slider.param.output
-                  &&  graphView.tempConn.input.types.includes(slider.param.output.type)
-                  && !slider.param.node.follows(graphView.tempConn.input.node))
-            {
-                graphView.overOutput = slider.param.output;
+//                 graphView.tempConn.wire.inputPos = point(
+//                     rect.x + rect.w/2,
+//                     rect.y + rect.h/2 - controlBar.offsetHeight);
+//             }
+//             else if ( graphView.tempConn.input
+//                   &&  slider.param.output
+//                   &&  graphView.tempConn.input.types.includes(slider.param.output.type)
+//                   && !slider.param.node.follows(graphView.tempConn.input.node))
+//             {
+//                 graphView.overOutput = slider.param.output;
                     
-                slider.param.output.mouseOver = true;
-                slider.param.output.updateControl();
+//                 slider.param.output.mouseOver = true;
+//                 slider.param.output.updateControl();
 
 
-                const rect = boundingRect(slider.param.output.control);
+//                 const rect = boundingRect(slider.param.output.control);
 
-                graphView.tempConn.wire.outputPos = point(
-                    rect.x + rect.w/2,
-                    rect.y + rect.h/2 - controlBar.offsetHeight);
+//                 graphView.tempConn.wire.outputPos = point(
+//                     rect.x + rect.w/2,
+//                     rect.y + rect.h/2 - controlBar.offsetHeight);
 
 
-                graphView.tempConn.input.updateControl();
-            }
-        }
-        else if (slider.readOnly)
-        {
-            slider.moved = true;
-        }
-    });
+//                 graphView.tempConn.input.updateControl();
+//             }
+//         }
+//         else if (slider.readOnly)
+//         {
+//             slider.moved = true;
+//         }
+//     });
     
     
     
-    slider.addEventListener('pointerleave', function(e)
-    {
-        slider.style.cursor           = 'default';
+//     slider.addEventListener('pointerleave', function(e)
+//     {
+//         slider.style.cursor           = 'default';
         
-        slider.focus.style.visibility = 'hidden';
-        slider.focus.style.opacity    = 0;
+//         slider.focus.style.visibility = 'hidden';
+//         slider.focus.style.opacity    = 0;
 
-        slider.update();
+//         slider.update();
 
 
-        if (graphView.tempConn)
-        {
-            if (   graphView.tempConn.output
-                && graphView.tempConn.output.node != slider.param.node)
-            {
-                const input = graphView.overInput;
+//         if (graphView.tempConn)
+//         {
+//             if (   graphView.tempConn.output
+//                 && graphView.tempConn.output.node != slider.param.node)
+//             {
+//                 const input = graphView.overInput;
                 
-                graphView.overInput   = null;
+//                 graphView.overInput   = null;
                 
-                if (input) // will be null if data types don't match or there's no auto input for someo other reason
-                {
-                    input.mouseOver = false;
-                    input.updateControl();
-                }
+//                 if (input) // will be null if data types don't match or there's no auto input for someo other reason
+//                 {
+//                     input.mouseOver = false;
+//                     input.updateControl();
+//                 }
                 
-                graphView.tempConn.wire.inputPos = point_NaN;
-            }
-            else if (graphView.tempConn.input
-                  && graphView.tempConn.input.node != slider.param.node)
-            {
-                const output = graphView.overOutput;
+//                 graphView.tempConn.wire.inputPos = point_NaN;
+//             }
+//             else if (graphView.tempConn.input
+//                   && graphView.tempConn.input.node != slider.param.node)
+//             {
+//                 const output = graphView.overOutput;
                 
-                graphView.overOutput = null;
+//                 graphView.overOutput = null;
 
-                if (output) // will be null if data types don't match or there's no auto output for someo other reason
-                {
-                    output.mouseOver = false;
-                    output.updateControl();
-                }
+//                 if (output) // will be null if data types don't match or there's no auto output for someo other reason
+//                 {
+//                     output.mouseOver = false;
+//                     output.updateControl();
+//                 }
 
-                graphView.tempConn.wire.outputPos = point_NaN;
-                graphView.tempConn.input.updateControl();
-           }
-        }
-    });
-
-
-
-    slider.addEventListener('losecapture', function()
-    {
-        slider.buttonDown0 = false;
-        slider.buttonDown1 = false;
-        slider.buttonDown2 = false;
-        slider.mouseOver   = false;
-        slider.update();
-    });
+//                 graphView.tempConn.wire.outputPos = point_NaN;
+//                 graphView.tempConn.input.updateControl();
+//            }
+//         }
+//     });
 
 
 
-    slider.addEventListener('pointerup', function(e)
-    {
-        clearTimeout(slider.clickTimer);
+//     slider.addEventListener('losecapture', function()
+//     {
+//         slider.buttonDown0 = false;
+//         slider.buttonDown1 = false;
+//         slider.buttonDown2 = false;
+//         slider.mouseOver   = false;
+//         slider.update();
+//     });
 
 
-        if (graphView.tempConn)
-        {
-            if (    graphView.tempConn.output
-                && !graphView.tempConn.output.node.follows(slider.param.node)
-                &&  graphView.overInput)
-            {
-                graphView.endConnection(e.pointerId);
-                graphView.overInput.endConnection();
-            }
-            else if (graphView.tempConn.input
-                && !slider.param.node.follows(graphView.tempConn.input.node)
-                &&  graphView.overOutput)
-            {
-                graphView.endConnection(e.pointerId);
-                graphView.overOutput.endConnection();
-            }
-        }
+
+//     slider.addEventListener('pointerup', function(e)
+//     {
+//         clearTimeout(slider.clickTimer);
+
+
+//         if (graphView.tempConn)
+//         {
+//             if (    graphView.tempConn.output
+//                 && !graphView.tempConn.output.node.follows(slider.param.node)
+//                 &&  graphView.overInput)
+//             {
+//                 graphView.endConnection(e.pointerId);
+//                 graphView.overInput.endConnection();
+//             }
+//             else if (graphView.tempConn.input
+//                 && !slider.param.node.follows(graphView.tempConn.input.node)
+//                 &&  graphView.overOutput)
+//             {
+//                 graphView.endConnection(e.pointerId);
+//                 graphView.overOutput.endConnection();
+//             }
+//         }
         
-        else if (   slider.moved
-            || document.menuHadFocus)
-        {
-            slider.unlockPointer(e.pointerId);
+//         else if (   slider.moved
+//             || document.menuHadFocus)
+//         {
+//             slider.unlockPointer(e.pointerId);
 
-            if (slider.param)
-                slider.param.noUpdate = false;  
+//             if (slider.param)
+//                 slider.param.noUpdate = false;  
 
-            return;            
-        }
+//             return;            
+//         }
 
-        else if (slider.buttonDown0_)
-        {
-            slider.clicked = true;
-            slider.showTextbox();
-        }
+//         else if (slider.buttonDown0_)
+//         {
+//             slider.clicked = true;
+//             slider.showTextbox();
+//         }
 
-             if (e.button == 0) slider.buttonDown0 = false;
-        else if (e.button == 1) slider.buttonDown1 = false;
-        else if (e.button == 2) slider.buttonDown2 = false;
+//              if (e.button == 0) slider.buttonDown0 = false;
+//         else if (e.button == 1) slider.buttonDown1 = false;
+//         else if (e.button == 2) slider.buttonDown2 = false;
 
-        slider.buttonDown0_ = false;
-    });    
+//         slider.buttonDown0_ = false;
+//     });    
 
 
 
-    document.addEventListener('pointerup', function(e)
-    {
-        if (   e.button == 0 
-            && slider.buttonDown0)
-        {
-            slider.buttonDown0 = false;
-            slider.unlockPointer(e.pointerId);
+//     document.addEventListener('pointerup', function(e)
+//     {
+//         if (   e.button == 0 
+//             && slider.buttonDown0)
+//         {
+//             slider.buttonDown0 = false;
+//             slider.unlockPointer(e.pointerId);
 
-            slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
+//             slider.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
-            // if (    slider.value != slider.oldValue
-            //     && !slider.readOnly)
-            //     slider.dispatchEvent(slider.onconfirm);
-        }
-        // else if (   e.button == 1
-        //     && slider.buttonDown1)
-        // {
-        //     slider.buttonDown1 = false;            
-        // }
-    });
+//             // if (    slider.value != slider.oldValue
+//             //     && !slider.readOnly)
+//             //     slider.dispatchEvent(slider.onconfirm);
+//         }
+//         // else if (   e.button == 1
+//         //     && slider.buttonDown1)
+//         // {
+//         //     slider.buttonDown1 = false;            
+//         // }
+//     });
 
 
     
-    slider.addEventListener('wheel', e =>
-    {
-        if (!slider.pointerEvents)
-            return;
+//     slider.addEventListener('wheel', e =>
+//     {
+//         if (!slider.pointerEvents)
+//             return;
 
 
-        const isTouchpad = 
-               Math.abs(e.deltaX) < 100
-            && Math.abs(e.deltaY) < 100;
+//         const isTouchpad = 
+//                Math.abs(e.deltaX) < 100
+//             && Math.abs(e.deltaY) < 100;
 
 
-        if (isTouchpad)
-        {
-            e.preventDefault();
-            return;
-        }
+//         if (isTouchpad)
+//         {
+//             e.preventDefault();
+//             return;
+//         }
 
 
-        const dWheelX = e.deltaX /  20 * (slider.dragReverse ? -1 : 1);
-        const dWheelY = e.deltaY / 100 * (slider.dragReverse ? -1 : 1);
+//         const dWheelX = e.deltaX /  20 * (slider.dragReverse ? -1 : 1);
+//         const dWheelY = e.deltaY / 100 * (slider.dragReverse ? -1 : 1);
 
 
-        if (   !getCtrlKey(e)
-            && !slider.buttonDown1)
-        {
-            e.stopPropagation();
+//         if (   !getCtrlKey(e)
+//             && !slider.buttonDown1)
+//         {
+//             e.stopPropagation();
 
-            if (!slider.readOnly)
-            {
-                // if (   document.activeElement
-                //     && document.activeElement.tagName.toLowerCase() == 'input'
-                //     && document.activeElement.slider)
-                //     document.activeElement.slider.textbox.finish(true, false);
+//             if (!slider.readOnly)
+//             {
+//                 // if (   document.activeElement
+//                 //     && document.activeElement.tagName.toLowerCase() == 'input'
+//                 //     && document.activeElement.slider)
+//                 //     document.activeElement.slider.textbox.finish(true, false);
 
-                // slider.oldValue = slider.value;
+//                 // slider.oldValue = slider.value;
 
-                // const dec = Math.pow(10, -slider.dec);
+//                 // const dec = Math.pow(10, -slider.dec);
 
-                // const val =
-                //     isTouchpad
-                //     ? slider.value -  dWheelX               * slider.wheelScale * dec
-                //     : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
+//                 // const val =
+//                 //     isTouchpad
+//                 //     ? slider.value -  dWheelX               * slider.wheelScale * dec
+//                 //     : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
                 
-                // slider.setValue(val, true, true, false, false);
-            }
-        }
-    });
+//                 // slider.setValue(val, true, true, false, false);
+//             }
+//         }
+//     });
 
 
 
-    // graphView.addEventListener('touchstart', e =>
-    // {
-    //     graphView.touches.push(e);
-    //     e.preventDefault();
-    // });
+//     // graphView.addEventListener('touchstart', e =>
+//     // {
+//     //     graphView.touches.push(e);
+//     //     e.preventDefault();
+//     // });
     
     
     
-    // graphView.addEventListener('touchmove', e =>
-    // {
-    //     for (let i = 0; i < graphView.touches.length; i++)
-    //         if (graphView.touches[i].pointerId == e.pointerId)
-    //         {
-    //             graphView.touches[i] = e;
-    //             break;
-    //         }
+//     // graphView.addEventListener('touchmove', e =>
+//     // {
+//     //     for (let i = 0; i < graphView.touches.length; i++)
+//     //         if (graphView.touches[i].pointerId == e.pointerId)
+//     //         {
+//     //             graphView.touches[i] = e;
+//     //             break;
+//     //         }
     
-    //     e.preventDefault();
-    // });
-    
-    
-    
-    // graphView.addEventListener('touchend', e =>
-    // {
-    //     for (let i = 0; i < graphView.touches.length; i++)
-    //         if (graphView.touches[i].pointerId == e.pointerId)
-    //         {
-    //             graphView.touches.splice(i, 1);
-    //             break;
-    //         }
-    
-    //     e.preventDefault();
-    // });
+//     //     e.preventDefault();
+//     // });
     
     
     
-    // graphView.addEventListener('touchcancel', e =>
-    // {
-    //     for (let i = 0; i < graphView.touches.length; i++)
-    //         if (graphView.touches[i].pointerId == e.pointerId)
-    //         {
-    //             graphView.touches.splice(i, 1);
-    //             break;
-    //         }
+//     // graphView.addEventListener('touchend', e =>
+//     // {
+//     //     for (let i = 0; i < graphView.touches.length; i++)
+//     //         if (graphView.touches[i].pointerId == e.pointerId)
+//     //         {
+//     //             graphView.touches.splice(i, 1);
+//     //             break;
+//     //         }
     
-    //     e.preventDefault();
-    // });
+//     //     e.preventDefault();
+//     // });
     
     
     
-    slider.addEventListener('keydown', e =>
-    {
-        if (   e.code == 'Enter'
-            || e.code == 'NumpadEnter')
-            slider.showTextbox();
+//     // graphView.addEventListener('touchcancel', e =>
+//     // {
+//     //     for (let i = 0; i < graphView.touches.length; i++)
+//     //         if (graphView.touches[i].pointerId == e.pointerId)
+//     //         {
+//     //             graphView.touches.splice(i, 1);
+//     //             break;
+//     //         }
+    
+//     //     e.preventDefault();
+//     // });
+    
+    
+    
+//     slider.addEventListener('keydown', e =>
+//     {
+//         if (   e.code == 'Enter'
+//             || e.code == 'NumpadEnter')
+//             slider.showTextbox();
 
-        // else if (e.code == 'Space')
-        //     setCursor(panCursor, true);
-    });
+//         // else if (e.code == 'Space')
+//         //     setCursor(panCursor, true);
+//     });
 
 
 
-    slider.addEventListener('focus', function()
-    {
-        if (   !graphView.spaceDown
-            && !slider.buttonDown1
-            && slider.pointerEvents)
-            slider.showTextbox();
-    });
-}
+//     slider.addEventListener('focus', function()
+//     {
+//         if (   !graphView.spaceDown
+//             && !slider.buttonDown1
+//             && slider.pointerEvents)
+//             slider.showTextbox();
+//     });
+// }
 
 
-function initFillControlTextbox(slider)
-{
-    slider.textbox = createTextbox('fillControlTextbox');
-    slider.textbox.slider = slider;
+// function initFillControlTextbox(slider)
+// {
+//     slider.textbox = createTextbox('fillControlTextbox');
+//     slider.textbox.slider = slider;
     
 
 
-    slider.textbox.addEventListener('pointerdown', e =>
-    {
-        e.stopPropagation();
-    });
+//     slider.textbox.addEventListener('pointerdown', e =>
+//     {
+//         e.stopPropagation();
+//     });
 
 
 
-    slider.textbox.addEventListener('pointermove', e =>
-    {
-        e.stopPropagation();
-        slider.textbox.style.cursor = 'default';
-    });
+//     slider.textbox.addEventListener('pointermove', e =>
+//     {
+//         e.stopPropagation();
+//         slider.textbox.style.cursor = 'default';
+//     });
 
 
 
-    slider.textbox.addEventListener('keydown', e =>
-    {
-        e.stopPropagation();
+//     slider.textbox.addEventListener('keydown', e =>
+//     {
+//         e.stopPropagation();
 
 
-        if (   e.code == 'KeyC'
-            && getCtrlKey(e))
-        {
-            e.preventDefault();
-            document.execCommand('copy');
-        }
+//         if (   e.code == 'KeyC'
+//             && getCtrlKey(e))
+//         {
+//             e.preventDefault();
+//             document.execCommand('copy');
+//         }
 
-        else if (e.code == 'KeyV'
-              && getCtrlKey(e)
-              && !slider.readOnly)
-        {
-            // by doing nothing here I let the OS do its thing
-        }
+//         else if (e.code == 'KeyV'
+//               && getCtrlKey(e)
+//               && !slider.readOnly)
+//         {
+//             // by doing nothing here I let the OS do its thing
+//         }
         
-        else if (   (   e.code == 'Enter'
-                     || e.code == 'NumpadEnter')
-                 && !slider.readOnly)
-        {
-            slider.textbox.keyBlur = true;
-            slider.textbox.finish(true);
-        }
+//         else if (   (   e.code == 'Enter'
+//                      || e.code == 'NumpadEnter')
+//                  && !slider.readOnly)
+//         {
+//             slider.textbox.keyBlur = true;
+//             slider.textbox.finish(true);
+//         }
 
-        else if (e.code == 'Escape')
-        {
-            slider.textbox.keyBlur = true;
-            slider.textbox.finish(false);
-        }
-        else if (e.code == 'Tab')
-        {
-            e.preventDefault();
-            e.stopPropagation();
+//         else if (e.code == 'Escape')
+//         {
+//             slider.textbox.keyBlur = true;
+//             slider.textbox.finish(false);
+//         }
+//         else if (e.code == 'Tab')
+//         {
+//             e.preventDefault();
+//             e.stopPropagation();
             
-            if (slider.param)
-            {
-                const params = slider.param.node.params;
-                let   index  = slider.param.index;
+//             if (slider.param)
+//             {
+//                 const params = slider.param.node.params;
+//                 let   index  = slider.param.index;
 
-                slider.textbox.keyBlur = true;
-                slider.textbox.finish(true, false);
+//                 slider.textbox.keyBlur = true;
+//                 slider.textbox.finish(true, false);
 
-                if (   e.shiftKey 
-                    && index > 0)
-                {
-                    while (params[--index].control.readOnly);
-                    params[index].control.showTextbox();
-                }
-                else if (!e.shiftKey 
-                      && index < params.length-1) 
-                {
-                    while (params[++index].control.readOnly);
-                    params[index].control.showTextbox();
-                }
-            }
+//                 if (   e.shiftKey 
+//                     && index > 0)
+//                 {
+//                     while (params[--index].control.readOnly);
+//                     params[index].control.showTextbox();
+//                 }
+//                 else if (!e.shiftKey 
+//                       && index < params.length-1) 
+//                 {
+//                     while (params[++index].control.readOnly);
+//                     params[index].control.showTextbox();
+//                 }
+//             }
 
-            // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
-            // let index = slider.tabIndex;
+//             // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
+//             // let index = slider.tabIndex;
 
-            // for (let i = 0; i < tabs.length; i++) 
-            // {
-            //     if (   e.shiftKey && tabs[i].tabIndex == index - 1
-            //         ||               tabs[i].tabIndex == index + 1) 
-            //     {
-            //         if (tabs[i].className == 'slider')
-            //             tabs[i].showTextbox();
-            //         else 
-            //         {
-            //             document.activeElement.blur();
-            //             tabs[i].focus();
-            //         }
+//             // for (let i = 0; i < tabs.length; i++) 
+//             // {
+//             //     if (   e.shiftKey && tabs[i].tabIndex == index - 1
+//             //         ||               tabs[i].tabIndex == index + 1) 
+//             //     {
+//             //         if (tabs[i].className == 'slider')
+//             //             tabs[i].showTextbox();
+//             //         else 
+//             //         {
+//             //             document.activeElement.blur();
+//             //             tabs[i].focus();
+//             //         }
 
-            //         break;
-            //     }
-            // }
-        }
+//             //         break;
+//             //     }
+//             // }
+//         }
 
-        else if ((   e.key == 'ArrowUp'
-                  || e.key == 'ArrowDown')
-              && !slider.readOnly)
-        {
-            e.preventDefault();
+//         else if ((   e.key == 'ArrowUp'
+//                   || e.key == 'ArrowDown')
+//               && !slider.readOnly)
+//         {
+//             e.preventDefault();
 
-            let text = slider.textbox.value;
+//             let text = slider.textbox.value;
 
-            if (slider.textbox.selectionStart != slider.textbox.selectionEnd)
-                slider.textbox.selectionStart =  slider.textbox.selectionEnd;
+//             if (slider.textbox.selectionStart != slider.textbox.selectionEnd)
+//                 slider.textbox.selectionStart =  slider.textbox.selectionEnd;
 
-            const pos = Math.min(
-                slider.textbox.selectionStart,
-                text.length);
+//             const pos = Math.min(
+//                 slider.textbox.selectionStart,
+//                 text.length);
 
-            const revPos = text.length - pos;
+//             const revPos = text.length - pos;
 
-            const val  = parseFloat(text);
-            const sign = e.key == 'ArrowUp' ? 1 : -1;
+//             const val  = parseFloat(text);
+//             const sign = e.key == 'ArrowUp' ? 1 : -1;
 
-            let decIndex = text.indexOf('.');
-            if (decIndex < 0) decIndex = text.indexOf(',');
+//             let decIndex = text.indexOf('.');
+//             if (decIndex < 0) decIndex = text.indexOf(',');
             
-            if (   text[0] != '-'
-                || pos > 0)
-            {
-                if (decIndex < 0) // integer
-                {
-                    let dec = Math.pow(10, revPos);
+//             if (   text[0] != '-'
+//                 || pos > 0)
+//             {
+//                 if (decIndex < 0) // integer
+//                 {
+//                     let dec = Math.pow(10, revPos);
 
-                    if (e.shiftKey) 
-                        dec *= 10;
+//                     if (e.shiftKey) 
+//                         dec *= 10;
 
-                    slider.setValue((val + sign * dec) / slider.valueScale);
-                    slider.updateTextbox();
-                }
-                else // floating point
-                {
-                    const _edit = pos - decIndex - 1;
+//                     slider.setValue((val + sign * dec) / slider.valueScale);
+//                     slider.updateTextbox();
+//                 }
+//                 else // floating point
+//                 {
+//                     const _edit = pos - decIndex - 1;
 
-                    let  dec  = 
-                        _edit < 0
-                        ?     Math.pow(10, -_edit - 1)
-                        : 1 / Math.pow(10,  _edit    );
+//                     let  dec  = 
+//                         _edit < 0
+//                         ?     Math.pow(10, -_edit - 1)
+//                         : 1 / Math.pow(10,  _edit    );
 
-                    if (e.shiftKey) 
-                        dec *= 10;
+//                     if (e.shiftKey) 
+//                         dec *= 10;
 
-                    slider.displayDec = text.length-1 - decIndex;
-                    slider.setValue((val + sign * dec) / slider.valueScale);
-                    slider.updateTextbox();
-                }
+//                     slider.displayDec = text.length-1 - decIndex;
+//                     slider.setValue((val + sign * dec) / slider.valueScale);
+//                     slider.updateTextbox();
+//                 }
 
-                slider.textbox.selectionStart =
-                slider.textbox.selectionEnd   = slider.textbox.savedValue.length - revPos;
-            }
-        }
-        else 
-        {
-            let curVal = slider.textbox.value;
+//                 slider.textbox.selectionStart =
+//                 slider.textbox.selectionEnd   = slider.textbox.savedValue.length - revPos;
+//             }
+//         }
+//         else 
+//         {
+//             let curVal = slider.textbox.value;
 
-            if (      e.key.length == 1
-                   && e.key != '?'
-                   && !isDigit(e.key)
-                   && !isHexDigit(e.key)
-                   && !(   ((      e.code == 'Minus'
-                                || e.code == 'NumpadSubtract')
-                             && !curVal.includes('-'))
-                        && slider.min < 0)
-                ||     slider.readOnly
-                   && !isArrowKey(e.code))
-                e.preventDefault();
+//             if (      e.key.length == 1
+//                    && e.key != '?'
+//                    && !isDigit(e.key)
+//                    && !isHexDigit(e.key)
+//                    && !(   ((      e.code == 'Minus'
+//                                 || e.code == 'NumpadSubtract')
+//                              && !curVal.includes('-'))
+//                         && slider.min < 0)
+//                 ||     slider.readOnly
+//                    && !isArrowKey(e.code))
+//                 e.preventDefault();
 
-            curVal =
-                curVal == INVALID
-                ? ''
-                :   curVal.substring(0, slider.textbox.selectionStart) 
-                  + curVal.substring(slider.textbox.selectionEnd, curVal.length);
+//             curVal =
+//                 curVal == INVALID
+//                 ? ''
+//                 :   curVal.substring(0, slider.textbox.selectionStart) 
+//                   + curVal.substring(slider.textbox.selectionEnd, curVal.length);
 
                   
-            const nextVal = parseFloat(curVal + e.key);
+//             const nextVal = parseFloat(curVal + e.key);
 
-            if (   nextVal < slider.min - 0.001
-                || nextVal > slider.max)
-                e.preventDefault();            
-        }
-    });
-
-
-
-    slider.textbox.addEventListener('paste', function(e)
-    {
-        e.preventDefault();
-
-        const str = e.clipboardData.getData('text/plain');
-
-        let val = 
-            slider.showHex
-            ? parseInt(str, 16)
-            : parseFloat(str);
-
-        val = Math.min(Math.max(slider.min, val), slider.max);
-
-        slider.textbox.value = isNaN(val) ? '' : val;
-    });
+//             if (   nextVal < slider.min - 0.001
+//                 || nextVal > slider.max)
+//                 e.preventDefault();            
+//         }
+//     });
 
 
 
-    slider.textbox.addEventListener('focusout', function()
-    {
-        //console.log('slider.successOnFocusOut', slider.successOnFocusOut);
+//     slider.textbox.addEventListener('paste', function(e)
+//     {
+//         e.preventDefault();
 
-        if (!slider.textbox.keyBlur) slider.textbox.finish(true);
-        else                         slider.textbox.keyBlur = false;
+//         const str = e.clipboardData.getData('text/plain');
 
-        if (slider.savedSuccessOnFocusOut != null)
-        {
-            slider.successOnFocusOut      = slider.savedSuccessOnFocusOut;
-            slider.savedSuccessOnFocusOut = null;
-        }
+//         let val = 
+//             slider.showHex
+//             ? parseInt(str, 16)
+//             : parseFloat(str);
 
-        slider.parentNode.removeChild(slider.textbox);
-        slider.clicked = false;
-    });
+//         val = Math.min(Math.max(slider.min, val), slider.max);
+
+//         slider.textbox.value = isNaN(val) ? '' : val;
+//     });
+
+
+
+//     slider.textbox.addEventListener('focusout', function()
+//     {
+//         //console.log('slider.successOnFocusOut', slider.successOnFocusOut);
+
+//         if (!slider.textbox.keyBlur) slider.textbox.finish(true);
+//         else                         slider.textbox.keyBlur = false;
+
+//         if (slider.savedSuccessOnFocusOut != null)
+//         {
+//             slider.successOnFocusOut      = slider.savedSuccessOnFocusOut;
+//             slider.savedSuccessOnFocusOut = null;
+//         }
+
+//         slider.parentNode.removeChild(slider.textbox);
+//         slider.clicked = false;
+//     });
     
 
 
-    slider.textbox.finish = function(success, focusSlider = true)
-    {
-        let   value      = slider.textbox.value;
-        const savedValue = slider.textbox.savedValue;
+//     slider.textbox.finish = function(success, focusSlider = true)
+//     {
+//         let   value      = slider.textbox.value;
+//         const savedValue = slider.textbox.savedValue;
 
-        let rgb      = value     .indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(value     );
-        let savedRgb = savedValue.indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(savedValue);
+//         let rgb      = value     .indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(value     );
+//         let savedRgb = savedValue.indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(savedValue);
 
        
-        const e = new CustomEvent('finishedit', { 'detail': {
-            'success':         success,
-            'value':           value,
-            'oldValue':        savedValue,
-            'preventSetValue': false }});
+//         const e = new CustomEvent('finishedit', { 'detail': {
+//             'success':         success,
+//             'value':           value,
+//             'oldValue':        savedValue,
+//             'preventSetValue': false }});
 
-        slider.dispatchEvent(e);
+//         slider.dispatchEvent(e);
 
 
-        if (!e.preventSetValue)
-        {
-            if (success) 
-            {
-                slider.setValue(
-                      value.trim() != '' 
-                    ? GColorValue.createFromRgb(rgb) 
-                    : GColorValue.createFromRgb(savedRgb));
-            }
-            else
-                slider.setValue(savedRgb);
-        }
+//         if (!e.preventSetValue)
+//         {
+//             if (success) 
+//             {
+//                 slider.setValue(
+//                       value.trim() != '' 
+//                     ? GColorValue.createFromRgb(rgb) 
+//                     : GColorValue.createFromRgb(savedRgb));
+//             }
+//             else
+//                 slider.setValue(savedRgb);
+//         }
          
         
-        slider.textbox.blur();
+//         slider.textbox.blur();
 
-        slider.text.style.display = 'block';
+//         slider.text.style.display = 'block';
 
-        if (   slider.inFocus
-            && focusSlider)
-            slider.focus();
-    };    
+//         if (   slider.inFocus
+//             && focusSlider)
+//             slider.focus();
+//     };    
     
     
 
-    slider.showTextbox = function()
-    {
-        slider.text.style.display = 'none';
+//     slider.showTextbox = function()
+//     {
+//         slider.text.style.display = 'none';
 
-        slider.inFocus = 
-               hasFocus(slider)
-            && !slider.clicked;
+//         slider.inFocus = 
+//                hasFocus(slider)
+//             && !slider.clicked;
     
-        slider.textbox.style.position  = 'absolute';
-        slider.textbox.style.left      = '50%';
-        slider.textbox.style.transform = 'translate(-50%)';
-        slider.textbox.style.top       = slider.offsetTop    + 1;
-        slider.textbox.style.width     = slider.offsetWidth  - 2;
-        slider.textbox.style.height    = slider.offsetHeight - 2;
-        slider.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
-        slider.textbox.style.outline   = 'none';
-        slider.textbox.style.textAlign = 'center';
-        slider.textbox.style.color     = isDarkMode() ? 'white' : 'black';
+//         slider.textbox.style.position  = 'absolute';
+//         slider.textbox.style.left      = '50%';
+//         slider.textbox.style.transform = 'translate(-50%)';
+//         slider.textbox.style.top       = slider.offsetTop    + 1;
+//         slider.textbox.style.width     = slider.offsetWidth  - 2;
+//         slider.textbox.style.height    = slider.offsetHeight - 2;
+//         slider.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
+//         slider.textbox.style.outline   = 'none';
+//         slider.textbox.style.textAlign = 'center';
+//         slider.textbox.style.color     = isDarkMode() ? 'white' : 'black';
 
 
-        const isConnected =    
-               slider.param != null
-            && slider.param.input
-            && slider.param.input.connected;
+//         const isConnected =    
+//                slider.param != null
+//             && slider.param.input
+//             && slider.param.input.connected;
 
-        enableElementText(
-            slider.textbox, 
-               !slider.readOnly
-            && !isConnected);
+//         enableElementText(
+//             slider.textbox, 
+//                !slider.readOnly
+//             && !isConnected);
 
-        slider.updateTextbox();
+//         slider.updateTextbox();
         
-        slider.parentNode.appendChild(slider.textbox);
+//         slider.parentNode.appendChild(slider.textbox);
         
-        slider.textbox.focus();
-        slider.textbox.select();
+//         slider.textbox.focus();
+//         slider.textbox.select();
 
-        slider.textbox.style.cursor = 'default';
-    }
+//         slider.textbox.style.cursor = 'default';
+//     }
 
 
 
-    slider.updateTextbox = function()
-    {
-        const rgb = dataColor2rgb(slider.value.toDataColor());
+//     slider.updateTextbox = function()
+//     {
+//         const rgb = dataColor2rgb(slider.value.toDataColor());
 
-        slider.textbox.value =
-            !slider.value.isValid()
-            ? DISPLAY_INVALID
-            : rgb2hex(rgb).toUpperCase();
+//         slider.textbox.value =
+//             !slider.value.isValid()
+//             ? DISPLAY_INVALID
+//             : rgb2hex(rgb).toUpperCase();
                            
-        slider.textbox.savedValue  = slider.textbox.value;
+//         slider.textbox.savedValue  = slider.textbox.value;
 
-        slider.textbox.style.color = isDark(rgb) ? '#fff' : '#000'
-    };
-}
-
-
-function initFillControlChildren(slider)
-{
-    slider.text  = createDiv('fillControlText');
-    slider.focus = createDiv('fillControlFocus');
-
-    slider.appendChild(slider.text);
-    slider.appendChild(slider.focus);
-}
+//         slider.textbox.style.color = isDark(rgb) ? '#fff' : '#000'
+//     };
+// }
 
 
+// function initFillControlChildren(slider)
+// {
+//     slider.text  = createDiv('fillControlText');
+//     slider.focus = createDiv('fillControlFocus');
 
-function initFillControl(param, slider, width, height, id, name, showName, defValue, dragScale = 0.05, wheelScale = 1, acc = 0)
-{
-    slider.param                  = param;
+//     slider.appendChild(slider.text);
+//     slider.appendChild(slider.focus);
+// }
+
+
+
+// function initFillControl(param, slider, width, height, id, name, showName, defValue, dragScale = 0.05, wheelScale = 1, acc = 0)
+// {
+//     slider.param                  = param;
      
-    slider.className              = 'fillControl';
+//     slider.className              = 'fillControl';
      
-    slider.width                  = width;
-    slider.height                 = height;
+//     slider.width                  = width;
+//     slider.height                 = height;
              
-    slider.style.width            = width;
-    slider.style.height           = height;
+//     slider.style.width            = width;
+//     slider.style.height           = height;
              
-    slider.value                  = defValue; // COLOR_FILL
+//     slider.value                  = defValue; // COLOR_FILL
 
-    slider.acc                    = acc;
+//     slider.acc                    = acc;
      
-    slider.id                     = id;
-    slider.name                   = name;
+//     slider.id                     = id;
+//     slider.name                   = name;
      
-    slider.dragReverse            = false;
-    slider.dragScale              = dragScale;
-    slider.wheelScale             = wheelScale;
+//     slider.dragReverse            = false;
+//     slider.dragScale              = dragScale;
+//     slider.wheelScale             = wheelScale;
              
-    slider.backColorLight         = 'transparent';
-    slider.valueColorLight        = '#7772';
-    slider.textColorLight         = '#000';
+//     slider.backColorLight         = 'transparent';
+//     slider.valueColorLight        = '#7772';
+//     slider.textColorLight         = '#000';
                 
-    slider.backColorDark          = 'transparent';
-    slider.valueColorDark         = '#fff4';
-    slider.textColorDark          = '#eee';
+//     slider.backColorDark          = 'transparent';
+//     slider.valueColorDark         = '#fff4';
+//     slider.textColorDark          = '#eee';
                 
-    slider.fontSize               = 11;
+//     slider.fontSize               = 11;
              
-    slider.style.display          = 'inline';
+//     slider.style.display          = 'inline';
              
-    slider.mouseOver              = false;
-    slider.buttonDown0            = false;
-    slider.buttonDown1            = false;
+//     slider.mouseOver              = false;
+//     slider.buttonDown0            = false;
+//     slider.buttonDown1            = false;
              
-    slider.clickSize              = 4;
-    slider.moved                  = false;
+//     slider.clickSize              = 4;
+//     slider.moved                  = false;
          
-    slider.tabIndex               = 0;
-    slider.inFocus                = false;
-    slider.clicked                = false;
+//     slider.tabIndex               = 0;
+//     slider.inFocus                = false;
+//     slider.clicked                = false;
  
-    slider.startValue             = 0;
-    slider.oldValue; 
+//     slider.startValue             = 0;
+//     slider.oldValue; 
  
-    slider.wrapValue              = false;
+//     slider.wrapValue              = false;
      
-    slider.showName               = showName;
-    slider.showHex                = false;
+//     slider.showName               = showName;
+//     slider.showHex                = false;
          
-    slider.enableChangeEvent      = true;
+//     slider.enableChangeEvent      = true;
     
-    slider.successOnFocusOut      = false;
-    slider.keyBlur                = false;
+//     slider.successOnFocusOut      = false;
+//     slider.keyBlur                = false;
     
-    slider.pointerEvents          = true;
-    slider.readOnly               = false;
+//     slider.pointerEvents          = true;
+//     slider.readOnly               = false;
      
-    slider.valueText              = '';
+//     slider.valueText              = '';
      
-    slider.onstartchange          = new Event('startchange');
-    slider.onchange               = new Event('change');
-    slider.onconfirm              = new Event('confirm');
+//     slider.onstartchange          = new Event('startchange');
+//     slider.onchange               = new Event('change');
+//     slider.onconfirm              = new Event('confirm');
 
 
-    initFillControlChildren(slider);    
-    initFillControlTextbox (slider);
-    initFillControlEvents  (slider);
-
-
-
-    slider.setName = function(name)
-    {
-        slider.name = name;
-        slider.update();
-    };
+//     initFillControlChildren(slider);    
+//     initFillControlTextbox (slider);
+//     initFillControlEvents  (slider);
 
 
 
-    slider.setFills = function(fills, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
-    {
-        const oldFills = [...slider.fills];
-
-        slider.fills = [...fills];
-
-        slider.update();
-
-        if (   fireChangeEvent
-            && slider.enableChangeEvent
-            && fills != slider.prevValue)
-            slider.dispatchEvent(slider.onchange);
-
-        if (   confirm
-            && slider.enableChangeEvent
-            && fills != oldFills)
-            slider.dispatchEvent(slider.onconfirm);
-    };
+//     slider.setName = function(name)
+//     {
+//         slider.name = name;
+//         slider.update();
+//     };
 
 
 
+//     slider.setFills = function(fills, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+//     {
+//         const oldFills = [...slider.fills];
 
-    slider.update = function()
-    {
-        const sw = slider.getClientWidth();
-        const sh = slider.getClientHeight();
+//         slider.fills = [...fills];
 
-        slider.updateColors();
-        slider.updateText();
-        slider.updateFocus(sw, sh);
+//         slider.update();
 
-        slider.cachedOffsetLeft   = null;
-        slider.cachedClientWidth  = null;
-        slider.cachedClientHeight = null;
-    };
+//         if (   fireChangeEvent
+//             && slider.enableChangeEvent
+//             && fills != slider.prevValue)
+//             slider.dispatchEvent(slider.onchange);
 
-
-
-    slider.updateColors = function()
-    {
-        // const rgb = 
-        //     slider.fills.length > 0
-        //     ? dataColor2rgb(slider.fills[0].toDataColor())
-        //     : [0xd9, 0xd9, 0xd9];
-
-        // slider     .style.background = colorStyleRgb(rgb);
-        // slider.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
-    };
+//         if (   confirm
+//             && slider.enableChangeEvent
+//             && fills != oldFills)
+//             slider.dispatchEvent(slider.onconfirm);
+//     };
 
 
 
-    slider.updateText = function()
-    {
-        // slider.text.innerHTML = '';
+
+//     slider.update = function()
+//     {
+//         const sw = slider.getClientWidth();
+//         const sh = slider.getClientHeight();
+
+//         slider.updateColors();
+//         slider.updateText();
+//         slider.updateFocus(sw, sh);
+
+//         slider.cachedOffsetLeft   = null;
+//         slider.cachedClientWidth  = null;
+//         slider.cachedClientHeight = null;
+//     };
+
+
+
+//     slider.updateColors = function()
+//     {
+//         // const rgb = 
+//         //     slider.fills.length > 0
+//         //     ? dataColor2rgb(slider.fills[0].toDataColor())
+//         //     : [0xd9, 0xd9, 0xd9];
+
+//         // slider     .style.background = colorStyleRgb(rgb);
+//         // slider.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
+//     };
+
+
+
+//     slider.updateText = function()
+//     {
+//         // slider.text.innerHTML = '';
         
-        // if (   slider.name.length > 0
-        //     && slider.showName)
-        //     slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="fillControlName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
+//         // if (   slider.name.length > 0
+//         //     && slider.showName)
+//         //     slider.text.innerHTML += (slider.name.trim() != '' ? '<span class="fillControlName">' + slider.name + '</span>&nbsp;&nbsp;' : '');
 
-        // if (slider.fills.length > 0)
-        //     slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.fills[0].toDataColor()));
-    };
-
-
-
-    slider.updateFocus = function(sw, sh)
-    {
-        slider.focus.style.left   = 0;
-        slider.focus.style.top    = 0;
-        slider.focus.style.width  = sw;
-        slider.focus.style.height = sh;
-    };
+//         // if (slider.fills.length > 0)
+//         //     slider.text.innerHTML += rgb2hex(dataColor2rgb(slider.fills[0].toDataColor()));
+//     };
 
 
 
-    slider.lockPointer = function(pointerId)
-    {
-        clearTimeout(slider.clickTimer);
-
-        slider.requestPointerLock =    
-               slider.      requestPointerLock 
-            || slider.   mozRequestPointerLock
-            || slider.webkitRequestPointerLock;
-
-        slider.requestPointerLock();
-    };
+//     slider.updateFocus = function(sw, sh)
+//     {
+//         slider.focus.style.left   = 0;
+//         slider.focus.style.top    = 0;
+//         slider.focus.style.width  = sw;
+//         slider.focus.style.height = sh;
+//     };
 
 
 
-    slider.unlockPointer = function(pointerId)
-    {
-        document.exitPointerLock =    
-               document.      exitPointerLock    
-            || document.   mozExitPointerLock
-            || document.webkitExitPointerLock;
+//     slider.lockPointer = function(pointerId)
+//     {
+//         clearTimeout(slider.clickTimer);
 
-        document.exitPointerLock();
-    };
+//         slider.requestPointerLock =    
+//                slider.      requestPointerLock 
+//             || slider.   mozRequestPointerLock
+//             || slider.webkitRequestPointerLock;
 
-
-
-    slider.isPointerLocked = function()
-    {
-        return (document.      pointerLockElement === slider 
-             || document.   mozPointerLockElement === slider
-             || document.webkitPointerLockElement === slider);
-    }
+//         slider.requestPointerLock();
+//     };
 
 
 
-    slider.getOffsetLeft   = () => slider.cachedOffsetLeft   = slider.cachedOffsetLeft   || slider.offsetLeft;
-    slider.getClientWidth  = () => slider.cachedClientWidth  = slider.cachedClientWidth  || slider.clientWidth;
-    slider.getClientHeight = () => slider.cachedClientHeight = slider.cachedClientHeight || slider.clientHeight;
+//     slider.unlockPointer = function(pointerId)
+//     {
+//         document.exitPointerLock =    
+//                document.      exitPointerLock    
+//             || document.   mozExitPointerLock
+//             || document.webkitExitPointerLock;
+
+//         document.exitPointerLock();
+//     };
 
 
 
-    slider.update();
-}
+//     slider.isPointerLocked = function()
+//     {
+//         return (document.      pointerLockElement === slider 
+//              || document.   mozPointerLockElement === slider
+//              || document.webkitPointerLockElement === slider);
+//     }
+
+
+
+//     slider.getOffsetLeft   = () => slider.cachedOffsetLeft   = slider.cachedOffsetLeft   || slider.offsetLeft;
+//     slider.getClientWidth  = () => slider.cachedClientWidth  = slider.cachedClientWidth  || slider.clientWidth;
+//     slider.getClientHeight = () => slider.cachedClientHeight = slider.cachedClientHeight || slider.clientHeight;
+
+
+
+//     slider.update();
+// }
 
 
 function initSelectMenu(select)
@@ -25566,11 +25566,11 @@ extends NumberParamBase
                 showName,
                 hasInput,
                 hasOutput,
-                value     = 0, 
-                min       = Number.MIN_SAFE_INTEGER, 
-                max       = Number.MAX_SAFE_INTEGER,
-                decimals  = 0,
-                dragScale = 0.05)
+                defaultValue = 0, 
+                min          = Number.MIN_SAFE_INTEGER, 
+                max          = Number.MAX_SAFE_INTEGER,
+                decimals     = 0,
+                dragScale    = 0.05)
     {
         super(NUMBER, id, name);
 
@@ -25579,7 +25579,7 @@ extends NumberParamBase
         this.control.param  = this;
         this.control.zIndex = 0;
    
-        this.defaultValue   = value;
+        this.defaultValue   = defaultValue;
 
 
         initNumberControl(
@@ -25592,7 +25592,7 @@ extends NumberParamBase
             showName,
             min,
             max,
-            value,      // default
+            defaultValue,      // default
             decimals,   // decimals
             dragScale); // drag scale
 
@@ -26083,11 +26083,22 @@ extends Parameter
         this.defaultValue          = defaultValue;
 
 
-        initFillControl(
+        initColorControl(
             this,
             this.colorControl,
-            120, // width
-            20,  // height
+            85, // width
+            20, // height
+            this.id,
+            this.name, 
+            showName,
+            defaultValue,
+            dragScale);
+
+        initNumberControl(
+            this,
+            this.opacityControl,
+            35, // width
+            20, // height
             this.id,
             this.name, 
             showName,
@@ -26096,7 +26107,8 @@ extends Parameter
 
         // this.control.successOnFocusOut = true;
 
-        this.div.appendChild(this.colorControl);
+        this.div.appendChild(this.  colorControl);
+        this.div.appendChild(this.opacityControl);
 
        
         if (hasInput)  this.initInput ([COLOR_FILL, COLOR_FILL_VALUE, COLOR, COLOR_VALUE]);
@@ -28023,8 +28035,8 @@ class Operator
             this.outputs.push(param.output);
         }
 
-        param.control.style.display = 'inline-block';
-        param.control.style.width   = '100%';
+        // param.control.div.style.display = 'inline-block';
+        // param.control.div.style.width   = '100%';
 
         this.inner.appendChild(param.div);
     }
@@ -33414,7 +33426,7 @@ extends OpColorBase
         this.addInput(new Input([COLOR_STOP, COLOR_STOP_VALUE]));
         this.addOutput(new Output(COLOR_STOP, this.output_genRequest));
 
-        this.addParam(this.paramFill     = new ColorParam ('fill',     '',         false, true, true));
+        this.addParam(this.paramFill     = new FillParam ('fill',     '',         false, true, true));
         this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 100, 0, 100));
 
         //this.paramFill.setValue([GColorFillValue.default], false, true, false);
