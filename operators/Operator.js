@@ -226,9 +226,6 @@ class Operator
             this.outputs.push(param.output);
         }
 
-        // param.control.div.style.display = 'inline-block';
-        // param.control.div.style.width   = '100%';
-
         this.inner.appendChild(param.div);
     }
  

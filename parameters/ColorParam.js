@@ -53,6 +53,9 @@ extends Parameter
 
         // this.control.successOnFocusOut = true;
 
+        this.control.style.display = 'inline-block';
+        this.control.style.width   = '100%';
+
         this.div.appendChild(this.control);
 
        
@@ -68,30 +71,17 @@ extends Parameter
 
         this.control.addEventListener('finishedit', e =>
         { 
-            // let   dec    = decCount(e.detail.value);
-            // const oldDec = decCount(e.detail.oldValue);
-
-            
-            // if (!e.detail.success)
-            //     return;
+            if (!e.detail.success)
+                return;
 
 
-            // if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
-            //     && dec >= oldDec)
-            // {
-            //     this.setValue(new GNumberValue(e.detail.value, dec), true);
-            //     e.preventSetValue = true;
-            // }
-            // else if (this.allowEditDecimals)
-            // {
-            //     if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
-            //         dec += Math.log10(this.control.valueScale);
-            //     else 
-            //         dec = oldDec;
+            if (e.detail.value != e.detail.oldValue)
+            {
+                const rgb = validHex2rgb(e.detail.value);
 
-            //         this.setValue(new GNumberValue(e.detail.value, dec), true);
-            //     e.preventSetValue = true;
-            // }
+                this.setValue(GColorValue.createFromRgb(scaleColor(rgb, 'rgb')), true);
+                e.preventSetValue = true;
+            }
         });
     }
 
@@ -112,37 +102,9 @@ extends Parameter
 
 
 
-    // setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
-    // {
-    //     this.preSetValue(value, createAction, dispatchEvents);
-
-    //     if (updateControl)
-    //     {
-    //         this.control.setDecimals(value.decimals, value.decimals);
-    //         this.control.setValue(value.value, false, false, forceChange); 
-    //     }
-
-    //     super.setValue(value, createAction, updateControl, dispatchEvents);
-
-    //     this.oldValue = this.genValue;
-    // }    
-
-
-
-    // valuesEqual(val1, val2)
-    // {
-    //     return val1
-    //         && val2
-    //         && val1.value    == val2.value
-    //         && val1.decimals == val2.decimals;
-    // }
-
-
-
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
         console.assert(value.type && value.type == COLOR_VALUE);
-
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)

@@ -232,10 +232,9 @@ function initColorControlTextbox(control)
         let   value      = control.textbox.value;
         const savedValue = control.textbox.savedValue;
 
-        let rgb      = value     .indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(value     );
-        let savedRgb = savedValue.indexOf(INVALID) > -1 ? Number.NaN : hex2rgb(savedValue);
+        let rgb      = validHex2rgb(value     );
+        let savedRgb = validHex2rgb(savedValue);
 
-       
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
             'value':           value,
@@ -247,11 +246,13 @@ function initColorControlTextbox(control)
 
         if (!e.preventSetValue)
         {
+            const _rgb = scaleColor(rgb, 'rgb');
+
             if (success) 
             {
                 control.setValue(
                       value.trim() != '' 
-                    ? GColorValue.createFromRgb(rgb) 
+                    ? GColorValue.createFromRgb(_rgb) 
                     : GColorValue.createFromRgb(savedRgb));
             }
             else

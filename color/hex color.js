@@ -10,6 +10,15 @@ function rgb2hex(rgb)
 
 
 
+function validHex2rgb(hex) // can process invalid '?'
+{
+    return hex.indexOf(INVALID) > -1 
+           ? rgb_NaN 
+           : hex2rgb(hex);
+}
+
+
+
 function hex2rgb(hex)
 {
     if (hex[0] == '#')

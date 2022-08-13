@@ -17,38 +17,41 @@ extends NumberParamBase
                 hasInput,
                 hasOutput,
                 options,
-                value = 0)
+                defaultValue = 0)
     {
         super(NUMBER, id, name);
 
-        this.control       = createDiv();
+        this.control        = createDiv();
         
         this.control.param  = this;
         this.control.zIndex = 0;
 
         this.options        = options;
         
-        this.defaultValue   = value;
+        this.defaultValue   = defaultValue;
 
 
         initNumberControl(
             this,
             this.control,
-            120,       // width
-            20,        // height
+            120, // width
+            20,  // height
             this.id,
             this.name, 
             showName,
             0,
             options.length-1,
-            value,     // default
-            0,         // decimals
+            defaultValue,
+            0,   // decimals
             0.02);
 
 
         this.control.options           = [...options];
         this.control.successOnFocusOut = true;
         this.control.barTop            = 0.8;
+
+        this.control.style.display = 'inline-block';
+        this.control.style.width   = '100%';
 
         this.div.appendChild(this.control);
 
@@ -63,34 +66,10 @@ extends NumberParamBase
 
 
 
-    // setDecimalsFrom(strValue)
-    // {
-    //     this.setDecimals(decCount(strValue));
-    // }
-
-
-
-    // setDecimals(dec, displayDec)
-    // {
-    //     this.control.setDecimals(dec, displayDec);
-    //     this.control.update();
-    //     pushUpdate([this.node]);
-    // }
-
-
-
     isDefault()
     {
         return this.value == this.defaultValue;
     }
-
-
-
-    // setOutputData()
-    // {
-    //     if (this.output)
-    //         this.output._data = dataFromNumber(this._control.value, 0);
-    // }
 
 
 
@@ -99,7 +78,7 @@ extends NumberParamBase
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
-            this._control.setValue(value, false, false, forceChange); 
+            this.control.setValue(value, false, false, forceChange); 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
     }    

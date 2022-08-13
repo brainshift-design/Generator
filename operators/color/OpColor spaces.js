@@ -35,6 +35,33 @@ const luvScale    = [100, 150, 150];
 
 
 
+function scaleColor(col, space)
+{
+    let scale;
+
+    switch (space)
+    {
+        case 'hex':    scale = rgbScale;    break;
+        case 'rgbhex': scale = rgbScale;    break;
+        case 'rgb':    scale = rgbScale;    break;
+        case 'hsv':    scale = hs_Scale;    break;
+        case 'hsl':    scale = hs_Scale;    break;
+        case 'hclokl': scale = hcloklScale; break;
+        case 'hcllab': scale = hcllabScale; break;
+        case 'hclluv': scale = hclluvScale; break;
+        case 'oklab':  scale = oklabScale;  break;
+        case 'lab':    scale = labScale;    break;
+        case 'luv':    scale = luvScale;    break;
+    }
+
+    return [
+        col[0] * scale[0],
+        col[1] * scale[1],
+        col[2] * scale[2] ];
+}
+
+
+
 function switchToSpace(node, space)
 {
     switch (space)

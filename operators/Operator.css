@@ -37,6 +37,20 @@
 }
 
 
+.nodeHeaderCheckers
+{
+    display:             inline-block;
+    width:               100%;
+    position:            absolute;
+    left:                0;
+    top:                 0; 
+    border-radius:       4px 4px 0 0;
+    z-index:             1;
+    /* overflow:      visible; */
+    /* box-shadow:    0 0 0 1px red inset; */
+}
+
+
 .nodeParamBack
 {
     display:    block;

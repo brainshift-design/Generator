@@ -6,7 +6,7 @@ extends Parameter
     oldValue = null;
 
     
-    get value   () { return this._control.value; }
+    get value    () { return this.control.value; }
 
     
     get valueText() { return this.control.valueText; }

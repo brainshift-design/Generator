@@ -8333,7 +8333,7 @@ function rgb2colorblind(rgb, l, m, s, cs = sRGB)
 }
 
 
-const color_NaN = [
+const rgb_NaN = [
     Number.NaN,
     Number.NaN,
     Number.NaN ];
@@ -8542,6 +8542,15 @@ function rgb2hex(rgb)
         + Math.round(rgb[2] * 0xff).toString(16).padStart(2, '0').toUpperCase();
 
     return hex;
+}
+
+
+
+function validHex2rgb(hex) // can process invalid '?'
+{
+    return hex.indexOf(INVALID) > -1 
+           ? rgb_NaN 
+           : hex2rgb(hex);
 }
 
 
@@ -8758,6 +8767,33 @@ const hclluvScale = [360, 330, 100];
 const oklabScale  = [100,  30,  30];
 const labScale    = [100, 100, 100];
 const luvScale    = [100, 150, 150];
+
+
+
+function scaleColor(col, space)
+{
+    let scale;
+
+    switch (space)
+    {
+        case 'hex':    scale = rgbScale;    break;
+        case 'rgbhex': scale = rgbScale;    break;
+        case 'rgb':    scale = rgbScale;    break;
+        case 'hsv':    scale = hs_Scale;    break;
+        case 'hsl':    scale = hs_Scale;    break;
+        case 'hclokl': scale = hcloklScale; break;
+        case 'hcllab': scale = hcllabScale; break;
+        case 'hclluv': scale = hclluvScale; break;
+        case 'oklab':  scale = oklabScale;  break;
+        case 'lab':    scale = labScale;    break;
+        case 'luv':    scale = luvScale;    break;
+    }
+
+    return [
+        col[0] * scale[0],
+        col[1] * scale[1],
+        col[2] * scale[2] ];
+}
 
 
 

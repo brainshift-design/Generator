@@ -1,4 +1,4 @@
-const color_NaN = [
+const rgb_NaN = [
     Number.NaN,
     Number.NaN,
     Number.NaN ];

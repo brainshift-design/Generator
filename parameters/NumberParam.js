@@ -24,7 +24,7 @@ extends NumberParamBase
     {
         super(NUMBER, id, name);
 
-        this.control       = createDiv();
+        this.control        = createDiv('numberControl');
         
         this.control.param  = this;
         this.control.zIndex = 0;
@@ -47,6 +47,9 @@ extends NumberParamBase
             dragScale); // drag scale
 
         this.control.successOnFocusOut = true;
+
+        this.control.style.display = 'inline-block';
+        this.control.style.width   = '100%';
 
         this.div.appendChild(this.control);
 

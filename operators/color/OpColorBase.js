@@ -88,7 +88,7 @@ extends Operator
     {
         const colBack = 
             dataColorIsNaN(this._color)
-            ? color_NaN
+            ? rgb_NaN
             : dataColor2rgb(this._color);
 
         const darkText = 
@@ -148,7 +148,7 @@ extends Operator
         else
         {
             this.resetWarningStyle();
-            this.updateWarningOverlayStyle(color_NaN);
+            this.updateWarningOverlayStyle(rgb_NaN);
         }
     }
 

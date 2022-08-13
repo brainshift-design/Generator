@@ -8,6 +8,7 @@ function initColorControlChildren(control)
 }
 
 
+
 function initColorControl(param, control, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0)
 {
     control.param                  = param;
@@ -77,8 +78,8 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
 
     initColorControlChildren(control);    
-    initColorControlTextbox(control);
-    initColorControlEvents(control);
+    initColorControlTextbox (control);
+    initColorControlEvents  (control);
 
 
 

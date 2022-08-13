@@ -15,8 +15,6 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 {
     control.param                  = param;
      
-    control.className              = 'numberControl';
-     
     control.width                  = width;
     control.height                 = height;
              
