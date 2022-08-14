@@ -46,7 +46,7 @@ extends GType
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this;//return this.result = this.copy();
     }
 
 
@@ -60,9 +60,9 @@ extends GType
 
 
 
-    static NaN = new GNumberValue(
+    static NaN = Object.freeze(new GNumberValue(
         Number.NaN, 
-        Number.NaN);
+        Number.NaN));
 }
 
 

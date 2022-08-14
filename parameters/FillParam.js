@@ -29,7 +29,7 @@ extends Parameter
                 hasInput,
                 hasOutput,
                 defaultValue = GColorFillValue.create(1, 217, 217, 217, 100, 0),
-                dragScale = 0.05)
+                dragScale    = 0.05)
     {
         super(COLOR_FILL, id, name);
 
@@ -69,11 +69,15 @@ extends Parameter
 
         // this.control.successOnFocusOut = true;
 
+
         this.div.appendChild(this.  colorControl);
         this.div.appendChild(this.opacityControl);
 
        
-        if (hasInput)  this.initInput ([COLOR_FILL, COLOR_FILL_VALUE, COLOR, COLOR_VALUE]);
+        if (hasInput) this.initInput([
+            ...COLOR_TYPES, 
+            ...COLOR_FILL_TYPES]);
+
         if (hasOutput) this.initOutput(COLOR_FILL, this.output_genRequest);
 
 

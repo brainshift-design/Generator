@@ -872,7 +872,9 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                     default:               value = parseGNumberValue   (values[i++]); break;
                 }
 
-                value.nodeId = nodeId; 
+                if (value.nodeId)
+                    value.nodeId = nodeId; 
+    
                 _values.push(value);
             }
 

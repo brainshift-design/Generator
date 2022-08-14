@@ -77,7 +77,7 @@ extends GType
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this;//this.result = this.copy();
     }
 
 
@@ -124,11 +124,11 @@ extends GType
 
 
 
-    static NaN = new GColorValue(
+    static NaN = Object.freeze(new GColorValue(
         GNumberValue.NaN,
         GNumberValue.NaN,
         GNumberValue.NaN,
-        GNumberValue.NaN);
+        GNumberValue.NaN));
 }
 
 
@@ -140,8 +140,8 @@ function parseGColorValue(str)
 
     const col = str.split(' ');
 
-    return GColorValue.create(
-        parseInt(col[0]),
+    return new GColorValue(
+        parseGNumberValue(col[0]),
         parseGNumberValue(col[1]),
         parseGNumberValue(col[2]),
         parseGNumberValue(col[3]));

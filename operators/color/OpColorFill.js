@@ -16,7 +16,7 @@ extends OpColorBase
         this.colorBack = createDiv('colorBack');
         this.inner.appendChild(this.colorBack);
 
-        this.addInput (new Input([COLOR_FILL, COLOR_FILL_VALUE]));
+        this.addInput (new Input(COLOR_FILL_TYPES));
         this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
 
         this.initContentInput(this.inputs[0], 0);

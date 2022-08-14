@@ -47,10 +47,6 @@ const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
 const COLOR_VALIDATE = 'CVLD'; // C
 const COLOR_CONTRAST = 'CCNT'; // C:text C:background
 const COLORBLIND = 'BLND'; // C
-const COLOR_STOP_VALUE = 'CS';
-const COLOR_STOP = 'CSTOP';
-const GRADIENT_VALUE = 'G';
-const GRADIENT = 'GRAD';
 const COLOR_TYPES = [
     COLOR_VALUE,
     COLOR,
@@ -60,6 +56,14 @@ const COLOR_TYPES = [
 ];
 const COLOR_FILL_VALUE = 'CF'; // ???????? remove?
 const COLOR_FILL = 'CFILL';
+const COLOR_FILL_TYPES = [
+    COLOR_FILL_VALUE,
+    COLOR_FILL
+];
+const COLOR_STOP_VALUE = 'CS';
+const COLOR_STOP = 'CSTOP';
+const GRADIENT_VALUE = 'G';
+const GRADIENT = 'GRAD';
 const GEOMETRY_VALUE = 'G0'; // abstract placeholder
 const RECTANGLE_VALUE = 'R';
 const LINE_VALUE = 'L';

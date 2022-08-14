@@ -17,9 +17,7 @@ class Connection
         this.wire.style.position         = 'absolute';
         this.wire.style.left             = 0;
         this.wire.style.top              = 0;
-        //this.wire.style.width            = '100%';
-        //this.wire.style.height           = '100vh';
-        this.wire.style.overflow = 'hidden';
+        this.wire.style.overflow         = 'hidden';
   
         this.wire.outputPos              = point_NaN;
         this.wire. inputPos              = point_NaN;
@@ -43,13 +41,10 @@ class Connection
 
         this.wire.update = (x1, y1, x2, y2) =>
         {
-            const cw      = graphView.clientWidth;
-            const ch      = graphView.clientHeight;
-            const yOffset = controlBar.offsetHeight;
+            const cw = graphView.clientWidth;
+            const ch = graphView.clientHeight;
         
-            // the yOffset is to start wire coords just below the control bar,
-            // not at the top of the window
-
+            
             this.wire.updateCurve  (x1, y1, x2, y2);
             this.wire.updateOutBall(x1, y1        );
             this.wire.updateInBall (        x2, y2);
@@ -60,12 +55,6 @@ class Connection
             this.wire.setAttribute('height', ch);
 
             
-            // this.wire.setAttribute('viewBox',
-            //             0
-            //     + ' ' + yOffset/2 // why is only half of yOffset taken???
-            //     + ' ' + cw
-            //     + ' ' + ch);
-
             const isSolo = 
                    graphView._soloNode
                 && (   this. input.node == graphView._soloNode

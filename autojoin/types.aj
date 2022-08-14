@@ -8,6 +8,11 @@
 
 
 ../generator/types/math/GNumberValue.js
+../generator/types/color/GColorValue.js
+../generator/types/color/GColorFillValue.js
+../generator/types/color/GColorStopValue.js
+
+
 ../generator/types/math/GNumber.js
 ../generator/types/math/GLimits.js
 ../generator/types/math/GAdd.js
@@ -19,7 +24,6 @@
 ../generator/types/math/GInterpolate.js
 
 
-../generator/types/color/GColorValue.js
 ../generator/types/color/GColor.js
 ../generator/types/color/GColorInterpolate.js
 ../generator/types/color/GColorContrast.js
@@ -27,11 +31,8 @@
 ../generator/types/color/GColorValidate.js
 
 
-../generator/types/color/GColorFillValue.js
 ../generator/types/color/GColorFill.js
 
-
-../generator/types/color/GColorStopValue.js
 ../generator/types/color/GColorStop.js
 
 

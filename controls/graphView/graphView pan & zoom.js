@@ -96,7 +96,7 @@ graphView.update = function(nodes = null)
     
     graphView.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
 
-    bounds = graphView.getAllNodeBounds();
+    const bounds = graphView.getAllNodeBounds();
     graphView.updateScroll(x, w, h, bounds, yOffset);
 };
 
