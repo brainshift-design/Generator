@@ -141,8 +141,8 @@ extends OpColorBase
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display         = this.canShowColor() ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor = isDarkMode() ? '#444' : '#fff';
+        this.checkers.style.display            = this.canShowColor() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
 
         this.checkers.style.backgroundSize     = '26px 26px';
         this.checkers.style.backgroundPosition = '0 0, 13px 13px';
@@ -191,12 +191,15 @@ extends OpColorBase
             
         const colText = 
             this.canShowColor()
-            ? (   darkText 
-               && this.paramOpacity.value >= 50
-               ? [0, 0, 0, 0.6] 
-               : [1, 1, 1, 0.7 ])
+            ? (this.paramOpacity.value >= 50
+               ? (darkText 
+                  ? [0, 0, 0, 0.6] 
+                  : [1, 1, 1, 0.7])
+               : (isDarkMode()
+                  ? [1, 1, 1, 0.7]
+                  : [0, 0, 0, 0.6])) 
             : (isDarkMode()
-               ? [1, 1, 1, 0.7 ]
+               ? [1, 1, 1, 0.7]
                : [0, 0, 0, 0.6]);
 
         const textStyle = colorStyleRgba(colText);
