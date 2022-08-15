@@ -60,9 +60,9 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GNumberValue(
+    static NaN = new GNumberValue(
         Number.NaN, 
-        Number.NaN));
+        Number.NaN);
 }
 
 

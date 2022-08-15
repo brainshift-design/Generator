@@ -1,17 +1,14 @@
 class GColorFill
 extends GOperator
 {
-    color;
-    opacity;
+    color   = null;
+    opacity = null;
 
 
 
     constructor(nodeId, active)
     {
         super(COLOR_FILL, nodeId, active);
-
-        this.color   = GColorValue.NaN;
-        this.opacity = new GNumberValue(100);
     }
 
 
@@ -47,8 +44,7 @@ extends GOperator
             {
                 this.result = new GColorFillValue(
                     this.color  .eval(parse).copy(), 
-                    this.opacity.eval(parse).copy(), 
-                    'GColorFill.eval()');
+                    this.opacity.eval(parse).copy());
             }
         
 
@@ -58,8 +54,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
+            // genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
+            // genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
 
 

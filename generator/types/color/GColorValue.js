@@ -124,11 +124,11 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GColorValue(
+    static NaN = new GColorValue(
         GNumberValue.NaN,
         GNumberValue.NaN,
         GNumberValue.NaN,
-        GNumberValue.NaN));
+        GNumberValue.NaN);
 }
 
 

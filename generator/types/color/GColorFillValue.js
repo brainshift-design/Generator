@@ -10,16 +10,10 @@ extends GType
                 opacity = GNumberValue.NaN,
                 log = '')
     {
-        //if (log != '') console.log('%c'+log, 'background-color: #fc8');
-
         super(COLOR_FILL_VALUE);
 
         this.color   = color;
         this.opacity = opacity;
-
-        // console.log('color =',      color);
-        // console.log('this.color =', this.color);
-        // console.log('this =',       this);
 
         this.result  = this;
         this.valid   = true;
@@ -31,8 +25,7 @@ extends GType
     {
         return new GColorFillValue(
             GColorValue.create(space, c1, c2, c3),
-            new GNumberValue(opacity),
-            'create()');
+            new GNumberValue(opacity));
     }
 
 
@@ -41,24 +34,16 @@ extends GType
     {
         return new GColorFillValue(
             GColorValue.create(1, rgb[0], rgb[1], rgb[2]),
-            new GNumberValue(opacity),
-            'createFromRgb()');
+            new GNumberValue(opacity));
     }
 
 
 
     copy()
     {
-        const color   = this.color  .copy();
-        const opacity = this.opacity.copy();
-        
-        const fill = new GColorFillValue(color, opacity, 'copy()');
-        // console.log('color =',   color);
-        //console.log('fill =', fill);
-        return fill;
-        // return new GColorFillValue(
-        //     this.color  .copy(),
-        //     this.opacity.copy());
+        return new GColorFillValue(
+            this.color  .copy(),
+            this.opacity.copy());
     }
 
 
@@ -96,16 +81,15 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GColorFillValue(
+    static NaN = new GColorFillValue(
         GColorValue .NaN,
-        GNumberValue.NaN,
-        'NaN'));
+        GNumberValue.NaN);
 
 
 
-    static default = Object.freeze(new GColorFillValue(
-        new GColorValue(1, 217, 217, 217),
-        new GNumberValue(100)));
+    static default = new GColorFillValue(
+        GColorValue.default,
+        new GNumberValue(100));
 }
 
 
@@ -119,6 +103,5 @@ function parseGColorFillValue(str)
 
     return new GColorFillValue(
         parseGColorValue(str),
-        parseGNumberValue(fill[4]),
-        'parseGColorFillValue()');
+        parseGNumberValue(fill[4]));
 }

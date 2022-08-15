@@ -307,7 +307,7 @@ function genParseColorFill(parse)
 
     if (   COLOR_FILL_TYPES.includes(parse.next)
         ||    parse.next == PARAM
-           && COLOR_FILLTYPES.includes(parse.afterNext))
+           && COLOR_FILL_TYPES.includes(parse.afterNext))
     {
         fill.input = genParse(parse);
         paramIds   = parse.move().split(',');

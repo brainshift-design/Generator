@@ -88,21 +88,21 @@ extends OpColorBase
     updateValues(updateParamId, paramIds, values)
     {
         const fill    = values[paramIds.findIndex(id => id == 'value')];
-        const color   = values[paramIds.findIndex(id => id == 'color')];
-        const opacity = values[paramIds.findIndex(id => id == 'opacity')];
+        // const color   = values[paramIds.findIndex(id => id == 'color')];
+        // const opacity = values[paramIds.findIndex(id => id == 'opacity')];
 
 
         if (fill.isValid())
         {
-            this.paramColor  .setValue(color,    false, true, false);
-            this.paramOpacity.setValue(opacity,  false, true, false);
+            this.paramColor  .setValue(fill.color,    false, true, false);
+            this.paramOpacity.setValue(fill.opacity,  false, true, false);
 
             this._color = fill.color.toDataColor();
         }
         else
         {
-            this.paramColor  .setValue(color,   false, true, false);
-            this.paramOpacity.setValue(opacity, false, true, false);
+            this.paramColor  .setValue(GColorValue.NaN/*color*/,   false, true, false);
+            this.paramOpacity.setValue(GNumberValue.NaN/*opacity*/, false, true, false);
             
             this._color = dataColor_NaN;
         }

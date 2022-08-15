@@ -4919,9 +4919,9 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GNumberValue(
+    static NaN = new GNumberValue(
         Number.NaN, 
-        Number.NaN));
+        Number.NaN);
 }
 
 
@@ -5063,11 +5063,11 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GColorValue(
+    static NaN = new GColorValue(
         GNumberValue.NaN,
         GNumberValue.NaN,
         GNumberValue.NaN,
-        GNumberValue.NaN));
+        GNumberValue.NaN);
 }
 
 
@@ -5099,16 +5099,10 @@ extends GType
                 opacity = GNumberValue.NaN,
                 log = '')
     {
-        //if (log != '') console.log('%c'+log, 'background-color: #fc8');
-
         super(COLOR_FILL_VALUE);
 
         this.color   = color;
         this.opacity = opacity;
-
-        // console.log('color =',      color);
-        // console.log('this.color =', this.color);
-        // console.log('this =',       this);
 
         this.result  = this;
         this.valid   = true;
@@ -5120,8 +5114,7 @@ extends GType
     {
         return new GColorFillValue(
             GColorValue.create(space, c1, c2, c3),
-            new GNumberValue(opacity),
-            'create()');
+            new GNumberValue(opacity));
     }
 
 
@@ -5130,24 +5123,16 @@ extends GType
     {
         return new GColorFillValue(
             GColorValue.create(1, rgb[0], rgb[1], rgb[2]),
-            new GNumberValue(opacity),
-            'createFromRgb()');
+            new GNumberValue(opacity));
     }
 
 
 
     copy()
     {
-        const color   = this.color  .copy();
-        const opacity = this.opacity.copy();
-        
-        const fill = new GColorFillValue(color, opacity, 'copy()');
-        // console.log('color =',   color);
-        //console.log('fill =', fill);
-        return fill;
-        // return new GColorFillValue(
-        //     this.color  .copy(),
-        //     this.opacity.copy());
+        return new GColorFillValue(
+            this.color  .copy(),
+            this.opacity.copy());
     }
 
 
@@ -5185,16 +5170,15 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GColorFillValue(
+    static NaN = new GColorFillValue(
         GColorValue .NaN,
-        GNumberValue.NaN,
-        'NaN'));
+        GNumberValue.NaN);
 
 
 
-    static default = Object.freeze(new GColorFillValue(
-        new GColorValue(1, 217, 217, 217),
-        new GNumberValue(100)));
+    static default = new GColorFillValue(
+        GColorValue.default,
+        new GNumberValue(100));
 }
 
 
@@ -5208,8 +5192,7 @@ function parseGColorFillValue(str)
 
     return new GColorFillValue(
         parseGColorValue(str),
-        parseGNumberValue(fill[4]),
-        'parseGColorFillValue()');
+        parseGNumberValue(fill[4]));
 }
 
 
@@ -6474,17 +6457,14 @@ extends GOperator
 class GColorFill
 extends GOperator
 {
-    color;
-    opacity;
+    color   = null;
+    opacity = null;
 
 
 
     constructor(nodeId, active)
     {
         super(COLOR_FILL, nodeId, active);
-
-        this.color   = GColorValue.NaN;
-        this.opacity = new GNumberValue(100);
     }
 
 
@@ -6520,8 +6500,7 @@ extends GOperator
             {
                 this.result = new GColorFillValue(
                     this.color  .eval(parse).copy(), 
-                    this.opacity.eval(parse).copy(), 
-                    'GColorFill.eval()');
+                    this.opacity.eval(parse).copy());
             }
         
 
@@ -6531,8 +6510,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
+            // genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
+            // genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
 
 
@@ -8365,7 +8344,7 @@ function genParseColorFill(parse)
 
     if (   COLOR_FILL_TYPES.includes(parse.next)
         ||    parse.next == PARAM
-           && COLOR_FILLTYPES.includes(parse.afterNext))
+           && COLOR_FILL_TYPES.includes(parse.afterNext))
     {
         fill.input = genParse(parse);
         paramIds   = parse.move().split(',');
@@ -16449,9 +16428,9 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GNumberValue(
+    static NaN = new GNumberValue(
         Number.NaN, 
-        Number.NaN));
+        Number.NaN);
 }
 
 
@@ -16593,11 +16572,11 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GColorValue(
+    static NaN = new GColorValue(
         GNumberValue.NaN,
         GNumberValue.NaN,
         GNumberValue.NaN,
-        GNumberValue.NaN));
+        GNumberValue.NaN);
 }
 
 
@@ -16629,16 +16608,10 @@ extends GType
                 opacity = GNumberValue.NaN,
                 log = '')
     {
-        //if (log != '') console.log('%c'+log, 'background-color: #fc8');
-
         super(COLOR_FILL_VALUE);
 
         this.color   = color;
         this.opacity = opacity;
-
-        // console.log('color =',      color);
-        // console.log('this.color =', this.color);
-        // console.log('this =',       this);
 
         this.result  = this;
         this.valid   = true;
@@ -16650,8 +16623,7 @@ extends GType
     {
         return new GColorFillValue(
             GColorValue.create(space, c1, c2, c3),
-            new GNumberValue(opacity),
-            'create()');
+            new GNumberValue(opacity));
     }
 
 
@@ -16660,24 +16632,16 @@ extends GType
     {
         return new GColorFillValue(
             GColorValue.create(1, rgb[0], rgb[1], rgb[2]),
-            new GNumberValue(opacity),
-            'createFromRgb()');
+            new GNumberValue(opacity));
     }
 
 
 
     copy()
     {
-        const color   = this.color  .copy();
-        const opacity = this.opacity.copy();
-        
-        const fill = new GColorFillValue(color, opacity, 'copy()');
-        // console.log('color =',   color);
-        //console.log('fill =', fill);
-        return fill;
-        // return new GColorFillValue(
-        //     this.color  .copy(),
-        //     this.opacity.copy());
+        return new GColorFillValue(
+            this.color  .copy(),
+            this.opacity.copy());
     }
 
 
@@ -16715,16 +16679,15 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GColorFillValue(
+    static NaN = new GColorFillValue(
         GColorValue .NaN,
-        GNumberValue.NaN,
-        'NaN'));
+        GNumberValue.NaN);
 
 
 
-    static default = Object.freeze(new GColorFillValue(
-        new GColorValue(1, 217, 217, 217),
-        new GNumberValue(100)));
+    static default = new GColorFillValue(
+        GColorValue.default,
+        new GNumberValue(100));
 }
 
 
@@ -16738,8 +16701,7 @@ function parseGColorFillValue(str)
 
     return new GColorFillValue(
         parseGColorValue(str),
-        parseGNumberValue(fill[4]),
-        'parseGColorFillValue()');
+        parseGNumberValue(fill[4]));
 }
 
 
@@ -18004,17 +17966,14 @@ extends GOperator
 class GColorFill
 extends GOperator
 {
-    color;
-    opacity;
+    color   = null;
+    opacity = null;
 
 
 
     constructor(nodeId, active)
     {
         super(COLOR_FILL, nodeId, active);
-
-        this.color   = GColorValue.NaN;
-        this.opacity = new GNumberValue(100);
     }
 
 
@@ -18050,8 +18009,7 @@ extends GOperator
             {
                 this.result = new GColorFillValue(
                     this.color  .eval(parse).copy(), 
-                    this.opacity.eval(parse).copy(), 
-                    'GColorFill.eval()');
+                    this.opacity.eval(parse).copy());
             }
         
 
@@ -18061,8 +18019,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
+            // genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
+            // genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
 
 
@@ -33807,21 +33765,21 @@ extends OpColorBase
     updateValues(updateParamId, paramIds, values)
     {
         const fill    = values[paramIds.findIndex(id => id == 'value')];
-        const color   = values[paramIds.findIndex(id => id == 'color')];
-        const opacity = values[paramIds.findIndex(id => id == 'opacity')];
+        // const color   = values[paramIds.findIndex(id => id == 'color')];
+        // const opacity = values[paramIds.findIndex(id => id == 'opacity')];
 
 
         if (fill.isValid())
         {
-            this.paramColor  .setValue(color,    false, true, false);
-            this.paramOpacity.setValue(opacity,  false, true, false);
+            this.paramColor  .setValue(fill.color,    false, true, false);
+            this.paramOpacity.setValue(fill.opacity,  false, true, false);
 
             this._color = fill.color.toDataColor();
         }
         else
         {
-            this.paramColor  .setValue(color,   false, true, false);
-            this.paramOpacity.setValue(opacity, false, true, false);
+            this.paramColor  .setValue(GColorValue.NaN/*color*/,   false, true, false);
+            this.paramOpacity.setValue(GNumberValue.NaN/*opacity*/, false, true, false);
             
             this._color = dataColor_NaN;
         }
