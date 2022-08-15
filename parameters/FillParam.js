@@ -18,8 +18,14 @@ extends Parameter
     }
 
     
-    get value   () { return this.colorControl.value; }
-    get genValue() { return this.colorControl.value; }
+    get value() 
+    { 
+        return new GColorFillValue(
+            this.colorControl.value,
+            new GNumberValue(this.opacityControl.value)); 
+    }
+    
+    get genValue() { return this.value.copy();  }
     
 
     
@@ -28,19 +34,19 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                defaultValue = GColorFillValue.create(1, 217, 217, 217, 100, 0),
+                defaultValue = GColorFillValue.NaN,
                 dragScale    = 0.05)
     {
         super(COLOR_FILL, id, name);
 
         this.colorControl          = createDiv();
         this.opacityControl        = createDiv();
-          
-        this.colorControl.param    = this;
-        this.opacityControl.param  = this;
         
+        this.colorControl.param    = this;
         this.colorControl.zIndex   = 0;
-        this.opacityControl.zIndex = 1;
+
+        this.opacityControl.param  = this;
+        this.opacityControl.zIndex = 0;
    
         this.defaultValue          = defaultValue;
 
@@ -48,71 +54,67 @@ extends Parameter
         initColorControl(
             this,
             this.colorControl,
-            85, // width
-            20, // height
+            120, // width
+            20,  // height
             this.id,
-            this.name, 
+            'color', 
             showName,
-            defaultValue,
-            dragScale);
+            defaultValue.color,   
+            dragScale); 
 
         initNumberControl(
             this,
             this.opacityControl,
-            35, // width
-            20, // height
+            120, // width
+            20,  // height
             this.id,
-            this.name, 
-            showName,
-            defaultValue,
-            dragScale);
+            'opacity', 
+            false,
+            0,
+            100,
+            defaultValue.opacity, // default
+            0);
 
-        // this.control.successOnFocusOut = true;
+        this.opacityControl.setSuffix('%', true);
+
+
+        this.  colorControl.successOnFocusOut = true;
+        this.  colorControl.style.display     = 'inline-block';
+        this.  colorControl.style.width       = '80%';
+
+        this.opacityControl.successOnFocusOut = true;
+        this.opacityControl.style.display     = 'inline-block';
+        this.opacityControl.style.width       = '20%';
 
 
         this.div.appendChild(this.  colorControl);
         this.div.appendChild(this.opacityControl);
 
        
-        if (hasInput) this.initInput([
-            ...COLOR_TYPES, 
-            ...COLOR_FILL_TYPES]);
-
-        if (hasOutput) this.initOutput(COLOR_FILL, this.output_genRequest);
+        if (hasInput)  this.initInput(COLOR_FILL_TYPES);
+        if (hasOutput) this.initOutput(COLOR_FILL_VALUE, this.output_genRequest);
 
 
-        // this.control.addEventListener('confirm', () => 
-        // {
-        //     this.setValue(new GNumberValue(this.control.value, this.control.displayDec), true,  false); 
-        // });
+        this.colorControl.addEventListener('confirm', () => 
+        {
+            this.setValue(this.colorControl.value, true, false); 
+        });
 
 
         this.colorControl.addEventListener('finishedit', e =>
         { 
-            // let   dec    = decCount(e.detail.value);
-            // const oldDec = decCount(e.detail.oldValue);
-
-            
-            // if (!e.detail.success)
-            //     return;
+            if (!e.detail.success)
+                return;
 
 
-            // if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
-            //     && dec >= oldDec)
-            // {
-            //     this.setValue(new GNumberValue(e.detail.value, dec), true);
-            //     e.preventSetValue = true;
-            // }
-            // else if (this.allowEditDecimals)
-            // {
-            //     if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
-            //         dec += Math.log10(this.control.valueScale);
-            //     else 
-            //         dec = oldDec;
+            if (e.detail.value != e.detail.oldValue)
+            {
+                const  rgb = validHex2rgb(e.detail.value);
+                const _rgb = scaleColor(rgb, 'rgb');
 
-            //         this.setValue(new GNumberValue(e.detail.value, dec), true);
-            //     e.preventSetValue = true;
-            // }
+                this.setValue(GColorFillValue.createFromRgb(1, _rgb[0], _rgb[1], _rgb[2], this.opacityControl.value), true);
+                e.preventSetValue = true;
+            }
         });
     }
 
@@ -128,57 +130,58 @@ extends Parameter
 
     isDefault()
     {
-        return  this.genValue.length != 1
-            || !this.genValue[0].equals(GColorFillValue.default);
+        return this.genValue == this.defaultValue;
     }
 
 
 
-    addFill(fill)
+    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        this.colorControl.fills.push(fill);
-    }
-
-
-
-    // setValue(fill, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
-    // {
-    //     this.preSetValue(fill, createAction, dispatchEvents);
-
-    //     if (updateControl)
-    //         this.control.setFills(fill, false, false, forceChange); 
-
-    //     super.setValue(fill, createAction, updateControl, dispatchEvents);
-
-    //     this.oldValue = this.genValue;
-    // }    
-
-
-
-    // valuesEqual(val1, val2)
-    // {
-    //     return val1
-    //         && val2
-    //         && val1.value    == val2.value
-    //         && val1.decimals == val2.decimals;
-    // }
-
-
-
-    setValue(fills, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
-    {
-        // console.log('fills =', fills);
-        // console.assert(fills.type && fills.type == COLOR_VALUE);
-
-        this.preSetValue(fills, createAction, dispatchEvents);
+        console.assert(value.type && value.type == COLOR_FILL_VALUE);
+        this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
-            this.colorControl.setFills(fills, false, false, forceChange); 
+        {
+            this.  colorControl.setValue(value.color,   false, false, forceChange); 
+            this.opacityControl.setValue(value.opacity, false, false, forceChange); 
+        }
 
-        super.setValue(fills, createAction, updateControl, dispatchEvents);
+        super.setValue(value, createAction, updateControl, dispatchEvents);
 
         this.oldValue = this.genValue;
     }    
+
+
+
+    updateControls()
+    {
+        const rgb = dataColor2rgb(this.value.color.toDataColor());
+
+        const col = 
+            isValidRgb(rgb)
+            ? (isDark(rgb)
+               ? [1, 1, 1]
+               : [0, 0, 0])
+            : (isDarkMode()
+               ? [1, 1, 1]
+               : [0, 0, 0]);
+
+
+        this.input.wireColor   = rgb;
+        this.input.colorLight  = 
+        this.input.colorDark   = rgb_a(col, 0.12);
+
+        this.output.wireColor  = rgb;
+        this.output.colorLight =
+        this.output.colorDark  = rgb_a(col, 0.12);
+
+
+        this.  colorControl.update();
+        this.opacityControl.update();
+        
+        if (this.input ) this.input .updateControl();
+        if (this.output) this.output.updateControl();
+    }
 
 
 
@@ -202,12 +205,9 @@ extends Parameter
             && this.input.connected)
             request.push(...pushInputOrParam(this.input, gen));
 
-        else 
-        {
-            request.push( 
-                COLOR_FILL_VALUE, 
-                this.value.toString());
-        }
+        else request.push( 
+            COLOR_FILL_VALUE, 
+            this.value.toString());
 
 
         return request;
@@ -218,6 +218,14 @@ extends Parameter
     output_genRequest(gen)
     {
         return this.param.genRequest(gen);
+    }
+
+
+
+    textboxHasFocus()
+    {
+        return hasFocus(this.  colorControl.textbox)
+            || hasFocus(this.opacityControl.textbox);
     }
 
 
@@ -243,6 +251,6 @@ extends Parameter
     
     loadParam(param)
     {
-        this.colorControl.fills = parseGColorFillValue(param);
+        this.setValue(parseGColorFillValue(param), true, true, false);
     }
 }

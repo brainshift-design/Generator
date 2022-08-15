@@ -51,7 +51,9 @@ extends Parameter
             defaultValue,   
             dragScale); 
 
-        // this.control.successOnFocusOut = true;
+        
+        this.control.successOnFocusOut = true;
+
 
         this.control.style.display = 'inline-block';
         this.control.style.width   = '100%';
@@ -178,6 +180,13 @@ extends Parameter
     output_genRequest(gen)
     {
         return this.param.genRequest(gen);
+    }
+
+
+
+    textboxHasFocus()
+    {
+        return hasFocus(this.control.textbox);
     }
 
 

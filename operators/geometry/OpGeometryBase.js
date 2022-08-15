@@ -26,7 +26,7 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramFill         = new FillParam  ('fill',             'f',      true, true, true));
+        this.addParam(this.paramFill         = new FillParam  ('fill',             'f',      true, true, true, GColorFillValue.default));
         this.addParam(this.paramStroke       = new FillParam  ('stroke',           's',      true, true, true));
 
         this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight',     'weight', true, true, true, 1, 0));
@@ -41,7 +41,8 @@ extends OperatorBase
 
 
         const cond = () => 
-               this.paramStroke.fills.length > 0
+                  this.paramStroke.value.isValid()
+               && isValidRgb(dataColorToRgb(this.paramStroke.value.color.toDataColor()))
             || this.paramStroke.connected;
 
         this.paramStrokeWeight.show = () => cond();
@@ -49,4 +50,52 @@ extends OperatorBase
         this.paramStrokeJoin  .show = () => cond();
         this.paramStrokeMiter .show = () => cond() && this.paramStrokeJoin.value == 0;
     } 
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        const input = this.node.inputs[0];
+
+        const paramIds = [];
+
+
+        if (input.connected)
+        {
+            request.push(...pushInputOrParam(input, gen));
+
+
+            for (const param of this.node.params)
+                if (param.input && param.input.connected) 
+                    paramIds.push(param.id);
+
+            request.push(paramIds.join(','));
+
+
+            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
+            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
+            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
+            if (this.node.paramHeight.input.connected) request.push(...this.node.paramHeight.genRequest(gen));
+            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
+            if (this.node.paramRound .input.connected) request.push(...this.node.paramRound .genRequest(gen));
+        }
+        else
+        {
+            request.push(
+                ...this.node.paramX     .genRequest(gen),
+                ...this.node.paramY     .genRequest(gen),
+                ...this.node.paramWidth .genRequest(gen),
+                ...this.node.paramHeight.genRequest(gen),
+                ...this.node.paramAngle .genRequest(gen),
+                ...this.node.paramRound .genRequest(gen));
+        }
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
 }

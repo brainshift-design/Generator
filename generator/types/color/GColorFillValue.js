@@ -7,8 +7,7 @@ extends GType
 
 
     constructor(color   = GColorValue .NaN, 
-                opacity = GNumberValue.NaN,
-                log = '')
+                opacity = GNumberValue.NaN)
     {
         super(COLOR_FILL_VALUE);
 

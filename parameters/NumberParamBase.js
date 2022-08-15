@@ -74,6 +74,13 @@ extends Parameter
 
 
 
+    textboxHasFocus()
+    {
+        return hasFocus(this.control.textbox);
+    }
+
+
+
     toJson(nTab = 0, id = '')
     {
         let pos = ' '.repeat(nTab);

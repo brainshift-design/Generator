@@ -6,7 +6,7 @@ const settings =
     logRawStorage:    false, 
     logStorage:       false, 
     logActions:       true, 
-    logRawRequests:   false, 
+    logRawRequests:   true, 
     logRequests:      true, 
     logValueUpdates:  true, 
     logObjectUpdates: true

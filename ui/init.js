@@ -28,7 +28,6 @@ const generator = new Worker(
         
 
 
-
 var     copiedNodesJson = '';
 var duplicatedNodesJson = '';
 

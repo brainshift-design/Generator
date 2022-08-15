@@ -164,6 +164,13 @@ extends EventTarget
 
 
 
+    textboxHasFocus()
+    {
+        return false;
+    }
+
+
+
     toString()
     {
         // parameter outputs call this method
