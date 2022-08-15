@@ -53,7 +53,7 @@ class Connection
 
             this.wire.setAttribute('width',  cw);
             this.wire.setAttribute('height', ch);
-
+            this.wire.setAttribute('stroke-width', graphView.zoom);
             
             const isSolo = 
                    graphView._soloNode
