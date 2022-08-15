@@ -130,11 +130,11 @@ extends Parameter
                ? [1, 1, 1]
                : [0, 0, 0]);
 
-        this.input.wireColor  = col;
+        this.input.wireColor  = rgb;
         this.input.colorLight = 
         this.input.colorDark  = rgb_a(col, 0.12);
 
-        this.output.wireColor  = col;
+        this.output.wireColor  = rgb;
         this.output.colorLight =
         this.output.colorDark  = rgb_a(col, 0.12);
 

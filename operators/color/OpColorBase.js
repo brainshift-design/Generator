@@ -96,8 +96,8 @@ extends Operator
             || rgb2hclokl(colBack)[2] > 0.71;
 
             
-        const ba = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.08 : 0.22), 0.5);
-        const wa = Math.min((this.header.over ? 14 : 1) * (isValidRgb(colBack) ? 0.1  : 0.14), 0.5);
+        const ba = Math.min(/*(this.header.over ? 14 : 1)*/14 * (isValidRgb(colBack) ? 0.08 : 0.22), 0.5);
+        const wa = Math.min(/*(this.header.over ? 14 : 1)*/14 * (isValidRgb(colBack) ? 0.1  : 0.14), 0.5);
 
         const colText = 
             this.canShowColor()

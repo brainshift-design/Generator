@@ -269,8 +269,8 @@ extends OpColorBase
 
         const colSpaceBar = 
             colors.darkText 
-            ? [0, 0, 0, isValidRgb(colors.back) ? (this.header.over ? 3 : 1) * 0.03 : 0.12] 
-            : [1, 1, 1, isValidRgb(colors.back) ? (this.header.over ? 3 : 1) * 0.05 : 0.24];
+            ? [0, 0, 0, isValidRgb(colors.back) ? /*(this.header.over ? 3 : 1)*/3 * 0.03 : 0.12] 
+            : [1, 1, 1, isValidRgb(colors.back) ? /*(this.header.over ? 3 : 1)*/3 * 0.05 : 0.24];
 
         this.paramSpace.control.backColor  = 'transparent';
         this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
