@@ -63,10 +63,10 @@ extends Parameter
         if (hasOutput) this.initOutput(COLOR_VALUE, this.output_genRequest);
 
 
-        // this.control.addEventListener('confirm', () => 
-        // {
-        //     this.setValue(new GNumberValue(this.control.value, this.control.displayDec), true,  false); 
-        // });
+        this.control.addEventListener('confirm', () => 
+        {
+            this.setValue(this.control.value, true, false); 
+        });
 
 
         this.control.addEventListener('finishedit', e =>
@@ -130,9 +130,10 @@ extends Parameter
                ? [1, 1, 1]
                : [0, 0, 0]);
 
-        this.input.wireColor  = rgb;
-        this.input.colorLight = 
-        this.input.colorDark  = rgb_a(col, 0.12);
+
+        this.input.wireColor   = rgb;
+        this.input.colorLight  = 
+        this.input.colorDark   = rgb_a(col, 0.12);
 
         this.output.wireColor  = rgb;
         this.output.colorLight =

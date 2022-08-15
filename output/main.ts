@@ -406,8 +406,8 @@ const settings =
     logMessages:      false,
     logRawStorage:    false, 
     logStorage:       false, 
-    logActions:       false, 
-    logRawRequests:   true, 
+    logActions:       true, 
+    logRawRequests:   false, 
     logRequests:      true, 
     logValueUpdates:  true, 
     logObjectUpdates: true

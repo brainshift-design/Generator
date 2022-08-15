@@ -268,16 +268,18 @@ extends OpColorBase
 
 
         const colSpaceBar = 
-            colors.darkText 
-            ? [0, 0, 0, isValidRgb(colors.back) ? 3 * 0.03 : 0.12] 
-            : [1, 1, 1, isValidRgb(colors.back) ? 3 * 0.05 : 0.24];
+               colors.darkText
+            && isValidRgb(colors.back)
+            ? [0, 0, 0, 0.09] 
+            : [1, 1, 1, 0.12];
 
-        this.paramSpace.control.backColor  = 'transparent';
-        this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
-        this.paramSpace.control.textColorLight =
-        this.paramSpace.control.textColorDark = colors.textStyle;
-        this.paramSpace.input .color       = colors.input;
-        this.paramSpace.output.color       = colors.output;
+        this.paramSpace.control.backColor       = 'transparent';
+        this.paramSpace.control.valueColorLight =
+        this.paramSpace.control.valueColorDark  = colorStyleRgba(colSpaceBar);
+        this.paramSpace.control.textColorLight  =
+        this.paramSpace.control.textColorDark   = colors.textStyle;
+        this.paramSpace.input .color            = colors.input;
+        this.paramSpace.output.color            = colors.output;
         this.paramSpace.updateControls();
 
         const colWarning = 

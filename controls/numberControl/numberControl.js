@@ -98,8 +98,8 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
 
     initNumberControlChildren(control);    
-    initNumberControlTextbox(control);
-    initNumberControlEvents(control);
+    initNumberControlTextbox (control);
+    initNumberControlEvents  (control);
 
 
 

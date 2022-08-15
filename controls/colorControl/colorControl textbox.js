@@ -44,7 +44,7 @@ function initColorControlTextbox(control)
               && getCtrlKey(e)
               && !control.readOnly)
         {
-            // by doing nothing here I let the OS do its thing
+            // let the OS do its thing here
         }
         
         else if (   (   e.code == 'Enter'
@@ -94,56 +94,31 @@ function initColorControlTextbox(control)
         {
             e.preventDefault();
 
-            let text = control.textbox.value;
+            // let text = control.textbox.value;
 
-            if (control.textbox.selectionStart != control.textbox.selectionEnd)
-                control.textbox.selectionStart =  control.textbox.selectionEnd;
+            if (   control.textbox.selectionStart == control.textbox.selectionEnd
+                && control.textbox.selectionStart % 2 == 0)
+                control.textbox.selectionStart--;
 
-            const pos = Math.min(
-                control.textbox.selectionStart,
-                text.length);
+            const iStart =  Math.floor(control.textbox.selectionStart / 2);
+            let   iEnd   =  Math.ceil (control.textbox.selectionEnd   / 2);
 
-            const revPos = text.length - pos;
+            if (iStart == iEnd) iEnd++;
 
-            const val  = parseFloat(text);
-            const sign = e.key == 'ArrowUp' ? 1 : -1;
 
-            let decIndex = text.indexOf('.');
-            if (decIndex < 0) decIndex = text.indexOf(',');
+            const rgb = scaleColor(validHex2rgb(control.textbox.value), 'rgb');
             
-            if (   text[0] != '-'
-                || pos > 0)
-            {
-                if (decIndex < 0) // integer
-                {
-                    let dec = Math.pow(10, revPos);
+            for (let i = iStart; i < iEnd; i++)
+                rgb[i] = Math.min(Math.max(0, rgb[i] + (e.key == 'ArrowUp' ? 1 : -1)), 0xff);
 
-                    if (e.shiftKey) 
-                        dec *= 10;
 
-                    control.setValue((val + sign * dec) / control.valueScale);
-                    control.updateTextbox();
-                }
-                else // floating point
-                {
-                    const _edit = pos - decIndex - 1;
+            control.setValue(GColorValue.createFromRgb(rgb));
+            control.updateTextbox();
 
-                    let  dec  = 
-                        _edit < 0
-                        ?     Math.pow(10, -_edit - 1)
-                        : 1 / Math.pow(10,  _edit    );
 
-                    if (e.shiftKey) 
-                        dec *= 10;
+            control.textbox.selectionStart = iStart * 2;
+            control.textbox.selectionEnd   = iEnd   * 2;
 
-                    control.displayDec = text.length-1 - decIndex;
-                    control.setValue((val + sign * dec) / control.valueScale);
-                    control.updateTextbox();
-                }
-
-                control.textbox.selectionStart =
-                control.textbox.selectionEnd   = control.textbox.savedValue.length - revPos;
-            }
         }
         else 
         {
@@ -153,10 +128,6 @@ function initColorControlTextbox(control)
                    && e.key != '?'
                    && !isDigit(e.key)
                    && !isHexDigit(e.key)
-                   && !(   ((      e.code == 'Minus'
-                                || e.code == 'NumpadSubtract')
-                             && !curVal.includes('-'))
-                        && control.min < 0)
                 ||     control.readOnly
                    && !isArrowKey(e.code))
                 e.preventDefault();
@@ -234,17 +205,15 @@ function initColorControlTextbox(control)
 
         if (!e.preventSetValue)
         {
-            const _rgb = scaleColor(rgb, 'rgb');
-
             if (success) 
             {
                 control.setValue(
                       value.trim() != '' 
-                    ? GColorValue.createFromRgb(_rgb) 
-                    : GColorValue.createFromRgb(savedRgb));
+                    ? GColorValue.createFromRgb(scaleColor(rgb,      'rgb')) 
+                    : GColorValue.createFromRgb(scaleColor(savedRgb, 'rgb')));
             }
             else
-                control.setValue(savedRgb);
+                control.setValue(GColorValue.createFromRgb(scaleColor(savedRgb, 'rgb')));
         }
          
         
@@ -310,8 +279,12 @@ function initColorControlTextbox(control)
             ? DISPLAY_INVALID
             : rgb2hex(rgb).toUpperCase();
                            
-        control.textbox.savedValue  = control.textbox.value;
+        control.textbox.savedValue = control.textbox.value;
 
-        control.textbox.style.color = isDark(rgb) ? '#fff' : '#000'
+        control.textbox.style.color = 
+                isDark(rgb) 
+            || !isValidRgb(rgb) 
+            ? '#fff' 
+            : '#000'
     };
 }

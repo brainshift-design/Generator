@@ -50,14 +50,14 @@ extends NumberParamBase
         this.control.successOnFocusOut = true;
         this.control.barTop            = 0.8;
 
-        this.control.style.display = 'inline-block';
-        this.control.style.width   = '100%';
+        this.control.style.display     = 'inline-block';
+        this.control.style.width       = '100%';
 
         this.div.appendChild(this.control);
 
 
-        if (hasInput)  this.initInput([NUMBER]);
-        if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
+        if (hasInput)  this.initInput(NUMBER_TYPES);
+        if (hasOutput) this.initOutput(NUMBER_VALUE, this.output_genRequest);
 
             
         //this.control.addEventListener('change',  () => { pushUpdateFromParam([this.node], this); /*this.setValue(this.value, false, false);*/ });
