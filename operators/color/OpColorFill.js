@@ -149,12 +149,12 @@ extends OpColorBase
                         
         const op = this.paramOpacity.value/100;
 
-        this.header.style.background = 
+        this.header.style.background = //'transparent';
             this.canShowColor()
             ? colorStyleRgb_a(colors.back, op)
-            : isDarkMode()
-            ? '#888088ee'
-            : '#ead8eaee';
+            : 'transparent';//isDarkMode()
+            //? '#888088ee'
+            //: '#ead8eaee';
 
 
         const noColor = [0.7, 0.7, 0.7];

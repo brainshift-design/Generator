@@ -41,11 +41,12 @@ function logReqActive(node)
 
 
 
-function logReqParam(param, parse)
+function logReqParam(param, type, parse)
 {
-    parse.log += parse.tab + PARAM;
     parse.log += 
-          ' ' + logReqId(param.nodeId) 
+                parse.tab + PARAM
+        + ' ' + type 
+        + ' ' + logReqId(param.nodeId) 
         + '.' + logReqId(param.paramId);
 }
 

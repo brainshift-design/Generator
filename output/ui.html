@@ -1859,6 +1859,8 @@ function rgbFromType(type, active)
 {
     switch (type)
     {
+        case NUMBER_VALUE:    
+        
         case NUMBER:    
         case NUMBER_LIMITS:
         case NUMBER_ADD:
@@ -1872,6 +1874,9 @@ function rgbFromType(type, active)
                 ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
                 : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
+        case COLOR_VALUE:           
+        case COLOR_FILL_VALUE:
+
         case COLOR:           
         case COLOR_INTERPOLATE:
         case COLOR_VALIDATE:
@@ -1881,6 +1886,12 @@ function rgbFromType(type, active)
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
+
+        case RECTANGLE_VALUE: 
+        case LINE_VALUE: 
+        case ELLIPSE_VALUE: 
+        case POLYGON_VALUE: 
+        case STAR_VALUE: 
 
         case RECTANGLE: 
         case LINE: 
@@ -4311,11 +4322,12 @@ function logReqActive(node)
 
 
 
-function logReqParam(param, parse)
+function logReqParam(param, type, parse)
 {
-    parse.log += parse.tab + PARAM;
     parse.log += 
-          ' ' + logReqId(param.nodeId) 
+                parse.tab + PARAM
+        + ' ' + type 
+        + ' ' + logReqId(param.nodeId) 
         + '.' + logReqId(param.paramId);
 }
 
@@ -4638,6 +4650,23 @@ const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
+const NUMBER_TYPES =
+[
+    NUMBER_VALUE,
+
+    NUMBER,
+    NUMBER_LIMITS,
+    NUMBER_ADD,
+    NUMBER_SUBTRACT,
+    NUMBER_MULTIPLY,
+    NUMBER_DIVIDE,
+    NUMBER_MODULO,
+    NUMBER_EXPONENT,
+    NUMBER_MATH,
+    NUMBER_INTERPOLATE 
+];
+
+
 const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
 
 const STRING              = 'STR';   // S | s
@@ -4840,7 +4869,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
+            const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId).result;
             console.assert(node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
@@ -6510,8 +6539,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            // genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
-            // genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
 
 
@@ -9080,7 +9109,7 @@ function genParseParam(parse)
         return null;
         
     parse.move(); // PARAM
-    parse.move(); // type
+    const type = parse.move(); // type
 
     
     const nodeId  = parse.move();
@@ -9094,7 +9123,7 @@ function genParseParam(parse)
 
 
     if (parse.logRequests) 
-        logReqParam(param, parse);
+        logReqParam(param, type, parse);
 
 
     return param;
@@ -11932,6 +11961,8 @@ function rgbFromType(type, active)
 {
     switch (type)
     {
+        case NUMBER_VALUE:    
+        
         case NUMBER:    
         case NUMBER_LIMITS:
         case NUMBER_ADD:
@@ -11945,6 +11976,9 @@ function rgbFromType(type, active)
                 ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
                 : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
+        case COLOR_VALUE:           
+        case COLOR_FILL_VALUE:
+
         case COLOR:           
         case COLOR_INTERPOLATE:
         case COLOR_VALIDATE:
@@ -11954,6 +11988,12 @@ function rgbFromType(type, active)
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
+
+        case RECTANGLE_VALUE: 
+        case LINE_VALUE: 
+        case ELLIPSE_VALUE: 
+        case POLYGON_VALUE: 
+        case STAR_VALUE: 
 
         case RECTANGLE: 
         case LINE: 
@@ -14384,11 +14424,12 @@ function logReqActive(node)
 
 
 
-function logReqParam(param, parse)
+function logReqParam(param, type, parse)
 {
-    parse.log += parse.tab + PARAM;
     parse.log += 
-          ' ' + logReqId(param.nodeId) 
+                parse.tab + PARAM
+        + ' ' + type 
+        + ' ' + logReqId(param.nodeId) 
         + '.' + logReqId(param.paramId);
 }
 
@@ -16147,6 +16188,23 @@ const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
+const NUMBER_TYPES =
+[
+    NUMBER_VALUE,
+
+    NUMBER,
+    NUMBER_LIMITS,
+    NUMBER_ADD,
+    NUMBER_SUBTRACT,
+    NUMBER_MULTIPLY,
+    NUMBER_DIVIDE,
+    NUMBER_MODULO,
+    NUMBER_EXPONENT,
+    NUMBER_MATH,
+    NUMBER_INTERPOLATE 
+];
+
+
 const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
 
 const STRING              = 'STR';   // S | s
@@ -16349,7 +16407,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
+            const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId).result;
             console.assert(node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
@@ -18019,8 +18077,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            // genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
-            // genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
 
 
@@ -25673,8 +25731,8 @@ extends NumberParamBase
         this.div.appendChild(this.control);
 
        
-        if (hasInput)  this.initInput([NUMBER]);
-        if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
+        if (hasInput)  this.initInput(NUMBER_TYPES);
+        if (hasOutput) this.initOutput(NUMBER_VALUE, this.output_genRequest);
 
 
         this.control.addEventListener('confirm', () => 
@@ -25926,7 +25984,7 @@ extends Parameter
 
        
         if (hasInput)  this.initInput(COLOR_TYPES);
-        if (hasOutput) this.initOutput(COLOR, this.output_genRequest);
+        if (hasOutput) this.initOutput(COLOR_VALUE, this.output_genRequest);
 
 
         // this.control.addEventListener('confirm', () => 
@@ -29196,15 +29254,11 @@ function createNodeLabel(node)
         
         const x          = e.clientX - wrect.x;
 
-        if (x < viewMargin)
-            updateHeaderLabelOffset(node, 0);
-        else if (x >= wrect.width - viewMargin)
-            updateHeaderLabelOffset(node, 1);
+             if (x <  viewMargin)               updateHeaderLabelOffset(node, 0);
+        else if (x >= wrect.width - viewMargin) updateHeaderLabelOffset(node, 1);
         else if (x >= viewMargin
-              && x < wrect.width - viewMargin)
-            updateHeaderLabelOffset(node, (x - viewMargin) / (wrect.width - viewMargin*2));
-        else
-            updateHeaderLabelOffset(node);
+              && x <  wrect.width - viewMargin) updateHeaderLabelOffset(node, (x - viewMargin) / (wrect.width - viewMargin*2));
+        else                                    updateHeaderLabelOffset(node);
     });
 
 
@@ -30405,7 +30459,7 @@ extends Operator
         const colors = this.getHeaderColors();
 
         this.header.style.background = 
-            this.canShowColor()//isValidDataColor(this._color)//this.canShowColor()
+            this.canShowColor()
             ? colorStyleRgb(colors.back)
             : isDarkMode()
               ? '#888088ee'
@@ -30455,8 +30509,8 @@ extends Operator
             || rgb2hclokl(colBack)[2] > 0.71;
 
             
-        const ba = Math.min(/*(this.header.over ? 14 : 1)*/14 * (isValidRgb(colBack) ? 0.08 : 0.22), 0.5);
-        const wa = Math.min(/*(this.header.over ? 14 : 1)*/14 * (isValidRgb(colBack) ? 0.1  : 0.14), 0.5);
+        const ba = Math.min(14 * (isValidRgb(colBack) ? 0.08 : 0.22), 0.5);
+        const wa = Math.min(14 * (isValidRgb(colBack) ? 0.1  : 0.14), 0.5);
 
         const colText = 
             this.canShowColor()
@@ -30834,8 +30888,8 @@ extends OpColorBase
 
         const colSpaceBar = 
             colors.darkText 
-            ? [0, 0, 0, isValidRgb(colors.back) ? /*(this.header.over ? 3 : 1)*/3 * 0.03 : 0.12] 
-            : [1, 1, 1, isValidRgb(colors.back) ? /*(this.header.over ? 3 : 1)*/3 * 0.05 : 0.24];
+            ? [0, 0, 0, isValidRgb(colors.back) ? 3 * 0.03 : 0.12] 
+            : [1, 1, 1, isValidRgb(colors.back) ? 3 * 0.05 : 0.24];
 
         this.paramSpace.control.backColor  = 'transparent';
         this.paramSpace.control.valueColor = colorStyleRgba(colSpaceBar);
@@ -33826,12 +33880,12 @@ extends OpColorBase
                         
         const op = this.paramOpacity.value/100;
 
-        this.header.style.background = 
+        this.header.style.background = //'transparent';
             this.canShowColor()
             ? colorStyleRgb_a(colors.back, op)
-            : isDarkMode()
-            ? '#888088ee'
-            : '#ead8eaee';
+            : 'transparent';//isDarkMode()
+            //? '#888088ee'
+            //: '#ead8eaee';
 
 
         const noColor = [0.7, 0.7, 0.7];

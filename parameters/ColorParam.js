@@ -60,7 +60,7 @@ extends Parameter
 
        
         if (hasInput)  this.initInput(COLOR_TYPES);
-        if (hasOutput) this.initOutput(COLOR, this.output_genRequest);
+        if (hasOutput) this.initOutput(COLOR_VALUE, this.output_genRequest);
 
 
         // this.control.addEventListener('confirm', () => 

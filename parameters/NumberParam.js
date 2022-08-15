@@ -54,8 +54,8 @@ extends NumberParamBase
         this.div.appendChild(this.control);
 
        
-        if (hasInput)  this.initInput([NUMBER]);
-        if (hasOutput) this.initOutput(NUMBER, this.output_genRequest);
+        if (hasInput)  this.initInput(NUMBER_TYPES);
+        if (hasOutput) this.initOutput(NUMBER_VALUE, this.output_genRequest);
 
 
         this.control.addEventListener('confirm', () => 

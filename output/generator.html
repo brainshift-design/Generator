@@ -16,6 +16,8 @@ function rgbFromType(type, active)
 {
     switch (type)
     {
+        case NUMBER_VALUE:    
+        
         case NUMBER:    
         case NUMBER_LIMITS:
         case NUMBER_ADD:
@@ -29,6 +31,9 @@ function rgbFromType(type, active)
                 ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
                 : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
+        case COLOR_VALUE:           
+        case COLOR_FILL_VALUE:
+
         case COLOR:           
         case COLOR_INTERPOLATE:
         case COLOR_VALIDATE:
@@ -38,6 +43,12 @@ function rgbFromType(type, active)
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
+
+        case RECTANGLE_VALUE: 
+        case LINE_VALUE: 
+        case ELLIPSE_VALUE: 
+        case POLYGON_VALUE: 
+        case STAR_VALUE: 
 
         case RECTANGLE: 
         case LINE: 
@@ -2468,11 +2479,12 @@ function logReqActive(node)
 
 
 
-function logReqParam(param, parse)
+function logReqParam(param, type, parse)
 {
-    parse.log += parse.tab + PARAM;
     parse.log += 
-          ' ' + logReqId(param.nodeId) 
+                parse.tab + PARAM
+        + ' ' + type 
+        + ' ' + logReqId(param.nodeId) 
         + '.' + logReqId(param.paramId);
 }
 
@@ -2795,6 +2807,23 @@ const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
+const NUMBER_TYPES =
+[
+    NUMBER_VALUE,
+
+    NUMBER,
+    NUMBER_LIMITS,
+    NUMBER_ADD,
+    NUMBER_SUBTRACT,
+    NUMBER_MULTIPLY,
+    NUMBER_DIVIDE,
+    NUMBER_MODULO,
+    NUMBER_EXPONENT,
+    NUMBER_MATH,
+    NUMBER_INTERPOLATE 
+];
+
+
 const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
 
 const STRING              = 'STR';   // S | s
@@ -2997,7 +3026,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
+            const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId).result;
             console.assert(node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
@@ -4667,8 +4696,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            // genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
-            // genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
 
 
@@ -7237,7 +7266,7 @@ function genParseParam(parse)
         return null;
         
     parse.move(); // PARAM
-    parse.move(); // type
+    const type = parse.move(); // type
 
     
     const nodeId  = parse.move();
@@ -7251,7 +7280,7 @@ function genParseParam(parse)
 
 
     if (parse.logRequests) 
-        logReqParam(param, parse);
+        logReqParam(param, type, parse);
 
 
     return param;

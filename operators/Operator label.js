@@ -26,15 +26,11 @@ function createNodeLabel(node)
         
         const x          = e.clientX - wrect.x;
 
-        if (x < viewMargin)
-            updateHeaderLabelOffset(node, 0);
-        else if (x >= wrect.width - viewMargin)
-            updateHeaderLabelOffset(node, 1);
+             if (x <  viewMargin)               updateHeaderLabelOffset(node, 0);
+        else if (x >= wrect.width - viewMargin) updateHeaderLabelOffset(node, 1);
         else if (x >= viewMargin
-              && x < wrect.width - viewMargin)
-            updateHeaderLabelOffset(node, (x - viewMargin) / (wrect.width - viewMargin*2));
-        else
-            updateHeaderLabelOffset(node);
+              && x <  wrect.width - viewMargin) updateHeaderLabelOffset(node, (x - viewMargin) / (wrect.width - viewMargin*2));
+        else                                    updateHeaderLabelOffset(node);
     });
 
 

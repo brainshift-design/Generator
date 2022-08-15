@@ -25,7 +25,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
+            const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId).result;
             console.assert(node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 

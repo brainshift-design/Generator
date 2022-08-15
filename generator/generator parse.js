@@ -163,7 +163,7 @@ function genParseParam(parse)
         return null;
         
     parse.move(); // PARAM
-    parse.move(); // type
+    const type = parse.move(); // type
 
     
     const nodeId  = parse.move();
@@ -177,7 +177,7 @@ function genParseParam(parse)
 
 
     if (parse.logRequests) 
-        logReqParam(param, parse);
+        logReqParam(param, type, parse);
 
 
     return param;

@@ -16,6 +16,23 @@ const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
+const NUMBER_TYPES =
+[
+    NUMBER_VALUE,
+
+    NUMBER,
+    NUMBER_LIMITS,
+    NUMBER_ADD,
+    NUMBER_SUBTRACT,
+    NUMBER_MULTIPLY,
+    NUMBER_DIVIDE,
+    NUMBER_MODULO,
+    NUMBER_EXPONENT,
+    NUMBER_MATH,
+    NUMBER_INTERPOLATE 
+];
+
+
 const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
 
 const STRING              = 'STR';   // S | s
