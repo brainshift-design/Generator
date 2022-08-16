@@ -1,7 +1,6 @@
 ../controls/toggleButton/*.js
 ../controls/numberControl/*.js
 ../controls/colorControl/*.js
-../controls/fillControl/*.js
 ../controls/select/*.js
 ../controls/menuSelect/*.js
 

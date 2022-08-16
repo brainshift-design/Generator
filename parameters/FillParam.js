@@ -6,6 +6,8 @@ extends Parameter
     oldValue = null;
     
 
+    controlWrapper;
+
     colorControl;
     opacityControl;
     
@@ -39,6 +41,8 @@ extends Parameter
     {
         super(COLOR_FILL, id, name);
 
+        this.controlWrapper        = createDiv();
+
         this.colorControl          = createDiv();
         this.opacityControl        = createDiv();
         
@@ -49,7 +53,7 @@ extends Parameter
         this.opacityControl.zIndex = 0;
    
         this.defaultValue          = defaultValue;
-
+console.log('defaultValue =', defaultValue);
 
         initColorControl(
             this,
@@ -78,17 +82,22 @@ extends Parameter
         this.opacityControl.setSuffix('%', true);
 
 
+        this.controlWrapper.style.display     = 'inline-block';
+        this.controlWrapper.style.width       = '100%';
+
         this.  colorControl.successOnFocusOut = true;
-        this.  colorControl.style.display     = 'inline-block';
-        this.  colorControl.style.width       = '80%';
+        this.  colorControl.style.display     = 'inline';
+        this.  colorControl.style.width       = '70%';
 
         this.opacityControl.successOnFocusOut = true;
-        this.opacityControl.style.display     = 'inline-block';
-        this.opacityControl.style.width       = '20%';
+        this.opacityControl.style.display     = 'inline';
+        this.opacityControl.style.width       = '30%';
 
 
-        this.div.appendChild(this.  colorControl);
-        this.div.appendChild(this.opacityControl);
+        this.controlWrapper.appendChild(this.  colorControl);
+        this.controlWrapper.appendChild(this.opacityControl);
+        
+        this.div.appendChild(this.controlWrapper);
 
        
         if (hasInput)  this.initInput(COLOR_FILL_TYPES);
@@ -209,6 +218,7 @@ extends Parameter
             COLOR_FILL_VALUE, 
             this.value.toString());
 
+        console.log('this.value =', this.value);
 
         return request;
     }

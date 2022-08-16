@@ -7,7 +7,6 @@
     ../controls/toggleButton/*.css
     ../controls/numberControl/*.css
     ../controls/colorControl/*.css
-    ../controls/fillControl/*.css
     ../controls/menuSelect/*.css
     ../controls/select/*.css
 

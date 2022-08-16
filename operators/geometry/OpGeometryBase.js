@@ -37,9 +37,6 @@ extends OperatorBase
         this.paramStrokeMiter.control.setSuffix('°', true);
 
 
-        this.paramFill.setValue(GColorFillValue.default);
-
-
         const cond = () => 
                   this.paramStroke.value.isValid()
                && isValidRgb(dataColorToRgb(this.paramStroke.value.color.toDataColor()))
@@ -50,49 +47,4 @@ extends OperatorBase
         this.paramStrokeJoin  .show = () => cond();
         this.paramStrokeMiter .show = () => cond() && this.paramStrokeJoin.value == 0;
     } 
-
-
-
-//     genGeometryBaseParamIds()
-//     {
-//         const paramIds = [];
-
-//         for (const param of this.params)
-//             if (   param.input 
-//                 && param.input.connected) 
-//                 paramIds.push(param.id);
-
-//         return paramIds;
-//     }
-
-
-
-//     genGeometryBaseRequest(gen, inputConnected)
-//     {
-//         // 'this' is the node
-
-//         const request = [];
-
-//         if (inputConnected)
-//         {
-//             if (this.paramFill       .input.connected) request.push(...this.paramFill       .genRequest(gen));
-//             if (this.paramStroke     .input.connected) request.push(...this.paramStroke     .genRequest(gen));
-//             // if (this.paramStrokeWidth.input.connected) request.push(...this.paramStrokeWidth.genRequest(gen));
-//             // if (this.paramStrokeFit  .input.connected) request.push(...this.paramStrokeFit  .genRequest(gen));
-//             // if (this.paramStrokeJoin .input.connected) request.push(...this.paramStrokeJoin .genRequest(gen));
-//             // if (this.paramStrokeMiter.input.connected) request.push(...this.paramStrokeMiter.genRequest(gen));
-//         }
-//         else
-//         {
-//             request.push(
-//                 ...this.paramFill       .genRequest(gen),
-//                 ...this.paramStroke     .genRequest(gen));//,
-//                 // ...this.paramStrokeWidth.genRequest(gen),
-//                 // ...this.paramStrokeFit  .genRequest(gen),
-//                 // ...this.paramStrokeJoin .genRequest(gen),
-//                 // ...this.paramStrokeMiter.genRequest(gen));
-//         }
-
-//         return request;
-//     }
 }
