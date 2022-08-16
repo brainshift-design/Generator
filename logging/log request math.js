@@ -1,6 +1,6 @@
 function logReqNumberValue(val, parse)
 {
-    parse.log += parse.tab + NUMBER_VALUE + ' ' + val;
+    parse.log += ' ' + NUMBER_VALUE + ' ' + val;
 }
 
 

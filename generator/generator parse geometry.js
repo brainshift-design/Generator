@@ -7,16 +7,46 @@
     N 100
     N 0
     N 0
-
-    RECT 
-    id
-    RECT 
-    ...
-    0,3,4  // overriding param index list
-    N 0
-    N 100
-    N 0
 */
+
+
+function genParseGeometryBase(parse, obj, paramId)
+{
+    switch (paramId)
+    {
+    case 'fill':         obj.fill         = genParse(parse); break;
+    case 'stroke':       obj.stroke       = genParse(parse); break;
+    case 'strokeWeight': obj.strokeWeight = genParse(parse); break;
+    case 'strokeFit':    obj.strokeFit    = genParse(parse); break;
+    case 'strokeJoin':   obj.strokeJoin   = genParse(parse); break;
+    case 'strokeMiter':  obj.strokeMiter  = genParse(parse); break;
+    }
+}
+
+
+
+function genParseParamCount(parse)
+{
+    const nParamIds = parseInt(parse.move());
+
+    if (parse.logRequests) 
+        parse.log += ' ' + nParamIds;
+
+    return nParamIds;
+}
+
+
+
+function genParseParamId(parse)
+{
+    const paramId = parse.move();
+
+    if (parse.logRequests) 
+        parse.log += parse.tab + paramId;
+
+    return paramId;
+}
+
 
 
 function genParseRectangle(parse)
@@ -41,21 +71,20 @@ function genParseRectangle(parse)
     parse.nTab++;
 
 
-    let paramIds;
-
     if (   parse.next == RECTANGLE_VALUE
         || parse.next == RECTANGLE)
-    {
         rect.input = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
-        paramIds   = parse.move().split(',');
-    }
-    else
-        paramIds = ['x', 'y', 'width', 'height', 'angle', 'round'];
 
-    
-    for (const id of paramIds)
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
     {
-        switch (id)
+        const paramId = genParseParamId(parse);
+
+        parse.nTab++;
+
+        switch (paramId)
         {
         case 'x':      rect.x      = genParse(parse); break;
         case 'y':      rect.y      = genParse(parse); break;
@@ -64,7 +93,12 @@ function genParseRectangle(parse)
         case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
         }
+
+        genParseGeometryBase(parse, rect, paramId);
+
+        parse.nTab--;
     }
+
 
 
     parse.nTab--;

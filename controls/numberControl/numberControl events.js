@@ -175,7 +175,7 @@ function initNumberControlEvents(control)
                     control.setValue(
                         Math.round(val / grain) * grain, 
                         true, 
-                        false, 
+                        true,
                         false,
                         getCtrlKey(e));
 

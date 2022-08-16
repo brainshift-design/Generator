@@ -37,8 +37,6 @@ extends OpGeometryBase
 
         this.addBaseParams();
 
-        //this.paramFill.addFill(new GColorValue(0, 0, 0, 255));
-
         
         this.inputs[0].addEventListener('connect', () =>
         {
@@ -69,6 +67,8 @@ extends OpGeometryBase
         {
             if (this.btnProportional.enabled)
                 this.paramHeight.setValue(this.paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
+
+            this.updateRound();
         });
 
 
@@ -76,6 +76,8 @@ extends OpGeometryBase
         {
             if (this.btnProportional.enabled)
                 this.paramWidth.setValue(this.paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
+
+            this.updateRound();
         });
 
 
@@ -99,41 +101,32 @@ extends OpGeometryBase
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
-        
-        const input = this.node.inputs[0];
-
+                
         const paramIds = [];
+        
 
 
+        const input = this.node.inputs[0];
+        
         if (input.connected)
         {
             request.push(...pushInputOrParam(input, gen));
 
-
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
                     paramIds.push(param.id);
-
-            request.push(paramIds.join(','));
-
-
-            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
-            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
-            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
-            if (this.node.paramHeight.input.connected) request.push(...this.node.paramHeight.genRequest(gen));
-            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
-            if (this.node.paramRound .input.connected) request.push(...this.node.paramRound .genRequest(gen));
         }
         else
         {
-            request.push(
-                ...this.node.paramX     .genRequest(gen),
-                ...this.node.paramY     .genRequest(gen),
-                ...this.node.paramWidth .genRequest(gen),
-                ...this.node.paramHeight.genRequest(gen),
-                ...this.node.paramAngle .genRequest(gen),
-                ...this.node.paramRound .genRequest(gen));
+            for (const param of this.node.params)
+                paramIds.push(param.id);
         }
+
+
+        request.push(paramIds.length);
+
+        for (const paramId of paramIds)
+            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
 
 
         gen.scope.pop();
@@ -172,11 +165,10 @@ extends OpGeometryBase
 
     updateRound()
     {
-        const control = this.paramRound.control;
-        const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
+        const min = Math.min(this.paramWidth.value, this.paramHeight.value);
 
-        control.setMin(0);
-        control.setMax(min/2);
+        this.paramRound.control.displayMin = 0;
+        this.paramRound.control.displayMax = min/2;
 
         this.paramRound.control.update();
     }
@@ -219,5 +211,7 @@ extends OpGeometryBase
                 this.refHeight = parseFloat(_node.refHeight);
             }
         //}
+
+        this.updateRound();
     }
 }

@@ -26,18 +26,18 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramFill         = new FillParam  ('fill',             'f',      true, true, true, GColorFillValue.default));
-        this.addParam(this.paramStroke       = new FillParam  ('stroke',           's',      true, true, true));
+        this.addParam(this.paramFill         = new FillParam  ('fill',         'f',      true, true, true, GColorFillValue.default));
+        this.addParam(this.paramStroke       = new FillParam  ('stroke',       's',      true, true, true));
 
-        this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight',     'weight', true, true, true, 1, 0));
-        this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',        'fit',    true, true, true, ['inside', 'center', 'outside'], 0));
-        this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',       'join',   true, true, true, ['miter', 'bevel', 'round'], 0));
-        this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiterLimit', 'limit',  true, true, true, 28.96, 0, 180, 2));
+        this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight', 'weight', true, true, true, 1, 0));
+        this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',    'fit',    true, true, true, ['inside', 'center', 'outside'], 0));
+        this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   'join',   true, true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiter',  'miter',  true, true, true, 28.96, 0, 180, 2));
 
         this.paramStrokeMiter.control.setSuffix('°', true);
 
 
-        //this.paramFill.fills.push(new GColorFillValue(0, 0, 0, 1));
+        this.paramFill.setValue(GColorFillValue.default);
 
 
         const cond = () => 
@@ -53,49 +53,46 @@ extends OperatorBase
 
 
 
-    output_genRequest(gen)
-    {
-        // 'this' is the output
+//     genGeometryBaseParamIds()
+//     {
+//         const paramIds = [];
 
-        const input = this.node.inputs[0];
+//         for (const param of this.params)
+//             if (   param.input 
+//                 && param.input.connected) 
+//                 paramIds.push(param.id);
 
-        const paramIds = [];
-
-
-        if (input.connected)
-        {
-            request.push(...pushInputOrParam(input, gen));
-
-
-            for (const param of this.node.params)
-                if (param.input && param.input.connected) 
-                    paramIds.push(param.id);
-
-            request.push(paramIds.join(','));
+//         return paramIds;
+//     }
 
 
-            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
-            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
-            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
-            if (this.node.paramHeight.input.connected) request.push(...this.node.paramHeight.genRequest(gen));
-            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
-            if (this.node.paramRound .input.connected) request.push(...this.node.paramRound .genRequest(gen));
-        }
-        else
-        {
-            request.push(
-                ...this.node.paramX     .genRequest(gen),
-                ...this.node.paramY     .genRequest(gen),
-                ...this.node.paramWidth .genRequest(gen),
-                ...this.node.paramHeight.genRequest(gen),
-                ...this.node.paramAngle .genRequest(gen),
-                ...this.node.paramRound .genRequest(gen));
-        }
 
+//     genGeometryBaseRequest(gen, inputConnected)
+//     {
+//         // 'this' is the node
 
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
+//         const request = [];
 
-        return request;
-    }
+//         if (inputConnected)
+//         {
+//             if (this.paramFill       .input.connected) request.push(...this.paramFill       .genRequest(gen));
+//             if (this.paramStroke     .input.connected) request.push(...this.paramStroke     .genRequest(gen));
+//             // if (this.paramStrokeWidth.input.connected) request.push(...this.paramStrokeWidth.genRequest(gen));
+//             // if (this.paramStrokeFit  .input.connected) request.push(...this.paramStrokeFit  .genRequest(gen));
+//             // if (this.paramStrokeJoin .input.connected) request.push(...this.paramStrokeJoin .genRequest(gen));
+//             // if (this.paramStrokeMiter.input.connected) request.push(...this.paramStrokeMiter.genRequest(gen));
+//         }
+//         else
+//         {
+//             request.push(
+//                 ...this.paramFill       .genRequest(gen),
+//                 ...this.paramStroke     .genRequest(gen));//,
+//                 // ...this.paramStrokeWidth.genRequest(gen),
+//                 // ...this.paramStrokeFit  .genRequest(gen),
+//                 // ...this.paramStrokeJoin .genRequest(gen),
+//                 // ...this.paramStrokeMiter.genRequest(gen));
+//         }
+
+//         return request;
+//     }
 }

@@ -1850,7 +1850,7 @@ const largeScrollGap = 14;
 
 const MAX_INT32      = 2147483647;
 
-const TAB            = '    ';
+const TAB            = '  ';
 const NL             = '\n';
 
 
@@ -4342,7 +4342,7 @@ function logReqNode(node, type, parse)
 
 function logReqNumberValue(val, parse)
 {
-    parse.log += parse.tab + NUMBER_VALUE + ' ' + val;
+    parse.log += ' ' + NUMBER_VALUE + ' ' + val;
 }
 
 
@@ -4385,7 +4385,7 @@ function logReqInterpolate(lerp, nValues, parse)
 
 function logReqColorValue(val, parse)
 {
-    parse.log += parse.tab + COLOR_VALUE + ' ' + val;
+    parse.log += ' ' + COLOR_VALUE + ' ' + val;
 }
 
 
@@ -4436,7 +4436,7 @@ function logReqColorValidate(val, parse)
 
 function logReqColorFillValue(fill, parse)
 {
-    parse.log += parse.tab + COLOR_FILL_VALUE + ' ' + fill;
+    parse.log += ' ' + COLOR_FILL_VALUE + ' ' + fill;
 }
 
 
@@ -8462,16 +8462,46 @@ function genParseColorStop(parse)
     N 100
     N 0
     N 0
-
-    RECT 
-    id
-    RECT 
-    ...
-    0,3,4  // overriding param index list
-    N 0
-    N 100
-    N 0
 */
+
+
+function genParseGeometryBase(parse, obj, paramId)
+{
+    switch (paramId)
+    {
+    case 'fill':         obj.fill         = genParse(parse); break;
+    case 'stroke':       obj.stroke       = genParse(parse); break;
+    case 'strokeWeight': obj.strokeWeight = genParse(parse); break;
+    case 'strokeFit':    obj.strokeFit    = genParse(parse); break;
+    case 'strokeJoin':   obj.strokeJoin   = genParse(parse); break;
+    case 'strokeMiter':  obj.strokeMiter  = genParse(parse); break;
+    }
+}
+
+
+
+function genParseParamCount(parse)
+{
+    const nParamIds = parseInt(parse.move());
+
+    if (parse.logRequests) 
+        parse.log += ' ' + nParamIds;
+
+    return nParamIds;
+}
+
+
+
+function genParseParamId(parse)
+{
+    const paramId = parse.move();
+
+    if (parse.logRequests) 
+        parse.log += parse.tab + paramId;
+
+    return paramId;
+}
+
 
 
 function genParseRectangle(parse)
@@ -8496,21 +8526,20 @@ function genParseRectangle(parse)
     parse.nTab++;
 
 
-    let paramIds;
-
     if (   parse.next == RECTANGLE_VALUE
         || parse.next == RECTANGLE)
-    {
         rect.input = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
-        paramIds   = parse.move().split(',');
-    }
-    else
-        paramIds = ['x', 'y', 'width', 'height', 'angle', 'round'];
 
-    
-    for (const id of paramIds)
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
     {
-        switch (id)
+        const paramId = genParseParamId(parse);
+
+        parse.nTab++;
+
+        switch (paramId)
         {
         case 'x':      rect.x      = genParse(parse); break;
         case 'y':      rect.y      = genParse(parse); break;
@@ -8519,7 +8548,12 @@ function genParseRectangle(parse)
         case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
         }
+
+        genParseGeometryBase(parse, rect, paramId);
+
+        parse.nTab--;
     }
+
 
 
     parse.nTab--;
@@ -11951,7 +11985,7 @@ const largeScrollGap = 14;
 
 const MAX_INT32      = 2147483647;
 
-const TAB            = '    ';
+const TAB            = '  ';
 const NL             = '\n';
 
 
@@ -14443,7 +14477,7 @@ function logReqNode(node, type, parse)
 
 function logReqNumberValue(val, parse)
 {
-    parse.log += parse.tab + NUMBER_VALUE + ' ' + val;
+    parse.log += ' ' + NUMBER_VALUE + ' ' + val;
 }
 
 
@@ -14486,7 +14520,7 @@ function logReqInterpolate(lerp, nValues, parse)
 
 function logReqColorValue(val, parse)
 {
-    parse.log += parse.tab + COLOR_VALUE + ' ' + val;
+    parse.log += ' ' + COLOR_VALUE + ' ' + val;
 }
 
 
@@ -14537,7 +14571,7 @@ function logReqColorValidate(val, parse)
 
 function logReqColorFillValue(fill, parse)
 {
-    parse.log += parse.tab + COLOR_FILL_VALUE + ' ' + fill;
+    parse.log += ' ' + COLOR_FILL_VALUE + ' ' + fill;
 }
 
 
@@ -19700,7 +19734,7 @@ function initNumberControlEvents(control)
                     control.setValue(
                         Math.round(val / grain) * grain, 
                         true, 
-                        false, 
+                        true,
                         false,
                         getCtrlKey(e));
 
@@ -33986,18 +34020,18 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramFill         = new FillParam  ('fill',             'f',      true, true, true, GColorFillValue.default));
-        this.addParam(this.paramStroke       = new FillParam  ('stroke',           's',      true, true, true));
+        this.addParam(this.paramFill         = new FillParam  ('fill',         'f',      true, true, true, GColorFillValue.default));
+        this.addParam(this.paramStroke       = new FillParam  ('stroke',       's',      true, true, true));
 
-        this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight',     'weight', true, true, true, 1, 0));
-        this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',        'fit',    true, true, true, ['inside', 'center', 'outside'], 0));
-        this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',       'join',   true, true, true, ['miter', 'bevel', 'round'], 0));
-        this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiterLimit', 'limit',  true, true, true, 28.96, 0, 180, 2));
+        this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight', 'weight', true, true, true, 1, 0));
+        this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',    'fit',    true, true, true, ['inside', 'center', 'outside'], 0));
+        this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   'join',   true, true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiter',  'miter',  true, true, true, 28.96, 0, 180, 2));
 
         this.paramStrokeMiter.control.setSuffix('°', true);
 
 
-        //this.paramFill.fills.push(new GColorFillValue(0, 0, 0, 1));
+        this.paramFill.setValue(GColorFillValue.default);
 
 
         const cond = () => 
@@ -34013,51 +34047,48 @@ extends OperatorBase
 
 
 
-    output_genRequest(gen)
-    {
-        // 'this' is the output
+//     genGeometryBaseParamIds()
+//     {
+//         const paramIds = [];
 
-        const input = this.node.inputs[0];
+//         for (const param of this.params)
+//             if (   param.input 
+//                 && param.input.connected) 
+//                 paramIds.push(param.id);
 
-        const paramIds = [];
-
-
-        if (input.connected)
-        {
-            request.push(...pushInputOrParam(input, gen));
-
-
-            for (const param of this.node.params)
-                if (param.input && param.input.connected) 
-                    paramIds.push(param.id);
-
-            request.push(paramIds.join(','));
+//         return paramIds;
+//     }
 
 
-            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
-            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
-            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
-            if (this.node.paramHeight.input.connected) request.push(...this.node.paramHeight.genRequest(gen));
-            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
-            if (this.node.paramRound .input.connected) request.push(...this.node.paramRound .genRequest(gen));
-        }
-        else
-        {
-            request.push(
-                ...this.node.paramX     .genRequest(gen),
-                ...this.node.paramY     .genRequest(gen),
-                ...this.node.paramWidth .genRequest(gen),
-                ...this.node.paramHeight.genRequest(gen),
-                ...this.node.paramAngle .genRequest(gen),
-                ...this.node.paramRound .genRequest(gen));
-        }
 
+//     genGeometryBaseRequest(gen, inputConnected)
+//     {
+//         // 'this' is the node
 
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
+//         const request = [];
 
-        return request;
-    }
+//         if (inputConnected)
+//         {
+//             if (this.paramFill       .input.connected) request.push(...this.paramFill       .genRequest(gen));
+//             if (this.paramStroke     .input.connected) request.push(...this.paramStroke     .genRequest(gen));
+//             // if (this.paramStrokeWidth.input.connected) request.push(...this.paramStrokeWidth.genRequest(gen));
+//             // if (this.paramStrokeFit  .input.connected) request.push(...this.paramStrokeFit  .genRequest(gen));
+//             // if (this.paramStrokeJoin .input.connected) request.push(...this.paramStrokeJoin .genRequest(gen));
+//             // if (this.paramStrokeMiter.input.connected) request.push(...this.paramStrokeMiter.genRequest(gen));
+//         }
+//         else
+//         {
+//             request.push(
+//                 ...this.paramFill       .genRequest(gen),
+//                 ...this.paramStroke     .genRequest(gen));//,
+//                 // ...this.paramStrokeWidth.genRequest(gen),
+//                 // ...this.paramStrokeFit  .genRequest(gen),
+//                 // ...this.paramStrokeJoin .genRequest(gen),
+//                 // ...this.paramStrokeMiter.genRequest(gen));
+//         }
+
+//         return request;
+//     }
 }
 
 
@@ -34100,8 +34131,6 @@ extends OpGeometryBase
 
         this.addBaseParams();
 
-        //this.paramFill.addFill(new GColorValue(0, 0, 0, 255));
-
         
         this.inputs[0].addEventListener('connect', () =>
         {
@@ -34132,6 +34161,8 @@ extends OpGeometryBase
         {
             if (this.btnProportional.enabled)
                 this.paramHeight.setValue(this.paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
+
+            this.updateRound();
         });
 
 
@@ -34139,6 +34170,8 @@ extends OpGeometryBase
         {
             if (this.btnProportional.enabled)
                 this.paramWidth.setValue(this.paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
+
+            this.updateRound();
         });
 
 
@@ -34162,41 +34195,32 @@ extends OpGeometryBase
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
-        
-        const input = this.node.inputs[0];
-
+                
         const paramIds = [];
+        
 
 
+        const input = this.node.inputs[0];
+        
         if (input.connected)
         {
             request.push(...pushInputOrParam(input, gen));
 
-
             for (const param of this.node.params)
                 if (param.input && param.input.connected) 
                     paramIds.push(param.id);
-
-            request.push(paramIds.join(','));
-
-
-            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
-            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
-            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
-            if (this.node.paramHeight.input.connected) request.push(...this.node.paramHeight.genRequest(gen));
-            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
-            if (this.node.paramRound .input.connected) request.push(...this.node.paramRound .genRequest(gen));
         }
         else
         {
-            request.push(
-                ...this.node.paramX     .genRequest(gen),
-                ...this.node.paramY     .genRequest(gen),
-                ...this.node.paramWidth .genRequest(gen),
-                ...this.node.paramHeight.genRequest(gen),
-                ...this.node.paramAngle .genRequest(gen),
-                ...this.node.paramRound .genRequest(gen));
+            for (const param of this.node.params)
+                paramIds.push(param.id);
         }
+
+
+        request.push(paramIds.length);
+
+        for (const paramId of paramIds)
+            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
 
 
         gen.scope.pop();
@@ -34235,11 +34259,10 @@ extends OpGeometryBase
 
     updateRound()
     {
-        const control = this.paramRound.control;
-        const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
+        const min = Math.min(this.paramWidth.value, this.paramHeight.value);
 
-        control.setMin(0);
-        control.setMax(min/2);
+        this.paramRound.control.displayMin = 0;
+        this.paramRound.control.displayMax = min/2;
 
         this.paramRound.control.update();
     }
@@ -34282,6 +34305,8 @@ extends OpGeometryBase
                 this.refHeight = parseFloat(_node.refHeight);
             }
         //}
+
+        this.updateRound();
     }
 }
 

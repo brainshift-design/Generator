@@ -1,6 +1,6 @@
 function logReqColorValue(val, parse)
 {
-    parse.log += parse.tab + COLOR_VALUE + ' ' + val;
+    parse.log += ' ' + COLOR_VALUE + ' ' + val;
 }
 
 
@@ -51,7 +51,7 @@ function logReqColorValidate(val, parse)
 
 function logReqColorFillValue(fill, parse)
 {
-    parse.log += parse.tab + COLOR_FILL_VALUE + ' ' + fill;
+    parse.log += ' ' + COLOR_FILL_VALUE + ' ' + fill;
 }
 
 

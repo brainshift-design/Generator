@@ -31,7 +31,7 @@ const largeScrollGap = 14;
 
 const MAX_INT32      = 2147483647;
 
-const TAB            = '    ';
+const TAB            = '  ';
 const NL             = '\n';
 
 

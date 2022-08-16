@@ -22,7 +22,7 @@ function noConnTag(key) { return noTag(key, connTag); }
 const smallScrollGap = 6;
 const largeScrollGap = 14;
 const MAX_INT32 = 2147483647;
-const TAB = '    ';
+const TAB = '  ';
 const NL = '\n';
 const INVALID = '?';
 const DISPLAY_INVALID = '🤷‍♂️';
