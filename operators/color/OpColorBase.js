@@ -47,7 +47,7 @@ extends Operator
 
         this.header.style.background = 
             this.canShowColor()
-            ? colorStyleRgb(colors.back)
+            ? rgb2style(colors.back)
             : isDarkMode()
               ? '#888088ee'
               : '#ead8eaee';
@@ -108,7 +108,7 @@ extends Operator
                ? [1, 1, 1, wa]
                : [0, 0, 0, ba ]);
 
-        const textStyle = colorStyleRgba(colText);
+        const textStyle = rgba2style(colText);
 
         
         const colInput  = this.canShowColor() ? colText : [0, 0, 0, 0.12];
@@ -156,7 +156,7 @@ extends Operator
 
     getDefaultWarningStyle(colBack)
     {
-        return colorStyleRgba(
+        return rgba2style(
             isDark(colBack) 
             ? [1, 1, 1, 0.2 ]
             : [0, 0, 0, 0.12]); 
@@ -168,8 +168,8 @@ extends Operator
     {
         this.warningStyle = 
             isDarkMode()
-            ? colorStyleRgba([0.3, 0.55, 0.3, 0.2])
-            : colorStyleRgba([0.5, 1, 0.5, 0.2]);        
+            ? rgba2style([0.3, 0.55, 0.3, 0.2])
+            : rgba2style([0.5, 1, 0.5, 0.2]);        
     }
 
 

@@ -53,8 +53,8 @@ extends Parameter
         this.opacityControl.zIndex = 0;
    
         this.defaultValue          = defaultValue;
-console.log('defaultValue =', defaultValue);
 
+        
         initColorControl(
             this,
             this.colorControl,
@@ -82,16 +82,38 @@ console.log('defaultValue =', defaultValue);
         this.opacityControl.setSuffix('%', true);
 
 
-        this.controlWrapper.style.display     = 'inline-block';
-        this.controlWrapper.style.width       = '100%';
+        this.controlWrapper.style.display           = 'inline-block';
+        this.controlWrapper.style.width             = '100%';
+        this.controlWrapper.style.height            = '20px';
 
-        this.  colorControl.successOnFocusOut = true;
-        this.  colorControl.style.display     = 'inline';
-        this.  colorControl.style.width       = '70%';
 
-        this.opacityControl.successOnFocusOut = true;
-        this.opacityControl.style.display     = 'inline';
-        this.opacityControl.style.width       = '30%';
+        this.  colorControl.successOnFocusOut       = true;
+        this.  colorControl.style.display           = 'inline';
+        this.  colorControl.style.width             = '60%';
+        this.  colorControl.style.position          = 'absolute';
+        this.  colorControl.style.left              = 0;
+
+    
+        this.opacityControl.successOnFocusOut       = true;
+        this.opacityControl.style.display           = 'inline';
+        this.opacityControl.style.width             = '40%';
+        this.opacityControl.style.position          = 'absolute';
+        this.opacityControl.style.right             = 0;
+        this.opacityControl.barTop                  = 0.8;
+        this.opacityControl.barBottom               = 1;
+
+
+        this.  colorControl.text.style.transform    = 'translateX(-40%)';
+        this.opacityControl.text.style.transform    = 'translateX(-70%)';
+
+
+        this.  colorControl.textbox.style.position  = 'absolute';
+        this.  colorControl.textbox.style.left      = '0';
+        this.  colorControl.textbox.style.transform = 'translateX(0)';
+
+        this.opacityControl.textbox.style.position  = 'absolute';
+        this.opacityControl.textbox.style.left      = '0';
+        this.opacityControl.textbox.style.transform = 'translateX(0)';
 
 
         this.controlWrapper.appendChild(this.  colorControl);
@@ -164,11 +186,11 @@ console.log('defaultValue =', defaultValue);
 
     updateControls()
     {
-        const rgb = dataColor2rgb(this.value.color.toDataColor());
+        const rgbVal = dataColor2rgb(this.value.color.toDataColor());
 
-        const col = 
-            isValidRgb(rgb)
-            ? (isDark(rgb)
+        const rgbText = 
+            isValidRgb(rgbVal)
+            ? (isDark(rgbVal)
                ? [1, 1, 1]
                : [0, 0, 0])
             : (isDarkMode()
@@ -176,18 +198,32 @@ console.log('defaultValue =', defaultValue);
                : [0, 0, 0]);
 
 
-        this.input.wireColor   = rgb;
+        this.input.wireColor   = rgbVal;
         this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(col, 0.12);
+        this.input.colorDark   = rgb_a(rgbText, 0.12);
 
-        this.output.wireColor  = rgb;
+        this.output.wireColor  = rgbVal;
         this.output.colorLight =
-        this.output.colorDark  = rgb_a(col, 0.12);
+        this.output.colorDark  = rgb_a(rgbText, 0.12);
+
+
+        this.controlWrapper.style.background = rgb2style(rgbVal);
+
+
+        this.opacityControl.backColorLight  = 
+        this.opacityControl.backColorDark   = rgba2style(rgb_a(rgbVal, 0.6));
+
+        this.opacityControl.valueColorLight = 
+        this.opacityControl.valueColorDark  = rgba2style(rgb_a(rgbText, 0.12));
+
+        this.opacityControl.textColorLight  = 
+        this.opacityControl.textColorDark   = rgba2style(rgb_a(rgbText, 0.6));
 
 
         this.  colorControl.update();
         this.opacityControl.update();
-        
+
+
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
     }

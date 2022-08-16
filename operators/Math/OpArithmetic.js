@@ -136,7 +136,7 @@ extends OperatorBase
 
         this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
         this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
-        this._symbol.style.color      = colorStyleRgb(colText);
+        this._symbol.style.color      = rgb2style(colText);
         this._symbol.style.left       = 'calc(50% + 1px)';
         
 

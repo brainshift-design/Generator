@@ -780,7 +780,7 @@ div
 {
     padding:          0;
     width:            74px;
-    height:           26px;
+    height:           20px;
     overflow:         hidden;
     background-color: var(--figma-color-bg);/*white;*/
     text-align:       center;
@@ -5119,7 +5119,7 @@ extends GType
 
 
     static default = new GColorFillValue(
-        GColorValue.default,
+        GColorValue.create(1, 217, 217, 217),
         new GNumberValue(100));
 }
 
@@ -10278,7 +10278,7 @@ function colorStyleRgb_(r, g, b)
 
 
 
-function colorStyleRgb(rgb)
+function rgb2style(rgb)
 {
     return colorStyle_(rgb[0], rgb[1], rgb[2], 1);
 }
@@ -10292,7 +10292,7 @@ function colorStyleRgba_(r, g, b, a)
 
 
 
-function colorStyleRgba(rgba)
+function rgba2style(rgba)
 {
     return colorStyle_(rgba[0], rgba[1], rgba[2], rgba[3]);
 }
@@ -15476,7 +15476,7 @@ function colorStyleRgb_(r, g, b)
 
 
 
-function colorStyleRgb(rgb)
+function rgb2style(rgb)
 {
     return colorStyle_(rgb[0], rgb[1], rgb[2], 1);
 }
@@ -15490,7 +15490,7 @@ function colorStyleRgba_(r, g, b, a)
 
 
 
-function colorStyleRgba(rgba)
+function rgba2style(rgba)
 {
     return colorStyle_(rgba[0], rgba[1], rgba[2], rgba[3]);
 }
@@ -16690,7 +16690,7 @@ extends GType
 
 
     static default = new GColorFillValue(
-        GColorValue.default,
+        GColorValue.create(1, 217, 217, 217),
         new GNumberValue(100));
 }
 
@@ -19584,7 +19584,7 @@ function initNumberControlEvents(control)
 
             if (control.param)
             {
-                control.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
+                control.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
 
                 if (    control.param.node
                     &&  control.param.node.params.includes(control.param)
@@ -20667,7 +20667,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
                 ? sx + cx
                 : sx + cx + v * sw;
 
-            control.bar.style.left   = Math.max(0, x);
+            control.bar.style.left   = 0;//Math.max(0, x);
             control.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), control.offsetWidth);
 
             control.bar.style.top    = sh * control.barTop;
@@ -21732,7 +21732,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
         if (isValidRgb(rgb))
         {
-            control     .style.background = colorStyleRgb(rgb);
+            control     .style.background = rgb2style(rgb);
             control.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
         }
         else
@@ -25070,8 +25070,8 @@ extends Parameter
         this.opacityControl.zIndex = 0;
    
         this.defaultValue          = defaultValue;
-console.log('defaultValue =', defaultValue);
 
+        
         initColorControl(
             this,
             this.colorControl,
@@ -25099,16 +25099,38 @@ console.log('defaultValue =', defaultValue);
         this.opacityControl.setSuffix('%', true);
 
 
-        this.controlWrapper.style.display     = 'inline-block';
-        this.controlWrapper.style.width       = '100%';
+        this.controlWrapper.style.display           = 'inline-block';
+        this.controlWrapper.style.width             = '100%';
+        this.controlWrapper.style.height            = '20px';
 
-        this.  colorControl.successOnFocusOut = true;
-        this.  colorControl.style.display     = 'inline';
-        this.  colorControl.style.width       = '70%';
 
-        this.opacityControl.successOnFocusOut = true;
-        this.opacityControl.style.display     = 'inline';
-        this.opacityControl.style.width       = '30%';
+        this.  colorControl.successOnFocusOut       = true;
+        this.  colorControl.style.display           = 'inline';
+        this.  colorControl.style.width             = '60%';
+        this.  colorControl.style.position          = 'absolute';
+        this.  colorControl.style.left              = 0;
+
+    
+        this.opacityControl.successOnFocusOut       = true;
+        this.opacityControl.style.display           = 'inline';
+        this.opacityControl.style.width             = '40%';
+        this.opacityControl.style.position          = 'absolute';
+        this.opacityControl.style.right             = 0;
+        this.opacityControl.barTop                  = 0.8;
+        this.opacityControl.barBottom               = 1;
+
+
+        this.  colorControl.text.style.transform    = 'translateX(-40%)';
+        this.opacityControl.text.style.transform    = 'translateX(-70%)';
+
+
+        this.  colorControl.textbox.style.position  = 'absolute';
+        this.  colorControl.textbox.style.left      = '0';
+        this.  colorControl.textbox.style.transform = 'translateX(0)';
+
+        this.opacityControl.textbox.style.position  = 'absolute';
+        this.opacityControl.textbox.style.left      = '0';
+        this.opacityControl.textbox.style.transform = 'translateX(0)';
 
 
         this.controlWrapper.appendChild(this.  colorControl);
@@ -25181,11 +25203,11 @@ console.log('defaultValue =', defaultValue);
 
     updateControls()
     {
-        const rgb = dataColor2rgb(this.value.color.toDataColor());
+        const rgbVal = dataColor2rgb(this.value.color.toDataColor());
 
-        const col = 
-            isValidRgb(rgb)
-            ? (isDark(rgb)
+        const rgbText = 
+            isValidRgb(rgbVal)
+            ? (isDark(rgbVal)
                ? [1, 1, 1]
                : [0, 0, 0])
             : (isDarkMode()
@@ -25193,18 +25215,32 @@ console.log('defaultValue =', defaultValue);
                : [0, 0, 0]);
 
 
-        this.input.wireColor   = rgb;
+        this.input.wireColor   = rgbVal;
         this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(col, 0.12);
+        this.input.colorDark   = rgb_a(rgbText, 0.12);
 
-        this.output.wireColor  = rgb;
+        this.output.wireColor  = rgbVal;
         this.output.colorLight =
-        this.output.colorDark  = rgb_a(col, 0.12);
+        this.output.colorDark  = rgb_a(rgbText, 0.12);
+
+
+        this.controlWrapper.style.background = rgb2style(rgbVal);
+
+
+        this.opacityControl.backColorLight  = 
+        this.opacityControl.backColorDark   = rgba2style(rgb_a(rgbVal, 0.6));
+
+        this.opacityControl.valueColorLight = 
+        this.opacityControl.valueColorDark  = rgba2style(rgb_a(rgbText, 0.12));
+
+        this.opacityControl.textColorLight  = 
+        this.opacityControl.textColorDark   = rgba2style(rgb_a(rgbText, 0.6));
 
 
         this.  colorControl.update();
         this.opacityControl.update();
-        
+
+
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
     }
@@ -26236,7 +26272,7 @@ extends EventTarget
                      
         const colorStyle = 
             graphView.showWires
-            ? colorStyleRgba(rgb_a(
+            ? rgba2style(rgb_a(
                 color,
                 (mouseOver 
                  ? Math.min(color[3] * 1.8, 1) 
@@ -26276,20 +26312,20 @@ extends EventTarget
                && graphView.savedConn.input == this
                && graphView.overInput != this
                ? 'transparent'
-               : colorStyleRgba(toRgba(this.connectedOutput.wireColor)))
+               : rgba2style(toRgba(this.connectedOutput.wireColor)))
             : (   tc
                && tc.output
                && this.types.includes(tc.output.type)
                && graphView.overInput == this
-               ? colorStyleRgba(toRgba(tc.output.wireColor))
+               ? rgba2style(toRgba(tc.output.wireColor))
                : (   tc
                   && tc.input
                   && tc.input == this)
                   ? (graphView.overOutput
-                     ? colorStyleRgba(toRgba(graphView.overOutput.wireColor))
+                     ? rgba2style(toRgba(graphView.overOutput.wireColor))
                      : (graphView.headerOutput
-                        ? colorStyleRgba(toRgba(graphView.headerOutput.wireColor))
-                        : colorStyleRgba(toRgba(tc.input.wireColor))))
+                        ? rgba2style(toRgba(graphView.headerOutput.wireColor))
+                        : rgba2style(toRgba(tc.input.wireColor))))
                   : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;
@@ -26454,7 +26490,7 @@ class Output
 
         const colorStyle = 
             graphView.showWires
-            ? colorStyleRgba(rgb_a(color, mouseOver ? Math.min(color[3] * 1.4, 1) : color[3] / 1.4))
+            ? rgba2style(rgb_a(color, mouseOver ? Math.min(color[3] * 1.4, 1) : color[3] / 1.4))
             : 'transparent';
 
         this.control.style.pointerEvents   = graphView.showWires ? 'auto' : 'none';
@@ -26468,7 +26504,7 @@ class Output
             ? '0 0 0 1px ' + colorStyle
             : 'none';
 
-        this.wireBall.style.backgroundColor = colorStyleRgba(toRgba(this.wireColor));
+        this.wireBall.style.backgroundColor = rgba2style(toRgba(this.wireColor));
 
         this.wireBall.style.zIndex = MAX_INT32;
 
@@ -26683,9 +26719,9 @@ class Connection
                   + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
                 : 'none';
 
-            this.wire.curve.style.stroke      = colorStyleRgb(color);
-            this.wire. inBall.style.fill      = colorStyleRgb(color);
-            this.wire.outBall.style.fill      = colorStyleRgb(color);
+            this.wire.curve.style.stroke      = rgb2style(color);
+            this.wire. inBall.style.fill      = rgb2style(color);
+            this.wire.outBall.style.fill      = rgb2style(color);
 
             this.wire.curve.style.strokeWeight = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * graphView.zoom;
             this.wire. inBall.style.r         = 3 * graphView.zoom;
@@ -27367,7 +27403,7 @@ class Operator
             ? [1, 1, 1]
             : [0, 0, 0]; 
 
-        const textStyle = colorStyleRgba(colText);
+        const textStyle = rgba2style(colText);
 
         const colInput  = colText;
         const colOutput = colText;
@@ -28823,7 +28859,7 @@ extends OperatorBase
 
         this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
         this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
-        this._symbol.style.color      = colorStyleRgb(colText);
+        this._symbol.style.color      = rgb2style(colText);
         this._symbol.style.left       = 'calc(50% + 1px)';
         
 
@@ -29145,7 +29181,7 @@ extends OperatorBase
 
         this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
         this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
-        this._symbol.style.color      = colorStyleRgb(colText);
+        this._symbol.style.color      = rgb2style(colText);
         this._symbol.style.left       = 'calc(50% + 1px)';
         
 
@@ -29362,7 +29398,7 @@ extends Operator
 
         this.header.style.background = 
             this.canShowColor()
-            ? colorStyleRgb(colors.back)
+            ? rgb2style(colors.back)
             : isDarkMode()
               ? '#888088ee'
               : '#ead8eaee';
@@ -29423,7 +29459,7 @@ extends Operator
                ? [1, 1, 1, wa]
                : [0, 0, 0, ba ]);
 
-        const textStyle = colorStyleRgba(colText);
+        const textStyle = rgba2style(colText);
 
         
         const colInput  = this.canShowColor() ? colText : [0, 0, 0, 0.12];
@@ -29471,7 +29507,7 @@ extends Operator
 
     getDefaultWarningStyle(colBack)
     {
-        return colorStyleRgba(
+        return rgba2style(
             isDark(colBack) 
             ? [1, 1, 1, 0.2 ]
             : [0, 0, 0, 0.12]); 
@@ -29483,8 +29519,8 @@ extends Operator
     {
         this.warningStyle = 
             isDarkMode()
-            ? colorStyleRgba([0.3, 0.55, 0.3, 0.2])
-            : colorStyleRgba([0.5, 1, 0.5, 0.2]);        
+            ? rgba2style([0.3, 0.55, 0.3, 0.2])
+            : rgba2style([0.5, 1, 0.5, 0.2]);        
     }
 
 
@@ -29782,7 +29818,7 @@ extends OpColorBase
 
         this.#colorBack.style.background = 
             this.canShowColor()
-            ? colorStyleRgb(colors.back)
+            ? rgb2style(colors.back)
             : isDarkMode()
               ? '#888088ee'
               : '#ead8eaee';
@@ -29796,7 +29832,7 @@ extends OpColorBase
 
         this.paramSpace.control.backColor       = 'transparent';
         this.paramSpace.control.valueColorLight =
-        this.paramSpace.control.valueColorDark  = colorStyleRgba(colSpaceBar);
+        this.paramSpace.control.valueColorDark  = rgba2style(colSpaceBar);
         this.paramSpace.control.textColorLight  =
         this.paramSpace.control.textColorDark   = colors.textStyle;
         this.paramSpace.input .color            = colors.input;
@@ -29808,7 +29844,7 @@ extends OpColorBase
             ? [0, 0, 0, 0.12] 
             : [1, 1, 1, 0.2 ];
 
-        this.warningStyle = colorStyleRgba(colWarning);
+        this.warningStyle = rgba2style(colWarning);
 
 
         this.updateWarningOverlay();
@@ -32159,9 +32195,9 @@ extends OpColorBase
 
         if (   this.inputs[0].connected 
             && this.inputs[1].connected)
-            colors.textStyle = colorStyleRgb(this.labelColor);
+            colors.textStyle = rgb2style(this.labelColor);
         else if (this.inputs[1].connected)
-            colors.textStyle = colorStyleRgba(colors.text);
+            colors.textStyle = rgba2style(colors.text);
         else 
             colors.textStyle = 'black';
 
@@ -32762,7 +32798,7 @@ extends OpColorBase
 
         this.colorBack.style.background = 
             this.canShowColor()
-            ? colorStyleRgb(colors.back)
+            ? rgb2style(colors.back)
             : isDarkMode()
               ? '#888088ee'
               : '#ead8eaee';
@@ -32838,7 +32874,7 @@ extends OpColorBase
                ? [1, 1, 1, 0.7]
                : [0, 0, 0, 0.6]);
 
-        const textStyle = colorStyleRgba(colText);
+        const textStyle = rgba2style(colText);
 
         
         const colInput  = colText;//this.canShowColor() ? colText : [0, 0, 0, 0.12];
@@ -32884,13 +32920,13 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramFill         = new FillParam  ('fill',         'f',      true, true, true, GColorFillValue.default));
-        this.addParam(this.paramStroke       = new FillParam  ('stroke',       's',      true, true, true));
+        this.addParam(this.paramFill         = new FillParam  ('fill',         'f',      false, true, true, GColorFillValue.default));
+        this.addParam(this.paramStroke       = new FillParam  ('stroke',       's',      false, true, true));
 
-        this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight', 'weight', true, true, true, 1, 0));
-        this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',    'fit',    true, true, true, ['inside', 'center', 'outside'], 0));
-        this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   'join',   true, true, true, ['miter', 'bevel', 'round'], 0));
-        this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiter',  'miter',  true, true, true, 28.96, 0, 180, 2));
+        this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight', 'weight', true,  true, true, 1, 0));
+        this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',    'fit',    true,  true, true, ['inside', 'center', 'outside'], 0));
+        this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
 
         this.paramStrokeMiter.control.setSuffix('°', true);
 

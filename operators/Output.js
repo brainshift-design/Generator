@@ -152,7 +152,7 @@ class Output
 
         const colorStyle = 
             graphView.showWires
-            ? colorStyleRgba(rgb_a(color, mouseOver ? Math.min(color[3] * 1.4, 1) : color[3] / 1.4))
+            ? rgba2style(rgb_a(color, mouseOver ? Math.min(color[3] * 1.4, 1) : color[3] / 1.4))
             : 'transparent';
 
         this.control.style.pointerEvents   = graphView.showWires ? 'auto' : 'none';
@@ -166,7 +166,7 @@ class Output
             ? '0 0 0 1px ' + colorStyle
             : 'none';
 
-        this.wireBall.style.backgroundColor = colorStyleRgba(toRgba(this.wireColor));
+        this.wireBall.style.backgroundColor = rgba2style(toRgba(this.wireColor));
 
         this.wireBall.style.zIndex = MAX_INT32;
 

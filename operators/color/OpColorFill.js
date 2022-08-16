@@ -127,7 +127,7 @@ extends OpColorBase
 
         this.colorBack.style.background = 
             this.canShowColor()
-            ? colorStyleRgb(colors.back)
+            ? rgb2style(colors.back)
             : isDarkMode()
               ? '#888088ee'
               : '#ead8eaee';
@@ -203,7 +203,7 @@ extends OpColorBase
                ? [1, 1, 1, 0.7]
                : [0, 0, 0, 0.6]);
 
-        const textStyle = colorStyleRgba(colText);
+        const textStyle = rgba2style(colText);
 
         
         const colInput  = colText;//this.canShowColor() ? colText : [0, 0, 0, 0.12];

@@ -261,7 +261,7 @@ extends OpColorBase
 
         this.#colorBack.style.background = 
             this.canShowColor()
-            ? colorStyleRgb(colors.back)
+            ? rgb2style(colors.back)
             : isDarkMode()
               ? '#888088ee'
               : '#ead8eaee';
@@ -275,7 +275,7 @@ extends OpColorBase
 
         this.paramSpace.control.backColor       = 'transparent';
         this.paramSpace.control.valueColorLight =
-        this.paramSpace.control.valueColorDark  = colorStyleRgba(colSpaceBar);
+        this.paramSpace.control.valueColorDark  = rgba2style(colSpaceBar);
         this.paramSpace.control.textColorLight  =
         this.paramSpace.control.textColorDark   = colors.textStyle;
         this.paramSpace.input .color            = colors.input;
@@ -287,7 +287,7 @@ extends OpColorBase
             ? [0, 0, 0, 0.12] 
             : [1, 1, 1, 0.2 ];
 
-        this.warningStyle = colorStyleRgba(colWarning);
+        this.warningStyle = rgba2style(colWarning);
 
 
         this.updateWarningOverlay();

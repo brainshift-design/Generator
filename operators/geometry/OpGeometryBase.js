@@ -26,13 +26,13 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramFill         = new FillParam  ('fill',         'f',      true, true, true, GColorFillValue.default));
-        this.addParam(this.paramStroke       = new FillParam  ('stroke',       's',      true, true, true));
+        this.addParam(this.paramFill         = new FillParam  ('fill',         'f',      false, true, true, GColorFillValue.default));
+        this.addParam(this.paramStroke       = new FillParam  ('stroke',       's',      false, true, true));
 
-        this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight', 'weight', true, true, true, 1, 0));
-        this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',    'fit',    true, true, true, ['inside', 'center', 'outside'], 0));
-        this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   'join',   true, true, true, ['miter', 'bevel', 'round'], 0));
-        this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiter',  'miter',  true, true, true, 28.96, 0, 180, 2));
+        this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight', 'weight', true,  true, true, 1, 0));
+        this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',    'fit',    true,  true, true, ['inside', 'center', 'outside'], 0));
+        this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
 
         this.paramStrokeMiter.control.setSuffix('°', true);
 

@@ -186,7 +186,7 @@ extends EventTarget
                      
         const colorStyle = 
             graphView.showWires
-            ? colorStyleRgba(rgb_a(
+            ? rgba2style(rgb_a(
                 color,
                 (mouseOver 
                  ? Math.min(color[3] * 1.8, 1) 
@@ -226,20 +226,20 @@ extends EventTarget
                && graphView.savedConn.input == this
                && graphView.overInput != this
                ? 'transparent'
-               : colorStyleRgba(toRgba(this.connectedOutput.wireColor)))
+               : rgba2style(toRgba(this.connectedOutput.wireColor)))
             : (   tc
                && tc.output
                && this.types.includes(tc.output.type)
                && graphView.overInput == this
-               ? colorStyleRgba(toRgba(tc.output.wireColor))
+               ? rgba2style(toRgba(tc.output.wireColor))
                : (   tc
                   && tc.input
                   && tc.input == this)
                   ? (graphView.overOutput
-                     ? colorStyleRgba(toRgba(graphView.overOutput.wireColor))
+                     ? rgba2style(toRgba(graphView.overOutput.wireColor))
                      : (graphView.headerOutput
-                        ? colorStyleRgba(toRgba(graphView.headerOutput.wireColor))
-                        : colorStyleRgba(toRgba(tc.input.wireColor))))
+                        ? rgba2style(toRgba(graphView.headerOutput.wireColor))
+                        : rgba2style(toRgba(tc.input.wireColor))))
                   : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;

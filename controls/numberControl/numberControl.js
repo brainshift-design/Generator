@@ -234,7 +234,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
                 ? sx + cx
                 : sx + cx + v * sw;
 
-            control.bar.style.left   = Math.max(0, x);
+            control.bar.style.left   = 0;//Math.max(0, x);
             control.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), control.offsetWidth);
 
             control.bar.style.top    = sh * control.barTop;

@@ -568,7 +568,7 @@ class Operator
             ? [1, 1, 1]
             : [0, 0, 0]; 
 
-        const textStyle = colorStyleRgba(colText);
+        const textStyle = rgba2style(colText);
 
         const colInput  = colText;
         const colOutput = colText;

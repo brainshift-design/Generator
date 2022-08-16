@@ -194,9 +194,9 @@ class Connection
                   + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
                 : 'none';
 
-            this.wire.curve.style.stroke      = colorStyleRgb(color);
-            this.wire. inBall.style.fill      = colorStyleRgb(color);
-            this.wire.outBall.style.fill      = colorStyleRgb(color);
+            this.wire.curve.style.stroke      = rgb2style(color);
+            this.wire. inBall.style.fill      = rgb2style(color);
+            this.wire.outBall.style.fill      = rgb2style(color);
 
             this.wire.curve.style.strokeWeight = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * graphView.zoom;
             this.wire. inBall.style.r         = 3 * graphView.zoom;

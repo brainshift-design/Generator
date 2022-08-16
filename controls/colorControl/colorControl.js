@@ -137,7 +137,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
         if (isValidRgb(rgb))
         {
-            control     .style.background = colorStyleRgb(rgb);
+            control     .style.background = rgb2style(rgb);
             control.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
         }
         else

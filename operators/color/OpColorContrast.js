@@ -235,9 +235,9 @@ extends OpColorBase
 
         if (   this.inputs[0].connected 
             && this.inputs[1].connected)
-            colors.textStyle = colorStyleRgb(this.labelColor);
+            colors.textStyle = rgb2style(this.labelColor);
         else if (this.inputs[1].connected)
-            colors.textStyle = colorStyleRgba(colors.text);
+            colors.textStyle = rgba2style(colors.text);
         else 
             colors.textStyle = 'black';
 

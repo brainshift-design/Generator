@@ -87,7 +87,7 @@ extends GType
 
 
     static default = new GColorFillValue(
-        GColorValue.default,
+        GColorValue.create(1, 217, 217, 217),
         new GNumberValue(100));
 }
 
