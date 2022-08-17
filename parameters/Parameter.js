@@ -85,8 +85,8 @@ extends EventTarget
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this.input.addEventListener('connect',    () => enableControlText(this.control, false));
-        this.input.addEventListener('disconnect', () => enableControlText(this.control, true ));
+        this.input.addEventListener('connect',    () => this.enableControlText(false));
+        this.input.addEventListener('disconnect', () => this.enableControlText(true ));
     }
 
 
@@ -167,6 +167,13 @@ extends EventTarget
     textboxHasFocus()
     {
         return false;
+    }
+
+
+
+    enableControlText()
+    {
+        return true;
     }
 
 

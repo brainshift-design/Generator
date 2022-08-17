@@ -109,11 +109,15 @@ extends Parameter
 
         this.  colorControl.textbox.style.position  = 'absolute';
         this.  colorControl.textbox.style.left      = '0';
+        this.  colorControl.textbox.style.width     = '60%';
         this.  colorControl.textbox.style.transform = 'translateX(0)';
-
+        this.  colorControl.textbox.style.textAlign = 'right';
+        
         this.opacityControl.textbox.style.position  = 'absolute';
-        this.opacityControl.textbox.style.left      = '0';
-        this.opacityControl.textbox.style.transform = 'translateX(0)';
+        this.opacityControl.textbox.style.right     = '0';
+        this.opacityControl.textbox.style.width     = '40%';
+        this.opacityControl.textbox.style.transform = 'translateX(25%)';
+        this.opacityControl.textbox.style.textAlign = 'left';
 
 
         this.controlWrapper.appendChild(this.  colorControl);
@@ -254,8 +258,6 @@ extends Parameter
             COLOR_FILL_VALUE, 
             this.value.toString());
 
-        console.log('this.value =', this.value);
-
         return request;
     }
 
@@ -276,6 +278,17 @@ extends Parameter
 
 
 
+    enableControlText(enable)
+    {
+        enableElementText(this.  colorControl, enable);
+        enableElementText(this.opacityControl, enable);
+        
+        this.  colorControl.readOnly = !enable;
+        this.opacityControl.readOnly = !enable;
+    }
+    
+    
+    
     toString()
     {
         return this.genValue.toString();

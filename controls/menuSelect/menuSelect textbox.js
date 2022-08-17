@@ -119,12 +119,12 @@ function initMenuSelectTextbox(select)
                hasFocus(select)
             && !select.clicked;
     
-        select.textbox.style.position = 'absolute';
+        // select.textbox.style.position = 'absolute';
     
-        select.textbox.style.left      = select.offsetLeft   + 1;
-        select.textbox.style.top       = select.offsetTop    + 1;
-        select.textbox.style.width     = select.offsetWidth  - 2;
-        select.textbox.style.height    = select.offsetHeight - 2;
+        // select.textbox.style.left      = select.offsetLeft   + 1;
+        // select.textbox.style.top       = select.offsetTop    + 1;
+        // select.textbox.style.width     = select.offsetWidth  - 2;
+        // select.textbox.style.height    = select.offsetHeight - 2;
         select.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         select.textbox.style.outline   = 'none';
     

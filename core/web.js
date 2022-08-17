@@ -52,14 +52,6 @@ function createTextbox(className = '')
 
 
 
-function enableControlText(slider, enable)
-{
-    enableElementText(slider, enable);
-    slider.readOnly = !enable;
-}
-
-
-
 function enableElementText(elem, enable)
 {
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 

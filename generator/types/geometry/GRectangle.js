@@ -70,10 +70,7 @@ extends GOperator
             }
 
 
-            // this.result.fills = [
-            //     COLOR, 
-            //     color.toRgbString(), 
-            //     (opacity.value / 100).toString()];
+            super.eval(parse);
 
 
             this.result.valid = true;
@@ -81,13 +78,6 @@ extends GOperator
            
             
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
-
-
-            if (this.active)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
         }
 
 

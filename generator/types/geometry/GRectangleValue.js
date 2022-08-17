@@ -1,5 +1,5 @@
 class GRectangleValue
-extends GGeometryValueBase
+extends GGeometryBaseValue
 {
     x;
     y;
@@ -59,7 +59,8 @@ extends GGeometryValueBase
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
-            && this.round .isValid();
+            && this.round .isValid()
+            && super.isValid();
     }
 
 

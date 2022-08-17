@@ -191,6 +191,14 @@ extends Parameter
 
 
 
+    enableControlText(enable)
+    {
+        enableElementText(this.control, enable);
+        this.control.readOnly = !enable;
+    }
+    
+    
+    
     toString()
     {
         return this.genValue.toString();

@@ -839,6 +839,7 @@ div
     position:             absolute;
     left:                 50%;
     transform:            translateX(-50%);
+    width:                100%;
     white-space:          nowrap;
     background-color:     transparent;
 }
@@ -926,6 +927,7 @@ div
     position:             absolute;
     left:                 50%;
     transform:            translateX(-50%);
+    width:                100%;
     white-space:          nowrap;
     background-color:     transparent;
 }
@@ -3907,14 +3909,6 @@ function createTextbox(className = '')
 
 
 
-function enableControlText(slider, enable)
-{
-    enableElementText(slider, enable);
-    slider.readOnly = !enable;
-}
-
-
-
 function enableElementText(elem, enable)
 {
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
@@ -6540,14 +6534,13 @@ extends GOperator
 }
 
 
-class GGeometryValueBase
+class GGeometryBaseValue
 extends GType
 {
     nodeId;
 
-    fills   = [];
-    strokes = [];
-
+    fill;
+    stroke;
     strokeWeight;
     strokeFit;
     strokeJoin;
@@ -6561,6 +6554,8 @@ extends GType
 
         this.nodeId = nodeId; 
 
+        this.fill         = GColorFillValue.default;
+        this.stroke       = GColorFillValue.NaN;
         this.strokeWeight = new GNumberValue(1);
         this.strokeFit    = new GNumberValue(0);
         this.strokeJoin   = new GNumberValue(0);
@@ -6573,9 +6568,8 @@ extends GType
     {
         this.nodeId  = base.nodeId;
 
-        this.fills   = [...base.fills  ];
-        this.strokes = [...base.strokes];
-
+        this.fill         = base.fill        .copy();
+        this.stroke       = base.stroke      .copy();
         this.strokeWeight = base.strokeWeight.copy();
         this.strokeFit    = base.strokeFit   .copy();
         this.strokeJoin   = base.strokeJoin  .copy();
@@ -6586,10 +6580,12 @@ extends GType
 
     isValid()
     {
-        return this.strokeWeight.isValid()
-            && this.strokeFit   .isValid()
-            && this.strokeJoin  .isValid()
-            && this.strokeMiter .isValid();
+        return this.fill        .isValid()
+            && (  !this.stroke.isValid()
+                ||    this.strokeWeight.isValid()
+                   && this.strokeFit   .isValid()
+                   && this.strokeJoin  .isValid()
+                   && this.strokeMiter .isValid());
     }
 
 
@@ -6616,9 +6612,8 @@ extends GType
         return {
             nodeId:           this.nodeId,
 
-            fills:            this.fills,
-            strokes:          this.strokes,
-            
+            fills:            [this.fill  ],
+            strokes:          [this.stroke],
             strokeWeight:     this.strokeWeight.value,
             strokeAlign:      strokeAlign,
             strokeJoin:       strokeJoin,
@@ -6630,16 +6625,18 @@ extends GType
 
     toString()
     {
-        return         this.strokeWeight.toString()
-               + ' ' + this.strokeFit  .toString()
-               + ' ' + this.strokeJoin .toString()
-               + ' ' + this.strokeMiter.toString();
+        return         this.fill        .toString()
+               + ' ' + this.stroke      .toString()
+               + ' ' + this.strokeWeight.toString()
+               + ' ' + this.strokeFit   .toString()
+               + ' ' + this.strokeJoin  .toString()
+               + ' ' + this.strokeMiter .toString();
     }
 }
 
 
 class GRectangleValue
-extends GGeometryValueBase
+extends GGeometryBaseValue
 {
     x;
     y;
@@ -6699,7 +6696,8 @@ extends GGeometryValueBase
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
-            && this.round .isValid();
+            && this.round .isValid()
+            && super.isValid();
     }
 
 
@@ -7213,7 +7211,15 @@ function parseGStarValue(str)
 class GGeometryBase
 extends GOperator
 {
-    objects = [];
+    fill         = null;
+    stroke       = null;
+    strokeWeight = null;;
+    strokeFit    = null;;
+    strokeJoin   = null;;
+    strokeMiter  = null;;
+    
+
+    objects      = [];
 
 
 
@@ -7237,6 +7243,13 @@ extends GOperator
 
     copyBase(base)
     {
+        if (base.fill        ) this.fill         = base.fill        .copy();
+        if (base.stroke      ) this.stroke       = base.stroke      .copy();
+        if (base.strokeWeight) this.strokeWeight = base.strokeWeight.copy();
+        if (base.strokeFit   ) this.strokeFit    = base.strokeFit   .copy();
+        if (base.strokeJoin  ) this.strokeJoin   = base.strokeJoin  .copy();
+        if (base.strokeMiter ) this.strokeMiter  = base.strokeMiter .copy();
+
         this.objects = [...base.objects];
     }
 
@@ -7256,11 +7269,31 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GGeometryBase(this.nodeId, this.active);
+            if (this.input)
+            {
+                if (this.fill        ) this.result.fill         = this.fill        .eval(parse).copy();
+                if (this.stroke      ) this.result.stroke       = this.stroke      .eval(parse).copy();
+                if (this.strokeWeight) this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
+                if (this.strokeFit   ) this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
+                if (this.strokeJoin  ) this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
+                if (this.strokeMiter ) this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
+            }
+            else
+            {
+                this.result.fill         = this.fill        .eval(parse).copy();
+                this.result.stroke       = this.stroke      .eval(parse).copy();
+                this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
+                this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
+                this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
+                this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
+            }
 
 
-            this.result.valid = true;
-            this.valid        = true;
+            if (this.active)
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    this.result.toFigmaObject());
         }
 
 
@@ -7341,10 +7374,7 @@ extends GOperator
             }
 
 
-            // this.result.fills = [
-            //     COLOR, 
-            //     color.toRgbString(), 
-            //     (opacity.value / 100).toString()];
+            super.eval(parse);
 
 
             this.result.valid = true;
@@ -7352,13 +7382,6 @@ extends GOperator
            
             
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
-
-
-            if (this.active)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
         }
 
 
@@ -14042,14 +14065,6 @@ function createTextbox(className = '')
 
 
 
-function enableControlText(slider, enable)
-{
-    enableElementText(slider, enable);
-    slider.readOnly = !enable;
-}
-
-
-
 function enableElementText(elem, enable)
 {
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
@@ -18111,14 +18126,13 @@ extends GOperator
 }
 
 
-class GGeometryValueBase
+class GGeometryBaseValue
 extends GType
 {
     nodeId;
 
-    fills   = [];
-    strokes = [];
-
+    fill;
+    stroke;
     strokeWeight;
     strokeFit;
     strokeJoin;
@@ -18132,6 +18146,8 @@ extends GType
 
         this.nodeId = nodeId; 
 
+        this.fill         = GColorFillValue.default;
+        this.stroke       = GColorFillValue.NaN;
         this.strokeWeight = new GNumberValue(1);
         this.strokeFit    = new GNumberValue(0);
         this.strokeJoin   = new GNumberValue(0);
@@ -18144,9 +18160,8 @@ extends GType
     {
         this.nodeId  = base.nodeId;
 
-        this.fills   = [...base.fills  ];
-        this.strokes = [...base.strokes];
-
+        this.fill         = base.fill        .copy();
+        this.stroke       = base.stroke      .copy();
         this.strokeWeight = base.strokeWeight.copy();
         this.strokeFit    = base.strokeFit   .copy();
         this.strokeJoin   = base.strokeJoin  .copy();
@@ -18157,10 +18172,12 @@ extends GType
 
     isValid()
     {
-        return this.strokeWeight.isValid()
-            && this.strokeFit   .isValid()
-            && this.strokeJoin  .isValid()
-            && this.strokeMiter .isValid();
+        return this.fill        .isValid()
+            && (  !this.stroke.isValid()
+                ||    this.strokeWeight.isValid()
+                   && this.strokeFit   .isValid()
+                   && this.strokeJoin  .isValid()
+                   && this.strokeMiter .isValid());
     }
 
 
@@ -18187,9 +18204,8 @@ extends GType
         return {
             nodeId:           this.nodeId,
 
-            fills:            this.fills,
-            strokes:          this.strokes,
-            
+            fills:            [this.fill  ],
+            strokes:          [this.stroke],
             strokeWeight:     this.strokeWeight.value,
             strokeAlign:      strokeAlign,
             strokeJoin:       strokeJoin,
@@ -18201,16 +18217,18 @@ extends GType
 
     toString()
     {
-        return         this.strokeWeight.toString()
-               + ' ' + this.strokeFit  .toString()
-               + ' ' + this.strokeJoin .toString()
-               + ' ' + this.strokeMiter.toString();
+        return         this.fill        .toString()
+               + ' ' + this.stroke      .toString()
+               + ' ' + this.strokeWeight.toString()
+               + ' ' + this.strokeFit   .toString()
+               + ' ' + this.strokeJoin  .toString()
+               + ' ' + this.strokeMiter .toString();
     }
 }
 
 
 class GRectangleValue
-extends GGeometryValueBase
+extends GGeometryBaseValue
 {
     x;
     y;
@@ -18270,7 +18288,8 @@ extends GGeometryValueBase
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
-            && this.round .isValid();
+            && this.round .isValid()
+            && super.isValid();
     }
 
 
@@ -18784,7 +18803,15 @@ function parseGStarValue(str)
 class GGeometryBase
 extends GOperator
 {
-    objects = [];
+    fill         = null;
+    stroke       = null;
+    strokeWeight = null;;
+    strokeFit    = null;;
+    strokeJoin   = null;;
+    strokeMiter  = null;;
+    
+
+    objects      = [];
 
 
 
@@ -18808,6 +18835,13 @@ extends GOperator
 
     copyBase(base)
     {
+        if (base.fill        ) this.fill         = base.fill        .copy();
+        if (base.stroke      ) this.stroke       = base.stroke      .copy();
+        if (base.strokeWeight) this.strokeWeight = base.strokeWeight.copy();
+        if (base.strokeFit   ) this.strokeFit    = base.strokeFit   .copy();
+        if (base.strokeJoin  ) this.strokeJoin   = base.strokeJoin  .copy();
+        if (base.strokeMiter ) this.strokeMiter  = base.strokeMiter .copy();
+
         this.objects = [...base.objects];
     }
 
@@ -18827,11 +18861,31 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GGeometryBase(this.nodeId, this.active);
+            if (this.input)
+            {
+                if (this.fill        ) this.result.fill         = this.fill        .eval(parse).copy();
+                if (this.stroke      ) this.result.stroke       = this.stroke      .eval(parse).copy();
+                if (this.strokeWeight) this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
+                if (this.strokeFit   ) this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
+                if (this.strokeJoin  ) this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
+                if (this.strokeMiter ) this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
+            }
+            else
+            {
+                this.result.fill         = this.fill        .eval(parse).copy();
+                this.result.stroke       = this.stroke      .eval(parse).copy();
+                this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
+                this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
+                this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
+                this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
+            }
 
 
-            this.result.valid = true;
-            this.valid        = true;
+            if (this.active)
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    this.result.toFigmaObject());
         }
 
 
@@ -18912,10 +18966,7 @@ extends GOperator
             }
 
 
-            // this.result.fills = [
-            //     COLOR, 
-            //     color.toRgbString(), 
-            //     (opacity.value / 100).toString()];
+            super.eval(parse);
 
 
             this.result.valid = true;
@@ -18923,13 +18974,6 @@ extends GOperator
            
             
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
-
-
-            if (this.active)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
         }
 
 
@@ -20380,12 +20424,12 @@ function initNumberControlTextbox(control)
                hasFocus(control)
             && !control.clicked;
     
-        control.textbox.style.position  = 'absolute';
-        control.textbox.style.left      = '50%';
-        control.textbox.style.transform = 'translate(-50%)';
-        control.textbox.style.top       = control.offsetTop    + 1;
-        control.textbox.style.width     = control.offsetWidth  - 2;
-        control.textbox.style.height    = control.offsetHeight - 2;
+        // control.textbox.style.position  = 'absolute';
+        // control.textbox.style.left      = '50%';
+        // control.textbox.style.transform = 'translate(-50%)';
+        // control.textbox.style.top       = control.offsetTop    + 1;
+        // control.textbox.style.width     = control.offsetWidth  - 2;
+        // control.textbox.style.height    = control.offsetHeight - 2;
         control.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         control.textbox.style.outline   = 'none';
         control.textbox.style.textAlign = 'center';
@@ -21539,12 +21583,12 @@ function initColorControlTextbox(control)
                hasFocus(control)
             && !control.clicked;
     
-        control.textbox.style.position  = 'absolute';
-        control.textbox.style.left      = '50%';
-        control.textbox.style.transform = 'translate(-50%)';
-        control.textbox.style.top       = control.offsetTop    + 1;
-        control.textbox.style.width     = control.offsetWidth  - 2;
-        control.textbox.style.height    = control.offsetHeight - 2;
+        // control.textbox.style.position  = 'absolute';
+        // control.textbox.style.left      = '50%';
+        // control.textbox.style.transform = 'translate(-50%)';
+        // control.textbox.style.top       = control.offsetTop    + 1;
+        // control.textbox.style.width     = control.offsetWidth  - 2;
+        // control.textbox.style.height    = control.offsetHeight - 2;
         control.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         control.textbox.style.outline   = 'none';
         control.textbox.style.textAlign = 'center';
@@ -22413,12 +22457,12 @@ function initMenuSelectTextbox(select)
                hasFocus(select)
             && !select.clicked;
     
-        select.textbox.style.position = 'absolute';
+        // select.textbox.style.position = 'absolute';
     
-        select.textbox.style.left      = select.offsetLeft   + 1;
-        select.textbox.style.top       = select.offsetTop    + 1;
-        select.textbox.style.width     = select.offsetWidth  - 2;
-        select.textbox.style.height    = select.offsetHeight - 2;
+        // select.textbox.style.left      = select.offsetLeft   + 1;
+        // select.textbox.style.top       = select.offsetTop    + 1;
+        // select.textbox.style.width     = select.offsetWidth  - 2;
+        // select.textbox.style.height    = select.offsetHeight - 2;
         select.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         select.textbox.style.outline   = 'none';
     
@@ -24283,8 +24327,8 @@ extends EventTarget
         this.input.control.style.transform = 'translateY(-50%)';
         this.div.appendChild(this.input.control);
 
-        this.input.addEventListener('connect',    () => enableControlText(this.control, false));
-        this.input.addEventListener('disconnect', () => enableControlText(this.control, true ));
+        this.input.addEventListener('connect',    () => this.enableControlText(false));
+        this.input.addEventListener('disconnect', () => this.enableControlText(true ));
     }
 
 
@@ -24365,6 +24409,13 @@ extends EventTarget
     textboxHasFocus()
     {
         return false;
+    }
+
+
+
+    enableControlText()
+    {
+        return true;
     }
 
 
@@ -24530,6 +24581,14 @@ extends Parameter
 
 
 
+    enableControlText(enable)
+    {
+        enableElementText(this.control, enable);
+        this.control.readOnly = !enable;
+    }
+    
+    
+    
     toJson(nTab = 0, id = '')
     {
         let pos = ' '.repeat(nTab);
@@ -24989,6 +25048,14 @@ extends Parameter
 
 
 
+    enableControlText(enable)
+    {
+        enableElementText(this.control, enable);
+        this.control.readOnly = !enable;
+    }
+    
+    
+    
     toString()
     {
         return this.genValue.toString();
@@ -25126,11 +25193,15 @@ extends Parameter
 
         this.  colorControl.textbox.style.position  = 'absolute';
         this.  colorControl.textbox.style.left      = '0';
+        this.  colorControl.textbox.style.width     = '60%';
         this.  colorControl.textbox.style.transform = 'translateX(0)';
-
+        this.  colorControl.textbox.style.textAlign = 'right';
+        
         this.opacityControl.textbox.style.position  = 'absolute';
-        this.opacityControl.textbox.style.left      = '0';
-        this.opacityControl.textbox.style.transform = 'translateX(0)';
+        this.opacityControl.textbox.style.right     = '0';
+        this.opacityControl.textbox.style.width     = '40%';
+        this.opacityControl.textbox.style.transform = 'translateX(25%)';
+        this.opacityControl.textbox.style.textAlign = 'left';
 
 
         this.controlWrapper.appendChild(this.  colorControl);
@@ -25271,8 +25342,6 @@ extends Parameter
             COLOR_FILL_VALUE, 
             this.value.toString());
 
-        console.log('this.value =', this.value);
-
         return request;
     }
 
@@ -25293,6 +25362,17 @@ extends Parameter
 
 
 
+    enableControlText(enable)
+    {
+        enableElementText(this.  colorControl, enable);
+        enableElementText(this.opacityControl, enable);
+        
+        this.  colorControl.readOnly = !enable;
+        this.opacityControl.readOnly = !enable;
+    }
+    
+    
+    
     toString()
     {
         return this.genValue.toString();
@@ -27041,7 +27121,7 @@ class Operator
         input.addEventListener('connect', () =>
         {
             for (let i = firstParam; i < this.params.length; i++)
-                enableControlText(this.params[i].control, false);
+            this.params[i].enableControlText(false);
         });
     
         input.addEventListener('disconnect', () =>
@@ -27049,7 +27129,7 @@ class Operator
             for (let i = firstParam; i < this.params.length; i++)
             {
                 if (!this.params[i].input.connected) 
-                    enableControlText(this.params[i].control, true);
+                    this.params[i].enableControlText(true);
             }
 
             this.updateNode();
@@ -28667,10 +28747,10 @@ extends OperatorBase
 
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
-        enableControlText(this.paramValue.control, false);
+        this.paramValue.enableControlText(false);
        
-        this.addParam(this.paramMin   = new NumberParam('min', 'min', true, true, true, 0));
-        this.addParam(this.paramMax   = new NumberParam('max', 'max', true, true, true));
+        this.addParam(this.paramMin = new NumberParam('min', 'min', true, true, true, 0));
+        this.addParam(this.paramMax = new NumberParam('max', 'max', true, true, true));
     }
 
 
@@ -28745,7 +28825,7 @@ extends OperatorBase
         
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
-        enableControlText(this.paramValue.control, false);
+        this.paramValue.enableControlText(false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');
@@ -29069,7 +29149,7 @@ extends OperatorBase
         this.addParam(this.paramOperation = new SelectParam('op',     '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
         this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
 
-        enableControlText(this.paramValue.control, false);
+        this.paramValue.enableControlText(false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');
@@ -29287,7 +29367,7 @@ extends OperatorBase
         this.addParam(this.paramValue  = new NumberParam('value', '', false, false, false, 0));
         this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
 
-        enableControlText(this.paramValue.control, false);
+        this.paramValue.enableControlText(false);
         
         this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
         this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
@@ -29626,7 +29706,7 @@ extends OpColorBase
 
 
         for (let i = 1; i < this.params.length; i++)
-            this.params[i].input.addEventListener('disconnect', () => { enableControlText(this.params[i].control, !this.inputs[0].connected); });
+            this.params[i].input.addEventListener('disconnect', () => { this.params[i].enableControlText(!this.inputs[0].connected); });
     }
 
 
@@ -31980,7 +32060,7 @@ extends OpColorBase
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
-        enableControlText(this.paramValue.control, false);
+        this.paramValue.enableControlText(false);
 
 
         createTooltip(ttWcag2);
@@ -32922,7 +33002,6 @@ extends OperatorBase
     {
         this.addParam(this.paramFill         = new FillParam  ('fill',         'f',      false, true, true, GColorFillValue.default));
         this.addParam(this.paramStroke       = new FillParam  ('stroke',       's',      false, true, true));
-
         this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight', 'weight', true,  true, true, 1, 0));
         this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',    'fit',    true,  true, true, ['inside', 'center', 'outside'], 0));
         this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
@@ -32941,6 +33020,20 @@ extends OperatorBase
         this.paramStrokeJoin  .show = () => cond();
         this.paramStrokeMiter .show = () => cond() && this.paramStrokeJoin.value == 0;
     } 
+
+
+
+    updateBaseValues(updateParamId, paramIds, values, obj)
+    {
+        this.paramFill        .setValue(obj.fill,         false, true, false);
+        this.paramStroke      .setValue(obj.stroke,       false, true, false);
+        this.paramStrokeWeight.setValue(obj.strokeWeight, false, true, false);
+        this.paramStrokeFit   .setValue(obj.strokeFit,    false, true, false);
+        this.paramStrokeJoin  .setValue(obj.strokeJoin,   false, true, false);
+        this.paramStrokeMiter .setValue(obj.strokeMiter,  false, true, false);
+
+        super.updateValues(updateParamId, paramIds, values);
+    }
 }
 
 
@@ -32987,7 +33080,7 @@ extends OpGeometryBase
         this.inputs[0].addEventListener('connect', () =>
         {
             for (const param of this.params)
-                enableControlText(param.control, false);
+                param.enableControlText(false);
         });
 
 
@@ -32995,7 +33088,7 @@ extends OpGeometryBase
         {
             for (const param of this.params)
                 if (!param.input.connected) 
-                    enableControlText(param.control, true);
+                    param.enableControlText(true);
         });
 
 
@@ -33059,13 +33152,16 @@ extends OpGeometryBase
             request.push(...pushInputOrParam(input, gen));
 
             for (const param of this.node.params)
-                if (param.input && param.input.connected) 
+                if (   param.input 
+                    && param.input.connected
+                    && param.show())
                     paramIds.push(param.id);
         }
         else
         {
             for (const param of this.node.params)
-                paramIds.push(param.id);
+                if (param.show())
+                    paramIds.push(param.id);
         }
 
 
@@ -33083,7 +33179,7 @@ extends OpGeometryBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(updateParamId, paramIds, values, src)
     {
         const rect = values[paramIds.findIndex(id => id == RECTANGLE_VALUE)];
 
@@ -33094,7 +33190,7 @@ extends OpGeometryBase
         this.paramAngle .setValue(rect.angle,  false, true, false);
         this.paramRound .setValue(rect.round,  false, true, false);
 
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateBaseValues(updateParamId, paramIds, values, rect);
     }
 
 
@@ -33194,7 +33290,7 @@ extends OpGeometryBase
         this.inputs[0].addEventListener('connect', () =>
         {
             for (const param of this.params)
-                enableControlText(param.control, false);
+                param.enableControlText(false);
         });
 
 
@@ -33202,7 +33298,7 @@ extends OpGeometryBase
         {
             for (const param of this.params)
                 if (!param.input.connected) 
-                    enableControlText(param.control, true);
+                    param.enableControlText(true);
         });
     }
     
@@ -33303,7 +33399,7 @@ extends OpGeometryBase
         this.inputs[0].addEventListener('connect', () =>
         {
             for (const param of this.params)
-                enableControlText(param.control, false);
+                param.enableControlText(false);
         });
 
 
@@ -33311,7 +33407,7 @@ extends OpGeometryBase
         {
             for (const param of this.params)
                 if (!param.input.connected) 
-                    enableControlText(param.control, true);
+                    param.enableControlText(true);
         });
 
 
@@ -33493,7 +33589,7 @@ extends OpGeometryBase
         this.inputs[0].addEventListener('connect', () =>
         {
             for (const param of this.params)
-                enableControlText(param.control, false);
+                param.enableControlText(false);
         });
 
 
@@ -33501,7 +33597,7 @@ extends OpGeometryBase
         {
             for (const param of this.params)
                 if (!param.input.connected) 
-                    enableControlText(param.control, true);
+                    param.enableControlText(true);
         });
 
 
@@ -33712,7 +33808,7 @@ extends OpGeometryBase
         this.inputs[0].addEventListener('connect', () =>
         {
             for (const param of this.params)
-                enableControlText(param.control, false);
+                param.enableControlText(false);
         });
 
 
@@ -33720,7 +33816,7 @@ extends OpGeometryBase
         {
             for (const param of this.params)
                 if (!param.input.connected) 
-                    enableControlText(param.control, true);
+                    param.enableControlText(true);
         });
 
 

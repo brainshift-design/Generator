@@ -236,12 +236,12 @@ function initColorControlTextbox(control)
                hasFocus(control)
             && !control.clicked;
     
-        control.textbox.style.position  = 'absolute';
-        control.textbox.style.left      = '50%';
-        control.textbox.style.transform = 'translate(-50%)';
-        control.textbox.style.top       = control.offsetTop    + 1;
-        control.textbox.style.width     = control.offsetWidth  - 2;
-        control.textbox.style.height    = control.offsetHeight - 2;
+        // control.textbox.style.position  = 'absolute';
+        // control.textbox.style.left      = '50%';
+        // control.textbox.style.transform = 'translate(-50%)';
+        // control.textbox.style.top       = control.offsetTop    + 1;
+        // control.textbox.style.width     = control.offsetWidth  - 2;
+        // control.textbox.style.height    = control.offsetHeight - 2;
         control.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         control.textbox.style.outline   = 'none';
         control.textbox.style.textAlign = 'center';

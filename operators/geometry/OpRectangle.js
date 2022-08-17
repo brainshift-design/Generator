@@ -41,7 +41,7 @@ extends OpGeometryBase
         this.inputs[0].addEventListener('connect', () =>
         {
             for (const param of this.params)
-                enableControlText(param.control, false);
+                param.enableControlText(false);
         });
 
 
@@ -49,7 +49,7 @@ extends OpGeometryBase
         {
             for (const param of this.params)
                 if (!param.input.connected) 
-                    enableControlText(param.control, true);
+                    param.enableControlText(true);
         });
 
 
@@ -113,13 +113,16 @@ extends OpGeometryBase
             request.push(...pushInputOrParam(input, gen));
 
             for (const param of this.node.params)
-                if (param.input && param.input.connected) 
+                if (   param.input 
+                    && param.input.connected
+                    && param.show())
                     paramIds.push(param.id);
         }
         else
         {
             for (const param of this.node.params)
-                paramIds.push(param.id);
+                if (param.show())
+                    paramIds.push(param.id);
         }
 
 
@@ -137,7 +140,7 @@ extends OpGeometryBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(updateParamId, paramIds, values, src)
     {
         const rect = values[paramIds.findIndex(id => id == RECTANGLE_VALUE)];
 
@@ -148,7 +151,7 @@ extends OpGeometryBase
         this.paramAngle .setValue(rect.angle,  false, true, false);
         this.paramRound .setValue(rect.round,  false, true, false);
 
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateBaseValues(updateParamId, paramIds, values, rect);
     }
 
 

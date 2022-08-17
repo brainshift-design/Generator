@@ -36,7 +36,7 @@
 ../generator/types/color/GColorStop.js
 
 
-../generator/types/geometry/GGeometryValueBase.js
+../generator/types/geometry/GGeometryBaseValue.js
 
 ../generator/types/geometry/GRectangleValue.js
 ../generator/types/geometry/GLineValue.js

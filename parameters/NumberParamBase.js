@@ -81,6 +81,14 @@ extends Parameter
 
 
 
+    enableControlText(enable)
+    {
+        enableElementText(this.control, enable);
+        this.control.readOnly = !enable;
+    }
+    
+    
+    
     toJson(nTab = 0, id = '')
     {
         let pos = ' '.repeat(nTab);

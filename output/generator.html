@@ -2150,14 +2150,6 @@ function createTextbox(className = '')
 
 
 
-function enableControlText(slider, enable)
-{
-    enableElementText(slider, enable);
-    slider.readOnly = !enable;
-}
-
-
-
 function enableElementText(elem, enable)
 {
     elem.style.fontStyle  = enable ? 'normal' : 'italic'; 
@@ -4783,14 +4775,13 @@ extends GOperator
 }
 
 
-class GGeometryValueBase
+class GGeometryBaseValue
 extends GType
 {
     nodeId;
 
-    fills   = [];
-    strokes = [];
-
+    fill;
+    stroke;
     strokeWeight;
     strokeFit;
     strokeJoin;
@@ -4804,6 +4795,8 @@ extends GType
 
         this.nodeId = nodeId; 
 
+        this.fill         = GColorFillValue.default;
+        this.stroke       = GColorFillValue.NaN;
         this.strokeWeight = new GNumberValue(1);
         this.strokeFit    = new GNumberValue(0);
         this.strokeJoin   = new GNumberValue(0);
@@ -4816,9 +4809,8 @@ extends GType
     {
         this.nodeId  = base.nodeId;
 
-        this.fills   = [...base.fills  ];
-        this.strokes = [...base.strokes];
-
+        this.fill         = base.fill        .copy();
+        this.stroke       = base.stroke      .copy();
         this.strokeWeight = base.strokeWeight.copy();
         this.strokeFit    = base.strokeFit   .copy();
         this.strokeJoin   = base.strokeJoin  .copy();
@@ -4829,10 +4821,12 @@ extends GType
 
     isValid()
     {
-        return this.strokeWeight.isValid()
-            && this.strokeFit   .isValid()
-            && this.strokeJoin  .isValid()
-            && this.strokeMiter .isValid();
+        return this.fill        .isValid()
+            && (  !this.stroke.isValid()
+                ||    this.strokeWeight.isValid()
+                   && this.strokeFit   .isValid()
+                   && this.strokeJoin  .isValid()
+                   && this.strokeMiter .isValid());
     }
 
 
@@ -4859,9 +4853,8 @@ extends GType
         return {
             nodeId:           this.nodeId,
 
-            fills:            this.fills,
-            strokes:          this.strokes,
-            
+            fills:            [this.fill  ],
+            strokes:          [this.stroke],
             strokeWeight:     this.strokeWeight.value,
             strokeAlign:      strokeAlign,
             strokeJoin:       strokeJoin,
@@ -4873,16 +4866,18 @@ extends GType
 
     toString()
     {
-        return         this.strokeWeight.toString()
-               + ' ' + this.strokeFit  .toString()
-               + ' ' + this.strokeJoin .toString()
-               + ' ' + this.strokeMiter.toString();
+        return         this.fill        .toString()
+               + ' ' + this.stroke      .toString()
+               + ' ' + this.strokeWeight.toString()
+               + ' ' + this.strokeFit   .toString()
+               + ' ' + this.strokeJoin  .toString()
+               + ' ' + this.strokeMiter .toString();
     }
 }
 
 
 class GRectangleValue
-extends GGeometryValueBase
+extends GGeometryBaseValue
 {
     x;
     y;
@@ -4942,7 +4937,8 @@ extends GGeometryValueBase
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
-            && this.round .isValid();
+            && this.round .isValid()
+            && super.isValid();
     }
 
 
@@ -5456,7 +5452,15 @@ function parseGStarValue(str)
 class GGeometryBase
 extends GOperator
 {
-    objects = [];
+    fill         = null;
+    stroke       = null;
+    strokeWeight = null;;
+    strokeFit    = null;;
+    strokeJoin   = null;;
+    strokeMiter  = null;;
+    
+
+    objects      = [];
 
 
 
@@ -5480,6 +5484,13 @@ extends GOperator
 
     copyBase(base)
     {
+        if (base.fill        ) this.fill         = base.fill        .copy();
+        if (base.stroke      ) this.stroke       = base.stroke      .copy();
+        if (base.strokeWeight) this.strokeWeight = base.strokeWeight.copy();
+        if (base.strokeFit   ) this.strokeFit    = base.strokeFit   .copy();
+        if (base.strokeJoin  ) this.strokeJoin   = base.strokeJoin  .copy();
+        if (base.strokeMiter ) this.strokeMiter  = base.strokeMiter .copy();
+
         this.objects = [...base.objects];
     }
 
@@ -5499,11 +5510,31 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GGeometryBase(this.nodeId, this.active);
+            if (this.input)
+            {
+                if (this.fill        ) this.result.fill         = this.fill        .eval(parse).copy();
+                if (this.stroke      ) this.result.stroke       = this.stroke      .eval(parse).copy();
+                if (this.strokeWeight) this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
+                if (this.strokeFit   ) this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
+                if (this.strokeJoin  ) this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
+                if (this.strokeMiter ) this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
+            }
+            else
+            {
+                this.result.fill         = this.fill        .eval(parse).copy();
+                this.result.stroke       = this.stroke      .eval(parse).copy();
+                this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
+                this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
+                this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
+                this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
+            }
 
 
-            this.result.valid = true;
-            this.valid        = true;
+            if (this.active)
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    this.result.toFigmaObject());
         }
 
 
@@ -5584,10 +5615,7 @@ extends GOperator
             }
 
 
-            // this.result.fills = [
-            //     COLOR, 
-            //     color.toRgbString(), 
-            //     (opacity.value / 100).toString()];
+            super.eval(parse);
 
 
             this.result.valid = true;
@@ -5595,13 +5623,6 @@ extends GOperator
            
             
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
-
-
-            if (this.active)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
         }
 
 

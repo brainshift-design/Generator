@@ -1,11 +1,10 @@
-class GGeometryValueBase
+class GGeometryBaseValue
 extends GType
 {
     nodeId;
 
-    fills   = [];
-    strokes = [];
-
+    fill;
+    stroke;
     strokeWeight;
     strokeFit;
     strokeJoin;
@@ -19,6 +18,8 @@ extends GType
 
         this.nodeId = nodeId; 
 
+        this.fill         = GColorFillValue.default;
+        this.stroke       = GColorFillValue.NaN;
         this.strokeWeight = new GNumberValue(1);
         this.strokeFit    = new GNumberValue(0);
         this.strokeJoin   = new GNumberValue(0);
@@ -31,9 +32,8 @@ extends GType
     {
         this.nodeId  = base.nodeId;
 
-        this.fills   = [...base.fills  ];
-        this.strokes = [...base.strokes];
-
+        this.fill         = base.fill        .copy();
+        this.stroke       = base.stroke      .copy();
         this.strokeWeight = base.strokeWeight.copy();
         this.strokeFit    = base.strokeFit   .copy();
         this.strokeJoin   = base.strokeJoin  .copy();
@@ -44,10 +44,12 @@ extends GType
 
     isValid()
     {
-        return this.strokeWeight.isValid()
-            && this.strokeFit   .isValid()
-            && this.strokeJoin  .isValid()
-            && this.strokeMiter .isValid();
+        return this.fill        .isValid()
+            && (  !this.stroke.isValid()
+                ||    this.strokeWeight.isValid()
+                   && this.strokeFit   .isValid()
+                   && this.strokeJoin  .isValid()
+                   && this.strokeMiter .isValid());
     }
 
 
@@ -74,9 +76,8 @@ extends GType
         return {
             nodeId:           this.nodeId,
 
-            fills:            this.fills,
-            strokes:          this.strokes,
-            
+            fills:            [this.fill  ],
+            strokes:          [this.stroke],
             strokeWeight:     this.strokeWeight.value,
             strokeAlign:      strokeAlign,
             strokeJoin:       strokeJoin,
@@ -88,9 +89,11 @@ extends GType
 
     toString()
     {
-        return         this.strokeWeight.toString()
-               + ' ' + this.strokeFit  .toString()
-               + ' ' + this.strokeJoin .toString()
-               + ' ' + this.strokeMiter.toString();
+        return         this.fill        .toString()
+               + ' ' + this.stroke      .toString()
+               + ' ' + this.strokeWeight.toString()
+               + ' ' + this.strokeFit   .toString()
+               + ' ' + this.strokeJoin  .toString()
+               + ' ' + this.strokeMiter .toString();
     }
 }

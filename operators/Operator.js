@@ -206,7 +206,7 @@ class Operator
         input.addEventListener('connect', () =>
         {
             for (let i = firstParam; i < this.params.length; i++)
-                enableControlText(this.params[i].control, false);
+            this.params[i].enableControlText(false);
         });
     
         input.addEventListener('disconnect', () =>
@@ -214,7 +214,7 @@ class Operator
             for (let i = firstParam; i < this.params.length; i++)
             {
                 if (!this.params[i].input.connected) 
-                    enableControlText(this.params[i].control, true);
+                    this.params[i].enableControlText(true);
             }
 
             this.updateNode();

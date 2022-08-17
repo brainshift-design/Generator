@@ -39,7 +39,7 @@ extends OpGeometryBase
         this.inputs[0].addEventListener('connect', () =>
         {
             for (const param of this.params)
-                enableControlText(param.control, false);
+                param.enableControlText(false);
         });
 
 
@@ -47,7 +47,7 @@ extends OpGeometryBase
         {
             for (const param of this.params)
                 if (!param.input.connected) 
-                    enableControlText(param.control, true);
+                    param.enableControlText(true);
         });
 
 

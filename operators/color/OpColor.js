@@ -69,7 +69,7 @@ extends OpColorBase
 
 
         for (let i = 1; i < this.params.length; i++)
-            this.params[i].input.addEventListener('disconnect', () => { enableControlText(this.params[i].control, !this.inputs[0].connected); });
+            this.params[i].input.addEventListener('disconnect', () => { this.params[i].enableControlText(!this.inputs[0].connected); });
     }
 
 

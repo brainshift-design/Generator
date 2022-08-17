@@ -22,7 +22,7 @@ extends OperatorBase
         
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
-        enableControlText(this.paramValue.control, false);
+        this.paramValue.enableControlText(false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');
