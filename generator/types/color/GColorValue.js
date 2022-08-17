@@ -15,10 +15,10 @@ extends GType
     {
         super(COLOR_VALUE);
 
-        this.space  = space;
-        this.c1     = c1;
-        this.c2     = c2;
-        this.c3     = c3;
+        this.space  = space.copy();
+        this.c1     = c1   .copy();
+        this.c2     = c2   .copy();
+        this.c3     = c3   .copy();
 
         this.result = this;
         this.valid  = true;
@@ -124,11 +124,11 @@ extends GType
 
 
 
-    static NaN = new GColorValue(
+    static NaN = Object.freeze(new GColorValue(
         GNumberValue.NaN,
         GNumberValue.NaN,
         GNumberValue.NaN,
-        GNumberValue.NaN);
+        GNumberValue.NaN));
 }
 
 

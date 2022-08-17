@@ -53,16 +53,16 @@ extends GType
 
     toString()
     {
-        return isNaN(this.value)
-            ? INVALID
-            : numToString(this.value, this.decimals);    
+        return !isNaN(this.value)
+            ? numToString(this.value, this.decimals)
+            : INVALID;
     }
 
 
 
-    static NaN = new GNumberValue(
+    static NaN = Object.freeze(new GNumberValue(
         Number.NaN, 
-        Number.NaN);
+        Number.NaN));
 }
 
 

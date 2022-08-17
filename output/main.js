@@ -77,7 +77,7 @@ const COLOR_STOP_VALUE = 'CS';
 const COLOR_STOP = 'CSTOP';
 const GRADIENT_VALUE = 'G';
 const GRADIENT = 'GRAD';
-const GEOMETRY_VALUE = 'G0'; // abstract placeholder
+//const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
 const RECTANGLE_VALUE = 'R';
 const LINE_VALUE = 'L';
 const ELLIPSE_VALUE = 'E';
@@ -89,7 +89,7 @@ const ELLIPSE = 'ELPS'; // N:x N:y N:width N:height N:angle
 const POLYGON = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
 const STAR = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
 const GEOMETRY_VALUES = [
-    GEOMETRY_VALUE,
+    //GEOMETRY_VALUE,
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,

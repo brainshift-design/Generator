@@ -12,7 +12,7 @@ extends GType
 
 
 
-    constructor(type = GEOMETRY_VALUE, nodeId)
+    constructor(type, nodeId)
     {
         super(type);
 
@@ -44,7 +44,7 @@ extends GType
 
     isValid()
     {
-        return this.fill        .isValid()
+        return this.fill.isValid()
             && (  !this.stroke.isValid()
                 ||    this.strokeWeight.isValid()
                    && this.strokeFit   .isValid()

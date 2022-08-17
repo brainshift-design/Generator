@@ -114,7 +114,7 @@ const GRADIENT_VALUE      = 'G';
 const GRADIENT            = 'GRAD';
 
 
-const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
+//const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
 
 const RECTANGLE_VALUE     = 'R';
 const LINE_VALUE          = 'L';
@@ -131,7 +131,7 @@ const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:point
 
 const GEOMETRY_VALUES =
 [
-    GEOMETRY_VALUE,
+    //GEOMETRY_VALUE,
 
     RECTANGLE_VALUE,
     LINE_VALUE,

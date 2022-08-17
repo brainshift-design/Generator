@@ -11,8 +11,8 @@ extends GType
     {
         super(COLOR_FILL_VALUE);
 
-        this.color   = color;
-        this.opacity = opacity;
+        this.color   = color  .copy();
+        this.opacity = opacity.copy();
 
         this.result  = this;
         this.valid   = true;
@@ -55,10 +55,10 @@ extends GType
 
 
 
-    equals(col)
+    equals(fill)
     {
-        return this.color  .equals(col.color  )
-            && this.opacity.equals(col.opacity);
+        return this.color  .equals(fill.color  )
+            && this.opacity.equals(fill.opacity);
     }
 
 
@@ -80,15 +80,15 @@ extends GType
 
 
 
-    static NaN = new GColorFillValue(
+    static NaN = Object.freeze(new GColorFillValue(
         GColorValue .NaN,
-        GNumberValue.NaN);
+        GNumberValue.NaN));
 
 
 
-    static default = new GColorFillValue(
+    static default = Object.freeze(new GColorFillValue(
         GColorValue.create(1, 217, 217, 217),
-        new GNumberValue(100));
+        new GNumberValue(100)));
 }
 
 

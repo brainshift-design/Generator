@@ -1,5 +1,5 @@
 class GRectangle
-extends GOperator
+extends GGeometryBase
 {
     input  = null;
 
@@ -33,7 +33,7 @@ extends GOperator
         if (this.angle ) rect.angle  = this.angle .copy();
         if (this.round ) rect.round  = this.round .copy();
 
-        rect.copyBase(this);
+        rect.copyFromeBase(this);
 
         return rect;
     }
@@ -70,7 +70,7 @@ extends GOperator
             }
 
 
-            super.eval(parse);
+            this.evalBase(parse, this.input);
 
 
             this.result.valid = true;

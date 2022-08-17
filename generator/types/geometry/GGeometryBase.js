@@ -3,35 +3,35 @@ extends GOperator
 {
     fill         = null;
     stroke       = null;
-    strokeWeight = null;;
-    strokeFit    = null;;
-    strokeJoin   = null;;
-    strokeMiter  = null;;
+    strokeWeight = null;
+    strokeFit    = null;
+    strokeJoin   = null;
+    strokeMiter  = null;
     
 
     objects      = [];
 
 
 
-    constructor(type = GEOMETRY, nodeId = '', active = false)
+    constructor(type, nodeId, active)
     {
         super(type, nodeId, active);
     }
 
 
 
-    copy()
-    {
-        const geom = new GGeometryBase(this.type, this.nodeId, this.active);
+    // copy()
+    // {
+    //     const geom = new GGeometryBase(this.type, this.nodeId, this.active);
 
-        geom.copyBase(this);
+    //     geom.copyBase(this);
 
-        return geom;
-    }
+    //     return geom;
+    // }
 
 
 
-    copyBase(base)
+    copyFromeBase(base)
     {
         if (base.fill        ) this.fill         = base.fill        .copy();
         if (base.stroke      ) this.stroke       = base.stroke      .copy();
@@ -55,11 +55,11 @@ extends GOperator
 
 
 
-    eval(parse)
+    evalBase(parse, input)
     {
         if (!this.valid)
         {
-            if (this.input)
+            if (input)
             {
                 if (this.fill        ) this.result.fill         = this.fill        .eval(parse).copy();
                 if (this.stroke      ) this.result.stroke       = this.stroke      .eval(parse).copy();
@@ -85,8 +85,5 @@ extends GOperator
                     this.nodeId,
                     this.result.toFigmaObject());
         }
-
-
-        return this.result;
     }
 }

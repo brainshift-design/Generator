@@ -2859,7 +2859,7 @@ const GRADIENT_VALUE      = 'G';
 const GRADIENT            = 'GRAD';
 
 
-const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
+//const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
 
 const RECTANGLE_VALUE     = 'R';
 const LINE_VALUE          = 'L';
@@ -2876,7 +2876,7 @@ const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:point
 
 const GEOMETRY_VALUES =
 [
-    GEOMETRY_VALUE,
+    //GEOMETRY_VALUE,
 
     RECTANGLE_VALUE,
     LINE_VALUE,
@@ -3090,16 +3090,16 @@ extends GType
 
     toString()
     {
-        return isNaN(this.value)
-            ? INVALID
-            : numToString(this.value, this.decimals);    
+        return !isNaN(this.value)
+            ? numToString(this.value, this.decimals)
+            : INVALID;
     }
 
 
 
-    static NaN = new GNumberValue(
+    static NaN = Object.freeze(new GNumberValue(
         Number.NaN, 
-        Number.NaN);
+        Number.NaN));
 }
 
 
@@ -3132,10 +3132,10 @@ extends GType
     {
         super(COLOR_VALUE);
 
-        this.space  = space;
-        this.c1     = c1;
-        this.c2     = c2;
-        this.c3     = c3;
+        this.space  = space.copy();
+        this.c1     = c1   .copy();
+        this.c2     = c2   .copy();
+        this.c3     = c3   .copy();
 
         this.result = this;
         this.valid  = true;
@@ -3241,11 +3241,11 @@ extends GType
 
 
 
-    static NaN = new GColorValue(
+    static NaN = Object.freeze(new GColorValue(
         GNumberValue.NaN,
         GNumberValue.NaN,
         GNumberValue.NaN,
-        GNumberValue.NaN);
+        GNumberValue.NaN));
 }
 
 
@@ -3278,8 +3278,8 @@ extends GType
     {
         super(COLOR_FILL_VALUE);
 
-        this.color   = color;
-        this.opacity = opacity;
+        this.color   = color  .copy();
+        this.opacity = opacity.copy();
 
         this.result  = this;
         this.valid   = true;
@@ -3322,10 +3322,10 @@ extends GType
 
 
 
-    equals(col)
+    equals(fill)
     {
-        return this.color  .equals(col.color  )
-            && this.opacity.equals(col.opacity);
+        return this.color  .equals(fill.color  )
+            && this.opacity.equals(fill.opacity);
     }
 
 
@@ -3347,15 +3347,15 @@ extends GType
 
 
 
-    static NaN = new GColorFillValue(
+    static NaN = Object.freeze(new GColorFillValue(
         GColorValue .NaN,
-        GNumberValue.NaN);
+        GNumberValue.NaN));
 
 
 
-    static default = new GColorFillValue(
+    static default = Object.freeze(new GColorFillValue(
         GColorValue.create(1, 217, 217, 217),
-        new GNumberValue(100));
+        new GNumberValue(100)));
 }
 
 
@@ -4091,12 +4091,11 @@ extends GOperator
             }
             else
             {
-                this.result = new GColorValue();
-
-                this.result.space = space;
-                this.result.c1    = this.c1.eval(parse).copy();
-                this.result.c2    = this.c2.eval(parse).copy();
-                this.result.c3    = this.c3.eval(parse).copy();
+                this.result = new GColorValue(
+                    space,
+                    this.c1.eval(parse).copy(),
+                    this.c2.eval(parse).copy(),
+                    this.c3.eval(parse).copy());
 
 
                 const toSpaceIndex = Math.min(Math.max(
@@ -4789,7 +4788,7 @@ extends GType
 
 
 
-    constructor(type = GEOMETRY_VALUE, nodeId)
+    constructor(type, nodeId)
     {
         super(type);
 
@@ -4821,7 +4820,7 @@ extends GType
 
     isValid()
     {
-        return this.fill        .isValid()
+        return this.fill.isValid()
             && (  !this.stroke.isValid()
                 ||    this.strokeWeight.isValid()
                    && this.strokeFit   .isValid()
@@ -5454,35 +5453,35 @@ extends GOperator
 {
     fill         = null;
     stroke       = null;
-    strokeWeight = null;;
-    strokeFit    = null;;
-    strokeJoin   = null;;
-    strokeMiter  = null;;
+    strokeWeight = null;
+    strokeFit    = null;
+    strokeJoin   = null;
+    strokeMiter  = null;
     
 
     objects      = [];
 
 
 
-    constructor(type = GEOMETRY, nodeId = '', active = false)
+    constructor(type, nodeId, active)
     {
         super(type, nodeId, active);
     }
 
 
 
-    copy()
-    {
-        const geom = new GGeometryBase(this.type, this.nodeId, this.active);
+    // copy()
+    // {
+    //     const geom = new GGeometryBase(this.type, this.nodeId, this.active);
 
-        geom.copyBase(this);
+    //     geom.copyBase(this);
 
-        return geom;
-    }
+    //     return geom;
+    // }
 
 
 
-    copyBase(base)
+    copyFromeBase(base)
     {
         if (base.fill        ) this.fill         = base.fill        .copy();
         if (base.stroke      ) this.stroke       = base.stroke      .copy();
@@ -5506,11 +5505,11 @@ extends GOperator
 
 
 
-    eval(parse)
+    evalBase(parse, input)
     {
         if (!this.valid)
         {
-            if (this.input)
+            if (input)
             {
                 if (this.fill        ) this.result.fill         = this.fill        .eval(parse).copy();
                 if (this.stroke      ) this.result.stroke       = this.stroke      .eval(parse).copy();
@@ -5536,15 +5535,12 @@ extends GOperator
                     this.nodeId,
                     this.result.toFigmaObject());
         }
-
-
-        return this.result;
     }
 }
 
 
 class GRectangle
-extends GOperator
+extends GGeometryBase
 {
     input  = null;
 
@@ -5578,7 +5574,7 @@ extends GOperator
         if (this.angle ) rect.angle  = this.angle .copy();
         if (this.round ) rect.round  = this.round .copy();
 
-        rect.copyBase(this);
+        rect.copyFromeBase(this);
 
         return rect;
     }
@@ -5615,7 +5611,7 @@ extends GOperator
             }
 
 
-            super.eval(parse);
+            this.evalBase(parse, this.input);
 
 
             this.result.valid = true;
