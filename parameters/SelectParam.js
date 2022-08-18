@@ -7,9 +7,6 @@ extends NumberParamBase
     control;
 
     
-    get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
-
-
 
     constructor(id,
                 name,
@@ -62,13 +59,6 @@ extends NumberParamBase
             
         //this.control.addEventListener('change',  () => { pushUpdateFromParam([this.node], this); /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
-    }
-
-
-
-    isDefault()
-    {
-        return this.value == this.defaultValue;
     }
 
 

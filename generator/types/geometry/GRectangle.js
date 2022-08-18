@@ -78,6 +78,13 @@ extends GGeometryBase
            
             
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
+
+
+            if (this.active)
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    this.result.toFigmaObject());
         }
 
 

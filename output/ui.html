@@ -4716,6 +4716,13 @@ class GType
 
 
 
+    equalChans(c1, c2)
+    {
+        return !c1 && !c2
+            ||  c1 && c2 && c1.equals(c2);
+    }
+
+
     eval(parse)
     {
         // calculate and add value update here
@@ -4809,7 +4816,7 @@ extends GType
         this.value    = val;
         this.decimals = dec;
 
-        this.result   = this;
+        this.result   = null;
         this.valid    = true;
     }
 
@@ -4842,7 +4849,7 @@ extends GType
 
     eval(parse)
     {
-        return this;//return this.result = this.copy();
+        return this;
     }
 
 
@@ -4896,7 +4903,7 @@ extends GType
         this.c2     = c2   .copy();
         this.c3     = c3   .copy();
 
-        this.result = this;
+        this.result = null;
         this.valid  = true;
     }
 
@@ -4953,7 +4960,7 @@ extends GType
 
     eval(parse)
     {
-        return this;//this.result = this.copy();
+        return this;
     }
 
 
@@ -5040,7 +5047,7 @@ extends GType
         this.color   = color  .copy();
         this.opacity = opacity.copy();
 
-        this.result  = this;
+        this.result  = null;
         this.valid   = true;
     }
 
@@ -5058,7 +5065,7 @@ extends GType
     static createFromRgb(rgb, opacity)
     {
         return new GColorFillValue(
-            GColorValue.create(1, rgb[0], rgb[1], rgb[2]),
+            GColorValue.createFromRgb(rgb),
             new GNumberValue(opacity));
     }
 
@@ -5091,7 +5098,7 @@ extends GType
 
     eval(parse)
     {
-        return this;//return this.result = this.copy();
+        return this;
     }
 
 
@@ -5102,6 +5109,13 @@ extends GType
             ?         this.color  .toString()
               + ' ' + this.opacity.toString()
             : INVALID;
+    }
+
+
+
+    toFigmaString()
+    {
+        return [COLOR, this.toString()];
     }
 
 
@@ -6553,8 +6567,8 @@ extends GType
 
         this.nodeId = nodeId; 
 
-        this.fill         = GColorFillValue.default;
-        this.stroke       = GColorFillValue.NaN;
+        this.fill         = GColorFillValue.default.copy();
+        this.stroke       = GColorFillValue.NaN    .copy();
         this.strokeWeight = new GNumberValue(1);
         this.strokeFit    = new GNumberValue(0);
         this.strokeJoin   = new GNumberValue(0);
@@ -6611,8 +6625,8 @@ extends GType
         return {
             nodeId:           this.nodeId,
 
-            fills:            [this.fill  ],
-            strokes:          [this.stroke],
+            fills:            [this.fill  .toFigmaString()],
+            strokes:          [this.stroke.toFigmaString()],
             strokeWeight:     this.strokeWeight.value,
             strokeAlign:      strokeAlign,
             strokeJoin:       strokeJoin,
@@ -7268,6 +7282,7 @@ extends GOperator
     {
         if (!this.valid)
         {
+            console.log('this =', this);
             if (input)
             {
                 if (this.fill        ) this.result.fill         = this.fill        .eval(parse).copy();
@@ -7279,20 +7294,13 @@ extends GOperator
             }
             else
             {
-                this.result.fill         = this.fill        .eval(parse).copy();
-                this.result.stroke       = this.stroke      .eval(parse).copy();
-                this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
-                this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
-                this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
-                this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
+                                       this.result.fill         = this.fill        .eval(parse).copy();
+                                       this.result.stroke       = this.stroke      .eval(parse).copy();
+                if (this.strokeWeight) this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
+                if (this.strokeFit   ) this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
+                if (this.strokeJoin  ) this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
+                if (this.strokeMiter ) this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
             }
-
-
-            if (this.active)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
         }
     }
 }
@@ -7378,6 +7386,13 @@ extends GGeometryBase
            
             
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
+
+
+            if (this.active)
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    this.result.toFigmaObject());
         }
 
 
@@ -7863,8 +7878,9 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logRawStorage:    false, 
-    logStorage:       false, 
+    logRawLoading:    true, 
+    logLoading:       false, 
+    logRawSaving:     true, 
     logActions:       true, 
     logRawRequests:   true, 
     logRequests:      true, 
@@ -16304,6 +16320,13 @@ class GType
 
 
 
+    equalChans(c1, c2)
+    {
+        return !c1 && !c2
+            ||  c1 && c2 && c1.equals(c2);
+    }
+
+
     eval(parse)
     {
         // calculate and add value update here
@@ -16397,7 +16420,7 @@ extends GType
         this.value    = val;
         this.decimals = dec;
 
-        this.result   = this;
+        this.result   = null;
         this.valid    = true;
     }
 
@@ -16430,7 +16453,7 @@ extends GType
 
     eval(parse)
     {
-        return this;//return this.result = this.copy();
+        return this;
     }
 
 
@@ -16484,7 +16507,7 @@ extends GType
         this.c2     = c2   .copy();
         this.c3     = c3   .copy();
 
-        this.result = this;
+        this.result = null;
         this.valid  = true;
     }
 
@@ -16541,7 +16564,7 @@ extends GType
 
     eval(parse)
     {
-        return this;//this.result = this.copy();
+        return this;
     }
 
 
@@ -16628,7 +16651,7 @@ extends GType
         this.color   = color  .copy();
         this.opacity = opacity.copy();
 
-        this.result  = this;
+        this.result  = null;
         this.valid   = true;
     }
 
@@ -16646,7 +16669,7 @@ extends GType
     static createFromRgb(rgb, opacity)
     {
         return new GColorFillValue(
-            GColorValue.create(1, rgb[0], rgb[1], rgb[2]),
+            GColorValue.createFromRgb(rgb),
             new GNumberValue(opacity));
     }
 
@@ -16679,7 +16702,7 @@ extends GType
 
     eval(parse)
     {
-        return this;//return this.result = this.copy();
+        return this;
     }
 
 
@@ -16690,6 +16713,13 @@ extends GType
             ?         this.color  .toString()
               + ' ' + this.opacity.toString()
             : INVALID;
+    }
+
+
+
+    toFigmaString()
+    {
+        return [COLOR, this.toString()];
     }
 
 
@@ -18141,8 +18171,8 @@ extends GType
 
         this.nodeId = nodeId; 
 
-        this.fill         = GColorFillValue.default;
-        this.stroke       = GColorFillValue.NaN;
+        this.fill         = GColorFillValue.default.copy();
+        this.stroke       = GColorFillValue.NaN    .copy();
         this.strokeWeight = new GNumberValue(1);
         this.strokeFit    = new GNumberValue(0);
         this.strokeJoin   = new GNumberValue(0);
@@ -18199,8 +18229,8 @@ extends GType
         return {
             nodeId:           this.nodeId,
 
-            fills:            [this.fill  ],
-            strokes:          [this.stroke],
+            fills:            [this.fill  .toFigmaString()],
+            strokes:          [this.stroke.toFigmaString()],
             strokeWeight:     this.strokeWeight.value,
             strokeAlign:      strokeAlign,
             strokeJoin:       strokeJoin,
@@ -18856,6 +18886,7 @@ extends GOperator
     {
         if (!this.valid)
         {
+            console.log('this =', this);
             if (input)
             {
                 if (this.fill        ) this.result.fill         = this.fill        .eval(parse).copy();
@@ -18867,20 +18898,13 @@ extends GOperator
             }
             else
             {
-                this.result.fill         = this.fill        .eval(parse).copy();
-                this.result.stroke       = this.stroke      .eval(parse).copy();
-                this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
-                this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
-                this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
-                this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
+                                       this.result.fill         = this.fill        .eval(parse).copy();
+                                       this.result.stroke       = this.stroke      .eval(parse).copy();
+                if (this.strokeWeight) this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
+                if (this.strokeFit   ) this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
+                if (this.strokeJoin  ) this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
+                if (this.strokeMiter ) this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
             }
-
-
-            if (this.active)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
         }
     }
 }
@@ -18966,6 +18990,13 @@ extends GGeometryBase
            
             
             genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
+
+
+            if (this.active)
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    this.result.toFigmaObject());
         }
 
 
@@ -19451,8 +19482,9 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logRawStorage:    false, 
-    logStorage:       false, 
+    logRawLoading:    true, 
+    logLoading:       false, 
+    logRawSaving:     true, 
     logActions:       true, 
     logRawRequests:   true, 
     logRequests:      true, 
@@ -24509,7 +24541,11 @@ extends Parameter
     }
 
 
+    get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
+
+
+    
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
         this.preSetValue(value, createAction, dispatchEvents);
@@ -24581,6 +24617,13 @@ extends Parameter
     
     
     
+    isDefault()
+    {
+        return this.genValue.equals(this.defaultValue);
+    }
+
+
+
     toJson(nTab = 0, id = '')
     {
         let pos = ' '.repeat(nTab);
@@ -24609,9 +24652,6 @@ extends NumberParamBase
     control;
 
 
-    get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
-
-    
     
     constructor(id,
                 name, 
@@ -24631,22 +24671,22 @@ extends NumberParamBase
         this.control.param  = this;
         this.control.zIndex = 0;
    
-        this.defaultValue   = defaultValue;
+        this.defaultValue   = new GNumberValue(defaultValue); // this way the default contains the decimals
 
 
         initNumberControl(
             this,
             this.control,
-            120,        // width
-            20,         // height
+            120, // width
+            20,  // height
             this.id,
             this.name, 
             showName,
             min,
             max,
-            defaultValue,      // default
-            decimals,   // decimals
-            dragScale); // drag scale
+            defaultValue,
+            decimals,   
+            dragScale); 
 
         this.control.successOnFocusOut = true;
 
@@ -24705,13 +24745,6 @@ extends NumberParamBase
 
 
 
-    isDefault()
-    {
-        return this.genValue == this.defaultValue;
-    }
-
-
-
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
         this.preSetValue(value, createAction, dispatchEvents);
@@ -24755,9 +24788,6 @@ extends NumberParamBase
     control;
 
     
-    get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
-
-
 
     constructor(id,
                 name,
@@ -24810,13 +24840,6 @@ extends NumberParamBase
             
         //this.control.addEventListener('change',  () => { pushUpdateFromParam([this.node], this); /*this.setValue(this.value, false, false);*/ });
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
-    }
-
-
-
-    isDefault()
-    {
-        return this.value == this.defaultValue;
     }
 
 
@@ -24948,7 +24971,7 @@ extends Parameter
 
     isDefault()
     {
-        return this.genValue == this.defaultValue;
+        return this.genValue.equals(this.defaultValue);
     }
 
 
@@ -25241,7 +25264,7 @@ extends Parameter
 
     isDefault()
     {
-        return this.genValue == this.defaultValue;
+        return this.genValue.equals(this.defaultValue);
     }
 
 
@@ -33004,7 +33027,7 @@ extends OperatorBase
 
         const cond = () => 
                   this.paramStroke.value.isValid()
-               && isValidRgb(dataColorToRgb(this.paramStroke.value.color.toDataColor()))
+               //&& isValidRgb(dataColorToRgb(this.paramStroke.value.color.toDataColor()))
             || this.paramStroke.connected;
 
         this.paramStrokeWeight.show = () => cond();
@@ -36396,9 +36419,10 @@ function uiLoadGraphView(json)
 
 function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
 {
-    if (settings.logRawStorage)
+    if (settings.logRawLoading)
         console.log(
-            'nodes json =', 
+            '%cnodes json = %s', 
+            'background: #fed',
             nodesJson
                 .replaceAll('\\n', '\n')
                 .replaceAll('\\"', '\"'));
@@ -37757,8 +37781,16 @@ function uiSaveNodes(nodeIds)
 {
     const nodeJson = [];
 
-    nodeIds.forEach(id => 
-        nodeJson.push(nodeFromId(id).toJson()));
+    for (const id of nodeIds)
+    {
+        const json = nodeFromId(id).toJson();
+
+        if (settings.logRawSaving)
+            console.log('%c' + json, 'background: #ddeeff');
+
+        nodeJson.push(json);
+    }
+
 
     uiQueueMessageToFigma({
         cmd:     'figSaveNodes',

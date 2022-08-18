@@ -7,9 +7,6 @@ extends NumberParamBase
     control;
 
 
-    get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
-
-    
     
     constructor(id,
                 name, 
@@ -29,22 +26,22 @@ extends NumberParamBase
         this.control.param  = this;
         this.control.zIndex = 0;
    
-        this.defaultValue   = defaultValue;
+        this.defaultValue   = new GNumberValue(defaultValue); // this way the default contains the decimals
 
 
         initNumberControl(
             this,
             this.control,
-            120,        // width
-            20,         // height
+            120, // width
+            20,  // height
             this.id,
             this.name, 
             showName,
             min,
             max,
-            defaultValue,      // default
-            decimals,   // decimals
-            dragScale); // drag scale
+            defaultValue,
+            decimals,   
+            dragScale); 
 
         this.control.successOnFocusOut = true;
 
@@ -99,13 +96,6 @@ extends NumberParamBase
     {
         super.setName(name, dispatchEvents);
         this.control.setName(name);
-    }
-
-
-
-    isDefault()
-    {
-        return this.genValue == this.defaultValue;
     }
 
 

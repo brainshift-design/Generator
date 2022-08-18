@@ -914,8 +914,16 @@ function uiSaveNodes(nodeIds)
 {
     const nodeJson = [];
 
-    nodeIds.forEach(id => 
-        nodeJson.push(nodeFromId(id).toJson()));
+    for (const id of nodeIds)
+    {
+        const json = nodeFromId(id).toJson();
+
+        if (settings.logRawSaving)
+            console.log('%c' + json, 'background: #ddeeff');
+
+        nodeJson.push(json);
+    }
+
 
     uiQueueMessageToFigma({
         cmd:     'figSaveNodes',

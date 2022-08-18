@@ -13,7 +13,7 @@ extends GType
         this.value    = val;
         this.decimals = dec;
 
-        this.result   = this;
+        this.result   = null;
         this.valid    = true;
     }
 
@@ -46,7 +46,7 @@ extends GType
 
     eval(parse)
     {
-        return this;//return this.result = this.copy();
+        return this;
     }
 
 

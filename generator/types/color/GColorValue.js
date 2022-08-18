@@ -20,7 +20,7 @@ extends GType
         this.c2     = c2   .copy();
         this.c3     = c3   .copy();
 
-        this.result = this;
+        this.result = null;
         this.valid  = true;
     }
 
@@ -77,7 +77,7 @@ extends GType
 
     eval(parse)
     {
-        return this;//this.result = this.copy();
+        return this;
     }
 
 

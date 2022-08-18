@@ -18,8 +18,8 @@ extends GType
 
         this.nodeId = nodeId; 
 
-        this.fill         = GColorFillValue.default;
-        this.stroke       = GColorFillValue.NaN;
+        this.fill         = GColorFillValue.default.copy();
+        this.stroke       = GColorFillValue.NaN    .copy();
         this.strokeWeight = new GNumberValue(1);
         this.strokeFit    = new GNumberValue(0);
         this.strokeJoin   = new GNumberValue(0);
@@ -76,8 +76,8 @@ extends GType
         return {
             nodeId:           this.nodeId,
 
-            fills:            [this.fill  ],
-            strokes:          [this.stroke],
+            fills:            [this.fill  .toFigmaString()],
+            strokes:          [this.stroke.toFigmaString()],
             strokeWeight:     this.strokeWeight.value,
             strokeAlign:      strokeAlign,
             strokeJoin:       strokeJoin,

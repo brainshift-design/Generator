@@ -17,7 +17,11 @@ extends Parameter
     }
 
 
+    get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
 
+
+
+    
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
         this.preSetValue(value, createAction, dispatchEvents);
@@ -89,6 +93,13 @@ extends Parameter
     
     
     
+    isDefault()
+    {
+        return this.genValue.equals(this.defaultValue);
+    }
+
+
+
     toJson(nTab = 0, id = '')
     {
         let pos = ' '.repeat(nTab);

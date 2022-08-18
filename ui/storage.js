@@ -142,9 +142,10 @@ function uiLoadGraphView(json)
 
 function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
 {
-    if (settings.logRawStorage)
+    if (settings.logRawLoading)
         console.log(
-            'nodes json =', 
+            '%cnodes json = %s', 
+            'background: #fed',
             nodesJson
                 .replaceAll('\\n', '\n')
                 .replaceAll('\\"', '\"'));

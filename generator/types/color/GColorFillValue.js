@@ -14,7 +14,7 @@ extends GType
         this.color   = color  .copy();
         this.opacity = opacity.copy();
 
-        this.result  = this;
+        this.result  = null;
         this.valid   = true;
     }
 
@@ -32,7 +32,7 @@ extends GType
     static createFromRgb(rgb, opacity)
     {
         return new GColorFillValue(
-            GColorValue.create(1, rgb[0], rgb[1], rgb[2]),
+            GColorValue.createFromRgb(rgb),
             new GNumberValue(opacity));
     }
 
@@ -65,7 +65,7 @@ extends GType
 
     eval(parse)
     {
-        return this;//return this.result = this.copy();
+        return this;
     }
 
 
@@ -76,6 +76,13 @@ extends GType
             ?         this.color  .toString()
               + ' ' + this.opacity.toString()
             : INVALID;
+    }
+
+
+
+    toFigmaString()
+    {
+        return [COLOR, this.toString()];
     }
 
 

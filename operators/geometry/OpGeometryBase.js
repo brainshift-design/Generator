@@ -38,7 +38,7 @@ extends OperatorBase
 
         const cond = () => 
                   this.paramStroke.value.isValid()
-               && isValidRgb(dataColorToRgb(this.paramStroke.value.color.toDataColor()))
+               //&& isValidRgb(dataColorToRgb(this.paramStroke.value.color.toDataColor()))
             || this.paramStroke.connected;
 
         this.paramStrokeWeight.show = () => cond();

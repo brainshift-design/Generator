@@ -165,7 +165,7 @@ extends Parameter
 
     isDefault()
     {
-        return this.genValue == this.defaultValue;
+        return this.genValue.equals(this.defaultValue);
     }
 
 

@@ -142,7 +142,7 @@ function figLogAllSavedNodesAndConns(settings)
 
 function figLogAllSavedNodes(settings)
 {
-    if (!settings.logStorage)
+    if (!settings.logLoading)
         return;
 
     figma.currentPage.getPluginDataKeys()
@@ -154,7 +154,7 @@ function figLogAllSavedNodes(settings)
 
 function figLogAllSavedConns(settings)
 {
-    if (!settings.logStorage)
+    if (!settings.logLoading)
         return;
 
     const connKeys = figma.currentPage.getPluginDataKeys()

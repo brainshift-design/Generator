@@ -404,8 +404,9 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logRawStorage:    false, 
-    logStorage:       false, 
+    logRawLoading:    true, 
+    logLoading:       false, 
+    logRawSaving:     true, 
     logActions:       true, 
     logRawRequests:   true, 
     logRequests:      true, 
@@ -527,10 +528,7 @@ function figDeleteAllObjects()
 }
 
 
-// function logStorage()
-// {
-//     figLogAllSavedNodesAndConns({ logStorage: true });
-// }
+
 
 
 function figOnSelectionChange()
@@ -968,21 +966,22 @@ function getObjectFills(objFills)
 {
     const fills = [];
 
-    for (const fill of objFills)
+    for (const _fill of objFills)
     {
-        const c = fill[1].split(' ');
+        console.log('_fill =', _fill);
+        const fill = _fill[1].split(' ');
 
-        switch (fill[0])
+        switch (_fill[0])
         {
             case COLOR:
                 fills.push(
                 {
                     type: 'SOLID', 
                     color: {
-                        r: Math.min(Math.max(0, parseFloat(c[0])), 1), 
-                        g: Math.min(Math.max(0, parseFloat(c[1])), 1), 
-                        b: Math.min(Math.max(0, parseFloat(c[2])), 1) },
-                    opacity: parseFloat(fill[2])
+                        r: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1), 
+                        g: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1), 
+                        b: Math.min(Math.max(0, parseFloat(fill[3]) / 0xff), 1) },
+                    opacity: parseFloat(fill[4]) / 100
                 });
 
                 break;
@@ -1210,7 +1209,7 @@ function figLogAllSavedNodesAndConns(settings)
 
 function figLogAllSavedNodes(settings)
 {
-    if (!settings.logStorage)
+    if (!settings.logLoading)
         return;
 
     figma.currentPage.getPluginDataKeys()
@@ -1222,7 +1221,7 @@ function figLogAllSavedNodes(settings)
 
 function figLogAllSavedConns(settings)
 {
-    if (!settings.logStorage)
+    if (!settings.logLoading)
         return;
 
     const connKeys = figma.currentPage.getPluginDataKeys()

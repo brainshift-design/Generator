@@ -35,6 +35,13 @@ class GType
 
 
 
+    equalChans(c1, c2)
+    {
+        return !c1 && !c2
+            ||  c1 && c2 && c1.equals(c2);
+    }
+
+
     eval(parse)
     {
         // calculate and add value update here

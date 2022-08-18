@@ -59,6 +59,7 @@ extends GOperator
     {
         if (!this.valid)
         {
+            console.log('this =', this);
             if (input)
             {
                 if (this.fill        ) this.result.fill         = this.fill        .eval(parse).copy();
@@ -70,20 +71,13 @@ extends GOperator
             }
             else
             {
-                this.result.fill         = this.fill        .eval(parse).copy();
-                this.result.stroke       = this.stroke      .eval(parse).copy();
-                this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
-                this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
-                this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
-                this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
+                                       this.result.fill         = this.fill        .eval(parse).copy();
+                                       this.result.stroke       = this.stroke      .eval(parse).copy();
+                if (this.strokeWeight) this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
+                if (this.strokeFit   ) this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
+                if (this.strokeJoin  ) this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
+                if (this.strokeMiter ) this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
             }
-
-
-            if (this.active)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
         }
     }
 }
