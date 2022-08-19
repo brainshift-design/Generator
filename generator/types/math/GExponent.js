@@ -35,7 +35,10 @@ extends GOperator
                 for (let i = 1; i < this.inputs.length; i++)
                 {
                     const input = this.inputs[i].eval(parse);
-                    console.assert(input.type == NUMBER_VALUE);
+
+                    console.assert(
+                        input.type == NUMBER_VALUE, 
+                        'this.result.type must be NUMBER_VALUE');
                         
                     this.result.value    = Math.pow(this.result.value, input.value);
                     this.result.decimals = Math.max(this.result.decimals, input.decimals);

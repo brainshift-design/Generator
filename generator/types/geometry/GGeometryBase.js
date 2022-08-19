@@ -59,7 +59,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            console.log('this =', this);
             if (input)
             {
                 if (this.fill        ) this.result.fill         = this.fill        .eval(parse).copy();

@@ -44,13 +44,17 @@ extends GOperator
     {
         if (!this.valid)
         {
+            console.log('this.space =', this.space);
             const space = this.space.eval(parse).copy();
 
 
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == COLOR_VALUE);
+
+                console.assert(
+                    this.result.type == COLOR_VALUE, 
+                    'this.result.type must be COLOR_VALUE');
 
                 if (this.result.isValid())
                 {
@@ -102,7 +106,10 @@ extends GOperator
             }
 
 
-            console.assert(this.result.space.type == NUMBER_VALUE);
+            console.assert(
+                this.result.space.type == NUMBER_VALUE, 
+                'this.result.type must be NUMBER_VALUE');
+
             this.result.space.value = Math.min(Math.max(
                 0, 
                 this.result.space.value), 

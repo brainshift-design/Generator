@@ -35,7 +35,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == COLOR_FILL_VALUE);
+
+                console.assert(
+                    this.result.type == COLOR_FILL_VALUE,
+                    'GColorFill this.result.type must be COLOR_FILL_VALUE');
 
                 if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
                 if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
@@ -43,7 +46,7 @@ extends GOperator
             else
             {
                 this.result = new GColorFillValue(
-                    this.color  .eval(parse).copy(), 
+                    GColorValue.createFromRgb(scaleColor(dataColor2rgb(this.color.eval(parse).toDataColor()), 'rgb')), 
                     this.opacity.eval(parse).copy());
             }
         

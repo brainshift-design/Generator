@@ -48,7 +48,10 @@ extends GOperator
                 const input1 = this.input1.eval(parse).copy();
 
 
-                console.assert(amount.type == NUMBER_VALUE);
+                console.assert(
+                    amount.type == NUMBER_VALUE, 
+                    'this.result.type must be NUMBER_VALUE');
+
                 const f = amount.value / 100;
 
                 const _space = colorSpace(space.value);

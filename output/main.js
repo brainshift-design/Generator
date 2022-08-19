@@ -615,18 +615,17 @@ function setObjectFills(obj, src) {
 function getObjectFills(objFills) {
     const fills = [];
     for (const _fill of objFills) {
-        console.log('_fill =', _fill);
         const fill = _fill[1].split(' ');
         switch (_fill[0]) {
-            case COLOR:
+            case 'SOLID':
                 fills.push({
                     type: 'SOLID',
                     color: {
-                        r: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1),
-                        g: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1),
-                        b: Math.min(Math.max(0, parseFloat(fill[3]) / 0xff), 1)
+                        r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1),
+                        g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1),
+                        b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1)
                     },
-                    opacity: parseFloat(fill[4]) / 100
+                    opacity: parseFloat(fill[3]) / 100
                 });
                 break;
         }

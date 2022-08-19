@@ -91,7 +91,9 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        console.assert(paramIds.length == values.length);
+        console.assert(
+            paramIds.length == values.length,
+            'paramIds.length must equal values.length');
 
         const colText = values[paramIds.findIndex(id => id == 'text')];
         const colBack = values[paramIds.findIndex(id => id == 'back')];

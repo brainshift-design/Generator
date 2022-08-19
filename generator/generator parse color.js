@@ -7,7 +7,7 @@ function genParseColorValue(parse)
     if (parse.logRequests)
         logReqColorValue(col, parse);
 
-    return parseGColorValue(col);
+    return parseGColorValue(col)[0];
 }
 
 
@@ -82,7 +82,7 @@ function genParseColorInterpolate(parse)
     if (!ignore)
     {
         nValues = parse.move();
-        console.assert(nValues => 0 && nValues <= 2);
+        console.assert(nValues => 0 && nValues <= 2, 'nValues must be [0, 2]');
     }
 
     
@@ -110,7 +110,7 @@ function genParseColorInterpolate(parse)
         lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
 
     else if (nValues != 0)
-        console.assert(false);
+        console.assert(false, 'nValues must be [0, 2]');
 
 
     lerp.space  = genParse(parse);
@@ -140,7 +140,7 @@ function genParseColorContrast(parse)
     if (!ignore)
     {
         nValues = parse.move();
-        console.assert(nValues => 0 && nValues <= 2);
+        console.assert(nValues => 0 && nValues <= 2, 'nValues must be [0, 2]');
     }
 
 
@@ -276,7 +276,7 @@ function genParseColorFillValue(parse)
     if (parse.logRequests)
         logReqColorFillValue(fill, parse);
 
-    return parseGColorFillValue(fill);
+    return parseGColorFillValue(fill)[0];
 }
 
 

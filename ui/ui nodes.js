@@ -861,15 +861,17 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
                 switch (type)
                 {
-                    case COLOR_VALUE:      value = parseGColorValue    (values[i++]); break;
-                    case COLOR_FILL_VALUE: value = parseGColorFillValue(values[i++]); break;
-                    case COLOR_STOP_VALUE: value = parseGColorStopValue(values[i++]); break;
-                    case RECTANGLE_VALUE:  value = parseGRectangleValue(values[i++]); break;
-                    case LINE_VALUE:       value = parseGLineValue     (values[i++]); break;
-                    case ELLIPSE_VALUE:    value = parseGEllipseValue  (values[i++]); break;
-                    case POLYGON_VALUE:    value = parseGPolygonValue  (values[i++]); break;
-                    case STAR_VALUE:       value = parseGStarValue     (values[i++]); break;
-                    default:               value = parseGNumberValue   (values[i++]); break;
+                    case NUMBER_VALUE:     value = parseGNumberValue   (values[i++])[0]; break;
+                    case COLOR_VALUE:      value = parseGColorValue    (values[i++])[0]; break;
+                    case COLOR_FILL_VALUE: value = parseGColorFillValue(values[i++])[0]; break;
+                    case COLOR_STOP_VALUE: value = parseGColorStopValue(values[i++])[0]; break;
+                    case RECTANGLE_VALUE:  value = parseGRectangleValue(values[i++])[0]; break;
+                    case LINE_VALUE:       value = parseGLineValue     (values[i++])[0]; break;
+                    case ELLIPSE_VALUE:    value = parseGEllipseValue  (values[i++])[0]; break;
+                    case POLYGON_VALUE:    value = parseGPolygonValue  (values[i++])[0]; break;
+                    case STAR_VALUE:       value = parseGStarValue     (values[i++])[0]; break;
+                    
+                    default:               console.assert(false, 'unknown type');
                 }
 
                 if (value.nodeId)

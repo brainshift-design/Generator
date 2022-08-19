@@ -67,7 +67,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == POLYGON_VALUE);
+                
+                console.assert(
+                    this.result.type == POLYGON_VALUE, 
+                    'this.result.type must be POLYGON_VALUE');
 
                 if (this.x      ) this.result.x       = this.x      .eval(parse).copy();
                 if (this.y      ) this.result.y       = this.y      .eval(parse).copy();

@@ -194,9 +194,9 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
     control.update = function()
     {
-        const sx = control.getOffsetLeft();
-        const sw = control.getClientWidth();
-        const sh = control.getClientHeight();
+        const sx =  control.getOffsetLeft();
+        const sw =  control.getClientWidth();
+        const sh =  control.getClientHeight();
 
         const cx = -control.displayMin / (control.displayMax - control.displayMin) * sw;
         const v  =  control.value      / (control.displayMax - control.displayMin);
@@ -231,10 +231,10 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
             const x = 
                 v >= 0
-                ? sx + cx
-                : sx + cx + v * sw;
+                ? cx
+                : cx + v * sw;
 
-            control.bar.style.left   = 0;//Math.max(0, x);
+            control.bar.style.left   = Math.max(0, x);
             control.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), control.offsetWidth);
 
             control.bar.style.top    = sh * control.barTop;

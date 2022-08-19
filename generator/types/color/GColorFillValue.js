@@ -20,10 +20,10 @@ extends GType
 
 
     
-    static create(space, c1, c2, c3, opacity)
+    static create(r, g, b, opacity)
     {
         return new GColorFillValue(
-            GColorValue.create(space, c1, c2, c3),
+            GColorValue.create(1, r, g, b),
             new GNumberValue(opacity));
     }
 
@@ -72,8 +72,12 @@ extends GType
 
     toString()
     {
+        const rgb = scaleColor(dataColor2rgb(this.color.toDataColor()), 'rgb');
+
         return this.isValid()
-            ?         this.color  .toString()
+            ?         rgb[0].toString()
+              + ' ' + rgb[1].toString()
+              + ' ' + rgb[2].toString()
               + ' ' + this.opacity.toString()
             : INVALID;
     }
@@ -82,7 +86,7 @@ extends GType
 
     toFigmaString()
     {
-        return [COLOR, this.toString()];
+        return ['SOLID', this.toString()];
     }
 
 
@@ -103,11 +107,22 @@ extends GType
 function parseGColorFillValue(str)
 {
     if (str == INVALID)
-        return GColorFillValue.NaN;
+        return [GColorFillValue.NaN, 1];
 
     const fill = str.split(' ');
 
-    return new GColorFillValue(
-        parseGColorValue(str),
-        parseGNumberValue(fill[4]));
+    let i = 0;
+
+    const r       = parseGNumberValue(fill[i]); i += r      [1];
+    const g       = parseGNumberValue(fill[i]); i += g      [1];
+    const b       = parseGNumberValue(fill[i]); i += b      [1];
+    const opacity = parseGNumberValue(fill[i]); i += opacity[1];
+
+    const color   = GColorValue.create(1, r[0], g[0], b[0])
+
+
+    return [
+        new GColorFillValue(color, opacity[0]),
+        i ];
+
 }

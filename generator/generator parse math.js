@@ -7,7 +7,7 @@ function genParseNumValue(parse)
     if (parse.logRequests)
         logReqNumberValue(val, parse);
 
-    return parseGNumberValue(val);
+    return parseGNumberValue(val)[0];
 }
 
 
@@ -58,7 +58,7 @@ function genParseLimits(parse)
     if (!ignore)
     {
         nValues = parse.move();
-        console.assert(nValues == 0 || nValues == 1);
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
     }
 
     
@@ -142,7 +142,7 @@ function genParseInterpolate(parse)
     if (!ignore)
     {
         nValues = parse.move();
-        console.assert(nValues => 0 && nValues <= 2);
+        console.assert(nValues => 0 && nValues <= 2, 'nValues must be [0, 2]');
     }
 
     

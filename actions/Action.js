@@ -28,7 +28,7 @@ class Action
                this.name != undefined
             && this.name != null
             && this.name != '',
-            'Error: cannot create user action');
+            'cannot create user action');
     }
 
 

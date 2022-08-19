@@ -119,16 +119,33 @@ extends GGeometryBaseValue
 function parseGRectangleValue(str)
 {
     if (str == INVALID)
-        return GRectangleValue.NaN;
+        return [GRectangleValue.NaN, 1];
 
-    const rect = str.split(' ');
+    const _rect = str.split(' ');
 
-    return new GRectangleValue(
+
+    let i = 0;
+
+    const x      = parseGNumberValue(fill[i]); i += x     [1];
+    const y      = parseGNumberValue(fill[i]); i += y     [1];
+    const width  = parseGNumberValue(fill[i]); i += width [1];
+    const height = parseGNumberValue(fill[i]); i += height[1];
+    const angle  = parseGNumberValue(fill[i]); i += angle [1];
+    const round  = parseGNumberValue(fill[i]); i += round [1];
+
+
+    const rect = new GRectangleValue(
         '', // set node ID elsewhere
-        new GNumberValue(parseGNumberValue(rect[0])),
-        new GNumberValue(parseGNumberValue(rect[1])),
-        new GNumberValue(parseGNumberValue(rect[2])),
-        new GNumberValue(parseGNumberValue(rect[3])),
-        new GNumberValue(parseGNumberValue(rect[4])),
-        new GNumberValue(parseGNumberValue(rect[5])));
+        x     [0],
+        y     [0],
+        width [0],
+        height[0],
+        angle [0],
+        round [0]);
+
+
+    i = parseGGeometryBaseValue(_rect, i, rect);
+
+    
+    return [rect, i];
 }

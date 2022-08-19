@@ -77,6 +77,6 @@ function parseGColorStopValue(str)
     const stop = str.split(' ');
 
     return new GColorStopValue(
-        parseGColorFillValue(str),
-        parseGNumberValue(stop[5]));
+        parseGColorFillValue(str)[0],
+        parseGNumberValue(stop[5])[0]);
 }

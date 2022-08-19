@@ -136,13 +136,19 @@ extends GType
 function parseGColorValue(str)
 {
     if (str == INVALID)
-        return GColorValue.NaN;
+        return [GColorValue.NaN, 1];
 
     const col = str.split(' ');
 
-    return new GColorValue(
-        parseGNumberValue(col[0]),
-        parseGNumberValue(col[1]),
-        parseGNumberValue(col[2]),
-        parseGNumberValue(col[3]));
+    let i = 0;
+
+    const space = parseGNumberValue(col[i]); i += space[1];
+    const c1    = parseGNumberValue(col[i]); i += c1   [1];
+    const c2    = parseGNumberValue(col[i]); i += c2   [1];
+    const c3    = parseGNumberValue(col[i]); i += c3   [1];
+
+
+    return [
+        new GColorValue(space[0], c1[0], c2[0], c3[0]), 
+        i ];
 }

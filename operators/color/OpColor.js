@@ -184,7 +184,10 @@ extends OpColorBase
     updateValues(updateParamId, paramIds, values)
     {
         const col = values[paramIds.findIndex(id => id == 'value')];
-        console.assert(col.type == COLOR_VALUE);
+
+        console.assert(
+            col.type == COLOR_VALUE, 
+            'this.result.type must be COLOR_VALUE');
 
 
         this.paramSpace.setValue(col.space, false, true, false);

@@ -6,6 +6,7 @@ extends Parameter
     oldValue = null;
     
 
+    checkers;
     controlWrapper;
 
     colorControl;
@@ -20,13 +21,7 @@ extends Parameter
     }
 
     
-    get value() 
-    { 
-        return new GColorFillValue(
-            this.colorControl.value,
-            new GNumberValue(this.opacityControl.value)); 
-    }
-    
+    value;
     get genValue() { return this.value.copy();  }
     
 
@@ -41,6 +36,7 @@ extends Parameter
     {
         super(COLOR_FILL, id, name);
 
+        this.checkers              = createDiv();
         this.controlWrapper        = createDiv();
 
         this.colorControl          = createDiv();
@@ -53,6 +49,7 @@ extends Parameter
         this.opacityControl.zIndex = 0;
    
         this.defaultValue          = defaultValue;
+        this.value                 = defaultValue;
 
         
         initColorControl(
@@ -76,10 +73,16 @@ extends Parameter
             false,
             0,
             100,
-            defaultValue.opacity, // default
+            defaultValue.opacity,
             0);
 
         this.opacityControl.setSuffix('%', true);
+
+
+        this.checkers.style.width             = '100%';
+        this.checkers.style.height            = '20px';
+        this.checkers.style.backgroundSize     = '26px 26px';
+        this.checkers.style.backgroundPosition = '0 0, 13px 13px';
 
 
         this.controlWrapper.style.display           = 'inline-block';
@@ -130,9 +133,14 @@ extends Parameter
         if (hasOutput) this.initOutput(COLOR_FILL_VALUE, this.output_genRequest);
 
 
-        this.colorControl.addEventListener('confirm', () => 
+        this.colorControl.addEventListener('confirm', () =>
+        { 
+            this.setValue(this.value, true, false);
+        });
+
+        this.opacityControl.addEventListener('confirm', () =>
         {
-            this.setValue(this.colorControl.value, true, false); 
+            this.setValue(this.value, true, false);
         });
 
 
@@ -147,7 +155,7 @@ extends Parameter
                 const  rgb = validHex2rgb(e.detail.value);
                 const _rgb = scaleColor(rgb, 'rgb');
 
-                this.setValue(GColorFillValue.createFromRgb(1, _rgb[0], _rgb[1], _rgb[2], this.opacityControl.value), true);
+                this.setValue(GColorFillValue.createFromRgb(_rgb, this.opacityControl.value), true);
                 e.preventSetValue = true;
             }
         });
@@ -172,13 +180,19 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        console.assert(value.type && value.type == COLOR_FILL_VALUE);
+        console.assert(
+               value.type 
+            && value.type == COLOR_FILL_VALUE, 
+            'FillParam this.result.type must be COLOR_FILL_VALUE');
+
         this.preSetValue(value, createAction, dispatchEvents);
+
+        this.value = value;
 
         if (updateControl)
         {
             this.  colorControl.setValue(value.color,   false, false, forceChange); 
-            this.opacityControl.setValue(value.opacity, false, false, forceChange); 
+            this.opacityControl.setValue(value.opacity, false, true, false, forceChange); 
         }
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
@@ -211,11 +225,24 @@ extends Parameter
         this.output.colorDark  = rgb_a(rgbText, 0.12);
 
 
-        this.controlWrapper.style.background = rgb2style(rgbVal);
+        this.checkers.style.display         = 'inline-block';//this.canShowColor() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor = isDarkMode() ? '#444' : '#fff';
 
+        this.checkers.style.background =
+            isDarkMode()
+            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+        this.controlWrapper.style.background = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
+
+
+        this.  colorControl.backColorLight  = 
+        this.  colorControl.backColorDark   = 'transparent';//rgba2style(rgb_a(rgbVal, 0.6));
 
         this.opacityControl.backColorLight  = 
-        this.opacityControl.backColorDark   = rgba2style(rgb_a(rgbVal, 0.6));
+        this.opacityControl.backColorDark   = 'transparent';//rgba2style(rgb_a(rgbVal, 0.6));
 
         this.opacityControl.valueColorLight = 
         this.opacityControl.valueColorDark  = rgba2style(rgb_a(rgbText, 0.12));
@@ -310,6 +337,6 @@ extends Parameter
     
     loadParam(param)
     {
-        this.setValue(parseGColorFillValue(param), true, true, false);
+        this.setValue(parseGColorFillValue(param)[0], true, true, false);
     }
 }

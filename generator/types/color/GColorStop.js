@@ -40,7 +40,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == COLOR_STOP_VALUE);
+
+                console.assert(
+                    this.result.type == COLOR_STOP_VALUE, 
+                    'this.result.type must be COLOR_STOP_VALUE');
 
                 if (this.result.isValid())
                 {

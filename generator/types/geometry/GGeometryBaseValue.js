@@ -74,14 +74,14 @@ extends GType
         }
 
         return {
-            nodeId:           this.nodeId,
+            nodeId:       this.nodeId,
 
-            fills:            [this.fill  .toFigmaString()],
-            strokes:          [this.stroke.toFigmaString()],
-            strokeWeight:     this.strokeWeight.value,
-            strokeAlign:      strokeAlign,
-            strokeJoin:       strokeJoin,
-            strokeMiterLimit: Math.min(this.strokeMiter.value, 16)
+            fills:        [this.fill  .toFigmaString()],
+            strokes:      [this.stroke.toFigmaString()],
+            strokeWeight: this.strokeWeight.value,
+            strokeAlign:  strokeAlign,
+            strokeJoin:   strokeJoin,
+            strokeMiter:  Math.min(this.strokeMiter.value, 16)
         }
     }
 
@@ -96,4 +96,25 @@ extends GType
                + ' ' + this.strokeJoin  .toString()
                + ' ' + this.strokeMiter .toString();
     }
+}
+
+
+
+function parseGGeometryBaseValue(_str, i, obj)
+{
+    const fill         = parseGNumberValue(obj[i]); i += x     [1];
+    const stroke       = parseGNumberValue(obj[i]); i += y     [1];
+    const strokeWeight = parseGNumberValue(obj[i]); i += width [1];
+    const strokeFit    = parseGNumberValue(obj[i]); i += height[1];
+    const strokeJoin   = parseGNumberValue(obj[i]); i += angle [1];
+    const strokeMiter  = parseGNumberValue(obj[i]); i += round [1];
+
+    obj.fill         = fill        [0];
+    obj.stroke       = stroke      [0];
+    obj.strokeWeight = strokeWeight[0];
+    obj.strokeFit    = strokeFit   [0];
+    obj.strokeJoin   = strokeJoin  [0];
+    obj.strokeMiter  = strokeMiter [0];
+
+    return i;
 }

@@ -114,6 +114,6 @@ extends Parameter
 
     loadParam(param)
     {
-        this.setValue(parseGNumberValue(param), true, true, false);
+        this.setValue(parseGNumberValue(param)[0], true, true, false);
     }
 }

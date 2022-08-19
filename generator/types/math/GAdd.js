@@ -31,7 +31,10 @@ extends GOperator
             for (const _input of this.inputs)
             {
                 const input = _input.eval(parse).copy();
-                console.assert(input.type == NUMBER_VALUE);
+
+                console.assert(
+                    input.type == NUMBER_VALUE, 
+                    'this.result.type must be NUMBER_VALUE');
 
                 this.result.value   += input.value;
                 this.result.decimals = Math.max(this.result.decimals, input.decimals);

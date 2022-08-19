@@ -69,9 +69,12 @@ extends GType
 
 function parseGNumberValue(str)
 {
-    return str == INVALID
+    const num = 
+        str == INVALID
         ? new GNumberValue(Number.NaN, 0)
         : new GNumberValue(
               parseFloat(str),
               decCount(str));
+
+    return [num, 1];
 }

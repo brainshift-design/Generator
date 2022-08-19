@@ -4872,11 +4872,14 @@ extends GType
 
 function parseGNumberValue(str)
 {
-    return str == INVALID
+    const num = 
+        str == INVALID
         ? new GNumberValue(Number.NaN, 0)
         : new GNumberValue(
               parseFloat(str),
               decCount(str));
+
+    return [num, 1];
 }
 
 
@@ -5019,15 +5022,21 @@ extends GType
 function parseGColorValue(str)
 {
     if (str == INVALID)
-        return GColorValue.NaN;
+        return [GColorValue.NaN, 1];
 
     const col = str.split(' ');
 
-    return new GColorValue(
-        parseGNumberValue(col[0]),
-        parseGNumberValue(col[1]),
-        parseGNumberValue(col[2]),
-        parseGNumberValue(col[3]));
+    let i = 0;
+
+    const space = parseGNumberValue(col[i]); i += space[1];
+    const c1    = parseGNumberValue(col[i]); i += c1   [1];
+    const c2    = parseGNumberValue(col[i]); i += c2   [1];
+    const c3    = parseGNumberValue(col[i]); i += c3   [1];
+
+
+    return [
+        new GColorValue(space[0], c1[0], c2[0], c3[0]), 
+        i ];
 }
 
 
@@ -5053,10 +5062,10 @@ extends GType
 
 
     
-    static create(space, c1, c2, c3, opacity)
+    static create(r, g, b, opacity)
     {
         return new GColorFillValue(
-            GColorValue.create(space, c1, c2, c3),
+            GColorValue.create(1, r, g, b),
             new GNumberValue(opacity));
     }
 
@@ -5105,8 +5114,12 @@ extends GType
 
     toString()
     {
+        const rgb = scaleColor(dataColor2rgb(this.color.toDataColor()), 'rgb');
+
         return this.isValid()
-            ?         this.color  .toString()
+            ?         rgb[0].toString()
+              + ' ' + rgb[1].toString()
+              + ' ' + rgb[2].toString()
               + ' ' + this.opacity.toString()
             : INVALID;
     }
@@ -5115,7 +5128,7 @@ extends GType
 
     toFigmaString()
     {
-        return [COLOR, this.toString()];
+        return ['SOLID', this.toString()];
     }
 
 
@@ -5136,13 +5149,24 @@ extends GType
 function parseGColorFillValue(str)
 {
     if (str == INVALID)
-        return GColorFillValue.NaN;
+        return [GColorFillValue.NaN, 1];
 
     const fill = str.split(' ');
 
-    return new GColorFillValue(
-        parseGColorValue(str),
-        parseGNumberValue(fill[4]));
+    let i = 0;
+
+    const r       = parseGNumberValue(fill[i]); i += r      [1];
+    const g       = parseGNumberValue(fill[i]); i += g      [1];
+    const b       = parseGNumberValue(fill[i]); i += b      [1];
+    const opacity = parseGNumberValue(fill[i]); i += opacity[1];
+
+    const color   = GColorValue.create(1, r[0], g[0], b[0])
+
+
+    return [
+        new GColorFillValue(color, opacity[0]),
+        i ];
+
 }
 
 
@@ -5225,8 +5249,8 @@ function parseGColorStopValue(str)
     const stop = str.split(' ');
 
     return new GColorStopValue(
-        parseGColorFillValue(str),
-        parseGNumberValue(stop[5]));
+        parseGColorFillValue(str)[0],
+        parseGNumberValue(stop[5])[0]);
 }
 
 
@@ -5270,7 +5294,7 @@ extends GOperator
 
             this.valid = true;
 
-            console.assert(this.result.valid);
+            console.assert(this.result.valid, 'this.result must be valid');
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
@@ -5389,7 +5413,10 @@ extends GOperator
             for (const _input of this.inputs)
             {
                 const input = _input.eval(parse).copy();
-                console.assert(input.type == NUMBER_VALUE);
+
+                console.assert(
+                    input.type == NUMBER_VALUE, 
+                    'this.result.type must be NUMBER_VALUE');
 
                 this.result.value   += input.value;
                 this.result.decimals = Math.max(this.result.decimals, input.decimals);
@@ -5447,7 +5474,10 @@ extends GOperator
                 for (let i = 1; i < this.inputs.length; i++)
                 {
                     const input = this.inputs[i].eval(parse);
-                    console.assert(input.type == NUMBER_VALUE);
+
+                    console.assert(
+                        input.type == NUMBER_VALUE, 
+                        'this.result.type must be NUMBER_VALUE');
                         
                     this.result.value   -= input.value;
                     this.result.decimals = Math.max(this.result.decimals, input.decimals);
@@ -5696,7 +5726,10 @@ extends GOperator
                 for (let i = 1; i < this.inputs.length; i++)
                 {
                     const input = this.inputs[i].eval(parse);
-                    console.assert(input.type == NUMBER_VALUE);
+
+                    console.assert(
+                        input.type == NUMBER_VALUE, 
+                        'this.result.type must be NUMBER_VALUE');
                         
                     this.result.value    = Math.pow(this.result.value, input.value);
                     this.result.decimals = Math.max(this.result.decimals, input.decimals);
@@ -5833,13 +5866,17 @@ extends GOperator
     {
         if (!this.valid)
         {
+            console.log('this.space =', this.space);
             const space = this.space.eval(parse).copy();
 
 
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == COLOR_VALUE);
+
+                console.assert(
+                    this.result.type == COLOR_VALUE, 
+                    'this.result.type must be COLOR_VALUE');
 
                 if (this.result.isValid())
                 {
@@ -5891,7 +5928,10 @@ extends GOperator
             }
 
 
-            console.assert(this.result.space.type == NUMBER_VALUE);
+            console.assert(
+                this.result.space.type == NUMBER_VALUE, 
+                'this.result.type must be NUMBER_VALUE');
+
             this.result.space.value = Math.min(Math.max(
                 0, 
                 this.result.space.value), 
@@ -5988,7 +6028,10 @@ extends GOperator
                 const input1 = this.input1.eval(parse).copy();
 
 
-                console.assert(amount.type == NUMBER_VALUE);
+                console.assert(
+                    amount.type == NUMBER_VALUE, 
+                    'this.result.type must be NUMBER_VALUE');
+
                 const f = amount.value / 100;
 
                 const _space = colorSpace(space.value);
@@ -6440,7 +6483,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == COLOR_FILL_VALUE);
+
+                console.assert(
+                    this.result.type == COLOR_FILL_VALUE,
+                    'GColorFill this.result.type must be COLOR_FILL_VALUE');
 
                 if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
                 if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
@@ -6448,7 +6494,7 @@ extends GOperator
             else
             {
                 this.result = new GColorFillValue(
-                    this.color  .eval(parse).copy(), 
+                    GColorValue.createFromRgb(scaleColor(dataColor2rgb(this.color.eval(parse).toDataColor()), 'rgb')), 
                     this.opacity.eval(parse).copy());
             }
         
@@ -6511,7 +6557,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == COLOR_STOP_VALUE);
+
+                console.assert(
+                    this.result.type == COLOR_STOP_VALUE, 
+                    'this.result.type must be COLOR_STOP_VALUE');
 
                 if (this.result.isValid())
                 {
@@ -6623,14 +6672,14 @@ extends GType
         }
 
         return {
-            nodeId:           this.nodeId,
+            nodeId:       this.nodeId,
 
-            fills:            [this.fill  .toFigmaString()],
-            strokes:          [this.stroke.toFigmaString()],
-            strokeWeight:     this.strokeWeight.value,
-            strokeAlign:      strokeAlign,
-            strokeJoin:       strokeJoin,
-            strokeMiterLimit: Math.min(this.strokeMiter.value, 16)
+            fills:        [this.fill  .toFigmaString()],
+            strokes:      [this.stroke.toFigmaString()],
+            strokeWeight: this.strokeWeight.value,
+            strokeAlign:  strokeAlign,
+            strokeJoin:   strokeJoin,
+            strokeMiter:  Math.min(this.strokeMiter.value, 16)
         }
     }
 
@@ -6645,6 +6694,27 @@ extends GType
                + ' ' + this.strokeJoin  .toString()
                + ' ' + this.strokeMiter .toString();
     }
+}
+
+
+
+function parseGGeometryBaseValue(_str, i, obj)
+{
+    const fill         = parseGNumberValue(obj[i]); i += x     [1];
+    const stroke       = parseGNumberValue(obj[i]); i += y     [1];
+    const strokeWeight = parseGNumberValue(obj[i]); i += width [1];
+    const strokeFit    = parseGNumberValue(obj[i]); i += height[1];
+    const strokeJoin   = parseGNumberValue(obj[i]); i += angle [1];
+    const strokeMiter  = parseGNumberValue(obj[i]); i += round [1];
+
+    obj.fill         = fill        [0];
+    obj.stroke       = stroke      [0];
+    obj.strokeWeight = strokeWeight[0];
+    obj.strokeFit    = strokeFit   [0];
+    obj.strokeJoin   = strokeJoin  [0];
+    obj.strokeMiter  = strokeMiter [0];
+
+    return i;
 }
 
 
@@ -6769,18 +6839,35 @@ extends GGeometryBaseValue
 function parseGRectangleValue(str)
 {
     if (str == INVALID)
-        return GRectangleValue.NaN;
+        return [GRectangleValue.NaN, 1];
 
-    const rect = str.split(' ');
+    const _rect = str.split(' ');
 
-    return new GRectangleValue(
+
+    let i = 0;
+
+    const x      = parseGNumberValue(fill[i]); i += x     [1];
+    const y      = parseGNumberValue(fill[i]); i += y     [1];
+    const width  = parseGNumberValue(fill[i]); i += width [1];
+    const height = parseGNumberValue(fill[i]); i += height[1];
+    const angle  = parseGNumberValue(fill[i]); i += angle [1];
+    const round  = parseGNumberValue(fill[i]); i += round [1];
+
+
+    const rect = new GRectangleValue(
         '', // set node ID elsewhere
-        new GNumberValue(parseGNumberValue(rect[0])),
-        new GNumberValue(parseGNumberValue(rect[1])),
-        new GNumberValue(parseGNumberValue(rect[2])),
-        new GNumberValue(parseGNumberValue(rect[3])),
-        new GNumberValue(parseGNumberValue(rect[4])),
-        new GNumberValue(parseGNumberValue(rect[5])));
+        x     [0],
+        y     [0],
+        width [0],
+        height[0],
+        angle [0],
+        round [0]);
+
+
+    i = parseGGeometryBaseValue(_rect, i, rect);
+
+    
+    return [rect, i];
 }
 
 
@@ -6970,11 +7057,11 @@ function parseGEllipseValue(str)
     const rect = str.split(' ');
 
     return new GEllipseValue(
-        new GNumberValue(parseGNumberValue(rect[0])),
-        new GNumberValue(parseGNumberValue(rect[1])),
-        new GNumberValue(parseGNumberValue(rect[2])),
-        new GNumberValue(parseGNumberValue(rect[3])),
-        new GNumberValue(parseGNumberValue(rect[4])));
+        new GNumberValue(parseGNumberValue(rect[0])[0]),
+        new GNumberValue(parseGNumberValue(rect[1])[0]),
+        new GNumberValue(parseGNumberValue(rect[2])[0]),
+        new GNumberValue(parseGNumberValue(rect[3])[0]),
+        new GNumberValue(parseGNumberValue(rect[4])[0]));
 }
 
 
@@ -7282,7 +7369,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            console.log('this =', this);
             if (input)
             {
                 if (this.fill        ) this.result.fill         = this.fill        .eval(parse).copy();
@@ -7358,7 +7444,10 @@ extends GGeometryBase
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == RECTANGLE_VALUE);
+
+                console.assert(
+                    this.result.type == RECTANGLE_VALUE, 
+                    'this.result.type must be RECTANGLE_VALUE');
 
                 if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
                 if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
@@ -7461,7 +7550,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == LINE_VALUE);
+
+                console.assert(
+                    this.result.type == LINE_VALUE, 
+                    'this.result.type must be LINE_VALUE');
 
                 if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
                 if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
@@ -7570,7 +7662,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == ELLIPSE_VALUE);
+
+                console.assert(
+                    this.result.type == ELLIPSE_VALUE, 
+                    'this.result.type must be ELLIPSE_VALUE');
 
                 if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
                 if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
@@ -7688,7 +7783,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == POLYGON_VALUE);
+                
+                console.assert(
+                    this.result.type == POLYGON_VALUE, 
+                    'this.result.type must be POLYGON_VALUE');
 
                 if (this.x      ) this.result.x       = this.x      .eval(parse).copy();
                 if (this.y      ) this.result.y       = this.y      .eval(parse).copy();
@@ -7815,7 +7913,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == STAR_VALUE);
+
+                console.assert(
+                    this.result.type == STAR_VALUE, 
+                    'this.result.type must be STAR_VALUE');
 
                 if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
                 if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
@@ -8021,7 +8122,7 @@ function genParseColorValue(parse)
     if (parse.logRequests)
         logReqColorValue(col, parse);
 
-    return parseGColorValue(col);
+    return parseGColorValue(col)[0];
 }
 
 
@@ -8096,7 +8197,7 @@ function genParseColorInterpolate(parse)
     if (!ignore)
     {
         nValues = parse.move();
-        console.assert(nValues => 0 && nValues <= 2);
+        console.assert(nValues => 0 && nValues <= 2, 'nValues must be [0, 2]');
     }
 
     
@@ -8124,7 +8225,7 @@ function genParseColorInterpolate(parse)
         lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
 
     else if (nValues != 0)
-        console.assert(false);
+        console.assert(false, 'nValues must be [0, 2]');
 
 
     lerp.space  = genParse(parse);
@@ -8154,7 +8255,7 @@ function genParseColorContrast(parse)
     if (!ignore)
     {
         nValues = parse.move();
-        console.assert(nValues => 0 && nValues <= 2);
+        console.assert(nValues => 0 && nValues <= 2, 'nValues must be [0, 2]');
     }
 
 
@@ -8290,7 +8391,7 @@ function genParseColorFillValue(parse)
     if (parse.logRequests)
         logReqColorFillValue(fill, parse);
 
-    return parseGColorFillValue(fill);
+    return parseGColorFillValue(fill)[0];
 }
 
 
@@ -8750,7 +8851,7 @@ function genParseNumValue(parse)
     if (parse.logRequests)
         logReqNumberValue(val, parse);
 
-    return parseGNumberValue(val);
+    return parseGNumberValue(val)[0];
 }
 
 
@@ -8801,7 +8902,7 @@ function genParseLimits(parse)
     if (!ignore)
     {
         nValues = parse.move();
-        console.assert(nValues == 0 || nValues == 1);
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
     }
 
     
@@ -8885,7 +8986,7 @@ function genParseInterpolate(parse)
     if (!ignore)
     {
         nValues = parse.move();
-        console.assert(nValues => 0 && nValues <= 2);
+        console.assert(nValues => 0 && nValues <= 2, 'nValues must be [0, 2]');
     }
 
     
@@ -16476,11 +16577,14 @@ extends GType
 
 function parseGNumberValue(str)
 {
-    return str == INVALID
+    const num = 
+        str == INVALID
         ? new GNumberValue(Number.NaN, 0)
         : new GNumberValue(
               parseFloat(str),
               decCount(str));
+
+    return [num, 1];
 }
 
 
@@ -16623,15 +16727,21 @@ extends GType
 function parseGColorValue(str)
 {
     if (str == INVALID)
-        return GColorValue.NaN;
+        return [GColorValue.NaN, 1];
 
     const col = str.split(' ');
 
-    return new GColorValue(
-        parseGNumberValue(col[0]),
-        parseGNumberValue(col[1]),
-        parseGNumberValue(col[2]),
-        parseGNumberValue(col[3]));
+    let i = 0;
+
+    const space = parseGNumberValue(col[i]); i += space[1];
+    const c1    = parseGNumberValue(col[i]); i += c1   [1];
+    const c2    = parseGNumberValue(col[i]); i += c2   [1];
+    const c3    = parseGNumberValue(col[i]); i += c3   [1];
+
+
+    return [
+        new GColorValue(space[0], c1[0], c2[0], c3[0]), 
+        i ];
 }
 
 
@@ -16657,10 +16767,10 @@ extends GType
 
 
     
-    static create(space, c1, c2, c3, opacity)
+    static create(r, g, b, opacity)
     {
         return new GColorFillValue(
-            GColorValue.create(space, c1, c2, c3),
+            GColorValue.create(1, r, g, b),
             new GNumberValue(opacity));
     }
 
@@ -16709,8 +16819,12 @@ extends GType
 
     toString()
     {
+        const rgb = scaleColor(dataColor2rgb(this.color.toDataColor()), 'rgb');
+
         return this.isValid()
-            ?         this.color  .toString()
+            ?         rgb[0].toString()
+              + ' ' + rgb[1].toString()
+              + ' ' + rgb[2].toString()
               + ' ' + this.opacity.toString()
             : INVALID;
     }
@@ -16719,7 +16833,7 @@ extends GType
 
     toFigmaString()
     {
-        return [COLOR, this.toString()];
+        return ['SOLID', this.toString()];
     }
 
 
@@ -16740,13 +16854,24 @@ extends GType
 function parseGColorFillValue(str)
 {
     if (str == INVALID)
-        return GColorFillValue.NaN;
+        return [GColorFillValue.NaN, 1];
 
     const fill = str.split(' ');
 
-    return new GColorFillValue(
-        parseGColorValue(str),
-        parseGNumberValue(fill[4]));
+    let i = 0;
+
+    const r       = parseGNumberValue(fill[i]); i += r      [1];
+    const g       = parseGNumberValue(fill[i]); i += g      [1];
+    const b       = parseGNumberValue(fill[i]); i += b      [1];
+    const opacity = parseGNumberValue(fill[i]); i += opacity[1];
+
+    const color   = GColorValue.create(1, r[0], g[0], b[0])
+
+
+    return [
+        new GColorFillValue(color, opacity[0]),
+        i ];
+
 }
 
 
@@ -16829,8 +16954,8 @@ function parseGColorStopValue(str)
     const stop = str.split(' ');
 
     return new GColorStopValue(
-        parseGColorFillValue(str),
-        parseGNumberValue(stop[5]));
+        parseGColorFillValue(str)[0],
+        parseGNumberValue(stop[5])[0]);
 }
 
 
@@ -16874,7 +16999,7 @@ extends GOperator
 
             this.valid = true;
 
-            console.assert(this.result.valid);
+            console.assert(this.result.valid, 'this.result must be valid');
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
@@ -16993,7 +17118,10 @@ extends GOperator
             for (const _input of this.inputs)
             {
                 const input = _input.eval(parse).copy();
-                console.assert(input.type == NUMBER_VALUE);
+
+                console.assert(
+                    input.type == NUMBER_VALUE, 
+                    'this.result.type must be NUMBER_VALUE');
 
                 this.result.value   += input.value;
                 this.result.decimals = Math.max(this.result.decimals, input.decimals);
@@ -17051,7 +17179,10 @@ extends GOperator
                 for (let i = 1; i < this.inputs.length; i++)
                 {
                     const input = this.inputs[i].eval(parse);
-                    console.assert(input.type == NUMBER_VALUE);
+
+                    console.assert(
+                        input.type == NUMBER_VALUE, 
+                        'this.result.type must be NUMBER_VALUE');
                         
                     this.result.value   -= input.value;
                     this.result.decimals = Math.max(this.result.decimals, input.decimals);
@@ -17300,7 +17431,10 @@ extends GOperator
                 for (let i = 1; i < this.inputs.length; i++)
                 {
                     const input = this.inputs[i].eval(parse);
-                    console.assert(input.type == NUMBER_VALUE);
+
+                    console.assert(
+                        input.type == NUMBER_VALUE, 
+                        'this.result.type must be NUMBER_VALUE');
                         
                     this.result.value    = Math.pow(this.result.value, input.value);
                     this.result.decimals = Math.max(this.result.decimals, input.decimals);
@@ -17437,13 +17571,17 @@ extends GOperator
     {
         if (!this.valid)
         {
+            console.log('this.space =', this.space);
             const space = this.space.eval(parse).copy();
 
 
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == COLOR_VALUE);
+
+                console.assert(
+                    this.result.type == COLOR_VALUE, 
+                    'this.result.type must be COLOR_VALUE');
 
                 if (this.result.isValid())
                 {
@@ -17495,7 +17633,10 @@ extends GOperator
             }
 
 
-            console.assert(this.result.space.type == NUMBER_VALUE);
+            console.assert(
+                this.result.space.type == NUMBER_VALUE, 
+                'this.result.type must be NUMBER_VALUE');
+
             this.result.space.value = Math.min(Math.max(
                 0, 
                 this.result.space.value), 
@@ -17592,7 +17733,10 @@ extends GOperator
                 const input1 = this.input1.eval(parse).copy();
 
 
-                console.assert(amount.type == NUMBER_VALUE);
+                console.assert(
+                    amount.type == NUMBER_VALUE, 
+                    'this.result.type must be NUMBER_VALUE');
+
                 const f = amount.value / 100;
 
                 const _space = colorSpace(space.value);
@@ -18044,7 +18188,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == COLOR_FILL_VALUE);
+
+                console.assert(
+                    this.result.type == COLOR_FILL_VALUE,
+                    'GColorFill this.result.type must be COLOR_FILL_VALUE');
 
                 if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
                 if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
@@ -18052,7 +18199,7 @@ extends GOperator
             else
             {
                 this.result = new GColorFillValue(
-                    this.color  .eval(parse).copy(), 
+                    GColorValue.createFromRgb(scaleColor(dataColor2rgb(this.color.eval(parse).toDataColor()), 'rgb')), 
                     this.opacity.eval(parse).copy());
             }
         
@@ -18115,7 +18262,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == COLOR_STOP_VALUE);
+
+                console.assert(
+                    this.result.type == COLOR_STOP_VALUE, 
+                    'this.result.type must be COLOR_STOP_VALUE');
 
                 if (this.result.isValid())
                 {
@@ -18227,14 +18377,14 @@ extends GType
         }
 
         return {
-            nodeId:           this.nodeId,
+            nodeId:       this.nodeId,
 
-            fills:            [this.fill  .toFigmaString()],
-            strokes:          [this.stroke.toFigmaString()],
-            strokeWeight:     this.strokeWeight.value,
-            strokeAlign:      strokeAlign,
-            strokeJoin:       strokeJoin,
-            strokeMiterLimit: Math.min(this.strokeMiter.value, 16)
+            fills:        [this.fill  .toFigmaString()],
+            strokes:      [this.stroke.toFigmaString()],
+            strokeWeight: this.strokeWeight.value,
+            strokeAlign:  strokeAlign,
+            strokeJoin:   strokeJoin,
+            strokeMiter:  Math.min(this.strokeMiter.value, 16)
         }
     }
 
@@ -18249,6 +18399,27 @@ extends GType
                + ' ' + this.strokeJoin  .toString()
                + ' ' + this.strokeMiter .toString();
     }
+}
+
+
+
+function parseGGeometryBaseValue(_str, i, obj)
+{
+    const fill         = parseGNumberValue(obj[i]); i += x     [1];
+    const stroke       = parseGNumberValue(obj[i]); i += y     [1];
+    const strokeWeight = parseGNumberValue(obj[i]); i += width [1];
+    const strokeFit    = parseGNumberValue(obj[i]); i += height[1];
+    const strokeJoin   = parseGNumberValue(obj[i]); i += angle [1];
+    const strokeMiter  = parseGNumberValue(obj[i]); i += round [1];
+
+    obj.fill         = fill        [0];
+    obj.stroke       = stroke      [0];
+    obj.strokeWeight = strokeWeight[0];
+    obj.strokeFit    = strokeFit   [0];
+    obj.strokeJoin   = strokeJoin  [0];
+    obj.strokeMiter  = strokeMiter [0];
+
+    return i;
 }
 
 
@@ -18373,18 +18544,35 @@ extends GGeometryBaseValue
 function parseGRectangleValue(str)
 {
     if (str == INVALID)
-        return GRectangleValue.NaN;
+        return [GRectangleValue.NaN, 1];
 
-    const rect = str.split(' ');
+    const _rect = str.split(' ');
 
-    return new GRectangleValue(
+
+    let i = 0;
+
+    const x      = parseGNumberValue(fill[i]); i += x     [1];
+    const y      = parseGNumberValue(fill[i]); i += y     [1];
+    const width  = parseGNumberValue(fill[i]); i += width [1];
+    const height = parseGNumberValue(fill[i]); i += height[1];
+    const angle  = parseGNumberValue(fill[i]); i += angle [1];
+    const round  = parseGNumberValue(fill[i]); i += round [1];
+
+
+    const rect = new GRectangleValue(
         '', // set node ID elsewhere
-        new GNumberValue(parseGNumberValue(rect[0])),
-        new GNumberValue(parseGNumberValue(rect[1])),
-        new GNumberValue(parseGNumberValue(rect[2])),
-        new GNumberValue(parseGNumberValue(rect[3])),
-        new GNumberValue(parseGNumberValue(rect[4])),
-        new GNumberValue(parseGNumberValue(rect[5])));
+        x     [0],
+        y     [0],
+        width [0],
+        height[0],
+        angle [0],
+        round [0]);
+
+
+    i = parseGGeometryBaseValue(_rect, i, rect);
+
+    
+    return [rect, i];
 }
 
 
@@ -18574,11 +18762,11 @@ function parseGEllipseValue(str)
     const rect = str.split(' ');
 
     return new GEllipseValue(
-        new GNumberValue(parseGNumberValue(rect[0])),
-        new GNumberValue(parseGNumberValue(rect[1])),
-        new GNumberValue(parseGNumberValue(rect[2])),
-        new GNumberValue(parseGNumberValue(rect[3])),
-        new GNumberValue(parseGNumberValue(rect[4])));
+        new GNumberValue(parseGNumberValue(rect[0])[0]),
+        new GNumberValue(parseGNumberValue(rect[1])[0]),
+        new GNumberValue(parseGNumberValue(rect[2])[0]),
+        new GNumberValue(parseGNumberValue(rect[3])[0]),
+        new GNumberValue(parseGNumberValue(rect[4])[0]));
 }
 
 
@@ -18886,7 +19074,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            console.log('this =', this);
             if (input)
             {
                 if (this.fill        ) this.result.fill         = this.fill        .eval(parse).copy();
@@ -18962,7 +19149,10 @@ extends GGeometryBase
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == RECTANGLE_VALUE);
+
+                console.assert(
+                    this.result.type == RECTANGLE_VALUE, 
+                    'this.result.type must be RECTANGLE_VALUE');
 
                 if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
                 if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
@@ -19065,7 +19255,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == LINE_VALUE);
+
+                console.assert(
+                    this.result.type == LINE_VALUE, 
+                    'this.result.type must be LINE_VALUE');
 
                 if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
                 if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
@@ -19174,7 +19367,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == ELLIPSE_VALUE);
+
+                console.assert(
+                    this.result.type == ELLIPSE_VALUE, 
+                    'this.result.type must be ELLIPSE_VALUE');
 
                 if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
                 if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
@@ -19292,7 +19488,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == POLYGON_VALUE);
+                
+                console.assert(
+                    this.result.type == POLYGON_VALUE, 
+                    'this.result.type must be POLYGON_VALUE');
 
                 if (this.x      ) this.result.x       = this.x      .eval(parse).copy();
                 if (this.y      ) this.result.y       = this.y      .eval(parse).copy();
@@ -19419,7 +19618,10 @@ extends GOperator
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
-                console.assert(this.result.type == STAR_VALUE);
+
+                console.assert(
+                    this.result.type == STAR_VALUE, 
+                    'this.result.type must be STAR_VALUE');
 
                 if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
                 if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
@@ -20695,9 +20897,9 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
     control.update = function()
     {
-        const sx = control.getOffsetLeft();
-        const sw = control.getClientWidth();
-        const sh = control.getClientHeight();
+        const sx =  control.getOffsetLeft();
+        const sw =  control.getClientWidth();
+        const sh =  control.getClientHeight();
 
         const cx = -control.displayMin / (control.displayMax - control.displayMin) * sw;
         const v  =  control.value      / (control.displayMax - control.displayMin);
@@ -20732,10 +20934,10 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
             const x = 
                 v >= 0
-                ? sx + cx
-                : sx + cx + v * sw;
+                ? cx
+                : cx + v * sw;
 
-            control.bar.style.left   = 0;//Math.max(0, x);
+            control.bar.style.left   = Math.max(0, x);
             control.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), control.offsetWidth);
 
             control.bar.style.top    = sh * control.barTop;
@@ -24638,7 +24840,7 @@ extends Parameter
 
     loadParam(param)
     {
-        this.setValue(parseGNumberValue(param), true, true, false);
+        this.setValue(parseGNumberValue(param)[0], true, true, false);
     }
 }
 
@@ -24978,7 +25180,11 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        console.assert(value.type && value.type == COLOR_VALUE);
+        console.assert(
+               value.type 
+            && value.type == COLOR_VALUE, 
+            'value.type must be COLOR_VALUE');
+            
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
@@ -25092,7 +25298,7 @@ extends Parameter
     
     loadParam(param)
     {
-        this.setValue(parseGColorValue(param), true, true, false);
+        this.setValue(parseGColorValue(param)[0], true, true, false);
     }
 }
 
@@ -25105,6 +25311,7 @@ extends Parameter
     oldValue = null;
     
 
+    checkers;
     controlWrapper;
 
     colorControl;
@@ -25119,13 +25326,7 @@ extends Parameter
     }
 
     
-    get value() 
-    { 
-        return new GColorFillValue(
-            this.colorControl.value,
-            new GNumberValue(this.opacityControl.value)); 
-    }
-    
+    value;
     get genValue() { return this.value.copy();  }
     
 
@@ -25140,6 +25341,7 @@ extends Parameter
     {
         super(COLOR_FILL, id, name);
 
+        this.checkers              = createDiv();
         this.controlWrapper        = createDiv();
 
         this.colorControl          = createDiv();
@@ -25152,6 +25354,7 @@ extends Parameter
         this.opacityControl.zIndex = 0;
    
         this.defaultValue          = defaultValue;
+        this.value                 = defaultValue;
 
         
         initColorControl(
@@ -25175,10 +25378,16 @@ extends Parameter
             false,
             0,
             100,
-            defaultValue.opacity, // default
+            defaultValue.opacity,
             0);
 
         this.opacityControl.setSuffix('%', true);
+
+
+        this.checkers.style.width             = '100%';
+        this.checkers.style.height            = '20px';
+        this.checkers.style.backgroundSize     = '26px 26px';
+        this.checkers.style.backgroundPosition = '0 0, 13px 13px';
 
 
         this.controlWrapper.style.display           = 'inline-block';
@@ -25229,9 +25438,14 @@ extends Parameter
         if (hasOutput) this.initOutput(COLOR_FILL_VALUE, this.output_genRequest);
 
 
-        this.colorControl.addEventListener('confirm', () => 
+        this.colorControl.addEventListener('confirm', () =>
+        { 
+            this.setValue(this.value, true, false);
+        });
+
+        this.opacityControl.addEventListener('confirm', () =>
         {
-            this.setValue(this.colorControl.value, true, false); 
+            this.setValue(this.value, true, false);
         });
 
 
@@ -25246,7 +25460,7 @@ extends Parameter
                 const  rgb = validHex2rgb(e.detail.value);
                 const _rgb = scaleColor(rgb, 'rgb');
 
-                this.setValue(GColorFillValue.createFromRgb(1, _rgb[0], _rgb[1], _rgb[2], this.opacityControl.value), true);
+                this.setValue(GColorFillValue.createFromRgb(_rgb, this.opacityControl.value), true);
                 e.preventSetValue = true;
             }
         });
@@ -25271,13 +25485,19 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        console.assert(value.type && value.type == COLOR_FILL_VALUE);
+        console.assert(
+               value.type 
+            && value.type == COLOR_FILL_VALUE, 
+            'FillParam this.result.type must be COLOR_FILL_VALUE');
+
         this.preSetValue(value, createAction, dispatchEvents);
+
+        this.value = value;
 
         if (updateControl)
         {
             this.  colorControl.setValue(value.color,   false, false, forceChange); 
-            this.opacityControl.setValue(value.opacity, false, false, forceChange); 
+            this.opacityControl.setValue(value.opacity, false, true, false, forceChange); 
         }
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
@@ -25310,11 +25530,24 @@ extends Parameter
         this.output.colorDark  = rgb_a(rgbText, 0.12);
 
 
-        this.controlWrapper.style.background = rgb2style(rgbVal);
+        this.checkers.style.display         = 'inline-block';//this.canShowColor() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor = isDarkMode() ? '#444' : '#fff';
 
+        this.checkers.style.background =
+            isDarkMode()
+            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+        this.controlWrapper.style.background = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
+
+
+        this.  colorControl.backColorLight  = 
+        this.  colorControl.backColorDark   = 'transparent';//rgba2style(rgb_a(rgbVal, 0.6));
 
         this.opacityControl.backColorLight  = 
-        this.opacityControl.backColorDark   = rgba2style(rgb_a(rgbVal, 0.6));
+        this.opacityControl.backColorDark   = 'transparent';//rgba2style(rgb_a(rgbVal, 0.6));
 
         this.opacityControl.valueColorLight = 
         this.opacityControl.valueColorDark  = rgba2style(rgb_a(rgbText, 0.12));
@@ -25409,7 +25642,7 @@ extends Parameter
     
     loadParam(param)
     {
-        this.setValue(parseGColorFillValue(param), true, true, false);
+        this.setValue(parseGColorFillValue(param)[0], true, true, false);
     }
 }
 
@@ -29836,7 +30069,10 @@ extends OpColorBase
     updateValues(updateParamId, paramIds, values)
     {
         const col = values[paramIds.findIndex(id => id == 'value')];
-        console.assert(col.type == COLOR_VALUE);
+
+        console.assert(
+            col.type == COLOR_VALUE, 
+            'this.result.type must be COLOR_VALUE');
 
 
         this.paramSpace.setValue(col.space, false, true, false);
@@ -32146,7 +32382,9 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        console.assert(paramIds.length == values.length);
+        console.assert(
+            paramIds.length == values.length,
+            'paramIds.length must equal values.length');
 
         const colText = values[paramIds.findIndex(id => id == 'text')];
         const colBack = values[paramIds.findIndex(id => id == 'back')];
@@ -33026,8 +33264,7 @@ extends OperatorBase
 
 
         const cond = () => 
-                  this.paramStroke.value.isValid()
-               //&& isValidRgb(dataColorToRgb(this.paramStroke.value.color.toDataColor()))
+               this.paramStroke.value.isValid() //&& isValidRgb(dataColorToRgb(this.paramStroke.value.color.toDataColor()))
             || this.paramStroke.connected;
 
         this.paramStrokeWeight.show = () => cond();
@@ -33205,6 +33442,7 @@ extends OpGeometryBase
         this.paramAngle .setValue(rect.angle,  false, true, false);
         this.paramRound .setValue(rect.round,  false, true, false);
 
+        console.log('rect =', rect);
         super.updateBaseValues(updateParamId, paramIds, values, rect);
     }
 
@@ -34102,7 +34340,7 @@ class Action
                this.name != undefined
             && this.name != null
             && this.name != '',
-            'Error: cannot create user action');
+            'cannot create user action');
     }
 
 
@@ -37728,15 +37966,17 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
                 switch (type)
                 {
-                    case COLOR_VALUE:      value = parseGColorValue    (values[i++]); break;
-                    case COLOR_FILL_VALUE: value = parseGColorFillValue(values[i++]); break;
-                    case COLOR_STOP_VALUE: value = parseGColorStopValue(values[i++]); break;
-                    case RECTANGLE_VALUE:  value = parseGRectangleValue(values[i++]); break;
-                    case LINE_VALUE:       value = parseGLineValue     (values[i++]); break;
-                    case ELLIPSE_VALUE:    value = parseGEllipseValue  (values[i++]); break;
-                    case POLYGON_VALUE:    value = parseGPolygonValue  (values[i++]); break;
-                    case STAR_VALUE:       value = parseGStarValue     (values[i++]); break;
-                    default:               value = parseGNumberValue   (values[i++]); break;
+                    case NUMBER_VALUE:     value = parseGNumberValue   (values[i++])[0]; break;
+                    case COLOR_VALUE:      value = parseGColorValue    (values[i++])[0]; break;
+                    case COLOR_FILL_VALUE: value = parseGColorFillValue(values[i++])[0]; break;
+                    case COLOR_STOP_VALUE: value = parseGColorStopValue(values[i++])[0]; break;
+                    case RECTANGLE_VALUE:  value = parseGRectangleValue(values[i++])[0]; break;
+                    case LINE_VALUE:       value = parseGLineValue     (values[i++])[0]; break;
+                    case ELLIPSE_VALUE:    value = parseGEllipseValue  (values[i++])[0]; break;
+                    case POLYGON_VALUE:    value = parseGPolygonValue  (values[i++])[0]; break;
+                    case STAR_VALUE:       value = parseGStarValue     (values[i++])[0]; break;
+                    
+                    default:               console.assert(false, 'unknown type');
                 }
 
                 if (value.nodeId)

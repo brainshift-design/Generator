@@ -38,7 +38,7 @@ extends GOperator
 
             this.valid = true;
 
-            console.assert(this.result.valid);
+            console.assert(this.result.valid, 'this.result must be valid');
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 

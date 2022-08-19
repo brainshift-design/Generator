@@ -106,7 +106,11 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
     {
-        console.assert(value.type && value.type == COLOR_VALUE);
+        console.assert(
+               value.type 
+            && value.type == COLOR_VALUE, 
+            'value.type must be COLOR_VALUE');
+            
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
@@ -220,6 +224,6 @@ extends Parameter
     
     loadParam(param)
     {
-        this.setValue(parseGColorValue(param), true, true, false);
+        this.setValue(parseGColorValue(param)[0], true, true, false);
     }
 }

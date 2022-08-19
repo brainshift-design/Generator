@@ -90,9 +90,9 @@ function parseGEllipseValue(str)
     const rect = str.split(' ');
 
     return new GEllipseValue(
-        new GNumberValue(parseGNumberValue(rect[0])),
-        new GNumberValue(parseGNumberValue(rect[1])),
-        new GNumberValue(parseGNumberValue(rect[2])),
-        new GNumberValue(parseGNumberValue(rect[3])),
-        new GNumberValue(parseGNumberValue(rect[4])));
+        new GNumberValue(parseGNumberValue(rect[0])[0]),
+        new GNumberValue(parseGNumberValue(rect[1])[0]),
+        new GNumberValue(parseGNumberValue(rect[2])[0]),
+        new GNumberValue(parseGNumberValue(rect[3])[0]),
+        new GNumberValue(parseGNumberValue(rect[4])[0]));
 }
