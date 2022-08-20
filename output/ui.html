@@ -4801,7 +4801,7 @@ extends GOperator
 }
 
 
-class GNumberValue
+class NumberValue
 extends GType
 {
     value;
@@ -4824,7 +4824,7 @@ extends GType
 
     copy()
     {
-        return new GNumberValue(
+        return new NumberValue(
             this.value, 
             this.decimals);
     }
@@ -4863,19 +4863,19 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GNumberValue(
+    static NaN = Object.freeze(new NumberValue(
         Number.NaN, 
         Number.NaN));
 }
 
 
 
-function parseGNumberValue(str)
+function parseNumberValue(str)
 {
     const num = 
         str == INVALID
-        ? new GNumberValue(Number.NaN, 0)
-        : new GNumberValue(
+        ? new NumberValue(Number.NaN, 0)
+        : new NumberValue(
               parseFloat(str),
               decCount(str));
 
@@ -4884,7 +4884,7 @@ function parseGNumberValue(str)
 
 
 
-class GColorValue
+class ColorValue
 extends GType
 {
     space;
@@ -4894,10 +4894,10 @@ extends GType
 
 
 
-    constructor(space = GNumberValue.NaN, 
-                c1    = GNumberValue.NaN, 
-                c2    = GNumberValue.NaN, 
-                c3    = GNumberValue.NaN)
+    constructor(space = NumberValue.NaN, 
+                c1    = NumberValue.NaN, 
+                c2    = NumberValue.NaN, 
+                c3    = NumberValue.NaN)
     {
         super(COLOR_VALUE);
 
@@ -4914,25 +4914,25 @@ extends GType
 
     static create(space, c1, c2, c3)
     {
-        return new GColorValue(
-            new GNumberValue(space),
-            new GNumberValue(c1),
-            new GNumberValue(c2),
-            new GNumberValue(c3));
+        return new ColorValue(
+            new NumberValue(space),
+            new NumberValue(c1),
+            new NumberValue(c2),
+            new NumberValue(c3));
     }
 
 
 
     static createFromRgb(rgb)
     {
-        return GColorValue.create(1, rgb[0], rgb[1], rgb[2]);
+        return ColorValue.create(1, rgb[0], rgb[1], rgb[2]);
     }
 
 
 
     copy()
     {
-        return new GColorValue(
+        return new ColorValue(
             this.space.copy(), 
             this.c1   .copy(), 
             this.c2   .copy(), 
@@ -5010,37 +5010,44 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GColorValue(
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN));
+    static NaN = Object.freeze(new ColorValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN));
 }
 
 
 
-function parseGColorValue(str)
+function parseColorValue(str, i = -1)
 {
-    if (str == INVALID)
-        return [GColorValue.NaN, 1];
+    if (   i <  0 && str    == INVALID
+        || i >= 0 && str[i] == INVALID)
+        return [ColorValue.NaN, 1];
 
-    const col = str.split(' ');
 
-    let i = 0;
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+        
+    
+    const iStart = i;
 
-    const space = parseGNumberValue(col[i]); i += space[1];
-    const c1    = parseGNumberValue(col[i]); i += c1   [1];
-    const c2    = parseGNumberValue(col[i]); i += c2   [1];
-    const c3    = parseGNumberValue(col[i]); i += c3   [1];
+    const space = parseNumberValue(col[i]); i += space[1];
+    const c1    = parseNumberValue(col[i]); i += c1   [1];
+    const c2    = parseNumberValue(col[i]); i += c2   [1];
+    const c3    = parseNumberValue(col[i]); i += c3   [1];
 
 
     return [
-        new GColorValue(space[0], c1[0], c2[0], c3[0]), 
-        i ];
+        new ColorValue(space[0], c1[0], c2[0], c3[0]), 
+        i - iStart];
 }
 
 
-class GColorFillValue
+class ColorFillValue
 extends GType
 {
     color;
@@ -5048,8 +5055,8 @@ extends GType
 
 
 
-    constructor(color   = GColorValue .NaN, 
-                opacity = GNumberValue.NaN)
+    constructor(color   = ColorValue .NaN, 
+                opacity = NumberValue.NaN)
     {
         super(COLOR_FILL_VALUE);
 
@@ -5064,25 +5071,25 @@ extends GType
     
     static create(r, g, b, opacity)
     {
-        return new GColorFillValue(
-            GColorValue.create(1, r, g, b),
-            new GNumberValue(opacity));
+        return new ColorFillValue(
+            ColorValue.create(1, r, g, b),
+            new NumberValue(opacity));
     }
 
 
 
     static createFromRgb(rgb, opacity)
     {
-        return new GColorFillValue(
-            GColorValue.createFromRgb(rgb),
-            new GNumberValue(opacity));
+        return new ColorFillValue(
+            ColorValue.createFromRgb(rgb),
+            new NumberValue(opacity));
     }
 
 
 
     copy()
     {
-        return new GColorFillValue(
+        return new ColorFillValue(
             this.color  .copy(),
             this.opacity.copy());
     }
@@ -5133,86 +5140,376 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GColorFillValue(
-        GColorValue .NaN,
-        GNumberValue.NaN));
+    static NaN = Object.freeze(new ColorFillValue(
+        ColorValue .NaN,
+        NumberValue.NaN));
 
 
 
-    static default = Object.freeze(new GColorFillValue(
-        GColorValue.create(1, 217, 217, 217),
-        new GNumberValue(100)));
+    static default = Object.freeze(new ColorFillValue(
+        ColorValue.create(1, 217, 217, 217),
+        new NumberValue(100)));
 }
 
 
 
-function parseGColorFillValue(str)
+function parseColorFillValue(str, i = -1)
 {
-    if (str == INVALID)
-        return [GColorFillValue.NaN, 1];
-
-    const fill = str.split(' ');
-
-    let i = 0;
-
-    const r       = parseGNumberValue(fill[i]); i += r      [1];
-    const g       = parseGNumberValue(fill[i]); i += g      [1];
-    const b       = parseGNumberValue(fill[i]); i += b      [1];
-    const opacity = parseGNumberValue(fill[i]); i += opacity[1];
-
-    const color   = GColorValue.create(1, r[0], g[0], b[0])
+    if (   i <  0 && str    == INVALID
+        || i >= 0 && str[i] == INVALID)
+        return [ColorFillValue.NaN, 1];
 
 
-    return [
-        new GColorFillValue(color, opacity[0]),
-        i ];
-
-}
-
-
-class GColorStopValue
-extends GType
-{
-    fill;
-    position;
-
-
-
-    constructor(fill     = GColorFillValue.NaN,
-                position = GNumberValue   .NaN)
+    if (i < 0)
     {
-        super(COLOR_STOP_VALUE);
-
-        this.fill     = fill;
-        this.position = position;
-
-        this.result   = this;
-        this.valid    = true;
+        str = str.split(' ');
+        i   = 0;
     }
 
 
+    const iStart = i;
+
+    const r       = parseNumberValue(str[i]); i += r[1];
+    const g       = parseNumberValue(str[i]); i += g[1];
+    const b       = parseNumberValue(str[i]); i += b[1];
+    const color   = ColorValue.create(1, r[0], g[0], b[0])
+   
+    const opacity = parseNumberValue(str[i]); i += opacity[1];
+
     
-    copy()
+    return [
+        new ColorFillValue(color, opacity[0]),
+        i - iStart ];
+}
+
+
+class GeometryBaseValue
+extends GType
+{
+    nodeId;
+
+    fill;
+    stroke;
+    strokeWeight;
+    strokeFit;
+    strokeJoin;
+    strokeMiter;
+
+
+
+    constructor(type, nodeId)
     {
-        return new GColorStopValue(
-            this.fill    .copy(),
-            this.position.copy());
+        super(type);
+
+        this.nodeId = nodeId; 
+
+        this.fill         = ColorFillValue.default.copy();
+        this.stroke       = ColorFillValue.NaN    .copy();
+        this.strokeWeight = new NumberValue(1);
+        this.strokeFit    = new NumberValue(0);
+        this.strokeJoin   = new NumberValue(0);
+        this.strokeMiter  = new NumberValue(28.96);
+    }
+
+
+
+    copyBase(base)
+    {
+        this.nodeId  = base.nodeId;
+
+        this.fill         = base.fill        .copy();
+        this.stroke       = base.stroke      .copy();
+        this.strokeWeight = base.strokeWeight.copy();
+        this.strokeFit    = base.strokeFit   .copy();
+        this.strokeJoin   = base.strokeJoin  .copy();
+        this.strokeMiter  = base.strokeMiter .copy();
     }
 
 
 
     isValid()
     {
-        return this.fill    .isValid()
-            && this.position.isValid();
+        return this.fill.isValid()
+            && (  !this.stroke.isValid()
+                ||    this.strokeWeight.isValid()
+                   && this.strokeFit   .isValid()
+                   && this.strokeJoin  .isValid()
+                   && this.strokeMiter .isValid());
     }
 
 
 
-    equals(col)
+    toFigmaObject()
     {
-        return this.fill    .equals(col.color   )
-            && this.position.equals(col.position);
+        let strokeAlign, 
+            strokeJoin;
+
+        switch (this.strokeFit.value)
+        {
+            case 0: strokeAlign = 'INSIDE';  break;
+            case 1: strokeAlign = 'CENTER';  break;
+            case 2: strokeAlign = 'OUTSIDE'; break;
+        }
+        
+        switch (this.strokeJoin.value)
+        {
+            case 0: strokeJoin = 'MITER'; break;
+            case 1: strokeJoin = 'BEVEL'; break;
+            case 2: strokeJoin = 'ROUND'; break;
+        }
+
+        return {
+            nodeId:       this.nodeId,
+
+            fills:        [this.fill  .toFigmaString()],
+            strokes:      [this.stroke.toFigmaString()],
+            strokeWeight: this.strokeWeight.value,
+            strokeAlign:  strokeAlign,
+            strokeJoin:   strokeJoin,
+            strokeMiter:  Math.min(this.strokeMiter.value, 16)
+        }
+    }
+
+
+
+    toString()
+    {
+        return      this.fill        .toString()
+            + ' ' + this.stroke      .toString()
+            + ' ' + this.strokeWeight.toString()
+            + ' ' + this.strokeFit   .toString()
+            + ' ' + this.strokeJoin  .toString()
+            + ' ' + this.strokeMiter .toString();
+    }
+}
+
+
+
+function parseGeometryBaseValue(str, i, obj)
+{
+    const fill         = parseColorFillValue(str, i); i += fill        [1];
+    const stroke       = parseColorFillValue(str, i); i += stroke      [1];
+    const strokeWeight = parseNumberValue   (str[i]); i += strokeWeight[1];
+    const strokeFit    = parseNumberValue   (str[i]); i += strokeFit   [1];
+    const strokeJoin   = parseNumberValue   (str[i]); i += strokeJoin  [1];
+    const strokeMiter  = parseNumberValue   (str[i]); i += strokeMiter [1];
+
+    obj.fill         = fill        [0];
+    obj.stroke       = stroke      [0];
+    obj.strokeWeight = strokeWeight[0];
+    obj.strokeFit    = strokeFit   [0];
+    obj.strokeJoin   = strokeJoin  [0];
+    obj.strokeMiter  = strokeMiter [0];
+
+    return i;
+}
+
+
+class RectangleValue
+extends GeometryBaseValue
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+
+
+
+    constructor(nodeId,
+                x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                width  = new NumberValue(0), 
+                height = new NumberValue(0), 
+                angle  = new NumberValue(0), 
+                round  = new NumberValue(0))
+    {
+        super(RECTANGLE_VALUE, nodeId);
+
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+        this.angle  = angle;
+        this.round  = round;
+
+        this.result = this;
+        this.valid  = true;
+    }
+
+
+
+    copy()
+    {
+        const rect = new RectangleValue(
+            this.nodeId,
+            this.x     .copy(), 
+            this.y     .copy(), 
+            this.width .copy(), 
+            this.height.copy(), 
+            this.angle .copy(), 
+            this.round .copy());
+
+        rect.copyBase(this);
+
+        return rect;
+    }
+
+
+
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid()
+
+            && super      .isValid();
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toFigmaObject()
+    {
+        return {
+            type:   RECTANGLE,
+            id:     0,
+            x:      this.x     .value,
+            y:      this.y     .value,
+            width:  this.width .value,
+            height: this.height.value,
+            angle:  this.angle .value,
+            round:  Math.max(0, this.round.value),
+            ...super.toFigmaObject()
+        };
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.x     .toString()
+              + ' ' + this.y     .toString()
+              + ' ' + this.width .toString()
+              + ' ' + this.height.toString()
+              + ' ' + this.angle .toString()
+              + ' ' + this.round .toString()
+              + ' ' + super.toString()
+            : INVALID;
+    }
+
+
+
+    static NaN = new RectangleValue(
+        '',
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
+}
+
+
+
+function parseRectangleValue(str, i = -1)
+{
+    if (   i <  0 && str    == INVALID
+        || i >= 0 && str[i] == INVALID)
+        return [RectangleValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x      = parseNumberValue(str[i]); i += x     [1];
+    const y      = parseNumberValue(str[i]); i += y     [1];
+    const width  = parseNumberValue(str[i]); i += width [1];
+    const height = parseNumberValue(str[i]); i += height[1];
+    const angle  = parseNumberValue(str[i]); i += angle [1];
+    const round  = parseNumberValue(str[i]); i += round [1];
+
+
+    const rect = new RectangleValue(
+        '', // set node ID elsewhere
+        x     [0],
+        y     [0],
+        width [0],
+        height[0],
+        angle [0],
+        round [0]);
+
+
+    i = parseGeometryBaseValue(str, i, rect);
+
+    
+    return [rect, i - iStart];
+}
+
+
+
+class LineValue
+extends GType
+{
+    x;
+    y;
+    width;
+    angle;
+
+
+
+    constructor(x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                width  = new NumberValue(0), 
+                angle  = new NumberValue(0))
+    {
+        super(LINE_VALUE);
+
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.angle  = angle;
+
+        this.result = this;
+        this.valid  = true;
+    }
+
+
+
+    copy()
+    {
+        return new LineValue(
+            this.x     .copy(), 
+            this.y     .copy(), 
+            this.width .copy(), 
+            this.angle .copy());
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.x    )
+            && !isNaN(this.y    )
+            && !isNaN(this.width)
+            && !isNaN(this.angle);
     }
 
 
@@ -5227,31 +5524,381 @@ extends GType
     toString()
     {
         return this.isValid()
-            ?         this.fill    .toString()
-              + ' ' + this.position.toString()
+            ?         this.x     .toString()
+              + ' ' + this.y     .toString()
+              + ' ' + this.width .toString()
+              + ' ' + this.angle .toString()
             : INVALID;
     }
 
 
 
-    static NaN = new GColorStopValue(
-        GColorFillValue.NaN,
-        GNumberValue   .NaN);
+    static NaN = new LineValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
 }
 
 
 
-function parseGColorStopValue(str)
+function parseLineValue(str)
 {
     if (str == INVALID)
-        return GColorStopValue.NaN;
+        return LineValue.NaN;
 
-    const stop = str.split(' ');
+    const rect = str.split(' ');
 
-    return new GColorStopValue(
-        parseGColorFillValue(str)[0],
-        parseGNumberValue(stop[5])[0]);
+    return new LineValue(
+        new NumberValue(parseNumberValue(rect[0])),
+        new NumberValue(parseNumberValue(rect[1])),
+        new NumberValue(parseNumberValue(rect[2])),
+        new NumberValue(parseNumberValue(rect[3])));
 }
+
+
+
+class EllipseValue
+extends GType
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+
+
+
+    constructor(x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                width  = new NumberValue(0), 
+                height = new NumberValue(0), 
+                angle  = new NumberValue(0))
+    {
+        super(ELLIPSE_VALUE);
+
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+        this.angle  = angle;
+
+        this.result = this;
+        this.valid  = true;
+    }
+
+
+
+    copy()
+    {
+        return new EllipseValue(
+            this.x     .copy(), 
+            this.y     .copy(), 
+            this.width .copy(), 
+            this.height.copy(), 
+            this.angle .copy());
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.x     )
+            && !isNaN(this.y     )
+            && !isNaN(this.width )
+            && !isNaN(this.height)
+            && !isNaN(this.angle );
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.x     .toString()
+              + ' ' + this.y     .toString()
+              + ' ' + this.width .toString()
+              + ' ' + this.height.toString()
+              + ' ' + this.angle .toString()
+            : INVALID;
+    }
+
+
+
+    static NaN = new EllipseValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
+}
+
+
+
+function parseEllipseValue(str)
+{
+    if (str == INVALID)
+        return EllipseValue.NaN;
+
+    const rect = str.split(' ');
+
+    return new EllipseValue(
+        new NumberValue(parseNumberValue(rect[0])[0]),
+        new NumberValue(parseNumberValue(rect[1])[0]),
+        new NumberValue(parseNumberValue(rect[2])[0]),
+        new NumberValue(parseNumberValue(rect[3])[0]),
+        new NumberValue(parseNumberValue(rect[4])[0]));
+}
+
+
+
+class PolygonValue
+extends GType
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    corners;
+
+
+
+    constructor(x       = new NumberValue(0), 
+                y       = new NumberValue(0), 
+                width   = new NumberValue(0), 
+                height  = new NumberValue(0), 
+                angle   = new NumberValue(0), 
+                round   = new NumberValue(0), 
+                corners = new NumberValue(0))
+    {
+        super(POLYGON_VALUE);
+
+        this.x       = x;
+        this.y       = y;
+        this.width   = width;
+        this.height  = height;
+        this.angle   = angle;
+        this.round   = round;
+        this.corners = corners;
+
+        this.result = this;
+        this.valid  = true;
+    }
+
+
+
+    copy()
+    {
+        return new PolygonValue(
+            this.x      .copy(), 
+            this.y      .copy(), 
+            this.width  .copy(), 
+            this.height .copy(), 
+            this.angle  .copy(), 
+            this.round  .copy(), 
+            this.corners.copy());
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.x      )
+            && !isNaN(this.y      )
+            && !isNaN(this.width  )
+            && !isNaN(this.height )
+            && !isNaN(this.angle  )
+            && !isNaN(this.round  )
+            && !isNaN(this.corners);
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.x      .toString()
+              + ' ' + this.y      .toString()
+              + ' ' + this.width  .toString()
+              + ' ' + this.height .toString()
+              + ' ' + this.angle  .toString()
+              + ' ' + this.round  .toString()
+              + ' ' + this.corners.toString()
+            : INVALID;
+    }
+
+
+
+    static NaN = new PolygonValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
+}
+
+
+
+function parsePolygonValue(str)
+{
+    if (str == INVALID)
+        return PolygonValue.NaN;
+
+    const rect = str.split(' ');
+
+    return new PolygonValue(
+        new NumberValue(parseNumberValue(rect[0])),
+        new NumberValue(parseNumberValue(rect[1])),
+        new NumberValue(parseNumberValue(rect[2])),
+        new NumberValue(parseNumberValue(rect[3])),
+        new NumberValue(parseNumberValue(rect[4])),
+        new NumberValue(parseNumberValue(rect[5])),
+        new NumberValue(parseNumberValue(rect[6])));
+}
+
+
+
+class StarValue
+extends GType
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    points;
+    convex;
+
+
+
+    constructor(x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                width  = new NumberValue(0), 
+                height = new NumberValue(0), 
+                angle  = new NumberValue(0), 
+                round  = new NumberValue(0), 
+                points = new NumberValue(0),
+                convex = new NumberValue(0))
+    {
+        super(STAR_VALUE);
+
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+        this.angle  = angle;
+        this.round  = round;
+        this.points = points;
+        this.convex = convex;
+
+        this.result = this;
+        this.valid  = true;
+    }
+
+
+
+    copy()
+    {
+        return new StarValue(
+            this.x     .copy(), 
+            this.y     .copy(), 
+            this.width .copy(), 
+            this.height.copy(), 
+            this.angle .copy(), 
+            this.round .copy(), 
+            this.points.copy(),
+            this.convex.copy());
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.x     )
+            && !isNaN(this.y     )
+            && !isNaN(this.width )
+            && !isNaN(this.height)
+            && !isNaN(this.angle )
+            && !isNaN(this.round )
+            && !isNaN(this.points)
+            && !isNaN(this.convex);
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.x     .toString()
+              + ' ' + this.y     .toString()
+              + ' ' + this.width .toString()
+              + ' ' + this.height.toString()
+              + ' ' + this.angle .toString()
+              + ' ' + this.round .toString()
+              + ' ' + this.points.toString()
+              + ' ' + this.convex.toString()
+            : INVALID;
+    }
+
+
+
+    static NaN = new StarValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
+}
+
+
+
+function parseStarValue(str)
+{
+    if (str == INVALID)
+        return StarValue.NaN;
+
+    const rect = str.split(' ');
+
+    return new StarValue(
+        new NumberValue(parseNumberValue(rect[0])),
+        new NumberValue(parseNumberValue(rect[1])),
+        new NumberValue(parseNumberValue(rect[2])),
+        new NumberValue(parseNumberValue(rect[3])),
+        new NumberValue(parseNumberValue(rect[4])),
+        new NumberValue(parseNumberValue(rect[5])),
+        new NumberValue(parseNumberValue(rect[6])),
+        new NumberValue(parseNumberValue(rect[7])));
+}
+
 
 
 class GNumber
@@ -5343,7 +5990,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
 
             if (this.input)
@@ -5407,7 +6054,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
 
             for (const _input of this.inputs)
@@ -5464,7 +6111,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
 
             if (this.inputs.length > 0)
@@ -5526,7 +6173,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
 
             if (this.inputs.length > 0)
@@ -5584,7 +6231,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
             
             if (this.inputs.length > 0)
@@ -5650,7 +6297,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
             
             if (this.inputs.length > 0)
@@ -5716,7 +6363,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
 
             if (this.inputs.length > 0)
@@ -5795,14 +6442,14 @@ extends GOperator
 
                 const maxDec = Math.max(input0.decimals, input1.decimals);
 
-                this.result = new GNumberValue(
+                this.result = new NumberValue(
                     floorTo(input0.value + amount.value * (input1.value - input0.value) / 100, maxDec),
                     maxDec);
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
             else if (this.input1) this.result = this.input1.eval(parse).copy();
-            else                  this.result = new GNumberValue(0);
+            else                  this.result = new NumberValue(0);
 
 
             this.result.valid = true;
@@ -5866,7 +6513,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            console.log('this.space =', this.space);
             const space = this.space.eval(parse).copy();
 
 
@@ -5901,7 +6547,7 @@ extends GOperator
             }
             else
             {
-                this.result = new GColorValue(
+                this.result = new ColorValue(
                     space,
                     this.c1.eval(parse).copy(),
                     this.c2.eval(parse).copy(),
@@ -6052,7 +6698,7 @@ extends GOperator
 
                 const factor = getColorSpaceFactor(_space);
 
-                this.result = GColorValue.create(
+                this.result = ColorValue.create(
                     space.value,
                     col[1] * factor[0],
                     col[2] * factor[1],
@@ -6063,7 +6709,7 @@ extends GOperator
             else if (this.input1) this.result = this.input1.eval(parse).copy();
 
             else 
-                this.result = GColorValue.NaN;
+                this.result = ColorValue.NaN;
 
 
             this.result.valid = true;
@@ -6151,7 +6797,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorValue();
+            this.result = new ColorValue();
 
             const standard = this.standard.eval(parse).copy();
 
@@ -6177,7 +6823,7 @@ extends GOperator
                                 dataColor2rgb(input0.toDataColor()),
                                 dataColor2rgb(input1.toDataColor()));
 
-                            this.value = new GNumberValue(value, 2);
+                            this.value = new NumberValue(value, 2);
                         }
                         else
                         {
@@ -6185,16 +6831,16 @@ extends GOperator
                                 dataColor2rgb(input0.toDataColor()),
                                 dataColor2rgb(input1.toDataColor()));
 
-                            this.value = new GNumberValue(Math.abs(value), 1);
+                            this.value = new NumberValue(Math.abs(value), 1);
                         }
                     }
                     else
-                        this.value = GNumberValue.NaN;
+                        this.value = NumberValue.NaN;
                 }
                 else
                 {
                     this.result = CGolorValue.NaN;
-                    this.value  = GNumberValue.NaN;
+                    this.value  = NumberValue.NaN;
                 }
 
 
@@ -6208,8 +6854,8 @@ extends GOperator
                 if (input0.isValid())
                     genPushUpdateValue(parse, this.nodeId, 'text', input0);
 
-                this.result = GColorValue.NaN;
-                this.value  = GNumberValue.NaN;
+                this.result = ColorValue.NaN;
+                this.value  = NumberValue.NaN;
             }
             else if (this.input1) 
             {
@@ -6218,19 +6864,19 @@ extends GOperator
                 if (input1.isValid())
                 {
                     this.result = input1;
-                    genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
+                    genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
                 }
                 else
-                    this.result = GColorValue.NaN;
+                    this.result = ColorValue.NaN;
     
-                this.value = GNumberValue.NaN;
+                this.value = NumberValue.NaN;
             }
             else
             {
-                this.result = GColorValue.NaN;
-                this.value  = GNumberValue.NaN;
+                this.result = ColorValue.NaN;
+                this.value  = NumberValue.NaN;
 
-                genPushUpdateValue(parse, this.nodeId, 'text',  GColorValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'text',  ColorValue.NaN);
             }
             
 
@@ -6315,17 +6961,17 @@ extends GOperator
     
                     const factor = getColorSpaceFactor(validCol[0]);
     
-                    this.result = GColorValue.create(
+                    this.result = ColorValue.create(
                         input.space.value,
                         validCol[1] * factor[0],
                         validCol[2] * factor[1],
                         validCol[3] * factor[2]);
                 }
                 else
-                    this.result = GColorValue.NaN;
+                    this.result = ColorValue.NaN;
             }
             else
-                this.result = GColorValue.NaN;
+                this.result = ColorValue.NaN;
 
 
             this.result.valid = true;
@@ -6413,17 +7059,17 @@ extends GOperator
 
                     const factor = getColorSpaceFactor('rgb');
     
-                    this.result = GColorValue.create(
+                    this.result = ColorValue.create(
                         1,
                         rgb[0] * factor[0],
                         rgb[1] * factor[1],
                         rgb[2] * factor[2]);
                 }
                 else
-                    this.result = GColorValue.NaN;
+                    this.result = ColorValue.NaN;
             }
             else
-                this.result = GColorValue.NaN;
+                this.result = ColorValue.NaN;
 
 
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
@@ -6493,8 +7139,8 @@ extends GOperator
             }
             else
             {
-                this.result = new GColorFillValue(
-                    GColorValue.createFromRgb(scaleColor(dataColor2rgb(this.color.eval(parse).toDataColor()), 'rgb')), 
+                this.result = new ColorFillValue(
+                    ColorValue.createFromRgb(scaleColor(dataColor2rgb(this.color.eval(parse).toDataColor()), 'rgb')), 
                     this.opacity.eval(parse).copy());
             }
         
@@ -6551,7 +7197,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorStopValue();
+            this.result = new ColorStopValue();
 
 
             if (this.input)
@@ -6594,718 +7240,6 @@ extends GOperator
             && this.position.mustNotEval;
     }
 }
-
-
-class GGeometryBaseValue
-extends GType
-{
-    nodeId;
-
-    fill;
-    stroke;
-    strokeWeight;
-    strokeFit;
-    strokeJoin;
-    strokeMiter;
-
-
-
-    constructor(type, nodeId)
-    {
-        super(type);
-
-        this.nodeId = nodeId; 
-
-        this.fill         = GColorFillValue.default.copy();
-        this.stroke       = GColorFillValue.NaN    .copy();
-        this.strokeWeight = new GNumberValue(1);
-        this.strokeFit    = new GNumberValue(0);
-        this.strokeJoin   = new GNumberValue(0);
-        this.strokeMiter  = new GNumberValue(28.96);
-    }
-
-
-
-    copyBase(base)
-    {
-        this.nodeId  = base.nodeId;
-
-        this.fill         = base.fill        .copy();
-        this.stroke       = base.stroke      .copy();
-        this.strokeWeight = base.strokeWeight.copy();
-        this.strokeFit    = base.strokeFit   .copy();
-        this.strokeJoin   = base.strokeJoin  .copy();
-        this.strokeMiter  = base.strokeMiter .copy();
-    }
-
-
-
-    isValid()
-    {
-        return this.fill.isValid()
-            && (  !this.stroke.isValid()
-                ||    this.strokeWeight.isValid()
-                   && this.strokeFit   .isValid()
-                   && this.strokeJoin  .isValid()
-                   && this.strokeMiter .isValid());
-    }
-
-
-
-    toFigmaObject()
-    {
-        let strokeAlign, 
-            strokeJoin;
-
-        switch (this.strokeFit.value)
-        {
-            case 0: strokeAlign = 'INSIDE';  break;
-            case 1: strokeAlign = 'CENTER';  break;
-            case 2: strokeAlign = 'OUTSIDE'; break;
-        }
-        
-        switch (this.strokeJoin.value)
-        {
-            case 0: strokeJoin = 'MITER'; break;
-            case 1: strokeJoin = 'BEVEL'; break;
-            case 2: strokeJoin = 'ROUND'; break;
-        }
-
-        return {
-            nodeId:       this.nodeId,
-
-            fills:        [this.fill  .toFigmaString()],
-            strokes:      [this.stroke.toFigmaString()],
-            strokeWeight: this.strokeWeight.value,
-            strokeAlign:  strokeAlign,
-            strokeJoin:   strokeJoin,
-            strokeMiter:  Math.min(this.strokeMiter.value, 16)
-        }
-    }
-
-
-
-    toString()
-    {
-        return         this.fill        .toString()
-               + ' ' + this.stroke      .toString()
-               + ' ' + this.strokeWeight.toString()
-               + ' ' + this.strokeFit   .toString()
-               + ' ' + this.strokeJoin  .toString()
-               + ' ' + this.strokeMiter .toString();
-    }
-}
-
-
-
-function parseGGeometryBaseValue(_str, i, obj)
-{
-    const fill         = parseGNumberValue(obj[i]); i += x     [1];
-    const stroke       = parseGNumberValue(obj[i]); i += y     [1];
-    const strokeWeight = parseGNumberValue(obj[i]); i += width [1];
-    const strokeFit    = parseGNumberValue(obj[i]); i += height[1];
-    const strokeJoin   = parseGNumberValue(obj[i]); i += angle [1];
-    const strokeMiter  = parseGNumberValue(obj[i]); i += round [1];
-
-    obj.fill         = fill        [0];
-    obj.stroke       = stroke      [0];
-    obj.strokeWeight = strokeWeight[0];
-    obj.strokeFit    = strokeFit   [0];
-    obj.strokeJoin   = strokeJoin  [0];
-    obj.strokeMiter  = strokeMiter [0];
-
-    return i;
-}
-
-
-class GRectangleValue
-extends GGeometryBaseValue
-{
-    x;
-    y;
-    width;
-    height;
-    angle;
-    round;
-
-
-
-    constructor(nodeId,
-                x      = new GNumberValue(0), 
-                y      = new GNumberValue(0), 
-                width  = new GNumberValue(0), 
-                height = new GNumberValue(0), 
-                angle  = new GNumberValue(0), 
-                round  = new GNumberValue(0))
-    {
-        super(RECTANGLE_VALUE, nodeId);
-
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        this.height = height;
-        this.angle  = angle;
-        this.round  = round;
-
-        this.result = this;
-        this.valid  = true;
-    }
-
-
-
-    copy()
-    {
-        const rect = new GRectangleValue(
-            this.nodeId,
-            this.x     .copy(), 
-            this.y     .copy(), 
-            this.width .copy(), 
-            this.height.copy(), 
-            this.angle .copy(), 
-            this.round .copy());
-
-        rect.copyBase(this);
-
-        return rect;
-    }
-
-
-
-    isValid()
-    {
-        return super.isValid()
-            && this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && this.round .isValid()
-            && super.isValid();
-    }
-
-
-
-    eval(parse)
-    {
-        return this.result = this.copy();
-    }
-
-
-
-    toFigmaObject()
-    {
-        return {
-            type:   RECTANGLE,
-            id:     0,
-            x:      this.x     .value,
-            y:      this.y     .value,
-            width:  this.width .value,
-            height: this.height.value,
-            angle:  this.angle .value,
-            round:  Math.max(0, this.round.value),
-            ...super.toFigmaObject()
-        };
-    }
-
-
-
-    toString()
-    {
-        return this.isValid()
-            ?         this.x     .toString()
-              + ' ' + this.y     .toString()
-              + ' ' + this.width .toString()
-              + ' ' + this.height.toString()
-              + ' ' + this.angle .toString()
-              + ' ' + this.round .toString()
-              + ' ' + super.toString()
-            : INVALID;
-    }
-
-
-
-    static NaN = new GRectangleValue(
-        '',
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
-}
-
-
-
-function parseGRectangleValue(str)
-{
-    if (str == INVALID)
-        return [GRectangleValue.NaN, 1];
-
-    const _rect = str.split(' ');
-
-
-    let i = 0;
-
-    const x      = parseGNumberValue(fill[i]); i += x     [1];
-    const y      = parseGNumberValue(fill[i]); i += y     [1];
-    const width  = parseGNumberValue(fill[i]); i += width [1];
-    const height = parseGNumberValue(fill[i]); i += height[1];
-    const angle  = parseGNumberValue(fill[i]); i += angle [1];
-    const round  = parseGNumberValue(fill[i]); i += round [1];
-
-
-    const rect = new GRectangleValue(
-        '', // set node ID elsewhere
-        x     [0],
-        y     [0],
-        width [0],
-        height[0],
-        angle [0],
-        round [0]);
-
-
-    i = parseGGeometryBaseValue(_rect, i, rect);
-
-    
-    return [rect, i];
-}
-
-
-
-class GLineValue
-extends GType
-{
-    x;
-    y;
-    width;
-    angle;
-
-
-
-    constructor(x      = new GNumberValue(0), 
-                y      = new GNumberValue(0), 
-                width  = new GNumberValue(0), 
-                angle  = new GNumberValue(0))
-    {
-        super(LINE_VALUE);
-
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        this.angle  = angle;
-
-        this.result = this;
-        this.valid  = true;
-    }
-
-
-
-    copy()
-    {
-        return new GLineValue(
-            this.x     .copy(), 
-            this.y     .copy(), 
-            this.width .copy(), 
-            this.angle .copy());
-    }
-
-
-
-    isValid()
-    {
-        return !isNaN(this.x    )
-            && !isNaN(this.y    )
-            && !isNaN(this.width)
-            && !isNaN(this.angle);
-    }
-
-
-
-    eval(parse)
-    {
-        return this.result = this.copy();
-    }
-
-
-
-    toString()
-    {
-        return this.isValid()
-            ?         this.x     .toString()
-              + ' ' + this.y     .toString()
-              + ' ' + this.width .toString()
-              + ' ' + this.angle .toString()
-            : INVALID;
-    }
-
-
-
-    static NaN = new GLineValue(
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
-}
-
-
-
-function parseGLineValue(str)
-{
-    if (str == INVALID)
-        return GLineValue.NaN;
-
-    const rect = str.split(' ');
-
-    return new GLineValue(
-        new GNumberValue(parseGNumberValue(rect[0])),
-        new GNumberValue(parseGNumberValue(rect[1])),
-        new GNumberValue(parseGNumberValue(rect[2])),
-        new GNumberValue(parseGNumberValue(rect[3])));
-}
-
-
-
-class GEllipseValue
-extends GType
-{
-    x;
-    y;
-    width;
-    height;
-    angle;
-
-
-
-    constructor(x      = new GNumberValue(0), 
-                y      = new GNumberValue(0), 
-                width  = new GNumberValue(0), 
-                height = new GNumberValue(0), 
-                angle  = new GNumberValue(0))
-    {
-        super(ELLIPSE_VALUE);
-
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        this.height = height;
-        this.angle  = angle;
-
-        this.result = this;
-        this.valid  = true;
-    }
-
-
-
-    copy()
-    {
-        return new GEllipseValue(
-            this.x     .copy(), 
-            this.y     .copy(), 
-            this.width .copy(), 
-            this.height.copy(), 
-            this.angle .copy());
-    }
-
-
-
-    isValid()
-    {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle );
-    }
-
-
-
-    eval(parse)
-    {
-        return this.result = this.copy();
-    }
-
-
-
-    toString()
-    {
-        return this.isValid()
-            ?         this.x     .toString()
-              + ' ' + this.y     .toString()
-              + ' ' + this.width .toString()
-              + ' ' + this.height.toString()
-              + ' ' + this.angle .toString()
-            : INVALID;
-    }
-
-
-
-    static NaN = new GEllipseValue(
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
-}
-
-
-
-function parseGEllipseValue(str)
-{
-    if (str == INVALID)
-        return GEllipseValue.NaN;
-
-    const rect = str.split(' ');
-
-    return new GEllipseValue(
-        new GNumberValue(parseGNumberValue(rect[0])[0]),
-        new GNumberValue(parseGNumberValue(rect[1])[0]),
-        new GNumberValue(parseGNumberValue(rect[2])[0]),
-        new GNumberValue(parseGNumberValue(rect[3])[0]),
-        new GNumberValue(parseGNumberValue(rect[4])[0]));
-}
-
-
-
-class GPolygonValue
-extends GType
-{
-    x;
-    y;
-    width;
-    height;
-    angle;
-    round;
-    corners;
-
-
-
-    constructor(x       = new GNumberValue(0), 
-                y       = new GNumberValue(0), 
-                width   = new GNumberValue(0), 
-                height  = new GNumberValue(0), 
-                angle   = new GNumberValue(0), 
-                round   = new GNumberValue(0), 
-                corners = new GNumberValue(0))
-    {
-        super(POLYGON_VALUE);
-
-        this.x       = x;
-        this.y       = y;
-        this.width   = width;
-        this.height  = height;
-        this.angle   = angle;
-        this.round   = round;
-        this.corners = corners;
-
-        this.result = this;
-        this.valid  = true;
-    }
-
-
-
-    copy()
-    {
-        return new GPolygonValue(
-            this.x      .copy(), 
-            this.y      .copy(), 
-            this.width  .copy(), 
-            this.height .copy(), 
-            this.angle  .copy(), 
-            this.round  .copy(), 
-            this.corners.copy());
-    }
-
-
-
-    isValid()
-    {
-        return !isNaN(this.x      )
-            && !isNaN(this.y      )
-            && !isNaN(this.width  )
-            && !isNaN(this.height )
-            && !isNaN(this.angle  )
-            && !isNaN(this.round  )
-            && !isNaN(this.corners);
-    }
-
-
-
-    eval(parse)
-    {
-        return this.result = this.copy();
-    }
-
-
-
-    toString()
-    {
-        return this.isValid()
-            ?         this.x      .toString()
-              + ' ' + this.y      .toString()
-              + ' ' + this.width  .toString()
-              + ' ' + this.height .toString()
-              + ' ' + this.angle  .toString()
-              + ' ' + this.round  .toString()
-              + ' ' + this.corners.toString()
-            : INVALID;
-    }
-
-
-
-    static NaN = new GPolygonValue(
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
-}
-
-
-
-function parseGPolygonValue(str)
-{
-    if (str == INVALID)
-        return GPolygonValue.NaN;
-
-    const rect = str.split(' ');
-
-    return new GPolygonValue(
-        new GNumberValue(parseGNumberValue(rect[0])),
-        new GNumberValue(parseGNumberValue(rect[1])),
-        new GNumberValue(parseGNumberValue(rect[2])),
-        new GNumberValue(parseGNumberValue(rect[3])),
-        new GNumberValue(parseGNumberValue(rect[4])),
-        new GNumberValue(parseGNumberValue(rect[5])),
-        new GNumberValue(parseGNumberValue(rect[6])));
-}
-
-
-
-class GStarValue
-extends GType
-{
-    x;
-    y;
-    width;
-    height;
-    angle;
-    round;
-    points;
-    convex;
-
-
-
-    constructor(x      = new GNumberValue(0), 
-                y      = new GNumberValue(0), 
-                width  = new GNumberValue(0), 
-                height = new GNumberValue(0), 
-                angle  = new GNumberValue(0), 
-                round  = new GNumberValue(0), 
-                points = new GNumberValue(0),
-                convex = new GNumberValue(0))
-    {
-        super(STAR_VALUE);
-
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        this.height = height;
-        this.angle  = angle;
-        this.round  = round;
-        this.points = points;
-        this.convex = convex;
-
-        this.result = this;
-        this.valid  = true;
-    }
-
-
-
-    copy()
-    {
-        return new GStarValue(
-            this.x     .copy(), 
-            this.y     .copy(), 
-            this.width .copy(), 
-            this.height.copy(), 
-            this.angle .copy(), 
-            this.round .copy(), 
-            this.points.copy(),
-            this.convex.copy());
-    }
-
-
-
-    isValid()
-    {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle )
-            && !isNaN(this.round )
-            && !isNaN(this.points)
-            && !isNaN(this.convex);
-    }
-
-
-
-    eval(parse)
-    {
-        return this.result = this.copy();
-    }
-
-
-
-    toString()
-    {
-        return this.isValid()
-            ?         this.x     .toString()
-              + ' ' + this.y     .toString()
-              + ' ' + this.width .toString()
-              + ' ' + this.height.toString()
-              + ' ' + this.angle .toString()
-              + ' ' + this.round .toString()
-              + ' ' + this.points.toString()
-              + ' ' + this.convex.toString()
-            : INVALID;
-    }
-
-
-
-    static NaN = new GStarValue(
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
-}
-
-
-
-function parseGStarValue(str)
-{
-    if (str == INVALID)
-        return GStarValue.NaN;
-
-    const rect = str.split(' ');
-
-    return new GStarValue(
-        new GNumberValue(parseGNumberValue(rect[0])),
-        new GNumberValue(parseGNumberValue(rect[1])),
-        new GNumberValue(parseGNumberValue(rect[2])),
-        new GNumberValue(parseGNumberValue(rect[3])),
-        new GNumberValue(parseGNumberValue(rect[4])),
-        new GNumberValue(parseGNumberValue(rect[5])),
-        new GNumberValue(parseGNumberValue(rect[6])),
-        new GNumberValue(parseGNumberValue(rect[7])));
-}
-
 
 
 class GGeometryBase
@@ -7438,7 +7372,7 @@ extends GGeometryBase
     {
         if (!this.valid)
         {
-            this.result = new GRectangleValue(this.nodeId);
+            this.result = new RectangleValue(this.nodeId);
 
 
             if (this.input)
@@ -7544,7 +7478,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GLineValue();
+            this.result = new LineValue();
 
 
             if (this.input)
@@ -7656,7 +7590,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GEllipseValue();
+            this.result = new EllipseValue();
 
 
             if (this.input)
@@ -7777,7 +7711,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GPolygonValue();
+            this.result = new PolygonValue();
 
 
             if (this.input)
@@ -7907,7 +7841,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GStarValue();
+            this.result = new StarValue();
 
 
             if (this.input)
@@ -8122,7 +8056,7 @@ function genParseColorValue(parse)
     if (parse.logRequests)
         logReqColorValue(col, parse);
 
-    return parseGColorValue(col)[0];
+    return parseColorValue(col)[0];
 }
 
 
@@ -8391,7 +8325,7 @@ function genParseColorFillValue(parse)
     if (parse.logRequests)
         logReqColorFillValue(fill, parse);
 
-    return parseGColorFillValue(fill)[0];
+    return parseColorFillValue(fill)[0];
 }
 
 
@@ -8459,7 +8393,7 @@ function genParseColorStopValue(parse)
     if (parse.logRequests)
         logReqColorStopValue(stop, parse);
 
-    return parseGColorStopValue(stop);
+    return parseColorStopValue(stop);
 }
 
 
@@ -8530,30 +8464,6 @@ function genParseGeometryBase(parse, obj, paramId)
 
 
 
-function genParseParamCount(parse)
-{
-    const nParamIds = parseInt(parse.move());
-
-    if (parse.logRequests) 
-        parse.log += ' ' + nParamIds;
-
-    return nParamIds;
-}
-
-
-
-function genParseParamId(parse)
-{
-    const paramId = parse.move();
-
-    if (parse.logRequests) 
-        parse.log += parse.tab + paramId;
-
-    return paramId;
-}
-
-
-
 function genParseRectangle(parse)
 {
     const [, nodeId, active, ignore] = genParseNodeStart(parse);
@@ -8603,7 +8513,7 @@ function genParseRectangle(parse)
 
         parse.nTab--;
     }
-
+console.log('rect =', rect);
 
 
     parse.nTab--;
@@ -8851,7 +8761,7 @@ function genParseNumValue(parse)
     if (parse.logRequests)
         logReqNumberValue(val, parse);
 
-    return parseGNumberValue(val)[0];
+    return parseNumberValue(val)[0];
 }
 
 
@@ -9130,10 +9040,6 @@ function genParse(parse)
     else if (parse.next == POLYGON           ) return genParsePolygon         (parse);
     else if (parse.next == STAR              ) return genParseStar            (parse);
 
-    // else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
-
-    // else if (parse.next == STROKE            ) return genParseColorStroke     (parse);
-
     
     parse.so++;
     return null;
@@ -9186,12 +9092,24 @@ function genParseActive(parse)
 
 
 
+function genParseParamCount(parse)
+{
+    const nParamIds = parseInt(parse.move());
+
+    if (parse.logRequests) 
+        parse.log += ' ' + nParamIds;
+
+    return nParamIds;
+}
+
+
+
 function genParseParam(parse)
 {
     if (parse.next != PARAM) 
         return null;
         
-    parse.move(); // PARAM
+    parse.move(); // PARAMw
     const type = parse.move(); // type
 
     
@@ -9210,6 +9128,18 @@ function genParseParam(parse)
 
 
     return param;
+}
+
+
+
+function genParseParamId(parse)
+{
+    const paramId = parse.move();
+
+    if (parse.logRequests) 
+        parse.log += parse.tab + paramId;
+
+    return paramId;
 }
 
 
@@ -9311,6 +9241,7 @@ function clearLastUpdate()
 
 function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, updateObjects)
 {
+    //console.log('updateValues =', updateValues);
     //console.log('genUpdateValuesAndObjects()');
 
     if (   updateValues .length == 0
@@ -9368,9 +9299,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
 
         if (n < nodeIds.length)
         {
-            valChunk.push(
-                nodeIds[n],
-                counts [n]);
+            valChunk.push(nodeIds[n], counts[n]);
 
             const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
             values.sort((a, b) => a.paramId - b.paramId);
@@ -16506,7 +16435,7 @@ extends GOperator
 }
 
 
-class GNumberValue
+class NumberValue
 extends GType
 {
     value;
@@ -16529,7 +16458,7 @@ extends GType
 
     copy()
     {
-        return new GNumberValue(
+        return new NumberValue(
             this.value, 
             this.decimals);
     }
@@ -16568,19 +16497,19 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GNumberValue(
+    static NaN = Object.freeze(new NumberValue(
         Number.NaN, 
         Number.NaN));
 }
 
 
 
-function parseGNumberValue(str)
+function parseNumberValue(str)
 {
     const num = 
         str == INVALID
-        ? new GNumberValue(Number.NaN, 0)
-        : new GNumberValue(
+        ? new NumberValue(Number.NaN, 0)
+        : new NumberValue(
               parseFloat(str),
               decCount(str));
 
@@ -16589,7 +16518,7 @@ function parseGNumberValue(str)
 
 
 
-class GColorValue
+class ColorValue
 extends GType
 {
     space;
@@ -16599,10 +16528,10 @@ extends GType
 
 
 
-    constructor(space = GNumberValue.NaN, 
-                c1    = GNumberValue.NaN, 
-                c2    = GNumberValue.NaN, 
-                c3    = GNumberValue.NaN)
+    constructor(space = NumberValue.NaN, 
+                c1    = NumberValue.NaN, 
+                c2    = NumberValue.NaN, 
+                c3    = NumberValue.NaN)
     {
         super(COLOR_VALUE);
 
@@ -16619,25 +16548,25 @@ extends GType
 
     static create(space, c1, c2, c3)
     {
-        return new GColorValue(
-            new GNumberValue(space),
-            new GNumberValue(c1),
-            new GNumberValue(c2),
-            new GNumberValue(c3));
+        return new ColorValue(
+            new NumberValue(space),
+            new NumberValue(c1),
+            new NumberValue(c2),
+            new NumberValue(c3));
     }
 
 
 
     static createFromRgb(rgb)
     {
-        return GColorValue.create(1, rgb[0], rgb[1], rgb[2]);
+        return ColorValue.create(1, rgb[0], rgb[1], rgb[2]);
     }
 
 
 
     copy()
     {
-        return new GColorValue(
+        return new ColorValue(
             this.space.copy(), 
             this.c1   .copy(), 
             this.c2   .copy(), 
@@ -16715,37 +16644,44 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GColorValue(
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN));
+    static NaN = Object.freeze(new ColorValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN));
 }
 
 
 
-function parseGColorValue(str)
+function parseColorValue(str, i = -1)
 {
-    if (str == INVALID)
-        return [GColorValue.NaN, 1];
+    if (   i <  0 && str    == INVALID
+        || i >= 0 && str[i] == INVALID)
+        return [ColorValue.NaN, 1];
 
-    const col = str.split(' ');
 
-    let i = 0;
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+        
+    
+    const iStart = i;
 
-    const space = parseGNumberValue(col[i]); i += space[1];
-    const c1    = parseGNumberValue(col[i]); i += c1   [1];
-    const c2    = parseGNumberValue(col[i]); i += c2   [1];
-    const c3    = parseGNumberValue(col[i]); i += c3   [1];
+    const space = parseNumberValue(col[i]); i += space[1];
+    const c1    = parseNumberValue(col[i]); i += c1   [1];
+    const c2    = parseNumberValue(col[i]); i += c2   [1];
+    const c3    = parseNumberValue(col[i]); i += c3   [1];
 
 
     return [
-        new GColorValue(space[0], c1[0], c2[0], c3[0]), 
-        i ];
+        new ColorValue(space[0], c1[0], c2[0], c3[0]), 
+        i - iStart];
 }
 
 
-class GColorFillValue
+class ColorFillValue
 extends GType
 {
     color;
@@ -16753,8 +16689,8 @@ extends GType
 
 
 
-    constructor(color   = GColorValue .NaN, 
-                opacity = GNumberValue.NaN)
+    constructor(color   = ColorValue .NaN, 
+                opacity = NumberValue.NaN)
     {
         super(COLOR_FILL_VALUE);
 
@@ -16769,25 +16705,25 @@ extends GType
     
     static create(r, g, b, opacity)
     {
-        return new GColorFillValue(
-            GColorValue.create(1, r, g, b),
-            new GNumberValue(opacity));
+        return new ColorFillValue(
+            ColorValue.create(1, r, g, b),
+            new NumberValue(opacity));
     }
 
 
 
     static createFromRgb(rgb, opacity)
     {
-        return new GColorFillValue(
-            GColorValue.createFromRgb(rgb),
-            new GNumberValue(opacity));
+        return new ColorFillValue(
+            ColorValue.createFromRgb(rgb),
+            new NumberValue(opacity));
     }
 
 
 
     copy()
     {
-        return new GColorFillValue(
+        return new ColorFillValue(
             this.color  .copy(),
             this.opacity.copy());
     }
@@ -16838,86 +16774,376 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GColorFillValue(
-        GColorValue .NaN,
-        GNumberValue.NaN));
+    static NaN = Object.freeze(new ColorFillValue(
+        ColorValue .NaN,
+        NumberValue.NaN));
 
 
 
-    static default = Object.freeze(new GColorFillValue(
-        GColorValue.create(1, 217, 217, 217),
-        new GNumberValue(100)));
+    static default = Object.freeze(new ColorFillValue(
+        ColorValue.create(1, 217, 217, 217),
+        new NumberValue(100)));
 }
 
 
 
-function parseGColorFillValue(str)
+function parseColorFillValue(str, i = -1)
 {
-    if (str == INVALID)
-        return [GColorFillValue.NaN, 1];
-
-    const fill = str.split(' ');
-
-    let i = 0;
-
-    const r       = parseGNumberValue(fill[i]); i += r      [1];
-    const g       = parseGNumberValue(fill[i]); i += g      [1];
-    const b       = parseGNumberValue(fill[i]); i += b      [1];
-    const opacity = parseGNumberValue(fill[i]); i += opacity[1];
-
-    const color   = GColorValue.create(1, r[0], g[0], b[0])
+    if (   i <  0 && str    == INVALID
+        || i >= 0 && str[i] == INVALID)
+        return [ColorFillValue.NaN, 1];
 
 
-    return [
-        new GColorFillValue(color, opacity[0]),
-        i ];
-
-}
-
-
-class GColorStopValue
-extends GType
-{
-    fill;
-    position;
-
-
-
-    constructor(fill     = GColorFillValue.NaN,
-                position = GNumberValue   .NaN)
+    if (i < 0)
     {
-        super(COLOR_STOP_VALUE);
-
-        this.fill     = fill;
-        this.position = position;
-
-        this.result   = this;
-        this.valid    = true;
+        str = str.split(' ');
+        i   = 0;
     }
 
 
+    const iStart = i;
+
+    const r       = parseNumberValue(str[i]); i += r[1];
+    const g       = parseNumberValue(str[i]); i += g[1];
+    const b       = parseNumberValue(str[i]); i += b[1];
+    const color   = ColorValue.create(1, r[0], g[0], b[0])
+   
+    const opacity = parseNumberValue(str[i]); i += opacity[1];
+
     
-    copy()
+    return [
+        new ColorFillValue(color, opacity[0]),
+        i - iStart ];
+}
+
+
+class GeometryBaseValue
+extends GType
+{
+    nodeId;
+
+    fill;
+    stroke;
+    strokeWeight;
+    strokeFit;
+    strokeJoin;
+    strokeMiter;
+
+
+
+    constructor(type, nodeId)
     {
-        return new GColorStopValue(
-            this.fill    .copy(),
-            this.position.copy());
+        super(type);
+
+        this.nodeId = nodeId; 
+
+        this.fill         = ColorFillValue.default.copy();
+        this.stroke       = ColorFillValue.NaN    .copy();
+        this.strokeWeight = new NumberValue(1);
+        this.strokeFit    = new NumberValue(0);
+        this.strokeJoin   = new NumberValue(0);
+        this.strokeMiter  = new NumberValue(28.96);
+    }
+
+
+
+    copyBase(base)
+    {
+        this.nodeId  = base.nodeId;
+
+        this.fill         = base.fill        .copy();
+        this.stroke       = base.stroke      .copy();
+        this.strokeWeight = base.strokeWeight.copy();
+        this.strokeFit    = base.strokeFit   .copy();
+        this.strokeJoin   = base.strokeJoin  .copy();
+        this.strokeMiter  = base.strokeMiter .copy();
     }
 
 
 
     isValid()
     {
-        return this.fill    .isValid()
-            && this.position.isValid();
+        return this.fill.isValid()
+            && (  !this.stroke.isValid()
+                ||    this.strokeWeight.isValid()
+                   && this.strokeFit   .isValid()
+                   && this.strokeJoin  .isValid()
+                   && this.strokeMiter .isValid());
     }
 
 
 
-    equals(col)
+    toFigmaObject()
     {
-        return this.fill    .equals(col.color   )
-            && this.position.equals(col.position);
+        let strokeAlign, 
+            strokeJoin;
+
+        switch (this.strokeFit.value)
+        {
+            case 0: strokeAlign = 'INSIDE';  break;
+            case 1: strokeAlign = 'CENTER';  break;
+            case 2: strokeAlign = 'OUTSIDE'; break;
+        }
+        
+        switch (this.strokeJoin.value)
+        {
+            case 0: strokeJoin = 'MITER'; break;
+            case 1: strokeJoin = 'BEVEL'; break;
+            case 2: strokeJoin = 'ROUND'; break;
+        }
+
+        return {
+            nodeId:       this.nodeId,
+
+            fills:        [this.fill  .toFigmaString()],
+            strokes:      [this.stroke.toFigmaString()],
+            strokeWeight: this.strokeWeight.value,
+            strokeAlign:  strokeAlign,
+            strokeJoin:   strokeJoin,
+            strokeMiter:  Math.min(this.strokeMiter.value, 16)
+        }
+    }
+
+
+
+    toString()
+    {
+        return      this.fill        .toString()
+            + ' ' + this.stroke      .toString()
+            + ' ' + this.strokeWeight.toString()
+            + ' ' + this.strokeFit   .toString()
+            + ' ' + this.strokeJoin  .toString()
+            + ' ' + this.strokeMiter .toString();
+    }
+}
+
+
+
+function parseGeometryBaseValue(str, i, obj)
+{
+    const fill         = parseColorFillValue(str, i); i += fill        [1];
+    const stroke       = parseColorFillValue(str, i); i += stroke      [1];
+    const strokeWeight = parseNumberValue   (str[i]); i += strokeWeight[1];
+    const strokeFit    = parseNumberValue   (str[i]); i += strokeFit   [1];
+    const strokeJoin   = parseNumberValue   (str[i]); i += strokeJoin  [1];
+    const strokeMiter  = parseNumberValue   (str[i]); i += strokeMiter [1];
+
+    obj.fill         = fill        [0];
+    obj.stroke       = stroke      [0];
+    obj.strokeWeight = strokeWeight[0];
+    obj.strokeFit    = strokeFit   [0];
+    obj.strokeJoin   = strokeJoin  [0];
+    obj.strokeMiter  = strokeMiter [0];
+
+    return i;
+}
+
+
+class RectangleValue
+extends GeometryBaseValue
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+
+
+
+    constructor(nodeId,
+                x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                width  = new NumberValue(0), 
+                height = new NumberValue(0), 
+                angle  = new NumberValue(0), 
+                round  = new NumberValue(0))
+    {
+        super(RECTANGLE_VALUE, nodeId);
+
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+        this.angle  = angle;
+        this.round  = round;
+
+        this.result = this;
+        this.valid  = true;
+    }
+
+
+
+    copy()
+    {
+        const rect = new RectangleValue(
+            this.nodeId,
+            this.x     .copy(), 
+            this.y     .copy(), 
+            this.width .copy(), 
+            this.height.copy(), 
+            this.angle .copy(), 
+            this.round .copy());
+
+        rect.copyBase(this);
+
+        return rect;
+    }
+
+
+
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid()
+
+            && super      .isValid();
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toFigmaObject()
+    {
+        return {
+            type:   RECTANGLE,
+            id:     0,
+            x:      this.x     .value,
+            y:      this.y     .value,
+            width:  this.width .value,
+            height: this.height.value,
+            angle:  this.angle .value,
+            round:  Math.max(0, this.round.value),
+            ...super.toFigmaObject()
+        };
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.x     .toString()
+              + ' ' + this.y     .toString()
+              + ' ' + this.width .toString()
+              + ' ' + this.height.toString()
+              + ' ' + this.angle .toString()
+              + ' ' + this.round .toString()
+              + ' ' + super.toString()
+            : INVALID;
+    }
+
+
+
+    static NaN = new RectangleValue(
+        '',
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
+}
+
+
+
+function parseRectangleValue(str, i = -1)
+{
+    if (   i <  0 && str    == INVALID
+        || i >= 0 && str[i] == INVALID)
+        return [RectangleValue.NaN, 1];
+
+
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x      = parseNumberValue(str[i]); i += x     [1];
+    const y      = parseNumberValue(str[i]); i += y     [1];
+    const width  = parseNumberValue(str[i]); i += width [1];
+    const height = parseNumberValue(str[i]); i += height[1];
+    const angle  = parseNumberValue(str[i]); i += angle [1];
+    const round  = parseNumberValue(str[i]); i += round [1];
+
+
+    const rect = new RectangleValue(
+        '', // set node ID elsewhere
+        x     [0],
+        y     [0],
+        width [0],
+        height[0],
+        angle [0],
+        round [0]);
+
+
+    i = parseGeometryBaseValue(str, i, rect);
+
+    
+    return [rect, i - iStart];
+}
+
+
+
+class LineValue
+extends GType
+{
+    x;
+    y;
+    width;
+    angle;
+
+
+
+    constructor(x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                width  = new NumberValue(0), 
+                angle  = new NumberValue(0))
+    {
+        super(LINE_VALUE);
+
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.angle  = angle;
+
+        this.result = this;
+        this.valid  = true;
+    }
+
+
+
+    copy()
+    {
+        return new LineValue(
+            this.x     .copy(), 
+            this.y     .copy(), 
+            this.width .copy(), 
+            this.angle .copy());
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.x    )
+            && !isNaN(this.y    )
+            && !isNaN(this.width)
+            && !isNaN(this.angle);
     }
 
 
@@ -16932,31 +17158,381 @@ extends GType
     toString()
     {
         return this.isValid()
-            ?         this.fill    .toString()
-              + ' ' + this.position.toString()
+            ?         this.x     .toString()
+              + ' ' + this.y     .toString()
+              + ' ' + this.width .toString()
+              + ' ' + this.angle .toString()
             : INVALID;
     }
 
 
 
-    static NaN = new GColorStopValue(
-        GColorFillValue.NaN,
-        GNumberValue   .NaN);
+    static NaN = new LineValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
 }
 
 
 
-function parseGColorStopValue(str)
+function parseLineValue(str)
 {
     if (str == INVALID)
-        return GColorStopValue.NaN;
+        return LineValue.NaN;
 
-    const stop = str.split(' ');
+    const rect = str.split(' ');
 
-    return new GColorStopValue(
-        parseGColorFillValue(str)[0],
-        parseGNumberValue(stop[5])[0]);
+    return new LineValue(
+        new NumberValue(parseNumberValue(rect[0])),
+        new NumberValue(parseNumberValue(rect[1])),
+        new NumberValue(parseNumberValue(rect[2])),
+        new NumberValue(parseNumberValue(rect[3])));
 }
+
+
+
+class EllipseValue
+extends GType
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+
+
+
+    constructor(x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                width  = new NumberValue(0), 
+                height = new NumberValue(0), 
+                angle  = new NumberValue(0))
+    {
+        super(ELLIPSE_VALUE);
+
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+        this.angle  = angle;
+
+        this.result = this;
+        this.valid  = true;
+    }
+
+
+
+    copy()
+    {
+        return new EllipseValue(
+            this.x     .copy(), 
+            this.y     .copy(), 
+            this.width .copy(), 
+            this.height.copy(), 
+            this.angle .copy());
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.x     )
+            && !isNaN(this.y     )
+            && !isNaN(this.width )
+            && !isNaN(this.height)
+            && !isNaN(this.angle );
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.x     .toString()
+              + ' ' + this.y     .toString()
+              + ' ' + this.width .toString()
+              + ' ' + this.height.toString()
+              + ' ' + this.angle .toString()
+            : INVALID;
+    }
+
+
+
+    static NaN = new EllipseValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
+}
+
+
+
+function parseEllipseValue(str)
+{
+    if (str == INVALID)
+        return EllipseValue.NaN;
+
+    const rect = str.split(' ');
+
+    return new EllipseValue(
+        new NumberValue(parseNumberValue(rect[0])[0]),
+        new NumberValue(parseNumberValue(rect[1])[0]),
+        new NumberValue(parseNumberValue(rect[2])[0]),
+        new NumberValue(parseNumberValue(rect[3])[0]),
+        new NumberValue(parseNumberValue(rect[4])[0]));
+}
+
+
+
+class PolygonValue
+extends GType
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    corners;
+
+
+
+    constructor(x       = new NumberValue(0), 
+                y       = new NumberValue(0), 
+                width   = new NumberValue(0), 
+                height  = new NumberValue(0), 
+                angle   = new NumberValue(0), 
+                round   = new NumberValue(0), 
+                corners = new NumberValue(0))
+    {
+        super(POLYGON_VALUE);
+
+        this.x       = x;
+        this.y       = y;
+        this.width   = width;
+        this.height  = height;
+        this.angle   = angle;
+        this.round   = round;
+        this.corners = corners;
+
+        this.result = this;
+        this.valid  = true;
+    }
+
+
+
+    copy()
+    {
+        return new PolygonValue(
+            this.x      .copy(), 
+            this.y      .copy(), 
+            this.width  .copy(), 
+            this.height .copy(), 
+            this.angle  .copy(), 
+            this.round  .copy(), 
+            this.corners.copy());
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.x      )
+            && !isNaN(this.y      )
+            && !isNaN(this.width  )
+            && !isNaN(this.height )
+            && !isNaN(this.angle  )
+            && !isNaN(this.round  )
+            && !isNaN(this.corners);
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.x      .toString()
+              + ' ' + this.y      .toString()
+              + ' ' + this.width  .toString()
+              + ' ' + this.height .toString()
+              + ' ' + this.angle  .toString()
+              + ' ' + this.round  .toString()
+              + ' ' + this.corners.toString()
+            : INVALID;
+    }
+
+
+
+    static NaN = new PolygonValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
+}
+
+
+
+function parsePolygonValue(str)
+{
+    if (str == INVALID)
+        return PolygonValue.NaN;
+
+    const rect = str.split(' ');
+
+    return new PolygonValue(
+        new NumberValue(parseNumberValue(rect[0])),
+        new NumberValue(parseNumberValue(rect[1])),
+        new NumberValue(parseNumberValue(rect[2])),
+        new NumberValue(parseNumberValue(rect[3])),
+        new NumberValue(parseNumberValue(rect[4])),
+        new NumberValue(parseNumberValue(rect[5])),
+        new NumberValue(parseNumberValue(rect[6])));
+}
+
+
+
+class StarValue
+extends GType
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    points;
+    convex;
+
+
+
+    constructor(x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                width  = new NumberValue(0), 
+                height = new NumberValue(0), 
+                angle  = new NumberValue(0), 
+                round  = new NumberValue(0), 
+                points = new NumberValue(0),
+                convex = new NumberValue(0))
+    {
+        super(STAR_VALUE);
+
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+        this.angle  = angle;
+        this.round  = round;
+        this.points = points;
+        this.convex = convex;
+
+        this.result = this;
+        this.valid  = true;
+    }
+
+
+
+    copy()
+    {
+        return new StarValue(
+            this.x     .copy(), 
+            this.y     .copy(), 
+            this.width .copy(), 
+            this.height.copy(), 
+            this.angle .copy(), 
+            this.round .copy(), 
+            this.points.copy(),
+            this.convex.copy());
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.x     )
+            && !isNaN(this.y     )
+            && !isNaN(this.width )
+            && !isNaN(this.height)
+            && !isNaN(this.angle )
+            && !isNaN(this.round )
+            && !isNaN(this.points)
+            && !isNaN(this.convex);
+    }
+
+
+
+    eval(parse)
+    {
+        return this.result = this.copy();
+    }
+
+
+
+    toString()
+    {
+        return this.isValid()
+            ?         this.x     .toString()
+              + ' ' + this.y     .toString()
+              + ' ' + this.width .toString()
+              + ' ' + this.height.toString()
+              + ' ' + this.angle .toString()
+              + ' ' + this.round .toString()
+              + ' ' + this.points.toString()
+              + ' ' + this.convex.toString()
+            : INVALID;
+    }
+
+
+
+    static NaN = new StarValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
+}
+
+
+
+function parseStarValue(str)
+{
+    if (str == INVALID)
+        return StarValue.NaN;
+
+    const rect = str.split(' ');
+
+    return new StarValue(
+        new NumberValue(parseNumberValue(rect[0])),
+        new NumberValue(parseNumberValue(rect[1])),
+        new NumberValue(parseNumberValue(rect[2])),
+        new NumberValue(parseNumberValue(rect[3])),
+        new NumberValue(parseNumberValue(rect[4])),
+        new NumberValue(parseNumberValue(rect[5])),
+        new NumberValue(parseNumberValue(rect[6])),
+        new NumberValue(parseNumberValue(rect[7])));
+}
+
 
 
 class GNumber
@@ -17048,7 +17624,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
 
             if (this.input)
@@ -17112,7 +17688,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
 
             for (const _input of this.inputs)
@@ -17169,7 +17745,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
 
             if (this.inputs.length > 0)
@@ -17231,7 +17807,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
 
             if (this.inputs.length > 0)
@@ -17289,7 +17865,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
             
             if (this.inputs.length > 0)
@@ -17355,7 +17931,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
             
             if (this.inputs.length > 0)
@@ -17421,7 +17997,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
 
             if (this.inputs.length > 0)
@@ -17500,14 +18076,14 @@ extends GOperator
 
                 const maxDec = Math.max(input0.decimals, input1.decimals);
 
-                this.result = new GNumberValue(
+                this.result = new NumberValue(
                     floorTo(input0.value + amount.value * (input1.value - input0.value) / 100, maxDec),
                     maxDec);
             }
 
             else if (this.input0) this.result = this.input0.eval(parse).copy();
             else if (this.input1) this.result = this.input1.eval(parse).copy();
-            else                  this.result = new GNumberValue(0);
+            else                  this.result = new NumberValue(0);
 
 
             this.result.valid = true;
@@ -17571,7 +18147,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            console.log('this.space =', this.space);
             const space = this.space.eval(parse).copy();
 
 
@@ -17606,7 +18181,7 @@ extends GOperator
             }
             else
             {
-                this.result = new GColorValue(
+                this.result = new ColorValue(
                     space,
                     this.c1.eval(parse).copy(),
                     this.c2.eval(parse).copy(),
@@ -17757,7 +18332,7 @@ extends GOperator
 
                 const factor = getColorSpaceFactor(_space);
 
-                this.result = GColorValue.create(
+                this.result = ColorValue.create(
                     space.value,
                     col[1] * factor[0],
                     col[2] * factor[1],
@@ -17768,7 +18343,7 @@ extends GOperator
             else if (this.input1) this.result = this.input1.eval(parse).copy();
 
             else 
-                this.result = GColorValue.NaN;
+                this.result = ColorValue.NaN;
 
 
             this.result.valid = true;
@@ -17856,7 +18431,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorValue();
+            this.result = new ColorValue();
 
             const standard = this.standard.eval(parse).copy();
 
@@ -17882,7 +18457,7 @@ extends GOperator
                                 dataColor2rgb(input0.toDataColor()),
                                 dataColor2rgb(input1.toDataColor()));
 
-                            this.value = new GNumberValue(value, 2);
+                            this.value = new NumberValue(value, 2);
                         }
                         else
                         {
@@ -17890,16 +18465,16 @@ extends GOperator
                                 dataColor2rgb(input0.toDataColor()),
                                 dataColor2rgb(input1.toDataColor()));
 
-                            this.value = new GNumberValue(Math.abs(value), 1);
+                            this.value = new NumberValue(Math.abs(value), 1);
                         }
                     }
                     else
-                        this.value = GNumberValue.NaN;
+                        this.value = NumberValue.NaN;
                 }
                 else
                 {
                     this.result = CGolorValue.NaN;
-                    this.value  = GNumberValue.NaN;
+                    this.value  = NumberValue.NaN;
                 }
 
 
@@ -17913,8 +18488,8 @@ extends GOperator
                 if (input0.isValid())
                     genPushUpdateValue(parse, this.nodeId, 'text', input0);
 
-                this.result = GColorValue.NaN;
-                this.value  = GNumberValue.NaN;
+                this.result = ColorValue.NaN;
+                this.value  = NumberValue.NaN;
             }
             else if (this.input1) 
             {
@@ -17923,19 +18498,19 @@ extends GOperator
                 if (input1.isValid())
                 {
                     this.result = input1;
-                    genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
+                    genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
                 }
                 else
-                    this.result = GColorValue.NaN;
+                    this.result = ColorValue.NaN;
     
-                this.value = GNumberValue.NaN;
+                this.value = NumberValue.NaN;
             }
             else
             {
-                this.result = GColorValue.NaN;
-                this.value  = GNumberValue.NaN;
+                this.result = ColorValue.NaN;
+                this.value  = NumberValue.NaN;
 
-                genPushUpdateValue(parse, this.nodeId, 'text',  GColorValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'text',  ColorValue.NaN);
             }
             
 
@@ -18020,17 +18595,17 @@ extends GOperator
     
                     const factor = getColorSpaceFactor(validCol[0]);
     
-                    this.result = GColorValue.create(
+                    this.result = ColorValue.create(
                         input.space.value,
                         validCol[1] * factor[0],
                         validCol[2] * factor[1],
                         validCol[3] * factor[2]);
                 }
                 else
-                    this.result = GColorValue.NaN;
+                    this.result = ColorValue.NaN;
             }
             else
-                this.result = GColorValue.NaN;
+                this.result = ColorValue.NaN;
 
 
             this.result.valid = true;
@@ -18118,17 +18693,17 @@ extends GOperator
 
                     const factor = getColorSpaceFactor('rgb');
     
-                    this.result = GColorValue.create(
+                    this.result = ColorValue.create(
                         1,
                         rgb[0] * factor[0],
                         rgb[1] * factor[1],
                         rgb[2] * factor[2]);
                 }
                 else
-                    this.result = GColorValue.NaN;
+                    this.result = ColorValue.NaN;
             }
             else
-                this.result = GColorValue.NaN;
+                this.result = ColorValue.NaN;
 
 
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
@@ -18198,8 +18773,8 @@ extends GOperator
             }
             else
             {
-                this.result = new GColorFillValue(
-                    GColorValue.createFromRgb(scaleColor(dataColor2rgb(this.color.eval(parse).toDataColor()), 'rgb')), 
+                this.result = new ColorFillValue(
+                    ColorValue.createFromRgb(scaleColor(dataColor2rgb(this.color.eval(parse).toDataColor()), 'rgb')), 
                     this.opacity.eval(parse).copy());
             }
         
@@ -18256,7 +18831,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorStopValue();
+            this.result = new ColorStopValue();
 
 
             if (this.input)
@@ -18299,718 +18874,6 @@ extends GOperator
             && this.position.mustNotEval;
     }
 }
-
-
-class GGeometryBaseValue
-extends GType
-{
-    nodeId;
-
-    fill;
-    stroke;
-    strokeWeight;
-    strokeFit;
-    strokeJoin;
-    strokeMiter;
-
-
-
-    constructor(type, nodeId)
-    {
-        super(type);
-
-        this.nodeId = nodeId; 
-
-        this.fill         = GColorFillValue.default.copy();
-        this.stroke       = GColorFillValue.NaN    .copy();
-        this.strokeWeight = new GNumberValue(1);
-        this.strokeFit    = new GNumberValue(0);
-        this.strokeJoin   = new GNumberValue(0);
-        this.strokeMiter  = new GNumberValue(28.96);
-    }
-
-
-
-    copyBase(base)
-    {
-        this.nodeId  = base.nodeId;
-
-        this.fill         = base.fill        .copy();
-        this.stroke       = base.stroke      .copy();
-        this.strokeWeight = base.strokeWeight.copy();
-        this.strokeFit    = base.strokeFit   .copy();
-        this.strokeJoin   = base.strokeJoin  .copy();
-        this.strokeMiter  = base.strokeMiter .copy();
-    }
-
-
-
-    isValid()
-    {
-        return this.fill.isValid()
-            && (  !this.stroke.isValid()
-                ||    this.strokeWeight.isValid()
-                   && this.strokeFit   .isValid()
-                   && this.strokeJoin  .isValid()
-                   && this.strokeMiter .isValid());
-    }
-
-
-
-    toFigmaObject()
-    {
-        let strokeAlign, 
-            strokeJoin;
-
-        switch (this.strokeFit.value)
-        {
-            case 0: strokeAlign = 'INSIDE';  break;
-            case 1: strokeAlign = 'CENTER';  break;
-            case 2: strokeAlign = 'OUTSIDE'; break;
-        }
-        
-        switch (this.strokeJoin.value)
-        {
-            case 0: strokeJoin = 'MITER'; break;
-            case 1: strokeJoin = 'BEVEL'; break;
-            case 2: strokeJoin = 'ROUND'; break;
-        }
-
-        return {
-            nodeId:       this.nodeId,
-
-            fills:        [this.fill  .toFigmaString()],
-            strokes:      [this.stroke.toFigmaString()],
-            strokeWeight: this.strokeWeight.value,
-            strokeAlign:  strokeAlign,
-            strokeJoin:   strokeJoin,
-            strokeMiter:  Math.min(this.strokeMiter.value, 16)
-        }
-    }
-
-
-
-    toString()
-    {
-        return         this.fill        .toString()
-               + ' ' + this.stroke      .toString()
-               + ' ' + this.strokeWeight.toString()
-               + ' ' + this.strokeFit   .toString()
-               + ' ' + this.strokeJoin  .toString()
-               + ' ' + this.strokeMiter .toString();
-    }
-}
-
-
-
-function parseGGeometryBaseValue(_str, i, obj)
-{
-    const fill         = parseGNumberValue(obj[i]); i += x     [1];
-    const stroke       = parseGNumberValue(obj[i]); i += y     [1];
-    const strokeWeight = parseGNumberValue(obj[i]); i += width [1];
-    const strokeFit    = parseGNumberValue(obj[i]); i += height[1];
-    const strokeJoin   = parseGNumberValue(obj[i]); i += angle [1];
-    const strokeMiter  = parseGNumberValue(obj[i]); i += round [1];
-
-    obj.fill         = fill        [0];
-    obj.stroke       = stroke      [0];
-    obj.strokeWeight = strokeWeight[0];
-    obj.strokeFit    = strokeFit   [0];
-    obj.strokeJoin   = strokeJoin  [0];
-    obj.strokeMiter  = strokeMiter [0];
-
-    return i;
-}
-
-
-class GRectangleValue
-extends GGeometryBaseValue
-{
-    x;
-    y;
-    width;
-    height;
-    angle;
-    round;
-
-
-
-    constructor(nodeId,
-                x      = new GNumberValue(0), 
-                y      = new GNumberValue(0), 
-                width  = new GNumberValue(0), 
-                height = new GNumberValue(0), 
-                angle  = new GNumberValue(0), 
-                round  = new GNumberValue(0))
-    {
-        super(RECTANGLE_VALUE, nodeId);
-
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        this.height = height;
-        this.angle  = angle;
-        this.round  = round;
-
-        this.result = this;
-        this.valid  = true;
-    }
-
-
-
-    copy()
-    {
-        const rect = new GRectangleValue(
-            this.nodeId,
-            this.x     .copy(), 
-            this.y     .copy(), 
-            this.width .copy(), 
-            this.height.copy(), 
-            this.angle .copy(), 
-            this.round .copy());
-
-        rect.copyBase(this);
-
-        return rect;
-    }
-
-
-
-    isValid()
-    {
-        return super.isValid()
-            && this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && this.round .isValid()
-            && super.isValid();
-    }
-
-
-
-    eval(parse)
-    {
-        return this.result = this.copy();
-    }
-
-
-
-    toFigmaObject()
-    {
-        return {
-            type:   RECTANGLE,
-            id:     0,
-            x:      this.x     .value,
-            y:      this.y     .value,
-            width:  this.width .value,
-            height: this.height.value,
-            angle:  this.angle .value,
-            round:  Math.max(0, this.round.value),
-            ...super.toFigmaObject()
-        };
-    }
-
-
-
-    toString()
-    {
-        return this.isValid()
-            ?         this.x     .toString()
-              + ' ' + this.y     .toString()
-              + ' ' + this.width .toString()
-              + ' ' + this.height.toString()
-              + ' ' + this.angle .toString()
-              + ' ' + this.round .toString()
-              + ' ' + super.toString()
-            : INVALID;
-    }
-
-
-
-    static NaN = new GRectangleValue(
-        '',
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
-}
-
-
-
-function parseGRectangleValue(str)
-{
-    if (str == INVALID)
-        return [GRectangleValue.NaN, 1];
-
-    const _rect = str.split(' ');
-
-
-    let i = 0;
-
-    const x      = parseGNumberValue(fill[i]); i += x     [1];
-    const y      = parseGNumberValue(fill[i]); i += y     [1];
-    const width  = parseGNumberValue(fill[i]); i += width [1];
-    const height = parseGNumberValue(fill[i]); i += height[1];
-    const angle  = parseGNumberValue(fill[i]); i += angle [1];
-    const round  = parseGNumberValue(fill[i]); i += round [1];
-
-
-    const rect = new GRectangleValue(
-        '', // set node ID elsewhere
-        x     [0],
-        y     [0],
-        width [0],
-        height[0],
-        angle [0],
-        round [0]);
-
-
-    i = parseGGeometryBaseValue(_rect, i, rect);
-
-    
-    return [rect, i];
-}
-
-
-
-class GLineValue
-extends GType
-{
-    x;
-    y;
-    width;
-    angle;
-
-
-
-    constructor(x      = new GNumberValue(0), 
-                y      = new GNumberValue(0), 
-                width  = new GNumberValue(0), 
-                angle  = new GNumberValue(0))
-    {
-        super(LINE_VALUE);
-
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        this.angle  = angle;
-
-        this.result = this;
-        this.valid  = true;
-    }
-
-
-
-    copy()
-    {
-        return new GLineValue(
-            this.x     .copy(), 
-            this.y     .copy(), 
-            this.width .copy(), 
-            this.angle .copy());
-    }
-
-
-
-    isValid()
-    {
-        return !isNaN(this.x    )
-            && !isNaN(this.y    )
-            && !isNaN(this.width)
-            && !isNaN(this.angle);
-    }
-
-
-
-    eval(parse)
-    {
-        return this.result = this.copy();
-    }
-
-
-
-    toString()
-    {
-        return this.isValid()
-            ?         this.x     .toString()
-              + ' ' + this.y     .toString()
-              + ' ' + this.width .toString()
-              + ' ' + this.angle .toString()
-            : INVALID;
-    }
-
-
-
-    static NaN = new GLineValue(
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
-}
-
-
-
-function parseGLineValue(str)
-{
-    if (str == INVALID)
-        return GLineValue.NaN;
-
-    const rect = str.split(' ');
-
-    return new GLineValue(
-        new GNumberValue(parseGNumberValue(rect[0])),
-        new GNumberValue(parseGNumberValue(rect[1])),
-        new GNumberValue(parseGNumberValue(rect[2])),
-        new GNumberValue(parseGNumberValue(rect[3])));
-}
-
-
-
-class GEllipseValue
-extends GType
-{
-    x;
-    y;
-    width;
-    height;
-    angle;
-
-
-
-    constructor(x      = new GNumberValue(0), 
-                y      = new GNumberValue(0), 
-                width  = new GNumberValue(0), 
-                height = new GNumberValue(0), 
-                angle  = new GNumberValue(0))
-    {
-        super(ELLIPSE_VALUE);
-
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        this.height = height;
-        this.angle  = angle;
-
-        this.result = this;
-        this.valid  = true;
-    }
-
-
-
-    copy()
-    {
-        return new GEllipseValue(
-            this.x     .copy(), 
-            this.y     .copy(), 
-            this.width .copy(), 
-            this.height.copy(), 
-            this.angle .copy());
-    }
-
-
-
-    isValid()
-    {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle );
-    }
-
-
-
-    eval(parse)
-    {
-        return this.result = this.copy();
-    }
-
-
-
-    toString()
-    {
-        return this.isValid()
-            ?         this.x     .toString()
-              + ' ' + this.y     .toString()
-              + ' ' + this.width .toString()
-              + ' ' + this.height.toString()
-              + ' ' + this.angle .toString()
-            : INVALID;
-    }
-
-
-
-    static NaN = new GEllipseValue(
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
-}
-
-
-
-function parseGEllipseValue(str)
-{
-    if (str == INVALID)
-        return GEllipseValue.NaN;
-
-    const rect = str.split(' ');
-
-    return new GEllipseValue(
-        new GNumberValue(parseGNumberValue(rect[0])[0]),
-        new GNumberValue(parseGNumberValue(rect[1])[0]),
-        new GNumberValue(parseGNumberValue(rect[2])[0]),
-        new GNumberValue(parseGNumberValue(rect[3])[0]),
-        new GNumberValue(parseGNumberValue(rect[4])[0]));
-}
-
-
-
-class GPolygonValue
-extends GType
-{
-    x;
-    y;
-    width;
-    height;
-    angle;
-    round;
-    corners;
-
-
-
-    constructor(x       = new GNumberValue(0), 
-                y       = new GNumberValue(0), 
-                width   = new GNumberValue(0), 
-                height  = new GNumberValue(0), 
-                angle   = new GNumberValue(0), 
-                round   = new GNumberValue(0), 
-                corners = new GNumberValue(0))
-    {
-        super(POLYGON_VALUE);
-
-        this.x       = x;
-        this.y       = y;
-        this.width   = width;
-        this.height  = height;
-        this.angle   = angle;
-        this.round   = round;
-        this.corners = corners;
-
-        this.result = this;
-        this.valid  = true;
-    }
-
-
-
-    copy()
-    {
-        return new GPolygonValue(
-            this.x      .copy(), 
-            this.y      .copy(), 
-            this.width  .copy(), 
-            this.height .copy(), 
-            this.angle  .copy(), 
-            this.round  .copy(), 
-            this.corners.copy());
-    }
-
-
-
-    isValid()
-    {
-        return !isNaN(this.x      )
-            && !isNaN(this.y      )
-            && !isNaN(this.width  )
-            && !isNaN(this.height )
-            && !isNaN(this.angle  )
-            && !isNaN(this.round  )
-            && !isNaN(this.corners);
-    }
-
-
-
-    eval(parse)
-    {
-        return this.result = this.copy();
-    }
-
-
-
-    toString()
-    {
-        return this.isValid()
-            ?         this.x      .toString()
-              + ' ' + this.y      .toString()
-              + ' ' + this.width  .toString()
-              + ' ' + this.height .toString()
-              + ' ' + this.angle  .toString()
-              + ' ' + this.round  .toString()
-              + ' ' + this.corners.toString()
-            : INVALID;
-    }
-
-
-
-    static NaN = new GPolygonValue(
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
-}
-
-
-
-function parseGPolygonValue(str)
-{
-    if (str == INVALID)
-        return GPolygonValue.NaN;
-
-    const rect = str.split(' ');
-
-    return new GPolygonValue(
-        new GNumberValue(parseGNumberValue(rect[0])),
-        new GNumberValue(parseGNumberValue(rect[1])),
-        new GNumberValue(parseGNumberValue(rect[2])),
-        new GNumberValue(parseGNumberValue(rect[3])),
-        new GNumberValue(parseGNumberValue(rect[4])),
-        new GNumberValue(parseGNumberValue(rect[5])),
-        new GNumberValue(parseGNumberValue(rect[6])));
-}
-
-
-
-class GStarValue
-extends GType
-{
-    x;
-    y;
-    width;
-    height;
-    angle;
-    round;
-    points;
-    convex;
-
-
-
-    constructor(x      = new GNumberValue(0), 
-                y      = new GNumberValue(0), 
-                width  = new GNumberValue(0), 
-                height = new GNumberValue(0), 
-                angle  = new GNumberValue(0), 
-                round  = new GNumberValue(0), 
-                points = new GNumberValue(0),
-                convex = new GNumberValue(0))
-    {
-        super(STAR_VALUE);
-
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        this.height = height;
-        this.angle  = angle;
-        this.round  = round;
-        this.points = points;
-        this.convex = convex;
-
-        this.result = this;
-        this.valid  = true;
-    }
-
-
-
-    copy()
-    {
-        return new GStarValue(
-            this.x     .copy(), 
-            this.y     .copy(), 
-            this.width .copy(), 
-            this.height.copy(), 
-            this.angle .copy(), 
-            this.round .copy(), 
-            this.points.copy(),
-            this.convex.copy());
-    }
-
-
-
-    isValid()
-    {
-        return !isNaN(this.x     )
-            && !isNaN(this.y     )
-            && !isNaN(this.width )
-            && !isNaN(this.height)
-            && !isNaN(this.angle )
-            && !isNaN(this.round )
-            && !isNaN(this.points)
-            && !isNaN(this.convex);
-    }
-
-
-
-    eval(parse)
-    {
-        return this.result = this.copy();
-    }
-
-
-
-    toString()
-    {
-        return this.isValid()
-            ?         this.x     .toString()
-              + ' ' + this.y     .toString()
-              + ' ' + this.width .toString()
-              + ' ' + this.height.toString()
-              + ' ' + this.angle .toString()
-              + ' ' + this.round .toString()
-              + ' ' + this.points.toString()
-              + ' ' + this.convex.toString()
-            : INVALID;
-    }
-
-
-
-    static NaN = new GStarValue(
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
-}
-
-
-
-function parseGStarValue(str)
-{
-    if (str == INVALID)
-        return GStarValue.NaN;
-
-    const rect = str.split(' ');
-
-    return new GStarValue(
-        new GNumberValue(parseGNumberValue(rect[0])),
-        new GNumberValue(parseGNumberValue(rect[1])),
-        new GNumberValue(parseGNumberValue(rect[2])),
-        new GNumberValue(parseGNumberValue(rect[3])),
-        new GNumberValue(parseGNumberValue(rect[4])),
-        new GNumberValue(parseGNumberValue(rect[5])),
-        new GNumberValue(parseGNumberValue(rect[6])),
-        new GNumberValue(parseGNumberValue(rect[7])));
-}
-
 
 
 class GGeometryBase
@@ -19143,7 +19006,7 @@ extends GGeometryBase
     {
         if (!this.valid)
         {
-            this.result = new GRectangleValue(this.nodeId);
+            this.result = new RectangleValue(this.nodeId);
 
 
             if (this.input)
@@ -19249,7 +19112,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GLineValue();
+            this.result = new LineValue();
 
 
             if (this.input)
@@ -19361,7 +19224,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GEllipseValue();
+            this.result = new EllipseValue();
 
 
             if (this.input)
@@ -19482,7 +19345,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GPolygonValue();
+            this.result = new PolygonValue();
 
 
             if (this.input)
@@ -19612,7 +19475,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GStarValue();
+            this.result = new StarValue();
 
 
             if (this.input)
@@ -21685,7 +21548,7 @@ function initColorControlTextbox(control)
                 rgb[i] = Math.min(Math.max(0, rgb[i] + (e.key == 'ArrowUp' ? 1 : -1)), 0xff);
 
 
-            control.setValue(GColorValue.createFromRgb(rgb));
+            control.setValue(ColorValue.createFromRgb(rgb));
             control.updateTextbox();
 
 
@@ -21782,11 +21645,11 @@ function initColorControlTextbox(control)
             {
                 control.setValue(
                       value.trim() != '' 
-                    ? GColorValue.createFromRgb(scaleColor(rgb,      'rgb')) 
-                    : GColorValue.createFromRgb(scaleColor(savedRgb, 'rgb')));
+                    ? ColorValue.createFromRgb(scaleColor(rgb,      'rgb')) 
+                    : ColorValue.createFromRgb(scaleColor(savedRgb, 'rgb')));
             }
             else
-                control.setValue(GColorValue.createFromRgb(scaleColor(savedRgb, 'rgb')));
+                control.setValue(ColorValue.createFromRgb(scaleColor(savedRgb, 'rgb')));
         }
          
         
@@ -24743,7 +24606,7 @@ extends Parameter
     }
 
 
-    get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
+    get genValue() { return new NumberValue(this.control.value, this.control.displayDec); }
 
 
 
@@ -24787,7 +24650,7 @@ extends Parameter
 
         else request.push( 
             NUMBER_VALUE, 
-            new GNumberValue(
+            new NumberValue(
                 this.control.value, 
                 this.control.displayDec).toString());
 
@@ -24840,7 +24703,7 @@ extends Parameter
 
     loadParam(param)
     {
-        this.setValue(parseGNumberValue(param)[0], true, true, false);
+        this.setValue(parseNumberValue(param)[0], true, true, false);
     }
 }
 
@@ -24873,7 +24736,7 @@ extends NumberParamBase
         this.control.param  = this;
         this.control.zIndex = 0;
    
-        this.defaultValue   = new GNumberValue(defaultValue); // this way the default contains the decimals
+        this.defaultValue   = new NumberValue(defaultValue); // this way the default contains the decimals
 
 
         initNumberControl(
@@ -24904,7 +24767,7 @@ extends NumberParamBase
 
         this.control.addEventListener('confirm', () => 
         {
-            this.setValue(new GNumberValue(this.control.value, this.control.displayDec), true,  false); 
+            this.setValue(new NumberValue(this.control.value, this.control.displayDec), true,  false); 
         });
 
 
@@ -24921,7 +24784,7 @@ extends NumberParamBase
             if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
                 && dec >= oldDec)
             {
-                this.setValue(new GNumberValue(e.detail.value, dec), true);
+                this.setValue(new NumberValue(e.detail.value, dec), true);
                 e.preventSetValue = true;
             }
             else if (this.allowEditDecimals)
@@ -24931,7 +24794,7 @@ extends NumberParamBase
                 else 
                     dec = oldDec;
 
-                    this.setValue(new GNumberValue(e.detail.value, dec), true);
+                    this.setValue(new NumberValue(e.detail.value, dec), true);
                 e.preventSetValue = true;
             }
         });
@@ -25101,7 +24964,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                defaultValue = GColorValue.NaN,
+                defaultValue = ColorValue.NaN,
                 dragScale    = 0.05)
     {
         super(COLOR, id, name);
@@ -25155,7 +25018,7 @@ extends Parameter
             {
                 const rgb = validHex2rgb(e.detail.value);
 
-                this.setValue(GColorValue.createFromRgb(scaleColor(rgb, 'rgb')), true);
+                this.setValue(ColorValue.createFromRgb(scaleColor(rgb, 'rgb')), true);
                 e.preventSetValue = true;
             }
         });
@@ -25298,7 +25161,7 @@ extends Parameter
     
     loadParam(param)
     {
-        this.setValue(parseGColorValue(param)[0], true, true, false);
+        this.setValue(parseColorValue(param)[0], true, true, false);
     }
 }
 
@@ -25336,7 +25199,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                defaultValue = GColorFillValue.NaN,
+                defaultValue = ColorFillValue.NaN,
                 dragScale    = 0.05)
     {
         super(COLOR_FILL, id, name);
@@ -25460,7 +25323,7 @@ extends Parameter
                 const  rgb = validHex2rgb(e.detail.value);
                 const _rgb = scaleColor(rgb, 'rgb');
 
-                this.setValue(GColorFillValue.createFromRgb(_rgb, this.opacityControl.value), true);
+                this.setValue(ColorFillValue.createFromRgb(_rgb, this.opacityControl.value), true);
                 e.preventSetValue = true;
             }
         });
@@ -25488,7 +25351,7 @@ extends Parameter
         console.assert(
                value.type 
             && value.type == COLOR_FILL_VALUE, 
-            'FillParam this.result.type must be COLOR_FILL_VALUE');
+            'FillParam value.type must be COLOR_FILL_VALUE');
 
         this.preSetValue(value, createAction, dispatchEvents);
 
@@ -25642,7 +25505,7 @@ extends Parameter
     
     loadParam(param)
     {
-        this.setValue(parseGColorFillValue(param)[0], true, true, false);
+        this.setValue(parseColorFillValue(param)[0], true, true, false);
     }
 }
 
@@ -30089,9 +29952,9 @@ extends OpColorBase
         }
         else
         {
-            this.param1.setValue(GNumberValue.NaN, false, true, false);
-            this.param2.setValue(GNumberValue.NaN, false, true, false);
-            this.param3.setValue(GNumberValue.NaN, false, true, false);
+            this.param1.setValue(NumberValue.NaN, false, true, false);
+            this.param2.setValue(NumberValue.NaN, false, true, false);
+            this.param3.setValue(NumberValue.NaN, false, true, false);
             
             this._color = dataColor_NaN;
         }
@@ -32818,7 +32681,7 @@ extends OpColorBase
         this.addParam(this.paramFill     = new FillParam ('fill',     '',         false, true, true));
         this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 100, 0, 100));
 
-        //this.paramFill.setValue([GColorFillValue.default], false, true, false);
+        //this.paramFill.setValue([ColorFillValue.default], false, true, false);
         
         this.paramPosition.control.suffix = '%';
     }
@@ -32872,8 +32735,8 @@ extends OpColorBase
         }
         else
         {
-            this.paramFill    .setValue([GColorFillValue.NaN], false, true, false);
-            this.paramPosition.setValue( GNumberValue   .NaN,  false, true, false);
+            this.paramFill    .setValue([ColorFillValue.NaN], false, true, false);
+            this.paramPosition.setValue( NumberValue   .NaN,  false, true, false);
             
             this._color = dataColor_NaN;
         }
@@ -33253,7 +33116,7 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramFill         = new FillParam  ('fill',         'f',      false, true, true, GColorFillValue.default));
+        this.addParam(this.paramFill         = new FillParam  ('fill',         'f',      false, true, true, ColorFillValue.default));
         this.addParam(this.paramStroke       = new FillParam  ('stroke',       's',      false, true, true));
         this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight', 'weight', true,  true, true, 1, 0));
         this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',    'fit',    true,  true, true, ['inside', 'center', 'outside'], 0));
@@ -33442,8 +33305,7 @@ extends OpGeometryBase
         this.paramAngle .setValue(rect.angle,  false, true, false);
         this.paramRound .setValue(rect.round,  false, true, false);
 
-        console.log('rect =', rect);
-        super.updateBaseValues(updateParamId, paramIds, values, rect);
+        this.updateBaseValues(updateParamId, paramIds, values, rect);
     }
 
 
@@ -34265,7 +34127,7 @@ extends OpGeometryBase
 //         this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
 //         this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiter',  'miter',  false, true, true, 28.96, 0, 180, 2));
 
-//         this.paramColor.setValue(GColorValue.create(1, 0, 0, 0), false, true, false);
+//         this.paramColor.setValue(ColorValue.create(1, 0, 0, 0), false, true, false);
         
 //         this.paramOpacity    .control.setSuffix('%', true);
 //         this.paramStrokeMiter.control.setSuffix('°', true);
@@ -36413,19 +36275,10 @@ generator.onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'uiEndGenMessage':        uiEndGenMessage();                                                                                                   break;
-
-        case 'uiUpdateValuesAndObjects': 
-            uiUpdateValuesAndObjects(
-                msg.updateNodeId, 
-                msg.updateParamId, 
-                msg.values, 
-                msg.objects);
-                
-            break;
-        
-        case 'uiUpdateFindCorrection': uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
-        case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
+        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                   break;
+        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects      (msg.updateNodeId, msg.updateParamId, msg.values, msg.objects); break;
+        case 'uiUpdateFindCorrection':   uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
+        case 'uiEndFindCorrection':      uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
     }
 };
 
@@ -37923,7 +37776,7 @@ function uiUpdateGraph()
 
 function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 {
-    //console.log('raw values = ', values);
+    console.log('raw values = ', values);
 
     if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
     if (settings.lobObjectUpdates) logObjectUpdates(objects);
@@ -37966,15 +37819,15 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
                 switch (type)
                 {
-                    case NUMBER_VALUE:     value = parseGNumberValue   (values[i++])[0]; break;
-                    case COLOR_VALUE:      value = parseGColorValue    (values[i++])[0]; break;
-                    case COLOR_FILL_VALUE: value = parseGColorFillValue(values[i++])[0]; break;
-                    case COLOR_STOP_VALUE: value = parseGColorStopValue(values[i++])[0]; break;
-                    case RECTANGLE_VALUE:  value = parseGRectangleValue(values[i++])[0]; break;
-                    case LINE_VALUE:       value = parseGLineValue     (values[i++])[0]; break;
-                    case ELLIPSE_VALUE:    value = parseGEllipseValue  (values[i++])[0]; break;
-                    case POLYGON_VALUE:    value = parseGPolygonValue  (values[i++])[0]; break;
-                    case STAR_VALUE:       value = parseGStarValue     (values[i++])[0]; break;
+                    case NUMBER_VALUE:     value = parseNumberValue   (values[i++])[0]; break;
+                    case COLOR_VALUE:      value = parseColorValue    (values[i++])[0]; break;
+                    case COLOR_FILL_VALUE: value = parseColorFillValue(values[i++])[0]; break;
+                    case COLOR_STOP_VALUE: value = parseColorStopValue(values[i++])[0]; break;
+                    case RECTANGLE_VALUE:  value = parseRectangleValue(values[i++])[0]; break;
+                    case LINE_VALUE:       value = parseLineValue     (values[i++])[0]; break;
+                    case ELLIPSE_VALUE:    value = parseEllipseValue  (values[i++])[0]; break;
+                    case POLYGON_VALUE:    value = parsePolygonValue  (values[i++])[0]; break;
+                    case STAR_VALUE:       value = parseStarValue     (values[i++])[0]; break;
                     
                     default:               console.assert(false, 'unknown type');
                 }

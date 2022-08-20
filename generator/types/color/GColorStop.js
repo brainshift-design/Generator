@@ -34,7 +34,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorStopValue();
+            this.result = new ColorStopValue();
 
 
             if (this.input)

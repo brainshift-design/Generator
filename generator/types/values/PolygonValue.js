@@ -1,4 +1,4 @@
-class GPolygonValue
+class PolygonValue
 extends GType
 {
     x;
@@ -11,13 +11,13 @@ extends GType
 
 
 
-    constructor(x       = new GNumberValue(0), 
-                y       = new GNumberValue(0), 
-                width   = new GNumberValue(0), 
-                height  = new GNumberValue(0), 
-                angle   = new GNumberValue(0), 
-                round   = new GNumberValue(0), 
-                corners = new GNumberValue(0))
+    constructor(x       = new NumberValue(0), 
+                y       = new NumberValue(0), 
+                width   = new NumberValue(0), 
+                height  = new NumberValue(0), 
+                angle   = new NumberValue(0), 
+                round   = new NumberValue(0), 
+                corners = new NumberValue(0))
     {
         super(POLYGON_VALUE);
 
@@ -37,7 +37,7 @@ extends GType
 
     copy()
     {
-        return new GPolygonValue(
+        return new PolygonValue(
             this.x      .copy(), 
             this.y      .copy(), 
             this.width  .copy(), 
@@ -84,31 +84,31 @@ extends GType
 
 
 
-    static NaN = new GPolygonValue(
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
+    static NaN = new PolygonValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
 }
 
 
 
-function parseGPolygonValue(str)
+function parsePolygonValue(str)
 {
     if (str == INVALID)
-        return GPolygonValue.NaN;
+        return PolygonValue.NaN;
 
     const rect = str.split(' ');
 
-    return new GPolygonValue(
-        new GNumberValue(parseGNumberValue(rect[0])),
-        new GNumberValue(parseGNumberValue(rect[1])),
-        new GNumberValue(parseGNumberValue(rect[2])),
-        new GNumberValue(parseGNumberValue(rect[3])),
-        new GNumberValue(parseGNumberValue(rect[4])),
-        new GNumberValue(parseGNumberValue(rect[5])),
-        new GNumberValue(parseGNumberValue(rect[6])));
+    return new PolygonValue(
+        new NumberValue(parseNumberValue(rect[0])),
+        new NumberValue(parseNumberValue(rect[1])),
+        new NumberValue(parseNumberValue(rect[2])),
+        new NumberValue(parseNumberValue(rect[3])),
+        new NumberValue(parseNumberValue(rect[4])),
+        new NumberValue(parseNumberValue(rect[5])),
+        new NumberValue(parseNumberValue(rect[6])));
 }

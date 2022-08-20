@@ -818,7 +818,7 @@ function uiUpdateGraph()
 
 function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 {
-    //console.log('raw values = ', values);
+    console.log('raw values = ', values);
 
     if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
     if (settings.lobObjectUpdates) logObjectUpdates(objects);
@@ -861,15 +861,15 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
                 switch (type)
                 {
-                    case NUMBER_VALUE:     value = parseGNumberValue   (values[i++])[0]; break;
-                    case COLOR_VALUE:      value = parseGColorValue    (values[i++])[0]; break;
-                    case COLOR_FILL_VALUE: value = parseGColorFillValue(values[i++])[0]; break;
-                    case COLOR_STOP_VALUE: value = parseGColorStopValue(values[i++])[0]; break;
-                    case RECTANGLE_VALUE:  value = parseGRectangleValue(values[i++])[0]; break;
-                    case LINE_VALUE:       value = parseGLineValue     (values[i++])[0]; break;
-                    case ELLIPSE_VALUE:    value = parseGEllipseValue  (values[i++])[0]; break;
-                    case POLYGON_VALUE:    value = parseGPolygonValue  (values[i++])[0]; break;
-                    case STAR_VALUE:       value = parseGStarValue     (values[i++])[0]; break;
+                    case NUMBER_VALUE:     value = parseNumberValue   (values[i++])[0]; break;
+                    case COLOR_VALUE:      value = parseColorValue    (values[i++])[0]; break;
+                    case COLOR_FILL_VALUE: value = parseColorFillValue(values[i++])[0]; break;
+                    case COLOR_STOP_VALUE: value = parseColorStopValue(values[i++])[0]; break;
+                    case RECTANGLE_VALUE:  value = parseRectangleValue(values[i++])[0]; break;
+                    case LINE_VALUE:       value = parseLineValue     (values[i++])[0]; break;
+                    case ELLIPSE_VALUE:    value = parseEllipseValue  (values[i++])[0]; break;
+                    case POLYGON_VALUE:    value = parsePolygonValue  (values[i++])[0]; break;
+                    case STAR_VALUE:       value = parseStarValue     (values[i++])[0]; break;
                     
                     default:               console.assert(false, 'unknown type');
                 }

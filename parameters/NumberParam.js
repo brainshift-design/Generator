@@ -26,7 +26,7 @@ extends NumberParamBase
         this.control.param  = this;
         this.control.zIndex = 0;
    
-        this.defaultValue   = new GNumberValue(defaultValue); // this way the default contains the decimals
+        this.defaultValue   = new NumberValue(defaultValue); // this way the default contains the decimals
 
 
         initNumberControl(
@@ -57,7 +57,7 @@ extends NumberParamBase
 
         this.control.addEventListener('confirm', () => 
         {
-            this.setValue(new GNumberValue(this.control.value, this.control.displayDec), true,  false); 
+            this.setValue(new NumberValue(this.control.value, this.control.displayDec), true,  false); 
         });
 
 
@@ -74,7 +74,7 @@ extends NumberParamBase
             if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
                 && dec >= oldDec)
             {
-                this.setValue(new GNumberValue(e.detail.value, dec), true);
+                this.setValue(new NumberValue(e.detail.value, dec), true);
                 e.preventSetValue = true;
             }
             else if (this.allowEditDecimals)
@@ -84,7 +84,7 @@ extends NumberParamBase
                 else 
                     dec = oldDec;
 
-                    this.setValue(new GNumberValue(e.detail.value, dec), true);
+                    this.setValue(new NumberValue(e.detail.value, dec), true);
                 e.preventSetValue = true;
             }
         });

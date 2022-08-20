@@ -52,7 +52,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GLineValue();
+            this.result = new LineValue();
 
 
             if (this.input)

@@ -7,7 +7,7 @@ function genParseColorValue(parse)
     if (parse.logRequests)
         logReqColorValue(col, parse);
 
-    return parseGColorValue(col)[0];
+    return parseColorValue(col)[0];
 }
 
 
@@ -276,7 +276,7 @@ function genParseColorFillValue(parse)
     if (parse.logRequests)
         logReqColorFillValue(fill, parse);
 
-    return parseGColorFillValue(fill)[0];
+    return parseColorFillValue(fill)[0];
 }
 
 
@@ -344,7 +344,7 @@ function genParseColorStopValue(parse)
     if (parse.logRequests)
         logReqColorStopValue(stop, parse);
 
-    return parseGColorStopValue(stop);
+    return parseColorStopValue(stop);
 }
 
 

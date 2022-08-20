@@ -64,7 +64,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GStarValue();
+            this.result = new StarValue();
 
 
             if (this.input)

@@ -151,8 +151,7 @@ extends OpGeometryBase
         this.paramAngle .setValue(rect.angle,  false, true, false);
         this.paramRound .setValue(rect.round,  false, true, false);
 
-        console.log('rect =', rect);
-        super.updateBaseValues(updateParamId, paramIds, values, rect);
+        this.updateBaseValues(updateParamId, paramIds, values, rect);
     }
 
 

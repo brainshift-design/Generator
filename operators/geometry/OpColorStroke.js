@@ -26,7 +26,7 @@
 //         this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
 //         this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiter',  'miter',  false, true, true, 28.96, 0, 180, 2));
 
-//         this.paramColor.setValue(GColorValue.create(1, 0, 0, 0), false, true, false);
+//         this.paramColor.setValue(ColorValue.create(1, 0, 0, 0), false, true, false);
         
 //         this.paramOpacity    .control.setSuffix('%', true);
 //         this.paramStrokeMiter.control.setSuffix('°', true);

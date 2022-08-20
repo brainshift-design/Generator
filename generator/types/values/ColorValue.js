@@ -1,4 +1,4 @@
-class GColorValue
+class ColorValue
 extends GType
 {
     space;
@@ -8,10 +8,10 @@ extends GType
 
 
 
-    constructor(space = GNumberValue.NaN, 
-                c1    = GNumberValue.NaN, 
-                c2    = GNumberValue.NaN, 
-                c3    = GNumberValue.NaN)
+    constructor(space = NumberValue.NaN, 
+                c1    = NumberValue.NaN, 
+                c2    = NumberValue.NaN, 
+                c3    = NumberValue.NaN)
     {
         super(COLOR_VALUE);
 
@@ -28,25 +28,25 @@ extends GType
 
     static create(space, c1, c2, c3)
     {
-        return new GColorValue(
-            new GNumberValue(space),
-            new GNumberValue(c1),
-            new GNumberValue(c2),
-            new GNumberValue(c3));
+        return new ColorValue(
+            new NumberValue(space),
+            new NumberValue(c1),
+            new NumberValue(c2),
+            new NumberValue(c3));
     }
 
 
 
     static createFromRgb(rgb)
     {
-        return GColorValue.create(1, rgb[0], rgb[1], rgb[2]);
+        return ColorValue.create(1, rgb[0], rgb[1], rgb[2]);
     }
 
 
 
     copy()
     {
-        return new GColorValue(
+        return new ColorValue(
             this.space.copy(), 
             this.c1   .copy(), 
             this.c2   .copy(), 
@@ -124,31 +124,38 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GColorValue(
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN));
+    static NaN = Object.freeze(new ColorValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN));
 }
 
 
 
-function parseGColorValue(str)
+function parseColorValue(str, i = -1)
 {
-    if (str == INVALID)
-        return [GColorValue.NaN, 1];
+    if (   i <  0 && str    == INVALID
+        || i >= 0 && str[i] == INVALID)
+        return [ColorValue.NaN, 1];
 
-    const col = str.split(' ');
 
-    let i = 0;
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+        
+    
+    const iStart = i;
 
-    const space = parseGNumberValue(col[i]); i += space[1];
-    const c1    = parseGNumberValue(col[i]); i += c1   [1];
-    const c2    = parseGNumberValue(col[i]); i += c2   [1];
-    const c3    = parseGNumberValue(col[i]); i += c3   [1];
+    const space = parseNumberValue(col[i]); i += space[1];
+    const c1    = parseNumberValue(col[i]); i += c1   [1];
+    const c2    = parseNumberValue(col[i]); i += c2   [1];
+    const c3    = parseNumberValue(col[i]); i += c3   [1];
 
 
     return [
-        new GColorValue(space[0], c1[0], c2[0], c3[0]), 
-        i ];
+        new ColorValue(space[0], c1[0], c2[0], c3[0]), 
+        i - iStart];
 }

@@ -44,7 +44,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            console.log('this.space =', this.space);
             const space = this.space.eval(parse).copy();
 
 
@@ -79,7 +78,7 @@ extends GOperator
             }
             else
             {
-                this.result = new GColorValue(
+                this.result = new ColorValue(
                     space,
                     this.c1.eval(parse).copy(),
                     this.c2.eval(parse).copy(),

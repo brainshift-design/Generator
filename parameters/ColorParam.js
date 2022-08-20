@@ -27,7 +27,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                defaultValue = GColorValue.NaN,
+                defaultValue = ColorValue.NaN,
                 dragScale    = 0.05)
     {
         super(COLOR, id, name);
@@ -81,7 +81,7 @@ extends Parameter
             {
                 const rgb = validHex2rgb(e.detail.value);
 
-                this.setValue(GColorValue.createFromRgb(scaleColor(rgb, 'rgb')), true);
+                this.setValue(ColorValue.createFromRgb(scaleColor(rgb, 'rgb')), true);
                 e.preventSetValue = true;
             }
         });
@@ -224,6 +224,6 @@ extends Parameter
     
     loadParam(param)
     {
-        this.setValue(parseGColorValue(param)[0], true, true, false);
+        this.setValue(parseColorValue(param)[0], true, true, false);
     }
 }

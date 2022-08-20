@@ -112,7 +112,7 @@ function initColorControlTextbox(control)
                 rgb[i] = Math.min(Math.max(0, rgb[i] + (e.key == 'ArrowUp' ? 1 : -1)), 0xff);
 
 
-            control.setValue(GColorValue.createFromRgb(rgb));
+            control.setValue(ColorValue.createFromRgb(rgb));
             control.updateTextbox();
 
 
@@ -209,11 +209,11 @@ function initColorControlTextbox(control)
             {
                 control.setValue(
                       value.trim() != '' 
-                    ? GColorValue.createFromRgb(scaleColor(rgb,      'rgb')) 
-                    : GColorValue.createFromRgb(scaleColor(savedRgb, 'rgb')));
+                    ? ColorValue.createFromRgb(scaleColor(rgb,      'rgb')) 
+                    : ColorValue.createFromRgb(scaleColor(savedRgb, 'rgb')));
             }
             else
-                control.setValue(GColorValue.createFromRgb(scaleColor(savedRgb, 'rgb')));
+                control.setValue(ColorValue.createFromRgb(scaleColor(savedRgb, 'rgb')));
         }
          
         

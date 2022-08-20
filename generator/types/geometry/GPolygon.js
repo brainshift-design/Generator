@@ -61,7 +61,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GPolygonValue();
+            this.result = new PolygonValue();
 
 
             if (this.input)

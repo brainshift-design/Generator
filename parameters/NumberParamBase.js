@@ -17,7 +17,7 @@ extends Parameter
     }
 
 
-    get genValue() { return new GNumberValue(this.control.value, this.control.displayDec); }
+    get genValue() { return new NumberValue(this.control.value, this.control.displayDec); }
 
 
 
@@ -61,7 +61,7 @@ extends Parameter
 
         else request.push( 
             NUMBER_VALUE, 
-            new GNumberValue(
+            new NumberValue(
                 this.control.value, 
                 this.control.displayDec).toString());
 
@@ -114,6 +114,6 @@ extends Parameter
 
     loadParam(param)
     {
-        this.setValue(parseGNumberValue(param)[0], true, true, false);
+        this.setValue(parseNumberValue(param)[0], true, true, false);
     }
 }

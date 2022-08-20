@@ -72,7 +72,7 @@ extends GOperator
 
                 const factor = getColorSpaceFactor(_space);
 
-                this.result = GColorValue.create(
+                this.result = ColorValue.create(
                     space.value,
                     col[1] * factor[0],
                     col[2] * factor[1],
@@ -83,7 +83,7 @@ extends GOperator
             else if (this.input1) this.result = this.input1.eval(parse).copy();
 
             else 
-                this.result = GColorValue.NaN;
+                this.result = ColorValue.NaN;
 
 
             this.result.valid = true;

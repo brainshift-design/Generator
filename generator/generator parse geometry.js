@@ -25,30 +25,6 @@ function genParseGeometryBase(parse, obj, paramId)
 
 
 
-function genParseParamCount(parse)
-{
-    const nParamIds = parseInt(parse.move());
-
-    if (parse.logRequests) 
-        parse.log += ' ' + nParamIds;
-
-    return nParamIds;
-}
-
-
-
-function genParseParamId(parse)
-{
-    const paramId = parse.move();
-
-    if (parse.logRequests) 
-        parse.log += parse.tab + paramId;
-
-    return paramId;
-}
-
-
-
 function genParseRectangle(parse)
 {
     const [, nodeId, active, ignore] = genParseNodeStart(parse);
@@ -98,7 +74,7 @@ function genParseRectangle(parse)
 
         parse.nTab--;
     }
-
+console.log('rect =', rect);
 
 
     parse.nTab--;

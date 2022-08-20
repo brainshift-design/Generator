@@ -65,17 +65,17 @@ extends GOperator
 
                     const factor = getColorSpaceFactor('rgb');
     
-                    this.result = GColorValue.create(
+                    this.result = ColorValue.create(
                         1,
                         rgb[0] * factor[0],
                         rgb[1] * factor[1],
                         rgb[2] * factor[2]);
                 }
                 else
-                    this.result = GColorValue.NaN;
+                    this.result = ColorValue.NaN;
             }
             else
-                this.result = GColorValue.NaN;
+                this.result = ColorValue.NaN;
 
 
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);

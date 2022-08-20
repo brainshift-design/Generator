@@ -64,17 +64,17 @@ extends GOperator
     
                     const factor = getColorSpaceFactor(validCol[0]);
     
-                    this.result = GColorValue.create(
+                    this.result = ColorValue.create(
                         input.space.value,
                         validCol[1] * factor[0],
                         validCol[2] * factor[1],
                         validCol[3] * factor[2]);
                 }
                 else
-                    this.result = GColorValue.NaN;
+                    this.result = ColorValue.NaN;
             }
             else
-                this.result = GColorValue.NaN;
+                this.result = ColorValue.NaN;
 
 
             this.result.valid = true;

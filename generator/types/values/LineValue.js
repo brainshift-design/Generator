@@ -1,4 +1,4 @@
-class GLineValue
+class LineValue
 extends GType
 {
     x;
@@ -8,10 +8,10 @@ extends GType
 
 
 
-    constructor(x      = new GNumberValue(0), 
-                y      = new GNumberValue(0), 
-                width  = new GNumberValue(0), 
-                angle  = new GNumberValue(0))
+    constructor(x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                width  = new NumberValue(0), 
+                angle  = new NumberValue(0))
     {
         super(LINE_VALUE);
 
@@ -28,7 +28,7 @@ extends GType
 
     copy()
     {
-        return new GLineValue(
+        return new LineValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -66,25 +66,25 @@ extends GType
 
 
 
-    static NaN = new GLineValue(
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
+    static NaN = new LineValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
 }
 
 
 
-function parseGLineValue(str)
+function parseLineValue(str)
 {
     if (str == INVALID)
-        return GLineValue.NaN;
+        return LineValue.NaN;
 
     const rect = str.split(' ');
 
-    return new GLineValue(
-        new GNumberValue(parseGNumberValue(rect[0])),
-        new GNumberValue(parseGNumberValue(rect[1])),
-        new GNumberValue(parseGNumberValue(rect[2])),
-        new GNumberValue(parseGNumberValue(rect[3])));
+    return new LineValue(
+        new NumberValue(parseNumberValue(rect[0])),
+        new NumberValue(parseNumberValue(rect[1])),
+        new NumberValue(parseNumberValue(rect[2])),
+        new NumberValue(parseNumberValue(rect[3])));
 }

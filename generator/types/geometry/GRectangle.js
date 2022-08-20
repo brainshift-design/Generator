@@ -44,7 +44,7 @@ extends GGeometryBase
     {
         if (!this.valid)
         {
-            this.result = new GRectangleValue(this.nodeId);
+            this.result = new RectangleValue(this.nodeId);
 
 
             if (this.input)

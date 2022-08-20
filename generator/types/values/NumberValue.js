@@ -1,4 +1,4 @@
-class GNumberValue
+class NumberValue
 extends GType
 {
     value;
@@ -21,7 +21,7 @@ extends GType
 
     copy()
     {
-        return new GNumberValue(
+        return new NumberValue(
             this.value, 
             this.decimals);
     }
@@ -60,19 +60,19 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new GNumberValue(
+    static NaN = Object.freeze(new NumberValue(
         Number.NaN, 
         Number.NaN));
 }
 
 
 
-function parseGNumberValue(str)
+function parseNumberValue(str)
 {
     const num = 
         str == INVALID
-        ? new GNumberValue(Number.NaN, 0)
-        : new GNumberValue(
+        ? new NumberValue(Number.NaN, 0)
+        : new NumberValue(
               parseFloat(str),
               decCount(str));
 

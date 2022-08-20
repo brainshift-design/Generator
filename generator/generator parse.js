@@ -101,10 +101,6 @@ function genParse(parse)
     else if (parse.next == POLYGON           ) return genParsePolygon         (parse);
     else if (parse.next == STAR              ) return genParseStar            (parse);
 
-    // else if (parse.next == COLOR_FILL        ) return genParseColorFill       (parse);
-
-    // else if (parse.next == STROKE            ) return genParseColorStroke     (parse);
-
     
     parse.so++;
     return null;
@@ -157,12 +153,24 @@ function genParseActive(parse)
 
 
 
+function genParseParamCount(parse)
+{
+    const nParamIds = parseInt(parse.move());
+
+    if (parse.logRequests) 
+        parse.log += ' ' + nParamIds;
+
+    return nParamIds;
+}
+
+
+
 function genParseParam(parse)
 {
     if (parse.next != PARAM) 
         return null;
         
-    parse.move(); // PARAM
+    parse.move(); // PARAMw
     const type = parse.move(); // type
 
     
@@ -181,4 +189,16 @@ function genParseParam(parse)
 
 
     return param;
+}
+
+
+
+function genParseParamId(parse)
+{
+    const paramId = parse.move();
+
+    if (parse.logRequests) 
+        parse.log += parse.tab + paramId;
+
+    return paramId;
 }

@@ -204,9 +204,9 @@ extends OpColorBase
         }
         else
         {
-            this.param1.setValue(GNumberValue.NaN, false, true, false);
-            this.param2.setValue(GNumberValue.NaN, false, true, false);
-            this.param3.setValue(GNumberValue.NaN, false, true, false);
+            this.param1.setValue(NumberValue.NaN, false, true, false);
+            this.param2.setValue(NumberValue.NaN, false, true, false);
+            this.param3.setValue(NumberValue.NaN, false, true, false);
             
             this._color = dataColor_NaN;
         }

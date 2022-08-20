@@ -31,7 +31,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                defaultValue = GColorFillValue.NaN,
+                defaultValue = ColorFillValue.NaN,
                 dragScale    = 0.05)
     {
         super(COLOR_FILL, id, name);
@@ -155,7 +155,7 @@ extends Parameter
                 const  rgb = validHex2rgb(e.detail.value);
                 const _rgb = scaleColor(rgb, 'rgb');
 
-                this.setValue(GColorFillValue.createFromRgb(_rgb, this.opacityControl.value), true);
+                this.setValue(ColorFillValue.createFromRgb(_rgb, this.opacityControl.value), true);
                 e.preventSetValue = true;
             }
         });
@@ -183,7 +183,7 @@ extends Parameter
         console.assert(
                value.type 
             && value.type == COLOR_FILL_VALUE, 
-            'FillParam this.result.type must be COLOR_FILL_VALUE');
+            'FillParam value.type must be COLOR_FILL_VALUE');
 
         this.preSetValue(value, createAction, dispatchEvents);
 
@@ -337,6 +337,6 @@ extends Parameter
     
     loadParam(param)
     {
-        this.setValue(parseGColorFillValue(param)[0], true, true, false);
+        this.setValue(parseColorFillValue(param)[0], true, true, false);
     }
 }

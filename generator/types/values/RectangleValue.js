@@ -1,5 +1,5 @@
-class GRectangleValue
-extends GGeometryBaseValue
+class RectangleValue
+extends GeometryBaseValue
 {
     x;
     y;
@@ -11,12 +11,12 @@ extends GGeometryBaseValue
 
 
     constructor(nodeId,
-                x      = new GNumberValue(0), 
-                y      = new GNumberValue(0), 
-                width  = new GNumberValue(0), 
-                height = new GNumberValue(0), 
-                angle  = new GNumberValue(0), 
-                round  = new GNumberValue(0))
+                x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                width  = new NumberValue(0), 
+                height = new NumberValue(0), 
+                angle  = new NumberValue(0), 
+                round  = new NumberValue(0))
     {
         super(RECTANGLE_VALUE, nodeId);
 
@@ -35,7 +35,7 @@ extends GGeometryBaseValue
 
     copy()
     {
-        const rect = new GRectangleValue(
+        const rect = new RectangleValue(
             this.nodeId,
             this.x     .copy(), 
             this.y     .copy(), 
@@ -53,14 +53,14 @@ extends GGeometryBaseValue
 
     isValid()
     {
-        return super.isValid()
-            && this.x     .isValid()
+        return this.x     .isValid()
             && this.y     .isValid()
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
             && this.round .isValid()
-            && super.isValid();
+
+            && super      .isValid();
     }
 
 
@@ -104,37 +104,43 @@ extends GGeometryBaseValue
 
 
 
-    static NaN = new GRectangleValue(
+    static NaN = new RectangleValue(
         '',
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
 }
 
 
 
-function parseGRectangleValue(str)
+function parseRectangleValue(str, i = -1)
 {
-    if (str == INVALID)
-        return [GRectangleValue.NaN, 1];
-
-    const _rect = str.split(' ');
-
-
-    let i = 0;
-
-    const x      = parseGNumberValue(fill[i]); i += x     [1];
-    const y      = parseGNumberValue(fill[i]); i += y     [1];
-    const width  = parseGNumberValue(fill[i]); i += width [1];
-    const height = parseGNumberValue(fill[i]); i += height[1];
-    const angle  = parseGNumberValue(fill[i]); i += angle [1];
-    const round  = parseGNumberValue(fill[i]); i += round [1];
+    if (   i <  0 && str    == INVALID
+        || i >= 0 && str[i] == INVALID)
+        return [RectangleValue.NaN, 1];
 
 
-    const rect = new GRectangleValue(
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+
+
+    const iStart = i;
+
+    const x      = parseNumberValue(str[i]); i += x     [1];
+    const y      = parseNumberValue(str[i]); i += y     [1];
+    const width  = parseNumberValue(str[i]); i += width [1];
+    const height = parseNumberValue(str[i]); i += height[1];
+    const angle  = parseNumberValue(str[i]); i += angle [1];
+    const round  = parseNumberValue(str[i]); i += round [1];
+
+
+    const rect = new RectangleValue(
         '', // set node ID elsewhere
         x     [0],
         y     [0],
@@ -144,8 +150,8 @@ function parseGRectangleValue(str)
         round [0]);
 
 
-    i = parseGGeometryBaseValue(_rect, i, rect);
+    i = parseGeometryBaseValue(str, i, rect);
 
     
-    return [rect, i];
+    return [rect, i - iStart];
 }

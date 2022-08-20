@@ -1,4 +1,4 @@
-class GGeometryBaseValue
+class GeometryBaseValue
 extends GType
 {
     nodeId;
@@ -18,12 +18,12 @@ extends GType
 
         this.nodeId = nodeId; 
 
-        this.fill         = GColorFillValue.default.copy();
-        this.stroke       = GColorFillValue.NaN    .copy();
-        this.strokeWeight = new GNumberValue(1);
-        this.strokeFit    = new GNumberValue(0);
-        this.strokeJoin   = new GNumberValue(0);
-        this.strokeMiter  = new GNumberValue(28.96);
+        this.fill         = ColorFillValue.default.copy();
+        this.stroke       = ColorFillValue.NaN    .copy();
+        this.strokeWeight = new NumberValue(1);
+        this.strokeFit    = new NumberValue(0);
+        this.strokeJoin   = new NumberValue(0);
+        this.strokeMiter  = new NumberValue(28.96);
     }
 
 
@@ -89,25 +89,25 @@ extends GType
 
     toString()
     {
-        return         this.fill        .toString()
-               + ' ' + this.stroke      .toString()
-               + ' ' + this.strokeWeight.toString()
-               + ' ' + this.strokeFit   .toString()
-               + ' ' + this.strokeJoin  .toString()
-               + ' ' + this.strokeMiter .toString();
+        return      this.fill        .toString()
+            + ' ' + this.stroke      .toString()
+            + ' ' + this.strokeWeight.toString()
+            + ' ' + this.strokeFit   .toString()
+            + ' ' + this.strokeJoin  .toString()
+            + ' ' + this.strokeMiter .toString();
     }
 }
 
 
 
-function parseGGeometryBaseValue(_str, i, obj)
+function parseGeometryBaseValue(str, i, obj)
 {
-    const fill         = parseGNumberValue(obj[i]); i += x     [1];
-    const stroke       = parseGNumberValue(obj[i]); i += y     [1];
-    const strokeWeight = parseGNumberValue(obj[i]); i += width [1];
-    const strokeFit    = parseGNumberValue(obj[i]); i += height[1];
-    const strokeJoin   = parseGNumberValue(obj[i]); i += angle [1];
-    const strokeMiter  = parseGNumberValue(obj[i]); i += round [1];
+    const fill         = parseColorFillValue(str, i); i += fill        [1];
+    const stroke       = parseColorFillValue(str, i); i += stroke      [1];
+    const strokeWeight = parseNumberValue   (str[i]); i += strokeWeight[1];
+    const strokeFit    = parseNumberValue   (str[i]); i += strokeFit   [1];
+    const strokeJoin   = parseNumberValue   (str[i]); i += strokeJoin  [1];
+    const strokeMiter  = parseNumberValue   (str[i]); i += strokeMiter [1];
 
     obj.fill         = fill        [0];
     obj.stroke       = stroke      [0];

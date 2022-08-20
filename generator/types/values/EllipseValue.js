@@ -1,4 +1,4 @@
-class GEllipseValue
+class EllipseValue
 extends GType
 {
     x;
@@ -9,11 +9,11 @@ extends GType
 
 
 
-    constructor(x      = new GNumberValue(0), 
-                y      = new GNumberValue(0), 
-                width  = new GNumberValue(0), 
-                height = new GNumberValue(0), 
-                angle  = new GNumberValue(0))
+    constructor(x      = new NumberValue(0), 
+                y      = new NumberValue(0), 
+                width  = new NumberValue(0), 
+                height = new NumberValue(0), 
+                angle  = new NumberValue(0))
     {
         super(ELLIPSE_VALUE);
 
@@ -31,7 +31,7 @@ extends GType
 
     copy()
     {
-        return new GEllipseValue(
+        return new EllipseValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -72,27 +72,27 @@ extends GType
 
 
 
-    static NaN = new GEllipseValue(
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN,
-        GNumberValue.NaN);
+    static NaN = new EllipseValue(
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN,
+        NumberValue.NaN);
 }
 
 
 
-function parseGEllipseValue(str)
+function parseEllipseValue(str)
 {
     if (str == INVALID)
-        return GEllipseValue.NaN;
+        return EllipseValue.NaN;
 
     const rect = str.split(' ');
 
-    return new GEllipseValue(
-        new GNumberValue(parseGNumberValue(rect[0])[0]),
-        new GNumberValue(parseGNumberValue(rect[1])[0]),
-        new GNumberValue(parseGNumberValue(rect[2])[0]),
-        new GNumberValue(parseGNumberValue(rect[3])[0]),
-        new GNumberValue(parseGNumberValue(rect[4])[0]));
+    return new EllipseValue(
+        new NumberValue(parseNumberValue(rect[0])[0]),
+        new NumberValue(parseNumberValue(rect[1])[0]),
+        new NumberValue(parseNumberValue(rect[2])[0]),
+        new NumberValue(parseNumberValue(rect[3])[0]),
+        new NumberValue(parseNumberValue(rect[4])[0]));
 }

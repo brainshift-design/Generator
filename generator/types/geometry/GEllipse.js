@@ -55,7 +55,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GEllipseValue();
+            this.result = new EllipseValue();
 
 
             if (this.input)

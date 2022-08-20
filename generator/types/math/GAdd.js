@@ -25,7 +25,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GNumberValue(0);
+            this.result = new NumberValue(0);
 
 
             for (const _input of this.inputs)

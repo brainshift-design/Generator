@@ -34,7 +34,7 @@ extends GOperator
     {
         if (!this.valid)
         {
-            this.result = new GColorValue();
+            this.result = new ColorValue();
 
             const standard = this.standard.eval(parse).copy();
 
@@ -60,7 +60,7 @@ extends GOperator
                                 dataColor2rgb(input0.toDataColor()),
                                 dataColor2rgb(input1.toDataColor()));
 
-                            this.value = new GNumberValue(value, 2);
+                            this.value = new NumberValue(value, 2);
                         }
                         else
                         {
@@ -68,16 +68,16 @@ extends GOperator
                                 dataColor2rgb(input0.toDataColor()),
                                 dataColor2rgb(input1.toDataColor()));
 
-                            this.value = new GNumberValue(Math.abs(value), 1);
+                            this.value = new NumberValue(Math.abs(value), 1);
                         }
                     }
                     else
-                        this.value = GNumberValue.NaN;
+                        this.value = NumberValue.NaN;
                 }
                 else
                 {
                     this.result = CGolorValue.NaN;
-                    this.value  = GNumberValue.NaN;
+                    this.value  = NumberValue.NaN;
                 }
 
 
@@ -91,8 +91,8 @@ extends GOperator
                 if (input0.isValid())
                     genPushUpdateValue(parse, this.nodeId, 'text', input0);
 
-                this.result = GColorValue.NaN;
-                this.value  = GNumberValue.NaN;
+                this.result = ColorValue.NaN;
+                this.value  = NumberValue.NaN;
             }
             else if (this.input1) 
             {
@@ -101,19 +101,19 @@ extends GOperator
                 if (input1.isValid())
                 {
                     this.result = input1;
-                    genPushUpdateValue(parse, this.nodeId, 'text', GColorValue.NaN);
+                    genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
                 }
                 else
-                    this.result = GColorValue.NaN;
+                    this.result = ColorValue.NaN;
     
-                this.value = GNumberValue.NaN;
+                this.value = NumberValue.NaN;
             }
             else
             {
-                this.result = GColorValue.NaN;
-                this.value  = GNumberValue.NaN;
+                this.result = ColorValue.NaN;
+                this.value  = NumberValue.NaN;
 
-                genPushUpdateValue(parse, this.nodeId, 'text',  GColorValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'text',  ColorValue.NaN);
             }
             
 

@@ -96,6 +96,7 @@ function clearLastUpdate()
 
 function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, updateObjects)
 {
+    //console.log('updateValues =', updateValues);
     //console.log('genUpdateValuesAndObjects()');
 
     if (   updateValues .length == 0
@@ -153,9 +154,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
 
         if (n < nodeIds.length)
         {
-            valChunk.push(
-                nodeIds[n],
-                counts [n]);
+            valChunk.push(nodeIds[n], counts[n]);
 
             const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
             values.sort((a, b) => a.paramId - b.paramId);
