@@ -250,17 +250,20 @@ extends Parameter
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display         = this.value.isValid() ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor = isDarkMode() ? '#444' : '#fff';
+        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
 
+        this.checkers.style.backgroundSize     = '20px 20px';
+        this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
+        
         const fillStyle = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
 
         this.opacityControl.backColorLight = 
         this.opacityControl.backColorDark  = fillStyle;
 
         this.opacityControl.valueColorLight = 
-        this.opacityControl.valueColorDark  = rgba2style(rgb_a(rgbText, 0.12));
+        this.opacityControl.valueColorDark  = 'transparent';//rgba2style(rgb_a(rgbText, 0.12));
 
         this.opacityControl.textColorLight  = 
         this.opacityControl.textColorDark   = rgba2style(rgb_a(rgbText, 0.6));
