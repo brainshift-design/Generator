@@ -22,6 +22,10 @@ extends GType
     
     static create(r, g, b, opacity)
     {
+        console.assert(
+            typeof opacity == 'number',
+            'opacity must be a number');
+
         return new ColorFillValue(
             ColorValue.create(1, r, g, b),
             new NumberValue(opacity));
@@ -31,6 +35,10 @@ extends GType
 
     static createFromRgb(rgb, opacity)
     {
+        console.assert(
+            typeof opacity == 'number',
+            'opacity must be a number');
+
         return new ColorFillValue(
             ColorValue.createFromRgb(rgb),
             new NumberValue(opacity));
@@ -97,9 +105,7 @@ extends GType
 
 
 
-    static default = Object.freeze(new ColorFillValue(
-        ColorValue.create(1, 217, 217, 217),
-        new NumberValue(100)));
+    static default = Object.freeze(ColorFillValue.create(217, 217, 217, 100));
 }
 
 
@@ -120,11 +126,11 @@ function parseColorFillValue(str, i = -1)
 
     const iStart = i;
 
-    const r       = parseNumberValue(str[i]); i += r[1];
-    const g       = parseNumberValue(str[i]); i += g[1];
-    const b       = parseNumberValue(str[i]); i += b[1];
-    const color   = ColorValue.create(1, r[0], g[0], b[0])
-   
+    const r = parseNumberValue(str[i]); i += r[1];
+    const g = parseNumberValue(str[i]); i += g[1];
+    const b = parseNumberValue(str[i]); i += b[1];
+
+    const color   = new ColorValue(new NumberValue(1), r[0], g[0], b[0]);
     const opacity = parseNumberValue(str[i]); i += opacity[1];
 
     

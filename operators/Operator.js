@@ -713,8 +713,6 @@ function getHeaderConnY(conns, padding, offset)
 
 function pushUpdate(nodes)
 {
-    //console.log('pushUpdate()', nodes);
-    
     pushUpdateFromParam(nodes, null);
 }
 
@@ -722,7 +720,8 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
-    //console.log('pushUpdateFromParam()');
+    console.log('pushUpdateFromParam('+param+')', nodes);
+    console.trace();
 
     const request = 
         param

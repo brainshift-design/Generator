@@ -281,24 +281,24 @@ function figUpdate(msg) {
 }
 function figCreateObject(objects, genObj) {
     let figObj;
+    const name = '◦G•   ' + genObj.nodeId.toString() + ' : ' + genObj.id.toString();
     switch (genObj.type) {
         case RECTANGLE:
-            figObj = figCreateRect(genObj);
+            figObj = figCreateRect(genObj, name);
             break;
         case LINE:
-            figObj = figCreateLine(genObj);
+            figObj = figCreateLine(genObj, name);
             break;
         case ELLIPSE:
-            figObj = figCreateEllipse(genObj);
+            figObj = figCreateEllipse(genObj, name);
             break;
         case POLYGON:
-            figObj = figCreatePolygon(genObj);
+            figObj = figCreatePolygon(genObj, name);
             break;
         case STAR:
-            figObj = figCreateStar(genObj);
+            figObj = figCreateStar(genObj, name);
             break;
     }
-    figObj.name = '◦G•   ' + genObj.nodeId.toString() + ' : ' + genObj.id.toString();
     figObj.setPluginData('id', genObj.id.toString());
     figObj.setPluginData('type', genObj.type.toString());
     figObj.setPluginData('nodeId', genObj.nodeId.toString());
@@ -480,9 +480,10 @@ function figPostMessageToUI(msg) {
 //     figPostMessageToGenerator({cmd: 'genEndFigMessage'}); 
 // }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-function figCreateRect(obj) {
+function figCreateRect(obj, name) {
     //console.log(obj);
     const rect = figma.createRectangle();
+    rect.name = name;
     rect.x = obj.x;
     rect.y = obj.y;
     setObjectFills(rect, obj);
@@ -505,9 +506,10 @@ function figUpdateRect(figRect, genRect) {
     setObjectStrokes(figRect, genRect);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-function figCreateLine(obj) {
+function figCreateLine(obj, name) {
     //console.log(obj);
     const line = figma.createLine();
+    line.name = name;
     line.x = obj.x;
     line.y = obj.y;
     line.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
@@ -523,9 +525,10 @@ function figUpdateLine(figLine, genLine) {
     figLine.rotation = genLine.angle;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-function figCreateEllipse(obj) {
+function figCreateEllipse(obj, name) {
     //console.log(obj);
     const ellipse = figma.createEllipse();
+    ellipse.name = name;
     ellipse.x = obj.x;
     ellipse.y = obj.y;
     ellipse.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
@@ -543,9 +546,10 @@ function figUpdateEllipse(figEllipse, genEllipse) {
     figEllipse.rotation = genEllipse.angle;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-function figCreatePolygon(obj) {
+function figCreatePolygon(obj, name) {
     //console.log(obj);
     const poly = figma.createPolygon();
+    poly.name = name;
     poly.x = obj.x;
     poly.y = obj.y;
     poly.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
@@ -567,9 +571,10 @@ function figUpdatePolygon(figPoly, genPoly) {
     figPoly.pointCount = genPoly.corners;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-function figCreateStar(obj) {
+function figCreateStar(obj, name) {
     //console.log(obj);
     const star = figma.createStar();
+    star.name = name;
     star.x = obj.x;
     star.y = obj.y;
     star.fills = [{ type: 'SOLID', color: { r: 0, g: 0, b: 0 } }];
@@ -639,7 +644,7 @@ function setObjectStrokes(obj, src) {
         obj.strokeWeight = Math.max(0, src.strokeWeight);
         obj.strokeAlign = src.strokeAlign;
         obj.strokeJoin = src.strokeJoin;
-        obj.strokeMiterLimit = Math.min(Math.max(0, src.strokeMiterLimit), 16);
+        obj.strokeMiterLimit = Math.min(Math.max(0, src.strokeMiter), 16);
     }
 }
 function getObjectStrokes(objStrokes) {

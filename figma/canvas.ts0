@@ -58,17 +58,18 @@ function figCreateObject(objects, genObj)
 {
     let figObj;
     
+
+    const name = '◦G•   ' + genObj.nodeId.toString() + ' : ' + genObj.id.toString();
+
     switch (genObj.type)
     {
-        case RECTANGLE: figObj = figCreateRect   (genObj); break;
-        case LINE:      figObj = figCreateLine   (genObj); break;
-        case ELLIPSE:   figObj = figCreateEllipse(genObj); break;
-        case POLYGON:   figObj = figCreatePolygon(genObj); break;
-        case STAR:      figObj = figCreateStar   (genObj); break;
+        case RECTANGLE: figObj = figCreateRect   (genObj, name); break;
+        case LINE:      figObj = figCreateLine   (genObj, name); break;
+        case ELLIPSE:   figObj = figCreateEllipse(genObj, name); break;
+        case POLYGON:   figObj = figCreatePolygon(genObj, name); break;
+        case STAR:      figObj = figCreateStar   (genObj, name); break;
     }
 
-
-    figObj.name = '◦G•   ' + genObj.nodeId.toString() + ' : ' + genObj.id.toString();
 
     figObj.setPluginData('id',     genObj.id    .toString());
     figObj.setPluginData('type',   genObj.type  .toString());

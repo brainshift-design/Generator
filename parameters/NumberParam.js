@@ -84,7 +84,7 @@ extends NumberParamBase
                 else 
                     dec = oldDec;
 
-                    this.setValue(new NumberValue(e.detail.value, dec), true);
+                this.setValue(new NumberValue(e.detail.value, dec), true);
                 e.preventSetValue = true;
             }
         });
@@ -100,30 +100,34 @@ extends NumberParamBase
 
 
 
-    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
-    {
-        this.preSetValue(value, createAction, dispatchEvents);
+    // setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    // {
+    //     console.assert(
+    //         value instanceof NumberValue,
+    //         'value must be a NumberValue');
 
-        if (updateControl)
-        {
-            this.control.setDecimals(value.decimals, value.decimals);
-            this.control.setValue(value.value, false, false, forceChange); 
-        }
+    //     this.preSetValue(value, createAction, dispatchEvents);
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+    //     if (updateControl)
+    //     {
+    //         this.control.setDecimals(value.decimals, value.decimals);
+    //         this.control.setValue   (value.value, false, false); 
+    //     }
 
-        this.oldValue = this.genValue;
-    }    
+    //     super.setValue(value, createAction, dispatchEvents);
+
+    //     this.oldValue = this.genValue;
+    // }    
 
 
 
-    valuesEqual(val1, val2)
-    {
-        return val1
-            && val2
-            && val1.value    == val2.value
-            && val1.decimals == val2.decimals;
-    }
+    // valuesEqual(val1, val2)
+    // {
+    //     return val1
+    //         && val2
+    //         && val1.value    == val2.value
+    //         && val1.decimals == val2.decimals;
+    // }
 
 
 

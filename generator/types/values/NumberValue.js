@@ -10,6 +10,13 @@ extends GType
     {
         super(NUMBER_VALUE);
 
+        if (typeof val !== 'number')
+        { 
+            console.trace();
+            console.assert(false, 'NumberValue.value must be a number');
+        }
+
+
         this.value    = val;
         this.decimals = dec;
 

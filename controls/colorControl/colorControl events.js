@@ -153,57 +153,55 @@ function initColorControlEvents(control)
         if (    control.buttonDown0
             && !control.readOnly)
         {
-            if (control.isPointerLocked())
-            {
-                control.movedX += e.movementX;
+            // if (control.isPointerLocked())
+            // {
+            //     control.movedX += e.movementX;
                 
-                if (!isNaN(control.value))
-                {
-                    const dx       = control.movedX * (control.dragReverse ? -1 : 1);
-                    const adaptive = 10 * Math.pow(Math.abs(dx), control.acc);
-                    const grain    = Math.pow(10, -control.dec);
-                    const drag     = grain * sqr(control.dragScale);
+            //     if (!isNaN(control.value))
+            //     {
+            //         const dx       = control.movedX * (control.dragReverse ? -1 : 1);
+            //         const adaptive = 10 * Math.pow(Math.abs(dx), control.acc);
+            //         const grain    = Math.pow(10, -control.dec);
+            //         const drag     = grain * sqr(control.dragScale);
 
-                    const val      = control.startValue + dx * drag * adaptive;
+            //         const val      = control.startValue + dx * drag * adaptive;
 
                     
-                    // reset slider movement at the limits for better UX
-                    const min = getCtrlKey(e) ? control.min : control.displayMin;
-                    const max = getCtrlKey(e) ? control.max : control.displayMax;
+            //         // reset slider movement at the limits for better UX
+            //         const min = getCtrlKey(e) ? control.min : control.displayMin;
+            //         const max = getCtrlKey(e) ? control.max : control.displayMax;
 
-                    control.setValue(
-                        Math.round(val / grain) * grain, 
-                        true, 
-                        false, 
-                        false,
-                        getCtrlKey(e));
+            //         control.setValue(
+            //             Math.round(val / grain) * grain, 
+            //             true, 
+            //             false);
 
 
-                    if (   val <= min
-                        || val >= max)
-                    {
-                        control.movedX     = 0;
-                        control.startValue = control.value;
-                        control.sx         = e.clientX;
-                    }
+            //         if (   val <= min
+            //             || val >= max)
+            //         {
+            //             control.movedX     = 0;
+            //             control.startValue = control.value;
+            //             control.sx         = e.clientX;
+            //         }
 
 
-                    if (control.value != control.prevValue)
-                        pushUpdateFromParam([control.param.node], control.param);
+            //         if (control.value != control.prevValue)
+            //             pushUpdateFromParam([control.param.node], control.param);
 
-                    control.prevValue = control.value;
-                }
-            }
-            else
-            {
-                if (Math.abs(e.clientX - control.sx) > control.clickSize/2)
-                {
-                    control.moved = true;
-                    control.lockPointer(e.pointerId);
+            //         control.prevValue = control.value;
+            //     }
+            // }
+            // else
+            // {
+            //     if (Math.abs(e.clientX - control.sx) > control.clickSize/2)
+            //     {
+            //         control.moved = true;
+            //         control.lockPointer(e.pointerId);
 
-                    control.dispatchEvent(control.onstartchange);
-                }
-            }
+            //         control.dispatchEvent(control.onstartchange);
+            //     }
+            // }
         }
         else if (graphView.tempConn
               && control.param)

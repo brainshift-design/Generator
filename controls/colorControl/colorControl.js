@@ -91,8 +91,14 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
 
 
-    control.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+    control.setValue = function(value, fireChangeEvent = true, confirm = true)
     {
+        if (!(value instanceof ColorValue))
+        {
+            console.trace();
+            console.assert(false, 'colorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
+        }
+
         const oldValue = control.value.copy();
 
         control.value = value.copy();

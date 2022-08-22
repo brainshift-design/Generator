@@ -63,15 +63,19 @@ extends NumberParamBase
 
 
 
-    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
-    { 
-        this.preSetValue(value, createAction, dispatchEvents);
+    // setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    // { 
+    //     console.assert(
+    //         value instanceof NumberValue,
+    //         'value must be a NumberValue');
 
-        if (updateControl)
-            this.control.setValue(value, false, false, forceChange); 
+    //     this.preSetValue(value, createAction, dispatchEvents);
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
-    }    
+    //     if (updateControl)
+    //         this.control.setValue(value.value, false, false); 
+
+    //     super.setValue(value, createAction, dispatchEvents);
+    // }    
 
 
 

@@ -74,7 +74,6 @@ function genParseRectangle(parse)
 
         parse.nTab--;
     }
-console.log('rect =', rect);
 
 
     parse.nTab--;

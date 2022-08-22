@@ -79,10 +79,10 @@ extends Parameter
         this.opacityControl.setSuffix('%', true);
 
 
-        this.checkers.style.width             = '100%';
-        this.checkers.style.height            = '20px';
-        this.checkers.style.backgroundSize     = '26px 26px';
-        this.checkers.style.backgroundPosition = '0 0, 13px 13px';
+        this.checkers.style.width                   = '100%';
+        this.checkers.style.height                  = '20px';
+        this.checkers.style.backgroundSize          = '26px 26px';
+        this.checkers.style.backgroundPosition      = '0 0, 13px 13px';
 
 
         this.controlWrapper.style.display           = 'inline-block';
@@ -135,12 +135,19 @@ extends Parameter
 
         this.colorControl.addEventListener('confirm', () =>
         { 
-            this.setValue(this.value, true, false);
+            this.setValue(new ColorFillValue(
+                this.colorControl.value, 
+                new NumberValue(this.opacityControl.value, this.opacityControl.dec)), 
+                true, false);
         });
+
 
         this.opacityControl.addEventListener('confirm', () =>
         {
-            this.setValue(this.value, true, false);
+            this.setValue(new ColorFillValue(
+                this.colorControl.value, 
+                new NumberValue(this.opacityControl.value, this.opacityControl.dec)), 
+                true, false);
         });
 
 
@@ -150,12 +157,13 @@ extends Parameter
                 return;
 
 
-            if (e.detail.value != e.detail.oldValue)
+            if (!e.detail.value.equals(e.detail.oldValue))
             {
                 const  rgb = validHex2rgb(e.detail.value);
                 const _rgb = scaleColor(rgb, 'rgb');
 
                 this.setValue(ColorFillValue.createFromRgb(_rgb, this.opacityControl.value), true);
+                
                 e.preventSetValue = true;
             }
         });
@@ -178,8 +186,15 @@ extends Parameter
 
 
 
-    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
+        if (!(value instanceof ColorFillValue))
+        {
+            console.trace();
+            console.assert(false, 'FillParam.setValue(value) is ' + typeof value + ', must be a ColorFillValue');
+        }
+
+        //console.log('value =', value);
         console.assert(
                value.type 
             && value.type == COLOR_FILL_VALUE, 
@@ -187,15 +202,20 @@ extends Parameter
 
         this.preSetValue(value, createAction, dispatchEvents);
 
+
         this.value = value;
+
+        //console.log('this.value = ', this.value);
 
         if (updateControl)
         {
-            this.  colorControl.setValue(value.color,   false, false, forceChange); 
-            this.opacityControl.setValue(value.opacity, false, true, false, forceChange); 
+            this.  colorControl.setValue(value.color,         false,       false); 
+            this.opacityControl.setValue(value.opacity.value, false, true, false); 
         }
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+
+        super.setValue(value, createAction, dispatchEvents);
+
 
         this.oldValue = this.genValue;
     }    
@@ -275,7 +295,6 @@ extends Parameter
 
 
         const request = [];
-
 
         if (   this.input
             && this.input.connected)

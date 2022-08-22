@@ -3054,6 +3054,13 @@ extends GType
     {
         super(NUMBER_VALUE);
 
+        if (typeof val !== 'number')
+        { 
+            console.trace();
+            console.assert(false, 'NumberValue.value must be a number');
+        }
+
+
         this.value    = val;
         this.decimals = dec;
 
@@ -3155,11 +3162,16 @@ extends GType
 
     static create(space, c1, c2, c3)
     {
+        console.assert(typeof space == 'number', 'space must be a number');
+        console.assert(typeof c1    == 'number', 'c1 must be a number');
+        console.assert(typeof c2    == 'number', 'c2 must be a number');
+        console.assert(typeof c3    == 'number', 'c3 must be a number');
+
         return new ColorValue(
             new NumberValue(space),
-            new NumberValue(c1),
-            new NumberValue(c2),
-            new NumberValue(c3));
+            new NumberValue(c1   ),
+            new NumberValue(c2   ),
+            new NumberValue(c3   ));
     }
 
 
@@ -3273,7 +3285,7 @@ function parseColorValue(str, i = -1)
         i   = 0;
     }
         
-    
+
     const iStart = i;
 
     const space = parseNumberValue(col[i]); i += space[1];
@@ -3312,6 +3324,10 @@ extends GType
     
     static create(r, g, b, opacity)
     {
+        console.assert(
+            typeof opacity == 'number',
+            'opacity must be a number');
+
         return new ColorFillValue(
             ColorValue.create(1, r, g, b),
             new NumberValue(opacity));
@@ -3321,6 +3337,10 @@ extends GType
 
     static createFromRgb(rgb, opacity)
     {
+        console.assert(
+            typeof opacity == 'number',
+            'opacity must be a number');
+
         return new ColorFillValue(
             ColorValue.createFromRgb(rgb),
             new NumberValue(opacity));
@@ -3387,9 +3407,7 @@ extends GType
 
 
 
-    static default = Object.freeze(new ColorFillValue(
-        ColorValue.create(1, 217, 217, 217),
-        new NumberValue(100)));
+    static default = Object.freeze(ColorFillValue.create(217, 217, 217, 100));
 }
 
 
@@ -3410,11 +3428,11 @@ function parseColorFillValue(str, i = -1)
 
     const iStart = i;
 
-    const r       = parseNumberValue(str[i]); i += r[1];
-    const g       = parseNumberValue(str[i]); i += g[1];
-    const b       = parseNumberValue(str[i]); i += b[1];
-    const color   = ColorValue.create(1, r[0], g[0], b[0])
-   
+    const r = parseNumberValue(str[i]); i += r[1];
+    const g = parseNumberValue(str[i]); i += g[1];
+    const b = parseNumberValue(str[i]); i += b[1];
+
+    const color   = new ColorValue(new NumberValue(1), r[0], g[0], b[0]);
     const opacity = parseNumberValue(str[i]); i += opacity[1];
 
     
@@ -6754,7 +6772,6 @@ function genParseRectangle(parse)
 
         parse.nTab--;
     }
-console.log('rect =', rect);
 
 
     parse.nTab--;

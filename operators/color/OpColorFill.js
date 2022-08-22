@@ -25,7 +25,7 @@ extends OpColorBase
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
-        //this.paramFill.setValue([GColorFill.default], false, true, false);
+        //this.paramFill.setValue([GColorFill.default], false, true);
         
         this.paramOpacity.control.suffix = '%';
     

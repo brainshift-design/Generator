@@ -111,8 +111,16 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
 
 
-    control.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+    control.setValue = function(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
+        if (typeof value !== 'number')
+        {
+            // console.log('value =', value);
+            console.trace();
+            console.assert(false, 'numberControl.setValue(value) is ' + typeof value + ', must be a number');
+        }
+
+
         const oldValue = control.value;
 
 

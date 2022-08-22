@@ -131,18 +131,20 @@ extends EventTarget
     {
         if (dispatchEvents)
         {
-            if (!this.valuesEqual(value, this.oldValue))
+            if (!value.equals(this.oldValue))//this.valuesEqual(value, this.oldValue))
                 this.dispatchEvent(this.onbeforechange);
         }
     }
 
 
 
-    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    setValue(value, createAction, dispatchEvents = true) 
     {
         if (dispatchEvents)
         {
-            if (value != this.oldValue)
+            console.log('typeof value =', typeof value);
+            console.log('value =', value);
+            if (!value.equals(this.oldValue))
             {
                 this.dispatchEvent(this.onchange);
                 
@@ -157,10 +159,10 @@ extends EventTarget
 
 
 
-    valuesEqual(val1, val2)
-    {
-        return val1 == val2;
-    }
+    // valuesEqual(val1, val2)
+    // {
+    //     return val1 == val2;
+    // }
 
 
 
@@ -201,6 +203,14 @@ extends EventTarget
     {
         
     }
+}
+
+
+
+function setParamValue(param, value, updateParamId = '')
+{
+    if (param.id != updateParamId)
+        param.setValue(value, false, true, false);
 }
 
 

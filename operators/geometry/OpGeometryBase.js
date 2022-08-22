@@ -48,15 +48,13 @@ extends OperatorBase
 
 
 
-    updateBaseValues(updateParamId, paramIds, values, obj)
+    updateBaseValues(updateParamId, obj)
     {
-        this.paramFill        .setValue(obj.fill,         false, true, false);
-        this.paramStroke      .setValue(obj.stroke,       false, true, false);
-        this.paramStrokeWeight.setValue(obj.strokeWeight, false, true, false);
-        this.paramStrokeFit   .setValue(obj.strokeFit,    false, true, false);
-        this.paramStrokeJoin  .setValue(obj.strokeJoin,   false, true, false);
-        this.paramStrokeMiter .setValue(obj.strokeMiter,  false, true, false);
-
-        super.updateValues(updateParamId, paramIds, values);
+        setParamValue(this.paramFill,         obj.fill,         updateParamId);
+        setParamValue(this.paramStroke,       obj.stroke,       updateParamId);
+        setParamValue(this.paramStrokeWeight, obj.strokeWeight, updateParamId);
+        setParamValue(this.paramStrokeFit,    obj.strokeFit,    updateParamId);
+        setParamValue(this.paramStrokeJoin,   obj.strokeJoin,   updateParamId);
+        setParamValue(this.paramStrokeMiter,  obj.strokeMiter,  updateParamId);
     }
 }

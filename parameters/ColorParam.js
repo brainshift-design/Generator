@@ -104,7 +104,7 @@ extends Parameter
 
 
 
-    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         console.assert(
                value.type 
@@ -114,9 +114,9 @@ extends Parameter
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
-            this.control.setValue(value, false, false, forceChange); 
+            this.control.setValue(value, false, false); 
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+        super.setValue(value, createAction, dispatchEvents);
 
         this.oldValue = this.genValue;
     }    

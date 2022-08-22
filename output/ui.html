@@ -1508,16 +1508,16 @@ div
     <button class='menuButton' id='btnCreateColorContrast'    onclick='actionManager.do(new CreateNodeAction(COLOR_CONTRAST,     btnCreateColorContrast   ));  this.blur();'></button>
     <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,         btnCreateColorblind      ));  this.blur();'></button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class='menuButton' id='btnCreateColorFill'        onclick='actionManager.do(new CreateNodeAction(COLOR_FILL,         btnCreateColorFill       ));  this.blur();'>FILL</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,          btnCreateRectangle       ));  this.blur();'>RECT</button>
-    <button class='menuButton' id='btnCreateLine'             onclick='actionManager.do(new CreateNodeAction(LINE,               btnCreateLine            ));  this.blur();'>LINE</button>
-    <button class='menuButton' id='btnCreateEllipse'          onclick='actionManager.do(new CreateNodeAction(ELLIPSE,            btnCreateEllipse         ));  this.blur();'>ELPS</button>
-    <button class='menuButton' id='btnCreatePolygon'          onclick='actionManager.do(new CreateNodeAction(POLYGON,            btnCreatePolygon         ));  this.blur();'>POLY</button>
-    <button class='menuButton' id='btnCreateStar'             onclick='actionManager.do(new CreateNodeAction(STAR,               btnCreateStar            ));  this.blur();'>STAR</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateColorStop'        onclick='actionManager.do(new CreateNodeAction(COLOR_STOP,         btnCreateColorStop       ));  this.blur();'>STP</button>
-    <button class='menuButton' id='btnCreateGradient'         onclick='actionManager.do(new CreateNodeAction(GRADIENT,           btnCreateGradient        ));  this.blur();'>GRD</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateColorFill'        onclick='actionManager.do(new CreateNodeAction(COLOR_FILL,         btnCreateColorFill       ));  this.blur();'>CFILL</button>
+    <!-- <button class='menuButton' id='btnCreateLine'             onclick='actionManager.do(new CreateNodeAction(LINE,               btnCreateLine            ));  this.blur();'>LINE</button> -->
+    <!-- <button class='menuButton' id='btnCreateEllipse'          onclick='actionManager.do(new CreateNodeAction(ELLIPSE,            btnCreateEllipse         ));  this.blur();'>ELPS</button> -->
+    <!-- <button class='menuButton' id='btnCreatePolygon'          onclick='actionManager.do(new CreateNodeAction(POLYGON,            btnCreatePolygon         ));  this.blur();'>POLY</button> -->
+    <!-- <button class='menuButton' id='btnCreateStar'             onclick='actionManager.do(new CreateNodeAction(STAR,               btnCreateStar            ));  this.blur();'>STAR</button> -->
+    <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+    <!-- <button class='menuButton' id='btnCreateColorStop'        onclick='actionManager.do(new CreateNodeAction(COLOR_STOP,         btnCreateColorStop       ));  this.blur();'>STP</button> -->
+    <!-- <button class='menuButton' id='btnCreateGradient'         onclick='actionManager.do(new CreateNodeAction(GRADIENT,           btnCreateGradient        ));  this.blur();'>GRD</button> -->
     <!-- <button class='menuButton' id='btnCreateColorStroke' onclick='actionManager.do(new CreateNodeAction(COLOR_STROKE,       btnCreateColorStroke));  this.blur();'>CSTK</button> -->
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnCreateComment'          onclick='actionManager.do(new CreateNodeAction(COMMENT,            btnCreateComment         ));  this.blur();'></button>
@@ -4813,6 +4813,13 @@ extends GType
     {
         super(NUMBER_VALUE);
 
+        if (typeof val !== 'number')
+        { 
+            console.trace();
+            console.assert(false, 'NumberValue.value must be a number');
+        }
+
+
         this.value    = val;
         this.decimals = dec;
 
@@ -4914,11 +4921,16 @@ extends GType
 
     static create(space, c1, c2, c3)
     {
+        console.assert(typeof space == 'number', 'space must be a number');
+        console.assert(typeof c1    == 'number', 'c1 must be a number');
+        console.assert(typeof c2    == 'number', 'c2 must be a number');
+        console.assert(typeof c3    == 'number', 'c3 must be a number');
+
         return new ColorValue(
             new NumberValue(space),
-            new NumberValue(c1),
-            new NumberValue(c2),
-            new NumberValue(c3));
+            new NumberValue(c1   ),
+            new NumberValue(c2   ),
+            new NumberValue(c3   ));
     }
 
 
@@ -5032,7 +5044,7 @@ function parseColorValue(str, i = -1)
         i   = 0;
     }
         
-    
+
     const iStart = i;
 
     const space = parseNumberValue(col[i]); i += space[1];
@@ -5071,6 +5083,10 @@ extends GType
     
     static create(r, g, b, opacity)
     {
+        console.assert(
+            typeof opacity == 'number',
+            'opacity must be a number');
+
         return new ColorFillValue(
             ColorValue.create(1, r, g, b),
             new NumberValue(opacity));
@@ -5080,6 +5096,10 @@ extends GType
 
     static createFromRgb(rgb, opacity)
     {
+        console.assert(
+            typeof opacity == 'number',
+            'opacity must be a number');
+
         return new ColorFillValue(
             ColorValue.createFromRgb(rgb),
             new NumberValue(opacity));
@@ -5146,9 +5166,7 @@ extends GType
 
 
 
-    static default = Object.freeze(new ColorFillValue(
-        ColorValue.create(1, 217, 217, 217),
-        new NumberValue(100)));
+    static default = Object.freeze(ColorFillValue.create(217, 217, 217, 100));
 }
 
 
@@ -5169,11 +5187,11 @@ function parseColorFillValue(str, i = -1)
 
     const iStart = i;
 
-    const r       = parseNumberValue(str[i]); i += r[1];
-    const g       = parseNumberValue(str[i]); i += g[1];
-    const b       = parseNumberValue(str[i]); i += b[1];
-    const color   = ColorValue.create(1, r[0], g[0], b[0])
-   
+    const r = parseNumberValue(str[i]); i += r[1];
+    const g = parseNumberValue(str[i]); i += g[1];
+    const b = parseNumberValue(str[i]); i += b[1];
+
+    const color   = new ColorValue(new NumberValue(1), r[0], g[0], b[0]);
     const opacity = parseNumberValue(str[i]); i += opacity[1];
 
     
@@ -8513,7 +8531,6 @@ function genParseRectangle(parse)
 
         parse.nTab--;
     }
-console.log('rect =', rect);
 
 
     parse.nTab--;
@@ -16447,6 +16464,13 @@ extends GType
     {
         super(NUMBER_VALUE);
 
+        if (typeof val !== 'number')
+        { 
+            console.trace();
+            console.assert(false, 'NumberValue.value must be a number');
+        }
+
+
         this.value    = val;
         this.decimals = dec;
 
@@ -16548,11 +16572,16 @@ extends GType
 
     static create(space, c1, c2, c3)
     {
+        console.assert(typeof space == 'number', 'space must be a number');
+        console.assert(typeof c1    == 'number', 'c1 must be a number');
+        console.assert(typeof c2    == 'number', 'c2 must be a number');
+        console.assert(typeof c3    == 'number', 'c3 must be a number');
+
         return new ColorValue(
             new NumberValue(space),
-            new NumberValue(c1),
-            new NumberValue(c2),
-            new NumberValue(c3));
+            new NumberValue(c1   ),
+            new NumberValue(c2   ),
+            new NumberValue(c3   ));
     }
 
 
@@ -16666,7 +16695,7 @@ function parseColorValue(str, i = -1)
         i   = 0;
     }
         
-    
+
     const iStart = i;
 
     const space = parseNumberValue(col[i]); i += space[1];
@@ -16705,6 +16734,10 @@ extends GType
     
     static create(r, g, b, opacity)
     {
+        console.assert(
+            typeof opacity == 'number',
+            'opacity must be a number');
+
         return new ColorFillValue(
             ColorValue.create(1, r, g, b),
             new NumberValue(opacity));
@@ -16714,6 +16747,10 @@ extends GType
 
     static createFromRgb(rgb, opacity)
     {
+        console.assert(
+            typeof opacity == 'number',
+            'opacity must be a number');
+
         return new ColorFillValue(
             ColorValue.createFromRgb(rgb),
             new NumberValue(opacity));
@@ -16780,9 +16817,7 @@ extends GType
 
 
 
-    static default = Object.freeze(new ColorFillValue(
-        ColorValue.create(1, 217, 217, 217),
-        new NumberValue(100)));
+    static default = Object.freeze(ColorFillValue.create(217, 217, 217, 100));
 }
 
 
@@ -16803,11 +16838,11 @@ function parseColorFillValue(str, i = -1)
 
     const iStart = i;
 
-    const r       = parseNumberValue(str[i]); i += r[1];
-    const g       = parseNumberValue(str[i]); i += g[1];
-    const b       = parseNumberValue(str[i]); i += b[1];
-    const color   = ColorValue.create(1, r[0], g[0], b[0])
-   
+    const r = parseNumberValue(str[i]); i += r[1];
+    const g = parseNumberValue(str[i]); i += g[1];
+    const b = parseNumberValue(str[i]); i += b[1];
+
+    const color   = new ColorValue(new NumberValue(1), r[0], g[0], b[0]);
     const opacity = parseNumberValue(str[i]); i += opacity[1];
 
     
@@ -19782,7 +19817,6 @@ function initNumberControlEvents(control)
                         Math.round(val / grain) * grain, 
                         true, 
                         true,
-                        false,
                         getCtrlKey(e));
 
 
@@ -20037,12 +20071,20 @@ function initNumberControlEvents(control)
 
                 const dec = Math.pow(10, -control.dec);
 
+                console.log('typeof control.value =',      typeof control.value);
+                console.log('typeof dWheelY =',            typeof dWheelY);
+                console.log('typeof control.wheelScale =', typeof control.wheelScale);
+                console.log('typeof dec =',                typeof dec);
+
                 const val =
                     isTouchpad
                     ? control.value -  dWheelX               * control.wheelScale * dec
                     : control.value + (dWheelY > 0 ? -1 : 1) * control.wheelScale * dec;
                 
-                control.setValue(val, true, true, false, false);
+                console.log('control.value =', control.value);
+                console.log('val =', val);
+                
+                control.setValue(val, true, true, false);
             }
         }
     });
@@ -20677,8 +20719,16 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
 
 
-    control.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+    control.setValue = function(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
+        if (typeof value !== 'number')
+        {
+            // console.log('value =', value);
+            console.trace();
+            console.assert(false, 'numberControl.setValue(value) is ' + typeof value + ', must be a number');
+        }
+
+
         const oldValue = control.value;
 
 
@@ -21073,57 +21123,55 @@ function initColorControlEvents(control)
         if (    control.buttonDown0
             && !control.readOnly)
         {
-            if (control.isPointerLocked())
-            {
-                control.movedX += e.movementX;
+            // if (control.isPointerLocked())
+            // {
+            //     control.movedX += e.movementX;
                 
-                if (!isNaN(control.value))
-                {
-                    const dx       = control.movedX * (control.dragReverse ? -1 : 1);
-                    const adaptive = 10 * Math.pow(Math.abs(dx), control.acc);
-                    const grain    = Math.pow(10, -control.dec);
-                    const drag     = grain * sqr(control.dragScale);
+            //     if (!isNaN(control.value))
+            //     {
+            //         const dx       = control.movedX * (control.dragReverse ? -1 : 1);
+            //         const adaptive = 10 * Math.pow(Math.abs(dx), control.acc);
+            //         const grain    = Math.pow(10, -control.dec);
+            //         const drag     = grain * sqr(control.dragScale);
 
-                    const val      = control.startValue + dx * drag * adaptive;
+            //         const val      = control.startValue + dx * drag * adaptive;
 
                     
-                    // reset slider movement at the limits for better UX
-                    const min = getCtrlKey(e) ? control.min : control.displayMin;
-                    const max = getCtrlKey(e) ? control.max : control.displayMax;
+            //         // reset slider movement at the limits for better UX
+            //         const min = getCtrlKey(e) ? control.min : control.displayMin;
+            //         const max = getCtrlKey(e) ? control.max : control.displayMax;
 
-                    control.setValue(
-                        Math.round(val / grain) * grain, 
-                        true, 
-                        false, 
-                        false,
-                        getCtrlKey(e));
+            //         control.setValue(
+            //             Math.round(val / grain) * grain, 
+            //             true, 
+            //             false);
 
 
-                    if (   val <= min
-                        || val >= max)
-                    {
-                        control.movedX     = 0;
-                        control.startValue = control.value;
-                        control.sx         = e.clientX;
-                    }
+            //         if (   val <= min
+            //             || val >= max)
+            //         {
+            //             control.movedX     = 0;
+            //             control.startValue = control.value;
+            //             control.sx         = e.clientX;
+            //         }
 
 
-                    if (control.value != control.prevValue)
-                        pushUpdateFromParam([control.param.node], control.param);
+            //         if (control.value != control.prevValue)
+            //             pushUpdateFromParam([control.param.node], control.param);
 
-                    control.prevValue = control.value;
-                }
-            }
-            else
-            {
-                if (Math.abs(e.clientX - control.sx) > control.clickSize/2)
-                {
-                    control.moved = true;
-                    control.lockPointer(e.pointerId);
+            //         control.prevValue = control.value;
+            //     }
+            // }
+            // else
+            // {
+            //     if (Math.abs(e.clientX - control.sx) > control.clickSize/2)
+            //     {
+            //         control.moved = true;
+            //         control.lockPointer(e.pointerId);
 
-                    control.dispatchEvent(control.onstartchange);
-                }
-            }
+            //         control.dispatchEvent(control.onstartchange);
+            //     }
+            // }
         }
         else if (graphView.tempConn
               && control.param)
@@ -21819,8 +21867,14 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
 
 
-    control.setValue = function(value, fireChangeEvent = true, confirm = true, forceChange = false, fullRange = true)
+    control.setValue = function(value, fireChangeEvent = true, confirm = true)
     {
+        if (!(value instanceof ColorValue))
+        {
+            console.trace();
+            console.assert(false, 'colorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
+        }
+
         const oldValue = control.value.copy();
 
         control.value = value.copy();
@@ -24462,18 +24516,20 @@ extends EventTarget
     {
         if (dispatchEvents)
         {
-            if (!this.valuesEqual(value, this.oldValue))
+            if (!value.equals(this.oldValue))//this.valuesEqual(value, this.oldValue))
                 this.dispatchEvent(this.onbeforechange);
         }
     }
 
 
 
-    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    setValue(value, createAction, dispatchEvents = true) 
     {
         if (dispatchEvents)
         {
-            if (value != this.oldValue)
+            console.log('typeof value =', typeof value);
+            console.log('value =', value);
+            if (!value.equals(this.oldValue))
             {
                 this.dispatchEvent(this.onchange);
                 
@@ -24488,10 +24544,10 @@ extends EventTarget
 
 
 
-    valuesEqual(val1, val2)
-    {
-        return val1 == val2;
-    }
+    // valuesEqual(val1, val2)
+    // {
+    //     return val1 == val2;
+    // }
 
 
 
@@ -24532,6 +24588,14 @@ extends EventTarget
     {
         
     }
+}
+
+
+
+function setParamValue(param, value, updateParamId = '')
+{
+    if (param.id != updateParamId)
+        param.setValue(value, false, true, false);
 }
 
 
@@ -24595,7 +24659,7 @@ extends Parameter
     oldValue = null;
 
     
-    get value    () { return this.control.value; }
+    get value    () { return new NumberValue(this.control.value); }
 
     
     get valueText() { return this.control.valueText; }
@@ -24611,14 +24675,18 @@ extends Parameter
 
 
     
-    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
+        console.assert(
+            value instanceof NumberValue,
+            'value must be a NumberValue');
+
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
         {
             this.control.setDecimals(value.decimals, value.decimals);
-            this.control.setValue(value.value, false, false, forceChange); 
+            this.control.setValue(value.value, false, false); 
         }
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
@@ -24794,7 +24862,7 @@ extends NumberParamBase
                 else 
                     dec = oldDec;
 
-                    this.setValue(new NumberValue(e.detail.value, dec), true);
+                this.setValue(new NumberValue(e.detail.value, dec), true);
                 e.preventSetValue = true;
             }
         });
@@ -24810,30 +24878,34 @@ extends NumberParamBase
 
 
 
-    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
-    {
-        this.preSetValue(value, createAction, dispatchEvents);
+    // setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    // {
+    //     console.assert(
+    //         value instanceof NumberValue,
+    //         'value must be a NumberValue');
 
-        if (updateControl)
-        {
-            this.control.setDecimals(value.decimals, value.decimals);
-            this.control.setValue(value.value, false, false, forceChange); 
-        }
+    //     this.preSetValue(value, createAction, dispatchEvents);
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+    //     if (updateControl)
+    //     {
+    //         this.control.setDecimals(value.decimals, value.decimals);
+    //         this.control.setValue   (value.value, false, false); 
+    //     }
 
-        this.oldValue = this.genValue;
-    }    
+    //     super.setValue(value, createAction, dispatchEvents);
+
+    //     this.oldValue = this.genValue;
+    // }    
 
 
 
-    valuesEqual(val1, val2)
-    {
-        return val1
-            && val2
-            && val1.value    == val2.value
-            && val1.decimals == val2.decimals;
-    }
+    // valuesEqual(val1, val2)
+    // {
+    //     return val1
+    //         && val2
+    //         && val1.value    == val2.value
+    //         && val1.decimals == val2.decimals;
+    // }
 
 
 
@@ -24909,15 +24981,19 @@ extends NumberParamBase
 
 
 
-    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
-    { 
-        this.preSetValue(value, createAction, dispatchEvents);
+    // setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    // { 
+    //     console.assert(
+    //         value instanceof NumberValue,
+    //         'value must be a NumberValue');
 
-        if (updateControl)
-            this.control.setValue(value, false, false, forceChange); 
+    //     this.preSetValue(value, createAction, dispatchEvents);
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
-    }    
+    //     if (updateControl)
+    //         this.control.setValue(value.value, false, false); 
+
+    //     super.setValue(value, createAction, dispatchEvents);
+    // }    
 
 
 
@@ -25041,7 +25117,7 @@ extends Parameter
 
 
 
-    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         console.assert(
                value.type 
@@ -25051,9 +25127,9 @@ extends Parameter
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
-            this.control.setValue(value, false, false, forceChange); 
+            this.control.setValue(value, false, false); 
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+        super.setValue(value, createAction, dispatchEvents);
 
         this.oldValue = this.genValue;
     }    
@@ -25247,10 +25323,10 @@ extends Parameter
         this.opacityControl.setSuffix('%', true);
 
 
-        this.checkers.style.width             = '100%';
-        this.checkers.style.height            = '20px';
-        this.checkers.style.backgroundSize     = '26px 26px';
-        this.checkers.style.backgroundPosition = '0 0, 13px 13px';
+        this.checkers.style.width                   = '100%';
+        this.checkers.style.height                  = '20px';
+        this.checkers.style.backgroundSize          = '26px 26px';
+        this.checkers.style.backgroundPosition      = '0 0, 13px 13px';
 
 
         this.controlWrapper.style.display           = 'inline-block';
@@ -25303,12 +25379,19 @@ extends Parameter
 
         this.colorControl.addEventListener('confirm', () =>
         { 
-            this.setValue(this.value, true, false);
+            this.setValue(new ColorFillValue(
+                this.colorControl.value, 
+                new NumberValue(this.opacityControl.value, this.opacityControl.dec)), 
+                true, false);
         });
+
 
         this.opacityControl.addEventListener('confirm', () =>
         {
-            this.setValue(this.value, true, false);
+            this.setValue(new ColorFillValue(
+                this.colorControl.value, 
+                new NumberValue(this.opacityControl.value, this.opacityControl.dec)), 
+                true, false);
         });
 
 
@@ -25318,12 +25401,13 @@ extends Parameter
                 return;
 
 
-            if (e.detail.value != e.detail.oldValue)
+            if (!e.detail.value.equals(e.detail.oldValue))
             {
                 const  rgb = validHex2rgb(e.detail.value);
                 const _rgb = scaleColor(rgb, 'rgb');
 
                 this.setValue(ColorFillValue.createFromRgb(_rgb, this.opacityControl.value), true);
+                
                 e.preventSetValue = true;
             }
         });
@@ -25346,8 +25430,15 @@ extends Parameter
 
 
 
-    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
+        if (!(value instanceof ColorFillValue))
+        {
+            console.trace();
+            console.assert(false, 'FillParam.setValue(value) is ' + typeof value + ', must be a ColorFillValue');
+        }
+
+        //console.log('value =', value);
         console.assert(
                value.type 
             && value.type == COLOR_FILL_VALUE, 
@@ -25355,15 +25446,20 @@ extends Parameter
 
         this.preSetValue(value, createAction, dispatchEvents);
 
+
         this.value = value;
+
+        //console.log('this.value = ', this.value);
 
         if (updateControl)
         {
-            this.  colorControl.setValue(value.color,   false, false, forceChange); 
-            this.opacityControl.setValue(value.opacity, false, true, false, forceChange); 
+            this.  colorControl.setValue(value.color,         false,       false); 
+            this.opacityControl.setValue(value.opacity.value, false, true, false); 
         }
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+
+        super.setValue(value, createAction, dispatchEvents);
+
 
         this.oldValue = this.genValue;
     }    
@@ -25443,7 +25539,6 @@ extends Parameter
 
 
         const request = [];
-
 
         if (   this.input
             && this.input.connected)
@@ -27739,8 +27834,6 @@ function getHeaderConnY(conns, padding, offset)
 
 function pushUpdate(nodes)
 {
-    //console.log('pushUpdate()', nodes);
-    
     pushUpdateFromParam(nodes, null);
 }
 
@@ -27748,7 +27841,8 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
-    //console.log('pushUpdateFromParam()');
+    console.log('pushUpdateFromParam('+param+')', nodes);
+    console.trace();
 
     const request = 
         param
@@ -32296,7 +32390,7 @@ extends OpColorBase
             this.paramValue.control.setDecimals(1);
             this.paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
 
-            this.paramValue.control.setValue(Math.abs(value), false, false, false);
+            this.paramValue.control.setValue(Math.abs(value), false, false);
         }
 
 
@@ -32892,7 +32986,7 @@ extends OpColorBase
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
-        //this.paramFill.setValue([GColorFill.default], false, true, false);
+        //this.paramFill.setValue([GColorFill.default], false, true);
         
         this.paramOpacity.control.suffix = '%';
     
@@ -33138,16 +33232,14 @@ extends OperatorBase
 
 
 
-    updateBaseValues(updateParamId, paramIds, values, obj)
+    updateBaseValues(updateParamId, obj)
     {
-        this.paramFill        .setValue(obj.fill,         false, true, false);
-        this.paramStroke      .setValue(obj.stroke,       false, true, false);
-        this.paramStrokeWeight.setValue(obj.strokeWeight, false, true, false);
-        this.paramStrokeFit   .setValue(obj.strokeFit,    false, true, false);
-        this.paramStrokeJoin  .setValue(obj.strokeJoin,   false, true, false);
-        this.paramStrokeMiter .setValue(obj.strokeMiter,  false, true, false);
-
-        super.updateValues(updateParamId, paramIds, values);
+        setParamValue(this.paramFill,         obj.fill,         updateParamId);
+        setParamValue(this.paramStroke,       obj.stroke,       updateParamId);
+        setParamValue(this.paramStrokeWeight, obj.strokeWeight, updateParamId);
+        setParamValue(this.paramStrokeFit,    obj.strokeFit,    updateParamId);
+        setParamValue(this.paramStrokeJoin,   obj.strokeJoin,   updateParamId);
+        setParamValue(this.paramStrokeMiter,  obj.strokeMiter,  updateParamId);
     }
 }
 
@@ -33294,18 +33386,21 @@ extends OpGeometryBase
 
 
 
-    updateValues(updateParamId, paramIds, values, src)
+    updateValues(updateParamId, paramIds, values)
     {
+        // overriding Operator.updateValues() here because 
+        // all values are taken from the RectangleValue
+
         const rect = values[paramIds.findIndex(id => id == RECTANGLE_VALUE)];
 
-        this.paramX     .setValue(rect.x,      false, true, false);
-        this.paramY     .setValue(rect.y,      false, true, false);
-        this.paramWidth .setValue(rect.width,  false, true, false);
-        this.paramHeight.setValue(rect.height, false, true, false);
-        this.paramAngle .setValue(rect.angle,  false, true, false);
-        this.paramRound .setValue(rect.round,  false, true, false);
+        setParamValue(this.paramX,      rect.x,      updateParamId);
+        setParamValue(this.paramY,      rect.y,      updateParamId);
+        setParamValue(this.paramWidth,  rect.width,  updateParamId);
+        setParamValue(this.paramHeight, rect.height, updateParamId);
+        setParamValue(this.paramAngle,  rect.angle,  updateParamId);
+        setParamValue(this.paramRound,  rect.round,  updateParamId);
 
-        this.updateBaseValues(updateParamId, paramIds, values, rect);
+        this.updateBaseValues(updateParamId, rect);
     }
 
 
@@ -34535,7 +34630,6 @@ extends Action
         setTimeout(() => graphView.updateScrollWithBounds());
         
         uiMakeNodeActive(node);
-        pushUpdate([node]);
     }
 
 
@@ -34557,7 +34651,6 @@ extends Action
         setTimeout(() => graphView.updateScrollWithBounds());
 
         uiMakeNodeActive(node);
-        pushUpdate([node]);
     }
 }
 
@@ -35953,7 +36046,7 @@ var genMessagePosted = false;
 
 //uiRemoveConnsToNodes(['num10']);
 //uiRemoveSavedNodesAndConns(['color']);
-//uiRemoveAllSavedNodesAndConns();
+uiRemoveAllSavedNodesAndConns();
 
 uiLogAllSavedNodesAndConns();
 
@@ -37776,7 +37869,7 @@ function uiUpdateGraph()
 
 function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 {
-    console.log('raw values = ', values);
+    //console.log('raw values = ', values);
 
     if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
     if (settings.lobObjectUpdates) logObjectUpdates(objects);

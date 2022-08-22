@@ -6,7 +6,7 @@ extends Parameter
     oldValue = null;
 
     
-    get value    () { return this.control.value; }
+    get value    () { return new NumberValue(this.control.value); }
 
     
     get valueText() { return this.control.valueText; }
@@ -22,14 +22,18 @@ extends Parameter
 
 
     
-    setValue(value, createAction, updateControl = true, dispatchEvents = true, forceChange = false) 
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
+        console.assert(
+            value instanceof NumberValue,
+            'value must be a NumberValue');
+
         this.preSetValue(value, createAction, dispatchEvents);
 
         if (updateControl)
         {
             this.control.setDecimals(value.decimals, value.decimals);
-            this.control.setValue(value.value, false, false, forceChange); 
+            this.control.setValue(value.value, false, false); 
         }
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
