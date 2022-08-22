@@ -430,19 +430,11 @@ function initNumberControlEvents(control)
 
                 const dec = Math.pow(10, -control.dec);
 
-                console.log('typeof control.value =',      typeof control.value);
-                console.log('typeof dWheelY =',            typeof dWheelY);
-                console.log('typeof control.wheelScale =', typeof control.wheelScale);
-                console.log('typeof dec =',                typeof dec);
-
                 const val =
                     isTouchpad
                     ? control.value -  dWheelX               * control.wheelScale * dec
                     : control.value + (dWheelY > 0 ? -1 : 1) * control.wheelScale * dec;
-                
-                console.log('control.value =', control.value);
-                console.log('val =', val);
-                
+
                 control.setValue(val, true, true, false);
             }
         }

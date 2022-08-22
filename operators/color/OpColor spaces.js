@@ -230,8 +230,6 @@ function switchToTextbox(node)
         node.inner.removeChild(node.param3.div);
         
         node.inner.appendChild(node.hexbox);
-
-        //graphView.updateNodeTransform(op);
     }
 }
 
@@ -423,27 +421,27 @@ function getNormalColorHcl(c1, c2, c3)
 
 
 
-function getDataColor(color)
+function getScaledDataColor(color)
 {
     switch (color[0])
     {
         case 'hex':
         case 'rgbhex':
-        case 'rgb':    return getDataColorRgb(          color[1], color[2], color[3]);
-        case 'hsv':    return getDataColorHs_('hsv',    color[1], color[2], color[3]);
-        case 'hsl':    return getDataColorHs_('hsl',    color[1], color[2], color[3]);
-        case 'hclokl': return getDataColorHcl('hclokl', color[1], color[2], color[3]);
-        case 'hcllab': return getDataColorHcl('hcllab', color[1], color[2], color[3]);
-        case 'hclluv': return getDataColorHcl('hclluv', color[1], color[2], color[3]);
-        case 'oklab':  return getDataColorOpp('oklab',  color[1], color[2], color[3]);
-        case 'lab':    return getDataColorOpp('lab',    color[1], color[2], color[3]);
-        case 'luv':    return getDataColorOpp('luv',    color[1], color[2], color[3]);
+        case 'rgb':    return getScaledDataColorRgb(          color[1], color[2], color[3]);
+        case 'hsv':    return getScaledDataColorHs_('hsv',    color[1], color[2], color[3]);
+        case 'hsl':    return getScaledDataColorHs_('hsl',    color[1], color[2], color[3]);
+        case 'hclokl': return getScaledDataColorHcl('hclokl', color[1], color[2], color[3]);
+        case 'hcllab': return getScaledDataColorHcl('hcllab', color[1], color[2], color[3]);
+        case 'hclluv': return getScaledDataColorHcl('hclluv', color[1], color[2], color[3]);
+        case 'oklab':  return getScaledDataColorOpp('oklab',  color[1], color[2], color[3]);
+        case 'lab':    return getScaledDataColorOpp('lab',    color[1], color[2], color[3]);
+        case 'luv':    return getScaledDataColorOpp('luv',    color[1], color[2], color[3]);
     }
 }
 
 
 
-function getDataColorRgb(c1, c2, c3)
+function getScaledDataColorRgb(c1, c2, c3)
 {
     return [
        'rgb',
@@ -454,7 +452,7 @@ function getDataColorRgb(c1, c2, c3)
 
 
 
-function getDataColorHs_(space, c1, c2, c3)
+function getScaledDataColorHs_(space, c1, c2, c3)
 {
     return [
         space,
@@ -465,7 +463,7 @@ function getDataColorHs_(space, c1, c2, c3)
 
 
 
-function getDataColorHcl(space, c1, c2, c3)
+function getScaledDataColorHcl(space, c1, c2, c3)
 {
     return [
         space,
@@ -476,7 +474,7 @@ function getDataColorHcl(space, c1, c2, c3)
 
 
 
-function getDataColorOpp(space, c1, c2, c3)
+function getScaledDataColorOpp(space, c1, c2, c3)
 {
     return [
         space,

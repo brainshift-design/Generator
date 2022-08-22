@@ -31,14 +31,6 @@ function initColorControl(param, control, width, height, id, name, showName, def
     control.dragScale              = dragScale;
     control.wheelScale             = wheelScale;
              
-    control.backColorLight         = 'transparent';
-    control.valueColorLight        = '#7772';
-    control.textColorLight         = '#000';
-                
-    control.backColorDark          = 'transparent';
-    control.valueColorDark         = '#fff4';
-    control.textColorDark          = '#eee';
-                
     control.fontSize               = 11;
              
     control.style.display          = 'inline';
@@ -107,12 +99,12 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
         if (   fireChangeEvent
             && control.enableChangeEvent
-            && value != control.prevValue)
+            && !value.equals(control.prevValue))
             control.dispatchEvent(control.onchange);
 
         if (   confirm
             && control.enableChangeEvent
-            && value != oldValue)
+            && !value.equals(oldValue))
             control.dispatchEvent(control.onconfirm);
     };
 
@@ -220,8 +212,4 @@ function initColorControl(param, control, width, height, id, name, showName, def
     control.getOffsetLeft   = () => control.cachedOffsetLeft   = control.cachedOffsetLeft   || control.offsetLeft;
     control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.clientWidth;
     control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.clientHeight;
-
-
-
-    control.update();
 }

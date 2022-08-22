@@ -720,8 +720,7 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
-    console.log('pushUpdateFromParam('+param+')', nodes);
-    console.trace();
+    //console.log('pushUpdateFromParam('+param+')', nodes);
 
     const request = 
         param

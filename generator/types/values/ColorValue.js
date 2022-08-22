@@ -154,10 +154,10 @@ function parseColorValue(str, i = -1)
 
     const iStart = i;
 
-    const space = parseNumberValue(col[i]); i += space[1];
-    const c1    = parseNumberValue(col[i]); i += c1   [1];
-    const c2    = parseNumberValue(col[i]); i += c2   [1];
-    const c3    = parseNumberValue(col[i]); i += c3   [1];
+    const space = parseNumberValue(str[i]); i += space[1];
+    const c1    = parseNumberValue(str[i]); i += c1   [1];
+    const c2    = parseNumberValue(str[i]); i += c2   [1];
+    const c3    = parseNumberValue(str[i]); i += c3   [1];
 
 
     return [

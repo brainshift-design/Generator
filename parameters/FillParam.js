@@ -22,7 +22,6 @@ extends Parameter
 
     
     value;
-    get genValue() { return this.value.copy();  }
     
 
     
@@ -73,16 +72,15 @@ extends Parameter
             false,
             0,
             100,
-            defaultValue.opacity,
+            defaultValue.opacity.value,
             0);
 
         this.opacityControl.setSuffix('%', true);
 
 
+        this.checkers.style.position                = 'absolute';
         this.checkers.style.width                   = '100%';
         this.checkers.style.height                  = '20px';
-        this.checkers.style.backgroundSize          = '26px 26px';
-        this.checkers.style.backgroundPosition      = '0 0, 13px 13px';
 
 
         this.controlWrapper.style.display           = 'inline-block';
@@ -126,6 +124,7 @@ extends Parameter
         this.controlWrapper.appendChild(this.  colorControl);
         this.controlWrapper.appendChild(this.opacityControl);
         
+        this.div.appendChild(this.checkers);
         this.div.appendChild(this.controlWrapper);
 
        
@@ -181,7 +180,7 @@ extends Parameter
 
     isDefault()
     {
-        return this.genValue.equals(this.defaultValue);
+        return this.value.equals(this.defaultValue);
     }
 
 
@@ -190,11 +189,11 @@ extends Parameter
     {
         if (!(value instanceof ColorFillValue))
         {
-            console.trace();
+            //console.trace();
             console.assert(false, 'FillParam.setValue(value) is ' + typeof value + ', must be a ColorFillValue');
         }
 
-        //console.log('value =', value);
+
         console.assert(
                value.type 
             && value.type == COLOR_FILL_VALUE, 
@@ -205,7 +204,6 @@ extends Parameter
 
         this.value = value;
 
-        //console.log('this.value = ', this.value);
 
         if (updateControl)
         {
@@ -214,10 +212,10 @@ extends Parameter
         }
 
 
-        super.setValue(value, createAction, dispatchEvents);
+        super.setValue(value, createAction, updateControl, dispatchEvents);
 
 
-        this.oldValue = this.genValue;
+        this.oldValue = this.value;
     }    
 
 
@@ -245,9 +243,6 @@ extends Parameter
         this.output.colorDark  = rgb_a(rgbText, 0.12);
 
 
-        this.checkers.style.display         = 'inline-block';//this.canShowColor() ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor = isDarkMode() ? '#444' : '#fff';
-
         this.checkers.style.background =
             isDarkMode()
             ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
@@ -255,14 +250,14 @@ extends Parameter
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.controlWrapper.style.background = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
+        this.checkers.style.display         = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor = isDarkMode() ? '#444' : '#fff';
 
 
-        this.  colorControl.backColorLight  = 
-        this.  colorControl.backColorDark   = 'transparent';//rgba2style(rgb_a(rgbVal, 0.6));
+        const fillStyle = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
 
-        this.opacityControl.backColorLight  = 
-        this.opacityControl.backColorDark   = 'transparent';//rgba2style(rgb_a(rgbVal, 0.6));
+        this.opacityControl.backColorLight = 
+        this.opacityControl.backColorDark  = fillStyle;
 
         this.opacityControl.valueColorLight = 
         this.opacityControl.valueColorDark  = rgba2style(rgb_a(rgbText, 0.12));
@@ -273,6 +268,10 @@ extends Parameter
 
         this.  colorControl.update();
         this.opacityControl.update();
+
+
+        this.colorControl.style.backgroundColor = fillStyle;
+        this.colorControl.style.color           = rgba2style(rgb_a(rgbText, 0.6));
 
 
         if (this.input ) this.input .updateControl();
@@ -337,7 +336,7 @@ extends Parameter
     
     toString()
     {
-        return this.genValue.toString();
+        return this.value.toString();
     }
 
 
@@ -349,7 +348,7 @@ extends Parameter
         if (id == '')
             id = this.id;
 
-        return pos + '["' + id  + '", "' + this.genValue.toString() + '"]';
+        return pos + '["' + id  + '", "' + this.value.toString() + '"]';
     }
 
 

@@ -131,20 +131,19 @@ extends EventTarget
     {
         if (dispatchEvents)
         {
-            if (!value.equals(this.oldValue))//this.valuesEqual(value, this.oldValue))
+            if (!value.equals(this.oldValue))
                 this.dispatchEvent(this.onbeforechange);
         }
     }
 
 
 
-    setValue(value, createAction, dispatchEvents = true) 
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (dispatchEvents)
         {
-            console.log('typeof value =', typeof value);
-            console.log('value =', value);
-            if (!value.equals(this.oldValue))
+            if (   !this.oldValue
+                || !value.equals(this.oldValue))
             {
                 this.dispatchEvent(this.onchange);
                 

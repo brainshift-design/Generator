@@ -1,24 +1,28 @@
 class   NumberParamBase
 extends Parameter
 {
-    defaultValue;
+    control;
+
+    
+    get value() 
+    { 
+        return new NumberValue(
+            this.control.value, 
+            this.control.displayDec); 
+    }
 
     oldValue = null;
 
-    
-    get value    () { return new NumberValue(this.control.value); }
 
-    
+    defaultValue;
+
+
     get valueText() { return this.control.valueText; }
     set valueText(text) 
     {
         this.control.valueText = text;
         this.control.update();
     }
-
-
-    get genValue() { return new NumberValue(this.control.value, this.control.displayDec); }
-
 
 
     
@@ -36,9 +40,11 @@ extends Parameter
             this.control.setValue(value.value, false, false); 
         }
 
+
         super.setValue(value, createAction, updateControl, dispatchEvents);
 
-        this.oldValue = this.genValue;
+        
+        this.oldValue = this.value.copy();
     }    
 
 
@@ -99,7 +105,7 @@ extends Parameter
     
     isDefault()
     {
-        return this.genValue.equals(this.defaultValue);
+        return this.value.equals(this.defaultValue);
     }
 
 
@@ -111,7 +117,7 @@ extends Parameter
         if (id == '')
             id = this.id;
 
-        return pos + '["' + id  + '", "' + this.genValue.toString() + '"]';
+        return pos + '["' + id  + '", "' + this.value.toString() + '"]';
     }
 
 

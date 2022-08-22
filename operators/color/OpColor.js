@@ -85,7 +85,7 @@ extends OpColorBase
         return [
             colorSpace(this.paramSpace.value),
             col[0],
-            col[1],
+        col[1],
             col[2] ];
     }
     
@@ -93,11 +93,11 @@ extends OpColorBase
     
     setColorParams(color, fireChangeEvent = false)
     {
-        const col = getDataColor(color);
+        const col = getScaledDataColor(color);
 
-        this.param1.setValue(col[1], fireChangeEvent);
-        this.param2.setValue(col[2], fireChangeEvent);
-        this.param3.setValue(col[3], fireChangeEvent);
+        this.param1.setValue(new NumberValue(col[1]), fireChangeEvent);
+        this.param2.setValue(new NumberValue(col[2]), fireChangeEvent);
+        this.param3.setValue(new NumberValue(col[3]), fireChangeEvent);
     }
 
 

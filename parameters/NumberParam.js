@@ -4,10 +4,6 @@ extends NumberParamBase
     allowEditDecimals = true;
     
     
-    control;
-
-
-    
     constructor(id,
                 name, 
                 showName,
@@ -26,7 +22,7 @@ extends NumberParamBase
         this.control.param  = this;
         this.control.zIndex = 0;
    
-        this.defaultValue   = new NumberValue(defaultValue); // this way the default contains the decimals
+        this.defaultValue   = new NumberValue(defaultValue);
 
 
         initNumberControl(
@@ -55,10 +51,7 @@ extends NumberParamBase
         if (hasOutput) this.initOutput(NUMBER_VALUE, this.output_genRequest);
 
 
-        this.control.addEventListener('confirm', () => 
-        {
-            this.setValue(new NumberValue(this.control.value, this.control.displayDec), true,  false); 
-        });
+        this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });
 
 
         this.control.addEventListener('finishedit', e =>
@@ -100,39 +93,8 @@ extends NumberParamBase
 
 
 
-    // setValue(value, createAction, updateControl = true, dispatchEvents = true) 
-    // {
-    //     console.assert(
-    //         value instanceof NumberValue,
-    //         'value must be a NumberValue');
-
-    //     this.preSetValue(value, createAction, dispatchEvents);
-
-    //     if (updateControl)
-    //     {
-    //         this.control.setDecimals(value.decimals, value.decimals);
-    //         this.control.setValue   (value.value, false, false); 
-    //     }
-
-    //     super.setValue(value, createAction, dispatchEvents);
-
-    //     this.oldValue = this.genValue;
-    // }    
-
-
-
-    // valuesEqual(val1, val2)
-    // {
-    //     return val1
-    //         && val2
-    //         && val1.value    == val2.value
-    //         && val1.decimals == val2.decimals;
-    // }
-
-
-
     toString()
     {
-        return this.genValue.toString();
+        return this.value.toString();
     }
 }

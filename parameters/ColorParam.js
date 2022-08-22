@@ -17,8 +17,7 @@ extends Parameter
     }
 
     
-    get value   () { return this.control.value; }
-    get genValue() { return this.value.copy();  }
+    get value() { return this.control.value; }
     
 
     
@@ -99,7 +98,7 @@ extends Parameter
 
     isDefault()
     {
-        return this.genValue.equals(this.defaultValue);
+        return this.value.equals(this.defaultValue);
     }
 
 
@@ -116,9 +115,9 @@ extends Parameter
         if (updateControl)
             this.control.setValue(value, false, false); 
 
-        super.setValue(value, createAction, dispatchEvents);
+        super.setValue(value, createAction, updateControl, dispatchEvents);
 
-        this.oldValue = this.genValue;
+        this.oldValue = this.value.copy();
     }    
 
 
@@ -205,7 +204,7 @@ extends Parameter
     
     toString()
     {
-        return this.genValue.toString();
+        return this.value.toString();
     }
 
 
@@ -217,7 +216,7 @@ extends Parameter
         if (id == '')
             id = this.id;
 
-        return pos + '["' + id  + '", "' + this.genValue.toString() + '"]';
+        return pos + '["' + id  + '", "' + this.value.toString() + '"]';
     }
 
 

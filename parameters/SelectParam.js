@@ -4,10 +4,6 @@ extends NumberParamBase
     options = [];
     
 
-    control;
-
-    
-
     constructor(id,
                 name,
                 showName,
@@ -25,7 +21,7 @@ extends NumberParamBase
 
         this.options        = options;
         
-        this.defaultValue   = defaultValue;
+        this.defaultValue   = new NumberValue(defaultValue);
 
 
         initNumberControl(
@@ -57,25 +53,8 @@ extends NumberParamBase
         if (hasOutput) this.initOutput(NUMBER_VALUE, this.output_genRequest);
 
             
-        //this.control.addEventListener('change',  () => { pushUpdateFromParam([this.node], this); /*this.setValue(this.value, false, false);*/ });
-        this.control.addEventListener('confirm', () => { this.setValue(this.value, true,  false); });
+        this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });
     }
-
-
-
-    // setValue(value, createAction, updateControl = true, dispatchEvents = true) 
-    // { 
-    //     console.assert(
-    //         value instanceof NumberValue,
-    //         'value must be a NumberValue');
-
-    //     this.preSetValue(value, createAction, dispatchEvents);
-
-    //     if (updateControl)
-    //         this.control.setValue(value.value, false, false); 
-
-    //     super.setValue(value, createAction, dispatchEvents);
-    // }    
 
 
 

@@ -11,7 +11,7 @@ function initNumberControlChildren(control)
 
 
 
-function initNumberControl(param, control, width, height, id, name, showName, min, max, defValue, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+function initNumberControl(param, control, width, height, id, name, showName, min, max, defaultValue, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
 {
     control.param                  = param;
      
@@ -23,7 +23,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
              
     control.min                    = min;
     control.max                    = max;
-    control.value                  = defValue;
+    control.value                  = defaultValue;
     control.acc                    = acc;
      
     control.dec                    =
@@ -113,9 +113,10 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
     control.setValue = function(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
+        //console.log('value =', value);
+        
         if (typeof value !== 'number')
         {
-            // console.log('value =', value);
             console.trace();
             console.assert(false, 'numberControl.setValue(value) is ' + typeof value + ', must be a number');
         }
@@ -202,6 +203,13 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
     control.update = function()
     {
+        if (typeof control.value !== 'number')
+        {
+            //console.log('value =', value);
+            console.trace();
+            console.assert(false, 'numberControl.update() value is ' + typeof control.value + ', must be a number');
+        }
+
         const sx =  control.getOffsetLeft();
         const sw =  control.getClientWidth();
         const sh =  control.getClientHeight();
@@ -353,8 +361,4 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.getOffsetLeft   = () => control.cachedOffsetLeft   = control.cachedOffsetLeft   || control.offsetLeft;
     control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.clientWidth;
     control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.clientHeight;
-
-
-
-    control.update();
 }

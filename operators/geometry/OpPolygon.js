@@ -55,8 +55,8 @@ extends OpGeometryBase
         {
             if (this.btnProportional.enabled)
             {
-                this.refWidth  = this.paramWidth .genValue;
-                this.refHeight = this.paramHeight.genValue;
+                this.refWidth  = this.paramWidth .value.value;
+                this.refHeight = this.paramHeight.value.value;
             }
         });
 
@@ -64,14 +64,14 @@ extends OpGeometryBase
         this.paramWidth.addEventListener('change', () =>
         {
             if (this.btnProportional.enabled)
-                this.paramHeight.setValue(this.paramWidth.genValue * this.refHeight / this.refWidth, false, true, false);
+                this.paramHeight.setValue(this.paramWidth.value.value * this.refHeight / this.refWidth, false, true, false);
         });
 
 
         this.paramHeight.addEventListener('change', () =>
         {
             if (this.btnProportional.enabled)
-                this.paramWidth.setValue(this.paramHeight.genValue * this.refWidth / this.refHeight, false, true, false);
+                this.paramWidth.setValue(this.paramHeight.value.value * this.refWidth / this.refHeight, false, true, false);
         });
     }
     

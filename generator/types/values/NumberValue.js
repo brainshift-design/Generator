@@ -13,7 +13,7 @@ extends GType
         if (typeof val !== 'number')
         { 
             console.trace();
-            console.assert(false, 'NumberValue.value must be a number');
+            console.assert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
         }
 
 
