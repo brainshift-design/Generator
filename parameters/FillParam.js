@@ -225,22 +225,22 @@ extends Parameter
         const rgbVal = dataColor2rgb(this.value.color.toDataColor());
 
         const rgbText = 
-            isValidRgb(rgbVal)
-            ? (isDark(rgbVal)
-               ? [1, 1, 1]
-               : [0, 0, 0])
+            this.opacityControl.value >= 50
+            ? (isDark(rgbVal) 
+                ? [0, 0, 0, 0.5] 
+                : [1, 1, 1, 0.8])
             : (isDarkMode()
-               ? [1, 1, 1]
-               : [0, 0, 0]);
+                ? [1, 1, 1, 0.8]
+                : [0, 0, 0, 0.5]);
 
 
         this.input.wireColor   = rgbVal;
         this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(rgbText, 0.12);
+        this.input.colorDark   = rgb_a(rgbText, isDark(rgbText) ? 0.12 : 0.44);
 
         this.output.wireColor  = rgbVal;
         this.output.colorLight =
-        this.output.colorDark  = rgb_a(rgbText, 0.12);
+        this.output.colorDark  = rgb_a(rgbText, isDark(rgbText) ? 0.12 : 0.44);
 
 
         this.checkers.style.background =
@@ -265,16 +265,18 @@ extends Parameter
         this.opacityControl.valueColorLight = 
         this.opacityControl.valueColorDark  = 'transparent';//rgba2style(rgb_a(rgbText, 0.12));
 
-        this.opacityControl.textColorLight  = 
-        this.opacityControl.textColorDark   = rgba2style(rgb_a(rgbText, 0.6));
+        this.  colorControl.textColorLight = 
+        this.  colorControl.textColorDark  = rgba2style(rgbText);
 
+        this.opacityControl.textColorLight = 
+        this.opacityControl.textColorDark  = rgba2style(rgbText);
 
         this.  colorControl.update();
         this.opacityControl.update();
 
 
         this.colorControl.style.backgroundColor = fillStyle;
-        this.colorControl.style.color           = rgba2style(rgb_a(rgbText, 0.6));
+        //this.colorControl.style.color           = rgba2style(rgb_a(rgbText, 0.6));
 
 
         if (this.input ) this.input .updateControl();

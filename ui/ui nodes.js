@@ -921,7 +921,7 @@ function uiSaveNodes(nodeIds)
         const json = nodeFromId(id).toJson();
 
         if (settings.logRawSaving)
-            console.log('%c' + json, 'background: #ddeeff');
+            console.log('%cSAVING\n––––––––––––––––––––––––––––––––\n' + json, 'background: #ddeeff');
 
         nodeJson.push(json);
     }

@@ -10404,9 +10404,9 @@ function rgb_a(rgb, a)
 
 
 
-function isDark(color, threshold = 0.71)
+function isDark(rgb, threshold = 0.71)
 {
-    return rgb2hclokl(color)[2] < threshold;
+    return rgb2hclokl(rgb)[2] < threshold;
 }
 
 
@@ -15592,9 +15592,9 @@ function rgb_a(rgb, a)
 
 
 
-function isDark(color, threshold = 0.71)
+function isDark(rgb, threshold = 0.71)
 {
-    return rgb2hclokl(color)[2] < threshold;
+    return rgb2hclokl(rgb)[2] < threshold;
 }
 
 
@@ -21801,6 +21801,12 @@ function initColorControl(param, control, width, height, id, name, showName, def
     control.dragScale              = dragScale;
     control.wheelScale             = wheelScale;
              
+    control.valueColorLight        = 'transparent';
+    control.textColorLight         = '#000';
+                
+    control.valueColorDark         = 'transparent';
+    control.textColorDark          = '#eee';
+
     control.fontSize               = 11;
              
     control.style.display          = 'inline';
@@ -21865,6 +21871,25 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
         control.value = value.copy();
 
+
+        const rgb = dataColor2rgb(control.value.toDataColor());
+
+        if (isValidRgb(rgb))
+        {
+            control.valueColorLight =
+            control.valueColorDark  = rgb2style(rgb);
+            control. textColorLight =
+            control. textColorDark  = isDark(rgb) ? '#fff8' : '#0008'
+        }
+        else
+        {
+            control.valueColorLight =
+            control.valueColorDark  = 'transparent';
+            control. textColorLight =
+            control. textColorDark  = '#fff8';
+        }
+
+
         control.update();
 
         if (   fireChangeEvent
@@ -21901,18 +21926,8 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
     control.updateColors = function()
     {
-        const rgb = dataColor2rgb(control.value.toDataColor());
-
-        if (isValidRgb(rgb))
-        {
-            control     .style.background = rgb2style(rgb);
-            control.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
-        }
-        else
-        {
-            control     .style.background = 'transparent';
-            control.text.style.color      = '#fff8';
-        }
+        control     .style.background = isDarkMode() ? control.valueColorDark : control.valueColorLight;
+        control.text.style.color      = isDarkMode() ? control. textColorDark : control. textColorLight;
     };
 
 
@@ -25396,22 +25411,22 @@ extends Parameter
         const rgbVal = dataColor2rgb(this.value.color.toDataColor());
 
         const rgbText = 
-            isValidRgb(rgbVal)
-            ? (isDark(rgbVal)
-               ? [1, 1, 1]
-               : [0, 0, 0])
+            this.opacityControl.value >= 50
+            ? (isDark(rgbVal) 
+                ? [0, 0, 0, 0.5] 
+                : [1, 1, 1, 0.8])
             : (isDarkMode()
-               ? [1, 1, 1]
-               : [0, 0, 0]);
+                ? [1, 1, 1, 0.8]
+                : [0, 0, 0, 0.5]);
 
 
         this.input.wireColor   = rgbVal;
         this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(rgbText, 0.12);
+        this.input.colorDark   = rgb_a(rgbText, isDark(rgbText) ? 0.12 : 0.44);
 
         this.output.wireColor  = rgbVal;
         this.output.colorLight =
-        this.output.colorDark  = rgb_a(rgbText, 0.12);
+        this.output.colorDark  = rgb_a(rgbText, isDark(rgbText) ? 0.12 : 0.44);
 
 
         this.checkers.style.background =
@@ -25436,16 +25451,18 @@ extends Parameter
         this.opacityControl.valueColorLight = 
         this.opacityControl.valueColorDark  = 'transparent';//rgba2style(rgb_a(rgbText, 0.12));
 
-        this.opacityControl.textColorLight  = 
-        this.opacityControl.textColorDark   = rgba2style(rgb_a(rgbText, 0.6));
+        this.  colorControl.textColorLight = 
+        this.  colorControl.textColorDark  = rgba2style(rgbText);
 
+        this.opacityControl.textColorLight = 
+        this.opacityControl.textColorDark  = rgba2style(rgbText);
 
         this.  colorControl.update();
         this.opacityControl.update();
 
 
         this.colorControl.style.backgroundColor = fillStyle;
-        this.colorControl.style.color           = rgba2style(rgb_a(rgbText, 0.6));
+        //this.colorControl.style.color           = rgba2style(rgb_a(rgbText, 0.6));
 
 
         if (this.input ) this.input .updateControl();
@@ -33035,7 +33052,7 @@ extends OpColorBase
         this.checkers.style.backgroundSize     = '26px 26px';
         this.checkers.style.backgroundPosition = '0 0, 13px 13px';
                         
-        
+
         const op = this.paramOpacity.value/100;
 
         this.header.style.background = //'transparent';
@@ -33075,7 +33092,7 @@ extends OpColorBase
 
         const darkText = 
               !this.canShowColor()
-            || rgb2hclokl(colBack)[2] > 0.71;
+            || isDark(colBack);
 
             
         const colText = 
@@ -35973,7 +35990,7 @@ var genMessagePosted = false;
 
 //uiRemoveConnsToNodes(['num10']);
 //uiRemoveSavedNodesAndConns(['color']);
-//uiRemoveAllSavedNodesAndConns();
+uiRemoveAllSavedNodesAndConns();
 
 uiLogAllSavedNodesAndConns();
 
@@ -37899,7 +37916,7 @@ function uiSaveNodes(nodeIds)
         const json = nodeFromId(id).toJson();
 
         if (settings.logRawSaving)
-            console.log('%c' + json, 'background: #ddeeff');
+            console.log('%cSAVING\n––––––––––––––––––––––––––––––––\n' + json, 'background: #ddeeff');
 
         nodeJson.push(json);
     }

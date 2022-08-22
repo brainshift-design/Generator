@@ -8645,9 +8645,9 @@ function rgb_a(rgb, a)
 
 
 
-function isDark(color, threshold = 0.71)
+function isDark(rgb, threshold = 0.71)
 {
-    return rgb2hclokl(color)[2] < threshold;
+    return rgb2hclokl(rgb)[2] < threshold;
 }
 
 

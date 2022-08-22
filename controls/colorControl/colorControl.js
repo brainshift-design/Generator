@@ -31,6 +31,12 @@ function initColorControl(param, control, width, height, id, name, showName, def
     control.dragScale              = dragScale;
     control.wheelScale             = wheelScale;
              
+    control.valueColorLight        = 'transparent';
+    control.textColorLight         = '#000';
+                
+    control.valueColorDark         = 'transparent';
+    control.textColorDark          = '#eee';
+
     control.fontSize               = 11;
              
     control.style.display          = 'inline';
@@ -95,6 +101,25 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
         control.value = value.copy();
 
+
+        const rgb = dataColor2rgb(control.value.toDataColor());
+
+        if (isValidRgb(rgb))
+        {
+            control.valueColorLight =
+            control.valueColorDark  = rgb2style(rgb);
+            control. textColorLight =
+            control. textColorDark  = isDark(rgb) ? '#fff8' : '#0008'
+        }
+        else
+        {
+            control.valueColorLight =
+            control.valueColorDark  = 'transparent';
+            control. textColorLight =
+            control. textColorDark  = '#fff8';
+        }
+
+
         control.update();
 
         if (   fireChangeEvent
@@ -131,18 +156,8 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
     control.updateColors = function()
     {
-        const rgb = dataColor2rgb(control.value.toDataColor());
-
-        if (isValidRgb(rgb))
-        {
-            control     .style.background = rgb2style(rgb);
-            control.text.style.color      = isDark(rgb) ? '#fff8' : '#0008'
-        }
-        else
-        {
-            control     .style.background = 'transparent';
-            control.text.style.color      = '#fff8';
-        }
+        control     .style.background = isDarkMode() ? control.valueColorDark : control.valueColorLight;
+        control.text.style.color      = isDarkMode() ? control. textColorDark : control. textColorLight;
     };
 
 

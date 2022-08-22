@@ -148,7 +148,7 @@ extends OpColorBase
         this.checkers.style.backgroundSize     = '26px 26px';
         this.checkers.style.backgroundPosition = '0 0, 13px 13px';
                         
-        
+
         const op = this.paramOpacity.value/100;
 
         this.header.style.background = //'transparent';
@@ -188,7 +188,7 @@ extends OpColorBase
 
         const darkText = 
               !this.canShowColor()
-            || rgb2hclokl(colBack)[2] > 0.71;
+            || isDark(colBack);
 
             
         const colText = 
