@@ -77,6 +77,14 @@ extends GOperator
                 if (this.strokeJoin  ) this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
                 if (this.strokeMiter ) this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
             }
+
+
+            genPushUpdateValue(parse, this.nodeId, 'fill',         this.fill        .value);
+            genPushUpdateValue(parse, this.nodeId, 'stroke',       this.stroke      .value);
+            genPushUpdateValue(parse, this.nodeId, 'strokeWeight', this.strokeWeight.value);
+            genPushUpdateValue(parse, this.nodeId, 'strokeFit',    this.strokeFit   .value);
+            genPushUpdateValue(parse, this.nodeId, 'strokeJoin',   this.strokeJoin  .value);
+            genPushUpdateValue(parse, this.nodeId, 'strokeMiter',  this.strokeMiter .value);
         }
     }
 }

@@ -1,8 +1,11 @@
-class OpColorFill
+class OpStroke
 extends OpColorBase
 {
-    paramColor;
-    paramOpacity;
+    paramFill;
+    paramStrokeWeight;
+    paramStrokeFit;
+    paramStrokeJoin;
+    paramStrokeMiter;
 
     checkers;
     colorBack;
@@ -10,25 +13,36 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_FILL, 'fill');
+        super(STROKE, 'stroke');
 
 
         this.colorBack = createDiv('colorBack');
         this.inner.appendChild(this.colorBack);
 
-        this.addInput (new Input(COLOR_FILL_TYPES));
-        this.addOutput(new Output(COLOR_FILL, this.output_genRequest));
+        this.addInput (new Input(STROKE_TYPES));
+        this.addOutput(new Output(STROKE, this.output_genRequest));
 
         this.initContentInput(this.inputs[0], 0);
 
 
-        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
-        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
+        this.addParam(this.paramFill         = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
+        this.addParam(this.paramStrokeWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
+        this.addParam(this.paramStrokeFit    = new SelectParam('fit',    'fit',    true,  true, true, ['inside', 'edge', 'outside'], 0));
+        this.addParam(this.paramStrokeJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramStrokeMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
 
-        //this.paramFill.setValue([GColorFill.default], false, true);
-        
-        this.paramOpacity.control.suffix = '%';
-    
+        this.paramStrokeMiter.control.setSuffix('°', true);
+
+
+        // const cond = () => 
+        //        this.paramStroke.value.isValid() //&& isValidRgb(dataColorToRgb(this.paramStroke.value.color.toDataColor()))
+        //     || this.paramStroke.connected;
+
+        // this.paramStrokeWeight.show = () => cond();
+        // this.paramStrokeFit   .show = () => cond();
+        // this.paramStrokeJoin  .show = () => cond();
+        // this.paramStrokeMiter .show = () => cond() && this.paramStrokeJoin.value == 0;
+
 
         this.checkers = createDiv('nodeHeaderCheckers');
         this.inner.insertBefore(this.checkers, this.header);
@@ -66,14 +80,14 @@ extends OpColorBase
 
             request.push(paramIds.join(','));
 
-            if (this.node.paramColor  .input.connected) request.push(...this.node.paramColor  .genRequest(gen));
-            if (this.node.paramOpacity.input.connected) request.push(...this.node.paramOpacity.genRequest(gen));
+            for (const param of this.node.params)
+                if (param.input && param.input.connected) 
+                    request.push(...param.genRequest(gen))
         }
         else
         {
-            request.push(
-                ...this.node.paramColor  .genRequest(gen),
-                ...this.node.paramOpacity.genRequest(gen));
+            for (const param of this.node.params)
+                request.push(...param.genRequest(gen))
         }
 
 
@@ -87,23 +101,32 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const fill    = values[paramIds.findIndex(id => id == 'value')];
+        const stroke = values[paramIds.findIndex(id => id == 'value')];
 
-        const color   = values[paramIds.findIndex(id => id == 'color')];
-        const opacity = values[paramIds.findIndex(id => id == 'opacity')];
+        const paramFill         = values[paramIds.findIndex(id => id == 'fill'        )];
+        const paramStrokeWeight = values[paramIds.findIndex(id => id == 'strokeWeight')];
+        const paramStrokeFit    = values[paramIds.findIndex(id => id == 'strokeFit'   )];
+        const paramStrokeJoin   = values[paramIds.findIndex(id => id == 'strokeJoin'  )];
+        const paramStrokeMiter  = values[paramIds.findIndex(id => id == 'strokeMiter' )];
 
 
-        if (fill.isValid())
+        if (stroke.isValid())
         {
-            this.paramColor  .setValue(fill.color,    false, true, false);
-            this.paramOpacity.setValue(fill.opacity,  false, true, false);
+            this.paramFill        .setValue(stroke.paramFill,         false, true, false);
+            this.paramStrokeWeight.setValue(stroke.paramStrokeWeight, false, true, false);
+            this.paramStrokeFit   .setValue(stroke.paramStrokeFit,    false, true, false);
+            this.paramStrokeJoin  .setValue(stroke.paramStrokeJoin,   false, true, false);
+            this.paramStrokeMiter .setValue(stroke.paramStrokeMiter,  false, true, false);
 
-            this._color = fill.color.toDataColor();
+            this._color = stroke.fill.color.toDataColor();
         }
         else
         {
-            this.paramColor  .setValue(color,   false, true, false);
-            this.paramOpacity.setValue(opacity, false, true, false);
+            this.paramFill        .setValue(paramFill,         false, true, false);
+            this.paramStrokeWeight.setValue(paramStrokeWeight, false, true, false);
+            this.paramStrokeFit   .setValue(paramStrokeFit,    false, true, false);
+            this.paramStrokeJoin  .setValue(paramStrokeJoin,   false, true, false);
+            this.paramStrokeMiter .setValue(paramStrokeMiter,  false, true, false);
             
             this._color = dataColor_NaN;
         }
@@ -116,11 +139,7 @@ extends OpColorBase
 
     updateHeader()
     {
-        //console.log(this.id + '.OpColorFill.updateHeader()');
-
-
-        // if (dataColorIsNaN(this._color))
-        //     return;
+        //console.log(this.id + '.OpStroke.updateHeader()');
 
 
         const colors = this.getHeaderColors();
@@ -149,11 +168,11 @@ extends OpColorBase
         this.checkers.style.backgroundPosition = '0 0, 13px 13px';
                         
 
-        const op = this.paramOpacity.value/100;
+        const op = 1;//this.paramFill.opacity.value/100;
 
         this.header.style.background = //'transparent';
             this.canShowColor()
-            ? colorStyleRgb_a(colors.back, op)
+            ? rgb2style_a(colors.back, op)
             : 'transparent';//isDarkMode()
             //? '#888088ee'
             //: '#ead8eaee';
@@ -171,7 +190,7 @@ extends OpColorBase
 
 
         this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colors.back, 45);
+        this.updateWarningOverlayStyle(colors.back);//, 45);
 
 
         Operator.prototype.updateHeader.call(this);

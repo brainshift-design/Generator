@@ -10,7 +10,7 @@ var genMessagePosted = false;
 
 //uiRemoveConnsToNodes(['num10']);
 //uiRemoveSavedNodesAndConns(['color']);
-uiRemoveAllSavedNodesAndConns();
+//uiRemoveAllSavedNodesAndConns();
 
 uiLogAllSavedNodesAndConns();
 

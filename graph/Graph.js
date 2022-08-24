@@ -313,7 +313,8 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case COLOR_STOP:         node = new OpColorStop();        break;
         case GRADIENT:           node = new OpGradient();         break;
 
-        case COLOR_FILL:         node = new OpColorFill();        break;
+        case FILL:               node = new OpFill();             break;
+        case STROKE:             node = new OpStroke();           break;
 
         case RECTANGLE:          node = new OpRectangle();        break;
         case LINE:               node = new OpLine();             break;

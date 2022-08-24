@@ -79,9 +79,6 @@ extends OpGeometryBase
 
             this.updateRound();
         });
-
-
-        this.updateParamDisplay();
     }
     
     
@@ -145,7 +142,7 @@ extends OpGeometryBase
         // overriding Operator.updateValues() here because 
         // all values are taken from the RectangleValue
 
-        const rect = values[paramIds.findIndex(id => id == RECTANGLE_VALUE)];
+        const rect = values[paramIds.findIndex(id => id == 'value')];
 
         setParamValue(this.paramX,      rect.x,      updateParamId);
         setParamValue(this.paramY,      rect.y,      updateParamId);

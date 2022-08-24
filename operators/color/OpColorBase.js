@@ -195,9 +195,9 @@ extends Operator
             && !this.forceShowWarning
             ? 'transparent'
             : 'repeating-linear-gradient('
-              + '-45deg, '
-              + 'transparent 0 7px,'
-              +  this.warningStyle + ' 7px 14px)';
+               + '-45deg, '
+               + 'transparent 0 7px,'
+               +  this.warningStyle + ' 7px 14px)';
 
         this._warningOverlay.style.display = 'block';
     }

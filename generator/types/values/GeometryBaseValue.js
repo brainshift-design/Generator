@@ -18,8 +18,8 @@ extends GType
 
         this.nodeId = nodeId; 
 
-        this.fill         = ColorFillValue.default.copy();
-        this.stroke       = ColorFillValue.NaN    .copy();
+        this.fill         = FillValue.default.copy();
+        this.stroke       = FillValue.NaN    .copy();
         this.strokeWeight = new NumberValue(1);
         this.strokeFit    = new NumberValue(0);
         this.strokeJoin   = new NumberValue(0);
@@ -102,8 +102,8 @@ extends GType
 
 function parseGeometryBaseValue(str, i, obj)
 {
-    const fill         = parseColorFillValue(str, i); i += fill        [1];
-    const stroke       = parseColorFillValue(str, i); i += stroke      [1];
+    const fill         = parseFillValue(str, i); i += fill        [1];
+    const stroke       = parseFillValue(str, i); i += stroke      [1];
     const strokeWeight = parseNumberValue   (str[i]); i += strokeWeight[1];
     const strokeFit    = parseNumberValue   (str[i]); i += strokeFit   [1];
     const strokeJoin   = parseNumberValue   (str[i]); i += strokeJoin  [1];

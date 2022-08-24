@@ -202,7 +202,7 @@ function initColorControlTextbox(control)
 
         control.dispatchEvent(e);
 
-
+        
         if (!e.preventSetValue)
         {
             if (success) 

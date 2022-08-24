@@ -155,7 +155,7 @@ extends OpColorBase
             if (  !isValidRgb(rgb0)
                 && isValidRgb(rgb1))
             {
-                this.warningStyle     = colorStyleRgb_a(invalid2validRgb(rgb0), 0.3);
+                this.warningStyle     = rgb2style_a(invalid2validRgb(rgb0), 0.3);
                 this.forceShowWarning = true;
             }
             else if ( isValidRgb(rgb0)

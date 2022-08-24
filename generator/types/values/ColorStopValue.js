@@ -6,7 +6,7 @@ extends GType
 
 
 
-    constructor(fill     = ColorFillValue.NaN,
+    constructor(fill     = FillValue.NaN,
                 position = NumberValue   .NaN)
     {
         super(COLOR_STOP_VALUE);
@@ -63,7 +63,7 @@ extends GType
 
 
     static NaN = new ColorStopValue(
-        ColorFillValue.NaN,
+        FillValue.NaN,
         NumberValue   .NaN);
 }
 
@@ -77,6 +77,6 @@ function parseColorStopValue(str)
     const stop = str.split(' ');
 
     return new ColorStopValue(
-        parseColorFillValue(str)[0],
+        parseFillValue(str)[0],
         parseNumberValue(stop[5])[0]);
 }

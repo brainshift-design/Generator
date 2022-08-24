@@ -3,7 +3,6 @@ function rgbFromType(type, active)
     switch (type)
     {
         case NUMBER_VALUE:    
-        
         case NUMBER:    
         case NUMBER_LIMITS:
         case NUMBER_ADD:
@@ -18,28 +17,34 @@ function rgbFromType(type, active)
                 : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
         case COLOR_VALUE:           
-        case COLOR_FILL_VALUE:
-
         case COLOR:           
         case COLOR_INTERPOLATE:
         case COLOR_VALIDATE:
         case COLOR_CONTRAST:
         case COLORBLIND:
-        case COLOR_FILL:
+                        
+        case FILL_VALUE:
+        case FILL:
+        
+        case STROKE_VALUE:
+        case STROKE:
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
 
         case RECTANGLE_VALUE: 
-        case LINE_VALUE: 
-        case ELLIPSE_VALUE: 
-        case POLYGON_VALUE: 
-        case STAR_VALUE: 
-
         case RECTANGLE: 
+
+        case LINE_VALUE: 
         case LINE: 
+
+        case ELLIPSE_VALUE: 
         case ELLIPSE: 
+
+        case POLYGON_VALUE: 
         case POLYGON: 
+
+        case STAR_VALUE: 
         case STAR: 
         //case COLOR_STROKE: 
             return active 

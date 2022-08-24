@@ -10,7 +10,8 @@
 ../generator/types/values/NumberValue.js
 
 ../generator/types/values/ColorValue.js
-../generator/types/values/ColorFillValue.js
+../generator/types/values/FillValue.js
+../generator/types/values/StrokeValue.js
 
 //../generator/types/values/ColorStopValue.js
 
@@ -40,9 +41,10 @@
 ../generator/types/color/GColorValidate.js
 
 
-../generator/types/color/GColorFill.js
+../generator/types/style/GFill.js
+../generator/types/style/GStroke.js
 
-../generator/types/color/GColorStop.js
+../generator/types/style/GColorStop.js
 
 
 ../generator/types/geometry/GGeometryBase.js

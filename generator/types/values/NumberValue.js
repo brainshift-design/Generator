@@ -62,7 +62,7 @@ extends GType
     {
         return !isNaN(this.value)
             ? numToString(this.value, this.decimals)
-            : INVALID;
+            : INVALID; // only NumberValue can do this, other _Values have to list all members
     }
 
 

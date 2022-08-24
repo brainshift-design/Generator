@@ -73,15 +73,22 @@ extends GGeometryBase
             }
 
 
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .value);
+            genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .value);
+            genPushUpdateValue(parse, this.nodeId, 'width',  this.width .value);
+            genPushUpdateValue(parse, this.nodeId, 'height', this.height.value);
+            genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .value);
+            genPushUpdateValue(parse, this.nodeId, 'round',  this.round .value);
+
+
             this.evalBase(parse, this.input);
 
 
             this.result.valid = true;
             this.valid        = true;
            
-            
-            genPushUpdateValue(parse, this.nodeId, RECTANGLE_VALUE, this.result);
-
 
             if (this.active)
                 genPushUpdateObject(

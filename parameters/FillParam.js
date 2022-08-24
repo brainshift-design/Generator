@@ -30,10 +30,10 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                defaultValue = ColorFillValue.NaN,
+                defaultValue = FillValue.NaN,
                 dragScale    = 0.05)
     {
-        super(COLOR_FILL, id, name);
+        super(FILL, id, name);
 
         this.checkers              = createDiv();
         this.controlWrapper        = createDiv();
@@ -100,8 +100,6 @@ extends Parameter
         this.opacityControl.style.width             = '40%';
         this.opacityControl.style.position          = 'absolute';
         this.opacityControl.style.right             = 0;
-        this.opacityControl.barTop                  = 0.8;
-        this.opacityControl.barBottom               = 1;
 
 
         this.  colorControl.text.style.transform    = 'translateX(-40%)';
@@ -128,13 +126,13 @@ extends Parameter
         this.div.appendChild(this.controlWrapper);
 
        
-        if (hasInput)  this.initInput(COLOR_FILL_TYPES);
-        if (hasOutput) this.initOutput(COLOR_FILL_VALUE, this.output_genRequest);
+        if (hasInput)  this.initInput(FILL_TYPES);
+        if (hasOutput) this.initOutput(FILL_VALUE, this.output_genRequest);
 
 
         this.colorControl.addEventListener('confirm', () =>
         { 
-            this.setValue(new ColorFillValue(
+            this.setValue(new FillValue(
                 this.colorControl.value, 
                 new NumberValue(this.opacityControl.value, this.opacityControl.dec)), 
                 true, false);
@@ -143,7 +141,7 @@ extends Parameter
 
         this.opacityControl.addEventListener('confirm', () =>
         {
-            this.setValue(new ColorFillValue(
+            this.setValue(new FillValue(
                 this.colorControl.value, 
                 new NumberValue(this.opacityControl.value, this.opacityControl.dec)), 
                 true, false);
@@ -155,13 +153,12 @@ extends Parameter
             if (!e.detail.success)
                 return;
 
-
-            if (!e.detail.value.equals(e.detail.oldValue))
+            if (e.detail.value != e.detail.oldValue)
             {
                 const  rgb = validHex2rgb(e.detail.value);
                 const _rgb = scaleColor(rgb, 'rgb');
 
-                this.setValue(ColorFillValue.createFromRgb(_rgb, this.opacityControl.value), true);
+                this.setValue(FillValue.createFromRgb(_rgb, this.opacityControl.value), true);
                 
                 e.preventSetValue = true;
             }
@@ -187,17 +184,17 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        if (!(value instanceof ColorFillValue))
+        if (!(value instanceof FillValue))
         {
             //console.trace();
-            console.assert(false, 'FillParam.setValue(value) is ' + typeof value + ', must be a ColorFillValue');
+            console.assert(false, 'FillParam.setValue(value) is ' + typeof value + ', must be a FillValue');
         }
 
 
         console.assert(
                value.type 
-            && value.type == COLOR_FILL_VALUE, 
-            'FillParam value.type must be COLOR_FILL_VALUE');
+            && value.type == FILL_VALUE, 
+            'FillParam value.type must be FILL_VALUE');
 
         this.preSetValue(value, createAction, dispatchEvents);
 
@@ -227,11 +224,11 @@ extends Parameter
         const rgbText = 
             this.opacityControl.value >= 50
             ? (isDark(rgbVal) 
-                ? [0, 0, 0, 0.5] 
-                : [1, 1, 1, 0.8])
+               ? [1, 1, 1, 0.8]
+               : [0, 0, 0, 0.5]) 
             : (isDarkMode()
-                ? [1, 1, 1, 0.8]
-                : [0, 0, 0, 0.5]);
+               ? [1, 1, 1, 0.8]
+               : [0, 0, 0, 0.5]);
 
 
         this.input.wireColor   = rgbVal;
@@ -259,17 +256,17 @@ extends Parameter
         
         const fillStyle = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
 
-        this.opacityControl.backColorLight = 
-        this.opacityControl.backColorDark  = fillStyle;
+        this.opacityControl.backColorLight  = 
+        this.opacityControl.backColorDark   = fillStyle;
 
         this.opacityControl.valueColorLight = 
         this.opacityControl.valueColorDark  = 'transparent';//rgba2style(rgb_a(rgbText, 0.12));
 
-        this.  colorControl.textColorLight = 
-        this.  colorControl.textColorDark  = rgba2style(rgbText);
+        this.  colorControl.textColorLight  = 
+        this.  colorControl.textColorDark   = rgba2style(rgbText);
 
-        this.opacityControl.textColorLight = 
-        this.opacityControl.textColorDark  = rgba2style(rgbText);
+        this.opacityControl.textColorLight  = 
+        this.opacityControl.textColorDark   = rgba2style(rgbText);
 
         this.  colorControl.update();
         this.opacityControl.update();
@@ -305,7 +302,7 @@ extends Parameter
             request.push(...pushInputOrParam(this.input, gen));
 
         else request.push( 
-            COLOR_FILL_VALUE, 
+            FILL_VALUE, 
             this.value.toString());
 
         return request;
@@ -360,6 +357,6 @@ extends Parameter
     
     loadParam(param)
     {
-        this.setValue(parseColorFillValue(param)[0], true, true, false);
+        this.setValue(parseFillValue(param)[0], true, true, false);
     }
 }

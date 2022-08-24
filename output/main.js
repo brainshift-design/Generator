@@ -67,15 +67,21 @@ const COLOR_TYPES = [
     COLOR_VALIDATE,
     COLORBLIND
 ];
-const COLOR_FILL_VALUE = 'CF'; // ???????? remove?
-const COLOR_FILL = 'CFILL';
-const COLOR_FILL_TYPES = [
-    COLOR_FILL_VALUE,
-    COLOR_FILL
+const FILL_VALUE = 'FL';
+const FILL = 'FILL';
+const FILL_TYPES = [
+    FILL_VALUE,
+    FILL
+];
+const STROKE_VALUE = 'SK';
+const STROKE = 'STRK';
+const STROKE_TYPES = [
+    STROKE_VALUE,
+    STROKE
 ];
 const COLOR_STOP_VALUE = 'CS';
 const COLOR_STOP = 'CSTOP';
-const GRADIENT_VALUE = 'G';
+const GRADIENT_VALUE = 'GR';
 const GRADIENT = 'GRAD';
 //const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
 const RECTANGLE_VALUE = 'R';
@@ -654,7 +660,7 @@ function getObjectStrokes(objStrokes) {
     //     const c = stroke[1].split(' ');
     //     switch (stroke[0])
     //     {
-    //         case COLOR_FILL:
+    //         case FILL:
     //             strokes.push(
     //             {
     //                 type: 'SOLID', 

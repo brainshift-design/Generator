@@ -16,7 +16,7 @@ extends OpColorBase
         this.addParam(this.paramFill     = new FillParam ('fill',     '',         false, true, true));
         this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 100, 0, 100));
 
-        //this.paramFill.setValue([ColorFillValue.default], false, true, false);
+        //this.paramFill.setValue([FillValue.default], false, true, false);
         
         this.paramPosition.control.suffix = '%';
     }
@@ -70,7 +70,7 @@ extends OpColorBase
         }
         else
         {
-            this.paramFill    .setValue([ColorFillValue.NaN], false, true, false);
+            this.paramFill    .setValue([FillValue.NaN], false, true, false);
             this.paramPosition.setValue( NumberValue   .NaN,  false, true, false);
             
             this._color = dataColor_NaN;

@@ -1,4 +1,4 @@
-class GColorFill
+class GFill
 extends GOperator
 {
     color   = null;
@@ -8,14 +8,14 @@ extends GOperator
 
     constructor(nodeId, active)
     {
-        super(COLOR_FILL, nodeId, active);
+        super(FILL, nodeId, active);
     }
 
 
 
     copy()
     {
-        const fill = new GColorFill(this.nodeId, this.active);
+        const fill = new GFill(this.nodeId, this.active);
 
         if (this.input) 
             fill.input = this.input.copy();
@@ -37,15 +37,15 @@ extends GOperator
                 this.result = this.input.eval(parse).copy();
 
                 console.assert(
-                    this.result.type == COLOR_FILL_VALUE,
-                    'GColorFill this.result.type must be COLOR_FILL_VALUE');
+                    this.result.type == FILL_VALUE,
+                    'GFill this.result.type must be FILL_VALUE');
 
                 if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
                 if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
             }
             else
             {
-                this.result = new ColorFillValue(
+                this.result = new FillValue(
                     ColorValue.createFromRgb(scaleColor(dataColor2rgb(this.color.eval(parse).toDataColor()), 'rgb')), 
                     this.opacity.eval(parse).copy());
             }
@@ -57,8 +57,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color);
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.color  .value);
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity.value);
         }
 
 

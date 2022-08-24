@@ -1,4 +1,4 @@
-class ColorFillValue
+class FillValue
 extends GType
 {
     color;
@@ -9,7 +9,7 @@ extends GType
     constructor(color   = ColorValue .NaN, 
                 opacity = NumberValue.NaN)
     {
-        super(COLOR_FILL_VALUE);
+        super(FILL_VALUE);
 
         this.color   = color  .copy();
         this.opacity = opacity.copy();
@@ -26,7 +26,7 @@ extends GType
             typeof opacity == 'number',
             'opacity must be a number');
 
-        return new ColorFillValue(
+        return new FillValue(
             ColorValue.create(1, r, g, b),
             new NumberValue(opacity));
     }
@@ -39,7 +39,7 @@ extends GType
             typeof opacity == 'number',
             'opacity must be a number');
 
-        return new ColorFillValue(
+        return new FillValue(
             ColorValue.createFromRgb(rgb),
             new NumberValue(opacity));
     }
@@ -48,7 +48,7 @@ extends GType
 
     copy()
     {
-        return new ColorFillValue(
+        return new FillValue(
             this.color  .copy(),
             this.opacity.copy());
     }
@@ -99,22 +99,22 @@ extends GType
 
 
 
-    static NaN = Object.freeze(new ColorFillValue(
+    static NaN = Object.freeze(new FillValue(
         ColorValue .NaN,
         NumberValue.NaN));
 
 
 
-    static default = Object.freeze(ColorFillValue.create(217, 217, 217, 100));
+    static default = Object.freeze(FillValue.create(217, 217, 217, 100));
 }
 
 
 
-function parseColorFillValue(str, i = -1)
+function parseFillValue(str, i = -1)
 {
     if (   i <  0 && str    == INVALID
         || i >= 0 && str[i] == INVALID)
-        return [ColorFillValue.NaN, 1];
+        return [FillValue.NaN, 1];
 
 
     if (i < 0)
@@ -135,6 +135,6 @@ function parseColorFillValue(str, i = -1)
 
     
     return [
-        new ColorFillValue(color, opacity[0]),
+        new FillValue(color, opacity[0]),
         i - iStart ];
 }

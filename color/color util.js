@@ -108,7 +108,7 @@ function rgba2style(rgba)
 
 
 
-function colorStyleRgb_a(rgb, a)
+function rgb2style_a(rgb, a)
 {
     return colorStyle_(rgb[0], rgb[1], rgb[2], a);
 }

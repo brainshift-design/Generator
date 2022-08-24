@@ -327,7 +327,7 @@ function getObjectStrokes(objStrokes)
 
     //     switch (stroke[0])
     //     {
-    //         case COLOR_FILL:
+    //         case FILL:
     //             strokes.push(
     //             {
     //                 type: 'SOLID', 

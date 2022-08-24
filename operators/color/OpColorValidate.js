@@ -239,7 +239,7 @@ console.log('correction.value =', correction.value);
     //     this.label.style.top = '40%';
 
     //     // const colors    = this.getHeaderColors();
-    //     // const findStyle = colorStyleRgb_a(colors.text, 0.35);
+    //     // const findStyle = rgb2style_a(colors.text, 0.35);
 
     //     // this.findBar     .style.outline    = '1px solid ' + findStyle;
     //     // this.findProgress.style.background = findStyle;

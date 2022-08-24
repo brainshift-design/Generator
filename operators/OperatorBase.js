@@ -11,7 +11,7 @@ extends Operator
         const colors = this.getHeaderColors();
 
 
-        this.header.style.backgroundColor = colorStyleRgb_a(colors.back, 0.95);
+        this.header.style.backgroundColor = rgb2style_a(colors.back, 0.95);
 
         this.label .style.color           = colors.textStyle;
         this.label .style.fontWeight      = this.active ? 'bold' : 'normal';

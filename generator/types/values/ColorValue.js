@@ -28,10 +28,10 @@ extends GType
 
     static create(space, c1, c2, c3)
     {
-        console.assert(typeof space == 'number', 'space must be a number');
-        console.assert(typeof c1    == 'number', 'c1 must be a number');
-        console.assert(typeof c2    == 'number', 'c2 must be a number');
-        console.assert(typeof c3    == 'number', 'c3 must be a number');
+        console.assert(typeof space == 'number', 'ColorValue.create() space must be a number');
+        console.assert(typeof c1    == 'number', 'ColorValue.create() c1 must be a number');
+        console.assert(typeof c2    == 'number', 'ColorValue.create() c2 must be a number');
+        console.assert(typeof c3    == 'number', 'ColorValue.create() c3 must be a number');
 
         return new ColorValue(
             new NumberValue(space),

@@ -97,20 +97,30 @@ const COLOR_TYPES =
 ];
 
 
-const COLOR_FILL_VALUE    = 'CF'; // ???????? remove?
-const COLOR_FILL          = 'CFILL';
+const FILL_VALUE    = 'FL';
+const FILL          = 'FILL';
 
-const COLOR_FILL_TYPES =
+const FILL_TYPES =
 [
-    COLOR_FILL_VALUE,
-    COLOR_FILL
+    FILL_VALUE,
+    FILL
+];
+
+
+const STROKE_VALUE    = 'SK';
+const STROKE          = 'STRK';
+
+const STROKE_TYPES =
+[
+    STROKE_VALUE,
+    STROKE
 ];
 
 
 const COLOR_STOP_VALUE    = 'CS';
 const COLOR_STOP          = 'CSTOP';
 
-const GRADIENT_VALUE      = 'G';
+const GRADIENT_VALUE      = 'GR';
 const GRADIENT            = 'GRAD';
 
 
@@ -1029,7 +1039,7 @@ function getObjectStrokes(objStrokes)
 
     //     switch (stroke[0])
     //     {
-    //         case COLOR_FILL:
+    //         case FILL:
     //             strokes.push(
     //             {
     //                 type: 'SOLID', 

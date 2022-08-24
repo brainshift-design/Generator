@@ -120,6 +120,11 @@ extends GOperator
 
 
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'space', this.space.value);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .value);
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .value);
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .value);
         }
 
 

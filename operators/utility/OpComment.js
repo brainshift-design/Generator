@@ -81,10 +81,10 @@ extends OperatorBase
 
         if (this.selected)
         {
-            this.label.style.color      = colorStyleRgb_a(hex2rgb(colFigmaBlue), 0.7);
+            this.label.style.color      = rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
             this.label.style.textShadow = '0 0 0 ' + colFigmaBlue;
 
-            this.textbox.style.color      = colorStyleRgb_a(hex2rgb(colFigmaBlue), 0.7);
+            this.textbox.style.color      = rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
             this.textbox.style.textShadow = '0 0 0 ' + colFigmaBlue;
         }
         else
