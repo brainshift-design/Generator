@@ -1,25 +1,9 @@
-/*
-    RECT 
-    id
-    N 0 
-    N 0 
-    N 100 
-    N 100
-    N 0
-    N 0
-*/
-
-
 function genParseGeometryBase(parse, obj, paramId)
 {
     switch (paramId)
     {
-    case 'fill':         obj.fill         = genParse(parse); break;
-    case 'stroke':       obj.stroke       = genParse(parse); break;
-    case 'strokeWeight': obj.strokeWeight = genParse(parse); break;
-    case 'strokeFit':    obj.strokeFit    = genParse(parse); break;
-    case 'strokeJoin':   obj.strokeJoin   = genParse(parse); break;
-    case 'strokeMiter':  obj.strokeMiter  = genParse(parse); break;
+    case 'fill':   obj.fill   = genParse(parse); break;
+    case 'stroke': obj.stroke = genParse(parse); break;
     }
 }
 

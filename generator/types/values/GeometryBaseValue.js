@@ -5,10 +5,6 @@ extends GType
 
     fill;
     stroke;
-    strokeWeight;
-    strokeFit;
-    strokeJoin;
-    strokeMiter;
 
 
 
@@ -19,11 +15,7 @@ extends GType
         this.nodeId = nodeId; 
 
         this.fill         = FillValue.default.copy();
-        this.stroke       = FillValue.NaN    .copy();
-        this.strokeWeight = new NumberValue(1);
-        this.strokeFit    = new NumberValue(0);
-        this.strokeJoin   = new NumberValue(0);
-        this.strokeMiter  = new NumberValue(28.96);
+        this.stroke       = StrokeValue.NaN  .copy();
     }
 
 
@@ -34,22 +26,14 @@ extends GType
 
         this.fill         = base.fill        .copy();
         this.stroke       = base.stroke      .copy();
-        this.strokeWeight = base.strokeWeight.copy();
-        this.strokeFit    = base.strokeFit   .copy();
-        this.strokeJoin   = base.strokeJoin  .copy();
-        this.strokeMiter  = base.strokeMiter .copy();
     }
 
 
 
     isValid()
     {
-        return this.fill.isValid()
-            && (  !this.stroke.isValid()
-                ||    this.strokeWeight.isValid()
-                   && this.strokeFit   .isValid()
-                   && this.strokeJoin  .isValid()
-                   && this.strokeMiter .isValid());
+        return this.fill  .isValid()
+           && !this.stroke.isValid();
     }
 
 
@@ -74,14 +58,10 @@ extends GType
         }
 
         return {
-            nodeId:       this.nodeId,
+            nodeId:  this.nodeId,
 
-            fills:        [this.fill  .toFigmaString()],
-            strokes:      [this.stroke.toFigmaString()],
-            strokeWeight: this.strokeWeight.value,
-            strokeAlign:  strokeAlign,
-            strokeJoin:   strokeJoin,
-            strokeMiter:  Math.min(this.strokeMiter.value, 16)
+            fills:   [this.fill  .toFigmaString()],
+            strokes: [this.stroke.toFigmaString()],
         }
     }
 
@@ -89,12 +69,8 @@ extends GType
 
     toString()
     {
-        return      this.fill        .toString()
-            + ' ' + this.stroke      .toString()
-            + ' ' + this.strokeWeight.toString()
-            + ' ' + this.strokeFit   .toString()
-            + ' ' + this.strokeJoin  .toString()
-            + ' ' + this.strokeMiter .toString();
+        return      this.fill  .toString()
+            + ' ' + this.stroke.toString();
     }
 }
 
@@ -102,19 +78,11 @@ extends GType
 
 function parseGeometryBaseValue(str, i, obj)
 {
-    const fill         = parseFillValue(str, i); i += fill        [1];
-    const stroke       = parseFillValue(str, i); i += stroke      [1];
-    const strokeWeight = parseNumberValue   (str[i]); i += strokeWeight[1];
-    const strokeFit    = parseNumberValue   (str[i]); i += strokeFit   [1];
-    const strokeJoin   = parseNumberValue   (str[i]); i += strokeJoin  [1];
-    const strokeMiter  = parseNumberValue   (str[i]); i += strokeMiter [1];
+    const fill   = parseFillValue  (str, i); i += fill  [1];
+    const stroke = parseStrokeValue(str, i); i += stroke[1];
 
-    obj.fill         = fill        [0];
-    obj.stroke       = stroke      [0];
-    obj.strokeWeight = strokeWeight[0];
-    obj.strokeFit    = strokeFit   [0];
-    obj.strokeJoin   = strokeJoin  [0];
-    obj.strokeMiter  = strokeMiter [0];
+    obj.fill   = fill  [0];
+    obj.stroke = stroke[0];
 
     return i;
 }

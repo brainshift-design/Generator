@@ -75,12 +75,12 @@ extends GGeometryBase
 
             genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .value);
-            genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .value);
-            genPushUpdateValue(parse, this.nodeId, 'width',  this.width .value);
-            genPushUpdateValue(parse, this.nodeId, 'height', this.height.value);
-            genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .value);
-            genPushUpdateValue(parse, this.nodeId, 'round',  this.round .value);
+            genPushUpdateValue(parse, this.nodeId, 'x',      this.x     );
+            genPushUpdateValue(parse, this.nodeId, 'y',      this.y     );
+            genPushUpdateValue(parse, this.nodeId, 'width',  this.width );
+            genPushUpdateValue(parse, this.nodeId, 'height', this.height);
+            genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle );
+            genPushUpdateValue(parse, this.nodeId, 'round',  this.round );
 
 
             this.evalBase(parse, this.input);

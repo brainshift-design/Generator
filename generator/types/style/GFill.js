@@ -57,8 +57,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.color  .value);
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity.value);
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
         }
 
 

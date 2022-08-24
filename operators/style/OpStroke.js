@@ -2,10 +2,10 @@ class OpStroke
 extends OpColorBase
 {
     paramFill;
-    paramStrokeWeight;
-    paramStrokeFit;
-    paramStrokeJoin;
-    paramStrokeMiter;
+    paramWeight;
+    paramFit;
+    paramJoin;
+    paramMiter;
 
     checkers;
     colorBack;
@@ -25,13 +25,13 @@ extends OpColorBase
         this.initContentInput(this.inputs[0], 0);
 
 
-        this.addParam(this.paramFill         = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
-        this.addParam(this.paramStrokeWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
-        this.addParam(this.paramStrokeFit    = new SelectParam('fit',    'fit',    true,  true, true, ['inside', 'edge', 'outside'], 0));
-        this.addParam(this.paramStrokeJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
-        this.addParam(this.paramStrokeMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
+        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
+        this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
+        this.addParam(this.paramFit    = new SelectParam('fit',    'fit',    true,  true, true, ['inside', 'edge', 'outside'], 0));
+        this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
 
-        this.paramStrokeMiter.control.setSuffix('°', true);
+        this.paramMiter.control.setSuffix('°', true);
 
 
         // const cond = () => 
@@ -103,30 +103,30 @@ extends OpColorBase
     {
         const stroke = values[paramIds.findIndex(id => id == 'value')];
 
-        const paramFill         = values[paramIds.findIndex(id => id == 'fill'        )];
-        const paramStrokeWeight = values[paramIds.findIndex(id => id == 'strokeWeight')];
-        const paramStrokeFit    = values[paramIds.findIndex(id => id == 'strokeFit'   )];
-        const paramStrokeJoin   = values[paramIds.findIndex(id => id == 'strokeJoin'  )];
-        const paramStrokeMiter  = values[paramIds.findIndex(id => id == 'strokeMiter' )];
+        const fill   = values[paramIds.findIndex(id => id == 'fill'  )];
+        const weight = values[paramIds.findIndex(id => id == 'weight')];
+        const fit    = values[paramIds.findIndex(id => id == 'fit'   )];
+        const join   = values[paramIds.findIndex(id => id == 'join'  )];
+        const miter  = values[paramIds.findIndex(id => id == 'miter' )];
 
 
         if (stroke.isValid())
         {
-            this.paramFill        .setValue(stroke.paramFill,         false, true, false);
-            this.paramStrokeWeight.setValue(stroke.paramStrokeWeight, false, true, false);
-            this.paramStrokeFit   .setValue(stroke.paramStrokeFit,    false, true, false);
-            this.paramStrokeJoin  .setValue(stroke.paramStrokeJoin,   false, true, false);
-            this.paramStrokeMiter .setValue(stroke.paramStrokeMiter,  false, true, false);
+            this.paramFill        .setValue(stroke.fill,   false, true, false);
+            this.paramWeight.setValue(stroke.weight, false, true, false);
+            this.paramFit   .setValue(stroke.fit,    false, true, false);
+            this.paramJoin  .setValue(stroke.join,   false, true, false);
+            this.paramMiter .setValue(stroke.miter,  false, true, false);
 
             this._color = stroke.fill.color.toDataColor();
         }
         else
         {
-            this.paramFill        .setValue(paramFill,         false, true, false);
-            this.paramStrokeWeight.setValue(paramStrokeWeight, false, true, false);
-            this.paramStrokeFit   .setValue(paramStrokeFit,    false, true, false);
-            this.paramStrokeJoin  .setValue(paramStrokeJoin,   false, true, false);
-            this.paramStrokeMiter .setValue(paramStrokeMiter,  false, true, false);
+            this.paramFill        .setValue(fill,   false, true, false);
+            this.paramWeight.setValue(weight, false, true, false);
+            this.paramFit   .setValue(fit,    false, true, false);
+            this.paramJoin  .setValue(join,   false, true, false);
+            this.paramMiter .setValue(miter,  false, true, false);
             
             this._color = dataColor_NaN;
         }

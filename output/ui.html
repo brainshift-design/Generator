@@ -5404,10 +5404,6 @@ extends GType
 
     fill;
     stroke;
-    strokeWeight;
-    strokeFit;
-    strokeJoin;
-    strokeMiter;
 
 
 
@@ -5418,11 +5414,7 @@ extends GType
         this.nodeId = nodeId; 
 
         this.fill         = FillValue.default.copy();
-        this.stroke       = FillValue.NaN    .copy();
-        this.strokeWeight = new NumberValue(1);
-        this.strokeFit    = new NumberValue(0);
-        this.strokeJoin   = new NumberValue(0);
-        this.strokeMiter  = new NumberValue(28.96);
+        this.stroke       = StrokeValue.NaN  .copy();
     }
 
 
@@ -5433,22 +5425,14 @@ extends GType
 
         this.fill         = base.fill        .copy();
         this.stroke       = base.stroke      .copy();
-        this.strokeWeight = base.strokeWeight.copy();
-        this.strokeFit    = base.strokeFit   .copy();
-        this.strokeJoin   = base.strokeJoin  .copy();
-        this.strokeMiter  = base.strokeMiter .copy();
     }
 
 
 
     isValid()
     {
-        return this.fill.isValid()
-            && (  !this.stroke.isValid()
-                ||    this.strokeWeight.isValid()
-                   && this.strokeFit   .isValid()
-                   && this.strokeJoin  .isValid()
-                   && this.strokeMiter .isValid());
+        return this.fill  .isValid()
+           && !this.stroke.isValid();
     }
 
 
@@ -5473,14 +5457,10 @@ extends GType
         }
 
         return {
-            nodeId:       this.nodeId,
+            nodeId:  this.nodeId,
 
-            fills:        [this.fill  .toFigmaString()],
-            strokes:      [this.stroke.toFigmaString()],
-            strokeWeight: this.strokeWeight.value,
-            strokeAlign:  strokeAlign,
-            strokeJoin:   strokeJoin,
-            strokeMiter:  Math.min(this.strokeMiter.value, 16)
+            fills:   [this.fill  .toFigmaString()],
+            strokes: [this.stroke.toFigmaString()],
         }
     }
 
@@ -5488,12 +5468,8 @@ extends GType
 
     toString()
     {
-        return      this.fill        .toString()
-            + ' ' + this.stroke      .toString()
-            + ' ' + this.strokeWeight.toString()
-            + ' ' + this.strokeFit   .toString()
-            + ' ' + this.strokeJoin  .toString()
-            + ' ' + this.strokeMiter .toString();
+        return      this.fill  .toString()
+            + ' ' + this.stroke.toString();
     }
 }
 
@@ -5501,19 +5477,11 @@ extends GType
 
 function parseGeometryBaseValue(str, i, obj)
 {
-    const fill         = parseFillValue(str, i); i += fill        [1];
-    const stroke       = parseFillValue(str, i); i += stroke      [1];
-    const strokeWeight = parseNumberValue   (str[i]); i += strokeWeight[1];
-    const strokeFit    = parseNumberValue   (str[i]); i += strokeFit   [1];
-    const strokeJoin   = parseNumberValue   (str[i]); i += strokeJoin  [1];
-    const strokeMiter  = parseNumberValue   (str[i]); i += strokeMiter [1];
+    const fill   = parseFillValue  (str, i); i += fill  [1];
+    const stroke = parseStrokeValue(str, i); i += stroke[1];
 
-    obj.fill         = fill        [0];
-    obj.stroke       = stroke      [0];
-    obj.strokeWeight = strokeWeight[0];
-    obj.strokeFit    = strokeFit   [0];
-    obj.strokeJoin   = strokeJoin  [0];
-    obj.strokeMiter  = strokeMiter [0];
+    obj.fill   = fill  [0];
+    obj.stroke = stroke[0];
 
     return i;
 }
@@ -6804,10 +6772,10 @@ extends GOperator
 
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'space', this.space.value);
-            genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .value);
-            genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .value);
-            genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .value);
+            genPushUpdateValue(parse, this.nodeId, 'space', this.space);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   );
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   );
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   );
         }
 
 
@@ -7370,8 +7338,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.color  .value);
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity.value);
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
         }
 
 
@@ -7437,11 +7405,11 @@ extends GOperator
 
                 genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
-                genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  .value);
-                genPushUpdateValue(parse, this.nodeId, 'weight', this.weight.value);
-                genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   .value);
-                genPushUpdateValue(parse, this.nodeId, 'join',   this.join  .value);
-                genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter .value);
+                genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
+                genPushUpdateValue(parse, this.nodeId, 'weight', this.weight);
+                genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   );
+                genPushUpdateValue(parse, this.nodeId, 'join',   this.join  );
+                genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter );
             }
             else
             {
@@ -7454,14 +7422,13 @@ extends GOperator
                 this.result = new StrokeValue(fill, weight, fit, join, miter);
 
 
-                console.log('fill =', fill);
                 genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
-                genPushUpdateValue(parse, this.nodeId, 'fill',   fill  .value);
-                genPushUpdateValue(parse, this.nodeId, 'weight', weight.value);
-                genPushUpdateValue(parse, this.nodeId, 'fit',    fit   .value);
-                genPushUpdateValue(parse, this.nodeId, 'join',   join  .value);
-                genPushUpdateValue(parse, this.nodeId, 'miter',  miter .value);
+                genPushUpdateValue(parse, this.nodeId, 'fill',   fill  );
+                genPushUpdateValue(parse, this.nodeId, 'weight', weight);
+                genPushUpdateValue(parse, this.nodeId, 'fit',    fit   );
+                genPushUpdateValue(parse, this.nodeId, 'join',   join  );
+                genPushUpdateValue(parse, this.nodeId, 'miter',  miter );
             }
         
 
@@ -7559,15 +7526,11 @@ extends GOperator
 class GGeometryBase
 extends GOperator
 {
-    fill         = null;
-    stroke       = null;
-    strokeWeight = null;
-    strokeFit    = null;
-    strokeJoin   = null;
-    strokeMiter  = null;
+    fill    = null;
+    stroke  = null;
     
 
-    objects      = [];
+    objects = [];
 
 
 
@@ -7591,12 +7554,8 @@ extends GOperator
 
     copyFromeBase(base)
     {
-        if (base.fill        ) this.fill         = base.fill        .copy();
-        if (base.stroke      ) this.stroke       = base.stroke      .copy();
-        if (base.strokeWeight) this.strokeWeight = base.strokeWeight.copy();
-        if (base.strokeFit   ) this.strokeFit    = base.strokeFit   .copy();
-        if (base.strokeJoin  ) this.strokeJoin   = base.strokeJoin  .copy();
-        if (base.strokeMiter ) this.strokeMiter  = base.strokeMiter .copy();
+        if (base.fill  ) this.fill   = base.fill  .copy();
+        if (base.stroke) this.stroke = base.stroke.copy();
 
         this.objects = [...base.objects];
     }
@@ -7605,7 +7564,7 @@ extends GOperator
 
     addUpdateObject(parse, nodeId, objects)
     {
-        if (this.active)
+        if (this.active) 
             genPushUpdateObject(parse, nodeId, objects);
         else 
             this.objects.push(objects);
@@ -7619,30 +7578,18 @@ extends GOperator
         {
             if (input)
             {
-                if (this.fill        ) this.result.fill         = this.fill        .eval(parse).copy();
-                if (this.stroke      ) this.result.stroke       = this.stroke      .eval(parse).copy();
-                if (this.strokeWeight) this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
-                if (this.strokeFit   ) this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
-                if (this.strokeJoin  ) this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
-                if (this.strokeMiter ) this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
+                if (this.fill  ) this.result.fill   = this.fill  .eval(parse).copy();
+                if (this.stroke) this.result.stroke = this.stroke.eval(parse).copy();
             }
             else
             {
-                                       this.result.fill         = this.fill        .eval(parse).copy();
-                                       this.result.stroke       = this.stroke      .eval(parse).copy();
-                if (this.strokeWeight) this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
-                if (this.strokeFit   ) this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
-                if (this.strokeJoin  ) this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
-                if (this.strokeMiter ) this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
+                this.result.fill   = this.fill  .eval(parse).copy();
+                this.result.stroke = this.stroke.eval(parse).copy();
             }
 
 
-            genPushUpdateValue(parse, this.nodeId, 'fill',         this.fill        .value);
-            genPushUpdateValue(parse, this.nodeId, 'stroke',       this.stroke      .value);
-            genPushUpdateValue(parse, this.nodeId, 'strokeWeight', this.strokeWeight.value);
-            genPushUpdateValue(parse, this.nodeId, 'strokeFit',    this.strokeFit   .value);
-            genPushUpdateValue(parse, this.nodeId, 'strokeJoin',   this.strokeJoin  .value);
-            genPushUpdateValue(parse, this.nodeId, 'strokeMiter',  this.strokeMiter .value);
+            genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
+            genPushUpdateValue(parse, this.nodeId, 'stroke', this.stroke);
         }
     }
 }
@@ -7725,12 +7672,12 @@ extends GGeometryBase
 
             genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .value);
-            genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .value);
-            genPushUpdateValue(parse, this.nodeId, 'width',  this.width .value);
-            genPushUpdateValue(parse, this.nodeId, 'height', this.height.value);
-            genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .value);
-            genPushUpdateValue(parse, this.nodeId, 'round',  this.round .value);
+            genPushUpdateValue(parse, this.nodeId, 'x',      this.x     );
+            genPushUpdateValue(parse, this.nodeId, 'y',      this.y     );
+            genPushUpdateValue(parse, this.nodeId, 'width',  this.width );
+            genPushUpdateValue(parse, this.nodeId, 'height', this.height);
+            genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle );
+            genPushUpdateValue(parse, this.nodeId, 'round',  this.round );
 
 
             this.evalBase(parse, this.input);
@@ -8433,10 +8380,6 @@ function genRequest(request)
 
 function genPushUpdateValue(parse, nodeId, paramId, value)
 {
-    console.log('genPushUpdateValue() paramId =', paramId);
-    console.log('genPushUpdateValue() value =', value);
-    console.log('genPushUpdateValue() value.type =', value.type);
-    
     const found = parse.updateValues.find(v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId
@@ -8892,28 +8835,12 @@ function genParseColorValidate(parse)
 }
 
 
-/*
-    RECT 
-    id
-    N 0 
-    N 0 
-    N 100 
-    N 100
-    N 0
-    N 0
-*/
-
-
 function genParseGeometryBase(parse, obj, paramId)
 {
     switch (paramId)
     {
-    case 'fill':         obj.fill         = genParse(parse); break;
-    case 'stroke':       obj.stroke       = genParse(parse); break;
-    case 'strokeWeight': obj.strokeWeight = genParse(parse); break;
-    case 'strokeFit':    obj.strokeFit    = genParse(parse); break;
-    case 'strokeJoin':   obj.strokeJoin   = genParse(parse); break;
-    case 'strokeMiter':  obj.strokeMiter  = genParse(parse); break;
+    case 'fill':   obj.fill   = genParse(parse); break;
+    case 'stroke': obj.stroke = genParse(parse); break;
     }
 }
 
@@ -17441,10 +17368,6 @@ extends GType
 
     fill;
     stroke;
-    strokeWeight;
-    strokeFit;
-    strokeJoin;
-    strokeMiter;
 
 
 
@@ -17455,11 +17378,7 @@ extends GType
         this.nodeId = nodeId; 
 
         this.fill         = FillValue.default.copy();
-        this.stroke       = FillValue.NaN    .copy();
-        this.strokeWeight = new NumberValue(1);
-        this.strokeFit    = new NumberValue(0);
-        this.strokeJoin   = new NumberValue(0);
-        this.strokeMiter  = new NumberValue(28.96);
+        this.stroke       = StrokeValue.NaN  .copy();
     }
 
 
@@ -17470,22 +17389,14 @@ extends GType
 
         this.fill         = base.fill        .copy();
         this.stroke       = base.stroke      .copy();
-        this.strokeWeight = base.strokeWeight.copy();
-        this.strokeFit    = base.strokeFit   .copy();
-        this.strokeJoin   = base.strokeJoin  .copy();
-        this.strokeMiter  = base.strokeMiter .copy();
     }
 
 
 
     isValid()
     {
-        return this.fill.isValid()
-            && (  !this.stroke.isValid()
-                ||    this.strokeWeight.isValid()
-                   && this.strokeFit   .isValid()
-                   && this.strokeJoin  .isValid()
-                   && this.strokeMiter .isValid());
+        return this.fill  .isValid()
+           && !this.stroke.isValid();
     }
 
 
@@ -17510,14 +17421,10 @@ extends GType
         }
 
         return {
-            nodeId:       this.nodeId,
+            nodeId:  this.nodeId,
 
-            fills:        [this.fill  .toFigmaString()],
-            strokes:      [this.stroke.toFigmaString()],
-            strokeWeight: this.strokeWeight.value,
-            strokeAlign:  strokeAlign,
-            strokeJoin:   strokeJoin,
-            strokeMiter:  Math.min(this.strokeMiter.value, 16)
+            fills:   [this.fill  .toFigmaString()],
+            strokes: [this.stroke.toFigmaString()],
         }
     }
 
@@ -17525,12 +17432,8 @@ extends GType
 
     toString()
     {
-        return      this.fill        .toString()
-            + ' ' + this.stroke      .toString()
-            + ' ' + this.strokeWeight.toString()
-            + ' ' + this.strokeFit   .toString()
-            + ' ' + this.strokeJoin  .toString()
-            + ' ' + this.strokeMiter .toString();
+        return      this.fill  .toString()
+            + ' ' + this.stroke.toString();
     }
 }
 
@@ -17538,19 +17441,11 @@ extends GType
 
 function parseGeometryBaseValue(str, i, obj)
 {
-    const fill         = parseFillValue(str, i); i += fill        [1];
-    const stroke       = parseFillValue(str, i); i += stroke      [1];
-    const strokeWeight = parseNumberValue   (str[i]); i += strokeWeight[1];
-    const strokeFit    = parseNumberValue   (str[i]); i += strokeFit   [1];
-    const strokeJoin   = parseNumberValue   (str[i]); i += strokeJoin  [1];
-    const strokeMiter  = parseNumberValue   (str[i]); i += strokeMiter [1];
+    const fill   = parseFillValue  (str, i); i += fill  [1];
+    const stroke = parseStrokeValue(str, i); i += stroke[1];
 
-    obj.fill         = fill        [0];
-    obj.stroke       = stroke      [0];
-    obj.strokeWeight = strokeWeight[0];
-    obj.strokeFit    = strokeFit   [0];
-    obj.strokeJoin   = strokeJoin  [0];
-    obj.strokeMiter  = strokeMiter [0];
+    obj.fill   = fill  [0];
+    obj.stroke = stroke[0];
 
     return i;
 }
@@ -18841,10 +18736,10 @@ extends GOperator
 
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'space', this.space.value);
-            genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .value);
-            genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .value);
-            genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .value);
+            genPushUpdateValue(parse, this.nodeId, 'space', this.space);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   );
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   );
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   );
         }
 
 
@@ -19407,8 +19302,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.color  .value);
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity.value);
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
         }
 
 
@@ -19474,11 +19369,11 @@ extends GOperator
 
                 genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
-                genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  .value);
-                genPushUpdateValue(parse, this.nodeId, 'weight', this.weight.value);
-                genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   .value);
-                genPushUpdateValue(parse, this.nodeId, 'join',   this.join  .value);
-                genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter .value);
+                genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
+                genPushUpdateValue(parse, this.nodeId, 'weight', this.weight);
+                genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   );
+                genPushUpdateValue(parse, this.nodeId, 'join',   this.join  );
+                genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter );
             }
             else
             {
@@ -19491,14 +19386,13 @@ extends GOperator
                 this.result = new StrokeValue(fill, weight, fit, join, miter);
 
 
-                console.log('fill =', fill);
                 genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
-                genPushUpdateValue(parse, this.nodeId, 'fill',   fill  .value);
-                genPushUpdateValue(parse, this.nodeId, 'weight', weight.value);
-                genPushUpdateValue(parse, this.nodeId, 'fit',    fit   .value);
-                genPushUpdateValue(parse, this.nodeId, 'join',   join  .value);
-                genPushUpdateValue(parse, this.nodeId, 'miter',  miter .value);
+                genPushUpdateValue(parse, this.nodeId, 'fill',   fill  );
+                genPushUpdateValue(parse, this.nodeId, 'weight', weight);
+                genPushUpdateValue(parse, this.nodeId, 'fit',    fit   );
+                genPushUpdateValue(parse, this.nodeId, 'join',   join  );
+                genPushUpdateValue(parse, this.nodeId, 'miter',  miter );
             }
         
 
@@ -19596,15 +19490,11 @@ extends GOperator
 class GGeometryBase
 extends GOperator
 {
-    fill         = null;
-    stroke       = null;
-    strokeWeight = null;
-    strokeFit    = null;
-    strokeJoin   = null;
-    strokeMiter  = null;
+    fill    = null;
+    stroke  = null;
     
 
-    objects      = [];
+    objects = [];
 
 
 
@@ -19628,12 +19518,8 @@ extends GOperator
 
     copyFromeBase(base)
     {
-        if (base.fill        ) this.fill         = base.fill        .copy();
-        if (base.stroke      ) this.stroke       = base.stroke      .copy();
-        if (base.strokeWeight) this.strokeWeight = base.strokeWeight.copy();
-        if (base.strokeFit   ) this.strokeFit    = base.strokeFit   .copy();
-        if (base.strokeJoin  ) this.strokeJoin   = base.strokeJoin  .copy();
-        if (base.strokeMiter ) this.strokeMiter  = base.strokeMiter .copy();
+        if (base.fill  ) this.fill   = base.fill  .copy();
+        if (base.stroke) this.stroke = base.stroke.copy();
 
         this.objects = [...base.objects];
     }
@@ -19642,7 +19528,7 @@ extends GOperator
 
     addUpdateObject(parse, nodeId, objects)
     {
-        if (this.active)
+        if (this.active) 
             genPushUpdateObject(parse, nodeId, objects);
         else 
             this.objects.push(objects);
@@ -19656,30 +19542,18 @@ extends GOperator
         {
             if (input)
             {
-                if (this.fill        ) this.result.fill         = this.fill        .eval(parse).copy();
-                if (this.stroke      ) this.result.stroke       = this.stroke      .eval(parse).copy();
-                if (this.strokeWeight) this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
-                if (this.strokeFit   ) this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
-                if (this.strokeJoin  ) this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
-                if (this.strokeMiter ) this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
+                if (this.fill  ) this.result.fill   = this.fill  .eval(parse).copy();
+                if (this.stroke) this.result.stroke = this.stroke.eval(parse).copy();
             }
             else
             {
-                                       this.result.fill         = this.fill        .eval(parse).copy();
-                                       this.result.stroke       = this.stroke      .eval(parse).copy();
-                if (this.strokeWeight) this.result.strokeWeight = this.strokeWeight.eval(parse).copy();
-                if (this.strokeFit   ) this.result.strokeFit    = this.strokeFit   .eval(parse).copy();
-                if (this.strokeJoin  ) this.result.strokeJoin   = this.strokeJoin  .eval(parse).copy();
-                if (this.strokeMiter ) this.result.strokeMiter  = this.strokeMiter .eval(parse).copy();
+                this.result.fill   = this.fill  .eval(parse).copy();
+                this.result.stroke = this.stroke.eval(parse).copy();
             }
 
 
-            genPushUpdateValue(parse, this.nodeId, 'fill',         this.fill        .value);
-            genPushUpdateValue(parse, this.nodeId, 'stroke',       this.stroke      .value);
-            genPushUpdateValue(parse, this.nodeId, 'strokeWeight', this.strokeWeight.value);
-            genPushUpdateValue(parse, this.nodeId, 'strokeFit',    this.strokeFit   .value);
-            genPushUpdateValue(parse, this.nodeId, 'strokeJoin',   this.strokeJoin  .value);
-            genPushUpdateValue(parse, this.nodeId, 'strokeMiter',  this.strokeMiter .value);
+            genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
+            genPushUpdateValue(parse, this.nodeId, 'stroke', this.stroke);
         }
     }
 }
@@ -19762,12 +19636,12 @@ extends GGeometryBase
 
             genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .value);
-            genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .value);
-            genPushUpdateValue(parse, this.nodeId, 'width',  this.width .value);
-            genPushUpdateValue(parse, this.nodeId, 'height', this.height.value);
-            genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .value);
-            genPushUpdateValue(parse, this.nodeId, 'round',  this.round .value);
+            genPushUpdateValue(parse, this.nodeId, 'x',      this.x     );
+            genPushUpdateValue(parse, this.nodeId, 'y',      this.y     );
+            genPushUpdateValue(parse, this.nodeId, 'width',  this.width );
+            genPushUpdateValue(parse, this.nodeId, 'height', this.height);
+            genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle );
+            genPushUpdateValue(parse, this.nodeId, 'round',  this.round );
 
 
             this.evalBase(parse, this.input);
@@ -26264,11 +26138,11 @@ extends Parameter
     
     
     get valueText() { return this.colorControl.valueText; }
-    set valueText(text) 
-    {
-        this.colorControl.valueText = text;
-        this.colorControl.update();
-    }
+    // set valueText(text) 
+    // {
+    //     this.colorControl.valueText = text;
+    //     this.updateControls();
+    // }
 
     
     value;
@@ -26382,6 +26256,7 @@ extends Parameter
 
 
         this.weightControl.text.style.transform     = 'translateX(-40%)';
+        this.   fitControl.text.style.transform     = 'translateX(-50%)';
         this.  joinControl.text.style.transform     = 'translateX(-70%)';
 
 
@@ -26461,7 +26336,8 @@ extends Parameter
     {
         if (!(value instanceof StrokeValue))
         {
-            //console.trace();
+            console.trace();
+            console.log('value =', value);
             console.assert(false, 'StrokeParam.setValue(value) is ' + typeof value + ', must be a StrokeValue');
         }
 
@@ -26495,10 +26371,11 @@ extends Parameter
 
     updateControls()
     {
-        const rgbVal = dataColor2rgb(this.value.color.toDataColor());
+        //const rgbVal = [0.5, 0.5, 0.5];
+        const rgbVal = dataColor2rgb(this.value.fill.color.toDataColor());
 
         const rgbText = 
-            this.opacityControl.value >= 50
+            true//this.opacityControl.value >= 50
             ? (isDark(rgbVal) 
                ? [1, 1, 1, 0.8]
                : [0, 0, 0, 0.5]) 
@@ -26523,14 +26400,14 @@ extends Parameter
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.display            = 'inline-block';//this.value.isValid() ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
 
         this.checkers.style.backgroundSize     = '20px 20px';
         this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
         
-        const fillStyle = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
+        const fillStyle = rgba2style(rgb_a(rgbVal, 1));//this.opacityControl.value/100));
 
         this.weightControl.backColorLight  = 
         this.weightControl.backColorDark   = 
@@ -26553,8 +26430,9 @@ extends Parameter
         this.  joinControl.textColorLight  = 
         this.  joinControl.textColorDark   = rgba2style(rgbText);
 
-        this.  colorControl.update();
-        this.opacityControl.update();
+        this.weightControl.update();
+        this.   fitControl.update();
+        this.  joinControl.update();
 
 
         // this.colorControl.style.backgroundColor = fillStyle;
@@ -34026,10 +33904,10 @@ class OpStroke
 extends OpColorBase
 {
     paramFill;
-    paramStrokeWeight;
-    paramStrokeFit;
-    paramStrokeJoin;
-    paramStrokeMiter;
+    paramWeight;
+    paramFit;
+    paramJoin;
+    paramMiter;
 
     checkers;
     colorBack;
@@ -34049,13 +33927,13 @@ extends OpColorBase
         this.initContentInput(this.inputs[0], 0);
 
 
-        this.addParam(this.paramFill         = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
-        this.addParam(this.paramStrokeWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
-        this.addParam(this.paramStrokeFit    = new SelectParam('fit',    'fit',    true,  true, true, ['inside', 'edge', 'outside'], 0));
-        this.addParam(this.paramStrokeJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
-        this.addParam(this.paramStrokeMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
+        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
+        this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
+        this.addParam(this.paramFit    = new SelectParam('fit',    'fit',    true,  true, true, ['inside', 'edge', 'outside'], 0));
+        this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
 
-        this.paramStrokeMiter.control.setSuffix('°', true);
+        this.paramMiter.control.setSuffix('°', true);
 
 
         // const cond = () => 
@@ -34127,30 +34005,30 @@ extends OpColorBase
     {
         const stroke = values[paramIds.findIndex(id => id == 'value')];
 
-        const paramFill         = values[paramIds.findIndex(id => id == 'fill'        )];
-        const paramStrokeWeight = values[paramIds.findIndex(id => id == 'strokeWeight')];
-        const paramStrokeFit    = values[paramIds.findIndex(id => id == 'strokeFit'   )];
-        const paramStrokeJoin   = values[paramIds.findIndex(id => id == 'strokeJoin'  )];
-        const paramStrokeMiter  = values[paramIds.findIndex(id => id == 'strokeMiter' )];
+        const fill   = values[paramIds.findIndex(id => id == 'fill'  )];
+        const weight = values[paramIds.findIndex(id => id == 'weight')];
+        const fit    = values[paramIds.findIndex(id => id == 'fit'   )];
+        const join   = values[paramIds.findIndex(id => id == 'join'  )];
+        const miter  = values[paramIds.findIndex(id => id == 'miter' )];
 
 
         if (stroke.isValid())
         {
-            this.paramFill        .setValue(stroke.paramFill,         false, true, false);
-            this.paramStrokeWeight.setValue(stroke.paramStrokeWeight, false, true, false);
-            this.paramStrokeFit   .setValue(stroke.paramStrokeFit,    false, true, false);
-            this.paramStrokeJoin  .setValue(stroke.paramStrokeJoin,   false, true, false);
-            this.paramStrokeMiter .setValue(stroke.paramStrokeMiter,  false, true, false);
+            this.paramFill        .setValue(stroke.fill,   false, true, false);
+            this.paramWeight.setValue(stroke.weight, false, true, false);
+            this.paramFit   .setValue(stroke.fit,    false, true, false);
+            this.paramJoin  .setValue(stroke.join,   false, true, false);
+            this.paramMiter .setValue(stroke.miter,  false, true, false);
 
             this._color = stroke.fill.color.toDataColor();
         }
         else
         {
-            this.paramFill        .setValue(paramFill,         false, true, false);
-            this.paramStrokeWeight.setValue(paramStrokeWeight, false, true, false);
-            this.paramStrokeFit   .setValue(paramStrokeFit,    false, true, false);
-            this.paramStrokeJoin  .setValue(paramStrokeJoin,   false, true, false);
-            this.paramStrokeMiter .setValue(paramStrokeMiter,  false, true, false);
+            this.paramFill        .setValue(fill,   false, true, false);
+            this.paramWeight.setValue(weight, false, true, false);
+            this.paramFit   .setValue(fit,    false, true, false);
+            this.paramJoin  .setValue(join,   false, true, false);
+            this.paramMiter .setValue(miter,  false, true, false);
             
             this._color = dataColor_NaN;
         }
@@ -34473,11 +34351,6 @@ extends OperatorBase
     paramFill;
     paramStroke;
 
-    paramStrokeWeight;
-    paramStrokeFit;
-    paramStrokeJoin;
-    paramStrokeMiter;
-
 
     btnProportional;
 
@@ -34495,20 +34368,16 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramFill         = new FillParam  ('fill',         'f',      false, true, true, FillValue.default));
-        this.addParam(this.paramStroke       = new StrokeParam('stroke',       's',      false, true, true, StrokeValue.NaN));
+        this.addParam(this.paramFill   = new FillParam  ('fill',   'f', false, true, true, FillValue.default));
+        this.addParam(this.paramStroke = new StrokeParam('stroke', 's', false, true, true, StrokeValue.NaN));
     } 
 
 
 
     updateBaseValues(updateParamId, obj)
     {
-        setParamValue(this.paramFill,         obj.fill,         updateParamId);
-        setParamValue(this.paramStroke,       obj.stroke,       updateParamId);
-        setParamValue(this.paramStrokeWeight, obj.strokeWeight, updateParamId);
-        setParamValue(this.paramStrokeFit,    obj.strokeFit,    updateParamId);
-        setParamValue(this.paramStrokeJoin,   obj.strokeJoin,   updateParamId);
-        setParamValue(this.paramStrokeMiter,  obj.strokeMiter,  updateParamId);
+        setParamValue(this.paramFill,   obj.fill,   updateParamId);
+        setParamValue(this.paramStroke, obj.stroke, updateParamId);
 
         this.updateParamDisplay();
     }

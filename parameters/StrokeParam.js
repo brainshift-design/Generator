@@ -15,11 +15,11 @@ extends Parameter
     
     
     get valueText() { return this.colorControl.valueText; }
-    set valueText(text) 
-    {
-        this.colorControl.valueText = text;
-        this.colorControl.update();
-    }
+    // set valueText(text) 
+    // {
+    //     this.colorControl.valueText = text;
+    //     this.updateControls();
+    // }
 
     
     value;
@@ -133,6 +133,7 @@ extends Parameter
 
 
         this.weightControl.text.style.transform     = 'translateX(-40%)';
+        this.   fitControl.text.style.transform     = 'translateX(-50%)';
         this.  joinControl.text.style.transform     = 'translateX(-70%)';
 
 
@@ -212,7 +213,8 @@ extends Parameter
     {
         if (!(value instanceof StrokeValue))
         {
-            //console.trace();
+            console.trace();
+            console.log('value =', value);
             console.assert(false, 'StrokeParam.setValue(value) is ' + typeof value + ', must be a StrokeValue');
         }
 
@@ -246,10 +248,11 @@ extends Parameter
 
     updateControls()
     {
-        const rgbVal = dataColor2rgb(this.value.color.toDataColor());
+        //const rgbVal = [0.5, 0.5, 0.5];
+        const rgbVal = dataColor2rgb(this.value.fill.color.toDataColor());
 
         const rgbText = 
-            this.opacityControl.value >= 50
+            true//this.opacityControl.value >= 50
             ? (isDark(rgbVal) 
                ? [1, 1, 1, 0.8]
                : [0, 0, 0, 0.5]) 
@@ -274,14 +277,14 @@ extends Parameter
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.display            = 'inline-block';//this.value.isValid() ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
 
         this.checkers.style.backgroundSize     = '20px 20px';
         this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
         
-        const fillStyle = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
+        const fillStyle = rgba2style(rgb_a(rgbVal, 1));//this.opacityControl.value/100));
 
         this.weightControl.backColorLight  = 
         this.weightControl.backColorDark   = 
@@ -304,8 +307,9 @@ extends Parameter
         this.  joinControl.textColorLight  = 
         this.  joinControl.textColorDark   = rgba2style(rgbText);
 
-        this.  colorControl.update();
-        this.opacityControl.update();
+        this.weightControl.update();
+        this.   fitControl.update();
+        this.  joinControl.update();
 
 
         // this.colorControl.style.backgroundColor = fillStyle;

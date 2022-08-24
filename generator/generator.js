@@ -55,10 +55,6 @@ function genRequest(request)
 
 function genPushUpdateValue(parse, nodeId, paramId, value)
 {
-    console.log('genPushUpdateValue() paramId =', paramId);
-    console.log('genPushUpdateValue() value =', value);
-    console.log('genPushUpdateValue() value.type =', value.type);
-    
     const found = parse.updateValues.find(v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId

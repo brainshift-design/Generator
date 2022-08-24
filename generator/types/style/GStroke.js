@@ -55,11 +55,11 @@ extends GOperator
 
                 genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
-                genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  .value);
-                genPushUpdateValue(parse, this.nodeId, 'weight', this.weight.value);
-                genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   .value);
-                genPushUpdateValue(parse, this.nodeId, 'join',   this.join  .value);
-                genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter .value);
+                genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
+                genPushUpdateValue(parse, this.nodeId, 'weight', this.weight);
+                genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   );
+                genPushUpdateValue(parse, this.nodeId, 'join',   this.join  );
+                genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter );
             }
             else
             {
@@ -72,14 +72,13 @@ extends GOperator
                 this.result = new StrokeValue(fill, weight, fit, join, miter);
 
 
-                console.log('fill =', fill);
                 genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
-                genPushUpdateValue(parse, this.nodeId, 'fill',   fill  .value);
-                genPushUpdateValue(parse, this.nodeId, 'weight', weight.value);
-                genPushUpdateValue(parse, this.nodeId, 'fit',    fit   .value);
-                genPushUpdateValue(parse, this.nodeId, 'join',   join  .value);
-                genPushUpdateValue(parse, this.nodeId, 'miter',  miter .value);
+                genPushUpdateValue(parse, this.nodeId, 'fill',   fill  );
+                genPushUpdateValue(parse, this.nodeId, 'weight', weight);
+                genPushUpdateValue(parse, this.nodeId, 'fit',    fit   );
+                genPushUpdateValue(parse, this.nodeId, 'join',   join  );
+                genPushUpdateValue(parse, this.nodeId, 'miter',  miter );
             }
         
 

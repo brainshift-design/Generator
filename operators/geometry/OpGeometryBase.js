@@ -4,11 +4,6 @@ extends OperatorBase
     paramFill;
     paramStroke;
 
-    paramStrokeWeight;
-    paramStrokeFit;
-    paramStrokeJoin;
-    paramStrokeMiter;
-
 
     btnProportional;
 
@@ -26,20 +21,16 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramFill         = new FillParam  ('fill',         'f',      false, true, true, FillValue.default));
-        this.addParam(this.paramStroke       = new StrokeParam('stroke',       's',      false, true, true, StrokeValue.NaN));
+        this.addParam(this.paramFill   = new FillParam  ('fill',   'f', false, true, true, FillValue.default));
+        this.addParam(this.paramStroke = new StrokeParam('stroke', 's', false, true, true, StrokeValue.NaN));
     } 
 
 
 
     updateBaseValues(updateParamId, obj)
     {
-        setParamValue(this.paramFill,         obj.fill,         updateParamId);
-        setParamValue(this.paramStroke,       obj.stroke,       updateParamId);
-        setParamValue(this.paramStrokeWeight, obj.strokeWeight, updateParamId);
-        setParamValue(this.paramStrokeFit,    obj.strokeFit,    updateParamId);
-        setParamValue(this.paramStrokeJoin,   obj.strokeJoin,   updateParamId);
-        setParamValue(this.paramStrokeMiter,  obj.strokeMiter,  updateParamId);
+        setParamValue(this.paramFill,   obj.fill,   updateParamId);
+        setParamValue(this.paramStroke, obj.stroke, updateParamId);
 
         this.updateParamDisplay();
     }
