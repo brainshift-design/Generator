@@ -75,13 +75,15 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
             for (const param of this.node.params)
-                if (param.input && param.input.connected) 
+                if (   param.input 
+                    && param.input.connected) 
                     paramIds.push(param.id);
 
             request.push(paramIds.join(','));
 
             for (const param of this.node.params)
-                if (param.input && param.input.connected) 
+                if (   param.input 
+                    && param.input.connected) 
                     request.push(...param.genRequest(gen))
         }
         else
@@ -112,7 +114,7 @@ extends OpColorBase
 
         if (stroke.isValid())
         {
-            this.paramFill        .setValue(stroke.fill,   false, true, false);
+            this.paramFill  .setValue(stroke.fill,   false, true, false);
             this.paramWeight.setValue(stroke.weight, false, true, false);
             this.paramFit   .setValue(stroke.fit,    false, true, false);
             this.paramJoin  .setValue(stroke.join,   false, true, false);
@@ -122,7 +124,7 @@ extends OpColorBase
         }
         else
         {
-            this.paramFill        .setValue(fill,   false, true, false);
+            this.paramFill  .setValue(fill,   false, true, false);
             this.paramWeight.setValue(weight, false, true, false);
             this.paramFit   .setValue(fit,    false, true, false);
             this.paramJoin  .setValue(join,   false, true, false);
@@ -212,7 +214,7 @@ extends OpColorBase
             
         const colText = 
             this.canShowColor()
-            ? (this.paramOpacity.value >= 50
+            ? (true//this.paramOpacity.value >= 50
                ? (darkText 
                   ? [0, 0, 0, 0.6] 
                   : [1, 1, 1, 0.7])

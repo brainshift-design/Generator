@@ -9,16 +9,16 @@ extends GOperator
 
 
 
-    constructor(type, nodeId, active)
+    constructor(nodeId, active)
     {
-        super(type, nodeId, active);
+        super(STROKE, nodeId, active);
     }
 
 
 
     copy()
     {
-        const stroke = new GStroke(this.type, this.nodeId, this.active);
+        const stroke = new GStroke(this.nodeId, this.active);
 
         if (this.input) 
             stroke.input = this.input.copy();
@@ -38,6 +38,7 @@ extends GOperator
     {
         if (!this.valid)
         {
+            console.log('this.nodeId =', this.nodeId);
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();

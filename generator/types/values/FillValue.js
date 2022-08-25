@@ -65,7 +65,8 @@ extends GType
 
     equals(fill)
     {
-        return this.color  .equals(fill.color  )
+        return fill
+            && this.color  .equals(fill.color  )
             && this.opacity.equals(fill.opacity);
     }
 
@@ -92,9 +93,9 @@ extends GType
 
 
 
-    toFigmaString()
+    toFigma()
     {
-        return ['SOLID', this.toString()];
+        return [['SOLID', this.toString()]];
     }
 
 
@@ -129,12 +130,12 @@ function parseFillValue(str, i = -1)
     const r = parseNumberValue(str[i]); i += r[1];
     const g = parseNumberValue(str[i]); i += g[1];
     const b = parseNumberValue(str[i]); i += b[1];
+    const a = parseNumberValue(str[i]); i += a[1];
 
-    const color   = new ColorValue(new NumberValue(1), r[0], g[0], b[0]);
-    const opacity = parseNumberValue(str[i]); i += opacity[1];
+    const color = new ColorValue(new NumberValue(1), r[0], g[0], b[0]);
 
     
     return [
-        new FillValue(color, opacity[0]),
+        new FillValue(color, a[0]),
         i - iStart ];
 }

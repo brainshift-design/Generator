@@ -59,13 +59,15 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
             for (const param of this.node.params)
-                if (param.input && param.input.connected) 
+                if (   param.input 
+                    && param.input.connected) 
                     paramIds.push(param.id);
 
             request.push(paramIds.join(','));
 
             for (const param of this.node.params)
-                if (param.input && param.input.connected) 
+                if (   param.input 
+                    && param.input.connected) 
                     request.push(...param.genRequest(gen))
         }
         else

@@ -53,6 +53,6 @@ class GType
 
     toString() 
     { 
-        return type; 
+        return this.type; 
     }
 }

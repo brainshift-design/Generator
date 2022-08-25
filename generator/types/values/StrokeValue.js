@@ -15,6 +15,13 @@ extends GType
                 join   = NumberValue.NaN,
                 miter  = NumberValue.NaN)
     {
+        if (fill.type != FILL_VALUE)
+        {
+            console.trace();
+            console.assert(false, 'fill.type must be FILL_VALUE');
+        }
+
+
         super(STROKE_VALUE);
 
         this.fill   = fill  .copy();
@@ -80,7 +87,8 @@ extends GType
 
     equals(stroke)
     {
-        return this.fill  .equals(stroke.fill  )
+        return stroke
+            && this.fill  .equals(stroke.fill  )
             && this.weight.equals(stroke.weight)
             && this.fit   .equals(stroke.fit   )
             && this.join  .equals(stroke.join  )
@@ -109,10 +117,34 @@ extends GType
 
 
 
-    // toFigmaString()
-    // {
-    //     return ['SOLID', this.toString()];
-    // }
+    toFigma()
+    {
+        let align, join;
+
+        switch (this.fit.value)
+        {
+            case 0: align = 'INSIDE';  break;
+            case 1: align = 'CENTER';  break;
+            case 2: align = 'OUTSIDE'; break;
+        }
+        
+        switch (this.join.value)
+        {
+            case 0: join = 'MITER'; break;
+            case 1: join = 'BEVEL'; break;
+            case 2: join = 'ROUND'; break;
+        }
+
+        return this.isValid()
+            ? {
+                  strokes:          this.fill.toFigma(),
+                  strokeWeight:     this.weight.value,
+                  strokeAlign:      align,
+                  strokeJoin:       join,
+                  strokeMiterLimit: this.miter.value
+              }
+            : {};
+    }
 
 
 
@@ -128,8 +160,8 @@ extends GType
     static default = Object.freeze(new StrokeValue(
         FillValue.create(0, 0, 0, 100),
         new NumberValue(1),
-        new NumberValue(1),
-        new NumberValue(1),
+        new NumberValue(0),
+        new NumberValue(0),
         new NumberValue(28.96)));
 }
 
@@ -151,7 +183,7 @@ function parseStrokeValue(str, i = -1)
 
     const iStart = i;
 
-    const fill   = parseFillValue  (str[i]); i += fill  [1];
+    const fill   = parseFillValue  (str, i); i += fill  [1];
     const weight = parseNumberValue(str[i]); i += weight[1];
     const fit    = parseNumberValue(str[i]); i += fit   [1];
     const join   = parseNumberValue(str[i]); i += join  [1];

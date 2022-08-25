@@ -96,8 +96,8 @@ function clearLastUpdate()
 
 function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, updateObjects)
 {
-    //console.log('updateValues =', updateValues);
     //console.log('genUpdateValuesAndObjects()');
+    //console.log('updateValues =', updateValues);
 
     if (   updateValues .length == 0
         && updateObjects.length == 0)

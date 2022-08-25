@@ -303,47 +303,47 @@ function getObjectFills(objFills)
 
 function setObjectStrokes(obj, src)
 {
-    if (   src.strokes !== null
+    if (   src.strokes != null
         && src.strokes.length > 0)
     {
-        obj.strokes = getObjectStrokes(src.strokes);
+        obj.strokes = getObjectFills(src.strokes);
 
         obj.strokeWeight     = Math.max(0, src.strokeWeight);
         obj.strokeAlign      = src.strokeAlign;
         obj.strokeJoin       = src.strokeJoin;
-        obj.strokeMiterLimit = Math.min(Math.max(0, src.strokeMiter), 16);
+        obj.strokeMiterLimit = Math.min(Math.max(0, src.strokeMiterLimit), 16);
     }
 }
 
 
 
-function getObjectStrokes(objStrokes)
-{
-    const strokes = [];
+// function getObjectStrokes(objStrokes)
+// {
+//     const strokes = [];
 
-    // for (const stroke of objStrokes)
-    // {
-    //     const c = stroke[1].split(' ');
+//     for (const stroke of objStrokes)
+//     {
+//         const c = stroke[1].split(' ');
 
-    //     switch (stroke[0])
-    //     {
-    //         case FILL:
-    //             strokes.push(
-    //             {
-    //                 type: 'SOLID', 
-    //                 color: {
-    //                     r: Math.min(Math.max(0, parseFloat(c[0])), 1), 
-    //                     g: Math.min(Math.max(0, parseFloat(c[1])), 1), 
-    //                     b: Math.min(Math.max(0, parseFloat(c[2])), 1) },
-    //                 opacity: parseFloat(stroke[2])
-    //             });
+//         switch (stroke[0])
+//         {
+//             case FILL:
+//                 strokes.push(
+//                 {
+//                     type: 'SOLID', 
+//                     color: {
+//                         r: Math.min(Math.max(0, parseFloat(c[0])), 1), 
+//                         g: Math.min(Math.max(0, parseFloat(c[1])), 1), 
+//                         b: Math.min(Math.max(0, parseFloat(c[2])), 1) },
+//                     opacity: parseFloat(stroke[2])
+//                 });
 
-    //             break;
-    //     }
-    // }
+//                 break;
+//         }
+//     }
 
-    return strokes;
-}
+//     return strokes;
+// }
 
 
 

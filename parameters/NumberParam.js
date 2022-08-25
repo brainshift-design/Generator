@@ -67,17 +67,17 @@ extends NumberParamBase
             if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
                 && dec >= oldDec)
             {
-                this.setValue(new NumberValue(e.detail.value, dec), true);
+                this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
                 e.preventSetValue = true;
             }
             else if (this.allowEditDecimals)
             {
-                if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
+                if (Math.abs(parseFloat(e.detail.value) - parseFloat(e.detail.oldValue)) <= Number.EPSILON)
                     dec += Math.log10(this.control.valueScale);
                 else 
                     dec = oldDec;
 
-                this.setValue(new NumberValue(e.detail.value, dec), true);
+                this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
                 e.preventSetValue = true;
             }
         });

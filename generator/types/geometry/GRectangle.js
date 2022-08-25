@@ -73,7 +73,7 @@ extends GGeometryBase
             }
 
 
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
+            //genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
             genPushUpdateValue(parse, this.nodeId, 'x',      this.x     );
             genPushUpdateValue(parse, this.nodeId, 'y',      this.y     );

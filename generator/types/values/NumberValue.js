@@ -45,7 +45,8 @@ extends GType
 
     equals(num)
     {
-        return this.value    == num.value
+        return num
+            && this.value    == num.value
             && this.decimals == num.decimals;
     }
 
@@ -78,7 +79,7 @@ function parseNumberValue(str)
 {
     const num = 
         str == INVALID
-        ? new NumberValue(Number.NaN, 0)
+        ? NumberValue.NaN
         : new NumberValue(
               parseFloat(str),
               decCount(str));

@@ -72,7 +72,8 @@ extends GType
 
     equals(col)
     {
-        return this.space.equals(col.space)
+        return col
+            && this.space.equals(col.space)
             && this.c1   .equals(col.c1   )
             && this.c2   .equals(col.c2   )
             && this.c3   .equals(col.c3   );

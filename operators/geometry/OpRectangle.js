@@ -142,16 +142,21 @@ extends OpGeometryBase
         // overriding Operator.updateValues() here because 
         // all values are taken from the RectangleValue
 
-        const rect = values[paramIds.findIndex(id => id == 'value')];
+        const x      = values[paramIds.findIndex(id => id == 'x'     )];
+        const y      = values[paramIds.findIndex(id => id == 'y'     )];
+        const width  = values[paramIds.findIndex(id => id == 'width' )];
+        const height = values[paramIds.findIndex(id => id == 'height')];
+        const angle  = values[paramIds.findIndex(id => id == 'angle' )];
+        const round  = values[paramIds.findIndex(id => id == 'round' )];
 
-        setParamValue(this.paramX,      rect.x,      updateParamId);
-        setParamValue(this.paramY,      rect.y,      updateParamId);
-        setParamValue(this.paramWidth,  rect.width,  updateParamId);
-        setParamValue(this.paramHeight, rect.height, updateParamId);
-        setParamValue(this.paramAngle,  rect.angle,  updateParamId);
-        setParamValue(this.paramRound,  rect.round,  updateParamId);
+        setParamValue(this.paramX,      x,      updateParamId);
+        setParamValue(this.paramY,      y,      updateParamId);
+        setParamValue(this.paramWidth,  width,  updateParamId);
+        setParamValue(this.paramHeight, height, updateParamId);
+        setParamValue(this.paramAngle,  angle,  updateParamId);
+        setParamValue(this.paramRound,  round,  updateParamId);
 
-        this.updateBaseValues(updateParamId, rect);
+        this.updateBaseValues(updateParamId, paramIds, values);
     }
 
 

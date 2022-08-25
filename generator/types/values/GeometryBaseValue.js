@@ -1,3 +1,8 @@
+/*
+    This is getting closer to Figma now, so here the format changes,
+    and objects hold stroke values directly, which incoming stroke values just set.
+*/
+
 class GeometryBaseValue
 extends GType
 {
@@ -14,18 +19,18 @@ extends GType
 
         this.nodeId = nodeId; 
 
-        this.fill         = FillValue.default.copy();
-        this.stroke       = StrokeValue.NaN  .copy();
+        this.fill   = FillValue.default.copy();
+        this.stroke = StrokeValue.NaN  .copy();
     }
 
 
 
     copyBase(base)
     {
-        this.nodeId  = base.nodeId;
+        this.nodeId = base.nodeId;
 
-        this.fill         = base.fill        .copy();
-        this.stroke       = base.stroke      .copy();
+        this.fill   = base.fill  .copy();
+        this.stroke = base.stroke.copy();
     }
 
 
@@ -40,28 +45,12 @@ extends GType
 
     toFigmaObject()
     {
-        let strokeAlign, 
-            strokeJoin;
-
-        switch (this.strokeFit.value)
-        {
-            case 0: strokeAlign = 'INSIDE';  break;
-            case 1: strokeAlign = 'CENTER';  break;
-            case 2: strokeAlign = 'OUTSIDE'; break;
-        }
-        
-        switch (this.strokeJoin.value)
-        {
-            case 0: strokeJoin = 'MITER'; break;
-            case 1: strokeJoin = 'BEVEL'; break;
-            case 2: strokeJoin = 'ROUND'; break;
-        }
-
         return {
-            nodeId:  this.nodeId,
+            nodeId: this.nodeId,
 
-            fills:   [this.fill  .toFigmaString()],
-            strokes: [this.stroke.toFigmaString()],
+            fills: this.fill.toFigma(),
+            
+            ...this.stroke.toFigma()
         }
     }
 

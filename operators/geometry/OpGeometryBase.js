@@ -27,10 +27,13 @@ extends OperatorBase
 
 
 
-    updateBaseValues(updateParamId, obj)
+    updateBaseValues(updateParamId, paramIds, values)
     {
-        setParamValue(this.paramFill,   obj.fill,   updateParamId);
-        setParamValue(this.paramStroke, obj.stroke, updateParamId);
+        const fill   = values[paramIds.findIndex(id => id == 'fill'  )];
+        const stroke = values[paramIds.findIndex(id => id == 'stroke')];
+
+        setParamValue(this.paramFill,   fill,   updateParamId);
+        setParamValue(this.paramStroke, stroke, updateParamId);
 
         this.updateParamDisplay();
     }

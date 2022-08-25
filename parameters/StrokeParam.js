@@ -165,9 +165,11 @@ extends Parameter
         this.weightControl.addEventListener('confirm', () =>
         { 
             this.setValue(new StrokeValue(
+                this.value.fill,
                 new NumberValue(this.weightControl.value, this.weightControl.dec), 
                 new NumberValue(this.   fitControl.value, this.   fitControl.dec), 
-                new NumberValue(this.  joinControl.value, this.  joinControl.dec)), 
+                new NumberValue(this.  joinControl.value, this.  joinControl.dec),
+                this.value.miter), 
                 true, false);
         });
 
@@ -175,9 +177,11 @@ extends Parameter
         this.fitControl.addEventListener('confirm', () =>
         { 
             this.setValue(new StrokeValue(
+                this.value.fill,
                 new NumberValue(this.weightControl.value, this.weightControl.dec), 
                 new NumberValue(this.   fitControl.value, this.   fitControl.dec), 
-                new NumberValue(this.  joinControl.value, this.  joinControl.dec)), 
+                new NumberValue(this.  joinControl.value, this.  joinControl.dec), 
+                this.value.miter), 
                 true, false);
         });
 
@@ -185,9 +189,11 @@ extends Parameter
         this.joinControl.addEventListener('confirm', () =>
         { 
             this.setValue(new StrokeValue(
+                this.value.fill,
                 new NumberValue(this.weightControl.value, this.weightControl.dec), 
                 new NumberValue(this.   fitControl.value, this.   fitControl.dec), 
-                new NumberValue(this.  joinControl.value, this.  joinControl.dec)), 
+                new NumberValue(this.  joinControl.value, this.  joinControl.dec), 
+                this.value.miter), 
                 true, false);
         });
     }
@@ -248,6 +254,7 @@ extends Parameter
 
     updateControls()
     {
+        console.log('stroke value =', this.value);
         //const rgbVal = [0.5, 0.5, 0.5];
         const rgbVal = dataColor2rgb(this.value.fill.color.toDataColor());
 

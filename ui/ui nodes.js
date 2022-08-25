@@ -818,10 +818,10 @@ function uiUpdateGraph()
 
 function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 {
-    //console.log('raw values = ', values);
+    console.log('raw update values = ', values);
 
     if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
-    if (settings.lobObjectUpdates) logObjectUpdates(objects);
+    if (settings.logObjectUpdates) logObjectUpdates(objects);
 
 
     const nodes = [];
@@ -872,7 +872,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                     case POLYGON_VALUE:    value = parsePolygonValue  (values[i++])[0]; break;
                     case STAR_VALUE:       value = parseStarValue     (values[i++])[0]; break;
                     
-                    default:               console.assert(false, 'unknown type');
+                    default:               console.assert(false, 'unknown type \'' + type + '\'');
                 }
 
                 if (value.nodeId)

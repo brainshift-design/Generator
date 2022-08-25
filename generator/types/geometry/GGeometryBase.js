@@ -63,8 +63,8 @@ extends GOperator
             }
 
 
-            genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
-            genPushUpdateValue(parse, this.nodeId, 'stroke', this.stroke);
+            genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
+            genPushUpdateValue(parse, this.nodeId, 'stroke', this.result.stroke);
         }
     }
 }

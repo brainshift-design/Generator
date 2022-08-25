@@ -4764,7 +4764,7 @@ class GType
 
     toString() 
     { 
-        return type; 
+        return this.type; 
     }
 }
 
@@ -4878,7 +4878,8 @@ extends GType
 
     equals(num)
     {
-        return this.value    == num.value
+        return num
+            && this.value    == num.value
             && this.decimals == num.decimals;
     }
 
@@ -4911,7 +4912,7 @@ function parseNumberValue(str)
 {
     const num = 
         str == INVALID
-        ? new NumberValue(Number.NaN, 0)
+        ? NumberValue.NaN
         : new NumberValue(
               parseFloat(str),
               decCount(str));
@@ -4995,7 +4996,8 @@ extends GType
 
     equals(col)
     {
-        return this.space.equals(col.space)
+        return col
+            && this.space.equals(col.space)
             && this.c1   .equals(col.c1   )
             && this.c2   .equals(col.c2   )
             && this.c3   .equals(col.c3   );
@@ -5156,7 +5158,8 @@ extends GType
 
     equals(fill)
     {
-        return this.color  .equals(fill.color  )
+        return fill
+            && this.color  .equals(fill.color  )
             && this.opacity.equals(fill.opacity);
     }
 
@@ -5183,9 +5186,9 @@ extends GType
 
 
 
-    toFigmaString()
+    toFigma()
     {
-        return ['SOLID', this.toString()];
+        return [['SOLID', this.toString()]];
     }
 
 
@@ -5220,13 +5223,13 @@ function parseFillValue(str, i = -1)
     const r = parseNumberValue(str[i]); i += r[1];
     const g = parseNumberValue(str[i]); i += g[1];
     const b = parseNumberValue(str[i]); i += b[1];
+    const a = parseNumberValue(str[i]); i += a[1];
 
-    const color   = new ColorValue(new NumberValue(1), r[0], g[0], b[0]);
-    const opacity = parseNumberValue(str[i]); i += opacity[1];
+    const color = new ColorValue(new NumberValue(1), r[0], g[0], b[0]);
 
     
     return [
-        new FillValue(color, opacity[0]),
+        new FillValue(color, a[0]),
         i - iStart ];
 }
 
@@ -5248,6 +5251,13 @@ extends GType
                 join   = NumberValue.NaN,
                 miter  = NumberValue.NaN)
     {
+        if (fill.type != FILL_VALUE)
+        {
+            console.trace();
+            console.assert(false, 'fill.type must be FILL_VALUE');
+        }
+
+
         super(STROKE_VALUE);
 
         this.fill   = fill  .copy();
@@ -5313,7 +5323,8 @@ extends GType
 
     equals(stroke)
     {
-        return this.fill  .equals(stroke.fill  )
+        return stroke
+            && this.fill  .equals(stroke.fill  )
             && this.weight.equals(stroke.weight)
             && this.fit   .equals(stroke.fit   )
             && this.join  .equals(stroke.join  )
@@ -5342,10 +5353,34 @@ extends GType
 
 
 
-    // toFigmaString()
-    // {
-    //     return ['SOLID', this.toString()];
-    // }
+    toFigma()
+    {
+        let align, join;
+
+        switch (this.fit.value)
+        {
+            case 0: align = 'INSIDE';  break;
+            case 1: align = 'CENTER';  break;
+            case 2: align = 'OUTSIDE'; break;
+        }
+        
+        switch (this.join.value)
+        {
+            case 0: join = 'MITER'; break;
+            case 1: join = 'BEVEL'; break;
+            case 2: join = 'ROUND'; break;
+        }
+
+        return this.isValid()
+            ? {
+                  strokes:          this.fill.toFigma(),
+                  strokeWeight:     this.weight.value,
+                  strokeAlign:      align,
+                  strokeJoin:       join,
+                  strokeMiterLimit: this.miter.value
+              }
+            : {};
+    }
 
 
 
@@ -5361,8 +5396,8 @@ extends GType
     static default = Object.freeze(new StrokeValue(
         FillValue.create(0, 0, 0, 100),
         new NumberValue(1),
-        new NumberValue(1),
-        new NumberValue(1),
+        new NumberValue(0),
+        new NumberValue(0),
         new NumberValue(28.96)));
 }
 
@@ -5384,7 +5419,7 @@ function parseStrokeValue(str, i = -1)
 
     const iStart = i;
 
-    const fill   = parseFillValue  (str[i]); i += fill  [1];
+    const fill   = parseFillValue  (str, i); i += fill  [1];
     const weight = parseNumberValue(str[i]); i += weight[1];
     const fit    = parseNumberValue(str[i]); i += fit   [1];
     const join   = parseNumberValue(str[i]); i += join  [1];
@@ -5396,6 +5431,11 @@ function parseStrokeValue(str, i = -1)
         i - iStart ];
 }
 
+
+/*
+    This is getting closer to Figma now, so here the format changes,
+    and objects hold stroke values directly, which incoming stroke values just set.
+*/
 
 class GeometryBaseValue
 extends GType
@@ -5413,18 +5453,18 @@ extends GType
 
         this.nodeId = nodeId; 
 
-        this.fill         = FillValue.default.copy();
-        this.stroke       = StrokeValue.NaN  .copy();
+        this.fill   = FillValue.default.copy();
+        this.stroke = StrokeValue.NaN  .copy();
     }
 
 
 
     copyBase(base)
     {
-        this.nodeId  = base.nodeId;
+        this.nodeId = base.nodeId;
 
-        this.fill         = base.fill        .copy();
-        this.stroke       = base.stroke      .copy();
+        this.fill   = base.fill  .copy();
+        this.stroke = base.stroke.copy();
     }
 
 
@@ -5439,28 +5479,12 @@ extends GType
 
     toFigmaObject()
     {
-        let strokeAlign, 
-            strokeJoin;
-
-        switch (this.strokeFit.value)
-        {
-            case 0: strokeAlign = 'INSIDE';  break;
-            case 1: strokeAlign = 'CENTER';  break;
-            case 2: strokeAlign = 'OUTSIDE'; break;
-        }
-        
-        switch (this.strokeJoin.value)
-        {
-            case 0: strokeJoin = 'MITER'; break;
-            case 1: strokeJoin = 'BEVEL'; break;
-            case 2: strokeJoin = 'ROUND'; break;
-        }
-
         return {
-            nodeId:  this.nodeId,
+            nodeId: this.nodeId,
 
-            fills:   [this.fill  .toFigmaString()],
-            strokes: [this.stroke.toFigmaString()],
+            fills: this.fill.toFigma(),
+            
+            ...this.stroke.toFigma()
         }
     }
 
@@ -7359,16 +7383,16 @@ extends GOperator
 
 
 
-    constructor(type, nodeId, active)
+    constructor(nodeId, active)
     {
-        super(type, nodeId, active);
+        super(STROKE, nodeId, active);
     }
 
 
 
     copy()
     {
-        const stroke = new GStroke(this.type, this.nodeId, this.active);
+        const stroke = new GStroke(this.nodeId, this.active);
 
         if (this.input) 
             stroke.input = this.input.copy();
@@ -7388,6 +7412,7 @@ extends GOperator
     {
         if (!this.valid)
         {
+            console.log('this.nodeId =', this.nodeId);
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -7588,8 +7613,8 @@ extends GOperator
             }
 
 
-            genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
-            genPushUpdateValue(parse, this.nodeId, 'stroke', this.stroke);
+            genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
+            genPushUpdateValue(parse, this.nodeId, 'stroke', this.result.stroke);
         }
     }
 }
@@ -7670,7 +7695,7 @@ extends GGeometryBase
             }
 
 
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
+            //genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
             genPushUpdateValue(parse, this.nodeId, 'x',      this.x     );
             genPushUpdateValue(parse, this.nodeId, 'y',      this.y     );
@@ -8421,8 +8446,8 @@ function clearLastUpdate()
 
 function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, updateObjects)
 {
-    //console.log('updateValues =', updateValues);
     //console.log('genUpdateValuesAndObjects()');
+    //console.log('updateValues =', updateValues);
 
     if (   updateValues .length == 0
         && updateObjects.length == 0)
@@ -8889,9 +8914,8 @@ function genParseRectangle(parse)
         case 'height': rect.height = genParse(parse); break;
         case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
+        default:       genParseGeometryBase(parse, rect, paramId); break;
         }
-
-        genParseGeometryBase(parse, rect, paramId);
 
         parse.nTab--;
     }
@@ -16728,7 +16752,7 @@ class GType
 
     toString() 
     { 
-        return type; 
+        return this.type; 
     }
 }
 
@@ -16842,7 +16866,8 @@ extends GType
 
     equals(num)
     {
-        return this.value    == num.value
+        return num
+            && this.value    == num.value
             && this.decimals == num.decimals;
     }
 
@@ -16875,7 +16900,7 @@ function parseNumberValue(str)
 {
     const num = 
         str == INVALID
-        ? new NumberValue(Number.NaN, 0)
+        ? NumberValue.NaN
         : new NumberValue(
               parseFloat(str),
               decCount(str));
@@ -16959,7 +16984,8 @@ extends GType
 
     equals(col)
     {
-        return this.space.equals(col.space)
+        return col
+            && this.space.equals(col.space)
             && this.c1   .equals(col.c1   )
             && this.c2   .equals(col.c2   )
             && this.c3   .equals(col.c3   );
@@ -17120,7 +17146,8 @@ extends GType
 
     equals(fill)
     {
-        return this.color  .equals(fill.color  )
+        return fill
+            && this.color  .equals(fill.color  )
             && this.opacity.equals(fill.opacity);
     }
 
@@ -17147,9 +17174,9 @@ extends GType
 
 
 
-    toFigmaString()
+    toFigma()
     {
-        return ['SOLID', this.toString()];
+        return [['SOLID', this.toString()]];
     }
 
 
@@ -17184,13 +17211,13 @@ function parseFillValue(str, i = -1)
     const r = parseNumberValue(str[i]); i += r[1];
     const g = parseNumberValue(str[i]); i += g[1];
     const b = parseNumberValue(str[i]); i += b[1];
+    const a = parseNumberValue(str[i]); i += a[1];
 
-    const color   = new ColorValue(new NumberValue(1), r[0], g[0], b[0]);
-    const opacity = parseNumberValue(str[i]); i += opacity[1];
+    const color = new ColorValue(new NumberValue(1), r[0], g[0], b[0]);
 
     
     return [
-        new FillValue(color, opacity[0]),
+        new FillValue(color, a[0]),
         i - iStart ];
 }
 
@@ -17212,6 +17239,13 @@ extends GType
                 join   = NumberValue.NaN,
                 miter  = NumberValue.NaN)
     {
+        if (fill.type != FILL_VALUE)
+        {
+            console.trace();
+            console.assert(false, 'fill.type must be FILL_VALUE');
+        }
+
+
         super(STROKE_VALUE);
 
         this.fill   = fill  .copy();
@@ -17277,7 +17311,8 @@ extends GType
 
     equals(stroke)
     {
-        return this.fill  .equals(stroke.fill  )
+        return stroke
+            && this.fill  .equals(stroke.fill  )
             && this.weight.equals(stroke.weight)
             && this.fit   .equals(stroke.fit   )
             && this.join  .equals(stroke.join  )
@@ -17306,10 +17341,34 @@ extends GType
 
 
 
-    // toFigmaString()
-    // {
-    //     return ['SOLID', this.toString()];
-    // }
+    toFigma()
+    {
+        let align, join;
+
+        switch (this.fit.value)
+        {
+            case 0: align = 'INSIDE';  break;
+            case 1: align = 'CENTER';  break;
+            case 2: align = 'OUTSIDE'; break;
+        }
+        
+        switch (this.join.value)
+        {
+            case 0: join = 'MITER'; break;
+            case 1: join = 'BEVEL'; break;
+            case 2: join = 'ROUND'; break;
+        }
+
+        return this.isValid()
+            ? {
+                  strokes:          this.fill.toFigma(),
+                  strokeWeight:     this.weight.value,
+                  strokeAlign:      align,
+                  strokeJoin:       join,
+                  strokeMiterLimit: this.miter.value
+              }
+            : {};
+    }
 
 
 
@@ -17325,8 +17384,8 @@ extends GType
     static default = Object.freeze(new StrokeValue(
         FillValue.create(0, 0, 0, 100),
         new NumberValue(1),
-        new NumberValue(1),
-        new NumberValue(1),
+        new NumberValue(0),
+        new NumberValue(0),
         new NumberValue(28.96)));
 }
 
@@ -17348,7 +17407,7 @@ function parseStrokeValue(str, i = -1)
 
     const iStart = i;
 
-    const fill   = parseFillValue  (str[i]); i += fill  [1];
+    const fill   = parseFillValue  (str, i); i += fill  [1];
     const weight = parseNumberValue(str[i]); i += weight[1];
     const fit    = parseNumberValue(str[i]); i += fit   [1];
     const join   = parseNumberValue(str[i]); i += join  [1];
@@ -17360,6 +17419,11 @@ function parseStrokeValue(str, i = -1)
         i - iStart ];
 }
 
+
+/*
+    This is getting closer to Figma now, so here the format changes,
+    and objects hold stroke values directly, which incoming stroke values just set.
+*/
 
 class GeometryBaseValue
 extends GType
@@ -17377,18 +17441,18 @@ extends GType
 
         this.nodeId = nodeId; 
 
-        this.fill         = FillValue.default.copy();
-        this.stroke       = StrokeValue.NaN  .copy();
+        this.fill   = FillValue.default.copy();
+        this.stroke = StrokeValue.NaN  .copy();
     }
 
 
 
     copyBase(base)
     {
-        this.nodeId  = base.nodeId;
+        this.nodeId = base.nodeId;
 
-        this.fill         = base.fill        .copy();
-        this.stroke       = base.stroke      .copy();
+        this.fill   = base.fill  .copy();
+        this.stroke = base.stroke.copy();
     }
 
 
@@ -17403,28 +17467,12 @@ extends GType
 
     toFigmaObject()
     {
-        let strokeAlign, 
-            strokeJoin;
-
-        switch (this.strokeFit.value)
-        {
-            case 0: strokeAlign = 'INSIDE';  break;
-            case 1: strokeAlign = 'CENTER';  break;
-            case 2: strokeAlign = 'OUTSIDE'; break;
-        }
-        
-        switch (this.strokeJoin.value)
-        {
-            case 0: strokeJoin = 'MITER'; break;
-            case 1: strokeJoin = 'BEVEL'; break;
-            case 2: strokeJoin = 'ROUND'; break;
-        }
-
         return {
-            nodeId:  this.nodeId,
+            nodeId: this.nodeId,
 
-            fills:   [this.fill  .toFigmaString()],
-            strokes: [this.stroke.toFigmaString()],
+            fills: this.fill.toFigma(),
+            
+            ...this.stroke.toFigma()
         }
     }
 
@@ -19323,16 +19371,16 @@ extends GOperator
 
 
 
-    constructor(type, nodeId, active)
+    constructor(nodeId, active)
     {
-        super(type, nodeId, active);
+        super(STROKE, nodeId, active);
     }
 
 
 
     copy()
     {
-        const stroke = new GStroke(this.type, this.nodeId, this.active);
+        const stroke = new GStroke(this.nodeId, this.active);
 
         if (this.input) 
             stroke.input = this.input.copy();
@@ -19352,6 +19400,7 @@ extends GOperator
     {
         if (!this.valid)
         {
+            console.log('this.nodeId =', this.nodeId);
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -19552,8 +19601,8 @@ extends GOperator
             }
 
 
-            genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
-            genPushUpdateValue(parse, this.nodeId, 'stroke', this.stroke);
+            genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
+            genPushUpdateValue(parse, this.nodeId, 'stroke', this.result.stroke);
         }
     }
 }
@@ -19634,7 +19683,7 @@ extends GGeometryBase
             }
 
 
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
+            //genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
             genPushUpdateValue(parse, this.nodeId, 'x',      this.x     );
             genPushUpdateValue(parse, this.nodeId, 'y',      this.y     );
@@ -25250,6 +25299,8 @@ extends Parameter
     
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
+        //console.log(this.id + '.setValue() value =', value);
+
         console.assert(
             value instanceof NumberValue,
             'value must be a NumberValue');
@@ -25420,17 +25471,17 @@ extends NumberParamBase
             if (   Math.abs(e.detail.value - e.detail.oldValue) > Number.EPSILON
                 && dec >= oldDec)
             {
-                this.setValue(new NumberValue(e.detail.value, dec), true);
+                this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
                 e.preventSetValue = true;
             }
             else if (this.allowEditDecimals)
             {
-                if (Math.abs(e.detail.value - e.detail.oldValue) <= Number.EPSILON)
+                if (Math.abs(parseFloat(e.detail.value) - parseFloat(e.detail.oldValue)) <= Number.EPSILON)
                     dec += Math.log10(this.control.valueScale);
                 else 
                     dec = oldDec;
 
-                this.setValue(new NumberValue(e.detail.value, dec), true);
+                this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
                 e.preventSetValue = true;
             }
         });
@@ -26288,9 +26339,11 @@ extends Parameter
         this.weightControl.addEventListener('confirm', () =>
         { 
             this.setValue(new StrokeValue(
+                this.value.fill,
                 new NumberValue(this.weightControl.value, this.weightControl.dec), 
                 new NumberValue(this.   fitControl.value, this.   fitControl.dec), 
-                new NumberValue(this.  joinControl.value, this.  joinControl.dec)), 
+                new NumberValue(this.  joinControl.value, this.  joinControl.dec),
+                this.value.miter), 
                 true, false);
         });
 
@@ -26298,9 +26351,11 @@ extends Parameter
         this.fitControl.addEventListener('confirm', () =>
         { 
             this.setValue(new StrokeValue(
+                this.value.fill,
                 new NumberValue(this.weightControl.value, this.weightControl.dec), 
                 new NumberValue(this.   fitControl.value, this.   fitControl.dec), 
-                new NumberValue(this.  joinControl.value, this.  joinControl.dec)), 
+                new NumberValue(this.  joinControl.value, this.  joinControl.dec), 
+                this.value.miter), 
                 true, false);
         });
 
@@ -26308,9 +26363,11 @@ extends Parameter
         this.joinControl.addEventListener('confirm', () =>
         { 
             this.setValue(new StrokeValue(
+                this.value.fill,
                 new NumberValue(this.weightControl.value, this.weightControl.dec), 
                 new NumberValue(this.   fitControl.value, this.   fitControl.dec), 
-                new NumberValue(this.  joinControl.value, this.  joinControl.dec)), 
+                new NumberValue(this.  joinControl.value, this.  joinControl.dec), 
+                this.value.miter), 
                 true, false);
         });
     }
@@ -26371,6 +26428,7 @@ extends Parameter
 
     updateControls()
     {
+        console.log('stroke value =', this.value);
         //const rgbVal = [0.5, 0.5, 0.5];
         const rgbVal = dataColor2rgb(this.value.fill.color.toDataColor());
 
@@ -33739,13 +33797,15 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
             for (const param of this.node.params)
-                if (param.input && param.input.connected) 
+                if (   param.input 
+                    && param.input.connected) 
                     paramIds.push(param.id);
 
             request.push(paramIds.join(','));
 
             for (const param of this.node.params)
-                if (param.input && param.input.connected) 
+                if (   param.input 
+                    && param.input.connected) 
                     request.push(...param.genRequest(gen))
         }
         else
@@ -33977,13 +34037,15 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
             for (const param of this.node.params)
-                if (param.input && param.input.connected) 
+                if (   param.input 
+                    && param.input.connected) 
                     paramIds.push(param.id);
 
             request.push(paramIds.join(','));
 
             for (const param of this.node.params)
-                if (param.input && param.input.connected) 
+                if (   param.input 
+                    && param.input.connected) 
                     request.push(...param.genRequest(gen))
         }
         else
@@ -34014,7 +34076,7 @@ extends OpColorBase
 
         if (stroke.isValid())
         {
-            this.paramFill        .setValue(stroke.fill,   false, true, false);
+            this.paramFill  .setValue(stroke.fill,   false, true, false);
             this.paramWeight.setValue(stroke.weight, false, true, false);
             this.paramFit   .setValue(stroke.fit,    false, true, false);
             this.paramJoin  .setValue(stroke.join,   false, true, false);
@@ -34024,7 +34086,7 @@ extends OpColorBase
         }
         else
         {
-            this.paramFill        .setValue(fill,   false, true, false);
+            this.paramFill  .setValue(fill,   false, true, false);
             this.paramWeight.setValue(weight, false, true, false);
             this.paramFit   .setValue(fit,    false, true, false);
             this.paramJoin  .setValue(join,   false, true, false);
@@ -34114,7 +34176,7 @@ extends OpColorBase
             
         const colText = 
             this.canShowColor()
-            ? (this.paramOpacity.value >= 50
+            ? (true//this.paramOpacity.value >= 50
                ? (darkText 
                   ? [0, 0, 0, 0.6] 
                   : [1, 1, 1, 0.7])
@@ -34374,10 +34436,13 @@ extends OperatorBase
 
 
 
-    updateBaseValues(updateParamId, obj)
+    updateBaseValues(updateParamId, paramIds, values)
     {
-        setParamValue(this.paramFill,   obj.fill,   updateParamId);
-        setParamValue(this.paramStroke, obj.stroke, updateParamId);
+        const fill   = values[paramIds.findIndex(id => id == 'fill'  )];
+        const stroke = values[paramIds.findIndex(id => id == 'stroke')];
+
+        setParamValue(this.paramFill,   fill,   updateParamId);
+        setParamValue(this.paramStroke, stroke, updateParamId);
 
         this.updateParamDisplay();
     }
@@ -34528,16 +34593,21 @@ extends OpGeometryBase
         // overriding Operator.updateValues() here because 
         // all values are taken from the RectangleValue
 
-        const rect = values[paramIds.findIndex(id => id == 'value')];
+        const x      = values[paramIds.findIndex(id => id == 'x'     )];
+        const y      = values[paramIds.findIndex(id => id == 'y'     )];
+        const width  = values[paramIds.findIndex(id => id == 'width' )];
+        const height = values[paramIds.findIndex(id => id == 'height')];
+        const angle  = values[paramIds.findIndex(id => id == 'angle' )];
+        const round  = values[paramIds.findIndex(id => id == 'round' )];
 
-        setParamValue(this.paramX,      rect.x,      updateParamId);
-        setParamValue(this.paramY,      rect.y,      updateParamId);
-        setParamValue(this.paramWidth,  rect.width,  updateParamId);
-        setParamValue(this.paramHeight, rect.height, updateParamId);
-        setParamValue(this.paramAngle,  rect.angle,  updateParamId);
-        setParamValue(this.paramRound,  rect.round,  updateParamId);
+        setParamValue(this.paramX,      x,      updateParamId);
+        setParamValue(this.paramY,      y,      updateParamId);
+        setParamValue(this.paramWidth,  width,  updateParamId);
+        setParamValue(this.paramHeight, height, updateParamId);
+        setParamValue(this.paramAngle,  angle,  updateParamId);
+        setParamValue(this.paramRound,  round,  updateParamId);
 
-        this.updateBaseValues(updateParamId, rect);
+        this.updateBaseValues(updateParamId, paramIds, values);
     }
 
 
@@ -39006,10 +39076,10 @@ function uiUpdateGraph()
 
 function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 {
-    //console.log('raw values = ', values);
+    console.log('raw update values = ', values);
 
     if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
-    if (settings.lobObjectUpdates) logObjectUpdates(objects);
+    if (settings.logObjectUpdates) logObjectUpdates(objects);
 
 
     const nodes = [];
@@ -39060,7 +39130,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                     case POLYGON_VALUE:    value = parsePolygonValue  (values[i++])[0]; break;
                     case STAR_VALUE:       value = parseStarValue     (values[i++])[0]; break;
                     
-                    default:               console.assert(false, 'unknown type');
+                    default:               console.assert(false, 'unknown type \'' + type + '\'');
                 }
 
                 if (value.nodeId)
