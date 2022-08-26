@@ -38,7 +38,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            console.log('this.nodeId =', this.nodeId);
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();

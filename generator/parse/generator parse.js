@@ -67,7 +67,7 @@ class Parse
 
 function genParse(parse)
 {
-    //console.log('next', next);
+    //console.log('parse.next', parse.next);
 
 
          if (parse.next == PARAM             ) return genParseParam           (parse);

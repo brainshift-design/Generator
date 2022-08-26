@@ -234,7 +234,7 @@ function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true
     }
 
     json += NL + tab + ']';
-    json += this.connectionsToJson(nodes, connOutputMustBeInNodes);
+    json += connectionsToJson(nodes, connOutputMustBeInNodes);
     json += (encloseBraces ? '\n}' :'');
 
     return json;

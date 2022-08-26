@@ -254,7 +254,6 @@ extends Parameter
 
     updateControls()
     {
-        console.log('stroke value =', this.value);
         //const rgbVal = [0.5, 0.5, 0.5];
         const rgbVal = dataColor2rgb(this.value.fill.color.toDataColor());
 

@@ -818,7 +818,7 @@ function uiUpdateGraph()
 
 function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 {
-    console.log('raw update values = ', values);
+    //console.log('raw values = ', values);
 
     if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
     if (settings.logObjectUpdates) logObjectUpdates(objects);

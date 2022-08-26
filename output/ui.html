@@ -4256,7 +4256,7 @@ function logReqNode(node, type, parse)
 
 function logReqNumberValue(val, parse)
 {
-    parse.log += ' ' + NUMBER_VALUE + ' ' + val;
+    parse.log += parse.tab + NUMBER_VALUE + ' ' + val;
 }
 
 
@@ -4299,7 +4299,7 @@ function logReqInterpolate(lerp, nValues, parse)
 
 function logReqColorValue(val, parse)
 {
-    parse.log += ' ' + COLOR_VALUE + ' ' + val;
+    parse.log += parse.tab + COLOR_VALUE + ' ' + val;
 }
 
 
@@ -4349,7 +4349,7 @@ function logReqColorValidate(val, parse)
 
 function logReqFillValue(fill, parse)
 {
-    parse.log += ' ' + FILL_VALUE + ' ' + fill;
+    parse.log += parse.tab + FILL_VALUE + ' ' + fill;
 }
 
 
@@ -4364,7 +4364,7 @@ function logReqFill(fill, parse)
 
 function logReqStrokeValue(stroke, parse)
 {
-    parse.log += ' ' + STROKE_VALUE + ' ' + stroke;
+    parse.log += parse.tab + STROKE_VALUE + ' ' + stroke;
 }
 
 
@@ -6796,10 +6796,10 @@ extends GOperator
 
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'space', this.space);
-            genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   );
+            genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
         }
 
 
@@ -7362,8 +7362,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
 
 
@@ -7412,7 +7412,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            console.log('this.nodeId =', this.nodeId);
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -8214,9 +8213,9 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logRawLoading:    true, 
+    logRawLoading:    false, 
     logLoading:       false, 
-    logRawSaving:     true, 
+    logRawSaving:     false, 
     logActions:       true, 
     logRawRequests:   true, 
     logRequests:      true, 
@@ -9173,6 +9172,7 @@ function genParseNumValue(parse)
 
 function genParseNumber(parse)
 {
+    console.log('genParseNumber()');
     const [, nodeId, active, ignore] = genParseNodeStart(parse);
 
 
@@ -9603,7 +9603,7 @@ class Parse
 
 function genParse(parse)
 {
-    //console.log('next', next);
+    //console.log('parse.next', parse.next);
 
 
          if (parse.next == PARAM             ) return genParseParam           (parse);
@@ -14808,7 +14808,7 @@ function logReqNode(node, type, parse)
 
 function logReqNumberValue(val, parse)
 {
-    parse.log += ' ' + NUMBER_VALUE + ' ' + val;
+    parse.log += parse.tab + NUMBER_VALUE + ' ' + val;
 }
 
 
@@ -14851,7 +14851,7 @@ function logReqInterpolate(lerp, nValues, parse)
 
 function logReqColorValue(val, parse)
 {
-    parse.log += ' ' + COLOR_VALUE + ' ' + val;
+    parse.log += parse.tab + COLOR_VALUE + ' ' + val;
 }
 
 
@@ -14901,7 +14901,7 @@ function logReqColorValidate(val, parse)
 
 function logReqFillValue(fill, parse)
 {
-    parse.log += ' ' + FILL_VALUE + ' ' + fill;
+    parse.log += parse.tab + FILL_VALUE + ' ' + fill;
 }
 
 
@@ -14916,7 +14916,7 @@ function logReqFill(fill, parse)
 
 function logReqStrokeValue(stroke, parse)
 {
-    parse.log += ' ' + STROKE_VALUE + ' ' + stroke;
+    parse.log += parse.tab + STROKE_VALUE + ' ' + stroke;
 }
 
 
@@ -18784,10 +18784,10 @@ extends GOperator
 
             genPushUpdateValue(parse, this.nodeId, 'value', this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'space', this.space);
-            genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   );
+            genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
         }
 
 
@@ -19350,8 +19350,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
 
 
@@ -19400,7 +19400,6 @@ extends GOperator
     {
         if (!this.valid)
         {
-            console.log('this.nodeId =', this.nodeId);
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -20202,9 +20201,9 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logRawLoading:    true, 
+    logRawLoading:    false, 
     logLoading:       false, 
-    logRawSaving:     true, 
+    logRawSaving:     false, 
     logActions:       true, 
     logRawRequests:   true, 
     logRequests:      true, 
@@ -26428,7 +26427,6 @@ extends Parameter
 
     updateControls()
     {
-        console.log('stroke value =', this.value);
         //const rgbVal = [0.5, 0.5, 0.5];
         const rgbVal = dataColor2rgb(this.value.fill.color.toDataColor());
 
@@ -26822,7 +26820,7 @@ function nodesToJson(nodes, encloseBraces = true, connOutputMustBeInNodes = true
     }
 
     json += NL + tab + ']';
-    json += this.connectionsToJson(nodes, connOutputMustBeInNodes);
+    json += connectionsToJson(nodes, connOutputMustBeInNodes);
     json += (encloseBraces ? '\n}' :'');
 
     return json;
@@ -39076,7 +39074,7 @@ function uiUpdateGraph()
 
 function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 {
-    console.log('raw update values = ', values);
+    //console.log('raw values = ', values);
 
     if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
     if (settings.logObjectUpdates) logObjectUpdates(objects);

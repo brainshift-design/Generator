@@ -414,9 +414,9 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logRawLoading:    true, 
+    logRawLoading:    false, 
     logLoading:       false, 
-    logRawSaving:     true, 
+    logRawSaving:     false, 
     logActions:       true, 
     logRawRequests:   true, 
     logRequests:      true, 

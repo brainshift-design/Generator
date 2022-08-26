@@ -1,6 +1,6 @@
 function logReqFillValue(fill, parse)
 {
-    parse.log += ' ' + FILL_VALUE + ' ' + fill;
+    parse.log += parse.tab + FILL_VALUE + ' ' + fill;
 }
 
 
@@ -15,7 +15,7 @@ function logReqFill(fill, parse)
 
 function logReqStrokeValue(stroke, parse)
 {
-    parse.log += ' ' + STROKE_VALUE + ' ' + stroke;
+    parse.log += parse.tab + STROKE_VALUE + ' ' + stroke;
 }
 
 
