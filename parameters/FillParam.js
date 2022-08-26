@@ -204,8 +204,8 @@ extends Parameter
 
         if (updateControl)
         {
-            this.  colorControl.setValue(value.color,         false,       false); 
-            this.opacityControl.setValue(value.opacity.value, false, true, false); 
+            this.  colorControl.setValue(value.color,         false, false); 
+            this.opacityControl.setValue(value.opacity.value, false, false, false); 
         }
 
 

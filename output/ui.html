@@ -26013,8 +26013,8 @@ extends Parameter
 
         if (updateControl)
         {
-            this.  colorControl.setValue(value.color,         false,       false); 
-            this.opacityControl.setValue(value.opacity.value, false, true, false); 
+            this.  colorControl.setValue(value.color,         false, false); 
+            this.opacityControl.setValue(value.opacity.value, false, false, false); 
         }
 
 
@@ -26411,9 +26411,9 @@ extends Parameter
 
         if (updateControl)
         {
-            this.weightControl.setValue(value.weight.value, false, true, false); 
-            this.   fitControl.setValue(value.   fit.value, false, true, false); 
-            this.  joinControl.setValue(value.  join.value, false, true, false); 
+            this.weightControl.setValue(value.weight.value, false, false, false); 
+            this.   fitControl.setValue(value.   fit.value, false, false, false); 
+            this.  joinControl.setValue(value.  join.value, false, false, false); 
         }
 
 
@@ -28821,8 +28821,9 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
-    //console.log('pushUpdateFromParam('+param+')', nodes);
+    // console.log('pushUpdateFromParam('+param+')', nodes);
 
+    
     const request = 
         param
         ? [param.node.id, param.id]

@@ -238,9 +238,9 @@ extends Parameter
 
         if (updateControl)
         {
-            this.weightControl.setValue(value.weight.value, false, true, false); 
-            this.   fitControl.setValue(value.   fit.value, false, true, false); 
-            this.  joinControl.setValue(value.  join.value, false, true, false); 
+            this.weightControl.setValue(value.weight.value, false, false, false); 
+            this.   fitControl.setValue(value.   fit.value, false, false, false); 
+            this.  joinControl.setValue(value.  join.value, false, false, false); 
         }
 
 
