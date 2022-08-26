@@ -65,8 +65,7 @@ extends Parameter
             false,
             0,
             100,
-            defaultValue.weight.value,
-            0);
+            defaultValue.weight.value);
 
         initNumberControl(
             this,
@@ -77,9 +76,8 @@ extends Parameter
             'fit', 
             false,
             0,
-            100,
-            defaultValue.fit.value,
-            0);
+            2,
+            defaultValue.fit.value);
 
         initNumberControl(
             this,
@@ -90,9 +88,8 @@ extends Parameter
             'join', 
             false,
             0,
-            100,
-            defaultValue.join.value,
-            0);
+            2,
+            defaultValue.join.value);
 
 
         this.checkers.style.position                = 'absolute';
@@ -116,25 +113,29 @@ extends Parameter
 
         this.fitControl.successOnFocusOut           = true;
         this.fitControl.style.display               = 'inline';
-        this.fitControl.style.width                 = '40%';
+        this.fitControl.style.width                 = '25%';
         this.fitControl.style.position              = 'absolute';
-        this.fitControl.style.right                 = 0;
+        this.fitControl.style.left                  = '40%';
         this.fitControl.barTop                      = 0.8;
         this.fitControl.barBottom                   = 1;
 
 
         this.joinControl.successOnFocusOut          = true;
         this.joinControl.style.display              = 'inline';
-        this.joinControl.style.width                = '40%';
+        this.joinControl.style.width                = '35%';
         this.joinControl.style.position             = 'absolute';
         this.joinControl.style.right                = 0;
         this.joinControl.barTop                     = 0.8;
         this.joinControl.barBottom                  = 1;
 
 
-        this.weightControl.text.style.transform     = 'translateX(-40%)';
+        this. fitControl.options                    = ['I', 'E', 'O'];
+        this.joinControl.options                    = ['M', 'B', 'R'];
+
+
+        this.weightControl.text.style.transform     = 'translateX(-0%)';
         this.   fitControl.text.style.transform     = 'translateX(-50%)';
-        this.  joinControl.text.style.transform     = 'translateX(-70%)';
+        this.  joinControl.text.style.transform     = 'translateX(-100%)';
 
 
         // this.  colorControl.textbox.style.position  = 'absolute';
