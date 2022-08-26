@@ -3,11 +3,11 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logRawLoading:    false, 
-    logLoading:       false, 
-    logRawSaving:     false, 
+    logRawLoading:    true, 
+    logLoading:       true, 
+    logRawSaving:     true, 
     logActions:       true, 
-    logRawRequests:   true, 
+    logRawRequests:   false, 
     logRequests:      true, 
     logValueUpdates:  true, 
     logObjectUpdates: true

@@ -58,8 +58,8 @@ function genParseColor(parse)
         case 'c3':      col.c3      = genParse(parse); break;
         }
     }
-
-
+    
+    
     parse.nTab--;
 
 

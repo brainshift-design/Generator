@@ -234,18 +234,18 @@ function logReqParam(param, type, parse) {
             + ' ' + logReqId(param.nodeId)
             + '.' + logReqId(param.paramId);
 }
-function logReqNode(node, type, parse) {
-    parse.log += parse.tab + type;
+function logReqNode(node, parse) {
+    parse.log += parse.tab + node.type;
     parse.log += logReqNodeId(node);
 }
 const settings = {
     showNodeId: false,
     logMessages: false,
-    logRawLoading: false,
-    logLoading: false,
-    logRawSaving: false,
+    logRawLoading: true,
+    logLoading: true,
+    logRawSaving: true,
     logActions: true,
-    logRawRequests: true,
+    logRawRequests: false,
     logRequests: true,
     logValueUpdates: true,
     logObjectUpdates: true

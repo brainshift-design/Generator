@@ -52,8 +52,8 @@ function logReqParam(param, type, parse)
 
 
 
-function logReqNode(node, type, parse)
+function logReqNode(node, parse)
 {
-    parse.log += parse.tab + type;
+    parse.log += parse.tab + node.type;
     parse.log += logReqNodeId(node);
 }

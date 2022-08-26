@@ -16,8 +16,12 @@ class Parse
     
     nTab = 0;
 
-    get tab() { return NL + TAB.repeat(Math.max(0, this.nTab)); }
+    get tab() { return this.inParam ? ' ' : NL + TAB.repeat(Math.max(0, this.nTab)); }
 
+    
+    inParam = false;
+
+    
     updateNodeId;
     updateParamId;
 
@@ -70,44 +74,57 @@ function genParse(parse)
     //console.log('parse.next', parse.next);
 
 
-         if (parse.next == PARAM             ) return genParseParam           (parse);
+    let result = null;
 
-    else if (parse.next == NUMBER_VALUE      ) return genParseNumValue        (parse);
-    else if (parse.next == NUMBER            ) return genParseNumber          (parse);
-    else if (parse.next == NUMBER_LIMITS     ) return genParseLimits          (parse);
-    else if (parse.next == NUMBER_ADD        ) return genParseArithmetic      (parse, (nodeId, active) => new GAdd     (nodeId, active));
-    else if (parse.next == NUMBER_SUBTRACT   ) return genParseArithmetic      (parse, (nodeId, active) => new GSubtract(nodeId, active));
-    else if (parse.next == NUMBER_MULTIPLY   ) return genParseArithmetic      (parse, (nodeId, active) => new GMultiply(nodeId, active));
-    else if (parse.next == NUMBER_DIVIDE     ) return genParseArithmetic      (parse, (nodeId, active) => new GDivide  (nodeId, active));
-    else if (parse.next == NUMBER_MODULO     ) return genParseArithmetic      (parse, (nodeId, active) => new GModulo  (nodeId, active));
-    else if (parse.next == NUMBER_EXPONENT   ) return genParseArithmetic      (parse, (nodeId, active) => new GExponent(nodeId, active));
-    else if (parse.next == NUMBER_INTERPOLATE) return genParseInterpolate     (parse);
 
-    else if (parse.next == COLOR_VALUE       ) return genParseColorValue      (parse);
-    else if (parse.next == COLOR             ) return genParseColor           (parse);
-    else if (parse.next == COLOR_INTERPOLATE ) return genParseColorInterpolate(parse);
-    else if (parse.next == COLOR_CONTRAST    ) return genParseColorContrast   (parse);
-    else if (parse.next == COLORBLIND        ) return genParseColorBlind      (parse);
-    else if (parse.next == COLOR_VALIDATE    ) return genParseColorValidate   (parse);
-    
-    else if (parse.next == FILL_VALUE        ) return genParseFillValue       (parse);
-    else if (parse.next == FILL              ) return genParseFill            (parse);
-    
-    else if (parse.next == STROKE_VALUE      ) return genParseStrokeValue     (parse);
-    else if (parse.next == STROKE            ) return genParseStroke          (parse);
-    
-    else if (parse.next == COLOR_STOP_VALUE  ) return genParseColorStopValue  (parse);
-    else if (parse.next == COLOR_STOP        ) return genParseColorStop       (parse);
+         if (parse.next == PARAM             ) result = genParseParam           (parse);
 
-    else if (parse.next == RECTANGLE         ) return genParseRectangle       (parse);
-    else if (parse.next == LINE              ) return genParseLine            (parse);
-    else if (parse.next == ELLIPSE           ) return genParseEllipse         (parse);
-    else if (parse.next == POLYGON           ) return genParsePolygon         (parse);
-    else if (parse.next == STAR              ) return genParseStar            (parse);
+    else if (parse.next == NUMBER_VALUE      ) result = genParseNumValue        (parse);
+    else if (parse.next == NUMBER            ) result = genParseNumber          (parse);
+    else if (parse.next == NUMBER_LIMITS     ) result = genParseLimits          (parse);
+    else if (parse.next == NUMBER_ADD        ) result = genParseArithmetic      (parse, (nodeId, active) => new GAdd     (nodeId, active));
+    else if (parse.next == NUMBER_SUBTRACT   ) result = genParseArithmetic      (parse, (nodeId, active) => new GSubtract(nodeId, active));
+    else if (parse.next == NUMBER_MULTIPLY   ) result = genParseArithmetic      (parse, (nodeId, active) => new GMultiply(nodeId, active));
+    else if (parse.next == NUMBER_DIVIDE     ) result = genParseArithmetic      (parse, (nodeId, active) => new GDivide  (nodeId, active));
+    else if (parse.next == NUMBER_MODULO     ) result = genParseArithmetic      (parse, (nodeId, active) => new GModulo  (nodeId, active));
+    else if (parse.next == NUMBER_EXPONENT   ) result = genParseArithmetic      (parse, (nodeId, active) => new GExponent(nodeId, active));
+    else if (parse.next == NUMBER_INTERPOLATE) result = genParseInterpolate     (parse);
 
-    
-    parse.so++;
-    return null;
+    else if (parse.next == COLOR_VALUE       ) result = genParseColorValue      (parse);
+    else if (parse.next == COLOR             ) result = genParseColor           (parse);
+    else if (parse.next == COLOR_INTERPOLATE ) result = genParseColorInterpolate(parse);
+    else if (parse.next == COLOR_CONTRAST    ) result = genParseColorContrast   (parse);
+    else if (parse.next == COLORBLIND        ) result = genParseColorBlind      (parse);
+    else if (parse.next == COLOR_VALIDATE    ) result = genParseColorValidate   (parse);
+
+    else if (parse.next == FILL_VALUE        ) result = genParseFillValue       (parse);
+    else if (parse.next == FILL              ) result = genParseFill            (parse);
+
+    else if (parse.next == STROKE_VALUE      ) result = genParseStrokeValue     (parse);
+    else if (parse.next == STROKE            ) result = genParseStroke          (parse);
+
+    else if (parse.next == COLOR_STOP_VALUE  ) result = genParseColorStopValue  (parse);
+    else if (parse.next == COLOR_STOP        ) result = genParseColorStop       (parse);
+
+    else if (parse.next == RECTANGLE         ) result = genParseRectangle       (parse);
+    else if (parse.next == LINE              ) result = genParseLine            (parse);
+    else if (parse.next == ELLIPSE           ) result = genParseEllipse         (parse);
+    else if (parse.next == POLYGON           ) result = genParsePolygon         (parse);
+    else if (parse.next == STAR              ) result = genParseStar            (parse);
+
+    else                                       console.assert(false, 'unknown parse token \'' + parse.next + '\'');
+
+
+    parse.inParam = false;
+
+
+    if (result)
+        return result;
+    else
+    {
+        parse.so++;
+        return null;
+    }
 }
 
 

@@ -43,6 +43,8 @@ function genParseRectangle(parse)
         const paramId = genParseParamId(parse);
 
         parse.nTab++;
+        parse.inParam = true;
+
 
         switch (paramId)
         {
@@ -55,10 +57,12 @@ function genParseRectangle(parse)
         default:       genParseGeometryBase(parse, rect, paramId); break;
         }
 
+
         parse.nTab--;
     }
-
-
+    
+    
+    parse.inParam = false;
     parse.nTab--;
 
 

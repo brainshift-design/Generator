@@ -7,7 +7,7 @@ function logReqColorValue(val, parse)
 
 function logReqColor(col, parse) 
 {
-    logReqNode(col, COLOR, parse); 
+    logReqNode(col, parse); 
 }
 
 
