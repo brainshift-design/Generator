@@ -97,14 +97,9 @@ extends Parameter
 
         this.value = value;
 
-
-        //if (updateControl)
-        //    this.updateControls();
-        //{
-        //     this.weightControl.setValue(value.weight.value, false, false, false); 
-        //     this.   fitControl.setValue(value.   fit.value, false, false, false); 
-        //     this.  joinControl.setValue(value.  join.value, false, false, false); 
-        //}
+// console.log('this.value =', this.value);
+//         if (updateControl)
+//             this.updateControls();
 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
@@ -117,47 +112,62 @@ extends Parameter
 
     updateControls()
     {
-        const rgbaVal = this.value.fill.toRgba();
-        rgbaVal[3] /= 100;
+        if (this.value.isValid())
+        {
+            const rgbaVal = this.value.fill.toRgba();
+            rgbaVal[3] /= 100;
 
-        const rgbaText = 
-            rgbaVal[3] >= 0.5
-            ? (isDark(rgbaVal) 
-               ? [1, 1, 1, 0.8]
-               : [0, 0, 0, 0.5]) 
-            : (isDarkMode()
-               ? [1, 1, 1, 0.8]
-               : [0, 0, 0, 0.5]);
-
-
-        this.input.wireColor   = rgbaVal;
-        this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(rgbaText, isDark(rgbaText) ? 0.12 : 0.44);
-
-        this.output.wireColor  = rgbaVal;
-        this.output.colorLight =
-        this.output.colorDark  = rgb_a(rgbaText, isDark(rgbaText) ? 0.12 : 0.44);
+            const rgbaText = 
+                rgbaVal[3] >= 0.5
+                ? (isDark(rgbaVal) 
+                   ? [1, 1, 1, 0.8]
+                   : [0, 0, 0, 0.5]) 
+                : (isDarkMode()
+                   ? [1, 1, 1, 0.8]
+                   : [0, 0, 0, 0.5]);
 
 
-        this.checkers.style.background =
-            isDarkMode()
-            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+            this.input.wireColor   = rgbaVal;
+            this.input.colorLight  = 
+            this.input.colorDark   = rgb_a(rgbaText, isDark(rgbaText) ? 0.12 : 0.44);
 
-        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
+            this.output.wireColor  = rgbaVal;
+            this.output.colorLight =
+            this.output.colorDark  = rgb_a(rgbaText, isDark(rgbaText) ? 0.12 : 0.44);
 
-        this.checkers.style.backgroundSize     = '20px 20px';
-        this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
-        this.div.style.height                  = '20px';
+            this.checkers.style.background =
+                isDarkMode()
+                ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+                  + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+                :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+                  + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.colorControl.style.background     = rgba2style(rgbaVal);
+            this.checkers.style.display            = 'inline-block';
+            this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
 
-        this.textControl.innerHTML             = this.value.isValid() ? 'stroke' : 'no stroke';
-        this.textControl.style.color           = rgba2style(rgbaText);
+            this.checkers.style.backgroundSize     = '20px 20px';
+            this.checkers.style.backgroundPosition = '0 0, 10px 10px';
+
+            this.colorControl.style.display        = 'inline-block';
+            this.colorControl.style.background     = rgba2style(rgbaVal);
+
+            this.textControl.innerHTML             = 'stroke';
+            this.textControl.style.color           = rgba2style(rgbaText);
+        }
+        else
+        {
+            this.checkers    .style.display        = 'none';
+            this.colorControl.style.display        = 'none';
+
+            this.colorControl.style.background     = 'transparent';
+
+            this.textControl.innerHTML             = 'no stroke';
+            this.textControl.style.color           = isDarkMode() ? '#eee8' : '#0006';
+        }
+
+
+        this.div.style.height = '20px';
 
 
         if (this.input ) this.input .updateControl();

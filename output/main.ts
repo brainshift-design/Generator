@@ -1025,6 +1025,9 @@ function setObjectStrokes(obj, src)
         obj.strokeJoin       = src.strokeJoin;
         obj.strokeMiterLimit = Math.min(Math.max(0, src.strokeMiterLimit), 16);
     }
+
+    else
+        obj.strokes = [];
 }
 
 

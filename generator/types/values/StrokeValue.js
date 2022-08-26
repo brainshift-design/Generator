@@ -143,7 +143,9 @@ extends GType
                   strokeJoin:       join,
                   strokeMiterLimit: this.miter.value
               }
-            : {};
+            : {
+                  strokes: []
+              };
     }
 
 

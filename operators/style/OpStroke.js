@@ -32,16 +32,7 @@ extends OpColorBase
         this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
 
         this.paramMiter.control.setSuffix('°', true);
-
-
-        // const cond = () => 
-        //        this.paramStroke.value.isValid() //&& isValidRgb(dataColorToRgb(this.paramStroke.value.color.toDataColor()))
-        //     || this.paramStroke.connected;
-
-        // this.paramStrokeWeight.show = () => cond();
-        // this.paramStrokeFit   .show = () => cond();
-        // this.paramStrokeJoin  .show = () => cond();
-        // this.paramStrokeMiter .show = () => cond() && this.paramStrokeJoin.value == 0;
+        this.paramMiter.show = () => this.paramJoin.value == 0;
 
 
         this.checkers = createDiv('nodeHeaderCheckers');

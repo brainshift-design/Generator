@@ -122,6 +122,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
         control.update();
 
+        
         if (   fireChangeEvent
             && control.enableChangeEvent
             && !value.equals(control.prevValue))
