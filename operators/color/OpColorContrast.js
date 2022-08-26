@@ -103,7 +103,7 @@ extends OpColorBase
 
         this.labelColor = 
             colText.isValid()
-            ? dataColor2rgb(colText.toDataColor())
+            ? colText.toRgb()
             : [0, 0, 0];
 
         this._color = colBack.toDataColor();
@@ -149,8 +149,8 @@ extends OpColorBase
         if (   this.inputs[0].connected
             && this.inputs[1].connected)
         {
-            const rgb0 = dataColor2rgb(colText.toDataColor());
-            const rgb1 = dataColor2rgb(colBack.toDataColor());
+            const rgb0 = colText.toRgb();
+            const rgb1 = colBack.toRgb();
 
             if (  !isValidRgb(rgb0)
                 && isValidRgb(rgb1))

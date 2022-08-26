@@ -7,19 +7,12 @@ extends Parameter
     
 
     checkers;
-    controlWrapper;
 
-    weightControl;
-       fitControl;
-      joinControl;
+    colorControl;
+     textControl;
+
     
-    
-    get valueText() { return this.colorControl.valueText; }
-    // set valueText(text) 
-    // {
-    //     this.colorControl.valueText = text;
-    //     this.updateControls();
-    // }
+    // get valueText() { return this.colorControl.valueText; }
 
     
     value;
@@ -36,167 +29,35 @@ extends Parameter
     {
         super(FILL, id, name);
 
-        this.checkers              = createDiv();
-        this.controlWrapper        = createDiv();
 
-        this.weightControl         = createDiv();
-        this.weightControl.param   = this;
-        this.weightControl.zIndex  = 0;
+        this.checkers                     = createDiv();
 
-        this.fitControl            = createDiv();
-        this.fitControl.param      = this;
-        this.fitControl.zIndex     = 0;
-   
-        this.joinControl           = createDiv();
-        this.joinControl.param     = this;
-        this.joinControl.zIndex    = 0;
-   
-        this.defaultValue          = defaultValue;
-        this.value                 = defaultValue;
+        this.colorControl                 = createDiv();
+        this. textControl                 = createDiv('colorControlText');
+
+        this.defaultValue                 = defaultValue;
+        this.value                        = defaultValue;
 
         
-        initNumberControl(
-            this,
-            this.weightControl,
-            120, // width
-            20,  // height
-            this.id,
-            'weight', 
-            false,
-            0,
-            100,
-            defaultValue.weight.value);
-
-        initNumberControl(
-            this,
-            this.fitControl,
-            120, // width
-            20,  // height
-            this.id,
-            'fit', 
-            false,
-            0,
-            2,
-            defaultValue.fit.value);
-
-        initNumberControl(
-            this,
-            this.joinControl,
-            120, // width
-            20,  // height
-            this.id,
-            'join', 
-            false,
-            0,
-            2,
-            defaultValue.join.value);
-
-
-        this.checkers.style.position                = 'absolute';
-        this.checkers.style.width                   = '100%';
-        this.checkers.style.height                  = '20px';
-
-
-        this.controlWrapper.style.display           = 'inline-block';
-        this.controlWrapper.style.width             = '100%';
-        this.controlWrapper.style.height            = '20px';
-
-
-        this.weightControl.successOnFocusOut        = true;
-        this.weightControl.style.display            = 'inline';
-        this.weightControl.style.width              = '40%';
-        this.weightControl.style.position           = 'absolute';
-        this.weightControl.style.left               = 0;
-        this.weightControl.barTop                   = 0.8;
-        this.weightControl.barBottom                = 1;
-
-
-        this.fitControl.successOnFocusOut           = true;
-        this.fitControl.style.display               = 'inline';
-        this.fitControl.style.width                 = '25%';
-        this.fitControl.style.position              = 'absolute';
-        this.fitControl.style.left                  = '40%';
-        this.fitControl.barTop                      = 0.8;
-        this.fitControl.barBottom                   = 1;
-
-
-        this.joinControl.successOnFocusOut          = true;
-        this.joinControl.style.display              = 'inline';
-        this.joinControl.style.width                = '35%';
-        this.joinControl.style.position             = 'absolute';
-        this.joinControl.style.right                = 0;
-        this.joinControl.barTop                     = 0.8;
-        this.joinControl.barBottom                  = 1;
-
-
-        this. fitControl.options                    = ['I', 'E', 'O'];
-        this.joinControl.options                    = ['M', 'B', 'R'];
-
-
-        this.weightControl.text.style.transform     = 'translateX(-0%)';
-        this.   fitControl.text.style.transform     = 'translateX(-50%)';
-        this.  joinControl.text.style.transform     = 'translateX(-100%)';
-
-
-        // this.  colorControl.textbox.style.position  = 'absolute';
-        // this.  colorControl.textbox.style.left      = '0';
-        // this.  colorControl.textbox.style.width     = '60%';
-        // this.  colorControl.textbox.style.transform = 'translateX(0)';
-        // this.  colorControl.textbox.style.textAlign = 'right';
+        this.checkers.style.position      = 'absolute';
+        this.checkers.style.width         = '100%';
+        this.checkers.style.height        = '20px';
         
-        // this.opacityControl.textbox.style.position  = 'absolute';
-        // this.opacityControl.textbox.style.right     = '0';
-        // this.opacityControl.textbox.style.width     = '40%';
-        // this.opacityControl.textbox.style.transform = 'translateX(25%)';
-        // this.opacityControl.textbox.style.textAlign = 'left';
 
+        this.colorControl.style.position  = 'absolute';
+        this.colorControl.style.display   = 'block';
+        this.colorControl.style.width     = '100%';
+        this.colorControl.style.height    = '20px';
+    
 
-        this.controlWrapper.appendChild(this.weightControl);
-        this.controlWrapper.appendChild(this.   fitControl);
-        this.controlWrapper.appendChild(this.  joinControl);
-        
         this.div.appendChild(this.checkers);
-        this.div.appendChild(this.controlWrapper);
+        
+        this.div.appendChild(this.colorControl);
+        this.div.appendChild(this. textControl);
 
        
         if (hasInput)  this.initInput(STROKE_TYPES);
         if (hasOutput) this.initOutput(STROKE_VALUE, this.output_genRequest);
-
-
-        this.weightControl.addEventListener('confirm', () =>
-        { 
-            this.setValue(new StrokeValue(
-                this.value.fill,
-                new NumberValue(this.weightControl.value, this.weightControl.dec), 
-                new NumberValue(this.   fitControl.value, this.   fitControl.dec), 
-                new NumberValue(this.  joinControl.value, this.  joinControl.dec),
-                this.value.miter), 
-                true, false);
-        });
-
-
-        this.fitControl.addEventListener('confirm', () =>
-        { 
-            this.setValue(new StrokeValue(
-                this.value.fill,
-                new NumberValue(this.weightControl.value, this.weightControl.dec), 
-                new NumberValue(this.   fitControl.value, this.   fitControl.dec), 
-                new NumberValue(this.  joinControl.value, this.  joinControl.dec), 
-                this.value.miter), 
-                true, false);
-        });
-
-
-        this.joinControl.addEventListener('confirm', () =>
-        { 
-            this.setValue(new StrokeValue(
-                this.value.fill,
-                new NumberValue(this.weightControl.value, this.weightControl.dec), 
-                new NumberValue(this.   fitControl.value, this.   fitControl.dec), 
-                new NumberValue(this.  joinControl.value, this.  joinControl.dec), 
-                this.value.miter), 
-                true, false);
-        });
     }
 
 
@@ -237,12 +98,13 @@ extends Parameter
         this.value = value;
 
 
-        if (updateControl)
-        {
-            this.weightControl.setValue(value.weight.value, false, false, false); 
-            this.   fitControl.setValue(value.   fit.value, false, false, false); 
-            this.  joinControl.setValue(value.  join.value, false, false, false); 
-        }
+        //if (updateControl)
+        //    this.updateControls();
+        //{
+        //     this.weightControl.setValue(value.weight.value, false, false, false); 
+        //     this.   fitControl.setValue(value.   fit.value, false, false, false); 
+        //     this.  joinControl.setValue(value.  join.value, false, false, false); 
+        //}
 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
@@ -255,12 +117,12 @@ extends Parameter
 
     updateControls()
     {
-        //const rgbVal = [0.5, 0.5, 0.5];
-        const rgbVal = dataColor2rgb(this.value.fill.color.toDataColor());
+        const rgbaVal = this.value.fill.toRgba();
+        rgbaVal[3] /= 100;
 
-        const rgbText = 
-            true//this.opacityControl.value >= 50
-            ? (isDark(rgbVal) 
+        const rgbaText = 
+            rgbaVal[3] >= 0.5
+            ? (isDark(rgbaVal) 
                ? [1, 1, 1, 0.8]
                : [0, 0, 0, 0.5]) 
             : (isDarkMode()
@@ -268,13 +130,13 @@ extends Parameter
                : [0, 0, 0, 0.5]);
 
 
-        this.input.wireColor   = rgbVal;
+        this.input.wireColor   = rgbaVal;
         this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(rgbText, isDark(rgbText) ? 0.12 : 0.44);
+        this.input.colorDark   = rgb_a(rgbaText, isDark(rgbaText) ? 0.12 : 0.44);
 
-        this.output.wireColor  = rgbVal;
+        this.output.wireColor  = rgbaVal;
         this.output.colorLight =
-        this.output.colorDark  = rgb_a(rgbText, isDark(rgbText) ? 0.12 : 0.44);
+        this.output.colorDark  = rgb_a(rgbaText, isDark(rgbaText) ? 0.12 : 0.44);
 
 
         this.checkers.style.background =
@@ -284,43 +146,18 @@ extends Parameter
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display            = 'inline-block';//this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
 
         this.checkers.style.backgroundSize     = '20px 20px';
         this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
-        
-        const fillStyle = rgba2style(rgb_a(rgbVal, 1));//this.opacityControl.value/100));
+        this.div.style.height                  = '20px';
 
-        this.weightControl.backColorLight  = 
-        this.weightControl.backColorDark   = 
-        this.   fitControl.backColorLight  = 
-        this.   fitControl.backColorDark   = 
-        this.  joinControl.backColorLight  = 
-        this.  joinControl.backColorDark   = fillStyle;
+        this.colorControl.style.background     = rgba2style(rgbaVal);
 
-        this.weightControl.valueColorLight = 
-        this.weightControl.valueColorDark  = 
-        this.   fitControl.valueColorLight = 
-        this.   fitControl.valueColorDark  = 
-        this.  joinControl.valueColorLight = 
-        this.  joinControl.valueColorDark  = 'transparent';//rgba2style(rgb_a(rgbText, 0.12));
-
-        this.weightControl.textColorLight  = 
-        this.weightControl.textColorDark   = 
-        this.   fitControl.textColorLight  = 
-        this.   fitControl.textColorDark   = 
-        this.  joinControl.textColorLight  = 
-        this.  joinControl.textColorDark   = rgba2style(rgbText);
-
-        this.weightControl.update();
-        this.   fitControl.update();
-        this.  joinControl.update();
-
-
-        // this.colorControl.style.backgroundColor = fillStyle;
-        //this.colorControl.style.color           = rgba2style(rgb_a(rgbText, 0.6));
+        this.textControl.innerHTML             = this.value.isValid() ? 'stroke' : 'no stroke';
+        this.textControl.style.color           = rgba2style(rgbaText);
 
 
         if (this.input ) this.input .updateControl();
@@ -364,24 +201,19 @@ extends Parameter
 
 
 
-    textboxHasFocus()
-    {
-        return hasFocus(this.weightControl.textbox)
-            || hasFocus(this.   fitControl.textbox)
-            || hasFocus(this.  joinControl.textbox);
-    }
+    // textboxHasFocus()
+    // {
+    //     return hasFocus(this.weightControl.textbox)
+    //         || hasFocus(this.   fitControl.textbox)
+    //         || hasFocus(this.  joinControl.textbox);
+    // }
 
 
 
     enableControlText(enable)
     {
-        enableElementText(this.weightControl, enable);
-        enableElementText(this.   fitControl, enable);
-        enableElementText(this.  joinControl, enable);
-        
-        this.weightControl.readOnly = !enable;
-        this.   fitControl.readOnly = !enable;
-        this.  joinControl.readOnly = !enable;
+        enableElementText(this.textControl, enable);
+        this.textControl.readOnly = !enable;
     }
     
     

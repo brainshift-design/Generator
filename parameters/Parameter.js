@@ -21,11 +21,6 @@ extends EventTarget
     onchangelock   = new Event('changelock');
 
 
-    //locked = false;
-
-    // showParamLock = false;
-    // paramLock;
-
     noUpdate = false;
 
 
@@ -51,17 +46,7 @@ extends EventTarget
         this.input  = null;
         this.output = null;
 
-        // this.paramLock = createDiv('paramLock');
-        // this.paramLock.param = this;
-        // this.paramLock.addEventListener('pointerenter', paramLock_onpointerenter);
-        // this.paramLock.addEventListener('pointerleave', paramLock_onpointerleave);
-        // this.paramLock.addEventListener('pointerdown',  paramLock_onpointerdown );
-        // this.paramLock.addEventListener('pointerup',    paramLock_onpointerup   );
-        //this._div.appendChild(this.paramLock);
-
         enableElementText(this.div, true);
-
-        //this.updateLock();
     }
 
 
@@ -158,13 +143,6 @@ extends EventTarget
 
 
 
-    // valuesEqual(val1, val2)
-    // {
-    //     return val1 == val2;
-    // }
-
-
-
     textboxHasFocus()
     {
         return false;
@@ -211,55 +189,3 @@ function setParamValue(param, value, updateParamId = '')
     if (param.id != updateParamId)
         param.setValue(value, false, true, false);
 }
-
-
-
-// function paramLock_onpointerenter(e)
-// {
-//     const paramLock = e.target;
-
-//     paramLock.over = true;
-//     paramLock.param.updateLock();
-// }
-
-
-
-// function paramLock_onpointerleave(e)
-// {
-//     const paramLock = e.target;
-
-//     paramLock.over = false;
-//     paramLock.param.updateLock();
-// }
-
-
-
-// function paramLock_onpointerdown(e)
-// {
-//     const paramLock = e.target;
-
-//     // e.preventDefault();
-//     e.stopPropagation();
-
-//     if (e.button == 0)
-//     {
-//         paramLock.down0 = true;
-//         paramLock.param.updateLock();
-//     }
-// }
-
-
-
-// function paramLock_onpointerup(e)
-// {
-//     const paramLock = e.target;
-
-//     if (e.button == 0)
-//     {
-//         paramLock.down0 = false;
-//         paramLock.param.locked = !paramLock.param.locked;
-//         paramLock.param.updateLock();
-
-//         paramLock.param.dispatchEvent(paramLock.param.onchangelock);
-//     }
-// }

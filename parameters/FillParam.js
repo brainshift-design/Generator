@@ -219,7 +219,7 @@ extends Parameter
 
     updateControls()
     {
-        const rgbVal = dataColor2rgb(this.value.color.toDataColor());
+        const rgbVal = this.value.color.toRgb();
 
         const rgbText = 
             this.opacityControl.value >= 50
@@ -317,11 +317,11 @@ extends Parameter
 
 
 
-    textboxHasFocus()
-    {
-        return hasFocus(this.  colorControl.textbox)
-            || hasFocus(this.opacityControl.textbox);
-    }
+    // textboxHasFocus()
+    // {
+    //     return hasFocus(this.  colorControl.textbox)
+    //         || hasFocus(this.opacityControl.textbox);
+    // }
 
 
 

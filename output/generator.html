@@ -3252,6 +3252,13 @@ extends GType
 
 
 
+    toRgb()
+    {
+        return dataColor2rgb(this.toDataColor());
+    }
+
+
+
     toDataColor()
     {
         if (!this.isValid())
@@ -3285,7 +3292,7 @@ extends GType
         if (!this.isValid())
             return INVALID;
 
-        const rgb = dataColor2rgb(this.toDataColor());
+        const rgb = this.toRgb();
 
         return      rgb[0].toString()
             + ' ' + rgb[1].toString()
@@ -3414,7 +3421,7 @@ extends GType
 
     toString()
     {
-        const rgb = scaleColor(dataColor2rgb(this.color.toDataColor()), 'rgb');
+        const rgb = scaleColor(this.color.toRgb(), 'rgb');
 
         return this.isValid()
             ?         rgb[0].toString()
@@ -3422,6 +3429,15 @@ extends GType
               + ' ' + rgb[2].toString()
               + ' ' + this.opacity.toString()
             : INVALID;
+    }
+
+
+
+    toRgba()
+    {
+        return [
+            ...this.color.toRgb(),
+            this.opacity.value ];
     }
 
 
@@ -5271,16 +5287,16 @@ extends GOperator
                         if (standard.value == 0)
                         {
                             const value = getContrastRatio2(
-                                dataColor2rgb(input0.toDataColor()),
-                                dataColor2rgb(input1.toDataColor()));
+                                input0.toRgb(),
+                                input1.toRgb());
 
                             this.value = new NumberValue(value, 2);
                         }
                         else
                         {
                             const value = getContrastRatio3(
-                                dataColor2rgb(input0.toDataColor()),
-                                dataColor2rgb(input1.toDataColor()));
+                                input0.toRgb(),
+                                input1.toRgb());
 
                             this.value = new NumberValue(Math.abs(value), 1);
                         }
@@ -5391,7 +5407,7 @@ extends GOperator
             {
                 const input = this.input.eval(parse).copy();
 
-                const rgb = dataColor2rgb(input.toDataColor());
+                const rgb = input.toRgb();
 
                 //const validRgb = invalid2validRgb(rgb);
 
@@ -5492,7 +5508,7 @@ extends GOperator
             {
                 const input = this.input.eval(parse).copy();
 
-                const rgb = dataColor2rgb(input.toDataColor());
+                const rgb = input.toRgb();
 
 
                 if (isValidRgb(rgb))

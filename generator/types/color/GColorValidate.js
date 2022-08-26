@@ -47,7 +47,7 @@ extends GOperator
             {
                 const input = this.input.eval(parse).copy();
 
-                const rgb = dataColor2rgb(input.toDataColor());
+                const rgb = input.toRgb();
 
 
                 if (isValidRgb(rgb))

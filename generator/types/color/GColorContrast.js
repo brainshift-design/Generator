@@ -57,16 +57,16 @@ extends GOperator
                         if (standard.value == 0)
                         {
                             const value = getContrastRatio2(
-                                dataColor2rgb(input0.toDataColor()),
-                                dataColor2rgb(input1.toDataColor()));
+                                input0.toRgb(),
+                                input1.toRgb());
 
                             this.value = new NumberValue(value, 2);
                         }
                         else
                         {
                             const value = getContrastRatio3(
-                                dataColor2rgb(input0.toDataColor()),
-                                dataColor2rgb(input1.toDataColor()));
+                                input0.toRgb(),
+                                input1.toRgb());
 
                             this.value = new NumberValue(Math.abs(value), 1);
                         }

@@ -124,7 +124,7 @@ extends Parameter
 
     updateControls()
     {
-        const rgb = dataColor2rgb(this.value.toDataColor());
+        const rgb = this.value.toRgb();
 
         const col = 
             isValidRgb(rgb)

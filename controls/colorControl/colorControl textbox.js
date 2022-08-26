@@ -272,7 +272,7 @@ function initColorControlTextbox(control)
 
     control.updateTextbox = function()
     {
-        const rgb = dataColor2rgb(control.value.toDataColor());
+        const rgb = control.value.toRgb();
 
         control.textbox.value =
             !control.value.isValid()

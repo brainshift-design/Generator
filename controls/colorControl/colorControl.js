@@ -102,7 +102,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
         control.value = value.copy();
 
 
-        const rgb = dataColor2rgb(control.value.toDataColor());
+        const rgb = control.value.toRgb();
 
         if (isValidRgb(rgb))
         {
@@ -172,8 +172,8 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
         control.text.innerHTML += 
                control.value.isValid()
-            && isValidRgb(dataColor2rgb(control.value.toDataColor()))
-            ? rgb2hex(dataColor2rgb(control.value.toDataColor()))
+            && isValidRgb(control.value.toRgb())
+            ? rgb2hex(control.value.toRgb())
             : DISPLAY_INVALID;
     };
 

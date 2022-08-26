@@ -81,7 +81,7 @@ extends GType
 
     toString()
     {
-        const rgb = scaleColor(dataColor2rgb(this.color.toDataColor()), 'rgb');
+        const rgb = scaleColor(this.color.toRgb(), 'rgb');
 
         return this.isValid()
             ?         rgb[0].toString()
@@ -89,6 +89,15 @@ extends GType
               + ' ' + rgb[2].toString()
               + ' ' + this.opacity.toString()
             : INVALID;
+    }
+
+
+
+    toRgba()
+    {
+        return [
+            ...this.color.toRgb(),
+            this.opacity.value ];
     }
 
 
