@@ -186,7 +186,7 @@ extends OpColorBase
             ? rgb_NaN
             : dataColor2rgb(this._color);
 
-        const darkText = 
+        const darkBack = 
               !this.canShowColor()
             || isDark(colBack);
 
@@ -194,9 +194,9 @@ extends OpColorBase
         const colText = 
             this.canShowColor()
             ? (this.paramOpacity.value >= 50
-               ? (darkText 
-                  ? [0, 0, 0, 0.6] 
-                  : [1, 1, 1, 0.7])
+               ? (darkBack 
+                  ? [1, 1, 1, 0.7] 
+                  : [0, 0, 0, 0.6])
                : (isDarkMode()
                   ? [1, 1, 1, 0.7]
                   : [0, 0, 0, 0.6])) 
@@ -214,7 +214,7 @@ extends OpColorBase
         return {
             back:      colBack, 
             text:      colText,
-            darkText:  darkText,
+            darkText:  darkBack,
             textStyle: textStyle,
             input:     colInput,
             output:    colOutput };
