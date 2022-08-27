@@ -161,12 +161,13 @@ extends OpColorBase
         this.checkers.style.backgroundPosition = '0 0, 13px 13px';
                         
 
-        const op = 1;//this.paramFill.opacity.value/100;
+        // const op = this.paramFill.value.opacity.value/100;
 
-        this.header.style.background = //'transparent';
-            this.canShowColor()
-            ? rgb2style_a(colors.back, op)
-            : 'transparent';//isDarkMode()
+        this.header.style.background = this.canShowColor() ? rgba2style(colors.back) : 'transparent';
+        // this.header.style.background = 
+        //     this.canShowColor()
+        //     ? rgb2style_a(colors.back, op)
+        //     : 'transparent';
             //? '#888088ee'
             //: '#ead8eaee';
 
@@ -193,10 +194,12 @@ extends OpColorBase
 
     getHeaderColors()
     {
+        const op = this.paramFill.value.opacity.value/100;
+
         const colBack = 
             dataColorIsNaN(this._color)
             ? rgb_NaN
-            : dataColor2rgb(this._color);
+            : rgb_a(dataColor2rgb(this._color), op);
 
         const darkBack = 
               !this.canShowColor()
@@ -205,7 +208,7 @@ extends OpColorBase
             
         const colText = 
             this.canShowColor()
-            ? (true//this.paramOpacity.value >= 50
+            ? (op >= 0.5
                ? (darkBack 
                   ? [1, 1, 1, 0.7] 
                   : [0, 0, 0, 0.6])

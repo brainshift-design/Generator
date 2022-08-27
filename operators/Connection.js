@@ -12,27 +12,37 @@ class Connection
         this.input  = input;
 
 
-        this.wire                        = createSvg('svg');
-        this.wire.connection             = this;
-        this.wire.style.position         = 'absolute';
-        this.wire.style.left             = 0;
-        this.wire.style.top              = 0;
-        this.wire.style.overflow         = 'hidden';
+        this.wire                            = createSvg('svg');
+        this.wire.connection                 = this;
+        this.wire.style.position             = 'absolute';
+        this.wire.style.left                 = 0;
+        this.wire.style.top                  = 0;
+        this.wire.style.overflow             = 'hidden';
   
-        this.wire.outputPos              = point_NaN;
-        this.wire. inputPos              = point_NaN;
+        this.wire.outputPos                  = point_NaN;
+        this.wire. inputPos                  = point_NaN;
   
-        this.wire.curve                  = createSvg('path');
-        this.wire.curve.style.fill       = 'none';
-        this.wire.curve.style.position   = 'absolute';
+        this.wire.xp1                        = createSvg('path');
+        this.wire.xp1.style.fill             = 'none';
+        this.wire.xp1.style.position         = 'absolute';
 
-        this.wire.outBall                = createSvg('circle');
-        this.wire.outBall.style.position = 'absolute';
+        this.wire.xp2                        = createSvg('path');
+        this.wire.xp2.style.fill             = 'none';
+        this.wire.xp2.style.position         = 'absolute';
 
-        this.wire.inBall                 = createSvg('circle');
-        this.wire.inBall.style.position  = 'absolute';
+        this.wire.curve                      = createSvg('path');
+        this.wire.curve.style.fill           = 'none';
+        this.wire.curve.style.position       = 'absolute';
+
+        this.wire.outBall                    = createSvg('circle');
+        this.wire.outBall.style.position     = 'absolute';
+
+        this.wire.inBall                     = createSvg('circle');
+        this.wire.inBall.style.position      = 'absolute';
 
 
+        this.wire.appendChild(this.wire.xp1);
+        this.wire.appendChild(this.wire.xp2);
         this.wire.appendChild(this.wire.curve);
         this.wire.appendChild(this.wire.outBall);
         this.wire.appendChild(this.wire.inBall);
@@ -71,6 +81,8 @@ class Connection
 
             show(this.wire,         showWire && (this != graphView.savedConn || isReordering));
             show(this.wire.curve,   showWire && (this != graphView.savedConn || isReordering));
+            show(this.wire.xp1,     showWire && (this != graphView.savedConn || isReordering));
+            show(this.wire.xp2,     showWire && (this != graphView.savedConn || isReordering));
             show(this.wire.outBall, showWire && (!graphView.tempConn || graphView.tempConn.output));
             show(this.wire. inBall, showWire && (!graphView.tempConn || graphView.tempConn. input));
         };
@@ -135,12 +147,16 @@ class Connection
             }
 
             
-            this.wire.curve.setAttribute('d',
+            const points =
                    'M ' + _x0 + ',' + _y0
                 + ' C ' + _x1 + ',' + _y1
                 + ' '   + _x2 + ',' + _y2
-                + ' '   + _x3 + ',' + _y3);
-        };
+                + ' '   + _x3 + ',' + _y3;
+
+            this.wire.xp1  .setAttribute('d', points);
+            this.wire.xp2  .setAttribute('d', points);
+            this.wire.curve.setAttribute('d', points);
+     };
 
 
 
@@ -194,15 +210,35 @@ class Connection
                   + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
                 : 'none';
 
-            this.wire.curve.style.stroke      = rgb2style(color);
-            this.wire. inBall.style.fill      = rgb2style(color);
-            this.wire.outBall.style.fill      = rgb2style(color);
+            if (this.output.wireColor[3] < 1)
+            {
+                this.wire.xp1.style.display          = 'inline';
+                this.wire.xp1.style.stroke           = isDarkMode() ? '#111' : '#c8c8c8';
+                this.wire.xp1.style.strokeDasharray  = 7 * graphView.zoom;
 
-            this.wire.curve.style.strokeWeight = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * graphView.zoom;
-            this.wire. inBall.style.r         = 3 * graphView.zoom;
-            this.wire.outBall.style.r         = 3 * graphView.zoom;
+                this.wire.xp2.style.display          = 'inline';
+                this.wire.xp2.style.stroke           = isDarkMode() ? '#444' : '#fff';
+                this.wire.xp2.style.strokeDasharray  = 7 * graphView.zoom;
+                this.wire.xp2.style.strokeDashoffset = 7 * graphView.zoom;
+            }
+            else
+            {
+                this.wire.xp1.style.display = 'none';
+                this.wire.xp2.style.display = 'none';
+            }
 
-            this.wire.style.zIndex = 0;
+            this.wire.  curve.style.stroke       = rgba2style(color);
+            this.wire. inBall.style.fill         = rgba2style(color);
+            this.wire.outBall.style.fill         = rgba2style(color);
+
+            this.wire.xp1  .style.strokeWeight   =
+            this.wire.xp2  .style.strokeWeight   =
+            this.wire.curve.style.strokeWeight   = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * graphView.zoom;
+
+            this.wire. inBall.style.r            = 3 * graphView.zoom;
+            this.wire.outBall.style.r            = 3 * graphView.zoom;
+
+            this.wire.style.zIndex               = 0;
         };
     }
 
