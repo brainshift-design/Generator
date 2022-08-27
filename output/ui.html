@@ -21319,12 +21319,12 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.wheelScale             = wheelScale;
              
     control.backColorLight         = 'transparent';
-    control.valueColorLight        = '#7772';
-    control.textColorLight         = '#000';
+    control.valueStyleLight        = '#7772';
+    control.textStyleLight         = '#000';
                 
     control.backColorDark          = 'transparent';
-    control.valueColorDark         = '#ffffff30';
-    control.textColorDark          = '#eee';
+    control.valueStyleDark         = '#ffffff30';
+    control.textStyleDark          = '#eee';
                 
     control.fontSize               = 11;
              
@@ -21539,8 +21539,8 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.updateColors = function()
     {
         control     .style.background = isDarkMode() ? control.backColorDark  : control.backColorLight;
-        control.bar .style.background = isDarkMode() ? control.valueColorDark : control.valueColorLight;
-        control.text.style.color      = isDarkMode() ? control.textColorDark  : control.textColorLight;
+        control.bar .style.background = isDarkMode() ? control.valueStyleDark : control.valueStyleLight;
+        control.text.style.color      = isDarkMode() ? control.textStyleDark  : control.textStyleLight;
     };
 
 
@@ -22457,7 +22457,7 @@ function initColorControlChildren(control)
 
 
 
-function initColorControl(param, control, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0)
+function initColorControl(param, control, width, height, id, name, showName, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
 {
     control.param                  = param;
      
@@ -22469,7 +22469,9 @@ function initColorControl(param, control, width, height, id, name, showName, def
     control.style.width            = width;
     control.style.height           = height;
              
-    control.value                  = def;
+    control.showColor              = true;
+
+    control.value                  = defaultValue;
     control.acc                    = acc;
      
     control.id                     = id;
@@ -22479,11 +22481,11 @@ function initColorControl(param, control, width, height, id, name, showName, def
     control.dragScale              = dragScale;
     control.wheelScale             = wheelScale;
              
-    control.valueColorLight        = 'transparent';
-    control.textColorLight         = '#000';
+    control.valueStyleLight        = 'transparent';
+    control.textStyleLight         = '#000';
                 
-    control.valueColorDark         = 'transparent';
-    control.textColorDark          = '#eee';
+    control.valueStyleDark         = 'transparent';
+    control.textStyleDark          = '#eee';
 
     control.fontSize               = 11;
              
@@ -22552,25 +22554,26 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
         const rgb = control.value.toRgb();
 
+
         if (isValidRgb(rgb))
         {
-            control.valueColorLight =
-            control.valueColorDark  = rgb2style(rgb);
-            control. textColorLight =
-            control. textColorDark  = isDark(rgb) ? '#fff8' : '#0008'
+            control.valueStyleLight =
+            control.valueStyleDark  = rgb2style(rgb);
+            control. textStyleLight =
+            control. textStyleDark  = isDark(rgb) ? '#fff8' : '#0008'
         }
         else
         {
-            control.valueColorLight =
-            control.valueColorDark  = 'transparent';
-            control. textColorLight =
-            control. textColorDark  = '#fff8';
+            control.valueStyleLight =
+            control.valueStyleDark  = 'transparent';
+            control. textStyleLight =
+            control. textStyleDark  = '#fff8';
         }
 
 
         control.update();
 
-        
+
         if (   fireChangeEvent
             && control.enableChangeEvent
             && !value.equals(control.prevValue))
@@ -22605,8 +22608,17 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
     control.updateColors = function()
     {
-        control     .style.background = isDarkMode() ? control.valueColorDark : control.valueColorLight;
-        control.text.style.color      = isDarkMode() ? control. textColorDark : control. textColorLight;
+        control.style.background = 
+            control.showColor
+            ? (isDarkMode() 
+               ? control.valueStyleDark 
+               : control.valueStyleLight)
+            : 'transparent';
+
+        control.text.style.color = 
+            isDarkMode() 
+            ? control.textStyleDark 
+            : control.textStyleLight;
     };
 
 
@@ -25834,10 +25846,10 @@ extends Parameter
         this.colorControl          = createDiv();
         this.opacityControl        = createDiv();
         
-        this.colorControl.param    = this;
-        this.colorControl.zIndex   = 0;
-
+        this.  colorControl.param  = this;
         this.opacityControl.param  = this;
+
+        this.  colorControl.zIndex = 0;
         this.opacityControl.zIndex = 0;
    
         this.defaultValue          = defaultValue;
@@ -25854,6 +25866,9 @@ extends Parameter
             showName,
             defaultValue.color,   
             dragScale); 
+
+        this.colorControl.showColor = false;
+
 
         initNumberControl(
             this,
@@ -25876,9 +25891,11 @@ extends Parameter
         this.checkers.style.height                  = '20px';
 
 
+        this.controlWrapper.style.position          = 'relative';
         this.controlWrapper.style.display           = 'inline-block';
         this.controlWrapper.style.width             = '100%';
         this.controlWrapper.style.height            = '20px';
+        this.controlWrapper.style.zIndex            = 1;
 
 
         this.  colorControl.successOnFocusOut       = true;
@@ -26033,7 +26050,7 @@ extends Parameter
         this.output.colorDark  = rgb_a(rgbText, isDark(rgbText) ? 0.12 : 0.44);
 
 
-        this.checkers.style.background =
+        this.checkers.style.background = 
             isDarkMode()
             ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
               + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
@@ -26049,24 +26066,20 @@ extends Parameter
         
         const fillStyle = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
 
-        this.opacityControl.backColorLight  = 
-        this.opacityControl.backColorDark   = fillStyle;
+        this.controlWrapper.style.background = fillStyle; 
 
-        this.opacityControl.valueColorLight = 
-        this.opacityControl.valueColorDark  = 'transparent';//rgba2style(rgb_a(rgbText, 0.12));
 
-        this.  colorControl.textColorLight  = 
-        this.  colorControl.textColorDark   = rgba2style(rgbText);
+        this.opacityControl.valueStyleLight  = 
+        this.opacityControl.valueStyleDark   = 'transparent';
 
-        this.opacityControl.textColorLight  = 
-        this.opacityControl.textColorDark   = rgba2style(rgbText);
+        this.  colorControl.textStyleLight   = 
+        this.  colorControl.textStyleDark    = rgba2style(rgbText);
+
+        this.opacityControl.textStyleLight   = 
+        this.opacityControl.textStyleDark    = rgba2style(rgbText);
 
         this.  colorControl.update();
         this.opacityControl.update();
-
-
-        this.colorControl.style.backgroundColor = fillStyle;
-        //this.colorControl.style.color           = rgba2style(rgb_a(rgbText, 0.6));
 
 
         if (this.input ) this.input .updateControl();
@@ -30926,10 +30939,10 @@ extends OpColorBase
             : [1, 1, 1, 0.12];
 
         this.paramSpace.control.backColor       = 'transparent';
-        this.paramSpace.control.valueColorLight =
-        this.paramSpace.control.valueColorDark  = rgba2style(colSpaceBar);
-        this.paramSpace.control.textColorLight  =
-        this.paramSpace.control.textColorDark   = colors.textStyle;
+        this.paramSpace.control.valueStyleLight =
+        this.paramSpace.control.valueStyleDark  = rgba2style(colSpaceBar);
+        this.paramSpace.control.textStyleLight  =
+        this.paramSpace.control.textStyleDark   = colors.textStyle;
         this.paramSpace.input .color            = colors.input;
         this.paramSpace.output.color            = colors.output;
         this.paramSpace.updateControls();

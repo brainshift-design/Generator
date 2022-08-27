@@ -43,12 +43,12 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.wheelScale             = wheelScale;
              
     control.backColorLight         = 'transparent';
-    control.valueColorLight        = '#7772';
-    control.textColorLight         = '#000';
+    control.valueStyleLight        = '#7772';
+    control.textStyleLight         = '#000';
                 
     control.backColorDark          = 'transparent';
-    control.valueColorDark         = '#ffffff30';
-    control.textColorDark          = '#eee';
+    control.valueStyleDark         = '#ffffff30';
+    control.textStyleDark          = '#eee';
                 
     control.fontSize               = 11;
              
@@ -263,8 +263,8 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.updateColors = function()
     {
         control     .style.background = isDarkMode() ? control.backColorDark  : control.backColorLight;
-        control.bar .style.background = isDarkMode() ? control.valueColorDark : control.valueColorLight;
-        control.text.style.color      = isDarkMode() ? control.textColorDark  : control.textColorLight;
+        control.bar .style.background = isDarkMode() ? control.valueStyleDark : control.valueStyleLight;
+        control.text.style.color      = isDarkMode() ? control.textStyleDark  : control.textStyleLight;
     };
 
 

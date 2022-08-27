@@ -9,7 +9,7 @@ function initColorControlChildren(control)
 
 
 
-function initColorControl(param, control, width, height, id, name, showName, def, dragScale = 0.05, wheelScale = 1, acc = 0)
+function initColorControl(param, control, width, height, id, name, showName, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
 {
     control.param                  = param;
      
@@ -21,7 +21,9 @@ function initColorControl(param, control, width, height, id, name, showName, def
     control.style.width            = width;
     control.style.height           = height;
              
-    control.value                  = def;
+    control.showColor              = true;
+
+    control.value                  = defaultValue;
     control.acc                    = acc;
      
     control.id                     = id;
@@ -31,11 +33,11 @@ function initColorControl(param, control, width, height, id, name, showName, def
     control.dragScale              = dragScale;
     control.wheelScale             = wheelScale;
              
-    control.valueColorLight        = 'transparent';
-    control.textColorLight         = '#000';
+    control.valueStyleLight        = 'transparent';
+    control.textStyleLight         = '#000';
                 
-    control.valueColorDark         = 'transparent';
-    control.textColorDark          = '#eee';
+    control.valueStyleDark         = 'transparent';
+    control.textStyleDark          = '#eee';
 
     control.fontSize               = 11;
              
@@ -104,25 +106,26 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
         const rgb = control.value.toRgb();
 
+
         if (isValidRgb(rgb))
         {
-            control.valueColorLight =
-            control.valueColorDark  = rgb2style(rgb);
-            control. textColorLight =
-            control. textColorDark  = isDark(rgb) ? '#fff8' : '#0008'
+            control.valueStyleLight =
+            control.valueStyleDark  = rgb2style(rgb);
+            control. textStyleLight =
+            control. textStyleDark  = isDark(rgb) ? '#fff8' : '#0008'
         }
         else
         {
-            control.valueColorLight =
-            control.valueColorDark  = 'transparent';
-            control. textColorLight =
-            control. textColorDark  = '#fff8';
+            control.valueStyleLight =
+            control.valueStyleDark  = 'transparent';
+            control. textStyleLight =
+            control. textStyleDark  = '#fff8';
         }
 
 
         control.update();
 
-        
+
         if (   fireChangeEvent
             && control.enableChangeEvent
             && !value.equals(control.prevValue))
@@ -157,8 +160,17 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
     control.updateColors = function()
     {
-        control     .style.background = isDarkMode() ? control.valueColorDark : control.valueColorLight;
-        control.text.style.color      = isDarkMode() ? control. textColorDark : control. textColorLight;
+        control.style.background = 
+            control.showColor
+            ? (isDarkMode() 
+               ? control.valueStyleDark 
+               : control.valueStyleLight)
+            : 'transparent';
+
+        control.text.style.color = 
+            isDarkMode() 
+            ? control.textStyleDark 
+            : control.textStyleLight;
     };
 
 

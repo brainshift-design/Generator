@@ -41,10 +41,10 @@ extends Parameter
         this.colorControl          = createDiv();
         this.opacityControl        = createDiv();
         
-        this.colorControl.param    = this;
-        this.colorControl.zIndex   = 0;
-
+        this.  colorControl.param  = this;
         this.opacityControl.param  = this;
+
+        this.  colorControl.zIndex = 0;
         this.opacityControl.zIndex = 0;
    
         this.defaultValue          = defaultValue;
@@ -61,6 +61,9 @@ extends Parameter
             showName,
             defaultValue.color,   
             dragScale); 
+
+        this.colorControl.showColor = false;
+
 
         initNumberControl(
             this,
@@ -83,9 +86,11 @@ extends Parameter
         this.checkers.style.height                  = '20px';
 
 
+        this.controlWrapper.style.position          = 'relative';
         this.controlWrapper.style.display           = 'inline-block';
         this.controlWrapper.style.width             = '100%';
         this.controlWrapper.style.height            = '20px';
+        this.controlWrapper.style.zIndex            = 1;
 
 
         this.  colorControl.successOnFocusOut       = true;
@@ -240,7 +245,7 @@ extends Parameter
         this.output.colorDark  = rgb_a(rgbText, isDark(rgbText) ? 0.12 : 0.44);
 
 
-        this.checkers.style.background =
+        this.checkers.style.background = 
             isDarkMode()
             ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
               + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
@@ -256,24 +261,20 @@ extends Parameter
         
         const fillStyle = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
 
-        this.opacityControl.backColorLight  = 
-        this.opacityControl.backColorDark   = fillStyle;
+        this.controlWrapper.style.background = fillStyle; 
 
-        this.opacityControl.valueColorLight = 
-        this.opacityControl.valueColorDark  = 'transparent';//rgba2style(rgb_a(rgbText, 0.12));
 
-        this.  colorControl.textColorLight  = 
-        this.  colorControl.textColorDark   = rgba2style(rgbText);
+        this.opacityControl.valueStyleLight  = 
+        this.opacityControl.valueStyleDark   = 'transparent';
 
-        this.opacityControl.textColorLight  = 
-        this.opacityControl.textColorDark   = rgba2style(rgbText);
+        this.  colorControl.textStyleLight   = 
+        this.  colorControl.textStyleDark    = rgba2style(rgbText);
+
+        this.opacityControl.textStyleLight   = 
+        this.opacityControl.textStyleDark    = rgba2style(rgbText);
 
         this.  colorControl.update();
         this.opacityControl.update();
-
-
-        this.colorControl.style.backgroundColor = fillStyle;
-        //this.colorControl.style.color           = rgba2style(rgb_a(rgbText, 0.6));
 
 
         if (this.input ) this.input .updateControl();
