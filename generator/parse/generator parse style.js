@@ -49,6 +49,8 @@ function genParseFill(parse)
     
     for (const id of paramIds)
     {
+        parse.inParam = false;
+
         switch (id)
         {
         case 'color':   fill.color   = genParse(parse); break;
@@ -117,6 +119,8 @@ function genParseStroke(parse)
         
     for (const id of paramIds)
     {
+        parse.inParam = false;
+
         switch (id)
         {
         case 'fill':   stroke.fill   = genParse(parse); break;
