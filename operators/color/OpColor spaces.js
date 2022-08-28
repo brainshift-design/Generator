@@ -227,7 +227,7 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c
 
 function switchToTextbox(node)
 {
-    if (!node.inner.contains(node.hexbox))
+    if (!node.inner.contains(node.paramColor.div))
     {
         removeOpColorParamWires(node);
 
@@ -235,7 +235,7 @@ function switchToTextbox(node)
         node.inner.removeChild(node.param2.div);
         node.inner.removeChild(node.param3.div);
         
-        node.inner.appendChild(node.hexbox);
+        node.inner.appendChild(node.paramColor.div);
     }
 }
 
@@ -256,15 +256,15 @@ function removeOpColorParamWires(node)
 
 function switchToSliders(node)
 {
-    if (node.inner.contains(node.hexbox))
+    if (node.inner.contains(node.paramColor.div))
     {
-        node.inner.removeChild(node.hexbox);
+        node.inner.removeChild(node.paramColor.div);
 
         node.inner.appendChild(node.param1.div);
         node.inner.appendChild(node.param2.div);
         node.inner.appendChild(node.param3.div);
 
-        node.updateNode();//graphView.updateNodeTransform(node);
+        node.updateNode();
     }
 }
 

@@ -2,15 +2,15 @@ class   OpColor
 extends OpColorBase
 {
     paramSpace;
-    
     param1;
     param2;
     param3;
+    paramColor;
 
     #colorBack;
 
 
-    hexbox;
+    //hexbox;
 
     
     prevSpace;
@@ -44,10 +44,11 @@ extends OpColorBase
         this.initContentInput(this.inputs[0], 1);
 
         
-        this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true, true, OpColorSpaces.map(s => s[1]), 0));
-        this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true, true, Math.round(this._color[1] * rgbFactor[0])));
-        this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true, true, Math.round(this._color[2] * rgbFactor[1])));
-        this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true, true, Math.round(this._color[3] * rgbFactor[2])));
+        this.addParam(this.paramSpace = new SelectParam('space', '', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
+        this.addParam(this.param1     = new NumberParam('c1',    '', true,  true,  true,  Math.round(this._color[1] * rgbFactor[0])));
+        this.addParam(this.param2     = new NumberParam('c2',    '', true,  true,  true,  Math.round(this._color[2] * rgbFactor[1])));
+        this.addParam(this.param3     = new NumberParam('c3',    '', true,  true,  true,  Math.round(this._color[3] * rgbFactor[2])));
+        this.addParam(this.paramColor = new ColorParam ('color', '', false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
         
         this.paramSpace.control.barTop = 0.8;
@@ -62,41 +63,43 @@ extends OpColorBase
         this.paramSpace.control.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
 
 
+        // hex is default, remove default sliders
+        this.inner.removeChild(this.param1.div);
+        this.inner.removeChild(this.param2.div);
+        this.inner.removeChild(this.param3.div);
+
+
         // initHexbox(this);
-        this.hexbox = createDiv();//createTextbox('hexbox');
+        // this.hexbox = createDiv();//createTextbox('hexbox');
     
-        initColorControl(
-            null,
-            this.hexbox,
-            100, // width
-            20,  // height
-            'hex',
-            '', 
-            false,
-            ColorValue.fromRgb([0xD9, 0xD9, 0xD9])); 
+        // initColorControl(
+        //     null,
+        //     this.hexbox,
+        //     100, // width
+        //     20,  // height
+        //     'hex',
+        //     '', 
+        //     false,
+        //     ColorValue.fromRgb([0xD9, 0xD9, 0xD9])); 
 
-        this.hexbox.node           = this;
+        // this.hexbox.node           = this;
 
-        this.hexbox.textStyleDark  = '#eee';
-        this.hexbox.textStyleLight = 'black';
+        // this.hexbox.textStyleDark  = '#eee';
+        // this.hexbox.textStyleLight = 'black';
 
-        this.hexbox.showColor      = false;
-        this.hexbox.style.display  = 'inline-block';
-        //this.hexbox.style.position = 'absolute';
-        this.hexbox.style.width    = '100%';
+        this.paramColor.control.showColor = false;
+        // this.hexbox.style.display  = 'inline-block';
+        // //this.hexbox.style.position = 'absolute';
+        // this.hexbox.style.width    = '100%';
 
 
-        this.hexbox.addEventListener('finishedit', () => 
+        this.paramColor.addEventListener('change', () => 
         {
-            const rgb = this.hexbox.value.toRgb();
-
-            actionManager.do(new SetParamValueAction(this.param1, new NumberValue(rgb[0])));
-            actionManager.do(new SetParamValueAction(this.param2, new NumberValue(rgb[1])), true);
-            actionManager.do(new SetParamValueAction(this.param3, new NumberValue(rgb[2])), true);
+            this._color = this.paramColor.value.toDataColor();
         });
 
 
-        for (let i = 1; i < this.params.length; i++)
+        for (let i = 1; i < this.params.length-1; i++) // -1 is for paramColor
             this.params[i].input.addEventListener('disconnect', () => { this.params[i].enableControlText(!this.inputs[0].connected); });
     }
 
@@ -252,13 +255,10 @@ extends OpColorBase
     {
         //console.log(this.id + '.OpColor.updateNode()');
         
-        enableElementText(this.hexbox, !this.isConnected());
+        enableElementText(this.paramColor.control, !this.isConnected());
 
-        if (!hasFocus(this.hexbox))
-        {
-            const colBack = dataColor2rgb(this._color);
-            this.hexbox.setValue(ColorValue.fromRgb(scaleRgb(colBack)), false, true, false);// = 
-        }
+        if (!hasFocus(this.paramColor.control))
+            this.paramColor.setValue(ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color))), false, true, false);// = 
         
         super.updateNode();
     }
