@@ -3206,7 +3206,7 @@ extends GType
 
 
 
-    static createFromRgb(rgb)
+    static fromRgb(rgb)
     {
         return ColorValue.create(1, rgb[0], rgb[1], rgb[2]);
     }
@@ -3373,14 +3373,14 @@ extends GType
 
 
 
-    static createFromRgb(rgb, opacity)
+    static fromRgb(rgb, opacity)
     {
         console.assert(
             typeof opacity == 'number',
             'opacity must be a number');
 
         return new FillValue(
-            ColorValue.createFromRgb(rgb),
+            ColorValue.fromRgb(rgb),
             new NumberValue(opacity));
     }
 
@@ -3421,7 +3421,7 @@ extends GType
 
     toString()
     {
-        const rgb = scaleColor(this.color.toRgb(), 'rgb');
+        const rgb = scaleRgb(this.color.toRgb());
 
         return this.isValid()
             ?         rgb[0].toString()
@@ -3541,14 +3541,14 @@ extends GType
 
 
 
-    // static createFromRgb(rgb, opacity)
+    // static fromRgb(rgb, opacity)
     // {
     //     console.assert(
     //         typeof opacity == 'number',
     //         'opacity must be a number');
 
     //     return new FillValue(
-    //         ColorValue.createFromRgb(rgb),
+    //         ColorValue.fromRgb(rgb),
     //         new NumberValue(opacity));
     // }
 
@@ -5609,7 +5609,7 @@ extends GOperator
             else
             {
                 this.result = new FillValue(
-                    ColorValue.createFromRgb(scaleColor(dataColor2rgb(this.color.eval(parse).toDataColor()), 'rgb')), 
+                    ColorValue.fromRgb(scaleRgb(dataColor2rgb(this.color.eval(parse).toDataColor()))), 
                     this.opacity.eval(parse).copy());
             }
         
@@ -6471,7 +6471,7 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logRawLoading:    true, 
+    logRawLoading:    false, 
     logLoading:       true, 
     logRawSaving:     true, 
     logActions:       true, 
@@ -9297,7 +9297,6 @@ function APCAcontrast(txtY, bgY)
 const OpColorSpaces = 
 [
     ['hex',    'Hex'   ],
-    //['rgbhex', '<span class=\'hash\'>#</span>RGB'],
     ['rgb',    'RGB'   ], 
     ['hsv',    'HSV'   ], 
     ['hsl',    'HSL'   ], 
@@ -9354,6 +9353,13 @@ function scaleColor(col, space)
         col[0] * scale[0],
         col[1] * scale[1],
         col[2] * scale[2] ];
+}
+
+
+
+function scaleRgb(rgb)
+{
+    return scaleColor(rgb, 'rgb');
 }
 
 

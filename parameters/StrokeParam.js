@@ -39,15 +39,18 @@ extends Parameter
         this.value                        = defaultValue;
 
         
-        this.checkers.style.position      = 'absolute';
-        this.checkers.style.width         = '100%';
-        this.checkers.style.height        = '20px';
+        this.checkers    .style.position  = 'absolute';
+        this.checkers    .style.width     = '100%';
+        this.checkers    .style.height    = '20px';
         
 
         this.colorControl.style.position  = 'absolute';
         this.colorControl.style.display   = 'block';
         this.colorControl.style.width     = '100%';
         this.colorControl.style.height    = '20px';
+
+        this.textControl .style.width     = '100%';
+        this.textControl .style.textAlign = 'center';
     
 
         this.div.appendChild(this.checkers);

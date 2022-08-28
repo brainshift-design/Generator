@@ -42,7 +42,7 @@ extends GType
 
 
 
-    static createFromRgb(rgb)
+    static fromRgb(rgb)
     {
         return ColorValue.create(1, rgb[0], rgb[1], rgb[2]);
     }

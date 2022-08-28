@@ -49,14 +49,14 @@ extends GType
 
 
 
-    // static createFromRgb(rgb, opacity)
+    // static fromRgb(rgb, opacity)
     // {
     //     console.assert(
     //         typeof opacity == 'number',
     //         'opacity must be a number');
 
     //     return new FillValue(
-    //         ColorValue.createFromRgb(rgb),
+    //         ColorValue.fromRgb(rgb),
     //         new NumberValue(opacity));
     // }
 

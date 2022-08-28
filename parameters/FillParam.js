@@ -81,47 +81,49 @@ extends Parameter
         this.opacityControl.setSuffix('%', true);
 
 
-        this.checkers.style.position                = 'absolute';
-        this.checkers.style.width                   = '100%';
-        this.checkers.style.height                  = '20px';
+        this.checkers.style.position                   = 'absolute';
+        this.checkers.style.width                      = '100%';
+        this.checkers.style.height                     = '20px';
 
 
-        this.controlWrapper.style.position          = 'relative';
-        this.controlWrapper.style.display           = 'inline-block';
-        this.controlWrapper.style.width             = '100%';
-        this.controlWrapper.style.height            = '20px';
-        this.controlWrapper.style.zIndex            = 1;
+        this.controlWrapper.style.position             = 'relative';
+        this.controlWrapper.style.display              = 'inline-block';
+        this.controlWrapper.style.width                = '100%';
+        this.controlWrapper.style.height               = '20px';
+        this.controlWrapper.style.zIndex               = 1;
 
 
-        this.  colorControl.successOnFocusOut       = true;
-        this.  colorControl.style.display           = 'inline';
-        this.  colorControl.style.width             = '60%';
-        this.  colorControl.style.position          = 'absolute';
-        this.  colorControl.style.left              = 0;
+        this.  colorControl.successOnFocusOut          = true;
+        this.  colorControl.style.display              = 'inline';
+        this.  colorControl.style.width                = '60%';
+        this.  colorControl.style.position             = 'absolute';
+        this.  colorControl.style.left                 = 0;
 
     
-        this.opacityControl.successOnFocusOut       = true;
-        this.opacityControl.style.display           = 'inline';
-        this.opacityControl.style.width             = '40%';
-        this.opacityControl.style.position          = 'absolute';
-        this.opacityControl.style.right             = 0;
+        this.opacityControl.successOnFocusOut          = true;
+        this.opacityControl.style.display              = 'inline';
+        this.opacityControl.style.width                = '40%';
+        this.opacityControl.style.position             = 'absolute';
+        this.opacityControl.style.right                = 0;
 
 
-        this.  colorControl.text.style.transform    = 'translateX(-40%)';
-        this.opacityControl.text.style.transform    = 'translateX(-70%)';
+        this.  colorControl.text.style.transform       = 'translateX(-40%)';
+        this.opacityControl.text.style.transform       = 'translateX(-70%)';
 
 
-        this.  colorControl.textbox.style.position  = 'absolute';
-        this.  colorControl.textbox.style.left      = '0';
-        this.  colorControl.textbox.style.width     = '60%';
-        this.  colorControl.textbox.style.transform = 'translateX(0)';
-        this.  colorControl.textbox.style.textAlign = 'right';
+        this.  colorControl.textbox.style.position     = 'absolute';
+        this.  colorControl.textbox.style.left         =  0;
+        this.  colorControl.textbox.style.width        = '60%';
+        this.  colorControl.textbox.style.transform    = 'translateX(0)';
+        this.  colorControl.textbox.style.textAlign    = 'right';
+        this.  colorControl.textbox.style.paddingLeft  =  11;
         
-        this.opacityControl.textbox.style.position  = 'absolute';
-        this.opacityControl.textbox.style.right     = '0';
-        this.opacityControl.textbox.style.width     = '40%';
-        this.opacityControl.textbox.style.transform = 'translateX(25%)';
-        this.opacityControl.textbox.style.textAlign = 'left';
+        this.opacityControl.textbox.style.position     = 'absolute';
+        this.opacityControl.textbox.style.right        =  0;
+        this.opacityControl.textbox.style.width        = '40%';
+        this.opacityControl.textbox.style.transform    = 'translateX(25%)';
+        this.opacityControl.textbox.style.textAlign    = 'left';
+        this.opacityControl.textbox.style.paddingRight =  10;
 
 
         this.controlWrapper.appendChild(this.  colorControl);
@@ -161,9 +163,9 @@ extends Parameter
             if (e.detail.value != e.detail.oldValue)
             {
                 const  rgb = validHex2rgb(e.detail.value);
-                const _rgb = scaleColor(rgb, 'rgb');
+                const _rgb = scaleRgb(rgb);
 
-                this.setValue(FillValue.createFromRgb(_rgb, this.opacityControl.value), true);
+                this.setValue(FillValue.fromRgb(_rgb, this.opacityControl.value), true);
                 
                 e.preventSetValue = true;
             }

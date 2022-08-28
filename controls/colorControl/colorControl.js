@@ -33,9 +33,11 @@ function initColorControl(param, control, width, height, id, name, showName, def
     control.dragScale              = dragScale;
     control.wheelScale             = wheelScale;
              
+    control. backStyleLight        = 'transparent';
     control.valueStyleLight        = 'transparent';
     control.textStyleLight         = '#000';
                 
+    control. backStyleDark         = 'transparent';
     control.valueStyleDark         = 'transparent';
     control.textStyleDark          = '#eee';
 
@@ -165,7 +167,9 @@ function initColorControl(param, control, width, height, id, name, showName, def
             ? (isDarkMode() 
                ? control.valueStyleDark 
                : control.valueStyleLight)
-            : 'transparent';
+            : (isDarkMode() 
+               ? control.backStyleDark 
+               : control.backStyleLight);
 
         control.text.style.color = 
             isDarkMode() 

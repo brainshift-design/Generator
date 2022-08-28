@@ -33,14 +33,14 @@ extends GType
 
 
 
-    static createFromRgb(rgb, opacity)
+    static fromRgb(rgb, opacity)
     {
         console.assert(
             typeof opacity == 'number',
             'opacity must be a number');
 
         return new FillValue(
-            ColorValue.createFromRgb(rgb),
+            ColorValue.fromRgb(rgb),
             new NumberValue(opacity));
     }
 
@@ -81,7 +81,7 @@ extends GType
 
     toString()
     {
-        const rgb = scaleColor(this.color.toRgb(), 'rgb');
+        const rgb = scaleRgb(this.color.toRgb());
 
         return this.isValid()
             ?         rgb[0].toString()

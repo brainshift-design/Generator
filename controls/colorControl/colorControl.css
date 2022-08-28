@@ -36,7 +36,7 @@
     font-variant-numeric: tabular-nums;
     pointer-events:       none;
     letter-spacing:       -0.35px;
-    position:             absolute;
+    position:             relative;
     left:                 50%;
     transform:            translateX(-50%);
     top:                  3px;

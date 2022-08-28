@@ -46,7 +46,7 @@ extends GOperator
             else
             {
                 this.result = new FillValue(
-                    ColorValue.createFromRgb(scaleColor(dataColor2rgb(this.color.eval(parse).toDataColor()), 'rgb')), 
+                    ColorValue.fromRgb(scaleRgb(dataColor2rgb(this.color.eval(parse).toDataColor()))), 
                     this.opacity.eval(parse).copy());
             }
         

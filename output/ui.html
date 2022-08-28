@@ -903,7 +903,7 @@ div
     font-variant-numeric: tabular-nums;
     pointer-events:       none;
     letter-spacing:       -0.35px;
-    position:             absolute;
+    position:             relative;
     left:                 50%;
     transform:            translateX(-50%);
     top:                  3px;
@@ -1340,7 +1340,7 @@ div
 }
 
 
-.hexbox
+/* .hexbox
 {
     text-align:  center;
     width:       100%;
@@ -1352,7 +1352,7 @@ div
 .hexbox:hover
 {
     box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1) inset;
-}
+} */
 
 
 .txtOrder
@@ -4968,7 +4968,7 @@ extends GType
 
 
 
-    static createFromRgb(rgb)
+    static fromRgb(rgb)
     {
         return ColorValue.create(1, rgb[0], rgb[1], rgb[2]);
     }
@@ -5135,14 +5135,14 @@ extends GType
 
 
 
-    static createFromRgb(rgb, opacity)
+    static fromRgb(rgb, opacity)
     {
         console.assert(
             typeof opacity == 'number',
             'opacity must be a number');
 
         return new FillValue(
-            ColorValue.createFromRgb(rgb),
+            ColorValue.fromRgb(rgb),
             new NumberValue(opacity));
     }
 
@@ -5183,7 +5183,7 @@ extends GType
 
     toString()
     {
-        const rgb = scaleColor(this.color.toRgb(), 'rgb');
+        const rgb = scaleRgb(this.color.toRgb());
 
         return this.isValid()
             ?         rgb[0].toString()
@@ -5303,14 +5303,14 @@ extends GType
 
 
 
-    // static createFromRgb(rgb, opacity)
+    // static fromRgb(rgb, opacity)
     // {
     //     console.assert(
     //         typeof opacity == 'number',
     //         'opacity must be a number');
 
     //     return new FillValue(
-    //         ColorValue.createFromRgb(rgb),
+    //         ColorValue.fromRgb(rgb),
     //         new NumberValue(opacity));
     // }
 
@@ -7371,7 +7371,7 @@ extends GOperator
             else
             {
                 this.result = new FillValue(
-                    ColorValue.createFromRgb(scaleColor(dataColor2rgb(this.color.eval(parse).toDataColor()), 'rgb')), 
+                    ColorValue.fromRgb(scaleRgb(dataColor2rgb(this.color.eval(parse).toDataColor()))), 
                     this.opacity.eval(parse).copy());
             }
         
@@ -8233,7 +8233,7 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logRawLoading:    true, 
+    logRawLoading:    false, 
     logLoading:       true, 
     logRawSaving:     true, 
     logActions:       true, 
@@ -11059,7 +11059,6 @@ function APCAcontrast(txtY, bgY)
 const OpColorSpaces = 
 [
     ['hex',    'Hex'   ],
-    //['rgbhex', '<span class=\'hash\'>#</span>RGB'],
     ['rgb',    'RGB'   ], 
     ['hsv',    'HSV'   ], 
     ['hsl',    'HSL'   ], 
@@ -11116,6 +11115,13 @@ function scaleColor(col, space)
         col[0] * scale[0],
         col[1] * scale[1],
         col[2] * scale[2] ];
+}
+
+
+
+function scaleRgb(rgb)
+{
+    return scaleColor(rgb, 'rgb');
 }
 
 
@@ -16999,7 +17005,7 @@ extends GType
 
 
 
-    static createFromRgb(rgb)
+    static fromRgb(rgb)
     {
         return ColorValue.create(1, rgb[0], rgb[1], rgb[2]);
     }
@@ -17166,14 +17172,14 @@ extends GType
 
 
 
-    static createFromRgb(rgb, opacity)
+    static fromRgb(rgb, opacity)
     {
         console.assert(
             typeof opacity == 'number',
             'opacity must be a number');
 
         return new FillValue(
-            ColorValue.createFromRgb(rgb),
+            ColorValue.fromRgb(rgb),
             new NumberValue(opacity));
     }
 
@@ -17214,7 +17220,7 @@ extends GType
 
     toString()
     {
-        const rgb = scaleColor(this.color.toRgb(), 'rgb');
+        const rgb = scaleRgb(this.color.toRgb());
 
         return this.isValid()
             ?         rgb[0].toString()
@@ -17334,14 +17340,14 @@ extends GType
 
 
 
-    // static createFromRgb(rgb, opacity)
+    // static fromRgb(rgb, opacity)
     // {
     //     console.assert(
     //         typeof opacity == 'number',
     //         'opacity must be a number');
 
     //     return new FillValue(
-    //         ColorValue.createFromRgb(rgb),
+    //         ColorValue.fromRgb(rgb),
     //         new NumberValue(opacity));
     // }
 
@@ -19402,7 +19408,7 @@ extends GOperator
             else
             {
                 this.result = new FillValue(
-                    ColorValue.createFromRgb(scaleColor(dataColor2rgb(this.color.eval(parse).toDataColor()), 'rgb')), 
+                    ColorValue.fromRgb(scaleRgb(dataColor2rgb(this.color.eval(parse).toDataColor()))), 
                     this.opacity.eval(parse).copy());
             }
         
@@ -20264,7 +20270,7 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logRawLoading:    true, 
+    logRawLoading:    false, 
     logLoading:       true, 
     logRawSaving:     true, 
     logActions:       true, 
@@ -21324,11 +21330,11 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.dragScale              = dragScale;
     control.wheelScale             = wheelScale;
              
-    control.backColorLight         = 'transparent';
+    control.backStyleLight         = 'transparent';
     control.valueStyleLight        = '#7772';
     control.textStyleLight         = '#000';
                 
-    control.backColorDark          = 'transparent';
+    control.backStyleDark          = 'transparent';
     control.valueStyleDark         = '#ffffff30';
     control.textStyleDark          = '#eee';
                 
@@ -21544,7 +21550,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
     control.updateColors = function()
     {
-        control     .style.background = isDarkMode() ? control.backColorDark  : control.backColorLight;
+        control     .style.background = isDarkMode() ? control.backTeyleDark  : control.backStyleLight;
         control.bar .style.background = isDarkMode() ? control.valueStyleDark : control.valueStyleLight;
         control.text.style.color      = isDarkMode() ? control.textStyleDark  : control.textStyleLight;
     };
@@ -22268,13 +22274,13 @@ function initColorControlTextbox(control)
             if (iStart == iEnd) iEnd++;
 
 
-            const rgb = scaleColor(validHex2rgb(control.textbox.value), 'rgb');
+            const rgb = scaleRgb(validHex2rgb(control.textbox.value));
             
             for (let i = iStart; i < iEnd; i++)
                 rgb[i] = Math.min(Math.max(0, rgb[i] + (e.key == 'ArrowUp' ? 1 : -1)), 0xff);
 
 
-            control.setValue(ColorValue.createFromRgb(rgb));
+            control.setValue(ColorValue.fromRgb(rgb));
             control.updateTextbox();
 
 
@@ -22371,11 +22377,11 @@ function initColorControlTextbox(control)
             {
                 control.setValue(
                       value.trim() != '' 
-                    ? ColorValue.createFromRgb(scaleColor(rgb,      'rgb')) 
-                    : ColorValue.createFromRgb(scaleColor(savedRgb, 'rgb')));
+                    ? ColorValue.fromRgb(scaleRgb(rgb     )) 
+                    : ColorValue.fromRgb(scaleRgb(savedRgb)));
             }
             else
-                control.setValue(ColorValue.createFromRgb(scaleColor(savedRgb, 'rgb')));
+                control.setValue(ColorValue.fromRgb(scaleRgb(savedRgb)));
         }
          
         
@@ -22487,9 +22493,11 @@ function initColorControl(param, control, width, height, id, name, showName, def
     control.dragScale              = dragScale;
     control.wheelScale             = wheelScale;
              
+    control. backStyleLight        = 'transparent';
     control.valueStyleLight        = 'transparent';
     control.textStyleLight         = '#000';
                 
+    control. backStyleDark         = 'transparent';
     control.valueStyleDark         = 'transparent';
     control.textStyleDark          = '#eee';
 
@@ -22619,7 +22627,9 @@ function initColorControl(param, control, width, height, id, name, showName, def
             ? (isDarkMode() 
                ? control.valueStyleDark 
                : control.valueStyleLight)
-            : 'transparent';
+            : (isDarkMode() 
+               ? control.backStyleDark 
+               : control.backStyleLight);
 
         control.text.style.color = 
             isDarkMode() 
@@ -25661,7 +25671,7 @@ extends Parameter
             {
                 const rgb = validHex2rgb(e.detail.value);
 
-                this.setValue(ColorValue.createFromRgb(scaleColor(rgb, 'rgb')), true);
+                this.setValue(ColorValue.fromRgb(scaleRgb(rgb)), true);
                 e.preventSetValue = true;
             }
         });
@@ -25892,47 +25902,49 @@ extends Parameter
         this.opacityControl.setSuffix('%', true);
 
 
-        this.checkers.style.position                = 'absolute';
-        this.checkers.style.width                   = '100%';
-        this.checkers.style.height                  = '20px';
+        this.checkers.style.position                   = 'absolute';
+        this.checkers.style.width                      = '100%';
+        this.checkers.style.height                     = '20px';
 
 
-        this.controlWrapper.style.position          = 'relative';
-        this.controlWrapper.style.display           = 'inline-block';
-        this.controlWrapper.style.width             = '100%';
-        this.controlWrapper.style.height            = '20px';
-        this.controlWrapper.style.zIndex            = 1;
+        this.controlWrapper.style.position             = 'relative';
+        this.controlWrapper.style.display              = 'inline-block';
+        this.controlWrapper.style.width                = '100%';
+        this.controlWrapper.style.height               = '20px';
+        this.controlWrapper.style.zIndex               = 1;
 
 
-        this.  colorControl.successOnFocusOut       = true;
-        this.  colorControl.style.display           = 'inline';
-        this.  colorControl.style.width             = '60%';
-        this.  colorControl.style.position          = 'absolute';
-        this.  colorControl.style.left              = 0;
+        this.  colorControl.successOnFocusOut          = true;
+        this.  colorControl.style.display              = 'inline';
+        this.  colorControl.style.width                = '60%';
+        this.  colorControl.style.position             = 'absolute';
+        this.  colorControl.style.left                 = 0;
 
     
-        this.opacityControl.successOnFocusOut       = true;
-        this.opacityControl.style.display           = 'inline';
-        this.opacityControl.style.width             = '40%';
-        this.opacityControl.style.position          = 'absolute';
-        this.opacityControl.style.right             = 0;
+        this.opacityControl.successOnFocusOut          = true;
+        this.opacityControl.style.display              = 'inline';
+        this.opacityControl.style.width                = '40%';
+        this.opacityControl.style.position             = 'absolute';
+        this.opacityControl.style.right                = 0;
 
 
-        this.  colorControl.text.style.transform    = 'translateX(-40%)';
-        this.opacityControl.text.style.transform    = 'translateX(-70%)';
+        this.  colorControl.text.style.transform       = 'translateX(-40%)';
+        this.opacityControl.text.style.transform       = 'translateX(-70%)';
 
 
-        this.  colorControl.textbox.style.position  = 'absolute';
-        this.  colorControl.textbox.style.left      = '0';
-        this.  colorControl.textbox.style.width     = '60%';
-        this.  colorControl.textbox.style.transform = 'translateX(0)';
-        this.  colorControl.textbox.style.textAlign = 'right';
+        this.  colorControl.textbox.style.position     = 'absolute';
+        this.  colorControl.textbox.style.left         =  0;
+        this.  colorControl.textbox.style.width        = '60%';
+        this.  colorControl.textbox.style.transform    = 'translateX(0)';
+        this.  colorControl.textbox.style.textAlign    = 'right';
+        this.  colorControl.textbox.style.paddingLeft  =  11;
         
-        this.opacityControl.textbox.style.position  = 'absolute';
-        this.opacityControl.textbox.style.right     = '0';
-        this.opacityControl.textbox.style.width     = '40%';
-        this.opacityControl.textbox.style.transform = 'translateX(25%)';
-        this.opacityControl.textbox.style.textAlign = 'left';
+        this.opacityControl.textbox.style.position     = 'absolute';
+        this.opacityControl.textbox.style.right        =  0;
+        this.opacityControl.textbox.style.width        = '40%';
+        this.opacityControl.textbox.style.transform    = 'translateX(25%)';
+        this.opacityControl.textbox.style.textAlign    = 'left';
+        this.opacityControl.textbox.style.paddingRight =  10;
 
 
         this.controlWrapper.appendChild(this.  colorControl);
@@ -25972,9 +25984,9 @@ extends Parameter
             if (e.detail.value != e.detail.oldValue)
             {
                 const  rgb = validHex2rgb(e.detail.value);
-                const _rgb = scaleColor(rgb, 'rgb');
+                const _rgb = scaleRgb(rgb);
 
-                this.setValue(FillValue.createFromRgb(_rgb, this.opacityControl.value), true);
+                this.setValue(FillValue.fromRgb(_rgb, this.opacityControl.value), true);
                 
                 e.preventSetValue = true;
             }
@@ -26215,15 +26227,18 @@ extends Parameter
         this.value                        = defaultValue;
 
         
-        this.checkers.style.position      = 'absolute';
-        this.checkers.style.width         = '100%';
-        this.checkers.style.height        = '20px';
+        this.checkers    .style.position  = 'absolute';
+        this.checkers    .style.width     = '100%';
+        this.checkers    .style.height    = '20px';
         
 
         this.colorControl.style.position  = 'absolute';
         this.colorControl.style.display   = 'block';
         this.colorControl.style.width     = '100%';
         this.colorControl.style.height    = '20px';
+
+        this.textControl .style.width     = '100%';
+        this.textControl .style.textAlign = 'center';
     
 
         this.div.appendChild(this.checkers);
@@ -30766,10 +30781,28 @@ extends OpColorBase
         this.paramSpace.control.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
 
 
-        //this.paramSpace.addEventListener('beforechange', () => { this.fromSpace = this.paramSpace.oldValue; });
+        // initHexbox(this);
+        this.hexbox = createDiv();//createTextbox('hexbox');
+    
+        initColorControl(
+            null,
+            this.hexbox,
+            100, // width
+            20,  // height
+            'hex',
+            '', 
+            false,
+            ColorValue.fromRgb([0xD9, 0xD9, 0xD9])); 
 
+        this.hexbox.node           = this;
 
-        initHexbox(this);
+        this.hexbox.textStyleDark  = '#eee';
+        this.hexbox.textStyleLight = 'black';
+
+        this.hexbox.showColor      = false;
+        this.hexbox.style.display  = 'inline-block';
+        //this.hexbox.style.position = 'absolute';
+        this.hexbox.style.width    = '100%';
 
 
         for (let i = 1; i < this.params.length; i++)
@@ -30927,28 +30960,15 @@ extends OpColorBase
     updateNode()
     {
         //console.log(this.id + '.OpColor.updateNode()');
-
         
         enableElementText(this.hexbox, !this.isConnected());
-
 
         if (!hasFocus(this.hexbox))
         {
             const colBack = dataColor2rgb(this._color);
-
-            this.hexbox.value = 
-                isValidRgb(colBack)
-                ? rgb2hex(colBack)
-                : DISPLAY_INVALID;
+            this.hexbox.setValue(ColorValue.fromRgb(scaleRgb(colBack)), false, true, false);// = 
         }
-
         
-        this.hexbox.style.color = 
-            isDarkMode()
-            ? '#eee'
-            : 'black';
-
-
         super.updateNode();
     }
 
@@ -31317,7 +31337,6 @@ extends OpColorBase
 const OpColorSpaces = 
 [
     ['hex',    'Hex'   ],
-    //['rgbhex', '<span class=\'hash\'>#</span>RGB'],
     ['rgb',    'RGB'   ], 
     ['hsv',    'HSV'   ], 
     ['hsl',    'HSL'   ], 
@@ -31374,6 +31393,13 @@ function scaleColor(col, space)
         col[0] * scale[0],
         col[1] * scale[1],
         col[2] * scale[2] ];
+}
+
+
+
+function scaleRgb(rgb)
+{
+    return scaleColor(rgb, 'rgb');
 }
 
 
@@ -31850,154 +31876,154 @@ function getColorSpaceScale(space)
 }
 
 
-function initHexbox(node)
-{
-    node.hexbox = createTextbox('hexbox');
+// function initHexbox(node)
+// {
+//     node.hexbox = createDiv();//createTextbox('hexbox');
     
-    node.hexbox.node    = node;
-    node.hexbox.editing = false;
+//     node.hexbox.node = node;
+//     //node.hexbox.editing = false;
     
-    node.hexbox.addEventListener('pointerdown', onHexboxPointerDown);
-    node.hexbox.addEventListener('pointerup',   onHexboxPointerUp);
-    node.hexbox.addEventListener('focus',       onHexboxFocus);
-    node.hexbox.addEventListener('focusout',    onHexboxFocusOut);
-    node.hexbox.addEventListener('input',       onHexboxInput);
-    node.hexbox.addEventListener('keydown',     onHexboxKeyDown);
-}
+//     // node.hexbox.addEventListener('pointerdown', onHexboxPointerDown);
+//     // node.hexbox.addEventListener('pointerup',   onHexboxPointerUp);
+//     // node.hexbox.addEventListener('focus',       onHexboxFocus);
+//     // node.hexbox.addEventListener('focusout',    onHexboxFocusOut);
+//     // node.hexbox.addEventListener('input',       onHexboxInput);
+//     // node.hexbox.addEventListener('keydown',     onHexboxKeyDown);
+// }
 
 
 
-function onHexboxPointerDown(e)
-{
-    //const hexbox = e.target;
+// function onHexboxPointerDown(e)
+// {
+//     //const hexbox = e.target;
 
-    if (e.button > 0)
-        e.preventDefault();
+//     if (e.button > 0)
+//         e.preventDefault();
 
-    e.stopPropagation();
-}
-
-
-
-function onHexboxPointerUp(e)
-{
-    const hexbox = e.target;
-
-    if (    e.button == 0
-        && !hexbox.editing)
-    {
-        e.preventDefault();
-
-        hexbox.savedValue = hexbox.value;
-
-        hexbox.focus();
-        hexbox.select();
-        hexbox.editing = true;
-    }
-}
+//     e.stopPropagation();
+// }
 
 
 
-function onHexboxFocus(e)
-{
-    const hexbox = e.target;
-    hexbox.style.cursor = 'default';
+// function onHexboxPointerUp(e)
+// {
+//     const hexbox = e.target;
 
-    if (hexbox.value == DISPLAY_INVALID)
-        hexbox.value = INVALID;
-}
+//     if (    e.button == 0
+//         && !hexbox.editing)
+//     {
+//         e.preventDefault();
 
+//         hexbox.savedValue = hexbox.value;
 
-
-function onHexboxFocusOut(e)
-{
-    const hexbox = e.target;
-    hexboxFinish(hexbox.node, true);
-    hexbox.style.cursor = 'default';
-}
-
+//         hexbox.focus();
+//         hexbox.select();
+//         hexbox.editing = true;
+//     }
+// }
 
 
-function onHexboxInput(e)
-{
-    const hexbox = e.target;
+
+// function onHexboxFocus(e)
+// {
+//     const hexbox = e.target;
+//     hexbox.style.cursor = 'default';
+
+//     if (hexbox.value == DISPLAY_INVALID)
+//         hexbox.value = INVALID;
+// }
+
+
+
+// function onHexboxFocusOut(e)
+// {
+//     const hexbox = e.target;
+//     hexboxFinish(hexbox.node, true);
+//     hexbox.style.cursor = 'default';
+// }
+
+
+
+// function onHexboxInput(e)
+// {
+//     const hexbox = e.target;
     
-    let val = hexbox.value;
+//     let val = hexbox.value;
 
-    if (val.trim() == '')
-        return;
+//     if (val.trim() == '')
+//         return;
 
-         if (   val.length > 7 
-             && val[0] == '#') hexbox.value = val.trim().slice(0, 7);
-    else if (val.length > 6)   hexbox.value = val.trim().slice(0, 6);
-}
+//          if (   val.length > 7 
+//              && val[0] == '#') hexbox.value = val.trim().slice(0, 7);
+//     else if (val.length > 6)   hexbox.value = val.trim().slice(0, 6);
+// }
 
 
 
-function onHexboxKeyDown(e)
-{
-    e.stopPropagation();
+// function onHexboxKeyDown(e)
+// {
+//     e.stopPropagation();
 
     
-    const hexbox = e.target;
+//     const hexbox = e.target;
 
-    if (   e.code == 'KeyC'
-        && getCtrlKey(e))
-    {
-        e.preventDefault();
-        document.execCommand('copy');
-    }
+//     if (   e.code == 'KeyC'
+//         && getCtrlKey(e))
+//     {
+//         e.preventDefault();
+//         document.execCommand('copy');
+//     }
 
-    else if (   e.code == 'KeyV'
-        && getCtrlKey(e)
-        && !hexbox.node.isConnected())
-    {
-        // do nothing and let the OS do its thing
-    }
+//     else if (   e.code == 'KeyV'
+//         && getCtrlKey(e)
+//         && !hexbox.node.isConnected())
+//     {
+//         // do nothing and let the OS do its thing
+//     }
 
-    else if ((   e.code == 'Enter'
-              || e.code == 'NumpadEnter')
-           && !hexbox.node.isConnected())
-        hexboxFinish(hexbox.node, true);
+//     else if ((   e.code == 'Enter'
+//               || e.code == 'NumpadEnter')
+//            && !hexbox.node.isConnected())
+//         hexboxFinish(hexbox.node, true);
 
-    else if (e.code == 'Escape')
-        hexboxFinish(hexbox.node, false);
+//     else if (e.code == 'Escape')
+//         hexboxFinish(hexbox.node, false);
 
-    else if (   e.key.length == 1
-             && !isDigit(e.key)
-             && !isHexDigit(e.key)
-         ||     hexbox.node.isConnected()
-            && !isArrowKey(e.code)
-         ||    e.key != 'ArrowLeft'
-            && e.key != 'ArrowRight'
-            && e.key != 'Delete'
-            && e.key != 'Backspace'
-            && hexbox.value.length >= 6
-            && hexbox.selectionStart == hexbox.selectionEnd)
-        e.preventDefault();
-}
+//     else if (   e.key.length == 1
+//              && !isDigit(e.key)
+//              && !isHexDigit(e.key)
+//          ||     hexbox.node.isConnected()
+//             && !isArrowKey(e.code)
+//          ||    e.key != 'ArrowLeft'
+//             && e.key != 'ArrowRight'
+//             && e.key != 'Delete'
+//             && e.key != 'Backspace'
+//             && hexbox.value.length >= 6
+//             && hexbox.selectionStart == hexbox.selectionEnd)
+//         e.preventDefault();
+// }
 
 
 
-function hexboxFinish(node, success)
-{
-    if (node.hexbox.value.trim() == '')
-        node.hexbox.value = node.hexbox.savedValue;
+// function hexboxFinish(node, success)
+// {
+//     if (node.hexbox.value.trim() == '')
+//         node.hexbox.value = node.hexbox.savedValue;
 
         
-    const rgb = hex2rgb(node.hexbox.value);
+//     const rgb = hex2rgb(node.hexbox.value);
     
-    if (success) 
-    {
-        setDataColorToCurrentSpace(node, rgb2dataColor(rgb));
-        pushUpdate([node.hexbox.node]);
-    }
+//     if (success) 
+//     {
+//         setDataColorToCurrentSpace(node, rgb2dataColor(rgb));
+//         pushUpdate([node.hexbox.node]);
+//     }
 
     
-    node.hexbox.selectionEnd = node.hexbox.selectionStart;
-    node.hexbox.editing = false;
-    node.hexbox.blur();
-};
+//     node.hexbox.selectionEnd = node.hexbox.selectionStart;
+//     node.hexbox.editing = false;
+//     node.hexbox.blur();
+// };
 
 
 function dataColor2array(color)
@@ -38959,8 +38985,8 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 {
     //console.log('raw values = ', values);
 
-    if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
-    if (settings.logObjectUpdates) logObjectUpdates(objects);
+    if (settings.logValueUpdates)  
+        logValueUpdates(updateNodeId, updateParamId, values);
 
 
     const nodes = [];

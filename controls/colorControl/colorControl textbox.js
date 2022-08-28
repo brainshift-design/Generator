@@ -106,13 +106,13 @@ function initColorControlTextbox(control)
             if (iStart == iEnd) iEnd++;
 
 
-            const rgb = scaleColor(validHex2rgb(control.textbox.value), 'rgb');
+            const rgb = scaleRgb(validHex2rgb(control.textbox.value));
             
             for (let i = iStart; i < iEnd; i++)
                 rgb[i] = Math.min(Math.max(0, rgb[i] + (e.key == 'ArrowUp' ? 1 : -1)), 0xff);
 
 
-            control.setValue(ColorValue.createFromRgb(rgb));
+            control.setValue(ColorValue.fromRgb(rgb));
             control.updateTextbox();
 
 
@@ -209,11 +209,11 @@ function initColorControlTextbox(control)
             {
                 control.setValue(
                       value.trim() != '' 
-                    ? ColorValue.createFromRgb(scaleColor(rgb,      'rgb')) 
-                    : ColorValue.createFromRgb(scaleColor(savedRgb, 'rgb')));
+                    ? ColorValue.fromRgb(scaleRgb(rgb     )) 
+                    : ColorValue.fromRgb(scaleRgb(savedRgb)));
             }
             else
-                control.setValue(ColorValue.createFromRgb(scaleColor(savedRgb, 'rgb')));
+                control.setValue(ColorValue.fromRgb(scaleRgb(savedRgb)));
         }
          
         

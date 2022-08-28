@@ -80,7 +80,7 @@ extends Parameter
             {
                 const rgb = validHex2rgb(e.detail.value);
 
-                this.setValue(ColorValue.createFromRgb(scaleColor(rgb, 'rgb')), true);
+                this.setValue(ColorValue.fromRgb(scaleRgb(rgb)), true);
                 e.preventSetValue = true;
             }
         });

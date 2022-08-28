@@ -62,10 +62,28 @@ extends OpColorBase
         this.paramSpace.control.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
 
 
-        //this.paramSpace.addEventListener('beforechange', () => { this.fromSpace = this.paramSpace.oldValue; });
+        // initHexbox(this);
+        this.hexbox = createDiv();//createTextbox('hexbox');
+    
+        initColorControl(
+            null,
+            this.hexbox,
+            100, // width
+            20,  // height
+            'hex',
+            '', 
+            false,
+            ColorValue.fromRgb([0xD9, 0xD9, 0xD9])); 
 
+        this.hexbox.node           = this;
 
-        initHexbox(this);
+        this.hexbox.textStyleDark  = '#eee';
+        this.hexbox.textStyleLight = 'black';
+
+        this.hexbox.showColor      = false;
+        this.hexbox.style.display  = 'inline-block';
+        //this.hexbox.style.position = 'absolute';
+        this.hexbox.style.width    = '100%';
 
 
         for (let i = 1; i < this.params.length; i++)
@@ -223,28 +241,15 @@ extends OpColorBase
     updateNode()
     {
         //console.log(this.id + '.OpColor.updateNode()');
-
         
         enableElementText(this.hexbox, !this.isConnected());
-
 
         if (!hasFocus(this.hexbox))
         {
             const colBack = dataColor2rgb(this._color);
-
-            this.hexbox.value = 
-                isValidRgb(colBack)
-                ? rgb2hex(colBack)
-                : DISPLAY_INVALID;
+            this.hexbox.setValue(ColorValue.fromRgb(scaleRgb(colBack)), false, true, false);// = 
         }
-
         
-        this.hexbox.style.color = 
-            isDarkMode()
-            ? '#eee'
-            : 'black';
-
-
         super.updateNode();
     }
 

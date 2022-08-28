@@ -241,7 +241,7 @@ function logReqNode(node, parse) {
 const settings = {
     showNodeId: false,
     logMessages: false,
-    logRawLoading: true,
+    logRawLoading: false,
     logLoading: true,
     logRawSaving: true,
     logActions: true,

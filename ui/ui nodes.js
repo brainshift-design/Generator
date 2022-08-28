@@ -820,8 +820,8 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 {
     //console.log('raw values = ', values);
 
-    if (settings.logValueUpdates)  logValueUpdates(updateNodeId, updateParamId, values);
-    if (settings.logObjectUpdates) logObjectUpdates(objects);
+    if (settings.logValueUpdates)  
+        logValueUpdates(updateNodeId, updateParamId, values);
 
 
     const nodes = [];

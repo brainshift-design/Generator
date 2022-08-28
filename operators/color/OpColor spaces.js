@@ -1,7 +1,6 @@
 const OpColorSpaces = 
 [
     ['hex',    'Hex'   ],
-    //['rgbhex', '<span class=\'hash\'>#</span>RGB'],
     ['rgb',    'RGB'   ], 
     ['hsv',    'HSV'   ], 
     ['hsl',    'HSL'   ], 
@@ -58,6 +57,13 @@ function scaleColor(col, space)
         col[0] * scale[0],
         col[1] * scale[1],
         col[2] * scale[2] ];
+}
+
+
+
+function scaleRgb(rgb)
+{
+    return scaleColor(rgb, 'rgb');
 }
 
 
