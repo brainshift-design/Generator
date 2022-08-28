@@ -226,7 +226,7 @@ extends Parameter
     {
         const rgbVal = this.value.color.toRgb();
 
-        const rgbText = 
+        const rgbaText = 
             this.opacityControl.value >= 50
             ? (isDark(rgbVal) 
                ? [1, 1, 1, 0.8]
@@ -238,11 +238,11 @@ extends Parameter
 
         this.input.wireColor   = rgbVal;
         this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(rgbText, isDark(rgbText) ? 0.12 : 0.44);
+        this.input.colorDark   = rgb_a(rgbaText, 0.2);//isDark(rgbText) ? 0.12 : 0.44);
 
         this.output.wireColor  = rgbVal;
         this.output.colorLight =
-        this.output.colorDark  = rgb_a(rgbText, isDark(rgbText) ? 0.12 : 0.44);
+        this.output.colorDark  = rgb_a(rgbaText, 0.2);//isDark(rgbText) ? 0.12 : 0.44);
 
 
         this.checkers.style.background = 
@@ -268,10 +268,10 @@ extends Parameter
         this.opacityControl.valueStyleDark   = 'transparent';
 
         this.  colorControl.textStyleLight   = 
-        this.  colorControl.textStyleDark    = rgba2style(rgbText);
+        this.  colorControl.textStyleDark    = rgba2style(rgbaText);
 
         this.opacityControl.textStyleLight   = 
-        this.opacityControl.textStyleDark    = rgba2style(rgbText);
+        this.opacityControl.textStyleDark    = rgba2style(rgbaText);
 
         this.  colorControl.update();
         this.opacityControl.update();

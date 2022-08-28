@@ -138,11 +138,11 @@ extends Parameter
 
         this.input.wireColor   = rgb;
         this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(col, 0.12);
+        this.input.colorDark   = rgb_a(col, 0.2);
 
         this.output.wireColor  = rgb;
         this.output.colorLight =
-        this.output.colorDark  = rgb_a(col, 0.12);
+        this.output.colorDark  = rgb_a(col, 0.2);
 
 
         super.updateControls();

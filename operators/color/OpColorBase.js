@@ -91,34 +91,34 @@ extends Operator
             ? rgb_NaN
             : dataColor2rgb(this._color);
 
-        const darkText = 
+        const darkBack = 
               !this.canShowColor()
-            || rgb2hclokl(colBack)[2] > 0.71;
+            || isDark(colBack);
 
             
-        const ba = Math.min(14 * (isValidRgb(colBack) ? 0.08 : 0.22), 0.5);
-        const wa = Math.min(14 * (isValidRgb(colBack) ? 0.1  : 0.14), 0.5);
+        // const ba = Math.min(14 * (isValidRgb(colBack) ? 0.08 : 0.22), 0.5);
+        // const wa = Math.min(14 * (isValidRgb(colBack) ? 0.1  : 0.14), 0.5);
 
         const colText = 
             this.canShowColor()
-            ? (darkText 
-               ? [0, 0, 0, ba] 
-               : [1, 1, 1, wa])
+            ? (darkBack 
+               ? [1, 1, 1, 0.7] 
+               : [0, 0, 0, 0.6])
             : (isDarkMode()
-               ? [1, 1, 1, wa]
-               : [0, 0, 0, ba ]);
+               ? [1, 1, 1, 0.7]
+               : [0, 0, 0, 0.6]);
 
         const textStyle = rgba2style(colText);
 
         
-        const colInput  = this.canShowColor() ? colText : [0, 0, 0, 0.12];
-        const colOutput = this.canShowColor() ? colText : [0, 0, 0, 0.1 ];
+        const colInput  = colText;//this.canShowColor() ? colText : [0, 0, 0, 0.12];
+        const colOutput = colText;//this.canShowColor() ? colText : [0, 0, 0, 0.1 ];
 
 
         return {
             back:      colBack, 
             text:      colText,
-            darkText:  darkText,
+            darkText:  darkBack,
             textStyle: textStyle,
             input:     colInput,
             output:    colOutput };

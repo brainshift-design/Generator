@@ -1132,6 +1132,7 @@ div
     left:           3px;
     pointer-events: none;
     box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12);
+    z-index:        10;
 }
 
 
@@ -1454,6 +1455,7 @@ div
     right:          3px;
     pointer-events: none;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
+    z-index:        10;
 }
 
 
@@ -25713,11 +25715,11 @@ extends Parameter
 
         this.input.wireColor   = rgb;
         this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(col, 0.12);
+        this.input.colorDark   = rgb_a(col, 0.2);
 
         this.output.wireColor  = rgb;
         this.output.colorLight =
-        this.output.colorDark  = rgb_a(col, 0.12);
+        this.output.colorDark  = rgb_a(col, 0.2);
 
 
         super.updateControls();
@@ -26031,7 +26033,7 @@ extends Parameter
     {
         const rgbVal = this.value.color.toRgb();
 
-        const rgbText = 
+        const rgbaText = 
             this.opacityControl.value >= 50
             ? (isDark(rgbVal) 
                ? [1, 1, 1, 0.8]
@@ -26043,11 +26045,11 @@ extends Parameter
 
         this.input.wireColor   = rgbVal;
         this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(rgbText, isDark(rgbText) ? 0.12 : 0.44);
+        this.input.colorDark   = rgb_a(rgbaText, 0.2);//isDark(rgbText) ? 0.12 : 0.44);
 
         this.output.wireColor  = rgbVal;
         this.output.colorLight =
-        this.output.colorDark  = rgb_a(rgbText, isDark(rgbText) ? 0.12 : 0.44);
+        this.output.colorDark  = rgb_a(rgbaText, 0.2);//isDark(rgbText) ? 0.12 : 0.44);
 
 
         this.checkers.style.background = 
@@ -26073,10 +26075,10 @@ extends Parameter
         this.opacityControl.valueStyleDark   = 'transparent';
 
         this.  colorControl.textStyleLight   = 
-        this.  colorControl.textStyleDark    = rgba2style(rgbText);
+        this.  colorControl.textStyleDark    = rgba2style(rgbaText);
 
         this.opacityControl.textStyleLight   = 
-        this.opacityControl.textStyleDark    = rgba2style(rgbText);
+        this.opacityControl.textStyleDark    = rgba2style(rgbaText);
 
         this.  colorControl.update();
         this.opacityControl.update();
@@ -30583,34 +30585,34 @@ extends Operator
             ? rgb_NaN
             : dataColor2rgb(this._color);
 
-        const darkText = 
+        const darkBack = 
               !this.canShowColor()
-            || rgb2hclokl(colBack)[2] > 0.71;
+            || isDark(colBack);
 
             
-        const ba = Math.min(14 * (isValidRgb(colBack) ? 0.08 : 0.22), 0.5);
-        const wa = Math.min(14 * (isValidRgb(colBack) ? 0.1  : 0.14), 0.5);
+        // const ba = Math.min(14 * (isValidRgb(colBack) ? 0.08 : 0.22), 0.5);
+        // const wa = Math.min(14 * (isValidRgb(colBack) ? 0.1  : 0.14), 0.5);
 
         const colText = 
             this.canShowColor()
-            ? (darkText 
-               ? [0, 0, 0, ba] 
-               : [1, 1, 1, wa])
+            ? (darkBack 
+               ? [1, 1, 1, 0.7] 
+               : [0, 0, 0, 0.6])
             : (isDarkMode()
-               ? [1, 1, 1, wa]
-               : [0, 0, 0, ba ]);
+               ? [1, 1, 1, 0.7]
+               : [0, 0, 0, 0.6]);
 
         const textStyle = rgba2style(colText);
 
         
-        const colInput  = this.canShowColor() ? colText : [0, 0, 0, 0.12];
-        const colOutput = this.canShowColor() ? colText : [0, 0, 0, 0.1 ];
+        const colInput  = colText;//this.canShowColor() ? colText : [0, 0, 0, 0.12];
+        const colOutput = colText;//this.canShowColor() ? colText : [0, 0, 0, 0.1 ];
 
 
         return {
             back:      colBack, 
             text:      colText,
-            darkText:  darkText,
+            darkText:  darkBack,
             textStyle: textStyle,
             input:     colInput,
             output:    colOutput };
@@ -30979,8 +30981,17 @@ extends OpColorBase
         this.paramSpace.control.valueStyleDark  = rgba2style(colSpaceBar);
         this.paramSpace.control.textStyleLight  =
         this.paramSpace.control.textStyleDark   = colors.textStyle;
-        this.paramSpace.input .color            = colors.input;
-        this.paramSpace.output.color            = colors.output;
+
+        this.inputs[0]        .colorLight       =
+        this.inputs[0]        .colorDark        =
+        this.paramSpace.input .colorLight       =
+        this.paramSpace.input .colorDark        = rgb_a(colors.input, 0.2);
+
+        this.outputs[0]       .colorLight       =
+        this.outputs[0]       .colorDark        = 
+        this.paramSpace.output.colorLight       =
+        this.paramSpace.output.colorDark        = rgb_a(colors.output, 0.2);
+
         this.paramSpace.updateControls();
 
         const colWarning = 
@@ -33769,11 +33780,11 @@ extends OpColorBase
 
         this.inputs[0] .wireColor  = this.canShowColor() ? colors.back : noColor;
         this.inputs[0] .colorLight = 
-        this.inputs[0] .colorDark  = rgb_a(colors.input, 0.12);
+        this.inputs[0] .colorDark  = rgb_a(colors.input, 0.2);
 
         this.outputs[0].wireColor  = this.canShowColor() ? colors.back : noColor;
         this.outputs[0].colorLight =
-        this.outputs[0].colorDark  = rgb_a(colors.output, 0.12);
+        this.outputs[0].colorDark  = rgb_a(colors.output, 0.2);
 
 
         this.updateWarningOverlay();
@@ -33815,8 +33826,8 @@ extends OpColorBase
         const textStyle = rgba2style(colText);
 
         
-        const colInput  = colText;//this.canShowColor() ? colText : [0, 0, 0, 0.12];
-        const colOutput = colText;//this.canShowColor() ? colText : [0, 0, 0, 0.1 ];
+        const colInput  = colText;
+        const colOutput = colText;
 
 
         return {
@@ -34008,15 +34019,15 @@ extends OpColorBase
 
         this.inputs[0] .wireColor  = this.canShowColor() ? colors.back : noColor;
         this.inputs[0] .colorLight = 
-        this.inputs[0] .colorDark  = rgb_a(colors.input, 0.12);
+        this.inputs[0] .colorDark  = rgb_a(colors.input, 0.2);
 
         this.outputs[0].wireColor  = this.canShowColor() ? colors.back : noColor;
         this.outputs[0].colorLight =
-        this.outputs[0].colorDark  = rgb_a(colors.output, 0.12);
+        this.outputs[0].colorDark  = rgb_a(colors.output, 0.2);
 
 
         this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colors.back);//, 45);
+        this.updateWarningOverlayStyle(colors.back);
 
 
         Operator.prototype.updateHeader.call(this);
@@ -34054,8 +34065,8 @@ extends OpColorBase
         const textStyle = rgba2style(colText);
 
         
-        const colInput  = colText;//this.canShowColor() ? colText : [0, 0, 0, 0.12];
-        const colOutput = colText;//this.canShowColor() ? colText : [0, 0, 0, 0.1 ];
+        const colInput  = colText;
+        const colOutput = colText;
 
 
         return {

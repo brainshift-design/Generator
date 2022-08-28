@@ -176,15 +176,15 @@ extends OpColorBase
 
         this.inputs[0] .wireColor  = this.canShowColor() ? colors.back : noColor;
         this.inputs[0] .colorLight = 
-        this.inputs[0] .colorDark  = rgb_a(colors.input, 0.12);
+        this.inputs[0] .colorDark  = rgb_a(colors.input, 0.2);
 
         this.outputs[0].wireColor  = this.canShowColor() ? colors.back : noColor;
         this.outputs[0].colorLight =
-        this.outputs[0].colorDark  = rgb_a(colors.output, 0.12);
+        this.outputs[0].colorDark  = rgb_a(colors.output, 0.2);
 
 
         this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colors.back);//, 45);
+        this.updateWarningOverlayStyle(colors.back);
 
 
         Operator.prototype.updateHeader.call(this);
@@ -222,8 +222,8 @@ extends OpColorBase
         const textStyle = rgba2style(colText);
 
         
-        const colInput  = colText;//this.canShowColor() ? colText : [0, 0, 0, 0.12];
-        const colOutput = colText;//this.canShowColor() ? colText : [0, 0, 0, 0.1 ];
+        const colInput  = colText;
+        const colOutput = colText;
 
 
         return {

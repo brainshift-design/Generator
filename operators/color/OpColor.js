@@ -281,8 +281,17 @@ extends OpColorBase
         this.paramSpace.control.valueStyleDark  = rgba2style(colSpaceBar);
         this.paramSpace.control.textStyleLight  =
         this.paramSpace.control.textStyleDark   = colors.textStyle;
-        this.paramSpace.input .color            = colors.input;
-        this.paramSpace.output.color            = colors.output;
+
+        this.inputs[0]        .colorLight       =
+        this.inputs[0]        .colorDark        =
+        this.paramSpace.input .colorLight       =
+        this.paramSpace.input .colorDark        = rgb_a(colors.input, 0.2);
+
+        this.outputs[0]       .colorLight       =
+        this.outputs[0]       .colorDark        = 
+        this.paramSpace.output.colorLight       =
+        this.paramSpace.output.colorDark        = rgb_a(colors.output, 0.2);
+
         this.paramSpace.updateControls();
 
         const colWarning = 
