@@ -68,35 +68,10 @@ extends OpColorBase
         this.inner.removeChild(this.param2.div);
         this.inner.removeChild(this.param3.div);
 
-
-        // initHexbox(this);
-        // this.hexbox = createDiv();//createTextbox('hexbox');
-    
-        // initColorControl(
-        //     null,
-        //     this.hexbox,
-        //     100, // width
-        //     20,  // height
-        //     'hex',
-        //     '', 
-        //     false,
-        //     ColorValue.fromRgb([0xD9, 0xD9, 0xD9])); 
-
-        // this.hexbox.node           = this;
-
-        // this.hexbox.textStyleDark  = '#eee';
-        // this.hexbox.textStyleLight = 'black';
-
+        
         this.paramColor.control.showColor = false;
-        // this.hexbox.style.display  = 'inline-block';
-        // //this.hexbox.style.position = 'absolute';
-        // this.hexbox.style.width    = '100%';
 
-
-        this.paramColor.addEventListener('change', () => 
-        {
-            this._color = this.paramColor.value.toDataColor();
-        });
+        this.paramColor.addEventListener('change', () => this._color = this.paramColor.value.toDataColor());
 
 
         for (let i = 1; i < this.params.length-1; i++) // -1 is for paramColor
@@ -116,7 +91,7 @@ extends OpColorBase
         return [
             colorSpace(this.paramSpace.value),
             col[0],
-        col[1],
+            col[1],
             col[2] ];
     }
     

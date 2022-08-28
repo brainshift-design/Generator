@@ -27267,19 +27267,20 @@ extends EventTarget
     }
 
 
-    connection = null;
-    
-    connecting = false;
-    mouseOver  = false;
-    
-
-    initialSeed = 0;
-    currentSeed = 0;
-
     get connected() { return this.connectedOutput != null; }
 
 
-    isNew      = false; // this indicates that the input is the empty "new" input of a variable node
+    connection   = null;
+    
+    connecting   = false;
+    mouseOver    = false;
+    
+
+    initialSeed  = 0;
+    currentSeed  = 0;
+
+
+    isNew        = false; // this indicates that the input is the empty "new" input of a variable node
 
 
     onconnect    = new Event('connect');
@@ -30787,35 +30788,10 @@ extends OpColorBase
         this.inner.removeChild(this.param2.div);
         this.inner.removeChild(this.param3.div);
 
-
-        // initHexbox(this);
-        // this.hexbox = createDiv();//createTextbox('hexbox');
-    
-        // initColorControl(
-        //     null,
-        //     this.hexbox,
-        //     100, // width
-        //     20,  // height
-        //     'hex',
-        //     '', 
-        //     false,
-        //     ColorValue.fromRgb([0xD9, 0xD9, 0xD9])); 
-
-        // this.hexbox.node           = this;
-
-        // this.hexbox.textStyleDark  = '#eee';
-        // this.hexbox.textStyleLight = 'black';
-
+        
         this.paramColor.control.showColor = false;
-        // this.hexbox.style.display  = 'inline-block';
-        // //this.hexbox.style.position = 'absolute';
-        // this.hexbox.style.width    = '100%';
 
-
-        this.paramColor.addEventListener('change', () => 
-        {
-            this._color = this.paramColor.value.toDataColor();
-        });
+        this.paramColor.addEventListener('change', () => this._color = this.paramColor.value.toDataColor());
 
 
         for (let i = 1; i < this.params.length-1; i++) // -1 is for paramColor
@@ -30835,7 +30811,7 @@ extends OpColorBase
         return [
             colorSpace(this.paramSpace.value),
             col[0],
-        col[1],
+            col[1],
             col[2] ];
     }
     
@@ -35623,9 +35599,6 @@ extends Action
         this.oldOutputActiveNodeId = idFromNode(getActiveNodeInTreeFromNodeId(this.outputNodeId));
         this.oldInputActiveNodeIds = getActiveNodesRightInTreeFromNodeId(this.inputNodeId).map(n => n.id);
 
-        // const activeNodesRight = getActiveNodesRightInTreeFromNodeId(this.inputNodeId);
-        // console.log('activeNodesRight =', activeNodesRight);
-        // this.oldInputActiveNodeIds = activeNodesRight.map(n => n.id);
 
         uiConnect(
             this.outputNode.outputs[this.outputIndex], 
@@ -35647,7 +35620,9 @@ extends Action
         }
 
 
-        pushUnique(updateNodes, nodeFromId(this.oldOutputActiveNodeId));
+        const oldOutputActiveNode = nodeFromId(this.oldOutputActiveNodeId);
+        if (oldOutputActiveNode) pushUnique(updateNodes, oldOutputActiveNode);
+
 
         const oldInputActiveNodeIds = [...this.oldInputActiveNodeIds];
         oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);

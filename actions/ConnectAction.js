@@ -57,9 +57,6 @@ extends Action
         this.oldOutputActiveNodeId = idFromNode(getActiveNodeInTreeFromNodeId(this.outputNodeId));
         this.oldInputActiveNodeIds = getActiveNodesRightInTreeFromNodeId(this.inputNodeId).map(n => n.id);
 
-        // const activeNodesRight = getActiveNodesRightInTreeFromNodeId(this.inputNodeId);
-        // console.log('activeNodesRight =', activeNodesRight);
-        // this.oldInputActiveNodeIds = activeNodesRight.map(n => n.id);
 
         uiConnect(
             this.outputNode.outputs[this.outputIndex], 
@@ -81,7 +78,9 @@ extends Action
         }
 
 
-        pushUnique(updateNodes, nodeFromId(this.oldOutputActiveNodeId));
+        const oldOutputActiveNode = nodeFromId(this.oldOutputActiveNodeId);
+        if (oldOutputActiveNode) pushUnique(updateNodes, oldOutputActiveNode);
+
 
         const oldInputActiveNodeIds = [...this.oldInputActiveNodeIds];
         oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);

@@ -54,19 +54,20 @@ extends EventTarget
     }
 
 
-    connection = null;
-    
-    connecting = false;
-    mouseOver  = false;
-    
-
-    initialSeed = 0;
-    currentSeed = 0;
-
     get connected() { return this.connectedOutput != null; }
 
 
-    isNew      = false; // this indicates that the input is the empty "new" input of a variable node
+    connection   = null;
+    
+    connecting   = false;
+    mouseOver    = false;
+    
+
+    initialSeed  = 0;
+    currentSeed  = 0;
+
+
+    isNew        = false; // this indicates that the input is the empty "new" input of a variable node
 
 
     onconnect    = new Event('connect');
