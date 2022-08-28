@@ -20497,7 +20497,7 @@ function initNumberControlEvents(control)
                     const val      = control.startValue + dx * drag * adaptive;
 
                     
-                    // reset slider movement at the limits for better UX
+                    // reset control movement at the limits for better UX
                     const min = getCtrlKey(e) ? control.min : control.displayMin;
                     const max = getCtrlKey(e) ? control.max : control.displayMax;
 
@@ -20708,14 +20708,14 @@ function initNumberControlEvents(control)
 
             control.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
-            // if (    slider.value != slider.oldValue
-            //     && !slider.readOnly)
-            //     slider.dispatchEvent(slider.onconfirm);
+            // if (    control.value != control.oldValue
+            //     && !control.readOnly)
+            //     control.dispatchEvent(control.onconfirm);
         }
         // else if (   e.button == 1
-        //     && slider.buttonDown1)
+        //     && control.buttonDown1)
         // {
-        //     slider.buttonDown1 = false;            
+        //     control.buttonDown1 = false;            
         // }
     });
 
@@ -20752,8 +20752,8 @@ function initNumberControlEvents(control)
             {
                 if (   document.activeElement
                     && document.activeElement.tagName.toLowerCase() == 'input'
-                    && document.activeElement.slider)
-                    document.activeElement.slider.textbox.finish(true, false);
+                    && document.activeElement.control)
+                    document.activeElement.control.textbox.finish(true, false);
 
                 control.oldValue = control.value;
 
@@ -20918,28 +20918,28 @@ function updateControlRangeDiv(range, div, controlWidth, controlHeight)
 
 
 
-function resetSliderRanges(slider)
+function resetControlRanges(control)
 {
-    slider.ranges = [];
-    resetControlRangeDivs(slider);        
+    control.ranges = [];
+    resetControlRangeDivs(control);        
 };
 
 
 
-function resetControlRangeDivs(slider)
+function resetControlRangeDivs(control)
 {
-    for (const div of slider.rangeDivs)
-        if (slider.contains(div))
-            slider.removeChild(div);
+    for (const div of control.rangeDivs)
+        if (control.contains(div))
+            control.removeChild(div);
 
-    slider.rangeDivs = [];
+    control.rangeDivs = [];
 }
 
 
 function initNumberControlTextbox(control)
 {
     control.textbox = createTextbox('numberControlTextbox');
-    control.textbox.slider = control;
+    control.textbox.control = control;
     
 
 
@@ -21018,7 +21018,7 @@ function initNumberControlTextbox(control)
             }
 
             // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
-            // let index = slider.tabIndex;
+            // let index = control.tabIndex;
 
             // for (let i = 0; i < tabs.length; i++) 
             // {
@@ -21160,7 +21160,7 @@ function initNumberControlTextbox(control)
 
     control.textbox.addEventListener('focusout', function()
     {
-        //console.log('slider.successOnFocusOut', slider.successOnFocusOut);
+        //console.log('control.successOnFocusOut', control.successOnFocusOut);
 
         if (!control.textbox.keyBlur) control.textbox.finish(true);
         else                         control.textbox.keyBlur = false;
@@ -21177,7 +21177,7 @@ function initNumberControlTextbox(control)
     
 
 
-    control.textbox.finish = function(success, focusSlider = true)
+    control.textbox.finish = function(success, focusControl = true)
     {
         let   value      = control.textbox.value;
         const savedValue = control.textbox.savedValue;
@@ -21221,7 +21221,7 @@ function initNumberControlTextbox(control)
         control.text.style.display = 'block';
 
         if (   control.inFocus
-            && focusSlider)
+            && focusControl)
             control.focus();
     };    
     
@@ -21464,8 +21464,8 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
         control.min        = min;
         control.displayMin = min;
 
-        // if (slider.value < min) 
-        //     slider.setValue(min, true, true, dispatchEvents);
+        // if (control.value < min) 
+        //     control.setValue(min, true, true, dispatchEvents);
     };
 
 
@@ -21475,8 +21475,8 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
         control.max        = max;
         control.displayMax = max;
 
-        // if (max < slider.value) 
-        //     slider.setValue(max, true, true, dispatchEvents);
+        // if (max < control.value) 
+        //     control.setValue(max, true, true, dispatchEvents);
     };
 
 
@@ -21747,12 +21747,12 @@ function initColorControlEvents(control)
             && control.pointerEvents)
         {
             // if (graphView.tempConn)
-            //     slider.style.cursor = 'default';
+            //     control.style.cursor = 'default';
             
             // else
-            //     slider.style.cursor = 
-            //            slider.readOnly 
-            //         || containsChild(slider, slider.textbox) 
+            //     control.style.cursor = 
+            //            control.readOnly 
+            //         || containsChild(control, control.textbox) 
             //         ? 'default'
             //         : 'ew-resize';
 
@@ -21821,7 +21821,7 @@ function initColorControlEvents(control)
             //         const val      = control.startValue + dx * drag * adaptive;
 
                     
-            //         // reset slider movement at the limits for better UX
+            //         // reset control movement at the limits for better UX
             //         const min = getCtrlKey(e) ? control.min : control.displayMin;
             //         const max = getCtrlKey(e) ? control.max : control.displayMax;
 
@@ -22031,14 +22031,14 @@ function initColorControlEvents(control)
 
             control.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
-            // if (    slider.value != slider.oldValue
-            //     && !slider.readOnly)
-            //     slider.dispatchEvent(slider.onconfirm);
+            // if (    control.value != control.oldValue
+            //     && !control.readOnly)
+            //     control.dispatchEvent(control.onconfirm);
         }
         // else if (   e.button == 1
-        //     && slider.buttonDown1)
+        //     && control.buttonDown1)
         // {
-        //     slider.buttonDown1 = false;            
+        //     control.buttonDown1 = false;            
         // }
     });
 
@@ -22075,19 +22075,19 @@ function initColorControlEvents(control)
             {
                 // if (   document.activeElement
                 //     && document.activeElement.tagName.toLowerCase() == 'input'
-                //     && document.activeElement.slider)
-                //     document.activeElement.slider.textbox.finish(true, false);
+                //     && document.activeElement.control)
+                //     document.activeElement.control.textbox.finish(true, false);
 
-                // slider.oldValue = slider.value;
+                // control.oldValue = control.value;
 
-                // const dec = Math.pow(10, -slider.dec);
+                // const dec = Math.pow(10, -control.dec);
 
                 // const val =
                 //     isTouchpad
-                //     ? slider.value -  dWheelX               * slider.wheelScale * dec
-                //     : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
+                //     ? control.value -  dWheelX               * control.wheelScale * dec
+                //     : control.value + (dWheelY > 0 ? -1 : 1) * control.wheelScale * dec;
                 
-                // slider.setValue(val, true, true, false, false);
+                // control.setValue(val, true, true, false, false);
             }
         }
     });
@@ -22169,7 +22169,7 @@ function initColorControlEvents(control)
 function initColorControlTextbox(control)
 {
     control.textbox = createTextbox('colorControlTextbox');
-    control.textbox.slider = control;
+    control.textbox.control = control;
     
 
 
@@ -23214,7 +23214,7 @@ function initMenuSelectTextbox(select)
         {
             e.preventDefault();
             
-            let tabs  = document.querySelectorAll('.slider, .menuSelect, .select, button, .menuButton');
+            let tabs  = document.querySelectorAll('.control, .menuSelect, .select, button, .menuButton');
             let index = select.tabIndex;
 
             for (let i = 0; i < tabs.length; i++) 
@@ -23262,9 +23262,9 @@ function initMenuSelectTextbox(select)
     });
 
 
-    // slider.textbox.addEventListener('input', function()
+    // control.textbox.addEventListener('input', function()
     // {
-    //     slider.setValue(Number(slider.textbox.value));
+    //     control.setValue(Number(control.textbox.value));
     // });
 
 
@@ -30805,6 +30805,16 @@ extends OpColorBase
         this.hexbox.style.width    = '100%';
 
 
+        this.hexbox.addEventListener('finishedit', () => 
+        {
+            const rgb = this.hexbox.value.toRgb();
+
+            actionManager.do(new SetParamValueAction(this.param1, new NumberValue(rgb[0])));
+            actionManager.do(new SetParamValueAction(this.param2, new NumberValue(rgb[1])), true);
+            actionManager.do(new SetParamValueAction(this.param3, new NumberValue(rgb[2])), true);
+        });
+
+
         for (let i = 1; i < this.params.length; i++)
             this.params[i].input.addEventListener('disconnect', () => { this.params[i].enableControlText(!this.inputs[0].connected); });
     }
@@ -31036,7 +31046,7 @@ extends OpColorBase
     {
         const colors = this.getHeaderColors();
 
-        this.updateAllSliderRanges();
+        this.updateAllControlRanges();
 
         const isValid = 
                colorSpaceIndex(this._color[0]) > 3
@@ -31051,7 +31061,7 @@ extends OpColorBase
 
     updateControl(control, isValid)
     {
-        // slider.valueText = 
+        // control.valueText = 
         //        this.inputs[0].connected 
         //     // && this.inputs[0].data.color[0] != this._color[0]
         //     && !isValid 
@@ -31060,7 +31070,7 @@ extends OpColorBase
 
         // if (    this.inputs[0].connected
         //     && !isValid)
-        //     slider.setValue(Number.NaN, true, false, false);
+        //     control.setValue(Number.NaN, true, false, false);
 
         enableElementText(control.textbox, !this.inputs[0].connected);
 
@@ -31085,9 +31095,9 @@ extends OpColorBase
 
     resetAllControlRanges()
     {
-        resetSliderRanges(this.param1.control);
-        resetSliderRanges(this.param2.control);
-        resetSliderRanges(this.param3.control);
+        resetControlRanges(this.param1.control);
+        resetControlRanges(this.param2.control);
+        resetControlRanges(this.param3.control);
     }
 
 
@@ -31101,7 +31111,7 @@ extends OpColorBase
 
 
 
-    updateAllSliderRanges()
+    updateAllControlRanges()
     {
         const warnLineStyle = this.getWarnLineStyle();
 
@@ -31140,21 +31150,21 @@ extends OpColorBase
         }
         else if (this.paramSpace.value > 3) // HCL
         {
-            this.updateSliderRanges(this.param1.control, f =>
+            this.updateControlRanges(this.param1.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     (this.param1.control.displayMin + f * (this.param1.control.displayMax - this.param1.control.displayMin)) / getColorSpaceFactor(this._color[0])[0],
                     this._color[2],
                     this._color[3]]));
 
-            this.updateSliderRanges(this.param2.control, f =>
+            this.updateControlRanges(this.param2.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
                     (this.param2.control.displayMin + f * (this.param2.control.displayMax - this.param2.control.displayMin)) / getColorSpaceFactor(this._color[0])[1],
                     this._color[3]]));
 
-            this.updateSliderRanges(this.param3.control, f =>
+            this.updateControlRanges(this.param3.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
@@ -31169,7 +31179,7 @@ extends OpColorBase
 
 
 
-    updateSliderRanges(slider, getRgb)
+    updateControlRanges(control, getRgb)
     {
         const warnLineStyle = this.getWarnLineStyle();
 
@@ -31201,10 +31211,10 @@ extends OpColorBase
             lastOf(ranges).end = 1;
         else if (!open
               && ranges.length == 0)
-            resetSliderRanges(slider);
+            resetControlRanges(control);
 
 
-        slider.ranges = ranges;
+        control.ranges = ranges;
     }
 
 
@@ -36779,65 +36789,6 @@ extends Action
         graphView.selectByIds(this.selectedIds);
     }
 }
-
-
-// class SetParamLockAction
-// extends Action
-// {
-//     nodeId;
-//     paramId;
-
-//     get param() 
-//     { 
-//         return nodeFromId(this.nodeId).params
-//             .find(p => p.id == this.paramId); 
-//     } 
-
-
-//     locked;
-
-
-
-//     constructor(param, locked)
-//     {
-//         super('SET PARAM LOCK ' + param.node.id + '.' + param.id + '.locked = ' + boolString(locked));
-
-//         this.nodeId  = param.node.id;
-//         this.paramId = param.id;
-
-//         this.locked  = locked;
-//     }
-
-
-
-//     do()
-//     {
-//         //this.oldValue = this.param.oldValue;
-//         pushUpdate([this.param.node]);
-
-//         uiSaveNodes([this.nodeId]);
-//     }
-
-
-
-//     undo()
-//     {
-//         this.param.setLocked(!this.locked);
-//         pushUpdate([this.param.node]);
-
-//         uiSaveNodes([this.nodeId]);
-//     }
-
-
-
-//     redo()
-//     {
-//         this.param.setLocked(this.locked);
-//         pushUpdate([this.param.node]);
-
-//         uiSaveNodes([this.nodeId]);
-//     }
-// }
 
 
 class SetParamValueAction

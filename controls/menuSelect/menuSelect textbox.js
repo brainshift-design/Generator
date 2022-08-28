@@ -29,7 +29,7 @@ function initMenuSelectTextbox(select)
         {
             e.preventDefault();
             
-            let tabs  = document.querySelectorAll('.slider, .menuSelect, .select, button, .menuButton');
+            let tabs  = document.querySelectorAll('.control, .menuSelect, .select, button, .menuButton');
             let index = select.tabIndex;
 
             for (let i = 0; i < tabs.length; i++) 
@@ -77,9 +77,9 @@ function initMenuSelectTextbox(select)
     });
 
 
-    // slider.textbox.addEventListener('input', function()
+    // control.textbox.addEventListener('input', function()
     // {
-    //     slider.setValue(Number(slider.textbox.value));
+    //     control.setValue(Number(control.textbox.value));
     // });
 
 

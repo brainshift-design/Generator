@@ -1,7 +1,7 @@
 function initColorControlTextbox(control)
 {
     control.textbox = createTextbox('colorControlTextbox');
-    control.textbox.slider = control;
+    control.textbox.control = control;
     
 
 

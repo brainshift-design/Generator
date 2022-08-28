@@ -1,7 +1,7 @@
 function initNumberControlTextbox(control)
 {
     control.textbox = createTextbox('numberControlTextbox');
-    control.textbox.slider = control;
+    control.textbox.control = control;
     
 
 
@@ -80,7 +80,7 @@ function initNumberControlTextbox(control)
             }
 
             // let tabs  = document.querySelectorAll('.numberControl, .selectControl, .select, .menuSelect, button, .menuButton');
-            // let index = slider.tabIndex;
+            // let index = control.tabIndex;
 
             // for (let i = 0; i < tabs.length; i++) 
             // {
@@ -222,7 +222,7 @@ function initNumberControlTextbox(control)
 
     control.textbox.addEventListener('focusout', function()
     {
-        //console.log('slider.successOnFocusOut', slider.successOnFocusOut);
+        //console.log('control.successOnFocusOut', control.successOnFocusOut);
 
         if (!control.textbox.keyBlur) control.textbox.finish(true);
         else                         control.textbox.keyBlur = false;
@@ -239,7 +239,7 @@ function initNumberControlTextbox(control)
     
 
 
-    control.textbox.finish = function(success, focusSlider = true)
+    control.textbox.finish = function(success, focusControl = true)
     {
         let   value      = control.textbox.value;
         const savedValue = control.textbox.savedValue;
@@ -283,7 +283,7 @@ function initNumberControlTextbox(control)
         control.text.style.display = 'block';
 
         if (   control.inFocus
-            && focusSlider)
+            && focusControl)
             control.focus();
     };    
     

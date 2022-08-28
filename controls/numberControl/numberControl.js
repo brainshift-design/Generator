@@ -176,8 +176,8 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
         control.min        = min;
         control.displayMin = min;
 
-        // if (slider.value < min) 
-        //     slider.setValue(min, true, true, dispatchEvents);
+        // if (control.value < min) 
+        //     control.setValue(min, true, true, dispatchEvents);
     };
 
 
@@ -187,8 +187,8 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
         control.max        = max;
         control.displayMax = max;
 
-        // if (max < slider.value) 
-        //     slider.setValue(max, true, true, dispatchEvents);
+        // if (max < control.value) 
+        //     control.setValue(max, true, true, dispatchEvents);
     };
 
 

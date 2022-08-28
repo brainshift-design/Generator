@@ -86,6 +86,16 @@ extends OpColorBase
         this.hexbox.style.width    = '100%';
 
 
+        this.hexbox.addEventListener('finishedit', () => 
+        {
+            const rgb = this.hexbox.value.toRgb();
+
+            actionManager.do(new SetParamValueAction(this.param1, new NumberValue(rgb[0])));
+            actionManager.do(new SetParamValueAction(this.param2, new NumberValue(rgb[1])), true);
+            actionManager.do(new SetParamValueAction(this.param3, new NumberValue(rgb[2])), true);
+        });
+
+
         for (let i = 1; i < this.params.length; i++)
             this.params[i].input.addEventListener('disconnect', () => { this.params[i].enableControlText(!this.inputs[0].connected); });
     }
@@ -317,7 +327,7 @@ extends OpColorBase
     {
         const colors = this.getHeaderColors();
 
-        this.updateAllSliderRanges();
+        this.updateAllControlRanges();
 
         const isValid = 
                colorSpaceIndex(this._color[0]) > 3
@@ -332,7 +342,7 @@ extends OpColorBase
 
     updateControl(control, isValid)
     {
-        // slider.valueText = 
+        // control.valueText = 
         //        this.inputs[0].connected 
         //     // && this.inputs[0].data.color[0] != this._color[0]
         //     && !isValid 
@@ -341,7 +351,7 @@ extends OpColorBase
 
         // if (    this.inputs[0].connected
         //     && !isValid)
-        //     slider.setValue(Number.NaN, true, false, false);
+        //     control.setValue(Number.NaN, true, false, false);
 
         enableElementText(control.textbox, !this.inputs[0].connected);
 
@@ -366,9 +376,9 @@ extends OpColorBase
 
     resetAllControlRanges()
     {
-        resetSliderRanges(this.param1.control);
-        resetSliderRanges(this.param2.control);
-        resetSliderRanges(this.param3.control);
+        resetControlRanges(this.param1.control);
+        resetControlRanges(this.param2.control);
+        resetControlRanges(this.param3.control);
     }
 
 
@@ -382,7 +392,7 @@ extends OpColorBase
 
 
 
-    updateAllSliderRanges()
+    updateAllControlRanges()
     {
         const warnLineStyle = this.getWarnLineStyle();
 
@@ -421,21 +431,21 @@ extends OpColorBase
         }
         else if (this.paramSpace.value > 3) // HCL
         {
-            this.updateSliderRanges(this.param1.control, f =>
+            this.updateControlRanges(this.param1.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     (this.param1.control.displayMin + f * (this.param1.control.displayMax - this.param1.control.displayMin)) / getColorSpaceFactor(this._color[0])[0],
                     this._color[2],
                     this._color[3]]));
 
-            this.updateSliderRanges(this.param2.control, f =>
+            this.updateControlRanges(this.param2.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
                     (this.param2.control.displayMin + f * (this.param2.control.displayMax - this.param2.control.displayMin)) / getColorSpaceFactor(this._color[0])[1],
                     this._color[3]]));
 
-            this.updateSliderRanges(this.param3.control, f =>
+            this.updateControlRanges(this.param3.control, f =>
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
@@ -450,7 +460,7 @@ extends OpColorBase
 
 
 
-    updateSliderRanges(slider, getRgb)
+    updateControlRanges(control, getRgb)
     {
         const warnLineStyle = this.getWarnLineStyle();
 
@@ -482,10 +492,10 @@ extends OpColorBase
             lastOf(ranges).end = 1;
         else if (!open
               && ranges.length == 0)
-            resetSliderRanges(slider);
+            resetControlRanges(control);
 
 
-        slider.ranges = ranges;
+        control.ranges = ranges;
     }
 
 

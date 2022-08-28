@@ -93,12 +93,12 @@ function initColorControlEvents(control)
             && control.pointerEvents)
         {
             // if (graphView.tempConn)
-            //     slider.style.cursor = 'default';
+            //     control.style.cursor = 'default';
             
             // else
-            //     slider.style.cursor = 
-            //            slider.readOnly 
-            //         || containsChild(slider, slider.textbox) 
+            //     control.style.cursor = 
+            //            control.readOnly 
+            //         || containsChild(control, control.textbox) 
             //         ? 'default'
             //         : 'ew-resize';
 
@@ -167,7 +167,7 @@ function initColorControlEvents(control)
             //         const val      = control.startValue + dx * drag * adaptive;
 
                     
-            //         // reset slider movement at the limits for better UX
+            //         // reset control movement at the limits for better UX
             //         const min = getCtrlKey(e) ? control.min : control.displayMin;
             //         const max = getCtrlKey(e) ? control.max : control.displayMax;
 
@@ -377,14 +377,14 @@ function initColorControlEvents(control)
 
             control.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
 
-            // if (    slider.value != slider.oldValue
-            //     && !slider.readOnly)
-            //     slider.dispatchEvent(slider.onconfirm);
+            // if (    control.value != control.oldValue
+            //     && !control.readOnly)
+            //     control.dispatchEvent(control.onconfirm);
         }
         // else if (   e.button == 1
-        //     && slider.buttonDown1)
+        //     && control.buttonDown1)
         // {
-        //     slider.buttonDown1 = false;            
+        //     control.buttonDown1 = false;            
         // }
     });
 
@@ -421,19 +421,19 @@ function initColorControlEvents(control)
             {
                 // if (   document.activeElement
                 //     && document.activeElement.tagName.toLowerCase() == 'input'
-                //     && document.activeElement.slider)
-                //     document.activeElement.slider.textbox.finish(true, false);
+                //     && document.activeElement.control)
+                //     document.activeElement.control.textbox.finish(true, false);
 
-                // slider.oldValue = slider.value;
+                // control.oldValue = control.value;
 
-                // const dec = Math.pow(10, -slider.dec);
+                // const dec = Math.pow(10, -control.dec);
 
                 // const val =
                 //     isTouchpad
-                //     ? slider.value -  dWheelX               * slider.wheelScale * dec
-                //     : slider.value + (dWheelY > 0 ? -1 : 1) * slider.wheelScale * dec;
+                //     ? control.value -  dWheelX               * control.wheelScale * dec
+                //     : control.value + (dWheelY > 0 ? -1 : 1) * control.wheelScale * dec;
                 
-                // slider.setValue(val, true, true, false, false);
+                // control.setValue(val, true, true, false, false);
             }
         }
     });

@@ -73,19 +73,19 @@ function updateControlRangeDiv(range, div, controlWidth, controlHeight)
 
 
 
-function resetSliderRanges(slider)
+function resetControlRanges(control)
 {
-    slider.ranges = [];
-    resetControlRangeDivs(slider);        
+    control.ranges = [];
+    resetControlRangeDivs(control);        
 };
 
 
 
-function resetControlRangeDivs(slider)
+function resetControlRangeDivs(control)
 {
-    for (const div of slider.rangeDivs)
-        if (slider.contains(div))
-            slider.removeChild(div);
+    for (const div of control.rangeDivs)
+        if (control.contains(div))
+            control.removeChild(div);
 
-    slider.rangeDivs = [];
+    control.rangeDivs = [];
 }
