@@ -507,11 +507,13 @@ extends OpColorBase
         let   pos = ' '.repeat(nTab);
         const tab = TAB;
 
+
         let json =
              ',\n'
             + pos + tab + '"params":\n'
             + pos + tab + '[\n';
         
+
         let first = true;
         for (let i = 0; i < this.params.length; i++)
         {
@@ -520,14 +522,24 @@ extends OpColorBase
             if (!this.paramIsConsideredDefault(param))
             {
                 if (!first) json += ',\n'; first = false;
-                json += pos + tab + tab + param.toJson(nTab, i > 0 ? 'c' + i : '');
+
+                json += 
+                      pos + tab + tab 
+                    + param.toJson(
+                          nTab, 
+                             i > 0
+                          && i < this.params.length-1 
+                          ? 'c' + i 
+                          : '');
             }
         }
+
 
         if (!first)
             json += '\n';
 
         json += pos + tab + ']';
+
 
         return json;
     }

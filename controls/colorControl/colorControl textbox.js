@@ -245,7 +245,6 @@ function initColorControlTextbox(control)
         control.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         control.textbox.style.outline   = 'none';
         control.textbox.style.textAlign = 'center';
-        control.textbox.style.color     = isDarkMode() ? 'white' : 'black';
 
 
         const isConnected =    
@@ -282,9 +281,17 @@ function initColorControlTextbox(control)
         control.textbox.savedValue = control.textbox.value;
 
         control.textbox.style.color = 
-                isDark(rgb) 
-            || !isValidRgb(rgb) 
-            ? '#fff' 
-            : '#000'
+            control.showColor
+            ? (isDarkMode() ? 'white' : 'black')
+            : (isDarkMode() ? 'white' : 'black');
+
+
+        control.textbox.style.color = 
+            control.showColor
+            ? (    isDark(rgb) 
+               || !isValidRgb(rgb) 
+               ? '#fff' 
+               : '#000')
+            : (isDarkMode() ? 'white' : 'black');
     };
 }

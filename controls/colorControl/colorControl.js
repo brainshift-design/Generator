@@ -109,19 +109,29 @@ function initColorControl(param, control, width, height, id, name, showName, def
         const rgb = control.value.toRgb();
 
 
-        if (isValidRgb(rgb))
+        if (control.showColor)
         {
-            control.valueStyleLight =
-            control.valueStyleDark  = rgb2style(rgb);
-            control. textStyleLight =
-            control. textStyleDark  = isDark(rgb) ? '#fff8' : '#0008'
+            if (isValidRgb(rgb))
+            {
+                control.valueStyleLight =
+                control.valueStyleDark  = rgb2style(rgb);
+
+                control.textStyleLight =
+                control.textStyleDark  = isDark(rgb) ? '#fff8' : '#0008'
+            }
+            else
+            {
+                control.valueStyleLight =
+                control.valueStyleDark  = 'transparent';
+                
+                control. textStyleLight =
+                control. textStyleDark  = '#fff8';
+            }
         }
         else
         {
-            control.valueStyleLight =
-            control.valueStyleDark  = 'transparent';
-            control. textStyleLight =
-            control. textStyleDark  = '#fff8';
+            control.textStyleDark = '#000';
+            control.textStyleDark = '#fff';
         }
 
 

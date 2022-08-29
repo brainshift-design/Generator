@@ -26,7 +26,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                defaultValue = ColorValue.NaN,
+                defaultValue = ColorValue.fromRgb([0x80, 0x80, 0x80]),
                 dragScale    = 0.05)
     {
         super(COLOR, id, name);

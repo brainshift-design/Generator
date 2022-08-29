@@ -22413,7 +22413,6 @@ function initColorControlTextbox(control)
         control.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         control.textbox.style.outline   = 'none';
         control.textbox.style.textAlign = 'center';
-        control.textbox.style.color     = isDarkMode() ? 'white' : 'black';
 
 
         const isConnected =    
@@ -22450,10 +22449,18 @@ function initColorControlTextbox(control)
         control.textbox.savedValue = control.textbox.value;
 
         control.textbox.style.color = 
-                isDark(rgb) 
-            || !isValidRgb(rgb) 
-            ? '#fff' 
-            : '#000'
+            control.showColor
+            ? (isDarkMode() ? 'white' : 'black')
+            : (isDarkMode() ? 'white' : 'black');
+
+
+        control.textbox.style.color = 
+            control.showColor
+            ? (    isDark(rgb) 
+               || !isValidRgb(rgb) 
+               ? '#fff' 
+               : '#000')
+            : (isDarkMode() ? 'white' : 'black');
     };
 }
 
@@ -22569,19 +22576,29 @@ function initColorControl(param, control, width, height, id, name, showName, def
         const rgb = control.value.toRgb();
 
 
-        if (isValidRgb(rgb))
+        if (control.showColor)
         {
-            control.valueStyleLight =
-            control.valueStyleDark  = rgb2style(rgb);
-            control. textStyleLight =
-            control. textStyleDark  = isDark(rgb) ? '#fff8' : '#0008'
+            if (isValidRgb(rgb))
+            {
+                control.valueStyleLight =
+                control.valueStyleDark  = rgb2style(rgb);
+
+                control.textStyleLight =
+                control.textStyleDark  = isDark(rgb) ? '#fff8' : '#0008'
+            }
+            else
+            {
+                control.valueStyleLight =
+                control.valueStyleDark  = 'transparent';
+                
+                control. textStyleLight =
+                control. textStyleDark  = '#fff8';
+            }
         }
         else
         {
-            control.valueStyleLight =
-            control.valueStyleDark  = 'transparent';
-            control. textStyleLight =
-            control. textStyleDark  = '#fff8';
+            control.textStyleDark = '#000';
+            control.textStyleDark = '#fff';
         }
 
 
@@ -25617,7 +25634,7 @@ extends Parameter
                 showName,
                 hasInput,
                 hasOutput,
-                defaultValue = ColorValue.NaN,
+                defaultValue = ColorValue.fromRgb([0x80, 0x80, 0x80]),
                 dragScale    = 0.05)
     {
         super(COLOR, id, name);
@@ -31218,11 +31235,13 @@ extends OpColorBase
         let   pos = ' '.repeat(nTab);
         const tab = TAB;
 
+
         let json =
              ',\n'
             + pos + tab + '"params":\n'
             + pos + tab + '[\n';
         
+
         let first = true;
         for (let i = 0; i < this.params.length; i++)
         {
@@ -31231,14 +31250,24 @@ extends OpColorBase
             if (!this.paramIsConsideredDefault(param))
             {
                 if (!first) json += ',\n'; first = false;
-                json += pos + tab + tab + param.toJson(nTab, i > 0 ? 'c' + i : '');
+
+                json += 
+                      pos + tab + tab 
+                    + param.toJson(
+                          nTab, 
+                             i > 0
+                          && i < this.params.length-1 
+                          ? 'c' + i 
+                          : '');
             }
         }
+
 
         if (!first)
             json += '\n';
 
         json += pos + tab + ']';
+
 
         return json;
     }
