@@ -6740,7 +6740,9 @@ extends GOperator
         if (!this.valid)
         {
             const space = this.space.eval(parse).copy();
-
+            const c1    = this.c1   .eval(parse).copy();
+            const c2    = this.c2   .eval(parse).copy();
+            const c3    = this.c3   .eval(parse).copy();
 
             if (this.input)
             {
@@ -6766,18 +6768,14 @@ extends GOperator
                         
                     this.result.space.value = toSpaceIndex;
 
-                    if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
-                    if (this.c2) this.result.c2 = this.c2.eval(parse).copy();
-                    if (this.c3) this.result.c3 = this.c3.eval(parse).copy();
+                    if (this.c1) this.result.c1 = c1;
+                    if (this.c2) this.result.c2 = c2;
+                    if (this.c3) this.result.c3 = c3;
                 }
             }
             else
             {
-                this.result = new ColorValue(
-                    space,
-                    this.c1.eval(parse).copy(),
-                    this.c2.eval(parse).copy(),
-                    this.c3.eval(parse).copy());
+                this.result = new ColorValue(space, c1, c2, c3);
 
 
                 const toSpaceIndex = Math.min(Math.max(
@@ -18831,7 +18829,9 @@ extends GOperator
         if (!this.valid)
         {
             const space = this.space.eval(parse).copy();
-
+            const c1    = this.c1   .eval(parse).copy();
+            const c2    = this.c2   .eval(parse).copy();
+            const c3    = this.c3   .eval(parse).copy();
 
             if (this.input)
             {
@@ -18857,18 +18857,14 @@ extends GOperator
                         
                     this.result.space.value = toSpaceIndex;
 
-                    if (this.c1) this.result.c1 = this.c1.eval(parse).copy();
-                    if (this.c2) this.result.c2 = this.c2.eval(parse).copy();
-                    if (this.c3) this.result.c3 = this.c3.eval(parse).copy();
+                    if (this.c1) this.result.c1 = c1;
+                    if (this.c2) this.result.c2 = c2;
+                    if (this.c3) this.result.c3 = c3;
                 }
             }
             else
             {
-                this.result = new ColorValue(
-                    space,
-                    this.c1.eval(parse).copy(),
-                    this.c2.eval(parse).copy(),
-                    this.c3.eval(parse).copy());
+                this.result = new ColorValue(space, c1, c2, c3);
 
 
                 const toSpaceIndex = Math.min(Math.max(
@@ -30976,29 +30972,28 @@ extends OpColorBase
             'this.result.type must be COLOR_VALUE');
 
 
-        this.paramSpace.setValue(col.space, false, true, false);
-        switchToSpace(this, colorSpace(col.space.value));
-
-        
         if (col.isValid())
         {
+            this.paramSpace.setValue(col.space, false, true, false);
+            switchToSpace(this, colorSpace(col.space.value));
+
             this.param1.setValue(col.c1, false, true, false);
             this.param2.setValue(col.c2, false, true, false);
             this.param3.setValue(col.c3, false, true, false);
 
             this._color = col.toDataColor();
+
+            this.prevSpace = colorSpace(col.space.value);
         }
         else
         {
-            this.param1.setValue(NumberValue.NaN, false, true, false);
-            this.param2.setValue(NumberValue.NaN, false, true, false);
-            this.param3.setValue(NumberValue.NaN, false, true, false);
+            this.param1    .setValue(NumberValue.NaN, false, true, false);
+            this.param2    .setValue(NumberValue.NaN, false, true, false);
+            this.param3    .setValue(NumberValue.NaN, false, true, false);
+            this.paramColor.setValue( ColorValue.NaN, false, true, false);
             
             this._color = dataColor_NaN;
         }
-
-
-        this.prevSpace = colorSpace(col.space.value);
 
 
         super.updateValues(updateParamId, paramIds, values);

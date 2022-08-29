@@ -192,29 +192,28 @@ extends OpColorBase
             'this.result.type must be COLOR_VALUE');
 
 
-        this.paramSpace.setValue(col.space, false, true, false);
-        switchToSpace(this, colorSpace(col.space.value));
-
-        
         if (col.isValid())
         {
+            this.paramSpace.setValue(col.space, false, true, false);
+            switchToSpace(this, colorSpace(col.space.value));
+
             this.param1.setValue(col.c1, false, true, false);
             this.param2.setValue(col.c2, false, true, false);
             this.param3.setValue(col.c3, false, true, false);
 
             this._color = col.toDataColor();
+
+            this.prevSpace = colorSpace(col.space.value);
         }
         else
         {
-            this.param1.setValue(NumberValue.NaN, false, true, false);
-            this.param2.setValue(NumberValue.NaN, false, true, false);
-            this.param3.setValue(NumberValue.NaN, false, true, false);
+            this.param1    .setValue(NumberValue.NaN, false, true, false);
+            this.param2    .setValue(NumberValue.NaN, false, true, false);
+            this.param3    .setValue(NumberValue.NaN, false, true, false);
+            this.paramColor.setValue( ColorValue.NaN, false, true, false);
             
             this._color = dataColor_NaN;
         }
-
-
-        this.prevSpace = colorSpace(col.space.value);
 
 
         super.updateValues(updateParamId, paramIds, values);
