@@ -83,12 +83,10 @@ extends GType
     {
         const rgb = scaleRgb(this.color.toRgb());
 
-        return this.isValid()
-            ?         rgb[0].toString()
-              + ' ' + rgb[1].toString()
-              + ' ' + rgb[2].toString()
-              + ' ' + this.opacity.toString()
-            : INVALID;
+        return        rgb[0]      .toString()
+              + ' ' + rgb[1]      .toString()
+              + ' ' + rgb[2]      .toString()
+              + ' ' + this.opacity.toString();
     }
 
 
@@ -122,11 +120,6 @@ extends GType
 
 function parseFillValue(str, i = -1)
 {
-    if (   i <  0 && str    == INVALID
-        || i >= 0 && str[i] == INVALID)
-        return [FillValue.NaN, 1];
-
-
     if (i < 0)
     {
         str = str.split(' ');

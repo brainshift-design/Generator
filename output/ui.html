@@ -5185,12 +5185,10 @@ extends GType
     {
         const rgb = scaleRgb(this.color.toRgb());
 
-        return this.isValid()
-            ?         rgb[0].toString()
-              + ' ' + rgb[1].toString()
-              + ' ' + rgb[2].toString()
-              + ' ' + this.opacity.toString()
-            : INVALID;
+        return        rgb[0]      .toString()
+              + ' ' + rgb[1]      .toString()
+              + ' ' + rgb[2]      .toString()
+              + ' ' + this.opacity.toString();
     }
 
 
@@ -5224,11 +5222,6 @@ extends GType
 
 function parseFillValue(str, i = -1)
 {
-    if (   i <  0 && str    == INVALID
-        || i >= 0 && str[i] == INVALID)
-        return [FillValue.NaN, 1];
-
-
     if (i < 0)
     {
         str = str.split(' ');
@@ -17274,12 +17267,10 @@ extends GType
     {
         const rgb = scaleRgb(this.color.toRgb());
 
-        return this.isValid()
-            ?         rgb[0].toString()
-              + ' ' + rgb[1].toString()
-              + ' ' + rgb[2].toString()
-              + ' ' + this.opacity.toString()
-            : INVALID;
+        return        rgb[0]      .toString()
+              + ' ' + rgb[1]      .toString()
+              + ' ' + rgb[2]      .toString()
+              + ' ' + this.opacity.toString();
     }
 
 
@@ -17313,11 +17304,6 @@ extends GType
 
 function parseFillValue(str, i = -1)
 {
-    if (   i <  0 && str    == INVALID
-        || i >= 0 && str[i] == INVALID)
-        return [FillValue.NaN, 1];
-
-
     if (i < 0)
     {
         str = str.split(' ');
@@ -26122,7 +26108,9 @@ extends Parameter
         const rgbVal = this.value.color.toRgb();
 
         const rgbaText = 
-            this.opacityControl.value >= 50
+               isValidRgb(rgbVal)
+            && this.value.opacity.isValid()
+            && this.opacityControl.value >= 50
             ? (isDark(rgbVal) 
                ? [1, 1, 1, 0.8]
                : [0, 0, 0, 0.5]) 

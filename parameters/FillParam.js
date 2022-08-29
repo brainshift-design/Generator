@@ -229,7 +229,9 @@ extends Parameter
         const rgbVal = this.value.color.toRgb();
 
         const rgbaText = 
-            this.opacityControl.value >= 50
+               isValidRgb(rgbVal)
+            && this.value.opacity.isValid()
+            && this.opacityControl.value >= 50
             ? (isDark(rgbVal) 
                ? [1, 1, 1, 0.8]
                : [0, 0, 0, 0.5]) 
