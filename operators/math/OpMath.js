@@ -135,10 +135,8 @@ extends OperatorBase
         super.updateHeader();
 
 
-        const colBack  = rgbFromType(this.type, this.active);
-        const darkText = rgb2hclokl(colBack)[2] > 0.71;
-        
-        const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
+        const colBack = rgbFromType(this.type, this.active);
+        const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
 
         this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
         this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';

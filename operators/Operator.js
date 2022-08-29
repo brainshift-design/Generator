@@ -578,7 +578,7 @@ class Operator
         return {
             back:       colBack, 
             text:       colText,
-            darkText:  !this.active,
+            darkBack:   this.active,
             textStyle:  textStyle,
             input:      colInput,
             output:     colOutput };

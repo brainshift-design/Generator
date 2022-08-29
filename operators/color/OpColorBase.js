@@ -108,7 +108,7 @@ extends Operator
         return {
             back:      colBack, 
             text:      colText,
-            darkText:  darkBack,
+            darkBack:  darkBack,
             textStyle: textStyle,
             input:     colInput,
             output:    colOutput };

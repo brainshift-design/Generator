@@ -261,10 +261,10 @@ extends OpColorBase
 
 
         const colSpaceBar = 
-               colors.darkText
+               colors.darkBack
             && isValidRgb(colors.back)
-            ? [0, 0, 0, 0.09] 
-            : [1, 1, 1, 0.12];
+            ? [1, 1, 1, 0.12]
+            : [0, 0, 0, 0.09]; 
 
         this.paramSpace.control.backColor       = 'transparent';
         this.paramSpace.control.valueStyleLight =
@@ -285,9 +285,9 @@ extends OpColorBase
         this.paramSpace.updateControls();
 
         const colWarning = 
-            colors.darkText 
-            ? [0, 0, 0, 0.12] 
-            : [1, 1, 1, 0.2 ];
+            colors.darkBack 
+            ? [1, 1, 1, 0.2 ]
+            : [0, 0, 0, 0.12]; 
 
         this.warningStyle = rgba2style(colWarning);
 
@@ -515,7 +515,7 @@ extends OpColorBase
         
 
         let first = true;
-        for (let i = 0; i < this.params.length; i++)
+        for (let i = 0; i < this.params.length-1; i++)
         {
             const param = this.params[i];
 
@@ -525,12 +525,7 @@ extends OpColorBase
 
                 json += 
                       pos + tab + tab 
-                    + param.toJson(
-                          nTab, 
-                             i > 0
-                          && i < this.params.length-1 
-                          ? 'c' + i 
-                          : '');
+                    + param.toJson(nTab, i > 0 ? 'c' + i : '');
             }
         }
 

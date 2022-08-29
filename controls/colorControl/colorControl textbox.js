@@ -290,8 +290,10 @@ function initColorControlTextbox(control)
             control.showColor
             ? (    isDark(rgb) 
                || !isValidRgb(rgb) 
-               ? '#fff' 
-               : '#000')
-            : (isDarkMode() ? 'white' : 'black');
+               ? 'white' 
+               : 'black')
+            : (isDarkMode() 
+               ? 'white' 
+               : 'black');
     };
 }

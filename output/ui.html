@@ -22458,9 +22458,11 @@ function initColorControlTextbox(control)
             control.showColor
             ? (    isDark(rgb) 
                || !isValidRgb(rgb) 
-               ? '#fff' 
-               : '#000')
-            : (isDarkMode() ? 'white' : 'black');
+               ? 'white' 
+               : 'black')
+            : (isDarkMode() 
+               ? 'white' 
+               : 'black');
     };
 }
 
@@ -28594,7 +28596,7 @@ class Operator
         return {
             back:       colBack, 
             text:       colText,
-            darkText:  !this.active,
+            darkBack:   this.active,
             textStyle:  textStyle,
             input:      colInput,
             output:     colOutput };
@@ -30033,10 +30035,8 @@ extends OperatorBase
         super.updateHeader();
 
 
-        const colBack  = rgbFromType(this.type, this.active);
-        const darkText = rgb2hclokl(colBack)[2] > 0.71;
-        
-        const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
+        const colBack = rgbFromType(this.type, this.active);
+        const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
 
         this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
         this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
@@ -30355,10 +30355,8 @@ extends OperatorBase
         super.updateHeader();
 
 
-        const colBack  = rgbFromType(this.type, this.active);
-        const darkText = rgb2hclokl(colBack)[2] > 0.71;
-        
-        const colText  = darkText ? [0, 0, 0] : [1, 1, 1];
+        const colBack = rgbFromType(this.type, this.active);
+        const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
 
         this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
         this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
@@ -30640,7 +30638,7 @@ extends Operator
         return {
             back:      colBack, 
             text:      colText,
-            darkText:  darkBack,
+            darkBack:  darkBack,
             textStyle: textStyle,
             input:     colInput,
             output:    colOutput };
@@ -30989,10 +30987,10 @@ extends OpColorBase
 
 
         const colSpaceBar = 
-               colors.darkText
+               colors.darkBack
             && isValidRgb(colors.back)
-            ? [0, 0, 0, 0.09] 
-            : [1, 1, 1, 0.12];
+            ? [1, 1, 1, 0.12]
+            : [0, 0, 0, 0.09]; 
 
         this.paramSpace.control.backColor       = 'transparent';
         this.paramSpace.control.valueStyleLight =
@@ -31013,9 +31011,9 @@ extends OpColorBase
         this.paramSpace.updateControls();
 
         const colWarning = 
-            colors.darkText 
-            ? [0, 0, 0, 0.12] 
-            : [1, 1, 1, 0.2 ];
+            colors.darkBack 
+            ? [1, 1, 1, 0.2 ]
+            : [0, 0, 0, 0.12]; 
 
         this.warningStyle = rgba2style(colWarning);
 
@@ -31243,7 +31241,7 @@ extends OpColorBase
         
 
         let first = true;
-        for (let i = 0; i < this.params.length; i++)
+        for (let i = 0; i < this.params.length-1; i++)
         {
             const param = this.params[i];
 
@@ -31253,12 +31251,7 @@ extends OpColorBase
 
                 json += 
                       pos + tab + tab 
-                    + param.toJson(
-                          nTab, 
-                             i > 0
-                          && i < this.params.length-1 
-                          ? 'c' + i 
-                          : '');
+                    + param.toJson(nTab, i > 0 ? 'c' + i : '');
             }
         }
 
