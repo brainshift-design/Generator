@@ -184,7 +184,7 @@ extends OpColorBase
 
 
         this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colors.back);
+        this.updateWarningOverlayStyle(colors.back, 45);
 
 
         Operator.prototype.updateHeader.call(this);
