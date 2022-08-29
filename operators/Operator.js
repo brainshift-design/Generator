@@ -213,7 +213,8 @@ class Operator
         {
             for (let i = firstParam; i < this.params.length; i++)
             {
-                if (!this.params[i].input.connected) 
+                if (    this.params[i].input
+                    && !this.params[i].input.connected) 
                     this.params[i].enableControlText(true);
             }
 
