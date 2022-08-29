@@ -21600,7 +21600,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
     control.updateColors = function()
     {
-        control     .style.background = isDarkMode() ? control.backTeyleDark  : control.backStyleLight;
+        control     .style.background = isDarkMode() ? control.backStyleDark  : control.backStyleLight;
         control.bar .style.background = isDarkMode() ? control.valueStyleDark : control.valueStyleLight;
         control.text.style.color      = isDarkMode() ? control.textStyleDark  : control.textStyleLight;
     };
@@ -25386,8 +25386,10 @@ extends Parameter
             value instanceof NumberValue,
             'value must be a NumberValue');
 
+
         this.preSetValue(value, createAction, dispatchEvents);
 
+        
         if (updateControl)
         {
             this.control.setDecimals(value.decimals, value.decimals);

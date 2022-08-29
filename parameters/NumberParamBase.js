@@ -35,8 +35,10 @@ extends Parameter
             value instanceof NumberValue,
             'value must be a NumberValue');
 
+
         this.preSetValue(value, createAction, dispatchEvents);
 
+        
         if (updateControl)
         {
             this.control.setDecimals(value.decimals, value.decimals);
