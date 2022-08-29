@@ -21,10 +21,6 @@ extends OpColorBase
 
 
 
-    #init = false;
-    
-
-
     constructor()
     {
         super(COLOR, 'color');
@@ -515,7 +511,7 @@ extends OpColorBase
         
 
         let first = true;
-        for (let i = 0; i < this.params.length-1; i++)
+        for (let i = 0; i < this.params.length-1; i++) // -1 is for paramColor
         {
             const param = this.params[i];
 
@@ -548,60 +544,17 @@ extends OpColorBase
 
         this.prevSpace = _node.prevSpace;
 
+
         super.loadParams(_node);
+
+
+        const space  = colorSpace(Math.max(1, this.paramSpace.value.value));
+        const factor = colorFactor(space);
+
+        this._color = [
+            space,
+            this.param1.value.value / factor[0],
+            this.param2.value.value / factor[1],
+            this.param3.value.value / factor[2]];
     }
 }
-
-
-
-// function paramSpace_onbeforechange(paramSpace)
-// {
-//     if (   paramSpace.value == 0
-//         && paramSpace.oldValue > 0)
-//     {
-//         for (let i = 2; i < paramSpace.node.inputs.length; i++)
-//         {
-//             const input = paramSpace.node.inputs[i];
-
-//             if (input.connected)
-//                 paramSpace.node._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
-//         }   
-
-//         for (let i = 2; i < paramSpace.node.outputs.length; i++)
-//         {
-//             const output = paramSpace.node.outputs[i];
-
-//             for (const input of output.connectedInputs)
-//                 paramSpace.node._oldSpaceConnections.push(getConnectionForArrayWithNames(input.connection));
-//         }   
-//     }
-// }
-
-
-
-// function paramSpace_onchange(paramSpace)
-// {
-//     // restore the old connections
-    
-//     if (   paramSpace.value > 0
-//         && paramSpace.oldValue == 0)
-//     {
-//         for (const conn of paramSpace.node._oldSpaceConnections)
-//         {
-//             const outputNode = nodeFromId(conn.outputNodeName);
-//             const  inputNode = nodeFromId(conn. inputNodeName);
-
-//             if (outputNode && inputNode)
-//             {
-//                 const output = outputNode.outputs[conn.outputIndex];
-//                 const  input =  inputNode. inputs[conn. inputIndex];
-
-//                 uiVariableConnect(outputNode, conn.outputIndex, inputNode, conn.inputIndex);
-//             }
-//         }
-
-//         paramSpace.node._oldSpaceConnections = [];
-//     }
-
-//     //pushUpdate([paramSpace.node]);
-// }

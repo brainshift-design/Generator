@@ -22,7 +22,7 @@ extends OpColorBase
         this.initContentInput(this.inputs[0], 0);
 
 
-        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true));
+        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb([0x80, 0x80, 0x80])));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
         this.paramOpacity.control.suffix = '%';
@@ -209,7 +209,7 @@ extends OpColorBase
         return {
             back:      colBack, 
             text:      colText,
-            darkText:  darkBack,
+            darkBack:  darkBack,
             textStyle: textStyle,
             input:     colInput,
             output:    colOutput };

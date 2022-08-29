@@ -679,7 +679,7 @@ class Operator
 
 
 
-    loadParams(_node)
+    loadParams(_node, canLoadParam = index => true)
     {
         if (!_node.params)
             return;
@@ -688,7 +688,10 @@ class Operator
         for (const _param of _node.params)
         {
             const index = this.params.findIndex(p => p.id == _param[0]);
-            if (index >= 0) this.params[index].loadParam(_param[1]);
+
+            if (   index >= 0
+                && canLoadParam(index)) 
+                this.params[index].loadParam(_param[1]);
         }
     }
 }
@@ -721,7 +724,7 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
-    // console.log('pushUpdateFromParam('+param+')', nodes);
+    //console.log('pushUpdateFromParam('+param+')', nodes);
 
     
     const request = 

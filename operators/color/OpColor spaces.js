@@ -23,14 +23,42 @@ const hs_Factor   = [360, 100, 100];
 const hclFactor   = [360, 100, 100];
 const oppFactor   = [100, 100, 100];
 
+
 const rgbScale    = [255, 255, 255];
+
 const hs_Scale    = [360, 100, 100];
+
 const hcloklScale = [360,  51, 100];
 const hcllabScale = [360, 400, 100];
 const hclluvScale = [360, 330, 100];
+
 const oklabScale  = [100,  30,  30];
 const labScale    = [100, 100, 100];
 const luvScale    = [100, 150, 150];
+
+
+
+function colorFactor(space)
+{
+    switch (space)
+    {
+        case 'hex':    return rgbFactor;   
+        case 'rgb':    return rgbFactor;
+
+        case 'hsv':    return hs_Factor;   
+        case 'hsl':    return hs_Factor;
+
+        case 'hclokl': return hclFactor;
+        case 'hcllab': return hclFactor;
+        case 'hclluv': return hclFactor;
+
+        case 'oklab':  return oppFactor; 
+        case 'lab':    return oppFactor;   
+        case 'luv':    return oppFactor;   
+        
+        default:       console.assert(false, 'invalid color factor from space \''+space+'\''); break;
+    }
+}
 
 
 
@@ -41,13 +69,15 @@ function scaleColor(col, space)
     switch (space)
     {
         case 'hex':    scale = rgbScale;    break;
-        case 'rgbhex': scale = rgbScale;    break;
         case 'rgb':    scale = rgbScale;    break;
+
         case 'hsv':    scale = hs_Scale;    break;
         case 'hsl':    scale = hs_Scale;    break;
+
         case 'hclokl': scale = hcloklScale; break;
         case 'hcllab': scale = hcllabScale; break;
         case 'hclluv': scale = hclluvScale; break;
+
         case 'oklab':  scale = oklabScale;  break;
         case 'lab':    scale = labScale;    break;
         case 'luv':    scale = luvScale;    break;
@@ -73,13 +103,15 @@ function switchToSpace(node, space)
     switch (space)
     {
         case 'hex':    switchToHex   (node); break;
-        case 'rgbhex': switchToRgbHex(node); break;
         case 'rgb':    switchToRgb   (node); break;
+
         case 'hsv':    switchToHsv   (node); break;
         case 'hsl':    switchToHsl   (node); break;
+
         case 'hclokl': switchToHclOkl(node); break;
         case 'hcllab': switchToHclLab(node); break;
         case 'hclluv': switchToHclLuv(node); break;
+
         case 'oklab':  switchToOklab (node); break;
         case 'lab':    switchToLab   (node); break;
         case 'luv':    switchToLuv   (node); break;
@@ -91,29 +123,19 @@ function switchToSpace(node, space)
 
 
 function switchToHex   (node) { switchToTextbox       (node);           }
-function switchToRgbHex(node) { switchToRgbHexControls(node);           }
 function switchToRgb   (node) { switchToRgbControls   (node);           }
+
 function switchToHsv   (node) { switchToHs_Controls   (node, 'V');      }
 function switchToHsl   (node) { switchToHs_Controls   (node, 'L');      }
+
 function switchToHclOkl(node) { switchToHclOklControls(node);           }
 function switchToHclLab(node) { switchToHclLabControls(node);           }
 function switchToHclLuv(node) { switchToHclLuvControls(node);           }
+
 function switchToOklab (node) { switchToOklabControls (node, 'a', 'b'); }
 function switchToLab   (node) { switchToLabControls   (node, 'a', 'b'); }
 function switchToLuv   (node) { switchToLuvControls   (node, 'u', 'v'); }
    
-
-
-function switchToRgbHexControls(node)
-{
-    switchToControls(node, 
-        '<span class=\'hash\'>#</span>R', 0, rgbScale[0], '', false, 
-        '<span class=\'hash\'>#</span>G', 0, rgbScale[1], 
-        '<span class=\'hash\'>#</span>B', 0, rgbScale[2]);  
-
-    showRgbControlHex(node, true);
-}
-
 
 
 function switchToRgbControls(node)
@@ -293,13 +315,15 @@ function getNormalColorValue(value, space, chan)
     switch (space)
     {
         case 'hex':
-        case 'rgbhex':
         case 'rgb':    return getNormalValueRgb_(value, chan);
+
         case 'hsv':   
         case 'hsl':    return getNormalValueHs_ (value, chan);
+
         case 'hclokl': 
         case 'hcllab': 
         case 'hclluv': return getNormalValueHcl (value, chan);
+
         case 'oklab':  
         case 'lab':    
         case 'luv':    return getNormalValueOpp (value, chan);
@@ -372,13 +396,15 @@ function getNormalColor_(space, c1, c2, c3)
     switch (space)
     {
         case 'hex':
-        case 'rgbhex':
         case 'rgb':    return getNormalColorRgb_(c1, c2, c3);
+
         case 'hsv':   
         case 'hsl':    return getNormalColorHs_(c1, c2, c3);
+
         case 'hclokl': 
         case 'hcllab': 
         case 'hclluv': return getNormalColorHcl(c1, c2, c3);
+
         case 'oklab': 
         case 'lab': 
         case 'luv':    return getNormalColorOpp(c1, c2, c3);
@@ -432,13 +458,15 @@ function getScaledDataColor(color)
     switch (color[0])
     {
         case 'hex':
-        case 'rgbhex':
         case 'rgb':    return getScaledDataColorRgb(          color[1], color[2], color[3]);
+
         case 'hsv':    return getScaledDataColorHs_('hsv',    color[1], color[2], color[3]);
         case 'hsl':    return getScaledDataColorHs_('hsl',    color[1], color[2], color[3]);
+
         case 'hclokl': return getScaledDataColorHcl('hclokl', color[1], color[2], color[3]);
         case 'hcllab': return getScaledDataColorHcl('hcllab', color[1], color[2], color[3]);
         case 'hclluv': return getScaledDataColorHcl('hclluv', color[1], color[2], color[3]);
+
         case 'oklab':  return getScaledDataColorOpp('oklab',  color[1], color[2], color[3]);
         case 'lab':    return getScaledDataColorOpp('lab',    color[1], color[2], color[3]);
         case 'luv':    return getScaledDataColorOpp('luv',    color[1], color[2], color[3]);
@@ -506,13 +534,15 @@ function getColorSpaceFactor(space)
     switch (space)
     {
         case 'hex':
-        case 'rgbhex':
         case 'rgb':    return rgbFactor;
+
         case 'hsv':   
         case 'hsl':    return hs_Factor;
+
         case 'hclokl': 
         case 'hcllab': 
         case 'hclluv': return hclFactor;
+
         case 'oklab': 
         case 'lab': 
         case 'luv':    return oppFactor;
@@ -526,13 +556,15 @@ function getColorSpaceScale(space)
     switch (space)
     {
         case 'hex':
-        case 'rgbhex':
         case 'rgb':    return rgbScale;
+
         case 'hsv':   
         case 'hsl':    return hs_Scale;
+
         case 'hclokl': return hcloklScale;
         case 'hcllab': return hcllabScale;
         case 'hclluv': return hclluvScale;
+
         case 'oklab':  return oklabScale;
         case 'lab':    return labScale;
         case 'luv':    return luvScale;
