@@ -296,44 +296,20 @@ extends OpColorBase
 
     updateParamControls()
     {
-        const colors = this.getHeaderColors();
-
         this.updateAllControlRanges();
 
-        const isValid = 
-               colorSpaceIndex(this._color[0]) > 3
-            || isValidRgb(colors.back);
-
-        this.updateControl(this.param1.control, isValid);
-        this.updateControl(this.param2.control, isValid);
-        this.updateControl(this.param3.control, isValid);
+        this.param1.updateControls();//this.param1.control.update()
+        this.param2.updateControls();//this.param2.control.update()
+        this.param3.updateControls();//this.param3.control.update()
     }
 
 
 
-    updateControl(control, isValid)
+    updateControl(control)
     {
-        // control.valueText = 
-        //        this.inputs[0].connected 
-        //     // && this.inputs[0].data.color[0] != this._color[0]
-        //     && !isValid 
-        //     ? DISPLAY_INVALID
-        //     : '';
-
-        // if (    this.inputs[0].connected
-        //     && !isValid)
-        //     control.setValue(Number.NaN, true, false, false);
-
         enableElementText(control.textbox, !this.inputs[0].connected);
 
         control.update();
-    }
-
-
-
-    getHeaderColor() 
-    {
-        return dataColor2rgb(this._color); 
     }
 
 
