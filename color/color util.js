@@ -197,3 +197,13 @@ function style2rgba(style)
 
     return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
 }
+
+
+
+function computedStyle2rgba(obj, style) 
+{
+    style2rgba_context.fillStyle = getStyleValue(obj, style);
+    style2rgba_context.fillRect(0, 0, 1, 1);
+
+    return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
+}

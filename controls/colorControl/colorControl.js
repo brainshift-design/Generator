@@ -116,7 +116,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
                 control.valueStyleLight =
                 control.valueStyleDark  = rgb2style(rgb);
 
-                control.textStyleLight =
+                control.textStyleLight = isDark(rgb) ? '#fff8' : '#0008'
                 control.textStyleDark  = isDark(rgb) ? '#fff8' : '#0008'
             }
             else
@@ -124,8 +124,8 @@ function initColorControl(param, control, width, height, id, name, showName, def
                 control.valueStyleLight =
                 control.valueStyleDark  = 'transparent';
                 
-                control. textStyleLight =
-                control. textStyleDark  = '#fff8';
+                control. textStyleLight = 'black';
+                control. textStyleDark  = 'white';
             }
         }
         else

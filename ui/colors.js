@@ -1,4 +1,4 @@
-const colFigmaBlue = '#0c8ce9';
+const colFigmaBlue         = '#0c8ce9';
 
 
 const rgbObjectLight       = hex2rgb('#bee0ff');
@@ -17,3 +17,14 @@ const rgbActiveNumberDark  = hex2rgb('#888');
 
 const rgbColor             = hex2rgb('#ddd');   //hex2rgb('#cc33cc'); // these are normally
 const rgbActiveColor       = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
+
+
+
+var rgbDocumentBody;
+
+
+
+function initModeColors()
+{
+    rgbDocumentBody = computedStyle2rgba(document.body, 'background-color');
+}

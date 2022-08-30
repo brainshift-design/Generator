@@ -48,9 +48,9 @@ extends Operator
         this.header.style.background = 
             this.canShowColor()
             ? rgb2style(colors.back)
-            : isDarkMode()
-              ? '#888088ee'
-              : '#ead8eaee';
+            : 'transparent';//isDarkMode()
+            //   ? '#888088ee'
+            //   : '#ead8eaee';
 
 
         const noColor = [0.7, 0.7, 0.7];
@@ -158,8 +158,8 @@ extends Operator
     {
         this.warningStyle = 
             isDarkMode()
-            ? rgba2style([0.3, 0.55, 0.3, 0.2])
-            : rgba2style([0.5, 1, 0.5, 0.2]);        
+            ? '#ffffff08' //rgba2style([0.3, 0.55, 0.3, 0.2])
+            : '#00000006';//rgba2style([0.5, 1, 0.5, 0.2]);        
     }
 
 

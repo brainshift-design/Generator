@@ -269,6 +269,8 @@ extends Parameter
             : 'transparent'; 
 
 
+        this.opacityControl. backStyleLight  = 
+        this.opacityControl. backStyleDark   = 
         this.opacityControl.valueStyleLight  = 
         this.opacityControl.valueStyleDark   = 'transparent';
 

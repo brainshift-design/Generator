@@ -469,15 +469,21 @@ class Operator
         
         const height = this.updateHeaderInputsAndOutputs();
 
-        this.header   .style.height = height;
-
-        this.paramBack.style.height = this.inner.offsetHeight - height;
-        this.paramBack.style.top    = height;
-
-        this.hiddenParamBack.style.height = this.inner.offsetHeight - height;
-        this.hiddenParamBack.style.top    = height;
+        this.header.style.height = height;
+        this.updateParamBack(height);
 
         this.updateHeaderLabel();
+    }
+
+
+
+    updateParamBack(headerHeight)
+    {
+        this.      paramBack.style.height =
+        this.hiddenParamBack.style.height = this.inner.offsetHeight - headerHeight;
+
+        this.      paramBack.style.top    =
+        this.hiddenParamBack.style.top    = headerHeight;
     }
 
 

@@ -3872,7 +3872,7 @@ function position(e)
 
 function getStyleValue(obj, style)
 {
-    return window.getComputedStyle(obj, null).getPropertyValue(style);
+    return window.getComputedStyle(obj).getPropertyValue(style);
 }
 
 
@@ -10461,194 +10461,6 @@ function rgb2hclluv(rgb, cs = sRGB)
 }
 
 
-// Hunt-Pointer-Estevez
-// const HPE = [[ 0.4002, 0.7076, -0.0808],
-//              [-0.2263, 1.1653,  0.0457],
-//              [ 0,      0,       0.9182]];
-
-// const invHPE = inverse(HPE);
-
-
-// CIECAM02
-const CAT = [[ 0.7328, 0.4296, -0.1624],
-             [-0.7036, 1.6975,  0.0061],
-             [ 0.0030, 0.0136,  0.9834]];
-
-const invCAT = inverse(CAT);
-
-
-
-function invalid2validRgb(rgb)
-{
-    return [
-        Math.min(Math.max(0, rgb[0]), 1),
-        Math.min(Math.max(0, rgb[1]), 1),
-        Math.min(Math.max(0, rgb[2]), 1) ];
-}
-
-
-
-function isValidRgb(rgb, lim = Eps)
-{
-    return (!isNaN(rgb[0])
-         && !isNaN(rgb[1])
-         && !isNaN(rgb[2])
-         && rgb[0] > -lim && rgb[0] < 1 + lim 
-         && rgb[1] > -lim && rgb[1] < 1 + lim 
-         && rgb[2] > -lim && rgb[2] < 1 + lim);
-}
-
-
-
-function isValidDataColor(col, lim = Eps)
-{
-    return isValidRgb(dataColor2rgb(col), lim);
-}
-
-
-
-function rgbLerp(rgb1, rgb2, t)
-{
-    return [ lerp(rgb1[0], rgb2[0], t),
-             lerp(rgb1[1], rgb2[1], t),
-             lerp(rgb1[2], rgb2[2], t) ];
-}
-
-
-
-function rgbAdd(rgb1, rgb2)
-{
-    return [ rgb1[0] + rgb2[0],
-             rgb1[1] + rgb2[1],
-             rgb1[2] + rgb2[2] ];
-}
-
-
-
-function rgbSub(rgb1, rgb2)
-{
-    return [ rgb1[0] - rgb2[0],
-             rgb1[1] - rgb2[1],
-             rgb1[2] - rgb2[2] ];
-}
-
-
-
-function rgbMuls(rgb, s)
-{
-    return [ rgb[0] * s,
-             rgb[1] * s,
-             rgb[2] * s ];
-}
-
-
-
-function rgbAvg(rgb1, rgb2)
-{
-    return [ (rgb1[0] + rgb2[0]) / 2,
-             (rgb1[1] + rgb2[1]) / 2,
-             (rgb1[2] + rgb2[2]) / 2 ];
-}
-
-
-
-function rgbMax(rgb1, rgb2)
-{
-    return [ Math.max(rgb1[0], rgb2[0]),
-             Math.max(rgb1[1], rgb2[1]),
-             Math.max(rgb1[2], rgb2[2]) ];
-}
-
-
-
-function rgbPow(col, p)
-{
-    return [
-        Math.pow(col[0], p), 
-        Math.pow(col[1], p), 
-        Math.pow(col[2], p) ]
-}
-
-
-
-const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
-const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
-const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));
-
-const lq1 = (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]) / (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]);
-const lq2 = (lmsW[1]*lmsB[0] - lmsB[1]*lmsW[0]) / (lmsW[1]*lmsB[2] - lmsB[1]*lmsW[2]);
-
-const mq1 = (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]) / (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]);
-const mq2 = (lmsW[0]*lmsB[1] - lmsB[0]*lmsW[1]) / (lmsW[0]*lmsB[2] - lmsB[0]*lmsW[2]);
-
-const sq1 = (lmsW[1]*lmsR[2] - lmsR[1]*lmsW[2]) / (lmsW[1]*lmsR[0] - lmsR[1]*lmsW[0]);
-const sq2 = (lmsW[0]*lmsR[2] - lmsR[0]*lmsW[2]) / (lmsW[0]*lmsR[1] - lmsR[0]*lmsW[1]);
-
-const bq1 = lmsW[0] / lmsW[2];
-const bq2 = lmsW[1] / lmsW[2];
-
-
-// this is a number I made up following the information here: https://www.color-blindness.com/2007/07/20/monochromacy-complete-color-blindness/
-// the simulation itself gives grayscale
-// on the site the simulation has color in it, so I decided to leave some color in as well,
-// but the amount is completely arbitrary, I just felt that this particular value matches
-// the description on that site without being unrealistically exaggerated
-const blueMono = 0.88;
-
-
-function rgb2colorblind(rgb, l, m, s, cs = sRGB)
-{
-    if (   l == 0
-        && m == 0
-        && s == 0)
-    {
-        // achromatopsia is simulated by taking only the luminance
-
-        const a = 
-              cs.Y[0] * rgb[0]
-            + cs.Y[1] * rgb[1]
-            + cs.Y[2] * rgb[2];
-
-        rgb = [a, a, a];
-    }
-    else
-    {
-        const xyz = rgb2xyz(rgb, cs);
-        const lms = xyz2lms(xyz);
-
-        const a = 
-              cs.Y[0] * rgb[0]
-            + cs.Y[1] * rgb[1]
-            + cs.Y[2] * rgb[2];
-
-        const lm = Math.min(l + m, 1);
-
-
-        const lms_ = [
-            lms[0] + lerp(blueMono * (bq1*lms[2] - lms[0]), (1 - l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]), lm),
-            lms[1] + lerp(blueMono * (bq2*lms[2] - lms[1]), (1 - m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]), lm),
-            lms[2] + lerp(0,                     lerp(s, 1 - s, lm) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]), lm) ];
-
-        const xyz_ = lms2xyz(lms_);
-              rgb  = xyz2rgb(xyz_, cs);
-
-
-        let bm_ = rgb2lab(rgb, cs);
-        bm_[0] = lerp(a, bm_[0], lm);
-        rgb = lab2rgb(bm_, cs);
-
-        
-        rgb = rgbLerp(
-            [a, a, a], 
-            rgb, 
-            Math.min(s + lm, 1));
-    }
-    
-
-    return rgb;
-}
-
-
 const rgb_NaN = [
     Number.NaN,
     Number.NaN,
@@ -10847,6 +10659,204 @@ function style2rgba(style)
     style2rgba_context.fillRect(0, 0, 1, 1);
 
     return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
+}
+
+
+
+function computedStyle2rgba(obj, style) 
+{
+    style2rgba_context.fillStyle = getStyleValue(obj, style);
+    style2rgba_context.fillRect(0, 0, 1, 1);
+
+    return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
+}
+
+
+// Hunt-Pointer-Estevez
+// const HPE = [[ 0.4002, 0.7076, -0.0808],
+//              [-0.2263, 1.1653,  0.0457],
+//              [ 0,      0,       0.9182]];
+
+// const invHPE = inverse(HPE);
+
+
+// CIECAM02
+const CAT = [[ 0.7328, 0.4296, -0.1624],
+             [-0.7036, 1.6975,  0.0061],
+             [ 0.0030, 0.0136,  0.9834]];
+
+const invCAT = inverse(CAT);
+
+
+
+function invalid2validRgb(rgb)
+{
+    return [
+        Math.min(Math.max(0, rgb[0]), 1),
+        Math.min(Math.max(0, rgb[1]), 1),
+        Math.min(Math.max(0, rgb[2]), 1) ];
+}
+
+
+
+function isValidRgb(rgb, lim = Eps)
+{
+    return (!isNaN(rgb[0])
+         && !isNaN(rgb[1])
+         && !isNaN(rgb[2])
+         && rgb[0] > -lim && rgb[0] < 1 + lim 
+         && rgb[1] > -lim && rgb[1] < 1 + lim 
+         && rgb[2] > -lim && rgb[2] < 1 + lim);
+}
+
+
+
+function isValidDataColor(col, lim = Eps)
+{
+    return isValidRgb(dataColor2rgb(col), lim);
+}
+
+
+
+function rgbLerp(rgb1, rgb2, t)
+{
+    return [ lerp(rgb1[0], rgb2[0], t),
+             lerp(rgb1[1], rgb2[1], t),
+             lerp(rgb1[2], rgb2[2], t) ];
+}
+
+
+
+function rgbAdd(rgb1, rgb2)
+{
+    return [ rgb1[0] + rgb2[0],
+             rgb1[1] + rgb2[1],
+             rgb1[2] + rgb2[2] ];
+}
+
+
+
+function rgbSub(rgb1, rgb2)
+{
+    return [ rgb1[0] - rgb2[0],
+             rgb1[1] - rgb2[1],
+             rgb1[2] - rgb2[2] ];
+}
+
+
+
+function rgbMuls(rgb, s)
+{
+    return [ rgb[0] * s,
+             rgb[1] * s,
+             rgb[2] * s ];
+}
+
+
+
+function rgbAvg(rgb1, rgb2)
+{
+    return [ (rgb1[0] + rgb2[0]) / 2,
+             (rgb1[1] + rgb2[1]) / 2,
+             (rgb1[2] + rgb2[2]) / 2 ];
+}
+
+
+
+function rgbMax(rgb1, rgb2)
+{
+    return [ Math.max(rgb1[0], rgb2[0]),
+             Math.max(rgb1[1], rgb2[1]),
+             Math.max(rgb1[2], rgb2[2]) ];
+}
+
+
+
+function rgbPow(col, p)
+{
+    return [
+        Math.pow(col[0], p), 
+        Math.pow(col[1], p), 
+        Math.pow(col[2], p) ]
+}
+
+
+
+const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
+const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
+const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));
+
+const lq1 = (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]) / (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]);
+const lq2 = (lmsW[1]*lmsB[0] - lmsB[1]*lmsW[0]) / (lmsW[1]*lmsB[2] - lmsB[1]*lmsW[2]);
+
+const mq1 = (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]) / (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]);
+const mq2 = (lmsW[0]*lmsB[1] - lmsB[0]*lmsW[1]) / (lmsW[0]*lmsB[2] - lmsB[0]*lmsW[2]);
+
+const sq1 = (lmsW[1]*lmsR[2] - lmsR[1]*lmsW[2]) / (lmsW[1]*lmsR[0] - lmsR[1]*lmsW[0]);
+const sq2 = (lmsW[0]*lmsR[2] - lmsR[0]*lmsW[2]) / (lmsW[0]*lmsR[1] - lmsR[0]*lmsW[1]);
+
+const bq1 = lmsW[0] / lmsW[2];
+const bq2 = lmsW[1] / lmsW[2];
+
+
+// this is a number I made up following the information here: https://www.color-blindness.com/2007/07/20/monochromacy-complete-color-blindness/
+// the simulation itself gives grayscale
+// on the site the simulation has color in it, so I decided to leave some color in as well,
+// but the amount is completely arbitrary, I just felt that this particular value matches
+// the description on that site without being unrealistically exaggerated
+const blueMono = 0.88;
+
+
+function rgb2colorblind(rgb, l, m, s, cs = sRGB)
+{
+    if (   l == 0
+        && m == 0
+        && s == 0)
+    {
+        // achromatopsia is simulated by taking only the luminance
+
+        const a = 
+              cs.Y[0] * rgb[0]
+            + cs.Y[1] * rgb[1]
+            + cs.Y[2] * rgb[2];
+
+        rgb = [a, a, a];
+    }
+    else
+    {
+        const xyz = rgb2xyz(rgb, cs);
+        const lms = xyz2lms(xyz);
+
+        const a = 
+              cs.Y[0] * rgb[0]
+            + cs.Y[1] * rgb[1]
+            + cs.Y[2] * rgb[2];
+
+        const lm = Math.min(l + m, 1);
+
+
+        const lms_ = [
+            lms[0] + lerp(blueMono * (bq1*lms[2] - lms[0]), (1 - l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]), lm),
+            lms[1] + lerp(blueMono * (bq2*lms[2] - lms[1]), (1 - m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]), lm),
+            lms[2] + lerp(0,                     lerp(s, 1 - s, lm) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]), lm) ];
+
+        const xyz_ = lms2xyz(lms_);
+              rgb  = xyz2rgb(xyz_, cs);
+
+
+        let bm_ = rgb2lab(rgb, cs);
+        bm_[0] = lerp(a, bm_[0], lm);
+        rgb = lab2rgb(bm_, cs);
+
+        
+        rgb = rgbLerp(
+            [a, a, a], 
+            rgb, 
+            Math.min(s + lm, 1));
+    }
+    
+
+    return rgb;
 }
 
 
@@ -14520,7 +14530,7 @@ function position(e)
 
 function getStyleValue(obj, style)
 {
-    return window.getComputedStyle(obj, null).getPropertyValue(style);
+    return window.getComputedStyle(obj).getPropertyValue(style);
 }
 
 
@@ -15838,84 +15848,6 @@ function rgbPow(col, p)
 
 
 
-const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
-const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
-const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));
-
-const lq1 = (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]) / (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]);
-const lq2 = (lmsW[1]*lmsB[0] - lmsB[1]*lmsW[0]) / (lmsW[1]*lmsB[2] - lmsB[1]*lmsW[2]);
-
-const mq1 = (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]) / (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]);
-const mq2 = (lmsW[0]*lmsB[1] - lmsB[0]*lmsW[1]) / (lmsW[0]*lmsB[2] - lmsB[0]*lmsW[2]);
-
-const sq1 = (lmsW[1]*lmsR[2] - lmsR[1]*lmsW[2]) / (lmsW[1]*lmsR[0] - lmsR[1]*lmsW[0]);
-const sq2 = (lmsW[0]*lmsR[2] - lmsR[0]*lmsW[2]) / (lmsW[0]*lmsR[1] - lmsR[0]*lmsW[1]);
-
-const bq1 = lmsW[0] / lmsW[2];
-const bq2 = lmsW[1] / lmsW[2];
-
-
-// this is a number I made up following the information here: https://www.color-blindness.com/2007/07/20/monochromacy-complete-color-blindness/
-// the simulation itself gives grayscale
-// on the site the simulation has color in it, so I decided to leave some color in as well,
-// but the amount is completely arbitrary, I just felt that this particular value matches
-// the description on that site without being unrealistically exaggerated
-const blueMono = 0.88;
-
-
-function rgb2colorblind(rgb, l, m, s, cs = sRGB)
-{
-    if (   l == 0
-        && m == 0
-        && s == 0)
-    {
-        // achromatopsia is simulated by taking only the luminance
-
-        const a = 
-              cs.Y[0] * rgb[0]
-            + cs.Y[1] * rgb[1]
-            + cs.Y[2] * rgb[2];
-
-        rgb = [a, a, a];
-    }
-    else
-    {
-        const xyz = rgb2xyz(rgb, cs);
-        const lms = xyz2lms(xyz);
-
-        const a = 
-              cs.Y[0] * rgb[0]
-            + cs.Y[1] * rgb[1]
-            + cs.Y[2] * rgb[2];
-
-        const lm = Math.min(l + m, 1);
-
-
-        const lms_ = [
-            lms[0] + lerp(blueMono * (bq1*lms[2] - lms[0]), (1 - l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]), lm),
-            lms[1] + lerp(blueMono * (bq2*lms[2] - lms[1]), (1 - m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]), lm),
-            lms[2] + lerp(0,                     lerp(s, 1 - s, lm) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]), lm) ];
-
-        const xyz_ = lms2xyz(lms_);
-              rgb  = xyz2rgb(xyz_, cs);
-
-
-        let bm_ = rgb2lab(rgb, cs);
-        bm_[0] = lerp(a, bm_[0], lm);
-        rgb = lab2rgb(bm_, cs);
-
-        
-        rgb = rgbLerp(
-            [a, a, a], 
-            rgb, 
-            Math.min(s + lm, 1));
-    }
-    
-
-    return rgb;
-}
-
-
 const rgb_NaN = [
     Number.NaN,
     Number.NaN,
@@ -16114,6 +16046,94 @@ function style2rgba(style)
     style2rgba_context.fillRect(0, 0, 1, 1);
 
     return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
+}
+
+
+
+function computedStyle2rgba(obj, style) 
+{
+    style2rgba_context.fillStyle = getStyleValue(obj, style);
+    style2rgba_context.fillRect(0, 0, 1, 1);
+
+    return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
+}
+
+
+const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
+const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
+const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));
+
+const lq1 = (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]) / (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]);
+const lq2 = (lmsW[1]*lmsB[0] - lmsB[1]*lmsW[0]) / (lmsW[1]*lmsB[2] - lmsB[1]*lmsW[2]);
+
+const mq1 = (lmsW[2]*lmsB[1] - lmsB[2]*lmsW[1]) / (lmsW[2]*lmsB[0] - lmsB[2]*lmsW[0]);
+const mq2 = (lmsW[0]*lmsB[1] - lmsB[0]*lmsW[1]) / (lmsW[0]*lmsB[2] - lmsB[0]*lmsW[2]);
+
+const sq1 = (lmsW[1]*lmsR[2] - lmsR[1]*lmsW[2]) / (lmsW[1]*lmsR[0] - lmsR[1]*lmsW[0]);
+const sq2 = (lmsW[0]*lmsR[2] - lmsR[0]*lmsW[2]) / (lmsW[0]*lmsR[1] - lmsR[0]*lmsW[1]);
+
+const bq1 = lmsW[0] / lmsW[2];
+const bq2 = lmsW[1] / lmsW[2];
+
+
+// this is a number I made up following the information here: https://www.color-blindness.com/2007/07/20/monochromacy-complete-color-blindness/
+// the simulation itself gives grayscale
+// on the site the simulation has color in it, so I decided to leave some color in as well,
+// but the amount is completely arbitrary, I just felt that this particular value matches
+// the description on that site without being unrealistically exaggerated
+const blueMono = 0.88;
+
+
+function rgb2colorblind(rgb, l, m, s, cs = sRGB)
+{
+    if (   l == 0
+        && m == 0
+        && s == 0)
+    {
+        // achromatopsia is simulated by taking only the luminance
+
+        const a = 
+              cs.Y[0] * rgb[0]
+            + cs.Y[1] * rgb[1]
+            + cs.Y[2] * rgb[2];
+
+        rgb = [a, a, a];
+    }
+    else
+    {
+        const xyz = rgb2xyz(rgb, cs);
+        const lms = xyz2lms(xyz);
+
+        const a = 
+              cs.Y[0] * rgb[0]
+            + cs.Y[1] * rgb[1]
+            + cs.Y[2] * rgb[2];
+
+        const lm = Math.min(l + m, 1);
+
+
+        const lms_ = [
+            lms[0] + lerp(blueMono * (bq1*lms[2] - lms[0]), (1 - l) * ((lq1*lms[1] + lq2*lms[2]) - lms[0]), lm),
+            lms[1] + lerp(blueMono * (bq2*lms[2] - lms[1]), (1 - m) * ((mq1*lms[0] + mq2*lms[2]) - lms[1]), lm),
+            lms[2] + lerp(0,                     lerp(s, 1 - s, lm) * ((sq1*lms[0] + sq2*lms[1]) - lms[2]), lm) ];
+
+        const xyz_ = lms2xyz(lms_);
+              rgb  = xyz2rgb(xyz_, cs);
+
+
+        let bm_ = rgb2lab(rgb, cs);
+        bm_[0] = lerp(a, bm_[0], lm);
+        rgb = lab2rgb(bm_, cs);
+
+        
+        rgb = rgbLerp(
+            [a, a, a], 
+            rgb, 
+            Math.min(s + lm, 1));
+    }
+    
+
+    return rgb;
 }
 
 
@@ -21370,7 +21390,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.dragScale              = dragScale;
     control.wheelScale             = wheelScale;
              
-    control.backStyleLight         = 'transparent';
+    control.backStyleLight         = 'rgba(255, 255, 255, 0.95)';
     control.valueStyleLight        = '#7772';
     control.textStyleLight         = '#000';
                 
@@ -21532,11 +21552,8 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.update = function()
     {
         if (typeof control.value !== 'number')
-        {
-            //console.log('value =', value);
-            console.trace();
             console.assert(false, 'numberControl.update() value is ' + typeof control.value + ', must be a number');
-        }
+
 
         const sx =  control.getOffsetLeft();
         const sw =  control.getClientWidth();
@@ -22625,7 +22642,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
                 control.valueStyleLight =
                 control.valueStyleDark  = rgb2style(rgb);
 
-                control.textStyleLight =
+                control.textStyleLight = isDark(rgb) ? '#fff8' : '#0008'
                 control.textStyleDark  = isDark(rgb) ? '#fff8' : '#0008'
             }
             else
@@ -22633,8 +22650,8 @@ function initColorControl(param, control, width, height, id, name, showName, def
                 control.valueStyleLight =
                 control.valueStyleDark  = 'transparent';
                 
-                control. textStyleLight =
-                control. textStyleDark  = '#fff8';
+                control. textStyleLight = 'black';
+                control. textStyleDark  = 'white';
             }
         }
         else
@@ -26152,6 +26169,8 @@ extends Parameter
             : 'transparent'; 
 
 
+        this.opacityControl. backStyleLight  = 
+        this.opacityControl. backStyleDark   = 
         this.opacityControl.valueStyleLight  = 
         this.opacityControl.valueStyleDark   = 'transparent';
 
@@ -28533,15 +28552,21 @@ class Operator
         
         const height = this.updateHeaderInputsAndOutputs();
 
-        this.header   .style.height = height;
-
-        this.paramBack.style.height = this.inner.offsetHeight - height;
-        this.paramBack.style.top    = height;
-
-        this.hiddenParamBack.style.height = this.inner.offsetHeight - height;
-        this.hiddenParamBack.style.top    = height;
+        this.header.style.height = height;
+        this.updateParamBack(height);
 
         this.updateHeaderLabel();
+    }
+
+
+
+    updateParamBack(headerHeight)
+    {
+        this.      paramBack.style.height =
+        this.hiddenParamBack.style.height = this.inner.offsetHeight - headerHeight;
+
+        this.      paramBack.style.top    =
+        this.hiddenParamBack.style.top    = headerHeight;
     }
 
 
@@ -28980,7 +29005,7 @@ function createOperatorNode(node)
 
     
     node.paramBack = createDiv('nodeParamBack');
-    node.inner.appendChild(node.paramBack);
+    //node.inner.appendChild(node.paramBack);
     
     
     //node.separator = createDiv('paramSeparator');
@@ -28998,7 +29023,7 @@ function createOperatorNode(node)
 
 
     node.hiddenParamBack = createDiv('nodeHiddenParamBack');
-    node.inner.appendChild(node.hiddenParamBack);
+    //node.inner.appendChild(node.hiddenParamBack);
     
 
     // node.div.addEventListener('pointermove', e =>
@@ -30627,9 +30652,9 @@ extends Operator
         this.header.style.background = 
             this.canShowColor()
             ? rgb2style(colors.back)
-            : isDarkMode()
-              ? '#888088ee'
-              : '#ead8eaee';
+            : 'transparent';//isDarkMode()
+            //   ? '#888088ee'
+            //   : '#ead8eaee';
 
 
         const noColor = [0.7, 0.7, 0.7];
@@ -30737,8 +30762,8 @@ extends Operator
     {
         this.warningStyle = 
             isDarkMode()
-            ? rgba2style([0.3, 0.55, 0.3, 0.2])
-            : rgba2style([0.5, 1, 0.5, 0.2]);        
+            ? '#ffffff08' //rgba2style([0.3, 0.55, 0.3, 0.2])
+            : '#00000006';//rgba2style([0.5, 1, 0.5, 0.2]);        
     }
 
 
@@ -31025,9 +31050,7 @@ extends OpColorBase
         this.#colorBack.style.background = 
             this.canShowColor()
             ? rgb2style(colors.back)
-            : isDarkMode()
-              ? '#888088ee'
-              : '#ead8eaee';
+            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
 
         const colSpaceBar = 
@@ -33812,9 +33835,7 @@ extends OpColorBase
         this.colorBack.style.background = 
             this.canShowColor()
             ? rgb2style(colors.back)
-            : isDarkMode()
-              ? '#888088ee'
-              : '#ead8eaee';
+            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
               
         this.checkers.style.height = this.header.offsetHeight;
@@ -33852,6 +33873,9 @@ extends OpColorBase
 
 
         Operator.prototype.updateHeader.call(this);
+
+
+        //this.updateParamBack(this.header.offsetHeight);
     }
 
 
@@ -34043,9 +34067,7 @@ extends OpColorBase
         this.colorBack.style.background = 
             this.canShowColor()
             ? rgb2style(colors.back)
-            : isDarkMode()
-              ? '#888088ee'
-              : '#ead8eaee';
+            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
               
         this.checkers.style.height = this.header.offsetHeight;
@@ -36930,7 +36952,7 @@ btnToggleWires.addEventListener('pointerover',  () => updateToggleShowWiresButto
 btnToggleWires.addEventListener('pointerleave', () => updateToggleShowWiresButton());
 
 
-const colFigmaBlue = '#0c8ce9';
+const colFigmaBlue         = '#0c8ce9';
 
 
 const rgbObjectLight       = hex2rgb('#bee0ff');
@@ -36950,6 +36972,16 @@ const rgbActiveNumberDark  = hex2rgb('#888');
 const rgbColor             = hex2rgb('#ddd');   //hex2rgb('#cc33cc'); // these are normally
 const rgbActiveColor       = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
 
+
+
+var rgbDocumentBody;
+
+
+
+function initModeColors()
+{
+    rgbDocumentBody = computedStyle2rgba(document.body, 'background-color');
+}
 
 
 const panCursor = 
@@ -37156,6 +37188,7 @@ var pasteOffsetDelta    = [40, 100];
 
 
 
+
 clearConsole();
 initColor();
 
@@ -37171,6 +37204,10 @@ function uiEndStartGenerator(msg)
 
     //uiEndResizeWindow();
 
+
+    initModeColors();
+    
+    
     window.focus();
 }
 
@@ -37369,18 +37406,17 @@ onmessage = e =>
 {
     let msg = JSON.parse(e.data.pluginMessage);
 
-
     switch (msg.cmd)
     {
-        case 'uiEndFigMessage':       uiEndFigMessage(msg.msgCmd);                                        break;
+        case 'uiEndFigMessage':      uiEndFigMessage(msg.msgCmd);                                        break;
 
-        case 'uiEndStartGenerator':   uiEndStartGenerator (msg);                                          break;
-        case 'uiLoadNodesAndConns':   uiLoadNodesAndConns (msg.nodesJson, msg.connsJson, msg.activeJson); break;
+        case 'uiEndStartGenerator':  uiEndStartGenerator (msg);                                          break;
+        case 'uiLoadNodesAndConns':  uiLoadNodesAndConns (msg.nodesJson, msg.connsJson, msg.activeJson); break;
          
-        case 'uiGetLocalDataReturn':  uiGetLocalDataReturn(msg);                                          break;
-        case 'uiGetPageDataReturn':   uiGetPageDataReturn (msg);                                          break;
+        case 'uiGetLocalDataReturn': uiGetLocalDataReturn(msg);                                          break;
+        case 'uiGetPageDataReturn':  uiGetPageDataReturn (msg);                                          break;
                
-        case 'uiEndResizeWindow':     uiEndResizeWindow();                                                break;
+        case 'uiEndResizeWindow':    uiEndResizeWindow();                                                break;
     }
 }    
 
@@ -39269,7 +39305,7 @@ function isDarkMode()
 
 
 
-// create and observer for when the UI theme changes
+// create an observer for when the UI theme changes
 
 function onClassChange(element, callback) 
 {
@@ -39287,9 +39323,14 @@ function onClassChange(element, callback)
 
     return observer.disconnect;
 }
-  
-onClassChange(document.childNodes[0], () => 
-    graph.nodes.forEach(n => n.updateNode()));
+
+
+
+onClassChange(document.childNodes[0], () =>
+{ 
+    initModeColors();
+    graph.nodes.forEach(n => n.updateNode());
+});
 
 
 const licenseKeys     = createCryptoKeys();

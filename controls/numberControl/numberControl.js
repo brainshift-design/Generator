@@ -42,7 +42,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.dragScale              = dragScale;
     control.wheelScale             = wheelScale;
              
-    control.backStyleLight         = 'transparent';
+    control.backStyleLight         = 'rgba(255, 255, 255, 0.95)';
     control.valueStyleLight        = '#7772';
     control.textStyleLight         = '#000';
                 
@@ -204,11 +204,8 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.update = function()
     {
         if (typeof control.value !== 'number')
-        {
-            //console.log('value =', value);
-            console.trace();
             console.assert(false, 'numberControl.update() value is ' + typeof control.value + ', must be a number');
-        }
+
 
         const sx =  control.getOffsetLeft();
         const sw =  control.getClientWidth();

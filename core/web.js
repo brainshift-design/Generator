@@ -7,7 +7,7 @@ function position(e)
 
 function getStyleValue(obj, style)
 {
-    return window.getComputedStyle(obj, null).getPropertyValue(style);
+    return window.getComputedStyle(obj).getPropertyValue(style);
 }
 
 

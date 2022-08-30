@@ -250,9 +250,7 @@ extends OpColorBase
         this.#colorBack.style.background = 
             this.canShowColor()
             ? rgb2style(colors.back)
-            : isDarkMode()
-              ? '#888088ee'
-              : '#ead8eaee';
+            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
 
         const colSpaceBar = 

@@ -53,7 +53,7 @@ function createOperatorNode(node)
 
     
     node.paramBack = createDiv('nodeParamBack');
-    node.inner.appendChild(node.paramBack);
+    //node.inner.appendChild(node.paramBack);
     
     
     //node.separator = createDiv('paramSeparator');
@@ -71,7 +71,7 @@ function createOperatorNode(node)
 
 
     node.hiddenParamBack = createDiv('nodeHiddenParamBack');
-    node.inner.appendChild(node.hiddenParamBack);
+    //node.inner.appendChild(node.hiddenParamBack);
     
 
     // node.div.addEventListener('pointermove', e =>
