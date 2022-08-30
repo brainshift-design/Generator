@@ -207,7 +207,6 @@ extends Parameter
 
         if (updateControl)
         {
-            console.log('update');
             this.  colorControl.setValue(value.color,         false, false); 
             this.opacityControl.setValue(value.opacity.value, false, false, false); 
         }
@@ -263,7 +262,11 @@ extends Parameter
         
         const fillStyle = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
 
-        this.controlWrapper.style.background = isValidRgb(rgbVal) ? fillStyle : 'transparent'; 
+        this.controlWrapper.style.background = 
+               isValidRgb(rgbVal) 
+            && this.value.opacity.isValid()
+            ? fillStyle 
+            : 'transparent'; 
 
 
         this.opacityControl.valueStyleLight  = 

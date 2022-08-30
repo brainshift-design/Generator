@@ -1,5 +1,5 @@
 const INVALID             = '?';
-const DISPLAY_INVALID     = '🤷‍♂️';
+const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
 
 
 const NUMBER_VALUE        = 'N';     // value (s) (with significant decimals)
