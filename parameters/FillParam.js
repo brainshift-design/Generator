@@ -192,25 +192,22 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof FillValue))
-        {
-            //console.trace();
             console.assert(false, 'FillParam.setValue(value) is ' + typeof value + ', must be a FillValue');
-        }
-
 
         console.assert(
                value.type 
             && value.type == FILL_VALUE, 
             'FillParam value.type must be FILL_VALUE');
 
+
         this.preSetValue(value, createAction, dispatchEvents);
 
 
         this.value = value;
 
-
         if (updateControl)
         {
+            console.log('update');
             this.  colorControl.setValue(value.color,         false, false); 
             this.opacityControl.setValue(value.opacity.value, false, false, false); 
         }
@@ -227,6 +224,7 @@ extends Parameter
     updateControls()
     {
         const rgbVal = this.value.color.toRgb();
+
 
         const rgbaText = 
                isValidRgb(rgbVal)
@@ -265,7 +263,7 @@ extends Parameter
         
         const fillStyle = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
 
-        this.controlWrapper.style.background = fillStyle; 
+        this.controlWrapper.style.background = isValidRgb(rgbVal) ? fillStyle : 'transparent'; 
 
 
         this.opacityControl.valueStyleLight  = 
