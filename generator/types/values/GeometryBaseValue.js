@@ -48,7 +48,9 @@ extends GType
         return {
             nodeId: this.nodeId,
 
-            fills: this.fill.toFigma(),
+            fills:  this.fill.isValid() 
+                    ? this.fill.toFigma() 
+                    : [],
             
             ...this.stroke.toFigma()
         }

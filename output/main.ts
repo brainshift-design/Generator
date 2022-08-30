@@ -978,7 +978,7 @@ function setObjectFills(obj, src)
         && src.fills.length > 0)
         obj.fills = getObjectFills(src.fills);
     else
-        obj.fills = [{type: 'SOLID', color: {r: 0.85, g: 0.85, b: 0.85}}];
+        obj.fills = [];//{type: 'SOLID', color: {r: 0.85, g: 0.85, b: 0.85}}];
 }
 
 
