@@ -23,24 +23,6 @@ function initColor()
 
 
 
-function colorIsNaN(c)
-{
-    return isNaN(c[0])
-        || isNaN(c[1])
-        || isNaN(c[2]);
-}
-
-
-
-function dataColorIsNaN(c)
-{
-    return isNaN(c[1])
-        || isNaN(c[2])
-        || isNaN(c[3]);
-}
-
-
-
 function allConesWork(cones)
 {
     return cones.l == 1 

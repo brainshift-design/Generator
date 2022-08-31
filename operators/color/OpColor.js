@@ -248,7 +248,7 @@ extends OpColorBase
         const colors = this.getHeaderColors();
 
         this.#colorBack.style.background = 
-            this.canShowColor()
+            !rgbIsNaN(colors.back)//this.canShowColor()
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
@@ -259,30 +259,35 @@ extends OpColorBase
             ? [1, 1, 1, 0.12]
             : [0, 0, 0, 0.09]; 
 
-        this.paramSpace.control.backColor       = 'transparent';
-        this.paramSpace.control.valueStyleLight =
-        this.paramSpace.control.valueStyleDark  = rgba2style(colSpaceBar);
-        this.paramSpace.control.textStyleLight  =
-        this.paramSpace.control.textStyleDark   = colors.textStyle;
+        this.paramSpace.control. backStyleLight  =
+        this.paramSpace.control. backStyleDark   = 'transparent';
+        this.paramSpace.control.valueStyleLight  =
+        this.paramSpace.control.valueStyleDark   = rgba2style(colSpaceBar);
+        this.paramSpace.control. textStyleLight  =
+        this.paramSpace.control. textStyleDark   = colors.textStyle;
 
-        this.inputs[0]        .colorLight       =
-        this.inputs[0]        .colorDark        =
-        this.paramSpace.input .colorLight       =
-        this.paramSpace.input .colorDark        = rgb_a(colors.input, 0.2);
+        this.inputs[0]         .colorLight       =
+        this.inputs[0]         .colorDark        =
+        this.paramSpace.input  .colorLight       =
+        this.paramSpace.input  .colorDark        = rgb_a(colors.input, 0.2);
 
-        this.outputs[0]       .colorLight       =
-        this.outputs[0]       .colorDark        = 
-        this.paramSpace.output.colorLight       =
-        this.paramSpace.output.colorDark        = rgb_a(colors.output, 0.2);
+        this.outputs[0]        .colorLight       =
+        this.outputs[0]        .colorDark        = 
+        this.paramSpace.output .colorLight       =
+        this.paramSpace.output .colorDark        = rgb_a(colors.output, 0.2);
 
         this.paramSpace.updateControls();
+
 
         const colWarning = 
             colors.darkBack 
             ? [1, 1, 1, 0.2 ]
             : [0, 0, 0, 0.12]; 
 
-        this.warningStyle = rgba2style(colWarning);
+        this.warningStyle = 
+            rgbIsValid(colors.back) 
+            ? 'transparent' 
+            : rgba2style(colWarning);
 
 
         this.updateWarningOverlay();
@@ -311,10 +316,10 @@ extends OpColorBase
 
 
 
-    canShowColor()
-    {
-        return isValidDataColor(this._color);
-    }
+    // canShowColor()
+    // {
+    //     return dataColorIsValid(this._color);
+    // }
 
 
 
@@ -342,7 +347,7 @@ extends OpColorBase
 
 
         if (    this.paramSpace.value == 1
-            && !isValidDataColor(this._color)) // RGB warning ranges
+            && !dataColorIsValid(this._color)) // RGB warning ranges
         {
             const rangesR = [];
             if (this._color[1] < 0) rangesR.push(new NumberControlRange(0, Math.min(-this._color[1], 1), warnLineStyle, 0.8));
@@ -361,7 +366,7 @@ extends OpColorBase
         }
         else if ((   this.paramSpace.value == 2  // HSV
                   || this.paramSpace.value == 3) // HSL
-              && !isValidDataColor(this._color))
+              && !dataColorIsValid(this._color))
         {
             const rangesS = [];
             if (this._color[2] < 0) rangesS.push(new NumberControlRange(0, Math.min(-this._color[2], 1), warnLineStyle, 0.8));

@@ -11,6 +11,7 @@
 ../color/spaces/hcl.js
 
 ../color/color.js
+../color/dataColor.js
 ../color/color util.js
 ../color/colorblind.js
 ../color/hex color.js

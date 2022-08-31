@@ -15,11 +15,20 @@ const invCAT = inverse(CAT);
 
 
 
-function rgbIsNaN(rgb)
+// function colorIsNaN(c)
+// {
+//     return isNaN(c[0])
+//         || isNaN(c[1])
+//         || isNaN(c[2]);
+// }
+
+
+
+function rgbIsNaN(rgb) 
 {
-    return !isNaN(rgb[0])
-        && !isNaN(rgb[1])
-        && !isNaN(rgb[2]);
+    return isNaN(rgb[0])
+        || isNaN(rgb[1])
+        || isNaN(rgb[2]);
 }
 
 
@@ -29,13 +38,6 @@ function rgbIsValid(rgb, lim = Eps)
     return rgb[0] > -lim && rgb[0] < 1 + lim 
         && rgb[1] > -lim && rgb[1] < 1 + lim 
         && rgb[2] > -lim && rgb[2] < 1 + lim;
-}
-
-
-
-function isValidDataColor(col, lim = Eps)
-{
-    return rgbIsValid(dataColor2rgb(col), lim);
 }
 
 

@@ -120,12 +120,11 @@ extends Operator
     {
         //console.log(this.id + '.updateWarningOverlay()');
 
-        if (this.canShowColor())
-        {
-            const rgb = dataColor2rgb(this._color);
+        const rgb = dataColor2rgb(this._color);
 
-            if (      !rgbIsNaN  (rgb)
-                   && !rgbIsValid(rgb)
+        if (!rgbIsNaN(rgb))
+        {
+            if (  !rgbIsValid(rgb)
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
@@ -167,7 +166,7 @@ extends Operator
 
     canShowColor()
     {
-        return isValidDataColor(this._color);
+        return dataColorIsValid(this._color);
     }
 
 

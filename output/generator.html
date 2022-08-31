@@ -5276,8 +5276,8 @@ extends GOperator
                 {
                     this.result = input1;
                     
-                    if (   isValidDataColor(input0.toDataColor())
-                        && isValidDataColor(input1.toDataColor()))
+                    if (   dataColorIsValid(input0.toDataColor())
+                        && dataColorIsValid(input1.toDataColor()))
                     {
                         if (standard.value == 0)
                         {
@@ -6467,12 +6467,16 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
+    logActions:       false, 
+
     logRawLoading:    false, 
-    logLoading:       true, 
-    logRawSaving:     true, 
-    logActions:       true, 
+    logLoading:       false, 
+    
+    logRawSaving:     false, 
+    
     logRawRequests:   false, 
     logRequests:      true, 
+    
     logValueUpdates:  true, 
     logObjectUpdates: true
 };
@@ -8702,6 +8706,139 @@ function rgb2hclluv(rgb, cs = sRGB)
 }
 
 
+// Hunt-Pointer-Estevez
+// const HPE = [[ 0.4002, 0.7076, -0.0808],
+//              [-0.2263, 1.1653,  0.0457],
+//              [ 0,      0,       0.9182]];
+
+// const invHPE = inverse(HPE);
+
+
+// CIECAM02
+const CAT = [[ 0.7328, 0.4296, -0.1624],
+             [-0.7036, 1.6975,  0.0061],
+             [ 0.0030, 0.0136,  0.9834]];
+
+const invCAT = inverse(CAT);
+
+
+
+// function colorIsNaN(c)
+// {
+//     return isNaN(c[0])
+//         || isNaN(c[1])
+//         || isNaN(c[2]);
+// }
+
+
+
+function rgbIsNaN(rgb) 
+{
+    return isNaN(rgb[0])
+        || isNaN(rgb[1])
+        || isNaN(rgb[2]);
+}
+
+
+
+function rgbIsValid(rgb, lim = Eps)
+{
+    return rgb[0] > -lim && rgb[0] < 1 + lim 
+        && rgb[1] > -lim && rgb[1] < 1 + lim 
+        && rgb[2] > -lim && rgb[2] < 1 + lim;
+}
+
+
+
+function invalid2validRgb(rgb)
+{
+    return [
+        Math.min(Math.max(0, rgb[0]), 1),
+        Math.min(Math.max(0, rgb[1]), 1),
+        Math.min(Math.max(0, rgb[2]), 1) ];
+}
+
+
+
+function rgbLerp(rgb1, rgb2, t)
+{
+    return [ lerp(rgb1[0], rgb2[0], t),
+             lerp(rgb1[1], rgb2[1], t),
+             lerp(rgb1[2], rgb2[2], t) ];
+}
+
+
+
+function rgbAdd(rgb1, rgb2)
+{
+    return [ rgb1[0] + rgb2[0],
+             rgb1[1] + rgb2[1],
+             rgb1[2] + rgb2[2] ];
+}
+
+
+
+function rgbSub(rgb1, rgb2)
+{
+    return [ rgb1[0] - rgb2[0],
+             rgb1[1] - rgb2[1],
+             rgb1[2] - rgb2[2] ];
+}
+
+
+
+function rgbMuls(rgb, s)
+{
+    return [ rgb[0] * s,
+             rgb[1] * s,
+             rgb[2] * s ];
+}
+
+
+
+function rgbAvg(rgb1, rgb2)
+{
+    return [ (rgb1[0] + rgb2[0]) / 2,
+             (rgb1[1] + rgb2[1]) / 2,
+             (rgb1[2] + rgb2[2]) / 2 ];
+}
+
+
+
+function rgbMax(rgb1, rgb2)
+{
+    return [ Math.max(rgb1[0], rgb2[0]),
+             Math.max(rgb1[1], rgb2[1]),
+             Math.max(rgb1[2], rgb2[2]) ];
+}
+
+
+
+function rgbPow(col, p)
+{
+    return [
+        Math.pow(col[0], p), 
+        Math.pow(col[1], p), 
+        Math.pow(col[2], p) ]
+}
+
+
+
+function dataColorIsNaN(c)
+{
+    return isNaN(c[1])
+        || isNaN(c[2])
+        || isNaN(c[3]);
+}
+
+
+
+function dataColorIsValid(col, lim = Eps)
+{
+    return rgbIsValid(dataColor2rgb(col), lim);
+}
+
+
 const rgb_NaN = [
     Number.NaN,
     Number.NaN,
@@ -8723,24 +8860,6 @@ function initColor()
 {
     style2rgba_canvas  = document.createElement('canvas');
     style2rgba_context = style2rgba_canvas.getContext('2d');
-}
-
-
-
-function colorIsNaN(c)
-{
-    return isNaN(c[0])
-        || isNaN(c[1])
-        || isNaN(c[2]);
-}
-
-
-
-function dataColorIsNaN(c)
-{
-    return isNaN(c[1])
-        || isNaN(c[2])
-        || isNaN(c[3]);
 }
 
 
@@ -8911,122 +9030,6 @@ function computedStyle2rgba(obj, style)
 
     return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
 }
-
-
-// Hunt-Pointer-Estevez
-// const HPE = [[ 0.4002, 0.7076, -0.0808],
-//              [-0.2263, 1.1653,  0.0457],
-//              [ 0,      0,       0.9182]];
-
-// const invHPE = inverse(HPE);
-
-
-// CIECAM02
-const CAT = [[ 0.7328, 0.4296, -0.1624],
-             [-0.7036, 1.6975,  0.0061],
-             [ 0.0030, 0.0136,  0.9834]];
-
-const invCAT = inverse(CAT);
-
-
-
-function rgbIsNaN(rgb)
-{
-    return !isNaN(rgb[0])
-        && !isNaN(rgb[1])
-        && !isNaN(rgb[2]);
-}
-
-
-
-function rgbIsValid(rgb, lim = Eps)
-{
-    return rgb[0] > -lim && rgb[0] < 1 + lim 
-        && rgb[1] > -lim && rgb[1] < 1 + lim 
-        && rgb[2] > -lim && rgb[2] < 1 + lim;
-}
-
-
-
-function isValidDataColor(col, lim = Eps)
-{
-    return rgbIsValid(dataColor2rgb(col), lim);
-}
-
-
-
-function invalid2validRgb(rgb)
-{
-    return [
-        Math.min(Math.max(0, rgb[0]), 1),
-        Math.min(Math.max(0, rgb[1]), 1),
-        Math.min(Math.max(0, rgb[2]), 1) ];
-}
-
-
-
-function rgbLerp(rgb1, rgb2, t)
-{
-    return [ lerp(rgb1[0], rgb2[0], t),
-             lerp(rgb1[1], rgb2[1], t),
-             lerp(rgb1[2], rgb2[2], t) ];
-}
-
-
-
-function rgbAdd(rgb1, rgb2)
-{
-    return [ rgb1[0] + rgb2[0],
-             rgb1[1] + rgb2[1],
-             rgb1[2] + rgb2[2] ];
-}
-
-
-
-function rgbSub(rgb1, rgb2)
-{
-    return [ rgb1[0] - rgb2[0],
-             rgb1[1] - rgb2[1],
-             rgb1[2] - rgb2[2] ];
-}
-
-
-
-function rgbMuls(rgb, s)
-{
-    return [ rgb[0] * s,
-             rgb[1] * s,
-             rgb[2] * s ];
-}
-
-
-
-function rgbAvg(rgb1, rgb2)
-{
-    return [ (rgb1[0] + rgb2[0]) / 2,
-             (rgb1[1] + rgb2[1]) / 2,
-             (rgb1[2] + rgb2[2]) / 2 ];
-}
-
-
-
-function rgbMax(rgb1, rgb2)
-{
-    return [ Math.max(rgb1[0], rgb2[0]),
-             Math.max(rgb1[1], rgb2[1]),
-             Math.max(rgb1[2], rgb2[2]) ];
-}
-
-
-
-function rgbPow(col, p)
-{
-    return [
-        Math.pow(col[0], p), 
-        Math.pow(col[1], p), 
-        Math.pow(col[2], p) ]
-}
-
 
 
 const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
@@ -10236,8 +10239,8 @@ function validateColor(color, order, margin1, margin2, margin3)
     else if (order == 5) { i1 = 2; i2 = 1; i3 = 0; } // LCH
  
                                   color = validateChannel(color, i1, margin1);
-    if (!isValidDataColor(color)) color = validateChannel(color, i2, margin2);
-    if (!isValidDataColor(color)) color = validateChannel(color, i3, margin3);
+    if (!dataColorIsValid(color)) color = validateChannel(color, i2, margin2);
+    if (!dataColorIsValid(color)) color = validateChannel(color, i3, margin3);
 
     return color;
 }
@@ -10260,7 +10263,7 @@ function validateChannel(color, iChan, margin)
     let _c  = savedValue,
          c_ = savedValue;
 
-    let _valid  = isValidDataColor(color);
+    let _valid  = dataColorIsValid(color);
     let  valid_ = _valid;
 
 
@@ -10282,7 +10285,7 @@ function validateChannel(color, iChan, margin)
 
     if (_valid) 
     { 
-        _valid = isValidDataColor(color);
+        _valid = dataColorIsValid(color);
         _c     = savedValue;
 
         while (   !_valid
@@ -10298,7 +10301,7 @@ function validateChannel(color, iChan, margin)
     }
     else if (valid_)
     { 
-        valid_ = isValidDataColor(color);
+        valid_ = dataColorIsValid(color);
         c_     = savedValue;
 
         while (   !valid_
@@ -10323,7 +10326,7 @@ function isColorValid(c, iChan, savedColor)
 {
     let color = [...savedColor];
     color[iChan+1] = c; 
-    return isValidDataColor(color);
+    return dataColorIsValid(color);
 }
 
 

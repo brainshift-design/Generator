@@ -241,10 +241,10 @@ function logReqNode(node, parse) {
 const settings = {
     showNodeId: false,
     logMessages: false,
+    logActions: false,
     logRawLoading: false,
-    logLoading: true,
-    logRawSaving: true,
-    logActions: true,
+    logLoading: false,
+    logRawSaving: false,
     logRawRequests: false,
     logRequests: true,
     logValueUpdates: true,
