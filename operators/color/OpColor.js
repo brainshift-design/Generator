@@ -263,8 +263,10 @@ extends OpColorBase
 
         this.paramSpace.control. backStyleLight  =
         this.paramSpace.control. backStyleDark   = 'transparent';
+
         this.paramSpace.control.valueStyleLight  =
         this.paramSpace.control.valueStyleDark   = rgba2style(colSpaceBar);
+
         this.paramSpace.control. textStyleLight  =
         this.paramSpace.control. textStyleDark   = colors.textStyle;
 

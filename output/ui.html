@@ -29328,14 +29328,14 @@ function createNodeHeader(node)
                 && !graphView.tempConn.output.node.follows(node)
                 &&  graphView.overInput)
             {
-                graphView.endConnection(e.pointerId);
+                graphView          .endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if ( graphView.tempConn.input
                   && !node.follows(graphView.tempConn.input.node)
                   &&  graphView.overOutput)
             {
-                graphView.endConnection(e.pointerId);
+                graphView           .endConnection(e.pointerId);
                 graphView.overOutput.endConnection();
             }
         }
@@ -30712,13 +30712,14 @@ extends Operator
             : dataColor2rgb(this._color);
 
         const darkBack = 
-              !rgbIsOk(colBack)
-            || isDark (colBack);
+               rgbIsOk(colBack)
+            && isDark (colBack);
 
             
         const colText = 
-            rgbIsOk(colBack)
-            ? (darkBack 
+               !rgbIsNaN  (colBack)
+            || !rgbIsValid(colBack)
+            ? (isDark(colBack) 
                ? [1, 1, 1, 0.7] 
                : [0, 0, 0, 0.6])
             : (isDarkMode()
@@ -31079,8 +31080,10 @@ extends OpColorBase
 
         this.paramSpace.control. backStyleLight  =
         this.paramSpace.control. backStyleDark   = 'transparent';
+
         this.paramSpace.control.valueStyleLight  =
         this.paramSpace.control.valueStyleDark   = rgba2style(colSpaceBar);
+
         this.paramSpace.control. textStyleLight  =
         this.paramSpace.control. textStyleDark   = colors.textStyle;
 

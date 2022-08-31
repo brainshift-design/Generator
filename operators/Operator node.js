@@ -359,14 +359,14 @@ function createNodeHeader(node)
                 && !graphView.tempConn.output.node.follows(node)
                 &&  graphView.overInput)
             {
-                graphView.endConnection(e.pointerId);
+                graphView          .endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if ( graphView.tempConn.input
                   && !node.follows(graphView.tempConn.input.node)
                   &&  graphView.overOutput)
             {
-                graphView.endConnection(e.pointerId);
+                graphView           .endConnection(e.pointerId);
                 graphView.overOutput.endConnection();
             }
         }
