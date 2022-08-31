@@ -227,7 +227,7 @@ extends Parameter
 
         const rgbaText = 
               !rgbIsNaN  (rgbVal)
-               rgbIsValid(rgbVal)
+            && rgbIsValid(rgbVal)
             && this.value.opacity.isValid()
             && this.opacityControl.value >= 50
             ? (isDark(rgbVal) 
@@ -269,6 +269,11 @@ extends Parameter
             ? fillStyle 
             : 'transparent'; 
 
+
+        this.  colorControl. backStyleLight  = 
+        this.  colorControl. backStyleDark   = 
+        this.  colorControl.valueStyleLight  = 
+        this.  colorControl.valueStyleDark   = 'transparent';
 
         this.opacityControl. backStyleLight  = 
         this.opacityControl. backStyleDark   = 

@@ -21399,7 +21399,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.textStyleLight         = '#000';
                 
     control.backStyleDark          = 'rgba(56, 56, 56, 0.95)';
-    control.valueStyleDark         = '#ffffff30';
+    control.valueStyleDark         = '#ffffff20';
     control.textStyleDark          = '#eee';
                 
     control.fontSize               = 11;
@@ -26133,7 +26133,7 @@ extends Parameter
 
         const rgbaText = 
               !rgbIsNaN  (rgbVal)
-               rgbIsValid(rgbVal)
+            && rgbIsValid(rgbVal)
             && this.value.opacity.isValid()
             && this.opacityControl.value >= 50
             ? (isDark(rgbVal) 
@@ -26175,6 +26175,11 @@ extends Parameter
             ? fillStyle 
             : 'transparent'; 
 
+
+        this.  colorControl. backStyleLight  = 
+        this.  colorControl. backStyleDark   = 
+        this.  colorControl.valueStyleLight  = 
+        this.  colorControl.valueStyleDark   = 'transparent';
 
         this.opacityControl. backStyleLight  = 
         this.opacityControl. backStyleDark   = 
@@ -33917,11 +33922,11 @@ extends OpColorBase
             this.canShowColor()
             ? (op >= 0.5
                ? (darkBack 
-                  ? [1, 1, 1, 0.7] 
-                  : [0, 0, 0, 0.6])
+                  ? [1, 1, 1, 1] 
+                  : [0, 0, 0, 1])
                : (isDarkMode()
-                  ? [1, 1, 1, 0.7]
-                  : [0, 0, 0, 0.6])) 
+                  ? [1, 1, 1, 1]
+                  : [0, 0, 0, 1])) 
             : (isDarkMode()
                ? [1, 1, 1, 0.7]
                : [0, 0, 0, 0.6]);
@@ -34154,11 +34159,11 @@ extends OpColorBase
             this.canShowColor()
             ? (op >= 0.5
                ? (darkBack 
-                  ? [1, 1, 1, 0.7] 
-                  : [0, 0, 0, 0.6])
+                  ? [1, 1, 1, 1] 
+                  : [0, 0, 0, 1])
                : (isDarkMode()
-                  ? [1, 1, 1, 0.7]
-                  : [0, 0, 0, 0.6])) 
+                  ? [1, 1, 1, 1]
+                  : [0, 0, 0, 1])) 
             : (isDarkMode()
                ? [1, 1, 1, 0.7]
                : [0, 0, 0, 0.6]);
