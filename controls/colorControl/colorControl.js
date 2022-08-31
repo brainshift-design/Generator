@@ -33,11 +33,11 @@ function initColorControl(param, control, width, height, id, name, showName, def
     control.dragScale              = dragScale;
     control.wheelScale             = wheelScale;
              
-    control. backStyleLight        = 'transparent';
+    control.backStyleLight         = 'rgba(255, 255, 255, 0.95)';
     control.valueStyleLight        = 'transparent';
     control.textStyleLight         = '#000';
                 
-    control. backStyleDark         = 'transparent';
+    control.backStyleDark          = 'rgba(56, 56, 56, 0.95)';
     control.valueStyleDark         = 'transparent';
     control.textStyleDark          = '#eee';
 

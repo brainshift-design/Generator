@@ -46,7 +46,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.valueStyleLight        = '#7772';
     control.textStyleLight         = '#000';
                 
-    control.backStyleDark          = 'transparent';
+    control.backStyleDark          = 'rgba(56, 56, 56, 0.95)';
     control.valueStyleDark         = '#ffffff30';
     control.textStyleDark          = '#eee';
                 
