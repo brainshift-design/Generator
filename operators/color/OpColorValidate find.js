@@ -311,7 +311,7 @@ function findCorrectionInOrder(nodeId,
             {
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
-                if (   isValidRgb(_rgb)
+                if (   rgbIsValid(_rgb)
                     && (  !closestOklab
                         || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
                 {

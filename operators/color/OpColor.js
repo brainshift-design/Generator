@@ -255,7 +255,7 @@ extends OpColorBase
 
         const colSpaceBar = 
                colors.darkBack
-            && isValidRgb(colors.back)
+            && !rgbIsNaN(colors.back)
             ? [1, 1, 1, 0.12]
             : [0, 0, 0, 0.09]; 
 
@@ -419,12 +419,12 @@ extends OpColorBase
         {
             const rgb = getRgb(f);
 
-            if (!open && !isValidRgb(rgb))
+            if (!open && !rgbIsValid(rgb))
             {
                 ranges.push(new NumberControlRange(f, f, warnLineStyle, 0.8));
                 open = true;
             }
-            else if (open && isValidRgb(rgb)) 
+            else if (open && rgbIsValid(rgb)) 
             {
                 ranges[ranges.length-1].end = f;
                 open = false;

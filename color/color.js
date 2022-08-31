@@ -15,31 +15,37 @@ const invCAT = inverse(CAT);
 
 
 
-function invalid2validRgb(rgb)
+function rgbIsNaN(rgb)
 {
-    return [
-        Math.min(Math.max(0, rgb[0]), 1),
-        Math.min(Math.max(0, rgb[1]), 1),
-        Math.min(Math.max(0, rgb[2]), 1) ];
+    return !isNaN(rgb[0])
+        && !isNaN(rgb[1])
+        && !isNaN(rgb[2]);
 }
 
 
 
-function isValidRgb(rgb, lim = Eps)
+function rgbIsValid(rgb, lim = Eps)
 {
-    return (!isNaN(rgb[0])
-         && !isNaN(rgb[1])
-         && !isNaN(rgb[2])
-         && rgb[0] > -lim && rgb[0] < 1 + lim 
-         && rgb[1] > -lim && rgb[1] < 1 + lim 
-         && rgb[2] > -lim && rgb[2] < 1 + lim);
+    return rgb[0] > -lim && rgb[0] < 1 + lim 
+        && rgb[1] > -lim && rgb[1] < 1 + lim 
+        && rgb[2] > -lim && rgb[2] < 1 + lim;
 }
 
 
 
 function isValidDataColor(col, lim = Eps)
 {
-    return isValidRgb(dataColor2rgb(col), lim);
+    return rgbIsValid(dataColor2rgb(col), lim);
+}
+
+
+
+function invalid2validRgb(rgb)
+{
+    return [
+        Math.min(Math.max(0, rgb[0]), 1),
+        Math.min(Math.max(0, rgb[1]), 1),
+        Math.min(Math.max(0, rgb[2]), 1) ];
 }
 
 

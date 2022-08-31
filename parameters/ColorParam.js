@@ -127,7 +127,8 @@ extends Parameter
         const rgb = this.value.toRgb();
 
         const col = 
-            isValidRgb(rgb)
+              !rgbIsNaN  (rgb)
+            && rgbIsValid(rgb)
             ? (isDark(rgb)
                ? [1, 1, 1]
                : [0, 0, 0])

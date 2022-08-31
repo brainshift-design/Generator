@@ -111,7 +111,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
         if (control.showColor)
         {
-            if (isValidRgb(rgb))
+            if (!rgbIsNaN(rgb))
             {
                 control.valueStyleLight =
                 control.valueStyleDark  = rgb2style(rgb);
@@ -199,7 +199,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
         control.text.innerHTML += 
                control.value.isValid()
-            && isValidRgb(control.value.toRgb())
+            && rgbIsValid(control.value.toRgb())
             ? rgb2hex(control.value.toRgb())
             : DISPLAY_INVALID;
     };

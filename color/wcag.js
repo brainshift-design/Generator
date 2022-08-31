@@ -1,6 +1,7 @@
 function getContrastRatio2(textColor, backColor)
 {
-    if (!isValidRgb(textColor))
+    if (    rgbIsNaN  (textColor)
+        || !rgbIsValid(textColor))
         return Number.NaN;
 
     const txtY = sRGB.luminance(textColor);
@@ -26,7 +27,8 @@ function getContrastRating2(ratio)
 
 function getContrastRatio3(textColor, backColor)
 {
-    if (!isValidRgb(textColor))
+    if (    rgbIsNaN  (textColor)
+        || !rgbIsValid(textColor))
         return Number.NaN;
 
     return APCAcontrast(

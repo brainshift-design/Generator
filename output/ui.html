@@ -7174,8 +7174,10 @@ extends GOperator
                     this.m.value / 2,
                     this.s.value / 2);
 
-                if (   isValidRgb(rgb)
-                    && isValidRgb(rgbCb))
+                if (   !rgbIsNaN  (rgb)
+                    && !rgbIsNaN  (rgbCb)
+                    &&  rgbIsValid(rgb)
+                    &&  rgbIsValid(rgbCb))
                 {
                     const validRgbCb = rgbCb;//invalid2validRgb(cb);
                 
@@ -7268,7 +7270,8 @@ extends GOperator
                 const rgb = input.toRgb();
 
 
-                if (isValidRgb(rgb))
+                if (  !rgbIsNaN  (rgb)
+                    && rgbIsValid(rgb))
                 {
                     // this._color = 
                     //     col
@@ -10689,31 +10692,37 @@ const invCAT = inverse(CAT);
 
 
 
-function invalid2validRgb(rgb)
+function rgbIsNaN(rgb)
 {
-    return [
-        Math.min(Math.max(0, rgb[0]), 1),
-        Math.min(Math.max(0, rgb[1]), 1),
-        Math.min(Math.max(0, rgb[2]), 1) ];
+    return !isNaN(rgb[0])
+        && !isNaN(rgb[1])
+        && !isNaN(rgb[2]);
 }
 
 
 
-function isValidRgb(rgb, lim = Eps)
+function rgbIsValid(rgb, lim = Eps)
 {
-    return (!isNaN(rgb[0])
-         && !isNaN(rgb[1])
-         && !isNaN(rgb[2])
-         && rgb[0] > -lim && rgb[0] < 1 + lim 
-         && rgb[1] > -lim && rgb[1] < 1 + lim 
-         && rgb[2] > -lim && rgb[2] < 1 + lim);
+    return rgb[0] > -lim && rgb[0] < 1 + lim 
+        && rgb[1] > -lim && rgb[1] < 1 + lim 
+        && rgb[2] > -lim && rgb[2] < 1 + lim;
 }
 
 
 
 function isValidDataColor(col, lim = Eps)
 {
-    return isValidRgb(dataColor2rgb(col), lim);
+    return rgbIsValid(dataColor2rgb(col), lim);
+}
+
+
+
+function invalid2validRgb(rgb)
+{
+    return [
+        Math.min(Math.max(0, rgb[0]), 1),
+        Math.min(Math.max(0, rgb[1]), 1),
+        Math.min(Math.max(0, rgb[2]), 1) ];
 }
 
 
@@ -10934,7 +10943,8 @@ function hex2rgb(hex)
 
 function getContrastRatio2(textColor, backColor)
 {
-    if (!isValidRgb(textColor))
+    if (    rgbIsNaN  (textColor)
+        || !rgbIsValid(textColor))
         return Number.NaN;
 
     const txtY = sRGB.luminance(textColor);
@@ -10960,7 +10970,8 @@ function getContrastRating2(ratio)
 
 function getContrastRatio3(textColor, backColor)
 {
-    if (!isValidRgb(textColor))
+    if (    rgbIsNaN  (textColor)
+        || !rgbIsValid(textColor))
         return Number.NaN;
 
     return APCAcontrast(
@@ -12288,7 +12299,7 @@ function findCorrectionInOrder(nodeId,
             {
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
-                if (   isValidRgb(_rgb)
+                if (   rgbIsValid(_rgb)
                     && (  !closestOklab
                         || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
                 {
@@ -15755,31 +15766,37 @@ const invCAT = inverse(CAT);
 
 
 
-function invalid2validRgb(rgb)
+function rgbIsNaN(rgb)
 {
-    return [
-        Math.min(Math.max(0, rgb[0]), 1),
-        Math.min(Math.max(0, rgb[1]), 1),
-        Math.min(Math.max(0, rgb[2]), 1) ];
+    return !isNaN(rgb[0])
+        && !isNaN(rgb[1])
+        && !isNaN(rgb[2]);
 }
 
 
 
-function isValidRgb(rgb, lim = Eps)
+function rgbIsValid(rgb, lim = Eps)
 {
-    return (!isNaN(rgb[0])
-         && !isNaN(rgb[1])
-         && !isNaN(rgb[2])
-         && rgb[0] > -lim && rgb[0] < 1 + lim 
-         && rgb[1] > -lim && rgb[1] < 1 + lim 
-         && rgb[2] > -lim && rgb[2] < 1 + lim);
+    return rgb[0] > -lim && rgb[0] < 1 + lim 
+        && rgb[1] > -lim && rgb[1] < 1 + lim 
+        && rgb[2] > -lim && rgb[2] < 1 + lim;
 }
 
 
 
 function isValidDataColor(col, lim = Eps)
 {
-    return isValidRgb(dataColor2rgb(col), lim);
+    return rgbIsValid(dataColor2rgb(col), lim);
+}
+
+
+
+function invalid2validRgb(rgb)
+{
+    return [
+        Math.min(Math.max(0, rgb[0]), 1),
+        Math.min(Math.max(0, rgb[1]), 1),
+        Math.min(Math.max(0, rgb[2]), 1) ];
 }
 
 
@@ -16211,7 +16228,8 @@ function hex2rgb(hex)
 
 function getContrastRatio2(textColor, backColor)
 {
-    if (!isValidRgb(textColor))
+    if (    rgbIsNaN  (textColor)
+        || !rgbIsValid(textColor))
         return Number.NaN;
 
     const txtY = sRGB.luminance(textColor);
@@ -16237,7 +16255,8 @@ function getContrastRating2(ratio)
 
 function getContrastRatio3(textColor, backColor)
 {
-    if (!isValidRgb(textColor))
+    if (    rgbIsNaN  (textColor)
+        || !rgbIsValid(textColor))
         return Number.NaN;
 
     return APCAcontrast(
@@ -19278,8 +19297,10 @@ extends GOperator
                     this.m.value / 2,
                     this.s.value / 2);
 
-                if (   isValidRgb(rgb)
-                    && isValidRgb(rgbCb))
+                if (   !rgbIsNaN  (rgb)
+                    && !rgbIsNaN  (rgbCb)
+                    &&  rgbIsValid(rgb)
+                    &&  rgbIsValid(rgbCb))
                 {
                     const validRgbCb = rgbCb;//invalid2validRgb(cb);
                 
@@ -19372,7 +19393,8 @@ extends GOperator
                 const rgb = input.toRgb();
 
 
-                if (isValidRgb(rgb))
+                if (  !rgbIsNaN  (rgb)
+                    && rgbIsValid(rgb))
                 {
                     // this._color = 
                     //     col
@@ -22513,8 +22535,9 @@ function initColorControlTextbox(control)
 
         control.textbox.style.color = 
             control.showColor
-            ? (    isDark(rgb) 
-               || !isValidRgb(rgb) 
+            ? (    rgbIsNaN  (rgb)
+               || !rgbIsValid(rgb) 
+               ||  isDark    (rgb) 
                ? 'white' 
                : 'black')
             : (isDarkMode() 
@@ -22637,7 +22660,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
         if (control.showColor)
         {
-            if (isValidRgb(rgb))
+            if (!rgbIsNaN(rgb))
             {
                 control.valueStyleLight =
                 control.valueStyleDark  = rgb2style(rgb);
@@ -22725,7 +22748,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
         control.text.innerHTML += 
                control.value.isValid()
-            && isValidRgb(control.value.toRgb())
+            && rgbIsValid(control.value.toRgb())
             ? rgb2hex(control.value.toRgb())
             : DISPLAY_INVALID;
     };
@@ -25797,7 +25820,8 @@ extends Parameter
         const rgb = this.value.toRgb();
 
         const col = 
-            isValidRgb(rgb)
+              !rgbIsNaN  (rgb)
+            && rgbIsValid(rgb)
             ? (isDark(rgb)
                ? [1, 1, 1]
                : [0, 0, 0])
@@ -26126,7 +26150,8 @@ extends Parameter
 
 
         const rgbaText = 
-               isValidRgb(rgbVal)
+              !rgbIsNaN  (rgbVal)
+               rgbIsValid(rgbVal)
             && this.value.opacity.isValid()
             && this.opacityControl.value >= 50
             ? (isDark(rgbVal) 
@@ -26163,7 +26188,7 @@ extends Parameter
         const fillStyle = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
 
         this.controlWrapper.style.background = 
-               isValidRgb(rgbVal) 
+               !rgbIsNaN(rgbVal) 
             && this.value.opacity.isValid()
             ? fillStyle 
             : 'transparent'; 
@@ -30728,7 +30753,8 @@ extends Operator
         {
             const rgb = dataColor2rgb(this._color);
 
-            if (   !isValidRgb(rgb)
+            if (      !rgbIsNaN  (rgb)
+                   && !rgbIsValid(rgb)
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
@@ -30785,7 +30811,8 @@ extends Operator
             : height;
 
         this._warningOverlay.style.background =
-               isValidRgb(colBack)
+               !rgbIsNaN  (colBack)
+            &&  rgbIsValid(colBack)
             && !this.forceShowWarning
             ? 'transparent'
             : 'repeating-linear-gradient('
@@ -31055,7 +31082,7 @@ extends OpColorBase
 
         const colSpaceBar = 
                colors.darkBack
-            && isValidRgb(colors.back)
+            && !rgbIsNaN(colors.back)
             ? [1, 1, 1, 0.12]
             : [0, 0, 0, 0.09]; 
 
@@ -31219,12 +31246,12 @@ extends OpColorBase
         {
             const rgb = getRgb(f);
 
-            if (!open && !isValidRgb(rgb))
+            if (!open && !rgbIsValid(rgb))
             {
                 ranges.push(new NumberControlRange(f, f, warnLineStyle, 0.8));
                 open = true;
             }
-            else if (open && isValidRgb(rgb)) 
+            else if (open && rgbIsValid(rgb)) 
             {
                 ranges[ranges.length-1].end = f;
                 open = false;
@@ -32712,7 +32739,7 @@ function findCorrectionInOrder(nodeId,
             {
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
-                if (   isValidRgb(_rgb)
+                if (   rgbIsValid(_rgb)
                     && (  !closestOklab
                         || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
                 {
@@ -33348,14 +33375,18 @@ extends OpColorBase
             const rgb0 = colText.toRgb();
             const rgb1 = colBack.toRgb();
 
-            if (  !isValidRgb(rgb0)
-                && isValidRgb(rgb1))
+            if (   (    rgbIsNaN  (rgb0)
+                    || !rgbIsValid(rgb0))
+                && !rgbIsNaN  (rgb1)
+                &&  rgbIsValid(rgb1))
             {
                 this.warningStyle     = rgb2style_a(invalid2validRgb(rgb0), 0.3);
                 this.forceShowWarning = true;
             }
-            else if ( isValidRgb(rgb0)
-                  && !isValidRgb(rgb1))
+            else if (!rgbIsNaN  (rgb0)
+                  &&  rgbIsValid(rgb0)
+                  && (    rgbIsNaN  (rgb1)
+                      || !rgbIsValid(rgb1)))
             {
                 this.warningStyle     = this.getDefaultWarningStyle(rgb1);
                 this.forceShowWarning = true;

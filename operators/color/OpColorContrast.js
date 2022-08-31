@@ -152,14 +152,18 @@ extends OpColorBase
             const rgb0 = colText.toRgb();
             const rgb1 = colBack.toRgb();
 
-            if (  !isValidRgb(rgb0)
-                && isValidRgb(rgb1))
+            if (   (    rgbIsNaN  (rgb0)
+                    || !rgbIsValid(rgb0))
+                && !rgbIsNaN  (rgb1)
+                &&  rgbIsValid(rgb1))
             {
                 this.warningStyle     = rgb2style_a(invalid2validRgb(rgb0), 0.3);
                 this.forceShowWarning = true;
             }
-            else if ( isValidRgb(rgb0)
-                  && !isValidRgb(rgb1))
+            else if (!rgbIsNaN  (rgb0)
+                  &&  rgbIsValid(rgb0)
+                  && (    rgbIsNaN  (rgb1)
+                      || !rgbIsValid(rgb1)))
             {
                 this.warningStyle     = this.getDefaultWarningStyle(rgb1);
                 this.forceShowWarning = true;

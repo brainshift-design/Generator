@@ -50,7 +50,8 @@ extends GOperator
                 const rgb = input.toRgb();
 
 
-                if (isValidRgb(rgb))
+                if (  !rgbIsNaN  (rgb)
+                    && rgbIsValid(rgb))
                 {
                     // this._color = 
                     //     col
