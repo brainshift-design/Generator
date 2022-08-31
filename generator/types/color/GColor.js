@@ -91,8 +91,9 @@ extends GOperator
                 this.result.space.value = toSpaceIndex;
 
 
-                if (   this.convert
-                    && !isNaN(this.convert.value))
+                if (    this.convert
+                    && !isNaN(this.convert.value)
+                    &&  this.result.isValid())
                 {
                     const fromSpace = this.convert.eval(parse).copy();
 

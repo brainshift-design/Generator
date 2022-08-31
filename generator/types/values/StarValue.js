@@ -76,16 +76,14 @@ extends GType
 
     toString()
     {
-        return this.isValid()
-            ?         this.x     .toString()
-              + ' ' + this.y     .toString()
-              + ' ' + this.width .toString()
-              + ' ' + this.height.toString()
-              + ' ' + this.angle .toString()
-              + ' ' + this.round .toString()
-              + ' ' + this.points.toString()
-              + ' ' + this.convex.toString()
-            : INVALID;
+        return      this.x     .toString()
+            + ' ' + this.y     .toString()
+            + ' ' + this.width .toString()
+            + ' ' + this.height.toString()
+            + ' ' + this.angle .toString()
+            + ' ' + this.round .toString()
+            + ' ' + this.points.toString()
+            + ' ' + this.convex.toString();
     }
 
 

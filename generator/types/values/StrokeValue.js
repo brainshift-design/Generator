@@ -106,13 +106,11 @@ extends GType
 
     toString()
     {
-        return this.isValid()
-            ?         this.fill  .toString()
-              + ' ' + this.weight.toString()
-              + ' ' + this.fit   .toString()
-              + ' ' + this.join  .toString()
-              + ' ' + this.miter .toString()
-            : INVALID;
+        return      this.fill  .toString()
+            + ' ' + this.weight.toString()
+            + ' ' + this.fit   .toString()
+            + ' ' + this.join  .toString()
+            + ' ' + this.miter .toString();
     }
 
 

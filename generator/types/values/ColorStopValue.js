@@ -54,17 +54,15 @@ extends GType
 
     toString()
     {
-        return this.isValid()
-            ?         this.fill    .toString()
-              + ' ' + this.position.toString()
-            : INVALID;
+        return      this.fill    .toString()
+            + ' ' + this.position.toString();
     }
 
 
 
     static NaN = new ColorStopValue(
         FillValue.NaN,
-        NumberValue   .NaN);
+        NumberValue.NaN);
 }
 
 

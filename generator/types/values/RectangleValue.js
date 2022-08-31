@@ -91,15 +91,14 @@ extends GeometryBaseValue
 
     toString()
     {
-        return this.isValid()
-            ?         this.x     .toString()
-              + ' ' + this.y     .toString()
-              + ' ' + this.width .toString()
-              + ' ' + this.height.toString()
-              + ' ' + this.angle .toString()
-              + ' ' + this.round .toString()
-              + ' ' + super.toString()
-            : INVALID;
+        return      this.x     .toString()
+            + ' ' + this.y     .toString()
+            + ' ' + this.width .toString()
+            + ' ' + this.height.toString()
+            + ' ' + this.angle .toString()
+            + ' ' + this.round .toString()
+            
+            + ' ' + super.toString();
     }
 
 

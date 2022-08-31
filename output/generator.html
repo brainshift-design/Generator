@@ -3277,12 +3277,10 @@ extends GType
 
     toString()
     {
-        return this.isValid()
-            ?         this.space.toString()
-              + ' ' + this.c1   .toString()
-              + ' ' + this.c2   .toString()
-              + ' ' + this.c3   .toString()
-            : INVALID;
+        return      this.space.toString()
+            + ' ' + this.c1   .toString()
+            + ' ' + this.c2   .toString()
+            + ' ' + this.c3   .toString();
     }
 
 
@@ -3312,9 +3310,9 @@ extends GType
 
 function parseColorValue(str, i = -1)
 {
-    if (   i <  0 && str    == INVALID
-        || i >= 0 && str[i] == INVALID)
-        return [ColorValue.NaN, 1];
+    // if (   i <  0 && str    == INVALID
+    //     || i >= 0 && str[i] == INVALID)
+    //     return [ColorValue.NaN, 1];
 
 
     if (i < 0)
@@ -3591,13 +3589,11 @@ extends GType
 
     toString()
     {
-        return this.isValid()
-            ?         this.fill  .toString()
-              + ' ' + this.weight.toString()
-              + ' ' + this.fit   .toString()
-              + ' ' + this.join  .toString()
-              + ' ' + this.miter .toString()
-            : INVALID;
+        return      this.fill  .toString()
+            + ' ' + this.weight.toString()
+            + ' ' + this.fit   .toString()
+            + ' ' + this.join  .toString()
+            + ' ' + this.miter .toString();
     }
 
 
@@ -3857,15 +3853,14 @@ extends GeometryBaseValue
 
     toString()
     {
-        return this.isValid()
-            ?         this.x     .toString()
-              + ' ' + this.y     .toString()
-              + ' ' + this.width .toString()
-              + ' ' + this.height.toString()
-              + ' ' + this.angle .toString()
-              + ' ' + this.round .toString()
-              + ' ' + super.toString()
-            : INVALID;
+        return      this.x     .toString()
+            + ' ' + this.y     .toString()
+            + ' ' + this.width .toString()
+            + ' ' + this.height.toString()
+            + ' ' + this.angle .toString()
+            + ' ' + this.round .toString()
+            
+            + ' ' + super.toString();
     }
 
 
@@ -3982,12 +3977,10 @@ extends GType
 
     toString()
     {
-        return this.isValid()
-            ?         this.x     .toString()
-              + ' ' + this.y     .toString()
-              + ' ' + this.width .toString()
-              + ' ' + this.angle .toString()
-            : INVALID;
+        return      this.x     .toString()
+            + ' ' + this.y     .toString()
+            + ' ' + this.width .toString()
+            + ' ' + this.angle .toString();
     }
 
 
@@ -4080,13 +4073,11 @@ extends GType
 
     toString()
     {
-        return this.isValid()
-            ?         this.x     .toString()
-              + ' ' + this.y     .toString()
-              + ' ' + this.width .toString()
-              + ' ' + this.height.toString()
-              + ' ' + this.angle .toString()
-            : INVALID;
+        return      this.x     .toString()
+            + ' ' + this.y     .toString()
+            + ' ' + this.width .toString()
+            + ' ' + this.height.toString()
+            + ' ' + this.angle .toString();
     }
 
 
@@ -4191,15 +4182,13 @@ extends GType
 
     toString()
     {
-        return this.isValid()
-            ?         this.x      .toString()
-              + ' ' + this.y      .toString()
-              + ' ' + this.width  .toString()
-              + ' ' + this.height .toString()
-              + ' ' + this.angle  .toString()
-              + ' ' + this.round  .toString()
-              + ' ' + this.corners.toString()
-            : INVALID;
+        return      this.x      .toString()
+            + ' ' + this.y      .toString()
+            + ' ' + this.width  .toString()
+            + ' ' + this.height .toString()
+            + ' ' + this.angle  .toString()
+            + ' ' + this.round  .toString()
+            + ' ' + this.corners.toString();
     }
 
 
@@ -4313,16 +4302,14 @@ extends GType
 
     toString()
     {
-        return this.isValid()
-            ?         this.x     .toString()
-              + ' ' + this.y     .toString()
-              + ' ' + this.width .toString()
-              + ' ' + this.height.toString()
-              + ' ' + this.angle .toString()
-              + ' ' + this.round .toString()
-              + ' ' + this.points.toString()
-              + ' ' + this.convex.toString()
-            : INVALID;
+        return      this.x     .toString()
+            + ' ' + this.y     .toString()
+            + ' ' + this.width .toString()
+            + ' ' + this.height.toString()
+            + ' ' + this.angle .toString()
+            + ' ' + this.round .toString()
+            + ' ' + this.points.toString()
+            + ' ' + this.convex.toString();
     }
 
 
@@ -5019,8 +5006,9 @@ extends GOperator
                 this.result.space.value = toSpaceIndex;
 
 
-                if (   this.convert
-                    && !isNaN(this.convert.value))
+                if (    this.convert
+                    && !isNaN(this.convert.value)
+                    &&  this.result.isValid())
                 {
                     const fromSpace = this.convert.eval(parse).copy();
 

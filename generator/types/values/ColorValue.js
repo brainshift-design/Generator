@@ -113,12 +113,10 @@ extends GType
 
     toString()
     {
-        return this.isValid()
-            ?         this.space.toString()
-              + ' ' + this.c1   .toString()
-              + ' ' + this.c2   .toString()
-              + ' ' + this.c3   .toString()
-            : INVALID;
+        return      this.space.toString()
+            + ' ' + this.c1   .toString()
+            + ' ' + this.c2   .toString()
+            + ' ' + this.c3   .toString();
     }
 
 
@@ -148,9 +146,9 @@ extends GType
 
 function parseColorValue(str, i = -1)
 {
-    if (   i <  0 && str    == INVALID
-        || i >= 0 && str[i] == INVALID)
-        return [ColorValue.NaN, 1];
+    // if (   i <  0 && str    == INVALID
+    //     || i >= 0 && str[i] == INVALID)
+    //     return [ColorValue.NaN, 1];
 
 
     if (i < 0)
