@@ -62,7 +62,7 @@ extends Action
     }
 
 
-
+    
     do()
     {
         const movedIds   = this.getMovedIds();
@@ -94,7 +94,7 @@ extends Action
         }
 
         for (const node of movedNodes)
-            node.updateNode();//Border();
+            node.updateNode();
             
         graphView.selectByIds(this.prevSelectedIds);
 

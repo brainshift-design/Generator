@@ -8217,7 +8217,7 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logActions:       false, 
+    logActions:       true, 
 
     logRawLoading:    false, 
     logLoading:       false, 
@@ -20330,7 +20330,7 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logActions:       false, 
+    logActions:       true, 
 
     logRawLoading:    false, 
     logLoading:       false, 
@@ -29306,7 +29306,7 @@ function createNodeHeader(node)
                     point(node.div.offsetLeft, node.div.offsetTop),
                     node.div.shiftOnPointerDown ));
             }
-            else if (!node.selected)
+            else if (graphView.selectedNodes.length > 0) //(!node.selected)
             {
                 actionManager.do(new SelectNodesAction(
                     graphView.selectedNodes    .map(n => n.id), 
@@ -36765,7 +36765,7 @@ extends Action
     }
 
 
-
+    
     do()
     {
         const movedIds   = this.getMovedIds();
@@ -36797,7 +36797,7 @@ extends Action
         }
 
         for (const node of movedNodes)
-            node.updateNode();//Border();
+            node.updateNode();
             
         graphView.selectByIds(this.prevSelectedIds);
 
@@ -37275,6 +37275,10 @@ document.addEventListener('keydown', e =>
           && getCtrlKey(e))
     {
         graphView.selectedNodes = graph.nodes;
+        
+        actionManager.do(new SelectNodesAction(
+            graphView.selectedNodes    .map(n => n.id), 
+            graphView.lastSelectedNodes.map(n => n.id)));
     }
 
     // undo/redo

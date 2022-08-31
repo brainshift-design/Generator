@@ -37,6 +37,10 @@ document.addEventListener('keydown', e =>
           && getCtrlKey(e))
     {
         graphView.selectedNodes = graph.nodes;
+        
+        actionManager.do(new SelectNodesAction(
+            graphView.selectedNodes    .map(n => n.id), 
+            graphView.lastSelectedNodes.map(n => n.id)));
     }
 
     // undo/redo
