@@ -126,7 +126,7 @@ extends OpColorBase
         const colors = this.getHeaderColors();
 
         this.colorBack.style.background = 
-              rgbIsOk(colors.back)
+            !rgbIsNaN(colors.back)
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
@@ -147,7 +147,10 @@ extends OpColorBase
         this.checkers.style.backgroundPosition = '0 0, 13px 13px';
                         
 
-        this.header.style.background = rgbIsOk(colors.back) ? rgba2style(colors.back) : 'transparent';
+        this.header.style.background = 
+            !rgbIsNaN(colors.back) 
+            ? rgba2style(colors.back) 
+            : 'transparent';
 
         
         const noColor = [0.7, 0.7, 0.7];
@@ -188,17 +191,17 @@ extends OpColorBase
 
             
         const colText = 
-            rgbIsOk(colBack)
+            !rgbIsNaN(colBack)
             ? (op >= 0.5
-               ? (darkBack 
+               ? (isDark(colBack)
                   ? [1, 1, 1, 1] 
-                  : [0, 0, 0, 1])
+                  : [0, 0, 0, 0.92])
                : (isDarkMode()
                   ? [1, 1, 1, 1]
-                  : [0, 0, 0, 1])) 
+                  : [0, 0, 0, 0.92])) 
             : (isDarkMode()
                ? [1, 1, 1, 0.7]
-               : [0, 0, 0, 0.6]);
+               : [0, 0, 0, 0.92]);
 
         const textStyle = rgba2style(colText);
 

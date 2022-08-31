@@ -159,15 +159,10 @@ extends OpColorBase
         this.checkers.style.backgroundPosition = '0 0, 13px 13px';
                         
 
-        // const op = this.paramFill.value.opacity.value/100;
-
-        this.header.style.background = rgbIsOk(colors.back) ? rgba2style(colors.back) : 'transparent';
-        // this.header.style.background = 
-        //     rgbIsOk(colors.back)
-        //     ? rgb2style_a(colors.back, op)
-        //     : 'transparent';
-            //? '#888088ee'
-            //: '#ead8eaee';
+        this.header.style.background = 
+            !rgbIsNaN(colors.back)
+            ? rgba2style(colors.back) 
+            : 'transparent';
 
 
         const noColor = [0.7, 0.7, 0.7];
@@ -182,7 +177,7 @@ extends OpColorBase
 
 
         this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colors.back, 45);
+        this.updateWarningOverlayStyle(colors.back);//, 45);
 
 
         Operator.prototype.updateHeader.call(this);
@@ -205,14 +200,14 @@ extends OpColorBase
 
             
         const colText = 
-            rgbIsOk(colBack)
+            !rgbIsNaN(colBack)
             ? (op >= 0.5
-               ? (darkBack 
+               ? (isDark(colBack) 
                   ? [1, 1, 1, 1] 
-                  : [0, 0, 0, 1])
+                  : [0, 0, 0, 0.92])
                : (isDarkMode()
                   ? [1, 1, 1, 1]
-                  : [0, 0, 0, 1])) 
+                  : [0, 0, 0, 0.92])) 
             : (isDarkMode()
                ? [1, 1, 1, 0.7]
                : [0, 0, 0, 0.6]);

@@ -91,13 +91,14 @@ extends Operator
             : dataColor2rgb(this._color);
 
         const darkBack = 
-              !rgbIsOk(colBack)
-            || isDark (colBack);
+               rgbIsOk(colBack)
+            && isDark (colBack);
 
             
         const colText = 
-            rgbIsOk(colBack)
-            ? (darkBack 
+               !rgbIsNaN  (colBack)
+            || !rgbIsValid(colBack)
+            ? (isDark(colBack) 
                ? [1, 1, 1, 0.7] 
                : [0, 0, 0, 0.6])
             : (isDarkMode()

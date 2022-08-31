@@ -226,15 +226,15 @@ extends Parameter
 
 
         const rgbaText = 
-            rgbIsOk(rgbVal)
+              !rgbIsNaN(rgbVal)
             && this.value.opacity.isValid()
             && this.opacityControl.value >= 50
             ? (isDark(rgbVal) 
                ? [1, 1, 1, 0.8]
-               : [0, 0, 0, 0.5]) 
+               : [0, 0, 0, 0.6]) 
             : (isDarkMode()
                ? [1, 1, 1, 0.8]
-               : [0, 0, 0, 0.5]);
+               : [0, 0, 0, 0.6]);
 
 
         this.input.wireColor   = rgbVal;
