@@ -42,6 +42,14 @@ function rgbIsValid(rgb, lim = Eps)
 
 
 
+function rgbIsOk(rgb, lim = Eps)
+{
+    return !rgbIsNaN  (rgb)
+        &&  rgbIsValid(rgb, lim);
+}
+
+
+
 function invalid2validRgb(rgb)
 {
     return [

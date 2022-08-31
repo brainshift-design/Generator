@@ -5400,10 +5400,8 @@ extends GOperator
                     this.m.value / 2,
                     this.s.value / 2);
 
-                if (   !rgbIsNaN  (rgb)
-                    && !rgbIsNaN  (rgbCb)
-                    &&  rgbIsValid(rgb)
-                    &&  rgbIsValid(rgbCb))
+                if (   rgbIsOk(rgb)
+                    && rgbIsOk(rgbCb))
                 {
                     const validRgbCb = rgbCb;//invalid2validRgb(cb);
                 
@@ -5496,8 +5494,7 @@ extends GOperator
                 const rgb = input.toRgb();
 
 
-                if (  !rgbIsNaN  (rgb)
-                    && rgbIsValid(rgb))
+                if (rgbIsOk(rgb))
                 {
                     // this._color = 
                     //     col
@@ -8738,6 +8735,14 @@ function rgbIsValid(rgb, lim = Eps)
 
 
 
+function rgbIsOk(rgb, lim = Eps)
+{
+    return !rgbIsNaN  (rgb)
+        &&  rgbIsValid(rgb, lim);
+}
+
+
+
 function invalid2validRgb(rgb)
 {
     return [
@@ -9199,8 +9204,7 @@ function getContrastRating2(ratio)
 
 function getContrastRatio3(textColor, backColor)
 {
-    if (    rgbIsNaN  (textColor)
-        || !rgbIsValid(textColor))
+    if (!rgbIsOk(textColor))
         return Number.NaN;
 
     return APCAcontrast(

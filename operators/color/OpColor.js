@@ -250,13 +250,13 @@ extends OpColorBase
         const colors = this.getHeaderColors();
 
         this.#colorBack.style.background = 
-            !rgbIsNaN(colors.back)//this.canShowColor()
+            !rgbIsNaN(colors.back)
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
 
         const colSpaceBar = 
-               colors.darkBack
+                colors.darkBack
             && !rgbIsNaN(colors.back)
             ? [1, 1, 1, 0.12]
             : [0, 0, 0, 0.09]; 
@@ -302,9 +302,9 @@ extends OpColorBase
     {
         this.updateAllControlRanges();
 
-        this.param1.updateControls();//this.param1.control.update()
-        this.param2.updateControls();//this.param2.control.update()
-        this.param3.updateControls();//this.param3.control.update()
+        this.param1.updateControls();
+        this.param2.updateControls();
+        this.param3.updateControls();
     }
 
 
@@ -315,13 +315,6 @@ extends OpColorBase
 
         control.update();
     }
-
-
-
-    // canShowColor()
-    // {
-    //     return dataColorIsValid(this._color);
-    // }
 
 
 
@@ -349,6 +342,7 @@ extends OpColorBase
 
 
         if (    this.paramSpace.value == 1
+            && !dataColorIsNaN  (this._color)
             && !dataColorIsValid(this._color)) // RGB warning ranges
         {
             const rangesR = [];
@@ -368,6 +362,7 @@ extends OpColorBase
         }
         else if ((   this.paramSpace.value == 2  // HSV
                   || this.paramSpace.value == 3) // HSL
+              && !dataColorIsNaN  (this._color)
               && !dataColorIsValid(this._color))
         {
             const rangesS = [];
@@ -380,7 +375,8 @@ extends OpColorBase
             if (this._color[3] > 1) rangesVL.push(new NumberControlRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
             this.param3.control.ranges = rangesVL;
         }
-        else if (this.paramSpace.value > 3) // HCL
+        else if ( this.paramSpace.value > 3 // HCL
+              && !dataColorIsNaN(this._color))
         {
             this.updateControlRanges(this.param1.control, f =>
                 dataColor2rgb([

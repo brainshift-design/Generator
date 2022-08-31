@@ -27,8 +27,7 @@ function getContrastRating2(ratio)
 
 function getContrastRatio3(textColor, backColor)
 {
-    if (    rgbIsNaN  (textColor)
-        || !rgbIsValid(textColor))
+    if (!rgbIsOk(textColor))
         return Number.NaN;
 
     return APCAcontrast(

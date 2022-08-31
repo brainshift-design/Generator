@@ -43,29 +43,35 @@ extends Operator
         //console.log(this.id + '.OpColorBase.updateHeader()');
 
 
-        const colors = this.getHeaderColors();
+        const colors  = this.getHeaderColors();
+        const noColor = [0.7, 0.7, 0.7];
+
 
         this.header.style.background = 
-            this.canShowColor()
+              rgbIsOk(colors.back)
             ? rgb2style(colors.back)
-            : 'transparent';//isDarkMode()
-            //   ? '#888088ee'
-            //   : '#ead8eaee';
+            : 'transparent';
 
-
-        const noColor = [0.7, 0.7, 0.7];
 
         for (const input of this.inputs.filter(i => !i.param))
         {
-            input.wireColor = this.canShowColor() ? colors.back : noColor;
-            input.color     = colors.input;
+            input.wireColor = 
+                  rgbIsOk(colors.back)
+                ? colors.back 
+                : noColor;
+
+            input.color = colors.input;
         }
 
 
         for (const output of this.outputs.filter(i => !i.param))
         {
-            output.wireColor = this.canShowColor() ? colors.back : noColor;
-            output.color     = colors.output;
+            output.wireColor = 
+                  rgbIsOk(colors.back)   
+                ? colors.back 
+                : noColor;
+
+            output.color = colors.output;
         }
 
 
@@ -85,12 +91,12 @@ extends Operator
             : dataColor2rgb(this._color);
 
         const darkBack = 
-              !this.canShowColor()
-            || isDark(colBack);
+              !rgbIsOk(colBack)
+            || isDark (colBack);
 
             
         const colText = 
-            this.canShowColor()
+            rgbIsOk(colBack)
             ? (darkBack 
                ? [1, 1, 1, 0.7] 
                : [0, 0, 0, 0.6])
@@ -164,13 +170,6 @@ extends Operator
 
 
 
-    canShowColor()
-    {
-        return dataColorIsValid(this._color);
-    }
-
-
-
     updateWarningOverlayStyle(colBack, height = -1)
     {
         //console.log('colBack =', colBack);
@@ -181,8 +180,7 @@ extends Operator
             : height;
 
         this._warningOverlay.style.background =
-               !rgbIsNaN  (colBack)
-            &&  rgbIsValid(colBack)
+               rgbIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
             : 'repeating-linear-gradient('

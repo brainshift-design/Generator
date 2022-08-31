@@ -53,10 +53,8 @@ extends GOperator
                     this.m.value / 2,
                     this.s.value / 2);
 
-                if (   !rgbIsNaN  (rgb)
-                    && !rgbIsNaN  (rgbCb)
-                    &&  rgbIsValid(rgb)
-                    &&  rgbIsValid(rgbCb))
+                if (   rgbIsOk(rgb)
+                    && rgbIsOk(rgbCb))
                 {
                     const validRgbCb = rgbCb;//invalid2validRgb(cb);
                 

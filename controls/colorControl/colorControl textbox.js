@@ -288,9 +288,8 @@ function initColorControlTextbox(control)
 
         control.textbox.style.color = 
             control.showColor
-            ? (    rgbIsNaN  (rgb)
-               || !rgbIsValid(rgb) 
-               ||  isDark    (rgb) 
+            ? (  !rgbIsOk(rgb) 
+               || isDark (rgb) 
                ? 'white' 
                : 'black')
             : (isDarkMode() 

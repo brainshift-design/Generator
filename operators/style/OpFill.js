@@ -126,7 +126,7 @@ extends OpColorBase
         const colors = this.getHeaderColors();
 
         this.colorBack.style.background = 
-            this.canShowColor()
+              rgbIsOk(colors.back)
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
@@ -140,23 +140,23 @@ extends OpColorBase
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display            = this.canShowColor() ? 'inline-block' : 'none';
+        this.checkers.style.display            = rgbIsOk(colors.back) ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
 
         this.checkers.style.backgroundSize     = '26px 26px';
         this.checkers.style.backgroundPosition = '0 0, 13px 13px';
                         
 
-        this.header.style.background = this.canShowColor() ? rgba2style(colors.back) : 'transparent';
+        this.header.style.background = rgbIsOk(colors.back) ? rgba2style(colors.back) : 'transparent';
 
         
         const noColor = [0.7, 0.7, 0.7];
 
-        this.inputs[0] .wireColor  = this.canShowColor() ? colors.back : noColor;
+        this.inputs[0] .wireColor  = rgbIsOk(colors.back) ? colors.back : noColor;
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = rgb_a(colors.input, 0.2);
 
-        this.outputs[0].wireColor  = this.canShowColor() ? colors.back : noColor;
+        this.outputs[0].wireColor  = rgbIsOk(colors.back) ? colors.back : noColor;
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = rgb_a(colors.output, 0.2);
 
@@ -183,12 +183,12 @@ extends OpColorBase
             : rgb_a(dataColor2rgb(this._color), op);
 
         const darkBack = 
-              !this.canShowColor()
+              !rgbIsOk(colBack)
             || isDark(colBack);
 
             
         const colText = 
-            this.canShowColor()
+            rgbIsOk(colBack)
             ? (op >= 0.5
                ? (darkBack 
                   ? [1, 1, 1, 1] 

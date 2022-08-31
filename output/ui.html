@@ -7162,10 +7162,8 @@ extends GOperator
                     this.m.value / 2,
                     this.s.value / 2);
 
-                if (   !rgbIsNaN  (rgb)
-                    && !rgbIsNaN  (rgbCb)
-                    &&  rgbIsValid(rgb)
-                    &&  rgbIsValid(rgbCb))
+                if (   rgbIsOk(rgb)
+                    && rgbIsOk(rgbCb))
                 {
                     const validRgbCb = rgbCb;//invalid2validRgb(cb);
                 
@@ -7258,8 +7256,7 @@ extends GOperator
                 const rgb = input.toRgb();
 
 
-                if (  !rgbIsNaN  (rgb)
-                    && rgbIsValid(rgb))
+                if (rgbIsOk(rgb))
                 {
                     // this._color = 
                     //     col
@@ -10500,6 +10497,14 @@ function rgbIsValid(rgb, lim = Eps)
 
 
 
+function rgbIsOk(rgb, lim = Eps)
+{
+    return !rgbIsNaN  (rgb)
+        &&  rgbIsValid(rgb, lim);
+}
+
+
+
 function invalid2validRgb(rgb)
 {
     return [
@@ -10961,8 +10966,7 @@ function getContrastRating2(ratio)
 
 function getContrastRatio3(textColor, backColor)
 {
-    if (    rgbIsNaN  (textColor)
-        || !rgbIsValid(textColor))
+    if (!rgbIsOk(textColor))
         return Number.NaN;
 
     return APCAcontrast(
@@ -15784,6 +15788,14 @@ function rgbIsValid(rgb, lim = Eps)
 
 
 
+function rgbIsOk(rgb, lim = Eps)
+{
+    return !rgbIsNaN  (rgb)
+        &&  rgbIsValid(rgb, lim);
+}
+
+
+
 function invalid2validRgb(rgb)
 {
     return [
@@ -16245,8 +16257,7 @@ function getContrastRating2(ratio)
 
 function getContrastRatio3(textColor, backColor)
 {
-    if (    rgbIsNaN  (textColor)
-        || !rgbIsValid(textColor))
+    if (!rgbIsOk(textColor))
         return Number.NaN;
 
     return APCAcontrast(
@@ -19275,10 +19286,8 @@ extends GOperator
                     this.m.value / 2,
                     this.s.value / 2);
 
-                if (   !rgbIsNaN  (rgb)
-                    && !rgbIsNaN  (rgbCb)
-                    &&  rgbIsValid(rgb)
-                    &&  rgbIsValid(rgbCb))
+                if (   rgbIsOk(rgb)
+                    && rgbIsOk(rgbCb))
                 {
                     const validRgbCb = rgbCb;//invalid2validRgb(cb);
                 
@@ -19371,8 +19380,7 @@ extends GOperator
                 const rgb = input.toRgb();
 
 
-                if (  !rgbIsNaN  (rgb)
-                    && rgbIsValid(rgb))
+                if (rgbIsOk(rgb))
                 {
                     // this._color = 
                     //     col
@@ -22517,9 +22525,8 @@ function initColorControlTextbox(control)
 
         control.textbox.style.color = 
             control.showColor
-            ? (    rgbIsNaN  (rgb)
-               || !rgbIsValid(rgb) 
-               ||  isDark    (rgb) 
+            ? (  !rgbIsOk(rgb) 
+               || isDark (rgb) 
                ? 'white' 
                : 'black')
             : (isDarkMode() 
@@ -25802,8 +25809,7 @@ extends Parameter
         const rgb = this.value.toRgb();
 
         const col = 
-              !rgbIsNaN  (rgb)
-            && rgbIsValid(rgb)
+            rgbIsOk(rgb)
             ? (isDark(rgb)
                ? [1, 1, 1]
                : [0, 0, 0])
@@ -26132,8 +26138,7 @@ extends Parameter
 
 
         const rgbaText = 
-              !rgbIsNaN  (rgbVal)
-            && rgbIsValid(rgbVal)
+            rgbIsOk(rgbVal)
             && this.value.opacity.isValid()
             && this.opacityControl.value >= 50
             ? (isDark(rgbVal) 
@@ -26170,7 +26175,7 @@ extends Parameter
         const fillStyle = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
 
         this.controlWrapper.style.background = 
-               !rgbIsNaN(rgbVal) 
+              !rgbIsNaN(rgbVal) 
             && this.value.opacity.isValid()
             ? fillStyle 
             : 'transparent'; 
@@ -30659,29 +30664,35 @@ extends Operator
         //console.log(this.id + '.OpColorBase.updateHeader()');
 
 
-        const colors = this.getHeaderColors();
+        const colors  = this.getHeaderColors();
+        const noColor = [0.7, 0.7, 0.7];
+
 
         this.header.style.background = 
-            this.canShowColor()
+              rgbIsOk(colors.back)
             ? rgb2style(colors.back)
-            : 'transparent';//isDarkMode()
-            //   ? '#888088ee'
-            //   : '#ead8eaee';
+            : 'transparent';
 
-
-        const noColor = [0.7, 0.7, 0.7];
 
         for (const input of this.inputs.filter(i => !i.param))
         {
-            input.wireColor = this.canShowColor() ? colors.back : noColor;
-            input.color     = colors.input;
+            input.wireColor = 
+                  rgbIsOk(colors.back)
+                ? colors.back 
+                : noColor;
+
+            input.color = colors.input;
         }
 
 
         for (const output of this.outputs.filter(i => !i.param))
         {
-            output.wireColor = this.canShowColor() ? colors.back : noColor;
-            output.color     = colors.output;
+            output.wireColor = 
+                  rgbIsOk(colors.back)   
+                ? colors.back 
+                : noColor;
+
+            output.color = colors.output;
         }
 
 
@@ -30701,12 +30712,12 @@ extends Operator
             : dataColor2rgb(this._color);
 
         const darkBack = 
-              !this.canShowColor()
-            || isDark(colBack);
+              !rgbIsOk(colBack)
+            || isDark (colBack);
 
             
         const colText = 
-            this.canShowColor()
+            rgbIsOk(colBack)
             ? (darkBack 
                ? [1, 1, 1, 0.7] 
                : [0, 0, 0, 0.6])
@@ -30780,13 +30791,6 @@ extends Operator
 
 
 
-    canShowColor()
-    {
-        return dataColorIsValid(this._color);
-    }
-
-
-
     updateWarningOverlayStyle(colBack, height = -1)
     {
         //console.log('colBack =', colBack);
@@ -30797,8 +30801,7 @@ extends Operator
             : height;
 
         this._warningOverlay.style.background =
-               !rgbIsNaN  (colBack)
-            &&  rgbIsValid(colBack)
+               rgbIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
             : 'repeating-linear-gradient('
@@ -31063,13 +31066,13 @@ extends OpColorBase
         const colors = this.getHeaderColors();
 
         this.#colorBack.style.background = 
-            !rgbIsNaN(colors.back)//this.canShowColor()
+            !rgbIsNaN(colors.back)
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
 
         const colSpaceBar = 
-               colors.darkBack
+                colors.darkBack
             && !rgbIsNaN(colors.back)
             ? [1, 1, 1, 0.12]
             : [0, 0, 0, 0.09]; 
@@ -31115,9 +31118,9 @@ extends OpColorBase
     {
         this.updateAllControlRanges();
 
-        this.param1.updateControls();//this.param1.control.update()
-        this.param2.updateControls();//this.param2.control.update()
-        this.param3.updateControls();//this.param3.control.update()
+        this.param1.updateControls();
+        this.param2.updateControls();
+        this.param3.updateControls();
     }
 
 
@@ -31128,13 +31131,6 @@ extends OpColorBase
 
         control.update();
     }
-
-
-
-    // canShowColor()
-    // {
-    //     return dataColorIsValid(this._color);
-    // }
 
 
 
@@ -31162,6 +31158,7 @@ extends OpColorBase
 
 
         if (    this.paramSpace.value == 1
+            && !dataColorIsNaN  (this._color)
             && !dataColorIsValid(this._color)) // RGB warning ranges
         {
             const rangesR = [];
@@ -31181,6 +31178,7 @@ extends OpColorBase
         }
         else if ((   this.paramSpace.value == 2  // HSV
                   || this.paramSpace.value == 3) // HSL
+              && !dataColorIsNaN  (this._color)
               && !dataColorIsValid(this._color))
         {
             const rangesS = [];
@@ -31193,7 +31191,8 @@ extends OpColorBase
             if (this._color[3] > 1) rangesVL.push(new NumberControlRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
             this.param3.control.ranges = rangesVL;
         }
-        else if (this.paramSpace.value > 3) // HCL
+        else if ( this.paramSpace.value > 3 // HCL
+              && !dataColorIsNaN(this._color))
         {
             this.updateControlRanges(this.param1.control, f =>
                 dataColor2rgb([
@@ -33368,18 +33367,14 @@ extends OpColorBase
             const rgb0 = colText.toRgb();
             const rgb1 = colBack.toRgb();
 
-            if (   (    rgbIsNaN  (rgb0)
-                    || !rgbIsValid(rgb0))
-                && !rgbIsNaN  (rgb1)
-                &&  rgbIsValid(rgb1))
+            if (  !rgbIsOk(rgb0)
+                && rgbIsOk(rgb1))
             {
                 this.warningStyle     = rgb2style_a(invalid2validRgb(rgb0), 0.3);
                 this.forceShowWarning = true;
             }
-            else if (!rgbIsNaN  (rgb0)
-                  &&  rgbIsValid(rgb0)
-                  && (    rgbIsNaN  (rgb1)
-                      || !rgbIsValid(rgb1)))
+            else if ( rgbIsOk(rgb0)
+                  && !rgbIsOk(rgb1))
             {
                 this.warningStyle     = this.getDefaultWarningStyle(rgb1);
                 this.forceShowWarning = true;
@@ -33595,13 +33590,6 @@ extends OpColorBase
 
 
         showOpColorInterpolateGammaControl(this, this.paramSpace.value == 1);    
-    }
-
-
-
-    canShowColor()
-    {
-        return !isDataColorNaN(this._color);
     }
 }
 
@@ -33857,7 +33845,7 @@ extends OpColorBase
         const colors = this.getHeaderColors();
 
         this.colorBack.style.background = 
-            this.canShowColor()
+              rgbIsOk(colors.back)
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
@@ -33871,23 +33859,23 @@ extends OpColorBase
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display            = this.canShowColor() ? 'inline-block' : 'none';
+        this.checkers.style.display            = rgbIsOk(colors.back) ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
 
         this.checkers.style.backgroundSize     = '26px 26px';
         this.checkers.style.backgroundPosition = '0 0, 13px 13px';
                         
 
-        this.header.style.background = this.canShowColor() ? rgba2style(colors.back) : 'transparent';
+        this.header.style.background = rgbIsOk(colors.back) ? rgba2style(colors.back) : 'transparent';
 
         
         const noColor = [0.7, 0.7, 0.7];
 
-        this.inputs[0] .wireColor  = this.canShowColor() ? colors.back : noColor;
+        this.inputs[0] .wireColor  = rgbIsOk(colors.back) ? colors.back : noColor;
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = rgb_a(colors.input, 0.2);
 
-        this.outputs[0].wireColor  = this.canShowColor() ? colors.back : noColor;
+        this.outputs[0].wireColor  = rgbIsOk(colors.back) ? colors.back : noColor;
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = rgb_a(colors.output, 0.2);
 
@@ -33914,12 +33902,12 @@ extends OpColorBase
             : rgb_a(dataColor2rgb(this._color), op);
 
         const darkBack = 
-              !this.canShowColor()
+              !rgbIsOk(colBack)
             || isDark(colBack);
 
             
         const colText = 
-            this.canShowColor()
+            rgbIsOk(colBack)
             ? (op >= 0.5
                ? (darkBack 
                   ? [1, 1, 1, 1] 
@@ -34089,7 +34077,7 @@ extends OpColorBase
         const colors = this.getHeaderColors();
 
         this.colorBack.style.background = 
-            this.canShowColor()
+            rgbIsOk(colors.back)
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
@@ -34103,7 +34091,7 @@ extends OpColorBase
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display            = this.canShowColor() ? 'inline-block' : 'none';
+        this.checkers.style.display            = rgbIsOk(colors.back) ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
 
         this.checkers.style.backgroundSize     = '26px 26px';
@@ -34112,9 +34100,9 @@ extends OpColorBase
 
         // const op = this.paramFill.value.opacity.value/100;
 
-        this.header.style.background = this.canShowColor() ? rgba2style(colors.back) : 'transparent';
+        this.header.style.background = rgbIsOk(colors.back) ? rgba2style(colors.back) : 'transparent';
         // this.header.style.background = 
-        //     this.canShowColor()
+        //     rgbIsOk(colors.back)
         //     ? rgb2style_a(colors.back, op)
         //     : 'transparent';
             //? '#888088ee'
@@ -34123,11 +34111,11 @@ extends OpColorBase
 
         const noColor = [0.7, 0.7, 0.7];
 
-        this.inputs[0] .wireColor  = this.canShowColor() ? colors.back : noColor;
+        this.inputs[0] .wireColor  = rgbIsOk(colors.back) ? colors.back : noColor;
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = rgb_a(colors.input, 0.2);
 
-        this.outputs[0].wireColor  = this.canShowColor() ? colors.back : noColor;
+        this.outputs[0].wireColor  = rgbIsOk(colors.back) ? colors.back : noColor;
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = rgb_a(colors.output, 0.2);
 
@@ -34151,12 +34139,12 @@ extends OpColorBase
             : rgb_a(dataColor2rgb(this._color), op);
 
         const darkBack = 
-              !this.canShowColor()
+              !rgbIsOk(colBack)
             || isDark(colBack);
 
             
         const colText = 
-            this.canShowColor()
+            rgbIsOk(colBack)
             ? (op >= 0.5
                ? (darkBack 
                   ? [1, 1, 1, 1] 

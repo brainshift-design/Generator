@@ -125,13 +125,6 @@ extends OpColorBase
 
         showOpColorInterpolateGammaControl(this, this.paramSpace.value == 1);    
     }
-
-
-
-    canShowColor()
-    {
-        return !isDataColorNaN(this._color);
-    }
 }
 
 
