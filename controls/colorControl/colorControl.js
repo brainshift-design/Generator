@@ -116,8 +116,8 @@ function initColorControl(param, control, width, height, id, name, showName, def
                 control.valueStyleLight =
                 control.valueStyleDark  = rgb2style(rgb);
 
-                control.textStyleLight = isDark(rgb) ? '#fff8' : '#0008'
-                control.textStyleDark  = isDark(rgb) ? '#fff8' : '#0008'
+                control.textStyleLight  = isDark(rgb) ? '#fffa' : '#0008';
+                control.textStyleDark   = isDark(rgb) ? '#fffa' : '#0008';
             }
             else
             {

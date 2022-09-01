@@ -123,11 +123,11 @@ extends Parameter
             const rgbaText = 
                 rgbaVal[3] >= 0.5
                 ? (isDark(rgbaVal) 
-                   ? [1, 1, 1, 0.8]
-                   : [0, 0, 0, 0.5]) 
+                   ? [1, 1, 1, 0.666]
+                   : [0, 0, 0, 0.5  ]) 
                 : (isDarkMode()
-                   ? [1, 1, 1, 0.8]
-                   : [0, 0, 0, 0.5]);
+                   ? [1, 1, 1, 0.666]
+                   : [0, 0, 0, 0.5  ]);
 
 
             this.input.wireColor   = rgbaVal;

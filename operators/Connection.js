@@ -217,7 +217,7 @@ class Connection
                 this.wire.xp1.style.strokeDasharray  = 7 * graphView.zoom;
 
                 this.wire.xp2.style.display          = 'inline';
-                this.wire.xp2.style.stroke           = isDarkMode() ? '#444' : '#fff';
+                this.wire.xp2.style.stroke           = isDarkMode() ? '#4d4d4d' : '#fff';
                 this.wire.xp2.style.strokeDasharray  = 7 * graphView.zoom;
                 this.wire.xp2.style.strokeDashoffset = 7 * graphView.zoom;
             }

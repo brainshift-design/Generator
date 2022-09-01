@@ -6,6 +6,12 @@ extends Parameter
     oldValue = null;
     
 
+    _warningOverlay;
+    
+    forceShowWarning = false;
+    warningStyle;
+
+
     checkers;
     controlWrapper;
 
@@ -51,6 +57,11 @@ extends Parameter
         this.value                 = defaultValue;
 
         
+        this._warningOverlay = createDiv('colorWarningOverlay');
+        this._warningOverlay.style.zIndex = 21;
+        this.div.appendChild(this._warningOverlay);
+
+
         initColorControl(
             this,
             this.colorControl,
@@ -230,11 +241,11 @@ extends Parameter
             && this.value.opacity.isValid()
             && this.opacityControl.value >= 50
             ? (isDark(rgbVal) 
-               ? [1, 1, 1, 0.8]
-               : [0, 0, 0, 0.6]) 
+               ? [1, 1, 1, 0.666]
+               : [0, 0, 0, 0.5  ]) 
             : (isDarkMode()
-               ? [1, 1, 1, 0.8]
-               : [0, 0, 0, 0.6]);
+               ? [1, 1, 1, 0.666]
+               : [0, 0, 0, 0.5  ]);
 
 
         this.input.wireColor   = rgbVal;
@@ -267,6 +278,9 @@ extends Parameter
             && this.value.opacity.isValid()
             ? fillStyle 
             : 'transparent'; 
+
+
+        this.updateWarningOverlay();
 
 
         this.  colorControl. backStyleLight  = 
@@ -345,6 +359,77 @@ extends Parameter
         
         this.  colorControl.readOnly = !enable;
         this.opacityControl.readOnly = !enable;
+    }
+    
+    
+    
+    updateWarningOverlay() 
+    {
+        //console.log(this.id + '.updateWarningOverlay()');
+
+        const rgba = this.value.toRgba();
+
+        if (!rgbIsNaN(rgba))
+        {
+            if (  !rgbIsValid(rgba)
+                || this.forceShowWarning)
+            {
+                if (!this.forceShowWarning)
+                    this.warningStyle = this.getDefaultWarningStyle(rgba);
+
+                this.updateWarningOverlayStyle(rgba);
+            }
+            else
+                this._warningOverlay.style.display = 'none';
+        }
+        else
+        {
+            this.resetWarningStyle();
+            this.updateWarningOverlayStyle(rgb_NaN);
+        }
+    }
+
+
+
+    getDefaultWarningStyle(colBack)
+    {
+        return rgba2style(
+            isDark(colBack) 
+            ? [1, 1, 1, 0.2 ]
+            : [0, 0, 0, 0.12]); 
+    }
+
+
+
+    resetWarningStyle()
+    {
+        this.warningStyle = 
+            isDarkMode()
+            ? '#ffffff08' //rgba2style([0.3, 0.55, 0.3, 0.2])
+            : '#00000006';//rgba2style([0.5, 1, 0.5, 0.2]);        
+    }
+
+
+
+    updateWarningOverlayStyle(colBack, height = -1)
+    {
+        //console.log('colBack =', colBack);
+        
+        this._warningOverlay.style.height = 
+            height < 0
+            ? this.div.offsetHeight
+            : height;
+
+        this._warningOverlay.style.background =
+               rgbIsOk(colBack)
+            && !this.forceShowWarning
+            ? 'transparent'
+            : 'repeating-linear-gradient('
+               + '-45deg, '
+               + 'transparent 0 7px,'
+               +  this.warningStyle + ' 7px 14px)';
+
+        this._warningOverlay.style.display = 'block';
     }
     
     

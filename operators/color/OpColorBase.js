@@ -4,7 +4,6 @@ extends Operator
     _color = dataColor_NaN;
 
     _warningOverlay;
-
     
     forceShowWarning = false;
     warningStyle;
@@ -99,11 +98,11 @@ extends Operator
                !rgbIsNaN  (colBack)
             || !rgbIsValid(colBack)
             ? (isDark(colBack) 
-               ? [1, 1, 1, 0.7] 
-               : [0, 0, 0, 0.6])
+               ? [1, 1, 1, 0.666] 
+               : [0, 0, 0, 0.5])
             : (isDarkMode()
-               ? [1, 1, 1, 0.7]
-               : [0, 0, 0, 0.6]);
+               ? [1, 1, 1, 0.666]
+               : [0, 0, 0, 0.5]);
 
         const textStyle = rgba2style(colText);
 

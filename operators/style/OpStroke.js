@@ -152,7 +152,7 @@ extends OpColorBase
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display            = rgbIsOk(colors.back) ? 'inline-block' : 'none';
+        this.checkers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
 
         this.checkers.style.backgroundSize     = '26px 26px';
