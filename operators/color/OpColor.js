@@ -350,8 +350,9 @@ extends OpColorBase
     {
         const warnLineStyle = this.getWarnLineStyle();
 
+        const space = this.paramSpace.value.value;
 
-        if (    this.paramSpace.value == 1
+        if (    space == 1
             && !dataColorIsNaN  (this._color)
             && !dataColorIsValid(this._color)) // RGB warning ranges
         {
@@ -370,8 +371,8 @@ extends OpColorBase
             if (this._color[3] > 1) rangesB.push(new NumberControlRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
             this.param3.control.ranges = rangesB;
         }
-        else if ((   this.paramSpace.value == 2  // HSV
-                  || this.paramSpace.value == 3) // HSL
+        else if ((   space == 2  // HSV
+                  || space == 3) // HSL
               && !dataColorIsNaN  (this._color)
               && !dataColorIsValid(this._color))
         {
@@ -385,7 +386,7 @@ extends OpColorBase
             if (this._color[3] > 1) rangesVL.push(new NumberControlRange(2-Math.min(this._color[3], 2), 1, warnLineStyle, 0.8));
             this.param3.control.ranges = rangesVL;
         }
-        else if ( this.paramSpace.value > 3 // HCL
+        else if ( space > 3 // HCL
               && !dataColorIsNaN(this._color))
         {
             this.updateControlRanges(this.param1.control, f =>
