@@ -32,6 +32,9 @@ extends GOperator
     {
         if (!this.valid)
         {
+            const color   = this.color  .eval(parse).copy();
+            const opacity = this.opacity.eval(parse).copy();
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -40,14 +43,14 @@ extends GOperator
                     this.result.type == FILL_VALUE,
                     'GFill this.result.type must be FILL_VALUE');
 
-                if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
-                if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
+                if (this.color  ) this.result.color   = color;
+                if (this.opacity) this.result.opacity = opacity;
             }
             else
             {
                 this.result = new FillValue(
-                    ColorValue.fromRgb(scaleRgb(dataColor2rgb(this.color.eval(parse).toDataColor()))), 
-                    this.opacity.eval(parse).copy());
+                    ColorValue.fromRgb(scaleRgb(dataColor2rgb(color.toDataColor()))), 
+                    opacity);
             }
         
 
@@ -57,8 +60,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
+            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
         }
 
 

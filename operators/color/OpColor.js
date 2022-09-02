@@ -249,42 +249,42 @@ extends OpColorBase
     
         const colors = this.getHeaderColors();
 
+        
         this.#colorBack.style.background = 
             !rgbIsNaN(colors.back)
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
-
         const colSpaceBar = 
-                colors.darkBack
+                isDark(colors.back)
             && !rgbIsNaN(colors.back)
             ? [1, 1, 1, 0.12]
             : [0, 0, 0, 0.09]; 
 
-        this.paramSpace.control. backStyleLight  =
-        this.paramSpace.control. backStyleDark   = 'transparent';
+        this.paramSpace.control. backStyleLight =
+        this.paramSpace.control. backStyleDark  = 'transparent';
 
-        this.paramSpace.control.valueStyleLight  =
-        this.paramSpace.control.valueStyleDark   = rgba2style(colSpaceBar);
+        this.paramSpace.control.valueStyleLight =
+        this.paramSpace.control.valueStyleDark  = rgba2style(colSpaceBar);
 
-        this.paramSpace.control. textStyleLight  =
-        this.paramSpace.control. textStyleDark   = colors.textStyle;
+        this.paramSpace.control. textStyleLight =
+        this.paramSpace.control. textStyleDark  = colors.textStyle;
 
-        this.inputs[0]         .colorLight       =
-        this.inputs[0]         .colorDark        =
-        this.paramSpace.input  .colorLight       =
-        this.paramSpace.input  .colorDark        = rgb_a(colors.input, 0.2);
+        this.inputs[0]         .colorLight      =
+        this.inputs[0]         .colorDark       =
+        this.paramSpace.input  .colorLight      =
+        this.paramSpace.input  .colorDark       = rgb_a(colors.input, 0.2);
 
-        this.outputs[0]        .colorLight       =
-        this.outputs[0]        .colorDark        = 
-        this.paramSpace.output .colorLight       =
-        this.paramSpace.output .colorDark        = rgb_a(colors.output, 0.2);
+        this.outputs[0]        .colorLight      =
+        this.outputs[0]        .colorDark       = 
+        this.paramSpace.output .colorLight      =
+        this.paramSpace.output .colorDark       = rgb_a(colors.output, 0.2);
 
         this.paramSpace.updateControls();
 
 
         const colWarning = 
-            colors.darkBack 
+            isDark(colors.back)
             ? [1, 1, 1, 0.2 ]
             : [0, 0, 0, 0.12]; 
 

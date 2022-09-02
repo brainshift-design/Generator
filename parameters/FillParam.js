@@ -118,7 +118,7 @@ extends Parameter
         this.opacityControl.style.right                = 0;
 
 
-        this.  colorControl.text.style.transform       = 'translateX(-40%)';
+        this.  colorControl.text.style.transform       = 'translateX(-45%)';
         this.opacityControl.text.style.transform       = 'translateX(-70%)';
 
 
@@ -233,28 +233,17 @@ extends Parameter
 
     updateControls()
     {
-        const rgbVal = this.value.color.toRgb();
-
-
-        const rgbaText = 
-              !rgbIsNaN(rgbVal)
-            && this.value.opacity.isValid()
-            && this.opacityControl.value >= 50
-            ? (isDark(rgbVal) 
-               ? [1, 1, 1, 0.666]
-               : [0, 0, 0, 0.5  ]) 
-            : (isDarkMode()
-               ? [1, 1, 1, 0.666]
-               : [0, 0, 0, 0.5  ]);
+        const rgbVal   = this.value.color.toRgb();
+        const rgbaText = getTextColorFromBackColor(rgbVal, this.opacityControl.value);
 
 
         this.input.wireColor   = rgbVal;
         this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(rgbaText, 0.2);//isDark(rgbText) ? 0.12 : 0.44);
+        this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
         this.output.wireColor  = rgbVal;
         this.output.colorLight =
-        this.output.colorDark  = rgb_a(rgbaText, 0.2);//isDark(rgbText) ? 0.12 : 0.44);
+        this.output.colorDark  = rgb_a(rgbaText, 0.2);
 
 
         this.checkers.style.background = 
@@ -375,7 +364,7 @@ extends Parameter
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
-                    this.warningStyle = this.getDefaultWarningStyle(rgba);
+                    this.warningStyle = getDefaultWarningStyle(rgba);
 
                 this.updateWarningOverlayStyle(rgba);
             }
@@ -384,29 +373,9 @@ extends Parameter
         }
         else
         {
-            this.resetWarningStyle();
-            this.updateWarningOverlayStyle(rgb_NaN);
+            this.warningStyle = getDefaultWarningStyle(rgb);
+            this.updateWarningOverlayStyle(rgb);
         }
-    }
-
-
-
-    getDefaultWarningStyle(colBack)
-    {
-        return rgba2style(
-            isDark(colBack) 
-            ? [1, 1, 1, 0.2 ]
-            : [0, 0, 0, 0.12]); 
-    }
-
-
-
-    resetWarningStyle()
-    {
-        this.warningStyle = 
-            isDarkMode()
-            ? '#ffffff08' //rgba2style([0.3, 0.55, 0.3, 0.2])
-            : '#00000006';//rgba2style([0.5, 1, 0.5, 0.2]);        
     }
 
 

@@ -189,3 +189,26 @@ function computedStyle2rgba(obj, style)
 
     return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
 }
+
+
+
+function getTextColorFromBackColor(rgb, opacity = 1)
+{
+    return !rgbIsNaN(rgb)
+ 
+           ? (opacity >= 0.5
+               ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
+               : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
+
+           : (isDarkMode() ? [1, 1, 1, 0.7] : [0, 0, 0, 0.92]);
+}
+
+
+
+function getDefaultWarningStyle(rgb)
+{
+    return rgba2style(
+        !rgbIsNaN(rgb)
+        ? (isDark(rgb)  ? '#ffffff08' : '#00000006')
+        : (isDarkMode() ? '#ffffff08' : '#00000006')); 
+}

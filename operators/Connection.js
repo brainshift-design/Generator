@@ -205,7 +205,7 @@ class Connection
             const outerOpacity = Math.round(bright * 60).toString(16).padStart(2, '0');
 
             this.wire.curve.style.filter = 
-                l > 0.6
+                !isDark(color)
                 ?   'drop-shadow(0px 0px 1px #000000' + innerOpacity + ') '
                   + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
                 : 'none';

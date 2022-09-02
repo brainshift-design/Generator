@@ -101,23 +101,23 @@ function initColorControl(param, control, width, height, id, name, showName, def
             console.assert(false, 'colorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
         }
 
+
         const oldValue = control.value.copy();
 
         control.value = value.copy();
 
 
-        const rgb = control.value.toRgb();
-
-
         if (control.showColor)
         {
+            const rgb = control.value.toRgb();
+
             if (!rgbIsNaN(rgb))
             {
                 control.valueStyleLight =
                 control.valueStyleDark  = rgb2style(rgb);
 
-                control.textStyleLight  = isDark(rgb) ? '#fffa' : '#0008';
-                control.textStyleDark   = isDark(rgb) ? '#fffa' : '#0008';
+                control.textStyleLight  = 
+                control.textStyleDark   = rgba2style(getTextColorFromBackColor(rgb));
             }
             else
             {

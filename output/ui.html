@@ -5183,10 +5183,10 @@ extends GType
     {
         const rgb = scaleRgb(this.color.toRgb());
 
-        return        rgb[0]      .toString()
-              + ' ' + rgb[1]      .toString()
-              + ' ' + rgb[2]      .toString()
-              + ' ' + this.opacity.toString();
+        return        new NumberValue(rgb[0]).toString()
+              + ' ' + new NumberValue(rgb[1]).toString()
+              + ' ' + new NumberValue(rgb[2]).toString()
+              + ' ' + this.opacity           .toString();
     }
 
 
@@ -6721,11 +6721,14 @@ extends GOperator
     {
         if (!this.valid)
         {
+            console.log('this =', this);
             const space = this.space.eval(parse).copy();
-            const c1    = this.c1   .eval(parse).copy();
-            const c2    = this.c2   .eval(parse).copy();
-            const c3    = this.c3   .eval(parse).copy();
+            
+            const c1 = this.c1 ? this.c1.eval(parse).copy() : null;
+            const c2 = this.c2 ? this.c2.eval(parse).copy() : null;
+            const c3 = this.c3 ? this.c3.eval(parse).copy() : null;
 
+            
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -7338,6 +7341,9 @@ extends GOperator
     {
         if (!this.valid)
         {
+            const color   = this.color  .eval(parse).copy();
+            const opacity = this.opacity.eval(parse).copy();
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -7346,14 +7352,14 @@ extends GOperator
                     this.result.type == FILL_VALUE,
                     'GFill this.result.type must be FILL_VALUE');
 
-                if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
-                if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
+                if (this.color  ) this.result.color   = color;
+                if (this.opacity) this.result.opacity = opacity;
             }
             else
             {
                 this.result = new FillValue(
-                    ColorValue.fromRgb(scaleRgb(dataColor2rgb(this.color.eval(parse).toDataColor()))), 
-                    this.opacity.eval(parse).copy());
+                    ColorValue.fromRgb(scaleRgb(dataColor2rgb(color.toDataColor()))), 
+                    opacity);
             }
         
 
@@ -7363,8 +7369,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
+            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
         }
 
 
@@ -7413,6 +7419,12 @@ extends GOperator
     {
         if (!this.valid)
         {
+            const fill   = this.fill  .eval(parse).copy();
+            const weight = this.weight.eval(parse).copy();
+            const fit    = this.fit   .eval(parse).copy();
+            const join   = this.join  .eval(parse).copy();
+            const miter  = this.miter .eval(parse).copy();            
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -7421,41 +7433,26 @@ extends GOperator
                     this.result.type == STROKE_VALUE,
                     'GStroke this.result.type must be STROKE_VALUE');
 
-                if (this.fill  ) this.result.fill   = this.fill  .eval(parse).copy();
-                if (this.weight) this.result.weight = this.weight.eval(parse).copy();
-                if (this.fit   ) this.result.fit    = this.fit   .eval(parse).copy();
-                if (this.join  ) this.result.join   = this.join  .eval(parse).copy();
-                if (this.miter ) this.result.miter  = this.miter .eval(parse).copy();
-
-
-                genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-
-                genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
-                genPushUpdateValue(parse, this.nodeId, 'weight', this.weight);
-                genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   );
-                genPushUpdateValue(parse, this.nodeId, 'join',   this.join  );
-                genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter );
+                if (this.fill  ) this.result.fill   = fill;
+                if (this.weight) this.result.weight = weight;
+                if (this.fit   ) this.result.fit    = fit;
+                if (this.join  ) this.result.join   = join;
+                if (this.miter ) this.result.miter  = miter;
             }
             else
             {
-                const fill   = this.fill  .eval(parse).copy();
-                const weight = this.weight.eval(parse).copy();
-                const fit    = this.fit   .eval(parse).copy();
-                const join   = this.join  .eval(parse).copy();
-                const miter  = this.miter .eval(parse).copy();
-
                 this.result = new StrokeValue(fill, weight, fit, join, miter);
-
-
-                genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-
-                genPushUpdateValue(parse, this.nodeId, 'fill',   fill  );
-                genPushUpdateValue(parse, this.nodeId, 'weight', weight);
-                genPushUpdateValue(parse, this.nodeId, 'fit',    fit   );
-                genPushUpdateValue(parse, this.nodeId, 'join',   join  );
-                genPushUpdateValue(parse, this.nodeId, 'miter',  miter );
             }
         
+
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'fill',   fill  );
+            genPushUpdateValue(parse, this.nodeId, 'weight', weight);
+            genPushUpdateValue(parse, this.nodeId, 'fit',    fit   );
+            genPushUpdateValue(parse, this.nodeId, 'join',   join  );
+            genPushUpdateValue(parse, this.nodeId, 'miter',  miter );
+
 
             this.result.valid = true;
             this.valid        = true;
@@ -8640,6 +8637,7 @@ function genParseColor(parse)
     {
         col.input = genParse(parse);
         paramIds  = parse.move().split(',');
+        console.log('paramIds =', paramIds);
     }
     else
         paramIds = ['space', 'convert', 'c1', 'c2', 'c3'];
@@ -10784,6 +10782,29 @@ function computedStyle2rgba(obj, style)
     style2rgba_context.fillRect(0, 0, 1, 1);
 
     return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
+}
+
+
+
+function getTextColorFromBackColor(rgb, opacity = 1)
+{
+    return !rgbIsNaN(rgb)
+ 
+           ? (opacity >= 0.5
+               ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
+               : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
+
+           : (isDarkMode() ? [1, 1, 1, 0.7] : [0, 0, 0, 0.92]);
+}
+
+
+
+function getDefaultWarningStyle(rgb)
+{
+    return rgba2style(
+        !rgbIsNaN(rgb)
+        ? (isDark(rgb)  ? '#ffffff08' : '#00000006')
+        : (isDarkMode() ? '#ffffff08' : '#00000006')); 
 }
 
 
@@ -16078,6 +16099,29 @@ function computedStyle2rgba(obj, style)
 }
 
 
+
+function getTextColorFromBackColor(rgb, opacity = 1)
+{
+    return !rgbIsNaN(rgb)
+ 
+           ? (opacity >= 0.5
+               ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
+               : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
+
+           : (isDarkMode() ? [1, 1, 1, 0.7] : [0, 0, 0, 0.92]);
+}
+
+
+
+function getDefaultWarningStyle(rgb)
+{
+    return rgba2style(
+        !rgbIsNaN(rgb)
+        ? (isDark(rgb)  ? '#ffffff08' : '#00000006')
+        : (isDarkMode() ? '#ffffff08' : '#00000006')); 
+}
+
+
 const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
 const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
 const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));
@@ -17307,10 +17351,10 @@ extends GType
     {
         const rgb = scaleRgb(this.color.toRgb());
 
-        return        rgb[0]      .toString()
-              + ' ' + rgb[1]      .toString()
-              + ' ' + rgb[2]      .toString()
-              + ' ' + this.opacity.toString();
+        return        new NumberValue(rgb[0]).toString()
+              + ' ' + new NumberValue(rgb[1]).toString()
+              + ' ' + new NumberValue(rgb[2]).toString()
+              + ' ' + this.opacity           .toString();
     }
 
 
@@ -18845,11 +18889,14 @@ extends GOperator
     {
         if (!this.valid)
         {
+            console.log('this =', this);
             const space = this.space.eval(parse).copy();
-            const c1    = this.c1   .eval(parse).copy();
-            const c2    = this.c2   .eval(parse).copy();
-            const c3    = this.c3   .eval(parse).copy();
+            
+            const c1 = this.c1 ? this.c1.eval(parse).copy() : null;
+            const c2 = this.c2 ? this.c2.eval(parse).copy() : null;
+            const c3 = this.c3 ? this.c3.eval(parse).copy() : null;
 
+            
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -19462,6 +19509,9 @@ extends GOperator
     {
         if (!this.valid)
         {
+            const color   = this.color  .eval(parse).copy();
+            const opacity = this.opacity.eval(parse).copy();
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -19470,14 +19520,14 @@ extends GOperator
                     this.result.type == FILL_VALUE,
                     'GFill this.result.type must be FILL_VALUE');
 
-                if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
-                if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
+                if (this.color  ) this.result.color   = color;
+                if (this.opacity) this.result.opacity = opacity;
             }
             else
             {
                 this.result = new FillValue(
-                    ColorValue.fromRgb(scaleRgb(dataColor2rgb(this.color.eval(parse).toDataColor()))), 
-                    this.opacity.eval(parse).copy());
+                    ColorValue.fromRgb(scaleRgb(dataColor2rgb(color.toDataColor()))), 
+                    opacity);
             }
         
 
@@ -19487,8 +19537,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
+            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
         }
 
 
@@ -19537,6 +19587,12 @@ extends GOperator
     {
         if (!this.valid)
         {
+            const fill   = this.fill  .eval(parse).copy();
+            const weight = this.weight.eval(parse).copy();
+            const fit    = this.fit   .eval(parse).copy();
+            const join   = this.join  .eval(parse).copy();
+            const miter  = this.miter .eval(parse).copy();            
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -19545,41 +19601,26 @@ extends GOperator
                     this.result.type == STROKE_VALUE,
                     'GStroke this.result.type must be STROKE_VALUE');
 
-                if (this.fill  ) this.result.fill   = this.fill  .eval(parse).copy();
-                if (this.weight) this.result.weight = this.weight.eval(parse).copy();
-                if (this.fit   ) this.result.fit    = this.fit   .eval(parse).copy();
-                if (this.join  ) this.result.join   = this.join  .eval(parse).copy();
-                if (this.miter ) this.result.miter  = this.miter .eval(parse).copy();
-
-
-                genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-
-                genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
-                genPushUpdateValue(parse, this.nodeId, 'weight', this.weight);
-                genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   );
-                genPushUpdateValue(parse, this.nodeId, 'join',   this.join  );
-                genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter );
+                if (this.fill  ) this.result.fill   = fill;
+                if (this.weight) this.result.weight = weight;
+                if (this.fit   ) this.result.fit    = fit;
+                if (this.join  ) this.result.join   = join;
+                if (this.miter ) this.result.miter  = miter;
             }
             else
             {
-                const fill   = this.fill  .eval(parse).copy();
-                const weight = this.weight.eval(parse).copy();
-                const fit    = this.fit   .eval(parse).copy();
-                const join   = this.join  .eval(parse).copy();
-                const miter  = this.miter .eval(parse).copy();
-
                 this.result = new StrokeValue(fill, weight, fit, join, miter);
-
-
-                genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-
-                genPushUpdateValue(parse, this.nodeId, 'fill',   fill  );
-                genPushUpdateValue(parse, this.nodeId, 'weight', weight);
-                genPushUpdateValue(parse, this.nodeId, 'fit',    fit   );
-                genPushUpdateValue(parse, this.nodeId, 'join',   join  );
-                genPushUpdateValue(parse, this.nodeId, 'miter',  miter );
             }
         
+
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'fill',   fill  );
+            genPushUpdateValue(parse, this.nodeId, 'weight', weight);
+            genPushUpdateValue(parse, this.nodeId, 'fit',    fit   );
+            genPushUpdateValue(parse, this.nodeId, 'join',   join  );
+            genPushUpdateValue(parse, this.nodeId, 'miter',  miter );
+
 
             this.result.valid = true;
             this.valid        = true;
@@ -22639,23 +22680,23 @@ function initColorControl(param, control, width, height, id, name, showName, def
             console.assert(false, 'colorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
         }
 
+
         const oldValue = control.value.copy();
 
         control.value = value.copy();
 
 
-        const rgb = control.value.toRgb();
-
-
         if (control.showColor)
         {
+            const rgb = control.value.toRgb();
+
             if (!rgbIsNaN(rgb))
             {
                 control.valueStyleLight =
                 control.valueStyleDark  = rgb2style(rgb);
 
-                control.textStyleLight  = isDark(rgb) ? '#fffa' : '#0008';
-                control.textStyleDark   = isDark(rgb) ? '#fffa' : '#0008';
+                control.textStyleLight  = 
+                control.textStyleDark   = rgba2style(getTextColorFromBackColor(rgb));
             }
             else
             {
@@ -26030,7 +26071,7 @@ extends Parameter
         this.opacityControl.style.right                = 0;
 
 
-        this.  colorControl.text.style.transform       = 'translateX(-40%)';
+        this.  colorControl.text.style.transform       = 'translateX(-45%)';
         this.opacityControl.text.style.transform       = 'translateX(-70%)';
 
 
@@ -26145,28 +26186,17 @@ extends Parameter
 
     updateControls()
     {
-        const rgbVal = this.value.color.toRgb();
-
-
-        const rgbaText = 
-              !rgbIsNaN(rgbVal)
-            && this.value.opacity.isValid()
-            && this.opacityControl.value >= 50
-            ? (isDark(rgbVal) 
-               ? [1, 1, 1, 0.666]
-               : [0, 0, 0, 0.5  ]) 
-            : (isDarkMode()
-               ? [1, 1, 1, 0.666]
-               : [0, 0, 0, 0.5  ]);
+        const rgbVal   = this.value.color.toRgb();
+        const rgbaText = getTextColorFromBackColor(rgbVal, this.opacityControl.value);
 
 
         this.input.wireColor   = rgbVal;
         this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(rgbaText, 0.2);//isDark(rgbText) ? 0.12 : 0.44);
+        this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
         this.output.wireColor  = rgbVal;
         this.output.colorLight =
-        this.output.colorDark  = rgb_a(rgbaText, 0.2);//isDark(rgbText) ? 0.12 : 0.44);
+        this.output.colorDark  = rgb_a(rgbaText, 0.2);
 
 
         this.checkers.style.background = 
@@ -26287,7 +26317,7 @@ extends Parameter
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
-                    this.warningStyle = this.getDefaultWarningStyle(rgba);
+                    this.warningStyle = getDefaultWarningStyle(rgba);
 
                 this.updateWarningOverlayStyle(rgba);
             }
@@ -26296,29 +26326,9 @@ extends Parameter
         }
         else
         {
-            this.resetWarningStyle();
-            this.updateWarningOverlayStyle(rgb_NaN);
+            this.warningStyle = getDefaultWarningStyle(rgb);
+            this.updateWarningOverlayStyle(rgb);
         }
-    }
-
-
-
-    getDefaultWarningStyle(colBack)
-    {
-        return rgba2style(
-            isDark(colBack) 
-            ? [1, 1, 1, 0.2 ]
-            : [0, 0, 0, 0.12]); 
-    }
-
-
-
-    resetWarningStyle()
-    {
-        this.warningStyle = 
-            isDarkMode()
-            ? '#ffffff08' //rgba2style([0.3, 0.55, 0.3, 0.2])
-            : '#00000006';//rgba2style([0.5, 1, 0.5, 0.2]);        
     }
 
 
@@ -28044,7 +28054,7 @@ class Connection
             const outerOpacity = Math.round(bright * 60).toString(16).padStart(2, '0');
 
             this.wire.curve.style.filter = 
-                l > 0.6
+                !isDark(color)
                 ?   'drop-shadow(0px 0px 1px #000000' + innerOpacity + ') '
                   + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
                 : 'none';
@@ -28673,7 +28683,7 @@ class Operator
 
 
 
-    updateHeaderLabel()
+    updateHeaderLabel(rgbBack)
     {
         this.label.innerHTML = 
             settings.showNodeId 
@@ -28681,6 +28691,7 @@ class Operator
             : this.name;
         
         const colors = this.getHeaderColors();
+
         this.label.style.color = colors.textStyle;
 
         this.label.style.left = '50%';
@@ -28753,26 +28764,23 @@ class Operator
 
     getHeaderColors()
     {
-        const colBack = rgbFromType(this.type, this.active);
-            
-        const colText = 
-            isDark(colBack) //!this.active 
-            ? [1, 1, 1]
-            : [0, 0, 0]; 
+        const rgbBack   = rgbFromType(this.type, this.active);
 
-        const textStyle = rgba2style(colText);
+        const rgbText   = isDark(rgbBack) ? [1, 1, 1] : [0, 0, 0]; 
+        const textStyle = rgba2style(rgbText);
 
-        const colInput  = colText;
-        const colOutput = colText;
+        const colInput  = rgbText;
+        const colOutput = rgbText;
 
 
         return {
-            back:       colBack, 
-            text:       colText,
-            darkBack:   this.active,
-            textStyle:  textStyle,
-            input:      colInput,
-            output:     colOutput };
+            back:      rgbBack, 
+            
+            text:      rgbText,
+            textStyle: textStyle,
+
+            input:     colInput,
+            output:    colOutput };
     }
 
 
@@ -29036,10 +29044,10 @@ extends Operator
 
         super.updateHeader();
 
-
+        
         const colors = this.getHeaderColors();
 
-
+            
         this.header.style.backgroundColor = rgb2style_a(colors.back, 0.95);
 
         this.label .style.color           = colors.textStyle;
@@ -30790,37 +30798,22 @@ extends Operator
 
     getHeaderColors()
     {
-        const colBack = 
+        const rgbBack = 
             dataColorIsNaN(this._color)
             ? rgb_NaN
             : dataColor2rgb(this._color);
-
-        const darkBack = 
-               rgbIsOk(colBack)
-            && isDark (colBack);
-
             
-        const colText = 
-               !rgbIsNaN  (colBack)
-            || !rgbIsValid(colBack)
-            ? (isDark(colBack) 
-               ? [1, 1, 1, 0.666] 
-               : [0, 0, 0, 0.5])
-            : (isDarkMode()
-               ? [1, 1, 1, 0.666]
-               : [0, 0, 0, 0.5]);
 
-        const textStyle = rgba2style(colText);
+        const rgbText   = getTextColorFromBackColor(rgbBack);
+        const textStyle = rgba2style(rgbText);
 
-        
-        const colInput  = colText;
-        const colOutput = colText;
+        const colInput  = rgbText;
+        const colOutput = rgbText;
 
 
         return {
-            back:      colBack, 
-            text:      colText,
-            darkBack:  darkBack,
+            back:      rgbBack, 
+            text:      rgbText,
             textStyle: textStyle,
             input:     colInput,
             output:    colOutput };
@@ -30840,7 +30833,7 @@ extends Operator
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
-                    this.warningStyle = this.getDefaultWarningStyle(rgb);
+                    this.warningStyle = getDefaultWarningStyle(rgb);
 
                 this.updateWarningOverlayStyle(rgb);
             }
@@ -30849,29 +30842,9 @@ extends Operator
         }
         else
         {
-            this.resetWarningStyle();
-            this.updateWarningOverlayStyle(rgb_NaN);
+            this.warningStyle = getDefaultWarningStyle(rgb);
+            this.updateWarningOverlayStyle(rgb);
         }
-    }
-
-
-
-    getDefaultWarningStyle(colBack)
-    {
-        return rgba2style(
-            isDark(colBack) 
-            ? [1, 1, 1, 0.2 ]
-            : [0, 0, 0, 0.12]); 
-    }
-
-
-
-    resetWarningStyle()
-    {
-        this.warningStyle = 
-            isDarkMode()
-            ? '#ffffff08' //rgba2style([0.3, 0.55, 0.3, 0.2])
-            : '#00000006';//rgba2style([0.5, 1, 0.5, 0.2]);        
     }
 
 
@@ -31150,42 +31123,42 @@ extends OpColorBase
     
         const colors = this.getHeaderColors();
 
+        
         this.#colorBack.style.background = 
             !rgbIsNaN(colors.back)
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
-
         const colSpaceBar = 
-                colors.darkBack
+                isDark(colors.back)
             && !rgbIsNaN(colors.back)
             ? [1, 1, 1, 0.12]
             : [0, 0, 0, 0.09]; 
 
-        this.paramSpace.control. backStyleLight  =
-        this.paramSpace.control. backStyleDark   = 'transparent';
+        this.paramSpace.control. backStyleLight =
+        this.paramSpace.control. backStyleDark  = 'transparent';
 
-        this.paramSpace.control.valueStyleLight  =
-        this.paramSpace.control.valueStyleDark   = rgba2style(colSpaceBar);
+        this.paramSpace.control.valueStyleLight =
+        this.paramSpace.control.valueStyleDark  = rgba2style(colSpaceBar);
 
-        this.paramSpace.control. textStyleLight  =
-        this.paramSpace.control. textStyleDark   = colors.textStyle;
+        this.paramSpace.control. textStyleLight =
+        this.paramSpace.control. textStyleDark  = colors.textStyle;
 
-        this.inputs[0]         .colorLight       =
-        this.inputs[0]         .colorDark        =
-        this.paramSpace.input  .colorLight       =
-        this.paramSpace.input  .colorDark        = rgb_a(colors.input, 0.2);
+        this.inputs[0]         .colorLight      =
+        this.inputs[0]         .colorDark       =
+        this.paramSpace.input  .colorLight      =
+        this.paramSpace.input  .colorDark       = rgb_a(colors.input, 0.2);
 
-        this.outputs[0]        .colorLight       =
-        this.outputs[0]        .colorDark        = 
-        this.paramSpace.output .colorLight       =
-        this.paramSpace.output .colorDark        = rgb_a(colors.output, 0.2);
+        this.outputs[0]        .colorLight      =
+        this.outputs[0]        .colorDark       = 
+        this.paramSpace.output .colorLight      =
+        this.paramSpace.output .colorDark       = rgb_a(colors.output, 0.2);
 
         this.paramSpace.updateControls();
 
 
         const colWarning = 
-            colors.darkBack 
+            isDark(colors.back)
             ? [1, 1, 1, 0.2 ]
             : [0, 0, 0, 0.12]; 
 
@@ -33463,7 +33436,7 @@ extends OpColorBase
             else if ( rgbIsOk(rgb0)
                   && !rgbIsOk(rgb1))
             {
-                this.warningStyle     = this.getDefaultWarningStyle(rgb1);
+                this.warningStyle     = getDefaultWarningStyle(rgb1);
                 this.forceShowWarning = true;
             }
             else
@@ -33979,51 +33952,6 @@ extends OpColorBase
 
         //this.updateParamBack(this.header.offsetHeight);
     }
-
-
-
-    getHeaderColors()
-    {
-        const op = this.paramOpacity.value/100;
-
-        const colBack = 
-            dataColorIsNaN(this._color)
-            ? rgb_NaN
-            : rgb_a(dataColor2rgb(this._color), op);
-
-        const darkBack = 
-              !rgbIsOk(colBack)
-            || isDark(colBack);
-
-            
-        const colText = 
-            !rgbIsNaN(colBack)
-            ? (op >= 0.5
-               ? (isDark(colBack)
-                  ? [1, 1, 1, 1] 
-                  : [0, 0, 0, 0.92])
-               : (isDarkMode()
-                  ? [1, 1, 1, 1]
-                  : [0, 0, 0, 0.92])) 
-            : (isDarkMode()
-               ? [1, 1, 1, 0.7 ]
-               : [0, 0, 0, 0.92]);
-
-        const textStyle = rgba2style(colText);
-
-        
-        const colInput  = colText;
-        const colOutput = colText;
-
-
-        return {
-            back:      colBack, 
-            text:      colText,
-            darkBack:  darkBack,
-            textStyle: textStyle,
-            input:     colInput,
-            output:    colOutput };
-    }
 }
 
 
@@ -34210,51 +34138,6 @@ extends OpColorBase
 
 
         Operator.prototype.updateHeader.call(this);
-    }
-
-
-
-    getHeaderColors()
-    {
-        const op = this.paramFill.value.opacity.value/100;
-
-        const colBack = 
-            dataColorIsNaN(this._color)
-            ? rgb_NaN
-            : rgb_a(dataColor2rgb(this._color), op);
-
-        const darkBack = 
-              !rgbIsOk(colBack)
-            || isDark(colBack);
-
-            
-        const colText = 
-            !rgbIsNaN(colBack)
-            ? (op >= 0.5
-               ? (isDark(colBack) 
-                  ? [1, 1, 1, 1] 
-                  : [0, 0, 0, 0.92])
-               : (isDarkMode()
-                  ? [1, 1, 1, 1]
-                  : [0, 0, 0, 0.92])) 
-            : (isDarkMode()
-               ? [1, 1, 1, 0.7]
-               : [0, 0, 0, 0.6]);
-
-        const textStyle = rgba2style(colText);
-
-        
-        const colInput  = colText;
-        const colOutput = colText;
-
-
-        return {
-            back:      colBack, 
-            text:      colText,
-            darkBack:  darkBack,
-            textStyle: textStyle,
-            input:     colInput,
-            output:    colOutput };
     }
 }
 

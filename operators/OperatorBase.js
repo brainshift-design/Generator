@@ -7,10 +7,10 @@ extends Operator
 
         super.updateHeader();
 
-
+        
         const colors = this.getHeaderColors();
 
-
+            
         this.header.style.backgroundColor = rgb2style_a(colors.back, 0.95);
 
         this.label .style.color           = colors.textStyle;

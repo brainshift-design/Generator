@@ -83,10 +83,10 @@ extends GType
     {
         const rgb = scaleRgb(this.color.toRgb());
 
-        return        rgb[0]      .toString()
-              + ' ' + rgb[1]      .toString()
-              + ' ' + rgb[2]      .toString()
-              + ' ' + this.opacity.toString();
+        return        new NumberValue(rgb[0]).toString()
+              + ' ' + new NumberValue(rgb[1]).toString()
+              + ' ' + new NumberValue(rgb[2]).toString()
+              + ' ' + this.opacity           .toString();
     }
 
 

@@ -44,11 +44,14 @@ extends GOperator
     {
         if (!this.valid)
         {
+            console.log('this =', this);
             const space = this.space.eval(parse).copy();
-            const c1    = this.c1   .eval(parse).copy();
-            const c2    = this.c2   .eval(parse).copy();
-            const c3    = this.c3   .eval(parse).copy();
+            
+            const c1 = this.c1 ? this.c1.eval(parse).copy() : null;
+            const c2 = this.c2 ? this.c2.eval(parse).copy() : null;
+            const c3 = this.c3 ? this.c3.eval(parse).copy() : null;
 
+            
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();

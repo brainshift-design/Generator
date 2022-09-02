@@ -161,7 +161,7 @@ extends OpColorBase
             else if ( rgbIsOk(rgb0)
                   && !rgbIsOk(rgb1))
             {
-                this.warningStyle     = this.getDefaultWarningStyle(rgb1);
+                this.warningStyle     = getDefaultWarningStyle(rgb1);
                 this.forceShowWarning = true;
             }
             else

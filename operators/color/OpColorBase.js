@@ -84,37 +84,22 @@ extends Operator
 
     getHeaderColors()
     {
-        const colBack = 
+        const rgbBack = 
             dataColorIsNaN(this._color)
             ? rgb_NaN
             : dataColor2rgb(this._color);
-
-        const darkBack = 
-               rgbIsOk(colBack)
-            && isDark (colBack);
-
             
-        const colText = 
-               !rgbIsNaN  (colBack)
-            || !rgbIsValid(colBack)
-            ? (isDark(colBack) 
-               ? [1, 1, 1, 0.666] 
-               : [0, 0, 0, 0.5])
-            : (isDarkMode()
-               ? [1, 1, 1, 0.666]
-               : [0, 0, 0, 0.5]);
 
-        const textStyle = rgba2style(colText);
+        const rgbText   = getTextColorFromBackColor(rgbBack);
+        const textStyle = rgba2style(rgbText);
 
-        
-        const colInput  = colText;
-        const colOutput = colText;
+        const colInput  = rgbText;
+        const colOutput = rgbText;
 
 
         return {
-            back:      colBack, 
-            text:      colText,
-            darkBack:  darkBack,
+            back:      rgbBack, 
+            text:      rgbText,
             textStyle: textStyle,
             input:     colInput,
             output:    colOutput };
@@ -134,7 +119,7 @@ extends Operator
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
-                    this.warningStyle = this.getDefaultWarningStyle(rgb);
+                    this.warningStyle = getDefaultWarningStyle(rgb);
 
                 this.updateWarningOverlayStyle(rgb);
             }
@@ -143,29 +128,9 @@ extends Operator
         }
         else
         {
-            this.resetWarningStyle();
-            this.updateWarningOverlayStyle(rgb_NaN);
+            this.warningStyle = getDefaultWarningStyle(rgb);
+            this.updateWarningOverlayStyle(rgb);
         }
-    }
-
-
-
-    getDefaultWarningStyle(colBack)
-    {
-        return rgba2style(
-            isDark(colBack) 
-            ? [1, 1, 1, 0.2 ]
-            : [0, 0, 0, 0.12]); 
-    }
-
-
-
-    resetWarningStyle()
-    {
-        this.warningStyle = 
-            isDarkMode()
-            ? '#ffffff08' //rgba2style([0.3, 0.55, 0.3, 0.2])
-            : '#00000006';//rgba2style([0.5, 1, 0.5, 0.2]);        
     }
 
 

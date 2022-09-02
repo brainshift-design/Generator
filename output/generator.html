@@ -3421,10 +3421,10 @@ extends GType
     {
         const rgb = scaleRgb(this.color.toRgb());
 
-        return        rgb[0]      .toString()
-              + ' ' + rgb[1]      .toString()
-              + ' ' + rgb[2]      .toString()
-              + ' ' + this.opacity.toString();
+        return        new NumberValue(rgb[0]).toString()
+              + ' ' + new NumberValue(rgb[1]).toString()
+              + ' ' + new NumberValue(rgb[2]).toString()
+              + ' ' + this.opacity           .toString();
     }
 
 
@@ -4959,11 +4959,14 @@ extends GOperator
     {
         if (!this.valid)
         {
+            console.log('this =', this);
             const space = this.space.eval(parse).copy();
-            const c1    = this.c1   .eval(parse).copy();
-            const c2    = this.c2   .eval(parse).copy();
-            const c3    = this.c3   .eval(parse).copy();
+            
+            const c1 = this.c1 ? this.c1.eval(parse).copy() : null;
+            const c2 = this.c2 ? this.c2.eval(parse).copy() : null;
+            const c3 = this.c3 ? this.c3.eval(parse).copy() : null;
 
+            
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -5576,6 +5579,9 @@ extends GOperator
     {
         if (!this.valid)
         {
+            const color   = this.color  .eval(parse).copy();
+            const opacity = this.opacity.eval(parse).copy();
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -5584,14 +5590,14 @@ extends GOperator
                     this.result.type == FILL_VALUE,
                     'GFill this.result.type must be FILL_VALUE');
 
-                if (this.color  ) this.result.color   = this.color  .eval(parse).copy();
-                if (this.opacity) this.result.opacity = this.opacity.eval(parse).copy();
+                if (this.color  ) this.result.color   = color;
+                if (this.opacity) this.result.opacity = opacity;
             }
             else
             {
                 this.result = new FillValue(
-                    ColorValue.fromRgb(scaleRgb(dataColor2rgb(this.color.eval(parse).toDataColor()))), 
-                    this.opacity.eval(parse).copy());
+                    ColorValue.fromRgb(scaleRgb(dataColor2rgb(color.toDataColor()))), 
+                    opacity);
             }
         
 
@@ -5601,8 +5607,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
+            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
         }
 
 
@@ -5651,6 +5657,12 @@ extends GOperator
     {
         if (!this.valid)
         {
+            const fill   = this.fill  .eval(parse).copy();
+            const weight = this.weight.eval(parse).copy();
+            const fit    = this.fit   .eval(parse).copy();
+            const join   = this.join  .eval(parse).copy();
+            const miter  = this.miter .eval(parse).copy();            
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -5659,41 +5671,26 @@ extends GOperator
                     this.result.type == STROKE_VALUE,
                     'GStroke this.result.type must be STROKE_VALUE');
 
-                if (this.fill  ) this.result.fill   = this.fill  .eval(parse).copy();
-                if (this.weight) this.result.weight = this.weight.eval(parse).copy();
-                if (this.fit   ) this.result.fit    = this.fit   .eval(parse).copy();
-                if (this.join  ) this.result.join   = this.join  .eval(parse).copy();
-                if (this.miter ) this.result.miter  = this.miter .eval(parse).copy();
-
-
-                genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-
-                genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
-                genPushUpdateValue(parse, this.nodeId, 'weight', this.weight);
-                genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   );
-                genPushUpdateValue(parse, this.nodeId, 'join',   this.join  );
-                genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter );
+                if (this.fill  ) this.result.fill   = fill;
+                if (this.weight) this.result.weight = weight;
+                if (this.fit   ) this.result.fit    = fit;
+                if (this.join  ) this.result.join   = join;
+                if (this.miter ) this.result.miter  = miter;
             }
             else
             {
-                const fill   = this.fill  .eval(parse).copy();
-                const weight = this.weight.eval(parse).copy();
-                const fit    = this.fit   .eval(parse).copy();
-                const join   = this.join  .eval(parse).copy();
-                const miter  = this.miter .eval(parse).copy();
-
                 this.result = new StrokeValue(fill, weight, fit, join, miter);
-
-
-                genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-
-                genPushUpdateValue(parse, this.nodeId, 'fill',   fill  );
-                genPushUpdateValue(parse, this.nodeId, 'weight', weight);
-                genPushUpdateValue(parse, this.nodeId, 'fit',    fit   );
-                genPushUpdateValue(parse, this.nodeId, 'join',   join  );
-                genPushUpdateValue(parse, this.nodeId, 'miter',  miter );
             }
         
+
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'fill',   fill  );
+            genPushUpdateValue(parse, this.nodeId, 'weight', weight);
+            genPushUpdateValue(parse, this.nodeId, 'fit',    fit   );
+            genPushUpdateValue(parse, this.nodeId, 'join',   join  );
+            genPushUpdateValue(parse, this.nodeId, 'miter',  miter );
+
 
             this.result.valid = true;
             this.valid        = true;
@@ -6878,6 +6875,7 @@ function genParseColor(parse)
     {
         col.input = genParse(parse);
         paramIds  = parse.move().split(',');
+        console.log('paramIds =', paramIds);
     }
     else
         paramIds = ['space', 'convert', 'c1', 'c2', 'c3'];
@@ -9022,6 +9020,29 @@ function computedStyle2rgba(obj, style)
     style2rgba_context.fillRect(0, 0, 1, 1);
 
     return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
+}
+
+
+
+function getTextColorFromBackColor(rgb, opacity = 1)
+{
+    return !rgbIsNaN(rgb)
+ 
+           ? (opacity >= 0.5
+               ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
+               : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
+
+           : (isDarkMode() ? [1, 1, 1, 0.7] : [0, 0, 0, 0.92]);
+}
+
+
+
+function getDefaultWarningStyle(rgb)
+{
+    return rgba2style(
+        !rgbIsNaN(rgb)
+        ? (isDark(rgb)  ? '#ffffff08' : '#00000006')
+        : (isDarkMode() ? '#ffffff08' : '#00000006')); 
 }
 
 

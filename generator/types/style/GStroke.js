@@ -38,6 +38,12 @@ extends GOperator
     {
         if (!this.valid)
         {
+            const fill   = this.fill  .eval(parse).copy();
+            const weight = this.weight.eval(parse).copy();
+            const fit    = this.fit   .eval(parse).copy();
+            const join   = this.join  .eval(parse).copy();
+            const miter  = this.miter .eval(parse).copy();            
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -46,41 +52,26 @@ extends GOperator
                     this.result.type == STROKE_VALUE,
                     'GStroke this.result.type must be STROKE_VALUE');
 
-                if (this.fill  ) this.result.fill   = this.fill  .eval(parse).copy();
-                if (this.weight) this.result.weight = this.weight.eval(parse).copy();
-                if (this.fit   ) this.result.fit    = this.fit   .eval(parse).copy();
-                if (this.join  ) this.result.join   = this.join  .eval(parse).copy();
-                if (this.miter ) this.result.miter  = this.miter .eval(parse).copy();
-
-
-                genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-
-                genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  );
-                genPushUpdateValue(parse, this.nodeId, 'weight', this.weight);
-                genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   );
-                genPushUpdateValue(parse, this.nodeId, 'join',   this.join  );
-                genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter );
+                if (this.fill  ) this.result.fill   = fill;
+                if (this.weight) this.result.weight = weight;
+                if (this.fit   ) this.result.fit    = fit;
+                if (this.join  ) this.result.join   = join;
+                if (this.miter ) this.result.miter  = miter;
             }
             else
             {
-                const fill   = this.fill  .eval(parse).copy();
-                const weight = this.weight.eval(parse).copy();
-                const fit    = this.fit   .eval(parse).copy();
-                const join   = this.join  .eval(parse).copy();
-                const miter  = this.miter .eval(parse).copy();
-
                 this.result = new StrokeValue(fill, weight, fit, join, miter);
-
-
-                genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-
-                genPushUpdateValue(parse, this.nodeId, 'fill',   fill  );
-                genPushUpdateValue(parse, this.nodeId, 'weight', weight);
-                genPushUpdateValue(parse, this.nodeId, 'fit',    fit   );
-                genPushUpdateValue(parse, this.nodeId, 'join',   join  );
-                genPushUpdateValue(parse, this.nodeId, 'miter',  miter );
             }
         
+
+            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'fill',   fill  );
+            genPushUpdateValue(parse, this.nodeId, 'weight', weight);
+            genPushUpdateValue(parse, this.nodeId, 'fit',    fit   );
+            genPushUpdateValue(parse, this.nodeId, 'join',   join  );
+            genPushUpdateValue(parse, this.nodeId, 'miter',  miter );
+
 
             this.result.valid = true;
             this.valid        = true;

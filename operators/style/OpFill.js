@@ -173,49 +173,4 @@ extends OpColorBase
 
         //this.updateParamBack(this.header.offsetHeight);
     }
-
-
-
-    getHeaderColors()
-    {
-        const op = this.paramOpacity.value/100;
-
-        const colBack = 
-            dataColorIsNaN(this._color)
-            ? rgb_NaN
-            : rgb_a(dataColor2rgb(this._color), op);
-
-        const darkBack = 
-              !rgbIsOk(colBack)
-            || isDark(colBack);
-
-            
-        const colText = 
-            !rgbIsNaN(colBack)
-            ? (op >= 0.5
-               ? (isDark(colBack)
-                  ? [1, 1, 1, 1] 
-                  : [0, 0, 0, 0.92])
-               : (isDarkMode()
-                  ? [1, 1, 1, 1]
-                  : [0, 0, 0, 0.92])) 
-            : (isDarkMode()
-               ? [1, 1, 1, 0.7 ]
-               : [0, 0, 0, 0.92]);
-
-        const textStyle = rgba2style(colText);
-
-        
-        const colInput  = colText;
-        const colOutput = colText;
-
-
-        return {
-            back:      colBack, 
-            text:      colText,
-            darkBack:  darkBack,
-            textStyle: textStyle,
-            input:     colInput,
-            output:    colOutput };
-    }
 }

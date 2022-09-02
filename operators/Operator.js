@@ -488,7 +488,7 @@ class Operator
 
 
 
-    updateHeaderLabel()
+    updateHeaderLabel(rgbBack)
     {
         this.label.innerHTML = 
             settings.showNodeId 
@@ -496,6 +496,7 @@ class Operator
             : this.name;
         
         const colors = this.getHeaderColors();
+
         this.label.style.color = colors.textStyle;
 
         this.label.style.left = '50%';
@@ -568,26 +569,23 @@ class Operator
 
     getHeaderColors()
     {
-        const colBack = rgbFromType(this.type, this.active);
-            
-        const colText = 
-            isDark(colBack) //!this.active 
-            ? [1, 1, 1]
-            : [0, 0, 0]; 
+        const rgbBack   = rgbFromType(this.type, this.active);
 
-        const textStyle = rgba2style(colText);
+        const rgbText   = isDark(rgbBack) ? [1, 1, 1] : [0, 0, 0]; 
+        const textStyle = rgba2style(rgbText);
 
-        const colInput  = colText;
-        const colOutput = colText;
+        const colInput  = rgbText;
+        const colOutput = rgbText;
 
 
         return {
-            back:       colBack, 
-            text:       colText,
-            darkBack:   this.active,
-            textStyle:  textStyle,
-            input:      colInput,
-            output:     colOutput };
+            back:      rgbBack, 
+            
+            text:      rgbText,
+            textStyle: textStyle,
+
+            input:     colInput,
+            output:    colOutput };
     }
 
 

@@ -42,6 +42,7 @@ function genParseColor(parse)
     {
         col.input = genParse(parse);
         paramIds  = parse.move().split(',');
+        console.log('paramIds =', paramIds);
     }
     else
         paramIds = ['space', 'convert', 'c1', 'c2', 'c3'];
