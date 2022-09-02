@@ -61,6 +61,13 @@ extends GType
 
     toString()
     {
+        return printNum(this.value) + ',' + printNum(this.decimals); // only NumberValue can do this, other _Values have to list all members
+    }
+
+
+
+    toSimpleString()
+    {
         return !isNaN(this.value)
             ? numToString(this.value, this.decimals)
             : INVALID; // only NumberValue can do this, other _Values have to list all members
@@ -76,6 +83,25 @@ extends GType
 
 
 function parseNumberValue(str)
+{
+    if (str.indexOf(',') < 0)
+    {
+        console.trace();
+        console.assert(false, 'number value missing \',\'');
+    }
+    
+    const parts = str.split(',');
+
+    const num = new NumberValue(
+        parseNum(parts[0]),
+        parseNum(parts[1]));
+
+    return [num, 1];
+}
+
+
+
+function parseSimpleNumberValue(str)
 {
     const num = 
         str == INVALID

@@ -1843,6 +1843,20 @@ function boolString(bool)
 
 
 
+function printNum(num)
+{
+    return !isNaN(num) ? num : INVALID;
+}
+
+
+
+function parseNum(str)
+{
+    return str == '?' ? Number.NaN : parseFloat(str);
+}
+
+
+
 function isTrue(strBool)
 {
     return strBool == 'true';
@@ -3134,6 +3148,13 @@ extends GType
 
     toString()
     {
+        return printNum(this.value) + ',' + printNum(this.decimals); // only NumberValue can do this, other _Values have to list all members
+    }
+
+
+
+    toSimpleString()
+    {
         return !isNaN(this.value)
             ? numToString(this.value, this.decimals)
             : INVALID; // only NumberValue can do this, other _Values have to list all members
@@ -3150,6 +3171,25 @@ extends GType
 
 function parseNumberValue(str)
 {
+    if (str.indexOf(',') < 0)
+    {
+        console.trace();
+        console.assert(false, 'number value missing \',\'');
+    }
+    
+    const parts = str.split(',');
+
+    const num = new NumberValue(
+        parseNum(parts[0]),
+        parseNum(parts[1]));
+
+    return [num, 1];
+}
+
+
+
+function parseSimpleNumberValue(str)
+{
     const num = 
         str == INVALID
         ? NumberValue.NaN
@@ -3159,7 +3199,6 @@ function parseNumberValue(str)
 
     return [num, 1];
 }
-
 
 
 class ColorValue
@@ -3226,10 +3265,10 @@ extends GType
 
     isValid()
     {
-        return !isNaN(this.space)
-            && !isNaN(this.c1)
-            && !isNaN(this.c2)
-            && !isNaN(this.c3);
+        return this.space.isValid()
+            && this.c1   .isValid()
+            && this.c2   .isValid()
+            && this.c3   .isValid();
     }
 
 
@@ -4959,14 +4998,13 @@ extends GOperator
     {
         if (!this.valid)
         {
-            console.log('this =', this);
             const space = this.space.eval(parse).copy();
             
             const c1 = this.c1 ? this.c1.eval(parse).copy() : null;
             const c2 = this.c2 ? this.c2.eval(parse).copy() : null;
             const c3 = this.c3 ? this.c3.eval(parse).copy() : null;
 
-            
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -5007,7 +5045,6 @@ extends GOperator
                     OpColorSpaces.length-1);
                 
                 this.result.space.value = toSpaceIndex;
-
 
                 if (    this.convert
                     && !isNaN(this.convert.value)
@@ -5052,11 +5089,11 @@ extends GOperator
 
     convertColor(fromSpace, toSpace)
     {
-        let color = makeDataColor(
+        let color = [
             fromSpace, 
             getNormalColorValue(this.result.c1.value, fromSpace, 0),
             getNormalColorValue(this.result.c2.value, fromSpace, 1),
-            getNormalColorValue(this.result.c3.value, fromSpace, 2));
+            getNormalColorValue(this.result.c3.value, fromSpace, 2)];
 
         color = getScaledDataColor(convertDataColorToSpace(color, toSpace));
 
@@ -6459,7 +6496,9 @@ const settings =
     logRawRequests:   false, 
     logRequests:      true, 
     
-    logValueUpdates:  true, 
+    logRawValues:     false, 
+    logValues:        true, 
+
     logObjectUpdates: true
 };
 
@@ -7410,7 +7449,9 @@ function genParseNumValue(parse)
     if (parse.logRequests)
         logReqNumberValue(val, parse);
 
-    return parseNumberValue(val)[0];
+    return val.indexOf(',') >= 0
+         ? parseNumberValue      (val)[0]
+         : parseSimpleNumberValue(val)[0];
 }
 
 
@@ -9614,13 +9655,6 @@ function switchToSliders(node)
 
         node.updateNode();
     }
-}
-
-
-
-function makeDataColor(space, c1, c2, c3)
-{
-    return [space, c1, c2, c3];
 }
 
 

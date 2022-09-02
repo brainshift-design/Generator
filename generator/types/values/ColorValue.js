@@ -62,10 +62,10 @@ extends GType
 
     isValid()
     {
-        return !isNaN(this.space)
-            && !isNaN(this.c1)
-            && !isNaN(this.c2)
-            && !isNaN(this.c3);
+        return this.space.isValid()
+            && this.c1   .isValid()
+            && this.c2   .isValid()
+            && this.c3   .isValid();
     }
 
 

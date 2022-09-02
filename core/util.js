@@ -311,6 +311,20 @@ function boolString(bool)
 
 
 
+function printNum(num)
+{
+    return !isNaN(num) ? num : INVALID;
+}
+
+
+
+function parseNum(str)
+{
+    return str == '?' ? Number.NaN : parseFloat(str);
+}
+
+
+
 function isTrue(strBool)
 {
     return strBool == 'true';

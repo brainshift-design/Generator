@@ -7,7 +7,9 @@ function genParseNumValue(parse)
     if (parse.logRequests)
         logReqNumberValue(val, parse);
 
-    return parseNumberValue(val)[0];
+    return val.indexOf(',') >= 0
+         ? parseNumberValue      (val)[0]
+         : parseSimpleNumberValue(val)[0];
 }
 
 

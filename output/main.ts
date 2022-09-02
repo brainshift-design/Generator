@@ -424,7 +424,9 @@ const settings =
     logRawRequests:   false, 
     logRequests:      true, 
     
-    logValueUpdates:  true, 
+    logRawValues:     false, 
+    logValues:        true, 
+
     logObjectUpdates: true
 };
 

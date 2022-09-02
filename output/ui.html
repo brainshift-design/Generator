@@ -3605,6 +3605,20 @@ function boolString(bool)
 
 
 
+function printNum(num)
+{
+    return !isNaN(num) ? num : INVALID;
+}
+
+
+
+function parseNum(str)
+{
+    return str == '?' ? Number.NaN : parseFloat(str);
+}
+
+
+
 function isTrue(strBool)
 {
     return strBool == 'true';
@@ -4896,6 +4910,13 @@ extends GType
 
     toString()
     {
+        return printNum(this.value) + ',' + printNum(this.decimals); // only NumberValue can do this, other _Values have to list all members
+    }
+
+
+
+    toSimpleString()
+    {
         return !isNaN(this.value)
             ? numToString(this.value, this.decimals)
             : INVALID; // only NumberValue can do this, other _Values have to list all members
@@ -4912,6 +4933,25 @@ extends GType
 
 function parseNumberValue(str)
 {
+    if (str.indexOf(',') < 0)
+    {
+        console.trace();
+        console.assert(false, 'number value missing \',\'');
+    }
+    
+    const parts = str.split(',');
+
+    const num = new NumberValue(
+        parseNum(parts[0]),
+        parseNum(parts[1]));
+
+    return [num, 1];
+}
+
+
+
+function parseSimpleNumberValue(str)
+{
     const num = 
         str == INVALID
         ? NumberValue.NaN
@@ -4921,7 +4961,6 @@ function parseNumberValue(str)
 
     return [num, 1];
 }
-
 
 
 class ColorValue
@@ -4988,10 +5027,10 @@ extends GType
 
     isValid()
     {
-        return !isNaN(this.space)
-            && !isNaN(this.c1)
-            && !isNaN(this.c2)
-            && !isNaN(this.c3);
+        return this.space.isValid()
+            && this.c1   .isValid()
+            && this.c2   .isValid()
+            && this.c3   .isValid();
     }
 
 
@@ -6721,14 +6760,13 @@ extends GOperator
     {
         if (!this.valid)
         {
-            console.log('this =', this);
             const space = this.space.eval(parse).copy();
             
             const c1 = this.c1 ? this.c1.eval(parse).copy() : null;
             const c2 = this.c2 ? this.c2.eval(parse).copy() : null;
             const c3 = this.c3 ? this.c3.eval(parse).copy() : null;
 
-            
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -6769,7 +6807,6 @@ extends GOperator
                     OpColorSpaces.length-1);
                 
                 this.result.space.value = toSpaceIndex;
-
 
                 if (    this.convert
                     && !isNaN(this.convert.value)
@@ -6814,11 +6851,11 @@ extends GOperator
 
     convertColor(fromSpace, toSpace)
     {
-        let color = makeDataColor(
+        let color = [
             fromSpace, 
             getNormalColorValue(this.result.c1.value, fromSpace, 0),
             getNormalColorValue(this.result.c2.value, fromSpace, 1),
-            getNormalColorValue(this.result.c3.value, fromSpace, 2));
+            getNormalColorValue(this.result.c3.value, fromSpace, 2)];
 
         color = getScaledDataColor(convertDataColorToSpace(color, toSpace));
 
@@ -8221,7 +8258,9 @@ const settings =
     logRawRequests:   false, 
     logRequests:      true, 
     
-    logValueUpdates:  true, 
+    logRawValues:     false, 
+    logValues:        true, 
+
     logObjectUpdates: true
 };
 
@@ -9172,7 +9211,9 @@ function genParseNumValue(parse)
     if (parse.logRequests)
         logReqNumberValue(val, parse);
 
-    return parseNumberValue(val)[0];
+    return val.indexOf(',') >= 0
+         ? parseNumberValue      (val)[0]
+         : parseSimpleNumberValue(val)[0];
 }
 
 
@@ -11376,13 +11417,6 @@ function switchToSliders(node)
 
         node.updateNode();
     }
-}
-
-
-
-function makeDataColor(space, c1, c2, c3)
-{
-    return [space, c1, c2, c3];
 }
 
 
@@ -14290,6 +14324,20 @@ function boolString(bool)
 
 
 
+function printNum(num)
+{
+    return !isNaN(num) ? num : INVALID;
+}
+
+
+
+function parseNum(str)
+{
+    return str == '?' ? Number.NaN : parseFloat(str);
+}
+
+
+
 function isTrue(strBool)
 {
     return strBool == 'true';
@@ -17064,6 +17112,13 @@ extends GType
 
     toString()
     {
+        return printNum(this.value) + ',' + printNum(this.decimals); // only NumberValue can do this, other _Values have to list all members
+    }
+
+
+
+    toSimpleString()
+    {
         return !isNaN(this.value)
             ? numToString(this.value, this.decimals)
             : INVALID; // only NumberValue can do this, other _Values have to list all members
@@ -17080,6 +17135,25 @@ extends GType
 
 function parseNumberValue(str)
 {
+    if (str.indexOf(',') < 0)
+    {
+        console.trace();
+        console.assert(false, 'number value missing \',\'');
+    }
+    
+    const parts = str.split(',');
+
+    const num = new NumberValue(
+        parseNum(parts[0]),
+        parseNum(parts[1]));
+
+    return [num, 1];
+}
+
+
+
+function parseSimpleNumberValue(str)
+{
     const num = 
         str == INVALID
         ? NumberValue.NaN
@@ -17089,7 +17163,6 @@ function parseNumberValue(str)
 
     return [num, 1];
 }
-
 
 
 class ColorValue
@@ -17156,10 +17229,10 @@ extends GType
 
     isValid()
     {
-        return !isNaN(this.space)
-            && !isNaN(this.c1)
-            && !isNaN(this.c2)
-            && !isNaN(this.c3);
+        return this.space.isValid()
+            && this.c1   .isValid()
+            && this.c2   .isValid()
+            && this.c3   .isValid();
     }
 
 
@@ -18889,14 +18962,13 @@ extends GOperator
     {
         if (!this.valid)
         {
-            console.log('this =', this);
             const space = this.space.eval(parse).copy();
             
             const c1 = this.c1 ? this.c1.eval(parse).copy() : null;
             const c2 = this.c2 ? this.c2.eval(parse).copy() : null;
             const c3 = this.c3 ? this.c3.eval(parse).copy() : null;
 
-            
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -18937,7 +19009,6 @@ extends GOperator
                     OpColorSpaces.length-1);
                 
                 this.result.space.value = toSpaceIndex;
-
 
                 if (    this.convert
                     && !isNaN(this.convert.value)
@@ -18982,11 +19053,11 @@ extends GOperator
 
     convertColor(fromSpace, toSpace)
     {
-        let color = makeDataColor(
+        let color = [
             fromSpace, 
             getNormalColorValue(this.result.c1.value, fromSpace, 0),
             getNormalColorValue(this.result.c2.value, fromSpace, 1),
-            getNormalColorValue(this.result.c3.value, fromSpace, 2));
+            getNormalColorValue(this.result.c3.value, fromSpace, 2)];
 
         color = getScaledDataColor(convertDataColorToSpace(color, toSpace));
 
@@ -20389,7 +20460,9 @@ const settings =
     logRawRequests:   false, 
     logRequests:      true, 
     
-    logValueUpdates:  true, 
+    logRawValues:     false, 
+    logValues:        true, 
+
     logObjectUpdates: true
 };
 
@@ -21528,7 +21601,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
         const dec = Math.pow(10, Math.abs(control.dec));
 
-        value = Math.round(value * dec) / dec;
+        //value = Math.round(value * dec) / dec;
 
         if (control.wrapValue)
         {
@@ -30981,6 +31054,7 @@ extends OpColorBase
     isConnected()
     {
         return this.inputs[0].connected
+            //   skipping [1]
             || this.inputs[2].connected
             || this.inputs[3].connected
             || this.inputs[4].connected;
@@ -31072,9 +31146,9 @@ extends OpColorBase
 
         if (col.isValid())
         {
-            this.param1.setValue(col.c1, false, true, false);
-            this.param2.setValue(col.c2, false, true, false);
-            this.param3.setValue(col.c3, false, true, false);
+            this.param1    .setValue(col.c1, false, true, false);
+            this.param2    .setValue(col.c2, false, true, false);
+            this.param3    .setValue(col.c3, false, true, false);
 
             this._color = col.toDataColor();
         }
@@ -31702,13 +31776,6 @@ function switchToSliders(node)
 
         node.updateNode();
     }
-}
-
-
-
-function makeDataColor(space, c1, c2, c3)
-{
-    return [space, c1, c2, c3];
 }
 
 
@@ -38973,9 +39040,10 @@ function uiUpdateGraph()
 
 function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 {
-    //console.log('raw values = ', values);
+    if (settings.logRawValues)  
+        console.log('raw values = ', values);
 
-    if (settings.logValueUpdates)  
+    if (settings.logValues)  
         logValueUpdates(updateNodeId, updateParamId, values);
 
 

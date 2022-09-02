@@ -107,6 +107,7 @@ extends OpColorBase
     isConnected()
     {
         return this.inputs[0].connected
+            //   skipping [1]
             || this.inputs[2].connected
             || this.inputs[3].connected
             || this.inputs[4].connected;
@@ -198,9 +199,9 @@ extends OpColorBase
 
         if (col.isValid())
         {
-            this.param1.setValue(col.c1, false, true, false);
-            this.param2.setValue(col.c2, false, true, false);
-            this.param3.setValue(col.c3, false, true, false);
+            this.param1    .setValue(col.c1, false, true, false);
+            this.param2    .setValue(col.c2, false, true, false);
+            this.param3    .setValue(col.c3, false, true, false);
 
             this._color = col.toDataColor();
         }

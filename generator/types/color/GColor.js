@@ -44,14 +44,13 @@ extends GOperator
     {
         if (!this.valid)
         {
-            console.log('this =', this);
             const space = this.space.eval(parse).copy();
             
             const c1 = this.c1 ? this.c1.eval(parse).copy() : null;
             const c2 = this.c2 ? this.c2.eval(parse).copy() : null;
             const c3 = this.c3 ? this.c3.eval(parse).copy() : null;
 
-            
+
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -92,7 +91,6 @@ extends GOperator
                     OpColorSpaces.length-1);
                 
                 this.result.space.value = toSpaceIndex;
-
 
                 if (    this.convert
                     && !isNaN(this.convert.value)
@@ -137,11 +135,11 @@ extends GOperator
 
     convertColor(fromSpace, toSpace)
     {
-        let color = makeDataColor(
+        let color = [
             fromSpace, 
             getNormalColorValue(this.result.c1.value, fromSpace, 0),
             getNormalColorValue(this.result.c2.value, fromSpace, 1),
-            getNormalColorValue(this.result.c3.value, fromSpace, 2));
+            getNormalColorValue(this.result.c3.value, fromSpace, 2)];
 
         color = getScaledDataColor(convertDataColorToSpace(color, toSpace));
 

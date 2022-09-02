@@ -127,7 +127,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
         const dec = Math.pow(10, Math.abs(control.dec));
 
-        value = Math.round(value * dec) / dec;
+        //value = Math.round(value * dec) / dec;
 
         if (control.wrapValue)
         {

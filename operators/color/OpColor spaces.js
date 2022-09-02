@@ -292,13 +292,6 @@ function switchToSliders(node)
 
 
 
-function makeDataColor(space, c1, c2, c3)
-{
-    return [space, c1, c2, c3];
-}
-
-
-
 function rgb2dataColor(rgb)
 {
     return [
