@@ -373,8 +373,8 @@ extends Parameter
         }
         else
         {
-            this.warningStyle = getDefaultWarningStyle(rgb);
-            this.updateWarningOverlayStyle(rgb);
+            this.warningStyle = getDefaultWarningStyle(rgba);
+            this.updateWarningOverlayStyle(rgba);
         }
     }
 
