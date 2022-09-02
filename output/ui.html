@@ -28996,6 +28996,7 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
+    console.trace();
     //console.log('pushUpdateFromParam('+param+')', nodes);
 
     
@@ -36012,9 +36013,6 @@ extends Action
         uiSaveNodes([
             ...this.newActiveNodeIds,
             ...this.oldActiveNodeIds]);
-
-
-        pushUpdate(this.nodeIds.map(id => nodeFromId(id)));
     }
 
 

@@ -136,9 +136,6 @@ extends Action
         uiSaveNodes([
             ...this.newActiveNodeIds,
             ...this.oldActiveNodeIds]);
-
-
-        pushUpdate(this.nodeIds.map(id => nodeFromId(id)));
     }
 
 
