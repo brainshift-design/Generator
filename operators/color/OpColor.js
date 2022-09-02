@@ -67,7 +67,14 @@ extends OpColorBase
         
         this.paramColor.control.showColor = false;
 
-        this.paramColor.addEventListener('change', () => this._color = this.paramColor.value.toDataColor());
+        this.paramColor.addEventListener('change', () => 
+        {
+            this._color = this.paramColor.value.toDataColor();
+
+            this.param1.setValue(new NumberValue(this._color[1] * rgbFactor[0]), false, true, false);
+            this.param2.setValue(new NumberValue(this._color[2] * rgbFactor[1]), false, true, false);
+            this.param3.setValue(new NumberValue(this._color[3] * rgbFactor[2]), false, true, false);
+        });
 
 
         for (let i = 1; i < this.params.length-1; i++) // -1 is for paramColor
