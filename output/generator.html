@@ -9079,10 +9079,9 @@ function getTextColorFromBackColor(rgb, opacity = 1)
 
 function getDefaultWarningStyle(rgb)
 {
-    return rgba2style(
-        !rgbIsNaN(rgb)
-        ? (isDark(rgb)  ? '#ffffff08' : '#00000006')
-        : (isDarkMode() ? '#ffffff08' : '#00000006')); 
+    return !rgbIsNaN(rgb)
+         ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
+         : (isDarkMode() ? '#ffffff08' : '#00000006'); 
 }
 
 

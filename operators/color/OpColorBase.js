@@ -118,8 +118,10 @@ extends Operator
             if (  !rgbIsValid(rgb)
                 || this.forceShowWarning)
             {
+                console.log('rgb =', rgb);
                 if (!this.forceShowWarning)
                     this.warningStyle = getDefaultWarningStyle(rgb);
+                    console.log('this.warningStyle =', this.warningStyle);
 
                 this.updateWarningOverlayStyle(rgb);
             }
@@ -145,7 +147,7 @@ extends Operator
             : height;
 
         this._warningOverlay.style.background =
-               rgbIsOk(colBack)
+                rgbIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
             : 'repeating-linear-gradient('

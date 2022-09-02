@@ -10841,10 +10841,9 @@ function getTextColorFromBackColor(rgb, opacity = 1)
 
 function getDefaultWarningStyle(rgb)
 {
-    return rgba2style(
-        !rgbIsNaN(rgb)
-        ? (isDark(rgb)  ? '#ffffff08' : '#00000006')
-        : (isDarkMode() ? '#ffffff08' : '#00000006')); 
+    return !rgbIsNaN(rgb)
+         ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
+         : (isDarkMode() ? '#ffffff08' : '#00000006'); 
 }
 
 
@@ -16162,10 +16161,9 @@ function getTextColorFromBackColor(rgb, opacity = 1)
 
 function getDefaultWarningStyle(rgb)
 {
-    return rgba2style(
-        !rgbIsNaN(rgb)
-        ? (isDark(rgb)  ? '#ffffff08' : '#00000006')
-        : (isDarkMode() ? '#ffffff08' : '#00000006')); 
+    return !rgbIsNaN(rgb)
+         ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
+         : (isDarkMode() ? '#ffffff08' : '#00000006'); 
 }
 
 
@@ -30904,8 +30902,10 @@ extends Operator
             if (  !rgbIsValid(rgb)
                 || this.forceShowWarning)
             {
+                console.log('rgb =', rgb);
                 if (!this.forceShowWarning)
                     this.warningStyle = getDefaultWarningStyle(rgb);
+                    console.log('this.warningStyle =', this.warningStyle);
 
                 this.updateWarningOverlayStyle(rgb);
             }
@@ -30931,7 +30931,7 @@ extends Operator
             : height;
 
         this._warningOverlay.style.background =
-               rgbIsOk(colBack)
+                rgbIsOk(colBack)
             && !this.forceShowWarning
             ? 'transparent'
             : 'repeating-linear-gradient('
