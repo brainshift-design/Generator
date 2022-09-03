@@ -4,6 +4,7 @@ extends Action
     outputNodeId;
     outputIndex;
     get outputNode() { return nodeFromId(this.outputNodeId); }
+    get output()     { return this.outputNode.outputs[this.outputIndex]; }
     
     oldOutputNodeId = '';
     oldOutputIndex;
@@ -12,13 +13,14 @@ extends Action
     inputNodeId;
     inputIndex;
     get inputNode() { return nodeFromId(this.inputNodeId); }
+    get input()     { return this.inputNode.inputs[this.inputIndex]; }
     
     oldOutputActiveNodeId;      // the active node in the output node's tree
     oldInputActiveNodeIds = []; // the active nodes in the input node's tree
     
     newActiveNodeIds = [];
 
-    oldinputValues = []; // in index,value pairs, to be restored on undo
+    oldinputValues   = []; // in index,value pairs, to be restored on undo
 
 
 
@@ -43,17 +45,18 @@ extends Action
    
         this.inputNodeId     = input.node.id;
         this.inputIndex      = input.index;
-
-        this.oldInputValues = 
-            input.getValuesForUndo
-            ? input.getValuesForUndo()
-            : [];
     }
 
 
     
     do()
     {
+        this.oldInputValues = 
+            this.input.getValuesForUndo
+            ? this.input.getValuesForUndo()
+            : [];
+
+
         this.oldOutputActiveNodeId = idFromNode(getActiveNodeInTreeFromNodeId(this.outputNodeId));
         this.oldInputActiveNodeIds = getActiveNodesRightInTreeFromNodeId(this.inputNodeId).map(n => n.id);
 
@@ -93,7 +96,7 @@ extends Action
 
 
         uiSaveNodes(updateNodes.map(n => n.id));
-        pushUpdate(updateNodes);
+        //pushUpdate(updateNodes);
     }
 
 
@@ -115,8 +118,10 @@ extends Action
 
         // restore old values
         for (const param of this.oldInputValues)
-            this.inputNode.params[this.inputNode.params.indexOf(param[0])]
+        {
+            this.inputNode.params[this.inputNode.params.findIndex(p => p.id == param[0])]
                 .setValue(param[1], true, true, false);
+        }
 
 
         const updateNodes = [];

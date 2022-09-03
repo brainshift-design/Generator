@@ -61,7 +61,7 @@ extends EventTarget
 
     initInput(types)
     {
-        this.input = new Input(types);
+        this.input = new Input(types, this.input_getValuesForUndo);
 
         this.input._param = this;
         this.input.control.style.float     = 'left';
@@ -95,6 +95,16 @@ extends EventTarget
 
 
     
+    input_getValuesForUndo()
+    {
+        console.log('this =', this);
+        return [[
+            this.param.id, 
+            this.param.value]];
+    }
+
+
+
     update(dispatchEvents)
     {
 

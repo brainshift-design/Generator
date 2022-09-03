@@ -622,6 +622,7 @@ function uiMakeNodePassive(node)
 
 function uiMakeNodeLeftPassive(node, fromNode = null)
 {
+    //console.log('uiMakeNodeLeftPassive() node =', node);
     for (const input of node.inputs.filter(i => !i.param))
     {
         if (    input.connected

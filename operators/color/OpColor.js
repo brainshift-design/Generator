@@ -34,7 +34,7 @@ extends OpColorBase
         this.inner.appendChild(this.#colorBack);
 
 
-        this.addInput(new Input(COLOR_TYPES));
+        this.addInput(new Input(COLOR_TYPES, this.input_getValuesForUndo));
         this.addOutput(new Output(COLOR, this.output_genRequest));
 
         this.initContentInput(this.inputs[0], 1);
@@ -118,6 +118,19 @@ extends OpColorBase
             || this.inputs[2].connected
             || this.inputs[3].connected
             || this.inputs[4].connected;
+    }
+
+
+
+    input_getValuesForUndo()
+    {
+        return [ 
+            [this.node.param1.id, 
+             this.node.param1.value],
+            [this.node.param2.id, 
+             this.node.param2.value],
+            [this.node.param3.id, 
+             this.node.param3.value]];
     }
 
 

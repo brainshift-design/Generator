@@ -16,7 +16,6 @@ function genParseNumValue(parse)
 
 function genParseNumber(parse)
 {
-    console.log('genParseNumber()');
     const [, nodeId, active, ignore] = genParseNodeStart(parse);
 
 

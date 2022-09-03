@@ -42,10 +42,6 @@ extends Action
         this.pastedNodeIds = nodes.map(n => n.id);
         this.pastedNodePos = nodes.map(n => { return point(n.div.offsetLeft, n.div.offsetTop); });
 
-        console.log('this.pastedNodeIds', this.pastedNodeIds);
-
-
-        console.log('this.oldActiveNodeIds', this.oldActiveNodeIds);
 
         updateTerminalsAfterNodes(nodes);
         
