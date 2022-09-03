@@ -16,7 +16,7 @@ extends OpColorBase
         this.colorBack = createDiv('colorBack');
         this.inner.appendChild(this.colorBack);
 
-        this.addInput (new Input(FILL_TYPES));
+        this.addInput (new Input(FILL_TYPES, this.input_getValuesForUndo));
         this.addOutput(new Output(FILL, this.output_genRequest));
 
         this.initContentInput(this.inputs[0], 0);
@@ -34,6 +34,17 @@ extends OpColorBase
     
     
     
+    input_getValuesForUndo()
+    {
+        return [ 
+            [this.node.paramColor  .id, 
+             this.node.paramColor  .value],
+            [this.node.paramOpacity.id, 
+             this.node.paramOpacity.value]];
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output

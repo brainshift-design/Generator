@@ -19,7 +19,7 @@ extends OpColorBase
         this.colorBack = createDiv('colorBack');
         this.inner.appendChild(this.colorBack);
 
-        this.addInput (new Input(STROKE_TYPES));
+        this.addInput (new Input(STROKE_TYPES, this.input_getValuesForUndo));
         this.addOutput(new Output(STROKE, this.output_genRequest));
 
         this.initContentInput(this.inputs[0], 0);
@@ -41,6 +41,23 @@ extends OpColorBase
     
     
     
+    input_getValuesForUndo()
+    {
+        return [ 
+            [this.node.paramFill  .id, 
+             this.node.paramFill  .value],
+            [this.node.paramWeight.id, 
+             this.node.paramWeight.value],
+            [this.node.paramFit   .id, 
+             this.node.paramFit   .value],
+            [this.node.paramJoin  .id, 
+             this.node.paramJoin  .value],
+            [this.node.paramMiter .id, 
+             this.node.paramMiter .value]];
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output

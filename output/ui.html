@@ -7378,8 +7378,8 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const color   = this.color  .eval(parse).copy();
-            const opacity = this.opacity.eval(parse).copy();
+            const color   = this.color   ? this.color  .eval(parse).copy() : null;
+            const opacity = this.opacity ? this.opacity.eval(parse).copy() : null;
 
             if (this.input)
             {
@@ -7389,13 +7389,16 @@ extends GOperator
                     this.result.type == FILL_VALUE,
                     'GFill this.result.type must be FILL_VALUE');
 
-                if (this.color  ) this.result.color   = color;
-                if (this.opacity) this.result.opacity = opacity;
+                if (this.result.isValid())
+                {
+                    if (this.color  ) this.result.color   = color;
+                    if (this.opacity) this.result.opacity = opacity;
+                }
             }
             else
             {
                 this.result = new FillValue(
-                    ColorValue.fromRgb(scaleRgb(dataColor2rgb(color.toDataColor()))), 
+                    ColorValue.fromRgb(scaleRgb(color.toRgb())), 
                     opacity);
             }
         
@@ -7406,8 +7409,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
 
 
@@ -7456,11 +7459,11 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const fill   = this.fill  .eval(parse).copy();
-            const weight = this.weight.eval(parse).copy();
-            const fit    = this.fit   .eval(parse).copy();
-            const join   = this.join  .eval(parse).copy();
-            const miter  = this.miter .eval(parse).copy();            
+            const fill   = this.fill   ? this.fill  .eval(parse).copy() : null;
+            const weight = this.weight ? this.weight.eval(parse).copy() : null;
+            const fit    = this.fit    ? this.fit   .eval(parse).copy() : null;
+            const join   = this.join   ? this.join  .eval(parse).copy() : null;
+            const miter  = this.miter  ? this.miter .eval(parse).copy() : null;            
 
             if (this.input)
             {
@@ -7484,11 +7487,11 @@ extends GOperator
 
             genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'fill',   fill  );
-            genPushUpdateValue(parse, this.nodeId, 'weight', weight);
-            genPushUpdateValue(parse, this.nodeId, 'fit',    fit   );
-            genPushUpdateValue(parse, this.nodeId, 'join',   join  );
-            genPushUpdateValue(parse, this.nodeId, 'miter',  miter );
+            genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
+            genPushUpdateValue(parse, this.nodeId, 'weight', this.result.weight);
+            genPushUpdateValue(parse, this.nodeId, 'fit',    this.result.fit   );
+            genPushUpdateValue(parse, this.nodeId, 'join',   this.result.join  );
+            genPushUpdateValue(parse, this.nodeId, 'miter',  this.result.miter );
 
 
             this.result.valid = true;
@@ -19576,8 +19579,8 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const color   = this.color  .eval(parse).copy();
-            const opacity = this.opacity.eval(parse).copy();
+            const color   = this.color   ? this.color  .eval(parse).copy() : null;
+            const opacity = this.opacity ? this.opacity.eval(parse).copy() : null;
 
             if (this.input)
             {
@@ -19587,13 +19590,16 @@ extends GOperator
                     this.result.type == FILL_VALUE,
                     'GFill this.result.type must be FILL_VALUE');
 
-                if (this.color  ) this.result.color   = color;
-                if (this.opacity) this.result.opacity = opacity;
+                if (this.result.isValid())
+                {
+                    if (this.color  ) this.result.color   = color;
+                    if (this.opacity) this.result.opacity = opacity;
+                }
             }
             else
             {
                 this.result = new FillValue(
-                    ColorValue.fromRgb(scaleRgb(dataColor2rgb(color.toDataColor()))), 
+                    ColorValue.fromRgb(scaleRgb(color.toRgb())), 
                     opacity);
             }
         
@@ -19604,8 +19610,8 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'color',   color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
 
 
@@ -19654,11 +19660,11 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const fill   = this.fill  .eval(parse).copy();
-            const weight = this.weight.eval(parse).copy();
-            const fit    = this.fit   .eval(parse).copy();
-            const join   = this.join  .eval(parse).copy();
-            const miter  = this.miter .eval(parse).copy();            
+            const fill   = this.fill   ? this.fill  .eval(parse).copy() : null;
+            const weight = this.weight ? this.weight.eval(parse).copy() : null;
+            const fit    = this.fit    ? this.fit   .eval(parse).copy() : null;
+            const join   = this.join   ? this.join  .eval(parse).copy() : null;
+            const miter  = this.miter  ? this.miter .eval(parse).copy() : null;            
 
             if (this.input)
             {
@@ -19682,11 +19688,11 @@ extends GOperator
 
             genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'fill',   fill  );
-            genPushUpdateValue(parse, this.nodeId, 'weight', weight);
-            genPushUpdateValue(parse, this.nodeId, 'fit',    fit   );
-            genPushUpdateValue(parse, this.nodeId, 'join',   join  );
-            genPushUpdateValue(parse, this.nodeId, 'miter',  miter );
+            genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
+            genPushUpdateValue(parse, this.nodeId, 'weight', this.result.weight);
+            genPushUpdateValue(parse, this.nodeId, 'fit',    this.result.fit   );
+            genPushUpdateValue(parse, this.nodeId, 'join',   this.result.join  );
+            genPushUpdateValue(parse, this.nodeId, 'miter',  this.result.miter );
 
 
             this.result.valid = true;
@@ -33889,7 +33895,7 @@ extends OpColorBase
         this.colorBack = createDiv('colorBack');
         this.inner.appendChild(this.colorBack);
 
-        this.addInput (new Input(FILL_TYPES));
+        this.addInput (new Input(FILL_TYPES, this.input_getValuesForUndo));
         this.addOutput(new Output(FILL, this.output_genRequest));
 
         this.initContentInput(this.inputs[0], 0);
@@ -33907,6 +33913,17 @@ extends OpColorBase
     
     
     
+    input_getValuesForUndo()
+    {
+        return [ 
+            [this.node.paramColor  .id, 
+             this.node.paramColor  .value],
+            [this.node.paramOpacity.id, 
+             this.node.paramOpacity.value]];
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -34070,7 +34087,7 @@ extends OpColorBase
         this.colorBack = createDiv('colorBack');
         this.inner.appendChild(this.colorBack);
 
-        this.addInput (new Input(STROKE_TYPES));
+        this.addInput (new Input(STROKE_TYPES, this.input_getValuesForUndo));
         this.addOutput(new Output(STROKE, this.output_genRequest));
 
         this.initContentInput(this.inputs[0], 0);
@@ -34092,6 +34109,23 @@ extends OpColorBase
     
     
     
+    input_getValuesForUndo()
+    {
+        return [ 
+            [this.node.paramFill  .id, 
+             this.node.paramFill  .value],
+            [this.node.paramWeight.id, 
+             this.node.paramWeight.value],
+            [this.node.paramFit   .id, 
+             this.node.paramFit   .value],
+            [this.node.paramJoin  .id, 
+             this.node.paramJoin  .value],
+            [this.node.paramMiter .id, 
+             this.node.paramMiter .value]];
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output

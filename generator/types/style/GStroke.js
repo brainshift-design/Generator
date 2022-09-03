@@ -38,11 +38,11 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const fill   = this.fill  .eval(parse).copy();
-            const weight = this.weight.eval(parse).copy();
-            const fit    = this.fit   .eval(parse).copy();
-            const join   = this.join  .eval(parse).copy();
-            const miter  = this.miter .eval(parse).copy();            
+            const fill   = this.fill   ? this.fill  .eval(parse).copy() : null;
+            const weight = this.weight ? this.weight.eval(parse).copy() : null;
+            const fit    = this.fit    ? this.fit   .eval(parse).copy() : null;
+            const join   = this.join   ? this.join  .eval(parse).copy() : null;
+            const miter  = this.miter  ? this.miter .eval(parse).copy() : null;            
 
             if (this.input)
             {
@@ -66,11 +66,11 @@ extends GOperator
 
             genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'fill',   fill  );
-            genPushUpdateValue(parse, this.nodeId, 'weight', weight);
-            genPushUpdateValue(parse, this.nodeId, 'fit',    fit   );
-            genPushUpdateValue(parse, this.nodeId, 'join',   join  );
-            genPushUpdateValue(parse, this.nodeId, 'miter',  miter );
+            genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
+            genPushUpdateValue(parse, this.nodeId, 'weight', this.result.weight);
+            genPushUpdateValue(parse, this.nodeId, 'fit',    this.result.fit   );
+            genPushUpdateValue(parse, this.nodeId, 'join',   this.result.join  );
+            genPushUpdateValue(parse, this.nodeId, 'miter',  this.result.miter );
 
 
             this.result.valid = true;
