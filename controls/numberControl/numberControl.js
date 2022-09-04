@@ -114,8 +114,8 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.setValue = function(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
         //console.log('setValue()', value);
-        
-        if (typeof value !== 'number')
+
+        if (typeof value != 'number')
         {
             console.trace();
             console.assert(false, 'numberControl.setValue(value) is ' + typeof value + ', must be a number');
@@ -146,7 +146,8 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
             || Math.abs(value - oldValue) > Number.EPSILON)
         {
             control.value = value;
-
+console.log('control.value =', control.value);
+console.trace();
             control.update();
 
             if (   fireChangeEvent

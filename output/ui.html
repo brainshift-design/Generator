@@ -3653,6 +3653,97 @@ function readonly(target, name, descriptor)
 }
 
 
+
+function superscriptNumber(num)
+{
+    const str = num.toString();
+
+    let sup = '';
+
+    for (const c of str)
+        sup += superscriptChar(c);
+
+    return sup;
+}
+
+
+
+function superscriptChar(c)
+{
+    switch (c)
+    {
+        case '0': return '⁰';
+        case '1': return '¹';
+        case '2': return '²';
+        case '3': return '³';
+        case '4': return '⁴';
+        case '5': return '⁵';
+        case '6': return '⁶';
+        case '7': return '⁷';
+        case '8': return '⁸';
+        case '9': return '⁹';
+        case '.': return '·';
+    }
+}
+
+
+
+function subscriptNumber(num)
+{
+    const str = num.toString();
+
+    let sup = '';
+
+    for (const c of str)
+        sup += subscriptChar(c);
+
+    return sup;
+}
+
+
+
+function subscriptChar(c)
+{
+    switch (c)
+    {
+        case '0': return '₀';
+        case '1': return '₁';
+        case '2': return '₂';
+        case '3': return '₃';
+        case '4': return '₄';
+        case '5': return '₅';
+        case '6': return '₆';
+        case '7': return '₇';
+        case '8': return '₈';
+        case '9': return '₉';
+        case '.': return ' ';
+    }
+}
+
+
+
+function displayValue(type, value)
+{
+    if (   type == NUMBER_VALUE
+        && value.indexOf(',') < 0)
+        return value;
+
+
+    let val;
+
+    switch (type)
+    {
+        case NUMBER_VALUE:    val = parseNumberValue   (value)[0]; break;
+        case COLOR_VALUE:     val = parseColorValue    (value)[0]; break;
+        case FILL_VALUE:      val = parseFillValue     (value)[0]; break;
+        case STROKE_VALUE:    val = parseStrokeValue   (value)[0]; break;
+        case RECTANGLE_VALUE: val = parseRectangleValue(value)[0]; break;
+    }
+
+    return val.toDisplayString();
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -4185,7 +4276,7 @@ function logValueUpdates(updateNodeId, updateParamId, values)
 
             log += 
                   NL + TAB.repeat(Math.max(0, nTab))
-                + index + ' ' + value;
+                + index + ' ' + displayValue(type, value);
         }
 
         nTab--;
@@ -4272,7 +4363,7 @@ function logReqNode(node, parse)
 
 function logReqNumberValue(val, parse)
 {
-    parse.log += parse.tab + NUMBER_VALUE + ' ' + val;
+    parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
 }
 
 
@@ -4315,7 +4406,7 @@ function logReqInterpolate(lerp, nValues, parse)
 
 function logReqColorValue(val, parse)
 {
-    parse.log += parse.tab + COLOR_VALUE + ' ' + val;
+    parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
 }
 
 
@@ -4365,7 +4456,7 @@ function logReqColorValidate(val, parse)
 
 function logReqFillValue(fill, parse)
 {
-    parse.log += parse.tab + FILL_VALUE + ' ' + fill;
+    parse.log += parse.tab + FILL_VALUE + ' ' + displayValue(FILL_VALUE, fill);
 }
 
 
@@ -4380,7 +4471,7 @@ function logReqFill(fill, parse)
 
 function logReqStrokeValue(stroke, parse)
 {
-    parse.log += parse.tab + STROKE_VALUE + ' ' + stroke;
+    parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
 }
 
 
@@ -4395,7 +4486,7 @@ function logReqStroke(stroke, parse)
 
 function logReqColorStopValue(stop, parse)
 {
-    parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + stop;
+    parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + displayValue(COLOR_STOP_VALUE, stop);
 }
 
 
@@ -4924,6 +5015,13 @@ extends GType
 
 
 
+    toDisplayString()
+    {
+        return printNum(this.value) + subscriptNumber(this.decimals); // only NumberValue can do this, other _Values have to list all members
+    }
+
+
+
     static NaN = Object.freeze(new NumberValue(
         Number.NaN, 
         Number.NaN));
@@ -5100,6 +5198,16 @@ extends GType
 
 
 
+    toDisplayString()
+    {
+        return      this.space.toDisplayString()
+            + ' ' + this.c1   .toDisplayString()
+            + ' ' + this.c2   .toDisplayString()
+            + ' ' + this.c3   .toDisplayString();
+    }
+
+
+
     static NaN = Object.freeze(new ColorValue(
         NumberValue.NaN,
         NumberValue.NaN,
@@ -5218,18 +5326,6 @@ extends GType
 
 
 
-    toString()
-    {
-        const rgb = scaleRgb(this.color.toRgb());
-
-        return        new NumberValue(rgb[0]).toString()
-              + ' ' + new NumberValue(rgb[1]).toString()
-              + ' ' + new NumberValue(rgb[2]).toString()
-              + ' ' + this.opacity           .toString();
-    }
-
-
-
     toRgba()
     {
         return [
@@ -5242,6 +5338,30 @@ extends GType
     toFigma()
     {
         return [['SOLID', this.toString()]];
+    }
+
+
+
+    toString()
+    {
+        const rgb = scaleRgb(this.color.toRgb());
+
+        return        new NumberValue(rgb[0]).toString()
+              + ' ' + new NumberValue(rgb[1]).toString()
+              + ' ' + new NumberValue(rgb[2]).toString()
+              + ' ' + this.opacity           .toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        const rgb = scaleRgb(this.color.toRgb());
+
+        return        new NumberValue(rgb[0]).toDisplayString()
+              + ' ' + new NumberValue(rgb[1]).toDisplayString()
+              + ' ' + new NumberValue(rgb[2]).toDisplayString()
+              + ' ' + this.opacity           .toDisplayString();
     }
 
 
@@ -5385,20 +5505,6 @@ extends GType
     {
         return this;
     }
-
-
-
-    toString()
-    {
-        return      this.fill  .toString()
-            + ' ' + this.weight.toString()
-            + ' ' + this.fit   .toString()
-            + ' ' + this.join  .toString()
-            + ' ' + this.miter .toString();
-    }
-
-
-
     toFigma()
     {
         let align, join;
@@ -5428,6 +5534,28 @@ extends GType
             : {
                   strokes: []
               };
+    }
+
+
+
+    toString()
+    {
+        return      this.fill  .toString()
+            + ' ' + this.weight.toString()
+            + ' ' + this.fit   .toString()
+            + ' ' + this.join  .toString()
+            + ' ' + this.miter .toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.fill  .toDisplayString()
+            + ' ' + this.weight.toDisplayString()
+            + ' ' + this.fit   .toDisplayString()
+            + ' ' + this.join  .toDisplayString()
+            + ' ' + this.miter .toDisplayString();
     }
 
 
@@ -5544,6 +5672,14 @@ extends GType
     {
         return      this.fill  .toString()
             + ' ' + this.stroke.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.fill  .toDisplayString()
+            + ' ' + this.stroke.toDisplayString();
     }
 }
 
@@ -5662,6 +5798,20 @@ extends GeometryBaseValue
             + ' ' + this.round .toString()
             
             + ' ' + super.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.height.toDisplayString()
+            + ' ' + this.angle .toDisplayString()
+            + ' ' + this.round .toDisplayString()
+            
+            + ' ' + super.toDisplayString();
     }
 
 
@@ -14371,6 +14521,97 @@ function readonly(target, name, descriptor)
 }
 
 
+
+function superscriptNumber(num)
+{
+    const str = num.toString();
+
+    let sup = '';
+
+    for (const c of str)
+        sup += superscriptChar(c);
+
+    return sup;
+}
+
+
+
+function superscriptChar(c)
+{
+    switch (c)
+    {
+        case '0': return '⁰';
+        case '1': return '¹';
+        case '2': return '²';
+        case '3': return '³';
+        case '4': return '⁴';
+        case '5': return '⁵';
+        case '6': return '⁶';
+        case '7': return '⁷';
+        case '8': return '⁸';
+        case '9': return '⁹';
+        case '.': return '·';
+    }
+}
+
+
+
+function subscriptNumber(num)
+{
+    const str = num.toString();
+
+    let sup = '';
+
+    for (const c of str)
+        sup += subscriptChar(c);
+
+    return sup;
+}
+
+
+
+function subscriptChar(c)
+{
+    switch (c)
+    {
+        case '0': return '₀';
+        case '1': return '₁';
+        case '2': return '₂';
+        case '3': return '₃';
+        case '4': return '₄';
+        case '5': return '₅';
+        case '6': return '₆';
+        case '7': return '₇';
+        case '8': return '₈';
+        case '9': return '₉';
+        case '.': return ' ';
+    }
+}
+
+
+
+function displayValue(type, value)
+{
+    if (   type == NUMBER_VALUE
+        && value.indexOf(',') < 0)
+        return value;
+
+
+    let val;
+
+    switch (type)
+    {
+        case NUMBER_VALUE:    val = parseNumberValue   (value)[0]; break;
+        case COLOR_VALUE:     val = parseColorValue    (value)[0]; break;
+        case FILL_VALUE:      val = parseFillValue     (value)[0]; break;
+        case STROKE_VALUE:    val = parseStrokeValue   (value)[0]; break;
+        case RECTANGLE_VALUE: val = parseRectangleValue(value)[0]; break;
+    }
+
+    return val.toDisplayString();
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -14903,7 +15144,7 @@ function logValueUpdates(updateNodeId, updateParamId, values)
 
             log += 
                   NL + TAB.repeat(Math.max(0, nTab))
-                + index + ' ' + value;
+                + index + ' ' + displayValue(type, value);
         }
 
         nTab--;
@@ -14990,7 +15231,7 @@ function logReqNode(node, parse)
 
 function logReqNumberValue(val, parse)
 {
-    parse.log += parse.tab + NUMBER_VALUE + ' ' + val;
+    parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
 }
 
 
@@ -15033,7 +15274,7 @@ function logReqInterpolate(lerp, nValues, parse)
 
 function logReqColorValue(val, parse)
 {
-    parse.log += parse.tab + COLOR_VALUE + ' ' + val;
+    parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
 }
 
 
@@ -15083,7 +15324,7 @@ function logReqColorValidate(val, parse)
 
 function logReqFillValue(fill, parse)
 {
-    parse.log += parse.tab + FILL_VALUE + ' ' + fill;
+    parse.log += parse.tab + FILL_VALUE + ' ' + displayValue(FILL_VALUE, fill);
 }
 
 
@@ -15098,7 +15339,7 @@ function logReqFill(fill, parse)
 
 function logReqStrokeValue(stroke, parse)
 {
-    parse.log += parse.tab + STROKE_VALUE + ' ' + stroke;
+    parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
 }
 
 
@@ -15113,7 +15354,7 @@ function logReqStroke(stroke, parse)
 
 function logReqColorStopValue(stop, parse)
 {
-    parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + stop;
+    parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + displayValue(COLOR_STOP_VALUE, stop);
 }
 
 
@@ -17124,6 +17365,13 @@ extends GType
 
 
 
+    toDisplayString()
+    {
+        return printNum(this.value) + subscriptNumber(this.decimals); // only NumberValue can do this, other _Values have to list all members
+    }
+
+
+
     static NaN = Object.freeze(new NumberValue(
         Number.NaN, 
         Number.NaN));
@@ -17300,6 +17548,16 @@ extends GType
 
 
 
+    toDisplayString()
+    {
+        return      this.space.toDisplayString()
+            + ' ' + this.c1   .toDisplayString()
+            + ' ' + this.c2   .toDisplayString()
+            + ' ' + this.c3   .toDisplayString();
+    }
+
+
+
     static NaN = Object.freeze(new ColorValue(
         NumberValue.NaN,
         NumberValue.NaN,
@@ -17418,18 +17676,6 @@ extends GType
 
 
 
-    toString()
-    {
-        const rgb = scaleRgb(this.color.toRgb());
-
-        return        new NumberValue(rgb[0]).toString()
-              + ' ' + new NumberValue(rgb[1]).toString()
-              + ' ' + new NumberValue(rgb[2]).toString()
-              + ' ' + this.opacity           .toString();
-    }
-
-
-
     toRgba()
     {
         return [
@@ -17442,6 +17688,30 @@ extends GType
     toFigma()
     {
         return [['SOLID', this.toString()]];
+    }
+
+
+
+    toString()
+    {
+        const rgb = scaleRgb(this.color.toRgb());
+
+        return        new NumberValue(rgb[0]).toString()
+              + ' ' + new NumberValue(rgb[1]).toString()
+              + ' ' + new NumberValue(rgb[2]).toString()
+              + ' ' + this.opacity           .toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        const rgb = scaleRgb(this.color.toRgb());
+
+        return        new NumberValue(rgb[0]).toDisplayString()
+              + ' ' + new NumberValue(rgb[1]).toDisplayString()
+              + ' ' + new NumberValue(rgb[2]).toDisplayString()
+              + ' ' + this.opacity           .toDisplayString();
     }
 
 
@@ -17585,20 +17855,6 @@ extends GType
     {
         return this;
     }
-
-
-
-    toString()
-    {
-        return      this.fill  .toString()
-            + ' ' + this.weight.toString()
-            + ' ' + this.fit   .toString()
-            + ' ' + this.join  .toString()
-            + ' ' + this.miter .toString();
-    }
-
-
-
     toFigma()
     {
         let align, join;
@@ -17628,6 +17884,28 @@ extends GType
             : {
                   strokes: []
               };
+    }
+
+
+
+    toString()
+    {
+        return      this.fill  .toString()
+            + ' ' + this.weight.toString()
+            + ' ' + this.fit   .toString()
+            + ' ' + this.join  .toString()
+            + ' ' + this.miter .toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.fill  .toDisplayString()
+            + ' ' + this.weight.toDisplayString()
+            + ' ' + this.fit   .toDisplayString()
+            + ' ' + this.join  .toDisplayString()
+            + ' ' + this.miter .toDisplayString();
     }
 
 
@@ -17744,6 +18022,14 @@ extends GType
     {
         return      this.fill  .toString()
             + ' ' + this.stroke.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.fill  .toDisplayString()
+            + ' ' + this.stroke.toDisplayString();
     }
 }
 
@@ -17862,6 +18148,20 @@ extends GeometryBaseValue
             + ' ' + this.round .toString()
             
             + ' ' + super.toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.height.toDisplayString()
+            + ' ' + this.angle .toDisplayString()
+            + ' ' + this.round .toDisplayString()
+            
+            + ' ' + super.toDisplayString();
     }
 
 
@@ -21588,8 +21888,8 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.setValue = function(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
         //console.log('setValue()', value);
-        
-        if (typeof value !== 'number')
+
+        if (typeof value != 'number')
         {
             console.trace();
             console.assert(false, 'numberControl.setValue(value) is ' + typeof value + ', must be a number');
@@ -21620,7 +21920,8 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
             || Math.abs(value - oldValue) > Number.EPSILON)
         {
             control.value = value;
-
+console.log('control.value =', control.value);
+console.trace();
             control.update();
 
             if (   fireChangeEvent

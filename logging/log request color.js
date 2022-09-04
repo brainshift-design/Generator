@@ -1,6 +1,6 @@
 function logReqColorValue(val, parse)
 {
-    parse.log += parse.tab + COLOR_VALUE + ' ' + val;
+    parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
 }
 
 

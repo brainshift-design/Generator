@@ -135,6 +135,16 @@ extends GType
 
 
 
+    toDisplayString()
+    {
+        return      this.space.toDisplayString()
+            + ' ' + this.c1   .toDisplayString()
+            + ' ' + this.c2   .toDisplayString()
+            + ' ' + this.c3   .toDisplayString();
+    }
+
+
+
     static NaN = Object.freeze(new ColorValue(
         NumberValue.NaN,
         NumberValue.NaN,

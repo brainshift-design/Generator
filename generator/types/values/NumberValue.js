@@ -75,6 +75,13 @@ extends GType
 
 
 
+    toDisplayString()
+    {
+        return printNum(this.value) + subscriptNumber(this.decimals); // only NumberValue can do this, other _Values have to list all members
+    }
+
+
+
     static NaN = Object.freeze(new NumberValue(
         Number.NaN, 
         Number.NaN));

@@ -324,7 +324,7 @@ function logValueUpdates(updateNodeId, updateParamId, values)
 
             log += 
                   NL + TAB.repeat(Math.max(0, nTab))
-                + index + ' ' + value;
+                + index + ' ' + displayValue(type, value);
         }
 
         nTab--;

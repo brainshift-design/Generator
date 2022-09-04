@@ -79,18 +79,6 @@ extends GType
 
 
 
-    toString()
-    {
-        const rgb = scaleRgb(this.color.toRgb());
-
-        return        new NumberValue(rgb[0]).toString()
-              + ' ' + new NumberValue(rgb[1]).toString()
-              + ' ' + new NumberValue(rgb[2]).toString()
-              + ' ' + this.opacity           .toString();
-    }
-
-
-
     toRgba()
     {
         return [
@@ -103,6 +91,30 @@ extends GType
     toFigma()
     {
         return [['SOLID', this.toString()]];
+    }
+
+
+
+    toString()
+    {
+        const rgb = scaleRgb(this.color.toRgb());
+
+        return        new NumberValue(rgb[0]).toString()
+              + ' ' + new NumberValue(rgb[1]).toString()
+              + ' ' + new NumberValue(rgb[2]).toString()
+              + ' ' + this.opacity           .toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        const rgb = scaleRgb(this.color.toRgb());
+
+        return        new NumberValue(rgb[0]).toDisplayString()
+              + ' ' + new NumberValue(rgb[1]).toDisplayString()
+              + ' ' + new NumberValue(rgb[2]).toDisplayString()
+              + ' ' + this.opacity           .toDisplayString();
     }
 
 

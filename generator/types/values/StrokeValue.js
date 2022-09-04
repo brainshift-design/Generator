@@ -101,20 +101,6 @@ extends GType
     {
         return this;
     }
-
-
-
-    toString()
-    {
-        return      this.fill  .toString()
-            + ' ' + this.weight.toString()
-            + ' ' + this.fit   .toString()
-            + ' ' + this.join  .toString()
-            + ' ' + this.miter .toString();
-    }
-
-
-
     toFigma()
     {
         let align, join;
@@ -144,6 +130,28 @@ extends GType
             : {
                   strokes: []
               };
+    }
+
+
+
+    toString()
+    {
+        return      this.fill  .toString()
+            + ' ' + this.weight.toString()
+            + ' ' + this.fit   .toString()
+            + ' ' + this.join  .toString()
+            + ' ' + this.miter .toString();
+    }
+
+
+
+    toDisplayString()
+    {
+        return      this.fill  .toDisplayString()
+            + ' ' + this.weight.toDisplayString()
+            + ' ' + this.fit   .toDisplayString()
+            + ' ' + this.join  .toDisplayString()
+            + ' ' + this.miter .toDisplayString();
     }
 
 

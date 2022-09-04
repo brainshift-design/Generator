@@ -103,6 +103,20 @@ extends GeometryBaseValue
 
 
 
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.height.toDisplayString()
+            + ' ' + this.angle .toDisplayString()
+            + ' ' + this.round .toDisplayString()
+            
+            + ' ' + super.toDisplayString();
+    }
+
+
+
     static NaN = new RectangleValue(
         '',
         NumberValue.NaN,

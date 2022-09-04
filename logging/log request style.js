@@ -1,6 +1,6 @@
 function logReqFillValue(fill, parse)
 {
-    parse.log += parse.tab + FILL_VALUE + ' ' + fill;
+    parse.log += parse.tab + FILL_VALUE + ' ' + displayValue(FILL_VALUE, fill);
 }
 
 
@@ -15,7 +15,7 @@ function logReqFill(fill, parse)
 
 function logReqStrokeValue(stroke, parse)
 {
-    parse.log += parse.tab + STROKE_VALUE + ' ' + stroke;
+    parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
 }
 
 
@@ -30,7 +30,7 @@ function logReqStroke(stroke, parse)
 
 function logReqColorStopValue(stop, parse)
 {
-    parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + stop;
+    parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + displayValue(COLOR_STOP_VALUE, stop);
 }
 
 

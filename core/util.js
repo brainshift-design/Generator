@@ -357,3 +357,94 @@ function readonly(target, name, descriptor)
     descriptor.writable = false;
     return descriptor;
 }
+
+
+
+function superscriptNumber(num)
+{
+    const str = num.toString();
+
+    let sup = '';
+
+    for (const c of str)
+        sup += superscriptChar(c);
+
+    return sup;
+}
+
+
+
+function superscriptChar(c)
+{
+    switch (c)
+    {
+        case '0': return '⁰';
+        case '1': return '¹';
+        case '2': return '²';
+        case '3': return '³';
+        case '4': return '⁴';
+        case '5': return '⁵';
+        case '6': return '⁶';
+        case '7': return '⁷';
+        case '8': return '⁸';
+        case '9': return '⁹';
+        case '.': return '·';
+    }
+}
+
+
+
+function subscriptNumber(num)
+{
+    const str = num.toString();
+
+    let sup = '';
+
+    for (const c of str)
+        sup += subscriptChar(c);
+
+    return sup;
+}
+
+
+
+function subscriptChar(c)
+{
+    switch (c)
+    {
+        case '0': return '₀';
+        case '1': return '₁';
+        case '2': return '₂';
+        case '3': return '₃';
+        case '4': return '₄';
+        case '5': return '₅';
+        case '6': return '₆';
+        case '7': return '₇';
+        case '8': return '₈';
+        case '9': return '₉';
+        case '.': return ' ';
+    }
+}
+
+
+
+function displayValue(type, value)
+{
+    if (   type == NUMBER_VALUE
+        && value.indexOf(',') < 0)
+        return value;
+
+
+    let val;
+
+    switch (type)
+    {
+        case NUMBER_VALUE:    val = parseNumberValue   (value)[0]; break;
+        case COLOR_VALUE:     val = parseColorValue    (value)[0]; break;
+        case FILL_VALUE:      val = parseFillValue     (value)[0]; break;
+        case STROKE_VALUE:    val = parseStrokeValue   (value)[0]; break;
+        case RECTANGLE_VALUE: val = parseRectangleValue(value)[0]; break;
+    }
+
+    return val.toDisplayString();
+}
