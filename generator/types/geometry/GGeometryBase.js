@@ -16,17 +16,6 @@ extends GOperator
 
 
 
-    // copy()
-    // {
-    //     const geom = new GGeometryBase(this.type, this.nodeId, this.active);
-
-    //     geom.copyBase(this);
-
-    //     return geom;
-    // }
-
-
-
     copyFromeBase(base)
     {
         if (base.fill  ) this.fill   = base.fill  .copy();

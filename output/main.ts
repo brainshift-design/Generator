@@ -727,10 +727,8 @@ function figCreateRect(obj, name)
     rect.x = obj.x;
     rect.y = obj.y;
 
-    
     setObjectFills  (rect, obj);
     setObjectStrokes(rect, obj);
-    
 
     rect.resize(
         Math.max(0.01, obj.width), 

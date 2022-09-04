@@ -7381,6 +7381,7 @@ extends GOperator
             const color   = this.color   ? this.color  .eval(parse).copy() : null;
             const opacity = this.opacity ? this.opacity.eval(parse).copy() : null;
 
+            
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -7603,17 +7604,6 @@ extends GOperator
 
 
 
-    // copy()
-    // {
-    //     const geom = new GGeometryBase(this.type, this.nodeId, this.active);
-
-    //     geom.copyBase(this);
-
-    //     return geom;
-    // }
-
-
-
     copyFromeBase(base)
     {
         if (base.fill  ) this.fill   = base.fill  .copy();
@@ -7703,7 +7693,12 @@ extends GGeometryBase
     {
         if (!this.valid)
         {
-            this.result = new RectangleValue(this.nodeId);
+            const x      = this.x      ? this.x     .eval(parse).copy() : null;
+            const y      = this.y      ? this.y     .eval(parse).copy() : null;
+            const width  = this.width  ? this.width .eval(parse).copy() : null;
+            const height = this.height ? this.height.eval(parse).copy() : null;
+            const angle  = this.angle  ? this.angle .eval(parse).copy() : null;
+            const round  = this.round  ? this.round .eval(parse).copy() : null;
 
 
             if (this.input)
@@ -7714,32 +7709,36 @@ extends GGeometryBase
                     this.result.type == RECTANGLE_VALUE, 
                     'this.result.type must be RECTANGLE_VALUE');
 
-                if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
-                if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
-                if (this.width ) this.result.width  = this.width .eval(parse).copy();
-                if (this.height) this.result.height = this.height.eval(parse).copy();
-                if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
-                if (this.round ) this.result.round  = this.round .eval(parse).copy();
+                if (this.x     ) this.result.x      = x;
+                if (this.y     ) this.result.y      = y;
+                if (this.width ) this.result.width  = width;
+                if (this.height) this.result.height = height;
+                if (this.angle ) this.result.angle  = angle;
+                if (this.round ) this.result.round  = round;
             }
             else
             {
-                this.result.x      = this.x     .eval(parse).copy();
-                this.result.y      = this.y     .eval(parse).copy();
-                this.result.width  = this.width .eval(parse).copy();
-                this.result.height = this.height.eval(parse).copy();
-                this.result.angle  = this.angle .eval(parse).copy();
-                this.result.round  = this.round .eval(parse).copy();
+                this.result = new RectangleValue(this.nodeId);
+
+                this.result.x      = x;
+                this.result.y      = y;
+                this.result.width  = width;
+                this.result.height = height;
+                this.result.angle  = angle;
+                this.result.round  = round;
             }
 
 
             //genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'x',      this.x     );
-            genPushUpdateValue(parse, this.nodeId, 'y',      this.y     );
-            genPushUpdateValue(parse, this.nodeId, 'width',  this.width );
-            genPushUpdateValue(parse, this.nodeId, 'height', this.height);
-            genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle );
-            genPushUpdateValue(parse, this.nodeId, 'round',  this.round );
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'x',       this.result.x     );
+            genPushUpdateValue(parse, this.nodeId, 'y',       this.result.y     );
+            genPushUpdateValue(parse, this.nodeId, 'width',   this.result.width );
+            genPushUpdateValue(parse, this.nodeId, 'height',  this.result.height);
+            genPushUpdateValue(parse, this.nodeId, 'angle',   this.result.angle );
+            genPushUpdateValue(parse, this.nodeId, 'round',   this.result.round );
 
 
             this.evalBase(parse, this.input);
@@ -19582,6 +19581,7 @@ extends GOperator
             const color   = this.color   ? this.color  .eval(parse).copy() : null;
             const opacity = this.opacity ? this.opacity.eval(parse).copy() : null;
 
+            
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
@@ -19804,17 +19804,6 @@ extends GOperator
 
 
 
-    // copy()
-    // {
-    //     const geom = new GGeometryBase(this.type, this.nodeId, this.active);
-
-    //     geom.copyBase(this);
-
-    //     return geom;
-    // }
-
-
-
     copyFromeBase(base)
     {
         if (base.fill  ) this.fill   = base.fill  .copy();
@@ -19904,7 +19893,12 @@ extends GGeometryBase
     {
         if (!this.valid)
         {
-            this.result = new RectangleValue(this.nodeId);
+            const x      = this.x      ? this.x     .eval(parse).copy() : null;
+            const y      = this.y      ? this.y     .eval(parse).copy() : null;
+            const width  = this.width  ? this.width .eval(parse).copy() : null;
+            const height = this.height ? this.height.eval(parse).copy() : null;
+            const angle  = this.angle  ? this.angle .eval(parse).copy() : null;
+            const round  = this.round  ? this.round .eval(parse).copy() : null;
 
 
             if (this.input)
@@ -19915,32 +19909,36 @@ extends GGeometryBase
                     this.result.type == RECTANGLE_VALUE, 
                     'this.result.type must be RECTANGLE_VALUE');
 
-                if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
-                if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
-                if (this.width ) this.result.width  = this.width .eval(parse).copy();
-                if (this.height) this.result.height = this.height.eval(parse).copy();
-                if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
-                if (this.round ) this.result.round  = this.round .eval(parse).copy();
+                if (this.x     ) this.result.x      = x;
+                if (this.y     ) this.result.y      = y;
+                if (this.width ) this.result.width  = width;
+                if (this.height) this.result.height = height;
+                if (this.angle ) this.result.angle  = angle;
+                if (this.round ) this.result.round  = round;
             }
             else
             {
-                this.result.x      = this.x     .eval(parse).copy();
-                this.result.y      = this.y     .eval(parse).copy();
-                this.result.width  = this.width .eval(parse).copy();
-                this.result.height = this.height.eval(parse).copy();
-                this.result.angle  = this.angle .eval(parse).copy();
-                this.result.round  = this.round .eval(parse).copy();
+                this.result = new RectangleValue(this.nodeId);
+
+                this.result.x      = x;
+                this.result.y      = y;
+                this.result.width  = width;
+                this.result.height = height;
+                this.result.angle  = angle;
+                this.result.round  = round;
             }
 
 
             //genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
-            genPushUpdateValue(parse, this.nodeId, 'x',      this.x     );
-            genPushUpdateValue(parse, this.nodeId, 'y',      this.y     );
-            genPushUpdateValue(parse, this.nodeId, 'width',  this.width );
-            genPushUpdateValue(parse, this.nodeId, 'height', this.height);
-            genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle );
-            genPushUpdateValue(parse, this.nodeId, 'round',  this.round );
+            genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
+
+            genPushUpdateValue(parse, this.nodeId, 'x',       this.result.x     );
+            genPushUpdateValue(parse, this.nodeId, 'y',       this.result.y     );
+            genPushUpdateValue(parse, this.nodeId, 'width',   this.result.width );
+            genPushUpdateValue(parse, this.nodeId, 'height',  this.result.height);
+            genPushUpdateValue(parse, this.nodeId, 'angle',   this.result.angle );
+            genPushUpdateValue(parse, this.nodeId, 'round',   this.result.round );
 
 
             this.evalBase(parse, this.input);
@@ -21589,7 +21587,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
     control.setValue = function(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
-        //console.log('value =', value);
+        //console.log('setValue()', value);
         
         if (typeof value !== 'number')
         {
@@ -21604,6 +21602,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
         const dec = Math.pow(10, Math.abs(control.dec));
 
         //value = Math.round(value * dec) / dec;
+
 
         if (control.wrapValue)
         {

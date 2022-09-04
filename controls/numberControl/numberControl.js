@@ -113,7 +113,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
     control.setValue = function(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
-        //console.log('value =', value);
+        //console.log('setValue()', value);
         
         if (typeof value !== 'number')
         {
@@ -128,6 +128,7 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
         const dec = Math.pow(10, Math.abs(control.dec));
 
         //value = Math.round(value * dec) / dec;
+
 
         if (control.wrapValue)
         {

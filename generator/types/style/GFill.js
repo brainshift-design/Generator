@@ -35,6 +35,7 @@ extends GOperator
             const color   = this.color   ? this.color  .eval(parse).copy() : null;
             const opacity = this.opacity ? this.opacity.eval(parse).copy() : null;
 
+            
             if (this.input)
             {
                 this.result = this.input.eval(parse).copy();
