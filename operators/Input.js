@@ -96,7 +96,7 @@ extends EventTarget
 
         this.wireColor        = rgbFromType(this.types[0], true);
 
-
+        
         this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 

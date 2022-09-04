@@ -210,7 +210,10 @@ class Connection
                   + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
                 : 'none';
 
-            if (this.output.wireColor[3] < 1)
+            if (      this.output
+                   && this.output.wireColor[3] < 1
+                ||    this.input
+                   && this.input.wireColor[3] < 1)
             {
                 this.wire.xp1.style.display          = 'inline';
                 this.wire.xp1.style.stroke           = isDarkMode() ? '#111' : '#c8c8c8';

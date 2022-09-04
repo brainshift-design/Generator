@@ -63,7 +63,7 @@ extends Operator
         }
 
 
-        for (const output of this.outputs.filter(i => !i.param))
+        for (const output of this.outputs.filter(o => !o.param))
         {
             output.wireColor = 
                   rgbIsOk(colors.back)   
