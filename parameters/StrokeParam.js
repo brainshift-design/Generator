@@ -6,6 +6,12 @@ extends Parameter
     oldValue = null;
     
 
+    _warningOverlay;
+    
+    forceShowWarning = false;
+    warningStyle;
+
+
     checkers;
 
     colorControl;
@@ -52,6 +58,11 @@ extends Parameter
         this.textControl .style.width     = '100%';
         this.textControl .style.textAlign = 'center';
     
+
+        this._warningOverlay = createDiv('colorWarningOverlay');
+        this._warningOverlay.style.zIndex = 21;
+        this.div.appendChild(this._warningOverlay);
+
 
         this.div.appendChild(this.checkers);
         
@@ -157,6 +168,8 @@ extends Parameter
 
             this.textControl.innerHTML             = 'stroke';
             this.textControl.style.color           = rgba2style(rgbaText);
+
+            this.updateWarningOverlay();
         }
         else
         {
@@ -227,6 +240,57 @@ extends Parameter
     {
         enableElementText(this.textControl, enable);
         this.textControl.readOnly = !enable;
+    }
+    
+    
+    
+    updateWarningOverlay() 
+    {
+        //console.log(this.id + '.updateWarningOverlay()');
+
+        const rgba = this.value.fill.toRgba();
+
+        if (!rgbIsNaN(rgba))
+        {
+            if (  !rgbIsValid(rgba)
+                || this.forceShowWarning)
+            {
+                if (!this.forceShowWarning)
+                    this.warningStyle = getDefaultWarningStyle(rgba);
+
+                this.updateWarningOverlayStyle(rgba);
+            }
+            else
+                this._warningOverlay.style.display = 'none';
+        }
+        else
+        {
+            this.warningStyle = getDefaultWarningStyle(rgba);
+            this.updateWarningOverlayStyle(rgba);
+        }
+    }
+
+
+
+    updateWarningOverlayStyle(colBack, height = -1)
+    {
+        //console.log('colBack =', colBack);
+        
+        this._warningOverlay.style.height = 
+            height < 0
+            ? this.div.offsetHeight
+            : height;
+
+        this._warningOverlay.style.background =
+               rgbIsOk(colBack)
+            && !this.forceShowWarning
+            ? 'transparent'
+            : 'repeating-linear-gradient('
+               + '-45deg, '
+               + 'transparent 0 7px,'
+               +  this.warningStyle + ' 7px 14px)';
+
+        this._warningOverlay.style.display = 'block';
     }
     
     
