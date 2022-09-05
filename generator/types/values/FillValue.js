@@ -83,7 +83,7 @@ extends GType
     {
         return [
             ...this.color.toRgb(),
-            this.opacity.value ];
+            this.opacity.value / 100 ];
     }
 
 

@@ -23,16 +23,16 @@ class Connection
         this.wire. inputPos                  = point_NaN;
   
         this.wire.xp1                        = createSvg('path');
-        this.wire.xp1.style.fill             = 'none';
         this.wire.xp1.style.position         = 'absolute';
+        this.wire.xp1.style.fill             = 'none';
 
         this.wire.xp2                        = createSvg('path');
-        this.wire.xp2.style.fill             = 'none';
         this.wire.xp2.style.position         = 'absolute';
+        this.wire.xp2.style.fill             = 'none';
 
         this.wire.curve                      = createSvg('path');
-        this.wire.curve.style.fill           = 'none';
         this.wire.curve.style.position       = 'absolute';
+        this.wire.curve.style.fill           = 'none';
 
         this.wire.outBall                    = createSvg('circle');
         this.wire.outBall.style.position     = 'absolute';
@@ -64,27 +64,6 @@ class Connection
             this.wire.setAttribute('width',  cw);
             this.wire.setAttribute('height', ch);
             this.wire.setAttribute('stroke-width', graphView.zoom);
-            
-            const isSolo = 
-                   graphView._soloNode
-                && (   this. input.node == graphView._soloNode
-                    || this.output.node == graphView._soloNode);
-            
-            const showWire = 
-                   graphView.showWires 
-                || isSolo;
-
-            const isReordering =   
-                   isNaN(newReorderIndex)
-                || isNaN(oldReorderIndex);
-
-
-            show(this.wire,         showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire.curve,   showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire.xp1,     showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire.xp2,     showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire.outBall, showWire && (!graphView.tempConn || graphView.tempConn.output));
-            show(this.wire. inBall, showWire && (!graphView.tempConn || graphView.tempConn. input));
         };
 
 
@@ -210,17 +189,22 @@ class Connection
                   + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
                 : 'none';
 
-            if (      this.output
-                   && this.output.wireColor[3] < 1
-                ||    this.input
-                   && this.input.wireColor[3] < 1)
+             
+            let showCurve = true;
+
+            if (      this.output && this.output.wireColor[3] < 1
+                ||    this. input && this. input.wireColor[3] < 1)
             {
+                showCurve = 
+                       this.output && this.output.wireColor[3] > 0
+                    || this. input && this. input.wireColor[3] > 0;
+
                 this.wire.xp1.style.display          = 'inline';
-                this.wire.xp1.style.stroke           = isDarkMode() ? '#111' : '#c8c8c8';
+                this.wire.xp1.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
                 this.wire.xp1.style.strokeDasharray  = 7 * graphView.zoom;
 
                 this.wire.xp2.style.display          = 'inline';
-                this.wire.xp2.style.stroke           = isDarkMode() ? '#4d4d4d' : '#fff';
+                this.wire.xp2.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//isDarkMode() ? '#4d4d4d' : '#fff';
                 this.wire.xp2.style.strokeDasharray  = 7 * graphView.zoom;
                 this.wire.xp2.style.strokeDashoffset = 7 * graphView.zoom;
             }
@@ -230,18 +214,41 @@ class Connection
                 this.wire.xp2.style.display = 'none';
             }
 
-            this.wire.  curve.style.stroke       = rgba2style(color);
-            this.wire. inBall.style.fill         = rgba2style(color);
-            this.wire.outBall.style.fill         = rgba2style(color);
 
-            this.wire.xp1  .style.strokeWeight   =
-            this.wire.xp2  .style.strokeWeight   =
-            this.wire.curve.style.strokeWeight   = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * graphView.zoom;
+            this.wire.  curve.style.stroke     = rgba2style(color);
+            this.wire. inBall.style.fill       = rgba2style(color);
+            this.wire.outBall.style.fill       = rgba2style(color);
 
-            this.wire. inBall.style.r            = 3 * graphView.zoom;
-            this.wire.outBall.style.r            = 3 * graphView.zoom;
+            this.wire.xp1  .style.strokeWeight =
+            this.wire.xp2  .style.strokeWeight =
+            this.wire.curve.style.strokeWeight = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * graphView.zoom;
 
-            this.wire.style.zIndex               = 0;
+            this.wire. inBall.style.r          = 3 * graphView.zoom;
+            this.wire.outBall.style.r          = 3 * graphView.zoom;
+
+            this.wire.style.zIndex             = 0;
+
+
+            const isSolo = 
+                   graphView._soloNode
+                && (   this. input.node == graphView._soloNode
+                    || this.output.node == graphView._soloNode);
+            
+            const showWire = 
+                   graphView.showWires 
+                || isSolo;
+
+            const isReordering =   
+                   isNaN(newReorderIndex)
+                || isNaN(oldReorderIndex);
+
+
+            show(this.wire,         showWire && (this != graphView.savedConn || isReordering));
+            show(this.wire.curve,   showWire && showCurve && (this != graphView.savedConn || isReordering));
+            show(this.wire.xp1,     showWire && (this != graphView.savedConn || isReordering));
+            show(this.wire.xp2,     showWire && (this != graphView.savedConn || isReordering));
+            show(this.wire.outBall, showWire && (!graphView.tempConn || graphView.tempConn.output));
+            show(this.wire. inBall, showWire && (!graphView.tempConn || graphView.tempConn. input));
         };
     }
 

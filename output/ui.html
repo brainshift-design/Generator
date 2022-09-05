@@ -5333,7 +5333,7 @@ extends GType
     {
         return [
             ...this.color.toRgb(),
-            this.opacity.value ];
+            this.opacity.value / 100 ];
     }
 
 
@@ -8403,7 +8403,7 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logActions:       true, 
+    logActions:       false, 
 
     logRawLoading:    false, 
     logLoading:       false, 
@@ -8411,12 +8411,12 @@ const settings =
     logRawSaving:     false, 
     
     logRawRequests:   false, 
-    logRequests:      true, 
+    logRequests:      false, 
     
     logRawValues:     false, 
-    logValues:        true, 
+    logValues:        false, 
 
-    logObjectUpdates: true
+    logObjectUpdates: false
 };
 
 
@@ -10980,10 +10980,10 @@ function computedStyle2rgba(obj, style)
 
 
 
-function getTextColorFromBackColor(rgb, opacity = 100)
+function getTextColorFromBackColor(rgb, opacity = 1)
 {
     return !rgbIsNaN(rgb)
-           ? (opacity >= 50
+           ? (opacity >= 0.5
                ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
                : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
            : (isDarkMode() ? [1, 1, 1, 0.7] : [0, 0, 0, 0.92]);
@@ -10995,6 +10995,15 @@ function getDefaultWarningStyle(rgb)
 {
     return !rgbIsNaN(rgb)
          ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
+         : (isDarkMode() ? '#ffffff08' : '#00000006'); 
+}
+
+
+
+function getWireWarningStyle(rgb)
+{
+    return !rgbIsNaN(rgb)
+         ? (isDark(rgb)  ? (isDarkMode() ? '#ffffff22': '#ffffff44') : '#00000022')
          : (isDarkMode() ? '#ffffff08' : '#00000006'); 
 }
 
@@ -16389,10 +16398,10 @@ function computedStyle2rgba(obj, style)
 
 
 
-function getTextColorFromBackColor(rgb, opacity = 100)
+function getTextColorFromBackColor(rgb, opacity = 1)
 {
     return !rgbIsNaN(rgb)
-           ? (opacity >= 50
+           ? (opacity >= 0.5
                ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
                : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
            : (isDarkMode() ? [1, 1, 1, 0.7] : [0, 0, 0, 0.92]);
@@ -16404,6 +16413,15 @@ function getDefaultWarningStyle(rgb)
 {
     return !rgbIsNaN(rgb)
          ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
+         : (isDarkMode() ? '#ffffff08' : '#00000006'); 
+}
+
+
+
+function getWireWarningStyle(rgb)
+{
+    return !rgbIsNaN(rgb)
+         ? (isDark(rgb)  ? (isDarkMode() ? '#ffffff22': '#ffffff44') : '#00000022')
          : (isDarkMode() ? '#ffffff08' : '#00000006'); 
 }
 
@@ -17682,7 +17700,7 @@ extends GType
     {
         return [
             ...this.color.toRgb(),
-            this.opacity.value ];
+            this.opacity.value / 100 ];
     }
 
 
@@ -20752,7 +20770,7 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logActions:       true, 
+    logActions:       false, 
 
     logRawLoading:    false, 
     logLoading:       false, 
@@ -20760,12 +20778,12 @@ const settings =
     logRawSaving:     false, 
     
     logRawRequests:   false, 
-    logRequests:      true, 
+    logRequests:      false, 
     
     logRawValues:     false, 
-    logValues:        true, 
+    logValues:        false, 
 
-    logObjectUpdates: true
+    logObjectUpdates: false
 };
 
 
@@ -25570,6 +25588,8 @@ function updateWires(wires)
 
         show(wires[i],         (graphView.showWires || isSolo) && conn != graphView.savedConn);
         show(wires[i].curve,   (graphView.showWires || isSolo) && conn != graphView.savedConn);
+        show(wires[i].xp1,     (graphView.showWires || isSolo) && conn != graphView.savedConn);
+        show(wires[i].xp2,     (graphView.showWires || isSolo) && conn != graphView.savedConn);
         show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
         show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
     }
@@ -26220,7 +26240,7 @@ extends Parameter
         const rgb = this.value.toRgb();
 
         const col = 
-            rgbIsOk(rgb)
+            !rgbIsNaN(rgb)
             ? (isDark(rgb)
                ? [1, 1, 1]
                : [0, 0, 0])
@@ -26229,11 +26249,16 @@ extends Parameter
                : [0, 0, 0]);
 
 
-        this.input.wireColor   = rgb;
+        const noColor = 
+            isDarkMode()
+            ? rgbNoColorDark
+            : rgbNoColorLight;
+
+        this.input.wireColor   = !rgbIsNaN(rgb) ? rgb : noColor;
         this.input.colorLight  = 
         this.input.colorDark   = rgb_a(col, 0.2);
 
-        this.output.wireColor  = rgb;
+        this.output.wireColor  = !rgbIsNaN(rgb) ? rgb : noColor;
         this.output.colorLight =
         this.output.colorDark  = rgb_a(col, 0.2);
 
@@ -26556,15 +26581,15 @@ extends Parameter
 
     updateControls()
     {
-        const rgbVal   = this.value.color.toRgb();
-        const rgbaText = getTextColorFromBackColor(rgbVal, this.opacityControl.value);
+        const rgbaVal  = this.value.toRgba();
+        const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
+console.log('rgbaVal =', rgbaVal);
 
-
-        this.input.wireColor   = rgbVal;
+        this.input.wireColor   = rgbaVal;
         this.input.colorLight  = 
         this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
-        this.output.wireColor  = rgbVal;
+        this.output.wireColor  = rgbaVal;
         this.output.colorLight =
         this.output.colorDark  = rgb_a(rgbaText, 0.2);
 
@@ -26583,10 +26608,10 @@ extends Parameter
         this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
         
-        const fillStyle = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
+        const fillStyle = rgba2style(rgb_a(rgbaVal, this.opacityControl.value/100));
 
         this.controlWrapper.style.background = 
-              !rgbIsNaN(rgbVal) 
+              !rgbIsNaN(rgbaVal) 
             && this.value.opacity.isValid()
             ? fillStyle 
             : 'transparent'; 
@@ -28306,16 +28331,16 @@ class Connection
         this.wire. inputPos                  = point_NaN;
   
         this.wire.xp1                        = createSvg('path');
-        this.wire.xp1.style.fill             = 'none';
         this.wire.xp1.style.position         = 'absolute';
+        this.wire.xp1.style.fill             = 'none';
 
         this.wire.xp2                        = createSvg('path');
-        this.wire.xp2.style.fill             = 'none';
         this.wire.xp2.style.position         = 'absolute';
+        this.wire.xp2.style.fill             = 'none';
 
         this.wire.curve                      = createSvg('path');
-        this.wire.curve.style.fill           = 'none';
         this.wire.curve.style.position       = 'absolute';
+        this.wire.curve.style.fill           = 'none';
 
         this.wire.outBall                    = createSvg('circle');
         this.wire.outBall.style.position     = 'absolute';
@@ -28347,27 +28372,6 @@ class Connection
             this.wire.setAttribute('width',  cw);
             this.wire.setAttribute('height', ch);
             this.wire.setAttribute('stroke-width', graphView.zoom);
-            
-            const isSolo = 
-                   graphView._soloNode
-                && (   this. input.node == graphView._soloNode
-                    || this.output.node == graphView._soloNode);
-            
-            const showWire = 
-                   graphView.showWires 
-                || isSolo;
-
-            const isReordering =   
-                   isNaN(newReorderIndex)
-                || isNaN(oldReorderIndex);
-
-
-            show(this.wire,         showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire.curve,   showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire.xp1,     showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire.xp2,     showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire.outBall, showWire && (!graphView.tempConn || graphView.tempConn.output));
-            show(this.wire. inBall, showWire && (!graphView.tempConn || graphView.tempConn. input));
         };
 
 
@@ -28493,17 +28497,22 @@ class Connection
                   + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
                 : 'none';
 
-            if (      this.output
-                   && this.output.wireColor[3] < 1
-                ||    this.input
-                   && this.input.wireColor[3] < 1)
+             
+            let showCurve = true;
+
+            if (      this.output && this.output.wireColor[3] < 1
+                ||    this. input && this. input.wireColor[3] < 1)
             {
+                showCurve = 
+                       this.output && this.output.wireColor[3] > 0
+                    || this. input && this. input.wireColor[3] > 0;
+
                 this.wire.xp1.style.display          = 'inline';
-                this.wire.xp1.style.stroke           = isDarkMode() ? '#111' : '#c8c8c8';
+                this.wire.xp1.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
                 this.wire.xp1.style.strokeDasharray  = 7 * graphView.zoom;
 
                 this.wire.xp2.style.display          = 'inline';
-                this.wire.xp2.style.stroke           = isDarkMode() ? '#4d4d4d' : '#fff';
+                this.wire.xp2.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//isDarkMode() ? '#4d4d4d' : '#fff';
                 this.wire.xp2.style.strokeDasharray  = 7 * graphView.zoom;
                 this.wire.xp2.style.strokeDashoffset = 7 * graphView.zoom;
             }
@@ -28513,18 +28522,41 @@ class Connection
                 this.wire.xp2.style.display = 'none';
             }
 
-            this.wire.  curve.style.stroke       = rgba2style(color);
-            this.wire. inBall.style.fill         = rgba2style(color);
-            this.wire.outBall.style.fill         = rgba2style(color);
 
-            this.wire.xp1  .style.strokeWeight   =
-            this.wire.xp2  .style.strokeWeight   =
-            this.wire.curve.style.strokeWeight   = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * graphView.zoom;
+            this.wire.  curve.style.stroke     = rgba2style(color);
+            this.wire. inBall.style.fill       = rgba2style(color);
+            this.wire.outBall.style.fill       = rgba2style(color);
 
-            this.wire. inBall.style.r            = 3 * graphView.zoom;
-            this.wire.outBall.style.r            = 3 * graphView.zoom;
+            this.wire.xp1  .style.strokeWeight =
+            this.wire.xp2  .style.strokeWeight =
+            this.wire.curve.style.strokeWeight = (1.2 + 0.3 * bright * (1 + 1/(graphView.zoom/4))) * graphView.zoom;
 
-            this.wire.style.zIndex               = 0;
+            this.wire. inBall.style.r          = 3 * graphView.zoom;
+            this.wire.outBall.style.r          = 3 * graphView.zoom;
+
+            this.wire.style.zIndex             = 0;
+
+
+            const isSolo = 
+                   graphView._soloNode
+                && (   this. input.node == graphView._soloNode
+                    || this.output.node == graphView._soloNode);
+            
+            const showWire = 
+                   graphView.showWires 
+                || isSolo;
+
+            const isReordering =   
+                   isNaN(newReorderIndex)
+                || isNaN(oldReorderIndex);
+
+
+            show(this.wire,         showWire && (this != graphView.savedConn || isReordering));
+            show(this.wire.curve,   showWire && showCurve && (this != graphView.savedConn || isReordering));
+            show(this.wire.xp1,     showWire && (this != graphView.savedConn || isReordering));
+            show(this.wire.xp2,     showWire && (this != graphView.savedConn || isReordering));
+            show(this.wire.outBall, showWire && (!graphView.tempConn || graphView.tempConn.output));
+            show(this.wire. inBall, showWire && (!graphView.tempConn || graphView.tempConn. input));
         };
     }
 
@@ -31186,14 +31218,19 @@ extends Operator
         //console.log(this.id + '.OpColorBase.updateHeader()');
 
 
-        const colors  = this.getHeaderColors();
-        const noColor = [0.7, 0.7, 0.7];
+        const colors = this.getHeaderColors();
 
+        const noColor = 
+            isDarkMode()
+            ? rgbNoColorDark
+            : rgbNoColorLight;
+        
 
         this.header.style.background = 
               rgbIsOk(colors.back)
             ? rgb2style(colors.back)
             : 'transparent';
+
 
         for (const input of this.inputs.filter(i => !i.param))
         {
@@ -31202,18 +31239,20 @@ extends Operator
                 ? colors.back 
                 : noColor;
 
-            input.color = colors.input;
+            input.colorLight =
+            input.colorDark  = colors.input;
         }
 
 
         for (const output of this.outputs.filter(o => !o.param))
         {
             output.wireColor = 
-                  rgbIsOk(colors.back)   
+                  !rgbIsNaN(colors.back)   
                 ? colors.back 
                 : noColor;
 
-            output.color = colors.output;
+            output.colorLight = 
+            output.colorDark  = colors.output;
         }
 
 
@@ -31232,16 +31271,13 @@ extends Operator
             ? rgb_NaN
             : dataColor2rgb(this._color);
             
-        const rgbText   = getTextColorFromBackColor(rgbBack);
-        const colInput  = rgbText;
-        const colOutput = rgbText;
-
+        const rgbText = getTextColorFromBackColor(rgbBack);
 
         return {
             back:   rgbBack, 
-            text:   rgbText,
-            input:  colInput,
-            output: colOutput };
+            text:   rgb_a(rgbText, 0.9),
+            input:  rgb_a(rgbText, 0.2),
+            output: rgb_a(rgbText, 0.2) };
     }
 
 
@@ -34378,13 +34414,16 @@ extends OpColorBase
             : 'transparent';
 
         
-        const noColor = [0.7, 0.7, 0.7];
+        const noColor = 
+            isDarkMode()
+            ? rgbNoColorDark
+            : rgbNoColorLight;
 
-        this.inputs[0] .wireColor  = rgbIsOk(colors.back) ? colors.back : noColor;
+        this.inputs[0] .wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = rgb_a(colors.input, 0.2);
 
-        this.outputs[0].wireColor  = rgbIsOk(colors.back) ? colors.back : noColor;
+        this.outputs[0].wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = rgb_a(colors.output, 0.2);
 
@@ -34403,7 +34442,7 @@ extends OpColorBase
         const colors = super.getHeaderColors();
  
         colors.back = rgb_a(colors.back, this.paramOpacity.value.value/100);
-        colors.text = getTextColorFromBackColor(colors.back, this.paramOpacity.value.value/100);
+        colors.text = getTextColorFromBackColor(colors.back, colors.back[3]);
 
         return colors;
     }
@@ -34598,13 +34637,16 @@ extends OpColorBase
             : 'transparent';
 
 
-        const noColor = [0.7, 0.7, 0.7];
+        const noColor = 
+            isDarkMode()
+            ? rgbNoColorDark
+            : rgbNoColorLight;
 
-        this.inputs[0] .wireColor  = rgbIsOk(colors.back) ? colors.back : noColor;
+        this.inputs[0] .wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = rgb_a(colors.input, 0.2);
 
-        this.outputs[0].wireColor  = rgbIsOk(colors.back) ? colors.back : noColor;
+        this.outputs[0].wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = rgb_a(colors.output, 0.2);
 
@@ -37473,9 +37515,12 @@ const rgbNumberDark        = hex2rgb('#505050');
 const rgbActiveNumberDark  = hex2rgb('#888');
 
 
-const rgbColor             = hex2rgb('#ddd');   //hex2rgb('#cc33cc'); // these are normally
-const rgbActiveColor       = hex2rgb('#787878');//hex2rgb('#ff00ff'); // not used
+const rgbColor             = hex2rgb('#ddd');   
+const rgbActiveColor       = hex2rgb('#787878');
 
+
+const rgbNoColorLight      = [0.95, 0.95, 0.95];
+const rgbNoColorDark       = [0.3, 0.3, 0.3];
 
 
 var rgbDocumentBody;

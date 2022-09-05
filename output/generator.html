@@ -3571,7 +3571,7 @@ extends GType
     {
         return [
             ...this.color.toRgb(),
-            this.opacity.value ];
+            this.opacity.value / 100 ];
     }
 
 
@@ -6641,7 +6641,7 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logActions:       true, 
+    logActions:       false, 
 
     logRawLoading:    false, 
     logLoading:       false, 
@@ -6649,12 +6649,12 @@ const settings =
     logRawSaving:     false, 
     
     logRawRequests:   false, 
-    logRequests:      true, 
+    logRequests:      false, 
     
     logRawValues:     false, 
-    logValues:        true, 
+    logValues:        false, 
 
-    logObjectUpdates: true
+    logObjectUpdates: false
 };
 
 
@@ -9218,10 +9218,10 @@ function computedStyle2rgba(obj, style)
 
 
 
-function getTextColorFromBackColor(rgb, opacity = 100)
+function getTextColorFromBackColor(rgb, opacity = 1)
 {
     return !rgbIsNaN(rgb)
-           ? (opacity >= 50
+           ? (opacity >= 0.5
                ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
                : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
            : (isDarkMode() ? [1, 1, 1, 0.7] : [0, 0, 0, 0.92]);
@@ -9233,6 +9233,15 @@ function getDefaultWarningStyle(rgb)
 {
     return !rgbIsNaN(rgb)
          ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
+         : (isDarkMode() ? '#ffffff08' : '#00000006'); 
+}
+
+
+
+function getWireWarningStyle(rgb)
+{
+    return !rgbIsNaN(rgb)
+         ? (isDark(rgb)  ? (isDarkMode() ? '#ffffff22': '#ffffff44') : '#00000022')
          : (isDarkMode() ? '#ffffff08' : '#00000006'); 
 }
 

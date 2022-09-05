@@ -414,7 +414,7 @@ const settings =
     showNodeId:       false, // instead of name
     
     logMessages:      false,
-    logActions:       true, 
+    logActions:       false, 
 
     logRawLoading:    false, 
     logLoading:       false, 
@@ -422,12 +422,12 @@ const settings =
     logRawSaving:     false, 
     
     logRawRequests:   false, 
-    logRequests:      true, 
+    logRequests:      false, 
     
     logRawValues:     false, 
-    logValues:        true, 
+    logValues:        false, 
 
-    logObjectUpdates: true
+    logObjectUpdates: false
 };
 
 

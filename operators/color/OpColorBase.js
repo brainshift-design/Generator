@@ -42,14 +42,19 @@ extends Operator
         //console.log(this.id + '.OpColorBase.updateHeader()');
 
 
-        const colors  = this.getHeaderColors();
-        const noColor = [0.7, 0.7, 0.7];
+        const colors = this.getHeaderColors();
 
+        const noColor = 
+            isDarkMode()
+            ? rgbNoColorDark
+            : rgbNoColorLight;
+        
 
         this.header.style.background = 
               rgbIsOk(colors.back)
             ? rgb2style(colors.back)
             : 'transparent';
+
 
         for (const input of this.inputs.filter(i => !i.param))
         {
@@ -58,18 +63,20 @@ extends Operator
                 ? colors.back 
                 : noColor;
 
-            input.color = colors.input;
+            input.colorLight =
+            input.colorDark  = colors.input;
         }
 
 
         for (const output of this.outputs.filter(o => !o.param))
         {
             output.wireColor = 
-                  rgbIsOk(colors.back)   
+                  !rgbIsNaN(colors.back)   
                 ? colors.back 
                 : noColor;
 
-            output.color = colors.output;
+            output.colorLight = 
+            output.colorDark  = colors.output;
         }
 
 
@@ -88,16 +95,13 @@ extends Operator
             ? rgb_NaN
             : dataColor2rgb(this._color);
             
-        const rgbText   = getTextColorFromBackColor(rgbBack);
-        const colInput  = rgbText;
-        const colOutput = rgbText;
-
+        const rgbText = getTextColorFromBackColor(rgbBack);
 
         return {
             back:   rgbBack, 
-            text:   rgbText,
-            input:  colInput,
-            output: colOutput };
+            text:   rgb_a(rgbText, 0.9),
+            input:  rgb_a(rgbText, 0.2),
+            output: rgb_a(rgbText, 0.2) };
     }
 
 

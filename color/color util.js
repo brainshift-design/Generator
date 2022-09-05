@@ -192,10 +192,10 @@ function computedStyle2rgba(obj, style)
 
 
 
-function getTextColorFromBackColor(rgb, opacity = 100)
+function getTextColorFromBackColor(rgb, opacity = 1)
 {
     return !rgbIsNaN(rgb)
-           ? (opacity >= 50
+           ? (opacity >= 0.5
                ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
                : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
            : (isDarkMode() ? [1, 1, 1, 0.7] : [0, 0, 0, 0.92]);
@@ -207,5 +207,14 @@ function getDefaultWarningStyle(rgb)
 {
     return !rgbIsNaN(rgb)
          ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
+         : (isDarkMode() ? '#ffffff08' : '#00000006'); 
+}
+
+
+
+function getWireWarningStyle(rgb)
+{
+    return !rgbIsNaN(rgb)
+         ? (isDark(rgb)  ? (isDarkMode() ? '#ffffff22': '#ffffff44') : '#00000022')
          : (isDarkMode() ? '#ffffff08' : '#00000006'); 
 }

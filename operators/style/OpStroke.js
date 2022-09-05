@@ -186,13 +186,16 @@ extends OpColorBase
             : 'transparent';
 
 
-        const noColor = [0.7, 0.7, 0.7];
+        const noColor = 
+            isDarkMode()
+            ? rgbNoColorDark
+            : rgbNoColorLight;
 
-        this.inputs[0] .wireColor  = rgbIsOk(colors.back) ? colors.back : noColor;
+        this.inputs[0] .wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = rgb_a(colors.input, 0.2);
 
-        this.outputs[0].wireColor  = rgbIsOk(colors.back) ? colors.back : noColor;
+        this.outputs[0].wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = rgb_a(colors.output, 0.2);
 

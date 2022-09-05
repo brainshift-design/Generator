@@ -127,7 +127,7 @@ extends Parameter
         const rgb = this.value.toRgb();
 
         const col = 
-            rgbIsOk(rgb)
+            !rgbIsNaN(rgb)
             ? (isDark(rgb)
                ? [1, 1, 1]
                : [0, 0, 0])
@@ -136,11 +136,16 @@ extends Parameter
                : [0, 0, 0]);
 
 
-        this.input.wireColor   = rgb;
+        const noColor = 
+            isDarkMode()
+            ? rgbNoColorDark
+            : rgbNoColorLight;
+
+        this.input.wireColor   = !rgbIsNaN(rgb) ? rgb : noColor;
         this.input.colorLight  = 
         this.input.colorDark   = rgb_a(col, 0.2);
 
-        this.output.wireColor  = rgb;
+        this.output.wireColor  = !rgbIsNaN(rgb) ? rgb : noColor;
         this.output.colorLight =
         this.output.colorDark  = rgb_a(col, 0.2);
 

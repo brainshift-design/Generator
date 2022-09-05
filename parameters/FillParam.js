@@ -233,15 +233,15 @@ extends Parameter
 
     updateControls()
     {
-        const rgbVal   = this.value.color.toRgb();
-        const rgbaText = getTextColorFromBackColor(rgbVal, this.opacityControl.value);
+        const rgbaVal  = this.value.toRgba();
+        const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
+console.log('rgbaVal =', rgbaVal);
 
-
-        this.input.wireColor   = rgbVal;
+        this.input.wireColor   = rgbaVal;
         this.input.colorLight  = 
         this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
-        this.output.wireColor  = rgbVal;
+        this.output.wireColor  = rgbaVal;
         this.output.colorLight =
         this.output.colorDark  = rgb_a(rgbaText, 0.2);
 
@@ -260,10 +260,10 @@ extends Parameter
         this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
         
-        const fillStyle = rgba2style(rgb_a(rgbVal, this.opacityControl.value/100));
+        const fillStyle = rgba2style(rgb_a(rgbaVal, this.opacityControl.value/100));
 
         this.controlWrapper.style.background = 
-              !rgbIsNaN(rgbVal) 
+              !rgbIsNaN(rgbaVal) 
             && this.value.opacity.isValid()
             ? fillStyle 
             : 'transparent'; 

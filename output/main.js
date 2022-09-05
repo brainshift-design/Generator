@@ -241,15 +241,15 @@ function logReqNode(node, parse) {
 const settings = {
     showNodeId: false,
     logMessages: false,
-    logActions: true,
+    logActions: false,
     logRawLoading: false,
     logLoading: false,
     logRawSaving: false,
     logRawRequests: false,
-    logRequests: true,
+    logRequests: false,
     logRawValues: false,
-    logValues: true,
-    logObjectUpdates: true
+    logValues: false,
+    logObjectUpdates: false
 };
 const figObjectArrays = []; // {nodeId, [objects]}
 function figUpdate(msg) {

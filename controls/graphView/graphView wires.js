@@ -113,6 +113,8 @@ function updateWires(wires)
 
         show(wires[i],         (graphView.showWires || isSolo) && conn != graphView.savedConn);
         show(wires[i].curve,   (graphView.showWires || isSolo) && conn != graphView.savedConn);
+        show(wires[i].xp1,     (graphView.showWires || isSolo) && conn != graphView.savedConn);
+        show(wires[i].xp2,     (graphView.showWires || isSolo) && conn != graphView.savedConn);
         show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
         show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
     }
