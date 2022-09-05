@@ -488,7 +488,7 @@ class Operator
 
 
 
-    updateHeaderLabel(rgbBack)
+    updateHeaderLabel()
     {
         this.label.innerHTML = 
             settings.showNodeId 
@@ -497,7 +497,8 @@ class Operator
         
         const colors = this.getHeaderColors();
 
-        this.label.style.color = colors.textStyle;
+        this.label.style.color      = colors.textStyle;
+        this.label.style.fontWeight = this.active ? 'bold' : 'normal';
 
         this.label.style.left = '50%';
         this.label.style.top  = '50%';

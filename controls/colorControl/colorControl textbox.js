@@ -278,6 +278,6 @@ function initColorControlTextbox(control)
             : rgb2hex(rgb).toUpperCase();
                            
         control.textbox.savedValue  = control.textbox.value;
-        control.textbox.style.color = control.text.style.color;
+        //control.textbox.style.color = control.text.style.color;
     };
 }

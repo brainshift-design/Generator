@@ -9218,14 +9218,12 @@ function computedStyle2rgba(obj, style)
 
 
 
-function getTextColorFromBackColor(rgb, opacity = 1)
+function getTextColorFromBackColor(rgb, opacity = 100)
 {
     return !rgbIsNaN(rgb)
- 
-           ? (opacity >= 0.5
+           ? (opacity >= 50
                ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
                : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
-
            : (isDarkMode() ? [1, 1, 1, 0.7] : [0, 0, 0, 0.92]);
 }
 

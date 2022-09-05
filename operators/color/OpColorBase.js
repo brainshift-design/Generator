@@ -51,7 +51,6 @@ extends Operator
             ? rgb2style(colors.back)
             : 'transparent';
 
-
         for (const input of this.inputs.filter(i => !i.param))
         {
             input.wireColor = 

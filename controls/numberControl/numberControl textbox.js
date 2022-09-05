@@ -306,7 +306,7 @@ function initNumberControlTextbox(control)
         control.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         control.textbox.style.outline   = 'none';
         control.textbox.style.textAlign = 'center';
-        control.textbox.style.color     = control.text.style.color;
+        //control.textbox.style.color     = control.text.style.color;
 
 
         const isConnected =    

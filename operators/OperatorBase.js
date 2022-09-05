@@ -14,7 +14,6 @@ extends Operator
         this.header.style.backgroundColor = rgb2style_a(colors.back, 0.95);
 
         this.label .style.color           = colors.textStyle;
-        this.label .style.fontWeight      = this.active ? 'bold' : 'normal';
 
 
         for (const input  of this.inputs .filter(i => !i.param)) input .color = colors.input;

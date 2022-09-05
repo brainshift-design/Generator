@@ -128,11 +128,11 @@ function initColorControl(param, control, width, height, id, name, showName, def
                 control. textStyleDark  = 'white';
             }
         }
-        else
-        {
-            control.textStyleDark = '#000';
-            control.textStyleDark = '#fff';
-        }
+        // else
+        // {
+        //     control.textStyleDark = '#000';
+        //     control.textStyleDark = '#fff';
+        // }
 
 
         control.update();
@@ -181,7 +181,8 @@ function initColorControl(param, control, width, height, id, name, showName, def
                ? control.backStyleDark 
                : control.backStyleLight);
 
-        control.text.style.color = 
+        control.text   .style.color = 
+        control.textbox.style.color = 
             isDarkMode() 
             ? control.textStyleDark 
             : control.textStyleLight;

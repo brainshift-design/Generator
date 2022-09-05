@@ -258,9 +258,10 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
     control.updateColors = function()
     {
-        control     .style.background = isDarkMode() ? control. backStyleDark : control. backStyleLight;
-        control.bar .style.background = isDarkMode() ? control.valueStyleDark : control.valueStyleLight;
-        control.text.style.color      = isDarkMode() ? control. textStyleDark : control. textStyleLight;
+        control        .style.background = isDarkMode() ? control. backStyleDark : control. backStyleLight;
+        control.bar    .style.background = isDarkMode() ? control.valueStyleDark : control.valueStyleLight;
+        control.text   .style.color      = 
+        control.textbox.style.color      = isDarkMode() ? control. textStyleDark : control. textStyleLight;
     };
 
 

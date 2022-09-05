@@ -10980,14 +10980,12 @@ function computedStyle2rgba(obj, style)
 
 
 
-function getTextColorFromBackColor(rgb, opacity = 1)
+function getTextColorFromBackColor(rgb, opacity = 100)
 {
     return !rgbIsNaN(rgb)
- 
-           ? (opacity >= 0.5
+           ? (opacity >= 50
                ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
                : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
-
            : (isDarkMode() ? [1, 1, 1, 0.7] : [0, 0, 0, 0.92]);
 }
 
@@ -16391,14 +16389,12 @@ function computedStyle2rgba(obj, style)
 
 
 
-function getTextColorFromBackColor(rgb, opacity = 1)
+function getTextColorFromBackColor(rgb, opacity = 100)
 {
     return !rgbIsNaN(rgb)
- 
-           ? (opacity >= 0.5
+           ? (opacity >= 50
                ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
                : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
-
            : (isDarkMode() ? [1, 1, 1, 0.7] : [0, 0, 0, 0.92]);
 }
 
@@ -21736,7 +21732,7 @@ function initNumberControlTextbox(control)
         control.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         control.textbox.style.outline   = 'none';
         control.textbox.style.textAlign = 'center';
-        control.textbox.style.color     = control.text.style.color;
+        //control.textbox.style.color     = control.text.style.color;
 
 
         const isConnected =    
@@ -22038,9 +22034,10 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
     control.updateColors = function()
     {
-        control     .style.background = isDarkMode() ? control. backStyleDark : control. backStyleLight;
-        control.bar .style.background = isDarkMode() ? control.valueStyleDark : control.valueStyleLight;
-        control.text.style.color      = isDarkMode() ? control. textStyleDark : control. textStyleLight;
+        control        .style.background = isDarkMode() ? control. backStyleDark : control. backStyleLight;
+        control.bar    .style.background = isDarkMode() ? control.valueStyleDark : control.valueStyleLight;
+        control.text   .style.color      = 
+        control.textbox.style.color      = isDarkMode() ? control. textStyleDark : control. textStyleLight;
     };
 
 
@@ -22934,7 +22931,7 @@ function initColorControlTextbox(control)
             : rgb2hex(rgb).toUpperCase();
                            
         control.textbox.savedValue  = control.textbox.value;
-        control.textbox.style.color = control.text.style.color;
+        //control.textbox.style.color = control.text.style.color;
     };
 }
 
@@ -23069,11 +23066,11 @@ function initColorControl(param, control, width, height, id, name, showName, def
                 control. textStyleDark  = 'white';
             }
         }
-        else
-        {
-            control.textStyleDark = '#000';
-            control.textStyleDark = '#fff';
-        }
+        // else
+        // {
+        //     control.textStyleDark = '#000';
+        //     control.textStyleDark = '#fff';
+        // }
 
 
         control.update();
@@ -23122,7 +23119,8 @@ function initColorControl(param, control, width, height, id, name, showName, def
                ? control.backStyleDark 
                : control.backStyleLight);
 
-        control.text.style.color = 
+        control.text   .style.color = 
+        control.textbox.style.color = 
             isDarkMode() 
             ? control.textStyleDark 
             : control.textStyleLight;
@@ -29058,7 +29056,7 @@ class Operator
 
 
 
-    updateHeaderLabel(rgbBack)
+    updateHeaderLabel()
     {
         this.label.innerHTML = 
             settings.showNodeId 
@@ -29067,7 +29065,8 @@ class Operator
         
         const colors = this.getHeaderColors();
 
-        this.label.style.color = colors.textStyle;
+        this.label.style.color      = colors.textStyle;
+        this.label.style.fontWeight = this.active ? 'bold' : 'normal';
 
         this.label.style.left = '50%';
         this.label.style.top  = '50%';
@@ -29426,7 +29425,6 @@ extends Operator
         this.header.style.backgroundColor = rgb2style_a(colors.back, 0.95);
 
         this.label .style.color           = colors.textStyle;
-        this.label .style.fontWeight      = this.active ? 'bold' : 'normal';
 
 
         for (const input  of this.inputs .filter(i => !i.param)) input .color = colors.input;
@@ -31139,7 +31137,6 @@ extends Operator
               rgbIsOk(colors.back)
             ? rgb2style(colors.back)
             : 'transparent';
-
 
         for (const input of this.inputs.filter(i => !i.param))
         {
