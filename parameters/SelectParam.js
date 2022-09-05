@@ -32,9 +32,9 @@ extends NumberParamBase
             this.id,
             this.name, 
             showName,
+            defaultValue,
             0,
             options.length-1,
-            defaultValue,
             0,   // decimals
             0.02);
 

@@ -84,9 +84,9 @@ extends Parameter
             this.id,
             'opacity', 
             false,
+            defaultValue.opacity.value,
             0,
             100,
-            defaultValue.opacity.value,
             0);
 
         this.opacityControl.setSuffix('%', true);

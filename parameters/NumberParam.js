@@ -33,9 +33,9 @@ extends NumberParamBase
             this.id,
             this.name, 
             showName,
+            defaultValue,
             min,
             max,
-            defaultValue,
             decimals,   
             dragScale); 
 

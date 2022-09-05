@@ -97,7 +97,6 @@ extends EventTarget
     
     input_getValuesForUndo()
     {
-        console.log('this =', this);
         return [[
             this.param.id, 
             this.param.value]];

@@ -11,7 +11,7 @@ function initNumberControlChildren(control)
 
 
 
-function initNumberControl(param, control, width, height, id, name, showName, min, max, defaultValue, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+function initNumberControl(param, control, width, height, id, name, showName, defaultValue, min, max, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
 {
     control.param                  = param;
      
@@ -21,16 +21,19 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.style.width            = width;
     control.style.height           = height;
              
+    control.value                  = defaultValue;
+
     control.min                    = min;
     control.max                    = max;
-    control.value                  = defaultValue;
+
+    control.displayMin             = min;
+    control.displayMax             = max;
+
     control.acc                    = acc;
      
     control.dec                    =
     control.displayDec             = dec;
          
-    control.displayMin             = min;
-    control.displayMax             = max;
     control.valueScale             = 1;
                 
     control.id                     = id;

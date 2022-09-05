@@ -14,8 +14,7 @@ extends Parameter
 
     checkers;
 
-    colorControl;
-     textControl;
+    control;
 
     
     // get valueText() { return this.colorControl.valueText; }
@@ -36,38 +35,43 @@ extends Parameter
         super(FILL, id, name);
 
 
-        this.checkers                     = createDiv();
+        this.checkers                = createDiv();
+        this.control                 = createDiv();
 
-        this.colorControl                 = createDiv();
-        this. textControl                 = createDiv('colorControlText');
-
-        this.defaultValue                 = defaultValue;
-        this.value                        = defaultValue;
+        this.defaultValue            = defaultValue;
+        this.value                   = defaultValue;
 
         
-        this.checkers    .style.position  = 'absolute';
-        this.checkers    .style.width     = '100%';
-        this.checkers    .style.height    = '20px';
-        
+        this.checkers.style.position = 'absolute';
+        this.checkers.style.width    = '100%';
+        this.checkers.style.height   = '20px';
 
-        this.colorControl.style.position  = 'absolute';
-        this.colorControl.style.display   = 'block';
-        this.colorControl.style.width     = '100%';
-        this.colorControl.style.height    = '20px';
+        this.control.style.position  = 'absolute';
+        this.control.style.display   = 'block';
+        this.control.style.width     = '100%';
+        this.control.style.height    = '20px';
 
-        this.textControl .style.width     = '100%';
-        this.textControl .style.textAlign = 'center';
-    
 
         this._warningOverlay = createDiv('colorWarningOverlay');
         this._warningOverlay.style.zIndex = 21;
         this.div.appendChild(this._warningOverlay);
 
 
+        initNumberControl(
+            this,
+            this.control,
+            120, // width
+            20,  // height
+            this.id,
+            'stroke', 
+            true,
+            defaultValue.opacity.value,
+            0);
+
+
+
         this.div.appendChild(this.checkers);
-        
-        this.div.appendChild(this.colorControl);
-        this.div.appendChild(this. textControl);
+        this.div.appendChild(this.control);
 
        
         if (hasInput)  this.initInput(STROKE_TYPES);

@@ -21785,7 +21785,7 @@ function initNumberControlChildren(control)
 
 
 
-function initNumberControl(param, control, width, height, id, name, showName, min, max, defaultValue, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+function initNumberControl(param, control, width, height, id, name, showName, defaultValue, min, max, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
 {
     control.param                  = param;
      
@@ -21795,16 +21795,19 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
     control.style.width            = width;
     control.style.height           = height;
              
+    control.value                  = defaultValue;
+
     control.min                    = min;
     control.max                    = max;
-    control.value                  = defaultValue;
+
+    control.displayMin             = min;
+    control.displayMax             = max;
+
     control.acc                    = acc;
      
     control.dec                    =
     control.displayDec             = dec;
          
-    control.displayMin             = min;
-    control.displayMax             = max;
     control.valueScale             = 1;
                 
     control.id                     = id;
@@ -25675,7 +25678,6 @@ extends EventTarget
     
     input_getValuesForUndo()
     {
-        console.log('this =', this);
         return [[
             this.param.id, 
             this.param.value]];
@@ -25950,9 +25952,9 @@ extends NumberParamBase
             this.id,
             this.name, 
             showName,
+            defaultValue,
             min,
             max,
-            defaultValue,
             decimals,   
             dragScale); 
 
@@ -26051,9 +26053,9 @@ extends NumberParamBase
             this.id,
             this.name, 
             showName,
+            defaultValue,
             0,
             options.length-1,
-            defaultValue,
             0,   // decimals
             0.02);
 
@@ -26412,9 +26414,9 @@ extends Parameter
             this.id,
             'opacity', 
             false,
+            defaultValue.opacity.value,
             0,
             100,
-            defaultValue.opacity.value,
             0);
 
         this.opacityControl.setSuffix('%', true);
@@ -26777,8 +26779,7 @@ extends Parameter
 
     checkers;
 
-    colorControl;
-     textControl;
+    control;
 
     
     // get valueText() { return this.colorControl.valueText; }
@@ -26799,38 +26800,43 @@ extends Parameter
         super(FILL, id, name);
 
 
-        this.checkers                     = createDiv();
+        this.checkers                = createDiv();
+        this.control                 = createDiv();
 
-        this.colorControl                 = createDiv();
-        this. textControl                 = createDiv('colorControlText');
-
-        this.defaultValue                 = defaultValue;
-        this.value                        = defaultValue;
+        this.defaultValue            = defaultValue;
+        this.value                   = defaultValue;
 
         
-        this.checkers    .style.position  = 'absolute';
-        this.checkers    .style.width     = '100%';
-        this.checkers    .style.height    = '20px';
-        
+        this.checkers.style.position = 'absolute';
+        this.checkers.style.width    = '100%';
+        this.checkers.style.height   = '20px';
 
-        this.colorControl.style.position  = 'absolute';
-        this.colorControl.style.display   = 'block';
-        this.colorControl.style.width     = '100%';
-        this.colorControl.style.height    = '20px';
+        this.control.style.position  = 'absolute';
+        this.control.style.display   = 'block';
+        this.control.style.width     = '100%';
+        this.control.style.height    = '20px';
 
-        this.textControl .style.width     = '100%';
-        this.textControl .style.textAlign = 'center';
-    
 
         this._warningOverlay = createDiv('colorWarningOverlay');
         this._warningOverlay.style.zIndex = 21;
         this.div.appendChild(this._warningOverlay);
 
 
+        initNumberControl(
+            this,
+            this.control,
+            120, // width
+            20,  // height
+            this.id,
+            'stroke', 
+            true,
+            defaultValue.opacity.value,
+            0);
+
+
+
         this.div.appendChild(this.checkers);
-        
-        this.div.appendChild(this.colorControl);
-        this.div.appendChild(this. textControl);
+        this.div.appendChild(this.control);
 
        
         if (hasInput)  this.initInput(STROKE_TYPES);
