@@ -246,7 +246,6 @@ function initColorControlTextbox(control)
         control.textbox.style.outline   = 'none';
         control.textbox.style.textAlign = 'center';
 
-
         const isConnected =    
                control.param != null
             && control.param.input
@@ -278,22 +277,7 @@ function initColorControlTextbox(control)
             ? DISPLAY_INVALID
             : rgb2hex(rgb).toUpperCase();
                            
-        control.textbox.savedValue = control.textbox.value;
-
-        control.textbox.style.color = 
-            control.showColor
-            ? (isDarkMode() ? 'white' : 'black')
-            : (isDarkMode() ? 'white' : 'black');
-
-
-        control.textbox.style.color = 
-            control.showColor
-            ? (  !rgbIsOk(rgb) 
-               || isDark (rgb) 
-               ? 'white' 
-               : 'black')
-            : (isDarkMode() 
-               ? 'white' 
-               : 'black');
+        control.textbox.savedValue  = control.textbox.value;
+        control.textbox.style.color = control.text.style.color;
     };
 }

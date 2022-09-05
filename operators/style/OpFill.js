@@ -180,8 +180,5 @@ extends OpColorBase
 
 
         Operator.prototype.updateHeader.call(this);
-
-
-        //this.updateParamBack(this.header.offsetHeight);
     }
 }
