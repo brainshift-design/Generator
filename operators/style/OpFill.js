@@ -159,7 +159,7 @@ extends OpColorBase
                         
 
         this.header.style.background = 
-            !rgbIsNaN(colors.back) 
+            !rgbIsNaN(colors.back)
             ? rgba2style(colors.back) 
             : 'transparent';
 
@@ -180,5 +180,17 @@ extends OpColorBase
 
 
         Operator.prototype.updateHeader.call(this);
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+ 
+        colors.back = rgb_a(colors.back, this.paramOpacity.value.value/100);
+        colors.text = getTextColorFromBackColor(colors.back, this.paramOpacity.value.value/100);
+
+        return colors;
     }
 }

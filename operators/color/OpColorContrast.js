@@ -184,6 +184,20 @@ extends OpColorBase
 
 
 
+    updateHeaderLabel()
+    {
+        super.updateHeaderLabel();
+
+        let textStyle;
+
+          if (   this.inputs[0].connected 
+              && this.inputs[1].connected) this.label.style.color = rgb2style(this.labelColor);
+        else if (this.inputs[1].connected) this.label.style.color = rgba2style(colors.text);
+        else                               this.label.style.color = 'black';
+    }
+
+
+
     setRanges()
     {
         if (isDarkMode())
@@ -226,24 +240,5 @@ extends OpColorBase
         }
 
         this.paramValue.control.update();
-    }
-
-
-
-    getHeaderColors()
-    {
-        const colors = super.getHeaderColors();
-
-
-        if (   this.inputs[0].connected 
-            && this.inputs[1].connected)
-            colors.textStyle = rgb2style(this.labelColor);
-        else if (this.inputs[1].connected)
-            colors.textStyle = rgba2style(colors.text);
-        else 
-            colors.textStyle = 'black';
-
-
-        return colors;
     }
 }

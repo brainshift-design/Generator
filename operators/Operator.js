@@ -497,7 +497,7 @@ class Operator
         
         const colors = this.getHeaderColors();
 
-        this.label.style.color      = colors.textStyle;
+        this.label.style.color      = rgba2style(colors.text);
         this.label.style.fontWeight = this.active ? 'bold' : 'normal';
 
         this.label.style.left = '50%';
@@ -571,22 +571,15 @@ class Operator
     getHeaderColors()
     {
         const rgbBack   = rgbFromType(this.type, this.active);
-
         const rgbText   = isDark(rgbBack) ? [1, 1, 1] : [0, 0, 0]; 
-        const textStyle = rgba2style(rgbText);
-
         const colInput  = rgbText;
         const colOutput = rgbText;
 
-
         return {
-            back:      rgbBack, 
-            
-            text:      rgbText,
-            textStyle: textStyle,
-
-            input:     colInput,
-            output:    colOutput };
+            back:   rgbBack, 
+            text:   rgbText,
+            input:  colInput,
+            output: colOutput };
     }
 
 

@@ -289,7 +289,7 @@ extends OpColorBase
         this.paramSpace.control.valueStyleDark  = rgba2style(colSpaceBar);
 
         this.paramSpace.control. textStyleLight =
-        this.paramSpace.control. textStyleDark  = colors.textStyle;
+        this.paramSpace.control. textStyleDark  = rgba2style(colors.text);
 
         this.inputs[0]         .colorLight      =
         this.inputs[0]         .colorDark       =

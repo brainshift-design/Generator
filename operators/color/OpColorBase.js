@@ -88,20 +88,16 @@ extends Operator
             ? rgb_NaN
             : dataColor2rgb(this._color);
             
-
         const rgbText   = getTextColorFromBackColor(rgbBack);
-        const textStyle = rgba2style(rgbText);
-
         const colInput  = rgbText;
         const colOutput = rgbText;
 
 
         return {
-            back:      rgbBack, 
-            text:      rgbText,
-            textStyle: textStyle,
-            input:     colInput,
-            output:    colOutput };
+            back:   rgbBack, 
+            text:   rgbText,
+            input:  colInput,
+            output: colOutput };
     }
 
 

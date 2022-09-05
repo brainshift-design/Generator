@@ -29065,7 +29065,7 @@ class Operator
         
         const colors = this.getHeaderColors();
 
-        this.label.style.color      = colors.textStyle;
+        this.label.style.color      = rgba2style(colors.text);
         this.label.style.fontWeight = this.active ? 'bold' : 'normal';
 
         this.label.style.left = '50%';
@@ -29139,22 +29139,15 @@ class Operator
     getHeaderColors()
     {
         const rgbBack   = rgbFromType(this.type, this.active);
-
         const rgbText   = isDark(rgbBack) ? [1, 1, 1] : [0, 0, 0]; 
-        const textStyle = rgba2style(rgbText);
-
         const colInput  = rgbText;
         const colOutput = rgbText;
 
-
         return {
-            back:      rgbBack, 
-            
-            text:      rgbText,
-            textStyle: textStyle,
-
-            input:     colInput,
-            output:    colOutput };
+            back:   rgbBack, 
+            text:   rgbText,
+            input:  colInput,
+            output: colOutput };
     }
 
 
@@ -29424,7 +29417,7 @@ extends Operator
             
         this.header.style.backgroundColor = rgb2style_a(colors.back, 0.95);
 
-        this.label .style.color           = colors.textStyle;
+        this.label .style.color           = rgba2style(colors.text);
 
 
         for (const input  of this.inputs .filter(i => !i.param)) input .color = colors.input;
@@ -31175,20 +31168,16 @@ extends Operator
             ? rgb_NaN
             : dataColor2rgb(this._color);
             
-
         const rgbText   = getTextColorFromBackColor(rgbBack);
-        const textStyle = rgba2style(rgbText);
-
         const colInput  = rgbText;
         const colOutput = rgbText;
 
 
         return {
-            back:      rgbBack, 
-            text:      rgbText,
-            textStyle: textStyle,
-            input:     colInput,
-            output:    colOutput };
+            back:   rgbBack, 
+            text:   rgbText,
+            input:  colInput,
+            output: colOutput };
     }
 
 
@@ -31535,7 +31524,7 @@ extends OpColorBase
         this.paramSpace.control.valueStyleDark  = rgba2style(colSpaceBar);
 
         this.paramSpace.control. textStyleLight =
-        this.paramSpace.control. textStyleDark  = colors.textStyle;
+        this.paramSpace.control. textStyleDark  = rgba2style(colors.text);
 
         this.inputs[0]         .colorLight      =
         this.inputs[0]         .colorDark       =
@@ -33846,6 +33835,20 @@ extends OpColorBase
 
 
 
+    updateHeaderLabel()
+    {
+        super.updateHeaderLabel();
+
+        let textStyle;
+
+          if (   this.inputs[0].connected 
+              && this.inputs[1].connected) this.label.style.color = rgb2style(this.labelColor);
+        else if (this.inputs[1].connected) this.label.style.color = rgba2style(colors.text);
+        else                               this.label.style.color = 'black';
+    }
+
+
+
     setRanges()
     {
         if (isDarkMode())
@@ -33888,25 +33891,6 @@ extends OpColorBase
         }
 
         this.paramValue.control.update();
-    }
-
-
-
-    getHeaderColors()
-    {
-        const colors = super.getHeaderColors();
-
-
-        if (   this.inputs[0].connected 
-            && this.inputs[1].connected)
-            colors.textStyle = rgb2style(this.labelColor);
-        else if (this.inputs[1].connected)
-            colors.textStyle = rgba2style(colors.text);
-        else 
-            colors.textStyle = 'black';
-
-
-        return colors;
     }
 }
 
@@ -34325,7 +34309,7 @@ extends OpColorBase
                         
 
         this.header.style.background = 
-            !rgbIsNaN(colors.back) 
+            !rgbIsNaN(colors.back)
             ? rgba2style(colors.back) 
             : 'transparent';
 
@@ -34346,6 +34330,18 @@ extends OpColorBase
 
 
         Operator.prototype.updateHeader.call(this);
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+ 
+        colors.back = rgb_a(colors.back, this.paramOpacity.value.value/100);
+        colors.text = getTextColorFromBackColor(colors.back, this.paramOpacity.value.value/100);
+
+        return colors;
     }
 }
 
@@ -34554,6 +34550,18 @@ extends OpColorBase
 
 
         Operator.prototype.updateHeader.call(this);
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+ 
+        colors.back = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
+        colors.text = getTextColorFromBackColor(colors.back, this.paramFill.value.opacity.value/100);
+
+        return colors;
     }
 }
 

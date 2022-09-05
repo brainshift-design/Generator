@@ -203,4 +203,16 @@ extends OpColorBase
 
         Operator.prototype.updateHeader.call(this);
     }
+
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+ 
+        colors.back = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
+        colors.text = getTextColorFromBackColor(colors.back, this.paramFill.value.opacity.value/100);
+
+        return colors;
+    }
 }
