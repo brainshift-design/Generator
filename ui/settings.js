@@ -13,7 +13,7 @@ const settings =
     logRawRequests:   false, 
     logRawValues:     false, 
     
-    logRequests:      true, 
-    logValues:        true, 
-    logObjectUpdates: true
+    logRequests:      false, 
+    logValues:        false, 
+    logObjectUpdates: false
 };

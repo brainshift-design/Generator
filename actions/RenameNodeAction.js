@@ -32,6 +32,7 @@ extends Action
     undo()
     {
         this.node.setName(this.oldName);
+        this.node.updateNode();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -41,6 +42,7 @@ extends Action
     redo()
     {
         this.node.setName(this.newName);
+        this.node.updateNode();
         
         uiSaveNodes([this.nodeId]);
     }

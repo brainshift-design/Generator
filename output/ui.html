@@ -8413,9 +8413,9 @@ const settings =
     logRawRequests:   false, 
     logRawValues:     false, 
     
-    logRequests:      true, 
-    logValues:        true, 
-    logObjectUpdates: true
+    logRequests:      false, 
+    logValues:        false, 
+    logObjectUpdates: false
 };
 
 
@@ -20761,9 +20761,9 @@ const settings =
     logRawRequests:   false, 
     logRawValues:     false, 
     
-    logRequests:      true, 
-    logValues:        true, 
-    logObjectUpdates: true
+    logRequests:      false, 
+    logValues:        false, 
+    logObjectUpdates: false
 };
 
 
@@ -37090,6 +37090,7 @@ extends Action
     undo()
     {
         this.node.setName(this.oldName);
+        this.node.updateNode();
 
         uiSaveNodes([this.nodeId]);
     }
@@ -37099,6 +37100,7 @@ extends Action
     redo()
     {
         this.node.setName(this.newName);
+        this.node.updateNode();
         
         uiSaveNodes([this.nodeId]);
     }
