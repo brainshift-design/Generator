@@ -29,6 +29,18 @@ extends OperatorBase
 
 
 
+    getBaseValuesForUndo()
+    {
+        return [ 
+            [this.paramFill  .id, 
+             this.paramFill  .value],
+
+            [this.paramStroke.id, 
+             this.paramStroke.value]];
+    }
+
+
+
     updateBaseValues(updateParamId, paramIds, values)
     {
         const fill   = values[paramIds.findIndex(id => id == 'fill'  )];

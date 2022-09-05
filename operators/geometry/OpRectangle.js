@@ -15,7 +15,7 @@ extends OpGeometryBase
         super(RECTANGLE, 'rect', 100);
 
 
-        this.addInput(new Input([RECTANGLE, RECTANGLE_VALUE]));
+        this.addInput(new Input([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output(RECTANGLE, this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
@@ -83,6 +83,32 @@ extends OpGeometryBase
     
     
     
+    input_getValuesForUndo()
+    {
+        return [ 
+            [this.node.paramX     .id, 
+             this.node.paramX     .value],
+
+            [this.node.paramY     .id, 
+             this.node.paramY     .value],
+
+            [this.node.paramWidth .id, 
+             this.node.paramWidth .value],
+
+            [this.node.paramHeight.id, 
+             this.node.paramHeight.value],
+
+            [this.node.paramAngle .id, 
+             this.node.paramAngle .value],
+
+            [this.node.paramRound .id, 
+             this.node.paramRound .value],
+
+            ...this.node.getBaseValuesForUndo()];
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output

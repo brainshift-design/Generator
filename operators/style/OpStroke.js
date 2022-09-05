@@ -46,12 +46,16 @@ extends OpColorBase
         return [ 
             [this.node.paramFill  .id, 
              this.node.paramFill  .value],
+
             [this.node.paramWeight.id, 
              this.node.paramWeight.value],
+
             [this.node.paramFit   .id, 
              this.node.paramFit   .value],
+
             [this.node.paramJoin  .id, 
              this.node.paramJoin  .value],
+
             [this.node.paramMiter .id, 
              this.node.paramMiter .value]];
     }
