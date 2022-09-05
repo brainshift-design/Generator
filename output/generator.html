@@ -3255,7 +3255,10 @@ extends GType
 
     toDisplayString()
     {
-        return printNum(this.value) + subscriptNumber(this.decimals); // only NumberValue can do this, other _Values have to list all members
+        return printNum(this.value) 
+             + (!isNaN(this.decimals)
+                ? subscriptNumber(this.decimals)
+                : '');
     }
 
 

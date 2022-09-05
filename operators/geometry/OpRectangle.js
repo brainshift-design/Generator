@@ -173,7 +173,7 @@ extends OpGeometryBase
 
     updateRound()
     {
-        const min = Math.min(this.paramWidth.value, this.paramHeight.value);
+        const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);
 
         this.paramRound.control.displayMin = 0;
         this.paramRound.control.displayMax = min/2;

@@ -51,7 +51,7 @@ extends NumberParamBase
         if (hasOutput) this.initOutput(NUMBER_VALUE, this.output_genRequest);
 
 
-        this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });
+        this.control.addEventListener('confirm', () => { this.setValue(this.value, true, false, true); });
 
 
         this.control.addEventListener('finishedit', e =>

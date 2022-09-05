@@ -113,8 +113,6 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
     control.setValue = function(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
-        //console.log('setValue()', value);
-
         if (typeof value != 'number')
         {
             console.trace();
@@ -140,14 +138,13 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
         else
             value = Math.min(Math.max(control.displayMin, value), control.displayMax);
 
-
+            
         if (    isNaN(value) && !isNaN(oldValue)
             || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)
         {
             control.value = value;
-console.log('control.value =', control.value);
-console.trace();
+
             control.update();
 
             if (   fireChangeEvent

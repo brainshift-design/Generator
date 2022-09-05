@@ -5017,7 +5017,10 @@ extends GType
 
     toDisplayString()
     {
-        return printNum(this.value) + subscriptNumber(this.decimals); // only NumberValue can do this, other _Values have to list all members
+        return printNum(this.value) 
+             + (!isNaN(this.decimals)
+                ? subscriptNumber(this.decimals)
+                : '');
     }
 
 
@@ -17367,7 +17370,10 @@ extends GType
 
     toDisplayString()
     {
-        return printNum(this.value) + subscriptNumber(this.decimals); // only NumberValue can do this, other _Values have to list all members
+        return printNum(this.value) 
+             + (!isNaN(this.decimals)
+                ? subscriptNumber(this.decimals)
+                : '');
     }
 
 
@@ -21887,8 +21893,6 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
 
     control.setValue = function(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
-        //console.log('setValue()', value);
-
         if (typeof value != 'number')
         {
             console.trace();
@@ -21914,14 +21918,13 @@ function initNumberControl(param, control, width, height, id, name, showName, mi
         else
             value = Math.min(Math.max(control.displayMin, value), control.displayMax);
 
-
+            
         if (    isNaN(value) && !isNaN(oldValue)
             || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)
         {
             control.value = value;
-console.log('control.value =', control.value);
-console.trace();
+
             control.update();
 
             if (   fireChangeEvent
@@ -25824,8 +25827,8 @@ extends Parameter
     
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
-        //console.log(this.id + '.setValue() value =', value);
-        //console.trace();
+        // console.log(this.id + '.setValue() value =', value);
+        // console.trace();
 
         console.assert(
             value instanceof NumberValue,
@@ -25983,7 +25986,7 @@ extends NumberParamBase
         if (hasOutput) this.initOutput(NUMBER_VALUE, this.output_genRequest);
 
 
-        this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });
+        this.control.addEventListener('confirm', () => { this.setValue(this.value, true, false, true); });
 
 
         this.control.addEventListener('finishedit', e =>
@@ -34994,7 +34997,7 @@ extends OpGeometryBase
 
     updateRound()
     {
-        const min = Math.min(this.paramWidth.value, this.paramHeight.value);
+        const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);
 
         this.paramRound.control.displayMin = 0;
         this.paramRound.control.displayMax = min/2;
