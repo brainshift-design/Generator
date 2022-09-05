@@ -6,15 +6,14 @@ const settings =
     logActions:       false, 
 
     logRawLoading:    false, 
-    logLoading:       false, 
-    
     logRawSaving:     false, 
     
-    logRawRequests:   false, 
-    logRequests:      false, 
-    
-    logRawValues:     false, 
-    logValues:        false, 
+    logLoading:       false, 
 
-    logObjectUpdates: false
+    logRawRequests:   false, 
+    logRawValues:     false, 
+    
+    logRequests:      true, 
+    logValues:        true, 
+    logObjectUpdates: true
 };

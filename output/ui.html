@@ -6941,13 +6941,13 @@ extends GOperator
                     this.convertColor(
                         colorSpace(fromSpaceIndex), 
                         colorSpace(  toSpaceIndex));
-                        
-                    this.result.space.value = toSpaceIndex;
-
-                    if (this.c1) this.result.c1 = c1;
-                    if (this.c2) this.result.c2 = c2;
-                    if (this.c3) this.result.c3 = c3;
                 }
+
+                this.result.space.value = toSpaceIndex;
+
+                if (this.c1) this.result.c1 = c1;
+                if (this.c2) this.result.c2 = c2;
+                if (this.c3) this.result.c3 = c3;
             }
             else
             {
@@ -8406,17 +8406,16 @@ const settings =
     logActions:       false, 
 
     logRawLoading:    false, 
-    logLoading:       false, 
-    
     logRawSaving:     false, 
     
-    logRawRequests:   false, 
-    logRequests:      false, 
-    
-    logRawValues:     false, 
-    logValues:        false, 
+    logLoading:       false, 
 
-    logObjectUpdates: false
+    logRawRequests:   false, 
+    logRawValues:     false, 
+    
+    logRequests:      true, 
+    logValues:        true, 
+    logObjectUpdates: true
 };
 
 
@@ -10995,15 +10994,6 @@ function getDefaultWarningStyle(rgb)
 {
     return !rgbIsNaN(rgb)
          ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
-         : (isDarkMode() ? '#ffffff08' : '#00000006'); 
-}
-
-
-
-function getWireWarningStyle(rgb)
-{
-    return !rgbIsNaN(rgb)
-         ? (isDark(rgb)  ? (isDarkMode() ? '#ffffff22': '#ffffff44') : '#00000022')
          : (isDarkMode() ? '#ffffff08' : '#00000006'); 
 }
 
@@ -16417,15 +16407,6 @@ function getDefaultWarningStyle(rgb)
 }
 
 
-
-function getWireWarningStyle(rgb)
-{
-    return !rgbIsNaN(rgb)
-         ? (isDark(rgb)  ? (isDarkMode() ? '#ffffff22': '#ffffff44') : '#00000022')
-         : (isDarkMode() ? '#ffffff08' : '#00000006'); 
-}
-
-
 const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
 const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
 const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));
@@ -19308,13 +19289,13 @@ extends GOperator
                     this.convertColor(
                         colorSpace(fromSpaceIndex), 
                         colorSpace(  toSpaceIndex));
-                        
-                    this.result.space.value = toSpaceIndex;
-
-                    if (this.c1) this.result.c1 = c1;
-                    if (this.c2) this.result.c2 = c2;
-                    if (this.c3) this.result.c3 = c3;
                 }
+
+                this.result.space.value = toSpaceIndex;
+
+                if (this.c1) this.result.c1 = c1;
+                if (this.c2) this.result.c2 = c2;
+                if (this.c3) this.result.c3 = c3;
             }
             else
             {
@@ -20773,17 +20754,16 @@ const settings =
     logActions:       false, 
 
     logRawLoading:    false, 
-    logLoading:       false, 
-    
     logRawSaving:     false, 
     
-    logRawRequests:   false, 
-    logRequests:      false, 
-    
-    logRawValues:     false, 
-    logValues:        false, 
+    logLoading:       false, 
 
-    logObjectUpdates: false
+    logRawRequests:   false, 
+    logRawValues:     false, 
+    
+    logRequests:      true, 
+    logValues:        true, 
+    logObjectUpdates: true
 };
 
 
@@ -26583,13 +26563,17 @@ extends Parameter
     {
         const rgbaVal  = this.value.toRgba();
         const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
-console.log('rgbaVal =', rgbaVal);
 
-        this.input.wireColor   = rgbaVal;
+        const noColor = 
+            isDarkMode()
+            ? rgbNoColorDark
+            : rgbNoColorLight;
+
+        this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
         this.input.colorLight  = 
         this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
-        this.output.wireColor  = rgbaVal;
+        this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
         this.output.colorLight =
         this.output.colorDark  = rgb_a(rgbaText, 0.2);
 
@@ -31552,23 +31536,19 @@ extends OpColorBase
         switchToSpace(this, colorSpace(col.space.value));
 
 
-        if (col.isValid())
-        {
-            this.param1    .setValue(col.c1, false, true, false);
-            this.param2    .setValue(col.c2, false, true, false);
-            this.param3    .setValue(col.c3, false, true, false);
+        this.param1.setValue(col.c1, false, true, false);
+        this.param2.setValue(col.c2, false, true, false);
+        this.param3.setValue(col.c3, false, true, false);
 
-            this._color = col.toDataColor();
-        }
-        else
-        {
-            this.param1    .setValue(NumberValue.NaN, false, true, false);
-            this.param2    .setValue(NumberValue.NaN, false, true, false);
-            this.param3    .setValue(NumberValue.NaN, false, true, false);
-            this.paramColor.setValue( ColorValue.NaN, false, true, false);
-            
-            this._color = dataColor_NaN;
-        }
+        
+        if (!col.isValid())
+            this.paramColor.setValue(ColorValue.NaN, false, true, false);
+
+
+        this._color = 
+            col.isValid()
+            ? col.toDataColor()
+            : dataColor_NaN;
 
 
         this.prevSpace = colorSpace(col.space.value);
@@ -34354,22 +34334,16 @@ extends OpColorBase
         const opacity = values[paramIds.findIndex(id => id == 'opacity')];
 
 
-        if (fill.isValid())
-        {
-            this.paramColor  .setValue(fill.color,    false, true, false);
-            this.paramOpacity.setValue(fill.opacity,  false, true, false);
+        this.paramColor  .setValue(color,   false, true, false);
+        this.paramOpacity.setValue(opacity, false, true, false);
 
-            this._color = fill.color.toDataColor();
-        }
-        else
-        {
-            this.paramColor  .setValue(color,   false, true, false);
-            this.paramOpacity.setValue(opacity, false, true, false);
+
+        this._color = 
+            fill.isValid()
+            ? fill.color.toDataColor()
+            : dataColor_NaN;
+
             
-            this._color = dataColor_NaN;
-        }
-
-
         super.updateValues(updateParamId, paramIds, values);
     }
 
@@ -34575,26 +34549,17 @@ extends OpColorBase
         const miter  = values[paramIds.findIndex(id => id == 'miter' )];
 
 
-        if (stroke.isValid())
-        {
-            this.paramFill  .setValue(stroke.fill,   false, true, false);
-            this.paramWeight.setValue(stroke.weight, false, true, false);
-            this.paramFit   .setValue(stroke.fit,    false, true, false);
-            this.paramJoin  .setValue(stroke.join,   false, true, false);
-            this.paramMiter .setValue(stroke.miter,  false, true, false);
+        this.paramFill  .setValue(fill,   false, true, false);
+        this.paramWeight.setValue(weight, false, true, false);
+        this.paramFit   .setValue(fit,    false, true, false);
+        this.paramJoin  .setValue(join,   false, true, false);
+        this.paramMiter .setValue(miter,  false, true, false);
 
-            this._color = stroke.fill.color.toDataColor();
-        }
-        else
-        {
-            this.paramFill  .setValue(fill,   false, true, false);
-            this.paramWeight.setValue(weight, false, true, false);
-            this.paramFit   .setValue(fit,    false, true, false);
-            this.paramJoin  .setValue(join,   false, true, false);
-            this.paramMiter .setValue(miter,  false, true, false);
-            
-            this._color = dataColor_NaN;
-        }
+        
+        this._color = 
+            stroke.isValid()
+            ? stroke.fill.color.toDataColor()
+            : dataColor_NaN;
 
 
         super.updateValues(updateParamId, paramIds, values);

@@ -235,13 +235,17 @@ extends Parameter
     {
         const rgbaVal  = this.value.toRgba();
         const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
-console.log('rgbaVal =', rgbaVal);
 
-        this.input.wireColor   = rgbaVal;
+        const noColor = 
+            isDarkMode()
+            ? rgbNoColorDark
+            : rgbNoColorLight;
+
+        this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
         this.input.colorLight  = 
         this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
-        this.output.wireColor  = rgbaVal;
+        this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
         this.output.colorLight =
         this.output.colorDark  = rgb_a(rgbaText, 0.2);
 

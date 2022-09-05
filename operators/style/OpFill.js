@@ -104,22 +104,16 @@ extends OpColorBase
         const opacity = values[paramIds.findIndex(id => id == 'opacity')];
 
 
-        if (fill.isValid())
-        {
-            this.paramColor  .setValue(fill.color,    false, true, false);
-            this.paramOpacity.setValue(fill.opacity,  false, true, false);
+        this.paramColor  .setValue(color,   false, true, false);
+        this.paramOpacity.setValue(opacity, false, true, false);
 
-            this._color = fill.color.toDataColor();
-        }
-        else
-        {
-            this.paramColor  .setValue(color,   false, true, false);
-            this.paramOpacity.setValue(opacity, false, true, false);
+
+        this._color = 
+            fill.isValid()
+            ? fill.color.toDataColor()
+            : dataColor_NaN;
+
             
-            this._color = dataColor_NaN;
-        }
-
-
         super.updateValues(updateParamId, paramIds, values);
     }
 

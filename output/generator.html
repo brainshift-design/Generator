@@ -5179,13 +5179,13 @@ extends GOperator
                     this.convertColor(
                         colorSpace(fromSpaceIndex), 
                         colorSpace(  toSpaceIndex));
-                        
-                    this.result.space.value = toSpaceIndex;
-
-                    if (this.c1) this.result.c1 = c1;
-                    if (this.c2) this.result.c2 = c2;
-                    if (this.c3) this.result.c3 = c3;
                 }
+
+                this.result.space.value = toSpaceIndex;
+
+                if (this.c1) this.result.c1 = c1;
+                if (this.c2) this.result.c2 = c2;
+                if (this.c3) this.result.c3 = c3;
             }
             else
             {
@@ -6644,17 +6644,16 @@ const settings =
     logActions:       false, 
 
     logRawLoading:    false, 
-    logLoading:       false, 
-    
     logRawSaving:     false, 
     
-    logRawRequests:   false, 
-    logRequests:      false, 
-    
-    logRawValues:     false, 
-    logValues:        false, 
+    logLoading:       false, 
 
-    logObjectUpdates: false
+    logRawRequests:   false, 
+    logRawValues:     false, 
+    
+    logRequests:      true, 
+    logValues:        true, 
+    logObjectUpdates: true
 };
 
 
@@ -9233,15 +9232,6 @@ function getDefaultWarningStyle(rgb)
 {
     return !rgbIsNaN(rgb)
          ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
-         : (isDarkMode() ? '#ffffff08' : '#00000006'); 
-}
-
-
-
-function getWireWarningStyle(rgb)
-{
-    return !rgbIsNaN(rgb)
-         ? (isDark(rgb)  ? (isDarkMode() ? '#ffffff22': '#ffffff44') : '#00000022')
          : (isDarkMode() ? '#ffffff08' : '#00000006'); 
 }
 

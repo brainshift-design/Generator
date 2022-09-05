@@ -209,12 +209,3 @@ function getDefaultWarningStyle(rgb)
          ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
          : (isDarkMode() ? '#ffffff08' : '#00000006'); 
 }
-
-
-
-function getWireWarningStyle(rgb)
-{
-    return !rgbIsNaN(rgb)
-         ? (isDark(rgb)  ? (isDarkMode() ? '#ffffff22': '#ffffff44') : '#00000022')
-         : (isDarkMode() ? '#ffffff08' : '#00000006'); 
-}

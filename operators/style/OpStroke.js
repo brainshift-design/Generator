@@ -124,26 +124,17 @@ extends OpColorBase
         const miter  = values[paramIds.findIndex(id => id == 'miter' )];
 
 
-        if (stroke.isValid())
-        {
-            this.paramFill  .setValue(stroke.fill,   false, true, false);
-            this.paramWeight.setValue(stroke.weight, false, true, false);
-            this.paramFit   .setValue(stroke.fit,    false, true, false);
-            this.paramJoin  .setValue(stroke.join,   false, true, false);
-            this.paramMiter .setValue(stroke.miter,  false, true, false);
+        this.paramFill  .setValue(fill,   false, true, false);
+        this.paramWeight.setValue(weight, false, true, false);
+        this.paramFit   .setValue(fit,    false, true, false);
+        this.paramJoin  .setValue(join,   false, true, false);
+        this.paramMiter .setValue(miter,  false, true, false);
 
-            this._color = stroke.fill.color.toDataColor();
-        }
-        else
-        {
-            this.paramFill  .setValue(fill,   false, true, false);
-            this.paramWeight.setValue(weight, false, true, false);
-            this.paramFit   .setValue(fit,    false, true, false);
-            this.paramJoin  .setValue(join,   false, true, false);
-            this.paramMiter .setValue(miter,  false, true, false);
-            
-            this._color = dataColor_NaN;
-        }
+        
+        this._color = 
+            stroke.isValid()
+            ? stroke.fill.color.toDataColor()
+            : dataColor_NaN;
 
 
         super.updateValues(updateParamId, paramIds, values);

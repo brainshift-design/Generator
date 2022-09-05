@@ -243,13 +243,13 @@ const settings = {
     logMessages: false,
     logActions: false,
     logRawLoading: false,
-    logLoading: false,
     logRawSaving: false,
+    logLoading: false,
     logRawRequests: false,
-    logRequests: false,
     logRawValues: false,
-    logValues: false,
-    logObjectUpdates: false
+    logRequests: true,
+    logValues: true,
+    logObjectUpdates: true
 };
 const figObjectArrays = []; // {nodeId, [objects]}
 function figUpdate(msg) {

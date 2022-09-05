@@ -217,23 +217,19 @@ extends OpColorBase
         switchToSpace(this, colorSpace(col.space.value));
 
 
-        if (col.isValid())
-        {
-            this.param1    .setValue(col.c1, false, true, false);
-            this.param2    .setValue(col.c2, false, true, false);
-            this.param3    .setValue(col.c3, false, true, false);
+        this.param1.setValue(col.c1, false, true, false);
+        this.param2.setValue(col.c2, false, true, false);
+        this.param3.setValue(col.c3, false, true, false);
 
-            this._color = col.toDataColor();
-        }
-        else
-        {
-            this.param1    .setValue(NumberValue.NaN, false, true, false);
-            this.param2    .setValue(NumberValue.NaN, false, true, false);
-            this.param3    .setValue(NumberValue.NaN, false, true, false);
-            this.paramColor.setValue( ColorValue.NaN, false, true, false);
-            
-            this._color = dataColor_NaN;
-        }
+        
+        if (!col.isValid())
+            this.paramColor.setValue(ColorValue.NaN, false, true, false);
+
+
+        this._color = 
+            col.isValid()
+            ? col.toDataColor()
+            : dataColor_NaN;
 
 
         this.prevSpace = colorSpace(col.space.value);
