@@ -216,7 +216,7 @@ extends Parameter
 
         this.value = value;
 
-        
+
         if (updateControl)
         {
             this.  colorControl.setValue(value.color,         false, false); 
@@ -277,21 +277,33 @@ extends Parameter
         this.updateWarningOverlay();
 
 
-        this.  colorControl. backStyleLight  = 
-        this.  colorControl. backStyleDark   = 
-        this.  colorControl.valueStyleLight  = 
-        this.  colorControl.valueStyleDark   = 'transparent';
+        if (!rgbIsNaN(rgbaVal))
+            this.div.style.background = 'transparent';
+        else
+        {
+            this.div.style.background =
+            isDarkMode()
+            ? 'rgba(56, 56, 56, 0.95)'
+            : 'rgba(255, 255, 255, 0.95)';
 
-        this.opacityControl. backStyleLight  = 
-        this.opacityControl. backStyleDark   = 
-        this.opacityControl.valueStyleLight  = 
-        this.opacityControl.valueStyleDark   = 'transparent';
+        }
 
-        this.  colorControl.textStyleLight   = 
-        this.  colorControl.textStyleDark    = rgba2style(rgbaText);
 
-        this.opacityControl.textStyleLight   = 
-        this.opacityControl.textStyleDark    = rgba2style(rgbaText);
+        this.  colorControl. backStyleLight = 
+        this.  colorControl. backStyleDark  = 
+        this.  colorControl.valueStyleLight = 
+        this.  colorControl.valueStyleDark  = 'transparent';
+
+        this.opacityControl. backStyleLight = 
+        this.opacityControl. backStyleDark  = 
+        this.opacityControl.valueStyleLight = 
+        this.opacityControl.valueStyleDark  = 'transparent';
+
+        this.  colorControl.textStyleLight  = 
+        this.  colorControl.textStyleDark   = rgba2style(rgbaText);
+
+        this.opacityControl.textStyleLight  = 
+        this.opacityControl.textStyleDark   = rgba2style(rgbaText);
 
         this.  colorControl.update();
         this.opacityControl.update();

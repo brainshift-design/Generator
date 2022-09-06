@@ -196,13 +196,13 @@ extends Parameter
         }
         else
         {
-            this.checkers   .style.display    = 'none';
-            this.control    .style.display    = 'none';
+            this.checkers   .style.display = 'none';
+            this.control    .style.display = 'none';
             
-            this.textControl.style.display    = 'inline-block';
-            this.textControl.style.color      = isDarkMode() ? '#eee8' : '#0006';
+            this.textControl.style.display = 'inline-block';
+            this.textControl.style.color   = isDarkMode() ? '#eee8' : '#0006';
 
-            this.textControl.innerHTML        = 'no stroke';
+            this.textControl.innerHTML     = 'no stroke';
             
             this.div.style.background =
                 isDarkMode()
