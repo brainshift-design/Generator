@@ -144,7 +144,7 @@ extends Parameter
         this.div.appendChild(this.controlWrapper);
 
        
-        if (hasInput)  this.initInput(FILL_TYPES);
+        if (hasInput)  this.initInput([...FILL_TYPES, ...COLOR_TYPES]);
         if (hasOutput) this.initOutput(FILL_VALUE, this.output_genRequest);
 
 
@@ -282,9 +282,9 @@ extends Parameter
         else
         {
             this.div.style.background =
-            isDarkMode()
-            ? 'rgba(56, 56, 56, 0.95)'
-            : 'rgba(255, 255, 255, 0.95)';
+                isDarkMode()
+                ? 'rgba(56, 56, 56, 0.95)'
+                : 'rgba(255, 255, 255, 0.95)';
 
         }
 
@@ -360,11 +360,17 @@ extends Parameter
 
     enableControlText(enable)
     {
+        const opEnable = 
+                enable 
+            || !this.input 
+            || !this.input.connected 
+            ||  COLOR_TYPES.includes(this.input.connectedOutput.type);
+
         enableElementText(this.  colorControl, enable);
-        enableElementText(this.opacityControl, enable);
+        enableElementText(this.opacityControl, opEnable);
         
         this.  colorControl.readOnly = !enable;
-        this.opacityControl.readOnly = !enable;
+        this.opacityControl.readOnly = !opEnable;
     }
     
     

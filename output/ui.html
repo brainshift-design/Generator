@@ -7777,15 +7777,24 @@ extends GOperator
     {
         if (!this.valid)
         {
+            let fill;
+            
+                 if ( FILL_TYPES.includes(this.fill.type)) fill = this.fill.eval(parse).copy();
+            else if (COLOR_TYPES.includes(this.fill.type)) fill = new FillValue(this.fill.eval(parse).copy(), new NumberValue(100));
+            else console.assert(false, 'fill must have type');
+
+            const stroke = this.stroke.eval(parse).copy();
+            
+
             if (input)
             {
-                if (this.fill  ) this.result.fill   = this.fill  .eval(parse).copy();
-                if (this.stroke) this.result.stroke = this.stroke.eval(parse).copy();
+                if (this.fill  ) this.result.fill   = fill;
+                if (this.stroke) this.result.stroke = stroke;
             }
             else
             {
-                this.result.fill   = this.fill  .eval(parse).copy();
-                this.result.stroke = this.stroke.eval(parse).copy();
+                this.result.fill   = fill;
+                this.result.stroke = stroke;
             }
 
 
@@ -20117,15 +20126,24 @@ extends GOperator
     {
         if (!this.valid)
         {
+            let fill;
+            
+                 if ( FILL_TYPES.includes(this.fill.type)) fill = this.fill.eval(parse).copy();
+            else if (COLOR_TYPES.includes(this.fill.type)) fill = new FillValue(this.fill.eval(parse).copy(), new NumberValue(100));
+            else console.assert(false, 'fill must have type');
+
+            const stroke = this.stroke.eval(parse).copy();
+            
+
             if (input)
             {
-                if (this.fill  ) this.result.fill   = this.fill  .eval(parse).copy();
-                if (this.stroke) this.result.stroke = this.stroke.eval(parse).copy();
+                if (this.fill  ) this.result.fill   = fill;
+                if (this.stroke) this.result.stroke = stroke;
             }
             else
             {
-                this.result.fill   = this.fill  .eval(parse).copy();
-                this.result.stroke = this.stroke.eval(parse).copy();
+                this.result.fill   = fill;
+                this.result.stroke = stroke;
             }
 
 
@@ -26465,7 +26483,7 @@ extends Parameter
         this.div.appendChild(this.controlWrapper);
 
        
-        if (hasInput)  this.initInput(FILL_TYPES);
+        if (hasInput)  this.initInput([...FILL_TYPES, ...COLOR_TYPES]);
         if (hasOutput) this.initOutput(FILL_VALUE, this.output_genRequest);
 
 
@@ -26603,9 +26621,9 @@ extends Parameter
         else
         {
             this.div.style.background =
-            isDarkMode()
-            ? 'rgba(56, 56, 56, 0.95)'
-            : 'rgba(255, 255, 255, 0.95)';
+                isDarkMode()
+                ? 'rgba(56, 56, 56, 0.95)'
+                : 'rgba(255, 255, 255, 0.95)';
 
         }
 
@@ -26681,11 +26699,17 @@ extends Parameter
 
     enableControlText(enable)
     {
+        const opEnable = 
+                enable 
+            || !this.input 
+            || !this.input.connected 
+            ||  COLOR_TYPES.includes(this.input.connectedOutput.type);
+
         enableElementText(this.  colorControl, enable);
-        enableElementText(this.opacityControl, enable);
+        enableElementText(this.opacityControl, opEnable);
         
         this.  colorControl.readOnly = !enable;
-        this.opacityControl.readOnly = !enable;
+        this.opacityControl.readOnly = !opEnable;
     }
     
     
