@@ -149,7 +149,7 @@ extends Action
 
 
         uiSaveNodes(updateNodes.map(n => n.id));
-        pushUpdate([this.inputNode]);
+        //pushUpdate([this.inputNode]);
  
 
         // cleanup

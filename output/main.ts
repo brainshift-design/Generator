@@ -416,17 +416,17 @@ const settings =
     logMessages:      false,
     logActions:       false, 
 
-    logRawLoading:    false, 
-    logRawSaving:     false, 
+    logRawLoading:    true, 
+    logRawSaving:     true, 
     
     logLoading:       false, 
 
     logRawRequests:   false, 
     logRawValues:     false, 
     
-    logRequests:      true, 
-    logValues:        true, 
-    logObjectUpdates: true
+    logRequests:      false, 
+    logValues:        false, 
+    logObjectUpdates: false
 };
 
 

@@ -55,7 +55,8 @@ extends Action
         }
 
 
-        pushUpdate([this.outputNode, this.inputNode]);
+        uiSaveNodes([this.outputNodeId, this.inputNodeId]);
+        //pushUpdate([this.outputNode, this.inputNode]);
     }
     
     
@@ -80,7 +81,8 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
 
 
-        pushUpdate([this.inputNode]);
+        uiSaveNodes([this.inputNodeId]);
+        //pushUpdate([this.inputNode]);
     }
     
     
@@ -98,6 +100,7 @@ extends Action
             uiMakeNodeActive(this.outputNode);
 
 
-        pushUpdate([this.outputNode, this.inputNode]);
+        uiSaveNodes([this.outputNodeId, this.inputNodeId]);
+        // pushUpdate([this.outputNode, this.inputNode]);
    }
 }

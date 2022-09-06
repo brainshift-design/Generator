@@ -8397,17 +8397,17 @@ const settings =
     logMessages:      false,
     logActions:       false, 
 
-    logRawLoading:    false, 
-    logRawSaving:     false, 
+    logRawLoading:    true, 
+    logRawSaving:     true, 
     
     logLoading:       false, 
 
     logRawRequests:   false, 
     logRawValues:     false, 
     
-    logRequests:      true, 
-    logValues:        true, 
-    logObjectUpdates: true
+    logRequests:      false, 
+    logValues:        false, 
+    logObjectUpdates: false
 };
 
 
@@ -20737,17 +20737,17 @@ const settings =
     logMessages:      false,
     logActions:       false, 
 
-    logRawLoading:    false, 
-    logRawSaving:     false, 
+    logRawLoading:    true, 
+    logRawSaving:     true, 
     
     logLoading:       false, 
 
     logRawRequests:   false, 
     logRawValues:     false, 
     
-    logRequests:      true, 
-    logValues:        true, 
-    logObjectUpdates: true
+    logRequests:      false, 
+    logValues:        false, 
+    logObjectUpdates: false
 };
 
 
@@ -36291,7 +36291,7 @@ extends Action
 
 
         uiSaveNodes(updateNodes.map(n => n.id));
-        pushUpdate([this.inputNode]);
+        //pushUpdate([this.inputNode]);
  
 
         // cleanup
@@ -36653,7 +36653,8 @@ extends Action
         }
 
 
-        pushUpdate([this.outputNode, this.inputNode]);
+        uiSaveNodes([this.outputNodeId, this.inputNodeId]);
+        //pushUpdate([this.outputNode, this.inputNode]);
     }
     
     
@@ -36678,7 +36679,8 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
 
 
-        pushUpdate([this.inputNode]);
+        uiSaveNodes([this.inputNodeId]);
+        //pushUpdate([this.inputNode]);
     }
     
     
@@ -36696,7 +36698,8 @@ extends Action
             uiMakeNodeActive(this.outputNode);
 
 
-        pushUpdate([this.outputNode, this.inputNode]);
+        uiSaveNodes([this.outputNodeId, this.inputNodeId]);
+        // pushUpdate([this.outputNode, this.inputNode]);
    }
 }
 
