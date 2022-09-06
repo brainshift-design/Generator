@@ -216,6 +216,7 @@ extends Parameter
 
         this.value = value;
 
+        
         if (updateControl)
         {
             this.  colorControl.setValue(value.color,         false, false); 

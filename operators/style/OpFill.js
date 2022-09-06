@@ -98,8 +98,6 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const fill    = values[paramIds.findIndex(id => id == 'value')];
-
         const color   = values[paramIds.findIndex(id => id == 'color')];
         const opacity = values[paramIds.findIndex(id => id == 'opacity')];
 
@@ -109,8 +107,8 @@ extends OpColorBase
 
 
         this._color = 
-            fill.isValid()
-            ? fill.color.toDataColor()
+            color.isValid()
+            ? color.toDataColor()
             : dataColor_NaN;
 
             

@@ -789,7 +789,7 @@ div
 }    
 
 
-.figma-light .numberControlName
+/* .figma-light .numberControlName
 {
     color: #0006;
 }
@@ -798,7 +798,7 @@ div
 .figma-dark .numberControlName
 {
     color: #fff6;
-}
+} */
 
 
 .numberControlBar
@@ -7561,8 +7561,6 @@ extends GOperator
             this.valid        = true;
            
             
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
-
             genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
             genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
@@ -7638,8 +7636,6 @@ extends GOperator
                 this.result = new StrokeValue(fill, weight, fit, join, miter);
             }
         
-
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
             genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
             genPushUpdateValue(parse, this.nodeId, 'weight', this.result.weight);
@@ -7881,10 +7877,6 @@ extends GGeometryBase
                 this.result.round  = round;
             }
 
-
-            //genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
             genPushUpdateValue(parse, this.nodeId, 'x',       this.result.x     );
             genPushUpdateValue(parse, this.nodeId, 'y',       this.result.y     );
@@ -8413,9 +8405,9 @@ const settings =
     logRawRequests:   false, 
     logRawValues:     false, 
     
-    logRequests:      false, 
-    logValues:        false, 
-    logObjectUpdates: false
+    logRequests:      true, 
+    logValues:        true, 
+    logObjectUpdates: true
 };
 
 
@@ -19909,8 +19901,6 @@ extends GOperator
             this.valid        = true;
            
             
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
-
             genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
             genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
@@ -19986,8 +19976,6 @@ extends GOperator
                 this.result = new StrokeValue(fill, weight, fit, join, miter);
             }
         
-
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
             genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
             genPushUpdateValue(parse, this.nodeId, 'weight', this.result.weight);
@@ -20229,10 +20217,6 @@ extends GGeometryBase
                 this.result.round  = round;
             }
 
-
-            //genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
             genPushUpdateValue(parse, this.nodeId, 'x',       this.result.x     );
             genPushUpdateValue(parse, this.nodeId, 'y',       this.result.y     );
@@ -20761,9 +20745,9 @@ const settings =
     logRawRequests:   false, 
     logRawValues:     false, 
     
-    logRequests:      false, 
-    logValues:        false, 
-    logObjectUpdates: false
+    logRequests:      true, 
+    logValues:        true, 
+    logObjectUpdates: true
 };
 
 
@@ -21785,7 +21769,7 @@ function initNumberControlChildren(control)
 
 
 
-function initNumberControl(param, control, width, height, id, name, showName, defaultValue, min, max, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+function initNumberControl(param, control, width, height, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
 {
     control.param                  = param;
      
@@ -22049,8 +22033,15 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         
         if (   control.name.length > 0
             && control.showName)
-            control.text.innerHTML += '<span class="numberControlName">' + control.name + "</span>&nbsp;&nbsp;";
+        {
+            const nameStyle = 
+                isDarkMode() 
+                ? rgba2style(rgb_a(style2rgba(control.textStyleDark),  0.4))
+                : rgba2style(rgb_a(style2rgba(control.textStyleLight), 0.6));
 
+            control.text.innerHTML += '<span style="color: '+nameStyle+';">' + control.name + "</span>&nbsp;&nbsp;";
+        }
+        
         control.text.innerHTML += control.getValueText() + control.suffix;
     };
 
@@ -26546,6 +26537,7 @@ extends Parameter
 
         this.value = value;
 
+        
         if (updateControl)
         {
             this.  colorControl.setValue(value.color,         false, false); 
@@ -26779,6 +26771,7 @@ extends Parameter
 
     checkers;
 
+    textControl;
     control;
 
     
@@ -26791,30 +26784,33 @@ extends Parameter
     
     constructor(id,
                 name, 
-                showName,
                 hasInput,
                 hasOutput,
-                defaultValue = StrokeValue.NaN,
-                dragScale    = 0.05)
+                defaultValue = StrokeValue.NaN)
     {
-        super(FILL, id, name);
+        super(STROKE, id, name);
 
 
-        this.checkers                = createDiv();
-        this.control                 = createDiv();
+        this.checkers                     = createDiv();
 
-        this.defaultValue            = defaultValue;
-        this.value                   = defaultValue;
+        this.textControl                  = createDiv('colorControlText');
+        this.control                      = createDiv();
+
+        this.defaultValue                 = defaultValue;
+        this.value                        = defaultValue;
 
         
-        this.checkers.style.position = 'absolute';
-        this.checkers.style.width    = '100%';
-        this.checkers.style.height   = '20px';
+        this.checkers.style.position      = 'absolute';
+        this.checkers.style.width         = '100%';
+        this.checkers.style.height        = '20px';
 
-        this.control.style.position  = 'absolute';
-        this.control.style.display   = 'block';
-        this.control.style.width     = '100%';
-        this.control.style.height    = '20px';
+        this.textControl.style.width      = '100%';
+        this.textControl.style.textAlign  = 'center';
+
+        this.control.style.position       = 'absolute';
+        this.control.style.display        = 'block';
+        this.control.style.width          = '100%';
+        this.control.style.height         = '20px';
 
 
         this._warningOverlay = createDiv('colorWarningOverlay');
@@ -26825,17 +26821,19 @@ extends Parameter
         initNumberControl(
             this,
             this.control,
-            120, // width
+            100, // width
             20,  // height
             this.id,
             'stroke', 
             true,
-            defaultValue.opacity.value,
+            defaultValue.weight.value,
             0);
 
 
 
         this.div.appendChild(this.checkers);
+
+        this.div.appendChild(this.textControl);
         this.div.appendChild(this.control);
 
        
@@ -26864,8 +26862,8 @@ extends Parameter
     {
         if (!(value instanceof StrokeValue))
         {
-            console.trace();
-            console.log('value =', value);
+            //console.trace();
+            //console.log('value =', value);
             console.assert(false, 'StrokeParam.setValue(value) is ' + typeof value + ', must be a StrokeValue');
         }
 
@@ -26879,10 +26877,13 @@ extends Parameter
 
 
         this.value = value;
+        
 
-// console.log('this.value =', this.value);
-//         if (updateControl)
-//             this.updateControls();
+        if (updateControl)
+        {
+            this.control.setDecimals(value.weight.decimals, value.weight.decimals);
+            this.control.setValue(value.weight.value, false, false); 
+        }
 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
@@ -26895,10 +26896,10 @@ extends Parameter
 
     updateControls()
     {
-        if (this.value.isValid())
+        if (   this.input.connected
+            && this.value.isValid())
         {
             const rgbaVal = this.value.fill.toRgba();
-            rgbaVal[3] /= 100;
 
             const rgbaText = 
                 rgbaVal[3] >= 0.5
@@ -26912,11 +26913,11 @@ extends Parameter
 
             this.input.wireColor   = rgbaVal;
             this.input.colorLight  = 
-            this.input.colorDark   = rgb_a(rgbaText, isDark(rgbaText) ? 0.12 : 0.44);
+            this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
             this.output.wireColor  = rgbaVal;
             this.output.colorLight =
-            this.output.colorDark  = rgb_a(rgbaText, isDark(rgbaText) ? 0.12 : 0.44);
+            this.output.colorDark  = rgb_a(rgbaText, 0.2);
 
 
             this.checkers.style.background =
@@ -26932,23 +26933,38 @@ extends Parameter
             this.checkers.style.backgroundSize     = '20px 20px';
             this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
-            this.colorControl.style.display        = 'inline-block';
-            this.colorControl.style.background     = rgba2style(rgbaVal);
+            
+            this.control.style.display             = 'inline-block';
+            
+            this.control. backStyleLight           = 
+            this.control. backStyleDark            = 
+            this.control.valueStyleLight           = 
+            this.control.valueStyleDark            = rgba2style(rgbaVal);
 
-            this.textControl.innerHTML             = 'stroke';
-            this.textControl.style.color           = rgba2style(rgbaText);
+            this.control.textStyleLight            = 
+            this.control.textStyleDark             = rgba2style(rgbaText);
+
+            this.control.update();
+            
+
+            this.textControl.style.display         = 'none';
 
             this.updateWarningOverlay();
         }
         else
         {
-            this.checkers    .style.display        = 'none';
-            this.colorControl.style.display        = 'none';
+            this.checkers   .style.display    = 'none';
+            this.control    .style.display    = 'none';
+            
+            this.textControl.style.display    = 'inline-block';
+            this.textControl.style.color      = isDarkMode() ? '#eee8' : '#0006';
 
-            this.colorControl.style.background     = 'transparent';
-
-            this.textControl.innerHTML             = 'no stroke';
-            this.textControl.style.color           = isDarkMode() ? '#eee8' : '#0006';
+            this.textControl.innerHTML        = 'no stroke';
+            
+            this.div.style.background =
+                isDarkMode()
+                ? 'rgba(56, 56, 56, 0.95)'
+                : 'rgba(255, 255, 255, 0.95)';
         }
 
 
@@ -27008,7 +27024,10 @@ extends Parameter
     enableControlText(enable)
     {
         enableElementText(this.textControl, enable);
+        enableElementText(this.control,     enable);
+
         this.textControl.readOnly = !enable;
+        this.control    .readOnly = !enable;
     }
     
     
@@ -34334,8 +34353,6 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const fill    = values[paramIds.findIndex(id => id == 'value')];
-
         const color   = values[paramIds.findIndex(id => id == 'color')];
         const opacity = values[paramIds.findIndex(id => id == 'opacity')];
 
@@ -34345,8 +34362,8 @@ extends OpColorBase
 
 
         this._color = 
-            fill.isValid()
-            ? fill.color.toDataColor()
+            color.isValid()
+            ? color.toDataColor()
             : dataColor_NaN;
 
             
@@ -34546,8 +34563,6 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const stroke = values[paramIds.findIndex(id => id == 'value')];
-
         const fill   = values[paramIds.findIndex(id => id == 'fill'  )];
         const weight = values[paramIds.findIndex(id => id == 'weight')];
         const fit    = values[paramIds.findIndex(id => id == 'fit'   )];
@@ -34563,8 +34578,8 @@ extends OpColorBase
 
         
         this._color = 
-            stroke.isValid()
-            ? stroke.fill.color.toDataColor()
+            fill.isValid()
+            ? fill.color.toDataColor()
             : dataColor_NaN;
 
 
@@ -34869,7 +34884,7 @@ extends OperatorBase
     addBaseParams()
     {
         this.addParam(this.paramFill   = new FillParam  ('fill',   'f', false, true, true, FillValue.default));
-        this.addParam(this.paramStroke = new StrokeParam('stroke', 's', false, true, true, StrokeValue.NaN));
+        this.addParam(this.paramStroke = new StrokeParam('stroke', 's',        true, true, StrokeValue.NaN));
 
         this.paramStroke.input.addEventListener('disconnect', () => { this.paramStroke.setValue(StrokeValue.NaN, false, true, false); });
     } 

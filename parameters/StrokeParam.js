@@ -14,6 +14,7 @@ extends Parameter
 
     checkers;
 
+    textControl;
     control;
 
     
@@ -26,30 +27,33 @@ extends Parameter
     
     constructor(id,
                 name, 
-                showName,
                 hasInput,
                 hasOutput,
-                defaultValue = StrokeValue.NaN,
-                dragScale    = 0.05)
+                defaultValue = StrokeValue.NaN)
     {
-        super(FILL, id, name);
+        super(STROKE, id, name);
 
 
-        this.checkers                = createDiv();
-        this.control                 = createDiv();
+        this.checkers                     = createDiv();
 
-        this.defaultValue            = defaultValue;
-        this.value                   = defaultValue;
+        this.textControl                  = createDiv('colorControlText');
+        this.control                      = createDiv();
+
+        this.defaultValue                 = defaultValue;
+        this.value                        = defaultValue;
 
         
-        this.checkers.style.position = 'absolute';
-        this.checkers.style.width    = '100%';
-        this.checkers.style.height   = '20px';
+        this.checkers.style.position      = 'absolute';
+        this.checkers.style.width         = '100%';
+        this.checkers.style.height        = '20px';
 
-        this.control.style.position  = 'absolute';
-        this.control.style.display   = 'block';
-        this.control.style.width     = '100%';
-        this.control.style.height    = '20px';
+        this.textControl.style.width      = '100%';
+        this.textControl.style.textAlign  = 'center';
+
+        this.control.style.position       = 'absolute';
+        this.control.style.display        = 'block';
+        this.control.style.width          = '100%';
+        this.control.style.height         = '20px';
 
 
         this._warningOverlay = createDiv('colorWarningOverlay');
@@ -60,17 +64,19 @@ extends Parameter
         initNumberControl(
             this,
             this.control,
-            120, // width
+            100, // width
             20,  // height
             this.id,
             'stroke', 
             true,
-            defaultValue.opacity.value,
+            defaultValue.weight.value,
             0);
 
 
 
         this.div.appendChild(this.checkers);
+
+        this.div.appendChild(this.textControl);
         this.div.appendChild(this.control);
 
        
@@ -99,8 +105,8 @@ extends Parameter
     {
         if (!(value instanceof StrokeValue))
         {
-            console.trace();
-            console.log('value =', value);
+            //console.trace();
+            //console.log('value =', value);
             console.assert(false, 'StrokeParam.setValue(value) is ' + typeof value + ', must be a StrokeValue');
         }
 
@@ -114,10 +120,13 @@ extends Parameter
 
 
         this.value = value;
+        
 
-// console.log('this.value =', this.value);
-//         if (updateControl)
-//             this.updateControls();
+        if (updateControl)
+        {
+            this.control.setDecimals(value.weight.decimals, value.weight.decimals);
+            this.control.setValue(value.weight.value, false, false); 
+        }
 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
@@ -130,10 +139,10 @@ extends Parameter
 
     updateControls()
     {
-        if (this.value.isValid())
+        if (   this.input.connected
+            && this.value.isValid())
         {
             const rgbaVal = this.value.fill.toRgba();
-            rgbaVal[3] /= 100;
 
             const rgbaText = 
                 rgbaVal[3] >= 0.5
@@ -147,11 +156,11 @@ extends Parameter
 
             this.input.wireColor   = rgbaVal;
             this.input.colorLight  = 
-            this.input.colorDark   = rgb_a(rgbaText, isDark(rgbaText) ? 0.12 : 0.44);
+            this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
             this.output.wireColor  = rgbaVal;
             this.output.colorLight =
-            this.output.colorDark  = rgb_a(rgbaText, isDark(rgbaText) ? 0.12 : 0.44);
+            this.output.colorDark  = rgb_a(rgbaText, 0.2);
 
 
             this.checkers.style.background =
@@ -167,23 +176,38 @@ extends Parameter
             this.checkers.style.backgroundSize     = '20px 20px';
             this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
-            this.colorControl.style.display        = 'inline-block';
-            this.colorControl.style.background     = rgba2style(rgbaVal);
+            
+            this.control.style.display             = 'inline-block';
+            
+            this.control. backStyleLight           = 
+            this.control. backStyleDark            = 
+            this.control.valueStyleLight           = 
+            this.control.valueStyleDark            = rgba2style(rgbaVal);
 
-            this.textControl.innerHTML             = 'stroke';
-            this.textControl.style.color           = rgba2style(rgbaText);
+            this.control.textStyleLight            = 
+            this.control.textStyleDark             = rgba2style(rgbaText);
+
+            this.control.update();
+            
+
+            this.textControl.style.display         = 'none';
 
             this.updateWarningOverlay();
         }
         else
         {
-            this.checkers    .style.display        = 'none';
-            this.colorControl.style.display        = 'none';
+            this.checkers   .style.display    = 'none';
+            this.control    .style.display    = 'none';
+            
+            this.textControl.style.display    = 'inline-block';
+            this.textControl.style.color      = isDarkMode() ? '#eee8' : '#0006';
 
-            this.colorControl.style.background     = 'transparent';
-
-            this.textControl.innerHTML             = 'no stroke';
-            this.textControl.style.color           = isDarkMode() ? '#eee8' : '#0006';
+            this.textControl.innerHTML        = 'no stroke';
+            
+            this.div.style.background =
+                isDarkMode()
+                ? 'rgba(56, 56, 56, 0.95)'
+                : 'rgba(255, 255, 255, 0.95)';
         }
 
 
@@ -243,7 +267,10 @@ extends Parameter
     enableControlText(enable)
     {
         enableElementText(this.textControl, enable);
+        enableElementText(this.control,     enable);
+
         this.textControl.readOnly = !enable;
+        this.control    .readOnly = !enable;
     }
     
     

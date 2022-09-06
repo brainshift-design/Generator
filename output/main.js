@@ -247,9 +247,9 @@ const settings = {
     logLoading: false,
     logRawRequests: false,
     logRawValues: false,
-    logRequests: false,
-    logValues: false,
-    logObjectUpdates: false
+    logRequests: true,
+    logValues: true,
+    logObjectUpdates: true
 };
 const figObjectArrays = []; // {nodeId, [objects]}
 function figUpdate(msg) {

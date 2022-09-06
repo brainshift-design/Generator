@@ -64,8 +64,6 @@ extends GOperator
             }
         
 
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-
             genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
             genPushUpdateValue(parse, this.nodeId, 'weight', this.result.weight);
             genPushUpdateValue(parse, this.nodeId, 'fit',    this.result.fit   );

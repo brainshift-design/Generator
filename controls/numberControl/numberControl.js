@@ -11,7 +11,7 @@ function initNumberControlChildren(control)
 
 
 
-function initNumberControl(param, control, width, height, id, name, showName, defaultValue, min, max, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
+function initNumberControl(param, control, width, height, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
 {
     control.param                  = param;
      
@@ -275,8 +275,15 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         
         if (   control.name.length > 0
             && control.showName)
-            control.text.innerHTML += '<span class="numberControlName">' + control.name + "</span>&nbsp;&nbsp;";
+        {
+            const nameStyle = 
+                isDarkMode() 
+                ? rgba2style(rgb_a(style2rgba(control.textStyleDark),  0.4))
+                : rgba2style(rgb_a(style2rgba(control.textStyleLight), 0.6));
 
+            control.text.innerHTML += '<span style="color: '+nameStyle+';">' + control.name + "</span>&nbsp;&nbsp;";
+        }
+        
         control.text.innerHTML += control.getValueText() + control.suffix;
     };
 

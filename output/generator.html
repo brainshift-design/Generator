@@ -5799,8 +5799,6 @@ extends GOperator
             this.valid        = true;
            
             
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
-
             genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
             genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
         }
@@ -5876,8 +5874,6 @@ extends GOperator
                 this.result = new StrokeValue(fill, weight, fit, join, miter);
             }
         
-
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
 
             genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
             genPushUpdateValue(parse, this.nodeId, 'weight', this.result.weight);
@@ -6119,10 +6115,6 @@ extends GGeometryBase
                 this.result.round  = round;
             }
 
-
-            //genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-
-            genPushUpdateValue(parse, this.nodeId, 'value',   this.result);
 
             genPushUpdateValue(parse, this.nodeId, 'x',       this.result.x     );
             genPushUpdateValue(parse, this.nodeId, 'y',       this.result.y     );
@@ -6651,9 +6643,9 @@ const settings =
     logRawRequests:   false, 
     logRawValues:     false, 
     
-    logRequests:      false, 
-    logValues:        false, 
-    logObjectUpdates: false
+    logRequests:      true, 
+    logValues:        true, 
+    logObjectUpdates: true
 };
 
 

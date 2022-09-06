@@ -115,8 +115,6 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const stroke = values[paramIds.findIndex(id => id == 'value')];
-
         const fill   = values[paramIds.findIndex(id => id == 'fill'  )];
         const weight = values[paramIds.findIndex(id => id == 'weight')];
         const fit    = values[paramIds.findIndex(id => id == 'fit'   )];
@@ -132,8 +130,8 @@ extends OpColorBase
 
         
         this._color = 
-            stroke.isValid()
-            ? stroke.fill.color.toDataColor()
+            fill.isValid()
+            ? fill.color.toDataColor()
             : dataColor_NaN;
 
 
