@@ -31,7 +31,7 @@ function uiPostMessageToFigma(msg)
     parent.postMessage({pluginMessage: JSON.stringify(msg)}, '*');
 
     if (settings.logMessages)
-        console.log('%c'+msg.cmd+' FIG ◄-- UI', 'background: #bef; color: black;');
+        console.log('%c%s FIG ◄-- UI '+msg.cmd, 'background: #bef; color: black;', '\n            ');
 }
 
 
@@ -152,7 +152,7 @@ function uiPostMessageToGenerator(msg)
     generator.postMessage(JSON.stringify(msg));
 
     if (settings.logMessages)
-        console.log('%cUI --► GEN '+msg.cmd, 'background: #ffb; color: black;');
+        console.log('%c%s UI '+msg.cmd+' --► GEN', 'background: #ffb; color: black;', '\n            ');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

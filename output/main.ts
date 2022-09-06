@@ -413,11 +413,12 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      false,
-    logActions:       false, 
+    logMessages:      true,
 
-    logRawLoading:    false, 
-    logRawSaving:     false, 
+    logActions:       true, 
+
+    logRawLoading:    true, 
+    logRawSaving:     true, 
     
     logLoading:       false, 
 
@@ -687,7 +688,7 @@ function figPostMessageToUI(msg)
     figma.ui.postMessage(JSON.stringify(msg));
 
     if (settings.logMessages)
-        console.log('%cFIG --► UI '+msg.cmd, 'background: #08f; color: white;');
+        console.log('%cFIG '+msg.cmd+' --► UI', 'background: #08f; color: white;');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

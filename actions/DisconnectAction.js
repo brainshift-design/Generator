@@ -55,7 +55,7 @@ extends Action
         }
 
 
-        uiSaveNodes([this.outputNodeId, this.inputNodeId]);
+        //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
         //pushUpdate([this.outputNode, this.inputNode]);
     }
     
@@ -81,7 +81,7 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
 
 
-        uiSaveNodes([this.inputNodeId]);
+        //uiSaveNodes([this.inputNodeId]);
         //pushUpdate([this.inputNode]);
     }
     
@@ -100,7 +100,7 @@ extends Action
             uiMakeNodeActive(this.outputNode);
 
 
-        uiSaveNodes([this.outputNodeId, this.inputNodeId]);
+        //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
         // pushUpdate([this.outputNode, this.inputNode]);
    }
 }

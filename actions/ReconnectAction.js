@@ -92,8 +92,10 @@ extends Action
 
         // graphView.updateNodeTransform(this.inputNode);
 
-        pushUpdate([this.oldInputNode]);
-        pushUpdate([this.inputNode   ]);
+        // pushUpdate([this.oldInputNode]);
+        // pushUpdate([this.inputNode   ]);
+
+        //uiSaveNodes([this.oldInputNodeId, this.inputNodeId]);
     }
 
 
@@ -113,7 +115,8 @@ extends Action
             this.oldInputIndex);
 
         // graphView.updateNodeTransform(this.oldInputNode);
-        pushUpdate([this.oldInputNode]);
+        //pushUpdate([this.oldInputNode]);
+        uiSaveNodes([this.oldInputNodeId]);
     
 
         if (this.oldOutputNodeId != '')

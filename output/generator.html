@@ -6641,11 +6641,12 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      false,
-    logActions:       false, 
+    logMessages:      true,
 
-    logRawLoading:    false, 
-    logRawSaving:     false, 
+    logActions:       true, 
+
+    logRawLoading:    true, 
+    logRawSaving:     true, 
     
     logLoading:       false, 
 
@@ -6751,7 +6752,7 @@ function genPostNextMessageToUI(msg)
         postMessage(JSON.stringify(msg));
 
         if (settings.logMessages)
-            console.log('%c'+msg.cmd+' UI ◄-- GEN', 'background: #ca0; color: white;');
+            console.log('%c%sUI ◄-- GEN '+msg.cmd, 'background: #ca0; color: white;', '\n                        ');
     }
 }
 

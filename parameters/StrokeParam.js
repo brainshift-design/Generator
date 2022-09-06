@@ -177,20 +177,20 @@ extends Parameter
             this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
             
-            this.control.style.display             = 'inline-block';
+            this.control.style.display     = 'inline-block';
             
-            this.control. backStyleLight           = 
-            this.control. backStyleDark            = 
-            this.control.valueStyleLight           = 
-            this.control.valueStyleDark            = rgba2style(rgbaVal);
+            this.control. backStyleLight   = 
+            this.control. backStyleDark    = 
+            this.control.valueStyleLight   = 
+            this.control.valueStyleDark    = rgba2style(rgbaVal);
 
-            this.control.textStyleLight            = 
-            this.control.textStyleDark             = rgba2style(rgbaText);
+            this.control.textStyleLight    = 
+            this.control.textStyleDark     = rgba2style(rgbaText);
 
             this.control.update();
             
 
-            this.textControl.style.display         = 'none';
+            this.textControl.style.display = 'none';
 
             this.updateWarningOverlay();
         }

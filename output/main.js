@@ -240,10 +240,10 @@ function logReqNode(node, parse) {
 }
 const settings = {
     showNodeId: false,
-    logMessages: false,
-    logActions: false,
-    logRawLoading: false,
-    logRawSaving: false,
+    logMessages: true,
+    logActions: true,
+    logRawLoading: true,
+    logRawSaving: true,
     logLoading: false,
     logRawRequests: false,
     logRawValues: false,
@@ -470,7 +470,7 @@ figma.ui.onmessage = msg => {
 function figPostMessageToUI(msg) {
     figma.ui.postMessage(JSON.stringify(msg));
     if (settings.logMessages)
-        console.log('%cFIG --► UI ' + msg.cmd, 'background: #08f; color: white;');
+        console.log('%cFIG ' + msg.cmd + ' --► UI', 'background: #08f; color: white;');
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // to Generator -->

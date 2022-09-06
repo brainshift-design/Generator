@@ -8403,11 +8403,12 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      false,
-    logActions:       false, 
+    logMessages:      true,
 
-    logRawLoading:    false, 
-    logRawSaving:     false, 
+    logActions:       true, 
+
+    logRawLoading:    true, 
+    logRawSaving:     true, 
     
     logLoading:       false, 
 
@@ -8513,7 +8514,7 @@ function genPostNextMessageToUI(msg)
         postMessage(JSON.stringify(msg));
 
         if (settings.logMessages)
-            console.log('%c'+msg.cmd+' UI ◄-- GEN', 'background: #ca0; color: white;');
+            console.log('%c%sUI ◄-- GEN '+msg.cmd, 'background: #ca0; color: white;', '\n                        ');
     }
 }
 
@@ -20752,11 +20753,12 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      false,
-    logActions:       false, 
+    logMessages:      true,
 
-    logRawLoading:    false, 
-    logRawSaving:     false, 
+    logActions:       true, 
+
+    logRawLoading:    true, 
+    logRawSaving:     true, 
     
     logLoading:       false, 
 
@@ -25171,7 +25173,7 @@ graphView.endConnection = pointerId =>
         let output = graphView.tempConn.output;
         let input  = graphView.overInput;
 
-        let savedInput = 
+        let savedConnInput = 
             graphView.savedConn
             ? graphView.savedConn.input
             : null;
@@ -25188,24 +25190,24 @@ graphView.endConnection = pointerId =>
                 && !isLastInArray(input.node.inputs, input))
                 actionManager.do(new ReorderInputAction(input.node.id, oldReorderIndex, newReorderIndex));
 
-            else if (input == savedInput) // reconnect old
+            else if (input == savedConnInput) // reconnect old
             {
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
                 updateWire(input.connection.wire);
             }
 
-            else if (savedInput)
+            else if (savedConnInput)
             {
-                if (savedInput.connectedOutput != output)
-                    actionManager.do(new ReconnectAction(output, savedInput, input));
+                if (savedConnInput.connectedOutput != output)
+                    actionManager.do(new ReconnectAction(output, savedConnInput, input));
             }
-            else if (   !savedInput
+            else if (   !savedConnInput
                      && (  !input.connected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new
                 actionManager.do(new ConnectAction(output, input));
         }
-        else if (savedInput) // disconnect old
-            actionManager.do(new DisconnectAction(output, savedInput));
+        else if (savedConnInput) // disconnect old
+            actionManager.do(new DisconnectAction(output, savedConnInput));
         
         graphView.cancelConnection(pointerId);
     }
@@ -26970,20 +26972,20 @@ extends Parameter
             this.checkers.style.backgroundPosition = '0 0, 10px 10px';
 
             
-            this.control.style.display             = 'inline-block';
+            this.control.style.display     = 'inline-block';
             
-            this.control. backStyleLight           = 
-            this.control. backStyleDark            = 
-            this.control.valueStyleLight           = 
-            this.control.valueStyleDark            = rgba2style(rgbaVal);
+            this.control. backStyleLight   = 
+            this.control. backStyleDark    = 
+            this.control.valueStyleLight   = 
+            this.control.valueStyleDark    = rgba2style(rgbaVal);
 
-            this.control.textStyleLight            = 
-            this.control.textStyleDark             = rgba2style(rgbaText);
+            this.control.textStyleLight    = 
+            this.control.textStyleDark     = rgba2style(rgbaText);
 
             this.control.update();
             
 
-            this.textControl.style.display         = 'none';
+            this.textControl.style.display = 'none';
 
             this.updateWarningOverlay();
         }
@@ -36273,7 +36275,7 @@ extends Action
         }
 
 
-        uiSaveNodes(updateNodes.map(n => n.id));
+        //uiSaveNodes(updateNodes.map(n => n.id));
         //pushUpdate(updateNodes);
     }
 
@@ -36326,7 +36328,7 @@ extends Action
         }
 
 
-        uiSaveNodes(updateNodes.map(n => n.id));
+        //uiSaveNodes(updateNodes.map(n => n.id));
         //pushUpdate([this.inputNode]);
  
 
@@ -36689,7 +36691,7 @@ extends Action
         }
 
 
-        uiSaveNodes([this.outputNodeId, this.inputNodeId]);
+        //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
         //pushUpdate([this.outputNode, this.inputNode]);
     }
     
@@ -36715,7 +36717,7 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
 
 
-        uiSaveNodes([this.inputNodeId]);
+        //uiSaveNodes([this.inputNodeId]);
         //pushUpdate([this.inputNode]);
     }
     
@@ -36734,7 +36736,7 @@ extends Action
             uiMakeNodeActive(this.outputNode);
 
 
-        uiSaveNodes([this.outputNodeId, this.inputNodeId]);
+        //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
         // pushUpdate([this.outputNode, this.inputNode]);
    }
 }
@@ -37067,8 +37069,10 @@ extends Action
 
         // graphView.updateNodeTransform(this.inputNode);
 
-        pushUpdate([this.oldInputNode]);
-        pushUpdate([this.inputNode   ]);
+        // pushUpdate([this.oldInputNode]);
+        // pushUpdate([this.inputNode   ]);
+
+        //uiSaveNodes([this.oldInputNodeId, this.inputNodeId]);
     }
 
 
@@ -37088,7 +37092,8 @@ extends Action
             this.oldInputIndex);
 
         // graphView.updateNodeTransform(this.oldInputNode);
-        pushUpdate([this.oldInputNode]);
+        //pushUpdate([this.oldInputNode]);
+        uiSaveNodes([this.oldInputNodeId]);
     
 
         if (this.oldOutputNodeId != '')
@@ -38012,7 +38017,7 @@ function uiPostMessageToFigma(msg)
     parent.postMessage({pluginMessage: JSON.stringify(msg)}, '*');
 
     if (settings.logMessages)
-        console.log('%c'+msg.cmd+' FIG ◄-- UI', 'background: #bef; color: black;');
+        console.log('%c%s FIG ◄-- UI '+msg.cmd, 'background: #bef; color: black;', '\n            ');
 }
 
 
@@ -38133,7 +38138,7 @@ function uiPostMessageToGenerator(msg)
     generator.postMessage(JSON.stringify(msg));
 
     if (settings.logMessages)
-        console.log('%cUI --► GEN '+msg.cmd, 'background: #ffb; color: black;');
+        console.log('%c%s UI '+msg.cmd+' --► GEN', 'background: #ffb; color: black;', '\n            ');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

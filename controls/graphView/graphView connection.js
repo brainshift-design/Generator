@@ -75,7 +75,7 @@ graphView.endConnection = pointerId =>
         let output = graphView.tempConn.output;
         let input  = graphView.overInput;
 
-        let savedInput = 
+        let savedConnInput = 
             graphView.savedConn
             ? graphView.savedConn.input
             : null;
@@ -92,24 +92,24 @@ graphView.endConnection = pointerId =>
                 && !isLastInArray(input.node.inputs, input))
                 actionManager.do(new ReorderInputAction(input.node.id, oldReorderIndex, newReorderIndex));
 
-            else if (input == savedInput) // reconnect old
+            else if (input == savedConnInput) // reconnect old
             {
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
                 updateWire(input.connection.wire);
             }
 
-            else if (savedInput)
+            else if (savedConnInput)
             {
-                if (savedInput.connectedOutput != output)
-                    actionManager.do(new ReconnectAction(output, savedInput, input));
+                if (savedConnInput.connectedOutput != output)
+                    actionManager.do(new ReconnectAction(output, savedConnInput, input));
             }
-            else if (   !savedInput
+            else if (   !savedConnInput
                      && (  !input.connected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new
                 actionManager.do(new ConnectAction(output, input));
         }
-        else if (savedInput) // disconnect old
-            actionManager.do(new DisconnectAction(output, savedInput));
+        else if (savedConnInput) // disconnect old
+            actionManager.do(new DisconnectAction(output, savedConnInput));
         
         graphView.cancelConnection(pointerId);
     }
