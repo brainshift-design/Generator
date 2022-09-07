@@ -21,8 +21,8 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramFill   = new FillParam  ('fill',   'f', false, true, true, FillValue.default));
-        this.addParam(this.paramStroke = new StrokeParam('stroke', 's',        true, true, StrokeValue.NaN));
+        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.default));
+        this.addParam(this.paramStroke = new StrokeParam('stroke', 'stroke',        true, true, StrokeValue.NaN));
 
         this.paramStroke.input.addEventListener('disconnect', () => { this.paramStroke.setValue(StrokeValue.NaN, false, true, false); });
     } 

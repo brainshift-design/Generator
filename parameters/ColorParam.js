@@ -112,8 +112,10 @@ extends Parameter
             
         this.preSetValue(value, createAction, dispatchEvents);
 
+        this.control.value = value.copy();
+
         if (updateControl)
-            this.control.setValue(value, false, false); 
+            this.control.setValue(this.control.value, false, true); 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
 

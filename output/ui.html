@@ -4826,6 +4826,8 @@ class GType
     topLevel;
 
 
+    data = {}; // for type conversion info
+
 
     constructor(type) 
     {
@@ -4842,6 +4844,13 @@ class GType
     copy()
     {
         return null;
+    }
+
+
+
+    copyBaseData(obj)
+    {
+        this.data = deepCopy(obj.data);
     }
 
 
@@ -5117,11 +5126,15 @@ extends GType
 
     copy()
     {
-        return new ColorValue(
+        const color = new ColorValue(
             this.space.copy(), 
             this.c1   .copy(), 
             this.c2   .copy(), 
             this.c3   .copy());
+
+        color.copyBaseData(this);
+
+        return color;
     }
 
 
@@ -5257,7 +5270,7 @@ extends GType
 
 
     constructor(color   = ColorValue .NaN, 
-                opacity = NumberValue.NaN)
+                opacity = new NumberValue(100))
     {
         super(FILL_VALUE);
 
@@ -5298,9 +5311,13 @@ extends GType
 
     copy()
     {
-        return new FillValue(
+        const fill = new FillValue(
             this.color  .copy(),
             this.opacity.copy());
+
+        fill.copyBaseData(this);
+
+        return fill;
     }
 
 
@@ -5405,6 +5422,22 @@ function parseFillValue(str, i = -1)
 }
 
 
+
+
+
+
+function evalFillValue(value, parse)
+{
+    const fill = value.eval(parse).copy();
+
+    console.log('value.data =', fill.data);
+         if ( FILL_TYPES.includes(fill.type)) return fill;
+    else if (COLOR_TYPES.includes(fill.type)) return new FillValue(fill, fill.data.opacity);
+
+    else console.assert(false, 'fill must have type');
+}
+
+
 class StrokeValue
 extends GType
 {
@@ -5417,10 +5450,10 @@ extends GType
 
 
     constructor(fill   = FillValue  .NaN, 
-                weight = NumberValue.NaN,
-                fit    = NumberValue.NaN,
-                join   = NumberValue.NaN,
-                miter  = NumberValue.NaN)
+                weight = new NumberValue(1),
+                fit    = new NumberValue(0),
+                join   = new NumberValue(0),
+                miter  = new NumberValue(28.96, 2))
     {
         if (fill.type != FILL_VALUE)
         {
@@ -5471,12 +5504,16 @@ extends GType
 
     copy()
     {
-        return new StrokeValue(
+        const stroke = new StrokeValue(
             this.fill  .copy(),
             this.weight.copy(),
             this.fit   .copy(),
             this.join  .copy(),
             this.miter .copy());
+
+        stroke.copyBaseData(this);
+
+        return stroke;
     }
 
 
@@ -5608,6 +5645,19 @@ function parseStrokeValue(str, i = -1)
     return [
         new StrokeValue(fill[0], weight[0], fit[0], join[0], miter[0]),
         i - iStart ];
+}
+
+
+
+function evalStrokeValue(value, parse)
+{
+    const stroke = value.eval(parse).copy();
+
+         if (STROKE_TYPES.includes(this.stroke.type)) return stroke;
+    else if (  FILL_TYPES.includes(this.stroke.type)) return new StrokeValue(stroke, value.data.weight);
+    else if ( COLOR_TYPES.includes(this.stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
+
+    else console.assert(false, 'stroke must have type');
 }
 
 
@@ -5747,6 +5797,7 @@ extends GeometryBaseValue
             this.round .copy());
 
         rect.copyBase(this);
+        rect.copyData(this);
 
         return rect;
     }
@@ -7611,11 +7662,11 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const fill   = this.fill   ? this.fill  .eval(parse).copy() : null;
-            const weight = this.weight ? this.weight.eval(parse).copy() : null;
-            const fit    = this.fit    ? this.fit   .eval(parse).copy() : null;
-            const join   = this.join   ? this.join  .eval(parse).copy() : null;
-            const miter  = this.miter  ? this.miter .eval(parse).copy() : null;            
+            const fill   = this.fill   ? evalFillValue(this.fill, parse) : null;
+            const weight = this.weight ? this.weight.eval(parse).copy()  : null;
+            const fit    = this.fit    ? this.fit   .eval(parse).copy()  : null;
+            const join   = this.join   ? this.join  .eval(parse).copy()  : null;
+            const miter  = this.miter  ? this.miter .eval(parse).copy()  : null;            
 
             if (this.input)
             {
@@ -7777,15 +7828,9 @@ extends GOperator
     {
         if (!this.valid)
         {
-            let fill;
+            const fill   = evalFillValue(this.fill,   parse);
+            const stroke = evalFillValue(this.stroke, parse);
             
-                 if ( FILL_TYPES.includes(this.fill.type)) fill = this.fill.eval(parse).copy();
-            else if (COLOR_TYPES.includes(this.fill.type)) fill = new FillValue(this.fill.eval(parse).copy(), new NumberValue(100));
-            else console.assert(false, 'fill must have type');
-
-            const stroke = this.stroke.eval(parse).copy();
-            
-
             if (input)
             {
                 if (this.fill  ) this.result.fill   = fill;
@@ -8403,21 +8448,21 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      true,
+    logMessages:      false,
 
-    logActions:       true, 
+    logActions:       false, 
 
-    logRawLoading:    true, 
-    logRawSaving:     true, 
+    logRawLoading:    false, 
+    logRawSaving:     false, 
     
     logLoading:       false, 
 
     logRawRequests:   false, 
     logRawValues:     false, 
     
-    logRequests:      false, 
-    logValues:        false, 
-    logObjectUpdates: false
+    logRequests:      true, 
+    logValues:        true, 
+    logObjectUpdates: true
 };
 
 
@@ -9060,8 +9105,8 @@ function genParseGeometryBase(parse, obj, paramId)
 {
     switch (paramId)
     {
-    case 'fill':   obj.fill   = genParse(parse); break;
-    case 'stroke': obj.stroke = genParse(parse); break;
+    case 'fill':   obj.fill   = genParseFillParam(parse); break;
+    case 'stroke': obj.stroke = genParse(parse);          break;
     }
 }
 
@@ -9614,6 +9659,18 @@ function genParseFill(parse)
 
 
 
+function genParseFillParam(parse)
+{
+    const fill = genParse(parse); 
+
+    if (COLOR_TYPES.includes(fill.type))
+        fill.data.opacity = genParse(parse);
+
+    return fill;
+}
+
+
+
 function genParseStrokeValue(parse)
 {
     parse.pos++; // STROKE_VALUE
@@ -9669,11 +9726,11 @@ function genParseStroke(parse)
 
         switch (id)
         {
-        case 'fill':   stroke.fill   = genParse(parse); break;
-        case 'weight': stroke.weight = genParse(parse); break;
-        case 'fit':    stroke.fit    = genParse(parse); break;
-        case 'join':   stroke.join   = genParse(parse); break;
-        case 'miter':  stroke.miter  = genParse(parse); break;
+        case 'fill':   stroke.fill   = genParseFillParam(parse); break;
+        case 'weight': stroke.weight = genParse(parse);          break;
+        case 'fit':    stroke.fit    = genParse(parse);          break;
+        case 'join':   stroke.join   = genParse(parse);          break;
+        case 'miter':  stroke.miter  = genParse(parse);          break;
         }
     }
 
@@ -17176,6 +17233,8 @@ class GType
     topLevel;
 
 
+    data = {}; // for type conversion info
+
 
     constructor(type) 
     {
@@ -17192,6 +17251,13 @@ class GType
     copy()
     {
         return null;
+    }
+
+
+
+    copyBaseData(obj)
+    {
+        this.data = deepCopy(obj.data);
     }
 
 
@@ -17467,11 +17533,15 @@ extends GType
 
     copy()
     {
-        return new ColorValue(
+        const color = new ColorValue(
             this.space.copy(), 
             this.c1   .copy(), 
             this.c2   .copy(), 
             this.c3   .copy());
+
+        color.copyBaseData(this);
+
+        return color;
     }
 
 
@@ -17607,7 +17677,7 @@ extends GType
 
 
     constructor(color   = ColorValue .NaN, 
-                opacity = NumberValue.NaN)
+                opacity = new NumberValue(100))
     {
         super(FILL_VALUE);
 
@@ -17648,9 +17718,13 @@ extends GType
 
     copy()
     {
-        return new FillValue(
+        const fill = new FillValue(
             this.color  .copy(),
             this.opacity.copy());
+
+        fill.copyBaseData(this);
+
+        return fill;
     }
 
 
@@ -17755,6 +17829,22 @@ function parseFillValue(str, i = -1)
 }
 
 
+
+
+
+
+function evalFillValue(value, parse)
+{
+    const fill = value.eval(parse).copy();
+
+    console.log('value.data =', fill.data);
+         if ( FILL_TYPES.includes(fill.type)) return fill;
+    else if (COLOR_TYPES.includes(fill.type)) return new FillValue(fill, fill.data.opacity);
+
+    else console.assert(false, 'fill must have type');
+}
+
+
 class StrokeValue
 extends GType
 {
@@ -17767,10 +17857,10 @@ extends GType
 
 
     constructor(fill   = FillValue  .NaN, 
-                weight = NumberValue.NaN,
-                fit    = NumberValue.NaN,
-                join   = NumberValue.NaN,
-                miter  = NumberValue.NaN)
+                weight = new NumberValue(1),
+                fit    = new NumberValue(0),
+                join   = new NumberValue(0),
+                miter  = new NumberValue(28.96, 2))
     {
         if (fill.type != FILL_VALUE)
         {
@@ -17821,12 +17911,16 @@ extends GType
 
     copy()
     {
-        return new StrokeValue(
+        const stroke = new StrokeValue(
             this.fill  .copy(),
             this.weight.copy(),
             this.fit   .copy(),
             this.join  .copy(),
             this.miter .copy());
+
+        stroke.copyBaseData(this);
+
+        return stroke;
     }
 
 
@@ -17958,6 +18052,19 @@ function parseStrokeValue(str, i = -1)
     return [
         new StrokeValue(fill[0], weight[0], fit[0], join[0], miter[0]),
         i - iStart ];
+}
+
+
+
+function evalStrokeValue(value, parse)
+{
+    const stroke = value.eval(parse).copy();
+
+         if (STROKE_TYPES.includes(this.stroke.type)) return stroke;
+    else if (  FILL_TYPES.includes(this.stroke.type)) return new StrokeValue(stroke, value.data.weight);
+    else if ( COLOR_TYPES.includes(this.stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
+
+    else console.assert(false, 'stroke must have type');
 }
 
 
@@ -18097,6 +18204,7 @@ extends GeometryBaseValue
             this.round .copy());
 
         rect.copyBase(this);
+        rect.copyData(this);
 
         return rect;
     }
@@ -19961,11 +20069,11 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const fill   = this.fill   ? this.fill  .eval(parse).copy() : null;
-            const weight = this.weight ? this.weight.eval(parse).copy() : null;
-            const fit    = this.fit    ? this.fit   .eval(parse).copy() : null;
-            const join   = this.join   ? this.join  .eval(parse).copy() : null;
-            const miter  = this.miter  ? this.miter .eval(parse).copy() : null;            
+            const fill   = this.fill   ? evalFillValue(this.fill, parse) : null;
+            const weight = this.weight ? this.weight.eval(parse).copy()  : null;
+            const fit    = this.fit    ? this.fit   .eval(parse).copy()  : null;
+            const join   = this.join   ? this.join  .eval(parse).copy()  : null;
+            const miter  = this.miter  ? this.miter .eval(parse).copy()  : null;            
 
             if (this.input)
             {
@@ -20127,15 +20235,9 @@ extends GOperator
     {
         if (!this.valid)
         {
-            let fill;
+            const fill   = evalFillValue(this.fill,   parse);
+            const stroke = evalFillValue(this.stroke, parse);
             
-                 if ( FILL_TYPES.includes(this.fill.type)) fill = this.fill.eval(parse).copy();
-            else if (COLOR_TYPES.includes(this.fill.type)) fill = new FillValue(this.fill.eval(parse).copy(), new NumberValue(100));
-            else console.assert(false, 'fill must have type');
-
-            const stroke = this.stroke.eval(parse).copy();
-            
-
             if (input)
             {
                 if (this.fill  ) this.result.fill   = fill;
@@ -20753,21 +20855,21 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      true,
+    logMessages:      false,
 
-    logActions:       true, 
+    logActions:       false, 
 
-    logRawLoading:    true, 
-    logRawSaving:     true, 
+    logRawLoading:    false, 
+    logRawSaving:     false, 
     
     logLoading:       false, 
 
     logRawRequests:   false, 
     logRawValues:     false, 
     
-    logRequests:      false, 
-    logValues:        false, 
-    logObjectUpdates: false
+    logRequests:      true, 
+    logValues:        true, 
+    logObjectUpdates: true
 };
 
 
@@ -26218,8 +26320,10 @@ extends Parameter
             
         this.preSetValue(value, createAction, dispatchEvents);
 
+        this.control.value = value.copy();
+
         if (updateControl)
-            this.control.setValue(value, false, false); 
+            this.control.setValue(this.control.value, false, true); 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
 
@@ -26526,21 +26630,6 @@ extends Parameter
 
 
 
-    setName(name, dispatchEvents = true)
-    {
-        super.setName(name, dispatchEvents);
-        this.colorControl.setName(name);
-    }
-
-
-
-    isDefault()
-    {
-        return this.value.equals(this.defaultValue);
-    }
-
-
-
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof FillValue))
@@ -26555,21 +26644,67 @@ extends Parameter
         this.preSetValue(value, createAction, dispatchEvents);
 
 
-        this.value = value;
+        this.value = value.copy();
 
 
         if (updateControl)
         {
-            this.  colorControl.setValue(value.color,         false, false); 
-            this.opacityControl.setValue(value.opacity.value, false, false, false); 
+            this.  colorControl.setValue(this.value.color,         false, false); 
+            this.opacityControl.setValue(this.value.opacity.value, false, false, false); 
         }
 
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
 
 
         this.oldValue = this.value;
     }    
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            request.push(...pushInputOrParam(this.input, gen));
+
+            if (COLOR_TYPES.includes(this.input.connectedOutput.type))
+            {
+                request.push(
+                    NUMBER_VALUE, 
+                    new NumberValue(
+                        this.opacityControl.value, 
+                        this.opacityControl.displayDec).toString());
+            }
+        }
+
+        else request.push( 
+            FILL_VALUE, 
+            this.value.toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
 
 
 
@@ -26656,37 +26791,17 @@ extends Parameter
 
 
 
-    genRequest(gen)
+    setName(name, dispatchEvents = true)
     {
-        // this function exists because a parameter without an output
-        // should still be able to generate a request
-        
-        // 'this' is the param
-
-        if (    this.output
-            && !isEmpty(this.output.cache)
-            &&  gen.passedNodes.includes(this.node))
-            return this.output.cache;
-
-
-        const request = [];
-
-        if (   this.input
-            && this.input.connected)
-            request.push(...pushInputOrParam(this.input, gen));
-
-        else request.push( 
-            FILL_VALUE, 
-            this.value.toString());
-
-        return request;
+        super.setName(name, dispatchEvents);
+        this.colorControl.setName(name);
     }
 
 
 
-    output_genRequest(gen)
+    isDefault()
     {
-        return this.param.genRequest(gen);
+        return this.value.equals(this.defaultValue);
     }
 
 
@@ -26845,12 +26960,6 @@ extends Parameter
         this.textControl.style.width      = '100%';
         this.textControl.style.textAlign  = 'center';
 
-        this.control.style.position       = 'absolute';
-        this.control.style.display        = 'block';
-        this.control.style.width          = '100%';
-        this.control.style.height         = '20px';
-
-
         this._warningOverlay = createDiv('colorWarningOverlay');
         this._warningOverlay.style.zIndex = 21;
         this.div.appendChild(this._warningOverlay);
@@ -26868,6 +26977,11 @@ extends Parameter
             0);
 
 
+        this.control.style.position       = 'absolute';
+        this.control.style.display        = 'block';
+        this.control.style.width          = '100%';
+        this.control.style.height         = '20px';
+
 
         this.div.appendChild(this.checkers);
 
@@ -26875,8 +26989,20 @@ extends Parameter
         this.div.appendChild(this.control);
 
        
-        if (hasInput)  this.initInput(STROKE_TYPES);
+        if (hasInput)  this.initInput([...STROKE_TYPES, ...FILL_TYPES, ...COLOR_TYPES]);
         if (hasOutput) this.initOutput(STROKE_VALUE, this.output_genRequest);
+
+
+        this.control.addEventListener('confirm', () => 
+        { 
+            const value = this.value.copy();
+
+            value.weight = new NumberValue(
+                this.control.value, 
+                this.control.decimals);
+
+            this.setValue(value, true, false);
+        });
     }
 
 
@@ -26898,10 +27024,11 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
+        //console.log('value =', value);
+        
         if (!(value instanceof StrokeValue))
         {
             //console.trace();
-            //console.log('value =', value);
             console.assert(false, 'StrokeParam.setValue(value) is ' + typeof value + ', must be a StrokeValue');
         }
 
@@ -26914,17 +27041,21 @@ extends Parameter
         this.preSetValue(value, createAction, dispatchEvents);
 
 
-        this.value = value;
-        
+        this.value = value.copy();
+        console.log('this.value =', this.value);
+
 
         if (updateControl)
         {
-            this.control.setDecimals(value.weight.decimals, value.weight.decimals);
-            this.control.setValue(value.weight.value, false, false); 
+            this.control.setDecimals(
+                this.value.weight.decimals, 
+                this.value.weight.decimals);
+                
+            this.control.setValue(this.value.weight.value, false, false); 
         }
 
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
 
 
         this.oldValue = this.value;
@@ -27061,11 +27192,18 @@ extends Parameter
 
     enableControlText(enable)
     {
+        const opEnable = 
+                enable 
+            || !this.input 
+            || !this.input.connected 
+            ||   FILL_TYPES.includes(this.input.connectedOutput.type)
+            ||  COLOR_TYPES.includes(this.input.connectedOutput.type);
+
         enableElementText(this.textControl, enable);
-        enableElementText(this.control,     enable);
+        enableElementText(this.control,     opEnable);
 
         this.textControl.readOnly = !enable;
-        this.control    .readOnly = !enable;
+        this.control    .readOnly = !opEnable;
     }
     
     
@@ -34921,8 +35059,8 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramFill   = new FillParam  ('fill',   'f', false, true, true, FillValue.default));
-        this.addParam(this.paramStroke = new StrokeParam('stroke', 's',        true, true, StrokeValue.NaN));
+        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.default));
+        this.addParam(this.paramStroke = new StrokeParam('stroke', 'stroke',        true, true, StrokeValue.NaN));
 
         this.paramStroke.input.addEventListener('disconnect', () => { this.paramStroke.setValue(StrokeValue.NaN, false, true, false); });
     } 
@@ -36734,9 +36872,7 @@ extends Action
         if (   !getActiveNodeLeftOnlyInTreeFromNode(this.outputNode)
             && !getActiveNodeRightInTreeFromNode(this.outputNode))
             uiMakeNodeActive(this.outputNode);
-
-
-        //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
+       //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
         // pushUpdate([this.outputNode, this.inputNode]);
    }
 }
@@ -39284,6 +39420,8 @@ function uiConnect(output, input, inputIndex = -1)
 
 function uiDisconnect(input)
 {
+    console.log('uiDisconnect()');
+    
     const node = input.node;
 
     uiRemoveSavedConnection(
@@ -39293,6 +39431,8 @@ function uiDisconnect(input)
         input.index);
 
     graph.disconnect(input);
+
+    node.updateNode();
 
     if (node.variableInputs)
         uiUpdateSavedConnectionsToNodeId(node.id);
@@ -39680,7 +39820,7 @@ function uiSaveNodes(nodeIds)
         const json = nodeFromId(id).toJson();
 
         if (settings.logRawSaving)
-            console.log('%cSAVING\n' + json, 'background: #ddeeff');
+            console.log('%cSAVING NODES\n' + json, 'background: #ddeeff');
 
         nodeJson.push(json);
     }
@@ -39695,7 +39835,46 @@ function uiSaveNodes(nodeIds)
 
 
 
-function uiRemoveSavedNodesAndConns(nodeIds)
+function uiSaveConnection(outputNodeId, outputIndex, inputNodeId, inputIndex, connJson)
+{
+    if (settings.logRawSaving)
+        console.log('%cSAVING CONNECTION\n' + connJson, 'background: #ddeeff');
+
+    uiQueueMessageToFigma({
+        cmd: 'figSaveConnection',
+        name: outputNodeId  + ' '
+            + outputIndex + ' '
+            + inputNodeId   + ' '
+            + inputIndex,
+        json: connJson
+    });
+}
+
+
+
+function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIndex)
+{
+    if (settings.logRawSaving)
+        console.log('%cREMOVING SAVED CONNECTION', 'background: #ddeeff');
+
+    uiQueueMessageToFigma({
+        cmd: 'figRemoveSavedConnection',
+        name: outputNodeId + ' '
+            + outputIndex  + ' '
+            + inputNodeId  + ' '
+            + inputIndex
+    });
+}
+
+
+
+function uiRemoveSavedConnectionsToNodeId(nodeId)
+{
+    uiQueueMessageToFigma({
+        cmd:   'figRemoveSavedConnectionsToNode',
+        nodeId: nodeId
+    });
+}function uiRemoveSavedNodesAndConns(nodeIds)
 {
     uiQueueMessageToFigma({
         cmd:    'figRemoveSavedNodesAndConns',
@@ -39749,43 +39928,6 @@ function uiLogAllSavedConns()
     uiQueueMessageToFigma({
         cmd:     'figLogAllSavedConns',
         settings: settings
-    });
-}
-
-
-
-function uiSaveConnection(outputNodeId, outputIndex, inputNodeId, inputIndex, connJson)
-{
-    uiQueueMessageToFigma({
-        cmd: 'figSaveConnection',
-        name: outputNodeId  + ' '
-            + outputIndex + ' '
-            + inputNodeId   + ' '
-            + inputIndex,
-        json: connJson
-    });
-}
-
-
-
-function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIndex)
-{
-    uiQueueMessageToFigma({
-        cmd: 'figRemoveSavedConnection',
-        name: outputNodeId + ' '
-            + outputIndex  + ' '
-            + inputNodeId  + ' '
-            + inputIndex
-    });
-}
-
-
-
-function uiRemoveSavedConnectionsToNodeId(nodeId)
-{
-    uiQueueMessageToFigma({
-        cmd:   'figRemoveSavedConnectionsToNode',
-        nodeId: nodeId
     });
 }
 

@@ -528,6 +528,8 @@ function uiConnect(output, input, inputIndex = -1)
 
 function uiDisconnect(input)
 {
+    console.log('uiDisconnect()');
+    
     const node = input.node;
 
     uiRemoveSavedConnection(
@@ -537,6 +539,8 @@ function uiDisconnect(input)
         input.index);
 
     graph.disconnect(input);
+
+    node.updateNode();
 
     if (node.variableInputs)
         uiUpdateSavedConnectionsToNodeId(node.id);
@@ -924,7 +928,7 @@ function uiSaveNodes(nodeIds)
         const json = nodeFromId(id).toJson();
 
         if (settings.logRawSaving)
-            console.log('%cSAVING\n' + json, 'background: #ddeeff');
+            console.log('%cSAVING NODES\n' + json, 'background: #ddeeff');
 
         nodeJson.push(json);
     }
@@ -939,7 +943,46 @@ function uiSaveNodes(nodeIds)
 
 
 
-function uiRemoveSavedNodesAndConns(nodeIds)
+function uiSaveConnection(outputNodeId, outputIndex, inputNodeId, inputIndex, connJson)
+{
+    if (settings.logRawSaving)
+        console.log('%cSAVING CONNECTION\n' + connJson, 'background: #ddeeff');
+
+    uiQueueMessageToFigma({
+        cmd: 'figSaveConnection',
+        name: outputNodeId  + ' '
+            + outputIndex + ' '
+            + inputNodeId   + ' '
+            + inputIndex,
+        json: connJson
+    });
+}
+
+
+
+function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIndex)
+{
+    if (settings.logRawSaving)
+        console.log('%cREMOVING SAVED CONNECTION', 'background: #ddeeff');
+
+    uiQueueMessageToFigma({
+        cmd: 'figRemoveSavedConnection',
+        name: outputNodeId + ' '
+            + outputIndex  + ' '
+            + inputNodeId  + ' '
+            + inputIndex
+    });
+}
+
+
+
+function uiRemoveSavedConnectionsToNodeId(nodeId)
+{
+    uiQueueMessageToFigma({
+        cmd:   'figRemoveSavedConnectionsToNode',
+        nodeId: nodeId
+    });
+}function uiRemoveSavedNodesAndConns(nodeIds)
 {
     uiQueueMessageToFigma({
         cmd:    'figRemoveSavedNodesAndConns',
@@ -993,42 +1036,5 @@ function uiLogAllSavedConns()
     uiQueueMessageToFigma({
         cmd:     'figLogAllSavedConns',
         settings: settings
-    });
-}
-
-
-
-function uiSaveConnection(outputNodeId, outputIndex, inputNodeId, inputIndex, connJson)
-{
-    uiQueueMessageToFigma({
-        cmd: 'figSaveConnection',
-        name: outputNodeId  + ' '
-            + outputIndex + ' '
-            + inputNodeId   + ' '
-            + inputIndex,
-        json: connJson
-    });
-}
-
-
-
-function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIndex)
-{
-    uiQueueMessageToFigma({
-        cmd: 'figRemoveSavedConnection',
-        name: outputNodeId + ' '
-            + outputIndex  + ' '
-            + inputNodeId  + ' '
-            + inputIndex
-    });
-}
-
-
-
-function uiRemoveSavedConnectionsToNodeId(nodeId)
-{
-    uiQueueMessageToFigma({
-        cmd:   'figRemoveSavedConnectionsToNode',
-        nodeId: nodeId
     });
 }

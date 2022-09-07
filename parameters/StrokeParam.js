@@ -50,12 +50,6 @@ extends Parameter
         this.textControl.style.width      = '100%';
         this.textControl.style.textAlign  = 'center';
 
-        this.control.style.position       = 'absolute';
-        this.control.style.display        = 'block';
-        this.control.style.width          = '100%';
-        this.control.style.height         = '20px';
-
-
         this._warningOverlay = createDiv('colorWarningOverlay');
         this._warningOverlay.style.zIndex = 21;
         this.div.appendChild(this._warningOverlay);
@@ -73,6 +67,11 @@ extends Parameter
             0);
 
 
+        this.control.style.position       = 'absolute';
+        this.control.style.display        = 'block';
+        this.control.style.width          = '100%';
+        this.control.style.height         = '20px';
+
 
         this.div.appendChild(this.checkers);
 
@@ -80,8 +79,20 @@ extends Parameter
         this.div.appendChild(this.control);
 
        
-        if (hasInput)  this.initInput(STROKE_TYPES);
+        if (hasInput)  this.initInput([...STROKE_TYPES, ...FILL_TYPES, ...COLOR_TYPES]);
         if (hasOutput) this.initOutput(STROKE_VALUE, this.output_genRequest);
+
+
+        this.control.addEventListener('confirm', () => 
+        { 
+            const value = this.value.copy();
+
+            value.weight = new NumberValue(
+                this.control.value, 
+                this.control.decimals);
+
+            this.setValue(value, true, false);
+        });
     }
 
 
@@ -103,10 +114,11 @@ extends Parameter
 
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
+        //console.log('value =', value);
+        
         if (!(value instanceof StrokeValue))
         {
             //console.trace();
-            //console.log('value =', value);
             console.assert(false, 'StrokeParam.setValue(value) is ' + typeof value + ', must be a StrokeValue');
         }
 
@@ -119,17 +131,21 @@ extends Parameter
         this.preSetValue(value, createAction, dispatchEvents);
 
 
-        this.value = value;
-        
+        this.value = value.copy();
+        console.log('this.value =', this.value);
+
 
         if (updateControl)
         {
-            this.control.setDecimals(value.weight.decimals, value.weight.decimals);
-            this.control.setValue(value.weight.value, false, false); 
+            this.control.setDecimals(
+                this.value.weight.decimals, 
+                this.value.weight.decimals);
+                
+            this.control.setValue(this.value.weight.value, false, false); 
         }
 
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
 
 
         this.oldValue = this.value;
@@ -266,11 +282,18 @@ extends Parameter
 
     enableControlText(enable)
     {
+        const opEnable = 
+                enable 
+            || !this.input 
+            || !this.input.connected 
+            ||   FILL_TYPES.includes(this.input.connectedOutput.type)
+            ||  COLOR_TYPES.includes(this.input.connectedOutput.type);
+
         enableElementText(this.textControl, enable);
-        enableElementText(this.control,     enable);
+        enableElementText(this.control,     opEnable);
 
         this.textControl.readOnly = !enable;
-        this.control    .readOnly = !enable;
+        this.control    .readOnly = !opEnable;
     }
     
     

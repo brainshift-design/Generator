@@ -40,15 +40,9 @@ extends GOperator
     {
         if (!this.valid)
         {
-            let fill;
+            const fill   = evalFillValue(this.fill,   parse);
+            const stroke = evalFillValue(this.stroke, parse);
             
-                 if ( FILL_TYPES.includes(this.fill.type)) fill = this.fill.eval(parse).copy();
-            else if (COLOR_TYPES.includes(this.fill.type)) fill = new FillValue(this.fill.eval(parse).copy(), new NumberValue(100));
-            else console.assert(false, 'fill must have type');
-
-            const stroke = this.stroke.eval(parse).copy();
-            
-
             if (input)
             {
                 if (this.fill  ) this.result.fill   = fill;

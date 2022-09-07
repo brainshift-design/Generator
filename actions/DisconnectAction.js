@@ -98,9 +98,7 @@ extends Action
         if (   !getActiveNodeLeftOnlyInTreeFromNode(this.outputNode)
             && !getActiveNodeRightInTreeFromNode(this.outputNode))
             uiMakeNodeActive(this.outputNode);
-
-
-        //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
+       //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
         // pushUpdate([this.outputNode, this.inputNode]);
    }
 }

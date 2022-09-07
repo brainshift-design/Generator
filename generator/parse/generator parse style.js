@@ -68,6 +68,18 @@ function genParseFill(parse)
 
 
 
+function genParseFillParam(parse)
+{
+    const fill = genParse(parse); 
+
+    if (COLOR_TYPES.includes(fill.type))
+        fill.data.opacity = genParse(parse);
+
+    return fill;
+}
+
+
+
 function genParseStrokeValue(parse)
 {
     parse.pos++; // STROKE_VALUE
@@ -123,11 +135,11 @@ function genParseStroke(parse)
 
         switch (id)
         {
-        case 'fill':   stroke.fill   = genParse(parse); break;
-        case 'weight': stroke.weight = genParse(parse); break;
-        case 'fit':    stroke.fit    = genParse(parse); break;
-        case 'join':   stroke.join   = genParse(parse); break;
-        case 'miter':  stroke.miter  = genParse(parse); break;
+        case 'fill':   stroke.fill   = genParseFillParam(parse); break;
+        case 'weight': stroke.weight = genParse(parse);          break;
+        case 'fit':    stroke.fit    = genParse(parse);          break;
+        case 'join':   stroke.join   = genParse(parse);          break;
+        case 'miter':  stroke.miter  = genParse(parse);          break;
         }
     }
 

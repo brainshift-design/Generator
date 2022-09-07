@@ -10,10 +10,10 @@ extends GType
 
 
     constructor(fill   = FillValue  .NaN, 
-                weight = NumberValue.NaN,
-                fit    = NumberValue.NaN,
-                join   = NumberValue.NaN,
-                miter  = NumberValue.NaN)
+                weight = new NumberValue(1),
+                fit    = new NumberValue(0),
+                join   = new NumberValue(0),
+                miter  = new NumberValue(28.96, 2))
     {
         if (fill.type != FILL_VALUE)
         {
@@ -64,12 +64,16 @@ extends GType
 
     copy()
     {
-        return new StrokeValue(
+        const stroke = new StrokeValue(
             this.fill  .copy(),
             this.weight.copy(),
             this.fit   .copy(),
             this.join  .copy(),
             this.miter .copy());
+
+        stroke.copyBaseData(this);
+
+        return stroke;
     }
 
 
@@ -201,4 +205,17 @@ function parseStrokeValue(str, i = -1)
     return [
         new StrokeValue(fill[0], weight[0], fit[0], join[0], miter[0]),
         i - iStart ];
+}
+
+
+
+function evalStrokeValue(value, parse)
+{
+    const stroke = value.eval(parse).copy();
+
+         if (STROKE_TYPES.includes(this.stroke.type)) return stroke;
+    else if (  FILL_TYPES.includes(this.stroke.type)) return new StrokeValue(stroke, value.data.weight);
+    else if ( COLOR_TYPES.includes(this.stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
+
+    else console.assert(false, 'stroke must have type');
 }

@@ -7,7 +7,7 @@ extends GType
 
 
     constructor(color   = ColorValue .NaN, 
-                opacity = NumberValue.NaN)
+                opacity = new NumberValue(100))
     {
         super(FILL_VALUE);
 
@@ -48,9 +48,13 @@ extends GType
 
     copy()
     {
-        return new FillValue(
+        const fill = new FillValue(
             this.color  .copy(),
             this.opacity.copy());
+
+        fill.copyBaseData(this);
+
+        return fill;
     }
 
 
@@ -152,4 +156,20 @@ function parseFillValue(str, i = -1)
     return [
         new FillValue(color, a[0]),
         i - iStart ];
+}
+
+
+
+
+
+
+function evalFillValue(value, parse)
+{
+    const fill = value.eval(parse).copy();
+
+    console.log('value.data =', fill.data);
+         if ( FILL_TYPES.includes(fill.type)) return fill;
+    else if (COLOR_TYPES.includes(fill.type)) return new FillValue(fill, fill.data.opacity);
+
+    else console.assert(false, 'fill must have type');
 }

@@ -240,16 +240,16 @@ function logReqNode(node, parse) {
 }
 const settings = {
     showNodeId: false,
-    logMessages: true,
-    logActions: true,
-    logRawLoading: true,
-    logRawSaving: true,
+    logMessages: false,
+    logActions: false,
+    logRawLoading: false,
+    logRawSaving: false,
     logLoading: false,
     logRawRequests: false,
     logRawValues: false,
-    logRequests: false,
-    logValues: false,
-    logObjectUpdates: false
+    logRequests: true,
+    logValues: true,
+    logObjectUpdates: true
 };
 const figObjectArrays = []; // {nodeId, [objects]}
 function figUpdate(msg) {

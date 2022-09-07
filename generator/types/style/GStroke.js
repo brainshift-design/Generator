@@ -38,11 +38,11 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const fill   = this.fill   ? this.fill  .eval(parse).copy() : null;
-            const weight = this.weight ? this.weight.eval(parse).copy() : null;
-            const fit    = this.fit    ? this.fit   .eval(parse).copy() : null;
-            const join   = this.join   ? this.join  .eval(parse).copy() : null;
-            const miter  = this.miter  ? this.miter .eval(parse).copy() : null;            
+            const fill   = this.fill   ? evalFillValue(this.fill, parse) : null;
+            const weight = this.weight ? this.weight.eval(parse).copy()  : null;
+            const fit    = this.fit    ? this.fit   .eval(parse).copy()  : null;
+            const join   = this.join   ? this.join  .eval(parse).copy()  : null;
+            const miter  = this.miter  ? this.miter .eval(parse).copy()  : null;            
 
             if (this.input)
             {

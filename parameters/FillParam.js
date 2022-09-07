@@ -185,21 +185,6 @@ extends Parameter
 
 
 
-    setName(name, dispatchEvents = true)
-    {
-        super.setName(name, dispatchEvents);
-        this.colorControl.setName(name);
-    }
-
-
-
-    isDefault()
-    {
-        return this.value.equals(this.defaultValue);
-    }
-
-
-
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         if (!(value instanceof FillValue))
@@ -214,21 +199,67 @@ extends Parameter
         this.preSetValue(value, createAction, dispatchEvents);
 
 
-        this.value = value;
+        this.value = value.copy();
 
 
         if (updateControl)
         {
-            this.  colorControl.setValue(value.color,         false, false); 
-            this.opacityControl.setValue(value.opacity.value, false, false, false); 
+            this.  colorControl.setValue(this.value.color,         false, false); 
+            this.opacityControl.setValue(this.value.opacity.value, false, false, false); 
         }
 
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
 
 
         this.oldValue = this.value;
     }    
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            request.push(...pushInputOrParam(this.input, gen));
+
+            if (COLOR_TYPES.includes(this.input.connectedOutput.type))
+            {
+                request.push(
+                    NUMBER_VALUE, 
+                    new NumberValue(
+                        this.opacityControl.value, 
+                        this.opacityControl.displayDec).toString());
+            }
+        }
+
+        else request.push( 
+            FILL_VALUE, 
+            this.value.toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
 
 
 
@@ -315,37 +346,17 @@ extends Parameter
 
 
 
-    genRequest(gen)
+    setName(name, dispatchEvents = true)
     {
-        // this function exists because a parameter without an output
-        // should still be able to generate a request
-        
-        // 'this' is the param
-
-        if (    this.output
-            && !isEmpty(this.output.cache)
-            &&  gen.passedNodes.includes(this.node))
-            return this.output.cache;
-
-
-        const request = [];
-
-        if (   this.input
-            && this.input.connected)
-            request.push(...pushInputOrParam(this.input, gen));
-
-        else request.push( 
-            FILL_VALUE, 
-            this.value.toString());
-
-        return request;
+        super.setName(name, dispatchEvents);
+        this.colorControl.setName(name);
     }
 
 
 
-    output_genRequest(gen)
+    isDefault()
     {
-        return this.param.genRequest(gen);
+        return this.value.equals(this.defaultValue);
     }
 
 
