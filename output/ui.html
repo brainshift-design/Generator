@@ -8497,12 +8497,12 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      false,
+    logMessages:      true,
 
-    logActions:       false, 
+    logActions:       true, 
 
-    logRawLoading:    false, 
-    logRawSaving:     false, 
+    logRawLoading:    true, 
+    logRawSaving:     true, 
     
     logLoading:       false, 
 
@@ -20966,12 +20966,12 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      false,
+    logMessages:      true,
 
-    logActions:       false, 
+    logActions:       true, 
 
-    logRawLoading:    false, 
-    logRawSaving:     false, 
+    logRawLoading:    true, 
+    logRawSaving:     true, 
     
     logLoading:       false, 
 
@@ -37687,7 +37687,7 @@ extends Action
     get param() 
     { 
         return nodeFromId(this.nodeId).params
-            .find(p => p.id == this.paramId); 
+               .find(p => p.id == this.paramId); 
     } 
 
 
@@ -40006,7 +40006,11 @@ function uiRemoveSavedConnectionsToNodeId(nodeId)
         cmd:   'figRemoveSavedConnectionsToNode',
         nodeId: nodeId
     });
-}function uiRemoveSavedNodesAndConns(nodeIds)
+}
+
+
+
+function uiRemoveSavedNodesAndConns(nodeIds)
 {
     uiQueueMessageToFigma({
         cmd:    'figRemoveSavedNodesAndConns',

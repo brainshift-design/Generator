@@ -982,7 +982,11 @@ function uiRemoveSavedConnectionsToNodeId(nodeId)
         cmd:   'figRemoveSavedConnectionsToNode',
         nodeId: nodeId
     });
-}function uiRemoveSavedNodesAndConns(nodeIds)
+}
+
+
+
+function uiRemoveSavedNodesAndConns(nodeIds)
 {
     uiQueueMessageToFigma({
         cmd:    'figRemoveSavedNodesAndConns',

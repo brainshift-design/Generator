@@ -240,10 +240,10 @@ function logReqNode(node, parse) {
 }
 const settings = {
     showNodeId: false,
-    logMessages: false,
-    logActions: false,
-    logRawLoading: false,
-    logRawSaving: false,
+    logMessages: true,
+    logActions: true,
+    logRawLoading: true,
+    logRawSaving: true,
     logLoading: false,
     logRawRequests: false,
     logRawValues: false,

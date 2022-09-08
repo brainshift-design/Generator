@@ -7,7 +7,7 @@ extends Action
     get param() 
     { 
         return nodeFromId(this.nodeId).params
-            .find(p => p.id == this.paramId); 
+               .find(p => p.id == this.paramId); 
     } 
 
 
