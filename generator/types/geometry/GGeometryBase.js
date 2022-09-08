@@ -40,8 +40,8 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const fill   = evalFillValue(this.fill,   parse);
-            const stroke = evalFillValue(this.stroke, parse);
+            const fill   = evalFillValue  (this.fill,   parse);
+            const stroke = evalStrokeValue(this.stroke, parse);
             
             if (input)
             {

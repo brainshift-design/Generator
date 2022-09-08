@@ -167,9 +167,8 @@ function evalFillValue(value, parse)
 {
     const fill = value.eval(parse).copy();
 
-    console.log('value.data =', fill.data);
          if ( FILL_TYPES.includes(fill.type)) return fill;
-    else if (COLOR_TYPES.includes(fill.type)) return new FillValue(fill, fill.data.opacity);
+    else if (COLOR_TYPES.includes(fill.type)) return new FillValue(fill, value.data.opacity);
 
     else console.assert(false, 'fill must have type');
 }

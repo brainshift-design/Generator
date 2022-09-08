@@ -97,6 +97,13 @@ function nozero(x)
 
 
 
+function noNaN(x, replace)
+{
+    return !isNaN(x) ? x : replace;
+}
+
+
+
 function getDigitCount(i)
 {
     let l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
@@ -1638,6 +1645,43 @@ function deepCopy(obj)
 
 
 
+function clone(val) 
+{
+    const type = typeof val;
+    
+    if (val === null) 
+      return null;
+
+    else if (type === 'undefined' 
+          || type === 'number' 
+          || type === 'string' 
+          || type === 'boolean') 
+        return val;
+
+    else if (type === 'object') 
+    {
+        if (val instanceof Array) 
+            return val.map(x => clone(x));
+
+        else if (val instanceof Uint8Array) 
+            return new Uint8Array(val);
+
+        else 
+        {
+            let obj = {};
+
+            for (const key in val) 
+                obj[key] = clone(val[key]);
+
+            return obj;
+        }
+    }
+
+    throw 'unknown';
+}
+
+
+
 function filterUnique(array)
 {
     return array.filter((value, index) => 
@@ -3088,7 +3132,7 @@ class GType
 
     copyBaseData(obj)
     {
-        this.data = deepCopy(obj.data);
+        this.data = clone(obj.data);
     }
 
 
@@ -3668,9 +3712,8 @@ function evalFillValue(value, parse)
 {
     const fill = value.eval(parse).copy();
 
-    console.log('value.data =', fill.data);
          if ( FILL_TYPES.includes(fill.type)) return fill;
-    else if (COLOR_TYPES.includes(fill.type)) return new FillValue(fill, fill.data.opacity);
+    else if (COLOR_TYPES.includes(fill.type)) return new FillValue(fill, value.data.opacity);
 
     else console.assert(false, 'fill must have type');
 }
@@ -3783,10 +3826,14 @@ extends GType
     {
         return this;
     }
+
+
+
     toFigma()
     {
         let align, join;
 
+        
         switch (this.fit.value)
         {
             case 0: align = 'INSIDE';  break;
@@ -3801,6 +3848,7 @@ extends GType
             case 2: join = 'ROUND'; break;
         }
 
+        
         return this.isValid()
             ? {
                   strokes:          this.fill.toFigma(),
@@ -3891,9 +3939,9 @@ function evalStrokeValue(value, parse)
 {
     const stroke = value.eval(parse).copy();
 
-         if (STROKE_TYPES.includes(this.stroke.type)) return stroke;
-    else if (  FILL_TYPES.includes(this.stroke.type)) return new StrokeValue(stroke, value.data.weight);
-    else if ( COLOR_TYPES.includes(this.stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
+         if (STROKE_TYPES.includes(stroke.type)) return stroke;
+    else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
+    else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
 
     else console.assert(false, 'stroke must have type');
 }
@@ -5222,6 +5270,7 @@ extends GOperator
                     const fromSpaceIndex = this.result.space.value;
 
                     this.result.space = space;
+
                     const toSpaceIndex = Math.min(Math.max(
                         0,
                         this.result.space.value),
@@ -5230,9 +5279,10 @@ extends GOperator
                     this.convertColor(
                         colorSpace(fromSpaceIndex), 
                         colorSpace(  toSpaceIndex));
+
+                    this.result.space.value = toSpaceIndex;
                 }
 
-                this.result.space.value = toSpaceIndex;
 
                 if (this.c1) this.result.c1 = c1;
                 if (this.c2) this.result.c2 = c2;
@@ -5242,12 +5292,11 @@ extends GOperator
             {
                 this.result = new ColorValue(space, c1, c2, c3);
 
-
                 const toSpaceIndex = Math.min(Math.max(
                     0,
                     this.result.space.value),
                     OpColorSpaces.length-1);
-                
+
                 this.result.space.value = toSpaceIndex;
 
                 if (    this.convert
@@ -6066,8 +6115,8 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const fill   = evalFillValue(this.fill,   parse);
-            const stroke = evalFillValue(this.stroke, parse);
+            const fill   = evalFillValue  (this.fill,   parse);
+            const stroke = evalStrokeValue(this.stroke, parse);
             
             if (input)
             {
@@ -7343,8 +7392,8 @@ function genParseGeometryBase(parse, obj, paramId)
 {
     switch (paramId)
     {
-    case 'fill':   obj.fill   = genParseFillParam(parse); break;
-    case 'stroke': obj.stroke = genParse(parse);          break;
+    case 'fill':   obj.fill   = genParseFillParam  (parse); break;
+    case 'stroke': obj.stroke = genParseStrokeParam(parse); break;
     }
 }
 
@@ -7977,6 +8026,19 @@ function genParseStroke(parse)
 
 
     genParseNodeEnd(parse, stroke);
+    return stroke;
+}
+
+
+
+function genParseStrokeParam(parse)
+{
+    const stroke = genParse(parse); 
+
+    if (    FILL_TYPES.includes(stroke.type)
+        || COLOR_TYPES.includes(stroke.type))
+        stroke.data.weight = genParse(parse);
+
     return stroke;
 }
 

@@ -55,6 +55,8 @@ extends Action
         }
 
 
+        this.outputNode.updateNode();
+        this.inputNode .updateNode();
         //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
         //pushUpdate([this.outputNode, this.inputNode]);
     }
@@ -81,6 +83,7 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
 
 
+        this.inputNode.updateNode();
         //uiSaveNodes([this.inputNodeId]);
         //pushUpdate([this.inputNode]);
     }
@@ -98,7 +101,11 @@ extends Action
         if (   !getActiveNodeLeftOnlyInTreeFromNode(this.outputNode)
             && !getActiveNodeRightInTreeFromNode(this.outputNode))
             uiMakeNodeActive(this.outputNode);
-       //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
+
+
+        this.outputNode.updateNode();
+        this.inputNode .updateNode();
+        //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
         // pushUpdate([this.outputNode, this.inputNode]);
    }
 }

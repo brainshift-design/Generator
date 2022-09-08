@@ -45,6 +45,7 @@ extends GeometryBaseValue
             this.round .copy());
 
         rect.copyBase(this);
+        rect.copyData(this);
 
         return rect;
     }

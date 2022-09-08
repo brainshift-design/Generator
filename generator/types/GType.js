@@ -8,6 +8,8 @@ class GType
     topLevel;
 
 
+    data = {}; // for type conversion info
+
 
     constructor(type) 
     {
@@ -24,6 +26,13 @@ class GType
     copy()
     {
         return null;
+    }
+
+
+
+    copyBaseData(obj)
+    {
+        this.data = clone(obj.data);
     }
 
 

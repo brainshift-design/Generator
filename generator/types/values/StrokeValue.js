@@ -105,10 +105,14 @@ extends GType
     {
         return this;
     }
+
+
+
     toFigma()
     {
         let align, join;
 
+        
         switch (this.fit.value)
         {
             case 0: align = 'INSIDE';  break;
@@ -123,6 +127,7 @@ extends GType
             case 2: join = 'ROUND'; break;
         }
 
+        
         return this.isValid()
             ? {
                   strokes:          this.fill.toFigma(),
@@ -213,9 +218,9 @@ function evalStrokeValue(value, parse)
 {
     const stroke = value.eval(parse).copy();
 
-         if (STROKE_TYPES.includes(this.stroke.type)) return stroke;
-    else if (  FILL_TYPES.includes(this.stroke.type)) return new StrokeValue(stroke, value.data.weight);
-    else if ( COLOR_TYPES.includes(this.stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
+         if (STROKE_TYPES.includes(stroke.type)) return stroke;
+    else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
+    else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
 
     else console.assert(false, 'stroke must have type');
 }

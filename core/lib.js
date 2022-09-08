@@ -16,6 +16,13 @@ function nozero(x)
 
 
 
+function noNaN(x, replace)
+{
+    return !isNaN(x) ? x : replace;
+}
+
+
+
 function getDigitCount(i)
 {
     let l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;

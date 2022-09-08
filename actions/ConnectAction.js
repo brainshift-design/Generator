@@ -95,6 +95,7 @@ extends Action
         }
 
 
+        updateNodes.forEach(n => n.updateNode());
         //uiSaveNodes(updateNodes.map(n => n.id));
         //pushUpdate(updateNodes);
     }
@@ -148,6 +149,7 @@ extends Action
         }
 
 
+        this.inputNode.updateNode();
         //uiSaveNodes(updateNodes.map(n => n.id));
         //pushUpdate([this.inputNode]);
  

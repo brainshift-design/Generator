@@ -153,6 +153,19 @@ function genParseStroke(parse)
 
 
 
+function genParseStrokeParam(parse)
+{
+    const stroke = genParse(parse); 
+
+    if (    FILL_TYPES.includes(stroke.type)
+        || COLOR_TYPES.includes(stroke.type))
+        stroke.data.weight = genParse(parse);
+
+    return stroke;
+}
+
+
+
 function genParseColorStopValue(parse)
 {
     parse.pos++; // COLOR_STOP_VALUE

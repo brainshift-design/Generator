@@ -528,7 +528,7 @@ function uiConnect(output, input, inputIndex = -1)
 
 function uiDisconnect(input)
 {
-    console.log('uiDisconnect()');
+    //console.log('uiDisconnect()');
     
     const node = input.node;
 

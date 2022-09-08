@@ -89,7 +89,7 @@ extends Parameter
 
             value.weight = new NumberValue(
                 this.control.value, 
-                this.control.decimals);
+                this.control.dec);
 
             this.setValue(value, true, false);
         });
@@ -132,7 +132,6 @@ extends Parameter
 
 
         this.value = value.copy();
-        console.log('this.value =', this.value);
 
 
         if (updateControl)
@@ -150,6 +149,54 @@ extends Parameter
 
         this.oldValue = this.value;
     }    
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            request.push(...pushInputOrParam(this.input, gen));
+
+            if (    FILL_TYPES.includes(this.input.connectedOutput.type)
+                || COLOR_TYPES.includes(this.input.connectedOutput.type))
+            {
+                const val = noNaN(this.control.value,      1);
+                const dec = noNaN(this.control.displayDec, 0);
+                
+                request.push(
+                    NUMBER_VALUE, 
+                    new NumberValue(val, dec).toString());
+            }
+        }
+
+        else request.push( 
+            STROKE_VALUE, 
+            this.value.toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
 
 
 
@@ -232,41 +279,6 @@ extends Parameter
 
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
-    }
-
-
-
-    genRequest(gen)
-    {
-        // this function exists because a parameter without an output
-        // should still be able to generate a request
-        
-        // 'this' is the param
-
-        if (    this.output
-            && !isEmpty(this.output.cache)
-            &&  gen.passedNodes.includes(this.node))
-            return this.output.cache;
-
-
-        const request = [];
-
-        if (   this.input
-            && this.input.connected)
-            request.push(...pushInputOrParam(this.input, gen));
-
-        else request.push( 
-            STROKE_VALUE, 
-            this.value.toString());
-
-        return request;
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        return this.param.genRequest(gen);
     }
 
 

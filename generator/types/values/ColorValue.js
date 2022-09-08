@@ -51,11 +51,15 @@ extends GType
 
     copy()
     {
-        return new ColorValue(
+        const color = new ColorValue(
             this.space.copy(), 
             this.c1   .copy(), 
             this.c2   .copy(), 
             this.c3   .copy());
+
+        color.copyBaseData(this);
+
+        return color;
     }
 
 

@@ -64,6 +64,7 @@ extends GOperator
                     const fromSpaceIndex = this.result.space.value;
 
                     this.result.space = space;
+
                     const toSpaceIndex = Math.min(Math.max(
                         0,
                         this.result.space.value),
@@ -72,9 +73,10 @@ extends GOperator
                     this.convertColor(
                         colorSpace(fromSpaceIndex), 
                         colorSpace(  toSpaceIndex));
+
+                    this.result.space.value = toSpaceIndex;
                 }
 
-                this.result.space.value = toSpaceIndex;
 
                 if (this.c1) this.result.c1 = c1;
                 if (this.c2) this.result.c2 = c2;
@@ -84,12 +86,11 @@ extends GOperator
             {
                 this.result = new ColorValue(space, c1, c2, c3);
 
-
                 const toSpaceIndex = Math.min(Math.max(
                     0,
                     this.result.space.value),
                     OpColorSpaces.length-1);
-                
+
                 this.result.space.value = toSpaceIndex;
 
                 if (    this.convert

@@ -1859,6 +1859,13 @@ function nozero(x)
 
 
 
+function noNaN(x, replace)
+{
+    return !isNaN(x) ? x : replace;
+}
+
+
+
 function getDigitCount(i)
 {
     let l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
@@ -3400,6 +3407,43 @@ function deepCopy(obj)
 
 
 
+function clone(val) 
+{
+    const type = typeof val;
+    
+    if (val === null) 
+      return null;
+
+    else if (type === 'undefined' 
+          || type === 'number' 
+          || type === 'string' 
+          || type === 'boolean') 
+        return val;
+
+    else if (type === 'object') 
+    {
+        if (val instanceof Array) 
+            return val.map(x => clone(x));
+
+        else if (val instanceof Uint8Array) 
+            return new Uint8Array(val);
+
+        else 
+        {
+            let obj = {};
+
+            for (const key in val) 
+                obj[key] = clone(val[key]);
+
+            return obj;
+        }
+    }
+
+    throw 'unknown';
+}
+
+
+
 function filterUnique(array)
 {
     return array.filter((value, index) => 
@@ -4850,7 +4894,7 @@ class GType
 
     copyBaseData(obj)
     {
-        this.data = deepCopy(obj.data);
+        this.data = clone(obj.data);
     }
 
 
@@ -5430,9 +5474,8 @@ function evalFillValue(value, parse)
 {
     const fill = value.eval(parse).copy();
 
-    console.log('value.data =', fill.data);
          if ( FILL_TYPES.includes(fill.type)) return fill;
-    else if (COLOR_TYPES.includes(fill.type)) return new FillValue(fill, fill.data.opacity);
+    else if (COLOR_TYPES.includes(fill.type)) return new FillValue(fill, value.data.opacity);
 
     else console.assert(false, 'fill must have type');
 }
@@ -5545,10 +5588,14 @@ extends GType
     {
         return this;
     }
+
+
+
     toFigma()
     {
         let align, join;
 
+        
         switch (this.fit.value)
         {
             case 0: align = 'INSIDE';  break;
@@ -5563,6 +5610,7 @@ extends GType
             case 2: join = 'ROUND'; break;
         }
 
+        
         return this.isValid()
             ? {
                   strokes:          this.fill.toFigma(),
@@ -5653,9 +5701,9 @@ function evalStrokeValue(value, parse)
 {
     const stroke = value.eval(parse).copy();
 
-         if (STROKE_TYPES.includes(this.stroke.type)) return stroke;
-    else if (  FILL_TYPES.includes(this.stroke.type)) return new StrokeValue(stroke, value.data.weight);
-    else if ( COLOR_TYPES.includes(this.stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
+         if (STROKE_TYPES.includes(stroke.type)) return stroke;
+    else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
+    else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
 
     else console.assert(false, 'stroke must have type');
 }
@@ -6984,6 +7032,7 @@ extends GOperator
                     const fromSpaceIndex = this.result.space.value;
 
                     this.result.space = space;
+
                     const toSpaceIndex = Math.min(Math.max(
                         0,
                         this.result.space.value),
@@ -6992,9 +7041,10 @@ extends GOperator
                     this.convertColor(
                         colorSpace(fromSpaceIndex), 
                         colorSpace(  toSpaceIndex));
+
+                    this.result.space.value = toSpaceIndex;
                 }
 
-                this.result.space.value = toSpaceIndex;
 
                 if (this.c1) this.result.c1 = c1;
                 if (this.c2) this.result.c2 = c2;
@@ -7004,12 +7054,11 @@ extends GOperator
             {
                 this.result = new ColorValue(space, c1, c2, c3);
 
-
                 const toSpaceIndex = Math.min(Math.max(
                     0,
                     this.result.space.value),
                     OpColorSpaces.length-1);
-                
+
                 this.result.space.value = toSpaceIndex;
 
                 if (    this.convert
@@ -7828,8 +7877,8 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const fill   = evalFillValue(this.fill,   parse);
-            const stroke = evalFillValue(this.stroke, parse);
+            const fill   = evalFillValue  (this.fill,   parse);
+            const stroke = evalStrokeValue(this.stroke, parse);
             
             if (input)
             {
@@ -9105,8 +9154,8 @@ function genParseGeometryBase(parse, obj, paramId)
 {
     switch (paramId)
     {
-    case 'fill':   obj.fill   = genParseFillParam(parse); break;
-    case 'stroke': obj.stroke = genParse(parse);          break;
+    case 'fill':   obj.fill   = genParseFillParam  (parse); break;
+    case 'stroke': obj.stroke = genParseStrokeParam(parse); break;
     }
 }
 
@@ -9739,6 +9788,19 @@ function genParseStroke(parse)
 
 
     genParseNodeEnd(parse, stroke);
+    return stroke;
+}
+
+
+
+function genParseStrokeParam(parse)
+{
+    const stroke = genParse(parse); 
+
+    if (    FILL_TYPES.includes(stroke.type)
+        || COLOR_TYPES.includes(stroke.type))
+        stroke.data.weight = genParse(parse);
+
     return stroke;
 }
 
@@ -12786,6 +12848,13 @@ function nozero(x)
 
 
 
+function noNaN(x, replace)
+{
+    return !isNaN(x) ? x : replace;
+}
+
+
+
 function getDigitCount(i)
 {
     let l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;
@@ -14323,6 +14392,43 @@ function shallowCopy(obj)
 function deepCopy(obj)
 {
     return JSON.parse(JSON.stringify(obj));
+}
+
+
+
+function clone(val) 
+{
+    const type = typeof val;
+    
+    if (val === null) 
+      return null;
+
+    else if (type === 'undefined' 
+          || type === 'number' 
+          || type === 'string' 
+          || type === 'boolean') 
+        return val;
+
+    else if (type === 'object') 
+    {
+        if (val instanceof Array) 
+            return val.map(x => clone(x));
+
+        else if (val instanceof Uint8Array) 
+            return new Uint8Array(val);
+
+        else 
+        {
+            let obj = {};
+
+            for (const key in val) 
+                obj[key] = clone(val[key]);
+
+            return obj;
+        }
+    }
+
+    throw 'unknown';
 }
 
 
@@ -17257,7 +17363,7 @@ class GType
 
     copyBaseData(obj)
     {
-        this.data = deepCopy(obj.data);
+        this.data = clone(obj.data);
     }
 
 
@@ -17837,9 +17943,8 @@ function evalFillValue(value, parse)
 {
     const fill = value.eval(parse).copy();
 
-    console.log('value.data =', fill.data);
          if ( FILL_TYPES.includes(fill.type)) return fill;
-    else if (COLOR_TYPES.includes(fill.type)) return new FillValue(fill, fill.data.opacity);
+    else if (COLOR_TYPES.includes(fill.type)) return new FillValue(fill, value.data.opacity);
 
     else console.assert(false, 'fill must have type');
 }
@@ -17952,10 +18057,14 @@ extends GType
     {
         return this;
     }
+
+
+
     toFigma()
     {
         let align, join;
 
+        
         switch (this.fit.value)
         {
             case 0: align = 'INSIDE';  break;
@@ -17970,6 +18079,7 @@ extends GType
             case 2: join = 'ROUND'; break;
         }
 
+        
         return this.isValid()
             ? {
                   strokes:          this.fill.toFigma(),
@@ -18060,9 +18170,9 @@ function evalStrokeValue(value, parse)
 {
     const stroke = value.eval(parse).copy();
 
-         if (STROKE_TYPES.includes(this.stroke.type)) return stroke;
-    else if (  FILL_TYPES.includes(this.stroke.type)) return new StrokeValue(stroke, value.data.weight);
-    else if ( COLOR_TYPES.includes(this.stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
+         if (STROKE_TYPES.includes(stroke.type)) return stroke;
+    else if (  FILL_TYPES.includes(stroke.type)) return new StrokeValue(stroke, value.data.weight);
+    else if ( COLOR_TYPES.includes(stroke.type)) return new StrokeValue(new FillValue(stroke), value.data.weight);
 
     else console.assert(false, 'stroke must have type');
 }
@@ -19391,6 +19501,7 @@ extends GOperator
                     const fromSpaceIndex = this.result.space.value;
 
                     this.result.space = space;
+
                     const toSpaceIndex = Math.min(Math.max(
                         0,
                         this.result.space.value),
@@ -19399,9 +19510,10 @@ extends GOperator
                     this.convertColor(
                         colorSpace(fromSpaceIndex), 
                         colorSpace(  toSpaceIndex));
+
+                    this.result.space.value = toSpaceIndex;
                 }
 
-                this.result.space.value = toSpaceIndex;
 
                 if (this.c1) this.result.c1 = c1;
                 if (this.c2) this.result.c2 = c2;
@@ -19411,12 +19523,11 @@ extends GOperator
             {
                 this.result = new ColorValue(space, c1, c2, c3);
 
-
                 const toSpaceIndex = Math.min(Math.max(
                     0,
                     this.result.space.value),
                     OpColorSpaces.length-1);
-                
+
                 this.result.space.value = toSpaceIndex;
 
                 if (    this.convert
@@ -20235,8 +20346,8 @@ extends GOperator
     {
         if (!this.valid)
         {
-            const fill   = evalFillValue(this.fill,   parse);
-            const stroke = evalFillValue(this.stroke, parse);
+            const fill   = evalFillValue  (this.fill,   parse);
+            const stroke = evalStrokeValue(this.stroke, parse);
             
             if (input)
             {
@@ -26999,7 +27110,7 @@ extends Parameter
 
             value.weight = new NumberValue(
                 this.control.value, 
-                this.control.decimals);
+                this.control.dec);
 
             this.setValue(value, true, false);
         });
@@ -27042,7 +27153,6 @@ extends Parameter
 
 
         this.value = value.copy();
-        console.log('this.value =', this.value);
 
 
         if (updateControl)
@@ -27060,6 +27170,54 @@ extends Parameter
 
         this.oldValue = this.value;
     }    
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            request.push(...pushInputOrParam(this.input, gen));
+
+            if (    FILL_TYPES.includes(this.input.connectedOutput.type)
+                || COLOR_TYPES.includes(this.input.connectedOutput.type))
+            {
+                const val = noNaN(this.control.value,      1);
+                const dec = noNaN(this.control.displayDec, 0);
+                
+                request.push(
+                    NUMBER_VALUE, 
+                    new NumberValue(val, dec).toString());
+            }
+        }
+
+        else request.push( 
+            STROKE_VALUE, 
+            this.value.toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
 
 
 
@@ -27142,41 +27300,6 @@ extends Parameter
 
         if (this.input ) this.input .updateControl();
         if (this.output) this.output.updateControl();
-    }
-
-
-
-    genRequest(gen)
-    {
-        // this function exists because a parameter without an output
-        // should still be able to generate a request
-        
-        // 'this' is the param
-
-        if (    this.output
-            && !isEmpty(this.output.cache)
-            &&  gen.passedNodes.includes(this.node))
-            return this.output.cache;
-
-
-        const request = [];
-
-        if (   this.input
-            && this.input.connected)
-            request.push(...pushInputOrParam(this.input, gen));
-
-        else request.push( 
-            STROKE_VALUE, 
-            this.value.toString());
-
-        return request;
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        return this.param.genRequest(gen);
     }
 
 
@@ -36413,6 +36536,7 @@ extends Action
         }
 
 
+        updateNodes.forEach(n => n.updateNode());
         //uiSaveNodes(updateNodes.map(n => n.id));
         //pushUpdate(updateNodes);
     }
@@ -36466,6 +36590,7 @@ extends Action
         }
 
 
+        this.inputNode.updateNode();
         //uiSaveNodes(updateNodes.map(n => n.id));
         //pushUpdate([this.inputNode]);
  
@@ -36829,6 +36954,8 @@ extends Action
         }
 
 
+        this.outputNode.updateNode();
+        this.inputNode .updateNode();
         //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
         //pushUpdate([this.outputNode, this.inputNode]);
     }
@@ -36855,6 +36982,7 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
 
 
+        this.inputNode.updateNode();
         //uiSaveNodes([this.inputNodeId]);
         //pushUpdate([this.inputNode]);
     }
@@ -36872,7 +37000,11 @@ extends Action
         if (   !getActiveNodeLeftOnlyInTreeFromNode(this.outputNode)
             && !getActiveNodeRightInTreeFromNode(this.outputNode))
             uiMakeNodeActive(this.outputNode);
-       //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
+
+
+        this.outputNode.updateNode();
+        this.inputNode .updateNode();
+        //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
         // pushUpdate([this.outputNode, this.inputNode]);
    }
 }
@@ -39420,7 +39552,7 @@ function uiConnect(output, input, inputIndex = -1)
 
 function uiDisconnect(input)
 {
-    console.log('uiDisconnect()');
+    //console.log('uiDisconnect()');
     
     const node = input.node;
 
