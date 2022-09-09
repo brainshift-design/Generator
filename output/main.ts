@@ -415,7 +415,7 @@ const settings =
     
     logMessages:      false,
 
-    logActions:       true, 
+    logActions:       false, 
 
     logRawLoading:    false, 
     logRawSaving:     false, 
@@ -976,17 +976,6 @@ function figUpdateStar(figStar, genStar)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function setObjectFills(obj, src)
-{
-    if (   src.fills !== null
-        && src.fills.length > 0)
-        obj.fills = getObjectFills(src.fills);
-    else
-        obj.fills = [];//{type: 'SOLID', color: {r: 0.85, g: 0.85, b: 0.85}}];
-}
-
-
-
 function getObjectFills(objFills)
 {
     const fills = [];
@@ -1005,7 +994,7 @@ function getObjectFills(objFills)
                         r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1), 
                         g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1), 
                         b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1) },
-                    opacity: parseFloat(fill[3]) / 100
+                    opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)
                 });
 
                 break;
@@ -1013,6 +1002,17 @@ function getObjectFills(objFills)
     }
 
     return fills;
+}
+
+
+
+function setObjectFills(obj, src)
+{
+    if (   src.fills !== null
+        && src.fills.length > 0)
+        obj.fills = getObjectFills(src.fills);
+    else
+        obj.fills = [];//{type: 'SOLID', color: {r: 0.85, g: 0.85, b: 0.85}}];
 }
 
 

@@ -4,7 +4,7 @@ const settings =
     
     logMessages:      false,
 
-    logActions:       true, 
+    logActions:       false, 
 
     logRawLoading:    false, 
     logRawSaving:     false, 

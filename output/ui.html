@@ -8499,7 +8499,7 @@ const settings =
     
     logMessages:      false,
 
-    logActions:       true, 
+    logActions:       false, 
 
     logRawLoading:    false, 
     logRawSaving:     false, 
@@ -20968,7 +20968,7 @@ const settings =
     
     logMessages:      false,
 
-    logActions:       true, 
+    logActions:       false, 
 
     logRawLoading:    false, 
     logRawSaving:     false, 
@@ -27225,8 +27225,6 @@ extends Parameter
 
     updateControls()
     {
-        console.log('this.value =', this.value);
-        
         if (   this.input.connected
             && this.value.isValid())
         {
@@ -36789,12 +36787,13 @@ extends Action
         for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
         
-        
+
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
+        
         for (const id of oldActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(id));
+            uiMakeNodesActive(oldActiveNodeIds.map(id => nodeFromId(id)));
     
 
         uiSaveNodes([
@@ -39594,34 +39593,35 @@ function uiMakeNodeActive(node)
 
 
 
-// function uiMakeNodesActive(nodes)
-// {
-//     for (const node of nodes)
-//     {
-//         uiMakeNodePassive(node);
-//         uiMakeNodeLeftPassive (node);
-//         uiMakeNodeRightPassive(node);
-//     }
+function uiMakeNodesActive(nodes)
+{
+    for (const node of nodes)
+    {
+        uiMakeNodePassive(node);
+        uiMakeNodeLeftPassive (node);
+        uiMakeNodeRightPassive(node);
+    }
 
-//     for (const node of nodes)
-//     {
-//         node._active = true;
+    for (const node of nodes)
+    {
+        node._active = true;
 
-//         if (!graphView.activeNodes.includes(node))
-//             graphView.activeNodes.push(node);
+        if (!graphView.activeNodes.includes(node))
+            graphView.activeNodes.push(node);
 
-//         uiQueueMessageToFigma({
-//             cmd:   'figSaveActiveNode',
-//             nodeId: node.id
-//         });
+        // uiQueueMessageToFigma({
+        //     cmd:   'figSaveActiveNode',
+        //     nodeId: node.id
+        // });
 
-//         // if (node.type == 'object')
-//         //     uiGenerateObjects([node.id]);
+        // if (node.type == 'object')
+        //     uiGenerateObjects([node.id]);
 
-//         node.updateNode();
-//         pushUpdate([node]);
-//     }
-// }
+        node.updateNode();
+    }
+
+    pushUpdate(nodes);
+}
 
 
 

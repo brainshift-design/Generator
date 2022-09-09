@@ -241,7 +241,7 @@ function logReqNode(node, parse) {
 const settings = {
     showNodeId: false,
     logMessages: false,
-    logActions: true,
+    logActions: false,
     logRawLoading: false,
     logRawSaving: false,
     logLoading: false,
@@ -617,13 +617,6 @@ function figUpdateStar(figStar, genStar) {
 //     return frame;
 // }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-function setObjectFills(obj, src) {
-    if (src.fills !== null
-        && src.fills.length > 0)
-        obj.fills = getObjectFills(src.fills);
-    else
-        obj.fills = []; //{type: 'SOLID', color: {r: 0.85, g: 0.85, b: 0.85}}];
-}
 function getObjectFills(objFills) {
     const fills = [];
     for (const _fill of objFills) {
@@ -637,12 +630,19 @@ function getObjectFills(objFills) {
                         g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1),
                         b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1)
                     },
-                    opacity: parseFloat(fill[3]) / 100
+                    opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)
                 });
                 break;
         }
     }
     return fills;
+}
+function setObjectFills(obj, src) {
+    if (src.fills !== null
+        && src.fills.length > 0)
+        obj.fills = getObjectFills(src.fills);
+    else
+        obj.fills = []; //{type: 'SOLID', color: {r: 0.85, g: 0.85, b: 0.85}}];
 }
 function setObjectStrokes(obj, src) {
     if (src.strokes != null

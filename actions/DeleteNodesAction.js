@@ -125,12 +125,13 @@ extends Action
         for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
         
-        
+
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
+        
         for (const id of oldActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(id));
+            uiMakeNodesActive(oldActiveNodeIds.map(id => nodeFromId(id)));
     
 
         uiSaveNodes([

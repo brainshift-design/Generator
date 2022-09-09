@@ -581,34 +581,35 @@ function uiMakeNodeActive(node)
 
 
 
-// function uiMakeNodesActive(nodes)
-// {
-//     for (const node of nodes)
-//     {
-//         uiMakeNodePassive(node);
-//         uiMakeNodeLeftPassive (node);
-//         uiMakeNodeRightPassive(node);
-//     }
+function uiMakeNodesActive(nodes)
+{
+    for (const node of nodes)
+    {
+        uiMakeNodePassive(node);
+        uiMakeNodeLeftPassive (node);
+        uiMakeNodeRightPassive(node);
+    }
 
-//     for (const node of nodes)
-//     {
-//         node._active = true;
+    for (const node of nodes)
+    {
+        node._active = true;
 
-//         if (!graphView.activeNodes.includes(node))
-//             graphView.activeNodes.push(node);
+        if (!graphView.activeNodes.includes(node))
+            graphView.activeNodes.push(node);
 
-//         uiQueueMessageToFigma({
-//             cmd:   'figSaveActiveNode',
-//             nodeId: node.id
-//         });
+        // uiQueueMessageToFigma({
+        //     cmd:   'figSaveActiveNode',
+        //     nodeId: node.id
+        // });
 
-//         // if (node.type == 'object')
-//         //     uiGenerateObjects([node.id]);
+        // if (node.type == 'object')
+        //     uiGenerateObjects([node.id]);
 
-//         node.updateNode();
-//         pushUpdate([node]);
-//     }
-// }
+        node.updateNode();
+    }
+
+    pushUpdate(nodes);
+}
 
 
 

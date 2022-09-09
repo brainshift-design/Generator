@@ -202,8 +202,6 @@ extends Parameter
 
     updateControls()
     {
-        console.log('this.value =', this.value);
-        
         if (   this.input.connected
             && this.value.isValid())
         {
