@@ -4,6 +4,7 @@
     ../ui/*.css
 
     ../controls/graphView/*.css
+    ../controls/menu/*.css
     ../controls/toggleButton/*.css
     ../controls/numberControl/*.css
     ../controls/colorControl/*.css

@@ -19,7 +19,7 @@ graphView.removeWire = function(wire)
 
 function updateWire(wire, x = 0, y = 0)
 {
-    const yOffset = controlBar.offsetHeight;
+    const yOffset = menuBar.offsetHeight;
 
     let pOut = point(0, 0),
         pIn  = point(0, 0);
@@ -62,7 +62,7 @@ function updateWires(wires)
     
     const cw      = graphView.clientWidth;
     const ch      = graphView.clientHeight;
-    const yOffset = controlBar.offsetHeight;
+    const yOffset = menuBar  .offsetHeight;
 
 
     wires.forEach(w => 
@@ -94,7 +94,7 @@ function updateWires(wires)
     
         wire.setAttribute('viewBox',
                     0
-            + ' ' + 0//yOffset/2 // why is only half of yOffset taken???
+            + ' ' + 0
             + ' ' + cw
             + ' ' + ch);
     }

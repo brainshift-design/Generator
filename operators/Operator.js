@@ -281,7 +281,9 @@ class Operator
         
         this._active = true;
 
-        if (!graphView.activeNodes.includes(this))
+        if (    graphView
+            &&  graphView.activeNodes
+            && !graphView.activeNodes.includes(this))
             graphView.activeNodes.push(this);
     }
 

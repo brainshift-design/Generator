@@ -1,4 +1,4 @@
-#controlBar
+#menuBar
 {
     display:          flex;
     height:           40px;
@@ -125,7 +125,7 @@
 {
     padding-left:        3px;
     padding-right:       30px;
-    background:          url('data:image/svg+xml;utf8,<svg width="19" height="19" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.2335" cy="15.4506" r="14.25" stroke="%23d5d5d5" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="7.63405" stroke="%23d5d5d5" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="1.75413" fill="%23d5d5d5"/></svg>');
+    background:          url('data:image/svg+xml;utf8,<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_603_2)"><path d="M9.33666 18.2036C14.1602 18.2036 18.0705 14.2933 18.0705 9.46972C18.0705 4.64614 14.1602 0.735851 9.33666 0.735851C4.51308 0.735851 0.60279 4.64614 0.60279 9.46972C0.60279 14.2933 4.51308 18.2036 9.33666 18.2036Z" stroke="black" stroke-width="0.919355" stroke-dasharray="1.84 1.84"/><path d="M9.33666 14.1487C11.9208 14.1487 14.0156 12.0538 14.0156 9.46972C14.0156 6.88562 11.9208 4.79079 9.33666 4.79079C6.75256 4.79079 4.65773 6.88562 4.65773 9.46972C4.65773 12.0538 6.75256 14.1487 9.33666 14.1487Z" stroke="black" stroke-width="0.919355"/><path d="M9.33666 10.5448C9.93043 10.5448 10.4118 10.0635 10.4118 9.46972C10.4118 8.87595 9.93043 8.39461 9.33666 8.39461C8.74289 8.39461 8.26155 8.87595 8.26155 9.46972C8.26155 10.0635 8.74289 10.5448 9.33666 10.5448Z" fill="black"/></g><defs><clipPath id="clip0_603_2"><rect width="19" height="19" fill="white"/></clipPath></defs></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
 }

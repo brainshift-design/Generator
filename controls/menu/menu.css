@@ -1,0 +1,136 @@
+.menuButton
+{
+    display:       inline-block;
+    font-family:   Inter;
+    font-size:     11px;
+    width:         50px;
+    height:        40px;
+    background:    #2c2c2c;
+    border-radius: 0;
+    min-width:     0;
+    min-height:    0;
+    border:        none;
+    position:      relative;
+    padding:       0;
+    color:         #d5d5d5;
+    overflow:      hidden;
+    /* box-shadow:    0 0 0 1px red inset; */
+}
+
+
+.menuButton:hover
+{
+    background: black;
+    color:      white;
+}
+
+
+.menuButton:focus
+{
+    background: var(--activeObjectColor);
+    color:      white;
+}
+
+
+.menuButtonIcon
+{
+    display:    inline-block;
+    width:      30px;
+    height:     40px;
+    /* box-shadow: 0 0 0 1px yellow inset; */
+}
+
+
+.menuButtonArrow
+{
+    display:             inline-block;
+    width:               20px;
+    height:              40px;
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.507593 1.22627L1.2469 0.498783L4.01388 3.22151L6.78084 0.498783L7.52015 1.22627L4.01388 4.67648L0.507593 1.22627Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    transition:          0.25s;
+    /* box-shadow:          0 0 0 1px magenta inset; */
+}
+
+
+.menuButtonArrow:hover
+{
+    transform: translateY(3px);
+}
+
+
+
+.menu
+{
+    display:          none;
+    opacity:          0;
+    width:            auto;
+    height:           15px;
+    background-color: #040404;
+    color:            #eee;
+    border-radius:    2px;
+    padding:          5px 10px 5px 10px;
+    position:         absolute;
+    z-index:          10000;
+    bottom:           125%;
+    left:             13px;
+    top:              44px;
+    font-family:      Inter;
+    font-size:        11px;
+    box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.15),
+                      0px 5px 17px rgba(0, 0, 0, 0.15 );
+}
+
+
+.menuArrow
+{
+    content:      '';
+    position:     absolute;
+    margin-left:  -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent #040404 transparent;
+    display:      none;
+    opacity:      0%;
+}
+
+
+.menuItem
+{
+    display: inline;
+    width:  100px;
+    height: 20px;
+}
+
+
+.menuItemCheck
+{
+    display: inline;
+    width:  100px;
+    height: 20px;
+}
+
+
+.menuItemIcon
+{
+    display: inline;
+    width:  100px;
+    height: 20px;
+}
+
+
+.menuItemName
+{
+    display: inline;
+    width:  100px;
+    height: 20px;
+}
+
+
+.menuItemShortcut
+{
+    display: inline;
+    width:  100px;
+    height: 20px;
+}

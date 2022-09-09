@@ -14,4 +14,4 @@ createTooltip(ttCreateValidateColor);    createTooltipSrc(btnCreateValidateColor
 createTooltip(ttCreateColorContrast);      createTooltipSrc(btnCreateColorContrast,      () => ttCreateColorContrast);
 createTooltip(ttCreateColorblind);       createTooltipSrc(btnCreateColorblind,       () => ttCreateColorblind);
 
-createTooltip(ttToggleWires);            createTooltipSrc(btnToggleWires,            () => ttToggleWires);
+// createTooltip(ttToggleWires);            createTooltipSrc(btnToggleWires,            () => ttToggleWires);

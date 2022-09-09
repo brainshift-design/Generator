@@ -121,14 +121,14 @@ graphView.placeNewNode = function(node)
     else
     {
         node.div.style.left = (graphView.offsetWidth /2 - graphView.pan.x                          ) / graphView.zoom - nodeRect.width/2;
-        node.div.style.top  = (graphView.offsetHeight/2 - graphView.pan.y - controlBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
+        node.div.style.top  = (graphView.offsetHeight/2 - graphView.pan.y - menuBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
     }
 
 
     // const nodeRect = boundingRect(node.div);
 
     // const defx = (graphView.offsetWidth /2 - graphView.pan.x) / graphView.zoom - nodeRect.width /2,
-    //       defy = (graphView.offsetHeight/2 - graphView.pan.y - controlBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
+    //       defy = (graphView.offsetHeight/2 - graphView.pan.y - menuBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
 
     // node.div.style.left = (graphView.offsetWidth  / 6 - graphView.pan.x) / graphView.zoom;
     // node.div.style.top  = (graphView.offsetHeight / 4 - graphView.pan.y) / graphView.zoom;
@@ -341,15 +341,15 @@ graphView.unsoloNode = function()
 
 
 
-graphView.toggleShowWires = function()
-{
-    graphView.showWires = !graphView.showWires;
+// graphView.toggleShowWires = function()
+// {
+//     graphView.showWires = !graphView.showWires;
 
-    uiSaveGraphView();
+//     uiSaveGraphView();
 
-    updateToggleShowWiresButton();
-    graphView.updateShowWires();
-};
+//     updateToggleShowWiresButton();
+//     graphView.updateShowWires();
+// };
 
 
 

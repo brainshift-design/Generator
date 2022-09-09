@@ -259,7 +259,7 @@ function finishLoading()
     graphView.loadingNodes   = false;
     graphView.canUpdateNodes = true;
     
-    updateToggleShowWiresButton();
+    //updateToggleShowWiresButton();
     graphView.updateShowWires(false);
 }
 

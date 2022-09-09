@@ -75,7 +75,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
 {
     const wndRect = new Rect(
         1,
-        controlBar.offsetHeight + 1,
+        menuBar  .offsetHeight + 1,
         graphView.offsetWidth  - 2,
         graphView.offsetHeight - 5);
 

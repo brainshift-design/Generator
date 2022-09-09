@@ -1,3 +1,4 @@
+../controls/menu/*.js
 ../controls/toggleButton/*.js
 ../controls/numberControl/*.js
 ../controls/colorControl/*.js

@@ -134,7 +134,7 @@ extends EventTarget
                 {
                     graphView.tempConn.wire.inputPos = point(
                         rect.x + rect.w/2,
-                        rect.y + rect.h/2 - controlBar.offsetHeight);
+                        rect.y + rect.h/2 - menuBar.offsetHeight);
                 }
 
                 graphView.overInput = !loop ? this : null;

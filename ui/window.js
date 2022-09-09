@@ -47,11 +47,11 @@ function uiEndResizeWindow()
 {
     graphView.updatePanAndZoom();
 
-    btnZoom.style.top  = 0;
-    btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;
+    // btnZoom.style.top  = 0;
+    // btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;
 
-    btnToggleWires.style.top  = 0;
-    btnToggleWires.style.left = btnZoom.offsetLeft - btnToggleWires.offsetWidth;
+    // btnToggleWires.style.top  = 0;
+    // btnToggleWires.style.left = btnZoom.offsetLeft - btnToggleWires.offsetWidth;
 }
 
 

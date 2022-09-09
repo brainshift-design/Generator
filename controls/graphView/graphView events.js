@@ -203,7 +203,7 @@ graphView.addEventListener('wheel', e =>
     if (e.ctrlKey)
     {
         let pos = point(e.clientX, e.clientY);
-        pos.y -= controlBar.offsetHeight;
+        pos.y -= menuBar.offsetHeight;
 
         const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (isTouchpad ? 5 : 10)));
         const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
@@ -249,7 +249,7 @@ graphView.addEventListener('gesturechange', e =>
 {
     const p = point(
         graphView.p.x,
-        graphView.p.y - controlBar.offsetHeight);
+        graphView.p.y - menuBar.offsetHeight);
 
     const zoom = graphView.zoomStart * e.scale;
     const pan  = subv(graphView.pan, mulvs(subv(p, graphView.pan), zoom / graphView.zoom - 1));

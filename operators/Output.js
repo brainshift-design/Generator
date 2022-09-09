@@ -100,7 +100,7 @@ class Output
                 {
                     graphView.tempConn.wire.outputPos = point(
                         rect.x + rect.w/2,
-                        rect.y + rect.h/2 - controlBar.offsetHeight);
+                        rect.y + rect.h/2 - menuBar.offsetHeight);
                 }
 
                 graphView.overOutput = !loop ? this : null;

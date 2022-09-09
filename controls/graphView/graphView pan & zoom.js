@@ -36,7 +36,7 @@ Object.defineProperty(graphView, 'zoom',
             window.innerWidth /2,
             window.innerHeight/2);
 
-        pos.y -= controlBar.offsetHeight;
+        pos.y -= menuBar.offsetHeight;
 
         const pan = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
 
@@ -76,7 +76,7 @@ graphView.setPanAndZoom = (pan, zoom) =>
 graphView.updatePanAndZoom = () =>
 {
     graphView.update(graph.nodes);
-    btnZoom.innerHTML = Math.round(graphView.zoom * 100) + '%';
+    //btnZoom.innerHTML = Math.round(graphView.zoom * 100) + '%';
 };
 
 
@@ -91,7 +91,7 @@ graphView.update = function(nodes = null)
     const x       = graphView.clientLeft;
     const w       = graphView.clientWidth;
     const h       = graphView.clientHeight;
-    const yOffset = controlBar.offsetHeight;
+    const yOffset = menuBar.offsetHeight;
     //let   bounds  = graphView.getAllNodeBounds();
     
     graphView.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
@@ -177,7 +177,7 @@ graphView.endZoomSelection = (pointerId, zoom) =>
         
         let box = {
             x: selection.x,
-            y: selection.y - controlBar.offsetHeight,
+            y: selection.y - menuBar.offsetHeight,
             w: selection.w,
             h: selection.h };
             

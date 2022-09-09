@@ -36,7 +36,6 @@ var pasteOffsetDelta    = [40, 100];
 
 
 
-
 clearConsole();
 initColor();
 
@@ -54,6 +53,8 @@ function uiEndStartGenerator(msg)
 
 
     initModeColors();
+    
+    initMenuBar();
     
     
     window.focus();

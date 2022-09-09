@@ -44,167 +44,6 @@
 }
 
 
-#controlBar
-{
-    display:          flex;
-    height:           40px;
-    background-color: #2c2c2c;
-    border-bottom:    1px solid var(--figma-color-bg-tertiary);
-    /* vertical-align:   middle; */
-    padding:          0;
-}
-
-
-
-#btnCreateNumber
-{
-    padding-left:  15px;
-    padding-right: 35px;
-}
-
-
-#btnZoom
-{
-    position:      absolute;
-    padding-left:  15px;
-    padding-right: 45px;
-}
-
-
-#btnToggleWires
-{
-    position:            absolute;
-    padding-left:        3px;
-    padding-right:       30px;
-    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="%23d5d5d5" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="%23d5d5d5"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="%23d5d5d5"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-}
-
-
-#btnToggleWires:hover
-{
-    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="white" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="white"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="white"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-}
-
-
-
-#btnCreateInterpolate
-{
-    padding-left:        3px;
-    padding-right:       30px;
-    background:          url('data:image/svg+xml;utf8,<svg width="23" height="5" viewBox="0 0 23 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.08447 0.0411377H9.96753V1.95288H18.5752C18.8079 1.10352 19.5852 0.479248 20.5085 0.479248C21.6155 0.479248 22.5129 1.37671 22.5129 2.48364C22.5129 3.5907 21.6155 4.48816 20.5085 4.48816C19.563 4.48816 18.7705 3.83362 18.5593 2.95288H9.96753V4.98364H8.08447V2.95288H4.51294C4.32324 3.85986 3.51904 4.54102 2.55566 4.54102C1.45117 4.54102 0.555908 3.64563 0.555908 2.54114C0.555908 1.43677 1.45117 0.541382 2.55566 0.541382C3.45532 0.541382 4.21631 1.13562 4.46753 1.95288H8.08447V0.0411377Z" fill="%23d5d5d5"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-}
-
-
-#btnCreateInterpolate:hover
-{
-    background:          url('data:image/svg+xml;utf8,<svg width="23" height="5" viewBox="0 0 23 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.08447 0.0411377H9.96753V1.95288H18.5752C18.8079 1.10352 19.5852 0.479248 20.5085 0.479248C21.6155 0.479248 22.5129 1.37671 22.5129 2.48364C22.5129 3.5907 21.6155 4.48816 20.5085 4.48816C19.563 4.48816 18.7705 3.83362 18.5593 2.95288H9.96753V4.98364H8.08447V2.95288H4.51294C4.32324 3.85986 3.51904 4.54102 2.55566 4.54102C1.45117 4.54102 0.555908 3.64563 0.555908 2.54114C0.555908 1.43677 1.45117 0.541382 2.55566 0.541382C3.45532 0.541382 4.21631 1.13562 4.46753 1.95288H8.08447V0.0411377Z" fill="white"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-    background-color:    black;
-}
-
-
-#btnCreateColorInterpolate
-{
-    padding-left:        3px;
-    padding-right:       30px;
-    background:          url('data:image/svg+xml;utf8,<svg width="21" height="19" viewBox="0 0 21 19" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.56288" cy="8.48389" r="1.99853" fill="%23d5d5d5"/><circle cx="18.464" cy="8.48389" r="1.99853" fill="%23d5d5d5"/><path d="M18.464 8.47584C18.464 7.43175 18.2584 6.39789 17.8588 5.43329C17.4593 4.46868 16.8736 3.59221 16.1354 2.85393C15.3971 2.11565 14.5206 1.53002 13.556 1.13047C12.5914 0.730912 11.5575 0.525265 10.5135 0.525265C9.46937 0.525265 8.43551 0.730912 7.4709 1.13047C6.50629 1.53002 5.62983 2.11566 4.89155 2.85393C4.15327 3.59221 3.56764 4.46868 3.16808 5.43329C2.76853 6.39789 2.56288 7.43175 2.56288 8.47584" stroke="white" stroke-opacity="0.3"/><path d="M18.464 8.47584C18.464 9.51992 18.2584 10.5538 17.8588 11.5184C17.4593 12.483 16.8736 13.3595 16.1354 14.0977C15.3971 14.836 14.5206 15.4217 13.556 15.8212C12.5914 16.2208 11.5575 16.4264 10.5135 16.4264C9.46937 16.4264 8.43551 16.2208 7.4709 15.8212C6.50629 15.4217 5.62983 14.836 4.89155 14.0977C4.15327 13.3595 3.56764 12.483 3.16808 11.5184C2.76853 10.5538 2.56288 9.51992 2.56288 8.47584" stroke="%23d5d5d5"/><rect x="7.07658" y="12.8511" width="1.88119" height="4.9512" transform="rotate(26.6869 7.07658 12.8511)" fill="%23d5d5d5"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-}
-
-
-#btnCreateColorInterpolate:hover
-{
-    background:          url('data:image/svg+xml;utf8,<svg width="21" height="19" viewBox="0 0 21 19" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.56288" cy="8.48389" r="1.99853" fill="white"/><circle cx="18.464" cy="8.48389" r="1.99853" fill="white"/><path d="M18.464 8.47584C18.464 7.43175 18.2584 6.39789 17.8588 5.43329C17.4593 4.46868 16.8736 3.59221 16.1354 2.85393C15.3971 2.11565 14.5206 1.53002 13.556 1.13047C12.5914 0.730912 11.5575 0.525265 10.5135 0.525265C9.46937 0.525265 8.43551 0.730912 7.4709 1.13047C6.50629 1.53002 5.62983 2.11566 4.89155 2.85393C4.15327 3.59221 3.56764 4.46868 3.16808 5.43329C2.76853 6.39789 2.56288 7.43175 2.56288 8.47584" stroke="white" stroke-opacity="0.5"/><path d="M18.464 8.47584C18.464 9.51992 18.2584 10.5538 17.8588 11.5184C17.4593 12.483 16.8736 13.3595 16.1354 14.0977C15.3971 14.836 14.5206 15.4217 13.556 15.8212C12.5914 16.2208 11.5575 16.4264 10.5135 16.4264C9.46937 16.4264 8.43551 16.2208 7.4709 15.8212C6.50629 15.4217 5.62983 14.836 4.89155 14.0977C4.15327 13.3595 3.56764 12.483 3.16808 11.5184C2.76853 10.5538 2.56288 9.51992 2.56288 8.47584" stroke="white"/><rect x="7.07658" y="12.8511" width="1.88119" height="4.9512" transform="rotate(26.6869 7.07658 12.8511)" fill="white"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-    background-color:    black;
-}
-
-
-#btnCreateValidateColor
-{
-    padding-left:        3px;
-    padding-right:       30px;
-    background:          url('data:image/svg+xml;utf8,<svg width="17" height="16" viewBox="0 -1 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.179 3.06615L6.68506 9.56013L2.88329 5.75836L4.0255 4.61615L6.68506 7.27571L12.0369 1.92393L13.179 3.06615Z" fill="%23d5d5d5"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.06159 1.13348C7.25451 1.03474 8.44629 1.33665 9.44831 1.99145L10.0355 1.09298C8.8335 0.307551 7.40396 -0.054602 5.97305 0.0638407C4.54213 0.182283 3.19159 0.774556 2.13516 1.74692C1.07873 2.71929 0.376759 4.0162 0.140351 5.43241C-0.0960669 6.84862 0.146575 8.30322 0.829881 9.56601C1.51319 10.8288 2.59812 11.8277 3.91297 12.4044C5.22782 12.9812 6.69749 13.1031 8.08937 12.7507C9.03602 12.5109 9.90991 12.0611 10.6496 11.4415L15.2558 15.9919L16.01 15.2284L11.4122 10.6861C11.4756 10.6118 11.5375 10.536 11.5977 10.4586C12.4797 9.32556 12.9585 7.93076 12.9585 6.49496H11.8852C11.8852 7.69195 11.486 8.85476 10.7507 9.79935C10.0155 10.744 8.98629 11.4164 7.82592 11.7102C6.66554 12.0039 5.44031 11.9024 4.34415 11.4216C3.24799 10.9407 2.3435 10.108 1.77385 9.05523C1.20419 8.00247 1.0019 6.7898 1.19899 5.60913C1.39609 4.42848 1.98131 3.34726 2.86203 2.53663C3.74275 1.72599 4.86867 1.23223 6.06159 1.13348Z" fill="%23d5d5d5"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-}
-
-
-#btnCreateValidateColor:hover
-{
-    background:          url('data:image/svg+xml;utf8,<svg width="17" height="16" viewBox="0 -1 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.179 3.06615L6.68506 9.56013L2.88329 5.75836L4.0255 4.61615L6.68506 7.27571L12.0369 1.92393L13.179 3.06615Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.06159 1.13348C7.25451 1.03474 8.44629 1.33665 9.44831 1.99145L10.0355 1.09298C8.8335 0.307551 7.40396 -0.054602 5.97305 0.0638407C4.54213 0.182283 3.19159 0.774556 2.13516 1.74692C1.07873 2.71929 0.376759 4.0162 0.140351 5.43241C-0.0960669 6.84862 0.146575 8.30322 0.829881 9.56601C1.51319 10.8288 2.59812 11.8277 3.91297 12.4044C5.22782 12.9812 6.69749 13.1031 8.08937 12.7507C9.03602 12.5109 9.90991 12.0611 10.6496 11.4415L15.2558 15.9919L16.01 15.2284L11.4122 10.6861C11.4756 10.6118 11.5375 10.536 11.5977 10.4586C12.4797 9.32556 12.9585 7.93076 12.9585 6.49496H11.8852C11.8852 7.69195 11.486 8.85476 10.7507 9.79935C10.0155 10.744 8.98629 11.4164 7.82592 11.7102C6.66554 12.0039 5.44031 11.9024 4.34415 11.4216C3.24799 10.9407 2.3435 10.108 1.77385 9.05523C1.20419 8.00247 1.0019 6.7898 1.19899 5.60913C1.39609 4.42848 1.98131 3.34726 2.86203 2.53663C3.74275 1.72599 4.86867 1.23223 6.06159 1.13348Z" fill="white"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-    background-color:    black;
-}
-
-
-#btnCreateColorContrast
-{
-    padding-left:        3px;
-    padding-right:       30px;
-    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="-2 -2 27 27" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11.1368" cy="11.4506" r="10.327" stroke="%23d5d5d5" stroke-width="1.5"/><path d="M11.1368 22.5276C8.19902 22.5276 5.38153 21.3606 3.30419 19.2832C1.22684 17.2059 0.0597991 14.3884 0.0597992 11.4506C0.0597993 8.51278 1.22684 5.6953 3.30419 3.61795C5.38153 1.54061 8.19902 0.373565 11.1368 0.373565L11.1368 11.4506L11.1368 22.5276Z" fill="%23d5d5d5"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-}
-
-
-#btnCreateColorContrast:hover
-{
-    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="-2 -2 27 27" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11.1368" cy="11.4506" r="10.327" stroke="white" stroke-width="1.5"/><path d="M11.1368 22.5276C8.19902 22.5276 5.38153 21.3606 3.30419 19.2832C1.22684 17.2059 0.0597991 14.3884 0.0597992 11.4506C0.0597993 8.51278 1.22684 5.6953 3.30419 3.61795C5.38153 1.54061 8.19902 0.373565 11.1368 0.373565L11.1368 11.4506L11.1368 22.5276Z" fill="white"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-    background-color:    black;
-}
-
-
-#btnCreateColorBlind
-{
-    padding-left:        3px;
-    padding-right:       30px;
-    background:          url('data:image/svg+xml;utf8,<svg width="19" height="19" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.2335" cy="15.4506" r="14.25" stroke="%23d5d5d5" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="7.63405" stroke="%23d5d5d5" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="1.75413" fill="%23d5d5d5"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-}
-
-
-#btnCreateColorBlind:hover
-{
-    background:          url('data:image/svg+xml;utf8,<svg width="19" height="19" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.2335" cy="15.4506" r="14.25" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="7.63405" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="1.75413" fill="white"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-    background-color:    black;
-}
-
-
-#btnCreateComment
-{
-    padding-left:        3px;
-    padding-right:       30px;
-    background:          url('data:image/svg+xml;utf8,<svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.92701 11.5266L3.6897 11.0341C3.24801 10.1174 3 9.08908 3 8C3 4.13401 6.13401 1 10 1C13.866 1 17 4.13401 17 8C17 11.866 13.866 15 10 15C8.89526 15 7.85296 14.7448 6.92628 14.2911L6.65842 14.1599L6.36249 14.1969L1.94388 14.7492L3.64047 11.9923L3.92701 11.5266ZM0.671856 14.9082L0 16L1.27203 15.841L6.48652 15.1892C7.5471 15.7085 8.73951 16 10 16C14.4183 16 18 12.4183 18 8C18 3.58172 14.4183 0 10 0C5.58172 0 2 3.58172 2 8C2 9.24258 2.28329 10.419 2.78881 11.4682L0.671856 14.9082Z" fill="white" fill-opacity="1"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-}
-
-
-#btnCreateComment:hover
-{
-    background:          url('data:image/svg+xml;utf8,<svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.92701 11.5266L3.6897 11.0341C3.24801 10.1174 3 9.08908 3 8C3 4.13401 6.13401 1 10 1C13.866 1 17 4.13401 17 8C17 11.866 13.866 15 10 15C8.89526 15 7.85296 14.7448 6.92628 14.2911L6.65842 14.1599L6.36249 14.1969L1.94388 14.7492L3.64047 11.9923L3.92701 11.5266ZM0.671856 14.9082L0 16L1.27203 15.841L6.48652 15.1892C7.5471 15.7085 8.73951 16 10 16C14.4183 16 18 12.4183 18 8C18 3.58172 14.4183 0 10 0C5.58172 0 2 3.58172 2 8C2 9.24258 2.28329 10.419 2.78881 11.4682L0.671856 14.9082Z" fill="white" fill-opacity="1"/></svg>');
-    background-position: 50% 50%;
-    background-repeat:   no-repeat;
-    background-color:    black;
-}
-
-
 #loadingOverlay
 {
     position:   absolute;
@@ -287,41 +126,6 @@
     width:         0;
     height:        5px;   
     background:    var(--figma-color-text);/*#333;*/
-}
-
-
-.menuButton
-{
-    font-family:   Inter;
-    font-size:     11px;
-    width:         40px;
-    height:        40px;
-    background:    #2c2c2c;
-    border-radius: 0;
-    min-width:     0;
-    min-height:    0;
-    border:        none;
-    position:      relative;
-    padding:       0;
-    padding-right: 2px;
-    margin-right:  -4px;
-    color:         #d5d5d5;
-    overflow:      hidden;
-    /* box-shadow:    0 0 0 1px red inset; */
-}
-
-
-.menuButton:hover
-{
-    background: black;
-    color:      white;
-}
-
-
-.menuButton:focus
-{
-    background: var(--activeObjectColor);
-    color:      white;
 }
 
 
@@ -718,6 +522,305 @@ div
     pointer-events: none;
     overflow:       hidden;
     /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+.menuButton
+{
+    display:       inline-block;
+    font-family:   Inter;
+    font-size:     11px;
+    width:         50px;
+    height:        40px;
+    background:    #2c2c2c;
+    border-radius: 0;
+    min-width:     0;
+    min-height:    0;
+    border:        none;
+    position:      relative;
+    padding:       0;
+    color:         #d5d5d5;
+    overflow:      hidden;
+    /* box-shadow:    0 0 0 1px red inset; */
+}
+
+
+.menuButton:hover
+{
+    background: black;
+    color:      white;
+}
+
+
+.menuButton:focus
+{
+    background: var(--activeObjectColor);
+    color:      white;
+}
+
+
+.menuButtonIcon
+{
+    display:    inline-block;
+    width:      30px;
+    height:     40px;
+    /* box-shadow: 0 0 0 1px yellow inset; */
+}
+
+
+.menuButtonArrow
+{
+    display:             inline-block;
+    width:               20px;
+    height:              40px;
+    background:          url('data:image/svg+xml;utf8,<svg width="8" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.507593 1.22627L1.2469 0.498783L4.01388 3.22151L6.78084 0.498783L7.52015 1.22627L4.01388 4.67648L0.507593 1.22627Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    transition:          0.25s;
+    /* box-shadow:          0 0 0 1px magenta inset; */
+}
+
+
+.menuButtonArrow:hover
+{
+    transform: translateY(3px);
+}
+
+
+
+.menu
+{
+    display:          none;
+    opacity:          0;
+    width:            auto;
+    height:           15px;
+    background-color: #040404;
+    color:            #eee;
+    border-radius:    2px;
+    padding:          5px 10px 5px 10px;
+    position:         absolute;
+    z-index:          10000;
+    bottom:           125%;
+    left:             13px;
+    top:              44px;
+    font-family:      Inter;
+    font-size:        11px;
+    box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.15),
+                      0px 5px 17px rgba(0, 0, 0, 0.15 );
+}
+
+
+.menuArrow
+{
+    content:      '';
+    position:     absolute;
+    margin-left:  -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: transparent transparent #040404 transparent;
+    display:      none;
+    opacity:      0%;
+}
+
+
+.menuItem
+{
+    display: inline;
+    width:  100px;
+    height: 20px;
+}
+
+
+.menuItemCheck
+{
+    display: inline;
+    width:  100px;
+    height: 20px;
+}
+
+
+.menuItemIcon
+{
+    display: inline;
+    width:  100px;
+    height: 20px;
+}
+
+
+.menuItemName
+{
+    display: inline;
+    width:  100px;
+    height: 20px;
+}
+
+
+.menuItemShortcut
+{
+    display: inline;
+    width:  100px;
+    height: 20px;
+}
+
+
+#menuBar
+{
+    display:          flex;
+    height:           40px;
+    background-color: #2c2c2c;
+    border-bottom:    1px solid var(--figma-color-bg-tertiary);
+    /* vertical-align:   middle; */
+    padding:          0;
+}
+
+
+
+#btnCreateNumber
+{
+    padding-left:  15px;
+    padding-right: 35px;
+}
+
+
+#btnZoom
+{
+    position:      absolute;
+    padding-left:  15px;
+    padding-right: 45px;
+}
+
+
+#btnToggleWires
+{
+    position:            absolute;
+    padding-left:        3px;
+    padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="%23d5d5d5" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="%23d5d5d5"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="%23d5d5d5"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+#btnToggleWires:hover
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="white" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="white"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+
+#btnCreateInterpolate
+{
+    padding-left:        3px;
+    padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="23" height="5" viewBox="0 0 23 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.08447 0.0411377H9.96753V1.95288H18.5752C18.8079 1.10352 19.5852 0.479248 20.5085 0.479248C21.6155 0.479248 22.5129 1.37671 22.5129 2.48364C22.5129 3.5907 21.6155 4.48816 20.5085 4.48816C19.563 4.48816 18.7705 3.83362 18.5593 2.95288H9.96753V4.98364H8.08447V2.95288H4.51294C4.32324 3.85986 3.51904 4.54102 2.55566 4.54102C1.45117 4.54102 0.555908 3.64563 0.555908 2.54114C0.555908 1.43677 1.45117 0.541382 2.55566 0.541382C3.45532 0.541382 4.21631 1.13562 4.46753 1.95288H8.08447V0.0411377Z" fill="%23d5d5d5"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+#btnCreateInterpolate:hover
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="23" height="5" viewBox="0 0 23 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.08447 0.0411377H9.96753V1.95288H18.5752C18.8079 1.10352 19.5852 0.479248 20.5085 0.479248C21.6155 0.479248 22.5129 1.37671 22.5129 2.48364C22.5129 3.5907 21.6155 4.48816 20.5085 4.48816C19.563 4.48816 18.7705 3.83362 18.5593 2.95288H9.96753V4.98364H8.08447V2.95288H4.51294C4.32324 3.85986 3.51904 4.54102 2.55566 4.54102C1.45117 4.54102 0.555908 3.64563 0.555908 2.54114C0.555908 1.43677 1.45117 0.541382 2.55566 0.541382C3.45532 0.541382 4.21631 1.13562 4.46753 1.95288H8.08447V0.0411377Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    background-color:    black;
+}
+
+
+#btnCreateColorInterpolate
+{
+    padding-left:        3px;
+    padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="19" viewBox="0 0 21 19" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.56288" cy="8.48389" r="1.99853" fill="%23d5d5d5"/><circle cx="18.464" cy="8.48389" r="1.99853" fill="%23d5d5d5"/><path d="M18.464 8.47584C18.464 7.43175 18.2584 6.39789 17.8588 5.43329C17.4593 4.46868 16.8736 3.59221 16.1354 2.85393C15.3971 2.11565 14.5206 1.53002 13.556 1.13047C12.5914 0.730912 11.5575 0.525265 10.5135 0.525265C9.46937 0.525265 8.43551 0.730912 7.4709 1.13047C6.50629 1.53002 5.62983 2.11566 4.89155 2.85393C4.15327 3.59221 3.56764 4.46868 3.16808 5.43329C2.76853 6.39789 2.56288 7.43175 2.56288 8.47584" stroke="white" stroke-opacity="0.3"/><path d="M18.464 8.47584C18.464 9.51992 18.2584 10.5538 17.8588 11.5184C17.4593 12.483 16.8736 13.3595 16.1354 14.0977C15.3971 14.836 14.5206 15.4217 13.556 15.8212C12.5914 16.2208 11.5575 16.4264 10.5135 16.4264C9.46937 16.4264 8.43551 16.2208 7.4709 15.8212C6.50629 15.4217 5.62983 14.836 4.89155 14.0977C4.15327 13.3595 3.56764 12.483 3.16808 11.5184C2.76853 10.5538 2.56288 9.51992 2.56288 8.47584" stroke="%23d5d5d5"/><rect x="7.07658" y="12.8511" width="1.88119" height="4.9512" transform="rotate(26.6869 7.07658 12.8511)" fill="%23d5d5d5"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+#btnCreateColorInterpolate:hover
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="19" viewBox="0 0 21 19" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2.56288" cy="8.48389" r="1.99853" fill="white"/><circle cx="18.464" cy="8.48389" r="1.99853" fill="white"/><path d="M18.464 8.47584C18.464 7.43175 18.2584 6.39789 17.8588 5.43329C17.4593 4.46868 16.8736 3.59221 16.1354 2.85393C15.3971 2.11565 14.5206 1.53002 13.556 1.13047C12.5914 0.730912 11.5575 0.525265 10.5135 0.525265C9.46937 0.525265 8.43551 0.730912 7.4709 1.13047C6.50629 1.53002 5.62983 2.11566 4.89155 2.85393C4.15327 3.59221 3.56764 4.46868 3.16808 5.43329C2.76853 6.39789 2.56288 7.43175 2.56288 8.47584" stroke="white" stroke-opacity="0.5"/><path d="M18.464 8.47584C18.464 9.51992 18.2584 10.5538 17.8588 11.5184C17.4593 12.483 16.8736 13.3595 16.1354 14.0977C15.3971 14.836 14.5206 15.4217 13.556 15.8212C12.5914 16.2208 11.5575 16.4264 10.5135 16.4264C9.46937 16.4264 8.43551 16.2208 7.4709 15.8212C6.50629 15.4217 5.62983 14.836 4.89155 14.0977C4.15327 13.3595 3.56764 12.483 3.16808 11.5184C2.76853 10.5538 2.56288 9.51992 2.56288 8.47584" stroke="white"/><rect x="7.07658" y="12.8511" width="1.88119" height="4.9512" transform="rotate(26.6869 7.07658 12.8511)" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    background-color:    black;
+}
+
+
+#btnCreateValidateColor
+{
+    padding-left:        3px;
+    padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="17" height="16" viewBox="0 -1 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.179 3.06615L6.68506 9.56013L2.88329 5.75836L4.0255 4.61615L6.68506 7.27571L12.0369 1.92393L13.179 3.06615Z" fill="%23d5d5d5"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.06159 1.13348C7.25451 1.03474 8.44629 1.33665 9.44831 1.99145L10.0355 1.09298C8.8335 0.307551 7.40396 -0.054602 5.97305 0.0638407C4.54213 0.182283 3.19159 0.774556 2.13516 1.74692C1.07873 2.71929 0.376759 4.0162 0.140351 5.43241C-0.0960669 6.84862 0.146575 8.30322 0.829881 9.56601C1.51319 10.8288 2.59812 11.8277 3.91297 12.4044C5.22782 12.9812 6.69749 13.1031 8.08937 12.7507C9.03602 12.5109 9.90991 12.0611 10.6496 11.4415L15.2558 15.9919L16.01 15.2284L11.4122 10.6861C11.4756 10.6118 11.5375 10.536 11.5977 10.4586C12.4797 9.32556 12.9585 7.93076 12.9585 6.49496H11.8852C11.8852 7.69195 11.486 8.85476 10.7507 9.79935C10.0155 10.744 8.98629 11.4164 7.82592 11.7102C6.66554 12.0039 5.44031 11.9024 4.34415 11.4216C3.24799 10.9407 2.3435 10.108 1.77385 9.05523C1.20419 8.00247 1.0019 6.7898 1.19899 5.60913C1.39609 4.42848 1.98131 3.34726 2.86203 2.53663C3.74275 1.72599 4.86867 1.23223 6.06159 1.13348Z" fill="%23d5d5d5"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+#btnCreateValidateColor:hover
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="17" height="16" viewBox="0 -1 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.179 3.06615L6.68506 9.56013L2.88329 5.75836L4.0255 4.61615L6.68506 7.27571L12.0369 1.92393L13.179 3.06615Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.06159 1.13348C7.25451 1.03474 8.44629 1.33665 9.44831 1.99145L10.0355 1.09298C8.8335 0.307551 7.40396 -0.054602 5.97305 0.0638407C4.54213 0.182283 3.19159 0.774556 2.13516 1.74692C1.07873 2.71929 0.376759 4.0162 0.140351 5.43241C-0.0960669 6.84862 0.146575 8.30322 0.829881 9.56601C1.51319 10.8288 2.59812 11.8277 3.91297 12.4044C5.22782 12.9812 6.69749 13.1031 8.08937 12.7507C9.03602 12.5109 9.90991 12.0611 10.6496 11.4415L15.2558 15.9919L16.01 15.2284L11.4122 10.6861C11.4756 10.6118 11.5375 10.536 11.5977 10.4586C12.4797 9.32556 12.9585 7.93076 12.9585 6.49496H11.8852C11.8852 7.69195 11.486 8.85476 10.7507 9.79935C10.0155 10.744 8.98629 11.4164 7.82592 11.7102C6.66554 12.0039 5.44031 11.9024 4.34415 11.4216C3.24799 10.9407 2.3435 10.108 1.77385 9.05523C1.20419 8.00247 1.0019 6.7898 1.19899 5.60913C1.39609 4.42848 1.98131 3.34726 2.86203 2.53663C3.74275 1.72599 4.86867 1.23223 6.06159 1.13348Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    background-color:    black;
+}
+
+
+#btnCreateColorContrast
+{
+    padding-left:        3px;
+    padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="-2 -2 27 27" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11.1368" cy="11.4506" r="10.327" stroke="%23d5d5d5" stroke-width="1.5"/><path d="M11.1368 22.5276C8.19902 22.5276 5.38153 21.3606 3.30419 19.2832C1.22684 17.2059 0.0597991 14.3884 0.0597992 11.4506C0.0597993 8.51278 1.22684 5.6953 3.30419 3.61795C5.38153 1.54061 8.19902 0.373565 11.1368 0.373565L11.1368 11.4506L11.1368 22.5276Z" fill="%23d5d5d5"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+#btnCreateColorContrast:hover
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="-2 -2 27 27" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11.1368" cy="11.4506" r="10.327" stroke="white" stroke-width="1.5"/><path d="M11.1368 22.5276C8.19902 22.5276 5.38153 21.3606 3.30419 19.2832C1.22684 17.2059 0.0597991 14.3884 0.0597992 11.4506C0.0597993 8.51278 1.22684 5.6953 3.30419 3.61795C5.38153 1.54061 8.19902 0.373565 11.1368 0.373565L11.1368 11.4506L11.1368 22.5276Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    background-color:    black;
+}
+
+
+#btnCreateColorBlind
+{
+    padding-left:        3px;
+    padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_603_2)"><path d="M9.33666 18.2036C14.1602 18.2036 18.0705 14.2933 18.0705 9.46972C18.0705 4.64614 14.1602 0.735851 9.33666 0.735851C4.51308 0.735851 0.60279 4.64614 0.60279 9.46972C0.60279 14.2933 4.51308 18.2036 9.33666 18.2036Z" stroke="black" stroke-width="0.919355" stroke-dasharray="1.84 1.84"/><path d="M9.33666 14.1487C11.9208 14.1487 14.0156 12.0538 14.0156 9.46972C14.0156 6.88562 11.9208 4.79079 9.33666 4.79079C6.75256 4.79079 4.65773 6.88562 4.65773 9.46972C4.65773 12.0538 6.75256 14.1487 9.33666 14.1487Z" stroke="black" stroke-width="0.919355"/><path d="M9.33666 10.5448C9.93043 10.5448 10.4118 10.0635 10.4118 9.46972C10.4118 8.87595 9.93043 8.39461 9.33666 8.39461C8.74289 8.39461 8.26155 8.87595 8.26155 9.46972C8.26155 10.0635 8.74289 10.5448 9.33666 10.5448Z" fill="black"/></g><defs><clipPath id="clip0_603_2"><rect width="19" height="19" fill="white"/></clipPath></defs></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+#btnCreateColorBlind:hover
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="19" height="19" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15.2335" cy="15.4506" r="14.25" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="7.63405" stroke="white" stroke-width="1.5"/><circle cx="15.2335" cy="15.4506" r="1.75413" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    background-color:    black;
+}
+
+
+#btnCreateComment
+{
+    padding-left:        3px;
+    padding-right:       30px;
+    background:          url('data:image/svg+xml;utf8,<svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.92701 11.5266L3.6897 11.0341C3.24801 10.1174 3 9.08908 3 8C3 4.13401 6.13401 1 10 1C13.866 1 17 4.13401 17 8C17 11.866 13.866 15 10 15C8.89526 15 7.85296 14.7448 6.92628 14.2911L6.65842 14.1599L6.36249 14.1969L1.94388 14.7492L3.64047 11.9923L3.92701 11.5266ZM0.671856 14.9082L0 16L1.27203 15.841L6.48652 15.1892C7.5471 15.7085 8.73951 16 10 16C14.4183 16 18 12.4183 18 8C18 3.58172 14.4183 0 10 0C5.58172 0 2 3.58172 2 8C2 9.24258 2.28329 10.419 2.78881 11.4682L0.671856 14.9082Z" fill="white" fill-opacity="1"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+}
+
+
+#btnCreateComment:hover
+{
+    background:          url('data:image/svg+xml;utf8,<svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.92701 11.5266L3.6897 11.0341C3.24801 10.1174 3 9.08908 3 8C3 4.13401 6.13401 1 10 1C13.866 1 17 4.13401 17 8C17 11.866 13.866 15 10 15C8.89526 15 7.85296 14.7448 6.92628 14.2911L6.65842 14.1599L6.36249 14.1969L1.94388 14.7492L3.64047 11.9923L3.92701 11.5266ZM0.671856 14.9082L0 16L1.27203 15.841L6.48652 15.1892C7.5471 15.7085 8.73951 16 10 16C14.4183 16 18 12.4183 18 8C18 3.58172 14.4183 0 10 0C5.58172 0 2 3.58172 2 8C2 9.24258 2.28329 10.419 2.78881 11.4682L0.671856 14.9082Z" fill="white" fill-opacity="1"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    background-color:    black;
 }
 
 
@@ -1485,8 +1588,7 @@ div
 
 </style>
 
-<div id='controlBar'>
-    
+<div id='menuBar'>
     <!-- <div id='menuSelect' style='margin-left: 10px;'></div> -->
     
     <!-- &nbsp;
@@ -1494,26 +1596,26 @@ div
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button class='menuButton' id='btnSave'                   onclick='saveGraph(); this.blur();'>SAVE</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-    <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction(NUMBER,             btnCreateNumber          ));  this.blur();'><span style='font-size: 13px; letter-spacing: -0.05em;'>123</span></button>
-    <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnCreateLimits          ));  this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button>
-    <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction(NUMBER_ADD,         btnCreateAdd             ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>+</span></button>
-    <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,    btnCreateSubtract        ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>−</span></button>
-    <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,    btnCreateMultiply        ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>×</span></button>
-    <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnCreateDivide          ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>÷</span></button>
-    <button class='menuButton' id='btnCreateModulo'           onclick='actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnCreateModulo          ));  this.blur();'><span style='font-size: 15px;'>%</span></button>
-    <button class='menuButton' id='btnCreateExponent'         onclick='actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnCreateExponent        ));  this.blur();'><span style='font-size: 16px;'>x<sup><sub><sup>y</sup></sub></sup></span></button>
-    <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnCreateInterpolate     ));  this.blur();'></button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction(COLOR,              btnCreateColor           ));  this.blur();'><span style='font-size: 17px;'>Ͼ</span></button>
-    <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE,  btnCreateColorInterpolate));  this.blur();'></button>
-    <button class='menuButton' id='btnCreateValidateColor'    onclick='actionManager.do(new CreateNodeAction(COLOR_VALIDATE,     btnCreateValidateColor   ));  this.blur();'></span></button>
-    <button class='menuButton' id='btnCreateColorContrast'    onclick='actionManager.do(new CreateNodeAction(COLOR_CONTRAST,     btnCreateColorContrast   ));  this.blur();'></button>
-    <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,         btnCreateColorblind      ));  this.blur();'></button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateFill'             onclick='actionManager.do(new CreateNodeAction(FILL,               btnCreateFill            ));  this.blur();'>FILL</button>
-    <button class='menuButton' id='btnCreateStroke'           onclick='actionManager.do(new CreateNodeAction(STROKE,             btnCreateStroke          ));  this.blur();'>STRK</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,          btnCreateRectangle       ));  this.blur();'>RECT</button>
+    <!-- <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction(NUMBER,             btnCreateNumber          ));  this.blur();'><span style='font-size: 13px; letter-spacing: -0.05em;'>123</span></button> -->
+    <!-- <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnCreateLimits          ));  this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button> -->
+    <!-- <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction(NUMBER_ADD,         btnCreateAdd             ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>+</span></button> -->
+    <!-- <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,    btnCreateSubtract        ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>−</span></button> -->
+    <!-- <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,    btnCreateMultiply        ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>×</span></button> -->
+    <!-- <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnCreateDivide          ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>÷</span></button> -->
+    <!-- <button class='menuButton' id='btnCreateModulo'           onclick='actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnCreateModulo          ));  this.blur();'><span style='font-size: 15px;'>%</span></button> -->
+    <!-- <button class='menuButton' id='btnCreateExponent'         onclick='actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnCreateExponent        ));  this.blur();'><span style='font-size: 16px;'>x<sup><sub><sup>y</sup></sub></sup></span></button> -->
+    <!-- <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnCreateInterpolate     ));  this.blur();'></button> -->
+    <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+    <!-- <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction(COLOR,              btnCreateColor           ));  this.blur();'><span style='font-size: 17px;'>Ͼ</span></button> -->
+    <!-- <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE,  btnCreateColorInterpolate));  this.blur();'></button> -->
+    <!-- <button class='menuButton' id='btnCreateValidateColor'    onclick='actionManager.do(new CreateNodeAction(COLOR_VALIDATE,     btnCreateValidateColor   ));  this.blur();'></span></button> -->
+    <!-- <button class='menuButton' id='btnCreateColorContrast'    onclick='actionManager.do(new CreateNodeAction(COLOR_CONTRAST,     btnCreateColorContrast   ));  this.blur();'></button> -->
+    <!-- <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,         btnCreateColorblind      ));  this.blur();'></button> -->
+    <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+    <!-- <button class='menuButton' id='btnCreateFill'             onclick='actionManager.do(new CreateNodeAction(FILL,               btnCreateFill            ));  this.blur();'>FILL</button> -->
+    <!-- <button class='menuButton' id='btnCreateStroke'           onclick='actionManager.do(new CreateNodeAction(STROKE,             btnCreateStroke          ));  this.blur();'>STRK</button> -->
+    <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+    <!-- <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,          btnCreateRectangle       ));  this.blur();'>RECT</button> -->
     <!-- <button class='menuButton' id='btnCreateLine'             onclick='actionManager.do(new CreateNodeAction(LINE,               btnCreateLine            ));  this.blur();'>LINE</button> -->
     <!-- <button class='menuButton' id='btnCreateEllipse'          onclick='actionManager.do(new CreateNodeAction(ELLIPSE,            btnCreateEllipse         ));  this.blur();'>ELPS</button> -->
     <!-- <button class='menuButton' id='btnCreatePolygon'          onclick='actionManager.do(new CreateNodeAction(POLYGON,            btnCreatePolygon         ));  this.blur();'>POLY</button> -->
@@ -1522,23 +1624,25 @@ div
     <!-- <button class='menuButton' id='btnCreateColorStop'        onclick='actionManager.do(new CreateNodeAction(COLOR_STOP,         btnCreateColorStop       ));  this.blur();'>STP</button> -->
     <!-- <button class='menuButton' id='btnCreateGradient'         onclick='actionManager.do(new CreateNodeAction(GRADIENT,           btnCreateGradient        ));  this.blur();'>GRD</button> -->
     <!-- <button class='menuButton' id='btnCreateColorStroke' onclick='actionManager.do(new CreateNodeAction(COLOR_STROKE,       btnCreateColorStroke));  this.blur();'>CSTK</button> -->
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnCreateComment'          onclick='actionManager.do(new CreateNodeAction(COMMENT,            btnCreateComment         ));  this.blur();'></button>
+    <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+    <!-- <button class='menuButton' id='btnCreateComment'          onclick='actionManager.do(new CreateNodeAction(COMMENT,            btnCreateComment         ));  this.blur();'></button> -->
     <!-- <button class='menuButton' id='btnCreateRow'              onclick='actionManager.do(new CreateNodeAction("row",              btnCreateRow        ));  this.blur();'>ROW</button> -->
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleShowWires(); this.blur();'></button>
+    <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+    <!-- <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleShowWires(); this.blur();'></button> -->
 
-    <button class='menuButton' id='btnZoom'                   onclick='graphView.zoom = 1; this.blur();'></button>
+    <!-- <button class='menuButton' id='btnZoom'                   onclick='graphView.zoom = 1; this.blur();'></button> -->
     
 </div>
     
-<div id='selectBox'></div>
+
 
 <div id='graphView'>
     <div id="wireContainer"></div>
     <div id='scrollbarX'></div>
     <div id='scrollbarY'></div>
 </div>
+
+<div id='selectBox'></div>
 
 
 
@@ -20984,6 +21088,254 @@ const settings =
 };
 
 
+var currentMenu = null;
+
+
+
+class Menu
+{
+    name;
+
+    div;
+    divArrow;
+
+
+    items    = [];
+    lastItem = null;
+
+
+
+    constructor(name)
+    {
+        this.name = name;
+
+        this.div      = createDiv('menu');
+        this.divArrow = createDiv('menuArrow');
+    }
+
+
+
+    addItems(items)
+    {
+        this.items = items;
+
+        if (!this.lastItem)
+            this.lastItem = this.items[0];
+
+        for (const item of this.items)
+            this.div.appendChild(item.div);
+    }
+
+
+
+    show(srcDiv)
+    {
+        if (currentMenu)
+            currentMenu.hide();
+    
+            
+        this.div     .style.display = 'block';
+        this.div     .style.opacity = '100%';
+    
+        this.divArrow.style.display = 'block';
+        this.divArrow.style.opacity = '100%';
+
+
+        document.body.appendChild(this.div);
+        document.body.appendChild(this.divArrow);
+
+    
+        let srcRect = srcDiv.getBoundingClientRect();
+    
+        srcRect.y -= 5;
+    
+    
+        const margin = 10;
+     
+        this.div.style.left = Math.min(Math.max(
+            margin, 
+            srcRect.x + srcRect.width/2 - this.div.offsetWidth/2), 
+            graphView.offsetWidth - this.div.offsetWidth - margin);
+    
+        this.divArrow.style.left = srcRect.x + srcRect.width/2;// - menuArrow.offsetWidth/2;
+    
+        
+        this.div.style.top = srcRect.y + srcRect.height + this.divArrow.offsetHeight;
+    
+        const menuRect = this.div.getBoundingClientRect();
+    
+        this.divArrow.style.borderColor = 'transparent transparent #040404 transparent';
+        this.divArrow.style.top         = menuRect.y - this.divArrow.offsetHeight;
+    
+    
+        currentMenu = this;
+    }
+    
+    
+    
+    hide()
+    {
+        this.div     .style.display = 'none';
+        this.div     .style.opacity = '0%';
+    
+        this.divArrow.style.display = 'none';
+        this.divArrow.style.opacity = '0%';
+    
+        currentMenu                 = null;
+    }
+}
+
+
+var menuMain;
+var menuMath;
+var menuText;
+var menuColor;
+var menuGeometry;
+
+
+function initMenuBar()
+{
+    menuMain = new Menu('Main menu');
+    menuMain.addItems([
+        new MenuItem('File'),
+        new MenuItem('Debug'),
+        new MenuItem('Help and activation')]);
+    
+    
+    menuMath = new Menu('Math nodes');
+    menuMath.addItems([
+        new MenuItem('Limits'),
+        new MenuItem('Add'),
+        new MenuItem('Subtract'),
+        new MenuItem('Multiply'),
+        new MenuItem('Divide'),
+        new MenuItem('Modulo'),
+        new MenuItem('Exponent'),
+        new MenuItem('Interpolate')]);
+    
+    
+    menuText = new Menu('Text nodes');
+    menuText.addItems([
+        new MenuItem('Text'),
+        new MenuItem('Add'),
+        new MenuItem('Substring'),
+        new MenuItem('Replace')]);
+    
+    
+    menuColor = new Menu('Color nodes');
+    menuColor.addItems([
+        new MenuItem('Color'),
+        new MenuItem('Validate'),
+        new MenuItem('Interpolate'),
+        new MenuItem('Contrast'),
+        new MenuItem('Colorblind')]);
+    
+    
+    menuGeometry = new Menu('Geometry nodes');
+    menuGeometry.addItems([
+        new MenuItem('Rectangle'),
+        new MenuItem('Line'),
+        new MenuItem('Ellipse'),
+        new MenuItem('Polygon'),
+        new MenuItem('Star')]);
+
+
+    const btnMain     = new MenuButton('',            menuMain);
+    const btnMath     = new MenuButton('',            menuMath);
+    const btnText     = new MenuButton('',            menuText);
+    const btnColor    = new MenuButton('',            menuColor);
+    const btnGeometry = new MenuButton('',            menuGeometry);
+    const btnComment  = new MenuButton('Add comment', null); // TODO add callback here
+}
+
+
+class MenuButton
+{
+    name;
+    menu;
+
+    icon     = '';
+    tooltip  = null;
+
+    callback;
+
+
+    div;
+
+    divIcon;
+    divArrow;
+
+
+
+    constructor(name, menu, callback = null)
+    {
+        this.name     = name;
+        this.menu     = menu;
+
+        this.callback = callback;
+
+
+        this.div      = createDiv('menuButton');
+
+        this.divIcon  = createDiv('menuButtonIcon');
+        this.divArrow = createDiv('menuButtonArrow');
+
+
+             if (this.menu    ) this.divArrow.addEventListener('click', () => this.menu.show(this.div));
+        else if (this.callback) this.divArrow.addEventListener('click', this.callback);
+
+
+        this.div.appendChild(this.divIcon);
+
+        if (this.menu)
+            this.div.appendChild(this.divArrow);
+
+        menuBar.appendChild(this.div);
+    }
+}
+
+
+class MenuItem
+{
+    parentMenu = null;
+    
+    checked    = false;
+    icon       = ''; // svg
+    name       = '';
+    shortcut   = '';
+
+    callback   = null;
+
+
+    div;
+
+    divCheck;
+    divIcon;
+    divName;
+    divShortcut;
+
+
+
+    constructor(name)
+    {
+        this.name        = name;
+
+
+        this.div         = createDiv('menuItem');
+
+        this.divCheck    = createDiv('menuItemCheck');
+        this.divIcon     = createDiv('menuItemIcon');
+        this.divName     = createDiv('menuItemName');
+        this.divShortcut = createDiv('menuItemShortcut');
+
+        this.div.appendChild(this.divCheck);
+        this.div.appendChild(this.divIcon);
+        this.div.appendChild(this.divName);
+        this.div.appendChild(this.divShortcut);
+    }
+}
+
+
 function createToggleButton(width, height)
 {
     const btn = createDiv('toggleButton');
@@ -21262,7 +21614,7 @@ function initNumberControlEvents(control)
 
                 graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - controlBar.offsetHeight);
+                    rect.y + rect.h/2 - menuBar.offsetHeight);
             }
             else if ( graphView.tempConn.input
                   &&  control.param.output
@@ -21279,7 +21631,7 @@ function initNumberControlEvents(control)
 
                 graphView.tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - controlBar.offsetHeight);
+                    rect.y + rect.h/2 - menuBar.offsetHeight);
 
 
                 graphView.tempConn.input.updateControl();
@@ -22592,7 +22944,7 @@ function initColorControlEvents(control)
 
                 graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - controlBar.offsetHeight);
+                    rect.y + rect.h/2 - menuBar.offsetHeight);
             }
             else if ( graphView.tempConn.input
                   &&  control.param.output
@@ -22609,7 +22961,7 @@ function initColorControlEvents(control)
 
                 graphView.tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - controlBar.offsetHeight);
+                    rect.y + rect.h/2 - menuBar.offsetHeight);
 
 
                 graphView.tempConn.input.updateControl();
@@ -24395,14 +24747,14 @@ graphView.placeNewNode = function(node)
     else
     {
         node.div.style.left = (graphView.offsetWidth /2 - graphView.pan.x                          ) / graphView.zoom - nodeRect.width/2;
-        node.div.style.top  = (graphView.offsetHeight/2 - graphView.pan.y - controlBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
+        node.div.style.top  = (graphView.offsetHeight/2 - graphView.pan.y - menuBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
     }
 
 
     // const nodeRect = boundingRect(node.div);
 
     // const defx = (graphView.offsetWidth /2 - graphView.pan.x) / graphView.zoom - nodeRect.width /2,
-    //       defy = (graphView.offsetHeight/2 - graphView.pan.y - controlBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
+    //       defy = (graphView.offsetHeight/2 - graphView.pan.y - menuBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
 
     // node.div.style.left = (graphView.offsetWidth  / 6 - graphView.pan.x) / graphView.zoom;
     // node.div.style.top  = (graphView.offsetHeight / 4 - graphView.pan.y) / graphView.zoom;
@@ -24615,15 +24967,15 @@ graphView.unsoloNode = function()
 
 
 
-graphView.toggleShowWires = function()
-{
-    graphView.showWires = !graphView.showWires;
+// graphView.toggleShowWires = function()
+// {
+//     graphView.showWires = !graphView.showWires;
 
-    uiSaveGraphView();
+//     uiSaveGraphView();
 
-    updateToggleShowWiresButton();
-    graphView.updateShowWires();
-};
+//     updateToggleShowWiresButton();
+//     graphView.updateShowWires();
+// };
 
 
 
@@ -24855,7 +25207,7 @@ graphView.addEventListener('wheel', e =>
     if (e.ctrlKey)
     {
         let pos = point(e.clientX, e.clientY);
-        pos.y -= controlBar.offsetHeight;
+        pos.y -= menuBar.offsetHeight;
 
         const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (isTouchpad ? 5 : 10)));
         const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
@@ -24901,7 +25253,7 @@ graphView.addEventListener('gesturechange', e =>
 {
     const p = point(
         graphView.p.x,
-        graphView.p.y - controlBar.offsetHeight);
+        graphView.p.y - menuBar.offsetHeight);
 
     const zoom = graphView.zoomStart * e.scale;
     const pan  = subv(graphView.pan, mulvs(subv(p, graphView.pan), zoom / graphView.zoom - 1));
@@ -24998,7 +25350,7 @@ Object.defineProperty(graphView, 'zoom',
             window.innerWidth /2,
             window.innerHeight/2);
 
-        pos.y -= controlBar.offsetHeight;
+        pos.y -= menuBar.offsetHeight;
 
         const pan = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
 
@@ -25038,7 +25390,7 @@ graphView.setPanAndZoom = (pan, zoom) =>
 graphView.updatePanAndZoom = () =>
 {
     graphView.update(graph.nodes);
-    btnZoom.innerHTML = Math.round(graphView.zoom * 100) + '%';
+    //btnZoom.innerHTML = Math.round(graphView.zoom * 100) + '%';
 };
 
 
@@ -25053,7 +25405,7 @@ graphView.update = function(nodes = null)
     const x       = graphView.clientLeft;
     const w       = graphView.clientWidth;
     const h       = graphView.clientHeight;
-    const yOffset = controlBar.offsetHeight;
+    const yOffset = menuBar.offsetHeight;
     //let   bounds  = graphView.getAllNodeBounds();
     
     graphView.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
@@ -25139,7 +25491,7 @@ graphView.endZoomSelection = (pointerId, zoom) =>
         
         let box = {
             x: selection.x,
-            y: selection.y - controlBar.offsetHeight,
+            y: selection.y - menuBar.offsetHeight,
             w: selection.w,
             h: selection.h };
             
@@ -25238,7 +25590,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
 {
     const wndRect = new Rect(
         1,
-        controlBar.offsetHeight + 1,
+        menuBar  .offsetHeight + 1,
         graphView.offsetWidth  - 2,
         graphView.offsetHeight - 5);
 
@@ -25455,7 +25807,7 @@ graphView.updateScrollWithBounds = () =>
         graphView.clientWidth,
         graphView.clientHeight,
         bounds,
-        controlBar.offsetHeight);
+        menuBar.offsetHeight);
 };
 
 
@@ -25701,7 +26053,7 @@ graphView.removeWire = function(wire)
 
 function updateWire(wire, x = 0, y = 0)
 {
-    const yOffset = controlBar.offsetHeight;
+    const yOffset = menuBar.offsetHeight;
 
     let pOut = point(0, 0),
         pIn  = point(0, 0);
@@ -25744,7 +26096,7 @@ function updateWires(wires)
     
     const cw      = graphView.clientWidth;
     const ch      = graphView.clientHeight;
-    const yOffset = controlBar.offsetHeight;
+    const yOffset = menuBar  .offsetHeight;
 
 
     wires.forEach(w => 
@@ -25776,7 +26128,7 @@ function updateWires(wires)
     
         wire.setAttribute('viewBox',
                     0
-            + ' ' + 0//yOffset/2 // why is only half of yOffset taken???
+            + ' ' + 0
             + ' ' + cw
             + ' ' + ch);
     }
@@ -28322,7 +28674,7 @@ extends EventTarget
                 {
                     graphView.tempConn.wire.inputPos = point(
                         rect.x + rect.w/2,
-                        rect.y + rect.h/2 - controlBar.offsetHeight);
+                        rect.y + rect.h/2 - menuBar.offsetHeight);
                 }
 
                 graphView.overInput = !loop ? this : null;
@@ -28541,7 +28893,7 @@ class Output
                 {
                     graphView.tempConn.wire.outputPos = point(
                         rect.x + rect.w/2,
-                        rect.y + rect.h/2 - controlBar.offsetHeight);
+                        rect.y + rect.h/2 - menuBar.offsetHeight);
                 }
 
                 graphView.overOutput = !loop ? this : null;
@@ -29265,7 +29617,9 @@ class Operator
         
         this._active = true;
 
-        if (!graphView.activeNodes.includes(this))
+        if (    graphView
+            &&  graphView.activeNodes
+            && !graphView.activeNodes.includes(this))
             graphView.activeNodes.push(this);
     }
 
@@ -30066,7 +30420,7 @@ function createNodeHeader(node)
             const w       = graphView.clientWidth;
             const h       = graphView.clientHeight;
             const bounds  = graphView.getAllNodeBounds();
-            const yOffset = controlBar.offsetHeight;
+            const yOffset = menuBar.offsetHeight;
         
             setNodePositions(
                 graphView.selectedNodes,
@@ -30119,7 +30473,7 @@ function createNodeHeader(node)
 
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
-                        inputRect.y + inputRect.h/2 - controlBar.offsetHeight);
+                        inputRect.y + inputRect.h/2 - menuBar.offsetHeight);
                 }
                 else
                 {
@@ -30141,7 +30495,7 @@ function createNodeHeader(node)
 
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
-                        inputRect.y + inputRect.h/2 - controlBar.offsetHeight);
+                        inputRect.y + inputRect.h/2 - menuBar.offsetHeight);
                 }
             }
             else if (tempConn.input
@@ -30161,7 +30515,7 @@ function createNodeHeader(node)
 
                 tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - controlBar.offsetHeight);
+                    rect.y + rect.h/2 - menuBar.offsetHeight);
 
 
                 tempConn.input.updateControl();
@@ -37763,24 +38117,24 @@ extends Action
 }
 
 
-function updateToggleShowWiresButton()
-{
-    const color = 
-           graphView.showWires 
-        || btnToggleWires.mouseOver 
-        ? 'white' 
-        : '%23d5d5d5';
+// function updateToggleShowWiresButton()
+// {
+//     const color = 
+//            graphView.showWires 
+//         || btnToggleWires.mouseOver 
+//         ? 'white' 
+//         : '%23d5d5d5';
 
-    btnToggleWires.style.background         = 'url(\'data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="'+color+'" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="'+color+'"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="'+color+'"/></svg>\')';
-    btnToggleWires.style.backgroundPosition = '50% 50%';
-    btnToggleWires.style.backgroundRepeat   = 'no-repeat';
-    btnToggleWires.style.backgroundColor    = graphView.showWires ? 'var(--figma-color-bg-brand)' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
-}
+//     btnToggleWires.style.background         = 'url(\'data:image/svg+xml;utf8,<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.65006 17.8918C15.4645 18.1216 13.0131 12.9935 10.1855 10.4007C7.35798 7.80786 4.94977 2.68156 17.7642 2.91138" stroke="'+color+'" stroke-width="1"/><circle cx="2.65005" cy="17.8918" r="2" transform="rotate(2.45954 2.65005 17.8918)" fill="'+color+'"/><circle cx="17.7642" cy="2.91141" r="2" transform="rotate(-177.54 17.7642 2.91141)" fill="'+color+'"/></svg>\')';
+//     btnToggleWires.style.backgroundPosition = '50% 50%';
+//     btnToggleWires.style.backgroundRepeat   = 'no-repeat';
+//     btnToggleWires.style.backgroundColor    = graphView.showWires ? 'var(--figma-color-bg-brand)' : (btnToggleWires.mouseOver ? 'black' : '#2c2c2c');
+// }
 
 
 
-btnToggleWires.addEventListener('pointerover',  () => updateToggleShowWiresButton());
-btnToggleWires.addEventListener('pointerleave', () => updateToggleShowWiresButton());
+// btnToggleWires.addEventListener('pointerover',  () => updateToggleShowWiresButton());
+// btnToggleWires.addEventListener('pointerleave', () => updateToggleShowWiresButton());
 
 
 const colFigmaBlue         = '#0c8ce9';
@@ -38025,7 +38379,6 @@ var pasteOffsetDelta    = [40, 100];
 
 
 
-
 clearConsole();
 initColor();
 
@@ -38043,6 +38396,8 @@ function uiEndStartGenerator(msg)
 
 
     initModeColors();
+    
+    initMenuBar();
     
     
     window.focus();
@@ -38681,7 +39036,7 @@ function finishLoading()
     graphView.loadingNodes   = false;
     graphView.canUpdateNodes = true;
     
-    updateToggleShowWiresButton();
+    //updateToggleShowWiresButton();
     graphView.updateShowWires(false);
 }
 
@@ -38838,8 +39193,8 @@ var tooltipTimer,
     tooltipOutTimer, 
     tooltipLeaveTimer;
 
-var curTooltipSource = null;
-var curTooltip       = null;
+var currentTooltipSource = null;
+var currentTooltip       = null;
 
     
 
@@ -38859,7 +39214,7 @@ function createTooltipSrc(source, getTooltip, bottomArrow = false)
                 clearTimeout(tooltipTimer);
                 tooltipTimer = null;
             }, 
-            curTooltip ? 0 : 1000);
+            currentTooltip ? 0 : 1000);
         }
     });
       
@@ -38867,7 +39222,7 @@ function createTooltipSrc(source, getTooltip, bottomArrow = false)
     source.addEventListener('pointerleave', () =>
     {
         clearTimeout(tooltipTimer);
-        curTooltipSource = null;
+        currentTooltipSource = null;
 
         tooltipOutTimer = setTimeout(() => 
         {
@@ -38901,8 +39256,8 @@ function createTooltip(tooltip)
 
 function showTooltip(source, tooltip, bottomArrow)
 {
-    if (curTooltip)
-        hideTooltip(curTooltip);
+    if (currentTooltip)
+        hideTooltip(currentTooltip);
 
 
     tooltip     .style.display = 'block';
@@ -38946,7 +39301,7 @@ function showTooltip(source, tooltip, bottomArrow)
     }
 
 
-    curTooltip = tooltip;
+    currentTooltip = tooltip;
 }
 
 
@@ -38962,8 +39317,8 @@ function hideTooltip(tooltip)
     clearTimeout(tooltipTimer);
     clearTimeout(tooltipOutTimer);
 
-    tooltipTimer               = null;
-    curTooltip                 = null;
+    tooltipTimer   = null;
+    currentTooltip = null;
 }
 
 
@@ -38983,7 +39338,7 @@ createTooltip(ttCreateValidateColor);    createTooltipSrc(btnCreateValidateColor
 createTooltip(ttCreateColorContrast);      createTooltipSrc(btnCreateColorContrast,      () => ttCreateColorContrast);
 createTooltip(ttCreateColorblind);       createTooltipSrc(btnCreateColorblind,       () => ttCreateColorblind);
 
-createTooltip(ttToggleWires);            createTooltipSrc(btnToggleWires,            () => ttToggleWires);
+// createTooltip(ttToggleWires);            createTooltipSrc(btnToggleWires,            () => ttToggleWires);
 
 
 // menuSelect.addEventListener('change', async function(e) 
@@ -39006,8 +39361,8 @@ productKeyClose.addEventListener('click', e =>
 
 
 
-btnToggleWires.addEventListener('pointerenter', () => { btnToggleWires.mouseOver = true;  updateToggleShowWiresButton(); });
-btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver = false; updateToggleShowWiresButton(); });
+// btnToggleWires.addEventListener('pointerenter', () => { btnToggleWires.mouseOver = true;  updateToggleShowWiresButton(); });
+// btnToggleWires.addEventListener('pointerleave', () => { btnToggleWires.mouseOver = false; updateToggleShowWiresButton(); });
 
 
 /*
@@ -40142,11 +40497,11 @@ function uiEndResizeWindow()
 {
     graphView.updatePanAndZoom();
 
-    btnZoom.style.top  = 0;
-    btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;
+    // btnZoom.style.top  = 0;
+    // btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;
 
-    btnToggleWires.style.top  = 0;
-    btnToggleWires.style.left = btnZoom.offsetLeft - btnToggleWires.offsetWidth;
+    // btnToggleWires.style.top  = 0;
+    // btnToggleWires.style.left = btnZoom.offsetLeft - btnToggleWires.offsetWidth;
 }
 
 

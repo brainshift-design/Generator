@@ -3,8 +3,8 @@ var tooltipTimer,
     tooltipOutTimer, 
     tooltipLeaveTimer;
 
-var curTooltipSource = null;
-var curTooltip       = null;
+var currentTooltipSource = null;
+var currentTooltip       = null;
 
     
 
@@ -24,7 +24,7 @@ function createTooltipSrc(source, getTooltip, bottomArrow = false)
                 clearTimeout(tooltipTimer);
                 tooltipTimer = null;
             }, 
-            curTooltip ? 0 : 1000);
+            currentTooltip ? 0 : 1000);
         }
     });
       
@@ -32,7 +32,7 @@ function createTooltipSrc(source, getTooltip, bottomArrow = false)
     source.addEventListener('pointerleave', () =>
     {
         clearTimeout(tooltipTimer);
-        curTooltipSource = null;
+        currentTooltipSource = null;
 
         tooltipOutTimer = setTimeout(() => 
         {
@@ -66,8 +66,8 @@ function createTooltip(tooltip)
 
 function showTooltip(source, tooltip, bottomArrow)
 {
-    if (curTooltip)
-        hideTooltip(curTooltip);
+    if (currentTooltip)
+        hideTooltip(currentTooltip);
 
 
     tooltip     .style.display = 'block';
@@ -111,7 +111,7 @@ function showTooltip(source, tooltip, bottomArrow)
     }
 
 
-    curTooltip = tooltip;
+    currentTooltip = tooltip;
 }
 
 
@@ -127,6 +127,6 @@ function hideTooltip(tooltip)
     clearTimeout(tooltipTimer);
     clearTimeout(tooltipOutTimer);
 
-    tooltipTimer               = null;
-    curTooltip                 = null;
+    tooltipTimer   = null;
+    currentTooltip = null;
 }

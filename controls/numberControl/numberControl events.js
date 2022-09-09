@@ -230,7 +230,7 @@ function initNumberControlEvents(control)
 
                 graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - controlBar.offsetHeight);
+                    rect.y + rect.h/2 - menuBar.offsetHeight);
             }
             else if ( graphView.tempConn.input
                   &&  control.param.output
@@ -247,7 +247,7 @@ function initNumberControlEvents(control)
 
                 graphView.tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - controlBar.offsetHeight);
+                    rect.y + rect.h/2 - menuBar.offsetHeight);
 
 
                 graphView.tempConn.input.updateControl();
