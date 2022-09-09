@@ -658,9 +658,7 @@ class Operator
         let first = true;
         for (const param of this.params)
         {
-            if (   !param.isDefault()
-                && (   !param.input
-                    || !param.input.connected))
+            if (!param.isDefault())
             {
                 if (!first) json += ',\n'; first = false;
                 json += pos + tab + tab + param.toJson(nTab);
