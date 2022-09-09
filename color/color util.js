@@ -198,7 +198,7 @@ function getTextColorFromBackColor(rgb, opacity = 1)
            ? (opacity >= 0.5
                ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
                : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
-           : (isDarkMode() ? [1, 1, 1, 0.7] : [0, 0, 0, 0.92]);
+           : (isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight);
 }
 
 

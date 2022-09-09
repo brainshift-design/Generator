@@ -202,26 +202,25 @@ extends Parameter
 
     updateControls()
     {
+        console.log('this.value =', this.value);
+        
         if (   this.input.connected
             && this.value.isValid())
         {
+            const noColor = 
+                isDarkMode()
+                ? rgbNoColorDark
+                : rgbNoColorLight;
+
             const rgbaVal = this.value.fill.toRgba();
-
-            const rgbaText = 
-                rgbaVal[3] >= 0.5
-                ? (isDark(rgbaVal) 
-                   ? [1, 1, 1, 0.666]
-                   : [0, 0, 0, 0.5  ]) 
-                : (isDarkMode()
-                   ? [1, 1, 1, 0.666]
-                   : [0, 0, 0, 0.5  ]);
+            const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
 
 
-            this.input.wireColor   = rgbaVal;
+            this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
-            this.output.wireColor  = rgbaVal;
+            this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
 
@@ -259,11 +258,24 @@ extends Parameter
         }
         else
         {
-            this.checkers   .style.display = 'none';
-            this.control    .style.display = 'none';
+            const noColor  = isDarkMode() ? rgbNoColorDark      : rgbNoColorLight;
+            const rgbaText = isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight;
+
+
+            this.input.wireColor           = noColor;
+            this.input.colorLight          = 
+            this.input.colorDark           = rgb_a(rgbaText, 0.12);
+        
+            this.output.wireColor          = noColor;
+            this.output.colorLight         =
+            this.output.colorDark          = rgb_a(rgbaText, 0.12);
+
+
+            this.checkers.style.display    = 'none';
+            this.control .style.display    = 'none';
             
             this.textControl.style.display = 'inline-block';
-            this.textControl.style.color   = isDarkMode() ? '#eee8' : '#0006';
+            this.textControl.style.color   = rgba2style(rgbaText);
 
             this.textControl.innerHTML     = 'no stroke';
             

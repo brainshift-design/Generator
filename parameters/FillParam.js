@@ -265,37 +265,15 @@ extends Parameter
 
     updateControls()
     {
-        const rgbaVal  = this.value.toRgba();
-        const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
-
         const noColor = 
             isDarkMode()
             ? rgbNoColorDark
             : rgbNoColorLight;
 
-        this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
-        this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(rgbaText, 0.2);
-
-        this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
-        this.output.colorLight =
-        this.output.colorDark  = rgb_a(rgbaText, 0.2);
+        const rgbaVal  = this.value.toRgba();
+        const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
 
 
-        this.checkers.style.background = 
-            isDarkMode()
-            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
-
-        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
-
-        this.checkers.style.backgroundSize     = '20px 20px';
-        this.checkers.style.backgroundPosition = '0 0, 10px 10px';
-
-        
         const fillStyle = rgba2style(rgb_a(rgbaVal, this.opacityControl.value/100));
 
         this.controlWrapper.style.background = 
@@ -320,18 +298,42 @@ extends Parameter
         }
 
 
-        this.  colorControl. backStyleLight = 
-        this.  colorControl. backStyleDark  = 
-        this.  colorControl.valueStyleLight = 
-        this.  colorControl.valueStyleDark  = 'transparent';
+        this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+        this.input.colorLight  = 
+        this.input.colorDark   = rgb_a(rgbaText, 0.2);
+
+        this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+        this.output.colorLight =
+        this.output.colorDark  = rgb_a(rgbaText, 0.2);
+
+
+        this.checkers.style.background = 
+            isDarkMode()
+            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
+
+        this.checkers.style.backgroundSize     = '20px 20px';
+        this.checkers.style.backgroundPosition = '0 0, 10px 10px';
+
+        
+        this.colorControl. backStyleLight   = 
+        this.colorControl. backStyleDark    = 
+        this.colorControl.valueStyleLight   = 
+        this.colorControl.valueStyleDark    = 'transparent';
+
+        this.colorControl.textStyleLight    = 
+        this.colorControl.textStyleDark     = rgba2style(rgbaText);
+
 
         this.opacityControl. backStyleLight = 
         this.opacityControl. backStyleDark  = 
         this.opacityControl.valueStyleLight = 
         this.opacityControl.valueStyleDark  = 'transparent';
-
-        this.  colorControl.textStyleLight  = 
-        this.  colorControl.textStyleDark   = rgba2style(rgbaText);
 
         this.opacityControl.textStyleLight  = 
         this.opacityControl.textStyleDark   = rgba2style(rgbaText);

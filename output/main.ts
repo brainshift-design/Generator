@@ -413,12 +413,12 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      true,
+    logMessages:      false,
 
     logActions:       true, 
 
-    logRawLoading:    true, 
-    logRawSaving:     true, 
+    logRawLoading:    false, 
+    logRawSaving:     false, 
     
     logLoading:       false, 
 

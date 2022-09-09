@@ -8497,12 +8497,12 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      true,
+    logMessages:      false,
 
     logActions:       true, 
 
-    logRawLoading:    true, 
-    logRawSaving:     true, 
+    logRawLoading:    false, 
+    logRawSaving:     false, 
     
     logLoading:       false, 
 
@@ -11106,7 +11106,7 @@ function getTextColorFromBackColor(rgb, opacity = 1)
            ? (opacity >= 0.5
                ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
                : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
-           : (isDarkMode() ? [1, 1, 1, 0.7] : [0, 0, 0, 0.92]);
+           : (isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight);
 }
 
 
@@ -16559,7 +16559,7 @@ function getTextColorFromBackColor(rgb, opacity = 1)
            ? (opacity >= 0.5
                ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
                : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
-           : (isDarkMode() ? [1, 1, 1, 0.7] : [0, 0, 0, 0.92]);
+           : (isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight);
 }
 
 
@@ -20966,12 +20966,12 @@ const settings =
 {
     showNodeId:       false, // instead of name
     
-    logMessages:      true,
+    logMessages:      false,
 
     logActions:       true, 
 
-    logRawLoading:    true, 
-    logRawSaving:     true, 
+    logRawLoading:    false, 
+    logRawSaving:     false, 
     
     logLoading:       false, 
 
@@ -26821,37 +26821,15 @@ extends Parameter
 
     updateControls()
     {
-        const rgbaVal  = this.value.toRgba();
-        const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
-
         const noColor = 
             isDarkMode()
             ? rgbNoColorDark
             : rgbNoColorLight;
 
-        this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
-        this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(rgbaText, 0.2);
-
-        this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
-        this.output.colorLight =
-        this.output.colorDark  = rgb_a(rgbaText, 0.2);
+        const rgbaVal  = this.value.toRgba();
+        const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
 
 
-        this.checkers.style.background = 
-            isDarkMode()
-            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
-
-        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
-
-        this.checkers.style.backgroundSize     = '20px 20px';
-        this.checkers.style.backgroundPosition = '0 0, 10px 10px';
-
-        
         const fillStyle = rgba2style(rgb_a(rgbaVal, this.opacityControl.value/100));
 
         this.controlWrapper.style.background = 
@@ -26876,18 +26854,42 @@ extends Parameter
         }
 
 
-        this.  colorControl. backStyleLight = 
-        this.  colorControl. backStyleDark  = 
-        this.  colorControl.valueStyleLight = 
-        this.  colorControl.valueStyleDark  = 'transparent';
+        this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+        this.input.colorLight  = 
+        this.input.colorDark   = rgb_a(rgbaText, 0.2);
+
+        this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+        this.output.colorLight =
+        this.output.colorDark  = rgb_a(rgbaText, 0.2);
+
+
+        this.checkers.style.background = 
+            isDarkMode()
+            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
+
+        this.checkers.style.backgroundSize     = '20px 20px';
+        this.checkers.style.backgroundPosition = '0 0, 10px 10px';
+
+        
+        this.colorControl. backStyleLight   = 
+        this.colorControl. backStyleDark    = 
+        this.colorControl.valueStyleLight   = 
+        this.colorControl.valueStyleDark    = 'transparent';
+
+        this.colorControl.textStyleLight    = 
+        this.colorControl.textStyleDark     = rgba2style(rgbaText);
+
 
         this.opacityControl. backStyleLight = 
         this.opacityControl. backStyleDark  = 
         this.opacityControl.valueStyleLight = 
         this.opacityControl.valueStyleDark  = 'transparent';
-
-        this.  colorControl.textStyleLight  = 
-        this.  colorControl.textStyleDark   = rgba2style(rgbaText);
 
         this.opacityControl.textStyleLight  = 
         this.opacityControl.textStyleDark   = rgba2style(rgbaText);
@@ -27223,26 +27225,25 @@ extends Parameter
 
     updateControls()
     {
+        console.log('this.value =', this.value);
+        
         if (   this.input.connected
             && this.value.isValid())
         {
+            const noColor = 
+                isDarkMode()
+                ? rgbNoColorDark
+                : rgbNoColorLight;
+
             const rgbaVal = this.value.fill.toRgba();
-
-            const rgbaText = 
-                rgbaVal[3] >= 0.5
-                ? (isDark(rgbaVal) 
-                   ? [1, 1, 1, 0.666]
-                   : [0, 0, 0, 0.5  ]) 
-                : (isDarkMode()
-                   ? [1, 1, 1, 0.666]
-                   : [0, 0, 0, 0.5  ]);
+            const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
 
 
-            this.input.wireColor   = rgbaVal;
+            this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
-            this.output.wireColor  = rgbaVal;
+            this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
 
@@ -27280,11 +27281,24 @@ extends Parameter
         }
         else
         {
-            this.checkers   .style.display = 'none';
-            this.control    .style.display = 'none';
+            const noColor  = isDarkMode() ? rgbNoColorDark      : rgbNoColorLight;
+            const rgbaText = isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight;
+
+
+            this.input.wireColor           = noColor;
+            this.input.colorLight          = 
+            this.input.colorDark           = rgb_a(rgbaText, 0.12);
+        
+            this.output.wireColor          = noColor;
+            this.output.colorLight         =
+            this.output.colorDark          = rgb_a(rgbaText, 0.12);
+
+
+            this.checkers.style.display    = 'none';
+            this.control .style.display    = 'none';
             
             this.textControl.style.display = 'inline-block';
-            this.textControl.style.color   = isDarkMode() ? '#eee8' : '#0006';
+            this.textControl.style.color   = rgba2style(rgbaText);
 
             this.textControl.innerHTML     = 'no stroke';
             
@@ -29178,9 +29192,10 @@ class Operator
         input.addEventListener('connect', () =>
         {
             for (let i = firstParam; i < this.params.length; i++)
-            this.params[i].enableControlText(false);
+                this.params[i].enableControlText(false);
         });
     
+
         input.addEventListener('disconnect', () =>
         {
             for (let i = firstParam; i < this.params.length; i++)
@@ -36515,7 +36530,6 @@ extends Action
             && !getActiveNodeInTreeFromNode(this.oldOutputNode))
         {
             uiMakeNodeActive(this.oldOutputNode);
-            pushUnique(updateNodes, this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
         }
 
@@ -36528,15 +36542,10 @@ extends Action
         oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldInputActiveNodeIds)
-        {
             uiMakeNodeActive(nodeFromId(id));
-            pushUnique(updateNodes, nodeFromId(id));
-        }
 
 
         updateNodes.forEach(n => n.updateNode());
-        //uiSaveNodes(updateNodes.map(n => n.id));
-        //pushUpdate(updateNodes);
     }
 
 
@@ -36570,27 +36579,22 @@ extends Action
         {
             const node = nodeFromId(id);
             uiMakeNodePassive(node);
-            pushUnique(updateNodes, node);
         }
 
         for (const id of this.oldInputActiveNodeIds)
         {
             const node = nodeFromId(id);
             uiMakeNodeActive(node);
-            pushUnique(updateNodes, node);
         }
 
         if (!this.oldInputActiveNodeIds.includes(this.oldOutputActiveNodeId))
         {
             const node = nodeFromId(this.oldOutputActiveNodeId);
             uiMakeNodeActive(node);
-            pushUnique(updateNodes, node);
         }
 
 
         this.inputNode.updateNode();
-        //uiSaveNodes(updateNodes.map(n => n.id));
-        //pushUpdate([this.inputNode]);
  
 
         // cleanup
@@ -36954,8 +36958,9 @@ extends Action
 
         this.outputNode.updateNode();
         this.inputNode .updateNode();
-        //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
-        //pushUpdate([this.outputNode, this.inputNode]);
+
+
+        pushUpdate([this.inputNode]);
     }
     
     
@@ -36981,8 +36986,6 @@ extends Action
 
 
         this.inputNode.updateNode();
-        //uiSaveNodes([this.inputNodeId]);
-        //pushUpdate([this.inputNode]);
     }
     
     
@@ -37002,9 +37005,10 @@ extends Action
 
         this.outputNode.updateNode();
         this.inputNode .updateNode();
-        //uiSaveNodes([this.outputNodeId, this.inputNodeId]);
-        // pushUpdate([this.outputNode, this.inputNode]);
-   }
+
+
+        pushUpdate([this.inputNode]);
+    }
 }
 
 
@@ -37305,8 +37309,6 @@ extends Action
     do()
     {
         uiDisconnect(this.oldInputNode.inputs[this.oldInputIndex]);
-
-        //this.oldInputNode.updateNode();//graphView.updateNodeTransform(this.oldInputNode);
         
 
         uiConnect(
@@ -37321,8 +37323,8 @@ extends Action
         {
             uiMakeNodeActive(this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
+
             pushUpdate([this.oldOutputNode]);
-            //graphView.updateNodeTransform(oldPrevOutputActiveNode);
         }
 
 
@@ -37331,14 +37333,6 @@ extends Action
 
         for (const id of oldInputActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
-
-
-        // graphView.updateNodeTransform(this.inputNode);
-
-        // pushUpdate([this.oldInputNode]);
-        // pushUpdate([this.inputNode   ]);
-
-        //uiSaveNodes([this.oldInputNodeId, this.inputNodeId]);
     }
 
 
@@ -37347,9 +37341,6 @@ extends Action
     {
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
 
-        // if (this.oldOutputNodeId != '')
-        //     uiDisconnect(this.inputNode.inputs[this.inputIndex]);
-
             
         uiVariableConnect(
             this.outputNode, 
@@ -37357,8 +37348,6 @@ extends Action
             this.oldInputNode, 
             this.oldInputIndex);
 
-        // graphView.updateNodeTransform(this.oldInputNode);
-        //pushUpdate([this.oldInputNode]);
         uiSaveNodes([this.oldInputNodeId]);
     
 
@@ -37370,7 +37359,6 @@ extends Action
                 this.inputNode, 
                 this.inputIndex);
 
-            // graphView.updateNodeTransform(this.inputNode);
             pushUpdate([this.inputNode]);
         }
 
@@ -37819,6 +37807,9 @@ const rgbActiveColor       = hex2rgb('#787878');
 
 const rgbNoColorLight      = [0.95, 0.95, 0.95];
 const rgbNoColorDark       = [0.3, 0.3, 0.3];
+
+const rgbaNoColorTextLight  = [0, 0, 0, 0.6];
+const rgbaNoColorTextDark   = [1, 1, 1, 0.4];
 
 
 var rgbDocumentBody;

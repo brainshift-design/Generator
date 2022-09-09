@@ -22,6 +22,9 @@ const rgbActiveColor       = hex2rgb('#787878');
 const rgbNoColorLight      = [0.95, 0.95, 0.95];
 const rgbNoColorDark       = [0.3, 0.3, 0.3];
 
+const rgbaNoColorTextLight  = [0, 0, 0, 0.6];
+const rgbaNoColorTextDark   = [1, 1, 1, 0.4];
+
 
 var rgbDocumentBody;
 

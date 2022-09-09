@@ -62,8 +62,6 @@ extends Action
     do()
     {
         uiDisconnect(this.oldInputNode.inputs[this.oldInputIndex]);
-
-        //this.oldInputNode.updateNode();//graphView.updateNodeTransform(this.oldInputNode);
         
 
         uiConnect(
@@ -78,8 +76,8 @@ extends Action
         {
             uiMakeNodeActive(this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
+
             pushUpdate([this.oldOutputNode]);
-            //graphView.updateNodeTransform(oldPrevOutputActiveNode);
         }
 
 
@@ -88,14 +86,6 @@ extends Action
 
         for (const id of oldInputActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
-
-
-        // graphView.updateNodeTransform(this.inputNode);
-
-        // pushUpdate([this.oldInputNode]);
-        // pushUpdate([this.inputNode   ]);
-
-        //uiSaveNodes([this.oldInputNodeId, this.inputNodeId]);
     }
 
 
@@ -104,9 +94,6 @@ extends Action
     {
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
 
-        // if (this.oldOutputNodeId != '')
-        //     uiDisconnect(this.inputNode.inputs[this.inputIndex]);
-
             
         uiVariableConnect(
             this.outputNode, 
@@ -114,8 +101,6 @@ extends Action
             this.oldInputNode, 
             this.oldInputIndex);
 
-        // graphView.updateNodeTransform(this.oldInputNode);
-        //pushUpdate([this.oldInputNode]);
         uiSaveNodes([this.oldInputNodeId]);
     
 
@@ -127,7 +112,6 @@ extends Action
                 this.inputNode, 
                 this.inputIndex);
 
-            // graphView.updateNodeTransform(this.inputNode);
             pushUpdate([this.inputNode]);
         }
 
