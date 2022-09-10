@@ -25,11 +25,11 @@
 }
 
 
-.menuButton:focus
+/* .menuButton:focus
 {
     background: var(--activeObjectColor);
     color:      white;
-}
+} */
 
 
 .menuButtonIcon

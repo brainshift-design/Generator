@@ -1,13 +1,14 @@
 class MenuItem
 {
-    parentMenu = null;
+    menu     = null;
+    index    = -1;
     
-    checked    = false;
-    icon       = ''; // svg
-    name       = '';
-    shortcut   = '';
+    checked  = false;
+    icon     = ''; // svg
+    name     = '';
+    shortcut = '';
 
-    callback   = null;
+    callback = null;
 
 
     div;

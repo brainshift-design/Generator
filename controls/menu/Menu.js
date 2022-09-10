@@ -11,29 +11,31 @@ class Menu
 
     showCheck;
 
-    items    = [];
-    lastItem = null;
+    menuButton = null;
+    
+    
+    items      = [];
+
+    lastItem   = null;
 
 
 
     constructor(name, showCheck = false)
     {
-        this.name      = name;
+        this.name       = name;
 
-        this.showCheck = showCheck;
+        this.showCheck  = showCheck;
 
-        this.div       = createDiv('menu');
-        this.divArrow  = createDiv('menuArrow');
+        this.div        = createDiv('menu');
+        this.divArrow   = createDiv('menuArrow');
     }
 
 
 
     addItems(items)
     {
-        this.items = items;
+        this.items = [...items];
 
-        if (!this.lastItem)
-            this.lastItem = this.items[0];
 
         for (let i = 0; i < this.items.length; i++)
         {
@@ -42,9 +44,21 @@ class Menu
 
             if (!this.showCheck)
                 this.items[i].divCheck.style.display = 'none';
-                
+
+            this.items[i].menu  = this;
+            this.items[i].index = i;
+
             this.div.appendChild(this.items[i].div);
         }
+
+
+        if (  !this.lastItem
+            && this.items.length > 0)
+            this.lastItem = this.items[0];
+
+
+        if (this.menuButton)
+            this.menuButton.update();
     }
 
 
@@ -90,6 +104,11 @@ class Menu
     
     
         currentMenu = this;
+
+
+        if (   this.menuButton
+            && this == menuMain)
+            this.menuButton.div.style.background = 'var(--figma-color-bg-brand)';
     }
     
     
@@ -101,7 +120,10 @@ class Menu
     
         this.divArrow.style.display = 'none';
         this.divArrow.style.opacity = '0%';
-    
+
+        if (this.menuButton)
+            this.menuButton.div.style.background = 'transparent';
+
         currentMenu                 = null;
     }
 }

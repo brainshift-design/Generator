@@ -2,7 +2,7 @@
 ../core/def.js
 ../core/types.js
 
-../logging/log.js
+../logging/log figma.js
 ../logging/log request.js
 
 ../ui/settings.js

@@ -21,6 +21,10 @@ class MenuButton
         this.name     = name;
         this.menu     = menu;
 
+        if (this.menu)
+            this.menu.menuButton = this;
+
+
         this.callback = callback;
 
 
@@ -32,11 +36,14 @@ class MenuButton
 
         if (this.menu) 
         {
-            this.divArrow.addEventListener('click', () => 
+            this.divArrow.addEventListener('pointerdown', e => 
             {
-                if (currentMenu) currentMenu.hide();
-                else             this.menu.show(this.div);
-            });
+                if (e.button == 0)
+                {
+                    if (currentMenu) currentMenu.hide();
+                    else             this.menu.show(this.div);
+                }
+            }, false);
         }
         else if (this.callback) 
             this.divArrow.addEventListener('click', this.callback);
@@ -48,5 +55,38 @@ class MenuButton
             this.div.appendChild(this.divArrow);
 
         menuBar.appendChild(this.div);
+
+
+        this.update();
+    }
+
+
+
+    setIcon(icon)
+    {
+        this.icon = icon;
+        this.update();
+    }
+
+
+
+    update()
+    {
+        this.div.style.width = this.menu ? 50 : 40;
+
+
+        const icon = 
+            this.icon != ''
+            ? this.icon
+            : this.menu
+                ? this.menu.lastItem.icon
+                : '';
+
+        if (icon != '')
+        {
+            this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + icon + '\')';
+            this.divIcon.style.backgroundPosition = '100% 50%';
+            this.divIcon.style.backgroundRepeat   = 'no-repeat';
+        }
     }
 }
