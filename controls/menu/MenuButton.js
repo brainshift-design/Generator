@@ -30,8 +30,16 @@ class MenuButton
         this.divArrow = createDiv('menuButtonArrow');
 
 
-             if (this.menu    ) this.divArrow.addEventListener('click', () => this.menu.show(this.div));
-        else if (this.callback) this.divArrow.addEventListener('click', this.callback);
+        if (this.menu) 
+        {
+            this.divArrow.addEventListener('click', () => 
+            {
+                if (currentMenu) currentMenu.hide();
+                else             this.menu.show(this.div);
+            });
+        }
+        else if (this.callback) 
+            this.divArrow.addEventListener('click', this.callback);
 
 
         this.div.appendChild(this.divIcon);

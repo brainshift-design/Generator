@@ -9,18 +9,21 @@ class Menu
     div;
     divArrow;
 
+    showCheck;
 
     items    = [];
     lastItem = null;
 
 
 
-    constructor(name)
+    constructor(name, showCheck = false)
     {
-        this.name = name;
+        this.name      = name;
 
-        this.div      = createDiv('menu');
-        this.divArrow = createDiv('menuArrow');
+        this.showCheck = showCheck;
+
+        this.div       = createDiv('menu');
+        this.divArrow  = createDiv('menuArrow');
     }
 
 
@@ -32,8 +35,16 @@ class Menu
         if (!this.lastItem)
             this.lastItem = this.items[0];
 
-        for (const item of this.items)
-            this.div.appendChild(item.div);
+        for (let i = 0; i < this.items.length; i++)
+        {
+            if (i > 0) 
+                this.div.appendChild(document.createElement('br'));
+
+            if (!this.showCheck)
+                this.items[i].divCheck.style.display = 'none';
+                
+            this.div.appendChild(this.items[i].div);
+        }
     }
 
 
@@ -60,7 +71,7 @@ class Menu
         srcRect.y -= 5;
     
     
-        const margin = 10;
+        const margin = 8;
      
         this.div.style.left = Math.min(Math.max(
             margin, 

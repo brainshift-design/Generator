@@ -19,10 +19,10 @@ class MenuItem
 
 
 
-    constructor(name)
+    constructor(name, icon = '')
     {
         this.name        = name;
-
+        this.icon        = icon;
 
         this.div         = createDiv('menuItem');
 
@@ -30,6 +30,17 @@ class MenuItem
         this.divIcon     = createDiv('menuItemIcon');
         this.divName     = createDiv('menuItemName');
         this.divShortcut = createDiv('menuItemShortcut');
+
+
+        this.divName.innerHTML = this.name;
+
+
+        if (this.icon != '')
+        {
+            this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + this.icon + '\')';
+            this.divIcon.style.backgroundPosition = '50% 50%';
+            this.divIcon.style.backgroundRepeat   = 'no-repeat';
+        }        
 
         this.div.appendChild(this.divCheck);
         this.div.appendChild(this.divIcon);

@@ -139,6 +139,11 @@ function createNodeHeader(node)
         }
 
 
+        if (   e.button == 0
+            && currentMenu)
+            currentMenu.hide();    
+
+
         if (    e.button == 0
             && !graphView.overOutput
             && !graphView.overInput)

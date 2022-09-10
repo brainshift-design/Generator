@@ -1,19 +1,25 @@
 document.addEventListener('pointerdown', function(e)
 {
-    if (   e.button == 0
-        && (   document.canResizeX
-            || document.canResizeY))
+    if (   e.button == 0)
     {
-        document.startRect = new Rect(
-            e.clientX,
-            e.clientY,
-            window.innerWidth,
-            window.innerHeight);
+        if (   document.canResizeX
+            || document.canResizeY)
+        {
+            document.startRect = new Rect(
+                e.clientX,
+                e.clientY,
+                window.innerWidth,
+                window.innerHeight);
 
-        document.body.setPointerCapture(e.pointerId);
+            document.body.setPointerCapture(e.pointerId);
 
-        document.resizingX = document.canResizeX;
-        document.resizingY = document.canResizeY;
+            document.resizingX = document.canResizeX;
+            document.resizingY = document.canResizeY;
+        }
+
+
+        if (currentMenu)
+            currentMenu.hide();    
     }
 });
 

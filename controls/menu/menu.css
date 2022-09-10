@@ -34,9 +34,9 @@
 
 .menuButtonIcon
 {
-    display:    inline-block;
-    width:      30px;
-    height:     40px;
+    display:             inline-block;
+    width:               30px;
+    height:              40px;
     /* box-shadow: 0 0 0 1px yellow inset; */
 }
 
@@ -65,12 +65,13 @@
 {
     display:          none;
     opacity:          0;
+    min-width:        200px;
     width:            auto;
-    height:           15px;
-    background-color: #040404;
+    height:           fit-content;
+    background-color: #1e1e1e;
     color:            #eee;
+    padding:          8px 0 8px 0;
     border-radius:    2px;
-    padding:          5px 10px 5px 10px;
     position:         absolute;
     z-index:          10000;
     bottom:           125%;
@@ -79,7 +80,7 @@
     font-family:      Inter;
     font-size:        11px;
     box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.15),
-                      0px 5px 17px rgba(0, 0, 0, 0.15 );
+                      0px 5px 17px rgba(0, 0, 0, 0.15);
 }
 
 
@@ -87,10 +88,10 @@
 {
     content:      '';
     position:     absolute;
-    margin-left:  -6px;
-    border-width: 6px;
+    margin-left:  -5px;
+    border-width: 5px;
     border-style: solid;
-    border-color: transparent transparent #040404 transparent;
+    border-color: transparent transparent #1e1e1e transparent;
     display:      none;
     opacity:      0%;
 }
@@ -98,39 +99,55 @@
 
 .menuItem
 {
-    display: inline;
-    width:  100px;
-    height: 20px;
+    display:     inline-block;
+    width:       100%;
+    height:      24px;
+    font-family: Inter;
+    font-size:   12px;
+    /* box-shadow:  0 0 0 1px red inset; */
+}
+
+
+.menuItem:hover
+{
+    background: var(--figma-color-bg-brand);
 }
 
 
 .menuItemCheck
 {
-    display: inline;
-    width:  100px;
-    height: 20px;
+    display:             inline-block;
+    width:               32px;
+    height:              24px;
+    background:          url('data:image/svg+xml;utf8,<svg width="9" height="8" viewBox="0 0 9 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.31749 2.4477L3.42546 4.55569L7.64142 0.339716L8.9589 1.65721L3.42546 7.19067L0 3.76519L1.31749 2.4477Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    visibility:          hidden;
+    /* box-shadow:          0 0 0 1px blue inset; */
 }
+
 
 
 .menuItemIcon
 {
-    display: inline;
-    width:  100px;
-    height: 20px;
+    display:             inline-block;
+    width:               32px;
+    height:              24px;
+    /* box-shadow:          0 0 0 1px orange inset; */
 }
 
 
 .menuItemName
 {
-    display: inline;
-    width:  100px;
-    height: 20px;
+    display:    inline-block;
+    /* box-shadow: 0 0 0 1px yellow inset; */
+    position:   relative;
+    top:       -8px;
 }
 
 
 .menuItemShortcut
 {
-    display: inline;
-    width:  100px;
-    height: 20px;
+    display: inline-block;
+    /* box-shadow: 0 0 0 1px green inset; */
 }

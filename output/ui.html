@@ -561,9 +561,9 @@ div
 
 .menuButtonIcon
 {
-    display:    inline-block;
-    width:      30px;
-    height:     40px;
+    display:             inline-block;
+    width:               30px;
+    height:              40px;
     /* box-shadow: 0 0 0 1px yellow inset; */
 }
 
@@ -592,12 +592,13 @@ div
 {
     display:          none;
     opacity:          0;
+    min-width:        200px;
     width:            auto;
-    height:           15px;
-    background-color: #040404;
+    height:           fit-content;
+    background-color: #1e1e1e;
     color:            #eee;
+    padding:          8px 0 8px 0;
     border-radius:    2px;
-    padding:          5px 10px 5px 10px;
     position:         absolute;
     z-index:          10000;
     bottom:           125%;
@@ -606,7 +607,7 @@ div
     font-family:      Inter;
     font-size:        11px;
     box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.15),
-                      0px 5px 17px rgba(0, 0, 0, 0.15 );
+                      0px 5px 17px rgba(0, 0, 0, 0.15);
 }
 
 
@@ -614,10 +615,10 @@ div
 {
     content:      '';
     position:     absolute;
-    margin-left:  -6px;
-    border-width: 6px;
+    margin-left:  -5px;
+    border-width: 5px;
     border-style: solid;
-    border-color: transparent transparent #040404 transparent;
+    border-color: transparent transparent #1e1e1e transparent;
     display:      none;
     opacity:      0%;
 }
@@ -625,41 +626,57 @@ div
 
 .menuItem
 {
-    display: inline;
-    width:  100px;
-    height: 20px;
+    display:     inline-block;
+    width:       100%;
+    height:      24px;
+    font-family: Inter;
+    font-size:   12px;
+    /* box-shadow:  0 0 0 1px red inset; */
+}
+
+
+.menuItem:hover
+{
+    background: var(--figma-color-bg-brand);
 }
 
 
 .menuItemCheck
 {
-    display: inline;
-    width:  100px;
-    height: 20px;
+    display:             inline-block;
+    width:               32px;
+    height:              24px;
+    background:          url('data:image/svg+xml;utf8,<svg width="9" height="8" viewBox="0 0 9 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.31749 2.4477L3.42546 4.55569L7.64142 0.339716L8.9589 1.65721L3.42546 7.19067L0 3.76519L1.31749 2.4477Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    visibility:          hidden;
+    /* box-shadow:          0 0 0 1px blue inset; */
 }
+
 
 
 .menuItemIcon
 {
-    display: inline;
-    width:  100px;
-    height: 20px;
+    display:             inline-block;
+    width:               32px;
+    height:              24px;
+    /* box-shadow:          0 0 0 1px orange inset; */
 }
 
 
 .menuItemName
 {
-    display: inline;
-    width:  100px;
-    height: 20px;
+    display:    inline-block;
+    /* box-shadow: 0 0 0 1px yellow inset; */
+    position:   relative;
+    top:       -8px;
 }
 
 
 .menuItemShortcut
 {
-    display: inline;
-    width:  100px;
-    height: 20px;
+    display: inline-block;
+    /* box-shadow: 0 0 0 1px green inset; */
 }
 
 
@@ -21099,18 +21116,21 @@ class Menu
     div;
     divArrow;
 
+    showCheck;
 
     items    = [];
     lastItem = null;
 
 
 
-    constructor(name)
+    constructor(name, showCheck = false)
     {
-        this.name = name;
+        this.name      = name;
 
-        this.div      = createDiv('menu');
-        this.divArrow = createDiv('menuArrow');
+        this.showCheck = showCheck;
+
+        this.div       = createDiv('menu');
+        this.divArrow  = createDiv('menuArrow');
     }
 
 
@@ -21122,8 +21142,16 @@ class Menu
         if (!this.lastItem)
             this.lastItem = this.items[0];
 
-        for (const item of this.items)
-            this.div.appendChild(item.div);
+        for (let i = 0; i < this.items.length; i++)
+        {
+            if (i > 0) 
+                this.div.appendChild(document.createElement('br'));
+
+            if (!this.showCheck)
+                this.items[i].divCheck.style.display = 'none';
+                
+            this.div.appendChild(this.items[i].div);
+        }
     }
 
 
@@ -21150,7 +21178,7 @@ class Menu
         srcRect.y -= 5;
     
     
-        const margin = 10;
+        const margin = 8;
      
         this.div.style.left = Math.min(Math.max(
             margin, 
@@ -21193,6 +21221,15 @@ var menuColor;
 var menuGeometry;
 
 
+
+const iconRectangle = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="15" height="15" stroke="white"/></svg>';
+const iconLine      = '<svg width="17" height="17" viewBox="0 1 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.772299" y1="15.9778" x2="15.6598" y2="1.09027" stroke="white" stroke-width="1.3"/></svg>';
+const iconEllipse   = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="7.5" stroke="white"/></svg>';
+const iconPolygon   = '<svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.82238 15.4885L10.0496 1.23853L18.2769 15.4885H1.82238Z" stroke="white"/></svg>';
+const iconStar      = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.8156 2.24924L10.4021 7.13198L10.5144 7.47747H10.8776H16.0116L11.8581 10.4952L11.5642 10.7087L11.6765 11.0542L13.263 15.9369L9.10949 12.9192L8.8156 12.7057L8.5217 12.9192L4.3682 15.9369L5.9547 11.0542L6.06695 10.7087L5.77306 10.4952L1.61955 7.47747H6.75357H7.11684L7.2291 7.13198L8.8156 2.24924Z" stroke="white"/></svg>';
+
+
+
 function initMenuBar()
 {
     menuMain = new Menu('Main menu');
@@ -21202,8 +21239,9 @@ function initMenuBar()
         new MenuItem('Help and activation')]);
     
     
-    menuMath = new Menu('Math nodes');
+    menuMath = new Menu('Math nodes', true);
     menuMath.addItems([
+        new MenuItem('Number'),
         new MenuItem('Limits'),
         new MenuItem('Add'),
         new MenuItem('Subtract'),
@@ -21214,7 +21252,7 @@ function initMenuBar()
         new MenuItem('Interpolate')]);
     
     
-    menuText = new Menu('Text nodes');
+    menuText = new Menu('Text nodes', true);
     menuText.addItems([
         new MenuItem('Text'),
         new MenuItem('Add'),
@@ -21222,7 +21260,7 @@ function initMenuBar()
         new MenuItem('Replace')]);
     
     
-    menuColor = new Menu('Color nodes');
+    menuColor = new Menu('Color nodes', true);
     menuColor.addItems([
         new MenuItem('Color'),
         new MenuItem('Validate'),
@@ -21231,13 +21269,13 @@ function initMenuBar()
         new MenuItem('Colorblind')]);
     
     
-    menuGeometry = new Menu('Geometry nodes');
+    menuGeometry = new Menu('Geometry nodes', true);
     menuGeometry.addItems([
-        new MenuItem('Rectangle'),
-        new MenuItem('Line'),
-        new MenuItem('Ellipse'),
-        new MenuItem('Polygon'),
-        new MenuItem('Star')]);
+        new MenuItem('Rectangle', iconRectangle),
+        new MenuItem('Line',      iconLine     ),
+        new MenuItem('Ellipse',   iconEllipse  ),
+        new MenuItem('Polygon',   iconPolygon  ),
+        new MenuItem('Star',      iconStar     )]);
 
 
     const btnMain     = new MenuButton('',            menuMain);
@@ -21281,8 +21319,16 @@ class MenuButton
         this.divArrow = createDiv('menuButtonArrow');
 
 
-             if (this.menu    ) this.divArrow.addEventListener('click', () => this.menu.show(this.div));
-        else if (this.callback) this.divArrow.addEventListener('click', this.callback);
+        if (this.menu) 
+        {
+            this.divArrow.addEventListener('click', () => 
+            {
+                if (currentMenu) currentMenu.hide();
+                else             this.menu.show(this.div);
+            });
+        }
+        else if (this.callback) 
+            this.divArrow.addEventListener('click', this.callback);
 
 
         this.div.appendChild(this.divIcon);
@@ -21316,10 +21362,10 @@ class MenuItem
 
 
 
-    constructor(name)
+    constructor(name, icon = '')
     {
         this.name        = name;
-
+        this.icon        = icon;
 
         this.div         = createDiv('menuItem');
 
@@ -21327,6 +21373,17 @@ class MenuItem
         this.divIcon     = createDiv('menuItemIcon');
         this.divName     = createDiv('menuItemName');
         this.divShortcut = createDiv('menuItemShortcut');
+
+
+        this.divName.innerHTML = this.name;
+
+
+        if (this.icon != '')
+        {
+            this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + this.icon + '\')';
+            this.divIcon.style.backgroundPosition = '50% 50%';
+            this.divIcon.style.backgroundRepeat   = 'no-repeat';
+        }        
 
         this.div.appendChild(this.divCheck);
         this.div.appendChild(this.divIcon);
@@ -30336,6 +30393,11 @@ function createNodeHeader(node)
         }
 
 
+        if (   e.button == 0
+            && currentMenu)
+            currentMenu.hide();    
+
+
         if (    e.button == 0
             && !graphView.overOutput
             && !graphView.overInput)
@@ -38278,20 +38340,26 @@ const zoomOutCursor =
 
 document.addEventListener('pointerdown', function(e)
 {
-    if (   e.button == 0
-        && (   document.canResizeX
-            || document.canResizeY))
+    if (   e.button == 0)
     {
-        document.startRect = new Rect(
-            e.clientX,
-            e.clientY,
-            window.innerWidth,
-            window.innerHeight);
+        if (   document.canResizeX
+            || document.canResizeY)
+        {
+            document.startRect = new Rect(
+                e.clientX,
+                e.clientY,
+                window.innerWidth,
+                window.innerHeight);
 
-        document.body.setPointerCapture(e.pointerId);
+            document.body.setPointerCapture(e.pointerId);
 
-        document.resizingX = document.canResizeX;
-        document.resizingY = document.canResizeY;
+            document.resizingX = document.canResizeX;
+            document.resizingY = document.canResizeY;
+        }
+
+
+        if (currentMenu)
+            currentMenu.hide();    
     }
 });
 
