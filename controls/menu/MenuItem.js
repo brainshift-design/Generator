@@ -8,7 +8,7 @@ class MenuItem
     name     = '';
     shortcut = '';
 
-    callback = null;
+    callback;
 
 
     div;
@@ -20,10 +20,12 @@ class MenuItem
 
 
 
-    constructor(name, icon = '')
+    constructor(name, icon = '', callback = null)
     {
         this.name        = name;
         this.icon        = icon;
+
+        this.callback    = callback;
 
         this.div         = createDiv('menuItem');
 
@@ -47,5 +49,8 @@ class MenuItem
         this.div.appendChild(this.divIcon);
         this.div.appendChild(this.divName);
         this.div.appendChild(this.divShortcut);
+
+
+        this.div.addEventListener('pointerup', () => { if (this.callback) this.callback(); });
     }
 }

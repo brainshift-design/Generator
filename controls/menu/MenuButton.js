@@ -34,16 +34,30 @@ class MenuButton
         this.divArrow = createDiv('menuButtonArrow');
 
 
+        this.div.addEventListener('pointerenter', () => this.div.style.background = 'black');
+   
+        this.div.addEventListener('pointerleave', () => 
+        {
+            if (  !currentMenu
+                || currentMenu != this.menu) 
+                this.div.style.background = 'transparent';
+        });
+
+
         if (this.menu) 
         {
             this.divArrow.addEventListener('pointerdown', e => 
             {
                 if (e.button == 0)
                 {
-                    if (currentMenu) currentMenu.hide();
-                    else             this.menu.show(this.div);
+                    e.stopPropagation();
+
+                    if (currentMenu)
+                        currentMenu.hide();
+                    
+                    this.menu.show(this.div);
                 }
-            }, false);
+            });
         }
         else if (this.callback) 
             this.divArrow.addEventListener('click', this.callback);
