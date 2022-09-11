@@ -29,9 +29,9 @@ class MenuItem
 
         this.div         = createDiv('menuItem');
 
-        this.divCheck    = createDiv('menuItemCheck');
-        this.divIcon     = createDiv('menuItemIcon');
-        this.divName     = createDiv('menuItemName');
+        this.divCheck    = createDiv('menuItemCheck'   );
+        this.divIcon     = createDiv('menuItemIcon'    );
+        this.divName     = createDiv('menuItemName'    );
         this.divShortcut = createDiv('menuItemShortcut');
 
 
@@ -45,12 +45,22 @@ class MenuItem
             this.divIcon.style.backgroundRepeat   = 'no-repeat';
         }        
 
-        this.div.appendChild(this.divCheck);
-        this.div.appendChild(this.divIcon);
-        this.div.appendChild(this.divName);
+        this.div.appendChild(this.divCheck   );
+        this.div.appendChild(this.divIcon    );
+        this.div.appendChild(this.divName    );
         this.div.appendChild(this.divShortcut);
 
 
-        this.div.addEventListener('pointerup', () => { if (this.callback) this.callback(); });
+        this.div.addEventListener('pointerdown', e => e.stopPropagation());
+
+        this.div.addEventListener('pointerup', () => 
+        { 
+            console.log('up');
+            if (currentMenu) 
+                currentMenu.hide();    
+
+            if (this.callback) 
+                this.callback(); 
+        });
     }
 }

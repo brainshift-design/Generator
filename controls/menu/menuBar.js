@@ -77,7 +77,7 @@ function initMenuBar()
         
     menuNumber = new Menu('Number nodes', true);
     menuNumber.addItems([
-        new MenuItem('Number',      iconNumber,      () => { actionManager.do(new CreateNodeAction(NUMBER, btnNumber.div)); if (currentMenu) currentMenu.hide(); }),
+        new MenuItem('Number',      iconNumber,    () => actionManager.do(new CreateNodeAction(NUMBER, btnNumber.div))),
         new MenuItem('Limits',      iconLimits     ),
         new MenuItem('Math',        iconMath       ),
         new MenuItem('Add',         iconAdd        ),
@@ -99,18 +99,18 @@ function initMenuBar()
     
     menuColor = new Menu('Color nodes', true);
     menuColor.addItems([
-        new MenuItem('Color',       iconColor,          () => { actionManager.do(new CreateNodeAction(COLOR, btnColor.div)); if (currentMenu) currentMenu.hide(); }),
+        new MenuItem('Color',       iconColor,          () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div))),
         new MenuItem('Validate',    iconColorValidate   ),
         new MenuItem('Interpolate', iconColorInterpolate),
         new MenuItem('Contrast',    iconColorContrast   ),
         new MenuItem('Colorblind',  iconColorblind      ),
-        new MenuItem('Fill',        iconFill,           () => { actionManager.do(new CreateNodeAction(FILL,   btnColor.div)); if (currentMenu) currentMenu.hide(); }),
-        new MenuItem('Stroke',      iconStroke,         () => { actionManager.do(new CreateNodeAction(STROKE, btnColor.div)); if (currentMenu) currentMenu.hide(); })]);
+        new MenuItem('Fill',        iconFill,           () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))),
+        new MenuItem('Stroke',      iconStroke,         () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div)))]);
     
     
     menuGeometry = new Menu('Geometry nodes', true);
     menuGeometry.addItems([
-        new MenuItem('Rectangle',   iconRectangle, () => { actionManager.do(new CreateNodeAction(RECTANGLE, btnGeometry.div)); if (currentMenu) currentMenu.hide(); }),
+        new MenuItem('Rectangle',   iconRectangle, () => actionManager.do(new CreateNodeAction(RECTANGLE, btnGeometry.div))),
         new MenuItem('Line',        iconLine     ),
         new MenuItem('Ellipse',     iconEllipse  ),
         new MenuItem('Polygon',     iconPolygon  ),

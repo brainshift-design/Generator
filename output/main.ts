@@ -318,7 +318,7 @@ const settings =
     
     logMessages:      false,
 
-    logActions:       false, 
+    logActions:       true, 
 
     logRawLoading:    false, 
     logRawSaving:     false, 
