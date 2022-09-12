@@ -606,8 +606,20 @@ div
     top:              44px;
     font-family:      Inter;
     font-size:        11px;
+}
+
+.figma-light .menu
+{
     box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.15),
                       0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark .menu
+{
+    box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.45),
+                      0px 5px 25px rgba(0, 0, 0, 0.45),
+                      0 0px 2px 0px #fff3 inset;
 }
 
 
@@ -621,6 +633,8 @@ div
     border-color: transparent transparent #1e1e1e transparent;
     display:      none;
     opacity:      0%;
+    z-index:      11000;
+    box-shadow:   0 0px 2px 0px #fff3 inset;
 }
 
 
@@ -20984,12 +20998,12 @@ class Menu
 
     showCheck;
 
-    menuButton = null;
+    button   = null;
     
     
-    items      = [];
+    items    = [];
 
-    lastItem   = null;
+    lastItem = null;
 
 
 
@@ -21030,8 +21044,8 @@ class Menu
             this.lastItem = this.items[0];
 
 
-        if (this.menuButton)
-            this.menuButton.update();
+        if (this.button)
+            this.button.update();
     }
 
 
@@ -21065,23 +21079,23 @@ class Menu
             srcRect.x + srcRect.width/2 - this.div.offsetWidth/2), 
             graphView.offsetWidth - this.div.offsetWidth - margin);
     
-        this.divArrow.style.left = srcRect.x + srcRect.width/2;// - menuArrow.offsetWidth/2;
-    
-        
         this.div.style.top = srcRect.y + srcRect.height + this.divArrow.offsetHeight;
+
+        
+        this.divArrow.style.left = srcRect.x + srcRect.width/2;
+        
     
         const menuRect = this.div.getBoundingClientRect();
     
-        this.divArrow.style.borderColor = 'transparent transparent #040404 transparent';
-        this.divArrow.style.top         = menuRect.y - this.divArrow.offsetHeight;
+        this.divArrow.style.top = menuRect.y - this.divArrow.offsetHeight;
     
     
         currentMenu = this;
 
 
-        if (   this.menuButton
+        if (   this.button
             && this == menuMain)
-            this.menuButton.div.style.background = 'var(--figma-color-bg-brand)';
+            this.button.div.style.background = 'var(--figma-color-bg-brand)';
     }
     
     
@@ -21094,8 +21108,8 @@ class Menu
         this.divArrow.style.display = 'none';
         this.divArrow.style.opacity = '0%';
 
-        if (this.menuButton)
-            this.menuButton.div.style.background = 'transparent';
+        if (this.button)
+            this.button.div.style.background = 'transparent';
 
         currentMenu                 = null;
     }
@@ -21226,7 +21240,7 @@ function initMenuBar()
     const btnString   = new MenuButton('',            menuString);
     const btnColor    = new MenuButton('',            menuColor);
     const btnGeometry = new MenuButton('',            menuGeometry);
-    const btnComment  = new MenuButton('Add comment', null); // TODO add callback here
+    const btnComment  = new MenuButton('Add comment', null, () => actionManager.do(new CreateNodeAction(COMMENT, btnComment.div)));
 
 
     btnMain   .setIcon(iconGenerator);
@@ -21282,21 +21296,34 @@ class MenuButton
 
         if (this.menu) 
         {
+            this.divIcon.addEventListener('pointerdown', e => 
+            {
+                if (e.button == 0)
+                {
+                    if (this.lastItem)
+                        this.lastItem.select();
+                }
+            });
+
+
             this.divArrow.addEventListener('pointerdown', e => 
             {
                 if (e.button == 0)
                 {
                     e.stopPropagation();
 
+                    const curMenu = currentMenu;
+
                     if (currentMenu)
                         currentMenu.hide();
                     
-                    this.menu.show(this.div);
+                    if (curMenu != this.menu)
+                        this.menu.show(this.div);
                 }
             });
         }
         else if (this.callback) 
-            this.divArrow.addEventListener('click', this.callback);
+            this.div.addEventListener('click', this.callback);
 
 
         this.div.appendChild(this.divIcon);
@@ -21396,16 +21423,18 @@ class MenuItem
 
 
         this.div.addEventListener('pointerdown', e => e.stopPropagation());
+        this.div.addEventListener('pointerup', () => this.select());
+    }
 
-        this.div.addEventListener('pointerup', () => 
-        { 
-            console.log('up');
-            if (currentMenu) 
-                currentMenu.hide();    
 
-            if (this.callback) 
-                this.callback(); 
-        });
+
+    select()
+    {
+        if (currentMenu) 
+            currentMenu.hide();    
+
+        if (this.callback) 
+            this.callback(); 
     }
 }
 
@@ -24702,6 +24731,9 @@ graphView.wires           = [];
  
 graphView.loadingNodes    = false;
 graphView.canUpdateNodes  = true;
+
+
+graphView.activeNodes     = [];
 
 
 graphView.overNode        = null;
@@ -39829,10 +39861,6 @@ productKeyClose.addEventListener('click', e =>
 
     ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙
 */
-
-
-
-graphView.activeNodes = [];
 
 
 

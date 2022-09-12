@@ -11,12 +11,12 @@ class Menu
 
     showCheck;
 
-    menuButton = null;
+    button   = null;
     
     
-    items      = [];
+    items    = [];
 
-    lastItem   = null;
+    lastItem = null;
 
 
 
@@ -57,8 +57,8 @@ class Menu
             this.lastItem = this.items[0];
 
 
-        if (this.menuButton)
-            this.menuButton.update();
+        if (this.button)
+            this.button.update();
     }
 
 
@@ -92,23 +92,23 @@ class Menu
             srcRect.x + srcRect.width/2 - this.div.offsetWidth/2), 
             graphView.offsetWidth - this.div.offsetWidth - margin);
     
-        this.divArrow.style.left = srcRect.x + srcRect.width/2;// - menuArrow.offsetWidth/2;
-    
-        
         this.div.style.top = srcRect.y + srcRect.height + this.divArrow.offsetHeight;
+
+        
+        this.divArrow.style.left = srcRect.x + srcRect.width/2;
+        
     
         const menuRect = this.div.getBoundingClientRect();
     
-        this.divArrow.style.borderColor = 'transparent transparent #040404 transparent';
-        this.divArrow.style.top         = menuRect.y - this.divArrow.offsetHeight;
+        this.divArrow.style.top = menuRect.y - this.divArrow.offsetHeight;
     
     
         currentMenu = this;
 
 
-        if (   this.menuButton
+        if (   this.button
             && this == menuMain)
-            this.menuButton.div.style.background = 'var(--figma-color-bg-brand)';
+            this.button.div.style.background = 'var(--figma-color-bg-brand)';
     }
     
     
@@ -121,8 +121,8 @@ class Menu
         this.divArrow.style.display = 'none';
         this.divArrow.style.opacity = '0%';
 
-        if (this.menuButton)
-            this.menuButton.div.style.background = 'transparent';
+        if (this.button)
+            this.button.div.style.background = 'transparent';
 
         currentMenu                 = null;
     }

@@ -52,15 +52,17 @@ class MenuItem
 
 
         this.div.addEventListener('pointerdown', e => e.stopPropagation());
+        this.div.addEventListener('pointerup', () => this.select());
+    }
 
-        this.div.addEventListener('pointerup', () => 
-        { 
-            console.log('up');
-            if (currentMenu) 
-                currentMenu.hide();    
 
-            if (this.callback) 
-                this.callback(); 
-        });
+
+    select()
+    {
+        if (currentMenu) 
+            currentMenu.hide();    
+
+        if (this.callback) 
+            this.callback(); 
     }
 }

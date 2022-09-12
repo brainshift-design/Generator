@@ -122,7 +122,7 @@ function initMenuBar()
     const btnString   = new MenuButton('',            menuString);
     const btnColor    = new MenuButton('',            menuColor);
     const btnGeometry = new MenuButton('',            menuGeometry);
-    const btnComment  = new MenuButton('Add comment', null); // TODO add callback here
+    const btnComment  = new MenuButton('Add comment', null, () => actionManager.do(new CreateNodeAction(COMMENT, btnComment.div)));
 
 
     btnMain   .setIcon(iconGenerator);

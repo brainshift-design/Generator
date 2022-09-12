@@ -46,21 +46,34 @@ class MenuButton
 
         if (this.menu) 
         {
+            this.divIcon.addEventListener('pointerdown', e => 
+            {
+                if (e.button == 0)
+                {
+                    if (this.lastItem)
+                        this.lastItem.select();
+                }
+            });
+
+
             this.divArrow.addEventListener('pointerdown', e => 
             {
                 if (e.button == 0)
                 {
                     e.stopPropagation();
 
+                    const curMenu = currentMenu;
+
                     if (currentMenu)
                         currentMenu.hide();
                     
-                    this.menu.show(this.div);
+                    if (curMenu != this.menu)
+                        this.menu.show(this.div);
                 }
             });
         }
         else if (this.callback) 
-            this.divArrow.addEventListener('click', this.callback);
+            this.div.addEventListener('click', this.callback);
 
 
         this.div.appendChild(this.divIcon);

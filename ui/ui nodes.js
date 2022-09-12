@@ -380,10 +380,6 @@
 
 
 
-graphView.activeNodes = [];
-
-
-
 function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
 {
     let node = createNode(nodeType, creatingButton, createdId);

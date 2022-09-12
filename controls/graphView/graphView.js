@@ -4,6 +4,9 @@ graphView.loadingNodes    = false;
 graphView.canUpdateNodes  = true;
 
 
+graphView.activeNodes     = [];
+
+
 graphView.overNode        = null;
 graphView.overInput       = null;
 graphView.overOutput      = null;
