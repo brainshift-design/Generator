@@ -66,7 +66,8 @@ function createTooltip(tooltip)
 
 function showTooltip(source, tooltip, bottomArrow)
 {
-    console.log('tooltip =', tooltip);
+    if (currentMenu)
+        return;
 
     if (currentTooltip)
         hideTooltip(currentTooltip);

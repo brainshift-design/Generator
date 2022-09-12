@@ -331,7 +331,7 @@ div
     opacity:          0;
     width:            auto;
     height:           15px;
-    background-color: #040404;
+    background-color: #1e1e1e;
     color:            #eee;
     border-radius:    2px;
     padding:          5px 10px 5px 10px;
@@ -367,7 +367,7 @@ div
     margin-left:  -6px;
     border-width: 6px;
     border-style: solid;
-    border-color: transparent transparent #040404 transparent;
+    border-color: transparent transparent #1e1e1e transparent;
     display:      none;
     opacity:      0%;
 }
@@ -21127,8 +21127,8 @@ class Menu
         this.divArrow.style.display = 'none';
         this.divArrow.style.opacity = '0%';
 
-        if (this.button)
-            this.button.div.style.background = 'transparent';
+        //if (this.button)
+        //    this.button.div.style.background = 'transparent';
 
         currentMenu                 = null;
     }
@@ -39449,7 +39449,8 @@ function createTooltip(tooltip)
 
 function showTooltip(source, tooltip, bottomArrow)
 {
-    console.log('tooltip =', tooltip);
+    if (currentMenu)
+        return;
 
     if (currentTooltip)
         hideTooltip(currentTooltip);

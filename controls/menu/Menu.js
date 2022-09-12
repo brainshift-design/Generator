@@ -121,8 +121,8 @@ class Menu
         this.divArrow.style.display = 'none';
         this.divArrow.style.opacity = '0%';
 
-        if (this.button)
-            this.button.div.style.background = 'transparent';
+        //if (this.button)
+        //    this.button.div.style.background = 'transparent';
 
         currentMenu                 = null;
     }
