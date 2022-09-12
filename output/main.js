@@ -196,9 +196,13 @@ const settings = {
     logRawRequests: false,
     logRawValues: false,
     logRequests: true,
-    logValues: true,
+    logValueUpdates: true,
     logObjectUpdates: true
 };
+function updateSetting(settingName, value) {
+    settings[settingName] = value;
+    uiSetLocalData(settingName, boolString(value));
+}
 const figObjectArrays = []; // {nodeId, [objects]}
 function figUpdate(msg) {
     if (settings.logObjectUpdates

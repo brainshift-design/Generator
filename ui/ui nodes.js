@@ -823,7 +823,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
     if (settings.logRawValues)  
         console.log('raw values = ', values);
 
-    if (settings.logValues)  
+    if (settings.logValueUpdates)  
         logValueUpdates(updateNodeId, updateParamId, values);
 
 

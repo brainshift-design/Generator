@@ -47,6 +47,22 @@ function uiEndStartGenerator(msg)
     productKey  = msg.productKey;
 
     uiGetLocalData('graphView');
+
+
+    uiGetLocalData('showNodeId'      );
+    
+    uiGetLocalData('logMessages'     );
+    uiGetLocalData('logActions'      );
+    uiGetLocalData('logRawLoading'   );
+    uiGetLocalData('logRawSaving'    );
+    uiGetLocalData('logLoading'      );
+    uiGetLocalData('logRawRequests'  );
+    uiGetLocalData('logRawValues'    );
+    uiGetLocalData('logRequests'     );
+    uiGetLocalData('logValueUpdates' );
+    uiGetLocalData('logObjectUpdates');
+
+
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
 
     //uiEndResizeWindow();

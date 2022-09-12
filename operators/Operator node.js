@@ -139,9 +139,8 @@ function createNodeHeader(node)
         }
 
 
-        if (   e.button == 0
-            && currentMenu)
-            currentMenu.hide();    
+        if (e.button == 0)
+            currentMenus.forEach(m => m.hide());
 
 
         if (    e.button == 0

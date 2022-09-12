@@ -43,8 +43,8 @@ class MenuButton
    
         this.div.addEventListener('pointerleave', () => 
         {
-            if (  !currentMenu
-                || currentMenu != this.menu) 
+            if (    currentMenus.length == 0
+                || !currentMenus.includes(this.menu)) 
                 this.div.style.background = 'transparent';
         });
 
@@ -59,12 +59,11 @@ class MenuButton
                     {
                         e.stopPropagation();
 
-                        const curMenu = currentMenu;
+                        const curMenus = [...currentMenus];
 
-                        if (currentMenu)
-                            currentMenu.hide();
+                        currentMenus.forEach(m => m.hide());
 
-                        if (curMenu != this.menu)
+                        if (!curMenus.includes(this.menu))
                             this.menu.show(this.div);
                     }
                     else if (this.menu.lastItem)
@@ -83,12 +82,11 @@ class MenuButton
                 {
                     e.stopPropagation();
 
-                    const curMenu = currentMenu;
+                    const curMenus = [...currentMenus];
 
-                    if (currentMenu)
-                        currentMenu.hide();
+                    currentMenus.forEach(m => m.hide());
                     
-                    if (curMenu != this.menu)
+                    if (!curMenus.includes(this.menu))
                         this.menu.show(this.div);
                 }
             });
@@ -140,7 +138,7 @@ class MenuButton
 
         div.addEventListener('pointerleave', e =>
         {
-            if (currentMenu != this.menu)
+            if (!currentMenus.includes(this.menu))
                 this.divArrow.style.transform = 'translateY(0)';
 
             this.overArrow = false;

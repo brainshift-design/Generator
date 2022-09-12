@@ -15,6 +15,14 @@ const settings =
     logRawValues:     false, 
     
     logRequests:      true, 
-    logValues:        true, 
+    logValueUpdates:  true, 
     logObjectUpdates: true
 };
+
+
+
+function updateSetting(settingName, value)
+{
+    settings[settingName] = value;
+    uiSetLocalData(settingName, boolString(value));
+}

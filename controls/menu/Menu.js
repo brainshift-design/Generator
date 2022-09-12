@@ -1,4 +1,4 @@
-var currentMenu = null;
+var currentMenus = [];
 
 
 
@@ -6,13 +6,17 @@ class Menu
 {
     name;
 
+    button   = null;
+
+
     div;
     divArrow;
 
     showCheck;
 
-    button   = null;
     
+    overMenu = false;
+
     
     items    = [];
 
@@ -28,6 +32,9 @@ class Menu
 
         this.div        = createDiv('menu');
         this.divArrow   = createDiv('menuArrow');
+
+        this.div.addEventListener('pointerenter', e => this.overMenu = true );
+        this.div.addEventListener('pointerleave', e => this.overMenu = false);
     }
 
 
@@ -45,8 +52,8 @@ class Menu
             if (!this.showCheck)
                 this.items[i].divCheck.style.display = 'none';
 
-            this.items[i].menu  = this;
-            this.items[i].index = i;
+            this.items[i].parentMenu = this;
+            this.items[i].index      = i;
 
             this.div.appendChild(this.items[i].div);
         }
@@ -63,10 +70,10 @@ class Menu
 
 
 
-    show(srcDiv)
+    show(srcDiv, hideCurrent = true)
     {
-        if (currentMenu)
-            currentMenu.hide();
+        if (hideCurrent)
+            currentMenus.forEach(m => m.hide());
     
             
         this.div     .style.display = 'block';
@@ -89,10 +96,15 @@ class Menu
      
         this.div.style.left = Math.min(Math.max(
             margin, 
-            srcRect.x + srcRect.width/2 - this.div.offsetWidth/2), 
+            hideCurrent
+            ? srcRect.x + srcRect.width/2 - this.div.offsetWidth/2
+            : srcRect.x + srcRect.width), 
             graphView.offsetWidth - this.div.offsetWidth - margin);
     
-        this.div.style.top = srcRect.y + srcRect.height + this.divArrow.offsetHeight;
+        this.div.style.top = 
+            hideCurrent
+            ? srcRect.y + srcRect.height + this.divArrow.offsetHeight
+            : srcRect.y;
 
         
         this.divArrow.style.left = srcRect.x + srcRect.width/2;
@@ -103,7 +115,7 @@ class Menu
         this.divArrow.style.top = menuRect.y - this.divArrow.offsetHeight;
     
     
-        currentMenu = this;
+        currentMenus.push(this);
 
 
         if (   this.button
@@ -121,12 +133,14 @@ class Menu
         this.divArrow.style.display = 'none';
         this.divArrow.style.opacity = '0%';
 
-        if (!this.button.overArrow)
+        if (    currentMenus.length == 1
+            && !this.button.overArrow)
         {
             this.button.divArrow.style.transform  = 'translateY(0)';
             this.button.div     .style.background = 'transparent';
         }
 
-        currentMenu = null;
+
+        removeFrom(currentMenus, this);
     }
 }

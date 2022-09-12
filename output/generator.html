@@ -2003,6 +2003,13 @@ function subscriptChar(c)
 }
 
 
+
+function parseBool(str)
+{
+    return str === 'true';
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -6684,9 +6691,17 @@ const settings =
     logRawValues:     false, 
     
     logRequests:      true, 
-    logValues:        true, 
+    logValueUpdates:  true, 
     logObjectUpdates: true
 };
+
+
+
+function updateSetting(settingName, value)
+{
+    settings[settingName] = value;
+    uiSetLocalData(settingName, boolString(value));
+}
 
 
 var genFigMessagePosted = false;

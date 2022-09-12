@@ -1,14 +1,17 @@
 class MenuItem
 {
-    menu     = null;
-    index    = -1;
+    parentMenu    = null;
+    index         = -1;
     
-    checked  = false;
-    icon     = ''; // svg
-    name     = '';
-    shortcut = '';
+    checked       = false;
+    icon          = ''; // svg
+    name          = '';
+    shortcut      = '';
 
-    callback;
+    callback      = null;
+    checkCallback = null;
+
+    childMenu     = null;
 
 
     div;
@@ -16,26 +19,42 @@ class MenuItem
     divCheck;
     divIcon;
     divName;
+    divExpand;
     divShortcut;
 
 
 
-    constructor(name, icon = '', callback = null)
+    constructor(name, options = {})
     {
-        this.name        = name;
-        this.icon        = icon;
+        this.name = name;
 
-        this.callback    = callback;
+
+        if (options.icon         ) this.icon          = options.icon;
+        if (options.callback     ) this.callback      = options.callback;
+        if (options.checkCallback) this.checkCallback = options.checkCallback;
+        if (options.childMenu    ) this.childMenu     = options.childMenu;
+
 
         this.div         = createDiv('menuItem');
 
         this.divCheck    = createDiv('menuItemCheck'   );
         this.divIcon     = createDiv('menuItemIcon'    );
         this.divName     = createDiv('menuItemName'    );
+        this.divExpand   = createDiv('menuItemExpand'  );
         this.divShortcut = createDiv('menuItemShortcut');
 
 
         this.divName.innerHTML = this.name;
+
+        this.divCheck.visibility = 
+               this.checkCallback 
+            && this.checkCallback() 
+            ? 'visible' 
+            : 'hidden';
+
+
+        if (this.childMenu)
+            this.divExpand.style.visibility = 'visible';
 
 
         if (this.icon != '')
@@ -48,22 +67,40 @@ class MenuItem
         this.div.appendChild(this.divCheck   );
         this.div.appendChild(this.divIcon    );
         this.div.appendChild(this.divName    );
+        this.div.appendChild(this.divExpand  );
         this.div.appendChild(this.divShortcut);
 
 
         this.div.addEventListener('pointerdown', e => e.stopPropagation());
-        this.div.addEventListener('pointerup', () => this.select());
+        this.div.addEventListener('pointerup', () => { if (!this.childMenu) this.select(); });
+
+
+        this.div.addEventListener('pointerenter', () =>
+        {
+            if (this.childMenu)
+                this.childMenu.show(this.div, false);
+        });
+        
+        
+        this.div.addEventListener('pointerleave', e =>
+        {
+            const menuRect = this.div.getBoundingClientRect();
+
+            if (    this.childMenu
+                && !this.childMenu.overMenu
+                && e.clientX <= menuRect.right)
+                this.childMenu.hide();
+        });
     }
 
 
 
     select()
     {
-        if (currentMenu)
-            currentMenu.hide();    
+        currentMenus.forEach(m => m.hide());
 
-        this.menu.lastItem = this;
-        this.menu.button.update();
+        this.parentMenu.lastItem = this;
+        this.parentMenu.button.update();
 
         if (this.callback) 
             this.callback(); 

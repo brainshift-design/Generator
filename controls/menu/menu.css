@@ -148,9 +148,24 @@
 .menuItemName
 {
     display:    inline-block;
-    /* box-shadow: 0 0 0 1px yellow inset; */
     position:   relative;
     top:       -8px;
+    /* box-shadow: 0 0 0 1px yellow inset; */
+}
+
+
+.menuItemExpand
+{
+    display:             inline-block;
+    width:               48px;
+    height:              24px;
+    background:          url('data:image/svg+xml;utf8,<svg width="6" height="8" viewBox="0 0 6 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 4L0 0V8L6 4Z" fill="white"/></svg>');
+    background-position: 50% 50%;
+    background-repeat:   no-repeat;
+    visibility:          hidden;
+    position:            absolute;
+    right:               0;
+    /* box-shadow:          0 0 0 1px green inset; */
 }
 
 

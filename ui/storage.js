@@ -85,9 +85,20 @@ function uiGetLocalDataReturn(msg)
 {
     switch (msg.key)
     {
-        case 'graphView':
-            uiLoadGraphView(msg.value);
-            break;
+        case 'graphView':        uiLoadGraphView(msg.value); break;
+
+        case 'showNodeId':       settings.showNodeId       = parseBool(msg.value); break;
+
+        case 'logMessages':      settings.logMessages      = parseBool(msg.value); break;
+        case 'logActions':       settings.logActions       = parseBool(msg.value); break;
+        case 'logRawLoading':    settings.logRawLoading    = parseBool(msg.value); break;
+        case 'logRawSaving':     settings.logRawSaving     = parseBool(msg.value); break;
+        case 'logLoading':       settings.logLoading       = parseBool(msg.value); break;
+        case 'logRawRequests':   settings.logRawRequests   = parseBool(msg.value); break;
+        case 'logRawValues':     settings.logRawValues     = parseBool(msg.value); break;
+        case 'logRequests':      settings.logRequests      = parseBool(msg.value); break;
+        case 'logValueUpdates':  settings.logValueUpdates  = parseBool(msg.value); break;
+        case 'logObjectUpdates': settings.logObjectUpdates = parseBool(msg.value); break;
     }
 }
 

@@ -462,3 +462,10 @@ function subscriptChar(c)
         case '.': return ' ';
     }
 }
+
+
+
+function parseBool(str)
+{
+    return str === 'true';
+}
