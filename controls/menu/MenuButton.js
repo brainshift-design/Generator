@@ -13,6 +13,8 @@ class MenuButton
     divIcon;
     divArrow;
 
+    overArrow = false;
+
     tooltipIcon;
     tooltipArrow;
 
@@ -71,6 +73,10 @@ class MenuButton
             });
 
 
+            if (this.useMenuName) this.createArrowEvents(this.div);
+            else                  this.createArrowEvents(this.divArrow);
+            
+
             this.divArrow.addEventListener('pointerdown', e => 
             {
                 if (e.button == 0)
@@ -119,6 +125,26 @@ class MenuButton
 
 
         this.update();
+    }
+
+
+
+    createArrowEvents(div)
+    {
+        div.addEventListener('pointerenter', e =>
+        {
+            this.overArrow = true;
+            this.divArrow.style.transform = 'translateY(3px)';
+        });
+
+
+        div.addEventListener('pointerleave', e =>
+        {
+            if (currentMenu != this.menu)
+                this.divArrow.style.transform = 'translateY(0)';
+
+            this.overArrow = false;
+        });
     }
 
 

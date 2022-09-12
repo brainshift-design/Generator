@@ -121,9 +121,12 @@ class Menu
         this.divArrow.style.display = 'none';
         this.divArrow.style.opacity = '0%';
 
-        //if (this.button)
-        //    this.button.div.style.background = 'transparent';
+        if (!this.button.overArrow)
+        {
+            this.button.divArrow.style.transform  = 'translateY(0)';
+            this.button.div     .style.background = 'transparent';
+        }
 
-        currentMenu                 = null;
+        currentMenu = null;
     }
 }

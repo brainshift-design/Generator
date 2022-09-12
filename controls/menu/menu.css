@@ -54,13 +54,6 @@
 }
 
 
-.menuButtonArrow:hover
-{
-    transform: translateY(3px);
-}
-
-
-
 .menu
 {
     display:          none;
@@ -80,6 +73,7 @@
     font-family:      Inter;
     font-size:        11px;
 }
+
 
 .figma-light .menu
 {
