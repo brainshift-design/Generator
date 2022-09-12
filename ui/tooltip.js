@@ -8,7 +8,7 @@ var currentTooltip       = null;
 
     
 
-function createTooltipSrc(source, getTooltip, bottomArrow = false)
+function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
 {
     source.addEventListener('pointerenter', () =>
     {
@@ -19,7 +19,7 @@ function createTooltipSrc(source, getTooltip, bottomArrow = false)
         {
             tooltipTimer = setTimeout(() =>
             {
-                showTooltip(source, getTooltip(), bottomArrow);
+                showTooltip(ref, getTooltip(), bottomArrow);
 
                 clearTimeout(tooltipTimer);
                 tooltipTimer = null;
@@ -66,6 +66,8 @@ function createTooltip(tooltip)
 
 function showTooltip(source, tooltip, bottomArrow)
 {
+    console.log('tooltip =', tooltip);
+
     if (currentTooltip)
         hideTooltip(currentTooltip);
 

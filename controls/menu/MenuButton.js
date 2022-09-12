@@ -4,19 +4,21 @@ class MenuButton
     menu;
 
     icon     = '';
-    tooltip  = null;
 
     callback;
-
+    useMenuName;
 
     div;
 
     divIcon;
     divArrow;
 
+    tooltipIcon;
+    tooltipArrow;
 
 
-    constructor(name, menu, callback = null)
+
+    constructor(name, menu, options = {})
     {
         this.name     = name;
         this.menu     = menu;
@@ -25,7 +27,8 @@ class MenuButton
             this.menu.button = this;
 
 
-        this.callback = callback;
+        this.callback    = options.callback    ? options.callback    : null;
+        this.useMenuName = options.useMenuName ? options.useMenuName : false;
 
 
         this.div      = createDiv('menuButton');
@@ -50,7 +53,19 @@ class MenuButton
             {
                 if (e.button == 0)
                 {
-                    if (this.menu.lastItem)
+                    if (this.useMenuName)
+                    {
+                        e.stopPropagation();
+
+                        const curMenu = currentMenu;
+
+                        if (currentMenu)
+                            currentMenu.hide();
+
+                        if (curMenu != this.menu)
+                            this.menu.show(this.div);
+                    }
+                    else if (this.menu.lastItem)
                         this.menu.lastItem.select();
                 }
             });
@@ -84,6 +99,25 @@ class MenuButton
         menuBar.appendChild(this.div);
 
 
+        const ttName = 
+            this.menu 
+            ? this.menu.name 
+            : this.name;
+
+        this.tooltipIcon  = createDiv('tooltip', 'ttMenuButtonIcon'  + ttName);
+        this.tooltipArrow = createDiv('tooltip', 'ttMenuButtonArrow' + ttName);
+
+        document.body.appendChild(this.tooltipIcon);
+        document.body.appendChild(this.tooltipArrow);
+        
+
+        createTooltip(this.tooltipIcon);
+        createTooltip(this.tooltipArrow);
+
+        createTooltipSrc(this.divIcon,  this.div,      () => document.getElementById('ttMenuButtonIcon'  + ttName));
+        createTooltipSrc(this.divArrow, this.divArrow, () => document.getElementById('ttMenuButtonArrow' + ttName));
+
+
         this.update();
     }
 
@@ -115,5 +149,22 @@ class MenuButton
             this.divIcon.style.backgroundPosition = '100% 50%';
             this.divIcon.style.backgroundRepeat   = 'no-repeat';
         }
+
+
+        if (this.menu)
+            this.tooltipArrow.innerHTML = this.menu.name;
+
+
+        if (this.useMenuName)
+            this.tooltipIcon.innerHTML = 
+                this.menu 
+                ? this.menu.name 
+                : this.name;
+        else
+            this.tooltipIcon.innerHTML = 
+                   this.menu
+                && this.menu.lastItem
+                ? this.menu.lastItem.name
+                : this.name;        
     }
 }

@@ -342,8 +342,21 @@ div
     top:              44px;
     font-family:      Inter;
     font-size:        11px;
+}
+
+
+.figma-light .tooltip
+{
     box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.15),
-                      0px 5px 17px rgba(0, 0, 0, 0.15 );
+                      0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark .tooltip
+{
+    box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.35),
+                      0px 5px 22px rgba(0, 0, 0, 0.35),
+                      0 0px 2px 0px #fff3 inset;
 }
 
 
@@ -4153,13 +4166,16 @@ function dispatchNewEvent(target, proto)
 
 
 
-function createDiv(className = '')
+function createDiv(className = '', id = '')
 {
     const div = document.createElement('div');
     
     if (className != '')
         div.className = className;
     
+    if (id != '')
+        div.id = id;
+
     return div;
 }
 
@@ -15075,13 +15091,16 @@ function dispatchNewEvent(target, proto)
 
 
 
-function createDiv(className = '')
+function createDiv(className = '', id = '')
 {
     const div = document.createElement('div');
     
     if (className != '')
         div.className = className;
     
+    if (id != '')
+        div.id = id;
+
     return div;
 }
 
@@ -21124,7 +21143,7 @@ var menuMainPreferencesDebugLogging;
 var menuNumber;
 var menuString;
 var menuColor;
-var menuGeometry;
+var menuShape;
 
 
 const iconGenerator        = '<svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.7074 3.74745C11.6364 3.51733 11.5384 3.31137 11.4134 3.12955C11.2912 2.94489 11.1435 2.78722 10.9702 2.65654C10.7997 2.52586 10.6037 2.42784 10.3821 2.3625C10.1605 2.29432 9.91903 2.26023 9.65767 2.26023C9.18892 2.26023 8.77131 2.37813 8.40483 2.61392C8.03835 2.84972 7.75 3.19631 7.53977 3.6537C7.33239 4.10824 7.22869 4.66222 7.22869 5.31563C7.22869 5.97472 7.33239 6.53296 7.53977 6.99034C7.74716 7.44773 8.03551 7.79574 8.40483 8.03438C8.77415 8.27017 9.20313 8.38807 9.69176 8.38807C10.1349 8.38807 10.5185 8.30284 10.8423 8.13239C11.169 7.96194 11.4205 7.72046 11.5966 7.40796C11.7727 7.09262 11.8608 6.7233 11.8608 6.3L12.2188 6.3554H9.84943V5.11961H13.3906V6.1679C13.3906 6.91506 13.2315 7.56137 12.9134 8.10682C12.5952 8.65228 12.1577 9.07273 11.6009 9.36819C11.044 9.6608 10.4048 9.80711 9.68324 9.80711C8.87926 9.80711 8.1733 9.62671 7.56534 9.26591C6.96023 8.90228 6.48722 8.38665 6.14631 7.71904C5.80824 7.04858 5.6392 6.25313 5.6392 5.33267C5.6392 4.62813 5.73864 3.99887 5.9375 3.44489C6.1392 2.89091 6.42045 2.42074 6.78125 2.03438C7.14205 1.64517 7.56534 1.34972 8.05114 1.14802C8.53693 0.94347 9.06534 0.841197 9.63636 0.841197C10.1193 0.841197 10.5696 0.91222 10.9872 1.05427C11.4048 1.19347 11.7756 1.39233 12.0994 1.65086C12.4261 1.90938 12.6946 2.2162 12.9048 2.57131C13.1151 2.92642 13.2528 3.31847 13.3182 3.74745H11.7074Z" fill="white"/><circle cx="2" cy="5" r="1.5" stroke="white"/><circle cx="17" cy="5" r="2" fill="white"/></svg>';
@@ -21226,21 +21245,24 @@ function initMenuBar()
         new MenuItem('Stroke',      iconStroke,         () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div)))]);
     
     
-    menuGeometry = new Menu('Geometry nodes', true);
-    menuGeometry.addItems([
-        new MenuItem('Rectangle',   iconRectangle, () => actionManager.do(new CreateNodeAction(RECTANGLE, btnGeometry.div))),
+    menuShape = new Menu('Shape nodes', true);
+    menuShape.addItems([
+        new MenuItem('Rectangle',   iconRectangle, () => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div))),
         new MenuItem('Line',        iconLine     ),
         new MenuItem('Ellipse',     iconEllipse  ),
         new MenuItem('Polygon',     iconPolygon  ),
         new MenuItem('Star',        iconStar     )]);
 
 
-    const btnMain     = new MenuButton('',            menuMain);
-    const btnNumber   = new MenuButton('',            menuNumber);
-    const btnString   = new MenuButton('',            menuString);
-    const btnColor    = new MenuButton('',            menuColor);
-    const btnGeometry = new MenuButton('',            menuGeometry);
-    const btnComment  = new MenuButton('Add comment', null, () => actionManager.do(new CreateNodeAction(COMMENT, btnComment.div)));
+    const btnMain    = new MenuButton('', menuMain, {useMenuName: true});
+    const btnNumber  = new MenuButton('', menuNumber);
+    const btnString  = new MenuButton('', menuString);
+    const btnColor   = new MenuButton('', menuColor);
+    const btnShape   = new MenuButton('', menuShape);
+    const btnComment = new MenuButton('Add comment', null, 
+    {
+        callback: () => actionManager.do(new CreateNodeAction(COMMENT, btnComment.div))
+    });
 
 
     btnMain   .setIcon(iconGenerator);
@@ -21254,19 +21276,21 @@ class MenuButton
     menu;
 
     icon     = '';
-    tooltip  = null;
 
     callback;
-
+    useMenuName;
 
     div;
 
     divIcon;
     divArrow;
 
+    tooltipIcon;
+    tooltipArrow;
 
 
-    constructor(name, menu, callback = null)
+
+    constructor(name, menu, options = {})
     {
         this.name     = name;
         this.menu     = menu;
@@ -21275,7 +21299,8 @@ class MenuButton
             this.menu.button = this;
 
 
-        this.callback = callback;
+        this.callback    = options.callback    ? options.callback    : null;
+        this.useMenuName = options.useMenuName ? options.useMenuName : false;
 
 
         this.div      = createDiv('menuButton');
@@ -21300,7 +21325,19 @@ class MenuButton
             {
                 if (e.button == 0)
                 {
-                    if (this.menu.lastItem)
+                    if (this.useMenuName)
+                    {
+                        e.stopPropagation();
+
+                        const curMenu = currentMenu;
+
+                        if (currentMenu)
+                            currentMenu.hide();
+
+                        if (curMenu != this.menu)
+                            this.menu.show(this.div);
+                    }
+                    else if (this.menu.lastItem)
                         this.menu.lastItem.select();
                 }
             });
@@ -21334,6 +21371,25 @@ class MenuButton
         menuBar.appendChild(this.div);
 
 
+        const ttName = 
+            this.menu 
+            ? this.menu.name 
+            : this.name;
+
+        this.tooltipIcon  = createDiv('tooltip', 'ttMenuButtonIcon'  + ttName);
+        this.tooltipArrow = createDiv('tooltip', 'ttMenuButtonArrow' + ttName);
+
+        document.body.appendChild(this.tooltipIcon);
+        document.body.appendChild(this.tooltipArrow);
+        
+
+        createTooltip(this.tooltipIcon);
+        createTooltip(this.tooltipArrow);
+
+        createTooltipSrc(this.divIcon,  this.div,      () => document.getElementById('ttMenuButtonIcon'  + ttName));
+        createTooltipSrc(this.divArrow, this.divArrow, () => document.getElementById('ttMenuButtonArrow' + ttName));
+
+
         this.update();
     }
 
@@ -21365,6 +21421,23 @@ class MenuButton
             this.divIcon.style.backgroundPosition = '100% 50%';
             this.divIcon.style.backgroundRepeat   = 'no-repeat';
         }
+
+
+        if (this.menu)
+            this.tooltipArrow.innerHTML = this.menu.name;
+
+
+        if (this.useMenuName)
+            this.tooltipIcon.innerHTML = 
+                this.menu 
+                ? this.menu.name 
+                : this.name;
+        else
+            this.tooltipIcon.innerHTML = 
+                   this.menu
+                && this.menu.lastItem
+                ? this.menu.lastItem.name
+                : this.name;        
     }
 }
 
@@ -39318,7 +39391,7 @@ var currentTooltip       = null;
 
     
 
-function createTooltipSrc(source, getTooltip, bottomArrow = false)
+function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
 {
     source.addEventListener('pointerenter', () =>
     {
@@ -39329,7 +39402,7 @@ function createTooltipSrc(source, getTooltip, bottomArrow = false)
         {
             tooltipTimer = setTimeout(() =>
             {
-                showTooltip(source, getTooltip(), bottomArrow);
+                showTooltip(ref, getTooltip(), bottomArrow);
 
                 clearTimeout(tooltipTimer);
                 tooltipTimer = null;
@@ -39376,6 +39449,8 @@ function createTooltip(tooltip)
 
 function showTooltip(source, tooltip, bottomArrow)
 {
+    console.log('tooltip =', tooltip);
+
     if (currentTooltip)
         hideTooltip(currentTooltip);
 

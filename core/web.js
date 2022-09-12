@@ -27,13 +27,16 @@ function dispatchNewEvent(target, proto)
 
 
 
-function createDiv(className = '')
+function createDiv(className = '', id = '')
 {
     const div = document.createElement('div');
     
     if (className != '')
         div.className = className;
     
+    if (id != '')
+        div.id = id;
+
     return div;
 }
 
