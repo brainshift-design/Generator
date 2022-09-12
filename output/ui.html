@@ -21272,7 +21272,7 @@ class MenuButton
         this.menu     = menu;
 
         if (this.menu)
-            this.menu.menuButton = this;
+            this.menu.button = this;
 
 
         this.callback = callback;
@@ -21430,8 +21430,11 @@ class MenuItem
 
     select()
     {
-        if (currentMenu) 
+        if (currentMenu)
             currentMenu.hide();    
+
+        this.menu.lastItem = this;
+        this.menu.button.update();
 
         if (this.callback) 
             this.callback(); 
@@ -39452,7 +39455,7 @@ createTooltip(ttCreateInterpolate);      createTooltipSrc(btnCreateInterpolate, 
 createTooltip(ttCreateColor);            createTooltipSrc(btnCreateColor,            () => ttCreateColor);
 createTooltip(ttCreateColorInterpolate); createTooltipSrc(btnCreateColorInterpolate, () => ttCreateColorInterpolate);
 createTooltip(ttCreateValidateColor);    createTooltipSrc(btnCreateValidateColor,    () => ttCreateValidateColor);
-createTooltip(ttCreateColorContrast);      createTooltipSrc(btnCreateColorContrast,      () => ttCreateColorContrast);
+createTooltip(ttCreateColorContrast);    createTooltipSrc(btnCreateColorContrast,    () => ttCreateColorContrast);
 createTooltip(ttCreateColorblind);       createTooltipSrc(btnCreateColorblind,       () => ttCreateColorblind);
 
 // createTooltip(ttToggleWires);            createTooltipSrc(btnToggleWires,            () => ttToggleWires);

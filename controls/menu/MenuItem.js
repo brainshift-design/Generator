@@ -59,8 +59,11 @@ class MenuItem
 
     select()
     {
-        if (currentMenu) 
+        if (currentMenu)
             currentMenu.hide();    
+
+        this.menu.lastItem = this;
+        this.menu.button.update();
 
         if (this.callback) 
             this.callback(); 

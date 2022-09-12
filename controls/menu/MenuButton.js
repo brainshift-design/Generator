@@ -22,7 +22,7 @@ class MenuButton
         this.menu     = menu;
 
         if (this.menu)
-            this.menu.menuButton = this;
+            this.menu.button = this;
 
 
         this.callback = callback;
