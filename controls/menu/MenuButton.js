@@ -50,8 +50,8 @@ class MenuButton
             {
                 if (e.button == 0)
                 {
-                    if (this.lastItem)
-                        this.lastItem.select();
+                    if (this.menu.lastItem)
+                        this.menu.lastItem.select();
                 }
             });
 
