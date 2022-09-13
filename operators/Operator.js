@@ -726,10 +726,11 @@ function pushUpdateFromParam(nodes, param)
     //console.log('pushUpdateFromParam('+param+')', nodes);
 
     
-    const request = 
-        param
-        ? [param.node.id, param.id]
-        : ['', ''];
+    const request = settings.logRequests ? [LOG] : [NULL];
+
+
+    if (param) request.push(param.node.id, param.id);
+    else       request.push(NULL, NULL);
 
 
     const gen = createGenObject(param ? param.node : null);
@@ -761,6 +762,14 @@ function pushUpdateFromParam(nodes, param)
             && !gen.passedNodes.includes(node))
             request.push(...getNodeRequest(node, gen));
     }
+
+
+    if (settings.logRawRequests)
+        console.log(
+            '%c%s%s', 
+            'background: #60aa60; color: #cfd', 
+            'raw request = ', 
+            request.toString());
 
 
     uiQueueMessageToGenerator({
@@ -819,7 +828,7 @@ function getNodeRequest(node, gen)
 function createGenObject(paramNode)
 {
     return {
-        scope:       paramNode ? [{nodeId: paramNode.id, paramId: ''}] : [], // [{nodeId, paramId}]
+        scope:       paramNode ? [{nodeId: paramNode.id, paramId: NULL}] : [], // [{nodeId, paramId}]
         passedNodes: [],
         paramNodes:  [],
         markParams:  true

@@ -73,7 +73,7 @@ function uiEndStartGenerator(msg)
     uiGetLocalData('logObjectUpdates');
 
 
-    updateSettingsMenus();
+    //updateSettingsMenus();
     
 
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});

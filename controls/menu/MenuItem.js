@@ -80,7 +80,10 @@ class MenuItem
             if (this.childMenu)
             {
                 if (!currentMenus.includes(this.childMenu))
+                {
+                    hideAllMenusAfter(this.parentMenu);
                     this.childMenu.show(this.div, true);
+                }
             }
             else
                 hideAllMenusAfter(this.parentMenu);

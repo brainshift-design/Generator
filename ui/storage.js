@@ -113,8 +113,13 @@ function uiGetLocalDataReturn(msg)
         case 'logRequests':      
         case 'logValueUpdates':  
         case 'logObjectUpdates': 
-            if (msg.value)
-                updateSetting(msg.key, parseBool(msg.value)); 
+            updateSettingAndMenu(
+                msg.key, 
+                msg.value, 
+                msg.value 
+                    ? parseBool(msg.value) 
+                    : false,
+                false); 
 
             break;
     }

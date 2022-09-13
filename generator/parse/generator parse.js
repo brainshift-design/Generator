@@ -50,7 +50,7 @@ class Parse
     {
         this.request       = request;
           
-        this.pos           = 2; 
+        this.pos           = 3; 
         this.so            = 0;
         
         this.logRequests   = logRequests;

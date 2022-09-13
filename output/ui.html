@@ -4798,6 +4798,9 @@ function normalizeSeed(x)
 }
 
 
+const NULL                = '';
+
+
 const INVALID             = '?';
 const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
 
@@ -4934,6 +4937,10 @@ const COMMENT             = 'CMNT';
 
 const ACTIVE              = 'ACT';
 const PARAM               = 'PARAM'; // nodeId paramId
+
+
+const LOG                 = 'LOG';
+
 
 
 /*
@@ -8610,7 +8617,7 @@ const settings =
     
     logMessages:      false,
 
-    logActions:       true, 
+    logActions:       false, 
 
     logRawLoading:    false, 
     logRawSaving:     false, 
@@ -8620,9 +8627,9 @@ const settings =
     logRawRequests:   false, 
     logRawValues:     false, 
     
-    logRequests:      true, 
-    logValueUpdates:  true, 
-    logObjectUpdates: true
+    logRequests:      false, 
+    logValueUpdates:  false, 
+    logObjectUpdates: false
 };
 
 
@@ -8648,22 +8655,22 @@ function updateSetting(settingName, value)
 
 
 
-function updateSettingAndMenu(settingName, value, save = true)
+function updateSettingAndMenu(settingName, valid, value, save = true)
 {
     switch (settingName)
     {
-        case 'showNodeId':        settings.showNodeId       = value;  menuItemShowNodeId   .setChecked(settings.showNodeId      );  break;
-        case 'showWires':         settings.showWires        = value;  menuItemShowWires    .setChecked(settings.showWires       );  break;
-        case 'logMessages':       settings.logMessages      = value;  menuItemMessages     .setChecked(settings.logMessages     );  break;
-        case 'logActions':        settings.logActions       = value;  menuItemActions      .setChecked(settings.logActions      );  break;
-        case 'logRawLoading':     settings.logRawLoading    = value;  menuItemRawLoading   .setChecked(settings.logRawLoading   );  break;
-        case 'logRawSaving':      settings.logRawSaving     = value;  menuItemRawSaving    .setChecked(settings.logRawSaving    );  break;
-        case 'logLoading':        settings.logLoading       = value;  menuItemLoading      .setChecked(settings.logLoading      );  break;
-        case 'logRawRequests':    settings.logRawRequests   = value;  menuItemRawRequests  .setChecked(settings.logRawRequests  );  break;
-        case 'logRawValues':      settings.logRawValues     = value;  menuItemRawValues    .setChecked(settings.logRawValues    );  break;
-        case 'logRequests':       settings.logRequests      = value;  menuItemRequests     .setChecked(settings.logRequests     );  break;
-        case 'logValueUpdates':   settings.logValueUpdates  = value;  menuItemValueUpdates .setChecked(settings.logValueUpdates );  break;
-        case 'logObjectUpdates':  settings.logObjectUpdates = value;  menuItemObjectUpdates.setChecked(settings.logObjectUpdates);  break;
+        case 'showNodeId':        if (valid) settings.showNodeId       = value;  menuItemShowNodeId      .setChecked(settings.showNodeId      );  break;
+        case 'showWires':         if (valid) settings.showWires        = value;  menuItemShowWires       .setChecked(settings.showWires       );  break;
+        case 'logMessages':       if (valid) settings.logMessages      = value;  menuItemLogMessages     .setChecked(settings.logMessages     );  break;
+        case 'logActions':        if (valid) settings.logActions       = value;  menuItemLogActions      .setChecked(settings.logActions      );  break;
+        case 'logRawLoading':     if (valid) settings.logRawLoading    = value;  menuItemLogRawLoading   .setChecked(settings.logRawLoading   );  break;
+        case 'logRawSaving':      if (valid) settings.logRawSaving     = value;  menuItemLogRawSaving    .setChecked(settings.logRawSaving    );  break;
+        case 'logLoading':        if (valid) settings.logLoading       = value;  menuItemLogLoading      .setChecked(settings.logLoading      );  break;
+        case 'logRawRequests':    if (valid) settings.logRawRequests   = value;  menuItemLogRawRequests  .setChecked(settings.logRawRequests  );  break;
+        case 'logRawValues':      if (valid) settings.logRawValues     = value;  menuItemLogRawValues    .setChecked(settings.logRawValues    );  break;
+        case 'logRequests':       if (valid) settings.logRequests      = value;  menuItemLogRequests     .setChecked(settings.logRequests     );  break;
+        case 'logValueUpdates':   if (valid) settings.logValueUpdates  = value;  menuItemLogValueUpdates .setChecked(settings.logValueUpdates );  break;
+        case 'logObjectUpdates':  if (valid) settings.logObjectUpdates = value;  menuItemLogObjectUpdates.setChecked(settings.logObjectUpdates);  break;
     } 
 
     if (save)
@@ -8674,18 +8681,18 @@ function updateSettingAndMenu(settingName, value, save = true)
 
 function updateSettingsMenus()
 {
-    menuItemShowNodeId   .setChecked(settings.showNodeId      );
-    menuItemShowWires    .setChecked(settings.showWires       );
-    menuItemMessages     .setChecked(settings.logMessages     );
-    menuItemActions      .setChecked(settings.logActions      );
-    menuItemRawLoading   .setChecked(settings.logRawLoading   );
-    menuItemRawSaving    .setChecked(settings.logRawSaving    );
-    menuItemLoading      .setChecked(settings.logLoading      );
-    menuItemRawRequests  .setChecked(settings.logRawRequests  );
-    menuItemRawValues    .setChecked(settings.logRawValues    );
-    menuItemRequests     .setChecked(settings.logRequests     );
-    menuItemValueUpdates .setChecked(settings.logValueUpdates );
-    menuItemObjectUpdates.setChecked(settings.logObjectUpdates);
+    menuItemShowNodeId      .setChecked(settings.showNodeId      );
+    menuItemShowWires       .setChecked(settings.showWires       );
+    menuItemLogMessages     .setChecked(settings.logMessages     );
+    menuItemLogActions      .setChecked(settings.logActions      );
+    menuItemLogRawLoading   .setChecked(settings.logRawLoading   );
+    menuItemLogRawSaving    .setChecked(settings.logRawSaving    );
+    menuItemLogLoading      .setChecked(settings.logLoading      );
+    menuItemLogRawRequests  .setChecked(settings.logRawRequests  );
+    menuItemLogRawValues    .setChecked(settings.logRawValues    );
+    menuItemLogRequests     .setChecked(settings.logRequests     );
+    menuItemLogValueUpdates .setChecked(settings.logValueUpdates );
+    menuItemLogObjectUpdates.setChecked(settings.logObjectUpdates);
 }
 
 
@@ -8812,25 +8819,22 @@ function genEndFigMessage()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-var lastUpdateNodeId  = '';
-var lastUpdateParamId = '';
+var lastUpdateNodeId  = NULL;
+var lastUpdateParamId = NULL;
 var lastUpdateValues  = [];
 var lastUpdateObjects = [];
+
+var settings_logRequests;
 
 
 
 function genRequest(request)
 {
-    if (settings.logRawRequests)
-        console.log(
-            '%c%s%s', 
-            'background: #60aa60; color: #cfd', 
-            'raw request = ', 
-            request.toString());
+    settings_logRequests = request[0] == LOG;
 
 
-    const updateNodeId  = request[0];
-    const updateParamId = request[1];
+    const updateNodeId  = request[1];
+    const updateParamId = request[2];
 
 
     const parse = new Parse(
@@ -8847,7 +8851,7 @@ function genRequest(request)
         genParse(parse);
 
 
-    if (settings.logRequests)
+    if (settings_logRequests)
         logRequest(parse);
 
 
@@ -8900,8 +8904,8 @@ function genPushUpdateObject(parse, nodeId, object)
 
 function clearLastUpdate()
 {
-    lastUpdateNodeId  = '';
-    lastUpdateParamId = '';
+    lastUpdateNodeId  = NULL;
+    lastUpdateParamId = NULL;
     lastUpdateValues  = [];
     lastUpdateObjects = [];
 }
@@ -10085,7 +10089,7 @@ class Parse
     {
         this.request       = request;
           
-        this.pos           = 2; 
+        this.pos           = 3; 
         this.so            = 0;
         
         this.logRequests   = logRequests;
@@ -17284,6 +17288,9 @@ function base32toArray(base32, chars = base32chars)
 }
 
 
+const NULL                = '';
+
+
 const INVALID             = '?';
 const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
 
@@ -17420,6 +17427,10 @@ const COMMENT             = 'CMNT';
 
 const ACTIVE              = 'ACT';
 const PARAM               = 'PARAM'; // nodeId paramId
+
+
+const LOG                 = 'LOG';
+
 
 
 /*
@@ -21096,7 +21107,7 @@ const settings =
     
     logMessages:      false,
 
-    logActions:       true, 
+    logActions:       false, 
 
     logRawLoading:    false, 
     logRawSaving:     false, 
@@ -21106,9 +21117,9 @@ const settings =
     logRawRequests:   false, 
     logRawValues:     false, 
     
-    logRequests:      true, 
-    logValueUpdates:  true, 
-    logObjectUpdates: true
+    logRequests:      false, 
+    logValueUpdates:  false, 
+    logObjectUpdates: false
 };
 
 
@@ -21134,22 +21145,22 @@ function updateSetting(settingName, value)
 
 
 
-function updateSettingAndMenu(settingName, value, save = true)
+function updateSettingAndMenu(settingName, valid, value, save = true)
 {
     switch (settingName)
     {
-        case 'showNodeId':        settings.showNodeId       = value;  menuItemShowNodeId   .setChecked(settings.showNodeId      );  break;
-        case 'showWires':         settings.showWires        = value;  menuItemShowWires    .setChecked(settings.showWires       );  break;
-        case 'logMessages':       settings.logMessages      = value;  menuItemMessages     .setChecked(settings.logMessages     );  break;
-        case 'logActions':        settings.logActions       = value;  menuItemActions      .setChecked(settings.logActions      );  break;
-        case 'logRawLoading':     settings.logRawLoading    = value;  menuItemRawLoading   .setChecked(settings.logRawLoading   );  break;
-        case 'logRawSaving':      settings.logRawSaving     = value;  menuItemRawSaving    .setChecked(settings.logRawSaving    );  break;
-        case 'logLoading':        settings.logLoading       = value;  menuItemLoading      .setChecked(settings.logLoading      );  break;
-        case 'logRawRequests':    settings.logRawRequests   = value;  menuItemRawRequests  .setChecked(settings.logRawRequests  );  break;
-        case 'logRawValues':      settings.logRawValues     = value;  menuItemRawValues    .setChecked(settings.logRawValues    );  break;
-        case 'logRequests':       settings.logRequests      = value;  menuItemRequests     .setChecked(settings.logRequests     );  break;
-        case 'logValueUpdates':   settings.logValueUpdates  = value;  menuItemValueUpdates .setChecked(settings.logValueUpdates );  break;
-        case 'logObjectUpdates':  settings.logObjectUpdates = value;  menuItemObjectUpdates.setChecked(settings.logObjectUpdates);  break;
+        case 'showNodeId':        if (valid) settings.showNodeId       = value;  menuItemShowNodeId      .setChecked(settings.showNodeId      );  break;
+        case 'showWires':         if (valid) settings.showWires        = value;  menuItemShowWires       .setChecked(settings.showWires       );  break;
+        case 'logMessages':       if (valid) settings.logMessages      = value;  menuItemLogMessages     .setChecked(settings.logMessages     );  break;
+        case 'logActions':        if (valid) settings.logActions       = value;  menuItemLogActions      .setChecked(settings.logActions      );  break;
+        case 'logRawLoading':     if (valid) settings.logRawLoading    = value;  menuItemLogRawLoading   .setChecked(settings.logRawLoading   );  break;
+        case 'logRawSaving':      if (valid) settings.logRawSaving     = value;  menuItemLogRawSaving    .setChecked(settings.logRawSaving    );  break;
+        case 'logLoading':        if (valid) settings.logLoading       = value;  menuItemLogLoading      .setChecked(settings.logLoading      );  break;
+        case 'logRawRequests':    if (valid) settings.logRawRequests   = value;  menuItemLogRawRequests  .setChecked(settings.logRawRequests  );  break;
+        case 'logRawValues':      if (valid) settings.logRawValues     = value;  menuItemLogRawValues    .setChecked(settings.logRawValues    );  break;
+        case 'logRequests':       if (valid) settings.logRequests      = value;  menuItemLogRequests     .setChecked(settings.logRequests     );  break;
+        case 'logValueUpdates':   if (valid) settings.logValueUpdates  = value;  menuItemLogValueUpdates .setChecked(settings.logValueUpdates );  break;
+        case 'logObjectUpdates':  if (valid) settings.logObjectUpdates = value;  menuItemLogObjectUpdates.setChecked(settings.logObjectUpdates);  break;
     } 
 
     if (save)
@@ -21160,18 +21171,18 @@ function updateSettingAndMenu(settingName, value, save = true)
 
 function updateSettingsMenus()
 {
-    menuItemShowNodeId   .setChecked(settings.showNodeId      );
-    menuItemShowWires    .setChecked(settings.showWires       );
-    menuItemMessages     .setChecked(settings.logMessages     );
-    menuItemActions      .setChecked(settings.logActions      );
-    menuItemRawLoading   .setChecked(settings.logRawLoading   );
-    menuItemRawSaving    .setChecked(settings.logRawSaving    );
-    menuItemLoading      .setChecked(settings.logLoading      );
-    menuItemRawRequests  .setChecked(settings.logRawRequests  );
-    menuItemRawValues    .setChecked(settings.logRawValues    );
-    menuItemRequests     .setChecked(settings.logRequests     );
-    menuItemValueUpdates .setChecked(settings.logValueUpdates );
-    menuItemObjectUpdates.setChecked(settings.logObjectUpdates);
+    menuItemShowNodeId      .setChecked(settings.showNodeId      );
+    menuItemShowWires       .setChecked(settings.showWires       );
+    menuItemLogMessages     .setChecked(settings.logMessages     );
+    menuItemLogActions      .setChecked(settings.logActions      );
+    menuItemLogRawLoading   .setChecked(settings.logRawLoading   );
+    menuItemLogRawSaving    .setChecked(settings.logRawSaving    );
+    menuItemLogLoading      .setChecked(settings.logLoading      );
+    menuItemLogRawRequests  .setChecked(settings.logRawRequests  );
+    menuItemLogRawValues    .setChecked(settings.logRawValues    );
+    menuItemLogRequests     .setChecked(settings.logRequests     );
+    menuItemLogValueUpdates .setChecked(settings.logValueUpdates );
+    menuItemLogObjectUpdates.setChecked(settings.logObjectUpdates);
 }
 
 
@@ -21348,6 +21359,7 @@ var menuMain;
 var menuMainPreferences;
 var menuMainDebug;
 var menuMainDebugLogging;
+var menuMainHelp;
 
 var menuNumber;
 var menuString;
@@ -21394,38 +21406,38 @@ const iconComment          = '<svg width="18" height="17" viewBox="0 0 18 17" fi
 var menuItemShowNodeId;
 var menuItemShowWires;
 
-var menuItemMessages;
-var menuItemActions;
-var menuItemRawLoading;
-var menuItemRawSaving;
-var menuItemLoading;
-var menuItemRawRequests;
-var menuItemRawValues;
-var menuItemRequests;
-var menuItemValueUpdates
-var menuItemObjectUpdates;
+var menuItemLogMessages;
+var menuItemLogActions;
+var menuItemLogRawLoading;
+var menuItemLogRawSaving;
+var menuItemLogLoading;
+var menuItemLogRawRequests;
+var menuItemLogRawValues;
+var menuItemLogRequests;
+var menuItemLogValueUpdates
+var menuItemLogObjectUpdates;
 
 
 
 function initMenuBar()
 {
     // menuMainPreferences = new Menu('Preferences', false);
-    // menuMainPreferences.addItems([
+    // menuMainPreferences.addItems([ 
     //     new MenuItem('Debug')]);
 
 
     menuMainDebugLogging = new Menu('Logging', false);
     menuMainDebugLogging.addItems([
-        menuItemMessages      = new MenuItem('Messages',       {checkCallback: () => settings.logMessages     , callback: () => updateSettingAndMenu('logMessages',      !settings.logMessages     )}),
-        menuItemActions       = new MenuItem('Actions',        {checkCallback: () => settings.logActions      , callback: () => updateSettingAndMenu('logActions',       !settings.logActions      )}),
-        menuItemRawLoading    = new MenuItem('Raw loading',    {checkCallback: () => settings.logRawLoading   , callback: () => updateSettingAndMenu('logRawLoading',    !settings.logRawLoading   )}),
-        menuItemRawSaving     = new MenuItem('Raw saving',     {checkCallback: () => settings.logRawSaving    , callback: () => updateSettingAndMenu('logRawSaving',     !settings.logRawSaving    )}),
-        menuItemLoading       = new MenuItem('Loading',        {checkCallback: () => settings.logLoading      , callback: () => updateSettingAndMenu('logLoading',       !settings.logLoading      )}),
-        menuItemRawRequests   = new MenuItem('Raw requests',   {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   !settings.logRawRequests  )}),
-        menuItemRawValues     = new MenuItem('Raw values',     {checkCallback: () => settings.logRawValues    , callback: () => updateSettingAndMenu('logRawValues',     !settings.logRawValues    )}),
-        menuItemRequests      = new MenuItem('Requests',       {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      !settings.logRequests     )}),
-        menuItemValueUpdates  = new MenuItem('Value updates',  {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  !settings.logValueUpdates )}),
-        menuItemObjectUpdates = new MenuItem('Object updates', {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', !settings.logObjectUpdates)})]);
+        menuItemLogMessages      = new MenuItem('Messages',       {checkCallback: () => settings.logMessages     , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     )}),
+        menuItemLogActions       = new MenuItem('Actions',        {checkCallback: () => settings.logActions      , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      )}),
+        menuItemLogRawLoading    = new MenuItem('Raw loading',    {checkCallback: () => settings.logRawLoading   , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading   )}),
+        menuItemLogRawSaving     = new MenuItem('Raw saving',     {checkCallback: () => settings.logRawSaving    , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving    )}),
+        menuItemLogLoading       = new MenuItem('Loading',        {checkCallback: () => settings.logLoading      , callback: () => updateSettingAndMenu('logLoading',       true, !settings.logLoading      )}),
+        menuItemLogRawRequests   = new MenuItem('Raw requests',   {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests  )}),
+        menuItemLogRawValues     = new MenuItem('Raw values',     {checkCallback: () => settings.logRawValues    , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues    )}),
+        menuItemLogRequests      = new MenuItem('Requests',       {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
+        menuItemLogValueUpdates  = new MenuItem('Value updates',  {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
+        menuItemLogObjectUpdates = new MenuItem('Object updates', {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)})]);
 
 
     menuMainDebug = new Menu('Debug', false);
@@ -21435,7 +21447,7 @@ function initMenuBar()
             checkCallback: () => settings.showNodeId, 
             callback: () => 
             {
-                updateSettingAndMenu('showNodeId', !settings.showNodeId);
+                updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
                 graph.nodes.forEach(n => n.updateNode());
             }
         }),
@@ -21444,19 +21456,25 @@ function initMenuBar()
             checkCallback: () => settings.showWires, 
             callback: () => 
             {
-                updateSettingAndMenu('showWires', !settings.showWires);
+                updateSettingAndMenu('showWires', true, !settings.showWires);
                 graphView.updateShowWires(settings.showWires);  
             }
         }),
         new MenuItem('Logging', {childMenu: menuMainDebugLogging})]);
 
 
+    menuMainHelp = new Menu('Help and activation', false);
+    menuMainHelp.addItems([
+        new MenuItem('Help page',         {callback: () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+        new MenuItem('Enter product key', {callback: () => showProductKeyDialog()})]);
+
+
     menuMain = new Menu('Main menu', false);
     menuMain.addItems([
-        new MenuItem('File'),
-        //new MenuItem('Preferences', {childMenu: menuMainPreferences}),
-        new MenuItem('Debug',       {childMenu: menuMainDebug      }),
-        new MenuItem('Help and activation')]);
+                       new MenuItem('File'),
+                       //new MenuItem('Preferences', {childMenu: menuMainPreferences}),
+                       new MenuItem('Debug',               {childMenu: menuMainDebug}),
+        menuMainHelp = new MenuItem('Help and activation', {childMenu: menuMainHelp })]);
   
         
     menuNumber = new Menu('Number nodes');
@@ -21800,7 +21818,10 @@ class MenuItem
             if (this.childMenu)
             {
                 if (!currentMenus.includes(this.childMenu))
+                {
+                    hideAllMenusAfter(this.parentMenu);
                     this.childMenu.show(this.div, true);
+                }
             }
             else
                 hideAllMenusAfter(this.parentMenu);
@@ -30559,10 +30580,11 @@ function pushUpdateFromParam(nodes, param)
     //console.log('pushUpdateFromParam('+param+')', nodes);
 
     
-    const request = 
-        param
-        ? [param.node.id, param.id]
-        : ['', ''];
+    const request = settings.logRequests ? [LOG] : [NULL];
+
+
+    if (param) request.push(param.node.id, param.id);
+    else       request.push(NULL, NULL);
 
 
     const gen = createGenObject(param ? param.node : null);
@@ -30594,6 +30616,14 @@ function pushUpdateFromParam(nodes, param)
             && !gen.passedNodes.includes(node))
             request.push(...getNodeRequest(node, gen));
     }
+
+
+    if (settings.logRawRequests)
+        console.log(
+            '%c%s%s', 
+            'background: #60aa60; color: #cfd', 
+            'raw request = ', 
+            request.toString());
 
 
     uiQueueMessageToGenerator({
@@ -30652,7 +30682,7 @@ function getNodeRequest(node, gen)
 function createGenObject(paramNode)
 {
     return {
-        scope:       paramNode ? [{nodeId: paramNode.id, paramId: ''}] : [], // [{nodeId, paramId}]
+        scope:       paramNode ? [{nodeId: paramNode.id, paramId: NULL}] : [], // [{nodeId, paramId}]
         passedNodes: [],
         paramNodes:  [],
         markParams:  true
@@ -38902,7 +38932,7 @@ function uiEndStartGenerator(msg)
     uiGetLocalData('logObjectUpdates');
 
 
-    updateSettingsMenus();
+    //updateSettingsMenus();
     
 
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
@@ -39407,8 +39437,13 @@ function uiGetLocalDataReturn(msg)
         case 'logRequests':      
         case 'logValueUpdates':  
         case 'logObjectUpdates': 
-            if (msg.value)
-                updateSetting(msg.key, parseBool(msg.value)); 
+            updateSettingAndMenu(
+                msg.key, 
+                msg.value, 
+                msg.value 
+                    ? parseBool(msg.value) 
+                    : false,
+                false); 
 
             break;
     }

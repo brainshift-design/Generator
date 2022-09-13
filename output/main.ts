@@ -36,6 +36,9 @@ const NL             = '\n';
 
 
 
+const NULL                = '';
+
+
 const INVALID             = '?';
 const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
 
@@ -172,6 +175,10 @@ const COMMENT             = 'CMNT';
 
 const ACTIVE              = 'ACT';
 const PARAM               = 'PARAM'; // nodeId paramId
+
+
+const LOG                 = 'LOG';
+
 
 
 /*

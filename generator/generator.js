@@ -1,22 +1,19 @@
-var lastUpdateNodeId  = '';
-var lastUpdateParamId = '';
+var lastUpdateNodeId  = NULL;
+var lastUpdateParamId = NULL;
 var lastUpdateValues  = [];
 var lastUpdateObjects = [];
+
+var settings_logRequests;
 
 
 
 function genRequest(request)
 {
-    if (settings.logRawRequests)
-        console.log(
-            '%c%s%s', 
-            'background: #60aa60; color: #cfd', 
-            'raw request = ', 
-            request.toString());
+    settings_logRequests = request[0] == LOG;
 
 
-    const updateNodeId  = request[0];
-    const updateParamId = request[1];
+    const updateNodeId  = request[1];
+    const updateParamId = request[2];
 
 
     const parse = new Parse(
@@ -33,7 +30,7 @@ function genRequest(request)
         genParse(parse);
 
 
-    if (settings.logRequests)
+    if (settings_logRequests)
         logRequest(parse);
 
 
@@ -86,8 +83,8 @@ function genPushUpdateObject(parse, nodeId, object)
 
 function clearLastUpdate()
 {
-    lastUpdateNodeId  = '';
-    lastUpdateParamId = '';
+    lastUpdateNodeId  = NULL;
+    lastUpdateParamId = NULL;
     lastUpdateValues  = [];
     lastUpdateObjects = [];
 }

@@ -24,6 +24,7 @@ const largeScrollGap = 14;
 const MAX_INT32 = 2147483647;
 const TAB = '  ';
 const NL = '\n';
+const NULL = '';
 const INVALID = '?';
 const DISPLAY_INVALID = INVALID; //'🤷‍♂️';
 const NUMBER_VALUE = 'N'; // value (s) (with significant decimals)
@@ -115,6 +116,7 @@ const GROUP = 'GRP'; // ???? count O...
 const COMMENT = 'CMNT';
 const ACTIVE = 'ACT';
 const PARAM = 'PARAM'; // nodeId paramId
+const LOG = 'LOG';
 /*
 
 FRAME       F
