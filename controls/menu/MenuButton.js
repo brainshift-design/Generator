@@ -42,7 +42,7 @@ class MenuButton
         this.div.addEventListener('pointerenter', () => 
         {
             if (!currentMenus.includes(this.menu))
-                this.div.style.background = 'black';
+                this.div.style.background = '#111';
         });
    
 
@@ -63,13 +63,7 @@ class MenuButton
                     if (this.useMenuName)
                     {
                         e.stopPropagation();
-
-                        const curMenus = [...currentMenus];
-
-                        hideAllMenus();
-
-                        if (!curMenus.includes(this.menu))
-                            this.menu.show(this.div);
+                        this.showMenu();
                     }
                     else if (this.menu.lastItem)
                         this.menu.lastItem.select();
@@ -86,13 +80,7 @@ class MenuButton
                 if (e.button == 0)
                 {
                     e.stopPropagation();
-
-                    const curMenus = [...currentMenus];
-
-                    hideAllMenus()
-                    
-                    if (!curMenus.includes(this.menu))
-                        this.menu.show(this.div);
+                    this.showMenu();
                 }
             });
         }
@@ -156,6 +144,20 @@ class MenuButton
     {
         this.icon = icon;
         this.update();
+    }
+
+
+
+    showMenu()
+    {
+        const curMenus = [...currentMenus];
+
+        hideAllMenus()
+        
+        if (!curMenus.includes(this.menu))
+            this.menu.show(this.div);
+        else
+            this.div.style.background = '#111';
     }
 
 
