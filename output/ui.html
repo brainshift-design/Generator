@@ -649,7 +649,7 @@ div
 {
     display:     inline-block;
     width:       100%;
-    height:      24px;
+    height:      auto;
     font-family: Inter;
     font-size:   12px;
     /* box-shadow:  0 0 0 1px red inset; */
@@ -689,7 +689,7 @@ div
 {
     display:    inline-block;
     position:   relative;
-    top:       -8px;
+    top:       -6px;
     /* box-shadow: 0 0 0 1px yellow inset; */
 }
 
@@ -699,7 +699,7 @@ div
     display:             inline-block;
     width:               48px;
     height:              24px;
-    background:          url('data:image/svg+xml;utf8,<svg width="6" height="8" viewBox="0 0 6 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 4L0 0V8L6 4Z" fill="white"/></svg>');
+    background:          url('data:image/svg+xml;utf8,<svg width="6" height="9" viewBox="0 -1 6 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 4L0 0V8L6 4Z" fill="white"/></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
     visibility:          hidden;
@@ -713,6 +713,16 @@ div
 {
     display: inline-block;
     /* box-shadow: 0 0 0 1px green inset; */
+}
+
+
+.menuSeparator
+{
+    display:    inline-block;
+    width:      100%;
+    height:     1px;
+    background: #383838;
+    margin:     8px 0 8px 0;
 }
 
 
@@ -21266,11 +21276,15 @@ class Menu
         //hideAllMenusAfter(this.parentMenu);
 
             
-        this.div     .style.display = 'block';
-        this.div     .style.opacity = '100%';
+        this.div.style.display = 'block';
+        this.div.style.opacity = '100%';
     
-        this.divArrow.style.display = 'block';
-        this.divArrow.style.opacity = '100%';
+        
+        if (!right)
+        {
+            this.divArrow.style.display = 'block';
+            this.divArrow.style.opacity = '100%';
+        }
 
 
         document.body.appendChild(this.div);
@@ -21430,11 +21444,15 @@ function initMenuBar()
     menuMainDebugLogging.addItems([
         menuItemLogMessages      = new MenuItem('Messages',       {checkCallback: () => settings.logMessages     , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     )}),
         menuItemLogActions       = new MenuItem('Actions',        {checkCallback: () => settings.logActions      , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      )}),
+                                   new MenuItem('',               {isSeparator: true}),
         menuItemLogRawLoading    = new MenuItem('Raw loading',    {checkCallback: () => settings.logRawLoading   , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading   )}),
         menuItemLogRawSaving     = new MenuItem('Raw saving',     {checkCallback: () => settings.logRawSaving    , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving    )}),
+                                   new MenuItem('',               {isSeparator: true}),
         menuItemLogLoading       = new MenuItem('Loading',        {checkCallback: () => settings.logLoading      , callback: () => updateSettingAndMenu('logLoading',       true, !settings.logLoading      )}),
+                                   new MenuItem('',               {isSeparator: true}),
         menuItemLogRawRequests   = new MenuItem('Raw requests',   {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests  )}),
         menuItemLogRawValues     = new MenuItem('Raw values',     {checkCallback: () => settings.logRawValues    , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues    )}),
+                                   new MenuItem('',               {isSeparator: true}),
         menuItemLogRequests      = new MenuItem('Requests',       {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
         menuItemLogValueUpdates  = new MenuItem('Value updates',  {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
         menuItemLogObjectUpdates = new MenuItem('Object updates', {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)})]);
@@ -21460,12 +21478,14 @@ function initMenuBar()
                 graphView.updateShowWires(settings.showWires);  
             }
         }),
+        new MenuItem('',        {isSeparator: true}),
         new MenuItem('Logging', {childMenu: menuMainDebugLogging})]);
 
 
     menuMainHelp = new Menu('Help and activation', false);
     menuMainHelp.addItems([
         new MenuItem('Help page',         {callback: () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+        new MenuItem('',                  {isSeparator: true}),
         new MenuItem('Enter product key', {callback: () => showProductKeyDialog()})]);
 
 
@@ -21474,6 +21494,7 @@ function initMenuBar()
                        new MenuItem('File'),
                        //new MenuItem('Preferences', {childMenu: menuMainPreferences}),
                        new MenuItem('Debug',               {childMenu: menuMainDebug}),
+                       new MenuItem('',                    {isSeparator: true}),
         menuMainHelp = new MenuItem('Help and activation', {childMenu: menuMainHelp })]);
   
         
@@ -21502,10 +21523,11 @@ function initMenuBar()
     menuColor = new Menu('Color nodes');
     menuColor.addItems([
         new MenuItem('Color',       {icon: iconColor,          callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div))}),
-        new MenuItem('Validate',    {icon: iconColorValidate   }),
         new MenuItem('Interpolate', {icon: iconColorInterpolate}),
+        new MenuItem('Validate',    {icon: iconColorValidate   }),
         new MenuItem('Contrast',    {icon: iconColorContrast   }),
         new MenuItem('Colorblind',  {icon: iconColorblind      }),
+        new MenuItem('',            {isSeparator: true}),
         new MenuItem('Fill',        {icon: iconFill,           callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
         new MenuItem('Stroke',      {icon: iconStroke,         callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))})]);
     
@@ -21753,6 +21775,8 @@ class MenuItem
 
     childMenu     = null;
 
+    isSeparator   = false;
+
 
     div;
 
@@ -21761,6 +21785,8 @@ class MenuItem
     divName;
     divExpand;
     divShortcut;
+
+    divSeparator;
 
 
 
@@ -21773,15 +21799,21 @@ class MenuItem
         if (options.callback     )   this.callback      = options.callback;
         if (options.checkCallback)   this.checkCallback = options.checkCallback;
         if (options.childMenu    ) { this.childMenu     = options.childMenu;  this.childMenu.parentMenu = this.parentMenu; }
+        if (options.isSeparator  )   this.isSeparator   = options.isSeparator;
 
 
-        this.div         = createDiv('menuItem');
+        this.div          = createDiv('menuItem');
 
-        this.divCheck    = createDiv('menuItemCheck'   );
-        this.divIcon     = createDiv('menuItemIcon'    );
-        this.divName     = createDiv('menuItemName'    );
-        this.divExpand   = createDiv('menuItemExpand'  );
-        this.divShortcut = createDiv('menuItemShortcut');
+        this.divCheck     = createDiv('menuItemCheck'   );
+        this.divIcon      = createDiv('menuItemIcon'    );
+        this.divName      = createDiv('menuItemName'    );
+        this.divExpand    = createDiv('menuItemExpand'  );
+        this.divShortcut  = createDiv('menuItemShortcut');
+
+        this.divSeparator = createDiv('menuSeparator'   );
+
+
+        this.div.style.pointerEvents = this.isSeparator ? 'none' : 'all';
 
 
         this.divName.innerHTML = this.name;
@@ -21804,11 +21836,16 @@ class MenuItem
             this.divIcon.style.backgroundRepeat   = 'no-repeat';
         }        
 
-        this.div.appendChild(this.divCheck   );
-        this.div.appendChild(this.divIcon    );
-        this.div.appendChild(this.divName    );
-        this.div.appendChild(this.divExpand  );
-        this.div.appendChild(this.divShortcut);
+        if (!this.isSeparator)
+        {
+            this.div.appendChild(this.divCheck   );
+            this.div.appendChild(this.divIcon    );
+            this.div.appendChild(this.divName    );
+            this.div.appendChild(this.divExpand  );
+            this.div.appendChild(this.divShortcut);
+        }
+        else
+            this.div.appendChild(this.divSeparator);
 
 
         this.div.addEventListener('pointerdown', e => e.stopPropagation());

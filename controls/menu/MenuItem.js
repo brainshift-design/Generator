@@ -13,6 +13,8 @@ class MenuItem
 
     childMenu     = null;
 
+    isSeparator   = false;
+
 
     div;
 
@@ -21,6 +23,8 @@ class MenuItem
     divName;
     divExpand;
     divShortcut;
+
+    divSeparator;
 
 
 
@@ -33,15 +37,21 @@ class MenuItem
         if (options.callback     )   this.callback      = options.callback;
         if (options.checkCallback)   this.checkCallback = options.checkCallback;
         if (options.childMenu    ) { this.childMenu     = options.childMenu;  this.childMenu.parentMenu = this.parentMenu; }
+        if (options.isSeparator  )   this.isSeparator   = options.isSeparator;
 
 
-        this.div         = createDiv('menuItem');
+        this.div          = createDiv('menuItem');
 
-        this.divCheck    = createDiv('menuItemCheck'   );
-        this.divIcon     = createDiv('menuItemIcon'    );
-        this.divName     = createDiv('menuItemName'    );
-        this.divExpand   = createDiv('menuItemExpand'  );
-        this.divShortcut = createDiv('menuItemShortcut');
+        this.divCheck     = createDiv('menuItemCheck'   );
+        this.divIcon      = createDiv('menuItemIcon'    );
+        this.divName      = createDiv('menuItemName'    );
+        this.divExpand    = createDiv('menuItemExpand'  );
+        this.divShortcut  = createDiv('menuItemShortcut');
+
+        this.divSeparator = createDiv('menuSeparator'   );
+
+
+        this.div.style.pointerEvents = this.isSeparator ? 'none' : 'all';
 
 
         this.divName.innerHTML = this.name;
@@ -64,11 +74,16 @@ class MenuItem
             this.divIcon.style.backgroundRepeat   = 'no-repeat';
         }        
 
-        this.div.appendChild(this.divCheck   );
-        this.div.appendChild(this.divIcon    );
-        this.div.appendChild(this.divName    );
-        this.div.appendChild(this.divExpand  );
-        this.div.appendChild(this.divShortcut);
+        if (!this.isSeparator)
+        {
+            this.div.appendChild(this.divCheck   );
+            this.div.appendChild(this.divIcon    );
+            this.div.appendChild(this.divName    );
+            this.div.appendChild(this.divExpand  );
+            this.div.appendChild(this.divShortcut);
+        }
+        else
+            this.div.appendChild(this.divSeparator);
 
 
         this.div.addEventListener('pointerdown', e => e.stopPropagation());

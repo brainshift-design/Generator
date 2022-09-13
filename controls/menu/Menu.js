@@ -78,11 +78,15 @@ class Menu
         //hideAllMenusAfter(this.parentMenu);
 
             
-        this.div     .style.display = 'block';
-        this.div     .style.opacity = '100%';
+        this.div.style.display = 'block';
+        this.div.style.opacity = '100%';
     
-        this.divArrow.style.display = 'block';
-        this.divArrow.style.opacity = '100%';
+        
+        if (!right)
+        {
+            this.divArrow.style.display = 'block';
+            this.divArrow.style.opacity = '100%';
+        }
 
 
         document.body.appendChild(this.div);
