@@ -8,6 +8,9 @@ class MenuButton
     callback;
     useMenuName;
 
+    selectLast;
+
+
     div;
 
     divIcon;
@@ -31,6 +34,7 @@ class MenuButton
 
         this.callback    = options.callback    ? options.callback    : null;
         this.useMenuName = options.useMenuName ? options.useMenuName : false;
+        this.selectLast  = options.selectLast  ? options.selectLast  : true;
 
 
         this.div      = createDiv('menuButton');
@@ -65,7 +69,8 @@ class MenuButton
                         e.stopPropagation();
                         this.showMenu();
                     }
-                    else if (this.menu.lastItem)
+                    else if (this.selectLast
+                          && this.menu.lastItem)
                         this.menu.lastItem.select();
                 }
             });
