@@ -44,42 +44,68 @@ const iconStar             = '<svg width="18" height="18" viewBox="0 0 18 18" fi
 const iconComment          = '<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.92701 11.5375L3.6897 11.045C3.24801 10.1283 3 9.09994 3 8.01086C3 4.14487 6.13401 1.01086 10 1.01086C13.866 1.01086 17 4.14487 17 8.01086C17 11.8769 13.866 15.0109 10 15.0109C8.89526 15.0109 7.85296 14.7557 6.92628 14.302L6.65842 14.1708L6.36249 14.2078L1.94388 14.7601L3.64047 12.0032L3.92701 11.5375ZM0.671856 14.9191L0 16.0109L1.27203 15.8519L6.48652 15.2001C7.5471 15.7194 8.73951 16.0109 10 16.0109C14.4183 16.0109 18 12.4292 18 8.01086C18 3.59258 14.4183 0.0108643 10 0.0108643C5.58172 0.0108643 2 3.59258 2 8.01086C2 9.25344 2.28329 10.4299 2.78881 11.4791L0.671856 14.9191Z" fill="white"/></svg>';
 
 
+
+var menuItemShowNodeId;
+var menuItemShowWires;
+
+var menuItemMessages;
+var menuItemActions;
+var menuItemRawLoading;
+var menuItemRawSaving;
+var menuItemLoading;
+var menuItemRawRequests;
+var menuItemRawValues;
+var menuItemRequests;
+var menuItemValueUpdates
+var menuItemObjectUpdates;
+
+
+
 function initMenuBar()
 {
-    // menuMainPreferences = new Menu('Preferences');
+    // menuMainPreferences = new Menu('Preferences', false);
     // menuMainPreferences.addItems([
     //     new MenuItem('Debug')]);
 
-        
-    menuMainDebugLogging = new Menu('Logging');
+
+    menuMainDebugLogging = new Menu('Logging', false);
     menuMainDebugLogging.addItems([
-        new MenuItem('Messages',       {checkCallback: () => settings.logMessages     , callback: () => updateSetting('logMessages',      !settings.logMessages     )}),
-        new MenuItem('Actions',        {checkCallback: () => settings.logActions      , callback: () => updateSetting('logActions',       !settings.logActions      )}),
-        new MenuItem('Raw loading',    {checkCallback: () => settings.logRawLoading   , callback: () => updateSetting('logRawLoading',    !settings.logRawLoading   )}),
-        new MenuItem('Raw saving',     {checkCallback: () => settings.logRawSaving    , callback: () => updateSetting('logRawSaving',     !settings.logRawSaving    )}),
-        new MenuItem('Loading',        {checkCallback: () => settings.logLoading      , callback: () => updateSetting('logLoading',       !settings.logLoading      )}),
-        new MenuItem('Raw requests',   {checkCallback: () => settings.logRawRequests  , callback: () => updateSetting('logRawRequests',   !settings.logRawRequests  )}),
-        new MenuItem('Raw values',     {checkCallback: () => settings.logRawValues    , callback: () => updateSetting('logRawValues',     !settings.logRawValues    )}),
-        new MenuItem('Requests',       {checkCallback: () => settings.logRequests     , callback: () => updateSetting('logRequests',      !settings.logRequests     )}),
-        new MenuItem('Value updates',  {checkCallback: () => settings.logValueUpdates , callback: () => updateSetting('logValueUpdates',  !settings.logValueUpdates )}),
-        new MenuItem('Object updates', {checkCallback: () => settings.logObjectUpdates, callback: () => updateSetting('logObjectUpdates', !settings.logObjectUpdates)})]);
+        menuItemMessages      = new MenuItem('Messages',       {checkCallback: () => settings.logMessages     , callback: () => updateSettingAndMenu('logMessages',      !settings.logMessages     )}),
+        menuItemActions       = new MenuItem('Actions',        {checkCallback: () => settings.logActions      , callback: () => updateSettingAndMenu('logActions',       !settings.logActions      )}),
+        menuItemRawLoading    = new MenuItem('Raw loading',    {checkCallback: () => settings.logRawLoading   , callback: () => updateSettingAndMenu('logRawLoading',    !settings.logRawLoading   )}),
+        menuItemRawSaving     = new MenuItem('Raw saving',     {checkCallback: () => settings.logRawSaving    , callback: () => updateSettingAndMenu('logRawSaving',     !settings.logRawSaving    )}),
+        menuItemLoading       = new MenuItem('Loading',        {checkCallback: () => settings.logLoading      , callback: () => updateSettingAndMenu('logLoading',       !settings.logLoading      )}),
+        menuItemRawRequests   = new MenuItem('Raw requests',   {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   !settings.logRawRequests  )}),
+        menuItemRawValues     = new MenuItem('Raw values',     {checkCallback: () => settings.logRawValues    , callback: () => updateSettingAndMenu('logRawValues',     !settings.logRawValues    )}),
+        menuItemRequests      = new MenuItem('Requests',       {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      !settings.logRequests     )}),
+        menuItemValueUpdates  = new MenuItem('Value updates',  {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  !settings.logValueUpdates )}),
+        menuItemObjectUpdates = new MenuItem('Object updates', {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', !settings.logObjectUpdates)})]);
 
 
-    menuMainDebug = new Menu('Debug');
+    menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-        new MenuItem('Show node IDs',
+        menuItemShowNodeId = new MenuItem('Show node IDs',
         {
             checkCallback: () => settings.showNodeId, 
             callback: () => 
             {
-                updateSetting('showNodeId', !settings.showNodeId);
+                updateSettingAndMenu('showNodeId', !settings.showNodeId);
                 graph.nodes.forEach(n => n.updateNode());
+            }
+        }),
+        menuItemShowWires = new MenuItem('Show wires',
+        {
+            checkCallback: () => settings.showWires, 
+            callback: () => 
+            {
+                updateSettingAndMenu('showWires', !settings.showWires);
+                graphView.updateShowWires(settings.showWires);  
             }
         }),
         new MenuItem('Logging', {childMenu: menuMainDebugLogging})]);
 
 
-    menuMain = new Menu('Main menu');
+    menuMain = new Menu('Main menu', false);
     menuMain.addItems([
         new MenuItem('File'),
         //new MenuItem('Preferences', {childMenu: menuMainPreferences}),
@@ -87,7 +113,7 @@ function initMenuBar()
         new MenuItem('Help and activation')]);
   
         
-    menuNumber = new Menu('Number nodes', true);
+    menuNumber = new Menu('Number nodes');
     menuNumber.addItems([
         new MenuItem('Number',      {icon: iconNumber,    callback: () => actionManager.do(new CreateNodeAction(NUMBER, btnNumber.div))}),
         new MenuItem('Limits',      {icon: iconLimits     }),
@@ -101,7 +127,7 @@ function initMenuBar()
         new MenuItem('Interpolate', {icon: iconInterpolate})]);
     
     
-    menuString = new Menu('String nodes', true);
+    menuString = new Menu('String nodes');
     menuString.addItems([
         new MenuItem('String',      {icon: iconString       }),
         new MenuItem('Join',        {icon: iconStringJoin   }),
@@ -109,7 +135,7 @@ function initMenuBar()
         new MenuItem('Replace',     {icon: iconStringReplace})]);
     
     
-    menuColor = new Menu('Color nodes', true);
+    menuColor = new Menu('Color nodes');
     menuColor.addItems([
         new MenuItem('Color',       {icon: iconColor,          callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div))}),
         new MenuItem('Validate',    {icon: iconColorValidate   }),
@@ -120,7 +146,7 @@ function initMenuBar()
         new MenuItem('Stroke',      {icon: iconStroke,         callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))})]);
     
     
-    menuShape = new Menu('Shape nodes', true);
+    menuShape = new Menu('Shape nodes');
     menuShape.addItems([
         new MenuItem('Rectangle',   {icon: iconRectangle, callback: () => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div))}),
         new MenuItem('Line',        {icon: iconLine   }),

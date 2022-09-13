@@ -20,7 +20,6 @@ graphView.savedInputIndex = -1;
 
 graphView.connPointerId   = -1;
 
-graphView.showWires       = true;
 graphView._soloNode       = null;
    
 graphView.selecting       = false;
@@ -344,21 +343,9 @@ graphView.unsoloNode = function()
 
 
 
-// graphView.toggleShowWires = function()
-// {
-//     graphView.showWires = !graphView.showWires;
-
-//     uiSaveGraphView();
-
-//     updateToggleShowWiresButton();
-//     graphView.updateShowWires();
-// };
-
-
-
 graphView.updateShowWires = function(updateNodes = true)
 {
-    graph.connections.forEach(c => show(c.wire, graphView.showWires));
+    graph.connections.forEach(c => show(c.wire, settings.showWires));
 
     if (updateNodes) 
         graph.nodes.forEach(n => n.updateNode());
@@ -368,12 +355,11 @@ graphView.updateShowWires = function(updateNodes = true)
 
 graphView.toJson = function()
 {
-    const tab = TAB;
+    const tab = '\n' + TAB;
 
-    return '{\n'
-        + tab + '"zoom": "'      + graphView.zoom  + '",\n'
-        + tab + '"panx": "'      + graphView.pan.x + '",\n'
-        + tab + '"pany": "'      + graphView.pan.y + '",\n'
-        + tab + '"showWires": "' + boolString(graphView.showWires) + '"\n'
+    return '{'
+        + tab + '"zoom": "'      + graphView.zoom  + '",'
+        + tab + '"panx": "'      + graphView.pan.x + '",'
+        + tab + '"pany": "'      + graphView.pan.y + '"'
         + '\n}';
 };

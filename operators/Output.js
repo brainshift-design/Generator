@@ -151,11 +151,11 @@ class Output
             : this.colorLight;
 
         const colorStyle = 
-            graphView.showWires
+            settings.showWires
             ? rgba2style(rgb_a(color, mouseOver ? Math.min(color[3] * 1.4, 1) : color[3] / 1.4))
             : 'transparent';
 
-        this.control.style.pointerEvents   = graphView.showWires ? 'auto' : 'none';
+        this.control.style.pointerEvents   = settings.showWires ? 'auto' : 'none';
         this.control.style.backgroundColor = colorStyle;
 
         this.control.style.boxShadow = 

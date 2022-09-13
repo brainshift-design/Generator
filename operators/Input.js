@@ -186,7 +186,7 @@ extends EventTarget
             : this.colorLight;
                      
         const colorStyle = 
-            graphView.showWires
+            settings.showWires
             ? rgba2style(rgb_a(
                 color,
                 (mouseOver 
@@ -213,7 +213,7 @@ extends EventTarget
         this.control.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
         this.control.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
         this.control.style.boxShadow     = '0 0 0 1px ' + colorStyle;
-        this.control.style.pointerEvents = graphView.showWires ? 'auto' : 'none';
+        this.control.style.pointerEvents = settings.showWires ? 'auto' : 'none';
 
         this.hitbox.style.left   = isConnected ? -2 : -3;
         this.hitbox.style.top    = isConnected ? -2 : -3;

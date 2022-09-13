@@ -140,7 +140,7 @@ function createNodeHeader(node)
 
 
         if (e.button == 0)
-            currentMenus.forEach(m => m.hide());
+            hideAllMenus();
 
 
         if (    e.button == 0

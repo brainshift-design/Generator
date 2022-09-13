@@ -29,10 +29,10 @@ class MenuItem
         this.name = name;
 
 
-        if (options.icon         ) this.icon          = options.icon;
-        if (options.callback     ) this.callback      = options.callback;
-        if (options.checkCallback) this.checkCallback = options.checkCallback;
-        if (options.childMenu    ) this.childMenu     = options.childMenu;
+        if (options.icon         )   this.icon          = options.icon;
+        if (options.callback     )   this.callback      = options.callback;
+        if (options.checkCallback)   this.checkCallback = options.checkCallback;
+        if (options.childMenu    ) { this.childMenu     = options.childMenu;  this.childMenu.parentMenu = this.parentMenu; }
 
 
         this.div         = createDiv('menuItem');
@@ -78,7 +78,7 @@ class MenuItem
         this.div.addEventListener('pointerenter', () =>
         {
             if (this.childMenu)
-                this.childMenu.show(this.div, false);
+                this.childMenu.show(this.div);
         });
         
         
@@ -88,7 +88,7 @@ class MenuItem
 
             if (    this.childMenu
                 && !this.childMenu.overMenu
-                && e.clientX <= menuRect.right)
+                && e.clientX < menuRect.right)
                 this.childMenu.hide();
         });
     }
@@ -97,12 +97,23 @@ class MenuItem
 
     select()
     {
-        currentMenus.forEach(m => m.hide());
+        if (currentMenus.length > 0) // this lets the item be selected without its parent menu being involved
+        {
+            currentMenus[0].lastItem = this;
+            currentMenus[0].button.update();
+        }
 
-        this.parentMenu.lastItem = this;
-        this.parentMenu.button.update();
+        hideAllMenus();
 
         if (this.callback) 
             this.callback(); 
+    }
+
+
+
+    setChecked(checked)
+    {
+        this.checked = checked;
+        this.divCheck.style.visibility = this.checked ? 'visible' : 'hidden';
     }
 }

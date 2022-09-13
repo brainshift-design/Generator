@@ -18,7 +18,7 @@ document.addEventListener('pointerdown', function(e)
         }
 
 
-        currentMenus.forEach(m => m.hide());
+        hideAllMenus();
     }
 });
 

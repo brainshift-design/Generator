@@ -7,15 +7,16 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiEndFigMessage':      uiEndFigMessage(msg.msgCmd);                                        break;
-
         case 'uiEndStartGenerator':  uiEndStartGenerator (msg);                                          break;
+
         case 'uiLoadNodesAndConns':  uiLoadNodesAndConns (msg.nodesJson, msg.connsJson, msg.activeJson); break;
-         
+        
         case 'uiGetLocalDataReturn': uiGetLocalDataReturn(msg);                                          break;
         case 'uiGetPageDataReturn':  uiGetPageDataReturn (msg);                                          break;
-               
-        case 'uiEndResizeWindow':    uiEndResizeWindow();                                                break;
+        
+        case 'uiEndResizeWindow':    uiEndResizeWindow   ();                                             break;
+        
+        case 'uiEndFigMessage':      uiEndFigMessage     (msg.msgCmd);                                   break;
     }
 }    
 

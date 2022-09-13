@@ -4,6 +4,8 @@ var genMessages = []; // messages from UI to Generator
 var genMessagePosted = false;
 
 
+uiClearAllLocalData();
+
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
@@ -41,16 +43,24 @@ initColor();
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
+
+
 function uiEndStartGenerator(msg)
 {
+    initModeColors();
+    initMenuBar();
+
+
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
+
 
     uiGetLocalData('graphView');
 
 
     uiGetLocalData('showNodeId'      );
-    
+    uiGetLocalData('showWires'       );
+
     uiGetLocalData('logMessages'     );
     uiGetLocalData('logActions'      );
     uiGetLocalData('logRawLoading'   );
@@ -63,15 +73,11 @@ function uiEndStartGenerator(msg)
     uiGetLocalData('logObjectUpdates');
 
 
+    updateSettingsMenus();
+    
+
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
 
-    //uiEndResizeWindow();
 
-
-    initModeColors();
-    
-    initMenuBar();
-    
-    
     window.focus();
 }

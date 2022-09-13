@@ -235,7 +235,7 @@ class Connection
                     || this.output.node == graphView._soloNode);
             
             const showWire = 
-                   graphView.showWires 
+                   settings.showWires 
                 || isSolo;
 
             const isReordering =   

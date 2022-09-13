@@ -4,6 +4,9 @@ var currentMenus = [];
 
 class Menu
 {
+    parentMenu = null;
+
+    
     name;
 
     button   = null;
@@ -12,23 +15,23 @@ class Menu
     div;
     divArrow;
 
-    showCheck;
+    showIcons;
 
     
-    overMenu = false;
+    overMenu   = false;
 
     
-    items    = [];
+    items      = [];
 
-    lastItem = null;
+    lastItem   = null;
 
 
 
-    constructor(name, showCheck = false)
+    constructor(name, showIcons = true)
     {
         this.name       = name;
 
-        this.showCheck  = showCheck;
+        this.showIcons  = showIcons;
 
         this.div        = createDiv('menu');
         this.divArrow   = createDiv('menuArrow');
@@ -49,8 +52,8 @@ class Menu
             if (i > 0) 
                 this.div.appendChild(document.createElement('br'));
 
-            if (!this.showCheck)
-                this.items[i].divCheck.style.display = 'none';
+            if (!this.showIcons)
+                this.items[i].divIcon.style.display = 'none';
 
             this.items[i].parentMenu = this;
             this.items[i].index      = i;
@@ -73,8 +76,15 @@ class Menu
     show(srcDiv, hideCurrent = true)
     {
         if (hideCurrent)
-            currentMenus.forEach(m => m.hide());
-    
+        {
+            const parentIndex = currentMenus.indexOf(this.parentMenu);
+            if (parentIndex > -1)
+            {
+                for (let i = currentMenus-1; i > parentIndex; i--)
+                    currentMenus[i].hide();
+            }
+        }
+
             
         this.div     .style.display = 'block';
         this.div     .style.opacity = '100%';
@@ -143,4 +153,12 @@ class Menu
 
         removeFrom(currentMenus, this);
     }
+}
+
+
+
+function hideAllMenus()
+{
+    for (let i = currentMenus.length-1; i >= 0; i--)
+        currentMenus[i].hide();
 }

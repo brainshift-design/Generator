@@ -27,6 +27,16 @@ function figSetLocalData(key, value)
 
 
 
+async function figClearAllLocalData()
+{
+    const keys = await figma.clientStorage.keysAsync(); 
+
+    for (const key of keys)
+        figma.clientStorage.deleteAsync(key);
+}
+
+
+
 function figGetPageData(key, postToUi = true)
 {
     const data = figma.currentPage.getPluginData(key);

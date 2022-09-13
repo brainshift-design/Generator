@@ -14,6 +14,8 @@ figma.ui.onmessage = msg =>
                            
         case 'figGetLocalData':                 figGetLocalData                (msg.key);                                    break;
         case 'figSetLocalData':                 figSetLocalData                (msg.key, msg.value);                         break;
+
+        case 'figClearAllLocalData':            figClearAllLocalData           ();                                           break;
                    
         case 'figGetPageData':                  figGetPageData                 (msg.key);                                    break;
         case 'figSetPageData':                  figSetPageData                 (msg.key, msg.value);                         break;

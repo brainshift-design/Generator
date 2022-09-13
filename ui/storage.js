@@ -30,6 +30,17 @@ function uiClearLocalData(key)
 
 
 
+function uiClearAllLocalData(key)
+{
+    uiQueueMessageToFigma({ 
+        cmd:  'figClearAllLocalData',
+        key:   key,
+        value: ''
+    });
+}
+
+
+
 function uiGetPageData(key)
 {
     uiQueueMessageToFigma({ 
@@ -85,20 +96,27 @@ function uiGetLocalDataReturn(msg)
 {
     switch (msg.key)
     {
-        case 'graphView':        uiLoadGraphView(msg.value); break;
+        case 'graphView':        
+            uiLoadGraphView(msg.value); 
+            break;
 
-        case 'showNodeId':       settings.showNodeId       = parseBool(msg.value); break;
+        case 'showNodeId':       
+        case 'showWires':        
 
-        case 'logMessages':      settings.logMessages      = parseBool(msg.value); break;
-        case 'logActions':       settings.logActions       = parseBool(msg.value); break;
-        case 'logRawLoading':    settings.logRawLoading    = parseBool(msg.value); break;
-        case 'logRawSaving':     settings.logRawSaving     = parseBool(msg.value); break;
-        case 'logLoading':       settings.logLoading       = parseBool(msg.value); break;
-        case 'logRawRequests':   settings.logRawRequests   = parseBool(msg.value); break;
-        case 'logRawValues':     settings.logRawValues     = parseBool(msg.value); break;
-        case 'logRequests':      settings.logRequests      = parseBool(msg.value); break;
-        case 'logValueUpdates':  settings.logValueUpdates  = parseBool(msg.value); break;
-        case 'logObjectUpdates': settings.logObjectUpdates = parseBool(msg.value); break;
+        case 'logMessages':      
+        case 'logActions':       
+        case 'logRawLoading':    
+        case 'logRawSaving':     
+        case 'logLoading':       
+        case 'logRawRequests':   
+        case 'logRawValues':     
+        case 'logRequests':      
+        case 'logValueUpdates':  
+        case 'logObjectUpdates': 
+            if (msg.value)
+                updateSetting(msg.key, parseBool(msg.value)); 
+
+            break;
     }
 }
 
@@ -124,29 +142,29 @@ function uiLoadGraphView(json)
     graphView.canUpdateNodes = false;
    
 
-    const data = JSON.parse(json);
-    //console.log(json);
-
-
-    const pan = point( 
-        parseFloat(data.panx), 
-        parseFloat(data.pany));
-
-    if (isNaN(pan.x)) pan.x = 0;
-    if (isNaN(pan.y)) pan.y = 0;
+    let pan  = point(0, 0);
+    let zoom = 1;
 
     
-    const zoom = parseFloat(data.zoom);
-    if (isNaN(zoom)) zoom  = 1;
+    if (json)
+    {
+        const data = JSON.parse(json);
+
+        pan = point( 
+            parseFloat(data.panx), 
+            parseFloat(data.pany));
+
+        if (isNaN(pan.x)) pan.x = 0;
+        if (isNaN(pan.y)) pan.y = 0;
+
+        
+        zoom = parseFloat(data.zoom);
+        if (isNaN(zoom)) zoom  = 1;
+    }
 
 
-    graphView._zoom = zoom;
-    graphView._pan  = pan;
-
-
-    // graphView.setPanAndZoom(pan, zoom);
-
-    graphView.showWires = isTrue(data.showWires);
+    graphView._zoom     = zoom;
+    graphView._pan      = pan;
 }
 
 

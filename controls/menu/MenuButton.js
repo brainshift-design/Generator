@@ -61,7 +61,7 @@ class MenuButton
 
                         const curMenus = [...currentMenus];
 
-                        currentMenus.forEach(m => m.hide());
+                        hideAllMenus();
 
                         if (!curMenus.includes(this.menu))
                             this.menu.show(this.div);
@@ -84,7 +84,7 @@ class MenuButton
 
                     const curMenus = [...currentMenus];
 
-                    currentMenus.forEach(m => m.hide());
+                    hideAllMenus()
                     
                     if (!curMenus.includes(this.menu))
                         this.menu.show(this.div);
