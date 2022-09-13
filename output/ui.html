@@ -21558,8 +21558,13 @@ class MenuButton
         this.divArrow = createDiv('menuButtonArrow');
 
 
-        this.div.addEventListener('pointerenter', () => this.div.style.background = 'black');
+        this.div.addEventListener('pointerenter', () => 
+        {
+            if (!currentMenus.includes(this.menu))
+                this.div.style.background = 'black';
+        });
    
+
         this.div.addEventListener('pointerleave', () => 
         {
             if (    currentMenus.length == 0
