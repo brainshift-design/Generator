@@ -21793,21 +21793,24 @@ class MenuItem
         this.div.addEventListener('pointerenter', () =>
         {
             if (this.childMenu)
-                this.childMenu.show(this.div, true);
+            {
+                if (!currentMenus.includes(this.childMenu))
+                    this.childMenu.show(this.div, true);
+            }
             else
                 hideAllMenusAfter(this.parentMenu);
         });
         
         
-        this.div.addEventListener('pointerleave', e =>
-        {
-            const menuRect = this.div.getBoundingClientRect();
+        // this.div.addEventListener('pointerleave', e =>
+        // {
+        //     const menuRect = this.div.getBoundingClientRect();
 
-            if (    this.childMenu
-                && !this.childMenu.overMenu
-                && e.clientX < menuRect.right)
-                this.childMenu.hide();
-        });
+        //     if (    this.childMenu
+        //         && !this.childMenu.overMenu
+        //         && e.clientX < menuRect.right)
+        //         this.childMenu.hide();
+        // });
     }
 
 
