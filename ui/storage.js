@@ -98,6 +98,7 @@ function uiGetLocalDataReturn(msg)
     {
         case 'graphView':        
             uiLoadGraphView(msg.value); 
+            graphView.updatePanAndZoom();
             break;
 
         case 'showNodeId':       

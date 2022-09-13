@@ -74,6 +74,8 @@ var menuItemLogRequests;
 var menuItemLogValueUpdates
 var menuItemLogObjectUpdates;
 
+var menuItemZoomTo100;
+
 
 
 function initMenuBar()
@@ -186,10 +188,10 @@ function initMenuBar()
 
     menuZoom = new Menu('Zoom/view options', false);
     menuZoom.addItems([
-        new MenuItem('Zoom in',      {callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
-        new MenuItem('Zoom out',     {callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
-        new MenuItem('Zoom to fit',  {}),
-        new MenuItem('Zoom to 100%', {callback: () => graphView.zoom = 1})]);
+                            new MenuItem('Zoom in',      {callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
+                            new MenuItem('Zoom out',     {callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
+                            new MenuItem('Zoom to fit',  {}),
+        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {callback: () => graphView.zoom = 1})]);
 
 
     btnMain    = new MenuButton('', menuMain, {useMenuName: true});
