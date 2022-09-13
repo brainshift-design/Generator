@@ -49,6 +49,17 @@ const iconComment          = '<svg width="18" height="17" viewBox="0 0 18 17" fi
 
 
 
+var btnMain;
+var btnNumber;
+var btnString;
+var btnColor;
+var btnShape;
+var btnComment;
+
+var btnZoom;
+
+
+
 var menuItemShowNodeId;
 var menuItemShowWires;
 
@@ -181,23 +192,24 @@ function initMenuBar()
         new MenuItem('Zoom to 100%', {callback: () => graphView.zoom = 1})]);
 
 
-    const btnMain    = new MenuButton('', menuMain, {useMenuName: true});
-    const btnNumber  = new MenuButton('', menuNumber);
-    const btnString  = new MenuButton('', menuString);
-    const btnColor   = new MenuButton('', menuColor);
-    const btnShape   = new MenuButton('', menuShape);
-    const btnComment = new MenuButton('Add comment', null, 
+    btnMain    = new MenuButton('', menuMain, {useMenuName: true});
+    btnNumber  = new MenuButton('', menuNumber);
+    btnString  = new MenuButton('', menuString);
+    btnColor   = new MenuButton('', menuColor);
+    btnShape   = new MenuButton('', menuShape);
+    btnComment = new MenuButton('Add comment', null, 
     {
         callback: () => actionManager.do(new CreateNodeAction(COMMENT, btnComment.div))
     });
 
 
-    const btnZoom = new MenuButton('', menuZoom, {selectLast: false});
+    btnZoom = new MenuButton('', menuZoom, {useMenuName: true, selectLast: false});
 
-    btnZoom.div.style.width        = '64px';
     btnZoom.div.style.position     = 'absolute';
     btnZoom.div.style.right        = '0px';
-    btnZoom.div.style.paddingRight = '0px';
+    btnZoom.div.style.paddingRight = '5px';
+    btnZoom.div.style.paddingLeft  = '13px';
+    // btnZoom.div.style.boxShadow    = '0 0 0 1px red inset';
 
 
     btnMain   .setIcon(iconGenerator);
