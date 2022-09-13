@@ -4,11 +4,6 @@ const figObjectArrays = []; // {nodeId, [objects]}
 
 function figUpdate(msg)
 {
-    if (   settings.logObjectUpdates
-        && msg.objects.length > 0)
-        logObjectUpdates(msg.objects);
-
-
     if (   msg.updateNodeId  != ''
         && msg.updateParamId != '')
     {

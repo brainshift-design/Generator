@@ -4,7 +4,7 @@ var genMessages = []; // messages from UI to Generator
 var genMessagePosted = false;
 
 
-uiClearAllLocalData();
+//uiClearAllLocalData();
 
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');

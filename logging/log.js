@@ -92,3 +92,13 @@ function logValueUpdates(updateNodeId, updateParamId, values)
         'background: #e70; color: white;', 
         log);
 }
+
+
+
+function logObjectUpdates(objects)
+{
+    console.log(
+        '%cobjects', 
+        'background: #07e; color: white;', 
+        objects);
+}

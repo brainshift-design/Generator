@@ -5,6 +5,4 @@
 ../logging/log figma.js
 ../logging/log request.js
 
-../ui/settings.js
-
 ../figma/*.ts0

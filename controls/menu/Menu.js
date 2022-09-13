@@ -73,17 +73,9 @@ class Menu
 
 
 
-    show(srcDiv, hideCurrent = true)
+    show(srcDiv, right = false)
     {
-        if (hideCurrent)
-        {
-            const parentIndex = currentMenus.indexOf(this.parentMenu);
-            if (parentIndex > -1)
-            {
-                for (let i = currentMenus-1; i > parentIndex; i--)
-                    currentMenus[i].hide();
-            }
-        }
+        //hideAllMenusAfter(this.parentMenu);
 
             
         this.div     .style.display = 'block';
@@ -106,15 +98,15 @@ class Menu
      
         this.div.style.left = Math.min(Math.max(
             margin, 
-            hideCurrent
-            ? srcRect.x + srcRect.width/2 - this.div.offsetWidth/2
-            : srcRect.x + srcRect.width), 
+            right
+            ? srcRect.x + srcRect.width 
+            : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2),
             graphView.offsetWidth - this.div.offsetWidth - margin);
     
         this.div.style.top = 
-            hideCurrent
-            ? srcRect.y + srcRect.height + this.divArrow.offsetHeight
-            : srcRect.y;
+            right
+            ? srcRect.y - 3
+            : srcRect.y + srcRect.height + this.divArrow.offsetHeight;
 
         
         this.divArrow.style.left = srcRect.x + srcRect.width/2;
@@ -143,7 +135,8 @@ class Menu
         this.divArrow.style.display = 'none';
         this.divArrow.style.opacity = '0%';
 
-        if (    currentMenus.length == 1
+
+        if (    this.button
             && !this.button.overArrow)
         {
             this.button.divArrow.style.transform  = 'translateY(0)';
@@ -160,5 +153,15 @@ class Menu
 function hideAllMenus()
 {
     for (let i = currentMenus.length-1; i >= 0; i--)
+        currentMenus[i].hide();
+}
+
+
+
+function hideAllMenusAfter(menu)
+{
+    const index = currentMenus.indexOf(menu);
+
+    for (let i = currentMenus.length-1; i > index; i--)
         currentMenus[i].hide();
 }

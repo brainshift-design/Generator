@@ -5,6 +5,11 @@ onmessage = e =>
 {
     let msg = JSON.parse(e.data.pluginMessage);
 
+
+    if (settings.logMessages)
+        console.log('%cFIG '+msg.cmd+' --► UI', 'background: #08f; color: white;');
+
+
     switch (msg.cmd)
     {
         case 'uiEndStartGenerator':  uiEndStartGenerator (msg);                                          break;

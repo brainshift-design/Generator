@@ -4421,6 +4421,16 @@ function logValueUpdates(updateNodeId, updateParamId, values)
 }
 
 
+
+function logObjectUpdates(objects)
+{
+    console.log(
+        '%cobjects', 
+        'background: #07e; color: white;', 
+        objects);
+}
+
+
 function logRequest(parse)
 {
     let log = '';
@@ -15417,6 +15427,16 @@ function logValueUpdates(updateNodeId, updateParamId, values)
 }
 
 
+
+function logObjectUpdates(objects)
+{
+    console.log(
+        '%cobjects', 
+        'background: #07e; color: white;', 
+        objects);
+}
+
+
 function logRequest(parse)
 {
     let log = '';
@@ -21230,17 +21250,9 @@ class Menu
 
 
 
-    show(srcDiv, hideCurrent = true)
+    show(srcDiv, right = false)
     {
-        if (hideCurrent)
-        {
-            const parentIndex = currentMenus.indexOf(this.parentMenu);
-            if (parentIndex > -1)
-            {
-                for (let i = currentMenus-1; i > parentIndex; i--)
-                    currentMenus[i].hide();
-            }
-        }
+        //hideAllMenusAfter(this.parentMenu);
 
             
         this.div     .style.display = 'block';
@@ -21263,15 +21275,15 @@ class Menu
      
         this.div.style.left = Math.min(Math.max(
             margin, 
-            hideCurrent
-            ? srcRect.x + srcRect.width/2 - this.div.offsetWidth/2
-            : srcRect.x + srcRect.width), 
+            right
+            ? srcRect.x + srcRect.width 
+            : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2),
             graphView.offsetWidth - this.div.offsetWidth - margin);
     
         this.div.style.top = 
-            hideCurrent
-            ? srcRect.y + srcRect.height + this.divArrow.offsetHeight
-            : srcRect.y;
+            right
+            ? srcRect.y - 3
+            : srcRect.y + srcRect.height + this.divArrow.offsetHeight;
 
         
         this.divArrow.style.left = srcRect.x + srcRect.width/2;
@@ -21300,7 +21312,8 @@ class Menu
         this.divArrow.style.display = 'none';
         this.divArrow.style.opacity = '0%';
 
-        if (    currentMenus.length == 1
+
+        if (    this.button
             && !this.button.overArrow)
         {
             this.button.divArrow.style.transform  = 'translateY(0)';
@@ -21317,6 +21330,16 @@ class Menu
 function hideAllMenus()
 {
     for (let i = currentMenus.length-1; i >= 0; i--)
+        currentMenus[i].hide();
+}
+
+
+
+function hideAllMenusAfter(menu)
+{
+    const index = currentMenus.indexOf(menu);
+
+    for (let i = currentMenus.length-1; i > index; i--)
         currentMenus[i].hide();
 }
 
@@ -21770,7 +21793,9 @@ class MenuItem
         this.div.addEventListener('pointerenter', () =>
         {
             if (this.childMenu)
-                this.childMenu.show(this.div);
+                this.childMenu.show(this.div, true);
+            else
+                hideAllMenusAfter(this.parentMenu);
         });
         
         
@@ -38800,7 +38825,7 @@ var genMessages = []; // messages from UI to Generator
 var genMessagePosted = false;
 
 
-uiClearAllLocalData();
+//uiClearAllLocalData();
 
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');
@@ -39077,6 +39102,11 @@ onmessage = e =>
 {
     let msg = JSON.parse(e.data.pluginMessage);
 
+
+    if (settings.logMessages)
+        console.log('%cFIG '+msg.cmd+' --► UI', 'background: #08f; color: white;');
+
+
     switch (msg.cmd)
     {
         case 'uiEndStartGenerator':  uiEndStartGenerator (msg);                                          break;
@@ -39249,6 +39279,9 @@ function setAutoCursor()
     else
         setCursor('default'); // 'auto');
 };
+
+
+
 
 
 function uiGetLocalData(key, value)
@@ -40774,6 +40807,11 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
     const nodeJson = [];
     nodes.forEach(n => nodeJson.push(n.toJson()));
+
+
+    if (   settings.logObjectUpdates)
+        //&& objects.length > 0)
+        logObjectUpdates([...objects]);
 
 
     uiPostMessageToFigma({

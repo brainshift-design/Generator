@@ -56,9 +56,6 @@ figma.ui.onmessage = msg =>
 function figPostMessageToUI(msg)
 {
     figma.ui.postMessage(JSON.stringify(msg));
-
-    if (settings.logMessages)
-        console.log('%cFIG '+msg.cmd+' --► UI', 'background: #08f; color: white;');
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

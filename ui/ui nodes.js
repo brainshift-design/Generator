@@ -901,6 +901,11 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
     nodes.forEach(n => nodeJson.push(n.toJson()));
 
 
+    if (   settings.logObjectUpdates)
+        //&& objects.length > 0)
+        logObjectUpdates([...objects]);
+
+
     uiPostMessageToFigma({
         cmd:          'figUpdate',
         updateNodeId:  updateNodeId,

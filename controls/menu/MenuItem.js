@@ -78,7 +78,9 @@ class MenuItem
         this.div.addEventListener('pointerenter', () =>
         {
             if (this.childMenu)
-                this.childMenu.show(this.div);
+                this.childMenu.show(this.div, true);
+            else
+                hideAllMenusAfter(this.parentMenu);
         });
         
         

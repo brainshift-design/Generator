@@ -52,13 +52,3 @@ function logSavedConn(connKey)
         'background: #cfc', 
         conn); 
 }
-
-
-
-function logObjectUpdates(objects)
-{
-    console.log(
-        '%cobjects', 
-        'background: #07e; color: white;', 
-        objects);
-}
