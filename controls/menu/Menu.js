@@ -81,7 +81,7 @@ class Menu
         this.div.style.display = 'block';
         this.div.style.opacity = '100%';
     
-        
+
         if (!right)
         {
             this.divArrow.style.display = 'block';
@@ -125,7 +125,8 @@ class Menu
 
 
         if (   this.button
-            && this == menuMain)
+            && (   this == menuMain
+                || this == menuZoom))
             this.button.div.style.background = 'var(--figma-color-bg-brand)';
     }
     
