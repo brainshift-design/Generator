@@ -51,7 +51,7 @@ function uiPostMessageToFigma(msg)
 
 function uiQueueMessageToFigma(msg)
 {
-    figMessages.push(msg);
+    uiFigMessages.push(msg);
     uiPostNextMessageToFigma();
 }
 
@@ -59,21 +59,17 @@ function uiQueueMessageToFigma(msg)
 
 function uiPostNextMessageToFigma()
 {
-    if (    figMessages.length > 0
+    if (    uiFigMessages.length > 0
         && !uiFigMessagePosted)
     {
-        let msg = figMessages.shift();
+        let msg = uiFigMessages.shift();
 
         if (msg.cmd == 'figResizeWindow')
         {
-            console.log('figMessages.length =', figMessages.length);
             // move along the queue since only the last message is important
-            while (figMessages.length > 0
-                && figMessages[0].cmd == msg.cmd)
-                {
-                    console.log('skipping');
-                    msg = figMessages.shift();
-                }
+            while (uiFigMessages.length > 0
+                && uiFigMessages[0].cmd == msg.cmd)
+                msg = uiFigMessages.shift();
         }
 
         uiPostMessageToFigma(msg);    

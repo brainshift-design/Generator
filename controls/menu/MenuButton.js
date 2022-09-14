@@ -27,19 +27,34 @@ class MenuButton
 
     constructor(name, menu, options = {})
     {
-        this.name     = name;
-        this.menu     = menu;
+        this.name = name;
+        this.menu = menu;
 
         if (this.menu)
             this.menu.button = this;
 
+        this.initOptions(options);
+        
+        this.createControls();
+        this.createTooltips();
 
-        this.callback    = options.callback    ? options.callback    : null;
-        this.highlight   = options.highlight   ? options.highlight   : null;
-        this.useMenuName = options.useMenuName ? options.useMenuName : false;
-        this.selectLast  = options.selectLast  ? options.selectLast  : true;
+        this.update();
+    }
 
 
+
+    initOptions(options)
+    {
+        this.callback    = options.callback    != undefined ? options.callback    : null;
+        this.highlight   = options.highlight   != undefined ? options.highlight   : null;
+        this.useMenuName = options.useMenuName != undefined ? options.useMenuName : false;
+        this.selectLast  = options.selectLast  != undefined ? options.selectLast  : true;
+    }
+
+
+
+    createControls()
+    {
         this.div      = createDiv('menuButton');
 
         this.divIcon  = createDiv('menuButtonIcon');
@@ -67,7 +82,7 @@ class MenuButton
 
         if (this.menu) 
         {
-            this.divIcon.addEventListener('pointerdown', e => 
+            this.div.addEventListener('pointerdown', e => 
             {
                 if (e.button == 0)
                 {
@@ -119,8 +134,12 @@ class MenuButton
             this.div.appendChild(this.divArrow);
 
         menuBar.appendChild(this.div);
+    }
 
 
+
+    createTooltips()
+    {
         const ttName = 
             this.menu 
             ? this.menu.name 
@@ -138,9 +157,6 @@ class MenuButton
 
         createTooltipSrc(this.divIcon,  this.div,      () => document.getElementById('ttMenuButtonIcon'  + ttName));
         createTooltipSrc(this.divArrow, this.divArrow, () => document.getElementById('ttMenuButtonArrow' + ttName));
-
-
-        this.update();
     }
 
 

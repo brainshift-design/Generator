@@ -2,7 +2,9 @@ class MenuItem
 {
     parentMenu    = null;
     index         = -1;
-    
+
+    enabled       = true;
+
     checked       = false;
     icon          = ''; // svg
     name          = '';
@@ -32,14 +34,35 @@ class MenuItem
     {
         this.name = name;
 
+        this.initOptions(options);
 
-        if (options.icon         )   this.icon          = options.icon;
-        if (options.callback     )   this.callback      = options.callback;
-        if (options.checkCallback)   this.checkCallback = options.checkCallback;
-        if (options.childMenu    ) { this.childMenu     = options.childMenu;  this.childMenu.parentMenu = this.parentMenu; }
-        if (options.isSeparator  )   this.isSeparator   = options.isSeparator;
+        this.createControls();
+
+        this.update();
+    }
 
 
+
+    initOptions(options)
+    {
+        if (options.icon          != undefined)   this.icon          = options.icon;
+        if (options.callback      != undefined)   this.callback      = options.callback;
+        if (options.checkCallback != undefined)   this.checkCallback = options.checkCallback;
+        if (options.childMenu     != undefined) 
+        { 
+            this.childMenu = options.childMenu;  
+            
+            if (this.childMenu)
+                this.childMenu.parentMenu = this.parentMenu; 
+        }
+        if (options.isSeparator   != undefined)   this.isSeparator   = options.isSeparator;
+        if (options.enabled       != undefined)   this.enabled       = options.enabled;
+    }
+
+
+
+    createControls()
+    {
         this.div          = createDiv('menuItem');
 
         this.divCheck     = createDiv('menuItemCheck'   );
@@ -92,6 +115,9 @@ class MenuItem
 
         this.div.addEventListener('pointerenter', () =>
         {
+            if (this.enabled)
+                this.div.style.background = 'var(--figma-color-bg-brand)';
+
             if (this.childMenu)
             {
                 if (!currentMenus.includes(this.childMenu))
@@ -102,6 +128,12 @@ class MenuItem
             }
             else
                 hideAllMenusAfter(this.parentMenu);
+        });
+        
+        
+        this.div.addEventListener('pointerleave', () =>
+        {
+            this.div.style.background = 'transparent';
         });
         
         
@@ -120,6 +152,9 @@ class MenuItem
 
     select()
     {
+        if (!this.enabled)
+            return;
+
         if (currentMenus.length > 0) // this lets the item be selected without its parent menu being involved
         {
             currentMenus[0].lastItem = this;
@@ -137,6 +172,22 @@ class MenuItem
     setChecked(checked)
     {
         this.checked = checked;
+        this.update();
+    }
+
+
+
+    setEnabled(enabled)
+    {
+        this.enabled = enabled;
+        this.update();
+    }
+    
+    
+    update()
+    {
         this.divCheck.style.visibility = this.checked ? 'visible' : 'hidden';
+
+        this.div     .style.opacity    = this.enabled ? '100%' : '40%';
     }
 }

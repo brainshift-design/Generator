@@ -22,6 +22,7 @@ function noConnTag(key) { return noTag(key, connTag); }
 const smallScrollGap = 6;
 const largeScrollGap = 14;
 const MAX_INT32 = 2147483647;
+const GEN_LOGO = '◦G•';
 const TAB = '  ';
 const NL = '\n';
 const NULL = '';
@@ -219,7 +220,7 @@ function figUpdate(msg) {
 }
 function figCreateObject(objects, genObj) {
     let figObj;
-    const name = '◦G•   ' + genObj.nodeId.toString() + ' : ' + genObj.id.toString();
+    const name = GEN_LOGO + '   ' + genObj.nodeId.toString() + ' : ' + genObj.id.toString();
     switch (genObj.type) {
         case RECTANGLE:
             figObj = figCreateRect(genObj, name);
