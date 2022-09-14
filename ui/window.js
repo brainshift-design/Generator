@@ -36,7 +36,7 @@ function uiResizeWindow(width, height)
 {
     uiQueueMessageToFigma({ 
         cmd:   'figResizeWindow', 
-        width:  width,
+        width:  Math.max(500, width),
         height: height
     });
 }

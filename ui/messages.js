@@ -1,3 +1,7 @@
+var uiFigMessagePosted = false;
+
+
+
 // --> from Figma
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -12,16 +16,18 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
+        case 'uiEndFigMessage':      uiEndFigMessage     (msg.msgCmd);                                   break;
+        
+        
         case 'uiEndStartGenerator':  uiEndStartGenerator (msg);                                          break;
-
+        
         case 'uiLoadNodesAndConns':  uiLoadNodesAndConns (msg.nodesJson, msg.connsJson, msg.activeJson); break;
         
         case 'uiGetLocalDataReturn': uiGetLocalDataReturn(msg);                                          break;
         case 'uiGetPageDataReturn':  uiGetPageDataReturn (msg);                                          break;
         
-        case 'uiEndResizeWindow':    uiEndResizeWindow   ();                                             break;
         
-        case 'uiEndFigMessage':      uiEndFigMessage     (msg.msgCmd);                                   break;
+        case 'uiEndResizeWindow':    uiEndResizeWindow   ();                                             break;
     }
 }    
 
@@ -34,6 +40,7 @@ onmessage = e =>
 
 function uiPostMessageToFigma(msg)
 {
+    uiFigMessagePosted = true;
     parent.postMessage({pluginMessage: JSON.stringify(msg)}, '*');
 
     if (settings.logMessages)
@@ -52,17 +59,21 @@ function uiQueueMessageToFigma(msg)
 
 function uiPostNextMessageToFigma()
 {
-    if (figMessages.length > 0)
+    if (    figMessages.length > 0
+        && !uiFigMessagePosted)
     {
         let msg = figMessages.shift();
 
-        if (   msg.cmd == 'figResizeWindow'
-            || msg.cmd == 'figUpdateObjects')
+        if (msg.cmd == 'figResizeWindow')
         {
+            console.log('figMessages.length =', figMessages.length);
             // move along the queue since only the last message is important
             while (figMessages.length > 0
                 && figMessages[0].cmd == msg.cmd)
-                msg = figMessages.shift();
+                {
+                    console.log('skipping');
+                    msg = figMessages.shift();
+                }
         }
 
         uiPostMessageToFigma(msg);    
@@ -73,10 +84,11 @@ function uiPostNextMessageToFigma()
 
 function uiEndFigMessage(msgCmd)
 {
+    uiFigMessagePosted = false;
+
     if (msgCmd == 'figUpdate')
         uiPostMessageToGenerator({cmd: 'genEndFigMessage'});
 
-    //uiFigMessagePosted = false;
     uiPostNextMessageToFigma();
 }
 
