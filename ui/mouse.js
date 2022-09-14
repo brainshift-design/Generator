@@ -11,7 +11,8 @@ function setAutoCursor()
     if (graphView.zoomSelecting)
         setCursor(zoomInCursor);
     else if (graphView.spaceDown
-          || graphView.panning)
+          || graphView.panning
+          || panMode)
         setCursor(panCursor);
     else
         setCursor('default'); // 'auto');

@@ -31,7 +31,8 @@ graphView.addEventListener('pointerdown', e =>
         && !scrollbarX.moving
         && !scrollbarY.moving)
     {
-        if (graphView.spaceDown)
+        if (   graphView.spaceDown
+            || panMode)
         {
             if (getCtrlKey(e)) graphView.startZoomSelection(e.pointerId, e.clientX, e.clientY);
             else               graphView.startPan(e.pointerId);
@@ -95,11 +96,13 @@ function graphView_onpointermove(e)
     graphView.p = point(e.clientX, e.clientY);
 
 
-    if (   graphView.panning
+    if (   (   graphView.panning
+            || panMode)
         && graphView.hasPointerCapture(e.pointerId))
     {
-        setTimeout(() =>
-        {
+        // TODO this is where the last extra pan step probably comes from on complicated graphs
+        //setTimeout(() =>
+        //{
             setCursor(panCursor);
 
             const dp = subv(graphView.p, graphView.pStart);
@@ -107,7 +110,7 @@ function graphView_onpointermove(e)
             graphView.setPanAndZoom(
                 addv(graphView.panStart, dp), 
                 graphView.zoom);
-        });
+        //});
     }
     
     else if (graphView.selecting)
@@ -130,7 +133,8 @@ function graphView_onpointermove(e)
 graphView.addEventListener('pointerup', e =>
 {
     if (   e.button == 0
-        && graphView.spaceDown)
+        && (   graphView.spaceDown
+            || panMode))
     {
         if (getCtrlKey(e))
         {
@@ -200,7 +204,8 @@ graphView.addEventListener('wheel', e =>
     const dWheelY = e.deltaY / (isTouchpad ? 20 : 100);
 
 
-    if (e.ctrlKey)
+    if (   e.ctrlKey
+        || panMode)
     {
         let pos = point(e.clientX, e.clientY);
         pos.y -= menuBar.offsetHeight;
