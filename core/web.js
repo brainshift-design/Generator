@@ -67,3 +67,42 @@ function hasFocus(elem)
 {
     return elem == document.activeElement;
 }
+
+
+
+function setStyle(id, properties)
+{
+    var elem = document.getElementById(id);
+
+    for (const property of properties)
+        elem.style[property] = properties[property];
+}
+
+
+
+function containsChild(parent, child)
+{
+    return child.parentNode == parent;
+}
+
+
+
+function forwardEvent(event, element)
+{
+    var e = new event.constructor(event.type, event);
+    element.dispatchEvent(e);
+}
+
+
+
+// function triggerMouseEvent(element, event, px, py, button = 0)
+// {
+//     const e = new MouseEvent(event, 
+//     {
+//         clientX: px,
+//         clientY: py,
+//         button:  button
+//     });
+//
+//     element.dispatchEvent(e);
+// }

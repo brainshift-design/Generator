@@ -29,6 +29,7 @@ const generator = new Worker(
         new Blob([generatorScript.textContent])));
         
 
+var panMode             = false;        
 
 var     copiedNodesJson = '';
 var duplicatedNodesJson = '';

@@ -6,6 +6,7 @@ class MenuButton
     icon     = '';
 
     callback;
+    highlight;
     useMenuName;
 
     selectLast;
@@ -16,6 +17,7 @@ class MenuButton
     divIcon;
     divArrow;
 
+    over      = false;
     overArrow = false;
 
     tooltipIcon;
@@ -33,6 +35,7 @@ class MenuButton
 
 
         this.callback    = options.callback    ? options.callback    : null;
+        this.highlight   = options.highlight   ? options.highlight   : null;
         this.useMenuName = options.useMenuName ? options.useMenuName : false;
         this.selectLast  = options.selectLast  ? options.selectLast  : true;
 
@@ -45,16 +48,20 @@ class MenuButton
 
         this.div.addEventListener('pointerenter', () => 
         {
-            if (!currentMenus.includes(this.menu))
-                this.div.style.background = '#111';
+            this.over = true;
+            this.update();
         });
    
 
         this.div.addEventListener('pointerleave', () => 
         {
-            if (    currentMenus.length == 0
-                || !currentMenus.includes(this.menu)) 
-                this.div.style.background = 'transparent';
+            // if (   (    currentMenus.length == 0
+            //     || !currentMenus.includes(this.menu))
+            //     && currentMenuButton != this) 
+            //     this.div.style.background = 'transparent';
+                
+            this.over = false;
+            this.update();
         });
 
 
@@ -64,6 +71,9 @@ class MenuButton
             {
                 if (e.button == 0)
                 {
+                    disableCurrentMenuButton();
+
+
                     if (this.useMenuName)
                     {
                         e.stopPropagation();
@@ -72,6 +82,9 @@ class MenuButton
                     else if (this.selectLast
                           && this.menu.lastItem)
                         this.menu.lastItem.select();
+
+                    
+                    this.update();
                 }
             });
 
@@ -86,11 +99,18 @@ class MenuButton
                 {
                     e.stopPropagation();
                     this.showMenu();
+                    this.update();
                 }
             });
         }
         else if (this.callback) 
-            this.div.addEventListener('click', this.callback);
+        {
+            this.div.addEventListener('click', () =>
+            {
+                disableCurrentMenuButton();
+                this.callback();
+            });
+        }
 
 
         this.div.appendChild(this.divIcon);
@@ -161,8 +181,9 @@ class MenuButton
         
         if (!curMenus.includes(this.menu))
             this.menu.show(this.div);
-        else
-            this.div.style.background = '#111';
+
+            // else
+            // this.div.style.background = '#111';
     }
 
 
@@ -170,6 +191,16 @@ class MenuButton
     update()
     {
         this.div.style.width = this.menu ? 50 : 40;
+
+
+        this.div.style.background =
+               currentMenuButton == this
+            ||    this.highlight 
+               && this.highlight()
+                ? 'var(--figma-color-bg-brand)'
+                : this.over
+                    ? '#111'
+                    : 'transparent';
 
 
         const icon = 

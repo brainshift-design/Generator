@@ -192,8 +192,8 @@ class Connection
              
             let showCurve = true;
 
-            if (      this.output && this.output.wireColor[3] < 1
-                ||    this. input && this. input.wireColor[3] < 1)
+            if (   this.output && this.output.wireColor[3] < 1
+                || this. input && this. input.wireColor[3] < 1)
             {
                 showCurve = 
                        this.output && this.output.wireColor[3] > 0

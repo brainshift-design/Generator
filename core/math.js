@@ -4,6 +4,13 @@ const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 
 
+function equal(a, b)
+{
+    return Math.abs(b - a) < Eps;
+}
+
+
+
 function floorTo(x, dec)
 {
     const div = Math.round(Math.pow(10, dec));
@@ -11,11 +18,13 @@ function floorTo(x, dec)
 }
 
 
+
 function roundTo(x, dec)
 {
     const div = Math.round(Math.pow(10, dec));
     return Math.round((x + Number.EPSILON) * div) / div;    
 }
+
 
 
 function sqr (x) { return x*x;   };

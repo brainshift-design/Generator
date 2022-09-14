@@ -340,6 +340,13 @@ const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 
 
+function equal(a, b)
+{
+    return Math.abs(b - a) < Eps;
+}
+
+
+
 function floorTo(x, dec)
 {
     const div = Math.round(Math.pow(10, dec));
@@ -347,11 +354,13 @@ function floorTo(x, dec)
 }
 
 
+
 function roundTo(x, dec)
 {
     const div = Math.round(Math.pow(10, dec));
     return Math.round((x + Number.EPSILON) * div) / div;    
 }
+
 
 
 function sqr (x) { return x*x;   };
@@ -1541,49 +1550,10 @@ const isMac = navigator.platform.toLowerCase().indexOf('mac') >= 0;
 
 
 
-function setStyle(id, properties)
-{
-    var elem = document.getElementById(id);
-
-    for (const property of properties)
-        elem.style[property] = properties[property];
-}
-
-
-
 function indexOfChild(parent, child)
 {
     return Array.prototype.indexOf.call(parent.children, child);
 }
-
-
-
-function containsChild(parent, child)
-{
-    return child.parentNode == parent;
-}
-
-
-
-function forwardEvent(event, element)
-{
-    var e = new event.constructor(event.type, event);
-    element.dispatchEvent(e);
-}
-
-
-
-// function triggerMouseEvent(element, event, px, py, button = 0)
-// {
-//     const e = new MouseEvent(event, 
-//     {
-//         clientX: px,
-//         clientY: py,
-//         button:  button
-//     });
-//
-//     element.dispatchEvent(e);
-// }
 
 
 
@@ -2303,6 +2273,45 @@ function hasFocus(elem)
 {
     return elem == document.activeElement;
 }
+
+
+
+function setStyle(id, properties)
+{
+    var elem = document.getElementById(id);
+
+    for (const property of properties)
+        elem.style[property] = properties[property];
+}
+
+
+
+function containsChild(parent, child)
+{
+    return child.parentNode == parent;
+}
+
+
+
+function forwardEvent(event, element)
+{
+    var e = new event.constructor(event.type, event);
+    element.dispatchEvent(e);
+}
+
+
+
+// function triggerMouseEvent(element, event, px, py, button = 0)
+// {
+//     const e = new MouseEvent(event, 
+//     {
+//         clientX: px,
+//         clientY: py,
+//         button:  button
+//     });
+//
+//     element.dispatchEvent(e);
+// }
 
 
 function writeTextToClipboard(str) 

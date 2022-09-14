@@ -1,28 +1,23 @@
-var currentMenus = [];
+var currentMenus      = [];
+var currentMenuButton = null;
 
 
 
 class Menu
 {
     parentMenu = null;
-
     
     name;
-
     button   = null;
-
 
     div;
     divArrow;
 
     showIcons;
 
-    
     overMenu   = false;
-
     
     items      = [];
-
     lastItem   = null;
 
 
@@ -124,10 +119,8 @@ class Menu
         currentMenus.push(this);
 
 
-        if (   this.button
-            && (   this == menuMain
-                || this == menuZoom))
-            this.button.div.style.background = 'var(--figma-color-bg-brand)';
+        if (this.button)
+            this.button.update();
     }
     
     
@@ -169,4 +162,16 @@ function hideAllMenusAfter(menu)
 
     for (let i = currentMenus.length-1; i > index; i--)
         currentMenus[i].hide();
+}
+
+
+
+function disableCurrentMenuButton()
+{
+    if (currentMenuButton)
+    {
+        const curMenuButton = currentMenuButton;
+        currentMenuButton = null;
+        curMenuButton.update();
+    }
 }
