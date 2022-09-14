@@ -35,7 +35,6 @@ class MenuItem
         this.name = name;
 
         this.initOptions(options);
-
         this.createControls();
 
         this.update();
@@ -53,9 +52,10 @@ class MenuItem
             this.childMenu = options.childMenu;  
             
             if (this.childMenu)
-                this.childMenu.parentMenu = this.parentMenu; 
+            this.childMenu.parentMenu = this.parentMenu; 
         }
         if (options.isSeparator   != undefined)   this.isSeparator   = options.isSeparator;
+        if (options.shortcut      != undefined)   this.shortcut      = options.shortcut;
         if (options.enabled       != undefined)   this.enabled       = options.enabled;
     }
 
@@ -97,6 +97,10 @@ class MenuItem
             this.divIcon.style.backgroundRepeat   = 'no-repeat';
         }        
 
+        
+        this.divShortcut.innerHTML = this.shortcut;
+
+        
         if (!this.isSeparator)
         {
             this.div.appendChild(this.divCheck   );

@@ -190,10 +190,10 @@ function initMenuBar()
 
     menuZoom = new Menu('Zoom/view options', false);
     menuZoom.addItems([
-                            new MenuItem('Zoom in',      {callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
-                            new MenuItem('Zoom out',     {callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
-                            new MenuItem('Zoom to fit',  {enabled:  false}),
-        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {callback: () => graphView.zoom = 1})]);
+                            new MenuItem('Zoom in',      {shortcut: osCtrl()  + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
+                            new MenuItem('Zoom out',     {shortcut: osCtrl()  + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
+                            new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', enabled:  false}),
+        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl()  + '0', callback: () => graphView.zoom = 1})]);
 
 
     btnMain    = new MenuButton('', menuMain, {useMenuName: true, highlight: () => currentMenus.includes(menuMain)});

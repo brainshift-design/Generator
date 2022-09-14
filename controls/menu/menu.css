@@ -168,7 +168,11 @@
 
 .menuItemShortcut
 {
-    display: inline-block;
+    display:               inline-block;
+    position:              absolute;
+    right:                 16px;
+    transform:             translateY(5px);
+    font-feature-settings: "salt" 1, "ss02" 1;
     /* box-shadow: 0 0 0 1px green inset; */
 }
 

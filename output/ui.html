@@ -708,7 +708,11 @@ div
 
 .menuItemShortcut
 {
-    display: inline-block;
+    display:               inline-block;
+    position:              absolute;
+    right:                 16px;
+    transform:             translateY(5px);
+    font-feature-settings: "salt" 1, "ss02" 1;
     /* box-shadow: 0 0 0 1px green inset; */
 }
 
@@ -3905,6 +3909,12 @@ function parseBool(str)
 {
     return str === 'true';
 }
+
+
+
+function osCtrl()  { return isMac ? '⌘' : 'Ctrl+';  }
+function osAlt()   { return isMac ? '⌥' : 'Alt+';   }
+function osShift() { return isMac ? '⇧'  : 'Shift+'; }
 
 
 "use strict";
@@ -14926,6 +14936,12 @@ function parseBool(str)
 }
 
 
+
+function osCtrl()  { return isMac ? '⌘' : 'Ctrl+';  }
+function osAlt()   { return isMac ? '⌥' : 'Alt+';   }
+function osShift() { return isMac ? '⇧'  : 'Shift+'; }
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -21583,10 +21599,10 @@ function initMenuBar()
 
     menuZoom = new Menu('Zoom/view options', false);
     menuZoom.addItems([
-                            new MenuItem('Zoom in',      {callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
-                            new MenuItem('Zoom out',     {callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
-                            new MenuItem('Zoom to fit',  {enabled:  false}),
-        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {callback: () => graphView.zoom = 1})]);
+                            new MenuItem('Zoom in',      {shortcut: osCtrl()  + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
+                            new MenuItem('Zoom out',     {shortcut: osCtrl()  + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
+                            new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', enabled:  false}),
+        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl()  + '0', callback: () => graphView.zoom = 1})]);
 
 
     btnMain    = new MenuButton('', menuMain, {useMenuName: true, highlight: () => currentMenus.includes(menuMain)});
@@ -21916,7 +21932,6 @@ class MenuItem
         this.name = name;
 
         this.initOptions(options);
-
         this.createControls();
 
         this.update();
@@ -21934,9 +21949,10 @@ class MenuItem
             this.childMenu = options.childMenu;  
             
             if (this.childMenu)
-                this.childMenu.parentMenu = this.parentMenu; 
+            this.childMenu.parentMenu = this.parentMenu; 
         }
         if (options.isSeparator   != undefined)   this.isSeparator   = options.isSeparator;
+        if (options.shortcut      != undefined)   this.shortcut      = options.shortcut;
         if (options.enabled       != undefined)   this.enabled       = options.enabled;
     }
 
@@ -21978,6 +21994,10 @@ class MenuItem
             this.divIcon.style.backgroundRepeat   = 'no-repeat';
         }        
 
+        
+        this.divShortcut.innerHTML = this.shortcut;
+
+        
         if (!this.isSeparator)
         {
             this.div.appendChild(this.divCheck   );

@@ -1980,6 +1980,12 @@ function parseBool(str)
 }
 
 
+
+function osCtrl()  { return isMac ? '⌘' : 'Ctrl+';  }
+function osAlt()   { return isMac ? '⌥' : 'Alt+';   }
+function osShift() { return isMac ? '⇧'  : 'Shift+'; }
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
