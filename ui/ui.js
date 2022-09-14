@@ -17,12 +17,12 @@
 
 function uiError(text, delay = 6000)
 {
-    uiNotify(text, 'Generator error: ', delay, true);
+    uiNotify(text, GEN_LOGO + ' Error: ', delay, true);
 }
 
 
 
-function uiNotify(text, prefix = 'Generator: ', delay = 4000, error = false)
+function uiNotify(text, prefix = GEN_LOGO + ' ', delay = 4000, error = false)
 {
     uiQueueMessageToFigma({ 
         cmd:   'figNotify',

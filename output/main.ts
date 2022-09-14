@@ -31,9 +31,9 @@ const largeScrollGap = 14;
 
 const MAX_INT32      = 2147483647;
 
+const GEN_LOGO      = '◦G•';
 const TAB            = '  ';
 const NL             = '\n';
-
 
 
 const NULL                = '';
@@ -365,7 +365,7 @@ function figCreateObject(objects, genObj)
     let figObj;
     
 
-    const name = '◦G•   ' + genObj.nodeId.toString() + ' : ' + genObj.id.toString();
+    const name = GEN_LOGO + '   ' + genObj.nodeId.toString() + ' : ' + genObj.id.toString();
 
     switch (genObj.type)
     {
