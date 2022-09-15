@@ -9,6 +9,10 @@ var settings_logRequests;
 
 function genRequest(request)
 {
+    // console.log('genRequest()');
+    // console.trace();
+
+
     settings_logRequests = request[0] == LOG;
 
 
@@ -128,82 +132,82 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
     const approxNodeChunkSize = 20;
     const objChunkSize        = 100;
 
-    let n  = 0, // node
-        vc = 0; // chunk count
+    
+    let n  = 0;
+    let o  = 0; // object
 
-    let o  = 0, // object
-        oc = 0; // chunk count
+    let nc = 0; // node cunk count
+    let oc = 0; // objectchunk counts
 
-    let valChunk = [],
-        objChunk = [];
 
-    let chunkId  = 0;
+    let nodeValChunk   = [],
+        objChunk       = [];
+
+    let nodeValChunkId = 0;
         
-    while (   o < updateObjects.length
-           || n < nodeIds.length)
+
+    while (   n < nodeIds.length
+           || o < updateObjects.length)
     {
-        if (o < updateObjects.length)
-        {
-            objChunk.push(updateObjects[o++]);
-            oc++;
-        }
-
-
         if (n < nodeIds.length)
         {
-            valChunk.push(nodeIds[n], counts[n]);
+            nodeValChunk.push(nodeIds[n], counts[n]);
 
             const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
             values.sort((a, b) => a.paramId - b.paramId);
 
             for (const v of values)
-            {
-                valChunk.push(v.paramId, v.type, v.value);
-                vc++;
-            }
+                nodeValChunk.push(v.paramId, v.type, v.value);
 
-            n++;
+            n++, nc++;
         }
 
 
-        if (   oc == objChunkSize
-            || vc >= approxNodeChunkSize)
+        if (o < updateObjects.length)
+        {
+            objChunk.push(updateObjects[o]);
+            o++, oc++;
+        }
+
+
+        if (   nc >= approxNodeChunkSize
+            || oc == objChunkSize)
         {
             genQueueChunk(
                 updateNodeId,
                 updateParamId,
-                chunkId++,
-                valChunk,
+                nodeValChunkId++,
+                nodeValChunk,
                 objChunk);
 
-            valChunk = [];  vc = 0;
-            objChunk = [];  oc = 0;
+            nodeValChunk = [];  nc = 0;
+            objChunk     = [];  oc = 0;
         }
     }
 
 
-    if (   valChunk.length > 0
+    if (   nodeValChunk.length > 0
         || objChunk.length > 0)
     {
         genQueueChunk(
             updateNodeId,
             updateParamId,
-            chunkId++,
-            valChunk,
+            nodeValChunkId++,
+            nodeValChunk,
             objChunk);
     }
 }
 
 
 
-function genQueueChunk(updateNodeId, updateParamId, chunkId, valChunk, objChunk)
+function genQueueChunk(updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk)
 {
     genQueueMessageToUI({
         cmd:          'uiUpdateValuesAndObjects',
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
-        chunkId:       chunkId,
-        values:        [...valChunk].map(v => v ? v.toString() : INVALID),
+        chunkId:       nodeValChunkId,
+        values:        [...nodeValChunk].map(v => v ? v.toString() : INVALID),
         objects:       [...objChunk]
     });
 

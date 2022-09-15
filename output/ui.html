@@ -8768,7 +8768,10 @@ onmessage = function(e)
     }
 
 
-    genPostMessageToUI({cmd: 'uiEndGenMessage'});
+    genPostMessageToUI({
+        cmd:   'uiEndGenMessage',
+        msgCmd: msg.cmd
+    });
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -8787,6 +8790,9 @@ function genPostMessageToUI(msg)
 
 function genQueueMessageToUI(msg)
 {
+    // console.log('genQueueMessageToUI()');
+    // console.trace();
+
     uiMessages.push(msg);
     genPostNextMessageToUI();
 }
@@ -8795,8 +8801,12 @@ function genQueueMessageToUI(msg)
 
 function genPostNextMessageToUI(msg)
 {
+    // console.log('genPostNextMessageToUI()');
+    // console.trace();
+
     //console.log('gen.uiMessages.length = ', uiMessages.length);
 
+    
     if (uiMessages.length > 0)
         //&& !genFigMessagePosted)
     {
@@ -8824,10 +8834,7 @@ function genPostNextMessageToUI(msg)
         //     }
         // }
 
-        postMessage(JSON.stringify(msg));
-
-        if (settings.logMessages)
-            console.log('%c%sUI ◄-- GEN '+msg.cmd, 'background: #ca0; color: white;', '\n                        ');
+        genPostMessageToUI(msg);
     }
 }
 
@@ -8868,6 +8875,10 @@ var settings_logRequests;
 
 function genRequest(request)
 {
+    // console.log('genRequest()');
+    // console.trace();
+
+
     settings_logRequests = request[0] == LOG;
 
 
@@ -8987,82 +8998,82 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
     const approxNodeChunkSize = 20;
     const objChunkSize        = 100;
 
-    let n  = 0, // node
-        vc = 0; // chunk count
+    
+    let n  = 0;
+    let o  = 0; // object
 
-    let o  = 0, // object
-        oc = 0; // chunk count
+    let nc = 0; // node cunk count
+    let oc = 0; // objectchunk counts
 
-    let valChunk = [],
-        objChunk = [];
 
-    let chunkId  = 0;
+    let nodeValChunk   = [],
+        objChunk       = [];
+
+    let nodeValChunkId = 0;
         
-    while (   o < updateObjects.length
-           || n < nodeIds.length)
+
+    while (   n < nodeIds.length
+           || o < updateObjects.length)
     {
-        if (o < updateObjects.length)
-        {
-            objChunk.push(updateObjects[o++]);
-            oc++;
-        }
-
-
         if (n < nodeIds.length)
         {
-            valChunk.push(nodeIds[n], counts[n]);
+            nodeValChunk.push(nodeIds[n], counts[n]);
 
             const values = updateValues.filter(v => v.nodeId == nodeIds[n]);
             values.sort((a, b) => a.paramId - b.paramId);
 
             for (const v of values)
-            {
-                valChunk.push(v.paramId, v.type, v.value);
-                vc++;
-            }
+                nodeValChunk.push(v.paramId, v.type, v.value);
 
-            n++;
+            n++, nc++;
         }
 
 
-        if (   oc == objChunkSize
-            || vc >= approxNodeChunkSize)
+        if (o < updateObjects.length)
+        {
+            objChunk.push(updateObjects[o]);
+            o++, oc++;
+        }
+
+
+        if (   nc >= approxNodeChunkSize
+            || oc == objChunkSize)
         {
             genQueueChunk(
                 updateNodeId,
                 updateParamId,
-                chunkId++,
-                valChunk,
+                nodeValChunkId++,
+                nodeValChunk,
                 objChunk);
 
-            valChunk = [];  vc = 0;
-            objChunk = [];  oc = 0;
+            nodeValChunk = [];  nc = 0;
+            objChunk     = [];  oc = 0;
         }
     }
 
 
-    if (   valChunk.length > 0
+    if (   nodeValChunk.length > 0
         || objChunk.length > 0)
     {
         genQueueChunk(
             updateNodeId,
             updateParamId,
-            chunkId++,
-            valChunk,
+            nodeValChunkId++,
+            nodeValChunk,
             objChunk);
     }
 }
 
 
 
-function genQueueChunk(updateNodeId, updateParamId, chunkId, valChunk, objChunk)
+function genQueueChunk(updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk)
 {
     genQueueMessageToUI({
         cmd:          'uiUpdateValuesAndObjects',
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
-        chunkId:       chunkId,
-        values:        [...valChunk].map(v => v ? v.toString() : INVALID),
+        chunkId:       nodeValChunkId,
+        values:        [...nodeValChunk].map(v => v ? v.toString() : INVALID),
         objects:       [...objChunk]
     });
 
@@ -29948,12 +29959,12 @@ class Connection
 
                 this.wire.xp1.style.display          = 'inline';
                 this.wire.xp1.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
-                this.wire.xp1.style.strokeDasharray  = 13 * graphView.zoom;
+                this.wire.xp1.style.strokeDasharray  = 11 * graphView.zoom;
 
                 this.wire.xp2.style.display          = 'inline';
                 this.wire.xp2.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//isDarkMode() ? '#4d4d4d' : '#fff';
-                this.wire.xp2.style.strokeDasharray  = 13 * graphView.zoom;
-                this.wire.xp2.style.strokeDashoffset = 13 * graphView.zoom;
+                this.wire.xp2.style.strokeDasharray  = 11 * graphView.zoom;
+                this.wire.xp2.style.strokeDashoffset = 11 * graphView.zoom;
             }
             else
             {
@@ -39396,7 +39407,14 @@ onmessage = e =>
 
 
     if (settings.logMessages)
-        console.log('%cFIG '+msg.cmd+' --► UI', 'background: #08f; color: white;');
+    {
+        let _msg = msg.cmd;
+
+        if (msg.cmd == 'uiEndFigMessage')
+            _msg += ': ' + msg.msgCmd;
+
+            console.log('%cFIG '+_msg+' --► UI', 'background: #08f; color: white;');
+    }
 
 
     switch (msg.cmd)
@@ -39468,7 +39486,9 @@ function uiEndFigMessage(msgCmd)
     uiFigMessagePosted = false;
 
     if (msgCmd == 'figUpdate')
-        uiPostMessageToGenerator({cmd: 'genEndFigMessage'});
+        uiPostMessageToGenerator({
+            cmd:   'genEndFigMessage',
+            msgCmd: msgCmd});
 
     uiPostNextMessageToFigma();
 }
@@ -39483,6 +39503,16 @@ function uiEndFigMessage(msgCmd)
 generator.onmessage = function(e)
 {
     const msg = JSON.parse(e.data);
+
+    if (settings.logMessages)
+    {
+        let _msg = msg.cmd;
+
+        if (msg.cmd == 'uiEndGenMessage')
+            _msg += ': ' + msg.msgCmd;
+
+        console.log('%c%sUI ◄-- GEN '+_msg, 'background: #ca0; color: white;', '\n                        ');
+    }
 
     switch (msg.cmd)
     {

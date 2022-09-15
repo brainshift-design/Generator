@@ -32,7 +32,10 @@ onmessage = function(e)
     }
 
 
-    genPostMessageToUI({cmd: 'uiEndGenMessage'});
+    genPostMessageToUI({
+        cmd:   'uiEndGenMessage',
+        msgCmd: msg.cmd
+    });
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,6 +54,9 @@ function genPostMessageToUI(msg)
 
 function genQueueMessageToUI(msg)
 {
+    // console.log('genQueueMessageToUI()');
+    // console.trace();
+
     uiMessages.push(msg);
     genPostNextMessageToUI();
 }
@@ -59,8 +65,12 @@ function genQueueMessageToUI(msg)
 
 function genPostNextMessageToUI(msg)
 {
+    // console.log('genPostNextMessageToUI()');
+    // console.trace();
+
     //console.log('gen.uiMessages.length = ', uiMessages.length);
 
+    
     if (uiMessages.length > 0)
         //&& !genFigMessagePosted)
     {
@@ -88,10 +98,7 @@ function genPostNextMessageToUI(msg)
         //     }
         // }
 
-        postMessage(JSON.stringify(msg));
-
-        if (settings.logMessages)
-            console.log('%c%sUI ◄-- GEN '+msg.cmd, 'background: #ca0; color: white;', '\n                        ');
+        genPostMessageToUI(msg);
     }
 }
 

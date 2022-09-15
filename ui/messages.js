@@ -11,7 +11,14 @@ onmessage = e =>
 
 
     if (settings.logMessages)
-        console.log('%cFIG '+msg.cmd+' --► UI', 'background: #08f; color: white;');
+    {
+        let _msg = msg.cmd;
+
+        if (msg.cmd == 'uiEndFigMessage')
+            _msg += ': ' + msg.msgCmd;
+
+            console.log('%cFIG '+_msg+' --► UI', 'background: #08f; color: white;');
+    }
 
 
     switch (msg.cmd)
@@ -83,7 +90,9 @@ function uiEndFigMessage(msgCmd)
     uiFigMessagePosted = false;
 
     if (msgCmd == 'figUpdate')
-        uiPostMessageToGenerator({cmd: 'genEndFigMessage'});
+        uiPostMessageToGenerator({
+            cmd:   'genEndFigMessage',
+            msgCmd: msgCmd});
 
     uiPostNextMessageToFigma();
 }
@@ -98,6 +107,16 @@ function uiEndFigMessage(msgCmd)
 generator.onmessage = function(e)
 {
     const msg = JSON.parse(e.data);
+
+    if (settings.logMessages)
+    {
+        let _msg = msg.cmd;
+
+        if (msg.cmd == 'uiEndGenMessage')
+            _msg += ': ' + msg.msgCmd;
+
+        console.log('%c%sUI ◄-- GEN '+_msg, 'background: #ca0; color: white;', '\n                        ');
+    }
 
     switch (msg.cmd)
     {
