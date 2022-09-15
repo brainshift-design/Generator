@@ -36,7 +36,7 @@ class Operator
     id;
 
     _name;
-    get name() { return this._name; }
+    get name()     { return this._name; }
     set name(name) { this.setName(name); }
 
 
@@ -633,13 +633,12 @@ class Operator
         const tab = TAB;
 
         let json =
-              pos + tab + '"type": "'    + this.type                      + '",\n'
-            + pos + tab + '"id": "'      + this.id                        + '",\n'
-            + pos + tab + '"z-index": "' + this.graph.nodes.indexOf(this) + '",\n'
-            + pos + tab + '"name": "'    + this.name.replace('"', '\\\"') + '",\n'
-            + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
-            + pos + tab + '"y": "'       + this.div.style.top             + '"';//,\n'
-            //+ pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
+              pos + tab + '"type": "' + this.type                      + '",\n'
+            + pos + tab + '"id": "'   + this.id                        + '",\n'
+            + pos + tab + '"name": "' + this.name.replace('"', '\\\"') + '",\n'
+            + pos + tab + '"x": "'    + this.div.style.left            + '",\n'
+            + pos + tab + '"y": "'    + this.div.style.top             + '",\n'
+            + pos + tab + '"z": "'    + this.graph.nodes.indexOf(this) + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';
