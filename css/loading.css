@@ -13,15 +13,15 @@
 .figma-dark  #loadingOverlay { background: #1e1e1e; }
 
 
-#loadingGraphic 
+#loadingGraphic
 {
     font-family: Inter;
     font-size:   26;
     font-weight: 800;
     color:       var(--figma-color-text);/*#333;*/
     position:    absolute;
-    left:        50%;
-    top:         45%;
+    left:        calc(50% - 4px);
+    top:         calc(45% - 6px);
     transform:   translateX(-50%)
                  translateY(-50%);
 }
@@ -31,25 +31,77 @@
 .figma-dark  #loadingGraphic { font-weight: 600; }
 
 
-#loadingEmpty
+#loadingG 
 {
-    font-size:     20;
-    font-weight:   800;
-    color:         var(--figma-color-text-secondary);/*#666;*/
-    margin-right:  2px;
-    position:      relative;
-    top:          -4px;
+    position: absolute;
+    left:     -7px;
+    top:      -3px;
+}
+
+#loadingG > path { fill: var(--figma-color-text); }
+
+
+#loadingEmpty        
+{ 
+    position: absolute;
+    left:     0;
+    top:      6px;
+
+    animation: emptyOrbit 3s linear infinite;     
+}
+
+#loadingEmpty > path { fill:var(--figma-color-text); }
+
+
+#loadingFull         
+{ 
+    position: absolute;
+    left:     0;
+    top:      6px;
+
+    animation: fullOrbit 3s linear infinite;    
+}
+
+#loadingFull  > path { fill: var(--figma-color-text); }
+
+
+@keyframes emptyOrbit
+{
+      0%   { transform: rotate(  0deg) translate(-22px) scale(100%);  opacity: 100%; }
+     15%   { transform: rotate(170deg) translate(-22px) scale(100%);  opacity: 100%; }
+     17%   { transform: rotate(180deg) translate(-22px) scale(130%);  opacity: 100%; }
+     23%   { transform: rotate(180deg) translate(-22px) scale(130%);  opacity: 100%; }
+     35%   { transform: rotate(180deg) translate(-22px) scale( 50%);  opacity:   0%; }
+     35.1% { transform: rotate(360deg) translate(-22px) scale(150%);  opacity:   0%; }
+     45%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
+     50%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
+     65%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
+     67%   { transform: rotate(360deg) translate(-22px) scale(130%);  opacity: 100%; }
+     73%   { transform: rotate(360deg) translate(-22px) scale(130%);  opacity: 100%; }
+     85%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
+     85.1% { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
+     95%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
+    100%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
 }
 
 
-#loadingFull
+@keyframes fullOrbit
 {
-    font-size:   16;
-    font-weight: 800;
-    color:       var(--figma-color-text-secondary);/*#666;*/
-    margin-left: 2px;
-    position:    relative;
-    top:        -5px;
+      0%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
+     18%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
+     20%   { transform: rotate(  0deg) translate(22px) scale( 50%);  opacity: 100%; }
+     23%   { transform: rotate(  0deg) translate(22px) scale( 50%);  opacity: 100%; }
+     33%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
+     35.1% { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
+     45%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
+     50%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
+     68%   { transform: rotate(170deg) translate(22px) scale(100%);  opacity: 100%; }
+     70%   { transform: rotate(180deg) translate(22px) scale( 50%);  opacity: 100%; }
+     73%   { transform: rotate(180deg) translate(22px) scale( 50%);  opacity: 100%; }
+     83%   { transform: rotate(180deg) translate(22px) scale(  0%);  opacity:   0%; }
+     85.1% { transform: rotate(  0deg) translate(22px) scale( 50%);  opacity:   0%; }
+     95%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
+    100%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
 }
 
 
@@ -61,7 +113,7 @@
     transform:     translateX(-50%)
                    translateY(-50%);
     width:         180px;
-    height:        5px;   
+    height:        5px;
     /* background:    var(--figma-color-bg);white; */
     border-radius: 2.5px;
     overflow:      hidden;
@@ -78,6 +130,6 @@
     left:          0;
     top:           0;
     width:         0;
-    height:        5px;   
+    height:        5px;
     background:    var(--figma-color-text);/*#333;*/
 }
