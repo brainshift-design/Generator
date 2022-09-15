@@ -1,7 +1,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> -->
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -293,6 +293,15 @@ input[type=text]::selection
 {
     background-color: var(--figma-color-bg-brand);
     color:            white;
+}
+
+
+@import url('https://rsms.me/inter/inter.css');
+html { font-family: 'Inter', sans-serif; }
+
+@supports (font-variation-settings: normal) 
+{
+  html { font-family: 'Inter var', sans-serif; } 
 }
 
 
@@ -662,7 +671,7 @@ div
     display:             inline-block;
     width:               32px;
     height:              22px;
-    background:          url('data:image/svg+xml;utf8,<svg width="9" height="8" viewBox="0 -1 9 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.31749 2.4477L3.42546 4.55569L7.64142 0.339716L8.9589 1.65721L3.42546 7.19067L0 3.76519L1.31749 2.4477Z" fill="white"/></svg>');
+    background:          url('data:image/svg+xml;utf8,<svg width="9" height="9" viewBox="0 -2 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.31749 2.4477L3.42546 4.55569L7.64142 0.339716L8.9589 1.65721L3.42546 7.19067L0 3.76519L1.31749 2.4477Z" fill="white"/></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
     visibility:          hidden;
@@ -712,7 +721,9 @@ div
     position:              absolute;
     right:                 16px;
     transform:             translateY(5px);
-    font-feature-settings: "salt" 1, "ss02" 1;
+    /* font-feature-settings: normal;*/
+    font-variant-alternates:  stylistic(), styleset();
+    font-feature-settings: 'salt' on, 'ss02' on;
     /* box-shadow: 0 0 0 1px green inset; */
 }
 
