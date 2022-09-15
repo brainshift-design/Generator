@@ -201,12 +201,12 @@ class Connection
 
                 this.wire.xp1.style.display          = 'inline';
                 this.wire.xp1.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
-                this.wire.xp1.style.strokeDasharray  = 10 * graphView.zoom;
+                this.wire.xp1.style.strokeDasharray  = 9 * graphView.zoom;
 
                 this.wire.xp2.style.display          = 'inline';
                 this.wire.xp2.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//isDarkMode() ? '#4d4d4d' : '#fff';
-                this.wire.xp2.style.strokeDasharray  = 10 * graphView.zoom;
-                this.wire.xp2.style.strokeDashoffset = 10 * graphView.zoom;
+                this.wire.xp2.style.strokeDasharray  = 9 * graphView.zoom;
+                this.wire.xp2.style.strokeDashoffset = 9 * graphView.zoom;
             }
             else
             {

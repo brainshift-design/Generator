@@ -102,3 +102,10 @@ function logObjectUpdates(objects)
         'background: #07e; color: white;', 
         objects);
 }
+
+
+
+function logSaveNodes(nodeJson)
+{
+    console.log('%cSAVING NODES\n' + nodeJson, 'background: #ddeeff');
+}

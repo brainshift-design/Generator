@@ -231,6 +231,8 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 
     promise.then(nodes => 
     {
+        nodes.sort((a, b) => a - b);
+
         graph.addNodes(nodes, false, false);
         loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
     });

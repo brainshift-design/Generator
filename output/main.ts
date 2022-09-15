@@ -31,12 +31,12 @@ const largeScrollGap = 14;
 
 const MAX_INT32      = 2147483647;
 
-const GEN_LOGO      = '◦G•';
+const NULL           = '';
+
 const TAB            = '  ';
 const NL             = '\n';
 
-
-const NULL                = '';
+const GEN_LOGO       = '◦G•';
 
 
 const INVALID             = '?';
@@ -315,8 +315,8 @@ const figObjectArrays = []; // {nodeId, [objects]}
 
 function figUpdate(msg)
 {
-    if (   msg.updateNodeId  != ''
-        && msg.updateParamId != '')
+    if (   msg.updateNodeId  != NULL
+        && msg.updateParamId != NULL)
     {
         const index = msg.nodeIds.indexOf(msg.updateNodeId);
 
@@ -327,7 +327,7 @@ function figUpdate(msg)
     //     figSaveNodes(msg.nodeIds, msg.nodeJson);
 
 
-    let curNodeId  = '';
+    let curNodeId  = NULL;
     let figObjects = null;
 
     for (const genObj of msg.objects)

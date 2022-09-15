@@ -64,7 +64,7 @@ extends Action
 
 
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
-        console.log('oldActiveNodeIds', oldActiveNodeIds);
+        //console.log('oldActiveNodeIds', oldActiveNodeIds);
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldActiveNodeIds)

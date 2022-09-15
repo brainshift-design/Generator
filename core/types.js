@@ -1,6 +1,3 @@
-const NULL                = '';
-
-
 const INVALID             = '?';
 const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
 

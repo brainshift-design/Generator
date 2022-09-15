@@ -898,11 +898,16 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
 
     const nodeJson = [];
+
     nodes.forEach(n => nodeJson.push(n.toJson()));
 
 
-    if (   settings.logObjectUpdates)
-        //&& objects.length > 0)
+    if (   settings.logRawSaving
+        && updateNodeId  != NULL
+        && updateParamId != NULL)
+        logSaveNodes(nodeJson.join('\n'));
+
+    if (settings.logObjectUpdates)
         logObjectUpdates([...objects]);
 
 
@@ -926,20 +931,16 @@ function uiSaveNodes(nodeIds)
     const nodeJson = [];
 
     for (const id of nodeIds)
-    {
-        const json = nodeFromId(id).toJson();
+        nodeJson.push(nodeFromId(id).toJson());
 
-        if (settings.logRawSaving)
-            console.log('%cSAVING NODES\n' + json, 'background: #ddeeff');
+    if (settings.logRawSaving)
+        logSaveNodes(nodeJson.join('\n'));
 
-        nodeJson.push(json);
-    }
-
-
-    uiQueueMessageToFigma({
-        cmd:     'figSaveNodes',
-        nodeIds:  nodeIds,
-        nodeJson: nodeJson
+    if (nodeJson.length > 0)
+        uiQueueMessageToFigma({
+            cmd:     'figSaveNodes',
+            nodeIds:  nodeIds,
+            nodeJson: nodeJson
     });
 }
 

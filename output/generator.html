@@ -7,9 +7,12 @@ const largeScrollGap = 14;
 
 const MAX_INT32      = 2147483647;
 
-const GEN_LOGO      = '◦G•';
+const NULL           = '';
+
 const TAB            = '  ';
 const NL             = '\n';
+
+const GEN_LOGO       = '◦G•';
 
 
 function rgbFromType(type, active)
@@ -2527,6 +2530,13 @@ function logObjectUpdates(objects)
 }
 
 
+
+function logSaveNodes(nodeJson)
+{
+    console.log('%cSAVING NODES\n' + nodeJson, 'background: #ddeeff');
+}
+
+
 function logRequest(parse)
 {
     let log = '';
@@ -2892,9 +2902,6 @@ function normalizeSeed(x)
 {
     return x / -0x7fffffff;
 }
-
-
-const NULL                = '';
 
 
 const INVALID             = '?';

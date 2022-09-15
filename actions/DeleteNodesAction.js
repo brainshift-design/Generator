@@ -92,7 +92,7 @@ extends Action
                     const index2 = node2.inputs.indexOf(i2);
                     
                     if (node1.id != node2.id) return node1.id - node2.id;
-                    if (index1 != index2) return index1 - index2;
+                    if (index1   != index2)   return index1   - index2;
                     return 0;
                 });
  

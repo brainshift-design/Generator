@@ -2003,9 +2003,12 @@ const largeScrollGap = 14;
 
 const MAX_INT32      = 2147483647;
 
-const GEN_LOGO      = '◦G•';
+const NULL           = '';
+
 const TAB            = '  ';
 const NL             = '\n';
+
+const GEN_LOGO       = '◦G•';
 
 
 function rgbFromType(type, active)
@@ -4523,6 +4526,13 @@ function logObjectUpdates(objects)
 }
 
 
+
+function logSaveNodes(nodeJson)
+{
+    console.log('%cSAVING NODES\n' + nodeJson, 'background: #ddeeff');
+}
+
+
 function logRequest(parse)
 {
     let log = '';
@@ -4888,9 +4898,6 @@ function normalizeSeed(x)
 {
     return x / -0x7fffffff;
 }
-
-
-const NULL                = '';
 
 
 const INVALID             = '?';
@@ -13039,9 +13046,12 @@ const largeScrollGap = 14;
 
 const MAX_INT32      = 2147483647;
 
-const GEN_LOGO      = '◦G•';
+const NULL           = '';
+
 const TAB            = '  ';
 const NL             = '\n';
+
+const GEN_LOGO       = '◦G•';
 
 
 function rgbFromType(type, active)
@@ -15559,6 +15569,13 @@ function logObjectUpdates(objects)
 }
 
 
+
+function logSaveNodes(nodeJson)
+{
+    console.log('%cSAVING NODES\n' + nodeJson, 'background: #ddeeff');
+}
+
+
 function logRequest(parse)
 {
     let log = '';
@@ -17404,9 +17421,6 @@ function base32toArray(base32, chars = base32chars)
 
     return array;
 }
-
-
-const NULL                = '';
 
 
 const INVALID             = '?';
@@ -30013,12 +30027,12 @@ class Connection
 
                 this.wire.xp1.style.display          = 'inline';
                 this.wire.xp1.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
-                this.wire.xp1.style.strokeDasharray  = 10 * graphView.zoom;
+                this.wire.xp1.style.strokeDasharray  = 9 * graphView.zoom;
 
                 this.wire.xp2.style.display          = 'inline';
                 this.wire.xp2.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//isDarkMode() ? '#4d4d4d' : '#fff';
-                this.wire.xp2.style.strokeDasharray  = 10 * graphView.zoom;
-                this.wire.xp2.style.strokeDashoffset = 10 * graphView.zoom;
+                this.wire.xp2.style.strokeDasharray  = 9 * graphView.zoom;
+                this.wire.xp2.style.strokeDashoffset = 9 * graphView.zoom;
             }
             else
             {
@@ -30801,11 +30815,12 @@ class Operator
         const tab = TAB;
 
         let json =
-              pos + tab + '"type": "'        + this.type                      + '",\n'
-            + pos + tab + '"id": "'          + this.id                        + '",\n'
-            + pos + tab + '"name": "'        + this.name.replace('"', '\\\"') + '",\n'
-            + pos + tab + '"x": "'           + this.div.style.left            + '",\n'
-            + pos + tab + '"y": "'           + this.div.style.top             + '"';//,\n'
+              pos + tab + '"type": "'    + this.type                      + '",\n'
+            + pos + tab + '"id": "'      + this.id                        + '",\n'
+            + pos + tab + '"z-index": "' + this.graph.nodes.indexOf(this) + '",\n'
+            + pos + tab + '"name": "'    + this.name.replace('"', '\\\"') + '",\n'
+            + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
+            + pos + tab + '"y": "'       + this.div.style.top             + '"';//,\n'
             //+ pos + tab + '"labelOffset": "' + this.labelOffsetFactor + '"';
 
         if (this.active)
@@ -37953,7 +37968,7 @@ extends Action
                     const index2 = node2.inputs.indexOf(i2);
                     
                     if (node1.id != node2.id) return node1.id - node2.id;
-                    if (index1 != index2) return index1 - index2;
+                    if (index1   != index2)   return index1   - index2;
                     return 0;
                 });
  
@@ -38412,7 +38427,7 @@ extends Action
 
 
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
-        console.log('oldActiveNodeIds', oldActiveNodeIds);
+        //console.log('oldActiveNodeIds', oldActiveNodeIds);
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldActiveNodeIds)
@@ -39898,6 +39913,8 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 
     promise.then(nodes => 
     {
+        nodes.sort((a, b) => a - b);
+
         graph.addNodes(nodes, false, false);
         loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
     });
@@ -41193,11 +41210,16 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
 
     const nodeJson = [];
+
     nodes.forEach(n => nodeJson.push(n.toJson()));
 
 
-    if (   settings.logObjectUpdates)
-        //&& objects.length > 0)
+    if (   settings.logRawSaving
+        && updateNodeId  != NULL
+        && updateParamId != NULL)
+        logSaveNodes(nodeJson.join('\n'));
+
+    if (settings.logObjectUpdates)
         logObjectUpdates([...objects]);
 
 
@@ -41221,20 +41243,16 @@ function uiSaveNodes(nodeIds)
     const nodeJson = [];
 
     for (const id of nodeIds)
-    {
-        const json = nodeFromId(id).toJson();
+        nodeJson.push(nodeFromId(id).toJson());
 
-        if (settings.logRawSaving)
-            console.log('%cSAVING NODES\n' + json, 'background: #ddeeff');
+    if (settings.logRawSaving)
+        logSaveNodes(nodeJson.join('\n'));
 
-        nodeJson.push(json);
-    }
-
-
-    uiQueueMessageToFigma({
-        cmd:     'figSaveNodes',
-        nodeIds:  nodeIds,
-        nodeJson: nodeJson
+    if (nodeJson.length > 0)
+        uiQueueMessageToFigma({
+            cmd:     'figSaveNodes',
+            nodeIds:  nodeIds,
+            nodeJson: nodeJson
     });
 }
 

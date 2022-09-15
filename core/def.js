@@ -3,6 +3,9 @@ const largeScrollGap = 14;
 
 const MAX_INT32      = 2147483647;
 
-const GEN_LOGO      = '◦G•';
+const NULL           = '';
+
 const TAB            = '  ';
 const NL             = '\n';
+
+const GEN_LOGO       = '◦G•';
