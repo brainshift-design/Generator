@@ -1,5 +1,5 @@
 class GRectangle
-extends GGeometryBase
+extends GShapeBase
 {
     input  = null;
 

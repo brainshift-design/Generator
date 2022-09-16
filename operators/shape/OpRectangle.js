@@ -1,5 +1,5 @@
 class   OpRectangle
-extends OpGeometryBase
+extends OpShapeBase
 {
     paramX;
     paramY;

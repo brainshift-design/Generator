@@ -1,4 +1,4 @@
-class GGeometryBase
+class GShapeBase
 extends GOperator
 {
     fill    = null;

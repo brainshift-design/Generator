@@ -1,28 +1,30 @@
-class   OpEllipse
-extends OpGeometryBase
+class   OpPolygon
+extends OpShapeBase
 {
     paramX;
     paramY;
     paramWidth;
     paramHeight;
     paramAngle;
-
-    //showAllParams = true;
+    paramRound;
+    paramCorners;
 
 
     
     constructor()
     {
-        super(ELLIPSE, 'elps', 90);
+        super(POLYGON, 'poly', 90);
 
-        this.addInput (new Input ([ELLIPSE, ELLIPSE_VALUE]));
-        this.addOutput(new Output(ELLIPSE, this.output_genRequest));
+        this.addInput (new Input ([POLYGON, POLYGON_VALUE]));
+        this.addOutput(new Output(POLYGON, this.output_genRequest));
 
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramX       = new NumberParam('x',       'x',       true, true, true,   0));
+        this.addParam(this.paramY       = new NumberParam('y',       'y',       true, true, true,   0));
+        this.addParam(this.paramWidth   = new NumberParam('width',   'width',   true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight  = new NumberParam('height',  'height',  true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',   true, true, true,   0, -180,   180));
+        this.addParam(this.paramRound   = new NumberParam('round',   'round',   true, true, true,   0,    0));
+        this.addParam(this.paramCorners = new NumberParam('corners', 'corners', true, true, true,   3,    3));
         
 
         this.paramAngle.control.setSuffix('°', true);
@@ -108,20 +110,24 @@ extends OpGeometryBase
             request.push(paramIds.join(','));
 
 
-            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
-            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
-            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
-            if (this.node.paramHeight.input.connected) request.push(...this.node.paramHeight.genRequest(gen));
-            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
+            if (this.node.paramX      .input.connected) request.push(...this.node.paramX      .genRequest(gen));
+            if (this.node.paramY      .input.connected) request.push(...this.node.paramY      .genRequest(gen));
+            if (this.node.paramWidth  .input.connected) request.push(...this.node.paramWidth  .genRequest(gen));
+            if (this.node.paramHeight .input.connected) request.push(...this.node.paramHeight .genRequest(gen));
+            if (this.node.paramAngle  .input.connected) request.push(...this.node.paramAngle  .genRequest(gen));
+            if (this.node.paramRound  .input.connected) request.push(...this.node.paramRound  .genRequest(gen));
+            if (this.node.paramCorners.input.connected) request.push(...this.node.paramCorners.genRequest(gen));
         }
         else
         {
             request.push(
-                ...this.node.paramX     .genRequest(gen),
-                ...this.node.paramY     .genRequest(gen),
-                ...this.node.paramWidth .genRequest(gen),
-                ...this.node.paramHeight.genRequest(gen),
-                ...this.node.paramAngle .genRequest(gen));
+                ...this.node.paramX      .genRequest(gen),
+                ...this.node.paramY      .genRequest(gen),
+                ...this.node.paramWidth  .genRequest(gen),
+                ...this.node.paramHeight .genRequest(gen),
+                ...this.node.paramAngle  .genRequest(gen),
+                ...this.node.paramRound  .genRequest(gen),
+                ...this.node.paramCorners.genRequest(gen));
         }
 
 
@@ -143,15 +149,38 @@ extends OpGeometryBase
 
 
 
+    updateValues(updateParamId, paramIds, values)
+    {
+        super.updateValues(updateParamId, paramIds, values);
+
+        if (   paramIds.includes('width')
+            || paramIds.includes('height'))
+            this.updateRound();
+    }
+
+
+
+    updateRound()
+    {
+        const control = this.paramRound.control;
+        const min     = Math.min(this.paramWidth.value, this.paramHeight.value);
+
+        control.setMin(0);
+        control.setMax(min/2);
+
+        this.paramRound.control.update();
+    }
+
+    
+
     toJsonBase(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
         const tab = TAB;
 
         let json = 
-                 super.toJsonBase(nTab)
-               //+ ',\n' + pos + tab + '"showAllParams": "' + boolString(this.showAllParams) + '"'
-               + ',\n' + pos + tab + '"proportional": "'  + boolString(this.btnProportional.enabled) + '"';
+               super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
 
         if (this.btnProportional.enabled)
         {
@@ -171,8 +200,6 @@ extends OpGeometryBase
 
         // if (_node.proportional)
         // {
-            //this.showAllParams = isTrue(_node.proportional);
-            
             this.btnProportional.enabled = isTrue(_node.proportional);
             this.btnProportional.updateBackground(false);
 

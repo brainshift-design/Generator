@@ -1,4 +1,4 @@
-class   OpGeometryBase
+class   OpShapeBase
 extends OperatorBase
 {
     paramFill;

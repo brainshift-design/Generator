@@ -1,5 +1,5 @@
 class RectangleValue
-extends GeometryBaseValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -164,7 +164,7 @@ function parseRectangleValue(str, i = -1)
         round [0]);
 
 
-    i = parseGeometryBaseValue(str, i, rect);
+    i = parseShapeBaseValue(str, i, rect);
 
     
     return [rect, i - iStart];

@@ -3,7 +3,7 @@
     and objects hold stroke values directly, which incoming stroke values just set.
 */
 
-class GeometryBaseValue
+class ShapeBaseValue
 extends GType
 {
     nodeId;
@@ -75,7 +75,7 @@ extends GType
 
 
 
-function parseGeometryBaseValue(str, i, obj)
+function parseShapeBaseValue(str, i, obj)
 {
     const fill   = parseFillValue  (str, i); i += fill  [1];
     const stroke = parseStrokeValue(str, i); i += stroke[1];

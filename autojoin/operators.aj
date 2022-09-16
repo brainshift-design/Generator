@@ -57,15 +57,15 @@
 ../operators/style/OpGradient.js
 
 
-../operators/geometry/OpGeometryBase.js
-../operators/geometry/OpRectangle.js
-../operators/geometry/OpLine.js
-../operators/geometry/OpEllipse.js
-../operators/geometry/OpPolygon.js
-../operators/geometry/OpStar.js
+../operators/shape/OpShapeBase.js
+../operators/shape/OpRectangle.js
+../operators/shape/OpLine.js
+../operators/shape/OpEllipse.js
+../operators/shape/OpPolygon.js
+../operators/shape/OpStar.js
 
 
-../operators/geometry/OpColorStroke.js
+../operators/shape/OpColorStroke.js
 
-//../operators/geometry/OpColumn.js
-//../operators/geometry/UOpSpread.js
+//../operators/shape/OpColumn.js
+//../operators/shape/UOpSpread.js

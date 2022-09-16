@@ -59,8 +59,8 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE    = 'FL';
-const FILL          = 'FILL';
+const FILL_VALUE = 'FL';
+const FILL       = 'FILL';
 
 const FILL_TYPES =
 [
@@ -86,7 +86,7 @@ const GRADIENT_VALUE      = 'GR';
 const GRADIENT            = 'GRAD';
 
 
-//const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
+const SHAPE_VALUE      = 'G0';    // abstract placeholder
 
 const RECTANGLE_VALUE     = 'R';
 const LINE_VALUE          = 'L';
@@ -101,9 +101,9 @@ const POLYGON             = 'POLY';  // N:x N:y N:width N:height N:angle N:corne
 const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
 
-const GEOMETRY_VALUES =
+const SHAPE_VALUES =
 [
-    //GEOMETRY_VALUE,
+    //SHAPE_VALUE,
 
     RECTANGLE_VALUE,
     LINE_VALUE,
@@ -113,9 +113,9 @@ const GEOMETRY_VALUES =
 ];
 
 
-const GEOMETRY_TYPES =
+const SHAPE_TYPES =
 [
-    ...GEOMETRY_VALUES,
+    ...SHAPE_VALUES,
 
     RECTANGLE,
     LINE,

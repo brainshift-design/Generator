@@ -1,5 +1,5 @@
 // class   OpColorStroke
-// extends OpGeometryBase
+// extends OpShapeBase
 // {
 //     paramColor;
 //     paramOpacity;
@@ -15,7 +15,7 @@
 //         super(COLOR_STROKE, 'stroke', 90);
 
 
-//         this.addInput(new Input(GEOMETRY_TYPES));
+//         this.addInput(new Input(SHAPE_TYPES));
 //         this.addOutput(new Output(COLOR_STROKE, this.output_genRequest));
 
 //         this.addParam(this.paramColor        = new ColorParam ('color',        '',        false, true, true));

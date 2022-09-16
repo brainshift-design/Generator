@@ -4726,7 +4726,7 @@ function logReqColorStop(stop, parse)
 }
 
 
-function logReqGeometry(node, parse)
+function logReqShape(node, parse)
 {
     parse.log += parse.tab + node.type;
     parse.log += logReqNodeId(node);
@@ -4956,8 +4956,8 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE    = 'FL';
-const FILL          = 'FILL';
+const FILL_VALUE = 'FL';
+const FILL       = 'FILL';
 
 const FILL_TYPES =
 [
@@ -4983,7 +4983,7 @@ const GRADIENT_VALUE      = 'GR';
 const GRADIENT            = 'GRAD';
 
 
-//const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
+const SHAPE_VALUE      = 'G0';    // abstract placeholder
 
 const RECTANGLE_VALUE     = 'R';
 const LINE_VALUE          = 'L';
@@ -4998,9 +4998,9 @@ const POLYGON             = 'POLY';  // N:x N:y N:width N:height N:angle N:corne
 const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
 
-const GEOMETRY_VALUES =
+const SHAPE_VALUES =
 [
-    //GEOMETRY_VALUE,
+    //SHAPE_VALUE,
 
     RECTANGLE_VALUE,
     LINE_VALUE,
@@ -5010,9 +5010,9 @@ const GEOMETRY_VALUES =
 ];
 
 
-const GEOMETRY_TYPES =
+const SHAPE_TYPES =
 [
-    ...GEOMETRY_VALUES,
+    ...SHAPE_VALUES,
 
     RECTANGLE,
     LINE,
@@ -5925,7 +5925,7 @@ function evalStrokeValue(value, parse)
     and objects hold stroke values directly, which incoming stroke values just set.
 */
 
-class GeometryBaseValue
+class ShapeBaseValue
 extends GType
 {
     nodeId;
@@ -5997,7 +5997,7 @@ extends GType
 
 
 
-function parseGeometryBaseValue(str, i, obj)
+function parseShapeBaseValue(str, i, obj)
 {
     const fill   = parseFillValue  (str, i); i += fill  [1];
     const stroke = parseStrokeValue(str, i); i += stroke[1];
@@ -6010,7 +6010,7 @@ function parseGeometryBaseValue(str, i, obj)
 
 
 class RectangleValue
-extends GeometryBaseValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -6175,7 +6175,7 @@ function parseRectangleValue(str, i = -1)
         round [0]);
 
 
-    i = parseGeometryBaseValue(str, i, rect);
+    i = parseShapeBaseValue(str, i, rect);
 
     
     return [rect, i - iStart];
@@ -8046,7 +8046,7 @@ extends GOperator
 }
 
 
-class GGeometryBase
+class GShapeBase
 extends GOperator
 {
     fill    = null;
@@ -8111,7 +8111,7 @@ extends GOperator
 
 
 class GRectangle
-extends GGeometryBase
+extends GShapeBase
 {
     input  = null;
 
@@ -9433,7 +9433,7 @@ function genParseColorValidate(parse)
 }
 
 
-function genParseGeometryBase(parse, obj, paramId)
+function genParseShapeBase(parse, obj, paramId)
 {
     switch (paramId)
     {
@@ -9453,7 +9453,7 @@ function genParseRectangle(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(rect, parse);
+        logReqShape(rect, parse);
 
 
     if (ignore) 
@@ -9489,7 +9489,7 @@ function genParseRectangle(parse)
         case 'height': rect.height = genParse(parse); break;
         case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
-        default:       genParseGeometryBase(parse, rect, paramId); break;
+        default:       genParseShapeBase(parse, rect, paramId); break;
         }
 
 
@@ -9516,7 +9516,7 @@ function genParseLine(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(line, parse);
+        logReqShape(line, parse);
 
 
     if (ignore) 
@@ -9571,7 +9571,7 @@ function genParseEllipse(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(elps, parse);
+        logReqShape(elps, parse);
 
 
     if (ignore) 
@@ -9627,7 +9627,7 @@ function genParsePolygon(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(poly, parse);
+        logReqShape(poly, parse);
 
 
     if (ignore) 
@@ -9685,7 +9685,7 @@ function genParseStar(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(star, parse);
+        logReqShape(star, parse);
 
 
     if (ignore) 
@@ -15769,7 +15769,7 @@ function logReqColorStop(stop, parse)
 }
 
 
-function logReqGeometry(node, parse)
+function logReqShape(node, parse)
 {
     parse.log += parse.tab + node.type;
     parse.log += logReqNodeId(node);
@@ -17479,8 +17479,8 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE    = 'FL';
-const FILL          = 'FILL';
+const FILL_VALUE = 'FL';
+const FILL       = 'FILL';
 
 const FILL_TYPES =
 [
@@ -17506,7 +17506,7 @@ const GRADIENT_VALUE      = 'GR';
 const GRADIENT            = 'GRAD';
 
 
-//const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
+const SHAPE_VALUE      = 'G0';    // abstract placeholder
 
 const RECTANGLE_VALUE     = 'R';
 const LINE_VALUE          = 'L';
@@ -17521,9 +17521,9 @@ const POLYGON             = 'POLY';  // N:x N:y N:width N:height N:angle N:corne
 const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
 
-const GEOMETRY_VALUES =
+const SHAPE_VALUES =
 [
-    //GEOMETRY_VALUE,
+    //SHAPE_VALUE,
 
     RECTANGLE_VALUE,
     LINE_VALUE,
@@ -17533,9 +17533,9 @@ const GEOMETRY_VALUES =
 ];
 
 
-const GEOMETRY_TYPES =
+const SHAPE_TYPES =
 [
-    ...GEOMETRY_VALUES,
+    ...SHAPE_VALUES,
 
     RECTANGLE,
     LINE,
@@ -18448,7 +18448,7 @@ function evalStrokeValue(value, parse)
     and objects hold stroke values directly, which incoming stroke values just set.
 */
 
-class GeometryBaseValue
+class ShapeBaseValue
 extends GType
 {
     nodeId;
@@ -18520,7 +18520,7 @@ extends GType
 
 
 
-function parseGeometryBaseValue(str, i, obj)
+function parseShapeBaseValue(str, i, obj)
 {
     const fill   = parseFillValue  (str, i); i += fill  [1];
     const stroke = parseStrokeValue(str, i); i += stroke[1];
@@ -18533,7 +18533,7 @@ function parseGeometryBaseValue(str, i, obj)
 
 
 class RectangleValue
-extends GeometryBaseValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -18698,7 +18698,7 @@ function parseRectangleValue(str, i = -1)
         round [0]);
 
 
-    i = parseGeometryBaseValue(str, i, rect);
+    i = parseShapeBaseValue(str, i, rect);
 
     
     return [rect, i - iStart];
@@ -20569,7 +20569,7 @@ extends GOperator
 }
 
 
-class GGeometryBase
+class GShapeBase
 extends GOperator
 {
     fill    = null;
@@ -20634,7 +20634,7 @@ extends GOperator
 
 
 class GRectangle
-extends GGeometryBase
+extends GShapeBase
 {
     input  = null;
 
@@ -21492,21 +21492,6 @@ function disableCurrentMenuButton()
 }
 
 
-var menuMain;
-var menuMainPreferences;
-var menuMainDebug;
-var menuMainDebugLogging;
-var menuMainHelp;
-
-var menuNumber;
-var menuString;
-var menuColor;
-var menuShape;
-
-var menuZoom;
-
-
-
 const iconGenerator        = '<svg width="19" height="10" viewBox="0 0 19 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.7074 3.74745C11.6364 3.51733 11.5384 3.31137 11.4134 3.12955C11.2912 2.94489 11.1435 2.78722 10.9702 2.65654C10.7997 2.52586 10.6037 2.42784 10.3821 2.3625C10.1605 2.29432 9.91903 2.26023 9.65767 2.26023C9.18892 2.26023 8.77131 2.37813 8.40483 2.61392C8.03835 2.84972 7.75 3.19631 7.53977 3.6537C7.33239 4.10824 7.22869 4.66222 7.22869 5.31563C7.22869 5.97472 7.33239 6.53296 7.53977 6.99034C7.74716 7.44773 8.03551 7.79574 8.40483 8.03438C8.77415 8.27017 9.20313 8.38807 9.69176 8.38807C10.1349 8.38807 10.5185 8.30284 10.8423 8.13239C11.169 7.96194 11.4205 7.72046 11.5966 7.40796C11.7727 7.09262 11.8608 6.7233 11.8608 6.3L12.2188 6.3554H9.84943V5.11961H13.3906V6.1679C13.3906 6.91506 13.2315 7.56137 12.9134 8.10682C12.5952 8.65228 12.1577 9.07273 11.6009 9.36819C11.044 9.6608 10.4048 9.80711 9.68324 9.80711C8.87926 9.80711 8.1733 9.62671 7.56534 9.26591C6.96023 8.90228 6.48722 8.38665 6.14631 7.71904C5.80824 7.04858 5.6392 6.25313 5.6392 5.33267C5.6392 4.62813 5.73864 3.99887 5.9375 3.44489C6.1392 2.89091 6.42045 2.42074 6.78125 2.03438C7.14205 1.64517 7.56534 1.34972 8.05114 1.14802C8.53693 0.94347 9.06534 0.841197 9.63636 0.841197C10.1193 0.841197 10.5696 0.91222 10.9872 1.05427C11.4048 1.19347 11.7756 1.39233 12.0994 1.65086C12.4261 1.90938 12.6946 2.2162 12.9048 2.57131C13.1151 2.92642 13.2528 3.31847 13.3182 3.74745H11.7074Z" fill="white"/><circle cx="2" cy="5" r="1.5" stroke="white"/><circle cx="17" cy="5" r="2" fill="white"/></svg>';
 
 const iconNumber           = '<svg width="18" height="7" viewBox="0 0 18 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.91122 0.0931559V6.90684H1.96124V0.958175H1.91528L0 2.06274V1.22433L1.96124 0.0931559H2.91122Z" fill="white"/><path d="M5.16742 6.90684V6.30798L7.75687 3.84601C8.06076 3.55767 8.31102 3.30703 8.50766 3.09411C8.7043 2.87896 8.84986 2.67712 8.94434 2.48859C9.04138 2.29785 9.0899 2.09823 9.0899 1.88973C9.0899 1.65019 9.02351 1.44281 8.89072 1.26759C8.76048 1.09236 8.58172 0.957066 8.35444 0.861692C8.12716 0.766318 7.87179 0.718631 7.58833 0.718631C7.28699 0.718631 7.02396 0.772972 6.79923 0.881654C6.57706 0.988118 6.40469 1.13783 6.28211 1.3308C6.16208 1.52376 6.10207 1.75 6.10207 2.00951H5.19806C5.19806 1.61027 5.30404 1.25982 5.516 0.958175C5.72796 0.656527 6.01652 0.421419 6.3817 0.252852C6.74944 0.0842839 7.16186 0 7.61897 0C8.07864 0 8.48595 0.0842839 8.84092 0.252852C9.19588 0.421419 9.47424 0.648764 9.67598 0.934886C9.87772 1.22101 9.97859 1.53929 9.97859 1.88973C9.97859 2.14037 9.92624 2.38546 9.82154 2.625C9.71939 2.86233 9.54063 3.12738 9.28526 3.42015C9.03245 3.71071 8.68131 4.06559 8.23186 4.48479L6.46981 6.12167V6.1749H10.1165V6.90684H5.16742Z" fill="white"/><path d="M14.3493 7C13.8436 7 13.3929 6.92459 12.9971 6.77376C12.6038 6.62294 12.291 6.41334 12.0586 6.14496C11.8288 5.87437 11.7036 5.56052 11.6832 5.20342H12.6485C12.6689 5.423 12.7557 5.61264 12.909 5.77234C13.0622 5.92982 13.2627 6.05181 13.5104 6.13831C13.7581 6.22481 14.0326 6.26806 14.3339 6.26806C14.671 6.26806 14.9698 6.21705 15.2303 6.11502C15.4908 6.01299 15.6951 5.87104 15.8432 5.68916C15.9913 5.50729 16.0653 5.29658 16.0653 5.05703C16.0653 4.8064 15.9938 4.58571 15.8508 4.39496C15.7078 4.202 15.4984 4.05117 15.2226 3.94249C14.9468 3.83381 14.6097 3.77947 14.2114 3.77947H13.5831V3.04753H14.2114C14.5229 3.04753 14.7962 2.99873 15.0311 2.90114C15.2686 2.80355 15.4537 2.66603 15.5865 2.48859C15.7219 2.31115 15.7895 2.10266 15.7895 1.86312C15.7895 1.63245 15.7308 1.43172 15.6133 1.26093C15.4959 1.09015 15.3299 0.957066 15.1154 0.861692C14.9034 0.766318 14.6531 0.718631 14.3646 0.718631C14.0939 0.718631 13.8385 0.761882 13.5985 0.848384C13.361 0.932668 13.1669 1.05577 13.0162 1.21768C12.8656 1.37738 12.7838 1.57034 12.7711 1.79658H11.8517C11.8671 1.43948 11.9909 1.12674 12.2233 0.858365C12.4557 0.587769 12.7596 0.377059 13.135 0.226236C13.5129 0.0754119 13.9279 0 14.3799 0C14.8651 0 15.2814 0.0853928 15.6287 0.256179C15.976 0.424746 16.2428 0.647655 16.4292 0.924905C16.6157 1.20215 16.7089 1.50158 16.7089 1.82319C16.7089 2.20691 16.5927 2.53406 16.3603 2.80466C16.1305 3.07525 15.8176 3.26267 15.4218 3.36692V3.42015C15.9172 3.49113 16.3041 3.67411 16.5825 3.96911C16.8608 4.26188 17 4.62452 17 5.05703C17 5.42744 16.8838 5.76014 16.6514 6.05513C16.4216 6.34791 16.1075 6.57858 15.7091 6.74715C15.3107 6.91572 14.8574 7 14.3493 7Z" fill="white"/></svg>';
@@ -21549,12 +21534,28 @@ var btnMain;
 var btnNumber;
 var btnString;
 var btnColor;
+var btnStyle;
 var btnShape;
 var btnHand;
 var btnComment;
 
 var btnZoom;
 
+
+var menuMain;
+var menuMainPreferences;
+var menuMainDebug;
+var menuMainDebugLogging;
+var menuMainDebugLoggingRaw;
+var menuMainHelp;
+
+var menuNumber;
+var menuString;
+var menuColor;
+var menuStyle;
+var menuShape;
+
+var menuZoom;
 
 
 var menuItemShowNodeId;
@@ -21582,22 +21583,26 @@ function initMenuBar()
     //     new MenuItem('Debug')]);
 
 
+    menuMainDebugLoggingRaw = new Menu('Raw', false);
+    menuMainDebugLoggingRaw.addItems([
+        menuItemLogRawLoading    = new MenuItem('Raw loading',    {checkCallback: () => settings.logRawLoading   , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading )}),
+        menuItemLogRawSaving     = new MenuItem('Raw saving',     {checkCallback: () => settings.logRawSaving    , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving  )}),
+        menuItemLogRawRequests   = new MenuItem('Raw requests',   {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests)}),
+        menuItemLogRawValues     = new MenuItem('Raw values',     {checkCallback: () => settings.logRawValues    , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues  )})]);
+
+
     menuMainDebugLogging = new Menu('Logging', false);
     menuMainDebugLogging.addItems([
         menuItemLogMessages      = new MenuItem('Messages',       {checkCallback: () => settings.logMessages     , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     )}),
         menuItemLogActions       = new MenuItem('Actions',        {checkCallback: () => settings.logActions      , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      )}),
                                    new MenuItem('',               {isSeparator: true}),
-        menuItemLogRawLoading    = new MenuItem('Raw loading',    {checkCallback: () => settings.logRawLoading   , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading   )}),
-        menuItemLogRawSaving     = new MenuItem('Raw saving',     {checkCallback: () => settings.logRawSaving    , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving    )}),
-                                   new MenuItem('',               {isSeparator: true}),
         menuItemLogLoading       = new MenuItem('Loading',        {checkCallback: () => settings.logLoading      , callback: () => updateSettingAndMenu('logLoading',       true, !settings.logLoading      )}),
                                    new MenuItem('',               {isSeparator: true}),
-        menuItemLogRawRequests   = new MenuItem('Raw requests',   {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests  )}),
-        menuItemLogRawValues     = new MenuItem('Raw values',     {checkCallback: () => settings.logRawValues    , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues    )}),
-                                   new MenuItem('',               {isSeparator: true}),
         menuItemLogRequests      = new MenuItem('Requests',       {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
-        menuItemLogValueUpdates  = new MenuItem('Value updates',  {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
-        menuItemLogObjectUpdates = new MenuItem('Object updates', {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)})]);
+        menuItemLogValueUpdates  = new MenuItem('Values',         {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
+        menuItemLogObjectUpdates = new MenuItem('Objects',        {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)}),
+                                   new MenuItem('',               {isSeparator: true}),
+                                   new MenuItem('Raw',            {childMenu: menuMainDebugLoggingRaw})]);
 
 
     menuMainDebug = new Menu('Debug', false);
@@ -21667,10 +21672,13 @@ function initMenuBar()
         new MenuItem('Interpolate', {icon: iconColorInterpolate, enabled: false}),
         new MenuItem('Validate',    {icon: iconColorValidate   , enabled: false}),
         new MenuItem('Contrast',    {icon: iconColorContrast   , enabled: false}),
-        new MenuItem('Colorblind',  {icon: iconColorblind      , enabled: false}),
-        new MenuItem('',            {isSeparator: true}),
-        new MenuItem('Fill',        {icon: iconFill,           callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
-        new MenuItem('Stroke',      {icon: iconStroke,         callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))})]);
+        new MenuItem('Colorblind',  {icon: iconColorblind      , enabled: false})]);
+    
+    
+    menuStyle = new Menu('Style nodes');
+    menuStyle.addItems([
+        new MenuItem('Fill',   {icon: iconFill,   callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
+        new MenuItem('Stroke', {icon: iconStroke, callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))})]);
     
     
     menuShape = new Menu('Shape nodes');
@@ -21693,8 +21701,9 @@ function initMenuBar()
     btnMain    = new MenuButton('', menuMain, {useMenuName: true, highlight: () => currentMenus.includes(menuMain)});
     btnNumber  = new MenuButton('', menuNumber);
     btnString  = new MenuButton('', menuString);
-    btnColor   = new MenuButton('', menuColor);
-    btnShape   = new MenuButton('', menuShape);
+    btnColor   = new MenuButton('', menuColor );
+    btnStyle   = new MenuButton('', menuStyle );
+    btnShape   = new MenuButton('', menuShape );
     btnHand    = new MenuButton('Hand tool', null, {callback: () => 
         { 
             panMode = !panMode;  
@@ -35783,7 +35792,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(FILL, 'fill');
+        super(SHAPE_VALUE, 'fill');
 
 
         this.colorBack = createDiv('colorBack');
@@ -36378,7 +36387,7 @@ function OpGradient_onDisconnectInput(node, input)
 }
 
 
-class   OpGeometryBase
+class   OpShapeBase
 extends OperatorBase
 {
     paramFill;
@@ -36435,7 +36444,7 @@ extends OperatorBase
 
 
 class   OpRectangle
-extends OpGeometryBase
+extends OpShapeBase
 {
     paramX;
     paramY;
@@ -36688,7 +36697,7 @@ extends OpGeometryBase
 
 
 class   OpLine
-extends OpGeometryBase
+extends OpShapeBase
 {
     paramX;
     paramY;
@@ -36789,7 +36798,7 @@ extends OpGeometryBase
 
 
 class   OpEllipse
-extends OpGeometryBase
+extends OpShapeBase
 {
     paramX;
     paramY;
@@ -36977,7 +36986,7 @@ extends OpGeometryBase
 
 
 class   OpPolygon
-extends OpGeometryBase
+extends OpShapeBase
 {
     paramX;
     paramY;
@@ -37192,7 +37201,7 @@ extends OpGeometryBase
 
 
 class   OpStar
-extends OpGeometryBase
+extends OpShapeBase
 {
     paramX;
     paramY;
@@ -37413,7 +37422,7 @@ extends OpGeometryBase
 
 
 // class   OpColorStroke
-// extends OpGeometryBase
+// extends OpShapeBase
 // {
 //     paramColor;
 //     paramOpacity;
@@ -37429,7 +37438,7 @@ extends OpGeometryBase
 //         super(COLOR_STROKE, 'stroke', 90);
 
 
-//         this.addInput(new Input(GEOMETRY_TYPES));
+//         this.addInput(new Input(SHAPE_TYPES));
 //         this.addOutput(new Output(COLOR_STROKE, this.output_genRequest));
 
 //         this.addParam(this.paramColor        = new ColorParam ('color',        '',        false, true, true));

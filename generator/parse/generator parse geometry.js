@@ -1,4 +1,4 @@
-function genParseGeometryBase(parse, obj, paramId)
+function genParseShapeBase(parse, obj, paramId)
 {
     switch (paramId)
     {
@@ -18,7 +18,7 @@ function genParseRectangle(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(rect, parse);
+        logReqShape(rect, parse);
 
 
     if (ignore) 
@@ -54,7 +54,7 @@ function genParseRectangle(parse)
         case 'height': rect.height = genParse(parse); break;
         case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
-        default:       genParseGeometryBase(parse, rect, paramId); break;
+        default:       genParseShapeBase(parse, rect, paramId); break;
         }
 
 
@@ -81,7 +81,7 @@ function genParseLine(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(line, parse);
+        logReqShape(line, parse);
 
 
     if (ignore) 
@@ -136,7 +136,7 @@ function genParseEllipse(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(elps, parse);
+        logReqShape(elps, parse);
 
 
     if (ignore) 
@@ -192,7 +192,7 @@ function genParsePolygon(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(poly, parse);
+        logReqShape(poly, parse);
 
 
     if (ignore) 
@@ -250,7 +250,7 @@ function genParseStar(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(star, parse);
+        logReqShape(star, parse);
 
 
     if (ignore) 

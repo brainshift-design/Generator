@@ -2735,7 +2735,7 @@ function logReqColorStop(stop, parse)
 }
 
 
-function logReqGeometry(node, parse)
+function logReqShape(node, parse)
 {
     parse.log += parse.tab + node.type;
     parse.log += logReqNodeId(node);
@@ -2965,8 +2965,8 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE    = 'FL';
-const FILL          = 'FILL';
+const FILL_VALUE = 'FL';
+const FILL       = 'FILL';
 
 const FILL_TYPES =
 [
@@ -2992,7 +2992,7 @@ const GRADIENT_VALUE      = 'GR';
 const GRADIENT            = 'GRAD';
 
 
-//const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
+const SHAPE_VALUE      = 'G0';    // abstract placeholder
 
 const RECTANGLE_VALUE     = 'R';
 const LINE_VALUE          = 'L';
@@ -3007,9 +3007,9 @@ const POLYGON             = 'POLY';  // N:x N:y N:width N:height N:angle N:corne
 const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
 
 
-const GEOMETRY_VALUES =
+const SHAPE_VALUES =
 [
-    //GEOMETRY_VALUE,
+    //SHAPE_VALUE,
 
     RECTANGLE_VALUE,
     LINE_VALUE,
@@ -3019,9 +3019,9 @@ const GEOMETRY_VALUES =
 ];
 
 
-const GEOMETRY_TYPES =
+const SHAPE_TYPES =
 [
-    ...GEOMETRY_VALUES,
+    ...SHAPE_VALUES,
 
     RECTANGLE,
     LINE,
@@ -3934,7 +3934,7 @@ function evalStrokeValue(value, parse)
     and objects hold stroke values directly, which incoming stroke values just set.
 */
 
-class GeometryBaseValue
+class ShapeBaseValue
 extends GType
 {
     nodeId;
@@ -4006,7 +4006,7 @@ extends GType
 
 
 
-function parseGeometryBaseValue(str, i, obj)
+function parseShapeBaseValue(str, i, obj)
 {
     const fill   = parseFillValue  (str, i); i += fill  [1];
     const stroke = parseStrokeValue(str, i); i += stroke[1];
@@ -4019,7 +4019,7 @@ function parseGeometryBaseValue(str, i, obj)
 
 
 class RectangleValue
-extends GeometryBaseValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -4184,7 +4184,7 @@ function parseRectangleValue(str, i = -1)
         round [0]);
 
 
-    i = parseGeometryBaseValue(str, i, rect);
+    i = parseShapeBaseValue(str, i, rect);
 
     
     return [rect, i - iStart];
@@ -6055,7 +6055,7 @@ extends GOperator
 }
 
 
-class GGeometryBase
+class GShapeBase
 extends GOperator
 {
     fill    = null;
@@ -6120,7 +6120,7 @@ extends GOperator
 
 
 class GRectangle
-extends GGeometryBase
+extends GShapeBase
 {
     input  = null;
 
@@ -7442,7 +7442,7 @@ function genParseColorValidate(parse)
 }
 
 
-function genParseGeometryBase(parse, obj, paramId)
+function genParseShapeBase(parse, obj, paramId)
 {
     switch (paramId)
     {
@@ -7462,7 +7462,7 @@ function genParseRectangle(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(rect, parse);
+        logReqShape(rect, parse);
 
 
     if (ignore) 
@@ -7498,7 +7498,7 @@ function genParseRectangle(parse)
         case 'height': rect.height = genParse(parse); break;
         case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
-        default:       genParseGeometryBase(parse, rect, paramId); break;
+        default:       genParseShapeBase(parse, rect, paramId); break;
         }
 
 
@@ -7525,7 +7525,7 @@ function genParseLine(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(line, parse);
+        logReqShape(line, parse);
 
 
     if (ignore) 
@@ -7580,7 +7580,7 @@ function genParseEllipse(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(elps, parse);
+        logReqShape(elps, parse);
 
 
     if (ignore) 
@@ -7636,7 +7636,7 @@ function genParsePolygon(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(poly, parse);
+        logReqShape(poly, parse);
 
 
     if (ignore) 
@@ -7694,7 +7694,7 @@ function genParseStar(parse)
 
 
     if (parse.logRequests) 
-        logReqGeometry(star, parse);
+        logReqShape(star, parse);
 
 
     if (ignore) 

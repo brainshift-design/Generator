@@ -15,7 +15,7 @@
 
 //../generator/types/values/ColorStopValue.js
 
-../generator/types/values/GeometryBaseValue.js
+../generator/types/values/ShapeBaseValue.js
 ../generator/types/values/RectangleValue.js
 ../generator/types/values/LineValue.js
 ../generator/types/values/EllipseValue.js
@@ -47,10 +47,10 @@
 ../generator/types/style/GColorStop.js
 
 
-../generator/types/geometry/GGeometryBase.js
+../generator/types/shape/GShapeBase.js
 
-../generator/types/geometry/GRectangle.js
-../generator/types/geometry/GLine.js
-../generator/types/geometry/GEllipse.js
-../generator/types/geometry/GPolygon.js
-../generator/types/geometry/GStar.js
+../generator/types/shape/GRectangle.js
+../generator/types/shape/GLine.js
+../generator/types/shape/GEllipse.js
+../generator/types/shape/GPolygon.js
+../generator/types/shape/GStar.js

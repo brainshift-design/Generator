@@ -1,5 +1,5 @@
 class   OpStar
-extends OpGeometryBase
+extends OpShapeBase
 {
     paramX;
     paramY;
