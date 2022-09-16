@@ -47,8 +47,8 @@
 #loadingOverlay
 {
     position:   absolute;
-    top:        0;
     left:       0;
+    top:        0;
     width:      100%;
     height:     100%;
     display:    none;
@@ -66,10 +66,13 @@
     font-weight: 800;
     color:       var(--figma-color-text);/*#333;*/
     position:    absolute;
-    left:        calc(50% - 4px);
-    top:         calc(45% - 6px);
+    left:        50%;
+    top:         50%;
+    width:       184px;
+    height:       64px;
     transform:   translateX(-50%)
                  translateY(-50%);
+    /* box-shadow:  0 0 0 1px red inset; */
 }
 
 
@@ -79,75 +82,66 @@
 
 #loadingG 
 {
-    position: absolute;
-    left:     -7px;
-    top:      -3px;
+    position:  absolute;
+    left:      50%;
+    top:       40%;
+    transform: translateX(-50%)
+               translateY(-50%);
 }
 
-#loadingG > path { fill: var(--figma-color-text); }
-
-
-#loadingEmpty        
-{ 
-    position: absolute;
-    left:     0;
-    top:      6px;
-
-    animation: emptyOrbit 3s linear infinite;     
+#loadingEmpty, #loadingFull
+{
+    position:  absolute;
+    left:      calc(50% - 4px);
+    top:       calc(40% - 4px);
 }
 
-#loadingEmpty > path { fill:var(--figma-color-text); }
+#loadingG     > path { fill: var(--figma-color-text);            }
 
+#loadingEmpty        { animation: emptyOrbit 3s linear infinite; }
+#loadingEmpty > path { fill:var(--figma-color-text);             }
 
-#loadingFull         
-{ 
-    position: absolute;
-    left:     0;
-    top:      6px;
-
-    animation: fullOrbit 3s linear infinite;    
-}
-
-#loadingFull  > path { fill: var(--figma-color-text); }
+#loadingFull         { animation: fullOrbit 3s linear infinite;  }
+#loadingFull  > path { fill: var(--figma-color-text);            }
 
 
 @keyframes emptyOrbit
 {
-      0%   { transform: rotate(  0deg) translate(-22px) scale(100%);  opacity: 100%; }
-     15%   { transform: rotate(170deg) translate(-22px) scale(100%);  opacity: 100%; }
-     17%   { transform: rotate(180deg) translate(-22px) scale(130%);  opacity: 100%; }
-     23%   { transform: rotate(180deg) translate(-22px) scale(130%);  opacity: 100%; }
-     35%   { transform: rotate(180deg) translate(-22px) scale( 50%);  opacity:   0%; }
-     35.1% { transform: rotate(360deg) translate(-22px) scale(150%);  opacity:   0%; }
-     45%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
-     50%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
-     65%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
-     67%   { transform: rotate(360deg) translate(-22px) scale(130%);  opacity: 100%; }
-     73%   { transform: rotate(360deg) translate(-22px) scale(130%);  opacity: 100%; }
-     85%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
-     85.1% { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
-     95%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
-    100%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
+      0%   { transform: rotate(  0deg) translate(-20px) scale(100%);  opacity: 100%; }
+     15%   { transform: rotate(170deg) translate(-20px) scale(100%);  opacity: 100%; }
+     17%   { transform: rotate(180deg) translate(-20px) scale(130%);  opacity: 100%; }
+     23%   { transform: rotate(180deg) translate(-20px) scale(130%);  opacity: 100%; }
+     30%   { transform: rotate(180deg) translate(-20px) scale( 50%);  opacity:   0%; }
+     35.1% { transform: rotate(360deg) translate(-20px) scale(150%);  opacity:   0%; }
+     40%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     50%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     68%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     70%   { transform: rotate(360deg) translate(-20px) scale(130%);  opacity: 100%; }
+     73%   { transform: rotate(360deg) translate(-20px) scale(130%);  opacity: 100%; }
+     77%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     85%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     95%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
+    100%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
 }
 
 
 @keyframes fullOrbit
 {
-      0%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
-     18%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
-     20%   { transform: rotate(  0deg) translate(22px) scale( 50%);  opacity: 100%; }
-     23%   { transform: rotate(  0deg) translate(22px) scale( 50%);  opacity: 100%; }
-     33%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
-     35.1% { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
-     45%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
-     50%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
-     68%   { transform: rotate(170deg) translate(22px) scale(100%);  opacity: 100%; }
-     70%   { transform: rotate(180deg) translate(22px) scale( 50%);  opacity: 100%; }
-     73%   { transform: rotate(180deg) translate(22px) scale( 50%);  opacity: 100%; }
-     83%   { transform: rotate(180deg) translate(22px) scale(  0%);  opacity:   0%; }
-     85.1% { transform: rotate(  0deg) translate(22px) scale( 50%);  opacity:   0%; }
-     95%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
-    100%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
+      0%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+     18%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+     19%   { transform: rotate(  0deg) translate(20px) scale( 75%);  opacity: 100%; }
+     20%   { transform: rotate(  0deg) translate(20px) scale( 75%);  opacity: 100%; }
+     33%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+     35.1% { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+     45%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+     50%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+     68%   { transform: rotate(170deg) translate(20px) scale(100%);  opacity: 100%; }
+     70%   { transform: rotate(180deg) translate(20px) scale( 50%);  opacity: 100%; }
+     73%   { transform: rotate(180deg) translate(20px) scale( 50%);  opacity: 100%; }
+     77%   { transform: rotate(180deg) translate(20px) scale(  0%);  opacity:   0%; }
+     85.1% { transform: rotate(  0deg) translate(20px) scale( 80%);  opacity:   0%; }
+     90%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+    100%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
 }
 
 
@@ -155,14 +149,14 @@
 {
     position:      absolute;
     left:          50%;
-    top:           50%;
+    bottom:           0;
     transform:     translateX(-50%)
                    translateY(-50%);
     width:         180px;
     height:        5px;
-    /* background:    var(--figma-color-bg);white; */
     border-radius: 2.5px;
     overflow:      hidden;
+    /* box-shadow:    0 0 0 1px yellow inset; */
 }
 
 
@@ -1776,12 +1770,13 @@ div
 
 <div id='loadingOverlay'>
     <div id='loadingGraphic'>
-        <svg id="loadingEmpty" width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 8C6.433 8 8 6.433 8 4.5C8 2.567 6.433 1 4.5 1C2.567 1 1 2.567 1 4.5C1 6.433 2.567 8 4.5 8ZM4.5 9C6.98528 9 9 6.98528 9 4.5C9 2.01472 6.98528 0 4.5 0C2.01472 0 0 2.01472 0 4.5C0 6.98528 2.01472 9 4.5 9Z" fill="white"/></svg>
-        <svg id="loadingG"     width="24" height="27" viewBox="0 0 24 27" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18.7883 8.7519C18.5684 8.05893 18.265 7.43869 17.878 6.89116C17.4997 6.33508 17.0423 5.86027 16.5058 5.46673C15.978 5.07319 15.3711 4.77804 14.685 4.58127C13.9989 4.37595 13.2512 4.27329 12.442 4.27329C10.9907 4.27329 9.69764 4.62833 8.56295 5.3384C7.42826 6.04848 6.53546 7.0922 5.88455 8.46958C5.24244 9.8384 4.92139 11.5067 4.92139 13.4743C4.92139 15.4591 5.24244 17.1402 5.88455 18.5176C6.52666 19.895 7.41946 20.943 8.56295 21.6616C9.70643 22.3717 11.0346 22.7267 12.5476 22.7267C13.9197 22.7267 15.1072 22.4701 16.11 21.9567C17.1215 21.4434 17.8999 20.7163 18.4453 19.7752C18.9907 18.8256 19.2633 17.7134 19.2633 16.4387L20.3716 16.6055H13.0357V12.884H24V16.0409C24 18.2909 23.5074 20.2372 22.5223 21.8798C21.5371 23.5223 20.1825 24.7885 18.4585 25.6782C16.7345 26.5594 14.7554 27 12.5212 27C10.0319 27 7.84607 26.4567 5.96372 25.3702C4.09016 24.2752 2.62562 22.7224 1.57009 20.712C0.523364 18.693 0 16.2975 0 13.5257C0 11.404 0.307861 9.50903 0.923584 7.84078C1.5481 6.17253 2.41891 4.75665 3.53601 3.59316C4.65311 2.4211 5.96372 1.53137 7.46784 0.923954C8.97196 0.307985 10.608 0 12.376 0C13.8714 0 15.2655 0.213878 16.5586 0.641635C17.8516 1.06084 18.9995 1.6597 20.0022 2.43821C21.0137 3.21673 21.845 4.14068 22.4959 5.21008C23.1468 6.27947 23.5734 7.46008 23.7757 8.7519H18.7883Z" fill="white"/></svg>
-        <svg id="loadingFull"  width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 4.5C9 6.98528 6.98528 9 4.5 9C2.01472 9 0 6.98528 0 4.5C0 2.01472 2.01472 0 4.5 0C6.98528 0 9 2.01472 9 4.5Z" fill="white"/></svg>
-    </div>
-    <div id='loadingBar'>
-        <div id='loadingProgress'></div>
+        <svg id="loadingEmpty" width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 7C5.65685 7 7 5.65685 7 4C7 2.34315 5.65685 1 4 1C2.34315 1 1 2.34315 1 4C1 5.65685 2.34315 7 4 7ZM8 4C8 6.20914 6.20914 8 4 8C1.79086 8 0 6.20914 0 4C0 1.79086 1.79086 0 4 0C6.20914 0 8 1.79086 8 4Z" fill="white"/></svg>
+        <svg id="loadingG"     width="21" height="24" viewBox="0 0 21 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16.4398 7.77947C16.2474 7.1635 15.9819 6.61217 15.6432 6.12548C15.3123 5.63118 14.912 5.20913 14.4426 4.85932C13.9808 4.50951 13.4497 4.24715 12.8494 4.07224C12.249 3.88973 11.5948 3.79848 10.8868 3.79848C9.61682 3.79848 8.48543 4.11407 7.49258 4.74525C6.49973 5.37643 5.71853 6.30418 5.14898 7.52852C4.58714 8.74525 4.30621 10.2281 4.30621 11.9772C4.30621 13.7414 4.58714 15.2357 5.14898 16.4601C5.71083 17.6844 6.49203 18.616 7.49258 19.2548C8.49313 19.8859 9.65531 20.2015 10.9791 20.2015C12.1798 20.2015 13.2188 19.9734 14.0962 19.5171C14.9813 19.0608 15.6625 18.4144 16.1396 17.5779C16.6168 16.7338 16.8554 15.7452 16.8554 14.6122L17.8252 14.7605H11.4063V11.4525H21V14.2586C21 16.2586 20.569 17.9886 19.707 19.4487C18.845 20.9087 17.6597 22.0342 16.1512 22.8251C14.6427 23.6084 12.9109 24 10.956 24C8.7779 24 6.86531 23.5171 5.21825 22.5513C3.57889 21.5779 2.29742 20.1977 1.37383 18.4106C0.457944 16.616 0 14.4867 0 12.0228C0 10.1369 0.269379 8.45247 0.808136 6.96958C1.35459 5.48669 2.11655 4.22814 3.09401 3.19392C4.07147 2.15209 5.21825 1.36122 6.53436 0.821293C7.85047 0.273764 9.28202 0 10.829 0C12.1374 0 13.3573 0.190114 14.4887 0.570342C15.6201 0.942966 16.6245 1.47529 17.5019 2.1673C18.387 2.85932 19.1143 3.68061 19.6839 4.63118C20.2534 5.58175 20.6267 6.63118 20.8037 7.77947H16.4398Z" fill="white"/></svg>
+        <svg id="loadingFull"  width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 4C8 6.20914 6.20914 8 4 8C1.79086 8 0 6.20914 0 4C0 1.79086 1.79086 0 4 0C6.20914 0 8 1.79086 8 4Z" fill="white"/></svg>
+
+        <div id='loadingBar'>
+            <div id='loadingProgress'></div>
+        </div>
     </div>
 </div>
 
@@ -38495,8 +38490,8 @@ extends Action
              'RECONNECT '
             + output.node.id + ' ' + output.index
             + ' (← '
-            + oldInput.node.id + ' ' + oldInput.index + ')'
-            + ' → '
+            + oldInput.node.id + ' ' + oldInput.index
+            + ') → '
             + input.node.id + ' ' + input.index);
 
 
@@ -39869,10 +39864,12 @@ function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
         
     graph.clear();
 
-    const nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
+    const _nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
     const conns = JSON.parse(connsJson).map(c => JSON.parse(c));
 
-    loadNodesAndConnsAsync(nodes, conns, setLoadingProgress);
+    _nodes.sort((a, b) => a.z - b.z);
+
+    loadNodesAndConnsAsync(_nodes, conns, setLoadingProgress);
 }
 
 
@@ -39912,8 +39909,6 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 
     promise.then(nodes => 
     {
-        _nodes.sort((a, b) => parseInt(a.z) - parseInt(b.z));
-
         graph.addNodes(nodes, false, false);
         loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
     });

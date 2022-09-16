@@ -36,8 +36,8 @@ extends Action
              'RECONNECT '
             + output.node.id + ' ' + output.index
             + ' (← '
-            + oldInput.node.id + ' ' + oldInput.index + ')'
-            + ' → '
+            + oldInput.node.id + ' ' + oldInput.index
+            + ') → '
             + input.node.id + ' ' + input.index);
 
 

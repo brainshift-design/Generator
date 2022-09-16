@@ -188,10 +188,12 @@ function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
         
     graph.clear();
 
-    const nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
+    const _nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
     const conns = JSON.parse(connsJson).map(c => JSON.parse(c));
 
-    loadNodesAndConnsAsync(nodes, conns, setLoadingProgress);
+    _nodes.sort((a, b) => a.z - b.z);
+
+    loadNodesAndConnsAsync(_nodes, conns, setLoadingProgress);
 }
 
 
@@ -231,8 +233,6 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 
     promise.then(nodes => 
     {
-        _nodes.sort((a, b) => parseInt(a.z) - parseInt(b.z));
-
         graph.addNodes(nodes, false, false);
         loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
     });

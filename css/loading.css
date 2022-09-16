@@ -1,8 +1,8 @@
 #loadingOverlay
 {
     position:   absolute;
-    top:        0;
     left:       0;
+    top:        0;
     width:      100%;
     height:     100%;
     display:    none;
@@ -20,10 +20,13 @@
     font-weight: 800;
     color:       var(--figma-color-text);/*#333;*/
     position:    absolute;
-    left:        calc(50% - 4px);
-    top:         calc(45% - 6px);
+    left:        50%;
+    top:         50%;
+    width:       184px;
+    height:       64px;
     transform:   translateX(-50%)
                  translateY(-50%);
+    /* box-shadow:  0 0 0 1px red inset; */
 }
 
 
@@ -33,75 +36,66 @@
 
 #loadingG 
 {
-    position: absolute;
-    left:     -7px;
-    top:      -3px;
+    position:  absolute;
+    left:      50%;
+    top:       40%;
+    transform: translateX(-50%)
+               translateY(-50%);
 }
 
-#loadingG > path { fill: var(--figma-color-text); }
-
-
-#loadingEmpty        
-{ 
-    position: absolute;
-    left:     0;
-    top:      6px;
-
-    animation: emptyOrbit 3s linear infinite;     
+#loadingEmpty, #loadingFull
+{
+    position:  absolute;
+    left:      calc(50% - 4px);
+    top:       calc(40% - 4px);
 }
 
-#loadingEmpty > path { fill:var(--figma-color-text); }
+#loadingG     > path { fill: var(--figma-color-text);            }
 
+#loadingEmpty        { animation: emptyOrbit 3s linear infinite; }
+#loadingEmpty > path { fill:var(--figma-color-text);             }
 
-#loadingFull         
-{ 
-    position: absolute;
-    left:     0;
-    top:      6px;
-
-    animation: fullOrbit 3s linear infinite;    
-}
-
-#loadingFull  > path { fill: var(--figma-color-text); }
+#loadingFull         { animation: fullOrbit 3s linear infinite;  }
+#loadingFull  > path { fill: var(--figma-color-text);            }
 
 
 @keyframes emptyOrbit
 {
-      0%   { transform: rotate(  0deg) translate(-22px) scale(100%);  opacity: 100%; }
-     15%   { transform: rotate(170deg) translate(-22px) scale(100%);  opacity: 100%; }
-     17%   { transform: rotate(180deg) translate(-22px) scale(130%);  opacity: 100%; }
-     23%   { transform: rotate(180deg) translate(-22px) scale(130%);  opacity: 100%; }
-     35%   { transform: rotate(180deg) translate(-22px) scale( 50%);  opacity:   0%; }
-     35.1% { transform: rotate(360deg) translate(-22px) scale(150%);  opacity:   0%; }
-     45%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
-     50%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
-     65%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
-     67%   { transform: rotate(360deg) translate(-22px) scale(130%);  opacity: 100%; }
-     73%   { transform: rotate(360deg) translate(-22px) scale(130%);  opacity: 100%; }
-     85%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
-     85.1% { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
-     95%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
-    100%   { transform: rotate(360deg) translate(-22px) scale(100%);  opacity: 100%; }
+      0%   { transform: rotate(  0deg) translate(-20px) scale(100%);  opacity: 100%; }
+     15%   { transform: rotate(170deg) translate(-20px) scale(100%);  opacity: 100%; }
+     17%   { transform: rotate(180deg) translate(-20px) scale(130%);  opacity: 100%; }
+     23%   { transform: rotate(180deg) translate(-20px) scale(130%);  opacity: 100%; }
+     30%   { transform: rotate(180deg) translate(-20px) scale( 50%);  opacity:   0%; }
+     35.1% { transform: rotate(360deg) translate(-20px) scale(150%);  opacity:   0%; }
+     40%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     50%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     68%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     70%   { transform: rotate(360deg) translate(-20px) scale(130%);  opacity: 100%; }
+     73%   { transform: rotate(360deg) translate(-20px) scale(130%);  opacity: 100%; }
+     77%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     85%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     95%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
+    100%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
 }
 
 
 @keyframes fullOrbit
 {
-      0%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
-     18%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
-     20%   { transform: rotate(  0deg) translate(22px) scale( 50%);  opacity: 100%; }
-     23%   { transform: rotate(  0deg) translate(22px) scale( 50%);  opacity: 100%; }
-     33%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
-     35.1% { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
-     45%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
-     50%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
-     68%   { transform: rotate(170deg) translate(22px) scale(100%);  opacity: 100%; }
-     70%   { transform: rotate(180deg) translate(22px) scale( 50%);  opacity: 100%; }
-     73%   { transform: rotate(180deg) translate(22px) scale( 50%);  opacity: 100%; }
-     83%   { transform: rotate(180deg) translate(22px) scale(  0%);  opacity:   0%; }
-     85.1% { transform: rotate(  0deg) translate(22px) scale( 50%);  opacity:   0%; }
-     95%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
-    100%   { transform: rotate(  0deg) translate(22px) scale(100%);  opacity: 100%; }
+      0%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+     18%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+     19%   { transform: rotate(  0deg) translate(20px) scale( 75%);  opacity: 100%; }
+     20%   { transform: rotate(  0deg) translate(20px) scale( 75%);  opacity: 100%; }
+     33%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+     35.1% { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+     45%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+     50%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+     68%   { transform: rotate(170deg) translate(20px) scale(100%);  opacity: 100%; }
+     70%   { transform: rotate(180deg) translate(20px) scale( 50%);  opacity: 100%; }
+     73%   { transform: rotate(180deg) translate(20px) scale( 50%);  opacity: 100%; }
+     77%   { transform: rotate(180deg) translate(20px) scale(  0%);  opacity:   0%; }
+     85.1% { transform: rotate(  0deg) translate(20px) scale( 80%);  opacity:   0%; }
+     90%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+    100%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
 }
 
 
@@ -109,14 +103,14 @@
 {
     position:      absolute;
     left:          50%;
-    top:           50%;
+    bottom:           0;
     transform:     translateX(-50%)
                    translateY(-50%);
     width:         180px;
     height:        5px;
-    /* background:    var(--figma-color-bg);white; */
     border-radius: 2.5px;
     overflow:      hidden;
+    /* box-shadow:    0 0 0 1px yellow inset; */
 }
 
 
