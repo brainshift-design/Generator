@@ -1,6 +1,8 @@
 class GFill
 extends GShapeBase
 {
+    input   = null;
+
     color   = null;
     opacity = null;
 
@@ -32,52 +34,53 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (!this.valid)
-        {
-            const color   = this.color   ? this.color  .eval(parse).copy() : null;
-            const opacity = this.opacity ? this.opacity.eval(parse).copy() : null;
+        if (this.valid)
+            return;
 
-            
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
 
-                console.assert(
-                       this.result.type == FILL_VALUE
-                    || SHAPE_VALUES.includes(this.result.type),
-                    'GFill this.result.type must be FILL_VALUE or in SHAPE_VALUES');
+        if (this.color  ) this.color  .eval(parse);
+        if (this.opacity) this.opacity.eval(parse);
 
-                if (this.result.isValid())
-                {
-                    if (this.color  ) this.result.color   = color;
-                    if (this.opacity) this.result.opacity = opacity;
-                }
-            }
-            else
-            {
-                this.result = new FillValue(
-                    ColorValue.fromRgb(scaleRgb(color.toRgb())), 
-                    opacity);
-            }
         
-
-            this.result.valid = true;
-            this.valid        = true;
-           
-            
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
+        if (this.input)
+            this.input.eval(parse);
 
 
-            if (   this.input
-                && this.active)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
+        if (this.color  ) genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
+        if (this.opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
+
+
+        if (this.input)
+            this.objects = this.input.objects;
+
+        if (this.active)
+            this.evalObjects();
+
+
+        this.valid = true;
+    }
+
+
+
+    evalObjects()
+    {
+        console.log('GFill.evalObjects()');
+        console.log('this.objects =', this.objects);
+        for (const obj of this.objects)
+        {
+            if (!obj.fills) obj.fills = [];
+
+            const rgb = scaleRgb(this.color.toRgb());
+
+            obj.fills.push([
+                'SOLID', 
+                        rgb[0]
+                + ' ' + rgb[1]
+                + ' ' + rgb[2]
+                + ' ' + this.opacity]);
         }
 
-
-        return this.result;
+        
+        super.evalObjects();
     }
 }

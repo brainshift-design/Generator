@@ -54,22 +54,31 @@ extends GShapeBase
         if (this.round ) this.round .eval(parse);
 
 
-        this.evalBase(parse, this.input);
-
-
         if (this.input)
             this.input.eval(parse);
 
 
-        genPushUpdateValue(parse, this.nodeId, 'x',      this.input ? this.input.x      : this.x     );
-        genPushUpdateValue(parse, this.nodeId, 'y',      this.input ? this.input.y      : this.y     );
-        genPushUpdateValue(parse, this.nodeId, 'width',  this.input ? this.input.width  : this.width );
-        genPushUpdateValue(parse, this.nodeId, 'height', this.input ? this.input.height : this.height);
-        genPushUpdateValue(parse, this.nodeId, 'angle',  this.input ? this.input.angle  : this.angle );
-        genPushUpdateValue(parse, this.nodeId, 'round',  this.input ? this.input.round  : this.round );
+        const x      = this.x      ? this.x      : this.input ? this.input.x      : null;
+        const y      = this.y      ? this.y      : this.input ? this.input.y      : null;
+        const width  = this.width  ? this.width  : this.input ? this.input.width  : null;
+        const height = this.height ? this.height : this.input ? this.input.height : null;
+        const angle  = this.angle  ? this.angle  : this.input ? this.input.angle  : null;
+        const round  = this.round  ? this.round  : this.input ? this.input.round  : null;
 
 
-        this.evalObjects();
+        if (x     ) genPushUpdateValue(parse, this.nodeId, 'x',      x     );
+        if (y     ) genPushUpdateValue(parse, this.nodeId, 'y',      y     );
+        if (width ) genPushUpdateValue(parse, this.nodeId, 'width',  width );
+        if (height) genPushUpdateValue(parse, this.nodeId, 'height', height);
+        if (angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  angle );
+        if (round ) genPushUpdateValue(parse, this.nodeId, 'round',  round );
+
+
+        if (    this.input
+            && !this.active)
+            this.objects = this.input.objects;
+        else
+            this.evalObjects();
 
 
         this.valid = true;

@@ -47,7 +47,8 @@ function genRequest(request)
 
     for (const node of parse.parsedNodes)
     {
-        if (node instanceof GShapeBase)
+        if (   node instanceof GShapeBase
+            && node.active)
             node.objects.forEach(o => genPushUpdateObject(parse, o));
     }
 
