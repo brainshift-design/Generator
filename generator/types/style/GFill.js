@@ -1,5 +1,5 @@
 class GFill
-extends GOperator
+extends GShapeBase
 {
     color   = null;
     opacity = null;
@@ -23,6 +23,8 @@ extends GOperator
         if (this.color  ) fill.color   = this.color  .copy();
         if (this.opacity) fill.opacity = this.opacity.copy();
 
+        rect.copyFromeBase(this);
+
         return fill;
     }
 
@@ -41,8 +43,9 @@ extends GOperator
                 this.result = this.input.eval(parse).copy();
 
                 console.assert(
-                    this.result.type == FILL_VALUE,
-                    'GFill this.result.type must be FILL_VALUE');
+                       this.result.type == FILL_VALUE
+                    || SHAPE_VALUES.includes(this.result.type),
+                    'GFill this.result.type must be FILL_VALUE or in SHAPE_VALUES');
 
                 if (this.result.isValid())
                 {
@@ -64,6 +67,14 @@ extends GOperator
             
             genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
             genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
+
+
+            if (   this.input
+                && this.active)
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    this.result.toFigmaObject());
         }
 
 

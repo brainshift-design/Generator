@@ -69,9 +69,12 @@ class Parse
 
 
 
-function genParse(parse)
+function genParse(parse, inParam = true)
 {
     //console.log('parse.next', parse.next);
+
+    if (!inParam)
+        parse.inParam = false;
 
 
     let result = null;

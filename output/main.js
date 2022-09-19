@@ -85,7 +85,7 @@ const COLOR_STOP_VALUE = 'CS';
 const COLOR_STOP = 'CSTOP';
 const GRADIENT_VALUE = 'GR';
 const GRADIENT = 'GRAD';
-//const GEOMETRY_VALUE      = 'G0';    // abstract placeholder
+const SHAPE_VALUE = 'G0'; // abstract placeholder
 const RECTANGLE_VALUE = 'R';
 const LINE_VALUE = 'L';
 const ELLIPSE_VALUE = 'E';
@@ -96,16 +96,16 @@ const LINE = 'LINE'; // N:x N:y N:width N:height N:angle
 const ELLIPSE = 'ELPS'; // N:x N:y N:width N:height N:angle
 const POLYGON = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
 const STAR = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
-const GEOMETRY_VALUES = [
-    //GEOMETRY_VALUE,
+const SHAPE_VALUES = [
+    SHAPE_VALUE,
     RECTANGLE_VALUE,
     LINE_VALUE,
     ELLIPSE_VALUE,
     POLYGON_VALUE,
     STAR_VALUE
 ];
-const GEOMETRY_TYPES = [
-    ...GEOMETRY_VALUES,
+const SHAPE_TYPES = [
+    ...SHAPE_VALUES,
     RECTANGLE,
     LINE,
     ELLIPSE,
@@ -571,7 +571,7 @@ function getObjectFills(objFills) {
     return fills;
 }
 function setObjectFills(obj, src) {
-    if (src.fills !== null
+    if (!!src.fills
         && src.fills.length > 0)
         obj.fills = getObjectFills(src.fills);
     else

@@ -42,67 +42,56 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (!this.valid)
-        {
-            const x      = this.x      ? this.x     .eval(parse).copy() : null;
-            const y      = this.y      ? this.y     .eval(parse).copy() : null;
-            const width  = this.width  ? this.width .eval(parse).copy() : null;
-            const height = this.height ? this.height.eval(parse).copy() : null;
-            const angle  = this.angle  ? this.angle .eval(parse).copy() : null;
-            const round  = this.round  ? this.round .eval(parse).copy() : null;
+        if (this.valid)
+            return;
 
 
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-
-                console.assert(
-                    this.result.type == RECTANGLE_VALUE, 
-                    'this.result.type must be RECTANGLE_VALUE');
-
-                if (this.x     ) this.result.x      = x;
-                if (this.y     ) this.result.y      = y;
-                if (this.width ) this.result.width  = width;
-                if (this.height) this.result.height = height;
-                if (this.angle ) this.result.angle  = angle;
-                if (this.round ) this.result.round  = round;
-            }
-            else
-            {
-                this.result = new RectangleValue(this.nodeId);
-
-                this.result.x      = x;
-                this.result.y      = y;
-                this.result.width  = width;
-                this.result.height = height;
-                this.result.angle  = angle;
-                this.result.round  = round;
-            }
+        if (this.x     ) this.x     .eval(parse);
+        if (this.y     ) this.y     .eval(parse);
+        if (this.width ) this.width .eval(parse);
+        if (this.height) this.height.eval(parse);
+        if (this.angle ) this.angle .eval(parse);
+        if (this.round ) this.round .eval(parse);
 
 
-            genPushUpdateValue(parse, this.nodeId, 'x',       this.result.x     );
-            genPushUpdateValue(parse, this.nodeId, 'y',       this.result.y     );
-            genPushUpdateValue(parse, this.nodeId, 'width',   this.result.width );
-            genPushUpdateValue(parse, this.nodeId, 'height',  this.result.height);
-            genPushUpdateValue(parse, this.nodeId, 'angle',   this.result.angle );
-            genPushUpdateValue(parse, this.nodeId, 'round',   this.result.round );
+        this.evalBase(parse, this.input);
 
 
-            this.evalBase(parse, this.input);
+        if (this.input)
+            this.input.eval(parse);
 
 
-            this.result.valid = true;
-            this.valid        = true;
-           
-
-            if (this.active)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
-        }
+        genPushUpdateValue(parse, this.nodeId, 'x',      this.input ? this.input.x      : this.x     );
+        genPushUpdateValue(parse, this.nodeId, 'y',      this.input ? this.input.y      : this.y     );
+        genPushUpdateValue(parse, this.nodeId, 'width',  this.input ? this.input.width  : this.width );
+        genPushUpdateValue(parse, this.nodeId, 'height', this.input ? this.input.height : this.height);
+        genPushUpdateValue(parse, this.nodeId, 'angle',  this.input ? this.input.angle  : this.angle );
+        genPushUpdateValue(parse, this.nodeId, 'round',  this.input ? this.input.round  : this.round );
 
 
-        return this.result;
+        this.evalObjects();
+
+
+        this.valid = true;
+    }
+
+
+
+    evalObjects()
+    {
+        this.objects = 
+        [{
+            type:   RECTANGLE,
+            id:     0,
+            x:                  (this.input ? this.input.x      : this.x     ).value,
+            y:                  (this.input ? this.input.y      : this.y     ).value,
+            width:              (this.input ? this.input.width  : this.width ).value,
+            height:             (this.input ? this.input.height : this.height).value,
+            angle:              (this.input ? this.input.angle  : this.angle ).value,
+            round:  Math.max(0, (this.input ? this.input.round  : this.round ).value)
+        }];
+
+        
+        super.evalObjects();
     }
 }

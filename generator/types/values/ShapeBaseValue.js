@@ -8,8 +8,8 @@ extends GType
 {
     nodeId;
 
-    fill;
-    stroke;
+    // fill;
+    // stroke;
 
 
 
@@ -19,8 +19,8 @@ extends GType
 
         this.nodeId = nodeId; 
 
-        this.fill   = FillValue.default.copy();
-        this.stroke = StrokeValue.NaN  .copy();
+        // this.fill   = FillValue.default.copy();
+        // this.stroke = StrokeValue.NaN  .copy();
     }
 
 
@@ -29,16 +29,17 @@ extends GType
     {
         this.nodeId = base.nodeId;
 
-        this.fill   = base.fill  .copy();
-        this.stroke = base.stroke.copy();
+        // this.fill   = base.fill  .copy();
+        // this.stroke = base.stroke.copy();
     }
 
 
 
     isValid()
     {
-        return this.fill  .isValid()
-           && !this.stroke.isValid();
+        return true;
+        // return this.fill  .isValid()
+        //    && !this.stroke.isValid();
     }
 
 
@@ -46,42 +47,42 @@ extends GType
     toFigmaObject()
     {
         return {
-            nodeId: this.nodeId,
+            nodeId: this.nodeId//,
 
-            fills:  this.fill.isValid() 
-                    ? this.fill.toFigma() 
-                    : [],
+            // fills:  this.fill.isValid() 
+            //         ? this.fill.toFigma() 
+            //         : [],
             
-            ...this.stroke.toFigma()
+            // ...this.stroke.toFigma()
         }
     }
 
 
 
-    toString()
-    {
-        return      this.fill  .toString()
-            + ' ' + this.stroke.toString();
-    }
+    // toString()
+    // {
+    //     return      this.fill  .toString()
+    //         + ' ' + this.stroke.toString();
+    // }
 
 
 
-    toDisplayString()
-    {
-        return      this.fill  .toDisplayString()
-            + ' ' + this.stroke.toDisplayString();
-    }
+    // toDisplayString()
+    // {
+    //     return      this.fill  .toDisplayString()
+    //         + ' ' + this.stroke.toDisplayString();
+    // }
 }
 
 
 
-function parseShapeBaseValue(str, i, obj)
-{
-    const fill   = parseFillValue  (str, i); i += fill  [1];
-    const stroke = parseStrokeValue(str, i); i += stroke[1];
+// function parseShapeBaseValue(str, i, obj)
+// {
+//     const fill   = parseFillValue  (str, i); i += fill  [1];
+//     const stroke = parseStrokeValue(str, i); i += stroke[1];
 
-    obj.fill   = fill  [0];
-    obj.stroke = stroke[0];
+//     obj.fill   = fill  [0];
+//     obj.stroke = stroke[0];
 
-    return i;
-}
+//     return i;
+// }

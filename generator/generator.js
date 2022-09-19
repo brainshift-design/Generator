@@ -45,6 +45,13 @@ function genRequest(request)
     for (const node of topLevelNodes) node.eval(parse);
 
 
+    for (const node of parse.parsedNodes)
+    {
+        if (node instanceof GShapeBase)
+            node.objects.forEach(o => genPushUpdateObject(parse, o));
+    }
+
+
     genUpdateValuesAndObjects(
         parse.updateNodeId,
         parse.updateParamId,
@@ -75,12 +82,12 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
 
 
 
-function genPushUpdateObject(parse, nodeId, object)
+function genPushUpdateObject(parse, object)
 {
     pushUniqueExcept(
         parse.updateObjects,
         object,
-        o => o.nodeId == nodeId);
+        o => o.nodeId == object.nodeId);
 }
 
 
@@ -89,6 +96,7 @@ function clearLastUpdate()
 {
     lastUpdateNodeId  = NULL;
     lastUpdateParamId = NULL;
+
     lastUpdateValues  = [];
     lastUpdateObjects = [];
 }

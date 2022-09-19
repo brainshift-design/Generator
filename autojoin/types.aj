@@ -41,9 +41,6 @@
 ../generator/types/color/GColorValidate.js
 
 
-../generator/types/style/GFill.js
-../generator/types/style/GStroke.js
-
 ../generator/types/style/GColorStop.js
 
 
@@ -54,3 +51,6 @@
 ../generator/types/shape/GEllipse.js
 ../generator/types/shape/GPolygon.js
 ../generator/types/shape/GStar.js
+
+../generator/types/style/GFill.js
+../generator/types/style/GStroke.js

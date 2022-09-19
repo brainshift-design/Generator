@@ -290,7 +290,7 @@ function getObjectFills(objFills)
 
 function setObjectFills(obj, src)
 {
-    if (   src.fills !== null
+    if (   !!src.fills
         && src.fills.length > 0)
         obj.fills = getObjectFills(src.fills);
     else

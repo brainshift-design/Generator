@@ -17,36 +17,33 @@ function rgbFromType(type, active)
                 : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
         case COLOR_VALUE:           
+
         case COLOR:           
         case COLOR_INTERPOLATE:
         case COLOR_VALIDATE:
         case COLOR_CONTRAST:
         case COLORBLIND:
-                        
-        case FILL_VALUE:
-        case FILL:
-        
-        case STROKE_VALUE:
-        case STROKE:
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
 
         case RECTANGLE_VALUE: 
-        case RECTANGLE: 
-
         case LINE_VALUE: 
-        case LINE: 
-
         case ELLIPSE_VALUE: 
-        case ELLIPSE: 
-
         case POLYGON_VALUE: 
-        case POLYGON: 
-
         case STAR_VALUE: 
+        
+        case RECTANGLE: 
+        case LINE: 
+        case ELLIPSE: 
+        case POLYGON: 
         case STAR: 
-        //case COLOR_STROKE: 
+        
+        case FILL_VALUE:
+        case STROKE_VALUE:
+            
+        case FILL:
+        case STROKE:
             return active 
                 ? (isDarkMode() ? rgbActiveObjectDark : rgbActiveObjectLight)
                 : (isDarkMode() ? rgbObjectDark       : rgbObjectLight      );

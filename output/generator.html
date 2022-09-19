@@ -34,36 +34,33 @@ function rgbFromType(type, active)
                 : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
         case COLOR_VALUE:           
+
         case COLOR:           
         case COLOR_INTERPOLATE:
         case COLOR_VALIDATE:
         case COLOR_CONTRAST:
         case COLORBLIND:
-                        
-        case FILL_VALUE:
-        case FILL:
-        
-        case STROKE_VALUE:
-        case STROKE:
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
 
         case RECTANGLE_VALUE: 
-        case RECTANGLE: 
-
         case LINE_VALUE: 
-        case LINE: 
-
         case ELLIPSE_VALUE: 
-        case ELLIPSE: 
-
         case POLYGON_VALUE: 
-        case POLYGON: 
-
         case STAR_VALUE: 
+        
+        case RECTANGLE: 
+        case LINE: 
+        case ELLIPSE: 
+        case POLYGON: 
         case STAR: 
-        //case COLOR_STROKE: 
+        
+        case FILL_VALUE:
+        case STROKE_VALUE:
+            
+        case FILL:
+        case STROKE:
             return active 
                 ? (isDarkMode() ? rgbActiveObjectDark : rgbActiveObjectLight)
                 : (isDarkMode() ? rgbObjectDark       : rgbObjectLight      );
@@ -3009,7 +3006,7 @@ const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:point
 
 const SHAPE_VALUES =
 [
-    //SHAPE_VALUE,
+    SHAPE_VALUE,
 
     RECTANGLE_VALUE,
     LINE_VALUE,
@@ -3165,6 +3162,7 @@ extends GType
         this.active = active;
     }
 }
+
 
 
 class GParam
@@ -3939,8 +3937,8 @@ extends GType
 {
     nodeId;
 
-    fill;
-    stroke;
+    // fill;
+    // stroke;
 
 
 
@@ -3950,8 +3948,8 @@ extends GType
 
         this.nodeId = nodeId; 
 
-        this.fill   = FillValue.default.copy();
-        this.stroke = StrokeValue.NaN  .copy();
+        // this.fill   = FillValue.default.copy();
+        // this.stroke = StrokeValue.NaN  .copy();
     }
 
 
@@ -3960,16 +3958,17 @@ extends GType
     {
         this.nodeId = base.nodeId;
 
-        this.fill   = base.fill  .copy();
-        this.stroke = base.stroke.copy();
+        // this.fill   = base.fill  .copy();
+        // this.stroke = base.stroke.copy();
     }
 
 
 
     isValid()
     {
-        return this.fill  .isValid()
-           && !this.stroke.isValid();
+        return true;
+        // return this.fill  .isValid()
+        //    && !this.stroke.isValid();
     }
 
 
@@ -3977,45 +3976,45 @@ extends GType
     toFigmaObject()
     {
         return {
-            nodeId: this.nodeId,
+            nodeId: this.nodeId//,
 
-            fills:  this.fill.isValid() 
-                    ? this.fill.toFigma() 
-                    : [],
+            // fills:  this.fill.isValid() 
+            //         ? this.fill.toFigma() 
+            //         : [],
             
-            ...this.stroke.toFigma()
+            // ...this.stroke.toFigma()
         }
     }
 
 
 
-    toString()
-    {
-        return      this.fill  .toString()
-            + ' ' + this.stroke.toString();
-    }
+    // toString()
+    // {
+    //     return      this.fill  .toString()
+    //         + ' ' + this.stroke.toString();
+    // }
 
 
 
-    toDisplayString()
-    {
-        return      this.fill  .toDisplayString()
-            + ' ' + this.stroke.toDisplayString();
-    }
+    // toDisplayString()
+    // {
+    //     return      this.fill  .toDisplayString()
+    //         + ' ' + this.stroke.toDisplayString();
+    // }
 }
 
 
 
-function parseShapeBaseValue(str, i, obj)
-{
-    const fill   = parseFillValue  (str, i); i += fill  [1];
-    const stroke = parseStrokeValue(str, i); i += stroke[1];
+// function parseShapeBaseValue(str, i, obj)
+// {
+//     const fill   = parseFillValue  (str, i); i += fill  [1];
+//     const stroke = parseStrokeValue(str, i); i += stroke[1];
 
-    obj.fill   = fill  [0];
-    obj.stroke = stroke[0];
+//     obj.fill   = fill  [0];
+//     obj.stroke = stroke[0];
 
-    return i;
-}
+//     return i;
+// }
 
 
 class RectangleValue
@@ -4064,8 +4063,8 @@ extends ShapeBaseValue
             this.angle .copy(), 
             this.round .copy());
 
-        rect.copyBase(this);
-        rect.copyData(this);
+        // rect.copyBase(this);
+        // rect.copyData(this);
 
         return rect;
     }
@@ -4079,11 +4078,10 @@ extends ShapeBaseValue
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
-            && this.round .isValid()
+            && this.round .isValid();
 
-            && super      .isValid();
+            //&& super      .isValid();
     }
-
 
 
     eval(parse)
@@ -4103,8 +4101,8 @@ extends ShapeBaseValue
             width:  this.width .value,
             height: this.height.value,
             angle:  this.angle .value,
-            round:  Math.max(0, this.round.value),
-            ...super.toFigmaObject()
+            round:  Math.max(0, this.round.value)//,
+            //...super.toFigmaObject()
         };
     }
 
@@ -4117,9 +4115,9 @@ extends ShapeBaseValue
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
             + ' ' + this.angle .toString()
-            + ' ' + this.round .toString()
+            + ' ' + this.round .toString();
             
-            + ' ' + super.toString();
+            //+ ' ' + super.toString();
     }
 
 
@@ -4131,9 +4129,9 @@ extends ShapeBaseValue
             + ' ' + this.width .toDisplayString()
             + ' ' + this.height.toDisplayString()
             + ' ' + this.angle .toDisplayString()
-            + ' ' + this.round .toDisplayString()
+            + ' ' + this.round .toDisplayString();
             
-            + ' ' + super.toDisplayString();
+            // + ' ' + super.toDisplayString();
     }
 
 
@@ -4184,7 +4182,7 @@ function parseRectangleValue(str, i = -1)
         round [0]);
 
 
-    i = parseShapeBaseValue(str, i, rect);
+    // i = parseShapeBaseValue(str, i, rect);
 
     
     return [rect, i - iStart];
@@ -5817,163 +5815,6 @@ extends GOperator
 
 
 
-class GFill
-extends GOperator
-{
-    color   = null;
-    opacity = null;
-
-
-
-    constructor(nodeId, active)
-    {
-        super(FILL, nodeId, active);
-    }
-
-
-
-    copy()
-    {
-        const fill = new GFill(this.nodeId, this.active);
-
-        if (this.input) 
-            fill.input = this.input.copy();
-
-        if (this.color  ) fill.color   = this.color  .copy();
-        if (this.opacity) fill.opacity = this.opacity.copy();
-
-        return fill;
-    }
-
-
-
-    eval(parse)
-    {
-        if (!this.valid)
-        {
-            const color   = this.color   ? this.color  .eval(parse).copy() : null;
-            const opacity = this.opacity ? this.opacity.eval(parse).copy() : null;
-
-            
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-
-                console.assert(
-                    this.result.type == FILL_VALUE,
-                    'GFill this.result.type must be FILL_VALUE');
-
-                if (this.result.isValid())
-                {
-                    if (this.color  ) this.result.color   = color;
-                    if (this.opacity) this.result.opacity = opacity;
-                }
-            }
-            else
-            {
-                this.result = new FillValue(
-                    ColorValue.fromRgb(scaleRgb(color.toRgb())), 
-                    opacity);
-            }
-        
-
-            this.result.valid = true;
-            this.valid        = true;
-           
-            
-            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
-            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
-        }
-
-
-        return this.result;
-    }
-}
-
-
-class GStroke
-extends GOperator
-{
-    fill   = null;
-    weight = null;
-    fit    = null;
-    join   = null;
-    miter  = null;
-
-
-
-    constructor(nodeId, active)
-    {
-        super(STROKE, nodeId, active);
-    }
-
-
-
-    copy()
-    {
-        const stroke = new GStroke(this.nodeId, this.active);
-
-        if (this.input) 
-            stroke.input = this.input.copy();
-
-        if (this.fill  ) stroke.fill   = this.fill  .copy();
-        if (this.weight) stroke.weight = this.weight.copy();
-        if (this.fit   ) stroke.fit    = this.fit   .copy();
-        if (this.join  ) stroke.join   = this.join  .copy();
-        if (this.miter ) stroke.miter  = this.miter .copy();
-
-        return stroke;
-    }
-
-
-
-    eval(parse)
-    {
-        if (!this.valid)
-        {
-            const fill   = this.fill   ? evalFillValue(this.fill, parse) : null;
-            const weight = this.weight ? this.weight.eval(parse).copy()  : null;
-            const fit    = this.fit    ? this.fit   .eval(parse).copy()  : null;
-            const join   = this.join   ? this.join  .eval(parse).copy()  : null;
-            const miter  = this.miter  ? this.miter .eval(parse).copy()  : null;            
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-
-                console.assert(
-                    this.result.type == STROKE_VALUE,
-                    'GStroke this.result.type must be STROKE_VALUE');
-
-                if (this.fill  ) this.result.fill   = fill;
-                if (this.weight) this.result.weight = weight;
-                if (this.fit   ) this.result.fit    = fit;
-                if (this.join  ) this.result.join   = join;
-                if (this.miter ) this.result.miter  = miter;
-            }
-            else
-            {
-                this.result = new StrokeValue(fill, weight, fit, join, miter);
-            }
-        
-
-            genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
-            genPushUpdateValue(parse, this.nodeId, 'weight', this.result.weight);
-            genPushUpdateValue(parse, this.nodeId, 'fit',    this.result.fit   );
-            genPushUpdateValue(parse, this.nodeId, 'join',   this.result.join  );
-            genPushUpdateValue(parse, this.nodeId, 'miter',  this.result.miter );
-
-
-            this.result.valid = true;
-            this.valid        = true;
-        }
-
-
-        return this.result;
-    }
-}
-
-
 class GColorStop
 extends GOperator
 {
@@ -6058,8 +5899,8 @@ extends GOperator
 class GShapeBase
 extends GOperator
 {
-    fill    = null;
-    stroke  = null;
+    // fill    = null;
+    // stroke  = null;
     
 
     objects = [];
@@ -6075,46 +5916,54 @@ extends GOperator
 
     copyFromeBase(base)
     {
-        if (base.fill  ) this.fill   = base.fill  .copy();
-        if (base.stroke) this.stroke = base.stroke.copy();
+        // if (base.fill  ) this.fill   = base.fill  .copy();
+        // if (base.stroke) this.stroke = base.stroke.copy();
 
         this.objects = [...base.objects];
     }
 
 
 
-    addUpdateObject(parse, nodeId, objects)
-    {
-        if (this.active) 
-            genPushUpdateObject(parse, nodeId, objects);
-        else 
-            this.objects.push(objects);
-    }
+    // addUpdateObject(parse, nodeId, objects)
+    // {
+    //     if (this.active) 
+    //         genPushUpdateObject(parse, nodeId, objects);
+    //     else 
+    //         this.objects.push(...objects);
+    // }
 
 
 
     evalBase(parse, input)
     {
-        if (!this.valid)
-        {
-            const fill   = evalFillValue  (this.fill,   parse);
-            const stroke = evalStrokeValue(this.stroke, parse);
+    //     if (!this.valid)
+    //     {
+    //         const fill   = evalFillValue  (this.fill,   parse);
+    //         const stroke = evalStrokeValue(this.stroke, parse);
             
-            if (input)
-            {
-                if (this.fill  ) this.result.fill   = fill;
-                if (this.stroke) this.result.stroke = stroke;
-            }
-            else
-            {
-                this.result.fill   = fill;
-                this.result.stroke = stroke;
-            }
+    //         if (input)
+    //         {
+    //             if (this.fill  ) this.result.fill   = fill;
+    //             if (this.stroke) this.result.stroke = stroke;
+    //         }
+    //         else
+    //         {
+    //             this.result.fill   = fill;
+    //             this.result.stroke = stroke;
+    //         }
 
 
-            genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
-            genPushUpdateValue(parse, this.nodeId, 'stroke', this.result.stroke);
-        }
+    //         genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
+    //         genPushUpdateValue(parse, this.nodeId, 'stroke', this.result.stroke);
+    //     }
+    }
+
+
+
+    evalObjects()
+    {
+        for (const obj of this.objects)
+            obj.nodeId = this.nodeId;
     }
 }
 
@@ -6163,68 +6012,57 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (!this.valid)
-        {
-            const x      = this.x      ? this.x     .eval(parse).copy() : null;
-            const y      = this.y      ? this.y     .eval(parse).copy() : null;
-            const width  = this.width  ? this.width .eval(parse).copy() : null;
-            const height = this.height ? this.height.eval(parse).copy() : null;
-            const angle  = this.angle  ? this.angle .eval(parse).copy() : null;
-            const round  = this.round  ? this.round .eval(parse).copy() : null;
+        if (this.valid)
+            return;
 
 
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-
-                console.assert(
-                    this.result.type == RECTANGLE_VALUE, 
-                    'this.result.type must be RECTANGLE_VALUE');
-
-                if (this.x     ) this.result.x      = x;
-                if (this.y     ) this.result.y      = y;
-                if (this.width ) this.result.width  = width;
-                if (this.height) this.result.height = height;
-                if (this.angle ) this.result.angle  = angle;
-                if (this.round ) this.result.round  = round;
-            }
-            else
-            {
-                this.result = new RectangleValue(this.nodeId);
-
-                this.result.x      = x;
-                this.result.y      = y;
-                this.result.width  = width;
-                this.result.height = height;
-                this.result.angle  = angle;
-                this.result.round  = round;
-            }
+        if (this.x     ) this.x     .eval(parse);
+        if (this.y     ) this.y     .eval(parse);
+        if (this.width ) this.width .eval(parse);
+        if (this.height) this.height.eval(parse);
+        if (this.angle ) this.angle .eval(parse);
+        if (this.round ) this.round .eval(parse);
 
 
-            genPushUpdateValue(parse, this.nodeId, 'x',       this.result.x     );
-            genPushUpdateValue(parse, this.nodeId, 'y',       this.result.y     );
-            genPushUpdateValue(parse, this.nodeId, 'width',   this.result.width );
-            genPushUpdateValue(parse, this.nodeId, 'height',  this.result.height);
-            genPushUpdateValue(parse, this.nodeId, 'angle',   this.result.angle );
-            genPushUpdateValue(parse, this.nodeId, 'round',   this.result.round );
+        this.evalBase(parse, this.input);
 
 
-            this.evalBase(parse, this.input);
+        if (this.input)
+            this.input.eval(parse);
 
 
-            this.result.valid = true;
-            this.valid        = true;
-           
-
-            if (this.active)
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    this.result.toFigmaObject());
-        }
+        genPushUpdateValue(parse, this.nodeId, 'x',      this.input ? this.input.x      : this.x     );
+        genPushUpdateValue(parse, this.nodeId, 'y',      this.input ? this.input.y      : this.y     );
+        genPushUpdateValue(parse, this.nodeId, 'width',  this.input ? this.input.width  : this.width );
+        genPushUpdateValue(parse, this.nodeId, 'height', this.input ? this.input.height : this.height);
+        genPushUpdateValue(parse, this.nodeId, 'angle',  this.input ? this.input.angle  : this.angle );
+        genPushUpdateValue(parse, this.nodeId, 'round',  this.input ? this.input.round  : this.round );
 
 
-        return this.result;
+        this.evalObjects();
+
+
+        this.valid = true;
+    }
+
+
+
+    evalObjects()
+    {
+        this.objects = 
+        [{
+            type:   RECTANGLE,
+            id:     0,
+            x:                  (this.input ? this.input.x      : this.x     ).value,
+            y:                  (this.input ? this.input.y      : this.y     ).value,
+            width:              (this.input ? this.input.width  : this.width ).value,
+            height:             (this.input ? this.input.height : this.height).value,
+            angle:              (this.input ? this.input.angle  : this.angle ).value,
+            round:  Math.max(0, (this.input ? this.input.round  : this.round ).value)
+        }];
+
+        
+        super.evalObjects();
     }
 }
 
@@ -6713,6 +6551,174 @@ extends GOperator
 }
 
 
+class GFill
+extends GShapeBase
+{
+    color   = null;
+    opacity = null;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(FILL, nodeId, active);
+    }
+
+
+
+    copy()
+    {
+        const fill = new GFill(this.nodeId, this.active);
+
+        if (this.input) 
+            fill.input = this.input.copy();
+
+        if (this.color  ) fill.color   = this.color  .copy();
+        if (this.opacity) fill.opacity = this.opacity.copy();
+
+        rect.copyFromeBase(this);
+
+        return fill;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            const color   = this.color   ? this.color  .eval(parse).copy() : null;
+            const opacity = this.opacity ? this.opacity.eval(parse).copy() : null;
+
+            
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+
+                console.assert(
+                       this.result.type == FILL_VALUE
+                    || SHAPE_VALUES.includes(this.result.type),
+                    'GFill this.result.type must be FILL_VALUE or in SHAPE_VALUES');
+
+                if (this.result.isValid())
+                {
+                    if (this.color  ) this.result.color   = color;
+                    if (this.opacity) this.result.opacity = opacity;
+                }
+            }
+            else
+            {
+                this.result = new FillValue(
+                    ColorValue.fromRgb(scaleRgb(color.toRgb())), 
+                    opacity);
+            }
+        
+
+            this.result.valid = true;
+            this.valid        = true;
+           
+            
+            genPushUpdateValue(parse, this.nodeId, 'color',   this.result.color  );
+            genPushUpdateValue(parse, this.nodeId, 'opacity', this.result.opacity);
+
+
+            if (   this.input
+                && this.active)
+                genPushUpdateObject(
+                    parse,
+                    this.nodeId,
+                    this.result.toFigmaObject());
+        }
+
+
+        return this.result;
+    }
+}
+
+
+class GStroke
+extends GOperator
+{
+    fill   = null;
+    weight = null;
+    fit    = null;
+    join   = null;
+    miter  = null;
+
+
+
+    constructor(nodeId, active)
+    {
+        super(STROKE, nodeId, active);
+    }
+
+
+
+    copy()
+    {
+        const stroke = new GStroke(this.nodeId, this.active);
+
+        if (this.input) 
+            stroke.input = this.input.copy();
+
+        if (this.fill  ) stroke.fill   = this.fill  .copy();
+        if (this.weight) stroke.weight = this.weight.copy();
+        if (this.fit   ) stroke.fit    = this.fit   .copy();
+        if (this.join  ) stroke.join   = this.join  .copy();
+        if (this.miter ) stroke.miter  = this.miter .copy();
+
+        return stroke;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            const fill   = this.fill   ? evalFillValue(this.fill, parse) : null;
+            const weight = this.weight ? this.weight.eval(parse).copy()  : null;
+            const fit    = this.fit    ? this.fit   .eval(parse).copy()  : null;
+            const join   = this.join   ? this.join  .eval(parse).copy()  : null;
+            const miter  = this.miter  ? this.miter .eval(parse).copy()  : null;            
+
+            if (this.input)
+            {
+                this.result = this.input.eval(parse).copy();
+
+                console.assert(
+                    this.result.type == STROKE_VALUE,
+                    'GStroke this.result.type must be STROKE_VALUE');
+
+                if (this.fill  ) this.result.fill   = fill;
+                if (this.weight) this.result.weight = weight;
+                if (this.fit   ) this.result.fit    = fit;
+                if (this.join  ) this.result.join   = join;
+                if (this.miter ) this.result.miter  = miter;
+            }
+            else
+            {
+                this.result = new StrokeValue(fill, weight, fit, join, miter);
+            }
+        
+
+            genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
+            genPushUpdateValue(parse, this.nodeId, 'weight', this.result.weight);
+            genPushUpdateValue(parse, this.nodeId, 'fit',    this.result.fit   );
+            genPushUpdateValue(parse, this.nodeId, 'join',   this.result.join  );
+            genPushUpdateValue(parse, this.nodeId, 'miter',  this.result.miter );
+
+
+            this.result.valid = true;
+            this.valid        = true;
+        }
+
+
+        return this.result;
+    }
+}
+
+
 const settings =
 {
     showNodeId:       false, // instead of name
@@ -6976,6 +6982,13 @@ function genRequest(request)
     for (const node of topLevelNodes) node.eval(parse);
 
 
+    for (const node of parse.parsedNodes)
+    {
+        if (node instanceof GShapeBase)
+            node.objects.forEach(o => genPushUpdateObject(parse, o));
+    }
+
+
     genUpdateValuesAndObjects(
         parse.updateNodeId,
         parse.updateParamId,
@@ -7006,12 +7019,12 @@ function genPushUpdateValue(parse, nodeId, paramId, value)
 
 
 
-function genPushUpdateObject(parse, nodeId, object)
+function genPushUpdateObject(parse, object)
 {
     pushUniqueExcept(
         parse.updateObjects,
         object,
-        o => o.nodeId == nodeId);
+        o => o.nodeId == object.nodeId);
 }
 
 
@@ -7020,6 +7033,7 @@ function clearLastUpdate()
 {
     lastUpdateNodeId  = NULL;
     lastUpdateParamId = NULL;
+
     lastUpdateValues  = [];
     lastUpdateObjects = [];
 }
@@ -7442,14 +7456,201 @@ function genParseColorValidate(parse)
 }
 
 
-function genParseShapeBase(parse, obj, paramId)
+function genParseNumValue(parse)
 {
-    switch (paramId)
-    {
-    case 'fill':   obj.fill   = genParseFillParam  (parse); break;
-    case 'stroke': obj.stroke = genParseStrokeParam(parse); break;
-    }
+    parse.pos++; // N
+
+    const val = parse.move();
+
+    if (parse.logRequests)
+        logReqNumberValue(val, parse);
+
+    return val.indexOf(',') >= 0
+         ? parseNumberValue      (val)[0]
+         : parseSimpleNumberValue(val)[0];
 }
+
+
+
+function genParseNumber(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const num = new GNumber(nodeId, active);
+
+    
+    if (parse.logRequests) 
+        logReqNumber(num, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, num);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    if (parse.next == NUMBER_VALUE) num.value = genParse(parse);
+    else                            num.input = genParse(parse);
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, num);
+    return num;
+}
+
+
+
+function genParseLimits(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const lim = new GLimits(nodeId, active);
+   
+
+    let nValues = -1;
+    
+    if (!ignore)
+    {
+        nValues = parse.move();
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+    }
+
+    
+    if (parse.logRequests) 
+        logReqLimits(lim, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, lim);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    if (nValues == 1)
+        lim.input = genParse(parse);
+
+    lim.min = genParse(parse);
+    lim.max = genParse(parse);
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, lim);
+    return lim;
+}
+
+
+
+function genParseArithmetic(parse, newNode)
+{
+    const [type, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const arith = newNode(nodeId, active);
+
+
+    let nValues = 0;
+    
+    if (!ignore)
+        nValues = parse.move();
+
+
+    if (parse.logRequests) 
+        logReqArithmetic(arith, type, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, arith);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    for (let i = 0; i < nValues; i++)
+        arith.inputs.push(genParse(parse));
+
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, arith);
+    return arith;
+}
+
+
+
+function genParseInterpolate(parse)
+{
+    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+
+
+    const lerp = new GInterpolate(nodeId, active);
+
+
+    let nValues = -1;
+
+    if (!ignore)
+    {
+        nValues = parse.move();
+        console.assert(nValues => 0 && nValues <= 2, 'nValues must be [0, 2]');
+    }
+
+    
+    if (parse.logRequests) 
+        logReqInterpolate(lerp, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, lerp);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    if (nValues == 2)
+    {
+        lerp.input0 = genParse(parse);
+        lerp.input1 = genParse(parse);
+        lerp.amount = genParse(parse);
+    }
+    else if (nValues == 1)
+    {
+        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+        lerp.amount = genParse(parse);
+    }
+    else if (nValues == 0)
+    {
+        lerp.amount = genParse(parse);
+    }
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, lerp);
+    return lerp;
+}
+
+
+// function genParseShapeBase(parse, obj, paramId)
+// {
+//     switch (paramId)
+//     {
+//     case 'fill':   obj.fill   = genParseFillParam  (parse); break;
+//     case 'stroke': obj.stroke = genParseStrokeParam(parse); break;
+//     }
+// }
 
 
 
@@ -7498,7 +7699,7 @@ function genParseRectangle(parse)
         case 'height': rect.height = genParse(parse); break;
         case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
-        default:       genParseShapeBase(parse, rect, paramId); break;
+        //default:       genParseShapeBase(parse, rect, paramId); break;
         }
 
 
@@ -7743,193 +7944,6 @@ function genParseStar(parse)
 }
 
 
-function genParseNumValue(parse)
-{
-    parse.pos++; // N
-
-    const val = parse.move();
-
-    if (parse.logRequests)
-        logReqNumberValue(val, parse);
-
-    return val.indexOf(',') >= 0
-         ? parseNumberValue      (val)[0]
-         : parseSimpleNumberValue(val)[0];
-}
-
-
-
-function genParseNumber(parse)
-{
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
-
-
-    const num = new GNumber(nodeId, active);
-
-    
-    if (parse.logRequests) 
-        logReqNumber(num, parse);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, num);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-    if (parse.next == NUMBER_VALUE) num.value = genParse(parse);
-    else                            num.input = genParse(parse);
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, num);
-    return num;
-}
-
-
-
-function genParseLimits(parse)
-{
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
-
-
-    const lim = new GLimits(nodeId, active);
-   
-
-    let nValues = -1;
-    
-    if (!ignore)
-    {
-        nValues = parse.move();
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
-    }
-
-    
-    if (parse.logRequests) 
-        logReqLimits(lim, nValues, parse);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, lim);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-    if (nValues == 1)
-        lim.input = genParse(parse);
-
-    lim.min = genParse(parse);
-    lim.max = genParse(parse);
-    
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, lim);
-    return lim;
-}
-
-
-
-function genParseArithmetic(parse, newNode)
-{
-    const [type, nodeId, active, ignore] = genParseNodeStart(parse);
-
-
-    const arith = newNode(nodeId, active);
-
-
-    let nValues = 0;
-    
-    if (!ignore)
-        nValues = parse.move();
-
-
-    if (parse.logRequests) 
-        logReqArithmetic(arith, type, nValues, parse);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, arith);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-    for (let i = 0; i < nValues; i++)
-        arith.inputs.push(genParse(parse));
-
-    parse.nTab--;
-
-        
-    genParseNodeEnd(parse, arith);
-    return arith;
-}
-
-
-
-function genParseInterpolate(parse)
-{
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
-
-
-    const lerp = new GInterpolate(nodeId, active);
-
-
-    let nValues = -1;
-
-    if (!ignore)
-    {
-        nValues = parse.move();
-        console.assert(nValues => 0 && nValues <= 2, 'nValues must be [0, 2]');
-    }
-
-    
-    if (parse.logRequests) 
-        logReqInterpolate(lerp, nValues, parse);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, lerp);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-    if (nValues == 2)
-    {
-        lerp.input0 = genParse(parse);
-        lerp.input1 = genParse(parse);
-        lerp.amount = genParse(parse);
-    }
-    else if (nValues == 1)
-    {
-        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-        lerp.amount = genParse(parse);
-    }
-    else if (nValues == 0)
-    {
-        lerp.amount = genParse(parse);
-    }
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, lerp);
-    return lerp;
-}
-
-
 function genParseFillValue(parse)
 {
     parse.pos++; // FILL_VALUE
@@ -7966,29 +7980,12 @@ function genParseFill(parse)
     parse.nTab++;
 
 
-    let paramIds;
-
-    if (   FILL_TYPES.includes(parse.next)
-        ||    parse.next == PARAM
-           && FILL_TYPES.includes(parse.afterNext))
-    {
+    if (SHAPE_TYPES.includes(parse.next))
         fill.input = genParse(parse);
-        paramIds   = parse.move().split(',');
-    }
-    else
-        paramIds = ['color', 'opacity'];
 
-    
-    for (const id of paramIds)
-    {
-        parse.inParam = false;
 
-        switch (id)
-        {
-        case 'color':   fill.color   = genParse(parse); break;
-        case 'opacity': fill.opacity = genParse(parse); break;
-        }
-    }
+    fill.color   = genParse(parse, false);
+    fill.opacity = genParse(parse, false);
 
     
     parse.nTab--;
@@ -8222,9 +8219,12 @@ class Parse
 
 
 
-function genParse(parse)
+function genParse(parse, inParam = true)
 {
     //console.log('parse.next', parse.next);
+
+    if (!inParam)
+        parse.inParam = false;
 
 
     let result = null;

@@ -93,6 +93,7 @@ function initMenuBar()
     menuMainDebugLoggingRaw.addItems([
         menuItemLogRawLoading    = new MenuItem('Raw loading',    {checkCallback: () => settings.logRawLoading   , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading )}),
         menuItemLogRawSaving     = new MenuItem('Raw saving',     {checkCallback: () => settings.logRawSaving    , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving  )}),
+                                   new MenuItem('',               {isSeparator: true}),
         menuItemLogRawRequests   = new MenuItem('Raw requests',   {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests)}),
         menuItemLogRawValues     = new MenuItem('Raw values',     {checkCallback: () => settings.logRawValues    , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues  )})]);
 
@@ -230,7 +231,7 @@ function initMenuBar()
     btnZoom.div.style.position     = 'absolute';
     btnZoom.div.style.right        = '0px';
     btnZoom.div.style.paddingRight = '5px';
-    btnZoom.div.style.paddingLeft  = '13px';
+    btnZoom.div.style.paddingLeft  = '11px';
     // btnZoom.div.style.boxShadow = '0 0 0 1px red inset';
 
 

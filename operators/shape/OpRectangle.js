@@ -1,5 +1,5 @@
 class   OpRectangle
-extends OpShapeBase
+extends OperatorBase//OpShapeBase
 {
     paramX;
     paramY;
@@ -31,11 +31,11 @@ extends OpShapeBase
         this.paramAngle.control.dragReverse = true;
 
 
-        this.btnProportional = createToggleButton(12, 12);
-        this.inner.appendChild(this.btnProportional);
+        // this.btnProportional = createToggleButton(12, 12);
+        // this.inner.appendChild(this.btnProportional);
 
 
-        this.addBaseParams();
+        // this.addBaseParams();
 
         
         this.inputs[0].addEventListener('connect', () =>
@@ -53,14 +53,14 @@ extends OpShapeBase
         });
 
 
-        this.btnProportional.addEventListener('click', () =>
-        {
-            if (this.btnProportional.enabled)
-            {
-                this.refWidth  = this.paramWidth .value.value;
-                this.refHeight = this.paramHeight.value.value;
-            }
-        });
+        // this.btnProportional.addEventListener('click', () =>
+        // {
+        //     if (this.btnProportional.enabled)
+        //     {
+        //         this.refWidth  = this.paramWidth .value.value;
+        //         this.refHeight = this.paramHeight.value.value;
+        //     }
+        // });
 
 
         this.paramWidth.addEventListener('change', () =>
@@ -102,9 +102,9 @@ extends OpShapeBase
              this.node.paramAngle .value],
 
             [this.node.paramRound .id, 
-             this.node.paramRound .value],
+             this.node.paramRound .value] ];//,
 
-            ...this.node.getBaseValuesForUndo()];
+            //...this.node.getBaseValuesForUndo()];
     }
 
 
@@ -163,37 +163,37 @@ extends OpShapeBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
-    {
-        // overriding Operator.updateValues() here because 
-        // all values are taken from the RectangleValue
+    // updateValues(updateParamId, paramIds, values)
+    // {
+    //     // overriding Operator.updateValues() here because 
+    //     // all values are taken from the RectangleValue
 
-        const x      = values[paramIds.findIndex(id => id == 'x'     )];
-        const y      = values[paramIds.findIndex(id => id == 'y'     )];
-        const width  = values[paramIds.findIndex(id => id == 'width' )];
-        const height = values[paramIds.findIndex(id => id == 'height')];
-        const angle  = values[paramIds.findIndex(id => id == 'angle' )];
-        const round  = values[paramIds.findIndex(id => id == 'round' )];
+    //     const x      = values[paramIds.findIndex(id => id == 'x'     )];
+    //     const y      = values[paramIds.findIndex(id => id == 'y'     )];
+    //     const width  = values[paramIds.findIndex(id => id == 'width' )];
+    //     const height = values[paramIds.findIndex(id => id == 'height')];
+    //     const angle  = values[paramIds.findIndex(id => id == 'angle' )];
+    //     const round  = values[paramIds.findIndex(id => id == 'round' )];
 
-        setParamValue(this.paramX,      x,      updateParamId);
-        setParamValue(this.paramY,      y,      updateParamId);
-        setParamValue(this.paramWidth,  width,  updateParamId);
-        setParamValue(this.paramHeight, height, updateParamId);
-        setParamValue(this.paramAngle,  angle,  updateParamId);
-        setParamValue(this.paramRound,  round,  updateParamId);
+    //     setParamValue(this.paramX,      x,      updateParamId);
+    //     setParamValue(this.paramY,      y,      updateParamId);
+    //     setParamValue(this.paramWidth,  width,  updateParamId);
+    //     setParamValue(this.paramHeight, height, updateParamId);
+    //     setParamValue(this.paramAngle,  angle,  updateParamId);
+    //     setParamValue(this.paramRound,  round,  updateParamId);
 
-        this.updateBaseValues(updateParamId, paramIds, values);
-    }
+    //     //this.updateBaseValues(updateParamId, paramIds, values);
+    // }
 
 
 
-    updateNode()
-    {
-        this.btnProportional.style.left = 45;
-        this.btnProportional.style.top  = 79;
+    // updateNode()
+    // {
+    //     this.btnProportional.style.left = 45;
+    //     this.btnProportional.style.top  = 79;
 
-        super.updateNode();
-    }
+    //     super.updateNode();
+    // }
 
 
 
@@ -209,43 +209,43 @@ extends OpShapeBase
 
     
 
-    toJsonBase(nTab = 0) 
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+    // toJsonBase(nTab = 0) 
+    // {
+    //     let   pos = ' '.repeat(nTab);
+    //     const tab = TAB;
 
-        let json = 
-               super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
+    //     let json = 
+    //            super.toJsonBase(nTab)
+    //          + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
 
-        if (this.btnProportional.enabled)
-        {
-            json +=
-                  ',\n' + pos + tab + '"refWidth": "'  + this.refWidth  + '"'
-                + ',\n' + pos + tab + '"refHeight": "' + this.refHeight + '"';
-        }
+    //     if (this.btnProportional.enabled)
+    //     {
+    //         json +=
+    //               ',\n' + pos + tab + '"refWidth": "'  + this.refWidth  + '"'
+    //             + ',\n' + pos + tab + '"refHeight": "' + this.refHeight + '"';
+    //     }
 
-        return json;
-    }
+    //     return json;
+    // }
 
 
 
-    loadParams(_node)
-    {
-        super.loadParams(_node);
+    // loadParams(_node)
+    // {
+    //     super.loadParams(_node);
 
-        // if (_node.proportional)
-        // {
-            this.btnProportional.enabled = isTrue(_node.proportional);
-            this.btnProportional.updateBackground(false);
+    //     // if (_node.proportional)
+    //     // {
+    //         this.btnProportional.enabled = isTrue(_node.proportional);
+    //         this.btnProportional.updateBackground(false);
 
-            if (this.btnProportional.enabled)
-            {
-                this.refWidth  = parseFloat(_node.refWidth);
-                this.refHeight = parseFloat(_node.refHeight);
-            }
-        //}
+    //         if (this.btnProportional.enabled)
+    //         {
+    //             this.refWidth  = parseFloat(_node.refWidth);
+    //             this.refHeight = parseFloat(_node.refHeight);
+    //         }
+    //     //}
 
-        this.updateRound();
-    }
+    //     this.updateRound();
+    // }
 }

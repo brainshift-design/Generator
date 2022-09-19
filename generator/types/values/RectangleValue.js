@@ -44,8 +44,8 @@ extends ShapeBaseValue
             this.angle .copy(), 
             this.round .copy());
 
-        rect.copyBase(this);
-        rect.copyData(this);
+        // rect.copyBase(this);
+        // rect.copyData(this);
 
         return rect;
     }
@@ -59,11 +59,10 @@ extends ShapeBaseValue
             && this.width .isValid()
             && this.height.isValid()
             && this.angle .isValid()
-            && this.round .isValid()
+            && this.round .isValid();
 
-            && super      .isValid();
+            //&& super      .isValid();
     }
-
 
 
     eval(parse)
@@ -83,8 +82,8 @@ extends ShapeBaseValue
             width:  this.width .value,
             height: this.height.value,
             angle:  this.angle .value,
-            round:  Math.max(0, this.round.value),
-            ...super.toFigmaObject()
+            round:  Math.max(0, this.round.value)//,
+            //...super.toFigmaObject()
         };
     }
 
@@ -97,9 +96,9 @@ extends ShapeBaseValue
             + ' ' + this.width .toString()
             + ' ' + this.height.toString()
             + ' ' + this.angle .toString()
-            + ' ' + this.round .toString()
+            + ' ' + this.round .toString();
             
-            + ' ' + super.toString();
+            //+ ' ' + super.toString();
     }
 
 
@@ -111,9 +110,9 @@ extends ShapeBaseValue
             + ' ' + this.width .toDisplayString()
             + ' ' + this.height.toDisplayString()
             + ' ' + this.angle .toDisplayString()
-            + ' ' + this.round .toDisplayString()
+            + ' ' + this.round .toDisplayString();
             
-            + ' ' + super.toDisplayString();
+            // + ' ' + super.toDisplayString();
     }
 
 
@@ -164,7 +163,7 @@ function parseRectangleValue(str, i = -1)
         round [0]);
 
 
-    i = parseShapeBaseValue(str, i, rect);
+    // i = parseShapeBaseValue(str, i, rect);
 
     
     return [rect, i - iStart];

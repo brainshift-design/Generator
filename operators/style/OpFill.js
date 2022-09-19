@@ -10,16 +10,16 @@ extends OpColorBase
 
     constructor()
     {
-        super(SHAPE_VALUE, 'fill');
+        super(FILL, 'fill');
 
 
         this.colorBack = createDiv('colorBack');
         this.inner.appendChild(this.colorBack);
 
-        this.addInput (new Input(FILL_TYPES, this.input_getValuesForUndo));
-        this.addOutput(new Output(FILL, this.output_genRequest));
+        this.addInput (new Input(SHAPE_TYPES, this.input_getValuesForUndo));
+        this.addOutput(new Output(SHAPE_VALUE, this.output_genRequest));
 
-        this.initContentInput(this.inputs[0], 0);
+        //this.initContentInput(this.inputs[0], 0);
 
 
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb([0x80, 0x80, 0x80])));
@@ -73,19 +73,11 @@ extends OpColorBase
                 if (   param.input 
                     && param.input.connected) 
                     paramIds.push(param.id);
-
-            request.push(paramIds.join(','));
-
-            for (const param of this.node.params)
-                if (   param.input 
-                    && param.input.connected) 
-                    request.push(...param.genRequest(gen))
         }
-        else
-        {
-            for (const param of this.node.params)
-                request.push(...param.genRequest(gen))
-        }
+
+
+        for (const param of this.node.params)
+            request.push(...param.genRequest(gen))
 
 
         gen.scope.pop();
@@ -98,7 +90,7 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const color   = values[paramIds.findIndex(id => id == 'color')];
+        const color   = values[paramIds.findIndex(id => id == 'color'  )];
         const opacity = values[paramIds.findIndex(id => id == 'opacity')];
 
 

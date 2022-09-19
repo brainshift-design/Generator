@@ -1,14 +1,14 @@
 class   OpShapeBase
 extends OperatorBase
 {
-    paramFill;
-    paramStroke;
+    // paramFill;
+    // paramStroke;
 
 
-    btnProportional;
+    // btnProportional;
 
-    refWidth  = Number.NaN;
-    refHeight = Number.NaN;
+    // refWidth  = Number.NaN;
+    // refHeight = Number.NaN;
 
 
     
@@ -19,36 +19,36 @@ extends OperatorBase
 
 
 
-    addBaseParams()
-    {
-        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.default));
-        this.addParam(this.paramStroke = new StrokeParam('stroke', 'stroke',        true, true, StrokeValue.NaN));
+    // addBaseParams()
+    // {
+    //     this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.default));
+    //     this.addParam(this.paramStroke = new StrokeParam('stroke', 'stroke',        true, true, StrokeValue.NaN));
 
-        this.paramStroke.input.addEventListener('disconnect', () => { this.paramStroke.setValue(StrokeValue.NaN, false, true, false); });
-    } 
-
-
-
-    getBaseValuesForUndo()
-    {
-        return [ 
-            [this.paramFill  .id, 
-             this.paramFill  .value],
-
-            [this.paramStroke.id, 
-             this.paramStroke.value]];
-    }
+    //     this.paramStroke.input.addEventListener('disconnect', () => { this.paramStroke.setValue(StrokeValue.NaN, false, true, false); });
+    // } 
 
 
 
-    updateBaseValues(updateParamId, paramIds, values)
-    {
-        const fill   = values[paramIds.findIndex(id => id == 'fill'  )];
-        const stroke = values[paramIds.findIndex(id => id == 'stroke')];
+    // getBaseValuesForUndo()
+    // {
+    //     return [ 
+    //         [this.paramFill  .id, 
+    //          this.paramFill  .value],
 
-        setParamValue(this.paramFill,   fill,   updateParamId);
-        setParamValue(this.paramStroke, stroke, updateParamId);
+    //         [this.paramStroke.id, 
+    //          this.paramStroke.value]];
+    // }
 
-        this.updateParamDisplay();
-    }
+
+
+    // updateBaseValues(updateParamId, paramIds, values)
+    // {
+    //     const fill   = values[paramIds.findIndex(id => id == 'fill'  )];
+    //     const stroke = values[paramIds.findIndex(id => id == 'stroke')];
+
+    //     setParamValue(this.paramFill,   fill,   updateParamId);
+    //     setParamValue(this.paramStroke, stroke, updateParamId);
+
+    //     this.updateParamDisplay();
+    // }
 }

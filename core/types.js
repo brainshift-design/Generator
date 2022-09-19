@@ -103,7 +103,7 @@ const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:point
 
 const SHAPE_VALUES =
 [
-    //SHAPE_VALUE,
+    SHAPE_VALUE,
 
     RECTANGLE_VALUE,
     LINE_VALUE,
