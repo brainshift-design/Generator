@@ -78,7 +78,7 @@ extends EventTarget
 
 
 
-    constructor(types, getValuesForUndo = null)
+    constructor(types, getValuesForUndo = null, opacity = 0.35)
     {
         super();
         
@@ -91,8 +91,8 @@ extends EventTarget
         
         this.control.input    = this;
         
-        this.colorLight       = [0, 0, 0, 0.12];
-        this.colorDark        = [255, 255, 255, 0.12];
+        this.colorLight       = [  0,   0,   0, opacity];
+        this.colorDark        = [255, 255, 255, opacity];
 
         this.wireColor        = rgbFromType(this.types[0], true);
 

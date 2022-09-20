@@ -68,6 +68,7 @@ extends EventTarget
         this.input.control.style.position  = 'absolute';
         this.input.control.style.top       = '50%';
         this.input.control.style.transform = 'translateY(-50%)';
+        
         this.div.appendChild(this.input.control);
 
         this.input.addEventListener('connect',    () => this.enableControlText(false));

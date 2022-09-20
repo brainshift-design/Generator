@@ -50,7 +50,7 @@ class Output
 
 
 
-    constructor(type, genRequest)
+    constructor(type, genRequest, opacity = 0.35)
     {
         this._type           = type;
         this.genRequest      = genRequest;
@@ -65,8 +65,8 @@ class Output
         this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
-        this.colorLight      = [0, 0, 0, 0.12];
-        this.colorDark       = [255, 255, 255, 0.12];
+        this.colorLight      = [  0,   0,   0, opacity];
+        this.colorDark       = [255, 255, 255, opacity];
 
         this.wireColor       = rgbFromType(this.type, true);
         

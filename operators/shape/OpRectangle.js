@@ -58,9 +58,7 @@ extends OperatorBase//OpShapeBase
              this.node.paramAngle .value],
 
             [this.node.paramRound .id, 
-             this.node.paramRound .value] ];//,
-
-            //...this.node.getBaseValuesForUndo()];
+             this.node.paramRound .value] ];
     }
 
 
@@ -118,40 +116,6 @@ extends OperatorBase//OpShapeBase
 
 
 
-    // updateValues(updateParamId, paramIds, values)
-    // {
-    //     // overriding Operator.updateValues() here because 
-    //     // all values are taken from the RectangleValue
-
-    //     const x      = values[paramIds.findIndex(id => id == 'x'     )];
-    //     const y      = values[paramIds.findIndex(id => id == 'y'     )];
-    //     const width  = values[paramIds.findIndex(id => id == 'width' )];
-    //     const height = values[paramIds.findIndex(id => id == 'height')];
-    //     const angle  = values[paramIds.findIndex(id => id == 'angle' )];
-    //     const round  = values[paramIds.findIndex(id => id == 'round' )];
-
-    //     setParamValue(this.paramX,      x,      updateParamId);
-    //     setParamValue(this.paramY,      y,      updateParamId);
-    //     setParamValue(this.paramWidth,  width,  updateParamId);
-    //     setParamValue(this.paramHeight, height, updateParamId);
-    //     setParamValue(this.paramAngle,  angle,  updateParamId);
-    //     setParamValue(this.paramRound,  round,  updateParamId);
-
-    //     //this.updateBaseValues(updateParamId, paramIds, values);
-    // }
-
-
-
-    // updateNode()
-    // {
-    //     this.btnProportional.style.left = 45;
-    //     this.btnProportional.style.top  = 79;
-
-    //     super.updateNode();
-    // }
-
-
-
     updateRound()
     {
         const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);
@@ -161,46 +125,4 @@ extends OperatorBase//OpShapeBase
 
         this.paramRound.control.update();
     }
-
-    
-
-    // toJsonBase(nTab = 0) 
-    // {
-    //     let   pos = ' '.repeat(nTab);
-    //     const tab = TAB;
-
-    //     let json = 
-    //            super.toJsonBase(nTab)
-    //          + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
-
-    //     if (this.btnProportional.enabled)
-    //     {
-    //         json +=
-    //               ',\n' + pos + tab + '"refWidth": "'  + this.refWidth  + '"'
-    //             + ',\n' + pos + tab + '"refHeight": "' + this.refHeight + '"';
-    //     }
-
-    //     return json;
-    // }
-
-
-
-    // loadParams(_node)
-    // {
-    //     super.loadParams(_node);
-
-    //     // if (_node.proportional)
-    //     // {
-    //         this.btnProportional.enabled = isTrue(_node.proportional);
-    //         this.btnProportional.updateBackground(false);
-
-    //         if (this.btnProportional.enabled)
-    //         {
-    //             this.refWidth  = parseFloat(_node.refWidth);
-    //             this.refHeight = parseFloat(_node.refHeight);
-    //         }
-    //     //}
-
-    //     this.updateRound();
-    // }
 }

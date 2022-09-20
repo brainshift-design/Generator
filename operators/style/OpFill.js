@@ -24,8 +24,8 @@ extends OpColorBase
         this.addOutput(new Output(FILL, this.output_genRequest));
 
 
-        this.inputs[0].addEventListener('connect',    () => this.outputs[0]._type = this.inputs[0].connectedOutput.type);
-        this.inputs[0].addEventListener('disconnect', () => this.outputs[0]._type = FILL);
+        this.inputs[0].addEventListener('connect',    () =>   this.outputs[0]._type = this.inputs[0].connectedOutput.type);
+        this.inputs[0].addEventListener('disconnect', () => { this.outputs[0]._type = FILL; uiDeleteObjects([this.id]); });
 
 
         this.initContentInput(
@@ -169,11 +169,11 @@ extends OpColorBase
 
         this.inputs[0] .wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
         this.inputs[0] .colorLight = 
-        this.inputs[0] .colorDark  = rgb_a(colors.input, 0.2);
+        this.inputs[0] .colorDark  = colors.input;
 
         this.outputs[0].wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
         this.outputs[0].colorLight =
-        this.outputs[0].colorDark  = rgb_a(colors.output, 0.2);
+        this.outputs[0].colorDark  = colors.output;
 
 
         this.updateWarningOverlay();

@@ -5268,6 +5268,13 @@ extends GType
 
 
 
+    toNumber()
+    {
+        return roundTo(this.value, this.decimals);
+    }
+
+
+
     toString()
     {
         return printNum(this.value) + ',' + printNum(this.decimals); // only NumberValue can do this, other _Values have to list all members
@@ -8623,19 +8630,24 @@ extends GShapeBase
 
     evalObjects()
     {
+        if (!this.active)
+            return;
+
+            
+        const rgb = scaleRgb(this.color.toRgb());
+
+
         for (const obj of this.objects)
         {
             if (!obj.fills) 
                 obj.fills = [];
-
-            const rgb = scaleRgb(this.color.toRgb());
 
             obj.fills.push([
                 'SOLID', 
                         rgb[0]
                 + ' ' + rgb[1]
                 + ' ' + rgb[2]
-                + ' ' + this.opacity]);
+                + ' ' + this.opacity.toNumber()]);
         }
 
         
@@ -17827,6 +17839,13 @@ extends GType
 
 
 
+    toNumber()
+    {
+        return roundTo(this.value, this.decimals);
+    }
+
+
+
     toString()
     {
         return printNum(this.value) + ',' + printNum(this.decimals); // only NumberValue can do this, other _Values have to list all members
@@ -21182,19 +21201,24 @@ extends GShapeBase
 
     evalObjects()
     {
+        if (!this.active)
+            return;
+
+            
+        const rgb = scaleRgb(this.color.toRgb());
+
+
         for (const obj of this.objects)
         {
             if (!obj.fills) 
                 obj.fills = [];
-
-            const rgb = scaleRgb(this.color.toRgb());
 
             obj.fills.push([
                 'SOLID', 
                         rgb[0]
                 + ' ' + rgb[1]
                 + ' ' + rgb[2]
-                + ' ' + this.opacity]);
+                + ' ' + this.opacity.toNumber()]);
         }
 
         
@@ -27135,6 +27159,7 @@ extends EventTarget
         this.input.control.style.position  = 'absolute';
         this.input.control.style.top       = '50%';
         this.input.control.style.transform = 'translateY(-50%)';
+        
         this.div.appendChild(this.input.control);
 
         this.input.addEventListener('connect',    () => this.enableControlText(false));
@@ -29528,7 +29553,7 @@ extends EventTarget
 
 
 
-    constructor(types, getValuesForUndo = null)
+    constructor(types, getValuesForUndo = null, opacity = 0.35)
     {
         super();
         
@@ -29541,8 +29566,8 @@ extends EventTarget
         
         this.control.input    = this;
         
-        this.colorLight       = [0, 0, 0, 0.12];
-        this.colorDark        = [255, 255, 255, 0.12];
+        this.colorLight       = [  0,   0,   0, opacity];
+        this.colorDark        = [255, 255, 255, opacity];
 
         this.wireColor        = rgbFromType(this.types[0], true);
 
@@ -29753,7 +29778,7 @@ class Output
 
 
 
-    constructor(type, genRequest)
+    constructor(type, genRequest, opacity = 0.35)
     {
         this._type           = type;
         this.genRequest      = genRequest;
@@ -29768,8 +29793,8 @@ class Output
         this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
-        this.colorLight      = [0, 0, 0, 0.12];
-        this.colorDark       = [255, 255, 255, 0.12];
+        this.colorLight      = [  0,   0,   0, opacity];
+        this.colorDark       = [255, 255, 255, opacity];
 
         this.wireColor       = rgbFromType(this.type, true);
         
@@ -31108,12 +31133,11 @@ extends Operator
 
             
         this.header.style.backgroundColor = rgb2style_a(colors.back, 0.95);
-
         this.label .style.color           = rgba2style(colors.text);
 
 
         for (const input  of this.inputs .filter(i => !i.param)) input .color = colors.input;
-        for (const output of this.outputs.filter(i => !i.param)) output.color = colors.output;
+        for (const output of this.outputs.filter(o => !o.param)) output.color = colors.output;
     }
 }
 
@@ -35870,8 +35894,8 @@ extends OpColorBase
         this.addOutput(new Output(FILL, this.output_genRequest));
 
 
-        this.inputs[0].addEventListener('connect',    () => this.outputs[0]._type = this.inputs[0].connectedOutput.type);
-        this.inputs[0].addEventListener('disconnect', () => this.outputs[0]._type = FILL);
+        this.inputs[0].addEventListener('connect',    () =>   this.outputs[0]._type = this.inputs[0].connectedOutput.type);
+        this.inputs[0].addEventListener('disconnect', () => { this.outputs[0]._type = FILL; uiDeleteObjects([this.id]); });
 
 
         this.initContentInput(
@@ -36015,11 +36039,11 @@ extends OpColorBase
 
         this.inputs[0] .wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
         this.inputs[0] .colorLight = 
-        this.inputs[0] .colorDark  = rgb_a(colors.input, 0.2);
+        this.inputs[0] .colorDark  = colors.input;
 
         this.outputs[0].wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
         this.outputs[0].colorLight =
-        this.outputs[0].colorDark  = rgb_a(colors.output, 0.2);
+        this.outputs[0].colorDark  = colors.output;
 
 
         this.updateWarningOverlay();
@@ -36573,9 +36597,7 @@ extends OperatorBase//OpShapeBase
              this.node.paramAngle .value],
 
             [this.node.paramRound .id, 
-             this.node.paramRound .value] ];//,
-
-            //...this.node.getBaseValuesForUndo()];
+             this.node.paramRound .value] ];
     }
 
 
@@ -36633,40 +36655,6 @@ extends OperatorBase//OpShapeBase
 
 
 
-    // updateValues(updateParamId, paramIds, values)
-    // {
-    //     // overriding Operator.updateValues() here because 
-    //     // all values are taken from the RectangleValue
-
-    //     const x      = values[paramIds.findIndex(id => id == 'x'     )];
-    //     const y      = values[paramIds.findIndex(id => id == 'y'     )];
-    //     const width  = values[paramIds.findIndex(id => id == 'width' )];
-    //     const height = values[paramIds.findIndex(id => id == 'height')];
-    //     const angle  = values[paramIds.findIndex(id => id == 'angle' )];
-    //     const round  = values[paramIds.findIndex(id => id == 'round' )];
-
-    //     setParamValue(this.paramX,      x,      updateParamId);
-    //     setParamValue(this.paramY,      y,      updateParamId);
-    //     setParamValue(this.paramWidth,  width,  updateParamId);
-    //     setParamValue(this.paramHeight, height, updateParamId);
-    //     setParamValue(this.paramAngle,  angle,  updateParamId);
-    //     setParamValue(this.paramRound,  round,  updateParamId);
-
-    //     //this.updateBaseValues(updateParamId, paramIds, values);
-    // }
-
-
-
-    // updateNode()
-    // {
-    //     this.btnProportional.style.left = 45;
-    //     this.btnProportional.style.top  = 79;
-
-    //     super.updateNode();
-    // }
-
-
-
     updateRound()
     {
         const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);
@@ -36676,48 +36664,6 @@ extends OperatorBase//OpShapeBase
 
         this.paramRound.control.update();
     }
-
-    
-
-    // toJsonBase(nTab = 0) 
-    // {
-    //     let   pos = ' '.repeat(nTab);
-    //     const tab = TAB;
-
-    //     let json = 
-    //            super.toJsonBase(nTab)
-    //          + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
-
-    //     if (this.btnProportional.enabled)
-    //     {
-    //         json +=
-    //               ',\n' + pos + tab + '"refWidth": "'  + this.refWidth  + '"'
-    //             + ',\n' + pos + tab + '"refHeight": "' + this.refHeight + '"';
-    //     }
-
-    //     return json;
-    // }
-
-
-
-    // loadParams(_node)
-    // {
-    //     super.loadParams(_node);
-
-    //     // if (_node.proportional)
-    //     // {
-    //         this.btnProportional.enabled = isTrue(_node.proportional);
-    //         this.btnProportional.updateBackground(false);
-
-    //         if (this.btnProportional.enabled)
-    //         {
-    //             this.refWidth  = parseFloat(_node.refWidth);
-    //             this.refHeight = parseFloat(_node.refHeight);
-    //         }
-    //     //}
-
-    //     this.updateRound();
-    // }
 }
 
 

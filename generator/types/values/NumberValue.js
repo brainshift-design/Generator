@@ -59,6 +59,13 @@ extends GType
 
 
 
+    toNumber()
+    {
+        return roundTo(this.value, this.decimals);
+    }
+
+
+
     toString()
     {
         return printNum(this.value) + ',' + printNum(this.decimals); // only NumberValue can do this, other _Values have to list all members
