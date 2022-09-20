@@ -3161,6 +3161,13 @@ extends GType
         this.nodeId = nodeId;
         this.active = active;
     }
+
+
+
+    toValue()
+    {
+        return null;
+    }
 }
 
 
@@ -3307,7 +3314,7 @@ function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
     {
-        console.trace();
+        //console.trace();
         console.assert(false, 'number value missing \',\'');
     }
     
@@ -5914,7 +5921,7 @@ extends GOperator
 
 
 
-    copyFromeBase(base)
+    copyFromBase(base)
     {
         // if (base.fill  ) this.fill   = base.fill  .copy();
         // if (base.stroke) this.stroke = base.stroke.copy();
@@ -6003,7 +6010,7 @@ extends GShapeBase
         if (this.angle ) rect.angle  = this.angle .copy();
         if (this.round ) rect.round  = this.round .copy();
 
-        rect.copyFromeBase(this);
+        rect.copyFromBase(this);
 
         return rect;
     }
@@ -6045,10 +6052,8 @@ extends GShapeBase
 
 
         if (    this.input
-            && !this.active)
-            this.objects = this.input.objects;
-        else
-            this.evalObjects();
+            && !this.active) this.objects = this.input.objects;
+        else                 this.evalObjects();
 
 
         this.valid = true;
@@ -6587,7 +6592,7 @@ extends GShapeBase
         if (this.color  ) fill.color   = this.color  .copy();
         if (this.opacity) fill.opacity = this.opacity.copy();
 
-        rect.copyFromeBase(this);
+        rect.copyFromBase(this);
 
         return fill;
     }
@@ -6608,15 +6613,16 @@ extends GShapeBase
             this.input.eval(parse);
 
 
-        if (this.color  ) genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
-        if (this.opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
+        const color   = this.color   && (!this.input || this.input.type == this.type) ? this.color   : this.input ? this.input.color   : null;
+        const opacity = this.opacity && (!this.input || this.input.type == this.type) ? this.opacity : this.input ? this.input.opacity : null;
 
 
-        if (this.input)
-            this.objects = this.input.objects;
+        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+        if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
-        if (this.active)
-            this.evalObjects();
+
+        if (this.input ) this.objects = this.input.objects;
+        if (this.active) this.evalObjects();
 
 
         this.valid = true;
@@ -6626,11 +6632,10 @@ extends GShapeBase
 
     evalObjects()
     {
-        console.log('GFill.evalObjects()');
-        console.log('this.objects =', this.objects);
         for (const obj of this.objects)
         {
-            if (!obj.fills) obj.fills = [];
+            if (!obj.fills) 
+                obj.fills = [];
 
             const rgb = scaleRgb(this.color.toRgb());
 
@@ -7712,7 +7717,6 @@ function genParseRectangle(parse)
         case 'height': rect.height = genParse(parse); break;
         case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
-        //default:       genParseShapeBase(parse, rect, paramId); break;
         }
 
 
@@ -7993,14 +7997,33 @@ function genParseFill(parse)
     parse.nTab++;
 
 
-    if (SHAPE_TYPES.includes(parse.next))
+    if (   parse.next == FILL
+        || SHAPE_TYPES.includes(parse.next))
         fill.input = genParse(parse);
 
 
-    fill.color   = genParse(parse, false);
-    fill.opacity = genParse(parse, false);
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.nTab++;
+        parse.inParam = true;
+
+
+        switch (paramId)
+        {
+        case 'color'  : fill.color   = genParse(parse); break;
+        case 'opacity': fill.opacity = genParse(parse); break;
+        }
+
+
+        parse.nTab--;
+    }
 
     
+    parse.inParam = false;
     parse.nTab--;
 
 

@@ -5152,6 +5152,13 @@ extends GType
         this.nodeId = nodeId;
         this.active = active;
     }
+
+
+
+    toValue()
+    {
+        return null;
+    }
 }
 
 
@@ -5298,7 +5305,7 @@ function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
     {
-        console.trace();
+        //console.trace();
         console.assert(false, 'number value missing \',\'');
     }
     
@@ -7905,7 +7912,7 @@ extends GOperator
 
 
 
-    copyFromeBase(base)
+    copyFromBase(base)
     {
         // if (base.fill  ) this.fill   = base.fill  .copy();
         // if (base.stroke) this.stroke = base.stroke.copy();
@@ -7994,7 +8001,7 @@ extends GShapeBase
         if (this.angle ) rect.angle  = this.angle .copy();
         if (this.round ) rect.round  = this.round .copy();
 
-        rect.copyFromeBase(this);
+        rect.copyFromBase(this);
 
         return rect;
     }
@@ -8036,10 +8043,8 @@ extends GShapeBase
 
 
         if (    this.input
-            && !this.active)
-            this.objects = this.input.objects;
-        else
-            this.evalObjects();
+            && !this.active) this.objects = this.input.objects;
+        else                 this.evalObjects();
 
 
         this.valid = true;
@@ -8578,7 +8583,7 @@ extends GShapeBase
         if (this.color  ) fill.color   = this.color  .copy();
         if (this.opacity) fill.opacity = this.opacity.copy();
 
-        rect.copyFromeBase(this);
+        rect.copyFromBase(this);
 
         return fill;
     }
@@ -8599,15 +8604,16 @@ extends GShapeBase
             this.input.eval(parse);
 
 
-        if (this.color  ) genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
-        if (this.opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
+        const color   = this.color   && (!this.input || this.input.type == this.type) ? this.color   : this.input ? this.input.color   : null;
+        const opacity = this.opacity && (!this.input || this.input.type == this.type) ? this.opacity : this.input ? this.input.opacity : null;
 
 
-        if (this.input)
-            this.objects = this.input.objects;
+        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+        if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
-        if (this.active)
-            this.evalObjects();
+
+        if (this.input ) this.objects = this.input.objects;
+        if (this.active) this.evalObjects();
 
 
         this.valid = true;
@@ -8617,11 +8623,10 @@ extends GShapeBase
 
     evalObjects()
     {
-        console.log('GFill.evalObjects()');
-        console.log('this.objects =', this.objects);
         for (const obj of this.objects)
         {
-            if (!obj.fills) obj.fills = [];
+            if (!obj.fills) 
+                obj.fills = [];
 
             const rgb = scaleRgb(this.color.toRgb());
 
@@ -9703,7 +9708,6 @@ function genParseRectangle(parse)
         case 'height': rect.height = genParse(parse); break;
         case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
-        //default:       genParseShapeBase(parse, rect, paramId); break;
         }
 
 
@@ -9984,14 +9988,33 @@ function genParseFill(parse)
     parse.nTab++;
 
 
-    if (SHAPE_TYPES.includes(parse.next))
+    if (   parse.next == FILL
+        || SHAPE_TYPES.includes(parse.next))
         fill.input = genParse(parse);
 
 
-    fill.color   = genParse(parse, false);
-    fill.opacity = genParse(parse, false);
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.nTab++;
+        parse.inParam = true;
+
+
+        switch (paramId)
+        {
+        case 'color'  : fill.color   = genParse(parse); break;
+        case 'opacity': fill.opacity = genParse(parse); break;
+        }
+
+
+        parse.nTab--;
+    }
 
     
+    parse.inParam = false;
     parse.nTab--;
 
 
@@ -17688,6 +17711,13 @@ extends GType
         this.nodeId = nodeId;
         this.active = active;
     }
+
+
+
+    toValue()
+    {
+        return null;
+    }
 }
 
 
@@ -17834,7 +17864,7 @@ function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
     {
-        console.trace();
+        //console.trace();
         console.assert(false, 'number value missing \',\'');
     }
     
@@ -20441,7 +20471,7 @@ extends GOperator
 
 
 
-    copyFromeBase(base)
+    copyFromBase(base)
     {
         // if (base.fill  ) this.fill   = base.fill  .copy();
         // if (base.stroke) this.stroke = base.stroke.copy();
@@ -20530,7 +20560,7 @@ extends GShapeBase
         if (this.angle ) rect.angle  = this.angle .copy();
         if (this.round ) rect.round  = this.round .copy();
 
-        rect.copyFromeBase(this);
+        rect.copyFromBase(this);
 
         return rect;
     }
@@ -20572,10 +20602,8 @@ extends GShapeBase
 
 
         if (    this.input
-            && !this.active)
-            this.objects = this.input.objects;
-        else
-            this.evalObjects();
+            && !this.active) this.objects = this.input.objects;
+        else                 this.evalObjects();
 
 
         this.valid = true;
@@ -21114,7 +21142,7 @@ extends GShapeBase
         if (this.color  ) fill.color   = this.color  .copy();
         if (this.opacity) fill.opacity = this.opacity.copy();
 
-        rect.copyFromeBase(this);
+        rect.copyFromBase(this);
 
         return fill;
     }
@@ -21135,15 +21163,16 @@ extends GShapeBase
             this.input.eval(parse);
 
 
-        if (this.color  ) genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
-        if (this.opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
+        const color   = this.color   && (!this.input || this.input.type == this.type) ? this.color   : this.input ? this.input.color   : null;
+        const opacity = this.opacity && (!this.input || this.input.type == this.type) ? this.opacity : this.input ? this.input.opacity : null;
 
 
-        if (this.input)
-            this.objects = this.input.objects;
+        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+        if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
-        if (this.active)
-            this.evalObjects();
+
+        if (this.input ) this.objects = this.input.objects;
+        if (this.active) this.evalObjects();
 
 
         this.valid = true;
@@ -21153,11 +21182,10 @@ extends GShapeBase
 
     evalObjects()
     {
-        console.log('GFill.evalObjects()');
-        console.log('this.objects =', this.objects);
         for (const obj of this.objects)
         {
-            if (!obj.fills) obj.fills = [];
+            if (!obj.fills) 
+                obj.fills = [];
 
             const rgb = scaleRgb(this.color.toRgb());
 
@@ -30419,10 +30447,14 @@ class Operator
 
 
 
-    initContentInput(input, firstParam)
+    initContentInput(input, firstParam = 0, condition = null)
     {
         input.addEventListener('connect', () =>
         {
+            if (    condition
+                && !condition())
+                return;
+
             for (let i = firstParam; i < this.params.length; i++)
                 this.params[i].enableControlText(false);
         });
@@ -35827,22 +35859,31 @@ extends OpColorBase
         super(FILL, 'fill');
 
 
-        this.colorBack = createDiv('colorBack');
-        this.inner.appendChild(this.colorBack);
+        this.addInput (new Input([FILL, FILL, ...SHAPE_TYPES], this.input_getValuesForUndo));
+        this.addOutput(new Output(FILL, this.output_genRequest));
 
-        this.addInput (new Input(SHAPE_TYPES, this.input_getValuesForUndo));
-        this.addOutput(new Output(SHAPE_VALUE, this.output_genRequest));
 
-        //this.initContentInput(this.inputs[0], 0);
+        this.inputs[0].addEventListener('connect',    () => this.outputs[0]._type = this.inputs[0].connectedOutput.type);
+        this.inputs[0].addEventListener('disconnect', () => this.outputs[0]._type = FILL);
+
+
+        this.initContentInput(
+            this.inputs[0],
+            0, 
+            () =>    this.inputs[0].connected
+                  && this.inputs[0].connectedOutput.type == FILL);
 
 
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb([0x80, 0x80, 0x80])));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
         this.paramOpacity.control.suffix = '%';
-    
 
-        this.checkers = createDiv('nodeHeaderCheckers');
+
+        this.colorBack = createDiv('colorBack');
+        this.checkers  = createDiv('nodeHeaderCheckers');
+
+        this.inner.appendChild(this.colorBack);
         this.inner.insertBefore(this.checkers, this.header);
     }
     
@@ -35853,8 +35894,9 @@ extends OpColorBase
         return [ 
             [this.node.paramColor  .id, 
              this.node.paramColor  .value],
+
             [this.node.paramOpacity.id, 
-             this.node.paramOpacity.value]];
+             this.node.paramOpacity.value] ];
     }
 
 
@@ -35874,24 +35916,33 @@ extends OpColorBase
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
-        
-        const input = this.node.inputs[0];
 
         const paramIds = [];
+
+
+        const input = this.node.inputs[0];
 
         if (input.connected)
         {
             request.push(...pushInputOrParam(input, gen));
 
             for (const param of this.node.params)
-                if (   param.input 
-                    && param.input.connected) 
+                if (      param.input 
+                       && param.input.connected
+                    || SHAPE_TYPES.includes(input.connectedOutput.type)) 
                     paramIds.push(param.id);
+        }
+        else
+        {
+            for (const param of this.node.params)
+                paramIds.push(param.id);
         }
 
 
-        for (const param of this.node.params)
-            request.push(...param.genRequest(gen))
+        request.push(paramIds.length);
+
+        for (const paramId of paramIds)
+            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
 
 
         gen.scope.pop();
@@ -35926,11 +35977,6 @@ extends OpColorBase
     updateHeader()
     {
         //console.log(this.id + '.OpFill.updateHeader()');
-
-
-        // if (dataColorIsNaN(this._color))
-        //     return;
-
 
         const colors = this.getHeaderColors();
 
@@ -36021,7 +36067,7 @@ extends OpColorBase
         this.addInput (new Input(STROKE_TYPES, this.input_getValuesForUndo));
         this.addOutput(new Output(STROKE, this.output_genRequest));
 
-        this.initContentInput(this.inputs[0], 0);
+        this.initContentInput(this.inputs[0]);
 
 
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
@@ -36484,8 +36530,11 @@ extends OperatorBase//OpShapeBase
         super(RECTANGLE, 'rect', 100);
 
 
-        this.addInput(new Input([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
+        this.addInput (new Input([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output(RECTANGLE, this.output_genRequest));
+
+        this.initContentInput(this.inputs[0]);
+
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
@@ -36493,61 +36542,14 @@ extends OperatorBase//OpShapeBase
         this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
         this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
         this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
-        
+
+
+        this.paramWidth .addEventListener('change', () => this.updateRound());
+        this.paramHeight.addEventListener('change', () => this.updateRound());
 
         this.paramAngle.control.setSuffix('°', true);
         this.paramAngle.control.wrapValue   = true;
         this.paramAngle.control.dragReverse = true;
-
-
-        // this.btnProportional = createToggleButton(12, 12);
-        // this.inner.appendChild(this.btnProportional);
-
-
-        // this.addBaseParams();
-
-        
-        this.inputs[0].addEventListener('connect', () =>
-        {
-            for (const param of this.params)
-                param.enableControlText(false);
-        });
-
-
-        this.inputs[0].addEventListener('disconnect', () =>
-        {
-            for (const param of this.params)
-                if (!param.input.connected) 
-                    param.enableControlText(true);
-        });
-
-
-        // this.btnProportional.addEventListener('click', () =>
-        // {
-        //     if (this.btnProportional.enabled)
-        //     {
-        //         this.refWidth  = this.paramWidth .value.value;
-        //         this.refHeight = this.paramHeight.value.value;
-        //     }
-        // });
-
-
-        this.paramWidth.addEventListener('change', () =>
-        {
-            if (this.btnProportional.enabled)
-                this.paramHeight.setValue(this.paramWidth.value.value * this.refHeight / this.refWidth, false, true, false);
-
-            this.updateRound();
-        });
-
-
-        this.paramHeight.addEventListener('change', () =>
-        {
-            if (this.btnProportional.enabled)
-                this.paramWidth.setValue(this.paramHeight.value.value * this.refWidth / this.refHeight, false, true, false);
-
-            this.updateRound();
-        });
     }
     
     
@@ -36596,7 +36598,6 @@ extends OperatorBase//OpShapeBase
                 
         const paramIds = [];
         
-
 
         const input = this.node.inputs[0];
         
@@ -41214,6 +41215,12 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                     case POLYGON_VALUE:    value = parsePolygonValue  (values[i++])[0]; break;
                     case STAR_VALUE:       value = parseStarValue     (values[i++])[0]; break;
                     
+                    // case FILL:             console.log('values[i] =', values[i]);
+                    //                        value = new FillValue(
+                    //                            parseColorValue (values[i++])[0],
+                    //                            parseNumberValue(values[i++])[0]);
+                    //                        break;
+
                     default:               console.assert(false, 'unknown type \'' + type + '\'');
                 }
 

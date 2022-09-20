@@ -54,7 +54,6 @@ function genParseRectangle(parse)
         case 'height': rect.height = genParse(parse); break;
         case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
-        //default:       genParseShapeBase(parse, rect, paramId); break;
         }
 
 

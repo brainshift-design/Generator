@@ -875,6 +875,12 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                     case POLYGON_VALUE:    value = parsePolygonValue  (values[i++])[0]; break;
                     case STAR_VALUE:       value = parseStarValue     (values[i++])[0]; break;
                     
+                    // case FILL:             console.log('values[i] =', values[i]);
+                    //                        value = new FillValue(
+                    //                            parseColorValue (values[i++])[0],
+                    //                            parseNumberValue(values[i++])[0]);
+                    //                        break;
+
                     default:               console.assert(false, 'unknown type \'' + type + '\'');
                 }
 

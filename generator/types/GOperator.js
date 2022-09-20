@@ -13,4 +13,11 @@ extends GType
         this.nodeId = nodeId;
         this.active = active;
     }
+
+
+
+    toValue()
+    {
+        return null;
+    }
 }

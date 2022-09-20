@@ -33,7 +33,7 @@ extends GShapeBase
         if (this.angle ) rect.angle  = this.angle .copy();
         if (this.round ) rect.round  = this.round .copy();
 
-        rect.copyFromeBase(this);
+        rect.copyFromBase(this);
 
         return rect;
     }
@@ -75,10 +75,8 @@ extends GShapeBase
 
 
         if (    this.input
-            && !this.active)
-            this.objects = this.input.objects;
-        else
-            this.evalObjects();
+            && !this.active) this.objects = this.input.objects;
+        else                 this.evalObjects();
 
 
         this.valid = true;

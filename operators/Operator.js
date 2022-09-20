@@ -201,10 +201,14 @@ class Operator
 
 
 
-    initContentInput(input, firstParam)
+    initContentInput(input, firstParam = 0, condition = null)
     {
         input.addEventListener('connect', () =>
         {
+            if (    condition
+                && !condition())
+                return;
+
             for (let i = firstParam; i < this.params.length; i++)
                 this.params[i].enableControlText(false);
         });

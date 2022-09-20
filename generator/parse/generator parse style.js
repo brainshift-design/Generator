@@ -34,14 +34,33 @@ function genParseFill(parse)
     parse.nTab++;
 
 
-    if (SHAPE_TYPES.includes(parse.next))
+    if (   parse.next == FILL
+        || SHAPE_TYPES.includes(parse.next))
         fill.input = genParse(parse);
 
 
-    fill.color   = genParse(parse, false);
-    fill.opacity = genParse(parse, false);
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
+    {
+        const paramId = genParseParamId(parse);
+
+        parse.nTab++;
+        parse.inParam = true;
+
+
+        switch (paramId)
+        {
+        case 'color'  : fill.color   = genParse(parse); break;
+        case 'opacity': fill.opacity = genParse(parse); break;
+        }
+
+
+        parse.nTab--;
+    }
 
     
+    parse.inParam = false;
     parse.nTab--;
 
 

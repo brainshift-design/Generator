@@ -96,7 +96,7 @@ function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
     {
-        console.trace();
+        //console.trace();
         console.assert(false, 'number value missing \',\'');
     }
     

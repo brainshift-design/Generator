@@ -16,7 +16,7 @@ extends GOperator
 
 
 
-    copyFromeBase(base)
+    copyFromBase(base)
     {
         // if (base.fill  ) this.fill   = base.fill  .copy();
         // if (base.stroke) this.stroke = base.stroke.copy();

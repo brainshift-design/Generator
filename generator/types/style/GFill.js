@@ -25,7 +25,7 @@ extends GShapeBase
         if (this.color  ) fill.color   = this.color  .copy();
         if (this.opacity) fill.opacity = this.opacity.copy();
 
-        rect.copyFromeBase(this);
+        rect.copyFromBase(this);
 
         return fill;
     }
@@ -46,15 +46,16 @@ extends GShapeBase
             this.input.eval(parse);
 
 
-        if (this.color  ) genPushUpdateValue(parse, this.nodeId, 'color',   this.color  );
-        if (this.opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity);
+        const color   = this.color   && (!this.input || this.input.type == this.type) ? this.color   : this.input ? this.input.color   : null;
+        const opacity = this.opacity && (!this.input || this.input.type == this.type) ? this.opacity : this.input ? this.input.opacity : null;
 
 
-        if (this.input)
-            this.objects = this.input.objects;
+        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+        if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
-        if (this.active)
-            this.evalObjects();
+
+        if (this.input ) this.objects = this.input.objects;
+        if (this.active) this.evalObjects();
 
 
         this.valid = true;
@@ -64,11 +65,10 @@ extends GShapeBase
 
     evalObjects()
     {
-        console.log('GFill.evalObjects()');
-        console.log('this.objects =', this.objects);
         for (const obj of this.objects)
         {
-            if (!obj.fills) obj.fills = [];
+            if (!obj.fills) 
+                obj.fills = [];
 
             const rgb = scaleRgb(this.color.toRgb());
 

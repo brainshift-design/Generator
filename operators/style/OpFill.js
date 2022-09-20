@@ -13,22 +13,31 @@ extends OpColorBase
         super(FILL, 'fill');
 
 
-        this.colorBack = createDiv('colorBack');
-        this.inner.appendChild(this.colorBack);
+        this.addInput (new Input([FILL, FILL, ...SHAPE_TYPES], this.input_getValuesForUndo));
+        this.addOutput(new Output(FILL, this.output_genRequest));
 
-        this.addInput (new Input(SHAPE_TYPES, this.input_getValuesForUndo));
-        this.addOutput(new Output(SHAPE_VALUE, this.output_genRequest));
 
-        //this.initContentInput(this.inputs[0], 0);
+        this.inputs[0].addEventListener('connect',    () => this.outputs[0]._type = this.inputs[0].connectedOutput.type);
+        this.inputs[0].addEventListener('disconnect', () => this.outputs[0]._type = FILL);
+
+
+        this.initContentInput(
+            this.inputs[0],
+            0, 
+            () =>    this.inputs[0].connected
+                  && this.inputs[0].connectedOutput.type == FILL);
 
 
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb([0x80, 0x80, 0x80])));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
         this.paramOpacity.control.suffix = '%';
-    
 
-        this.checkers = createDiv('nodeHeaderCheckers');
+
+        this.colorBack = createDiv('colorBack');
+        this.checkers  = createDiv('nodeHeaderCheckers');
+
+        this.inner.appendChild(this.colorBack);
         this.inner.insertBefore(this.checkers, this.header);
     }
     
@@ -39,8 +48,9 @@ extends OpColorBase
         return [ 
             [this.node.paramColor  .id, 
              this.node.paramColor  .value],
+
             [this.node.paramOpacity.id, 
-             this.node.paramOpacity.value]];
+             this.node.paramOpacity.value] ];
     }
 
 
@@ -60,24 +70,33 @@ extends OpColorBase
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
-        
-        const input = this.node.inputs[0];
 
         const paramIds = [];
+
+
+        const input = this.node.inputs[0];
 
         if (input.connected)
         {
             request.push(...pushInputOrParam(input, gen));
 
             for (const param of this.node.params)
-                if (   param.input 
-                    && param.input.connected) 
+                if (      param.input 
+                       && param.input.connected
+                    || SHAPE_TYPES.includes(input.connectedOutput.type)) 
                     paramIds.push(param.id);
+        }
+        else
+        {
+            for (const param of this.node.params)
+                paramIds.push(param.id);
         }
 
 
-        for (const param of this.node.params)
-            request.push(...param.genRequest(gen))
+        request.push(paramIds.length);
+
+        for (const paramId of paramIds)
+            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
 
 
         gen.scope.pop();
@@ -112,11 +131,6 @@ extends OpColorBase
     updateHeader()
     {
         //console.log(this.id + '.OpFill.updateHeader()');
-
-
-        // if (dataColorIsNaN(this._color))
-        //     return;
-
 
         const colors = this.getHeaderColors();
 
