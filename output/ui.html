@@ -35859,6 +35859,13 @@ extends OpColorBase
         super(FILL, 'fill');
 
 
+        this.colorBack = createDiv('colorBack');
+        this.checkers  = createDiv('nodeHeaderCheckers');
+
+        this.inner.appendChild(this.colorBack);
+        this.inner.insertBefore(this.checkers, this.header);
+
+
         this.addInput (new Input([FILL, FILL, ...SHAPE_TYPES], this.input_getValuesForUndo));
         this.addOutput(new Output(FILL, this.output_genRequest));
 
@@ -35878,13 +35885,6 @@ extends OpColorBase
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
         this.paramOpacity.control.suffix = '%';
-
-
-        this.colorBack = createDiv('colorBack');
-        this.checkers  = createDiv('nodeHeaderCheckers');
-
-        this.inner.appendChild(this.colorBack);
-        this.inner.insertBefore(this.checkers, this.header);
     }
     
     
