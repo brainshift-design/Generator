@@ -11131,6 +11131,16 @@ function rgbIsNaN(rgb)
 
 
 
+function rgbaIsNaN(rgba) 
+{
+    return isNaN(rgba[0])
+        || isNaN(rgba[1])
+        || isNaN(rgba[2])
+        || isNaN(rgba[3]);
+}
+
+
+
 function rgbIsValid(rgb, lim = Eps)
 {
     return rgb[0] > -lim && rgb[0] < 1 + lim 
@@ -16532,6 +16542,16 @@ function rgbIsNaN(rgb)
     return isNaN(rgb[0])
         || isNaN(rgb[1])
         || isNaN(rgb[2]);
+}
+
+
+
+function rgbaIsNaN(rgba) 
+{
+    return isNaN(rgba[0])
+        || isNaN(rgba[1])
+        || isNaN(rgba[2])
+        || isNaN(rgba[3]);
 }
 
 
@@ -27610,10 +27630,13 @@ extends Parameter
     defaultValue;
 
     oldValue = null;
-    
 
+    
+    checkers;
+    
     control;
     
+
     
     get valueText() { return this.control.valueText; }
     set valueText(text) 
@@ -27637,6 +27660,7 @@ extends Parameter
     {
         super(COLOR, id, name);
 
+        this.checkers       = createDiv();
         this.control        = createDiv();
         
         this.control.param  = this;
@@ -27656,14 +27680,19 @@ extends Parameter
             defaultValue,   
             dragScale); 
 
-        
         this.control.successOnFocusOut = true;
 
 
-        this.control.style.display = 'inline-block';
-        this.control.style.width   = '100%';
+        this.checkers.style.position = 'absolute';
+        this.checkers.style.width    = '100%';
+        this.checkers.style.height   = '20px';
 
-        this.div.appendChild(this.control);
+        this.control .style.display  = 'inline-block';
+        this.control .style.width    = '100%';
+
+
+        this.div.appendChild(this.checkers);
+        this.div.appendChild(this.control );
 
        
         if (hasInput)  this.initInput(COLOR_TYPES);
@@ -27756,6 +27785,22 @@ extends Parameter
         this.output.wireColor  = !rgbIsNaN(rgb) ? rgb : noColor;
         this.output.colorLight =
         this.output.colorDark  = rgb_a(col, 0.2);
+
+
+        this.checkers.style.background = 
+            isDarkMode()
+            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
+
+        this.checkers.style.backgroundSize     = '20px 20px';
+        this.checkers.style.backgroundPosition = '0 0, 10px 10px';
+
+        this.checkers.style.opacity            = 0;
 
 
         super.updateControls();
@@ -28120,7 +28165,7 @@ extends Parameter
         const fillStyle = rgba2style(rgb_a(rgbaVal, this.opacityControl.value/100));
 
         this.controlWrapper.style.background = 
-              !rgbIsNaN(rgbaVal) 
+              !rgbaIsNaN(rgbaVal) 
             && this.value.opacity.isValid()
             ? fillStyle 
             : 'transparent'; 
@@ -28129,7 +28174,7 @@ extends Parameter
         this.updateWarningOverlay();
 
 
-        if (!rgbIsNaN(rgbaVal))
+        if (!rgbaIsNaN(rgbaVal))
             this.div.style.background = 'transparent';
         else
         {
@@ -35890,7 +35935,7 @@ extends OpColorBase
         this.inner.insertBefore(this.checkers, this.header);
 
 
-        this.addInput (new Input([FILL, FILL, ...SHAPE_TYPES], this.input_getValuesForUndo));
+        this.addInput (new Input([FILL, FILL_VALUE, ...SHAPE_TYPES], this.input_getValuesForUndo));
         this.addOutput(new Output(FILL, this.output_genRequest));
 
 
@@ -35953,13 +35998,15 @@ extends OpColorBase
             for (const param of this.node.params)
                 if (      param.input 
                        && param.input.connected
+                       && param.show()
                     || SHAPE_TYPES.includes(input.connectedOutput.type)) 
                     paramIds.push(param.id);
         }
         else
         {
             for (const param of this.node.params)
-                paramIds.push(param.id);
+                if (param.show())
+                    paramIds.push(param.id);
         }
 
 
@@ -35998,6 +36045,16 @@ extends OpColorBase
 
 
 
+    updateNode()
+    {
+        super.updateNode();
+
+        if (this.paramOpacity.value.isValid())
+            this.paramColor.checkers.style.opacity = ((100 - this.paramOpacity.value.toNumber())) + '%';
+    }
+
+
+
     updateHeader()
     {
         //console.log(this.id + '.OpFill.updateHeader()');
@@ -36009,8 +36066,8 @@ extends OpColorBase
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
-              
         this.checkers.style.height = this.header.offsetHeight;
+
 
         this.checkers.style.background =
             isDarkMode()

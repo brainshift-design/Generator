@@ -4,10 +4,13 @@ extends Parameter
     defaultValue;
 
     oldValue = null;
-    
 
+    
+    checkers;
+    
     control;
     
+
     
     get valueText() { return this.control.valueText; }
     set valueText(text) 
@@ -31,6 +34,7 @@ extends Parameter
     {
         super(COLOR, id, name);
 
+        this.checkers       = createDiv();
         this.control        = createDiv();
         
         this.control.param  = this;
@@ -50,14 +54,19 @@ extends Parameter
             defaultValue,   
             dragScale); 
 
-        
         this.control.successOnFocusOut = true;
 
 
-        this.control.style.display = 'inline-block';
-        this.control.style.width   = '100%';
+        this.checkers.style.position = 'absolute';
+        this.checkers.style.width    = '100%';
+        this.checkers.style.height   = '20px';
 
-        this.div.appendChild(this.control);
+        this.control .style.display  = 'inline-block';
+        this.control .style.width    = '100%';
+
+
+        this.div.appendChild(this.checkers);
+        this.div.appendChild(this.control );
 
        
         if (hasInput)  this.initInput(COLOR_TYPES);
@@ -150,6 +159,22 @@ extends Parameter
         this.output.wireColor  = !rgbIsNaN(rgb) ? rgb : noColor;
         this.output.colorLight =
         this.output.colorDark  = rgb_a(col, 0.2);
+
+
+        this.checkers.style.background = 
+            isDarkMode()
+            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
+
+        this.checkers.style.backgroundSize     = '20px 20px';
+        this.checkers.style.backgroundPosition = '0 0, 10px 10px';
+
+        this.checkers.style.opacity            = 0;
 
 
         super.updateControls();

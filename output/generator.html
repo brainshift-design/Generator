@@ -9140,6 +9140,16 @@ function rgbIsNaN(rgb)
 
 
 
+function rgbaIsNaN(rgba) 
+{
+    return isNaN(rgba[0])
+        || isNaN(rgba[1])
+        || isNaN(rgba[2])
+        || isNaN(rgba[3]);
+}
+
+
+
 function rgbIsValid(rgb, lim = Eps)
 {
     return rgb[0] > -lim && rgb[0] < 1 + lim 

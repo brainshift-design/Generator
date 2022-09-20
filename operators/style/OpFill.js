@@ -20,7 +20,7 @@ extends OpColorBase
         this.inner.insertBefore(this.checkers, this.header);
 
 
-        this.addInput (new Input([FILL, FILL, ...SHAPE_TYPES], this.input_getValuesForUndo));
+        this.addInput (new Input([FILL, FILL_VALUE, ...SHAPE_TYPES], this.input_getValuesForUndo));
         this.addOutput(new Output(FILL, this.output_genRequest));
 
 
@@ -83,13 +83,15 @@ extends OpColorBase
             for (const param of this.node.params)
                 if (      param.input 
                        && param.input.connected
+                       && param.show()
                     || SHAPE_TYPES.includes(input.connectedOutput.type)) 
                     paramIds.push(param.id);
         }
         else
         {
             for (const param of this.node.params)
-                paramIds.push(param.id);
+                if (param.show())
+                    paramIds.push(param.id);
         }
 
 
@@ -128,6 +130,16 @@ extends OpColorBase
 
 
 
+    updateNode()
+    {
+        super.updateNode();
+
+        if (this.paramOpacity.value.isValid())
+            this.paramColor.checkers.style.opacity = ((100 - this.paramOpacity.value.toNumber())) + '%';
+    }
+
+
+
     updateHeader()
     {
         //console.log(this.id + '.OpFill.updateHeader()');
@@ -139,8 +151,8 @@ extends OpColorBase
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
-              
         this.checkers.style.height = this.header.offsetHeight;
+
 
         this.checkers.style.background =
             isDarkMode()

@@ -277,7 +277,7 @@ extends Parameter
         const fillStyle = rgba2style(rgb_a(rgbaVal, this.opacityControl.value/100));
 
         this.controlWrapper.style.background = 
-              !rgbIsNaN(rgbaVal) 
+              !rgbaIsNaN(rgbaVal) 
             && this.value.opacity.isValid()
             ? fillStyle 
             : 'transparent'; 
@@ -286,7 +286,7 @@ extends Parameter
         this.updateWarningOverlay();
 
 
-        if (!rgbIsNaN(rgbaVal))
+        if (!rgbaIsNaN(rgbaVal))
             this.div.style.background = 'transparent';
         else
         {
