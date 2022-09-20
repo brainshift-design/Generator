@@ -27152,14 +27152,14 @@ extends EventTarget
 
     initInput(types)
     {
-        this.input = new Input(types, this.input_getValuesForUndo);
+        this.input = new Input(types, this.input_getValuesForUndo, 0.12);
 
         this.input._param = this;
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';
         this.input.control.style.top       = '50%';
         this.input.control.style.transform = 'translateY(-50%)';
-        
+
         this.div.appendChild(this.input.control);
 
         this.input.addEventListener('connect',    () => this.enableControlText(false));
@@ -27170,7 +27170,7 @@ extends EventTarget
 
     initOutput(type, toString)
     {
-        this.output = new Output(type, toString);
+        this.output = new Output(type, toString, 0.12);
 
         this.output._param = this;
         this.output.control.style.float     = 'right';
