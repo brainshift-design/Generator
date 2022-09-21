@@ -27,6 +27,7 @@ function rgbFromType(type, active)
                  ? rgbActiveColor  
                  : rgbColor;
 
+        case SHAPE_VALUE:
         case RECTANGLE_VALUE: 
         case LINE_VALUE: 
         case ELLIPSE_VALUE: 

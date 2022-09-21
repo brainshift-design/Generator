@@ -10,7 +10,7 @@ extends Operator
         
         const colors = this.getHeaderColors();
 
-            
+
         this.header.style.backgroundColor = rgb2style_a(colors.back, 0.95);
         this.label .style.color           = rgba2style(colors.text);
 

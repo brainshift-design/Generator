@@ -114,7 +114,7 @@ class MenuItem
 
 
         this.div.addEventListener('pointerdown', e => e.stopPropagation());
-        this.div.addEventListener('pointerup', () => { if (!this.childMenu) this.select(); });
+        this.div.addEventListener('pointerup', e => { if (!this.childMenu) this.select(!e.shiftKey); });
 
 
         this.div.addEventListener('pointerenter', () =>
@@ -154,7 +154,7 @@ class MenuItem
 
 
 
-    select()
+    select(hideCurrent = true)
     {
         if (!this.enabled)
             return;
@@ -165,7 +165,8 @@ class MenuItem
             currentMenus[0].button.update();
         }
 
-        hideAllMenus();
+        if (hideCurrent)
+            hideAllMenus();
 
         if (this.callback) 
             this.callback(); 

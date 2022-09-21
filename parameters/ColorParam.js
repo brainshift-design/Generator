@@ -57,12 +57,13 @@ extends Parameter
         this.control.successOnFocusOut = true;
 
 
-        this.checkers.style.position = 'absolute';
-        this.checkers.style.width    = '100%';
-        this.checkers.style.height   = '20px';
+        this.checkers.style.position      = 'absolute';
+        this.checkers.style.width         = '100%';
+        this.checkers.style.height        = '20px';
+        this.checkers.style.pointerEvents = 'none';
 
-        this.control .style.display  = 'inline-block';
-        this.control .style.width    = '100%';
+        this.control .style.display       = 'inline-block';
+        this.control .style.width         = '100%';
 
 
         this.div.appendChild(this.checkers);
@@ -173,8 +174,6 @@ extends Parameter
 
         this.checkers.style.backgroundSize     = '20px 20px';
         this.checkers.style.backgroundPosition = '0 0, 10px 10px';
-
-        this.checkers.style.opacity            = 0;
 
 
         super.updateControls();

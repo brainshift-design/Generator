@@ -134,8 +134,15 @@ extends OpColorBase
     {
         super.updateNode();
 
+        this.updateColorCheckers();
+    }
+
+
+
+    updateColorCheckers()
+    {
         if (this.paramOpacity.value.isValid())
-            this.paramColor.checkers.style.opacity = ((100 - this.paramOpacity.value.toNumber())) + '%';
+            this.paramColor.checkers.style.opacity = (100 - this.paramOpacity.value.toNumber()) + '%';
     }
 
 
@@ -193,6 +200,11 @@ extends OpColorBase
 
 
         Operator.prototype.updateHeader.call(this);
+
+
+        if (   this.inputs[0].connected
+            && SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type))
+            this.header.style.backgroundColor = rgb2style_a(rgbFromType(SHAPE_VALUE, this.active), 0.95);
     }
 
 
