@@ -111,6 +111,9 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
+        super.updateValues(updateParamId, paramIds, values);
+
+
         const color   = values[paramIds.findIndex(id => id == 'color'  )];
         const opacity = values[paramIds.findIndex(id => id == 'opacity')];
 
@@ -124,25 +127,26 @@ extends OpColorBase
             ? color.toDataColor()
             : dataColor_NaN;
 
-            
-        super.updateValues(updateParamId, paramIds, values);
+
+        this.updateColorControl();
     }
 
 
 
-    updateNode()
-    {
-        super.updateNode();
-
-        this.updateColorCheckers();
-    }
-
-
-
-    updateColorCheckers()
+    updateColorControl()
     {
         if (this.paramOpacity.value.isValid())
             this.paramColor.checkers.style.opacity = (100 - this.paramOpacity.value.toNumber()) + '%';
+
+        const rgbaText = getTextColorFromBackColor(dataColor2rgb(this._color), this.paramOpacity.value.toNumber() / 100);
+
+        this.paramColor.control. backStyleLight = 
+        this.paramColor.control. backStyleDark  = 
+        this.paramColor.control.valueStyleLight = 
+        this.paramColor.control.valueStyleDark  = 'transparent';
+
+        this.paramColor.control.textStyleLight  = 
+        this.paramColor.control.textStyleDark   = rgba2style(rgbaText);
     }
 
 
@@ -216,7 +220,7 @@ extends OpColorBase
         colors.back   = rgb_a(colors.back, this.paramOpacity.value.value/100);
         colors.text   = getTextColorFromBackColor(colors.back, colors.back[3]);
 
-        colors.output = colors.back;
+        //colors.output = colors.back;
 
         if (   this.inputs[0].connected
             && SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type))

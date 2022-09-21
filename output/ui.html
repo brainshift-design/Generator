@@ -32932,14 +32932,11 @@ extends Operator
     {
         //console.log(this.id + '.OpColorBase.updateHeader()');
 
+        super.updateHeader();
+
 
         const colors = this.getHeaderColors();
 
-        const noColor = 
-            isDarkMode()
-            ? rgbNoColorDark
-            : rgbNoColorLight;
-        
 
         this.header.style.background = 
               rgbIsOk(colors.back)
@@ -32949,38 +32946,34 @@ extends Operator
 
         for (const input of this.inputs.filter(i => !i.param))
         {
-            input.wireColor = 
-                  rgbIsOk(colors.back)
-                ? colors.back 
-                : noColor;
-
             input.colorLight =
             input.colorDark  = colors.input;
+
+            input.wireColor  = colors.wire;
         }
 
 
         for (const output of this.outputs.filter(o => !o.param))
         {
-            output.wireColor = 
-                  !rgbIsNaN(colors.back)   
-                ? colors.back 
-                : noColor;
-
             output.colorLight = 
             output.colorDark  = colors.output;
+
+            output.wireColor  = colors.wire;
         }
 
 
         this.updateWarningOverlay();
-
-
-        super.updateHeader();
     }
 
 
 
     getHeaderColors()
     {
+        const noColor = 
+            isDarkMode()
+            ? rgbNoColorDark
+            : rgbNoColorLight;
+
         const rgbBack = 
             dataColorIsNaN(this._color)
             ? rgb_NaN
@@ -32988,11 +32981,17 @@ extends Operator
             
         const rgbText = getTextColorFromBackColor(rgbBack);
 
+        const rgbaWire = 
+            !rgbIsNaN(rgbBack)   
+            ? rgbBack 
+            : noColor;
+
         return {
-            back:   rgbBack, 
+            back:   rgb_a(rgbBack, 1), 
             text:   rgb_a(rgbText, 0.9),
             input:  rgb_a(rgbText, 0.2),
-            output: rgb_a(rgbText, 0.2) };
+            output: rgb_a(rgbText, 0.2),
+            wire:   rgbaWire };
     }
 
 
@@ -36072,6 +36071,9 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
+        super.updateValues(updateParamId, paramIds, values);
+
+
         const color   = values[paramIds.findIndex(id => id == 'color'  )];
         const opacity = values[paramIds.findIndex(id => id == 'opacity')];
 
@@ -36085,25 +36087,26 @@ extends OpColorBase
             ? color.toDataColor()
             : dataColor_NaN;
 
-            
-        super.updateValues(updateParamId, paramIds, values);
+
+        this.updateColorControl();
     }
 
 
 
-    updateNode()
-    {
-        super.updateNode();
-
-        this.updateColorCheckers();
-    }
-
-
-
-    updateColorCheckers()
+    updateColorControl()
     {
         if (this.paramOpacity.value.isValid())
             this.paramColor.checkers.style.opacity = (100 - this.paramOpacity.value.toNumber()) + '%';
+
+        const rgbaText = getTextColorFromBackColor(dataColor2rgb(this._color), this.paramOpacity.value.toNumber() / 100);
+
+        this.paramColor.control. backStyleLight = 
+        this.paramColor.control. backStyleDark  = 
+        this.paramColor.control.valueStyleLight = 
+        this.paramColor.control.valueStyleDark  = 'transparent';
+
+        this.paramColor.control.textStyleLight  = 
+        this.paramColor.control.textStyleDark   = rgba2style(rgbaText);
     }
 
 
@@ -36177,7 +36180,7 @@ extends OpColorBase
         colors.back   = rgb_a(colors.back, this.paramOpacity.value.value/100);
         colors.text   = getTextColorFromBackColor(colors.back, colors.back[3]);
 
-        colors.output = colors.back;
+        //colors.output = colors.back;
 
         if (   this.inputs[0].connected
             && SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type))
