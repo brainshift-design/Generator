@@ -182,7 +182,7 @@ function genParseParamCount(parse)
     const nParamIds = parseInt(parse.move());
 
     if (parse.logRequests) 
-        parse.log += ' ' + nParamIds;
+        parse.log += parse.tab + nParamIds;
 
     return nParamIds;
 }

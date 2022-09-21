@@ -22,7 +22,9 @@ extends EventTarget
     
     colorLight;
     colorDark;
+
     wireColor;
+
 
     control;
     hitbox;
@@ -62,6 +64,8 @@ extends EventTarget
     connecting   = false;
     mouseOver    = false;
     
+    overFactor   = 1.7;
+    
 
     initialSeed  = 0;
     currentSeed  = 0;
@@ -78,7 +82,7 @@ extends EventTarget
 
 
 
-    constructor(types, getValuesForUndo = null, opacity = 0.35)
+    constructor(types, getValuesForUndo = null)
     {
         super();
         
@@ -91,8 +95,8 @@ extends EventTarget
         
         this.control.input    = this;
         
-        this.colorLight       = [  0,   0,   0, opacity];
-        this.colorDark        = [255, 255, 255, opacity];
+        this.colorLight       = [0, 0, 0, 1];
+        this.colorDark        = [1, 1, 1, 1];
 
         this.wireColor        = rgbFromType(this.types[0], true);
 
@@ -114,6 +118,7 @@ extends EventTarget
 
             this.mouseOver = true;
             this.updateControl();
+
 
             let savedInput = 
                 graphView.savedConn
@@ -189,9 +194,9 @@ extends EventTarget
             settings.showWires
             ? rgba2style(rgb_a(
                 color,
-                (mouseOver 
-                 ? Math.min(color[3] * 1.8, 1) 
-                 : color[3])))
+                mouseOver 
+                ? Math.min(color[3] * this.overFactor, 1) 
+                : color[3]))
             : 'transparent';
 
 

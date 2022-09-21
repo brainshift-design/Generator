@@ -6621,8 +6621,8 @@ extends GShapeBase
             this.input.eval(parse);
 
 
-        const color   = this.color   && (!this.input || this.input.type == this.type) ? this.color   : this.input ? this.input.color   : null;
-        const opacity = this.opacity && (!this.input || this.input.type == this.type) ? this.opacity : this.input ? this.input.opacity : null;
+        const color   = this.color   /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.color   : this.input ? this.input.color   : null;
+        const opacity = this.opacity /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.opacity : this.input ? this.input.opacity : null;
 
 
         if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  );
@@ -7708,8 +7708,8 @@ function genParseRectangle(parse)
     parse.nTab++;
 
 
-    if (   parse.next == RECTANGLE_VALUE
-        || parse.next == RECTANGLE)
+    if (   parse.next == RECTANGLE
+        || parse.next == RECTANGLE_VALUE)
         rect.input = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
 
 
@@ -8012,6 +8012,7 @@ function genParseFill(parse)
 
 
     if (   parse.next == FILL
+        || parse.next == FILL_VALUE
         || SHAPE_TYPES.includes(parse.next))
         fill.input = genParse(parse);
 
@@ -8025,13 +8026,12 @@ function genParseFill(parse)
         parse.nTab++;
         parse.inParam = true;
 
-
+        
         switch (paramId)
         {
         case 'color'  : fill.color   = genParse(parse); break;
         case 'opacity': fill.opacity = genParse(parse); break;
         }
-
 
         parse.nTab--;
     }
@@ -8382,7 +8382,7 @@ function genParseParamCount(parse)
     const nParamIds = parseInt(parse.move());
 
     if (parse.logRequests) 
-        parse.log += ' ' + nParamIds;
+        parse.log += parse.tab + nParamIds;
 
     return nParamIds;
 }

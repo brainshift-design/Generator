@@ -35,6 +35,7 @@ function genParseFill(parse)
 
 
     if (   parse.next == FILL
+        || parse.next == FILL_VALUE
         || SHAPE_TYPES.includes(parse.next))
         fill.input = genParse(parse);
 
@@ -48,13 +49,12 @@ function genParseFill(parse)
         parse.nTab++;
         parse.inParam = true;
 
-
+        
         switch (paramId)
         {
         case 'color'  : fill.color   = genParse(parse); break;
         case 'opacity': fill.opacity = genParse(parse); break;
         }
-
 
         parse.nTab--;
     }

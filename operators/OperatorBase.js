@@ -15,7 +15,19 @@ extends Operator
         this.label .style.color           = rgba2style(colors.text);
 
 
-        for (const input  of this.inputs .filter(i => !i.param)) input .color = colors.input;
-        for (const output of this.outputs.filter(o => !o.param)) output.color = colors.output;
+        for (const input of this.inputs.filter(i => !i.param))
+        {
+            input.colorLight = 
+            input.colorDark  = colors.input;
+        }
+
+        
+        for (const output of this.outputs.filter(o => !o.param)) 
+        {
+            output.colorLight =
+            output.colorDark  = colors.output;
+
+            output.wireColor  = colors.wire;
+        }
     }
 }

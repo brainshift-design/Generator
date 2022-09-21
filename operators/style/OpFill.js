@@ -94,7 +94,7 @@ extends OpColorBase
                     paramIds.push(param.id);
         }
 
-
+        
         request.push(paramIds.length);
 
         for (const paramId of paramIds)
@@ -186,11 +186,11 @@ extends OpColorBase
             ? rgbNoColorDark
             : rgbNoColorLight;
 
-        this.inputs[0] .wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
+        this.inputs[0] .wireColor  = !rgbIsNaN(colors.input) ? colors.input : noColor;
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;
 
-        this.outputs[0].wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
+        this.outputs[0].wireColor  = !rgbIsNaN(colors.output) ? colors.output : noColor;
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = colors.output;
 
@@ -211,10 +211,16 @@ extends OpColorBase
 
     getHeaderColors()
     {
-        const colors = super.getHeaderColors();
+        const colors  = super.getHeaderColors();
  
-        colors.back = rgb_a(colors.back, this.paramOpacity.value.value/100);
-        colors.text = getTextColorFromBackColor(colors.back, colors.back[3]);
+        colors.back   = rgb_a(colors.back, this.paramOpacity.value.value/100);
+        colors.text   = getTextColorFromBackColor(colors.back, colors.back[3]);
+
+        colors.output = colors.back;
+
+        if (   this.inputs[0].connected
+            && SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type))
+            colors.output = rgbFromType(SHAPE_VALUE, true);
 
         return colors;
     }

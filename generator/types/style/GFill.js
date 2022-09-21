@@ -46,8 +46,8 @@ extends GShapeBase
             this.input.eval(parse);
 
 
-        const color   = this.color   && (!this.input || this.input.type == this.type) ? this.color   : this.input ? this.input.color   : null;
-        const opacity = this.opacity && (!this.input || this.input.type == this.type) ? this.opacity : this.input ? this.input.opacity : null;
+        const color   = this.color   /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.color   : this.input ? this.input.color   : null;
+        const opacity = this.opacity /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.opacity : this.input ? this.input.opacity : null;
 
 
         if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  );

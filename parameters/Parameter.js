@@ -61,7 +61,7 @@ extends EventTarget
 
     initInput(types)
     {
-        this.input = new Input(types, this.input_getValuesForUndo, 0.12);
+        this.input = new Input(types, this.input_getValuesForUndo);
 
         this.input._param = this;
         this.input.control.style.float     = 'left';
@@ -79,7 +79,7 @@ extends EventTarget
 
     initOutput(type, toString)
     {
-        this.output = new Output(type, toString, 0.12);
+        this.output = new Output(type, toString);
 
         this.output._param = this;
         this.output.control.style.float     = 'right';

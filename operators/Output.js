@@ -12,6 +12,7 @@ class Output
 
     colorLight;
     colorDark;
+
     wireColor;
 
     control;
@@ -23,6 +24,8 @@ class Output
     
     mouseOver  = false;
     connecting = false;
+
+    overFactor = 1.7;
     
     
     genRequest = null; // function pointer, must be implemented
@@ -50,7 +53,7 @@ class Output
 
 
 
-    constructor(type, genRequest, opacity = 0.35)
+    constructor(type, genRequest)
     {
         this._type           = type;
         this.genRequest      = genRequest;
@@ -65,8 +68,8 @@ class Output
         this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
-        this.colorLight      = [  0,   0,   0, opacity];
-        this.colorDark       = [255, 255, 255, opacity];
+        this.colorLight      = [0, 0, 0, 1];
+        this.colorDark       = [1, 1, 1, 1];
 
         this.wireColor       = rgbFromType(this.type, true);
         
@@ -145,14 +148,19 @@ class Output
                  && (   !graphView.tempConn.input.types.includes(this.type)
                      || this.node.follows(graphView.tempConn.input.node)));
 
-        const color =
+
+        const color = 
             isDarkMode()
             ? this.colorDark
             : this.colorLight;
 
         const colorStyle = 
             settings.showWires
-            ? rgba2style(rgb_a(color, mouseOver ? Math.min(color[3] * 1.4, 1) : color[3] / 1.4))
+            ? rgba2style(rgb_a(
+                color, 
+                mouseOver 
+                ? Math.min(color[3] * this.overFactor, 1) 
+                : color[3]))
             : 'transparent';
 
         this.control.style.pointerEvents   = settings.showWires ? 'auto' : 'none';

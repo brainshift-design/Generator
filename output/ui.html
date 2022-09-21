@@ -8612,8 +8612,8 @@ extends GShapeBase
             this.input.eval(parse);
 
 
-        const color   = this.color   && (!this.input || this.input.type == this.type) ? this.color   : this.input ? this.input.color   : null;
-        const opacity = this.opacity && (!this.input || this.input.type == this.type) ? this.opacity : this.input ? this.input.opacity : null;
+        const color   = this.color   /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.color   : this.input ? this.input.color   : null;
+        const opacity = this.opacity /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.opacity : this.input ? this.input.opacity : null;
 
 
         if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  );
@@ -9699,8 +9699,8 @@ function genParseRectangle(parse)
     parse.nTab++;
 
 
-    if (   parse.next == RECTANGLE_VALUE
-        || parse.next == RECTANGLE)
+    if (   parse.next == RECTANGLE
+        || parse.next == RECTANGLE_VALUE)
         rect.input = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
 
 
@@ -10003,6 +10003,7 @@ function genParseFill(parse)
 
 
     if (   parse.next == FILL
+        || parse.next == FILL_VALUE
         || SHAPE_TYPES.includes(parse.next))
         fill.input = genParse(parse);
 
@@ -10016,13 +10017,12 @@ function genParseFill(parse)
         parse.nTab++;
         parse.inParam = true;
 
-
+        
         switch (paramId)
         {
         case 'color'  : fill.color   = genParse(parse); break;
         case 'opacity': fill.opacity = genParse(parse); break;
         }
-
 
         parse.nTab--;
     }
@@ -10373,7 +10373,7 @@ function genParseParamCount(parse)
     const nParamIds = parseInt(parse.move());
 
     if (parse.logRequests) 
-        parse.log += ' ' + nParamIds;
+        parse.log += parse.tab + nParamIds;
 
     return nParamIds;
 }
@@ -21205,8 +21205,8 @@ extends GShapeBase
             this.input.eval(parse);
 
 
-        const color   = this.color   && (!this.input || this.input.type == this.type) ? this.color   : this.input ? this.input.color   : null;
-        const opacity = this.opacity && (!this.input || this.input.type == this.type) ? this.opacity : this.input ? this.input.opacity : null;
+        const color   = this.color   /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.color   : this.input ? this.input.color   : null;
+        const opacity = this.opacity /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.opacity : this.input ? this.input.opacity : null;
 
 
         if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  );
@@ -27177,7 +27177,7 @@ extends EventTarget
 
     initInput(types)
     {
-        this.input = new Input(types, this.input_getValuesForUndo, 0.12);
+        this.input = new Input(types, this.input_getValuesForUndo);
 
         this.input._param = this;
         this.input.control.style.float     = 'left';
@@ -27195,7 +27195,7 @@ extends EventTarget
 
     initOutput(type, toString)
     {
-        this.output = new Output(type, toString, 0.12);
+        this.output = new Output(type, toString);
 
         this.output._param = this;
         this.output.control.style.float     = 'right';
@@ -27408,6 +27408,21 @@ extends Parameter
     output_genRequest(gen)
     {
         return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        this.input .colorLight = [0, 0, 0, 0.12];
+        this.input .colorDark  = [1, 1, 1, 0.12];
+        this.input .overFactor = 3;
+        
+        this.output.colorLight = [0, 0, 0, 0.12];
+        this.output.colorDark  = [1, 1, 1, 0.12];
+        this.output.overFactor = 3;
+
+        super.updateControls();
     }
 
 
@@ -29546,7 +29561,9 @@ extends EventTarget
     
     colorLight;
     colorDark;
+
     wireColor;
+
 
     control;
     hitbox;
@@ -29586,6 +29603,8 @@ extends EventTarget
     connecting   = false;
     mouseOver    = false;
     
+    overFactor   = 1.7;
+    
 
     initialSeed  = 0;
     currentSeed  = 0;
@@ -29602,7 +29621,7 @@ extends EventTarget
 
 
 
-    constructor(types, getValuesForUndo = null, opacity = 0.35)
+    constructor(types, getValuesForUndo = null)
     {
         super();
         
@@ -29615,8 +29634,8 @@ extends EventTarget
         
         this.control.input    = this;
         
-        this.colorLight       = [  0,   0,   0, opacity];
-        this.colorDark        = [255, 255, 255, opacity];
+        this.colorLight       = [0, 0, 0, 1];
+        this.colorDark        = [1, 1, 1, 1];
 
         this.wireColor        = rgbFromType(this.types[0], true);
 
@@ -29638,6 +29657,7 @@ extends EventTarget
 
             this.mouseOver = true;
             this.updateControl();
+
 
             let savedInput = 
                 graphView.savedConn
@@ -29713,9 +29733,9 @@ extends EventTarget
             settings.showWires
             ? rgba2style(rgb_a(
                 color,
-                (mouseOver 
-                 ? Math.min(color[3] * 1.8, 1) 
-                 : color[3])))
+                mouseOver 
+                ? Math.min(color[3] * this.overFactor, 1) 
+                : color[3]))
             : 'transparent';
 
 
@@ -29789,6 +29809,7 @@ class Output
 
     colorLight;
     colorDark;
+
     wireColor;
 
     control;
@@ -29800,6 +29821,8 @@ class Output
     
     mouseOver  = false;
     connecting = false;
+
+    overFactor = 1.7;
     
     
     genRequest = null; // function pointer, must be implemented
@@ -29827,7 +29850,7 @@ class Output
 
 
 
-    constructor(type, genRequest, opacity = 0.35)
+    constructor(type, genRequest)
     {
         this._type           = type;
         this.genRequest      = genRequest;
@@ -29842,8 +29865,8 @@ class Output
         this.control.appendChild(this.hitbox);
         this.control.appendChild(this.wireBall);
 
-        this.colorLight      = [  0,   0,   0, opacity];
-        this.colorDark       = [255, 255, 255, opacity];
+        this.colorLight      = [0, 0, 0, 1];
+        this.colorDark       = [1, 1, 1, 1];
 
         this.wireColor       = rgbFromType(this.type, true);
         
@@ -29922,14 +29945,19 @@ class Output
                  && (   !graphView.tempConn.input.types.includes(this.type)
                      || this.node.follows(graphView.tempConn.input.node)));
 
-        const color =
+
+        const color = 
             isDarkMode()
             ? this.colorDark
             : this.colorLight;
 
         const colorStyle = 
             settings.showWires
-            ? rgba2style(rgb_a(color, mouseOver ? Math.min(color[3] * 1.4, 1) : color[3] / 1.4))
+            ? rgba2style(rgb_a(
+                color, 
+                mouseOver 
+                ? Math.min(color[3] * this.overFactor, 1) 
+                : color[3]))
             : 'transparent';
 
         this.control.style.pointerEvents   = settings.showWires ? 'auto' : 'none';
@@ -30897,16 +30925,18 @@ class Operator
 
     getHeaderColors()
     {
-        const rgbBack   = rgbFromType(this.type, this.active);
-        const rgbText   = isDark(rgbBack) ? [1, 1, 1] : [0, 0, 0]; 
-        const colInput  = rgbText;
-        const colOutput = rgbText;
+        const rgbaBack  = rgb_a(rgbFromType(this.type, this.active), 1);
+        const rgbaText  = isDark(rgbaBack) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        const colInput  = rgb_a(rgbaText, 0.35);
+        const colOutput = rgb_a(rgbaText, 0.35);
+        const colWire   = rgbFromType(this.type, true);
 
         return {
-            back:   rgbBack, 
-            text:   rgbText,
+            back:   rgbaBack, 
+            text:   rgbaText,
             input:  colInput,
-            output: colOutput };
+            output: colOutput,
+            wire:   colWire };
     }
 
 
@@ -31185,8 +31215,20 @@ extends Operator
         this.label .style.color           = rgba2style(colors.text);
 
 
-        for (const input  of this.inputs .filter(i => !i.param)) input .color = colors.input;
-        for (const output of this.outputs.filter(o => !o.param)) output.color = colors.output;
+        for (const input of this.inputs.filter(i => !i.param))
+        {
+            input.colorLight = 
+            input.colorDark  = colors.input;
+        }
+
+        
+        for (const output of this.outputs.filter(o => !o.param)) 
+        {
+            output.colorLight =
+            output.colorDark  = colors.output;
+
+            output.wireColor  = colors.wire;
+        }
     }
 }
 
@@ -36013,7 +36055,7 @@ extends OpColorBase
                     paramIds.push(param.id);
         }
 
-
+        
         request.push(paramIds.length);
 
         for (const paramId of paramIds)
@@ -36105,11 +36147,11 @@ extends OpColorBase
             ? rgbNoColorDark
             : rgbNoColorLight;
 
-        this.inputs[0] .wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
+        this.inputs[0] .wireColor  = !rgbIsNaN(colors.input) ? colors.input : noColor;
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;
 
-        this.outputs[0].wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
+        this.outputs[0].wireColor  = !rgbIsNaN(colors.output) ? colors.output : noColor;
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = colors.output;
 
@@ -36130,10 +36172,16 @@ extends OpColorBase
 
     getHeaderColors()
     {
-        const colors = super.getHeaderColors();
+        const colors  = super.getHeaderColors();
  
-        colors.back = rgb_a(colors.back, this.paramOpacity.value.value/100);
-        colors.text = getTextColorFromBackColor(colors.back, colors.back[3]);
+        colors.back   = rgb_a(colors.back, this.paramOpacity.value.value/100);
+        colors.text   = getTextColorFromBackColor(colors.back, colors.back[3]);
+
+        colors.output = colors.back;
+
+        if (   this.inputs[0].connected
+            && SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type))
+            colors.output = rgbFromType(SHAPE_VALUE, true);
 
         return colors;
     }
@@ -36611,7 +36659,7 @@ extends OperatorBase
 
 
 class   OpRectangle
-extends OperatorBase//OpShapeBase
+extends OperatorBase
 {
     paramX;
     paramY;

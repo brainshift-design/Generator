@@ -577,16 +577,18 @@ class Operator
 
     getHeaderColors()
     {
-        const rgbBack   = rgbFromType(this.type, this.active);
-        const rgbText   = isDark(rgbBack) ? [1, 1, 1] : [0, 0, 0]; 
-        const colInput  = rgbText;
-        const colOutput = rgbText;
+        const rgbaBack  = rgb_a(rgbFromType(this.type, this.active), 1);
+        const rgbaText  = isDark(rgbaBack) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+        const colInput  = rgb_a(rgbaText, 0.35);
+        const colOutput = rgb_a(rgbaText, 0.35);
+        const colWire   = rgbFromType(this.type, true);
 
         return {
-            back:   rgbBack, 
-            text:   rgbText,
+            back:   rgbaBack, 
+            text:   rgbaText,
             input:  colInput,
-            output: colOutput };
+            output: colOutput,
+            wire:   colWire };
     }
 
 
