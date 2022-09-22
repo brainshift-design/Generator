@@ -198,7 +198,7 @@ extends OpColorBase
 
 
 
-    getHeaderColors()
+    getHeaderColors(options = {})
     {
         const colors = super.getHeaderColors();
  

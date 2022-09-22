@@ -8,6 +8,15 @@ extends OpColorBase
     colorBack;
 
 
+
+    get inputIsShape() 
+    {
+        return this.inputs[0].connected
+            && SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type);
+    }
+    
+    
+    
     constructor()
     {
         super(FILL, 'fill');
@@ -16,7 +25,7 @@ extends OpColorBase
         this.colorBack = createDiv('colorBack');
         this.checkers  = createDiv('nodeHeaderCheckers');
 
-        this.inner.appendChild(this.colorBack);
+        //this.inner.appendChild(this.colorBack);
         this.inner.insertBefore(this.checkers, this.header);
 
 
@@ -31,8 +40,8 @@ extends OpColorBase
         this.initContentInput(
             this.inputs[0],
             0, 
-            () =>    this.inputs[0].connected
-                  && this.inputs[0].connectedOutput.type == FILL);
+            () =>  this.inputs[0].connected
+                && this.inputs[0].connectedOutput.type == FILL);
 
 
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb([0x80, 0x80, 0x80])));
@@ -111,9 +120,6 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        super.updateValues(updateParamId, paramIds, values);
-
-
         const color   = values[paramIds.findIndex(id => id == 'color'  )];
         const opacity = values[paramIds.findIndex(id => id == 'opacity')];
 
@@ -126,6 +132,9 @@ extends OpColorBase
             color.isValid()
             ? color.toDataColor()
             : dataColor_NaN;
+
+
+        super.updateValues(updateParamId, paramIds, values);
     }
 
 
@@ -133,25 +142,34 @@ extends OpColorBase
     updateColorControl()
     {
         if (this.paramOpacity.value.isValid())
-            this.paramColor.checkers.style.opacity = (100 - this.paramOpacity.value.toNumber()) + '%';
+            this.paramColor.checkers.style.opacity = 
+                this.inputIsShape 
+                ? (100 - this.paramOpacity.value.toNumber()) + '%'
+                : 0;
 
 
-        const colors = this.getHeaderColors();
+        const colors = this.getHeaderColors({color: true});
+
+        colors.text   = getTextColorFromBackColor(colors.back, this.inputIsShape ? colors.back[3] : 1);
+        colors.input  = rgb_a(colors.text, 0.2);
+        colors.output = rgb_a(colors.text, 0.2);
+
 
         this.paramColor.control. backStyleLight = 
         this.paramColor.control. backStyleDark  = 
         this.paramColor.control.valueStyleLight = 
-        this.paramColor.control.valueStyleDark  = 'transparent';
+        this.paramColor.control.valueStyleDark  = rgba2style(rgb_a(colors.back, 1));
 
         this.paramColor.control.textStyleLight  = 
         this.paramColor.control.textStyleDark   = rgba2style(colors.text);
 
         this.paramColor. input.colorLight       =
         this.paramColor. input.colorDark        = colors.input;
-        this.paramColor. input.wireColor        = rgb_a(colors.wire, 1);
         
         this.paramColor.output.colorLight       =
         this.paramColor.output.colorDark        = colors.output;
+        
+        this.paramColor. input.wireColor        = rgb_a(colors.wire, 1);
         this.paramColor.output.wireColor        = rgb_a(colors.wire, 1);
     }
 
@@ -169,16 +187,28 @@ extends OpColorBase
     updateHeader()
     {
         //console.log(this.id + '.OpFill.updateHeader()');
+        
+        Operator.prototype.updateHeader.call(this);
 
-        const colors = this.getHeaderColors();
+
+        const colors =
+              this.inputIsShape
+            ? OperatorBase.prototype.getHeaderColors.call(this)
+            : this.getHeaderColors();
+
+
+        this.header.style.background = 
+            !rgbIsNaN(colors.back)
+            ? rgba2style(colors.back) 
+            : 'transparent';
 
         this.colorBack.style.background = 
             !rgbIsNaN(colors.back)
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
-        this.checkers.style.height = this.header.offsetHeight;
 
+        this.checkers.style.height = this.header.offsetHeight;
 
         this.checkers.style.background =
             isDarkMode()
@@ -194,12 +224,6 @@ extends OpColorBase
         this.checkers.style.backgroundPosition = '0 0, 13px 13px';
                         
 
-        this.header.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgba2style(colors.back) 
-            : 'transparent';
-
-        
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;
         this.inputs[0] .wireColor  = colors.wire;
@@ -210,36 +234,39 @@ extends OpColorBase
 
 
         this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colors.back, 45);
-
-
-        Operator.prototype.updateHeader.call(this);
-
-
-        if (   this.inputs[0].connected
-            && SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type))
-            this.header.style.backgroundColor = rgb2style_a(rgbFromType(SHAPE_VALUE, this.active), 0.95);
+        this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
     }
 
 
 
-    getHeaderColors()
+    updateHeaderLabel()
     {
-        const colors  = super.getHeaderColors();
- 
-        colors.back   = rgb_a(colors.back, this.paramOpacity.value.value/100);
+        super.updateHeaderLabel();
         
-        colors.text   = getTextColorFromBackColor(colors.back, colors.back[3]);
 
+        const colors                = this.getHeaderColors();
+
+        this.label.style.color      = rgba2style(colors.text);
+        this.label.style.fontWeight = this.active ? 'bold' : 'normal';
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        if (    this.inputIsShape
+            && !options.color)
+            return Operator.prototype.getHeaderColors.call(this);
+
+            
+        const colors  = super.getHeaderColors();
+
+        colors.back   = rgb_a(colors.back, this.paramOpacity.value.value/100);
+        colors.text   = getTextColorFromBackColor(colors.back, colors.back[3]);
         colors.input  = rgb_a(colors.text, 0.2);
         colors.output = rgb_a(colors.text, 0.2);
-
-        if (   this.inputs[0].connected
-            && SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type))
-            colors.output = rgbFromType(SHAPE_VALUE, true);
-
         colors.wire   = colors.back;
-
+        
         return colors;
     }
 }

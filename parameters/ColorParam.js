@@ -62,6 +62,7 @@ extends Parameter
         this.checkers.style.height        = '20px';
         this.checkers.style.pointerEvents = 'none';
 
+
         this.control .style.display       = 'inline-block';
         this.control .style.width         = '100%';
 

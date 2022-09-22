@@ -502,15 +502,16 @@ class Operator
             ? this.id 
             : this.name;
         
-        const colors = this.getHeaderColors();
+        this.label.style.left       = '50%';
+        this.label.style.top        = '50%';
+
+        updateHeaderLabelOffset(this);
+
+
+        const colors                = Operator.prototype.getHeaderColors.call(this);
 
         this.label.style.color      = rgba2style(colors.text);
         this.label.style.fontWeight = this.active ? 'bold' : 'normal';
-
-        this.label.style.left = '50%';
-        this.label.style.top  = '50%';
-
-        updateHeaderLabelOffset(this);
     }
 
 
@@ -577,7 +578,7 @@ class Operator
 
     getHeaderColors()
     {
-        const rgbaBack  = rgb_a(rgbFromType(this.type, this.active), 1);
+        const rgbaBack  = rgb_a(rgbFromType(this.type, this.active), 0.95);
         const rgbaText  = isDark(rgbaBack) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
         const colInput  = rgb_a(rgbaText, 0.35);
         const colOutput = rgb_a(rgbaText, 0.35);
