@@ -136,30 +136,30 @@ extends Parameter
 
     updateControls()
     {
-        const rgb = this.value.toRgb();
+        // const rgb = this.value.toRgb();
 
-        const col = 
-            !rgbIsNaN(rgb)
-            ? (isDark(rgb)
-               ? [1, 1, 1]
-               : [0, 0, 0])
-            : (isDarkMode()
-               ? [1, 1, 1]
-               : [0, 0, 0]);
+        // const col = 
+        //     !rgbIsNaN(rgb)
+        //     ? (isDark(rgb)
+        //        ? [1, 1, 1]
+        //        : [0, 0, 0])
+        //     : (isDarkMode()
+        //        ? [1, 1, 1]
+        //        : [0, 0, 0]);
 
 
-        const noColor = 
-            isDarkMode()
-            ? rgbNoColorDark
-            : rgbNoColorLight;
+        // const noColor = 
+        //     isDarkMode()
+        //     ? rgbNoColorDark
+        //     : rgbNoColorLight;
 
-        this.input.wireColor   = !rgbIsNaN(rgb) ? rgb : noColor;
-        this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(col, 0.2);
+        // this.input.wireColor   = !rgbIsNaN(rgb) ? rgb : noColor;
+        // this.input.colorLight  = 
+        // this.input.colorDark   = rgb_a(col, 0.2);
 
-        this.output.wireColor  = !rgbIsNaN(rgb) ? rgb : noColor;
-        this.output.colorLight =
-        this.output.colorDark  = rgb_a(col, 0.2);
+        // this.output.wireColor  = !rgbIsNaN(rgb) ? rgb : noColor;
+        // this.output.colorLight =
+        // this.output.colorDark  = rgb_a(col, 0.2);
 
 
         this.checkers.style.background = 

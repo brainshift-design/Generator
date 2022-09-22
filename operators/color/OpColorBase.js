@@ -96,7 +96,7 @@ extends Operator
             : noColor;
 
         return {
-            back:   rgb_a(rgbBack, 1), 
+            back:   rgb_a(rgbBack, 1  ), 
             text:   rgb_a(rgbText, 0.9),
             input:  rgb_a(rgbText, 0.2),
             output: rgb_a(rgbText, 0.2),

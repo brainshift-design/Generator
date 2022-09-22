@@ -126,9 +126,6 @@ extends OpColorBase
             color.isValid()
             ? color.toDataColor()
             : dataColor_NaN;
-
-
-        this.updateColorControl();
     }
 
 
@@ -138,7 +135,8 @@ extends OpColorBase
         if (this.paramOpacity.value.isValid())
             this.paramColor.checkers.style.opacity = (100 - this.paramOpacity.value.toNumber()) + '%';
 
-        const rgbaText = getTextColorFromBackColor(dataColor2rgb(this._color), this.paramOpacity.value.toNumber() / 100);
+
+        const colors = this.getHeaderColors();
 
         this.paramColor.control. backStyleLight = 
         this.paramColor.control. backStyleDark  = 
@@ -146,7 +144,24 @@ extends OpColorBase
         this.paramColor.control.valueStyleDark  = 'transparent';
 
         this.paramColor.control.textStyleLight  = 
-        this.paramColor.control.textStyleDark   = rgba2style(rgbaText);
+        this.paramColor.control.textStyleDark   = rgba2style(colors.text);
+
+        this.paramColor. input.colorLight       =
+        this.paramColor. input.colorDark        = colors.input;
+        this.paramColor. input.wireColor        = rgb_a(colors.wire, 1);
+        
+        this.paramColor.output.colorLight       =
+        this.paramColor.output.colorDark        = colors.output;
+        this.paramColor.output.wireColor        = rgb_a(colors.wire, 1);
+    }
+
+
+
+    updateNode()
+    {
+        this.updateColorControl();
+
+        super.updateNode();
     }
 
 
@@ -185,18 +200,13 @@ extends OpColorBase
             : 'transparent';
 
         
-        const noColor = 
-            isDarkMode()
-            ? rgbNoColorDark
-            : rgbNoColorLight;
-
-        this.inputs[0] .wireColor  = !rgbIsNaN(colors.input) ? colors.input : noColor;
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;
+        this.inputs[0] .wireColor  = colors.wire;
 
-        this.outputs[0].wireColor  = !rgbIsNaN(colors.output) ? colors.output : noColor;
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = colors.output;
+        this.outputs[0].wireColor  = colors.wire;
 
 
         this.updateWarningOverlay();
@@ -218,13 +228,17 @@ extends OpColorBase
         const colors  = super.getHeaderColors();
  
         colors.back   = rgb_a(colors.back, this.paramOpacity.value.value/100);
+        
         colors.text   = getTextColorFromBackColor(colors.back, colors.back[3]);
 
-        //colors.output = colors.back;
+        colors.input  = rgb_a(colors.text, 0.2);
+        colors.output = rgb_a(colors.text, 0.2);
 
         if (   this.inputs[0].connected
             && SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type))
             colors.output = rgbFromType(SHAPE_VALUE, true);
+
+        colors.wire   = colors.back;
 
         return colors;
     }
