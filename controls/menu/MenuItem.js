@@ -15,7 +15,7 @@ class MenuItem
 
     childMenu     = null;
 
-    isSeparator   = false;
+    separator   = false;
 
 
     div;
@@ -54,7 +54,7 @@ class MenuItem
             if (this.childMenu)
             this.childMenu.parentMenu = this.parentMenu; 
         }
-        if (options.isSeparator   != undefined)   this.isSeparator   = options.isSeparator;
+        if (options.separator   != undefined)   this.separator   = options.separator;
         if (options.shortcut      != undefined)   this.shortcut      = options.shortcut;
         if (options.enabled       != undefined)   this.enabled       = options.enabled;
     }
@@ -74,7 +74,7 @@ class MenuItem
         this.divSeparator = createDiv('menuSeparator'   );
 
 
-        this.div.style.pointerEvents = this.isSeparator ? 'none' : 'all';
+        this.div.style.pointerEvents = this.separator ? 'none' : 'all';
 
 
         this.divName.innerHTML = this.name;
@@ -101,7 +101,7 @@ class MenuItem
         this.divShortcut.innerHTML = this.shortcut;
 
         
-        if (!this.isSeparator)
+        if (!this.separator)
         {
             this.div.appendChild(this.divCheck   );
             this.div.appendChild(this.divIcon    );

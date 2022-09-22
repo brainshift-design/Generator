@@ -43,7 +43,10 @@ extends GShapeBase
 
         
         if (this.input)
+        {
             this.input.eval(parse);
+            this.objects = this.input.objects;
+        }
 
 
         const color   = this.color   /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.color   : this.input ? this.input.color   : null;
@@ -54,8 +57,7 @@ extends GShapeBase
         if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
 
-        if (this.input)  this.objects = this.input.objects;
-        if (this.active) this.evalObjects();
+        this.evalObjects();
 
 
         this.valid = true;

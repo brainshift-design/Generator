@@ -93,7 +93,7 @@ function initMenuBar()
     menuMainDebugLoggingRaw.addItems([
         menuItemLogRawLoading    = new MenuItem('Raw loading',    {checkCallback: () => settings.logRawLoading   , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading )}),
         menuItemLogRawSaving     = new MenuItem('Raw saving',     {checkCallback: () => settings.logRawSaving    , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving  )}),
-                                   new MenuItem('',               {isSeparator: true}),
+                                   new MenuItem('',               {separator: true}),
         menuItemLogRawRequests   = new MenuItem('Raw requests',   {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests)}),
         menuItemLogRawValues     = new MenuItem('Raw values',     {checkCallback: () => settings.logRawValues    , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues  )})]);
 
@@ -102,13 +102,13 @@ function initMenuBar()
     menuMainDebugLogging.addItems([
         menuItemLogMessages      = new MenuItem('Messages',       {checkCallback: () => settings.logMessages     , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     )}),
         menuItemLogActions       = new MenuItem('Actions',        {checkCallback: () => settings.logActions      , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      )}),
-                                   new MenuItem('',               {isSeparator: true}),
+                                   new MenuItem('',               {separator: true}),
         menuItemLogLoading       = new MenuItem('Loading',        {checkCallback: () => settings.logLoading      , callback: () => updateSettingAndMenu('logLoading',       true, !settings.logLoading      )}),
-                                   new MenuItem('',               {isSeparator: true}),
+                                   new MenuItem('',               {separator: true}),
         menuItemLogRequests      = new MenuItem('Requests',       {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
         menuItemLogValueUpdates  = new MenuItem('Values',         {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
         menuItemLogObjectUpdates = new MenuItem('Objects',        {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)}),
-                                   new MenuItem('',               {isSeparator: true}),
+                                   new MenuItem('',               {separator: true}),
                                    new MenuItem('Raw',            {childMenu: menuMainDebugLoggingRaw})]);
 
 
@@ -132,14 +132,14 @@ function initMenuBar()
                 graphView.updateShowWires(settings.showWires);  
             }
         }),
-        new MenuItem('',        {isSeparator: true}),
+        new MenuItem('',        {separator: true}),
         new MenuItem('Logging', {childMenu: menuMainDebugLogging})]);
 
 
     menuMainHelp = new Menu('Help and activation', false);
     menuMainHelp.addItems([
         new MenuItem('Help page',         {callback: () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-        new MenuItem('',                  {isSeparator: true}),
+        new MenuItem('',                  {separator: true}),
         new MenuItem('Enter product key...', {callback: () => showProductKeyDialog()})]);
 
 
@@ -147,7 +147,7 @@ function initMenuBar()
     menuMain.addItems([
                        //new MenuItem('Preferences', {childMenu: menuMainPreferences}),
                        new MenuItem('Debug',               {childMenu: menuMainDebug}),
-                       new MenuItem('',                    {isSeparator: true}),
+                       new MenuItem('',                    {separator: true}),
         menuMainHelp = new MenuItem('Help and activation', {childMenu: menuMainHelp })]);
   
         
@@ -184,8 +184,9 @@ function initMenuBar()
     
     menuStyle = new Menu('Style nodes');
     menuStyle.addItems([
-        new MenuItem('Fill',   {icon: iconFill,   callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
-        new MenuItem('Stroke', {icon: iconStroke, callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))})]);
+        new MenuItem('Solid fill', {icon: iconFill,   callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
+        new MenuItem('',           {separator: true}),
+        new MenuItem('Stroke',     {icon: iconStroke, callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))})]);
     
     
     menuShape = new Menu('Shape nodes');
