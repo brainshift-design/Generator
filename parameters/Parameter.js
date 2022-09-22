@@ -33,18 +33,19 @@ extends EventTarget
     {
         super();
 
-        this.#id   = id;
-        this.#name = name;
-        this.#type = type;
 
-        this._div = createDiv();
+        this.#id                = id;
+        this.#name              = name;
+        this.#type              = type;
+
+        this._div               = createDiv();
 
         this.div.style.position = 'relative';
         this.div.style.padding  = 0;
         this.div.style.width    = '100%';
 
-        this.input  = null;
-        this.output = null;
+        this.input              = null;
+        this.output             = null;
 
         enableElementText(this.div, true);
     }
@@ -62,13 +63,17 @@ extends EventTarget
     initInput(types)
     {
         this.input = new Input(types, this.input_getValuesForUndo);
-
         this.input._param = this;
+
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';
         this.input.control.style.top       = '50%';
         this.input.control.style.transform = 'translateY(-50%)';
 
+        this.input .colorLight = [0, 0, 0, 0.12];
+        this.input .colorDark  = [1, 1, 1, 0.12];
+        this.input .overFactor = 3;
+        
         this.div.appendChild(this.input.control);
 
         this.input.addEventListener('connect',    () => this.enableControlText(false));
@@ -80,13 +85,17 @@ extends EventTarget
     initOutput(type, toString)
     {
         this.output = new Output(type, toString);
-
         this.output._param = this;
+
         this.output.control.style.float     = 'right';
         this.output.control.style.position  = 'absolute';
         this.output.control.style.top       = '50%';
         this.output.control.style.transform = 'translateY(-50%)';
         
+        this.output.colorLight = [0, 0, 0, 0.12];
+        this.output.colorDark  = [1, 1, 1, 0.12];
+        this.output.overFactor = 3;
+
         this.div.appendChild(this.output.control);
     }
 

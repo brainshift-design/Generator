@@ -93,21 +93,6 @@ extends Parameter
 
 
 
-    updateControls()
-    {
-        this.input .colorLight = [0, 0, 0, 0.12];
-        this.input .colorDark  = [1, 1, 1, 0.12];
-        this.input .overFactor = 3;
-        
-        this.output.colorLight = [0, 0, 0, 0.12];
-        this.output.colorDark  = [1, 1, 1, 0.12];
-        this.output.overFactor = 3;
-
-        super.updateControls();
-    }
-
-
-
     textboxHasFocus()
     {
         return hasFocus(this.control.textbox);

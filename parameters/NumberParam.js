@@ -17,6 +17,7 @@ extends NumberParamBase
     {
         super(NUMBER, id, name);
 
+        
         this.control        = createDiv('numberControl');
         
         this.control.param  = this;

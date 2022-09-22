@@ -7,7 +7,7 @@ extends OpColorBase
     param3;
     paramColor;
 
-    #colorBack;
+    colorBack;
 
 
     //hexbox;
@@ -34,8 +34,8 @@ extends OpColorBase
         this.prevSpace =  'hex';
 
 
-        this.#colorBack = createDiv('colorBack');
-        this.inner.appendChild(this.#colorBack);
+        this.colorBack = createDiv('colorBack');
+        this.inner.appendChild(this.colorBack);
 
 
         this.addInput(new Input(COLOR_TYPES, this.input_getValuesForUndo));
@@ -131,8 +131,10 @@ extends OpColorBase
         return [ 
             [this.node.param1.id, 
              this.node.param1.value],
+
             [this.node.param2.id, 
              this.node.param2.value],
+
             [this.node.param3.id, 
              this.node.param3.value]];
     }
@@ -167,7 +169,8 @@ extends OpColorBase
             paramIds.push(this.node.paramSpace.id);
 
             for (const param of this.node.params.filter(p => p.id != this.node.paramSpace.id))
-                if (param.input && param.input.connected) 
+                if (   param.input 
+                    && param.input.connected) 
                     paramIds.push(param.id);
 
             request.push(paramIds.join(','));
@@ -254,33 +257,16 @@ extends OpColorBase
     {
         //console.log(this.id + '.OpColor.updateNode()');
         
+        super.updateNode();
+
+
         enableElementText(this.paramColor.control, !this.isConnected());
 
         if (!hasFocus(this.paramColor.control))
             this.paramColor.setValue(ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color))), false, true, false);// = 
         
-        super.updateNode();
-    }
 
-
-
-    updateHeader()
-    {
-        //console.log(this.id + '.OpColor.updateHeader()');
-
-        super.updateHeader();
-        
-
-        this.header.style.background = 'transparent';
-    
-    
         const colors = this.getHeaderColors();
-
-        
-        this.#colorBack.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgb2style(colors.back)
-            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
         const colSpaceBar = 
                 isDark(colors.back)
@@ -288,6 +274,7 @@ extends OpColorBase
             ? [1, 1, 1, 0.12]
             : [0, 0, 0, 0.09]; 
 
+            
         this.paramSpace.control. backStyleLight =
         this.paramSpace.control. backStyleDark  = 'transparent';
 
@@ -297,17 +284,43 @@ extends OpColorBase
         this.paramSpace.control. textStyleLight =
         this.paramSpace.control. textStyleDark  = rgba2style(colors.text);
 
-        this.inputs[0]         .colorLight      =
-        this.inputs[0]         .colorDark       =
-        this.paramSpace.input  .colorLight      =
-        this.paramSpace.input  .colorDark       = rgb_a(colors.input, 0.2);
 
-        this.outputs[0]        .colorLight      =
-        this.outputs[0]        .colorDark       = 
-        this.paramSpace.output .colorLight      =
-        this.paramSpace.output .colorDark       = rgb_a(colors.output, 0.2);
+        this.paramSpace.input .colorLight =
+        this.paramSpace.input .colorDark  = colors.input;
+
+        this.paramSpace.output.colorLight =
+        this.paramSpace.output.colorDark  = colors.output;
+
 
         this.paramSpace.updateControls();
+    }
+
+
+
+    updateHeader()
+    {
+        //console.log(this.id + '.OpColor.updateHeader()');
+
+        super.updateHeader();
+
+        
+        this.header.style.background = 'transparent';
+    
+        const colors = this.getHeaderColors();
+
+        
+        this.colorBack.style.background = 
+            !rgbIsNaN(colors.back)
+            ? rgb2style(colors.back)
+            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+
+        this.label.style.color = rgb2style(colors.text);
+        
+        this.inputs[0] .colorLight =
+        this.inputs[0] .colorDark  = colors.input;
+
+        this.outputs[0].colorLight =
+        this.outputs[0].colorDark  = colors.output; 
 
 
         const colWarning = 

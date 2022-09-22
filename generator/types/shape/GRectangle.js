@@ -40,6 +40,18 @@ extends GShapeBase
 
 
 
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid();
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)

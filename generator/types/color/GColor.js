@@ -40,6 +40,16 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.space.isValid()
+            && this.c1   .isValid()
+            && this.c2   .isValid()
+            && this.c3   .isValid();
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
@@ -60,7 +70,7 @@ extends GOperator
             this.input.eval(parse);
 
 
-            if (color.isValid())
+            if (this.input.isValid())
             {
                 color = new ColorValue(
                     this.input.space, 
@@ -70,24 +80,27 @@ extends GOperator
 
                 const fromSpaceIndex = color.space.value;
 
-                color.space = space;
+                //color.space = this.space;
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
-                    color.space.value),
+                    this.space.value),
                     OpColorSpaces.length-1);
 
+                console.log('1 color.space.value =', color.space.value);
                 this.convertColor(
+                    color,
                     colorSpace(fromSpaceIndex), 
                     colorSpace(  toSpaceIndex));
 
+                console.log('2 color.space.value =', color.space.value);
                 color.space.value = toSpaceIndex;
             }
 
 
-            if (this.c1) color.c1 = c1;
-            if (this.c2) color.c2 = c2;
-            if (this.c3) color.c3 = c3;
+            if (this.c1) color.c1 = this.c1;
+            if (this.c2) color.c2 = this.c2;
+            if (this.c3) color.c3 = this.c3;
         }
         else
         {
@@ -156,11 +169,11 @@ extends GOperator
 
 
 
-    get mustNotEval()
-    {
-        return this.space.mustNotEval
-            && this.c1   .mustNotEval
-            && this.c2   .mustNotEval
-            && this.c3   .mustNotEval;
-    }
+    // get mustNotEval()
+    // {
+    //     return this.space.mustNotEval
+    //         && this.c1   .mustNotEval
+    //         && this.c2   .mustNotEval
+    //         && this.c3   .mustNotEval;
+    // }
 }

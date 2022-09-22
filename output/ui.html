@@ -7230,6 +7230,16 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.space.isValid()
+            && this.c1   .isValid()
+            && this.c2   .isValid()
+            && this.c3   .isValid();
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
@@ -7250,7 +7260,7 @@ extends GOperator
             this.input.eval(parse);
 
 
-            if (color.isValid())
+            if (this.input.isValid())
             {
                 color = new ColorValue(
                     this.input.space, 
@@ -7260,24 +7270,27 @@ extends GOperator
 
                 const fromSpaceIndex = color.space.value;
 
-                color.space = space;
+                //color.space = this.space;
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
-                    color.space.value),
+                    this.space.value),
                     OpColorSpaces.length-1);
 
+                console.log('1 color.space.value =', color.space.value);
                 this.convertColor(
+                    color,
                     colorSpace(fromSpaceIndex), 
                     colorSpace(  toSpaceIndex));
 
+                console.log('2 color.space.value =', color.space.value);
                 color.space.value = toSpaceIndex;
             }
 
 
-            if (this.c1) color.c1 = c1;
-            if (this.c2) color.c2 = c2;
-            if (this.c3) color.c3 = c3;
+            if (this.c1) color.c1 = this.c1;
+            if (this.c2) color.c2 = this.c2;
+            if (this.c3) color.c3 = this.c3;
         }
         else
         {
@@ -7346,13 +7359,13 @@ extends GOperator
 
 
 
-    get mustNotEval()
-    {
-        return this.space.mustNotEval
-            && this.c1   .mustNotEval
-            && this.c2   .mustNotEval
-            && this.c3   .mustNotEval;
-    }
+    // get mustNotEval()
+    // {
+    //     return this.space.mustNotEval
+    //         && this.c1   .mustNotEval
+    //         && this.c2   .mustNotEval
+    //         && this.c3   .mustNotEval;
+    // }
 }
 
 
@@ -7897,11 +7910,11 @@ extends GOperator
 
 
 
-    get mustNotEval()
-    {
-        return this.fill    .mustNotEval
-            && this.position.mustNotEval;
-    }
+    // get mustNotEval()
+    // {
+    //     return this.fill    .mustNotEval
+    //         && this.position.mustNotEval;
+    // }
 }
 
 
@@ -8015,6 +8028,18 @@ extends GShapeBase
         rect.copyFromBase(this);
 
         return rect;
+    }
+
+
+
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid();
     }
 
 
@@ -8601,6 +8626,14 @@ extends GShapeBase
 
 
 
+    isValid()
+    {
+        return this.color  .isValid()
+            && this.opacity.isValid();
+    }
+
+
+    
     eval(parse)
     {
         if (this.valid)
@@ -19856,6 +19889,16 @@ extends GOperator
 
 
 
+    isValid()
+    {
+        return this.space.isValid()
+            && this.c1   .isValid()
+            && this.c2   .isValid()
+            && this.c3   .isValid();
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
@@ -19876,7 +19919,7 @@ extends GOperator
             this.input.eval(parse);
 
 
-            if (color.isValid())
+            if (this.input.isValid())
             {
                 color = new ColorValue(
                     this.input.space, 
@@ -19886,24 +19929,27 @@ extends GOperator
 
                 const fromSpaceIndex = color.space.value;
 
-                color.space = space;
+                //color.space = this.space;
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
-                    color.space.value),
+                    this.space.value),
                     OpColorSpaces.length-1);
 
+                console.log('1 color.space.value =', color.space.value);
                 this.convertColor(
+                    color,
                     colorSpace(fromSpaceIndex), 
                     colorSpace(  toSpaceIndex));
 
+                console.log('2 color.space.value =', color.space.value);
                 color.space.value = toSpaceIndex;
             }
 
 
-            if (this.c1) color.c1 = c1;
-            if (this.c2) color.c2 = c2;
-            if (this.c3) color.c3 = c3;
+            if (this.c1) color.c1 = this.c1;
+            if (this.c2) color.c2 = this.c2;
+            if (this.c3) color.c3 = this.c3;
         }
         else
         {
@@ -19972,13 +20018,13 @@ extends GOperator
 
 
 
-    get mustNotEval()
-    {
-        return this.space.mustNotEval
-            && this.c1   .mustNotEval
-            && this.c2   .mustNotEval
-            && this.c3   .mustNotEval;
-    }
+    // get mustNotEval()
+    // {
+    //     return this.space.mustNotEval
+    //         && this.c1   .mustNotEval
+    //         && this.c2   .mustNotEval
+    //         && this.c3   .mustNotEval;
+    // }
 }
 
 
@@ -20523,11 +20569,11 @@ extends GOperator
 
 
 
-    get mustNotEval()
-    {
-        return this.fill    .mustNotEval
-            && this.position.mustNotEval;
-    }
+    // get mustNotEval()
+    // {
+    //     return this.fill    .mustNotEval
+    //         && this.position.mustNotEval;
+    // }
 }
 
 
@@ -20641,6 +20687,18 @@ extends GShapeBase
         rect.copyFromBase(this);
 
         return rect;
+    }
+
+
+
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid();
     }
 
 
@@ -21227,6 +21285,14 @@ extends GShapeBase
 
 
 
+    isValid()
+    {
+        return this.color  .isValid()
+            && this.opacity.isValid();
+    }
+
+
+    
     eval(parse)
     {
         if (this.valid)
@@ -21817,7 +21883,7 @@ function initMenuBar()
     menuColor.addItems([
         new MenuItem('Color',        {icon: iconColor           , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div))}),
         new MenuItem('Random color', {icon: iconColorRandom     , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div, {random: true}))}),
-        new MenuItem('',             {separator: true}),
+        //new MenuItem('',             {separator: true}),
         new MenuItem('Interpolate',  {icon: iconColorInterpolate, enabled: false}),
         new MenuItem('Validate',     {icon: iconColorValidate   , enabled: false}),
         new MenuItem('Contrast',     {icon: iconColorContrast   , enabled: false}),
@@ -21827,7 +21893,7 @@ function initMenuBar()
     menuStyle = new Menu('Style nodes');
     menuStyle.addItems([
         new MenuItem('Solid fill', {icon: iconFill,   callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
-        new MenuItem('',           {separator: true}),
+        //new MenuItem('',           {separator: true}),
         new MenuItem('Stroke',     {icon: iconStroke, callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))})]);
     
     
@@ -27191,18 +27257,19 @@ extends EventTarget
     {
         super();
 
-        this.#id   = id;
-        this.#name = name;
-        this.#type = type;
 
-        this._div = createDiv();
+        this.#id                = id;
+        this.#name              = name;
+        this.#type              = type;
+
+        this._div               = createDiv();
 
         this.div.style.position = 'relative';
         this.div.style.padding  = 0;
         this.div.style.width    = '100%';
 
-        this.input  = null;
-        this.output = null;
+        this.input              = null;
+        this.output             = null;
 
         enableElementText(this.div, true);
     }
@@ -27220,13 +27287,17 @@ extends EventTarget
     initInput(types)
     {
         this.input = new Input(types, this.input_getValuesForUndo);
-
         this.input._param = this;
+
         this.input.control.style.float     = 'left';
         this.input.control.style.position  = 'absolute';
         this.input.control.style.top       = '50%';
         this.input.control.style.transform = 'translateY(-50%)';
 
+        this.input .colorLight = [0, 0, 0, 0.12];
+        this.input .colorDark  = [1, 1, 1, 0.12];
+        this.input .overFactor = 3;
+        
         this.div.appendChild(this.input.control);
 
         this.input.addEventListener('connect',    () => this.enableControlText(false));
@@ -27238,13 +27309,17 @@ extends EventTarget
     initOutput(type, toString)
     {
         this.output = new Output(type, toString);
-
         this.output._param = this;
+
         this.output.control.style.float     = 'right';
         this.output.control.style.position  = 'absolute';
         this.output.control.style.top       = '50%';
         this.output.control.style.transform = 'translateY(-50%)';
         
+        this.output.colorLight = [0, 0, 0, 0.12];
+        this.output.colorDark  = [1, 1, 1, 0.12];
+        this.output.overFactor = 3;
+
         this.div.appendChild(this.output.control);
     }
 
@@ -27454,21 +27529,6 @@ extends Parameter
 
 
 
-    updateControls()
-    {
-        this.input .colorLight = [0, 0, 0, 0.12];
-        this.input .colorDark  = [1, 1, 1, 0.12];
-        this.input .overFactor = 3;
-        
-        this.output.colorLight = [0, 0, 0, 0.12];
-        this.output.colorDark  = [1, 1, 1, 0.12];
-        this.output.overFactor = 3;
-
-        super.updateControls();
-    }
-
-
-
     textboxHasFocus()
     {
         return hasFocus(this.control.textbox);
@@ -27529,6 +27589,7 @@ extends NumberParamBase
     {
         super(NUMBER, id, name);
 
+        
         this.control        = createDiv('numberControl');
         
         this.control.param  = this;
@@ -33100,7 +33161,7 @@ extends OpColorBase
     param3;
     paramColor;
 
-    #colorBack;
+    colorBack;
 
 
     //hexbox;
@@ -33127,8 +33188,8 @@ extends OpColorBase
         this.prevSpace =  'hex';
 
 
-        this.#colorBack = createDiv('colorBack');
-        this.inner.appendChild(this.#colorBack);
+        this.colorBack = createDiv('colorBack');
+        this.inner.appendChild(this.colorBack);
 
 
         this.addInput(new Input(COLOR_TYPES, this.input_getValuesForUndo));
@@ -33224,8 +33285,10 @@ extends OpColorBase
         return [ 
             [this.node.param1.id, 
              this.node.param1.value],
+
             [this.node.param2.id, 
              this.node.param2.value],
+
             [this.node.param3.id, 
              this.node.param3.value]];
     }
@@ -33260,7 +33323,8 @@ extends OpColorBase
             paramIds.push(this.node.paramSpace.id);
 
             for (const param of this.node.params.filter(p => p.id != this.node.paramSpace.id))
-                if (param.input && param.input.connected) 
+                if (   param.input 
+                    && param.input.connected) 
                     paramIds.push(param.id);
 
             request.push(paramIds.join(','));
@@ -33347,33 +33411,16 @@ extends OpColorBase
     {
         //console.log(this.id + '.OpColor.updateNode()');
         
+        super.updateNode();
+
+
         enableElementText(this.paramColor.control, !this.isConnected());
 
         if (!hasFocus(this.paramColor.control))
             this.paramColor.setValue(ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color))), false, true, false);// = 
         
-        super.updateNode();
-    }
 
-
-
-    updateHeader()
-    {
-        //console.log(this.id + '.OpColor.updateHeader()');
-
-        super.updateHeader();
-        
-
-        this.header.style.background = 'transparent';
-    
-    
         const colors = this.getHeaderColors();
-
-        
-        this.#colorBack.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgb2style(colors.back)
-            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
         const colSpaceBar = 
                 isDark(colors.back)
@@ -33381,6 +33428,7 @@ extends OpColorBase
             ? [1, 1, 1, 0.12]
             : [0, 0, 0, 0.09]; 
 
+            
         this.paramSpace.control. backStyleLight =
         this.paramSpace.control. backStyleDark  = 'transparent';
 
@@ -33390,17 +33438,43 @@ extends OpColorBase
         this.paramSpace.control. textStyleLight =
         this.paramSpace.control. textStyleDark  = rgba2style(colors.text);
 
-        this.inputs[0]         .colorLight      =
-        this.inputs[0]         .colorDark       =
-        this.paramSpace.input  .colorLight      =
-        this.paramSpace.input  .colorDark       = rgb_a(colors.input, 0.2);
 
-        this.outputs[0]        .colorLight      =
-        this.outputs[0]        .colorDark       = 
-        this.paramSpace.output .colorLight      =
-        this.paramSpace.output .colorDark       = rgb_a(colors.output, 0.2);
+        this.paramSpace.input .colorLight =
+        this.paramSpace.input .colorDark  = colors.input;
+
+        this.paramSpace.output.colorLight =
+        this.paramSpace.output.colorDark  = colors.output;
+
 
         this.paramSpace.updateControls();
+    }
+
+
+
+    updateHeader()
+    {
+        //console.log(this.id + '.OpColor.updateHeader()');
+
+        super.updateHeader();
+
+        
+        this.header.style.background = 'transparent';
+    
+        const colors = this.getHeaderColors();
+
+        
+        this.colorBack.style.background = 
+            !rgbIsNaN(colors.back)
+            ? rgb2style(colors.back)
+            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+
+        this.label.style.color = rgb2style(colors.text);
+        
+        this.inputs[0] .colorLight =
+        this.inputs[0] .colorDark  = colors.input;
+
+        this.outputs[0].colorLight =
+        this.outputs[0].colorDark  = colors.output; 
 
 
         const colWarning = 

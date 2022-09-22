@@ -178,7 +178,7 @@ function initMenuBar()
     menuColor.addItems([
         new MenuItem('Color',        {icon: iconColor           , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div))}),
         new MenuItem('Random color', {icon: iconColorRandom     , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div, {random: true}))}),
-        new MenuItem('',             {separator: true}),
+        //new MenuItem('',             {separator: true}),
         new MenuItem('Interpolate',  {icon: iconColorInterpolate, enabled: false}),
         new MenuItem('Validate',     {icon: iconColorValidate   , enabled: false}),
         new MenuItem('Contrast',     {icon: iconColorContrast   , enabled: false}),
@@ -188,7 +188,7 @@ function initMenuBar()
     menuStyle = new Menu('Style nodes');
     menuStyle.addItems([
         new MenuItem('Solid fill', {icon: iconFill,   callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
-        new MenuItem('',           {separator: true}),
+        //new MenuItem('',           {separator: true}),
         new MenuItem('Stroke',     {icon: iconStroke, callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))})]);
     
     

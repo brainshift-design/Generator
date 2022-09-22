@@ -32,6 +32,14 @@ extends GShapeBase
 
 
 
+    isValid()
+    {
+        return this.color  .isValid()
+            && this.opacity.isValid();
+    }
+
+
+    
     eval(parse)
     {
         if (this.valid)
