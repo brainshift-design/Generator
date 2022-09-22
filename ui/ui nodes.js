@@ -380,9 +380,9 @@
 
 
 
-function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true)
+function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true, options = {})
 {
-    let node = createNode(nodeType, creatingButton, createdId);
+    let node = createNode(nodeType, creatingButton, createdId, options);
 
     graph.addNode(node);
 

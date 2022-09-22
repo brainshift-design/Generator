@@ -16,7 +16,7 @@ class Parse
     
     nTab = 0;
 
-    get tab() { return this.inParam ? ' ' : NL + TAB.repeat(Math.max(0, this.nTab)); }
+    get tab() { return this.inParam ? ' ' : (NL + TAB.repeat(Math.max(0, this.nTab))); }
 
     
     inParam = false;

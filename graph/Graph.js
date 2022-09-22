@@ -287,7 +287,7 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 
 
 
-function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
+function createNode(nodeType, creatingButton = null, createdNodeId = -1, options = {})
 {
     let node;
 
@@ -304,7 +304,7 @@ function createNode(nodeType, creatingButton = null)//, createdNodeId = -1)
         case NUMBER_INTERPOLATE: node = new OpInterpolate();      break;
         // case NUMBER_RANDOM:   node = new OpRandom(); break;
         
-        case COLOR:              node = new OpColor();            break;
+        case COLOR:              node = new OpColor(options);     break;
         case COLOR_INTERPOLATE:  node = new OpColorInterpolate(); break;
         case COLOR_VALIDATE:     node = new OpColorValidate();    break;
         case COLOR_CONTRAST:     node = new OpColorContrast();    break;

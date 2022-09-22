@@ -42,111 +42,116 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        if (this.space) this.space.eval(parse);
+        if (this.c1   ) this.c1   .eval(parse);
+        if (this.c2   ) this.c2   .eval(parse);
+        if (this.c3   ) this.c3   .eval(parse);
+
+
+        let color;
+
+
+        if (this.input)
         {
-            const space = this.space.eval(parse).copy();
-            
-            const c1 = this.c1 ? this.c1.eval(parse).copy() : null;
-            const c2 = this.c2 ? this.c2.eval(parse).copy() : null;
-            const c3 = this.c3 ? this.c3.eval(parse).copy() : null;
+            this.input.eval(parse);
 
 
-            if (this.input)
+            if (color.isValid())
             {
-                this.result = this.input.eval(parse).copy();
+                color = new ColorValue(
+                    this.input.space, 
+                    this.input.c1, 
+                    this.input.c2, 
+                    this.input.c3);
 
-                console.assert(
-                    this.result.type == COLOR_VALUE, 
-                    'this.result.type must be COLOR_VALUE');
+                const fromSpaceIndex = color.space.value;
 
-                if (this.result.isValid())
-                {
-                    const fromSpaceIndex = this.result.space.value;
-
-                    this.result.space = space;
-
-                    const toSpaceIndex = Math.min(Math.max(
-                        0,
-                        this.result.space.value),
-                        OpColorSpaces.length-1);
-
-                    this.convertColor(
-                        colorSpace(fromSpaceIndex), 
-                        colorSpace(  toSpaceIndex));
-
-                    this.result.space.value = toSpaceIndex;
-                }
-
-
-                if (this.c1) this.result.c1 = c1;
-                if (this.c2) this.result.c2 = c2;
-                if (this.c3) this.result.c3 = c3;
-            }
-            else
-            {
-                this.result = new ColorValue(space, c1, c2, c3);
+                color.space = space;
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
-                    this.result.space.value),
+                    color.space.value),
                     OpColorSpaces.length-1);
 
-                this.result.space.value = toSpaceIndex;
+                this.convertColor(
+                    colorSpace(fromSpaceIndex), 
+                    colorSpace(  toSpaceIndex));
 
-                if (    this.convert
-                    && !isNaN(this.convert.value)
-                    &&  this.result.isValid())
-                {
-                    const fromSpace = this.convert.eval(parse).copy();
-
-                    this.convertColor(
-                        colorSpace(fromSpace.value), 
-                        colorSpace(toSpaceIndex));
-                }
+                color.space.value = toSpaceIndex;
             }
 
 
-            console.assert(
-                this.result.space.type == NUMBER_VALUE, 
-                'this.result.type must be NUMBER_VALUE');
+            if (this.c1) color.c1 = c1;
+            if (this.c2) color.c2 = c2;
+            if (this.c3) color.c3 = c3;
+        }
+        else
+        {
+            color = new ColorValue(
+                this.space, 
+                this.c1, 
+                this.c2, 
+                this.c3);
 
-            this.result.space.value = Math.min(Math.max(
-                0, 
-                this.result.space.value), 
+            const toSpaceIndex = Math.min(Math.max(
+                0,
+                color.space.value),
                 OpColorSpaces.length-1);
 
+            color.space.value = toSpaceIndex;
 
-            this.result.valid = true;
-            this.valid        = true;
+            if (    this.convert
+                && !isNaN(this.convert.value)
+                &&  color.isValid())
+            {
+                this.convert.eval(parse);
 
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
-
-            genPushUpdateValue(parse, this.nodeId, 'space', this.result.space);
-            genPushUpdateValue(parse, this.nodeId, 'c1',    this.result.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',    this.result.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',    this.result.c3   );
+                this.convertColor(
+                    color,
+                    colorSpace(this.convert.value), 
+                    colorSpace(toSpaceIndex));
+            }
         }
 
 
-        return this.result;
+        console.assert(
+            color.space.type == NUMBER_VALUE, 
+            'this.result.type must be NUMBER_VALUE');
+
+        color.space.value = Math.min(Math.max(
+            0, 
+            color.space.value), 
+            OpColorSpaces.length-1);
+
+
+        genPushUpdateValue(parse, this.nodeId, 'space', color.space);
+        genPushUpdateValue(parse, this.nodeId, 'c1',    color.c1   );
+        genPushUpdateValue(parse, this.nodeId, 'c2',    color.c2   );
+        genPushUpdateValue(parse, this.nodeId, 'c3',    color.c3   );
+
+
+        this.valid = true;
     }
 
 
 
-    convertColor(fromSpace, toSpace)
+    convertColor(color, fromSpace, toSpace)
     {
-        let color = [
+        let col = [
             fromSpace, 
-            getNormalColorValue(this.result.c1.value, fromSpace, 0),
-            getNormalColorValue(this.result.c2.value, fromSpace, 1),
-            getNormalColorValue(this.result.c3.value, fromSpace, 2)];
+            getNormalColorValue(color.c1.value, fromSpace, 0),
+            getNormalColorValue(color.c2.value, fromSpace, 1),
+            getNormalColorValue(color.c3.value, fromSpace, 2)];
 
-        color = getScaledDataColor(convertDataColorToSpace(color, toSpace));
+        col = getScaledDataColor(convertDataColorToSpace(col, toSpace));
 
-        this.result.c1.value = color[1];
-        this.result.c2.value = color[2];
-        this.result.c3.value = color[3];
+        color.c1.value = col[1];
+        color.c2.value = col[2];
+        color.c3.value = col[3];
     }
 
 

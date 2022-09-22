@@ -21,12 +21,16 @@ extends OpColorBase
 
 
 
-    constructor()
+    constructor(options = {})
     {
         super(COLOR, 'color');
 
 
-        this._color    = ['hex', 0.5, 0.5, 0.5];
+        this._color = 
+            !!options.random
+            ? ['hex', Math.random(), Math.random(), Math.random()]
+            : ['hex', 0.5, 0.5, 0.5];
+        
         this.prevSpace =  'hex';
 
 
@@ -188,7 +192,7 @@ extends OpColorBase
             {
                 request.push(
                     ...this.node.paramSpace.genRequest(gen),
-                    NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)),
+                    NUMBER_VALUE, numToString(colorSpaceIndex(this.node.prevSpace)), 
                     ...this.node.param1.genRequest(gen),
                     ...this.node.param2.genRequest(gen),
                     ...this.node.param3.genRequest(gen));
@@ -206,33 +210,39 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == 'value')];
-
-        console.assert(
-            col.type == COLOR_VALUE, 
-            'this.result.type must be COLOR_VALUE');
-
-
-        this.paramSpace.setValue(col.space, false, true, false);
-        switchToSpace(this, colorSpace(col.space.value));
+        const space = values[paramIds.findIndex(id => id == 'space')];
+        const c1    = values[paramIds.findIndex(id => id == 'c1'   )];
+        const c2    = values[paramIds.findIndex(id => id == 'c2'   )];
+        const c3    = values[paramIds.findIndex(id => id == 'c3'   )];
 
 
-        this.param1.setValue(col.c1, false, true, false);
-        this.param2.setValue(col.c2, false, true, false);
-        this.param3.setValue(col.c3, false, true, false);
+        this.paramSpace.setValue(space, false, true, false);
+        switchToSpace(this, colorSpace(space.value));
 
-        
-        if (!col.isValid())
+
+        this.param1.setValue(c1, false, true, false);
+        this.param2.setValue(c2, false, true, false);
+        this.param3.setValue(c3, false, true, false);
+
+
+        const valid =
+               space.isValid()
+            && c1   .isValid()
+            && c2   .isValid()
+            && c3   .isValid();
+
+            
+        if (!valid)
             this.paramColor.setValue(ColorValue.NaN, false, true, false);
 
 
         this._color = 
-            col.isValid()
-            ? col.toDataColor()
+            valid
+            ? makeDataColor(space, c1, c2, c3)
             : dataColor_NaN;
 
 
-        this.prevSpace = colorSpace(col.space.value);
+        this.prevSpace = colorSpace(space.value);
 
 
         super.updateValues(updateParamId, paramIds, values);

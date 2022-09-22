@@ -47,6 +47,8 @@ function genParseColor(parse)
         paramIds = ['space', 'convert', 'c1', 'c2', 'c3'];
 
     
+    parse.inParam = false;
+    
     for (const id of paramIds)
     {
         switch (id)

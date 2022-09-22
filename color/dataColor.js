@@ -1,3 +1,16 @@
+function makeDataColor(space, c1, c2, c3)
+{
+    const _space = colorSpace(space.value);
+
+    return [
+        _space, 
+        getNormalColorValue(c1.value, _space, 0), 
+        getNormalColorValue(c2.value, _space, 1), 
+        getNormalColorValue(c3.value, _space, 2) ]; 
+}
+
+
+
 function dataColorIsNaN(c)
 {
     return isNaN(c[1])

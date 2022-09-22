@@ -22,7 +22,7 @@ function genParseNumber(parse)
     const num = new GNumber(nodeId, active);
 
     
-    if (parse.logRequests) 
+    if (parse.logRequests)
         logReqNumber(num, parse);
 
 

@@ -71,7 +71,7 @@ extends GShapeBase
             || !this.opacity)
             return;
 
-            
+            console.log('this.color =', this.color);
         const rgb = scaleRgb(this.color.toRgb());
 
 

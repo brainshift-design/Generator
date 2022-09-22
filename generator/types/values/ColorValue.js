@@ -104,13 +104,11 @@ extends GType
         if (!this.isValid())
             return dataColor_NaN;
 
-        const space = colorSpace(this.space.value);
-
-        return [
-            space, 
-            getNormalColorValue(this.c1.value, space, 0), 
-            getNormalColorValue(this.c2.value, space, 1), 
-            getNormalColorValue(this.c3.value, space, 2) ]; 
+        return makeDataColor(
+            this.space,
+            this.c1,
+            this.c2,
+            this.c3);
     }
 
 
