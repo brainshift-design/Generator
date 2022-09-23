@@ -15,20 +15,20 @@ extends GShapeBase
 
 
 
-    copy()
-    {
-        const fill = new GFill(this.nodeId, this.active);
+    // copy()
+    // {
+    //     const fill = new GFill(this.nodeId, this.active);
 
-        if (this.input) 
-            fill.input = this.input.copy();
+    //     if (this.input) 
+    //         fill.input = this.input.copy();
 
-        if (this.color  ) fill.color   = this.color  .copy();
-        if (this.opacity) fill.opacity = this.opacity.copy();
+    //     if (this.color  ) fill.color   = this.color  .copy();
+    //     if (this.opacity) fill.opacity = this.opacity.copy();
 
-        rect.copyFromBase(this);
+    //     rect.copyFromBase(this);
 
-        return fill;
-    }
+    //     return fill;
+    // }
 
 
 
@@ -39,7 +39,7 @@ extends GShapeBase
     }
 
 
-    
+
     eval(parse)
     {
         if (this.valid)

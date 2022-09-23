@@ -19,24 +19,24 @@ extends GShapeBase
 
 
 
-    copy()
-    {
-        const rect = new GRectangle(this.nodeId, this.active);
+    // copy()
+    // {
+    //     const rect = new GRectangle(this.nodeId, this.active);
 
-        if (this.input) 
-            rect.input = this.input.copy();
+    //     if (this.input) 
+    //         rect.input = this.input.copy();
 
-        if (this.x     ) rect.x      = this.x     .copy();
-        if (this.y     ) rect.y      = this.y     .copy();
-        if (this.width ) rect.width  = this.width .copy();
-        if (this.height) rect.height = this.height.copy();
-        if (this.angle ) rect.angle  = this.angle .copy();
-        if (this.round ) rect.round  = this.round .copy();
+    //     if (this.x     ) rect.x      = this.x     .copy();
+    //     if (this.y     ) rect.y      = this.y     .copy();
+    //     if (this.width ) rect.width  = this.width .copy();
+    //     if (this.height) rect.height = this.height.copy();
+    //     if (this.angle ) rect.angle  = this.angle .copy();
+    //     if (this.round ) rect.round  = this.round .copy();
 
-        rect.copyFromBase(this);
+    //     rect.copyFromBase(this);
 
-        return rect;
-    }
+    //     return rect;
+    // }
 
 
 

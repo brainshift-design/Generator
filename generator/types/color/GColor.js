@@ -69,38 +69,36 @@ extends GOperator
         {
             this.input.eval(parse);
 
-
+            
             if (this.input.isValid())
             {
                 color = new ColorValue(
-                    this.input.space, 
+                    this.input.convert, 
                     this.input.c1, 
                     this.input.c2, 
                     this.input.c3);
 
                 const fromSpaceIndex = color.space.value;
 
-                //color.space = this.space;
+                color.space = this.space;
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
-                    this.space.value),
+                    color.space.value),
                     OpColorSpaces.length-1);
 
-                console.log('1 color.space.value =', color.space.value);
                 this.convertColor(
                     color,
                     colorSpace(fromSpaceIndex), 
                     colorSpace(  toSpaceIndex));
 
-                console.log('2 color.space.value =', color.space.value);
                 color.space.value = toSpaceIndex;
+
+                
+                if (this.c1) color.c1 = this.c1;
+                if (this.c2) color.c2 = this.c2;
+                if (this.c3) color.c3 = this.c3;
             }
-
-
-            if (this.c1) color.c1 = this.c1;
-            if (this.c2) color.c2 = this.c2;
-            if (this.c3) color.c3 = this.c3;
         }
         else
         {
@@ -117,6 +115,7 @@ extends GOperator
 
             color.space.value = toSpaceIndex;
 
+            
             if (    this.convert
                 && !isNaN(this.convert.value)
                 &&  color.isValid())
@@ -134,11 +133,6 @@ extends GOperator
         console.assert(
             color.space.type == NUMBER_VALUE, 
             'this.result.type must be NUMBER_VALUE');
-
-        color.space.value = Math.min(Math.max(
-            0, 
-            color.space.value), 
-            OpColorSpaces.length-1);
 
 
         genPushUpdateValue(parse, this.nodeId, 'space', color.space);

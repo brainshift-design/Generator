@@ -5268,38 +5268,36 @@ extends GOperator
         {
             this.input.eval(parse);
 
-
+            
             if (this.input.isValid())
             {
                 color = new ColorValue(
-                    this.input.space, 
+                    this.input.convert, 
                     this.input.c1, 
                     this.input.c2, 
                     this.input.c3);
 
                 const fromSpaceIndex = color.space.value;
 
-                //color.space = this.space;
+                color.space = this.space;
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
-                    this.space.value),
+                    color.space.value),
                     OpColorSpaces.length-1);
 
-                console.log('1 color.space.value =', color.space.value);
                 this.convertColor(
                     color,
                     colorSpace(fromSpaceIndex), 
                     colorSpace(  toSpaceIndex));
 
-                console.log('2 color.space.value =', color.space.value);
                 color.space.value = toSpaceIndex;
+
+                
+                if (this.c1) color.c1 = this.c1;
+                if (this.c2) color.c2 = this.c2;
+                if (this.c3) color.c3 = this.c3;
             }
-
-
-            if (this.c1) color.c1 = this.c1;
-            if (this.c2) color.c2 = this.c2;
-            if (this.c3) color.c3 = this.c3;
         }
         else
         {
@@ -5316,6 +5314,7 @@ extends GOperator
 
             color.space.value = toSpaceIndex;
 
+            
             if (    this.convert
                 && !isNaN(this.convert.value)
                 &&  color.isValid())
@@ -5333,11 +5332,6 @@ extends GOperator
         console.assert(
             color.space.type == NUMBER_VALUE, 
             'this.result.type must be NUMBER_VALUE');
-
-        color.space.value = Math.min(Math.max(
-            0, 
-            color.space.value), 
-            OpColorSpaces.length-1);
 
 
         genPushUpdateValue(parse, this.nodeId, 'space', color.space);
@@ -6020,24 +6014,24 @@ extends GShapeBase
 
 
 
-    copy()
-    {
-        const rect = new GRectangle(this.nodeId, this.active);
+    // copy()
+    // {
+    //     const rect = new GRectangle(this.nodeId, this.active);
 
-        if (this.input) 
-            rect.input = this.input.copy();
+    //     if (this.input) 
+    //         rect.input = this.input.copy();
 
-        if (this.x     ) rect.x      = this.x     .copy();
-        if (this.y     ) rect.y      = this.y     .copy();
-        if (this.width ) rect.width  = this.width .copy();
-        if (this.height) rect.height = this.height.copy();
-        if (this.angle ) rect.angle  = this.angle .copy();
-        if (this.round ) rect.round  = this.round .copy();
+    //     if (this.x     ) rect.x      = this.x     .copy();
+    //     if (this.y     ) rect.y      = this.y     .copy();
+    //     if (this.width ) rect.width  = this.width .copy();
+    //     if (this.height) rect.height = this.height.copy();
+    //     if (this.angle ) rect.angle  = this.angle .copy();
+    //     if (this.round ) rect.round  = this.round .copy();
 
-        rect.copyFromBase(this);
+    //     rect.copyFromBase(this);
 
-        return rect;
-    }
+    //     return rect;
+    // }
 
 
 
@@ -6618,20 +6612,20 @@ extends GShapeBase
 
 
 
-    copy()
-    {
-        const fill = new GFill(this.nodeId, this.active);
+    // copy()
+    // {
+    //     const fill = new GFill(this.nodeId, this.active);
 
-        if (this.input) 
-            fill.input = this.input.copy();
+    //     if (this.input) 
+    //         fill.input = this.input.copy();
 
-        if (this.color  ) fill.color   = this.color  .copy();
-        if (this.opacity) fill.opacity = this.opacity.copy();
+    //     if (this.color  ) fill.color   = this.color  .copy();
+    //     if (this.opacity) fill.opacity = this.opacity.copy();
 
-        rect.copyFromBase(this);
+    //     rect.copyFromBase(this);
 
-        return fill;
-    }
+    //     return fill;
+    // }
 
 
 
@@ -6642,7 +6636,7 @@ extends GShapeBase
     }
 
 
-    
+
     eval(parse)
     {
         if (this.valid)
