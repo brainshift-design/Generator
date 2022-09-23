@@ -90,7 +90,7 @@ function updateWires(wires)
 
         wire.setAttribute('width',  cw);
         wire.setAttribute('height', ch);
-        wire.setAttribute('stroke-width', graphView.zoom);
+        wire.setAttribute('stroke-width', 1.6 * graphView.zoom);
     
         wire.setAttribute('viewBox',
                     0

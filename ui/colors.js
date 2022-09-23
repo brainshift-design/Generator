@@ -26,6 +26,7 @@ const rgbaNoColorTextLight  = [0, 0, 0, 0.6];
 const rgbaNoColorTextDark   = [1, 1, 1, 0.4];
 
 
+const rgbDefaultFill        = [0xD9, 0xD9, 0xD9];
 var rgbDocumentBody;
 
 

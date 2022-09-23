@@ -44,7 +44,7 @@ extends OpColorBase
                 && this.inputs[0].connectedOutput.type == FILL);
 
 
-        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb([0x80, 0x80, 0x80])));
+        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
         this.paramOpacity.control.suffix = '%';

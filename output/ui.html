@@ -8667,7 +8667,7 @@ extends GShapeBase
             || !this.opacity)
             return;
 
-            console.log('this.color =', this.color);
+
         const rgb = scaleRgb(this.color.toRgb());
 
 
@@ -21366,7 +21366,7 @@ extends GShapeBase
             || !this.opacity)
             return;
 
-            console.log('this.color =', this.color);
+
         const rgb = scaleRgb(this.color.toRgb());
 
 
@@ -21911,8 +21911,8 @@ function initMenuBar()
 
     menuMainHelp = new Menu('Help and activation', false);
     menuMainHelp.addItems([
-        new MenuItem('Help page',         {callback: () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-        new MenuItem('',                  {separator: true}),
+        new MenuItem('Help page',            {callback: () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+        new MenuItem('',                     {separator: true}),
         new MenuItem('Enter product key...', {callback: () => showProductKeyDialog()})]);
 
 
@@ -21949,7 +21949,7 @@ function initMenuBar()
     menuColor = new Menu('Color nodes');
     menuColor.addItems([
         new MenuItem('Color',        {icon: iconColor           , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div))}),
-        new MenuItem('Random color', {icon: iconColorRandom     , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div, {random: true}))}),
+        //new MenuItem('Random color', {icon: iconColorRandom     , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div, {random: true}))}),
         //new MenuItem('',             {separator: true}),
         new MenuItem('Interpolate',  {icon: iconColorInterpolate, enabled: false}),
         new MenuItem('Validate',     {icon: iconColorValidate   , enabled: false}),
@@ -27258,7 +27258,7 @@ function updateWires(wires)
 
         wire.setAttribute('width',  cw);
         wire.setAttribute('height', ch);
-        wire.setAttribute('stroke-width', graphView.zoom);
+        wire.setAttribute('stroke-width', 1.6 * graphView.zoom);
     
         wire.setAttribute('viewBox',
                     0
@@ -36225,7 +36225,7 @@ extends OpColorBase
                 && this.inputs[0].connectedOutput.type == FILL);
 
 
-        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb([0x80, 0x80, 0x80])));
+        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
         this.paramOpacity.control.suffix = '%';
@@ -39380,6 +39380,7 @@ const rgbaNoColorTextLight  = [0, 0, 0, 0.6];
 const rgbaNoColorTextDark   = [1, 1, 1, 0.4];
 
 
+const rgbDefaultFill        = [0xD9, 0xD9, 0xD9];
 var rgbDocumentBody;
 
 
