@@ -92,13 +92,6 @@ extends GType
 
 
 
-    toRgb()
-    {
-        return dataColor2rgb(this.toDataColor());
-    }
-
-
-
     toDataColor()
     {
         if (!this.isValid())
@@ -109,6 +102,13 @@ extends GType
             this.c1,
             this.c2,
             this.c3);
+    }
+
+
+
+    toRgb()
+    {
+        return dataColor2rgb(this.toDataColor());
     }
 
 

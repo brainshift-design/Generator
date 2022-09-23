@@ -15,20 +15,20 @@ extends GShapeBase
 
 
 
-    // copy()
-    // {
-    //     const fill = new GFill(this.nodeId, this.active);
+    copy()
+    {
+        const fill = new GFill(this.nodeId, this.active);
 
-    //     if (this.input) 
-    //         fill.input = this.input.copy();
+        if (this.input) 
+            fill.input = this.input.copy();
 
-    //     if (this.color  ) fill.color   = this.color  .copy();
-    //     if (this.opacity) fill.opacity = this.opacity.copy();
+        if (this.color  ) fill.color   = this.color  .copy();
+        if (this.opacity) fill.opacity = this.opacity.copy();
 
-    //     rect.copyFromBase(this);
+        rect.copyFromBase(this);
 
-    //     return fill;
-    // }
+        return fill;
+    }
 
 
 
@@ -57,11 +57,10 @@ extends GShapeBase
         }
 
 
-        const color   = this.color   /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.color   : this.input ? this.input.color   : null;
-        const opacity = this.opacity /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.opacity : this.input ? this.input.opacity : null;
+        const color   = this.color   ? this.color   : this.input ? this.input.color   : null;
+        const opacity = this.opacity ? this.opacity : this.input ? this.input.opacity : null;
 
-
-        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color.type == COLOR ? color.toColorValue() : color);
         if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
 
@@ -75,12 +74,15 @@ extends GShapeBase
 
     evalObjects()
     {
-        if (   !this.color
-            || !this.opacity)
+        const color   = this.color   ? this.color   : this.input ? this.input.color   : null;
+        const opacity = this.opacity ? this.opacity : this.input ? this.input.opacity : null;
+
+        if (   !color
+            || !opacity)
             return;
 
 
-        const rgb = scaleRgb(this.color.toRgb());
+        const rgb = scaleRgb((color.type == COLOR ? color.toColorValue() : color).toRgb());
 
 
         for (const obj of this.objects)

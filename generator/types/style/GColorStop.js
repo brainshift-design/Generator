@@ -68,12 +68,4 @@ extends GOperator
 
         return this.result;
     }
-
-
-
-    // get mustNotEval()
-    // {
-    //     return this.fill    .mustNotEval
-    //         && this.position.mustNotEval;
-    // }
 }

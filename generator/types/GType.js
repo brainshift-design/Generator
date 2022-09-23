@@ -75,16 +75,15 @@ function displayValue(type, value)
         return value;
 
 
-    let val;
-
     switch (type)
     {
-        case NUMBER_VALUE:    val = parseNumberValue   (value)[0]; break;
-        case COLOR_VALUE:     val = parseColorValue    (value)[0]; break;
-        case FILL_VALUE:      val = parseFillValue     (value)[0]; break;
-        case STROKE_VALUE:    val = parseStrokeValue   (value)[0]; break;
-        case RECTANGLE_VALUE: val = parseRectangleValue(value)[0]; break;
+        case NUMBER_VALUE:    return parseNumberValue   (value)[0].toDisplayString();
+        case COLOR_VALUE:     return parseColorValue    (value)[0].toDisplayString();
+        case FILL_VALUE:      return parseFillValue     (value)[0].toDisplayString()
+        case STROKE_VALUE:    return parseStrokeValue   (value)[0].toDisplayString()
+        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString()
     }
 
-    return val.toDisplayString();
+
+    console.assert(false, 'cannot display value of type \'' + type + '\'');
 }

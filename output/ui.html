@@ -5123,18 +5123,17 @@ function displayValue(type, value)
         return value;
 
 
-    let val;
-
     switch (type)
     {
-        case NUMBER_VALUE:    val = parseNumberValue   (value)[0]; break;
-        case COLOR_VALUE:     val = parseColorValue    (value)[0]; break;
-        case FILL_VALUE:      val = parseFillValue     (value)[0]; break;
-        case STROKE_VALUE:    val = parseStrokeValue   (value)[0]; break;
-        case RECTANGLE_VALUE: val = parseRectangleValue(value)[0]; break;
+        case NUMBER_VALUE:    return parseNumberValue   (value)[0].toDisplayString();
+        case COLOR_VALUE:     return parseColorValue    (value)[0].toDisplayString();
+        case FILL_VALUE:      return parseFillValue     (value)[0].toDisplayString()
+        case STROKE_VALUE:    return parseStrokeValue   (value)[0].toDisplayString()
+        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString()
     }
 
-    return val.toDisplayString();
+
+    console.assert(false, 'cannot display value of type \'' + type + '\'');
 }
 
 
@@ -5435,13 +5434,6 @@ extends GType
 
 
 
-    toRgb()
-    {
-        return dataColor2rgb(this.toDataColor());
-    }
-
-
-
     toDataColor()
     {
         if (!this.isValid())
@@ -5452,6 +5444,13 @@ extends GType
             this.c1,
             this.c2,
             this.c3);
+    }
+
+
+
+    toRgb()
+    {
+        return dataColor2rgb(this.toDataColor());
     }
 
 
@@ -7353,12 +7352,48 @@ extends GOperator
 
 
 
-    // get mustNotEval()
+    toColorValue()
+    {
+        return new ColorValue(
+            this.space,
+            this.c1,
+            this.c2,
+            this.c3);
+    }
+
+
+
+    // toDataColor()
     // {
-    //     return this.space.mustNotEval
-    //         && this.c1   .mustNotEval
-    //         && this.c2   .mustNotEval
-    //         && this.c3   .mustNotEval;
+    //     if (!this.isValid())
+    //         return dataColor_NaN;
+
+    //     return makeDataColor(
+    //         this.space,
+    //         this.c1,
+    //         this.c2,
+    //         this.c3);
+    // }
+
+
+
+    // toRgb()
+    // {
+    //     return dataColor2rgb(this.toDataColor());
+    // }
+
+
+
+    // toDisplayString()
+    // {
+    //     // console.log('this.space =', this.space);
+    //     // console.log('this.c1 =', this.c1);
+    //     // console.log('this.c2 =', this.c2);
+    //     // console.log('this.c3 =', this.c3);
+    //     return      this.space.toDisplayString()
+    //         + ' ' + this.c1   .toDisplayString()
+    //         + ' ' + this.c2   .toDisplayString()
+    //         + ' ' + this.c3   .toDisplayString();
     // }
 }
 
@@ -7901,14 +7936,6 @@ extends GOperator
 
         return this.result;
     }
-
-
-
-    // get mustNotEval()
-    // {
-    //     return this.fill    .mustNotEval
-    //         && this.position.mustNotEval;
-    // }
 }
 
 
@@ -8005,24 +8032,24 @@ extends GShapeBase
 
 
 
-    // copy()
-    // {
-    //     const rect = new GRectangle(this.nodeId, this.active);
+    copy()
+    {
+        const rect = new GRectangle(this.nodeId, this.active);
 
-    //     if (this.input) 
-    //         rect.input = this.input.copy();
+        if (this.input) 
+            rect.input = this.input.copy();
 
-    //     if (this.x     ) rect.x      = this.x     .copy();
-    //     if (this.y     ) rect.y      = this.y     .copy();
-    //     if (this.width ) rect.width  = this.width .copy();
-    //     if (this.height) rect.height = this.height.copy();
-    //     if (this.angle ) rect.angle  = this.angle .copy();
-    //     if (this.round ) rect.round  = this.round .copy();
+        if (this.x     ) rect.x      = this.x     .copy();
+        if (this.y     ) rect.y      = this.y     .copy();
+        if (this.width ) rect.width  = this.width .copy();
+        if (this.height) rect.height = this.height.copy();
+        if (this.angle ) rect.angle  = this.angle .copy();
+        if (this.round ) rect.round  = this.round .copy();
 
-    //     rect.copyFromBase(this);
+        rect.copyFromBase(this);
 
-    //     return rect;
-    // }
+        return rect;
+    }
 
 
 
@@ -8603,20 +8630,20 @@ extends GShapeBase
 
 
 
-    // copy()
-    // {
-    //     const fill = new GFill(this.nodeId, this.active);
+    copy()
+    {
+        const fill = new GFill(this.nodeId, this.active);
 
-    //     if (this.input) 
-    //         fill.input = this.input.copy();
+        if (this.input) 
+            fill.input = this.input.copy();
 
-    //     if (this.color  ) fill.color   = this.color  .copy();
-    //     if (this.opacity) fill.opacity = this.opacity.copy();
+        if (this.color  ) fill.color   = this.color  .copy();
+        if (this.opacity) fill.opacity = this.opacity.copy();
 
-    //     rect.copyFromBase(this);
+        rect.copyFromBase(this);
 
-    //     return fill;
-    // }
+        return fill;
+    }
 
 
 
@@ -8645,11 +8672,10 @@ extends GShapeBase
         }
 
 
-        const color   = this.color   /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.color   : this.input ? this.input.color   : null;
-        const opacity = this.opacity /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.opacity : this.input ? this.input.opacity : null;
+        const color   = this.color   ? this.color   : this.input ? this.input.color   : null;
+        const opacity = this.opacity ? this.opacity : this.input ? this.input.opacity : null;
 
-
-        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color.type == COLOR ? color.toColorValue() : color);
         if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
 
@@ -8663,12 +8689,15 @@ extends GShapeBase
 
     evalObjects()
     {
-        if (   !this.color
-            || !this.opacity)
+        const color   = this.color   ? this.color   : this.input ? this.input.color   : null;
+        const opacity = this.opacity ? this.opacity : this.input ? this.input.opacity : null;
+
+        if (   !color
+            || !opacity)
             return;
 
 
-        const rgb = scaleRgb(this.color.toRgb());
+        const rgb = scaleRgb((color.type == COLOR ? color.toColorValue() : color).toRgb());
 
 
         for (const obj of this.objects)
@@ -17822,18 +17851,17 @@ function displayValue(type, value)
         return value;
 
 
-    let val;
-
     switch (type)
     {
-        case NUMBER_VALUE:    val = parseNumberValue   (value)[0]; break;
-        case COLOR_VALUE:     val = parseColorValue    (value)[0]; break;
-        case FILL_VALUE:      val = parseFillValue     (value)[0]; break;
-        case STROKE_VALUE:    val = parseStrokeValue   (value)[0]; break;
-        case RECTANGLE_VALUE: val = parseRectangleValue(value)[0]; break;
+        case NUMBER_VALUE:    return parseNumberValue   (value)[0].toDisplayString();
+        case COLOR_VALUE:     return parseColorValue    (value)[0].toDisplayString();
+        case FILL_VALUE:      return parseFillValue     (value)[0].toDisplayString()
+        case STROKE_VALUE:    return parseStrokeValue   (value)[0].toDisplayString()
+        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString()
     }
 
-    return val.toDisplayString();
+
+    console.assert(false, 'cannot display value of type \'' + type + '\'');
 }
 
 
@@ -18134,13 +18162,6 @@ extends GType
 
 
 
-    toRgb()
-    {
-        return dataColor2rgb(this.toDataColor());
-    }
-
-
-
     toDataColor()
     {
         if (!this.isValid())
@@ -18151,6 +18172,13 @@ extends GType
             this.c1,
             this.c2,
             this.c3);
+    }
+
+
+
+    toRgb()
+    {
+        return dataColor2rgb(this.toDataColor());
     }
 
 
@@ -20052,12 +20080,48 @@ extends GOperator
 
 
 
-    // get mustNotEval()
+    toColorValue()
+    {
+        return new ColorValue(
+            this.space,
+            this.c1,
+            this.c2,
+            this.c3);
+    }
+
+
+
+    // toDataColor()
     // {
-    //     return this.space.mustNotEval
-    //         && this.c1   .mustNotEval
-    //         && this.c2   .mustNotEval
-    //         && this.c3   .mustNotEval;
+    //     if (!this.isValid())
+    //         return dataColor_NaN;
+
+    //     return makeDataColor(
+    //         this.space,
+    //         this.c1,
+    //         this.c2,
+    //         this.c3);
+    // }
+
+
+
+    // toRgb()
+    // {
+    //     return dataColor2rgb(this.toDataColor());
+    // }
+
+
+
+    // toDisplayString()
+    // {
+    //     // console.log('this.space =', this.space);
+    //     // console.log('this.c1 =', this.c1);
+    //     // console.log('this.c2 =', this.c2);
+    //     // console.log('this.c3 =', this.c3);
+    //     return      this.space.toDisplayString()
+    //         + ' ' + this.c1   .toDisplayString()
+    //         + ' ' + this.c2   .toDisplayString()
+    //         + ' ' + this.c3   .toDisplayString();
     // }
 }
 
@@ -20600,14 +20664,6 @@ extends GOperator
 
         return this.result;
     }
-
-
-
-    // get mustNotEval()
-    // {
-    //     return this.fill    .mustNotEval
-    //         && this.position.mustNotEval;
-    // }
 }
 
 
@@ -20704,24 +20760,24 @@ extends GShapeBase
 
 
 
-    // copy()
-    // {
-    //     const rect = new GRectangle(this.nodeId, this.active);
+    copy()
+    {
+        const rect = new GRectangle(this.nodeId, this.active);
 
-    //     if (this.input) 
-    //         rect.input = this.input.copy();
+        if (this.input) 
+            rect.input = this.input.copy();
 
-    //     if (this.x     ) rect.x      = this.x     .copy();
-    //     if (this.y     ) rect.y      = this.y     .copy();
-    //     if (this.width ) rect.width  = this.width .copy();
-    //     if (this.height) rect.height = this.height.copy();
-    //     if (this.angle ) rect.angle  = this.angle .copy();
-    //     if (this.round ) rect.round  = this.round .copy();
+        if (this.x     ) rect.x      = this.x     .copy();
+        if (this.y     ) rect.y      = this.y     .copy();
+        if (this.width ) rect.width  = this.width .copy();
+        if (this.height) rect.height = this.height.copy();
+        if (this.angle ) rect.angle  = this.angle .copy();
+        if (this.round ) rect.round  = this.round .copy();
 
-    //     rect.copyFromBase(this);
+        rect.copyFromBase(this);
 
-    //     return rect;
-    // }
+        return rect;
+    }
 
 
 
@@ -21302,20 +21358,20 @@ extends GShapeBase
 
 
 
-    // copy()
-    // {
-    //     const fill = new GFill(this.nodeId, this.active);
+    copy()
+    {
+        const fill = new GFill(this.nodeId, this.active);
 
-    //     if (this.input) 
-    //         fill.input = this.input.copy();
+        if (this.input) 
+            fill.input = this.input.copy();
 
-    //     if (this.color  ) fill.color   = this.color  .copy();
-    //     if (this.opacity) fill.opacity = this.opacity.copy();
+        if (this.color  ) fill.color   = this.color  .copy();
+        if (this.opacity) fill.opacity = this.opacity.copy();
 
-    //     rect.copyFromBase(this);
+        rect.copyFromBase(this);
 
-    //     return fill;
-    // }
+        return fill;
+    }
 
 
 
@@ -21344,11 +21400,10 @@ extends GShapeBase
         }
 
 
-        const color   = this.color   /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.color   : this.input ? this.input.color   : null;
-        const opacity = this.opacity /*&& (!this.input || SHAPE_TYPES.includes(this.input.type))*/ ? this.opacity : this.input ? this.input.opacity : null;
+        const color   = this.color   ? this.color   : this.input ? this.input.color   : null;
+        const opacity = this.opacity ? this.opacity : this.input ? this.input.opacity : null;
 
-
-        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  );
+        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color.type == COLOR ? color.toColorValue() : color);
         if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
 
@@ -21362,12 +21417,15 @@ extends GShapeBase
 
     evalObjects()
     {
-        if (   !this.color
-            || !this.opacity)
+        const color   = this.color   ? this.color   : this.input ? this.input.color   : null;
+        const opacity = this.opacity ? this.opacity : this.input ? this.input.opacity : null;
+
+        if (   !color
+            || !opacity)
             return;
 
 
-        const rgb = scaleRgb(this.color.toRgb());
+        const rgb = scaleRgb((color.type == COLOR ? color.toColorValue() : color).toRgb());
 
 
         for (const obj of this.objects)
