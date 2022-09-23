@@ -59,19 +59,23 @@ function uiEndStartGenerator(msg)
     uiGetLocalData('graphView');
 
 
-    uiGetLocalData('showNodeId'      );
-    uiGetLocalData('showWires'       );
+    uiGetLocalData('enableLxxColorSpaces');
 
-    uiGetLocalData('logMessages'     );
-    uiGetLocalData('logActions'      );
-    uiGetLocalData('logRawLoading'   );
-    uiGetLocalData('logRawSaving'    );
-    uiGetLocalData('logLoading'      );
-    uiGetLocalData('logRawRequests'  );
-    uiGetLocalData('logRawValues'    );
-    uiGetLocalData('logRequests'     );
-    uiGetLocalData('logValueUpdates' );
-    uiGetLocalData('logObjectUpdates');
+    uiGetLocalData('showNodeId'          );
+    uiGetLocalData('showWires'           );
+
+    uiGetLocalData('logMessages'         );
+    uiGetLocalData('logActions'          );
+
+    uiGetLocalData('logLoading'          );
+    uiGetLocalData('logRequests'         );
+    uiGetLocalData('logValueUpdates'     );
+    uiGetLocalData('logObjectUpdates'    );
+
+    uiGetLocalData('logRawLoading'       );
+    uiGetLocalData('logRawSaving'        );
+    uiGetLocalData('logRawRequests'      );
+    uiGetLocalData('logRawValues'        );
 
 
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});

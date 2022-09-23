@@ -65,6 +65,8 @@ var menuShape;
 var menuZoom;
 
 
+var menuItemEnableLxxColorSpaces;
+
 var menuItemShowNodeId;
 var menuItemShowWires;
 
@@ -85,32 +87,32 @@ var menuItemZoomTo100;
 
 function initMenuBar()
 {
-    // menuMainPreferences = new Menu('Preferences', false);
-    // menuMainPreferences.addItems([ 
-    //     new MenuItem('Debug')]);
+    menuMainPreferences = new Menu('Preferences', false);
+    menuMainPreferences.addItems([ 
+        menuItemEnableLxxColorSpaces = new MenuItem('Enable Lxx color spaces', {checkCallback: () => settings.enableLxxColorSpaces, callback: () => updateSettingAndMenu('enableLxxColorSpaces', true, !settings.enableLxxColorSpaces)})]);
 
 
     menuMainDebugLoggingRaw = new Menu('Raw', false);
     menuMainDebugLoggingRaw.addItems([
-        menuItemLogRawLoading    = new MenuItem('Raw loading',    {checkCallback: () => settings.logRawLoading   , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading )}),
-        menuItemLogRawSaving     = new MenuItem('Raw saving',     {checkCallback: () => settings.logRawSaving    , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving  )}),
-                                   new MenuItem('',               {separator: true}),
-        menuItemLogRawRequests   = new MenuItem('Raw requests',   {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests)}),
-        menuItemLogRawValues     = new MenuItem('Raw values',     {checkCallback: () => settings.logRawValues    , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues  )})]);
+        menuItemLogRawLoading    = new MenuItem('Raw loading',  {checkCallback: () => settings.logRawLoading   , callback: () => { updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading );  updateEnableLxxColorSpace(); }}),
+        menuItemLogRawSaving     = new MenuItem('Raw saving',   {checkCallback: () => settings.logRawSaving    , callback: () =>   updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving  )}),
+                                   new MenuItem('',             {separator: true}),
+        menuItemLogRawRequests   = new MenuItem('Raw requests', {checkCallback: () => settings.logRawRequests  , callback: () =>   updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests)}),
+        menuItemLogRawValues     = new MenuItem('Raw values',   {checkCallback: () => settings.logRawValues    , callback: () =>   updateSettingAndMenu('logRawValues',     true, !settings.logRawValues  )})]);
 
 
     menuMainDebugLogging = new Menu('Logging', false);
     menuMainDebugLogging.addItems([
-        menuItemLogMessages      = new MenuItem('Messages',       {checkCallback: () => settings.logMessages     , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     )}),
-        menuItemLogActions       = new MenuItem('Actions',        {checkCallback: () => settings.logActions      , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      )}),
-                                   new MenuItem('',               {separator: true}),
-        menuItemLogLoading       = new MenuItem('Loading',        {checkCallback: () => settings.logLoading      , callback: () => updateSettingAndMenu('logLoading',       true, !settings.logLoading      )}),
-                                   new MenuItem('',               {separator: true}),
-        menuItemLogRequests      = new MenuItem('Requests',       {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
-        menuItemLogValueUpdates  = new MenuItem('Values',         {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
-        menuItemLogObjectUpdates = new MenuItem('Objects',        {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)}),
-                                   new MenuItem('',               {separator: true}),
-                                   new MenuItem('Raw',            {childMenu: menuMainDebugLoggingRaw})]);
+        menuItemLogMessages      = new MenuItem('Messages', {checkCallback: () => settings.logMessages     , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     )}),
+        menuItemLogActions       = new MenuItem('Actions',  {checkCallback: () => settings.logActions      , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      )}),
+                                   new MenuItem('',         {separator: true}),
+        menuItemLogLoading       = new MenuItem('Loading',  {checkCallback: () => settings.logLoading      , callback: () => updateSettingAndMenu('logLoading',       true, !settings.logLoading      )}),
+                                   new MenuItem('',         {separator: true}),
+        menuItemLogRequests      = new MenuItem('Requests', {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
+        menuItemLogValueUpdates  = new MenuItem('Values',   {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
+        menuItemLogObjectUpdates = new MenuItem('Objects',  {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)}),
+                                   new MenuItem('',         {separator: true}),
+                                   new MenuItem('Raw',      {childMenu: menuMainDebugLoggingRaw})]);
 
 
     menuMainDebug = new Menu('Debug', false);
@@ -146,7 +148,7 @@ function initMenuBar()
 
     menuMain = new Menu('Main menu', false);
     menuMain.addItems([
-                       //new MenuItem('Preferences', {childMenu: menuMainPreferences}),
+                       new MenuItem('Preferences',         {childMenu: menuMainPreferences}),
                        new MenuItem('Debug',               {childMenu: menuMainDebug}),
                        new MenuItem('',                    {separator: true}),
         menuMainHelp = new MenuItem('Help and activation', {childMenu: menuMainHelp })]);

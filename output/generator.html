@@ -5284,7 +5284,7 @@ extends GOperator
                 const toSpaceIndex = Math.min(Math.max(
                     0,
                     color.space.value),
-                    OpColorSpaces.length-1);
+                    colorSpaceCount(parse)-1);
 
                 this.convertColor(
                     color,
@@ -5310,7 +5310,7 @@ extends GOperator
             const toSpaceIndex = Math.min(Math.max(
                 0,
                 color.space.value),
-                OpColorSpaces.length-1);
+                colorSpaceCount(parse)-1);
 
             color.space.value = toSpaceIndex;
 
@@ -6784,24 +6784,23 @@ extends GOperator
 
 const settings =
 {
-    showNodeId:       false, // instead of name
-    showWires:        true,
-    
-    logMessages:      false,
+    enableLxxColorSpaces: false,
 
-    logActions:       false, 
-
-    logRawLoading:    false, 
-    logRawSaving:     false, 
+    showNodeId:           false, // instead of name
+    showWires:            true,
     
-    logLoading:       false, 
-
-    logRawRequests:   false, 
-    logRawValues:     false, 
+    logMessages:          false,
+    logActions:           false, 
     
-    logRequests:      false, 
-    logValueUpdates:  false, 
-    logObjectUpdates: false
+    logLoading:           false, 
+    logRequests:          false, 
+    logValueUpdates:      false, 
+    logObjectUpdates:     false,
+    
+    logRawLoading:        false, 
+    logRawSaving:         false, 
+    logRawRequests:       false, 
+    logRawValues:         false    
 };
 
 
@@ -6810,18 +6809,22 @@ function updateSetting(settingName, value)
 {
     switch (settingName)
     {
-        case 'showNodeId':        settings.showNodeId       = value;  break;
-        case 'showWires':         settings.showWires        = value;  break;
-        case 'logMessages':       settings.logMessages      = value;  break;
-        case 'logActions':        settings.logActions       = value;  break;
-        case 'logRawLoading':     settings.logRawLoading    = value;  break;
-        case 'logRawSaving':      settings.logRawSaving     = value;  break;
-        case 'logLoading':        settings.logLoading       = value;  break;
-        case 'logRawRequests':    settings.logRawRequests   = value;  break;
-        case 'logRawValues':      settings.logRawValues     = value;  break;
-        case 'logRequests':       settings.logRequests      = value;  break;
-        case 'logValueUpdates':   settings.logValueUpdates  = value;  break;
-        case 'logObjectUpdates':  settings.logObjectUpdates = value;  break;
+        case 'enableLxxColorSpaces': settings.enableLxxColorSpaces = value;  break;
+
+        case 'showNodeId':           settings.showNodeId           = value;  break;
+        case 'showWires':            settings.showWires            = value;  break;
+
+        case 'logMessages':          settings.logMessages          = value;  break;
+        case 'logActions':           settings.logActions           = value;  break;
+        case 'logLoading':           settings.logLoading           = value;  break;
+        case 'logRequests':          settings.logRequests          = value;  break;
+        case 'logValueUpdates':      settings.logValueUpdates      = value;  break;
+        case 'logObjectUpdates':     settings.logObjectUpdates     = value;  break;
+
+        case 'logRawLoading':        settings.logRawLoading        = value;  break;
+        case 'logRawSaving':         settings.logRawSaving         = value;  break;
+        case 'logRawRequests':       settings.logRawRequests       = value;  break;
+        case 'logRawValues':         settings.logRawValues         = value;  break;
     } 
 }
 
@@ -6831,18 +6834,22 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 {
     switch (settingName)
     {
-        case 'showNodeId':        if (valid) settings.showNodeId       = value;  menuItemShowNodeId      .setChecked(settings.showNodeId      );  break;
-        case 'showWires':         if (valid) settings.showWires        = value;  menuItemShowWires       .setChecked(settings.showWires       );  break;
-        case 'logMessages':       if (valid) settings.logMessages      = value;  menuItemLogMessages     .setChecked(settings.logMessages     );  break;
-        case 'logActions':        if (valid) settings.logActions       = value;  menuItemLogActions      .setChecked(settings.logActions      );  break;
-        case 'logRawLoading':     if (valid) settings.logRawLoading    = value;  menuItemLogRawLoading   .setChecked(settings.logRawLoading   );  break;
-        case 'logRawSaving':      if (valid) settings.logRawSaving     = value;  menuItemLogRawSaving    .setChecked(settings.logRawSaving    );  break;
-        case 'logLoading':        if (valid) settings.logLoading       = value;  menuItemLogLoading      .setChecked(settings.logLoading      );  break;
-        case 'logRawRequests':    if (valid) settings.logRawRequests   = value;  menuItemLogRawRequests  .setChecked(settings.logRawRequests  );  break;
-        case 'logRawValues':      if (valid) settings.logRawValues     = value;  menuItemLogRawValues    .setChecked(settings.logRawValues    );  break;
-        case 'logRequests':       if (valid) settings.logRequests      = value;  menuItemLogRequests     .setChecked(settings.logRequests     );  break;
-        case 'logValueUpdates':   if (valid) settings.logValueUpdates  = value;  menuItemLogValueUpdates .setChecked(settings.logValueUpdates );  break;
-        case 'logObjectUpdates':  if (valid) settings.logObjectUpdates = value;  menuItemLogObjectUpdates.setChecked(settings.logObjectUpdates);  break;
+        case 'enableLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemEnableLxxColorSpaces);  break;
+
+        case 'showNodeId':           updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId          );  break;
+        case 'showWires':            updateSettingAndMenu_(valid, settingName, value, menuItemShowWires           );  break;
+
+        case 'logMessages':          updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages         );  break;
+        case 'logActions':           updateSettingAndMenu_(valid, settingName, value, menuItemLogActions          );  break;
+        case 'logLoading':           updateSettingAndMenu_(valid, settingName, value, menuItemLogLoading          );  break;
+        case 'logRequests':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRequests         );  break;
+        case 'logValueUpdates':      updateSettingAndMenu_(valid, settingName, value, menuItemLogValueUpdates     );  break;
+        case 'logObjectUpdates':     updateSettingAndMenu_(valid, settingName, value, menuItemLogObjectUpdates    );  break;
+
+        case 'logRawLoading':        updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoading       );  break;
+        case 'logRawSaving':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaving        );  break;
+        case 'logRawRequests':       updateSettingAndMenu_(valid, settingName, value, menuItemLogRawRequests      );  break;
+        case 'logRawValues':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawValues        );  break;
     } 
 
     if (save)
@@ -6851,20 +6858,44 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 
 
 
+function updateSettingAndMenu_(valid, setting, value, menu)
+{
+    if (valid) 
+        settings[setting] = value;  
+
+    menu.setChecked(settings[setting]);
+}
+
+
+
 function updateSettingsMenus()
 {
-    menuItemShowNodeId      .setChecked(settings.showNodeId      );
-    menuItemShowWires       .setChecked(settings.showWires       );
-    menuItemLogMessages     .setChecked(settings.logMessages     );
-    menuItemLogActions      .setChecked(settings.logActions      );
-    menuItemLogRawLoading   .setChecked(settings.logRawLoading   );
-    menuItemLogRawSaving    .setChecked(settings.logRawSaving    );
-    menuItemLogLoading      .setChecked(settings.logLoading      );
-    menuItemLogRawRequests  .setChecked(settings.logRawRequests  );
-    menuItemLogRawValues    .setChecked(settings.logRawValues    );
-    menuItemLogRequests     .setChecked(settings.logRequests     );
-    menuItemLogValueUpdates .setChecked(settings.logValueUpdates );
-    menuItemLogObjectUpdates.setChecked(settings.logObjectUpdates);
+    menuItemEnableLxxColorSpaces.setChecked(settings.enableLxxColorSpaces);
+
+    menuItemShowNodeId          .setChecked(settings.showNodeId          );
+    menuItemShowWires           .setChecked(settings.showWires           );
+
+    menuItemLogMessages         .setChecked(settings.logMessages         );
+    menuItemLogActions          .setChecked(settings.logActions          );
+
+    menuItemLogLoading          .setChecked(settings.logLoading          );
+    menuItemLogRequests         .setChecked(settings.logRequests         );
+    menuItemLogValueUpdates     .setChecked(settings.logValueUpdates     );
+    menuItemLogObjectUpdates    .setChecked(settings.logObjectUpdates    );
+
+    menuItemLogRawLoading       .setChecked(settings.logRawLoading       );
+    menuItemLogRawSaving        .setChecked(settings.logRawSaving        );
+    menuItemLogRawRequests      .setChecked(settings.logRawRequests      );
+    menuItemLogRawValues        .setChecked(settings.logRawValues        );
+}
+
+
+
+function updateEnableLxxColorSpace()
+{
+    graph.nodes
+        .filter(n => COLOR_TYPES.includes(n.type))
+        .forEach(n => n.updateNode());
 }
 
 
@@ -7003,9 +7034,6 @@ var lastUpdateParamId = NULL;
 var lastUpdateValues  = [];
 var lastUpdateObjects = [];
 
-var settings_logRequests;
-
-
 
 function genRequest(request)
 {
@@ -7013,7 +7041,10 @@ function genRequest(request)
     // console.trace();
 
 
-    settings_logRequests = request[0] == LOG;
+    const set = parseInt(request[0]);
+
+    const enableLxxColorSpaces = (set >> 0) & 1 != 0;
+    const logRequests          = (set >> 1) & 1 != 0;
 
 
     const updateNodeId  = request[1];
@@ -7024,7 +7055,8 @@ function genRequest(request)
         request, 
         updateNodeId, 
         updateParamId, 
-        settings);
+        enableLxxColorSpaces,
+        logRequests);
 
 
     const stackOverflowProtect = 100;
@@ -7034,7 +7066,7 @@ function genRequest(request)
         genParse(parse);
 
 
-    if (settings_logRequests)
+    if (logRequests)
         logRequest(parse);
 
 
@@ -7258,7 +7290,7 @@ function genParseColorValue(parse)
 
     const col = parse.move();
 
-    if (parse.logRequests)
+    if (parse.settings.logRequests) 
         logReqColorValue(col, parse);
 
     return parseColorValue(col)[0];
@@ -7274,7 +7306,7 @@ function genParseColor(parse)
     const col = new GColor(nodeId, active);
 
   
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqColor(col, parse);
 
 
@@ -7342,7 +7374,7 @@ function genParseColorInterpolate(parse)
     }
 
     
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqColorInterpolate(lerp, nValues, parse);
 
 
@@ -7406,7 +7438,7 @@ function genParseColorContrast(parse)
         : -1;
 
     
-    if (parse.logRequests) 
+        if (parse.settings.logRequests) 
         logReqColorContrast(cnt, nValues, valueIndex, parse);
 
 
@@ -7454,7 +7486,7 @@ function genParseColorBlind(parse)
     const cb = new GColorBlind(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqColorBlind(cb, parse);
 
 
@@ -7492,7 +7524,7 @@ function genParseColorValidate(parse)
     const val = new GColorValidate(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqColorValidate(val, parse);
 
 
@@ -7528,7 +7560,7 @@ function genParseNumValue(parse)
 
     const val = parse.move();
 
-    if (parse.logRequests)
+    if (parse.settings.logRequests) 
         logReqNumberValue(val, parse);
 
     return val.indexOf(',') >= 0
@@ -7546,7 +7578,7 @@ function genParseNumber(parse)
     const num = new GNumber(nodeId, active);
 
     
-    if (parse.logRequests)
+    if (parse.settings.logRequests) 
         logReqNumber(num, parse);
 
 
@@ -7588,7 +7620,7 @@ function genParseLimits(parse)
     }
 
     
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqLimits(lim, nValues, parse);
 
 
@@ -7630,7 +7662,7 @@ function genParseArithmetic(parse, newNode)
         nValues = parse.move();
 
 
-    if (parse.logRequests) 
+        if (parse.settings.logRequests) 
         logReqArithmetic(arith, type, nValues, parse);
 
 
@@ -7672,7 +7704,7 @@ function genParseInterpolate(parse)
     }
 
     
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqInterpolate(lerp, nValues, parse);
 
 
@@ -7728,7 +7760,7 @@ function genParseRectangle(parse)
     const rect = new GRectangle(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqShape(rect, parse);
 
 
@@ -7790,7 +7822,7 @@ function genParseLine(parse)
     let line = new GLine(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqShape(line, parse);
 
 
@@ -7845,7 +7877,7 @@ function genParseEllipse(parse)
     const elps = new GEllipse(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqShape(elps, parse);
 
 
@@ -7901,7 +7933,7 @@ function genParsePolygon(parse)
     const poly = new GPolygon(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqShape(poly, parse);
 
 
@@ -7959,7 +7991,7 @@ function genParseStar(parse)
     const star = new GStar(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqShape(star, parse);
 
 
@@ -8015,7 +8047,7 @@ function genParseFillValue(parse)
 
     const fill = parse.move();
 
-    if (parse.logRequests)
+    if (parse.settings.logRequests) 
         logReqFillValue(fill, parse);
 
     return parseFillValue(fill)[0];
@@ -8031,7 +8063,7 @@ function genParseFill(parse)
     const fill = new GFill(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqFill(fill, parse);
 
 
@@ -8099,7 +8131,7 @@ function genParseStrokeValue(parse)
 
     const stroke = parse.move();
 
-    if (parse.logRequests)
+    if (parse.settings.logRequests) 
         logReqStrokeValue(stroke, parse);
 
     return parseStrokeValue(stroke)[0];
@@ -8115,7 +8147,7 @@ function genParseStroke(parse)
     const stroke = new GStroke(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqStroke(stroke, parse);
 
 
@@ -8185,7 +8217,7 @@ function genParseColorStopValue(parse)
 
     const stop = parse.move();
 
-    if (parse.logRequests)
+    if (parse.settings.logRequests) 
         logReqColorStopValue(stop, parse);
 
     return parseColorStopValue(stop);
@@ -8201,7 +8233,7 @@ function genParseColorStop(parse)
     const stop = new GColorStop(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqColorStop(stop, parse);
 
 
@@ -8244,8 +8276,10 @@ class Parse
     
     pos; 
     so;
-    
-    logRequests;
+
+    settings = {};
+
+
     log  = '';
     
     nTab = 0;
@@ -8280,17 +8314,19 @@ class Parse
 
 
 
-    constructor(request, updateNodeId, updateParamId, logRequests)
+    constructor(request, updateNodeId, updateParamId, enableLxxColorSpaces, logRequests)
     {
         this.request       = request;
           
         this.pos           = 3; 
         this.so            = 0;
         
-        this.logRequests   = logRequests;
-
         this.updateNodeId  = updateNodeId; 
         this.updateParamId = updateParamId;
+   
+        
+        this.settings.enableLxxColorSpaces = enableLxxColorSpaces;
+        this.settings.logRequests          = logRequests;
     }
 
 
@@ -8415,7 +8451,7 @@ function genParseParamCount(parse)
 {
     const nParamIds = parseInt(parse.move());
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         parse.log += parse.tab + nParamIds;
 
     return nParamIds;
@@ -8442,7 +8478,7 @@ function genParseParam(parse)
     pushUnique(parse.paramNodeIds, nodeId);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqParam(param, type, parse);
 
 
@@ -8455,7 +8491,7 @@ function genParseParamId(parse)
 {
     const paramId = parse.move();
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests)
         parse.log += parse.tab + paramId;
 
     return paramId;
@@ -9804,15 +9840,25 @@ const OpColorSpaces =
     ['hsl',    'HSL'   ], 
     ['hclokl', 'HCL/ok'],
     ['hcllab', 'HCL/ab'],
-    ['hclluv', 'HCL/uv']/*,
+    ['hclluv', 'HCL/uv'],
     ['oklab',  'okLab' ],
     ['lab',    'Lab'   ],
-    ['luv',    'Luv'   ]*/
+    ['luv',    'Luv'   ]
 ];
 
-function colorSpace(index) { return OpColorSpaces[index][0]; }
 
+
+function colorSpace     (index) { return OpColorSpaces[index][0]; }
 function colorSpaceIndex(space) { return OpColorSpaces.findIndex(s => s[0] == space); }
+
+function colorSpaceCount(parse = null)
+{ 
+    const set = parse ? parse.settings : settings;
+
+    return set.enableLxxColorSpaces 
+           ? OpColorSpaces.length
+           : OpColorSpaces.length - 3; 
+}
 
 
 
@@ -10224,22 +10270,22 @@ function getNormalColorHs_(c1, c2, c3)
 
 
 
-function getNormalColorOpp(c1, c2, c3)
-{
-    return [
-        c1 / oppFactor[0], 
-        c2 / oppFactor[1], 
-        c3 / oppFactor[2]];
-}
-
-
-
 function getNormalColorHcl(c1, c2, c3)
 {
     return [
         c1 / hclFactor[0], 
         c2 / hclFactor[1], 
         c3 / hclFactor[2]];
+}
+
+
+
+function getNormalColorOpp(c1, c2, c3)
+{
+    return [
+        c1 / oppFactor[0], 
+        c2 / oppFactor[1], 
+        c3 / oppFactor[2]];
 }
 
 
@@ -10752,8 +10798,8 @@ function validateChannel(color, iChan, margin)
            && ! valid_
            && stackOverflowProtect-- > 0)
     {
-        _c -= d;  _valid = isColorValid(_c, iChan, savedColor);
-        c_ += d;  valid_ = isColorValid(c_, iChan, savedColor);
+        _c  -= d;  _valid  = isColorValid(_c , iChan, savedColor);
+         c_ += d;   valid_ = isColorValid( c_, iChan, savedColor);
     }
 
 

@@ -4,7 +4,7 @@ function genParseNumValue(parse)
 
     const val = parse.move();
 
-    if (parse.logRequests)
+    if (parse.settings.logRequests) 
         logReqNumberValue(val, parse);
 
     return val.indexOf(',') >= 0
@@ -22,7 +22,7 @@ function genParseNumber(parse)
     const num = new GNumber(nodeId, active);
 
     
-    if (parse.logRequests)
+    if (parse.settings.logRequests) 
         logReqNumber(num, parse);
 
 
@@ -64,7 +64,7 @@ function genParseLimits(parse)
     }
 
     
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqLimits(lim, nValues, parse);
 
 
@@ -106,7 +106,7 @@ function genParseArithmetic(parse, newNode)
         nValues = parse.move();
 
 
-    if (parse.logRequests) 
+        if (parse.settings.logRequests) 
         logReqArithmetic(arith, type, nValues, parse);
 
 
@@ -148,7 +148,7 @@ function genParseInterpolate(parse)
     }
 
     
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqInterpolate(lerp, nValues, parse);
 
 

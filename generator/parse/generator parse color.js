@@ -4,7 +4,7 @@ function genParseColorValue(parse)
 
     const col = parse.move();
 
-    if (parse.logRequests)
+    if (parse.settings.logRequests) 
         logReqColorValue(col, parse);
 
     return parseColorValue(col)[0];
@@ -20,7 +20,7 @@ function genParseColor(parse)
     const col = new GColor(nodeId, active);
 
   
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqColor(col, parse);
 
 
@@ -88,7 +88,7 @@ function genParseColorInterpolate(parse)
     }
 
     
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqColorInterpolate(lerp, nValues, parse);
 
 
@@ -152,7 +152,7 @@ function genParseColorContrast(parse)
         : -1;
 
     
-    if (parse.logRequests) 
+        if (parse.settings.logRequests) 
         logReqColorContrast(cnt, nValues, valueIndex, parse);
 
 
@@ -200,7 +200,7 @@ function genParseColorBlind(parse)
     const cb = new GColorBlind(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqColorBlind(cb, parse);
 
 
@@ -238,7 +238,7 @@ function genParseColorValidate(parse)
     const val = new GColorValidate(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqColorValidate(val, parse);
 
 

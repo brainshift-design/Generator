@@ -274,7 +274,10 @@ extends OpColorBase
             ? [1, 1, 1, 0.12]
             : [0, 0, 0, 0.09]; 
 
-            
+
+        this.paramSpace.control.setMax(colorSpaceCount()-1);
+
+
         this.paramSpace.control. backStyleLight =
         this.paramSpace.control. backStyleDark  = 'transparent';
 

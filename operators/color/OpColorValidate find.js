@@ -45,8 +45,8 @@ function validateChannel(color, iChan, margin)
            && ! valid_
            && stackOverflowProtect-- > 0)
     {
-        _c -= d;  _valid = isColorValid(_c, iChan, savedColor);
-        c_ += d;  valid_ = isColorValid(c_, iChan, savedColor);
+        _c  -= d;  _valid  = isColorValid(_c , iChan, savedColor);
+         c_ += d;   valid_ = isColorValid( c_, iChan, savedColor);
     }
 
 

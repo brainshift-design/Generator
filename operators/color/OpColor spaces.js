@@ -6,15 +6,25 @@ const OpColorSpaces =
     ['hsl',    'HSL'   ], 
     ['hclokl', 'HCL/ok'],
     ['hcllab', 'HCL/ab'],
-    ['hclluv', 'HCL/uv']/*,
+    ['hclluv', 'HCL/uv'],
     ['oklab',  'okLab' ],
     ['lab',    'Lab'   ],
-    ['luv',    'Luv'   ]*/
+    ['luv',    'Luv'   ]
 ];
 
-function colorSpace(index) { return OpColorSpaces[index][0]; }
 
+
+function colorSpace     (index) { return OpColorSpaces[index][0]; }
 function colorSpaceIndex(space) { return OpColorSpaces.findIndex(s => s[0] == space); }
+
+function colorSpaceCount(parse = null)
+{ 
+    const set = parse ? parse.settings : settings;
+
+    return set.enableLxxColorSpaces 
+           ? OpColorSpaces.length
+           : OpColorSpaces.length - 3; 
+}
 
 
 
@@ -426,22 +436,22 @@ function getNormalColorHs_(c1, c2, c3)
 
 
 
-function getNormalColorOpp(c1, c2, c3)
-{
-    return [
-        c1 / oppFactor[0], 
-        c2 / oppFactor[1], 
-        c3 / oppFactor[2]];
-}
-
-
-
 function getNormalColorHcl(c1, c2, c3)
 {
     return [
         c1 / hclFactor[0], 
         c2 / hclFactor[1], 
         c3 / hclFactor[2]];
+}
+
+
+
+function getNormalColorOpp(c1, c2, c3)
+{
+    return [
+        c1 / oppFactor[0], 
+        c2 / oppFactor[1], 
+        c3 / oppFactor[2]];
 }
 
 

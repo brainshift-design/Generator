@@ -17,7 +17,7 @@ function genParseRectangle(parse)
     const rect = new GRectangle(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqShape(rect, parse);
 
 
@@ -79,7 +79,7 @@ function genParseLine(parse)
     let line = new GLine(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqShape(line, parse);
 
 
@@ -134,7 +134,7 @@ function genParseEllipse(parse)
     const elps = new GEllipse(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqShape(elps, parse);
 
 
@@ -190,7 +190,7 @@ function genParsePolygon(parse)
     const poly = new GPolygon(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqShape(poly, parse);
 
 
@@ -248,7 +248,7 @@ function genParseStar(parse)
     const star = new GStar(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqShape(star, parse);
 
 

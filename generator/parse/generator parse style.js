@@ -4,7 +4,7 @@ function genParseFillValue(parse)
 
     const fill = parse.move();
 
-    if (parse.logRequests)
+    if (parse.settings.logRequests) 
         logReqFillValue(fill, parse);
 
     return parseFillValue(fill)[0];
@@ -20,7 +20,7 @@ function genParseFill(parse)
     const fill = new GFill(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqFill(fill, parse);
 
 
@@ -88,7 +88,7 @@ function genParseStrokeValue(parse)
 
     const stroke = parse.move();
 
-    if (parse.logRequests)
+    if (parse.settings.logRequests) 
         logReqStrokeValue(stroke, parse);
 
     return parseStrokeValue(stroke)[0];
@@ -104,7 +104,7 @@ function genParseStroke(parse)
     const stroke = new GStroke(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqStroke(stroke, parse);
 
 
@@ -174,7 +174,7 @@ function genParseColorStopValue(parse)
 
     const stop = parse.move();
 
-    if (parse.logRequests)
+    if (parse.settings.logRequests) 
         logReqColorStopValue(stop, parse);
 
     return parseColorStopValue(stop);
@@ -190,7 +190,7 @@ function genParseColorStop(parse)
     const stop = new GColorStop(nodeId, active);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqColorStop(stop, parse);
 
 

@@ -85,7 +85,7 @@ extends GOperator
                 const toSpaceIndex = Math.min(Math.max(
                     0,
                     color.space.value),
-                    OpColorSpaces.length-1);
+                    colorSpaceCount(parse)-1);
 
                 this.convertColor(
                     color,
@@ -111,7 +111,7 @@ extends GOperator
             const toSpaceIndex = Math.min(Math.max(
                 0,
                 color.space.value),
-                OpColorSpaces.length-1);
+                colorSpaceCount(parse)-1);
 
             color.space.value = toSpaceIndex;
 

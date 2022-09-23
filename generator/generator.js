@@ -3,9 +3,6 @@ var lastUpdateParamId = NULL;
 var lastUpdateValues  = [];
 var lastUpdateObjects = [];
 
-var settings_logRequests;
-
-
 
 function genRequest(request)
 {
@@ -13,7 +10,10 @@ function genRequest(request)
     // console.trace();
 
 
-    settings_logRequests = request[0] == LOG;
+    const set = parseInt(request[0]);
+
+    const enableLxxColorSpaces = (set >> 0) & 1 != 0;
+    const logRequests          = (set >> 1) & 1 != 0;
 
 
     const updateNodeId  = request[1];
@@ -24,7 +24,8 @@ function genRequest(request)
         request, 
         updateNodeId, 
         updateParamId, 
-        settings);
+        enableLxxColorSpaces,
+        logRequests);
 
 
     const stackOverflowProtect = 100;
@@ -34,7 +35,7 @@ function genRequest(request)
         genParse(parse);
 
 
-    if (settings_logRequests)
+    if (logRequests)
         logRequest(parse);
 
 

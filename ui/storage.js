@@ -1,75 +1,11 @@
-function uiGetLocalData(key, value)
-{
-    uiQueueMessageToFigma({ 
-        cmd: 'figGetLocalData', 
-        key:  key
-    });
-}
+function      uiGetLocalData(key)        { uiQueueMessageToFigma({ cmd:      'figGetLocalData', key: key               }); }
+function      uiSetLocalData(key, value) { uiQueueMessageToFigma({ cmd:      'figSetLocalData', key: key, value: value }); }
+function    uiClearLocalData(key)        { uiQueueMessageToFigma({ cmd:      'figSetLocalData', key: key, value: ''    }); }
+function uiClearAllLocalData(key)        { uiQueueMessageToFigma({ cmd: 'figClearAllLocalData', key: key, value: ''    }); }
 
-
-
-function uiSetLocalData(key, value)
-{
-    uiQueueMessageToFigma({ 
-        cmd:  'figSetLocalData',
-        key:   key,
-        value: value
-    });
-}
-
-
-
-function uiClearLocalData(key)
-{
-    uiQueueMessageToFigma({ 
-        cmd:  'figSetLocalData',
-        key:   key,
-        value: ''
-    });
-}
-
-
-
-function uiClearAllLocalData(key)
-{
-    uiQueueMessageToFigma({ 
-        cmd:  'figClearAllLocalData',
-        key:   key,
-        value: ''
-    });
-}
-
-
-
-function uiGetPageData(key)
-{
-    uiQueueMessageToFigma({ 
-        cmd: 'figGetPageData', 
-        key:  key
-    });
-}
-
-
-
-function uiSetPageData(key, value)
-{
-    uiQueueMessageToFigma({ 
-        cmd:  'figSetPageData', 
-        key:   key,
-        value: value
-    });
-}
-
-
-
-function uiClearPageData(key)
-{
-    uiQueueMessageToFigma({ 
-        cmd:  'figSetPageData', 
-        key:   key,
-        value: ''
-    });
-}
+function       uiGetPageData(key)        { uiQueueMessageToFigma({ cmd:       'figGetPageData', key: key               }); } 
+function       uiSetPageData(key, value) { uiQueueMessageToFigma({ cmd:       'figSetPageData', key: key, value: value }); }
+function     uiClearPageData(key)        { uiQueueMessageToFigma({ cmd:       'figSetPageData', key: key, value: ''    }); }
 
 
 
@@ -101,19 +37,23 @@ function uiGetLocalDataReturn(msg)
             graphView.updatePanAndZoom();
             break;
 
+        case 'enableLxxColorSpaces':       
+
         case 'showNodeId':       
         case 'showWires':        
 
         case 'logMessages':      
         case 'logActions':       
-        case 'logRawLoading':    
-        case 'logRawSaving':     
+
         case 'logLoading':       
-        case 'logRawRequests':   
-        case 'logRawValues':     
         case 'logRequests':      
         case 'logValueUpdates':  
         case 'logObjectUpdates': 
+
+        case 'logRawLoading':    
+        case 'logRawSaving':     
+        case 'logRawRequests':   
+        case 'logRawValues':     
             updateSettingAndMenu(
                 msg.key, 
                 msg.value, 

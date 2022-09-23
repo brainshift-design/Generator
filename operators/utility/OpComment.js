@@ -79,30 +79,32 @@ extends OperatorBase
     {
         this.label.innerHTML = this.name;
 
+
         if (this.selected)
         {
-            this.label.style.color      = rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
-            this.label.style.textShadow = '0 0 0 ' + colFigmaBlue;
+            this.label.style.color        = rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
+            this.label.style.textShadow   = '0 0 0 ' + colFigmaBlue;
 
             this.textbox.style.color      = rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
             this.textbox.style.textShadow = '0 0 0 ' + colFigmaBlue;
         }
         else
         {
-            this.label.style.color      = '#666';
-            this.label.style.textShadow = 'none';
+            this.label.style.color        = '#666';
+            this.label.style.textShadow   = 'none';
 
             this.textbox.style.color      = '#666';
             this.textbox.style.textShadow = 'none';
         }
     
-        this.label.style.background = 'transparent';
-        this.label.style.textAlign  = 'left';
 
-        this.label.style.left       = '0';
-        this.label.style.top        = '0';
+        this.label.style.background           = 'transparent';
+        this.label.style.textAlign            = 'left';
 
-        this.label.style.transform  = 'none';
+        this.label.style.left                 = '0';
+        this.label.style.top                  = '0';
+
+        this.label.style.transform            = 'none';
 
         this.label.style.WebkitBackgroundClip = 'inherit';
         this.label.style.WebkitTextFillColor  = 'inherit';

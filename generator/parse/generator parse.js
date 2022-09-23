@@ -10,8 +10,10 @@ class Parse
     
     pos; 
     so;
-    
-    logRequests;
+
+    settings = {};
+
+
     log  = '';
     
     nTab = 0;
@@ -46,17 +48,19 @@ class Parse
 
 
 
-    constructor(request, updateNodeId, updateParamId, logRequests)
+    constructor(request, updateNodeId, updateParamId, enableLxxColorSpaces, logRequests)
     {
         this.request       = request;
           
         this.pos           = 3; 
         this.so            = 0;
         
-        this.logRequests   = logRequests;
-
         this.updateNodeId  = updateNodeId; 
         this.updateParamId = updateParamId;
+   
+        
+        this.settings.enableLxxColorSpaces = enableLxxColorSpaces;
+        this.settings.logRequests          = logRequests;
     }
 
 
@@ -181,7 +185,7 @@ function genParseParamCount(parse)
 {
     const nParamIds = parseInt(parse.move());
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         parse.log += parse.tab + nParamIds;
 
     return nParamIds;
@@ -208,7 +212,7 @@ function genParseParam(parse)
     pushUnique(parse.paramNodeIds, nodeId);
 
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests) 
         logReqParam(param, type, parse);
 
 
@@ -221,7 +225,7 @@ function genParseParamId(parse)
 {
     const paramId = parse.move();
 
-    if (parse.logRequests) 
+    if (parse.settings.logRequests)
         parse.log += parse.tab + paramId;
 
     return paramId;

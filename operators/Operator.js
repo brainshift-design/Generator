@@ -733,7 +733,12 @@ function pushUpdateFromParam(nodes, param)
     //console.log('pushUpdateFromParam('+param+')', nodes);
 
     
-    const request = settings.logRequests ? [LOG] : [NULL];
+    const set =
+          ((settings.enableLxxColorSpaces) << 0)
+        | ((settings.logRequests         ) << 1);
+
+
+    const request = [set.toString()];
 
 
     if (param) request.push(param.node.id, param.id);

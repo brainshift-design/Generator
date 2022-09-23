@@ -1,23 +1,22 @@
 const settings =
 {
-    showNodeId:       false, // instead of name
-    showWires:        true,
-    
-    logMessages:      false,
+    enableLxxColorSpaces: false,
 
-    logActions:       false, 
-
-    logRawLoading:    false, 
-    logRawSaving:     false, 
+    showNodeId:           false, // instead of name
+    showWires:            true,
     
-    logLoading:       false, 
-
-    logRawRequests:   false, 
-    logRawValues:     false, 
+    logMessages:          false,
+    logActions:           false, 
     
-    logRequests:      false, 
-    logValueUpdates:  false, 
-    logObjectUpdates: false
+    logLoading:           false, 
+    logRequests:          false, 
+    logValueUpdates:      false, 
+    logObjectUpdates:     false,
+    
+    logRawLoading:        false, 
+    logRawSaving:         false, 
+    logRawRequests:       false, 
+    logRawValues:         false    
 };
 
 
@@ -26,18 +25,22 @@ function updateSetting(settingName, value)
 {
     switch (settingName)
     {
-        case 'showNodeId':        settings.showNodeId       = value;  break;
-        case 'showWires':         settings.showWires        = value;  break;
-        case 'logMessages':       settings.logMessages      = value;  break;
-        case 'logActions':        settings.logActions       = value;  break;
-        case 'logRawLoading':     settings.logRawLoading    = value;  break;
-        case 'logRawSaving':      settings.logRawSaving     = value;  break;
-        case 'logLoading':        settings.logLoading       = value;  break;
-        case 'logRawRequests':    settings.logRawRequests   = value;  break;
-        case 'logRawValues':      settings.logRawValues     = value;  break;
-        case 'logRequests':       settings.logRequests      = value;  break;
-        case 'logValueUpdates':   settings.logValueUpdates  = value;  break;
-        case 'logObjectUpdates':  settings.logObjectUpdates = value;  break;
+        case 'enableLxxColorSpaces': settings.enableLxxColorSpaces = value;  break;
+
+        case 'showNodeId':           settings.showNodeId           = value;  break;
+        case 'showWires':            settings.showWires            = value;  break;
+
+        case 'logMessages':          settings.logMessages          = value;  break;
+        case 'logActions':           settings.logActions           = value;  break;
+        case 'logLoading':           settings.logLoading           = value;  break;
+        case 'logRequests':          settings.logRequests          = value;  break;
+        case 'logValueUpdates':      settings.logValueUpdates      = value;  break;
+        case 'logObjectUpdates':     settings.logObjectUpdates     = value;  break;
+
+        case 'logRawLoading':        settings.logRawLoading        = value;  break;
+        case 'logRawSaving':         settings.logRawSaving         = value;  break;
+        case 'logRawRequests':       settings.logRawRequests       = value;  break;
+        case 'logRawValues':         settings.logRawValues         = value;  break;
     } 
 }
 
@@ -47,18 +50,22 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 {
     switch (settingName)
     {
-        case 'showNodeId':        if (valid) settings.showNodeId       = value;  menuItemShowNodeId      .setChecked(settings.showNodeId      );  break;
-        case 'showWires':         if (valid) settings.showWires        = value;  menuItemShowWires       .setChecked(settings.showWires       );  break;
-        case 'logMessages':       if (valid) settings.logMessages      = value;  menuItemLogMessages     .setChecked(settings.logMessages     );  break;
-        case 'logActions':        if (valid) settings.logActions       = value;  menuItemLogActions      .setChecked(settings.logActions      );  break;
-        case 'logRawLoading':     if (valid) settings.logRawLoading    = value;  menuItemLogRawLoading   .setChecked(settings.logRawLoading   );  break;
-        case 'logRawSaving':      if (valid) settings.logRawSaving     = value;  menuItemLogRawSaving    .setChecked(settings.logRawSaving    );  break;
-        case 'logLoading':        if (valid) settings.logLoading       = value;  menuItemLogLoading      .setChecked(settings.logLoading      );  break;
-        case 'logRawRequests':    if (valid) settings.logRawRequests   = value;  menuItemLogRawRequests  .setChecked(settings.logRawRequests  );  break;
-        case 'logRawValues':      if (valid) settings.logRawValues     = value;  menuItemLogRawValues    .setChecked(settings.logRawValues    );  break;
-        case 'logRequests':       if (valid) settings.logRequests      = value;  menuItemLogRequests     .setChecked(settings.logRequests     );  break;
-        case 'logValueUpdates':   if (valid) settings.logValueUpdates  = value;  menuItemLogValueUpdates .setChecked(settings.logValueUpdates );  break;
-        case 'logObjectUpdates':  if (valid) settings.logObjectUpdates = value;  menuItemLogObjectUpdates.setChecked(settings.logObjectUpdates);  break;
+        case 'enableLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemEnableLxxColorSpaces);  break;
+
+        case 'showNodeId':           updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId          );  break;
+        case 'showWires':            updateSettingAndMenu_(valid, settingName, value, menuItemShowWires           );  break;
+
+        case 'logMessages':          updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages         );  break;
+        case 'logActions':           updateSettingAndMenu_(valid, settingName, value, menuItemLogActions          );  break;
+        case 'logLoading':           updateSettingAndMenu_(valid, settingName, value, menuItemLogLoading          );  break;
+        case 'logRequests':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRequests         );  break;
+        case 'logValueUpdates':      updateSettingAndMenu_(valid, settingName, value, menuItemLogValueUpdates     );  break;
+        case 'logObjectUpdates':     updateSettingAndMenu_(valid, settingName, value, menuItemLogObjectUpdates    );  break;
+
+        case 'logRawLoading':        updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoading       );  break;
+        case 'logRawSaving':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaving        );  break;
+        case 'logRawRequests':       updateSettingAndMenu_(valid, settingName, value, menuItemLogRawRequests      );  break;
+        case 'logRawValues':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawValues        );  break;
     } 
 
     if (save)
@@ -67,18 +74,42 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 
 
 
+function updateSettingAndMenu_(valid, setting, value, menu)
+{
+    if (valid) 
+        settings[setting] = value;  
+
+    menu.setChecked(settings[setting]);
+}
+
+
+
 function updateSettingsMenus()
 {
-    menuItemShowNodeId      .setChecked(settings.showNodeId      );
-    menuItemShowWires       .setChecked(settings.showWires       );
-    menuItemLogMessages     .setChecked(settings.logMessages     );
-    menuItemLogActions      .setChecked(settings.logActions      );
-    menuItemLogRawLoading   .setChecked(settings.logRawLoading   );
-    menuItemLogRawSaving    .setChecked(settings.logRawSaving    );
-    menuItemLogLoading      .setChecked(settings.logLoading      );
-    menuItemLogRawRequests  .setChecked(settings.logRawRequests  );
-    menuItemLogRawValues    .setChecked(settings.logRawValues    );
-    menuItemLogRequests     .setChecked(settings.logRequests     );
-    menuItemLogValueUpdates .setChecked(settings.logValueUpdates );
-    menuItemLogObjectUpdates.setChecked(settings.logObjectUpdates);
+    menuItemEnableLxxColorSpaces.setChecked(settings.enableLxxColorSpaces);
+
+    menuItemShowNodeId          .setChecked(settings.showNodeId          );
+    menuItemShowWires           .setChecked(settings.showWires           );
+
+    menuItemLogMessages         .setChecked(settings.logMessages         );
+    menuItemLogActions          .setChecked(settings.logActions          );
+
+    menuItemLogLoading          .setChecked(settings.logLoading          );
+    menuItemLogRequests         .setChecked(settings.logRequests         );
+    menuItemLogValueUpdates     .setChecked(settings.logValueUpdates     );
+    menuItemLogObjectUpdates    .setChecked(settings.logObjectUpdates    );
+
+    menuItemLogRawLoading       .setChecked(settings.logRawLoading       );
+    menuItemLogRawSaving        .setChecked(settings.logRawSaving        );
+    menuItemLogRawRequests      .setChecked(settings.logRawRequests      );
+    menuItemLogRawValues        .setChecked(settings.logRawValues        );
+}
+
+
+
+function updateEnableLxxColorSpace()
+{
+    graph.nodes
+        .filter(n => COLOR_TYPES.includes(n.type))
+        .forEach(n => n.updateNode());
 }
