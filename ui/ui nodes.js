@@ -384,8 +384,9 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
 {
     let node = createNode(nodeType, creatingButton, createdId, options);
 
-    graph.addNode(node);
 
+    graph.addNode(node);
+    
     uiSaveNodes([node.id]);
 
 
