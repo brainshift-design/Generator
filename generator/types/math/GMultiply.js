@@ -5,16 +5,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_MULTIPLY, nodeId, active);
+        super(NUMBER_MULTIPLY, nodeId, options);
     }
 
 
     
     copy()
     {
-        const mul = new GMultiply(this.nodeId, this.active);
+        const mul = new GMultiply(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return mul;
     }

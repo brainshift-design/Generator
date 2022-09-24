@@ -133,7 +133,7 @@ extends EventTarget
                     || this == savedInput))
             {
                 const rect = boundingRect(this.control);
-                const loop = graphView.tempConn.output.node.follows(this.node);
+                const loop = graphView.tempConn.output.node.isOrFollows(this.node);
 
                 if (!loop)
                 {
@@ -183,7 +183,7 @@ extends EventTarget
             && !(   tc
                  && tc.output
                  && (  !this.types.includes(tc.output.type)
-                     || tc.output.node.follows(this.node)));
+                     || tc.output.node.isOrFollows(this.node)));
 
         const color =
             isDarkMode()

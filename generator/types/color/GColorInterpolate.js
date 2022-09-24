@@ -9,16 +9,16 @@ extends GOperator
     gamma;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR_INTERPOLATE, nodeId, active);
+        super(COLOR_INTERPOLATE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const lerp = new GColorInterpolate(this.nodeId, this.active);
+        const lerp = new GColorInterpolate(this.nodeId, this.options);
 
         if (this.input0) lerp.input0 = this.input0.copy();
         if (this.input1) lerp.input1 = this.input1.copy();

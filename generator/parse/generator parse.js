@@ -89,12 +89,12 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_VALUE      ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER            ) result = genParseNumber          (parse);
     else if (parse.next == NUMBER_LIMITS     ) result = genParseLimits          (parse);
-    else if (parse.next == NUMBER_ADD        ) result = genParseArithmetic      (parse, (nodeId, active) => new GAdd     (nodeId, active));
-    else if (parse.next == NUMBER_SUBTRACT   ) result = genParseArithmetic      (parse, (nodeId, active) => new GSubtract(nodeId, active));
-    else if (parse.next == NUMBER_MULTIPLY   ) result = genParseArithmetic      (parse, (nodeId, active) => new GMultiply(nodeId, active));
-    else if (parse.next == NUMBER_DIVIDE     ) result = genParseArithmetic      (parse, (nodeId, active) => new GDivide  (nodeId, active));
-    else if (parse.next == NUMBER_MODULO     ) result = genParseArithmetic      (parse, (nodeId, active) => new GModulo  (nodeId, active));
-    else if (parse.next == NUMBER_EXPONENT   ) result = genParseArithmetic      (parse, (nodeId, active) => new GExponent(nodeId, active));
+    else if (parse.next == NUMBER_ADD        ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd     (nodeId, options));
+    else if (parse.next == NUMBER_SUBTRACT   ) result = genParseArithmetic      (parse, (nodeId, options) => new GSubtract(nodeId, options));
+    else if (parse.next == NUMBER_MULTIPLY   ) result = genParseArithmetic      (parse, (nodeId, options) => new GMultiply(nodeId, options));
+    else if (parse.next == NUMBER_DIVIDE     ) result = genParseArithmetic      (parse, (nodeId, options) => new GDivide  (nodeId, options));
+    else if (parse.next == NUMBER_MODULO     ) result = genParseArithmetic      (parse, (nodeId, options) => new GModulo  (nodeId, options));
+    else if (parse.next == NUMBER_EXPONENT   ) result = genParseArithmetic      (parse, (nodeId, options) => new GExponent(nodeId, options));
     else if (parse.next == NUMBER_INTERPOLATE) result = genParseInterpolate     (parse);
 
     else if (parse.next == COLOR_VALUE       ) result = genParseColorValue      (parse);
@@ -146,9 +146,9 @@ function genParseNodeStart(parse)
     if (parse.parsedNodes.find(n => n.nodeId == nodeId))
         return [type, nodeId, false, true];
 
-    const active = genParseActive(parse);
+    const options = genParseNodeOptions(parse);
 
-    return [type, nodeId, active, false];
+    return [type, nodeId, options, false];
 }
 
 
@@ -168,15 +168,17 @@ function genParseNodeEnd(parse, node = null)
 
 
 
-function genParseActive(parse)
+function genParseNodeOptions(parse)
 {
-    if (parse.next == ACTIVE)
-    {
-        parse.move();
-        return true;
-    }
+    const opt = parseInt(parse.move());
 
-    return false;
+    const options = 
+    {
+        active:       ((opt >> 0) & 1) != 0,
+        beforeActive: ((opt >> 1) & 1) != 0,
+    };
+
+    return options;
 }
 
 

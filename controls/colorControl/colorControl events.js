@@ -214,7 +214,7 @@ function initColorControlEvents(control)
             if (    graphView.tempConn.output
                 &&  control.param.input
                 &&  control.param.input.types.includes(graphView.tempConn.output.type)
-                && !graphView.tempConn.output.node.follows(control.param.node)
+                && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 && (  !control.param.input.connected // not already connected to this input
                     || control.param.input.connectedOutput != graphView.tempConn.output
                     || control.param.input == savedInput))
@@ -233,7 +233,7 @@ function initColorControlEvents(control)
             else if ( graphView.tempConn.input
                   &&  control.param.output
                   &&  graphView.tempConn.input.types.includes(control.param.output.type)
-                  && !control.param.node.follows(graphView.tempConn.input.node))
+                  && !control.param.node.isOrFollows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = control.param.output;
                     
@@ -326,14 +326,14 @@ function initColorControlEvents(control)
         if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
-                && !graphView.tempConn.output.node.follows(control.param.node)
+                && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 &&  graphView.overInput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if (graphView.tempConn.input
-                && !control.param.node.follows(graphView.tempConn.input.node)
+                && !control.param.node.isOrFollows(graphView.tempConn.input.node)
                 &&  graphView.overOutput)
             {
                 graphView.endConnection(e.pointerId);

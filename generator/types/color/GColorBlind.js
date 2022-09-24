@@ -8,16 +8,16 @@ extends GOperator
     s;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLORBLIND, nodeId, active);
+        super(COLORBLIND, nodeId, options);
     }
 
 
     
     copy()
     {
-        const cb = new GColorBlind(this.nodeId, this.active);
+        const cb = new GColorBlind(this.nodeId, this.options);
 
         if (this.input) cb.input = this.input.copy();
 

@@ -14,16 +14,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(STAR, nodeId, active);
+        super(STAR, nodeId, options);
     }
 
 
 
     copy()
     {
-        const star = new GStar(this.nodeId, this.active);
+        const star = new GStar(this.nodeId, this.options);
 
         if (this.input) 
             star.input = this.input.copy();
@@ -104,7 +104,7 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, STAR_VALUE, this.result);
 
 
-            if (this.active)
+            if (this.options.active)
             {
                 genPushUpdateObject(
                     parse,

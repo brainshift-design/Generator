@@ -8,16 +8,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR_STOP, nodeId, active);
+        super(COLOR_STOP, nodeId, options);
     }
 
 
     
     copy()
     {
-        const stop = new GColorStop(this.nodeId, this.active);
+        const stop = new GColorStop(this.nodeId, this.options);
 
         if (this.input) 
             stop.input = this.input.copy();

@@ -8,16 +8,16 @@ extends GShapeBase
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(FILL, nodeId, active);
+        super(FILL, nodeId, options);
     }
 
 
 
     copy()
     {
-        const fill = new GFill(this.nodeId, this.active);
+        const fill = new GFill(this.nodeId, this.options);
 
         if (this.input) 
             fill.input = this.input.copy();
@@ -64,7 +64,9 @@ extends GShapeBase
         if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
 
-        this.evalObjects();
+        if (   this.options.active
+            || this.options.beforeActive)
+            this.evalObjects();
 
 
         this.valid = true;

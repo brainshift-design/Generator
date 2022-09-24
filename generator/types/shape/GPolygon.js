@@ -13,16 +13,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(POLYGON, nodeId, active);
+        super(POLYGON, nodeId, options);
     }
 
 
 
     copy()
     {
-        const poly = new GPolygon(this.nodeId, this.active);
+        const poly = new GPolygon(this.nodeId, this.options);
 
         if (this.input) 
             poly.input = this.input.copy();
@@ -99,7 +99,7 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, POLYGON_VALUE, this.result);
 
 
-            if (this.active)
+            if (this.options)
             {
                 genPushUpdateObject(
                     parse,

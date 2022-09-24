@@ -10,16 +10,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(LINE, nodeId, active);
+        super(LINE, nodeId, options);
     }
 
 
 
     copy()
     {
-        const line = new GLine(this.nodeId, this.active);
+        const line = new GLine(this.nodeId, this.options);
 
         if (this.input) 
             line.input = this.input.copy();
@@ -84,7 +84,7 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, LINE_VALUE, this.result);
 
 
-            if (this.active)
+            if (this.options)
             {
                 genPushUpdateObject(
                     parse,

@@ -6,16 +6,16 @@ extends GOperator
     
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER, nodeId, active);
+        super(NUMBER, nodeId, options);
     }
 
 
 
     copy()
     {
-        const num = new GNumber(this.nodeId, this.active);
+        const num = new GNumber(this.nodeId, this.options);
         
         num.value = this.value;
 

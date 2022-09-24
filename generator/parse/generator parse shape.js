@@ -11,10 +11,10 @@
 
 function genParseRectangle(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const rect = new GRectangle(nodeId, active);
+    const rect = new GRectangle(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -73,10 +73,10 @@ function genParseRectangle(parse)
 
 function genParseLine(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
   
-    let line = new GLine(nodeId, active);
+    let line = new GLine(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -128,10 +128,10 @@ function genParseLine(parse)
 
 function genParseEllipse(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const elps = new GEllipse(nodeId, active);
+    const elps = new GEllipse(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -184,10 +184,10 @@ function genParseEllipse(parse)
 
 function genParsePolygon(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const poly = new GPolygon(nodeId, active);
+    const poly = new GPolygon(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -242,10 +242,10 @@ function genParsePolygon(parse)
 
 function genParseStar(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const star = new GStar(nodeId, active);
+    const star = new GStar(nodeId, options);
 
 
     if (parse.settings.logRequests) 

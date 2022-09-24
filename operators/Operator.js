@@ -157,7 +157,7 @@ class Operator
             && graphView.savedConn.input.node == this)
             return graphView.savedConn.input;
         
-        else if (!graphView.tempConn.output.node.follows(this))
+        else if (!graphView.tempConn.output.node.isOrFollows(this))
         {
             if (this.variableInputs)
                 return lastOf(inputs);
@@ -194,7 +194,7 @@ class Operator
         const outputs = this.outputs.filter(o => inputTypes.includes(o.type));
 
         return     outputs.length == 1
-               && !this.follows(graphView.tempConn.input.node)
+               && !this.isOrFollows(graphView.tempConn.input.node)
                ? outputs[0]
                : null;
     }
@@ -333,31 +333,23 @@ class Operator
 
 
 
-    // isAfter(node)
-    // {
-    //     if (this.inputs.length == 0)
-    //         return false;
+    follows(node) 
+    { 
+        return this.isOrFollows(node, true); 
+    }
 
-    //     for (const input of inputs)
-    //     {
-    //         if (input.connectedOutput.node == node)       return true;
-    //         if (input.connectedOutput.node.isAfter(node)) return true;
-    //     }
 
-    //     return false;
-    // }
 
-    
-
-    follows(node)
+    isOrFollows(node, ignoreIs = false)
     {
-        if (this == node)
+        if (    this == node
+            && !ignoreIs)
             return true;
             
         for (const input of this.inputs)
         {
             if (   input.connected
-                && input.connectedOutput.node.follows(node))
+                && input.connectedOutput.node.isOrFollows(node))
                 return true;
         }
 
@@ -436,9 +428,18 @@ class Operator
 
         const ignore = gen.passedNodes.includes(this);
 
-        if (    this.active
-            && !ignore) 
-            request.push(ACTIVE);
+    
+        if (!ignore)
+        {
+            const beforeActive = this.follows(getActiveNodeRightInTreeFromNode(this));
+
+            const options =
+                  ((this.active  ? 1 : 0) << 0)
+                | ((beforeActive ? 1 : 0) << 1);
+
+            request.push(options);
+        }
+
 
         return [request, ignore];
     }
@@ -734,8 +735,8 @@ function pushUpdateFromParam(nodes, param)
 
     
     const set =
-          ((settings.enableLxxColorSpaces) << 0)
-        | ((settings.logRequests         ) << 1);
+          ((settings.enableLxxColorSpaces ? 1 : 0) << 0)
+        | ((settings.logRequests          ? 1 : 0) << 1);
 
 
     const request = [set.toString()];
@@ -851,6 +852,6 @@ function createGenObject(paramNode)
 
 function areConnected(node1, node2)
 {
-    return node1.follows(node2)
-        || node2.follows(node1);
+    return node1.isOrFollows(node2)
+        || node2.isOrFollows(node1);
 }

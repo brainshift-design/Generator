@@ -7,16 +7,16 @@ extends GOperator
     amount;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_INTERPOLATE, nodeId, active);
+        super(NUMBER_INTERPOLATE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const lerp = new GInterpolate(this.nodeId, this.active);
+        const lerp = new GInterpolate(this.nodeId, this.options);
 
         if (this.input0) lerp.input0 = this.input0.copy();
         if (this.input1) lerp.input1 = this.input1.copy();

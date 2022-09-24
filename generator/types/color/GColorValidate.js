@@ -10,16 +10,16 @@ extends GOperator
     margin3;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR_VALIDATE, nodeId, active);
+        super(COLOR_VALIDATE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const val = new GColorBlind(this.nodeId, this.active);
+        const val = new GColorBlind(this.nodeId, this.options);
 
         if (this.input) val.input = this.input.copy();
 

@@ -174,6 +174,7 @@ const COMMENT             = 'CMNT';
 
 
 const ACTIVE              = 'ACT';
+const BEFORE_ACTIVE       = 'BEF';
 const PARAM               = 'PARAM'; // nodeId paramId
 
 
@@ -270,7 +271,7 @@ function logReqNodeId(node)
 {
     return ' ' 
          + logReqId(node.nodeId)
-         + logReqActive(node);
+         + logReqOptions(node);
 }
 
 
@@ -282,11 +283,17 @@ function logReqId(nodeId)
 
 
 
-function logReqActive(node)
+function logReqOptions(node)
 {
-    return node.active
-         ? ' ' + ACTIVE
-         : '';
+    let log = '';
+
+    if (node.options.active)
+        log += ' ' + ACTIVE;
+
+    if (node.options.beforeActive)
+        log += ' ' + BEFORE_ACTIVE;
+
+    return log;
 }
 
 

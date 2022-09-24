@@ -5,16 +5,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_DIVIDE, nodeId, active);
+        super(NUMBER_DIVIDE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const div = new GDivide(this.nodeId, this.active);
+        const div = new GDivide(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return div;
     }

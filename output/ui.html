@@ -4548,7 +4548,7 @@ function logReqNodeId(node)
 {
     return ' ' 
          + logReqId(node.nodeId)
-         + logReqActive(node);
+         + logReqOptions(node);
 }
 
 
@@ -4560,11 +4560,17 @@ function logReqId(nodeId)
 
 
 
-function logReqActive(node)
+function logReqOptions(node)
 {
-    return node.active
-         ? ' ' + ACTIVE
-         : '';
+    let log = '';
+
+    if (node.options.active)
+        log += ' ' + ACTIVE;
+
+    if (node.options.beforeActive)
+        log += ' ' + BEFORE_ACTIVE;
+
+    return log;
 }
 
 
@@ -5028,6 +5034,7 @@ const COMMENT             = 'CMNT';
 
 
 const ACTIVE              = 'ACT';
+const BEFORE_ACTIVE       = 'BEF';
 const PARAM               = 'PARAM'; // nodeId paramId
 
 
@@ -5141,16 +5148,16 @@ class GOperator
 extends GType
 {
     nodeId;
-    active;
+    options;
 
 
 
-    constructor(type, nodeId, active)
+    constructor(type, nodeId, options)
     {
         super(type);
 
-        this.nodeId = nodeId;
-        this.active = active;
+        this.nodeId  = nodeId;
+        this.options = options;
     }
 
 
@@ -6629,16 +6636,16 @@ extends GOperator
     
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER, nodeId, active);
+        super(NUMBER, nodeId, options);
     }
 
 
 
     copy()
     {
-        const num = new GNumber(this.nodeId, this.active);
+        const num = new GNumber(this.nodeId, this.options);
         
         num.value = this.value;
 
@@ -6682,16 +6689,16 @@ extends GOperator
     minMaxPriority = -1; 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_LIMITS, nodeId, active);
+        super(NUMBER_LIMITS, nodeId, options);
     }
 
 
     
     copy()
     {
-        const lim = new GLimits(this.nodeId, this.active);
+        const lim = new GLimits(this.nodeId, this.options);
 
         if (this.input) 
             lim.input = this.input.copy();
@@ -6754,16 +6761,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_ADD, nodeId, active);
+        super(NUMBER_ADD, nodeId, options);
     }
 
 
     
     copy()
     {
-        const add = new GAdd(this.nodeId, this.active);
+        const add = new GAdd(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return add;
     }
@@ -6811,16 +6818,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_SUBTRACT, nodeId, active);
+        super(NUMBER_SUBTRACT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const sub = new GSubtract(this.nodeId, this.active);
+        const sub = new GSubtract(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return sub;
     }
@@ -6873,16 +6880,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_MULTIPLY, nodeId, active);
+        super(NUMBER_MULTIPLY, nodeId, options);
     }
 
 
     
     copy()
     {
-        const mul = new GMultiply(this.nodeId, this.active);
+        const mul = new GMultiply(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return mul;
     }
@@ -6931,16 +6938,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_DIVIDE, nodeId, active);
+        super(NUMBER_DIVIDE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const div = new GDivide(this.nodeId, this.active);
+        const div = new GDivide(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return div;
     }
@@ -6997,16 +7004,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_MODULO, nodeId, active);
+        super(NUMBER_MODULO, nodeId, options);
     }
 
 
     
     copy()
     {
-        const mod = new GModulo(this.nodeId, this.active);
+        const mod = new GModulo(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return mod;
     }
@@ -7063,16 +7070,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_EXPONENT, nodeId, active);
+        super(NUMBER_EXPONENT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const exp = new GExponent(this.nodeId, this.active);
+        const exp = new GExponent(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return exp;
     }
@@ -7127,16 +7134,16 @@ extends GOperator
     amount;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_INTERPOLATE, nodeId, active);
+        super(NUMBER_INTERPOLATE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const lerp = new GInterpolate(this.nodeId, this.active);
+        const lerp = new GInterpolate(this.nodeId, this.options);
 
         if (this.input0) lerp.input0 = this.input0.copy();
         if (this.input1) lerp.input1 = this.input1.copy();
@@ -7201,16 +7208,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR, nodeId, active);
+        super(COLOR, nodeId, options);
     }
 
 
     
     copy()
     {
-        const col = new GColor(this.nodeId, this.active);
+        const col = new GColor(this.nodeId, this.options);
 
         if (this.input) 
             col.input = this.input.copy();
@@ -7409,16 +7416,16 @@ extends GOperator
     gamma;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR_INTERPOLATE, nodeId, active);
+        super(COLOR_INTERPOLATE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const lerp = new GColorInterpolate(this.nodeId, this.active);
+        const lerp = new GColorInterpolate(this.nodeId, this.options);
 
         if (this.input0) lerp.input0 = this.input0.copy();
         if (this.input1) lerp.input1 = this.input1.copy();
@@ -7545,16 +7552,16 @@ extends GOperator
     value;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR_CONTRAST, nodeId, active);
+        super(COLOR_CONTRAST, nodeId, options);
     }
 
 
     
     copy()
     {
-        const cnt = new GColorContrast(this.nodeId, this.active);
+        const cnt = new GColorContrast(this.nodeId, this.options);
 
         if (this.input0) cnt.input0 = this.input0.copy();
         if (this.input1) cnt.input1 = this.input1.copy();
@@ -7679,16 +7686,16 @@ extends GOperator
     s;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLORBLIND, nodeId, active);
+        super(COLORBLIND, nodeId, options);
     }
 
 
     
     copy()
     {
-        const cb = new GColorBlind(this.nodeId, this.active);
+        const cb = new GColorBlind(this.nodeId, this.options);
 
         if (this.input) cb.input = this.input.copy();
 
@@ -7778,16 +7785,16 @@ extends GOperator
     margin3;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR_VALIDATE, nodeId, active);
+        super(COLOR_VALIDATE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const val = new GColorBlind(this.nodeId, this.active);
+        const val = new GColorBlind(this.nodeId, this.options);
 
         if (this.input) val.input = this.input.copy();
 
@@ -7876,16 +7883,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR_STOP, nodeId, active);
+        super(COLOR_STOP, nodeId, options);
     }
 
 
     
     copy()
     {
-        const stop = new GColorStop(this.nodeId, this.active);
+        const stop = new GColorStop(this.nodeId, this.options);
 
         if (this.input) 
             stop.input = this.input.copy();
@@ -7950,9 +7957,9 @@ extends GOperator
 
 
 
-    constructor(type, nodeId, active)
+    constructor(type, nodeId, options)
     {
-        super(type, nodeId, active);
+        super(type, nodeId, options);
     }
 
 
@@ -7969,7 +7976,7 @@ extends GOperator
 
     // addUpdateObject(parse, nodeId, objects)
     // {
-    //     if (this.active) 
+    //     if (this.options.active) 
     //         genPushUpdateObject(parse, nodeId, objects);
     //     else 
     //         this.objects.push(...objects);
@@ -8025,16 +8032,16 @@ extends GShapeBase
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(RECTANGLE, nodeId, active);
+        super(RECTANGLE, nodeId, options);
     }
 
 
 
     copy()
     {
-        const rect = new GRectangle(this.nodeId, this.active);
+        const rect = new GRectangle(this.nodeId, this.options);
 
         if (this.input) 
             rect.input = this.input.copy();
@@ -8100,8 +8107,8 @@ extends GShapeBase
 
 
         if (    this.input
-            && !this.active) this.objects = this.input.objects;
-        else                 this.evalObjects();
+            && !this.options) this.objects = this.input.objects;
+        else                  this.evalObjects();
 
 
         this.valid = true;
@@ -8141,16 +8148,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(LINE, nodeId, active);
+        super(LINE, nodeId, options);
     }
 
 
 
     copy()
     {
-        const line = new GLine(this.nodeId, this.active);
+        const line = new GLine(this.nodeId, this.options);
 
         if (this.input) 
             line.input = this.input.copy();
@@ -8215,7 +8222,7 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, LINE_VALUE, this.result);
 
 
-            if (this.active)
+            if (this.options)
             {
                 genPushUpdateObject(
                     parse,
@@ -8251,16 +8258,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(ELLIPSE, nodeId, active);
+        super(ELLIPSE, nodeId, options);
     }
 
 
 
     copy()
     {
-        const elps = new GEllipse(this.nodeId, this.active);
+        const elps = new GEllipse(this.nodeId, this.options);
 
         if (this.input) 
             elps.input = this.input.copy();
@@ -8329,7 +8336,7 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, ELLIPSE_VALUE, this.result);
 
 
-            if (this.active)
+            if (this.options)
             {
                 genPushUpdateObject(
                     parse,
@@ -8368,16 +8375,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(POLYGON, nodeId, active);
+        super(POLYGON, nodeId, options);
     }
 
 
 
     copy()
     {
-        const poly = new GPolygon(this.nodeId, this.active);
+        const poly = new GPolygon(this.nodeId, this.options);
 
         if (this.input) 
             poly.input = this.input.copy();
@@ -8454,7 +8461,7 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, POLYGON_VALUE, this.result);
 
 
-            if (this.active)
+            if (this.options)
             {
                 genPushUpdateObject(
                     parse,
@@ -8496,16 +8503,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(STAR, nodeId, active);
+        super(STAR, nodeId, options);
     }
 
 
 
     copy()
     {
-        const star = new GStar(this.nodeId, this.active);
+        const star = new GStar(this.nodeId, this.options);
 
         if (this.input) 
             star.input = this.input.copy();
@@ -8586,7 +8593,7 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, STAR_VALUE, this.result);
 
 
-            if (this.active)
+            if (this.options.active)
             {
                 genPushUpdateObject(
                     parse,
@@ -8623,16 +8630,16 @@ extends GShapeBase
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(FILL, nodeId, active);
+        super(FILL, nodeId, options);
     }
 
 
 
     copy()
     {
-        const fill = new GFill(this.nodeId, this.active);
+        const fill = new GFill(this.nodeId, this.options);
 
         if (this.input) 
             fill.input = this.input.copy();
@@ -8679,7 +8686,9 @@ extends GShapeBase
         if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
 
-        this.evalObjects();
+        if (   this.options.active
+            || this.options.beforeActive)
+            this.evalObjects();
 
 
         this.valid = true;
@@ -8730,16 +8739,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(STROKE, nodeId, active);
+        super(STROKE, nodeId, options);
     }
 
 
 
     copy()
     {
-        const stroke = new GStroke(this.nodeId, this.active);
+        const stroke = new GStroke(this.nodeId, this.options);
 
         if (this.input) 
             stroke.input = this.input.copy();
@@ -9100,7 +9109,7 @@ function genRequest(request)
     for (const node of parse.parsedNodes)
     {
         if (   node instanceof GShapeBase
-            && node.active)
+            && node.options.active)
             node.objects.forEach(o => genPushUpdateObject(parse, o));
     }
 
@@ -9320,10 +9329,10 @@ function genParseColorValue(parse)
 
 function genParseColor(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const col = new GColor(nodeId, active);
+    const col = new GColor(nodeId, options);
 
   
     if (parse.settings.logRequests) 
@@ -9379,10 +9388,10 @@ function genParseColor(parse)
 
 function genParseColorInterpolate(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const lerp = new GColorInterpolate(nodeId, active);
+    const lerp = new GColorInterpolate(nodeId, options);
 
 
     let nValues = -1;
@@ -9437,10 +9446,10 @@ function genParseColorInterpolate(parse)
 
 function genParseColorContrast(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cnt = new GColorContrast(nodeId, active);
+    const cnt = new GColorContrast(nodeId, options);
 
 
     let nValues = -1;
@@ -9500,10 +9509,10 @@ function genParseColorContrast(parse)
 
 function genParseColorBlind(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cb = new GColorBlind(nodeId, active);
+    const cb = new GColorBlind(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -9538,10 +9547,10 @@ function genParseColorBlind(parse)
 
 function genParseColorValidate(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const val = new GColorValidate(nodeId, active);
+    const val = new GColorValidate(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -9592,10 +9601,10 @@ function genParseNumValue(parse)
 
 function genParseNumber(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const num = new GNumber(nodeId, active);
+    const num = new GNumber(nodeId, options);
 
     
     if (parse.settings.logRequests) 
@@ -9625,10 +9634,10 @@ function genParseNumber(parse)
 
 function genParseLimits(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const lim = new GLimits(nodeId, active);
+    const lim = new GLimits(nodeId, options);
    
 
     let nValues = -1;
@@ -9670,10 +9679,10 @@ function genParseLimits(parse)
 
 function genParseArithmetic(parse, newNode)
 {
-    const [type, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const arith = newNode(nodeId, active);
+    const arith = newNode(nodeId, options);
 
 
     let nValues = 0;
@@ -9709,10 +9718,10 @@ function genParseArithmetic(parse, newNode)
 
 function genParseInterpolate(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const lerp = new GInterpolate(nodeId, active);
+    const lerp = new GInterpolate(nodeId, options);
 
 
     let nValues = -1;
@@ -9774,10 +9783,10 @@ function genParseInterpolate(parse)
 
 function genParseRectangle(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const rect = new GRectangle(nodeId, active);
+    const rect = new GRectangle(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -9836,10 +9845,10 @@ function genParseRectangle(parse)
 
 function genParseLine(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
   
-    let line = new GLine(nodeId, active);
+    let line = new GLine(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -9891,10 +9900,10 @@ function genParseLine(parse)
 
 function genParseEllipse(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const elps = new GEllipse(nodeId, active);
+    const elps = new GEllipse(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -9947,10 +9956,10 @@ function genParseEllipse(parse)
 
 function genParsePolygon(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const poly = new GPolygon(nodeId, active);
+    const poly = new GPolygon(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -10005,10 +10014,10 @@ function genParsePolygon(parse)
 
 function genParseStar(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const star = new GStar(nodeId, active);
+    const star = new GStar(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -10077,10 +10086,10 @@ function genParseFillValue(parse)
 
 function genParseFill(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const fill = new GFill(nodeId, active);
+    const fill = new GFill(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -10161,10 +10170,10 @@ function genParseStrokeValue(parse)
 
 function genParseStroke(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const stroke = new GStroke(nodeId, active);
+    const stroke = new GStroke(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -10247,10 +10256,10 @@ function genParseColorStopValue(parse)
 
 function genParseColorStop(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const stop = new GColorStop(nodeId, active);
+    const stop = new GColorStop(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -10375,12 +10384,12 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_VALUE      ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER            ) result = genParseNumber          (parse);
     else if (parse.next == NUMBER_LIMITS     ) result = genParseLimits          (parse);
-    else if (parse.next == NUMBER_ADD        ) result = genParseArithmetic      (parse, (nodeId, active) => new GAdd     (nodeId, active));
-    else if (parse.next == NUMBER_SUBTRACT   ) result = genParseArithmetic      (parse, (nodeId, active) => new GSubtract(nodeId, active));
-    else if (parse.next == NUMBER_MULTIPLY   ) result = genParseArithmetic      (parse, (nodeId, active) => new GMultiply(nodeId, active));
-    else if (parse.next == NUMBER_DIVIDE     ) result = genParseArithmetic      (parse, (nodeId, active) => new GDivide  (nodeId, active));
-    else if (parse.next == NUMBER_MODULO     ) result = genParseArithmetic      (parse, (nodeId, active) => new GModulo  (nodeId, active));
-    else if (parse.next == NUMBER_EXPONENT   ) result = genParseArithmetic      (parse, (nodeId, active) => new GExponent(nodeId, active));
+    else if (parse.next == NUMBER_ADD        ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd     (nodeId, options));
+    else if (parse.next == NUMBER_SUBTRACT   ) result = genParseArithmetic      (parse, (nodeId, options) => new GSubtract(nodeId, options));
+    else if (parse.next == NUMBER_MULTIPLY   ) result = genParseArithmetic      (parse, (nodeId, options) => new GMultiply(nodeId, options));
+    else if (parse.next == NUMBER_DIVIDE     ) result = genParseArithmetic      (parse, (nodeId, options) => new GDivide  (nodeId, options));
+    else if (parse.next == NUMBER_MODULO     ) result = genParseArithmetic      (parse, (nodeId, options) => new GModulo  (nodeId, options));
+    else if (parse.next == NUMBER_EXPONENT   ) result = genParseArithmetic      (parse, (nodeId, options) => new GExponent(nodeId, options));
     else if (parse.next == NUMBER_INTERPOLATE) result = genParseInterpolate     (parse);
 
     else if (parse.next == COLOR_VALUE       ) result = genParseColorValue      (parse);
@@ -10432,9 +10441,9 @@ function genParseNodeStart(parse)
     if (parse.parsedNodes.find(n => n.nodeId == nodeId))
         return [type, nodeId, false, true];
 
-    const active = genParseActive(parse);
+    const options = genParseNodeOptions(parse);
 
-    return [type, nodeId, active, false];
+    return [type, nodeId, options, false];
 }
 
 
@@ -10454,15 +10463,17 @@ function genParseNodeEnd(parse, node = null)
 
 
 
-function genParseActive(parse)
+function genParseNodeOptions(parse)
 {
-    if (parse.next == ACTIVE)
-    {
-        parse.move();
-        return true;
-    }
+    const opt = parseInt(parse.move());
 
-    return false;
+    const options = 
+    {
+        active:       ((opt >> 0) & 1) != 0,
+        beforeActive: ((opt >> 1) & 1) != 0,
+    };
+
+    return options;
 }
 
 
@@ -15773,7 +15784,7 @@ function logReqNodeId(node)
 {
     return ' ' 
          + logReqId(node.nodeId)
-         + logReqActive(node);
+         + logReqOptions(node);
 }
 
 
@@ -15785,11 +15796,17 @@ function logReqId(nodeId)
 
 
 
-function logReqActive(node)
+function logReqOptions(node)
 {
-    return node.active
-         ? ' ' + ACTIVE
-         : '';
+    let log = '';
+
+    if (node.options.active)
+        log += ' ' + ACTIVE;
+
+    if (node.options.beforeActive)
+        log += ' ' + BEFORE_ACTIVE;
+
+    return log;
 }
 
 
@@ -17756,6 +17773,7 @@ const COMMENT             = 'CMNT';
 
 
 const ACTIVE              = 'ACT';
+const BEFORE_ACTIVE       = 'BEF';
 const PARAM               = 'PARAM'; // nodeId paramId
 
 
@@ -17869,16 +17887,16 @@ class GOperator
 extends GType
 {
     nodeId;
-    active;
+    options;
 
 
 
-    constructor(type, nodeId, active)
+    constructor(type, nodeId, options)
     {
         super(type);
 
-        this.nodeId = nodeId;
-        this.active = active;
+        this.nodeId  = nodeId;
+        this.options = options;
     }
 
 
@@ -19357,16 +19375,16 @@ extends GOperator
     
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER, nodeId, active);
+        super(NUMBER, nodeId, options);
     }
 
 
 
     copy()
     {
-        const num = new GNumber(this.nodeId, this.active);
+        const num = new GNumber(this.nodeId, this.options);
         
         num.value = this.value;
 
@@ -19410,16 +19428,16 @@ extends GOperator
     minMaxPriority = -1; 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_LIMITS, nodeId, active);
+        super(NUMBER_LIMITS, nodeId, options);
     }
 
 
     
     copy()
     {
-        const lim = new GLimits(this.nodeId, this.active);
+        const lim = new GLimits(this.nodeId, this.options);
 
         if (this.input) 
             lim.input = this.input.copy();
@@ -19482,16 +19500,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_ADD, nodeId, active);
+        super(NUMBER_ADD, nodeId, options);
     }
 
 
     
     copy()
     {
-        const add = new GAdd(this.nodeId, this.active);
+        const add = new GAdd(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return add;
     }
@@ -19539,16 +19557,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_SUBTRACT, nodeId, active);
+        super(NUMBER_SUBTRACT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const sub = new GSubtract(this.nodeId, this.active);
+        const sub = new GSubtract(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return sub;
     }
@@ -19601,16 +19619,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_MULTIPLY, nodeId, active);
+        super(NUMBER_MULTIPLY, nodeId, options);
     }
 
 
     
     copy()
     {
-        const mul = new GMultiply(this.nodeId, this.active);
+        const mul = new GMultiply(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return mul;
     }
@@ -19659,16 +19677,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_DIVIDE, nodeId, active);
+        super(NUMBER_DIVIDE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const div = new GDivide(this.nodeId, this.active);
+        const div = new GDivide(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return div;
     }
@@ -19725,16 +19743,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_MODULO, nodeId, active);
+        super(NUMBER_MODULO, nodeId, options);
     }
 
 
     
     copy()
     {
-        const mod = new GModulo(this.nodeId, this.active);
+        const mod = new GModulo(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return mod;
     }
@@ -19791,16 +19809,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_EXPONENT, nodeId, active);
+        super(NUMBER_EXPONENT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const exp = new GExponent(this.nodeId, this.active);
+        const exp = new GExponent(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return exp;
     }
@@ -19855,16 +19873,16 @@ extends GOperator
     amount;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_INTERPOLATE, nodeId, active);
+        super(NUMBER_INTERPOLATE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const lerp = new GInterpolate(this.nodeId, this.active);
+        const lerp = new GInterpolate(this.nodeId, this.options);
 
         if (this.input0) lerp.input0 = this.input0.copy();
         if (this.input1) lerp.input1 = this.input1.copy();
@@ -19929,16 +19947,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR, nodeId, active);
+        super(COLOR, nodeId, options);
     }
 
 
     
     copy()
     {
-        const col = new GColor(this.nodeId, this.active);
+        const col = new GColor(this.nodeId, this.options);
 
         if (this.input) 
             col.input = this.input.copy();
@@ -20137,16 +20155,16 @@ extends GOperator
     gamma;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR_INTERPOLATE, nodeId, active);
+        super(COLOR_INTERPOLATE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const lerp = new GColorInterpolate(this.nodeId, this.active);
+        const lerp = new GColorInterpolate(this.nodeId, this.options);
 
         if (this.input0) lerp.input0 = this.input0.copy();
         if (this.input1) lerp.input1 = this.input1.copy();
@@ -20273,16 +20291,16 @@ extends GOperator
     value;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR_CONTRAST, nodeId, active);
+        super(COLOR_CONTRAST, nodeId, options);
     }
 
 
     
     copy()
     {
-        const cnt = new GColorContrast(this.nodeId, this.active);
+        const cnt = new GColorContrast(this.nodeId, this.options);
 
         if (this.input0) cnt.input0 = this.input0.copy();
         if (this.input1) cnt.input1 = this.input1.copy();
@@ -20407,16 +20425,16 @@ extends GOperator
     s;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLORBLIND, nodeId, active);
+        super(COLORBLIND, nodeId, options);
     }
 
 
     
     copy()
     {
-        const cb = new GColorBlind(this.nodeId, this.active);
+        const cb = new GColorBlind(this.nodeId, this.options);
 
         if (this.input) cb.input = this.input.copy();
 
@@ -20506,16 +20524,16 @@ extends GOperator
     margin3;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR_VALIDATE, nodeId, active);
+        super(COLOR_VALIDATE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const val = new GColorBlind(this.nodeId, this.active);
+        const val = new GColorBlind(this.nodeId, this.options);
 
         if (this.input) val.input = this.input.copy();
 
@@ -20604,16 +20622,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR_STOP, nodeId, active);
+        super(COLOR_STOP, nodeId, options);
     }
 
 
     
     copy()
     {
-        const stop = new GColorStop(this.nodeId, this.active);
+        const stop = new GColorStop(this.nodeId, this.options);
 
         if (this.input) 
             stop.input = this.input.copy();
@@ -20678,9 +20696,9 @@ extends GOperator
 
 
 
-    constructor(type, nodeId, active)
+    constructor(type, nodeId, options)
     {
-        super(type, nodeId, active);
+        super(type, nodeId, options);
     }
 
 
@@ -20697,7 +20715,7 @@ extends GOperator
 
     // addUpdateObject(parse, nodeId, objects)
     // {
-    //     if (this.active) 
+    //     if (this.options.active) 
     //         genPushUpdateObject(parse, nodeId, objects);
     //     else 
     //         this.objects.push(...objects);
@@ -20753,16 +20771,16 @@ extends GShapeBase
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(RECTANGLE, nodeId, active);
+        super(RECTANGLE, nodeId, options);
     }
 
 
 
     copy()
     {
-        const rect = new GRectangle(this.nodeId, this.active);
+        const rect = new GRectangle(this.nodeId, this.options);
 
         if (this.input) 
             rect.input = this.input.copy();
@@ -20828,8 +20846,8 @@ extends GShapeBase
 
 
         if (    this.input
-            && !this.active) this.objects = this.input.objects;
-        else                 this.evalObjects();
+            && !this.options) this.objects = this.input.objects;
+        else                  this.evalObjects();
 
 
         this.valid = true;
@@ -20869,16 +20887,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(LINE, nodeId, active);
+        super(LINE, nodeId, options);
     }
 
 
 
     copy()
     {
-        const line = new GLine(this.nodeId, this.active);
+        const line = new GLine(this.nodeId, this.options);
 
         if (this.input) 
             line.input = this.input.copy();
@@ -20943,7 +20961,7 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, LINE_VALUE, this.result);
 
 
-            if (this.active)
+            if (this.options)
             {
                 genPushUpdateObject(
                     parse,
@@ -20979,16 +20997,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(ELLIPSE, nodeId, active);
+        super(ELLIPSE, nodeId, options);
     }
 
 
 
     copy()
     {
-        const elps = new GEllipse(this.nodeId, this.active);
+        const elps = new GEllipse(this.nodeId, this.options);
 
         if (this.input) 
             elps.input = this.input.copy();
@@ -21057,7 +21075,7 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, ELLIPSE_VALUE, this.result);
 
 
-            if (this.active)
+            if (this.options)
             {
                 genPushUpdateObject(
                     parse,
@@ -21096,16 +21114,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(POLYGON, nodeId, active);
+        super(POLYGON, nodeId, options);
     }
 
 
 
     copy()
     {
-        const poly = new GPolygon(this.nodeId, this.active);
+        const poly = new GPolygon(this.nodeId, this.options);
 
         if (this.input) 
             poly.input = this.input.copy();
@@ -21182,7 +21200,7 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, POLYGON_VALUE, this.result);
 
 
-            if (this.active)
+            if (this.options)
             {
                 genPushUpdateObject(
                     parse,
@@ -21224,16 +21242,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(STAR, nodeId, active);
+        super(STAR, nodeId, options);
     }
 
 
 
     copy()
     {
-        const star = new GStar(this.nodeId, this.active);
+        const star = new GStar(this.nodeId, this.options);
 
         if (this.input) 
             star.input = this.input.copy();
@@ -21314,7 +21332,7 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, STAR_VALUE, this.result);
 
 
-            if (this.active)
+            if (this.options.active)
             {
                 genPushUpdateObject(
                     parse,
@@ -21351,16 +21369,16 @@ extends GShapeBase
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(FILL, nodeId, active);
+        super(FILL, nodeId, options);
     }
 
 
 
     copy()
     {
-        const fill = new GFill(this.nodeId, this.active);
+        const fill = new GFill(this.nodeId, this.options);
 
         if (this.input) 
             fill.input = this.input.copy();
@@ -21407,7 +21425,9 @@ extends GShapeBase
         if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
 
 
-        this.evalObjects();
+        if (   this.options.active
+            || this.options.beforeActive)
+            this.evalObjects();
 
 
         this.valid = true;
@@ -21458,16 +21478,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(STROKE, nodeId, active);
+        super(STROKE, nodeId, options);
     }
 
 
 
     copy()
     {
-        const stroke = new GStroke(this.nodeId, this.active);
+        const stroke = new GStroke(this.nodeId, this.options);
 
         if (this.input) 
             stroke.input = this.input.copy();
@@ -22794,7 +22814,7 @@ function initNumberControlEvents(control)
             if (    graphView.tempConn.output
                 &&  control.param.input
                 &&  control.param.input.types.includes(graphView.tempConn.output.type)
-                && !graphView.tempConn.output.node.follows(control.param.node)
+                && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 && (  !control.param.input.connected // not already connected to this input
                     || control.param.input.connectedOutput != graphView.tempConn.output
                     || control.param.input == savedInput))
@@ -22813,7 +22833,7 @@ function initNumberControlEvents(control)
             else if ( graphView.tempConn.input
                   &&  control.param.output
                   &&  graphView.tempConn.input.types.includes(control.param.output.type)
-                  && !control.param.node.follows(graphView.tempConn.input.node))
+                  && !control.param.node.isOrFollows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = control.param.output;
                     
@@ -22906,14 +22926,14 @@ function initNumberControlEvents(control)
         if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
-                && !graphView.tempConn.output.node.follows(control.param.node)
+                && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 &&  graphView.overInput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if (graphView.tempConn.input
-                && !control.param.node.follows(graphView.tempConn.input.node)
+                && !control.param.node.isOrFollows(graphView.tempConn.input.node)
                 &&  graphView.overOutput)
             {
                 graphView.endConnection(e.pointerId);
@@ -24124,7 +24144,7 @@ function initColorControlEvents(control)
             if (    graphView.tempConn.output
                 &&  control.param.input
                 &&  control.param.input.types.includes(graphView.tempConn.output.type)
-                && !graphView.tempConn.output.node.follows(control.param.node)
+                && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 && (  !control.param.input.connected // not already connected to this input
                     || control.param.input.connectedOutput != graphView.tempConn.output
                     || control.param.input == savedInput))
@@ -24143,7 +24163,7 @@ function initColorControlEvents(control)
             else if ( graphView.tempConn.input
                   &&  control.param.output
                   &&  graphView.tempConn.input.types.includes(control.param.output.type)
-                  && !control.param.node.follows(graphView.tempConn.input.node))
+                  && !control.param.node.isOrFollows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = control.param.output;
                     
@@ -24236,14 +24256,14 @@ function initColorControlEvents(control)
         if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
-                && !graphView.tempConn.output.node.follows(control.param.node)
+                && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 &&  graphView.overInput)
             {
                 graphView.endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if (graphView.tempConn.input
-                && !control.param.node.follows(graphView.tempConn.input.node)
+                && !control.param.node.isOrFollows(graphView.tempConn.input.node)
                 &&  graphView.overOutput)
             {
                 graphView.endConnection(e.pointerId);
@@ -29901,7 +29921,7 @@ extends EventTarget
                     || this == savedInput))
             {
                 const rect = boundingRect(this.control);
-                const loop = graphView.tempConn.output.node.follows(this.node);
+                const loop = graphView.tempConn.output.node.isOrFollows(this.node);
 
                 if (!loop)
                 {
@@ -29951,7 +29971,7 @@ extends EventTarget
             && !(   tc
                  && tc.output
                  && (  !this.types.includes(tc.output.type)
-                     || tc.output.node.follows(this.node)));
+                     || tc.output.node.isOrFollows(this.node)));
 
         const color =
             isDarkMode()
@@ -30123,7 +30143,7 @@ class Output
                 && graphView.tempConn.input.types.includes(this.type))
             {
                 const rect = boundingRect(this.control);
-                const loop = this.node.follows(graphView.tempConn.input.node);
+                const loop = this.node.isOrFollows(graphView.tempConn.input.node);
 
                 if (!loop)
                 {
@@ -30171,8 +30191,8 @@ class Output
                  && graphView.tempConn.output)
             && !(   graphView.tempConn
                  && graphView.tempConn.input
-                 && (   !graphView.tempConn.input.types.includes(this.type)
-                     || this.node.follows(graphView.tempConn.input.node)));
+                 && (  !graphView.tempConn.input.types.includes(this.type)
+                     || this.node.isOrFollows(graphView.tempConn.input.node)));
 
 
         const color = 
@@ -30734,7 +30754,7 @@ class Operator
             && graphView.savedConn.input.node == this)
             return graphView.savedConn.input;
         
-        else if (!graphView.tempConn.output.node.follows(this))
+        else if (!graphView.tempConn.output.node.isOrFollows(this))
         {
             if (this.variableInputs)
                 return lastOf(inputs);
@@ -30771,7 +30791,7 @@ class Operator
         const outputs = this.outputs.filter(o => inputTypes.includes(o.type));
 
         return     outputs.length == 1
-               && !this.follows(graphView.tempConn.input.node)
+               && !this.isOrFollows(graphView.tempConn.input.node)
                ? outputs[0]
                : null;
     }
@@ -30910,31 +30930,23 @@ class Operator
 
 
 
-    // isAfter(node)
-    // {
-    //     if (this.inputs.length == 0)
-    //         return false;
+    follows(node) 
+    { 
+        return this.isOrFollows(node, true); 
+    }
 
-    //     for (const input of inputs)
-    //     {
-    //         if (input.connectedOutput.node == node)       return true;
-    //         if (input.connectedOutput.node.isAfter(node)) return true;
-    //     }
 
-    //     return false;
-    // }
 
-    
-
-    follows(node)
+    isOrFollows(node, ignoreIs = false)
     {
-        if (this == node)
+        if (    this == node
+            && !ignoreIs)
             return true;
             
         for (const input of this.inputs)
         {
             if (   input.connected
-                && input.connectedOutput.node.follows(node))
+                && input.connectedOutput.node.isOrFollows(node))
                 return true;
         }
 
@@ -31013,9 +31025,18 @@ class Operator
 
         const ignore = gen.passedNodes.includes(this);
 
-        if (    this.active
-            && !ignore) 
-            request.push(ACTIVE);
+    
+        if (!ignore)
+        {
+            const beforeActive = this.follows(getActiveNodeRightInTreeFromNode(this));
+
+            const options =
+                  ((this.active  ? 1 : 0) << 0)
+                | ((beforeActive ? 1 : 0) << 1);
+
+            request.push(options);
+        }
+
 
         return [request, ignore];
     }
@@ -31311,8 +31332,8 @@ function pushUpdateFromParam(nodes, param)
 
     
     const set =
-          ((settings.enableLxxColorSpaces) << 0)
-        | ((settings.logRequests         ) << 1);
+          ((settings.enableLxxColorSpaces ? 1 : 0) << 0)
+        | ((settings.logRequests          ? 1 : 0) << 1);
 
 
     const request = [set.toString()];
@@ -31428,8 +31449,8 @@ function createGenObject(paramNode)
 
 function areConnected(node1, node2)
 {
-    return node1.follows(node2)
-        || node2.follows(node1);
+    return node1.isOrFollows(node2)
+        || node2.isOrFollows(node1);
 }
 
 
@@ -31713,7 +31734,7 @@ function createNodeHeader(node)
                  && toTheRightOfInputs)
         {
             if (    tempConn.output
-                && !tempConn.output.node.follows(node))
+                && !tempConn.output.node.isOrFollows(node))
             {
                 if (   node.variableInputs
                     && savedConn)
@@ -31776,7 +31797,7 @@ function createNodeHeader(node)
                 }
             }
             else if (tempConn.input
-                  && !node.follows(tempConn.input.node))
+                  && !node.isOrFollows(tempConn.input.node))
             {
                 const output = node.getAutoOutput(tempConn.input.types);
                 if (!output) return;
@@ -31830,14 +31851,14 @@ function createNodeHeader(node)
         else if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
-                && !graphView.tempConn.output.node.follows(node)
+                && !graphView.tempConn.output.node.isOrFollows(node)
                 &&  graphView.overInput)
             {
                 graphView          .endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if ( graphView.tempConn.input
-                  && !node.follows(graphView.tempConn.input.node)
+                  && !node.isOrFollows(graphView.tempConn.input.node)
                   &&  graphView.overOutput)
             {
                 graphView           .endConnection(e.pointerId);
@@ -38169,7 +38190,7 @@ extends Action
 
 
         const oldInputActiveNodeIds = [...this.oldInputActiveNodeIds];
-        oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+        oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldInputActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
@@ -38436,7 +38457,7 @@ extends Action
         
 
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
-        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         
         for (const id of oldActiveNodeIds)
@@ -38625,7 +38646,7 @@ extends Action
         this.oldActiveNodeIds = [];
         
 
-        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
@@ -38861,7 +38882,7 @@ extends Action
 
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
         //console.log('oldActiveNodeIds', oldActiveNodeIds);
-        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
@@ -38975,7 +38996,7 @@ extends Action
 
 
         let oldInputActiveNodeIds = [...this.oldInputActiveNodeIds];
-        oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+        oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldInputActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));

@@ -5,16 +5,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_EXPONENT, nodeId, active);
+        super(NUMBER_EXPONENT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const exp = new GExponent(this.nodeId, this.active);
+        const exp = new GExponent(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return exp;
     }

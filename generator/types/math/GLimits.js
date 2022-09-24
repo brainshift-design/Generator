@@ -9,16 +9,16 @@ extends GOperator
     minMaxPriority = -1; 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_LIMITS, nodeId, active);
+        super(NUMBER_LIMITS, nodeId, options);
     }
 
 
     
     copy()
     {
-        const lim = new GLimits(this.nodeId, this.active);
+        const lim = new GLimits(this.nodeId, this.options);
 
         if (this.input) 
             lim.input = this.input.copy();

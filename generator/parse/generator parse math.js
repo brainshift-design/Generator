@@ -16,10 +16,10 @@ function genParseNumValue(parse)
 
 function genParseNumber(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const num = new GNumber(nodeId, active);
+    const num = new GNumber(nodeId, options);
 
     
     if (parse.settings.logRequests) 
@@ -49,10 +49,10 @@ function genParseNumber(parse)
 
 function genParseLimits(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const lim = new GLimits(nodeId, active);
+    const lim = new GLimits(nodeId, options);
    
 
     let nValues = -1;
@@ -94,10 +94,10 @@ function genParseLimits(parse)
 
 function genParseArithmetic(parse, newNode)
 {
-    const [type, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const arith = newNode(nodeId, active);
+    const arith = newNode(nodeId, options);
 
 
     let nValues = 0;
@@ -133,10 +133,10 @@ function genParseArithmetic(parse, newNode)
 
 function genParseInterpolate(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const lerp = new GInterpolate(nodeId, active);
+    const lerp = new GInterpolate(nodeId, options);
 
 
     let nValues = -1;

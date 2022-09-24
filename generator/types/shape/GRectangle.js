@@ -12,16 +12,16 @@ extends GShapeBase
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(RECTANGLE, nodeId, active);
+        super(RECTANGLE, nodeId, options);
     }
 
 
 
     copy()
     {
-        const rect = new GRectangle(this.nodeId, this.active);
+        const rect = new GRectangle(this.nodeId, this.options);
 
         if (this.input) 
             rect.input = this.input.copy();
@@ -87,8 +87,8 @@ extends GShapeBase
 
 
         if (    this.input
-            && !this.active) this.objects = this.input.objects;
-        else                 this.evalObjects();
+            && !this.options) this.objects = this.input.objects;
+        else                  this.evalObjects();
 
 
         this.valid = true;

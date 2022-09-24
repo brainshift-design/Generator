@@ -12,16 +12,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR, nodeId, active);
+        super(COLOR, nodeId, options);
     }
 
 
     
     copy()
     {
-        const col = new GColor(this.nodeId, this.active);
+        const col = new GColor(this.nodeId, this.options);
 
         if (this.input) 
             col.input = this.input.copy();

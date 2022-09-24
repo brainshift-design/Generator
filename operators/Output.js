@@ -97,7 +97,7 @@ class Output
                 && graphView.tempConn.input.types.includes(this.type))
             {
                 const rect = boundingRect(this.control);
-                const loop = this.node.follows(graphView.tempConn.input.node);
+                const loop = this.node.isOrFollows(graphView.tempConn.input.node);
 
                 if (!loop)
                 {
@@ -145,8 +145,8 @@ class Output
                  && graphView.tempConn.output)
             && !(   graphView.tempConn
                  && graphView.tempConn.input
-                 && (   !graphView.tempConn.input.types.includes(this.type)
-                     || this.node.follows(graphView.tempConn.input.node)));
+                 && (  !graphView.tempConn.input.types.includes(this.type)
+                     || this.node.isOrFollows(graphView.tempConn.input.node)));
 
 
         const color = 

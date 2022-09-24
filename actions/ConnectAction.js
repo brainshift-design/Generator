@@ -85,7 +85,7 @@ extends Action
 
 
         const oldInputActiveNodeIds = [...this.oldInputActiveNodeIds];
-        oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).follows(nodeFromId(x)) ? -1 : 1);
+        oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldInputActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));

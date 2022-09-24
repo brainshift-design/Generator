@@ -116,6 +116,7 @@ const SHAPE_TYPES = [
 const GROUP = 'GRP'; // ???? count O...
 const COMMENT = 'CMNT';
 const ACTIVE = 'ACT';
+const BEFORE_ACTIVE = 'BEF';
 const PARAM = 'PARAM'; // nodeId paramId
 const LOG = 'LOG';
 /*
@@ -165,15 +166,18 @@ function logRequest(parse) {
 function logReqNodeId(node) {
     return ' '
         + logReqId(node.nodeId)
-        + logReqActive(node);
+        + logReqOptions(node);
 }
 function logReqId(nodeId) {
     return nodeId == '' ? '\'\'' : nodeId;
 }
-function logReqActive(node) {
-    return node.active
-        ? ' ' + ACTIVE
-        : '';
+function logReqOptions(node) {
+    let log = '';
+    if (node.options.active)
+        log += ' ' + ACTIVE;
+    if (node.options.beforeActive)
+        log += ' ' + BEFORE_ACTIVE;
+    return log;
 }
 function logReqParam(param, type, parse) {
     parse.log +=

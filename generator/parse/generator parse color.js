@@ -14,10 +14,10 @@ function genParseColorValue(parse)
 
 function genParseColor(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const col = new GColor(nodeId, active);
+    const col = new GColor(nodeId, options);
 
   
     if (parse.settings.logRequests) 
@@ -73,10 +73,10 @@ function genParseColor(parse)
 
 function genParseColorInterpolate(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const lerp = new GColorInterpolate(nodeId, active);
+    const lerp = new GColorInterpolate(nodeId, options);
 
 
     let nValues = -1;
@@ -131,10 +131,10 @@ function genParseColorInterpolate(parse)
 
 function genParseColorContrast(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cnt = new GColorContrast(nodeId, active);
+    const cnt = new GColorContrast(nodeId, options);
 
 
     let nValues = -1;
@@ -194,10 +194,10 @@ function genParseColorContrast(parse)
 
 function genParseColorBlind(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const cb = new GColorBlind(nodeId, active);
+    const cb = new GColorBlind(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -232,10 +232,10 @@ function genParseColorBlind(parse)
 
 function genParseColorValidate(parse)
 {
-    const [, nodeId, active, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const val = new GColorValidate(nodeId, active);
+    const val = new GColorValidate(nodeId, options);
 
 
     if (parse.settings.logRequests) 

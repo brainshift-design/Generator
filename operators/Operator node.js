@@ -243,7 +243,7 @@ function createNodeHeader(node)
                  && toTheRightOfInputs)
         {
             if (    tempConn.output
-                && !tempConn.output.node.follows(node))
+                && !tempConn.output.node.isOrFollows(node))
             {
                 if (   node.variableInputs
                     && savedConn)
@@ -306,7 +306,7 @@ function createNodeHeader(node)
                 }
             }
             else if (tempConn.input
-                  && !node.follows(tempConn.input.node))
+                  && !node.isOrFollows(tempConn.input.node))
             {
                 const output = node.getAutoOutput(tempConn.input.types);
                 if (!output) return;
@@ -360,14 +360,14 @@ function createNodeHeader(node)
         else if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
-                && !graphView.tempConn.output.node.follows(node)
+                && !graphView.tempConn.output.node.isOrFollows(node)
                 &&  graphView.overInput)
             {
                 graphView          .endConnection(e.pointerId);
                 graphView.overInput.endConnection();
             }
             else if ( graphView.tempConn.input
-                  && !node.follows(graphView.tempConn.input.node)
+                  && !node.isOrFollows(graphView.tempConn.input.node)
                   &&  graphView.overOutput)
             {
                 graphView           .endConnection(e.pointerId);

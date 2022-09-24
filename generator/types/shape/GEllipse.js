@@ -11,16 +11,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(ELLIPSE, nodeId, active);
+        super(ELLIPSE, nodeId, options);
     }
 
 
 
     copy()
     {
-        const elps = new GEllipse(this.nodeId, this.active);
+        const elps = new GEllipse(this.nodeId, this.options);
 
         if (this.input) 
             elps.input = this.input.copy();
@@ -89,7 +89,7 @@ extends GOperator
             genPushUpdateValue(parse, this.nodeId, ELLIPSE_VALUE, this.result);
 
 
-            if (this.active)
+            if (this.options)
             {
                 genPushUpdateObject(
                     parse,

@@ -8,16 +8,16 @@ extends GOperator
     value;
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(COLOR_CONTRAST, nodeId, active);
+        super(COLOR_CONTRAST, nodeId, options);
     }
 
 
     
     copy()
     {
-        const cnt = new GColorContrast(this.nodeId, this.active);
+        const cnt = new GColorContrast(this.nodeId, this.options);
 
         if (this.input0) cnt.input0 = this.input0.copy();
         if (this.input1) cnt.input1 = this.input1.copy();

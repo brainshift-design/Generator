@@ -5,16 +5,16 @@ extends GOperator
 
 
 
-    constructor(nodeId, active)
+    constructor(nodeId, options)
     {
-        super(NUMBER_SUBTRACT, nodeId, active);
+        super(NUMBER_SUBTRACT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const sub = new GSubtract(this.nodeId, this.active);
+        const sub = new GSubtract(this.nodeId, this.options);
         add.inputs = this.inputs.map(i => i.copy());
         return sub;
     }

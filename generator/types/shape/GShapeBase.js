@@ -9,9 +9,9 @@ extends GOperator
 
 
 
-    constructor(type, nodeId, active)
+    constructor(type, nodeId, options)
     {
-        super(type, nodeId, active);
+        super(type, nodeId, options);
     }
 
 
@@ -28,7 +28,7 @@ extends GOperator
 
     // addUpdateObject(parse, nodeId, objects)
     // {
-    //     if (this.active) 
+    //     if (this.options.active) 
     //         genPushUpdateObject(parse, nodeId, objects);
     //     else 
     //         this.objects.push(...objects);

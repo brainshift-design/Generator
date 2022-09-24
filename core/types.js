@@ -133,6 +133,7 @@ const COMMENT             = 'CMNT';
 
 
 const ACTIVE              = 'ACT';
+const BEFORE_ACTIVE       = 'BEF';
 const PARAM               = 'PARAM'; // nodeId paramId
 
 
