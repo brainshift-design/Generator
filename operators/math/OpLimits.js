@@ -17,7 +17,7 @@ extends OperatorBase
 
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
-        this.paramValue.enableControlText(false);
+        //this.paramValue.enableControlText(false);
        
         this.addParam(this.paramMin = new NumberParam('min', 'min', true, true, true, 0));
         this.addParam(this.paramMax = new NumberParam('max', 'max', true, true, true));

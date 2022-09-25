@@ -34,19 +34,19 @@ extends OpShapeBase
         this.inner.appendChild(this.btnProportional);
 
 
-        this.inputs[0].addEventListener('connect', () =>
-        {
-            for (const param of this.params)
-                param.enableControlText(false);
-        });
+        // this.inputs[0].addEventListener('connect', () =>
+        // {
+        //     for (const param of this.params)
+        //         param.enableControlText(false);
+        // });
 
 
-        this.inputs[0].addEventListener('disconnect', () =>
-        {
-            for (const param of this.params)
-                if (!param.input.connected) 
-                    param.enableControlText(true);
-        });
+        // this.inputs[0].addEventListener('disconnect', () =>
+        // {
+        //     for (const param of this.params)
+        //         if (!param.input.connected) 
+        //             param.enableControlText(true);
+        // });
 
 
         this.btnProportional.addEventListener('click', () =>

@@ -71,13 +71,13 @@ extends OperatorBase
 
 
 
-    updateNode()
-    {
-        this.paramValue.control.readOnly = this.inputs[0].connected;
-        enableElementText(this.paramValue.control, !this.inputs[0].connected);
+    // updateNode()
+    // {
+    //     this.paramValue.control.readOnly = this.inputs[0].connected;
+    //     enableElementText(this.paramValue.control, !this.inputs[0].connected);
 
-        super.updateNode();
-    }
+    //     super.updateNode();
+    // }
 
 
 

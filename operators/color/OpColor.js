@@ -43,8 +43,6 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES, this.input_getValuesForUndo));
         this.addOutput(new Output(COLOR, this.output_genRequest));
 
-        this.initContentInput(this.inputs[0], 1);
-
         
         this.addParam(this.paramSpace = new SelectParam('space', '', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
         this.addParam(this.param1     = new NumberParam('c1',    '', true,  true,  true,  Math.round(defColor[1] * rgbFactor[0])));
@@ -85,10 +83,6 @@ extends OpColorBase
             this.param2.setValue(new NumberValue(this._color[2] * rgbFactor[1]), false, true, false);
             this.param3.setValue(new NumberValue(this._color[3] * rgbFactor[2]), false, true, false);
         });
-
-
-        for (let i = 1; i < this.params.length-1; i++) // -1 is for paramColor
-            this.params[i].input.addEventListener('disconnect', () => { this.params[i].enableControlText(!this.inputs[0].connected); });
     }
 
 
@@ -266,8 +260,6 @@ extends OpColorBase
         super.updateNode();
 
 
-        enableElementText(this.paramColor.control, !this.isConnected());
-
         if (!hasFocus(this.paramColor.control))
             this.paramColor.setValue(ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color))), false, true, false);// = 
         
@@ -349,22 +341,21 @@ extends OpColorBase
 
 
 
-    updateParamControls()
+    updateParams()
     {
         this.updateAllControlRanges();
 
         this.param1.updateControls();
         this.param2.updateControls();
         this.param3.updateControls();
-    }
 
+        this.param1.enableControlText(!this.inputs[0].connected);
+        this.param2.enableControlText(!this.inputs[0].connected);
+        this.param3.enableControlText(!this.inputs[0].connected);
 
+        enableElementText(this.paramColor.control, !this.isConnected());
 
-    updateControl(control)
-    {
-        enableElementText(control.textbox, !this.inputs[0].connected);
-
-        control.update();
+        super.updateParams();
     }
 
 

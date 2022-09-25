@@ -37,13 +37,6 @@ extends OpColorBase
         this.inputs[0].addEventListener('disconnect', () => { this.outputs[0]._type = FILL; uiDeleteObjects([this.id]); });
 
 
-        this.initContentInput(
-            this.inputs[0],
-            0, 
-            () =>  this.inputs[0].connected
-                && this.inputs[0].connectedOutput.type == FILL);
-
-
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
@@ -268,5 +261,19 @@ extends OpColorBase
         colors.wire   = colors.back;
         
         return colors;
+    }
+
+
+
+    updateParams()
+    {
+        const enable = 
+               !this.inputs[0].connected
+            ||  SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type);
+
+        this.paramColor  .enableControlText(enable);
+        this.paramOpacity.enableControlText(enable);
+
+        super.updateParams();
     }
 }

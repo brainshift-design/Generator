@@ -23521,10 +23521,10 @@ function initNumberControlTextbox(control)
             && control.param.input
             && control.param.input.connected;
 
-        enableElementText(
-            control.textbox, 
-               !control.readOnly
-            && !isConnected);
+        // enableElementText(
+        //     control.textbox, 
+        //        !control.readOnly
+        //     && !isConnected);
 
         control.updateTextbox();
         
@@ -24695,10 +24695,10 @@ function initColorControlTextbox(control)
             && control.param.input
             && control.param.input.connected;
 
-        enableElementText(
-            control.textbox, 
-               !control.readOnly
-            && !isConnected);
+        // enableElementText(
+        //     control.textbox, 
+        //        !control.readOnly
+        //     && !isConnected);
 
         control.updateTextbox();
         
@@ -30798,31 +30798,31 @@ class Operator
 
 
 
-    initContentInput(input, firstParam = 0, condition = null)
-    {
-        input.addEventListener('connect', () =>
-        {
-            if (    condition
-                && !condition())
-                return;
+    // initContentInput(input, firstParam = 0, condition = null)
+    // {
+    //     input.addEventListener('connect', () =>
+    //     {
+    //         if (    condition
+    //             && !condition())
+    //             return;
 
-            for (let i = firstParam; i < this.params.length; i++)
-                this.params[i].enableControlText(false);
-        });
+    //         for (let i = firstParam; i < this.params.length; i++)
+    //             this.params[i].enableControlText(false);
+    //     });
     
 
-        input.addEventListener('disconnect', () =>
-        {
-            for (let i = firstParam; i < this.params.length; i++)
-            {
-                if (    this.params[i].input
-                    && !this.params[i].input.connected) 
-                    this.params[i].enableControlText(true);
-            }
+    //     input.addEventListener('disconnect', () =>
+    //     {
+    //         for (let i = firstParam; i < this.params.length; i++)
+    //         {
+    //             if (    this.params[i].input
+    //                 && !this.params[i].input.connected) 
+    //                 this.params[i].enableControlText(true);
+    //         }
 
-            this.updateNode();
-        });
-    }
+    //         this.updateNode();
+    //     });
+    // }
 
 
 
@@ -31053,7 +31053,7 @@ class Operator
 
         this.updateBorder();
         this.updateHeader();
-        this.updateParamControls();
+        this.updateParams();
 
         graphView.updateNodeTransform(this);
     }
@@ -31153,14 +31153,6 @@ class Operator
 
 
 
-    updateParams(dispatchEvents)
-    {
-        for (const param of this.params)
-            param.update(dispatchEvents);
-    }
-
-
-
     updateValues(updateParamId, paramIds, values) // virtual
     {
         //logFunction('Operator.updateValues()');
@@ -31201,7 +31193,7 @@ class Operator
 
 
 
-    updateParamControls()
+    updateParams()
     {
         this.params.forEach(p => p.updateControls());
     }
@@ -32433,13 +32425,13 @@ extends OperatorBase
 
 
 
-    updateNode()
-    {
-        this.paramValue.control.readOnly = this.inputs[0].connected;
-        enableElementText(this.paramValue.control, !this.inputs[0].connected);
+    // updateNode()
+    // {
+    //     this.paramValue.control.readOnly = this.inputs[0].connected;
+    //     enableElementText(this.paramValue.control, !this.inputs[0].connected);
 
-        super.updateNode();
-    }
+    //     super.updateNode();
+    // }
 
 
 
@@ -32470,7 +32462,7 @@ extends OperatorBase
 
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
-        this.paramValue.enableControlText(false);
+        //this.paramValue.enableControlText(false);
        
         this.addParam(this.paramMin = new NumberParam('min', 'min', true, true, true, 0));
         this.addParam(this.paramMax = new NumberParam('max', 'max', true, true, true));
@@ -32548,7 +32540,7 @@ extends OperatorBase
         
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
-        this.paramValue.enableControlText(false);
+        //this.paramValue.enableControlText(false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');
@@ -32870,7 +32862,7 @@ extends OperatorBase
         this.addParam(this.paramOperation = new SelectParam('op',    '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
         this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
 
-        this.paramValue.enableControlText(false);
+        //this.paramValue.enableControlText(false);
 
 
         this._symbol           = createDiv('arithmeticSymbol');
@@ -33086,7 +33078,7 @@ extends OperatorBase
         this.addParam(this.paramValue  = new NumberParam('value', '', false, false, false, 0));
         this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
 
-        this.paramValue.enableControlText(false);
+        //this.paramValue.enableControlText(false);
         
         this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
         this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
@@ -33351,8 +33343,6 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES, this.input_getValuesForUndo));
         this.addOutput(new Output(COLOR, this.output_genRequest));
 
-        this.initContentInput(this.inputs[0], 1);
-
         
         this.addParam(this.paramSpace = new SelectParam('space', '', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
         this.addParam(this.param1     = new NumberParam('c1',    '', true,  true,  true,  Math.round(defColor[1] * rgbFactor[0])));
@@ -33393,10 +33383,6 @@ extends OpColorBase
             this.param2.setValue(new NumberValue(this._color[2] * rgbFactor[1]), false, true, false);
             this.param3.setValue(new NumberValue(this._color[3] * rgbFactor[2]), false, true, false);
         });
-
-
-        for (let i = 1; i < this.params.length-1; i++) // -1 is for paramColor
-            this.params[i].input.addEventListener('disconnect', () => { this.params[i].enableControlText(!this.inputs[0].connected); });
     }
 
 
@@ -33574,8 +33560,6 @@ extends OpColorBase
         super.updateNode();
 
 
-        enableElementText(this.paramColor.control, !this.isConnected());
-
         if (!hasFocus(this.paramColor.control))
             this.paramColor.setValue(ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color))), false, true, false);// = 
         
@@ -33657,22 +33641,21 @@ extends OpColorBase
 
 
 
-    updateParamControls()
+    updateParams()
     {
         this.updateAllControlRanges();
 
         this.param1.updateControls();
         this.param2.updateControls();
         this.param3.updateControls();
-    }
 
+        this.param1.enableControlText(!this.inputs[0].connected);
+        this.param2.enableControlText(!this.inputs[0].connected);
+        this.param3.enableControlText(!this.inputs[0].connected);
 
+        enableElementText(this.paramColor.control, !this.isConnected());
 
-    updateControl(control)
-    {
-        enableElementText(control.textbox, !this.inputs[0].connected);
-
-        control.update();
+        super.updateParams();
     }
 
 
@@ -35782,7 +35765,7 @@ extends OpColorBase
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
-        this.paramValue.enableControlText(false);
+        //this.paramValue.enableControlText(false);
 
 
         createTooltip(ttWcag2);
@@ -36298,13 +36281,6 @@ extends OpColorBase
         this.inputs[0].addEventListener('disconnect', () => { this.outputs[0]._type = FILL; uiDeleteObjects([this.id]); });
 
 
-        this.initContentInput(
-            this.inputs[0],
-            0, 
-            () =>  this.inputs[0].connected
-                && this.inputs[0].connectedOutput.type == FILL);
-
-
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
@@ -36530,6 +36506,20 @@ extends OpColorBase
         
         return colors;
     }
+
+
+
+    updateParams()
+    {
+        const enable = 
+               !this.inputs[0].connected
+            ||  SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type);
+
+        this.paramColor  .enableControlText(enable);
+        this.paramOpacity.enableControlText(enable);
+
+        super.updateParams();
+    }
 }
 
 
@@ -36557,7 +36547,7 @@ extends OpColorBase
         this.addInput (new Input(STROKE_TYPES, this.input_getValuesForUndo));
         this.addOutput(new Output(STROKE, this.output_genRequest));
 
-        this.initContentInput(this.inputs[0]);
+        // this.initContentInput(this.inputs[0]);
 
 
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
@@ -37023,7 +37013,7 @@ extends OperatorBase
         this.addInput (new Input([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output(RECTANGLE, this.output_genRequest));
 
-        this.initContentInput(this.inputs[0]);
+        // this.initContentInput(this.inputs[0]);
 
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
@@ -37161,19 +37151,19 @@ extends OpShapeBase
         this.paramAngle.control.dragReverse = true;
 
 
-        this.inputs[0].addEventListener('connect', () =>
-        {
-            for (const param of this.params)
-                param.enableControlText(false);
-        });
+        // this.inputs[0].addEventListener('connect', () =>
+        // {
+        //     for (const param of this.params)
+        //         param.enableControlText(false);
+        // });
 
 
-        this.inputs[0].addEventListener('disconnect', () =>
-        {
-            for (const param of this.params)
-                if (!param.input.connected) 
-                    param.enableControlText(true);
-        });
+        // this.inputs[0].addEventListener('disconnect', () =>
+        // {
+        //     for (const param of this.params)
+        //         if (!param.input.connected) 
+        //             param.enableControlText(true);
+        // });
     }
     
     
@@ -37270,19 +37260,19 @@ extends OpShapeBase
         this.inner.appendChild(this.btnProportional);
 
 
-        this.inputs[0].addEventListener('connect', () =>
-        {
-            for (const param of this.params)
-                param.enableControlText(false);
-        });
+        // this.inputs[0].addEventListener('connect', () =>
+        // {
+        //     for (const param of this.params)
+        //         param.enableControlText(false);
+        // });
 
 
-        this.inputs[0].addEventListener('disconnect', () =>
-        {
-            for (const param of this.params)
-                if (!param.input.connected) 
-                    param.enableControlText(true);
-        });
+        // this.inputs[0].addEventListener('disconnect', () =>
+        // {
+        //     for (const param of this.params)
+        //         if (!param.input.connected) 
+        //             param.enableControlText(true);
+        // });
 
 
         this.btnProportional.addEventListener('click', () =>
@@ -37460,19 +37450,19 @@ extends OpShapeBase
         this.inner.appendChild(this.btnProportional);
 
 
-        this.inputs[0].addEventListener('connect', () =>
-        {
-            for (const param of this.params)
-                param.enableControlText(false);
-        });
+        // this.inputs[0].addEventListener('connect', () =>
+        // {
+        //     for (const param of this.params)
+        //         param.enableControlText(false);
+        // });
 
 
-        this.inputs[0].addEventListener('disconnect', () =>
-        {
-            for (const param of this.params)
-                if (!param.input.connected) 
-                    param.enableControlText(true);
-        });
+        // this.inputs[0].addEventListener('disconnect', () =>
+        // {
+        //     for (const param of this.params)
+        //         if (!param.input.connected) 
+        //             param.enableControlText(true);
+        // });
 
 
         this.btnProportional.addEventListener('click', () =>
@@ -37679,19 +37669,19 @@ extends OpShapeBase
         this.inner.appendChild(this.btnProportional);
 
 
-        this.inputs[0].addEventListener('connect', () =>
-        {
-            for (const param of this.params)
-                param.enableControlText(false);
-        });
+        // this.inputs[0].addEventListener('connect', () =>
+        // {
+        //     for (const param of this.params)
+        //         param.enableControlText(false);
+        // });
 
 
-        this.inputs[0].addEventListener('disconnect', () =>
-        {
-            for (const param of this.params)
-                if (!param.input.connected) 
-                    param.enableControlText(true);
-        });
+        // this.inputs[0].addEventListener('disconnect', () =>
+        // {
+        //     for (const param of this.params)
+        //         if (!param.input.connected) 
+        //             param.enableControlText(true);
+        // });
 
 
         this.btnProportional.addEventListener('click', () =>

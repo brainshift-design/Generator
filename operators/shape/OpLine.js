@@ -26,19 +26,19 @@ extends OpShapeBase
         this.paramAngle.control.dragReverse = true;
 
 
-        this.inputs[0].addEventListener('connect', () =>
-        {
-            for (const param of this.params)
-                param.enableControlText(false);
-        });
+        // this.inputs[0].addEventListener('connect', () =>
+        // {
+        //     for (const param of this.params)
+        //         param.enableControlText(false);
+        // });
 
 
-        this.inputs[0].addEventListener('disconnect', () =>
-        {
-            for (const param of this.params)
-                if (!param.input.connected) 
-                    param.enableControlText(true);
-        });
+        // this.inputs[0].addEventListener('disconnect', () =>
+        // {
+        //     for (const param of this.params)
+        //         if (!param.input.connected) 
+        //             param.enableControlText(true);
+        // });
     }
     
     

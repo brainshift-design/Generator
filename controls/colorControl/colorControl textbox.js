@@ -251,10 +251,10 @@ function initColorControlTextbox(control)
             && control.param.input
             && control.param.input.connected;
 
-        enableElementText(
-            control.textbox, 
-               !control.readOnly
-            && !isConnected);
+        // enableElementText(
+        //     control.textbox, 
+        //        !control.readOnly
+        //     && !isConnected);
 
         control.updateTextbox();
         

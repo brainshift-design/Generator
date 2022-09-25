@@ -201,31 +201,31 @@ class Operator
 
 
 
-    initContentInput(input, firstParam = 0, condition = null)
-    {
-        input.addEventListener('connect', () =>
-        {
-            if (    condition
-                && !condition())
-                return;
+    // initContentInput(input, firstParam = 0, condition = null)
+    // {
+    //     input.addEventListener('connect', () =>
+    //     {
+    //         if (    condition
+    //             && !condition())
+    //             return;
 
-            for (let i = firstParam; i < this.params.length; i++)
-                this.params[i].enableControlText(false);
-        });
+    //         for (let i = firstParam; i < this.params.length; i++)
+    //             this.params[i].enableControlText(false);
+    //     });
     
 
-        input.addEventListener('disconnect', () =>
-        {
-            for (let i = firstParam; i < this.params.length; i++)
-            {
-                if (    this.params[i].input
-                    && !this.params[i].input.connected) 
-                    this.params[i].enableControlText(true);
-            }
+    //     input.addEventListener('disconnect', () =>
+    //     {
+    //         for (let i = firstParam; i < this.params.length; i++)
+    //         {
+    //             if (    this.params[i].input
+    //                 && !this.params[i].input.connected) 
+    //                 this.params[i].enableControlText(true);
+    //         }
 
-            this.updateNode();
-        });
-    }
+    //         this.updateNode();
+    //     });
+    // }
 
 
 
@@ -456,7 +456,7 @@ class Operator
 
         this.updateBorder();
         this.updateHeader();
-        this.updateParamControls();
+        this.updateParams();
 
         graphView.updateNodeTransform(this);
     }
@@ -556,14 +556,6 @@ class Operator
 
 
 
-    updateParams(dispatchEvents)
-    {
-        for (const param of this.params)
-            param.update(dispatchEvents);
-    }
-
-
-
     updateValues(updateParamId, paramIds, values) // virtual
     {
         //logFunction('Operator.updateValues()');
@@ -604,7 +596,7 @@ class Operator
 
 
 
-    updateParamControls()
+    updateParams()
     {
         this.params.forEach(p => p.updateControls());
     }

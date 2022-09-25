@@ -22,7 +22,7 @@ extends OpColorBase
         this.addInput (new Input(STROKE_TYPES, this.input_getValuesForUndo));
         this.addOutput(new Output(STROKE, this.output_genRequest));
 
-        this.initContentInput(this.inputs[0]);
+        // this.initContentInput(this.inputs[0]);
 
 
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));

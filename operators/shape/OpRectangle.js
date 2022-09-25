@@ -18,7 +18,7 @@ extends OperatorBase
         this.addInput (new Input([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output(RECTANGLE, this.output_genRequest));
 
-        this.initContentInput(this.inputs[0]);
+        // this.initContentInput(this.inputs[0]);
 
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
