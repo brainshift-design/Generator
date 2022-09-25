@@ -74,14 +74,14 @@ extends GOperator
             const input = 
                 isParam
                 ? this.input.node[this.input.paramId]
-                : this.input;
+                : this.input.toValue();
 
             if (input.isValid())
             {
                 const space =
                     isParam
                     ? input.space
-                    : this.input.space;
+                    : this.input.space.toValue();
 
                 color = new ColorValue(
                     space, 
@@ -106,18 +106,18 @@ extends GOperator
                 color.space.value = toSpaceIndex;
 
                 
-                if (this.c1) color.c1 = this.c1;
-                if (this.c2) color.c2 = this.c2;
-                if (this.c3) color.c3 = this.c3;
+                if (this.c1) color.c1 = this.c1.toValue();
+                if (this.c2) color.c2 = this.c2.toValue();
+                if (this.c3) color.c3 = this.c3.toValue();
             }
         }
         else
         {
             color = new ColorValue(
-                this.space, 
-                this.c1, 
-                this.c2, 
-                this.c3);
+                this.space.toValue(), 
+                this.c1   .toValue(), 
+                this.c2   .toValue(), 
+                this.c3   .toValue());
 
             const toSpaceIndex = Math.min(Math.max(
                 0,
@@ -141,15 +141,10 @@ extends GOperator
         }
 
 
-        console.assert(
-            color.space.type == NUMBER_VALUE, 
-            'this.result.type must be NUMBER_VALUE');
-
-
-        genPushUpdateValue(parse, this.nodeId, 'space', color.space.toValue());
-        genPushUpdateValue(parse, this.nodeId, 'c1',    color.c1   .toValue());
-        genPushUpdateValue(parse, this.nodeId, 'c2',    color.c2   .toValue());
-        genPushUpdateValue(parse, this.nodeId, 'c3',    color.c3   .toValue());
+        genPushUpdateValue(parse, this.nodeId, 'space', color.space);
+        genPushUpdateValue(parse, this.nodeId, 'c1',    color.c1   );
+        genPushUpdateValue(parse, this.nodeId, 'c2',    color.c2   );
+        genPushUpdateValue(parse, this.nodeId, 'c3',    color.c3   );
 
 
         this.valid = true;
@@ -177,10 +172,10 @@ extends GOperator
     toValue()
     {
         return new ColorValue(
-            this.space,
-            this.c1,
-            this.c2,
-            this.c3);
+            this.space ? this.space.toValue() : this.input.space.toValue(),
+            this.c1    ? this.c1   .toValue() : this.input.c1   .toValue(),
+            this.c2    ? this.c2   .toValue() : this.input.c2   .toValue(),
+            this.c3    ? this.c3   .toValue() : this.input.c3   .toValue());
     }
 
 

@@ -104,7 +104,11 @@ graphView.update = function(nodes = null)
     graphView.updateScroll(x, w, h, bounds, yOffset);
 
 
-    nodes.forEach(n => n.updateHeaderLabel());
+    nodes.forEach(n =>
+    {
+        n.updateHeader(); 
+        n.updateHeaderLabel(); 
+    });
 };
 
 

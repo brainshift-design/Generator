@@ -23,7 +23,7 @@ extends OpColorBase
         super(COLOR, 'color');
 
 
-        const defColor = ['hex', 0.788, 0.788, 0.788];
+        const defColor = ['hex', 0.85, 0.85, 0.85];
 
         this._color = 
             !!options.random

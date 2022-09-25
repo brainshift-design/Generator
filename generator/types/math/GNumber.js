@@ -41,7 +41,8 @@ extends GOperator
         else
             this.value.eval(parse);
 
-
+        
+        console.assert(this.value.type == NUMBER_VALUE, 'this.value.type must be NUMBER_VALUE');
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
 
         
