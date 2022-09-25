@@ -98,17 +98,33 @@ extends GShapeBase
 
     evalObjects()
     {
-        this.objects = 
-        [{
-            type:   RECTANGLE,
-            id:     0,
-            x:                  (this.input ? this.input.x      : this.x     ).value,
-            y:                  (this.input ? this.input.y      : this.y     ).value,
-            width:              (this.input ? this.input.width  : this.width ).value,
-            height:             (this.input ? this.input.height : this.height).value,
-            angle:              (this.input ? this.input.angle  : this.angle ).value,
-            round:  Math.max(0, (this.input ? this.input.round  : this.round ).value)
-        }];
+        const x      = this.x      ? this.x      : this.input ? this.input.x      : null;
+        const y      = this.y      ? this.y      : this.input ? this.input.y      : null;
+        const width  = this.width  ? this.width  : this.input ? this.input.width  : null;
+        const height = this.height ? this.height : this.input ? this.input.height : null;
+        const angle  = this.angle  ? this.angle  : this.input ? this.input.angle  : null;
+        const round  = this.round  ? this.round  : this.input ? this.input.round  : null;
+
+
+        if (   x 
+            && y 
+            && width 
+            && height 
+            && angle 
+            && round)
+        {
+            this.objects = 
+            [{
+                type:   RECTANGLE,
+                id:     0,
+                x:                  x     .toValue().value,
+                y:                  y     .toValue().value,
+                width:              width .toValue().value,
+                height:             height.toValue().value,
+                angle:              angle .toValue().value,
+                round:  Math.max(0, round .toValue().value)
+            }];
+        }
 
         
         super.evalObjects();

@@ -32,8 +32,8 @@ extends OperatorBase
     {
         // 'this' is the output        
 
-        if (!isEmpty(this.cache))
-            return this.cache;
+        // if (!isEmpty(this.cache))
+        //     return this.cache;
 
 
         gen.scope.push({
@@ -53,7 +53,7 @@ extends OperatorBase
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
-        return this.cache = request;
+        return /*this.cache =*/ request;
     }
 
 

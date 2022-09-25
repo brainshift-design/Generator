@@ -457,14 +457,15 @@ class Operator
             ? this.id 
             : this.name;
         
-        this.label.style.left       = '50%';
-        this.label.style.top        = '50%';
+        this.label.style.left = '50%';
+        this.label.style.top  = '50%';
 
         updateHeaderLabelOffset(this);
 
 
-        const colors                = Operator.prototype.getHeaderColors.call(this);
+        const colors          = Operator.prototype.getHeaderColors.call(this);
 
+        
         let fontSize = 11;
 
         // compensate for bold active header names look THINNER when zoomed out

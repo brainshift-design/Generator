@@ -84,8 +84,8 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        if (!isEmpty(this.cache))
-            return this.cache;
+        // if (!isEmpty(this.cache))
+        //     return this.cache;
 
 
         gen.scope.push({

@@ -119,7 +119,11 @@ function genParse(parse, inParam = true)
     else if (parse.next == POLYGON           ) result = genParsePolygon         (parse);
     else if (parse.next == STAR              ) result = genParseStar            (parse);
 
-    else                                       console.assert(false, 'unknown parse token \'' + parse.next + '\'');
+    else                                       
+    {
+        console.trace();
+        console.assert(false, 'unknown parse token \'' + parse.next + '\'');
+    }
 
 
     parse.inParam = false;

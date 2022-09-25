@@ -92,8 +92,8 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        if (!isEmpty(this.cache))
-            return this.cache;
+        // if (!isEmpty(this.cache))
+        //     return this.cache;
 
         const connectedInputs  = this.node.inputs.filter(i => i.connected);
 
