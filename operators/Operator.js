@@ -431,7 +431,8 @@ class Operator
     
         if (!ignore)
         {
-            const beforeActive = this.follows(getActiveNodeRightInTreeFromNode(this));
+            const nextActive   = getActiveNodeRightInTreeFromNode(this);
+            const beforeActive = nextActive && nextActive.follows(this);
 
             const options =
                   ((this.active  ? 1 : 0) << 0)
