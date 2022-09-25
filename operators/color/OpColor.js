@@ -10,9 +10,6 @@ extends OpColorBase
     colorBack;
 
 
-    //hexbox;
-
-    
     prevSpace;
     prevSpaceConnections = [];
 
@@ -481,7 +478,7 @@ extends OpColorBase
         if (open)
             lastOf(ranges).end = 1;
         else if (!open
-              && ranges.length == 0)
+              && isEmpty(ranges))
             resetControlRanges(control);
 
 

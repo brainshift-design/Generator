@@ -17,11 +17,11 @@ extends GOperator
     {
         const num = new GNumber(this.nodeId, this.options);
         
-        num.value = this.value;
-
         if (this.input) 
             num.input = this.input.copy();
         
+        num.value = this.value;
+
         return num;
     }
 
@@ -29,20 +29,29 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        if (this.input) 
         {
-            this.result = 
-                this.input
-                ? this.input.eval(parse).copy()
-                : this.value.copy();
-
-            this.valid = true;
-
-            console.assert(this.result.valid, 'this.result must be valid');
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            this.input.eval(parse);
+            this.value = this.input.value;
         }
+        else
+            this.value.eval(parse);
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+
+        
+        this.valid = true;
+    }
+
+
+
+    toValue()
+    {
+        return this.value;
     }
 }

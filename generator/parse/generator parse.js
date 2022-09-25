@@ -159,7 +159,7 @@ function genParseNodeEnd(parse, node = null)
 
     if (node)
     {
-        if (parse.scope.length == 0)
+        if (isEmpty(parse.scope))
             node.topLevel = true;
 
         pushUnique(parse.parsedNodes, node);

@@ -1,5 +1,5 @@
 class PolygonValue
-extends GType
+extends GValue
 {
     x;
     y;

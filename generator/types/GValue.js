@@ -1,4 +1,4 @@
-class GType
+class GValue
 {
     type;
 
@@ -60,6 +60,13 @@ class GType
 
 
 
+    toValue()
+    {
+        
+    }
+
+
+
     toString() 
     { 
         return this.type; 
@@ -79,9 +86,9 @@ function displayValue(type, value)
     {
         case NUMBER_VALUE:    return parseNumberValue   (value)[0].toDisplayString();
         case COLOR_VALUE:     return parseColorValue    (value)[0].toDisplayString();
-        case FILL_VALUE:      return parseFillValue     (value)[0].toDisplayString()
-        case STROKE_VALUE:    return parseStrokeValue   (value)[0].toDisplayString()
-        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString()
+        case FILL_VALUE:      return parseFillValue     (value)[0].toDisplayString();
+        case STROKE_VALUE:    return parseStrokeValue   (value)[0].toDisplayString();
+        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
     }
 
 

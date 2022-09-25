@@ -1,5 +1,5 @@
 class GOperator
-extends GType
+extends GValue
 {
     nodeId;
     options;
@@ -20,4 +20,13 @@ extends GType
     {
         return null;
     }
+}
+
+
+
+function evalValue(value)
+{
+    return value instanceof GOperator 
+           ? value.value 
+           : value;
 }

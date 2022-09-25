@@ -235,7 +235,7 @@ function removeAt(array, index)
 
 function removeLast(array)
 {
-    if (array.length == 0)
+    if (isEmpty(array))
         return null;
 
     let last = lastOf(array);
@@ -3062,7 +3062,7 @@ VECTOR      V
 */
 
 
-class GType
+class GValue
 {
     type;
 
@@ -3124,6 +3124,13 @@ class GType
 
 
 
+    toValue()
+    {
+        
+    }
+
+
+
     toString() 
     { 
         return this.type; 
@@ -3143,9 +3150,9 @@ function displayValue(type, value)
     {
         case NUMBER_VALUE:    return parseNumberValue   (value)[0].toDisplayString();
         case COLOR_VALUE:     return parseColorValue    (value)[0].toDisplayString();
-        case FILL_VALUE:      return parseFillValue     (value)[0].toDisplayString()
-        case STROKE_VALUE:    return parseStrokeValue   (value)[0].toDisplayString()
-        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString()
+        case FILL_VALUE:      return parseFillValue     (value)[0].toDisplayString();
+        case STROKE_VALUE:    return parseStrokeValue   (value)[0].toDisplayString();
+        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
     }
 
 
@@ -3154,7 +3161,7 @@ function displayValue(type, value)
 
 
 class GOperator
-extends GType
+extends GValue
 {
     nodeId;
     options;
@@ -3177,6 +3184,14 @@ extends GType
     }
 }
 
+
+
+function evalValue(value)
+{
+    return value instanceof GOperator 
+           ? value.value 
+           : value;
+}
 
 
 class GParam
@@ -3224,7 +3239,7 @@ extends GOperator
 
 
 class NumberValue
-extends GType
+extends GValue
 {
     value;
     decimals;
@@ -3287,6 +3302,13 @@ extends GType
     toNumber()
     {
         return roundTo(this.value, this.decimals);
+    }
+
+
+
+    toValue()
+    {
+        return this;
     }
 
 
@@ -3357,7 +3379,7 @@ function parseSimpleNumberValue(str)
 
 
 class ColorValue
-extends GType
+extends GValue
 {
     space;
     c1;
@@ -3471,6 +3493,13 @@ extends GType
 
 
 
+    toValue()
+    {
+        return this;
+    }
+
+
+
     toString()
     {
         return      this.space.toString()
@@ -3543,7 +3572,7 @@ function parseColorValue(str, i = -1)
 
 
 class FillValue
-extends GType
+extends GValue
 {
     color;
     opacity;
@@ -3643,6 +3672,13 @@ extends GType
 
 
 
+    toValue()
+    {
+        return this;
+    }
+
+
+
     toString()
     {
         const rgb = scaleRgb(this.color.toRgb());
@@ -3719,7 +3755,7 @@ function evalFillValue(value, parse)
 
 
 class StrokeValue
-extends GType
+extends GValue
 {
     fill;
     weight;
@@ -3863,6 +3899,13 @@ extends GType
 
 
 
+    toValue()
+    {
+        return this;
+    }
+
+
+
     toString()
     {
         return      this.fill  .toString()
@@ -3952,7 +3995,7 @@ function evalStrokeValue(value, parse)
 */
 
 class ShapeBaseValue
-extends GType
+extends GValue
 {
     nodeId;
 
@@ -4210,7 +4253,7 @@ function parseRectangleValue(str, i = -1)
 
 
 class LineValue
-extends GType
+extends GValue
 {
     x;
     y;
@@ -4301,7 +4344,7 @@ function parseLineValue(str)
 
 
 class EllipseValue
-extends GType
+extends GValue
 {
     x;
     y;
@@ -4400,7 +4443,7 @@ function parseEllipseValue(str)
 
 
 class PolygonValue
-extends GType
+extends GValue
 {
     x;
     y;
@@ -4515,7 +4558,7 @@ function parsePolygonValue(str)
 
 
 class StarValue
-extends GType
+extends GValue
 {
     x;
     y;
@@ -4656,11 +4699,11 @@ extends GOperator
     {
         const num = new GNumber(this.nodeId, this.options);
         
-        num.value = this.value;
-
         if (this.input) 
             num.input = this.input.copy();
         
+        num.value = this.value;
+
         return num;
     }
 
@@ -4668,21 +4711,30 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        if (this.input) 
         {
-            this.result = 
-                this.input
-                ? this.input.eval(parse).copy()
-                : this.value.copy();
-
-            this.valid = true;
-
-            console.assert(this.result.valid, 'this.result must be valid');
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            this.input.eval(parse);
+            this.value = this.input.value;
         }
+        else
+            this.value.eval(parse);
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+
+        
+        this.valid = true;
+    }
+
+
+
+    toValue()
+    {
+        return this.value;
     }
 }
 
@@ -5340,10 +5392,10 @@ extends GOperator
             'this.result.type must be NUMBER_VALUE');
 
 
-        genPushUpdateValue(parse, this.nodeId, 'space', color.space);
-        genPushUpdateValue(parse, this.nodeId, 'c1',    color.c1   );
-        genPushUpdateValue(parse, this.nodeId, 'c2',    color.c2   );
-        genPushUpdateValue(parse, this.nodeId, 'c3',    color.c3   );
+        genPushUpdateValue(parse, this.nodeId, 'space', color.space.toValue());
+        genPushUpdateValue(parse, this.nodeId, 'c1',    color.c1   .toValue());
+        genPushUpdateValue(parse, this.nodeId, 'c2',    color.c2   .toValue());
+        genPushUpdateValue(parse, this.nodeId, 'c3',    color.c3   .toValue());
 
 
         this.valid = true;
@@ -5368,7 +5420,7 @@ extends GOperator
 
 
 
-    toColorValue()
+    toValue()
     {
         return new ColorValue(
             this.space,
@@ -6107,12 +6159,12 @@ extends GShapeBase
         const round  = this.round  ? this.round  : this.input ? this.input.round  : null;
 
 
-        if (x     ) genPushUpdateValue(parse, this.nodeId, 'x',      x     );
-        if (y     ) genPushUpdateValue(parse, this.nodeId, 'y',      y     );
-        if (width ) genPushUpdateValue(parse, this.nodeId, 'width',  width );
-        if (height) genPushUpdateValue(parse, this.nodeId, 'height', height);
-        if (angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  angle );
-        if (round ) genPushUpdateValue(parse, this.nodeId, 'round',  round );
+        if (x     ) genPushUpdateValue(parse, this.nodeId, 'x',      x     .toValue());
+        if (y     ) genPushUpdateValue(parse, this.nodeId, 'y',      y     .toValue());
+        if (width ) genPushUpdateValue(parse, this.nodeId, 'width',  width .toValue());
+        if (height) genPushUpdateValue(parse, this.nodeId, 'height', height.toValue());
+        if (angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  angle .toValue());
+        if (round ) genPushUpdateValue(parse, this.nodeId, 'round',  round .toValue());
 
 
         if (    this.input
@@ -6691,10 +6743,10 @@ extends GShapeBase
         const color   = this.color   ? this.color   : this.input ? this.input.color   : null;
         const opacity = this.opacity ? this.opacity : this.input ? this.input.opacity : null;
 
-        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color.type == COLOR ? color.toColorValue() : color);
-        if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  .toValue());
+        if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity.toValue());
 
-
+        
         if (   this.options.active
             || this.options.beforeActive)
             this.evalObjects();
@@ -6715,7 +6767,7 @@ extends GShapeBase
             return;
 
 
-        const rgb = scaleRgb((color.type == COLOR ? color.toColorValue() : color).toRgb());
+        const rgb = scaleRgb(color.toValue().toRgb());
 
 
         for (const obj of this.objects)
@@ -6728,7 +6780,7 @@ extends GShapeBase
                         rgb[0]
                 + ' ' + rgb[1]
                 + ' ' + rgb[2]
-                + ' ' + this.opacity.toNumber()]);
+                + ' ' + this.opacity.toValue().toNumber()]);
         }
 
         
@@ -7179,8 +7231,8 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
     //console.log('genUpdateValuesAndObjects()');
     //console.log('updateValues =', updateValues);
 
-    if (   updateValues .length == 0
-        && updateObjects.length == 0)
+    if (   isEmpty(updateValues )
+        && isEmpty(updateObjects))
     {
         //console.log('restoring');
         updateNodeId  = lastUpdateNodeId;
@@ -7629,9 +7681,11 @@ function genParseNumber(parse)
 
     parse.nTab++;
 
+
     if (parse.next == NUMBER_VALUE) num.value = genParse(parse);
     else                            num.input = genParse(parse);
 
+    
     parse.nTab--;
 
 
@@ -8463,7 +8517,7 @@ function genParseNodeEnd(parse, node = null)
 
     if (node)
     {
-        if (parse.scope.length == 0)
+        if (isEmpty(parse.scope))
             node.topLevel = true;
 
         pushUnique(parse.parsedNodes, node);

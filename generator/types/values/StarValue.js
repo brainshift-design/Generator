@@ -1,5 +1,5 @@
 class StarValue
-extends GType
+extends GValue
 {
     x;
     y;

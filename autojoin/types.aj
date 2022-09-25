@@ -1,7 +1,7 @@
 ../core/types.js
 
 
-../generator/types/GType.js
+../generator/types/GValue.js
 ../generator/types/GOperator.js
 
 ../generator/types/GParam.js

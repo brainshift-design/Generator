@@ -1,5 +1,5 @@
 class FillValue
-extends GType
+extends GValue
 {
     color;
     opacity;
@@ -95,6 +95,13 @@ extends GType
     toFigma()
     {
         return [['SOLID', this.toString()]];
+    }
+
+
+
+    toValue()
+    {
+        return this;
     }
 
 

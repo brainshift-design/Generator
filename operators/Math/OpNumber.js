@@ -49,35 +49,21 @@ extends OperatorBase
         if (input.connected) request.push(...pushInputOrParam(input, gen));
         else                 request.push(...this.node.paramValue.genRequest(gen));
 
-
             
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
-        
-        return request;
+
+        return this.cache = request;
     }
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateParams()
     {
-        super.updateValues(updateParamId, paramIds, values);
+        this.paramValue.enableControlText(!this.inputs[0].connected);
 
-        const index = paramIds.indexOf('value');
- 
-        if (index > -1) 
-            this.outputs[0].cache = [NUMBER_VALUE, values[index].toString()];
+        super.updateParams();
     }
-
-
-
-    // updateNode()
-    // {
-    //     this.paramValue.control.readOnly = this.inputs[0].connected;
-    //     enableElementText(this.paramValue.control, !this.inputs[0].connected);
-
-    //     super.updateNode();
-    // }
 
 
 

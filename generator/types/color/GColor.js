@@ -135,10 +135,10 @@ extends GOperator
             'this.result.type must be NUMBER_VALUE');
 
 
-        genPushUpdateValue(parse, this.nodeId, 'space', color.space);
-        genPushUpdateValue(parse, this.nodeId, 'c1',    color.c1   );
-        genPushUpdateValue(parse, this.nodeId, 'c2',    color.c2   );
-        genPushUpdateValue(parse, this.nodeId, 'c3',    color.c3   );
+        genPushUpdateValue(parse, this.nodeId, 'space', color.space.toValue());
+        genPushUpdateValue(parse, this.nodeId, 'c1',    color.c1   .toValue());
+        genPushUpdateValue(parse, this.nodeId, 'c2',    color.c2   .toValue());
+        genPushUpdateValue(parse, this.nodeId, 'c3',    color.c3   .toValue());
 
 
         this.valid = true;
@@ -163,7 +163,7 @@ extends GOperator
 
 
 
-    toColorValue()
+    toValue()
     {
         return new ColorValue(
             this.space,

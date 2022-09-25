@@ -1565,21 +1565,6 @@ div
 }
 
 
-/* .hexbox
-{
-    text-align:  center;
-    width:       100%;
-    background:  transparent;
-    cursor:      default;
-}
-
-
-.hexbox:hover
-{
-    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1) inset;
-} */
-
-
 .txtOrder
 {
     text-align:  center;
@@ -1594,15 +1579,6 @@ div
     box-shadow: 0  1px 0 0 rgba(0, 0, 0, 0.1) inset,
                 0 -1px 0 0 rgba(0, 0, 0, 0.1) inset;
 }
-
-
-/* .paramLock
-{
-    width:               11px;
-    height:              11px;
-    position:            absolute;
-    display:             none;
-} */
 
 
 .findColorCorrection
@@ -2226,7 +2202,7 @@ function removeAt(array, index)
 
 function removeLast(array)
 {
-    if (array.length == 0)
+    if (isEmpty(array))
         return null;
 
     let last = lastOf(array);
@@ -5053,7 +5029,7 @@ VECTOR      V
 */
 
 
-class GType
+class GValue
 {
     type;
 
@@ -5115,6 +5091,13 @@ class GType
 
 
 
+    toValue()
+    {
+        
+    }
+
+
+
     toString() 
     { 
         return this.type; 
@@ -5134,9 +5117,9 @@ function displayValue(type, value)
     {
         case NUMBER_VALUE:    return parseNumberValue   (value)[0].toDisplayString();
         case COLOR_VALUE:     return parseColorValue    (value)[0].toDisplayString();
-        case FILL_VALUE:      return parseFillValue     (value)[0].toDisplayString()
-        case STROKE_VALUE:    return parseStrokeValue   (value)[0].toDisplayString()
-        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString()
+        case FILL_VALUE:      return parseFillValue     (value)[0].toDisplayString();
+        case STROKE_VALUE:    return parseStrokeValue   (value)[0].toDisplayString();
+        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
     }
 
 
@@ -5145,7 +5128,7 @@ function displayValue(type, value)
 
 
 class GOperator
-extends GType
+extends GValue
 {
     nodeId;
     options;
@@ -5168,6 +5151,14 @@ extends GType
     }
 }
 
+
+
+function evalValue(value)
+{
+    return value instanceof GOperator 
+           ? value.value 
+           : value;
+}
 
 
 class GParam
@@ -5215,7 +5206,7 @@ extends GOperator
 
 
 class NumberValue
-extends GType
+extends GValue
 {
     value;
     decimals;
@@ -5278,6 +5269,13 @@ extends GType
     toNumber()
     {
         return roundTo(this.value, this.decimals);
+    }
+
+
+
+    toValue()
+    {
+        return this;
     }
 
 
@@ -5348,7 +5346,7 @@ function parseSimpleNumberValue(str)
 
 
 class ColorValue
-extends GType
+extends GValue
 {
     space;
     c1;
@@ -5462,6 +5460,13 @@ extends GType
 
 
 
+    toValue()
+    {
+        return this;
+    }
+
+
+
     toString()
     {
         return      this.space.toString()
@@ -5534,7 +5539,7 @@ function parseColorValue(str, i = -1)
 
 
 class FillValue
-extends GType
+extends GValue
 {
     color;
     opacity;
@@ -5634,6 +5639,13 @@ extends GType
 
 
 
+    toValue()
+    {
+        return this;
+    }
+
+
+
     toString()
     {
         const rgb = scaleRgb(this.color.toRgb());
@@ -5710,7 +5722,7 @@ function evalFillValue(value, parse)
 
 
 class StrokeValue
-extends GType
+extends GValue
 {
     fill;
     weight;
@@ -5854,6 +5866,13 @@ extends GType
 
 
 
+    toValue()
+    {
+        return this;
+    }
+
+
+
     toString()
     {
         return      this.fill  .toString()
@@ -5943,7 +5962,7 @@ function evalStrokeValue(value, parse)
 */
 
 class ShapeBaseValue
-extends GType
+extends GValue
 {
     nodeId;
 
@@ -6201,7 +6220,7 @@ function parseRectangleValue(str, i = -1)
 
 
 class LineValue
-extends GType
+extends GValue
 {
     x;
     y;
@@ -6292,7 +6311,7 @@ function parseLineValue(str)
 
 
 class EllipseValue
-extends GType
+extends GValue
 {
     x;
     y;
@@ -6391,7 +6410,7 @@ function parseEllipseValue(str)
 
 
 class PolygonValue
-extends GType
+extends GValue
 {
     x;
     y;
@@ -6506,7 +6525,7 @@ function parsePolygonValue(str)
 
 
 class StarValue
-extends GType
+extends GValue
 {
     x;
     y;
@@ -6647,11 +6666,11 @@ extends GOperator
     {
         const num = new GNumber(this.nodeId, this.options);
         
-        num.value = this.value;
-
         if (this.input) 
             num.input = this.input.copy();
         
+        num.value = this.value;
+
         return num;
     }
 
@@ -6659,21 +6678,30 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        if (this.input) 
         {
-            this.result = 
-                this.input
-                ? this.input.eval(parse).copy()
-                : this.value.copy();
-
-            this.valid = true;
-
-            console.assert(this.result.valid, 'this.result must be valid');
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            this.input.eval(parse);
+            this.value = this.input.value;
         }
+        else
+            this.value.eval(parse);
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+
+        
+        this.valid = true;
+    }
+
+
+
+    toValue()
+    {
+        return this.value;
     }
 }
 
@@ -7331,10 +7359,10 @@ extends GOperator
             'this.result.type must be NUMBER_VALUE');
 
 
-        genPushUpdateValue(parse, this.nodeId, 'space', color.space);
-        genPushUpdateValue(parse, this.nodeId, 'c1',    color.c1   );
-        genPushUpdateValue(parse, this.nodeId, 'c2',    color.c2   );
-        genPushUpdateValue(parse, this.nodeId, 'c3',    color.c3   );
+        genPushUpdateValue(parse, this.nodeId, 'space', color.space.toValue());
+        genPushUpdateValue(parse, this.nodeId, 'c1',    color.c1   .toValue());
+        genPushUpdateValue(parse, this.nodeId, 'c2',    color.c2   .toValue());
+        genPushUpdateValue(parse, this.nodeId, 'c3',    color.c3   .toValue());
 
 
         this.valid = true;
@@ -7359,7 +7387,7 @@ extends GOperator
 
 
 
-    toColorValue()
+    toValue()
     {
         return new ColorValue(
             this.space,
@@ -8098,12 +8126,12 @@ extends GShapeBase
         const round  = this.round  ? this.round  : this.input ? this.input.round  : null;
 
 
-        if (x     ) genPushUpdateValue(parse, this.nodeId, 'x',      x     );
-        if (y     ) genPushUpdateValue(parse, this.nodeId, 'y',      y     );
-        if (width ) genPushUpdateValue(parse, this.nodeId, 'width',  width );
-        if (height) genPushUpdateValue(parse, this.nodeId, 'height', height);
-        if (angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  angle );
-        if (round ) genPushUpdateValue(parse, this.nodeId, 'round',  round );
+        if (x     ) genPushUpdateValue(parse, this.nodeId, 'x',      x     .toValue());
+        if (y     ) genPushUpdateValue(parse, this.nodeId, 'y',      y     .toValue());
+        if (width ) genPushUpdateValue(parse, this.nodeId, 'width',  width .toValue());
+        if (height) genPushUpdateValue(parse, this.nodeId, 'height', height.toValue());
+        if (angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  angle .toValue());
+        if (round ) genPushUpdateValue(parse, this.nodeId, 'round',  round .toValue());
 
 
         if (    this.input
@@ -8682,10 +8710,10 @@ extends GShapeBase
         const color   = this.color   ? this.color   : this.input ? this.input.color   : null;
         const opacity = this.opacity ? this.opacity : this.input ? this.input.opacity : null;
 
-        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color.type == COLOR ? color.toColorValue() : color);
-        if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  .toValue());
+        if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity.toValue());
 
-
+        
         if (   this.options.active
             || this.options.beforeActive)
             this.evalObjects();
@@ -8706,7 +8734,7 @@ extends GShapeBase
             return;
 
 
-        const rgb = scaleRgb((color.type == COLOR ? color.toColorValue() : color).toRgb());
+        const rgb = scaleRgb(color.toValue().toRgb());
 
 
         for (const obj of this.objects)
@@ -8719,7 +8747,7 @@ extends GShapeBase
                         rgb[0]
                 + ' ' + rgb[1]
                 + ' ' + rgb[2]
-                + ' ' + this.opacity.toNumber()]);
+                + ' ' + this.opacity.toValue().toNumber()]);
         }
 
         
@@ -9170,8 +9198,8 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
     //console.log('genUpdateValuesAndObjects()');
     //console.log('updateValues =', updateValues);
 
-    if (   updateValues .length == 0
-        && updateObjects.length == 0)
+    if (   isEmpty(updateValues )
+        && isEmpty(updateObjects))
     {
         //console.log('restoring');
         updateNodeId  = lastUpdateNodeId;
@@ -9620,9 +9648,11 @@ function genParseNumber(parse)
 
     parse.nTab++;
 
+
     if (parse.next == NUMBER_VALUE) num.value = genParse(parse);
     else                            num.input = genParse(parse);
 
+    
     parse.nTab--;
 
 
@@ -10454,7 +10484,7 @@ function genParseNodeEnd(parse, node = null)
 
     if (node)
     {
-        if (parse.scope.length == 0)
+        if (isEmpty(parse.scope))
             node.topLevel = true;
 
         pushUnique(parse.parsedNodes, node);
@@ -13479,7 +13509,7 @@ function removeAt(array, index)
 
 function removeLast(array)
 {
-    if (array.length == 0)
+    if (isEmpty(array))
         return null;
 
     let last = lastOf(array);
@@ -17826,7 +17856,7 @@ VECTOR      V
 */
 
 
-class GType
+class GValue
 {
     type;
 
@@ -17888,6 +17918,13 @@ class GType
 
 
 
+    toValue()
+    {
+        
+    }
+
+
+
     toString() 
     { 
         return this.type; 
@@ -17907,9 +17944,9 @@ function displayValue(type, value)
     {
         case NUMBER_VALUE:    return parseNumberValue   (value)[0].toDisplayString();
         case COLOR_VALUE:     return parseColorValue    (value)[0].toDisplayString();
-        case FILL_VALUE:      return parseFillValue     (value)[0].toDisplayString()
-        case STROKE_VALUE:    return parseStrokeValue   (value)[0].toDisplayString()
-        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString()
+        case FILL_VALUE:      return parseFillValue     (value)[0].toDisplayString();
+        case STROKE_VALUE:    return parseStrokeValue   (value)[0].toDisplayString();
+        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
     }
 
 
@@ -17918,7 +17955,7 @@ function displayValue(type, value)
 
 
 class GOperator
-extends GType
+extends GValue
 {
     nodeId;
     options;
@@ -17941,6 +17978,14 @@ extends GType
     }
 }
 
+
+
+function evalValue(value)
+{
+    return value instanceof GOperator 
+           ? value.value 
+           : value;
+}
 
 
 class GParam
@@ -17988,7 +18033,7 @@ extends GOperator
 
 
 class NumberValue
-extends GType
+extends GValue
 {
     value;
     decimals;
@@ -18051,6 +18096,13 @@ extends GType
     toNumber()
     {
         return roundTo(this.value, this.decimals);
+    }
+
+
+
+    toValue()
+    {
+        return this;
     }
 
 
@@ -18121,7 +18173,7 @@ function parseSimpleNumberValue(str)
 
 
 class ColorValue
-extends GType
+extends GValue
 {
     space;
     c1;
@@ -18235,6 +18287,13 @@ extends GType
 
 
 
+    toValue()
+    {
+        return this;
+    }
+
+
+
     toString()
     {
         return      this.space.toString()
@@ -18307,7 +18366,7 @@ function parseColorValue(str, i = -1)
 
 
 class FillValue
-extends GType
+extends GValue
 {
     color;
     opacity;
@@ -18407,6 +18466,13 @@ extends GType
 
 
 
+    toValue()
+    {
+        return this;
+    }
+
+
+
     toString()
     {
         const rgb = scaleRgb(this.color.toRgb());
@@ -18483,7 +18549,7 @@ function evalFillValue(value, parse)
 
 
 class StrokeValue
-extends GType
+extends GValue
 {
     fill;
     weight;
@@ -18627,6 +18693,13 @@ extends GType
 
 
 
+    toValue()
+    {
+        return this;
+    }
+
+
+
     toString()
     {
         return      this.fill  .toString()
@@ -18716,7 +18789,7 @@ function evalStrokeValue(value, parse)
 */
 
 class ShapeBaseValue
-extends GType
+extends GValue
 {
     nodeId;
 
@@ -18974,7 +19047,7 @@ function parseRectangleValue(str, i = -1)
 
 
 class LineValue
-extends GType
+extends GValue
 {
     x;
     y;
@@ -19065,7 +19138,7 @@ function parseLineValue(str)
 
 
 class EllipseValue
-extends GType
+extends GValue
 {
     x;
     y;
@@ -19164,7 +19237,7 @@ function parseEllipseValue(str)
 
 
 class PolygonValue
-extends GType
+extends GValue
 {
     x;
     y;
@@ -19279,7 +19352,7 @@ function parsePolygonValue(str)
 
 
 class StarValue
-extends GType
+extends GValue
 {
     x;
     y;
@@ -19420,11 +19493,11 @@ extends GOperator
     {
         const num = new GNumber(this.nodeId, this.options);
         
-        num.value = this.value;
-
         if (this.input) 
             num.input = this.input.copy();
         
+        num.value = this.value;
+
         return num;
     }
 
@@ -19432,21 +19505,30 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        if (this.input) 
         {
-            this.result = 
-                this.input
-                ? this.input.eval(parse).copy()
-                : this.value.copy();
-
-            this.valid = true;
-
-            console.assert(this.result.valid, 'this.result must be valid');
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            this.input.eval(parse);
+            this.value = this.input.value;
         }
+        else
+            this.value.eval(parse);
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+
+        
+        this.valid = true;
+    }
+
+
+
+    toValue()
+    {
+        return this.value;
     }
 }
 
@@ -20104,10 +20186,10 @@ extends GOperator
             'this.result.type must be NUMBER_VALUE');
 
 
-        genPushUpdateValue(parse, this.nodeId, 'space', color.space);
-        genPushUpdateValue(parse, this.nodeId, 'c1',    color.c1   );
-        genPushUpdateValue(parse, this.nodeId, 'c2',    color.c2   );
-        genPushUpdateValue(parse, this.nodeId, 'c3',    color.c3   );
+        genPushUpdateValue(parse, this.nodeId, 'space', color.space.toValue());
+        genPushUpdateValue(parse, this.nodeId, 'c1',    color.c1   .toValue());
+        genPushUpdateValue(parse, this.nodeId, 'c2',    color.c2   .toValue());
+        genPushUpdateValue(parse, this.nodeId, 'c3',    color.c3   .toValue());
 
 
         this.valid = true;
@@ -20132,7 +20214,7 @@ extends GOperator
 
 
 
-    toColorValue()
+    toValue()
     {
         return new ColorValue(
             this.space,
@@ -20871,12 +20953,12 @@ extends GShapeBase
         const round  = this.round  ? this.round  : this.input ? this.input.round  : null;
 
 
-        if (x     ) genPushUpdateValue(parse, this.nodeId, 'x',      x     );
-        if (y     ) genPushUpdateValue(parse, this.nodeId, 'y',      y     );
-        if (width ) genPushUpdateValue(parse, this.nodeId, 'width',  width );
-        if (height) genPushUpdateValue(parse, this.nodeId, 'height', height);
-        if (angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  angle );
-        if (round ) genPushUpdateValue(parse, this.nodeId, 'round',  round );
+        if (x     ) genPushUpdateValue(parse, this.nodeId, 'x',      x     .toValue());
+        if (y     ) genPushUpdateValue(parse, this.nodeId, 'y',      y     .toValue());
+        if (width ) genPushUpdateValue(parse, this.nodeId, 'width',  width .toValue());
+        if (height) genPushUpdateValue(parse, this.nodeId, 'height', height.toValue());
+        if (angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  angle .toValue());
+        if (round ) genPushUpdateValue(parse, this.nodeId, 'round',  round .toValue());
 
 
         if (    this.input
@@ -21455,10 +21537,10 @@ extends GShapeBase
         const color   = this.color   ? this.color   : this.input ? this.input.color   : null;
         const opacity = this.opacity ? this.opacity : this.input ? this.input.opacity : null;
 
-        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color.type == COLOR ? color.toColorValue() : color);
-        if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  .toValue());
+        if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity.toValue());
 
-
+        
         if (   this.options.active
             || this.options.beforeActive)
             this.evalObjects();
@@ -21479,7 +21561,7 @@ extends GShapeBase
             return;
 
 
-        const rgb = scaleRgb((color.type == COLOR ? color.toColorValue() : color).toRgb());
+        const rgb = scaleRgb(color.toValue().toRgb());
 
 
         for (const obj of this.objects)
@@ -21492,7 +21574,7 @@ extends GShapeBase
                         rgb[0]
                 + ' ' + rgb[1]
                 + ' ' + rgb[2]
-                + ' ' + this.opacity.toNumber()]);
+                + ' ' + this.opacity.toValue().toNumber()]);
         }
 
         
@@ -22201,11 +22283,6 @@ class MenuButton
 
         this.div.addEventListener('pointerleave', () => 
         {
-            // if (   (    currentMenus.length == 0
-            //     || !currentMenus.includes(this.menu))
-            //     && currentMenuButton != this) 
-            //     this.div.style.background = 'transparent';
-                
             this.over = false;
             this.update();
         });
@@ -24891,11 +24968,6 @@ function initColorControl(param, control, width, height, id, name, showName, def
                 control. textStyleDark  = 'white';
             }
         }
-        // else
-        // {
-        //     control.textStyleDark = '#000';
-        //     control.textStyleDark = '#fff';
-        // }
 
 
         control.update();
@@ -27572,13 +27644,13 @@ extends EventTarget
 
 
 
-    enableControlText()
+    enableControlText(enable)
     {
-        return true;
+
     }
-
-
-
+    
+    
+    
     toString()
     {
         // parameter outputs call this method
@@ -27717,6 +27789,7 @@ extends Parameter
 
     enableControlText(enable)
     {
+        enable &= !this.input || !this.input.connected;
         enableElementText(this.control, enable);
         this.control.readOnly = !enable;
     }
@@ -28156,6 +28229,7 @@ extends Parameter
 
     enableControlText(enable)
     {
+        enable &= !this.input || !this.input.connected;
         enableElementText(this.control, enable);
         this.control.readOnly = !enable;
     }
@@ -28563,6 +28637,8 @@ extends Parameter
 
     enableControlText(enable)
     {
+        enable &= !this.input || !this.input.connected;
+
         const opEnable = 
                 enable 
             || !this.input 
@@ -28961,6 +29037,8 @@ extends Parameter
 
     enableControlText(enable)
     {
+        enable &= !this.input || !this.input.connected;
+
         const opEnable = 
                 enable 
             || !this.input 
@@ -29319,7 +29397,7 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
     }
     
 
-    if (connections.length == 0)
+    if (isEmpty(connections))
         return '';
 
 
@@ -32438,35 +32516,21 @@ extends OperatorBase
         if (input.connected) request.push(...pushInputOrParam(input, gen));
         else                 request.push(...this.node.paramValue.genRequest(gen));
 
-
             
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
-        
-        return request;
+
+        return this.cache = request;
     }
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateParams()
     {
-        super.updateValues(updateParamId, paramIds, values);
+        this.paramValue.enableControlText(!this.inputs[0].connected);
 
-        const index = paramIds.indexOf('value');
- 
-        if (index > -1) 
-            this.outputs[0].cache = [NUMBER_VALUE, values[index].toString()];
+        super.updateParams();
     }
-
-
-
-    // updateNode()
-    // {
-    //     this.paramValue.control.readOnly = this.inputs[0].connected;
-    //     enableElementText(this.paramValue.control, !this.inputs[0].connected);
-
-    //     super.updateNode();
-    // }
 
 
 
@@ -32695,7 +32759,7 @@ extends OperatorBase
         const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
 
 
-        if (connectedInputs.length == 0)
+        if (isEmpty(connectedInputs))
         {
             if (this._showOnlySymbol)
             {
@@ -32987,13 +33051,13 @@ extends OperatorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
-    {
-        super.updateValues(updateParamId, paramIds, values);
+    // updateValues(updateParamId, paramIds, values)
+    // {
+    //     super.updateValues(updateParamId, paramIds, values);
 
-        if (paramIds.includes('value'))
-            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
-    }
+    //     if (paramIds.includes('value'))
+    //         this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
+    // }
 
 
 
@@ -33015,7 +33079,7 @@ extends OperatorBase
         const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
 
 
-        if (connectedInputs.length == 0)
+        if (isEmpty(connectedInputs))
         {
             if (this._showOnlySymbol)
             {
@@ -33165,13 +33229,13 @@ extends OperatorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
-    {
-        super.updateValues(updateParamId, paramIds, values);
+    // updateValues(updateParamId, paramIds, values)
+    // {
+    //     super.updateValues(updateParamId, paramIds, values);
 
-        if (paramIds.includes('value'))
-            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
-    }
+    //     if (paramIds.includes('value'))
+    //         this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
+    // }
 }
 
 
@@ -33345,9 +33409,6 @@ extends OpColorBase
     colorBack;
 
 
-    //hexbox;
-
-    
     prevSpace;
     prevSpaceConnections = [];
 
@@ -33816,7 +33877,7 @@ extends OpColorBase
         if (open)
             lastOf(ranges).end = 1;
         else if (!open
-              && ranges.length == 0)
+              && isEmpty(ranges))
             resetControlRanges(control);
 
 
@@ -34489,156 +34550,6 @@ function getColorSpaceScale(space)
         case 'luv':    return luvScale;
     }    
 }
-
-
-// function initHexbox(node)
-// {
-//     node.hexbox = createDiv();//createTextbox('hexbox');
-    
-//     node.hexbox.node = node;
-//     //node.hexbox.editing = false;
-    
-//     // node.hexbox.addEventListener('pointerdown', onHexboxPointerDown);
-//     // node.hexbox.addEventListener('pointerup',   onHexboxPointerUp);
-//     // node.hexbox.addEventListener('focus',       onHexboxFocus);
-//     // node.hexbox.addEventListener('focusout',    onHexboxFocusOut);
-//     // node.hexbox.addEventListener('input',       onHexboxInput);
-//     // node.hexbox.addEventListener('keydown',     onHexboxKeyDown);
-// }
-
-
-
-// function onHexboxPointerDown(e)
-// {
-//     //const hexbox = e.target;
-
-//     if (e.button > 0)
-//         e.preventDefault();
-
-//     e.stopPropagation();
-// }
-
-
-
-// function onHexboxPointerUp(e)
-// {
-//     const hexbox = e.target;
-
-//     if (    e.button == 0
-//         && !hexbox.editing)
-//     {
-//         e.preventDefault();
-
-//         hexbox.savedValue = hexbox.value;
-
-//         hexbox.focus();
-//         hexbox.select();
-//         hexbox.editing = true;
-//     }
-// }
-
-
-
-// function onHexboxFocus(e)
-// {
-//     const hexbox = e.target;
-//     hexbox.style.cursor = 'default';
-
-//     if (hexbox.value == DISPLAY_INVALID)
-//         hexbox.value = INVALID;
-// }
-
-
-
-// function onHexboxFocusOut(e)
-// {
-//     const hexbox = e.target;
-//     hexboxFinish(hexbox.node, true);
-//     hexbox.style.cursor = 'default';
-// }
-
-
-
-// function onHexboxInput(e)
-// {
-//     const hexbox = e.target;
-    
-//     let val = hexbox.value;
-
-//     if (val.trim() == '')
-//         return;
-
-//          if (   val.length > 7 
-//              && val[0] == '#') hexbox.value = val.trim().slice(0, 7);
-//     else if (val.length > 6)   hexbox.value = val.trim().slice(0, 6);
-// }
-
-
-
-// function onHexboxKeyDown(e)
-// {
-//     e.stopPropagation();
-
-    
-//     const hexbox = e.target;
-
-//     if (   e.code == 'KeyC'
-//         && getCtrlKey(e))
-//     {
-//         e.preventDefault();
-//         document.execCommand('copy');
-//     }
-
-//     else if (   e.code == 'KeyV'
-//         && getCtrlKey(e)
-//         && !hexbox.node.isConnected())
-//     {
-//         // do nothing and let the OS do its thing
-//     }
-
-//     else if ((   e.code == 'Enter'
-//               || e.code == 'NumpadEnter')
-//            && !hexbox.node.isConnected())
-//         hexboxFinish(hexbox.node, true);
-
-//     else if (e.code == 'Escape')
-//         hexboxFinish(hexbox.node, false);
-
-//     else if (   e.key.length == 1
-//              && !isDigit(e.key)
-//              && !isHexDigit(e.key)
-//          ||     hexbox.node.isConnected()
-//             && !isArrowKey(e.code)
-//          ||    e.key != 'ArrowLeft'
-//             && e.key != 'ArrowRight'
-//             && e.key != 'Delete'
-//             && e.key != 'Backspace'
-//             && hexbox.value.length >= 6
-//             && hexbox.selectionStart == hexbox.selectionEnd)
-//         e.preventDefault();
-// }
-
-
-
-// function hexboxFinish(node, success)
-// {
-//     if (node.hexbox.value.trim() == '')
-//         node.hexbox.value = node.hexbox.savedValue;
-
-        
-//     const rgb = hex2rgb(node.hexbox.value);
-    
-//     if (success) 
-//     {
-//         setDataColorToCurrentSpace(node, rgb2dataColor(rgb));
-//         pushUpdate([node.hexbox.node]);
-//     }
-
-    
-//     node.hexbox.selectionEnd = node.hexbox.selectionStart;
-//     node.hexbox.editing = false;
-//     node.hexbox.blur();
-// };
 
 
 function dataColor2array(color)
@@ -36945,13 +36856,13 @@ aram``
 
 
 
-    updateValues(updateParamId, paramIds, values)
-    {
-        super.updateValues(updateParamId, paramIds, values);
+    // updateValues(updateParamId, paramIds, values)
+    // {
+    //     super.updateValues(updateParamId, paramIds, values);
 
-        if (paramIds.includes('value'))
-            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
-    }
+    //     if (paramIds.includes('value'))
+    //         this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
+    // }
 }
 
 
@@ -38065,7 +37976,7 @@ class ActionManager
 
     undo()
     {
-        if (this.actions.length == 0)
+        if (isEmpty(this.actions))
             return;
 
         for (;;)
@@ -38086,7 +37997,7 @@ class ActionManager
             last.undo(); 
 
 
-            if (   this.actions.length == 0
+            if (   isEmpty(this.actions)
                 || last.prevAction != lastOf(this.actions))
                 break;
         }
@@ -38096,7 +38007,7 @@ class ActionManager
 
     redo()
     {
-        if (this.redoActions.length == 0)
+        if (isEmpty(this.redoActions))
             return;
     
         for (;;)
@@ -38117,7 +38028,7 @@ class ActionManager
             last.redo(); 
         
 
-            if (   this.redoActions.length == 0
+            if (   isEmpty(this.redoActions)
                 || last.nextAction != lastOf(this.redoActions))
                 break;
         }

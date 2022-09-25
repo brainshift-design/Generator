@@ -49,7 +49,7 @@ class ActionManager
 
     undo()
     {
-        if (this.actions.length == 0)
+        if (isEmpty(this.actions))
             return;
 
         for (;;)
@@ -70,7 +70,7 @@ class ActionManager
             last.undo(); 
 
 
-            if (   this.actions.length == 0
+            if (   isEmpty(this.actions)
                 || last.prevAction != lastOf(this.actions))
                 break;
         }
@@ -80,7 +80,7 @@ class ActionManager
 
     redo()
     {
-        if (this.redoActions.length == 0)
+        if (isEmpty(this.redoActions))
             return;
     
         for (;;)
@@ -101,7 +101,7 @@ class ActionManager
             last.redo(); 
         
 
-            if (   this.redoActions.length == 0
+            if (   isEmpty(this.redoActions)
                 || last.nextAction != lastOf(this.redoActions))
                 break;
         }

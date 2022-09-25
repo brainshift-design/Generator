@@ -110,8 +110,8 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
     //console.log('genUpdateValuesAndObjects()');
     //console.log('updateValues =', updateValues);
 
-    if (   updateValues .length == 0
-        && updateObjects.length == 0)
+    if (   isEmpty(updateValues )
+        && isEmpty(updateObjects))
     {
         //console.log('restoring');
         updateNodeId  = lastUpdateNodeId;

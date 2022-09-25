@@ -4,7 +4,7 @@
 */
 
 class ShapeBaseValue
-extends GType
+extends GValue
 {
     nodeId;
 

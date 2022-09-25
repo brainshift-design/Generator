@@ -1,5 +1,5 @@
 class StrokeValue
-extends GType
+extends GValue
 {
     fill;
     weight;
@@ -139,6 +139,13 @@ extends GType
             : {
                   strokes: []
               };
+    }
+
+
+
+    toValue()
+    {
+        return this;
     }
 
 

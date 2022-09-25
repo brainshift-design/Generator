@@ -35,9 +35,11 @@ function genParseNumber(parse)
 
     parse.nTab++;
 
+
     if (parse.next == NUMBER_VALUE) num.value = genParse(parse);
     else                            num.input = genParse(parse);
 
+    
     parse.nTab--;
 
 

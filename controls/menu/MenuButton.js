@@ -70,11 +70,6 @@ class MenuButton
 
         this.div.addEventListener('pointerleave', () => 
         {
-            // if (   (    currentMenus.length == 0
-            //     || !currentMenus.includes(this.menu))
-            //     && currentMenuButton != this) 
-            //     this.div.style.background = 'transparent';
-                
             this.over = false;
             this.update();
         });

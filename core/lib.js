@@ -153,7 +153,7 @@ function removeAt(array, index)
 
 function removeLast(array)
 {
-    if (array.length == 0)
+    if (isEmpty(array))
         return null;
 
     let last = lastOf(array);

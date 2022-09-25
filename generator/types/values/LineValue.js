@@ -1,5 +1,5 @@
 class LineValue
-extends GType
+extends GValue
 {
     x;
     y;

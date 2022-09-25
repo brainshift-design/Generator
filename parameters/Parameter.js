@@ -169,13 +169,13 @@ extends EventTarget
 
 
 
-    enableControlText()
+    enableControlText(enable)
     {
-        return true;
+
     }
-
-
-
+    
+    
+    
     toString()
     {
         // parameter outputs call this method

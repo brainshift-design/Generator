@@ -60,10 +60,10 @@ extends GShapeBase
         const color   = this.color   ? this.color   : this.input ? this.input.color   : null;
         const opacity = this.opacity ? this.opacity : this.input ? this.input.opacity : null;
 
-        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color.type == COLOR ? color.toColorValue() : color);
-        if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity);
+        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  .toValue());
+        if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity.toValue());
 
-
+        
         if (   this.options.active
             || this.options.beforeActive)
             this.evalObjects();
@@ -84,7 +84,7 @@ extends GShapeBase
             return;
 
 
-        const rgb = scaleRgb((color.type == COLOR ? color.toColorValue() : color).toRgb());
+        const rgb = scaleRgb(color.toValue().toRgb());
 
 
         for (const obj of this.objects)
@@ -97,7 +97,7 @@ extends GShapeBase
                         rgb[0]
                 + ' ' + rgb[1]
                 + ' ' + rgb[2]
-                + ' ' + this.opacity.toNumber()]);
+                + ' ' + this.opacity.toValue().toNumber()]);
         }
 
         

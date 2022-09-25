@@ -1,5 +1,5 @@
 class EllipseValue
-extends GType
+extends GValue
 {
     x;
     y;

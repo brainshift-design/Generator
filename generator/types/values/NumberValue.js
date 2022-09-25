@@ -1,5 +1,5 @@
 class NumberValue
-extends GType
+extends GValue
 {
     value;
     decimals;
@@ -62,6 +62,13 @@ extends GType
     toNumber()
     {
         return roundTo(this.value, this.decimals);
+    }
+
+
+
+    toValue()
+    {
+        return this;
     }
 
 

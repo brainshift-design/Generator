@@ -102,6 +102,7 @@ extends Parameter
 
     enableControlText(enable)
     {
+        enable &= !this.input || !this.input.connected;
         enableElementText(this.control, enable);
         this.control.readOnly = !enable;
     }

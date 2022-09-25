@@ -1,5 +1,5 @@
 class ColorValue
-extends GType
+extends GValue
 {
     space;
     c1;
@@ -109,6 +109,13 @@ extends GType
     toRgb()
     {
         return dataColor2rgb(this.toDataColor());
+    }
+
+
+
+    toValue()
+    {
+        return this;
     }
 
 

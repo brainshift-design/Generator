@@ -120,13 +120,13 @@ extends OperatorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
-    {
-        super.updateValues(updateParamId, paramIds, values);
+    // updateValues(updateParamId, paramIds, values)
+    // {
+    //     super.updateValues(updateParamId, paramIds, values);
 
-        if (paramIds.includes('value'))
-            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
-    }
+    //     if (paramIds.includes('value'))
+    //         this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
+    // }
 
 
 
@@ -148,7 +148,7 @@ extends OperatorBase
         const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
 
 
-        if (connectedInputs.length == 0)
+        if (isEmpty(connectedInputs))
         {
             if (this._showOnlySymbol)
             {

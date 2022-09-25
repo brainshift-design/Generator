@@ -128,11 +128,6 @@ function initColorControl(param, control, width, height, id, name, showName, def
                 control. textStyleDark  = 'white';
             }
         }
-        // else
-        // {
-        //     control.textStyleDark = '#000';
-        //     control.textStyleDark = '#fff';
-        // }
 
 
         control.update();

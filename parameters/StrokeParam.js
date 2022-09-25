@@ -304,6 +304,8 @@ extends Parameter
 
     enableControlText(enable)
     {
+        enable &= !this.input || !this.input.connected;
+
         const opEnable = 
                 enable 
             || !this.input 

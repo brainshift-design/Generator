@@ -1,5 +1,5 @@
 class ColorStopValue
-extends GType
+extends GValue
 {
     fill;
     position;

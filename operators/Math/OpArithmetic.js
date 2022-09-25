@@ -142,7 +142,7 @@ extends OperatorBase
         const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
 
 
-        if (connectedInputs.length == 0)
+        if (isEmpty(connectedInputs))
         {
             if (this._showOnlySymbol)
             {

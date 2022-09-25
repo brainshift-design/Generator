@@ -263,7 +263,7 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
     }
     
 
-    if (connections.length == 0)
+    if (isEmpty(connections))
         return '';
 
 

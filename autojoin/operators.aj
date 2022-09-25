@@ -41,7 +41,6 @@
 ../operators/color/OpColorBase.js
 ../operators/color/OpColor.js
 ../operators/color/OpColor spaces.js
-../operators/color/OpColor hexbox.js
 ../operators/color/OpColor convert.js
 ../operators/color/OpColorValidate find.js
 ../operators/color/OpColorValidate.js

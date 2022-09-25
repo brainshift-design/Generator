@@ -89,13 +89,13 @@ aram``
 
 
 
-    updateValues(updateParamId, paramIds, values)
-    {
-        super.updateValues(updateParamId, paramIds, values);
+    // updateValues(updateParamId, paramIds, values)
+    // {
+    //     super.updateValues(updateParamId, paramIds, values);
 
-        if (paramIds.includes('value'))
-            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
-    }
+    //     if (paramIds.includes('value'))
+    //         this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
+    // }
 }
 
 
