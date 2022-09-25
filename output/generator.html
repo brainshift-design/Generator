@@ -15,7 +15,7 @@ const NL             = '\n';
 const GEN_LOGO       = '◦G•';
 
 
-function rgbFromType(type, active)
+function rgbHeaderFromType(type, active)
 {
     switch (type)
     {
@@ -8636,6 +8636,23 @@ const sRGB = createColorSpace
     }
 );
 
+
+
+function rgbSaturateHsv(rgb, amount)
+{
+    const hsv = rgb2hsv(rgb);
+    hsv[1] *= amount;
+    return hsv2rgb(hsv);
+}
+
+
+
+function rgbSaturateHsl(rgb, amount)
+{
+    const hsl = rgb2hsl(rgb);
+    hsl[1] *= amount;
+    return hsl2rgb(hsl);
+}
 
 
 function rgb2hsv_(r, g, b)

@@ -2006,7 +2006,7 @@ const NL             = '\n';
 const GEN_LOGO       = '◦G•';
 
 
-function rgbFromType(type, active)
+function rgbHeaderFromType(type, active)
 {
     switch (type)
     {
@@ -10629,6 +10629,23 @@ const sRGB = createColorSpace
 
 
 
+function rgbSaturateHsv(rgb, amount)
+{
+    const hsv = rgb2hsv(rgb);
+    hsv[1] *= amount;
+    return hsv2rgb(hsv);
+}
+
+
+
+function rgbSaturateHsl(rgb, amount)
+{
+    const hsl = rgb2hsl(rgb);
+    hsl[1] *= amount;
+    return hsl2rgb(hsl);
+}
+
+
 function rgb2hsv_(r, g, b)
 {
     let h, s, v;
@@ -13242,7 +13259,7 @@ const NL             = '\n';
 const GEN_LOGO       = '◦G•';
 
 
-function rgbFromType(type, active)
+function rgbHeaderFromType(type, active)
 {
     switch (type)
     {
@@ -16072,6 +16089,23 @@ const sRGB = createColorSpace
     }
 );
 
+
+
+function rgbSaturateHsv(rgb, amount)
+{
+    const hsv = rgb2hsv(rgb);
+    hsv[1] *= amount;
+    return hsv2rgb(hsv);
+}
+
+
+
+function rgbSaturateHsl(rgb, amount)
+{
+    const hsl = rgb2hsl(rgb);
+    hsl[1] *= amount;
+    return hsl2rgb(hsl);
+}
 
 
 function rgb2hsv_(r, g, b)
@@ -29886,7 +29920,7 @@ extends EventTarget
         this.colorLight       = [0, 0, 0, 1];
         this.colorDark        = [1, 1, 1, 1];
 
-        this.wireColor        = rgbFromType(this.types[0], true);
+        this.wireColor        = rgbHeaderFromType(this.types[0], true);
 
         
         this.control.appendChild(this.hitbox);
@@ -30117,7 +30151,7 @@ class Output
         this.colorLight      = [0, 0, 0, 1];
         this.colorDark       = [1, 1, 1, 1];
 
-        this.wireColor       = rgbFromType(this.type, true);
+        this.wireColor       = rgbHeaderFromType(this.type, true);
         
         this.updateControl();
 
@@ -31169,11 +31203,12 @@ class Operator
 
     getHeaderColors()
     {
-        const rgbaBack  = rgb_a(rgbFromType(this.type, this.active), 0.95);
+        const rgbaBack  = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
         const rgbaText  = isDark(rgbaBack) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
-        const colInput  = rgb_a(rgbaText, 0.35);
-        const colOutput = rgb_a(rgbaText, 0.35);
-        const colWire   = rgbFromType(this.type, true);
+
+        const colInput  = this.active ? rgb_a(rgbaText, 0.4)  : rgb_a(rgbSaturateHsv(rgbHeaderFromType(this.type, true), 0.5), 0.8);
+        const colOutput = this.active ? rgb_a(rgbaText, 0.35) : rgb_a(rgbSaturateHsv(rgbHeaderFromType(this.type, true), 0.5), 0.7);
+        const colWire   = rgbHeaderFromType(this.type, true);
 
         return {
             back:   rgbaBack, 
@@ -32967,7 +33002,7 @@ extends OperatorBase
         super.updateHeader();
 
 
-        const colBack = rgbFromType(this.type, this.active);
+        const colBack = rgbHeaderFromType(this.type, this.active);
         const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
 
         this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;

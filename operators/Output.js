@@ -71,7 +71,7 @@ class Output
         this.colorLight      = [0, 0, 0, 1];
         this.colorDark       = [1, 1, 1, 1];
 
-        this.wireColor       = rgbFromType(this.type, true);
+        this.wireColor       = rgbHeaderFromType(this.type, true);
         
         this.updateControl();
 

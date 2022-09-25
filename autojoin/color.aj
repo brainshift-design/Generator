@@ -1,5 +1,6 @@
 ../color/spaces/colorSpace.js
 ../color/spaces/sRGB.js
+../color/spaces/rgb.js
 ../color/spaces/hsv.js
 ../color/spaces/hsl.js
 ../color/spaces/lms.js

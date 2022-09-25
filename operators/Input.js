@@ -98,7 +98,7 @@ extends EventTarget
         this.colorLight       = [0, 0, 0, 1];
         this.colorDark        = [1, 1, 1, 1];
 
-        this.wireColor        = rgbFromType(this.types[0], true);
+        this.wireColor        = rgbHeaderFromType(this.types[0], true);
 
         
         this.control.appendChild(this.hitbox);

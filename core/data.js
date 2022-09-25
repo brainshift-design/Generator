@@ -1,4 +1,4 @@
-function rgbFromType(type, active)
+function rgbHeaderFromType(type, active)
 {
     switch (type)
     {
