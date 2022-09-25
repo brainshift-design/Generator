@@ -201,34 +201,6 @@ class Operator
 
 
 
-    // initContentInput(input, firstParam = 0, condition = null)
-    // {
-    //     input.addEventListener('connect', () =>
-    //     {
-    //         if (    condition
-    //             && !condition())
-    //             return;
-
-    //         for (let i = firstParam; i < this.params.length; i++)
-    //             this.params[i].enableControlText(false);
-    //     });
-    
-
-    //     input.addEventListener('disconnect', () =>
-    //     {
-    //         for (let i = firstParam; i < this.params.length; i++)
-    //         {
-    //             if (    this.params[i].input
-    //                 && !this.params[i].input.connected) 
-    //                 this.params[i].enableControlText(true);
-    //         }
-
-    //         this.updateNode();
-    //     });
-    // }
-
-
-
     addBaseParams()
     {
 
@@ -309,27 +281,8 @@ class Operator
     setName(newName)
     {
         this._name = newName;
-        // this.label.innerHTML = this._name;
-        // //this.label.innerHTML = this.id;
-        
         return true;
     }
-
-
-
-    // isBefore(node)
-    // {
-    //     if (!this.outputs.find(o => o.connected))
-    //         return false;
-
-    //     for (const input of output.connectedInputs)
-    //     {
-    //         if (input.node == node)        return true;
-    //         if (input.node.isBefore(node)) return true;
-    //     }
-
-    //     return false;
-    // }
 
 
 
@@ -512,8 +465,18 @@ class Operator
 
         const colors                = Operator.prototype.getHeaderColors.call(this);
 
+        let fontSize = 11;
+
+        // compensate for bold active header names look THINNER when zoomed out
+             if (graphView.zoom < 0.5 ) fontSize = 17;
+        else if (graphView.zoom < 0.75) fontSize = 15;
+        else if (graphView.zoom < 1   ) fontSize = 13;
+        else if (graphView.zoom < 1.5 ) fontSize = 12;
+
         this.label.style.color      = rgba2style(colors.text);
-        this.label.style.fontWeight = this.active ? 'bold' : 'normal';
+        this.label.style.fontSize   = this.active ? fontSize : 11;
+        this.label.style.height     = this.active ? fontSize * 14 / 11 : 14;
+        this.label.style.fontWeight = this.active ? (graphView.zoom < 1.5 ? '900' : 'bold') : 'normal';
     }
 
 

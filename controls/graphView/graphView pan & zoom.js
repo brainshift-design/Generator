@@ -102,6 +102,9 @@ graphView.update = function(nodes = null)
 
     const bounds = graphView.getAllNodeBounds();
     graphView.updateScroll(x, w, h, bounds, yOffset);
+
+
+    nodes.forEach(n => n.updateHeaderLabel());
 };
 
 

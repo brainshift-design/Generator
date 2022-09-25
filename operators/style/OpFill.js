@@ -236,11 +236,8 @@ extends OpColorBase
     {
         super.updateHeaderLabel();
         
-
         const colors                = this.getHeaderColors();
-
         this.label.style.color      = rgba2style(colors.text);
-        this.label.style.fontWeight = this.active ? 'bold' : 'normal';
     }
 
 
