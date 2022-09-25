@@ -3,6 +3,8 @@ extends GOperator
 {
     paramId;
 
+    node;
+
 
 
     constructor(nodeId, paramId)
@@ -23,20 +25,24 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
-        {
-            const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId).result;
-            console.assert(node, 'can\'t find parameter node \'' + this.nodeId + '\'');
+        if (this.valid)
+            return;
 
 
-            this.result = node[this.paramId].eval(parse).copy();
-
-            
-            this.result.valid = true;
-            this.valid        = true;
-        }
+        this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
+        console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
-        return this.result;
+        this.node[this.paramId].eval(parse);
+
+        
+        this.valid = true;
     }
+
+
+
+    // toValue()
+    // {
+    //     return this.node[this.paramId].toValue();
+    // }
 }

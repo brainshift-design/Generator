@@ -32,7 +32,6 @@ extends GValue
         this.points = points;
         this.convex = convex;
 
-        this.result = this;
         this.valid  = true;
     }
 
@@ -69,7 +68,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 

@@ -20,7 +20,6 @@ extends GValue
         this.c2     = c2   .copy();
         this.c3     = c3   .copy();
 
-        this.result = null;
         this.valid  = true;
     }
 
@@ -87,7 +86,7 @@ extends GValue
 
     eval(parse)
     {
-        return this;
+
     }
 
 

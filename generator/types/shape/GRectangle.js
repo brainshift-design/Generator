@@ -78,12 +78,12 @@ extends GShapeBase
         const round  = this.round  ? this.round  : this.input ? this.input.round  : null;
 
 
-        if (x     ) genPushUpdateValue(parse, this.nodeId, 'x',      x     );
-        if (y     ) genPushUpdateValue(parse, this.nodeId, 'y',      y     );
-        if (width ) genPushUpdateValue(parse, this.nodeId, 'width',  width );
-        if (height) genPushUpdateValue(parse, this.nodeId, 'height', height);
-        if (angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  angle );
-        if (round ) genPushUpdateValue(parse, this.nodeId, 'round',  round );
+        if (x     ) genPushUpdateValue(parse, this.nodeId, 'x',      x     .toValue());
+        if (y     ) genPushUpdateValue(parse, this.nodeId, 'y',      y     .toValue());
+        if (width ) genPushUpdateValue(parse, this.nodeId, 'width',  width .toValue());
+        if (height) genPushUpdateValue(parse, this.nodeId, 'height', height.toValue());
+        if (angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  angle .toValue());
+        if (round ) genPushUpdateValue(parse, this.nodeId, 'round',  round .toValue());
 
 
         if (    this.input

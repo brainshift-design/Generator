@@ -67,16 +67,27 @@ extends GOperator
 
         if (this.input)
         {
+            const isParam = this.input instanceof GParam;
+
             this.input.eval(parse);
 
-            
-            if (this.input.isValid())
+            const input = 
+                isParam
+                ? this.input.node[this.input.paramId]
+                : this.input;
+
+            if (input.isValid())
             {
+                const space =
+                    isParam
+                    ? input.space
+                    : this.input.space;
+
                 color = new ColorValue(
-                    this.input.convert, 
-                    this.input.c1, 
-                    this.input.c2, 
-                    this.input.c3);
+                    space, 
+                    input.c1, 
+                    input.c2, 
+                    input.c3);
 
                 const fromSpaceIndex = color.space.value;
 

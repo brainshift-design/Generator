@@ -14,7 +14,6 @@ extends GValue
         this.color   = color  .copy();
         this.opacity = opacity.copy();
 
-        this.result  = null;
         this.valid   = true;
     }
 
@@ -78,7 +77,7 @@ extends GValue
 
     eval(parse)
     {
-        return this;
+
     }
 
 

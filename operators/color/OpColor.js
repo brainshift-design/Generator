@@ -342,13 +342,15 @@ extends OpColorBase
     {
         this.updateAllControlRanges();
 
-        this.param1.updateControls();
-        this.param2.updateControls();
-        this.param3.updateControls();
+        // this.param1.updateControls();
+        // this.param2.updateControls();
+        // this.param3.updateControls();
 
-        this.param1.enableControlText(!this.inputs[0].connected);
-        this.param2.enableControlText(!this.inputs[0].connected);
-        this.param3.enableControlText(!this.inputs[0].connected);
+        const enable = !this.inputs[0].connected;
+
+        this.param1.enableControlText(enable);
+        this.param2.enableControlText(enable);
+        this.param3.enableControlText(enable);
 
         enableElementText(this.paramColor.control, !this.isConnected());
 

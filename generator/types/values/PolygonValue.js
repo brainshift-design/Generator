@@ -29,7 +29,6 @@ extends GValue
         this.round   = round;
         this.corners = corners;
 
-        this.result = this;
         this.valid  = true;
     }
 
@@ -64,7 +63,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 

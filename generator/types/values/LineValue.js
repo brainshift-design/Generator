@@ -20,7 +20,6 @@ extends GValue
         this.width  = width;
         this.angle  = angle;
 
-        this.result = this;
         this.valid  = true;
     }
 
@@ -49,7 +48,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 

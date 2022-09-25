@@ -20,7 +20,6 @@ extends GValue
         this.value    = val;
         this.decimals = dec;
 
-        this.result   = null;
         this.valid    = true;
     }
 
@@ -54,7 +53,7 @@ extends GValue
 
     eval(parse)
     {
-        return this;
+
     }
 
 

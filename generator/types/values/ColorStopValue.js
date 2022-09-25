@@ -14,7 +14,6 @@ extends GValue
         this.fill     = fill;
         this.position = position;
 
-        this.result   = this;
         this.valid    = true;
     }
 
@@ -47,7 +46,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 

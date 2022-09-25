@@ -116,6 +116,26 @@ extends OperatorBase
 
 
 
+    updateParams()
+    {
+        // this.param1.updateControls();
+        // this.param2.updateControls();
+        // this.param3.updateControls();
+
+        const enable = !this.inputs[0].connected;
+        
+        this.paramX     .enableControlText(enable);
+        this.paramY     .enableControlText(enable);
+        this.paramWidth .enableControlText(enable);
+        this.paramHeight.enableControlText(enable);
+        this.paramAngle .enableControlText(enable);
+        this.paramRound .enableControlText(enable);
+
+        super.updateParams();
+    }
+
+    
+
     updateRound()
     {
         const min = Math.min(this.paramWidth.value.value, this.paramHeight.value.value);

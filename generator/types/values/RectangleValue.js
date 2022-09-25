@@ -27,7 +27,6 @@ extends ShapeBaseValue
         this.angle  = angle;
         this.round  = round;
 
-        this.result = this;
         this.valid  = true;
     }
 
@@ -67,7 +66,7 @@ extends ShapeBaseValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 

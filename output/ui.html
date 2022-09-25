@@ -5166,6 +5166,8 @@ extends GOperator
 {
     paramId;
 
+    node;
+
 
 
     constructor(nodeId, paramId)
@@ -5186,22 +5188,26 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
-        {
-            const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId).result;
-            console.assert(node, 'can\'t find parameter node \'' + this.nodeId + '\'');
+        if (this.valid)
+            return;
 
 
-            this.result = node[this.paramId].eval(parse).copy();
-
-            
-            this.result.valid = true;
-            this.valid        = true;
-        }
+        this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
+        console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
-        return this.result;
+        this.node[this.paramId].eval(parse);
+
+        
+        this.valid = true;
     }
+
+
+
+    // toValue()
+    // {
+    //     return this.node[this.paramId].toValue();
+    // }
 }
 
 
@@ -5227,7 +5233,6 @@ extends GValue
         this.value    = val;
         this.decimals = dec;
 
-        this.result   = null;
         this.valid    = true;
     }
 
@@ -5261,7 +5266,7 @@ extends GValue
 
     eval(parse)
     {
-        return this;
+
     }
 
 
@@ -5367,7 +5372,6 @@ extends GValue
         this.c2     = c2   .copy();
         this.c3     = c3   .copy();
 
-        this.result = null;
         this.valid  = true;
     }
 
@@ -5434,7 +5438,7 @@ extends GValue
 
     eval(parse)
     {
-        return this;
+
     }
 
 
@@ -5554,7 +5558,6 @@ extends GValue
         this.color   = color  .copy();
         this.opacity = opacity.copy();
 
-        this.result  = null;
         this.valid   = true;
     }
 
@@ -5618,7 +5621,7 @@ extends GValue
 
     eval(parse)
     {
-        return this;
+
     }
 
 
@@ -5753,7 +5756,6 @@ extends GValue
         this.join   = join  .copy();
         this.miter  = miter .copy();
 
-        this.result  = null;
         this.valid   = true;
     }
 
@@ -5826,7 +5828,7 @@ extends GValue
 
     eval(parse)
     {
-        return this;
+
     }
 
 
@@ -6075,7 +6077,6 @@ extends ShapeBaseValue
         this.angle  = angle;
         this.round  = round;
 
-        this.result = this;
         this.valid  = true;
     }
 
@@ -6115,7 +6116,7 @@ extends ShapeBaseValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 
@@ -6241,7 +6242,6 @@ extends GValue
         this.width  = width;
         this.angle  = angle;
 
-        this.result = this;
         this.valid  = true;
     }
 
@@ -6270,7 +6270,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 
@@ -6335,7 +6335,6 @@ extends GValue
         this.height = height;
         this.angle  = angle;
 
-        this.result = this;
         this.valid  = true;
     }
 
@@ -6366,7 +6365,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 
@@ -6440,7 +6439,6 @@ extends GValue
         this.round   = round;
         this.corners = corners;
 
-        this.result = this;
         this.valid  = true;
     }
 
@@ -6475,7 +6473,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 
@@ -6558,7 +6556,6 @@ extends GValue
         this.points = points;
         this.convex = convex;
 
-        this.result = this;
         this.valid  = true;
     }
 
@@ -6595,7 +6592,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 
@@ -7291,16 +7288,27 @@ extends GOperator
 
         if (this.input)
         {
+            const isParam = this.input instanceof GParam;
+
             this.input.eval(parse);
 
-            
-            if (this.input.isValid())
+            const input = 
+                isParam
+                ? this.input.node[this.input.paramId]
+                : this.input;
+
+            if (input.isValid())
             {
+                const space =
+                    isParam
+                    ? input.space
+                    : this.input.space;
+
                 color = new ColorValue(
-                    this.input.convert, 
-                    this.input.c1, 
-                    this.input.c2, 
-                    this.input.c3);
+                    space, 
+                    input.c1, 
+                    input.c2, 
+                    input.c3);
 
                 const fromSpaceIndex = color.space.value;
 
@@ -17993,6 +18001,8 @@ extends GOperator
 {
     paramId;
 
+    node;
+
 
 
     constructor(nodeId, paramId)
@@ -18013,22 +18023,26 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
-        {
-            const node = parse.parsedNodes.find(v => v.nodeId == this.nodeId).result;
-            console.assert(node, 'can\'t find parameter node \'' + this.nodeId + '\'');
+        if (this.valid)
+            return;
 
 
-            this.result = node[this.paramId].eval(parse).copy();
-
-            
-            this.result.valid = true;
-            this.valid        = true;
-        }
+        this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
+        console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
-        return this.result;
+        this.node[this.paramId].eval(parse);
+
+        
+        this.valid = true;
     }
+
+
+
+    // toValue()
+    // {
+    //     return this.node[this.paramId].toValue();
+    // }
 }
 
 
@@ -18054,7 +18068,6 @@ extends GValue
         this.value    = val;
         this.decimals = dec;
 
-        this.result   = null;
         this.valid    = true;
     }
 
@@ -18088,7 +18101,7 @@ extends GValue
 
     eval(parse)
     {
-        return this;
+
     }
 
 
@@ -18194,7 +18207,6 @@ extends GValue
         this.c2     = c2   .copy();
         this.c3     = c3   .copy();
 
-        this.result = null;
         this.valid  = true;
     }
 
@@ -18261,7 +18273,7 @@ extends GValue
 
     eval(parse)
     {
-        return this;
+
     }
 
 
@@ -18381,7 +18393,6 @@ extends GValue
         this.color   = color  .copy();
         this.opacity = opacity.copy();
 
-        this.result  = null;
         this.valid   = true;
     }
 
@@ -18445,7 +18456,7 @@ extends GValue
 
     eval(parse)
     {
-        return this;
+
     }
 
 
@@ -18580,7 +18591,6 @@ extends GValue
         this.join   = join  .copy();
         this.miter  = miter .copy();
 
-        this.result  = null;
         this.valid   = true;
     }
 
@@ -18653,7 +18663,7 @@ extends GValue
 
     eval(parse)
     {
-        return this;
+
     }
 
 
@@ -18902,7 +18912,6 @@ extends ShapeBaseValue
         this.angle  = angle;
         this.round  = round;
 
-        this.result = this;
         this.valid  = true;
     }
 
@@ -18942,7 +18951,7 @@ extends ShapeBaseValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 
@@ -19068,7 +19077,6 @@ extends GValue
         this.width  = width;
         this.angle  = angle;
 
-        this.result = this;
         this.valid  = true;
     }
 
@@ -19097,7 +19105,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 
@@ -19162,7 +19170,6 @@ extends GValue
         this.height = height;
         this.angle  = angle;
 
-        this.result = this;
         this.valid  = true;
     }
 
@@ -19193,7 +19200,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 
@@ -19267,7 +19274,6 @@ extends GValue
         this.round   = round;
         this.corners = corners;
 
-        this.result = this;
         this.valid  = true;
     }
 
@@ -19302,7 +19308,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 
@@ -19385,7 +19391,6 @@ extends GValue
         this.points = points;
         this.convex = convex;
 
-        this.result = this;
         this.valid  = true;
     }
 
@@ -19422,7 +19427,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.result = this.copy();
+        return this.copy();
     }
 
 
@@ -20118,16 +20123,27 @@ extends GOperator
 
         if (this.input)
         {
+            const isParam = this.input instanceof GParam;
+
             this.input.eval(parse);
 
-            
-            if (this.input.isValid())
+            const input = 
+                isParam
+                ? this.input.node[this.input.paramId]
+                : this.input;
+
+            if (input.isValid())
             {
+                const space =
+                    isParam
+                    ? input.space
+                    : this.input.space;
+
                 color = new ColorValue(
-                    this.input.convert, 
-                    this.input.c1, 
-                    this.input.c2, 
-                    this.input.c3);
+                    space, 
+                    input.c1, 
+                    input.c2, 
+                    input.c3);
 
                 const fromSpaceIndex = color.space.value;
 
@@ -33741,13 +33757,15 @@ extends OpColorBase
     {
         this.updateAllControlRanges();
 
-        this.param1.updateControls();
-        this.param2.updateControls();
-        this.param3.updateControls();
+        // this.param1.updateControls();
+        // this.param2.updateControls();
+        // this.param3.updateControls();
 
-        this.param1.enableControlText(!this.inputs[0].connected);
-        this.param2.enableControlText(!this.inputs[0].connected);
-        this.param3.enableControlText(!this.inputs[0].connected);
+        const enable = !this.inputs[0].connected;
+
+        this.param1.enableControlText(enable);
+        this.param2.enableControlText(enable);
+        this.param3.enableControlText(enable);
 
         enableElementText(this.paramColor.control, !this.isConnected());
 
@@ -37056,6 +37074,26 @@ extends OperatorBase
     }
 
 
+
+    updateParams()
+    {
+        // this.param1.updateControls();
+        // this.param2.updateControls();
+        // this.param3.updateControls();
+
+        const enable = !this.inputs[0].connected;
+        
+        this.paramX     .enableControlText(enable);
+        this.paramY     .enableControlText(enable);
+        this.paramWidth .enableControlText(enable);
+        this.paramHeight.enableControlText(enable);
+        this.paramAngle .enableControlText(enable);
+        this.paramRound .enableControlText(enable);
+
+        super.updateParams();
+    }
+
+    
 
     updateRound()
     {

@@ -30,7 +30,6 @@ extends GValue
         this.join   = join  .copy();
         this.miter  = miter .copy();
 
-        this.result  = null;
         this.valid   = true;
     }
 
@@ -103,7 +102,7 @@ extends GValue
 
     eval(parse)
     {
-        return this;
+
     }
 
 
