@@ -67,15 +67,20 @@ extends GShapeBase
 
 
         if (this.input)
+        {
+            while (!RECTANGLE_TYPES.includes(this.input.type))
+                this.input = this.input.input;
+
             this.input.eval(parse);
+        }
 
-
-        const x      = this.x      ? this.x      : this.input ? this.input.x      : null;
-        const y      = this.y      ? this.y      : this.input ? this.input.y      : null;
-        const width  = this.width  ? this.width  : this.input ? this.input.width  : null;
-        const height = this.height ? this.height : this.input ? this.input.height : null;
-        const angle  = this.angle  ? this.angle  : this.input ? this.input.angle  : null;
-        const round  = this.round  ? this.round  : this.input ? this.input.round  : null;
+        
+        const x      = this.x      ? this.x      : this.input && !isEmpty(this.input.objects) ? this.input.x      : null;
+        const y      = this.y      ? this.y      : this.input && !isEmpty(this.input.objects) ? this.input.y      : null;
+        const width  = this.width  ? this.width  : this.input && !isEmpty(this.input.objects) ? this.input.width  : null;
+        const height = this.height ? this.height : this.input && !isEmpty(this.input.objects) ? this.input.height : null;
+        const angle  = this.angle  ? this.angle  : this.input && !isEmpty(this.input.objects) ? this.input.angle  : null;
+        const round  = this.round  ? this.round  : this.input && !isEmpty(this.input.objects) ? this.input.round  : null;
 
 
         if (x     ) genPushUpdateValue(parse, this.nodeId, 'x',      x     .toValue());

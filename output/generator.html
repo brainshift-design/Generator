@@ -2995,20 +2995,38 @@ const COLOR_STOP          = 'CSTOP';
 const GRADIENT_VALUE      = 'GR';
 const GRADIENT            = 'GRAD';
 
+const GRADIENT_TYPES =
+[
+    GRADIENT_VALUE,
+    GRADIENT
+];
 
-const SHAPE_VALUE      = 'G0';    // abstract placeholder
 
-const RECTANGLE_VALUE     = 'R';
-const LINE_VALUE          = 'L';
-const ELLIPSE_VALUE       = 'E';
-const POLYGON_VALUE       = 'P';
-const STAR_VALUE          = 'ST';
+const PROPERTY_TYPES =
+[
+    ...FILL_TYPES,
+    ...STROKE_TYPES,
+    ...GRADIENT_TYPES
+];
 
-const RECTANGLE           = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
-const LINE                = 'LINE';  // N:x N:y N:width N:height N:angle
-const ELLIPSE             = 'ELPS';  // N:x N:y N:width N:height N:angle
-const POLYGON             = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
-const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
+
+const SHAPE_VALUE      = 'G0';   // abstract placeholder
+
+const RECTANGLE_VALUE  = 'R';
+const RECTANGLE        = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+
+const RECTANGLE_TYPES = [RECTANGLE_VALUE, RECTANGLE];
+
+
+const LINE_VALUE       = 'L';
+const ELLIPSE_VALUE    = 'E';
+const POLYGON_VALUE    = 'P';
+const STAR_VALUE       = 'ST';
+
+const LINE             = 'LINE'; // N:x N:y N:width N:height N:angle
+const ELLIPSE          = 'ELPS'; // N:x N:y N:width N:height N:angle
+const POLYGON          = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
+const STAR             = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
 
 
 const SHAPE_VALUES =
@@ -6152,15 +6170,20 @@ extends GShapeBase
 
 
         if (this.input)
+        {
+            while (!RECTANGLE_TYPES.includes(this.input.type))
+                this.input = this.input.input;
+
             this.input.eval(parse);
+        }
 
-
-        const x      = this.x      ? this.x      : this.input ? this.input.x      : null;
-        const y      = this.y      ? this.y      : this.input ? this.input.y      : null;
-        const width  = this.width  ? this.width  : this.input ? this.input.width  : null;
-        const height = this.height ? this.height : this.input ? this.input.height : null;
-        const angle  = this.angle  ? this.angle  : this.input ? this.input.angle  : null;
-        const round  = this.round  ? this.round  : this.input ? this.input.round  : null;
+        
+        const x      = this.x      ? this.x      : this.input && !isEmpty(this.input.objects) ? this.input.x      : null;
+        const y      = this.y      ? this.y      : this.input && !isEmpty(this.input.objects) ? this.input.y      : null;
+        const width  = this.width  ? this.width  : this.input && !isEmpty(this.input.objects) ? this.input.width  : null;
+        const height = this.height ? this.height : this.input && !isEmpty(this.input.objects) ? this.input.height : null;
+        const angle  = this.angle  ? this.angle  : this.input && !isEmpty(this.input.objects) ? this.input.angle  : null;
+        const round  = this.round  ? this.round  : this.input && !isEmpty(this.input.objects) ? this.input.round  : null;
 
 
         if (x     ) genPushUpdateValue(parse, this.nodeId, 'x',      x     .toValue());
@@ -7887,7 +7910,8 @@ function genParseRectangle(parse)
 
 
     if (   parse.next == RECTANGLE
-        || parse.next == RECTANGLE_VALUE)
+        || parse.next == RECTANGLE_VALUE
+        || PROPERTY_TYPES.includes(parse.next))
         rect.input = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
 
 

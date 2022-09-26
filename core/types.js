@@ -85,20 +85,38 @@ const COLOR_STOP          = 'CSTOP';
 const GRADIENT_VALUE      = 'GR';
 const GRADIENT            = 'GRAD';
 
+const GRADIENT_TYPES =
+[
+    GRADIENT_VALUE,
+    GRADIENT
+];
 
-const SHAPE_VALUE      = 'G0';    // abstract placeholder
 
-const RECTANGLE_VALUE     = 'R';
-const LINE_VALUE          = 'L';
-const ELLIPSE_VALUE       = 'E';
-const POLYGON_VALUE       = 'P';
-const STAR_VALUE          = 'ST';
+const PROPERTY_TYPES =
+[
+    ...FILL_TYPES,
+    ...STROKE_TYPES,
+    ...GRADIENT_TYPES
+];
 
-const RECTANGLE           = 'RECT';  // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
-const LINE                = 'LINE';  // N:x N:y N:width N:height N:angle
-const ELLIPSE             = 'ELPS';  // N:x N:y N:width N:height N:angle
-const POLYGON             = 'POLY';  // N:x N:y N:width N:height N:angle N:corners
-const STAR                = 'STAR';  // N:x N:y N:width N:height N:angle N:points N:convex
+
+const SHAPE_VALUE      = 'G0';   // abstract placeholder
+
+const RECTANGLE_VALUE  = 'R';
+const RECTANGLE        = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+
+const RECTANGLE_TYPES = [RECTANGLE_VALUE, RECTANGLE];
+
+
+const LINE_VALUE       = 'L';
+const ELLIPSE_VALUE    = 'E';
+const POLYGON_VALUE    = 'P';
+const STAR_VALUE       = 'ST';
+
+const LINE             = 'LINE'; // N:x N:y N:width N:height N:angle
+const ELLIPSE          = 'ELPS'; // N:x N:y N:width N:height N:angle
+const POLYGON          = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
+const STAR             = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
 
 
 const SHAPE_VALUES =
