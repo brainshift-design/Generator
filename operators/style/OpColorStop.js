@@ -11,7 +11,7 @@ extends OpColorBase
 
 
         this.addInput(new Input([COLOR_STOP, COLOR_STOP_VALUE]));
-        this.addOutput(new Output(COLOR_STOP, this.output_genRequest));
+        this.addOutput(new Output([COLOR_STOP], this.output_genRequest));
 
         this.addParam(this.paramFill     = new FillParam ('fill',     '',         false, true, true));
         this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 100, 0, 100));

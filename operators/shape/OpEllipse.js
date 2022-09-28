@@ -16,7 +16,7 @@ extends OpShapeBase
         super(ELLIPSE, 'elps', 90);
 
         this.addInput (new Input ([ELLIPSE, ELLIPSE_VALUE]));
-        this.addOutput(new Output(ELLIPSE, this.output_genRequest));
+        this.addOutput(new Output([ELLIPSE], this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));

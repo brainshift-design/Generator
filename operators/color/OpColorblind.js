@@ -13,7 +13,7 @@ extends OpColorBase
 
 
         this.addInput(new Input(COLOR_TYPES));
-        this.addOutput(new Output(COLOR, this.output_genRequest));
+        this.addOutput(new Output([COLOR], this.output_genRequest));
 
 
         this.addParam(this.paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0, 0.02));

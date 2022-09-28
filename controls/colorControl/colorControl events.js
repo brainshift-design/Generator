@@ -213,7 +213,7 @@ function initColorControlEvents(control)
 
             if (    graphView.tempConn.output
                 &&  control.param.input
-                &&  control.param.input.types.includes(graphView.tempConn.output.type)
+                &&  control.param.input.accepts(graphView.tempConn.output)
                 && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 && (  !control.param.input.connected // not already connected to this input
                     || control.param.input.connectedOutput != graphView.tempConn.output
@@ -232,7 +232,7 @@ function initColorControlEvents(control)
             }
             else if ( graphView.tempConn.input
                   &&  control.param.output
-                  &&  graphView.tempConn.input.types.includes(control.param.output.type)
+                  &&  graphView.tempConn.input.accepts(control.param.output)
                   && !control.param.node.isOrFollows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = control.param.output;

@@ -120,9 +120,8 @@ function genParseStroke(parse)
     parse.nTab++;
 
 
-    if (   STROKE_TYPES.includes(parse.next)
-        ||   FILL_TYPES.includes(parse.next)
-        ||  SHAPE_TYPES.includes(parse.next))
+    if (  PROPERTY_TYPES.includes(parse.next)
+        ||   SHAPE_TYPES.includes(parse.next))
         stroke.input = genParse(parse);
         //   parse.next == PARAM
         //   && STROKE_TYPES.includes(parse.afterNext))

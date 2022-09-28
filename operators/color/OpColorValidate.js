@@ -44,7 +44,7 @@ extends OpColorBase
 
 
         this.addInput(new Input(COLOR_TYPES));
-        this.addOutput(new Output(COLOR, this.output_genRequest));
+        this.addOutput(new Output([COLOR], this.output_genRequest));
 
 
         this.alwaysLoadParams = true;

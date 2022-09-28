@@ -12,7 +12,7 @@ extends OpColorBase
     get inputIsShape() 
     {
         return this.inputs[0].connected
-            && SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type);
+            && arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types);
     }
     
     
@@ -30,11 +30,11 @@ extends OpColorBase
 
 
         this.addInput (new Input([...FILL_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
-        this.addOutput(new Output(FILL, this.output_genRequest));
+        this.addOutput(new Output([FILL], this.output_genRequest));
 
 
-        this.inputs[0].addEventListener('connect',    () =>   this.outputs[0]._type = this.inputs[0].connectedOutput.type);
-        this.inputs[0].addEventListener('disconnect', () => { this.outputs[0]._type = FILL; uiDeleteObjects([this.id]); });
+        this.inputs[0].addEventListener('connect',    () =>   this.outputs[0].types.push(...this.inputs[0].connectedOutput.types));
+        this.inputs[0].addEventListener('disconnect', () => { this.outputs[0].types = [FILL]; uiDeleteObjects([this.id]); });
 
 
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
@@ -86,7 +86,7 @@ extends OpColorBase
                 if (      param.input 
                        && param.input.connected
                        && param.canShow()
-                    || SHAPE_TYPES.includes(input.connectedOutput.type)) 
+                    || arraysIntersect(SHAPE_TYPES, input.connectedOutput.types)) 
                     paramIds.push(param.id);
         }
         else
@@ -259,7 +259,7 @@ extends OpColorBase
     {
         const enable = 
                !this.inputs[0].connected
-            ||  SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type);
+            ||  arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types);
 
         this.paramColor  .enableControlText(enable);
         this.paramOpacity.enableControlText(enable);

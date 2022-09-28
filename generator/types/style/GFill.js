@@ -65,6 +65,14 @@ extends GShapeBase
 
 
 
+    getParams()
+    {
+        return [this.color   ? this.color   : this.input ? this.input.color   : null,
+                this.opacity ? this.opacity : this.input ? this.input.opacity : null];
+    }
+
+
+
     evalObjects()
     {
         const [color, opacity] = this.getParams();
@@ -92,14 +100,6 @@ extends GShapeBase
 
         
         super.evalObjects();
-    }
-
-
-
-    getParams()
-    {
-        return [this.color   ? this.color   : this.input ? this.input.color   : null,
-                this.opacity ? this.opacity : this.input ? this.input.opacity : null];
     }
 
 

@@ -83,7 +83,7 @@ graphView.endConnection = pointerId =>
         output.connecting = false;
         
         if (   input
-            && input.types.includes(output.type)) // TO INPUT
+            && input.accepts(output)) // TO INPUT
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex)
@@ -122,7 +122,7 @@ graphView.endConnection = pointerId =>
         input.connecting = false;
         
         if (   output
-            && input.types.includes(output.type)) // TO OUTPUT
+            && input.accepts(output)) // TO OUTPUT
             actionManager.do(new ConnectAction(output, input));
 
         graphView.cancelConnection(pointerId);

@@ -16,7 +16,7 @@
 
 
 //         this.addInput(new Input(SHAPE_TYPES));
-//         this.addOutput(new Output(COLOR_STROKE, this.output_genRequest));
+//         this.addOutput(new Output([COLOR_STROKE], this.output_genRequest));
 
 //         this.addParam(this.paramColor        = new ColorParam ('color',        '',        false, true, true));
 //         this.addParam(this.paramOpacity      = new NumberParam('opacity',      'opacity', true,  true, true, 100, 0, 100));

@@ -205,12 +205,32 @@ function arraysEqual(arr1, arr2)
 
 
 
+function arraysIntersect(array1, array2)
+{
+    return array1.find(i => array2.includes(i));
+}
+
+
+
 function removeFromArray(array, item)
 {
     var index = array.indexOf(item);
     
     if (index > -1)
         array.splice(index, 1);
+}
+
+
+
+function removeArrayFromArray(fromArray, array)
+{
+    for (const item of array)
+    {
+        var index = fromArray.indexOf(item);
+        
+        if (index > -1)
+            fromArray.splice(index, 1);
+    }
 }
 
 

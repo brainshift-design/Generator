@@ -145,7 +145,7 @@ extends Parameter
 
        
         if (hasInput)  this.initInput([...FILL_TYPES, ...COLOR_TYPES]);
-        if (hasOutput) this.initOutput(FILL_VALUE, this.output_genRequest);
+        if (hasOutput) this.initOutput([FILL_VALUE], this.output_genRequest);
 
 
         this.colorControl.addEventListener('confirm', () =>
@@ -237,7 +237,7 @@ extends Parameter
         {
             request.push(...pushInputOrParam(this.input, gen));
 
-            if (COLOR_TYPES.includes(this.input.connectedOutput.type))
+            if (arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types))
             {
                 request.push(
                     NUMBER_VALUE, 
@@ -379,7 +379,7 @@ extends Parameter
                 enable 
             || !this.input 
             || !this.input.connected 
-            ||  COLOR_TYPES.includes(this.input.connectedOutput.type);
+            ||  arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types);
 
         enableElementText(this.  colorControl, enable);
         enableElementText(this.opacityControl, opEnable);

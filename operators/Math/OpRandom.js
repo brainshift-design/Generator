@@ -12,7 +12,7 @@ extends Operator
     {
         super('random', NUMBER);
 
-        this.addOutput(new Output(this.dataType));
+        this.addOutput(new Output([this.dataType]));
 
         this.addParam(this.#min   = new NumberParam('min',   'min',   true,  0));
         this.addParam(this.#max   = new NumberParam('max',   'max',   true, 10));
@@ -77,7 +77,7 @@ extends Operator
 //     {
 //         super('random', NUMBER);
 
-//         this.addOutput(new Output(this.dataType));
+//         this.addOutput(new Output([this.dataType]));
 
 //         this.addParam(this.#min   = new NumberParam('min'));
 //         this.addParam(this.#max   = new NumberParam('max'));

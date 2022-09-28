@@ -40,18 +40,6 @@ extends GShapeBase
 
 
 
-    isValid()
-    {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && this.round .isValid();
-    }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -68,20 +56,15 @@ extends GShapeBase
 
         if (this.input)
         {
-            while (!RECTANGLE_TYPES.includes(this.input.type))
-                this.input = this.input.input;
-
             this.input.eval(parse);
+
+            while (  !RECTANGLE_TYPES.includes(this.input.type)
+                   && this.input.input)
+                this.input = this.input.input;
         }
 
-        
-        const x      = this.x      ? this.x      : this.input && !isEmpty(this.input.objects) ? this.input.x      : null;
-        const y      = this.y      ? this.y      : this.input && !isEmpty(this.input.objects) ? this.input.y      : null;
-        const width  = this.width  ? this.width  : this.input && !isEmpty(this.input.objects) ? this.input.width  : null;
-        const height = this.height ? this.height : this.input && !isEmpty(this.input.objects) ? this.input.height : null;
-        const angle  = this.angle  ? this.angle  : this.input && !isEmpty(this.input.objects) ? this.input.angle  : null;
-        const round  = this.round  ? this.round  : this.input && !isEmpty(this.input.objects) ? this.input.round  : null;
 
+        const [x, y, width, height, angle, round] = this.getParams();
 
         if (x     ) genPushUpdateValue(parse, this.nodeId, 'x',      x     .toValue());
         if (y     ) genPushUpdateValue(parse, this.nodeId, 'y',      y     .toValue());
@@ -97,6 +80,18 @@ extends GShapeBase
 
 
         this.valid = true;
+    }
+
+
+
+    getParams()
+    {
+        return [this.x      ? this.x      : this.input && !isEmpty(this.input.objects) ? this.input.x      : null,
+                this.y      ? this.y      : this.input && !isEmpty(this.input.objects) ? this.input.y      : null,
+                this.width  ? this.width  : this.input && !isEmpty(this.input.objects) ? this.input.width  : null,
+                this.height ? this.height : this.input && !isEmpty(this.input.objects) ? this.input.height : null,
+                this.angle  ? this.angle  : this.input && !isEmpty(this.input.objects) ? this.input.angle  : null,
+                this.round  ? this.round  : this.input && !isEmpty(this.input.objects) ? this.input.round  : null];
     }
 
 
@@ -133,5 +128,17 @@ extends GShapeBase
 
         
         super.evalObjects();
+    }
+
+
+
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid();
     }
 }

@@ -50,7 +50,7 @@ extends NumberParamBase
 
 
         if (hasInput)  this.initInput(NUMBER_TYPES);
-        if (hasOutput) this.initOutput(NUMBER_VALUE, this.output_genRequest);
+        if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest);
 
             
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });

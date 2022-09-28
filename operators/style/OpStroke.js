@@ -15,7 +15,7 @@ extends OpColorBase
     get inputIsShape() 
     {
         return this.inputs[0].connected
-            && SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type);
+            && arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types);
     }
 
 
@@ -29,10 +29,10 @@ extends OpColorBase
         this.inner.appendChild(this.colorBack);
 
         this.addInput (new Input([...STROKE_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
-        this.addOutput(new Output(STROKE, this.output_genRequest));
+        this.addOutput(new Output([STROKE], this.output_genRequest));
 
-        this.inputs[0].addEventListener('connect',    () =>   this.outputs[0]._type = this.inputs[0].connectedOutput.type);
-        this.inputs[0].addEventListener('disconnect', () => { this.outputs[0]._type = FILL; uiDeleteObjects([this.id]); });
+        this.inputs[0].addEventListener('connect',    () =>   this.outputs[0].types.push(...this.inputs[0].connectedOutput.types));
+        this.inputs[0].addEventListener('disconnect', () => { this.outputs[0].types = [STROKE]; uiDeleteObjects([this.id]); });
 
 
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
@@ -101,7 +101,7 @@ extends OpColorBase
                 if (      param.input 
                        && param.input.connected
                        && param.canShow() 
-                    || SHAPE_TYPES.includes(input.connectedOutput.type)) 
+                    || arraysIntersect(SHAPE_TYPES, input.connectedOutput.types)) 
                     paramIds.push(param.id);
         }
         else
@@ -208,7 +208,8 @@ extends OpColorBase
  
         const enable = 
                !this.inputs[0].connected
-            || !SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type);
+            || !arraysIntersect( SHAPE_TYPES, this.inputs[0].connectedOutput.types)
+            || !arraysIntersect(STROKE_TYPES, this.inputs[0].connectedOutput.types);
 
         this.paramFill  .enableControlText(enableFill);
         this.paramWeight.enableControlText(enable);

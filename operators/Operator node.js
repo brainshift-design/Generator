@@ -284,7 +284,7 @@ function createNodeHeader(node)
                 }
                 else
                 {
-                    const input = node.getAutoInput(tempConn.output.type);
+                    const input = node.getAutoInput(tempConn.output.types);
 
                     if ( !input)
                         // ||    input.connected

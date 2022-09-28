@@ -82,9 +82,9 @@ extends EventTarget
 
 
 
-    initOutput(type, toString)
+    initOutput(types, toString)
     {
-        this.output = new Output(type, toString);
+        this.output = new Output(types, toString);
         this.output._param = this;
 
         this.output.control.style.float     = 'right';

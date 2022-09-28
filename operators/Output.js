@@ -1,8 +1,8 @@
 class Output
 {
-    _type;     
-    get type() { return this._type; }
+    types = []; // an output can have multiple types
 
+    
     _node  = null;  get node () { return this._node;  }
     _param = null;  get param() { return this._param; }
     
@@ -55,7 +55,7 @@ class Output
 
     constructor(type, genRequest)
     {
-        this._type           = type;
+        this.types           = [...type];
         this.genRequest      = genRequest;
 
         this.control         = createDiv('output');

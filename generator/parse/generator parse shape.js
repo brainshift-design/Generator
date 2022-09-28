@@ -31,9 +31,8 @@ function genParseRectangle(parse)
     parse.nTab++;
 
 
-    if (   parse.next == RECTANGLE
-        || parse.next == RECTANGLE_VALUE
-        || PROPERTY_TYPES.includes(parse.next))
+    if (   RECTANGLE_TYPES.includes(parse.next)
+        ||  PROPERTY_TYPES.includes(parse.next))
         rect.input = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
 
 

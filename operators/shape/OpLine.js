@@ -13,7 +13,7 @@ extends OpShapeBase
         super(LINE, 'line', 90);
 
         this.addInput (new Input ([LINE, LINE_VALUE]));
-        this.addOutput(new Output(LINE, this.output_genRequest));
+        this.addOutput(new Output([LINE], this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));

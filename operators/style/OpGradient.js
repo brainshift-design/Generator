@@ -18,7 +18,7 @@ extends OperatorBase
 
 
         this.addNewInput();
-        this.addOutput(new Output(GRADIENT, this.output_genRequest));
+        this.addOutput(new Output([GRADIENT], this.output_genRequest));
         
 
         this.addParam(this.paramType   = new SelectParam('type', '', false, true, true, ['linear', 'radial', 'angular', 'diamond'], 0));

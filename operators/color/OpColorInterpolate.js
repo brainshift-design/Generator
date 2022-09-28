@@ -15,7 +15,7 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES));
         this.addInput(new Input(COLOR_TYPES));
 
-        this.addOutput(new Output(COLOR, this.output_genRequest));
+        this.addOutput(new Output([COLOR], this.output_genRequest));
 
 
         this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));

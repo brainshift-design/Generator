@@ -10,7 +10,7 @@ extends OperatorBase
         super(NUMBER, 'num', 70);
 
         this.addInput (new Input ([NUMBER], this.input_getValuesForUndo));
-        this.addOutput(new Output(NUMBER, this.output_genRequest));
+        this.addOutput(new Output([NUMBER], this.output_genRequest));
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
         

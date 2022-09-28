@@ -80,7 +80,7 @@ extends Parameter
 
        
         if (hasInput)  this.initInput([...STROKE_TYPES, ...FILL_TYPES, ...COLOR_TYPES]);
-        if (hasOutput) this.initOutput(STROKE_VALUE, this.output_genRequest);
+        if (hasOutput) this.initOutput([STROKE_VALUE], this.output_genRequest);
 
 
         this.control.addEventListener('confirm', () => 
@@ -172,8 +172,8 @@ extends Parameter
         {
             request.push(...pushInputOrParam(this.input, gen));
 
-            if (    FILL_TYPES.includes(this.input.connectedOutput.type)
-                || COLOR_TYPES.includes(this.input.connectedOutput.type))
+            if (   arraysIntersect( FILL_TYPES, this.input.connectedOutput.types)
+                || arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types))
             {
                 const val = noNaN(this.control.value,      1);
                 const dec = noNaN(this.control.displayDec, 0);
@@ -310,8 +310,8 @@ extends Parameter
                 enable 
             || !this.input 
             || !this.input.connected 
-            ||   FILL_TYPES.includes(this.input.connectedOutput.type)
-            ||  COLOR_TYPES.includes(this.input.connectedOutput.type);
+            ||  arraysIntersect( FILL_TYPES, this.input.connectedOutput.types)
+            ||  arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types);
 
         enableElementText(this.textControl, enable);
         enableElementText(this.control,     opEnable);

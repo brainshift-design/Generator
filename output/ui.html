@@ -3722,12 +3722,32 @@ function arraysEqual(arr1, arr2)
 
 
 
+function arraysIntersect(array1, array2)
+{
+    return array1.find(i => array2.includes(i));
+}
+
+
+
 function removeFromArray(array, item)
 {
     var index = array.indexOf(item);
     
     if (index > -1)
         array.splice(index, 1);
+}
+
+
+
+function removeArrayFromArray(fromArray, array)
+{
+    for (const item of array)
+    {
+        var index = fromArray.indexOf(item);
+        
+        if (index > -1)
+            fromArray.splice(index, 1);
+    }
 }
 
 
@@ -8076,18 +8096,6 @@ extends GShapeBase
 
 
 
-    isValid()
-    {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && this.round .isValid();
-    }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -8104,20 +8112,15 @@ extends GShapeBase
 
         if (this.input)
         {
-            while (!RECTANGLE_TYPES.includes(this.input.type))
-                this.input = this.input.input;
-
             this.input.eval(parse);
+
+            while (  !RECTANGLE_TYPES.includes(this.input.type)
+                   && this.input.input)
+                this.input = this.input.input;
         }
 
-        
-        const x      = this.x      ? this.x      : this.input && !isEmpty(this.input.objects) ? this.input.x      : null;
-        const y      = this.y      ? this.y      : this.input && !isEmpty(this.input.objects) ? this.input.y      : null;
-        const width  = this.width  ? this.width  : this.input && !isEmpty(this.input.objects) ? this.input.width  : null;
-        const height = this.height ? this.height : this.input && !isEmpty(this.input.objects) ? this.input.height : null;
-        const angle  = this.angle  ? this.angle  : this.input && !isEmpty(this.input.objects) ? this.input.angle  : null;
-        const round  = this.round  ? this.round  : this.input && !isEmpty(this.input.objects) ? this.input.round  : null;
 
+        const [x, y, width, height, angle, round] = this.getParams();
 
         if (x     ) genPushUpdateValue(parse, this.nodeId, 'x',      x     .toValue());
         if (y     ) genPushUpdateValue(parse, this.nodeId, 'y',      y     .toValue());
@@ -8133,6 +8136,18 @@ extends GShapeBase
 
 
         this.valid = true;
+    }
+
+
+
+    getParams()
+    {
+        return [this.x      ? this.x      : this.input && !isEmpty(this.input.objects) ? this.input.x      : null,
+                this.y      ? this.y      : this.input && !isEmpty(this.input.objects) ? this.input.y      : null,
+                this.width  ? this.width  : this.input && !isEmpty(this.input.objects) ? this.input.width  : null,
+                this.height ? this.height : this.input && !isEmpty(this.input.objects) ? this.input.height : null,
+                this.angle  ? this.angle  : this.input && !isEmpty(this.input.objects) ? this.input.angle  : null,
+                this.round  ? this.round  : this.input && !isEmpty(this.input.objects) ? this.input.round  : null];
     }
 
 
@@ -8169,6 +8184,18 @@ extends GShapeBase
 
         
         super.evalObjects();
+    }
+
+
+
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid();
     }
 }
 
@@ -8724,6 +8751,14 @@ extends GShapeBase
 
 
 
+    getParams()
+    {
+        return [this.color   ? this.color   : this.input ? this.input.color   : null,
+                this.opacity ? this.opacity : this.input ? this.input.opacity : null];
+    }
+
+
+
     evalObjects()
     {
         const [color, opacity] = this.getParams();
@@ -8751,14 +8786,6 @@ extends GShapeBase
 
         
         super.evalObjects();
-    }
-
-
-
-    getParams()
-    {
-        return [this.color   ? this.color   : this.input ? this.input.color   : null,
-                this.opacity ? this.opacity : this.input ? this.input.opacity : null];
     }
 
 
@@ -8835,6 +8862,10 @@ extends GShapeBase
         {
             this.input.eval(parse);
             this.objects = this.input.objects;
+
+            while (  !STROKE_TYPES.includes(this.input.type)
+                   && this.input.input)
+                this.input = this.input.input;
         }
 
 
@@ -8853,6 +8884,17 @@ extends GShapeBase
 
 
         this.valid = true;
+    }
+
+
+
+    getParams()
+    {
+        return [this.fill,
+                this.weight ? this.weight : this.input ? this.input.weight : null,
+                this.fit    ? this.fit    : this.input ? this.input.fit    : null,
+                this.join   ? this.join   : this.input ? this.input.join   : null,
+                this.miter  ? this.miter  : this.input ? this.input.miter  : null];
     }
 
 
@@ -8905,17 +8947,6 @@ extends GShapeBase
 
         
         super.evalObjects();
-    }
-
-
-
-    getParams()
-    {
-        return [this.fill   ? this.fill   : this.input ? this.input.fill   : null,
-                this.weight ? this.weight : this.input ? this.input.weight : null,
-                this.fit    ? this.fit    : this.input ? this.input.fit    : null,
-                this.join   ? this.join   : this.input ? this.input.join   : null,
-                this.miter  ? this.miter  : this.input ? this.input.miter  : null];
     }
 
 
@@ -9937,9 +9968,8 @@ function genParseRectangle(parse)
     parse.nTab++;
 
 
-    if (   parse.next == RECTANGLE
-        || parse.next == RECTANGLE_VALUE
-        || PROPERTY_TYPES.includes(parse.next))
+    if (   RECTANGLE_TYPES.includes(parse.next)
+        ||  PROPERTY_TYPES.includes(parse.next))
         rect.input = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
 
 
@@ -10327,9 +10357,8 @@ function genParseStroke(parse)
     parse.nTab++;
 
 
-    if (   STROKE_TYPES.includes(parse.next)
-        ||   FILL_TYPES.includes(parse.next)
-        ||  SHAPE_TYPES.includes(parse.next))
+    if (  PROPERTY_TYPES.includes(parse.next)
+        ||   SHAPE_TYPES.includes(parse.next))
         stroke.input = genParse(parse);
         //   parse.next == PARAM
         //   && STROKE_TYPES.includes(parse.afterNext))
@@ -15144,12 +15173,32 @@ function arraysEqual(arr1, arr2)
 
 
 
+function arraysIntersect(array1, array2)
+{
+    return array1.find(i => array2.includes(i));
+}
+
+
+
 function removeFromArray(array, item)
 {
     var index = array.indexOf(item);
     
     if (index > -1)
         array.splice(index, 1);
+}
+
+
+
+function removeArrayFromArray(fromArray, array)
+{
+    for (const item of array)
+    {
+        var index = fromArray.indexOf(item);
+        
+        if (index > -1)
+            fromArray.splice(index, 1);
+    }
 }
 
 
@@ -21018,18 +21067,6 @@ extends GShapeBase
 
 
 
-    isValid()
-    {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.height.isValid()
-            && this.angle .isValid()
-            && this.round .isValid();
-    }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -21046,20 +21083,15 @@ extends GShapeBase
 
         if (this.input)
         {
-            while (!RECTANGLE_TYPES.includes(this.input.type))
-                this.input = this.input.input;
-
             this.input.eval(parse);
+
+            while (  !RECTANGLE_TYPES.includes(this.input.type)
+                   && this.input.input)
+                this.input = this.input.input;
         }
 
-        
-        const x      = this.x      ? this.x      : this.input && !isEmpty(this.input.objects) ? this.input.x      : null;
-        const y      = this.y      ? this.y      : this.input && !isEmpty(this.input.objects) ? this.input.y      : null;
-        const width  = this.width  ? this.width  : this.input && !isEmpty(this.input.objects) ? this.input.width  : null;
-        const height = this.height ? this.height : this.input && !isEmpty(this.input.objects) ? this.input.height : null;
-        const angle  = this.angle  ? this.angle  : this.input && !isEmpty(this.input.objects) ? this.input.angle  : null;
-        const round  = this.round  ? this.round  : this.input && !isEmpty(this.input.objects) ? this.input.round  : null;
 
+        const [x, y, width, height, angle, round] = this.getParams();
 
         if (x     ) genPushUpdateValue(parse, this.nodeId, 'x',      x     .toValue());
         if (y     ) genPushUpdateValue(parse, this.nodeId, 'y',      y     .toValue());
@@ -21075,6 +21107,18 @@ extends GShapeBase
 
 
         this.valid = true;
+    }
+
+
+
+    getParams()
+    {
+        return [this.x      ? this.x      : this.input && !isEmpty(this.input.objects) ? this.input.x      : null,
+                this.y      ? this.y      : this.input && !isEmpty(this.input.objects) ? this.input.y      : null,
+                this.width  ? this.width  : this.input && !isEmpty(this.input.objects) ? this.input.width  : null,
+                this.height ? this.height : this.input && !isEmpty(this.input.objects) ? this.input.height : null,
+                this.angle  ? this.angle  : this.input && !isEmpty(this.input.objects) ? this.input.angle  : null,
+                this.round  ? this.round  : this.input && !isEmpty(this.input.objects) ? this.input.round  : null];
     }
 
 
@@ -21111,6 +21155,18 @@ extends GShapeBase
 
         
         super.evalObjects();
+    }
+
+
+
+    isValid()
+    {
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid();
     }
 }
 
@@ -21666,6 +21722,14 @@ extends GShapeBase
 
 
 
+    getParams()
+    {
+        return [this.color   ? this.color   : this.input ? this.input.color   : null,
+                this.opacity ? this.opacity : this.input ? this.input.opacity : null];
+    }
+
+
+
     evalObjects()
     {
         const [color, opacity] = this.getParams();
@@ -21693,14 +21757,6 @@ extends GShapeBase
 
         
         super.evalObjects();
-    }
-
-
-
-    getParams()
-    {
-        return [this.color   ? this.color   : this.input ? this.input.color   : null,
-                this.opacity ? this.opacity : this.input ? this.input.opacity : null];
     }
 
 
@@ -21777,6 +21833,10 @@ extends GShapeBase
         {
             this.input.eval(parse);
             this.objects = this.input.objects;
+
+            while (  !STROKE_TYPES.includes(this.input.type)
+                   && this.input.input)
+                this.input = this.input.input;
         }
 
 
@@ -21795,6 +21855,17 @@ extends GShapeBase
 
 
         this.valid = true;
+    }
+
+
+
+    getParams()
+    {
+        return [this.fill,
+                this.weight ? this.weight : this.input ? this.input.weight : null,
+                this.fit    ? this.fit    : this.input ? this.input.fit    : null,
+                this.join   ? this.join   : this.input ? this.input.join   : null,
+                this.miter  ? this.miter  : this.input ? this.input.miter  : null];
     }
 
 
@@ -21847,17 +21918,6 @@ extends GShapeBase
 
         
         super.evalObjects();
-    }
-
-
-
-    getParams()
-    {
-        return [this.fill   ? this.fill   : this.input ? this.input.fill   : null,
-                this.weight ? this.weight : this.input ? this.input.weight : null,
-                this.fit    ? this.fit    : this.input ? this.input.fit    : null,
-                this.join   ? this.join   : this.input ? this.input.join   : null,
-                this.miter  ? this.miter  : this.input ? this.input.miter  : null];
     }
 
 
@@ -23146,7 +23206,7 @@ function initNumberControlEvents(control)
 
             if (    graphView.tempConn.output
                 &&  control.param.input
-                &&  control.param.input.types.includes(graphView.tempConn.output.type)
+                &&  control.param.input.accepts(graphView.tempConn.output)
                 && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 && (  !control.param.input.connected // not already connected to this input
                     || control.param.input.connectedOutput != graphView.tempConn.output
@@ -23165,7 +23225,7 @@ function initNumberControlEvents(control)
             }
             else if ( graphView.tempConn.input
                   &&  control.param.output
-                  &&  graphView.tempConn.input.types.includes(control.param.output.type)
+                  &&  graphView.tempConn.input.accepts(control.param.output)
                   && !control.param.node.isOrFollows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = control.param.output;
@@ -24476,7 +24536,7 @@ function initColorControlEvents(control)
 
             if (    graphView.tempConn.output
                 &&  control.param.input
-                &&  control.param.input.types.includes(graphView.tempConn.output.type)
+                &&  control.param.input.accepts(graphView.tempConn.output)
                 && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 && (  !control.param.input.connected // not already connected to this input
                     || control.param.input.connectedOutput != graphView.tempConn.output
@@ -24495,7 +24555,7 @@ function initColorControlEvents(control)
             }
             else if ( graphView.tempConn.input
                   &&  control.param.output
-                  &&  graphView.tempConn.input.types.includes(control.param.output.type)
+                  &&  graphView.tempConn.input.accepts(control.param.output)
                   && !control.param.node.isOrFollows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = control.param.output;
@@ -27293,7 +27353,7 @@ graphView.endConnection = pointerId =>
         output.connecting = false;
         
         if (   input
-            && input.types.includes(output.type)) // TO INPUT
+            && input.accepts(output)) // TO INPUT
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex)
@@ -27332,7 +27392,7 @@ graphView.endConnection = pointerId =>
         input.connecting = false;
         
         if (   output
-            && input.types.includes(output.type)) // TO OUTPUT
+            && input.accepts(output)) // TO OUTPUT
             actionManager.do(new ConnectAction(output, input));
 
         graphView.cancelConnection(pointerId);
@@ -27786,9 +27846,9 @@ extends EventTarget
 
 
 
-    initOutput(type, toString)
+    initOutput(types, toString)
     {
-        this.output = new Output(type, toString);
+        this.output = new Output(types, toString);
         this.output._param = this;
 
         this.output.control.style.float     = 'right';
@@ -28102,7 +28162,7 @@ extends NumberParamBase
 
        
         if (hasInput)  this.initInput(NUMBER_TYPES);
-        if (hasOutput) this.initOutput(NUMBER_VALUE, this.output_genRequest);
+        if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest);
 
 
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true, false, true); });
@@ -28206,7 +28266,7 @@ extends NumberParamBase
 
 
         if (hasInput)  this.initInput(NUMBER_TYPES);
-        if (hasOutput) this.initOutput(NUMBER_VALUE, this.output_genRequest);
+        if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest);
 
             
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });
@@ -28302,7 +28362,7 @@ extends Parameter
 
        
         if (hasInput)  this.initInput(COLOR_TYPES);
-        if (hasOutput) this.initOutput(COLOR_VALUE, this.output_genRequest);
+        if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest);
 
 
         this.control.addEventListener('confirm', () => 
@@ -28638,7 +28698,7 @@ extends Parameter
 
        
         if (hasInput)  this.initInput([...FILL_TYPES, ...COLOR_TYPES]);
-        if (hasOutput) this.initOutput(FILL_VALUE, this.output_genRequest);
+        if (hasOutput) this.initOutput([FILL_VALUE], this.output_genRequest);
 
 
         this.colorControl.addEventListener('confirm', () =>
@@ -28730,7 +28790,7 @@ extends Parameter
         {
             request.push(...pushInputOrParam(this.input, gen));
 
-            if (COLOR_TYPES.includes(this.input.connectedOutput.type))
+            if (arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types))
             {
                 request.push(
                     NUMBER_VALUE, 
@@ -28872,7 +28932,7 @@ extends Parameter
                 enable 
             || !this.input 
             || !this.input.connected 
-            ||  COLOR_TYPES.includes(this.input.connectedOutput.type);
+            ||  arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types);
 
         enableElementText(this.  colorControl, enable);
         enableElementText(this.opacityControl, opEnable);
@@ -29042,7 +29102,7 @@ extends Parameter
 
        
         if (hasInput)  this.initInput([...STROKE_TYPES, ...FILL_TYPES, ...COLOR_TYPES]);
-        if (hasOutput) this.initOutput(STROKE_VALUE, this.output_genRequest);
+        if (hasOutput) this.initOutput([STROKE_VALUE], this.output_genRequest);
 
 
         this.control.addEventListener('confirm', () => 
@@ -29134,8 +29194,8 @@ extends Parameter
         {
             request.push(...pushInputOrParam(this.input, gen));
 
-            if (    FILL_TYPES.includes(this.input.connectedOutput.type)
-                || COLOR_TYPES.includes(this.input.connectedOutput.type))
+            if (   arraysIntersect( FILL_TYPES, this.input.connectedOutput.types)
+                || arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types))
             {
                 const val = noNaN(this.control.value,      1);
                 const dec = noNaN(this.control.displayDec, 0);
@@ -29272,8 +29332,8 @@ extends Parameter
                 enable 
             || !this.input 
             || !this.input.connected 
-            ||   FILL_TYPES.includes(this.input.connectedOutput.type)
-            ||  COLOR_TYPES.includes(this.input.connectedOutput.type);
+            ||  arraysIntersect( FILL_TYPES, this.input.connectedOutput.types)
+            ||  arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types);
 
         enableElementText(this.textControl, enable);
         enableElementText(this.control,     opEnable);
@@ -30256,7 +30316,7 @@ extends EventTarget
 
             if (   graphView.tempConn
                 && graphView.tempConn.output
-                && this.types.includes(graphView.tempConn.output.type)
+                && this.accepts(graphView.tempConn.output)
                 && (  !this.connected
                     || this.connectedOutput != graphView.tempConn.output
                     || this == savedInput))
@@ -30311,7 +30371,7 @@ extends EventTarget
                  && tc.input)
             && !(   tc
                  && tc.output
-                 && (  !this.types.includes(tc.output.type)
+                 && (  !this.accepts(tc.output)
                      || tc.output.node.isOrFollows(this.node)));
 
         const color =
@@ -30336,7 +30396,7 @@ extends EventTarget
                    ||    graphView.overInput == this
                       && !tc.input)
                && !(    tc.output
-                    && !this.types.includes(tc.output.type));
+                    && !this.accepts(tc.output));
 
         this.control.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -30364,7 +30424,7 @@ extends EventTarget
                : rgba2style(toRgba(this.connectedOutput.wireColor)))
             : (   tc
                && tc.output
-               && this.types.includes(tc.output.type)
+               && this.accepts(tc.output)
                && graphView.overInput == this
                ? rgba2style(toRgba(tc.output.wireColor))
                : (   tc
@@ -30382,14 +30442,21 @@ extends EventTarget
 
         show(this.wireBall, isConnected); 
     }
+
+
+
+    accepts(output)
+    {
+        return this.types.find(t => output.types.includes(t));
+    }
 }
 
 
 class Output
 {
-    _type;     
-    get type() { return this._type; }
+    types = []; // an output can have multiple types
 
+    
     _node  = null;  get node () { return this._node;  }
     _param = null;  get param() { return this._param; }
     
@@ -30442,7 +30509,7 @@ class Output
 
     constructor(type, genRequest)
     {
-        this._type           = type;
+        this.types           = [...type];
         this.genRequest      = genRequest;
 
         this.control         = createDiv('output');
@@ -30729,7 +30796,7 @@ class Connection
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && this.input.types.includes(graphView.overOutput.type)) 
+                    && this.input.accepts(graphView.overOutput)) 
                     return graphView.overOutput.wireColor;
                 else
                     return this.input.wireColor;
@@ -31082,9 +31149,9 @@ class Operator
 
 
 
-    getAutoInput(outType)
+    getAutoInput(outTypes)
     {
-        const inputs = this.inputs.filter(i => i.types.includes(outType));
+        const inputs = this.inputs.filter(i => i.types.find(_i => outTypes.includes(_i)));
 
         
         if (graphView.overInput)
@@ -31699,7 +31766,7 @@ function pushInputOrParam(input, gen)
         pushUnique(gen.paramNodes, input.connectedOutput.node);
 
         return[ PARAM,
-                input.connectedOutput.type,
+                input.connectedOutput.types[0],
                 input.connectedOutput.node.id,
                 input.connectedOutput.param.id ];
     }
@@ -32074,7 +32141,7 @@ function createNodeHeader(node)
                 }
                 else
                 {
-                    const input = node.getAutoInput(tempConn.output.type);
+                    const input = node.getAutoInput(tempConn.output.types);
 
                     if ( !input)
                         // ||    input.connected
@@ -32670,7 +32737,7 @@ extends OperatorBase
         super(NUMBER, 'num', 70);
 
         this.addInput (new Input ([NUMBER], this.input_getValuesForUndo));
-        this.addOutput(new Output(NUMBER, this.output_genRequest));
+        this.addOutput(new Output([NUMBER], this.output_genRequest));
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
         
@@ -32750,7 +32817,7 @@ extends OperatorBase
         super(NUMBER_LIMITS, 'lim', 70);
 
         this.addInput (new Input ([NUMBER]));
-        this.addOutput(new Output(NUMBER, this.output_genRequest));
+        this.addOutput(new Output([NUMBER], this.output_genRequest));
 
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
@@ -32828,7 +32895,7 @@ extends OperatorBase
 
 
         this.addNewInput();
-        this.addOutput(new Output(NUMBER, this.output_genRequest));
+        this.addOutput(new Output([NUMBER], this.output_genRequest));
         
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
@@ -33148,7 +33215,7 @@ extends OperatorBase
 
 
         this.addNewInput();
-        this.addOutput(new Output(NUMBER, this.output_genRequest));
+        this.addOutput(new Output([NUMBER], this.output_genRequest));
         
         this.addParam(this.paramOperation = new SelectParam('op',    '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
         this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
@@ -33364,7 +33431,7 @@ extends OperatorBase
         this.addInput(new Input([NUMBER]));
         this.addInput(new Input([NUMBER]));
 
-        this.addOutput(new Output(NUMBER, this.output_genRequest));
+        this.addOutput(new Output([NUMBER], this.output_genRequest));
 
         this.addParam(this.paramValue  = new NumberParam('value', '', false, false, false, 0));
         this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
@@ -33629,7 +33696,7 @@ extends OpColorBase
 
 
         this.addInput(new Input(COLOR_TYPES, this.input_getValuesForUndo));
-        this.addOutput(new Output(COLOR, this.output_genRequest));
+        this.addOutput(new Output([COLOR], this.output_genRequest));
 
         
         this.addParam(this.paramSpace = new SelectParam('space', '', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
@@ -35565,7 +35632,7 @@ extends OpColorBase
 
 
         this.addInput(new Input(COLOR_TYPES));
-        this.addOutput(new Output(COLOR, this.output_genRequest));
+        this.addOutput(new Output([COLOR], this.output_genRequest));
 
 
         this.alwaysLoadParams = true;
@@ -36139,7 +36206,7 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES));
         this.addInput(new Input(COLOR_TYPES));
 
-        this.addOutput(new Output(COLOR, this.output_genRequest));
+        this.addOutput(new Output([COLOR], this.output_genRequest));
 
 
         this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
@@ -36292,7 +36359,7 @@ extends OpColorBase
 
 
         this.addInput(new Input(COLOR_TYPES));
-        this.addOutput(new Output(COLOR, this.output_genRequest));
+        this.addOutput(new Output([COLOR], this.output_genRequest));
 
 
         this.addParam(this.paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0, 0.02));
@@ -36389,7 +36456,7 @@ extends OpColorBase
     get inputIsShape() 
     {
         return this.inputs[0].connected
-            && SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type);
+            && arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types);
     }
     
     
@@ -36407,11 +36474,11 @@ extends OpColorBase
 
 
         this.addInput (new Input([...FILL_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
-        this.addOutput(new Output(FILL, this.output_genRequest));
+        this.addOutput(new Output([FILL], this.output_genRequest));
 
 
-        this.inputs[0].addEventListener('connect',    () =>   this.outputs[0]._type = this.inputs[0].connectedOutput.type);
-        this.inputs[0].addEventListener('disconnect', () => { this.outputs[0]._type = FILL; uiDeleteObjects([this.id]); });
+        this.inputs[0].addEventListener('connect',    () =>   this.outputs[0].types.push(...this.inputs[0].connectedOutput.types));
+        this.inputs[0].addEventListener('disconnect', () => { this.outputs[0].types = [FILL]; uiDeleteObjects([this.id]); });
 
 
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
@@ -36463,7 +36530,7 @@ extends OpColorBase
                 if (      param.input 
                        && param.input.connected
                        && param.canShow()
-                    || SHAPE_TYPES.includes(input.connectedOutput.type)) 
+                    || arraysIntersect(SHAPE_TYPES, input.connectedOutput.types)) 
                     paramIds.push(param.id);
         }
         else
@@ -36636,7 +36703,7 @@ extends OpColorBase
     {
         const enable = 
                !this.inputs[0].connected
-            ||  SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type);
+            ||  arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types);
 
         this.paramColor  .enableControlText(enable);
         this.paramOpacity.enableControlText(enable);
@@ -36663,7 +36730,7 @@ extends OpColorBase
     get inputIsShape() 
     {
         return this.inputs[0].connected
-            && SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type);
+            && arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types);
     }
 
 
@@ -36677,10 +36744,10 @@ extends OpColorBase
         this.inner.appendChild(this.colorBack);
 
         this.addInput (new Input([...STROKE_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
-        this.addOutput(new Output(STROKE, this.output_genRequest));
+        this.addOutput(new Output([STROKE], this.output_genRequest));
 
-        this.inputs[0].addEventListener('connect',    () =>   this.outputs[0]._type = this.inputs[0].connectedOutput.type);
-        this.inputs[0].addEventListener('disconnect', () => { this.outputs[0]._type = FILL; uiDeleteObjects([this.id]); });
+        this.inputs[0].addEventListener('connect',    () =>   this.outputs[0].types.push(...this.inputs[0].connectedOutput.types));
+        this.inputs[0].addEventListener('disconnect', () => { this.outputs[0].types = [STROKE]; uiDeleteObjects([this.id]); });
 
 
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
@@ -36749,7 +36816,7 @@ extends OpColorBase
                 if (      param.input 
                        && param.input.connected
                        && param.canShow() 
-                    || SHAPE_TYPES.includes(input.connectedOutput.type)) 
+                    || arraysIntersect(SHAPE_TYPES, input.connectedOutput.types)) 
                     paramIds.push(param.id);
         }
         else
@@ -36856,7 +36923,8 @@ extends OpColorBase
  
         const enable = 
                !this.inputs[0].connected
-            || !SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type);
+            || !arraysIntersect( SHAPE_TYPES, this.inputs[0].connectedOutput.types)
+            || !arraysIntersect(STROKE_TYPES, this.inputs[0].connectedOutput.types);
 
         this.paramFill  .enableControlText(enableFill);
         this.paramWeight.enableControlText(enable);
@@ -36899,7 +36967,7 @@ extends OpColorBase
 
 
         this.addInput(new Input([COLOR_STOP, COLOR_STOP_VALUE]));
-        this.addOutput(new Output(COLOR_STOP, this.output_genRequest));
+        this.addOutput(new Output([COLOR_STOP], this.output_genRequest));
 
         this.addParam(this.paramFill     = new FillParam ('fill',     '',         false, true, true));
         this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 100, 0, 100));
@@ -36990,7 +37058,7 @@ extends OperatorBase
 
 
         this.addNewInput();
-        this.addOutput(new Output(GRADIENT, this.output_genRequest));
+        this.addOutput(new Output([GRADIENT], this.output_genRequest));
         
 
         this.addParam(this.paramType   = new SelectParam('type', '', false, true, true, ['linear', 'radial', 'angular', 'diamond'], 0));
@@ -37162,7 +37230,7 @@ extends OperatorBase
 
 
         this.addInput (new Input([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
-        this.addOutput(new Output(RECTANGLE, this.output_genRequest));
+        this.addOutput(new Output([RECTANGLE], this.output_genRequest));
 
         // this.initContentInput(this.inputs[0]);
 
@@ -37305,7 +37373,7 @@ extends OpShapeBase
         super(LINE, 'line', 90);
 
         this.addInput (new Input ([LINE, LINE_VALUE]));
-        this.addOutput(new Output(LINE, this.output_genRequest));
+        this.addOutput(new Output([LINE], this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
@@ -37409,7 +37477,7 @@ extends OpShapeBase
         super(ELLIPSE, 'elps', 90);
 
         this.addInput (new Input ([ELLIPSE, ELLIPSE_VALUE]));
-        this.addOutput(new Output(ELLIPSE, this.output_genRequest));
+        this.addOutput(new Output([ELLIPSE], this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
@@ -37597,7 +37665,7 @@ extends OpShapeBase
         super(POLYGON, 'poly', 90);
 
         this.addInput (new Input ([POLYGON, POLYGON_VALUE]));
-        this.addOutput(new Output(POLYGON, this.output_genRequest));
+        this.addOutput(new Output([POLYGON], this.output_genRequest));
 
         this.addParam(this.paramX       = new NumberParam('x',       'x',       true, true, true,   0));
         this.addParam(this.paramY       = new NumberParam('y',       'y',       true, true, true,   0));
@@ -37813,7 +37881,7 @@ extends OpShapeBase
         super(STAR, 'star', 90);
 
         this.addInput (new Input ([STAR, STAR_VALUE]));
-        this.addOutput(new Output(STAR, this.output_genRequest));
+        this.addOutput(new Output([STAR], this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
@@ -38033,7 +38101,7 @@ extends OpShapeBase
 
 
 //         this.addInput(new Input(SHAPE_TYPES));
-//         this.addOutput(new Output(COLOR_STROKE, this.output_genRequest));
+//         this.addOutput(new Output([COLOR_STROKE], this.output_genRequest));
 
 //         this.addParam(this.paramColor        = new ColorParam ('color',        '',        false, true, true));
 //         this.addParam(this.paramOpacity      = new NumberParam('opacity',      'opacity', true,  true, true, 100, 0, 100));

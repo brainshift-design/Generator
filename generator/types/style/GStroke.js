@@ -53,6 +53,10 @@ extends GShapeBase
         {
             this.input.eval(parse);
             this.objects = this.input.objects;
+
+            while (  !STROKE_TYPES.includes(this.input.type)
+                   && this.input.input)
+                this.input = this.input.input;
         }
 
 
@@ -71,6 +75,17 @@ extends GShapeBase
 
 
         this.valid = true;
+    }
+
+
+
+    getParams()
+    {
+        return [this.fill,
+                this.weight ? this.weight : this.input ? this.input.weight : null,
+                this.fit    ? this.fit    : this.input ? this.input.fit    : null,
+                this.join   ? this.join   : this.input ? this.input.join   : null,
+                this.miter  ? this.miter  : this.input ? this.input.miter  : null];
     }
 
 
@@ -123,17 +138,6 @@ extends GShapeBase
 
         
         super.evalObjects();
-    }
-
-
-
-    getParams()
-    {
-        return [this.fill   ? this.fill   : this.input ? this.input.fill   : null,
-                this.weight ? this.weight : this.input ? this.input.weight : null,
-                this.fit    ? this.fit    : this.input ? this.input.fit    : null,
-                this.join   ? this.join   : this.input ? this.input.join   : null,
-                this.miter  ? this.miter  : this.input ? this.input.miter  : null];
     }
 
 

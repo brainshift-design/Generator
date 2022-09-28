@@ -18,7 +18,7 @@ extends OperatorBase
 
 
         this.addNewInput();
-        this.addOutput(new Output(NUMBER, this.output_genRequest));
+        this.addOutput(new Output([NUMBER], this.output_genRequest));
         
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));

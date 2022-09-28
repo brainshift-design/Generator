@@ -144,9 +144,9 @@ class Operator
 
 
 
-    getAutoInput(outType)
+    getAutoInput(outTypes)
     {
-        const inputs = this.inputs.filter(i => i.types.includes(outType));
+        const inputs = this.inputs.filter(i => i.types.find(_i => outTypes.includes(_i)));
 
         
         if (graphView.overInput)
@@ -761,7 +761,7 @@ function pushInputOrParam(input, gen)
         pushUnique(gen.paramNodes, input.connectedOutput.node);
 
         return[ PARAM,
-                input.connectedOutput.type,
+                input.connectedOutput.types[0],
                 input.connectedOutput.node.id,
                 input.connectedOutput.param.id ];
     }
