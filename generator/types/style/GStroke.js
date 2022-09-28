@@ -1,6 +1,8 @@
 class GStroke
-extends GOperator
+extends GShapeBase
 {
+    input  = null;
+
     fill   = null;
     weight = null;
     fit    = null;
@@ -36,46 +38,124 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        if (this.fill  ) this.fill  .eval(parse);
+        if (this.weight) this.weight.eval(parse);
+        if (this.fit   ) this.fit   .eval(parse);
+        if (this.join  ) this.join  .eval(parse);
+        if (this.miter ) this.miter .eval(parse);            
+
+
+        if (this.input)
         {
-            const fill   = this.fill   ? evalFillValue(this.fill, parse) : null;
-            const weight = this.weight ? this.weight.eval(parse).copy()  : null;
-            const fit    = this.fit    ? this.fit   .eval(parse).copy()  : null;
-            const join   = this.join   ? this.join  .eval(parse).copy()  : null;
-            const miter  = this.miter  ? this.miter .eval(parse).copy()  : null;            
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-
-                console.assert(
-                    this.result.type == STROKE_VALUE,
-                    'GStroke this.result.type must be STROKE_VALUE');
-
-                if (this.fill  ) this.result.fill   = fill;
-                if (this.weight) this.result.weight = weight;
-                if (this.fit   ) this.result.fit    = fit;
-                if (this.join  ) this.result.join   = join;
-                if (this.miter ) this.result.miter  = miter;
-            }
-            else
-            {
-                this.result = new StrokeValue(fill, weight, fit, join, miter);
-            }
-        
-
-            genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
-            genPushUpdateValue(parse, this.nodeId, 'weight', this.result.weight);
-            genPushUpdateValue(parse, this.nodeId, 'fit',    this.result.fit   );
-            genPushUpdateValue(parse, this.nodeId, 'join',   this.result.join  );
-            genPushUpdateValue(parse, this.nodeId, 'miter',  this.result.miter );
-
-
-            this.result.valid = true;
-            this.valid        = true;
+            this.input.eval(parse);
+            this.objects = this.input.objects;
         }
 
 
-        return this.result;
+        const [fill, weight, fit, join, miter] = this.getParams();
+
+        if (fill  ) genPushUpdateValue(parse, this.nodeId, 'fill',   fill  .toValue());
+        if (weight) genPushUpdateValue(parse, this.nodeId, 'weight', weight.toValue());
+        if (fit   ) genPushUpdateValue(parse, this.nodeId, 'fit',    fit   .toValue());
+        if (join  ) genPushUpdateValue(parse, this.nodeId, 'join',   join  .toValue());
+        if (miter ) genPushUpdateValue(parse, this.nodeId, 'miter',  miter .toValue());
+
+
+        if (   this.options.active
+            || this.options.beforeActive)
+            this.evalObjects();
+
+
+        this.valid = true;
+    }
+
+
+
+    evalObjects()
+    {
+        const [fill, weight, fit, join, miter] = this.getParams();
+        
+        if (   !fill
+            || !weight
+            || !fit
+            || !join
+            || !miter)
+            return;
+
+
+        const rgb = scaleRgb(fill.color.toValue().toRgb());
+
+        for (const obj of this.objects)
+        {
+            if (!obj.strokes) 
+                obj.strokes = [];
+
+            obj.strokes.push([
+                'SOLID', 
+                        rgb[0]
+                + ' ' + rgb[1]
+                + ' ' + rgb[2]
+                + ' ' + fill.opacity.toValue().value]);
+
+
+            obj.strokeWeight = weight.toValue().value;
+
+            switch (fit.toValue().value)
+            {
+                case 0: obj.strokeAlign = 'INSIDE';  break;
+                case 1: obj.strokeAlign = 'CENTER';  break;
+                case 2: obj.strokeAlign = 'OUTSIDE'; break;
+            }
+            
+            switch (join.toValue().value)
+            {
+                case 0: obj.strokeJoin = 'MITER'; break;
+                case 1: obj.strokeJoin = 'BEVEL'; break;
+                case 2: obj.strokeJoin = 'ROUND'; break;
+            }
+
+            obj.strokeMiterLimit = miter.toValue().value;
+        }
+
+        
+        super.evalObjects();
+    }
+
+
+
+    getParams()
+    {
+        return [this.fill   ? this.fill   : this.input ? this.input.fill   : null,
+                this.weight ? this.weight : this.input ? this.input.weight : null,
+                this.fit    ? this.fit    : this.input ? this.input.fit    : null,
+                this.join   ? this.join   : this.input ? this.input.join   : null,
+                this.miter  ? this.miter  : this.input ? this.input.miter  : null];
+    }
+
+
+
+    toValue()
+    {
+        return new StrokeValue(
+            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
+            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
+            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
+            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
+            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+    }
+
+
+
+    isValid()
+    {
+        return this.fill  .isValid()
+            && this.weight.isValid()
+            && this.fit   .isValid()
+            && this.join  .isValid()
+            && this.miter .isValid();
     }
 }

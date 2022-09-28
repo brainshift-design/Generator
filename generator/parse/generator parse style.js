@@ -34,10 +34,11 @@ function genParseFill(parse)
     parse.nTab++;
 
 
-    if (   parse.next == FILL
-        || parse.next == FILL_VALUE
+    if (    FILL_TYPES.includes(parse.next)
         || SHAPE_TYPES.includes(parse.next))
         fill.input = genParse(parse);
+    // ||    parse.next == PARAM
+    //    && FILL_TYPES.includes(parse.afterNext))
 
 
     const nParamIds = genParseParamCount(parse);
@@ -55,6 +56,7 @@ function genParseFill(parse)
         case 'color'  : fill.color   = genParse(parse); break;
         case 'opacity': fill.opacity = genParse(parse); break;
         }
+
 
         parse.nTab--;
     }
@@ -118,24 +120,25 @@ function genParseStroke(parse)
     parse.nTab++;
 
 
-    let paramIds;
-
     if (   STROKE_TYPES.includes(parse.next)
-        ||    parse.next == PARAM
-           && STROKE_TYPES.includes(parse.afterNext))
-    {
+        ||   FILL_TYPES.includes(parse.next)
+        ||  SHAPE_TYPES.includes(parse.next))
         stroke.input = genParse(parse);
-        paramIds     = parse.move().split(',');
-    }
-    else
-        paramIds = ['fill', 'weight', 'fit', 'join', 'miter'];
+        //   parse.next == PARAM
+        //   && STROKE_TYPES.includes(parse.afterNext))
 
-        
-    for (const id of paramIds)
+
+    const nParamIds = genParseParamCount(parse);
+       
+    for (let i = 0; i < nParamIds; i++)
     {
-        parse.inParam = false;
+        const paramId = genParseParamId(parse);
 
-        switch (id)
+        parse.nTab++;
+        parse.inParam = true;
+
+
+        switch (paramId)
         {
         case 'fill':   stroke.fill   = genParseFillParam(parse); break;
         case 'weight': stroke.weight = genParse(parse);          break;
@@ -143,9 +146,13 @@ function genParseStroke(parse)
         case 'join':   stroke.join   = genParse(parse);          break;
         case 'miter':  stroke.miter  = genParse(parse);          break;
         }
+
+
+        parse.nTab--;
     }
 
     
+    parse.inParam = false;
     parse.nTab--;
 
 

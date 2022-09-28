@@ -919,7 +919,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
 
     uiPostMessageToFigma({
-        cmd:          'figUpdate',
+        cmd:          'figUpdateObjects',
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
         nodeIds:       nodes.map(n => n.id),

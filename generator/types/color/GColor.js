@@ -177,39 +177,4 @@ extends GOperator
             this.c2    ? this.c2   .toValue() : this.input.c2   .toValue(),
             this.c3    ? this.c3   .toValue() : this.input.c3   .toValue());
     }
-
-
-
-    // toDataColor()
-    // {
-    //     if (!this.isValid())
-    //         return dataColor_NaN;
-
-    //     return makeDataColor(
-    //         this.space,
-    //         this.c1,
-    //         this.c2,
-    //         this.c3);
-    // }
-
-
-
-    // toRgb()
-    // {
-    //     return dataColor2rgb(this.toDataColor());
-    // }
-
-
-
-    // toDisplayString()
-    // {
-    //     // console.log('this.space =', this.space);
-    //     // console.log('this.c1 =', this.c1);
-    //     // console.log('this.c2 =', this.c2);
-    //     // console.log('this.c3 =', this.c3);
-    //     return      this.space.toDisplayString()
-    //         + ' ' + this.c1   .toDisplayString()
-    //         + ' ' + this.c2   .toDisplayString()
-    //         + ' ' + this.c3   .toDisplayString();
-    // }
 }

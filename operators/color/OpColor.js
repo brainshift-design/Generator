@@ -243,9 +243,6 @@ extends OpColorBase
 
 
         this.prevSpace = colorSpace(space.value);
-
-
-        super.updateValues(updateParamId, paramIds, values);
     }
 
 

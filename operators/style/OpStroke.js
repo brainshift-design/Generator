@@ -11,6 +11,15 @@ extends OpColorBase
     colorBack;
 
 
+    
+    get inputIsShape() 
+    {
+        return this.inputs[0].connected
+            && SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type);
+    }
+
+
+
     constructor()
     {
         super(STROKE, 'stroke');
@@ -19,10 +28,11 @@ extends OpColorBase
         this.colorBack = createDiv('colorBack');
         this.inner.appendChild(this.colorBack);
 
-        this.addInput (new Input(STROKE_TYPES, this.input_getValuesForUndo));
+        this.addInput (new Input([...STROKE_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
         this.addOutput(new Output(STROKE, this.output_genRequest));
 
-        // this.initContentInput(this.inputs[0]);
+        this.inputs[0].addEventListener('connect',    () =>   this.outputs[0]._type = this.inputs[0].connectedOutput.type);
+        this.inputs[0].addEventListener('disconnect', () => { this.outputs[0]._type = FILL; uiDeleteObjects([this.id]); });
 
 
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
@@ -32,7 +42,7 @@ extends OpColorBase
         this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
 
         this.paramMiter.control.setSuffix('°', true);
-        this.paramMiter.show = () => this.paramJoin.value == 0;
+        this.paramMiter.canShow = () => this.paramJoin.value == 0;
 
 
         this.checkers = createDiv('nodeHeaderCheckers');
@@ -78,31 +88,34 @@ extends OpColorBase
         if (ignore) return request;
 
         
-        const input = this.node.inputs[0];
-
         const paramIds = [];
+
+        
+        const input = this.node.inputs[0];
 
         if (input.connected)
         {
             request.push(...pushInputOrParam(input, gen));
 
             for (const param of this.node.params)
-                if (   param.input 
-                    && param.input.connected) 
+                if (      param.input 
+                       && param.input.connected
+                       && param.canShow() 
+                    || SHAPE_TYPES.includes(input.connectedOutput.type)) 
                     paramIds.push(param.id);
-
-            request.push(paramIds.join(','));
-
-            for (const param of this.node.params)
-                if (   param.input 
-                    && param.input.connected) 
-                    request.push(...param.genRequest(gen))
         }
         else
         {
             for (const param of this.node.params)
-                request.push(...param.genRequest(gen))
+                if (param.canShow())
+                    paramIds.push(param.id);
         }
+
+
+        request.push(paramIds.length);
+
+        for (const paramId of paramIds)
+            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
 
 
         gen.scope.pop();
@@ -115,25 +128,12 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const fill   = values[paramIds.findIndex(id => id == 'fill'  )];
-        const weight = values[paramIds.findIndex(id => id == 'weight')];
-        const fit    = values[paramIds.findIndex(id => id == 'fit'   )];
-        const join   = values[paramIds.findIndex(id => id == 'join'  )];
-        const miter  = values[paramIds.findIndex(id => id == 'miter' )];
-
-
-        this.paramFill  .setValue(fill,   false, true, false);
-        this.paramWeight.setValue(weight, false, true, false);
-        this.paramFit   .setValue(fit,    false, true, false);
-        this.paramJoin  .setValue(join,   false, true, false);
-        this.paramMiter .setValue(miter,  false, true, false);
-
+        const fill = values[paramIds.findIndex(id => id == 'fill')];
         
         this._color = 
             fill.isValid()
             ? fill.color.toDataColor()
             : dataColor_NaN;
-
 
         super.updateValues(updateParamId, paramIds, values);
     }
@@ -145,9 +145,18 @@ extends OpColorBase
         //console.log(this.id + '.OpStroke.updateHeader()');
 
 
-        const colors = this.getHeaderColors();
+        const colors =
+              this.inputIsShape
+            ? OperatorBase.prototype.getHeaderColors.call(this)
+            : this.getHeaderColors();
 
-        this.colorBack.style.background = 
+
+        this.header.style.background = 
+            !rgbIsNaN(colors.back)
+            ? rgba2style(colors.back) 
+            : 'transparent';
+
+            this.colorBack.style.background = 
             rgbIsOk(colors.back)
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
@@ -175,22 +184,17 @@ extends OpColorBase
             : 'transparent';
 
 
-        const noColor = 
-            isDarkMode()
-            ? rgbNoColorDark
-            : rgbNoColorLight;
-
-        this.inputs[0] .wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
         this.inputs[0] .colorLight = 
-        this.inputs[0] .colorDark  = rgb_a(colors.input, 0.2);
+        this.inputs[0] .colorDark  = colors.input;
+        this.inputs[0] .wireColor  = colors.wire;
 
-        this.outputs[0].wireColor  = !rgbIsNaN(colors.back) ? colors.back : noColor;
         this.outputs[0].colorLight =
-        this.outputs[0].colorDark  = rgb_a(colors.output, 0.2);
+        this.outputs[0].colorDark  = colors.output;
+        this.outputs[0].wireColor  = colors.wire;
 
 
         this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colors.back);//, 45);
+        this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
 
 
         Operator.prototype.updateHeader.call(this);
@@ -198,10 +202,34 @@ extends OpColorBase
 
 
 
+    updateParams()
+    {
+        const enableFill = !this.paramFill.input.connected;
+ 
+        const enable = 
+               !this.inputs[0].connected
+            || !SHAPE_TYPES.includes(this.inputs[0].connectedOutput.type);
+
+        this.paramFill  .enableControlText(enableFill);
+        this.paramWeight.enableControlText(enable);
+        this.paramFit   .enableControlText(enable);
+        this.paramJoin  .enableControlText(enable);
+        this.paramMiter .enableControlText(enable);
+
+        super.updateParams();
+    }
+
+    
+
     getHeaderColors(options = {})
     {
-        const colors = super.getHeaderColors();
+        if (    this.inputIsShape
+            && !options.color)
+            return Operator.prototype.getHeaderColors.call(this);
  
+
+        const colors  = super.getHeaderColors();
+
         colors.back = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
         colors.text = getTextColorFromBackColor(colors.back, this.paramFill.value.opacity.value/100);
 

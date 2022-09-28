@@ -201,15 +201,13 @@ function logReqNode(node, parse) {
     parse.log += logReqNodeId(node);
 }
 const figObjectArrays = []; // {nodeId, [objects]}
-function figUpdate(msg) {
+function figUpdateObjects(msg) {
     if (msg.updateNodeId != NULL
         && msg.updateParamId != NULL) {
         const index = msg.nodeIds.indexOf(msg.updateNodeId);
         if (index > -1)
             figSaveNodes([msg.updateNodeId], [msg.nodeJson[index]]);
     }
-    // else
-    //     figSaveNodes(msg.nodeIds, msg.nodeJson);
     let curNodeId = NULL;
     let figObjects = null;
     for (const genObj of msg.objects) {
@@ -401,8 +399,8 @@ figma.ui.onmessage = msg => {
         case 'figRemoveSavedConnectionsToNode':
             figRemoveSavedConnectionsToNode(msg.nodeId);
             break;
-        case 'figUpdate':
-            figUpdate(msg);
+        case 'figUpdateObjects':
+            figUpdateObjects(msg);
             break;
         case 'figDeleteObjects':
             figDeleteObjectsFromNodeIds(msg.nodeIds);
@@ -603,49 +601,6 @@ function setObjectStrokes(obj, src) {
     else
         obj.strokes = [];
 }
-// function getObjectStrokes(objStrokes)
-// {
-//     const strokes = [];
-//     for (const stroke of objStrokes)
-//     {
-//         const c = stroke[1].split(' ');
-//         switch (stroke[0])
-//         {
-//             case FILL:
-//                 strokes.push(
-//                 {
-//                     type: 'SOLID', 
-//                     color: {
-//                         r: Math.min(Math.max(0, parseFloat(c[0])), 1), 
-//                         g: Math.min(Math.max(0, parseFloat(c[1])), 1), 
-//                         b: Math.min(Math.max(0, parseFloat(c[2])), 1) },
-//                     opacity: parseFloat(stroke[2])
-//                 });
-//                 break;
-//         }
-//     }
-//     return strokes;
-// }
-// function setNodeFill(node, fill)
-// {
-//     switch (node.type)
-//     {
-//         case 'RECTANGLE':
-//         case 'VECTOR':
-//         case 'LINE':
-//         case 'ELLIPSE':
-//         case 'POLYGON':
-//         case 'STAR':
-//         case 'TEXT':
-//         case 'BOOLEAN_OPERATION':
-//         {
-//             let n = node as typeof node;
-//             let f = clone(n.fills);
-//             f = fill;
-//             n.fills = f;
-//         }
-//     }
-// }
 function figLoadLocal(key) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield figma.clientStorage.getAsync(key);

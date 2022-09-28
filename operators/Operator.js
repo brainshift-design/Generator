@@ -234,7 +234,7 @@ class Operator
     updateParamDisplay() // must be called at the end of each final Op constructor
     {
         for (const param of this.params)
-            param.div.style.display = param.show() ? 'inline-block' : 'none';
+            param.div.style.display = param.canShow() ? 'inline-block' : 'none';
     }
 
 

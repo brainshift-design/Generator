@@ -32,14 +32,6 @@ extends GShapeBase
 
 
 
-    isValid()
-    {
-        return this.color  .isValid()
-            && this.opacity.isValid();
-    }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -57,8 +49,7 @@ extends GShapeBase
         }
 
 
-        const color   = this.color   ? this.color   : this.input ? this.input.color   : null;
-        const opacity = this.opacity ? this.opacity : this.input ? this.input.opacity : null;
+        const [color, opacity] = this.getParams();
 
         if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  .toValue());
         if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity.toValue());
@@ -76,8 +67,7 @@ extends GShapeBase
 
     evalObjects()
     {
-        const color   = this.color   ? this.color   : this.input ? this.input.color   : null;
-        const opacity = this.opacity ? this.opacity : this.input ? this.input.opacity : null;
+        const [color, opacity] = this.getParams();
 
         if (   !color
             || !opacity)
@@ -102,5 +92,30 @@ extends GShapeBase
 
         
         super.evalObjects();
+    }
+
+
+
+    getParams()
+    {
+        return [this.color   ? this.color   : this.input ? this.input.color   : null,
+                this.opacity ? this.opacity : this.input ? this.input.opacity : null];
+    }
+
+
+
+    toValue()
+    {
+        return new FillValue(
+            this.color   ? this.color  .toValue() : this.input.color  .toValue(),
+            this.opacity ? this.opacity.toValue() : this.input.opacity.toValue());
+    }
+
+
+
+    isValid()
+    {
+        return this.color  .isValid()
+            && this.opacity.isValid();
     }
 }

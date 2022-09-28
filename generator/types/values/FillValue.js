@@ -58,14 +58,6 @@ extends GValue
 
 
 
-    isValid()
-    {
-        return this.color  .isValid()
-            && this.opacity.isValid();
-    }
-
-
-
     equals(fill)
     {
         return fill
@@ -82,6 +74,13 @@ extends GValue
 
 
 
+    toValue()
+    {
+        return this;
+    }
+
+
+
     toRgba()
     {
         return [
@@ -91,17 +90,10 @@ extends GValue
 
 
 
-    toFigma()
-    {
-        return [['SOLID', this.toString()]];
-    }
-
-
-
-    toValue()
-    {
-        return this;
-    }
+    // toFigma()
+    // {
+    //     return [['SOLID', this.toString()]];
+    // }
 
 
 
@@ -125,6 +117,14 @@ extends GValue
               + ' ' + new NumberValue(rgb[1]).toDisplayString()
               + ' ' + new NumberValue(rgb[2]).toDisplayString()
               + ' ' + this.opacity           .toDisplayString();
+    }
+
+
+
+    isValid()
+    {
+        return this.color  .isValid()
+            && this.opacity.isValid();
     }
 
 
@@ -169,12 +169,12 @@ function parseFillValue(str, i = -1)
 
 
 
-function evalFillValue(value, parse)
-{
-    const fill = value.eval(parse).copy();
+// function evalFillValue(fillValue, parse)
+// {
+//     fillValue.eval(parse);
 
-         if ( FILL_TYPES.includes(fill.type)) return fill;
-    else if (COLOR_TYPES.includes(fill.type)) return new FillValue(fill, value.data.opacity);
+//          if ( FILL_TYPES.includes(fillValue.type)) return fill;
+//     else if (COLOR_TYPES.includes(fillValue.type)) return new FillValue(fill, fillValue.data.opacity);
 
-    else console.assert(false, 'fill must have type');
-}
+//     else console.assert(false, 'fill must have type');
+// }

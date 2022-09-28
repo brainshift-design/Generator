@@ -19,7 +19,7 @@ extends OpColorBase
     
     constructor()
     {
-        super(FILL, 'solid');
+        super(FILL, 'fill');
 
 
         this.colorBack = createDiv('colorBack');
@@ -29,7 +29,7 @@ extends OpColorBase
         this.inner.insertBefore(this.checkers, this.header);
 
 
-        this.addInput (new Input([FILL, FILL_VALUE, ...SHAPE_TYPES], this.input_getValuesForUndo));
+        this.addInput (new Input([...FILL_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
         this.addOutput(new Output(FILL, this.output_genRequest));
 
 
@@ -85,14 +85,14 @@ extends OpColorBase
             for (const param of this.node.params)
                 if (      param.input 
                        && param.input.connected
-                       && param.show()
+                       && param.canShow()
                     || SHAPE_TYPES.includes(input.connectedOutput.type)) 
                     paramIds.push(param.id);
         }
         else
         {
             for (const param of this.node.params)
-                if (param.show())
+                if (param.canShow())
                     paramIds.push(param.id);
         }
 
@@ -113,19 +113,12 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const color   = values[paramIds.findIndex(id => id == 'color'  )];
-        const opacity = values[paramIds.findIndex(id => id == 'opacity')];
-
-
-        this.paramColor  .setValue(color,   false, true, false);
-        this.paramOpacity.setValue(opacity, false, true, false);
-
+        const color = values[paramIds.findIndex(id => id == 'color')];
 
         this._color = 
             color.isValid()
             ? color.toDataColor()
             : dataColor_NaN;
-
 
         super.updateValues(updateParamId, paramIds, values);
     }

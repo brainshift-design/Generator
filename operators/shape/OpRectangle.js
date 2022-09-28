@@ -91,13 +91,13 @@ extends OperatorBase
             for (const param of this.node.params)
                 if (   param.input 
                     && param.input.connected
-                    && param.show())
+                    && param.canShow())
                     paramIds.push(param.id);
         }
         else
         {
             for (const param of this.node.params)
-                if (param.show())
+                if (param.canShow())
                     paramIds.push(param.id);
         }
 

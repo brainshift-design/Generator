@@ -25,7 +25,7 @@ extends EventTarget
 
 
 
-    show = () => true;
+    canShow = () => true;
 
 
 

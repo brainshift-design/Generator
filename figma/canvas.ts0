@@ -2,7 +2,7 @@ const figObjectArrays = []; // {nodeId, [objects]}
 
 
 
-function figUpdate(msg)
+function figUpdateObjects(msg)
 {
     if (   msg.updateNodeId  != NULL
         && msg.updateParamId != NULL)
@@ -12,8 +12,6 @@ function figUpdate(msg)
         if (index > -1)
             figSaveNodes([msg.updateNodeId], [msg.nodeJson[index]]);
     }
-    // else
-    //     figSaveNodes(msg.nodeIds, msg.nodeJson);
 
 
     let curNodeId  = NULL;

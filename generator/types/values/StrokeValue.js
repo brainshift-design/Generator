@@ -107,38 +107,38 @@ extends GValue
 
 
 
-    toFigma()
-    {
-        let align, join;
+    // toFigma()
+    // {
+    //     let align, join;
 
         
-        switch (this.fit.value)
-        {
-            case 0: align = 'INSIDE';  break;
-            case 1: align = 'CENTER';  break;
-            case 2: align = 'OUTSIDE'; break;
-        }
+    //     switch (this.fit.value)
+    //     {
+    //         case 0: align = 'INSIDE';  break;
+    //         case 1: align = 'CENTER';  break;
+    //         case 2: align = 'OUTSIDE'; break;
+    //     }
         
-        switch (this.join.value)
-        {
-            case 0: join = 'MITER'; break;
-            case 1: join = 'BEVEL'; break;
-            case 2: join = 'ROUND'; break;
-        }
+    //     switch (this.join.value)
+    //     {
+    //         case 0: join = 'MITER'; break;
+    //         case 1: join = 'BEVEL'; break;
+    //         case 2: join = 'ROUND'; break;
+    //     }
 
         
-        return this.isValid()
-            ? {
-                  strokes:          this.fill.toFigma(),
-                  strokeWeight:     this.weight.value,
-                  strokeAlign:      align,
-                  strokeJoin:       join,
-                  strokeMiterLimit: this.miter.value
-              }
-            : {
-                  strokes: []
-              };
-    }
+    //     return this.isValid()
+    //         ? {
+    //               strokes:          this.fill.toFigma(),
+    //               strokeWeight:     this.weight.value,
+    //               strokeAlign:      align,
+    //               strokeJoin:       join,
+    //               strokeMiterLimit: this.miter.value
+    //           }
+    //         : {
+    //               strokes: []
+    //           };
+    // }
 
 
 

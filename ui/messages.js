@@ -89,7 +89,7 @@ function uiEndFigMessage(msgCmd)
 {
     uiFigMessagePosted = false;
 
-    if (msgCmd == 'figUpdate')
+    if (msgCmd == 'figUpdateObjects')
         uiPostMessageToGenerator({
             cmd:   'genEndFigMessage',
             msgCmd: msgCmd});

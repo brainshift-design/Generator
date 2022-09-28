@@ -3653,14 +3653,6 @@ extends GValue
 
 
 
-    isValid()
-    {
-        return this.color  .isValid()
-            && this.opacity.isValid();
-    }
-
-
-
     equals(fill)
     {
         return fill
@@ -3677,6 +3669,13 @@ extends GValue
 
 
 
+    toValue()
+    {
+        return this;
+    }
+
+
+
     toRgba()
     {
         return [
@@ -3686,17 +3685,10 @@ extends GValue
 
 
 
-    toFigma()
-    {
-        return [['SOLID', this.toString()]];
-    }
-
-
-
-    toValue()
-    {
-        return this;
-    }
+    // toFigma()
+    // {
+    //     return [['SOLID', this.toString()]];
+    // }
 
 
 
@@ -3720,6 +3712,14 @@ extends GValue
               + ' ' + new NumberValue(rgb[1]).toDisplayString()
               + ' ' + new NumberValue(rgb[2]).toDisplayString()
               + ' ' + this.opacity           .toDisplayString();
+    }
+
+
+
+    isValid()
+    {
+        return this.color  .isValid()
+            && this.opacity.isValid();
     }
 
 
@@ -3764,15 +3764,15 @@ function parseFillValue(str, i = -1)
 
 
 
-function evalFillValue(value, parse)
-{
-    const fill = value.eval(parse).copy();
+// function evalFillValue(fillValue, parse)
+// {
+//     fillValue.eval(parse);
 
-         if ( FILL_TYPES.includes(fill.type)) return fill;
-    else if (COLOR_TYPES.includes(fill.type)) return new FillValue(fill, value.data.opacity);
+//          if ( FILL_TYPES.includes(fillValue.type)) return fill;
+//     else if (COLOR_TYPES.includes(fillValue.type)) return new FillValue(fill, fillValue.data.opacity);
 
-    else console.assert(false, 'fill must have type');
-}
+//     else console.assert(false, 'fill must have type');
+// }
 
 
 class StrokeValue
@@ -3884,38 +3884,38 @@ extends GValue
 
 
 
-    toFigma()
-    {
-        let align, join;
+    // toFigma()
+    // {
+    //     let align, join;
 
         
-        switch (this.fit.value)
-        {
-            case 0: align = 'INSIDE';  break;
-            case 1: align = 'CENTER';  break;
-            case 2: align = 'OUTSIDE'; break;
-        }
+    //     switch (this.fit.value)
+    //     {
+    //         case 0: align = 'INSIDE';  break;
+    //         case 1: align = 'CENTER';  break;
+    //         case 2: align = 'OUTSIDE'; break;
+    //     }
         
-        switch (this.join.value)
-        {
-            case 0: join = 'MITER'; break;
-            case 1: join = 'BEVEL'; break;
-            case 2: join = 'ROUND'; break;
-        }
+    //     switch (this.join.value)
+    //     {
+    //         case 0: join = 'MITER'; break;
+    //         case 1: join = 'BEVEL'; break;
+    //         case 2: join = 'ROUND'; break;
+    //     }
 
         
-        return this.isValid()
-            ? {
-                  strokes:          this.fill.toFigma(),
-                  strokeWeight:     this.weight.value,
-                  strokeAlign:      align,
-                  strokeJoin:       join,
-                  strokeMiterLimit: this.miter.value
-              }
-            : {
-                  strokes: []
-              };
-    }
+    //     return this.isValid()
+    //         ? {
+    //               strokes:          this.fill.toFigma(),
+    //               strokeWeight:     this.weight.value,
+    //               strokeAlign:      align,
+    //               strokeJoin:       join,
+    //               strokeMiterLimit: this.miter.value
+    //           }
+    //         : {
+    //               strokes: []
+    //           };
+    // }
 
 
 
@@ -5450,41 +5450,6 @@ extends GOperator
             this.c2    ? this.c2   .toValue() : this.input.c2   .toValue(),
             this.c3    ? this.c3   .toValue() : this.input.c3   .toValue());
     }
-
-
-
-    // toDataColor()
-    // {
-    //     if (!this.isValid())
-    //         return dataColor_NaN;
-
-    //     return makeDataColor(
-    //         this.space,
-    //         this.c1,
-    //         this.c2,
-    //         this.c3);
-    // }
-
-
-
-    // toRgb()
-    // {
-    //     return dataColor2rgb(this.toDataColor());
-    // }
-
-
-
-    // toDisplayString()
-    // {
-    //     // console.log('this.space =', this.space);
-    //     // console.log('this.c1 =', this.c1);
-    //     // console.log('this.c2 =', this.c2);
-    //     // console.log('this.c3 =', this.c3);
-    //     return      this.space.toDisplayString()
-    //         + ' ' + this.c1   .toDisplayString()
-    //         + ' ' + this.c2   .toDisplayString()
-    //         + ' ' + this.c3   .toDisplayString();
-    // }
 }
 
 
@@ -6758,14 +6723,6 @@ extends GShapeBase
 
 
 
-    isValid()
-    {
-        return this.color  .isValid()
-            && this.opacity.isValid();
-    }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -6783,8 +6740,7 @@ extends GShapeBase
         }
 
 
-        const color   = this.color   ? this.color   : this.input ? this.input.color   : null;
-        const opacity = this.opacity ? this.opacity : this.input ? this.input.opacity : null;
+        const [color, opacity] = this.getParams();
 
         if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  .toValue());
         if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity.toValue());
@@ -6802,8 +6758,7 @@ extends GShapeBase
 
     evalObjects()
     {
-        const color   = this.color   ? this.color   : this.input ? this.input.color   : null;
-        const opacity = this.opacity ? this.opacity : this.input ? this.input.opacity : null;
+        const [color, opacity] = this.getParams();
 
         if (   !color
             || !opacity)
@@ -6829,12 +6784,39 @@ extends GShapeBase
         
         super.evalObjects();
     }
+
+
+
+    getParams()
+    {
+        return [this.color   ? this.color   : this.input ? this.input.color   : null,
+                this.opacity ? this.opacity : this.input ? this.input.opacity : null];
+    }
+
+
+
+    toValue()
+    {
+        return new FillValue(
+            this.color   ? this.color  .toValue() : this.input.color  .toValue(),
+            this.opacity ? this.opacity.toValue() : this.input.opacity.toValue());
+    }
+
+
+
+    isValid()
+    {
+        return this.color  .isValid()
+            && this.opacity.isValid();
+    }
 }
 
 
 class GStroke
-extends GOperator
+extends GShapeBase
 {
+    input  = null;
+
     fill   = null;
     weight = null;
     fit    = null;
@@ -6870,47 +6852,125 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        if (this.fill  ) this.fill  .eval(parse);
+        if (this.weight) this.weight.eval(parse);
+        if (this.fit   ) this.fit   .eval(parse);
+        if (this.join  ) this.join  .eval(parse);
+        if (this.miter ) this.miter .eval(parse);            
+
+
+        if (this.input)
         {
-            const fill   = this.fill   ? evalFillValue(this.fill, parse) : null;
-            const weight = this.weight ? this.weight.eval(parse).copy()  : null;
-            const fit    = this.fit    ? this.fit   .eval(parse).copy()  : null;
-            const join   = this.join   ? this.join  .eval(parse).copy()  : null;
-            const miter  = this.miter  ? this.miter .eval(parse).copy()  : null;            
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-
-                console.assert(
-                    this.result.type == STROKE_VALUE,
-                    'GStroke this.result.type must be STROKE_VALUE');
-
-                if (this.fill  ) this.result.fill   = fill;
-                if (this.weight) this.result.weight = weight;
-                if (this.fit   ) this.result.fit    = fit;
-                if (this.join  ) this.result.join   = join;
-                if (this.miter ) this.result.miter  = miter;
-            }
-            else
-            {
-                this.result = new StrokeValue(fill, weight, fit, join, miter);
-            }
-        
-
-            genPushUpdateValue(parse, this.nodeId, 'fill',   this.result.fill  );
-            genPushUpdateValue(parse, this.nodeId, 'weight', this.result.weight);
-            genPushUpdateValue(parse, this.nodeId, 'fit',    this.result.fit   );
-            genPushUpdateValue(parse, this.nodeId, 'join',   this.result.join  );
-            genPushUpdateValue(parse, this.nodeId, 'miter',  this.result.miter );
-
-
-            this.result.valid = true;
-            this.valid        = true;
+            this.input.eval(parse);
+            this.objects = this.input.objects;
         }
 
 
-        return this.result;
+        const [fill, weight, fit, join, miter] = this.getParams();
+
+        if (fill  ) genPushUpdateValue(parse, this.nodeId, 'fill',   fill  .toValue());
+        if (weight) genPushUpdateValue(parse, this.nodeId, 'weight', weight.toValue());
+        if (fit   ) genPushUpdateValue(parse, this.nodeId, 'fit',    fit   .toValue());
+        if (join  ) genPushUpdateValue(parse, this.nodeId, 'join',   join  .toValue());
+        if (miter ) genPushUpdateValue(parse, this.nodeId, 'miter',  miter .toValue());
+
+
+        if (   this.options.active
+            || this.options.beforeActive)
+            this.evalObjects();
+
+
+        this.valid = true;
+    }
+
+
+
+    evalObjects()
+    {
+        const [fill, weight, fit, join, miter] = this.getParams();
+        
+        if (   !fill
+            || !weight
+            || !fit
+            || !join
+            || !miter)
+            return;
+
+
+        const rgb = scaleRgb(fill.color.toValue().toRgb());
+
+        for (const obj of this.objects)
+        {
+            if (!obj.strokes) 
+                obj.strokes = [];
+
+            obj.strokes.push([
+                'SOLID', 
+                        rgb[0]
+                + ' ' + rgb[1]
+                + ' ' + rgb[2]
+                + ' ' + fill.opacity.toValue().value]);
+
+
+            obj.strokeWeight = weight.toValue().value;
+
+            switch (fit.toValue().value)
+            {
+                case 0: obj.strokeAlign = 'INSIDE';  break;
+                case 1: obj.strokeAlign = 'CENTER';  break;
+                case 2: obj.strokeAlign = 'OUTSIDE'; break;
+            }
+            
+            switch (join.toValue().value)
+            {
+                case 0: obj.strokeJoin = 'MITER'; break;
+                case 1: obj.strokeJoin = 'BEVEL'; break;
+                case 2: obj.strokeJoin = 'ROUND'; break;
+            }
+
+            obj.strokeMiterLimit = miter.toValue().value;
+        }
+
+        
+        super.evalObjects();
+    }
+
+
+
+    getParams()
+    {
+        return [this.fill   ? this.fill   : this.input ? this.input.fill   : null,
+                this.weight ? this.weight : this.input ? this.input.weight : null,
+                this.fit    ? this.fit    : this.input ? this.input.fit    : null,
+                this.join   ? this.join   : this.input ? this.input.join   : null,
+                this.miter  ? this.miter  : this.input ? this.input.miter  : null];
+    }
+
+
+
+    toValue()
+    {
+        return new StrokeValue(
+            this.fill   ? this.fill  .toValue() : this.input.fill  .toValue(),
+            this.weight ? this.weight.toValue() : this.input.weight.toValue(),
+            this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
+            this.join   ? this.join  .toValue() : this.input.join  .toValue(),
+            this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+    }
+
+
+
+    isValid()
+    {
+        return this.fill  .isValid()
+            && this.weight.isValid()
+            && this.fit   .isValid()
+            && this.join  .isValid()
+            && this.miter .isValid();
     }
 }
 
@@ -8213,10 +8273,11 @@ function genParseFill(parse)
     parse.nTab++;
 
 
-    if (   parse.next == FILL
-        || parse.next == FILL_VALUE
+    if (    FILL_TYPES.includes(parse.next)
         || SHAPE_TYPES.includes(parse.next))
         fill.input = genParse(parse);
+    // ||    parse.next == PARAM
+    //    && FILL_TYPES.includes(parse.afterNext))
 
 
     const nParamIds = genParseParamCount(parse);
@@ -8234,6 +8295,7 @@ function genParseFill(parse)
         case 'color'  : fill.color   = genParse(parse); break;
         case 'opacity': fill.opacity = genParse(parse); break;
         }
+
 
         parse.nTab--;
     }
@@ -8297,24 +8359,25 @@ function genParseStroke(parse)
     parse.nTab++;
 
 
-    let paramIds;
-
     if (   STROKE_TYPES.includes(parse.next)
-        ||    parse.next == PARAM
-           && STROKE_TYPES.includes(parse.afterNext))
-    {
+        ||   FILL_TYPES.includes(parse.next)
+        ||  SHAPE_TYPES.includes(parse.next))
         stroke.input = genParse(parse);
-        paramIds     = parse.move().split(',');
-    }
-    else
-        paramIds = ['fill', 'weight', 'fit', 'join', 'miter'];
+        //   parse.next == PARAM
+        //   && STROKE_TYPES.includes(parse.afterNext))
 
-        
-    for (const id of paramIds)
+
+    const nParamIds = genParseParamCount(parse);
+       
+    for (let i = 0; i < nParamIds; i++)
     {
-        parse.inParam = false;
+        const paramId = genParseParamId(parse);
 
-        switch (id)
+        parse.nTab++;
+        parse.inParam = true;
+
+
+        switch (paramId)
         {
         case 'fill':   stroke.fill   = genParseFillParam(parse); break;
         case 'weight': stroke.weight = genParse(parse);          break;
@@ -8322,9 +8385,13 @@ function genParseStroke(parse)
         case 'join':   stroke.join   = genParse(parse);          break;
         case 'miter':  stroke.miter  = genParse(parse);          break;
         }
+
+
+        parse.nTab--;
     }
 
     
+    parse.inParam = false;
     parse.nTab--;
 
 
