@@ -6895,7 +6895,7 @@ extends GShapeBase
             this.input.eval(parse);
             this.objects = this.input.objects;
 
-            while (  !STROKE_TYPES.includes(this.input.type)
+            while (   !STROKE_TYPES.includes(this.input.type)
                    && this.input.input)
                 this.input = this.input.input;
         }
@@ -6922,11 +6922,11 @@ extends GShapeBase
 
     getParams()
     {
-        return [this.fill,
-                this.weight ? this.weight : this.input ? this.input.weight : null,
-                this.fit    ? this.fit    : this.input ? this.input.fit    : null,
-                this.join   ? this.join   : this.input ? this.input.join   : null,
-                this.miter  ? this.miter  : this.input ? this.input.miter  : null];
+        return [this.fill   ? this.fill   : this.input && isEmpty(this.input.objects) ? this.input.fill   : null,
+                this.weight ? this.weight : this.input                                ? this.input.weight : null,
+                this.fit    ? this.fit    : this.input                                ? this.input.fit    : null,
+                this.join   ? this.join   : this.input                                ? this.input.join   : null,
+                this.miter  ? this.miter  : this.input                                ? this.input.miter  : null];
     }
 
 

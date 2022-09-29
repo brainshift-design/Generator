@@ -100,7 +100,7 @@ extends OpColorBase
             for (const param of this.node.params)
                 if (      param.input 
                        && param.input.connected
-                       && param.canShow() 
+                       && param.canShow()
                     || arraysIntersect(SHAPE_TYPES, input.connectedOutput.types)) 
                     paramIds.push(param.id);
         }
@@ -129,7 +129,7 @@ extends OpColorBase
     updateValues(updateParamId, paramIds, values)
     {
         const fill = values[paramIds.findIndex(id => id == 'fill')];
-        
+
         this._color = 
             fill.isValid()
             ? fill.color.toDataColor()
