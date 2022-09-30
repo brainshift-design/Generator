@@ -48,7 +48,7 @@ class Parse
 
 
 
-    constructor(request, updateNodeId, updateParamId, enableLxxColorSpaces, logRequests)
+    constructor(request, updateNodeId, updateParamId, includeLxxColorSpaces, logRequests)
     {
         this.request       = request;
           
@@ -59,8 +59,8 @@ class Parse
         this.updateParamId = updateParamId;
    
         
-        this.settings.enableLxxColorSpaces = enableLxxColorSpaces;
-        this.settings.logRequests          = logRequests;
+        this.settings.includeLxxColorSpaces = includeLxxColorSpaces;
+        this.settings.logRequests           = logRequests;
     }
 
 

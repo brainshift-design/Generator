@@ -19,15 +19,6 @@ extends OperatorBase
 
 
 
-    input_getValuesForUndo()
-    {
-        return [[
-            this.node.paramValue.id, 
-            this.node.paramValue.value]];
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output        

@@ -57,10 +57,10 @@ extends GShapeBase
         if (this.input)
         {
             this.input.eval(parse);
-
-            while (  !RECTANGLE_TYPES.includes(this.input.type)
-                   && this.input.input)
-                this.input = this.input.input;
+console.log(this.nodeId + '.input =', this.input);
+            // while (  !RECTANGLE_TYPES.includes(this.input.type)
+            //        && this.input.input)
+            //     this.input = this.input.input;
         }
 
 

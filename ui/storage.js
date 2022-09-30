@@ -37,7 +37,8 @@ function uiGetLocalDataReturn(msg)
             graphView.updatePanAndZoom();
             break;
 
-        case 'enableLxxColorSpaces':       
+        case 'includeLxxColorSpaces':
+        case 'debugMode':
 
         case 'showNodeId':       
         case 'showWires':        
@@ -64,6 +65,10 @@ function uiGetLocalDataReturn(msg)
 
             break;
     }
+
+
+    if (msg.key == 'debugMode')
+        menuItemDebug.setVisible(settings.debugMode);
 }
 
 

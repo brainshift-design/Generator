@@ -33,7 +33,7 @@ function genParseRectangle(parse)
 
     if (   RECTANGLE_TYPES.includes(parse.next)
         ||  PROPERTY_TYPES.includes(parse.next))
-        rect.input = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
+        rect.input = genParse(parse);
 
 
     const nParamIds = genParseParamCount(parse);

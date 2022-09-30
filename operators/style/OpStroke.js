@@ -51,27 +51,6 @@ extends OpColorBase
     
     
     
-    input_getValuesForUndo()
-    {
-        return [ 
-            [this.node.paramFill  .id, 
-             this.node.paramFill  .value],
-
-            [this.node.paramWeight.id, 
-             this.node.paramWeight.value],
-
-            [this.node.paramFit   .id, 
-             this.node.paramFit   .value],
-
-            [this.node.paramJoin  .id, 
-             this.node.paramJoin  .value],
-
-            [this.node.paramMiter .id, 
-             this.node.paramMiter .value]];
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -98,10 +77,13 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
             for (const param of this.node.params)
-                if (      param.input 
-                       && param.input.connected
-                       && param.canShow()
-                    || arraysIntersect(SHAPE_TYPES, input.connectedOutput.types)) 
+                if ((         param.input 
+                           && param.input.connected
+                           && param.canShow()
+                           //&& !arraysIntersect(STROKE_TYPES, input.connectedOutput.types)
+                        //|| param.id == 'fill')
+                        || arraysIntersect(SHAPE_TYPES, input.connectedOutput.types))
+                     && !arraysIntersect(STROKE_TYPES, input.connectedOutput.types))
                     paramIds.push(param.id);
         }
         else
@@ -131,7 +113,8 @@ extends OpColorBase
         const fill = values[paramIds.findIndex(id => id == 'fill')];
 
         this._color = 
-            fill.isValid()
+               fill
+            && fill.isValid()
             ? fill.color.toDataColor()
             : dataColor_NaN;
 
@@ -208,7 +191,7 @@ extends OpColorBase
  
         const enable = 
                !this.inputs[0].connected
-            || !arraysIntersect( SHAPE_TYPES, this.inputs[0].connectedOutput.types)
+            //|| !arraysIntersect( SHAPE_TYPES, this.inputs[0].connectedOutput.types)
             || !arraysIntersect(STROKE_TYPES, this.inputs[0].connectedOutput.types);
 
         this.paramFill  .enableControlText(enableFill);

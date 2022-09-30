@@ -123,21 +123,6 @@ extends OpColorBase
 
 
 
-    input_getValuesForUndo()
-    {
-        return [ 
-            [this.node.param1.id, 
-             this.node.param1.value],
-
-            [this.node.param2.id, 
-             this.node.param2.value],
-
-            [this.node.param3.id, 
-             this.node.param3.value]];
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output

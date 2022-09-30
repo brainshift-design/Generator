@@ -67,7 +67,11 @@ var menuShape;
 var menuZoom;
 
 
-var menuItemEnableLxxColorSpaces;
+var menuItemIncludeLxxColorSpaces;
+var menuItemDebugMode;
+
+var menuItemDebug;
+var menuItemHelp;
 
 var menuItemShowNodeId;
 var menuItemShowWires;
@@ -90,17 +94,18 @@ var menuItemZoomTo100;
 function initMenuBar()
 {
     menuMainPreferences = new Menu('Preferences', false);
-    menuMainPreferences.addItems([ 
-        menuItemEnableLxxColorSpaces = new MenuItem('Enable Lxx color spaces', {checkCallback: () => settings.enableLxxColorSpaces, callback: () => updateSettingAndMenu('enableLxxColorSpaces', true, !settings.enableLxxColorSpaces)})]);
+    menuMainPreferences.addItems([
+        menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces', {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace();         }}),
+        menuItemDebugMode             = new MenuItem('Debug mode',               {checkCallback: () => settings.debugMode,             callback: () => { updateSettingAndMenu('debugMode',             true, !settings.debugMode            ); menuItemDebug.setVisible(settings.debugMode); }})]);
 
-
+    
     menuMainDebugLoggingRaw = new Menu('Raw', false);
     menuMainDebugLoggingRaw.addItems([
-        menuItemLogRawLoading    = new MenuItem('Raw loading',  {checkCallback: () => settings.logRawLoading   , callback: () => { updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading );  updateEnableLxxColorSpace(); }}),
-        menuItemLogRawSaving     = new MenuItem('Raw saving',   {checkCallback: () => settings.logRawSaving    , callback: () =>   updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving  )}),
+        menuItemLogRawLoading    = new MenuItem('Raw loading',  {checkCallback: () => settings.logRawLoading , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading )}),
+        menuItemLogRawSaving     = new MenuItem('Raw saving',   {checkCallback: () => settings.logRawSaving  , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving  )}),
                                    new MenuItem('',             {separator: true}),
-        menuItemLogRawRequests   = new MenuItem('Raw requests', {checkCallback: () => settings.logRawRequests  , callback: () =>   updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests)}),
-        menuItemLogRawValues     = new MenuItem('Raw values',   {checkCallback: () => settings.logRawValues    , callback: () =>   updateSettingAndMenu('logRawValues',     true, !settings.logRawValues  )})]);
+        menuItemLogRawRequests   = new MenuItem('Raw requests', {checkCallback: () => settings.logRawRequests, callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests)}),
+        menuItemLogRawValues     = new MenuItem('Raw values',   {checkCallback: () => settings.logRawValues  , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues  )})]);
 
 
     menuMainDebugLogging = new Menu('Logging', false);
@@ -150,10 +155,10 @@ function initMenuBar()
 
     menuMain = new Menu('Main menu', false);
     menuMain.addItems([
-                       new MenuItem('Preferences',         {childMenu: menuMainPreferences}),
-                       new MenuItem('Debug',               {childMenu: menuMainDebug}),
-                       new MenuItem('',                    {separator: true}),
-        menuMainHelp = new MenuItem('Help and activation', {childMenu: menuMainHelp })]);
+                        new MenuItem('Preferences',         {childMenu: menuMainPreferences}),
+        menuItemDebug = new MenuItem('Debug',               {childMenu: menuMainDebug}),
+                        new MenuItem('',                    {separator: true}),
+        menuItemHelp  = new MenuItem('Help and activation', {childMenu: menuMainHelp })]);
   
         
     menuNumber = new Menu('Number nodes');

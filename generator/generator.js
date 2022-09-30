@@ -12,7 +12,7 @@ function genRequest(request)
 
     const set = parseInt(request[0]);
 
-    const enableLxxColorSpaces = (set >> 0) & 1 != 0;
+    const includeLxxColorSpaces = (set >> 0) & 1 != 0;
     const logRequests          = (set >> 1) & 1 != 0;
 
 
@@ -24,7 +24,7 @@ function genRequest(request)
         request, 
         updateNodeId, 
         updateParamId, 
-        enableLxxColorSpaces,
+        includeLxxColorSpaces,
         logRequests);
 
 

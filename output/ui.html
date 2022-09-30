@@ -8113,10 +8113,10 @@ extends GShapeBase
         if (this.input)
         {
             this.input.eval(parse);
-
-            while (  !RECTANGLE_TYPES.includes(this.input.type)
-                   && this.input.input)
-                this.input = this.input.input;
+console.log(this.nodeId + '.input =', this.input);
+            // while (  !RECTANGLE_TYPES.includes(this.input.type)
+            //        && this.input.input)
+            //     this.input = this.input.input;
         }
 
 
@@ -8863,9 +8863,9 @@ extends GShapeBase
             this.input.eval(parse);
             this.objects = this.input.objects;
 
-            while (   !STROKE_TYPES.includes(this.input.type)
-                   && this.input.input)
-                this.input = this.input.input;
+            // while (   !STROKE_TYPES.includes(this.input.type)
+            //        && this.input.input)
+            //     this.input = this.input.input;
         }
 
 
@@ -8890,11 +8890,12 @@ extends GShapeBase
 
     getParams()
     {
-        return [this.fill   ? this.fill   : this.input && isEmpty(this.input.objects) ? this.input.fill   : null,
-                this.weight ? this.weight : this.input                                ? this.input.weight : null,
-                this.fit    ? this.fit    : this.input                                ? this.input.fit    : null,
-                this.join   ? this.join   : this.input                                ? this.input.join   : null,
-                this.miter  ? this.miter  : this.input                                ? this.input.miter  : null];
+        // console.log('this.input =', this.input);
+        return [this.fill   ? this.fill   : this.input && !isEmpty(this.input.objects) ? this.input.fill   : null,
+                this.weight ? this.weight : this.input                                 ? this.input.weight : null,
+                this.fit    ? this.fit    : this.input                                 ? this.input.fit    : null,
+                this.join   ? this.join   : this.input                                 ? this.input.join   : null,
+                this.miter  ? this.miter  : this.input                                 ? this.input.miter  : null];
     }
 
 
@@ -8903,6 +8904,11 @@ extends GShapeBase
     {
         const [fill, weight, fit, join, miter] = this.getParams();
         
+        console.log('fill =', fill);
+        console.log('weight =', weight);
+        console.log('fit =', fit);
+        console.log('join =', join);
+        console.log('miter =', miter);
         if (   !fill
             || !weight
             || !fit
@@ -8976,23 +8982,24 @@ extends GShapeBase
 
 const settings =
 {
-    enableLxxColorSpaces: false,
+    includeLxxColorSpaces: false,
+    debugMode:             false,
 
-    showNodeId:           false, // instead of name
-    showWires:            true,
+    showNodeId:            false, // instead of name
+    showWires:             true,
     
-    logMessages:          false,
-    logActions:           false, 
+    logMessages:           false,
+    logActions:            false, 
     
-    logLoading:           false, 
-    logRequests:          false, 
-    logValueUpdates:      false, 
-    logObjectUpdates:     false,
+    logLoading:            false, 
+    logRequests:           false, 
+    logValueUpdates:       false, 
+    logObjectUpdates:      false,
     
-    logRawLoading:        false, 
-    logRawSaving:         false, 
-    logRawRequests:       false, 
-    logRawValues:         false    
+    logRawLoading:         false, 
+    logRawSaving:          false, 
+    logRawRequests:        false, 
+    logRawValues:          false    
 };
 
 
@@ -9001,22 +9008,23 @@ function updateSetting(settingName, value)
 {
     switch (settingName)
     {
-        case 'enableLxxColorSpaces': settings.enableLxxColorSpaces = value;  break;
+        case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
+        case 'debugMode':             settings.debugMode             = value;  break;
 
-        case 'showNodeId':           settings.showNodeId           = value;  break;
-        case 'showWires':            settings.showWires            = value;  break;
-
-        case 'logMessages':          settings.logMessages          = value;  break;
-        case 'logActions':           settings.logActions           = value;  break;
-        case 'logLoading':           settings.logLoading           = value;  break;
-        case 'logRequests':          settings.logRequests          = value;  break;
-        case 'logValueUpdates':      settings.logValueUpdates      = value;  break;
-        case 'logObjectUpdates':     settings.logObjectUpdates     = value;  break;
-
-        case 'logRawLoading':        settings.logRawLoading        = value;  break;
-        case 'logRawSaving':         settings.logRawSaving         = value;  break;
-        case 'logRawRequests':       settings.logRawRequests       = value;  break;
-        case 'logRawValues':         settings.logRawValues         = value;  break;
+        case 'showNodeId':            settings.showNodeId             = value;  break;
+        case 'showWires':             settings.showWires              = value;  break;
+   
+        case 'logMessages':           settings.logMessages            = value;  break;
+        case 'logActions':            settings.logActions             = value;  break;
+        case 'logLoading':            settings.logLoading             = value;  break;
+        case 'logRequests':           settings.logRequests            = value;  break;
+        case 'logValueUpdates':       settings.logValueUpdates        = value;  break;
+        case 'logObjectUpdates':      settings.logObjectUpdates       = value;  break;
+   
+        case 'logRawLoading':         settings.logRawLoading          = value;  break;
+        case 'logRawSaving':          settings.logRawSaving           = value;  break;
+        case 'logRawRequests':        settings.logRawRequests         = value;  break;
+        case 'logRawValues':          settings.logRawValues           = value;  break;
     } 
 }
 
@@ -9026,22 +9034,23 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 {
     switch (settingName)
     {
-        case 'enableLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemEnableLxxColorSpaces);  break;
+        case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
+        case 'debugMode':             updateSettingAndMenu_(valid, settingName, value, menuItemDebugMode            );  break;
 
-        case 'showNodeId':           updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId          );  break;
-        case 'showWires':            updateSettingAndMenu_(valid, settingName, value, menuItemShowWires           );  break;
-
-        case 'logMessages':          updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages         );  break;
-        case 'logActions':           updateSettingAndMenu_(valid, settingName, value, menuItemLogActions          );  break;
-        case 'logLoading':           updateSettingAndMenu_(valid, settingName, value, menuItemLogLoading          );  break;
-        case 'logRequests':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRequests         );  break;
-        case 'logValueUpdates':      updateSettingAndMenu_(valid, settingName, value, menuItemLogValueUpdates     );  break;
-        case 'logObjectUpdates':     updateSettingAndMenu_(valid, settingName, value, menuItemLogObjectUpdates    );  break;
-
-        case 'logRawLoading':        updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoading       );  break;
-        case 'logRawSaving':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaving        );  break;
-        case 'logRawRequests':       updateSettingAndMenu_(valid, settingName, value, menuItemLogRawRequests      );  break;
-        case 'logRawValues':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawValues        );  break;
+        case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
+        case 'showWires':             updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
+ 
+        case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
+        case 'logActions':            updateSettingAndMenu_(valid, settingName, value, menuItemLogActions           );  break;
+        case 'logLoading':            updateSettingAndMenu_(valid, settingName, value, menuItemLogLoading           );  break;
+        case 'logRequests':           updateSettingAndMenu_(valid, settingName, value, menuItemLogRequests          );  break;
+        case 'logValueUpdates':       updateSettingAndMenu_(valid, settingName, value, menuItemLogValueUpdates      );  break;
+        case 'logObjectUpdates':      updateSettingAndMenu_(valid, settingName, value, menuItemLogObjectUpdates     );  break;
+  
+        case 'logRawLoading':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoading        );  break;
+        case 'logRawSaving':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaving         );  break;
+        case 'logRawRequests':        updateSettingAndMenu_(valid, settingName, value, menuItemLogRawRequests       );  break;
+        case 'logRawValues':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRawValues         );  break;
     } 
 
     if (save)
@@ -9062,32 +9071,61 @@ function updateSettingAndMenu_(valid, setting, value, menu)
 
 function updateSettingsMenus()
 {
-    menuItemEnableLxxColorSpaces.setChecked(settings.enableLxxColorSpaces);
+    menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
+    menuItemDebugMode            .setChecked(settings.debugMode            );
 
-    menuItemShowNodeId          .setChecked(settings.showNodeId          );
-    menuItemShowWires           .setChecked(settings.showWires           );
+    menuItemDebug                .setVisible(settings.debugMode            );
 
-    menuItemLogMessages         .setChecked(settings.logMessages         );
-    menuItemLogActions          .setChecked(settings.logActions          );
-
-    menuItemLogLoading          .setChecked(settings.logLoading          );
-    menuItemLogRequests         .setChecked(settings.logRequests         );
-    menuItemLogValueUpdates     .setChecked(settings.logValueUpdates     );
-    menuItemLogObjectUpdates    .setChecked(settings.logObjectUpdates    );
-
-    menuItemLogRawLoading       .setChecked(settings.logRawLoading       );
-    menuItemLogRawSaving        .setChecked(settings.logRawSaving        );
-    menuItemLogRawRequests      .setChecked(settings.logRawRequests      );
-    menuItemLogRawValues        .setChecked(settings.logRawValues        );
+    menuItemShowNodeId           .setChecked(settings.showNodeId           );
+    menuItemShowWires            .setChecked(settings.showWires            );
+  
+    menuItemLogMessages          .setChecked(settings.logMessages          );
+    menuItemLogActions           .setChecked(settings.logActions           );
+  
+    menuItemLogLoading           .setChecked(settings.logLoading           );
+    menuItemLogRequests          .setChecked(settings.logRequests          );
+    menuItemLogValueUpdates      .setChecked(settings.logValueUpdates      );
+    menuItemLogObjectUpdates     .setChecked(settings.logObjectUpdates     );
+  
+    menuItemLogRawLoading        .setChecked(settings.logRawLoading        );
+    menuItemLogRawSaving         .setChecked(settings.logRawSaving         );
+    menuItemLogRawRequests       .setChecked(settings.logRawRequests       );
+    menuItemLogRawValues         .setChecked(settings.logRawValues         );
 }
 
 
 
-function updateEnableLxxColorSpace()
+function updateMenuItemIncludeLxxColorSpace()
 {
     graph.nodes
         .filter(n => COLOR_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
+}
+
+
+
+function loadLocalSettings()
+{
+    uiGetLocalData('graphView');
+
+    uiGetLocalData('includeLxxColorSpaces');
+    uiGetLocalData('debugMode'            );
+
+    uiGetLocalData('showNodeId'           );
+    uiGetLocalData('showWires'            );
+ 
+    uiGetLocalData('logMessages'          );
+    uiGetLocalData('logActions'           );
+
+    uiGetLocalData('logLoading'           );
+    uiGetLocalData('logRequests'          );
+    uiGetLocalData('logValueUpdates'      );
+    uiGetLocalData('logObjectUpdates'     );
+
+    uiGetLocalData('logRawLoading'        );
+    uiGetLocalData('logRawSaving'         );
+    uiGetLocalData('logRawRequests'       );
+    uiGetLocalData('logRawValues'         );
 }
 
 
@@ -9235,7 +9273,7 @@ function genRequest(request)
 
     const set = parseInt(request[0]);
 
-    const enableLxxColorSpaces = (set >> 0) & 1 != 0;
+    const includeLxxColorSpaces = (set >> 0) & 1 != 0;
     const logRequests          = (set >> 1) & 1 != 0;
 
 
@@ -9247,7 +9285,7 @@ function genRequest(request)
         request, 
         updateNodeId, 
         updateParamId, 
-        enableLxxColorSpaces,
+        includeLxxColorSpaces,
         logRequests);
 
 
@@ -9970,7 +10008,7 @@ function genParseRectangle(parse)
 
     if (   RECTANGLE_TYPES.includes(parse.next)
         ||  PROPERTY_TYPES.includes(parse.next))
-        rect.input = genParse(parse); // not genParseRectangle() because genParse() handles stack overflow
+        rect.input = genParse(parse);
 
 
     const nParamIds = genParseParamCount(parse);
@@ -10514,7 +10552,7 @@ class Parse
 
 
 
-    constructor(request, updateNodeId, updateParamId, enableLxxColorSpaces, logRequests)
+    constructor(request, updateNodeId, updateParamId, includeLxxColorSpaces, logRequests)
     {
         this.request       = request;
           
@@ -10525,8 +10563,8 @@ class Parse
         this.updateParamId = updateParamId;
    
         
-        this.settings.enableLxxColorSpaces = enableLxxColorSpaces;
-        this.settings.logRequests          = logRequests;
+        this.settings.includeLxxColorSpaces = includeLxxColorSpaces;
+        this.settings.logRequests           = logRequests;
     }
 
 
@@ -12078,7 +12116,7 @@ function colorSpaceCount(parse = null)
 { 
     const set = parse ? parse.settings : settings;
 
-    return set.enableLxxColorSpaces 
+    return set.includeLxxColorSpaces 
            ? OpColorSpaces.length
            : OpColorSpaces.length - 3; 
 }
@@ -21084,10 +21122,10 @@ extends GShapeBase
         if (this.input)
         {
             this.input.eval(parse);
-
-            while (  !RECTANGLE_TYPES.includes(this.input.type)
-                   && this.input.input)
-                this.input = this.input.input;
+console.log(this.nodeId + '.input =', this.input);
+            // while (  !RECTANGLE_TYPES.includes(this.input.type)
+            //        && this.input.input)
+            //     this.input = this.input.input;
         }
 
 
@@ -21834,9 +21872,9 @@ extends GShapeBase
             this.input.eval(parse);
             this.objects = this.input.objects;
 
-            while (   !STROKE_TYPES.includes(this.input.type)
-                   && this.input.input)
-                this.input = this.input.input;
+            // while (   !STROKE_TYPES.includes(this.input.type)
+            //        && this.input.input)
+            //     this.input = this.input.input;
         }
 
 
@@ -21861,11 +21899,12 @@ extends GShapeBase
 
     getParams()
     {
-        return [this.fill   ? this.fill   : this.input && isEmpty(this.input.objects) ? this.input.fill   : null,
-                this.weight ? this.weight : this.input                                ? this.input.weight : null,
-                this.fit    ? this.fit    : this.input                                ? this.input.fit    : null,
-                this.join   ? this.join   : this.input                                ? this.input.join   : null,
-                this.miter  ? this.miter  : this.input                                ? this.input.miter  : null];
+        // console.log('this.input =', this.input);
+        return [this.fill   ? this.fill   : this.input && !isEmpty(this.input.objects) ? this.input.fill   : null,
+                this.weight ? this.weight : this.input                                 ? this.input.weight : null,
+                this.fit    ? this.fit    : this.input                                 ? this.input.fit    : null,
+                this.join   ? this.join   : this.input                                 ? this.input.join   : null,
+                this.miter  ? this.miter  : this.input                                 ? this.input.miter  : null];
     }
 
 
@@ -21874,6 +21913,11 @@ extends GShapeBase
     {
         const [fill, weight, fit, join, miter] = this.getParams();
         
+        console.log('fill =', fill);
+        console.log('weight =', weight);
+        console.log('fit =', fit);
+        console.log('join =', join);
+        console.log('miter =', miter);
         if (   !fill
             || !weight
             || !fit
@@ -21947,23 +21991,24 @@ extends GShapeBase
 
 const settings =
 {
-    enableLxxColorSpaces: false,
+    includeLxxColorSpaces: false,
+    debugMode:             false,
 
-    showNodeId:           false, // instead of name
-    showWires:            true,
+    showNodeId:            false, // instead of name
+    showWires:             true,
     
-    logMessages:          false,
-    logActions:           false, 
+    logMessages:           false,
+    logActions:            false, 
     
-    logLoading:           false, 
-    logRequests:          false, 
-    logValueUpdates:      false, 
-    logObjectUpdates:     false,
+    logLoading:            false, 
+    logRequests:           false, 
+    logValueUpdates:       false, 
+    logObjectUpdates:      false,
     
-    logRawLoading:        false, 
-    logRawSaving:         false, 
-    logRawRequests:       false, 
-    logRawValues:         false    
+    logRawLoading:         false, 
+    logRawSaving:          false, 
+    logRawRequests:        false, 
+    logRawValues:          false    
 };
 
 
@@ -21972,22 +22017,23 @@ function updateSetting(settingName, value)
 {
     switch (settingName)
     {
-        case 'enableLxxColorSpaces': settings.enableLxxColorSpaces = value;  break;
+        case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
+        case 'debugMode':             settings.debugMode             = value;  break;
 
-        case 'showNodeId':           settings.showNodeId           = value;  break;
-        case 'showWires':            settings.showWires            = value;  break;
-
-        case 'logMessages':          settings.logMessages          = value;  break;
-        case 'logActions':           settings.logActions           = value;  break;
-        case 'logLoading':           settings.logLoading           = value;  break;
-        case 'logRequests':          settings.logRequests          = value;  break;
-        case 'logValueUpdates':      settings.logValueUpdates      = value;  break;
-        case 'logObjectUpdates':     settings.logObjectUpdates     = value;  break;
-
-        case 'logRawLoading':        settings.logRawLoading        = value;  break;
-        case 'logRawSaving':         settings.logRawSaving         = value;  break;
-        case 'logRawRequests':       settings.logRawRequests       = value;  break;
-        case 'logRawValues':         settings.logRawValues         = value;  break;
+        case 'showNodeId':            settings.showNodeId             = value;  break;
+        case 'showWires':             settings.showWires              = value;  break;
+   
+        case 'logMessages':           settings.logMessages            = value;  break;
+        case 'logActions':            settings.logActions             = value;  break;
+        case 'logLoading':            settings.logLoading             = value;  break;
+        case 'logRequests':           settings.logRequests            = value;  break;
+        case 'logValueUpdates':       settings.logValueUpdates        = value;  break;
+        case 'logObjectUpdates':      settings.logObjectUpdates       = value;  break;
+   
+        case 'logRawLoading':         settings.logRawLoading          = value;  break;
+        case 'logRawSaving':          settings.logRawSaving           = value;  break;
+        case 'logRawRequests':        settings.logRawRequests         = value;  break;
+        case 'logRawValues':          settings.logRawValues           = value;  break;
     } 
 }
 
@@ -21997,22 +22043,23 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 {
     switch (settingName)
     {
-        case 'enableLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemEnableLxxColorSpaces);  break;
+        case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
+        case 'debugMode':             updateSettingAndMenu_(valid, settingName, value, menuItemDebugMode            );  break;
 
-        case 'showNodeId':           updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId          );  break;
-        case 'showWires':            updateSettingAndMenu_(valid, settingName, value, menuItemShowWires           );  break;
-
-        case 'logMessages':          updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages         );  break;
-        case 'logActions':           updateSettingAndMenu_(valid, settingName, value, menuItemLogActions          );  break;
-        case 'logLoading':           updateSettingAndMenu_(valid, settingName, value, menuItemLogLoading          );  break;
-        case 'logRequests':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRequests         );  break;
-        case 'logValueUpdates':      updateSettingAndMenu_(valid, settingName, value, menuItemLogValueUpdates     );  break;
-        case 'logObjectUpdates':     updateSettingAndMenu_(valid, settingName, value, menuItemLogObjectUpdates    );  break;
-
-        case 'logRawLoading':        updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoading       );  break;
-        case 'logRawSaving':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaving        );  break;
-        case 'logRawRequests':       updateSettingAndMenu_(valid, settingName, value, menuItemLogRawRequests      );  break;
-        case 'logRawValues':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawValues        );  break;
+        case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
+        case 'showWires':             updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
+ 
+        case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
+        case 'logActions':            updateSettingAndMenu_(valid, settingName, value, menuItemLogActions           );  break;
+        case 'logLoading':            updateSettingAndMenu_(valid, settingName, value, menuItemLogLoading           );  break;
+        case 'logRequests':           updateSettingAndMenu_(valid, settingName, value, menuItemLogRequests          );  break;
+        case 'logValueUpdates':       updateSettingAndMenu_(valid, settingName, value, menuItemLogValueUpdates      );  break;
+        case 'logObjectUpdates':      updateSettingAndMenu_(valid, settingName, value, menuItemLogObjectUpdates     );  break;
+  
+        case 'logRawLoading':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoading        );  break;
+        case 'logRawSaving':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaving         );  break;
+        case 'logRawRequests':        updateSettingAndMenu_(valid, settingName, value, menuItemLogRawRequests       );  break;
+        case 'logRawValues':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRawValues         );  break;
     } 
 
     if (save)
@@ -22033,32 +22080,61 @@ function updateSettingAndMenu_(valid, setting, value, menu)
 
 function updateSettingsMenus()
 {
-    menuItemEnableLxxColorSpaces.setChecked(settings.enableLxxColorSpaces);
+    menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
+    menuItemDebugMode            .setChecked(settings.debugMode            );
 
-    menuItemShowNodeId          .setChecked(settings.showNodeId          );
-    menuItemShowWires           .setChecked(settings.showWires           );
+    menuItemDebug                .setVisible(settings.debugMode            );
 
-    menuItemLogMessages         .setChecked(settings.logMessages         );
-    menuItemLogActions          .setChecked(settings.logActions          );
-
-    menuItemLogLoading          .setChecked(settings.logLoading          );
-    menuItemLogRequests         .setChecked(settings.logRequests         );
-    menuItemLogValueUpdates     .setChecked(settings.logValueUpdates     );
-    menuItemLogObjectUpdates    .setChecked(settings.logObjectUpdates    );
-
-    menuItemLogRawLoading       .setChecked(settings.logRawLoading       );
-    menuItemLogRawSaving        .setChecked(settings.logRawSaving        );
-    menuItemLogRawRequests      .setChecked(settings.logRawRequests      );
-    menuItemLogRawValues        .setChecked(settings.logRawValues        );
+    menuItemShowNodeId           .setChecked(settings.showNodeId           );
+    menuItemShowWires            .setChecked(settings.showWires            );
+  
+    menuItemLogMessages          .setChecked(settings.logMessages          );
+    menuItemLogActions           .setChecked(settings.logActions           );
+  
+    menuItemLogLoading           .setChecked(settings.logLoading           );
+    menuItemLogRequests          .setChecked(settings.logRequests          );
+    menuItemLogValueUpdates      .setChecked(settings.logValueUpdates      );
+    menuItemLogObjectUpdates     .setChecked(settings.logObjectUpdates     );
+  
+    menuItemLogRawLoading        .setChecked(settings.logRawLoading        );
+    menuItemLogRawSaving         .setChecked(settings.logRawSaving         );
+    menuItemLogRawRequests       .setChecked(settings.logRawRequests       );
+    menuItemLogRawValues         .setChecked(settings.logRawValues         );
 }
 
 
 
-function updateEnableLxxColorSpace()
+function updateMenuItemIncludeLxxColorSpace()
 {
     graph.nodes
         .filter(n => COLOR_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
+}
+
+
+
+function loadLocalSettings()
+{
+    uiGetLocalData('graphView');
+
+    uiGetLocalData('includeLxxColorSpaces');
+    uiGetLocalData('debugMode'            );
+
+    uiGetLocalData('showNodeId'           );
+    uiGetLocalData('showWires'            );
+ 
+    uiGetLocalData('logMessages'          );
+    uiGetLocalData('logActions'           );
+
+    uiGetLocalData('logLoading'           );
+    uiGetLocalData('logRequests'          );
+    uiGetLocalData('logValueUpdates'      );
+    uiGetLocalData('logObjectUpdates'     );
+
+    uiGetLocalData('logRawLoading'        );
+    uiGetLocalData('logRawSaving'         );
+    uiGetLocalData('logRawRequests'       );
+    uiGetLocalData('logRawValues'         );
 }
 
 
@@ -22310,7 +22386,11 @@ var menuShape;
 var menuZoom;
 
 
-var menuItemEnableLxxColorSpaces;
+var menuItemIncludeLxxColorSpaces;
+var menuItemDebugMode;
+
+var menuItemDebug;
+var menuItemHelp;
 
 var menuItemShowNodeId;
 var menuItemShowWires;
@@ -22333,17 +22413,18 @@ var menuItemZoomTo100;
 function initMenuBar()
 {
     menuMainPreferences = new Menu('Preferences', false);
-    menuMainPreferences.addItems([ 
-        menuItemEnableLxxColorSpaces = new MenuItem('Enable Lxx color spaces', {checkCallback: () => settings.enableLxxColorSpaces, callback: () => updateSettingAndMenu('enableLxxColorSpaces', true, !settings.enableLxxColorSpaces)})]);
+    menuMainPreferences.addItems([
+        menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces', {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace();         }}),
+        menuItemDebugMode             = new MenuItem('Debug mode',               {checkCallback: () => settings.debugMode,             callback: () => { updateSettingAndMenu('debugMode',             true, !settings.debugMode            ); menuItemDebug.setVisible(settings.debugMode); }})]);
 
-
+    
     menuMainDebugLoggingRaw = new Menu('Raw', false);
     menuMainDebugLoggingRaw.addItems([
-        menuItemLogRawLoading    = new MenuItem('Raw loading',  {checkCallback: () => settings.logRawLoading   , callback: () => { updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading );  updateEnableLxxColorSpace(); }}),
-        menuItemLogRawSaving     = new MenuItem('Raw saving',   {checkCallback: () => settings.logRawSaving    , callback: () =>   updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving  )}),
+        menuItemLogRawLoading    = new MenuItem('Raw loading',  {checkCallback: () => settings.logRawLoading , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading )}),
+        menuItemLogRawSaving     = new MenuItem('Raw saving',   {checkCallback: () => settings.logRawSaving  , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving  )}),
                                    new MenuItem('',             {separator: true}),
-        menuItemLogRawRequests   = new MenuItem('Raw requests', {checkCallback: () => settings.logRawRequests  , callback: () =>   updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests)}),
-        menuItemLogRawValues     = new MenuItem('Raw values',   {checkCallback: () => settings.logRawValues    , callback: () =>   updateSettingAndMenu('logRawValues',     true, !settings.logRawValues  )})]);
+        menuItemLogRawRequests   = new MenuItem('Raw requests', {checkCallback: () => settings.logRawRequests, callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests)}),
+        menuItemLogRawValues     = new MenuItem('Raw values',   {checkCallback: () => settings.logRawValues  , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues  )})]);
 
 
     menuMainDebugLogging = new Menu('Logging', false);
@@ -22393,10 +22474,10 @@ function initMenuBar()
 
     menuMain = new Menu('Main menu', false);
     menuMain.addItems([
-                       new MenuItem('Preferences',         {childMenu: menuMainPreferences}),
-                       new MenuItem('Debug',               {childMenu: menuMainDebug}),
-                       new MenuItem('',                    {separator: true}),
-        menuMainHelp = new MenuItem('Help and activation', {childMenu: menuMainHelp })]);
+                        new MenuItem('Preferences',         {childMenu: menuMainPreferences}),
+        menuItemDebug = new MenuItem('Debug',               {childMenu: menuMainDebug}),
+                        new MenuItem('',                    {separator: true}),
+        menuItemHelp  = new MenuItem('Help and activation', {childMenu: menuMainHelp })]);
   
         
     menuNumber = new Menu('Number nodes');
@@ -22933,7 +23014,14 @@ class MenuItem
         this.update();
     }
     
-    
+
+    setVisible(visible)
+    {
+        menuItemDebug.div.style.display = visible ? 'inline-block' : 'none';
+    }
+
+
+
     update()
     {
         this.divCheck.style.visibility = this.checked ? 'visible' : 'hidden';
@@ -31359,11 +31447,14 @@ class Operator
 
 
 
-    toString() 
-    { 
-        // create the generator string here
+    input_getValuesForUndo()
+    {
+        const values = [];
 
-        return '';
+        for (const param of this.node.params)
+            values.push([param.id, param.value]);
+
+        return values;
     }
 
 
@@ -31506,7 +31597,7 @@ class Operator
         else if (        outputHeight > inputHeight ) for (let i = 0; i < inputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
 
 
-        for (let i = 0; i < inputs.length; i++) 
+        for (let i = 0; i < inputs.length; i++)
         {
             inputs[i].control.style.top = inputY[i];
             inputs[i].updateControl();
@@ -31664,6 +31755,15 @@ class Operator
                 this.params[index].loadParam(_param[1]);
         }
     }
+
+
+
+    toString() 
+    { 
+        // create the generator string here
+
+        return '';
+    }
 }
 
 
@@ -31698,8 +31798,8 @@ function pushUpdateFromParam(nodes, param)
 
     
     const set =
-          ((settings.enableLxxColorSpaces ? 1 : 0) << 0)
-        | ((settings.logRequests          ? 1 : 0) << 1);
+          ((settings.includeLxxColorSpaces ? 1 : 0) << 0)
+        | ((settings.logRequests           ? 1 : 0) << 1);
 
 
     const request = [set.toString()];
@@ -32746,15 +32846,6 @@ extends OperatorBase
 
 
 
-    input_getValuesForUndo()
-    {
-        return [[
-            this.node.paramValue.id, 
-            this.node.paramValue.value]];
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output        
@@ -33781,21 +33872,6 @@ extends OpColorBase
 
 
 
-    input_getValuesForUndo()
-    {
-        return [ 
-            [this.node.param1.id, 
-             this.node.param1.value],
-
-            [this.node.param2.id, 
-             this.node.param2.value],
-
-            [this.node.param3.id, 
-             this.node.param3.value]];
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -34252,7 +34328,7 @@ function colorSpaceCount(parse = null)
 { 
     const set = parse ? parse.settings : settings;
 
-    return set.enableLxxColorSpaces 
+    return set.includeLxxColorSpaces 
            ? OpColorSpaces.length
            : OpColorSpaces.length - 3; 
 }
@@ -36489,18 +36565,6 @@ extends OpColorBase
     
     
     
-    input_getValuesForUndo()
-    {
-        return [ 
-            [this.node.paramColor  .id, 
-             this.node.paramColor  .value],
-
-            [this.node.paramOpacity.id, 
-             this.node.paramOpacity.value] ];
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -36766,27 +36830,6 @@ extends OpColorBase
     
     
     
-    input_getValuesForUndo()
-    {
-        return [ 
-            [this.node.paramFill  .id, 
-             this.node.paramFill  .value],
-
-            [this.node.paramWeight.id, 
-             this.node.paramWeight.value],
-
-            [this.node.paramFit   .id, 
-             this.node.paramFit   .value],
-
-            [this.node.paramJoin  .id, 
-             this.node.paramJoin  .value],
-
-            [this.node.paramMiter .id, 
-             this.node.paramMiter .value]];
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -36813,10 +36856,13 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
             for (const param of this.node.params)
-                if (      param.input 
-                       && param.input.connected
-                       && param.canShow()
-                    || arraysIntersect(SHAPE_TYPES, input.connectedOutput.types)) 
+                if ((         param.input 
+                           && param.input.connected
+                           && param.canShow()
+                           //&& !arraysIntersect(STROKE_TYPES, input.connectedOutput.types)
+                        //|| param.id == 'fill')
+                        || arraysIntersect(SHAPE_TYPES, input.connectedOutput.types))
+                     && !arraysIntersect(STROKE_TYPES, input.connectedOutput.types))
                     paramIds.push(param.id);
         }
         else
@@ -36846,7 +36892,8 @@ extends OpColorBase
         const fill = values[paramIds.findIndex(id => id == 'fill')];
 
         this._color = 
-            fill.isValid()
+               fill
+            && fill.isValid()
             ? fill.color.toDataColor()
             : dataColor_NaN;
 
@@ -36923,7 +36970,7 @@ extends OpColorBase
  
         const enable = 
                !this.inputs[0].connected
-            || !arraysIntersect( SHAPE_TYPES, this.inputs[0].connectedOutput.types)
+            //|| !arraysIntersect( SHAPE_TYPES, this.inputs[0].connectedOutput.types)
             || !arraysIntersect(STROKE_TYPES, this.inputs[0].connectedOutput.types);
 
         this.paramFill  .enableControlText(enableFill);
@@ -37232,8 +37279,6 @@ extends OperatorBase
         this.addInput (new Input([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([RECTANGLE], this.output_genRequest));
 
-        // this.initContentInput(this.inputs[0]);
-
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
@@ -37253,30 +37298,6 @@ extends OperatorBase
     
     
     
-    input_getValuesForUndo()
-    {
-        return [ 
-            [this.node.paramX     .id, 
-             this.node.paramX     .value],
-
-            [this.node.paramY     .id, 
-             this.node.paramY     .value],
-
-            [this.node.paramWidth .id, 
-             this.node.paramWidth .value],
-
-            [this.node.paramHeight.id, 
-             this.node.paramHeight.value],
-
-            [this.node.paramAngle .id, 
-             this.node.paramAngle .value],
-
-            [this.node.paramRound .id, 
-             this.node.paramRound .value] ];
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -39873,7 +39894,7 @@ var genMessages = []; // messages from UI to Generator
 var genMessagePosted = false;
 
 
-//uiClearAllLocalData();
+// uiClearAllLocalData();
 
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');
@@ -39925,28 +39946,9 @@ function uiEndStartGenerator(msg)
     productKey  = msg.productKey;
 
 
-    uiGetLocalData('graphView');
+    loadLocalSettings();
 
-
-    uiGetLocalData('enableLxxColorSpaces');
-
-    uiGetLocalData('showNodeId'          );
-    uiGetLocalData('showWires'           );
-
-    uiGetLocalData('logMessages'         );
-    uiGetLocalData('logActions'          );
-
-    uiGetLocalData('logLoading'          );
-    uiGetLocalData('logRequests'         );
-    uiGetLocalData('logValueUpdates'     );
-    uiGetLocalData('logObjectUpdates'    );
-
-    uiGetLocalData('logRawLoading'       );
-    uiGetLocalData('logRawSaving'        );
-    uiGetLocalData('logRawRequests'      );
-    uiGetLocalData('logRawValues'        );
-
-
+    
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
 
 
@@ -40404,7 +40406,8 @@ function uiGetLocalDataReturn(msg)
             graphView.updatePanAndZoom();
             break;
 
-        case 'enableLxxColorSpaces':       
+        case 'includeLxxColorSpaces':
+        case 'debugMode':
 
         case 'showNodeId':       
         case 'showWires':        
@@ -40431,6 +40434,10 @@ function uiGetLocalDataReturn(msg)
 
             break;
     }
+
+
+    if (msg.key == 'debugMode')
+        menuItemDebug.setVisible(settings.debugMode);
 }
 
 

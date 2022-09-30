@@ -188,7 +188,14 @@ class MenuItem
         this.update();
     }
     
-    
+
+    setVisible(visible)
+    {
+        menuItemDebug.div.style.display = visible ? 'inline-block' : 'none';
+    }
+
+
+
     update()
     {
         this.divCheck.style.visibility = this.checked ? 'visible' : 'hidden';

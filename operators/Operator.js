@@ -354,11 +354,14 @@ class Operator
 
 
 
-    toString() 
-    { 
-        // create the generator string here
+    input_getValuesForUndo()
+    {
+        const values = [];
 
-        return '';
+        for (const param of this.node.params)
+            values.push([param.id, param.value]);
+
+        return values;
     }
 
 
@@ -501,7 +504,7 @@ class Operator
         else if (        outputHeight > inputHeight ) for (let i = 0; i < inputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
 
 
-        for (let i = 0; i < inputs.length; i++) 
+        for (let i = 0; i < inputs.length; i++)
         {
             inputs[i].control.style.top = inputY[i];
             inputs[i].updateControl();
@@ -659,6 +662,15 @@ class Operator
                 this.params[index].loadParam(_param[1]);
         }
     }
+
+
+
+    toString() 
+    { 
+        // create the generator string here
+
+        return '';
+    }
 }
 
 
@@ -693,8 +705,8 @@ function pushUpdateFromParam(nodes, param)
 
     
     const set =
-          ((settings.enableLxxColorSpaces ? 1 : 0) << 0)
-        | ((settings.logRequests          ? 1 : 0) << 1);
+          ((settings.includeLxxColorSpaces ? 1 : 0) << 0)
+        | ((settings.logRequests           ? 1 : 0) << 1);
 
 
     const request = [set.toString()];

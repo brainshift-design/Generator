@@ -54,9 +54,9 @@ extends GShapeBase
             this.input.eval(parse);
             this.objects = this.input.objects;
 
-            while (   !STROKE_TYPES.includes(this.input.type)
-                   && this.input.input)
-                this.input = this.input.input;
+            // while (   !STROKE_TYPES.includes(this.input.type)
+            //        && this.input.input)
+            //     this.input = this.input.input;
         }
 
 
@@ -81,11 +81,12 @@ extends GShapeBase
 
     getParams()
     {
-        return [this.fill   ? this.fill   : this.input && isEmpty(this.input.objects) ? this.input.fill   : null,
-                this.weight ? this.weight : this.input                                ? this.input.weight : null,
-                this.fit    ? this.fit    : this.input                                ? this.input.fit    : null,
-                this.join   ? this.join   : this.input                                ? this.input.join   : null,
-                this.miter  ? this.miter  : this.input                                ? this.input.miter  : null];
+        // console.log('this.input =', this.input);
+        return [this.fill   ? this.fill   : this.input && !isEmpty(this.input.objects) ? this.input.fill   : null,
+                this.weight ? this.weight : this.input                                 ? this.input.weight : null,
+                this.fit    ? this.fit    : this.input                                 ? this.input.fit    : null,
+                this.join   ? this.join   : this.input                                 ? this.input.join   : null,
+                this.miter  ? this.miter  : this.input                                 ? this.input.miter  : null];
     }
 
 
@@ -94,6 +95,11 @@ extends GShapeBase
     {
         const [fill, weight, fit, join, miter] = this.getParams();
         
+        console.log('fill =', fill);
+        console.log('weight =', weight);
+        console.log('fit =', fit);
+        console.log('join =', join);
+        console.log('miter =', miter);
         if (   !fill
             || !weight
             || !fit

@@ -4,7 +4,7 @@ var genMessages = []; // messages from UI to Generator
 var genMessagePosted = false;
 
 
-//uiClearAllLocalData();
+// uiClearAllLocalData();
 
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');
@@ -56,28 +56,9 @@ function uiEndStartGenerator(msg)
     productKey  = msg.productKey;
 
 
-    uiGetLocalData('graphView');
+    loadLocalSettings();
 
-
-    uiGetLocalData('enableLxxColorSpaces');
-
-    uiGetLocalData('showNodeId'          );
-    uiGetLocalData('showWires'           );
-
-    uiGetLocalData('logMessages'         );
-    uiGetLocalData('logActions'          );
-
-    uiGetLocalData('logLoading'          );
-    uiGetLocalData('logRequests'         );
-    uiGetLocalData('logValueUpdates'     );
-    uiGetLocalData('logObjectUpdates'    );
-
-    uiGetLocalData('logRawLoading'       );
-    uiGetLocalData('logRawSaving'        );
-    uiGetLocalData('logRawRequests'      );
-    uiGetLocalData('logRawValues'        );
-
-
+    
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
 
 
