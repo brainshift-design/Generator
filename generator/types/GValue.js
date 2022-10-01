@@ -2,7 +2,6 @@ class GValue
 {
     type;
 
-    result;
     valid; // has been evaluated
 
     topLevel;
@@ -15,7 +14,6 @@ class GValue
     {
         this.type     = type;
 
-        this.result   = null;
         this.valid    = false;
 
         this.topLevel = false;

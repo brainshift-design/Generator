@@ -186,7 +186,7 @@ function initMenuBar()
     menuColor = new Menu('Color nodes');
     menuColor.addItems([
         new MenuItem('Color',        {icon: iconColor           , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div))}),
-        //new MenuItem('Random color', {icon: iconColorRandom     , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div, {random: true}))}),
+        //new MenuItem('Random color', {icon: iconColorRandom   , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div, {random: true}))}),
         //new MenuItem('',             {separator: true}),
         new MenuItem('Interpolate',  {icon: iconColorInterpolate, enabled: false}),
         new MenuItem('Validate',     {icon: iconColorValidate   , enabled: false}),
