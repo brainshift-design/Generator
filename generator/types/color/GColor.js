@@ -19,34 +19,34 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const col = new GColor(this.nodeId, this.options);
+    // copy()
+    // {
+    //     const col = new GColor(this.nodeId, this.options);
 
-        if (this.input) 
-            col.input = this.input.copy();
+    //     if (this.input) 
+    //         col.input = this.input.copy();
 
-        col.space = this.space.copy();
+    //     col.space = this.space.copy();
 
-        if (this.convert) 
-            col.convert = this.convert.copy();
+    //     if (this.convert) 
+    //         col.convert = this.convert.copy();
 
-        if (this.c1) col.c1 = this.c1.copy();
-        if (this.c2) col.c2 = this.c2.copy();
-        if (this.c3) col.c3 = this.c3.copy();
+    //     if (this.c1) col.c1 = this.c1.copy();
+    //     if (this.c2) col.c2 = this.c2.copy();
+    //     if (this.c3) col.c3 = this.c3.copy();
 
-        return col;
-    }
+    //     return col;
+    // }
 
 
 
-    isValid()
-    {
-        return this.space.isValid()
-            && this.c1   .isValid()
-            && this.c2   .isValid()
-            && this.c3   .isValid();
-    }
+    // isValid()
+    // {
+    //     return this.space.isValid()
+    //         && this.c1   .isValid()
+    //         && this.c2   .isValid()
+    //         && this.c3   .isValid();
+    // }
 
 
 

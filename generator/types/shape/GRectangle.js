@@ -54,20 +54,20 @@ extends GShapeBase
             && RECTANGLE_TYPES.includes(this.input.type);   
 
             
-        if (hasInput && !this.x     ) this.x      = this.input.x;     
-        if (hasInput && !this.y     ) this.y      = this.input.y;     
-        if (hasInput && !this.width ) this.width  = this.input.width; 
-        if (hasInput && !this.height) this.height = this.input.height;
-        if (hasInput && !this.angle ) this.angle  = this.input.angle; 
-        if (hasInput && !this.round ) this.round  = this.input.round; 
+        if (this.x     ) this.x     .eval(); else if (hasInput) this.x      = this.input.x;
+        if (this.y     ) this.y     .eval(); else if (hasInput) this.y      = this.input.y;
+        if (this.width ) this.width .eval(); else if (hasInput) this.width  = this.input.width;
+        if (this.height) this.height.eval(); else if (hasInput) this.height = this.input.height;
+        if (this.angle ) this.angle .eval(); else if (hasInput) this.angle  = this.input.angle;
+        if (this.round ) this.round .eval(); else if (hasInput) this.round  = this.input.round;
 
         
-        if (this.x     ) { this.x     .eval(parse); genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue()); }
-        if (this.y     ) { this.y     .eval(parse); genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue()); }
-        if (this.width ) { this.width .eval(parse); genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue()); }
-        if (this.height) { this.height.eval(parse); genPushUpdateValue(parse, this.nodeId, 'height', this.height.toValue()); }
-        if (this.angle ) { this.angle .eval(parse); genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue()); }
-        if (this.round ) { this.round .eval(parse); genPushUpdateValue(parse, this.nodeId, 'round',  this.round .toValue()); }
+        if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
+        if (this.y     ) genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
+        if (this.width ) genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
+        if (this.height) genPushUpdateValue(parse, this.nodeId, 'height', this.height.toValue());
+        if (this.angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
+        if (this.round ) genPushUpdateValue(parse, this.nodeId, 'round',  this.round .toValue());
 
 
         if (    hasInput
