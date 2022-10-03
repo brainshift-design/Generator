@@ -115,18 +115,20 @@ extends OpColorBase
 
     updateColorControl()
     {
-        if (this.paramOpacity.value.isValid())
-            this.paramColor.checkers.style.opacity = 
-                this.inputIsShape 
-                ? (100 - this.paramOpacity.value.toNumber()) + '%'
-                : 0;
-
-
         const colors = this.getHeaderColors({color: true});
 
         colors.text   = getTextColorFromBackColor(colors.back, this.inputIsShape ? colors.back[3] : 1);
         colors.input  = rgb_a(colors.text, 0.2);
         colors.output = rgb_a(colors.text, 0.2);
+
+
+        this.paramColor.checkers.style.display = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
+
+        if (this.paramOpacity.value.isValid())
+            this.paramColor.checkers.style.opacity = 
+                this.inputIsShape 
+                ? (100 - this.paramOpacity.value.toNumber()) + '%'
+                : 0;
 
 
         this.paramColor.control. backStyleLight = 
@@ -245,6 +247,9 @@ extends OpColorBase
 
     updateParams()
     {
+        if (this.inputs[0].connected)
+            console.log('intersect =', arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types));
+        
         const enable = 
                !this.inputs[0].connected
             ||  arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types);

@@ -95,11 +95,6 @@ extends GShapeBase
     {
         const [fill, weight, fit, join, miter] = this.getParams();
         
-        console.log('fill =', fill);
-        console.log('weight =', weight);
-        console.log('fit =', fit);
-        console.log('join =', join);
-        console.log('miter =', miter);
         if (   !fill
             || !weight
             || !fit

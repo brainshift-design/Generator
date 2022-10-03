@@ -207,7 +207,7 @@ function arraysEqual(arr1, arr2)
 
 function arraysIntersect(array1, array2)
 {
-    return array1.find(i => array2.includes(i));
+    return array1.findIndex(i => array2.includes(i)) > -1;
 }
 
 
