@@ -60,6 +60,7 @@ extends Parameter
         this.checkers.style.position      = 'absolute';
         this.checkers.style.width         = '100%';
         this.checkers.style.height        = '20px';
+        this.checkers.style.display       = 'none';
         this.checkers.style.pointerEvents = 'none';
 
 
@@ -170,7 +171,7 @@ extends Parameter
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
+        //this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
 
         this.checkers.style.backgroundSize     = '20px 20px';
