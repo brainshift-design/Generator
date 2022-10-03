@@ -3222,12 +3222,12 @@ extends GValue
 
 
 
-function evalValue(value)
-{
-    return value instanceof GOperator 
-           ? value.value 
-           : value;
-}
+// function evalValue(value)
+// {
+//     return value instanceof GOperator 
+//            ? value.value 
+//            : value;
+// }
 
 
 class GParam
@@ -5432,10 +5432,15 @@ extends GOperator
         }
 
 
-        genPushUpdateValue(parse, this.nodeId, 'space', color.space);
-        genPushUpdateValue(parse, this.nodeId, 'c1',    color.c1   );
-        genPushUpdateValue(parse, this.nodeId, 'c2',    color.c2   );
-        genPushUpdateValue(parse, this.nodeId, 'c3',    color.c3   );
+        this.space = color.space;
+        this.c1    = color.c1;
+        this.c2    = color.c2;
+        this.c3    = color.c3;
+
+        if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue());
+        if (this.space) genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .toValue());
+        if (this.space) genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .toValue());
+        if (this.space) genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .toValue());
 
 
         this.valid = true;
@@ -5463,10 +5468,10 @@ extends GOperator
     toValue()
     {
         return new ColorValue(
-            this.space ? this.space.toValue() : this.input.space.toValue(),
-            this.c1    ? this.c1   .toValue() : this.input.c1   .toValue(),
-            this.c2    ? this.c2   .toValue() : this.input.c2   .toValue(),
-            this.c3    ? this.c3   .toValue() : this.input.c3   .toValue());
+            this.space ? this.space.toValue() : NumberValue.NaN,
+            this.c1    ? this.c1   .toValue() : NumberValue.NaN,
+            this.c2    ? this.c2   .toValue() : NumberValue.NaN,
+            this.c3    ? this.c3   .toValue() : NumberValue.NaN);
     }
 }
 

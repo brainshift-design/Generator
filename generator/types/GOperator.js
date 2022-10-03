@@ -24,9 +24,9 @@ extends GValue
 
 
 
-function evalValue(value)
-{
-    return value instanceof GOperator 
-           ? value.value 
-           : value;
-}
+// function evalValue(value)
+// {
+//     return value instanceof GOperator 
+//            ? value.value 
+//            : value;
+// }
