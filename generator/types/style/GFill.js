@@ -84,7 +84,7 @@ extends GShapeBase
 
         const rgb = scaleRgb(color.toValue().toRgb());
 
-
+        
         for (const obj of this.objects)
         {
             if (!obj.fills) 
@@ -95,7 +95,7 @@ extends GShapeBase
                         rgb[0]
                 + ' ' + rgb[1]
                 + ' ' + rgb[2]
-                + ' ' + this.opacity.toValue().toNumber()]);
+                + ' ' + opacity.toValue().toNumber()]);
         }
 
         

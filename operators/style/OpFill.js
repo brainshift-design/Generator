@@ -33,10 +33,6 @@ extends OpColorBase
         this.addOutput(new Output([FILL], this.output_genRequest));
 
 
-        this.inputs[0].addEventListener('connect',    () =>   this.outputs[0].types.push(...this.inputs[0].connectedOutput.types));
-        this.inputs[0].addEventListener('disconnect', () => { this.outputs[0].types = [FILL]; uiDeleteObjects([this.id]); });
-
-
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
@@ -107,6 +103,14 @@ extends OpColorBase
             color.isValid()
             ? color.toDataColor()
             : dataColor_NaN;
+
+
+        this.outputs[0].types =
+               this.inputs[0].connected
+            && arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types)
+            ? [...this.inputs[0].connectedOutput.types, FILL]
+            : [FILL];
+
 
         super.updateValues(updateParamId, paramIds, values);
     }
@@ -247,9 +251,6 @@ extends OpColorBase
 
     updateParams()
     {
-        if (this.inputs[0].connected)
-            console.log('intersect =', arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types));
-        
         const enable = 
                !this.inputs[0].connected
             ||  arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types);
