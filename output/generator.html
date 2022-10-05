@@ -6735,21 +6735,23 @@ extends GShapeBase
             return;
 
 
-        if (this.color  ) this.color  .eval(parse);
-        if (this.opacity) this.opacity.eval(parse);
-
-        
         if (this.input)
         {
             this.input.eval(parse);
             this.objects = this.input.objects;
         }
 
+        const hasInput =     
+               this.input 
+            && FILL_TYPES.includes(this.input.type);   
 
-        const [color, opacity] = this.getParams();
 
-        if (color  ) genPushUpdateValue(parse, this.nodeId, 'color',   color  .toValue());
-        if (opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', opacity.toValue());
+        if (this.color  ) this.color  .eval(parse); else if (hasInput) this.color   = this.input.color;
+        if (this.opacity) this.opacity.eval(parse); else if (hasInput) this.opacity = this.input.opacity;
+
+
+        if (this.color  ) genPushUpdateValue(parse, this.nodeId, 'color',   this.color  .toValue());
+        if (this.opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity.toValue());
 
         
         if (   this.options.active
@@ -6762,24 +6764,13 @@ extends GShapeBase
 
 
 
-    getParams()
-    {
-        return [this.color   ? this.color   : this.input ? this.input.color   : null,
-                this.opacity ? this.opacity : this.input ? this.input.opacity : null];
-    }
-
-
-
     evalObjects()
     {
-        const [color, opacity] = this.getParams();
-
-        if (   !color
-            || !opacity)
+        if (!this.objects)
             return;
 
 
-        const rgb = scaleRgb(color.toValue().toRgb());
+        const rgb = scaleRgb(this.color.toValue().toRgb());
 
         
         for (const obj of this.objects)
@@ -6792,7 +6783,7 @@ extends GShapeBase
                         rgb[0]
                 + ' ' + rgb[1]
                 + ' ' + rgb[2]
-                + ' ' + opacity.toValue().toNumber()]);
+                + ' ' + this.opacity.toValue().toNumber()]);
         }
 
         
