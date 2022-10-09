@@ -74,11 +74,12 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
             for (const param of this.node.params)
-                if (   (      param.input 
-                           && param.input.connected
-                           && param.canShow()
-                        || arraysIntersect(OBJECT_TYPES, input.connectedOutput.types))
-                    && !arraysIntersect(STROKE_TYPES, input.connectedOutput.types))
+                if (      (      param.input 
+                              && param.input.connected
+                              && param.canShow()
+                           || arraysIntersect(OBJECT_TYPES, input.connectedOutput.types)
+                       && !arraysIntersect(STROKE_TYPES, input.connectedOutput.types))
+                    || param.id == 'fill')
                     paramIds.push(param.id);
         }
         else
