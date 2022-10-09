@@ -34,8 +34,7 @@ function genParseFill(parse)
     parse.nTab++;
 
 
-    if (    FILL_TYPES.includes(parse.next)
-        || SHAPE_TYPES.includes(parse.next))
+    if (OBJECT_TYPES.includes(parse.next))
         fill.input = genParse(parse);
     // ||    parse.next == PARAM
     //    && FILL_TYPES.includes(parse.afterNext))
@@ -120,8 +119,7 @@ function genParseStroke(parse)
     parse.nTab++;
 
 
-    if (  PROPERTY_TYPES.includes(parse.next)
-        ||   SHAPE_TYPES.includes(parse.next))
+    if (OBJECT_TYPES.includes(parse.next))
         stroke.input = genParse(parse);
         //   parse.next == PARAM
         //   && STROKE_TYPES.includes(parse.afterNext))
