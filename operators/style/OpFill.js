@@ -70,7 +70,7 @@ extends OpColorBase
                 if (      param.input 
                        && param.input.connected
                        && param.canShow()
-                    || arraysIntersect(SHAPE_TYPES, input.connectedOutput.types)) 
+                    || arraysIntersect(OBJECT_TYPES, input.connectedOutput.types)) 
                     paramIds.push(param.id);
         }
         else

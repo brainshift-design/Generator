@@ -97,6 +97,7 @@ const PROPERTY_TYPES =
     ...FILL_TYPES,
     ...STROKE_TYPES,
     ...GRADIENT_TYPES
+    // ...STYLE_TYPES will also be here
 ];
 
 
@@ -141,6 +142,13 @@ const SHAPE_TYPES =
     POLYGON,
     STAR//,
     //TEXT
+];
+
+
+const OBJECT_TYPES = // because they produce or modify objects
+[
+    ...SHAPE_TYPES,
+    ...PROPERTY_TYPES
 ];
 
 

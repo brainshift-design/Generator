@@ -4995,6 +4995,7 @@ const PROPERTY_TYPES =
     ...FILL_TYPES,
     ...STROKE_TYPES,
     ...GRADIENT_TYPES
+    // ...STYLE_TYPES will also be here
 ];
 
 
@@ -5039,6 +5040,13 @@ const SHAPE_TYPES =
     POLYGON,
     STAR//,
     //TEXT
+];
+
+
+const OBJECT_TYPES = // because they produce or modify objects
+[
+    ...SHAPE_TYPES,
+    ...PROPERTY_TYPES
 ];
 
 
@@ -8821,31 +8829,31 @@ extends GShapeBase
             return;
 
 
-        if (this.fill  ) this.fill  .eval(parse);
-        if (this.weight) this.weight.eval(parse);
-        if (this.fit   ) this.fit   .eval(parse);
-        if (this.join  ) this.join  .eval(parse);
-        if (this.miter ) this.miter .eval(parse);            
-
-
         if (this.input)
         {
             this.input.eval(parse);
             this.objects = this.input.objects;
-
-            // while (   !STROKE_TYPES.includes(this.input.type)
-            //        && this.input.input)
-            //     this.input = this.input.input;
         }
 
+        const hasInput =     
+               this.input 
+            && STROKE_TYPES.includes(this.input.type);   
 
-        const [fill, weight, fit, join, miter] = this.getParams();
 
-        if (fill  ) genPushUpdateValue(parse, this.nodeId, 'fill',   fill  .toValue());
-        if (weight) genPushUpdateValue(parse, this.nodeId, 'weight', weight.toValue());
-        if (fit   ) genPushUpdateValue(parse, this.nodeId, 'fit',    fit   .toValue());
-        if (join  ) genPushUpdateValue(parse, this.nodeId, 'join',   join  .toValue());
-        if (miter ) genPushUpdateValue(parse, this.nodeId, 'miter',  miter .toValue());
+        if (this.fill  ) this.fill  .eval(parse); else if (hasInput) this.fill   = this.input.fill; 
+        if (this.weight) this.weight.eval(parse); else if (hasInput) this.weight = this.input.weight;
+        if (this.fit   ) this.fit   .eval(parse); else if (hasInput) this.fit    = this.input.fit;
+        if (this.join  ) this.join  .eval(parse); else if (hasInput) this.join   = this.input.join;
+        if (this.miter ) this.miter .eval(parse); else if (hasInput) this.miter  = this.input.miter;            
+
+
+        // const [fill, weight, fit, join, miter] = this.getParams();
+
+        if (this.fill  ) genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  .toValue());
+        if (this.weight) genPushUpdateValue(parse, this.nodeId, 'weight', this.weight.toValue());
+        if (this.fit   ) genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   .toValue());
+        if (this.join  ) genPushUpdateValue(parse, this.nodeId, 'join',   this.join  .toValue());
+        if (this.miter ) genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter .toValue());
 
 
         if (   this.options.active
@@ -8858,31 +8866,35 @@ extends GShapeBase
 
 
 
-    getParams()
-    {
-        // console.log('this.input =', this.input);
-        return [this.fill   ? this.fill   : this.input && !isEmpty(this.input.objects) ? this.input.fill   : null,
-                this.weight ? this.weight : this.input                                 ? this.input.weight : null,
-                this.fit    ? this.fit    : this.input                                 ? this.input.fit    : null,
-                this.join   ? this.join   : this.input                                 ? this.input.join   : null,
-                this.miter  ? this.miter  : this.input                                 ? this.input.miter  : null];
-    }
+    // getParams()
+    // {
+    //     // console.log('this.input =', this.input);
+    //     return [this.fill   ? this.fill   : this.input && !isEmpty(this.input.objects) ? this.input.fill   : null,
+    //             this.weight ? this.weight : this.input                                 ? this.input.weight : null,
+    //             this.fit    ? this.fit    : this.input                                 ? this.input.fit    : null,
+    //             this.join   ? this.join   : this.input                                 ? this.input.join   : null,
+    //             this.miter  ? this.miter  : this.input                                 ? this.input.miter  : null];
+    // }
 
 
 
     evalObjects()
     {
-        const [fill, weight, fit, join, miter] = this.getParams();
+        // const [fill, weight, fit, join, miter] = this.getParams();
         
-        if (   !fill
-            || !weight
-            || !fit
-            || !join
-            || !miter)
+        // if (   !fill
+        //     || !weight
+        //     || !fit
+        //     || !join
+        //     || !miter)
+        //     return;
+
+
+        if (!this.objects)
             return;
 
 
-        const rgb = scaleRgb(fill.color.toValue().toRgb());
+        const rgb = scaleRgb(this.fill.color.toValue().toRgb());
 
         for (const obj of this.objects)
         {
@@ -8894,26 +8906,26 @@ extends GShapeBase
                         rgb[0]
                 + ' ' + rgb[1]
                 + ' ' + rgb[2]
-                + ' ' + fill.opacity.toValue().value]);
+                + ' ' + this.fill.opacity.toValue().value]);
 
 
-            obj.strokeWeight = weight.toValue().value;
+            obj.strokeWeight = this.weight.toValue().value;
 
-            switch (fit.toValue().value)
+            switch (this.fit.toValue().value)
             {
                 case 0: obj.strokeAlign = 'INSIDE';  break;
                 case 1: obj.strokeAlign = 'CENTER';  break;
                 case 2: obj.strokeAlign = 'OUTSIDE'; break;
             }
             
-            switch (join.toValue().value)
+            switch (this.join.toValue().value)
             {
                 case 0: obj.strokeJoin = 'MITER'; break;
                 case 1: obj.strokeJoin = 'BEVEL'; break;
                 case 2: obj.strokeJoin = 'ROUND'; break;
             }
 
-            obj.strokeMiterLimit = miter.toValue().value;
+            obj.strokeMiterLimit = this.miter.toValue().value;
         }
 
         
@@ -17969,6 +17981,7 @@ const PROPERTY_TYPES =
     ...FILL_TYPES,
     ...STROKE_TYPES,
     ...GRADIENT_TYPES
+    // ...STYLE_TYPES will also be here
 ];
 
 
@@ -18013,6 +18026,13 @@ const SHAPE_TYPES =
     POLYGON,
     STAR//,
     //TEXT
+];
+
+
+const OBJECT_TYPES = // because they produce or modify objects
+[
+    ...SHAPE_TYPES,
+    ...PROPERTY_TYPES
 ];
 
 
@@ -21795,31 +21815,31 @@ extends GShapeBase
             return;
 
 
-        if (this.fill  ) this.fill  .eval(parse);
-        if (this.weight) this.weight.eval(parse);
-        if (this.fit   ) this.fit   .eval(parse);
-        if (this.join  ) this.join  .eval(parse);
-        if (this.miter ) this.miter .eval(parse);            
-
-
         if (this.input)
         {
             this.input.eval(parse);
             this.objects = this.input.objects;
-
-            // while (   !STROKE_TYPES.includes(this.input.type)
-            //        && this.input.input)
-            //     this.input = this.input.input;
         }
 
+        const hasInput =     
+               this.input 
+            && STROKE_TYPES.includes(this.input.type);   
 
-        const [fill, weight, fit, join, miter] = this.getParams();
 
-        if (fill  ) genPushUpdateValue(parse, this.nodeId, 'fill',   fill  .toValue());
-        if (weight) genPushUpdateValue(parse, this.nodeId, 'weight', weight.toValue());
-        if (fit   ) genPushUpdateValue(parse, this.nodeId, 'fit',    fit   .toValue());
-        if (join  ) genPushUpdateValue(parse, this.nodeId, 'join',   join  .toValue());
-        if (miter ) genPushUpdateValue(parse, this.nodeId, 'miter',  miter .toValue());
+        if (this.fill  ) this.fill  .eval(parse); else if (hasInput) this.fill   = this.input.fill; 
+        if (this.weight) this.weight.eval(parse); else if (hasInput) this.weight = this.input.weight;
+        if (this.fit   ) this.fit   .eval(parse); else if (hasInput) this.fit    = this.input.fit;
+        if (this.join  ) this.join  .eval(parse); else if (hasInput) this.join   = this.input.join;
+        if (this.miter ) this.miter .eval(parse); else if (hasInput) this.miter  = this.input.miter;            
+
+
+        // const [fill, weight, fit, join, miter] = this.getParams();
+
+        if (this.fill  ) genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  .toValue());
+        if (this.weight) genPushUpdateValue(parse, this.nodeId, 'weight', this.weight.toValue());
+        if (this.fit   ) genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   .toValue());
+        if (this.join  ) genPushUpdateValue(parse, this.nodeId, 'join',   this.join  .toValue());
+        if (this.miter ) genPushUpdateValue(parse, this.nodeId, 'miter',  this.miter .toValue());
 
 
         if (   this.options.active
@@ -21832,31 +21852,35 @@ extends GShapeBase
 
 
 
-    getParams()
-    {
-        // console.log('this.input =', this.input);
-        return [this.fill   ? this.fill   : this.input && !isEmpty(this.input.objects) ? this.input.fill   : null,
-                this.weight ? this.weight : this.input                                 ? this.input.weight : null,
-                this.fit    ? this.fit    : this.input                                 ? this.input.fit    : null,
-                this.join   ? this.join   : this.input                                 ? this.input.join   : null,
-                this.miter  ? this.miter  : this.input                                 ? this.input.miter  : null];
-    }
+    // getParams()
+    // {
+    //     // console.log('this.input =', this.input);
+    //     return [this.fill   ? this.fill   : this.input && !isEmpty(this.input.objects) ? this.input.fill   : null,
+    //             this.weight ? this.weight : this.input                                 ? this.input.weight : null,
+    //             this.fit    ? this.fit    : this.input                                 ? this.input.fit    : null,
+    //             this.join   ? this.join   : this.input                                 ? this.input.join   : null,
+    //             this.miter  ? this.miter  : this.input                                 ? this.input.miter  : null];
+    // }
 
 
 
     evalObjects()
     {
-        const [fill, weight, fit, join, miter] = this.getParams();
+        // const [fill, weight, fit, join, miter] = this.getParams();
         
-        if (   !fill
-            || !weight
-            || !fit
-            || !join
-            || !miter)
+        // if (   !fill
+        //     || !weight
+        //     || !fit
+        //     || !join
+        //     || !miter)
+        //     return;
+
+
+        if (!this.objects)
             return;
 
 
-        const rgb = scaleRgb(fill.color.toValue().toRgb());
+        const rgb = scaleRgb(this.fill.color.toValue().toRgb());
 
         for (const obj of this.objects)
         {
@@ -21868,26 +21892,26 @@ extends GShapeBase
                         rgb[0]
                 + ' ' + rgb[1]
                 + ' ' + rgb[2]
-                + ' ' + fill.opacity.toValue().value]);
+                + ' ' + this.fill.opacity.toValue().value]);
 
 
-            obj.strokeWeight = weight.toValue().value;
+            obj.strokeWeight = this.weight.toValue().value;
 
-            switch (fit.toValue().value)
+            switch (this.fit.toValue().value)
             {
                 case 0: obj.strokeAlign = 'INSIDE';  break;
                 case 1: obj.strokeAlign = 'CENTER';  break;
                 case 2: obj.strokeAlign = 'OUTSIDE'; break;
             }
             
-            switch (join.toValue().value)
+            switch (this.join.toValue().value)
             {
                 case 0: obj.strokeJoin = 'MITER'; break;
                 case 1: obj.strokeJoin = 'BEVEL'; break;
                 case 2: obj.strokeJoin = 'ROUND'; break;
             }
 
-            obj.strokeMiterLimit = miter.toValue().value;
+            obj.strokeMiterLimit = this.miter.toValue().value;
         }
 
         
@@ -36521,7 +36545,7 @@ extends OpColorBase
                 if (      param.input 
                        && param.input.connected
                        && param.canShow()
-                    || arraysIntersect(SHAPE_TYPES, input.connectedOutput.types)) 
+                    || arraysIntersect(OBJECT_TYPES, input.connectedOutput.types)) 
                     paramIds.push(param.id);
         }
         else
@@ -36747,9 +36771,6 @@ extends OpColorBase
         this.addInput (new Input([...STROKE_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
         this.addOutput(new Output([STROKE], this.output_genRequest));
 
-        this.inputs[0].addEventListener('connect',    () =>   this.outputs[0].types.push(...this.inputs[0].connectedOutput.types));
-        this.inputs[0].addEventListener('disconnect', () => { this.outputs[0].types = [STROKE]; uiDeleteObjects([this.id]); });
-
 
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
         this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
@@ -36793,13 +36814,11 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
             for (const param of this.node.params)
-                if ((         param.input 
+                if (   (      param.input 
                            && param.input.connected
                            && param.canShow()
-                           //&& !arraysIntersect(STROKE_TYPES, input.connectedOutput.types)
-                        //|| param.id == 'fill')
-                        || arraysIntersect(SHAPE_TYPES, input.connectedOutput.types))
-                     && !arraysIntersect(STROKE_TYPES, input.connectedOutput.types))
+                        || arraysIntersect(OBJECT_TYPES, input.connectedOutput.types))
+                    && !arraysIntersect(STROKE_TYPES, input.connectedOutput.types))
                     paramIds.push(param.id);
         }
         else
@@ -36833,6 +36852,14 @@ extends OpColorBase
             && fill.isValid()
             ? fill.color.toDataColor()
             : dataColor_NaN;
+
+            
+        this.outputs[0].types =
+               this.inputs[0].connected
+            && arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types)
+            ? [...this.inputs[0].connectedOutput.types, STROKE]
+            : [STROKE];
+
 
         super.updateValues(updateParamId, paramIds, values);
     }

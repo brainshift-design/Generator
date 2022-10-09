@@ -31,9 +31,6 @@ extends OpColorBase
         this.addInput (new Input([...STROKE_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
         this.addOutput(new Output([STROKE], this.output_genRequest));
 
-        this.inputs[0].addEventListener('connect',    () =>   this.outputs[0].types.push(...this.inputs[0].connectedOutput.types));
-        this.inputs[0].addEventListener('disconnect', () => { this.outputs[0].types = [STROKE]; uiDeleteObjects([this.id]); });
-
 
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
         this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
@@ -77,13 +74,11 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
             for (const param of this.node.params)
-                if ((         param.input 
+                if (   (      param.input 
                            && param.input.connected
                            && param.canShow()
-                           //&& !arraysIntersect(STROKE_TYPES, input.connectedOutput.types)
-                        //|| param.id == 'fill')
-                        || arraysIntersect(SHAPE_TYPES, input.connectedOutput.types))
-                     && !arraysIntersect(STROKE_TYPES, input.connectedOutput.types))
+                        || arraysIntersect(OBJECT_TYPES, input.connectedOutput.types))
+                    && !arraysIntersect(STROKE_TYPES, input.connectedOutput.types))
                     paramIds.push(param.id);
         }
         else
@@ -117,6 +112,14 @@ extends OpColorBase
             && fill.isValid()
             ? fill.color.toDataColor()
             : dataColor_NaN;
+
+            
+        this.outputs[0].types =
+               this.inputs[0].connected
+            && arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types)
+            ? [...this.inputs[0].connectedOutput.types, STROKE]
+            : [STROKE];
+
 
         super.updateValues(updateParamId, paramIds, values);
     }
