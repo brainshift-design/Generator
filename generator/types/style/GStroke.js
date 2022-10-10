@@ -59,9 +59,6 @@ extends GShapeBase
         if (this.join  ) this.join  .eval(parse); else if (hasInput) this.join   = this.input.join;
         if (this.miter ) this.miter .eval(parse); else if (hasInput) this.miter  = this.input.miter;            
 
-
-        // const [fill, weight, fit, join, miter] = this.getParams();
-
         if (this.fill  ) genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  .toValue());
         if (this.weight) genPushUpdateValue(parse, this.nodeId, 'weight', this.weight.toValue());
         if (this.fit   ) genPushUpdateValue(parse, this.nodeId, 'fit',    this.fit   .toValue());
@@ -79,30 +76,8 @@ extends GShapeBase
 
 
 
-    // getParams()
-    // {
-    //     // console.log('this.input =', this.input);
-    //     return [this.fill   ? this.fill   : this.input && !isEmpty(this.input.objects) ? this.input.fill   : null,
-    //             this.weight ? this.weight : this.input                                 ? this.input.weight : null,
-    //             this.fit    ? this.fit    : this.input                                 ? this.input.fit    : null,
-    //             this.join   ? this.join   : this.input                                 ? this.input.join   : null,
-    //             this.miter  ? this.miter  : this.input                                 ? this.input.miter  : null];
-    // }
-
-
-
     evalObjects()
     {
-        // const [fill, weight, fit, join, miter] = this.getParams();
-        
-        // if (   !fill
-        //     || !weight
-        //     || !fit
-        //     || !join
-        //     || !miter)
-        //     return;
-
-
         if (!this.objects)
             return;
 
@@ -111,7 +86,7 @@ extends GShapeBase
 
         for (const obj of this.objects)
         {
-            if (!obj.strokes) 
+            if (!obj.strokes)
                 obj.strokes = [];
 
             obj.strokes.push([
@@ -122,23 +97,27 @@ extends GShapeBase
                 + ' ' + this.fill.opacity.toValue().value]);
 
 
-            obj.strokeWeight = this.weight.toValue().value;
+            if (this.weight)
+                obj.strokeWeight = this.weight.toValue().value;
 
-            switch (this.fit.toValue().value)
-            {
-                case 0: obj.strokeAlign = 'INSIDE';  break;
-                case 1: obj.strokeAlign = 'CENTER';  break;
-                case 2: obj.strokeAlign = 'OUTSIDE'; break;
-            }
-            
-            switch (this.join.toValue().value)
-            {
-                case 0: obj.strokeJoin = 'MITER'; break;
-                case 1: obj.strokeJoin = 'BEVEL'; break;
-                case 2: obj.strokeJoin = 'ROUND'; break;
-            }
+            if (this.fit)
+                switch (this.fit.toValue().value)
+                {
+                    case 0: obj.strokeAlign = 'INSIDE';  break;
+                    case 1: obj.strokeAlign = 'CENTER';  break;
+                    case 2: obj.strokeAlign = 'OUTSIDE'; break;
+                }
 
-            obj.strokeMiterLimit = this.miter.toValue().value;
+            if (this.join)
+                switch (this.join.toValue().value)
+                {
+                    case 0: obj.strokeJoin = 'MITER'; break;
+                    case 1: obj.strokeJoin = 'BEVEL'; break;
+                    case 2: obj.strokeJoin = 'ROUND'; break;
+                }
+
+            if (this.miter)
+                obj.strokeMiterLimit = this.miter.toValue().value;
         }
 
         
