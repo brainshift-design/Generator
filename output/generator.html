@@ -4766,7 +4766,7 @@ extends GOperator
 
         
         console.assert(this.value.type == NUMBER_VALUE, 'this.value.type must be NUMBER_VALUE');
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
         this.valid = true;
@@ -7812,7 +7812,7 @@ function genParseNumber(parse)
     if (parse.next == NUMBER_VALUE) num.value = genParse(parse);
     else                            num.input = genParse(parse);
 
-    
+
     parse.nTab--;
 
 
@@ -7958,17 +7958,6 @@ function genParseInterpolate(parse)
     genParseNodeEnd(parse, lerp);
     return lerp;
 }
-
-
-// function genParseShapeBase(parse, obj, paramId)
-// {
-//     switch (paramId)
-//     {
-//     case 'fill':   obj.fill   = genParseFillParam  (parse); break;
-//     case 'stroke': obj.stroke = genParseStrokeParam(parse); break;
-//     }
-// }
-
 
 
 function genParseRectangle(parse)

@@ -1,14 +1,3 @@
-// function genParseShapeBase(parse, obj, paramId)
-// {
-//     switch (paramId)
-//     {
-//     case 'fill':   obj.fill   = genParseFillParam  (parse); break;
-//     case 'stroke': obj.stroke = genParseStrokeParam(parse); break;
-//     }
-// }
-
-
-
 function genParseRectangle(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);

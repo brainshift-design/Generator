@@ -39,7 +39,7 @@ function genParseNumber(parse)
     if (parse.next == NUMBER_VALUE) num.value = genParse(parse);
     else                            num.input = genParse(parse);
 
-    
+
     parse.nTab--;
 
 

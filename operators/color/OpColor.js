@@ -127,10 +127,6 @@ extends OpColorBase
     {
         // 'this' is the output
 
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
@@ -325,6 +321,8 @@ extends OpColorBase
         this.updateAllControlRanges();
 
         const enable = !this.inputs[0].connected;
+
+        this.paramSpace.enableControlText(!this.paramSpace.input.connected);
 
         this.param1.enableControlText(enable);
         this.param2.enableControlText(enable);

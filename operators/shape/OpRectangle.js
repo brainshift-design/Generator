@@ -41,10 +41,6 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
@@ -53,10 +49,10 @@ extends OperatorBase
         if (ignore) return request;
 
                 
-        const paramIds = [];
-        
-
         const input = this.node.inputs[0];
+        
+        const paramIds = [];
+
         
         if (input.connected)
         {
