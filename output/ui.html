@@ -8121,12 +8121,12 @@ extends GShapeBase
             && RECTANGLE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x     .eval(); else if (hasInput) this.x      = this.input.x;
-        if (this.y     ) this.y     .eval(); else if (hasInput) this.y      = this.input.y;
-        if (this.width ) this.width .eval(); else if (hasInput) this.width  = this.input.width;
-        if (this.height) this.height.eval(); else if (hasInput) this.height = this.input.height;
-        if (this.angle ) this.angle .eval(); else if (hasInput) this.angle  = this.input.angle;
-        if (this.round ) this.round .eval(); else if (hasInput) this.round  = this.input.round;
+        if (this.x     ) this.x     .eval(parse); else if (hasInput) this.x      = this.input.x;
+        if (this.y     ) this.y     .eval(parse); else if (hasInput) this.y      = this.input.y;
+        if (this.width ) this.width .eval(parse); else if (hasInput) this.width  = this.input.width;
+        if (this.height) this.height.eval(parse); else if (hasInput) this.height = this.input.height;
+        if (this.angle ) this.angle .eval(parse); else if (hasInput) this.angle  = this.input.angle;
+        if (this.round ) this.round .eval(parse); else if (hasInput) this.round  = this.input.round;
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
@@ -9775,6 +9775,7 @@ function genParseNumber(parse)
 
 
     parse.nTab++;
+    parse.inParam = false;
 
 
     if (parse.next == NUMBER_VALUE) num.value = genParse(parse);
@@ -9961,9 +9962,7 @@ function genParseRectangle(parse)
     {
         const paramId = genParseParamId(parse);
 
-        parse.nTab++;
         parse.inParam = true;
-
 
         switch (paramId)
         {
@@ -9974,9 +9973,6 @@ function genParseRectangle(parse)
         case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
         }
-
-
-        parse.nTab--;
     }
     
     
@@ -21072,12 +21068,12 @@ extends GShapeBase
             && RECTANGLE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x     .eval(); else if (hasInput) this.x      = this.input.x;
-        if (this.y     ) this.y     .eval(); else if (hasInput) this.y      = this.input.y;
-        if (this.width ) this.width .eval(); else if (hasInput) this.width  = this.input.width;
-        if (this.height) this.height.eval(); else if (hasInput) this.height = this.input.height;
-        if (this.angle ) this.angle .eval(); else if (hasInput) this.angle  = this.input.angle;
-        if (this.round ) this.round .eval(); else if (hasInput) this.round  = this.input.round;
+        if (this.x     ) this.x     .eval(parse); else if (hasInput) this.x      = this.input.x;
+        if (this.y     ) this.y     .eval(parse); else if (hasInput) this.y      = this.input.y;
+        if (this.width ) this.width .eval(parse); else if (hasInput) this.width  = this.input.width;
+        if (this.height) this.height.eval(parse); else if (hasInput) this.height = this.input.height;
+        if (this.angle ) this.angle .eval(parse); else if (hasInput) this.angle  = this.input.angle;
+        if (this.round ) this.round .eval(parse); else if (hasInput) this.round  = this.input.round;
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());

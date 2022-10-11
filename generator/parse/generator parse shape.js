@@ -31,9 +31,7 @@ function genParseRectangle(parse)
     {
         const paramId = genParseParamId(parse);
 
-        parse.nTab++;
         parse.inParam = true;
-
 
         switch (paramId)
         {
@@ -44,9 +42,6 @@ function genParseRectangle(parse)
         case 'angle':  rect.angle  = genParse(parse); break;
         case 'round':  rect.round  = genParse(parse); break;
         }
-
-
-        parse.nTab--;
     }
     
     

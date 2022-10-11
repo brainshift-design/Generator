@@ -34,6 +34,7 @@ function genParseNumber(parse)
 
 
     parse.nTab++;
+    parse.inParam = false;
 
 
     if (parse.next == NUMBER_VALUE) num.value = genParse(parse);
