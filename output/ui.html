@@ -8937,6 +8937,7 @@ extends GShapeBase
 
 const settings =
 {
+    autoConnectNewNodes:   true,
     includeLxxColorSpaces: false,
     debugMode:             false,
 
@@ -8963,23 +8964,24 @@ function updateSetting(settingName, value)
 {
     switch (settingName)
     {
+        case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
         case 'debugMode':             settings.debugMode             = value;  break;
 
-        case 'showNodeId':            settings.showNodeId             = value;  break;
-        case 'showWires':             settings.showWires              = value;  break;
+        case 'showNodeId':            settings.showNodeId            = value;  break;
+        case 'showWires':             settings.showWires             = value;  break;
    
-        case 'logMessages':           settings.logMessages            = value;  break;
-        case 'logActions':            settings.logActions             = value;  break;
-        case 'logLoading':            settings.logLoading             = value;  break;
-        case 'logRequests':           settings.logRequests            = value;  break;
-        case 'logValueUpdates':       settings.logValueUpdates        = value;  break;
-        case 'logObjectUpdates':      settings.logObjectUpdates       = value;  break;
+        case 'logMessages':           settings.logMessages           = value;  break;
+        case 'logActions':            settings.logActions            = value;  break;
+        case 'logLoading':            settings.logLoading            = value;  break;
+        case 'logRequests':           settings.logRequests           = value;  break;
+        case 'logValueUpdates':       settings.logValueUpdates       = value;  break;
+        case 'logObjectUpdates':      settings.logObjectUpdates      = value;  break;
    
-        case 'logRawLoading':         settings.logRawLoading          = value;  break;
-        case 'logRawSaving':          settings.logRawSaving           = value;  break;
-        case 'logRawRequests':        settings.logRawRequests         = value;  break;
-        case 'logRawValues':          settings.logRawValues           = value;  break;
+        case 'logRawLoading':         settings.logRawLoading         = value;  break;
+        case 'logRawSaving':          settings.logRawSaving          = value;  break;
+        case 'logRawRequests':        settings.logRawRequests        = value;  break;
+        case 'logRawValues':          settings.logRawValues          = value;  break;
     } 
 }
 
@@ -8989,6 +8991,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 {
     switch (settingName)
     {
+        case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value, menuItemDebugMode            );  break;
 
@@ -9026,6 +9029,7 @@ function updateSettingAndMenu_(valid, setting, value, menu)
 
 function updateSettingsMenus()
 {
+    menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
     menuItemDebugMode            .setChecked(settings.debugMode            );
 
@@ -9063,6 +9067,7 @@ function loadLocalSettings()
 {
     uiGetLocalData('graphView');
 
+    uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
     uiGetLocalData('debugMode'            );
 
@@ -9229,7 +9234,7 @@ function genRequest(request)
     const set = parseInt(request[0]);
 
     const includeLxxColorSpaces = (set >> 0) & 1 != 0;
-    const logRequests          = (set >> 1) & 1 != 0;
+    const logRequests           = (set >> 1) & 1 != 0;
 
 
     const updateNodeId  = request[1];
@@ -12056,7 +12061,7 @@ function colorSpaceCount(parse = null)
 
     return set.includeLxxColorSpaces 
            ? OpColorSpaces.length
-           : OpColorSpaces.length - 3; 
+        : OpColorSpaces.length - 3; 
 }
 
 
@@ -21884,6 +21889,7 @@ extends GShapeBase
 
 const settings =
 {
+    autoConnectNewNodes:   true,
     includeLxxColorSpaces: false,
     debugMode:             false,
 
@@ -21910,23 +21916,24 @@ function updateSetting(settingName, value)
 {
     switch (settingName)
     {
+        case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
         case 'debugMode':             settings.debugMode             = value;  break;
 
-        case 'showNodeId':            settings.showNodeId             = value;  break;
-        case 'showWires':             settings.showWires              = value;  break;
+        case 'showNodeId':            settings.showNodeId            = value;  break;
+        case 'showWires':             settings.showWires             = value;  break;
    
-        case 'logMessages':           settings.logMessages            = value;  break;
-        case 'logActions':            settings.logActions             = value;  break;
-        case 'logLoading':            settings.logLoading             = value;  break;
-        case 'logRequests':           settings.logRequests            = value;  break;
-        case 'logValueUpdates':       settings.logValueUpdates        = value;  break;
-        case 'logObjectUpdates':      settings.logObjectUpdates       = value;  break;
+        case 'logMessages':           settings.logMessages           = value;  break;
+        case 'logActions':            settings.logActions            = value;  break;
+        case 'logLoading':            settings.logLoading            = value;  break;
+        case 'logRequests':           settings.logRequests           = value;  break;
+        case 'logValueUpdates':       settings.logValueUpdates       = value;  break;
+        case 'logObjectUpdates':      settings.logObjectUpdates      = value;  break;
    
-        case 'logRawLoading':         settings.logRawLoading          = value;  break;
-        case 'logRawSaving':          settings.logRawSaving           = value;  break;
-        case 'logRawRequests':        settings.logRawRequests         = value;  break;
-        case 'logRawValues':          settings.logRawValues           = value;  break;
+        case 'logRawLoading':         settings.logRawLoading         = value;  break;
+        case 'logRawSaving':          settings.logRawSaving          = value;  break;
+        case 'logRawRequests':        settings.logRawRequests        = value;  break;
+        case 'logRawValues':          settings.logRawValues          = value;  break;
     } 
 }
 
@@ -21936,6 +21943,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 {
     switch (settingName)
     {
+        case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value, menuItemDebugMode            );  break;
 
@@ -21973,6 +21981,7 @@ function updateSettingAndMenu_(valid, setting, value, menu)
 
 function updateSettingsMenus()
 {
+    menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
     menuItemDebugMode            .setChecked(settings.debugMode            );
 
@@ -22010,6 +22019,7 @@ function loadLocalSettings()
 {
     uiGetLocalData('graphView');
 
+    uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
     uiGetLocalData('debugMode'            );
 
@@ -22279,6 +22289,7 @@ var menuShape;
 var menuZoom;
 
 
+var menuItemAutoConnectNewNodes;
 var menuItemIncludeLxxColorSpaces;
 var menuItemDebugMode;
 
@@ -22307,6 +22318,7 @@ function initMenuBar()
 {
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
+        menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',   {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                               }}),
         menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces', {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace();         }}),
         menuItemDebugMode             = new MenuItem('Debug mode',               {checkCallback: () => settings.debugMode,             callback: () => { updateSettingAndMenu('debugMode',             true, !settings.debugMode            ); menuItemDebug.setVisible(settings.debugMode); }})]);
 
@@ -31543,10 +31555,17 @@ class Operator
 
 
 
-    setParamOutputData()
+    connectToSelected(selected)
     {
-        for (const param of this.params)
-            param.setOutputData();
+        console.assert(selected.length > 0);
+
+        const node   = selected[0];
+        const inputs = this.inputs.filter(i => i.types.includes(node.type));
+    
+        if (   node
+            && node.outputs.length > 0
+            && inputs.length > 0)
+            actionManager.do(new ConnectAction(node.outputs[0], inputs[0]), true);
     }
 
 
@@ -34218,7 +34237,7 @@ function colorSpaceCount(parse = null)
 
     return set.includeLxxColorSpaces 
            ? OpColorSpaces.length
-           : OpColorSpaces.length - 3; 
+        : OpColorSpaces.length - 3; 
 }
 
 
@@ -36895,6 +36914,21 @@ extends OpColorBase
         colors.text = getTextColorFromBackColor(colors.back, this.paramFill.value.opacity.value/100);
 
         return colors;
+    }
+
+
+
+    connectToSelected(selected)
+    {
+        console.assert(selected.length > 0);
+
+        const node   = selected[0];
+        const inputs = this.inputs.filter(i => i.types.includes(node.type));
+    
+        if (   node
+            && node.outputs.length > 0
+            && inputs.length > 0)
+            actionManager.do(new ConnectAction(node.outputs[0], inputs[0]), true);
     }
 }
 
@@ -40300,6 +40334,7 @@ function uiGetLocalDataReturn(msg)
             graphView.updatePanAndZoom();
             break;
 
+        case 'autoConnectNewNodes':
         case 'includeLxxColorSpaces':
         case 'debugMode':
 
@@ -41228,16 +41263,9 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
     uiSaveNodes([node.id]);
 
 
-    // if (graphView.selectedNodes.length > 0)
-    // {
-    //     const selNode = graph.nodes.find(n => n.selected);
-    //     const inputs  = node.inputs.filter(i => i.types.includes(selNode.type));
-
-    //     if (   !!selNode
-    //         && selNode.output
-    //         && inputs.length > 0)
-    //         uiConnect(selNode.output, inputs[0]);
-    // }
+    if (   settings.autoConnectNewNodes
+        && graphView.selectedNodes.length > 0)
+        node.connectToSelected(graphView.selectedNodes);
 
 
     if (updateUi)

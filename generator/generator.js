@@ -13,7 +13,7 @@ function genRequest(request)
     const set = parseInt(request[0]);
 
     const includeLxxColorSpaces = (set >> 0) & 1 != 0;
-    const logRequests          = (set >> 1) & 1 != 0;
+    const logRequests           = (set >> 1) & 1 != 0;
 
 
     const updateNodeId  = request[1];

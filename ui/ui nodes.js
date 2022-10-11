@@ -390,16 +390,9 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
     uiSaveNodes([node.id]);
 
 
-    // if (graphView.selectedNodes.length > 0)
-    // {
-    //     const selNode = graph.nodes.find(n => n.selected);
-    //     const inputs  = node.inputs.filter(i => i.types.includes(selNode.type));
-
-    //     if (   !!selNode
-    //         && selNode.output
-    //         && inputs.length > 0)
-    //         uiConnect(selNode.output, inputs[0]);
-    // }
+    if (   settings.autoConnectNewNodes
+        && graphView.selectedNodes.length > 0)
+        node.connectToSelected(graphView.selectedNodes);
 
 
     if (updateUi)

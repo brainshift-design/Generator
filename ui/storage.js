@@ -37,6 +37,7 @@ function uiGetLocalDataReturn(msg)
             graphView.updatePanAndZoom();
             break;
 
+        case 'autoConnectNewNodes':
         case 'includeLxxColorSpaces':
         case 'debugMode':
 

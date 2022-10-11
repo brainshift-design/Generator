@@ -23,7 +23,7 @@ function colorSpaceCount(parse = null)
 
     return set.includeLxxColorSpaces 
            ? OpColorSpaces.length
-           : OpColorSpaces.length - 3; 
+        : OpColorSpaces.length - 3; 
 }
 
 

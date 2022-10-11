@@ -1,5 +1,6 @@
 const settings =
 {
+    autoConnectNewNodes:   true,
     includeLxxColorSpaces: false,
     debugMode:             false,
 
@@ -26,23 +27,24 @@ function updateSetting(settingName, value)
 {
     switch (settingName)
     {
+        case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
         case 'debugMode':             settings.debugMode             = value;  break;
 
-        case 'showNodeId':            settings.showNodeId             = value;  break;
-        case 'showWires':             settings.showWires              = value;  break;
+        case 'showNodeId':            settings.showNodeId            = value;  break;
+        case 'showWires':             settings.showWires             = value;  break;
    
-        case 'logMessages':           settings.logMessages            = value;  break;
-        case 'logActions':            settings.logActions             = value;  break;
-        case 'logLoading':            settings.logLoading             = value;  break;
-        case 'logRequests':           settings.logRequests            = value;  break;
-        case 'logValueUpdates':       settings.logValueUpdates        = value;  break;
-        case 'logObjectUpdates':      settings.logObjectUpdates       = value;  break;
+        case 'logMessages':           settings.logMessages           = value;  break;
+        case 'logActions':            settings.logActions            = value;  break;
+        case 'logLoading':            settings.logLoading            = value;  break;
+        case 'logRequests':           settings.logRequests           = value;  break;
+        case 'logValueUpdates':       settings.logValueUpdates       = value;  break;
+        case 'logObjectUpdates':      settings.logObjectUpdates      = value;  break;
    
-        case 'logRawLoading':         settings.logRawLoading          = value;  break;
-        case 'logRawSaving':          settings.logRawSaving           = value;  break;
-        case 'logRawRequests':        settings.logRawRequests         = value;  break;
-        case 'logRawValues':          settings.logRawValues           = value;  break;
+        case 'logRawLoading':         settings.logRawLoading         = value;  break;
+        case 'logRawSaving':          settings.logRawSaving          = value;  break;
+        case 'logRawRequests':        settings.logRawRequests        = value;  break;
+        case 'logRawValues':          settings.logRawValues          = value;  break;
     } 
 }
 
@@ -52,6 +54,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 {
     switch (settingName)
     {
+        case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value, menuItemDebugMode            );  break;
 
@@ -89,6 +92,7 @@ function updateSettingAndMenu_(valid, setting, value, menu)
 
 function updateSettingsMenus()
 {
+    menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
     menuItemDebugMode            .setChecked(settings.debugMode            );
 
@@ -126,6 +130,7 @@ function loadLocalSettings()
 {
     uiGetLocalData('graphView');
 
+    uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
     uiGetLocalData('debugMode'            );
 

@@ -67,6 +67,7 @@ var menuShape;
 var menuZoom;
 
 
+var menuItemAutoConnectNewNodes;
 var menuItemIncludeLxxColorSpaces;
 var menuItemDebugMode;
 
@@ -95,6 +96,7 @@ function initMenuBar()
 {
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
+        menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',   {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                               }}),
         menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces', {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace();         }}),
         menuItemDebugMode             = new MenuItem('Debug mode',               {checkCallback: () => settings.debugMode,             callback: () => { updateSettingAndMenu('debugMode',             true, !settings.debugMode            ); menuItemDebug.setVisible(settings.debugMode); }})]);
 

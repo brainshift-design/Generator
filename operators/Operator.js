@@ -556,10 +556,17 @@ class Operator
 
 
 
-    setParamOutputData()
+    connectToSelected(selected)
     {
-        for (const param of this.params)
-            param.setOutputData();
+        console.assert(selected.length > 0);
+
+        const node   = selected[0];
+        const inputs = this.inputs.filter(i => i.types.includes(node.type));
+    
+        if (   node
+            && node.outputs.length > 0
+            && inputs.length > 0)
+            actionManager.do(new ConnectAction(node.outputs[0], inputs[0]), true);
     }
 
 
