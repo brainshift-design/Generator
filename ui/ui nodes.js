@@ -567,6 +567,8 @@ function uiMakeNodeActive(node)
     node.makeActive();
     node.updateNode();
 
+    uiSaveNodes([node.id]);
+
     pushUpdate([node]);
 }
 
@@ -591,6 +593,8 @@ function uiMakeNodesActive(nodes)
         node.updateNode();
     }
 
+    uiSaveNodes(nodes.map(n => n.id));
+
     pushUpdate(nodes);
 }
 
@@ -604,6 +608,8 @@ function uiMakeNodePassive(node)
     node.updateNode();
 
     uiDeleteObjects([node.id]);
+
+    uiSaveNodes([node.id]);
 }
 
 
