@@ -67,6 +67,10 @@ var menuShape;
 var menuZoom;
 
 
+var menuGraph;
+var menuNode;
+
+
 var menuItemAutoConnectNewNodes;
 var menuItemIncludeLxxColorSpaces;
 var menuItemDebugMode;
@@ -90,9 +94,16 @@ var menuItemLogObjectUpdates;
 
 var menuItemZoomTo100;
 
+var menuItemGraphPaste;
+
+var menuItemNodeCopy;
+var menuItemNodeDuplicate;
+var menuItemNodeBringToFront;
+var menuItemNodeSendToBack;
+var menuItemNodeEnableDisable;
 
 
-function initMenuBar()
+function initMenus()
 {
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
@@ -188,8 +199,6 @@ function initMenuBar()
     menuColor = new Menu('Color nodes');
     menuColor.addItems([
         new MenuItem('Color',        {icon: iconColor           , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div))}),
-        //new MenuItem('Random color', {icon: iconColorRandom   , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div, {random: true}))}),
-        //new MenuItem('',             {separator: true}),
         new MenuItem('Validate',     {icon: iconColorValidate   , enabled: false}),
         new MenuItem('Contrast',     {icon: iconColorContrast   , enabled: false}),
         new MenuItem('Colorblind',   {icon: iconColorblind      , enabled: false}),
@@ -199,7 +208,6 @@ function initMenuBar()
     menuStyle = new Menu('Style nodes');
     menuStyle.addItems([
         new MenuItem('Solid fill', {icon: iconFill,   callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
-        //new MenuItem('',           {separator: true}),
         new MenuItem('Stroke',     {icon: iconStroke, callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))}),
         new MenuItem('Style',      {icon: iconStyle,  enabled: false})]);
     
@@ -215,10 +223,26 @@ function initMenuBar()
 
     menuZoom = new Menu('Zoom/view options', false);
     menuZoom.addItems([
-                            new MenuItem('Zoom in',      {shortcut: osCtrl()  + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
-                            new MenuItem('Zoom out',     {shortcut: osCtrl()  + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
+                            new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
+                            new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', enabled:  false}),
-        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl()  + '0', callback: () => graphView.zoom = 1})]);
+        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);
+
+
+    menuGraph = new Menu('Graph menu', false);
+    menuGraph.addItems([
+        menuItemGraphPaste = new MenuItem('Paste', {shortcut: osCtrl() + 'V', enabled: false})]);
+
+
+    menuNode = new Menu('Node menu', false);
+    menuNode.addItems([
+        menuItemNodeCopy          = new MenuItem('Copy',           {shortcut: osCtrl() + 'C', enabled: false}),
+        menuItemNodeDuplicate     = new MenuItem('Duplicate',      {shortcut: osCtrl() + 'D', enabled: false}),
+                                    new MenuItem('',               {separator: true}),
+        menuItemNodeBringToFront  = new MenuItem('Bring to front', {shortcut: ']', enabled: false}),
+        menuItemNodeSendToBack    = new MenuItem('Send to back',   {shortcut: '[', enabled: false}),
+                                    new MenuItem('',               {separator: true}),
+        menuItemNodeEnableDisable = new MenuItem('Enable/Disable', {shortcut: osCtrl() + osShift() + 'D', enabled: false})]);
 
 
     btnMain    = new MenuButton('', menuMain, {useMenuName: true, highlight: () => currentMenus.includes(menuMain)});

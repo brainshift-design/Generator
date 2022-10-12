@@ -143,6 +143,16 @@ function createNodeHeader(node)
             hideAllMenus();
 
 
+        if (   e.button == 0
+            || e.button == 2)
+        {
+            node.div.shiftOnPointerDown = 
+                   e.shiftKey
+                && !getCtrlKey(e)
+                && !e.altKey;
+        }
+
+
         if (    e.button == 0
             && !graphView.overOutput
             && !graphView.overInput)
@@ -151,11 +161,6 @@ function createNodeHeader(node)
 
             node.div.selectedSet = false;
             node.div.moved       = false;
-
-            node.div.shiftOnPointerDown = 
-                    e.shiftKey
-                && !getCtrlKey(e)
-                && !e.altKey;
 
 
             if (   getCtrlKey(e)
@@ -205,7 +210,15 @@ function createNodeHeader(node)
             node.header.setPointerCapture(e.pointerId);
         }
 
+        else if (e.button == 2)
+        {
+            e.stopPropagation();
 
+            if (isEmpty(currentMenus)) menuNode.showAt(e.clientX, e.clientY);
+            else                       hideAllMenus();
+        }
+
+        
         updateGraphNodes();
     });
 

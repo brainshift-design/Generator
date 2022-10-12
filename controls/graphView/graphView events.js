@@ -17,8 +17,6 @@ graphView.addEventListener('pointerleave', e =>
 
 graphView.addEventListener('pointerdown', e =>
 {
-    //e.preventDefault();
-    
     graphView.pStart = point(e.clientX, e.clientY);
 
     const sx = e.clientX;
@@ -82,6 +80,12 @@ graphView.addEventListener('pointerdown', e =>
         graphView.btn1down = true;
         setCursor(panCursor);
         graphView.startPan(e.pointerId);
+    }
+
+    else if (e.button == 2)
+    {
+        if (isEmpty(currentMenus)) menuGraph.showAt(e.clientX, e.clientY);
+        else                       hideAllMenus();
     }
 });
 

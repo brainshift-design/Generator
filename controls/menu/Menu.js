@@ -70,9 +70,6 @@ class Menu
 
     show(srcDiv, right = false)
     {
-        //hideAllMenusAfter(this.parentMenu);
-
-            
         this.div.style.display = 'block';
         this.div.style.opacity = '100%';
     
@@ -84,7 +81,7 @@ class Menu
         }
 
 
-        document.body.appendChild(this.div);
+        document.body.appendChild(this.div     );
         document.body.appendChild(this.divArrow);
 
     
@@ -121,6 +118,23 @@ class Menu
 
         if (this.button)
             this.button.update();
+    }
+    
+    
+    
+    showAt(x, y)
+    {
+        this.div.style.display = 'block';
+        this.div.style.opacity = '100%';
+    
+        document.body.appendChild(this.div);
+    
+        const margin = 8;
+     
+        this.div.style.left = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
+        this.div.style.top  = y - 4;
+    
+        currentMenus.push(this);
     }
     
     

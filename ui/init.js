@@ -47,7 +47,7 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 function uiEndStartGenerator(msg)
 {
     initModeColors();
-    initMenuBar();
+    initMenus();
 
 
     currentUser = msg.currentUser;
