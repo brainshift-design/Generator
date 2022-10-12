@@ -221,6 +221,6 @@ function onConnectInput(node)
 function onDisconnectInput(node, input)
 {
     removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.control);
+    node.inputControls.removeChild(input.div);
     //node.updateNode();
 }

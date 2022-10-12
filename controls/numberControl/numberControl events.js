@@ -226,7 +226,7 @@ function initNumberControlEvents(control)
                 control.param.input.mouseOver = true;
                 control.param.input.updateControl();
 
-                const rect = boundingRect(control.param.input.control);
+                const rect = boundingRect(control.param.input.div);
 
                 graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
@@ -243,7 +243,7 @@ function initNumberControlEvents(control)
                 control.param.output.updateControl();
 
 
-                const rect = boundingRect(control.param.output.control);
+                const rect = boundingRect(control.param.output.div);
 
                 graphView.tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,

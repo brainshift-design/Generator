@@ -139,7 +139,7 @@ class Operator
     {
         input._node = this;
         this.inputs.push(input);
-        this.inputControls.appendChild(input.control);
+        this.inputControls.appendChild(input.div);
     }
 
 
@@ -184,7 +184,7 @@ class Operator
     {
         output._node = this;
         this.outputs.push(output);
-        this.outputControls.appendChild(output.control);
+        this.outputControls.appendChild(output.div);
     }
 
 
@@ -506,13 +506,13 @@ class Operator
 
         for (let i = 0; i < inputs.length; i++)
         {
-            inputs[i].control.style.top = inputY[i];
+            inputs[i].div.style.top = inputY[i];
             inputs[i].updateControl();
         }
 
         for (let i = 0; i < outputs.length; i++) 
         {
-            outputs[i].control.style.top = outputY[i];
+            outputs[i].div.style.top = outputY[i];
             outputs[i].updateControl();
         }
 

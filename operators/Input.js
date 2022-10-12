@@ -26,7 +26,7 @@ extends EventTarget
     wireColor;
 
 
-    control;
+    div;
     hitbox;
     wireBall;
   
@@ -89,11 +89,11 @@ extends EventTarget
         this.types            = [...types];
         this.getValuesForUndo = getValuesForUndo;
 
-        this.control          = createDiv('input');
+        this.div          = createDiv('input');
         this.hitbox           = createDiv('inputHitbox');
         this.wireBall         = createDiv('inputBall');
         
-        this.control.input    = this;
+        this.div.input    = this;
         
         this.colorLight       = [0, 0, 0, 1];
         this.colorDark        = [1, 1, 1, 1];
@@ -101,8 +101,8 @@ extends EventTarget
         this.wireColor        = rgbHeaderFromType(this.types[0], true);
 
         
-        this.control.appendChild(this.hitbox);
-        this.control.appendChild(this.wireBall);
+        this.div.appendChild(this.hitbox);
+        this.div.appendChild(this.wireBall);
 
                 
         //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
@@ -132,7 +132,7 @@ extends EventTarget
                     || this.connectedOutput != graphView.tempConn.output
                     || this == savedInput))
             {
-                const rect = boundingRect(this.control);
+                const rect = boundingRect(this.div);
                 const loop = graphView.tempConn.output.node.isOrFollows(this.node);
 
                 if (!loop)
@@ -209,16 +209,16 @@ extends EventTarget
                && !(    tc.output
                     && !this.accepts(tc.output));
 
-        this.control.style.transform = 
+        this.div.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
             + 'translateY(-50%)';
         
-        this.control.style.width         = (isConnected ? 8 : 6) + 'px';
-        this.control.style.height        = (isConnected ? 8 : 6) + 'px';
-        this.control.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
-        this.control.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
-        this.control.style.boxShadow     = '0 0 0 1px ' + colorStyle;
-        this.control.style.pointerEvents = settings.showWires ? 'auto' : 'none';
+        this.div.style.width         = (isConnected ? 8 : 6) + 'px';
+        this.div.style.height        = (isConnected ? 8 : 6) + 'px';
+        this.div.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
+        this.div.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
+        this.div.style.boxShadow     = '0 0 0 1px ' + colorStyle;
+        this.div.style.pointerEvents = settings.showWires ? 'auto' : 'none';
 
         this.hitbox.style.left   = isConnected ? -2 : -3;
         this.hitbox.style.top    = isConnected ? -2 : -3;

@@ -27,7 +27,7 @@ function updateWire(wire, x = 0, y = 0)
 
     if (wire.connection.output)
     {
-        const ro = boundingRect(wire.connection.output.control);
+        const ro = boundingRect(wire.connection.output.div);
         pOut = point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset);
     }
     else
@@ -36,7 +36,7 @@ function updateWire(wire, x = 0, y = 0)
 
     if (wire.connection.input)
     {
-        const ri = boundingRect(wire.connection.input .control);
+        const ri = boundingRect(wire.connection.input.div);
         pIn = point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset);
     }
     else
@@ -67,8 +67,8 @@ function updateWires(wires)
 
     wires.forEach(w => 
     {
-        const ro = boundingRect(w.connection.output.control);
-        const ri = boundingRect(w.connection.input .control);
+        const ro = boundingRect(w.connection.output.div);
+        const ri = boundingRect(w.connection.input .div);
 
         pOut.push(point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset));
         pIn .push(point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset));

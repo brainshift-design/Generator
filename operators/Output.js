@@ -15,7 +15,7 @@ class Output
 
     wireColor;
 
-    control;
+    div;
     hitbox;
     wireBall;
     
@@ -58,15 +58,15 @@ class Output
         this.types           = [...type];
         this.genRequest      = genRequest;
 
-        this.control         = createDiv('output');
+        this.div         = createDiv('output');
         this.hitbox          = createDiv('outputHitbox');
         this.wireBall        = createDiv('outputBall');
         
-        this.control.output  = this;
+        this.div.output  = this;
         
         
-        this.control.appendChild(this.hitbox);
-        this.control.appendChild(this.wireBall);
+        this.div.appendChild(this.hitbox);
+        this.div.appendChild(this.wireBall);
 
         this.colorLight      = [0, 0, 0, 1];
         this.colorDark       = [1, 1, 1, 1];
@@ -96,7 +96,7 @@ class Output
                 && graphView.tempConn.input
                 && graphView.tempConn.input.types.includes(this.type))
             {
-                const rect = boundingRect(this.control);
+                const rect = boundingRect(this.div);
                 const loop = this.node.isOrFollows(graphView.tempConn.input.node);
 
                 if (!loop)
@@ -163,10 +163,10 @@ class Output
                 : color[3]))
             : 'transparent';
 
-        this.control.style.pointerEvents   = settings.showWires ? 'auto' : 'none';
-        this.control.style.backgroundColor = colorStyle;
+        this.div.style.pointerEvents   = settings.showWires ? 'auto' : 'none';
+        this.div.style.backgroundColor = colorStyle;
 
-        this.control.style.boxShadow = 
+        this.div.style.boxShadow = 
                this.connectedInputs.length > 0
             ||    graphView.tempConn
                && (   graphView.tempConn.output == this

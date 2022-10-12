@@ -385,14 +385,19 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
     let node = createNode(nodeType, creatingButton, createdId, options);
 
 
-    graph.addNode(node);
+    const autoConnect = 
+           settings.autoConnectNewNodes
+        && graphView.selectedNodes.length > 0
+        && canAutoConnectNode(node);
+
+
+    graph.addNode(node, !autoConnect);
     
+    if (autoConnect)
+        autoConnectNode(node);
+    
+
     uiSaveNodes([node.id]);
-
-
-    if (   settings.autoConnectNewNodes
-        && graphView.selectedNodes.length > 0)
-        node.connectToSelected(graphView.selectedNodes);
 
 
     if (updateUi)
@@ -402,16 +407,39 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
 
         node.updateNode();
 
-        //pushUpdate([node]);
-
-        //graphView.putNodeOnTop(node);
-        //graphView.updateNodeTransform(node);
-
-        //updateGraphNodes();
     }
 
 
     return node;
+}
+
+
+
+function canAutoConnectNode(node)
+{
+    const selNode = graph.nodes.find(n => n.selected);
+    const inputs  = node.inputs.filter(i => arraysIntersect(i.types, selNode.outputs[0].types));
+
+    return selNode
+        && selNode.outputs.length > 0
+        && inputs.length > 0;
+}
+
+
+
+function autoConnectNode(node)
+{
+    const selNode = graph.nodes.find(n => n.selected);
+    const inputs  = node.inputs.filter(i => arraysIntersect(i.types, selNode.outputs[0].types));
+
+    console.assert(
+           selNode
+        && selNode.outputs.length > 0
+        && inputs.length > 0,
+        'cannot auto-connect node');
+
+    actionManager.do(new ConnectAction(selNode.outputs[0], inputs[0]), true);
+    graphView.autoPlaceNewNode(selNode.outputs[0], inputs[0]);
 }
 
 
@@ -425,32 +453,6 @@ function uiDeleteNodes(nodeIds)//, actionId)
     uiRemoveSavedNodesAndConns(nodeIds);
     uiDeleteObjects(nodeIds);
 }
-
-
-
-// function uiUndeleteNodes(nodes, nodePos, actionId)
-// {
-//     graph.addNodes(nodes);
-
-
-//     graphView.selectedNodes = nodes;
-
-//     graphView.putNodeOnTop(lastOf(nodes));
-
-//     for (let i = 0; i < nodes.length; i++)
-//     {
-//         setNodePosition(
-//             nodes[i],
-//             nodePos[i].x,
-//             nodePos[i].y);
-//     }
-
-
-//     // uiQueueMessageToGenerator({
-//     //     cmd:       'genUndeleteNodes',
-//     //     uiActionId: actionId
-//     // });
-// }
 
 
 
@@ -587,14 +589,6 @@ function uiMakeNodesActive(nodes)
         if (!graphView.activeNodes.includes(node))
             graphView.activeNodes.push(node);
 
-        // uiQueueMessageToFigma({
-        //     cmd:   'figSaveActiveNode',
-        //     nodeId: node.id
-        // });
-
-        // if (node.type == 'object')
-        //     uiGenerateObjects([node.id]);
-
         node.updateNode();
     }
 
@@ -645,15 +639,6 @@ function uiMakeNodeRightPassive(node, fromNode = null)
     }
 
     uiMakeNodeLeftPassive(node, fromNode);//
-    // for (const input of node.inputs.filter(i => !i.param))
-    // {
-    //     if (   input.connected
-    //         && input.connectedOutput.node != fromNode)
-    //     {
-    //         uiMakeNodePassive(input.connectedOutput.node);
-    //         uiMakeNodeLeftPassive(input.connectedOutput.node, node);
-    //     }
-    // }
 }
 
 

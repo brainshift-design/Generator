@@ -23210,7 +23210,7 @@ function initNumberControlEvents(control)
                 control.param.input.mouseOver = true;
                 control.param.input.updateControl();
 
-                const rect = boundingRect(control.param.input.control);
+                const rect = boundingRect(control.param.input.div);
 
                 graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
@@ -23227,7 +23227,7 @@ function initNumberControlEvents(control)
                 control.param.output.updateControl();
 
 
-                const rect = boundingRect(control.param.output.control);
+                const rect = boundingRect(control.param.output.div);
 
                 graphView.tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
@@ -24540,7 +24540,7 @@ function initColorControlEvents(control)
                 control.param.input.mouseOver = true;
                 control.param.input.updateControl();
 
-                const rect = boundingRect(control.param.input.control);
+                const rect = boundingRect(control.param.input.div);
 
                 graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
@@ -24557,7 +24557,7 @@ function initColorControlEvents(control)
                 control.param.output.updateControl();
 
 
-                const rect = boundingRect(control.param.output.control);
+                const rect = boundingRect(control.param.output.div);
 
                 graphView.tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
@@ -26343,52 +26343,21 @@ graphView.placeNewNode = function(node)
     }
     else
     {
-        node.div.style.left = (graphView.offsetWidth /2 - graphView.pan.x                          ) / graphView.zoom - nodeRect.width/2;
+        node.div.style.left = (graphView.offsetWidth /2 - graphView.pan.x                       ) / graphView.zoom - nodeRect.width/2;
         node.div.style.top  = (graphView.offsetHeight/2 - graphView.pan.y - menuBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
     }
+};
 
 
-    // const nodeRect = boundingRect(node.div);
 
-    // const defx = (graphView.offsetWidth /2 - graphView.pan.x) / graphView.zoom - nodeRect.width /2,
-    //       defy = (graphView.offsetHeight/2 - graphView.pan.y - menuBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
+graphView.autoPlaceNewNode = function(output, input)
+{
+    //console.log('graphView.autoPlaceNewNode()');
 
-    // node.div.style.left = (graphView.offsetWidth  / 6 - graphView.pan.x) / graphView.zoom;
-    // node.div.style.top  = (graphView.offsetHeight / 4 - graphView.pan.y) / graphView.zoom;
+    const defaultPlacementGap = 30;
 
-
-    // const dx = 30,
-    //       dy = 20;
-
-    // let   ox = defx,
-    //       oy = defy;
-
-        
-    // let maxIter = 100; // stack overflow safeguard
-    
-    // let intersecting;
-    // while (   maxIter-- > 0
-    //        && (intersecting = graphView.getIntersectingNodes(node)).length > 0)
-    // {
-    //     let bounds = Rect.NaN;
-        
-    //     for (const n of intersecting)
-    //         bounds = expandRect(bounds, graphView.getNodeBounds(n));
-
-    //     const right = intersecting.reduce((a, b) => 
-    //         graphView.getNodeBounds(a).r > graphView.getNodeBounds(b).r ? a : b);
-
-    //     if (   right.type == node.type
-    //         && node.type != 'color'
-    //         && node.type != 'webcontrast') ox = bounds.b + dy;
-    //     else                                 oy = bounds.r + dx;
-    // }
-
-    
-    // const margin = 100;
-
-    // node.div.style.left = (ox > margin && ox < window.clientWidth  - margin) ? ox : defx;
-    // node.div.style.top  = (oy > margin && oy < window.clientHeight - margin) ? oy : defy;
+    input.node.div.style.left = output.node.div.offsetLeft + output.node.div.offsetWidth + defaultPlacementGap;
+    input.node.div.style.top  = output.node.div.offsetTop;//outputRect.y - graphView.pan.y/graphView.zoom - (inputRect.y - inputNodeRect.y);
 };
 
 
@@ -27661,7 +27630,7 @@ function updateWire(wire, x = 0, y = 0)
 
     if (wire.connection.output)
     {
-        const ro = boundingRect(wire.connection.output.control);
+        const ro = boundingRect(wire.connection.output.div);
         pOut = point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset);
     }
     else
@@ -27670,7 +27639,7 @@ function updateWire(wire, x = 0, y = 0)
 
     if (wire.connection.input)
     {
-        const ri = boundingRect(wire.connection.input .control);
+        const ri = boundingRect(wire.connection.input.div);
         pIn = point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset);
     }
     else
@@ -27701,8 +27670,8 @@ function updateWires(wires)
 
     wires.forEach(w => 
     {
-        const ro = boundingRect(w.connection.output.control);
-        const ri = boundingRect(w.connection.input .control);
+        const ro = boundingRect(w.connection.output.div);
+        const ri = boundingRect(w.connection.input .div);
 
         pOut.push(point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset));
         pIn .push(point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset));
@@ -27822,16 +27791,16 @@ extends EventTarget
         this.input = new Input(types, this.input_getValuesForUndo);
         this.input._param = this;
 
-        this.input.control.style.float     = 'left';
-        this.input.control.style.position  = 'absolute';
-        this.input.control.style.top       = '50%';
-        this.input.control.style.transform = 'translateY(-50%)';
+        this.input.div.style.float     = 'left';
+        this.input.div.style.position  = 'absolute';
+        this.input.div.style.top       = '50%';
+        this.input.div.style.transform = 'translateY(-50%)';
 
         this.input .colorLight = [0, 0, 0, 0.12];
         this.input .colorDark  = [1, 1, 1, 0.12];
         this.input .overFactor = 3;
         
-        this.div.appendChild(this.input.control);
+        this.div.appendChild(this.input.div);
 
         this.input.addEventListener('connect',    () => this.enableControlText(false));
         this.input.addEventListener('disconnect', () => this.enableControlText(true ));
@@ -27844,16 +27813,16 @@ extends EventTarget
         this.output = new Output(types, toString);
         this.output._param = this;
 
-        this.output.control.style.float     = 'right';
-        this.output.control.style.position  = 'absolute';
-        this.output.control.style.top       = '50%';
-        this.output.control.style.transform = 'translateY(-50%)';
+        this.output.div.style.float     = 'right';
+        this.output.div.style.position  = 'absolute';
+        this.output.div.style.top       = '50%';
+        this.output.div.style.transform = 'translateY(-50%)';
         
         this.output.colorLight = [0, 0, 0, 0.12];
         this.output.colorDark  = [1, 1, 1, 0.12];
         this.output.overFactor = 3;
 
-        this.div.appendChild(this.output.control);
+        this.div.appendChild(this.output.div);
     }
 
 
@@ -30209,7 +30178,7 @@ extends EventTarget
     wireColor;
 
 
-    control;
+    div;
     hitbox;
     wireBall;
   
@@ -30272,11 +30241,11 @@ extends EventTarget
         this.types            = [...types];
         this.getValuesForUndo = getValuesForUndo;
 
-        this.control          = createDiv('input');
+        this.div          = createDiv('input');
         this.hitbox           = createDiv('inputHitbox');
         this.wireBall         = createDiv('inputBall');
         
-        this.control.input    = this;
+        this.div.input    = this;
         
         this.colorLight       = [0, 0, 0, 1];
         this.colorDark        = [1, 1, 1, 1];
@@ -30284,8 +30253,8 @@ extends EventTarget
         this.wireColor        = rgbHeaderFromType(this.types[0], true);
 
         
-        this.control.appendChild(this.hitbox);
-        this.control.appendChild(this.wireBall);
+        this.div.appendChild(this.hitbox);
+        this.div.appendChild(this.wireBall);
 
                 
         //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
@@ -30315,7 +30284,7 @@ extends EventTarget
                     || this.connectedOutput != graphView.tempConn.output
                     || this == savedInput))
             {
-                const rect = boundingRect(this.control);
+                const rect = boundingRect(this.div);
                 const loop = graphView.tempConn.output.node.isOrFollows(this.node);
 
                 if (!loop)
@@ -30392,16 +30361,16 @@ extends EventTarget
                && !(    tc.output
                     && !this.accepts(tc.output));
 
-        this.control.style.transform = 
+        this.div.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
             + 'translateY(-50%)';
         
-        this.control.style.width         = (isConnected ? 8 : 6) + 'px';
-        this.control.style.height        = (isConnected ? 8 : 6) + 'px';
-        this.control.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
-        this.control.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
-        this.control.style.boxShadow     = '0 0 0 1px ' + colorStyle;
-        this.control.style.pointerEvents = settings.showWires ? 'auto' : 'none';
+        this.div.style.width         = (isConnected ? 8 : 6) + 'px';
+        this.div.style.height        = (isConnected ? 8 : 6) + 'px';
+        this.div.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
+        this.div.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
+        this.div.style.boxShadow     = '0 0 0 1px ' + colorStyle;
+        this.div.style.pointerEvents = settings.showWires ? 'auto' : 'none';
 
         this.hitbox.style.left   = isConnected ? -2 : -3;
         this.hitbox.style.top    = isConnected ? -2 : -3;
@@ -30463,7 +30432,7 @@ class Output
 
     wireColor;
 
-    control;
+    div;
     hitbox;
     wireBall;
     
@@ -30506,15 +30475,15 @@ class Output
         this.types           = [...type];
         this.genRequest      = genRequest;
 
-        this.control         = createDiv('output');
+        this.div         = createDiv('output');
         this.hitbox          = createDiv('outputHitbox');
         this.wireBall        = createDiv('outputBall');
         
-        this.control.output  = this;
+        this.div.output  = this;
         
         
-        this.control.appendChild(this.hitbox);
-        this.control.appendChild(this.wireBall);
+        this.div.appendChild(this.hitbox);
+        this.div.appendChild(this.wireBall);
 
         this.colorLight      = [0, 0, 0, 1];
         this.colorDark       = [1, 1, 1, 1];
@@ -30544,7 +30513,7 @@ class Output
                 && graphView.tempConn.input
                 && graphView.tempConn.input.types.includes(this.type))
             {
-                const rect = boundingRect(this.control);
+                const rect = boundingRect(this.div);
                 const loop = this.node.isOrFollows(graphView.tempConn.input.node);
 
                 if (!loop)
@@ -30611,10 +30580,10 @@ class Output
                 : color[3]))
             : 'transparent';
 
-        this.control.style.pointerEvents   = settings.showWires ? 'auto' : 'none';
-        this.control.style.backgroundColor = colorStyle;
+        this.div.style.pointerEvents   = settings.showWires ? 'auto' : 'none';
+        this.div.style.backgroundColor = colorStyle;
 
-        this.control.style.boxShadow = 
+        this.div.style.boxShadow = 
                this.connectedInputs.length > 0
             ||    graphView.tempConn
                && (   graphView.tempConn.output == this
@@ -31138,7 +31107,7 @@ class Operator
     {
         input._node = this;
         this.inputs.push(input);
-        this.inputControls.appendChild(input.control);
+        this.inputControls.appendChild(input.div);
     }
 
 
@@ -31183,7 +31152,7 @@ class Operator
     {
         output._node = this;
         this.outputs.push(output);
-        this.outputControls.appendChild(output.control);
+        this.outputControls.appendChild(output.div);
     }
 
 
@@ -31505,13 +31474,13 @@ class Operator
 
         for (let i = 0; i < inputs.length; i++)
         {
-            inputs[i].control.style.top = inputY[i];
+            inputs[i].div.style.top = inputY[i];
             inputs[i].updateControl();
         }
 
         for (let i = 0; i < outputs.length; i++) 
         {
-            outputs[i].control.style.top = outputY[i];
+            outputs[i].div.style.top = outputY[i];
             outputs[i].updateControl();
         }
 
@@ -32146,7 +32115,7 @@ function createNodeHeader(node)
                     graphView.overInput.updateControl();
 
                     
-                    const inputRect = boundingRect(savedConn.input.control);
+                    const inputRect = boundingRect(savedConn.input.div);
 
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
@@ -32168,7 +32137,7 @@ function createNodeHeader(node)
                     input.updateControl();
 
 
-                    const inputRect = boundingRect(input.control);
+                    const inputRect = boundingRect(input.div);
 
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
@@ -32188,7 +32157,7 @@ function createNodeHeader(node)
                 output.updateControl();
 
 
-                const rect = boundingRect(output.control);
+                const rect = boundingRect(output.div);
 
                 tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
@@ -33091,7 +33060,7 @@ function OpArithmetic_onConnectInput(node)
 function OpArithmetic_onDisconnectInput(node, input)
 {
     removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.control);
+    node.inputControls.removeChild(input.div);
     //node.updateNode();
 }
 
@@ -33411,7 +33380,7 @@ function onConnectInput(node)
 function onDisconnectInput(node, input)
 {
     removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.control);
+    node.inputControls.removeChild(input.div);
     //node.updateNode();
 }
 
@@ -37130,7 +37099,7 @@ function OpGradient_onConnectInput(node)
 function OpGradient_onDisconnectInput(node, input)
 {
     removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.control);
+    node.inputControls.removeChild(input.div);
     //node.updateNode();
 }
 
@@ -41258,14 +41227,19 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
     let node = createNode(nodeType, creatingButton, createdId, options);
 
 
-    graph.addNode(node);
+    const autoConnect = 
+           settings.autoConnectNewNodes
+        && graphView.selectedNodes.length > 0
+        && canAutoConnectNode(node);
+
+
+    graph.addNode(node, !autoConnect);
     
+    if (autoConnect)
+        autoConnectNode(node);
+    
+
     uiSaveNodes([node.id]);
-
-
-    if (   settings.autoConnectNewNodes
-        && graphView.selectedNodes.length > 0)
-        node.connectToSelected(graphView.selectedNodes);
 
 
     if (updateUi)
@@ -41275,16 +41249,39 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
 
         node.updateNode();
 
-        //pushUpdate([node]);
-
-        //graphView.putNodeOnTop(node);
-        //graphView.updateNodeTransform(node);
-
-        //updateGraphNodes();
     }
 
 
     return node;
+}
+
+
+
+function canAutoConnectNode(node)
+{
+    const selNode = graph.nodes.find(n => n.selected);
+    const inputs  = node.inputs.filter(i => arraysIntersect(i.types, selNode.outputs[0].types));
+
+    return selNode
+        && selNode.outputs.length > 0
+        && inputs.length > 0;
+}
+
+
+
+function autoConnectNode(node)
+{
+    const selNode = graph.nodes.find(n => n.selected);
+    const inputs  = node.inputs.filter(i => arraysIntersect(i.types, selNode.outputs[0].types));
+
+    console.assert(
+           selNode
+        && selNode.outputs.length > 0
+        && inputs.length > 0,
+        'cannot auto-connect node');
+
+    actionManager.do(new ConnectAction(selNode.outputs[0], inputs[0]), true);
+    graphView.autoPlaceNewNode(selNode.outputs[0], inputs[0]);
 }
 
 
@@ -41298,32 +41295,6 @@ function uiDeleteNodes(nodeIds)//, actionId)
     uiRemoveSavedNodesAndConns(nodeIds);
     uiDeleteObjects(nodeIds);
 }
-
-
-
-// function uiUndeleteNodes(nodes, nodePos, actionId)
-// {
-//     graph.addNodes(nodes);
-
-
-//     graphView.selectedNodes = nodes;
-
-//     graphView.putNodeOnTop(lastOf(nodes));
-
-//     for (let i = 0; i < nodes.length; i++)
-//     {
-//         setNodePosition(
-//             nodes[i],
-//             nodePos[i].x,
-//             nodePos[i].y);
-//     }
-
-
-//     // uiQueueMessageToGenerator({
-//     //     cmd:       'genUndeleteNodes',
-//     //     uiActionId: actionId
-//     // });
-// }
 
 
 
@@ -41460,14 +41431,6 @@ function uiMakeNodesActive(nodes)
         if (!graphView.activeNodes.includes(node))
             graphView.activeNodes.push(node);
 
-        // uiQueueMessageToFigma({
-        //     cmd:   'figSaveActiveNode',
-        //     nodeId: node.id
-        // });
-
-        // if (node.type == 'object')
-        //     uiGenerateObjects([node.id]);
-
         node.updateNode();
     }
 
@@ -41518,15 +41481,6 @@ function uiMakeNodeRightPassive(node, fromNode = null)
     }
 
     uiMakeNodeLeftPassive(node, fromNode);//
-    // for (const input of node.inputs.filter(i => !i.param))
-    // {
-    //     if (   input.connected
-    //         && input.connectedOutput.node != fromNode)
-    //     {
-    //         uiMakeNodePassive(input.connectedOutput.node);
-    //         uiMakeNodeLeftPassive(input.connectedOutput.node, node);
-    //     }
-    // }
 }
 
 

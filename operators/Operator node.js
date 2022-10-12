@@ -276,7 +276,7 @@ function createNodeHeader(node)
                     graphView.overInput.updateControl();
 
                     
-                    const inputRect = boundingRect(savedConn.input.control);
+                    const inputRect = boundingRect(savedConn.input.div);
 
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
@@ -298,7 +298,7 @@ function createNodeHeader(node)
                     input.updateControl();
 
 
-                    const inputRect = boundingRect(input.control);
+                    const inputRect = boundingRect(input.div);
 
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
@@ -318,7 +318,7 @@ function createNodeHeader(node)
                 output.updateControl();
 
 
-                const rect = boundingRect(output.control);
+                const rect = boundingRect(output.div);
 
                 tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,

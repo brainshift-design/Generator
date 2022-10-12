@@ -122,52 +122,21 @@ graphView.placeNewNode = function(node)
     }
     else
     {
-        node.div.style.left = (graphView.offsetWidth /2 - graphView.pan.x                          ) / graphView.zoom - nodeRect.width/2;
+        node.div.style.left = (graphView.offsetWidth /2 - graphView.pan.x                       ) / graphView.zoom - nodeRect.width/2;
         node.div.style.top  = (graphView.offsetHeight/2 - graphView.pan.y - menuBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
     }
+};
 
 
-    // const nodeRect = boundingRect(node.div);
 
-    // const defx = (graphView.offsetWidth /2 - graphView.pan.x) / graphView.zoom - nodeRect.width /2,
-    //       defy = (graphView.offsetHeight/2 - graphView.pan.y - menuBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
+graphView.autoPlaceNewNode = function(output, input)
+{
+    //console.log('graphView.autoPlaceNewNode()');
 
-    // node.div.style.left = (graphView.offsetWidth  / 6 - graphView.pan.x) / graphView.zoom;
-    // node.div.style.top  = (graphView.offsetHeight / 4 - graphView.pan.y) / graphView.zoom;
+    const defaultPlacementGap = 30;
 
-
-    // const dx = 30,
-    //       dy = 20;
-
-    // let   ox = defx,
-    //       oy = defy;
-
-        
-    // let maxIter = 100; // stack overflow safeguard
-    
-    // let intersecting;
-    // while (   maxIter-- > 0
-    //        && (intersecting = graphView.getIntersectingNodes(node)).length > 0)
-    // {
-    //     let bounds = Rect.NaN;
-        
-    //     for (const n of intersecting)
-    //         bounds = expandRect(bounds, graphView.getNodeBounds(n));
-
-    //     const right = intersecting.reduce((a, b) => 
-    //         graphView.getNodeBounds(a).r > graphView.getNodeBounds(b).r ? a : b);
-
-    //     if (   right.type == node.type
-    //         && node.type != 'color'
-    //         && node.type != 'webcontrast') ox = bounds.b + dy;
-    //     else                                 oy = bounds.r + dx;
-    // }
-
-    
-    // const margin = 100;
-
-    // node.div.style.left = (ox > margin && ox < window.clientWidth  - margin) ? ox : defx;
-    // node.div.style.top  = (oy > margin && oy < window.clientHeight - margin) ? oy : defy;
+    input.node.div.style.left = output.node.div.offsetLeft + output.node.div.offsetWidth + defaultPlacementGap;
+    input.node.div.style.top  = output.node.div.offsetTop;//outputRect.y - graphView.pan.y/graphView.zoom - (inputRect.y - inputNodeRect.y);
 };
 
 

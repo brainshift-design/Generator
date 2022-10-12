@@ -214,6 +214,6 @@ function OpArithmetic_onConnectInput(node)
 function OpArithmetic_onDisconnectInput(node, input)
 {
     removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.control);
+    node.inputControls.removeChild(input.div);
     //node.updateNode();
 }
