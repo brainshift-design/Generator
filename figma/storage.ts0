@@ -142,19 +142,16 @@ function figRemoveAllSavedNodesAndConns()
 
 
 
-function figLogAllSavedNodesAndConns(settings)
+function figLogAllSavedNodesAndConns()
 {
-    figLogAllSavedNodes(settings);
-    figLogAllSavedConns(settings);
+    figLogAllSavedNodes();
+    figLogAllSavedConns();
 }
 
 
 
-function figLogAllSavedNodes(settings)
+function figLogAllSavedNodes()
 {
-    if (!settings.logLoading)
-        return;
-
     figma.currentPage.getPluginDataKeys()
         .filter (k => isNodeKey(k))
         .forEach(k => logSavedNode(k));
@@ -162,11 +159,8 @@ function figLogAllSavedNodes(settings)
 
 
 
-function figLogAllSavedConns(settings)
+function figLogAllSavedConns()
 {
-    if (!settings.logLoading)
-        return;
-
     const connKeys = figma.currentPage.getPluginDataKeys()
         .filter(k => isConnKey(k));
         

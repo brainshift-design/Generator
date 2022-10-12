@@ -563,9 +563,9 @@ figma.ui.onmessage = msg =>
         case 'figRemoveSavedNodesAndConns':     figRemoveSavedNodesAndConns    (msg.nodeIds);                                break;
         case 'figRemoveAllSavedNodesAndConns':  figRemoveAllSavedNodesAndConns ();                                           break;
         
-        case 'figLogAllSavedNodesAndConns':     figLogAllSavedNodesAndConns    (msg.settings);                               break;
-        case 'figLogAllSavedNodes':             figLogAllSavedNodes            (msg.settings);                               break;
-        case 'figLogAllSavedConns':             figLogAllSavedConns            (msg.settings);                               break;
+        case 'figLogAllSavedNodesAndConns':     figLogAllSavedNodesAndConns    ();                                           break;
+        case 'figLogAllSavedNodes':             figLogAllSavedNodes            ();                                           break;
+        case 'figLogAllSavedConns':             figLogAllSavedConns            ();                                           break;
      
         case 'figSaveConnection':               figSaveConnection              (msg.name, msg.json);                         break;
         case 'figRemoveSavedConnection':        figRemoveSavedConnection       (msg.name);                                   break;
@@ -1081,19 +1081,16 @@ function figRemoveAllSavedNodesAndConns()
 
 
 
-function figLogAllSavedNodesAndConns(settings)
+function figLogAllSavedNodesAndConns()
 {
-    figLogAllSavedNodes(settings);
-    figLogAllSavedConns(settings);
+    figLogAllSavedNodes();
+    figLogAllSavedConns();
 }
 
 
 
-function figLogAllSavedNodes(settings)
+function figLogAllSavedNodes()
 {
-    if (!settings.logLoading)
-        return;
-
     figma.currentPage.getPluginDataKeys()
         .filter (k => isNodeKey(k))
         .forEach(k => logSavedNode(k));
@@ -1101,11 +1098,8 @@ function figLogAllSavedNodes(settings)
 
 
 
-function figLogAllSavedConns(settings)
+function figLogAllSavedConns()
 {
-    if (!settings.logLoading)
-        return;
-
     const connKeys = figma.currentPage.getPluginDataKeys()
         .filter(k => isConnKey(k));
         

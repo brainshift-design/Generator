@@ -14,8 +14,6 @@ var genMessagePosted = false;
 //uiRemoveSavedNodesAndConns(['color']);
 //uiRemoveAllSavedNodesAndConns();
 
-uiLogAllSavedNodesAndConns();
-
 
 
 var currentUser = '';
@@ -57,8 +55,8 @@ function uiEndStartGenerator(msg)
 
 
     loadLocalSettings();
-
     
+
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
 
 

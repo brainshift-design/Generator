@@ -38442,6 +38442,7 @@ extends Action
         setTimeout(() => graphView.updateScrollWithBounds());
         
         uiMakeNodeActive(node);
+        uiSaveNodes([node.id]);
     }
 
 
@@ -38468,6 +38469,7 @@ extends Action
         setTimeout(() => graphView.updateScrollWithBounds());
 
         uiMakeNodeActive(node);
+        uiSaveNodes([node.id]);
     }
 }
 
@@ -39801,8 +39803,6 @@ var genMessagePosted = false;
 //uiRemoveSavedNodesAndConns(['color']);
 //uiRemoveAllSavedNodesAndConns();
 
-uiLogAllSavedNodesAndConns();
-
 
 
 var currentUser = '';
@@ -39844,8 +39844,8 @@ function uiEndStartGenerator(msg)
 
 
     loadLocalSettings();
-
     
+
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
 
 
@@ -40336,6 +40336,10 @@ function uiGetLocalDataReturn(msg)
 
     if (msg.key == 'debugMode')
         menuItemDebug.setVisible(settings.debugMode);
+
+    else if (msg.key == 'logLoading')
+        if (settings.logLoading)
+            uiLogAllSavedNodesAndConns();
 }
 
 
@@ -41239,7 +41243,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
         autoConnectNode(node);
     
 
-    uiSaveNodes([node.id]);
+    // uiSaveNodes([node.id]);
 
 
     if (updateUi)
@@ -41248,7 +41252,6 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
         graphView.selectedNodes     = [node];
 
         node.updateNode();
-
     }
 
 

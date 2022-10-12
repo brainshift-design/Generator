@@ -70,6 +70,10 @@ function uiGetLocalDataReturn(msg)
 
     if (msg.key == 'debugMode')
         menuItemDebug.setVisible(settings.debugMode);
+
+    else if (msg.key == 'logLoading')
+        if (settings.logLoading)
+            uiLogAllSavedNodesAndConns();
 }
 
 

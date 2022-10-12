@@ -397,7 +397,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
         autoConnectNode(node);
     
 
-    uiSaveNodes([node.id]);
+    // uiSaveNodes([node.id]);
 
 
     if (updateUi)
@@ -406,7 +406,6 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
         graphView.selectedNodes     = [node];
 
         node.updateNode();
-
     }
 
 

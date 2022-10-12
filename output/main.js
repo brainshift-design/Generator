@@ -388,13 +388,13 @@ figma.ui.onmessage = msg => {
             figRemoveAllSavedNodesAndConns();
             break;
         case 'figLogAllSavedNodesAndConns':
-            figLogAllSavedNodesAndConns(msg.settings);
+            figLogAllSavedNodesAndConns();
             break;
         case 'figLogAllSavedNodes':
-            figLogAllSavedNodes(msg.settings);
+            figLogAllSavedNodes();
             break;
         case 'figLogAllSavedConns':
-            figLogAllSavedConns(msg.settings);
+            figLogAllSavedConns();
             break;
         case 'figSaveConnection':
             figSaveConnection(msg.name, msg.json);
@@ -691,20 +691,16 @@ function figRemoveAllSavedNodesAndConns() {
     for (const key of connKeys)
         figClearPageData(key);
 }
-function figLogAllSavedNodesAndConns(settings) {
-    figLogAllSavedNodes(settings);
-    figLogAllSavedConns(settings);
+function figLogAllSavedNodesAndConns() {
+    figLogAllSavedNodes();
+    figLogAllSavedConns();
 }
-function figLogAllSavedNodes(settings) {
-    if (!settings.logLoading)
-        return;
+function figLogAllSavedNodes() {
     figma.currentPage.getPluginDataKeys()
         .filter(k => isNodeKey(k))
         .forEach(k => logSavedNode(k));
 }
-function figLogAllSavedConns(settings) {
-    if (!settings.logLoading)
-        return;
+function figLogAllSavedConns() {
     const connKeys = figma.currentPage.getPluginDataKeys()
         .filter(k => isConnKey(k));
     connKeys.sort((key1, key2) => {
