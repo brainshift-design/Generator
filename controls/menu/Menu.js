@@ -52,7 +52,7 @@ class Menu
                 this.div.appendChild(document.createElement('br'));
 
             if (!this.showIcons)  this.items[i].divIcon .style.display = 'none';
-            if (!this.showChecks) this.items[i].divCheck.style.width   = this.showIcons ? 10 : 15;
+            if (!this.showChecks) this.items[i].divCheck.style.width   = this.showIcons ? 18 : 15;
 
             this.items[i].parentMenu = this;
             this.items[i].index      = i;
@@ -74,8 +74,7 @@ class Menu
 
     show(srcDiv, right = false)
     {
-        if (this.init)
-            this.init();
+        this.initMenu();
 
 
         this.div.style.display = 'block';
@@ -132,8 +131,8 @@ class Menu
     
     showAt(x, y)
     {
-        if (this.init)
-            this.init();
+        this.initMenu();
+
 
         this.div.style.display = 'block';
         this.div.style.opacity = '100%';
@@ -145,11 +144,28 @@ class Menu
         this.div.style.left = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
         this.div.style.top  = y - 4;
     
+
         currentMenus.push(this);
     }
     
     
     
+    initMenu()
+    {
+        // let maxWidth = 0;
+
+        // for (const item of this.items)
+        //     maxWidth = Math.max(maxWidth, item.name.offsetWidth + item.shortcut.offsetWidth + 30);
+
+        // if (this.div.offsetWidth < maxWidth)
+        //     this.div.style.width = maxWidth;
+            
+        if (this.init)
+            this.init();
+    }
+
+
+
     hide()
     {
         this.div     .style.display = 'none';

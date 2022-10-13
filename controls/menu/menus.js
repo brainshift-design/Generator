@@ -208,18 +208,18 @@ function initMenus()
     
     menuStyle = new Menu('Style nodes', true, false);
     menuStyle.addItems([
-        new MenuItem('Solid fill',  {icon: iconFill  , callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
-        new MenuItem('Stroke',      {icon: iconStroke, callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))}),
-        new MenuItem('Style',       {icon: iconStyle , enabled:  false})]);
+        new MenuItem('Solid fill', {icon: iconFill  , callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
+        new MenuItem('Stroke',     {icon: iconStroke, callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))}),
+        new MenuItem('Style',      {icon: iconStyle , enabled:  false})]);
     
     
     menuShape = new Menu('Shape nodes', true, false);
     menuShape.addItems([
-        new MenuItem('Rectangle',   {icon: iconRectangle, callback: () => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div))}),
-        new MenuItem('Line',        {icon: iconLine     , enabled: false}),
-        new MenuItem('Ellipse',     {icon: iconEllipse  , enabled: false}),
-        new MenuItem('Polygon',     {icon: iconPolygon  , enabled: false}),
-        new MenuItem('Star',        {icon: iconStar     , enabled: false})]);
+        new MenuItem('Rectangle',  {icon: iconRectangle, callback: () => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div))}),
+        new MenuItem('Line',       {icon: iconLine     , enabled: false}),
+        new MenuItem('Ellipse',    {icon: iconEllipse  , enabled: false}),
+        new MenuItem('Polygon',    {icon: iconPolygon  , enabled: false}),
+        new MenuItem('Star',       {icon: iconStar     , enabled: false})]);
 
 
     menuZoom = new Menu('Zoom/view options', false);
@@ -234,9 +234,8 @@ function initMenus()
     menuGraph.addItems([
         menuItemGraphPaste = new MenuItem('Paste here', {shortcut: osCtrl() + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(e.shiftKey, e.clientX, e.clientY - menuBar.offsetHeight); }})]);
 
-    menuGraph.init = () =>
+    menuGraph.init = () => 
     {
-        console.log('init graph menu');
         menuItemGraphPaste.setEnabled(copiedNodesJson != '');
     };
 

@@ -147,17 +147,6 @@ class MenuItem
         {
             this.div.style.background = 'transparent';
         });
-        
-        
-        // this.div.addEventListener('pointerleave', e =>
-        // {
-        //     const menuRect = this.div.getBoundingClientRect();
-
-        //     if (    this.childMenu
-        //         && !this.childMenu.overMenu
-        //         && e.clientX < menuRect.right)
-        //         this.childMenu.hide();
-        // });
     }
 
 
@@ -215,7 +204,6 @@ class MenuItem
     update()
     {
         this.divCheck.style.visibility = this.checked ? 'visible' : 'hidden';
-
-        this.div     .style.opacity    = this.enabled ? '100%' : '40%';
+        this.div     .style.opacity    = this.enabled ? '100%'    : '40%';
     }
 }

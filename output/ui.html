@@ -22096,7 +22096,7 @@ class Menu
                 this.div.appendChild(document.createElement('br'));
 
             if (!this.showIcons)  this.items[i].divIcon .style.display = 'none';
-            if (!this.showChecks) this.items[i].divCheck.style.width   = this.showIcons ? 10 : 15;
+            if (!this.showChecks) this.items[i].divCheck.style.width   = this.showIcons ? 18 : 15;
 
             this.items[i].parentMenu = this;
             this.items[i].index      = i;
@@ -22118,8 +22118,7 @@ class Menu
 
     show(srcDiv, right = false)
     {
-        if (this.init)
-            this.init();
+        this.initMenu();
 
 
         this.div.style.display = 'block';
@@ -22176,8 +22175,8 @@ class Menu
     
     showAt(x, y)
     {
-        if (this.init)
-            this.init();
+        this.initMenu();
+
 
         this.div.style.display = 'block';
         this.div.style.opacity = '100%';
@@ -22189,11 +22188,28 @@ class Menu
         this.div.style.left = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
         this.div.style.top  = y - 4;
     
+
         currentMenus.push(this);
     }
     
     
     
+    initMenu()
+    {
+        // let maxWidth = 0;
+
+        // for (const item of this.items)
+        //     maxWidth = Math.max(maxWidth, item.name.offsetWidth + item.shortcut.offsetWidth + 30);
+
+        // if (this.div.offsetWidth < maxWidth)
+        //     this.div.style.width = maxWidth;
+            
+        if (this.init)
+            this.init();
+    }
+
+
+
     hide()
     {
         this.div     .style.display = 'none';
@@ -22645,17 +22661,6 @@ class MenuItem
         {
             this.div.style.background = 'transparent';
         });
-        
-        
-        // this.div.addEventListener('pointerleave', e =>
-        // {
-        //     const menuRect = this.div.getBoundingClientRect();
-
-        //     if (    this.childMenu
-        //         && !this.childMenu.overMenu
-        //         && e.clientX < menuRect.right)
-        //         this.childMenu.hide();
-        // });
     }
 
 
@@ -22713,8 +22718,7 @@ class MenuItem
     update()
     {
         this.divCheck.style.visibility = this.checked ? 'visible' : 'hidden';
-
-        this.div     .style.opacity    = this.enabled ? '100%' : '40%';
+        this.div     .style.opacity    = this.enabled ? '100%'    : '40%';
     }
 }
 
@@ -22929,18 +22933,18 @@ function initMenus()
     
     menuStyle = new Menu('Style nodes', true, false);
     menuStyle.addItems([
-        new MenuItem('Solid fill',  {icon: iconFill  , callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
-        new MenuItem('Stroke',      {icon: iconStroke, callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))}),
-        new MenuItem('Style',       {icon: iconStyle , enabled:  false})]);
+        new MenuItem('Solid fill', {icon: iconFill  , callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
+        new MenuItem('Stroke',     {icon: iconStroke, callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))}),
+        new MenuItem('Style',      {icon: iconStyle , enabled:  false})]);
     
     
     menuShape = new Menu('Shape nodes', true, false);
     menuShape.addItems([
-        new MenuItem('Rectangle',   {icon: iconRectangle, callback: () => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div))}),
-        new MenuItem('Line',        {icon: iconLine     , enabled: false}),
-        new MenuItem('Ellipse',     {icon: iconEllipse  , enabled: false}),
-        new MenuItem('Polygon',     {icon: iconPolygon  , enabled: false}),
-        new MenuItem('Star',        {icon: iconStar     , enabled: false})]);
+        new MenuItem('Rectangle',  {icon: iconRectangle, callback: () => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div))}),
+        new MenuItem('Line',       {icon: iconLine     , enabled: false}),
+        new MenuItem('Ellipse',    {icon: iconEllipse  , enabled: false}),
+        new MenuItem('Polygon',    {icon: iconPolygon  , enabled: false}),
+        new MenuItem('Star',       {icon: iconStar     , enabled: false})]);
 
 
     menuZoom = new Menu('Zoom/view options', false);
@@ -22955,9 +22959,8 @@ function initMenus()
     menuGraph.addItems([
         menuItemGraphPaste = new MenuItem('Paste here', {shortcut: osCtrl() + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(e.shiftKey, e.clientX, e.clientY - menuBar.offsetHeight); }})]);
 
-    menuGraph.init = () =>
+    menuGraph.init = () => 
     {
-        console.log('init graph menu');
         menuItemGraphPaste.setEnabled(copiedNodesJson != '');
     };
 
