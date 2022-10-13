@@ -36,7 +36,7 @@ const NULL           = '';
 const TAB            = '  ';
 const NL             = '\n';
 
-const GEN_LOGO       = '◦G•';
+const GENERATOR_LOGO = '◦G•';
 
 
 const INVALID             = '?';
@@ -393,10 +393,10 @@ function figUpdateObjects(msg)
 
 function figCreateObject(objects, genObj)
 {
-    let figObj;
+    const name = 'G.' + genObj.nodeId.toString() + '.' + genObj.id.toString();
     
-
-    const name = GEN_LOGO + '   ' + genObj.nodeId.toString() + ' : ' + genObj.id.toString();
+    
+    let figObj;
 
     switch (genObj.type)
     {
@@ -406,6 +406,8 @@ function figCreateObject(objects, genObj)
         case POLYGON:   figObj = figCreatePolygon(genObj, name); break;
         case STAR:      figObj = figCreateStar   (genObj, name); break;
     }
+
+    console.assert(!!figObj, 'no Figma object created');
 
 
     figObj.setPluginData('id',     genObj.id    .toString());

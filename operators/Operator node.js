@@ -159,52 +159,17 @@ function createNodeHeader(node)
         {
             e.stopPropagation();
 
-            node.div.selectedSet = false;
-            node.div.moved       = false;
+            selectFromClick(node, getCtrlKey(e), e.shiftKey, e.altKey);
 
-
-            if (   getCtrlKey(e)
-                && e.shiftKey
-                && e.altKey)
-            {
-                graphView.selectedNodes = getAllNodesFromNode(node);
-                console.log('graphView.selectedNodes = ', graphView.selectedNodes);
-            }
-            else if (e.shiftKey
-                  && e.altKey)
-            {
-                if (isMac) graphView.selectedNodes = getNodesBeforeNode(node);
-                else       graphView.selectedNodes = getNodesAcrossNode(node);
-            }
-            else if (getCtrlKey(e)
-                  && e.shiftKey)
-            {
-                if (isMac) graphView.selectedNodes = getNodesAcrossNode(node);
-                else       graphView.selectedNodes = getNodesBeforeNode(node);
-            }
-            else if (getCtrlKey(e)
-                  && e.altKey)
-                graphView.selectedNodes = getNodesAfterNode(node);
-
-            else if (!node.selected)
-            {
-                if (e.shiftKey) node     .selected      = true;
-                else            graphView.selectedNodes = [node];
-
-                node.selectedSet = true;
-            }
-
-            
+                        
             node.div.sx = e.clientX;
             node.div.sy = e.clientY;
-
 
             for (const n of graphView.selectedNodes)
             {
                 n.div.slx = n.div.offsetLeft;
                 n.div.sly = n.div.offsetTop;
             }
-
 
             node.div.dragging = true;
             node.header.setPointerCapture(e.pointerId);
@@ -214,8 +179,10 @@ function createNodeHeader(node)
         {
             e.stopPropagation();
 
-            if (isEmpty(currentMenus)) menuNode.showAt(e.clientX, e.clientY);
-            else                       hideAllMenus();
+            selectFromClick(node, getCtrlKey(e), e.shiftKey, e.altKey);
+
+            hideAllMenus();
+            menuNode.showAt(e.clientX, e.clientY);
         }
 
         
@@ -483,4 +450,44 @@ function setNodePosition(node, x, y, updateTransform = true)
 
     if (updateTransform)
         graphView.updateNodeTransform(node);
+}
+
+
+
+function selectFromClick(node, ctrl, shift, alt)
+{
+    node.div.selectedSet = false;
+    node.div.moved       = false;
+
+
+    if (   ctrl
+        && shift
+        && alt)
+    {
+        graphView.selectedNodes = getAllNodesFromNode(node);
+        console.log('graphView.selectedNodes = ', graphView.selectedNodes);
+    }
+    else if (shift
+          && alt)
+    {
+        if (isMac) graphView.selectedNodes = getNodesBeforeNode(node);
+        else       graphView.selectedNodes = getNodesAcrossNode(node);
+    }
+    else if (ctrl
+          && shift)
+    {
+        if (isMac) graphView.selectedNodes = getNodesAcrossNode(node);
+        else       graphView.selectedNodes = getNodesBeforeNode(node);
+    }
+    else if (ctrl
+          && alt)
+        graphView.selectedNodes = getNodesAfterNode(node);
+
+    else if (!node.selected)
+    {
+        if (shift) node     .selected      = true;
+        else       graphView.selectedNodes = [node];
+
+        node.selectedSet = true;
+    }
 }

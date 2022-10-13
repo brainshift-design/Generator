@@ -327,8 +327,51 @@ graphView.toJson = function()
     const tab = '\n' + TAB;
 
     return '{'
-        + tab + '"zoom": "'      + graphView.zoom  + '",'
-        + tab + '"panx": "'      + graphView.pan.x + '",'
-        + tab + '"pany": "'      + graphView.pan.y + '"'
+        + tab + '"zoom": "' + graphView.zoom  + '",'
+        + tab + '"panx": "' + graphView.pan.x + '",'
+        + tab + '"pany": "' + graphView.pan.y + '"'
         + '\n}';
 };
+
+
+
+function selectAllNodes()
+{
+    graphView.selectedNodes = graph.nodes;
+        
+    actionManager.do(new SelectNodesAction(
+        graphView.selectedNodes    .map(n => n.id), 
+        graphView.lastSelectedNodes.map(n => n.id)));
+}
+
+
+
+function copySelectedNodes()
+{
+    pasteOffset     = [0, 0];
+    copiedNodesJson = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
+}
+
+
+
+function pasteCopiedNodes(pasteOutsideConnections, clientX = Number.NaN, clientY = Number.NaN)
+{
+    if (copiedNodesJson == '')
+        return;
+
+    const x = (clientX - graphView.pan.x) / graphView.zoom;
+    const y = (clientY - graphView.pan.y) / graphView.zoom;
+
+    actionManager.do(new PasteNodesAction(copiedNodesJson, pasteOutsideConnections, false, x, y));
+}
+
+
+
+function duplicateSelectedNodes(pasteOutsideConnections)
+{
+    if (graphView.selectedNodes.length > 0)
+    {
+        pasteOffset = [0, 0];
+        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), pasteOutsideConnections, true));
+    }
+}

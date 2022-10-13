@@ -25,7 +25,7 @@ const MAX_INT32 = 2147483647;
 const NULL = '';
 const TAB = '  ';
 const NL = '\n';
-const GEN_LOGO = '◦G•';
+const GENERATOR_LOGO = '◦G•';
 const INVALID = '?';
 const DISPLAY_INVALID = INVALID; //'🤷‍♂️';
 const NUMBER_VALUE = 'N'; // value (s) (with significant decimals)
@@ -237,8 +237,8 @@ function figUpdateObjects(msg) {
     }
 }
 function figCreateObject(objects, genObj) {
+    const name = 'G.' + genObj.nodeId.toString() + '.' + genObj.id.toString();
     let figObj;
-    const name = GEN_LOGO + '   ' + genObj.nodeId.toString() + ' : ' + genObj.id.toString();
     switch (genObj.type) {
         case RECTANGLE:
             figObj = figCreateRect(genObj, name);
@@ -256,6 +256,7 @@ function figCreateObject(objects, genObj) {
             figObj = figCreateStar(genObj, name);
             break;
     }
+    console.assert(!!figObj, 'no Figma object created');
     figObj.setPluginData('id', genObj.id.toString());
     figObj.setPluginData('type', genObj.type.toString());
     figObj.setPluginData('nodeId', genObj.nodeId.toString());

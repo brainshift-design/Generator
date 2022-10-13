@@ -15,7 +15,7 @@ class MenuItem
 
     childMenu     = null;
 
-    separator   = false;
+    separator     = false;
 
 
     div;
@@ -114,7 +114,15 @@ class MenuItem
 
 
         this.div.addEventListener('pointerdown', e => e.stopPropagation());
-        this.div.addEventListener('pointerup', e => { if (!this.childMenu) this.select(!e.shiftKey); });
+
+
+        this.div.addEventListener('pointerup', e => 
+        {
+            const rect = boundingRect(this.div);
+
+            if (!this.childMenu) 
+                this.select(e.shiftKey, rect.x, rect.y); 
+        });
 
 
         this.div.addEventListener('pointerenter', () =>
@@ -154,7 +162,7 @@ class MenuItem
 
 
 
-    select(hideCurrent = true)
+    select(shift = false, x = Number.NaN, y = Number.NaN)
     {
         if (!this.enabled)
             return;
@@ -162,14 +170,22 @@ class MenuItem
         if (currentMenus.length > 0) // this lets the item be selected without its parent menu being involved
         {
             currentMenus[0].lastItem = this;
-            currentMenus[0].button.update();
+
+            if (currentMenus[0].button)
+                currentMenus[0].button.update();
         }
 
-        if (hideCurrent)
+        if (!shift)
             hideAllMenus();
 
+
+        const e = {shiftKey: shift};
+
+        if (!isNaN(x)) e.clientX = x;
+        if (!isNaN(y)) e.clientY = y;
+
         if (this.callback) 
-            this.callback(); 
+            this.callback(e); 
     }
 
 

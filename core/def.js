@@ -8,4 +8,4 @@ const NULL           = '';
 const TAB            = '  ';
 const NL             = '\n';
 
-const GEN_LOGO       = '◦G•';
+const GENERATOR_LOGO = '◦G•';

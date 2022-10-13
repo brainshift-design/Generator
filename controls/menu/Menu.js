@@ -21,6 +21,8 @@ class Menu
     lastItem   = null;
 
 
+    init       = null; // ()
+
 
     constructor(name, showIcons = true)
     {
@@ -70,6 +72,10 @@ class Menu
 
     show(srcDiv, right = false)
     {
+        if (this.init)
+            this.init();
+
+
         this.div.style.display = 'block';
         this.div.style.opacity = '100%';
     
@@ -124,6 +130,9 @@ class Menu
     
     showAt(x, y)
     {
+        if (this.init)
+            this.init();
+
         this.div.style.display = 'block';
         this.div.style.opacity = '100%';
     

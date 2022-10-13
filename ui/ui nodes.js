@@ -673,7 +673,7 @@ function uiCopyNodes(nodeIds)
 
 
 
-function uiPasteNodes(nodesJson, pasteOutsideConnections)
+function uiPasteNodes(nodesJson, pasteOutsideConnections, x, y)
 {
     //console.log(nodesJson);
 
@@ -687,11 +687,24 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections)
     const data = JSON.parse(nodesJson);
 
 
-    // offset new nodes (must be done before loading)
-    for (let i = 0; i < data.nodes.length; i++)
+    if (   !isNaN(x) 
+        && !isNaN(y)) // position new nodes
     {
-        data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset[0] / graphView.zoom;
-        data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset[1] / graphView.zoom;
+        const positions = data.nodes.map(n => [parseFloat(n.x), parseFloat(n.y)]);
+
+        for (let i = 0; i < data.nodes.length; i++)
+        {
+            data.nodes[i].x = x + positions[i][0] - positions[0][0] + 5 / graphView.zoom;
+            data.nodes[i].y = y + positions[i][1] - positions[0][1];
+        }
+    }
+    else // offset new nodes (must be done before loading)
+    {
+        for (let i = 0; i < data.nodes.length; i++)
+        {
+            data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset[0] / graphView.zoom;
+            data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset[1] / graphView.zoom;
+        }
     }
 
 

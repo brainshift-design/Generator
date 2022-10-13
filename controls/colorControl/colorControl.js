@@ -11,72 +11,74 @@ function initColorControlChildren(control)
 
 function initColorControl(param, control, width, height, id, name, showName, defaultValue, dragScale = 0.05, wheelScale = 1, acc = 0)
 {
-    control.param                  = param;
-     
-    control.className              = 'colorControl';
-     
-    control.width                  = width;
-    control.height                 = height;
-             
-    control.style.width            = width;
-    control.style.height           = height;
-             
-    control.showColor              = true;
+    // control is also the div
 
-    control.value                  = defaultValue;
-    control.acc                    = acc;
+    control.param             = param;
      
-    control.id                     = id;
-    control.name                   = name;
+    control.className         = 'colorControl';
      
-    control.dragReverse            = false;
-    control.dragScale              = dragScale;
-    control.wheelScale             = wheelScale;
+    control.width             = width;
+    control.height            = height;
              
-    control.backStyleLight         = 'rgba(255, 255, 255, 0.95)';
-    control.valueStyleLight        = 'transparent';
-    control.textStyleLight         = '#000';
+    control.style.width       = width;
+    control.style.height      = height;
+             
+    control.showColor         = true;
+
+    control.value             = defaultValue;
+    control.acc               = acc;
+     
+    control.id                = id;
+    control.name              = name;
+     
+    control.dragReverse       = false;
+    control.dragScale         = dragScale;
+    control.wheelScale        = wheelScale;
+             
+    control.backStyleLight    = 'rgba(255, 255, 255, 0.95)';
+    control.valueStyleLight   = 'transparent';
+    control.textStyleLight    = '#000';
                 
-    control.backStyleDark          = 'rgba(56, 56, 56, 0.95)';
-    control.valueStyleDark         = 'transparent';
-    control.textStyleDark          = '#eee';
+    control.backStyleDark     = 'rgba(56, 56, 56, 0.95)';
+    control.valueStyleDark    = 'transparent';
+    control.textStyleDark     = '#eee';
 
-    control.fontSize               = 11;
+    control.fontSize          = 11;
              
-    control.style.display          = 'inline';
+    control.style.display     = 'inline';
              
-    control.mouseOver              = false;
-    control.buttonDown0            = false;
-    control.buttonDown1            = false;
+    control.mouseOver         = false;
+    control.buttonDown0       = false;
+    control.buttonDown1       = false;
              
-    control.clickSize              = 4;
-    control.moved                  = false;
+    control.clickSize         = 4;
+    control.moved             = false;
          
-    control.tabIndex               = 0;
-    control.inFocus                = false;
-    control.clicked                = false;
+    control.tabIndex          = 0;
+    control.inFocus           = false;
+    control.clicked           = false;
  
-    control.startValue             = 0;
+    control.startValue        = 0;
     control.oldValue; 
  
-    control.wrapValue              = false;
+    control.wrapValue         = false;
      
-    control.showName               = showName;
-    control.showHex                = false;
+    control.showName          = showName;
+    control.showHex           = false;
          
-    control.enableChangeEvent      = true;
+    control.enableChangeEvent = true;
     
-    control.successOnFocusOut      = false;
-    control.keyBlur                = false;
+    control.successOnFocusOut = false;
+    control.keyBlur           = false;
     
-    control.pointerEvents          = true;
-    control.readOnly               = false;
+    control.pointerEvents     = true;
+    control.readOnly          = false;
      
-    control.valueText              = '';
+    control.valueText         = '';
      
-    control.onstartchange          = new Event('startchange');
-    control.onchange               = new Event('change');
-    control.onconfirm              = new Event('confirm');
+    control.onstartchange     = new Event('startchange');
+    control.onchange          = new Event('change');
+    control.onconfirm         = new Event('confirm');
 
 
     initColorControlChildren(control);    

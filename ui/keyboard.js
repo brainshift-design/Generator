@@ -6,42 +6,25 @@ document.addEventListener('keydown', e =>
     // copy
     if (   e.code == 'KeyC'
         && getCtrlKey(e))
-    {
-        pasteOffset     = [0, 0];
-        copiedNodesJson = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
-    }
-
+        copySelectedNodes();
+        
     // paste
     else if (e.code == 'KeyV'
           && getCtrlKey(e))
-    {
-        if (copiedNodesJson.trim() != '')
-            actionManager.do(new PasteNodesAction(copiedNodesJson, e.shiftKey));
-    }
+          pasteCopiedNodes(e.shiftKey);
 
     // duplicate
     else if (e.code == 'KeyD'
           && getCtrlKey(e))
     {
-        if (graphView.selectedNodes.length > 0)
-        {
-            pasteOffset = [0, 0];
-            actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), e.shiftKey));
-        }
-
+        duplicateSelectedNodes(e.shiftKey);
         return false;
     }
 
     // select all
     else if (e.code == 'KeyA'
           && getCtrlKey(e))
-    {
-        graphView.selectedNodes = graph.nodes;
-        
-        actionManager.do(new SelectNodesAction(
-            graphView.selectedNodes    .map(n => n.id), 
-            graphView.lastSelectedNodes.map(n => n.id)));
-    }
+        selectAllNodes();
 
     // undo/redo
     else if (e.code == 'KeyZ'

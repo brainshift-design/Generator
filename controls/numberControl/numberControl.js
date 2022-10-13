@@ -13,6 +13,8 @@ function initNumberControlChildren(control)
 
 function initNumberControl(param, control, width, height, id, name, showName, defaultValue, min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER, dec = 0, dragScale = 0.05, wheelScale = 1, acc = 0, suffix = '')
 {
+    // control is also the div
+    
     control.param                  = param;
      
     control.width                  = width;

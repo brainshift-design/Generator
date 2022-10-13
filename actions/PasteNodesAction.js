@@ -8,13 +8,16 @@ extends Action
     pastedNodeIds = [];
     pastedNodePos = [];
 
+    x;
+    y;
+
     prevSelectedNodeIds = [];
 
     oldActiveNodeIds = [];
 
 
 
-    constructor(copiedNodesJson, pasteOutsideConnections)
+    constructor(copiedNodesJson, pasteOutsideConnections, isDuplicate = false, x = Number.NaN, y = Number.NaN)
     {
         const data = JSON.parse(copiedNodesJson);
 
@@ -22,6 +25,11 @@ extends Action
 
         this.copiedNodesJson         = copiedNodesJson;
         this.pasteOutsideConnections = pasteOutsideConnections;
+
+        this.isDuplicate             = isDuplicate;
+        
+        this.x                       = x;
+        this.y                       = y;
     }
 
 
@@ -37,7 +45,7 @@ extends Action
             pushUnique(this.oldActiveNodeIds, getActiveNodesInTreeFromNodeId(nodeId).map(n => n.id));
 
 
-        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections);
+        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections, this.x, this.y);
 
         this.pastedNodeIds = nodes.map(n => n.id);
         this.pastedNodePos = nodes.map(n => { return point(n.div.offsetLeft, n.div.offsetTop); });
@@ -49,6 +57,8 @@ extends Action
         graphView.updateScrollWithBounds();
 
         uiSaveNodes(nodes.map(n => n.id));
+
+        this.notify(nodes, this.isDuplicate);
     }
 
 
@@ -75,7 +85,7 @@ extends Action
 
     redo()
     {
-        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections);
+        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections, this.x, this.y);
         
         this.pastedNodeIds = nodes.map(n => n.id);
 
@@ -91,5 +101,15 @@ extends Action
         graphView.updateNodeTransforms(nodes);
 
         uiSaveNodes(nodes.map(n => n.id));
+        
+        this.notify(nodes, this.isDuplicate);
+    }
+
+
+
+    notify(nodes, isDuplicate)
+    {
+        const action = isDuplicate ? 'Duplicate' : 'Paste';
+        uiNotify(action + ' ' + nodes.length + ' node' + (nodes.length == 1 ? '' : 's'), 2500);
     }
 }
