@@ -44,19 +44,19 @@ class MenuItem
 
     initOptions(options)
     {
-        if (options.icon          != undefined)   this.icon          = options.icon;
-        if (options.callback      != undefined)   this.callback      = options.callback;
-        if (options.checkCallback != undefined)   this.checkCallback = options.checkCallback;
+        if (options.icon          != undefined) this.icon          = options.icon;
+        if (options.callback      != undefined) this.callback      = options.callback;
+        if (options.checkCallback != undefined) this.checkCallback = options.checkCallback;
         if (options.childMenu     != undefined) 
         { 
             this.childMenu = options.childMenu;  
             
             if (this.childMenu)
-            this.childMenu.parentMenu = this.parentMenu; 
+                this.childMenu.parentMenu = this.parentMenu; 
         }
-        if (options.separator   != undefined)   this.separator   = options.separator;
-        if (options.shortcut      != undefined)   this.shortcut      = options.shortcut;
-        if (options.enabled       != undefined)   this.enabled       = options.enabled;
+        if (options.separator     != undefined) this.separator     = options.separator;
+        if (options.shortcut      != undefined) this.shortcut      = options.shortcut;
+        if (options.enabled       != undefined) this.enabled       = options.enabled;
     }
 
 

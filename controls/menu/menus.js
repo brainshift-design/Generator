@@ -103,6 +103,7 @@ var menuItemNodeSendToBack;
 var menuItemNodeEnableDisable;
 
 
+
 function initMenus()
 {
     menuMainPreferences = new Menu('Preferences', false);
@@ -174,7 +175,7 @@ function initMenus()
         menuItemHelp  = new MenuItem('Help and activation', {childMenu: menuMainHelp })]);
   
         
-    menuNumber = new Menu('Number nodes');
+    menuNumber = new Menu('Number nodes', true, false);
     menuNumber.addItems([
         new MenuItem('Number',      {icon: iconNumber     , callback: () => actionManager.do(new CreateNodeAction(NUMBER, btnNumber.div))}),
         new MenuItem('Limits',      {icon: iconLimits     , enabled: false}),
@@ -188,7 +189,7 @@ function initMenus()
         new MenuItem('Interpolate', {icon: iconInterpolate, enabled: false})]);
     
     
-    menuString = new Menu('String nodes');
+    menuString = new Menu('String nodes', true, false);
     menuString.addItems([
         new MenuItem('String',      {icon: iconString       , enabled: false}),
         new MenuItem('Join',        {icon: iconStringJoin   , enabled: false}),
@@ -196,7 +197,7 @@ function initMenus()
         new MenuItem('Replace',     {icon: iconStringReplace, enabled: false})]);
     
     
-    menuColor = new Menu('Color nodes');
+    menuColor = new Menu('Color nodes', true, false);
     menuColor.addItems([
         new MenuItem('Color',       {icon: iconColor           , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div))}),
         new MenuItem('Validate',    {icon: iconColorValidate   , enabled: false}),
@@ -205,14 +206,14 @@ function initMenus()
         new MenuItem('Interpolate', {icon: iconColorInterpolate, enabled: false})]);
     
     
-    menuStyle = new Menu('Style nodes');
+    menuStyle = new Menu('Style nodes', true, false);
     menuStyle.addItems([
         new MenuItem('Solid fill',  {icon: iconFill  , callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
         new MenuItem('Stroke',      {icon: iconStroke, callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))}),
         new MenuItem('Style',       {icon: iconStyle , enabled:  false})]);
     
     
-    menuShape = new Menu('Shape nodes');
+    menuShape = new Menu('Shape nodes', true, false);
     menuShape.addItems([
         new MenuItem('Rectangle',   {icon: iconRectangle, callback: () => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div))}),
         new MenuItem('Line',        {icon: iconLine     , enabled: false}),
@@ -229,7 +230,7 @@ function initMenus()
         menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);
 
 
-    menuGraph = new Menu('Graph menu', false);
+    menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
         menuItemGraphPaste = new MenuItem('Paste here', {shortcut: osCtrl() + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(e.shiftKey, e.clientX, e.clientY - menuBar.offsetHeight); }})]);
 
@@ -240,12 +241,13 @@ function initMenus()
     };
 
 
-    menuNode = new Menu('Node menu', false);
+    menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
         menuItemNodeCopy          = new MenuItem('Copy',           {shortcut: osCtrl() + 'C', callback: () => copySelectedNodes() }),
         menuItemNodeDuplicate     = new MenuItem('Duplicate',      {shortcut: osCtrl() + 'D', callback: e => { hideAllMenus(); duplicateSelectedNodes(e.shiftKey); }}),
                                     new MenuItem('',               {separator: true}),
         menuItemNodeEnableDisable = new MenuItem('Enable/Disable', {shortcut: osCtrl() + osShift() + 'D', enabled: false})]);
+
 
 
     btnMain    = new MenuButton('', menuMain, {useMenuName: true, highlight: () => currentMenus.includes(menuMain)});

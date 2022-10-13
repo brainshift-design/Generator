@@ -14,6 +14,7 @@ class Menu
     divArrow;
 
     showIcons;
+    showChecks;
 
     overMenu   = false;
     
@@ -24,11 +25,12 @@ class Menu
     init       = null; // ()
 
 
-    constructor(name, showIcons = true)
+    constructor(name, showIcons = true, showChecks = true)
     {
         this.name       = name;
 
         this.showIcons  = showIcons;
+        this.showChecks = showChecks;
 
         this.div        = createDiv('menu');
         this.divArrow   = createDiv('menuArrow');
@@ -49,8 +51,8 @@ class Menu
             if (i > 0) 
                 this.div.appendChild(document.createElement('br'));
 
-            if (!this.showIcons)
-                this.items[i].divIcon.style.display = 'none';
+            if (!this.showIcons)  this.items[i].divIcon .style.display = 'none';
+            if (!this.showChecks) this.items[i].divCheck.style.width   = this.showIcons ? 10 : 15;
 
             this.items[i].parentMenu = this;
             this.items[i].index      = i;
