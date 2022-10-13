@@ -48,6 +48,14 @@ extends OpColorBase
     
     
     
+    canAutoConnectFrom(node)
+    {
+        return OBJECT_TYPES.includes(node.type)
+            ||  COLOR_TYPES.includes(node.type);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output

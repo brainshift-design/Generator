@@ -320,6 +320,13 @@ class Operator
 
 
 
+    canAutoConnectFrom(node)
+    {
+        return false;
+    }
+
+
+
     reset() // for the entire generation run
     {
         for (const input of this.inputs)

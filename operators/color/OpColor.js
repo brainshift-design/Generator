@@ -123,6 +123,13 @@ extends OpColorBase
 
 
 
+    canAutoConnectFrom(node)
+    {
+        return COLOR_TYPES.includes(node.type);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output

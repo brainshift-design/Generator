@@ -36,11 +36,20 @@ extends OpColorBase
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
+
         this.paramOpacity.control.suffix = '%';
     }
     
     
     
+    canAutoConnectFrom(node)
+    {
+        return OBJECT_TYPES.includes(node.type)
+            ||  COLOR_TYPES.includes(node.type);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output

@@ -385,10 +385,14 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
     let node = createNode(nodeType, creatingButton, createdId, options);
 
 
+    const selNode = graph.nodes.find(n => n.selected);
+
     const autoConnect = 
            settings.autoConnectNewNodes
         && graphView.selectedNodes.length > 0
-        && canAutoConnectNode(node);
+        && canAutoConnectNode(node)
+        && selNode
+        && node.canAutoConnectFrom(selNode);
 
 
     graph.addNode(node, !autoConnect);

@@ -31413,6 +31413,13 @@ class Operator
 
 
 
+    canAutoConnectFrom(node)
+    {
+        return false;
+    }
+
+
+
     reset() // for the entire generation run
     {
         for (const input of this.inputs)
@@ -33891,6 +33898,13 @@ extends OpColorBase
             || this.inputs[2].connected
             || this.inputs[3].connected
             || this.inputs[4].connected;
+    }
+
+
+
+    canAutoConnectFrom(node)
+    {
+        return COLOR_TYPES.includes(node.type);
     }
 
 
@@ -36577,11 +36591,20 @@ extends OpColorBase
         this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
         this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
+
         this.paramOpacity.control.suffix = '%';
     }
     
     
     
+    canAutoConnectFrom(node)
+    {
+        return OBJECT_TYPES.includes(node.type)
+            ||  COLOR_TYPES.includes(node.type);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -36854,6 +36877,14 @@ extends OpColorBase
     
     
     
+    canAutoConnectFrom(node)
+    {
+        return OBJECT_TYPES.includes(node.type)
+            ||  COLOR_TYPES.includes(node.type);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -41377,10 +41408,14 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
     let node = createNode(nodeType, creatingButton, createdId, options);
 
 
+    const selNode = graph.nodes.find(n => n.selected);
+
     const autoConnect = 
            settings.autoConnectNewNodes
         && graphView.selectedNodes.length > 0
-        && canAutoConnectNode(node);
+        && canAutoConnectNode(node)
+        && selNode
+        && node.canAutoConnectFrom(selNode);
 
 
     graph.addNode(node, !autoConnect);
