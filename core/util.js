@@ -322,7 +322,7 @@ function logTrace()
 
 
 
-function boolString(bool)
+function boolToString(bool)
 {
     return bool ? 'true' : 'false';
 }

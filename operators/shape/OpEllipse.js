@@ -150,8 +150,8 @@ extends OpShapeBase
 
         let json = 
                  super.toJsonBase(nTab)
-               //+ ',\n' + pos + tab + '"showAllParams": "' + boolString(this.showAllParams) + '"'
-               + ',\n' + pos + tab + '"proportional": "'  + boolString(this.btnProportional.enabled) + '"';
+               //+ ',\n' + pos + tab + '"showAllParams": "' + boolToString(this.showAllParams) + '"'
+               + ',\n' + pos + tab + '"proportional": "'  + boolToString(this.btnProportional.enabled) + '"';
 
         if (this.btnProportional.enabled)
         {

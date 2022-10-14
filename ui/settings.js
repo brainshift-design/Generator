@@ -75,7 +75,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
     } 
 
     if (save)
-        uiSetLocalData(settingName, boolString(value));
+        uiSetLocalData(settingName, boolToString(value));
 }
 
 

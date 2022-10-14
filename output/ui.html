@@ -149,7 +149,7 @@
 {
     position:      absolute;
     left:          50%;
-    bottom:           0;
+    bottom:          0;
     transform:     translateX(-50%)
                    translateY(-50%);
     width:         180px;
@@ -3840,7 +3840,7 @@ function logTrace()
 
 
 
-function boolString(bool)
+function boolToString(bool)
 {
     return bool ? 'true' : 'false';
 }
@@ -9013,7 +9013,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
     } 
 
     if (save)
-        uiSetLocalData(settingName, boolString(value));
+        uiSetLocalData(settingName, boolToString(value));
 }
 
 
@@ -15272,7 +15272,7 @@ function logTrace()
 
 
 
-function boolString(bool)
+function boolToString(bool)
 {
     return bool ? 'true' : 'false';
 }
@@ -21965,7 +21965,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
     } 
 
     if (save)
-        uiSetLocalData(settingName, boolString(value));
+        uiSetLocalData(settingName, boolToString(value));
 }
 
 
@@ -22835,6 +22835,7 @@ function initMenus()
     menuMainPreferences.addItems([
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',   {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                               }}),
         menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces', {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace();         }}),
+                                        new MenuItem('',                         {separator: true}),
         menuItemDebugMode             = new MenuItem('Debug mode',               {checkCallback: () => settings.debugMode,             callback: () => { updateSettingAndMenu('debugMode',             true, !settings.debugMode            ); menuItemDebug.setVisible(settings.debugMode); }})]);
 
     
@@ -22970,7 +22971,16 @@ function initMenus()
         menuItemNodeCopy          = new MenuItem('Copy',           {shortcut: osCtrl() + 'C', callback: () => copySelectedNodes() }),
         menuItemNodeDuplicate     = new MenuItem('Duplicate',      {shortcut: osCtrl() + 'D', callback: e => { hideAllMenus(); duplicateSelectedNodes(e.shiftKey); }}),
                                     new MenuItem('',               {separator: true}),
-        menuItemNodeEnableDisable = new MenuItem('Enable/Disable', {shortcut: osCtrl() + osShift() + 'D', enabled: false})]);
+        menuItemNodeEnableDisable = new MenuItem('Enable/Disable', {shortcut: osCtrl() + osShift() + 'D', callback: () => 
+            {
+                graphView.selectedNodes.forEach(n => 
+                {
+                    n.enabled = !n.enabled;
+                    n.updateNode();
+                });
+
+                uiSaveNodes(graphView.selectedNodes.map(n => n.id));
+            }})]);
 
 
 
@@ -23063,6 +23073,10 @@ function initNumberControlEvents(control)
         if (graphView.spaceDown)
             return;
 
+            
+        hideAllMenus();
+
+
         if (e.button == 0)
         {
             if (!control.pointerEvents)
@@ -23140,6 +23154,8 @@ function initNumberControlEvents(control)
         else if (e.button == 2)
         {
             e.preventDefault();
+            e.stopPropagation();
+
             control.buttonDown2 = true;
         }
     });
@@ -31133,6 +31149,9 @@ class Operator
     set name(name) { this.setName(name); }
 
 
+    enabled;
+
+    
     inputs        = [];
     outputs       = [];
 
@@ -31162,6 +31181,8 @@ class Operator
     div;
     inner;
     header;
+
+    divDisabled;
     
     labelWrapper;
     label;
@@ -31215,6 +31236,8 @@ class Operator
         this.#type             = type;
         this.id                = shortName;
         
+        this.enabled           = true;
+
         this.defShortName      = shortName;
         this.defaultWidth      = defWidth;
         this.labelOffsetFactor = 0;
@@ -31513,6 +31536,7 @@ class Operator
         this.updateBorder();
         this.updateHeader();
         this.updateParams();
+        this.updateDisabled();
 
         graphView.updateNodeTransform(this);
     }
@@ -31538,6 +31562,27 @@ class Operator
         this.updateParamBack(height);
 
         this.updateHeaderLabel();
+    }
+
+
+
+    updateParams()
+    {
+        this.params.forEach(p => p.updateControls());
+    }
+
+
+
+    updateDisabled()
+    {
+        //this.inner      .style.opacity = this.enabled ? '100%' : '10%';
+        this.divDisabled.style.display   = this.enabled ? 'none' : 'inline-block';
+
+        this.divDisabled.style.zIndex    = 1000;
+        this.divDisabled.style.height    = Math.min(this.div.offsetWidth, this.div.offsetHeight) + 70;
+        this.divDisabled.style.left      = (this.div.offsetWidth  - this.divDisabled.offsetWidth ) / 2;
+        this.divDisabled.style.top       = (this.div.offsetHeight - this.divDisabled.offsetHeight) / 2;
+        this.divDisabled.style.transform = 'rotate(45deg)';
     }
 
 
@@ -31671,13 +31716,6 @@ class Operator
 
 
 
-    updateParams()
-    {
-        this.params.forEach(p => p.updateControls());
-    }
-
-
-
     updateConnectedInputValueText() {}
 
 
@@ -31709,12 +31747,13 @@ class Operator
         const tab = TAB;
 
         let json =
-              pos + tab + '"type": "' + this.type                      + '",\n'
-            + pos + tab + '"id": "'   + this.id                        + '",\n'
-            + pos + tab + '"name": "' + this.name.replace('"', '\\\"') + '",\n'
-            + pos + tab + '"x": "'    + this.div.style.left            + '",\n'
-            + pos + tab + '"y": "'    + this.div.style.top             + '",\n'
-            + pos + tab + '"z": "'    + this.graph.nodes.indexOf(this) + '"';
+              pos + tab + '"type": "'    + this.type                      + '",\n'
+            + pos + tab + '"id": "'      + this.id                        + '",\n'
+            + pos + tab + '"name": "'    + this.name.replace('"', '\\\"') + '",\n'
+            + pos + tab + '"enabled": "' + boolToString(this.enabled)     + '",\n'
+            + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
+            + pos + tab + '"y": "'       + this.div.style.top             + '",\n'
+            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';
@@ -31754,7 +31793,22 @@ class Operator
 
 
 
-    loadParams(_node, canLoadParam = index => true)
+    loadFromParsedJson(_node)
+    {
+        this.id      = _node.id;
+        this.name    = _node.name;
+
+        if (_node.enabled)
+            this.enabled = parseBool(_node.enabled);
+    
+        if (   _node.params
+            || this.alwaysLoadParams)
+            this.loadParams(_node);
+    }
+
+
+
+    loadParams(_node)
     {
         if (!_node.params)
             return;
@@ -31764,8 +31818,7 @@ class Operator
         {
             const index = this.params.findIndex(p => p.id == _param[0]);
 
-            if (   index >= 0
-                && canLoadParam(index)) 
+            if (index >= 0)
                 this.params[index].loadParam(_param[1]);
         }
     }
@@ -32064,6 +32117,8 @@ function createOperatorNode(node)
 
 
     createNodeHeader(node);
+
+    createNodeInfo(node);
 }     
 
 
@@ -32392,6 +32447,20 @@ function createNodeHeader(node)
 
         node.header.ignoreDoubleClick = false;
     });
+}
+
+
+
+function createNodeInfo(node)
+{
+    node.divDisabled = createDiv();
+    node.div.appendChild(node.divDisabled);
+
+    node.divDisabled.style.position      = 'absolute';
+    node.divDisabled.style.width         = 5;
+    node.divDisabled.style.height        = 100;
+    node.divDisabled.style.background    = '#e88b';
+    node.divDisabled.style.pointerEvents = 'none';
 }
 
 
@@ -33178,7 +33247,7 @@ extends OperatorBase
         const tab = TAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"onlySymbol": "' + boolString(this._showOnlySymbol) + '"';
+             + ',\n' + pos + tab + '"onlySymbol": "' + boolToString(this._showOnlySymbol) + '"';
     }
 
 
@@ -33498,7 +33567,7 @@ extends OperatorBase
         const tab = TAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"onlySymbol": "' + boolString(this._showOnlySymbol) + '"';
+             + ',\n' + pos + tab + '"onlySymbol": "' + boolToString(this._showOnlySymbol) + '"';
     }
 
 
@@ -35971,9 +36040,9 @@ console.log('correction.value =', correction.value);
     //     const [i1, i2, i3] = getCorrectionOrder(this.order.value);
 
     //     return super.toJsonBase(nTab)
-    //         + ',\n' + pos + tab + '"locked1": "' + boolString(this.corrections[i1].locked) + '"'
-    //         + ',\n' + pos + tab + '"locked2": "' + boolString(this.corrections[i2].locked) + '"'
-    //         + ',\n' + pos + tab + '"locked3": "' + boolString(this.corrections[i3].locked) + '"';
+    //         + ',\n' + pos + tab + '"locked1": "' + boolToString(this.corrections[i1].locked) + '"'
+    //         + ',\n' + pos + tab + '"locked2": "' + boolToString(this.corrections[i2].locked) + '"'
+    //         + ',\n' + pos + tab + '"locked3": "' + boolToString(this.corrections[i3].locked) + '"';
     // }
 
 
@@ -37705,8 +37774,8 @@ extends OpShapeBase
 
         let json = 
                  super.toJsonBase(nTab)
-               //+ ',\n' + pos + tab + '"showAllParams": "' + boolString(this.showAllParams) + '"'
-               + ',\n' + pos + tab + '"proportional": "'  + boolString(this.btnProportional.enabled) + '"';
+               //+ ',\n' + pos + tab + '"showAllParams": "' + boolToString(this.showAllParams) + '"'
+               + ',\n' + pos + tab + '"proportional": "'  + boolToString(this.btnProportional.enabled) + '"';
 
         if (this.btnProportional.enabled)
         {
@@ -37923,7 +37992,7 @@ extends OpShapeBase
 
         let json = 
                super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
+             + ',\n' + pos + tab + '"proportional": "' + boolToString(this.btnProportional.enabled) + '"';
 
         if (this.btnProportional.enabled)
         {
@@ -38144,7 +38213,7 @@ extends OpShapeBase
 
         let json = 
                super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
+             + ',\n' + pos + tab + '"proportional": "' + boolToString(this.btnProportional.enabled) + '"';
 
         if (this.btnProportional.enabled)
         {
@@ -39743,7 +39812,7 @@ extends Action
 
     constructor(nodeId, showOnlySymbol)
     {
-        super('TOGGLE MATH SYMBOL ' + boolString(showOnlySymbol));
+        super('TOGGLE MATH SYMBOL ' + boolToString(showOnlySymbol));
 
         this.nodeId         = nodeId;
         this.showOnlySymbol = showOnlySymbol;
@@ -40582,7 +40651,7 @@ function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
     graph.clear();
 
     const _nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
-    const conns = JSON.parse(connsJson).map(c => JSON.parse(c));
+    const  conns = JSON.parse(connsJson).map(c => JSON.parse(c));
 
     _nodes.sort((a, b) => a.z - b.z);
 
@@ -40777,12 +40846,9 @@ function loadNode(_node)
 {
     const node = createNode(_node.type);
 
-    node.id   = _node.id;
-    node.name = _node.name;
 
-    if (  _node.params
-        || node.alwaysLoadParams)
-        node.loadParams(_node);
+    node.loadFromParsedJson(_node);
+
 
     node.updateNode();
     
@@ -40794,6 +40860,7 @@ function loadNode(_node)
         parseFloat(_node.y),
         false);
 
+        
     return node;
 }
 

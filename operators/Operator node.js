@@ -93,6 +93,8 @@ function createOperatorNode(node)
 
 
     createNodeHeader(node);
+
+    createNodeInfo(node);
 }     
 
 
@@ -421,6 +423,20 @@ function createNodeHeader(node)
 
         node.header.ignoreDoubleClick = false;
     });
+}
+
+
+
+function createNodeInfo(node)
+{
+    node.divDisabled = createDiv();
+    node.div.appendChild(node.divDisabled);
+
+    node.divDisabled.style.position      = 'absolute';
+    node.divDisabled.style.width         = 5;
+    node.divDisabled.style.height        = 100;
+    node.divDisabled.style.background    = '#e88b';
+    node.divDisabled.style.pointerEvents = 'none';
 }
 
 

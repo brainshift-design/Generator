@@ -40,6 +40,9 @@ class Operator
     set name(name) { this.setName(name); }
 
 
+    enabled;
+
+    
     inputs        = [];
     outputs       = [];
 
@@ -69,6 +72,8 @@ class Operator
     div;
     inner;
     header;
+
+    divDisabled;
     
     labelWrapper;
     label;
@@ -122,6 +127,8 @@ class Operator
         this.#type             = type;
         this.id                = shortName;
         
+        this.enabled           = true;
+
         this.defShortName      = shortName;
         this.defaultWidth      = defWidth;
         this.labelOffsetFactor = 0;
@@ -420,6 +427,7 @@ class Operator
         this.updateBorder();
         this.updateHeader();
         this.updateParams();
+        this.updateDisabled();
 
         graphView.updateNodeTransform(this);
     }
@@ -445,6 +453,27 @@ class Operator
         this.updateParamBack(height);
 
         this.updateHeaderLabel();
+    }
+
+
+
+    updateParams()
+    {
+        this.params.forEach(p => p.updateControls());
+    }
+
+
+
+    updateDisabled()
+    {
+        //this.inner      .style.opacity = this.enabled ? '100%' : '10%';
+        this.divDisabled.style.display   = this.enabled ? 'none' : 'inline-block';
+
+        this.divDisabled.style.zIndex    = 1000;
+        this.divDisabled.style.height    = Math.min(this.div.offsetWidth, this.div.offsetHeight) + 70;
+        this.divDisabled.style.left      = (this.div.offsetWidth  - this.divDisabled.offsetWidth ) / 2;
+        this.divDisabled.style.top       = (this.div.offsetHeight - this.divDisabled.offsetHeight) / 2;
+        this.divDisabled.style.transform = 'rotate(45deg)';
     }
 
 
@@ -578,13 +607,6 @@ class Operator
 
 
 
-    updateParams()
-    {
-        this.params.forEach(p => p.updateControls());
-    }
-
-
-
     updateConnectedInputValueText() {}
 
 
@@ -616,12 +638,13 @@ class Operator
         const tab = TAB;
 
         let json =
-              pos + tab + '"type": "' + this.type                      + '",\n'
-            + pos + tab + '"id": "'   + this.id                        + '",\n'
-            + pos + tab + '"name": "' + this.name.replace('"', '\\\"') + '",\n'
-            + pos + tab + '"x": "'    + this.div.style.left            + '",\n'
-            + pos + tab + '"y": "'    + this.div.style.top             + '",\n'
-            + pos + tab + '"z": "'    + this.graph.nodes.indexOf(this) + '"';
+              pos + tab + '"type": "'    + this.type                      + '",\n'
+            + pos + tab + '"id": "'      + this.id                        + '",\n'
+            + pos + tab + '"name": "'    + this.name.replace('"', '\\\"') + '",\n'
+            + pos + tab + '"enabled": "' + boolToString(this.enabled)     + '",\n'
+            + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
+            + pos + tab + '"y": "'       + this.div.style.top             + '",\n'
+            + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '"';
 
         if (this.active)
             json += ',\n' + pos + tab + '"active": "' + this.active + '"';
@@ -661,7 +684,22 @@ class Operator
 
 
 
-    loadParams(_node, canLoadParam = index => true)
+    loadFromParsedJson(_node)
+    {
+        this.id      = _node.id;
+        this.name    = _node.name;
+
+        if (_node.enabled)
+            this.enabled = parseBool(_node.enabled);
+    
+        if (   _node.params
+            || this.alwaysLoadParams)
+            this.loadParams(_node);
+    }
+
+
+
+    loadParams(_node)
     {
         if (!_node.params)
             return;
@@ -671,8 +709,7 @@ class Operator
         {
             const index = this.params.findIndex(p => p.id == _param[0]);
 
-            if (   index >= 0
-                && canLoadParam(index)) 
+            if (index >= 0)
                 this.params[index].loadParam(_param[1]);
         }
     }

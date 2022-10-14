@@ -139,7 +139,7 @@ function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
     graph.clear();
 
     const _nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
-    const conns = JSON.parse(connsJson).map(c => JSON.parse(c));
+    const  conns = JSON.parse(connsJson).map(c => JSON.parse(c));
 
     _nodes.sort((a, b) => a.z - b.z);
 
@@ -334,12 +334,9 @@ function loadNode(_node)
 {
     const node = createNode(_node.type);
 
-    node.id   = _node.id;
-    node.name = _node.name;
 
-    if (  _node.params
-        || node.alwaysLoadParams)
-        node.loadParams(_node);
+    node.loadFromParsedJson(_node);
+
 
     node.updateNode();
     
@@ -351,6 +348,7 @@ function loadNode(_node)
         parseFloat(_node.y),
         false);
 
+        
     return node;
 }
 

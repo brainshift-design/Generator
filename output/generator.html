@@ -1871,7 +1871,7 @@ function logTrace()
 
 
 
-function boolString(bool)
+function boolToString(bool)
 {
     return bool ? 'true' : 'false';
 }
@@ -7044,7 +7044,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
     } 
 
     if (save)
-        uiSetLocalData(settingName, boolString(value));
+        uiSetLocalData(settingName, boolToString(value));
 }
 
 

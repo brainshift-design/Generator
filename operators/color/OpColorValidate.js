@@ -272,9 +272,9 @@ console.log('correction.value =', correction.value);
     //     const [i1, i2, i3] = getCorrectionOrder(this.order.value);
 
     //     return super.toJsonBase(nTab)
-    //         + ',\n' + pos + tab + '"locked1": "' + boolString(this.corrections[i1].locked) + '"'
-    //         + ',\n' + pos + tab + '"locked2": "' + boolString(this.corrections[i2].locked) + '"'
-    //         + ',\n' + pos + tab + '"locked3": "' + boolString(this.corrections[i3].locked) + '"';
+    //         + ',\n' + pos + tab + '"locked1": "' + boolToString(this.corrections[i1].locked) + '"'
+    //         + ',\n' + pos + tab + '"locked2": "' + boolToString(this.corrections[i2].locked) + '"'
+    //         + ',\n' + pos + tab + '"locked3": "' + boolToString(this.corrections[i3].locked) + '"';
     // }
 
 

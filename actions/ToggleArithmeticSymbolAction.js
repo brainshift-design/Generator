@@ -10,7 +10,7 @@ extends Action
 
     constructor(nodeId, showOnlySymbol)
     {
-        super('TOGGLE MATH SYMBOL ' + boolString(showOnlySymbol));
+        super('TOGGLE MATH SYMBOL ' + boolToString(showOnlySymbol));
 
         this.nodeId         = nodeId;
         this.showOnlySymbol = showOnlySymbol;

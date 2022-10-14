@@ -180,7 +180,7 @@ extends OperatorBase
         const tab = TAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"onlySymbol": "' + boolString(this._showOnlySymbol) + '"';
+             + ',\n' + pos + tab + '"onlySymbol": "' + boolToString(this._showOnlySymbol) + '"';
     }
 
 

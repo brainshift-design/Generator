@@ -180,7 +180,7 @@ extends OpShapeBase
 
         let json = 
                super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + boolString(this.btnProportional.enabled) + '"';
+             + ',\n' + pos + tab + '"proportional": "' + boolToString(this.btnProportional.enabled) + '"';
 
         if (this.btnProportional.enabled)
         {
