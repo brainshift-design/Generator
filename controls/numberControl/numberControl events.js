@@ -5,6 +5,10 @@ function initNumberControlEvents(control)
         if (graphView.spaceDown)
             return;
 
+            
+        hideAllMenus();
+
+
         if (e.button == 0)
         {
             if (!control.pointerEvents)
@@ -82,6 +86,8 @@ function initNumberControlEvents(control)
         else if (e.button == 2)
         {
             e.preventDefault();
+            e.stopPropagation();
+
             control.buttonDown2 = true;
         }
     });
