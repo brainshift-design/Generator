@@ -54,8 +54,14 @@ extends OpColorBase
     {
         // 'this' is the output
 
-        if (!isEmpty(this.cache))
-            return this.cache;
+        const input = this.node.inputs[0];
+
+        if (!this.node.enabled)
+        {
+            return input.connected
+                 ? input.connectedOutput.genRequest(gen)
+                 : [];
+        }
 
 
         gen.scope.push({
@@ -68,8 +74,6 @@ extends OpColorBase
 
         const paramIds = [];
 
-
-        const input = this.node.inputs[0];
 
         if (input.connected)
         {

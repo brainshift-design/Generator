@@ -255,6 +255,8 @@ function initMenus()
                 });
 
                 uiSaveNodes(graphView.selectedNodes.map(n => n.id));
+
+                pushUpdate(graphView.selectedNodes);
             }})]);
 
 
