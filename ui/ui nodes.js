@@ -677,7 +677,7 @@ function uiCopyNodes(nodeIds)
 
 
 
-function uiPasteNodes(nodesJson, pasteOutsideConnections, x, y)
+function uiPasteNodes(nodesJson, /*pasteOutsideConnections, */x, y)
 {
     //console.log(nodesJson);
 
@@ -724,7 +724,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections, x, y)
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
-        loadConnections(data, pasteOutsideConnections);
+        loadConnections(data);//, pasteOutsideConnections);
     }
 
     graphView.selectedNodes = nodes;
@@ -929,6 +929,21 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
         
 
     graphView.update(nodes);
+}
+
+
+
+function uiToggleDisableSelectedNodes()
+{
+    graphView.selectedNodes.forEach(n => 
+        {
+            n.enabled = !n.enabled;
+            n.updateNode();
+        });
+
+        uiSaveNodes(graphView.selectedNodes.map(n => n.id));
+
+        pushUpdate(graphView.selectedNodes);
 }
 
 

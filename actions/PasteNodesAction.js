@@ -3,7 +3,7 @@ extends Action
 {
     copiedNodesJson;
 
-    pasteOutsideConnections;
+    //pasteOutsideConnections;
 
     pastedNodeIds = [];
     pastedNodePos = [];
@@ -17,14 +17,14 @@ extends Action
 
 
 
-    constructor(copiedNodesJson, pasteOutsideConnections, isDuplicate = false, x = Number.NaN, y = Number.NaN)
+    constructor(copiedNodesJson, /*pasteOutsideConnections, */isDuplicate = false, x = Number.NaN, y = Number.NaN)
     {
         const data = JSON.parse(copiedNodesJson);
 
         super('PASTE ' + data.nodes.length + ' ' + countToString(data.nodes, 'node'));
 
         this.copiedNodesJson         = copiedNodesJson;
-        this.pasteOutsideConnections = pasteOutsideConnections;
+        //this.pasteOutsideConnections = pasteOutsideConnections;
 
         this.isDuplicate             = isDuplicate;
         
@@ -45,7 +45,7 @@ extends Action
             pushUnique(this.oldActiveNodeIds, getActiveNodesInTreeFromNodeId(nodeId).map(n => n.id));
 
 
-        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections, this.x, this.y);
+        const nodes = uiPasteNodes(this.copiedNodesJson, /*this.pasteOutsideConnections, */this.x, this.y);
 
         this.pastedNodeIds = nodes.map(n => n.id);
         this.pastedNodePos = nodes.map(n => { return point(n.div.offsetLeft, n.div.offsetTop); });
@@ -85,7 +85,7 @@ extends Action
 
     redo()
     {
-        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections, this.x, this.y);
+        const nodes = uiPasteNodes(this.copiedNodesJson, /*this.pasteOutsideConnections, */this.x, this.y);
         
         this.pastedNodeIds = nodes.map(n => n.id);
 

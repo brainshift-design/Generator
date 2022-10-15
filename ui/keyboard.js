@@ -10,14 +10,28 @@ document.addEventListener('keydown', e =>
         
     // paste
     else if (e.code == 'KeyV'
-          && getCtrlKey(e))
-          pasteCopiedNodes(e.shiftKey);
+          && getCtrlKey(e)
+          && !e.shiftKey
+          && !e.altKey)
+          pasteCopiedNodes();//e.altKey);
 
     // duplicate
     else if (e.code == 'KeyD'
-          && getCtrlKey(e))
+          && getCtrlKey(e)
+          && !e.shiftKey
+          && !e.altKey)
     {
-        duplicateSelectedNodes(e.shiftKey);
+        duplicateSelectedNodes();//e.altKey);
+        return false;
+    }
+
+    // disable nodes
+    else if (e.code == 'KeyD'
+          && getCtrlKey(e)
+          && e.shiftKey)
+    {
+        e.preventDefault();
+        uiToggleDisableSelectedNodes();
         return false;
     }
 

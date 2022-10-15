@@ -22971,18 +22971,7 @@ function initMenus()
         menuItemNodeCopy          = new MenuItem('Copy',           {shortcut: osCtrl() + 'C', callback: () => copySelectedNodes() }),
         menuItemNodeDuplicate     = new MenuItem('Duplicate',      {shortcut: osCtrl() + 'D', callback: e => { hideAllMenus(); duplicateSelectedNodes(e.shiftKey); }}),
                                     new MenuItem('',               {separator: true}),
-        menuItemNodeEnableDisable = new MenuItem('Enable/Disable', {shortcut: osCtrl() + osShift() + 'D', callback: () => 
-            {
-                graphView.selectedNodes.forEach(n => 
-                {
-                    n.enabled = !n.enabled;
-                    n.updateNode();
-                });
-
-                uiSaveNodes(graphView.selectedNodes.map(n => n.id));
-
-                pushUpdate(graphView.selectedNodes);
-            }})]);
+        menuItemNodeEnableDisable = new MenuItem('Enable/Disable', {shortcut: osCtrl() + osShift() + 'D', callback: () => uiToggleDisableSelectedNodes()})]);
 
 
 
@@ -26671,7 +26660,7 @@ function copySelectedNodes()
 
 
 
-function pasteCopiedNodes(pasteOutsideConnections, clientX = Number.NaN, clientY = Number.NaN)
+function pasteCopiedNodes(/*pasteOutsideConnections, */clientX = Number.NaN, clientY = Number.NaN)
 {
     if (copiedNodesJson == '')
         return;
@@ -26679,17 +26668,17 @@ function pasteCopiedNodes(pasteOutsideConnections, clientX = Number.NaN, clientY
     const x = (clientX - graphView.pan.x) / graphView.zoom;
     const y = (clientY - graphView.pan.y) / graphView.zoom;
 
-    actionManager.do(new PasteNodesAction(copiedNodesJson, pasteOutsideConnections, false, x, y));
+    actionManager.do(new PasteNodesAction(copiedNodesJson, /*pasteOutsideConnections, */false, x, y));
 }
 
 
 
-function duplicateSelectedNodes(pasteOutsideConnections)
+function duplicateSelectedNodes(/*pasteOutsideConnections*/)
 {
     if (graphView.selectedNodes.length > 0)
     {
         pasteOffset = [0, 0];
-        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), pasteOutsideConnections, true));
+        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), /*pasteOutsideConnections, */true));
     }
 }
 
@@ -31507,14 +31496,13 @@ class Operator
             this.type, 
             this.id];
 
+
         const ignore = gen.passedNodes.includes(this);
 
-    
         if (!ignore)
         {
             const nextActive   = getActiveNodeRightInTreeFromNode(this);
             const beforeActive = nextActive && nextActive.follows(this);
-
             const options =
                   ((this.active  ? 1 : 0) << 0)
                 | ((beforeActive ? 1 : 0) << 1);
@@ -39219,7 +39207,7 @@ extends Action
 {
     copiedNodesJson;
 
-    pasteOutsideConnections;
+    //pasteOutsideConnections;
 
     pastedNodeIds = [];
     pastedNodePos = [];
@@ -39233,14 +39221,14 @@ extends Action
 
 
 
-    constructor(copiedNodesJson, pasteOutsideConnections, isDuplicate = false, x = Number.NaN, y = Number.NaN)
+    constructor(copiedNodesJson, /*pasteOutsideConnections, */isDuplicate = false, x = Number.NaN, y = Number.NaN)
     {
         const data = JSON.parse(copiedNodesJson);
 
         super('PASTE ' + data.nodes.length + ' ' + countToString(data.nodes, 'node'));
 
         this.copiedNodesJson         = copiedNodesJson;
-        this.pasteOutsideConnections = pasteOutsideConnections;
+        //this.pasteOutsideConnections = pasteOutsideConnections;
 
         this.isDuplicate             = isDuplicate;
         
@@ -39261,7 +39249,7 @@ extends Action
             pushUnique(this.oldActiveNodeIds, getActiveNodesInTreeFromNodeId(nodeId).map(n => n.id));
 
 
-        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections, this.x, this.y);
+        const nodes = uiPasteNodes(this.copiedNodesJson, /*this.pasteOutsideConnections, */this.x, this.y);
 
         this.pastedNodeIds = nodes.map(n => n.id);
         this.pastedNodePos = nodes.map(n => { return point(n.div.offsetLeft, n.div.offsetTop); });
@@ -39301,7 +39289,7 @@ extends Action
 
     redo()
     {
-        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteOutsideConnections, this.x, this.y);
+        const nodes = uiPasteNodes(this.copiedNodesJson, /*this.pasteOutsideConnections, */this.x, this.y);
         
         this.pastedNodeIds = nodes.map(n => n.id);
 
@@ -40138,14 +40126,28 @@ document.addEventListener('keydown', e =>
         
     // paste
     else if (e.code == 'KeyV'
-          && getCtrlKey(e))
-          pasteCopiedNodes(e.shiftKey);
+          && getCtrlKey(e)
+          && !e.shiftKey
+          && !e.altKey)
+          pasteCopiedNodes();//e.altKey);
 
     // duplicate
     else if (e.code == 'KeyD'
-          && getCtrlKey(e))
+          && getCtrlKey(e)
+          && !e.shiftKey
+          && !e.altKey)
     {
-        duplicateSelectedNodes(e.shiftKey);
+        duplicateSelectedNodes();//e.altKey);
+        return false;
+    }
+
+    // disable nodes
+    else if (e.code == 'KeyD'
+          && getCtrlKey(e)
+          && e.shiftKey)
+    {
+        e.preventDefault();
+        uiToggleDisableSelectedNodes();
         return false;
     }
 
@@ -40876,15 +40878,15 @@ function loadNode(_node)
 
 
 
-function loadConnections(data, loadOutsideConnections, setProgress = null)
+function loadConnections(data, /*loadOutsideConnections, */setProgress = null)
 {
     for (let i = 0; i < data.connections.length; i++)
     {
         const _conn = data.connections[i];
         
         if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId)
-               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId)
-            || loadOutsideConnections)
+               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId))
+            //|| loadOutsideConnections)
             Connection.parseJson(_conn);
 
         if (setProgress)
@@ -41777,7 +41779,7 @@ function uiCopyNodes(nodeIds)
 
 
 
-function uiPasteNodes(nodesJson, pasteOutsideConnections, x, y)
+function uiPasteNodes(nodesJson, /*pasteOutsideConnections, */x, y)
 {
     //console.log(nodesJson);
 
@@ -41824,7 +41826,7 @@ function uiPasteNodes(nodesJson, pasteOutsideConnections, x, y)
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
-        loadConnections(data, pasteOutsideConnections);
+        loadConnections(data);//, pasteOutsideConnections);
     }
 
     graphView.selectedNodes = nodes;
@@ -42029,6 +42031,21 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
         
 
     graphView.update(nodes);
+}
+
+
+
+function uiToggleDisableSelectedNodes()
+{
+    graphView.selectedNodes.forEach(n => 
+        {
+            n.enabled = !n.enabled;
+            n.updateNode();
+        });
+
+        uiSaveNodes(graphView.selectedNodes.map(n => n.id));
+
+        pushUpdate(graphView.selectedNodes);
 }
 
 

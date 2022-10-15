@@ -354,15 +354,15 @@ function loadNode(_node)
 
 
 
-function loadConnections(data, loadOutsideConnections, setProgress = null)
+function loadConnections(data, /*loadOutsideConnections, */setProgress = null)
 {
     for (let i = 0; i < data.connections.length; i++)
     {
         const _conn = data.connections[i];
         
         if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId)
-               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId)
-            || loadOutsideConnections)
+               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId))
+            //|| loadOutsideConnections)
             Connection.parseJson(_conn);
 
         if (setProgress)

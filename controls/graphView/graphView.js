@@ -354,7 +354,7 @@ function copySelectedNodes()
 
 
 
-function pasteCopiedNodes(pasteOutsideConnections, clientX = Number.NaN, clientY = Number.NaN)
+function pasteCopiedNodes(/*pasteOutsideConnections, */clientX = Number.NaN, clientY = Number.NaN)
 {
     if (copiedNodesJson == '')
         return;
@@ -362,16 +362,16 @@ function pasteCopiedNodes(pasteOutsideConnections, clientX = Number.NaN, clientY
     const x = (clientX - graphView.pan.x) / graphView.zoom;
     const y = (clientY - graphView.pan.y) / graphView.zoom;
 
-    actionManager.do(new PasteNodesAction(copiedNodesJson, pasteOutsideConnections, false, x, y));
+    actionManager.do(new PasteNodesAction(copiedNodesJson, /*pasteOutsideConnections, */false, x, y));
 }
 
 
 
-function duplicateSelectedNodes(pasteOutsideConnections)
+function duplicateSelectedNodes(/*pasteOutsideConnections*/)
 {
     if (graphView.selectedNodes.length > 0)
     {
         pasteOffset = [0, 0];
-        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), pasteOutsideConnections, true));
+        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), /*pasteOutsideConnections, */true));
     }
 }

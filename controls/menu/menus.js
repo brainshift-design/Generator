@@ -246,18 +246,7 @@ function initMenus()
         menuItemNodeCopy          = new MenuItem('Copy',           {shortcut: osCtrl() + 'C', callback: () => copySelectedNodes() }),
         menuItemNodeDuplicate     = new MenuItem('Duplicate',      {shortcut: osCtrl() + 'D', callback: e => { hideAllMenus(); duplicateSelectedNodes(e.shiftKey); }}),
                                     new MenuItem('',               {separator: true}),
-        menuItemNodeEnableDisable = new MenuItem('Enable/Disable', {shortcut: osCtrl() + osShift() + 'D', callback: () => 
-            {
-                graphView.selectedNodes.forEach(n => 
-                {
-                    n.enabled = !n.enabled;
-                    n.updateNode();
-                });
-
-                uiSaveNodes(graphView.selectedNodes.map(n => n.id));
-
-                pushUpdate(graphView.selectedNodes);
-            }})]);
+        menuItemNodeEnableDisable = new MenuItem('Enable/Disable', {shortcut: osCtrl() + osShift() + 'D', callback: () => uiToggleDisableSelectedNodes()})]);
 
 
 

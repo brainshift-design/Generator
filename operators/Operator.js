@@ -396,14 +396,13 @@ class Operator
             this.type, 
             this.id];
 
+
         const ignore = gen.passedNodes.includes(this);
 
-    
         if (!ignore)
         {
             const nextActive   = getActiveNodeRightInTreeFromNode(this);
             const beforeActive = nextActive && nextActive.follows(this);
-
             const options =
                   ((this.active  ? 1 : 0) << 0)
                 | ((beforeActive ? 1 : 0) << 1);
