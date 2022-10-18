@@ -933,17 +933,17 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
 
 
-function uiToggleDisableSelectedNodes()
+function uiToggleDisableNodes(nodes)
 {
-    graphView.selectedNodes.forEach(n => 
-        {
-            n.enabled = !n.enabled;
-            n.updateNode();
-        });
+    nodes.forEach(n => 
+    {
+        n.enabled = !n.enabled;
+        n.updateNode();
+    });
 
-        uiSaveNodes(graphView.selectedNodes.map(n => n.id));
 
-        pushUpdate(graphView.selectedNodes);
+    uiSaveNodes(nodes.map(n => n.id));
+    pushUpdate(nodes);
 }
 
 

@@ -22971,7 +22971,7 @@ function initMenus()
         menuItemNodeCopy          = new MenuItem('Copy',           {shortcut: osCtrl() + 'C', callback: () => copySelectedNodes() }),
         menuItemNodeDuplicate     = new MenuItem('Duplicate',      {shortcut: osCtrl() + 'D', callback: e => { hideAllMenus(); duplicateSelectedNodes(e.shiftKey); }}),
                                     new MenuItem('',               {separator: true}),
-        menuItemNodeEnableDisable = new MenuItem('Enable/Disable', {shortcut: osCtrl() + osShift() + 'D', callback: () => uiToggleDisableSelectedNodes()})]);
+        menuItemNodeEnableDisable = new MenuItem('Enable/Disable', {shortcut: osCtrl() + osShift() + 'D', callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
 
 
 
@@ -39314,7 +39314,7 @@ extends Action
     notify(nodes, isDuplicate)
     {
         const action = isDuplicate ? 'Duplicate' : 'Paste';
-        uiNotify(action + ' ' + nodes.length + ' node' + (nodes.length == 1 ? '' : 's'), 2500);
+        uiNotify(action + ' ' + nodes.length + ' ' + countToString(nodes, 'node'), 2500);
     }
 }
 
@@ -39838,6 +39838,38 @@ extends Action
 }
 
 
+class ToggleDisableNodesAction
+extends Action
+{
+    selectedIds = [];
+
+
+
+    constructor(selectedIds)
+    {
+        super(
+              'TOGGLE DISABLE ' + selectedIds.length 
+            + ' ' + countToString(selectedIds, 'node'));
+
+        this.selectedIds = [...selectedIds];
+    }
+
+
+
+    do()
+    {
+        uiToggleDisableNodes(this.selectedIds.map(id => nodeFromId(id)));
+    }
+
+
+
+    undo()
+    {
+        this.do();
+    }
+}
+
+
 const colFigmaBlue         = '#0c8ce9';
 
 
@@ -40147,7 +40179,7 @@ document.addEventListener('keydown', e =>
           && e.shiftKey)
     {
         e.preventDefault();
-        uiToggleDisableSelectedNodes();
+        actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)));
         return false;
     }
 
@@ -42035,17 +42067,17 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
 
 
-function uiToggleDisableSelectedNodes()
+function uiToggleDisableNodes(nodes)
 {
-    graphView.selectedNodes.forEach(n => 
-        {
-            n.enabled = !n.enabled;
-            n.updateNode();
-        });
+    nodes.forEach(n => 
+    {
+        n.enabled = !n.enabled;
+        n.updateNode();
+    });
 
-        uiSaveNodes(graphView.selectedNodes.map(n => n.id));
 
-        pushUpdate(graphView.selectedNodes);
+    uiSaveNodes(nodes.map(n => n.id));
+    pushUpdate(nodes);
 }
 
 

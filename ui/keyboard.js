@@ -31,7 +31,7 @@ document.addEventListener('keydown', e =>
           && e.shiftKey)
     {
         e.preventDefault();
-        uiToggleDisableSelectedNodes();
+        actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)));
         return false;
     }
 

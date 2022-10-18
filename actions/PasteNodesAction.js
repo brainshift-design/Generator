@@ -110,6 +110,6 @@ extends Action
     notify(nodes, isDuplicate)
     {
         const action = isDuplicate ? 'Duplicate' : 'Paste';
-        uiNotify(action + ' ' + nodes.length + ' node' + (nodes.length == 1 ? '' : 's'), 2500);
+        uiNotify(action + ' ' + nodes.length + ' ' + countToString(nodes, 'node'), 2500);
     }
 }
