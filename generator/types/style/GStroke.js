@@ -45,7 +45,7 @@ extends GShapeBase
         if (this.input)
         {
             this.input.eval(parse);
-            this.objects = this.input.objects;
+            this.objects = clone(this.input.objects);
         }
 
         const hasInput =     
@@ -122,7 +122,7 @@ extends GShapeBase
                     obj.strokeMiterLimit = this.miter.toValue().value;
             }
         }
-        
+
         
         super.evalObjects();
     }

@@ -8728,7 +8728,7 @@ extends GShapeBase
         if (this.input)
         {
             this.input.eval(parse);
-            this.objects = this.input.objects;
+            this.objects = clone(this.input.objects);
         }
 
         const hasInput =     
@@ -8847,7 +8847,7 @@ extends GShapeBase
         if (this.input)
         {
             this.input.eval(parse);
-            this.objects = this.input.objects;
+            this.objects = clone(this.input.objects);
         }
 
         const hasInput =     
@@ -8924,7 +8924,7 @@ extends GShapeBase
                     obj.strokeMiterLimit = this.miter.toValue().value;
             }
         }
-        
+
         
         super.evalObjects();
     }
@@ -21699,7 +21699,7 @@ extends GShapeBase
         if (this.input)
         {
             this.input.eval(parse);
-            this.objects = this.input.objects;
+            this.objects = clone(this.input.objects);
         }
 
         const hasInput =     
@@ -21818,7 +21818,7 @@ extends GShapeBase
         if (this.input)
         {
             this.input.eval(parse);
-            this.objects = this.input.objects;
+            this.objects = clone(this.input.objects);
         }
 
         const hasInput =     
@@ -21895,7 +21895,7 @@ extends GShapeBase
                     obj.strokeMiterLimit = this.miter.toValue().value;
             }
         }
-        
+
         
         super.evalObjects();
     }
@@ -39204,7 +39204,7 @@ extends Action
 
     do()
     {
-        this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.activeId).map(n => n.id)]; 
+        this.oldActiveNodeIds = [...activeNodesFromNodeId(this.activeId).map(n => n.id)]; 
 
         uiMakeNodeActive(nodeFromId(this.activeId));
 
@@ -39399,7 +39399,7 @@ extends Action
         this.inputIndex            = input.index;
 
         this.oldOutputActiveNodeId = activeFromNodeId(this.outputNodeId).id;
-        this.oldInputActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
+        this.oldInputActiveNodeIds = [...activeNodesFromNodeId(this.inputNodeId).map(n => n.id)];
     }
 
 

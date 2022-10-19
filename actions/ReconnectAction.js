@@ -54,7 +54,7 @@ extends Action
         this.inputIndex            = input.index;
 
         this.oldOutputActiveNodeId = activeFromNodeId(this.outputNodeId).id;
-        this.oldInputActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
+        this.oldInputActiveNodeIds = [...activeNodesFromNodeId(this.inputNodeId).map(n => n.id)];
     }
 
 
