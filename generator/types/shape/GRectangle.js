@@ -45,7 +45,10 @@ extends GShapeBase
         if (this.valid)
             return;
 
+        // if (!this.options.enabled)
+        //     return this.input;
 
+            
         if (this.input)
             this.input.eval(parse);
 
@@ -82,6 +85,10 @@ extends GShapeBase
 
     evalObjects()
     {
+        if (!this.options.enabled)
+            return;
+            
+
         if (   this.x 
             && this.y 
             && this.width 

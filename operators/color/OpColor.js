@@ -134,6 +134,16 @@ extends OpColorBase
     {
         // 'this' is the output
 
+        const input = this.node.inputs[0];
+
+        // if (!this.node.enabled)
+        // {
+        //     return input.connected
+        //          ? input.connectedOutput.genRequest(gen)
+        //          : [];
+        // }
+
+
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
@@ -142,8 +152,6 @@ extends OpColorBase
         if (ignore) return request;
 
         
-        const input = this.node.inputs[0];
-
         const paramIds = [];
 
 

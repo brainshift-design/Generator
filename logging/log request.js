@@ -36,11 +36,9 @@ function logReqOptions(node)
 {
     let log = '';
 
-    if (node.options.active)
-        log += ' ' + ACTIVE;
-
-    if (node.options.beforeActive)
-        log += ' ' + BEFORE_ACTIVE;
+    if ( node.options.active      ) log += ' ' + ACTIVE;
+    if ( node.options.beforeActive) log += ' ' + BEFORE_ACTIVE;
+    if (!node.options.enabled     ) log += ' ' + DISABLED;
 
     return log;
 }

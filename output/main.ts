@@ -193,18 +193,19 @@ const OBJECT_TYPES = // because they produce or modify objects
 ];
 
 
-const GROUP               = 'GRP';   // ???? count O...
+const GROUP            = 'GRP';   // ???? count O...
 
 
-const COMMENT             = 'CMNT';
+const COMMENT          = 'CMNT';
 
 
-const ACTIVE              = 'ACT';
-const BEFORE_ACTIVE       = 'BEF';
-const PARAM               = 'PARAM'; // nodeId paramId
+const ACTIVE           = 'ACT';
+const BEFORE_ACTIVE    = 'BEF';
+const DISABLED         = 'DIS';
+const PARAM            = 'PARAM'; // nodeId paramId
 
 
-const LOG                 = 'LOG';
+const LOG              = 'LOG';
 
 
 
@@ -313,11 +314,9 @@ function logReqOptions(node)
 {
     let log = '';
 
-    if (node.options.active)
-        log += ' ' + ACTIVE;
-
-    if (node.options.beforeActive)
-        log += ' ' + BEFORE_ACTIVE;
+    if ( node.options.active      ) log += ' ' + ACTIVE;
+    if ( node.options.beforeActive) log += ' ' + BEFORE_ACTIVE;
+    if (!node.options.enabled     ) log += ' ' + DISABLED;
 
     return log;
 }

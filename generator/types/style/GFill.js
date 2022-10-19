@@ -68,7 +68,8 @@ extends GShapeBase
 
     evalObjects()
     {
-        if (!this.objects)
+        if (   !this.objects
+            || !this.options.enabled)
             return;
 
 

@@ -180,6 +180,7 @@ function genParseNodeOptions(parse)
     {
         active:       ((opt >> 0) & 1) != 0,
         beforeActive: ((opt >> 1) & 1) != 0,
+        enabled:      ((opt >> 2) & 1) != 0
     };
 
     return options;

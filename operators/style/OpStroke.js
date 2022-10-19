@@ -62,12 +62,12 @@ extends OpColorBase
 
         const input = this.node.inputs[0];
 
-        if (!this.node.enabled)
-        {
-            return input.connected
-                 ? input.connectedOutput.genRequest(gen)
-                 : [];
-        }
+        // if (!this.node.enabled)
+        // {
+        //     return input.connected
+        //          ? input.connectedOutput.genRequest(gen)
+        //          : [];
+        // }
 
 
         gen.scope.push({

@@ -106,9 +106,14 @@ extends GOperator
                 color.space.value = toSpaceIndex;
 
                 
-                if (this.c1) color.c1 = this.c1.toValue();
-                if (this.c2) color.c2 = this.c2.toValue();
-                if (this.c3) color.c3 = this.c3.toValue();
+                // fake disabled status by checking for it during param eval (easiest way to do it)
+
+                if (this.options.enabled)
+                {
+                    if (this.c1) color.c1 = this.c1.toValue();
+                    if (this.c2) color.c2 = this.c2.toValue();
+                    if (this.c3) color.c3 = this.c3.toValue();
+                }
             }
         }
         else
@@ -146,10 +151,13 @@ extends GOperator
         this.c2    = color.c2;
         this.c3    = color.c3;
 
-        if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue());
-        if (this.space) genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .toValue());
-        if (this.space) genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .toValue());
-        if (this.space) genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .toValue());
+        // if (this.options.enabled)
+        // {
+            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue());
+            if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .toValue());
+            if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .toValue());
+            if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .toValue());
+        // }
 
 
         this.valid = true;

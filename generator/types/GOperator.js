@@ -2,16 +2,14 @@ class GOperator
 extends GValue
 {
     nodeId;
-    options;
 
 
 
     constructor(type, nodeId, options)
     {
-        super(type);
+        super(type, options);
 
         this.nodeId  = nodeId;
-        this.options = options;
     }
 
 

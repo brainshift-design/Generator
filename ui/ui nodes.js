@@ -447,7 +447,7 @@ function autoConnectNode(node)
 
 
 
-function uiDeleteNodes(nodeIds)//, actionId)
+function uiDeleteNodes(nodeIds)
 {
     nodeIds.forEach(id => nodeFromId(id).makePassive());
 
@@ -780,9 +780,9 @@ function updateGraphNodes()
 {
     //console.log('updateGraphNodes()');
 
-    for (const node of graphView.selectedNodes)      node.updateNode();
+    for (const node of graphView.selectedNodes     ) node.updateNode();
     for (const node of graphView._prevSelectedNodes) node.updateNode();
-    for (const node of graphView.lastSelectedNodes)  node.updateNode();
+    for (const node of graphView.lastSelectedNodes ) node.updateNode();
 }
 
 
@@ -939,6 +939,9 @@ function uiToggleDisableNodes(nodes)
     {
         n.enabled = !n.enabled;
         n.updateNode();
+
+        if (!n.enabled)
+            uiDeleteObjects([n.id]);
     });
 
 

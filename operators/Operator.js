@@ -403,9 +403,11 @@ class Operator
         {
             const nextActive   = getActiveNodeRightInTreeFromNode(this);
             const beforeActive = nextActive && nextActive.follows(this);
+
             const options =
                   ((this.active  ? 1 : 0) << 0)
-                | ((beforeActive ? 1 : 0) << 1);
+                | ((beforeActive ? 1 : 0) << 1)
+                | ((this.enabled ? 1 : 0) << 2);
 
             request.push(options);
         }

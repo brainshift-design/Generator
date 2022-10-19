@@ -33,10 +33,11 @@ extends GOperator
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
-        this.node[this.paramId].eval(parse);
+        const param = this.node[this.paramId];
 
-        
-        this.valid = true;
+        param.eval(parse);
+
+        this.valid = param.valid;
     }
 
 

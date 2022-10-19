@@ -2593,11 +2593,9 @@ function logReqOptions(node)
 {
     let log = '';
 
-    if (node.options.active)
-        log += ' ' + ACTIVE;
-
-    if (node.options.beforeActive)
-        log += ' ' + BEFORE_ACTIVE;
+    if ( node.options.active      ) log += ' ' + ACTIVE;
+    if ( node.options.beforeActive) log += ' ' + BEFORE_ACTIVE;
+    if (!node.options.enabled     ) log += ' ' + DISABLED;
 
     return log;
 }
@@ -3082,18 +3080,19 @@ const OBJECT_TYPES = // because they produce or modify objects
 ];
 
 
-const GROUP               = 'GRP';   // ???? count O...
+const GROUP            = 'GRP';   // ???? count O...
 
 
-const COMMENT             = 'CMNT';
+const COMMENT          = 'CMNT';
 
 
-const ACTIVE              = 'ACT';
-const BEFORE_ACTIVE       = 'BEF';
-const PARAM               = 'PARAM'; // nodeId paramId
+const ACTIVE           = 'ACT';
+const BEFORE_ACTIVE    = 'BEF';
+const DISABLED         = 'DIS';
+const PARAM            = 'PARAM'; // nodeId paramId
 
 
-const LOG                 = 'LOG';
+const LOG              = 'LOG';
 
 
 
@@ -3113,20 +3112,22 @@ class GValue
     type;
 
     valid; // has been evaluated
-
     topLevel;
 
+    options = {};
 
     data = {}; // for type conversion info
 
 
-    constructor(type) 
+
+    constructor(type, options) 
     {
         this.type     = type;
-
+       
         this.valid    = false;
-
         this.topLevel = false;
+
+        this.options  = options;
     }
 
 
@@ -3140,7 +3141,8 @@ class GValue
 
     copyBaseData(obj)
     {
-        this.data = clone(obj.data);
+        this.options = clone(obj.options);
+        this.data    = clone(obj.data);
     }
 
 
@@ -3155,7 +3157,7 @@ class GValue
     equalChans(c1, c2)
     {
         return !c1 && !c2
-            ||  c1 && c2 && c1.equals(c2);
+            ||  c1 &&  c2 && c1.equals(c2);
     }
 
 
@@ -3208,16 +3210,14 @@ class GOperator
 extends GValue
 {
     nodeId;
-    options;
 
 
 
     constructor(type, nodeId, options)
     {
-        super(type);
+        super(type, options);
 
         this.nodeId  = nodeId;
-        this.options = options;
     }
 
 
@@ -3273,10 +3273,11 @@ extends GOperator
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
 
-        this.node[this.paramId].eval(parse);
+        const param = this.node[this.paramId];
 
-        
-        this.valid = true;
+        param.eval(parse);
+
+        this.valid = param.valid;
     }
 
 
@@ -5405,9 +5406,14 @@ extends GOperator
                 color.space.value = toSpaceIndex;
 
                 
-                if (this.c1) color.c1 = this.c1.toValue();
-                if (this.c2) color.c2 = this.c2.toValue();
-                if (this.c3) color.c3 = this.c3.toValue();
+                // fake disabled status by checking for it during param eval (easiest way to do it)
+
+                if (this.options.enabled)
+                {
+                    if (this.c1) color.c1 = this.c1.toValue();
+                    if (this.c2) color.c2 = this.c2.toValue();
+                    if (this.c3) color.c3 = this.c3.toValue();
+                }
             }
         }
         else
@@ -5445,10 +5451,13 @@ extends GOperator
         this.c2    = color.c2;
         this.c3    = color.c3;
 
-        if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue());
-        if (this.space) genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .toValue());
-        if (this.space) genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .toValue());
-        if (this.space) genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .toValue());
+        // if (this.options.enabled)
+        // {
+            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue());
+            if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .toValue());
+            if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .toValue());
+            if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .toValue());
+        // }
 
 
         this.valid = true;
@@ -6144,7 +6153,10 @@ extends GShapeBase
         if (this.valid)
             return;
 
+        // if (!this.options.enabled)
+        //     return this.input;
 
+            
         if (this.input)
             this.input.eval(parse);
 
@@ -6181,6 +6193,10 @@ extends GShapeBase
 
     evalObjects()
     {
+        if (!this.options.enabled)
+            return;
+            
+
         if (   this.x 
             && this.y 
             && this.width 
@@ -6773,7 +6789,8 @@ extends GShapeBase
 
     evalObjects()
     {
-        if (!this.objects)
+        if (   !this.objects
+            || !this.options.enabled)
             return;
 
 
@@ -6859,6 +6876,9 @@ extends GShapeBase
         if (this.valid)
             return;
 
+        // if (!this.options.enabled)
+        //     return this.input;
+
 
         if (this.input)
         {
@@ -6896,7 +6916,8 @@ extends GShapeBase
 
     evalObjects()
     {
-        if (!this.objects)
+        if (   !this.objects
+            || !this.options.enabled)
             return;
 
 
@@ -8659,6 +8680,7 @@ function genParseNodeOptions(parse)
     {
         active:       ((opt >> 0) & 1) != 0,
         beforeActive: ((opt >> 1) & 1) != 0,
+        enabled:      ((opt >> 2) & 1) != 0
     };
 
     return options;

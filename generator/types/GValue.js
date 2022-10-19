@@ -3,20 +3,22 @@ class GValue
     type;
 
     valid; // has been evaluated
-
     topLevel;
 
+    options = {};
 
     data = {}; // for type conversion info
 
 
-    constructor(type) 
+
+    constructor(type, options) 
     {
         this.type     = type;
-
+       
         this.valid    = false;
-
         this.topLevel = false;
+
+        this.options  = options;
     }
 
 
@@ -30,7 +32,8 @@ class GValue
 
     copyBaseData(obj)
     {
-        this.data = clone(obj.data);
+        this.options = clone(obj.options);
+        this.data    = clone(obj.data);
     }
 
 
@@ -45,7 +48,7 @@ class GValue
     equalChans(c1, c2)
     {
         return !c1 && !c2
-            ||  c1 && c2 && c1.equals(c2);
+            ||  c1 &&  c2 && c1.equals(c2);
     }
 
 
