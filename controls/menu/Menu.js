@@ -152,16 +152,25 @@ class Menu
     
     initMenu()
     {
-        // let maxWidth = 0;
-
-        // for (const item of this.items)
-        //     maxWidth = Math.max(maxWidth, item.name.offsetWidth + item.shortcut.offsetWidth + 30);
-
-        // if (this.div.offsetWidth < maxWidth)
-        //     this.div.style.width = maxWidth;
-            
         if (this.init)
             this.init();
+
+
+        let width = 0;
+        
+        utilContext.font = '13px Inter';
+        
+
+        for (const item of this.items)
+        {
+            const mesName     = utilContext.measureText(item.name);
+            const mesShortcut = utilContext.measureText(item.shortcut);
+    
+            width = Math.max(width, mesName.width + mesShortcut.width + 30);
+        }
+
+        
+        this.div.style.width = Math.max(100, width);
     }
 
 

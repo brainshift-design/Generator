@@ -3,7 +3,7 @@ extends Action
 {
     copiedNodesJson;
 
-    //pasteOutsideConnections;
+    pasteConnected;
 
     pastedNodeIds = [];
     pastedNodePos = [];
@@ -17,19 +17,19 @@ extends Action
 
 
 
-    constructor(copiedNodesJson, /*pasteOutsideConnections, */isDuplicate = false, x = Number.NaN, y = Number.NaN)
+    constructor(copiedNodesJson, pasteConnected, isDuplicate = false, x = Number.NaN, y = Number.NaN)
     {
         const data = JSON.parse(copiedNodesJson);
 
         super('PASTE ' + data.nodes.length + ' ' + countToString(data.nodes, 'node'));
 
-        this.copiedNodesJson         = copiedNodesJson;
-        //this.pasteOutsideConnections = pasteOutsideConnections;
+        this.copiedNodesJson = copiedNodesJson;
+        this.pasteConnected  = pasteConnected;
 
-        this.isDuplicate             = isDuplicate;
+        this.isDuplicate     = isDuplicate;
         
-        this.x                       = x;
-        this.y                       = y;
+        this.x               = x;
+        this.y               = y;
     }
 
 
@@ -45,7 +45,7 @@ extends Action
             pushUnique(this.oldActiveNodeIds, activeNodesFromNodeId(nodeId).map(n => n.id));
 
 
-        const nodes = uiPasteNodes(this.copiedNodesJson, /*this.pasteOutsideConnections, */this.x, this.y);
+        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y);
 
         this.pastedNodeIds = nodes.map(n => n.id);
         this.pastedNodePos = nodes.map(n => { return point(n.div.offsetLeft, n.div.offsetTop); });
@@ -58,7 +58,7 @@ extends Action
 
         uiSaveNodes(nodes.map(n => n.id));
 
-        this.notify(nodes, this.isDuplicate);
+        this.notify(nodes, this.isDuplicate, this.pasteConnected);
     }
 
 
@@ -74,7 +74,6 @@ extends Action
 
 
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
-        //console.log('oldActiveNodeIds', oldActiveNodeIds);
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldActiveNodeIds)
@@ -85,7 +84,7 @@ extends Action
 
     redo()
     {
-        const nodes = uiPasteNodes(this.copiedNodesJson, /*this.pasteOutsideConnections, */this.x, this.y);
+        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y);
         
         this.pastedNodeIds = nodes.map(n => n.id);
 
@@ -102,14 +101,18 @@ extends Action
 
         uiSaveNodes(nodes.map(n => n.id));
         
-        this.notify(nodes, this.isDuplicate);
+        this.notify(nodes, this.isDuplicate, this.pasteConnected);
     }
 
 
 
-    notify(nodes, isDuplicate)
+    notify(nodes, isDuplicate, pasteConnected)
     {
-        const action = isDuplicate ? 'Duplicate' : 'Paste';
+        let action = isDuplicate ? 'Duplicate' : 'Paste';
+
+        if (pasteConnected)
+            action += ' connected';
+
         uiNotify(action + ' ' + nodes.length + ' ' + countToString(nodes, 'node'), 2500);
     }
 }

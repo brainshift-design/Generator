@@ -677,7 +677,7 @@ function uiCopyNodes(nodeIds)
 
 
 
-function uiPasteNodes(nodesJson, /*pasteOutsideConnections, */x, y)
+function uiPasteNodes(nodesJson, pasteConnected, x, y)
 {
     //console.log(nodesJson);
 
@@ -724,7 +724,7 @@ function uiPasteNodes(nodesJson, /*pasteOutsideConnections, */x, y)
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
-        loadConnections(data);//, pasteOutsideConnections);
+        loadConnections(data, pasteConnected);
     }
 
     graphView.selectedNodes = nodes;

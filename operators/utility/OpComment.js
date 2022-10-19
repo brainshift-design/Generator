@@ -43,12 +43,9 @@ extends OperatorBase
         this.inner.style.boxShadow = 'none';
 
 
-        const cnv = this.canvas || (this.canvas = document.createElement("canvas"));
-        const ctx = cnv.getContext("2d");
+        utilContext.font = '11px Inter';
         
-        ctx.font = '11px Inter';
-        
-        const mes = ctx.measureText(
+        const mes = utilContext.measureText(
             hasFocus(this.textbox) 
             ? this.textbox.value 
             : this.name);

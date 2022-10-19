@@ -10,19 +10,6 @@ const dataColor_NaN = [
     Number.NaN ];
 
 
-var style2rgba_canvas;
-var style2rgba_context;
-    
-
-
-function initColor()
-{
-    style2rgba_canvas  = document.createElement('canvas');
-    style2rgba_context = style2rgba_canvas.getContext('2d');
-}
-
-
-
 function allConesWork(cones)
 {
     return cones.l == 1 
@@ -174,20 +161,20 @@ function rgbEqual(rgb1, rgb2)
 
 function style2rgba(style) 
 {
-    style2rgba_context.fillStyle = style;
-    style2rgba_context.fillRect(0, 0, 1, 1);
+    utilContext.fillStyle = style;
+    utilContext.fillRect(0, 0, 1, 1);
 
-    return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
+    return rgbaDiv(utilContext.getImageData(0, 0, 1, 1).data, 0xFF);
 }
 
 
 
 function computedStyle2rgba(obj, style) 
 {
-    style2rgba_context.fillStyle = getStyleValue(obj, style);
-    style2rgba_context.fillRect(0, 0, 1, 1);
+    utilContext.fillStyle = getStyleValue(obj, style);
+    utilContext.fillRect(0, 0, 1, 1);
 
-    return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
+    return rgbaDiv(utilContext.getImageData(0, 0, 1, 1).data, 0xFF);
 }
 
 

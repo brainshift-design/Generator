@@ -95,9 +95,11 @@ var menuItemLogObjectUpdates;
 var menuItemZoomTo100;
 
 var menuItemGraphPaste;
+var menuItemGraphPasteConnected;
 
 var menuItemNodeCopy;
 var menuItemNodeDuplicate;
+var menuItemNodeDuplicateConnected;
 var menuItemNodeBringToFront;
 var menuItemNodeSendToBack;
 var menuItemNodeEnableDisable;
@@ -233,7 +235,8 @@ function initMenus()
 
     menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
-        menuItemGraphPaste = new MenuItem('Paste here', {shortcut: osCtrl() + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(e.shiftKey, e.clientX, e.clientY - menuBar.offsetHeight); }})]);
+        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()             + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(false, e.clientX, e.clientY - menuBar.offsetHeight); }}),
+        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrl() + osShift() + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(true,  e.clientX, e.clientY - menuBar.offsetHeight); }})]);
 
     menuGraph.init = () => 
     {
@@ -243,10 +246,11 @@ function initMenus()
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
-        menuItemNodeCopy          = new MenuItem('Copy',           {shortcut: osCtrl() + 'C', callback: () => copySelectedNodes() }),
-        menuItemNodeDuplicate     = new MenuItem('Duplicate',      {shortcut: osCtrl() + 'D', callback: e => { hideAllMenus(); duplicateSelectedNodes(e.shiftKey); }}),
-                                    new MenuItem('',               {separator: true}),
-        menuItemNodeEnableDisable = new MenuItem('Enable/Disable', {shortcut: osCtrl() + osShift() + 'D', callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
+        menuItemNodeCopy               = new MenuItem('Copy',                {shortcut: osCtrl()             + 'C', callback: () => copySelectedNodes() }),
+        menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut: osCtrl()             + 'D', callback: e => { hideAllMenus(); duplicateSelectedNodes(false); }}),
+        menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut: osCtrl() + osShift() + 'D', callback: e => { hideAllMenus(); duplicateSelectedNodes(true ); }}),
+                                         new MenuItem('',                    {separator: true}),
+        menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut: osCtrl() + osShift() + 'E', callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
 
 
 

@@ -2,6 +2,19 @@ const isMac = navigator.platform.toLowerCase().indexOf('mac') >= 0;
 
 
 
+var utilCanvas;
+var utilContext;
+    
+
+
+function initUtilContext()
+{
+    utilCanvas  = document.createElement('canvas');
+    utilContext = utilCanvas.getContext('2d');
+}
+
+
+
 function indexOfChild(parent, child)
 {
     return Array.prototype.indexOf.call(parent.children, child);

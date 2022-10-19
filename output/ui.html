@@ -3520,6 +3520,19 @@ const isMac = navigator.platform.toLowerCase().indexOf('mac') >= 0;
 
 
 
+var utilCanvas;
+var utilContext;
+    
+
+
+function initUtilContext()
+{
+    utilCanvas  = document.createElement('canvas');
+    utilContext = utilCanvas.getContext('2d');
+}
+
+
+
 function indexOfChild(parent, child)
 {
     return Array.prototype.indexOf.call(parent.children, child);
@@ -11577,19 +11590,6 @@ const dataColor_NaN = [
     Number.NaN ];
 
 
-var style2rgba_canvas;
-var style2rgba_context;
-    
-
-
-function initColor()
-{
-    style2rgba_canvas  = document.createElement('canvas');
-    style2rgba_context = style2rgba_canvas.getContext('2d');
-}
-
-
-
 function allConesWork(cones)
 {
     return cones.l == 1 
@@ -11741,20 +11741,20 @@ function rgbEqual(rgb1, rgb2)
 
 function style2rgba(style) 
 {
-    style2rgba_context.fillStyle = style;
-    style2rgba_context.fillRect(0, 0, 1, 1);
+    utilContext.fillStyle = style;
+    utilContext.fillRect(0, 0, 1, 1);
 
-    return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
+    return rgbaDiv(utilContext.getImageData(0, 0, 1, 1).data, 0xFF);
 }
 
 
 
 function computedStyle2rgba(obj, style) 
 {
-    style2rgba_context.fillStyle = getStyleValue(obj, style);
-    style2rgba_context.fillRect(0, 0, 1, 1);
+    utilContext.fillStyle = getStyleValue(obj, style);
+    utilContext.fillRect(0, 0, 1, 1);
 
-    return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
+    return rgbaDiv(utilContext.getImageData(0, 0, 1, 1).data, 0xFF);
 }
 
 
@@ -14971,6 +14971,19 @@ const isMac = navigator.platform.toLowerCase().indexOf('mac') >= 0;
 
 
 
+var utilCanvas;
+var utilContext;
+    
+
+
+function initUtilContext()
+{
+    utilCanvas  = document.createElement('canvas');
+    utilContext = utilCanvas.getContext('2d');
+}
+
+
+
 function indexOfChild(parent, child)
 {
     return Array.prototype.indexOf.call(parent.children, child);
@@ -17057,19 +17070,6 @@ const dataColor_NaN = [
     Number.NaN ];
 
 
-var style2rgba_canvas;
-var style2rgba_context;
-    
-
-
-function initColor()
-{
-    style2rgba_canvas  = document.createElement('canvas');
-    style2rgba_context = style2rgba_canvas.getContext('2d');
-}
-
-
-
 function allConesWork(cones)
 {
     return cones.l == 1 
@@ -17221,20 +17221,20 @@ function rgbEqual(rgb1, rgb2)
 
 function style2rgba(style) 
 {
-    style2rgba_context.fillStyle = style;
-    style2rgba_context.fillRect(0, 0, 1, 1);
+    utilContext.fillStyle = style;
+    utilContext.fillRect(0, 0, 1, 1);
 
-    return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
+    return rgbaDiv(utilContext.getImageData(0, 0, 1, 1).data, 0xFF);
 }
 
 
 
 function computedStyle2rgba(obj, style) 
 {
-    style2rgba_context.fillStyle = getStyleValue(obj, style);
-    style2rgba_context.fillRect(0, 0, 1, 1);
+    utilContext.fillStyle = getStyleValue(obj, style);
+    utilContext.fillRect(0, 0, 1, 1);
 
-    return rgbaDiv(style2rgba_context.getImageData(0, 0, 1, 1).data, 0xFF);
+    return rgbaDiv(utilContext.getImageData(0, 0, 1, 1).data, 0xFF);
 }
 
 
@@ -22233,16 +22233,25 @@ class Menu
     
     initMenu()
     {
-        // let maxWidth = 0;
-
-        // for (const item of this.items)
-        //     maxWidth = Math.max(maxWidth, item.name.offsetWidth + item.shortcut.offsetWidth + 30);
-
-        // if (this.div.offsetWidth < maxWidth)
-        //     this.div.style.width = maxWidth;
-            
         if (this.init)
             this.init();
+
+
+        let width = 0;
+        
+        utilContext.font = '13px Inter';
+        
+
+        for (const item of this.items)
+        {
+            const mesName     = utilContext.measureText(item.name);
+            const mesShortcut = utilContext.measureText(item.shortcut);
+    
+            width = Math.max(width, mesName.width + mesShortcut.width + 30);
+        }
+
+        
+        this.div.style.width = Math.max(100, width);
     }
 
 
@@ -22857,9 +22866,11 @@ var menuItemLogObjectUpdates;
 var menuItemZoomTo100;
 
 var menuItemGraphPaste;
+var menuItemGraphPasteConnected;
 
 var menuItemNodeCopy;
 var menuItemNodeDuplicate;
+var menuItemNodeDuplicateConnected;
 var menuItemNodeBringToFront;
 var menuItemNodeSendToBack;
 var menuItemNodeEnableDisable;
@@ -22995,7 +23006,8 @@ function initMenus()
 
     menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
-        menuItemGraphPaste = new MenuItem('Paste here', {shortcut: osCtrl() + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(e.shiftKey, e.clientX, e.clientY - menuBar.offsetHeight); }})]);
+        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()             + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(false, e.clientX, e.clientY - menuBar.offsetHeight); }}),
+        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrl() + osShift() + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(true,  e.clientX, e.clientY - menuBar.offsetHeight); }})]);
 
     menuGraph.init = () => 
     {
@@ -23005,10 +23017,11 @@ function initMenus()
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
-        menuItemNodeCopy          = new MenuItem('Copy',           {shortcut: osCtrl() + 'C', callback: () => copySelectedNodes() }),
-        menuItemNodeDuplicate     = new MenuItem('Duplicate',      {shortcut: osCtrl() + 'D', callback: e => { hideAllMenus(); duplicateSelectedNodes(e.shiftKey); }}),
-                                    new MenuItem('',               {separator: true}),
-        menuItemNodeEnableDisable = new MenuItem('Enable/Disable', {shortcut: osCtrl() + osShift() + 'D', callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
+        menuItemNodeCopy               = new MenuItem('Copy',                {shortcut: osCtrl()             + 'C', callback: () => copySelectedNodes() }),
+        menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut: osCtrl()             + 'D', callback: e => { hideAllMenus(); duplicateSelectedNodes(false); }}),
+        menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut: osCtrl() + osShift() + 'D', callback: e => { hideAllMenus(); duplicateSelectedNodes(true ); }}),
+                                         new MenuItem('',                    {separator: true}),
+        menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut: osCtrl() + osShift() + 'E', callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
 
 
 
@@ -26697,7 +26710,7 @@ function copySelectedNodes()
 
 
 
-function pasteCopiedNodes(/*pasteOutsideConnections, */clientX = Number.NaN, clientY = Number.NaN)
+function pasteCopiedNodes(pasteConnected, clientX = Number.NaN, clientY = Number.NaN)
 {
     if (copiedNodesJson == '')
         return;
@@ -26705,17 +26718,17 @@ function pasteCopiedNodes(/*pasteOutsideConnections, */clientX = Number.NaN, cli
     const x = (clientX - graphView.pan.x) / graphView.zoom;
     const y = (clientY - graphView.pan.y) / graphView.zoom;
 
-    actionManager.do(new PasteNodesAction(copiedNodesJson, /*pasteOutsideConnections, */false, x, y));
+    actionManager.do(new PasteNodesAction(copiedNodesJson, pasteConnected, false, x, y));
 }
 
 
 
-function duplicateSelectedNodes(/*pasteOutsideConnections*/)
+function duplicateSelectedNodes(pasteConnected)
 {
     if (graphView.selectedNodes.length > 0)
     {
         pasteOffset = [0, 0];
-        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), /*pasteOutsideConnections, */true));
+        actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), pasteConnected, true));
     }
 }
 
@@ -32888,12 +32901,9 @@ extends OperatorBase
         this.inner.style.boxShadow = 'none';
 
 
-        const cnv = this.canvas || (this.canvas = document.createElement("canvas"));
-        const ctx = cnv.getContext("2d");
+        utilContext.font = '11px Inter';
         
-        ctx.font = '11px Inter';
-        
-        const mes = ctx.measureText(
+        const mes = utilContext.measureText(
             hasFocus(this.textbox) 
             ? this.textbox.value 
             : this.name);
@@ -39231,7 +39241,7 @@ extends Action
 {
     copiedNodesJson;
 
-    //pasteOutsideConnections;
+    pasteConnected;
 
     pastedNodeIds = [];
     pastedNodePos = [];
@@ -39245,19 +39255,19 @@ extends Action
 
 
 
-    constructor(copiedNodesJson, /*pasteOutsideConnections, */isDuplicate = false, x = Number.NaN, y = Number.NaN)
+    constructor(copiedNodesJson, pasteConnected, isDuplicate = false, x = Number.NaN, y = Number.NaN)
     {
         const data = JSON.parse(copiedNodesJson);
 
         super('PASTE ' + data.nodes.length + ' ' + countToString(data.nodes, 'node'));
 
-        this.copiedNodesJson         = copiedNodesJson;
-        //this.pasteOutsideConnections = pasteOutsideConnections;
+        this.copiedNodesJson = copiedNodesJson;
+        this.pasteConnected  = pasteConnected;
 
-        this.isDuplicate             = isDuplicate;
+        this.isDuplicate     = isDuplicate;
         
-        this.x                       = x;
-        this.y                       = y;
+        this.x               = x;
+        this.y               = y;
     }
 
 
@@ -39273,7 +39283,7 @@ extends Action
             pushUnique(this.oldActiveNodeIds, activeNodesFromNodeId(nodeId).map(n => n.id));
 
 
-        const nodes = uiPasteNodes(this.copiedNodesJson, /*this.pasteOutsideConnections, */this.x, this.y);
+        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y);
 
         this.pastedNodeIds = nodes.map(n => n.id);
         this.pastedNodePos = nodes.map(n => { return point(n.div.offsetLeft, n.div.offsetTop); });
@@ -39286,7 +39296,7 @@ extends Action
 
         uiSaveNodes(nodes.map(n => n.id));
 
-        this.notify(nodes, this.isDuplicate);
+        this.notify(nodes, this.isDuplicate, this.pasteConnected);
     }
 
 
@@ -39302,7 +39312,6 @@ extends Action
 
 
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
-        //console.log('oldActiveNodeIds', oldActiveNodeIds);
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldActiveNodeIds)
@@ -39313,7 +39322,7 @@ extends Action
 
     redo()
     {
-        const nodes = uiPasteNodes(this.copiedNodesJson, /*this.pasteOutsideConnections, */this.x, this.y);
+        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y);
         
         this.pastedNodeIds = nodes.map(n => n.id);
 
@@ -39330,14 +39339,18 @@ extends Action
 
         uiSaveNodes(nodes.map(n => n.id));
         
-        this.notify(nodes, this.isDuplicate);
+        this.notify(nodes, this.isDuplicate, this.pasteConnected);
     }
 
 
 
-    notify(nodes, isDuplicate)
+    notify(nodes, isDuplicate, pasteConnected)
     {
-        const action = isDuplicate ? 'Duplicate' : 'Paste';
+        let action = isDuplicate ? 'Duplicate' : 'Paste';
+
+        if (pasteConnected)
+            action += ' connected';
+
         uiNotify(action + ' ' + nodes.length + ' ' + countToString(nodes, 'node'), 2500);
     }
 }
@@ -40105,7 +40118,7 @@ document.addEventListener('pointerup', function(e)
 
 
 var uiFigMessages = []; // messages from UI to Figma
-var genMessages = []; // messages from UI to Generator
+var genMessages   = []; // messages from UI to Generator
 
 var genMessagePosted = false;
 
@@ -40144,7 +40157,9 @@ var pasteOffsetDelta    = [40, 100];
 
 
 clearConsole();
-initColor();
+
+initUtilContext();
+
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
@@ -40183,22 +40198,20 @@ document.addEventListener('keydown', e =>
     // paste
     else if (e.code == 'KeyV'
           && getCtrlKey(e)
-          && !e.shiftKey
           && !e.altKey)
-          pasteCopiedNodes();//e.altKey);
+          pasteCopiedNodes(e.shiftKey);
 
     // duplicate
     else if (e.code == 'KeyD'
           && getCtrlKey(e)
-          && !e.shiftKey
           && !e.altKey)
     {
-        duplicateSelectedNodes();//e.altKey);
+        duplicateSelectedNodes(e.shiftKey);
         return false;
     }
 
     // disable nodes
-    else if (e.code == 'KeyD'
+    else if (e.code == 'KeyE'
           && getCtrlKey(e)
           && e.shiftKey)
     {
@@ -40934,15 +40947,15 @@ function loadNode(_node)
 
 
 
-function loadConnections(data, /*loadOutsideConnections, */setProgress = null)
+function loadConnections(data, loadConnected, setProgress = null)
 {
     for (let i = 0; i < data.connections.length; i++)
     {
         const _conn = data.connections[i];
         
         if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId)
-               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId))
-            //|| loadOutsideConnections)
+               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId)
+            || loadConnected)
             Connection.parseJson(_conn);
 
         if (setProgress)
@@ -41835,7 +41848,7 @@ function uiCopyNodes(nodeIds)
 
 
 
-function uiPasteNodes(nodesJson, /*pasteOutsideConnections, */x, y)
+function uiPasteNodes(nodesJson, pasteConnected, x, y)
 {
     //console.log(nodesJson);
 
@@ -41882,7 +41895,7 @@ function uiPasteNodes(nodesJson, /*pasteOutsideConnections, */x, y)
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
-        loadConnections(data);//, pasteOutsideConnections);
+        loadConnections(data, pasteConnected);
     }
 
     graphView.selectedNodes = nodes;

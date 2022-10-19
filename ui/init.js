@@ -1,5 +1,5 @@
 var uiFigMessages = []; // messages from UI to Figma
-var genMessages = []; // messages from UI to Generator
+var genMessages   = []; // messages from UI to Generator
 
 var genMessagePosted = false;
 
@@ -38,7 +38,9 @@ var pasteOffsetDelta    = [40, 100];
 
 
 clearConsole();
-initColor();
+
+initUtilContext();
+
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 

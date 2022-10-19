@@ -11,22 +11,20 @@ document.addEventListener('keydown', e =>
     // paste
     else if (e.code == 'KeyV'
           && getCtrlKey(e)
-          && !e.shiftKey
           && !e.altKey)
-          pasteCopiedNodes();//e.altKey);
+          pasteCopiedNodes(e.shiftKey);
 
     // duplicate
     else if (e.code == 'KeyD'
           && getCtrlKey(e)
-          && !e.shiftKey
           && !e.altKey)
     {
-        duplicateSelectedNodes();//e.altKey);
+        duplicateSelectedNodes(e.shiftKey);
         return false;
     }
 
     // disable nodes
-    else if (e.code == 'KeyD'
+    else if (e.code == 'KeyE'
           && getCtrlKey(e)
           && e.shiftKey)
     {
