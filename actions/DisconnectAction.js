@@ -33,22 +33,22 @@ extends Action
 
     do()
     {
-        this.oldActiveNodeIds = [...getActiveNodesInTreeFromNodeId(this.inputNodeId).map(n => n.id)];
+        this.oldActiveNodeIds = [...activeNodesFromNodeId(this.inputNodeId).map(n => n.id)];
 
 
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
         this.inputNode.invalidate();
         
 
-        if (!getActiveNodeInTreeFromNode(this.inputNode))
+        if (!activeFromNode(this.inputNode))
         {
             uiMakeNodeActive(this.inputNode);
             this.newActiveNodeIds.push(this.inputNodeId);
         }
 
 
-        if (   !getActiveNodeLeftOnlyInTreeFromNode(this.outputNode)
-            && !getActiveNodeRightInTreeFromNode(this.outputNode))
+        if (   !activeLeftOnlyFromNode(this.outputNode)
+            && !activeRightFromNode(this.outputNode))
         {
             uiMakeNodeActive(this.outputNode);
             this.newActiveNodeIds.push(this.outputNodeId);
@@ -94,11 +94,11 @@ extends Action
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
         
 
-        if (!getActiveNodeInTreeFromNode(this.inputNode))
+        if (!activeFromNode(this.inputNode))
             uiMakeNodeActive(this.inputNode);
 
-        if (   !getActiveNodeLeftOnlyInTreeFromNode(this.outputNode)
-            && !getActiveNodeRightInTreeFromNode(this.outputNode))
+        if (   !activeLeftOnlyFromNode(this.outputNode)
+            && !activeRightFromNode(this.outputNode))
             uiMakeNodeActive(this.outputNode);
 
 

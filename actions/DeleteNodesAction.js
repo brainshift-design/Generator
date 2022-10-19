@@ -43,7 +43,7 @@ extends Action
         this.oldActiveNodeIds = [];
 
         for (const nodeId of this.nodeIds)
-            pushUnique(this.oldActiveNodeIds, getActiveNodesInTreeFromNodeId(nodeId).map(n => n.id));
+            pushUnique(this.oldActiveNodeIds, activeNodesFromNodeId(nodeId).map(n => n.id));
         
 
         for (const nodeId of this.nodeIds)
@@ -205,9 +205,9 @@ extends Action
         uiDisconnect(input);
 
 
-        const activeLeft     = getActiveNodeLeftInTreeFromNode(output.node);
-        const activeLeftOnly = getActiveNodeLeftOnlyInTreeFromNode(output.node);
-        const activeRight    = getActiveNodeRightInTreeFromNode(input.node);
+        const activeLeft     = activeLeftFromNode(output.node);
+        const activeLeftOnly = activeLeftOnlyFromNode(output.node);
+        const activeRight    = activeRightFromNode(input.node);
 
 
         if (  !activeLeftOnly

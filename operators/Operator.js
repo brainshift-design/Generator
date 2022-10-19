@@ -401,7 +401,7 @@ class Operator
 
         if (!ignore)
         {
-            const nextActive   = getActiveNodeRightInTreeFromNode(this);
+            const nextActive   = activeRightFromNode(this);
             const beforeActive = nextActive && nextActive.follows(this);
 
             const options =
@@ -778,7 +778,7 @@ function pushUpdateFromParam(nodes, param)
     
     nodes.forEach(n => pushUnique(
         terminals, 
-        getTerminalsAfterNode(n)));
+        terminalsAfterNode(n)));
 
 
     for (const node of terminals)

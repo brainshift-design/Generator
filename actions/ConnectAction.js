@@ -57,8 +57,8 @@ extends Action
             : [];
 
 
-        this.oldOutputActiveNodeId = idFromNode(getActiveNodeInTreeFromNodeId(this.outputNodeId));
-        this.oldInputActiveNodeIds = getActiveNodesRightInTreeFromNodeId(this.inputNodeId).map(n => n.id);
+        this.oldOutputActiveNodeId = idFromNode(activeFromNodeId(this.outputNodeId));
+        this.oldInputActiveNodeIds = activeNodesRightFromNodeId(this.inputNodeId).map(n => n.id);
 
 
         uiConnect(
@@ -73,7 +73,7 @@ extends Action
 
         
         if (    this.oldOutputNode
-            && !getActiveNodeInTreeFromNode(this.oldOutputNode))
+            && !activeFromNode(this.oldOutputNode))
         {
             uiMakeNodeActive(this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);

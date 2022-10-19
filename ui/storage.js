@@ -259,7 +259,7 @@ function finishLoadingNodes(_nodes, loadedNodes, duplicates = false)
         .map(_n => nodeFromId(duplicates ? _n.newId : _n.id))
         .forEach(n => n.makeActive());
 
-    // validateActiveNodesInTrees(loadedNodes);
+    // validateActiveNodess(loadedNodes);
 
     loadedNodes.forEach(n => n.updateNode());
     graphView.updateNodeTransforms(loadedNodes);

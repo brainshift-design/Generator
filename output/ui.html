@@ -8122,9 +8122,6 @@ extends GShapeBase
         if (this.valid)
             return;
 
-        // if (!this.options.enabled)
-        //     return this.input;
-
             
         if (this.input)
             this.input.eval(parse);
@@ -8165,7 +8162,7 @@ extends GShapeBase
         if (!this.options.enabled)
             return;
             
-
+            
         if (   this.x 
             && this.y 
             && this.width 
@@ -8758,25 +8755,26 @@ extends GShapeBase
 
     evalObjects()
     {
-        if (   !this.objects
-            || !this.options.enabled)
+        if (!this.objects)
             return;
-
-
-        const rgb = scaleRgb(this.color.toValue().toRgb());
-
         
-        for (const obj of this.objects)
+        
+        if (this.options.enabled)
         {
-            if (!obj.fills) 
-                obj.fills = [];
+            const rgb = scaleRgb(this.color.toValue().toRgb());
 
-            obj.fills.push([
-                'SOLID', 
-                        rgb[0]
-                + ' ' + rgb[1]
-                + ' ' + rgb[2]
-                + ' ' + this.opacity.toValue().toNumber()]);
+            for (const obj of this.objects)
+            {
+                if (!obj.fills) 
+                    obj.fills = [];
+
+                obj.fills.push([
+                    'SOLID', 
+                            rgb[0]
+                    + ' ' + rgb[1]
+                    + ' ' + rgb[2]
+                    + ' ' + this.opacity.toValue().toNumber()]);
+            }
         }
 
         
@@ -8845,9 +8843,6 @@ extends GShapeBase
         if (this.valid)
             return;
 
-        // if (!this.options.enabled)
-        //     return this.input;
-
 
         if (this.input)
         {
@@ -8885,49 +8880,51 @@ extends GShapeBase
 
     evalObjects()
     {
-        if (   !this.objects
-            || !this.options.enabled)
+        if (!this.objects)
             return;
 
 
-        const rgb = scaleRgb(this.fill.color.toValue().toRgb());
-
-        for (const obj of this.objects)
+        if (this.options.enabled)
         {
-            if (!obj.strokes)
-                obj.strokes = [];
+            const rgb = scaleRgb(this.fill.color.toValue().toRgb());
 
-            obj.strokes.push([
-                'SOLID', 
-                        rgb[0]
-                + ' ' + rgb[1]
-                + ' ' + rgb[2]
-                + ' ' + this.fill.opacity.toValue().value]);
+            for (const obj of this.objects)
+            {
+                if (!obj.strokes)
+                    obj.strokes = [];
+
+                obj.strokes.push([
+                    'SOLID', 
+                            rgb[0]
+                    + ' ' + rgb[1]
+                    + ' ' + rgb[2]
+                    + ' ' + this.fill.opacity.toValue().value]);
 
 
-            if (this.weight)
-                obj.strokeWeight = this.weight.toValue().value;
+                if (this.weight)
+                    obj.strokeWeight = this.weight.toValue().value;
 
-            if (this.fit)
-                switch (this.fit.toValue().value)
-                {
-                    case 0: obj.strokeAlign = 'INSIDE';  break;
-                    case 1: obj.strokeAlign = 'CENTER';  break;
-                    case 2: obj.strokeAlign = 'OUTSIDE'; break;
-                }
+                if (this.fit)
+                    switch (this.fit.toValue().value)
+                    {
+                        case 0: obj.strokeAlign = 'INSIDE';  break;
+                        case 1: obj.strokeAlign = 'CENTER';  break;
+                        case 2: obj.strokeAlign = 'OUTSIDE'; break;
+                    }
 
-            if (this.join)
-                switch (this.join.toValue().value)
-                {
-                    case 0: obj.strokeJoin = 'MITER'; break;
-                    case 1: obj.strokeJoin = 'BEVEL'; break;
-                    case 2: obj.strokeJoin = 'ROUND'; break;
-                }
+                if (this.join)
+                    switch (this.join.toValue().value)
+                    {
+                        case 0: obj.strokeJoin = 'MITER'; break;
+                        case 1: obj.strokeJoin = 'BEVEL'; break;
+                        case 2: obj.strokeJoin = 'ROUND'; break;
+                    }
 
-            if (this.miter)
-                obj.strokeMiterLimit = this.miter.toValue().value;
+                if (this.miter)
+                    obj.strokeMiterLimit = this.miter.toValue().value;
+            }
         }
-
+        
         
         super.evalObjects();
     }
@@ -21096,9 +21093,6 @@ extends GShapeBase
         if (this.valid)
             return;
 
-        // if (!this.options.enabled)
-        //     return this.input;
-
             
         if (this.input)
             this.input.eval(parse);
@@ -21139,7 +21133,7 @@ extends GShapeBase
         if (!this.options.enabled)
             return;
             
-
+            
         if (   this.x 
             && this.y 
             && this.width 
@@ -21732,25 +21726,26 @@ extends GShapeBase
 
     evalObjects()
     {
-        if (   !this.objects
-            || !this.options.enabled)
+        if (!this.objects)
             return;
-
-
-        const rgb = scaleRgb(this.color.toValue().toRgb());
-
         
-        for (const obj of this.objects)
+        
+        if (this.options.enabled)
         {
-            if (!obj.fills) 
-                obj.fills = [];
+            const rgb = scaleRgb(this.color.toValue().toRgb());
 
-            obj.fills.push([
-                'SOLID', 
-                        rgb[0]
-                + ' ' + rgb[1]
-                + ' ' + rgb[2]
-                + ' ' + this.opacity.toValue().toNumber()]);
+            for (const obj of this.objects)
+            {
+                if (!obj.fills) 
+                    obj.fills = [];
+
+                obj.fills.push([
+                    'SOLID', 
+                            rgb[0]
+                    + ' ' + rgb[1]
+                    + ' ' + rgb[2]
+                    + ' ' + this.opacity.toValue().toNumber()]);
+            }
         }
 
         
@@ -21819,9 +21814,6 @@ extends GShapeBase
         if (this.valid)
             return;
 
-        // if (!this.options.enabled)
-        //     return this.input;
-
 
         if (this.input)
         {
@@ -21859,49 +21851,51 @@ extends GShapeBase
 
     evalObjects()
     {
-        if (   !this.objects
-            || !this.options.enabled)
+        if (!this.objects)
             return;
 
 
-        const rgb = scaleRgb(this.fill.color.toValue().toRgb());
-
-        for (const obj of this.objects)
+        if (this.options.enabled)
         {
-            if (!obj.strokes)
-                obj.strokes = [];
+            const rgb = scaleRgb(this.fill.color.toValue().toRgb());
 
-            obj.strokes.push([
-                'SOLID', 
-                        rgb[0]
-                + ' ' + rgb[1]
-                + ' ' + rgb[2]
-                + ' ' + this.fill.opacity.toValue().value]);
+            for (const obj of this.objects)
+            {
+                if (!obj.strokes)
+                    obj.strokes = [];
+
+                obj.strokes.push([
+                    'SOLID', 
+                            rgb[0]
+                    + ' ' + rgb[1]
+                    + ' ' + rgb[2]
+                    + ' ' + this.fill.opacity.toValue().value]);
 
 
-            if (this.weight)
-                obj.strokeWeight = this.weight.toValue().value;
+                if (this.weight)
+                    obj.strokeWeight = this.weight.toValue().value;
 
-            if (this.fit)
-                switch (this.fit.toValue().value)
-                {
-                    case 0: obj.strokeAlign = 'INSIDE';  break;
-                    case 1: obj.strokeAlign = 'CENTER';  break;
-                    case 2: obj.strokeAlign = 'OUTSIDE'; break;
-                }
+                if (this.fit)
+                    switch (this.fit.toValue().value)
+                    {
+                        case 0: obj.strokeAlign = 'INSIDE';  break;
+                        case 1: obj.strokeAlign = 'CENTER';  break;
+                        case 2: obj.strokeAlign = 'OUTSIDE'; break;
+                    }
 
-            if (this.join)
-                switch (this.join.toValue().value)
-                {
-                    case 0: obj.strokeJoin = 'MITER'; break;
-                    case 1: obj.strokeJoin = 'BEVEL'; break;
-                    case 2: obj.strokeJoin = 'ROUND'; break;
-                }
+                if (this.join)
+                    switch (this.join.toValue().value)
+                    {
+                        case 0: obj.strokeJoin = 'MITER'; break;
+                        case 1: obj.strokeJoin = 'BEVEL'; break;
+                        case 2: obj.strokeJoin = 'ROUND'; break;
+                    }
 
-            if (this.miter)
-                obj.strokeMiterLimit = this.miter.toValue().value;
+                if (this.miter)
+                    obj.strokeMiterLimit = this.miter.toValue().value;
+            }
         }
-
+        
         
         super.evalObjects();
     }
@@ -29915,7 +29909,7 @@ function nodesFromIds(ids)
 }
 
 
-// function activeNodeInTree(node) 
+// function activeNode(node) 
 // { 
 //     const left  = activeNodeLeft(node);  if (!!left ) return left;
 //     const right = activeNodeRight(node); if (!!right) return right;
@@ -29999,14 +29993,14 @@ function getNodesAcrossNode(node)
 {
     let nodes = [];
 
-    nodes = [...nodes, ...getNodesBeforeNode(node)];
+    nodes = [...nodes, ...nodesBeforeNode(node)];
     nodes = [...nodes, ...getNodesAfterNode (node)];
 
     return nodes;
 }
 
 
-function getNodesBeforeNode(node)
+function nodesBeforeNode(node)
 {
     let before = [];
 
@@ -30015,7 +30009,7 @@ function getNodesBeforeNode(node)
         if (!before.includes(input.connectedOutput.node)) // avoid including diamond tips twice
             before.push(input.connectedOutput.node);
     
-        before.push(...getNodesBeforeNode(input.connectedOutput.node));
+        before.push(...nodesBeforeNode(input.connectedOutput.node));
     }
 
     return before;
@@ -30041,7 +30035,7 @@ function getNodesAfterNode(node)
 
 
 
-function getTerminalsAfterNode(node)
+function terminalsAfterNode(node)
 {
     let after = [];
 
@@ -30054,7 +30048,7 @@ function getTerminalsAfterNode(node)
                     || !input.param.output.connected))
                 pushUnique(after, input.node);
 
-            pushUnique(after, getTerminalsAfterNode(input.node));
+            pushUnique(after, terminalsAfterNode(input.node));
         }
     }
 
@@ -30063,10 +30057,10 @@ function getTerminalsAfterNode(node)
 
 
 
-function getTerminalsAfterParam(param)
+function terminalsAfterParam(param)
 {
     if (!param.output)
-        return getTerminalsAfterNode(param.node);
+        return terminalsAfterNode(param.node);
 
 
     let after = [];
@@ -30078,7 +30072,7 @@ function getTerminalsAfterParam(param)
                 || !input.param.output.connected))
             pushUnique(after, input.node);
 
-        pushUnique(after, getTerminalsAfterNode(input.node));
+        pushUnique(after, terminalsAfterNode(input.node));
     }
 
     return after.length > 0 ? after : [];
@@ -30091,14 +30085,14 @@ function updateTerminalsAfterNodes(nodes)
     const terminals = [];
 
     for (const node of nodes)
-        pushUnique(terminals, getTerminalsAfterNode(node));
+        pushUnique(terminals, terminalsAfterNode(node));
 
     pushUpdate(terminals);
 }
 
 
 
-function getActiveNodeInBranchFrom(node, alreadyChecked = [])
+function activeInBranchFromNode(node, alreadyChecked = [])
 {
     if (node.active) return node;
 
@@ -30109,7 +30103,7 @@ function getActiveNodeInBranchFrom(node, alreadyChecked = [])
         && !nodeInputs[0].connectedOutput.param
         && !alreadyChecked.includes(nodeInputs[0].connectedOutput.node))
     {
-        const leftActive = getActiveNodeInBranchFrom(
+        const leftActive = activeInBranchFromNode(
             nodeInputs[0].connectedOutput.node, 
             [...alreadyChecked, node]);
 
@@ -30125,7 +30119,7 @@ function getActiveNodeInBranchFrom(node, alreadyChecked = [])
         && !nodeOutputs[0].connectedInputs[0].param
         && !alreadyChecked.includes(nodeOutputs[0].connectedInputs[0].node))
     {
-        const rightActive = getActiveNodeInBranchFrom(
+        const rightActive = activeInBranchFromNode(
             nodeOutputs[0].connectedInputs[0].node, 
             [...alreadyChecked, node]);
 
@@ -30138,19 +30132,19 @@ function getActiveNodeInBranchFrom(node, alreadyChecked = [])
 
 
 
-function getActiveNodeInTreeFromNodeId(nodeId, alreadyChecked = [])
+function activeFromNodeId(nodeId, alreadyChecked = [])
 {
-    return getActiveNodeInTreeFromNode(nodeFromId(nodeId), alreadyChecked);
+    return activeFromNode(nodeFromId(nodeId), alreadyChecked);
 }
 
 
 
-function getActiveNodeInTreeFromNode(node, alreadyChecked = [])
+function activeFromNode(node, alreadyChecked = [])
 {
     if (node.active) return node;
 
 
-    const leftActive = getActiveNodeLeftInTreeFromNode(node, [...alreadyChecked]);
+    const leftActive = activeLeftFromNode(node, [...alreadyChecked]);
     if (leftActive) return leftActive;
 
 
@@ -30160,7 +30154,7 @@ function getActiveNodeInTreeFromNode(node, alreadyChecked = [])
         {
             if (!alreadyChecked.includes(input.node))
             {
-                const rightActive = getActiveNodeInTreeFromNode(
+                const rightActive = activeFromNode(
                     input.node, 
                     [...alreadyChecked, node]);
 
@@ -30175,7 +30169,7 @@ function getActiveNodeInTreeFromNode(node, alreadyChecked = [])
 
 
 
-function getActiveNodeLeftInTreeFromNode(node, alreadyChecked = [])
+function activeLeftFromNode(node, alreadyChecked = [])
 {
     /*  This is different from LeftOnly in that it will check the left node, 
         but then it will also check the right nodes of that left node. */
@@ -30189,7 +30183,7 @@ function getActiveNodeLeftInTreeFromNode(node, alreadyChecked = [])
             && !input.connectedOutput.param
             && !alreadyChecked.includes(input.connectedOutput.node))
         {
-            const leftActive = getActiveNodeInTreeFromNode(
+            const leftActive = activeFromNode(
                 input.connectedOutput.node, 
                 [...alreadyChecked, node]);
 
@@ -30203,7 +30197,7 @@ function getActiveNodeLeftInTreeFromNode(node, alreadyChecked = [])
 
 
 
-function getActiveNodeLeftOnlyInTreeFromNode(node, alreadyChecked = [])
+function activeLeftOnlyFromNode(node, alreadyChecked = [])
 {
     /*  This is different from Left in that it will only check left nodes. */
 
@@ -30216,7 +30210,7 @@ function getActiveNodeLeftOnlyInTreeFromNode(node, alreadyChecked = [])
             && !input.connectedOutput.param
             && !alreadyChecked.includes(input.connectedOutput.node))
         {
-            const leftActive = getActiveNodeLeftOnlyInTreeFromNode(
+            const leftActive = activeLeftOnlyFromNode(
                 input.connectedOutput.node, 
                 [...alreadyChecked, node]);
 
@@ -30230,7 +30224,7 @@ function getActiveNodeLeftOnlyInTreeFromNode(node, alreadyChecked = [])
 
 
 
-function getActiveNodeRightInTreeFromNode(node, alreadyChecked = [])
+function activeRightFromNode(node, alreadyChecked = [])
 {
     if (node.active) return node;
 
@@ -30241,7 +30235,7 @@ function getActiveNodeRightInTreeFromNode(node, alreadyChecked = [])
         {
             if (!alreadyChecked.includes(input.node))
             {
-                const rightActive = getActiveNodeRightInTreeFromNode(
+                const rightActive = activeRightFromNode(
                     input.node, 
                     [...alreadyChecked, node]);
 
@@ -30256,7 +30250,7 @@ function getActiveNodeRightInTreeFromNode(node, alreadyChecked = [])
 
 
 
-function getActiveNodesRightInTreeFromNodeId(nodeId, alreadyChecked = [])
+function activeNodesRightFromNodeId(nodeId, alreadyChecked = [])
 {
     const rightActive = [];
     
@@ -30273,7 +30267,7 @@ function getActiveNodesRightInTreeFromNodeId(nodeId, alreadyChecked = [])
         {
             if (!alreadyChecked.includes(input.node))
             {
-                rightActive.push(...getActiveNodesRightInTreeFromNodeId(
+                rightActive.push(...activeNodesRightFromNodeId(
                     input.node.id, 
                     [...alreadyChecked, node]));
             }
@@ -30286,14 +30280,14 @@ function getActiveNodesRightInTreeFromNodeId(nodeId, alreadyChecked = [])
 
 
 
-function getActiveNodesInTreeFromNodeId(nodeId, alreadyChecked = [])
+function activeNodesFromNodeId(nodeId, alreadyChecked = [])
 {
-    return getActiveNodesInTreeFromNode(nodeFromId(nodeId), alreadyChecked);
+    return activeNodesFromNode(nodeFromId(nodeId), alreadyChecked);
 }
 
 
 
-function getActiveNodesInTreeFromNode(node, alreadyChecked = [])
+function activeNodesFromNode(node, alreadyChecked = [])
 {
     const activeNodes = [];
 
@@ -30307,7 +30301,7 @@ function getActiveNodesInTreeFromNode(node, alreadyChecked = [])
         if (    input.connected
             && !input.connectedOutput.param
             && !alreadyChecked.includes(input.connectedOutput.node))
-            pushUnique(activeNodes, getActiveNodesInTreeFromNode(input.connectedOutput.node, [...alreadyChecked, node]));
+            pushUnique(activeNodes, activeNodesFromNode(input.connectedOutput.node, [...alreadyChecked, node]));
     }
 
 
@@ -30316,7 +30310,7 @@ function getActiveNodesInTreeFromNode(node, alreadyChecked = [])
         for (const input of output.connectedInputs.filter(i => !i.param))
         {
             if (!alreadyChecked.includes(input.node))
-                pushUnique(activeNodes, getActiveNodesInTreeFromNode(input.node, [...alreadyChecked, node]));
+                pushUnique(activeNodes, activeNodesFromNode(input.node, [...alreadyChecked, node]));
         }
     }
 
@@ -31544,7 +31538,7 @@ class Operator
 
         if (!ignore)
         {
-            const nextActive   = getActiveNodeRightInTreeFromNode(this);
+            const nextActive   = activeRightFromNode(this);
             const beforeActive = nextActive && nextActive.follows(this);
 
             const options =
@@ -31921,7 +31915,7 @@ function pushUpdateFromParam(nodes, param)
     
     nodes.forEach(n => pushUnique(
         terminals, 
-        getTerminalsAfterNode(n)));
+        terminalsAfterNode(n)));
 
 
     for (const node of terminals)
@@ -32545,14 +32539,14 @@ function selectFromClick(node, ctrl, shift, alt)
     else if (shift
           && alt)
     {
-        if (isMac) graphView.selectedNodes = getNodesBeforeNode(node);
+        if (isMac) graphView.selectedNodes = nodesBeforeNode(node);
         else       graphView.selectedNodes = getNodesAcrossNode(node);
     }
     else if (ctrl
           && shift)
     {
         if (isMac) graphView.selectedNodes = getNodesAcrossNode(node);
-        else       graphView.selectedNodes = getNodesBeforeNode(node);
+        else       graphView.selectedNodes = nodesBeforeNode(node);
     }
     else if (ctrl
           && alt)
@@ -34017,16 +34011,6 @@ extends OpColorBase
     {
         // 'this' is the output
 
-        const input = this.node.inputs[0];
-
-        // if (!this.node.enabled)
-        // {
-        //     return input.connected
-        //          ? input.connectedOutput.genRequest(gen)
-        //          : [];
-        // }
-
-
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
@@ -34037,6 +34021,8 @@ extends OpColorBase
         
         const paramIds = [];
 
+
+        const input = this.node.inputs[0];
 
         if (input.connected)
         {
@@ -36721,16 +36707,6 @@ extends OpColorBase
     {
         // 'this' is the output
 
-        const input = this.node.inputs[0];
-
-        // if (!this.node.enabled)
-        // {
-        //     return input.connected
-        //          ? input.connectedOutput.genRequest(gen)
-        //          : [];
-        // }
-
-
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
@@ -36741,6 +36717,8 @@ extends OpColorBase
 
         const paramIds = [];
 
+
+        const input = this.node.inputs[0];
 
         if (input.connected)
         {
@@ -37005,16 +36983,6 @@ extends OpColorBase
     {
         // 'this' is the output
 
-        const input = this.node.inputs[0];
-
-        // if (!this.node.enabled)
-        // {
-        //     return input.connected
-        //          ? input.connectedOutput.genRequest(gen)
-        //          : [];
-        // }
-
-
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
@@ -37026,6 +36994,8 @@ extends OpColorBase
         const paramIds = [];
 
         
+        const input = this.node.inputs[0];
+
         if (input.connected)
         {
             request.push(...pushInputOrParam(input, gen));
@@ -37499,16 +37469,6 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        const input = this.node.inputs[0];
-
-        // if (!this.node.enabled)
-        // {
-        //     return input.connected
-        //          ? input.connectedOutput.genRequest(gen)
-        //          : [];
-        // }
-
-
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
@@ -37521,6 +37481,8 @@ extends OperatorBase
         const paramIds = [];
         
         
+        const input = this.node.inputs[0];
+
         if (input.connected)
         {
             request.push(...pushInputOrParam(input, gen));
@@ -38611,8 +38573,8 @@ extends Action
             : [];
 
 
-        this.oldOutputActiveNodeId = idFromNode(getActiveNodeInTreeFromNodeId(this.outputNodeId));
-        this.oldInputActiveNodeIds = getActiveNodesRightInTreeFromNodeId(this.inputNodeId).map(n => n.id);
+        this.oldOutputActiveNodeId = idFromNode(activeFromNodeId(this.outputNodeId));
+        this.oldInputActiveNodeIds = activeNodesRightFromNodeId(this.inputNodeId).map(n => n.id);
 
 
         uiConnect(
@@ -38627,7 +38589,7 @@ extends Action
 
         
         if (    this.oldOutputNode
-            && !getActiveNodeInTreeFromNode(this.oldOutputNode))
+            && !activeFromNode(this.oldOutputNode))
         {
             uiMakeNodeActive(this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
@@ -38822,7 +38784,7 @@ extends Action
         this.oldActiveNodeIds = [];
 
         for (const nodeId of this.nodeIds)
-            pushUnique(this.oldActiveNodeIds, getActiveNodesInTreeFromNodeId(nodeId).map(n => n.id));
+            pushUnique(this.oldActiveNodeIds, activeNodesFromNodeId(nodeId).map(n => n.id));
         
 
         for (const nodeId of this.nodeIds)
@@ -38984,9 +38946,9 @@ extends Action
         uiDisconnect(input);
 
 
-        const activeLeft     = getActiveNodeLeftInTreeFromNode(output.node);
-        const activeLeftOnly = getActiveNodeLeftOnlyInTreeFromNode(output.node);
-        const activeRight    = getActiveNodeRightInTreeFromNode(input.node);
+        const activeLeft     = activeLeftFromNode(output.node);
+        const activeLeftOnly = activeLeftOnlyFromNode(output.node);
+        const activeRight    = activeRightFromNode(input.node);
 
 
         if (  !activeLeftOnly
@@ -39050,22 +39012,22 @@ extends Action
 
     do()
     {
-        this.oldActiveNodeIds = [...getActiveNodesInTreeFromNodeId(this.inputNodeId).map(n => n.id)];
+        this.oldActiveNodeIds = [...activeNodesFromNodeId(this.inputNodeId).map(n => n.id)];
 
 
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
         this.inputNode.invalidate();
         
 
-        if (!getActiveNodeInTreeFromNode(this.inputNode))
+        if (!activeFromNode(this.inputNode))
         {
             uiMakeNodeActive(this.inputNode);
             this.newActiveNodeIds.push(this.inputNodeId);
         }
 
 
-        if (   !getActiveNodeLeftOnlyInTreeFromNode(this.outputNode)
-            && !getActiveNodeRightInTreeFromNode(this.outputNode))
+        if (   !activeLeftOnlyFromNode(this.outputNode)
+            && !activeRightFromNode(this.outputNode))
         {
             uiMakeNodeActive(this.outputNode);
             this.newActiveNodeIds.push(this.outputNodeId);
@@ -39111,11 +39073,11 @@ extends Action
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
         
 
-        if (!getActiveNodeInTreeFromNode(this.inputNode))
+        if (!activeFromNode(this.inputNode))
             uiMakeNodeActive(this.inputNode);
 
-        if (   !getActiveNodeLeftOnlyInTreeFromNode(this.outputNode)
-            && !getActiveNodeRightInTreeFromNode(this.outputNode))
+        if (   !activeLeftOnlyFromNode(this.outputNode)
+            && !activeRightFromNode(this.outputNode))
             uiMakeNodeActive(this.outputNode);
 
 
@@ -39242,7 +39204,7 @@ extends Action
 
     do()
     {
-        this.oldActiveNodeIds = [...getActiveNodesInTreeFromNodeId(this.activeId).map(n => n.id)]; 
+        this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.activeId).map(n => n.id)]; 
 
         uiMakeNodeActive(nodeFromId(this.activeId));
 
@@ -39308,7 +39270,7 @@ extends Action
         this.oldActiveNodeIds = [];
 
         for (const nodeId of this.prevSelectedNodeIds)
-            pushUnique(this.oldActiveNodeIds, getActiveNodesInTreeFromNodeId(nodeId).map(n => n.id));
+            pushUnique(this.oldActiveNodeIds, activeNodesFromNodeId(nodeId).map(n => n.id));
 
 
         const nodes = uiPasteNodes(this.copiedNodesJson, /*this.pasteOutsideConnections, */this.x, this.y);
@@ -39436,8 +39398,8 @@ extends Action
         this.inputNodeId           = input.node.id;
         this.inputIndex            = input.index;
 
-        this.oldOutputActiveNodeId = getActiveNodeInTreeFromNodeId(this.outputNodeId).id;
-        this.oldInputActiveNodeIds = [...getActiveNodesInTreeFromNodeId(this.inputNodeId).map(n => n.id)];
+        this.oldOutputActiveNodeId = activeFromNodeId(this.outputNodeId).id;
+        this.oldInputActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
     }
 
 
@@ -39455,7 +39417,7 @@ extends Action
 
         this.newActiveNodeIds = [];
 
-        if (!getActiveNodeInTreeFromNode(this.oldOutputNode))
+        if (!activeFromNode(this.oldOutputNode))
         {
             uiMakeNodeActive(this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
@@ -40877,7 +40839,7 @@ function finishLoadingNodes(_nodes, loadedNodes, duplicates = false)
         .map(_n => nodeFromId(duplicates ? _n.newId : _n.id))
         .forEach(n => n.makeActive());
 
-    // validateActiveNodesInTrees(loadedNodes);
+    // validateActiveNodess(loadedNodes);
 
     loadedNodes.forEach(n => n.updateNode());
     graphView.updateNodeTransforms(loadedNodes);
@@ -41932,7 +41894,7 @@ function uiPasteNodes(nodesJson, /*pasteOutsideConnections, */x, y)
         const terminals = [];
 
         for (const node of nodes)
-            pushUnique(terminals, getTerminalsAfterNode(node));
+            pushUnique(terminals, terminalsAfterNode(node));
 
         terminals.forEach(n => n.makeActive());
     }
@@ -42131,14 +42093,18 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
 function uiToggleDisableNodes(nodes)
 {
+    const update = [];
+
     nodes.forEach(n => 
     {
         n.enabled = !n.enabled;
-        n.updateNode();
 
         if (!n.enabled)
-            uiDeleteObjects([n.id]);
+            pushUnique(update, n.id);
     });
+
+
+    update.forEach(_id => uiDeleteObjects([activeRightFromNode(nodeFromId(_id)).id]));
 
 
     uiSaveNodes(nodes.map(n => n.id));

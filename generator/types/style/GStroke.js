@@ -41,9 +41,6 @@ extends GShapeBase
         if (this.valid)
             return;
 
-        // if (!this.options.enabled)
-        //     return this.input;
-
 
         if (this.input)
         {
@@ -81,49 +78,51 @@ extends GShapeBase
 
     evalObjects()
     {
-        if (   !this.objects
-            || !this.options.enabled)
+        if (!this.objects)
             return;
 
 
-        const rgb = scaleRgb(this.fill.color.toValue().toRgb());
-
-        for (const obj of this.objects)
+        if (this.options.enabled)
         {
-            if (!obj.strokes)
-                obj.strokes = [];
+            const rgb = scaleRgb(this.fill.color.toValue().toRgb());
 
-            obj.strokes.push([
-                'SOLID', 
-                        rgb[0]
-                + ' ' + rgb[1]
-                + ' ' + rgb[2]
-                + ' ' + this.fill.opacity.toValue().value]);
+            for (const obj of this.objects)
+            {
+                if (!obj.strokes)
+                    obj.strokes = [];
+
+                obj.strokes.push([
+                    'SOLID', 
+                            rgb[0]
+                    + ' ' + rgb[1]
+                    + ' ' + rgb[2]
+                    + ' ' + this.fill.opacity.toValue().value]);
 
 
-            if (this.weight)
-                obj.strokeWeight = this.weight.toValue().value;
+                if (this.weight)
+                    obj.strokeWeight = this.weight.toValue().value;
 
-            if (this.fit)
-                switch (this.fit.toValue().value)
-                {
-                    case 0: obj.strokeAlign = 'INSIDE';  break;
-                    case 1: obj.strokeAlign = 'CENTER';  break;
-                    case 2: obj.strokeAlign = 'OUTSIDE'; break;
-                }
+                if (this.fit)
+                    switch (this.fit.toValue().value)
+                    {
+                        case 0: obj.strokeAlign = 'INSIDE';  break;
+                        case 1: obj.strokeAlign = 'CENTER';  break;
+                        case 2: obj.strokeAlign = 'OUTSIDE'; break;
+                    }
 
-            if (this.join)
-                switch (this.join.toValue().value)
-                {
-                    case 0: obj.strokeJoin = 'MITER'; break;
-                    case 1: obj.strokeJoin = 'BEVEL'; break;
-                    case 2: obj.strokeJoin = 'ROUND'; break;
-                }
+                if (this.join)
+                    switch (this.join.toValue().value)
+                    {
+                        case 0: obj.strokeJoin = 'MITER'; break;
+                        case 1: obj.strokeJoin = 'BEVEL'; break;
+                        case 2: obj.strokeJoin = 'ROUND'; break;
+                    }
 
-            if (this.miter)
-                obj.strokeMiterLimit = this.miter.toValue().value;
+                if (this.miter)
+                    obj.strokeMiterLimit = this.miter.toValue().value;
+            }
         }
-
+        
         
         super.evalObjects();
     }

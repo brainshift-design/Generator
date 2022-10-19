@@ -736,7 +736,7 @@ function uiPasteNodes(nodesJson, /*pasteOutsideConnections, */x, y)
         const terminals = [];
 
         for (const node of nodes)
-            pushUnique(terminals, getTerminalsAfterNode(node));
+            pushUnique(terminals, terminalsAfterNode(node));
 
         terminals.forEach(n => n.makeActive());
     }
@@ -935,14 +935,18 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
 function uiToggleDisableNodes(nodes)
 {
+    const update = [];
+
     nodes.forEach(n => 
     {
         n.enabled = !n.enabled;
-        n.updateNode();
 
         if (!n.enabled)
-            uiDeleteObjects([n.id]);
+            pushUnique(update, n.id);
     });
+
+
+    update.forEach(_id => uiDeleteObjects([activeRightFromNode(nodeFromId(_id)).id]));
 
 
     uiSaveNodes(nodes.map(n => n.id));

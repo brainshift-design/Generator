@@ -18,7 +18,7 @@ extends Action
 
     do()
     {
-        this.oldActiveNodeIds = [...getActiveNodesInTreeFromNodeId(this.activeId).map(n => n.id)]; 
+        this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.activeId).map(n => n.id)]; 
 
         uiMakeNodeActive(nodeFromId(this.activeId));
 

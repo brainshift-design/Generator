@@ -68,25 +68,26 @@ extends GShapeBase
 
     evalObjects()
     {
-        if (   !this.objects
-            || !this.options.enabled)
+        if (!this.objects)
             return;
-
-
-        const rgb = scaleRgb(this.color.toValue().toRgb());
-
         
-        for (const obj of this.objects)
+        
+        if (this.options.enabled)
         {
-            if (!obj.fills) 
-                obj.fills = [];
+            const rgb = scaleRgb(this.color.toValue().toRgb());
 
-            obj.fills.push([
-                'SOLID', 
-                        rgb[0]
-                + ' ' + rgb[1]
-                + ' ' + rgb[2]
-                + ' ' + this.opacity.toValue().toNumber()]);
+            for (const obj of this.objects)
+            {
+                if (!obj.fills) 
+                    obj.fills = [];
+
+                obj.fills.push([
+                    'SOLID', 
+                            rgb[0]
+                    + ' ' + rgb[1]
+                    + ' ' + rgb[2]
+                    + ' ' + this.opacity.toValue().toNumber()]);
+            }
         }
 
         
