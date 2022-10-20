@@ -8,19 +8,24 @@ extends Action
     nodePos          = [];
 
     oldConnections   = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
+    newConnections   = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
 
     newActiveNodeIds = [];
     oldActiveNodeIds = [];
 
+    connectThrough;
 
 
-    constructor(nodeIds)
+
+    constructor(nodeIds, connectThrough)
     {
         super('DELETE ' + nodeIds.length + ' ' + countToString(nodeIds, 'node'));
 
         this.nodeIds         = [...nodeIds]; // clone the array
         this.nodes           = nodeIds.map(id => nodeFromId(id));
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
+
+        this.connectThrough  = connectThrough;
     }
 
 
@@ -60,6 +65,30 @@ extends Action
             for (const output of node.outputs)
                 for (const input of output.connectedInputs)
                     this.addConnection(input.connection);
+
+            if (   this.connectThrough
+                && node.inputs .filter(i => !i.param).length == 1
+                && node.outputs.filter(o => !o.param).length == 1
+                && node.inputs [0].connected
+                && node.outputs[0].connected)
+            {
+                const input  = node.inputs [0];
+                const output = node.outputs[0];
+
+                for (const connectedInput of output.connectedInputs)
+                {
+                    if (arraysIntersect(input.connectedOutput.types, connectedInput.types))
+                    {
+                        this.newConnections.push(
+                        {
+                            outputNodeId: input.connectedOutput.node.id,
+                            outputIndex:  input.connectedOutput.index,
+                             inputNodeId: connectedInput.node.id,
+                             inputIndex:  connectedInput.index
+                        });
+                    }
+                }
+            }
         }
 
 
@@ -102,8 +131,15 @@ extends Action
             }
         }
 
-        
+
         uiDeleteNodes(this.nodeIds);
+
+
+        if (this.connectThrough)
+            for (const _conn of this.newConnections)
+                uiConnect(
+                    nodeFromId(_conn.outputNodeId).outputs[_conn.outputIndex], 
+                    nodeFromId(_conn. inputNodeId). inputs[_conn. inputIndex]);
 
         uiSaveNodes(this.newActiveNodeIds);
        
@@ -114,8 +150,13 @@ extends Action
 
     undo()
     {
+        for (const _conn of this.newConnections)
+            uiDisconnect(nodeFromId(_conn.inputNodeId).inputs[_conn.inputIndex]);
+
+            
         this.restoreNodes();
         this.restoreConns();
+        
 
         this.nodePos     = [];
         this.oldConnections = [];

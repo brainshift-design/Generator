@@ -375,3 +375,16 @@ function duplicateSelectedNodes(pasteConnected)
         actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), pasteConnected, true));
     }
 }
+
+
+
+function deleteSelectedNodes(connectThrough)
+{
+    const nodeIds = graphView.selectedNodes.map(n => n.id);
+
+    if (nodeIds.length > 0)
+    {
+        actionManager.do(new DeleteNodesAction(nodeIds, connectThrough));
+        graphView._selected = [];
+    }
+}

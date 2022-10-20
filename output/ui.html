@@ -22895,6 +22895,7 @@ var menuItemGraphPasteConnected;
 var menuItemNodeCopy;
 var menuItemNodeDuplicate;
 var menuItemNodeDuplicateConnected;
+var menuItemNodeRemove;
 var menuItemNodeBringToFront;
 var menuItemNodeSendToBack;
 var menuItemNodeEnableDisable;
@@ -23041,11 +23042,13 @@ function initMenus()
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
-        menuItemNodeCopy               = new MenuItem('Copy',                {shortcut: osCtrl()             + 'C', callback: () => copySelectedNodes() }),
-        menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut: osCtrl()             + 'D', callback: e => { hideAllMenus(); duplicateSelectedNodes(false); }}),
-        menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut: osCtrl() + osShift() + 'D', callback: e => { hideAllMenus(); duplicateSelectedNodes(true ); }}),
+        menuItemNodeCopy               = new MenuItem('Copy',                {shortcut: osCtrl()             + 'C',  callback: () => copySelectedNodes() }),
+        menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut: osCtrl()             + 'D',  callback: e => { hideAllMenus(); duplicateSelectedNodes(false); }}),
+        menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut: osCtrl() + osShift() + 'D',  callback: e => { hideAllMenus(); duplicateSelectedNodes(true ); }}),
                                          new MenuItem('',                    {separator: true}),
-        menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut: osCtrl() + osShift() + 'E', callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
+        menuItemNodeRemove             = new MenuItem('Remove',              {shortcut: osShift()            + '⌫', callback: e => { hideAllMenus(); deleteSelectedNodes(true); }}),
+                                         new MenuItem('',                    {separator: true}),
+        menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut: osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
 
 
 
@@ -26753,6 +26756,19 @@ function duplicateSelectedNodes(pasteConnected)
     {
         pasteOffset = [0, 0];
         actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), pasteConnected, true));
+    }
+}
+
+
+
+function deleteSelectedNodes(connectThrough)
+{
+    const nodeIds = graphView.selectedNodes.map(n => n.id);
+
+    if (nodeIds.length > 0)
+    {
+        actionManager.do(new DeleteNodesAction(nodeIds, connectThrough));
+        graphView._selected = [];
     }
 }
 
@@ -32907,7 +32923,7 @@ extends OperatorBase
         this.textbox.addEventListener('change', e =>
         {
             if (this.textbox.value.trim() == '')
-                actionManager.do(new DeleteNodesAction([this.id]), true);
+                actionManager.do(new DeleteNodesAction([this.id], false), true);
         });
     }
 
@@ -38787,19 +38803,24 @@ extends Action
     nodePos          = [];
 
     oldConnections   = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
+    newConnections   = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
 
     newActiveNodeIds = [];
     oldActiveNodeIds = [];
 
+    connectThrough;
 
 
-    constructor(nodeIds)
+
+    constructor(nodeIds, connectThrough)
     {
         super('DELETE ' + nodeIds.length + ' ' + countToString(nodeIds, 'node'));
 
         this.nodeIds         = [...nodeIds]; // clone the array
         this.nodes           = nodeIds.map(id => nodeFromId(id));
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
+
+        this.connectThrough  = connectThrough;
     }
 
 
@@ -38839,6 +38860,30 @@ extends Action
             for (const output of node.outputs)
                 for (const input of output.connectedInputs)
                     this.addConnection(input.connection);
+
+            if (   this.connectThrough
+                && node.inputs .filter(i => !i.param).length == 1
+                && node.outputs.filter(o => !o.param).length == 1
+                && node.inputs [0].connected
+                && node.outputs[0].connected)
+            {
+                const input  = node.inputs [0];
+                const output = node.outputs[0];
+
+                for (const connectedInput of output.connectedInputs)
+                {
+                    if (arraysIntersect(input.connectedOutput.types, connectedInput.types))
+                    {
+                        this.newConnections.push(
+                        {
+                            outputNodeId: input.connectedOutput.node.id,
+                            outputIndex:  input.connectedOutput.index,
+                             inputNodeId: connectedInput.node.id,
+                             inputIndex:  connectedInput.index
+                        });
+                    }
+                }
+            }
         }
 
 
@@ -38881,8 +38926,15 @@ extends Action
             }
         }
 
-        
+
         uiDeleteNodes(this.nodeIds);
+
+
+        if (this.connectThrough)
+            for (const _conn of this.newConnections)
+                uiConnect(
+                    nodeFromId(_conn.outputNodeId).outputs[_conn.outputIndex], 
+                    nodeFromId(_conn. inputNodeId). inputs[_conn. inputIndex]);
 
         uiSaveNodes(this.newActiveNodeIds);
        
@@ -38893,8 +38945,13 @@ extends Action
 
     undo()
     {
+        for (const _conn of this.newConnections)
+            uiDisconnect(nodeFromId(_conn.inputNodeId).inputs[_conn.inputIndex]);
+
+            
         this.restoreNodes();
         this.restoreConns();
+        
 
         this.nodePos     = [];
         this.oldConnections = [];
@@ -40269,15 +40326,7 @@ document.addEventListener('keydown', e =>
     // delete / backspace
     else if (   e.key == 'Delete'
              || e.key == 'Backspace')
-    {
-        const nodeIds = graphView.selectedNodes.map(n => n.id);
-
-        if (nodeIds.length > 0)
-        {
-            actionManager.do(new DeleteNodesAction(nodeIds));
-            graphView._selected = [];
-        }
-    }
+        deleteSelectedNodes(e.shiftKey);
 
     // escape
     else if (e.key == 'Escape')

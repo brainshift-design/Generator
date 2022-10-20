@@ -21,7 +21,7 @@ extends OperatorBase
         this.textbox.addEventListener('change', e =>
         {
             if (this.textbox.value.trim() == '')
-                actionManager.do(new DeleteNodesAction([this.id]), true);
+                actionManager.do(new DeleteNodesAction([this.id], false), true);
         });
     }
 
