@@ -8866,7 +8866,13 @@ extends GShapeBase
 
         if (   this.fill
             && COLOR_TYPES.includes(this.fill.type))
-            this.fill = new FillValue(this.fill.toValue(), this.fill.options.opacity.toValue());
+        {
+            this.fill.eval(parse);
+
+            this.fill = new FillValue(
+                this.fill.toValue(), 
+                this.fill.options.opacity.toValue());
+        }
 
 
         const hasInput =     
@@ -21830,7 +21836,13 @@ extends GShapeBase
 
         if (   this.fill
             && COLOR_TYPES.includes(this.fill.type))
-            this.fill = new FillValue(this.fill.toValue(), this.fill.options.opacity.toValue());
+        {
+            this.fill.eval(parse);
+
+            this.fill = new FillValue(
+                this.fill.toValue(), 
+                this.fill.options.opacity.toValue());
+        }
 
 
         const hasInput =     
