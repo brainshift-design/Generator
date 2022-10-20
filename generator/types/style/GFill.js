@@ -51,7 +51,7 @@ extends GShapeBase
 
         if (this.color  ) this.color  .eval(parse); else if (hasInput) this.color   = this.input.color;
         if (this.opacity) this.opacity.eval(parse); else if (hasInput) this.opacity = this.input.opacity;
-console.log('this.opacity =', this.opacity);
+
         if (this.color  ) genPushUpdateValue(parse, this.nodeId, 'color',   this.color  .toValue());
         if (this.opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity.toValue());
 

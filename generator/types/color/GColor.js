@@ -95,7 +95,7 @@ extends GOperator
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
-                    color.space.value),
+                    color.space.toValue().value),
                     colorSpaceCount(parse)-1);
 
                 this.convertColor(

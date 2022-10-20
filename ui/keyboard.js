@@ -19,6 +19,9 @@ document.addEventListener('keydown', e =>
           && getCtrlKey(e)
           && !e.altKey)
     {
+        if (e.shiftKey)
+            e.preventDefault();
+            
         duplicateSelectedNodes(e.shiftKey);
         return false;
     }
