@@ -14,7 +14,7 @@ graphView.startConnectionFromOutput = (pointerId, output, updateTempWire = true)
             graphView.pStart.x, 
             graphView.pStart.y);
     }
-        
+
     output.updateControl();
 };
 

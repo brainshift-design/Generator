@@ -53,27 +53,29 @@ class Output
 
 
 
-    constructor(type, genRequest)
+    constructor(types, genRequest)
     {
-        this.types           = [...type];
-        this.genRequest      = genRequest;
+        this.types      = [...types];
+        this.genRequest = genRequest;
 
-        this.div         = createDiv('output');
-        this.hitbox          = createDiv('outputHitbox');
-        this.wireBall        = createDiv('outputBall');
+        this.div        = createDiv('output');
+        this.hitbox     = createDiv('outputHitbox');
+        this.wireBall   = createDiv('outputBall');
         
-        this.div.output  = this;
+        this.div.output = this;
         
         
+        this.colorLight = [0, 0, 0, 1];
+        this.colorDark  = [1, 1, 1, 1];
+
+        this.wireColor  = rgbHeaderFromType(this.types[0], true);
+        
+
         this.div.appendChild(this.hitbox);
         this.div.appendChild(this.wireBall);
 
-        this.colorLight      = [0, 0, 0, 1];
-        this.colorDark       = [1, 1, 1, 1];
 
-        this.wireColor       = rgbHeaderFromType(this.type, true);
-        
-        this.updateControl();
+        //        this.updateControl();
 
         
         //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
@@ -187,6 +189,7 @@ class Output
                       && !graphView.tempConn.output)
                && !(    graphView.tempConn.input
                     && !graphView.tempConn.input.types.includes(this.type));
+
 
         show(this.wireBall, isConnected);
     }
