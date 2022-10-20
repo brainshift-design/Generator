@@ -89,11 +89,12 @@ extends EventTarget
         this.types            = [...types];
         this.getValuesForUndo = getValuesForUndo;
 
-        this.div          = createDiv('input');
+        this.div              = createDiv('input');
         this.hitbox           = createDiv('inputHitbox');
         this.wireBall         = createDiv('inputBall');
         
-        this.div.input    = this;
+        this.div.input        = this;
+        
         
         this.colorLight       = [0, 0, 0, 1];
         this.colorDark        = [1, 1, 1, 1];

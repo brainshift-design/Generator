@@ -42,8 +42,8 @@ extends GOperator
 
 
 
-    // toValue()
-    // {
-    //     return this.node[this.paramId].toValue();
-    // }
+    toValue()
+    {
+        return this.node[this.paramId].toValue();
+    }
 }
