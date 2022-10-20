@@ -6,7 +6,7 @@ extends GValue
 
 
 
-    constructor(color   = ColorValue .NaN, 
+    constructor(color   = ColorValue.NaN, 
                 opacity = new NumberValue(100))
     {
         super(FILL_VALUE);

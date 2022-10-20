@@ -76,7 +76,7 @@ function genParseFillParam(parse)
     const fill = genParse(parse); 
 
     if (COLOR_TYPES.includes(fill.type))
-        fill.data.opacity = genParse(parse);
+        fill.options.opacity = genParse(parse);
 
     return fill;
 }

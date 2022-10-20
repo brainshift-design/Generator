@@ -48,6 +48,12 @@ extends GShapeBase
             this.objects = clone(this.input.objects);
         }
 
+
+        if (   this.fill
+            && COLOR_TYPES.includes(this.fill.type))
+            this.fill = new FillValue(this.fill.toValue(), this.fill.options.opacity.toValue());
+
+
         const hasInput =     
                this.input 
             && STROKE_TYPES.includes(this.input.type);   

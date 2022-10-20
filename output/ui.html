@@ -5610,7 +5610,7 @@ extends GValue
 
 
 
-    constructor(color   = ColorValue .NaN, 
+    constructor(color   = ColorValue.NaN, 
                 opacity = new NumberValue(100))
     {
         super(FILL_VALUE);
@@ -8863,6 +8863,12 @@ extends GShapeBase
             this.objects = clone(this.input.objects);
         }
 
+
+        if (   this.fill
+            && COLOR_TYPES.includes(this.fill.type))
+            this.fill = new FillValue(this.fill.toValue(), this.fill.options.opacity.toValue());
+
+
         const hasInput =     
                this.input 
             && STROKE_TYPES.includes(this.input.type);   
@@ -10328,7 +10334,7 @@ function genParseFillParam(parse)
     const fill = genParse(parse); 
 
     if (COLOR_TYPES.includes(fill.type))
-        fill.data.opacity = genParse(parse);
+        fill.options.opacity = genParse(parse);
 
     return fill;
 }
@@ -18568,7 +18574,7 @@ extends GValue
 
 
 
-    constructor(color   = ColorValue .NaN, 
+    constructor(color   = ColorValue.NaN, 
                 opacity = new NumberValue(100))
     {
         super(FILL_VALUE);
@@ -21820,6 +21826,12 @@ extends GShapeBase
             this.input.eval(parse);
             this.objects = clone(this.input.objects);
         }
+
+
+        if (   this.fill
+            && COLOR_TYPES.includes(this.fill.type))
+            this.fill = new FillValue(this.fill.toValue(), this.fill.options.opacity.toValue());
+
 
         const hasInput =     
                this.input 
@@ -36971,7 +36983,7 @@ extends OpColorBase
 
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
         this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
-        this.addParam(this.paramFit    = new SelectParam('fit',    'fit',    true,  true, true, ['inside', 'edge', 'outside'], 0));
+        this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 0));
         this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
         this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
 
