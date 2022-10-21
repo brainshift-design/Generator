@@ -180,6 +180,13 @@ function lastOf(array)
 
 
 
+function firstOf(array)
+{
+    return array[0];
+}
+
+
+
 function moveInArray(array, from, to) 
 {
     const item = array[from];

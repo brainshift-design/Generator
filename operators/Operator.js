@@ -295,21 +295,40 @@ class Operator
 
     follows(node) 
     { 
-        return this.isOrFollows(node, true); 
+        return this.isOrFollows(node, false); 
     }
 
 
 
-    isOrFollows(node, ignoreIs = false)
+    isOrFollows(node, considerIs = true)
     {
-        if (    this == node
-            && !ignoreIs)
+        if (   this == node
+            && considerIs)
             return true;
-            
+
         for (const input of this.inputs)
         {
             if (   input.connected
                 && input.connectedOutput.node.isOrFollows(node))
+                return true;
+        }
+
+        return false;
+    }
+
+
+
+    immediatelyFollows(node, headerOnly = false)
+    {
+        const inputs = 
+            headerOnly 
+            ? this.inputs.filter(i => !i.param) 
+            : this.inputs;
+
+        for (const input of inputs)
+        {
+            if (   input.connected
+                && input.connectedOutput.node == node)
                 return true;
         }
 

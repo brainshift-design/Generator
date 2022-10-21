@@ -51,6 +51,12 @@ extends Action
             pushUnique(this.oldActiveNodeIds, activeNodesFromNodeId(nodeId).map(n => n.id));
         
 
+        this.newConnections = [];
+
+        if (this.connectThrough)
+            this.prepareReconnections();
+
+
         for (const nodeId of this.nodeIds)
         {
             const node = nodeFromId(nodeId);
@@ -65,30 +71,6 @@ extends Action
             for (const output of node.outputs)
                 for (const input of output.connectedInputs)
                     this.addConnection(input.connection);
-
-            if (   this.connectThrough
-                && node.inputs .filter(i => !i.param).length == 1
-                && node.outputs.filter(o => !o.param).length == 1
-                && node.inputs [0].connected
-                && node.outputs[0].connected)
-            {
-                const input  = node.inputs [0];
-                const output = node.outputs[0];
-
-                for (const connectedInput of output.connectedInputs)
-                {
-                    if (arraysIntersect(input.connectedOutput.types, connectedInput.types))
-                    {
-                        this.newConnections.push(
-                        {
-                            outputNodeId: input.connectedOutput.node.id,
-                            outputIndex:  input.connectedOutput.index,
-                             inputNodeId: connectedInput.node.id,
-                             inputIndex:  connectedInput.index
-                        });
-                    }
-                }
-            }
         }
 
 
@@ -141,9 +123,76 @@ extends Action
                     nodeFromId(_conn.outputNodeId).outputs[_conn.outputIndex], 
                     nodeFromId(_conn. inputNodeId). inputs[_conn. inputIndex]);
 
+
         uiSaveNodes(this.newActiveNodeIds);
        
         pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
+    }
+
+
+
+    prepareReconnections()
+    {
+        let sections     = this.nodeIds.map(n => [nodeFromId(n)]);
+        let firstSection = 0;
+
+        while (true)
+        {
+            let moved = false;
+            
+            for (let i = sections.length-1; i > firstSection; i--)
+            {
+                if (firstOf(sections[i]).immediatelyFollows(lastOf(sections[firstSection]), true))
+                {
+                    sections[firstSection].push(...sections[i]);
+                    moved = true;
+                }
+                else if (lastOf(sections[firstSection]).immediatelyFollows(firstOf(sections[i]), true))
+                {
+                    sections[firstSection] = [...sections[i], sections[firstSection]];
+                    moved = true;
+                }
+                
+                removeAt(sections, i);
+            }
+    
+            firstSection++;
+
+            if (  !moved
+                || firstSection >= sections.length)
+                break;
+        }
+
+
+        for (const sec of sections)
+        {
+            const first = firstOf(sec);
+            const last  = lastOf(sec);
+
+            if (   this.connectThrough
+                && first.inputs .filter(i => !i.param).length == 1
+                &&  last.outputs.filter(o => !o.param).length == 1
+                && first.inputs [0].connected
+                &&  last.outputs[0].connected)
+            {
+                const input  = first.inputs [0];
+                const output =  last.outputs[0];
+
+                for (const connectedInput of output.connectedInputs)
+                {
+                    if (arraysIntersect(input.connectedOutput.types, connectedInput.types))
+                    {
+                        this.newConnections.push(
+                        {
+                            outputNodeId: input.connectedOutput.node.id,
+                            outputIndex:  input.connectedOutput.index,
+                                inputNodeId: connectedInput.node.id,
+                                inputIndex:  connectedInput.index
+                        });
+                    }
+                }
+            }
+        }
     }
 
 
@@ -153,7 +202,7 @@ extends Action
         for (const _conn of this.newConnections)
             uiDisconnect(nodeFromId(_conn.inputNodeId).inputs[_conn.inputIndex]);
 
-            
+
         this.restoreNodes();
         this.restoreConns();
         
