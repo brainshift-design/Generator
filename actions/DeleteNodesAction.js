@@ -207,7 +207,7 @@ extends Action
         this.restoreConns();
         
 
-        this.nodePos     = [];
+        this.nodePos        = [];
         this.oldConnections = [];
 
         graphView.selectByIds(this.prevSelectedIds);
@@ -216,16 +216,17 @@ extends Action
             uiMakeNodePassive(nodeFromId(id));
         
 
+        uiSaveNodes([
+            ...this.nodeIds,
+            ...this.newActiveNodeIds]);//,
+            //...this.oldActiveNodeIds]);
+
+
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         
         uiMakeNodesActive(oldActiveNodeIds.map(id => nodeFromId(id)));
-    
-
-        uiSaveNodes([
-            ...this.newActiveNodeIds,
-            ...this.oldActiveNodeIds]);
     }
 
 

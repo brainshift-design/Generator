@@ -461,6 +461,8 @@ function uiDeleteNodes(nodeIds)
 
 function uiDeleteObjects(nodeIds)
 {
+    console.trace();
+
     uiQueueMessageToFigma({
         cmd:    'figDeleteObjects',
         nodeIds: nodeIds
@@ -589,11 +591,8 @@ function uiMakeNodesActive(nodes)
 
     for (const node of nodes)
     {
+        pushUnique(graphView.activeNodes, node);
         node._active = true;
-
-        if (!graphView.activeNodes.includes(node))
-            graphView.activeNodes.push(node);
-
         node.updateNode();
     }
 
@@ -610,8 +609,6 @@ function uiMakeNodePassive(node)
 
     node.makePassive();
     node.updateNode();
-
-    uiDeleteObjects([node.id]);
 
     uiSaveNodes([node.id]);
 }
