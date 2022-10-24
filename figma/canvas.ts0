@@ -24,7 +24,9 @@ function figUpdateObjects(msg)
             curNodeId  = genObj.nodeId;
             
             figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
-            if (!figObjects) figObjectArrays.push(figObjects = {nodeId: genObj.nodeId, objects: []});
+
+            if (!figObjects) 
+                figObjectArrays.push(figObjects = {nodeId: genObj.nodeId, objects: []});
         }
 
         const figObj = figObjects[genObj.id];

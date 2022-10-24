@@ -5105,7 +5105,7 @@ class GValue
 
     options = {};
 
-    data = {}; // for type conversion info
+    data    = {}; // for type conversion info
 
 
 
@@ -18082,7 +18082,7 @@ class GValue
 
     options = {};
 
-    data = {}; // for type conversion info
+    data    = {}; // for type conversion info
 
 
 
@@ -31359,6 +31359,17 @@ class Operator
 
 
 
+    createInputForObjects(types, getValuesForUndo)
+    {
+        const input = new Input(types, getValuesForUndo);
+
+        input.addEventListener('disconnect', () => uiDeleteObjects([this.id]));
+
+        return input;
+    }
+
+
+
     getAutoInput(outTypes)
     {
         const inputs = this.inputs.filter(i => i.types.find(_i => outTypes.includes(_i)));
@@ -36769,7 +36780,7 @@ extends OpColorBase
         this.inner.insertBefore(this.checkers, this.header);
 
 
-        this.addInput (new Input([...FILL_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
+        this.addInput (this.createInputForObjects([...FILL_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
         this.addOutput(new Output([FILL], this.output_genRequest));
 
 
@@ -37038,8 +37049,10 @@ extends OpColorBase
         this.colorBack = createDiv('colorBack');
         this.inner.appendChild(this.colorBack);
 
-        this.addInput (new Input([...STROKE_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
+        this.addInput (this.createInputForObjects([...STROKE_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
         this.addOutput(new Output([STROKE], this.output_genRequest));
+
+        this.inputs[0].addEventListener('disconnect', () => uiDeleteObjects([this.id]));
 
 
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
@@ -37530,7 +37543,7 @@ extends OperatorBase
         super(RECTANGLE, 'rect', 100);
 
 
-        this.addInput (new Input([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
+        this.addInput (this.createInputForObjects([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([RECTANGLE], this.output_genRequest));
 
 
@@ -38995,7 +39008,7 @@ extends Action
         for (const sec of sections)
         {
             const first = firstOf(sec);
-            const last  = lastOf(sec);
+            const last  =  lastOf(sec);
 
             if (   this.connectThrough
                 && first.inputs .filter(i => !i.param).length == 1
@@ -39048,8 +39061,7 @@ extends Action
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         
-        for (const id of oldActiveNodeIds)
-            uiMakeNodesActive(oldActiveNodeIds.map(id => nodeFromId(id)));
+        uiMakeNodesActive(oldActiveNodeIds.map(id => nodeFromId(id)));
     
 
         uiSaveNodes([

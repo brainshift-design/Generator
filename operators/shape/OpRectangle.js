@@ -15,7 +15,7 @@ extends OperatorBase
         super(RECTANGLE, 'rect', 100);
 
 
-        this.addInput (new Input([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
+        this.addInput (this.createInputForObjects([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([RECTANGLE], this.output_genRequest));
 
 

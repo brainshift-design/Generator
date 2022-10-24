@@ -167,7 +167,7 @@ extends Action
         for (const sec of sections)
         {
             const first = firstOf(sec);
-            const last  = lastOf(sec);
+            const last  =  lastOf(sec);
 
             if (   this.connectThrough
                 && first.inputs .filter(i => !i.param).length == 1
@@ -220,8 +220,7 @@ extends Action
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         
-        for (const id of oldActiveNodeIds)
-            uiMakeNodesActive(oldActiveNodeIds.map(id => nodeFromId(id)));
+        uiMakeNodesActive(oldActiveNodeIds.map(id => nodeFromId(id)));
     
 
         uiSaveNodes([

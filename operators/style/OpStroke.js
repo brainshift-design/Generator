@@ -28,8 +28,10 @@ extends OpColorBase
         this.colorBack = createDiv('colorBack');
         this.inner.appendChild(this.colorBack);
 
-        this.addInput (new Input([...STROKE_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
+        this.addInput (this.createInputForObjects([...STROKE_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
         this.addOutput(new Output([STROKE], this.output_genRequest));
+
+        this.inputs[0].addEventListener('disconnect', () => uiDeleteObjects([this.id]));
 
 
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));

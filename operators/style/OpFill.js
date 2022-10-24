@@ -29,7 +29,7 @@ extends OpColorBase
         this.inner.insertBefore(this.checkers, this.header);
 
 
-        this.addInput (new Input([...FILL_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
+        this.addInput (this.createInputForObjects([...FILL_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
         this.addOutput(new Output([FILL], this.output_genRequest));
 
 

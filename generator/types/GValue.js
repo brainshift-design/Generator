@@ -7,7 +7,7 @@ class GValue
 
     options = {};
 
-    data = {}; // for type conversion info
+    data    = {}; // for type conversion info
 
 
 

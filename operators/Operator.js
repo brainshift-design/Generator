@@ -151,6 +151,17 @@ class Operator
 
 
 
+    createInputForObjects(types, getValuesForUndo)
+    {
+        const input = new Input(types, getValuesForUndo);
+
+        input.addEventListener('disconnect', () => uiDeleteObjects([this.id]));
+
+        return input;
+    }
+
+
+
     getAutoInput(outTypes)
     {
         const inputs = this.inputs.filter(i => i.types.find(_i => outTypes.includes(_i)));
