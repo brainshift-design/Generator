@@ -159,7 +159,7 @@ extends Action
 
         uiSaveNodes(this.newActiveNodeIds);
       
-        pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
+        //pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
     }
 
 

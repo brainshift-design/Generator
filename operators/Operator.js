@@ -783,6 +783,7 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
+    console.trace();
     //console.log('pushUpdateFromParam('+param+')', nodes);
 
     
