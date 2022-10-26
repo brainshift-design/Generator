@@ -42,7 +42,7 @@ extends Action
         this.oldActiveNodeIds = [];
 
         for (const nodeId of this.prevSelectedNodeIds)
-            pushUnique(this.oldActiveNodeIds, activeNodesFromNodeId(nodeId).map(n => n.id));
+            pushUnique(this.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
 
 
         const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y);

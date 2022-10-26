@@ -33,22 +33,25 @@ extends Action
 
     do()
     {
-        this.oldActiveNodeIds = [...activeNodesFromNodeId(this.inputNodeId).map(n => n.id)];
+        this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
+
+        for (const id of this.oldActiveNodeIds)
+            uiDeleteObjects([id]); // clean up now irrelevant objects
 
 
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
         this.inputNode.invalidate();
         
-
-        if (!activeFromNode(this.inputNode))
+        
+        if (!getActiveFromNode(this.inputNode))
         {
             uiMakeNodeActive(this.inputNode);
             this.newActiveNodeIds.push(this.inputNodeId);
         }
 
 
-        if (   !activeLeftOnlyFromNode(this.outputNode)
-            && !activeRightFromNode(this.outputNode))
+        if (   !getActiveLeftOnlyFromNode(this.outputNode)
+            && !getActiveRightFromNode(this.outputNode))
         {
             uiMakeNodeActive(this.outputNode);
             this.newActiveNodeIds.push(this.outputNodeId);
@@ -71,7 +74,10 @@ extends Action
             this. inputNode, this. inputIndex);
 
         for (const id of this.newActiveNodeIds)
+        {
             uiMakeNodePassive(nodeFromId(id));
+            uiDeleteObjects([id]); // clean up now irrelevant objects
+        }
 
 
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
@@ -85,27 +91,5 @@ extends Action
 
 
         this.inputNode.updateNode();
-    }
-    
-    
-    
-    redo()
-    {
-        uiDisconnect(this.inputNode.inputs[this.inputIndex]);
-        
-
-        if (!activeFromNode(this.inputNode))
-            uiMakeNodeActive(this.inputNode);
-
-        if (   !activeLeftOnlyFromNode(this.outputNode)
-            && !activeRightFromNode(this.outputNode))
-            uiMakeNodeActive(this.outputNode);
-
-
-        this.outputNode.updateNode();
-        this.inputNode .updateNode();
-
-
-        pushUpdate([this.inputNode]);
     }
 }

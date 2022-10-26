@@ -53,8 +53,8 @@ extends Action
         this.inputNodeId           = input.node.id;
         this.inputIndex            = input.index;
 
-        this.oldOutputActiveNodeId = activeFromNodeId(this.outputNodeId).id;
-        this.oldInputActiveNodeIds = [...activeNodesFromNodeId(this.inputNodeId).map(n => n.id)];
+        this.oldOutputActiveNodeId = getActiveFromNodeId(this.outputNodeId).id;
+        this.oldInputActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
     }
 
 
@@ -72,7 +72,7 @@ extends Action
 
         this.newActiveNodeIds = [];
 
-        if (!activeFromNode(this.oldOutputNode))
+        if (!getActiveFromNode(this.oldOutputNode))
         {
             uiMakeNodeActive(this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);

@@ -57,8 +57,12 @@ extends Action
             : [];
 
 
-        this.oldOutputActiveNodeId = idFromNode(activeFromNodeId(this.outputNodeId));
-        this.oldInputActiveNodeIds = activeNodesRightFromNodeId(this.inputNodeId).map(n => n.id);
+        this.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(this.outputNodeId));
+        this.oldInputActiveNodeIds = getActiveNodesRightFromNodeId(this.inputNodeId).map(n => n.id);
+
+
+        for (const id of [this.oldOutputActiveNodeId, ...this.oldInputActiveNodeIds]) 
+            uiDeleteObjects([id]); // clean up now irrelevant objects
 
 
         uiConnect(
@@ -73,7 +77,7 @@ extends Action
 
         
         if (    this.oldOutputNode
-            && !activeFromNode(this.oldOutputNode))
+            && !getActiveFromNode(this.oldOutputNode))
         {
             uiMakeNodeActive(this.oldOutputNode);
             this.newActiveNodeIds.push(this.oldOutputNodeId);
@@ -88,8 +92,13 @@ extends Action
         oldInputActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         for (const id of oldInputActiveNodeIds)
+        {
             uiMakeNodeActive(nodeFromId(id));
+            this.newActiveNodeIds.push(id);
+        }
 
+
+        pushUpdate(oldInputActiveNodeIds.map(id => nodeFromId(id)));
 
         updateNodes.forEach(n => n.updateNode());
     }
@@ -98,6 +107,7 @@ extends Action
 
     undo()
     {
+
         uiDisconnect(this.inputNode.inputs[this.inputIndex]);
 
 
@@ -121,17 +131,22 @@ extends Action
 
         const updateNodes = [];
 
+
         for (const id of this.newActiveNodeIds)
         {
             const node = nodeFromId(id);
             uiMakeNodePassive(node);
         }
+console.log('this.newActiveNodeIds =', this.newActiveNodeIds);
+        uiDeleteObjects(this.newActiveNodeIds); // clean up now irrelevant objects
+
 
         for (const id of this.oldInputActiveNodeIds)
         {
             const node = nodeFromId(id);
             uiMakeNodeActive(node);
         }
+
 
         if (!this.oldInputActiveNodeIds.includes(this.oldOutputActiveNodeId))
         {

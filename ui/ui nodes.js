@@ -461,7 +461,7 @@ function uiDeleteNodes(nodeIds)
 
 function uiDeleteObjects(nodeIds)
 {
-    console.trace();
+    //console.trace();
 
     uiQueueMessageToFigma({
         cmd:    'figDeleteObjects',
@@ -733,7 +733,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y)
         const terminals = [];
 
         for (const node of nodes)
-            pushUnique(terminals, terminalsAfterNode(node));
+            pushUnique(terminals, getTerminalsAfterNode(node));
 
         terminals.forEach(n => n.makeActive());
     }
@@ -812,6 +812,43 @@ function uiUpdateGraph()
 
         uiUpdateNodes(deferNodes);
     }
+}
+
+
+
+function findConnectedClusters(nodes)
+{
+    let clusters = [...nodes];
+    let first    = 0;
+
+    while (true)
+    {
+        let moved = false;
+        
+        for (let i = clusters.length-1; i > first; i--)
+        {
+            if (firstOf(clusters[i]).immediatelyFollows(lastOf(clusters[first]), true))
+            {
+                clusters[first].push(...clusters[i]);
+                moved = true;
+            }
+            else if (lastOf(clusters[first]).immediatelyFollows(firstOf(clusters[i]), true))
+            {
+                clusters[first] = [...clusters[i], clusters[first]];
+                moved = true;
+            }
+            
+            removeAt(clusters, i);
+        }
+
+        first++;
+
+        if (  !moved
+            || first >= clusters.length)
+            break;
+    }
+
+    return clusters;
 }
 
 
@@ -943,7 +980,7 @@ function uiToggleDisableNodes(nodes)
     });
 
 
-    update.forEach(_id => uiDeleteObjects([activeRightFromNode(nodeFromId(_id)).id]));
+    update.forEach(_id => uiDeleteObjects([getActiveRightFromNode(nodeFromId(_id)).id]));
 
 
     uiSaveNodes(nodes.map(n => n.id));

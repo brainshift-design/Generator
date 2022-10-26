@@ -18,7 +18,7 @@ extends Action
 
     do()
     {
-        this.oldActiveNodeIds = [...activeNodesFromNodeId(this.activeId).map(n => n.id)]; 
+        this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.activeId).map(n => n.id)]; 
         uiDeleteObjects(this.oldActiveNodeIds);
 
         uiMakeNodeActive(nodeFromId(this.activeId));

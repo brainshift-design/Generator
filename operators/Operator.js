@@ -155,7 +155,7 @@ class Operator
     {
         const input = new Input(types, getValuesForUndo);
 
-        input.addEventListener('disconnect', () => uiDeleteObjects([this.id]));
+        //input.addEventListener('disconnect', () => uiDeleteObjects([this.id]));
 
         return input;
     }
@@ -431,7 +431,7 @@ class Operator
 
         if (!ignore)
         {
-            const nextActive   = activeRightFromNode(this);
+            const nextActive   = getActiveRightFromNode(this);
             const beforeActive = nextActive && nextActive.follows(this);
 
             const options =
@@ -808,7 +808,7 @@ function pushUpdateFromParam(nodes, param)
     
     nodes.forEach(n => pushUnique(
         terminals, 
-        terminalsAfterNode(n)));
+        getTerminalsAfterNode(n)));
 
 
     for (const node of terminals)

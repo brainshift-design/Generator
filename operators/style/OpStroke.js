@@ -31,8 +31,6 @@ extends OpColorBase
         this.addInput (this.createInputForObjects([...STROKE_TYPES, ...SHAPE_TYPES], this.input_getValuesForUndo));
         this.addOutput(new Output([STROKE], this.output_genRequest));
 
-        this.inputs[0].addEventListener('disconnect', () => uiDeleteObjects([this.id]));
-
 
         this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
         this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
@@ -127,6 +125,9 @@ extends OpColorBase
             ? [...this.inputs[0].connectedOutput.types, STROKE]
             : [STROKE];
 
+        // if (!this.inputs[0].connected
+        //     && 
+        // input.addEventListener('disconnect', () => uiDeleteObjects([this.id]));
 
         super.updateValues(updateParamId, paramIds, values);
     }
