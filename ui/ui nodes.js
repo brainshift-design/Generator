@@ -441,7 +441,23 @@ function autoConnectNode(node, insert)
         && inputs.length > 0,
         'cannot auto-connect node');
 
+
+    let connectedInputs = [];
+    
+    if (insert)
+    {
+        connectedInputs = [...selNode.outputs[0].connectedInputs];
+        connectedInputs.forEach(i => actionManager.do(new DisconnectAction(selNode.outputs[0], i), true));
+    }
+
+
     actionManager.do(new ConnectAction(selNode.outputs[0], inputs[0]), true);
+
+    
+    if (insert)
+        connectedInputs.forEach(i => actionManager.do(new ConnectAction(node.outputs[0], i), true));
+
+
     graphView.autoPlaceNewNode(selNode.outputs[0], inputs[0]);
 }
 

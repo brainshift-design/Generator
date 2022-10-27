@@ -44,14 +44,13 @@ extends Action
     prepareReconnections()
     {
         const clusters = findConnectedClusters(this.nodeIds.map(n => nodeFromId(n)));
-        console.log('clusters =', clusters);
 
+        
         for (const cluster of clusters)
         {
             const first = firstOf(cluster);
             const last  =  lastOf(cluster);
-console.log('first =', first);
-console.log('last =', last);
+
             if (   first.inputs .filter(i => !i.param).length == 1
                 &&  last.outputs.filter(o => !o.param).length == 1
                 && first.inputs [0].connected

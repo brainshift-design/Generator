@@ -39663,14 +39663,13 @@ extends Action
     prepareReconnections()
     {
         const clusters = findConnectedClusters(this.nodeIds.map(n => nodeFromId(n)));
-        console.log('clusters =', clusters);
 
+        
         for (const cluster of clusters)
         {
             const first = firstOf(cluster);
             const last  =  lastOf(cluster);
-console.log('first =', first);
-console.log('last =', last);
+
             if (   first.inputs .filter(i => !i.param).length == 1
                 &&  last.outputs.filter(o => !o.param).length == 1
                 && first.inputs [0].connected
@@ -42063,7 +42062,23 @@ function autoConnectNode(node, insert)
         && inputs.length > 0,
         'cannot auto-connect node');
 
+
+    let connectedInputs = [];
+    
+    if (insert)
+    {
+        connectedInputs = [...selNode.outputs[0].connectedInputs];
+        connectedInputs.forEach(i => actionManager.do(new DisconnectAction(selNode.outputs[0], i), true));
+    }
+
+
     actionManager.do(new ConnectAction(selNode.outputs[0], inputs[0]), true);
+
+    
+    if (insert)
+        connectedInputs.forEach(i => actionManager.do(new ConnectAction(node.outputs[0], i), true));
+
+
     graphView.autoPlaceNewNode(selNode.outputs[0], inputs[0]);
 }
 
