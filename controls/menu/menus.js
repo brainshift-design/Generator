@@ -242,7 +242,8 @@ function initMenus()
 
     menuGraph.init = () => 
     {
-        menuItemGraphPaste.setEnabled(copiedNodesJson != '');
+        menuItemGraphPaste         .setEnabled(copiedNodesJson != '');
+        menuItemGraphPasteConnected.setEnabled(copiedNodesJson != '');
     };
 
 
