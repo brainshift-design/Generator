@@ -137,7 +137,7 @@ extends Action
             const node = nodeFromId(id);
             uiMakeNodePassive(node);
         }
-console.log('this.newActiveNodeIds =', this.newActiveNodeIds);
+
         uiDeleteObjects(this.newActiveNodeIds); // clean up now irrelevant objects
 
 

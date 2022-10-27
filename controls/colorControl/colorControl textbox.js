@@ -97,7 +97,8 @@ function initColorControlTextbox(control)
             // let text = control.textbox.value;
 
             if (   control.textbox.selectionStart == control.textbox.selectionEnd
-                && control.textbox.selectionStart % 2 == 0)
+                && control.textbox.selectionStart % 2 == 0
+                && control.textbox.selectionStart > 0)
                 control.textbox.selectionStart--;
 
             const iStart =  Math.floor(control.textbox.selectionStart / 2);

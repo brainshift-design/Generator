@@ -25101,7 +25101,8 @@ function initColorControlTextbox(control)
             // let text = control.textbox.value;
 
             if (   control.textbox.selectionStart == control.textbox.selectionEnd
-                && control.textbox.selectionStart % 2 == 0)
+                && control.textbox.selectionStart % 2 == 0
+                && control.textbox.selectionStart > 0)
                 control.textbox.selectionStart--;
 
             const iStart =  Math.floor(control.textbox.selectionStart / 2);
@@ -38778,7 +38779,7 @@ extends Action
             const node = nodeFromId(id);
             uiMakeNodePassive(node);
         }
-console.log('this.newActiveNodeIds =', this.newActiveNodeIds);
+
         uiDeleteObjects(this.newActiveNodeIds); // clean up now irrelevant objects
 
 
