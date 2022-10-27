@@ -645,7 +645,7 @@ div
     background:          url('data:image/svg+xml;utf8,<svg width="8" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.507593 1.22627L1.2469 0.498783L4.01388 3.22151L6.78084 0.498783L7.52015 1.22627L4.01388 4.67648L0.507593 1.22627Z" fill="white"/></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
-    transition:          0.25s;
+    transition:          0.2s;
     /* box-shadow:          0 0 0 1px magenta inset; */
 }
 
@@ -39662,7 +39662,7 @@ extends Action
 
     prepareReconnections()
     {
-        const clusters = findConnectedClusters(this.nodeIds.map(n => [nodeFromId(n)]));
+        const clusters = findConnectedClusters(this.nodeIds.map(n => nodeFromId(n)));
         
         for (const cluster of clusters)
         {
@@ -39702,9 +39702,9 @@ extends Action
             this.clusterActiveRight.push(getActiveRightFromNode(lastOf(cluster), [lastOf(cluster)]));
         }
 
-        // console.log('clusters =', clusters);
-        // console.log('this.clusterActiveLeft =', this.clusterActiveLeft);
-        // console.log('this.clusterActiveRight =', this.clusterActiveRight);
+        console.log('clusters =', clusters);
+        console.log('this.clusterActiveLeft =', this.clusterActiveLeft);
+        console.log('this.clusterActiveRight =', this.clusterActiveRight);
     }
 
 
@@ -42442,7 +42442,7 @@ function uiUpdateGraph()
 
 function findConnectedClusters(nodes)
 {
-    let clusters = [...nodes];
+    let clusters = nodes.map(n => [n]);
     let first    = 0;
 
     while (true)
@@ -42454,15 +42454,15 @@ function findConnectedClusters(nodes)
             if (firstOf(clusters[i]).immediatelyFollows(lastOf(clusters[first]), true))
             {
                 clusters[first].push(...clusters[i]);
+                removeAt(clusters, i);
                 moved = true;
             }
             else if (lastOf(clusters[first]).immediatelyFollows(firstOf(clusters[i]), true))
             {
                 clusters[first] = [...clusters[i], ...clusters[first]];
+                removeAt(clusters, i);
                 moved = true;
             }
-            
-            removeAt(clusters, i);
         }
 
         first++;

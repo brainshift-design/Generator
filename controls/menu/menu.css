@@ -50,7 +50,7 @@
     background:          url('data:image/svg+xml;utf8,<svg width="8" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.507593 1.22627L1.2469 0.498783L4.01388 3.22151L6.78084 0.498783L7.52015 1.22627L4.01388 4.67648L0.507593 1.22627Z" fill="white"/></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
-    transition:          0.25s;
+    transition:          0.2s;
     /* box-shadow:          0 0 0 1px magenta inset; */
 }
 

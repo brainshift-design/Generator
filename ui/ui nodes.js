@@ -818,7 +818,7 @@ function uiUpdateGraph()
 
 function findConnectedClusters(nodes)
 {
-    let clusters = [...nodes];
+    let clusters = nodes.map(n => [n]);
     let first    = 0;
 
     while (true)
@@ -830,15 +830,15 @@ function findConnectedClusters(nodes)
             if (firstOf(clusters[i]).immediatelyFollows(lastOf(clusters[first]), true))
             {
                 clusters[first].push(...clusters[i]);
+                removeAt(clusters, i);
                 moved = true;
             }
             else if (lastOf(clusters[first]).immediatelyFollows(firstOf(clusters[i]), true))
             {
                 clusters[first] = [...clusters[i], ...clusters[first]];
+                removeAt(clusters, i);
                 moved = true;
             }
-            
-            removeAt(clusters, i);
         }
 
         first++;

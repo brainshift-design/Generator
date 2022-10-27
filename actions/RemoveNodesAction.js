@@ -43,7 +43,7 @@ extends Action
 
     prepareReconnections()
     {
-        const clusters = findConnectedClusters(this.nodeIds.map(n => [nodeFromId(n)]));
+        const clusters = findConnectedClusters(this.nodeIds.map(n => nodeFromId(n)));
         
         for (const cluster of clusters)
         {
@@ -83,9 +83,9 @@ extends Action
             this.clusterActiveRight.push(getActiveRightFromNode(lastOf(cluster), [lastOf(cluster)]));
         }
 
-        // console.log('clusters =', clusters);
-        // console.log('this.clusterActiveLeft =', this.clusterActiveLeft);
-        // console.log('this.clusterActiveRight =', this.clusterActiveRight);
+        console.log('clusters =', clusters);
+        console.log('this.clusterActiveLeft =', this.clusterActiveLeft);
+        console.log('this.clusterActiveRight =', this.clusterActiveRight);
     }
 
 
