@@ -401,3 +401,10 @@ function removeSelectedNodes()
         graphView._selected = [];
     }
 }
+
+
+
+function layoutSelectedNodes()
+{
+    
+}

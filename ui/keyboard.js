@@ -59,6 +59,12 @@ document.addEventListener('keydown', e =>
         else            deleteSelectedNodes();
     }
 
+    // select all
+    else if (e.code == 'KeyL'
+          && getCtrlKey(e))
+        layoutSelectedNodes();
+
+
     // escape
     else if (e.key == 'Escape')
     {

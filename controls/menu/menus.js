@@ -101,8 +101,9 @@ var menuItemNodeCopy;
 var menuItemNodeDuplicate;
 var menuItemNodeDuplicateConnected;
 var menuItemNodeRemove;
-var menuItemNodeBringToFront;
-var menuItemNodeSendToBack;
+var menuItemNodeLayout;
+// var menuItemNodeBringToFront;
+// var menuItemNodeSendToBack;
 var menuItemNodeEnableDisable;
 
 
@@ -252,6 +253,8 @@ function initMenus()
         menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut: osCtrl() + osShift() + 'D',  callback: e => { hideAllMenus(); duplicateSelectedNodes(true ); }}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeRemove             = new MenuItem('Remove',              {shortcut: osShift()            + '⌫', callback: e => { hideAllMenus(); removeSelectedNodes(true); }}),
+                                         new MenuItem('',                    {separator: true}),
+        menuItemNodeLayout             = new MenuItem('Layout',              {shortcut: osCtrl()             + 'L',  callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut: osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
 
