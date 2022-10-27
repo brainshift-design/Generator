@@ -834,7 +834,7 @@ function findConnectedClusters(nodes)
             }
             else if (lastOf(clusters[first]).immediatelyFollows(firstOf(clusters[i]), true))
             {
-                clusters[first] = [...clusters[i], clusters[first]];
+                clusters[first] = [...clusters[i], ...clusters[first]];
                 moved = true;
             }
             

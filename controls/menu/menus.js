@@ -54,8 +54,8 @@ var btnZoom;
 var menuMain;
 var menuMainPreferences;
 var menuMainDebug;
-var menuMainDebugLogging;
-var menuMainDebugLoggingRaw;
+var menuMainDebugLog;
+var menuMainDebugLogRaw;
 var menuMainHelp;
 
 var menuNumber;
@@ -117,8 +117,8 @@ function initMenus()
         menuItemDebugMode             = new MenuItem('Debug mode',               {checkCallback: () => settings.debugMode,             callback: () => { updateSettingAndMenu('debugMode',             true, !settings.debugMode            ); menuItemDebug.setVisible(settings.debugMode); }})]);
 
     
-    menuMainDebugLoggingRaw = new Menu('Raw', false);
-    menuMainDebugLoggingRaw.addItems([
+    menuMainDebugLogRaw = new Menu('Raw', false);
+    menuMainDebugLogRaw.addItems([
         menuItemLogRawLoading    = new MenuItem('Raw loading',  {checkCallback: () => settings.logRawLoading , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading )}),
         menuItemLogRawSaving     = new MenuItem('Raw saving',   {checkCallback: () => settings.logRawSaving  , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving  )}),
                                    new MenuItem('',             {separator: true}),
@@ -126,8 +126,8 @@ function initMenus()
         menuItemLogRawValues     = new MenuItem('Raw values',   {checkCallback: () => settings.logRawValues  , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues  )})]);
 
 
-    menuMainDebugLogging = new Menu('Logging', false);
-    menuMainDebugLogging.addItems([
+    menuMainDebugLog = new Menu('Log', false);
+    menuMainDebugLog.addItems([
         menuItemLogMessages      = new MenuItem('Messages', {checkCallback: () => settings.logMessages     , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     )}),
         menuItemLogActions       = new MenuItem('Actions',  {checkCallback: () => settings.logActions      , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      )}),
                                    new MenuItem('',         {separator: true}),
@@ -137,7 +137,7 @@ function initMenus()
         menuItemLogValueUpdates  = new MenuItem('Values',   {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
         menuItemLogObjectUpdates = new MenuItem('Objects',  {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)}),
                                    new MenuItem('',         {separator: true}),
-                                   new MenuItem('Raw',      {childMenu: menuMainDebugLoggingRaw})]);
+                                   new MenuItem('Raw',      {childMenu: menuMainDebugLogRaw})]);
 
 
     menuMainDebug = new Menu('Debug', false);
@@ -160,8 +160,8 @@ function initMenus()
                 graphView.updateShowWires(settings.showWires);  
             }
         }),
-        new MenuItem('',        {separator: true}),
-        new MenuItem('Logging', {childMenu: menuMainDebugLogging})]);
+        new MenuItem('',    {separator: true}),
+        new MenuItem('Log', {childMenu: menuMainDebugLog})]);
 
 
     menuMainHelp = new Menu('Help and activation', false);
@@ -251,7 +251,7 @@ function initMenus()
         menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut: osCtrl()             + 'D',  callback: e => { hideAllMenus(); duplicateSelectedNodes(false); }}),
         menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut: osCtrl() + osShift() + 'D',  callback: e => { hideAllMenus(); duplicateSelectedNodes(true ); }}),
                                          new MenuItem('',                    {separator: true}),
-        menuItemNodeRemove             = new MenuItem('Remove',              {shortcut: osShift()            + '⌫', callback: e => { hideAllMenus(); deleteSelectedNodes(true); }}),
+        menuItemNodeRemove             = new MenuItem('Remove',              {shortcut: osShift()            + '⌫', callback: e => { hideAllMenus(); removeSelectedNodes(true); }}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut: osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
 

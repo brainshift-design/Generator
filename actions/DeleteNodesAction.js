@@ -14,19 +14,14 @@ extends Action
     oldActiveNodeIds = [];
    
 
-    connectThrough;
 
-
-
-    constructor(nodeIds, connectThrough)
+    constructor(nodeIds)
     {
         super('DELETE ' + nodeIds.length + ' ' + countToString(nodeIds, 'node'));
 
         this.nodeIds         = [...nodeIds]; // clone the array
         this.nodes           = nodeIds.map(id => nodeFromId(id));
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
-
-        this.connectThrough  = connectThrough;
     }
 
 
@@ -43,43 +38,6 @@ extends Action
 
 
 
-    prepareReconnections()
-    {
-        const clusters = findConnectedClusters(this.nodeIds.map(n => [nodeFromId(n)]));
-        
-        for (const cluster of clusters)
-        {
-            const first = firstOf(cluster);
-            const last  =  lastOf(cluster);
-
-            if (   this.connectThrough
-                && first.inputs .filter(i => !i.param).length == 1
-                &&  last.outputs.filter(o => !o.param).length == 1
-                && first.inputs [0].connected
-                &&  last.outputs[0].connected)
-            {
-                const input  = first.inputs [0];
-                const output =  last.outputs[0];
-
-                for (const connectedInput of output.connectedInputs)
-                {
-                    if (arraysIntersect(input.connectedOutput.types, connectedInput.types))
-                    {
-                        this.newConnections.push(
-                        {
-                            outputNodeId: input.connectedOutput.node.id,
-                            outputIndex:  input.connectedOutput.index,
-                            inputNodeId:  connectedInput.node.id,
-                            inputIndex:   connectedInput.index
-                        });
-                    }
-                }
-            }
-        }
-    }
-
-
-
     do()
     {
         this.newActiveNodeIds = [];
@@ -92,9 +50,6 @@ extends Action
         
 
         this.newConnections = [];
-
-        if (this.connectThrough)
-            this.prepareReconnections();
 
 
         for (const nodeId of this.nodeIds)

@@ -10,26 +10,21 @@ extends Action
     oldConnections     = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
     newConnections     = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
 
-    // clusterActiveLeft  = [];
-    // clusterActiveRight = [];
+    clusterActiveLeft  = [];
+    clusterActiveRight = [];
     
     newActiveNodeIds   = [];
     oldActiveNodeIds   = [];
-   
-
-    connectThrough;
 
 
 
-    constructor(nodeIds, connectThrough)
+    constructor(nodeIds)
     {
-        super('DELETE ' + nodeIds.length + ' ' + countToString(nodeIds, 'node'));
+        super('REMOVE ' + nodeIds.length + ' ' + countToString(nodeIds, 'node'));
 
         this.nodeIds         = [...nodeIds]; // clone the array
         this.nodes           = nodeIds.map(id => nodeFromId(id));
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
-
-        this.connectThrough  = connectThrough;
     }
 
 
@@ -55,8 +50,7 @@ extends Action
             const first = firstOf(cluster);
             const last  =  lastOf(cluster);
 
-            if (   this.connectThrough
-                && first.inputs .filter(i => !i.param).length == 1
+            if (   first.inputs .filter(i => !i.param).length == 1
                 &&  last.outputs.filter(o => !o.param).length == 1
                 && first.inputs [0].connected
                 &&  last.outputs[0].connected)
@@ -80,15 +74,18 @@ extends Action
             }
         }
 
+        this.clusterActiveLeft  = [];
+        this.clusterActiveRight = [];
 
-        // this.clusterActiveLeft  = [];
-        // this.clusterActiveRight = [];
+        for (const cluster of clusters)
+        {
+            this.clusterActiveLeft .push(getActiveLeftFromNode(firstOf(cluster), [firstOf(cluster)]));
+            this.clusterActiveRight.push(getActiveRightFromNode(lastOf(cluster), [lastOf(cluster)]));
+        }
 
-        // for (const cluster of clusters)
-        // {
-        //     this.clusterActiveLeft .push(getActiveLeftFromNode(firstOf(cluster), [firstOf(cluster)]));
-        //     this.clusterActiveRight.push(getActiveRightFromNode(lastOf(cluster), [lastOf(cluster)]));
-        // }
+        // console.log('clusters =', clusters);
+        // console.log('this.clusterActiveLeft =', this.clusterActiveLeft);
+        // console.log('this.clusterActiveRight =', this.clusterActiveRight);
     }
 
 
@@ -98,17 +95,18 @@ extends Action
         this.newActiveNodeIds = [];
         this.oldActiveNodeIds = [];
 
+
         for (const nodeId of this.nodeIds)
             pushUnique(this.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
-        
-        uiDeleteObjects(this.oldActiveNodeIds); // clean up now irrelevant objects
-        
 
+            
         this.newConnections = [];
 
-        if (this.connectThrough)
-            this.prepareReconnections();
+        this.prepareReconnections();
 
+
+        uiDeleteObjects(this.oldActiveNodeIds); // clean up now irrelevant objects
+        
 
         for (const nodeId of this.nodeIds)
         {
@@ -170,31 +168,23 @@ extends Action
         uiDeleteNodes(this.nodeIds);
 
 
-        // if (this.connectThrough)
-        // {
-        //     for (let i = 0; i < this.newConnections.length; i++)
-        //     {
-        //         const _conn = this.newConnections[i];
-                
-        //         uiConnect(
-        //             nodeFromId(_conn.outputNodeId).outputs[_conn.outputIndex], 
-        //             nodeFromId(_conn. inputNodeId). inputs[_conn. inputIndex]);
+        for (let i = 0; i < this.newConnections.length; i++)
+        {
+            const _conn = this.newConnections[i];
+            
+            uiConnect(
+                nodeFromId(_conn.outputNodeId).outputs[_conn.outputIndex], 
+                nodeFromId(_conn. inputNodeId). inputs[_conn. inputIndex]);
 
-        //         let _active;
-
-        //              if (this.clusterActiveLeft [i]) _active = this.clusterActiveLeft [i];
-        //         else if (this.clusterActiveRight[i]) _active = this.clusterActiveRight[i];
-        //         else                                 _active = nodeFromId(_conn.inputNodeId);
-
-        //         uiMakeNodeActive(_active);
-        //         //pushUpdate([_active]);
-        //     }
-        // }
+                 if (this.clusterActiveLeft [i]) pushUpdate([this.clusterActiveLeft [i]]);
+            else if (this.clusterActiveRight[i]) pushUpdate([this.clusterActiveRight[i]]);
+            else                                 uiMakeNodeActive(nodeFromId(_conn.inputNodeId));
+        }
 
 
         uiSaveNodes(this.newActiveNodeIds);
        
-        pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
+        //pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
     }
 
 
@@ -301,30 +291,30 @@ extends Action
         uiDisconnect(input);
 
 
-        const activeLeft     = getActiveLeftFromNode(output.node);
-        const activeLeftOnly = getActiveLeftOnlyFromNode(output.node);
-        const activeRight    = getActiveRightFromNode(input.node);
+        // const activeLeft     = getActiveLeftFromNode(output.node);
+        // const activeLeftOnly = getActiveLeftOnlyFromNode(output.node);
+        // const activeRight    = getActiveRightFromNode(input.node);
 
 
-        if (  !activeLeftOnly
-            && activeLeft != activeRight)
-        {
-            if (!ignoreNodeIds.includes(output.node.id))
-            {
-                uiMakeNodeActive(output.node);
-                pushUnique(this.newActiveNodeIds, output.node.id);
-            }
+        // if (  !activeLeftOnly
+        //     && activeLeft != activeRight)
+        // {
+        //     if (!ignoreNodeIds.includes(output.node.id))
+        //     {
+        //         uiMakeNodeActive(output.node);
+        //         pushUnique(this.newActiveNodeIds, output.node.id);
+        //     }
 
-            updateNodes.push(output.node);
-        }
+        //     updateNodes.push(output.node);
+        // }
 
 
-        if (   !activeRight
-            && !ignoreNodeIds.includes(input.node.id))
-        {
-            uiMakeNodeActive(input.node);
-            pushUnique(this.newActiveNodeIds, input.node.id);
-        }
+        // if (   !activeRight
+        //     && !ignoreNodeIds.includes(input.node.id))
+        // {
+        //     uiMakeNodeActive(input.node);
+        //     pushUnique(this.newActiveNodeIds, input.node.id);
+        // }
         
 
         return updateNodes;

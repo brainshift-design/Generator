@@ -54,7 +54,10 @@ document.addEventListener('keydown', e =>
     // delete / backspace
     else if (   e.key == 'Delete'
              || e.key == 'Backspace')
-        deleteSelectedNodes(e.shiftKey);
+    {
+        if (e.shiftKey) removeSelectedNodes();
+        else            deleteSelectedNodes();
+    }
 
     // escape
     else if (e.key == 'Escape')

@@ -378,13 +378,26 @@ function duplicateSelectedNodes(pasteConnected)
 
 
 
-function deleteSelectedNodes(connectThrough)
+function deleteSelectedNodes()
 {
     const nodeIds = graphView.selectedNodes.map(n => n.id);
 
     if (nodeIds.length > 0)
     {
-        actionManager.do(new DeleteNodesAction(nodeIds, connectThrough));
+        actionManager.do(new DeleteNodesAction(nodeIds));
+        graphView._selected = [];
+    }
+}
+
+
+
+function removeSelectedNodes()
+{
+    const nodeIds = graphView.selectedNodes.map(n => n.id);
+
+    if (nodeIds.length > 0)
+    {
+        actionManager.do(new RemoveNodesAction(nodeIds));
         graphView._selected = [];
     }
 }
