@@ -398,7 +398,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
     graph.addNode(node, !autoConnect);
     
     if (autoConnect)
-        autoConnectNode(node);
+        autoConnectNode(node, !!options.insert);
     
 
     // uiSaveNodes([node.id]);
@@ -430,7 +430,7 @@ function canAutoConnectNode(node)
 
 
 
-function autoConnectNode(node)
+function autoConnectNode(node, insert)
 {
     const selNode = graph.nodes.find(n => n.selected);
     const inputs  = node.inputs.filter(i => arraysIntersect(i.types, selNode.outputs[0].types));
@@ -821,21 +821,22 @@ function findConnectedClusters(nodes)
     let clusters = nodes.map(n => [n]);
     let first    = 0;
 
+
     while (true)
     {
         let moved = false;
         
         for (let i = clusters.length-1; i > first; i--)
         {
-            if (firstOf(clusters[i]).immediatelyFollows(lastOf(clusters[first]), true))
+            if (firstOf(clusters[i]).immediatelyFollows(lastOf(clusters[i-1]), true))
             {
-                clusters[first].push(...clusters[i]);
+                clusters[i-1].push(...clusters[i]);
                 removeAt(clusters, i);
                 moved = true;
             }
-            else if (lastOf(clusters[first]).immediatelyFollows(firstOf(clusters[i]), true))
+            else if (lastOf(clusters[i-1]).immediatelyFollows(firstOf(clusters[i]), true))
             {
-                clusters[first] = [...clusters[i], ...clusters[first]];
+                clusters[first] = [...clusters[i], ...clusters[i-1]];
                 removeAt(clusters, i);
                 moved = true;
             }
@@ -847,6 +848,7 @@ function findConnectedClusters(nodes)
             || first >= clusters.length)
             break;
     }
+
 
     return clusters;
 }

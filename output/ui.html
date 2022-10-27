@@ -22990,7 +22990,7 @@ function initMenus()
         
     menuNumber = new Menu('Number nodes', true, false);
     menuNumber.addItems([
-        new MenuItem('Number',      {icon: iconNumber     , callback: () => actionManager.do(new CreateNodeAction(NUMBER, btnNumber.div))}),
+        new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(new CreateNodeAction(NUMBER, btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Limits',      {icon: iconLimits     , enabled: false}),
         new MenuItem('Math',        {icon: iconMath       , enabled: false}),
         new MenuItem('Add',         {icon: iconAdd        , enabled: false}),
@@ -23012,7 +23012,7 @@ function initMenus()
     
     menuColor = new Menu('Color nodes', true, false);
     menuColor.addItems([
-        new MenuItem('Color',       {icon: iconColor           , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div))}),
+        new MenuItem('Color',       {icon: iconColor           , callback: e => actionManager.do(new CreateNodeAction(COLOR, btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Validate',    {icon: iconColorValidate   , enabled: false}),
         new MenuItem('Contrast',    {icon: iconColorContrast   , enabled: false}),
         new MenuItem('Colorblind',  {icon: iconColorblind      , enabled: false}),
@@ -23021,14 +23021,14 @@ function initMenus()
     
     menuStyle = new Menu('Style nodes', true, false);
     menuStyle.addItems([
-        new MenuItem('Solid fill', {icon: iconFill  , callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
-        new MenuItem('Stroke',     {icon: iconStroke, callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))}),
+        new MenuItem('Solid fill', {icon: iconFill  , callback: e => actionManager.do(new CreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Stroke',     {icon: iconStroke, callback: e => actionManager.do(new CreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Style',      {icon: iconStyle , enabled:  false})]);
     
     
     menuShape = new Menu('Shape nodes', true, false);
     menuShape.addItems([
-        new MenuItem('Rectangle',  {icon: iconRectangle, callback: () => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div))}),
+        new MenuItem('Rectangle',  {icon: iconRectangle, callback: e => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div, {insert: e.shiftKey}))}),
         new MenuItem('Line',       {icon: iconLine     , enabled: false}),
         new MenuItem('Ellipse',    {icon: iconEllipse  , enabled: false}),
         new MenuItem('Polygon',    {icon: iconPolygon  , enabled: false}),
@@ -39663,12 +39663,14 @@ extends Action
     prepareReconnections()
     {
         const clusters = findConnectedClusters(this.nodeIds.map(n => nodeFromId(n)));
-        
+        console.log('clusters =', clusters);
+
         for (const cluster of clusters)
         {
             const first = firstOf(cluster);
             const last  =  lastOf(cluster);
-
+console.log('first =', first);
+console.log('last =', last);
             if (   first.inputs .filter(i => !i.param).length == 1
                 &&  last.outputs.filter(o => !o.param).length == 1
                 && first.inputs [0].connected
@@ -39701,10 +39703,6 @@ extends Action
             this.clusterActiveLeft .push(getActiveLeftFromNode(firstOf(cluster), [firstOf(cluster)]));
             this.clusterActiveRight.push(getActiveRightFromNode(lastOf(cluster), [lastOf(cluster)]));
         }
-
-        console.log('clusters =', clusters);
-        console.log('this.clusterActiveLeft =', this.clusterActiveLeft);
-        console.log('this.clusterActiveRight =', this.clusterActiveRight);
     }
 
 
@@ -39751,7 +39749,7 @@ extends Action
         {
             const node = nodeFromId(nodeId);
 
-
+            
             const nodeInputs = [...node.inputs.filter(i => i.connected)];
 
             for (let i = nodeInputs.length-1; i >= 0; i--)
@@ -42022,7 +42020,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
     graph.addNode(node, !autoConnect);
     
     if (autoConnect)
-        autoConnectNode(node);
+        autoConnectNode(node, !!options.insert);
     
 
     // uiSaveNodes([node.id]);
@@ -42054,7 +42052,7 @@ function canAutoConnectNode(node)
 
 
 
-function autoConnectNode(node)
+function autoConnectNode(node, insert)
 {
     const selNode = graph.nodes.find(n => n.selected);
     const inputs  = node.inputs.filter(i => arraysIntersect(i.types, selNode.outputs[0].types));
@@ -42445,21 +42443,22 @@ function findConnectedClusters(nodes)
     let clusters = nodes.map(n => [n]);
     let first    = 0;
 
+
     while (true)
     {
         let moved = false;
         
         for (let i = clusters.length-1; i > first; i--)
         {
-            if (firstOf(clusters[i]).immediatelyFollows(lastOf(clusters[first]), true))
+            if (firstOf(clusters[i]).immediatelyFollows(lastOf(clusters[i-1]), true))
             {
-                clusters[first].push(...clusters[i]);
+                clusters[i-1].push(...clusters[i]);
                 removeAt(clusters, i);
                 moved = true;
             }
-            else if (lastOf(clusters[first]).immediatelyFollows(firstOf(clusters[i]), true))
+            else if (lastOf(clusters[i-1]).immediatelyFollows(firstOf(clusters[i]), true))
             {
-                clusters[first] = [...clusters[i], ...clusters[first]];
+                clusters[first] = [...clusters[i], ...clusters[i-1]];
                 removeAt(clusters, i);
                 moved = true;
             }
@@ -42471,6 +42470,7 @@ function findConnectedClusters(nodes)
             || first >= clusters.length)
             break;
     }
+
 
     return clusters;
 }

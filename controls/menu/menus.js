@@ -181,7 +181,7 @@ function initMenus()
         
     menuNumber = new Menu('Number nodes', true, false);
     menuNumber.addItems([
-        new MenuItem('Number',      {icon: iconNumber     , callback: () => actionManager.do(new CreateNodeAction(NUMBER, btnNumber.div))}),
+        new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(new CreateNodeAction(NUMBER, btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Limits',      {icon: iconLimits     , enabled: false}),
         new MenuItem('Math',        {icon: iconMath       , enabled: false}),
         new MenuItem('Add',         {icon: iconAdd        , enabled: false}),
@@ -203,7 +203,7 @@ function initMenus()
     
     menuColor = new Menu('Color nodes', true, false);
     menuColor.addItems([
-        new MenuItem('Color',       {icon: iconColor           , callback: () => actionManager.do(new CreateNodeAction(COLOR, btnColor.div))}),
+        new MenuItem('Color',       {icon: iconColor           , callback: e => actionManager.do(new CreateNodeAction(COLOR, btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Validate',    {icon: iconColorValidate   , enabled: false}),
         new MenuItem('Contrast',    {icon: iconColorContrast   , enabled: false}),
         new MenuItem('Colorblind',  {icon: iconColorblind      , enabled: false}),
@@ -212,14 +212,14 @@ function initMenus()
     
     menuStyle = new Menu('Style nodes', true, false);
     menuStyle.addItems([
-        new MenuItem('Solid fill', {icon: iconFill  , callback: () => actionManager.do(new CreateNodeAction(FILL,   btnColor.div))}),
-        new MenuItem('Stroke',     {icon: iconStroke, callback: () => actionManager.do(new CreateNodeAction(STROKE, btnColor.div))}),
+        new MenuItem('Solid fill', {icon: iconFill  , callback: e => actionManager.do(new CreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Stroke',     {icon: iconStroke, callback: e => actionManager.do(new CreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Style',      {icon: iconStyle , enabled:  false})]);
     
     
     menuShape = new Menu('Shape nodes', true, false);
     menuShape.addItems([
-        new MenuItem('Rectangle',  {icon: iconRectangle, callback: () => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div))}),
+        new MenuItem('Rectangle',  {icon: iconRectangle, callback: e => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div, {insert: e.shiftKey}))}),
         new MenuItem('Line',       {icon: iconLine     , enabled: false}),
         new MenuItem('Ellipse',    {icon: iconEllipse  , enabled: false}),
         new MenuItem('Polygon',    {icon: iconPolygon  , enabled: false}),
