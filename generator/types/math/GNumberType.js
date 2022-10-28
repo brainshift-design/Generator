@@ -7,6 +7,8 @@ extends GOperator
 
     toValue()
     {
-        return this.value;
+        return new NumberValue(
+            this.value.value,
+            this.value.decimals);
     }
 }

@@ -10,8 +10,8 @@ extends OperatorBase
     {
         super(NUMBER_INTERPOLATE, 'inter', 70);
 
-        this.addInput(new Input([NUMBER]));
-        this.addInput(new Input([NUMBER]));
+        this.addInput(new Input(NUMBER_TYPES));
+        this.addInput(new Input(NUMBER_TYPES));
 
         this.addOutput(new Output([NUMBER], this.output_genRequest));
 
@@ -31,10 +31,6 @@ extends OperatorBase
     output_genRequest(gen)
     {
         // 'this' is the output
-
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
 
         gen.scope.push({
             nodeId:  this.node.id, 

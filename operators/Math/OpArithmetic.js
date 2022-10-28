@@ -66,7 +66,7 @@ extends OperatorBase
     
     addNewInput()
     {
-        const input = new Input([NUMBER]);
+        const input = new Input(NUMBER_TYPES);
         input.isNew = true;
 
         input.addEventListener('connect',    () => { OpArithmetic_onConnectInput(this); input.isNew = false; });

@@ -1,5 +1,5 @@
 class GInterpolate
-extends GOperator
+extends GNumberType
 {
     input0 = null;
     input1 = null;
@@ -14,53 +14,49 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const lerp = new GInterpolate(this.nodeId, this.options);
-
-        if (this.input0) lerp.input0 = this.input0.copy();
-        if (this.input1) lerp.input1 = this.input1.copy();
-
-        lerp.amount = this.amount.copy();
-
-        return lerp;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.amount.eval(parse);
+        const amount = this.amount.toValue();
+
+
+        if (   this.input0 
+            && this.input1)
         {
-            const amount = this.amount.eval(parse).copy();
+            this.input0.eval(parse);
+            this.input1.eval(parse);
 
-            if (   this.input0 
-                && this.input1)
-            {
-                const input0 = this.input0.eval(parse).copy();
-                const input1 = this.input1.eval(parse).copy();
+            const val0 = this.input0.toValue();
+            const val1 = this.input1.toValue();
 
-                const maxDec = Math.max(input0.decimals, input1.decimals);
+            const maxDec = Math.max(val0.decimals, val1.decimals);
 
-                this.result = new NumberValue(
-                    floorTo(input0.value + amount.value * (input1.value - input0.value) / 100, maxDec),
-                    maxDec);
-            }
-
-            else if (this.input0) this.result = this.input0.eval(parse).copy();
-            else if (this.input1) this.result = this.input1.eval(parse).copy();
-            else                  this.result = new NumberValue(0);
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+            this.value = new NumberValue(
+                floorTo(val0.value + amount.value * (val1.value - val0.value) / 100, maxDec),
+                maxDec);
         }
+        else if (this.input0)
+        {
+            this.input0.eval(parse);
+            this.value = this.input0.toValue();
+        } 
+        else if (this.input1) 
+        {
+            this.input1.eval(parse);
+            this.value = this.input1.toValue();
+        }
+        else                  
+            this.value = new NumberValue(0);
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+
+
+        this.valid = true;
     }
 }

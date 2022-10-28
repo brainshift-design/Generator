@@ -63,7 +63,7 @@ class GValue
 
     toValue()
     {
-        return this;
+        return null;
     }
 
 

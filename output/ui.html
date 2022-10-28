@@ -5161,7 +5161,7 @@ class GValue
 
     toValue()
     {
-        return this;
+        return null;
     }
 
 
@@ -5334,6 +5334,15 @@ extends GValue
     eval(parse)
     {
 
+    }
+
+
+
+    toValue()
+    {
+        return new NumberValue(
+            this.value,
+            this.decimals);
     }
 
 
@@ -6706,7 +6715,9 @@ extends GOperator
 
     toValue()
     {
-        return this.value;
+        return new NumberValue(
+            this.value.value,
+            this.value.decimals);
     }
 }
 
@@ -6764,7 +6775,7 @@ extends GNumberType
 
 
 class GLimits
-extends GOperator
+extends GNumberType
 {
     input = null;
 
@@ -6781,59 +6792,41 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const lim = new GLimits(this.nodeId, this.options);
-
-        if (this.input) 
-            lim.input = this.input.copy();
-
-        lim.min = this.min.copy();
-        lim.max = this.max.copy();
-
-        lim.minMaxPriority = this.minMaxPriority;
-
-        return lim;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.value = new NumberValue(0);
+
+
+        if (this.input)
         {
-            this.result = new NumberValue(0);
-
-
-            if (this.input)
-                this.result = this.input.eval(parse).copy();
-
-
-            const min = this.min.eval(parse).copy();
-            const max = this.max.eval(parse).copy();
-
-
-            // min.value = Math.min(min.value, max.value);
-            // max.value = Math.max(min.value, max.value);
-
-
-            this.result.value = Math.min(Math.max(
-                min.value,
-                this.result.value),
-                max.value);
-
-
-            this.valid        = true;
-            this.result.valid = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'min',   min);
-            genPushUpdateValue(parse, this.nodeId, 'max',   max);
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            this.input.eval(parse);
+            this.value = this.input.toValue();
         }
 
 
-        return this.result;
+        this.min.eval(parse);
+        this.max.eval(parse);
+
+        const min = this.min.toValue();
+        const max = this.max.toValue();
+
+
+        this.value.value = Math.min(Math.max(
+            min.value,
+            this.value.value),
+            max.value);
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'min',   min);
+        genPushUpdateValue(parse, this.nodeId, 'max',   max);
+
+
+        this.valid = true;
     }
 }
 
@@ -7158,7 +7151,7 @@ extends GArithmetic
 
 
 class GInterpolate
-extends GOperator
+extends GNumberType
 {
     input0 = null;
     input1 = null;
@@ -7173,54 +7166,50 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const lerp = new GInterpolate(this.nodeId, this.options);
-
-        if (this.input0) lerp.input0 = this.input0.copy();
-        if (this.input1) lerp.input1 = this.input1.copy();
-
-        lerp.amount = this.amount.copy();
-
-        return lerp;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.amount.eval(parse);
+        const amount = this.amount.toValue();
+
+
+        if (   this.input0 
+            && this.input1)
         {
-            const amount = this.amount.eval(parse).copy();
+            this.input0.eval(parse);
+            this.input1.eval(parse);
 
-            if (   this.input0 
-                && this.input1)
-            {
-                const input0 = this.input0.eval(parse).copy();
-                const input1 = this.input1.eval(parse).copy();
+            const val0 = this.input0.toValue();
+            const val1 = this.input1.toValue();
 
-                const maxDec = Math.max(input0.decimals, input1.decimals);
+            const maxDec = Math.max(val0.decimals, val1.decimals);
 
-                this.result = new NumberValue(
-                    floorTo(input0.value + amount.value * (input1.value - input0.value) / 100, maxDec),
-                    maxDec);
-            }
-
-            else if (this.input0) this.result = this.input0.eval(parse).copy();
-            else if (this.input1) this.result = this.input1.eval(parse).copy();
-            else                  this.result = new NumberValue(0);
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+            this.value = new NumberValue(
+                floorTo(val0.value + amount.value * (val1.value - val0.value) / 100, maxDec),
+                maxDec);
         }
+        else if (this.input0)
+        {
+            this.input0.eval(parse);
+            this.value = this.input0.toValue();
+        } 
+        else if (this.input1) 
+        {
+            this.input1.eval(parse);
+            this.value = this.input1.toValue();
+        }
+        else                  
+            this.value = new NumberValue(0);
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+
+
+        this.valid = true;
     }
 }
 
@@ -18077,7 +18066,7 @@ class GValue
 
     toValue()
     {
-        return this;
+        return null;
     }
 
 
@@ -18250,6 +18239,15 @@ extends GValue
     eval(parse)
     {
 
+    }
+
+
+
+    toValue()
+    {
+        return new NumberValue(
+            this.value,
+            this.decimals);
     }
 
 
@@ -19622,7 +19620,9 @@ extends GOperator
 
     toValue()
     {
-        return this.value;
+        return new NumberValue(
+            this.value.value,
+            this.value.decimals);
     }
 }
 
@@ -19680,7 +19680,7 @@ extends GNumberType
 
 
 class GLimits
-extends GOperator
+extends GNumberType
 {
     input = null;
 
@@ -19697,59 +19697,41 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const lim = new GLimits(this.nodeId, this.options);
-
-        if (this.input) 
-            lim.input = this.input.copy();
-
-        lim.min = this.min.copy();
-        lim.max = this.max.copy();
-
-        lim.minMaxPriority = this.minMaxPriority;
-
-        return lim;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.value = new NumberValue(0);
+
+
+        if (this.input)
         {
-            this.result = new NumberValue(0);
-
-
-            if (this.input)
-                this.result = this.input.eval(parse).copy();
-
-
-            const min = this.min.eval(parse).copy();
-            const max = this.max.eval(parse).copy();
-
-
-            // min.value = Math.min(min.value, max.value);
-            // max.value = Math.max(min.value, max.value);
-
-
-            this.result.value = Math.min(Math.max(
-                min.value,
-                this.result.value),
-                max.value);
-
-
-            this.valid        = true;
-            this.result.valid = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'min',   min);
-            genPushUpdateValue(parse, this.nodeId, 'max',   max);
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            this.input.eval(parse);
+            this.value = this.input.toValue();
         }
 
 
-        return this.result;
+        this.min.eval(parse);
+        this.max.eval(parse);
+
+        const min = this.min.toValue();
+        const max = this.max.toValue();
+
+
+        this.value.value = Math.min(Math.max(
+            min.value,
+            this.value.value),
+            max.value);
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'min',   min);
+        genPushUpdateValue(parse, this.nodeId, 'max',   max);
+
+
+        this.valid = true;
     }
 }
 
@@ -20074,7 +20056,7 @@ extends GArithmetic
 
 
 class GInterpolate
-extends GOperator
+extends GNumberType
 {
     input0 = null;
     input1 = null;
@@ -20089,54 +20071,50 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const lerp = new GInterpolate(this.nodeId, this.options);
-
-        if (this.input0) lerp.input0 = this.input0.copy();
-        if (this.input1) lerp.input1 = this.input1.copy();
-
-        lerp.amount = this.amount.copy();
-
-        return lerp;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.amount.eval(parse);
+        const amount = this.amount.toValue();
+
+
+        if (   this.input0 
+            && this.input1)
         {
-            const amount = this.amount.eval(parse).copy();
+            this.input0.eval(parse);
+            this.input1.eval(parse);
 
-            if (   this.input0 
-                && this.input1)
-            {
-                const input0 = this.input0.eval(parse).copy();
-                const input1 = this.input1.eval(parse).copy();
+            const val0 = this.input0.toValue();
+            const val1 = this.input1.toValue();
 
-                const maxDec = Math.max(input0.decimals, input1.decimals);
+            const maxDec = Math.max(val0.decimals, val1.decimals);
 
-                this.result = new NumberValue(
-                    floorTo(input0.value + amount.value * (input1.value - input0.value) / 100, maxDec),
-                    maxDec);
-            }
-
-            else if (this.input0) this.result = this.input0.eval(parse).copy();
-            else if (this.input1) this.result = this.input1.eval(parse).copy();
-            else                  this.result = new NumberValue(0);
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+            this.value = new NumberValue(
+                floorTo(val0.value + amount.value * (val1.value - val0.value) / 100, maxDec),
+                maxDec);
         }
+        else if (this.input0)
+        {
+            this.input0.eval(parse);
+            this.value = this.input0.toValue();
+        } 
+        else if (this.input1) 
+        {
+            this.input1.eval(parse);
+            this.value = this.input1.toValue();
+        }
+        else                  
+            this.value = new NumberValue(0);
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+
+
+        this.valid = true;
     }
 }
 
@@ -22869,16 +22847,16 @@ function initMenus()
         
     menuNumber = new Menu('Number nodes', true, false);
     menuNumber.addItems([
-        new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(new CreateNodeAction(NUMBER, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Limits',      {icon: iconLimits     , enabled: false}),
+        new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(new CreateNodeAction(NUMBER,             btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Math',        {icon: iconMath       , enabled: false}),
-        new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(new CreateNodeAction(NUMBER_ADD,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,   btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Exponent',    {icon: iconExponent   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_EXPONENT, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Modulo',      {icon: iconModulo     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MODULO,   btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Interpolate', {icon: iconInterpolate, enabled: false})]);
+        new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(new CreateNodeAction(NUMBER_ADD,         btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Exponent',    {icon: iconExponent   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Modulo',      {icon: iconModulo     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, {insert: e.shiftKey}))})]);
     
     
     menuString = new Menu('String nodes', true, false);
@@ -33174,7 +33152,7 @@ extends OperatorBase
     
     addNewInput()
     {
-        const input = new Input([NUMBER]);
+        const input = new Input(NUMBER_TYPES);
         input.isNew = true;
 
         input.addEventListener('connect',    () => { OpArithmetic_onConnectInput(this); input.isNew = false; });
@@ -33655,8 +33633,8 @@ extends OperatorBase
     {
         super(NUMBER_INTERPOLATE, 'inter', 70);
 
-        this.addInput(new Input([NUMBER]));
-        this.addInput(new Input([NUMBER]));
+        this.addInput(new Input(NUMBER_TYPES));
+        this.addInput(new Input(NUMBER_TYPES));
 
         this.addOutput(new Output([NUMBER], this.output_genRequest));
 
@@ -33676,10 +33654,6 @@ extends OperatorBase
     output_genRequest(gen)
     {
         // 'this' is the output
-
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
 
         gen.scope.push({
             nodeId:  this.node.id, 

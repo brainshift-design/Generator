@@ -58,6 +58,15 @@ extends GValue
 
 
 
+    toValue()
+    {
+        return new NumberValue(
+            this.value,
+            this.decimals);
+    }
+
+
+
     toNumber()
     {
         return roundTo(this.value, this.decimals);

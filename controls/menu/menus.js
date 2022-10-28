@@ -182,16 +182,16 @@ function initMenus()
         
     menuNumber = new Menu('Number nodes', true, false);
     menuNumber.addItems([
-        new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(new CreateNodeAction(NUMBER, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Limits',      {icon: iconLimits     , enabled: false}),
+        new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(new CreateNodeAction(NUMBER,             btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Math',        {icon: iconMath       , enabled: false}),
-        new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(new CreateNodeAction(NUMBER_ADD,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,   btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Exponent',    {icon: iconExponent   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_EXPONENT, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Modulo',      {icon: iconModulo     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MODULO,   btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Interpolate', {icon: iconInterpolate, enabled: false})]);
+        new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(new CreateNodeAction(NUMBER_ADD,         btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Exponent',    {icon: iconExponent   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Modulo',      {icon: iconModulo     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, {insert: e.shiftKey}))})]);
     
     
     menuString = new Menu('String nodes', true, false);
