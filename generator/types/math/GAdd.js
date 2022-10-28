@@ -12,43 +12,49 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const add = new GAdd(this.nodeId, this.options);
-        add.inputs = this.inputs.map(i => i.copy());
-        return add;
-    }
+    // copy()
+    // {
+    //     const add = new GAdd(this.nodeId, this.options);
+    //     add.inputs = this.inputs.map(i => i.copy());
+    //     return add;
+    // }
 
 
 
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.value = new NumberValue(0);
+
+
+        for (const input of this.inputs)
         {
-            this.result = new NumberValue(0);
+            input.eval(parse);
 
+            const val = input.toValue();
 
-            for (const _input of this.inputs)
-            {
-                const input = _input.eval(parse).copy();
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must belong to NUMBER_VALUE');
 
-                console.assert(
-                    input.type == NUMBER_VALUE, 
-                    'this.result.type must be NUMBER_VALUE');
-
-                this.result.value   += input.value;
-                this.result.decimals = Math.max(this.result.decimals, input.decimals);
-            }
-            
-            
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
+            this.value.value   += val.value;
+            this.value.decimals = Math.max(this.value.decimals, val.decimals);
         }
+        
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
-        return this.result;
+        this.valid = true;
+    }
+
+
+
+    toValue()
+    {
+        return this.value;
     }
 }

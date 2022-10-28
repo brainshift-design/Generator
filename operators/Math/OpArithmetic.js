@@ -83,10 +83,6 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
@@ -128,7 +124,7 @@ extends OperatorBase
         super.updateHeader();
 
 
-        const colBack = rgbFromType(this.type, this.active);
+        const colBack = rgbHeaderFromType(this.type, this.active);
         const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
 
         this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;

@@ -13,17 +13,17 @@ extends GOperator
 
 
 
-    copy()
-    {
-        const num = new GNumber(this.nodeId, this.options);
+    // copy()
+    // {
+    //     const num = new GNumber(this.nodeId, this.options);
         
-        if (this.input) 
-            num.input = this.input.copy();
+    //     if (this.input) 
+    //         num.input = this.input.copy();
         
-        num.value = this.value;
+    //     num.value = this.value;
 
-        return num;
-    }
+    //     return num;
+    // }
 
 
 
