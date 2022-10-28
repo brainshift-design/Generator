@@ -1,10 +1,6 @@
 class GAdd
-extends GOperator
+extends GArithmetic
 {
-    inputs = [];
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_ADD, nodeId, options);
@@ -12,15 +8,6 @@ extends GOperator
 
 
     
-    // copy()
-    // {
-    //     const add = new GAdd(this.nodeId, this.options);
-    //     add.inputs = this.inputs.map(i => i.copy());
-    //     return add;
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -33,7 +20,6 @@ extends GOperator
         for (const input of this.inputs)
         {
             input.eval(parse);
-
             const val = input.toValue();
 
             console.assert(
@@ -49,12 +35,5 @@ extends GOperator
 
 
         this.valid = true;
-    }
-
-
-
-    toValue()
-    {
-        return this.value;
     }
 }

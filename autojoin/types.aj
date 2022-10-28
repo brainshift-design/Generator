@@ -23,8 +23,10 @@
 ../generator/types/values/StarValue.js
 
 
+../generator/types/math/GNumberType.js
 ../generator/types/math/GNumber.js
 ../generator/types/math/GLimits.js
+../generator/types/math/GArithmetic.js
 ../generator/types/math/GAdd.js
 ../generator/types/math/GSubtract.js
 ../generator/types/math/GMultiply.js

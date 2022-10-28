@@ -112,13 +112,6 @@ extends GValue
 
 
 
-    toValue()
-    {
-        return this;
-    }
-
-
-
     toString()
     {
         return      this.space.toString()

@@ -1,8 +1,7 @@
 class GNumber
-extends GOperator
+extends GNumberType
 {
     input = null;
-    value;
     
 
 
@@ -47,12 +46,5 @@ extends GOperator
 
         
         this.valid = true;
-    }
-
-
-
-    toValue()
-    {
-        return this.value;
     }
 }

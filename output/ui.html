@@ -5161,7 +5161,7 @@ class GValue
 
     toValue()
     {
-        
+        return this;
     }
 
 
@@ -5345,13 +5345,6 @@ extends GValue
 
 
 
-    toValue()
-    {
-        return this;
-    }
-
-
-
     toString()
     {
         return printNum(this.value) + ',' + printNum(this.decimals); // only NumberValue can do this, other _Values have to list all members
@@ -5527,13 +5520,6 @@ extends GValue
     toRgb()
     {
         return dataColor2rgb(this.toDataColor());
-    }
-
-
-
-    toValue()
-    {
-        return this;
     }
 
 
@@ -6711,11 +6697,24 @@ function parseStarValue(str)
 
 
 
-class GNumber
+class GNumberType
 extends GOperator
 {
-    input = null;
     value;
+    
+
+
+    toValue()
+    {
+        return this.value;
+    }
+}
+
+
+class GNumber
+extends GNumberType
+{
+    input = null;
     
 
 
@@ -6760,13 +6759,6 @@ extends GOperator
 
         
         this.valid = true;
-    }
-
-
-
-    toValue()
-    {
-        return this.value;
     }
 }
 
@@ -6847,13 +6839,17 @@ extends GOperator
 
 
 
-class GAdd
-extends GOperator
+class GArithmetic
+extends GNumberType
 {
     inputs = [];
+}
 
 
 
+class GAdd
+extends GArithmetic
+{
     constructor(nodeId, options)
     {
         super(NUMBER_ADD, nodeId, options);
@@ -6861,15 +6857,6 @@ extends GOperator
 
 
     
-    // copy()
-    // {
-    //     const add = new GAdd(this.nodeId, this.options);
-    //     add.inputs = this.inputs.map(i => i.copy());
-    //     return add;
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -6882,7 +6869,6 @@ extends GOperator
         for (const input of this.inputs)
         {
             input.eval(parse);
-
             const val = input.toValue();
 
             console.assert(
@@ -6899,24 +6885,13 @@ extends GOperator
 
         this.valid = true;
     }
-
-
-
-    toValue()
-    {
-        return this.value;
-    }
 }
 
 
 
 class GSubtract
-extends GOperator
+extends GArithmetic
 {
-    inputs = [];
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_SUBTRACT, nodeId, options);
@@ -6924,15 +6899,6 @@ extends GOperator
 
 
     
-    // copy()
-    // {
-    //     const sub = new GSubtract(this.nodeId, this.options);
-    //     add.inputs = this.inputs.map(i => i.copy());
-    //     return sub;
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -6945,7 +6911,6 @@ extends GOperator
         if (this.inputs.length > 0)
         {
             this.inputs[0].eval(parse);
-            
             const val0 = this.inputs[0].toValue();
 
             this.value.value    = val0.value;
@@ -6955,7 +6920,6 @@ extends GOperator
             for (let i = 1; i < this.inputs.length; i++)
             {
                 this.inputs[i].eval(parse);
-
                 const val = this.inputs[i].toValue();
 
                 console.assert(
@@ -6973,24 +6937,13 @@ extends GOperator
 
         this.valid = true;
     }
-
-
-
-    toValue()
-    {
-        return this.value;
-    }
 }
 
 
 
 class GMultiply
-extends GOperator
+extends GArithmetic
 {
-    inputs = [];
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_MULTIPLY, nodeId, options);
@@ -6998,57 +6951,45 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const mul = new GMultiply(this.nodeId, this.options);
-        add.inputs = this.inputs.map(i => i.copy());
-        return mul;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.value = new NumberValue(0);
+
+
+        if (this.inputs.length > 0)
         {
-            this.result = new NumberValue(0);
+            this.value.value = 1;
 
-
-            if (this.inputs.length > 0)
+            for (const input of this.inputs)
             {
-                this.result.value = 1;
+                input.eval(parse);
+                const val = input.toValue();
 
-                for (const _input of this.inputs)
-                {
-                    const input = _input.eval(parse).copy();
+                console.assert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
 
-                    this.result.value   *= input.value;
-                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                }
+                this.value.value   *= val.value;
+                this.value.decimals = Math.max(this.value.decimals, val.decimals);
             }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.valid = true;
     }
 }
 
 
-
 class GDivide
-extends GOperator
+extends GArithmetic
 {
-    inputs = [];
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_DIVIDE, nodeId, options);
@@ -7056,65 +6997,58 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const div = new GDivide(this.nodeId, this.options);
-        add.inputs = this.inputs.map(i => i.copy());
-        return div;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.value = new NumberValue(0);
+
+        
+        if (this.inputs.length > 0)
         {
-            this.result = new NumberValue(0);
+            this.inputs[0].eval(parse);
+            const val0 = this.inputs[0].toValue();
 
-            
-            if (this.inputs.length > 0)
+            this.value.value    = val0.value;
+            this.value.decimals = val0.decimals;
+
+
+            for (let i = 1; i < this.inputs.length; i++)
             {
-                this.result = this.inputs[0].eval(parse).copy();
+                this.inputs[i].eval(parse);
+                const val = this.inputs[i].toValue();
 
+                console.assert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
 
-                for (let i = 1; i < this.inputs.length; i++)
-                {
-                    const input = this.inputs[i].eval(parse).copy();
-
-                    if (input.value == 0) 
-                    { 
-                        this.result.value    = Number.NaN; 
-                        this.result.decimals = 0;
-                        break; 
-                    }
-
-                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                    this.result.value    = floorTo(this.result.value / input.value, this.result.decimals);
+                if (val.value == 0) 
+                { 
+                    this.value.value    = Number.NaN; 
+                    this.value.decimals = 0;
+                    break; 
                 }
+
+                this.value.decimals = Math.max(this.value.decimals, val.decimals);
+                this.value.value    = floorTo(this.value.value / val.value, this.value.decimals);
             }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.valid = true;
     }
 }
 
 
 
 class GModulo
-extends GOperator
+extends GArithmetic
 {
-    inputs = [];
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_MODULO, nodeId, options);
@@ -7122,65 +7056,58 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const mod = new GModulo(this.nodeId, this.options);
-        add.inputs = this.inputs.map(i => i.copy());
-        return mod;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.value = new NumberValue(0);
+
+        
+        if (this.inputs.length > 0)
         {
-            this.result = new NumberValue(0);
+            this.inputs[0].eval(parse);
+            const val0 = this.inputs[0].toValue();
 
-            
-            if (this.inputs.length > 0)
+            this.value.value    = val0.value;
+            this.value.decimals = val0.decimals;
+
+
+            for (let i = 1; i < this.inputs.length; i++)
             {
-                this.result = this.inputs[0].eval(parse).copy();
+                this.inputs[i].eval(parse);
+                const val = this.inputs[i].toValue();
 
+                console.assert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
 
-                for (let i = 1; i < this.inputs.length; i++)
-                {
-                    const input = this.inputs[i].eval(parse).copy();
-
-                    if (input.value == 0) 
-                    { 
-                        this.result.value    = Number.NaN; 
-                        this.result.decimals = 0;
-                        break; 
-                    }
-
-                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                    this.result.value    = floorTo(this.result.value % input.value, this.result.decimals);
+                if (val.value == 0) 
+                { 
+                    this.value.value    = Number.NaN; 
+                    this.value.decimals = 0;
+                    break; 
                 }
+
+                this.value.decimals = Math.max(this.value.decimals, val.decimals);
+                this.value.value    = floorTo(this.value.value % val.value, this.value.decimals);
             }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.valid = true;
     }
 }
 
 
 
 class GExponent
-extends GOperator
+extends GArithmetic
 {
-    inputs = [];
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_EXPONENT, nodeId, options);
@@ -7188,49 +7115,43 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const exp = new GExponent(this.nodeId, this.options);
-        add.inputs = this.inputs.map(i => i.copy());
-        return exp;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.value = new NumberValue(0);
+
+
+        if (this.inputs.length > 0)
         {
-            this.result = new NumberValue(0);
+            this.inputs[0].eval(parse);
+            const val0 = this.inputs[0].toValue();
+
+            this.value.value    = val0.value;
+            this.value.decimals = val0.decimals;
 
 
-            if (this.inputs.length > 0)
+            for (let i = 1; i < this.inputs.length; i++)
             {
-                this.result = this.inputs[0].eval(parse).copy();
+                this.inputs[i].eval(parse);
+                const val = this.inputs[i].toValue();
 
-                for (let i = 1; i < this.inputs.length; i++)
-                {
-                    const input = this.inputs[i].eval(parse);
-
-                    console.assert(
-                        input.type == NUMBER_VALUE, 
-                        'this.result.type must be NUMBER_VALUE');
-                        
-                    this.result.value    = Math.pow(this.result.value, input.value);
-                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                }
+                console.assert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
+                    
+                this.value.value    = Math.pow(this.value.value,    val.value);
+                this.value.decimals = Math.max(this.value.decimals, val.decimals);
             }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.valid = true;
     }
 }
 
@@ -18156,7 +18077,7 @@ class GValue
 
     toValue()
     {
-        
+        return this;
     }
 
 
@@ -18340,13 +18261,6 @@ extends GValue
 
 
 
-    toValue()
-    {
-        return this;
-    }
-
-
-
     toString()
     {
         return printNum(this.value) + ',' + printNum(this.decimals); // only NumberValue can do this, other _Values have to list all members
@@ -18522,13 +18436,6 @@ extends GValue
     toRgb()
     {
         return dataColor2rgb(this.toDataColor());
-    }
-
-
-
-    toValue()
-    {
-        return this;
     }
 
 
@@ -19706,11 +19613,24 @@ function parseStarValue(str)
 
 
 
-class GNumber
+class GNumberType
 extends GOperator
 {
-    input = null;
     value;
+    
+
+
+    toValue()
+    {
+        return this.value;
+    }
+}
+
+
+class GNumber
+extends GNumberType
+{
+    input = null;
     
 
 
@@ -19755,13 +19675,6 @@ extends GOperator
 
         
         this.valid = true;
-    }
-
-
-
-    toValue()
-    {
-        return this.value;
     }
 }
 
@@ -19842,13 +19755,17 @@ extends GOperator
 
 
 
-class GAdd
-extends GOperator
+class GArithmetic
+extends GNumberType
 {
     inputs = [];
+}
 
 
 
+class GAdd
+extends GArithmetic
+{
     constructor(nodeId, options)
     {
         super(NUMBER_ADD, nodeId, options);
@@ -19856,15 +19773,6 @@ extends GOperator
 
 
     
-    // copy()
-    // {
-    //     const add = new GAdd(this.nodeId, this.options);
-    //     add.inputs = this.inputs.map(i => i.copy());
-    //     return add;
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -19877,7 +19785,6 @@ extends GOperator
         for (const input of this.inputs)
         {
             input.eval(parse);
-
             const val = input.toValue();
 
             console.assert(
@@ -19894,24 +19801,13 @@ extends GOperator
 
         this.valid = true;
     }
-
-
-
-    toValue()
-    {
-        return this.value;
-    }
 }
 
 
 
 class GSubtract
-extends GOperator
+extends GArithmetic
 {
-    inputs = [];
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_SUBTRACT, nodeId, options);
@@ -19919,15 +19815,6 @@ extends GOperator
 
 
     
-    // copy()
-    // {
-    //     const sub = new GSubtract(this.nodeId, this.options);
-    //     add.inputs = this.inputs.map(i => i.copy());
-    //     return sub;
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -19940,7 +19827,6 @@ extends GOperator
         if (this.inputs.length > 0)
         {
             this.inputs[0].eval(parse);
-            
             const val0 = this.inputs[0].toValue();
 
             this.value.value    = val0.value;
@@ -19950,7 +19836,6 @@ extends GOperator
             for (let i = 1; i < this.inputs.length; i++)
             {
                 this.inputs[i].eval(parse);
-
                 const val = this.inputs[i].toValue();
 
                 console.assert(
@@ -19968,24 +19853,13 @@ extends GOperator
 
         this.valid = true;
     }
-
-
-
-    toValue()
-    {
-        return this.value;
-    }
 }
 
 
 
 class GMultiply
-extends GOperator
+extends GArithmetic
 {
-    inputs = [];
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_MULTIPLY, nodeId, options);
@@ -19993,57 +19867,45 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const mul = new GMultiply(this.nodeId, this.options);
-        add.inputs = this.inputs.map(i => i.copy());
-        return mul;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.value = new NumberValue(0);
+
+
+        if (this.inputs.length > 0)
         {
-            this.result = new NumberValue(0);
+            this.value.value = 1;
 
-
-            if (this.inputs.length > 0)
+            for (const input of this.inputs)
             {
-                this.result.value = 1;
+                input.eval(parse);
+                const val = input.toValue();
 
-                for (const _input of this.inputs)
-                {
-                    const input = _input.eval(parse).copy();
+                console.assert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
 
-                    this.result.value   *= input.value;
-                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                }
+                this.value.value   *= val.value;
+                this.value.decimals = Math.max(this.value.decimals, val.decimals);
             }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.valid = true;
     }
 }
 
 
-
 class GDivide
-extends GOperator
+extends GArithmetic
 {
-    inputs = [];
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_DIVIDE, nodeId, options);
@@ -20051,65 +19913,58 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const div = new GDivide(this.nodeId, this.options);
-        add.inputs = this.inputs.map(i => i.copy());
-        return div;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.value = new NumberValue(0);
+
+        
+        if (this.inputs.length > 0)
         {
-            this.result = new NumberValue(0);
+            this.inputs[0].eval(parse);
+            const val0 = this.inputs[0].toValue();
 
-            
-            if (this.inputs.length > 0)
+            this.value.value    = val0.value;
+            this.value.decimals = val0.decimals;
+
+
+            for (let i = 1; i < this.inputs.length; i++)
             {
-                this.result = this.inputs[0].eval(parse).copy();
+                this.inputs[i].eval(parse);
+                const val = this.inputs[i].toValue();
 
+                console.assert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
 
-                for (let i = 1; i < this.inputs.length; i++)
-                {
-                    const input = this.inputs[i].eval(parse).copy();
-
-                    if (input.value == 0) 
-                    { 
-                        this.result.value    = Number.NaN; 
-                        this.result.decimals = 0;
-                        break; 
-                    }
-
-                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                    this.result.value    = floorTo(this.result.value / input.value, this.result.decimals);
+                if (val.value == 0) 
+                { 
+                    this.value.value    = Number.NaN; 
+                    this.value.decimals = 0;
+                    break; 
                 }
+
+                this.value.decimals = Math.max(this.value.decimals, val.decimals);
+                this.value.value    = floorTo(this.value.value / val.value, this.value.decimals);
             }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.valid = true;
     }
 }
 
 
 
 class GModulo
-extends GOperator
+extends GArithmetic
 {
-    inputs = [];
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_MODULO, nodeId, options);
@@ -20117,65 +19972,58 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const mod = new GModulo(this.nodeId, this.options);
-        add.inputs = this.inputs.map(i => i.copy());
-        return mod;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.value = new NumberValue(0);
+
+        
+        if (this.inputs.length > 0)
         {
-            this.result = new NumberValue(0);
+            this.inputs[0].eval(parse);
+            const val0 = this.inputs[0].toValue();
 
-            
-            if (this.inputs.length > 0)
+            this.value.value    = val0.value;
+            this.value.decimals = val0.decimals;
+
+
+            for (let i = 1; i < this.inputs.length; i++)
             {
-                this.result = this.inputs[0].eval(parse).copy();
+                this.inputs[i].eval(parse);
+                const val = this.inputs[i].toValue();
 
+                console.assert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
 
-                for (let i = 1; i < this.inputs.length; i++)
-                {
-                    const input = this.inputs[i].eval(parse).copy();
-
-                    if (input.value == 0) 
-                    { 
-                        this.result.value    = Number.NaN; 
-                        this.result.decimals = 0;
-                        break; 
-                    }
-
-                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                    this.result.value    = floorTo(this.result.value % input.value, this.result.decimals);
+                if (val.value == 0) 
+                { 
+                    this.value.value    = Number.NaN; 
+                    this.value.decimals = 0;
+                    break; 
                 }
+
+                this.value.decimals = Math.max(this.value.decimals, val.decimals);
+                this.value.value    = floorTo(this.value.value % val.value, this.value.decimals);
             }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.valid = true;
     }
 }
 
 
 
 class GExponent
-extends GOperator
+extends GArithmetic
 {
-    inputs = [];
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_EXPONENT, nodeId, options);
@@ -20183,49 +20031,43 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const exp = new GExponent(this.nodeId, this.options);
-        add.inputs = this.inputs.map(i => i.copy());
-        return exp;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.value = new NumberValue(0);
+
+
+        if (this.inputs.length > 0)
         {
-            this.result = new NumberValue(0);
+            this.inputs[0].eval(parse);
+            const val0 = this.inputs[0].toValue();
+
+            this.value.value    = val0.value;
+            this.value.decimals = val0.decimals;
 
 
-            if (this.inputs.length > 0)
+            for (let i = 1; i < this.inputs.length; i++)
             {
-                this.result = this.inputs[0].eval(parse).copy();
+                this.inputs[i].eval(parse);
+                const val = this.inputs[i].toValue();
 
-                for (let i = 1; i < this.inputs.length; i++)
-                {
-                    const input = this.inputs[i].eval(parse);
-
-                    console.assert(
-                        input.type == NUMBER_VALUE, 
-                        'this.result.type must be NUMBER_VALUE');
-                        
-                    this.result.value    = Math.pow(this.result.value, input.value);
-                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                }
+                console.assert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
+                    
+                this.value.value    = Math.pow(this.value.value,    val.value);
+                this.value.decimals = Math.max(this.value.decimals, val.decimals);
             }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.valid = true;
     }
 }
 

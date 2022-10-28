@@ -1,10 +1,6 @@
 class GExponent
-extends GOperator
+extends GArithmetic
 {
-    inputs = [];
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_EXPONENT, nodeId, options);
@@ -12,48 +8,42 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const exp = new GExponent(this.nodeId, this.options);
-        add.inputs = this.inputs.map(i => i.copy());
-        return exp;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.value = new NumberValue(0);
+
+
+        if (this.inputs.length > 0)
         {
-            this.result = new NumberValue(0);
+            this.inputs[0].eval(parse);
+            const val0 = this.inputs[0].toValue();
+
+            this.value.value    = val0.value;
+            this.value.decimals = val0.decimals;
 
 
-            if (this.inputs.length > 0)
+            for (let i = 1; i < this.inputs.length; i++)
             {
-                this.result = this.inputs[0].eval(parse).copy();
+                this.inputs[i].eval(parse);
+                const val = this.inputs[i].toValue();
 
-                for (let i = 1; i < this.inputs.length; i++)
-                {
-                    const input = this.inputs[i].eval(parse);
-
-                    console.assert(
-                        input.type == NUMBER_VALUE, 
-                        'this.result.type must be NUMBER_VALUE');
-                        
-                    this.result.value    = Math.pow(this.result.value, input.value);
-                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                }
+                console.assert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
+                    
+                this.value.value    = Math.pow(this.value.value,    val.value);
+                this.value.decimals = Math.max(this.value.decimals, val.decimals);
             }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.valid = true;
     }
 }

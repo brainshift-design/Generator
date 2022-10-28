@@ -1,10 +1,6 @@
 class GDivide
-extends GOperator
+extends GArithmetic
 {
-    inputs = [];
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_DIVIDE, nodeId, options);
@@ -12,52 +8,49 @@ extends GOperator
 
 
     
-    copy()
-    {
-        const div = new GDivide(this.nodeId, this.options);
-        add.inputs = this.inputs.map(i => i.copy());
-        return div;
-    }
-
-
-
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return;
+
+
+        this.value = new NumberValue(0);
+
+        
+        if (this.inputs.length > 0)
         {
-            this.result = new NumberValue(0);
+            this.inputs[0].eval(parse);
+            const val0 = this.inputs[0].toValue();
 
-            
-            if (this.inputs.length > 0)
+            this.value.value    = val0.value;
+            this.value.decimals = val0.decimals;
+
+
+            for (let i = 1; i < this.inputs.length; i++)
             {
-                this.result = this.inputs[0].eval(parse).copy();
+                this.inputs[i].eval(parse);
+                const val = this.inputs[i].toValue();
 
+                console.assert(
+                    val.type == NUMBER_VALUE, 
+                    'val.type must be NUMBER_VALUE');
 
-                for (let i = 1; i < this.inputs.length; i++)
-                {
-                    const input = this.inputs[i].eval(parse).copy();
-
-                    if (input.value == 0) 
-                    { 
-                        this.result.value    = Number.NaN; 
-                        this.result.decimals = 0;
-                        break; 
-                    }
-
-                    this.result.decimals = Math.max(this.result.decimals, input.decimals);
-                    this.result.value    = floorTo(this.result.value / input.value, this.result.decimals);
+                if (val.value == 0) 
+                { 
+                    this.value.value    = Number.NaN; 
+                    this.value.decimals = 0;
+                    break; 
                 }
+
+                this.value.decimals = Math.max(this.value.decimals, val.decimals);
+                this.value.value    = floorTo(this.value.value / val.value, this.value.decimals);
             }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
         }
 
 
-        return this.result;
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.valid = true;
     }
 }

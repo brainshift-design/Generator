@@ -1,10 +1,6 @@
 class GSubtract
-extends GOperator
+extends GArithmetic
 {
-    inputs = [];
-
-
-
     constructor(nodeId, options)
     {
         super(NUMBER_SUBTRACT, nodeId, options);
@@ -12,15 +8,6 @@ extends GOperator
 
 
     
-    // copy()
-    // {
-    //     const sub = new GSubtract(this.nodeId, this.options);
-    //     add.inputs = this.inputs.map(i => i.copy());
-    //     return sub;
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -33,7 +20,6 @@ extends GOperator
         if (this.inputs.length > 0)
         {
             this.inputs[0].eval(parse);
-            
             const val0 = this.inputs[0].toValue();
 
             this.value.value    = val0.value;
@@ -43,7 +29,6 @@ extends GOperator
             for (let i = 1; i < this.inputs.length; i++)
             {
                 this.inputs[i].eval(parse);
-
                 const val = this.inputs[i].toValue();
 
                 console.assert(
@@ -60,12 +45,5 @@ extends GOperator
 
 
         this.valid = true;
-    }
-
-
-
-    toValue()
-    {
-        return this.value;
     }
 }
