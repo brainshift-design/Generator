@@ -53,7 +53,7 @@ extends Operator
             : 'transparent';
 
 
-        for (const input of this.inputs.filter(i => !i.param))
+        for (const input of this.headerInputs)
         {
             input.colorLight =
             input.colorDark  = colors.input;
@@ -62,7 +62,7 @@ extends Operator
         }
 
 
-        for (const output of this.outputs.filter(o => !o.param))
+        for (const output of this.headerOutputs)
         {
             output.colorLight = 
             output.colorDark  = colors.output;

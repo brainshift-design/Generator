@@ -299,12 +299,12 @@ class Connection
 
         if (   !outputNode 
             ||    isDigit(outputId[0])
-               && parseInt(outputId) >= outputNode.outputs.filter(o => !o.param).length
+               && parseInt(outputId) >= outputNode.headerOutputs.length
             ||   !isDigit(outputId[0])
                && !outputNode.params.find(p => p.id == outputId && p.output)
             || !inputNode  
             ||    isDigit(inputId[0])
-               && parseInt(inputId) >= inputNode.inputs.filter(i => !i.param).length
+               && parseInt(inputId) >= inputNode.headerInputs.length
             ||   !isDigit(inputId[0])
                && !inputNode.params.find(p => p.id == inputId && p.input))
         {

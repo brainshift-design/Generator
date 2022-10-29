@@ -95,6 +95,49 @@ function genParseLimits(parse)
 
 
 
+function genParseMath(parse, newNode)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const math = newNode(nodeId, options);
+
+    
+    let nValues = 0;
+    
+    if (!ignore)
+        nValues = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReqMath(math, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, math);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    for (let i = 0; i < nValues; i++)
+        math.inputs.push(genParse(parse));
+
+
+    math.operation = genParse(parse);
+
+    
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, math);
+    return math;
+}
+
+
+
 function genParseArithmetic(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -106,10 +149,10 @@ function genParseArithmetic(parse, newNode)
     let nValues = 0;
     
     if (!ignore)
-        nValues = parse.move();
+        nValues = parseInt(parse.move());
 
 
-        if (parse.settings.logRequests) 
+    if (parse.settings.logRequests) 
         logReqArithmetic(arith, type, nValues, parse);
 
 

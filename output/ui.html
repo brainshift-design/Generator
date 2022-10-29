@@ -1986,11 +1986,17 @@ const GENERATOR_LOGO = '◦G•';
 
 function rgbHeaderFromType(type, active)
 {
+    if (NUMBER_TYPES.includes(type))
+        return active 
+        ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
+        : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
+
     switch (type)
     {
         case NUMBER_VALUE:    
         case NUMBER:    
         case NUMBER_LIMITS:
+        case NUMBER_MATH:
         case NUMBER_ADD:
         case NUMBER_SUBTRACT:
         case NUMBER_MULTIPLY:
@@ -1998,9 +2004,6 @@ function rgbHeaderFromType(type, active)
         case NUMBER_MODULO:
         case NUMBER_EXPONENT:
         case NUMBER_INTERPOLATE: 
-            return active 
-                ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
-                : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
         case COLOR_VALUE:           
 
@@ -4635,6 +4638,15 @@ function logReqLimits(lim, nValues, parse)
 
 
 
+function logReqMath(math, nValues, parse)
+{
+    parse.log += parse.tab + NUMBER_MATH;
+    parse.log += logReqNodeId(math);
+    parse.log += ' ' + nValues;
+}
+
+
+
 function logReqArithmetic(arith, type, nValues, parse)
 {
     parse.log += parse.tab + type;
@@ -4923,13 +4935,13 @@ const NUMBER_VALUE        = 'N';     // value (s) (with significant decimals)
 
 const NUMBER              = 'NUM';   // N | n
 const NUMBER_LIMITS       = 'LIM';   // N:min N:max
+const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_ADD          = 'ADD';   // count N...
 const NUMBER_SUBTRACT     = 'SUB';   // count N...
 const NUMBER_MULTIPLY     = 'MUL';   // count N...
 const NUMBER_DIVIDE       = 'DIV';   // count N...
 const NUMBER_MODULO       = 'MOD';   // count N...
 const NUMBER_EXPONENT     = 'EXP';   // count N...
-const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
@@ -4939,14 +4951,25 @@ const NUMBER_TYPES =
 
     NUMBER,
     NUMBER_LIMITS,
+    NUMBER_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,
     NUMBER_MULTIPLY,
     NUMBER_DIVIDE,
     NUMBER_MODULO,
     NUMBER_EXPONENT,
-    NUMBER_MATH,
     NUMBER_INTERPOLATE 
+];
+
+
+const MATH_OPS = 
+[   // the order is important for logical keyboard value changes
+    [NUMBER_SUBTRACT, '-' ],
+    [NUMBER_ADD,      '+' ],
+    [NUMBER_DIVIDE,   '÷' ],
+    [NUMBER_MULTIPLY, '×' ],
+    [NUMBER_MODULO,   '%' ],
+    [NUMBER_EXPONENT, 'eˣ'] 
 ];
 
 
@@ -6840,6 +6863,52 @@ extends GNumberType
 
 
 
+class GMath
+extends GArithmetic
+{
+    operation;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_MATH, nodeId, options);
+    }
+
+
+    
+    eval(parse)
+    {
+        if (this.valid)
+            return;
+
+
+        this.operation.eval(parse);
+        const op = this.operation.toValue();
+
+        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+
+        switch (op.value)
+        {
+            case 0: this.value = evalSubtractInputs(this.inputs, parse); break;
+            case 1: this.value = evalAddInputs     (this.inputs, parse); break;
+            case 2: this.value = evalDivideInputs  (this.inputs, parse); break;
+            case 3: this.value = evalMultiplyInputs(this.inputs, parse); break;
+            case 4: this.value = evalModuloInputs  (this.inputs, parse); break;
+            case 5: this.value = evalExponentInputs(this.inputs, parse); break;
+        }
+
+        
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+        genPushUpdateValue(parse, this.nodeId, 'operation', op);
+
+
+        this.valid = true;
+    }
+}
+
+
+
 class GAdd
 extends GArithmetic
 {
@@ -6855,31 +6924,37 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-
-        for (const input of this.inputs)
-        {
-            input.eval(parse);
-            const val = input.toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must belong to NUMBER_VALUE');
-
-            this.value.value   += val.value;
-            this.value.decimals = Math.max(this.value.decimals, val.decimals);
-        }
-        
+        this.value = evalAddInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalAddInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+
+    for (const input of inputs)
+    {
+        input.eval(parse);
+        const val = input.toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        value.value   += val.value;
+        value.decimals = Math.max(value.decimals, val.decimals);
+    }
+
+
+    return value;
+}
 
 
 class GSubtract
@@ -6897,41 +6972,47 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-
-        if (this.inputs.length > 0)
-        {
-            this.inputs[0].eval(parse);
-            const val0 = this.inputs[0].toValue();
-
-            this.value.value    = val0.value;
-            this.value.decimals = val0.decimals;
-
-
-            for (let i = 1; i < this.inputs.length; i++)
-            {
-                this.inputs[i].eval(parse);
-                const val = this.inputs[i].toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-                    
-                this.value.value   -= val.value;
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-            }
-        }
-
+        this.value = evalSubtractInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalSubtractInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        inputs[0].eval(parse);
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i].eval(parse);
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value   -= val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
 
 
 class GMultiply
@@ -6949,34 +7030,41 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-
-        if (this.inputs.length > 0)
-        {
-            this.value.value = 1;
-
-            for (const input of this.inputs)
-            {
-                input.eval(parse);
-                const val = input.toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                this.value.value   *= val.value;
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-            }
-        }
-
+        this.value = evalMultiplyInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-
         this.valid = true;
     }
+}
+
+
+
+function evalMultiplyInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        value.value = 1;
+
+        for (const input of inputs)
+        {
+            input.eval(parse);
+            const val = input.toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            value.value   *= val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
 }
 
 
@@ -6995,48 +7083,54 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-        
-        if (this.inputs.length > 0)
-        {
-            this.inputs[0].eval(parse);
-            const val0 = this.inputs[0].toValue();
-
-            this.value.value    = val0.value;
-            this.value.decimals = val0.decimals;
-
-
-            for (let i = 1; i < this.inputs.length; i++)
-            {
-                this.inputs[i].eval(parse);
-                const val = this.inputs[i].toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                if (val.value == 0) 
-                { 
-                    this.value.value    = Number.NaN; 
-                    this.value.decimals = 0;
-                    break; 
-                }
-
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-                this.value.value    = floorTo(this.value.value / val.value, this.value.decimals);
-            }
-        }
-
+        this.value = evalDivideInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalDivideInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+        
+    if (inputs.length > 0)
+    {
+        inputs[0].eval(parse);
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i].eval(parse);
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            if (val.value == 0) 
+            { 
+                value.value    = Number.NaN; 
+                value.decimals = 0;
+                break; 
+            }
+
+            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value    = floorTo(value.value / val.value, value.decimals);
+        }
+    }
+
+
+    return value;
+}
 
 
 class GModulo
@@ -7054,48 +7148,54 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-        
-        if (this.inputs.length > 0)
-        {
-            this.inputs[0].eval(parse);
-            const val0 = this.inputs[0].toValue();
-
-            this.value.value    = val0.value;
-            this.value.decimals = val0.decimals;
-
-
-            for (let i = 1; i < this.inputs.length; i++)
-            {
-                this.inputs[i].eval(parse);
-                const val = this.inputs[i].toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                if (val.value == 0) 
-                { 
-                    this.value.value    = Number.NaN; 
-                    this.value.decimals = 0;
-                    break; 
-                }
-
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-                this.value.value    = floorTo(this.value.value % val.value, this.value.decimals);
-            }
-        }
-
+        this.value = evalModuloInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalModuloInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+        
+    if (inputs.length > 0)
+    {
+        inputs[0].eval(parse);
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i].eval(parse);
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            if (val.value == 0) 
+            { 
+                value.value    = Number.NaN; 
+                value.decimals = 0;
+                break; 
+            }
+
+            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value    = floorTo(value.value % val.value, value.decimals);
+        }
+    }
+
+
+    return value;
+}
 
 
 class GExponent
@@ -7113,41 +7213,47 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-
-        if (this.inputs.length > 0)
-        {
-            this.inputs[0].eval(parse);
-            const val0 = this.inputs[0].toValue();
-
-            this.value.value    = val0.value;
-            this.value.decimals = val0.decimals;
-
-
-            for (let i = 1; i < this.inputs.length; i++)
-            {
-                this.inputs[i].eval(parse);
-                const val = this.inputs[i].toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-                    
-                this.value.value    = Math.pow(this.value.value,    val.value);
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-            }
-        }
-
+        this.value = evalExponentInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalExponentInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        inputs[0].eval(parse);
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i].eval(parse);
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value    = Math.pow(value.value,    val.value);
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
 
 
 class GInterpolate
@@ -9820,6 +9926,49 @@ function genParseLimits(parse)
 
 
 
+function genParseMath(parse, newNode)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const math = newNode(nodeId, options);
+
+    
+    let nValues = 0;
+    
+    if (!ignore)
+        nValues = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReqMath(math, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, math);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    for (let i = 0; i < nValues; i++)
+        math.inputs.push(genParse(parse));
+
+
+    math.operation = genParse(parse);
+
+    
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, math);
+    return math;
+}
+
+
+
 function genParseArithmetic(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -9831,10 +9980,10 @@ function genParseArithmetic(parse, newNode)
     let nValues = 0;
     
     if (!ignore)
-        nValues = parse.move();
+        nValues = parseInt(parse.move());
 
 
-        if (parse.settings.logRequests) 
+    if (parse.settings.logRequests) 
         logReqArithmetic(arith, type, nValues, parse);
 
 
@@ -10515,6 +10664,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_VALUE      ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER            ) result = genParseNumber          (parse);
     else if (parse.next == NUMBER_LIMITS     ) result = genParseLimits          (parse);
+    else if (parse.next == NUMBER_MATH       ) result = genParseMath            (parse, (nodeId, options) => new GMath    (nodeId, options));
     else if (parse.next == NUMBER_ADD        ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd     (nodeId, options));
     else if (parse.next == NUMBER_SUBTRACT   ) result = genParseArithmetic      (parse, (nodeId, options) => new GSubtract(nodeId, options));
     else if (parse.next == NUMBER_MULTIPLY   ) result = genParseArithmetic      (parse, (nodeId, options) => new GMultiply(nodeId, options));
@@ -13384,11 +13534,17 @@ const GENERATOR_LOGO = '◦G•';
 
 function rgbHeaderFromType(type, active)
 {
+    if (NUMBER_TYPES.includes(type))
+        return active 
+        ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
+        : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
+
     switch (type)
     {
         case NUMBER_VALUE:    
         case NUMBER:    
         case NUMBER_LIMITS:
+        case NUMBER_MATH:
         case NUMBER_ADD:
         case NUMBER_SUBTRACT:
         case NUMBER_MULTIPLY:
@@ -13396,9 +13552,6 @@ function rgbHeaderFromType(type, active)
         case NUMBER_MODULO:
         case NUMBER_EXPONENT:
         case NUMBER_INTERPOLATE: 
-            return active 
-                ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
-                : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
         case COLOR_VALUE:           
 
@@ -16033,6 +16186,15 @@ function logReqLimits(lim, nValues, parse)
 
 
 
+function logReqMath(math, nValues, parse)
+{
+    parse.log += parse.tab + NUMBER_MATH;
+    parse.log += logReqNodeId(math);
+    parse.log += ' ' + nValues;
+}
+
+
+
 function logReqArithmetic(arith, type, nValues, parse)
 {
     parse.log += parse.tab + type;
@@ -17828,13 +17990,13 @@ const NUMBER_VALUE        = 'N';     // value (s) (with significant decimals)
 
 const NUMBER              = 'NUM';   // N | n
 const NUMBER_LIMITS       = 'LIM';   // N:min N:max
+const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_ADD          = 'ADD';   // count N...
 const NUMBER_SUBTRACT     = 'SUB';   // count N...
 const NUMBER_MULTIPLY     = 'MUL';   // count N...
 const NUMBER_DIVIDE       = 'DIV';   // count N...
 const NUMBER_MODULO       = 'MOD';   // count N...
 const NUMBER_EXPONENT     = 'EXP';   // count N...
-const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
@@ -17844,14 +18006,25 @@ const NUMBER_TYPES =
 
     NUMBER,
     NUMBER_LIMITS,
+    NUMBER_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,
     NUMBER_MULTIPLY,
     NUMBER_DIVIDE,
     NUMBER_MODULO,
     NUMBER_EXPONENT,
-    NUMBER_MATH,
     NUMBER_INTERPOLATE 
+];
+
+
+const MATH_OPS = 
+[   // the order is important for logical keyboard value changes
+    [NUMBER_SUBTRACT, '-' ],
+    [NUMBER_ADD,      '+' ],
+    [NUMBER_DIVIDE,   '÷' ],
+    [NUMBER_MULTIPLY, '×' ],
+    [NUMBER_MODULO,   '%' ],
+    [NUMBER_EXPONENT, 'eˣ'] 
 ];
 
 
@@ -19745,6 +19918,52 @@ extends GNumberType
 
 
 
+class GMath
+extends GArithmetic
+{
+    operation;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_MATH, nodeId, options);
+    }
+
+
+    
+    eval(parse)
+    {
+        if (this.valid)
+            return;
+
+
+        this.operation.eval(parse);
+        const op = this.operation.toValue();
+
+        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+
+        switch (op.value)
+        {
+            case 0: this.value = evalSubtractInputs(this.inputs, parse); break;
+            case 1: this.value = evalAddInputs     (this.inputs, parse); break;
+            case 2: this.value = evalDivideInputs  (this.inputs, parse); break;
+            case 3: this.value = evalMultiplyInputs(this.inputs, parse); break;
+            case 4: this.value = evalModuloInputs  (this.inputs, parse); break;
+            case 5: this.value = evalExponentInputs(this.inputs, parse); break;
+        }
+
+        
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+        genPushUpdateValue(parse, this.nodeId, 'operation', op);
+
+
+        this.valid = true;
+    }
+}
+
+
+
 class GAdd
 extends GArithmetic
 {
@@ -19760,31 +19979,37 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-
-        for (const input of this.inputs)
-        {
-            input.eval(parse);
-            const val = input.toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must belong to NUMBER_VALUE');
-
-            this.value.value   += val.value;
-            this.value.decimals = Math.max(this.value.decimals, val.decimals);
-        }
-        
+        this.value = evalAddInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalAddInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+
+    for (const input of inputs)
+    {
+        input.eval(parse);
+        const val = input.toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        value.value   += val.value;
+        value.decimals = Math.max(value.decimals, val.decimals);
+    }
+
+
+    return value;
+}
 
 
 class GSubtract
@@ -19802,41 +20027,47 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-
-        if (this.inputs.length > 0)
-        {
-            this.inputs[0].eval(parse);
-            const val0 = this.inputs[0].toValue();
-
-            this.value.value    = val0.value;
-            this.value.decimals = val0.decimals;
-
-
-            for (let i = 1; i < this.inputs.length; i++)
-            {
-                this.inputs[i].eval(parse);
-                const val = this.inputs[i].toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-                    
-                this.value.value   -= val.value;
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-            }
-        }
-
+        this.value = evalSubtractInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalSubtractInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        inputs[0].eval(parse);
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i].eval(parse);
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value   -= val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
 
 
 class GMultiply
@@ -19854,34 +20085,41 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-
-        if (this.inputs.length > 0)
-        {
-            this.value.value = 1;
-
-            for (const input of this.inputs)
-            {
-                input.eval(parse);
-                const val = input.toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                this.value.value   *= val.value;
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-            }
-        }
-
+        this.value = evalMultiplyInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-
         this.valid = true;
     }
+}
+
+
+
+function evalMultiplyInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        value.value = 1;
+
+        for (const input of inputs)
+        {
+            input.eval(parse);
+            const val = input.toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            value.value   *= val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
 }
 
 
@@ -19900,48 +20138,54 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-        
-        if (this.inputs.length > 0)
-        {
-            this.inputs[0].eval(parse);
-            const val0 = this.inputs[0].toValue();
-
-            this.value.value    = val0.value;
-            this.value.decimals = val0.decimals;
-
-
-            for (let i = 1; i < this.inputs.length; i++)
-            {
-                this.inputs[i].eval(parse);
-                const val = this.inputs[i].toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                if (val.value == 0) 
-                { 
-                    this.value.value    = Number.NaN; 
-                    this.value.decimals = 0;
-                    break; 
-                }
-
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-                this.value.value    = floorTo(this.value.value / val.value, this.value.decimals);
-            }
-        }
-
+        this.value = evalDivideInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalDivideInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+        
+    if (inputs.length > 0)
+    {
+        inputs[0].eval(parse);
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i].eval(parse);
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            if (val.value == 0) 
+            { 
+                value.value    = Number.NaN; 
+                value.decimals = 0;
+                break; 
+            }
+
+            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value    = floorTo(value.value / val.value, value.decimals);
+        }
+    }
+
+
+    return value;
+}
 
 
 class GModulo
@@ -19959,48 +20203,54 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-        
-        if (this.inputs.length > 0)
-        {
-            this.inputs[0].eval(parse);
-            const val0 = this.inputs[0].toValue();
-
-            this.value.value    = val0.value;
-            this.value.decimals = val0.decimals;
-
-
-            for (let i = 1; i < this.inputs.length; i++)
-            {
-                this.inputs[i].eval(parse);
-                const val = this.inputs[i].toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                if (val.value == 0) 
-                { 
-                    this.value.value    = Number.NaN; 
-                    this.value.decimals = 0;
-                    break; 
-                }
-
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-                this.value.value    = floorTo(this.value.value % val.value, this.value.decimals);
-            }
-        }
-
+        this.value = evalModuloInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalModuloInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+        
+    if (inputs.length > 0)
+    {
+        inputs[0].eval(parse);
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i].eval(parse);
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            if (val.value == 0) 
+            { 
+                value.value    = Number.NaN; 
+                value.decimals = 0;
+                break; 
+            }
+
+            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value    = floorTo(value.value % val.value, value.decimals);
+        }
+    }
+
+
+    return value;
+}
 
 
 class GExponent
@@ -20018,41 +20268,47 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-
-        if (this.inputs.length > 0)
-        {
-            this.inputs[0].eval(parse);
-            const val0 = this.inputs[0].toValue();
-
-            this.value.value    = val0.value;
-            this.value.decimals = val0.decimals;
-
-
-            for (let i = 1; i < this.inputs.length; i++)
-            {
-                this.inputs[i].eval(parse);
-                const val = this.inputs[i].toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-                    
-                this.value.value    = Math.pow(this.value.value,    val.value);
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-            }
-        }
-
+        this.value = evalExponentInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalExponentInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        inputs[0].eval(parse);
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i].eval(parse);
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value    = Math.pow(value.value,    val.value);
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
 
 
 class GInterpolate
@@ -22672,7 +22928,7 @@ const iconAdd              = '<svg width="12" height="11" viewBox="0 0 12 11" fi
 const iconSubtract         = '<svg width="10" height="3" viewBox="0 0 10 3" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.13023 0.648867V2.23978H0.0393206V0.648867H9.13023Z" fill="white"/></svg>';
 const iconMultiply         = '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.05068 9.98978L0.0393206 1.97841L1.11887 0.898868L9.13023 8.91023L8.05068 9.98978ZM1.11887 9.98978L0.0393206 8.91023L8.05068 0.898868L9.13023 1.97841L1.11887 9.98978Z" fill="white"/></svg>';
 const iconDivide           = '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.13023 4.64887V6.23978H0.0393206V4.64887H9.13023ZM4.58478 10.3875C4.22966 10.3875 3.92663 10.2644 3.67568 10.0182C3.42947 9.76724 3.30637 9.46421 3.30637 9.1091C3.30637 8.76819 3.42947 8.47463 3.67568 8.22841C3.92663 7.9822 4.22966 7.85909 4.58478 7.85909C4.92568 7.85909 5.21925 7.9822 5.46546 8.22841C5.71167 8.47463 5.83478 8.76819 5.83478 9.1091C5.83478 9.46421 5.71167 9.76724 5.46546 10.0182C5.21925 10.2644 4.92568 10.3875 4.58478 10.3875ZM4.58478 3.02955C4.34803 3.02955 4.1326 2.97273 3.93847 2.85909C3.74434 2.74546 3.59046 2.59158 3.47682 2.39745C3.36318 2.20332 3.30637 1.98788 3.30637 1.75114C3.30637 1.41023 3.42947 1.11667 3.67568 0.870458C3.92663 0.624246 4.22966 0.501141 4.58478 0.501141C4.92568 0.501141 5.21925 0.624246 5.46546 0.870458C5.71167 1.11667 5.83478 1.41023 5.83478 1.75114C5.83478 2.10625 5.71167 2.40928 5.46546 2.66023C5.21925 2.90644 4.92568 3.02955 4.58478 3.02955Z" fill="white"/></svg>';
-const iconExponent         = '<svg width="15" height="15" viewBox="-1 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.58665 4.77273L3.67756 8.34091L5.76847 4.77273H7.31392L4.49574 9.13636L7.31392 13.5H5.76847L3.67756 10.1136L1.58665 13.5H0.0411932L2.81392 9.13636L0.0411932 4.77273H1.58665Z" fill="white"/><path d="M9.30682 8.04545C9.16477 8.04545 9.03812 8.03362 8.92685 8.00994C8.81558 7.98864 8.73864 7.96733 8.69602 7.94602L8.90909 7.20739C9.11269 7.25947 9.29261 7.27841 9.44886 7.2642C9.60511 7.25 9.74361 7.18016 9.86435 7.05469C9.98745 6.93158 10.0999 6.73153 10.2017 6.45455L10.358 6.02841L8.34091 0.545454H9.25L10.7557 4.89205H10.8125L12.3182 0.545454H13.2273L10.9119 6.79545C10.8078 7.07718 10.6787 7.31037 10.5249 7.49503C10.371 7.68205 10.1922 7.82055 9.98864 7.91051C9.78741 8.00047 9.56013 8.04545 9.30682 8.04545Z" fill="white"/></svg>';
+const iconExponent         = '<svg width="14" height="14" viewBox="-1 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.24574 13.6818C3.40483 13.6818 2.67945 13.4962 2.0696 13.125C1.46354 12.75 0.995739 12.2273 0.666193 11.5568C0.340436 10.8826 0.177557 10.0985 0.177557 9.20455C0.177557 8.31061 0.340436 7.52273 0.666193 6.84091C0.995739 6.1553 1.45407 5.62121 2.04119 5.23864C2.6321 4.85227 3.3215 4.65909 4.10938 4.65909C4.56392 4.65909 5.01278 4.73485 5.45597 4.88636C5.89915 5.03788 6.30256 5.28409 6.66619 5.625C7.02983 5.96212 7.3196 6.40909 7.53551 6.96591C7.75142 7.52273 7.85938 8.20833 7.85938 9.02273V9.59091H1.1321V8.43182H6.49574C6.49574 7.93939 6.39725 7.5 6.20028 7.11364C6.0071 6.72727 5.73059 6.42235 5.37074 6.19886C5.01468 5.97538 4.59422 5.86364 4.10938 5.86364C3.57528 5.86364 3.11316 5.99621 2.72301 6.26136C2.33665 6.52273 2.0393 6.86364 1.83097 7.28409C1.62263 7.70455 1.51847 8.1553 1.51847 8.63636V9.40909C1.51847 10.0682 1.6321 10.6269 1.85938 11.0852C2.09044 11.5398 2.41051 11.8864 2.8196 12.125C3.22869 12.3598 3.70407 12.4773 4.24574 12.4773C4.59801 12.4773 4.91619 12.428 5.20028 12.3295C5.48816 12.2273 5.73627 12.0758 5.9446 11.875C6.15294 11.6705 6.31392 11.4167 6.42756 11.1136L7.72301 11.4773C7.58665 11.9167 7.35748 12.303 7.03551 12.6364C6.71354 12.9659 6.31581 13.2235 5.84233 13.4091C5.36884 13.5909 4.83665 13.6818 4.24574 13.6818Z" fill="white"/><path d="M9.39205 0.545454L10.6989 2.77557L12.0057 0.545454H12.9716L11.2102 3.27273L12.9716 6H12.0057L10.6989 3.88352L9.39205 6H8.42614L10.1591 3.27273L8.42614 0.545454H9.39205Z" fill="white"/></svg>';
 const iconModulo           = '<svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.07556 8.75853V8.21776C6.07556 7.8439 6.15233 7.50175 6.30588 7.19131C6.46277 6.87753 6.68976 6.62718 6.98685 6.44024C7.28728 6.24997 7.65113 6.15484 8.0784 6.15484C8.51235 6.15484 8.8762 6.24997 9.16995 6.44024C9.4637 6.62718 9.68568 6.87753 9.83589 7.19131C9.9861 7.50175 10.0612 7.8439 10.0612 8.21776V8.75853C10.0612 9.1324 9.98444 9.47622 9.83088 9.78999C9.68067 10.1004 9.45702 10.3508 9.15993 10.5411C8.86618 10.728 8.50567 10.8215 8.0784 10.8215C7.64445 10.8215 7.27893 10.728 6.98184 10.5411C6.68475 10.3508 6.45943 10.1004 6.30588 9.78999C6.15233 9.47622 6.07556 9.1324 6.07556 8.75853ZM7.09701 8.21776V8.75853C7.09701 9.06897 7.17044 9.3477 7.31732 9.59472C7.46419 9.8384 7.71789 9.96024 8.0784 9.96024C8.4289 9.96024 8.67591 9.8384 8.81945 9.59472C8.96632 9.3477 9.03976 9.06897 9.03976 8.75853V8.21776C9.03976 7.90732 8.96966 7.63026 8.82946 7.38659C8.68926 7.13957 8.43891 7.01606 8.0784 7.01606C7.7279 7.01606 7.47588 7.13957 7.32233 7.38659C7.17211 7.63026 7.09701 7.90732 7.09701 8.21776ZM0.968313 2.89021V2.34944C0.968313 1.97558 1.04509 1.63342 1.19864 1.32298C1.35553 1.00921 1.58252 0.758851 1.87961 0.571919C2.18003 0.381649 2.54388 0.286514 2.97115 0.286514C3.4051 0.286514 3.76895 0.381649 4.0627 0.571919C4.35645 0.758851 4.57843 1.00921 4.72865 1.32298C4.87886 1.63342 4.95397 1.97558 4.95397 2.34944V2.89021C4.95397 3.26407 4.87719 3.60789 4.72364 3.92167C4.57343 4.23211 4.34978 4.48247 4.05269 4.67274C3.75894 4.85967 3.39843 4.95313 2.97115 4.95313C2.5372 4.95313 2.17169 4.85967 1.8746 4.67274C1.57751 4.48247 1.35219 4.23211 1.19864 3.92167C1.04509 3.60789 0.968313 3.26407 0.968313 2.89021ZM1.98976 2.34944V2.89021C1.98976 3.20065 2.0632 3.47938 2.21007 3.72639C2.35695 3.97007 2.61064 4.09191 2.97115 4.09191C3.32165 4.09191 3.56867 3.97007 3.7122 3.72639C3.85908 3.47938 3.93252 3.20065 3.93252 2.89021V2.34944C3.93252 2.039 3.86242 1.76194 3.72222 1.51826C3.58202 1.27124 3.33167 1.14774 2.97115 1.14774C2.62066 1.14774 2.36863 1.27124 2.21508 1.51826C2.06487 1.76194 1.98976 2.039 1.98976 2.34944ZM1.34885 10.6813L8.39885 0.426713H9.54047L2.49047 10.6813H1.34885Z" fill="white"/></svg>';
 const iconInterpolate      = '<svg width="20" height="10" viewBox="0 0 20 10" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="-0.150566" y1="8.52321" x2="18.8494" y2="2.52321" stroke="white"/><ellipse cx="3.07097" cy="7.5" rx="0.732794" ry="3.23269" transform="rotate(-12.7132 3.07097 7.5)" fill="white"/><ellipse cx="11.3613" cy="4.88962" rx="0.732794" ry="3.23269" transform="rotate(-12.7132 11.3613 4.88962)" fill="white"/><ellipse cx="15.9295" cy="3.65694" rx="0.732794" ry="3.23269" transform="rotate(-12.7132 15.9295 3.65694)" fill="white"/></svg>';
 
@@ -22849,7 +23105,8 @@ function initMenus()
     menuNumber.addItems([
         new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(new CreateNodeAction(NUMBER,             btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Math',        {icon: iconMath       , enabled: false}),
+        new MenuItem('',            {separator: true}),
+        new MenuItem('Math',        {icon: iconMath       , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MATH,        btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(new CreateNodeAction(NUMBER_ADD,         btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,    btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,    btnNumber.div, {insert: e.shiftKey}))}),
@@ -27438,7 +27695,8 @@ graphView.endConnection = pointerId =>
                 && !isNaN(oldReorderIndex)
                 &&  newReorderIndex >= 0
                 &&  input.node.variableInputs
-                && !isLastInArray(input.node.inputs, input))
+                && !input.param
+                && !isLastInArray(input.node.headerInputs, input))
                 actionManager.do(new ReorderInputAction(input.node.id, oldReorderIndex, newReorderIndex));
 
             else if (input == savedConnInput) // reconnect old
@@ -28157,6 +28415,7 @@ extends Parameter
 
     enableControlText(enable)
     {
+        console.log('NumberParambase.enableControlText('+enable+')');
         enable &= !this.input || !this.input.connected;
         enableElementText(this.control, enable);
         this.control.readOnly = !enable;
@@ -29654,15 +29913,16 @@ class Graph
         }
 
 
-        if (   input.node.variableInputs
-            && inputIndex > -1)
+        if (    input.node.variableInputs
+            && !input.param
+            &&  inputIndex > -1)
         {
-            input = lastOf(input.node.inputs);
+            input = lastOf(input.node.headerInputs);
             
             // move new input back to correct index
             moveInArray(
                 input.node.inputs, 
-                input.node.inputs.length-1, 
+                input.node.headerInputs.length-1, 
                 inputIndex);
 
             input.node.inputControls.insertBefore(
@@ -29798,6 +30058,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     {
         case NUMBER:             node = new OpNumber();           break;
         case NUMBER_LIMITS:      node = new OpLimits();           break;
+        case NUMBER_MATH:        node = new OpMath();             break;
         case NUMBER_ADD:         node = new OpAdd();              break;
         case NUMBER_SUBTRACT:    node = new OpSubtract();         break;
         case NUMBER_MULTIPLY:    node = new OpMultiply();         break;
@@ -30061,9 +30322,8 @@ function getActiveInBranchFromNode(node, alreadyChecked = [])
     }
 
 
-    const nodeOutputs = node.outputs
-        .filter(o => o.connectedInputs.length == 1)
-        .filter(o => !o.param);
+    const nodeOutputs = node.headerOutputs
+        .filter(o => o.connectedInputs.length == 1);
 
     if (    nodeOutputs.length == 1
         && !nodeOutputs[0].connectedInputs[0].param
@@ -30100,7 +30360,7 @@ function getActiveFromNode(node, alreadyChecked = [])
     if (leftActive) return leftActive;
 
 
-    for (const output of node.outputs.filter(o => !o.param))
+    for (const output of node.headerOutputs)
     {
         for (const input of output.connectedInputs.filter(i => !i.param))
         {
@@ -30131,7 +30391,7 @@ function getActiveLeftFromNode(node, alreadyChecked = [])
         return node;
 
 
-    for (const input of node.inputs.filter(i => !i.param))
+    for (const input of node.headerInputs)
     {
         if (    input.connected
             && !input.connectedOutput.param
@@ -30160,7 +30420,7 @@ function getActiveLeftOnlyFromNode(node, alreadyChecked = [])
         return node;
 
 
-    for (const input of node.inputs.filter(i => !i.param))
+    for (const input of node.headerInputs)
     {
         if (    input.connected
             && !input.connectedOutput.param
@@ -30187,7 +30447,7 @@ function getActiveRightFromNode(node, alreadyChecked = [])
         return node;
 
 
-    for (const output of node.outputs.filter(o => !o.param))
+    for (const output of node.headerOutputs)
     {
         for (const input of output.connectedInputs.filter(i => !i.param))
         {
@@ -30219,7 +30479,7 @@ function getActiveNodesRightFromNodeId(nodeId, alreadyChecked = [])
         rightActive.push(node);
 
 
-    for (const output of node.outputs.filter(o => !o.param))
+    for (const output of node.headerOutputs)
     {
         for (const input of output.connectedInputs.filter(i => !i.param))
         {
@@ -30254,7 +30514,7 @@ function getActiveNodesFromNode(node, alreadyChecked = [])
         activeNodes.push(node);
 
 
-    for (const input of node.inputs.filter(i => !i.param))
+    for (const input of node.headerInputs)
     {
         if (    input.connected
             && !input.connectedOutput.param
@@ -30263,7 +30523,7 @@ function getActiveNodesFromNode(node, alreadyChecked = [])
     }
 
 
-    for (const output of node.outputs.filter(o => !o.param))
+    for (const output of node.headerOutputs)
     {
         for (const input of output.connectedInputs.filter(i => !i.param))
         {
@@ -30318,7 +30578,7 @@ extends EventTarget
         {
             this.dispatchEvent(new CustomEvent(
                 'disconnect', 
-                { 'input': this }));
+                { detail: { input: this }}));
         }
 
         this._connectedOutput = output;
@@ -30327,10 +30587,10 @@ extends EventTarget
         {
             this.dispatchEvent(new CustomEvent(
                 'connect', 
-                { 
-                    'output': output,
-                    'input':  this 
-                }));
+                { detail: {
+                    output: output,
+                    input:  this 
+                }}));
         }
     }
 
@@ -30353,8 +30613,8 @@ extends EventTarget
     isNew        = false; // this indicates that the input is the empty "new" input of a variable node
 
 
-    onconnect    = new Event('connect');
-    ondisconnect = new Event('disconnect');
+    //onconnect    = new Event('connect');
+    //ondisconnect = new Event('disconnect');
 
 
     getValuesForUndo; // function pointer, return array of [index,value] tuples
@@ -31042,12 +31302,12 @@ class Connection
 
         if (   !outputNode 
             ||    isDigit(outputId[0])
-               && parseInt(outputId) >= outputNode.outputs.filter(o => !o.param).length
+               && parseInt(outputId) >= outputNode.headerOutputs.length
             ||   !isDigit(outputId[0])
                && !outputNode.params.find(p => p.id == outputId && p.output)
             || !inputNode  
             ||    isDigit(inputId[0])
-               && parseInt(inputId) >= inputNode.inputs.filter(i => !i.param).length
+               && parseInt(inputId) >= inputNode.headerInputs.length
             ||   !isDigit(inputId[0])
                && !inputNode.params.find(p => p.id == inputId && p.input))
         {
@@ -31142,18 +31402,18 @@ class Operator
     enabled;
 
     
-    inputs        = [];
-    outputs       = [];
+    inputs           = [];
+    outputs          = [];
 
-    params        = [];
-    hiddenParams  = [];
+    params           = [];
+    hiddenParams     = [];
 
     
-    variableInputs       = false;
+    variableInputs   = false;
 
-    alwaysLoadParams     = false;
+    alwaysLoadParams = false;
 
-    scrollName           = true;
+    scrollName       = true;
 
 
     defaultWidth;
@@ -31210,14 +31470,10 @@ class Operator
     get active() { return this._active; }
        
     
-    get headerConnected()
-    {
-        const inputs = this.inputs.filter(i => 
-              !i.param 
-            && i.connected);
-            
-        return inputs.length > 0;
-    }
+    get headerConnected() { return this.headerInputs.filter(i => i.connected).length > 0; }
+
+    get headerInputs () { return this.inputs .filter(i => !i.param); }
+    get headerOutputs() { return this.outputs.filter(o => !o.param); }
 
 
 
@@ -31241,11 +31497,22 @@ class Operator
 
 
 
-    addInput(input)
+    addInput(input)//, index = -1)
     {
         input._node = this;
-        this.inputs.push(input);
-        this.inputControls.appendChild(input.div);
+        
+        //if (index < 0)
+        //{
+            // this.inputs.push(input);
+            // this.inputControls.appendChild(input.div);
+        //}
+        //else
+        //{
+            const index = this.headerInputs.length;
+
+            this.inputs.splice(index, 0, input);
+            this.inputControls.insertBefore(input.div, this.inputControls.children[index]);
+        //}
     }
 
 
@@ -31263,11 +31530,12 @@ class Operator
 
     getAutoInput(outTypes)
     {
-        const inputs = this.inputs.filter(i => i.types.find(_i => outTypes.includes(_i)));
+        const inputs = this.inputs.filter(i => arraysIntersect(i.types, outTypes));
 
-        
+
         if (graphView.overInput)
             return graphView.overInput;
+
 
         if (   graphView.savedConn
             && graphView.savedConn.input
@@ -31277,7 +31545,7 @@ class Operator
         else if (!graphView.tempConn.output.node.isOrFollows(this))
         {
             if (this.variableInputs)
-                return lastOf(inputs);
+                return lastOf(inputs.filter(i => !i.param));
 
             else
             {
@@ -31291,6 +31559,7 @@ class Operator
                 return inputs[0];
             }
         }
+
 
         return null;
     }
@@ -31432,7 +31701,7 @@ class Operator
     {
         const inputs = 
             headerOnly 
-            ? this.inputs.filter(i => !i.param) 
+            ? this.headerInputs 
             : this.inputs;
 
         for (const input of inputs)
@@ -31656,9 +31925,9 @@ class Operator
         // console.log('this.inputs',  this.inputs);
         // console.log('this.outputs', this.outputs);
 
-        const inputs          = this.inputs .filter(i => !i.param);
-        const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
-        const outputs         = this.outputs.filter(o => !o.param);
+        const inputs          = this.headerInputs;
+        const connectedInputs = this.headerInputs.filter(i => i.connected);
+        const outputs         = this.headerOutputs;
 
         const padding         = this.header.connectionPadding;
             
@@ -31970,10 +32239,9 @@ function getNodeRequest(node, gen)
     const request = [];
 
 
-    if (node.outputs.filter(o => !o.param).length > 0)
+    if (node.headerOutputs.length > 0)
     {
-        node.outputs
-            .filter(o => !o.param)
+        node.headerOutputs
             .forEach(o =>
             {
                 const _r = o.genRequest(gen);
@@ -32026,14 +32294,14 @@ extends Operator
         this.label .style.color           = rgba2style(colors.text);
 
 
-        for (const input of this.inputs.filter(i => !i.param))
+        for (const input of this.headerInputs)
         {
             input.colorLight = 
             input.colorDark  = colors.input;
         }
 
         
-        for (const output of this.outputs.filter(o => !o.param)) 
+        for (const output of this.headerOutputs) 
         {
             output.colorLight =
             output.colorDark  = colors.output;
@@ -32282,7 +32550,7 @@ function createNodeHeader(node)
                     const index = Math.min(Math.round(
                           ((e.clientY - rect.y) / graphView.zoom - padding - (connectionSize + connectionGap)/2) 
                         / (connectionSize + connectionGap)),
-                        node.inputs.length-2);
+                        node.headerInputs.length-2);
                     
                     if (index != prevReorderIndex)
                     {
@@ -32958,8 +33226,8 @@ extends OperatorBase
     {
         super(NUMBER, 'num', 70);
 
-        this.addInput (new Input ([NUMBER], this.input_getValuesForUndo));
-        this.addOutput(new Output([NUMBER], this.output_genRequest));
+        this.addInput (new Input (NUMBER_TYPES, this.input_getValuesForUndo));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
         
@@ -33025,8 +33293,8 @@ extends OperatorBase
     {
         super(NUMBER_LIMITS, 'lim', 70);
 
-        this.addInput (new Input ([NUMBER]));
-        this.addOutput(new Output([NUMBER], this.output_genRequest));
+        this.addInput (new Input (NUMBER_TYPES));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
@@ -33095,16 +33363,16 @@ extends OperatorBase
 
     constructor(type, shortName, symbol)
     {
-        super(type, shortName, 50);
+        super(type, shortName, 70);
 
-        this.variableInputs  = true;
+        this.variableInputs   = true;
         this.alwaysLoadParams = true;
 
         this._showOnlySymbol  = true;
 
 
         this.addNewInput();
-        this.addOutput(new Output([NUMBER], this.output_genRequest));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
@@ -33152,15 +33420,15 @@ extends OperatorBase
     
     addNewInput()
     {
-        const input = new Input(NUMBER_TYPES);
-        input.isNew = true;
+        const newInput = new Input(NUMBER_TYPES);
+        newInput.isNew = true;
 
-        input.addEventListener('connect',    () => { OpArithmetic_onConnectInput(this); input.isNew = false; });
-        input.addEventListener('disconnect', () => OpArithmetic_onDisconnectInput(this, input));
+        newInput.addEventListener('connect',    e => { OpArithmetic_onConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => OpArithmetic_onDisconnectInput(this, e.detail.input));
 
-        this.addInput(input);
+        this.addInput(newInput);
 
-        return input;
+        return newInput;
     }
 
 
@@ -33199,8 +33467,17 @@ extends OperatorBase
     {
         super.updateValues(updateParamId, paramIds, values);
 
-        if (paramIds.includes('value'))
-            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
+        const value = values[paramIds.findIndex(id => id == 'value')];
+        this.paramValue.setValue(value, false, true, false);
+    }
+
+
+
+    updateParams()
+    {
+        this.paramValue.enableControlText(false);
+
+        super.updateParams();
     }
 
 
@@ -33220,7 +33497,7 @@ extends OperatorBase
         
 
         const padding         = this.header.connectionPadding;
-        const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
+        const connectedInputs = this.headerInputs.filter(i => i.connected);
 
 
         if (isEmpty(connectedInputs))
@@ -33279,7 +33556,7 @@ extends OperatorBase
         if (_node.showOnlySymbol)
             this._showOnlySymbol = isTrue(_node.showOnlySymbol);
 
-        //super.loadParams(_node);
+        super.loadParams(_node);
     }
 }
 
@@ -33288,7 +33565,6 @@ extends OperatorBase
 function OpArithmetic_onConnectInput(node)
 {
     node.addNewInput();
-    //node.updateNode();
 }
 
 
@@ -33297,7 +33573,123 @@ function OpArithmetic_onDisconnectInput(node, input)
 {
     removeFromArray(node.inputs, input);
     node.inputControls.removeChild(input.div);
-    //node.updateNode();
+}
+
+
+class   OpMath
+extends OperatorBase
+{
+    paramOperation;
+    paramValue;
+
+
+
+    constructor()
+    {
+        super(NUMBER_MATH, 'math', 70);
+
+        this.variableInputs   = true;
+        this.alwaysLoadParams = true;
+
+
+        this.addNewInput();
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        
+        this.addParam(this.paramOperation = new SelectParam('op',    '', false, true, true, MATH_OPS.map(s => s[1]), 1));
+        this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
+    }
+    
+    
+    
+    addNewInput()
+    {
+        const newInput = new Input(NUMBER_TYPES);
+        newInput.isNew = true;
+
+        newInput.addEventListener('connect',    e => { OpMath_onConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => OpMath_onDisconnectInput(this, e.detail.input));
+
+        this.addInput(newInput);
+
+        return newInput;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
+
+
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+        connectedInputs.forEach(input => 
+            request.push(...input.connectedOutput.genRequest(gen)));
+
+        
+        request.push(...this.node.paramOperation.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(updateParamId, paramIds, values)
+    {
+        super.updateValues(updateParamId, paramIds, values);
+
+        const operation = values[paramIds.findIndex(id => id == 'operation')];
+        const value     = values[paramIds.findIndex(id => id == 'value'    )];
+
+        this.paramOperation.setValue(operation, false, true, false);
+        this.paramValue    .setValue(value,     false, true, false);
+    }
+
+
+
+    updateParams()
+    {
+        this.paramOperation.enableControlText(true );
+        this.paramValue    .enableControlText(false);
+
+        super.updateParams();
+    }
+
+
+
+    paramsToJson(nTab = 0)
+    {
+        return '';
+    }
+}
+
+
+
+function OpMath_onConnectInput(node)
+{
+    node.addNewInput();
+}
+
+
+
+function OpMath_onDisconnectInput(node, input)
+{
+    removeFromArray(node.inputs, input);
+    node.inputControls.removeChild(input.div);
 }
 
 
@@ -33393,234 +33785,6 @@ extends OpArithmetic
 }
 
 
-// const ops = [ // the order is important for logical keyboard value changes
-//     [NUMBER_SUBTRACT, '-'],
-//     [NUMBER_ADD,      '+'],
-//     [NUMBER_DIVIDE,   '÷'],
-//     [NUMBER_MULTIPLY, '×'],
-//     [NUMBER_MODULO,   '%'],
-//     [NUMBER_EXPONENT, 'xʸ'] ];
-
-
-
-class   OpMath
-extends OperatorBase
-{
-    paramOperation;
-    paramValue;
-
-
-
-    constructor(type, shortName)
-    {
-        super(type, shortName, 50);
-
-        this.variableInputs   = true;
-        this.alwaysLoadParams = true;
-
-
-        this.addNewInput();
-        this.addOutput(new Output([NUMBER], this.output_genRequest));
-        
-        this.addParam(this.paramOperation = new SelectParam('op',    '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
-        this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
-
-        //this.paramValue.enableControlText(false);
-
-
-        this._symbol           = createDiv('arithmeticSymbol');
-        this._symbol.innerHTML = symbol;
-        this._symbol.clicked0  = false;
-        
-        this._symbol.addEventListener('pointerenter', () => this._symbol.style.opacity = this._showOnlySymbol ? 1 : 0.65);
-        this._symbol.addEventListener('pointerleave', () => this._symbol.style.opacity = 1);
-
-        this._symbol.addEventListener('pointerdown', e => 
-        { 
-            if (e.button == 0)
-            {
-                if (this._symbol.clicked0) // finish double click on small symbol
-                {
-                    this._symbol.clicked0      = false;
-                    this._symbol.style.opacity = 1;
-
-                    actionManager.do(new ToggleArithmeticSymbolAction(this.id, true));
-
-                    this.header.ignoreDoubleClick = true;
-                }
-                else if (!this._showOnlySymbol) // start double cick on small symbol
-                {
-                    this._symbol.clicked0 = true;
-                    setTimeout(() => this._symbol.clicked0 = false, 250); // seems like a good default guess
-                }
-            }
-        });
-
-        this.header.appendChild(this._symbol);
-
-        
-        this.textbox.addEventListener('finishedit', e => 
-        {
-            if (this._showOnlySymbol)
-                actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
-        });
-    }
-    
-    
-    
-    addNewInput()
-    {
-        const input = new Input([NUMBER]);
-        input.isNew = true;
-
-        input.addEventListener('connect',    () => { onConnectInput(this); input.isNew = false; });
-        input.addEventListener('disconnect', () => onDisconnectInput(this, input));
-
-        this.addInput(input);
-
-        return input;
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-        const connectedInputs  = this.node.inputs.filter(i => i.connected);
-
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: '' });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-
-        request.push(connectedInputs.length); // utility values like param count are stored as numbers
-        
-        connectedInputs.forEach(input => 
-            request.push(...input.connectedOutput.genRequest(gen)));
-
-        
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
-    }
-
-
-
-    // updateValues(updateParamId, paramIds, values)
-    // {
-    //     super.updateValues(updateParamId, paramIds, values);
-
-    //     if (paramIds.includes('value'))
-    //         this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
-    // }
-
-
-
-    updateHeader()
-    {
-        super.updateHeader();
-
-
-        const colBack = rgbHeaderFromType(this.type, this.active);
-        const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
-
-        this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
-        this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
-        this._symbol.style.color      = rgb2style(colText);
-        this._symbol.style.left       = 'calc(50% + 1px)';
-        
-
-        const padding         = this.header.connectionPadding;
-        const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
-
-
-        if (isEmpty(connectedInputs))
-        {
-            if (this._showOnlySymbol)
-            {
-                this._symbol.style.top = 2;
-            }
-            else
-            {
-                this._symbol.style.top = -1;
-                this.label  .style.top = 'calc(50% + 4px)';
-            }
-        }
-        else
-        {
-            const [connectedInputY, connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
-
-            if (this._showOnlySymbol)
-            {
-                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 9;
-            }
-            else
-            {
-                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 6;
-                this.label  .style.top = 'calc(50% + 5px)';
-            }
-        }
-        
-
-        this.label.style.visibility = this._showOnlySymbol ? 'hidden' : 'visible';
-    }
-
-
-
-    toJsonBase(nTab = 0) 
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = TAB;
-
-        return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"onlySymbol": "' + boolToString(this._showOnlySymbol) + '"';
-    }
-
-
-
-    paramsToJson(nTab = 0)
-    {
-        return '';
-    }
-
-
-
-    loadParams(_node)
-    {
-        if (_node.showOnlySymbol)
-            this._showOnlySymbol = isTrue(_node.showOnlySymbol);
-
-        //super.loadParams(_node);
-    }
-}
-
-
-
-function onConnectInput(node)
-{
-    node.addNewInput();
-    //node.updateNode();
-}
-
-
-
-function onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
-    //node.updateNode();
-}
-
-
 class   OpInterpolate
 extends OperatorBase
 {
@@ -33636,7 +33800,7 @@ extends OperatorBase
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));
 
-        this.addOutput(new Output([NUMBER], this.output_genRequest));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue  = new NumberParam('value', '', false, false, false, 0));
         this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
@@ -33754,7 +33918,7 @@ extends Operator
             : 'transparent';
 
 
-        for (const input of this.inputs.filter(i => !i.param))
+        for (const input of this.headerInputs)
         {
             input.colorLight =
             input.colorDark  = colors.input;
@@ -33763,7 +33927,7 @@ extends Operator
         }
 
 
-        for (const output of this.outputs.filter(o => !o.param))
+        for (const output of this.headerOutputs)
         {
             output.colorLight = 
             output.colorDark  = colors.output;
@@ -34098,9 +34262,6 @@ extends OpColorBase
     {
         //console.log(this.id + '.OpColor.updateNode()');
         
-        super.updateNode();
-
-
         if (!hasFocus(this.paramColor.control))
             this.paramColor.setValue(ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color))), false, true, false);// = 
         
@@ -34134,7 +34295,10 @@ extends OpColorBase
         this.paramSpace.output.colorDark  = colors.output;
 
 
-        this.paramSpace.updateControls();
+        //this.paramSpace.updateControls();
+
+
+        super.updateNode();
     }
 
 
@@ -38521,7 +38685,7 @@ extends Action
     
     newActiveNodeIds = [];
 
-    oldinputValues   = []; // in index,value pairs, to be restored on undo
+    oldInputValues   = []; // in index,value pairs, to be restored on undo
 
 
 
@@ -39530,8 +39694,8 @@ extends Action
             const first = firstOf(cluster);
             const last  =  lastOf(cluster);
 
-            if (   first.inputs .filter(i => !i.param).length == 1
-                &&  last.outputs.filter(o => !o.param).length == 1
+            if (   first.headerInputs .length == 1
+                &&  last.headerOutputs.length == 1
                 && first.inputs [0].connected
                 &&  last.outputs[0].connected)
             {
@@ -41987,13 +42151,15 @@ function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
 {
     //console.log('uiVariableConnect()');
 
-    if (inputNode.variableInputs)
-    {
-        const input = lastOf(inputNode.inputs);
+    const output = outputNode.outputs[outputIndex];
+    const  input =  inputNode. inputs[ inputIndex];
 
+    if (    inputNode.variableInputs
+        && !input.param)
+    {
         const conn = uiConnect(
-            outputNode.outputs[outputIndex],
-            input,
+            output,
+            lastOf(inputNode.headerInputs),
             inputIndex);
 
         uiUpdateSavedConnectionsToNodeId(inputNode.id);
@@ -42001,17 +42167,16 @@ function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
         return conn;
     }
     else
-    {
-        return uiConnect(
-            outputNode.outputs[outputIndex],
-             inputNode. inputs[ inputIndex]);
-    }
+        return uiConnect(output, input);
 }
 
 
 
 function uiConnect(output, input, inputIndex = -1)
 {
+    // console.log('output =', output);
+    // console.log('input =', input);
+    // console.log('inputIndex =', inputIndex);
     const conn = graph.connect(output, input, inputIndex);
 
     uiSaveConnection(
@@ -42121,7 +42286,7 @@ function uiMakeNodePassive(node)
 function uiMakeNodeLeftPassive(node, fromNode = null)
 {
     //console.log('uiMakeNodeLeftPassive() node =', node);
-    for (const input of node.inputs.filter(i => !i.param))
+    for (const input of node.headerInputs)
     {
         if (    input.connected
             && !input.connectedOutput.param
@@ -42138,7 +42303,7 @@ function uiMakeNodeLeftPassive(node, fromNode = null)
 
 function uiMakeNodeRightPassive(node, fromNode = null)
 {
-    for (const output of node.outputs.filter(o => !o.param))
+    for (const output of node.headerOutputs)
     {
         for (const connInput of output.connectedInputs.filter(i => !i.param))
         {
@@ -42521,9 +42686,9 @@ function uiSaveConnection(outputNodeId, outputIndex, inputNodeId, inputIndex, co
 
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
-        name: outputNodeId  + ' '
-            + outputIndex + ' '
-            + inputNodeId   + ' '
+        name: outputNodeId + ' '
+            + outputIndex  + ' '
+            + inputNodeId  + ' '
             + inputIndex,
         json: connJson
     });

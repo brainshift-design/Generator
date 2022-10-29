@@ -17,11 +17,17 @@ const GENERATOR_LOGO = '◦G•';
 
 function rgbHeaderFromType(type, active)
 {
+    if (NUMBER_TYPES.includes(type))
+        return active 
+        ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
+        : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
+
     switch (type)
     {
         case NUMBER_VALUE:    
         case NUMBER:    
         case NUMBER_LIMITS:
+        case NUMBER_MATH:
         case NUMBER_ADD:
         case NUMBER_SUBTRACT:
         case NUMBER_MULTIPLY:
@@ -29,9 +35,6 @@ function rgbHeaderFromType(type, active)
         case NUMBER_MODULO:
         case NUMBER_EXPONENT:
         case NUMBER_INTERPOLATE: 
-            return active 
-                ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
-                : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
         case COLOR_VALUE:           
 
@@ -2666,6 +2669,15 @@ function logReqLimits(lim, nValues, parse)
 
 
 
+function logReqMath(math, nValues, parse)
+{
+    parse.log += parse.tab + NUMBER_MATH;
+    parse.log += logReqNodeId(math);
+    parse.log += ' ' + nValues;
+}
+
+
+
 function logReqArithmetic(arith, type, nValues, parse)
 {
     parse.log += parse.tab + type;
@@ -2954,13 +2966,13 @@ const NUMBER_VALUE        = 'N';     // value (s) (with significant decimals)
 
 const NUMBER              = 'NUM';   // N | n
 const NUMBER_LIMITS       = 'LIM';   // N:min N:max
+const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_ADD          = 'ADD';   // count N...
 const NUMBER_SUBTRACT     = 'SUB';   // count N...
 const NUMBER_MULTIPLY     = 'MUL';   // count N...
 const NUMBER_DIVIDE       = 'DIV';   // count N...
 const NUMBER_MODULO       = 'MOD';   // count N...
 const NUMBER_EXPONENT     = 'EXP';   // count N...
-const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
@@ -2970,14 +2982,25 @@ const NUMBER_TYPES =
 
     NUMBER,
     NUMBER_LIMITS,
+    NUMBER_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,
     NUMBER_MULTIPLY,
     NUMBER_DIVIDE,
     NUMBER_MODULO,
     NUMBER_EXPONENT,
-    NUMBER_MATH,
     NUMBER_INTERPOLATE 
+];
+
+
+const MATH_OPS = 
+[   // the order is important for logical keyboard value changes
+    [NUMBER_SUBTRACT, '-' ],
+    [NUMBER_ADD,      '+' ],
+    [NUMBER_DIVIDE,   '÷' ],
+    [NUMBER_MULTIPLY, '×' ],
+    [NUMBER_MODULO,   '%' ],
+    [NUMBER_EXPONENT, 'eˣ'] 
 ];
 
 
@@ -4871,6 +4894,52 @@ extends GNumberType
 
 
 
+class GMath
+extends GArithmetic
+{
+    operation;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_MATH, nodeId, options);
+    }
+
+
+    
+    eval(parse)
+    {
+        if (this.valid)
+            return;
+
+
+        this.operation.eval(parse);
+        const op = this.operation.toValue();
+
+        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+
+        switch (op.value)
+        {
+            case 0: this.value = evalSubtractInputs(this.inputs, parse); break;
+            case 1: this.value = evalAddInputs     (this.inputs, parse); break;
+            case 2: this.value = evalDivideInputs  (this.inputs, parse); break;
+            case 3: this.value = evalMultiplyInputs(this.inputs, parse); break;
+            case 4: this.value = evalModuloInputs  (this.inputs, parse); break;
+            case 5: this.value = evalExponentInputs(this.inputs, parse); break;
+        }
+
+        
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+        genPushUpdateValue(parse, this.nodeId, 'operation', op);
+
+
+        this.valid = true;
+    }
+}
+
+
+
 class GAdd
 extends GArithmetic
 {
@@ -4886,31 +4955,37 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-
-        for (const input of this.inputs)
-        {
-            input.eval(parse);
-            const val = input.toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must belong to NUMBER_VALUE');
-
-            this.value.value   += val.value;
-            this.value.decimals = Math.max(this.value.decimals, val.decimals);
-        }
-        
+        this.value = evalAddInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalAddInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+
+    for (const input of inputs)
+    {
+        input.eval(parse);
+        const val = input.toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        value.value   += val.value;
+        value.decimals = Math.max(value.decimals, val.decimals);
+    }
+
+
+    return value;
+}
 
 
 class GSubtract
@@ -4928,41 +5003,47 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-
-        if (this.inputs.length > 0)
-        {
-            this.inputs[0].eval(parse);
-            const val0 = this.inputs[0].toValue();
-
-            this.value.value    = val0.value;
-            this.value.decimals = val0.decimals;
-
-
-            for (let i = 1; i < this.inputs.length; i++)
-            {
-                this.inputs[i].eval(parse);
-                const val = this.inputs[i].toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-                    
-                this.value.value   -= val.value;
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-            }
-        }
-
+        this.value = evalSubtractInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalSubtractInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        inputs[0].eval(parse);
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i].eval(parse);
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value   -= val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
 
 
 class GMultiply
@@ -4980,34 +5061,41 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-
-        if (this.inputs.length > 0)
-        {
-            this.value.value = 1;
-
-            for (const input of this.inputs)
-            {
-                input.eval(parse);
-                const val = input.toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                this.value.value   *= val.value;
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-            }
-        }
-
+        this.value = evalMultiplyInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-
         this.valid = true;
     }
+}
+
+
+
+function evalMultiplyInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        value.value = 1;
+
+        for (const input of inputs)
+        {
+            input.eval(parse);
+            const val = input.toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            value.value   *= val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
 }
 
 
@@ -5026,48 +5114,54 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-        
-        if (this.inputs.length > 0)
-        {
-            this.inputs[0].eval(parse);
-            const val0 = this.inputs[0].toValue();
-
-            this.value.value    = val0.value;
-            this.value.decimals = val0.decimals;
-
-
-            for (let i = 1; i < this.inputs.length; i++)
-            {
-                this.inputs[i].eval(parse);
-                const val = this.inputs[i].toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                if (val.value == 0) 
-                { 
-                    this.value.value    = Number.NaN; 
-                    this.value.decimals = 0;
-                    break; 
-                }
-
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-                this.value.value    = floorTo(this.value.value / val.value, this.value.decimals);
-            }
-        }
-
+        this.value = evalDivideInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalDivideInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+        
+    if (inputs.length > 0)
+    {
+        inputs[0].eval(parse);
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i].eval(parse);
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            if (val.value == 0) 
+            { 
+                value.value    = Number.NaN; 
+                value.decimals = 0;
+                break; 
+            }
+
+            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value    = floorTo(value.value / val.value, value.decimals);
+        }
+    }
+
+
+    return value;
+}
 
 
 class GModulo
@@ -5085,48 +5179,54 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-        
-        if (this.inputs.length > 0)
-        {
-            this.inputs[0].eval(parse);
-            const val0 = this.inputs[0].toValue();
-
-            this.value.value    = val0.value;
-            this.value.decimals = val0.decimals;
-
-
-            for (let i = 1; i < this.inputs.length; i++)
-            {
-                this.inputs[i].eval(parse);
-                const val = this.inputs[i].toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-
-                if (val.value == 0) 
-                { 
-                    this.value.value    = Number.NaN; 
-                    this.value.decimals = 0;
-                    break; 
-                }
-
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-                this.value.value    = floorTo(this.value.value % val.value, this.value.decimals);
-            }
-        }
-
+        this.value = evalModuloInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalModuloInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+        
+    if (inputs.length > 0)
+    {
+        inputs[0].eval(parse);
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i].eval(parse);
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            if (val.value == 0) 
+            { 
+                value.value    = Number.NaN; 
+                value.decimals = 0;
+                break; 
+            }
+
+            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value    = floorTo(value.value % val.value, value.decimals);
+        }
+    }
+
+
+    return value;
+}
 
 
 class GExponent
@@ -5144,41 +5244,47 @@ extends GArithmetic
         if (this.valid)
             return;
 
-
-        this.value = new NumberValue(0);
-
-
-        if (this.inputs.length > 0)
-        {
-            this.inputs[0].eval(parse);
-            const val0 = this.inputs[0].toValue();
-
-            this.value.value    = val0.value;
-            this.value.decimals = val0.decimals;
-
-
-            for (let i = 1; i < this.inputs.length; i++)
-            {
-                this.inputs[i].eval(parse);
-                const val = this.inputs[i].toValue();
-
-                console.assert(
-                    val.type == NUMBER_VALUE, 
-                    'val.type must be NUMBER_VALUE');
-                    
-                this.value.value    = Math.pow(this.value.value,    val.value);
-                this.value.decimals = Math.max(this.value.decimals, val.decimals);
-            }
-        }
-
+        this.value = evalExponentInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.valid = true;
     }
 }
 
+
+
+function evalExponentInputs(inputs, parse)
+{
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        inputs[0].eval(parse);
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i].eval(parse);
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value    = Math.pow(value.value,    val.value);
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
 
 
 class GInterpolate
@@ -7851,6 +7957,49 @@ function genParseLimits(parse)
 
 
 
+function genParseMath(parse, newNode)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const math = newNode(nodeId, options);
+
+    
+    let nValues = 0;
+    
+    if (!ignore)
+        nValues = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReqMath(math, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, math);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    for (let i = 0; i < nValues; i++)
+        math.inputs.push(genParse(parse));
+
+
+    math.operation = genParse(parse);
+
+    
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, math);
+    return math;
+}
+
+
+
 function genParseArithmetic(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -7862,10 +8011,10 @@ function genParseArithmetic(parse, newNode)
     let nValues = 0;
     
     if (!ignore)
-        nValues = parse.move();
+        nValues = parseInt(parse.move());
 
 
-        if (parse.settings.logRequests) 
+    if (parse.settings.logRequests) 
         logReqArithmetic(arith, type, nValues, parse);
 
 
@@ -8546,6 +8695,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_VALUE      ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER            ) result = genParseNumber          (parse);
     else if (parse.next == NUMBER_LIMITS     ) result = genParseLimits          (parse);
+    else if (parse.next == NUMBER_MATH       ) result = genParseMath            (parse, (nodeId, options) => new GMath    (nodeId, options));
     else if (parse.next == NUMBER_ADD        ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd     (nodeId, options));
     else if (parse.next == NUMBER_SUBTRACT   ) result = genParseArithmetic      (parse, (nodeId, options) => new GSubtract(nodeId, options));
     else if (parse.next == NUMBER_MULTIPLY   ) result = genParseArithmetic      (parse, (nodeId, options) => new GMultiply(nodeId, options));

@@ -15,14 +15,14 @@ extends Operator
         this.label .style.color           = rgba2style(colors.text);
 
 
-        for (const input of this.inputs.filter(i => !i.param))
+        for (const input of this.headerInputs)
         {
             input.colorLight = 
             input.colorDark  = colors.input;
         }
 
         
-        for (const output of this.outputs.filter(o => !o.param)) 
+        for (const output of this.headerOutputs) 
         {
             output.colorLight =
             output.colorDark  = colors.output;

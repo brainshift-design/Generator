@@ -51,8 +51,8 @@ extends Action
             const first = firstOf(cluster);
             const last  =  lastOf(cluster);
 
-            if (   first.inputs .filter(i => !i.param).length == 1
-                &&  last.outputs.filter(o => !o.param).length == 1
+            if (   first.headerInputs .length == 1
+                &&  last.headerOutputs.length == 1
                 && first.inputs [0].connected
                 &&  last.outputs[0].connected)
             {

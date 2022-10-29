@@ -39,7 +39,7 @@ extends EventTarget
         {
             this.dispatchEvent(new CustomEvent(
                 'disconnect', 
-                { 'input': this }));
+                { detail: { input: this }}));
         }
 
         this._connectedOutput = output;
@@ -48,10 +48,10 @@ extends EventTarget
         {
             this.dispatchEvent(new CustomEvent(
                 'connect', 
-                { 
-                    'output': output,
-                    'input':  this 
-                }));
+                { detail: {
+                    output: output,
+                    input:  this 
+                }}));
         }
     }
 
@@ -74,8 +74,8 @@ extends EventTarget
     isNew        = false; // this indicates that the input is the empty "new" input of a variable node
 
 
-    onconnect    = new Event('connect');
-    ondisconnect = new Event('disconnect');
+    //onconnect    = new Event('connect');
+    //ondisconnect = new Event('disconnect');
 
 
     getValuesForUndo; // function pointer, return array of [index,value] tuples

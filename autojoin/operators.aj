@@ -27,13 +27,13 @@
 ../operators/math/OpNumber.js
 ../operators/math/OpLimits.js
 ../operators/math/OpArithmetic.js
+../operators/math/OpMath.js
 ../operators/math/OpAdd.js
 ../operators/math/OpSubtract.js
 ../operators/math/OpMultiply.js
 ../operators/math/OpDivide.js
 ../operators/math/OpModulo.js
 ../operators/math/OpExponent.js
-../operators/math/OpMath.js
 ../operators/math/OpInterpolate.js
 //../operators/math/OpRandom.js
 

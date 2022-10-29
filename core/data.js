@@ -1,10 +1,16 @@
 function rgbHeaderFromType(type, active)
 {
+    if (NUMBER_TYPES.includes(type))
+        return active 
+        ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
+        : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
+
     switch (type)
     {
         case NUMBER_VALUE:    
         case NUMBER:    
         case NUMBER_LIMITS:
+        case NUMBER_MATH:
         case NUMBER_ADD:
         case NUMBER_SUBTRACT:
         case NUMBER_MULTIPLY:
@@ -12,9 +18,6 @@ function rgbHeaderFromType(type, active)
         case NUMBER_MODULO:
         case NUMBER_EXPONENT:
         case NUMBER_INTERPOLATE: 
-            return active 
-                ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
-                : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
         case COLOR_VALUE:           
 

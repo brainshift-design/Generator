@@ -43,18 +43,18 @@ class Operator
     enabled;
 
     
-    inputs        = [];
-    outputs       = [];
+    inputs           = [];
+    outputs          = [];
 
-    params        = [];
-    hiddenParams  = [];
+    params           = [];
+    hiddenParams     = [];
 
     
-    variableInputs       = false;
+    variableInputs   = false;
 
-    alwaysLoadParams     = false;
+    alwaysLoadParams = false;
 
-    scrollName           = true;
+    scrollName       = true;
 
 
     defaultWidth;
@@ -111,14 +111,10 @@ class Operator
     get active() { return this._active; }
        
     
-    get headerConnected()
-    {
-        const inputs = this.inputs.filter(i => 
-              !i.param 
-            && i.connected);
-            
-        return inputs.length > 0;
-    }
+    get headerConnected() { return this.headerInputs.filter(i => i.connected).length > 0; }
+
+    get headerInputs () { return this.inputs .filter(i => !i.param); }
+    get headerOutputs() { return this.outputs.filter(o => !o.param); }
 
 
 
@@ -142,11 +138,22 @@ class Operator
 
 
 
-    addInput(input)
+    addInput(input)//, index = -1)
     {
         input._node = this;
-        this.inputs.push(input);
-        this.inputControls.appendChild(input.div);
+        
+        //if (index < 0)
+        //{
+            // this.inputs.push(input);
+            // this.inputControls.appendChild(input.div);
+        //}
+        //else
+        //{
+            const index = this.headerInputs.length;
+
+            this.inputs.splice(index, 0, input);
+            this.inputControls.insertBefore(input.div, this.inputControls.children[index]);
+        //}
     }
 
 
@@ -164,11 +171,12 @@ class Operator
 
     getAutoInput(outTypes)
     {
-        const inputs = this.inputs.filter(i => i.types.find(_i => outTypes.includes(_i)));
+        const inputs = this.inputs.filter(i => arraysIntersect(i.types, outTypes));
 
-        
+
         if (graphView.overInput)
             return graphView.overInput;
+
 
         if (   graphView.savedConn
             && graphView.savedConn.input
@@ -178,7 +186,7 @@ class Operator
         else if (!graphView.tempConn.output.node.isOrFollows(this))
         {
             if (this.variableInputs)
-                return lastOf(inputs);
+                return lastOf(inputs.filter(i => !i.param));
 
             else
             {
@@ -192,6 +200,7 @@ class Operator
                 return inputs[0];
             }
         }
+
 
         return null;
     }
@@ -333,7 +342,7 @@ class Operator
     {
         const inputs = 
             headerOnly 
-            ? this.inputs.filter(i => !i.param) 
+            ? this.headerInputs 
             : this.inputs;
 
         for (const input of inputs)
@@ -557,9 +566,9 @@ class Operator
         // console.log('this.inputs',  this.inputs);
         // console.log('this.outputs', this.outputs);
 
-        const inputs          = this.inputs .filter(i => !i.param);
-        const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
-        const outputs         = this.outputs.filter(o => !o.param);
+        const inputs          = this.headerInputs;
+        const connectedInputs = this.headerInputs.filter(i => i.connected);
+        const outputs         = this.headerOutputs;
 
         const padding         = this.header.connectionPadding;
             
@@ -871,10 +880,9 @@ function getNodeRequest(node, gen)
     const request = [];
 
 
-    if (node.outputs.filter(o => !o.param).length > 0)
+    if (node.headerOutputs.length > 0)
     {
-        node.outputs
-            .filter(o => !o.param)
+        node.headerOutputs
             .forEach(o =>
             {
                 const _r = o.genRequest(gen);

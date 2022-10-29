@@ -1,13 +1,3 @@
-// const ops = [ // the order is important for logical keyboard value changes
-//     [NUMBER_SUBTRACT, '-'],
-//     [NUMBER_ADD,      '+'],
-//     [NUMBER_DIVIDE,   '÷'],
-//     [NUMBER_MULTIPLY, '×'],
-//     [NUMBER_MODULO,   '%'],
-//     [NUMBER_EXPONENT, 'xʸ'] ];
-
-
-
 class   OpMath
 extends OperatorBase
 {
@@ -16,74 +6,34 @@ extends OperatorBase
 
 
 
-    constructor(type, shortName)
+    constructor()
     {
-        super(type, shortName, 50);
+        super(NUMBER_MATH, 'math', 70);
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
 
 
         this.addNewInput();
-        this.addOutput(new Output([NUMBER], this.output_genRequest));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-        this.addParam(this.paramOperation = new SelectParam('op',    '', false, true, true, [OpColorSpaces.map(s => s[1])], 0));
+        this.addParam(this.paramOperation = new SelectParam('op',    '', false, true, true, MATH_OPS.map(s => s[1]), 1));
         this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
-
-        //this.paramValue.enableControlText(false);
-
-
-        this._symbol           = createDiv('arithmeticSymbol');
-        this._symbol.innerHTML = symbol;
-        this._symbol.clicked0  = false;
-        
-        this._symbol.addEventListener('pointerenter', () => this._symbol.style.opacity = this._showOnlySymbol ? 1 : 0.65);
-        this._symbol.addEventListener('pointerleave', () => this._symbol.style.opacity = 1);
-
-        this._symbol.addEventListener('pointerdown', e => 
-        { 
-            if (e.button == 0)
-            {
-                if (this._symbol.clicked0) // finish double click on small symbol
-                {
-                    this._symbol.clicked0      = false;
-                    this._symbol.style.opacity = 1;
-
-                    actionManager.do(new ToggleArithmeticSymbolAction(this.id, true));
-
-                    this.header.ignoreDoubleClick = true;
-                }
-                else if (!this._showOnlySymbol) // start double cick on small symbol
-                {
-                    this._symbol.clicked0 = true;
-                    setTimeout(() => this._symbol.clicked0 = false, 250); // seems like a good default guess
-                }
-            }
-        });
-
-        this.header.appendChild(this._symbol);
-
-        
-        this.textbox.addEventListener('finishedit', e => 
-        {
-            if (this._showOnlySymbol)
-                actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
-        });
     }
     
     
     
     addNewInput()
     {
-        const input = new Input([NUMBER]);
-        input.isNew = true;
+        const newInput = new Input(NUMBER_TYPES);
+        newInput.isNew = true;
 
-        input.addEventListener('connect',    () => { onConnectInput(this); input.isNew = false; });
-        input.addEventListener('disconnect', () => onDisconnectInput(this, input));
+        newInput.addEventListener('connect',    e => { OpMath_onConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => OpMath_onDisconnectInput(this, e.detail.input));
 
-        this.addInput(input);
+        this.addInput(newInput);
 
-        return input;
+        return newInput;
     }
 
 
@@ -91,12 +41,6 @@ extends OperatorBase
     output_genRequest(gen)
     {
         // 'this' is the output
-
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-        const connectedInputs  = this.node.inputs.filter(i => i.connected);
-
 
         gen.scope.push({
             nodeId:  this.node.id, 
@@ -106,10 +50,16 @@ extends OperatorBase
         if (ignore) return request;
 
 
+        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
+
+
         request.push(connectedInputs.length); // utility values like param count are stored as numbers
         
         connectedInputs.forEach(input => 
             request.push(...input.connectedOutput.genRequest(gen)));
+
+        
+        request.push(...this.node.paramOperation.genRequest(gen));
 
         
         gen.scope.pop();
@@ -120,74 +70,25 @@ extends OperatorBase
 
 
 
-    // updateValues(updateParamId, paramIds, values)
-    // {
-    //     super.updateValues(updateParamId, paramIds, values);
-
-    //     if (paramIds.includes('value'))
-    //         this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
-    // }
-
-
-
-    updateHeader()
+    updateValues(updateParamId, paramIds, values)
     {
-        super.updateHeader();
+        super.updateValues(updateParamId, paramIds, values);
 
+        const operation = values[paramIds.findIndex(id => id == 'operation')];
+        const value     = values[paramIds.findIndex(id => id == 'value'    )];
 
-        const colBack = rgbHeaderFromType(this.type, this.active);
-        const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
-
-        this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
-        this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
-        this._symbol.style.color      = rgb2style(colText);
-        this._symbol.style.left       = 'calc(50% + 1px)';
-        
-
-        const padding         = this.header.connectionPadding;
-        const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
-
-
-        if (isEmpty(connectedInputs))
-        {
-            if (this._showOnlySymbol)
-            {
-                this._symbol.style.top = 2;
-            }
-            else
-            {
-                this._symbol.style.top = -1;
-                this.label  .style.top = 'calc(50% + 4px)';
-            }
-        }
-        else
-        {
-            const [connectedInputY, connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
-
-            if (this._showOnlySymbol)
-            {
-                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 9;
-            }
-            else
-            {
-                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 6;
-                this.label  .style.top = 'calc(50% + 5px)';
-            }
-        }
-        
-
-        this.label.style.visibility = this._showOnlySymbol ? 'hidden' : 'visible';
+        this.paramOperation.setValue(operation, false, true, false);
+        this.paramValue    .setValue(value,     false, true, false);
     }
 
 
 
-    toJsonBase(nTab = 0) 
+    updateParams()
     {
-        let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+        this.paramOperation.enableControlText(true );
+        this.paramValue    .enableControlText(false);
 
-        return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"onlySymbol": "' + boolToString(this._showOnlySymbol) + '"';
+        super.updateParams();
     }
 
 
@@ -196,31 +97,19 @@ extends OperatorBase
     {
         return '';
     }
-
-
-
-    loadParams(_node)
-    {
-        if (_node.showOnlySymbol)
-            this._showOnlySymbol = isTrue(_node.showOnlySymbol);
-
-        //super.loadParams(_node);
-    }
 }
 
 
 
-function onConnectInput(node)
+function OpMath_onConnectInput(node)
 {
     node.addNewInput();
-    //node.updateNode();
 }
 
 
 
-function onDisconnectInput(node, input)
+function OpMath_onDisconnectInput(node, input)
 {
     removeFromArray(node.inputs, input);
     node.inputControls.removeChild(input.div);
-    //node.updateNode();
 }

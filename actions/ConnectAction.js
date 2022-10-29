@@ -20,7 +20,7 @@ extends Action
     
     newActiveNodeIds = [];
 
-    oldinputValues   = []; // in index,value pairs, to be restored on undo
+    oldInputValues   = []; // in index,value pairs, to be restored on undo
 
 
 

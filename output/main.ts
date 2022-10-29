@@ -47,13 +47,13 @@ const NUMBER_VALUE        = 'N';     // value (s) (with significant decimals)
 
 const NUMBER              = 'NUM';   // N | n
 const NUMBER_LIMITS       = 'LIM';   // N:min N:max
+const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_ADD          = 'ADD';   // count N...
 const NUMBER_SUBTRACT     = 'SUB';   // count N...
 const NUMBER_MULTIPLY     = 'MUL';   // count N...
 const NUMBER_DIVIDE       = 'DIV';   // count N...
 const NUMBER_MODULO       = 'MOD';   // count N...
 const NUMBER_EXPONENT     = 'EXP';   // count N...
-const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
 
 
@@ -63,14 +63,25 @@ const NUMBER_TYPES =
 
     NUMBER,
     NUMBER_LIMITS,
+    NUMBER_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,
     NUMBER_MULTIPLY,
     NUMBER_DIVIDE,
     NUMBER_MODULO,
     NUMBER_EXPONENT,
-    NUMBER_MATH,
     NUMBER_INTERPOLATE 
+];
+
+
+const MATH_OPS = 
+[   // the order is important for logical keyboard value changes
+    [NUMBER_SUBTRACT, '-' ],
+    [NUMBER_ADD,      '+' ],
+    [NUMBER_DIVIDE,   '÷' ],
+    [NUMBER_MULTIPLY, '×' ],
+    [NUMBER_MODULO,   '%' ],
+    [NUMBER_EXPONENT, 'eˣ'] 
 ];
 
 

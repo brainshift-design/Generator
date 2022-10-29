@@ -12,8 +12,8 @@ extends OperatorBase
     {
         super(NUMBER_LIMITS, 'lim', 70);
 
-        this.addInput (new Input ([NUMBER]));
-        this.addOutput(new Output([NUMBER], this.output_genRequest));
+        this.addInput (new Input (NUMBER_TYPES));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));

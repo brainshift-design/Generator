@@ -24,6 +24,15 @@ function logReqLimits(lim, nValues, parse)
 
 
 
+function logReqMath(math, nValues, parse)
+{
+    parse.log += parse.tab + NUMBER_MATH;
+    parse.log += logReqNodeId(math);
+    parse.log += ' ' + nValues;
+}
+
+
+
 function logReqArithmetic(arith, type, nValues, parse)
 {
     parse.log += parse.tab + type;

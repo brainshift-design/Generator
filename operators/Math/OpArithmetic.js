@@ -9,16 +9,16 @@ extends OperatorBase
 
     constructor(type, shortName, symbol)
     {
-        super(type, shortName, 50);
+        super(type, shortName, 70);
 
-        this.variableInputs  = true;
+        this.variableInputs   = true;
         this.alwaysLoadParams = true;
 
         this._showOnlySymbol  = true;
 
 
         this.addNewInput();
-        this.addOutput(new Output([NUMBER], this.output_genRequest));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
@@ -66,15 +66,15 @@ extends OperatorBase
     
     addNewInput()
     {
-        const input = new Input(NUMBER_TYPES);
-        input.isNew = true;
+        const newInput = new Input(NUMBER_TYPES);
+        newInput.isNew = true;
 
-        input.addEventListener('connect',    () => { OpArithmetic_onConnectInput(this); input.isNew = false; });
-        input.addEventListener('disconnect', () => OpArithmetic_onDisconnectInput(this, input));
+        newInput.addEventListener('connect',    e => { OpArithmetic_onConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => OpArithmetic_onDisconnectInput(this, e.detail.input));
 
-        this.addInput(input);
+        this.addInput(newInput);
 
-        return input;
+        return newInput;
     }
 
 
@@ -113,8 +113,17 @@ extends OperatorBase
     {
         super.updateValues(updateParamId, paramIds, values);
 
-        if (paramIds.includes('value'))
-            this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
+        const value = values[paramIds.findIndex(id => id == 'value')];
+        this.paramValue.setValue(value, false, true, false);
+    }
+
+
+
+    updateParams()
+    {
+        this.paramValue.enableControlText(false);
+
+        super.updateParams();
     }
 
 
@@ -134,7 +143,7 @@ extends OperatorBase
         
 
         const padding         = this.header.connectionPadding;
-        const connectedInputs = this.inputs .filter(i => !i.param && i.connected);
+        const connectedInputs = this.headerInputs.filter(i => i.connected);
 
 
         if (isEmpty(connectedInputs))
@@ -193,7 +202,7 @@ extends OperatorBase
         if (_node.showOnlySymbol)
             this._showOnlySymbol = isTrue(_node.showOnlySymbol);
 
-        //super.loadParams(_node);
+        super.loadParams(_node);
     }
 }
 
@@ -202,7 +211,6 @@ extends OperatorBase
 function OpArithmetic_onConnectInput(node)
 {
     node.addNewInput();
-    //node.updateNode();
 }
 
 
@@ -211,5 +219,4 @@ function OpArithmetic_onDisconnectInput(node, input)
 {
     removeFromArray(node.inputs, input);
     node.inputControls.removeChild(input.div);
-    //node.updateNode();
 }

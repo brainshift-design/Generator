@@ -151,15 +151,16 @@ class Graph
         }
 
 
-        if (   input.node.variableInputs
-            && inputIndex > -1)
+        if (    input.node.variableInputs
+            && !input.param
+            &&  inputIndex > -1)
         {
-            input = lastOf(input.node.inputs);
+            input = lastOf(input.node.headerInputs);
             
             // move new input back to correct index
             moveInArray(
                 input.node.inputs, 
-                input.node.inputs.length-1, 
+                input.node.headerInputs.length-1, 
                 inputIndex);
 
             input.node.inputControls.insertBefore(
@@ -295,6 +296,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     {
         case NUMBER:             node = new OpNumber();           break;
         case NUMBER_LIMITS:      node = new OpLimits();           break;
+        case NUMBER_MATH:        node = new OpMath();             break;
         case NUMBER_ADD:         node = new OpAdd();              break;
         case NUMBER_SUBTRACT:    node = new OpSubtract();         break;
         case NUMBER_MULTIPLY:    node = new OpMultiply();         break;

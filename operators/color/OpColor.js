@@ -239,9 +239,6 @@ extends OpColorBase
     {
         //console.log(this.id + '.OpColor.updateNode()');
         
-        super.updateNode();
-
-
         if (!hasFocus(this.paramColor.control))
             this.paramColor.setValue(ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color))), false, true, false);// = 
         
@@ -275,7 +272,10 @@ extends OpColorBase
         this.paramSpace.output.colorDark  = colors.output;
 
 
-        this.paramSpace.updateControls();
+        //this.paramSpace.updateControls();
+
+
+        super.updateNode();
     }
 
 

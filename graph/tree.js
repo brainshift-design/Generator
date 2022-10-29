@@ -202,9 +202,8 @@ function getActiveInBranchFromNode(node, alreadyChecked = [])
     }
 
 
-    const nodeOutputs = node.outputs
-        .filter(o => o.connectedInputs.length == 1)
-        .filter(o => !o.param);
+    const nodeOutputs = node.headerOutputs
+        .filter(o => o.connectedInputs.length == 1);
 
     if (    nodeOutputs.length == 1
         && !nodeOutputs[0].connectedInputs[0].param
@@ -241,7 +240,7 @@ function getActiveFromNode(node, alreadyChecked = [])
     if (leftActive) return leftActive;
 
 
-    for (const output of node.outputs.filter(o => !o.param))
+    for (const output of node.headerOutputs)
     {
         for (const input of output.connectedInputs.filter(i => !i.param))
         {
@@ -272,7 +271,7 @@ function getActiveLeftFromNode(node, alreadyChecked = [])
         return node;
 
 
-    for (const input of node.inputs.filter(i => !i.param))
+    for (const input of node.headerInputs)
     {
         if (    input.connected
             && !input.connectedOutput.param
@@ -301,7 +300,7 @@ function getActiveLeftOnlyFromNode(node, alreadyChecked = [])
         return node;
 
 
-    for (const input of node.inputs.filter(i => !i.param))
+    for (const input of node.headerInputs)
     {
         if (    input.connected
             && !input.connectedOutput.param
@@ -328,7 +327,7 @@ function getActiveRightFromNode(node, alreadyChecked = [])
         return node;
 
 
-    for (const output of node.outputs.filter(o => !o.param))
+    for (const output of node.headerOutputs)
     {
         for (const input of output.connectedInputs.filter(i => !i.param))
         {
@@ -360,7 +359,7 @@ function getActiveNodesRightFromNodeId(nodeId, alreadyChecked = [])
         rightActive.push(node);
 
 
-    for (const output of node.outputs.filter(o => !o.param))
+    for (const output of node.headerOutputs)
     {
         for (const input of output.connectedInputs.filter(i => !i.param))
         {
@@ -395,7 +394,7 @@ function getActiveNodesFromNode(node, alreadyChecked = [])
         activeNodes.push(node);
 
 
-    for (const input of node.inputs.filter(i => !i.param))
+    for (const input of node.headerInputs)
     {
         if (    input.connected
             && !input.connectedOutput.param
@@ -404,7 +403,7 @@ function getActiveNodesFromNode(node, alreadyChecked = [])
     }
 
 
-    for (const output of node.outputs.filter(o => !o.param))
+    for (const output of node.headerOutputs)
     {
         for (const input of output.connectedInputs.filter(i => !i.param))
         {

@@ -236,7 +236,7 @@ function createNodeHeader(node)
                     const index = Math.min(Math.round(
                           ((e.clientY - rect.y) / graphView.zoom - padding - (connectionSize + connectionGap)/2) 
                         / (connectionSize + connectionGap)),
-                        node.inputs.length-2);
+                        node.headerInputs.length-2);
                     
                     if (index != prevReorderIndex)
                     {

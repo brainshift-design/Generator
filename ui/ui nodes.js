@@ -500,13 +500,15 @@ function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
 {
     //console.log('uiVariableConnect()');
 
-    if (inputNode.variableInputs)
-    {
-        const input = lastOf(inputNode.inputs);
+    const output = outputNode.outputs[outputIndex];
+    const  input =  inputNode. inputs[ inputIndex];
 
+    if (    inputNode.variableInputs
+        && !input.param)
+    {
         const conn = uiConnect(
-            outputNode.outputs[outputIndex],
-            input,
+            output,
+            lastOf(inputNode.headerInputs),
             inputIndex);
 
         uiUpdateSavedConnectionsToNodeId(inputNode.id);
@@ -514,17 +516,16 @@ function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
         return conn;
     }
     else
-    {
-        return uiConnect(
-            outputNode.outputs[outputIndex],
-             inputNode. inputs[ inputIndex]);
-    }
+        return uiConnect(output, input);
 }
 
 
 
 function uiConnect(output, input, inputIndex = -1)
 {
+    // console.log('output =', output);
+    // console.log('input =', input);
+    // console.log('inputIndex =', inputIndex);
     const conn = graph.connect(output, input, inputIndex);
 
     uiSaveConnection(
@@ -634,7 +635,7 @@ function uiMakeNodePassive(node)
 function uiMakeNodeLeftPassive(node, fromNode = null)
 {
     //console.log('uiMakeNodeLeftPassive() node =', node);
-    for (const input of node.inputs.filter(i => !i.param))
+    for (const input of node.headerInputs)
     {
         if (    input.connected
             && !input.connectedOutput.param
@@ -651,7 +652,7 @@ function uiMakeNodeLeftPassive(node, fromNode = null)
 
 function uiMakeNodeRightPassive(node, fromNode = null)
 {
-    for (const output of node.outputs.filter(o => !o.param))
+    for (const output of node.headerOutputs)
     {
         for (const connInput of output.connectedInputs.filter(i => !i.param))
         {
@@ -1034,9 +1035,9 @@ function uiSaveConnection(outputNodeId, outputIndex, inputNodeId, inputIndex, co
 
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
-        name: outputNodeId  + ' '
-            + outputIndex + ' '
-            + inputNodeId   + ' '
+        name: outputNodeId + ' '
+            + outputIndex  + ' '
+            + inputNodeId  + ' '
             + inputIndex,
         json: connJson
     });
