@@ -95,6 +95,42 @@ function genParseLimits(parse)
 
 
 
+function genParseRandom(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const rnd = new GRandom(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReqRandom(rnd, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, rnd);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    rnd.seed = genParse(parse);
+    rnd.min  = genParse(parse);
+    rnd.max  = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, rnd);
+    return rnd;
+}
+
+
+
 function genParseMath(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -128,7 +164,7 @@ function genParseMath(parse, newNode)
 
     math.operation = genParse(parse);
 
-    
+
     parse.nTab--;
 
         

@@ -26,6 +26,7 @@
 
 ../operators/math/OpNumber.js
 ../operators/math/OpLimits.js
+../operators/math/OpRandom.js
 ../operators/math/OpArithmetic.js
 ../operators/math/OpMath.js
 ../operators/math/OpAdd.js

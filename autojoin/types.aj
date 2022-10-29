@@ -26,6 +26,7 @@
 ../generator/types/math/GNumberType.js
 ../generator/types/math/GNumber.js
 ../generator/types/math/GLimits.js
+../generator/types/math/GRandom.js
 ../generator/types/math/GArithmetic.js
 ../generator/types/math/GMath.js
 ../generator/types/math/GAdd.js

@@ -296,6 +296,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     {
         case NUMBER:             node = new OpNumber();           break;
         case NUMBER_LIMITS:      node = new OpLimits();           break;
+        case NUMBER_RANDOM:      node = new OpRandom();           break;
         case NUMBER_MATH:        node = new OpMath();             break;
         case NUMBER_ADD:         node = new OpAdd();              break;
         case NUMBER_SUBTRACT:    node = new OpSubtract();         break;
@@ -304,7 +305,6 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_MODULO:      node = new OpModulo();           break;
         case NUMBER_EXPONENT:    node = new OpExponent();         break;
         case NUMBER_INTERPOLATE: node = new OpInterpolate();      break;
-        // case NUMBER_RANDOM:   node = new OpRandom(); break;
         
         case COLOR:              node = new OpColor(options);     break;
         case COLOR_INTERPOLATE:  node = new OpColorInterpolate(); break;

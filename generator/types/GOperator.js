@@ -9,7 +9,7 @@ extends GValue
     {
         super(type, options);
 
-        this.nodeId  = nodeId;
+        this.nodeId = nodeId;
     }
 
 

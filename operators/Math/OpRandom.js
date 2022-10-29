@@ -1,116 +1,52 @@
 class   OpRandom
-extends Operator
+extends OperatorBase
 {
-    #min;
-    #max;
-    #scale;
-    #seed;
+    paramSeed;
+    paramMin;
+    paramMax;
 
-    
+
 
     constructor()
     {
-        super('random', NUMBER);
+        super(NUMBER_RANDOM, 'random', 90);
 
-        this.addOutput(new Output([this.dataType]));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.#min   = new NumberParam('min',   'min',   true,  0));
-        this.addParam(this.#max   = new NumberParam('max',   'max',   true, 10));
-        this.addParam(this.#scale = new NumberParam('scale', 'scale', true,  1, 1));
-        this.addParam(this.#seed  = new NumberParam('seed',  'seed',  true,  1, 1));
+        this.addParam(this.paramSeed  = new NumberParam('seed',  'seed',  true, true, true,    0));
+        this.addParam(this.paramMin   = new NumberParam('min',   'min',   true, true, true,    0));
+        this.addParam(this.paramMax   = new NumberParam('max',   'max',   true, true, true, 1000));
 
-        this.#max.control.min = this.#min.value;
-        this.#min.control.max = this.#max.value;
-
-
-        this.#min.control.addEventListener('change', () =>
-        {
-            // if (this.#min.value > this.#max.value)
-            //     this.#min.value = this.#max.value;
-
-            this.#max.control.setMin(this.#min.value);
-            this.updateConnectedInputValueText();
-        });
-
-
-        this.#max.control.addEventListener('change', () =>
-        {
-            // if (this.#max.value < this.#min.value)
-            //     this.#max.value = this.#min.value;
-
-            this.#min.control.setMax(this.#max.value);
-            this.updateConnectedInputValueText();
-        });
+        //this.paramValue.enableControlText(false);
+        
+        // this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
+        // this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
+        
+        // this.paramAmount.control.setSuffix('%', true);
     }
 
 
 
-    updateConnectedInputValueText()
+    output_genRequest(gen)
     {
-        const val =
-            this.#min.value == this.#max.value
-            ? this.#min.value
-            : this.#min.value + '~' + this.#max.value;
+        // 'this' is the output
 
-        if (this.output)
-        {
-            for (const input of this.output.connectedInputs)
-                input.param.valueText = val;
-        }
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        request.push(...this.node.paramSeed .genRequest(gen));
+        request.push(...this.node.paramMin  .genRequest(gen));
+        request.push(...this.node.paramMax  .genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
     }
 }
-
-
-
-
-
-// class   OpRandom
-// extends Operator
-// {
-//     #min;
-//     #max;
-//     #scale;
-//     #seed;
-
-
-//     constructor()
-//     {
-//         super('random', NUMBER);
-
-//         this.addOutput(new Output([this.dataType]));
-
-//         this.addParam(this.#min   = new NumberParam('min'));
-//         this.addParam(this.#max   = new NumberParam('max'));
-//         this.addParam(this.#scale = new NumberParam('scale', 1, 1));
-//         this.addParam(this.#seed  = new NumberParam('seed'));
-
-//         this.#min.control.addEventListener('change', () =>
-//         {
-//             if (this.#min.control.value > this.#max.control.value)
-//                 this.#max.control.setValue(this.#min.control.value, false);
-//         });
-
-//         this.#max.control.addEventListener('change', () =>
-//         {
-//             if (this.#max.control.value < this.#min.control.value)
-//                 this.#min.control.setValue(this.#max.control.value, false);
-//         });
-//     }
-
-
-//     updateData()
-//     {
-//         this.output._data = 
-//         {
-//             id:    this.id,
-//             type:  this.type,
-            
-//             min:   this.#min  .value,
-//             max:   this.#max  .value,
-//             scale: this.#scale.value,
-//             seed:  this.#seed .value
-//         };
-
-//         super.updateData();
-//     }
-// }

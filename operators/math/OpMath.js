@@ -75,10 +75,7 @@ extends OperatorBase
         super.updateValues(updateParamId, paramIds, values);
 
         const operation = values[paramIds.findIndex(id => id == 'operation')];
-        const value     = values[paramIds.findIndex(id => id == 'value'    )];
-
         this.paramOperation.setValue(operation, false, true, false);
-        this.paramValue    .setValue(value,     false, true, false);
     }
 
 

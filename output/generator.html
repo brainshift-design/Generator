@@ -2669,6 +2669,14 @@ function logReqLimits(lim, nValues, parse)
 
 
 
+function logReqRandom(rnd, parse)
+{
+    parse.log += parse.tab + NUMBER_RANDOM;
+    parse.log += logReqNodeId(rnd);
+}
+
+
+
 function logReqMath(math, nValues, parse)
 {
     parse.log += parse.tab + NUMBER_MATH;
@@ -2966,6 +2974,7 @@ const NUMBER_VALUE        = 'N';     // value (s) (with significant decimals)
 
 const NUMBER              = 'NUM';   // N | n
 const NUMBER_LIMITS       = 'LIM';   // N:min N:max
+const NUMBER_RANDOM       = 'RAND';  // N:seed N:scale N:min N:max
 const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_ADD          = 'ADD';   // count N...
 const NUMBER_SUBTRACT     = 'SUB';   // count N...
@@ -2982,6 +2991,7 @@ const NUMBER_TYPES =
 
     NUMBER,
     NUMBER_LIMITS,
+    NUMBER_RANDOM,
     NUMBER_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,
@@ -3260,7 +3270,7 @@ extends GValue
     {
         super(type, options);
 
-        this.nodeId  = nodeId;
+        this.nodeId = nodeId;
     }
 
 
@@ -4878,6 +4888,51 @@ extends GNumberType
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         genPushUpdateValue(parse, this.nodeId, 'min',   min);
         genPushUpdateValue(parse, this.nodeId, 'max',   max);
+
+
+        this.valid = true;
+    }
+}
+
+
+
+class GRandom
+extends GNumberType
+{
+    seed;
+    min;
+    max;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_RANDOM, nodeId, options);
+    }
+
+
+    
+    eval(parse)
+    {
+        if (this.valid)
+            return;
+
+
+        this.seed.eval(parse);
+        this.min .eval(parse);
+        this.max .eval(parse);
+
+        const seed = this.seed.toValue();
+        const min  = this.min .toValue();
+        const max  = this.max .toValue();
+
+
+        this.value = new NumberValue(0);
+
+
+        genPushUpdateValue(parse, this.nodeId, 'seed', seed);
+        genPushUpdateValue(parse, this.nodeId, 'min',  min );
+        genPushUpdateValue(parse, this.nodeId, 'max',  max );
 
 
         this.valid = true;
@@ -7957,6 +8012,42 @@ function genParseLimits(parse)
 
 
 
+function genParseRandom(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const rnd = new GRandom(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReqRandom(rnd, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, rnd);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    rnd.seed = genParse(parse);
+    rnd.min  = genParse(parse);
+    rnd.max  = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, rnd);
+    return rnd;
+}
+
+
+
 function genParseMath(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -7990,7 +8081,7 @@ function genParseMath(parse, newNode)
 
     math.operation = genParse(parse);
 
-    
+
     parse.nTab--;
 
         
@@ -8695,6 +8786,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_VALUE      ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER            ) result = genParseNumber          (parse);
     else if (parse.next == NUMBER_LIMITS     ) result = genParseLimits          (parse);
+    else if (parse.next == NUMBER_RANDOM     ) result = genParseRandom          (parse);
     else if (parse.next == NUMBER_MATH       ) result = genParseMath            (parse, (nodeId, options) => new GMath    (nodeId, options));
     else if (parse.next == NUMBER_ADD        ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd     (nodeId, options));
     else if (parse.next == NUMBER_SUBTRACT   ) result = genParseArithmetic      (parse, (nodeId, options) => new GSubtract(nodeId, options));

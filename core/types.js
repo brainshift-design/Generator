@@ -6,6 +6,7 @@ const NUMBER_VALUE        = 'N';     // value (s) (with significant decimals)
 
 const NUMBER              = 'NUM';   // N | n
 const NUMBER_LIMITS       = 'LIM';   // N:min N:max
+const NUMBER_RANDOM       = 'RAND';  // N:seed N:scale N:min N:max
 const NUMBER_MATH         = 'MATH';  // op count N...
 const NUMBER_ADD          = 'ADD';   // count N...
 const NUMBER_SUBTRACT     = 'SUB';   // count N...
@@ -22,6 +23,7 @@ const NUMBER_TYPES =
 
     NUMBER,
     NUMBER_LIMITS,
+    NUMBER_RANDOM,
     NUMBER_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,

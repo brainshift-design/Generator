@@ -24,6 +24,14 @@ function logReqLimits(lim, nValues, parse)
 
 
 
+function logReqRandom(rnd, parse)
+{
+    parse.log += parse.tab + NUMBER_RANDOM;
+    parse.log += logReqNodeId(rnd);
+}
+
+
+
 function logReqMath(math, nValues, parse)
 {
     parse.log += parse.tab + NUMBER_MATH;
