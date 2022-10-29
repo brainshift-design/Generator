@@ -27,9 +27,13 @@ extends GValue
 
     copy()
     {
-        return new NumberValue(
+        const val = new NumberValue(
             this.value, 
             this.decimals);
+
+        val.copyBase(this);
+
+        return val;
     }
 
 
@@ -53,7 +57,7 @@ extends GValue
 
     eval(parse)
     {
-
+        return this;
     }
 
 

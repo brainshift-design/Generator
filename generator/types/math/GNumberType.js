@@ -5,6 +5,15 @@ extends GOperator
     
 
 
+    copyBase(src)
+    {
+        super.copyBase(src);
+
+        this.value = src.value.copy();
+    }
+
+
+
     toValue()
     {
         return new NumberValue(

@@ -27,11 +27,15 @@ extends GValue
 
     copy()
     {
-        return new LineValue(
+        const val = new LineValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
             this.angle .copy());
+
+        val.copyBase(this);
+
+        return val;
     }
 
 
@@ -48,7 +52,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.copy();
+        return this;
     }
 
 

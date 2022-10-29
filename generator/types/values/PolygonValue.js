@@ -36,7 +36,7 @@ extends GValue
 
     copy()
     {
-        return new PolygonValue(
+        const val = new PolygonValue(
             this.x      .copy(), 
             this.y      .copy(), 
             this.width  .copy(), 
@@ -44,6 +44,10 @@ extends GValue
             this.angle  .copy(), 
             this.round  .copy(), 
             this.corners.copy());
+    
+        val.copyBase(this);
+
+        return val;
     }
 
 
@@ -63,7 +67,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.copy();
+        return this;
     }
 
 

@@ -5,6 +5,8 @@ extends GNumberType
     min;
     max;
 
+    random;
+
 
 
     constructor(nodeId, options)
@@ -14,29 +16,57 @@ extends GNumberType
 
 
     
+    copy()
+    {
+        const rnd = new GRandom(this.nodeId, this.options);
+
+        rnd.copyBase(this);
+
+        rnd.seed   = this.seed.copy();
+        rnd.min    = this.min .copy();
+        rnd.max    = this.max .copy();
+
+        rnd.random = this.random.copy();
+
+        return rnd;
+    }
+
+
+
     eval(parse)
     {
-        if (this.valid)
-            return;
+        if (!this.valid)
+        {
+            this.seed = this.seed.eval(parse).copy();
+            this.min  = this.min .eval(parse).copy();
+            this.max  = this.max .eval(parse).copy();
+        }
 
-
-        this.seed.eval(parse);
-        this.min .eval(parse);
-        this.max .eval(parse);
 
         const seed = this.seed.toValue();
         const min  = this.min .toValue();
         const max  = this.max .toValue();
+    
+
+        if (!this.valid)
+            this.random = new Random(seed.value);
+        
+
+        this.value = new NumberValue(
+            min.value + this.random.next() * (max.value - min.value),
+            Math.max(min.decimals, max.decimals));
 
 
-        this.value = new NumberValue(0);
-
-
-        genPushUpdateValue(parse, this.nodeId, 'seed', seed);
-        genPushUpdateValue(parse, this.nodeId, 'min',  min );
-        genPushUpdateValue(parse, this.nodeId, 'max',  max );
-
+        if (!this.valid)
+        {
+            genPushUpdateValue(parse, this.nodeId, 'seed', seed);
+            genPushUpdateValue(parse, this.nodeId, 'min',  min );
+            genPushUpdateValue(parse, this.nodeId, 'max',  max );
+        }
+        
 
         this.valid = true;
+
+        return this;
     }
 }

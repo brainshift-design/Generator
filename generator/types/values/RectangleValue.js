@@ -43,8 +43,7 @@ extends ShapeBaseValue
             this.angle .copy(), 
             this.round .copy());
 
-        // rect.copyBase(this);
-        // rect.copyData(this);
+        rect.copyBase(this);
 
         return rect;
     }
@@ -66,7 +65,7 @@ extends ShapeBaseValue
 
     eval(parse)
     {
-        return this.copy();
+        return this;
     }
 
 

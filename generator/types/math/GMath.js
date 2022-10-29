@@ -12,13 +12,27 @@ extends GArithmetic
 
 
     
+    copy()
+    {
+        const math = new GMath(this.nodeId, this.options);
+
+        math.copyBase(this);
+
+        math.inputs    = this.inputs.map(i => i.copy());
+        math.operation = this.operation.copy();
+
+        return math;
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
 
-        this.operation.eval(parse);
+        this.operation = this.operation.eval(parse).copy();
         const op = this.operation.toValue();
 
         op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
@@ -39,5 +53,7 @@ extends GArithmetic
 
 
         this.valid = true;
+
+        return this;
     }
 }

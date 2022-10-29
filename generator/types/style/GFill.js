@@ -19,13 +19,13 @@ extends GShapeBase
     {
         const fill = new GFill(this.nodeId, this.options);
 
+        fill.copyBase(this);
+
         if (this.input) 
             fill.input = this.input.copy();
 
         if (this.color  ) fill.color   = this.color  .copy();
         if (this.opacity) fill.opacity = this.opacity.copy();
-
-        rect.copyFromBase(this);
 
         return fill;
     }
@@ -35,12 +35,12 @@ extends GShapeBase
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
 
         if (this.input)
         {
-            this.input.eval(parse);
+            this.input = this.input.eval(parse).copy();
             this.objects = clone(this.input.objects);
         }
 
@@ -49,8 +49,8 @@ extends GShapeBase
             && FILL_TYPES.includes(this.input.type);   
 
 
-        if (this.color  ) this.color  .eval(parse); else if (hasInput) this.color   = this.input.color;
-        if (this.opacity) this.opacity.eval(parse); else if (hasInput) this.opacity = this.input.opacity;
+        if (this.color  ) this.color   = this.color  .eval(parse).copy(); else if (hasInput) this.color   = this.input.color;
+        if (this.opacity) this.opacity = this.opacity.eval(parse).copy(); else if (hasInput) this.opacity = this.input.opacity;
 
         if (this.color  ) genPushUpdateValue(parse, this.nodeId, 'color',   this.color  .toValue());
         if (this.opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity.toValue());
@@ -62,6 +62,8 @@ extends GShapeBase
 
 
         this.valid = true;
+
+        return this;
     }
 
 

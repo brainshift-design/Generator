@@ -4,23 +4,29 @@ const INTER_STEP   = 0,
       INTER_CUBIC  = 3;
 
 
+
 class NoiseSeed
 {
     initial;
     current;
 
     
+
     constructor()
     {
         this.reset();
     }
     
+
+
     set(seed)
     {
         this.initial = seed;
         this.current = seed;
     }    
     
+
+
     rotate()
     {
         this.current = (this.current + 0x7ed55d16) + (this.current << 12);
@@ -31,6 +37,8 @@ class NoiseSeed
         this.current = (this.current ^ 0xb55a4f09) ^ (this.current >> 16);
     }    
     
+
+
     next()
     {
         const seed = this.current;
@@ -38,11 +46,14 @@ class NoiseSeed
         return seed;
     }
 
+
+
     reset()
     {
         this.current = this.initial;
     }
 };
+
 
 
 class Noise

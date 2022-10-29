@@ -25,15 +25,19 @@ class GValue
 
     copy()
     {
+        console.assert(false, 'abstract class GValue cannot be copied');
         return null;
     }
 
 
 
-    copyBaseData(obj)
+    copyBase(src)
     {
-        this.options = clone(obj.options);
-        this.data    = clone(obj.data);
+        this.valid    = src.valid;
+        this.topLevel = src.topLevel;
+
+        this.options  = clone(src.options);
+        this.data     = clone(src.data);
     }
 
 
@@ -56,7 +60,7 @@ class GValue
     {
         // calculate and add value update here
 
-        return null;
+        return this;
     }
 
 

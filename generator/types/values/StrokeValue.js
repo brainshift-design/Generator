@@ -63,16 +63,16 @@ extends GValue
 
     copy()
     {
-        const stroke = new StrokeValue(
+        const val = new StrokeValue(
             this.fill  .copy(),
             this.weight.copy(),
             this.fit   .copy(),
             this.join  .copy(),
             this.miter .copy());
 
-        stroke.copyBaseData(this);
+        val.copyBase(this);
 
-        return stroke;
+        return val;
     }
 
 
@@ -102,7 +102,8 @@ extends GValue
 
     eval(parse)
     {
-
+        return this;
+        return this;
     }
 
 

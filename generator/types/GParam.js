@@ -18,7 +18,11 @@ extends GOperator
 
     copy()
     {
-        return new GParam(this.nodeId, this.paramId);
+        const param = GParam(this.nodeId, this.paramId);
+
+        param.copyBase(this);
+
+        return param;
     }
 
 
@@ -38,6 +42,8 @@ extends GOperator
         param.eval(parse);
 
         this.valid = param.valid;
+
+        return this;
     }
 
 

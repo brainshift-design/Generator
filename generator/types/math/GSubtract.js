@@ -8,16 +8,28 @@ extends GArithmetic
 
 
     
+    copy()
+    {
+        const sub = new GSubtract(this.nodeId, this.options);
+        sub.copyBase(this);
+        sub.inputs = this.inputs.map(i => i.copy());
+        return sub;
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
         this.value = evalSubtractInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.valid = true;
+
+        return this;
     }
 }
 
@@ -30,7 +42,7 @@ function evalSubtractInputs(inputs, parse)
 
     if (inputs.length > 0)
     {
-        inputs[0].eval(parse);
+        inputs[0] = inputs[0].eval(parse).copy();
         const val0 = inputs[0].toValue();
 
         value.value    = val0.value;
@@ -39,7 +51,7 @@ function evalSubtractInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            inputs[i].eval(parse);
+            inputs[i] = inputs[i].eval(parse).copy();
             const val = inputs[i].toValue();
 
             console.assert(

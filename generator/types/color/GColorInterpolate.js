@@ -20,6 +20,8 @@ extends GOperator
     {
         const lerp = new GColorInterpolate(this.nodeId, this.options);
 
+        lerp.copyBase(this);
+
         if (this.input0) lerp.input0 = this.input0.copy();
         if (this.input1) lerp.input1 = this.input1.copy();
 
@@ -97,7 +99,7 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 
 

@@ -19,24 +19,26 @@ extends GOperator
 
 
     
-    // copy()
-    // {
-    //     const col = new GColor(this.nodeId, this.options);
+    copy()
+    {
+        const col = new GColor(this.nodeId, this.options);
 
-    //     if (this.input) 
-    //         col.input = this.input.copy();
+        col.copyBase(this);
 
-    //     col.space = this.space.copy();
+        if (this.input) 
+            col.input = this.input.copy();
 
-    //     if (this.convert) 
-    //         col.convert = this.convert.copy();
+        col.space = this.space.copy();
 
-    //     if (this.c1) col.c1 = this.c1.copy();
-    //     if (this.c2) col.c2 = this.c2.copy();
-    //     if (this.c3) col.c3 = this.c3.copy();
+        if (this.c1) col.c1 = this.c1.copy();
+        if (this.c2) col.c2 = this.c2.copy();
+        if (this.c3) col.c3 = this.c3.copy();
 
-    //     return col;
-    // }
+        if (this.convert) 
+            col.convert = this.convert.copy();
+
+        return col;
+    }
 
 
 
@@ -53,13 +55,13 @@ extends GOperator
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
 
-        if (this.space) this.space.eval(parse);
-        if (this.c1   ) this.c1   .eval(parse);
-        if (this.c2   ) this.c2   .eval(parse);
-        if (this.c3   ) this.c3   .eval(parse);
+        if (this.space) this.space = this.space.eval(parse).copy();
+        if (this.c1   ) this.c1    = this.c1   .eval(parse).copy();
+        if (this.c2   ) this.c2    = this.c2   .eval(parse).copy();
+        if (this.c3   ) this.c3    = this.c3   .eval(parse).copy();
 
 
         let color;
@@ -69,7 +71,7 @@ extends GOperator
         {
             const isParam = this.input instanceof GParam;
 
-            this.input.eval(parse);
+            this.input = this.input.eval(parse).copy();
 
             const input = 
                 isParam
@@ -151,6 +153,7 @@ extends GOperator
         this.c2    = color.c2;
         this.c3    = color.c3;
 
+        
         // if (this.options.enabled)
         // {
             if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue());
@@ -161,6 +164,8 @@ extends GOperator
 
 
         this.valid = true;
+
+        return this;
     }
 
 

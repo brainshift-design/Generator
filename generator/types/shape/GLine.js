@@ -21,6 +21,8 @@ extends GOperator
     {
         const line = new GLine(this.nodeId, this.options);
 
+        line.copyBase(this);
+
         if (this.input) 
             line.input = this.input.copy();
 
@@ -102,6 +104,6 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }

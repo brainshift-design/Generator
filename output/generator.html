@@ -1528,7 +1528,16 @@ class Random
     seed;
 
 
+
     constructor(seed = 0xb9ef7ca4) { this.seed = seed; }
+
+
+
+    copy()
+    {
+        return new Random(this.seed);
+    }
+
 
 
     next()
@@ -2811,23 +2820,29 @@ const INTER_STEP   = 0,
       INTER_CUBIC  = 3;
 
 
+
 class NoiseSeed
 {
     initial;
     current;
 
     
+
     constructor()
     {
         this.reset();
     }
     
+
+
     set(seed)
     {
         this.initial = seed;
         this.current = seed;
     }    
     
+
+
     rotate()
     {
         this.current = (this.current + 0x7ed55d16) + (this.current << 12);
@@ -2838,6 +2853,8 @@ class NoiseSeed
         this.current = (this.current ^ 0xb55a4f09) ^ (this.current >> 16);
     }    
     
+
+
     next()
     {
         const seed = this.current;
@@ -2845,11 +2862,14 @@ class NoiseSeed
         return seed;
     }
 
+
+
     reset()
     {
         this.current = this.initial;
     }
 };
+
 
 
 class Noise
@@ -3187,15 +3207,19 @@ class GValue
 
     copy()
     {
+        console.assert(false, 'abstract class GValue cannot be copied');
         return null;
     }
 
 
 
-    copyBaseData(obj)
+    copyBase(src)
     {
-        this.options = clone(obj.options);
-        this.data    = clone(obj.data);
+        this.valid    = src.valid;
+        this.topLevel = src.topLevel;
+
+        this.options  = clone(src.options);
+        this.data     = clone(src.data);
     }
 
 
@@ -3218,7 +3242,7 @@ class GValue
     {
         // calculate and add value update here
 
-        return null;
+        return this;
     }
 
 
@@ -3275,6 +3299,15 @@ extends GValue
 
 
 
+    copyBase(src)
+    {
+        super.copyBase(src);
+        
+        this.nodeId = src.nodeId;
+    }
+
+
+
     toValue()
     {
         return null;
@@ -3311,7 +3344,11 @@ extends GOperator
 
     copy()
     {
-        return new GParam(this.nodeId, this.paramId);
+        const param = GParam(this.nodeId, this.paramId);
+
+        param.copyBase(this);
+
+        return param;
     }
 
 
@@ -3331,6 +3368,8 @@ extends GOperator
         param.eval(parse);
 
         this.valid = param.valid;
+
+        return this;
     }
 
 
@@ -3371,9 +3410,13 @@ extends GValue
 
     copy()
     {
-        return new NumberValue(
+        const val = new NumberValue(
             this.value, 
             this.decimals);
+
+        val.copyBase(this);
+
+        return val;
     }
 
 
@@ -3397,7 +3440,7 @@ extends GValue
 
     eval(parse)
     {
-
+        return this;
     }
 
 
@@ -3541,7 +3584,7 @@ extends GValue
             this.c2   .copy(), 
             this.c3   .copy());
 
-        color.copyBaseData(this);
+        color.copyBase(this);
 
         return color;
     }
@@ -3571,7 +3614,7 @@ extends GValue
 
     eval(parse)
     {
-
+        return this;
     }
 
 
@@ -3721,7 +3764,7 @@ extends GValue
             this.color  .copy(),
             this.opacity.copy());
 
-        fill.copyBaseData(this);
+        fill.copyBase(this);
 
         return fill;
     }
@@ -3739,7 +3782,7 @@ extends GValue
 
     eval(parse)
     {
-
+        return this;
     }
 
 
@@ -3915,16 +3958,16 @@ extends GValue
 
     copy()
     {
-        const stroke = new StrokeValue(
+        const val = new StrokeValue(
             this.fill  .copy(),
             this.weight.copy(),
             this.fit   .copy(),
             this.join  .copy(),
             this.miter .copy());
 
-        stroke.copyBaseData(this);
+        val.copyBase(this);
 
-        return stroke;
+        return val;
     }
 
 
@@ -3954,7 +3997,8 @@ extends GValue
 
     eval(parse)
     {
-
+        return this;
+        return this;
     }
 
 
@@ -4219,8 +4263,7 @@ extends ShapeBaseValue
             this.angle .copy(), 
             this.round .copy());
 
-        // rect.copyBase(this);
-        // rect.copyData(this);
+        rect.copyBase(this);
 
         return rect;
     }
@@ -4242,7 +4285,7 @@ extends ShapeBaseValue
 
     eval(parse)
     {
-        return this.copy();
+        return this;
     }
 
 
@@ -4375,11 +4418,15 @@ extends GValue
 
     copy()
     {
-        return new LineValue(
+        const val = new LineValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
             this.angle .copy());
+
+        val.copyBase(this);
+
+        return val;
     }
 
 
@@ -4396,7 +4443,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.copy();
+        return this;
     }
 
 
@@ -4468,12 +4515,16 @@ extends GValue
 
     copy()
     {
-        return new EllipseValue(
+        const elps = new EllipseValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
             this.height.copy(), 
             this.angle .copy());
+
+        elps.copyBase(this);
+
+        return elps;
     }
 
 
@@ -4491,7 +4542,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.copy();
+        return this;
     }
 
 
@@ -4572,7 +4623,7 @@ extends GValue
 
     copy()
     {
-        return new PolygonValue(
+        const val = new PolygonValue(
             this.x      .copy(), 
             this.y      .copy(), 
             this.width  .copy(), 
@@ -4580,6 +4631,10 @@ extends GValue
             this.angle  .copy(), 
             this.round  .copy(), 
             this.corners.copy());
+    
+        val.copyBase(this);
+
+        return val;
     }
 
 
@@ -4599,7 +4654,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.copy();
+        return this;
     }
 
 
@@ -4689,7 +4744,7 @@ extends GValue
 
     copy()
     {
-        return new StarValue(
+        const val = new StarValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -4698,6 +4753,10 @@ extends GValue
             this.round .copy(), 
             this.points.copy(),
             this.convex.copy());
+
+        val.copyBase(this);
+
+        return val;
     }
 
 
@@ -4718,7 +4777,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.copy();
+        return this;
     }
 
 
@@ -4777,6 +4836,15 @@ extends GOperator
     
 
 
+    copyBase(src)
+    {
+        super.copyBase(src);
+
+        this.value = src.value.copy();
+    }
+
+
+
     toValue()
     {
         return new NumberValue(
@@ -4800,33 +4868,35 @@ extends GNumberType
 
 
 
-    // copy()
-    // {
-    //     const num = new GNumber(this.nodeId, this.options);
+    copy()
+    {
+        const num = new GNumber(this.nodeId, this.options);
         
-    //     if (this.input) 
-    //         num.input = this.input.copy();
-        
-    //     num.value = this.value;
+        num.copyBase(this);
 
-    //     return num;
-    // }
+        if (this.input) 
+            num.input = this.input.copy();
+        
+        num.value = this.value;
+
+        return num;
+    }
 
 
 
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
 
         if (this.input) 
         {
-            this.input.eval(parse);
+            this.input = this.input.eval(parse).copy();
             this.value = this.input.value;
         }
         else
-            this.value.eval(parse);
+            this.value = this.value.eval(parse).copy();
 
         
         console.assert(this.value.type == NUMBER_VALUE, 'this.value.type must be NUMBER_VALUE');
@@ -4834,6 +4904,8 @@ extends GNumberType
 
         
         this.valid = true;
+
+        return this;
     }
 }
 
@@ -4856,10 +4928,29 @@ extends GNumberType
 
 
     
+    copy()
+    {
+        const lim = new GLimits(this.nodeId, this.options);
+
+        lim.copyBase(this);
+
+        if (this.input) 
+            lim.input = this.input.copy();
+
+        lim.min = this.min.copy();
+        lim.max = this.max.copy();
+
+        lim.minMaxPriority = this.minMaxPriority;
+
+        return lim;
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
 
         this.value = new NumberValue(0);
@@ -4867,13 +4958,13 @@ extends GNumberType
 
         if (this.input)
         {
-            this.input.eval(parse);
+            this.input = this.input.eval(parse).copy();
             this.value = this.input.toValue();
         }
 
 
-        this.min.eval(parse);
-        this.max.eval(parse);
+        this.min = this.min.eval(parse).copy();
+        this.max = this.max.eval(parse).copy();
 
         const min = this.min.toValue();
         const max = this.max.toValue();
@@ -4891,6 +4982,8 @@ extends GNumberType
 
 
         this.valid = true;
+
+        return this;
     }
 }
 
@@ -4903,6 +4996,8 @@ extends GNumberType
     min;
     max;
 
+    random;
+
 
 
     constructor(nodeId, options)
@@ -4912,30 +5007,58 @@ extends GNumberType
 
 
     
+    copy()
+    {
+        const rnd = new GRandom(this.nodeId, this.options);
+
+        rnd.copyBase(this);
+
+        rnd.seed   = this.seed.copy();
+        rnd.min    = this.min .copy();
+        rnd.max    = this.max .copy();
+
+        rnd.random = this.random.copy();
+
+        return rnd;
+    }
+
+
+
     eval(parse)
     {
-        if (this.valid)
-            return;
+        if (!this.valid)
+        {
+            this.seed = this.seed.eval(parse).copy();
+            this.min  = this.min .eval(parse).copy();
+            this.max  = this.max .eval(parse).copy();
+        }
 
-
-        this.seed.eval(parse);
-        this.min .eval(parse);
-        this.max .eval(parse);
 
         const seed = this.seed.toValue();
         const min  = this.min .toValue();
         const max  = this.max .toValue();
+    
+
+        if (!this.valid)
+            this.random = new Random(seed.value);
+        
+
+        this.value = new NumberValue(
+            min.value + this.random.next() * (max.value - min.value),
+            Math.max(min.decimals, max.decimals));
 
 
-        this.value = new NumberValue(0);
-
-
-        genPushUpdateValue(parse, this.nodeId, 'seed', seed);
-        genPushUpdateValue(parse, this.nodeId, 'min',  min );
-        genPushUpdateValue(parse, this.nodeId, 'max',  max );
-
+        if (!this.valid)
+        {
+            genPushUpdateValue(parse, this.nodeId, 'seed', seed);
+            genPushUpdateValue(parse, this.nodeId, 'min',  min );
+            genPushUpdateValue(parse, this.nodeId, 'max',  max );
+        }
+        
 
         this.valid = true;
+
+        return this;
     }
 }
 
@@ -4963,13 +5086,27 @@ extends GArithmetic
 
 
     
+    copy()
+    {
+        const math = new GMath(this.nodeId, this.options);
+
+        math.copyBase(this);
+
+        math.inputs    = this.inputs.map(i => i.copy());
+        math.operation = this.operation.copy();
+
+        return math;
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
 
-        this.operation.eval(parse);
+        this.operation = this.operation.eval(parse).copy();
         const op = this.operation.toValue();
 
         op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
@@ -4990,6 +5127,8 @@ extends GArithmetic
 
 
         this.valid = true;
+
+        return this;
     }
 }
 
@@ -5005,16 +5144,28 @@ extends GArithmetic
 
 
     
+    copy()
+    {
+        const add = new GAdd(this.nodeId, this.options);
+        add.copyBase(this);
+        add.inputs = this.inputs.map(i => i.copy());
+        return add;
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
         this.value = evalAddInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.valid = true;
+
+        return this;
     }
 }
 
@@ -5025,10 +5176,10 @@ function evalAddInputs(inputs, parse)
     const value = new NumberValue(0);
 
 
-    for (const input of inputs)
+    for (let i = 0; i < inputs.length; i++)
     {
-        input.eval(parse);
-        const val = input.toValue();
+        inputs[i] = inputs[i].eval(parse).copy();
+        const val = inputs[i].toValue();
 
         console.assert(
             val.type == NUMBER_VALUE, 
@@ -5053,16 +5204,28 @@ extends GArithmetic
 
 
     
+    copy()
+    {
+        const sub = new GSubtract(this.nodeId, this.options);
+        sub.copyBase(this);
+        sub.inputs = this.inputs.map(i => i.copy());
+        return sub;
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
         this.value = evalSubtractInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.valid = true;
+
+        return this;
     }
 }
 
@@ -5075,7 +5238,7 @@ function evalSubtractInputs(inputs, parse)
 
     if (inputs.length > 0)
     {
-        inputs[0].eval(parse);
+        inputs[0] = inputs[0].eval(parse).copy();
         const val0 = inputs[0].toValue();
 
         value.value    = val0.value;
@@ -5084,7 +5247,7 @@ function evalSubtractInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            inputs[i].eval(parse);
+            inputs[i] = inputs[i].eval(parse).copy();
             const val = inputs[i].toValue();
 
             console.assert(
@@ -5110,17 +5273,29 @@ extends GArithmetic
     }
 
 
+
+    copy()
+    {
+        const mul = new GMultiply(this.nodeId, this.options);
+        mul.copyBase(this);
+        mul.inputs = this.inputs.map(i => i.copy());
+        return mul;
+    }
+
     
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
         this.value = evalMultiplyInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.valid = true;
+
+        return this;
     }
 }
 
@@ -5135,9 +5310,9 @@ function evalMultiplyInputs(inputs, parse)
     {
         value.value = 1;
 
-        for (const input of inputs)
+        for (let i = 0; i < inputs.length; i++)
         {
-            input.eval(parse);
+            inputs[i] = inputs[i].eval(parse).copy();
             const val = input.toValue();
 
             console.assert(
@@ -5164,16 +5339,28 @@ extends GArithmetic
 
 
     
+    copy()
+    {
+        const div = new GDivide(this.nodeId, this.options);
+        div.copyBase(this);
+        div.inputs = this.inputs.map(i => i.copy());
+        return div;
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
         this.value = evalDivideInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.valid = true;
+
+        return this;
     }
 }
 
@@ -5186,7 +5373,7 @@ function evalDivideInputs(inputs, parse)
         
     if (inputs.length > 0)
     {
-        inputs[0].eval(parse);
+        inputs[0] = inputs[0].eval(parse).copy();
         const val0 = inputs[0].toValue();
 
         value.value    = val0.value;
@@ -5195,7 +5382,7 @@ function evalDivideInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            inputs[i].eval(parse);
+            inputs[i] = inputs[i].eval(parse).copy();
             const val = inputs[i].toValue();
 
             console.assert(
@@ -5229,16 +5416,28 @@ extends GArithmetic
 
 
     
+    copy()
+    {
+        const mod = new GModulo(this.nodeId, this.options);
+        mod.copyBase(this);
+        mod.inputs = this.inputs.map(i => i.copy());
+        return mod;
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
         this.value = evalModuloInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.valid = true;
+
+        return this;
     }
 }
 
@@ -5251,7 +5450,7 @@ function evalModuloInputs(inputs, parse)
         
     if (inputs.length > 0)
     {
-        inputs[0].eval(parse);
+        inputs[0] = inputs[0].eval(parse).copy();
         const val0 = inputs[0].toValue();
 
         value.value    = val0.value;
@@ -5260,7 +5459,7 @@ function evalModuloInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            inputs[i].eval(parse);
+            inputs[i] = inputs[i].eval(parse).copy();
             const val = inputs[i].toValue();
 
             console.assert(
@@ -5294,16 +5493,28 @@ extends GArithmetic
 
 
     
+    copy()
+    {
+        const exp = new GExponent(this.nodeId, this.options);
+        exp.copyBase(this);
+        exp.inputs = this.inputs.map(i => i.copy());
+        return exp;
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
         this.value = evalExponentInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.valid = true;
+
+        return this;
     }
 }
 
@@ -5316,7 +5527,7 @@ function evalExponentInputs(inputs, parse)
 
     if (inputs.length > 0)
     {
-        inputs[0].eval(parse);
+        inputs[0] = inputs[0].eval(parse).copy();
         const val0 = inputs[0].toValue();
 
         value.value    = val0.value;
@@ -5325,7 +5536,7 @@ function evalExponentInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            inputs[i].eval(parse);
+            inputs[i] = inputs[i].eval(parse).copy();
             const val = inputs[i].toValue();
 
             console.assert(
@@ -5358,21 +5569,37 @@ extends GNumberType
 
 
     
+    copy()
+    {
+        const lerp = new GInterpolate(this.nodeId, this.options);
+
+        lerp.copyBase(this);
+
+        if (this.input0) lerp.input0 = this.input0.copy();
+        if (this.input1) lerp.input1 = this.input1.copy();
+
+        lerp.amount = this.amount.copy();
+
+        return lerp;
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
 
-        this.amount.eval(parse);
+        this.amount = this.amount.eval(parse).copy();
         const amount = this.amount.toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            this.input0.eval(parse);
-            this.input1.eval(parse);
+            this.input0 = this.input0.eval(parse).copy();
+            this.input1 = this.input1.eval(parse).copy();
 
             const val0 = this.input0.toValue();
             const val1 = this.input1.toValue();
@@ -5385,12 +5612,12 @@ extends GNumberType
         }
         else if (this.input0)
         {
-            this.input0.eval(parse);
+            this.input0 = this.input0.eval(parse).copy();
             this.value = this.input0.toValue();
         } 
         else if (this.input1) 
         {
-            this.input1.eval(parse);
+            this.input1 = this.input1.eval(parse).copy();
             this.value = this.input1.toValue();
         }
         else                  
@@ -5402,6 +5629,8 @@ extends GNumberType
 
 
         this.valid = true;
+
+        return this;
     }
 }
 
@@ -5428,24 +5657,26 @@ extends GOperator
 
 
     
-    // copy()
-    // {
-    //     const col = new GColor(this.nodeId, this.options);
+    copy()
+    {
+        const col = new GColor(this.nodeId, this.options);
 
-    //     if (this.input) 
-    //         col.input = this.input.copy();
+        col.copyBase(this);
 
-    //     col.space = this.space.copy();
+        if (this.input) 
+            col.input = this.input.copy();
 
-    //     if (this.convert) 
-    //         col.convert = this.convert.copy();
+        col.space = this.space.copy();
 
-    //     if (this.c1) col.c1 = this.c1.copy();
-    //     if (this.c2) col.c2 = this.c2.copy();
-    //     if (this.c3) col.c3 = this.c3.copy();
+        if (this.c1) col.c1 = this.c1.copy();
+        if (this.c2) col.c2 = this.c2.copy();
+        if (this.c3) col.c3 = this.c3.copy();
 
-    //     return col;
-    // }
+        if (this.convert) 
+            col.convert = this.convert.copy();
+
+        return col;
+    }
 
 
 
@@ -5462,13 +5693,13 @@ extends GOperator
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
 
-        if (this.space) this.space.eval(parse);
-        if (this.c1   ) this.c1   .eval(parse);
-        if (this.c2   ) this.c2   .eval(parse);
-        if (this.c3   ) this.c3   .eval(parse);
+        if (this.space) this.space = this.space.eval(parse).copy();
+        if (this.c1   ) this.c1    = this.c1   .eval(parse).copy();
+        if (this.c2   ) this.c2    = this.c2   .eval(parse).copy();
+        if (this.c3   ) this.c3    = this.c3   .eval(parse).copy();
 
 
         let color;
@@ -5478,7 +5709,7 @@ extends GOperator
         {
             const isParam = this.input instanceof GParam;
 
-            this.input.eval(parse);
+            this.input = this.input.eval(parse).copy();
 
             const input = 
                 isParam
@@ -5560,6 +5791,7 @@ extends GOperator
         this.c2    = color.c2;
         this.c3    = color.c3;
 
+        
         // if (this.options.enabled)
         // {
             if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue());
@@ -5570,6 +5802,8 @@ extends GOperator
 
 
         this.valid = true;
+
+        return this;
     }
 
 
@@ -5623,6 +5857,8 @@ extends GOperator
     copy()
     {
         const lerp = new GColorInterpolate(this.nodeId, this.options);
+
+        lerp.copyBase(this);
 
         if (this.input0) lerp.input0 = this.input0.copy();
         if (this.input1) lerp.input1 = this.input1.copy();
@@ -5701,7 +5937,7 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 
 
@@ -5759,6 +5995,8 @@ extends GOperator
     copy()
     {
         const cnt = new GColorContrast(this.nodeId, this.options);
+
+        cnt.copyBase(this);
 
         if (this.input0) cnt.input0 = this.input0.copy();
         if (this.input1) cnt.input1 = this.input1.copy();
@@ -5867,7 +6105,7 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }
 
@@ -5893,6 +6131,8 @@ extends GOperator
     copy()
     {
         const cb = new GColorBlind(this.nodeId, this.options);
+
+        cb.copyBase(this);
 
         if (this.input) cb.input = this.input.copy();
 
@@ -5964,7 +6204,7 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }
 
@@ -5991,7 +6231,9 @@ extends GOperator
     
     copy()
     {
-        const val = new GColorBlind(this.nodeId, this.options);
+        const val = new GColorValidate(this.nodeId, this.options);
+
+        val.copyBase(this);
 
         if (this.input) val.input = this.input.copy();
 
@@ -6064,7 +6306,7 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }
 
@@ -6090,6 +6332,8 @@ extends GOperator
     copy()
     {
         const stop = new GColorStop(this.nodeId, this.options);
+
+        stop.copyBase(this);
 
         if (this.input) 
             stop.input = this.input.copy();
@@ -6138,7 +6382,7 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }
 
@@ -6236,47 +6480,47 @@ extends GShapeBase
 
 
 
-    // copy()
-    // {
-    //     const rect = new GRectangle(this.nodeId, this.options);
+    copy()
+    {
+        const rect = new GRectangle(this.nodeId, this.options);
 
-    //     if (this.input) 
-    //         rect.input = this.input.copy();
+        rect.copyBase(this);
 
-    //     if (this.x     ) rect.x      = this.x     .copy();
-    //     if (this.y     ) rect.y      = this.y     .copy();
-    //     if (this.width ) rect.width  = this.width .copy();
-    //     if (this.height) rect.height = this.height.copy();
-    //     if (this.angle ) rect.angle  = this.angle .copy();
-    //     if (this.round ) rect.round  = this.round .copy();
+        if (this.input) 
+            rect.input = this.input.copy();
 
-    //     rect.copyFromBase(this);
+        if (this.x     ) rect.x      = this.x     .copy();
+        if (this.y     ) rect.y      = this.y     .copy();
+        if (this.width ) rect.width  = this.width .copy();
+        if (this.height) rect.height = this.height.copy();
+        if (this.angle ) rect.angle  = this.angle .copy();
+        if (this.round ) rect.round  = this.round .copy();
 
-    //     return rect;
-    // }
+        return rect;
+    }
 
 
 
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
             
         if (this.input)
-            this.input.eval(parse);
+            this.input = this.input.eval(parse).copy();
 
         const hasInput =     
                this.input 
             && RECTANGLE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x     .eval(parse); else if (hasInput) this.x      = this.input.x;
-        if (this.y     ) this.y     .eval(parse); else if (hasInput) this.y      = this.input.y;
-        if (this.width ) this.width .eval(parse); else if (hasInput) this.width  = this.input.width;
-        if (this.height) this.height.eval(parse); else if (hasInput) this.height = this.input.height;
-        if (this.angle ) this.angle .eval(parse); else if (hasInput) this.angle  = this.input.angle;
-        if (this.round ) this.round .eval(parse); else if (hasInput) this.round  = this.input.round;
+        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x;
+        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y;
+        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width;
+        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height;
+        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle;
+        if (this.round ) this.round  = this.round .eval(parse).copy(); else if (hasInput) this.round  = this.input.round;
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
@@ -6293,6 +6537,8 @@ extends GShapeBase
 
 
         this.valid = true;
+
+        return this;
     }
 
 
@@ -6363,6 +6609,8 @@ extends GOperator
     copy()
     {
         const line = new GLine(this.nodeId, this.options);
+
+        line.copyBase(this);
 
         if (this.input) 
             line.input = this.input.copy();
@@ -6445,7 +6693,7 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }
 
@@ -6473,6 +6721,8 @@ extends GOperator
     copy()
     {
         const elps = new GEllipse(this.nodeId, this.options);
+
+        elps.copyBase(this);
 
         if (this.input) 
             elps.input = this.input.copy();
@@ -6560,7 +6810,7 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }
 
@@ -6590,6 +6840,8 @@ extends GOperator
     copy()
     {
         const poly = new GPolygon(this.nodeId, this.options);
+
+        poly.copyBase(this);
 
         if (this.input) 
             poly.input = this.input.copy();
@@ -6687,7 +6939,7 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }
 
@@ -6718,6 +6970,8 @@ extends GOperator
     copy()
     {
         const star = new GStar(this.nodeId, this.options);
+
+        star.copyBase(this);
 
         if (this.input) 
             star.input = this.input.copy();
@@ -6820,7 +7074,7 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }
 
@@ -6846,13 +7100,13 @@ extends GShapeBase
     {
         const fill = new GFill(this.nodeId, this.options);
 
+        fill.copyBase(this);
+
         if (this.input) 
             fill.input = this.input.copy();
 
         if (this.color  ) fill.color   = this.color  .copy();
         if (this.opacity) fill.opacity = this.opacity.copy();
-
-        rect.copyFromBase(this);
 
         return fill;
     }
@@ -6862,12 +7116,12 @@ extends GShapeBase
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
 
         if (this.input)
         {
-            this.input.eval(parse);
+            this.input = this.input.eval(parse).copy();
             this.objects = clone(this.input.objects);
         }
 
@@ -6876,8 +7130,8 @@ extends GShapeBase
             && FILL_TYPES.includes(this.input.type);   
 
 
-        if (this.color  ) this.color  .eval(parse); else if (hasInput) this.color   = this.input.color;
-        if (this.opacity) this.opacity.eval(parse); else if (hasInput) this.opacity = this.input.opacity;
+        if (this.color  ) this.color   = this.color  .eval(parse).copy(); else if (hasInput) this.color   = this.input.color;
+        if (this.opacity) this.opacity = this.opacity.eval(parse).copy(); else if (hasInput) this.opacity = this.input.opacity;
 
         if (this.color  ) genPushUpdateValue(parse, this.nodeId, 'color',   this.color  .toValue());
         if (this.opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity.toValue());
@@ -6889,6 +7143,8 @@ extends GShapeBase
 
 
         this.valid = true;
+
+        return this;
     }
 
 
@@ -6964,6 +7220,8 @@ extends GShapeBase
     {
         const stroke = new GStroke(this.nodeId, this.options);
 
+        stroke.copyBase(this);
+
         if (this.input) 
             stroke.input = this.input.copy();
 
@@ -6981,12 +7239,12 @@ extends GShapeBase
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
 
         if (this.input)
         {
-            this.input.eval(parse);
+            this.input = this.input.eval(parse).copy();
             this.objects = clone(this.input.objects);
         }
 
@@ -6994,7 +7252,7 @@ extends GShapeBase
         if (   this.fill
             && COLOR_TYPES.includes(this.fill.type))
         {
-            this.fill.eval(parse);
+            this.fill = this.fill.eval(parse).copy();
 
             this.fill = new FillValue(
                 this.fill.toValue(), 
@@ -7026,6 +7284,8 @@ extends GShapeBase
 
 
         this.valid = true;
+
+        return this;
     }
 
 

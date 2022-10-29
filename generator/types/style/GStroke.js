@@ -22,6 +22,8 @@ extends GShapeBase
     {
         const stroke = new GStroke(this.nodeId, this.options);
 
+        stroke.copyBase(this);
+
         if (this.input) 
             stroke.input = this.input.copy();
 
@@ -39,12 +41,12 @@ extends GShapeBase
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
 
         if (this.input)
         {
-            this.input.eval(parse);
+            this.input = this.input.eval(parse).copy();
             this.objects = clone(this.input.objects);
         }
 
@@ -52,7 +54,7 @@ extends GShapeBase
         if (   this.fill
             && COLOR_TYPES.includes(this.fill.type))
         {
-            this.fill.eval(parse);
+            this.fill = this.fill.eval(parse).copy();
 
             this.fill = new FillValue(
                 this.fill.toValue(), 
@@ -84,6 +86,8 @@ extends GShapeBase
 
 
         this.valid = true;
+
+        return this;
     }
 
 

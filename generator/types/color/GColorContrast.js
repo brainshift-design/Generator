@@ -19,6 +19,8 @@ extends GOperator
     {
         const cnt = new GColorContrast(this.nodeId, this.options);
 
+        cnt.copyBase(this);
+
         if (this.input0) cnt.input0 = this.input0.copy();
         if (this.input1) cnt.input1 = this.input1.copy();
 
@@ -126,6 +128,6 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }

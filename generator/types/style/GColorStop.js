@@ -19,6 +19,8 @@ extends GOperator
     {
         const stop = new GColorStop(this.nodeId, this.options);
 
+        stop.copyBase(this);
+
         if (this.input) 
             stop.input = this.input.copy();
 
@@ -66,6 +68,6 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }

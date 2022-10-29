@@ -56,7 +56,7 @@ extends GValue
             this.c2   .copy(), 
             this.c3   .copy());
 
-        color.copyBaseData(this);
+        color.copyBase(this);
 
         return color;
     }
@@ -86,7 +86,7 @@ extends GValue
 
     eval(parse)
     {
-
+        return this;
     }
 
 

@@ -19,6 +19,8 @@ extends GOperator
     {
         const cb = new GColorBlind(this.nodeId, this.options);
 
+        cb.copyBase(this);
+
         if (this.input) cb.input = this.input.copy();
 
         cb.l = this.l.copy();
@@ -89,6 +91,6 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }

@@ -24,6 +24,8 @@ extends GOperator
     {
         const poly = new GPolygon(this.nodeId, this.options);
 
+        poly.copyBase(this);
+
         if (this.input) 
             poly.input = this.input.copy();
 
@@ -120,6 +122,6 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }

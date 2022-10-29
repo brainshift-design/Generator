@@ -14,6 +14,15 @@ extends GValue
 
 
 
+    copyBase(src)
+    {
+        super.copyBase(src);
+        
+        this.nodeId = src.nodeId;
+    }
+
+
+
     toValue()
     {
         return null;

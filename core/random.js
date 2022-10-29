@@ -3,7 +3,16 @@ class Random
     seed;
 
 
+
     constructor(seed = 0xb9ef7ca4) { this.seed = seed; }
+
+
+
+    copy()
+    {
+        return new Random(this.seed);
+    }
+
 
 
     next()

@@ -14,21 +14,37 @@ extends GNumberType
 
 
     
+    copy()
+    {
+        const lerp = new GInterpolate(this.nodeId, this.options);
+
+        lerp.copyBase(this);
+
+        if (this.input0) lerp.input0 = this.input0.copy();
+        if (this.input1) lerp.input1 = this.input1.copy();
+
+        lerp.amount = this.amount.copy();
+
+        return lerp;
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
 
-        this.amount.eval(parse);
+        this.amount = this.amount.eval(parse).copy();
         const amount = this.amount.toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            this.input0.eval(parse);
-            this.input1.eval(parse);
+            this.input0 = this.input0.eval(parse).copy();
+            this.input1 = this.input1.eval(parse).copy();
 
             const val0 = this.input0.toValue();
             const val1 = this.input1.toValue();
@@ -41,12 +57,12 @@ extends GNumberType
         }
         else if (this.input0)
         {
-            this.input0.eval(parse);
+            this.input0 = this.input0.eval(parse).copy();
             this.value = this.input0.toValue();
         } 
         else if (this.input1) 
         {
-            this.input1.eval(parse);
+            this.input1 = this.input1.eval(parse).copy();
             this.value = this.input1.toValue();
         }
         else                  
@@ -58,5 +74,7 @@ extends GNumberType
 
 
         this.valid = true;
+
+        return this;
     }
 }

@@ -16,10 +16,29 @@ extends GNumberType
 
 
     
+    copy()
+    {
+        const lim = new GLimits(this.nodeId, this.options);
+
+        lim.copyBase(this);
+
+        if (this.input) 
+            lim.input = this.input.copy();
+
+        lim.min = this.min.copy();
+        lim.max = this.max.copy();
+
+        lim.minMaxPriority = this.minMaxPriority;
+
+        return lim;
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
 
         this.value = new NumberValue(0);
@@ -27,13 +46,13 @@ extends GNumberType
 
         if (this.input)
         {
-            this.input.eval(parse);
+            this.input = this.input.eval(parse).copy();
             this.value = this.input.toValue();
         }
 
 
-        this.min.eval(parse);
-        this.max.eval(parse);
+        this.min = this.min.eval(parse).copy();
+        this.max = this.max.eval(parse).copy();
 
         const min = this.min.toValue();
         const max = this.max.toValue();
@@ -51,5 +70,7 @@ extends GNumberType
 
 
         this.valid = true;
+
+        return this;
     }
 }

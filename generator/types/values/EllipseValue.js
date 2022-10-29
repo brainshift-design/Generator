@@ -30,12 +30,16 @@ extends GValue
 
     copy()
     {
-        return new EllipseValue(
+        const elps = new EllipseValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
             this.height.copy(), 
             this.angle .copy());
+
+        elps.copyBase(this);
+
+        return elps;
     }
 
 
@@ -53,7 +57,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.copy();
+        return this;
     }
 
 

@@ -7,17 +7,29 @@ extends GArithmetic
     }
 
 
+
+    copy()
+    {
+        const mul = new GMultiply(this.nodeId, this.options);
+        mul.copyBase(this);
+        mul.inputs = this.inputs.map(i => i.copy());
+        return mul;
+    }
+
     
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
         this.value = evalMultiplyInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.valid = true;
+
+        return this;
     }
 }
 
@@ -32,9 +44,9 @@ function evalMultiplyInputs(inputs, parse)
     {
         value.value = 1;
 
-        for (const input of inputs)
+        for (let i = 0; i < inputs.length; i++)
         {
-            input.eval(parse);
+            inputs[i] = inputs[i].eval(parse).copy();
             const val = input.toValue();
 
             console.assert(

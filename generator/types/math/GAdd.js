@@ -8,16 +8,28 @@ extends GArithmetic
 
 
     
+    copy()
+    {
+        const add = new GAdd(this.nodeId, this.options);
+        add.copyBase(this);
+        add.inputs = this.inputs.map(i => i.copy());
+        return add;
+    }
+
+
+
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
         this.value = evalAddInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.valid = true;
+
+        return this;
     }
 }
 
@@ -28,10 +40,10 @@ function evalAddInputs(inputs, parse)
     const value = new NumberValue(0);
 
 
-    for (const input of inputs)
+    for (let i = 0; i < inputs.length; i++)
     {
-        input.eval(parse);
-        const val = input.toValue();
+        inputs[i] = inputs[i].eval(parse).copy();
+        const val = inputs[i].toValue();
 
         console.assert(
             val.type == NUMBER_VALUE, 

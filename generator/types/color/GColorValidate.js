@@ -19,7 +19,9 @@ extends GOperator
     
     copy()
     {
-        const val = new GColorBlind(this.nodeId, this.options);
+        const val = new GColorValidate(this.nodeId, this.options);
+
+        val.copyBase(this);
 
         if (this.input) val.input = this.input.copy();
 
@@ -92,6 +94,6 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }

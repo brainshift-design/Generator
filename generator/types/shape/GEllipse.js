@@ -22,6 +22,8 @@ extends GOperator
     {
         const elps = new GEllipse(this.nodeId, this.options);
 
+        elps.copyBase(this);
+
         if (this.input) 
             elps.input = this.input.copy();
 
@@ -108,6 +110,6 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }

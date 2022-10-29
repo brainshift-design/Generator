@@ -39,7 +39,7 @@ extends GValue
 
     copy()
     {
-        return new StarValue(
+        const val = new StarValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -48,6 +48,10 @@ extends GValue
             this.round .copy(), 
             this.points.copy(),
             this.convex.copy());
+
+        val.copyBase(this);
+
+        return val;
     }
 
 
@@ -68,7 +72,7 @@ extends GValue
 
     eval(parse)
     {
-        return this.copy();
+        return this;
     }
 
 

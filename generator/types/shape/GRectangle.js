@@ -19,47 +19,47 @@ extends GShapeBase
 
 
 
-    // copy()
-    // {
-    //     const rect = new GRectangle(this.nodeId, this.options);
+    copy()
+    {
+        const rect = new GRectangle(this.nodeId, this.options);
 
-    //     if (this.input) 
-    //         rect.input = this.input.copy();
+        rect.copyBase(this);
 
-    //     if (this.x     ) rect.x      = this.x     .copy();
-    //     if (this.y     ) rect.y      = this.y     .copy();
-    //     if (this.width ) rect.width  = this.width .copy();
-    //     if (this.height) rect.height = this.height.copy();
-    //     if (this.angle ) rect.angle  = this.angle .copy();
-    //     if (this.round ) rect.round  = this.round .copy();
+        if (this.input) 
+            rect.input = this.input.copy();
 
-    //     rect.copyFromBase(this);
+        if (this.x     ) rect.x      = this.x     .copy();
+        if (this.y     ) rect.y      = this.y     .copy();
+        if (this.width ) rect.width  = this.width .copy();
+        if (this.height) rect.height = this.height.copy();
+        if (this.angle ) rect.angle  = this.angle .copy();
+        if (this.round ) rect.round  = this.round .copy();
 
-    //     return rect;
-    // }
+        return rect;
+    }
 
 
 
     eval(parse)
     {
         if (this.valid)
-            return;
+            return this;
 
             
         if (this.input)
-            this.input.eval(parse);
+            this.input = this.input.eval(parse).copy();
 
         const hasInput =     
                this.input 
             && RECTANGLE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x     .eval(parse); else if (hasInput) this.x      = this.input.x;
-        if (this.y     ) this.y     .eval(parse); else if (hasInput) this.y      = this.input.y;
-        if (this.width ) this.width .eval(parse); else if (hasInput) this.width  = this.input.width;
-        if (this.height) this.height.eval(parse); else if (hasInput) this.height = this.input.height;
-        if (this.angle ) this.angle .eval(parse); else if (hasInput) this.angle  = this.input.angle;
-        if (this.round ) this.round .eval(parse); else if (hasInput) this.round  = this.input.round;
+        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x;
+        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y;
+        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width;
+        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height;
+        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle;
+        if (this.round ) this.round  = this.round .eval(parse).copy(); else if (hasInput) this.round  = this.input.round;
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
@@ -76,6 +76,8 @@ extends GShapeBase
 
 
         this.valid = true;
+
+        return this;
     }
 
 

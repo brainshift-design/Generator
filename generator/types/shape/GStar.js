@@ -25,6 +25,8 @@ extends GOperator
     {
         const star = new GStar(this.nodeId, this.options);
 
+        star.copyBase(this);
+
         if (this.input) 
             star.input = this.input.copy();
 
@@ -126,6 +128,6 @@ extends GOperator
         }
 
 
-        return this.result;
+        return this;
     }
 }
