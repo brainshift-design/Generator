@@ -95,7 +95,7 @@ extends OperatorBase
 
     paramsToJson(nTab = 0)
     {
-        return '';
+        return super.paramsToJson();
     }
 }
 

@@ -102,7 +102,6 @@ extends Parameter
 
     enableControlText(enable)
     {
-        console.log('NumberParambase.enableControlText('+enable+')');
         enable &= !this.input || !this.input.connected;
         enableElementText(this.control, enable);
         this.control.readOnly = !enable;
