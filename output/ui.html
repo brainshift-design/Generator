@@ -5478,14 +5478,6 @@ extends GValue
 
 
 
-    isValid()
-    {
-        return !isNaN(this.value)
-            && !isNaN(this.decimals);
-    }
-
-
-
     equals(num)
     {
         return num
@@ -5498,6 +5490,14 @@ extends GValue
     eval(parse)
     {
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.value)
+            && !isNaN(this.decimals);
     }
 
 
@@ -6332,6 +6332,13 @@ extends ShapeBaseValue
 
 
 
+    eval(parse)
+    {
+        return this;
+    }
+
+
+
     isValid()
     {
         return this.x     .isValid()
@@ -6340,16 +6347,7 @@ extends ShapeBaseValue
             && this.height.isValid()
             && this.angle .isValid()
             && this.round .isValid();
-
-            //&& super      .isValid();
     }
-
-
-    eval(parse)
-    {
-        return this;
-    }
-
 
 
     toValue()
@@ -6975,6 +6973,21 @@ extends GNumberType
         this.valid = true;
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.value)
+            && !isNaN(this.decimals);
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
     }
 }
 
@@ -7772,38 +7785,50 @@ extends GOperator
 
             const input = 
                 isParam
-                ? this.input.node[this.input.paramId]
+                ? this.input.node[this.input.paramId].copy()
                 : this.input.toValue();
 
             if (input.isValid())
             {
+                // console.log('isParam =', isParam);
+                // console.log('input.space =', input.space);
+                // const space = this.input.toValue().space;
+                // console.log('space =', space);
+
+                console.log('1');
                 const space =
                     isParam
-                    ? input.space.copy()
-                    : this.input.space.toValue();
+                    ? input.space
+                    : this.input.space;
 
                 color = new ColorValue(
                     space, 
                     input.c1.copy(), 
                     input.c2.copy(), 
                     input.c3.copy());
+                    
+                    console.log('2');
 
                 const fromSpaceIndex = color.space.value;
 
                 color.space = this.space;
+                console.log('3');
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
                     Math.round(color.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
+                    console.log('4');
 
                 this.convertColor(
                     color,
                     colorSpace(fromSpaceIndex), 
                     colorSpace(  toSpaceIndex));
+                    console.log('5');
 
                 color.space.value = toSpaceIndex;
 
+                console.log('6');
                 
                 // fake disabled status by checking for it during param eval (easiest way to do it)
 
@@ -7813,6 +7838,7 @@ extends GOperator
                     if (this.c2) color.c2 = this.c2.toValue();
                     if (this.c3) color.c3 = this.c3.toValue();
                 }
+                console.log('7');
             }
         }
         else
@@ -7880,6 +7906,16 @@ extends GOperator
         color.c1.value = col[1];
         color.c2.value = col[2];
         color.c3.value = col[3];
+    }
+
+
+
+    isValid()
+    {
+        return this.space.isValid()
+            && this.c1   .isValid()
+            && this.c2   .isValid()
+            && this.c3   .isValid();
     }
 
 
@@ -8640,25 +8676,29 @@ extends GShapeBase
 
 
 
-    toValue()
+    isValid()
     {
-        // return new RectangleValue(
-        //     this.id,
-        //     this.x.
-        // )
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid();
     }
 
 
 
-    // isValid()
-    // {
-    //     return this.x     .isValid()
-    //         && this.y     .isValid()
-    //         && this.width .isValid()
-    //         && this.height.isValid()
-    //         && this.angle .isValid()
-    //         && this.round .isValid();
-    // }
+    toValue()
+    {
+        return new RectangleValue(
+            this.id,
+            this.x     .toValue(),
+            this.y     .toValue(),
+            this.width .toValue(),
+            this.height.toValue(),
+            this.angle .toValue(),
+            this.round .toValue());
+    }
 }
 
 
@@ -9254,19 +9294,19 @@ extends GShapeBase
 
 
 
+    isValid()
+    {
+        return this.color  .isValid()
+            && this.opacity.isValid();
+    }
+
+
+
     toValue()
     {
         return new FillValue(
             this.color   ? this.color  .toValue() : this.input.color  .toValue(),
             this.opacity ? this.opacity.toValue() : this.input.opacity.toValue());
-    }
-
-
-
-    isValid()
-    {
-        return this.color  .isValid()
-            && this.opacity.isValid();
     }
 }
 
@@ -9418,6 +9458,17 @@ extends GShapeBase
 
 
 
+    isValid()
+    {
+        return this.fill  .isValid()
+            && this.weight.isValid()
+            && this.fit   .isValid()
+            && this.join  .isValid()
+            && this.miter .isValid();
+    }
+
+
+
     toValue()
     {
         return new StrokeValue(
@@ -9426,17 +9477,6 @@ extends GShapeBase
             this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
             this.join   ? this.join  .toValue() : this.input.join  .toValue(),
             this.miter  ? this.miter .toValue() : this.input.miter .toValue());
-    }
-
-
-
-    isValid()
-    {
-        return this.fill  .isValid()
-            && this.weight.isValid()
-            && this.fit   .isValid()
-            && this.join  .isValid()
-            && this.miter .isValid();
     }
 }
 
@@ -18980,14 +19020,6 @@ extends GValue
 
 
 
-    isValid()
-    {
-        return !isNaN(this.value)
-            && !isNaN(this.decimals);
-    }
-
-
-
     equals(num)
     {
         return num
@@ -19000,6 +19032,14 @@ extends GValue
     eval(parse)
     {
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.value)
+            && !isNaN(this.decimals);
     }
 
 
@@ -19834,6 +19874,13 @@ extends ShapeBaseValue
 
 
 
+    eval(parse)
+    {
+        return this;
+    }
+
+
+
     isValid()
     {
         return this.x     .isValid()
@@ -19842,16 +19889,7 @@ extends ShapeBaseValue
             && this.height.isValid()
             && this.angle .isValid()
             && this.round .isValid();
-
-            //&& super      .isValid();
     }
-
-
-    eval(parse)
-    {
-        return this;
-    }
-
 
 
     toValue()
@@ -20477,6 +20515,21 @@ extends GNumberType
         this.valid = true;
 
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.value)
+            && !isNaN(this.decimals);
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
     }
 }
 
@@ -21274,38 +21327,50 @@ extends GOperator
 
             const input = 
                 isParam
-                ? this.input.node[this.input.paramId]
+                ? this.input.node[this.input.paramId].copy()
                 : this.input.toValue();
 
             if (input.isValid())
             {
+                // console.log('isParam =', isParam);
+                // console.log('input.space =', input.space);
+                // const space = this.input.toValue().space;
+                // console.log('space =', space);
+
+                console.log('1');
                 const space =
                     isParam
-                    ? input.space.copy()
-                    : this.input.space.toValue();
+                    ? input.space
+                    : this.input.space;
 
                 color = new ColorValue(
                     space, 
                     input.c1.copy(), 
                     input.c2.copy(), 
                     input.c3.copy());
+                    
+                    console.log('2');
 
                 const fromSpaceIndex = color.space.value;
 
                 color.space = this.space;
+                console.log('3');
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
                     Math.round(color.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
+                    console.log('4');
 
                 this.convertColor(
                     color,
                     colorSpace(fromSpaceIndex), 
                     colorSpace(  toSpaceIndex));
+                    console.log('5');
 
                 color.space.value = toSpaceIndex;
 
+                console.log('6');
                 
                 // fake disabled status by checking for it during param eval (easiest way to do it)
 
@@ -21315,6 +21380,7 @@ extends GOperator
                     if (this.c2) color.c2 = this.c2.toValue();
                     if (this.c3) color.c3 = this.c3.toValue();
                 }
+                console.log('7');
             }
         }
         else
@@ -21382,6 +21448,16 @@ extends GOperator
         color.c1.value = col[1];
         color.c2.value = col[2];
         color.c3.value = col[3];
+    }
+
+
+
+    isValid()
+    {
+        return this.space.isValid()
+            && this.c1   .isValid()
+            && this.c2   .isValid()
+            && this.c3   .isValid();
     }
 
 
@@ -22142,25 +22218,29 @@ extends GShapeBase
 
 
 
-    toValue()
+    isValid()
     {
-        // return new RectangleValue(
-        //     this.id,
-        //     this.x.
-        // )
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid();
     }
 
 
 
-    // isValid()
-    // {
-    //     return this.x     .isValid()
-    //         && this.y     .isValid()
-    //         && this.width .isValid()
-    //         && this.height.isValid()
-    //         && this.angle .isValid()
-    //         && this.round .isValid();
-    // }
+    toValue()
+    {
+        return new RectangleValue(
+            this.id,
+            this.x     .toValue(),
+            this.y     .toValue(),
+            this.width .toValue(),
+            this.height.toValue(),
+            this.angle .toValue(),
+            this.round .toValue());
+    }
 }
 
 
@@ -22756,19 +22836,19 @@ extends GShapeBase
 
 
 
+    isValid()
+    {
+        return this.color  .isValid()
+            && this.opacity.isValid();
+    }
+
+
+
     toValue()
     {
         return new FillValue(
             this.color   ? this.color  .toValue() : this.input.color  .toValue(),
             this.opacity ? this.opacity.toValue() : this.input.opacity.toValue());
-    }
-
-
-
-    isValid()
-    {
-        return this.color  .isValid()
-            && this.opacity.isValid();
     }
 }
 
@@ -22920,6 +23000,17 @@ extends GShapeBase
 
 
 
+    isValid()
+    {
+        return this.fill  .isValid()
+            && this.weight.isValid()
+            && this.fit   .isValid()
+            && this.join  .isValid()
+            && this.miter .isValid();
+    }
+
+
+
     toValue()
     {
         return new StrokeValue(
@@ -22928,17 +23019,6 @@ extends GShapeBase
             this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
             this.join   ? this.join  .toValue() : this.input.join  .toValue(),
             this.miter  ? this.miter .toValue() : this.input.miter .toValue());
-    }
-
-
-
-    isValid()
-    {
-        return this.fill  .isValid()
-            && this.weight.isValid()
-            && this.fit   .isValid()
-            && this.join  .isValid()
-            && this.miter .isValid();
     }
 }
 

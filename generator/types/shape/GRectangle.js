@@ -113,23 +113,27 @@ extends GShapeBase
 
 
 
-    toValue()
+    isValid()
     {
-        // return new RectangleValue(
-        //     this.id,
-        //     this.x.
-        // )
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.height.isValid()
+            && this.angle .isValid()
+            && this.round .isValid();
     }
 
 
 
-    // isValid()
-    // {
-    //     return this.x     .isValid()
-    //         && this.y     .isValid()
-    //         && this.width .isValid()
-    //         && this.height.isValid()
-    //         && this.angle .isValid()
-    //         && this.round .isValid();
-    // }
+    toValue()
+    {
+        return new RectangleValue(
+            this.id,
+            this.x     .toValue(),
+            this.y     .toValue(),
+            this.width .toValue(),
+            this.height.toValue(),
+            this.angle .toValue(),
+            this.round .toValue());
+    }
 }

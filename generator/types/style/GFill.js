@@ -98,18 +98,18 @@ extends GShapeBase
 
 
 
+    isValid()
+    {
+        return this.color  .isValid()
+            && this.opacity.isValid();
+    }
+
+
+
     toValue()
     {
         return new FillValue(
             this.color   ? this.color  .toValue() : this.input.color  .toValue(),
             this.opacity ? this.opacity.toValue() : this.input.opacity.toValue());
-    }
-
-
-
-    isValid()
-    {
-        return this.color  .isValid()
-            && this.opacity.isValid();
     }
 }

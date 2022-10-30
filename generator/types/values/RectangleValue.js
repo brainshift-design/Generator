@@ -50,6 +50,13 @@ extends ShapeBaseValue
 
 
 
+    eval(parse)
+    {
+        return this;
+    }
+
+
+
     isValid()
     {
         return this.x     .isValid()
@@ -58,16 +65,7 @@ extends ShapeBaseValue
             && this.height.isValid()
             && this.angle .isValid()
             && this.round .isValid();
-
-            //&& super      .isValid();
     }
-
-
-    eval(parse)
-    {
-        return this;
-    }
-
 
 
     toValue()

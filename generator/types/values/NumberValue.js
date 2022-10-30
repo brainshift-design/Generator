@@ -38,14 +38,6 @@ extends GValue
 
 
 
-    isValid()
-    {
-        return !isNaN(this.value)
-            && !isNaN(this.decimals);
-    }
-
-
-
     equals(num)
     {
         return num
@@ -58,6 +50,14 @@ extends GValue
     eval(parse)
     {
         return this;
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.value)
+            && !isNaN(this.decimals);
     }
 
 

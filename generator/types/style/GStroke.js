@@ -145,6 +145,17 @@ extends GShapeBase
 
 
 
+    isValid()
+    {
+        return this.fill  .isValid()
+            && this.weight.isValid()
+            && this.fit   .isValid()
+            && this.join  .isValid()
+            && this.miter .isValid();
+    }
+
+
+
     toValue()
     {
         return new StrokeValue(
@@ -153,16 +164,5 @@ extends GShapeBase
             this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
             this.join   ? this.join  .toValue() : this.input.join  .toValue(),
             this.miter  ? this.miter .toValue() : this.input.miter .toValue());
-    }
-
-
-
-    isValid()
-    {
-        return this.fill  .isValid()
-            && this.weight.isValid()
-            && this.fit   .isValid()
-            && this.join  .isValid()
-            && this.miter .isValid();
     }
 }
