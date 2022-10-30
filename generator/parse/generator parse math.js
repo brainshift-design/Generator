@@ -117,9 +117,9 @@ function genParseRandom(parse)
     parse.nTab++;
 
 
+    rnd.seed = genParse(parse);
     rnd.min  = genParse(parse);
     rnd.max  = genParse(parse);
-    rnd.seed = genParse(parse);
 
 
     parse.nTab--;

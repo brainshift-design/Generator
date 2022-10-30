@@ -10,7 +10,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_LIMITS, 'lim', 70);
+        super(NUMBER_LIMITS, 'lim', 90);
 
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
@@ -19,8 +19,8 @@ extends OperatorBase
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
         //this.paramValue.enableControlText(false);
        
-        this.addParam(this.paramMin = new NumberParam('min', 'min', true, true, true, 0));
-        this.addParam(this.paramMax = new NumberParam('max', 'max', true, true, true));
+        this.addParam(this.paramMin = new NumberParam('min', 'min', true, true, true,    0));
+        this.addParam(this.paramMax = new NumberParam('max', 'max', true, true, true, 1000));
     }
 
 

@@ -452,28 +452,40 @@ function figPostMessageToUI(msg) {
 //     figPostMessageToGenerator({cmd: 'genEndFigMessage'}); 
 // }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+function genRectIsValid(genRect) {
+    return genRect.x != null && !isNaN(genRect.x)
+        && genRect.y != null && !isNaN(genRect.y)
+        && genRect.width != null && !isNaN(genRect.width)
+        && genRect.height != null && !isNaN(genRect.height)
+        && genRect.angle != null && !isNaN(genRect.angle)
+        && genRect.round != null && !isNaN(genRect.round);
+}
 function figCreateRect(obj, name) {
     //console.log(obj);
     const rect = figma.createRectangle();
     rect.name = name;
-    rect.x = obj.x;
-    rect.y = obj.y;
-    setObjectFills(rect, obj);
-    setObjectStrokes(rect, obj);
-    rect.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
-    rect.rotation = obj.angle;
-    rect.cornerRadius = obj.round;
+    if (genRectIsValid(obj)) {
+        rect.x = obj.x;
+        rect.y = obj.y;
+        setObjectFills(rect, obj);
+        setObjectStrokes(rect, obj);
+        rect.resize(Math.max(0.01, obj.width), Math.max(0.01, obj.height));
+        rect.rotation = obj.angle;
+        rect.cornerRadius = obj.round;
+    }
     return rect;
 }
 function figUpdateRect(figRect, genRect) {
-    figRect.x = genRect.x;
-    figRect.y = genRect.y;
-    if (figRect.width != genRect.width
-        || figRect.height != genRect.height) {
-        figRect.resize(Math.max(0.01, genRect.width), Math.max(0.01, genRect.height));
+    if (genRectIsValid(genRect)) {
+        figRect.x = genRect.x;
+        figRect.y = genRect.y;
+        if (figRect.width != genRect.width
+            || figRect.height != genRect.height) {
+            figRect.resize(Math.max(0.01, genRect.width), Math.max(0.01, genRect.height));
+        }
+        figRect.rotation = genRect.angle;
+        figRect.cornerRadius = genRect.round;
     }
-    figRect.rotation = genRect.angle;
-    figRect.cornerRadius = genRect.round;
     setObjectFills(figRect, genRect);
     setObjectStrokes(figRect, genRect);
 }

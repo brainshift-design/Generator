@@ -18,7 +18,7 @@ extends GOperator
 
     copy()
     {
-        const param = GParam(this.nodeId, this.paramId);
+        const param = new GParam(this.nodeId, this.paramId);
 
         param.copyBase(this);
 

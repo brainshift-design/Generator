@@ -47,7 +47,7 @@ function evalMultiplyInputs(inputs, parse)
         for (let i = 0; i < inputs.length; i++)
         {
             inputs[i] = inputs[i].eval(parse).copy();
-            const val = input.toValue();
+            const val = inputs[i].toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
