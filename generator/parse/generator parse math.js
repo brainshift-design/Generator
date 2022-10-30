@@ -104,7 +104,7 @@ function genParseRandom(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqRandom(rnd, nValues, parse);
+        logReqRandom(rnd, parse);
 
 
     if (ignore) 
@@ -117,9 +117,9 @@ function genParseRandom(parse)
     parse.nTab++;
 
 
-    rnd.seed = genParse(parse);
     rnd.min  = genParse(parse);
     rnd.max  = genParse(parse);
+    rnd.seed = genParse(parse);
 
 
     parse.nTab--;
