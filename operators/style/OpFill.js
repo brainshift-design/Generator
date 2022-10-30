@@ -228,8 +228,8 @@ extends OpColorBase
     {
         super.updateHeaderLabel();
         
-        const colors                = this.getHeaderColors();
-        this.label.style.color      = rgba2style(colors.text);
+        const colors = this.getHeaderColors();
+        this.label.style.color = rgba2style(colors.text);
     }
 
 

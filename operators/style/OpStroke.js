@@ -150,8 +150,8 @@ extends OpColorBase
             ? rgba2style(colors.back) 
             : 'transparent';
 
-            this.colorBack.style.background = 
-            rgbIsOk(colors.back)
+        this.colorBack.style.background = 
+            rgbIsOk(colors.back) //!rgbIsNaN(colors.back)
             ? rgb2style(colors.back)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
@@ -192,6 +192,16 @@ extends OpColorBase
 
 
         Operator.prototype.updateHeader.call(this);
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        super.updateHeaderLabel();
+        
+        const colors = this.getHeaderColors();
+        this.label.style.color = rgba2style(colors.text);
     }
 
 
