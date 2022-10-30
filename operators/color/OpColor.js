@@ -323,6 +323,16 @@ extends OpColorBase
 
 
 
+    updateHeaderLabel()
+    {
+        super.updateHeaderLabel();
+        
+        const colors = this.getHeaderColors();
+        this.label.style.color = rgba2style(colors.text);
+    }
+
+
+
     updateParams()
     {
         this.updateAllControlRanges();

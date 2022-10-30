@@ -58,7 +58,7 @@ extends GShapeBase
 
             this.fill = new FillValue(
                 this.fill.toValue(), 
-                this.fill.options.opacity.toValue());
+                new NumberValue(100));// this.fill.options.opacity.toValue());
         }
 
 
