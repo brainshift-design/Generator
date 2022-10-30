@@ -1,9 +1,6 @@
 class   NumberParam
 extends NumberParamBase
 {
-    allowEditDecimals = true;
-    
-    
     constructor(id,
                 name, 
                 showName,
@@ -71,7 +68,7 @@ extends NumberParamBase
                 this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
                 e.preventSetValue = true;
             }
-            else if (this.allowEditDecimals)
+            else if (this.control.allowEditDecimals)
             {
                 if (Math.abs(parseFloat(e.detail.value) - parseFloat(e.detail.oldValue)) <= Number.EPSILON)
                     dec += Math.log10(this.control.valueScale);

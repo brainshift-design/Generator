@@ -185,6 +185,12 @@ function initNumberControlTextbox(control)
                    && !isArrowKey(e.code))
                 e.preventDefault();
 
+            if (    e.key == '.'
+                &&  control.dec == 0
+                && !control.allowEditDecimals)
+                e.preventDefault();
+                
+                    
             curVal =
                 curVal == INVALID
                 ? ''

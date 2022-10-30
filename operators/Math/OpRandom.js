@@ -17,15 +17,8 @@ extends OperatorBase
         this.addParam(this.paramMin  = new NumberParam('min',  'min',  true, true, true,    0));
         this.addParam(this.paramMax  = new NumberParam('max',  'max',  true, true, true, 1000));
 
-        this.paramSeed.allowEditDecimals = false;
+        this.paramSeed.control.allowEditDecimals = false;
         this.paramSeed.isDefault = () => false;
-
-        //this.paramValue.enableControlText(false);
-        
-        // this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
-        // this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
-        
-        // this.paramAmount.control.setSuffix('%', true);
     }
 
 

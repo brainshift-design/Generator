@@ -42,16 +42,6 @@ extends GOperator
 
 
 
-    // isValid()
-    // {
-    //     return this.space.isValid()
-    //         && this.c1   .isValid()
-    //         && this.c2   .isValid()
-    //         && this.c3   .isValid();
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -97,7 +87,7 @@ extends GOperator
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
-                    color.space.toValue().value),
+                    Math.round(color.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
 
                 this.convertColor(
@@ -128,7 +118,7 @@ extends GOperator
 
             const toSpaceIndex = Math.min(Math.max(
                 0,
-                color.space.value),
+                Math.round(color.space.value)), // round because a value can come in with decimals (TODO fix this)
                 colorSpaceCount(parse)-1);
 
             color.space.value = toSpaceIndex;

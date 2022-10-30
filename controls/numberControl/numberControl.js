@@ -86,6 +86,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.pointerEvents          = true;
     control.readOnly               = false;
      
+    control.allowEditDecimals      = true;
+    
     control.valueText              = '';
      
     control.barTop                 = 0;

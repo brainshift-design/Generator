@@ -7749,16 +7749,6 @@ extends GOperator
 
 
 
-    // isValid()
-    // {
-    //     return this.space.isValid()
-    //         && this.c1   .isValid()
-    //         && this.c2   .isValid()
-    //         && this.c3   .isValid();
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -7804,7 +7794,7 @@ extends GOperator
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
-                    color.space.toValue().value),
+                    Math.round(color.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
 
                 this.convertColor(
@@ -7835,7 +7825,7 @@ extends GOperator
 
             const toSpaceIndex = Math.min(Math.max(
                 0,
-                color.space.value),
+                Math.round(color.space.value)), // round because a value can come in with decimals (TODO fix this)
                 colorSpaceCount(parse)-1);
 
             color.space.value = toSpaceIndex;
@@ -21261,16 +21251,6 @@ extends GOperator
 
 
 
-    // isValid()
-    // {
-    //     return this.space.isValid()
-    //         && this.c1   .isValid()
-    //         && this.c2   .isValid()
-    //         && this.c3   .isValid();
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -21316,7 +21296,7 @@ extends GOperator
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
-                    color.space.toValue().value),
+                    Math.round(color.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
 
                 this.convertColor(
@@ -21347,7 +21327,7 @@ extends GOperator
 
             const toSpaceIndex = Math.min(Math.max(
                 0,
-                color.space.value),
+                Math.round(color.space.value)), // round because a value can come in with decimals (TODO fix this)
                 colorSpaceCount(parse)-1);
 
             color.space.value = toSpaceIndex;
@@ -24946,6 +24926,12 @@ function initNumberControlTextbox(control)
                    && !isArrowKey(e.code))
                 e.preventDefault();
 
+            if (    e.key == '.'
+                &&  control.dec == 0
+                && !control.allowEditDecimals)
+                e.preventDefault();
+                
+                    
             curVal =
                 curVal == INVALID
                 ? ''
@@ -25197,6 +25183,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.pointerEvents          = true;
     control.readOnly               = false;
      
+    control.allowEditDecimals      = true;
+    
     control.valueText              = '';
      
     control.barTop                 = 0;
@@ -29327,9 +29315,6 @@ extends Parameter
 class   NumberParam
 extends NumberParamBase
 {
-    allowEditDecimals = true;
-    
-    
     constructor(id,
                 name, 
                 showName,
@@ -29397,7 +29382,7 @@ extends NumberParamBase
                 this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
                 e.preventSetValue = true;
             }
-            else if (this.allowEditDecimals)
+            else if (this.control.allowEditDecimals)
             {
                 if (Math.abs(parseFloat(e.detail.value) - parseFloat(e.detail.oldValue)) <= Number.EPSILON)
                     dec += Math.log10(this.control.valueScale);
@@ -34237,15 +34222,8 @@ extends OperatorBase
         this.addParam(this.paramMin  = new NumberParam('min',  'min',  true, true, true,    0));
         this.addParam(this.paramMax  = new NumberParam('max',  'max',  true, true, true, 1000));
 
-        this.paramSeed.allowEditDecimals = false;
+        this.paramSeed.control.allowEditDecimals = false;
         this.paramSeed.isDefault = () => false;
-
-        //this.paramValue.enableControlText(false);
-        
-        // this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
-        // this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
-        
-        // this.paramAmount.control.setSuffix('%', true);
     }
 
 
