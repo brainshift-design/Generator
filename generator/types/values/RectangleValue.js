@@ -70,6 +70,13 @@ extends ShapeBaseValue
 
 
 
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
     toFigmaObject()
     {
         return {

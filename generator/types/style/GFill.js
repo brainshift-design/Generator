@@ -41,7 +41,7 @@ extends GShapeBase
         if (this.input)
         {
             this.input = this.input.eval(parse).copy();
-            this.objects = clone(this.input.objects);
+            this.copyObjects(this.input.objects);
         }
 
         const hasInput =     
@@ -49,8 +49,8 @@ extends GShapeBase
             && FILL_TYPES.includes(this.input.type);   
 
 
-        if (this.color  ) this.color   = this.color  .eval(parse).copy(); else if (hasInput) this.color   = this.input.color;
-        if (this.opacity) this.opacity = this.opacity.eval(parse).copy(); else if (hasInput) this.opacity = this.input.opacity;
+        if (this.color  ) this.color   = this.color  .eval(parse).copy(); else if (hasInput) this.color   = this.input.color  .copy();
+        if (this.opacity) this.opacity = this.opacity.eval(parse).copy(); else if (hasInput) this.opacity = this.input.opacity.copy();
 
         if (this.color  ) genPushUpdateValue(parse, this.nodeId, 'color',   this.color  .toValue());
         if (this.opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity.toValue());

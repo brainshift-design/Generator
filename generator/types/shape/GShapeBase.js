@@ -16,12 +16,19 @@ extends GOperator
 
 
 
-    copyFromBase(base)
+    copyBase(base)
     {
         // if (base.fill  ) this.fill   = base.fill  .copy();
         // if (base.stroke) this.stroke = base.stroke.copy();
 
-        this.objects = [...base.objects];
+        this.copyObjects(base.objects);
+    }
+
+
+
+    copyObjects(objects)
+    {
+        this.objects = objects.map(o => o.copy());
     }
 
 

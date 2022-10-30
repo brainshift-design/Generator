@@ -47,7 +47,7 @@ extends GShapeBase
         if (this.input)
         {
             this.input = this.input.eval(parse).copy();
-            this.objects = clone(this.input.objects);
+            this.copyObjects(this.input.objects);
         }
 
 
@@ -67,11 +67,11 @@ extends GShapeBase
             && STROKE_TYPES.includes(this.input.type);   
 
 
-        if (this.fill  ) this.fill  .eval(parse); else if (hasInput) this.fill   = this.input.fill; 
-        if (this.weight) this.weight.eval(parse); else if (hasInput) this.weight = this.input.weight;
-        if (this.fit   ) this.fit   .eval(parse); else if (hasInput) this.fit    = this.input.fit;
-        if (this.join  ) this.join  .eval(parse); else if (hasInput) this.join   = this.input.join;
-        if (this.miter ) this.miter .eval(parse); else if (hasInput) this.miter  = this.input.miter;            
+        if (this.fill  ) this.fill   = this.fill  .eval(parse).copy(); else if (hasInput) this.fill   = this.input.fill  .copy(); 
+        if (this.weight) this.weight = this.weight.eval(parse).copy(); else if (hasInput) this.weight = this.input.weight.copy();
+        if (this.fit   ) this.fit    = this.fit   .eval(parse).copy(); else if (hasInput) this.fit    = this.input.fit   .copy();
+        if (this.join  ) this.join   = this.join  .eval(parse).copy(); else if (hasInput) this.join   = this.input.join  .copy();
+        if (this.miter ) this.miter  = this.miter .eval(parse).copy(); else if (hasInput) this.miter  = this.input.miter .copy();            
 
         if (this.fill  ) genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  .toValue());
         if (this.weight) genPushUpdateValue(parse, this.nodeId, 'weight', this.weight.toValue());

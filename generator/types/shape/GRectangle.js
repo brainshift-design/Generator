@@ -54,12 +54,12 @@ extends GShapeBase
             && RECTANGLE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x;
-        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y;
-        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width;
-        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height;
-        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle;
-        if (this.round ) this.round  = this.round .eval(parse).copy(); else if (hasInput) this.round  = this.input.round;
+        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x     .copy();
+        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y     .copy();
+        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width .copy();
+        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height.copy();
+        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
+        if (this.round ) this.round  = this.round .eval(parse).copy(); else if (hasInput) this.round  = this.input.round .copy();
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
@@ -96,20 +96,29 @@ extends GShapeBase
             && this.round)
         {
             this.objects = 
-            [{
-                type:   RECTANGLE,
-                id:     0,
-                x:                  this.x     .toValue().value,
-                y:                  this.y     .toValue().value,
-                width:              this.width .toValue().value,
-                height:             this.height.toValue().value,
-                angle:              this.angle .toValue().value,
-                round:  Math.max(0, this.round .toValue().value)
-            }];
+            [
+                new FigmaRectangle(
+                            this.x     .toValue().value,
+                            this.y     .toValue().value,
+                            this.width .toValue().value,
+                            this.height.toValue().value,
+                            this.angle .toValue().value,
+                Math.max(0, this.round .toValue().value))
+            ];
         }
 
         
         super.evalObjects();
+    }
+
+
+
+    toValue()
+    {
+        // return new RectangleValue(
+        //     this.id,
+        //     this.x.
+        // )
     }
 
 

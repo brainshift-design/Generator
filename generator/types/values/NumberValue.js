@@ -64,9 +64,7 @@ extends GValue
 
     toValue()
     {
-        return new NumberValue(
-            this.value,
-            this.decimals);
+        return this.copy();
     }
 
 

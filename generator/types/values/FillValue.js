@@ -76,7 +76,7 @@ extends GValue
 
     toValue()
     {
-        return this;
+        return this.copy();
     }
 
 

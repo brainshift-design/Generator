@@ -7,6 +7,10 @@
 ../generator/types/GParam.js
 
 
+../generator/types/figma/FigmaObject.js
+../generator/types/figma/FigmaRectangle.js
+
+
 ../generator/types/values/NumberValue.js
 
 ../generator/types/values/ColorValue.js

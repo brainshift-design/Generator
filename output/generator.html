@@ -3381,6 +3381,90 @@ extends GOperator
 }
 
 
+class FigmaObject
+{
+    type;
+
+    id          = 0;
+
+    fills       = [];
+ 
+    strokeFills = [];
+
+    strokeWeight;
+    strokeFit;
+    strokeJoin;
+    strokeMiter;
+
+
+
+    constructor(type)
+    {
+        this.type = type;
+    }
+
+
+
+    copyBase(base)
+    {
+        this.type         = base.type;
+        this.id           = base.id;
+               
+        this.fills        = clone(base.fills);
+
+        this.strokeFills  = clone(base.strokeFills);
+
+        this.strokeWeight = base.strokeWeight;
+        this.strokeFit    = base.strokeFit;
+        this.strokeJoin   = base.strokeJoin;
+        this.strokeMiter  = base.strokeMiter;
+    }
+}
+
+
+class FigmaRectangle
+extends FigmaObject
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+
+
+
+    constructor(x, y, width, height, angle, round)
+    {
+        super(RECTANGLE);
+        
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+        this.angle  = angle;
+        this.round  = round;
+    }
+
+
+
+    copy()
+    {
+        const rect = new FigmaRectangle(
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            this.angle,
+            this.round);
+
+        rect.copyBase(this);
+
+        return rect;
+    }
+}
+
+
 class NumberValue
 extends GValue
 {
@@ -3447,9 +3531,7 @@ extends GValue
 
     toValue()
     {
-        return new NumberValue(
-            this.value,
-            this.decimals);
+        return this.copy();
     }
 
 
@@ -3615,6 +3697,13 @@ extends GValue
     eval(parse)
     {
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
     }
 
 
@@ -3789,7 +3878,7 @@ extends GValue
 
     toValue()
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -4040,7 +4129,7 @@ extends GValue
 
     toValue()
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -4286,6 +4375,13 @@ extends ShapeBaseValue
     eval(parse)
     {
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
     }
 
 
@@ -5720,14 +5816,14 @@ extends GOperator
             {
                 const space =
                     isParam
-                    ? input.space
+                    ? input.space.copy()
                     : this.input.space.toValue();
 
                 color = new ColorValue(
                     space, 
-                    input.c1, 
-                    input.c2, 
-                    input.c3);
+                    input.c1.copy(), 
+                    input.c2.copy(), 
+                    input.c3.copy());
 
                 const fromSpaceIndex = color.space.value;
 
@@ -5791,7 +5887,7 @@ extends GOperator
         this.c2    = color.c2;
         this.c3    = color.c3;
 
-        
+
         // if (this.options.enabled)
         // {
             if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue());
@@ -6405,12 +6501,19 @@ extends GOperator
 
 
 
-    copyFromBase(base)
+    copyBase(base)
     {
         // if (base.fill  ) this.fill   = base.fill  .copy();
         // if (base.stroke) this.stroke = base.stroke.copy();
 
-        this.objects = [...base.objects];
+        this.copyObjects(base.objects);
+    }
+
+
+
+    copyObjects(objects)
+    {
+        this.objects = objects.map(o => o.copy());
     }
 
 
@@ -6515,12 +6618,12 @@ extends GShapeBase
             && RECTANGLE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x;
-        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y;
-        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width;
-        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height;
-        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle;
-        if (this.round ) this.round  = this.round .eval(parse).copy(); else if (hasInput) this.round  = this.input.round;
+        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x     .copy();
+        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y     .copy();
+        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width .copy();
+        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height.copy();
+        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
+        if (this.round ) this.round  = this.round .eval(parse).copy(); else if (hasInput) this.round  = this.input.round .copy();
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
@@ -6557,20 +6660,29 @@ extends GShapeBase
             && this.round)
         {
             this.objects = 
-            [{
-                type:   RECTANGLE,
-                id:     0,
-                x:                  this.x     .toValue().value,
-                y:                  this.y     .toValue().value,
-                width:              this.width .toValue().value,
-                height:             this.height.toValue().value,
-                angle:              this.angle .toValue().value,
-                round:  Math.max(0, this.round .toValue().value)
-            }];
+            [
+                new FigmaRectangle(
+                            this.x     .toValue().value,
+                            this.y     .toValue().value,
+                            this.width .toValue().value,
+                            this.height.toValue().value,
+                            this.angle .toValue().value,
+                Math.max(0, this.round .toValue().value))
+            ];
         }
 
         
         super.evalObjects();
+    }
+
+
+
+    toValue()
+    {
+        // return new RectangleValue(
+        //     this.id,
+        //     this.x.
+        // )
     }
 
 
@@ -7122,7 +7234,7 @@ extends GShapeBase
         if (this.input)
         {
             this.input = this.input.eval(parse).copy();
-            this.objects = clone(this.input.objects);
+            this.copyObjects(this.input.objects);
         }
 
         const hasInput =     
@@ -7130,8 +7242,8 @@ extends GShapeBase
             && FILL_TYPES.includes(this.input.type);   
 
 
-        if (this.color  ) this.color   = this.color  .eval(parse).copy(); else if (hasInput) this.color   = this.input.color;
-        if (this.opacity) this.opacity = this.opacity.eval(parse).copy(); else if (hasInput) this.opacity = this.input.opacity;
+        if (this.color  ) this.color   = this.color  .eval(parse).copy(); else if (hasInput) this.color   = this.input.color  .copy();
+        if (this.opacity) this.opacity = this.opacity.eval(parse).copy(); else if (hasInput) this.opacity = this.input.opacity.copy();
 
         if (this.color  ) genPushUpdateValue(parse, this.nodeId, 'color',   this.color  .toValue());
         if (this.opacity) genPushUpdateValue(parse, this.nodeId, 'opacity', this.opacity.toValue());
@@ -7245,7 +7357,7 @@ extends GShapeBase
         if (this.input)
         {
             this.input = this.input.eval(parse).copy();
-            this.objects = clone(this.input.objects);
+            this.copyObjects(this.input.objects);
         }
 
 
@@ -7265,11 +7377,11 @@ extends GShapeBase
             && STROKE_TYPES.includes(this.input.type);   
 
 
-        if (this.fill  ) this.fill  .eval(parse); else if (hasInput) this.fill   = this.input.fill; 
-        if (this.weight) this.weight.eval(parse); else if (hasInput) this.weight = this.input.weight;
-        if (this.fit   ) this.fit   .eval(parse); else if (hasInput) this.fit    = this.input.fit;
-        if (this.join  ) this.join  .eval(parse); else if (hasInput) this.join   = this.input.join;
-        if (this.miter ) this.miter .eval(parse); else if (hasInput) this.miter  = this.input.miter;            
+        if (this.fill  ) this.fill   = this.fill  .eval(parse).copy(); else if (hasInput) this.fill   = this.input.fill  .copy(); 
+        if (this.weight) this.weight = this.weight.eval(parse).copy(); else if (hasInput) this.weight = this.input.weight.copy();
+        if (this.fit   ) this.fit    = this.fit   .eval(parse).copy(); else if (hasInput) this.fit    = this.input.fit   .copy();
+        if (this.join  ) this.join   = this.join  .eval(parse).copy(); else if (hasInput) this.join   = this.input.join  .copy();
+        if (this.miter ) this.miter  = this.miter .eval(parse).copy(); else if (hasInput) this.miter  = this.input.miter .copy();            
 
         if (this.fill  ) genPushUpdateValue(parse, this.nodeId, 'fill',   this.fill  .toValue());
         if (this.weight) genPushUpdateValue(parse, this.nodeId, 'weight', this.weight.toValue());

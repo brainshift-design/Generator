@@ -82,14 +82,14 @@ extends GOperator
             {
                 const space =
                     isParam
-                    ? input.space
+                    ? input.space.copy()
                     : this.input.space.toValue();
 
                 color = new ColorValue(
                     space, 
-                    input.c1, 
-                    input.c2, 
-                    input.c3);
+                    input.c1.copy(), 
+                    input.c2.copy(), 
+                    input.c3.copy());
 
                 const fromSpaceIndex = color.space.value;
 
@@ -153,7 +153,7 @@ extends GOperator
         this.c2    = color.c2;
         this.c3    = color.c3;
 
-        
+
         // if (this.options.enabled)
         // {
             if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue());
