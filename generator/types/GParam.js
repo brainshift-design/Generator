@@ -40,8 +40,9 @@ extends GOperator
 
 
         const param = this.node[this.paramId];
-
+        
         param.eval(parse);
+
 
         this.valid = param.valid;
 
