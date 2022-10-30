@@ -252,6 +252,9 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
     {
         let node = nodes[i];
 
+        if (node.variableInputs)
+            continue;
+            
         for (let j = 0; j < node.inputs.length; j++)
         {
             if (   !node.inputs[j].connected

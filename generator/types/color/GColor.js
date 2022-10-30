@@ -75,7 +75,6 @@ extends GOperator
                 // const space = this.input.toValue().space;
                 // console.log('space =', space);
 
-                console.log('1');
                 const space =
                     isParam
                     ? input.space
@@ -87,28 +86,23 @@ extends GOperator
                     input.c2.copy(), 
                     input.c3.copy());
                     
-                    console.log('2');
 
                 const fromSpaceIndex = color.space.value;
 
                 color.space = this.space;
-                console.log('3');
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
                     Math.round(color.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
-                    console.log('4');
 
                 this.convertColor(
                     color,
                     colorSpace(fromSpaceIndex), 
                     colorSpace(  toSpaceIndex));
-                    console.log('5');
 
                 color.space.value = toSpaceIndex;
 
-                console.log('6');
                 
                 // fake disabled status by checking for it during param eval (easiest way to do it)
 
@@ -118,7 +112,6 @@ extends GOperator
                     if (this.c2) color.c2 = this.c2.toValue();
                     if (this.c3) color.c3 = this.c3.toValue();
                 }
-                console.log('7');
             }
         }
         else
