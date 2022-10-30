@@ -34,62 +34,65 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return this;
+
+
+        this.l = this.l.eval(parse).copy();
+        this.m = this.m.eval(parse).copy();
+        this.s = this.s.eval(parse).copy();
+
+        const l = this.l.toValue();        
+        const m = this.m.toValue();
+        const s = this.s.toValue();
+
+
+        if (this.input)
         {
-            const l = this.l.eval(parse).copy();
-            const m = this.m.eval(parse).copy();
-            const s = this.s.eval(parse).copy();
+            this.input = this.input.eval(parse).copy();
+            const input = this.input.toValue();
 
+            const rgb = input.toRgb();
 
-            if (this.input)
+            //const validRgb = invalid2validRgb(rgb);
+
+            const rgbCb = rgb2colorblind(
+                rgb,
+                l.value / 2,
+                m.value / 2,
+                s.value / 2);
+
+            if (   rgbIsOk(rgb)
+                && rgbIsOk(rgbCb))
             {
-                const input = this.input.eval(parse).copy();
+                const validRgbCb = rgbCb;//invalid2validRgb(cb);
+            
+                const validCol = convertDataColorToSpace(
+                    rgb2dataColor(validRgbCb), 
+                    colorSpace(input.space.value));
 
-                const rgb = input.toRgb();
+                const factor = getColorSpaceFactor(validCol[0]);
 
-                //const validRgb = invalid2validRgb(rgb);
-
-                const rgbCb = rgb2colorblind(
-                    rgb,
-                    this.l.value / 2,
-                    this.m.value / 2,
-                    this.s.value / 2);
-
-                if (   rgbIsOk(rgb)
-                    && rgbIsOk(rgbCb))
-                {
-                    const validRgbCb = rgbCb;//invalid2validRgb(cb);
-                
-                    const validCol = convertDataColorToSpace(
-                        rgb2dataColor(validRgbCb), 
-                        colorSpace(input.space.value));
-    
-                    const factor = getColorSpaceFactor(validCol[0]);
-    
-                    this.result = ColorValue.create(
-                        input.space.value,
-                        validCol[1] * factor[0],
-                        validCol[2] * factor[1],
-                        validCol[3] * factor[2]);
-                }
-                else
-                    this.result = ColorValue.NaN;
+                this.value = ColorValue.create(
+                    input.space.value,
+                    validCol[1] * factor[0],
+                    validCol[2] * factor[1],
+                    validCol[3] * factor[2]);
             }
             else
-                this.result = ColorValue.NaN;
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
-
-            genPushUpdateValue(parse, this.nodeId, 'l', l);
-            genPushUpdateValue(parse, this.nodeId, 'm', m);
-            genPushUpdateValue(parse, this.nodeId, 's', s);
+                this.value = ColorValue.NaN;
         }
+        else
+            this.value = ColorValue.NaN;
 
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'l',     l);
+        genPushUpdateValue(parse, this.nodeId, 'm',     m);
+        genPushUpdateValue(parse, this.nodeId, 's',     s);
+
+
+        this.valid = true;
 
         return this;
     }

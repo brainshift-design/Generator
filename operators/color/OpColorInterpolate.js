@@ -9,13 +9,13 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_INTERPOLATE, 'inter', 80);
+        super(COLOR_INTERPOLATE, 'inter', 90);
 
         
         this.addInput(new Input(COLOR_TYPES));
         this.addInput(new Input(COLOR_TYPES));
 
-        this.addOutput(new Output([COLOR], this.output_genRequest));
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
         this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
@@ -62,7 +62,7 @@ extends OpColorBase
 
 
         createTooltip(ttInterpolationSpace);
-        createTooltipSrc(this.paramSpace.control, () => ttInterpolationSpace);
+        createTooltipSrc(this.paramSpace.control, this.paramSpace.control, () => ttInterpolationSpace);
     }
 
 
@@ -71,13 +71,10 @@ extends OpColorBase
     {
         // 'this' is the output
 
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
+
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;

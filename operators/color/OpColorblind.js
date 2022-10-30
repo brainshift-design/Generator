@@ -9,7 +9,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLORBLIND, 'colorblind', 80);
+        super(COLORBLIND, 'colorblind', 90);
 
 
         this.addInput(new Input(COLOR_TYPES));
@@ -34,14 +34,11 @@ extends OpColorBase
     {
         // 'this' is the output
 
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
 
+            
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 

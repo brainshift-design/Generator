@@ -254,7 +254,7 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 
         if (node.variableInputs)
             continue;
-            
+
         for (let j = 0; j < node.inputs.length; j++)
         {
             if (   !node.inputs[j].connected
@@ -310,10 +310,10 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_INTERPOLATE: node = new OpInterpolate();      break;
         
         case COLOR:              node = new OpColor(options);     break;
-        case COLOR_INTERPOLATE:  node = new OpColorInterpolate(); break;
         case COLOR_VALIDATE:     node = new OpColorValidate();    break;
         case COLOR_CONTRAST:     node = new OpColorContrast();    break;
         case COLORBLIND:         node = new OpColorBlind();       break;
+        case COLOR_INTERPOLATE:  node = new OpColorInterpolate(); break;
         
         case COLOR_STOP:         node = new OpColorStop();        break;
         case GRADIENT:           node = new OpGradient();         break;

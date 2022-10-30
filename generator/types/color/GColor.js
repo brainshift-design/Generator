@@ -62,11 +62,10 @@ extends GOperator
             const isParam = this.input instanceof GParam;
 
             this.input = this.input.eval(parse).copy();
-
-            const input = 
-                isParam
-                ? this.input.node[this.input.paramId].copy()
-                : this.input.toValue();
+            const input = this.input.toValue();
+                // isParam
+                // ? this.input.node[this.input.paramId].copy()
+                // : this.input.toValue();
 
             if (input.isValid())
             {

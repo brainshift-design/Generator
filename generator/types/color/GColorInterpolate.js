@@ -36,69 +36,78 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return this;
+
+
+        this.space  = this.space .eval(parse).copy();
+        this.amount = this.amount.eval(parse).copy();
+        this.gamma  = this.gamma .eval(parse).copy();
+
+        const space  = this.space .toValue();
+        const amount = this.amount.toValue();
+        const gamma  = this.gamma .toValue();
+
+
+        if (   this.input0 
+            && this.input1)
         {
-            const space  = this.space .eval(parse).copy();
-            const amount = this.amount.eval(parse).copy();
-            const gamma  = this.gamma .eval(parse).copy();
+            this.input0 = this.input0.eval(parse).copy();
+            this.input1 = this.input1.eval(parse).copy();
+
+            const col0 = this.input0.toValue();
+            const col1 = this.input1.toValue();
+
+            console.assert(
+                amount.type == NUMBER_VALUE, 
+                'this.result.type must be NUMBER_VALUE');
+
+            const f = amount.value / 100;
+
+            const _space = colorSpace(space.value);
+
+            const col = this.interpolate(
+                space.value,
+                convertDataColorToSpace(col0.toDataColor(), _space),
+                convertDataColorToSpace(col1.toDataColor(), _space),
+                f,
+                gamma.value);
 
 
-            if (   this.input0 
-                && this.input1)
-            {
-                const input0 = this.input0.eval(parse).copy();
-                const input1 = this.input1.eval(parse).copy();
+            // allow interpolating invalid colors,
+            // so no valid color check here
 
+            const factor = getColorSpaceFactor(_space);
 
-                console.assert(
-                    amount.type == NUMBER_VALUE, 
-                    'this.result.type must be NUMBER_VALUE');
-
-                const f = amount.value / 100;
-
-                const _space = colorSpace(space.value);
-
-                const col0 = input0.toDataColor();
-                const col1 = input1.toDataColor();
-
-                const col = this.interpolate(
-                    space.value,
-                    convertDataColorToSpace(col0, _space),
-                    convertDataColorToSpace(col1, _space),
-                    f,
-                    gamma.value);
-
-
-                // allow interpolating invalid colors,
-                // so no valid color check here
-
-                const factor = getColorSpaceFactor(_space);
-
-                this.result = ColorValue.create(
-                    space.value,
-                    col[1] * factor[0],
-                    col[2] * factor[1],
-                    col[3] * factor[2]);
-            }
-
-            else if (this.input0) this.result = this.input0.eval(parse).copy();
-            else if (this.input1) this.result = this.input1.eval(parse).copy();
-
-            else 
-                this.result = ColorValue.NaN;
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value',  this.result);
-
-            genPushUpdateValue(parse, this.nodeId, 'space',  space );
-            genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+            this.value = ColorValue.create(
+                space.value,
+                col[1] * factor[0],
+                col[2] * factor[1],
+                col[3] * factor[2]);
         }
 
+        else if (this.input0) 
+        {
+            this.input0 = this.input0.eval(parse).copy();
+            this.value = this.input0.toValue().copy();
+        }
+        else if (this.input1) 
+        {
+            this.input1 = this.input1.eval(parse).copy();
+            this.value = this.input1.toValue().copy();
+        }
+        else 
+            this.value = ColorValue.NaN;
 
+
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+        genPushUpdateValue(parse, this.nodeId, 'space',  space );
+        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+        genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
+
+
+        this.valid = true;
+        
         return this;
     }
 
