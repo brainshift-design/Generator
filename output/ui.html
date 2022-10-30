@@ -33467,9 +33467,9 @@ function createNodeHeader(node)
                     const rect    = boundingRect(node.div);
                     const padding = node.header.connectionPadding;
 
-                    const index = Math.min(Math.round(
+                    const index = Math.min(Math.max(0, Math.round(
                           ((e.clientY - rect.y) / graphView.zoom - padding - (connectionSize + connectionGap)/2) 
-                        / (connectionSize + connectionGap)),
+                        / (connectionSize + connectionGap))),
                         node.headerInputs.length-2);
                     
                     if (index != prevReorderIndex)
