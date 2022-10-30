@@ -129,7 +129,7 @@ extends Action
         }
 
 
-        const updateNodes = [];
+        //const updateNodes = [];
 
 
         for (const id of this.newActiveNodeIds)
@@ -154,6 +154,8 @@ extends Action
             uiMakeNodeActive(node);
         }
 
+
+        pushUpdate(this.oldInputActiveNodeIds.map(id => nodeFromId(id)));
 
         this.inputNode.updateNode();
  

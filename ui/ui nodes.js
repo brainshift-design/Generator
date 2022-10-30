@@ -967,18 +967,19 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
         && updateParamId != NULL)
         logSaveNodes(nodeJson.join('\n'));
 
-    if (settings.logObjectUpdates)
-        logObjectUpdates([...objects]);
+    if (objects.length > 0)
+    {
+        if (settings.logObjectUpdates)
+            logObjectUpdates([...objects]);
 
-
-    uiPostMessageToFigma({
-        cmd:          'figUpdateObjects',
-        updateNodeId:  updateNodeId,
-        updateParamId: updateParamId,
-        nodeIds:       nodes.map(n => n.id),
-        nodeJson:      nodeJson,
-        objects:       [...objects]
-    });
+        uiPostMessageToFigma({
+            cmd:          'figUpdateObjects',
+            updateNodeId:  updateNodeId,
+            updateParamId: updateParamId,
+            nodeIds:       nodes.map(n => n.id),
+            nodeJson:      nodeJson,
+            objects:       [...objects]});
+    }
         
 
     graphView.update(nodes);
