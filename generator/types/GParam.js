@@ -22,6 +22,8 @@ extends GOperator
 
         param.copyBase(this);
 
+        param.node = this.node;
+
         return param;
     }
 
@@ -50,6 +52,7 @@ extends GOperator
 
     toValue()
     {
+        console.assert(this.node, 'invalid parameter node \'' + this.nodeId + '\'');
         return this.node[this.paramId].toValue();
     }
 }

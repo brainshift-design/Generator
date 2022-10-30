@@ -3348,6 +3348,8 @@ extends GOperator
 
         param.copyBase(this);
 
+        param.node = this.node;
+
         return param;
     }
 
@@ -3376,6 +3378,7 @@ extends GOperator
 
     toValue()
     {
+        console.assert(this.node, 'invalid parameter node \'' + this.nodeId + '\'');
         return this.node[this.paramId].toValue();
     }
 }
@@ -4989,7 +4992,8 @@ extends GNumberType
         if (this.input) 
         {
             this.input = this.input.eval(parse).copy();
-            this.value = this.input.value;
+            console.log('this.input =', this.input);
+            this.value = this.input.toValue();
         }
         else
             this.value = this.value.eval(parse).copy();
@@ -9285,7 +9289,7 @@ function genParseParam(parse)
     
 
     const param = new GParam(nodeId, paramId);
-    
+    //param.node = parse.parsedNodes.find(n => n.id == nodeId);
 
     pushUnique(parse.paramNodeIds, nodeId);
 

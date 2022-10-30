@@ -216,7 +216,7 @@ function genParseParam(parse)
     
 
     const param = new GParam(nodeId, paramId);
-    
+    //param.node = parse.parsedNodes.find(n => n.id == nodeId);
 
     pushUnique(parse.paramNodeIds, nodeId);
 
