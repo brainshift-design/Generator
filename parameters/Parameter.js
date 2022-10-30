@@ -101,7 +101,7 @@ extends EventTarget
 
 
 
-    isDefault() { return false; }
+    isDefault = () => false;
 
 
     

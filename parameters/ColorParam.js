@@ -108,10 +108,7 @@ extends Parameter
 
 
 
-    isDefault()
-    {
-        return this.value.equals(this.defaultValue);
-    }
+    isDefault = () => this.value.equals(this.defaultValue);
 
 
 
