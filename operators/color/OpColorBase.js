@@ -26,14 +26,14 @@ extends Operator
 
 
 
-    updateValues(updateParamId, paramIds, values)
-    {
-        //logFunction('OpColorBase.updateValues()');
+    // updateValues(updateParamId, paramIds, values)
+    // {
+    //     //logFunction('OpColorBase.updateValues()');
 
-        super.updateValues(updateParamId, paramIds, values);
+    //     super.updateValues(updateParamId, paramIds, values);
         
-        this.updateHeader();
-    }
+    //     //this.updateHeader();
+    // }
 
 
 

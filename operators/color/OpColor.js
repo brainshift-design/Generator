@@ -284,8 +284,7 @@ extends OpColorBase
     {
         //console.log(this.id + '.OpColor.updateHeader()');
 
-        //super.updateHeader();
-        Operator.prototype.updateHeader.call(this);
+        super.updateHeader();
 
         
         this.header.style.background = 'transparent';

@@ -2,7 +2,7 @@ class   OpColorContrast
 extends OpColorBase
 {
     paramStandard;
-    paramValue;
+    paramContrast;
 
     labelColor = [0, 0, 0];
 
@@ -16,7 +16,7 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES));
 
 
-        this.addParam(this.paramValue    = new NumberParam('value',    '', false, false, true, 0, 0));
+        this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0, 0));
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
@@ -27,7 +27,8 @@ extends OpColorBase
         createTooltip(ttWcag3);
 
         createTooltipSrc(
-            this.paramValue.control, 
+            this.paramContrast.control, 
+            this.paramContrast.control, 
             () => this.paramStandard.value == 1 ? ttWcag3 : ttWcag2);
 
 
@@ -48,10 +49,6 @@ extends OpColorBase
     genRequest(gen)
     {
         // 'this' is the node
-
-        if (!isEmpty(this.requestCache))
-            return this.requestCache;
-
 
         gen.scope.push({
             nodeId:  this.id, 
@@ -95,6 +92,9 @@ extends OpColorBase
             paramIds.length == values.length,
             'paramIds.length must equal values.length');
 
+        super.updateValues(updateParamId, paramIds, values);
+
+
         const colText = values[paramIds.findIndex(id => id == 'text')];
         const colBack = values[paramIds.findIndex(id => id == 'back')];
 
@@ -109,40 +109,37 @@ extends OpColorBase
         this._color = colBack.toDataColor();
 
 
-        super.updateValues(updateParamId, paramIds, values);
+        const contrast = this.paramContrast.value;
 
-
-        const value = this.paramValue.value;
-
-
+        
         if (this.paramStandard.value == 0)
         {
-            let rating = getContrastRating2(value);
+            let rating = getContrastRating2(contrast.value);
 
             if (rating != '')
                 rating = '&nbsp;&nbsp;' + rating;
 
-            this.paramValue.control.min        = 
-            this.paramValue.control.displayMin = 0;
+            this.paramContrast.control.min        = 
+            this.paramContrast.control.displayMin = 0;
 
-            this.paramValue.control.max        = 
-            this.paramValue.control.displayMax = 21;
+            this.paramContrast.control.max        = 
+            this.paramContrast.control.displayMax = 21;
 
-            this.paramValue.control.setDecimals(2);
-            this.paramValue.control.setSuffix(rating);
+            this.paramContrast.control.setDecimals(2);
+            this.paramContrast.control.setSuffix(rating);
         }
         else
         {
-            this.paramValue.control.min        = 
-            this.paramValue.control.displayMin = 0;
+            this.paramContrast.control.min        = 
+            this.paramContrast.control.displayMin = 0;
 
-            this.paramValue.control.max        = 
-            this.paramValue.control.displayMax = 105;
+            this.paramContrast.control.max        = 
+            this.paramContrast.control.displayMax = 105;
 
-            this.paramValue.control.setDecimals(1);
-            this.paramValue.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
+            this.paramContrast.control.setDecimals(1);
+            this.paramContrast.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
 
-            this.paramValue.control.setValue(Math.abs(value), false, false);
+            this.paramContrast.control.setValue(Math.abs(contrast.value), false, false);
         }
 
 
@@ -188,12 +185,14 @@ extends OpColorBase
     {
         super.updateHeaderLabel();
 
-        let textStyle;
+        const colors = this.getHeaderColors();
+
+        // let textStyle;
 
           if (   this.inputs[0].connected 
               && this.inputs[1].connected) this.label.style.color = rgb2style(this.labelColor);
         else if (this.inputs[1].connected) this.label.style.color = rgba2style(colors.text);
-        else                               this.label.style.color = 'black';
+        else                               this.label.style.color = isDarkMode() ? 'white' : 'black';
     }
 
 
@@ -203,14 +202,14 @@ extends OpColorBase
         if (isDarkMode())
         {
             if (this.paramStandard.value == 0)
-                this.paramValue.control.ranges = [
+                this.paramContrast.control.ranges = [
                     new NumberControlRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.2 )', 0.8),
                     new NumberControlRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.27)', 0.8),
                     new NumberControlRange(4.5/21,  7  /21, 'rgba(64,  220, 64, 0.27)', 0.8),
                     new NumberControlRange(7  /21, 21  /21, 'transparent') ];
 
             else
-                this.paramValue.control.ranges = [
+                this.paramContrast.control.ranges = [
                     new NumberControlRange( 0/105,  15/105, 'rgba(255,  64,  96, 0.2)', 0.8),
                     new NumberControlRange(15/105,  30/105, 'rgba(255, 128,  24, 0.2)', 0.8),
                     new NumberControlRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2)', 0.8),
@@ -222,14 +221,14 @@ extends OpColorBase
         else
         {
             if (this.paramStandard.value == 0)
-                this.paramValue.control.ranges = [
+                this.paramContrast.control.ranges = [
                     new NumberControlRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.2 )', 0.8),
                     new NumberControlRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.27)', 0.8),
                     new NumberControlRange(4.5/21,  7  /21, 'rgba(64,  220, 64, 0.27)', 0.8),
                     new NumberControlRange(7  /21, 21  /21, 'transparent') ];
 
             else
-                this.paramValue.control.ranges = [
+                this.paramContrast.control.ranges = [
                     new NumberControlRange( 0/105,  15/105, 'rgba(255,   0,  64, 0.2 )', 0.8),
                     new NumberControlRange(15/105,  30/105, 'rgba(255, 112,   0, 0.2 )', 0.8),
                     new NumberControlRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2 )', 0.8),
@@ -239,6 +238,6 @@ extends OpColorBase
                     new NumberControlRange(90/105, 105/105, 'transparent') ];
         }
 
-        this.paramValue.control.update();
+        this.paramContrast.control.update();
     }
 }

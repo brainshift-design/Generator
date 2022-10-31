@@ -1,5 +1,5 @@
 class GColorBlind
-extends GOperator
+extends GColorType
 {
     input = null;
 
@@ -87,9 +87,9 @@ extends GOperator
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'l',     l);
-        genPushUpdateValue(parse, this.nodeId, 'm',     m);
-        genPushUpdateValue(parse, this.nodeId, 's',     s);
+        genPushUpdateValue(parse, this.nodeId, 'l',     l         );
+        genPushUpdateValue(parse, this.nodeId, 'm',     m         );
+        genPushUpdateValue(parse, this.nodeId, 's',     s         );
 
 
         this.valid = true;

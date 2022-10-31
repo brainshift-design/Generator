@@ -6113,13 +6113,13 @@ extends GColorType
 
 
 class GColorContrast
-extends GOperator
+extends GColorType
 {
     input0 = null;
     input1 = null;
 
     standard;
-    value;
+    contrast;
 
 
     constructor(nodeId, options)
@@ -6139,7 +6139,7 @@ extends GOperator
         if (this.input1) cnt.input1 = this.input1.copy();
 
         cnt.standard = this.standard.copy();
-        cnt.value    = this.value   .copy();
+        cnt.contrast = this.contrast.copy();
 
         return cnt;
     }
@@ -6148,99 +6148,104 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return this;
+
+
+        this.standard = this.standard.eval(parse).copy();
+        const standard = this.standard.toValue();
+
+
+        if (   this.input0 
+            && this.input1)
         {
-            this.result = new ColorValue();
+            this.input0 = this.input0.eval(parse).copy();
+            this.input1 = this.input1.eval(parse).copy();
 
-            const standard = this.standard.eval(parse).copy();
+            const input0 = this.input0.toValue();
+            const input1 = this.input1.toValue();
 
 
-            if (   this.input0 
-                && this.input1)
+            if (   input0.isValid()
+                && input1.isValid())
             {
-                const input0 = this.input0.eval(parse).copy();
-                const input1 = this.input1.eval(parse).copy();
-
-
-                if (   input0.isValid()
-                    && input1.isValid())
+                this.value = input1;
+                
+                if (   dataColorIsValid(input0.toDataColor())
+                    && dataColorIsValid(input1.toDataColor()))
                 {
-                    this.result = input1;
-                    
-                    if (   dataColorIsValid(input0.toDataColor())
-                        && dataColorIsValid(input1.toDataColor()))
+                    if (standard.value == 0)
                     {
-                        if (standard.value == 0)
-                        {
-                            const value = getContrastRatio2(
-                                input0.toRgb(),
-                                input1.toRgb());
+                        const value = getContrastRatio2(
+                            input0.toRgb(),
+                            input1.toRgb());
 
-                            this.value = new NumberValue(value, 2);
-                        }
-                        else
-                        {
-                            const value = getContrastRatio3(
-                                input0.toRgb(),
-                                input1.toRgb());
-
-                            this.value = new NumberValue(Math.abs(value), 1);
-                        }
+                        this.contrast = new NumberValue(value, 2);
                     }
                     else
-                        this.value = NumberValue.NaN;
+                    {
+                        const value = getContrastRatio3(
+                            input0.toRgb(),
+                            input1.toRgb());
+
+                        this.contrast = new NumberValue(Math.abs(value), 1);
+                    }
                 }
                 else
-                {
-                    this.result = CGolorValue.NaN;
-                    this.value  = NumberValue.NaN;
-                }
-
-
-                genPushUpdateValue(parse, this.nodeId, 'text', input0);
-            }
-
-            else if (this.input0) 
-            {
-                const input0 = this.input0.eval(parse).copy();
-
-                if (input0.isValid())
-                    genPushUpdateValue(parse, this.nodeId, 'text', input0);
-
-                this.result = ColorValue.NaN;
-                this.value  = NumberValue.NaN;
-            }
-            else if (this.input1) 
-            {
-                const input1 = this.input1.eval(parse).copy();
-
-                if (input1.isValid())
-                {
-                    this.result = input1;
-                    genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
-                }
-                else
-                    this.result = ColorValue.NaN;
-    
-                this.value = NumberValue.NaN;
+                    this.contrast = NumberValue.NaN;
             }
             else
             {
-                this.result = ColorValue.NaN;
-                this.value  = NumberValue.NaN;
-
-                genPushUpdateValue(parse, this.nodeId, 'text',  ColorValue.NaN);
+                this.value    = ColorValue.NaN;
+                this.contrast = NumberValue.NaN;
             }
-            
-
-            genPushUpdateValue(parse, this.nodeId, 'back',  this.result);
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
-            this.result.valid = true;
-            this.valid        = true;
+            genPushUpdateValue(parse, this.nodeId, 'text', input0);
         }
 
+        else if (this.input0) 
+        {
+            this.input0 = this.input0.eval(parse).copy();
+            const input0 = this.input0.toValue();
+
+            if (input0.isValid())
+                genPushUpdateValue(parse, this.nodeId, 'text', input0);
+
+            this.value    = ColorValue.NaN;
+            this.contrast = NumberValue.NaN;
+        }
+        else if (this.input1) 
+        {
+            this.input1 = this.input1.eval(parse).copy();
+            const input1 = this.input1.toValue();
+
+            if (input1.isValid())
+            {
+                this.value = input1;
+                genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+            }
+            else
+                this.value = ColorValue.NaN;
+
+            this.contrast = NumberValue.NaN;
+        }
+        else
+        {
+            this.value    = ColorValue.NaN;
+            this.contrast = NumberValue.NaN;
+
+            genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+        }
+        
+
+        genPushUpdateValue(parse, this.nodeId, 'back',     this.value);
+
+        genPushUpdateValue(parse, this.nodeId, 'standard', this.standard);
+        genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
+
+
+        this.valid = true;
 
         return this;
     }
@@ -6249,7 +6254,7 @@ extends GOperator
 
 
 class GColorBlind
-extends GOperator
+extends GColorType
 {
     input = null;
 
@@ -6337,9 +6342,9 @@ extends GOperator
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'l',     l);
-        genPushUpdateValue(parse, this.nodeId, 'm',     m);
-        genPushUpdateValue(parse, this.nodeId, 's',     s);
+        genPushUpdateValue(parse, this.nodeId, 'l',     l         );
+        genPushUpdateValue(parse, this.nodeId, 'm',     m         );
+        genPushUpdateValue(parse, this.nodeId, 's',     s         );
 
 
         this.valid = true;

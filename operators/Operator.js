@@ -601,7 +601,7 @@ class Operator
 
     updateValues(updateParamId, paramIds, values) // virtual
     {
-        //logFunction('Operator.updateValues()');
+        // logFunction(this.id + '.Operator.updateValues()');
 
         for (let i = 0, paramIndex; i < paramIds.length; i++)
         {
