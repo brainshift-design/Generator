@@ -205,7 +205,9 @@ extends OpColorBase
 
 
         this.paramSpace.setValue(space, false, true, false);
-        switchToSpace(this, colorSpace(space.value));
+
+        if (space)
+            switchToSpace(this, colorSpace(space.value));
 
 
         this.param1.setValue(c1, false, true, false);
@@ -230,7 +232,7 @@ extends OpColorBase
             : dataColor_NaN;
 
 
-        this.prevSpace = colorSpace(space.value);
+        this.prevSpace = space ? colorSpace(space.value) : NumberValue.NaN;
     }
 
 

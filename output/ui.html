@@ -7831,7 +7831,7 @@ extends GColorType
                     Math.round(this.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
 
-                    
+
                 this.convertColor(
                     this.value,
                     colorSpace(fromSpaceIndex), 
@@ -7849,6 +7849,8 @@ extends GColorType
                     if (this.c3) this.value.c3 = this.c3.toValue();
                 }
             }
+            else
+                this.value = ColorValue.NaN;
         }
         else
         {
@@ -8043,6 +8045,7 @@ extends GColorType
 
 
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+        
         genPushUpdateValue(parse, this.nodeId, 'space',  space );
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
@@ -8332,7 +8335,7 @@ extends GColorType
 
 
 class GColorValidate
-extends GOperator
+extends GColorType
 {
     input = null;
 
@@ -8370,62 +8373,63 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return this;
+
+
+        this.order   = this.order  .eval(parse).copy();
+        this.margin1 = this.margin1.eval(parse).copy();
+        this.margin2 = this.margin2.eval(parse).copy();
+        this.margin3 = this.margin3.eval(parse).copy();
+
+        const order   = this.order  .toValue();
+        const margin1 = this.margin1.toValue();
+        const margin2 = this.margin2.toValue();
+        const margin3 = this.margin3.toValue();
+
+        
+        if (this.input)
         {
-            const order   = this.order  .eval(parse).copy();
-            const margin1 = this.margin1.eval(parse).copy();
-            const margin2 = this.margin2.eval(parse).copy();
-            const margin3 = this.margin3.eval(parse).copy();
+            this.input = this.input.eval(parse).copy();
+            const input = this.input.toValue();
 
-            
-            if (this.input)
+
+            const rgb = input.toRgb();
+
+
+            if (rgbIsOk(rgb))
             {
-                const input = this.input.eval(parse).copy();
+                this._color = validateColor(
+                        input.toDataColor(),
+                        this.order  .value, 
+                        this.margin1.value,
+                        this.margin2.value,
+                        this.margin3.value);
 
-                const rgb = input.toRgb();
+                const factor = getColorSpaceFactor('rgb');
 
-
-                if (rgbIsOk(rgb))
-                {
-                    // this._color = 
-                    //     col
-                    //     ? [...validateColor(
-                    //         col.toDataColor(),
-                    //         this.order  .value, 
-                    //         this.margin1.value,
-                    //         this.margin2.value,
-                    //         this.margin3.value)]
-                    //     : dataColor_NaN;
-
-
-                    const factor = getColorSpaceFactor('rgb');
-    
-                    this.result = ColorValue.create(
-                        1,
-                        rgb[0] * factor[0],
-                        rgb[1] * factor[1],
-                        rgb[2] * factor[2]);
-                }
-                else
-                    this.result = ColorValue.NaN;
+                this.value = ColorValue.create(
+                    1,
+                    this._color[1] * factor[0],
+                    this._color[2] * factor[1],
+                    this._color[3] * factor[2]);
             }
             else
-                this.result = ColorValue.NaN;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'order',   order  );
-            genPushUpdateValue(parse, this.nodeId, 'margin1', margin1);
-            genPushUpdateValue(parse, this.nodeId, 'margin2', margin2);
-            genPushUpdateValue(parse, this.nodeId, 'margin3', margin3);
+                this.value = ColorValue.NaN;
         }
+        else
+            this.value = ColorValue.NaN;
 
+
+        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+
+        genPushUpdateValue(parse, this.nodeId, 'order',   order  );
+        genPushUpdateValue(parse, this.nodeId, 'margin1', margin1);
+        genPushUpdateValue(parse, this.nodeId, 'margin2', margin2);
+        genPushUpdateValue(parse, this.nodeId, 'margin3', margin3);
+
+        
+        this.valid = true;
 
         return this;
     }
@@ -21400,7 +21404,7 @@ extends GColorType
                     Math.round(this.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
 
-                    
+
                 this.convertColor(
                     this.value,
                     colorSpace(fromSpaceIndex), 
@@ -21418,6 +21422,8 @@ extends GColorType
                     if (this.c3) this.value.c3 = this.c3.toValue();
                 }
             }
+            else
+                this.value = ColorValue.NaN;
         }
         else
         {
@@ -21612,6 +21618,7 @@ extends GColorType
 
 
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+        
         genPushUpdateValue(parse, this.nodeId, 'space',  space );
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
@@ -21901,7 +21908,7 @@ extends GColorType
 
 
 class GColorValidate
-extends GOperator
+extends GColorType
 {
     input = null;
 
@@ -21939,62 +21946,63 @@ extends GOperator
 
     eval(parse)
     {
-        if (!this.valid)
+        if (this.valid)
+            return this;
+
+
+        this.order   = this.order  .eval(parse).copy();
+        this.margin1 = this.margin1.eval(parse).copy();
+        this.margin2 = this.margin2.eval(parse).copy();
+        this.margin3 = this.margin3.eval(parse).copy();
+
+        const order   = this.order  .toValue();
+        const margin1 = this.margin1.toValue();
+        const margin2 = this.margin2.toValue();
+        const margin3 = this.margin3.toValue();
+
+        
+        if (this.input)
         {
-            const order   = this.order  .eval(parse).copy();
-            const margin1 = this.margin1.eval(parse).copy();
-            const margin2 = this.margin2.eval(parse).copy();
-            const margin3 = this.margin3.eval(parse).copy();
+            this.input = this.input.eval(parse).copy();
+            const input = this.input.toValue();
 
-            
-            if (this.input)
+
+            const rgb = input.toRgb();
+
+
+            if (rgbIsOk(rgb))
             {
-                const input = this.input.eval(parse).copy();
+                this._color = validateColor(
+                        input.toDataColor(),
+                        this.order  .value, 
+                        this.margin1.value,
+                        this.margin2.value,
+                        this.margin3.value);
 
-                const rgb = input.toRgb();
+                const factor = getColorSpaceFactor('rgb');
 
-
-                if (rgbIsOk(rgb))
-                {
-                    // this._color = 
-                    //     col
-                    //     ? [...validateColor(
-                    //         col.toDataColor(),
-                    //         this.order  .value, 
-                    //         this.margin1.value,
-                    //         this.margin2.value,
-                    //         this.margin3.value)]
-                    //     : dataColor_NaN;
-
-
-                    const factor = getColorSpaceFactor('rgb');
-    
-                    this.result = ColorValue.create(
-                        1,
-                        rgb[0] * factor[0],
-                        rgb[1] * factor[1],
-                        rgb[2] * factor[2]);
-                }
-                else
-                    this.result = ColorValue.NaN;
+                this.value = ColorValue.create(
+                    1,
+                    this._color[1] * factor[0],
+                    this._color[2] * factor[1],
+                    this._color[3] * factor[2]);
             }
             else
-                this.result = ColorValue.NaN;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'value', this.result);
-
-
-            this.result.valid = true;
-            this.valid        = true;
-
-
-            genPushUpdateValue(parse, this.nodeId, 'order',   order  );
-            genPushUpdateValue(parse, this.nodeId, 'margin1', margin1);
-            genPushUpdateValue(parse, this.nodeId, 'margin2', margin2);
-            genPushUpdateValue(parse, this.nodeId, 'margin3', margin3);
+                this.value = ColorValue.NaN;
         }
+        else
+            this.value = ColorValue.NaN;
 
+
+        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+
+        genPushUpdateValue(parse, this.nodeId, 'order',   order  );
+        genPushUpdateValue(parse, this.nodeId, 'margin1', margin1);
+        genPushUpdateValue(parse, this.nodeId, 'margin2', margin2);
+        genPushUpdateValue(parse, this.nodeId, 'margin3', margin3);
+
+        
+        this.valid = true;
 
         return this;
     }
@@ -23940,8 +23948,8 @@ const iconSubstring        = '<svg width="20" height="16" viewBox="0 0 20 16" fi
 const iconStringReplace    = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.962017 16H0.0941198L2.60435 9.16364H3.45889L5.96912 16H5.10122L3.05832 10.2452H3.00492L0.962017 16ZM1.28247 13.3295H4.78077V14.0639H1.28247V13.3295ZM18.6763 11.3H17.8485C17.7995 11.0619 17.7138 10.8527 17.5914 10.6724C17.4713 10.4922 17.3244 10.3409 17.1508 10.2185C16.9795 10.0938 16.7892 10.0004 16.58 9.93807C16.3708 9.87576 16.1527 9.8446 15.9257 9.8446C15.5118 9.8446 15.1368 9.9492 14.8008 10.1584C14.467 10.3676 14.2011 10.6758 14.003 11.083C13.8072 11.4903 13.7093 11.9899 13.7093 12.5818C13.7093 13.1738 13.8072 13.6734 14.003 14.0806C14.2011 14.4879 14.467 14.7961 14.8008 15.0053C15.1368 15.2144 15.5118 15.319 15.9257 15.319C16.1527 15.319 16.3708 15.2879 16.58 15.2256C16.7892 15.1633 16.9795 15.0709 17.1508 14.9485C17.3244 14.8239 17.4713 14.6714 17.5914 14.4912C17.7138 14.3087 17.7995 14.0995 17.8485 13.8636H18.6763C18.614 14.213 18.5005 14.5257 18.3358 14.8016C18.1711 15.0776 17.9664 15.3124 17.7216 15.506C17.4768 15.6973 17.202 15.8431 16.8971 15.9433C16.5945 16.0434 16.2707 16.0935 15.9257 16.0935C15.3427 16.0935 14.8242 15.951 14.3702 15.6662C13.9162 15.3813 13.5591 14.9763 13.2987 14.4511C13.0383 13.9259 12.9081 13.3028 12.9081 12.5818C12.9081 11.8608 13.0383 11.2377 13.2987 10.7125C13.5591 10.1873 13.9162 9.78229 14.3702 9.49744C14.8242 9.21259 15.3427 9.07017 15.9257 9.07017C16.2707 9.07017 16.5945 9.12024 16.8971 9.22038C17.202 9.32053 17.4768 9.4674 17.7216 9.66101C17.9664 9.85239 18.1711 10.0861 18.3358 10.362C18.5005 10.6357 18.614 10.9484 18.6763 11.3Z" fill="white"/><path d="M0.275672 6V0.909091H1.99584C2.39357 0.909091 2.72004 0.977036 2.97525 1.11293C3.23045 1.24716 3.41938 1.43194 3.54201 1.66726C3.66464 1.90258 3.72596 2.17022 3.72596 2.47017C3.72596 2.77012 3.66464 3.0361 3.54201 3.26811C3.41938 3.50012 3.23128 3.68241 2.97773 3.81499C2.72418 3.9459 2.4002 4.01136 2.00579 4.01136H0.61374V3.45455H1.9859C2.25768 3.45455 2.47643 3.41477 2.64215 3.33523C2.80953 3.25568 2.9305 3.14299 3.00508 2.99716C3.08131 2.84967 3.11942 2.67401 3.11942 2.47017C3.11942 2.26634 3.08131 2.08819 3.00508 1.93572C2.92884 1.78326 2.80704 1.6656 2.63966 1.58274C2.47229 1.49822 2.25105 1.45597 1.97596 1.45597H0.89215V6H0.275672ZM2.67198 3.71307L3.92482 6H3.20891L1.97596 3.71307H2.67198Z" fill="white"/><path d="M7.93402 18V12.9091H9.71385C10.0685 12.9091 10.361 12.9704 10.5913 13.093C10.8217 13.214 10.9932 13.3772 11.1059 13.5827C11.2186 13.7866 11.2749 14.0128 11.2749 14.2614C11.2749 14.4801 11.236 14.6607 11.1581 14.8033C11.0819 14.9458 10.9808 15.0585 10.8548 15.1413C10.7305 15.2242 10.5955 15.2855 10.4496 15.3253V15.375C10.6054 15.3849 10.762 15.4396 10.9195 15.5391C11.0769 15.6385 11.2086 15.781 11.3147 15.9666C11.4208 16.1522 11.4738 16.3793 11.4738 16.6477C11.4738 16.9029 11.4158 17.1325 11.2998 17.3363C11.1838 17.5401 11.0007 17.7017 10.7504 17.821C10.5002 17.9403 10.1746 18 9.77351 18H7.93402ZM8.5505 17.4531H9.77351C10.1762 17.4531 10.4621 17.3752 10.6311 17.2195C10.8018 17.062 10.8871 16.8714 10.8871 16.6477C10.8871 16.4754 10.8432 16.3163 10.7554 16.1705C10.6676 16.023 10.5425 15.9053 10.38 15.8175C10.2176 15.728 10.0254 15.6832 9.80334 15.6832H8.5505V17.4531ZM8.5505 15.1463H9.69397C9.87957 15.1463 10.047 15.1098 10.1961 15.0369C10.3469 14.964 10.4662 14.8613 10.5541 14.7287C10.6435 14.5961 10.6883 14.4403 10.6883 14.2614C10.6883 14.0376 10.6104 13.8479 10.4546 13.6921C10.2988 13.5347 10.0519 13.456 9.71385 13.456H8.5505V15.1463Z" fill="white"/><path d="M8.72684 10.4314C8.8411 8.38532 8.18851 5.28547 4.9663 4.51052" stroke="white"/><line x1="10.518" y1="9.5204" x2="8.07839" y2="11.6097" stroke="white"/><line x1="6.81449" y1="9.59341" x2="9.27206" y2="11.3618" stroke="white"/><line x1="2.44721" y1="3.77639" x2="3.44721" y2="5.77639" stroke="white"/></svg>';
 
 const iconColor            = '<svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 2.43384C10.7465 1.2502 9.18038 0.509092 7.44118 0.509092C4.13249 0.509092 1.45027 3.19131 1.45027 6.5C1.45027 9.80869 4.13249 12.4909 7.44118 12.4909C9.18038 12.4909 10.7465 11.7498 11.8409 10.5662" stroke="white"/><path d="M7.5 7.57511C8.09377 7.57511 8.57511 7.09377 8.57511 6.5C8.57511 5.90623 8.09377 5.42489 7.5 5.42489C6.90623 5.42489 6.42489 5.90623 6.42489 6.5C6.42489 7.09377 6.90623 7.57511 7.5 7.57511Z" fill="white"/></svg>';
-const iconColorRandom      = '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 2.43385C10.7465 1.2502 9.18038 0.509094 7.44118 0.509094C4.13249 0.509094 1.45027 3.19132 1.45027 6.5C1.45027 9.80869 4.13249 12.4909 7.44118 12.4909C9.18038 12.4909 10.7465 11.7498 11.8409 10.5662" stroke="white"/><path d="M6.70419 7.80159V7.71763C6.70634 7.32795 6.74294 7.01793 6.81399 6.78757C6.88719 6.55721 6.99053 6.37206 7.12401 6.23212C7.25749 6.09003 7.42003 5.95978 7.61164 5.84137C7.74297 5.75956 7.8603 5.67021 7.96364 5.57333C8.06913 5.4743 8.15202 5.3645 8.2123 5.24393C8.27258 5.12122 8.30273 4.98451 8.30273 4.8338C8.30273 4.66372 8.2629 4.51625 8.18324 4.39138C8.10358 4.26651 7.99594 4.16963 7.8603 4.10074C7.72682 4.03184 7.57719 3.9974 7.41142 3.9974C7.25856 3.9974 7.11324 4.03077 6.97546 4.09751C6.83982 4.16209 6.72679 4.26113 6.63637 4.39461C6.5481 4.52594 6.49859 4.69279 6.48782 4.89516H5.33817C5.34893 4.48611 5.44796 4.14379 5.63527 3.86822C5.82472 3.59265 6.07446 3.38597 6.38448 3.24818C6.69665 3.1104 7.04112 3.0415 7.41788 3.0415C7.82908 3.0415 8.19077 3.11363 8.50295 3.25787C8.81727 3.40212 9.06163 3.60772 9.23601 3.87468C9.41255 4.13949 9.50082 4.45381 9.50082 4.81766C9.50082 5.06309 9.46099 5.28269 9.38133 5.47645C9.30383 5.67021 9.19296 5.84244 9.04871 5.99315C8.90446 6.14385 8.73331 6.27841 8.53524 6.39682C8.36085 6.50446 8.21769 6.61642 8.10573 6.73267C7.99594 6.84893 7.91413 6.98564 7.8603 7.1428C7.80863 7.29781 7.78172 7.48942 7.77957 7.71763V7.80159H6.70419Z" fill="white"/><path d="M6.70947 9.81362C6.8745 9.97612 7.07127 10.0574 7.29978 10.0574C7.45212 10.0574 7.59049 10.0205 7.7149 9.94692C7.84185 9.87075 7.94341 9.76919 8.01958 9.64224C8.09829 9.51529 8.13764 9.37438 8.13764 9.2195C8.13764 8.99099 8.05386 8.79549 7.88629 8.63299C7.72125 8.4705 7.52575 8.38925 7.29978 8.38925C7.07127 8.38925 6.8745 8.4705 6.70947 8.63299C6.54443 8.79549 6.46191 8.99099 6.46191 9.2195C6.46191 9.45309 6.54443 9.65113 6.70947 9.81362Z" fill="white"/></svg>';
-const iconColorValidate    = '<svg width="19" height="16" viewBox="-2 -1 19 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.179 3.06615L6.68506 9.56013L2.88329 5.75836L4.0255 4.61615L6.68506 7.27571L12.0369 1.92393L13.179 3.06615Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.06159 1.13348C7.25451 1.03474 8.44629 1.33665 9.44831 1.99145L10.0355 1.09298C8.8335 0.307551 7.40396 -0.054602 5.97305 0.0638407C4.54213 0.182283 3.19159 0.774556 2.13516 1.74692C1.07873 2.71929 0.37676 4.0162 0.140352 5.43241C-0.0960661 6.84862 0.146576 8.30322 0.829882 9.56601C1.51319 10.8288 2.59812 11.8277 3.91297 12.4044C5.22782 12.9812 6.69749 13.1031 8.08937 12.7507C9.03602 12.5109 9.90991 12.0611 10.6496 11.4415L15.2558 15.9919L16.01 15.2284L11.4122 10.6861C11.4756 10.6118 11.5375 10.536 11.5977 10.4586C12.4797 9.32556 12.9585 7.93076 12.9585 6.49496H11.8852C11.8852 7.69195 11.486 8.85476 10.7507 9.79935C10.0155 10.744 8.98629 11.4164 7.82592 11.7102C6.66554 12.0039 5.44031 11.9024 4.34415 11.4216C3.24799 10.9407 2.3435 10.108 1.77385 9.05523C1.20419 8.00247 1.0019 6.7898 1.19899 5.60913C1.39609 4.42848 1.98131 3.34726 2.86203 2.53663C3.74275 1.72599 4.86867 1.23223 6.06159 1.13348Z" fill="white"/></svg>';
+//const iconColorValidate    = '<svg width="19" height="16" viewBox="-2 -1 19 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.179 3.06615L6.68506 9.56013L2.88329 5.75836L4.0255 4.61615L6.68506 7.27571L12.0369 1.92393L13.179 3.06615Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.06159 1.13348C7.25451 1.03474 8.44629 1.33665 9.44831 1.99145L10.0355 1.09298C8.8335 0.307551 7.40396 -0.054602 5.97305 0.0638407C4.54213 0.182283 3.19159 0.774556 2.13516 1.74692C1.07873 2.71929 0.37676 4.0162 0.140352 5.43241C-0.0960661 6.84862 0.146576 8.30322 0.829882 9.56601C1.51319 10.8288 2.59812 11.8277 3.91297 12.4044C5.22782 12.9812 6.69749 13.1031 8.08937 12.7507C9.03602 12.5109 9.90991 12.0611 10.6496 11.4415L15.2558 15.9919L16.01 15.2284L11.4122 10.6861C11.4756 10.6118 11.5375 10.536 11.5977 10.4586C12.4797 9.32556 12.9585 7.93076 12.9585 6.49496H11.8852C11.8852 7.69195 11.486 8.85476 10.7507 9.79935C10.0155 10.744 8.98629 11.4164 7.82592 11.7102C6.66554 12.0039 5.44031 11.9024 4.34415 11.4216C3.24799 10.9407 2.3435 10.108 1.77385 9.05523C1.20419 8.00247 1.0019 6.7898 1.19899 5.60913C1.39609 4.42848 1.98131 3.34726 2.86203 2.53663C3.74275 1.72599 4.86867 1.23223 6.06159 1.13348Z" fill="white"/></svg>';
+const iconColorValidate    = '<svg width="18" height="13" viewBox="-2 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 10.5662C10.7465 11.7498 9.18038 12.4909 7.44118 12.4909C4.13249 12.4909 1.45027 9.80869 1.45027 6.5C1.45027 3.19131 4.13249 0.50909 7.44118 0.50909C8.66322 0.50909 9.80806 1.02212 10.7556 1.65033" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.6832 2.62548L9.18921 9.11946L5.38744 5.31769L6.52965 4.17548L9.18921 6.83504L14.5411 1.48326L15.6832 2.62548Z" fill="white"/></svg>';
 const iconColorContrast    = '<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.49866 15.5233C12.3783 15.5233 15.5233 12.3783 15.5233 8.49867C15.5233 4.61906 12.3783 1.47401 8.49866 1.47401C4.61906 1.47401 1.47401 4.61906 1.47401 8.49867C1.47401 12.3783 4.61906 15.5233 8.49866 15.5233Z" stroke="white"/><path d="M8.01022 15.1997C6.14349 15.1997 4.3532 14.494 3.03321 13.2377C1.71321 11.9814 0.971649 10.2775 0.971649 8.50083C0.971649 6.72416 1.71321 5.02026 3.03321 3.76397C4.3532 2.50768 6.14349 1.8019 8.01022 1.8019V8.50083V15.1997Z" fill="white"/></svg>';
 const iconColorblind       = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 18.4807C14.4599 18.4807 18.4807 14.4599 18.4807 9.5C18.4807 4.54009 14.4599 0.519287 9.5 0.519287C4.54009 0.519287 0.519283 4.54009 0.519283 9.5C0.519283 14.4599 4.54009 18.4807 9.5 18.4807Z" stroke="white" stroke-width="0.919355" stroke-dasharray="1.84 1.84"/><path d="M9.5 14.5417C12.2844 14.5417 14.5417 12.2844 14.5417 9.5C14.5417 6.71557 12.2844 4.45834 9.5 4.45834C6.71557 4.45834 4.45834 6.71557 4.45834 9.5C4.45834 12.2844 6.71557 14.5417 9.5 14.5417Z" stroke="white" stroke-width="0.919355"/><path d="M9.5 10.918C10.2831 10.918 10.918 10.2831 10.918 9.5C10.918 8.71686 10.2831 8.08199 9.5 8.08199C8.71686 8.08199 8.08199 8.71686 8.08199 9.5C8.08199 10.2831 8.71686 10.918 9.5 10.918Z" fill="white"/></svg>';
 const iconColorInterpolate = '<svg width="18" height="21" viewBox="0 -1 18 21" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9.5" cy="2.5" r="2.5" fill="white" fill-opacity="0.1"/><circle cx="9.5" cy="2.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2.5" fill="white" fill-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2" stroke="white" stroke-opacity="0.7"/><circle cx="9.5" cy="16.5" r="2.5" fill="white" fill-opacity="0.8"/><circle cx="9.5" cy="16.5" r="2" stroke="white" stroke-opacity="0.9"/><circle cx="14.5" cy="14.5" r="2" fill="white" stroke="white"/><circle cx="14.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="4.5" cy="14.5" r="2.5" fill="white" fill-opacity="0.6"/><circle cx="4.5" cy="14.5" r="2" stroke="white" stroke-opacity="0.8"/><circle cx="4.5" cy="4.5" r="2.5" fill="white" fill-opacity="0.2"/><circle cx="4.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.6"/></svg>';
@@ -24119,7 +24127,7 @@ function initMenus()
     menuColor = new Menu('Color nodes', true, false);
     menuColor.addItems([
         new MenuItem('Color',       {icon: iconColor           , callback: e => actionManager.do(new CreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Validate',    {icon: iconColorValidate   , enabled: false}),
+        new MenuItem('Validate',    {icon: iconColorValidate   , callback: e => actionManager.do(new CreateNodeAction(COLOR_VALIDATE,    btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Contrast',    {icon: iconColorContrast   , callback: e => actionManager.do(new CreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Colorblind',  {icon: iconColorblind      , callback: e => actionManager.do(new CreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Interpolate', {icon: iconColorInterpolate, callback: e => actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))})]);
@@ -33095,6 +33103,9 @@ class Operator
 
     loadParams(_node)
     {
+        if (!_node.params)
+            return;
+            
         for (const _param of _node.params)
         {
             const index = this.params.findIndex(p => p.id == _param[0]);
@@ -35267,7 +35278,9 @@ extends OpColorBase
 
 
         this.paramSpace.setValue(space, false, true, false);
-        switchToSpace(this, colorSpace(space.value));
+
+        if (space)
+            switchToSpace(this, colorSpace(space.value));
 
 
         this.param1.setValue(c1, false, true, false);
@@ -35292,7 +35305,7 @@ extends OpColorBase
             : dataColor_NaN;
 
 
-        this.prevSpace = colorSpace(space.value);
+        this.prevSpace = space ? colorSpace(space.value) : NumberValue.NaN;
     }
 
 
@@ -36990,7 +37003,7 @@ function reorderCorrection(closestOrder,
 
 
 
-var validateIsFinding = false;
+//var validateIsFinding = false;
 
 
 
@@ -37015,11 +37028,11 @@ class OpColorValidate_Correction
 class   OpColorValidate
 extends OpColorBase
 {
-    order;
+    paramOrder;
 
-    margin1;
-    margin2;
-    margin3;
+    paramMargin1;
+    paramMargin2;
+    paramMargin3;
 
 
     // findBar;
@@ -37032,17 +37045,17 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_VALIDATE, 'validate', 80);
+        super(COLOR_VALIDATE, 'validate', 90);
 
 
         this.addInput(new Input(COLOR_TYPES));
-        this.addOutput(new Output([COLOR], this.output_genRequest));
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
         this.alwaysLoadParams = true;
 
 
-        this.addParam(this.order = new SelectParam('order', '', false, true, true, [
+        this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [
             'H,&thinsp;C,&thinsp;L', 
             'C,&thinsp;H,&thinsp;L', 
             'C,&thinsp;L,&thinsp;H', 
@@ -37051,34 +37064,34 @@ extends OpColorBase
             'L,&thinsp;C,&thinsp;H' 
         ], 2));
 
-        this.order.addEventListener('change', () => this.updateCorrections());
+        this.paramOrder.addEventListener('change', () => this.updateCorrections());
 
 
-        this.addParam(this.margin1 = new NumberParam('margin1', '', true, true, true, 0));
-        this.addParam(this.margin2 = new NumberParam('margin2', '', true, true, true, 0));
-        this.addParam(this.margin3 = new NumberParam('margin3', '', true, true, true, 0));
+        this.addParam(this.paramMargin1 = new NumberParam('margin1', '', true, true, true, 0));
+        this.addParam(this.paramMargin2 = new NumberParam('margin2', '', true, true, true, 0));
+        this.addParam(this.paramMargin3 = new NumberParam('margin3', '', true, true, true, 0));
 
 
-        this.margin1.addEventListener('change', () => 
+        this.paramMargin1.addEventListener('change', () => 
         {
-            const [i1,,] = getCorrectionOrder(this.order.value);
-            this.corrections[i1].value = this.margin1.value;
+            const [i1,,] = getCorrectionOrder(this.paramOrder.value);
+            this.corrections[i1].value = this.paramMargin1.value;
             uiSaveNodes([this.id]);
         });
 
 
-        this.margin2.addEventListener('change', () => 
+        this.paramMargin2.addEventListener('change', () => 
         {
-            const [, i2,] = getCorrectionOrder(this.order.value);
-            this.corrections[i2].value = this.margin2.value;
+            const [, i2,] = getCorrectionOrder(this.paramOrder.value);
+            this.corrections[i2].value = this.paramMargin2.value;
             uiSaveNodes([this.id]);
         });
 
         
-        this.margin3.addEventListener('change', () => 
+        this.paramMargin3.addEventListener('change', () => 
         {
-            const [,, i3] = getCorrectionOrder(this.order.value);
-            this.corrections[i3].value = this.margin3.value;
+            const [,, i3] = getCorrectionOrder(this.paramOrder.value);
+            this.corrections[i3].value = this.paramMargin3.value;
             uiSaveNodes([this.id]);
         });
 
@@ -37133,27 +37146,14 @@ extends OpColorBase
 
 
 
-    initCorrections()
-    {
-        this.corrections = [
-            new OpColorValidate_Correction('H', 180),
-            new OpColorValidate_Correction('C', 100),
-            new OpColorValidate_Correction('L', 100) ];
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output
 
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
+
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -37164,11 +37164,12 @@ extends OpColorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.order  .genRequest(gen));
 
-        request.push(...this.node.margin1.genRequest(gen));
-        request.push(...this.node.margin2.genRequest(gen));
-        request.push(...this.node.margin3.genRequest(gen));
+        request.push(...this.node.paramOrder  .genRequest(gen));
+
+        request.push(...this.node.paramMargin1.genRequest(gen));
+        request.push(...this.node.paramMargin2.genRequest(gen));
+        request.push(...this.node.paramMargin3.genRequest(gen));
 
 
         gen.scope.pop();
@@ -37195,13 +37196,23 @@ extends OpColorBase
 
 
 
+    initCorrections()
+    {
+        this.corrections = [
+            new OpColorValidate_Correction('H', 180),
+            new OpColorValidate_Correction('C', 100),
+            new OpColorValidate_Correction('L', 100) ];
+    }
+
+
+
     updateCorrections()
     {
-        const [i1, i2, i3] = getCorrectionOrder(this.order.value);
+        const [i1, i2, i3] = getCorrectionOrder(this.paramOrder.value.value);
 
-        this.updateMargin(this.margin1, this.corrections[i1]);
-        this.updateMargin(this.margin2, this.corrections[i2]);
-        this.updateMargin(this.margin3, this.corrections[i3]);
+        this.updateMargin(this.paramMargin1, this.corrections[i1]);
+        this.updateMargin(this.paramMargin2, this.corrections[i2]);
+        this.updateMargin(this.paramMargin3, this.corrections[i3]);
     }
 
 
@@ -37216,7 +37227,7 @@ extends OpColorBase
 
         //margin.locked = correction.locked;
         //margin.updateLock();
-console.log('correction.value =', correction.value);
+
         // if (!margin.locked)
         // {
             //margin.control.setDecimals(Math.min(decCount(numToString(correction.value, -1))));
@@ -37289,40 +37300,40 @@ console.log('correction.value =', correction.value);
 
 
 
-function uiUpdateFindCorrectionProgress(nodeId, progress)
-{
-    const node = nodeFromId(nodeId);
+// function uiUpdateFindCorrectionProgress(nodeId, progress)
+// {
+//     const node = nodeFromId(nodeId);
 
-    node.findProgress.style.width = (progress * 100) + '%';
-}
+//     node.findProgress.style.width = (progress * 100) + '%';
+// }
 
 
 
-function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, closest3)
-{
-    const node = nodeFromId(nodeId);
+// function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, closest3)
+// {
+//     const node = nodeFromId(nodeId);
 
-    if (success)
-    {
-        node.order.setValue(closestOrder, true, true, false);
+//     if (success)
+//     {
+//         node.paramOrder.setValue(closestOrder, true, true, false);
 
-        const [i1, i2, i3] = getCorrectionOrder(closestOrder);
+//         const [i1, i2, i3] = getCorrectionOrder(closestOrder);
 
-        node.corrections[i1].value = closest1;
-        node.corrections[i2].value = closest2;
-        node.corrections[i3].value = closest3;
+//         node.corrections[i1].value = closest1;
+//         node.corrections[i2].value = closest2;
+//         node.corrections[i3].value = closest3;
 
-        node.updateCorrections();
-    }
+//         node.updateCorrections();
+//     }
 
-    validateIsFinding = false;
+//     validateIsFinding = false;
 
-    node.findBar.style.display = 'none';
+//     node.findBar.style.display = 'none';
 
-    pushUpdate([node]);
+//     //pushUpdate([node]);
 
-    uiSaveNodes([nodeId]);
-}
+//     //uiSaveNodes([nodeId]);
+// }
 
 
 

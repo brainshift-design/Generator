@@ -1,4 +1,4 @@
-var validateIsFinding = false;
+//var validateIsFinding = false;
 
 
 
@@ -23,11 +23,11 @@ class OpColorValidate_Correction
 class   OpColorValidate
 extends OpColorBase
 {
-    order;
+    paramOrder;
 
-    margin1;
-    margin2;
-    margin3;
+    paramMargin1;
+    paramMargin2;
+    paramMargin3;
 
 
     // findBar;
@@ -40,17 +40,17 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_VALIDATE, 'validate', 80);
+        super(COLOR_VALIDATE, 'validate', 90);
 
 
         this.addInput(new Input(COLOR_TYPES));
-        this.addOutput(new Output([COLOR], this.output_genRequest));
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
         this.alwaysLoadParams = true;
 
 
-        this.addParam(this.order = new SelectParam('order', '', false, true, true, [
+        this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [
             'H,&thinsp;C,&thinsp;L', 
             'C,&thinsp;H,&thinsp;L', 
             'C,&thinsp;L,&thinsp;H', 
@@ -59,34 +59,34 @@ extends OpColorBase
             'L,&thinsp;C,&thinsp;H' 
         ], 2));
 
-        this.order.addEventListener('change', () => this.updateCorrections());
+        this.paramOrder.addEventListener('change', () => this.updateCorrections());
 
 
-        this.addParam(this.margin1 = new NumberParam('margin1', '', true, true, true, 0));
-        this.addParam(this.margin2 = new NumberParam('margin2', '', true, true, true, 0));
-        this.addParam(this.margin3 = new NumberParam('margin3', '', true, true, true, 0));
+        this.addParam(this.paramMargin1 = new NumberParam('margin1', '', true, true, true, 0));
+        this.addParam(this.paramMargin2 = new NumberParam('margin2', '', true, true, true, 0));
+        this.addParam(this.paramMargin3 = new NumberParam('margin3', '', true, true, true, 0));
 
 
-        this.margin1.addEventListener('change', () => 
+        this.paramMargin1.addEventListener('change', () => 
         {
-            const [i1,,] = getCorrectionOrder(this.order.value);
-            this.corrections[i1].value = this.margin1.value;
+            const [i1,,] = getCorrectionOrder(this.paramOrder.value);
+            this.corrections[i1].value = this.paramMargin1.value;
             uiSaveNodes([this.id]);
         });
 
 
-        this.margin2.addEventListener('change', () => 
+        this.paramMargin2.addEventListener('change', () => 
         {
-            const [, i2,] = getCorrectionOrder(this.order.value);
-            this.corrections[i2].value = this.margin2.value;
+            const [, i2,] = getCorrectionOrder(this.paramOrder.value);
+            this.corrections[i2].value = this.paramMargin2.value;
             uiSaveNodes([this.id]);
         });
 
         
-        this.margin3.addEventListener('change', () => 
+        this.paramMargin3.addEventListener('change', () => 
         {
-            const [,, i3] = getCorrectionOrder(this.order.value);
-            this.corrections[i3].value = this.margin3.value;
+            const [,, i3] = getCorrectionOrder(this.paramOrder.value);
+            this.corrections[i3].value = this.paramMargin3.value;
             uiSaveNodes([this.id]);
         });
 
@@ -141,27 +141,14 @@ extends OpColorBase
 
 
 
-    initCorrections()
-    {
-        this.corrections = [
-            new OpColorValidate_Correction('H', 180),
-            new OpColorValidate_Correction('C', 100),
-            new OpColorValidate_Correction('L', 100) ];
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output
 
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
         gen.scope.push({
             nodeId:  this.node.id, 
             paramId: '' });
+
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -172,11 +159,12 @@ extends OpColorBase
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
-        request.push(...this.node.order  .genRequest(gen));
 
-        request.push(...this.node.margin1.genRequest(gen));
-        request.push(...this.node.margin2.genRequest(gen));
-        request.push(...this.node.margin3.genRequest(gen));
+        request.push(...this.node.paramOrder  .genRequest(gen));
+
+        request.push(...this.node.paramMargin1.genRequest(gen));
+        request.push(...this.node.paramMargin2.genRequest(gen));
+        request.push(...this.node.paramMargin3.genRequest(gen));
 
 
         gen.scope.pop();
@@ -203,13 +191,23 @@ extends OpColorBase
 
 
 
+    initCorrections()
+    {
+        this.corrections = [
+            new OpColorValidate_Correction('H', 180),
+            new OpColorValidate_Correction('C', 100),
+            new OpColorValidate_Correction('L', 100) ];
+    }
+
+
+
     updateCorrections()
     {
-        const [i1, i2, i3] = getCorrectionOrder(this.order.value);
+        const [i1, i2, i3] = getCorrectionOrder(this.paramOrder.value.value);
 
-        this.updateMargin(this.margin1, this.corrections[i1]);
-        this.updateMargin(this.margin2, this.corrections[i2]);
-        this.updateMargin(this.margin3, this.corrections[i3]);
+        this.updateMargin(this.paramMargin1, this.corrections[i1]);
+        this.updateMargin(this.paramMargin2, this.corrections[i2]);
+        this.updateMargin(this.paramMargin3, this.corrections[i3]);
     }
 
 
@@ -224,7 +222,7 @@ extends OpColorBase
 
         //margin.locked = correction.locked;
         //margin.updateLock();
-console.log('correction.value =', correction.value);
+
         // if (!margin.locked)
         // {
             //margin.control.setDecimals(Math.min(decCount(numToString(correction.value, -1))));
@@ -297,40 +295,40 @@ console.log('correction.value =', correction.value);
 
 
 
-function uiUpdateFindCorrectionProgress(nodeId, progress)
-{
-    const node = nodeFromId(nodeId);
+// function uiUpdateFindCorrectionProgress(nodeId, progress)
+// {
+//     const node = nodeFromId(nodeId);
 
-    node.findProgress.style.width = (progress * 100) + '%';
-}
+//     node.findProgress.style.width = (progress * 100) + '%';
+// }
 
 
 
-function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, closest3)
-{
-    const node = nodeFromId(nodeId);
+// function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, closest3)
+// {
+//     const node = nodeFromId(nodeId);
 
-    if (success)
-    {
-        node.order.setValue(closestOrder, true, true, false);
+//     if (success)
+//     {
+//         node.paramOrder.setValue(closestOrder, true, true, false);
 
-        const [i1, i2, i3] = getCorrectionOrder(closestOrder);
+//         const [i1, i2, i3] = getCorrectionOrder(closestOrder);
 
-        node.corrections[i1].value = closest1;
-        node.corrections[i2].value = closest2;
-        node.corrections[i3].value = closest3;
+//         node.corrections[i1].value = closest1;
+//         node.corrections[i2].value = closest2;
+//         node.corrections[i3].value = closest3;
 
-        node.updateCorrections();
-    }
+//         node.updateCorrections();
+//     }
 
-    validateIsFinding = false;
+//     validateIsFinding = false;
 
-    node.findBar.style.display = 'none';
+//     node.findBar.style.display = 'none';
 
-    pushUpdate([node]);
+//     //pushUpdate([node]);
 
-    uiSaveNodes([nodeId]);
-}
+//     //uiSaveNodes([nodeId]);
+// }
 
 
 

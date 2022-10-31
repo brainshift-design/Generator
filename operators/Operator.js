@@ -749,6 +749,9 @@ class Operator
 
     loadParams(_node)
     {
+        if (!_node.params)
+            return;
+            
         for (const _param of _node.params)
         {
             const index = this.params.findIndex(p => p.id == _param[0]);

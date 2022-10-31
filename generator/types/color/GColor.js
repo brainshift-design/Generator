@@ -76,7 +76,7 @@ extends GColorType
                     Math.round(this.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
 
-                    
+
                 this.convertColor(
                     this.value,
                     colorSpace(fromSpaceIndex), 
@@ -94,6 +94,8 @@ extends GColorType
                     if (this.c3) this.value.c3 = this.c3.toValue();
                 }
             }
+            else
+                this.value = ColorValue.NaN;
         }
         else
         {
