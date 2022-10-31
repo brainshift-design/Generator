@@ -3495,10 +3495,15 @@ function expandRect(rect1, rect2)
 class Random
 {
     seed;
+    last;
 
 
 
-    constructor(seed = 0xb9ef7ca4) { this.seed = seed; }
+    constructor(seed = 0xb9ef7ca4)
+    { 
+        this.seed = seed; 
+        this.last = seed;
+    }
 
 
 
@@ -3511,6 +3516,8 @@ class Random
 
     next()
     {
+        this.last = this.seed;
+        
         this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
         this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
         this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
@@ -15561,10 +15568,15 @@ function expandRect(rect1, rect2)
 class Random
 {
     seed;
+    last;
 
 
 
-    constructor(seed = 0xb9ef7ca4) { this.seed = seed; }
+    constructor(seed = 0xb9ef7ca4)
+    { 
+        this.seed = seed; 
+        this.last = seed;
+    }
 
 
 
@@ -15577,6 +15589,8 @@ class Random
 
     next()
     {
+        this.last = this.seed;
+        
         this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
         this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
         this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
@@ -23930,7 +23944,7 @@ const iconColorRandom      = '<svg width="13" height="13" viewBox="0 0 13 13" fi
 const iconColorValidate    = '<svg width="19" height="16" viewBox="-2 -1 19 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.179 3.06615L6.68506 9.56013L2.88329 5.75836L4.0255 4.61615L6.68506 7.27571L12.0369 1.92393L13.179 3.06615Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.06159 1.13348C7.25451 1.03474 8.44629 1.33665 9.44831 1.99145L10.0355 1.09298C8.8335 0.307551 7.40396 -0.054602 5.97305 0.0638407C4.54213 0.182283 3.19159 0.774556 2.13516 1.74692C1.07873 2.71929 0.37676 4.0162 0.140352 5.43241C-0.0960661 6.84862 0.146576 8.30322 0.829882 9.56601C1.51319 10.8288 2.59812 11.8277 3.91297 12.4044C5.22782 12.9812 6.69749 13.1031 8.08937 12.7507C9.03602 12.5109 9.90991 12.0611 10.6496 11.4415L15.2558 15.9919L16.01 15.2284L11.4122 10.6861C11.4756 10.6118 11.5375 10.536 11.5977 10.4586C12.4797 9.32556 12.9585 7.93076 12.9585 6.49496H11.8852C11.8852 7.69195 11.486 8.85476 10.7507 9.79935C10.0155 10.744 8.98629 11.4164 7.82592 11.7102C6.66554 12.0039 5.44031 11.9024 4.34415 11.4216C3.24799 10.9407 2.3435 10.108 1.77385 9.05523C1.20419 8.00247 1.0019 6.7898 1.19899 5.60913C1.39609 4.42848 1.98131 3.34726 2.86203 2.53663C3.74275 1.72599 4.86867 1.23223 6.06159 1.13348Z" fill="white"/></svg>';
 const iconColorContrast    = '<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.49866 15.5233C12.3783 15.5233 15.5233 12.3783 15.5233 8.49867C15.5233 4.61906 12.3783 1.47401 8.49866 1.47401C4.61906 1.47401 1.47401 4.61906 1.47401 8.49867C1.47401 12.3783 4.61906 15.5233 8.49866 15.5233Z" stroke="white"/><path d="M8.01022 15.1997C6.14349 15.1997 4.3532 14.494 3.03321 13.2377C1.71321 11.9814 0.971649 10.2775 0.971649 8.50083C0.971649 6.72416 1.71321 5.02026 3.03321 3.76397C4.3532 2.50768 6.14349 1.8019 8.01022 1.8019V8.50083V15.1997Z" fill="white"/></svg>';
 const iconColorblind       = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 18.4807C14.4599 18.4807 18.4807 14.4599 18.4807 9.5C18.4807 4.54009 14.4599 0.519287 9.5 0.519287C4.54009 0.519287 0.519283 4.54009 0.519283 9.5C0.519283 14.4599 4.54009 18.4807 9.5 18.4807Z" stroke="white" stroke-width="0.919355" stroke-dasharray="1.84 1.84"/><path d="M9.5 14.5417C12.2844 14.5417 14.5417 12.2844 14.5417 9.5C14.5417 6.71557 12.2844 4.45834 9.5 4.45834C6.71557 4.45834 4.45834 6.71557 4.45834 9.5C4.45834 12.2844 6.71557 14.5417 9.5 14.5417Z" stroke="white" stroke-width="0.919355"/><path d="M9.5 10.918C10.2831 10.918 10.918 10.2831 10.918 9.5C10.918 8.71686 10.2831 8.08199 9.5 8.08199C8.71686 8.08199 8.08199 8.71686 8.08199 9.5C8.08199 10.2831 8.71686 10.918 9.5 10.918Z" fill="white"/></svg>';
-const iconColorInterpolate = '<svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9.5" cy="2.5" r="2.5" fill="white" fill-opacity="0.1"/><circle cx="9.5" cy="2.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2.5" fill="white" fill-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2" stroke="white" stroke-opacity="0.7"/><circle cx="9.5" cy="16.5" r="2.5" fill="white" fill-opacity="0.8"/><circle cx="9.5" cy="16.5" r="2" stroke="white" stroke-opacity="0.9"/><circle cx="14.5" cy="14.5" r="2" fill="white" stroke="white"/><circle cx="14.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="4.5" cy="14.5" r="2.5" fill="white" fill-opacity="0.6"/><circle cx="4.5" cy="14.5" r="2" stroke="white" stroke-opacity="0.8"/><circle cx="4.5" cy="4.5" r="2.5" fill="white" fill-opacity="0.2"/><circle cx="4.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.6"/></svg>';
+const iconColorInterpolate = '<svg width="18" height="21" viewBox="0 -1 18 21" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9.5" cy="2.5" r="2.5" fill="white" fill-opacity="0.1"/><circle cx="9.5" cy="2.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2.5" fill="white" fill-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2" stroke="white" stroke-opacity="0.7"/><circle cx="9.5" cy="16.5" r="2.5" fill="white" fill-opacity="0.8"/><circle cx="9.5" cy="16.5" r="2" stroke="white" stroke-opacity="0.9"/><circle cx="14.5" cy="14.5" r="2" fill="white" stroke="white"/><circle cx="14.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="4.5" cy="14.5" r="2.5" fill="white" fill-opacity="0.6"/><circle cx="4.5" cy="14.5" r="2" stroke="white" stroke-opacity="0.8"/><circle cx="4.5" cy="4.5" r="2.5" fill="white" fill-opacity="0.2"/><circle cx="4.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.6"/></svg>';
 
 const iconFill             = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 7C13 10.3137 10.3137 13 7 13C3.68629 13 1 10.3137 1 7C1 3.68629 3.68629 1 7 1C10.3137 1 13 3.68629 13 7Z" stroke="white" stroke-opacity="0.5" stroke-width="2"/><path d="M7 12C9.76142 12 12 9.76142 12 7C12 4.23858 9.76142 2 7 2C4.23858 2 2 4.23858 2 7C2 9.76142 4.23858 12 7 12Z" fill="white"/></svg>';
 const iconStroke           = '<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 7C13 10.3137 10.3137 13 7 13C3.68629 13 1 10.3137 1 7C1 3.68629 3.68629 1 7 1C10.3137 1 13 3.68629 13 7Z" stroke="white" stroke-width="2"/><path d="M7 12C9.76142 12 12 9.76142 12 7C12 4.23858 9.76142 2 7 2C4.23858 2 2 4.23858 2 7C2 9.76142 4.23858 12 7 12Z" fill="white" fill-opacity="0.35"/></svg>';
@@ -32888,7 +32902,11 @@ class Operator
         this.label.style.color      = rgba2style(colors.text);
         this.label.style.fontSize   = this.active ? fontSize : 11;
         this.label.style.height     = this.active ? fontSize * 14 / 11 : 14;
-        this.label.style.fontWeight = this.active ? (graphView.zoom < 1.5 ? '900' : 'bold') : 'normal';
+
+        this.label.style.fontWeight = 
+            this.active 
+            ? (graphView.zoom < 1.2 ? '900' : 'bold') 
+            : (graphView.zoom < 1.2 ? '600' : 'normal');
     }
 
 

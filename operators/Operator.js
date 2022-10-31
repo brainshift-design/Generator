@@ -556,7 +556,11 @@ class Operator
         this.label.style.color      = rgba2style(colors.text);
         this.label.style.fontSize   = this.active ? fontSize : 11;
         this.label.style.height     = this.active ? fontSize * 14 / 11 : 14;
-        this.label.style.fontWeight = this.active ? (graphView.zoom < 1.5 ? '900' : 'bold') : 'normal';
+
+        this.label.style.fontWeight = 
+            this.active 
+            ? (graphView.zoom < 1.2 ? '900' : 'bold') 
+            : (graphView.zoom < 1.2 ? '600' : 'normal');
     }
 
 

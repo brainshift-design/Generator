@@ -1,10 +1,15 @@
 class Random
 {
     seed;
+    last;
 
 
 
-    constructor(seed = 0xb9ef7ca4) { this.seed = seed; }
+    constructor(seed = 0xb9ef7ca4)
+    { 
+        this.seed = seed; 
+        this.last = seed;
+    }
 
 
 
@@ -17,6 +22,8 @@ class Random
 
     next()
     {
+        this.last = this.seed;
+        
         this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
         this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
         this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
