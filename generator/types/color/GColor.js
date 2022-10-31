@@ -1,5 +1,5 @@
 class GColor
-extends GOperator
+extends GColorType
 {
     input   = null;
 
@@ -47,75 +47,57 @@ extends GOperator
         if (this.valid)
             return this;
 
-
+            
         if (this.space) this.space = this.space.eval(parse).copy();
         if (this.c1   ) this.c1    = this.c1   .eval(parse).copy();
         if (this.c2   ) this.c2    = this.c2   .eval(parse).copy();
         if (this.c3   ) this.c3    = this.c3   .eval(parse).copy();
 
 
-        let color;
-
-
         if (this.input)
         {
-            const isParam = this.input instanceof GParam;
-
             this.input = this.input.eval(parse).copy();
             const input = this.input.toValue();
-                // isParam
-                // ? this.input.node[this.input.paramId].copy()
-                // : this.input.toValue();
+
 
             if (input.isValid())
             {
-                // console.log('isParam =', isParam);
-                // console.log('input.space =', input.space);
-                // const space = this.input.toValue().space;
-                // console.log('space =', space);
-
-                const space =
-                    isParam
-                    ? input.space
-                    : this.input.space;
-
-                color = new ColorValue(
-                    space, 
+                this.value = new ColorValue(
+                    input.space,
                     input.c1.copy(), 
                     input.c2.copy(), 
                     input.c3.copy());
                     
 
-                const fromSpaceIndex = color.space.value;
-
-                color.space = this.space;
+                const fromSpaceIndex = input.space.value;
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
-                    Math.round(color.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
+                    Math.round(this.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
 
+                    
                 this.convertColor(
-                    color,
+                    this.value,
                     colorSpace(fromSpaceIndex), 
                     colorSpace(  toSpaceIndex));
 
-                color.space.value = toSpaceIndex;
+                this.value.space.value = toSpaceIndex;
 
                 
                 // fake disabled status by checking for it during param eval (easiest way to do it)
 
                 if (this.options.enabled)
                 {
-                    if (this.c1) color.c1 = this.c1.toValue();
-                    if (this.c2) color.c2 = this.c2.toValue();
-                    if (this.c3) color.c3 = this.c3.toValue();
+                    if (this.c1) this.value.c1 = this.c1.toValue();
+                    if (this.c2) this.value.c2 = this.c2.toValue();
+                    if (this.c3) this.value.c3 = this.c3.toValue();
                 }
             }
         }
         else
         {
-            color = new ColorValue(
+            this.value = new ColorValue(
                 this.space.toValue(), 
                 this.c1   .toValue(), 
                 this.c2   .toValue(), 
@@ -123,30 +105,30 @@ extends GOperator
 
             const toSpaceIndex = Math.min(Math.max(
                 0,
-                Math.round(color.space.value)), // round because a value can come in with decimals (TODO fix this)
+                Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
                 colorSpaceCount(parse)-1);
 
-            color.space.value = toSpaceIndex;
+            this.value.space.value = toSpaceIndex;
 
             
             if (    this.convert
                 && !isNaN(this.convert.value)
-                &&  color.isValid())
+                &&  this.value.isValid())
             {
                 this.convert.eval(parse);
 
                 this.convertColor(
-                    color,
+                    this.value,
                     colorSpace(this.convert.value), 
                     colorSpace(toSpaceIndex));
             }
         }
 
 
-        this.space = color.space;
-        this.c1    = color.c1;
-        this.c2    = color.c2;
-        this.c3    = color.c3;
+        this.space = this.value.space;
+        this.c1    = this.value.c1;
+        this.c2    = this.value.c2;
+        this.c3    = this.value.c3;
 
 
         // if (this.options.enabled)

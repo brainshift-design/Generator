@@ -20,7 +20,7 @@ extends NumberParamBase
         this.control.param  = this;
         this.control.zIndex = 0;
    
-        this.defaultValue   = new NumberValue(defaultValue);
+        this.defaultValue   = new NumberValue(defaultValue, decimals);
 
 
         initNumberControl(

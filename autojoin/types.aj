@@ -42,6 +42,7 @@
 ../generator/types/math/GInterpolate.js
 
 
+../generator/types/color/GColorType.js
 ../generator/types/color/GColor.js
 ../generator/types/color/GColorInterpolate.js
 ../generator/types/color/GColorContrast.js

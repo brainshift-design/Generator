@@ -957,15 +957,15 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
 
 
-    const nodeJson = [];
+    // const nodeJson = [];
 
-    nodes.forEach(n => nodeJson.push(n.toJson()));
+    // nodes.forEach(n => nodeJson.push(n.toJson()));
 
 
-    if (   settings.logRawSaving
-        && updateNodeId  != NULL
-        && updateParamId != NULL)
-        logSaveNodes(nodeJson.join('\n'));
+    // if (   settings.logRawSaving
+    //     && updateNodeId  != NULL
+    //     && updateParamId != NULL)
+    //     logSaveNodes(nodeJson.join('\n'));
 
     if (objects.length > 0)
     {
@@ -977,7 +977,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
             updateNodeId:  updateNodeId,
             updateParamId: updateParamId,
             nodeIds:       nodes.map(n => n.id),
-            nodeJson:      nodeJson,
+            // nodeJson:      nodeJson,
             objects:       [...objects]});
     }
         
@@ -1016,15 +1016,16 @@ function uiSaveNodes(nodeIds)
     for (const id of nodeIds)
         nodeJson.push(nodeFromId(id).toJson());
 
-    if (settings.logRawSaving)
-        logSaveNodes(nodeJson.join('\n'));
-
     if (nodeJson.length > 0)
+    {
+        if (settings.logRawSaving)
+            logSaveNodes(nodeJson.join('\n'));
+
         uiQueueMessageToFigma({
             cmd:     'figSaveNodes',
             nodeIds:  nodeIds,
-            nodeJson: nodeJson
-    });
+            nodeJson: nodeJson});
+    }
 }
 
 

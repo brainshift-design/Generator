@@ -221,12 +221,13 @@ function logReqNode(node, parse) {
 }
 const figObjectArrays = []; // {nodeId, [objects]}
 function figUpdateObjects(msg) {
-    if (msg.updateNodeId != NULL
-        && msg.updateParamId != NULL) {
-        const index = msg.nodeIds.indexOf(msg.updateNodeId);
-        if (index > -1)
-            figSaveNodes([msg.updateNodeId], [msg.nodeJson[index]]);
-    }
+    // if (   msg.updateNodeId  != NULL
+    //     && msg.updateParamId != NULL)
+    // {
+    //     const index = msg.nodeIds.indexOf(msg.updateNodeId);
+    //     if (index > -1)
+    //         figSaveNodes([msg.updateNodeId], [msg.nodeJson[index]]);
+    // }
     let curNodeId = NULL;
     let figObjects = null;
     for (const genObj of msg.objects) {

@@ -35,9 +35,6 @@ extends OpColorBase
         this.header.connectionPadding = 12.5;
 
         
-        //this._color = dataColor_NaN;
-
-        
         // this.inputs[0].addEventListener('connect', () => 
         // {
         //     if (   !this.inputs[1].connected
@@ -120,7 +117,7 @@ extends OpColorBase
         super.updateValues(updateParamId, paramIds, values);
 
 
-        showOpColorInterpolateGammaControl(this, this.paramSpace.value == 1);    
+        //showOpColorInterpolateGammaControl(this, this.paramSpace.value == 1);    
     }
 }
 

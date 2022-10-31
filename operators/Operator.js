@@ -661,7 +661,9 @@ class Operator
               pos + '{\n'
             + this.toJsonBase(nTab);
 
-        if (this.params.filter(p => !this.paramIsConsideredDefault(p)).length > 0)
+        const nonDefaultParams = this.params.filter(p => !this.paramIsConsideredDefault(p));
+
+        if (nonDefaultParams.length > 0) // don't include empty param section
             json += this.paramsToJson(nTab);
 
         json += '\n' + pos + '}';
@@ -696,6 +698,8 @@ class Operator
 
     paramsToJson(nTab = 0)
     {
+        //logFunction('Operator.paramsToJson()');
+        
         let   pos = ' '.repeat(nTab);
         const tab = TAB;
 
@@ -726,8 +730,8 @@ class Operator
 
     loadFromParsedJson(_node)
     {
-        this.id      = _node.id;
-        this.name    = _node.name;
+        this.id   = _node.id;
+        this.name = _node.name;
 
         if (_node.enabled)
             this.enabled = parseBool(_node.enabled);
@@ -741,10 +745,6 @@ class Operator
 
     loadParams(_node)
     {
-        if (!_node.params)
-            return;
-
-
         for (const _param of _node.params)
         {
             const index = this.params.findIndex(p => p.id == _param[0]);

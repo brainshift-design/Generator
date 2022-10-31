@@ -284,7 +284,8 @@ extends OpColorBase
     {
         //console.log(this.id + '.OpColor.updateHeader()');
 
-        super.updateHeader();
+        //super.updateHeader();
+        Operator.prototype.updateHeader.call(this);
 
         
         this.header.style.background = 'transparent';
@@ -323,13 +324,13 @@ extends OpColorBase
 
 
 
-    updateHeaderLabel()
-    {
-        super.updateHeaderLabel();
+    // updateHeaderLabel()
+    // {
+    //     super.updateHeaderLabel();
         
-        const colors = this.getHeaderColors();
-        this.label.style.color = rgba2style(colors.text);
-    }
+    //     const colors = this.getHeaderColors();
+    //     this.label.style.color = rgba2style(colors.text);
+    // }
 
 
 
@@ -550,13 +551,13 @@ extends OpColorBase
 
     loadParams(_node)
     {
+        super.loadParams(_node);
+
+
         if (_node.colorBeforeNaN)
             this._colorBeforeNaN = _node.colorBeforeNaN;
 
-        this.prevSpace = _node.prevSpace;
-
-
-        super.loadParams(_node);
+        this.prevSpace = _node.prevSpace;    
 
 
         const space  = colorSpace(Math.max(1, this.paramSpace.value.value));

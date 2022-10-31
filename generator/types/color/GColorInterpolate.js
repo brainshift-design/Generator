@@ -1,5 +1,5 @@
 class GColorInterpolate
-extends GOperator
+extends GColorType
 {
     input0 = null;
     input1 = null;
@@ -89,12 +89,12 @@ extends GOperator
         else if (this.input0) 
         {
             this.input0 = this.input0.eval(parse).copy();
-            this.value = this.input0.toValue().copy();
+            this.value = this.input0.toValue();
         }
         else if (this.input1) 
         {
             this.input1 = this.input1.eval(parse).copy();
-            this.value = this.input1.toValue().copy();
+            this.value = this.input1.toValue();
         }
         else 
             this.value = ColorValue.NaN;

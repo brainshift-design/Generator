@@ -338,9 +338,9 @@ function loadNode(_node)
     node.loadFromParsedJson(_node);
 
 
-    node.updateNode();
+    //node.updateNode();
     
-    updateHeaderLabelOffset(node, 0.5);
+    //updateHeaderLabelOffset(node, 0.5);
 
     setNodePosition(
         node, 

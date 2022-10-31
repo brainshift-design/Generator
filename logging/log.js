@@ -33,11 +33,16 @@ class RequestSettings
 
 
 
-function logFunction(funcName)
+function logFunction(funcName, obj = null)
 {
+    let str = funcName;
+
+    if (obj)
+        str = obj.id + '.' + str;
+
     console.log(
-        '%c ' + funcName + ' ', 
-        'background: #09f; color: white;');
+        '%c ' + str + ' ', 
+        'background: #fc0; color: #632;');
 }
 
 

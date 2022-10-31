@@ -48,9 +48,10 @@ extends Operator
 
 
         this.header.style.background = 
-              rgbIsOk(colors.back)
+            !rgbIsNaN(colors.back) //  rgbIsOk(colors.back)
             ? rgb2style(colors.back)
-            : 'transparent';
+            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+            //: 'transparent';
 
 
         for (const input of this.headerInputs)
@@ -72,6 +73,16 @@ extends Operator
 
 
         this.updateWarningOverlay();
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        super.updateHeaderLabel();
+        
+        const colors = this.getHeaderColors();
+        this.label.style.color = rgba2style(colors.text);
     }
 
 

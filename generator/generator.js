@@ -123,7 +123,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
     }
     else if (genFigMessagePosted)
     {
-        //console.log('saving');
+        // console.log('saving');
         lastUpdateNodeId  = updateNodeId;
         lastUpdateParamId = updateParamId;
         lastUpdateValues  = updateValues;
@@ -221,5 +221,6 @@ function genQueueChunk(updateNodeId, updateParamId, nodeValChunkId, nodeValChunk
         objects:       [...objChunk]
     });
 
-    genFigMessagePosted = true;
+    if (objChunk.length > 0)
+        genFigMessagePosted = true;
 }

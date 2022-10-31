@@ -1868,15 +1868,15 @@ div
 
 <div id='ttInterpolationSpace' class='tooltip'>
 
-    <div>
+    <div style="margin-left: 20px;">
         The color space determines<br/>the path of interpolation.
     </div>
-    <div style="margin-top: 14px;">
-        Through RGB it goes in a straight line,<br/>through spaces with Hue &mdash; in a circle.
+    <div style="margin-left: 20px; margin-top: 14px;">
+        In RGB it's a straight line,<br/>in spaces with Hue it's a circle.
     </div>
 
     <div style="position: absolute; left:  47px; top: 110px;">RGB</div>
-    <div style="position: absolute; left: 152px; top: 110px;">HCL</div>
+    <div style="position: absolute; left: 152px; top: 110px;">HSV</div>
 
     <svg width="192" height="88" viewBox="0 0 192 88" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: 13px; margin-left: 4px;">
         <circle cx="43.945" cy="43.6699" r="42.9129" transform="rotate(164.053 43.945 43.6699)" stroke="white"/>
@@ -4478,11 +4478,16 @@ class RequestSettings
 
 
 
-function logFunction(funcName)
+function logFunction(funcName, obj = null)
 {
+    let str = funcName;
+
+    if (obj)
+        str = obj.id + '.' + str;
+
     console.log(
-        '%c ' + funcName + ' ', 
-        'background: #09f; color: white;');
+        '%c ' + str + ' ', 
+        'background: #fc0; color: #632;');
 }
 
 
@@ -7718,8 +7723,31 @@ extends GNumberType
 
 
 
-class GColor
+class GColorType
 extends GOperator
+{
+    value;
+    
+
+
+    copyBase(src)
+    {
+        super.copyBase(src);
+
+        this.value = src.value.copy();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+class GColor
+extends GColorType
 {
     input   = null;
 
@@ -7767,75 +7795,57 @@ extends GOperator
         if (this.valid)
             return this;
 
-
+            
         if (this.space) this.space = this.space.eval(parse).copy();
         if (this.c1   ) this.c1    = this.c1   .eval(parse).copy();
         if (this.c2   ) this.c2    = this.c2   .eval(parse).copy();
         if (this.c3   ) this.c3    = this.c3   .eval(parse).copy();
 
 
-        let color;
-
-
         if (this.input)
         {
-            const isParam = this.input instanceof GParam;
-
             this.input = this.input.eval(parse).copy();
             const input = this.input.toValue();
-                // isParam
-                // ? this.input.node[this.input.paramId].copy()
-                // : this.input.toValue();
+
 
             if (input.isValid())
             {
-                // console.log('isParam =', isParam);
-                // console.log('input.space =', input.space);
-                // const space = this.input.toValue().space;
-                // console.log('space =', space);
-
-                const space =
-                    isParam
-                    ? input.space
-                    : this.input.space;
-
-                color = new ColorValue(
-                    space, 
+                this.value = new ColorValue(
+                    input.space,
                     input.c1.copy(), 
                     input.c2.copy(), 
                     input.c3.copy());
                     
 
-                const fromSpaceIndex = color.space.value;
-
-                color.space = this.space;
+                const fromSpaceIndex = input.space.value;
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
-                    Math.round(color.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
+                    Math.round(this.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
 
+                    
                 this.convertColor(
-                    color,
+                    this.value,
                     colorSpace(fromSpaceIndex), 
                     colorSpace(  toSpaceIndex));
 
-                color.space.value = toSpaceIndex;
+                this.value.space.value = toSpaceIndex;
 
                 
                 // fake disabled status by checking for it during param eval (easiest way to do it)
 
                 if (this.options.enabled)
                 {
-                    if (this.c1) color.c1 = this.c1.toValue();
-                    if (this.c2) color.c2 = this.c2.toValue();
-                    if (this.c3) color.c3 = this.c3.toValue();
+                    if (this.c1) this.value.c1 = this.c1.toValue();
+                    if (this.c2) this.value.c2 = this.c2.toValue();
+                    if (this.c3) this.value.c3 = this.c3.toValue();
                 }
             }
         }
         else
         {
-            color = new ColorValue(
+            this.value = new ColorValue(
                 this.space.toValue(), 
                 this.c1   .toValue(), 
                 this.c2   .toValue(), 
@@ -7843,30 +7853,30 @@ extends GOperator
 
             const toSpaceIndex = Math.min(Math.max(
                 0,
-                Math.round(color.space.value)), // round because a value can come in with decimals (TODO fix this)
+                Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
                 colorSpaceCount(parse)-1);
 
-            color.space.value = toSpaceIndex;
+            this.value.space.value = toSpaceIndex;
 
             
             if (    this.convert
                 && !isNaN(this.convert.value)
-                &&  color.isValid())
+                &&  this.value.isValid())
             {
                 this.convert.eval(parse);
 
                 this.convertColor(
-                    color,
+                    this.value,
                     colorSpace(this.convert.value), 
                     colorSpace(toSpaceIndex));
             }
         }
 
 
-        this.space = color.space;
-        this.c1    = color.c1;
-        this.c2    = color.c2;
-        this.c3    = color.c3;
+        this.space = this.value.space;
+        this.c1    = this.value.c1;
+        this.c2    = this.value.c2;
+        this.c3    = this.value.c3;
 
 
         // if (this.options.enabled)
@@ -7924,7 +7934,7 @@ extends GOperator
 
 
 class GColorInterpolate
-extends GOperator
+extends GColorType
 {
     input0 = null;
     input1 = null;
@@ -8014,12 +8024,12 @@ extends GOperator
         else if (this.input0) 
         {
             this.input0 = this.input0.eval(parse).copy();
-            this.value = this.input0.toValue().copy();
+            this.value = this.input0.toValue();
         }
         else if (this.input1) 
         {
             this.input1 = this.input1.eval(parse).copy();
-            this.value = this.input1.toValue().copy();
+            this.value = this.input1.toValue();
         }
         else 
             this.value = ColorValue.NaN;
@@ -9894,7 +9904,7 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
     }
     else if (genFigMessagePosted)
     {
-        //console.log('saving');
+        // console.log('saving');
         lastUpdateNodeId  = updateNodeId;
         lastUpdateParamId = updateParamId;
         lastUpdateValues  = updateValues;
@@ -9992,7 +10002,8 @@ function genQueueChunk(updateNodeId, updateParamId, nodeValChunkId, nodeValChunk
         objects:       [...objChunk]
     });
 
-    genFigMessagePosted = true;
+    if (objChunk.length > 0)
+        genFigMessagePosted = true;
 }
 
 
@@ -16528,11 +16539,16 @@ class RequestSettings
 
 
 
-function logFunction(funcName)
+function logFunction(funcName, obj = null)
 {
+    let str = funcName;
+
+    if (obj)
+        str = obj.id + '.' + str;
+
     console.log(
-        '%c ' + funcName + ' ', 
-        'background: #09f; color: white;');
+        '%c ' + str + ' ', 
+        'background: #fc0; color: #632;');
 }
 
 
@@ -21264,8 +21280,31 @@ extends GNumberType
 
 
 
-class GColor
+class GColorType
 extends GOperator
+{
+    value;
+    
+
+
+    copyBase(src)
+    {
+        super.copyBase(src);
+
+        this.value = src.value.copy();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+class GColor
+extends GColorType
 {
     input   = null;
 
@@ -21313,75 +21352,57 @@ extends GOperator
         if (this.valid)
             return this;
 
-
+            
         if (this.space) this.space = this.space.eval(parse).copy();
         if (this.c1   ) this.c1    = this.c1   .eval(parse).copy();
         if (this.c2   ) this.c2    = this.c2   .eval(parse).copy();
         if (this.c3   ) this.c3    = this.c3   .eval(parse).copy();
 
 
-        let color;
-
-
         if (this.input)
         {
-            const isParam = this.input instanceof GParam;
-
             this.input = this.input.eval(parse).copy();
             const input = this.input.toValue();
-                // isParam
-                // ? this.input.node[this.input.paramId].copy()
-                // : this.input.toValue();
+
 
             if (input.isValid())
             {
-                // console.log('isParam =', isParam);
-                // console.log('input.space =', input.space);
-                // const space = this.input.toValue().space;
-                // console.log('space =', space);
-
-                const space =
-                    isParam
-                    ? input.space
-                    : this.input.space;
-
-                color = new ColorValue(
-                    space, 
+                this.value = new ColorValue(
+                    input.space,
                     input.c1.copy(), 
                     input.c2.copy(), 
                     input.c3.copy());
                     
 
-                const fromSpaceIndex = color.space.value;
-
-                color.space = this.space;
+                const fromSpaceIndex = input.space.value;
 
                 const toSpaceIndex = Math.min(Math.max(
                     0,
-                    Math.round(color.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
+                    Math.round(this.space.toValue().value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
 
+                    
                 this.convertColor(
-                    color,
+                    this.value,
                     colorSpace(fromSpaceIndex), 
                     colorSpace(  toSpaceIndex));
 
-                color.space.value = toSpaceIndex;
+                this.value.space.value = toSpaceIndex;
 
                 
                 // fake disabled status by checking for it during param eval (easiest way to do it)
 
                 if (this.options.enabled)
                 {
-                    if (this.c1) color.c1 = this.c1.toValue();
-                    if (this.c2) color.c2 = this.c2.toValue();
-                    if (this.c3) color.c3 = this.c3.toValue();
+                    if (this.c1) this.value.c1 = this.c1.toValue();
+                    if (this.c2) this.value.c2 = this.c2.toValue();
+                    if (this.c3) this.value.c3 = this.c3.toValue();
                 }
             }
         }
         else
         {
-            color = new ColorValue(
+            this.value = new ColorValue(
                 this.space.toValue(), 
                 this.c1   .toValue(), 
                 this.c2   .toValue(), 
@@ -21389,30 +21410,30 @@ extends GOperator
 
             const toSpaceIndex = Math.min(Math.max(
                 0,
-                Math.round(color.space.value)), // round because a value can come in with decimals (TODO fix this)
+                Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
                 colorSpaceCount(parse)-1);
 
-            color.space.value = toSpaceIndex;
+            this.value.space.value = toSpaceIndex;
 
             
             if (    this.convert
                 && !isNaN(this.convert.value)
-                &&  color.isValid())
+                &&  this.value.isValid())
             {
                 this.convert.eval(parse);
 
                 this.convertColor(
-                    color,
+                    this.value,
                     colorSpace(this.convert.value), 
                     colorSpace(toSpaceIndex));
             }
         }
 
 
-        this.space = color.space;
-        this.c1    = color.c1;
-        this.c2    = color.c2;
-        this.c3    = color.c3;
+        this.space = this.value.space;
+        this.c1    = this.value.c1;
+        this.c2    = this.value.c2;
+        this.c3    = this.value.c3;
 
 
         // if (this.options.enabled)
@@ -21470,7 +21491,7 @@ extends GOperator
 
 
 class GColorInterpolate
-extends GOperator
+extends GColorType
 {
     input0 = null;
     input1 = null;
@@ -21560,12 +21581,12 @@ extends GOperator
         else if (this.input0) 
         {
             this.input0 = this.input0.eval(parse).copy();
-            this.value = this.input0.toValue().copy();
+            this.value = this.input0.toValue();
         }
         else if (this.input1) 
         {
             this.input1 = this.input1.eval(parse).copy();
-            this.value = this.input1.toValue().copy();
+            this.value = this.input1.toValue();
         }
         else 
             this.value = ColorValue.NaN;
@@ -29422,7 +29443,7 @@ extends NumberParamBase
         this.control.param  = this;
         this.control.zIndex = 0;
    
-        this.defaultValue   = new NumberValue(defaultValue);
+        this.defaultValue   = new NumberValue(defaultValue, decimals);
 
 
         initNumberControl(
@@ -32962,7 +32983,9 @@ class Operator
               pos + '{\n'
             + this.toJsonBase(nTab);
 
-        if (this.params.filter(p => !this.paramIsConsideredDefault(p)).length > 0)
+        const nonDefaultParams = this.params.filter(p => !this.paramIsConsideredDefault(p));
+
+        if (nonDefaultParams.length > 0) // don't include empty param section
             json += this.paramsToJson(nTab);
 
         json += '\n' + pos + '}';
@@ -32997,6 +33020,8 @@ class Operator
 
     paramsToJson(nTab = 0)
     {
+        //logFunction('Operator.paramsToJson()');
+        
         let   pos = ' '.repeat(nTab);
         const tab = TAB;
 
@@ -33027,8 +33052,8 @@ class Operator
 
     loadFromParsedJson(_node)
     {
-        this.id      = _node.id;
-        this.name    = _node.name;
+        this.id   = _node.id;
+        this.name = _node.name;
 
         if (_node.enabled)
             this.enabled = parseBool(_node.enabled);
@@ -33042,10 +33067,6 @@ class Operator
 
     loadParams(_node)
     {
-        if (!_node.params)
-            return;
-
-
         for (const _param of _node.params)
         {
             const index = this.params.findIndex(p => p.id == _param[0]);
@@ -34892,9 +34913,10 @@ extends Operator
 
 
         this.header.style.background = 
-              rgbIsOk(colors.back)
+            !rgbIsNaN(colors.back) //  rgbIsOk(colors.back)
             ? rgb2style(colors.back)
-            : 'transparent';
+            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+            //: 'transparent';
 
 
         for (const input of this.headerInputs)
@@ -34916,6 +34938,16 @@ extends Operator
 
 
         this.updateWarningOverlay();
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        super.updateHeaderLabel();
+        
+        const colors = this.getHeaderColors();
+        this.label.style.color = rgba2style(colors.text);
     }
 
 
@@ -35286,7 +35318,8 @@ extends OpColorBase
     {
         //console.log(this.id + '.OpColor.updateHeader()');
 
-        super.updateHeader();
+        //super.updateHeader();
+        Operator.prototype.updateHeader.call(this);
 
         
         this.header.style.background = 'transparent';
@@ -35325,13 +35358,13 @@ extends OpColorBase
 
 
 
-    updateHeaderLabel()
-    {
-        super.updateHeaderLabel();
+    // updateHeaderLabel()
+    // {
+    //     super.updateHeaderLabel();
         
-        const colors = this.getHeaderColors();
-        this.label.style.color = rgba2style(colors.text);
-    }
+    //     const colors = this.getHeaderColors();
+    //     this.label.style.color = rgba2style(colors.text);
+    // }
 
 
 
@@ -35552,13 +35585,13 @@ extends OpColorBase
 
     loadParams(_node)
     {
+        super.loadParams(_node);
+
+
         if (_node.colorBeforeNaN)
             this._colorBeforeNaN = _node.colorBeforeNaN;
 
-        this.prevSpace = _node.prevSpace;
-
-
-        super.loadParams(_node);
+        this.prevSpace = _node.prevSpace;    
 
 
         const space  = colorSpace(Math.max(1, this.paramSpace.value.value));
@@ -37570,9 +37603,6 @@ extends OpColorBase
         this.header.connectionPadding = 12.5;
 
         
-        //this._color = dataColor_NaN;
-
-        
         // this.inputs[0].addEventListener('connect', () => 
         // {
         //     if (   !this.inputs[1].connected
@@ -37655,7 +37685,7 @@ extends OpColorBase
         super.updateValues(updateParamId, paramIds, values);
 
 
-        showOpColorInterpolateGammaControl(this, this.paramSpace.value == 1);    
+        //showOpColorInterpolateGammaControl(this, this.paramSpace.value == 1);    
     }
 }
 
@@ -41281,7 +41311,7 @@ extends Action
         this.oldValue = this.param.oldValue;
         pushUpdateFromParam([this.param.node], this.param);
 
-        //uiSaveNodes([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -41291,7 +41321,7 @@ extends Action
         this.param.setValue(this.oldValue, false, true);
         pushUpdateFromParam([this.param.node], this.param);
 
-        //uiSaveNodes([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 
 
@@ -41301,7 +41331,7 @@ extends Action
         this.param.setValue(this.newValue);
         pushUpdateFromParam([this.param.node], this.param);
 
-        //uiSaveNodes([this.nodeId]);
+        uiSaveNodes([this.nodeId]);
     }
 }
 
@@ -41972,7 +42002,7 @@ generator.onmessage = function(e)
     switch (msg.cmd)
     {
         case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                   break;
-        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects      (msg.updateNodeId, msg.updateParamId, msg.values, msg.objects); break;
+        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects      (msg.updateNodeId, msg.updateParamId, msg.values, msg.objects);                        break;
         case 'uiUpdateFindCorrection':   uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
         case 'uiEndFindCorrection':      uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
     }
@@ -42406,9 +42436,9 @@ function loadNode(_node)
     node.loadFromParsedJson(_node);
 
 
-    node.updateNode();
+    //node.updateNode();
     
-    updateHeaderLabelOffset(node, 0.5);
+    //updateHeaderLabelOffset(node, 0.5);
 
     setNodePosition(
         node, 
@@ -43603,15 +43633,15 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
 
 
-    const nodeJson = [];
+    // const nodeJson = [];
 
-    nodes.forEach(n => nodeJson.push(n.toJson()));
+    // nodes.forEach(n => nodeJson.push(n.toJson()));
 
 
-    if (   settings.logRawSaving
-        && updateNodeId  != NULL
-        && updateParamId != NULL)
-        logSaveNodes(nodeJson.join('\n'));
+    // if (   settings.logRawSaving
+    //     && updateNodeId  != NULL
+    //     && updateParamId != NULL)
+    //     logSaveNodes(nodeJson.join('\n'));
 
     if (objects.length > 0)
     {
@@ -43623,7 +43653,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
             updateNodeId:  updateNodeId,
             updateParamId: updateParamId,
             nodeIds:       nodes.map(n => n.id),
-            nodeJson:      nodeJson,
+            // nodeJson:      nodeJson,
             objects:       [...objects]});
     }
         
@@ -43662,15 +43692,16 @@ function uiSaveNodes(nodeIds)
     for (const id of nodeIds)
         nodeJson.push(nodeFromId(id).toJson());
 
-    if (settings.logRawSaving)
-        logSaveNodes(nodeJson.join('\n'));
-
     if (nodeJson.length > 0)
+    {
+        if (settings.logRawSaving)
+            logSaveNodes(nodeJson.join('\n'));
+
         uiQueueMessageToFigma({
             cmd:     'figSaveNodes',
             nodeIds:  nodeIds,
-            nodeJson: nodeJson
-    });
+            nodeJson: nodeJson});
+    }
 }
 
 
