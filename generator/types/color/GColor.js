@@ -112,10 +112,13 @@ extends GColorType
 
             this.value.space.value = toSpaceIndex;
 
-            
-            if (    this.convert
-                && !isNaN(this.convert.value)
-                &&  this.value.isValid())
+            console.log('this.value.space =', this.value.space);
+            console.log('this.convert =', this.convert);
+
+            if (   this.convert
+                && this.convert.isValid()
+                && this.convert.value > -1
+                && this.value.isValid())
             {
                 this.convert.eval(parse);
 

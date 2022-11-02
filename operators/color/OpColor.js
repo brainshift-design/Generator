@@ -203,36 +203,32 @@ extends OpColorBase
         const c2    = values[paramIds.findIndex(id => id == 'c2'   )];
         const c3    = values[paramIds.findIndex(id => id == 'c3'   )];
 
-
-        this.paramSpace.setValue(space, false, true, false);
-
-        if (space)
-            switchToSpace(this, colorSpace(space.value));
-
-
-        this.param1.setValue(c1, false, true, false);
-        this.param2.setValue(c2, false, true, false);
-        this.param3.setValue(c3, false, true, false);
-
-
         const valid =
                space.isValid()
             && c1   .isValid()
             && c2   .isValid()
             && c3   .isValid();
 
-            
-        if (!valid)
+        if (valid)
+        {
+            this.paramSpace.setValue(space, false, true, false);
+
+            switchToSpace(this, colorSpace(space.value));
+
+            this.param1.setValue(c1, false, true, false);
+            this.param2.setValue(c2, false, true, false);
+            this.param3.setValue(c3, false, true, false);
+
+            this._color    = makeDataColor(space, c1, c2, c3);
+            this.prevSpace = colorSpace(space.value);
+        }
+        else
+        {
             this.paramColor.setValue(ColorValue.NaN, false, true, false);
 
-
-        this._color = 
-            valid
-            ? makeDataColor(space, c1, c2, c3)
-            : dataColor_NaN;
-
-
-        this.prevSpace = space ? colorSpace(space.value) : NumberValue.NaN;
+            this._color    = dataColor_NaN;
+            this.prevSpace = NumberValue.NaN;
+        }
     }
 
 

@@ -800,7 +800,7 @@ function pushUpdate(nodes)
 function pushUpdateFromParam(nodes, param)
 {
     //console.trace();
-    //console.log('pushUpdateFromParam('+param+')', nodes);
+    //console.log('pushUpdateFromParam(' + (param ? param : '') +')', nodes);
 
     
     const set =

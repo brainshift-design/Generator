@@ -7867,10 +7867,13 @@ extends GColorType
 
             this.value.space.value = toSpaceIndex;
 
-            
-            if (    this.convert
-                && !isNaN(this.convert.value)
-                &&  this.value.isValid())
+            console.log('this.value.space =', this.value.space);
+            console.log('this.convert =', this.convert);
+
+            if (   this.convert
+                && this.convert.isValid()
+                && this.convert.value > -1
+                && this.value.isValid())
             {
                 this.convert.eval(parse);
 
@@ -21440,10 +21443,13 @@ extends GColorType
 
             this.value.space.value = toSpaceIndex;
 
-            
-            if (    this.convert
-                && !isNaN(this.convert.value)
-                &&  this.value.isValid())
+            console.log('this.value.space =', this.value.space);
+            console.log('this.convert =', this.convert);
+
+            if (   this.convert
+                && this.convert.isValid()
+                && this.convert.value > -1
+                && this.value.isValid())
             {
                 this.convert.eval(parse);
 
@@ -29753,9 +29759,9 @@ extends Parameter
         this.control.value = value.copy();
 
         if (updateControl)
-            this.control.setValue(this.control.value, false, true); 
+            this.control.setValue(this.control.value, false, true, false); 
 
-        super.setValue(value, createAction, updateControl, dispatchEvents);
+        //super.setValue(value, createAction, updateControl, dispatchEvents);
 
         this.oldValue = this.value.copy();
     }    
@@ -33154,7 +33160,7 @@ function pushUpdate(nodes)
 function pushUpdateFromParam(nodes, param)
 {
     //console.trace();
-    //console.log('pushUpdateFromParam('+param+')', nodes);
+    //console.log('pushUpdateFromParam(' + (param ? param : '') +')', nodes);
 
     
     const set =
@@ -35276,36 +35282,32 @@ extends OpColorBase
         const c2    = values[paramIds.findIndex(id => id == 'c2'   )];
         const c3    = values[paramIds.findIndex(id => id == 'c3'   )];
 
-
-        this.paramSpace.setValue(space, false, true, false);
-
-        if (space)
-            switchToSpace(this, colorSpace(space.value));
-
-
-        this.param1.setValue(c1, false, true, false);
-        this.param2.setValue(c2, false, true, false);
-        this.param3.setValue(c3, false, true, false);
-
-
         const valid =
                space.isValid()
             && c1   .isValid()
             && c2   .isValid()
             && c3   .isValid();
 
-            
-        if (!valid)
+        if (valid)
+        {
+            this.paramSpace.setValue(space, false, true, false);
+
+            switchToSpace(this, colorSpace(space.value));
+
+            this.param1.setValue(c1, false, true, false);
+            this.param2.setValue(c2, false, true, false);
+            this.param3.setValue(c3, false, true, false);
+
+            this._color    = makeDataColor(space, c1, c2, c3);
+            this.prevSpace = colorSpace(space.value);
+        }
+        else
+        {
             this.paramColor.setValue(ColorValue.NaN, false, true, false);
 
-
-        this._color = 
-            valid
-            ? makeDataColor(space, c1, c2, c3)
-            : dataColor_NaN;
-
-
-        this.prevSpace = space ? colorSpace(space.value) : NumberValue.NaN;
+            this._color    = dataColor_NaN;
+            this.prevSpace = NumberValue.NaN;
+        }
     }
 
 
