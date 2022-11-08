@@ -71,7 +71,7 @@ extends GColorType
                     rgb2dataColor(validRgbCb), 
                     colorSpace(input.space.value));
 
-                const factor = getColorSpaceFactor(validCol[0]);
+                const factor = colorSpaceFactor(validCol[0]);
 
                 this.value = ColorValue.create(
                     input.space.value,

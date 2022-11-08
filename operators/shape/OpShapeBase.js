@@ -1,54 +1,63 @@
 class   OpShapeBase
 extends OperatorBase
 {
-    // paramFill;
-    // paramStroke;
-
-
-    // btnProportional;
-
-    // refWidth  = Number.NaN;
-    // refHeight = Number.NaN;
-
-
-    
-    constructor(type, shortName, defWidth = 80)
+    output_genRequest(gen)
     {
-        super(type, shortName, defWidth);
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+                
+        
+        const paramIds = [];
+        
+        
+        const input = this.node.inputs[0];
+
+        if (input.connected)
+        {
+            request.push(...pushInputOrParam(input, gen));
+
+            for (const param of this.node.params)
+                if (   param.input 
+                    && param.input.connected
+                    && param.canShow())
+                    paramIds.push(param.id);
+        }
+        else
+        {
+            for (const param of this.node.params)
+                if (param.canShow())
+                    paramIds.push(param.id);
+        }
+
+
+        request.push(paramIds.length);
+
+        for (const paramId of paramIds)
+            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
     }
 
 
 
-    // addBaseParams()
-    // {
-    //     this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.default));
-    //     this.addParam(this.paramStroke = new StrokeParam('stroke', 'stroke',        true, true, StrokeValue.NaN));
+    updateParams()
+    {
+        const enable = !this.inputs[0].connected;
+        
+        for (const param of this.params)
+            param.enableControlText(enable);
 
-    //     this.paramStroke.input.addEventListener('disconnect', () => { this.paramStroke.setValue(StrokeValue.NaN, false, true, false); });
-    // } 
-
-
-
-    // getBaseValuesForUndo()
-    // {
-    //     return [ 
-    //         [this.paramFill  .id, 
-    //          this.paramFill  .value],
-
-    //         [this.paramStroke.id, 
-    //          this.paramStroke.value]];
-    // }
-
-
-
-    // updateBaseValues(updateParamId, paramIds, values)
-    // {
-    //     const fill   = values[paramIds.findIndex(id => id == 'fill'  )];
-    //     const stroke = values[paramIds.findIndex(id => id == 'stroke')];
-
-    //     setParamValue(this.paramFill,   fill,   updateParamId);
-    //     setParamValue(this.paramStroke, stroke, updateParamId);
-
-    //     this.updateParamDisplay();
-    // }
+        super.updateParams();
+    }
 }

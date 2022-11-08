@@ -423,7 +423,7 @@ extends OpColorBase
             this.updateControlRanges(this.param1.control, f =>
                 dataColor2rgb([
                     this._color[0],
-                    (this.param1.control.displayMin + f * (this.param1.control.displayMax - this.param1.control.displayMin)) / getColorSpaceFactor(this._color[0])[0],
+                    (this.param1.control.displayMin + f * (this.param1.control.displayMax - this.param1.control.displayMin)) / colorSpaceFactor(this._color[0])[0],
                     this._color[2],
                     this._color[3]]));
 
@@ -431,7 +431,7 @@ extends OpColorBase
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
-                    (this.param2.control.displayMin + f * (this.param2.control.displayMax - this.param2.control.displayMin)) / getColorSpaceFactor(this._color[0])[1],
+                    (this.param2.control.displayMin + f * (this.param2.control.displayMax - this.param2.control.displayMin)) / colorSpaceFactor(this._color[0])[1],
                     this._color[3]]));
 
             this.updateControlRanges(this.param3.control, f =>
@@ -439,7 +439,7 @@ extends OpColorBase
                     this._color[0],
                     this._color[1],
                     this._color[2],
-                    (this.param3.control.displayMin + f * (this.param3.control.displayMax - this.param3.control.displayMin)) / getColorSpaceFactor(this._color[0])[2]]));
+                    (this.param3.control.displayMin + f * (this.param3.control.displayMax - this.param3.control.displayMin)) / colorSpaceFactor(this._color[0])[2]]));
         }
         else // no warning ranges
         {

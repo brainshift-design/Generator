@@ -24,3 +24,10 @@ function dataColorIsValid(col, lim = Eps)
 {
     return rgbIsValid(dataColor2rgb(col), lim);
 }
+
+
+
+function dataColorIsOk(col, lim = Eps)
+{
+    return rgbIsOk(dataColor2rgb(col), lim);
+}

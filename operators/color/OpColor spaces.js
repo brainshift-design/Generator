@@ -52,18 +52,18 @@ function colorFactor(space)
 {
     switch (space)
     {
-        case 'hex':    return rgbFactor;   
+        case 'hex':
         case 'rgb':    return rgbFactor;
 
-        case 'hsv':    return hs_Factor;   
+        case 'hsv':
         case 'hsl':    return hs_Factor;
 
-        case 'hclokl': return hclFactor;
-        case 'hcllab': return hclFactor;
+        case 'hclokl':
+        case 'hcllab':
         case 'hclluv': return hclFactor;
 
-        case 'oklab':  return oppFactor; 
-        case 'lab':    return oppFactor;   
+        case 'oklab':  
+        case 'lab':      
         case 'luv':    return oppFactor;   
         
         default:       console.assert(false, 'invalid color factor from space \''+space+'\''); break;
@@ -78,10 +78,10 @@ function scaleColor(col, space)
 
     switch (space)
     {
-        case 'hex':    scale = rgbScale;    break;
+        case 'hex':    
         case 'rgb':    scale = rgbScale;    break;
 
-        case 'hsv':    scale = hs_Scale;    break;
+        case 'hsv':    
         case 'hsl':    scale = hs_Scale;    break;
 
         case 'hclokl': scale = hcloklScale; break;
@@ -532,7 +532,7 @@ function setDataColorToCurrentSpace(node, color)
 
 
 
-function getColorSpaceFactor(space)
+function colorSpaceFactor(space)
 {
     switch (space)
     {

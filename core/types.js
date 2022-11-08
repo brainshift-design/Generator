@@ -114,23 +114,28 @@ const PROPERTY_TYPES =
 ];
 
 
-const SHAPE_VALUE      = 'G0';   // abstract placeholder
+const SHAPE_VALUE      = 'SHP';  // abstract placeholder
+
 
 const RECTANGLE_VALUE  = 'R';
 const RECTANGLE        = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
-
-const RECTANGLE_TYPES = [RECTANGLE_VALUE, RECTANGLE];
-
+const RECTANGLE_TYPES  = [RECTANGLE_VALUE, RECTANGLE];
 
 const LINE_VALUE       = 'L';
-const ELLIPSE_VALUE    = 'E';
-const POLYGON_VALUE    = 'P';
-const STAR_VALUE       = 'ST';
-
 const LINE             = 'LINE'; // N:x N:y N:width N:height N:angle
+const LINE_TYPES       = [LINE_VALUE, LINE];
+
+const ELLIPSE_VALUE    = 'E';
 const ELLIPSE          = 'ELPS'; // N:x N:y N:width N:height N:angle
+const ELLIPSE_TYPES    = [ELLIPSE_VALUE, ELLIPSE];
+
+const POLYGON_VALUE    = 'P';
 const POLYGON          = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
+const POLYGON_TYPES    = [POLYGON_VALUE, POLYGON];
+
+const STAR_VALUE       = 'ST';
 const STAR             = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
+const STAR_TYPES       = [STAR_VALUE, STAR];
 
 
 const SHAPE_VALUES =

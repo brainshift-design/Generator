@@ -31,79 +31,93 @@ extends GOperator
         if (this.width ) line.width  = this.width .copy();
         if (this.angle ) line.angle  = this.angle .copy();
 
-        line.copyBase(this);
-
         return line;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+
+        if (this.input)
+            this.input = this.input.eval(parse).copy();
+
+        const hasInput =     
+               this.input 
+            && LINE_TYPES.includes(this.input.type);   
+
+            
+        if (this.x     ) this.x     = this.x     .eval(parse).copy(); else if (hasInput) this.x     = this.input.x     .copy();
+        if (this.y     ) this.y     = this.y     .eval(parse).copy(); else if (hasInput) this.y     = this.input.y     .copy();
+        if (this.width ) this.width = this.width .eval(parse).copy(); else if (hasInput) this.width = this.input.width .copy();
+        if (this.angle ) this.angle = this.angle .eval(parse).copy(); else if (hasInput) this.angle = this.input.angle .copy();
+
+        
+        if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
+        if (this.y     ) genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
+        if (this.width ) genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
+        if (this.angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
+
+
+        if (    hasInput
+            && !this.options) this.objects = this.input.objects;
+        else                  this.evalObjects();
+
+
+        this.valid = true;
+
+        return this;
+    }
+
+
+
+    evalObjects()
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        if (   this.x 
+            && this.y 
+            && this.width 
+            && this.angle)
+        {
+            this.objects = 
+            [
+                new FigmaLine(
+                    this.x     .toValue().value,
+                    this.y     .toValue().value,
+                    this.width .toValue().value,
+                    this.angle .toValue().value)
+            ];
+        }
+
+        
+        super.evalObjects();
     }
 
 
 
     isValid()
     {
-        return this.input
-               ? this.input.isValid()
-               : (   this.x     .isValid()
-                  && this.y     .isValid()
-                  && this.width .isValid()
-                  && this.angle .isValid());
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.angle .isValid();
     }
 
-    
 
-    eval(parse)
+
+    toValue()
     {
-        if (!this.valid)
-        {
-            this.result = new LineValue();
-
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-
-                console.assert(
-                    this.result.type == LINE_VALUE, 
-                    'this.result.type must be LINE_VALUE');
-
-                if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
-                if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
-                if (this.width ) this.result.width  = this.width .eval(parse).copy();
-                if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
-            }
-            else
-            {
-                this.result.x      = this.x     .eval(parse).copy();
-                this.result.y      = this.y     .eval(parse).copy();
-                this.result.width  = this.width .eval(parse).copy();
-                this.result.angle  = this.angle .eval(parse).copy();
-            }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-           
-            
-            genPushUpdateValue(parse, this.nodeId, LINE_VALUE, this.result);
-
-
-            if (this.options)
-            {
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    { 
-                        nodeId: this.nodeId,          
-                        type:   LINE,
-                        id:     0,
-                        x:      this.result.x     .value,
-                        y:      this.result.y     .value,
-                        width:  this.result.width .value,
-                        angle:  this.result.angle .value
-                    });
-            }
-        }
-
-
-        return this;
+        return new LineValue(
+            this.id,
+            this.x     .toValue(),
+            this.y     .toValue(),
+            this.width .toValue(),
+            this.angle .toValue());
     }
 }

@@ -10,9 +10,9 @@ extends OpShapeBase
     
     constructor()
     {
-        super(LINE, 'line', 90);
+        super(LINE, 'line', 100);
 
-        this.addInput (new Input ([LINE, LINE_VALUE]));
+        this.addInput (this.createInputForObjects([LINE, LINE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([LINE], this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
@@ -24,76 +24,5 @@ extends OpShapeBase
         this.paramAngle.control.setSuffix('°', true);
         this.paramAngle.control.wrapValue   = true;
         this.paramAngle.control.dragReverse = true;
-
-
-        // this.inputs[0].addEventListener('connect', () =>
-        // {
-        //     for (const param of this.params)
-        //         param.enableControlText(false);
-        // });
-
-
-        // this.inputs[0].addEventListener('disconnect', () =>
-        // {
-        //     for (const param of this.params)
-        //         if (!param.input.connected) 
-        //             param.enableControlText(true);
-        // });
-    }
-    
-    
-    
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: '' });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-        
-        const input = this.node.inputs[0];
-
-        const paramIds = [];
-
-
-        if (input.connected)
-        {
-            request.push(...pushInputOrParam(input, gen));
-
-
-            for (const param of this.node.params)
-                if (param.input && param.input.connected) 
-                    paramIds.push(param.id);
-
-            request.push(paramIds.join(','));
-
-
-            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
-            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
-            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
-            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
-        }
-        else
-        {
-            request.push(
-                ...this.node.paramX     .genRequest(gen),
-                ...this.node.paramY     .genRequest(gen),
-                ...this.node.paramWidth .genRequest(gen),
-                ...this.node.paramAngle .genRequest(gen));
-        }
-
-
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
     }
 }

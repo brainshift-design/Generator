@@ -1,5 +1,5 @@
 class LineValue
-extends GValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -8,34 +8,40 @@ extends GValue
 
 
 
-    constructor(x      = new NumberValue(0), 
+    constructor(nodeId,
+                x      = new NumberValue(0), 
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 angle  = new NumberValue(0))
     {
-        super(LINE_VALUE);
+        super(LINE_VALUE, nodeId);
 
         this.x      = x;
         this.y      = y;
         this.width  = width;
         this.angle  = angle;
-
-        this.valid  = true;
     }
 
 
 
     copy()
     {
-        const val = new LineValue(
-            this.x     .copy(), 
-            this.y     .copy(), 
-            this.width .copy(), 
-            this.angle .copy());
+        const line = new LineValue(
+            this.x    .copy(), 
+            this.y    .copy(), 
+            this.width.copy(), 
+            this.angle.copy());
 
-        val.copyBase(this);
+        line.copyBase(this);
 
-        return val;
+        return line;
+    }
+
+
+
+    eval(parse)
+    {
+        return this;
     }
 
 
@@ -50,9 +56,23 @@ extends GValue
 
 
 
-    eval(parse)
+    toValue()
     {
-        return this;
+        return this.copy();
+    }
+
+
+
+    toFigmaObject()
+    {
+        return {
+            type:   LINE,
+            id:     0,
+            x:      this.x     .value,
+            y:      this.y     .value,
+            width:  this.width .value,
+            angle:  this.angle .value,
+        };
     }
 
 
@@ -67,7 +87,18 @@ extends GValue
 
 
 
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.angle .toDisplayString();
+    }
+
+
+
     static NaN = new LineValue(
+        '',
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,

@@ -175,14 +175,14 @@ function initNumberControlEvents(control)
 
                     
                     // reset control movement at the limits for better UX
-                    const min = getCtrlKey(e) ? control.min : control.displayMin;
-                    const max = getCtrlKey(e) ? control.max : control.displayMax;
+                    const min = e.shiftKey ? control.min : control.displayMin;
+                    const max = e.shiftKey ? control.max : control.displayMax;
 
                     control.setValue(
                         Math.round(val / grain) * grain, 
                         true, 
                         true,
-                        getCtrlKey(e));
+                        e.shiftKey);
 
 
                     if (   val <= min
@@ -321,6 +321,7 @@ function initNumberControlEvents(control)
         control.buttonDown1 = false;
         control.buttonDown2 = false;
         control.mouseOver   = false;
+        
         control.update();
     });
 

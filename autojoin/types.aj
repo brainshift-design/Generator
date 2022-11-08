@@ -9,6 +9,10 @@
 
 ../generator/types/figma/FigmaObject.js
 ../generator/types/figma/FigmaRectangle.js
+../generator/types/figma/FigmaLine.js
+../generator/types/figma/FigmaEllipse.js
+../generator/types/figma/FigmaPolygon.js
+../generator/types/figma/FigmaStar.js
 
 
 ../generator/types/values/NumberValue.js

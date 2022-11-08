@@ -77,21 +77,20 @@ function genParseLine(parse)
     parse.nTab++;
 
 
-    let paramIds;
-    
-    if (   parse.next == LINE_VALUE
-        || parse.next == LINE)
-    {
-        line.input = genParse(parse); // not genParseLine() because genParse() handles stack overflow
-        paramIds   = parse.move().split(',');
-    }
-    else
-        paramIds = ['x', 'y', 'width', 'angle'];
+    if (       LINE_TYPES.includes(parse.next)
+        || PROPERTY_TYPES.includes(parse.next))
+        line.input = genParse(parse);
 
 
-    for (const id of paramIds)
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
     {
-        switch (id)
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
         {
         case 'x':     line.x     = genParse(parse); break;
         case 'y':     line.y     = genParse(parse); break;
@@ -101,6 +100,7 @@ function genParseLine(parse)
     }
 
 
+    parse.inParam = false;
     parse.nTab--;
 
 

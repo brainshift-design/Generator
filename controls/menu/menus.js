@@ -188,12 +188,12 @@ function initMenus()
         new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_RANDOM,      btnNumber.div, {insert: e.shiftKey}))})]);
     
     
-    menuString = new Menu('String nodes', true, false);
-    menuString.addItems([
-        new MenuItem('String',      {icon: iconString       , enabled: false}),
-        new MenuItem('Join',        {icon: iconStringJoin   , enabled: false}),
-        new MenuItem('Substring',   {icon: iconSubstring    , enabled: false}),
-        new MenuItem('Replace',     {icon: iconStringReplace, enabled: false})]);
+    // menuString = new Menu('String nodes', true, false);
+    // menuString.addItems([
+    //     new MenuItem('String',      {icon: iconString       , enabled: false}),
+    //     new MenuItem('Join',        {icon: iconStringJoin   , enabled: false}),
+    //     new MenuItem('Substring',   {icon: iconSubstring    , enabled: false}),
+    //     new MenuItem('Replace',     {icon: iconStringReplace, enabled: false})]);
     
     
     menuColor = new Menu('Color nodes', true, false);
@@ -217,7 +217,7 @@ function initMenus()
     menuShape = new Menu('Shape nodes', true, false);
     menuShape.addItems([
         new MenuItem('Rectangle',  {icon: iconRectangle, callback: e => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Line',       {icon: iconLine     , enabled: false}),
+        new MenuItem('Line',       {icon: iconLine     , callback: e => actionManager.do(new CreateNodeAction(LINE,      btnShape.div, {insert: e.shiftKey}))}),
         new MenuItem('Ellipse',    {icon: iconEllipse  , enabled: false}),
         new MenuItem('Polygon',    {icon: iconPolygon  , enabled: false}),
         new MenuItem('Star',       {icon: iconStar     , enabled: false})]);
@@ -259,7 +259,7 @@ function initMenus()
 
     btnMain    = new MenuButton('', menuMain, {useMenuName: true, highlight: () => currentMenus.includes(menuMain)});
     btnNumber  = new MenuButton('', menuNumber);
-    btnString  = new MenuButton('', menuString);
+    //btnString  = new MenuButton('', menuString);
     btnColor   = new MenuButton('', menuColor );
     btnStyle   = new MenuButton('', menuStyle );
     btnShape   = new MenuButton('', menuShape );

@@ -26,8 +26,6 @@ extends ShapeBaseValue
         this.height = height;
         this.angle  = angle;
         this.round  = round;
-
-        this.valid  = true;
     }
 
 
@@ -85,8 +83,7 @@ extends ShapeBaseValue
             width:  this.width .value,
             height: this.height.value,
             angle:  this.angle .value,
-            round:  Math.max(0, this.round.value)//,
-            //...super.toFigmaObject()
+            round:  Math.max(0, this.round.value)
         };
     }
 
@@ -100,8 +97,6 @@ extends ShapeBaseValue
             + ' ' + this.height.toString()
             + ' ' + this.angle .toString()
             + ' ' + this.round .toString();
-            
-            //+ ' ' + super.toString();
     }
 
 
@@ -114,8 +109,6 @@ extends ShapeBaseValue
             + ' ' + this.height.toDisplayString()
             + ' ' + this.angle .toDisplayString()
             + ' ' + this.round .toDisplayString();
-            
-            // + ' ' + super.toDisplayString();
     }
 
 

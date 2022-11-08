@@ -464,6 +464,13 @@ function startNodeProgress(node)
 
 
 
+function uiStartNodeProgress(nodeId)
+{
+    startNodeProgress(nodeFromId(nodeId));
+}
+
+
+
 function uiUpdateNodeProgress(nodeId, progress)
 {
     const node = nodeFromId(nodeId);

@@ -15,7 +15,7 @@ class GValue
     {
         this.type     = type;
        
-        this.valid    = false;
+        this.valid    = true;
         this.topLevel = false;
 
         this.options  = options;

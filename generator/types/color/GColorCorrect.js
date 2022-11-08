@@ -63,60 +63,57 @@ extends GColorType
 
             
             const rgb = input.toRgb();
-
             
-            if (!rgbIsNaN(rgb))
-            {
-                const orderValue = Math.min(Math.max(0, order.value), 5);
-                const inputColor = input.toDataColor();
-
-
-                const
-              [ closestOklab,
-                closestOrder,
-                closest1,
-                closest2,
-                closest3 ] = findCorrection(
-                                 this.nodeId,
-                                 inputColor, 
-                                 margin1, margin2, margin3, 
-                                 this.margin1.input, this.margin2.input, this.margin3.input); 
-
-
-                if (closestOrder >= 0 && closestOrder < 6)
+            if (!rgbIsOk(rgb))
+                genQueueMessageToUI(
                 {
-                    this._color = correctColor(
-                        inputColor,
-                        closestOrder, 
-                        closest1,
-                        closest2,
-                        closest3);
-
-                    const spaceIndex = colorSpaceIndex(this._color[0]);
-                    const factor     = getColorSpaceFactor(this._color[0]);
-
-                    this.value = ColorValue.create(
-                        spaceIndex,
-                        this._color[1] * factor[0],
-                        this._color[2] * factor[1],
-                        this._color[3] * factor[2]);
+                    cmd:   'uiStartNodeProgress',
+                    nodeId: this.nodeId
+                });
 
 
-                    if (spaceIndex >= 4)
-                    {
-                        genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                        genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1));
-                        genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2));
-                        genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3));
-                    }
-                    else
-                    {
-                        genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                    }
-                }
+            const orderValue = Math.min(Math.max(0, order.value), 5);
+            const inputColor = input.toDataColor();
+
+
+            const
+          [ closestOklab,
+            closestOrder,
+            closest1,
+            closest2,
+            closest3 ] = findCorrection(
+                this.nodeId,
+                inputColor, 
+                margin1, margin2, margin3, 
+                this.margin1.input, 
+                this.margin2.input, 
+                this.margin3.input); 
+
+                
+            if (closestOrder >= 0 && closestOrder < 6)
+            {
+                this._color = correctColor(
+                    inputColor,
+                    closestOrder,
+                    closest1,
+                    closest2,
+                    closest3);
+
+                    
+                const spaceIndex = colorSpaceIndex (this._color[0]);
+                const factor     = colorSpaceFactor(this._color[0]);
+
+                this.value = ColorValue.create(
+                    spaceIndex,
+                    this._color[1] * factor[0],
+                    this._color[2] * factor[1],
+                    this._color[3] * factor[2]);
+
+
+                genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
+                genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
+                genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
+                genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
             }
             else
                 this.value = ColorValue.NaN;
@@ -136,147 +133,12 @@ extends GColorType
 
 
 
-function correctColor(color, order, margin1, margin2, margin3)
-{
-    const [i1, i2, i3] = getCorrectionsInOrder(order);
-
-                                  color = correctChannel(color, i1, margin1);
-    if (!dataColorIsValid(color)) color = correctChannel(color, i2, margin2);
-    if (!dataColorIsValid(color)) color = correctChannel(color, i3, margin3);
-
-    return color;
-}
-
-
-
-function correctChannel(color, iChan, margin)
-{
-    const factor = getColorSpaceFactor(color[0]);
-
-    margin /= factor[iChan];
-
-
-    const savedColor = [...color];
-    const savedValue = color[iChan+1];
-
-    const d = 0.001;
-
-
-    let _c  = savedValue,
-         c_ = savedValue;
-
-    let _valid  = dataColorIsValid(color);
-    let  valid_ = _valid;
-
-
-    let stackOverflowProtect = 1/d;
-
-
-    while (   !_valid
-           && ! valid_
-           && stackOverflowProtect-- > 0)
-    {
-        _c  -= d;  _valid  = isColorValid(_c , iChan, savedColor);
-         c_ += d;   valid_ = isColorValid( c_, iChan, savedColor);
-    }
-
-
-    stackOverflowProtect = 1/d;
-    color = [...savedColor];
-
-
-    if (_valid) 
-    { 
-        _valid = dataColorIsValid(color);
-        _c     = savedValue;
-
-        while (   !_valid
-               && margin > 0
-               && stackOverflowProtect-- > 0)
-        {
-            _c -= d; 
-            _valid = isColorValid(_c, iChan, savedColor);
-            margin -= d;
-        }
-
-        color[iChan+1] = _c;
-    }
-    else if (valid_)
-    { 
-        valid_ = dataColorIsValid(color);
-        c_     = savedValue;
-
-        while (   !valid_
-               && margin > 0
-               && stackOverflowProtect-- > 0)
-        {
-            c_ += d; 
-            valid_ = isColorValid(c_, iChan, savedColor);
-            margin -= d;
-        }
-
-        color[iChan+1] = c_;
-    }
-
-
-    return color;
-}
-
-
-
-function isColorValid(c, iChan, savedColor)
-{
-    let color = [...savedColor];
-    color[iChan+1] = c; 
-    return dataColorIsValid(color);
-}
-
-
-
-function getCorrectionsInOrder(order)
-{
-    switch (order)
-    {
-        case 0: return [0, 1, 2];
-        case 1: return [1, 0, 2];
-        case 2: return [1, 2, 0];
-        case 3: return [0, 2, 1];
-        case 4: return [2, 0, 1];
-        case 5: return [2, 1, 0];
-    }
-
-    // should never get here
-    console.assert(false, 'invalid correction order ' + order);
-    return [0, 0, 0];
-}
-
-
-
-function getCorrectMax(order)
-{
-    switch (order)
-    {
-        case 0: return [180, 100, 100]; // HCL
-        case 1: return [100, 180, 100]; // CHL
-        case 2: return [100, 100, 180]; // CLH
-        case 3: return [180, 100, 100]; // HLC
-        case 4: return [100, 180, 100]; // LHC
-        case 5: return [100, 100, 180]; // LCH
-    }
-
-    // should never get here
-    console.assert(false, 'invalid validation order ' + order);
-    return [0, 0, 0];
-}
-
-
-
 function findCorrection(nodeId,
                         color,
-                        param1,  param2,  param3,
+                        margin1, margin2, margin3,
                         locked1, locked2, locked3) 
 {
-    const refOklab = dataColor2array(convert2oklab(color));
+    const refOklab = dataColor2array(dataColor2oklab(color));
 
 
     let closestColor = [...color],
@@ -302,16 +164,17 @@ function findCorrection(nodeId,
         {
             closestColor = [..._closestColor];
 
-            const [max1, max2, max3] = getCorrectMax(order);
+            const [min1, min2, min3] = getMinCorrections(color[0], order);
+            const [max1, max2, max3] = getMaxCorrections(color[0], order);
 
-            let start1 = lerp(0, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
-                start2 = lerp(0, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
-                start3 = lerp(0, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
+            let start1 = lerp(min1, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
+                start2 = lerp(min2, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
+                start3 = lerp(min3, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
                
                 
-            if (locked1) { closest1 = param1; start1 = closest1; end1 = start1+Eps; }
-            if (locked2) { closest2 = param2; start2 = closest2; end2 = start2+Eps; }
-            if (locked3) { closest3 = param3; start3 = closest3; end3 = start3+Eps; }
+            if (locked1) { closest1 = margin1; start1 = closest1; end1 = start1+Eps; }
+            if (locked2) { closest2 = margin2; start2 = closest2; end2 = start2+Eps; }
+            if (locked3) { closest3 = margin3; start3 = closest3; end3 = start3+Eps; }
             
 
           [ closestColor,
@@ -395,7 +258,7 @@ function findCorrectionInOrder(nodeId,
             {
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
-                if (   rgbIsValid(_rgb)
+                if (   rgbIsOk(_rgb)
                     && (  !closestOklab
                         || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
                 {
@@ -435,10 +298,196 @@ function findCorrectionInOrder(nodeId,
 function getCorrectedColor(color, order, m1, m2, m3)
 {
     const _color = correctColor(color, order, m1, m2, m3);
-    const _oklab = dataColor2array(convert2oklab(_color));
+    const _oklab = dataColor2array(dataColor2oklab(_color));
     const _rgb   = oklab2rgb(_oklab);
 
     return [_color, _oklab, _rgb];
+}
+
+
+
+function correctColor(color, order, margin1, margin2, margin3)
+{
+    if (order < 0)
+        return color;
+
+
+    const [i1, i2, i3] = getCorrectionsInOrder(order);
+
+                               color = correctChannel(color, i1, margin1);
+    if (!dataColorIsOk(color)) color = correctChannel(color, i2, margin2);
+    if (!dataColorIsOk(color)) color = correctChannel(color, i3, margin3);
+
+    return color;
+}
+
+
+
+function correctChannel(color, iChan, margin)
+{
+    const factor = colorSpaceFactor(color[0]);
+
+    margin /= factor[iChan];
+
+
+    const savedColor = [...color];
+    const savedValue = color[iChan+1];
+
+    const d = 0.001;
+
+
+    let _c  = savedValue,
+         c_ = savedValue;
+
+    let _valid  = dataColorIsOk(color);
+    let  valid_ = _valid;
+
+
+    let stackOverflowProtect = 1/d;
+
+
+    while (   !_valid
+           && ! valid_
+           && stackOverflowProtect-- > 0)
+    {
+        _c  -= d;  _valid  = isColorOk(_c , iChan, savedColor);
+         c_ += d;   valid_ = isColorOk( c_, iChan, savedColor);
+    }
+
+
+    stackOverflowProtect = 1/d;
+    color = [...savedColor];
+
+
+    if (_valid) 
+    { 
+        _valid = dataColorIsOk(color);
+        _c     = savedValue;
+
+        while (   !_valid
+               && margin > 0
+               && stackOverflowProtect-- > 0)
+        {
+            _c -= d; 
+            _valid = isColorOk(_c, iChan, savedColor);
+            margin -= d;
+        }
+
+        color[iChan+1] = _c;
+    }
+    else if (valid_)
+    { 
+        valid_ = dataColorIsOk(color);
+        c_     = savedValue;
+
+        while (   !valid_
+               && margin > 0
+               && stackOverflowProtect-- > 0)
+        {
+            c_ += d; 
+            valid_ = isColorOk(c_, iChan, savedColor);
+            margin -= d;
+        }
+
+        color[iChan+1] = c_;
+    }
+
+
+    return color;
+}
+
+
+
+function isColorOk(c, iChan, savedColor)
+{
+    let color = [...savedColor];
+    color[iChan+1] = c; 
+    return dataColorIsOk(color);
+}
+
+
+
+function getCorrectionsInOrder(order)
+{
+    switch (order)
+    {
+        case 0: return [0, 1, 2];
+        case 1: return [1, 0, 2];
+        case 2: return [1, 2, 0];
+        case 3: return [0, 2, 1];
+        case 4: return [2, 0, 1];
+        case 5: return [2, 1, 0];
+    }
+
+    // should never get here
+    console.assert(false, 'invalid correction order ' + order);
+    return [0, 0, 0];
+}
+
+
+
+function getMinCorrections(space, order)
+{
+    const [c1, c2, c3] = getCorrectionsInOrder(order);
+
+    let min;
+
+    switch (space)
+    {
+        case 'hex':
+        case 'rgb':    min = [0, 0, 0]; break
+
+        case 'hsv': 
+        case 'hsl':    min = [0, 0, 0]; break;
+
+        case 'hclokl':
+        case 'hcllab':
+        case 'hclluv': min = [0, 0, 0]; break;
+
+        case 'oklab':
+        case 'lab':
+        case 'luv':    min = [0, -oppFactor[1]/2, -oppFactor[2]/2]; break;
+        
+        default:
+            // should never get here
+            console.assert(false, 'invalid validation order ' + order);
+            return [0, 0, 0];
+    }
+
+    return [min[c1], min[c2], min[c3]];
+}
+
+
+
+function getMaxCorrections(space, order)
+{
+    const [c1, c2, c3] = getCorrectionsInOrder(order);
+
+    let max;
+
+    switch (space)
+    {
+        case 'hex':
+        case 'rgb':    max = [...rgbFactor]; break;
+
+        case 'hsv': 
+        case 'hsl':    max = [hs_Factor[0]/2, hs_Factor[1], hs_Factor[2]]; break;
+
+        case 'hclokl':
+        case 'hcllab':
+        case 'hclluv': max = [hclFactor[0]/2, hclFactor[1], hclFactor[2]]; break;
+
+        case 'oklab':
+        case 'lab':
+        case 'luv':    max = [...oppFactor]; break;
+        
+        default:
+            // should never get here
+            console.assert(false, 'invalid validation order ' + order);
+            return [0, 0, 0];
+    }
+
+    return [max[c1], max[c2], max[c3]];
 }
 
 

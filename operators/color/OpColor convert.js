@@ -46,7 +46,7 @@ function convertDataColorToSpace(color, toSpace)
         case 'hcllab': return convert2hcllab(color);
         case 'hclluv': return convert2hclluv(color);
 
-        case 'oklab':  return convert2oklab (color);
+        case 'oklab':  return dataColor2oklab (color);
         case 'lab':    return convert2lab   (color);
         case 'luv':    return convert2luv   (color);
     }
@@ -149,7 +149,7 @@ function convert2hsl(fromColor)
 
 
 
-function convert2oklab(fromColor)
+function dataColor2oklab(fromColor)
 {
     const col = dataColor2array(fromColor);
 

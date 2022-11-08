@@ -5082,23 +5082,28 @@ const PROPERTY_TYPES =
 ];
 
 
-const SHAPE_VALUE      = 'G0';   // abstract placeholder
+const SHAPE_VALUE      = 'SHP';  // abstract placeholder
+
 
 const RECTANGLE_VALUE  = 'R';
 const RECTANGLE        = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
-
-const RECTANGLE_TYPES = [RECTANGLE_VALUE, RECTANGLE];
-
+const RECTANGLE_TYPES  = [RECTANGLE_VALUE, RECTANGLE];
 
 const LINE_VALUE       = 'L';
-const ELLIPSE_VALUE    = 'E';
-const POLYGON_VALUE    = 'P';
-const STAR_VALUE       = 'ST';
-
 const LINE             = 'LINE'; // N:x N:y N:width N:height N:angle
+const LINE_TYPES       = [LINE_VALUE, LINE];
+
+const ELLIPSE_VALUE    = 'E';
 const ELLIPSE          = 'ELPS'; // N:x N:y N:width N:height N:angle
+const ELLIPSE_TYPES    = [ELLIPSE_VALUE, ELLIPSE];
+
+const POLYGON_VALUE    = 'P';
 const POLYGON          = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
+const POLYGON_TYPES    = [POLYGON_VALUE, POLYGON];
+
+const STAR_VALUE       = 'ST';
 const STAR             = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
+const STAR_TYPES       = [STAR_VALUE, STAR];
 
 
 const SHAPE_VALUES =
@@ -5177,7 +5182,7 @@ class GValue
     {
         this.type     = type;
        
-        this.valid    = false;
+        this.valid    = true;
         this.topLevel = false;
 
         this.options  = options;
@@ -5446,6 +5451,52 @@ extends FigmaObject
         return rect;
     }
 }
+
+
+class FigmaLine
+extends FigmaObject
+{
+    x;
+    y;
+    width;
+    angle;
+
+
+
+    constructor(x, y, width, angle)
+    {
+        super(RECTANGLE);
+        
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.angle  = angle;
+    }
+
+
+
+    copy()
+    {
+        const rect = new FigmaLine(
+            this.x,
+            this.y,
+            this.width,
+            this.angle);
+
+        rect.copyBase(this);
+
+        return rect;
+    }
+}
+
+
+
+
+
+
+
+
+
 
 
 class NumberValue
@@ -6317,8 +6368,6 @@ extends ShapeBaseValue
         this.height = height;
         this.angle  = angle;
         this.round  = round;
-
-        this.valid  = true;
     }
 
 
@@ -6376,8 +6425,7 @@ extends ShapeBaseValue
             width:  this.width .value,
             height: this.height.value,
             angle:  this.angle .value,
-            round:  Math.max(0, this.round.value)//,
-            //...super.toFigmaObject()
+            round:  Math.max(0, this.round.value)
         };
     }
 
@@ -6391,8 +6439,6 @@ extends ShapeBaseValue
             + ' ' + this.height.toString()
             + ' ' + this.angle .toString()
             + ' ' + this.round .toString();
-            
-            //+ ' ' + super.toString();
     }
 
 
@@ -6405,8 +6451,6 @@ extends ShapeBaseValue
             + ' ' + this.height.toDisplayString()
             + ' ' + this.angle .toDisplayString()
             + ' ' + this.round .toDisplayString();
-            
-            // + ' ' + super.toDisplayString();
     }
 
 
@@ -6466,7 +6510,7 @@ function parseRectangleValue(str, i = -1)
 
 
 class LineValue
-extends GValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -6475,34 +6519,40 @@ extends GValue
 
 
 
-    constructor(x      = new NumberValue(0), 
+    constructor(nodeId,
+                x      = new NumberValue(0), 
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 angle  = new NumberValue(0))
     {
-        super(LINE_VALUE);
+        super(LINE_VALUE, nodeId);
 
         this.x      = x;
         this.y      = y;
         this.width  = width;
         this.angle  = angle;
-
-        this.valid  = true;
     }
 
 
 
     copy()
     {
-        const val = new LineValue(
-            this.x     .copy(), 
-            this.y     .copy(), 
-            this.width .copy(), 
-            this.angle .copy());
+        const line = new LineValue(
+            this.x    .copy(), 
+            this.y    .copy(), 
+            this.width.copy(), 
+            this.angle.copy());
 
-        val.copyBase(this);
+        line.copyBase(this);
 
-        return val;
+        return line;
+    }
+
+
+
+    eval(parse)
+    {
+        return this;
     }
 
 
@@ -6517,9 +6567,23 @@ extends GValue
 
 
 
-    eval(parse)
+    toValue()
     {
-        return this;
+        return this.copy();
+    }
+
+
+
+    toFigmaObject()
+    {
+        return {
+            type:   LINE,
+            id:     0,
+            x:      this.x     .value,
+            y:      this.y     .value,
+            width:  this.width .value,
+            angle:  this.angle .value,
+        };
     }
 
 
@@ -6534,7 +6598,18 @@ extends GValue
 
 
 
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.angle .toDisplayString();
+    }
+
+
+
     static NaN = new LineValue(
+        '',
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -8051,7 +8126,7 @@ extends GColorType
             // allow interpolating invalid colors,
             // so no valid color check here
 
-            const factor = getColorSpaceFactor(_space);
+            const factor = colorSpaceFactor(_space);
 
             this.value = ColorValue.create(
                 spaceValue,
@@ -8335,7 +8410,7 @@ extends GColorType
                     rgb2dataColor(validRgbCb), 
                     colorSpace(input.space.value));
 
-                const factor = getColorSpaceFactor(validCol[0]);
+                const factor = colorSpaceFactor(validCol[0]);
 
                 this.value = ColorValue.create(
                     input.space.value,
@@ -8429,60 +8504,57 @@ extends GColorType
 
             
             const rgb = input.toRgb();
-
             
-            if (!rgbIsNaN(rgb))
-            {
-                const orderValue = Math.min(Math.max(0, order.value), 5);
-                const inputColor = input.toDataColor();
-
-
-                const
-              [ closestOklab,
-                closestOrder,
-                closest1,
-                closest2,
-                closest3 ] = findCorrection(
-                                 this.nodeId,
-                                 inputColor, 
-                                 margin1, margin2, margin3, 
-                                 this.margin1.input, this.margin2.input, this.margin3.input); 
-
-
-                if (closestOrder >= 0 && closestOrder < 6)
+            if (!rgbIsOk(rgb))
+                genQueueMessageToUI(
                 {
-                    this._color = correctColor(
-                        inputColor,
-                        closestOrder, 
-                        closest1,
-                        closest2,
-                        closest3);
-
-                    const spaceIndex = colorSpaceIndex(this._color[0]);
-                    const factor     = getColorSpaceFactor(this._color[0]);
-
-                    this.value = ColorValue.create(
-                        spaceIndex,
-                        this._color[1] * factor[0],
-                        this._color[2] * factor[1],
-                        this._color[3] * factor[2]);
+                    cmd:   'uiStartNodeProgress',
+                    nodeId: this.nodeId
+                });
 
 
-                    if (spaceIndex >= 4)
-                    {
-                        genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                        genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1));
-                        genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2));
-                        genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3));
-                    }
-                    else
-                    {
-                        genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                    }
-                }
+            const orderValue = Math.min(Math.max(0, order.value), 5);
+            const inputColor = input.toDataColor();
+
+
+            const
+          [ closestOklab,
+            closestOrder,
+            closest1,
+            closest2,
+            closest3 ] = findCorrection(
+                this.nodeId,
+                inputColor, 
+                margin1, margin2, margin3, 
+                this.margin1.input, 
+                this.margin2.input, 
+                this.margin3.input); 
+
+                
+            if (closestOrder >= 0 && closestOrder < 6)
+            {
+                this._color = correctColor(
+                    inputColor,
+                    closestOrder,
+                    closest1,
+                    closest2,
+                    closest3);
+
+                    
+                const spaceIndex = colorSpaceIndex (this._color[0]);
+                const factor     = colorSpaceFactor(this._color[0]);
+
+                this.value = ColorValue.create(
+                    spaceIndex,
+                    this._color[1] * factor[0],
+                    this._color[2] * factor[1],
+                    this._color[3] * factor[2]);
+
+
+                genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
+                genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
+                genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
+                genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
             }
             else
                 this.value = ColorValue.NaN;
@@ -8502,147 +8574,12 @@ extends GColorType
 
 
 
-function correctColor(color, order, margin1, margin2, margin3)
-{
-    const [i1, i2, i3] = getCorrectionsInOrder(order);
-
-                                  color = correctChannel(color, i1, margin1);
-    if (!dataColorIsValid(color)) color = correctChannel(color, i2, margin2);
-    if (!dataColorIsValid(color)) color = correctChannel(color, i3, margin3);
-
-    return color;
-}
-
-
-
-function correctChannel(color, iChan, margin)
-{
-    const factor = getColorSpaceFactor(color[0]);
-
-    margin /= factor[iChan];
-
-
-    const savedColor = [...color];
-    const savedValue = color[iChan+1];
-
-    const d = 0.001;
-
-
-    let _c  = savedValue,
-         c_ = savedValue;
-
-    let _valid  = dataColorIsValid(color);
-    let  valid_ = _valid;
-
-
-    let stackOverflowProtect = 1/d;
-
-
-    while (   !_valid
-           && ! valid_
-           && stackOverflowProtect-- > 0)
-    {
-        _c  -= d;  _valid  = isColorValid(_c , iChan, savedColor);
-         c_ += d;   valid_ = isColorValid( c_, iChan, savedColor);
-    }
-
-
-    stackOverflowProtect = 1/d;
-    color = [...savedColor];
-
-
-    if (_valid) 
-    { 
-        _valid = dataColorIsValid(color);
-        _c     = savedValue;
-
-        while (   !_valid
-               && margin > 0
-               && stackOverflowProtect-- > 0)
-        {
-            _c -= d; 
-            _valid = isColorValid(_c, iChan, savedColor);
-            margin -= d;
-        }
-
-        color[iChan+1] = _c;
-    }
-    else if (valid_)
-    { 
-        valid_ = dataColorIsValid(color);
-        c_     = savedValue;
-
-        while (   !valid_
-               && margin > 0
-               && stackOverflowProtect-- > 0)
-        {
-            c_ += d; 
-            valid_ = isColorValid(c_, iChan, savedColor);
-            margin -= d;
-        }
-
-        color[iChan+1] = c_;
-    }
-
-
-    return color;
-}
-
-
-
-function isColorValid(c, iChan, savedColor)
-{
-    let color = [...savedColor];
-    color[iChan+1] = c; 
-    return dataColorIsValid(color);
-}
-
-
-
-function getCorrectionsInOrder(order)
-{
-    switch (order)
-    {
-        case 0: return [0, 1, 2];
-        case 1: return [1, 0, 2];
-        case 2: return [1, 2, 0];
-        case 3: return [0, 2, 1];
-        case 4: return [2, 0, 1];
-        case 5: return [2, 1, 0];
-    }
-
-    // should never get here
-    console.assert(false, 'invalid correction order ' + order);
-    return [0, 0, 0];
-}
-
-
-
-function getCorrectMax(order)
-{
-    switch (order)
-    {
-        case 0: return [180, 100, 100]; // HCL
-        case 1: return [100, 180, 100]; // CHL
-        case 2: return [100, 100, 180]; // CLH
-        case 3: return [180, 100, 100]; // HLC
-        case 4: return [100, 180, 100]; // LHC
-        case 5: return [100, 100, 180]; // LCH
-    }
-
-    // should never get here
-    console.assert(false, 'invalid validation order ' + order);
-    return [0, 0, 0];
-}
-
-
-
 function findCorrection(nodeId,
                         color,
-                        param1,  param2,  param3,
+                        margin1, margin2, margin3,
                         locked1, locked2, locked3) 
 {
-    const refOklab = dataColor2array(convert2oklab(color));
+    const refOklab = dataColor2array(dataColor2oklab(color));
 
 
     let closestColor = [...color],
@@ -8668,16 +8605,17 @@ function findCorrection(nodeId,
         {
             closestColor = [..._closestColor];
 
-            const [max1, max2, max3] = getCorrectMax(order);
+            const [min1, min2, min3] = getMinCorrections(color[0], order);
+            const [max1, max2, max3] = getMaxCorrections(color[0], order);
 
-            let start1 = lerp(0, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
-                start2 = lerp(0, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
-                start3 = lerp(0, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
+            let start1 = lerp(min1, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
+                start2 = lerp(min2, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
+                start3 = lerp(min3, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
                
                 
-            if (locked1) { closest1 = param1; start1 = closest1; end1 = start1+Eps; }
-            if (locked2) { closest2 = param2; start2 = closest2; end2 = start2+Eps; }
-            if (locked3) { closest3 = param3; start3 = closest3; end3 = start3+Eps; }
+            if (locked1) { closest1 = margin1; start1 = closest1; end1 = start1+Eps; }
+            if (locked2) { closest2 = margin2; start2 = closest2; end2 = start2+Eps; }
+            if (locked3) { closest3 = margin3; start3 = closest3; end3 = start3+Eps; }
             
 
           [ closestColor,
@@ -8761,7 +8699,7 @@ function findCorrectionInOrder(nodeId,
             {
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
-                if (   rgbIsValid(_rgb)
+                if (   rgbIsOk(_rgb)
                     && (  !closestOklab
                         || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
                 {
@@ -8801,10 +8739,196 @@ function findCorrectionInOrder(nodeId,
 function getCorrectedColor(color, order, m1, m2, m3)
 {
     const _color = correctColor(color, order, m1, m2, m3);
-    const _oklab = dataColor2array(convert2oklab(_color));
+    const _oklab = dataColor2array(dataColor2oklab(_color));
     const _rgb   = oklab2rgb(_oklab);
 
     return [_color, _oklab, _rgb];
+}
+
+
+
+function correctColor(color, order, margin1, margin2, margin3)
+{
+    if (order < 0)
+        return color;
+
+
+    const [i1, i2, i3] = getCorrectionsInOrder(order);
+
+                               color = correctChannel(color, i1, margin1);
+    if (!dataColorIsOk(color)) color = correctChannel(color, i2, margin2);
+    if (!dataColorIsOk(color)) color = correctChannel(color, i3, margin3);
+
+    return color;
+}
+
+
+
+function correctChannel(color, iChan, margin)
+{
+    const factor = colorSpaceFactor(color[0]);
+
+    margin /= factor[iChan];
+
+
+    const savedColor = [...color];
+    const savedValue = color[iChan+1];
+
+    const d = 0.001;
+
+
+    let _c  = savedValue,
+         c_ = savedValue;
+
+    let _valid  = dataColorIsOk(color);
+    let  valid_ = _valid;
+
+
+    let stackOverflowProtect = 1/d;
+
+
+    while (   !_valid
+           && ! valid_
+           && stackOverflowProtect-- > 0)
+    {
+        _c  -= d;  _valid  = isColorOk(_c , iChan, savedColor);
+         c_ += d;   valid_ = isColorOk( c_, iChan, savedColor);
+    }
+
+
+    stackOverflowProtect = 1/d;
+    color = [...savedColor];
+
+
+    if (_valid) 
+    { 
+        _valid = dataColorIsOk(color);
+        _c     = savedValue;
+
+        while (   !_valid
+               && margin > 0
+               && stackOverflowProtect-- > 0)
+        {
+            _c -= d; 
+            _valid = isColorOk(_c, iChan, savedColor);
+            margin -= d;
+        }
+
+        color[iChan+1] = _c;
+    }
+    else if (valid_)
+    { 
+        valid_ = dataColorIsOk(color);
+        c_     = savedValue;
+
+        while (   !valid_
+               && margin > 0
+               && stackOverflowProtect-- > 0)
+        {
+            c_ += d; 
+            valid_ = isColorOk(c_, iChan, savedColor);
+            margin -= d;
+        }
+
+        color[iChan+1] = c_;
+    }
+
+
+    return color;
+}
+
+
+
+function isColorOk(c, iChan, savedColor)
+{
+    let color = [...savedColor];
+    color[iChan+1] = c; 
+    return dataColorIsOk(color);
+}
+
+
+
+function getCorrectionsInOrder(order)
+{
+    switch (order)
+    {
+        case 0: return [0, 1, 2];
+        case 1: return [1, 0, 2];
+        case 2: return [1, 2, 0];
+        case 3: return [0, 2, 1];
+        case 4: return [2, 0, 1];
+        case 5: return [2, 1, 0];
+    }
+
+    // should never get here
+    console.assert(false, 'invalid correction order ' + order);
+    return [0, 0, 0];
+}
+
+
+
+function getMinCorrections(space, order)
+{
+    const [c1, c2, c3] = getCorrectionsInOrder(order);
+
+    let min;
+
+    switch (space)
+    {
+        case 'hex':
+        case 'rgb':    min = [0, 0, 0]; break
+
+        case 'hsv': 
+        case 'hsl':    min = [0, 0, 0]; break;
+
+        case 'hclokl':
+        case 'hcllab':
+        case 'hclluv': min = [0, 0, 0]; break;
+
+        case 'oklab':
+        case 'lab':
+        case 'luv':    min = [0, -oppFactor[1]/2, -oppFactor[2]/2]; break;
+        
+        default:
+            // should never get here
+            console.assert(false, 'invalid validation order ' + order);
+            return [0, 0, 0];
+    }
+
+    return [min[c1], min[c2], min[c3]];
+}
+
+
+
+function getMaxCorrections(space, order)
+{
+    const [c1, c2, c3] = getCorrectionsInOrder(order);
+
+    let max;
+
+    switch (space)
+    {
+        case 'hex':
+        case 'rgb':    max = [...rgbFactor]; break;
+
+        case 'hsv': 
+        case 'hsl':    max = [hs_Factor[0]/2, hs_Factor[1], hs_Factor[2]]; break;
+
+        case 'hclokl':
+        case 'hcllab':
+        case 'hclluv': max = [hclFactor[0]/2, hclFactor[1], hclFactor[2]]; break;
+
+        case 'oklab':
+        case 'lab':
+        case 'luv':    max = [...oppFactor]; break;
+        
+        default:
+            // should never get here
+            console.assert(false, 'invalid validation order ' + order);
+            return [0, 0, 0];
+    }
+
+    return [max[c1], max[c2], max[c3]];
 }
 
 
@@ -9208,80 +9332,94 @@ extends GOperator
         if (this.width ) line.width  = this.width .copy();
         if (this.angle ) line.angle  = this.angle .copy();
 
-        line.copyBase(this);
-
         return line;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+
+        if (this.input)
+            this.input = this.input.eval(parse).copy();
+
+        const hasInput =     
+               this.input 
+            && LINE_TYPES.includes(this.input.type);   
+
+            
+        if (this.x     ) this.x     = this.x     .eval(parse).copy(); else if (hasInput) this.x     = this.input.x     .copy();
+        if (this.y     ) this.y     = this.y     .eval(parse).copy(); else if (hasInput) this.y     = this.input.y     .copy();
+        if (this.width ) this.width = this.width .eval(parse).copy(); else if (hasInput) this.width = this.input.width .copy();
+        if (this.angle ) this.angle = this.angle .eval(parse).copy(); else if (hasInput) this.angle = this.input.angle .copy();
+
+        
+        if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
+        if (this.y     ) genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
+        if (this.width ) genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
+        if (this.angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
+
+
+        if (    hasInput
+            && !this.options) this.objects = this.input.objects;
+        else                  this.evalObjects();
+
+
+        this.valid = true;
+
+        return this;
+    }
+
+
+
+    evalObjects()
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        if (   this.x 
+            && this.y 
+            && this.width 
+            && this.angle)
+        {
+            this.objects = 
+            [
+                new FigmaLine(
+                    this.x     .toValue().value,
+                    this.y     .toValue().value,
+                    this.width .toValue().value,
+                    this.angle .toValue().value)
+            ];
+        }
+
+        
+        super.evalObjects();
     }
 
 
 
     isValid()
     {
-        return this.input
-               ? this.input.isValid()
-               : (   this.x     .isValid()
-                  && this.y     .isValid()
-                  && this.width .isValid()
-                  && this.angle .isValid());
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.angle .isValid();
     }
 
-    
 
-    eval(parse)
+
+    toValue()
     {
-        if (!this.valid)
-        {
-            this.result = new LineValue();
-
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-
-                console.assert(
-                    this.result.type == LINE_VALUE, 
-                    'this.result.type must be LINE_VALUE');
-
-                if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
-                if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
-                if (this.width ) this.result.width  = this.width .eval(parse).copy();
-                if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
-            }
-            else
-            {
-                this.result.x      = this.x     .eval(parse).copy();
-                this.result.y      = this.y     .eval(parse).copy();
-                this.result.width  = this.width .eval(parse).copy();
-                this.result.angle  = this.angle .eval(parse).copy();
-            }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-           
-            
-            genPushUpdateValue(parse, this.nodeId, LINE_VALUE, this.result);
-
-
-            if (this.options)
-            {
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    { 
-                        nodeId: this.nodeId,          
-                        type:   LINE,
-                        id:     0,
-                        x:      this.result.x     .value,
-                        y:      this.result.y     .value,
-                        width:  this.result.width .value,
-                        angle:  this.result.angle .value
-                    });
-            }
-        }
-
-
-        return this;
+        return new LineValue(
+            this.id,
+            this.x     .toValue(),
+            this.y     .toValue(),
+            this.width .toValue(),
+            this.angle .toValue());
     }
 }
 
@@ -11123,21 +11261,20 @@ function genParseLine(parse)
     parse.nTab++;
 
 
-    let paramIds;
-    
-    if (   parse.next == LINE_VALUE
-        || parse.next == LINE)
-    {
-        line.input = genParse(parse); // not genParseLine() because genParse() handles stack overflow
-        paramIds   = parse.move().split(',');
-    }
-    else
-        paramIds = ['x', 'y', 'width', 'angle'];
+    if (       LINE_TYPES.includes(parse.next)
+        || PROPERTY_TYPES.includes(parse.next))
+        line.input = genParse(parse);
 
 
-    for (const id of paramIds)
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
     {
-        switch (id)
+        const paramId = genParseParamId(parse);
+
+        parse.inParam = true;
+
+        switch (paramId)
         {
         case 'x':     line.x     = genParse(parse); break;
         case 'y':     line.y     = genParse(parse); break;
@@ -11147,6 +11284,7 @@ function genParseLine(parse)
     }
 
 
+    parse.inParam = false;
     parse.nTab--;
 
 
@@ -12668,6 +12806,13 @@ function dataColorIsValid(col, lim = Eps)
 }
 
 
+
+function dataColorIsOk(col, lim = Eps)
+{
+    return rgbIsOk(dataColor2rgb(col), lim);
+}
+
+
 const rgb_NaN = [
     Number.NaN,
     Number.NaN,
@@ -13200,18 +13345,18 @@ function colorFactor(space)
 {
     switch (space)
     {
-        case 'hex':    return rgbFactor;   
+        case 'hex':
         case 'rgb':    return rgbFactor;
 
-        case 'hsv':    return hs_Factor;   
+        case 'hsv':
         case 'hsl':    return hs_Factor;
 
-        case 'hclokl': return hclFactor;
-        case 'hcllab': return hclFactor;
+        case 'hclokl':
+        case 'hcllab':
         case 'hclluv': return hclFactor;
 
-        case 'oklab':  return oppFactor; 
-        case 'lab':    return oppFactor;   
+        case 'oklab':  
+        case 'lab':      
         case 'luv':    return oppFactor;   
         
         default:       console.assert(false, 'invalid color factor from space \''+space+'\''); break;
@@ -13226,10 +13371,10 @@ function scaleColor(col, space)
 
     switch (space)
     {
-        case 'hex':    scale = rgbScale;    break;
+        case 'hex':    
         case 'rgb':    scale = rgbScale;    break;
 
-        case 'hsv':    scale = hs_Scale;    break;
+        case 'hsv':    
         case 'hsl':    scale = hs_Scale;    break;
 
         case 'hclokl': scale = hcloklScale; break;
@@ -13680,7 +13825,7 @@ function setDataColorToCurrentSpace(node, color)
 
 
 
-function getColorSpaceFactor(space)
+function colorSpaceFactor(space)
 {
     switch (space)
     {
@@ -13771,7 +13916,7 @@ function convertDataColorToSpace(color, toSpace)
         case 'hcllab': return convert2hcllab(color);
         case 'hclluv': return convert2hclluv(color);
 
-        case 'oklab':  return convert2oklab (color);
+        case 'oklab':  return dataColor2oklab (color);
         case 'lab':    return convert2lab   (color);
         case 'luv':    return convert2luv   (color);
     }
@@ -13874,7 +14019,7 @@ function convert2hsl(fromColor)
 
 
 
-function convert2oklab(fromColor)
+function dataColor2oklab(fromColor)
 {
     const col = dataColor2array(fromColor);
 
@@ -17758,6 +17903,13 @@ function dataColorIsValid(col, lim = Eps)
 }
 
 
+
+function dataColorIsOk(col, lim = Eps)
+{
+    return rgbIsOk(dataColor2rgb(col), lim);
+}
+
+
 const rgb_NaN = [
     Number.NaN,
     Number.NaN,
@@ -18682,23 +18834,28 @@ const PROPERTY_TYPES =
 ];
 
 
-const SHAPE_VALUE      = 'G0';   // abstract placeholder
+const SHAPE_VALUE      = 'SHP';  // abstract placeholder
+
 
 const RECTANGLE_VALUE  = 'R';
 const RECTANGLE        = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
-
-const RECTANGLE_TYPES = [RECTANGLE_VALUE, RECTANGLE];
-
+const RECTANGLE_TYPES  = [RECTANGLE_VALUE, RECTANGLE];
 
 const LINE_VALUE       = 'L';
-const ELLIPSE_VALUE    = 'E';
-const POLYGON_VALUE    = 'P';
-const STAR_VALUE       = 'ST';
-
 const LINE             = 'LINE'; // N:x N:y N:width N:height N:angle
+const LINE_TYPES       = [LINE_VALUE, LINE];
+
+const ELLIPSE_VALUE    = 'E';
 const ELLIPSE          = 'ELPS'; // N:x N:y N:width N:height N:angle
+const ELLIPSE_TYPES    = [ELLIPSE_VALUE, ELLIPSE];
+
+const POLYGON_VALUE    = 'P';
 const POLYGON          = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
+const POLYGON_TYPES    = [POLYGON_VALUE, POLYGON];
+
+const STAR_VALUE       = 'ST';
 const STAR             = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
+const STAR_TYPES       = [STAR_VALUE, STAR];
 
 
 const SHAPE_VALUES =
@@ -18777,7 +18934,7 @@ class GValue
     {
         this.type     = type;
        
-        this.valid    = false;
+        this.valid    = true;
         this.topLevel = false;
 
         this.options  = options;
@@ -19046,6 +19203,52 @@ extends FigmaObject
         return rect;
     }
 }
+
+
+class FigmaLine
+extends FigmaObject
+{
+    x;
+    y;
+    width;
+    angle;
+
+
+
+    constructor(x, y, width, angle)
+    {
+        super(RECTANGLE);
+        
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.angle  = angle;
+    }
+
+
+
+    copy()
+    {
+        const rect = new FigmaLine(
+            this.x,
+            this.y,
+            this.width,
+            this.angle);
+
+        rect.copyBase(this);
+
+        return rect;
+    }
+}
+
+
+
+
+
+
+
+
+
 
 
 class NumberValue
@@ -19917,8 +20120,6 @@ extends ShapeBaseValue
         this.height = height;
         this.angle  = angle;
         this.round  = round;
-
-        this.valid  = true;
     }
 
 
@@ -19976,8 +20177,7 @@ extends ShapeBaseValue
             width:  this.width .value,
             height: this.height.value,
             angle:  this.angle .value,
-            round:  Math.max(0, this.round.value)//,
-            //...super.toFigmaObject()
+            round:  Math.max(0, this.round.value)
         };
     }
 
@@ -19991,8 +20191,6 @@ extends ShapeBaseValue
             + ' ' + this.height.toString()
             + ' ' + this.angle .toString()
             + ' ' + this.round .toString();
-            
-            //+ ' ' + super.toString();
     }
 
 
@@ -20005,8 +20203,6 @@ extends ShapeBaseValue
             + ' ' + this.height.toDisplayString()
             + ' ' + this.angle .toDisplayString()
             + ' ' + this.round .toDisplayString();
-            
-            // + ' ' + super.toDisplayString();
     }
 
 
@@ -20066,7 +20262,7 @@ function parseRectangleValue(str, i = -1)
 
 
 class LineValue
-extends GValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -20075,34 +20271,40 @@ extends GValue
 
 
 
-    constructor(x      = new NumberValue(0), 
+    constructor(nodeId,
+                x      = new NumberValue(0), 
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 angle  = new NumberValue(0))
     {
-        super(LINE_VALUE);
+        super(LINE_VALUE, nodeId);
 
         this.x      = x;
         this.y      = y;
         this.width  = width;
         this.angle  = angle;
-
-        this.valid  = true;
     }
 
 
 
     copy()
     {
-        const val = new LineValue(
-            this.x     .copy(), 
-            this.y     .copy(), 
-            this.width .copy(), 
-            this.angle .copy());
+        const line = new LineValue(
+            this.x    .copy(), 
+            this.y    .copy(), 
+            this.width.copy(), 
+            this.angle.copy());
 
-        val.copyBase(this);
+        line.copyBase(this);
 
-        return val;
+        return line;
+    }
+
+
+
+    eval(parse)
+    {
+        return this;
     }
 
 
@@ -20117,9 +20319,23 @@ extends GValue
 
 
 
-    eval(parse)
+    toValue()
     {
-        return this;
+        return this.copy();
+    }
+
+
+
+    toFigmaObject()
+    {
+        return {
+            type:   LINE,
+            id:     0,
+            x:      this.x     .value,
+            y:      this.y     .value,
+            width:  this.width .value,
+            angle:  this.angle .value,
+        };
     }
 
 
@@ -20134,7 +20350,18 @@ extends GValue
 
 
 
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.angle .toDisplayString();
+    }
+
+
+
     static NaN = new LineValue(
+        '',
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -21651,7 +21878,7 @@ extends GColorType
             // allow interpolating invalid colors,
             // so no valid color check here
 
-            const factor = getColorSpaceFactor(_space);
+            const factor = colorSpaceFactor(_space);
 
             this.value = ColorValue.create(
                 spaceValue,
@@ -21935,7 +22162,7 @@ extends GColorType
                     rgb2dataColor(validRgbCb), 
                     colorSpace(input.space.value));
 
-                const factor = getColorSpaceFactor(validCol[0]);
+                const factor = colorSpaceFactor(validCol[0]);
 
                 this.value = ColorValue.create(
                     input.space.value,
@@ -22029,60 +22256,57 @@ extends GColorType
 
             
             const rgb = input.toRgb();
-
             
-            if (!rgbIsNaN(rgb))
-            {
-                const orderValue = Math.min(Math.max(0, order.value), 5);
-                const inputColor = input.toDataColor();
-
-
-                const
-              [ closestOklab,
-                closestOrder,
-                closest1,
-                closest2,
-                closest3 ] = findCorrection(
-                                 this.nodeId,
-                                 inputColor, 
-                                 margin1, margin2, margin3, 
-                                 this.margin1.input, this.margin2.input, this.margin3.input); 
-
-
-                if (closestOrder >= 0 && closestOrder < 6)
+            if (!rgbIsOk(rgb))
+                genQueueMessageToUI(
                 {
-                    this._color = correctColor(
-                        inputColor,
-                        closestOrder, 
-                        closest1,
-                        closest2,
-                        closest3);
-
-                    const spaceIndex = colorSpaceIndex(this._color[0]);
-                    const factor     = getColorSpaceFactor(this._color[0]);
-
-                    this.value = ColorValue.create(
-                        spaceIndex,
-                        this._color[1] * factor[0],
-                        this._color[2] * factor[1],
-                        this._color[3] * factor[2]);
+                    cmd:   'uiStartNodeProgress',
+                    nodeId: this.nodeId
+                });
 
 
-                    if (spaceIndex >= 4)
-                    {
-                        genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                        genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1));
-                        genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2));
-                        genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3));
-                    }
-                    else
-                    {
-                        genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                    }
-                }
+            const orderValue = Math.min(Math.max(0, order.value), 5);
+            const inputColor = input.toDataColor();
+
+
+            const
+          [ closestOklab,
+            closestOrder,
+            closest1,
+            closest2,
+            closest3 ] = findCorrection(
+                this.nodeId,
+                inputColor, 
+                margin1, margin2, margin3, 
+                this.margin1.input, 
+                this.margin2.input, 
+                this.margin3.input); 
+
+                
+            if (closestOrder >= 0 && closestOrder < 6)
+            {
+                this._color = correctColor(
+                    inputColor,
+                    closestOrder,
+                    closest1,
+                    closest2,
+                    closest3);
+
+                    
+                const spaceIndex = colorSpaceIndex (this._color[0]);
+                const factor     = colorSpaceFactor(this._color[0]);
+
+                this.value = ColorValue.create(
+                    spaceIndex,
+                    this._color[1] * factor[0],
+                    this._color[2] * factor[1],
+                    this._color[3] * factor[2]);
+
+
+                genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
+                genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
+                genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
+                genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
             }
             else
                 this.value = ColorValue.NaN;
@@ -22102,147 +22326,12 @@ extends GColorType
 
 
 
-function correctColor(color, order, margin1, margin2, margin3)
-{
-    const [i1, i2, i3] = getCorrectionsInOrder(order);
-
-                                  color = correctChannel(color, i1, margin1);
-    if (!dataColorIsValid(color)) color = correctChannel(color, i2, margin2);
-    if (!dataColorIsValid(color)) color = correctChannel(color, i3, margin3);
-
-    return color;
-}
-
-
-
-function correctChannel(color, iChan, margin)
-{
-    const factor = getColorSpaceFactor(color[0]);
-
-    margin /= factor[iChan];
-
-
-    const savedColor = [...color];
-    const savedValue = color[iChan+1];
-
-    const d = 0.001;
-
-
-    let _c  = savedValue,
-         c_ = savedValue;
-
-    let _valid  = dataColorIsValid(color);
-    let  valid_ = _valid;
-
-
-    let stackOverflowProtect = 1/d;
-
-
-    while (   !_valid
-           && ! valid_
-           && stackOverflowProtect-- > 0)
-    {
-        _c  -= d;  _valid  = isColorValid(_c , iChan, savedColor);
-         c_ += d;   valid_ = isColorValid( c_, iChan, savedColor);
-    }
-
-
-    stackOverflowProtect = 1/d;
-    color = [...savedColor];
-
-
-    if (_valid) 
-    { 
-        _valid = dataColorIsValid(color);
-        _c     = savedValue;
-
-        while (   !_valid
-               && margin > 0
-               && stackOverflowProtect-- > 0)
-        {
-            _c -= d; 
-            _valid = isColorValid(_c, iChan, savedColor);
-            margin -= d;
-        }
-
-        color[iChan+1] = _c;
-    }
-    else if (valid_)
-    { 
-        valid_ = dataColorIsValid(color);
-        c_     = savedValue;
-
-        while (   !valid_
-               && margin > 0
-               && stackOverflowProtect-- > 0)
-        {
-            c_ += d; 
-            valid_ = isColorValid(c_, iChan, savedColor);
-            margin -= d;
-        }
-
-        color[iChan+1] = c_;
-    }
-
-
-    return color;
-}
-
-
-
-function isColorValid(c, iChan, savedColor)
-{
-    let color = [...savedColor];
-    color[iChan+1] = c; 
-    return dataColorIsValid(color);
-}
-
-
-
-function getCorrectionsInOrder(order)
-{
-    switch (order)
-    {
-        case 0: return [0, 1, 2];
-        case 1: return [1, 0, 2];
-        case 2: return [1, 2, 0];
-        case 3: return [0, 2, 1];
-        case 4: return [2, 0, 1];
-        case 5: return [2, 1, 0];
-    }
-
-    // should never get here
-    console.assert(false, 'invalid correction order ' + order);
-    return [0, 0, 0];
-}
-
-
-
-function getCorrectMax(order)
-{
-    switch (order)
-    {
-        case 0: return [180, 100, 100]; // HCL
-        case 1: return [100, 180, 100]; // CHL
-        case 2: return [100, 100, 180]; // CLH
-        case 3: return [180, 100, 100]; // HLC
-        case 4: return [100, 180, 100]; // LHC
-        case 5: return [100, 100, 180]; // LCH
-    }
-
-    // should never get here
-    console.assert(false, 'invalid validation order ' + order);
-    return [0, 0, 0];
-}
-
-
-
 function findCorrection(nodeId,
                         color,
-                        param1,  param2,  param3,
+                        margin1, margin2, margin3,
                         locked1, locked2, locked3) 
 {
-    const refOklab = dataColor2array(convert2oklab(color));
+    const refOklab = dataColor2array(dataColor2oklab(color));
 
 
     let closestColor = [...color],
@@ -22268,16 +22357,17 @@ function findCorrection(nodeId,
         {
             closestColor = [..._closestColor];
 
-            const [max1, max2, max3] = getCorrectMax(order);
+            const [min1, min2, min3] = getMinCorrections(color[0], order);
+            const [max1, max2, max3] = getMaxCorrections(color[0], order);
 
-            let start1 = lerp(0, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
-                start2 = lerp(0, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
-                start3 = lerp(0, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
+            let start1 = lerp(min1, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
+                start2 = lerp(min2, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
+                start3 = lerp(min3, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
                
                 
-            if (locked1) { closest1 = param1; start1 = closest1; end1 = start1+Eps; }
-            if (locked2) { closest2 = param2; start2 = closest2; end2 = start2+Eps; }
-            if (locked3) { closest3 = param3; start3 = closest3; end3 = start3+Eps; }
+            if (locked1) { closest1 = margin1; start1 = closest1; end1 = start1+Eps; }
+            if (locked2) { closest2 = margin2; start2 = closest2; end2 = start2+Eps; }
+            if (locked3) { closest3 = margin3; start3 = closest3; end3 = start3+Eps; }
             
 
           [ closestColor,
@@ -22361,7 +22451,7 @@ function findCorrectionInOrder(nodeId,
             {
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
-                if (   rgbIsValid(_rgb)
+                if (   rgbIsOk(_rgb)
                     && (  !closestOklab
                         || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
                 {
@@ -22401,10 +22491,196 @@ function findCorrectionInOrder(nodeId,
 function getCorrectedColor(color, order, m1, m2, m3)
 {
     const _color = correctColor(color, order, m1, m2, m3);
-    const _oklab = dataColor2array(convert2oklab(_color));
+    const _oklab = dataColor2array(dataColor2oklab(_color));
     const _rgb   = oklab2rgb(_oklab);
 
     return [_color, _oklab, _rgb];
+}
+
+
+
+function correctColor(color, order, margin1, margin2, margin3)
+{
+    if (order < 0)
+        return color;
+
+
+    const [i1, i2, i3] = getCorrectionsInOrder(order);
+
+                               color = correctChannel(color, i1, margin1);
+    if (!dataColorIsOk(color)) color = correctChannel(color, i2, margin2);
+    if (!dataColorIsOk(color)) color = correctChannel(color, i3, margin3);
+
+    return color;
+}
+
+
+
+function correctChannel(color, iChan, margin)
+{
+    const factor = colorSpaceFactor(color[0]);
+
+    margin /= factor[iChan];
+
+
+    const savedColor = [...color];
+    const savedValue = color[iChan+1];
+
+    const d = 0.001;
+
+
+    let _c  = savedValue,
+         c_ = savedValue;
+
+    let _valid  = dataColorIsOk(color);
+    let  valid_ = _valid;
+
+
+    let stackOverflowProtect = 1/d;
+
+
+    while (   !_valid
+           && ! valid_
+           && stackOverflowProtect-- > 0)
+    {
+        _c  -= d;  _valid  = isColorOk(_c , iChan, savedColor);
+         c_ += d;   valid_ = isColorOk( c_, iChan, savedColor);
+    }
+
+
+    stackOverflowProtect = 1/d;
+    color = [...savedColor];
+
+
+    if (_valid) 
+    { 
+        _valid = dataColorIsOk(color);
+        _c     = savedValue;
+
+        while (   !_valid
+               && margin > 0
+               && stackOverflowProtect-- > 0)
+        {
+            _c -= d; 
+            _valid = isColorOk(_c, iChan, savedColor);
+            margin -= d;
+        }
+
+        color[iChan+1] = _c;
+    }
+    else if (valid_)
+    { 
+        valid_ = dataColorIsOk(color);
+        c_     = savedValue;
+
+        while (   !valid_
+               && margin > 0
+               && stackOverflowProtect-- > 0)
+        {
+            c_ += d; 
+            valid_ = isColorOk(c_, iChan, savedColor);
+            margin -= d;
+        }
+
+        color[iChan+1] = c_;
+    }
+
+
+    return color;
+}
+
+
+
+function isColorOk(c, iChan, savedColor)
+{
+    let color = [...savedColor];
+    color[iChan+1] = c; 
+    return dataColorIsOk(color);
+}
+
+
+
+function getCorrectionsInOrder(order)
+{
+    switch (order)
+    {
+        case 0: return [0, 1, 2];
+        case 1: return [1, 0, 2];
+        case 2: return [1, 2, 0];
+        case 3: return [0, 2, 1];
+        case 4: return [2, 0, 1];
+        case 5: return [2, 1, 0];
+    }
+
+    // should never get here
+    console.assert(false, 'invalid correction order ' + order);
+    return [0, 0, 0];
+}
+
+
+
+function getMinCorrections(space, order)
+{
+    const [c1, c2, c3] = getCorrectionsInOrder(order);
+
+    let min;
+
+    switch (space)
+    {
+        case 'hex':
+        case 'rgb':    min = [0, 0, 0]; break
+
+        case 'hsv': 
+        case 'hsl':    min = [0, 0, 0]; break;
+
+        case 'hclokl':
+        case 'hcllab':
+        case 'hclluv': min = [0, 0, 0]; break;
+
+        case 'oklab':
+        case 'lab':
+        case 'luv':    min = [0, -oppFactor[1]/2, -oppFactor[2]/2]; break;
+        
+        default:
+            // should never get here
+            console.assert(false, 'invalid validation order ' + order);
+            return [0, 0, 0];
+    }
+
+    return [min[c1], min[c2], min[c3]];
+}
+
+
+
+function getMaxCorrections(space, order)
+{
+    const [c1, c2, c3] = getCorrectionsInOrder(order);
+
+    let max;
+
+    switch (space)
+    {
+        case 'hex':
+        case 'rgb':    max = [...rgbFactor]; break;
+
+        case 'hsv': 
+        case 'hsl':    max = [hs_Factor[0]/2, hs_Factor[1], hs_Factor[2]]; break;
+
+        case 'hclokl':
+        case 'hcllab':
+        case 'hclluv': max = [hclFactor[0]/2, hclFactor[1], hclFactor[2]]; break;
+
+        case 'oklab':
+        case 'lab':
+        case 'luv':    max = [...oppFactor]; break;
+        
+        default:
+            // should never get here
+            console.assert(false, 'invalid validation order ' + order);
+            return [0, 0, 0];
+    }
+
+    return [max[c1], max[c2], max[c3]];
 }
 
 
@@ -22808,80 +23084,94 @@ extends GOperator
         if (this.width ) line.width  = this.width .copy();
         if (this.angle ) line.angle  = this.angle .copy();
 
-        line.copyBase(this);
-
         return line;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+
+        if (this.input)
+            this.input = this.input.eval(parse).copy();
+
+        const hasInput =     
+               this.input 
+            && LINE_TYPES.includes(this.input.type);   
+
+            
+        if (this.x     ) this.x     = this.x     .eval(parse).copy(); else if (hasInput) this.x     = this.input.x     .copy();
+        if (this.y     ) this.y     = this.y     .eval(parse).copy(); else if (hasInput) this.y     = this.input.y     .copy();
+        if (this.width ) this.width = this.width .eval(parse).copy(); else if (hasInput) this.width = this.input.width .copy();
+        if (this.angle ) this.angle = this.angle .eval(parse).copy(); else if (hasInput) this.angle = this.input.angle .copy();
+
+        
+        if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
+        if (this.y     ) genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
+        if (this.width ) genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
+        if (this.angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
+
+
+        if (    hasInput
+            && !this.options) this.objects = this.input.objects;
+        else                  this.evalObjects();
+
+
+        this.valid = true;
+
+        return this;
+    }
+
+
+
+    evalObjects()
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        if (   this.x 
+            && this.y 
+            && this.width 
+            && this.angle)
+        {
+            this.objects = 
+            [
+                new FigmaLine(
+                    this.x     .toValue().value,
+                    this.y     .toValue().value,
+                    this.width .toValue().value,
+                    this.angle .toValue().value)
+            ];
+        }
+
+        
+        super.evalObjects();
     }
 
 
 
     isValid()
     {
-        return this.input
-               ? this.input.isValid()
-               : (   this.x     .isValid()
-                  && this.y     .isValid()
-                  && this.width .isValid()
-                  && this.angle .isValid());
+        return this.x     .isValid()
+            && this.y     .isValid()
+            && this.width .isValid()
+            && this.angle .isValid();
     }
 
-    
 
-    eval(parse)
+
+    toValue()
     {
-        if (!this.valid)
-        {
-            this.result = new LineValue();
-
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-
-                console.assert(
-                    this.result.type == LINE_VALUE, 
-                    'this.result.type must be LINE_VALUE');
-
-                if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
-                if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
-                if (this.width ) this.result.width  = this.width .eval(parse).copy();
-                if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
-            }
-            else
-            {
-                this.result.x      = this.x     .eval(parse).copy();
-                this.result.y      = this.y     .eval(parse).copy();
-                this.result.width  = this.width .eval(parse).copy();
-                this.result.angle  = this.angle .eval(parse).copy();
-            }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-           
-            
-            genPushUpdateValue(parse, this.nodeId, LINE_VALUE, this.result);
-
-
-            if (this.options)
-            {
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    { 
-                        nodeId: this.nodeId,          
-                        type:   LINE,
-                        id:     0,
-                        x:      this.result.x     .value,
-                        y:      this.result.y     .value,
-                        width:  this.result.width .value,
-                        angle:  this.result.angle .value
-                    });
-            }
-        }
-
-
-        return this;
+        return new LineValue(
+            this.id,
+            this.x     .toValue(),
+            this.y     .toValue(),
+            this.width .toValue(),
+            this.angle .toValue());
     }
 }
 
@@ -24589,12 +24879,12 @@ function initMenus()
         new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_RANDOM,      btnNumber.div, {insert: e.shiftKey}))})]);
     
     
-    menuString = new Menu('String nodes', true, false);
-    menuString.addItems([
-        new MenuItem('String',      {icon: iconString       , enabled: false}),
-        new MenuItem('Join',        {icon: iconStringJoin   , enabled: false}),
-        new MenuItem('Substring',   {icon: iconSubstring    , enabled: false}),
-        new MenuItem('Replace',     {icon: iconStringReplace, enabled: false})]);
+    // menuString = new Menu('String nodes', true, false);
+    // menuString.addItems([
+    //     new MenuItem('String',      {icon: iconString       , enabled: false}),
+    //     new MenuItem('Join',        {icon: iconStringJoin   , enabled: false}),
+    //     new MenuItem('Substring',   {icon: iconSubstring    , enabled: false}),
+    //     new MenuItem('Replace',     {icon: iconStringReplace, enabled: false})]);
     
     
     menuColor = new Menu('Color nodes', true, false);
@@ -24618,7 +24908,7 @@ function initMenus()
     menuShape = new Menu('Shape nodes', true, false);
     menuShape.addItems([
         new MenuItem('Rectangle',  {icon: iconRectangle, callback: e => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Line',       {icon: iconLine     , enabled: false}),
+        new MenuItem('Line',       {icon: iconLine     , callback: e => actionManager.do(new CreateNodeAction(LINE,      btnShape.div, {insert: e.shiftKey}))}),
         new MenuItem('Ellipse',    {icon: iconEllipse  , enabled: false}),
         new MenuItem('Polygon',    {icon: iconPolygon  , enabled: false}),
         new MenuItem('Star',       {icon: iconStar     , enabled: false})]);
@@ -24660,7 +24950,7 @@ function initMenus()
 
     btnMain    = new MenuButton('', menuMain, {useMenuName: true, highlight: () => currentMenus.includes(menuMain)});
     btnNumber  = new MenuButton('', menuNumber);
-    btnString  = new MenuButton('', menuString);
+    //btnString  = new MenuButton('', menuString);
     btnColor   = new MenuButton('', menuColor );
     btnStyle   = new MenuButton('', menuStyle );
     btnShape   = new MenuButton('', menuShape );
@@ -24917,14 +25207,14 @@ function initNumberControlEvents(control)
 
                     
                     // reset control movement at the limits for better UX
-                    const min = getCtrlKey(e) ? control.min : control.displayMin;
-                    const max = getCtrlKey(e) ? control.max : control.displayMax;
+                    const min = e.shiftKey ? control.min : control.displayMin;
+                    const max = e.shiftKey ? control.max : control.displayMax;
 
                     control.setValue(
                         Math.round(val / grain) * grain, 
                         true, 
                         true,
-                        getCtrlKey(e));
+                        e.shiftKey);
 
 
                     if (   val <= min
@@ -25063,6 +25353,7 @@ function initNumberControlEvents(control)
         control.buttonDown1 = false;
         control.buttonDown2 = false;
         control.mouseOver   = false;
+        
         control.update();
     });
 
@@ -34296,6 +34587,13 @@ function startNodeProgress(node)
 
 
 
+function uiStartNodeProgress(nodeId)
+{
+    startNodeProgress(nodeFromId(nodeId));
+}
+
+
+
 function uiUpdateNodeProgress(nodeId, progress)
 {
     const node = nodeFromId(nodeId);
@@ -36073,7 +36371,7 @@ extends OpColorBase
             this.updateControlRanges(this.param1.control, f =>
                 dataColor2rgb([
                     this._color[0],
-                    (this.param1.control.displayMin + f * (this.param1.control.displayMax - this.param1.control.displayMin)) / getColorSpaceFactor(this._color[0])[0],
+                    (this.param1.control.displayMin + f * (this.param1.control.displayMax - this.param1.control.displayMin)) / colorSpaceFactor(this._color[0])[0],
                     this._color[2],
                     this._color[3]]));
 
@@ -36081,7 +36379,7 @@ extends OpColorBase
                 dataColor2rgb([
                     this._color[0],
                     this._color[1],
-                    (this.param2.control.displayMin + f * (this.param2.control.displayMax - this.param2.control.displayMin)) / getColorSpaceFactor(this._color[0])[1],
+                    (this.param2.control.displayMin + f * (this.param2.control.displayMax - this.param2.control.displayMin)) / colorSpaceFactor(this._color[0])[1],
                     this._color[3]]));
 
             this.updateControlRanges(this.param3.control, f =>
@@ -36089,7 +36387,7 @@ extends OpColorBase
                     this._color[0],
                     this._color[1],
                     this._color[2],
-                    (this.param3.control.displayMin + f * (this.param3.control.displayMax - this.param3.control.displayMin)) / getColorSpaceFactor(this._color[0])[2]]));
+                    (this.param3.control.displayMin + f * (this.param3.control.displayMax - this.param3.control.displayMin)) / colorSpaceFactor(this._color[0])[2]]));
         }
         else // no warning ranges
         {
@@ -36282,18 +36580,18 @@ function colorFactor(space)
 {
     switch (space)
     {
-        case 'hex':    return rgbFactor;   
+        case 'hex':
         case 'rgb':    return rgbFactor;
 
-        case 'hsv':    return hs_Factor;   
+        case 'hsv':
         case 'hsl':    return hs_Factor;
 
-        case 'hclokl': return hclFactor;
-        case 'hcllab': return hclFactor;
+        case 'hclokl':
+        case 'hcllab':
         case 'hclluv': return hclFactor;
 
-        case 'oklab':  return oppFactor; 
-        case 'lab':    return oppFactor;   
+        case 'oklab':  
+        case 'lab':      
         case 'luv':    return oppFactor;   
         
         default:       console.assert(false, 'invalid color factor from space \''+space+'\''); break;
@@ -36308,10 +36606,10 @@ function scaleColor(col, space)
 
     switch (space)
     {
-        case 'hex':    scale = rgbScale;    break;
+        case 'hex':    
         case 'rgb':    scale = rgbScale;    break;
 
-        case 'hsv':    scale = hs_Scale;    break;
+        case 'hsv':    
         case 'hsl':    scale = hs_Scale;    break;
 
         case 'hclokl': scale = hcloklScale; break;
@@ -36762,7 +37060,7 @@ function setDataColorToCurrentSpace(node, color)
 
 
 
-function getColorSpaceFactor(space)
+function colorSpaceFactor(space)
 {
     switch (space)
     {
@@ -36853,7 +37151,7 @@ function convertDataColorToSpace(color, toSpace)
         case 'hcllab': return convert2hcllab(color);
         case 'hclluv': return convert2hclluv(color);
 
-        case 'oklab':  return convert2oklab (color);
+        case 'oklab':  return dataColor2oklab (color);
         case 'lab':    return convert2lab   (color);
         case 'luv':    return convert2luv   (color);
     }
@@ -36956,7 +37254,7 @@ function convert2hsl(fromColor)
 
 
 
-function convert2oklab(fromColor)
+function dataColor2oklab(fromColor)
 {
     const col = dataColor2array(fromColor);
 
@@ -37200,31 +37498,7 @@ extends OpColorBase
         this.addParam(this.paramMargin3 = new NumberParam('margin3', '', true, true, true, 0));
 
 
-        // this.paramMargin1.addEventListener('change', () => 
-        // {
-        //     const [i1,,] = getCorrectionOrder(this.paramOrder.value);
-        //     this.corrections[i1].value = this.paramMargin1.value;
-        //     uiSaveNodes([this.id]);
-        // });
-
-
-        // this.paramMargin2.addEventListener('change', () => 
-        // {
-        //     const [, i2,] = getCorrectionOrder(this.paramOrder.value);
-        //     this.corrections[i2].value = this.paramMargin2.value;
-        //     uiSaveNodes([this.id]);
-        // });
-
-        
-        // this.paramMargin3.addEventListener('change', () => 
-        // {
-        //     const [,, i3] = getCorrectionOrder(this.paramOrder.value);
-        //     this.corrections[i3].value = this.paramMargin3.value;
-        //     uiSaveNodes([this.id]);
-        // });
-
-
-        this.initCorrections('hclokl');
+        this.initCorrections('');
         this.updateCorrections();
 
 
@@ -37268,9 +37542,6 @@ extends OpColorBase
         request.push(...this.node.paramMargin3.genRequest(gen));
 
 
-        startNodeProgress(this.node);
-
-
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
@@ -37288,13 +37559,13 @@ extends OpColorBase
             ? col.toDataColor()
             : dataColor_NaN;
 
-            
         // const order   = values[paramIds.findIndex(id => id == 'order'  )];
         // const margin1 = values[paramIds.findIndex(id => id == 'margin1')];
         // const margin2 = values[paramIds.findIndex(id => id == 'margin2')];
         // const margin3 = values[paramIds.findIndex(id => id == 'margin3')];
 
 
+        this.initCorrections(this._color[0]);
         this.updateCorrections();
 
         endNodeProgress(this);
@@ -37333,19 +37604,51 @@ extends OpColorBase
 
     initCorrections(colorSpace)
     {
+        if (colorSpace == '')
+        {
+            this.paramOrder  .setValue(NumberValue.NaN);
+            this.paramMargin1.setValue(NumberValue.NaN);
+            this.paramMargin2.setValue(NumberValue.NaN);
+            this.paramMargin3.setValue(NumberValue.NaN);
+
+            return;
+        }
+
+
         switch (colorSpace)
         {
+        case 'hex':
+        case 'rgb':
+            this.paramOrder.setOptions(makeOptions('RGB'));
+            this.corrections = [
+                new OpColorCorrect_Correction('R', rgbFactor[0]),
+                new OpColorCorrect_Correction('G', rgbFactor[1]),
+                new OpColorCorrect_Correction('B', rgbFactor[2]) ];
+
+            break;
+
+        case 'hsv':
+            this.paramOrder.setOptions(makeOptions('HSV'));
+            this.corrections = [
+                new OpColorCorrect_Correction('H', hs_Factor[0]/2),
+                new OpColorCorrect_Correction('S', hs_Factor[1]),
+                new OpColorCorrect_Correction('V', hs_Factor[2]) ];
+
+            break;
+
+        case 'hsl':
+            this.paramOrder.setOptions(makeOptions('HSL'));
+            this.corrections = [
+                new OpColorCorrect_Correction('H', hs_Factor[0]/2),
+                new OpColorCorrect_Correction('S', hs_Factor[1]),
+                new OpColorCorrect_Correction('L', hs_Factor[2]) ];
+
+            break;
+
         case 'hclokl':
         case 'hcllab':
         case 'hclluv':
-            this.paramOrder.setOptions([
-                'H,&thinsp;C,&thinsp;L', 
-                'C,&thinsp;H,&thinsp;L', 
-                'C,&thinsp;L,&thinsp;H', 
-                'H,&thinsp;L,&thinsp;C', 
-                'L,&thinsp;H,&thinsp;C', 
-                'L,&thinsp;C,&thinsp;H']);
-
+            this.paramOrder.setOptions(makeOptions('HCL'));
             this.corrections = [
                 new OpColorCorrect_Correction('H', hclFactor[0]/2),
                 new OpColorCorrect_Correction('C', hclFactor[1]),
@@ -37355,14 +37658,7 @@ extends OpColorBase
 
         case 'oklab': 
         case 'lab':
-            this.paramOrder.setOptions([
-                'L,&thinsp;a,&thinsp;b', 
-                'a,&thinsp;L,&thinsp;b', 
-                'a,&thinsp;b,&thinsp;L', 
-                'L,&thinsp;b,&thinsp;a', 
-                'b,&thinsp;L,&thinsp;a', 
-                'b,&thinsp;a,&thinsp;L']);
-
+            this.paramOrder.setOptions(makeOptions('Lab'));
             this.corrections = [
                 new OpColorCorrect_Correction('L', oppFactor[0]),
                 new OpColorCorrect_Correction('a', oppFactor[1]),
@@ -37371,14 +37667,7 @@ extends OpColorBase
             break;
 
         case 'luv':
-            this.paramOrder.setOptions([
-                'L,&thinsp;u,&thinsp;v', 
-                'u,&thinsp;L,&thinsp;v', 
-                'u,&thinsp;v,&thinsp;L', 
-                'L,&thinsp;v,&thinsp;u', 
-                'v,&thinsp;L,&thinsp;u', 
-                'v,&thinsp;u,&thinsp;L']);
-
+            this.paramOrder.setOptions(makeOptions('Luv'));
             this.corrections = [
                 new OpColorCorrect_Correction('L', oppFactor[0]),
                 new OpColorCorrect_Correction('u', oppFactor[1]),
@@ -37394,11 +37683,14 @@ extends OpColorBase
     {
         this.updateColorSpace();
 
-        const [i1, i2, i3] = getCorrectionsInOrder(this.paramOrder.value.value);
+        if (this.paramOrder.value.isValid())
+        {
+            const [i1, i2, i3] = getCorrectionsInOrder(this.paramOrder.value.value);
 
-        this.updateMargin(this.paramMargin1, this.corrections[i1]);
-        this.updateMargin(this.paramMargin2, this.corrections[i2]);
-        this.updateMargin(this.paramMargin3, this.corrections[i3]);
+            this.updateMargin(this.paramMargin1, this.corrections[i1]);
+            this.updateMargin(this.paramMargin2, this.corrections[i2]);
+            this.updateMargin(this.paramMargin3, this.corrections[i3]);
+        }
     }
 
 
@@ -37418,39 +37710,7 @@ extends OpColorBase
 
         margin.control.setMin(0,              false);
         margin.control.setMax(correction.max, false);
-
-        //margin.locked = correction.locked;
-        //margin.updateLock();
-
-        // if (!margin.locked)
-        // {
-            //margin.control.setDecimals(Math.min(decCount(numToString(correction.value, -1))));
-            //margin.setValue(correction.value, true, true, false);
-        //}
     }
-
-
-
-    // updateHeaderLabel()
-    // {
-    //     this.label.style.top = '40%';
-
-    //     // const colors    = this.getHeaderColors();
-    //     // const findStyle = rgb2style_a(colors.text, 0.35);
-
-    //     // this.findBar     .style.outline    = '1px solid ' + findStyle;
-    //     // this.findProgress.style.background = findStyle;
-
-
-    //     super.updateHeaderLabel();
-    // }
-
-
-
-    // canShowColor()
-    // {
-    //     return this.inputs[0].connected;
-    // }
 
 
 
@@ -37458,38 +37718,19 @@ extends OpColorBase
     {
         return this.inputs[0].connected;
     }
+}
 
 
 
-    // toJsonBase(nTab = 0) 
-    // {
-    //     let   pos = ' '.repeat(nTab);
-    //     const tab = TAB;
-
-    //     const [i1, i2, i3] = getCorrectionOrder(this.order.value);
-
-    //     return super.toJsonBase(nTab)
-    //         + ',\n' + pos + tab + '"locked1": "' + boolToString(this.corrections[i1].locked) + '"'
-    //         + ',\n' + pos + tab + '"locked2": "' + boolToString(this.corrections[i2].locked) + '"'
-    //         + ',\n' + pos + tab + '"locked3": "' + boolToString(this.corrections[i3].locked) + '"';
-    // }
-
-
-
-    // loadParams(_node)
-    // {
-    //     super.loadParams(_node);
-
-    //     const [i1, i2, i3] = getCorrectionOrder(this.order.value);
-
-    //     if (_node.locked1) this.corrections[i1].locked = isTrue(_node.locked1);
-    //     if (_node.locked2) this.corrections[i2].locked = isTrue(_node.locked2);
-    //     if (_node.locked3) this.corrections[i3].locked = isTrue(_node.locked3);
-
-    //     this.updateCorrections();
-
-    //     super.loadParams(_node); // must be done again after the locks have been set
-    // }
+function makeOptions(c)
+{
+    return ([
+        c[0]+',&thinsp;'+c[1]+',&thinsp;'+c[2], 
+        c[1]+',&thinsp;'+c[0]+',&thinsp;'+c[2], 
+        c[1]+',&thinsp;'+c[2]+',&thinsp;'+c[0], 
+        c[0]+',&thinsp;'+c[2]+',&thinsp;'+c[1], 
+        c[2]+',&thinsp;'+c[0]+',&thinsp;'+c[1], 
+        c[2]+',&thinsp;'+c[1]+',&thinsp;'+c[0]]);
 }
 
 
@@ -38745,98 +38986,6 @@ function OpGradient_onDisconnectInput(node, input)
 class   OpShapeBase
 extends OperatorBase
 {
-    // paramFill;
-    // paramStroke;
-
-
-    // btnProportional;
-
-    // refWidth  = Number.NaN;
-    // refHeight = Number.NaN;
-
-
-    
-    constructor(type, shortName, defWidth = 80)
-    {
-        super(type, shortName, defWidth);
-    }
-
-
-
-    // addBaseParams()
-    // {
-    //     this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.default));
-    //     this.addParam(this.paramStroke = new StrokeParam('stroke', 'stroke',        true, true, StrokeValue.NaN));
-
-    //     this.paramStroke.input.addEventListener('disconnect', () => { this.paramStroke.setValue(StrokeValue.NaN, false, true, false); });
-    // } 
-
-
-
-    // getBaseValuesForUndo()
-    // {
-    //     return [ 
-    //         [this.paramFill  .id, 
-    //          this.paramFill  .value],
-
-    //         [this.paramStroke.id, 
-    //          this.paramStroke.value]];
-    // }
-
-
-
-    // updateBaseValues(updateParamId, paramIds, values)
-    // {
-    //     const fill   = values[paramIds.findIndex(id => id == 'fill'  )];
-    //     const stroke = values[paramIds.findIndex(id => id == 'stroke')];
-
-    //     setParamValue(this.paramFill,   fill,   updateParamId);
-    //     setParamValue(this.paramStroke, stroke, updateParamId);
-
-    //     this.updateParamDisplay();
-    // }
-}
-
-
-class   OpRectangle
-extends OperatorBase
-{
-    paramX;
-    paramY;
-    paramWidth;
-    paramHeight;
-    paramAngle;
-    paramRound;
-
-
-    
-    constructor()
-    {
-        super(RECTANGLE, 'rect', 100);
-
-
-        this.addInput (this.createInputForObjects([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
-        this.addOutput(new Output([RECTANGLE], this.output_genRequest));
-
-
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
-        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
-
-
-        this.paramWidth .addEventListener('change', () => this.updateRound());
-        this.paramHeight.addEventListener('change', () => this.updateRound());
-
-        this.paramAngle.control.setSuffix('°', true);
-        this.paramAngle.control.wrapValue   = true;
-        this.paramAngle.control.dragReverse = true;
-    }
-    
-    
-    
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -38891,17 +39040,53 @@ extends OperatorBase
     {
         const enable = !this.inputs[0].connected;
         
-        this.paramX     .enableControlText(enable);
-        this.paramY     .enableControlText(enable);
-        this.paramWidth .enableControlText(enable);
-        this.paramHeight.enableControlText(enable);
-        this.paramAngle .enableControlText(enable);
-        this.paramRound .enableControlText(enable);
+        for (const param of this.params)
+            param.enableControlText(enable);
 
         super.updateParams();
     }
+}
+
+
+
+class   OpRectangle
+extends OpShapeBase
+{
+    paramX;
+    paramY;
+    paramWidth;
+    paramHeight;
+    paramAngle;
+    paramRound;
+
 
     
+    constructor()
+    {
+        super(RECTANGLE, 'rect', 100);
+
+
+        this.addInput (this.createInputForObjects([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
+        this.addOutput(new Output([RECTANGLE], this.output_genRequest));
+
+
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
+
+
+        this.paramWidth .addEventListener('change', () => this.updateRound());
+        this.paramHeight.addEventListener('change', () => this.updateRound());
+
+        this.paramAngle.control.setSuffix('°', true);
+        this.paramAngle.control.wrapValue   = true;
+        this.paramAngle.control.dragReverse = true;
+    }
+
+
 
     updateRound()
     {
@@ -38927,9 +39112,9 @@ extends OpShapeBase
     
     constructor()
     {
-        super(LINE, 'line', 90);
+        super(LINE, 'line', 100);
 
-        this.addInput (new Input ([LINE, LINE_VALUE]));
+        this.addInput (this.createInputForObjects([LINE, LINE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([LINE], this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
@@ -38941,77 +39126,6 @@ extends OpShapeBase
         this.paramAngle.control.setSuffix('°', true);
         this.paramAngle.control.wrapValue   = true;
         this.paramAngle.control.dragReverse = true;
-
-
-        // this.inputs[0].addEventListener('connect', () =>
-        // {
-        //     for (const param of this.params)
-        //         param.enableControlText(false);
-        // });
-
-
-        // this.inputs[0].addEventListener('disconnect', () =>
-        // {
-        //     for (const param of this.params)
-        //         if (!param.input.connected) 
-        //             param.enableControlText(true);
-        // });
-    }
-    
-    
-    
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: '' });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-        
-        const input = this.node.inputs[0];
-
-        const paramIds = [];
-
-
-        if (input.connected)
-        {
-            request.push(...pushInputOrParam(input, gen));
-
-
-            for (const param of this.node.params)
-                if (param.input && param.input.connected) 
-                    paramIds.push(param.id);
-
-            request.push(paramIds.join(','));
-
-
-            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
-            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
-            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
-            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
-        }
-        else
-        {
-            request.push(
-                ...this.node.paramX     .genRequest(gen),
-                ...this.node.paramY     .genRequest(gen),
-                ...this.node.paramWidth .genRequest(gen),
-                ...this.node.paramAngle .genRequest(gen));
-        }
-
-
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
     }
 }
 
@@ -42203,6 +42317,7 @@ generator.onmessage = function(e)
     {
         case 'uiEndGenMessage':          uiEndGenMessage();                                                                                             break;
         case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.updateNodeId, msg.updateParamId, msg.values, msg.objects);                        break;
+        case 'uiStartNodeProgress':      uiStartNodeProgress     (msg.nodeId);                                                                          break;
         case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                                            break;
         //case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
     }

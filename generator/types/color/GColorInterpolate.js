@@ -81,7 +81,7 @@ extends GColorType
             // allow interpolating invalid colors,
             // so no valid color check here
 
-            const factor = getColorSpaceFactor(_space);
+            const factor = colorSpaceFactor(_space);
 
             this.value = ColorValue.create(
                 spaceValue,
