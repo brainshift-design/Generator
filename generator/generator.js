@@ -63,11 +63,17 @@ function genRequest(request)
 
 
 
-function genPushUpdateValue(parse, nodeId, paramId, value)
+function genPushUpdateValue(parse, nodeId, paramId, value, forceUpdate = false)
 {
     //logFunction('genPushUpdateValue()');
     //console.trace();
     
+    if (   nodeId  == parse.updateNodeId
+        && paramId == parse.updateParamId
+        && !forceUpdate)
+        return;
+ 
+        
     const found = parse.updateValues.find(v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId

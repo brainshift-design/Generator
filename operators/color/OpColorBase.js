@@ -10,9 +10,9 @@ extends Operator
     
 
 
-    constructor(nodeType, shortType, type, defWidth = 90)
+    constructor(nodeType, shortType, defWidth = 90, progressBar = false)
     {
-        super(nodeType, shortType, type, defWidth);
+        super(nodeType, shortType, defWidth, progressBar);
 
 
         this._warningOverlay = createDiv('colorWarningOverlay');

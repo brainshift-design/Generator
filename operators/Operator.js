@@ -75,6 +75,10 @@ class Operator
 
     divDisabled;
     
+    progressWrapper = null;
+    progressBar     = null;
+    hasProgressBar  = false;
+
     labelWrapper;
     label;
     textbox;
@@ -118,7 +122,7 @@ class Operator
 
 
 
-    constructor(type, shortName, defWidth = 100)
+    constructor(type, shortName, defWidth = 100, progressBar = false)
     {
         this.#type             = type;
         this.id                = shortName;
@@ -132,6 +136,9 @@ class Operator
         this.valid             = false;
 
         createOperatorNode(this);
+
+        if (progressBar)
+            createNodeProgressBar(this);
 
         this.setName(shortName);
     }    
@@ -828,6 +835,13 @@ function pushUpdateFromParam(nodes, param)
         getTerminalsAfterNode(n)));
 
 
+    const progressNodes = [];
+
+    nodes.forEach(n => pushUnique(
+        progressNodes, 
+        getProgressNodesAfterNode(n)));
+
+    
     for (const node of terminals)
     {
         if (!gen.passedNodes.includes(node))

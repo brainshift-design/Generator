@@ -102,7 +102,7 @@
 
 
 
-// function getValidateMax(order)
+// function getCorrectMax(order)
 // {
 //     switch (order)
 //     {
@@ -189,7 +189,7 @@
 //         {
 //             closestColor = [..._closestColor];
 
-//             const [max1, max2, max3] = getValidateMax(order);
+//             const [max1, max2, max3] = getCorrectMax(order);
 
 //             let start1 = lerp(0, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
 //                 start2 = lerp(0, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
@@ -335,7 +335,7 @@
 
 //         genQueueMessageToUI(
 //         {
-//             cmd:     'uiUpdateFindCorrection',
+//             cmd:     'uiUpdateNodeProgress',
 //             nodeId:   nodeId,
 //             progress: progress / total
 //         });

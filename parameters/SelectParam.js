@@ -19,8 +19,7 @@ extends NumberParamBase
         this.control.param  = this;
         this.control.zIndex = 0;
 
-        this.options        = options;
-        
+       
         this.defaultValue   = new NumberValue(defaultValue);
 
 
@@ -39,7 +38,8 @@ extends NumberParamBase
             0.02);
 
 
-        this.control.options           = [...options];
+        this.setOptions(options);
+
         this.control.successOnFocusOut = true;
         this.control.barTop            = 0.8;
 
@@ -54,6 +54,14 @@ extends NumberParamBase
 
             
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });
+    }
+
+
+
+    setOptions(options)
+    {
+        this        .options = [...options];
+        this.control.options = [...options];
     }
 
 

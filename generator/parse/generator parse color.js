@@ -230,16 +230,16 @@ function genParseColorBlind(parse)
 
 
 
-function genParseColorValidate(parse)
+function genParseColorCorrect(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const val = new GColorValidate(nodeId, options);
+    const val = new GColorCorrect(nodeId, options);
 
 
     if (parse.settings.logRequests) 
-        logReqColorValidate(val, parse);
+        logReqColorCorrect(val, parse);
 
 
     if (ignore) 

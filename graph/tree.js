@@ -124,6 +124,26 @@ function getNodesAfterNode(node)
 
 
 
+function getProgressNodesAfterNode(node)
+{
+    let after = [];
+
+    for (const output of node.outputs)
+    {
+        for (const input of output.connectedInputs)
+        {
+            if (input.node.hasProgressBar)
+                pushUnique(after, input.node);
+
+            pushUnique(after, getProgressNodesAfterNode(input.node));
+        }
+    }
+
+    return after;
+}
+
+
+
 function getTerminalsAfterNode(node)
 {
     let after = [];

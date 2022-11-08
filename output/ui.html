@@ -871,7 +871,7 @@ div
 }
 
 
-#btnCreateValidateColor
+#btnCreateCorrectColor
 {
     padding-left:        3px;
     padding-right:       30px;
@@ -881,7 +881,7 @@ div
 }
 
 
-#btnCreateValidateColor:hover
+#btnCreateCorrectColor:hover
 {
     background:          url('data:image/svg+xml;utf8,<svg width="17" height="16" viewBox="0 -1 17 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.179 3.06615L6.68506 9.56013L2.88329 5.75836L4.0255 4.61615L6.68506 7.27571L12.0369 1.92393L13.179 3.06615Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.06159 1.13348C7.25451 1.03474 8.44629 1.33665 9.44831 1.99145L10.0355 1.09298C8.8335 0.307551 7.40396 -0.054602 5.97305 0.0638407C4.54213 0.182283 3.19159 0.774556 2.13516 1.74692C1.07873 2.71929 0.376759 4.0162 0.140351 5.43241C-0.0960669 6.84862 0.146575 8.30322 0.829881 9.56601C1.51319 10.8288 2.59812 11.8277 3.91297 12.4044C5.22782 12.9812 6.69749 13.1031 8.08937 12.7507C9.03602 12.5109 9.90991 12.0611 10.6496 11.4415L15.2558 15.9919L16.01 15.2284L11.4122 10.6861C11.4756 10.6118 11.5375 10.536 11.5977 10.4586C12.4797 9.32556 12.9585 7.93076 12.9585 6.49496H11.8852C11.8852 7.69195 11.486 8.85476 10.7507 9.79935C10.0155 10.744 8.98629 11.4164 7.82592 11.7102C6.66554 12.0039 5.44031 11.9024 4.34415 11.4216C3.24799 10.9407 2.3435 10.108 1.77385 9.05523C1.20419 8.00247 1.0019 6.7898 1.19899 5.60913C1.39609 4.42848 1.98131 3.34726 2.86203 2.53663C3.74275 1.72599 4.86867 1.23223 6.06159 1.13348Z" fill="white"/></svg>');
     background-position: 50% 50%;
@@ -1600,30 +1600,29 @@ div
 }
 
 
-.findBar
+.progressWrapper
 {
     position:      absolute;
-    left:          50%;
-    top:           66%;
-    transform:     translateX(-50%)
-                   translateY(-50%);
-    width:         46px;
-    height:        3px;   
+    left:          0;
+    top:           0;
+    width:         100%;
+    height:        6px;   
     background:    transparent;
-    border-radius: 2.5px;
+    /* border-radius: 2.5px; */
+    border-radius: 4px 4px 0 0;
     overflow:      hidden;
     display:       none;
 }
 
 
-.findProgress
+.progressBar
 {
     position:      absolute;
     left:          0;
     top:           0;
     width:         0;
     height:        5px;   
-    background:    #333;
+    background:    var(--figma-color-bg-brand);
 }
 
 
@@ -1708,7 +1707,7 @@ div
     <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
     <!-- <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction(COLOR,              btnCreateColor           ));  this.blur();'><span style='font-size: 17px;'>Ͼ</span></button> -->
     <!-- <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE,  btnCreateColorInterpolate));  this.blur();'></button> -->
-    <!-- <button class='menuButton' id='btnCreateValidateColor'    onclick='actionManager.do(new CreateNodeAction(COLOR_VALIDATE,     btnCreateValidateColor   ));  this.blur();'></span></button> -->
+    <!-- <button class='menuButton' id='btnCreateCorrectColor'    onclick='actionManager.do(new CreateNodeAction(COLOR_VALIDATE,     btnCreateCorrectColor   ));  this.blur();'></span></button> -->
     <!-- <button class='menuButton' id='btnCreateColorContrast'    onclick='actionManager.do(new CreateNodeAction(COLOR_CONTRAST,     btnCreateColorContrast   ));  this.blur();'></button> -->
     <!-- <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,         btnCreateColorblind      ));  this.blur();'></button> -->
     <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
@@ -1798,7 +1797,7 @@ div
 
 <div id='ttCreateColor' class='tooltip'>Color</div>
 <div id='ttCreateColorInterpolate' class='tooltip'>Interpolate color</div>
-<div id='ttCreateValidateColor' class='tooltip'>Validate color</div>
+<div id='ttCreateCorrectColor' class='tooltip'>Correct color</div>
 <div id='ttCreateColorContrast' class='tooltip'>Web contrast</div>
 
 <div id='ttCreateColorblind' class='tooltip'>
@@ -4736,7 +4735,7 @@ function logReqColorBlind(cb, parse)
 
 
 
-function logReqColorValidate(val, parse)
+function logReqColorCorrect(val, parse)
 {
     parse.log += parse.tab + COLOR_VALIDATE;
     parse.log += logReqNodeId(val);
@@ -7917,7 +7916,7 @@ extends GColorType
 
         // if (this.options.enabled)
         // {
-            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue());
+            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue(), true);
             if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .toValue());
             if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .toValue());
             if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .toValue());
@@ -8365,7 +8364,7 @@ extends GColorType
 
 
 
-class GColorValidate
+class GColorCorrect
 extends GColorType
 {
     input = null;
@@ -8389,7 +8388,7 @@ extends GColorType
     
     copy()
     {
-        const val = new GColorValidate(this.nodeId, this.options);
+        const val = new GColorCorrect(this.nodeId, this.options);
 
         val.copyBase(this);
 
@@ -8450,26 +8449,40 @@ extends GColorType
                                  this.margin1.input, this.margin2.input, this.margin3.input); 
 
 
-                this._color = validateColor(
-                    inputColor,
-                    closestOrder, 
-                    closest1,
-                    closest2,
-                    closest3);
+                if (closestOrder >= 0 && closestOrder < 6)
+                {
+                    this._color = correctColor(
+                        inputColor,
+                        closestOrder, 
+                        closest1,
+                        closest2,
+                        closest3);
 
-                const factor = getColorSpaceFactor(this._color[0]);
+                    const spaceIndex = colorSpaceIndex(this._color[0]);
+                    const factor     = getColorSpaceFactor(this._color[0]);
 
-                this.value = ColorValue.create(
-                    colorSpaceIndex(this._color[0]),
-                    this._color[1] * factor[0],
-                    this._color[2] * factor[1],
-                    this._color[3] * factor[2]);
+                    this.value = ColorValue.create(
+                        spaceIndex,
+                        this._color[1] * factor[0],
+                        this._color[2] * factor[1],
+                        this._color[3] * factor[2]);
 
 
-                genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1));
-                genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2));
-                genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3));
+                    if (spaceIndex >= 4)
+                    {
+                        genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1));
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2));
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3));
+                    }
+                    else
+                    {
+                        genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+                    }
+                }
             }
             else
                 this.value = ColorValue.NaN;
@@ -8489,20 +8502,20 @@ extends GColorType
 
 
 
-function validateColor(color, order, margin1, margin2, margin3)
+function correctColor(color, order, margin1, margin2, margin3)
 {
     const [i1, i2, i3] = getCorrectionsInOrder(order);
 
-                                  color = validateChannel(color, i1, margin1);
-    if (!dataColorIsValid(color)) color = validateChannel(color, i2, margin2);
-    if (!dataColorIsValid(color)) color = validateChannel(color, i3, margin3);
+                                  color = correctChannel(color, i1, margin1);
+    if (!dataColorIsValid(color)) color = correctChannel(color, i2, margin2);
+    if (!dataColorIsValid(color)) color = correctChannel(color, i3, margin3);
 
     return color;
 }
 
 
 
-function validateChannel(color, iChan, margin)
+function correctChannel(color, iChan, margin)
 {
     const factor = getColorSpaceFactor(color[0]);
 
@@ -8599,13 +8612,13 @@ function getCorrectionsInOrder(order)
     }
 
     // should never get here
-    console.assert(false, 'invalid validation order');
+    console.assert(false, 'invalid correction order ' + order);
     return [0, 0, 0];
 }
 
 
 
-function getValidateMax(order)
+function getCorrectMax(order)
 {
     switch (order)
     {
@@ -8618,7 +8631,7 @@ function getValidateMax(order)
     }
 
     // should never get here
-    console.assert(false, 'invalid validation order');
+    console.assert(false, 'invalid validation order ' + order);
     return [0, 0, 0];
 }
 
@@ -8655,7 +8668,7 @@ function findCorrection(nodeId,
         {
             closestColor = [..._closestColor];
 
-            const [max1, max2, max3] = getValidateMax(order);
+            const [max1, max2, max3] = getCorrectMax(order);
 
             let start1 = lerp(0, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
                 start2 = lerp(0, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
@@ -8766,7 +8779,7 @@ function findCorrectionInOrder(nodeId,
 
         genQueueMessageToUI(
         {
-            cmd:     'uiUpdateFindCorrection',
+            cmd:     'uiUpdateNodeProgress',
             nodeId:   nodeId,
             progress: progress / total
         });
@@ -8787,7 +8800,7 @@ function findCorrectionInOrder(nodeId,
 
 function getCorrectedColor(color, order, m1, m2, m3)
 {
-    const _color = validateColor(color, order, m1, m2, m3);
+    const _color = correctColor(color, order, m1, m2, m3);
     const _oklab = dataColor2array(convert2oklab(_color));
     const _rgb   = oklab2rgb(_oklab);
 
@@ -10291,11 +10304,17 @@ function genRequest(request)
 
 
 
-function genPushUpdateValue(parse, nodeId, paramId, value)
+function genPushUpdateValue(parse, nodeId, paramId, value, forceUpdate = false)
 {
     //logFunction('genPushUpdateValue()');
     //console.trace();
     
+    if (   nodeId  == parse.updateNodeId
+        && paramId == parse.updateParamId
+        && !forceUpdate)
+        return;
+ 
+        
     const found = parse.updateValues.find(v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId
@@ -10717,16 +10736,16 @@ function genParseColorBlind(parse)
 
 
 
-function genParseColorValidate(parse)
+function genParseColorCorrect(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const val = new GColorValidate(nodeId, options);
+    const val = new GColorCorrect(nodeId, options);
 
 
     if (parse.settings.logRequests) 
-        logReqColorValidate(val, parse);
+        logReqColorCorrect(val, parse);
 
 
     if (ignore) 
@@ -11642,7 +11661,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == COLOR_INTERPOLATE ) result = genParseColorInterpolate(parse);
     else if (parse.next == COLOR_CONTRAST    ) result = genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND        ) result = genParseColorBlind      (parse);
-    else if (parse.next == COLOR_VALIDATE    ) result = genParseColorValidate   (parse);
+    else if (parse.next == COLOR_VALIDATE    ) result = genParseColorCorrect   (parse);
 
     else if (parse.next == FILL_VALUE        ) result = genParseFillValue       (parse);
     else if (parse.next == FILL              ) result = genParseFill            (parse);
@@ -14044,444 +14063,6 @@ function convert2hclluv(fromColor)
         hcl[1],
         hcl[2] ];
 }
-
-
-// function validateColor(color, order, margin1, margin2, margin3)
-// {
-//     let i1, i2, i3;
-    
-//          if (order == 0) { i1 = 0; i2 = 1; i3 = 2; } // HCL
-//     else if (order == 1) { i1 = 1; i2 = 0; i3 = 2; } // CHL
-//     else if (order == 2) { i1 = 1; i2 = 2; i3 = 0; } // CLH
-//     else if (order == 3) { i1 = 0; i2 = 2; i3 = 1; } // HLC
-//     else if (order == 4) { i1 = 2; i2 = 0; i3 = 1; } // LHC
-//     else if (order == 5) { i1 = 2; i2 = 1; i3 = 0; } // LCH
- 
-//                                   color = validateChannel(color, i1, margin1);
-//     if (!dataColorIsValid(color)) color = validateChannel(color, i2, margin2);
-//     if (!dataColorIsValid(color)) color = validateChannel(color, i3, margin3);
-
-//     return color;
-// }
-
-
-
-// function validateChannel(color, iChan, margin)
-// {
-//     const factor = getColorSpaceFactor(color[0]);
-
-//     margin /= factor[iChan];
-
-
-//     const savedColor = [...color];
-//     const savedValue = color[iChan+1];
-
-//     const d = 0.001;
-
-
-//     let _c  = savedValue,
-//          c_ = savedValue;
-
-//     let _valid  = dataColorIsValid(color);
-//     let  valid_ = _valid;
-
-
-//     let stackOverflowProtect = 1/d;
-
-
-//     while (   !_valid
-//            && ! valid_
-//            && stackOverflowProtect-- > 0)
-//     {
-//         _c  -= d;  _valid  = isColorValid(_c , iChan, savedColor);
-//          c_ += d;   valid_ = isColorValid( c_, iChan, savedColor);
-//     }
-
-
-//     stackOverflowProtect = 1/d;
-//     color = [...savedColor];
-
-
-//     if (_valid) 
-//     { 
-//         _valid = dataColorIsValid(color);
-//         _c     = savedValue;
-
-//         while (   !_valid
-//                && margin > 0
-//                && stackOverflowProtect-- > 0)
-//         {
-//             _c -= d; 
-//             _valid = isColorValid(_c, iChan, savedColor);
-//             margin -= d;
-//         }
-
-//         color[iChan+1] = _c;
-//     }
-//     else if (valid_)
-//     { 
-//         valid_ = dataColorIsValid(color);
-//         c_     = savedValue;
-
-//         while (   !valid_
-//                && margin > 0
-//                && stackOverflowProtect-- > 0)
-//         {
-//             c_ += d; 
-//             valid_ = isColorValid(c_, iChan, savedColor);
-//             margin -= d;
-//         }
-
-//         color[iChan+1] = c_;
-//     }
-
-
-//     return color;
-// }
-
-
-
-// function isColorValid(c, iChan, savedColor)
-// {
-//     let color = [...savedColor];
-//     color[iChan+1] = c; 
-//     return dataColorIsValid(color);
-// }
-
-
-
-// function getValidateMax(order)
-// {
-//     switch (order)
-//     {
-//         case 0: return [180, 100, 100]; // HCL
-//         case 1: return [100, 180, 100]; // CHL
-//         case 2: return [100, 100, 180]; // CLH
-//         case 3: return [180, 100, 100]; // HLC
-//         case 4: return [100, 180, 100]; // LHC
-//         case 5: return [100, 100, 180]; // LCH
-//     }
-
-//     // should never get here
-//     return [0, 0, 0];
-// }
-
-
-
-// function genFindCorrection(nodeId, 
-//                            inputColor, 
-//                            param1,  param2,  param3, 
-//                            locked1, locked2, locked3)
-// {
-//     const refOklab = dataColor2array(convert2oklab(inputColor));
-
-//     let
-//   [ closestOklab,
-//     closestOrder,
-//     closest1,
-//     closest2,
-//     closest3 ] = findCorrection(
-//                      nodeId, 
-//                      inputColor, 
-//                      refOklab, 
-//                      param1,  param2,  param3, 
-//                      locked1, locked2, locked3); 
-
-// //   [ closestOrder,
-// //     closest1, closest2, closest3,
-// //     locked1,  locked2,  locked3 ] = reorderCorrection(
-// //                                         closestOrder,
-// //                                         closest1, closest2, closest3,
-// //                                         locked1,  locked2,  locked3);
-
-//     genQueueMessageToUI(
-//     {
-//         cmd:         'uiEndFindCorrection',
-//         nodeId:       nodeId,
-//         success:      closestOklab != null,
-//         closestOrder: closestOrder,
-//         closest1:     closest1,
-//         closest2:     closest2,
-//         closest3:     closest3
-//     });
-// }
-
-
-
-// function findCorrection(nodeId, 
-//                         color, 
-//                         refOklab, 
-//                         param1,  param2,  param3, 
-//                         locked1, locked2, locked3) 
-// {
-//     let closestColor = [...color],
-//         closestOklab = null, 
-//         closestOrder = -1,
-//         closest1     = -1,
-//         closest2     = -1,
-//         closest3     = -1;
-
-
-//     let progress = 0,
-//         total    = 6 * Math.pow(2, Tau);
-
-
-//     let d = 1;
-
-//     while (d > 1/1024)
-//     {
-//         let _closestColor = [...closestColor];
-
-
-//         for (let order = 0; order < 6; order++)
-//         {
-//             closestColor = [..._closestColor];
-
-//             const [max1, max2, max3] = getValidateMax(order);
-
-//             let start1 = lerp(0, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
-//                 start2 = lerp(0, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
-//                 start3 = lerp(0, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
-               
-                
-//             if (locked1) { closest1 = param1; start1 = closest1; end1 = start1+Eps; }
-//             if (locked2) { closest2 = param2; start2 = closest2; end2 = start2+Eps; }
-//             if (locked3) { closest3 = param3; start3 = closest3; end3 = start3+Eps; }
-            
-
-//           [ closestColor,
-//             closestOklab,
-//             closestOrder,
-//             closest1,
-//             closest2,
-//             closest3,
-//             progress ] = findCorrectionInOrder(
-//                 nodeId,
-//                 refOklab,
-//                 order, 
-//                 locked1,  locked2,  locked3,
-//                 closest1, closest2, closest3,
-//                 start1,   start2,   start3, 
-//                 end1,     end2,     end3,
-//                 [...closestColor],
-//                 closestOklab, 
-//                 closestOrder,
-//                 progress,
-//                 total);
-//         }
-
-        
-//         d /= 2;
-//     }
-
-
-//     // reduce closest to necessary minimums
-
-//     const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
-
-//     let c1 = closest1;
-//     let c2 = closest2;
-//     let c3 = closest3;
-
-//     // console.log('closest1', closest1);
-//     // console.log('closest2', closest2);
-//     // console.log('closest3', closest3);
-//     // console.log('');
-
-//     while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
-//     while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
-//     while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
-
-//     closest1 = Math.max(0, c1);
-//     closest2 = Math.max(0, c2);
-//     closest3 = Math.max(0, c3);
-
-//     // console.log('closest1', closest1);
-//     // console.log('closest2', closest2);
-//     // console.log('closest3', closest3);
-//     // console.log('');
-
-    
-//     return [
-//         closestOklab,
-//         closestOrder,
-//         closest1,
-//         closest2,
-//         closest3 ];
-// }
-
-
-
-// function findCorrectionInOrder(nodeId,
-//                                refOklab,
-//                                order, 
-//                                locked1,  locked2,  locked3,
-//                                closest1, closest2, closest3,
-//                                start1,   start2,   start3, 
-//                                end1,     end2,     end3,
-//                                closestColor,
-//                                closestOklab,
-//                                closestOrder,
-//                                progress,
-//                                total)
-// {
-//     const color = [...closestColor];
-
-//     // console.log('order', order);
-//     // console.log('-------------------')
-
-//     // console.log('locked1',  locked1);
-//     // console.log('start1',   start1);
-//     // console.log('end1',     end1);
-    
-//     // console.log('locked2',  locked2);
-//     // console.log('start2',   start2);
-//     // console.log('end2',     end2);
-    
-//     // console.log('locked3',  locked3);
-//     // console.log('start3',   start3);
-//     // console.log('end3',     end3);
-
-//     // console.log('-------------------')
-//     // console.log('')
-
-    
-//     let nSteps1 = locked1 ? 1 : 2;
-//     let nSteps2 = locked2 ? 1 : 2;
-//     let nSteps3 = locked3 ? 1 : 2;
-
-
-//     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
-//     {
-//         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
-//         {
-//             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
-//             {
-//                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
-
-//                 if (   rgbIsValid(_rgb)
-//                     && (  !closestOklab
-//                         || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
-//                 {
-//                     closestColor = _color;
-//                     closestOklab = _oklab;
-//                     closestOrder = order;
-//                     closest1     = m1;
-//                     closest2     = m2;
-//                     closest3     = m3;
-
-//                     console.log('order', order);
-//                     console.log('closest1', closest1);
-//                     console.log('closest2', closest2);
-//                     console.log('closest3', closest3);
-//                     console.log('');
-//                 }
-
-//                 progress++;
-//             }
-//         }
-
-//         genQueueMessageToUI(
-//         {
-//             cmd:     'uiUpdateFindCorrection',
-//             nodeId:   nodeId,
-//             progress: progress / total
-//         });
-//     }
-
-
-//     return [
-//         closestColor,
-//         closestOklab,
-//         closestOrder,
-//         closest1,
-//         closest2,
-//         closest3,
-//         progress ];
-// }
-
-
-
-// function getCorrectedColor(color, order, m1, m2, m3)
-// {
-//     const _color = validateColor(color, order, m1, m2, m3);
-//     const _oklab = dataColor2array(convert2oklab(_color));
-//     const _rgb   = oklab2rgb(_oklab);
-
-//     return [_color, _oklab, _rgb];
-// }
-
-
-
-// function reorderCorrection(closestOrder,
-//                            closest1, closest2, closest3,
-//                            locked1,  locked2,  locked3)
-// {
-//     let c1 = { closest: closest1, locked: locked1 };
-//     let c2 = { closest: closest2, locked: locked2 };
-//     let c3 = { closest: closest3, locked: locked3 };
-
-//     if (   c1.closest <  Eps
-//         && c2.closest <  Eps
-//         && c3.closest >= Eps)
-//     {
-//         switch (closestOrder)
-//         {
-//             case 0: closestOrder = 4; break;
-//             case 1: closestOrder = 5; break;
-//             case 2: closestOrder = 0; break;
-//             case 3: closestOrder = 1; break;
-//             case 4: closestOrder = 2; break;
-//             case 5: closestOrder = 3; break;
-//         }
-
-//         const tmp = c2;
-//         c1 = c3;
-//         c2 = c1;
-//         c3 = tmp;
-//     }
-//     else if (c1.closest >= Eps
-//           && c2.closest <  Eps)
-//     {
-//         switch (closestOrder)
-//         {
-//             case 0: closestOrder = 3; break;
-//             case 1: closestOrder = 2; break;
-//             case 2: closestOrder = 1; break;
-//             case 3: closestOrder = 0; break;
-//             case 4: closestOrder = 5; break;
-//             case 5: closestOrder = 4; break;
-//         }
-
-//         const tmp = c2;
-//         c2 = c3;
-//         c3 = tmp;
-//     }
-//     else if (c1.closest < Eps)
-//     {
-//         switch (closestOrder)
-//         {
-//             case 0: closestOrder = 2; break;
-//             case 1: closestOrder = 3; break;
-//             case 2: closestOrder = 4; break;
-//             case 3: closestOrder = 5; break;
-//             case 4: closestOrder = 0; break;
-//             case 5: closestOrder = 1; break;
-//         }
-
-//         const tmp = c1;
-//         c1 = c2;
-//         c2 = c3;
-//         c3 = tmp;
-//     }
-
-
-//     return [
-//         closestOrder,
-//         c1.closest, c2.closest, c3.closest,
-//         c1.locked,  c2.locked,  c3.locked ];
-// }
-
 
 
 </script>
@@ -17258,7 +16839,7 @@ function logReqColorBlind(cb, parse)
 
 
 
-function logReqColorValidate(val, parse)
+function logReqColorCorrect(val, parse)
 {
     parse.log += parse.tab + COLOR_VALIDATE;
     parse.log += logReqNodeId(val);
@@ -21935,7 +21516,7 @@ extends GColorType
 
         // if (this.options.enabled)
         // {
-            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue());
+            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue(), true);
             if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .toValue());
             if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .toValue());
             if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .toValue());
@@ -22383,7 +21964,7 @@ extends GColorType
 
 
 
-class GColorValidate
+class GColorCorrect
 extends GColorType
 {
     input = null;
@@ -22407,7 +21988,7 @@ extends GColorType
     
     copy()
     {
-        const val = new GColorValidate(this.nodeId, this.options);
+        const val = new GColorCorrect(this.nodeId, this.options);
 
         val.copyBase(this);
 
@@ -22468,26 +22049,40 @@ extends GColorType
                                  this.margin1.input, this.margin2.input, this.margin3.input); 
 
 
-                this._color = validateColor(
-                    inputColor,
-                    closestOrder, 
-                    closest1,
-                    closest2,
-                    closest3);
+                if (closestOrder >= 0 && closestOrder < 6)
+                {
+                    this._color = correctColor(
+                        inputColor,
+                        closestOrder, 
+                        closest1,
+                        closest2,
+                        closest3);
 
-                const factor = getColorSpaceFactor(this._color[0]);
+                    const spaceIndex = colorSpaceIndex(this._color[0]);
+                    const factor     = getColorSpaceFactor(this._color[0]);
 
-                this.value = ColorValue.create(
-                    colorSpaceIndex(this._color[0]),
-                    this._color[1] * factor[0],
-                    this._color[2] * factor[1],
-                    this._color[3] * factor[2]);
+                    this.value = ColorValue.create(
+                        spaceIndex,
+                        this._color[1] * factor[0],
+                        this._color[2] * factor[1],
+                        this._color[3] * factor[2]);
 
 
-                genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1));
-                genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2));
-                genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3));
+                    if (spaceIndex >= 4)
+                    {
+                        genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1));
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2));
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3));
+                    }
+                    else
+                    {
+                        genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+                    }
+                }
             }
             else
                 this.value = ColorValue.NaN;
@@ -22507,20 +22102,20 @@ extends GColorType
 
 
 
-function validateColor(color, order, margin1, margin2, margin3)
+function correctColor(color, order, margin1, margin2, margin3)
 {
     const [i1, i2, i3] = getCorrectionsInOrder(order);
 
-                                  color = validateChannel(color, i1, margin1);
-    if (!dataColorIsValid(color)) color = validateChannel(color, i2, margin2);
-    if (!dataColorIsValid(color)) color = validateChannel(color, i3, margin3);
+                                  color = correctChannel(color, i1, margin1);
+    if (!dataColorIsValid(color)) color = correctChannel(color, i2, margin2);
+    if (!dataColorIsValid(color)) color = correctChannel(color, i3, margin3);
 
     return color;
 }
 
 
 
-function validateChannel(color, iChan, margin)
+function correctChannel(color, iChan, margin)
 {
     const factor = getColorSpaceFactor(color[0]);
 
@@ -22617,13 +22212,13 @@ function getCorrectionsInOrder(order)
     }
 
     // should never get here
-    console.assert(false, 'invalid validation order');
+    console.assert(false, 'invalid correction order ' + order);
     return [0, 0, 0];
 }
 
 
 
-function getValidateMax(order)
+function getCorrectMax(order)
 {
     switch (order)
     {
@@ -22636,7 +22231,7 @@ function getValidateMax(order)
     }
 
     // should never get here
-    console.assert(false, 'invalid validation order');
+    console.assert(false, 'invalid validation order ' + order);
     return [0, 0, 0];
 }
 
@@ -22673,7 +22268,7 @@ function findCorrection(nodeId,
         {
             closestColor = [..._closestColor];
 
-            const [max1, max2, max3] = getValidateMax(order);
+            const [max1, max2, max3] = getCorrectMax(order);
 
             let start1 = lerp(0, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
                 start2 = lerp(0, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
@@ -22784,7 +22379,7 @@ function findCorrectionInOrder(nodeId,
 
         genQueueMessageToUI(
         {
-            cmd:     'uiUpdateFindCorrection',
+            cmd:     'uiUpdateNodeProgress',
             nodeId:   nodeId,
             progress: progress / total
         });
@@ -22805,7 +22400,7 @@ function findCorrectionInOrder(nodeId,
 
 function getCorrectedColor(color, order, m1, m2, m3)
 {
-    const _color = validateColor(color, order, m1, m2, m3);
+    const _color = correctColor(color, order, m1, m2, m3);
     const _oklab = dataColor2array(convert2oklab(_color));
     const _rgb   = oklab2rgb(_oklab);
 
@@ -24824,8 +24419,8 @@ const iconSubstring        = '<svg width="20" height="16" viewBox="0 0 20 16" fi
 const iconStringReplace    = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.962017 16H0.0941198L2.60435 9.16364H3.45889L5.96912 16H5.10122L3.05832 10.2452H3.00492L0.962017 16ZM1.28247 13.3295H4.78077V14.0639H1.28247V13.3295ZM18.6763 11.3H17.8485C17.7995 11.0619 17.7138 10.8527 17.5914 10.6724C17.4713 10.4922 17.3244 10.3409 17.1508 10.2185C16.9795 10.0938 16.7892 10.0004 16.58 9.93807C16.3708 9.87576 16.1527 9.8446 15.9257 9.8446C15.5118 9.8446 15.1368 9.9492 14.8008 10.1584C14.467 10.3676 14.2011 10.6758 14.003 11.083C13.8072 11.4903 13.7093 11.9899 13.7093 12.5818C13.7093 13.1738 13.8072 13.6734 14.003 14.0806C14.2011 14.4879 14.467 14.7961 14.8008 15.0053C15.1368 15.2144 15.5118 15.319 15.9257 15.319C16.1527 15.319 16.3708 15.2879 16.58 15.2256C16.7892 15.1633 16.9795 15.0709 17.1508 14.9485C17.3244 14.8239 17.4713 14.6714 17.5914 14.4912C17.7138 14.3087 17.7995 14.0995 17.8485 13.8636H18.6763C18.614 14.213 18.5005 14.5257 18.3358 14.8016C18.1711 15.0776 17.9664 15.3124 17.7216 15.506C17.4768 15.6973 17.202 15.8431 16.8971 15.9433C16.5945 16.0434 16.2707 16.0935 15.9257 16.0935C15.3427 16.0935 14.8242 15.951 14.3702 15.6662C13.9162 15.3813 13.5591 14.9763 13.2987 14.4511C13.0383 13.9259 12.9081 13.3028 12.9081 12.5818C12.9081 11.8608 13.0383 11.2377 13.2987 10.7125C13.5591 10.1873 13.9162 9.78229 14.3702 9.49744C14.8242 9.21259 15.3427 9.07017 15.9257 9.07017C16.2707 9.07017 16.5945 9.12024 16.8971 9.22038C17.202 9.32053 17.4768 9.4674 17.7216 9.66101C17.9664 9.85239 18.1711 10.0861 18.3358 10.362C18.5005 10.6357 18.614 10.9484 18.6763 11.3Z" fill="white"/><path d="M0.275672 6V0.909091H1.99584C2.39357 0.909091 2.72004 0.977036 2.97525 1.11293C3.23045 1.24716 3.41938 1.43194 3.54201 1.66726C3.66464 1.90258 3.72596 2.17022 3.72596 2.47017C3.72596 2.77012 3.66464 3.0361 3.54201 3.26811C3.41938 3.50012 3.23128 3.68241 2.97773 3.81499C2.72418 3.9459 2.4002 4.01136 2.00579 4.01136H0.61374V3.45455H1.9859C2.25768 3.45455 2.47643 3.41477 2.64215 3.33523C2.80953 3.25568 2.9305 3.14299 3.00508 2.99716C3.08131 2.84967 3.11942 2.67401 3.11942 2.47017C3.11942 2.26634 3.08131 2.08819 3.00508 1.93572C2.92884 1.78326 2.80704 1.6656 2.63966 1.58274C2.47229 1.49822 2.25105 1.45597 1.97596 1.45597H0.89215V6H0.275672ZM2.67198 3.71307L3.92482 6H3.20891L1.97596 3.71307H2.67198Z" fill="white"/><path d="M7.93402 18V12.9091H9.71385C10.0685 12.9091 10.361 12.9704 10.5913 13.093C10.8217 13.214 10.9932 13.3772 11.1059 13.5827C11.2186 13.7866 11.2749 14.0128 11.2749 14.2614C11.2749 14.4801 11.236 14.6607 11.1581 14.8033C11.0819 14.9458 10.9808 15.0585 10.8548 15.1413C10.7305 15.2242 10.5955 15.2855 10.4496 15.3253V15.375C10.6054 15.3849 10.762 15.4396 10.9195 15.5391C11.0769 15.6385 11.2086 15.781 11.3147 15.9666C11.4208 16.1522 11.4738 16.3793 11.4738 16.6477C11.4738 16.9029 11.4158 17.1325 11.2998 17.3363C11.1838 17.5401 11.0007 17.7017 10.7504 17.821C10.5002 17.9403 10.1746 18 9.77351 18H7.93402ZM8.5505 17.4531H9.77351C10.1762 17.4531 10.4621 17.3752 10.6311 17.2195C10.8018 17.062 10.8871 16.8714 10.8871 16.6477C10.8871 16.4754 10.8432 16.3163 10.7554 16.1705C10.6676 16.023 10.5425 15.9053 10.38 15.8175C10.2176 15.728 10.0254 15.6832 9.80334 15.6832H8.5505V17.4531ZM8.5505 15.1463H9.69397C9.87957 15.1463 10.047 15.1098 10.1961 15.0369C10.3469 14.964 10.4662 14.8613 10.5541 14.7287C10.6435 14.5961 10.6883 14.4403 10.6883 14.2614C10.6883 14.0376 10.6104 13.8479 10.4546 13.6921C10.2988 13.5347 10.0519 13.456 9.71385 13.456H8.5505V15.1463Z" fill="white"/><path d="M8.72684 10.4314C8.8411 8.38532 8.18851 5.28547 4.9663 4.51052" stroke="white"/><line x1="10.518" y1="9.5204" x2="8.07839" y2="11.6097" stroke="white"/><line x1="6.81449" y1="9.59341" x2="9.27206" y2="11.3618" stroke="white"/><line x1="2.44721" y1="3.77639" x2="3.44721" y2="5.77639" stroke="white"/></svg>';
 
 const iconColor            = '<svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 2.43384C10.7465 1.2502 9.18038 0.509092 7.44118 0.509092C4.13249 0.509092 1.45027 3.19131 1.45027 6.5C1.45027 9.80869 4.13249 12.4909 7.44118 12.4909C9.18038 12.4909 10.7465 11.7498 11.8409 10.5662" stroke="white"/><path d="M7.5 7.57511C8.09377 7.57511 8.57511 7.09377 8.57511 6.5C8.57511 5.90623 8.09377 5.42489 7.5 5.42489C6.90623 5.42489 6.42489 5.90623 6.42489 6.5C6.42489 7.09377 6.90623 7.57511 7.5 7.57511Z" fill="white"/></svg>';
-//const iconColorValidate    = '<svg width="19" height="16" viewBox="-2 -1 19 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.179 3.06615L6.68506 9.56013L2.88329 5.75836L4.0255 4.61615L6.68506 7.27571L12.0369 1.92393L13.179 3.06615Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.06159 1.13348C7.25451 1.03474 8.44629 1.33665 9.44831 1.99145L10.0355 1.09298C8.8335 0.307551 7.40396 -0.054602 5.97305 0.0638407C4.54213 0.182283 3.19159 0.774556 2.13516 1.74692C1.07873 2.71929 0.37676 4.0162 0.140352 5.43241C-0.0960661 6.84862 0.146576 8.30322 0.829882 9.56601C1.51319 10.8288 2.59812 11.8277 3.91297 12.4044C5.22782 12.9812 6.69749 13.1031 8.08937 12.7507C9.03602 12.5109 9.90991 12.0611 10.6496 11.4415L15.2558 15.9919L16.01 15.2284L11.4122 10.6861C11.4756 10.6118 11.5375 10.536 11.5977 10.4586C12.4797 9.32556 12.9585 7.93076 12.9585 6.49496H11.8852C11.8852 7.69195 11.486 8.85476 10.7507 9.79935C10.0155 10.744 8.98629 11.4164 7.82592 11.7102C6.66554 12.0039 5.44031 11.9024 4.34415 11.4216C3.24799 10.9407 2.3435 10.108 1.77385 9.05523C1.20419 8.00247 1.0019 6.7898 1.19899 5.60913C1.39609 4.42848 1.98131 3.34726 2.86203 2.53663C3.74275 1.72599 4.86867 1.23223 6.06159 1.13348Z" fill="white"/></svg>';
-const iconColorValidate    = '<svg width="18" height="13" viewBox="-2 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 10.5662C10.7465 11.7498 9.18038 12.4909 7.44118 12.4909C4.13249 12.4909 1.45027 9.80869 1.45027 6.5C1.45027 3.19131 4.13249 0.50909 7.44118 0.50909C8.66322 0.50909 9.80806 1.02212 10.7556 1.65033" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.6832 2.62548L9.18921 9.11946L5.38744 5.31769L6.52965 4.17548L9.18921 6.83504L14.5411 1.48326L15.6832 2.62548Z" fill="white"/></svg>';
+//const iconColorCorrect    = '<svg width="19" height="16" viewBox="-2 -1 19 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.179 3.06615L6.68506 9.56013L2.88329 5.75836L4.0255 4.61615L6.68506 7.27571L12.0369 1.92393L13.179 3.06615Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6.06159 1.13348C7.25451 1.03474 8.44629 1.33665 9.44831 1.99145L10.0355 1.09298C8.8335 0.307551 7.40396 -0.054602 5.97305 0.0638407C4.54213 0.182283 3.19159 0.774556 2.13516 1.74692C1.07873 2.71929 0.37676 4.0162 0.140352 5.43241C-0.0960661 6.84862 0.146576 8.30322 0.829882 9.56601C1.51319 10.8288 2.59812 11.8277 3.91297 12.4044C5.22782 12.9812 6.69749 13.1031 8.08937 12.7507C9.03602 12.5109 9.90991 12.0611 10.6496 11.4415L15.2558 15.9919L16.01 15.2284L11.4122 10.6861C11.4756 10.6118 11.5375 10.536 11.5977 10.4586C12.4797 9.32556 12.9585 7.93076 12.9585 6.49496H11.8852C11.8852 7.69195 11.486 8.85476 10.7507 9.79935C10.0155 10.744 8.98629 11.4164 7.82592 11.7102C6.66554 12.0039 5.44031 11.9024 4.34415 11.4216C3.24799 10.9407 2.3435 10.108 1.77385 9.05523C1.20419 8.00247 1.0019 6.7898 1.19899 5.60913C1.39609 4.42848 1.98131 3.34726 2.86203 2.53663C3.74275 1.72599 4.86867 1.23223 6.06159 1.13348Z" fill="white"/></svg>';
+const iconColorCorrect    = '<svg width="18" height="13" viewBox="-2 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.8409 10.5662C10.7465 11.7498 9.18038 12.4909 7.44118 12.4909C4.13249 12.4909 1.45027 9.80869 1.45027 6.5C1.45027 3.19131 4.13249 0.50909 7.44118 0.50909C8.66322 0.50909 9.80806 1.02212 10.7556 1.65033" stroke="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15.6832 2.62548L9.18921 9.11946L5.38744 5.31769L6.52965 4.17548L9.18921 6.83504L14.5411 1.48326L15.6832 2.62548Z" fill="white"/></svg>';
 const iconColorContrast    = '<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.49866 15.5233C12.3783 15.5233 15.5233 12.3783 15.5233 8.49867C15.5233 4.61906 12.3783 1.47401 8.49866 1.47401C4.61906 1.47401 1.47401 4.61906 1.47401 8.49867C1.47401 12.3783 4.61906 15.5233 8.49866 15.5233Z" stroke="white"/><path d="M8.01022 15.1997C6.14349 15.1997 4.3532 14.494 3.03321 13.2377C1.71321 11.9814 0.971649 10.2775 0.971649 8.50083C0.971649 6.72416 1.71321 5.02026 3.03321 3.76397C4.3532 2.50768 6.14349 1.8019 8.01022 1.8019V8.50083V15.1997Z" fill="white"/></svg>';
 const iconColorblind       = '<svg width="19" height="19" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 18.4807C14.4599 18.4807 18.4807 14.4599 18.4807 9.5C18.4807 4.54009 14.4599 0.519287 9.5 0.519287C4.54009 0.519287 0.519283 4.54009 0.519283 9.5C0.519283 14.4599 4.54009 18.4807 9.5 18.4807Z" stroke="white" stroke-width="0.919355" stroke-dasharray="1.84 1.84"/><path d="M9.5 14.5417C12.2844 14.5417 14.5417 12.2844 14.5417 9.5C14.5417 6.71557 12.2844 4.45834 9.5 4.45834C6.71557 4.45834 4.45834 6.71557 4.45834 9.5C4.45834 12.2844 6.71557 14.5417 9.5 14.5417Z" stroke="white" stroke-width="0.919355"/><path d="M9.5 10.918C10.2831 10.918 10.918 10.2831 10.918 9.5C10.918 8.71686 10.2831 8.08199 9.5 8.08199C8.71686 8.08199 8.08199 8.71686 8.08199 9.5C8.08199 10.2831 8.71686 10.918 9.5 10.918Z" fill="white"/></svg>';
 const iconColorInterpolate = '<svg width="18" height="21" viewBox="0 -1 18 21" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9.5" cy="2.5" r="2.5" fill="white" fill-opacity="0.1"/><circle cx="9.5" cy="2.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2.5" fill="white" fill-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2" stroke="white" stroke-opacity="0.7"/><circle cx="9.5" cy="16.5" r="2.5" fill="white" fill-opacity="0.8"/><circle cx="9.5" cy="16.5" r="2" stroke="white" stroke-opacity="0.9"/><circle cx="14.5" cy="14.5" r="2" fill="white" stroke="white"/><circle cx="14.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="4.5" cy="14.5" r="2.5" fill="white" fill-opacity="0.6"/><circle cx="4.5" cy="14.5" r="2" stroke="white" stroke-opacity="0.8"/><circle cx="4.5" cy="4.5" r="2.5" fill="white" fill-opacity="0.2"/><circle cx="4.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.6"/></svg>';
@@ -25005,9 +24600,11 @@ function initMenus()
     menuColor = new Menu('Color nodes', true, false);
     menuColor.addItems([
         new MenuItem('Color',       {icon: iconColor           , callback: e => actionManager.do(new CreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Validate',    {icon: iconColorValidate   , callback: e => actionManager.do(new CreateNodeAction(COLOR_VALIDATE,    btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('',            {separator: true}),
+        new MenuItem('Correct',     {icon: iconColorCorrect    , callback: e => actionManager.do(new CreateNodeAction(COLOR_VALIDATE,    btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Contrast',    {icon: iconColorContrast   , callback: e => actionManager.do(new CreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Colorblind',  {icon: iconColorblind      , callback: e => actionManager.do(new CreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('',            {separator: true}),
         new MenuItem('Interpolate', {icon: iconColorInterpolate, callback: e => actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))})]);
     
     
@@ -30452,8 +30049,7 @@ extends NumberParamBase
         this.control.param  = this;
         this.control.zIndex = 0;
 
-        this.options        = options;
-        
+       
         this.defaultValue   = new NumberValue(defaultValue);
 
 
@@ -30472,7 +30068,8 @@ extends NumberParamBase
             0.02);
 
 
-        this.control.options           = [...options];
+        this.setOptions(options);
+
         this.control.successOnFocusOut = true;
         this.control.barTop            = 0.8;
 
@@ -30487,6 +30084,14 @@ extends NumberParamBase
 
             
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });
+    }
+
+
+
+    setOptions(options)
+    {
+        this        .options = [...options];
+        this.control.options = [...options];
     }
 
 
@@ -31942,7 +31547,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_INTERPOLATE: node = new OpInterpolate();      break;
         
         case COLOR:              node = new OpColor(options);     break;
-        case COLOR_VALIDATE:     node = new OpColorValidate();    break;
+        case COLOR_VALIDATE:     node = new OpColorCorrect();    break;
         case COLOR_CONTRAST:     node = new OpColorContrast();    break;
         case COLORBLIND:         node = new OpColorBlind();       break;
         case COLOR_INTERPOLATE:  node = new OpColorInterpolate(); break;
@@ -32111,6 +31716,26 @@ function getNodesAfterNode(node)
 
             after.push(...getNodesAfterNode(input.node));
         }
+
+    return after;
+}
+
+
+
+function getProgressNodesAfterNode(node)
+{
+    let after = [];
+
+    for (const output of node.outputs)
+    {
+        for (const input of output.connectedInputs)
+        {
+            if (input.node.hasProgressBar)
+                pushUnique(after, input.node);
+
+            pushUnique(after, getProgressNodesAfterNode(input.node));
+        }
+    }
 
     return after;
 }
@@ -33307,6 +32932,10 @@ class Operator
 
     divDisabled;
     
+    progressWrapper = null;
+    progressBar     = null;
+    hasProgressBar  = false;
+
     labelWrapper;
     label;
     textbox;
@@ -33350,7 +32979,7 @@ class Operator
 
 
 
-    constructor(type, shortName, defWidth = 100)
+    constructor(type, shortName, defWidth = 100, progressBar = false)
     {
         this.#type             = type;
         this.id                = shortName;
@@ -33364,6 +32993,9 @@ class Operator
         this.valid             = false;
 
         createOperatorNode(this);
+
+        if (progressBar)
+            createNodeProgressBar(this);
 
         this.setName(shortName);
     }    
@@ -34060,6 +33692,13 @@ function pushUpdateFromParam(nodes, param)
         getTerminalsAfterNode(n)));
 
 
+    const progressNodes = [];
+
+    nodes.forEach(n => pushUnique(
+        progressNodes, 
+        getProgressNodesAfterNode(n)));
+
+    
     for (const node of terminals)
     {
         if (!gen.passedNodes.includes(node))
@@ -34630,6 +34269,46 @@ function createNodeInfo(node)
     node.divDisabled.style.height        = 100;
     node.divDisabled.style.background    = '#e88b';
     node.divDisabled.style.pointerEvents = 'none';
+}
+
+
+
+function createNodeProgressBar(node)
+{
+    node.hasProgressBar  = true;
+
+    node.progressWrapper = createDiv('progressWrapper');
+    node.progressBar     = createDiv('progressBar');
+
+    node.progressWrapper.appendChild(node.progressBar);
+    node.header         .appendChild(node.progressWrapper);
+}
+
+
+
+function startNodeProgress(node)
+{
+    node.progressWrapper.style.display = 'block';
+
+    node.progressBar    .style.left    =   '0%';
+    node.progressBar    .style.width   = '100%';
+}
+
+
+
+function uiUpdateNodeProgress(nodeId, progress)
+{
+    const node = nodeFromId(nodeId);
+
+    node.progressBar.style.left  = (   progress  * 100) + '%';
+    node.progressBar.style.width = ((1-progress) * 100) + '%';
+}
+
+
+
+function endNodeProgress(node)
+{
+    node.progressWrapper.style.display = 'none';
 }
 
 
@@ -35812,9 +35491,9 @@ extends Operator
     
 
 
-    constructor(nodeType, shortType, type, defWidth = 90)
+    constructor(nodeType, shortType, defWidth = 90, progressBar = false)
     {
-        super(nodeType, shortType, type, defWidth);
+        super(nodeType, shortType, defWidth, progressBar);
 
 
         this._warningOverlay = createDiv('colorWarningOverlay');
@@ -36174,24 +35853,33 @@ extends OpColorBase
         const c2    = values[paramIds.findIndex(id => id == 'c2'   )];
         const c3    = values[paramIds.findIndex(id => id == 'c3'   )];
 
+
+        if (space) this.paramSpace.setValue(space, false, true, false);
+
+        switchToSpace(this, colorSpace(space.value));
+
+        
+        if (c1) this.param1.setValue(c1, false, true, false);
+        if (c2) this.param2.setValue(c2, false, true, false);
+        if (c3) this.param3.setValue(c3, false, true, false);
+
+
+        const _space = this.paramSpace.value;
+        const _c1    = this.param1    .value;
+        const _c2    = this.param2    .value;
+        const _c3    = this.param3    .value;
+
         const valid =
-               space.isValid()
-            && c1   .isValid()
-            && c2   .isValid()
-            && c3   .isValid();
+               _space && _space.isValid()
+            && _c1    && _c1   .isValid()
+            && _c2    && _c2   .isValid()
+            && _c3    && _c3   .isValid();
+
 
         if (valid)
         {
-            this.paramSpace.setValue(space, false, true, false);
-
-            switchToSpace(this, colorSpace(space.value));
-
-            this.param1.setValue(c1, false, true, false);
-            this.param2.setValue(c2, false, true, false);
-            this.param3.setValue(c3, false, true, false);
-
-            this._color    = makeDataColor(space, c1, c2, c3);
-            this.prevSpace = colorSpace(space.value);
+            this._color    = makeDataColor(_space, _c1, _c2, _c3);
+            this.prevSpace = colorSpace(_space.value);
         }
         else
         {
@@ -37459,449 +37147,7 @@ function convert2hclluv(fromColor)
 }
 
 
-// function validateColor(color, order, margin1, margin2, margin3)
-// {
-//     let i1, i2, i3;
-    
-//          if (order == 0) { i1 = 0; i2 = 1; i3 = 2; } // HCL
-//     else if (order == 1) { i1 = 1; i2 = 0; i3 = 2; } // CHL
-//     else if (order == 2) { i1 = 1; i2 = 2; i3 = 0; } // CLH
-//     else if (order == 3) { i1 = 0; i2 = 2; i3 = 1; } // HLC
-//     else if (order == 4) { i1 = 2; i2 = 0; i3 = 1; } // LHC
-//     else if (order == 5) { i1 = 2; i2 = 1; i3 = 0; } // LCH
- 
-//                                   color = validateChannel(color, i1, margin1);
-//     if (!dataColorIsValid(color)) color = validateChannel(color, i2, margin2);
-//     if (!dataColorIsValid(color)) color = validateChannel(color, i3, margin3);
-
-//     return color;
-// }
-
-
-
-// function validateChannel(color, iChan, margin)
-// {
-//     const factor = getColorSpaceFactor(color[0]);
-
-//     margin /= factor[iChan];
-
-
-//     const savedColor = [...color];
-//     const savedValue = color[iChan+1];
-
-//     const d = 0.001;
-
-
-//     let _c  = savedValue,
-//          c_ = savedValue;
-
-//     let _valid  = dataColorIsValid(color);
-//     let  valid_ = _valid;
-
-
-//     let stackOverflowProtect = 1/d;
-
-
-//     while (   !_valid
-//            && ! valid_
-//            && stackOverflowProtect-- > 0)
-//     {
-//         _c  -= d;  _valid  = isColorValid(_c , iChan, savedColor);
-//          c_ += d;   valid_ = isColorValid( c_, iChan, savedColor);
-//     }
-
-
-//     stackOverflowProtect = 1/d;
-//     color = [...savedColor];
-
-
-//     if (_valid) 
-//     { 
-//         _valid = dataColorIsValid(color);
-//         _c     = savedValue;
-
-//         while (   !_valid
-//                && margin > 0
-//                && stackOverflowProtect-- > 0)
-//         {
-//             _c -= d; 
-//             _valid = isColorValid(_c, iChan, savedColor);
-//             margin -= d;
-//         }
-
-//         color[iChan+1] = _c;
-//     }
-//     else if (valid_)
-//     { 
-//         valid_ = dataColorIsValid(color);
-//         c_     = savedValue;
-
-//         while (   !valid_
-//                && margin > 0
-//                && stackOverflowProtect-- > 0)
-//         {
-//             c_ += d; 
-//             valid_ = isColorValid(c_, iChan, savedColor);
-//             margin -= d;
-//         }
-
-//         color[iChan+1] = c_;
-//     }
-
-
-//     return color;
-// }
-
-
-
-// function isColorValid(c, iChan, savedColor)
-// {
-//     let color = [...savedColor];
-//     color[iChan+1] = c; 
-//     return dataColorIsValid(color);
-// }
-
-
-
-// function getValidateMax(order)
-// {
-//     switch (order)
-//     {
-//         case 0: return [180, 100, 100]; // HCL
-//         case 1: return [100, 180, 100]; // CHL
-//         case 2: return [100, 100, 180]; // CLH
-//         case 3: return [180, 100, 100]; // HLC
-//         case 4: return [100, 180, 100]; // LHC
-//         case 5: return [100, 100, 180]; // LCH
-//     }
-
-//     // should never get here
-//     return [0, 0, 0];
-// }
-
-
-
-// function genFindCorrection(nodeId, 
-//                            inputColor, 
-//                            param1,  param2,  param3, 
-//                            locked1, locked2, locked3)
-// {
-//     const refOklab = dataColor2array(convert2oklab(inputColor));
-
-//     let
-//   [ closestOklab,
-//     closestOrder,
-//     closest1,
-//     closest2,
-//     closest3 ] = findCorrection(
-//                      nodeId, 
-//                      inputColor, 
-//                      refOklab, 
-//                      param1,  param2,  param3, 
-//                      locked1, locked2, locked3); 
-
-// //   [ closestOrder,
-// //     closest1, closest2, closest3,
-// //     locked1,  locked2,  locked3 ] = reorderCorrection(
-// //                                         closestOrder,
-// //                                         closest1, closest2, closest3,
-// //                                         locked1,  locked2,  locked3);
-
-//     genQueueMessageToUI(
-//     {
-//         cmd:         'uiEndFindCorrection',
-//         nodeId:       nodeId,
-//         success:      closestOklab != null,
-//         closestOrder: closestOrder,
-//         closest1:     closest1,
-//         closest2:     closest2,
-//         closest3:     closest3
-//     });
-// }
-
-
-
-// function findCorrection(nodeId, 
-//                         color, 
-//                         refOklab, 
-//                         param1,  param2,  param3, 
-//                         locked1, locked2, locked3) 
-// {
-//     let closestColor = [...color],
-//         closestOklab = null, 
-//         closestOrder = -1,
-//         closest1     = -1,
-//         closest2     = -1,
-//         closest3     = -1;
-
-
-//     let progress = 0,
-//         total    = 6 * Math.pow(2, Tau);
-
-
-//     let d = 1;
-
-//     while (d > 1/1024)
-//     {
-//         let _closestColor = [...closestColor];
-
-
-//         for (let order = 0; order < 6; order++)
-//         {
-//             closestColor = [..._closestColor];
-
-//             const [max1, max2, max3] = getValidateMax(order);
-
-//             let start1 = lerp(0, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
-//                 start2 = lerp(0, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
-//                 start3 = lerp(0, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
-               
-                
-//             if (locked1) { closest1 = param1; start1 = closest1; end1 = start1+Eps; }
-//             if (locked2) { closest2 = param2; start2 = closest2; end2 = start2+Eps; }
-//             if (locked3) { closest3 = param3; start3 = closest3; end3 = start3+Eps; }
-            
-
-//           [ closestColor,
-//             closestOklab,
-//             closestOrder,
-//             closest1,
-//             closest2,
-//             closest3,
-//             progress ] = findCorrectionInOrder(
-//                 nodeId,
-//                 refOklab,
-//                 order, 
-//                 locked1,  locked2,  locked3,
-//                 closest1, closest2, closest3,
-//                 start1,   start2,   start3, 
-//                 end1,     end2,     end3,
-//                 [...closestColor],
-//                 closestOklab, 
-//                 closestOrder,
-//                 progress,
-//                 total);
-//         }
-
-        
-//         d /= 2;
-//     }
-
-
-//     // reduce closest to necessary minimums
-
-//     const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
-
-//     let c1 = closest1;
-//     let c2 = closest2;
-//     let c3 = closest3;
-
-//     // console.log('closest1', closest1);
-//     // console.log('closest2', closest2);
-//     // console.log('closest3', closest3);
-//     // console.log('');
-
-//     while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
-//     while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
-//     while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
-
-//     closest1 = Math.max(0, c1);
-//     closest2 = Math.max(0, c2);
-//     closest3 = Math.max(0, c3);
-
-//     // console.log('closest1', closest1);
-//     // console.log('closest2', closest2);
-//     // console.log('closest3', closest3);
-//     // console.log('');
-
-    
-//     return [
-//         closestOklab,
-//         closestOrder,
-//         closest1,
-//         closest2,
-//         closest3 ];
-// }
-
-
-
-// function findCorrectionInOrder(nodeId,
-//                                refOklab,
-//                                order, 
-//                                locked1,  locked2,  locked3,
-//                                closest1, closest2, closest3,
-//                                start1,   start2,   start3, 
-//                                end1,     end2,     end3,
-//                                closestColor,
-//                                closestOklab,
-//                                closestOrder,
-//                                progress,
-//                                total)
-// {
-//     const color = [...closestColor];
-
-//     // console.log('order', order);
-//     // console.log('-------------------')
-
-//     // console.log('locked1',  locked1);
-//     // console.log('start1',   start1);
-//     // console.log('end1',     end1);
-    
-//     // console.log('locked2',  locked2);
-//     // console.log('start2',   start2);
-//     // console.log('end2',     end2);
-    
-//     // console.log('locked3',  locked3);
-//     // console.log('start3',   start3);
-//     // console.log('end3',     end3);
-
-//     // console.log('-------------------')
-//     // console.log('')
-
-    
-//     let nSteps1 = locked1 ? 1 : 2;
-//     let nSteps2 = locked2 ? 1 : 2;
-//     let nSteps3 = locked3 ? 1 : 2;
-
-
-//     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
-//     {
-//         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
-//         {
-//             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
-//             {
-//                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
-
-//                 if (   rgbIsValid(_rgb)
-//                     && (  !closestOklab
-//                         || rgbDistance(refOklab, _oklab) < rgbDistance(refOklab, closestOklab)))
-//                 {
-//                     closestColor = _color;
-//                     closestOklab = _oklab;
-//                     closestOrder = order;
-//                     closest1     = m1;
-//                     closest2     = m2;
-//                     closest3     = m3;
-
-//                     console.log('order', order);
-//                     console.log('closest1', closest1);
-//                     console.log('closest2', closest2);
-//                     console.log('closest3', closest3);
-//                     console.log('');
-//                 }
-
-//                 progress++;
-//             }
-//         }
-
-//         genQueueMessageToUI(
-//         {
-//             cmd:     'uiUpdateFindCorrection',
-//             nodeId:   nodeId,
-//             progress: progress / total
-//         });
-//     }
-
-
-//     return [
-//         closestColor,
-//         closestOklab,
-//         closestOrder,
-//         closest1,
-//         closest2,
-//         closest3,
-//         progress ];
-// }
-
-
-
-// function getCorrectedColor(color, order, m1, m2, m3)
-// {
-//     const _color = validateColor(color, order, m1, m2, m3);
-//     const _oklab = dataColor2array(convert2oklab(_color));
-//     const _rgb   = oklab2rgb(_oklab);
-
-//     return [_color, _oklab, _rgb];
-// }
-
-
-
-// function reorderCorrection(closestOrder,
-//                            closest1, closest2, closest3,
-//                            locked1,  locked2,  locked3)
-// {
-//     let c1 = { closest: closest1, locked: locked1 };
-//     let c2 = { closest: closest2, locked: locked2 };
-//     let c3 = { closest: closest3, locked: locked3 };
-
-//     if (   c1.closest <  Eps
-//         && c2.closest <  Eps
-//         && c3.closest >= Eps)
-//     {
-//         switch (closestOrder)
-//         {
-//             case 0: closestOrder = 4; break;
-//             case 1: closestOrder = 5; break;
-//             case 2: closestOrder = 0; break;
-//             case 3: closestOrder = 1; break;
-//             case 4: closestOrder = 2; break;
-//             case 5: closestOrder = 3; break;
-//         }
-
-//         const tmp = c2;
-//         c1 = c3;
-//         c2 = c1;
-//         c3 = tmp;
-//     }
-//     else if (c1.closest >= Eps
-//           && c2.closest <  Eps)
-//     {
-//         switch (closestOrder)
-//         {
-//             case 0: closestOrder = 3; break;
-//             case 1: closestOrder = 2; break;
-//             case 2: closestOrder = 1; break;
-//             case 3: closestOrder = 0; break;
-//             case 4: closestOrder = 5; break;
-//             case 5: closestOrder = 4; break;
-//         }
-
-//         const tmp = c2;
-//         c2 = c3;
-//         c3 = tmp;
-//     }
-//     else if (c1.closest < Eps)
-//     {
-//         switch (closestOrder)
-//         {
-//             case 0: closestOrder = 2; break;
-//             case 1: closestOrder = 3; break;
-//             case 2: closestOrder = 4; break;
-//             case 3: closestOrder = 5; break;
-//             case 4: closestOrder = 0; break;
-//             case 5: closestOrder = 1; break;
-//         }
-
-//         const tmp = c1;
-//         c1 = c2;
-//         c2 = c3;
-//         c3 = tmp;
-//     }
-
-
-//     return [
-//         closestOrder,
-//         c1.closest, c2.closest, c3.closest,
-//         c1.locked,  c2.locked,  c3.locked ];
-// }
-
-
-
-//var validateIsFinding = false;
-
-
-
-class OpColorValidate_Correction
+class OpColorCorrect_Correction
 {
     name; // 'H', 'C', or 'L'
     max;
@@ -37919,7 +37165,7 @@ class OpColorValidate_Correction
 
 
 
-class   OpColorValidate
+class   OpColorCorrect
 extends OpColorBase
 {
     paramOrder;
@@ -37929,13 +37175,12 @@ extends OpColorBase
     paramMargin3;
 
 
-    findBar;
-    findProgress;
+    colorSpaceIndex = -1;
 
 
     constructor()
     {
-        super(COLOR_VALIDATE, 'validate', 90);
+        super(COLOR_VALIDATE, 'correct', 90, true);
 
 
         this.addInput(new Input(COLOR_TYPES));
@@ -37945,14 +37190,7 @@ extends OpColorBase
         this.alwaysLoadParams = true;
 
 
-        this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [
-            'H,&thinsp;C,&thinsp;L', 
-            'C,&thinsp;H,&thinsp;L', 
-            'C,&thinsp;L,&thinsp;H', 
-            'H,&thinsp;L,&thinsp;C', 
-            'L,&thinsp;H,&thinsp;C', 
-            'L,&thinsp;C,&thinsp;H' 
-        ], 2));
+        this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [0, 1, 2, 3, 4, 5], 2));
 
         this.paramOrder.addEventListener('change', () => this.updateCorrections());
 
@@ -37986,52 +37224,14 @@ extends OpColorBase
         // });
 
 
-        this.initCorrections();
+        this.initCorrections('hclokl');
         this.updateCorrections();
 
 
         this.header.connectionPadding = 18;
 
 
-        // this.header.addEventListener('pointerup', e => 
-        // { 
-        //     if (   e.button == 0
-        //         && !validateIsFinding
-        //         && this.inputs[0].connected) 
-        //     { 
-        //         this.findBar     .style.display = 'block';
-        //         this.findProgress.style.width   = 0;
-                
-        //         validateIsFinding = true;
-
-        //         // uiQueueMessageToGenerator(
-        //         // {
-        //         //     cmd:       'genFindCorrection',
-        //         //     nodeId:     this.id,
-        //         //     inputColor: this.inputs[0].data.color,
-        //         //     param1:     this.margin1.value,
-        //         //     param2:     this.margin2.value,
-        //         //     param3:     this.margin3.value,
-        //         //     locked1:    this.margin1.locked,
-        //         //     locked2:    this.margin2.locked,
-        //         //     locked3:    this.margin3.locked
-        //         // });
-        //     }
-        // });
-
-
-        this.createProgressBar();
-    }
-
-
-
-    createProgressBar()
-    {
-        this.findBar      = createDiv('findBar');
-        this.findProgress = createDiv('findProgress');
-
-        this.findBar.appendChild(this.findProgress);
-        this.header .appendChild(this.findBar);
+        startNodeProgress(this);
     }
 
 
@@ -38068,6 +37268,9 @@ extends OpColorBase
         request.push(...this.node.paramMargin3.genRequest(gen));
 
 
+        startNodeProgress(this.node);
+
+
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
@@ -38085,57 +37288,125 @@ extends OpColorBase
             ? col.toDataColor()
             : dataColor_NaN;
 
+            
+        // const order   = values[paramIds.findIndex(id => id == 'order'  )];
+        // const margin1 = values[paramIds.findIndex(id => id == 'margin1')];
+        // const margin2 = values[paramIds.findIndex(id => id == 'margin2')];
+        // const margin3 = values[paramIds.findIndex(id => id == 'margin3')];
+
+
         this.updateCorrections();
 
+        endNodeProgress(this);
 
-        const order   = values[paramIds.findIndex(id => id == 'order'  )];
-        const margin1 = values[paramIds.findIndex(id => id == 'margin1')];
-        const margin2 = values[paramIds.findIndex(id => id == 'margin2')];
-        const margin3 = values[paramIds.findIndex(id => id == 'margin3')];
-
-        // if (   order
-        //     && margin1
-        //     && margin2
-        //     && margin3)
-        // {
-        //     node.paramOrder.setValue(order, false, true, false);
-
-        //     const [i1, i2, i3] = getCorrectionOrder(closestOrder);
-
-        //     node.corrections[i1].value = closest1;
-        //     node.corrections[i2].value = closest2;
-        //     node.corrections[i3].value = closest3;
-
-        //     node.updateCorrections();
-        // }
-
-        //validateIsFinding = false;
-
-        this.findBar.style.display = 'none';
-
-
+        
         super.updateValues(updateParamId, paramIds, values);
     }
 
 
 
-    initCorrections()
+    updateParams()
     {
-        this.corrections = [
-            new OpColorValidate_Correction('H', 180),
-            new OpColorValidate_Correction('C', 100),
-            new OpColorValidate_Correction('L', 100) ];
+        this.paramOrder  .enableControlText(false);
+        this.paramMargin1.enableControlText(false);
+        this.paramMargin2.enableControlText(false);
+        this.paramMargin3.enableControlText(false);
+
+        super.updateParams();
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+        const colors = this.getHeaderColors();
+
+        this.progressBar.style.background = 
+            !rgbIsNaN(colors.back) 
+            ? rgb2style_a(colors.text, 0.5) 
+            : 'var(--figma-color-bg-brand)';
+    }
+
+
+
+    initCorrections(colorSpace)
+    {
+        switch (colorSpace)
+        {
+        case 'hclokl':
+        case 'hcllab':
+        case 'hclluv':
+            this.paramOrder.setOptions([
+                'H,&thinsp;C,&thinsp;L', 
+                'C,&thinsp;H,&thinsp;L', 
+                'C,&thinsp;L,&thinsp;H', 
+                'H,&thinsp;L,&thinsp;C', 
+                'L,&thinsp;H,&thinsp;C', 
+                'L,&thinsp;C,&thinsp;H']);
+
+            this.corrections = [
+                new OpColorCorrect_Correction('H', hclFactor[0]/2),
+                new OpColorCorrect_Correction('C', hclFactor[1]),
+                new OpColorCorrect_Correction('L', hclFactor[2]) ];
+
+            break;
+
+        case 'oklab': 
+        case 'lab':
+            this.paramOrder.setOptions([
+                'L,&thinsp;a,&thinsp;b', 
+                'a,&thinsp;L,&thinsp;b', 
+                'a,&thinsp;b,&thinsp;L', 
+                'L,&thinsp;b,&thinsp;a', 
+                'b,&thinsp;L,&thinsp;a', 
+                'b,&thinsp;a,&thinsp;L']);
+
+            this.corrections = [
+                new OpColorCorrect_Correction('L', oppFactor[0]),
+                new OpColorCorrect_Correction('a', oppFactor[1]),
+                new OpColorCorrect_Correction('b', oppFactor[2]) ];
+
+            break;
+
+        case 'luv':
+            this.paramOrder.setOptions([
+                'L,&thinsp;u,&thinsp;v', 
+                'u,&thinsp;L,&thinsp;v', 
+                'u,&thinsp;v,&thinsp;L', 
+                'L,&thinsp;v,&thinsp;u', 
+                'v,&thinsp;L,&thinsp;u', 
+                'v,&thinsp;u,&thinsp;L']);
+
+            this.corrections = [
+                new OpColorCorrect_Correction('L', oppFactor[0]),
+                new OpColorCorrect_Correction('u', oppFactor[1]),
+                new OpColorCorrect_Correction('v', oppFactor[2]) ];
+
+            break;
+        }
     }
 
 
 
     updateCorrections()
     {
+        this.updateColorSpace();
+
         const [i1, i2, i3] = getCorrectionsInOrder(this.paramOrder.value.value);
 
         this.updateMargin(this.paramMargin1, this.corrections[i1]);
         this.updateMargin(this.paramMargin2, this.corrections[i2]);
         this.updateMargin(this.paramMargin3, this.corrections[i3]);
+    }
+
+
+
+    updateColorSpace()
+    {
+        if (dataColorIsValid(this._color))
+            this.initCorrections(this._color[0]);
     }
 
 
@@ -38219,16 +37490,6 @@ extends OpColorBase
 
     //     super.loadParams(_node); // must be done again after the locks have been set
     // }
-}
-
-
-
-function uiUpdateFindCorrectionProgress(nodeId, progress)
-{
-    const node = nodeFromId(nodeId);
-
-    node.findBar     .style.display = 'block';
-    node.findProgress.style.width   = (progress * 100) + '%';
 }
 
 
@@ -42940,10 +42201,10 @@ generator.onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                   break;
-        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects      (msg.updateNodeId, msg.updateParamId, msg.values, msg.objects);                        break;
-        case 'uiUpdateFindCorrection':   uiUpdateFindCorrectionProgress(msg.nodeId, msg.progress);                                                            break;
-        //case 'uiEndFindCorrection':      uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
+        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                             break;
+        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.updateNodeId, msg.updateParamId, msg.values, msg.objects);                        break;
+        case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                                            break;
+        //case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
     }
 };
 
@@ -43582,7 +42843,7 @@ createTooltip(ttCreateInterpolate);      createTooltipSrc(btnCreateInterpolate, 
 
 createTooltip(ttCreateColor);            createTooltipSrc(btnCreateColor,            () => ttCreateColor);
 createTooltip(ttCreateColorInterpolate); createTooltipSrc(btnCreateColorInterpolate, () => ttCreateColorInterpolate);
-createTooltip(ttCreateValidateColor);    createTooltipSrc(btnCreateValidateColor,    () => ttCreateValidateColor);
+createTooltip(ttCreateCorrectColor);    createTooltipSrc(btnCreateCorrectColor,    () => ttCreateCorrectColor);
 createTooltip(ttCreateColorContrast);    createTooltipSrc(btnCreateColorContrast,    () => ttCreateColorContrast);
 createTooltip(ttCreateColorblind);       createTooltipSrc(btnCreateColorblind,       () => ttCreateColorblind);
 

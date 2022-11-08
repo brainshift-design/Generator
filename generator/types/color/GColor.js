@@ -135,7 +135,7 @@ extends GColorType
 
         // if (this.options.enabled)
         // {
-            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue());
+            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue(), true);
             if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .toValue());
             if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .toValue());
             if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .toValue());

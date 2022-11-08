@@ -1,4 +1,4 @@
-class GColorValidate
+class GColorCorrect
 extends GColorType
 {
     input = null;
@@ -22,7 +22,7 @@ extends GColorType
     
     copy()
     {
-        const val = new GColorValidate(this.nodeId, this.options);
+        const val = new GColorCorrect(this.nodeId, this.options);
 
         val.copyBase(this);
 
@@ -83,26 +83,40 @@ extends GColorType
                                  this.margin1.input, this.margin2.input, this.margin3.input); 
 
 
-                this._color = validateColor(
-                    inputColor,
-                    closestOrder, 
-                    closest1,
-                    closest2,
-                    closest3);
+                if (closestOrder >= 0 && closestOrder < 6)
+                {
+                    this._color = correctColor(
+                        inputColor,
+                        closestOrder, 
+                        closest1,
+                        closest2,
+                        closest3);
 
-                const factor = getColorSpaceFactor(this._color[0]);
+                    const spaceIndex = colorSpaceIndex(this._color[0]);
+                    const factor     = getColorSpaceFactor(this._color[0]);
 
-                this.value = ColorValue.create(
-                    colorSpaceIndex(this._color[0]),
-                    this._color[1] * factor[0],
-                    this._color[2] * factor[1],
-                    this._color[3] * factor[2]);
+                    this.value = ColorValue.create(
+                        spaceIndex,
+                        this._color[1] * factor[0],
+                        this._color[2] * factor[1],
+                        this._color[3] * factor[2]);
 
 
-                genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1));
-                genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2));
-                genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3));
+                    if (spaceIndex >= 4)
+                    {
+                        genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1));
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2));
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3));
+                    }
+                    else
+                    {
+                        genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+                    }
+                }
             }
             else
                 this.value = ColorValue.NaN;
@@ -122,20 +136,20 @@ extends GColorType
 
 
 
-function validateColor(color, order, margin1, margin2, margin3)
+function correctColor(color, order, margin1, margin2, margin3)
 {
     const [i1, i2, i3] = getCorrectionsInOrder(order);
 
-                                  color = validateChannel(color, i1, margin1);
-    if (!dataColorIsValid(color)) color = validateChannel(color, i2, margin2);
-    if (!dataColorIsValid(color)) color = validateChannel(color, i3, margin3);
+                                  color = correctChannel(color, i1, margin1);
+    if (!dataColorIsValid(color)) color = correctChannel(color, i2, margin2);
+    if (!dataColorIsValid(color)) color = correctChannel(color, i3, margin3);
 
     return color;
 }
 
 
 
-function validateChannel(color, iChan, margin)
+function correctChannel(color, iChan, margin)
 {
     const factor = getColorSpaceFactor(color[0]);
 
@@ -232,13 +246,13 @@ function getCorrectionsInOrder(order)
     }
 
     // should never get here
-    console.assert(false, 'invalid validation order');
+    console.assert(false, 'invalid correction order ' + order);
     return [0, 0, 0];
 }
 
 
 
-function getValidateMax(order)
+function getCorrectMax(order)
 {
     switch (order)
     {
@@ -251,7 +265,7 @@ function getValidateMax(order)
     }
 
     // should never get here
-    console.assert(false, 'invalid validation order');
+    console.assert(false, 'invalid validation order ' + order);
     return [0, 0, 0];
 }
 
@@ -288,7 +302,7 @@ function findCorrection(nodeId,
         {
             closestColor = [..._closestColor];
 
-            const [max1, max2, max3] = getValidateMax(order);
+            const [max1, max2, max3] = getCorrectMax(order);
 
             let start1 = lerp(0, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
                 start2 = lerp(0, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
@@ -399,7 +413,7 @@ function findCorrectionInOrder(nodeId,
 
         genQueueMessageToUI(
         {
-            cmd:     'uiUpdateFindCorrection',
+            cmd:     'uiUpdateNodeProgress',
             nodeId:   nodeId,
             progress: progress / total
         });
@@ -420,7 +434,7 @@ function findCorrectionInOrder(nodeId,
 
 function getCorrectedColor(color, order, m1, m2, m3)
 {
-    const _color = validateColor(color, order, m1, m2, m3);
+    const _color = correctColor(color, order, m1, m2, m3);
     const _oklab = dataColor2array(convert2oklab(_color));
     const _rgb   = oklab2rgb(_oklab);
 

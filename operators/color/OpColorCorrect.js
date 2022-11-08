@@ -1,8 +1,4 @@
-//var validateIsFinding = false;
-
-
-
-class OpColorValidate_Correction
+class OpColorCorrect_Correction
 {
     name; // 'H', 'C', or 'L'
     max;
@@ -20,7 +16,7 @@ class OpColorValidate_Correction
 
 
 
-class   OpColorValidate
+class   OpColorCorrect
 extends OpColorBase
 {
     paramOrder;
@@ -30,13 +26,12 @@ extends OpColorBase
     paramMargin3;
 
 
-    findBar;
-    findProgress;
+    colorSpaceIndex = -1;
 
 
     constructor()
     {
-        super(COLOR_VALIDATE, 'validate', 90);
+        super(COLOR_VALIDATE, 'correct', 90, true);
 
 
         this.addInput(new Input(COLOR_TYPES));
@@ -46,14 +41,7 @@ extends OpColorBase
         this.alwaysLoadParams = true;
 
 
-        this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [
-            'H,&thinsp;C,&thinsp;L', 
-            'C,&thinsp;H,&thinsp;L', 
-            'C,&thinsp;L,&thinsp;H', 
-            'H,&thinsp;L,&thinsp;C', 
-            'L,&thinsp;H,&thinsp;C', 
-            'L,&thinsp;C,&thinsp;H' 
-        ], 2));
+        this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [0, 1, 2, 3, 4, 5], 2));
 
         this.paramOrder.addEventListener('change', () => this.updateCorrections());
 
@@ -87,52 +75,14 @@ extends OpColorBase
         // });
 
 
-        this.initCorrections();
+        this.initCorrections('hclokl');
         this.updateCorrections();
 
 
         this.header.connectionPadding = 18;
 
 
-        // this.header.addEventListener('pointerup', e => 
-        // { 
-        //     if (   e.button == 0
-        //         && !validateIsFinding
-        //         && this.inputs[0].connected) 
-        //     { 
-        //         this.findBar     .style.display = 'block';
-        //         this.findProgress.style.width   = 0;
-                
-        //         validateIsFinding = true;
-
-        //         // uiQueueMessageToGenerator(
-        //         // {
-        //         //     cmd:       'genFindCorrection',
-        //         //     nodeId:     this.id,
-        //         //     inputColor: this.inputs[0].data.color,
-        //         //     param1:     this.margin1.value,
-        //         //     param2:     this.margin2.value,
-        //         //     param3:     this.margin3.value,
-        //         //     locked1:    this.margin1.locked,
-        //         //     locked2:    this.margin2.locked,
-        //         //     locked3:    this.margin3.locked
-        //         // });
-        //     }
-        // });
-
-
-        this.createProgressBar();
-    }
-
-
-
-    createProgressBar()
-    {
-        this.findBar      = createDiv('findBar');
-        this.findProgress = createDiv('findProgress');
-
-        this.findBar.appendChild(this.findProgress);
-        this.header .appendChild(this.findBar);
+        startNodeProgress(this);
     }
 
 
@@ -169,6 +119,9 @@ extends OpColorBase
         request.push(...this.node.paramMargin3.genRequest(gen));
 
 
+        startNodeProgress(this.node);
+
+
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
@@ -186,57 +139,125 @@ extends OpColorBase
             ? col.toDataColor()
             : dataColor_NaN;
 
+            
+        // const order   = values[paramIds.findIndex(id => id == 'order'  )];
+        // const margin1 = values[paramIds.findIndex(id => id == 'margin1')];
+        // const margin2 = values[paramIds.findIndex(id => id == 'margin2')];
+        // const margin3 = values[paramIds.findIndex(id => id == 'margin3')];
+
+
         this.updateCorrections();
 
+        endNodeProgress(this);
 
-        const order   = values[paramIds.findIndex(id => id == 'order'  )];
-        const margin1 = values[paramIds.findIndex(id => id == 'margin1')];
-        const margin2 = values[paramIds.findIndex(id => id == 'margin2')];
-        const margin3 = values[paramIds.findIndex(id => id == 'margin3')];
-
-        // if (   order
-        //     && margin1
-        //     && margin2
-        //     && margin3)
-        // {
-        //     node.paramOrder.setValue(order, false, true, false);
-
-        //     const [i1, i2, i3] = getCorrectionOrder(closestOrder);
-
-        //     node.corrections[i1].value = closest1;
-        //     node.corrections[i2].value = closest2;
-        //     node.corrections[i3].value = closest3;
-
-        //     node.updateCorrections();
-        // }
-
-        //validateIsFinding = false;
-
-        this.findBar.style.display = 'none';
-
-
+        
         super.updateValues(updateParamId, paramIds, values);
     }
 
 
 
-    initCorrections()
+    updateParams()
     {
-        this.corrections = [
-            new OpColorValidate_Correction('H', 180),
-            new OpColorValidate_Correction('C', 100),
-            new OpColorValidate_Correction('L', 100) ];
+        this.paramOrder  .enableControlText(false);
+        this.paramMargin1.enableControlText(false);
+        this.paramMargin2.enableControlText(false);
+        this.paramMargin3.enableControlText(false);
+
+        super.updateParams();
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+        const colors = this.getHeaderColors();
+
+        this.progressBar.style.background = 
+            !rgbIsNaN(colors.back) 
+            ? rgb2style_a(colors.text, 0.5) 
+            : 'var(--figma-color-bg-brand)';
+    }
+
+
+
+    initCorrections(colorSpace)
+    {
+        switch (colorSpace)
+        {
+        case 'hclokl':
+        case 'hcllab':
+        case 'hclluv':
+            this.paramOrder.setOptions([
+                'H,&thinsp;C,&thinsp;L', 
+                'C,&thinsp;H,&thinsp;L', 
+                'C,&thinsp;L,&thinsp;H', 
+                'H,&thinsp;L,&thinsp;C', 
+                'L,&thinsp;H,&thinsp;C', 
+                'L,&thinsp;C,&thinsp;H']);
+
+            this.corrections = [
+                new OpColorCorrect_Correction('H', hclFactor[0]/2),
+                new OpColorCorrect_Correction('C', hclFactor[1]),
+                new OpColorCorrect_Correction('L', hclFactor[2]) ];
+
+            break;
+
+        case 'oklab': 
+        case 'lab':
+            this.paramOrder.setOptions([
+                'L,&thinsp;a,&thinsp;b', 
+                'a,&thinsp;L,&thinsp;b', 
+                'a,&thinsp;b,&thinsp;L', 
+                'L,&thinsp;b,&thinsp;a', 
+                'b,&thinsp;L,&thinsp;a', 
+                'b,&thinsp;a,&thinsp;L']);
+
+            this.corrections = [
+                new OpColorCorrect_Correction('L', oppFactor[0]),
+                new OpColorCorrect_Correction('a', oppFactor[1]),
+                new OpColorCorrect_Correction('b', oppFactor[2]) ];
+
+            break;
+
+        case 'luv':
+            this.paramOrder.setOptions([
+                'L,&thinsp;u,&thinsp;v', 
+                'u,&thinsp;L,&thinsp;v', 
+                'u,&thinsp;v,&thinsp;L', 
+                'L,&thinsp;v,&thinsp;u', 
+                'v,&thinsp;L,&thinsp;u', 
+                'v,&thinsp;u,&thinsp;L']);
+
+            this.corrections = [
+                new OpColorCorrect_Correction('L', oppFactor[0]),
+                new OpColorCorrect_Correction('u', oppFactor[1]),
+                new OpColorCorrect_Correction('v', oppFactor[2]) ];
+
+            break;
+        }
     }
 
 
 
     updateCorrections()
     {
+        this.updateColorSpace();
+
         const [i1, i2, i3] = getCorrectionsInOrder(this.paramOrder.value.value);
 
         this.updateMargin(this.paramMargin1, this.corrections[i1]);
         this.updateMargin(this.paramMargin2, this.corrections[i2]);
         this.updateMargin(this.paramMargin3, this.corrections[i3]);
+    }
+
+
+
+    updateColorSpace()
+    {
+        if (dataColorIsValid(this._color))
+            this.initCorrections(this._color[0]);
     }
 
 
@@ -320,16 +341,6 @@ extends OpColorBase
 
     //     super.loadParams(_node); // must be done again after the locks have been set
     // }
-}
-
-
-
-function uiUpdateFindCorrectionProgress(nodeId, progress)
-{
-    const node = nodeFromId(nodeId);
-
-    node.findBar     .style.display = 'block';
-    node.findProgress.style.width   = (progress * 100) + '%';
 }
 
 

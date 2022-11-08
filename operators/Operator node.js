@@ -441,6 +441,46 @@ function createNodeInfo(node)
 
 
 
+function createNodeProgressBar(node)
+{
+    node.hasProgressBar  = true;
+
+    node.progressWrapper = createDiv('progressWrapper');
+    node.progressBar     = createDiv('progressBar');
+
+    node.progressWrapper.appendChild(node.progressBar);
+    node.header         .appendChild(node.progressWrapper);
+}
+
+
+
+function startNodeProgress(node)
+{
+    node.progressWrapper.style.display = 'block';
+
+    node.progressBar    .style.left    =   '0%';
+    node.progressBar    .style.width   = '100%';
+}
+
+
+
+function uiUpdateNodeProgress(nodeId, progress)
+{
+    const node = nodeFromId(nodeId);
+
+    node.progressBar.style.left  = (   progress  * 100) + '%';
+    node.progressBar.style.width = ((1-progress) * 100) + '%';
+}
+
+
+
+function endNodeProgress(node)
+{
+    node.progressWrapper.style.display = 'none';
+}
+
+
+
 function setNodePositions(nodes, dx, dy, updateTransform = true)
 {
     //console.log('setNodePositions()');

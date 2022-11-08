@@ -203,24 +203,33 @@ extends OpColorBase
         const c2    = values[paramIds.findIndex(id => id == 'c2'   )];
         const c3    = values[paramIds.findIndex(id => id == 'c3'   )];
 
+
+        if (space) this.paramSpace.setValue(space, false, true, false);
+
+        switchToSpace(this, colorSpace(space.value));
+
+        
+        if (c1) this.param1.setValue(c1, false, true, false);
+        if (c2) this.param2.setValue(c2, false, true, false);
+        if (c3) this.param3.setValue(c3, false, true, false);
+
+
+        const _space = this.paramSpace.value;
+        const _c1    = this.param1    .value;
+        const _c2    = this.param2    .value;
+        const _c3    = this.param3    .value;
+
         const valid =
-               space.isValid()
-            && c1   .isValid()
-            && c2   .isValid()
-            && c3   .isValid();
+               _space && _space.isValid()
+            && _c1    && _c1   .isValid()
+            && _c2    && _c2   .isValid()
+            && _c3    && _c3   .isValid();
+
 
         if (valid)
         {
-            this.paramSpace.setValue(space, false, true, false);
-
-            switchToSpace(this, colorSpace(space.value));
-
-            this.param1.setValue(c1, false, true, false);
-            this.param2.setValue(c2, false, true, false);
-            this.param3.setValue(c3, false, true, false);
-
-            this._color    = makeDataColor(space, c1, c2, c3);
-            this.prevSpace = colorSpace(space.value);
+            this._color    = makeDataColor(_space, _c1, _c2, _c3);
+            this.prevSpace = colorSpace(_space.value);
         }
         else
         {

@@ -43,8 +43,7 @@
 ../operators/color/OpColor.js
 ../operators/color/OpColor spaces.js
 ../operators/color/OpColor convert.js
-../operators/color/OpColorValidate find.js
-../operators/color/OpColorValidate.js
+../operators/color/OpColorCorrect.js
 ../operators/color/OpColorContrast.js
 ../operators/color/OpColorInterpolate.js
 ../operators/color/OpColorblind.js
