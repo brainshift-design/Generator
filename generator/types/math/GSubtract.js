@@ -37,6 +37,10 @@ extends GArithmetic
 
 function evalSubtractInputs(inputs, parse)
 {
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
     const value = new NumberValue(0);
 
 

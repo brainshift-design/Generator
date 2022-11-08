@@ -65,6 +65,9 @@ function genRequest(request)
 
 function genPushUpdateValue(parse, nodeId, paramId, value)
 {
+    //logFunction('genPushUpdateValue()');
+    //console.trace();
+    
     const found = parse.updateValues.find(v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId

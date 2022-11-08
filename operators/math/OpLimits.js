@@ -16,11 +16,9 @@ extends OperatorBase
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
-        //this.paramValue.enableControlText(false);
-       
-        this.addParam(this.paramMin = new NumberParam('min', 'min', true, true, true,    0));
-        this.addParam(this.paramMax = new NumberParam('max', 'max', true, true, true, 1000));
+        this.addParam(this.paramValue = new NumberParam('value', '',    false, false, false));      
+        this.addParam(this.paramMin   = new NumberParam('min',   'min', true,  true,  true,    0));
+        this.addParam(this.paramMax   = new NumberParam('max',   'max', true,  true,  true, 1000));
     }
 
 
@@ -28,10 +26,6 @@ extends OperatorBase
     output_genRequest(gen)
     {
         // 'this' is the output
-
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
 
         gen.scope.push({
             nodeId:  this.node.id, 
@@ -52,7 +46,7 @@ extends OperatorBase
         request.push(...this.node.paramMin.genRequest(gen));
         request.push(...this.node.paramMax.genRequest(gen));
 
-
+        
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
@@ -61,11 +55,25 @@ extends OperatorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
-    {
-        super.updateValues(updateParamId, paramIds, values);
+    // updateValues(updateParamId, paramIds, values)
+    // {
+    //     //super.updateValues(updateParamId, paramIds, values);
 
-        this.paramMax.control.setMin(values[paramIds.indexOf('min')].value, false);
-        this.paramMin.control.setMax(values[paramIds.indexOf('max')].value, false);
+    //     const min = values[paramIds.findIndex(id => id == 'min')];
+    //     const max = values[paramIds.findIndex(id => id == 'max')];
+
+    //     this.paramMax.control.setMin(min, false, true, false);
+    //     this.paramMin.control.setMax(max, false, true, false);
+    // }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        this.paramValue.enableControlText(false);
+        this.paramMin  .enableControlText(true);
+        this.paramMax  .enableControlText(true);
     }
 }

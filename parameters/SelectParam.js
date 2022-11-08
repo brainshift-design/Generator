@@ -63,7 +63,7 @@ extends NumberParamBase
         return this.input
             && this.input.connected 
 
-            ? [ ...this.input.connectedOutput.genRequest(createGenObject()) ]
+            ? [ ...pushInputOrParam(this.input, createGenObject()) ]
 
             : [ NUMBER, 
                 this.value.toString(), 

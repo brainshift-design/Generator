@@ -35,7 +35,7 @@ extends GNumberType
 
 
         if (this.input) 
-        {
+        { 
             this.input = this.input.eval(parse).copy();
             this.value = this.input.toValue();
         }

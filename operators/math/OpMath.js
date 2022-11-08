@@ -17,8 +17,8 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, MATH_OPS.map(s => s[1]), 1));
         this.addParam(this.paramValue     = new NumberParam('value',     '',   false, false, false));
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, MATH_OPS.map(s => s[1]), 1));
     }
     
     
@@ -55,8 +55,8 @@ extends OperatorBase
 
         request.push(connectedInputs.length); // utility values like param count are stored as numbers
         
-        connectedInputs.forEach(input => 
-            request.push(...input.connectedOutput.genRequest(gen)));
+        for (const input of connectedInputs)
+            request.push(...pushInputOrParam(input, gen));
 
         
         request.push(...this.node.paramOperation.genRequest(gen));
@@ -70,20 +70,23 @@ extends OperatorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
-    {
-        super.updateValues(updateParamId, paramIds, values);
+    // updateValues(updateParamId, paramIds, values)
+    // {
+    //     super.updateValues(updateParamId, paramIds, values);
 
-        const operation = values[paramIds.findIndex(id => id == 'operation')];
-        this.paramOperation.setValue(operation, false, true, false);
-    }
+    //     const value     = values[paramIds.findIndex(id => id == 'value'    )];
+    //     const operation = values[paramIds.findIndex(id => id == 'operation')];
+
+    //     this.paramValue    .setValue(value,     false, true, false);
+    //     this.paramOperation.setValue(operation, false, true, false);
+    // }
 
 
 
     updateParams()
     {
-        this.paramOperation.enableControlText(true );
         this.paramValue    .enableControlText(false);
+        this.paramOperation.enableControlText(true );
 
         super.updateParams();
     }

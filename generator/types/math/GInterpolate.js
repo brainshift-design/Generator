@@ -66,7 +66,7 @@ extends GNumberType
             this.value = this.input1.toValue();
         }
         else                  
-            this.value = new NumberValue(0);
+            this.value = NumberValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value',  this.value);

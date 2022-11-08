@@ -866,8 +866,7 @@ function pushInputOrParam(input, gen)
 {
     if (    input.connectedOutput.param
         &&  gen.markParams
-        &&  lastOf(gen.scope).nodeId != input.connectedOutput.node.id
-        && !input.connectedOutput.node.valid)
+        &&  lastOf(gen.scope).nodeId != input.connectedOutput.node.id)
     {
         pushUnique(gen.paramNodes, input.connectedOutput.node);
 

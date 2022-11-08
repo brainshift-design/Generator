@@ -207,17 +207,16 @@ function genParseParam(parse)
     if (parse.next != PARAM) 
         return null;
         
-    parse.move(); // PARAMw
+    parse.move(); // PARAM
     const type = parse.move(); // type
 
     
     const nodeId  = parse.move();
     const paramId = parse.move();
     
-
-    const param = new GParam(nodeId, paramId);
-    //param.node = parse.parsedNodes.find(n => n.id == nodeId);
-
+    const param   = new GParam(nodeId, paramId);
+ 
+    
     pushUnique(parse.paramNodeIds, nodeId);
 
 
@@ -239,3 +238,14 @@ function genParseParamId(parse)
 
     return paramId;
 }
+
+
+
+// function genCreateNumber(input)
+// {
+//     const num = new NumberValue(input.nodeId);
+
+//     num.input = input;
+
+//     return num;
+// }

@@ -6,7 +6,7 @@ extends GNumberType
     min;
     max;
 
-    minMaxPriority = -1; 
+    //minMaxPriority = -1; 
 
 
     constructor(nodeId, options)
@@ -28,7 +28,7 @@ extends GNumberType
         lim.min = this.min.copy();
         lim.max = this.max.copy();
 
-        lim.minMaxPriority = this.minMaxPriority;
+        //lim.minMaxPriority = this.minMaxPriority;
 
         return lim;
     }
@@ -43,14 +43,7 @@ extends GNumberType
 
         this.value = new NumberValue(0);
 
-
-        if (this.input)
-        {
-            this.input = this.input.eval(parse).copy();
-            this.value = this.input.toValue();
-        }
-
-
+        
         this.min = this.min.eval(parse).copy();
         this.max = this.max.eval(parse).copy();
 
@@ -58,10 +51,22 @@ extends GNumberType
         const max = this.max.toValue();
 
 
-        this.value.value = Math.min(Math.max(
-            min.value,
-            this.value.value),
-            max.value);
+        if (this.input)
+        {
+            this.input = this.input.eval(parse).copy();
+            this.value = this.input.toValue();
+
+            console.assert(
+                this.value.type == NUMBER_VALUE, 
+                'this.value.type must belong to NUMBER_VALUE');
+
+            this.value.value = Math.min(Math.max(
+                min.value,
+                this.value.value),
+                max.value);
+        }
+        else
+            this.value = NumberValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);

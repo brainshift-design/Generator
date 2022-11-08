@@ -63,4 +63,14 @@ extends OperatorBase
 
         return request;
     }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        this.paramValue .enableControlText(false);
+        this.paramAmount.enableControlText(true);
+    }
 }

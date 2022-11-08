@@ -918,16 +918,16 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
                 switch (type)
                 {
-                    case NUMBER_VALUE:     value = parseNumberValue   (values[i++])[0]; break;
-                    case COLOR_VALUE:      value = parseColorValue    (values[i++])[0]; break;
-                    case FILL_VALUE:       value = parseFillValue     (values[i++])[0]; break;
-                    case STROKE_VALUE:     value = parseStrokeValue   (values[i++])[0]; break;
+                    case     NUMBER_VALUE: value = parseNumberValue   (values[i++])[0]; break;
+                    case      COLOR_VALUE: value = parseColorValue    (values[i++])[0]; break;
+                    case       FILL_VALUE: value = parseFillValue     (values[i++])[0]; break;
+                    case     STROKE_VALUE: value = parseStrokeValue   (values[i++])[0]; break;
                     case COLOR_STOP_VALUE: value = parseColorStopValue(values[i++])[0]; break;
-                    case RECTANGLE_VALUE:  value = parseRectangleValue(values[i++])[0]; break;
-                    case LINE_VALUE:       value = parseLineValue     (values[i++])[0]; break;
-                    case ELLIPSE_VALUE:    value = parseEllipseValue  (values[i++])[0]; break;
-                    case POLYGON_VALUE:    value = parsePolygonValue  (values[i++])[0]; break;
-                    case STAR_VALUE:       value = parseStarValue     (values[i++])[0]; break;
+                    case  RECTANGLE_VALUE: value = parseRectangleValue(values[i++])[0]; break;
+                    case       LINE_VALUE: value = parseLineValue     (values[i++])[0]; break;
+                    case    ELLIPSE_VALUE: value = parseEllipseValue  (values[i++])[0]; break;
+                    case    POLYGON_VALUE: value = parsePolygonValue  (values[i++])[0]; break;
+                    case       STAR_VALUE: value = parseStarValue     (values[i++])[0]; break;
                     
                     // case FILL:             console.log('values[i] =', values[i]);
                     //                        value = new FillValue(

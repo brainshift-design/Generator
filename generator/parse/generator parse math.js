@@ -80,11 +80,13 @@ function genParseLimits(parse)
 
     parse.nTab++;
 
+
     if (nValues == 1)
         lim.input = genParse(parse);
 
     lim.min = genParse(parse);
     lim.max = genParse(parse);
+
     
     parse.nTab--;
 

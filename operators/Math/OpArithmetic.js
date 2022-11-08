@@ -109,13 +109,13 @@ extends OperatorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
-    {
-        super.updateValues(updateParamId, paramIds, values);
+    // updateValues(updateParamId, paramIds, values)
+    // {
+    //     super.updateValues(updateParamId, paramIds, values);
 
-        const value = values[paramIds.findIndex(id => id == 'value')];
-        this.paramValue.setValue(value, false, true, false);
-    }
+    //     const value = values[paramIds.findIndex(id => id == 'value')];
+    //     this.paramValue.setValue(value, false, true, false);
+    // }
 
 
 

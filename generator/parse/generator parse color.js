@@ -254,11 +254,10 @@ function genParseColorValidate(parse)
     if (COLOR_TYPES.includes(parse.next))
         val.input = genParse(parse);
 
-    val.order   = genParse(parse);
-
-    val.margin1 = genParse(parse);
-    val.margin2 = genParse(parse);
-    val.margin3 = genParse(parse);
+    if (parse.next != INVALID) val.order   = genParse(parse); else { val.order   = null; parse.move(); }
+    if (parse.next != INVALID) val.margin1 = genParse(parse); else { val.margin1 = null; parse.move(); }
+    if (parse.next != INVALID) val.margin2 = genParse(parse); else { val.margin2 = null; parse.move(); }
+    if (parse.next != INVALID) val.margin3 = genParse(parse); else { val.margin3 = null; parse.move(); }
 
     parse.nTab--;
 

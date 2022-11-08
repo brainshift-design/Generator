@@ -64,6 +64,7 @@ extends GOperator
 
     eval(parse)
     {
+
         if (!this.valid)
         {
             this.result = new StarValue();

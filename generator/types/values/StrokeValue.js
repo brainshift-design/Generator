@@ -103,7 +103,6 @@ extends GValue
     eval(parse)
     {
         return this;
-        return this;
     }
 
 

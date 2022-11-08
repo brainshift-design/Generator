@@ -2,9 +2,10 @@ class GParam
 extends GOperator
 {
     paramId;
-
+    
     node;
-
+    param;
+    
 
 
     constructor(nodeId, paramId)
@@ -23,7 +24,7 @@ extends GOperator
         param.copyBase(this);
 
         param.node = this.node;
-
+    
         return param;
     }
 
@@ -31,29 +32,27 @@ extends GOperator
 
     eval(parse)
     {
-        if (this.valid)
-            return;
+        // if (this.valid)
+        //     return this.param;
 
 
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-
-        const param = this.node[this.paramId];
-        
-        param.eval(parse);
+        this.param = this.node[this.paramId];
+        this.param.eval(parse);
 
 
-        this.valid = param.valid;
+        // this.valid = this.param.valid;
 
-        return this;
+        return this.param;//this;
     }
 
 
 
-    toValue()
-    {
-        console.assert(this.node, 'invalid parameter node \'' + this.nodeId + '\'');
-        return this.node[this.paramId].toValue();
-    }
+    // toValue()
+    // {
+    //     //console.assert(this.node, 'invalid parameter node \'' + this.nodeId + '\'');
+    //     return this.param.toValue();//this.node[this.paramId].toValue();
+    // }
 }

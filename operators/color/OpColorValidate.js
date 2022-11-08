@@ -30,12 +30,8 @@ extends OpColorBase
     paramMargin3;
 
 
-    // findBar;
-    // findProgress;
-
-
-    corrections = [];
-
+    findBar;
+    findProgress;
 
 
     constructor()
@@ -67,28 +63,28 @@ extends OpColorBase
         this.addParam(this.paramMargin3 = new NumberParam('margin3', '', true, true, true, 0));
 
 
-        this.paramMargin1.addEventListener('change', () => 
-        {
-            const [i1,,] = getCorrectionOrder(this.paramOrder.value);
-            this.corrections[i1].value = this.paramMargin1.value;
-            uiSaveNodes([this.id]);
-        });
+        // this.paramMargin1.addEventListener('change', () => 
+        // {
+        //     const [i1,,] = getCorrectionOrder(this.paramOrder.value);
+        //     this.corrections[i1].value = this.paramMargin1.value;
+        //     uiSaveNodes([this.id]);
+        // });
 
 
-        this.paramMargin2.addEventListener('change', () => 
-        {
-            const [, i2,] = getCorrectionOrder(this.paramOrder.value);
-            this.corrections[i2].value = this.paramMargin2.value;
-            uiSaveNodes([this.id]);
-        });
+        // this.paramMargin2.addEventListener('change', () => 
+        // {
+        //     const [, i2,] = getCorrectionOrder(this.paramOrder.value);
+        //     this.corrections[i2].value = this.paramMargin2.value;
+        //     uiSaveNodes([this.id]);
+        // });
 
         
-        this.paramMargin3.addEventListener('change', () => 
-        {
-            const [,, i3] = getCorrectionOrder(this.paramOrder.value);
-            this.corrections[i3].value = this.paramMargin3.value;
-            uiSaveNodes([this.id]);
-        });
+        // this.paramMargin3.addEventListener('change', () => 
+        // {
+        //     const [,, i3] = getCorrectionOrder(this.paramOrder.value);
+        //     this.corrections[i3].value = this.paramMargin3.value;
+        //     uiSaveNodes([this.id]);
+        // });
 
 
         this.initCorrections();
@@ -125,19 +121,26 @@ extends OpColorBase
         // });
 
 
-        //this.createProgressBar();
+        this.createProgressBar();
     }
 
 
 
-    // createProgressBar()
-    // {
-    //     this.findBar      = createDiv('findBar');
-    //     this.findProgress = createDiv('findProgress');
+    createProgressBar()
+    {
+        this.findBar      = createDiv('findBar');
+        this.findProgress = createDiv('findProgress');
 
-    //     this.findBar.appendChild(this.findProgress);
-    //     this.header .appendChild(this.findBar);
-    // }
+        this.findBar.appendChild(this.findProgress);
+        this.header .appendChild(this.findBar);
+    }
+
+
+
+    canAutoConnectFrom(node)
+    {
+        return COLOR_TYPES.includes(node.type);
+    }
 
 
 
@@ -161,7 +164,6 @@ extends OpColorBase
 
 
         request.push(...this.node.paramOrder  .genRequest(gen));
-
         request.push(...this.node.paramMargin1.genRequest(gen));
         request.push(...this.node.paramMargin2.genRequest(gen));
         request.push(...this.node.paramMargin3.genRequest(gen));
@@ -186,6 +188,33 @@ extends OpColorBase
 
         this.updateCorrections();
 
+
+        const order   = values[paramIds.findIndex(id => id == 'order'  )];
+        const margin1 = values[paramIds.findIndex(id => id == 'margin1')];
+        const margin2 = values[paramIds.findIndex(id => id == 'margin2')];
+        const margin3 = values[paramIds.findIndex(id => id == 'margin3')];
+
+        // if (   order
+        //     && margin1
+        //     && margin2
+        //     && margin3)
+        // {
+        //     node.paramOrder.setValue(order, false, true, false);
+
+        //     const [i1, i2, i3] = getCorrectionOrder(closestOrder);
+
+        //     node.corrections[i1].value = closest1;
+        //     node.corrections[i2].value = closest2;
+        //     node.corrections[i3].value = closest3;
+
+        //     node.updateCorrections();
+        // }
+
+        //validateIsFinding = false;
+
+        this.findBar.style.display = 'none';
+
+
         super.updateValues(updateParamId, paramIds, values);
     }
 
@@ -203,7 +232,7 @@ extends OpColorBase
 
     updateCorrections()
     {
-        const [i1, i2, i3] = getCorrectionOrder(this.paramOrder.value.value);
+        const [i1, i2, i3] = getCorrectionsInOrder(this.paramOrder.value.value);
 
         this.updateMargin(this.paramMargin1, this.corrections[i1]);
         this.updateMargin(this.paramMargin2, this.corrections[i2]);
@@ -215,7 +244,7 @@ extends OpColorBase
     updateMargin(margin, correction)
     {
         margin.setName(correction.name, false);
-        margin.control.name = addValidateSymbol(correction.name);
+        margin.control.name = correction.name;
 
         margin.control.setMin(0,              false);
         margin.control.setMax(correction.max, false);
@@ -295,59 +324,38 @@ extends OpColorBase
 
 
 
-// function uiUpdateFindCorrectionProgress(nodeId, progress)
-// {
-//     const node = nodeFromId(nodeId);
+function uiUpdateFindCorrectionProgress(nodeId, progress)
+{
+    const node = nodeFromId(nodeId);
 
-//     node.findProgress.style.width = (progress * 100) + '%';
-// }
+    node.findBar     .style.display = 'block';
+    node.findProgress.style.width   = (progress * 100) + '%';
+}
 
 
 
 // function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, closest3)
 // {
-//     const node = nodeFromId(nodeId);
+//     // const node = nodeFromId(nodeId);
 
-//     if (success)
-//     {
-//         node.paramOrder.setValue(closestOrder, true, true, false);
+//     // if (success)
+//     // {
+//     //     node.paramOrder.setValue(closestOrder, true, true, false);
 
-//         const [i1, i2, i3] = getCorrectionOrder(closestOrder);
+//     //     const [i1, i2, i3] = getCorrectionOrder(closestOrder);
 
-//         node.corrections[i1].value = closest1;
-//         node.corrections[i2].value = closest2;
-//         node.corrections[i3].value = closest3;
+//     //     node.corrections[i1].value = closest1;
+//     //     node.corrections[i2].value = closest2;
+//     //     node.corrections[i3].value = closest3;
 
-//         node.updateCorrections();
-//     }
+//     //     node.updateCorrections();
+//     // }
 
-//     validateIsFinding = false;
+//     // validateIsFinding = false;
 
-//     node.findBar.style.display = 'none';
+//     // node.findBar.style.display = 'none';
 
 //     //pushUpdate([node]);
 
 //     //uiSaveNodes([nodeId]);
 // }
-
-
-
-function getCorrectionOrder(order)
-{
-    switch (order)
-    {
-        case 0: return [0, 1, 2];
-        case 1: return [1, 0, 2];
-        case 2: return [1, 2, 0];
-        case 3: return [0, 2, 1];
-        case 4: return [2, 0, 1];
-        case 5: return [2, 1, 0];
-    }
-}
-
-
-
-function addValidateSymbol(name)
-{
-    return /*'<span class="asterisk">±&thinsp;</span>' + */name;
-}
