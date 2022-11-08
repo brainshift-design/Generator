@@ -63,20 +63,6 @@ extends ShapeBaseValue
 
 
 
-    toFigmaObject()
-    {
-        return {
-            type:   LINE,
-            id:     0,
-            x:      this.x     .value,
-            y:      this.y     .value,
-            width:  this.width .value,
-            angle:  this.angle .value,
-        };
-    }
-
-
-
     toString()
     {
         return      this.x     .toString()

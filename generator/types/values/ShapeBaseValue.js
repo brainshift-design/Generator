@@ -44,21 +44,6 @@ extends GValue
 
 
 
-    toFigmaObject()
-    {
-        return {
-            nodeId: this.nodeId//,
-
-            // fills:  this.fill.isValid() 
-            //         ? this.fill.toFigma() 
-            //         : [],
-            
-            // ...this.stroke.toFigma()
-        }
-    }
-
-
-
     // toString()
     // {
     //     return      this.fill  .toString()

@@ -5182,7 +5182,7 @@ class GValue
     {
         this.type     = type;
        
-        this.valid    = true;
+        this.valid    = false;
         this.topLevel = false;
 
         this.options  = options;
@@ -5376,7 +5376,6 @@ class FigmaObject
     id          = 0;
 
     fills       = [];
- 
     strokeFills = [];
 
     strokeWeight;
@@ -5399,7 +5398,6 @@ class FigmaObject
         this.id           = base.id;
                
         this.fills        = clone(base.fills);
-
         this.strokeFills  = clone(base.strokeFills);
 
         this.strokeWeight = base.strokeWeight;
@@ -5465,7 +5463,7 @@ extends FigmaObject
 
     constructor(x, y, width, angle)
     {
-        super(RECTANGLE);
+        super(LINE);
         
         this.x      = x;
         this.y      = y;
@@ -5477,26 +5475,152 @@ extends FigmaObject
 
     copy()
     {
-        const rect = new FigmaLine(
+        const line = new FigmaLine(
             this.x,
             this.y,
             this.width,
             this.angle);
 
-        rect.copyBase(this);
+        line.copyBase(this);
 
-        return rect;
+        return line;
     }
 }
 
 
+class FigmaEllipse
+extends FigmaObject
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
 
 
 
+    constructor(x, y, width, height, angle)
+    {
+        super(ELLIPSE);
+        
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+        this.angle  = angle;
+    }
 
 
 
+    copy()
+    {
+        const ellipse = new FigmaEllipse(
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            this.angle);
 
+        ellipse.copyBase(this);
+
+        return ellipse;
+    }
+}
+
+
+class FigmaPolygon
+extends FigmaObject
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    corners;
+
+
+
+    constructor(x, y, width, height, angle, round, corners)
+    {
+        super(POLYGON);
+        
+        this.x       = x;
+        this.y       = y;
+        this.width   = width;
+        this.height  = height;
+        this.angle   = angle;
+        this.round   = round;
+        this.corners = corners;
+    }
+
+
+
+    copy()
+    {
+        const poly = new FigmaPolygon(
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            this.angle,
+            this.round,
+            this.corners);
+
+        poly.copyBase(this);
+
+        return poly;
+    }
+}
+
+
+class FigmaStar
+extends FigmaObject
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    points;
+    convex;
+
+
+
+    constructor(x, y, width, height, angle, round, points, convex)
+    {
+        super(STAR);
+        
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+        this.angle  = angle;
+        this.round  = round;
+        this.points = points;
+        this.convex = convex;
+    }
+
+
+
+    copy()
+    {
+        const star = new FigmaStar(
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            this.angle,
+            this.round,
+            this.points,
+            this.convex);
+
+        star.copyBase(this);
+
+        return star;
+    }
+}
 
 
 class NumberValue
@@ -6296,21 +6420,6 @@ extends GValue
 
 
 
-    toFigmaObject()
-    {
-        return {
-            nodeId: this.nodeId//,
-
-            // fills:  this.fill.isValid() 
-            //         ? this.fill.toFigma() 
-            //         : [],
-            
-            // ...this.stroke.toFigma()
-        }
-    }
-
-
-
     // toString()
     // {
     //     return      this.fill  .toString()
@@ -6411,22 +6520,6 @@ extends ShapeBaseValue
     toValue()
     {
         return this.copy();
-    }
-
-
-
-    toFigmaObject()
-    {
-        return {
-            type:   RECTANGLE,
-            id:     0,
-            x:      this.x     .value,
-            y:      this.y     .value,
-            width:  this.width .value,
-            height: this.height.value,
-            angle:  this.angle .value,
-            round:  Math.max(0, this.round.value)
-        };
     }
 
 
@@ -6574,20 +6667,6 @@ extends ShapeBaseValue
 
 
 
-    toFigmaObject()
-    {
-        return {
-            type:   LINE,
-            id:     0,
-            x:      this.x     .value,
-            y:      this.y     .value,
-            width:  this.width .value,
-            angle:  this.angle .value,
-        };
-    }
-
-
-
     toString()
     {
         return      this.x     .toString()
@@ -6635,7 +6714,7 @@ function parseLineValue(str)
 
 
 class EllipseValue
-extends GValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -6645,21 +6724,20 @@ extends GValue
 
 
 
-    constructor(x      = new NumberValue(0), 
+    constructor(nodeId,
+                x      = new NumberValue(0), 
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
                 angle  = new NumberValue(0))
     {
-        super(ELLIPSE_VALUE);
+        super(ELLIPSE_VALUE, nodeId);
 
         this.x      = x;
         this.y      = y;
         this.width  = width;
         this.height = height;
         this.angle  = angle;
-
-        this.valid  = true;
     }
 
 
@@ -6709,7 +6787,19 @@ extends GValue
 
 
 
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.height.toDisplayString()
+            + ' ' + this.angle .toDisplayString();
+    }
+
+
+
     static NaN = new EllipseValue(
+        '',
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -6737,7 +6827,7 @@ function parseEllipseValue(str)
 
 
 class PolygonValue
-extends GValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -6749,7 +6839,8 @@ extends GValue
 
 
 
-    constructor(x       = new NumberValue(0), 
+    constructor(nodeId,
+                x       = new NumberValue(0), 
                 y       = new NumberValue(0), 
                 width   = new NumberValue(0), 
                 height  = new NumberValue(0), 
@@ -6757,7 +6848,7 @@ extends GValue
                 round   = new NumberValue(0), 
                 corners = new NumberValue(0))
     {
-        super(POLYGON_VALUE);
+        super(POLYGON_VALUE, nodeId);
 
         this.x       = x;
         this.y       = y;
@@ -6766,15 +6857,13 @@ extends GValue
         this.angle   = angle;
         this.round   = round;
         this.corners = corners;
-
-        this.valid  = true;
     }
 
 
 
     copy()
     {
-        const val = new PolygonValue(
+        const poly = new PolygonValue(
             this.x      .copy(), 
             this.y      .copy(), 
             this.width  .copy(), 
@@ -6783,9 +6872,16 @@ extends GValue
             this.round  .copy(), 
             this.corners.copy());
     
-        val.copyBase(this);
+        poly.copyBase(this);
 
-        return val;
+        return poly;
+    }
+
+
+
+    eval(parse)
+    {
+        return this;
     }
 
 
@@ -6803,9 +6899,9 @@ extends GValue
 
 
 
-    eval(parse)
+    toValue()
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -6823,7 +6919,21 @@ extends GValue
 
 
 
+    toDisplayString()
+    {
+        return      this.x      .toDisplayString()
+            + ' ' + this.y      .toDisplayString()
+            + ' ' + this.width  .toDisplayString()
+            + ' ' + this.height .toDisplayString()
+            + ' ' + this.angle  .toDisplayString()
+            + ' ' + this.round  .toDisplayString()
+            + ' ' + this.corners.toDisplayString();
+    }
+
+
+
     static NaN = new PolygonValue(
+        '',
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -6840,22 +6950,23 @@ function parsePolygonValue(str)
     if (str == INVALID)
         return PolygonValue.NaN;
 
-    const rect = str.split(' ');
+    const poly = str.split(' ');
 
     return new PolygonValue(
-        new NumberValue(parseNumberValue(rect[0])),
-        new NumberValue(parseNumberValue(rect[1])),
-        new NumberValue(parseNumberValue(rect[2])),
-        new NumberValue(parseNumberValue(rect[3])),
-        new NumberValue(parseNumberValue(rect[4])),
-        new NumberValue(parseNumberValue(rect[5])),
-        new NumberValue(parseNumberValue(rect[6])));
+        '',
+        new NumberValue(parseNumberValue(poly[0])),
+        new NumberValue(parseNumberValue(poly[1])),
+        new NumberValue(parseNumberValue(poly[2])),
+        new NumberValue(parseNumberValue(poly[3])),
+        new NumberValue(parseNumberValue(poly[4])),
+        new NumberValue(parseNumberValue(poly[5])),
+        new NumberValue(parseNumberValue(poly[6])));
 }
 
 
 
 class StarValue
-extends GValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -6868,7 +6979,8 @@ extends GValue
 
 
 
-    constructor(x      = new NumberValue(0), 
+    constructor(nodeId,
+                x      = new NumberValue(0), 
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
@@ -6877,7 +6989,7 @@ extends GValue
                 points = new NumberValue(0),
                 convex = new NumberValue(0))
     {
-        super(STAR_VALUE);
+        super(STAR_VALUE, nodeId);
 
         this.x      = x;
         this.y      = y;
@@ -6887,15 +6999,13 @@ extends GValue
         this.round  = round;
         this.points = points;
         this.convex = convex;
-
-        this.valid  = true;
     }
 
 
 
     copy()
     {
-        const val = new StarValue(
+        const star = new StarValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -6905,9 +7015,16 @@ extends GValue
             this.points.copy(),
             this.convex.copy());
 
-        val.copyBase(this);
+        star.copyBase(this);
 
-        return val;
+        return star;
+    }
+
+
+
+    eval(parse)
+    {
+        return this;
     }
 
 
@@ -6925,10 +7042,10 @@ extends GValue
     }
 
 
-
-    eval(parse)
+    
+    toValue()
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -6947,7 +7064,22 @@ extends GValue
 
 
 
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.height.toDisplayString()
+            + ' ' + this.angle .toDisplayString()
+            + ' ' + this.round .toDisplayString()
+            + ' ' + this.points.toDisplayString()
+            + ' ' + this.convex.toDisplayString();
+    }
+
+
+
     static NaN = new StarValue(
+        '',
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -6965,17 +7097,17 @@ function parseStarValue(str)
     if (str == INVALID)
         return StarValue.NaN;
 
-    const rect = str.split(' ');
+    const star = str.split(' ');
 
     return new StarValue(
-        new NumberValue(parseNumberValue(rect[0])),
-        new NumberValue(parseNumberValue(rect[1])),
-        new NumberValue(parseNumberValue(rect[2])),
-        new NumberValue(parseNumberValue(rect[3])),
-        new NumberValue(parseNumberValue(rect[4])),
-        new NumberValue(parseNumberValue(rect[5])),
-        new NumberValue(parseNumberValue(rect[6])),
-        new NumberValue(parseNumberValue(rect[7])));
+        new NumberValue(parseNumberValue(star[0])),
+        new NumberValue(parseNumberValue(star[1])),
+        new NumberValue(parseNumberValue(star[2])),
+        new NumberValue(parseNumberValue(star[3])),
+        new NumberValue(parseNumberValue(star[4])),
+        new NumberValue(parseNumberValue(star[5])),
+        new NumberValue(parseNumberValue(star[6])),
+        new NumberValue(parseNumberValue(star[7])));
 }
 
 
@@ -9258,12 +9390,12 @@ extends GShapeBase
             this.objects = 
             [
                 new FigmaRectangle(
-                            this.x     .toValue().value,
-                            this.y     .toValue().value,
-                            this.width .toValue().value,
-                            this.height.toValue().value,
-                            this.angle .toValue().value,
-                Math.max(0, this.round .toValue().value))
+                                this.x     .toValue().value,
+                                this.y     .toValue().value,
+                                this.width .toValue().value,
+                                this.height.toValue().value,
+                                this.angle .toValue().value,
+                    Math.max(0, this.round .toValue().value))
             ];
         }
 
@@ -9300,7 +9432,7 @@ extends GShapeBase
 
 
 class GLine
-extends GOperator
+extends GShapeBase
 {
     input  = null;
 
@@ -9389,10 +9521,10 @@ extends GOperator
             this.objects = 
             [
                 new FigmaLine(
-                    this.x     .toValue().value,
-                    this.y     .toValue().value,
-                    this.width .toValue().value,
-                    this.angle .toValue().value)
+                    this.x    .toValue().value,
+                    this.y    .toValue().value,
+                    this.width.toValue().value,
+                    this.angle.toValue().value)
             ];
         }
 
@@ -9404,10 +9536,10 @@ extends GOperator
 
     isValid()
     {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.angle .isValid();
+        return this.x    .isValid()
+            && this.y    .isValid()
+            && this.width.isValid()
+            && this.angle.isValid();
     }
 
 
@@ -9425,7 +9557,7 @@ extends GOperator
 
 
 class GEllipse
-extends GOperator
+extends GShapeBase
 {
     input  = null;
 
@@ -9446,103 +9578,119 @@ extends GOperator
 
     copy()
     {
-        const elps = new GEllipse(this.nodeId, this.options);
+        const ellipse = new GEllipse(this.nodeId, this.options);
 
-        elps.copyBase(this);
+        ellipse.copyBase(this);
 
         if (this.input) 
-            elps.input = this.input.copy();
+            ellipse.input = this.input.copy();
 
-        if (this.x     ) elps.x      = this.x     .copy();
-        if (this.y     ) elps.y      = this.y     .copy();
-        if (this.width ) elps.width  = this.width .copy();
-        if (this.height) elps.height = this.height.copy();
-        if (this.angle ) elps.angle  = this.angle .copy();
+        if (this.x     ) ellipse.x      = this.x     .copy();
+        if (this.y     ) ellipse.y      = this.y     .copy();
+        if (this.width ) ellipse.width  = this.width .copy();
+        if (this.height) ellipse.height = this.height.copy();
+        if (this.angle ) ellipse.angle  = this.angle .copy();
 
-        elps.copyBase(this);
-        
-        return elps;
+        return ellipse;
     }
 
 
-
-    isValid()
-    {
-        return this.input
-               ? this.input.isValid()
-               : (   this.x     .isValid()
-                  && this.y     .isValid()
-                  && this.width .isValid()
-                  && this.height.isValid()
-                  && this.angle .isValid());
-    }
-
-    
 
     eval(parse)
     {
-        if (!this.valid)
-        {
-            this.result = new EllipseValue();
+        if (this.valid)
+            return this;
 
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-
-                console.assert(
-                    this.result.type == ELLIPSE_VALUE, 
-                    'this.result.type must be ELLIPSE_VALUE');
-
-                if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
-                if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
-                if (this.width ) this.result.width  = this.width .eval(parse).copy();
-                if (this.height) this.result.height = this.height.eval(parse).copy();
-                if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
-            }
-            else
-            {
-                this.result.x      = this.x     .eval(parse).copy();
-                this.result.y      = this.y     .eval(parse).copy();
-                this.result.width  = this.width .eval(parse).copy();
-                this.result.height = this.height.eval(parse).copy();
-                this.result.angle  = this.angle .eval(parse).copy();
-            }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-           
             
-            genPushUpdateValue(parse, this.nodeId, ELLIPSE_VALUE, this.result);
+        if (this.input)
+            this.input = this.input.eval(parse).copy();
+
+        const hasInput =     
+               this.input 
+            && ELLIPSE_TYPES.includes(this.input.type);   
+
+            
+        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x     .copy();
+        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y     .copy();
+        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width .copy();
+        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height.copy();
+        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
+
+        
+        if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
+        if (this.y     ) genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
+        if (this.width ) genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
+        if (this.height) genPushUpdateValue(parse, this.nodeId, 'height', this.height.toValue());
+        if (this.angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
 
 
-            if (this.options)
-            {
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    { 
-                        nodeId: this.nodeId,          
-                        type:   ELLIPSE,
-                        id:     0,
-                        x:      this.result.x     .value,
-                        y:      this.result.y     .value,
-                        width:  this.result.width .value,
-                        height: this.result.height.value,
-                        angle:  this.result.angle .value
-                    });
-            }
-        }
+        if (    hasInput
+            && !this.options) this.objects = this.input.objects;
+        else                  this.evalObjects();
 
+
+        this.valid = true;
 
         return this;
-    }
+   }
+
+
+
+   evalObjects()
+   {
+       if (!this.options.enabled)
+           return;
+           
+           
+       if (   this.x 
+           && this.y 
+           && this.width 
+           && this.height 
+           && this.angle)
+       {
+           this.objects = 
+           [
+               new FigmaEllipse(
+                               this.x     .toValue().value,
+                               this.y     .toValue().value,
+                               this.width .toValue().value,
+                               this.height.toValue().value,
+                               this.angle .toValue().value)
+           ];
+       }
+
+       
+       super.evalObjects();
+   }
+
+
+
+   isValid()
+   {
+       return this.x     .isValid()
+           && this.y     .isValid()
+           && this.width .isValid()
+           && this.height.isValid()
+           && this.angle .isValid();
+   }
+
+
+
+   toValue()
+   {
+       return new EllipseValue(
+           this.id,
+           this.x     .toValue(),
+           this.y     .toValue(),
+           this.width .toValue(),
+           this.height.toValue(),
+           this.angle .toValue());
+   }
 }
 
 
 class GPolygon
-extends GOperator
+extends GShapeBase
 {
     input   = null;
 
@@ -9580,98 +9728,118 @@ extends GOperator
         if (this.round  ) poly.round   = this.round  .copy();
         if (this.corners) poly.corners = this.corners.copy();
 
-        poly.copyBase(this);
-
         return poly;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+            
+        if (this.input)
+            this.input = this.input.eval(parse).copy();
+
+        const hasInput =     
+               this.input 
+            && POLYGON_TYPES.includes(this.input.type);   
+
+             
+        if (this.x      ) this.x       = this.x      .eval(parse).copy(); else if (hasInput) this.x       = this.input.x      .copy();
+        if (this.y      ) this.y       = this.y      .eval(parse).copy(); else if (hasInput) this.y       = this.input.y      .copy();
+        if (this.width  ) this.width   = this.width  .eval(parse).copy(); else if (hasInput) this.width   = this.input.width  .copy();
+        if (this.height ) this.height  = this.height .eval(parse).copy(); else if (hasInput) this.height  = this.input.height .copy();
+        if (this.angle  ) this.angle   = this.angle  .eval(parse).copy(); else if (hasInput) this.angle   = this.input.angle  .copy();
+        if (this.round  ) this.round   = this.round  .eval(parse).copy(); else if (hasInput) this.round   = this.input.round  .copy();
+        if (this.corners) this.corners = this.corners.eval(parse).copy(); else if (hasInput) this.corners = this.input.corners.copy();
+
+        
+        if (this.x      ) genPushUpdateValue(parse, this.nodeId, 'x',       this.x      .toValue());
+        if (this.y      ) genPushUpdateValue(parse, this.nodeId, 'y',       this.y      .toValue());
+        if (this.width  ) genPushUpdateValue(parse, this.nodeId, 'width',   this.width  .toValue());
+        if (this.height ) genPushUpdateValue(parse, this.nodeId, 'height',  this.height .toValue());
+        if (this.angle  ) genPushUpdateValue(parse, this.nodeId, 'angle',   this.angle  .toValue());
+        if (this.round  ) genPushUpdateValue(parse, this.nodeId, 'round',   this.round  .toValue());
+        if (this.corners) genPushUpdateValue(parse, this.nodeId, 'corners', this.corners.toValue());
+
+
+        if (    hasInput
+            && !this.options) this.objects = this.input.objects;
+        else                  this.evalObjects();
+
+
+        this.valid = true;
+
+        return this;
+    }
+
+
+
+    evalObjects()
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        if (   this.x 
+            && this.y 
+            && this.width 
+            && this.height 
+            && this.angle 
+            && this.round
+            && this.corners)
+        {
+            this.objects = 
+            [
+                new FigmaPolygon(
+                                this.x      .toValue().value,
+                                this.y      .toValue().value,
+                                this.width  .toValue().value,
+                                this.height .toValue().value,
+                                this.angle  .toValue().value,
+                    Math.max(0, this.round  .toValue().value),
+                                this.corners.toValue().value)
+            ];
+        }
+
+        
+        super.evalObjects();
     }
 
 
 
     isValid()
     {
-        return this.input
-               ? this.input.isValid()
-               : (   this.x      .isValid()
-                  && this.y      .isValid()
-                  && this.width  .isValid()
-                  && this.height .isValid()
-                  && this.angle  .isValid()
-                  && this.round  .isValid()
-                  && this.corners.isValid());
+        return this.x      .isValid()
+            && this.y      .isValid()
+            && this.width  .isValid()
+            && this.height .isValid()
+            && this.angle  .isValid()
+            && this.round  .isValid()
+            && this.corners.isValid();
     }
 
-    
 
-    eval(parse)
+
+    toValue()
     {
-        if (!this.valid)
-        {
-            this.result = new PolygonValue();
-
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-                
-                console.assert(
-                    this.result.type == POLYGON_VALUE, 
-                    'this.result.type must be POLYGON_VALUE');
-
-                if (this.x      ) this.result.x       = this.x      .eval(parse).copy();
-                if (this.y      ) this.result.y       = this.y      .eval(parse).copy();
-                if (this.width  ) this.result.width   = this.width  .eval(parse).copy();
-                if (this.height ) this.result.height  = this.height .eval(parse).copy();
-                if (this.angle  ) this.result.angle   = this.angle  .eval(parse).copy();
-                if (this.round  ) this.result.round   = this.round  .eval(parse).copy();
-                if (this.corners) this.result.corners = this.corners.eval(parse).copy();
-            }
-            else
-            {
-                this.result.x       = this.x      .eval(parse).copy();
-                this.result.y       = this.y      .eval(parse).copy();
-                this.result.width   = this.width  .eval(parse).copy();
-                this.result.height  = this.height .eval(parse).copy();
-                this.result.angle   = this.angle  .eval(parse).copy();
-                this.result.round   = this.round  .eval(parse).copy();
-                this.result.corners = this.corners.eval(parse).copy();
-            }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-           
-            
-            genPushUpdateValue(parse, this.nodeId, POLYGON_VALUE, this.result);
-
-
-            if (this.options)
-            {
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    { 
-                        nodeId:  this.nodeId,          
-                        type:    POLYGON,
-                        id:      0,
-                        x:       this.result.x     .value,
-                        y:       this.result.y     .value,
-                        width:   this.result.width .value,
-                        height:  this.result.height.value,
-                        angle:   this.result.angle .value,
-                        round:   Math.max(0, this.result.round.value),
-                        corners: this.result.corners.value
-                    });
-            }
-        }
-
-
-        return this;
+        return new PolygonValue(
+            this.id,
+            this.x      .toValue(),
+            this.y      .toValue(),
+            this.width  .toValue(),
+            this.height .toValue(),
+            this.angle  .toValue(),
+            this.round  .toValue(),
+            this.corners.toValue());
     }
 }
 
 
 class GStar
-extends GOperator
+extends GShapeBase
 {
     input  = null;
 
@@ -9711,98 +9879,119 @@ extends GOperator
         if (this.points) star.points = this.points.copy();
         if (this.convex) star.convex = this.convex.copy();
 
-        star.copyBase(this);
-
         return star;
     }
 
 
 
-    isValid()
-    {
-        return this.input
-               ? this.input.isValid()
-               : (   this.x     .isValid()
-                  && this.y     .isValid()
-                  && this.width .isValid()
-                  && this.height.isValid()
-                  && this.angle .isValid()
-                  && this.round .isValid()
-                  && this.points.isValid()
-                  && this.convex.isValid());
-    }
-
-    
-
     eval(parse)
     {
+        if (this.valid)
+            return this;
 
-        if (!this.valid)
-        {
-            this.result = new StarValue();
-
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-
-                console.assert(
-                    this.result.type == STAR_VALUE, 
-                    'this.result.type must be STAR_VALUE');
-
-                if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
-                if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
-                if (this.width ) this.result.width  = this.width .eval(parse).copy();
-                if (this.height) this.result.height = this.height.eval(parse).copy();
-                if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
-                if (this.round ) this.result.round  = this.round .eval(parse).copy();
-                if (this.points) this.result.points = this.points.eval(parse).copy();
-                if (this.convex) this.result.convex = this.convex.eval(parse).copy();
-            }
-            else
-            {
-                this.result.x      = this.x     .eval(parse).copy();
-                this.result.y      = this.y     .eval(parse).copy();
-                this.result.width  = this.width .eval(parse).copy();
-                this.result.height = this.height.eval(parse).copy();
-                this.result.angle  = this.angle .eval(parse).copy();
-                this.result.round  = this.round .eval(parse).copy();
-                this.result.points = this.points.eval(parse).copy();
-                this.result.convex = this.convex.eval(parse).copy();
-            }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-           
             
-            genPushUpdateValue(parse, this.nodeId, STAR_VALUE, this.result);
+        if (this.input)
+            this.input = this.input.eval(parse).copy();
+
+        const hasInput =     
+               this.input 
+            && STAR_TYPES.includes(this.input.type);   
+
+             
+        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x     .copy();
+        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y     .copy();
+        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width .copy();
+        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height.copy();
+        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
+        if (this.round ) this.round  = this.round .eval(parse).copy(); else if (hasInput) this.round  = this.input.round .copy();
+        if (this.points) this.points = this.points.eval(parse).copy(); else if (hasInput) this.points = this.input.points.copy();
+        if (this.convex) this.convex = this.convex.eval(parse).copy(); else if (hasInput) this.convex = this.input.convex.copy();
+
+        
+        if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
+        if (this.y     ) genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
+        if (this.width ) genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
+        if (this.height) genPushUpdateValue(parse, this.nodeId, 'height', this.height.toValue());
+        if (this.angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
+        if (this.round ) genPushUpdateValue(parse, this.nodeId, 'round',  this.round .toValue());
+        if (this.points) genPushUpdateValue(parse, this.nodeId, 'points', this.points.toValue());
+        if (this.convex) genPushUpdateValue(parse, this.nodeId, 'convex', this.convex.toValue());
 
 
-            if (this.options.active)
-            {
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    { 
-                        nodeId: this.nodeId,          
-                        type:   STAR,
-                        id:     0,
-                        x:      this.result.x     .value,
-                        y:      this.result.y     .value,
-                        width:  this.result.width .value,
-                        height: this.result.height.value,
-                        angle:  this.result.angle .value,
-                        round:  Math.max(0, this.result.round.value),
-                        points: this.result.points.value,
-                        convex: this.result.convex.value
-                    });
-            }
-        }
+        if (    hasInput
+            && !this.options) this.objects = this.input.objects;
+        else                  this.evalObjects();
 
+
+        this.valid = true;
 
         return this;
-    }
+   }
+
+
+
+   evalObjects()
+   {
+       if (!this.options.enabled)
+           return;
+           
+           
+       if (   this.x 
+           && this.y 
+           && this.width 
+           && this.height 
+           && this.angle 
+           && this.round
+           && this.points
+           && this.convex)
+       {
+           this.objects = 
+           [
+               new FigmaStar(
+                               this.x     .toValue().value,
+                               this.y     .toValue().value,
+                               this.width .toValue().value,
+                               this.height.toValue().value,
+                               this.angle .toValue().value,
+                   Math.max(0, this.round .toValue().value),
+                               this.points.toValue().value,
+                               this.convex.toValue().value)
+           ];
+       }
+
+       
+       super.evalObjects();
+   }
+
+
+
+   isValid()
+   {
+       return this.x     .isValid()
+           && this.y     .isValid()
+           && this.width .isValid()
+           && this.height.isValid()
+           && this.angle .isValid()
+           && this.round .isValid()
+           && this.points.isValid()
+           && this.convex.isValid();
+   }
+
+
+
+   toValue()
+   {
+       return new StarValue(
+           this.id,
+           this.x     .toValue(),
+           this.y     .toValue(),
+           this.width .toValue(),
+           this.height.toValue(),
+           this.angle .toValue(),
+           this.round .toValue(),
+           this.points.toValue(),
+           this.convex.toValue());
+   }
 }
 
 
@@ -11244,7 +11433,7 @@ function genParseLine(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
   
-    let line = new GLine(nodeId, options);
+    const line = new GLine(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -11299,16 +11488,16 @@ function genParseEllipse(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const elps = new GEllipse(nodeId, options);
+    const ellipse = new GEllipse(nodeId, options);
 
 
     if (parse.settings.logRequests) 
-        logReqShape(elps, parse);
+        logReqShape(ellipse, parse);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, elps);
+        genParseNodeEnd(parse, ellipse);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -11316,36 +11505,36 @@ function genParseEllipse(parse)
     parse.nTab++;
 
 
-    let paramIds;
+    if (    ELLIPSE_TYPES.includes(parse.next)
+        || PROPERTY_TYPES.includes(parse.next))
+        ellipse.input = genParse(parse);
 
-    if (   parse.next == ELLIPSE_VALUE
-        || parse.next == ELLIPSE)
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
     {
-        elps.input = genParse(parse); // not genParseEllipse() because genParse() handles stack overflow
-        paramIds   = parse.move().split(',');
-    }
-    else
-        paramIds = ['x', 'y', 'width', 'height', 'angle'];
+        const paramId = genParseParamId(parse);
 
+        parse.inParam = true;
 
-    for (const id of paramIds)
-    {
-        switch (id)
+        switch (paramId)
         {
-        case 'x':      elps.x      = genParse(parse); break;
-        case 'y':      elps.y      = genParse(parse); break;
-        case 'width':  elps.width  = genParse(parse); break;
-        case 'height': elps.height = genParse(parse); break;
-        case 'angle':  elps.angle  = genParse(parse); break;
+        case 'x':      ellipse.x      = genParse(parse); break;
+        case 'y':      ellipse.y      = genParse(parse); break;
+        case 'width':  ellipse.width  = genParse(parse); break;
+        case 'height': ellipse.height = genParse(parse); break;
+        case 'angle':  ellipse.angle  = genParse(parse); break;
         }
     }
-
-
+    
+    
+    parse.inParam = false;
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, elps);
-    return elps;
+    genParseNodeEnd(parse, ellipse);
+    return ellipse;
 }
 
 
@@ -11372,21 +11561,20 @@ function genParsePolygon(parse)
     parse.nTab++;
 
 
-    let paramIds;
+    if (    POLYGON_TYPES.includes(parse.next)
+        || PROPERTY_TYPES.includes(parse.next))
+        poly.input = genParse(parse);
 
-    if (   parse.next == POLYGON_VALUE
-        || parse.next == POLYGON)
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
     {
-        poly.input = genParse(parse); // not genParsePolygon() because genParse() handles stack overflow
-        paramIds   = parse.move().split(',');
-    }
-    else
-        paramIds = ['x', 'y', 'width', 'height', 'angle', 'round', 'corners'];
+        const paramId = genParseParamId(parse);
 
+        parse.inParam = true;
 
-    for (const id of paramIds)
-    {
-        switch (id)
+        switch (paramId)
         {
         case 'x':       poly.x       = genParse(parse); break;
         case 'y':       poly.y       = genParse(parse); break;
@@ -11397,8 +11585,9 @@ function genParsePolygon(parse)
         case 'corners': poly.corners = genParse(parse); break;
         }
     }
-
-
+    
+    
+    parse.inParam = false;
     parse.nTab--;
 
 
@@ -11430,21 +11619,20 @@ function genParseStar(parse)
     parse.nTab++;
 
 
-    let paramIds;
+    if (       STAR_TYPES.includes(parse.next)
+        || PROPERTY_TYPES.includes(parse.next))
+        star.input = genParse(parse);
 
-    if (   parse.next == STAR_VALUE
-        || parse.next == STAR)
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
     {
-        star.input = genParse(parse); // not genParseStar() because genParse() handles stack overflow
-        paramIds   = parse.move().split(',');
-    }
-    else
-        paramIds = ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex'];
+        const paramId = genParseParamId(parse);
 
+        parse.inParam = true;
 
-    for (const id of paramIds)
-    {
-        switch (id)
+        switch (paramId)
         {
         case 'x':      star.x      = genParse(parse); break;
         case 'y':      star.y      = genParse(parse); break;
@@ -11456,8 +11644,9 @@ function genParseStar(parse)
         case 'convex': star.convex = genParse(parse); break;
         }
     }
-
-
+    
+    
+    parse.inParam = false;
     parse.nTab--;
 
 
@@ -18934,7 +19123,7 @@ class GValue
     {
         this.type     = type;
        
-        this.valid    = true;
+        this.valid    = false;
         this.topLevel = false;
 
         this.options  = options;
@@ -19128,7 +19317,6 @@ class FigmaObject
     id          = 0;
 
     fills       = [];
- 
     strokeFills = [];
 
     strokeWeight;
@@ -19151,7 +19339,6 @@ class FigmaObject
         this.id           = base.id;
                
         this.fills        = clone(base.fills);
-
         this.strokeFills  = clone(base.strokeFills);
 
         this.strokeWeight = base.strokeWeight;
@@ -19217,7 +19404,7 @@ extends FigmaObject
 
     constructor(x, y, width, angle)
     {
-        super(RECTANGLE);
+        super(LINE);
         
         this.x      = x;
         this.y      = y;
@@ -19229,26 +19416,152 @@ extends FigmaObject
 
     copy()
     {
-        const rect = new FigmaLine(
+        const line = new FigmaLine(
             this.x,
             this.y,
             this.width,
             this.angle);
 
-        rect.copyBase(this);
+        line.copyBase(this);
 
-        return rect;
+        return line;
     }
 }
 
 
+class FigmaEllipse
+extends FigmaObject
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
 
 
 
+    constructor(x, y, width, height, angle)
+    {
+        super(ELLIPSE);
+        
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+        this.angle  = angle;
+    }
 
 
 
+    copy()
+    {
+        const ellipse = new FigmaEllipse(
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            this.angle);
 
+        ellipse.copyBase(this);
+
+        return ellipse;
+    }
+}
+
+
+class FigmaPolygon
+extends FigmaObject
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    corners;
+
+
+
+    constructor(x, y, width, height, angle, round, corners)
+    {
+        super(POLYGON);
+        
+        this.x       = x;
+        this.y       = y;
+        this.width   = width;
+        this.height  = height;
+        this.angle   = angle;
+        this.round   = round;
+        this.corners = corners;
+    }
+
+
+
+    copy()
+    {
+        const poly = new FigmaPolygon(
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            this.angle,
+            this.round,
+            this.corners);
+
+        poly.copyBase(this);
+
+        return poly;
+    }
+}
+
+
+class FigmaStar
+extends FigmaObject
+{
+    x;
+    y;
+    width;
+    height;
+    angle;
+    round;
+    points;
+    convex;
+
+
+
+    constructor(x, y, width, height, angle, round, points, convex)
+    {
+        super(STAR);
+        
+        this.x      = x;
+        this.y      = y;
+        this.width  = width;
+        this.height = height;
+        this.angle  = angle;
+        this.round  = round;
+        this.points = points;
+        this.convex = convex;
+    }
+
+
+
+    copy()
+    {
+        const star = new FigmaStar(
+            this.x,
+            this.y,
+            this.width,
+            this.height,
+            this.angle,
+            this.round,
+            this.points,
+            this.convex);
+
+        star.copyBase(this);
+
+        return star;
+    }
+}
 
 
 class NumberValue
@@ -20048,21 +20361,6 @@ extends GValue
 
 
 
-    toFigmaObject()
-    {
-        return {
-            nodeId: this.nodeId//,
-
-            // fills:  this.fill.isValid() 
-            //         ? this.fill.toFigma() 
-            //         : [],
-            
-            // ...this.stroke.toFigma()
-        }
-    }
-
-
-
     // toString()
     // {
     //     return      this.fill  .toString()
@@ -20163,22 +20461,6 @@ extends ShapeBaseValue
     toValue()
     {
         return this.copy();
-    }
-
-
-
-    toFigmaObject()
-    {
-        return {
-            type:   RECTANGLE,
-            id:     0,
-            x:      this.x     .value,
-            y:      this.y     .value,
-            width:  this.width .value,
-            height: this.height.value,
-            angle:  this.angle .value,
-            round:  Math.max(0, this.round.value)
-        };
     }
 
 
@@ -20326,20 +20608,6 @@ extends ShapeBaseValue
 
 
 
-    toFigmaObject()
-    {
-        return {
-            type:   LINE,
-            id:     0,
-            x:      this.x     .value,
-            y:      this.y     .value,
-            width:  this.width .value,
-            angle:  this.angle .value,
-        };
-    }
-
-
-
     toString()
     {
         return      this.x     .toString()
@@ -20387,7 +20655,7 @@ function parseLineValue(str)
 
 
 class EllipseValue
-extends GValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -20397,21 +20665,20 @@ extends GValue
 
 
 
-    constructor(x      = new NumberValue(0), 
+    constructor(nodeId,
+                x      = new NumberValue(0), 
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
                 angle  = new NumberValue(0))
     {
-        super(ELLIPSE_VALUE);
+        super(ELLIPSE_VALUE, nodeId);
 
         this.x      = x;
         this.y      = y;
         this.width  = width;
         this.height = height;
         this.angle  = angle;
-
-        this.valid  = true;
     }
 
 
@@ -20461,7 +20728,19 @@ extends GValue
 
 
 
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.height.toDisplayString()
+            + ' ' + this.angle .toDisplayString();
+    }
+
+
+
     static NaN = new EllipseValue(
+        '',
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -20489,7 +20768,7 @@ function parseEllipseValue(str)
 
 
 class PolygonValue
-extends GValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -20501,7 +20780,8 @@ extends GValue
 
 
 
-    constructor(x       = new NumberValue(0), 
+    constructor(nodeId,
+                x       = new NumberValue(0), 
                 y       = new NumberValue(0), 
                 width   = new NumberValue(0), 
                 height  = new NumberValue(0), 
@@ -20509,7 +20789,7 @@ extends GValue
                 round   = new NumberValue(0), 
                 corners = new NumberValue(0))
     {
-        super(POLYGON_VALUE);
+        super(POLYGON_VALUE, nodeId);
 
         this.x       = x;
         this.y       = y;
@@ -20518,15 +20798,13 @@ extends GValue
         this.angle   = angle;
         this.round   = round;
         this.corners = corners;
-
-        this.valid  = true;
     }
 
 
 
     copy()
     {
-        const val = new PolygonValue(
+        const poly = new PolygonValue(
             this.x      .copy(), 
             this.y      .copy(), 
             this.width  .copy(), 
@@ -20535,9 +20813,16 @@ extends GValue
             this.round  .copy(), 
             this.corners.copy());
     
-        val.copyBase(this);
+        poly.copyBase(this);
 
-        return val;
+        return poly;
+    }
+
+
+
+    eval(parse)
+    {
+        return this;
     }
 
 
@@ -20555,9 +20840,9 @@ extends GValue
 
 
 
-    eval(parse)
+    toValue()
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -20575,7 +20860,21 @@ extends GValue
 
 
 
+    toDisplayString()
+    {
+        return      this.x      .toDisplayString()
+            + ' ' + this.y      .toDisplayString()
+            + ' ' + this.width  .toDisplayString()
+            + ' ' + this.height .toDisplayString()
+            + ' ' + this.angle  .toDisplayString()
+            + ' ' + this.round  .toDisplayString()
+            + ' ' + this.corners.toDisplayString();
+    }
+
+
+
     static NaN = new PolygonValue(
+        '',
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -20592,22 +20891,23 @@ function parsePolygonValue(str)
     if (str == INVALID)
         return PolygonValue.NaN;
 
-    const rect = str.split(' ');
+    const poly = str.split(' ');
 
     return new PolygonValue(
-        new NumberValue(parseNumberValue(rect[0])),
-        new NumberValue(parseNumberValue(rect[1])),
-        new NumberValue(parseNumberValue(rect[2])),
-        new NumberValue(parseNumberValue(rect[3])),
-        new NumberValue(parseNumberValue(rect[4])),
-        new NumberValue(parseNumberValue(rect[5])),
-        new NumberValue(parseNumberValue(rect[6])));
+        '',
+        new NumberValue(parseNumberValue(poly[0])),
+        new NumberValue(parseNumberValue(poly[1])),
+        new NumberValue(parseNumberValue(poly[2])),
+        new NumberValue(parseNumberValue(poly[3])),
+        new NumberValue(parseNumberValue(poly[4])),
+        new NumberValue(parseNumberValue(poly[5])),
+        new NumberValue(parseNumberValue(poly[6])));
 }
 
 
 
 class StarValue
-extends GValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -20620,7 +20920,8 @@ extends GValue
 
 
 
-    constructor(x      = new NumberValue(0), 
+    constructor(nodeId,
+                x      = new NumberValue(0), 
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
@@ -20629,7 +20930,7 @@ extends GValue
                 points = new NumberValue(0),
                 convex = new NumberValue(0))
     {
-        super(STAR_VALUE);
+        super(STAR_VALUE, nodeId);
 
         this.x      = x;
         this.y      = y;
@@ -20639,15 +20940,13 @@ extends GValue
         this.round  = round;
         this.points = points;
         this.convex = convex;
-
-        this.valid  = true;
     }
 
 
 
     copy()
     {
-        const val = new StarValue(
+        const star = new StarValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -20657,9 +20956,16 @@ extends GValue
             this.points.copy(),
             this.convex.copy());
 
-        val.copyBase(this);
+        star.copyBase(this);
 
-        return val;
+        return star;
+    }
+
+
+
+    eval(parse)
+    {
+        return this;
     }
 
 
@@ -20677,10 +20983,10 @@ extends GValue
     }
 
 
-
-    eval(parse)
+    
+    toValue()
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -20699,7 +21005,22 @@ extends GValue
 
 
 
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.height.toDisplayString()
+            + ' ' + this.angle .toDisplayString()
+            + ' ' + this.round .toDisplayString()
+            + ' ' + this.points.toDisplayString()
+            + ' ' + this.convex.toDisplayString();
+    }
+
+
+
     static NaN = new StarValue(
+        '',
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -20717,17 +21038,17 @@ function parseStarValue(str)
     if (str == INVALID)
         return StarValue.NaN;
 
-    const rect = str.split(' ');
+    const star = str.split(' ');
 
     return new StarValue(
-        new NumberValue(parseNumberValue(rect[0])),
-        new NumberValue(parseNumberValue(rect[1])),
-        new NumberValue(parseNumberValue(rect[2])),
-        new NumberValue(parseNumberValue(rect[3])),
-        new NumberValue(parseNumberValue(rect[4])),
-        new NumberValue(parseNumberValue(rect[5])),
-        new NumberValue(parseNumberValue(rect[6])),
-        new NumberValue(parseNumberValue(rect[7])));
+        new NumberValue(parseNumberValue(star[0])),
+        new NumberValue(parseNumberValue(star[1])),
+        new NumberValue(parseNumberValue(star[2])),
+        new NumberValue(parseNumberValue(star[3])),
+        new NumberValue(parseNumberValue(star[4])),
+        new NumberValue(parseNumberValue(star[5])),
+        new NumberValue(parseNumberValue(star[6])),
+        new NumberValue(parseNumberValue(star[7])));
 }
 
 
@@ -23010,12 +23331,12 @@ extends GShapeBase
             this.objects = 
             [
                 new FigmaRectangle(
-                            this.x     .toValue().value,
-                            this.y     .toValue().value,
-                            this.width .toValue().value,
-                            this.height.toValue().value,
-                            this.angle .toValue().value,
-                Math.max(0, this.round .toValue().value))
+                                this.x     .toValue().value,
+                                this.y     .toValue().value,
+                                this.width .toValue().value,
+                                this.height.toValue().value,
+                                this.angle .toValue().value,
+                    Math.max(0, this.round .toValue().value))
             ];
         }
 
@@ -23052,7 +23373,7 @@ extends GShapeBase
 
 
 class GLine
-extends GOperator
+extends GShapeBase
 {
     input  = null;
 
@@ -23141,10 +23462,10 @@ extends GOperator
             this.objects = 
             [
                 new FigmaLine(
-                    this.x     .toValue().value,
-                    this.y     .toValue().value,
-                    this.width .toValue().value,
-                    this.angle .toValue().value)
+                    this.x    .toValue().value,
+                    this.y    .toValue().value,
+                    this.width.toValue().value,
+                    this.angle.toValue().value)
             ];
         }
 
@@ -23156,10 +23477,10 @@ extends GOperator
 
     isValid()
     {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.angle .isValid();
+        return this.x    .isValid()
+            && this.y    .isValid()
+            && this.width.isValid()
+            && this.angle.isValid();
     }
 
 
@@ -23177,7 +23498,7 @@ extends GOperator
 
 
 class GEllipse
-extends GOperator
+extends GShapeBase
 {
     input  = null;
 
@@ -23198,103 +23519,119 @@ extends GOperator
 
     copy()
     {
-        const elps = new GEllipse(this.nodeId, this.options);
+        const ellipse = new GEllipse(this.nodeId, this.options);
 
-        elps.copyBase(this);
+        ellipse.copyBase(this);
 
         if (this.input) 
-            elps.input = this.input.copy();
+            ellipse.input = this.input.copy();
 
-        if (this.x     ) elps.x      = this.x     .copy();
-        if (this.y     ) elps.y      = this.y     .copy();
-        if (this.width ) elps.width  = this.width .copy();
-        if (this.height) elps.height = this.height.copy();
-        if (this.angle ) elps.angle  = this.angle .copy();
+        if (this.x     ) ellipse.x      = this.x     .copy();
+        if (this.y     ) ellipse.y      = this.y     .copy();
+        if (this.width ) ellipse.width  = this.width .copy();
+        if (this.height) ellipse.height = this.height.copy();
+        if (this.angle ) ellipse.angle  = this.angle .copy();
 
-        elps.copyBase(this);
-        
-        return elps;
+        return ellipse;
     }
 
 
-
-    isValid()
-    {
-        return this.input
-               ? this.input.isValid()
-               : (   this.x     .isValid()
-                  && this.y     .isValid()
-                  && this.width .isValid()
-                  && this.height.isValid()
-                  && this.angle .isValid());
-    }
-
-    
 
     eval(parse)
     {
-        if (!this.valid)
-        {
-            this.result = new EllipseValue();
+        if (this.valid)
+            return this;
 
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-
-                console.assert(
-                    this.result.type == ELLIPSE_VALUE, 
-                    'this.result.type must be ELLIPSE_VALUE');
-
-                if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
-                if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
-                if (this.width ) this.result.width  = this.width .eval(parse).copy();
-                if (this.height) this.result.height = this.height.eval(parse).copy();
-                if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
-            }
-            else
-            {
-                this.result.x      = this.x     .eval(parse).copy();
-                this.result.y      = this.y     .eval(parse).copy();
-                this.result.width  = this.width .eval(parse).copy();
-                this.result.height = this.height.eval(parse).copy();
-                this.result.angle  = this.angle .eval(parse).copy();
-            }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-           
             
-            genPushUpdateValue(parse, this.nodeId, ELLIPSE_VALUE, this.result);
+        if (this.input)
+            this.input = this.input.eval(parse).copy();
+
+        const hasInput =     
+               this.input 
+            && ELLIPSE_TYPES.includes(this.input.type);   
+
+            
+        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x     .copy();
+        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y     .copy();
+        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width .copy();
+        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height.copy();
+        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
+
+        
+        if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
+        if (this.y     ) genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
+        if (this.width ) genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
+        if (this.height) genPushUpdateValue(parse, this.nodeId, 'height', this.height.toValue());
+        if (this.angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
 
 
-            if (this.options)
-            {
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    { 
-                        nodeId: this.nodeId,          
-                        type:   ELLIPSE,
-                        id:     0,
-                        x:      this.result.x     .value,
-                        y:      this.result.y     .value,
-                        width:  this.result.width .value,
-                        height: this.result.height.value,
-                        angle:  this.result.angle .value
-                    });
-            }
-        }
+        if (    hasInput
+            && !this.options) this.objects = this.input.objects;
+        else                  this.evalObjects();
 
+
+        this.valid = true;
 
         return this;
-    }
+   }
+
+
+
+   evalObjects()
+   {
+       if (!this.options.enabled)
+           return;
+           
+           
+       if (   this.x 
+           && this.y 
+           && this.width 
+           && this.height 
+           && this.angle)
+       {
+           this.objects = 
+           [
+               new FigmaEllipse(
+                               this.x     .toValue().value,
+                               this.y     .toValue().value,
+                               this.width .toValue().value,
+                               this.height.toValue().value,
+                               this.angle .toValue().value)
+           ];
+       }
+
+       
+       super.evalObjects();
+   }
+
+
+
+   isValid()
+   {
+       return this.x     .isValid()
+           && this.y     .isValid()
+           && this.width .isValid()
+           && this.height.isValid()
+           && this.angle .isValid();
+   }
+
+
+
+   toValue()
+   {
+       return new EllipseValue(
+           this.id,
+           this.x     .toValue(),
+           this.y     .toValue(),
+           this.width .toValue(),
+           this.height.toValue(),
+           this.angle .toValue());
+   }
 }
 
 
 class GPolygon
-extends GOperator
+extends GShapeBase
 {
     input   = null;
 
@@ -23332,98 +23669,118 @@ extends GOperator
         if (this.round  ) poly.round   = this.round  .copy();
         if (this.corners) poly.corners = this.corners.copy();
 
-        poly.copyBase(this);
-
         return poly;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+            
+        if (this.input)
+            this.input = this.input.eval(parse).copy();
+
+        const hasInput =     
+               this.input 
+            && POLYGON_TYPES.includes(this.input.type);   
+
+             
+        if (this.x      ) this.x       = this.x      .eval(parse).copy(); else if (hasInput) this.x       = this.input.x      .copy();
+        if (this.y      ) this.y       = this.y      .eval(parse).copy(); else if (hasInput) this.y       = this.input.y      .copy();
+        if (this.width  ) this.width   = this.width  .eval(parse).copy(); else if (hasInput) this.width   = this.input.width  .copy();
+        if (this.height ) this.height  = this.height .eval(parse).copy(); else if (hasInput) this.height  = this.input.height .copy();
+        if (this.angle  ) this.angle   = this.angle  .eval(parse).copy(); else if (hasInput) this.angle   = this.input.angle  .copy();
+        if (this.round  ) this.round   = this.round  .eval(parse).copy(); else if (hasInput) this.round   = this.input.round  .copy();
+        if (this.corners) this.corners = this.corners.eval(parse).copy(); else if (hasInput) this.corners = this.input.corners.copy();
+
+        
+        if (this.x      ) genPushUpdateValue(parse, this.nodeId, 'x',       this.x      .toValue());
+        if (this.y      ) genPushUpdateValue(parse, this.nodeId, 'y',       this.y      .toValue());
+        if (this.width  ) genPushUpdateValue(parse, this.nodeId, 'width',   this.width  .toValue());
+        if (this.height ) genPushUpdateValue(parse, this.nodeId, 'height',  this.height .toValue());
+        if (this.angle  ) genPushUpdateValue(parse, this.nodeId, 'angle',   this.angle  .toValue());
+        if (this.round  ) genPushUpdateValue(parse, this.nodeId, 'round',   this.round  .toValue());
+        if (this.corners) genPushUpdateValue(parse, this.nodeId, 'corners', this.corners.toValue());
+
+
+        if (    hasInput
+            && !this.options) this.objects = this.input.objects;
+        else                  this.evalObjects();
+
+
+        this.valid = true;
+
+        return this;
+    }
+
+
+
+    evalObjects()
+    {
+        if (!this.options.enabled)
+            return;
+            
+            
+        if (   this.x 
+            && this.y 
+            && this.width 
+            && this.height 
+            && this.angle 
+            && this.round
+            && this.corners)
+        {
+            this.objects = 
+            [
+                new FigmaPolygon(
+                                this.x      .toValue().value,
+                                this.y      .toValue().value,
+                                this.width  .toValue().value,
+                                this.height .toValue().value,
+                                this.angle  .toValue().value,
+                    Math.max(0, this.round  .toValue().value),
+                                this.corners.toValue().value)
+            ];
+        }
+
+        
+        super.evalObjects();
     }
 
 
 
     isValid()
     {
-        return this.input
-               ? this.input.isValid()
-               : (   this.x      .isValid()
-                  && this.y      .isValid()
-                  && this.width  .isValid()
-                  && this.height .isValid()
-                  && this.angle  .isValid()
-                  && this.round  .isValid()
-                  && this.corners.isValid());
+        return this.x      .isValid()
+            && this.y      .isValid()
+            && this.width  .isValid()
+            && this.height .isValid()
+            && this.angle  .isValid()
+            && this.round  .isValid()
+            && this.corners.isValid();
     }
 
-    
 
-    eval(parse)
+
+    toValue()
     {
-        if (!this.valid)
-        {
-            this.result = new PolygonValue();
-
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-                
-                console.assert(
-                    this.result.type == POLYGON_VALUE, 
-                    'this.result.type must be POLYGON_VALUE');
-
-                if (this.x      ) this.result.x       = this.x      .eval(parse).copy();
-                if (this.y      ) this.result.y       = this.y      .eval(parse).copy();
-                if (this.width  ) this.result.width   = this.width  .eval(parse).copy();
-                if (this.height ) this.result.height  = this.height .eval(parse).copy();
-                if (this.angle  ) this.result.angle   = this.angle  .eval(parse).copy();
-                if (this.round  ) this.result.round   = this.round  .eval(parse).copy();
-                if (this.corners) this.result.corners = this.corners.eval(parse).copy();
-            }
-            else
-            {
-                this.result.x       = this.x      .eval(parse).copy();
-                this.result.y       = this.y      .eval(parse).copy();
-                this.result.width   = this.width  .eval(parse).copy();
-                this.result.height  = this.height .eval(parse).copy();
-                this.result.angle   = this.angle  .eval(parse).copy();
-                this.result.round   = this.round  .eval(parse).copy();
-                this.result.corners = this.corners.eval(parse).copy();
-            }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-           
-            
-            genPushUpdateValue(parse, this.nodeId, POLYGON_VALUE, this.result);
-
-
-            if (this.options)
-            {
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    { 
-                        nodeId:  this.nodeId,          
-                        type:    POLYGON,
-                        id:      0,
-                        x:       this.result.x     .value,
-                        y:       this.result.y     .value,
-                        width:   this.result.width .value,
-                        height:  this.result.height.value,
-                        angle:   this.result.angle .value,
-                        round:   Math.max(0, this.result.round.value),
-                        corners: this.result.corners.value
-                    });
-            }
-        }
-
-
-        return this;
+        return new PolygonValue(
+            this.id,
+            this.x      .toValue(),
+            this.y      .toValue(),
+            this.width  .toValue(),
+            this.height .toValue(),
+            this.angle  .toValue(),
+            this.round  .toValue(),
+            this.corners.toValue());
     }
 }
 
 
 class GStar
-extends GOperator
+extends GShapeBase
 {
     input  = null;
 
@@ -23463,98 +23820,119 @@ extends GOperator
         if (this.points) star.points = this.points.copy();
         if (this.convex) star.convex = this.convex.copy();
 
-        star.copyBase(this);
-
         return star;
     }
 
 
 
-    isValid()
-    {
-        return this.input
-               ? this.input.isValid()
-               : (   this.x     .isValid()
-                  && this.y     .isValid()
-                  && this.width .isValid()
-                  && this.height.isValid()
-                  && this.angle .isValid()
-                  && this.round .isValid()
-                  && this.points.isValid()
-                  && this.convex.isValid());
-    }
-
-    
-
     eval(parse)
     {
+        if (this.valid)
+            return this;
 
-        if (!this.valid)
-        {
-            this.result = new StarValue();
-
-
-            if (this.input)
-            {
-                this.result = this.input.eval(parse).copy();
-
-                console.assert(
-                    this.result.type == STAR_VALUE, 
-                    'this.result.type must be STAR_VALUE');
-
-                if (this.x     ) this.result.x      = this.x     .eval(parse).copy();
-                if (this.y     ) this.result.y      = this.y     .eval(parse).copy();
-                if (this.width ) this.result.width  = this.width .eval(parse).copy();
-                if (this.height) this.result.height = this.height.eval(parse).copy();
-                if (this.angle ) this.result.angle  = this.angle .eval(parse).copy();
-                if (this.round ) this.result.round  = this.round .eval(parse).copy();
-                if (this.points) this.result.points = this.points.eval(parse).copy();
-                if (this.convex) this.result.convex = this.convex.eval(parse).copy();
-            }
-            else
-            {
-                this.result.x      = this.x     .eval(parse).copy();
-                this.result.y      = this.y     .eval(parse).copy();
-                this.result.width  = this.width .eval(parse).copy();
-                this.result.height = this.height.eval(parse).copy();
-                this.result.angle  = this.angle .eval(parse).copy();
-                this.result.round  = this.round .eval(parse).copy();
-                this.result.points = this.points.eval(parse).copy();
-                this.result.convex = this.convex.eval(parse).copy();
-            }
-
-
-            this.result.valid = true;
-            this.valid        = true;
-           
             
-            genPushUpdateValue(parse, this.nodeId, STAR_VALUE, this.result);
+        if (this.input)
+            this.input = this.input.eval(parse).copy();
+
+        const hasInput =     
+               this.input 
+            && STAR_TYPES.includes(this.input.type);   
+
+             
+        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x     .copy();
+        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y     .copy();
+        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width .copy();
+        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height.copy();
+        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
+        if (this.round ) this.round  = this.round .eval(parse).copy(); else if (hasInput) this.round  = this.input.round .copy();
+        if (this.points) this.points = this.points.eval(parse).copy(); else if (hasInput) this.points = this.input.points.copy();
+        if (this.convex) this.convex = this.convex.eval(parse).copy(); else if (hasInput) this.convex = this.input.convex.copy();
+
+        
+        if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
+        if (this.y     ) genPushUpdateValue(parse, this.nodeId, 'y',      this.y     .toValue());
+        if (this.width ) genPushUpdateValue(parse, this.nodeId, 'width',  this.width .toValue());
+        if (this.height) genPushUpdateValue(parse, this.nodeId, 'height', this.height.toValue());
+        if (this.angle ) genPushUpdateValue(parse, this.nodeId, 'angle',  this.angle .toValue());
+        if (this.round ) genPushUpdateValue(parse, this.nodeId, 'round',  this.round .toValue());
+        if (this.points) genPushUpdateValue(parse, this.nodeId, 'points', this.points.toValue());
+        if (this.convex) genPushUpdateValue(parse, this.nodeId, 'convex', this.convex.toValue());
 
 
-            if (this.options.active)
-            {
-                genPushUpdateObject(
-                    parse,
-                    this.nodeId,
-                    { 
-                        nodeId: this.nodeId,          
-                        type:   STAR,
-                        id:     0,
-                        x:      this.result.x     .value,
-                        y:      this.result.y     .value,
-                        width:  this.result.width .value,
-                        height: this.result.height.value,
-                        angle:  this.result.angle .value,
-                        round:  Math.max(0, this.result.round.value),
-                        points: this.result.points.value,
-                        convex: this.result.convex.value
-                    });
-            }
-        }
+        if (    hasInput
+            && !this.options) this.objects = this.input.objects;
+        else                  this.evalObjects();
 
+
+        this.valid = true;
 
         return this;
-    }
+   }
+
+
+
+   evalObjects()
+   {
+       if (!this.options.enabled)
+           return;
+           
+           
+       if (   this.x 
+           && this.y 
+           && this.width 
+           && this.height 
+           && this.angle 
+           && this.round
+           && this.points
+           && this.convex)
+       {
+           this.objects = 
+           [
+               new FigmaStar(
+                               this.x     .toValue().value,
+                               this.y     .toValue().value,
+                               this.width .toValue().value,
+                               this.height.toValue().value,
+                               this.angle .toValue().value,
+                   Math.max(0, this.round .toValue().value),
+                               this.points.toValue().value,
+                               this.convex.toValue().value)
+           ];
+       }
+
+       
+       super.evalObjects();
+   }
+
+
+
+   isValid()
+   {
+       return this.x     .isValid()
+           && this.y     .isValid()
+           && this.width .isValid()
+           && this.height.isValid()
+           && this.angle .isValid()
+           && this.round .isValid()
+           && this.points.isValid()
+           && this.convex.isValid();
+   }
+
+
+
+   toValue()
+   {
+       return new StarValue(
+           this.id,
+           this.x     .toValue(),
+           this.y     .toValue(),
+           this.width .toValue(),
+           this.height.toValue(),
+           this.angle .toValue(),
+           this.round .toValue(),
+           this.points.toValue(),
+           this.convex.toValue());
+   }
 }
 
 
@@ -24909,9 +25287,9 @@ function initMenus()
     menuShape.addItems([
         new MenuItem('Rectangle',  {icon: iconRectangle, callback: e => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div, {insert: e.shiftKey}))}),
         new MenuItem('Line',       {icon: iconLine     , callback: e => actionManager.do(new CreateNodeAction(LINE,      btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Ellipse',    {icon: iconEllipse  , enabled: false}),
-        new MenuItem('Polygon',    {icon: iconPolygon  , enabled: false}),
-        new MenuItem('Star',       {icon: iconStar     , enabled: false})]);
+        new MenuItem('Ellipse',    {icon: iconEllipse  , callback: e => actionManager.do(new CreateNodeAction(ELLIPSE,   btnShape.div, {insert: e.shiftKey}))}),
+        new MenuItem('Polygon',    {icon: iconPolygon  , callback: e => actionManager.do(new CreateNodeAction(POLYGON,   btnShape.div, {insert: e.shiftKey}))}),
+        new MenuItem('Star',       {icon: iconStar     , callback: e => actionManager.do(new CreateNodeAction(STAR,      btnShape.div, {insert: e.shiftKey}))})]);
 
 
     menuZoom = new Menu('Zoom/view options', false);
@@ -39139,16 +39517,15 @@ extends OpShapeBase
     paramHeight;
     paramAngle;
 
-    //showAllParams = true;
-
 
     
     constructor()
     {
-        super(ELLIPSE, 'elps', 90);
+        super(ELLIPSE, 'ellipse', 100);
 
-        this.addInput (new Input ([ELLIPSE, ELLIPSE_VALUE]));
+        this.addInput (this.createInputForObjects([ELLIPSE, ELLIPSE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([ELLIPSE], this.output_genRequest));
+
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
         this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
@@ -39160,160 +39537,6 @@ extends OpShapeBase
         this.paramAngle.control.setSuffix('°', true);
         this.paramAngle.control.wrapValue   = true;
         this.paramAngle.control.dragReverse = true;
-
-        
-        this.btnProportional = createToggleButton(12, 12);
-        this.inner.appendChild(this.btnProportional);
-
-
-        // this.inputs[0].addEventListener('connect', () =>
-        // {
-        //     for (const param of this.params)
-        //         param.enableControlText(false);
-        // });
-
-
-        // this.inputs[0].addEventListener('disconnect', () =>
-        // {
-        //     for (const param of this.params)
-        //         if (!param.input.connected) 
-        //             param.enableControlText(true);
-        // });
-
-
-        this.btnProportional.addEventListener('click', () =>
-        {
-            if (this.btnProportional.enabled)
-            {
-                this.refWidth  = this.paramWidth .value.value;
-                this.refHeight = this.paramHeight.value.value;
-            }
-        });
-
-
-        this.paramWidth.addEventListener('change', () =>
-        {
-            if (this.btnProportional.enabled)
-                this.paramHeight.setValue(this.paramWidth.value.value * this.refHeight / this.refWidth, false, true, false);
-        });
-
-
-        this.paramHeight.addEventListener('change', () =>
-        {
-            if (this.btnProportional.enabled)
-                this.paramWidth.setValue(this.paramHeight.value.value * this.refWidth / this.refHeight, false, true, false);
-        });
-    }
-    
-    
-    
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: '' });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-        
-        const input = this.node.inputs[0];
-
-        const paramIds = [];
-
-
-        if (input.connected)
-        {
-            request.push(...pushInputOrParam(input, gen));
-
-
-            for (const param of this.node.params)
-                if (param.input && param.input.connected) 
-                    paramIds.push(param.id);
-
-            request.push(paramIds.join(','));
-
-
-            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
-            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
-            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
-            if (this.node.paramHeight.input.connected) request.push(...this.node.paramHeight.genRequest(gen));
-            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
-        }
-        else
-        {
-            request.push(
-                ...this.node.paramX     .genRequest(gen),
-                ...this.node.paramY     .genRequest(gen),
-                ...this.node.paramWidth .genRequest(gen),
-                ...this.node.paramHeight.genRequest(gen),
-                ...this.node.paramAngle .genRequest(gen));
-        }
-
-
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
-    }
-
-
-
-    updateNode()
-    {
-        this.btnProportional.style.left = 45;
-        this.btnProportional.style.top  = 79;
-
-        super.updateNode();
-    }
-
-
-
-    toJsonBase(nTab = 0) 
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = TAB;
-
-        let json = 
-                 super.toJsonBase(nTab)
-               //+ ',\n' + pos + tab + '"showAllParams": "' + boolToString(this.showAllParams) + '"'
-               + ',\n' + pos + tab + '"proportional": "'  + boolToString(this.btnProportional.enabled) + '"';
-
-        if (this.btnProportional.enabled)
-        {
-            json +=
-                  ',\n' + pos + tab + '"refWidth": "'  + this.refWidth  + '"'
-                + ',\n' + pos + tab + '"refHeight": "' + this.refHeight + '"';
-        }
-
-        return json;
-    }
-
-
-
-    loadParams(_node)
-    {
-        super.loadParams(_node);
-
-        // if (_node.proportional)
-        // {
-            //this.showAllParams = isTrue(_node.proportional);
-            
-            this.btnProportional.enabled = isTrue(_node.proportional);
-            this.btnProportional.updateBackground(false);
-
-            if (this.btnProportional.enabled)
-            {
-                this.refWidth  = parseFloat(_node.refWidth);
-                this.refHeight = parseFloat(_node.refHeight);
-            }
-        //}
     }
 }
 
@@ -39335,7 +39558,7 @@ extends OpShapeBase
     {
         super(POLYGON, 'poly', 90);
 
-        this.addInput (new Input ([POLYGON, POLYGON_VALUE]));
+        this.addInput (this.createInputForObjects([POLYGON, POLYGON_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([POLYGON], this.output_genRequest));
 
         this.addParam(this.paramX       = new NumberParam('x',       'x',       true, true, true,   0));
@@ -39350,132 +39573,6 @@ extends OpShapeBase
         this.paramAngle.control.setSuffix('°', true);
         this.paramAngle.control.wrapValue   = true;
         this.paramAngle.control.dragReverse = true;
-
-        
-        this.btnProportional = createToggleButton(12, 12);
-        this.inner.appendChild(this.btnProportional);
-
-
-        // this.inputs[0].addEventListener('connect', () =>
-        // {
-        //     for (const param of this.params)
-        //         param.enableControlText(false);
-        // });
-
-
-        // this.inputs[0].addEventListener('disconnect', () =>
-        // {
-        //     for (const param of this.params)
-        //         if (!param.input.connected) 
-        //             param.enableControlText(true);
-        // });
-
-
-        this.btnProportional.addEventListener('click', () =>
-        {
-            if (this.btnProportional.enabled)
-            {
-                this.refWidth  = this.paramWidth .value.value;
-                this.refHeight = this.paramHeight.value.value;
-            }
-        });
-
-
-        this.paramWidth.addEventListener('change', () =>
-        {
-            if (this.btnProportional.enabled)
-                this.paramHeight.setValue(this.paramWidth.value.value * this.refHeight / this.refWidth, false, true, false);
-        });
-
-
-        this.paramHeight.addEventListener('change', () =>
-        {
-            if (this.btnProportional.enabled)
-                this.paramWidth.setValue(this.paramHeight.value.value * this.refWidth / this.refHeight, false, true, false);
-        });
-    }
-    
-    
-    
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: '' });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-        
-        const input = this.node.inputs[0];
-
-        const paramIds = [];
-
-
-        if (input.connected)
-        {
-            request.push(...pushInputOrParam(input, gen));
-
-
-            for (const param of this.node.params)
-                if (param.input && param.input.connected) 
-                    paramIds.push(param.id);
-
-            request.push(paramIds.join(','));
-
-
-            if (this.node.paramX      .input.connected) request.push(...this.node.paramX      .genRequest(gen));
-            if (this.node.paramY      .input.connected) request.push(...this.node.paramY      .genRequest(gen));
-            if (this.node.paramWidth  .input.connected) request.push(...this.node.paramWidth  .genRequest(gen));
-            if (this.node.paramHeight .input.connected) request.push(...this.node.paramHeight .genRequest(gen));
-            if (this.node.paramAngle  .input.connected) request.push(...this.node.paramAngle  .genRequest(gen));
-            if (this.node.paramRound  .input.connected) request.push(...this.node.paramRound  .genRequest(gen));
-            if (this.node.paramCorners.input.connected) request.push(...this.node.paramCorners.genRequest(gen));
-        }
-        else
-        {
-            request.push(
-                ...this.node.paramX      .genRequest(gen),
-                ...this.node.paramY      .genRequest(gen),
-                ...this.node.paramWidth  .genRequest(gen),
-                ...this.node.paramHeight .genRequest(gen),
-                ...this.node.paramAngle  .genRequest(gen),
-                ...this.node.paramRound  .genRequest(gen),
-                ...this.node.paramCorners.genRequest(gen));
-        }
-
-
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
-    }
-
-
-
-    updateNode()
-    {
-        this.btnProportional.style.left = 45;
-        this.btnProportional.style.top  = 79;
-
-        super.updateNode();
-    }
-
-
-
-    updateValues(updateParamId, paramIds, values)
-    {
-        super.updateValues(updateParamId, paramIds, values);
-
-        if (   paramIds.includes('width')
-            || paramIds.includes('height'))
-            this.updateRound();
     }
 
 
@@ -39489,46 +39586,6 @@ extends OpShapeBase
         control.setMax(min/2);
 
         this.paramRound.control.update();
-    }
-
-    
-
-    toJsonBase(nTab = 0) 
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = TAB;
-
-        let json = 
-               super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + boolToString(this.btnProportional.enabled) + '"';
-
-        if (this.btnProportional.enabled)
-        {
-            json +=
-                  ',\n' + pos + tab + '"refWidth": "'  + this.refWidth  + '"'
-                + ',\n' + pos + tab + '"refHeight": "' + this.refHeight + '"';
-        }
-
-        return json;
-    }
-
-
-
-    loadParams(_node)
-    {
-        super.loadParams(_node);
-
-        // if (_node.proportional)
-        // {
-            this.btnProportional.enabled = isTrue(_node.proportional);
-            this.btnProportional.updateBackground(false);
-
-            if (this.btnProportional.enabled)
-            {
-                this.refWidth  = parseFloat(_node.refWidth);
-                this.refHeight = parseFloat(_node.refHeight);
-            }
-        //}
     }
 }
 
@@ -39551,7 +39608,7 @@ extends OpShapeBase
     {
         super(STAR, 'star', 90);
 
-        this.addInput (new Input ([STAR, STAR_VALUE]));
+        this.addInput (this.createInputForObjects([STAR, STAR_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([STAR], this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
@@ -39569,134 +39626,6 @@ extends OpShapeBase
         this.paramAngle.control.dragReverse = true;
 
         this.paramConvex.control.setSuffix('%', true);
-        
-
-        this.btnProportional = createToggleButton(12, 12);
-        this.inner.appendChild(this.btnProportional);
-
-
-        // this.inputs[0].addEventListener('connect', () =>
-        // {
-        //     for (const param of this.params)
-        //         param.enableControlText(false);
-        // });
-
-
-        // this.inputs[0].addEventListener('disconnect', () =>
-        // {
-        //     for (const param of this.params)
-        //         if (!param.input.connected) 
-        //             param.enableControlText(true);
-        // });
-
-
-        this.btnProportional.addEventListener('click', () =>
-        {
-            if (this.btnProportional.enabled)
-            {
-                this.refWidth  = this.paramWidth .value.value;
-                this.refHeight = this.paramHeight.value.value;
-            }
-        });
-
-
-        this.paramWidth.addEventListener('change', () =>
-        {
-            if (this.btnProportional.enabled)
-                this.paramHeight.setValue(this.paramWidth.value.value * this.refHeight / this.refWidth, false, true, false);
-        });
-
-
-        this.paramHeight.addEventListener('change', () =>
-        {
-            if (this.btnProportional.enabled)
-                this.paramWidth.setValue(this.paramHeight.value.value * this.refWidth / this.refHeight, false, true, false);
-        });
-    }
-    
-    
-    
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: '' });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-        
-        const input = this.node.inputs[0];
-
-        const paramIds = [];
-
-
-        if (input.connected)
-        {
-            request.push(...pushInputOrParam(input, gen));
-
-
-            for (const param of this.node.params)
-                if (param.input && param.input.connected) 
-                    paramIds.push(param.id);
-
-            request.push(paramIds.join(','));
-
-
-            if (this.node.paramX     .input.connected) request.push(...this.node.paramX     .genRequest(gen));
-            if (this.node.paramY     .input.connected) request.push(...this.node.paramY     .genRequest(gen));
-            if (this.node.paramWidth .input.connected) request.push(...this.node.paramWidth .genRequest(gen));
-            if (this.node.paramHeight.input.connected) request.push(...this.node.paramHeight.genRequest(gen));
-            if (this.node.paramAngle .input.connected) request.push(...this.node.paramAngle .genRequest(gen));
-            if (this.node.paramRound .input.connected) request.push(...this.node.paramRound .genRequest(gen));
-            if (this.node.paramPoints.input.connected) request.push(...this.node.paramPoints.genRequest(gen));
-            if (this.node.paramConvex.input.connected) request.push(...this.node.paramConvex.genRequest(gen));
-        }
-        else
-        {
-            request.push(
-                ...this.node.paramX     .genRequest(gen),
-                ...this.node.paramY     .genRequest(gen),
-                ...this.node.paramWidth .genRequest(gen),
-                ...this.node.paramHeight.genRequest(gen),
-                ...this.node.paramAngle .genRequest(gen),
-                ...this.node.paramRound .genRequest(gen),
-                ...this.node.paramPoints.genRequest(gen),
-                ...this.node.paramConvex.genRequest(gen));
-        }
-
-
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
-    }
-
-
-
-    updateNode()
-    {
-        this.btnProportional.style.left = 45;
-        this.btnProportional.style.top  = 79;
-
-        super.updateNode();
-    }
-
-
-
-    updateValues(updateParamId, paramIds, values)
-    {
-        super.updateValues(updateParamId, paramIds, values);
-
-        if (   paramIds.includes('width')
-            || paramIds.includes('height'))
-            this.updateRound();
     }
 
 
@@ -39711,120 +39640,7 @@ extends OpShapeBase
 
         this.paramRound.control.update();
     }
-
-    
-
-    toJsonBase(nTab = 0) 
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = TAB;
-
-        let json = 
-               super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"proportional": "' + boolToString(this.btnProportional.enabled) + '"';
-
-        if (this.btnProportional.enabled)
-        {
-            json +=
-                  ',\n' + pos + tab + '"refWidth": "'  + this.refWidth  + '"'
-                + ',\n' + pos + tab + '"refHeight": "' + this.refHeight + '"';
-        }
-
-        return json;
-    }
-
-
-
-    loadParams(_node)
-    {
-        super.loadParams(_node);
-
-        // if (_node.proportional)
-        // {
-            this.btnProportional.enabled = isTrue(_node.proportional);
-            this.btnProportional.updateBackground(false);
-
-            if (this.btnProportional.enabled)
-            {
-                this.refWidth  = parseFloat(_node.refWidth);
-                this.refHeight = parseFloat(_node.refHeight);
-            }
-        //}
-    }
 }
-
-
-// class   OpColorStroke
-// extends OpShapeBase
-// {
-//     paramColor;
-//     paramOpacity;
-
-//     paramStrokeWeight;
-//     paramStrokeFit;
-//     paramStrokeJoin;
-//     paramStrokeMiter;
-
-    
-//     constructor()
-//     {
-//         super(COLOR_STROKE, 'stroke', 90);
-
-
-//         this.addInput(new Input(SHAPE_TYPES));
-//         this.addOutput(new Output([COLOR_STROKE], this.output_genRequest));
-
-//         this.addParam(this.paramColor        = new ColorParam ('color',        '',        false, true, true));
-//         this.addParam(this.paramOpacity      = new NumberParam('opacity',      'opacity', true,  true, true, 100, 0, 100));
-
-//         this.addParam(this.paramStrokeWeight = new NumberParam('strokeWeight', 'weight', true,  true, true, 1, 0));
-//         this.addParam(this.paramStrokeFit    = new SelectParam('strokeFit',    'fit',    true,  true, true, ['inside', 'center', 'outside'], 0));
-//         this.addParam(this.paramStrokeJoin   = new SelectParam('strokeJoin',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
-//         this.addParam(this.paramStrokeMiter  = new NumberParam('strokeMiter',  'miter',  false, true, true, 28.96, 0, 180, 2));
-
-//         this.paramColor.setValue(ColorValue.create(1, 0, 0, 0), false, true, false);
-        
-//         this.paramOpacity    .control.setSuffix('%', true);
-//         this.paramStrokeMiter.control.setSuffix('°', true);
-//     }
-    
-    
-    
-//     output_genRequest(gen)
-//     {
-//         // 'this' is the output
-
-//         if (!isEmpty(this.cache))
-//             return this.cache;
-
-
-//         gen.scope.push({
-//             nodeId:  this.node.id, 
-//             paramId: '' });
-
-//         const [request, ignore] = this.node.genRequestStart(gen);
-//         if (ignore) return request;
-
-        
-//         const input = this.node.inputs[0];
-
-//         if (input.connected)
-//             request.push(...pushInputOrParam(input, gen));
-
-//         request.push(...this.node.paramColor       .genRequest(gen));
-//         request.push(...this.node.paramOpacity     .genRequest(gen));
-//         request.push(...this.node.paramStrokeWeight.genRequest(gen));
-//         request.push(...this.node.paramStrokeFit   .genRequest(gen));
-//         request.push(...this.node.paramStrokeJoin  .genRequest(gen));
-//         request.push(...this.node.paramStrokeMiter .genRequest(gen));
-
-
-//         gen.scope.pop();
-//         pushUnique(gen.passedNodes, this.node);
-
-//         return request;
-//     }
-// }
 
 
 class Action
@@ -42319,7 +42135,6 @@ generator.onmessage = function(e)
         case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.updateNodeId, msg.updateParamId, msg.values, msg.objects);                        break;
         case 'uiStartNodeProgress':      uiStartNodeProgress     (msg.nodeId);                                                                          break;
         case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                                            break;
-        //case 'uiEndFindCorrection':    uiEndFindCorrection           (msg.nodeId, msg.success, msg.closestOrder, msg.closest1, msg.closest2, msg.closest3); break;
     }
 };
 

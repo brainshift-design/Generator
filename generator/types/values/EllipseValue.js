@@ -1,5 +1,5 @@
 class EllipseValue
-extends GValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -9,21 +9,20 @@ extends GValue
 
 
 
-    constructor(x      = new NumberValue(0), 
+    constructor(nodeId,
+                x      = new NumberValue(0), 
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
                 angle  = new NumberValue(0))
     {
-        super(ELLIPSE_VALUE);
+        super(ELLIPSE_VALUE, nodeId);
 
         this.x      = x;
         this.y      = y;
         this.width  = width;
         this.height = height;
         this.angle  = angle;
-
-        this.valid  = true;
     }
 
 
@@ -73,7 +72,19 @@ extends GValue
 
 
 
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.height.toDisplayString()
+            + ' ' + this.angle .toDisplayString();
+    }
+
+
+
     static NaN = new EllipseValue(
+        '',
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,

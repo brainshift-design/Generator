@@ -36,7 +36,6 @@
 ../operators/math/OpModulo.js
 ../operators/math/OpExponent.js
 ../operators/math/OpInterpolate.js
-//../operators/math/OpRandom.js
 
 
 ../operators/color/OpColorBase.js
@@ -64,7 +63,7 @@
 ../operators/shape/OpStar.js
 
 
-../operators/shape/OpColorStroke.js
+//../operators/shape/OpColorStroke.js
 
 //../operators/shape/OpColumn.js
 //../operators/shape/UOpSpread.js

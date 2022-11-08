@@ -1,5 +1,5 @@
 class StarValue
-extends GValue
+extends ShapeBaseValue
 {
     x;
     y;
@@ -12,7 +12,8 @@ extends GValue
 
 
 
-    constructor(x      = new NumberValue(0), 
+    constructor(nodeId,
+                x      = new NumberValue(0), 
                 y      = new NumberValue(0), 
                 width  = new NumberValue(0), 
                 height = new NumberValue(0), 
@@ -21,7 +22,7 @@ extends GValue
                 points = new NumberValue(0),
                 convex = new NumberValue(0))
     {
-        super(STAR_VALUE);
+        super(STAR_VALUE, nodeId);
 
         this.x      = x;
         this.y      = y;
@@ -31,15 +32,13 @@ extends GValue
         this.round  = round;
         this.points = points;
         this.convex = convex;
-
-        this.valid  = true;
     }
 
 
 
     copy()
     {
-        const val = new StarValue(
+        const star = new StarValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -49,9 +48,16 @@ extends GValue
             this.points.copy(),
             this.convex.copy());
 
-        val.copyBase(this);
+        star.copyBase(this);
 
-        return val;
+        return star;
+    }
+
+
+
+    eval(parse)
+    {
+        return this;
     }
 
 
@@ -69,10 +75,10 @@ extends GValue
     }
 
 
-
-    eval(parse)
+    
+    toValue()
     {
-        return this;
+        return this.copy();
     }
 
 
@@ -91,7 +97,22 @@ extends GValue
 
 
 
+    toDisplayString()
+    {
+        return      this.x     .toDisplayString()
+            + ' ' + this.y     .toDisplayString()
+            + ' ' + this.width .toDisplayString()
+            + ' ' + this.height.toDisplayString()
+            + ' ' + this.angle .toDisplayString()
+            + ' ' + this.round .toDisplayString()
+            + ' ' + this.points.toDisplayString()
+            + ' ' + this.convex.toDisplayString();
+    }
+
+
+
     static NaN = new StarValue(
+        '',
         NumberValue.NaN,
         NumberValue.NaN,
         NumberValue.NaN,
@@ -109,15 +130,15 @@ function parseStarValue(str)
     if (str == INVALID)
         return StarValue.NaN;
 
-    const rect = str.split(' ');
+    const star = str.split(' ');
 
     return new StarValue(
-        new NumberValue(parseNumberValue(rect[0])),
-        new NumberValue(parseNumberValue(rect[1])),
-        new NumberValue(parseNumberValue(rect[2])),
-        new NumberValue(parseNumberValue(rect[3])),
-        new NumberValue(parseNumberValue(rect[4])),
-        new NumberValue(parseNumberValue(rect[5])),
-        new NumberValue(parseNumberValue(rect[6])),
-        new NumberValue(parseNumberValue(rect[7])));
+        new NumberValue(parseNumberValue(star[0])),
+        new NumberValue(parseNumberValue(star[1])),
+        new NumberValue(parseNumberValue(star[2])),
+        new NumberValue(parseNumberValue(star[3])),
+        new NumberValue(parseNumberValue(star[4])),
+        new NumberValue(parseNumberValue(star[5])),
+        new NumberValue(parseNumberValue(star[6])),
+        new NumberValue(parseNumberValue(star[7])));
 }

@@ -60,7 +60,7 @@ function genParseLine(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
   
-    let line = new GLine(nodeId, options);
+    const line = new GLine(nodeId, options);
 
 
     if (parse.settings.logRequests) 
@@ -115,16 +115,16 @@ function genParseEllipse(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const elps = new GEllipse(nodeId, options);
+    const ellipse = new GEllipse(nodeId, options);
 
 
     if (parse.settings.logRequests) 
-        logReqShape(elps, parse);
+        logReqShape(ellipse, parse);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, elps);
+        genParseNodeEnd(parse, ellipse);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -132,36 +132,36 @@ function genParseEllipse(parse)
     parse.nTab++;
 
 
-    let paramIds;
+    if (    ELLIPSE_TYPES.includes(parse.next)
+        || PROPERTY_TYPES.includes(parse.next))
+        ellipse.input = genParse(parse);
 
-    if (   parse.next == ELLIPSE_VALUE
-        || parse.next == ELLIPSE)
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
     {
-        elps.input = genParse(parse); // not genParseEllipse() because genParse() handles stack overflow
-        paramIds   = parse.move().split(',');
-    }
-    else
-        paramIds = ['x', 'y', 'width', 'height', 'angle'];
+        const paramId = genParseParamId(parse);
 
+        parse.inParam = true;
 
-    for (const id of paramIds)
-    {
-        switch (id)
+        switch (paramId)
         {
-        case 'x':      elps.x      = genParse(parse); break;
-        case 'y':      elps.y      = genParse(parse); break;
-        case 'width':  elps.width  = genParse(parse); break;
-        case 'height': elps.height = genParse(parse); break;
-        case 'angle':  elps.angle  = genParse(parse); break;
+        case 'x':      ellipse.x      = genParse(parse); break;
+        case 'y':      ellipse.y      = genParse(parse); break;
+        case 'width':  ellipse.width  = genParse(parse); break;
+        case 'height': ellipse.height = genParse(parse); break;
+        case 'angle':  ellipse.angle  = genParse(parse); break;
         }
     }
-
-
+    
+    
+    parse.inParam = false;
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, elps);
-    return elps;
+    genParseNodeEnd(parse, ellipse);
+    return ellipse;
 }
 
 
@@ -188,21 +188,20 @@ function genParsePolygon(parse)
     parse.nTab++;
 
 
-    let paramIds;
+    if (    POLYGON_TYPES.includes(parse.next)
+        || PROPERTY_TYPES.includes(parse.next))
+        poly.input = genParse(parse);
 
-    if (   parse.next == POLYGON_VALUE
-        || parse.next == POLYGON)
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
     {
-        poly.input = genParse(parse); // not genParsePolygon() because genParse() handles stack overflow
-        paramIds   = parse.move().split(',');
-    }
-    else
-        paramIds = ['x', 'y', 'width', 'height', 'angle', 'round', 'corners'];
+        const paramId = genParseParamId(parse);
 
+        parse.inParam = true;
 
-    for (const id of paramIds)
-    {
-        switch (id)
+        switch (paramId)
         {
         case 'x':       poly.x       = genParse(parse); break;
         case 'y':       poly.y       = genParse(parse); break;
@@ -213,8 +212,9 @@ function genParsePolygon(parse)
         case 'corners': poly.corners = genParse(parse); break;
         }
     }
-
-
+    
+    
+    parse.inParam = false;
     parse.nTab--;
 
 
@@ -246,21 +246,20 @@ function genParseStar(parse)
     parse.nTab++;
 
 
-    let paramIds;
+    if (       STAR_TYPES.includes(parse.next)
+        || PROPERTY_TYPES.includes(parse.next))
+        star.input = genParse(parse);
 
-    if (   parse.next == STAR_VALUE
-        || parse.next == STAR)
+
+    const nParamIds = genParseParamCount(parse);
+
+    for (let i = 0; i < nParamIds; i++)
     {
-        star.input = genParse(parse); // not genParseStar() because genParse() handles stack overflow
-        paramIds   = parse.move().split(',');
-    }
-    else
-        paramIds = ['x', 'y', 'width', 'height', 'angle', 'round', 'points', 'convex'];
+        const paramId = genParseParamId(parse);
 
+        parse.inParam = true;
 
-    for (const id of paramIds)
-    {
-        switch (id)
+        switch (paramId)
         {
         case 'x':      star.x      = genParse(parse); break;
         case 'y':      star.y      = genParse(parse); break;
@@ -272,8 +271,9 @@ function genParseStar(parse)
         case 'convex': star.convex = genParse(parse); break;
         }
     }
-
-
+    
+    
+    parse.inParam = false;
     parse.nTab--;
 
 

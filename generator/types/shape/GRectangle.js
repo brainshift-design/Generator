@@ -98,12 +98,12 @@ extends GShapeBase
             this.objects = 
             [
                 new FigmaRectangle(
-                            this.x     .toValue().value,
-                            this.y     .toValue().value,
-                            this.width .toValue().value,
-                            this.height.toValue().value,
-                            this.angle .toValue().value,
-                Math.max(0, this.round .toValue().value))
+                                this.x     .toValue().value,
+                                this.y     .toValue().value,
+                                this.width .toValue().value,
+                                this.height.toValue().value,
+                                this.angle .toValue().value,
+                    Math.max(0, this.round .toValue().value))
             ];
         }
 

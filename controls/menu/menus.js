@@ -218,9 +218,9 @@ function initMenus()
     menuShape.addItems([
         new MenuItem('Rectangle',  {icon: iconRectangle, callback: e => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div, {insert: e.shiftKey}))}),
         new MenuItem('Line',       {icon: iconLine     , callback: e => actionManager.do(new CreateNodeAction(LINE,      btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Ellipse',    {icon: iconEllipse  , enabled: false}),
-        new MenuItem('Polygon',    {icon: iconPolygon  , enabled: false}),
-        new MenuItem('Star',       {icon: iconStar     , enabled: false})]);
+        new MenuItem('Ellipse',    {icon: iconEllipse  , callback: e => actionManager.do(new CreateNodeAction(ELLIPSE,   btnShape.div, {insert: e.shiftKey}))}),
+        new MenuItem('Polygon',    {icon: iconPolygon  , callback: e => actionManager.do(new CreateNodeAction(POLYGON,   btnShape.div, {insert: e.shiftKey}))}),
+        new MenuItem('Star',       {icon: iconStar     , callback: e => actionManager.do(new CreateNodeAction(STAR,      btnShape.div, {insert: e.shiftKey}))})]);
 
 
     menuZoom = new Menu('Zoom/view options', false);

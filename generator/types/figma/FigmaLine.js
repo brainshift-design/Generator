@@ -10,7 +10,7 @@ extends FigmaObject
 
     constructor(x, y, width, angle)
     {
-        super(RECTANGLE);
+        super(LINE);
         
         this.x      = x;
         this.y      = y;
@@ -22,14 +22,14 @@ extends FigmaObject
 
     copy()
     {
-        const rect = new FigmaLine(
+        const line = new FigmaLine(
             this.x,
             this.y,
             this.width,
             this.angle);
 
-        rect.copyBase(this);
+        line.copyBase(this);
 
-        return rect;
+        return line;
     }
 }

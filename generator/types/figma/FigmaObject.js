@@ -5,7 +5,6 @@ class FigmaObject
     id          = 0;
 
     fills       = [];
- 
     strokeFills = [];
 
     strokeWeight;
@@ -28,7 +27,6 @@ class FigmaObject
         this.id           = base.id;
                
         this.fills        = clone(base.fills);
-
         this.strokeFills  = clone(base.strokeFills);
 
         this.strokeWeight = base.strokeWeight;

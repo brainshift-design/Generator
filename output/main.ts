@@ -659,21 +659,24 @@ function figCreateRect(obj, name)
 
     rect.name = name;
 
-    if (genRectIsValid(obj))
-    {
-        rect.x = obj.x;
-        rect.y = obj.y;
+    if (!genRectIsValid(obj))
+        return rect;
 
-        setObjectFills  (rect, obj);
-        setObjectStrokes(rect, obj);
 
-        rect.resize(
-            Math.max(0.01, obj.width), 
-            Math.max(0.01, obj.height));
-            
-        rect.rotation     = obj.angle;
-        rect.cornerRadius = obj.round;
-    }
+    rect.x = obj.x;
+    rect.y = obj.y;
+
+    rect.resize(
+        Math.max(0.01, obj.width), 
+        Math.max(0.01, obj.height));
+        
+    rect.rotation     = obj.angle;
+    rect.cornerRadius = obj.round;
+
+
+    setObjectFills  (rect, obj);
+    setObjectStrokes(rect, obj);
+
 
     return rect;
 }
@@ -682,22 +685,23 @@ function figCreateRect(obj, name)
 
 function figUpdateRect(figRect, genRect)
 {
-    if (genRectIsValid(genRect))
+    if (!genRectIsValid(genRect))
+        return;
+
+
+    figRect.x = genRect.x;
+    figRect.y = genRect.y;
+
+    if (   figRect.width  != genRect.width
+        || figRect.height != genRect.height)
     {
-        figRect.x = genRect.x;
-        figRect.y = genRect.y;
-
-        if (   figRect.width  != genRect.width
-            || figRect.height != genRect.height)
-        {
-            figRect.resize(
-                Math.max(0.01, genRect.width), 
-                Math.max(0.01, genRect.height));
-        }
-
-        figRect.rotation     = genRect.angle;
-        figRect.cornerRadius = genRect.round;
+        figRect.resize(
+            Math.max(0.01, genRect.width), 
+            Math.max(0.01, genRect.height));
     }
+
+    figRect.rotation     = genRect.angle;
+    figRect.cornerRadius = genRect.round;
 
 
     setObjectFills  (figRect, genRect);
@@ -710,6 +714,16 @@ function figUpdateRect(figRect, genRect)
 
 
 
+function genLineIsValid(genLine)
+{
+    return genLine.x     != null && !isNaN(genLine.x    )
+        && genLine.y     != null && !isNaN(genLine.y    )
+        && genLine.width != null && !isNaN(genLine.width)
+        && genLine.angle != null && !isNaN(genLine.angle);
+}
+
+
+
 function figCreateLine(obj, name)
 {
     //console.log(obj);
@@ -718,15 +732,23 @@ function figCreateLine(obj, name)
 
     line.name = name;
 
+
+    if (!genLineIsValid(obj))
+        return line;
+
+
     line.x = obj.x;
     line.y = obj.y;
-    
-    line.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
     
     line.resize(Math.max(0.01, obj.width), 0);
         
     line.rotation = obj.angle;
 
+
+    setObjectFills  (line, obj);
+    setObjectStrokes(line, obj);
+
+    
     return line;
 }
 
@@ -734,6 +756,10 @@ function figCreateLine(obj, name)
 
 function figUpdateLine(figLine, genLine)
 {
+    if (!genLineIsValid(genLine))
+        return;
+
+
     figLine.x = genLine.x;
     figLine.y = genLine.y;
 
@@ -741,11 +767,26 @@ function figUpdateLine(figLine, genLine)
         figLine.resize(Math.max(0.01, genLine.width), 0);
 
     figLine.rotation = genLine.angle;
+
+
+    setObjectFills  (figLine, genLine);
+    setObjectStrokes(figLine, genLine);
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function genEllipseIsValid(genEllipse)
+{
+    return genEllipse.x      != null && !isNaN(genEllipse.x     )
+        && genEllipse.y      != null && !isNaN(genEllipse.y     )
+        && genEllipse.width  != null && !isNaN(genEllipse.width )
+        && genEllipse.height != null && !isNaN(genEllipse.height)
+        && genEllipse.angle  != null && !isNaN(genEllipse.angle );
+}
 
 
 
@@ -757,10 +798,12 @@ function figCreateEllipse(obj, name)
 
     ellipse.name = name;
 
+    if (!genEllipseIsValid(obj))
+        return ellipse;
+
+
     ellipse.x = obj.x;
     ellipse.y = obj.y;
-    
-    ellipse.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
     
     ellipse.resize(
         Math.max(0.01, obj.width), 
@@ -768,6 +811,11 @@ function figCreateEllipse(obj, name)
         
     ellipse.rotation = obj.angle;
 
+
+    setObjectFills  (ellipse, obj);
+    setObjectStrokes(ellipse, obj);
+    
+    
     return ellipse;
 }
 
@@ -775,6 +823,10 @@ function figCreateEllipse(obj, name)
 
 function figUpdateEllipse(figEllipse, genEllipse)
 {
+    if (!genEllipseIsValid(genEllipse))
+        return;
+
+
     figEllipse.x = genEllipse.x;
     figEllipse.y = genEllipse.y;
 
@@ -787,11 +839,28 @@ function figUpdateEllipse(figEllipse, genEllipse)
     }
 
     figEllipse.rotation = genEllipse.angle;
+
+
+    setObjectFills  (figEllipse, genEllipse);
+    setObjectStrokes(figEllipse, genEllipse);
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function genPolyIsValid(genPoly)
+{
+    return genPoly.x       != null && !isNaN(genPoly.x      )
+        && genPoly.y       != null && !isNaN(genPoly.y      )
+        && genPoly.width   != null && !isNaN(genPoly.width  )
+        && genPoly.height  != null && !isNaN(genPoly.height )
+        && genPoly.angle   != null && !isNaN(genPoly.angle  )
+        && genPoly.round   != null && !isNaN(genPoly.round  )
+        && genPoly.corners != null && !isNaN(genPoly.corners);
+}
 
 
 
@@ -803,10 +872,12 @@ function figCreatePolygon(obj, name)
 
     poly.name = name;
 
+    if (!genPolyIsValid(obj))
+        return poly;
+
+
     poly.x = obj.x;
     poly.y = obj.y;
-    
-    poly.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
     
     poly.resize(
         Math.max(0.01, obj.width), 
@@ -816,6 +887,11 @@ function figCreatePolygon(obj, name)
     poly.cornerRadius = obj.round;
     poly.pointCount   = obj.corners;
 
+
+    setObjectFills  (poly, obj);
+    setObjectStrokes(poly, obj);
+
+
     return poly;
 }
 
@@ -823,6 +899,10 @@ function figCreatePolygon(obj, name)
 
 function figUpdatePolygon(figPoly, genPoly)
 {
+    if (!genPolyIsValid(genPoly))
+        return;
+
+
     figPoly.x = genPoly.x;
     figPoly.y = genPoly.y;
 
@@ -837,11 +917,29 @@ function figUpdatePolygon(figPoly, genPoly)
     figPoly.rotation     = genPoly.angle;
     figPoly.cornerRadius = genPoly.round;
     figPoly.pointCount   = genPoly.corners;
+
+
+    setObjectFills  (figPoly, genPoly);
+    setObjectStrokes(figPoly, genPoly);
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function genStarIsValid(genStar)
+{
+    return genStar.x      != null && !isNaN(genStar.x     )
+        && genStar.y      != null && !isNaN(genStar.y     )
+        && genStar.width  != null && !isNaN(genStar.width )
+        && genStar.height != null && !isNaN(genStar.height)
+        && genStar.angle  != null && !isNaN(genStar.angle )
+        && genStar.round  != null && !isNaN(genStar.round )
+        && genStar.points != null && !isNaN(genStar.points)
+        && genStar.convex != null && !isNaN(genStar.convex);
+}
 
 
 
@@ -853,10 +951,12 @@ function figCreateStar(obj, name)
 
     star.name = name;
 
+    if (!genStarIsValid(obj))
+        return star;
+
+
     star.x = obj.x;
     star.y = obj.y;
-    
-    star.fills = [{type: 'SOLID', color: {r: 0, g: 0, b: 0}}];
     
     star.resize(
         Math.max(0.01, obj.width), 
@@ -867,6 +967,11 @@ function figCreateStar(obj, name)
     star.pointCount   = obj.points;
     star.innerRadius  = obj.convex / 100;
 
+
+    setObjectFills  (star, obj);
+    setObjectStrokes(star, obj);
+
+
     return star;
 }
 
@@ -874,6 +979,10 @@ function figCreateStar(obj, name)
 
 function figUpdateStar(figStar, genStar)
 {
+    if (!genStarIsValid(genStar))
+        return;
+
+
     figStar.x = genStar.x;
     figStar.y = genStar.y;
 
@@ -889,6 +998,10 @@ function figUpdateStar(figStar, genStar)
     figStar.cornerRadius = genStar.round;
     figStar.pointCount   = genStar.points;
     figStar.innerRadius  = genStar.convex / 100;
+
+
+    setObjectFills  (figStar, genStar);
+    setObjectStrokes(figStar, genStar);
 }
 
 

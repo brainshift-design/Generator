@@ -1,5 +1,5 @@
 class GLine
-extends GOperator
+extends GShapeBase
 {
     input  = null;
 
@@ -88,10 +88,10 @@ extends GOperator
             this.objects = 
             [
                 new FigmaLine(
-                    this.x     .toValue().value,
-                    this.y     .toValue().value,
-                    this.width .toValue().value,
-                    this.angle .toValue().value)
+                    this.x    .toValue().value,
+                    this.y    .toValue().value,
+                    this.width.toValue().value,
+                    this.angle.toValue().value)
             ];
         }
 
@@ -103,10 +103,10 @@ extends GOperator
 
     isValid()
     {
-        return this.x     .isValid()
-            && this.y     .isValid()
-            && this.width .isValid()
-            && this.angle .isValid();
+        return this.x    .isValid()
+            && this.y    .isValid()
+            && this.width.isValid()
+            && this.angle.isValid();
     }
 
 

@@ -73,22 +73,6 @@ extends ShapeBaseValue
 
 
 
-    toFigmaObject()
-    {
-        return {
-            type:   RECTANGLE,
-            id:     0,
-            x:      this.x     .value,
-            y:      this.y     .value,
-            width:  this.width .value,
-            height: this.height.value,
-            angle:  this.angle .value,
-            round:  Math.max(0, this.round.value)
-        };
-    }
-
-
-
     toString()
     {
         return      this.x     .toString()
