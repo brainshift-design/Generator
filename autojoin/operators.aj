@@ -6,6 +6,7 @@
 ../parameters/ColorParam.js
 ../parameters/FillParam.js
 ../parameters/StrokeParam.js
+../parameters/StyleParam.js
 
 ../graph/Graph.js
 ../graph/tree.js
@@ -55,6 +56,7 @@
 
 ../operators/style/OpFill.js
 ../operators/style/OpStroke.js
+../operators/style/OpStyle.js
 
 ../operators/style/OpColorStop.js
 ../operators/style/OpGradient.js

@@ -12,7 +12,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(RECTANGLE, 'rect', 100);
+        super(RECTANGLE, 'rect');
 
 
         this.addInput (this.createInputForObjects([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
@@ -33,6 +33,9 @@ extends OpShapeBase
         this.paramAngle.control.setSuffix('°', true);
         this.paramAngle.control.wrapValue   = true;
         this.paramAngle.control.dragReverse = true;
+
+
+        this.addBaseParams();
     }
 
 

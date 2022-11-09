@@ -175,7 +175,7 @@ function initMenus()
         menuItemHelp  = new MenuItem('Help and activation', {childMenu: menuMainHelp })]);
   
         
-    menuFlow = new Menu('Flow', true, false);
+    menuFlow = new Menu('Flow nodes', true, false);
     menuFlow.addItems([
         new MenuItem('List',  {icon: iconList,      callback: e => actionManager.do(new CreateNodeAction(LIST,       btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Items', {icon: iconListItems, callback: e => actionManager.do(new CreateNodeAction(LIST_ITEMS, btnNumber.div, {insert: e.shiftKey}))})]);
@@ -222,7 +222,7 @@ function initMenus()
     menuStyle.addItems([
         new MenuItem('Solid fill', {icon: iconFill  , callback: e => actionManager.do(new CreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Stroke',     {icon: iconStroke, callback: e => actionManager.do(new CreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Style',      {icon: iconStyle , enabled:  false})]);
+        new MenuItem('Style',      {icon: iconStyle , callback: e => actionManager.do(new CreateNodeAction(STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
     
     
     menuShape = new Menu('Shape nodes', true, false);

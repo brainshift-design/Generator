@@ -20,8 +20,7 @@ function genParseRectangle(parse)
     parse.nTab++;
 
 
-    if (  RECTANGLE_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (RECTANGLE_TYPES.includes(parse.next))
         rect.input = genParse(parse);
 
 
@@ -77,8 +76,7 @@ function genParseLine(parse)
     parse.nTab++;
 
 
-    if (       LINE_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (LINE_TYPES.includes(parse.next))
         line.input = genParse(parse);
 
 
@@ -132,8 +130,7 @@ function genParseEllipse(parse)
     parse.nTab++;
 
 
-    if (    ELLIPSE_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (ELLIPSE_TYPES.includes(parse.next))
         ellipse.input = genParse(parse);
 
 
@@ -188,8 +185,7 @@ function genParsePolygon(parse)
     parse.nTab++;
 
 
-    if (    POLYGON_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (POLYGON_TYPES.includes(parse.next))
         poly.input = genParse(parse);
 
 
@@ -246,8 +242,7 @@ function genParseStar(parse)
     parse.nTab++;
 
 
-    if (       STAR_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (STAR_TYPES.includes(parse.next))
         star.input = genParse(parse);
 
 

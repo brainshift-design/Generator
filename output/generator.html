@@ -1764,7 +1764,7 @@ function isEmpty(array)
 
 
 
-function arraysEqual(arr1, arr2)
+function arraysAreEqual(arr1, arr2)
 {
     if (arr1.length != arr2.length)
         return false;
@@ -2651,6 +2651,21 @@ function logReqNode(node, parse)
 }
 
 
+function logReqListValue(list, parse)
+{
+    parse.log += parse.tab + LIST_VALUE + ' ' + displayValue(LIST_VALUE, list);
+}
+
+
+
+function logReqList(list, nValues, parse)
+{
+    parse.log += parse.tab + NUMBER_MATH;
+    parse.log += logReqNodeId(list);
+    parse.log += ' ' + nValues;
+}
+
+
 function logReqNumberValue(val, parse)
 {
     parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
@@ -3097,16 +3112,6 @@ const FILL_TYPES =
 ];
 
 
-const STROKE_VALUE    = 'SK';
-const STROKE          = 'STRK';
-
-const STROKE_TYPES =
-[
-    STROKE_VALUE,
-    STROKE
-];
-
-
 const COLOR_STOP_VALUE    = 'CS';
 const COLOR_STOP          = 'CSTOP';
 
@@ -3120,8 +3125,22 @@ const GRADIENT_TYPES =
 ];
 
 
+const STROKE_VALUE    = 'SK';
+const STROKE          = 'STRK';
+
+const STROKE_TYPES =
+[
+    STROKE_VALUE,
+    STROKE
+];
+
+
+const STYLE           = 'STYLE';
+
+
 const STYLE_TYPES =
 [
+    STYLE,
     ...FILL_TYPES,
     ...STROKE_TYPES,
     ...GRADIENT_TYPES
@@ -3314,11 +3333,16 @@ function displayValue(type, value)
 
     switch (type)
     {
-        case NUMBER_VALUE:    return parseNumberValue   (value)[0].toDisplayString();
-        case COLOR_VALUE:     return parseColorValue    (value)[0].toDisplayString();
-        case FILL_VALUE:      return parseFillValue     (value)[0].toDisplayString();
-        case STROKE_VALUE:    return parseStrokeValue   (value)[0].toDisplayString();
+        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
+        case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
+        case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
         case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
+        case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
+        case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
+        case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
+        case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
+        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
+        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
     }
 
 
@@ -3692,7 +3716,7 @@ extends GValue
     {
         super(LIST_VALUE);
 
-        this.items = clone(items);
+        this.items = items ? clone(items) : null;
     }
 
 
@@ -3748,8 +3772,9 @@ extends GValue
     {
         let str = '';
 
-        for (const item of this.items)
-            str += item.toString() + '\ufffc';
+        if (this.items)
+            for (const item of this.items)
+                str += item.toString() + '\ufffc';
 
         return str;
     }
@@ -3760,8 +3785,9 @@ extends GValue
     {
         let str = '';
 
-        for (const item of this.items)
-            str += item.toDisplayString() + '; ';
+        if (this.items)
+            for (const item of this.items)
+                str += item.toDisplayString() + '; ';
 
         return str;
     }
@@ -3775,7 +3801,9 @@ extends GValue
 
 function parseListValue(str)
 {
-    const list = new ListValue(str.split('\ufffc'));
+    const items = str.split('\ufffc', ).filter(i => i);
+
+    const list = new ListValue(items);
 
     return [list, 1];
 }
@@ -9323,6 +9351,20 @@ function genParseColorCorrect(parse)
 }
 
 
+function genParseListValue(parse)
+{
+    parse.pos++; // LIST_VALUE
+
+    const list = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqListValue(list, parse);
+
+    return parseListValue(list)[0];
+}
+
+
+
 function genParseList(parse)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -9659,8 +9701,7 @@ function genParseRectangle(parse)
     parse.nTab++;
 
 
-    if (  RECTANGLE_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (RECTANGLE_TYPES.includes(parse.next))
         rect.input = genParse(parse);
 
 
@@ -9716,8 +9757,7 @@ function genParseLine(parse)
     parse.nTab++;
 
 
-    if (       LINE_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (LINE_TYPES.includes(parse.next))
         line.input = genParse(parse);
 
 
@@ -9771,8 +9811,7 @@ function genParseEllipse(parse)
     parse.nTab++;
 
 
-    if (    ELLIPSE_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (ELLIPSE_TYPES.includes(parse.next))
         ellipse.input = genParse(parse);
 
 
@@ -9827,8 +9866,7 @@ function genParsePolygon(parse)
     parse.nTab++;
 
 
-    if (    POLYGON_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (POLYGON_TYPES.includes(parse.next))
         poly.input = genParse(parse);
 
 
@@ -9885,8 +9923,7 @@ function genParseStar(parse)
     parse.nTab++;
 
 
-    if (       STAR_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (STAR_TYPES.includes(parse.next))
         star.input = genParse(parse);
 
 

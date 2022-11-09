@@ -3732,7 +3732,7 @@ function isEmpty(array)
 
 
 
-function arraysEqual(arr1, arr2)
+function arraysAreEqual(arr1, arr2)
 {
     if (arr1.length != arr2.length)
         return false;
@@ -4619,6 +4619,21 @@ function logReqNode(node, parse)
 }
 
 
+function logReqListValue(list, parse)
+{
+    parse.log += parse.tab + LIST_VALUE + ' ' + displayValue(LIST_VALUE, list);
+}
+
+
+
+function logReqList(list, nValues, parse)
+{
+    parse.log += parse.tab + NUMBER_MATH;
+    parse.log += logReqNodeId(list);
+    parse.log += ' ' + nValues;
+}
+
+
 function logReqNumberValue(val, parse)
 {
     parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
@@ -5065,16 +5080,6 @@ const FILL_TYPES =
 ];
 
 
-const STROKE_VALUE    = 'SK';
-const STROKE          = 'STRK';
-
-const STROKE_TYPES =
-[
-    STROKE_VALUE,
-    STROKE
-];
-
-
 const COLOR_STOP_VALUE    = 'CS';
 const COLOR_STOP          = 'CSTOP';
 
@@ -5088,8 +5093,22 @@ const GRADIENT_TYPES =
 ];
 
 
+const STROKE_VALUE    = 'SK';
+const STROKE          = 'STRK';
+
+const STROKE_TYPES =
+[
+    STROKE_VALUE,
+    STROKE
+];
+
+
+const STYLE           = 'STYLE';
+
+
 const STYLE_TYPES =
 [
+    STYLE,
     ...FILL_TYPES,
     ...STROKE_TYPES,
     ...GRADIENT_TYPES
@@ -5282,11 +5301,16 @@ function displayValue(type, value)
 
     switch (type)
     {
-        case NUMBER_VALUE:    return parseNumberValue   (value)[0].toDisplayString();
-        case COLOR_VALUE:     return parseColorValue    (value)[0].toDisplayString();
-        case FILL_VALUE:      return parseFillValue     (value)[0].toDisplayString();
-        case STROKE_VALUE:    return parseStrokeValue   (value)[0].toDisplayString();
+        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
+        case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
+        case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
         case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
+        case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
+        case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
+        case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
+        case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
+        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
+        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
     }
 
 
@@ -5660,7 +5684,7 @@ extends GValue
     {
         super(LIST_VALUE);
 
-        this.items = clone(items);
+        this.items = items ? clone(items) : null;
     }
 
 
@@ -5716,8 +5740,9 @@ extends GValue
     {
         let str = '';
 
-        for (const item of this.items)
-            str += item.toString() + '\ufffc';
+        if (this.items)
+            for (const item of this.items)
+                str += item.toString() + '\ufffc';
 
         return str;
     }
@@ -5728,8 +5753,9 @@ extends GValue
     {
         let str = '';
 
-        for (const item of this.items)
-            str += item.toDisplayString() + '; ';
+        if (this.items)
+            for (const item of this.items)
+                str += item.toDisplayString() + '; ';
 
         return str;
     }
@@ -5743,7 +5769,9 @@ extends GValue
 
 function parseListValue(str)
 {
-    const list = new ListValue(str.split('\ufffc'));
+    const items = str.split('\ufffc', ).filter(i => i);
+
+    const list = new ListValue(items);
 
     return [list, 1];
 }
@@ -11291,6 +11319,20 @@ function genParseColorCorrect(parse)
 }
 
 
+function genParseListValue(parse)
+{
+    parse.pos++; // LIST_VALUE
+
+    const list = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqListValue(list, parse);
+
+    return parseListValue(list)[0];
+}
+
+
+
 function genParseList(parse)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -11627,8 +11669,7 @@ function genParseRectangle(parse)
     parse.nTab++;
 
 
-    if (  RECTANGLE_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (RECTANGLE_TYPES.includes(parse.next))
         rect.input = genParse(parse);
 
 
@@ -11684,8 +11725,7 @@ function genParseLine(parse)
     parse.nTab++;
 
 
-    if (       LINE_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (LINE_TYPES.includes(parse.next))
         line.input = genParse(parse);
 
 
@@ -11739,8 +11779,7 @@ function genParseEllipse(parse)
     parse.nTab++;
 
 
-    if (    ELLIPSE_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (ELLIPSE_TYPES.includes(parse.next))
         ellipse.input = genParse(parse);
 
 
@@ -11795,8 +11834,7 @@ function genParsePolygon(parse)
     parse.nTab++;
 
 
-    if (    POLYGON_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (POLYGON_TYPES.includes(parse.next))
         poly.input = genParse(parse);
 
 
@@ -11853,8 +11891,7 @@ function genParseStar(parse)
     parse.nTab++;
 
 
-    if (       STAR_TYPES.includes(parse.next)
-        || PROPERTY_TYPES.includes(parse.next))
+    if (STAR_TYPES.includes(parse.next))
         star.input = genParse(parse);
 
 
@@ -16408,7 +16445,7 @@ function isEmpty(array)
 
 
 
-function arraysEqual(arr1, arr2)
+function arraysAreEqual(arr1, arr2)
 {
     if (arr1.length != arr2.length)
         return false;
@@ -17292,6 +17329,21 @@ function logReqNode(node, parse)
 {
     parse.log += parse.tab + node.type;
     parse.log += logReqNodeId(node);
+}
+
+
+function logReqListValue(list, parse)
+{
+    parse.log += parse.tab + LIST_VALUE + ' ' + displayValue(LIST_VALUE, list);
+}
+
+
+
+function logReqList(list, nValues, parse)
+{
+    parse.log += parse.tab + NUMBER_MATH;
+    parse.log += logReqNodeId(list);
+    parse.log += ' ' + nValues;
 }
 
 
@@ -19244,16 +19296,6 @@ const FILL_TYPES =
 ];
 
 
-const STROKE_VALUE    = 'SK';
-const STROKE          = 'STRK';
-
-const STROKE_TYPES =
-[
-    STROKE_VALUE,
-    STROKE
-];
-
-
 const COLOR_STOP_VALUE    = 'CS';
 const COLOR_STOP          = 'CSTOP';
 
@@ -19267,8 +19309,22 @@ const GRADIENT_TYPES =
 ];
 
 
+const STROKE_VALUE    = 'SK';
+const STROKE          = 'STRK';
+
+const STROKE_TYPES =
+[
+    STROKE_VALUE,
+    STROKE
+];
+
+
+const STYLE           = 'STYLE';
+
+
 const STYLE_TYPES =
 [
+    STYLE,
     ...FILL_TYPES,
     ...STROKE_TYPES,
     ...GRADIENT_TYPES
@@ -19461,11 +19517,16 @@ function displayValue(type, value)
 
     switch (type)
     {
-        case NUMBER_VALUE:    return parseNumberValue   (value)[0].toDisplayString();
-        case COLOR_VALUE:     return parseColorValue    (value)[0].toDisplayString();
-        case FILL_VALUE:      return parseFillValue     (value)[0].toDisplayString();
-        case STROKE_VALUE:    return parseStrokeValue   (value)[0].toDisplayString();
+        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
+        case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
+        case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
         case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
+        case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
+        case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
+        case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
+        case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
+        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
+        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
     }
 
 
@@ -19839,7 +19900,7 @@ extends GValue
     {
         super(LIST_VALUE);
 
-        this.items = clone(items);
+        this.items = items ? clone(items) : null;
     }
 
 
@@ -19895,8 +19956,9 @@ extends GValue
     {
         let str = '';
 
-        for (const item of this.items)
-            str += item.toString() + '\ufffc';
+        if (this.items)
+            for (const item of this.items)
+                str += item.toString() + '\ufffc';
 
         return str;
     }
@@ -19907,8 +19969,9 @@ extends GValue
     {
         let str = '';
 
-        for (const item of this.items)
-            str += item.toDisplayString() + '; ';
+        if (this.items)
+            for (const item of this.items)
+                str += item.toDisplayString() + '; ';
 
         return str;
     }
@@ -19922,7 +19985,9 @@ extends GValue
 
 function parseListValue(str)
 {
-    const list = new ListValue(str.split('\ufffc'));
+    const items = str.split('\ufffc', ).filter(i => i);
+
+    const list = new ListValue(items);
 
     return [list, 1];
 }
@@ -25673,7 +25738,7 @@ function initMenus()
         menuItemHelp  = new MenuItem('Help and activation', {childMenu: menuMainHelp })]);
   
         
-    menuFlow = new Menu('Flow', true, false);
+    menuFlow = new Menu('Flow nodes', true, false);
     menuFlow.addItems([
         new MenuItem('List',  {icon: iconList,      callback: e => actionManager.do(new CreateNodeAction(LIST,       btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Items', {icon: iconListItems, callback: e => actionManager.do(new CreateNodeAction(LIST_ITEMS, btnNumber.div, {insert: e.shiftKey}))})]);
@@ -25720,7 +25785,7 @@ function initMenus()
     menuStyle.addItems([
         new MenuItem('Solid fill', {icon: iconFill  , callback: e => actionManager.do(new CreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Stroke',     {icon: iconStroke, callback: e => actionManager.do(new CreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Style',      {icon: iconStyle , enabled:  false})]);
+        new MenuItem('Style',      {icon: iconStyle , callback: e => actionManager.do(new CreateNodeAction(STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
     
     
     menuShape = new Menu('Shape nodes', true, false);
@@ -32385,6 +32450,236 @@ extends Parameter
     loadParam(param)
     {
         this.setValue(parseStrokeValue(param)[0], true, true, false);
+    }
+}
+
+
+class   StyleParam
+extends Parameter
+{
+    defaultValue;
+
+    oldValue = null;
+    
+
+    textControl;
+
+    
+    // get valueText() { return this.colorControl.valueText; }
+
+    
+    value;
+    
+
+    
+    constructor(id,
+                name, 
+                hasInput,
+                hasOutput,
+                defaultValue = new ListValue())
+    {
+        super(LIST, id, name);
+
+
+        this.textControl                  = createDiv('colorControlText');
+
+        this.defaultValue                 = defaultValue.copy();
+        this.value                        = defaultValue.copy();
+
+        
+        this.textControl.style.width      = '100%';
+        this.textControl.style.textAlign  = 'center';
+
+
+        this.div.appendChild(this.textControl);
+
+       
+        if (hasInput)  this.initInput(ALL_TYPES);
+        if (hasOutput) this.initOutput([LIST_VALUE], this.output_genRequest);
+    }
+
+
+
+    isDefault = () => arraysAreEqual(this.value, this.defaultValue);
+
+
+
+    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+    {
+        //console.log('value =', value);
+        
+        if (!(value instanceof ListValue))
+        {
+            //console.trace();
+            console.assert(false, 'StyleParam.setValue(value) is ' + typeof value + ', must be a ListValue');
+        }
+
+
+        console.assert(
+               value.type 
+            && value.type == LIST_VALUE, 
+            'StyleParam value.type must be LIST_VALUE');
+
+        this.preSetValue(value, createAction, dispatchEvents);
+
+
+        this.value = value.copy();
+
+
+        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+        this.oldValue = this.value;
+    }    
+
+
+
+    genRequest(gen)
+    {
+        // this function exists because a parameter without an output
+        // should still be able to generate a request
+        
+        // 'this' is the param
+
+        if (    this.output
+            && !isEmpty(this.output.cache)
+            &&  gen.passedNodes.includes(this.node))
+            return this.output.cache;
+
+
+        const request = [];
+
+        if (   this.input
+            && this.input.connected)
+        {
+            request.push(...pushInputOrParam(this.input, gen));
+
+            // if (arraysIntersect(ALL_TYPES, this.input.connectedOutput.types))
+            // {
+            //     const val = noNaN(this.control.value,      1);
+            //     const dec = noNaN(this.control.displayDec, 0);
+                
+            //     request.push(
+            //         NUMBER_VALUE, 
+            //         new NumberValue(val, dec).toString());
+            // }
+        }
+
+        else request.push( 
+            LIST_VALUE, 
+            this.value.toString());
+
+        return request;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        return this.param.genRequest(gen);
+    }
+
+
+
+    updateControls()
+    {
+        if (   this.input.connected
+            && this.value.isValid())
+        {
+            const noColor = 
+                isDarkMode()
+                ? rgbNoColorDark
+                : rgbNoColorLight;
+
+            const rgbaVal = this.value.fill.toRgba();
+            const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
+
+
+            this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+            this.input.colorLight  = 
+            this.input.colorDark   = rgb_a(rgbaText, 0.2);
+
+            this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+            this.output.colorLight =
+            this.output.colorDark  = rgb_a(rgbaText, 0.2);
+
+
+            this.textControl.style.display = 'none';
+        }
+        else
+        {
+            const noColor  = isDarkMode() ? rgbNoColorDark      : rgbNoColorLight;
+            const rgbaText = isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight;
+
+
+            this.input.wireColor           = noColor;
+            this.input.colorLight          = 
+            this.input.colorDark           = rgb_a(rgbaText, 0.12);
+        
+            this.output.wireColor          = noColor;
+            this.output.colorLight         =
+            this.output.colorDark          = rgb_a(rgbaText, 0.12);
+
+
+            this.textControl.style.display = 'inline-block';
+            this.textControl.style.color   = rgba2style(rgbaText);
+
+            this.textControl.innerHTML     = 'no style';
+            
+            this.div.style.background =
+                isDarkMode()
+                ? 'rgba(56, 56, 56, 0.95)'
+                : 'rgba(255, 255, 255, 0.95)';
+        }
+
+
+        this.div.style.height = '20px';
+
+
+        if (this.input ) this.input .updateControl();
+        if (this.output) this.output.updateControl();
+    }
+
+
+
+    enableControlText(enable)
+    {
+        enable &= !this.input || !this.input.connected;
+
+        const opEnable = 
+                enable 
+            || !this.input 
+            || !this.input.connected 
+            ||  arraysIntersect(ALL_TYPES, this.input.connectedOutput.types);
+
+        enableElementText(this.textControl, enable);
+        this.textControl.readOnly = !enable;
+    }
+
+
+
+    toString()
+    {
+        return this.value.toString();
+    }
+
+
+
+    toJson(nTab = 0, id = '')
+    {
+        let pos = ' '.repeat(nTab);
+        
+        if (id == '')
+            id = this.id;
+
+        return pos + '["' + id  + '", "' + this.value.toString() + '"]';
+    }
+
+
+    
+    loadParam(param)
+    {
+        this.setValue(parseListValue(param)[0], true, true, false);
     }
 }
 
@@ -39856,6 +40151,20 @@ extends OpColorBase
 }
 
 
+class   OpStyle
+extends OpColorBase
+{
+    constructor()
+    {
+        super(STYLE, 'style');
+
+
+        this.addInput (new Input([...LIST_TYPES, ...COLOR_TYPES, ...STYLE_TYPES]), this.input_getValuesForUndo);
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+    }
+}
+
+
 class   OpColorStop
 extends OpColorBase
 {
@@ -40061,6 +40370,23 @@ function OpGradient_onDisconnectInput(node, input)
 class   OpShapeBase
 extends OperatorBase
 {
+    paramStyle;
+
+
+    constructor(type, shortType, defWidth = 100)
+    {
+        super(type, shortType, defWidth);
+    }
+
+
+
+    addBaseParams()
+    {
+        this.addParam(this.paramStyle = new StyleParam('style', 'style', true, true));
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -40138,7 +40464,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(RECTANGLE, 'rect', 100);
+        super(RECTANGLE, 'rect');
 
 
         this.addInput (this.createInputForObjects([RECTANGLE, RECTANGLE_VALUE], this.input_getValuesForUndo));
@@ -40159,6 +40485,9 @@ extends OpShapeBase
         this.paramAngle.control.setSuffix('°', true);
         this.paramAngle.control.wrapValue   = true;
         this.paramAngle.control.dragReverse = true;
+
+
+        this.addBaseParams();
     }
 
 
@@ -42275,15 +42604,21 @@ const rgbActiveShapeDark   = hex2rgb('#18a0fb');
 const rgbNoColorLight      = [0.95, 0.95, 0.95];
 const rgbNoColorDark       = [0.3, 0.3, 0.3];
 
-const rgbaNoColorTextLight  = [0, 0, 0, 0.6];
-const rgbaNoColorTextDark   = [1, 1, 1, 0.4];
+const rgbaNoColorTextLight = [0, 0, 0, 0.6];
+const rgbaNoColorTextDark  = [1, 1, 1, 0.4];
 
 
 
-const rgbDefaultFill        = [0xD9, 0xD9, 0xD9];
+const rgbDefaultFill       = [0xD9, 0xD9, 0xD9];
 
 
 var rgbDocumentBody;
+
+
+function initThemeColors()
+{
+    rgbDocumentBody = computedStyle2rgba(document.body, 'background-color');
+}
 
 
 const panCursor = 
@@ -44749,13 +45084,6 @@ function isDarkMode()
 {
     const style = window.getComputedStyle(document.body);
     return isDark(style2rgba(style.backgroundColor));
-}
-
-
-
-function initThemeColors()
-{
-    rgbDocumentBody = computedStyle2rgba(document.body, 'background-color');
 }
 
 

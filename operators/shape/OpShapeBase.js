@@ -1,6 +1,23 @@
 class   OpShapeBase
 extends OperatorBase
 {
+    paramStyle;
+
+
+    constructor(type, shortType, defWidth = 100)
+    {
+        super(type, shortType, defWidth);
+    }
+
+
+
+    addBaseParams()
+    {
+        this.addParam(this.paramStyle = new StyleParam('style', 'style', true, true));
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output

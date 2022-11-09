@@ -1,3 +1,17 @@
+function genParseListValue(parse)
+{
+    parse.pos++; // LIST_VALUE
+
+    const list = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqListValue(list, parse);
+
+    return parseListValue(list)[0];
+}
+
+
+
 function genParseList(parse)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
