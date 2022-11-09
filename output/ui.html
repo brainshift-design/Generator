@@ -33729,7 +33729,7 @@ class Connection
         {
             if (this.output)
                 return LIST_TYPES.includes(this.output.node.type)
-                       ? rgbDocumentBody
+                       ? (rgbDocumentBody)
                        : this.output.wireColor;
 
             else if (this.input)
@@ -36122,6 +36122,16 @@ extends OperatorBase
 
         return request;
     }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+        this.div   .style.borderRadius = '4px';        
+        this.header.style.borderRadius = '4px';        
+    }
 }
 
 
@@ -37315,7 +37325,7 @@ extends OpColorBase
         this.colorBack.style.background = 
             !rgbIsNaN(colors.back)
             ? rgb2style(colors.back)
-            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+            : rgba2style(rgb_a(isDarkMode() ? control.backStyleDark : control.backStyleLight, 0.95));
 
         this.label.style.color = rgb2style(colors.text);
         
@@ -42272,14 +42282,8 @@ const rgbaNoColorTextDark   = [1, 1, 1, 0.4];
 
 const rgbDefaultFill        = [0xD9, 0xD9, 0xD9];
 
+
 var rgbDocumentBody;
-
-
-
-function initModeColors()
-{
-    rgbDocumentBody = computedStyle2rgba(document.body, 'background-color');
-}
 
 
 const panCursor = 
@@ -42503,7 +42507,7 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 function uiEndStartGenerator(msg)
 {
-    initModeColors();
+    initThemeColors();
     initMenus();
 
 
@@ -42517,6 +42521,14 @@ function uiEndStartGenerator(msg)
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
 
 
+    onClassChange(document.childNodes[0], () =>
+    { 
+        initThemeColors();
+    
+        graph.nodes.forEach(n => n.updateNode());
+    });
+    
+    
     window.focus();
 }
 
@@ -44741,6 +44753,13 @@ function isDarkMode()
 
 
 
+function initThemeColors()
+{
+    rgbDocumentBody = computedStyle2rgba(document.body, 'background-color');
+}
+
+
+
 // create an observer for when the UI theme changes
 
 function onClassChange(element, callback) 
@@ -44759,14 +44778,6 @@ function onClassChange(element, callback)
 
     return observer.disconnect;
 }
-
-
-
-onClassChange(document.childNodes[0], () =>
-{ 
-    initModeColors();
-    graph.nodes.forEach(n => n.updateNode());
-});
 
 
 const licenseKeys     = createCryptoKeys();

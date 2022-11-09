@@ -302,7 +302,7 @@ extends OpColorBase
         this.colorBack.style.background = 
             !rgbIsNaN(colors.back)
             ? rgb2style(colors.back)
-            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+            : rgba2style(rgb_a(isDarkMode() ? control.backStyleDark : control.backStyleLight, 0.95));
 
         this.label.style.color = rgb2style(colors.text);
         

@@ -48,7 +48,7 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 function uiEndStartGenerator(msg)
 {
-    initModeColors();
+    initThemeColors();
     initMenus();
 
 
@@ -62,5 +62,13 @@ function uiEndStartGenerator(msg)
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
 
 
+    onClassChange(document.childNodes[0], () =>
+    { 
+        initThemeColors();
+    
+        graph.nodes.forEach(n => n.updateNode());
+    });
+    
+    
     window.focus();
 }

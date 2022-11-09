@@ -45,11 +45,5 @@ const rgbaNoColorTextDark   = [1, 1, 1, 0.4];
 
 const rgbDefaultFill        = [0xD9, 0xD9, 0xD9];
 
+
 var rgbDocumentBody;
-
-
-
-function initModeColors()
-{
-    rgbDocumentBody = computedStyle2rgba(document.body, 'background-color');
-}

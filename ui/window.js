@@ -64,6 +64,13 @@ function isDarkMode()
 
 
 
+function initThemeColors()
+{
+    rgbDocumentBody = computedStyle2rgba(document.body, 'background-color');
+}
+
+
+
 // create an observer for when the UI theme changes
 
 function onClassChange(element, callback) 
@@ -82,11 +89,3 @@ function onClassChange(element, callback)
 
     return observer.disconnect;
 }
-
-
-
-onClassChange(document.childNodes[0], () =>
-{ 
-    initModeColors();
-    graph.nodes.forEach(n => n.updateNode());
-});

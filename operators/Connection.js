@@ -65,7 +65,7 @@ class Connection
         {
             if (this.output)
                 return LIST_TYPES.includes(this.output.node.type)
-                       ? rgbDocumentBody
+                       ? (rgbDocumentBody)
                        : this.output.wireColor;
 
             else if (this.input)
