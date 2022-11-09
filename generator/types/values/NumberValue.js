@@ -19,8 +19,6 @@ extends GValue
 
         this.value    = val;
         this.decimals = dec;
-
-        this.valid    = true;
     }
 
 

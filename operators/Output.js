@@ -103,7 +103,8 @@ class Output
 
                 if (!loop)
                 {
-                    graphView.tempConn.wire.outputPos = point(
+                    graphView.tempConn.wire2.outputPos =
+                    graphView.tempConn.wire .outputPos = point(
                         rect.x + rect.w/2,
                         rect.y + rect.h/2 - menuBar.offsetHeight);
                 }
@@ -134,7 +135,8 @@ class Output
 
         if (   graphView.tempConn
             && graphView.tempConn.input)
-            graphView.tempConn.wire.outputPos = point_NaN;
+            graphView.tempConn.wire2.outputPos =
+            graphView.tempConn.wire .outputPos = point_NaN;
     }
 
 

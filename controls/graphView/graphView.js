@@ -167,7 +167,10 @@ graphView.putWiresOnTop = function(node)
 
     for (const input of node.inputs.filter(i => i.connected))
     {
+        wireContainer.removeChild(input.connection.wire2);
         wireContainer.removeChild(input.connection.wire);
+
+        wireContainer.appendChild(input.connection.wire2);
         wireContainer.appendChild(input.connection.wire);
     }
         
@@ -175,7 +178,10 @@ graphView.putWiresOnTop = function(node)
     {
         for (const connInput of output.connectedInputs)
         {
+            wireContainer.removeChild(connInput.connection.wire2);
             wireContainer.removeChild(connInput.connection.wire);
+
+            wireContainer.appendChild(connInput.connection.wire2);
             wireContainer.appendChild(connInput.connection.wire);
         }
     }
@@ -198,13 +204,19 @@ graphView.updateNodeTransforms = function(nodes, _updateWires = true)
             if (   input.connected
                 && input.connection
                 && !wires.includes(input.connection.wire))
+            {
+                wires.push(input.connection.wire2);        
                 wires.push(input.connection.wire);        
+            }
 
         for (const output of node.outputs)
             for (const connInput of output.connectedInputs)
                 if (   connInput.connection
                     && !wires.includes(connInput.connection.wire))
+                {
+                    wires.push(connInput.connection.wire2);
                     wires.push(connInput.connection.wire);
+                }
     }
 
 
@@ -230,13 +242,18 @@ graphView.updateNodeTransform = function(node)
     for (const input of node.inputs)
         if (   input.connected
             && input.connection)
+        {
+            wires.push(input.connection.wire2);        
             wires.push(input.connection.wire);        
+        }
 
     for (const output of node.outputs)
         for (const connInput of output.connectedInputs)
             if (connInput.connection)
+            {
+                wires.push(connInput.connection.wire2);
                 wires.push(connInput.connection.wire);
-
+            }
 
     graphView.setNodeTransform(node, nodeLeft, nodeTop, nodeRect);
 
@@ -288,13 +305,15 @@ graphView.soloNode = function(node)
 
     graph.connections.forEach(c =>
     { 
-        c.wire.style.opacity = 
+        c.wire2.style.opacity = 
+        c.wire .style.opacity = 
                c.input  && graphView._soloNode == c.input .node
             || c.output && graphView._soloNode == c.output.node
             ? 1 
             : 0.09;
     });
 
+    updateWires(graph.connections.map(c => c.wire2));
     updateWires(graph.connections.map(c => c.wire));
 };
 
@@ -304,9 +323,12 @@ graphView.unsoloNode = function()
 {
     graphView._soloNode = null;
 
-    graph.nodes.forEach(n => n.div .style.opacity = 1);
+    graph.nodes.forEach(n => n.div.style.opacity = 1);
 
-    graph.connections.forEach(c => c.wire.style.opacity = 1);
+    graph.connections.forEach(c => c.wire2.style.opacity = 1);
+    graph.connections.forEach(c => c.wire .style.opacity = 1);
+
+    updateWires(graph.connections.map(c => c.wire2));
     updateWires(graph.connections.map(c => c.wire));
 };
 

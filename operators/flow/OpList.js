@@ -1,31 +1,22 @@
-class   OpMath
+class   OpList
 extends OperatorBase
 {
-    paramOperation;
-    paramValue;
-
-
-
     constructor()
     {
-        super(NUMBER_MATH, 'math', 70);
+        super(LIST, 'list', 90);
 
-        this.variableInputs   = true;
-        this.alwaysLoadParams = true;
+        this.variableInputs = true;
 
 
         this.addNewInput();
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
-        
-        this.addParam(this.paramValue     = new NumberParam('value',     '',   false, false, false));
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, MATH_OPS.map(s => s[1]), 1));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
     }
     
     
     
     addNewInput()
     {
-        const newInput = new Input(NUMBER_TYPES);
+        const newInput = new Input(ALL_TYPES);
         newInput.isNew = true;
 
         newInput.addEventListener('connect',    e => { OpList_onConnectInput(this); e.detail.input.isNew = false; });
@@ -59,36 +50,10 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         
-        request.push(...this.node.paramOperation.genRequest(gen));
-
-        
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
         return request;
-    }
-
-
-
-    // updateValues(updateParamId, paramIds, values)
-    // {
-    //     super.updateValues(updateParamId, paramIds, values);
-
-    //     const value     = values[paramIds.findIndex(id => id == 'value'    )];
-    //     const operation = values[paramIds.findIndex(id => id == 'operation')];
-
-    //     this.paramValue    .setValue(value,     false, true, false);
-    //     this.paramOperation.setValue(operation, false, true, false);
-    // }
-
-
-
-    updateParams()
-    {
-        this.paramValue    .enableControlText(false);
-        this.paramOperation.enableControlText(true );
-
-        super.updateParams();
     }
 }
 

@@ -17,25 +17,34 @@ const GENERATOR_LOGO = '◦G•';
 
 function rgbHeaderFromType(type, active)
 {
+    if (FLOW_TYPES.includes(type))
+        return active 
+        ? (isDarkMode() ? rgbActiveFlowDark : rgbActiveFlowLight)
+        : (isDarkMode() ? rgbFlowDark       : rgbFlowLight      );
+
     if (NUMBER_TYPES.includes(type))
         return active 
         ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
         : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
+    if (STRING_TYPES.includes(type))
+        return active 
+        ? (isDarkMode() ? rgbActiveStringDark : rgbActiveStringLight)
+        : (isDarkMode() ? rgbStringDark       : rgbStringLight      );
+
+    if (SHAPE_TYPES.includes(type))
+        return active 
+        ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
+        : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );
+
+    if (STYLE_TYPES.includes(type))
+        return active 
+        ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
+        : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );
+
+        
     switch (type)
     {
-        case NUMBER_VALUE:    
-        case NUMBER:    
-        case NUMBER_LIMITS:
-        case NUMBER_MATH:
-        case NUMBER_ADD:
-        case NUMBER_SUBTRACT:
-        case NUMBER_MULTIPLY:
-        case NUMBER_DIVIDE:
-        case NUMBER_MODULO:
-        case NUMBER_EXPONENT:
-        case NUMBER_INTERPOLATE: 
-
         case COLOR_VALUE:           
 
         case COLOR:           
@@ -46,28 +55,6 @@ function rgbHeaderFromType(type, active)
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
-
-        case SHAPE_VALUE:
-        case RECTANGLE_VALUE: 
-        case LINE_VALUE: 
-        case ELLIPSE_VALUE: 
-        case POLYGON_VALUE: 
-        case STAR_VALUE: 
-        
-        case RECTANGLE: 
-        case LINE: 
-        case ELLIPSE: 
-        case POLYGON: 
-        case STAR: 
-        
-        case FILL_VALUE:
-        case STROKE_VALUE:
-            
-        case FILL:
-        case STROKE:
-            return active 
-                ? (isDarkMode() ? rgbActiveObjectDark : rgbActiveObjectLight)
-                : (isDarkMode() ? rgbObjectDark       : rgbObjectLight      );
     }
 
     return 'magenta';
@@ -3002,6 +2989,26 @@ const INVALID             = '?';
 const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
 
 
+const LIST_VALUE       = 'LS';
+
+const LIST             = 'LIST';
+const LIST_ITEMS       = 'ITEMS';
+
+
+const LIST_TYPES =
+[
+    LIST_VALUE,
+    LIST
+];
+
+
+const FLOW_TYPES =
+[
+    ...LIST_TYPES,
+    LIST_ITEMS
+];
+
+
 const NUMBER_VALUE        = 'N';     // value (s) (with significant decimals)
 
 const NUMBER              = 'NUM';   // N | n
@@ -3051,6 +3058,14 @@ const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
 const STRING              = 'STR';   // S | s
 const STRING_ADD          = 'SADD';  // S S
 const STRING_REPLACE      = 'SREPL'; // S S:what S:with
+
+
+const STRING_TYPES =
+[
+    STRING,
+    STRING_ADD,
+    STRING_REPLACE
+];
 
 
 const COLOR_VALUE         = 'C';     // color value
@@ -3105,7 +3120,7 @@ const GRADIENT_TYPES =
 ];
 
 
-const PROPERTY_TYPES =
+const STYLE_TYPES =
 [
     ...FILL_TYPES,
     ...STROKE_TYPES,
@@ -3166,11 +3181,22 @@ const SHAPE_TYPES =
 const OBJECT_TYPES = // because they produce or modify objects
 [
     ...SHAPE_TYPES,
-    ...PROPERTY_TYPES
+    ...STYLE_TYPES
 ];
 
 
 const GROUP            = 'GRP';   // ???? count O...
+
+
+const ALL_TYPES =
+[
+    ...FLOW_TYPES,
+    ...NUMBER_TYPES,
+    ...STRING_TYPES,
+    ...COLOR_TYPES,
+    ...STYLE_TYPES,
+    ...SHAPE_TYPES
+];
 
 
 const COMMENT          = 'CMNT';
@@ -3655,6 +3681,106 @@ extends FigmaObject
 }
 
 
+class ListValue
+extends GValue
+{
+    items;
+
+
+
+    constructor(items = [])
+    {
+        super(LIST_VALUE);
+
+        this.items = clone(items);
+    }
+
+
+
+    copy()
+    {
+        const list = new ListValue(this.items);
+
+        list.copyBase(this);
+
+        return list;
+    }
+
+
+
+    equals(list)
+    {
+        if (!list)                                  return false;
+        if (!(list instanceof ListValue))           return false;
+        if (this.items.length != list.items.length) return false;
+            
+        for (let i = 0; i < this.items.length; i++)
+            if (!this.items[i].equals(list.items[i]))
+                return false;
+
+        return true;
+    }
+
+
+
+    eval(parse)
+    {
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return !this.items.find(i => !i.isValid());
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toString()
+    {
+        let str = '';
+
+        for (const item of this.items)
+            str += item.toString() + '\ufffc';
+
+        return str;
+    }
+
+
+
+    toDisplayString()
+    {
+        let str = '';
+
+        for (const item of this.items)
+            str += item.toDisplayString() + '; ';
+
+        return str;
+    }
+
+
+
+    static NaN = Object.freeze(new ListValue(null));
+}
+
+
+
+function parseListValue(str)
+{
+    const list = new ListValue(str.split('\ufffc'));
+
+    return [list, 1];
+}
+
+
 class NumberValue
 extends GValue
 {
@@ -3676,8 +3802,6 @@ extends GValue
 
         this.value    = val;
         this.decimals = dec;
-
-        this.valid    = true;
     }
 
 
@@ -5141,6 +5265,73 @@ function parseStarValue(str)
         new NumberValue(parseNumberValue(star[6])),
         new NumberValue(parseNumberValue(star[7])));
 }
+
+
+
+class GList
+extends GOperator
+{
+    inputs = [];
+
+    value;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(LIST, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const list = new GList(this.nodeId, this.options);
+
+        list.copyBase(this);
+
+        list.inputs = this.inputs.map(i => i.copy());
+        list.value  = this.value.copy();
+
+        return list;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+
+        this.value = new ListValue();
+
+
+        for (let i = 0; i < this.inputs.length; i++)
+        {
+            this.inputs[i] = this.inputs[i].eval(parse).copy();
+            this.value.items.push(this.inputs[i].toValue());
+        }
+    
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.valid = true;
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+
 
 
 
@@ -9132,6 +9323,49 @@ function genParseColorCorrect(parse)
 }
 
 
+function genParseList(parse)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const list = new GList(nodeId, options);
+
+    
+    let nValues = 0;
+    
+    if (!ignore)
+        nValues = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReqList(list, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, list);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    for (let i = 0; i < nValues; i++)
+        list.inputs.push(genParse(parse));
+
+
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, list);
+    return list;
+}
+
+
+
+
+
+
 function genParseNumValue(parse)
 {
     parse.pos++; // N
@@ -10001,6 +10235,10 @@ function genParse(parse, inParam = true)
 
 
          if (parse.next == PARAM             ) result = genParseParam           (parse);
+
+    else if (parse.next == LIST_VALUE        ) result = genParseListValue       (parse);
+    else if (parse.next == LIST              ) result = genParseList            (parse);
+    else if (parse.next == LIST_ITEMS        ) result = genParseListItems       (parse);
 
     else if (parse.next == NUMBER_VALUE      ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER            ) result = genParseNumber          (parse);

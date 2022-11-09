@@ -918,6 +918,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
                 switch (type)
                 {
+                    case       LIST_VALUE: value = parseListValue     (values[i++])[0]; break;
                     case     NUMBER_VALUE: value = parseNumberValue   (values[i++])[0]; break;
                     case      COLOR_VALUE: value = parseColorValue    (values[i++])[0]; break;
                     case       FILL_VALUE: value = parseFillValue     (values[i++])[0]; break;
@@ -929,12 +930,6 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                     case    POLYGON_VALUE: value = parsePolygonValue  (values[i++])[0]; break;
                     case       STAR_VALUE: value = parseStarValue     (values[i++])[0]; break;
                     
-                    // case FILL:             console.log('values[i] =', values[i]);
-                    //                        value = new FillValue(
-                    //                            parseColorValue (values[i++])[0],
-                    //                            parseNumberValue(values[i++])[0]);
-                    //                        break;
-
                     default:               console.assert(false, 'unknown type \'' + type + '\'');
                 }
 

@@ -11,8 +11,11 @@ graphView.addWire = function(wire, updateTransform = true)
 
 graphView.removeWire = function(wire)
 {
-    wireContainer.removeChild(wire);    
-    removeFromArray(graphView.wires, wire);
+    if (wireContainer.contains(wire))
+        wireContainer.removeChild(wire);    
+
+    if (graphView.wires.includes(wire))
+        removeFromArray(graphView.wires, wire);
 };
 
 
@@ -43,11 +46,12 @@ function updateWire(wire, x = 0, y = 0)
         pIn = point(x, y - yOffset);
 
 
-    wire.update(
-        pOut.x, 
-        pOut.y, 
-        pIn.x, 
-        pIn.y);        
+    if (wire.update)
+        wire.update(
+            pOut.x, 
+            pOut.y, 
+            pIn.x, 
+            pIn.y);        
 }
 
 
@@ -83,14 +87,14 @@ function updateWires(wires)
         // not at the top of the window
 
         wire.updateCurve  (pOut[i].x, pOut[i].y, pIn[i].x, pIn[i].y);
-        wire.updateOutBall(pOut[i].x, pOut[i].y                    );
-        wire.updateInBall (                      pIn[i].x, pIn[i].y);
+
+        if (wire.outBall) wire.updateOutBall(pOut[i].x, pOut[i].y);
+        if (wire. inBall) wire.updateInBall (pIn [i].x, pIn [i].y);
 
         wire.updateStyle(wire.getColor());
 
         wire.setAttribute('width',  cw);
         wire.setAttribute('height', ch);
-        wire.setAttribute('stroke-width', 1.6 * graphView.zoom);
     
         wire.setAttribute('viewBox',
                     0
@@ -115,7 +119,8 @@ function updateWires(wires)
         show(wires[i].curve,   (settings.showWires || isSolo) && conn != graphView.savedConn);
         show(wires[i].xp1,     (settings.showWires || isSolo) && conn != graphView.savedConn);
         show(wires[i].xp2,     (settings.showWires || isSolo) && conn != graphView.savedConn);
-        show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
-        show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
+
+        if (wires[i].outBall) show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
+        if (wires[i]. inBall) show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
     }
 }

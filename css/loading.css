@@ -61,41 +61,41 @@
 
 @keyframes emptyOrbit
 {
-      0%   { transform: rotate(  0deg) translate(-20px) scale(100%);  opacity: 100%; }
-     10%   { transform: rotate(170deg) translate(-20px) scale(100%);  opacity: 100%; }
-     11.3% { transform: rotate(180deg) translate(-20px) scale(130%);  opacity: 100%; }
-     15.3% { transform: rotate(180deg) translate(-20px) scale(130%);  opacity: 100%; }
-     20%   { transform: rotate(180deg) translate(-20px) scale( 50%);  opacity:   0%; }
-     23.4% { transform: rotate(360deg) translate(-20px) scale(150%);  opacity:   0%; }
-     26.7% { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
-     50%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
-     62%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
-     63.3% { transform: rotate(360deg) translate(-20px) scale(130%);  opacity: 100%; }
-     65.3% { transform: rotate(360deg) translate(-20px) scale(130%);  opacity: 100%; }
-     68%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
-     73.3% { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
-     80%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
-    100%   { transform: rotate(360deg) translate(-20px) scale(100%);  opacity: 100%; }
+      0%   { transform: rotate(   0deg) translate(-20px) scale(100%);  opacity: 100%; }
+     10%   { transform: rotate(-170deg) translate(-20px) scale(100%);  opacity: 100%; }
+     11.3% { transform: rotate(-180deg) translate(-20px) scale(130%);  opacity: 100%; }
+     15.3% { transform: rotate(-180deg) translate(-20px) scale(130%);  opacity: 100%; }
+     20%   { transform: rotate(-180deg) translate(-20px) scale( 50%);  opacity:   0%; }
+     23.4% { transform: rotate(-360deg) translate(-20px) scale(150%);  opacity:   0%; }
+     26.7% { transform: rotate(-360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     50%   { transform: rotate(-360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     62%   { transform: rotate(-360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     63.3% { transform: rotate(-360deg) translate(-20px) scale(130%);  opacity: 100%; }
+     65.3% { transform: rotate(-360deg) translate(-20px) scale(130%);  opacity: 100%; }
+     68%   { transform: rotate(-360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     73.3% { transform: rotate(-360deg) translate(-20px) scale(100%);  opacity: 100%; }
+     80%   { transform: rotate(-360deg) translate(-20px) scale(100%);  opacity: 100%; }
+    100%   { transform: rotate(-360deg) translate(-20px) scale(100%);  opacity: 100%; }
 }
 
 
 @keyframes fullOrbit
 {
-      0%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
-     12%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
-     12.7% { transform: rotate(  0deg) translate(20px) scale( 75%);  opacity: 100%; }
-     13.3% { transform: rotate(  0deg) translate(20px) scale( 75%);  opacity: 100%; }
-     22%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
-     23.4% { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
-     30%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
-     50%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
-     62%   { transform: rotate(170deg) translate(20px) scale(100%);  opacity: 100%; }
-     63.3% { transform: rotate(180deg) translate(20px) scale( 50%);  opacity: 100%; }
-     65.3% { transform: rotate(180deg) translate(20px) scale( 50%);  opacity: 100%; }
-     68%   { transform: rotate(180deg) translate(20px) scale(  0%);  opacity:   0%; }
-     73.4% { transform: rotate(  0deg) translate(20px) scale( 80%);  opacity:   0%; }
-     76.7% { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
-    100%   { transform: rotate(  0deg) translate(20px) scale(100%);  opacity: 100%; }
+      0%   { transform: rotate(   0deg) translate(20px) scale(100%);  opacity: 100%; }
+     12%   { transform: rotate(   0deg) translate(20px) scale(100%);  opacity: 100%; }
+     12.7% { transform: rotate(   0deg) translate(20px) scale( 75%);  opacity: 100%; }
+     13.3% { transform: rotate(   0deg) translate(20px) scale( 75%);  opacity: 100%; }
+     22%   { transform: rotate(   0deg) translate(20px) scale(100%);  opacity: 100%; }
+     23.4% { transform: rotate(   0deg) translate(20px) scale(100%);  opacity: 100%; }
+     30%   { transform: rotate(   0deg) translate(20px) scale(100%);  opacity: 100%; }
+     50%   { transform: rotate(   0deg) translate(20px) scale(100%);  opacity: 100%; }
+     62%   { transform: rotate(-170deg) translate(20px) scale(100%);  opacity: 100%; }
+     63.3% { transform: rotate(-180deg) translate(20px) scale( 50%);  opacity: 100%; }
+     65.3% { transform: rotate(-180deg) translate(20px) scale( 50%);  opacity: 100%; }
+     68%   { transform: rotate(-180deg) translate(20px) scale(  0%);  opacity:   0%; }
+     73.4% { transform: rotate(   0deg) translate(20px) scale( 80%);  opacity:   0%; }
+     76.7% { transform: rotate(   0deg) translate(20px) scale(100%);  opacity: 100%; }
+    100%   { transform: rotate(   0deg) translate(20px) scale(100%);  opacity: 100%; }
 }
 
 

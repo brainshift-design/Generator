@@ -1,24 +1,33 @@
 function rgbHeaderFromType(type, active)
 {
+    if (FLOW_TYPES.includes(type))
+        return active 
+        ? (isDarkMode() ? rgbActiveFlowDark : rgbActiveFlowLight)
+        : (isDarkMode() ? rgbFlowDark       : rgbFlowLight      );
+
     if (NUMBER_TYPES.includes(type))
         return active 
         ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
         : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
 
+    if (STRING_TYPES.includes(type))
+        return active 
+        ? (isDarkMode() ? rgbActiveStringDark : rgbActiveStringLight)
+        : (isDarkMode() ? rgbStringDark       : rgbStringLight      );
+
+    if (SHAPE_TYPES.includes(type))
+        return active 
+        ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
+        : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );
+
+    if (STYLE_TYPES.includes(type))
+        return active 
+        ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
+        : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );
+
+        
     switch (type)
     {
-        case NUMBER_VALUE:    
-        case NUMBER:    
-        case NUMBER_LIMITS:
-        case NUMBER_MATH:
-        case NUMBER_ADD:
-        case NUMBER_SUBTRACT:
-        case NUMBER_MULTIPLY:
-        case NUMBER_DIVIDE:
-        case NUMBER_MODULO:
-        case NUMBER_EXPONENT:
-        case NUMBER_INTERPOLATE: 
-
         case COLOR_VALUE:           
 
         case COLOR:           
@@ -29,28 +38,6 @@ function rgbHeaderFromType(type, active)
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
-
-        case SHAPE_VALUE:
-        case RECTANGLE_VALUE: 
-        case LINE_VALUE: 
-        case ELLIPSE_VALUE: 
-        case POLYGON_VALUE: 
-        case STAR_VALUE: 
-        
-        case RECTANGLE: 
-        case LINE: 
-        case ELLIPSE: 
-        case POLYGON: 
-        case STAR: 
-        
-        case FILL_VALUE:
-        case STROKE_VALUE:
-            
-        case FILL:
-        case STROKE:
-            return active 
-                ? (isDarkMode() ? rgbActiveObjectDark : rgbActiveObjectLight)
-                : (isDarkMode() ? rgbObjectDark       : rgbObjectLight      );
     }
 
     return 'magenta';

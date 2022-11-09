@@ -43,6 +43,26 @@ const INVALID             = '?';
 const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
 
 
+const LIST_VALUE       = 'LS';
+
+const LIST             = 'LIST';
+const LIST_ITEMS       = 'ITEMS';
+
+
+const LIST_TYPES =
+[
+    LIST_VALUE,
+    LIST
+];
+
+
+const FLOW_TYPES =
+[
+    ...LIST_TYPES,
+    LIST_ITEMS
+];
+
+
 const NUMBER_VALUE        = 'N';     // value (s) (with significant decimals)
 
 const NUMBER              = 'NUM';   // N | n
@@ -92,6 +112,14 @@ const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
 const STRING              = 'STR';   // S | s
 const STRING_ADD          = 'SADD';  // S S
 const STRING_REPLACE      = 'SREPL'; // S S:what S:with
+
+
+const STRING_TYPES =
+[
+    STRING,
+    STRING_ADD,
+    STRING_REPLACE
+];
 
 
 const COLOR_VALUE         = 'C';     // color value
@@ -146,7 +174,7 @@ const GRADIENT_TYPES =
 ];
 
 
-const PROPERTY_TYPES =
+const STYLE_TYPES =
 [
     ...FILL_TYPES,
     ...STROKE_TYPES,
@@ -207,11 +235,22 @@ const SHAPE_TYPES =
 const OBJECT_TYPES = // because they produce or modify objects
 [
     ...SHAPE_TYPES,
-    ...PROPERTY_TYPES
+    ...STYLE_TYPES
 ];
 
 
 const GROUP            = 'GRP';   // ???? count O...
+
+
+const ALL_TYPES =
+[
+    ...FLOW_TYPES,
+    ...NUMBER_TYPES,
+    ...STRING_TYPES,
+    ...COLOR_TYPES,
+    ...STYLE_TYPES,
+    ...SHAPE_TYPES
+];
 
 
 const COMMENT          = 'CMNT';

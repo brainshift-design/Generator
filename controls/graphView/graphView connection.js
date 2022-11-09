@@ -5,14 +5,13 @@ graphView.startConnectionFromOutput = (pointerId, output, updateTempWire = true)
     graphView.tempConn = new Connection(output, null);
     graphView.tempConn.wire.output = output;
 
-    graphView.addWire(graphView.tempConn.wire, false);
+    graphView.addWire(graphView.tempConn.wire2, false);
+    graphView.addWire(graphView.tempConn.wire,  false);
 
     if (updateTempWire)
     {
-        updateWire(
-            graphView.tempConn.wire,
-            graphView.pStart.x, 
-            graphView.pStart.y);
+        updateWire(graphView.tempConn.wire2, graphView.pStart.x, graphView.pStart.y);
+        updateWire(graphView.tempConn.wire,  graphView.pStart.x, graphView.pStart.y);
     }
 
     output.updateControl();
@@ -25,14 +24,14 @@ graphView.startConnectionFromInput = (pointerId, input) =>
     graphView.connPointerId = pointerId;
 
     graphView.tempConn = new Connection(null, input);
+    
     graphView.tempConn.wire.input = input;
     
-    graphView.addWire(graphView.tempConn.wire, false);
+    graphView.addWire(graphView.tempConn.wire2, false);
+    graphView.addWire(graphView.tempConn.wire,  false);
 
-    updateWire(
-        graphView.tempConn.wire,
-        graphView.pStart.x, 
-        graphView.pStart.y);
+    updateWire(graphView.tempConn.wire2, graphView.pStart.x, graphView.pStart.y);
+    updateWire(graphView.tempConn.wire,  graphView.pStart.x, graphView.pStart.y);
 
     input.updateControl();
 };
@@ -44,6 +43,7 @@ graphView.cancelConnection = pointerId =>
     const output = graphView.tempConn.output;
     const input  = graphView.tempConn.input;
 
+    graphView.removeWire(graphView.tempConn.wire2);    
     graphView.removeWire(graphView.tempConn.wire);    
 
     graphView.savedConn = null;
@@ -96,7 +96,9 @@ graphView.endConnection = pointerId =>
             else if (input == savedConnInput) // reconnect old
             {
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
-                updateWire(input.connection.wire);
+                
+                updateWire(input.connection.wire2);
+                updateWire(input.connection.wire );
             }
 
             else if (savedConnInput)

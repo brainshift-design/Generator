@@ -138,7 +138,8 @@ extends EventTarget
 
                 if (!loop)
                 {
-                    graphView.tempConn.wire.inputPos = point(
+                    graphView.tempConn.wire2.inputPos = 
+                    graphView.tempConn.wire .inputPos = point(
                         rect.x + rect.w/2,
                         rect.y + rect.h/2 - menuBar.offsetHeight);
                 }
@@ -168,7 +169,8 @@ extends EventTarget
 
         if (   graphView.tempConn
             && graphView.tempConn.output)
-            graphView.tempConn.wire.inputPos = point_NaN;
+            graphView.tempConn.wire2.inputPos =
+            graphView.tempConn.wire .inputPos = point_NaN;
     }
 
 

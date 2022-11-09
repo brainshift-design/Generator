@@ -178,6 +178,7 @@ class Graph
         input .connection = conn;
         output.connection = conn;
         
+        graphView.addWire(conn.wire2);
         graphView.addWire(conn.wire);
 
         this.connections.push(conn);
@@ -197,6 +198,7 @@ class Graph
         if (!output) return false;
 
 
+        graphView.removeWire(input.connection.wire2);
         graphView.removeWire(input.connection.wire);
 
         removeFromArray(this.connections, input.connection);
@@ -297,6 +299,9 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 
     switch (nodeType)
     {
+        case LIST:               node = new OpList();             break;
+        case LIST_ITEMS:         node = new OpListItems();        break;
+
         case NUMBER:             node = new OpNumber();           break;
         case NUMBER_LIMITS:      node = new OpLimits();           break;
         case NUMBER_RANDOM:      node = new OpRandom();           break;

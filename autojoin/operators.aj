@@ -24,6 +24,11 @@
 
 ../operators/utility/OpComment.js
 
+
+../operators/flow/OpList.js
+../operators/flow/OpListItems.js
+
+
 ../operators/math/OpNumber.js
 ../operators/math/OpLimits.js
 ../operators/math/OpRandom.js
