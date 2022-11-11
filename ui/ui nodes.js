@@ -930,7 +930,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                     case    POLYGON_VALUE: value = parsePolygonValue  (values[i++])[0]; break;
                     case       STAR_VALUE: value = parseStarValue     (values[i++])[0]; break;
                     
-                    default:               console.assert(false, 'unknown type \'' + type + '\'');
+                    default: console.assert(false, 'unknown type \'' + type + '\'');
                 }
 
                 if (value.nodeId)

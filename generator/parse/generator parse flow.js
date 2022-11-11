@@ -52,3 +52,37 @@ function genParseList(parse)
 
 
 
+function genParseListItems(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const items = new GListItems(nodeId, options);
+
+    
+    const nValues = 0;
+    
+    if (parse.settings.logRequests) 
+        logReqListItems(items, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, items);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+    parse.inParam = false;
+
+
+    //items.value = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, items);
+    return items;
+}

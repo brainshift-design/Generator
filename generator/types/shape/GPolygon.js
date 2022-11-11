@@ -103,6 +103,8 @@ extends GShapeBase
             this.objects = 
             [
                 new FigmaPolygon(
+                                this.nodeId,
+                                -1,
                                 this.x      .toValue().value,
                                 this.y      .toValue().value,
                                 this.width  .toValue().value,

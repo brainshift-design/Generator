@@ -1,3 +1,29 @@
+function figPositionWindow(x, y)
+{
+    // x = Math.floor(Math.max(0, x ));
+    // y = Math.floor(Math.max(0, y));
+
+    // figma.ui.resize(x, y);
+
+    
+    // figma.ui.close();
+    // figma.showUI(
+    //     __html__,
+    //     {
+    //         visible:     false,
+    //         themeColors: true,
+    //         position: {x: x, y: y}
+    //     });
+
+    // figma.clientStorage.setAsync('windowWidth',  x);
+    // figma.clientStorage.setAsync('windowHeight', y);
+
+
+    figPostMessageToUI({cmd: 'uiEndPositionWindow'});
+}
+
+
+
 function figResizeWindow(width, height)
 {
     width  = Math.floor(Math.max(0, width ));

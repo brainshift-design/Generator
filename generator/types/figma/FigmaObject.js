@@ -2,7 +2,8 @@ class FigmaObject
 {
     type;
 
-    id          = 0;
+    nodeId      = '';
+    id          = -1;
 
     fills       = [];
     strokeFills = [];
@@ -14,18 +15,18 @@ class FigmaObject
 
 
 
-    constructor(type)
+    constructor(type, nodeId, id)
     {
-        this.type = type;
+        this.type   = type;
+
+        this.nodeId = nodeId;
+        this.id     = id;
     }
 
 
 
     copyBase(base)
     {
-        this.type         = base.type;
-        this.id           = base.id;
-               
         this.fills        = clone(base.fills);
         this.strokeFills  = clone(base.strokeFills);
 

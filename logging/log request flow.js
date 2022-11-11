@@ -7,7 +7,16 @@ function logReqListValue(list, parse)
 
 function logReqList(list, nValues, parse)
 {
-    parse.log += parse.tab + NUMBER_MATH;
+    parse.log += parse.tab + LIST;
+    parse.log += logReqNodeId(list);
+    parse.log += ' ' + nValues;
+}
+
+
+
+function logReqListItems(list, nValues, parse)
+{
+    parse.log += parse.tab + LIST_ITEMS;
     parse.log += logReqNodeId(list);
     parse.log += ' ' + nValues;
 }

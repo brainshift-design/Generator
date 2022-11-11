@@ -1,3 +1,15 @@
+function makeObjectName(obj)
+{
+    return OBJECT_PREFIX + obj.nodeId
+         + (obj.id > -1 ? '.'+obj.id : '');
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 function genRectIsValid(genRect)
 {
     return genRect.x      != null && !isNaN(genRect.x     )
@@ -10,13 +22,13 @@ function genRectIsValid(genRect)
 
 
 
-function figCreateRect(obj, name)
+function figCreateRect(obj)
 {
     //console.log(obj);
 
     const rect = figma.createRectangle();
 
-    rect.name = name;
+    rect.name = makeObjectName(obj);
 
     if (!genRectIsValid(obj))
         return rect;
@@ -83,13 +95,13 @@ function genLineIsValid(genLine)
 
 
 
-function figCreateLine(obj, name)
+function figCreateLine(obj)
 {
     //console.log(obj);
 
     const line = figma.createLine();
 
-    line.name = name;
+    line.name = makeObjectName(obj);
 
 
     if (!genLineIsValid(obj))
@@ -149,13 +161,13 @@ function genEllipseIsValid(genEllipse)
 
 
 
-function figCreateEllipse(obj, name)
+function figCreateEllipse(obj)
 {
     //console.log(obj);
 
     const ellipse = figma.createEllipse();
 
-    ellipse.name = name;
+    ellipse.name = makeObjectName(obj);
 
     if (!genEllipseIsValid(obj))
         return ellipse;
@@ -223,13 +235,13 @@ function genPolyIsValid(genPoly)
 
 
 
-function figCreatePolygon(obj, name)
+function figCreatePolygon(obj)
 {
     //console.log(obj);
 
     const poly = figma.createPolygon();
 
-    poly.name = name;
+    poly.name = makeObjectName(obj);
 
     if (!genPolyIsValid(obj))
         return poly;
@@ -302,13 +314,13 @@ function genStarIsValid(genStar)
 
 
 
-function figCreateStar(obj, name)
+function figCreateStar(obj)
 {
     //console.log(obj);
 
     const star = figma.createStar();
 
-    star.name = name;
+    star.name = makeObjectName(obj);
 
     if (!genStarIsValid(obj))
         return star;

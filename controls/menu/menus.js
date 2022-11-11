@@ -97,6 +97,10 @@ var menuItemLogValueUpdates
 var menuItemLogObjectUpdates;
 
 var menuItemZoomTo100;
+var menuItemZoomTop;
+var menuItemZoomLeft;
+var menuItemZoomRight;
+var menuItemZoomFill;
 
 var menuItemGraphPaste;
 var menuItemGraphPasteConnected;
@@ -239,7 +243,12 @@ function initMenus()
                             new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', enabled:  false}),
-        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);
+        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);//,
+        //                     new MenuItem('',             {separator: true}),
+        // menuItemZoomTop   = new MenuItem('Window top',   {shortcut: osAlt() + '3', callback: () => dockWindowTop()}),
+        // menuItemZoomRight = new MenuItem('Window right', {shortcut: osAlt() + '2'}),
+        // menuItemZoomLeft  = new MenuItem('Window left',  {shortcut: osAlt() + '1'}),
+        // menuItemZoomFill  = new MenuItem('Maximize',     {shortcut: osAlt() + '0'})]);
 
 
     menuGraph = new Menu('Graph menu', false, false);

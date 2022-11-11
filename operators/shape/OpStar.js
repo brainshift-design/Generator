@@ -34,6 +34,9 @@ extends OpShapeBase
         this.paramAngle.control.dragReverse = true;
 
         this.paramConvex.control.setSuffix('%', true);
+
+
+        this.addBaseParams();
     }
 
 

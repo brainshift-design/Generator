@@ -34,16 +34,28 @@ function figStartGenerator()
         if (wndWidth  == null) wndWidth  = 800;
         if (wndHeight == null) wndHeight = 600;
 
+        // figma.showUI(
+        //     __html__,
+        //     {
+        //         //visible:     false,
+        //         themeColors: true,
+        //         width:       Math.max(0, wndWidth),
+        //         height:      Math.max(0, wndHeight)
+        //         //position: {x: , y: }
+        //     });
+
+
         figma.ui.resize(
             Math.max(0, wndWidth),
             Math.max(0, wndHeight));
+        
+            
+        figma.ui.show();
 
-
+        
         figPostMessageToUI({
             cmd:        'uiEndStartGenerator',
             currentUser: figma.currentUser,
             productKey:  productKey });
-
-        figma.ui.show();
     })();
 }

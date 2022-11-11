@@ -108,6 +108,8 @@ extends GShapeBase
            this.objects = 
            [
                new FigmaStar(
+                               this.nodeId,
+                               -1,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
                                this.width .toValue().value,

@@ -15,7 +15,7 @@ class Menu
 
     showIcons;
     showChecks;
-
+   
     overMenu   = false;
     
     items      = [];
@@ -27,13 +27,13 @@ class Menu
 
     constructor(name, showIcons = true, showChecks = true)
     {
-        this.name       = name;
+        this.name              = name;
 
-        this.showIcons  = showIcons;
-        this.showChecks = showChecks;
+        this.showIcons         = showIcons;
+        this.showChecks        = showChecks;
 
-        this.div        = createDiv('menu');
-        this.divArrow   = createDiv('menuArrow');
+        this.div               = createDiv('menu');
+        this.divArrow          = createDiv('menuArrow');
 
         this.div.addEventListener('pointerenter', e => this.overMenu = true );
         this.div.addEventListener('pointerleave', e => this.overMenu = false);

@@ -9,7 +9,13 @@ extends GValue
     {
         super(LIST_VALUE);
 
-        this.items = clone(items);
+        if (items)
+        {
+            this.items = [];
+            
+            for (const item of items)
+                this.items.push(item.copy());
+        }
     }
 
 
@@ -63,10 +69,23 @@ extends GValue
 
     toString()
     {
-        let str = '';
+        if (!this.items)
+            return '';
 
-        for (const item of this.items)
-            str += item.toString() + '\ufffc';
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toString();
+        }
+
 
         return str;
     }
@@ -75,10 +94,23 @@ extends GValue
 
     toDisplayString()
     {
-        let str = '';
+        if (!this.items)
+            return '';
 
-        for (const item of this.items)
-            str += item.toDisplayString() + '; ';
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toDisplayString();
+        }
+
 
         return str;
     }
@@ -90,9 +122,40 @@ extends GValue
 
 
 
-function parseListValue(str)
+function parseListValue(str, i = -1)
 {
-    const list = new ListValue(str.split('\ufffc'));
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+        
 
-    return [list, 1];
+    const iStart = i;
+
+    const list = new ListValue();
+    
+
+    const nValues = parseInt(str[i++]);
+
+
+    for (let j = 0; j < nValues; j++)
+    {
+        const type = str[i++];
+        
+        switch (type)
+        {
+            case NUMBER_VALUE: { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
+            case COLOR_VALUE:  { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
+            case FILL_VALUE:   { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
+            case STROKE_VALUE: { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
+            case STYLE_VALUE:  { const style  = parseStyleValue (str, i); i += style [1]; list.items.push(style [0]); break; }
+            case LIST_VALUE:   { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
+        }
+    }
+ 
+
+    return [
+        list, 
+        i - iStart];
 }

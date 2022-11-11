@@ -12,9 +12,9 @@ extends FigmaObject
 
 
 
-    constructor(x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, id, x, y, width, height, angle, round, points, convex)
     {
-        super(STAR);
+        super(STAR, nodeId, id);
         
         this.x      = x;
         this.y      = y;
@@ -31,6 +31,8 @@ extends FigmaObject
     copy()
     {
         const star = new FigmaStar(
+            this.nodeId,
+            this.id,
             this.x,
             this.y,
             this.width,

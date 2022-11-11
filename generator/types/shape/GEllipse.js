@@ -93,6 +93,8 @@ extends GShapeBase
            this.objects = 
            [
                new FigmaEllipse(
+                               this.nodeId,
+                               -1,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
                                this.width .toValue().value,

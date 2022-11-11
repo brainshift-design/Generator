@@ -223,3 +223,88 @@ function genParseColorStop(parse)
     genParseNodeEnd(parse, stop);
     return stop;
 }
+
+
+
+function genParseStyleValue(parse)
+{
+    parse.pos++; // STYLE_VALUE
+
+    const style = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqStyleValue(style, parse);
+
+    return parseStyleValue(style)[0];
+}
+
+
+
+function genParseStyle(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const style = new GStyle(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReqStyle(style, parse);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, style);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (OBJECT_TYPES.includes(parse.next))
+        style.input = genParse(parse);
+    // ||    parse.next == PARAM
+    //    && FILL_TYPES.includes(parse.afterNext))
+
+
+    // const nParamIds = genParseParamCount(parse);
+
+    // for (let i = 0; i < nParamIds; i++)
+    // {
+    //     const paramId = genParseParamId(parse);
+
+    //     parse.nTab++;
+    //     parse.inParam = true;
+
+        
+    //     switch (paramId)
+    //     {
+    //     case 'color'  : style.color   = genParse(parse); break;
+    //     case 'opacity': style.opacity = genParse(parse); break;
+    //     }
+
+
+    //     parse.nTab--;
+    // }
+
+    
+    // parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, style);
+    return style;
+}
+
+
+
+function genParseStyleParam(parse)
+{
+    // const style = genParse(parse); 
+
+    // if (STYLE_TYPES.includes(style.type))
+    //     style.options.opacity = genParse(parse);
+
+    // return style;
+}

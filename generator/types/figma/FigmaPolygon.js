@@ -11,9 +11,9 @@ extends FigmaObject
 
 
 
-    constructor(x, y, width, height, angle, round, corners)
+    constructor(nodeId, id, x, y, width, height, angle, round, corners)
     {
-        super(POLYGON);
+        super(POLYGON, nodeId, id);
         
         this.x       = x;
         this.y       = y;
@@ -29,6 +29,8 @@ extends FigmaObject
     copy()
     {
         const poly = new FigmaPolygon(
+            this.nodeId,
+            this.id,
             this.x,
             this.y,
             this.width,

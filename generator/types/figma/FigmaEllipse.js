@@ -9,9 +9,9 @@ extends FigmaObject
 
 
 
-    constructor(x, y, width, height, angle)
+    constructor(nodeId, id, x, y, width, height, angle)
     {
-        super(ELLIPSE);
+        super(ELLIPSE, nodeId, id);
         
         this.x      = x;
         this.y      = y;
@@ -25,6 +25,8 @@ extends FigmaObject
     copy()
     {
         const ellipse = new FigmaEllipse(
+            this.nodeId,
+            this.id,
             this.x,
             this.y,
             this.width,

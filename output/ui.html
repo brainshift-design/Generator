@@ -1981,6 +1981,8 @@ const TAB            = '  ';
 const NL             = '\n';
 
 const GENERATOR_LOGO = '◦G•';
+const OBJECT_PREFIX  = 'G.';
+
 
 
 function rgbHeaderFromType(type, active)
@@ -4628,7 +4630,16 @@ function logReqListValue(list, parse)
 
 function logReqList(list, nValues, parse)
 {
-    parse.log += parse.tab + NUMBER_MATH;
+    parse.log += parse.tab + LIST;
+    parse.log += logReqNodeId(list);
+    parse.log += ' ' + nValues;
+}
+
+
+
+function logReqListItems(list, nValues, parse)
+{
+    parse.log += parse.tab + LIST_ITEMS;
     parse.log += logReqNodeId(list);
     parse.log += ' ' + nValues;
 }
@@ -4786,6 +4797,22 @@ function logReqColorStop(stop, parse)
     parse.log += parse.tab + stop.type;
     parse.log += logReqNodeId(stop);
 }
+
+
+
+function logReqStyleValue(style, parse)
+{
+    parse.log += parse.tab + STYLE_VALUE + ' ' + displayValue(STYLE_VALUE, style);
+}
+
+
+
+function logReqStyle(style, parse)
+{
+    parse.log += parse.tab + style.type;
+    parse.log += logReqNodeId(style);
+}
+
 
 
 function logReqShape(node, parse)
@@ -4972,16 +4999,16 @@ const INVALID             = '?';
 const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
 
 
-const LIST_VALUE       = 'LS';
+const LIST_VALUE = 'LIST#';
+const LIST       = 'LIST';
 
-const LIST             = 'LIST';
-const LIST_ITEMS       = 'ITEMS';
-
+const LIST_ITEMS = 'ITEMS';
 
 const LIST_TYPES =
 [
     LIST_VALUE,
-    LIST
+    LIST,
+    LIST_ITEMS
 ];
 
 
@@ -4992,19 +5019,19 @@ const FLOW_TYPES =
 ];
 
 
-const NUMBER_VALUE        = 'N';     // value (s) (with significant decimals)
+const NUMBER_VALUE       = 'NUM#';  // value (s) (with significant decimals)
 
-const NUMBER              = 'NUM';   // N | n
-const NUMBER_LIMITS       = 'LIM';   // N:min N:max
-const NUMBER_RANDOM       = 'RAND';  // N:seed N:scale N:min N:max
-const NUMBER_MATH         = 'MATH';  // op count N...
-const NUMBER_ADD          = 'ADD';   // count N...
-const NUMBER_SUBTRACT     = 'SUB';   // count N...
-const NUMBER_MULTIPLY     = 'MUL';   // count N...
-const NUMBER_DIVIDE       = 'DIV';   // count N...
-const NUMBER_MODULO       = 'MOD';   // count N...
-const NUMBER_EXPONENT     = 'EXP';   // count N...
-const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
+const NUMBER             = 'NUM';   // N | n
+const NUMBER_LIMITS      = 'LIM';   // N:min N:max
+const NUMBER_RANDOM      = 'RAND';  // N:seed N:scale N:min N:max
+const NUMBER_MATH        = 'MATH';  // op count N...
+const NUMBER_ADD         = 'ADD';   // count N...
+const NUMBER_SUBTRACT    = 'SUB';   // count N...
+const NUMBER_MULTIPLY    = 'MUL';   // count N...
+const NUMBER_DIVIDE      = 'DIV';   // count N...
+const NUMBER_MODULO      = 'MOD';   // count N...
+const NUMBER_EXPONENT    = 'EXP';   // count N...
+const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
 
 
 const NUMBER_TYPES =
@@ -5025,22 +5052,11 @@ const NUMBER_TYPES =
 ];
 
 
-const MATH_OPS = 
-[   // the order is important for logical keyboard value changes
-    [NUMBER_SUBTRACT, '-' ],
-    [NUMBER_ADD,      '+' ],
-    [NUMBER_DIVIDE,   '÷' ],
-    [NUMBER_MULTIPLY, '×' ],
-    [NUMBER_MODULO,   '%' ],
-    [NUMBER_EXPONENT, 'eˣ'] 
-];
+const STRING_VALUE   = 'STR#';  // "..." (s) (escape \\ and \")
 
-
-const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
-
-const STRING              = 'STR';   // S | s
-const STRING_ADD          = 'SADD';  // S S
-const STRING_REPLACE      = 'SREPL'; // S S:what S:with
+const STRING         = 'STR';   // S | s
+const STRING_ADD     = 'SADD';  // S S
+const STRING_REPLACE = 'SREPL'; // S S:what S:with
 
 
 const STRING_TYPES =
@@ -5051,13 +5067,13 @@ const STRING_TYPES =
 ];
 
 
-const COLOR_VALUE         = 'C';     // color value
+const COLOR_VALUE       = 'COL#';  // color value
 
-const COLOR               = 'COL';   // C | N:space N:c1 N:c2 N:c3
-const COLOR_INTERPOLATE   = 'CLERP'; // C C N:amount
-const COLOR_VALIDATE      = 'CVLD';  // C
-const COLOR_CONTRAST      = 'CCNT';  // C:text C:background
-const COLORBLIND          = 'BLND';  // C
+const COLOR             = 'COL';   // C | N:space N:c1 N:c2 N:c3
+const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
+const COLOR_VALIDATE    = 'CVLD';  // C
+const COLOR_CONTRAST    = 'CCNT';  // C:text C:background
+const COLORBLIND        = 'BLND';  // C
 
 
 const COLOR_TYPES =
@@ -5070,72 +5086,45 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE = 'FL';
-const FILL       = 'FILL';
+const FILL_VALUE       = 'FILL#';
+const FILL             = 'FILL';
+const FILL_TYPES       = [FILL_VALUE, FILL];
 
-const FILL_TYPES =
-[
-    FILL_VALUE,
-    FILL
-];
+const STROKE_VALUE     = 'STRK#';
+const STROKE           = 'STRK';
+const STROKE_TYPES     = [STROKE_VALUE, STROKE];
 
+const COLOR_STOP_VALUE = 'CSTOP#';
+const COLOR_STOP       = 'CSTOP';
 
-const COLOR_STOP_VALUE    = 'CS';
-const COLOR_STOP          = 'CSTOP';
+const GRADIENT_VALUE   = 'GRAD#';
+const GRADIENT         = 'GRAD';
+const GRADIENT_TYPES   = [GRADIENT_VALUE, GRADIENT];
 
-const GRADIENT_VALUE      = 'GR';
-const GRADIENT            = 'GRAD';
-
-const GRADIENT_TYPES =
-[
-    GRADIENT_VALUE,
-    GRADIENT
-];
+const STYLE_VALUE      = 'STYLE#';
+const STYLE            = 'STYLE';
+const STYLE_TYPES      = [STYLE_VALUE, STYLE];
 
 
-const STROKE_VALUE    = 'SK';
-const STROKE          = 'STRK';
+const SHAPE_VALUE      = 'SHP#'; // abstract placeholder
 
-const STROKE_TYPES =
-[
-    STROKE_VALUE,
-    STROKE
-];
-
-
-const STYLE           = 'STYLE';
-
-
-const STYLE_TYPES =
-[
-    STYLE,
-    ...FILL_TYPES,
-    ...STROKE_TYPES,
-    ...GRADIENT_TYPES
-    // ...STYLE_TYPES will also be here
-];
-
-
-const SHAPE_VALUE      = 'SHP';  // abstract placeholder
-
-
-const RECTANGLE_VALUE  = 'R';
+const RECTANGLE_VALUE  = 'RECT#';
 const RECTANGLE        = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const RECTANGLE_TYPES  = [RECTANGLE_VALUE, RECTANGLE];
 
-const LINE_VALUE       = 'L';
+const LINE_VALUE       = 'LINE#';
 const LINE             = 'LINE'; // N:x N:y N:width N:height N:angle
 const LINE_TYPES       = [LINE_VALUE, LINE];
 
-const ELLIPSE_VALUE    = 'E';
+const ELLIPSE_VALUE    = 'ELPS#';
 const ELLIPSE          = 'ELPS'; // N:x N:y N:width N:height N:angle
 const ELLIPSE_TYPES    = [ELLIPSE_VALUE, ELLIPSE];
 
-const POLYGON_VALUE    = 'P';
+const POLYGON_VALUE    = 'POLY#';
 const POLYGON          = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
 const POLYGON_TYPES    = [POLYGON_VALUE, POLYGON];
 
-const STAR_VALUE       = 'ST';
+const STAR_VALUE       = 'STAR#';
 const STAR             = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
 const STAR_TYPES       = [STAR_VALUE, STAR];
 
@@ -5156,23 +5145,13 @@ const SHAPE_TYPES =
 [
     ...SHAPE_VALUES,
 
-    RECTANGLE,
-    LINE,
-    ELLIPSE,
-    POLYGON,
-    STAR//,
+    ...RECTANGLE_TYPES,
+    ...LINE_TYPES,
+    ...ELLIPSE_TYPES,
+    ...POLYGON_TYPES,
+    ...STAR_TYPES//,
     //TEXT
 ];
-
-
-const OBJECT_TYPES = // because they produce or modify objects
-[
-    ...SHAPE_TYPES,
-    ...STYLE_TYPES
-];
-
-
-const GROUP            = 'GRP';   // ???? count O...
 
 
 const ALL_TYPES =
@@ -5181,21 +5160,39 @@ const ALL_TYPES =
     ...NUMBER_TYPES,
     ...STRING_TYPES,
     ...COLOR_TYPES,
+    ...FILL_TYPES,
+    ...STROKE_TYPES,
+    ...GRADIENT_TYPES,
     ...STYLE_TYPES,
     ...SHAPE_TYPES
 ];
 
 
-const COMMENT          = 'CMNT';
+const GROUP         = 'GRP';   // ???? count O...
 
 
-const ACTIVE           = 'ACT';
-const BEFORE_ACTIVE    = 'BEF';
-const DISABLED         = 'DIS';
-const PARAM            = 'PARAM'; // nodeId paramId
+const COMMENT       = 'CMNT';
 
 
-const LOG              = 'LOG';
+const ACTIVE        = 'ACT';
+const BEFORE_ACTIVE = 'BEF';
+const DISABLED      = 'DIS';
+const PARAM         = 'PARAM'; // nodeId paramId
+
+
+const LOG           = 'LOG';
+
+
+
+const MATH_OPS = 
+[   // the order is important for logical keyboard value changes
+    [NUMBER_SUBTRACT, '-' ],
+    [NUMBER_ADD,      '+' ],
+    [NUMBER_DIVIDE,   '÷' ],
+    [NUMBER_MULTIPLY, '×' ],
+    [NUMBER_MODULO,   '%' ],
+    [NUMBER_EXPONENT, 'eˣ'] 
+];
 
 
 
@@ -5423,7 +5420,8 @@ class FigmaObject
 {
     type;
 
-    id          = 0;
+    nodeId      = '';
+    id          = -1;
 
     fills       = [];
     strokeFills = [];
@@ -5435,18 +5433,18 @@ class FigmaObject
 
 
 
-    constructor(type)
+    constructor(type, nodeId, id)
     {
-        this.type = type;
+        this.type   = type;
+
+        this.nodeId = nodeId;
+        this.id     = id;
     }
 
 
 
     copyBase(base)
     {
-        this.type         = base.type;
-        this.id           = base.id;
-               
         this.fills        = clone(base.fills);
         this.strokeFills  = clone(base.strokeFills);
 
@@ -5470,9 +5468,9 @@ extends FigmaObject
 
 
 
-    constructor(x, y, width, height, angle, round)
+    constructor(nodeId, id, x, y, width, height, angle, round)
     {
-        super(RECTANGLE);
+        super(RECTANGLE, nodeId, id);
         
         this.x      = x;
         this.y      = y;
@@ -5487,6 +5485,8 @@ extends FigmaObject
     copy()
     {
         const rect = new FigmaRectangle(
+            this.nodeId,
+            this.id,
             this.x,
             this.y,
             this.width,
@@ -5511,14 +5511,14 @@ extends FigmaObject
 
 
 
-    constructor(x, y, width, angle)
+    constructor(nodeId, id, x, y, width, angle)
     {
-        super(LINE);
+        super(LINE, nodeId, id);
         
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        this.angle  = angle;
+        this.x     = x;
+        this.y     = y;
+        this.width = width;
+        this.angle = angle;
     }
 
 
@@ -5526,6 +5526,8 @@ extends FigmaObject
     copy()
     {
         const line = new FigmaLine(
+            this.nodeId,
+            this.id,
             this.x,
             this.y,
             this.width,
@@ -5549,9 +5551,9 @@ extends FigmaObject
 
 
 
-    constructor(x, y, width, height, angle)
+    constructor(nodeId, id, x, y, width, height, angle)
     {
-        super(ELLIPSE);
+        super(ELLIPSE, nodeId, id);
         
         this.x      = x;
         this.y      = y;
@@ -5565,6 +5567,8 @@ extends FigmaObject
     copy()
     {
         const ellipse = new FigmaEllipse(
+            this.nodeId,
+            this.id,
             this.x,
             this.y,
             this.width,
@@ -5591,9 +5595,9 @@ extends FigmaObject
 
 
 
-    constructor(x, y, width, height, angle, round, corners)
+    constructor(nodeId, id, x, y, width, height, angle, round, corners)
     {
-        super(POLYGON);
+        super(POLYGON, nodeId, id);
         
         this.x       = x;
         this.y       = y;
@@ -5609,6 +5613,8 @@ extends FigmaObject
     copy()
     {
         const poly = new FigmaPolygon(
+            this.nodeId,
+            this.id,
             this.x,
             this.y,
             this.width,
@@ -5638,9 +5644,9 @@ extends FigmaObject
 
 
 
-    constructor(x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, id, x, y, width, height, angle, round, points, convex)
     {
-        super(STAR);
+        super(STAR, nodeId, id);
         
         this.x      = x;
         this.y      = y;
@@ -5657,6 +5663,8 @@ extends FigmaObject
     copy()
     {
         const star = new FigmaStar(
+            this.nodeId,
+            this.id,
             this.x,
             this.y,
             this.width,
@@ -5684,7 +5692,13 @@ extends GValue
     {
         super(LIST_VALUE);
 
-        this.items = items ? clone(items) : null;
+        if (items)
+        {
+            this.items = [];
+            
+            for (const item of items)
+                this.items.push(item.copy());
+        }
     }
 
 
@@ -5738,11 +5752,23 @@ extends GValue
 
     toString()
     {
-        let str = '';
+        if (!this.items)
+            return '';
 
-        if (this.items)
-            for (const item of this.items)
-                str += item.toString() + '\ufffc';
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toString();
+        }
+
 
         return str;
     }
@@ -5751,11 +5777,23 @@ extends GValue
 
     toDisplayString()
     {
-        let str = '';
+        if (!this.items)
+            return '';
 
-        if (this.items)
-            for (const item of this.items)
-                str += item.toDisplayString() + '; ';
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toDisplayString();
+        }
+
 
         return str;
     }
@@ -5767,13 +5805,42 @@ extends GValue
 
 
 
-function parseListValue(str)
+function parseListValue(str, i = -1)
 {
-    const items = str.split('\ufffc', ).filter(i => i);
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+        
 
-    const list = new ListValue(items);
+    const iStart = i;
 
-    return [list, 1];
+    const list = new ListValue();
+    
+
+    const nValues = parseInt(str[i++]);
+
+
+    for (let j = 0; j < nValues; j++)
+    {
+        const type = str[i++];
+        
+        switch (type)
+        {
+            case NUMBER_VALUE: { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
+            case COLOR_VALUE:  { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
+            case FILL_VALUE:   { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
+            case STROKE_VALUE: { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
+            case STYLE_VALUE:  { const style  = parseStyleValue (str, i); i += style [1]; list.items.push(style [0]); break; }
+            case LIST_VALUE:   { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
+        }
+    }
+ 
+
+    return [
+        list, 
+        i - iStart];
 }
 
 
@@ -6049,6 +6116,16 @@ extends GValue
 
 
 
+    toDisplayString()
+    {
+        return      this.space.toDisplayString()
+            + ' ' + this.c1   .toDisplayString()
+            + ' ' + this.c2   .toDisplayString()
+            + ' ' + this.c3   .toDisplayString();
+    }
+
+
+
     toRgbString()
     {
         if (!this.isValid())
@@ -6059,16 +6136,6 @@ extends GValue
         return      rgb[0].toString()
             + ' ' + rgb[1].toString()
             + ' ' + rgb[2].toString();
-    }
-
-
-
-    toDisplayString()
-    {
-        return      this.space.toDisplayString()
-            + ' ' + this.c1   .toDisplayString()
-            + ' ' + this.c2   .toDisplayString()
-            + ' ' + this.c3   .toDisplayString();
     }
 
 
@@ -6084,11 +6151,6 @@ extends GValue
 
 function parseColorValue(str, i = -1)
 {
-    // if (   i <  0 && str    == INVALID
-    //     || i >= 0 && str[i] == INVALID)
-    //     return [ColorValue.NaN, 1];
-
-
     if (i < 0)
     {
         str = str.split(' ');
@@ -7302,14 +7364,13 @@ extends GOperator
 
         this.value = new ListValue();
 
-
         for (let i = 0; i < this.inputs.length; i++)
         {
             this.inputs[i] = this.inputs[i].eval(parse).copy();
             this.value.items.push(this.inputs[i].toValue());
         }
     
-        
+
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
@@ -7328,7 +7389,68 @@ extends GOperator
 
 
 
+class GListItems
+extends GOperator
+{
+    input = null;
+    
+    items = [];
 
+
+    constructor(nodeId, options)
+    {
+        super(LIST_ITEMS, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const items = new GListItems(this.nodeId, this.options);
+        
+        items.copyBase(this);
+
+        if (this.input) 
+            items.input = this.input.copy();
+        
+        for (const item of this.items)
+            items.push(item.copy());
+
+        return items;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+
+        if (this.input) 
+        { 
+            this.input = this.input.eval(parse).copy();
+            this.value = this.input.toValue();
+        }
+        else
+            this.value = ListValue.NaN;
+            
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.valid = true;
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
 
 
 class GNumberType
@@ -9609,6 +9731,8 @@ extends GShapeBase
             this.objects = 
             [
                 new FigmaRectangle(
+                                this.nodeId,
+                                -1,
                                 this.x     .toValue().value,
                                 this.y     .toValue().value,
                                 this.width .toValue().value,
@@ -9740,6 +9864,8 @@ extends GShapeBase
             this.objects = 
             [
                 new FigmaLine(
+                    this.nodeId,
+                    -1,
                     this.x    .toValue().value,
                     this.y    .toValue().value,
                     this.width.toValue().value,
@@ -9870,6 +9996,8 @@ extends GShapeBase
            this.objects = 
            [
                new FigmaEllipse(
+                               this.nodeId,
+                               -1,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
                                this.width .toValue().value,
@@ -10013,6 +10141,8 @@ extends GShapeBase
             this.objects = 
             [
                 new FigmaPolygon(
+                                this.nodeId,
+                                -1,
                                 this.x      .toValue().value,
                                 this.y      .toValue().value,
                                 this.width  .toValue().value,
@@ -10167,6 +10297,8 @@ extends GShapeBase
            this.objects = 
            [
                new FigmaStar(
+                               this.nodeId,
+                               -1,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
                                this.width .toValue().value,
@@ -11373,6 +11505,40 @@ function genParseList(parse)
 
 
 
+function genParseListItems(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const items = new GListItems(nodeId, options);
+
+    
+    const nValues = 0;
+    
+    if (parse.settings.logRequests) 
+        logReqListItems(items, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, items);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+    parse.inParam = false;
+
+
+    //items.value = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, items);
+    return items;
+}
 
 
 
@@ -12153,6 +12319,92 @@ function genParseColorStop(parse)
 }
 
 
+
+function genParseStyleValue(parse)
+{
+    parse.pos++; // STYLE_VALUE
+
+    const style = parse.move();
+
+    if (parse.settings.logRequests) 
+        logReqStyleValue(style, parse);
+
+    return parseStyleValue(style)[0];
+}
+
+
+
+function genParseStyle(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const style = new GStyle(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReqStyle(style, parse);
+
+
+    if (ignore)
+    {
+        genParseNodeEnd(parse, style);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (OBJECT_TYPES.includes(parse.next))
+        style.input = genParse(parse);
+    // ||    parse.next == PARAM
+    //    && FILL_TYPES.includes(parse.afterNext))
+
+
+    // const nParamIds = genParseParamCount(parse);
+
+    // for (let i = 0; i < nParamIds; i++)
+    // {
+    //     const paramId = genParseParamId(parse);
+
+    //     parse.nTab++;
+    //     parse.inParam = true;
+
+        
+    //     switch (paramId)
+    //     {
+    //     case 'color'  : style.color   = genParse(parse); break;
+    //     case 'opacity': style.opacity = genParse(parse); break;
+    //     }
+
+
+    //     parse.nTab--;
+    // }
+
+    
+    // parse.inParam = false;
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, style);
+    return style;
+}
+
+
+
+function genParseStyleParam(parse)
+{
+    // const style = genParse(parse); 
+
+    // if (STYLE_TYPES.includes(style.type))
+    //     style.options.opacity = genParse(parse);
+
+    // return style;
+}
+
+
+
 // some parse functions return values
 // some parse functions update values
 // some parse functions update objects
@@ -12263,7 +12515,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == COLOR_INTERPOLATE ) result = genParseColorInterpolate(parse);
     else if (parse.next == COLOR_CONTRAST    ) result = genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND        ) result = genParseColorBlind      (parse);
-    else if (parse.next == COLOR_VALIDATE    ) result = genParseColorCorrect   (parse);
+    else if (parse.next == COLOR_VALIDATE    ) result = genParseColorCorrect    (parse);
 
     else if (parse.next == FILL_VALUE        ) result = genParseFillValue       (parse);
     else if (parse.next == FILL              ) result = genParseFill            (parse);
@@ -12273,6 +12525,9 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == COLOR_STOP_VALUE  ) result = genParseColorStopValue  (parse);
     else if (parse.next == COLOR_STOP        ) result = genParseColorStop       (parse);
+
+    else if (parse.next == STYLE_VALUE       ) result = genParseStyleValue      (parse);
+    else if (parse.next == STYLE             ) result = genParseStyle           (parse);
 
     else if (parse.next == RECTANGLE         ) result = genParseRectangle       (parse);
     else if (parse.next == LINE              ) result = genParseLine            (parse);
@@ -14694,6 +14949,8 @@ const TAB            = '  ';
 const NL             = '\n';
 
 const GENERATOR_LOGO = '◦G•';
+const OBJECT_PREFIX  = 'G.';
+
 
 
 function rgbHeaderFromType(type, active)
@@ -17341,7 +17598,16 @@ function logReqListValue(list, parse)
 
 function logReqList(list, nValues, parse)
 {
-    parse.log += parse.tab + NUMBER_MATH;
+    parse.log += parse.tab + LIST;
+    parse.log += logReqNodeId(list);
+    parse.log += ' ' + nValues;
+}
+
+
+
+function logReqListItems(list, nValues, parse)
+{
+    parse.log += parse.tab + LIST_ITEMS;
     parse.log += logReqNodeId(list);
     parse.log += ' ' + nValues;
 }
@@ -17499,6 +17765,22 @@ function logReqColorStop(stop, parse)
     parse.log += parse.tab + stop.type;
     parse.log += logReqNodeId(stop);
 }
+
+
+
+function logReqStyleValue(style, parse)
+{
+    parse.log += parse.tab + STYLE_VALUE + ' ' + displayValue(STYLE_VALUE, style);
+}
+
+
+
+function logReqStyle(style, parse)
+{
+    parse.log += parse.tab + style.type;
+    parse.log += logReqNodeId(style);
+}
+
 
 
 function logReqShape(node, parse)
@@ -19188,16 +19470,16 @@ const INVALID             = '?';
 const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
 
 
-const LIST_VALUE       = 'LS';
+const LIST_VALUE = 'LIST#';
+const LIST       = 'LIST';
 
-const LIST             = 'LIST';
-const LIST_ITEMS       = 'ITEMS';
-
+const LIST_ITEMS = 'ITEMS';
 
 const LIST_TYPES =
 [
     LIST_VALUE,
-    LIST
+    LIST,
+    LIST_ITEMS
 ];
 
 
@@ -19208,19 +19490,19 @@ const FLOW_TYPES =
 ];
 
 
-const NUMBER_VALUE        = 'N';     // value (s) (with significant decimals)
+const NUMBER_VALUE       = 'NUM#';  // value (s) (with significant decimals)
 
-const NUMBER              = 'NUM';   // N | n
-const NUMBER_LIMITS       = 'LIM';   // N:min N:max
-const NUMBER_RANDOM       = 'RAND';  // N:seed N:scale N:min N:max
-const NUMBER_MATH         = 'MATH';  // op count N...
-const NUMBER_ADD          = 'ADD';   // count N...
-const NUMBER_SUBTRACT     = 'SUB';   // count N...
-const NUMBER_MULTIPLY     = 'MUL';   // count N...
-const NUMBER_DIVIDE       = 'DIV';   // count N...
-const NUMBER_MODULO       = 'MOD';   // count N...
-const NUMBER_EXPONENT     = 'EXP';   // count N...
-const NUMBER_INTERPOLATE  = 'LERP';  // count N... N:amount
+const NUMBER             = 'NUM';   // N | n
+const NUMBER_LIMITS      = 'LIM';   // N:min N:max
+const NUMBER_RANDOM      = 'RAND';  // N:seed N:scale N:min N:max
+const NUMBER_MATH        = 'MATH';  // op count N...
+const NUMBER_ADD         = 'ADD';   // count N...
+const NUMBER_SUBTRACT    = 'SUB';   // count N...
+const NUMBER_MULTIPLY    = 'MUL';   // count N...
+const NUMBER_DIVIDE      = 'DIV';   // count N...
+const NUMBER_MODULO      = 'MOD';   // count N...
+const NUMBER_EXPONENT    = 'EXP';   // count N...
+const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
 
 
 const NUMBER_TYPES =
@@ -19241,22 +19523,11 @@ const NUMBER_TYPES =
 ];
 
 
-const MATH_OPS = 
-[   // the order is important for logical keyboard value changes
-    [NUMBER_SUBTRACT, '-' ],
-    [NUMBER_ADD,      '+' ],
-    [NUMBER_DIVIDE,   '÷' ],
-    [NUMBER_MULTIPLY, '×' ],
-    [NUMBER_MODULO,   '%' ],
-    [NUMBER_EXPONENT, 'eˣ'] 
-];
+const STRING_VALUE   = 'STR#';  // "..." (s) (escape \\ and \")
 
-
-const STRING_VALUE        = 'S';     // "..." (s) (escape \\ and \")
-
-const STRING              = 'STR';   // S | s
-const STRING_ADD          = 'SADD';  // S S
-const STRING_REPLACE      = 'SREPL'; // S S:what S:with
+const STRING         = 'STR';   // S | s
+const STRING_ADD     = 'SADD';  // S S
+const STRING_REPLACE = 'SREPL'; // S S:what S:with
 
 
 const STRING_TYPES =
@@ -19267,13 +19538,13 @@ const STRING_TYPES =
 ];
 
 
-const COLOR_VALUE         = 'C';     // color value
+const COLOR_VALUE       = 'COL#';  // color value
 
-const COLOR               = 'COL';   // C | N:space N:c1 N:c2 N:c3
-const COLOR_INTERPOLATE   = 'CLERP'; // C C N:amount
-const COLOR_VALIDATE      = 'CVLD';  // C
-const COLOR_CONTRAST      = 'CCNT';  // C:text C:background
-const COLORBLIND          = 'BLND';  // C
+const COLOR             = 'COL';   // C | N:space N:c1 N:c2 N:c3
+const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
+const COLOR_VALIDATE    = 'CVLD';  // C
+const COLOR_CONTRAST    = 'CCNT';  // C:text C:background
+const COLORBLIND        = 'BLND';  // C
 
 
 const COLOR_TYPES =
@@ -19286,72 +19557,45 @@ const COLOR_TYPES =
 ];
 
 
-const FILL_VALUE = 'FL';
-const FILL       = 'FILL';
+const FILL_VALUE       = 'FILL#';
+const FILL             = 'FILL';
+const FILL_TYPES       = [FILL_VALUE, FILL];
 
-const FILL_TYPES =
-[
-    FILL_VALUE,
-    FILL
-];
+const STROKE_VALUE     = 'STRK#';
+const STROKE           = 'STRK';
+const STROKE_TYPES     = [STROKE_VALUE, STROKE];
 
+const COLOR_STOP_VALUE = 'CSTOP#';
+const COLOR_STOP       = 'CSTOP';
 
-const COLOR_STOP_VALUE    = 'CS';
-const COLOR_STOP          = 'CSTOP';
+const GRADIENT_VALUE   = 'GRAD#';
+const GRADIENT         = 'GRAD';
+const GRADIENT_TYPES   = [GRADIENT_VALUE, GRADIENT];
 
-const GRADIENT_VALUE      = 'GR';
-const GRADIENT            = 'GRAD';
-
-const GRADIENT_TYPES =
-[
-    GRADIENT_VALUE,
-    GRADIENT
-];
+const STYLE_VALUE      = 'STYLE#';
+const STYLE            = 'STYLE';
+const STYLE_TYPES      = [STYLE_VALUE, STYLE];
 
 
-const STROKE_VALUE    = 'SK';
-const STROKE          = 'STRK';
+const SHAPE_VALUE      = 'SHP#'; // abstract placeholder
 
-const STROKE_TYPES =
-[
-    STROKE_VALUE,
-    STROKE
-];
-
-
-const STYLE           = 'STYLE';
-
-
-const STYLE_TYPES =
-[
-    STYLE,
-    ...FILL_TYPES,
-    ...STROKE_TYPES,
-    ...GRADIENT_TYPES
-    // ...STYLE_TYPES will also be here
-];
-
-
-const SHAPE_VALUE      = 'SHP';  // abstract placeholder
-
-
-const RECTANGLE_VALUE  = 'R';
+const RECTANGLE_VALUE  = 'RECT#';
 const RECTANGLE        = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const RECTANGLE_TYPES  = [RECTANGLE_VALUE, RECTANGLE];
 
-const LINE_VALUE       = 'L';
+const LINE_VALUE       = 'LINE#';
 const LINE             = 'LINE'; // N:x N:y N:width N:height N:angle
 const LINE_TYPES       = [LINE_VALUE, LINE];
 
-const ELLIPSE_VALUE    = 'E';
+const ELLIPSE_VALUE    = 'ELPS#';
 const ELLIPSE          = 'ELPS'; // N:x N:y N:width N:height N:angle
 const ELLIPSE_TYPES    = [ELLIPSE_VALUE, ELLIPSE];
 
-const POLYGON_VALUE    = 'P';
+const POLYGON_VALUE    = 'POLY#';
 const POLYGON          = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
 const POLYGON_TYPES    = [POLYGON_VALUE, POLYGON];
 
-const STAR_VALUE       = 'ST';
+const STAR_VALUE       = 'STAR#';
 const STAR             = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
 const STAR_TYPES       = [STAR_VALUE, STAR];
 
@@ -19372,23 +19616,13 @@ const SHAPE_TYPES =
 [
     ...SHAPE_VALUES,
 
-    RECTANGLE,
-    LINE,
-    ELLIPSE,
-    POLYGON,
-    STAR//,
+    ...RECTANGLE_TYPES,
+    ...LINE_TYPES,
+    ...ELLIPSE_TYPES,
+    ...POLYGON_TYPES,
+    ...STAR_TYPES//,
     //TEXT
 ];
-
-
-const OBJECT_TYPES = // because they produce or modify objects
-[
-    ...SHAPE_TYPES,
-    ...STYLE_TYPES
-];
-
-
-const GROUP            = 'GRP';   // ???? count O...
 
 
 const ALL_TYPES =
@@ -19397,21 +19631,39 @@ const ALL_TYPES =
     ...NUMBER_TYPES,
     ...STRING_TYPES,
     ...COLOR_TYPES,
+    ...FILL_TYPES,
+    ...STROKE_TYPES,
+    ...GRADIENT_TYPES,
     ...STYLE_TYPES,
     ...SHAPE_TYPES
 ];
 
 
-const COMMENT          = 'CMNT';
+const GROUP         = 'GRP';   // ???? count O...
 
 
-const ACTIVE           = 'ACT';
-const BEFORE_ACTIVE    = 'BEF';
-const DISABLED         = 'DIS';
-const PARAM            = 'PARAM'; // nodeId paramId
+const COMMENT       = 'CMNT';
 
 
-const LOG              = 'LOG';
+const ACTIVE        = 'ACT';
+const BEFORE_ACTIVE = 'BEF';
+const DISABLED      = 'DIS';
+const PARAM         = 'PARAM'; // nodeId paramId
+
+
+const LOG           = 'LOG';
+
+
+
+const MATH_OPS = 
+[   // the order is important for logical keyboard value changes
+    [NUMBER_SUBTRACT, '-' ],
+    [NUMBER_ADD,      '+' ],
+    [NUMBER_DIVIDE,   '÷' ],
+    [NUMBER_MULTIPLY, '×' ],
+    [NUMBER_MODULO,   '%' ],
+    [NUMBER_EXPONENT, 'eˣ'] 
+];
 
 
 
@@ -19639,7 +19891,8 @@ class FigmaObject
 {
     type;
 
-    id          = 0;
+    nodeId      = '';
+    id          = -1;
 
     fills       = [];
     strokeFills = [];
@@ -19651,18 +19904,18 @@ class FigmaObject
 
 
 
-    constructor(type)
+    constructor(type, nodeId, id)
     {
-        this.type = type;
+        this.type   = type;
+
+        this.nodeId = nodeId;
+        this.id     = id;
     }
 
 
 
     copyBase(base)
     {
-        this.type         = base.type;
-        this.id           = base.id;
-               
         this.fills        = clone(base.fills);
         this.strokeFills  = clone(base.strokeFills);
 
@@ -19686,9 +19939,9 @@ extends FigmaObject
 
 
 
-    constructor(x, y, width, height, angle, round)
+    constructor(nodeId, id, x, y, width, height, angle, round)
     {
-        super(RECTANGLE);
+        super(RECTANGLE, nodeId, id);
         
         this.x      = x;
         this.y      = y;
@@ -19703,6 +19956,8 @@ extends FigmaObject
     copy()
     {
         const rect = new FigmaRectangle(
+            this.nodeId,
+            this.id,
             this.x,
             this.y,
             this.width,
@@ -19727,14 +19982,14 @@ extends FigmaObject
 
 
 
-    constructor(x, y, width, angle)
+    constructor(nodeId, id, x, y, width, angle)
     {
-        super(LINE);
+        super(LINE, nodeId, id);
         
-        this.x      = x;
-        this.y      = y;
-        this.width  = width;
-        this.angle  = angle;
+        this.x     = x;
+        this.y     = y;
+        this.width = width;
+        this.angle = angle;
     }
 
 
@@ -19742,6 +19997,8 @@ extends FigmaObject
     copy()
     {
         const line = new FigmaLine(
+            this.nodeId,
+            this.id,
             this.x,
             this.y,
             this.width,
@@ -19765,9 +20022,9 @@ extends FigmaObject
 
 
 
-    constructor(x, y, width, height, angle)
+    constructor(nodeId, id, x, y, width, height, angle)
     {
-        super(ELLIPSE);
+        super(ELLIPSE, nodeId, id);
         
         this.x      = x;
         this.y      = y;
@@ -19781,6 +20038,8 @@ extends FigmaObject
     copy()
     {
         const ellipse = new FigmaEllipse(
+            this.nodeId,
+            this.id,
             this.x,
             this.y,
             this.width,
@@ -19807,9 +20066,9 @@ extends FigmaObject
 
 
 
-    constructor(x, y, width, height, angle, round, corners)
+    constructor(nodeId, id, x, y, width, height, angle, round, corners)
     {
-        super(POLYGON);
+        super(POLYGON, nodeId, id);
         
         this.x       = x;
         this.y       = y;
@@ -19825,6 +20084,8 @@ extends FigmaObject
     copy()
     {
         const poly = new FigmaPolygon(
+            this.nodeId,
+            this.id,
             this.x,
             this.y,
             this.width,
@@ -19854,9 +20115,9 @@ extends FigmaObject
 
 
 
-    constructor(x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, id, x, y, width, height, angle, round, points, convex)
     {
-        super(STAR);
+        super(STAR, nodeId, id);
         
         this.x      = x;
         this.y      = y;
@@ -19873,6 +20134,8 @@ extends FigmaObject
     copy()
     {
         const star = new FigmaStar(
+            this.nodeId,
+            this.id,
             this.x,
             this.y,
             this.width,
@@ -19900,7 +20163,13 @@ extends GValue
     {
         super(LIST_VALUE);
 
-        this.items = items ? clone(items) : null;
+        if (items)
+        {
+            this.items = [];
+            
+            for (const item of items)
+                this.items.push(item.copy());
+        }
     }
 
 
@@ -19954,11 +20223,23 @@ extends GValue
 
     toString()
     {
-        let str = '';
+        if (!this.items)
+            return '';
 
-        if (this.items)
-            for (const item of this.items)
-                str += item.toString() + '\ufffc';
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toString();
+        }
+
 
         return str;
     }
@@ -19967,11 +20248,23 @@ extends GValue
 
     toDisplayString()
     {
-        let str = '';
+        if (!this.items)
+            return '';
 
-        if (this.items)
-            for (const item of this.items)
-                str += item.toDisplayString() + '; ';
+
+        let str = '';
+        
+        
+        str += this.items.length;
+
+        for (let i = 0; i < this.items.length; i++)
+        {
+            const item = this.items[i];
+
+            str += ' ' + item.type + ' ';
+            str += item.toDisplayString();
+        }
+
 
         return str;
     }
@@ -19983,13 +20276,42 @@ extends GValue
 
 
 
-function parseListValue(str)
+function parseListValue(str, i = -1)
 {
-    const items = str.split('\ufffc', ).filter(i => i);
+    if (i < 0)
+    {
+        str = str.split(' ');
+        i   = 0;
+    }
+        
 
-    const list = new ListValue(items);
+    const iStart = i;
 
-    return [list, 1];
+    const list = new ListValue();
+    
+
+    const nValues = parseInt(str[i++]);
+
+
+    for (let j = 0; j < nValues; j++)
+    {
+        const type = str[i++];
+        
+        switch (type)
+        {
+            case NUMBER_VALUE: { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
+            case COLOR_VALUE:  { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
+            case FILL_VALUE:   { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
+            case STROKE_VALUE: { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
+            case STYLE_VALUE:  { const style  = parseStyleValue (str, i); i += style [1]; list.items.push(style [0]); break; }
+            case LIST_VALUE:   { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
+        }
+    }
+ 
+
+    return [
+        list, 
+        i - iStart];
 }
 
 
@@ -20265,6 +20587,16 @@ extends GValue
 
 
 
+    toDisplayString()
+    {
+        return      this.space.toDisplayString()
+            + ' ' + this.c1   .toDisplayString()
+            + ' ' + this.c2   .toDisplayString()
+            + ' ' + this.c3   .toDisplayString();
+    }
+
+
+
     toRgbString()
     {
         if (!this.isValid())
@@ -20275,16 +20607,6 @@ extends GValue
         return      rgb[0].toString()
             + ' ' + rgb[1].toString()
             + ' ' + rgb[2].toString();
-    }
-
-
-
-    toDisplayString()
-    {
-        return      this.space.toDisplayString()
-            + ' ' + this.c1   .toDisplayString()
-            + ' ' + this.c2   .toDisplayString()
-            + ' ' + this.c3   .toDisplayString();
     }
 
 
@@ -20300,11 +20622,6 @@ extends GValue
 
 function parseColorValue(str, i = -1)
 {
-    // if (   i <  0 && str    == INVALID
-    //     || i >= 0 && str[i] == INVALID)
-    //     return [ColorValue.NaN, 1];
-
-
     if (i < 0)
     {
         str = str.split(' ');
@@ -21518,14 +21835,13 @@ extends GOperator
 
         this.value = new ListValue();
 
-
         for (let i = 0; i < this.inputs.length; i++)
         {
             this.inputs[i] = this.inputs[i].eval(parse).copy();
             this.value.items.push(this.inputs[i].toValue());
         }
     
-        
+
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
@@ -21544,7 +21860,68 @@ extends GOperator
 
 
 
+class GListItems
+extends GOperator
+{
+    input = null;
+    
+    items = [];
 
+
+    constructor(nodeId, options)
+    {
+        super(LIST_ITEMS, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const items = new GListItems(this.nodeId, this.options);
+        
+        items.copyBase(this);
+
+        if (this.input) 
+            items.input = this.input.copy();
+        
+        for (const item of this.items)
+            items.push(item.copy());
+
+        return items;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+
+        if (this.input) 
+        { 
+            this.input = this.input.eval(parse).copy();
+            this.value = this.input.toValue();
+        }
+        else
+            this.value = ListValue.NaN;
+            
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.valid = true;
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
 
 
 class GNumberType
@@ -23825,6 +24202,8 @@ extends GShapeBase
             this.objects = 
             [
                 new FigmaRectangle(
+                                this.nodeId,
+                                -1,
                                 this.x     .toValue().value,
                                 this.y     .toValue().value,
                                 this.width .toValue().value,
@@ -23956,6 +24335,8 @@ extends GShapeBase
             this.objects = 
             [
                 new FigmaLine(
+                    this.nodeId,
+                    -1,
                     this.x    .toValue().value,
                     this.y    .toValue().value,
                     this.width.toValue().value,
@@ -24086,6 +24467,8 @@ extends GShapeBase
            this.objects = 
            [
                new FigmaEllipse(
+                               this.nodeId,
+                               -1,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
                                this.width .toValue().value,
@@ -24229,6 +24612,8 @@ extends GShapeBase
             this.objects = 
             [
                 new FigmaPolygon(
+                                this.nodeId,
+                                -1,
                                 this.x      .toValue().value,
                                 this.y      .toValue().value,
                                 this.width  .toValue().value,
@@ -24383,6 +24768,8 @@ extends GShapeBase
            this.objects = 
            [
                new FigmaStar(
+                               this.nodeId,
+                               -1,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
                                this.width .toValue().value,
@@ -24888,7 +25275,7 @@ class Menu
 
     showIcons;
     showChecks;
-
+   
     overMenu   = false;
     
     items      = [];
@@ -24900,13 +25287,13 @@ class Menu
 
     constructor(name, showIcons = true, showChecks = true)
     {
-        this.name       = name;
+        this.name              = name;
 
-        this.showIcons  = showIcons;
-        this.showChecks = showChecks;
+        this.showIcons         = showIcons;
+        this.showChecks        = showChecks;
 
-        this.div        = createDiv('menu');
-        this.divArrow   = createDiv('menuArrow');
+        this.div               = createDiv('menu');
+        this.divArrow          = createDiv('menuArrow');
 
         this.div.addEventListener('pointerenter', e => this.overMenu = true );
         this.div.addEventListener('pointerleave', e => this.overMenu = false);
@@ -25352,22 +25739,22 @@ class MenuButton
 
 class MenuItem
 {
-    parentMenu    = null;
-    index         = -1;
+    parentMenu        = null;
+    index             = -1;
 
-    enabled       = true;
+    enabled           = true;
 
-    checked       = false;
-    icon          = ''; // svg
-    name          = '';
-    shortcut      = '';
+    checked           = false;
+    icon              = ''; // svg
+    name              = '';
+    shortcut          = '';
 
-    callback      = null;
-    checkCallback = null;
+    callback          = null;
+    checkCallback     = null;
 
-    childMenu     = null;
+    childMenu         = null;
 
-    separator     = false;
+    separator         = false;
 
 
     div;
@@ -25396,26 +25783,26 @@ class MenuItem
 
     initOptions(options)
     {
-        if (options.icon          != undefined) this.icon          = options.icon;
-        if (options.callback      != undefined) this.callback      = options.callback;
-        if (options.checkCallback != undefined) this.checkCallback = options.checkCallback;
-        if (options.childMenu     != undefined) 
+        if (options.icon              != undefined) this.icon              = options.icon;
+        if (options.callback          != undefined) this.callback          = options.callback;
+        if (options.checkCallback     != undefined) this.checkCallback     = options.checkCallback;
+        if (options.childMenu         != undefined) 
         { 
             this.childMenu = options.childMenu;  
             
             if (this.childMenu)
                 this.childMenu.parentMenu = this.parentMenu; 
         }
-        if (options.separator     != undefined) this.separator     = options.separator;
-        if (options.shortcut      != undefined) this.shortcut      = options.shortcut;
-        if (options.enabled       != undefined) this.enabled       = options.enabled;
+        if (options.separator         != undefined) this.separator = options.separator;
+        if (options.shortcut          != undefined) this.shortcut  = options.shortcut;
+        if (options.enabled           != undefined) this.enabled   = options.enabled;
     }
 
 
 
     createControls()
     {
-        this.div          = createDiv('menuItem');
+        this.div          = createDiv('menuItem'        );
 
         this.divCheck     = createDiv('menuItemCheck'   );
         this.divIcon      = createDiv('menuItemIcon'    );
@@ -25431,11 +25818,16 @@ class MenuItem
 
         this.divName.innerHTML = this.name;
 
-        this.divCheck.visibility = 
-               this.checkCallback 
-            && this.checkCallback() 
-            ? 'visible' 
-            : 'hidden';
+        // this.divCheck.style.visibility = 
+        //        this.checkCallback 
+        //     && this.checkCallback() 
+        //     ? 'visible' 
+        //     : 'hidden';
+
+        // this.divCheck.style.display = 
+        //     this.iconReplacesCheck
+        //     ? 'none'
+        //     : 'inline-block';
 
 
         if (this.childMenu)
@@ -25545,6 +25937,7 @@ class MenuItem
         this.update();
     }
     
+
 
     setVisible(visible)
     {
@@ -25660,6 +26053,10 @@ var menuItemLogValueUpdates
 var menuItemLogObjectUpdates;
 
 var menuItemZoomTo100;
+var menuItemZoomTop;
+var menuItemZoomLeft;
+var menuItemZoomRight;
+var menuItemZoomFill;
 
 var menuItemGraphPaste;
 var menuItemGraphPasteConnected;
@@ -25802,7 +26199,12 @@ function initMenus()
                             new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', enabled:  false}),
-        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);
+        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);//,
+        //                     new MenuItem('',             {separator: true}),
+        // menuItemZoomTop   = new MenuItem('Window top',   {shortcut: osAlt() + '3', callback: () => dockWindowTop()}),
+        // menuItemZoomRight = new MenuItem('Window right', {shortcut: osAlt() + '2'}),
+        // menuItemZoomLeft  = new MenuItem('Window left',  {shortcut: osAlt() + '1'}),
+        // menuItemZoomFill  = new MenuItem('Maximize',     {shortcut: osAlt() + '0'})]);
 
 
     menuGraph = new Menu('Graph menu', false, false);
@@ -33001,7 +33403,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_INTERPOLATE: node = new OpInterpolate();      break;
         
         case COLOR:              node = new OpColor(options);     break;
-        case COLOR_VALIDATE:     node = new OpColorCorrect();    break;
+        case COLOR_VALIDATE:     node = new OpColorCorrect();     break;
         case COLOR_CONTRAST:     node = new OpColorContrast();    break;
         case COLORBLIND:         node = new OpColorBlind();       break;
         case COLOR_INTERPOLATE:  node = new OpColorInterpolate(); break;
@@ -33011,6 +33413,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 
         case FILL:               node = new OpFill();             break;
         case STROKE:             node = new OpStroke();           break;
+        case STYLE:              node = new OpStyle();            break;
 
         case RECTANGLE:          node = new OpRectangle();        break;
         case LINE:               node = new OpLine();             break;
@@ -36425,6 +36828,7 @@ extends OperatorBase
         super.updateHeader();
 
         this.div   .style.borderRadius = '4px';        
+        this.inner .style.borderRadius = '4px';        
         this.header.style.borderRadius = '4px';        
     }
 }
@@ -36445,7 +36849,49 @@ function OpList_onDisconnectInput(node, input)
 }
 
 
+class   OpListItems
+extends OperatorBase
+{
+    paramValue;
 
+
+
+    constructor()
+    {
+        super(LIST_ITEMS, 'items', 100);
+
+        this.addInput (new Input (LIST_TYPES, this.input_getValuesForUndo));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+
+        this.alwaysLoadParams = true;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output        
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+        
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+        // if (input.connected) request.push(...pushInputOrParam(input, gen));
+        // else                 request.push(...this.node.paramValue.genRequest(gen));
+
+            
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+}
 
 
 class   OpNumber
@@ -40162,6 +40608,56 @@ extends OpColorBase
         this.addInput (new Input([...LIST_TYPES, ...COLOR_TYPES, ...STYLE_TYPES]), this.input_getValuesForUndo);
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
     }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+                
+        
+        const paramIds = [];
+        
+        
+        const input = this.node.inputs[0];
+
+        if (input.connected)
+        {
+            request.push(...pushInputOrParam(input, gen));
+
+            for (const param of this.node.params)
+                if (   param.input 
+                    && param.input.connected
+                    && param.canShow())
+                    paramIds.push(param.id);
+        }
+        else
+        {
+            for (const param of this.node.params)
+                if (param.canShow())
+                    paramIds.push(param.id);
+        }
+
+
+        request.push(paramIds.length);
+
+        for (const paramId of paramIds)
+            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
 }
 
 
@@ -40530,6 +41026,9 @@ extends OpShapeBase
         this.paramAngle.control.setSuffix('°', true);
         this.paramAngle.control.wrapValue   = true;
         this.paramAngle.control.dragReverse = true;
+
+
+        this.addBaseParams();
     }
 }
 
@@ -40563,6 +41062,9 @@ extends OpShapeBase
         this.paramAngle.control.setSuffix('°', true);
         this.paramAngle.control.wrapValue   = true;
         this.paramAngle.control.dragReverse = true;
+
+
+        this.addBaseParams();
     }
 }
 
@@ -40599,6 +41101,9 @@ extends OpShapeBase
         this.paramAngle.control.setSuffix('°', true);
         this.paramAngle.control.wrapValue   = true;
         this.paramAngle.control.dragReverse = true;
+
+
+        this.addBaseParams();
     }
 
 
@@ -40652,6 +41157,9 @@ extends OpShapeBase
         this.paramAngle.control.dragReverse = true;
 
         this.paramConvex.control.setSuffix('%', true);
+
+
+        this.addBaseParams();
     }
 
 
@@ -44790,7 +45298,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                     case    POLYGON_VALUE: value = parsePolygonValue  (values[i++])[0]; break;
                     case       STAR_VALUE: value = parseStarValue     (values[i++])[0]; break;
                     
-                    default:               console.assert(false, 'unknown type \'' + type + '\'');
+                    default: console.assert(false, 'unknown type \'' + type + '\'');
                 }
 
                 if (value.nodeId)
@@ -45000,6 +45508,17 @@ function uiLogAllSavedConns()
 //     removeAt(menuSelect.items, index);
 //     menuSelect.updateItems();
 // }
+
+
+
+function dockWindowTop()
+{
+    uiQueueMessageToFigma({ 
+        cmd: 'figPositionWindow',
+        x:    0,
+        y:    0
+    });        
+}
 
 
 

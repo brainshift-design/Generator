@@ -40,3 +40,18 @@ function logReqColorStop(stop, parse)
     parse.log += parse.tab + stop.type;
     parse.log += logReqNodeId(stop);
 }
+
+
+
+function logReqStyleValue(style, parse)
+{
+    parse.log += parse.tab + STYLE_VALUE + ' ' + displayValue(STYLE_VALUE, style);
+}
+
+
+
+function logReqStyle(style, parse)
+{
+    parse.log += parse.tab + style.type;
+    parse.log += logReqNodeId(style);
+}

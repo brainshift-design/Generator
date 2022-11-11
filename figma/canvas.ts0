@@ -2,18 +2,35 @@ const figObjectArrays = []; // {nodeId, [objects]}
 
 
 
+function figCreateObject(objects, genObj)
+{
+    let figObj;
+
+    switch (genObj.type)
+    {
+        case RECTANGLE: figObj = figCreateRect   (genObj); break;
+        case LINE:      figObj = figCreateLine   (genObj); break;
+        case ELLIPSE:   figObj = figCreateEllipse(genObj); break;
+        case POLYGON:   figObj = figCreatePolygon(genObj); break;
+        case STAR:      figObj = figCreateStar   (genObj); break;
+    }
+
+    console.assert(!!figObj, 'no Figma object created');
+
+
+    figObj.setPluginData('id',     genObj.id    .toString());
+    figObj.setPluginData('type',   genObj.type  .toString());
+    figObj.setPluginData('nodeId', genObj.nodeId.toString());
+    
+
+    objects[genObj.id] = figObj;
+    figma.currentPage.appendChild(figObj);
+}
+
+
+
 function figUpdateObjects(msg)
 {
-    // if (   msg.updateNodeId  != NULL
-    //     && msg.updateParamId != NULL)
-    // {
-    //     const index = msg.nodeIds.indexOf(msg.updateNodeId);
-
-    //     if (index > -1)
-    //         figSaveNodes([msg.updateNodeId], [msg.nodeJson[index]]);
-    // }
-
-
     let curNodeId  = NULL;
     let figObjects = null;
 
@@ -45,36 +62,6 @@ function figUpdateObjects(msg)
             figCreateObject(figObjects, genObj);
         }
     }
-}
-
-
-
-function figCreateObject(objects, genObj)
-{
-    const name = 'G.' + genObj.nodeId.toString() + '.' + genObj.id.toString();
-    
-    
-    let figObj;
-
-    switch (genObj.type)
-    {
-        case RECTANGLE: figObj = figCreateRect   (genObj, name); break;
-        case LINE:      figObj = figCreateLine   (genObj, name); break;
-        case ELLIPSE:   figObj = figCreateEllipse(genObj, name); break;
-        case POLYGON:   figObj = figCreatePolygon(genObj, name); break;
-        case STAR:      figObj = figCreateStar   (genObj, name); break;
-    }
-
-    console.assert(!!figObj, 'no Figma object created');
-
-
-    figObj.setPluginData('id',     genObj.id    .toString());
-    figObj.setPluginData('type',   genObj.type  .toString());
-    figObj.setPluginData('nodeId', genObj.nodeId.toString());
-    
-
-    objects[genObj.id] = figObj;
-    figma.currentPage.appendChild(figObj);
 }
 
 

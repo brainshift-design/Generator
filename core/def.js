@@ -9,3 +9,4 @@ const TAB            = '  ';
 const NL             = '\n';
 
 const GENERATOR_LOGO = '◦G•';
+const OBJECT_PREFIX  = 'G.';

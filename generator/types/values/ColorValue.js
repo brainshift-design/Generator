@@ -129,6 +129,16 @@ extends GValue
 
 
 
+    toDisplayString()
+    {
+        return      this.space.toDisplayString()
+            + ' ' + this.c1   .toDisplayString()
+            + ' ' + this.c2   .toDisplayString()
+            + ' ' + this.c3   .toDisplayString();
+    }
+
+
+
     toRgbString()
     {
         if (!this.isValid())
@@ -139,16 +149,6 @@ extends GValue
         return      rgb[0].toString()
             + ' ' + rgb[1].toString()
             + ' ' + rgb[2].toString();
-    }
-
-
-
-    toDisplayString()
-    {
-        return      this.space.toDisplayString()
-            + ' ' + this.c1   .toDisplayString()
-            + ' ' + this.c2   .toDisplayString()
-            + ' ' + this.c3   .toDisplayString();
     }
 
 
@@ -164,11 +164,6 @@ extends GValue
 
 function parseColorValue(str, i = -1)
 {
-    // if (   i <  0 && str    == INVALID
-    //     || i >= 0 && str[i] == INVALID)
-    //     return [ColorValue.NaN, 1];
-
-
     if (i < 0)
     {
         str = str.split(' ');

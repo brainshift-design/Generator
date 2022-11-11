@@ -9,6 +9,7 @@ figma.ui.onmessage = msg =>
     {
         case 'figStartGenerator':               figStartGenerator              ();                                           break;
            
+        case 'figPositionWindow':               figPositionWindow              (msg.x, msg.y);                               break; 
         case 'figResizeWindow':                 figResizeWindow                (msg.width, msg.height);                      break; 
         case 'figNotify':                       figNotify                      (msg.text, msg.prefix, msg.delay, msg.error); break;
                            

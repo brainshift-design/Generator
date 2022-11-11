@@ -15,6 +15,17 @@
 
 
 
+function dockWindowTop()
+{
+    uiQueueMessageToFigma({ 
+        cmd: 'figPositionWindow',
+        x:    0,
+        y:    0
+    });        
+}
+
+
+
 function uiError(text, delay = 6000)
 {
     uiNotify(text, delay, true);

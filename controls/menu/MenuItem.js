@@ -1,21 +1,21 @@
 class MenuItem
 {
-    parentMenu    = null;
-    index         = -1;
+    parentMenu        = null;
+    index             = -1;
 
-    enabled       = true;
+    enabled           = true;
 
-    checked       = false;
-    icon          = ''; // svg
-    name          = '';
-    shortcut      = '';
+    checked           = false;
+    icon              = ''; // svg
+    name              = '';
+    shortcut          = '';
 
-    callback      = null;
-    checkCallback = null;
+    callback          = null;
+    checkCallback     = null;
 
-    childMenu     = null;
+    childMenu         = null;
 
-    separator     = false;
+    separator         = false;
 
 
     div;
@@ -44,26 +44,26 @@ class MenuItem
 
     initOptions(options)
     {
-        if (options.icon          != undefined) this.icon          = options.icon;
-        if (options.callback      != undefined) this.callback      = options.callback;
-        if (options.checkCallback != undefined) this.checkCallback = options.checkCallback;
-        if (options.childMenu     != undefined) 
+        if (options.icon              != undefined) this.icon              = options.icon;
+        if (options.callback          != undefined) this.callback          = options.callback;
+        if (options.checkCallback     != undefined) this.checkCallback     = options.checkCallback;
+        if (options.childMenu         != undefined) 
         { 
             this.childMenu = options.childMenu;  
             
             if (this.childMenu)
                 this.childMenu.parentMenu = this.parentMenu; 
         }
-        if (options.separator     != undefined) this.separator     = options.separator;
-        if (options.shortcut      != undefined) this.shortcut      = options.shortcut;
-        if (options.enabled       != undefined) this.enabled       = options.enabled;
+        if (options.separator         != undefined) this.separator = options.separator;
+        if (options.shortcut          != undefined) this.shortcut  = options.shortcut;
+        if (options.enabled           != undefined) this.enabled   = options.enabled;
     }
 
 
 
     createControls()
     {
-        this.div          = createDiv('menuItem');
+        this.div          = createDiv('menuItem'        );
 
         this.divCheck     = createDiv('menuItemCheck'   );
         this.divIcon      = createDiv('menuItemIcon'    );
@@ -79,11 +79,16 @@ class MenuItem
 
         this.divName.innerHTML = this.name;
 
-        this.divCheck.visibility = 
-               this.checkCallback 
-            && this.checkCallback() 
-            ? 'visible' 
-            : 'hidden';
+        // this.divCheck.style.visibility = 
+        //        this.checkCallback 
+        //     && this.checkCallback() 
+        //     ? 'visible' 
+        //     : 'hidden';
+
+        // this.divCheck.style.display = 
+        //     this.iconReplacesCheck
+        //     ? 'none'
+        //     : 'inline-block';
 
 
         if (this.childMenu)
@@ -193,6 +198,7 @@ class MenuItem
         this.update();
     }
     
+
 
     setVisible(visible)
     {

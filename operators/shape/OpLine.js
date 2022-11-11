@@ -24,5 +24,8 @@ extends OpShapeBase
         this.paramAngle.control.setSuffix('°', true);
         this.paramAngle.control.wrapValue   = true;
         this.paramAngle.control.dragReverse = true;
+
+
+        this.addBaseParams();
     }
 }

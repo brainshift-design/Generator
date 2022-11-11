@@ -36,14 +36,13 @@ extends GOperator
 
         this.value = new ListValue();
 
-
         for (let i = 0; i < this.inputs.length; i++)
         {
             this.inputs[i] = this.inputs[i].eval(parse).copy();
             this.value.items.push(this.inputs[i].toValue());
         }
     
-        
+
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 

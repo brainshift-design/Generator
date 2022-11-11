@@ -26,20 +26,22 @@ const NULL = '';
 const TAB = '  ';
 const NL = '\n';
 const GENERATOR_LOGO = '◦G•';
+const OBJECT_PREFIX = 'G.';
 const INVALID = '?';
 const DISPLAY_INVALID = INVALID; //'🤷‍♂️';
-const LIST_VALUE = 'LS';
+const LIST_VALUE = 'LIST#';
 const LIST = 'LIST';
 const LIST_ITEMS = 'ITEMS';
 const LIST_TYPES = [
     LIST_VALUE,
-    LIST
+    LIST,
+    LIST_ITEMS
 ];
 const FLOW_TYPES = [
     ...LIST_TYPES,
     LIST_ITEMS
 ];
-const NUMBER_VALUE = 'N'; // value (s) (with significant decimals)
+const NUMBER_VALUE = 'NUM#'; // value (s) (with significant decimals)
 const NUMBER = 'NUM'; // N | n
 const NUMBER_LIMITS = 'LIM'; // N:min N:max
 const NUMBER_RANDOM = 'RAND'; // N:seed N:scale N:min N:max
@@ -65,15 +67,7 @@ const NUMBER_TYPES = [
     NUMBER_EXPONENT,
     NUMBER_INTERPOLATE
 ];
-const MATH_OPS = [
-    [NUMBER_SUBTRACT, '-'],
-    [NUMBER_ADD, '+'],
-    [NUMBER_DIVIDE, '÷'],
-    [NUMBER_MULTIPLY, '×'],
-    [NUMBER_MODULO, '%'],
-    [NUMBER_EXPONENT, 'eˣ']
-];
-const STRING_VALUE = 'S'; // "..." (s) (escape \\ and \")
+const STRING_VALUE = 'STR#'; // "..." (s) (escape \\ and \")
 const STRING = 'STR'; // S | s
 const STRING_ADD = 'SADD'; // S S
 const STRING_REPLACE = 'SREPL'; // S S:what S:with
@@ -82,7 +76,7 @@ const STRING_TYPES = [
     STRING_ADD,
     STRING_REPLACE
 ];
-const COLOR_VALUE = 'C'; // color value
+const COLOR_VALUE = 'COL#'; // color value
 const COLOR = 'COL'; // C | N:space N:c1 N:c2 N:c3
 const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
 const COLOR_VALIDATE = 'CVLD'; // C
@@ -95,46 +89,34 @@ const COLOR_TYPES = [
     COLOR_VALIDATE,
     COLORBLIND
 ];
-const FILL_VALUE = 'FL';
+const FILL_VALUE = 'FILL#';
 const FILL = 'FILL';
-const FILL_TYPES = [
-    FILL_VALUE,
-    FILL
-];
-const STROKE_VALUE = 'SK';
+const FILL_TYPES = [FILL_VALUE, FILL];
+const STROKE_VALUE = 'STRK#';
 const STROKE = 'STRK';
-const STROKE_TYPES = [
-    STROKE_VALUE,
-    STROKE
-];
-const COLOR_STOP_VALUE = 'CS';
+const STROKE_TYPES = [STROKE_VALUE, STROKE];
+const COLOR_STOP_VALUE = 'CSTOP#';
 const COLOR_STOP = 'CSTOP';
-const GRADIENT_VALUE = 'GR';
+const GRADIENT_VALUE = 'GRAD#';
 const GRADIENT = 'GRAD';
-const GRADIENT_TYPES = [
-    GRADIENT_VALUE,
-    GRADIENT
-];
-const STYLE_TYPES = [
-    ...FILL_TYPES,
-    ...STROKE_TYPES,
-    ...GRADIENT_TYPES
-    // ...STYLE_TYPES will also be here
-];
-const SHAPE_VALUE = 'SHP'; // abstract placeholder
-const RECTANGLE_VALUE = 'R';
+const GRADIENT_TYPES = [GRADIENT_VALUE, GRADIENT];
+const STYLE_VALUE = 'STYLE#';
+const STYLE = 'STYLE';
+const STYLE_TYPES = [STYLE_VALUE, STYLE];
+const SHAPE_VALUE = 'SHP#'; // abstract placeholder
+const RECTANGLE_VALUE = 'RECT#';
 const RECTANGLE = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
 const RECTANGLE_TYPES = [RECTANGLE_VALUE, RECTANGLE];
-const LINE_VALUE = 'L';
+const LINE_VALUE = 'LINE#';
 const LINE = 'LINE'; // N:x N:y N:width N:height N:angle
 const LINE_TYPES = [LINE_VALUE, LINE];
-const ELLIPSE_VALUE = 'E';
+const ELLIPSE_VALUE = 'ELPS#';
 const ELLIPSE = 'ELPS'; // N:x N:y N:width N:height N:angle
 const ELLIPSE_TYPES = [ELLIPSE_VALUE, ELLIPSE];
-const POLYGON_VALUE = 'P';
+const POLYGON_VALUE = 'POLY#';
 const POLYGON = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
 const POLYGON_TYPES = [POLYGON_VALUE, POLYGON];
-const STAR_VALUE = 'ST';
+const STAR_VALUE = 'STAR#';
 const STAR = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
 const STAR_TYPES = [STAR_VALUE, STAR];
 const SHAPE_VALUES = [
@@ -147,33 +129,39 @@ const SHAPE_VALUES = [
 ];
 const SHAPE_TYPES = [
     ...SHAPE_VALUES,
-    RECTANGLE,
-    LINE,
-    ELLIPSE,
-    POLYGON,
-    STAR //,
+    ...RECTANGLE_TYPES,
+    ...LINE_TYPES,
+    ...ELLIPSE_TYPES,
+    ...POLYGON_TYPES,
+    ...STAR_TYPES //,
     //TEXT
 ];
-const OBJECT_TYPES = // because they produce or modify objects
- [
-    ...SHAPE_TYPES,
-    ...STYLE_TYPES
-];
-const GROUP = 'GRP'; // ???? count O...
 const ALL_TYPES = [
     ...FLOW_TYPES,
     ...NUMBER_TYPES,
     ...STRING_TYPES,
     ...COLOR_TYPES,
+    ...FILL_TYPES,
+    ...STROKE_TYPES,
+    ...GRADIENT_TYPES,
     ...STYLE_TYPES,
     ...SHAPE_TYPES
 ];
+const GROUP = 'GRP'; // ???? count O...
 const COMMENT = 'CMNT';
 const ACTIVE = 'ACT';
 const BEFORE_ACTIVE = 'BEF';
 const DISABLED = 'DIS';
 const PARAM = 'PARAM'; // nodeId paramId
 const LOG = 'LOG';
+const MATH_OPS = [
+    [NUMBER_SUBTRACT, '-'],
+    [NUMBER_ADD, '+'],
+    [NUMBER_DIVIDE, '÷'],
+    [NUMBER_MULTIPLY, '×'],
+    [NUMBER_MODULO, '%'],
+    [NUMBER_EXPONENT, 'eˣ']
+];
 /*
 
 FRAME       F
@@ -248,14 +236,33 @@ function logReqNode(node, parse) {
     parse.log += logReqNodeId(node);
 }
 const figObjectArrays = []; // {nodeId, [objects]}
+function figCreateObject(objects, genObj) {
+    let figObj;
+    switch (genObj.type) {
+        case RECTANGLE:
+            figObj = figCreateRect(genObj);
+            break;
+        case LINE:
+            figObj = figCreateLine(genObj);
+            break;
+        case ELLIPSE:
+            figObj = figCreateEllipse(genObj);
+            break;
+        case POLYGON:
+            figObj = figCreatePolygon(genObj);
+            break;
+        case STAR:
+            figObj = figCreateStar(genObj);
+            break;
+    }
+    console.assert(!!figObj, 'no Figma object created');
+    figObj.setPluginData('id', genObj.id.toString());
+    figObj.setPluginData('type', genObj.type.toString());
+    figObj.setPluginData('nodeId', genObj.nodeId.toString());
+    objects[genObj.id] = figObj;
+    figma.currentPage.appendChild(figObj);
+}
 function figUpdateObjects(msg) {
-    // if (   msg.updateNodeId  != NULL
-    //     && msg.updateParamId != NULL)
-    // {
-    //     const index = msg.nodeIds.indexOf(msg.updateNodeId);
-    //     if (index > -1)
-    //         figSaveNodes([msg.updateNodeId], [msg.nodeJson[index]]);
-    // }
     let curNodeId = NULL;
     let figObjects = null;
     for (const genObj of msg.objects) {
@@ -277,33 +284,6 @@ function figUpdateObjects(msg) {
             figCreateObject(figObjects, genObj);
         }
     }
-}
-function figCreateObject(objects, genObj) {
-    const name = 'G.' + genObj.nodeId.toString() + '.' + genObj.id.toString();
-    let figObj;
-    switch (genObj.type) {
-        case RECTANGLE:
-            figObj = figCreateRect(genObj, name);
-            break;
-        case LINE:
-            figObj = figCreateLine(genObj, name);
-            break;
-        case ELLIPSE:
-            figObj = figCreateEllipse(genObj, name);
-            break;
-        case POLYGON:
-            figObj = figCreatePolygon(genObj, name);
-            break;
-        case STAR:
-            figObj = figCreateStar(genObj, name);
-            break;
-    }
-    console.assert(!!figObj, 'no Figma object created');
-    figObj.setPluginData('id', genObj.id.toString());
-    figObj.setPluginData('type', genObj.type.toString());
-    figObj.setPluginData('nodeId', genObj.nodeId.toString());
-    objects[genObj.id] = figObj;
-    figma.currentPage.appendChild(figObj);
 }
 function figUpdateObject(figObj, genObj) {
     switch (genObj.type) {
@@ -376,13 +356,22 @@ function figStartGenerator() {
                 wndWidth = 800;
             if (wndHeight == null)
                 wndHeight = 600;
+            // figma.showUI(
+            //     __html__,
+            //     {
+            //         //visible:     false,
+            //         themeColors: true,
+            //         width:       Math.max(0, wndWidth),
+            //         height:      Math.max(0, wndHeight)
+            //         //position: {x: , y: }
+            //     });
             figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
+            figma.ui.show();
             figPostMessageToUI({
                 cmd: 'uiEndStartGenerator',
                 currentUser: figma.currentUser,
                 productKey: productKey
             });
-            figma.ui.show();
         });
     })();
 }
@@ -393,6 +382,9 @@ figma.ui.onmessage = msg => {
     switch (msg.cmd) {
         case 'figStartGenerator':
             figStartGenerator();
+            break;
+        case 'figPositionWindow':
+            figPositionWindow(msg.x, msg.y);
             break;
         case 'figResizeWindow':
             figResizeWindow(msg.width, msg.height);
@@ -481,6 +473,11 @@ function figPostMessageToUI(msg) {
 //     figPostMessageToGenerator({cmd: 'genEndFigMessage'}); 
 // }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+function makeObjectName(obj) {
+    return OBJECT_PREFIX + obj.nodeId
+        + (obj.id > -1 ? '.' + obj.id : '');
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
 function genRectIsValid(genRect) {
     return genRect.x != null && !isNaN(genRect.x)
         && genRect.y != null && !isNaN(genRect.y)
@@ -489,10 +486,10 @@ function genRectIsValid(genRect) {
         && genRect.angle != null && !isNaN(genRect.angle)
         && genRect.round != null && !isNaN(genRect.round);
 }
-function figCreateRect(obj, name) {
+function figCreateRect(obj) {
     //console.log(obj);
     const rect = figma.createRectangle();
-    rect.name = name;
+    rect.name = makeObjectName(obj);
     if (!genRectIsValid(obj))
         return rect;
     rect.x = obj.x;
@@ -525,10 +522,10 @@ function genLineIsValid(genLine) {
         && genLine.width != null && !isNaN(genLine.width)
         && genLine.angle != null && !isNaN(genLine.angle);
 }
-function figCreateLine(obj, name) {
+function figCreateLine(obj) {
     //console.log(obj);
     const line = figma.createLine();
-    line.name = name;
+    line.name = makeObjectName(obj);
     if (!genLineIsValid(obj))
         return line;
     line.x = obj.x;
@@ -558,10 +555,10 @@ function genEllipseIsValid(genEllipse) {
         && genEllipse.height != null && !isNaN(genEllipse.height)
         && genEllipse.angle != null && !isNaN(genEllipse.angle);
 }
-function figCreateEllipse(obj, name) {
+function figCreateEllipse(obj) {
     //console.log(obj);
     const ellipse = figma.createEllipse();
-    ellipse.name = name;
+    ellipse.name = makeObjectName(obj);
     if (!genEllipseIsValid(obj))
         return ellipse;
     ellipse.x = obj.x;
@@ -595,10 +592,10 @@ function genPolyIsValid(genPoly) {
         && genPoly.round != null && !isNaN(genPoly.round)
         && genPoly.corners != null && !isNaN(genPoly.corners);
 }
-function figCreatePolygon(obj, name) {
+function figCreatePolygon(obj) {
     //console.log(obj);
     const poly = figma.createPolygon();
-    poly.name = name;
+    poly.name = makeObjectName(obj);
     if (!genPolyIsValid(obj))
         return poly;
     poly.x = obj.x;
@@ -637,10 +634,10 @@ function genStarIsValid(genStar) {
         && genStar.points != null && !isNaN(genStar.points)
         && genStar.convex != null && !isNaN(genStar.convex);
 }
-function figCreateStar(obj, name) {
+function figCreateStar(obj) {
     //console.log(obj);
     const star = figma.createStar();
-    star.name = name;
+    star.name = makeObjectName(obj);
     if (!genStarIsValid(obj))
         return star;
     star.x = obj.x;
@@ -852,6 +849,22 @@ function figRemoveSavedConnectionsToNode(nodeId) {
 }
 function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
 function connNameForStorage(name) { return connTag + ' ' + name; }
+function figPositionWindow(x, y) {
+    // x = Math.floor(Math.max(0, x ));
+    // y = Math.floor(Math.max(0, y));
+    // figma.ui.resize(x, y);
+    // figma.ui.close();
+    // figma.showUI(
+    //     __html__,
+    //     {
+    //         visible:     false,
+    //         themeColors: true,
+    //         position: {x: x, y: y}
+    //     });
+    // figma.clientStorage.setAsync('windowWidth',  x);
+    // figma.clientStorage.setAsync('windowHeight', y);
+    figPostMessageToUI({ cmd: 'uiEndPositionWindow' });
+}
 function figResizeWindow(width, height) {
     width = Math.floor(Math.max(0, width));
     height = Math.floor(Math.max(0, height));
