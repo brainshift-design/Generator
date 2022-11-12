@@ -3371,6 +3371,13 @@ extends GValue
 
 
 
+    getParamFromId(paramId)
+    {
+        return this[paramId];
+    }
+
+
+
     toValue()
     {
         return null;
@@ -3421,20 +3428,13 @@ extends GOperator
 
     eval(parse)
     {
-        // if (this.valid)
-        //     return this.param;
-
-
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-        this.param = this.node[this.paramId];
-        this.param.eval(parse);
+        this.param = this.node.getParamFromId(this.paramId);
+        this.param = this.param.eval(parse).copy();
 
-
-        // this.valid = this.param.valid;
-
-        return this.param;//this;
+        return this.param.toValue();
     }
 
 
@@ -5399,7 +5399,15 @@ extends GOperator
         for (let i = 0; i < this.inputs.length; i++)
         {
             this.inputs[i] = this.inputs[i].eval(parse).copy();
-            this.value.items.push(this.inputs[i].toValue());
+            const input = this.inputs[i].toValue();
+
+            if (input.type == LIST_VALUE)
+            {
+                for (const item of input.items)
+                    this.value.items.push(item);   
+            }
+            else
+                this.value.items.push(input);
         }
     
 
@@ -5446,7 +5454,7 @@ extends GOperator
             items.input = this.input.copy();
         
         for (const item of this.items)
-            items.push(item.copy());
+            items.items.push(item.copy());
 
         return items;
     }
@@ -5471,11 +5479,16 @@ extends GOperator
         } 
 
 
+        this.items = [];
+
+
         if (this.value.isValid())
         {
             for (let i = 0; i < this.value.items.length; i++)
             {
                 const item = this.value.items[i];
+
+                this.items.push(item);
                 genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
             }
         }
@@ -5484,6 +5497,18 @@ extends GOperator
         this.valid = true;
 
         return this;
+    }
+
+
+
+    getParamFromId(paramId)
+    {
+        if (   paramId.length > 4
+            && paramId.substring(0, 4) == 'item'
+            && strIsNum(paramId.substring(4)))
+            return this.items[parseInt(paramId.substring(4))];
+
+        return null;
     }
 
 
@@ -6427,6 +6452,7 @@ extends GColorType
 
         if (this.input)
         {
+            if (this.nodeId == 'color') console.log('this.input =', this.input);
             this.input = this.input.eval(parse).copy();
             const input = this.input.toValue();
 

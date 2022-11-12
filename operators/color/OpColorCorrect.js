@@ -63,9 +63,9 @@ extends OpColorBase
 
 
 
-    canAutoConnectFrom(node)
+    canAutoConnectFrom(output)
     {
-        return COLOR_TYPES.includes(node.type);
+        return arraysIntersect(COLOR_TYPES, output.types);
     }
 
 

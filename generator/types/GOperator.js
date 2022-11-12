@@ -23,6 +23,13 @@ extends GValue
 
 
 
+    getParamFromId(paramId)
+    {
+        return this[paramId];
+    }
+
+
+
     toValue()
     {
         return null;

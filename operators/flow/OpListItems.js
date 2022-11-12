@@ -17,6 +17,13 @@ extends OperatorBase
 
 
 
+    // getParamFromId(paramId)
+    // {
+
+    // }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output        

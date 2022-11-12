@@ -64,7 +64,7 @@ class Connection
         this.wire.getColor = () =>
         {
             if (this.output)
-                return LIST_TYPES.includes(this.output.node.type)
+                return arraysIntersect(LIST_TYPES, this.output.types)
                        ? (rgbDocumentBody)
                        : this.output.wireColor;
 
@@ -163,7 +163,7 @@ class Connection
             this.wire. inBall.style.fill   = rgba2style(color);
             this.wire.outBall.style.fill   = rgba2style(color);
 
-            //const listType = LIST_TYPES.includes(this.output.node.type);
+            //const listType = arraysIntersect(LIST_TYPES, this.output.types);
 
 
             let width = 1.6 * graphView.zoom;
@@ -245,7 +245,7 @@ class Connection
             }
 
 
-            const listType = LIST_TYPES.includes(this.output.node.type);
+            const listType = arraysIntersect(LIST_TYPES, this.output.types);
             this.wire2.curve.style.stroke = listType ? rgba2style(color)  : 'transparent';
 
 

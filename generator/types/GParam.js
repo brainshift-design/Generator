@@ -32,20 +32,13 @@ extends GOperator
 
     eval(parse)
     {
-        // if (this.valid)
-        //     return this.param;
-
-
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-        this.param = this.node[this.paramId];
-        this.param.eval(parse);
+        this.param = this.node.getParamFromId(this.paramId);
+        this.param = this.param.eval(parse).copy();
 
-
-        // this.valid = this.param.valid;
-
-        return this.param;//this;
+        return this.param.toValue();
     }
 
 

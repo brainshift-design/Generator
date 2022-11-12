@@ -392,7 +392,8 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
         && graphView.selectedNodes.length > 0
         && canAutoConnectNode(node)
         && selNode
-        && node.canAutoConnectFrom(selNode);
+        && selNode.headerOutputs.length > 0
+        && node.canAutoConnectFrom(selNode.headerOutputs[0]);
 
 
     graph.addNode(node, !autoConnect);

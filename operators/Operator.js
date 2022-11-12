@@ -406,7 +406,7 @@ class Operator
 
 
 
-    canAutoConnectFrom(node)
+    canAutoConnectFrom(output)
     {
         return false;
     }

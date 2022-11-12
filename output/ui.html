@@ -5339,6 +5339,13 @@ extends GValue
 
 
 
+    getParamFromId(paramId)
+    {
+        return this[paramId];
+    }
+
+
+
     toValue()
     {
         return null;
@@ -5389,20 +5396,13 @@ extends GOperator
 
     eval(parse)
     {
-        // if (this.valid)
-        //     return this.param;
-
-
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-        this.param = this.node[this.paramId];
-        this.param.eval(parse);
+        this.param = this.node.getParamFromId(this.paramId);
+        this.param = this.param.eval(parse).copy();
 
-
-        // this.valid = this.param.valid;
-
-        return this.param;//this;
+        return this.param.toValue();
     }
 
 
@@ -7367,7 +7367,15 @@ extends GOperator
         for (let i = 0; i < this.inputs.length; i++)
         {
             this.inputs[i] = this.inputs[i].eval(parse).copy();
-            this.value.items.push(this.inputs[i].toValue());
+            const input = this.inputs[i].toValue();
+
+            if (input.type == LIST_VALUE)
+            {
+                for (const item of input.items)
+                    this.value.items.push(item);   
+            }
+            else
+                this.value.items.push(input);
         }
     
 
@@ -7414,7 +7422,7 @@ extends GOperator
             items.input = this.input.copy();
         
         for (const item of this.items)
-            items.push(item.copy());
+            items.items.push(item.copy());
 
         return items;
     }
@@ -7439,11 +7447,16 @@ extends GOperator
         } 
 
 
+        this.items = [];
+
+
         if (this.value.isValid())
         {
             for (let i = 0; i < this.value.items.length; i++)
             {
                 const item = this.value.items[i];
+
+                this.items.push(item);
                 genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
             }
         }
@@ -7452,6 +7465,18 @@ extends GOperator
         this.valid = true;
 
         return this;
+    }
+
+
+
+    getParamFromId(paramId)
+    {
+        if (   paramId.length > 4
+            && paramId.substring(0, 4) == 'item'
+            && strIsNum(paramId.substring(4)))
+            return this.items[parseInt(paramId.substring(4))];
+
+        return null;
     }
 
 
@@ -8395,6 +8420,7 @@ extends GColorType
 
         if (this.input)
         {
+            if (this.nodeId == 'color') console.log('this.input =', this.input);
             this.input = this.input.eval(parse).copy();
             const input = this.input.toValue();
 
@@ -19813,6 +19839,13 @@ extends GValue
 
 
 
+    getParamFromId(paramId)
+    {
+        return this[paramId];
+    }
+
+
+
     toValue()
     {
         return null;
@@ -19863,20 +19896,13 @@ extends GOperator
 
     eval(parse)
     {
-        // if (this.valid)
-        //     return this.param;
-
-
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
-        this.param = this.node[this.paramId];
-        this.param.eval(parse);
+        this.param = this.node.getParamFromId(this.paramId);
+        this.param = this.param.eval(parse).copy();
 
-
-        // this.valid = this.param.valid;
-
-        return this.param;//this;
+        return this.param.toValue();
     }
 
 
@@ -21841,7 +21867,15 @@ extends GOperator
         for (let i = 0; i < this.inputs.length; i++)
         {
             this.inputs[i] = this.inputs[i].eval(parse).copy();
-            this.value.items.push(this.inputs[i].toValue());
+            const input = this.inputs[i].toValue();
+
+            if (input.type == LIST_VALUE)
+            {
+                for (const item of input.items)
+                    this.value.items.push(item);   
+            }
+            else
+                this.value.items.push(input);
         }
     
 
@@ -21888,7 +21922,7 @@ extends GOperator
             items.input = this.input.copy();
         
         for (const item of this.items)
-            items.push(item.copy());
+            items.items.push(item.copy());
 
         return items;
     }
@@ -21913,11 +21947,16 @@ extends GOperator
         } 
 
 
+        this.items = [];
+
+
         if (this.value.isValid())
         {
             for (let i = 0; i < this.value.items.length; i++)
             {
                 const item = this.value.items[i];
+
+                this.items.push(item);
                 genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
             }
         }
@@ -21926,6 +21965,18 @@ extends GOperator
         this.valid = true;
 
         return this;
+    }
+
+
+
+    getParamFromId(paramId)
+    {
+        if (   paramId.length > 4
+            && paramId.substring(0, 4) == 'item'
+            && strIsNum(paramId.substring(4)))
+            return this.items[parseInt(paramId.substring(4))];
+
+        return null;
     }
 
 
@@ -22869,6 +22920,7 @@ extends GColorType
 
         if (this.input)
         {
+            if (this.nodeId == 'color') console.log('this.input =', this.input);
             this.input = this.input.eval(parse).copy();
             const input = this.input.toValue();
 
@@ -34439,7 +34491,7 @@ class Connection
         this.wire.getColor = () =>
         {
             if (this.output)
-                return LIST_TYPES.includes(this.output.node.type)
+                return arraysIntersect(LIST_TYPES, this.output.types)
                        ? (rgbDocumentBody)
                        : this.output.wireColor;
 
@@ -34538,7 +34590,7 @@ class Connection
             this.wire. inBall.style.fill   = rgba2style(color);
             this.wire.outBall.style.fill   = rgba2style(color);
 
-            //const listType = LIST_TYPES.includes(this.output.node.type);
+            //const listType = arraysIntersect(LIST_TYPES, this.output.types);
 
 
             let width = 1.6 * graphView.zoom;
@@ -34620,7 +34672,7 @@ class Connection
             }
 
 
-            const listType = LIST_TYPES.includes(this.output.node.type);
+            const listType = arraysIntersect(LIST_TYPES, this.output.types);
             this.wire2.curve.style.stroke = listType ? rgba2style(color)  : 'transparent';
 
 
@@ -35267,7 +35319,7 @@ class Operator
 
 
 
-    canAutoConnectFrom(node)
+    canAutoConnectFrom(output)
     {
         return false;
     }
@@ -36928,6 +36980,13 @@ extends OperatorBase
 
 
 
+    // getParamFromId(paramId)
+    // {
+
+    // }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output        
@@ -37983,9 +38042,9 @@ extends OpColorBase
 
 
 
-    canAutoConnectFrom(node)
+    canAutoConnectFrom(output)
     {
-        return COLOR_TYPES.includes(node.type);
+        return arraysIntersect(COLOR_TYPES, output.types);
     }
 
 
@@ -39422,9 +39481,9 @@ extends OpColorBase
 
 
 
-    canAutoConnectFrom(node)
+    canAutoConnectFrom(output)
     {
-        return COLOR_TYPES.includes(node.type);
+        return arraysIntersect(COLOR_TYPES, output.types);
     }
 
 
@@ -40207,10 +40266,10 @@ extends OpColorBase
     
     
     
-    canAutoConnectFrom(node)
+    canAutoConnectFrom(output)
     {
-        return OBJECT_TYPES.includes(node.type)
-            ||  COLOR_TYPES.includes(node.type);
+        return arraysIntersect(OBJECT_TYPES, output.types)
+            || arraysIntersect( COLOR_TYPES, output.types);
     }
 
 
@@ -40483,10 +40542,10 @@ extends OpColorBase
     
     
     
-    canAutoConnectFrom(node)
+    canAutoConnectFrom(output)
     {
-        return OBJECT_TYPES.includes(node.type)
-            ||  COLOR_TYPES.includes(node.type);
+        return arraysIntersect(OBJECT_TYPES, output.types)
+            || arraysIntersect( COLOR_TYPES, output.types);
     }
 
 
@@ -44856,7 +44915,8 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
         && graphView.selectedNodes.length > 0
         && canAutoConnectNode(node)
         && selNode
-        && node.canAutoConnectFrom(selNode);
+        && selNode.headerOutputs.length > 0
+        && node.canAutoConnectFrom(selNode.headerOutputs[0]);
 
 
     graph.addNode(node, !autoConnect);

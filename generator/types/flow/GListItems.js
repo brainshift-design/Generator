@@ -23,7 +23,7 @@ extends GOperator
             items.input = this.input.copy();
         
         for (const item of this.items)
-            items.push(item.copy());
+            items.items.push(item.copy());
 
         return items;
     }
@@ -48,11 +48,16 @@ extends GOperator
         } 
 
 
+        this.items = [];
+
+
         if (this.value.isValid())
         {
             for (let i = 0; i < this.value.items.length; i++)
             {
                 const item = this.value.items[i];
+
+                this.items.push(item);
                 genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
             }
         }
@@ -61,6 +66,18 @@ extends GOperator
         this.valid = true;
 
         return this;
+    }
+
+
+
+    getParamFromId(paramId)
+    {
+        if (   paramId.length > 4
+            && paramId.substring(0, 4) == 'item'
+            && strIsNum(paramId.substring(4)))
+            return this.items[parseInt(paramId.substring(4))];
+
+        return null;
     }
 
 
