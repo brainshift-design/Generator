@@ -159,18 +159,25 @@ class Connection
             }
 
 
-            this.wire.  curve.style.stroke     = rgba2style(color);
-            this.wire. inBall.style.fill       = rgba2style(color);
-            this.wire.outBall.style.fill       = rgba2style(color);
+            this.wire.  curve.style.stroke = rgba2style(color);
+            this.wire. inBall.style.fill   = rgba2style(color);
+            this.wire.outBall.style.fill   = rgba2style(color);
 
-            const listType = LIST_TYPES.includes(this.output.node.type);
+            //const listType = LIST_TYPES.includes(this.output.node.type);
 
-            this.wire.setAttribute('stroke-width', (listType ? 2.4 : 1.6) * graphView.zoom);
 
-            this.wire. inBall.style.r          = 3 * graphView.zoom;
-            this.wire.outBall.style.r          = 3 * graphView.zoom;
+            let width = 1.6 * graphView.zoom;
 
-            this.wire.style.zIndex             = 1;
+                 if (graphView.zoom < 1/7) width += 1 * (1 - graphView.zoom) * (7 * graphView.zoom);
+            else if (graphView.zoom < 1  ) width += 1 * (1 - graphView.zoom);
+
+            this.wire.setAttribute('stroke-width', width);
+
+
+            this.wire. inBall.style.r = 3 * graphView.zoom;
+            this.wire.outBall.style.r = 3 * graphView.zoom;
+
+            this.wire.style.zIndex    = 1;
 
 
             const isSolo = 
@@ -241,7 +248,14 @@ class Connection
             const listType = LIST_TYPES.includes(this.output.node.type);
             this.wire2.curve.style.stroke = listType ? rgba2style(color)  : 'transparent';
 
-            this.wire2.setAttribute('stroke-width', 5.6 * graphView.zoom);
+
+            let width = 4.4 * graphView.zoom;
+
+                 if (graphView.zoom < 1/7) width += 2 * (1 - graphView.zoom) * (7 * graphView.zoom);
+            else if (graphView.zoom < 1  ) width += 2 * (1 - graphView.zoom);
+
+            this.wire2.setAttribute('stroke-width', width);
+
 
             this.wire2.style.zIndex = 0;
 

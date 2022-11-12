@@ -14,7 +14,7 @@ function genParseListValue(parse)
 
 function genParseList(parse)
 {
-    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
     const list = new GList(nodeId, options);
@@ -39,6 +39,7 @@ function genParseList(parse)
 
     parse.nTab++;
 
+    
     for (let i = 0; i < nValues; i++)
         list.inputs.push(genParse(parse));
 
@@ -60,10 +61,8 @@ function genParseListItems(parse)
     const items = new GListItems(nodeId, options);
 
     
-    const nValues = 0;
-    
     if (parse.settings.logRequests) 
-        logReqListItems(items, nValues, parse);
+        logReqListItems(items, parse);
 
 
     if (ignore) 
@@ -74,10 +73,10 @@ function genParseListItems(parse)
 
 
     parse.nTab++;
-    parse.inParam = false;
 
 
-    //items.value = genParse(parse);
+    if (LIST_TYPES.includes(parse.next))
+        items.input = genParse(parse);
 
 
     parse.nTab--;

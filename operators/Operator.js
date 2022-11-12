@@ -245,8 +245,11 @@ class Operator
     addParam(param)
     {
         this.params.push(param);
+        this.inner.appendChild(param.div);
         
+
         param._node = this;
+
 
         if (param.input)
         {
@@ -259,11 +262,41 @@ class Operator
             param.output._node = this;
             this.outputs.push(param.output);
         }
-
-        this.inner.appendChild(param.div);
     }
  
     
+
+    removeParam(param)
+    {
+        removeFromArray(this.params, param);
+        this.inner.removeChild(param.div);
+
+
+        param._node = null;
+
+
+        if (param.input)
+        {
+            param.input._node = null;
+            removeFromArray(this.inputs, param.input);
+        }
+
+        if (param.output)
+        {
+            param.output._node = null;
+            removeFromArray(this.outputs, param.output);
+        }
+    }
+
+
+
+    removeAllParams()
+    {
+        for (let i = this.params.length-1; i >= 0; i--)
+            this.removeParam(this.params[i]);
+    }
+
+
 
     updateParamDisplay() // must be called at the end of each final Op constructor
     {
@@ -841,7 +874,7 @@ function pushUpdateFromParam(nodes, param)
         progressNodes, 
         getProgressNodesAfterNode(n)));
 
-    
+
     for (const node of terminals)
     {
         if (!gen.passedNodes.includes(node))

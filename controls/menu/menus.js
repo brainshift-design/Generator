@@ -215,7 +215,7 @@ function initMenus()
     menuColor.addItems([
         new MenuItem('Color',       {icon: iconColor           , callback: e => actionManager.do(new CreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Correct',     {icon: iconColorCorrect    , callback: e => actionManager.do(new CreateNodeAction(COLOR_VALIDATE,    btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Correct',     {icon: iconColorCorrect    , callback: e => actionManager.do(new CreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Contrast',    {icon: iconColorContrast   , callback: e => actionManager.do(new CreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Colorblind',  {icon: iconColorblind      , callback: e => actionManager.do(new CreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('',            {separator: true}),

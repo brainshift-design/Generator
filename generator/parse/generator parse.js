@@ -1,9 +1,3 @@
-// some parse functions return values
-// some parse functions update values
-// some parse functions update objects
-
-
-
 class Parse
 {
     request;
@@ -108,7 +102,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == COLOR_INTERPOLATE ) result = genParseColorInterpolate(parse);
     else if (parse.next == COLOR_CONTRAST    ) result = genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND        ) result = genParseColorBlind      (parse);
-    else if (parse.next == COLOR_VALIDATE    ) result = genParseColorCorrect    (parse);
+    else if (parse.next == COLOR_CORRECT     ) result = genParseColorCorrect    (parse);
 
     else if (parse.next == FILL_VALUE        ) result = genParseFillValue       (parse);
     else if (parse.next == FILL              ) result = genParseFill            (parse);

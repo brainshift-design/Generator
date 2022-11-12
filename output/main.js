@@ -79,14 +79,14 @@ const STRING_TYPES = [
 const COLOR_VALUE = 'COL#'; // color value
 const COLOR = 'COL'; // C | N:space N:c1 N:c2 N:c3
 const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
-const COLOR_VALIDATE = 'CVLD'; // C
+const COLOR_CORRECT = 'CCOR'; // C
 const COLOR_CONTRAST = 'CCNT'; // C:text C:background
 const COLORBLIND = 'BLND'; // C
 const COLOR_TYPES = [
     COLOR_VALUE,
     COLOR,
     COLOR_INTERPOLATE,
-    COLOR_VALIDATE,
+    COLOR_CORRECT,
     COLORBLIND
 ];
 const FILL_VALUE = 'FILL#';

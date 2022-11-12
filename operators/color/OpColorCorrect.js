@@ -31,7 +31,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_VALIDATE, 'correct', 90, true);
+        super(COLOR_CORRECT, 'correct', 90, true);
 
 
         this.addInput(new Input(COLOR_TYPES));

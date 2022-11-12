@@ -42,11 +42,21 @@ extends GOperator
             this.value = this.input.toValue();
         }
         else
+        {
             this.value = ListValue.NaN;
-            
-        
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        } 
 
+
+        if (this.value.isValid())
+        {
+            for (let i = 0; i < this.value.items.length; i++)
+            {
+                const item = this.value.items[i];
+                genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
+            }
+        }
+        
 
         this.valid = true;
 

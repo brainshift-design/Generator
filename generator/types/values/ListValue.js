@@ -55,7 +55,8 @@ extends GValue
 
     isValid()
     {
-        return !this.items.find(i => !i.isValid());
+        return this.items
+            && !this.items.find(i => !i.isValid());
     }
 
 

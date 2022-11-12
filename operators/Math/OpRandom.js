@@ -35,9 +35,9 @@ extends OperatorBase
         if (ignore) return request;
 
         
-        request.push(...this.node.paramSeed .genRequest(gen));
-        request.push(...this.node.paramMin  .genRequest(gen));
-        request.push(...this.node.paramMax  .genRequest(gen));
+        request.push(...this.node.paramSeed.genRequest(gen));
+        request.push(...this.node.paramMin .genRequest(gen));
+        request.push(...this.node.paramMax .genRequest(gen));
 
 
         gen.scope.pop();

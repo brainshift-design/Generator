@@ -15,7 +15,7 @@ extends GColorType
 
     constructor(nodeId, options)
     {
-        super(COLOR_VALIDATE, nodeId, options);
+        super(COLOR_CORRECT, nodeId, options);
     }
 
 
