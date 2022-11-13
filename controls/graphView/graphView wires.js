@@ -74,11 +74,13 @@ function updateWires(wires)
         const ro = boundingRect(w.connection.output.div);
         const ri = boundingRect(w.connection.input .div);
 
+        // console.log('w.connection.output.div =', w.connection.output.div);
+        // console.log('ro =', ro);
         pOut.push(point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset));
         pIn .push(point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset));
     });
 
-    
+       
     for (let i = 0; i < wires.length; i++)
     {
         const wire = wires[i];
@@ -115,10 +117,10 @@ function updateWires(wires)
             && (    input.node == graphView._soloNode
                 || output.node == graphView._soloNode);
 
-        show(wires[i],         (settings.showWires || isSolo) && conn != graphView.savedConn);
-        show(wires[i].curve,   (settings.showWires || isSolo) && conn != graphView.savedConn);
-        show(wires[i].xp1,     (settings.showWires || isSolo) && conn != graphView.savedConn);
-        show(wires[i].xp2,     (settings.showWires || isSolo) && conn != graphView.savedConn);
+        show(wires[i],         /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i].curve,   /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i].xp1,     /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i].xp2,     /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
 
         if (wires[i].outBall) show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
         if (wires[i]. inBall) show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);

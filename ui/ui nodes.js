@@ -497,12 +497,12 @@ function uiSetNodeId(nodeId, newId)
 
 
 
-function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
+function uiVariableConnect(outputNode, outputId, inputNode, inputId)
 {
     //console.log('uiVariableConnect()');
 
-    const output = outputNode.outputs[outputIndex];
-    const  input =  inputNode. inputs[ inputIndex];
+    const output = outputNode.outputs.find(o => o.id == outputId);
+    const  input =  inputNode. inputs.find(i => i.id ==  inputId);
 
     if (    inputNode.variableInputs
         && !input.param)
@@ -510,7 +510,7 @@ function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
         const conn = uiConnect(
             output,
             lastOf(inputNode.headerInputs),
-            inputIndex);
+            inputId);
 
         uiUpdateSavedConnectionsToNodeId(inputNode.id);
 
@@ -522,18 +522,18 @@ function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
 
 
 
-function uiConnect(output, input, inputIndex = -1)
+function uiConnect(output, input, inputId = '')
 {
     // console.log('output =', output);
     // console.log('input =', input);
     // console.log('inputIndex =', inputIndex);
-    const conn = graph.connect(output, input, inputIndex);
+    const conn = graph.connect(output, input, inputId);
 
     uiSaveConnection(
         output.node.id,
-        output.index,
+        output.id,
         input.node.id,
-        input.index,
+        input.id,
         conn.toJson());
 
     return conn;
@@ -591,7 +591,7 @@ function uiMakeNodeActive(node)
     node.makeActive();
     node.updateNode();
 
-    uiSaveNodes([node.id]);
+    //uiSaveNodes([node.id]);
 
     pushUpdate([node]);
 }
@@ -952,17 +952,21 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
     }
 
 
+    // if (graphView.loadingNodes) // in case the loading nodes were just evaluated for the first time
+    // {
+    //     loadConnectionsAsync(
+    //         _loadingNodes, 
+    //         _loadingConns, 
+    //          loadingNodes, 
+    //          loadingSetProgress);    
 
-    // const nodeJson = [];
+    //     _loadingNodes       = null;
+    //     _loadingConns       = null;
+    //      loadingNodes       = null;
+    //      loadingSetProgress = false;
+    //}
 
-    // nodes.forEach(n => nodeJson.push(n.toJson()));
-
-
-    // if (   settings.logRawSaving
-    //     && updateNodeId  != NULL
-    //     && updateParamId != NULL)
-    //     logSaveNodes(nodeJson.join('\n'));
-
+    //else 
     if (objects.length > 0)
     {
         if (settings.logObjectUpdates)
@@ -979,6 +983,8 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
         
 
     graphView.update(nodes);
+
+    uiSaveNodes(nodes.map(n => n.id));
 }
 
 

@@ -40,12 +40,4 @@ extends GOperator
 
         return this.param.toValue();
     }
-
-
-
-    // toValue()
-    // {
-    //     //console.assert(this.node, 'invalid parameter node \'' + this.nodeId + '\'');
-    //     return this.param.toValue();//this.node[this.paramId].toValue();
-    // }
 }

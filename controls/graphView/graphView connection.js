@@ -79,7 +79,7 @@ graphView.endConnection = pointerId =>
             graphView.savedConn
             ? graphView.savedConn.input
             : null;
-        
+
         output.connecting = false;
         
         if (   input

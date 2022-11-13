@@ -2,49 +2,55 @@ class ConnectAction
 extends Action
 {
     outputNodeId;
-    outputIndex;
+    outputId;
+
     get outputNode() { return nodeFromId(this.outputNodeId); }
-    get output()     { return this.outputNode.outputs[this.outputIndex]; }
+    get output()     { return this.outputNode.outputs.find(o => o.id == this.outputId); }
     
     oldOutputNodeId = '';
-    oldOutputIndex;
+    oldOutputId;
+    
     get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
     
     inputNodeId;
-    inputIndex;
-    get inputNode() { return nodeFromId(this.inputNodeId); }
-    get input()     { return this.inputNode.inputs[this.inputIndex]; }
+    inputId;
     
+    get inputNode() { return nodeFromId(this.inputNodeId); }
+    get input()     { return this.inputNode.inputs.find(i => i.id == this.inputId); }
+    
+
     oldOutputActiveNodeId;      // the active node in the output node's tree
     oldInputActiveNodeIds = []; // the active nodes in the input node's tree
     
-    newActiveNodeIds = [];
-
-    oldInputValues   = []; // in index,value pairs, to be restored on undo
+    newActiveNodeIds      = [];
+     
+    oldInputValues        = []; // in id,value pairs, to be restored on undo
 
 
 
     constructor(output, input)
     {
-        const oldOutIndex = 
+        console.log('output =', output);
+        console.log('output.node =', output.node);
+        const oldOutputId = 
             input.connected 
-            ? input.connectedOutput.index
-            : -1; 
+            ? input.connectedOutput.id
+            : ''; 
 
         super('CONNECT ' 
-            + output.node.id + ' ' + output.index
+            + output.node.id + '.' + output.id
             + ' → '
-            + input.node.id + ' ' + input.index);
+            + input.node.id + '.' + input.id);
 
 
         this.outputNodeId    = output.node.id;
-        this.outputIndex     = output.index;
+        this.outputId        = output.id;
    
         this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
-        this.oldOutputIndex  = oldOutIndex;
+        this.oldOutputIndex  = oldOutputId;
    
         this.inputNodeId     = input.node.id;
-        this.inputIndex      = input.index;
+        this.inputId         = input.id;
     }
 
 
@@ -66,9 +72,9 @@ extends Action
 
 
         uiConnect(
-            this.outputNode.outputs[this.outputIndex], 
-            this.inputNode. inputs [this. inputIndex],
-            this.inputIndex);
+            this.outputNode.outputs.find(o => o.id == this.outputId), 
+            this.inputNode. inputs .find(i => i.id == this. inputId),
+            this.inputId);
 
 
         this.newActiveNodeIds = [];
@@ -108,16 +114,16 @@ extends Action
     undo()
     {
 
-        uiDisconnect(this.inputNode.inputs[this.inputIndex]);
+        uiDisconnect(this.inputNode.inputs[this.inputId]);
 
 
         if (this.oldOutputNodeId != '')
         {
             uiVariableConnect(
                 this.oldOutputNode, 
-                this.oldOutputIndex, 
+                this.oldOutputId, 
                 this.inputNode, 
-                this.inputIndex);
+                this.inputId);
         }
 
 

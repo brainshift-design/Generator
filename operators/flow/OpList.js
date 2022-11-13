@@ -3,7 +3,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(LIST, 'list', 90);
+        super(LIST, 'list', 100);
 
         this.variableInputs = true;
 

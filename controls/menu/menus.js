@@ -137,15 +137,15 @@ function initMenus()
                 graph.nodes.forEach(n => n.updateNode());
             }
         }),
-        menuItemShowWires = new MenuItem('Show wires',
-        {
-            checkCallback: () => settings.showWires, 
-            callback:      () => 
-            {
-                updateSettingAndMenu('showWires', true, !settings.showWires);
-                graphView.updateShowWires(settings.showWires);  
-            }
-        }),
+        // menuItemShowWires = new MenuItem('Show wires',
+        // {
+        //     checkCallback: () => settings.showWires, 
+        //     callback:      () => 
+        //     {
+        //         updateSettingAndMenu('showWires', true, !settings.showWires);
+        //         graphView.updateShowWires(settings.showWires);  
+        //     }
+        // }),
                                    new MenuItem('',                 {separator: true}),
         menuItemLogRequests      = new MenuItem('Log requests',     {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
         menuItemLogRawRequests   = new MenuItem('Log raw requests', {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests  )}),
@@ -213,13 +213,13 @@ function initMenus()
     
     menuColor = new Menu('Color nodes', true, false);
     menuColor.addItems([
-        new MenuItem('Color',       {icon: iconColor           , callback: e => actionManager.do(new CreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('',            {separator: true}),
-        new MenuItem('Correct',     {icon: iconColorCorrect    , callback: e => actionManager.do(new CreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Contrast',    {icon: iconColorContrast   , callback: e => actionManager.do(new CreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Colorblind',  {icon: iconColorblind      , callback: e => actionManager.do(new CreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('',            {separator: true}),
-        new MenuItem('Interpolate', {icon: iconColorInterpolate, callback: e => actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Color',             {icon: iconColor           , callback: e => actionManager.do(new CreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('',                  {separator: true}),
+        new MenuItem('Correct color',     {icon: iconColorCorrect    , callback: e => actionManager.do(new CreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Web contrast',      {icon: iconColorContrast   , callback: e => actionManager.do(new CreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Colorblind',        {icon: iconColorblind      , callback: e => actionManager.do(new CreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('',                  {separator: true}),
+        new MenuItem('Color interpolate', {icon: iconColorInterpolate, callback: e => actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))})]);
     
     
     menuStyle = new Menu('Style nodes', true, false);
@@ -231,11 +231,11 @@ function initMenus()
     
     menuShape = new Menu('Shape nodes', true, false);
     menuShape.addItems([
-        new MenuItem('Rectangle',  {icon: iconRectangle, callback: e => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Line',       {icon: iconLine     , callback: e => actionManager.do(new CreateNodeAction(LINE,      btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Ellipse',    {icon: iconEllipse  , callback: e => actionManager.do(new CreateNodeAction(ELLIPSE,   btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Polygon',    {icon: iconPolygon  , callback: e => actionManager.do(new CreateNodeAction(POLYGON,   btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Star',       {icon: iconStar     , callback: e => actionManager.do(new CreateNodeAction(STAR,      btnShape.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Rectangle', {icon: iconRectangle, callback: e => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div, {insert: e.shiftKey}))}),
+        new MenuItem('Line',      {icon: iconLine     , callback: e => actionManager.do(new CreateNodeAction(LINE,      btnShape.div, {insert: e.shiftKey}))}),
+        new MenuItem('Ellipse',   {icon: iconEllipse  , callback: e => actionManager.do(new CreateNodeAction(ELLIPSE,   btnShape.div, {insert: e.shiftKey}))}),
+        new MenuItem('Polygon',   {icon: iconPolygon  , callback: e => actionManager.do(new CreateNodeAction(POLYGON,   btnShape.div, {insert: e.shiftKey}))}),
+        new MenuItem('Star',      {icon: iconStar     , callback: e => actionManager.do(new CreateNodeAction(STAR,      btnShape.div, {insert: e.shiftKey}))})]);
 
 
     menuZoom = new Menu('Zoom/view options', false);

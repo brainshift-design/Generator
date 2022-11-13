@@ -336,7 +336,7 @@ graphView.unsoloNode = function()
 
 graphView.updateShowWires = function(updateNodes = true)
 {
-    graph.connections.forEach(c => show(c.wire, settings.showWires));
+    graph.connections.forEach(c => show(c.wire, true));//settings.showWires));
 
     if (updateNodes) 
         graph.nodes.forEach(n => n.updateNode());

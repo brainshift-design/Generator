@@ -180,14 +180,14 @@ class Connection
             this.wire.style.zIndex    = 1;
 
 
-            const isSolo = 
-                   graphView._soloNode
-                && (   this. input.node == graphView._soloNode
-                    || this.output.node == graphView._soloNode);
+            // const isSolo = 
+            //        graphView._soloNode
+            //     && (   this. input.node == graphView._soloNode
+            //         || this.output.node == graphView._soloNode);
             
-            const showWire = 
-                   settings.showWires 
-                || isSolo;
+            const showWire = true;
+                //    settings.showWires 
+                // || isSolo;
 
 
             const isReordering =   
@@ -265,9 +265,9 @@ class Connection
                 && (   this. input.node == graphView._soloNode
                     || this.output.node == graphView._soloNode);
             
-            const showWire = 
-                   settings.showWires 
-                || isSolo;
+            const showWire = true;
+                //    settings.showWires 
+                // || isSolo;
 
             const isReordering =   
                    isNaN(newReorderIndex)

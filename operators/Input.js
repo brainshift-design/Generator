@@ -6,10 +6,9 @@ extends EventTarget
 
     get data()
     {
-        return (
-            this.connected
-            ? this.connectedOutput.data
-            : null);
+        return this.connected
+             ? this.connectedOutput.data
+             : null;
     }
 
 
@@ -17,6 +16,7 @@ extends EventTarget
     _param = null; get param() { return this._param; }
 
 
+    get id()    { return this.node.getInputId(this);     }
     get index() { return this.node.inputs.indexOf(this); }
 
     
@@ -194,13 +194,14 @@ extends EventTarget
             : this.colorLight;
                      
         const colorStyle = 
-            settings.showWires
-            ? rgba2style(rgb_a(
+            //settings.showWires
+            //? 
+            rgba2style(rgb_a(
                 color,
                 mouseOver 
                 ? Math.min(color[3] * this.overFactor, 1) 
-                : color[3]))
-            : 'transparent';
+                : color[3]));
+            //: 'transparent';
 
 
         const isConnected =
@@ -221,7 +222,7 @@ extends EventTarget
         this.div.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
         this.div.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
         this.div.style.boxShadow     = '0 0 0 1px ' + colorStyle;
-        this.div.style.pointerEvents = settings.showWires ? 'auto' : 'none';
+        this.div.style.pointerEvents = 'auto';//settings.showWires ? 'auto' : 'none';
 
         this.hitbox.style.left   = isConnected ? -2 : -3;
         this.hitbox.style.top    = isConnected ? -2 : -3;
@@ -261,6 +262,6 @@ extends EventTarget
 
     accepts(output)
     {
-        return this.types.find(t => output.types.includes(t));
+        return arraysIntersect(this.types, output.types);
     }
 }

@@ -63,16 +63,17 @@ extends EventTarget
     initInput(types)
     {
         this.input = new Input(types, this.input_getValuesForUndo);
-        this.input._param = this;
+
+        this.input._param              = this;
 
         this.input.div.style.float     = 'left';
         this.input.div.style.position  = 'absolute';
         this.input.div.style.top       = '50%';
         this.input.div.style.transform = 'translateY(-50%)';
 
-        this.input .colorLight = [0, 0, 0, 0.12];
-        this.input .colorDark  = [1, 1, 1, 0.12];
-        this.input .overFactor = 3;
+        this.input.colorLight          = [0, 0, 0, 0.12];
+        this.input.colorDark           = [1, 1, 1, 0.12];
+        this.input.overFactor          = 3;
         
         this.div.appendChild(this.input.div);
 
@@ -85,16 +86,17 @@ extends EventTarget
     initOutput(types, toString)
     {
         this.output = new Output(types, toString);
-        this.output._param = this;
+
+        this.output._param              = this;
 
         this.output.div.style.float     = 'right';
         this.output.div.style.position  = 'absolute';
         this.output.div.style.top       = '50%';
         this.output.div.style.transform = 'translateY(-50%)';
         
-        this.output.colorLight = [0, 0, 0, 0.12];
-        this.output.colorDark  = [1, 1, 1, 0.12];
-        this.output.overFactor = 3;
+        this.output.colorLight          = [0, 0, 0, 0.12];
+        this.output.colorDark           = [1, 1, 1, 0.12];
+        this.output.overFactor          = 3;
 
         this.div.appendChild(this.output.div);
     }

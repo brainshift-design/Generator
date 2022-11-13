@@ -7,6 +7,7 @@ class Output
     _param = null;  get param() { return this._param; }
     
     
+    get id()    { return this.node.getOutputId(this);     }
     get index() { return this.node.outputs.indexOf(this); }
 
 
@@ -159,15 +160,16 @@ class Output
             : this.colorLight;
 
         const colorStyle = 
-            settings.showWires
-            ? rgba2style(rgb_a(
+            //settings.showWires
+            //? 
+            rgba2style(rgb_a(
                 color, 
                 mouseOver 
                 ? Math.min(color[3] * this.overFactor, 1) 
-                : color[3]))
-            : 'transparent';
+                : color[3]));
+            //: 'transparent';
 
-        this.div.style.pointerEvents   = settings.showWires ? 'auto' : 'none';
+        this.div.style.pointerEvents   = 'auto';//settings.showWires ? 'auto' : 'none';
         this.div.style.backgroundColor = colorStyle;
 
         this.div.style.boxShadow = 

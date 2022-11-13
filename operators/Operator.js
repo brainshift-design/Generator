@@ -53,6 +53,7 @@ class Operator
     variableInputs   = false;
 
     alwaysLoadParams = false;
+    alwaysSaveParams = false;
 
     scrollName       = true;
 
@@ -145,6 +146,15 @@ class Operator
 
 
 
+    getInputId(input)
+    {
+        return input.param
+               ? input.param.id
+               : input.index;
+    }
+
+
+
     addInput(input)//, index = -1)
     {
         input._node = this;
@@ -214,9 +224,19 @@ class Operator
 
 
 
+    getOutputId(output)
+    {
+        return output.param
+               ? output.param.id
+               : output.index;
+    }
+
+
+
     addOutput(output)
     {
         output._node = this;
+
         this.outputs.push(output);
         this.outputControls.appendChild(output.div);
     }
@@ -244,12 +264,11 @@ class Operator
 
     addParam(param)
     {
+        param._node = this;
+
         this.params.push(param);
         this.inner.appendChild(param.div);
         
-
-        param._node = this;
-
 
         if (param.input)
         {
@@ -270,7 +289,6 @@ class Operator
     {
         removeFromArray(this.params, param);
         this.inner.removeChild(param.div);
-
 
         param._node = null;
 
@@ -698,7 +716,7 @@ class Operator
     toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+       //const tab = TAB;
         
 
         let json = 
@@ -707,7 +725,8 @@ class Operator
 
         const nonDefaultParams = this.params.filter(p => !this.paramIsConsideredDefault(p));
 
-        if (nonDefaultParams.length > 0) // don't include empty param section
+        if (   nonDefaultParams.length > 0 // don't include empty param section
+            || this.alwaysSaveParams)
             json += this.paramsToJson(nTab);
 
         json += '\n' + pos + '}';
@@ -795,8 +814,12 @@ class Operator
         for (const _param of _node.params)
         {
             const index = this.params.findIndex(p => p.id == _param[0]);
-
-            if (index >= 0)
+            console.assert(index >= 0, 'param not found, cannot load');
+            
+            right now loading assumes the parameter exists
+            but instead it has to check, and if the param doesn't exist, create it,
+            just like OpListItems does
+            //if (index >= 0)
                 this.params[index].loadParam(_param[1]);
         }
     }

@@ -1353,7 +1353,6 @@ div
     background:     transparent;
     border-radius:  3px;
     margin:         0;
-    /* margin-left:    0px; */
     position:       absolute;
     left:           3px;
     pointer-events: none;
@@ -1652,8 +1651,7 @@ div
     height:         6px;
     border-radius:  3px;
     margin:         0;
-    /* margin-left:    3px; */
-    position: absolute;
+    position:       absolute;
     right:          3px;
     pointer-events: none;
     /* box-shadow:     0 0 0 1px rgba(0, 0, 0, 0.12); */
@@ -5404,14 +5402,6 @@ extends GOperator
 
         return this.param.toValue();
     }
-
-
-
-    // toValue()
-    // {
-    //     //console.assert(this.node, 'invalid parameter node \'' + this.nodeId + '\'');
-    //     return this.param.toValue();//this.node[this.paramId].toValue();
-    // }
 }
 
 
@@ -10676,7 +10666,7 @@ const settings =
     debugMode:             false,
 
     showNodeId:            false, // instead of name
-    showWires:             true,
+    // showWires:             true,
     
     logMessages:           false,
     logActions:            false, 
@@ -10703,7 +10693,7 @@ function updateSetting(settingName, value)
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'showNodeId':            settings.showNodeId            = value;  break;
-        case 'showWires':             settings.showWires             = value;  break;
+        //case 'showWires':             settings.showWires             = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
         case 'logActions':            settings.logActions            = value;  break;
@@ -10730,7 +10720,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value, menuItemDebugMode            );  break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
-        case 'showWires':             updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
+        //case 'showWires':             updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
         case 'logActions':            updateSettingAndMenu_(valid, settingName, value, menuItemLogActions           );  break;
@@ -10770,7 +10760,7 @@ function updateSettingsMenus()
     menuItemDebug                .setVisible(settings.debugMode            );
 
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
-    menuItemShowWires            .setChecked(settings.showWires            );
+    //menuItemShowWires            .setChecked(settings.showWires            );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
     menuItemLogActions           .setChecked(settings.logActions           );
@@ -10806,7 +10796,7 @@ function loadLocalSettings()
     uiGetLocalData('debugMode'            );
 
     uiGetLocalData('showNodeId'           );
-    uiGetLocalData('showWires'            );
+    //uiGetLocalData('showWires'            );
  
     uiGetLocalData('logMessages'          );
     uiGetLocalData('logActions'           );
@@ -13566,6 +13556,12 @@ const rgb_NaN = [
     Number.NaN,
     Number.NaN ];
 
+const rgba_NaN = [
+    Number.NaN,
+    Number.NaN,
+    Number.NaN,
+    Number.NaN ];
+
 const dataColor_NaN = [
     'rgb',
     Number.NaN,
@@ -13851,11 +13847,33 @@ function rgb2hex(rgb)
 
 
 
+function rgba2hex(rgba)
+{
+    let hex =
+          Math.round(rgb[0] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[1] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[2] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[3] * 0xff).toString(16).padStart(2, '0').toUpperCase();
+
+    return hex;
+}
+
+
+
 function validHex2rgb(hex) // can process invalid '?'
 {
     return hex.indexOf(INVALID) > -1 
            ? rgb_NaN 
            : hex2rgb(hex);
+}
+
+
+
+function validHex2rgba(hex) // can process invalid '?'
+{
+    return hex.indexOf(INVALID) > -1 
+           ? rgba_NaN 
+           : hex2rgba(hex);
 }
 
 
@@ -13903,11 +13921,87 @@ function hex2rgb(hex)
         rgb[2] = 0;         
     }
 
+
     rgb[0] /= 0xff;
     rgb[1] /= 0xff;
     rgb[2] /= 0xff;
 
+    
     return rgb;
+}
+
+
+
+function hex2rgba(hex)
+{
+    if (hex[0] == '#')
+        hex = hex.substring(1);
+
+        
+    let rgba = [];
+
+    if (hex.length >= 8)
+    {
+        rgba[0] = parseInt(hex.slice(0, 2), 16); 
+        rgba[1] = parseInt(hex.slice(2, 4), 16); 
+        rgba[2] = parseInt(hex.slice(4, 6), 16); 
+        rgba[3] = parseInt(hex.slice(6, 8), 16); 
+    }
+    else if (hex.length >= 6)
+    {
+        rgba[0] = parseInt(hex.slice(0, 2), 16); 
+        rgba[1] = parseInt(hex.slice(2, 4), 16); 
+        rgba[2] = parseInt(hex.slice(4, 6), 16); 
+        rgba[3] = 0xff; 
+    }
+    else if (hex.length >= 4)
+    {
+        rgba[0] = parseInt(hex[0], 16) * 0x11; 
+        rgba[1] = parseInt(hex[1], 16) * 0x11; 
+        rgba[2] = parseInt(hex[2], 16) * 0x11; 
+        rgba[3] = parseInt(hex[3], 16) * 0x11; 
+    }
+    else if (hex.length == 3)
+    {
+        rgba[0] = parseInt(hex[0], 16) * 0x11; 
+        rgba[1] = parseInt(hex[1], 16) * 0x11; 
+        rgba[2] = parseInt(hex[2], 16) * 0x11; 
+        rgba[3] = 0xff; 
+    }
+    else if (hex.length == 2)
+    {
+        let v = parseInt(hex, 16);
+        
+        rgba[0] = v; 
+        rgba[1] = v; 
+        rgba[2] = v; 
+        rgba[3] = 0xff; 
+    }
+    else if (hex.length == 1)
+    {
+        let v = parseInt(hex, 16);
+        
+        rgba[0] = v * 0x11; 
+        rgba[1] = v * 0x11; 
+        rgba[2] = v * 0x11; 
+        rgba[3] = 0xff; 
+    }
+    else if (hex.length == 0)
+    {
+        rgba[0] = 0; 
+        rgba[1] = 0; 
+        rgba[2] = 0;         
+        rgba[3] = 0; 
+    }
+
+
+    rgba[0] /= 0xff;
+    rgba[1] /= 0xff;
+    rgba[2] /= 0xff;
+    rgba[3] /= 0xff;
+
+
+    return rgba;
 }
 
 
@@ -18691,6 +18785,12 @@ const rgb_NaN = [
     Number.NaN,
     Number.NaN ];
 
+const rgba_NaN = [
+    Number.NaN,
+    Number.NaN,
+    Number.NaN,
+    Number.NaN ];
+
 const dataColor_NaN = [
     'rgb',
     Number.NaN,
@@ -18976,11 +19076,33 @@ function rgb2hex(rgb)
 
 
 
+function rgba2hex(rgba)
+{
+    let hex =
+          Math.round(rgb[0] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[1] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[2] * 0xff).toString(16).padStart(2, '0').toUpperCase()
+        + Math.round(rgb[3] * 0xff).toString(16).padStart(2, '0').toUpperCase();
+
+    return hex;
+}
+
+
+
 function validHex2rgb(hex) // can process invalid '?'
 {
     return hex.indexOf(INVALID) > -1 
            ? rgb_NaN 
            : hex2rgb(hex);
+}
+
+
+
+function validHex2rgba(hex) // can process invalid '?'
+{
+    return hex.indexOf(INVALID) > -1 
+           ? rgba_NaN 
+           : hex2rgba(hex);
 }
 
 
@@ -19028,11 +19150,87 @@ function hex2rgb(hex)
         rgb[2] = 0;         
     }
 
+
     rgb[0] /= 0xff;
     rgb[1] /= 0xff;
     rgb[2] /= 0xff;
 
+    
     return rgb;
+}
+
+
+
+function hex2rgba(hex)
+{
+    if (hex[0] == '#')
+        hex = hex.substring(1);
+
+        
+    let rgba = [];
+
+    if (hex.length >= 8)
+    {
+        rgba[0] = parseInt(hex.slice(0, 2), 16); 
+        rgba[1] = parseInt(hex.slice(2, 4), 16); 
+        rgba[2] = parseInt(hex.slice(4, 6), 16); 
+        rgba[3] = parseInt(hex.slice(6, 8), 16); 
+    }
+    else if (hex.length >= 6)
+    {
+        rgba[0] = parseInt(hex.slice(0, 2), 16); 
+        rgba[1] = parseInt(hex.slice(2, 4), 16); 
+        rgba[2] = parseInt(hex.slice(4, 6), 16); 
+        rgba[3] = 0xff; 
+    }
+    else if (hex.length >= 4)
+    {
+        rgba[0] = parseInt(hex[0], 16) * 0x11; 
+        rgba[1] = parseInt(hex[1], 16) * 0x11; 
+        rgba[2] = parseInt(hex[2], 16) * 0x11; 
+        rgba[3] = parseInt(hex[3], 16) * 0x11; 
+    }
+    else if (hex.length == 3)
+    {
+        rgba[0] = parseInt(hex[0], 16) * 0x11; 
+        rgba[1] = parseInt(hex[1], 16) * 0x11; 
+        rgba[2] = parseInt(hex[2], 16) * 0x11; 
+        rgba[3] = 0xff; 
+    }
+    else if (hex.length == 2)
+    {
+        let v = parseInt(hex, 16);
+        
+        rgba[0] = v; 
+        rgba[1] = v; 
+        rgba[2] = v; 
+        rgba[3] = 0xff; 
+    }
+    else if (hex.length == 1)
+    {
+        let v = parseInt(hex, 16);
+        
+        rgba[0] = v * 0x11; 
+        rgba[1] = v * 0x11; 
+        rgba[2] = v * 0x11; 
+        rgba[3] = 0xff; 
+    }
+    else if (hex.length == 0)
+    {
+        rgba[0] = 0; 
+        rgba[1] = 0; 
+        rgba[2] = 0;         
+        rgba[3] = 0; 
+    }
+
+
+    rgba[0] /= 0xff;
+    rgba[1] /= 0xff;
+    rgba[2] /= 0xff;
+    rgba[3] /= 0xff;
+
+
+    return rgba;
 }
 
 
@@ -19904,14 +20102,6 @@ extends GOperator
 
         return this.param.toValue();
     }
-
-
-
-    // toValue()
-    // {
-    //     //console.assert(this.node, 'invalid parameter node \'' + this.nodeId + '\'');
-    //     return this.param.toValue();//this.node[this.paramId].toValue();
-    // }
 }
 
 
@@ -25176,7 +25366,7 @@ const settings =
     debugMode:             false,
 
     showNodeId:            false, // instead of name
-    showWires:             true,
+    // showWires:             true,
     
     logMessages:           false,
     logActions:            false, 
@@ -25203,7 +25393,7 @@ function updateSetting(settingName, value)
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'showNodeId':            settings.showNodeId            = value;  break;
-        case 'showWires':             settings.showWires             = value;  break;
+        //case 'showWires':             settings.showWires             = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
         case 'logActions':            settings.logActions            = value;  break;
@@ -25230,7 +25420,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value, menuItemDebugMode            );  break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
-        case 'showWires':             updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
+        //case 'showWires':             updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
         case 'logActions':            updateSettingAndMenu_(valid, settingName, value, menuItemLogActions           );  break;
@@ -25270,7 +25460,7 @@ function updateSettingsMenus()
     menuItemDebug                .setVisible(settings.debugMode            );
 
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
-    menuItemShowWires            .setChecked(settings.showWires            );
+    //menuItemShowWires            .setChecked(settings.showWires            );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
     menuItemLogActions           .setChecked(settings.logActions           );
@@ -25306,7 +25496,7 @@ function loadLocalSettings()
     uiGetLocalData('debugMode'            );
 
     uiGetLocalData('showNodeId'           );
-    uiGetLocalData('showWires'            );
+    //uiGetLocalData('showWires'            );
  
     uiGetLocalData('logMessages'          );
     uiGetLocalData('logActions'           );
@@ -26158,15 +26348,15 @@ function initMenus()
                 graph.nodes.forEach(n => n.updateNode());
             }
         }),
-        menuItemShowWires = new MenuItem('Show wires',
-        {
-            checkCallback: () => settings.showWires, 
-            callback:      () => 
-            {
-                updateSettingAndMenu('showWires', true, !settings.showWires);
-                graphView.updateShowWires(settings.showWires);  
-            }
-        }),
+        // menuItemShowWires = new MenuItem('Show wires',
+        // {
+        //     checkCallback: () => settings.showWires, 
+        //     callback:      () => 
+        //     {
+        //         updateSettingAndMenu('showWires', true, !settings.showWires);
+        //         graphView.updateShowWires(settings.showWires);  
+        //     }
+        // }),
                                    new MenuItem('',                 {separator: true}),
         menuItemLogRequests      = new MenuItem('Log requests',     {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
         menuItemLogRawRequests   = new MenuItem('Log raw requests', {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests  )}),
@@ -26234,13 +26424,13 @@ function initMenus()
     
     menuColor = new Menu('Color nodes', true, false);
     menuColor.addItems([
-        new MenuItem('Color',       {icon: iconColor           , callback: e => actionManager.do(new CreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('',            {separator: true}),
-        new MenuItem('Correct',     {icon: iconColorCorrect    , callback: e => actionManager.do(new CreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Contrast',    {icon: iconColorContrast   , callback: e => actionManager.do(new CreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Colorblind',  {icon: iconColorblind      , callback: e => actionManager.do(new CreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('',            {separator: true}),
-        new MenuItem('Interpolate', {icon: iconColorInterpolate, callback: e => actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Color',             {icon: iconColor           , callback: e => actionManager.do(new CreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('',                  {separator: true}),
+        new MenuItem('Correct color',     {icon: iconColorCorrect    , callback: e => actionManager.do(new CreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Web contrast',      {icon: iconColorContrast   , callback: e => actionManager.do(new CreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Colorblind',        {icon: iconColorblind      , callback: e => actionManager.do(new CreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('',                  {separator: true}),
+        new MenuItem('Color interpolate', {icon: iconColorInterpolate, callback: e => actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))})]);
     
     
     menuStyle = new Menu('Style nodes', true, false);
@@ -26252,11 +26442,11 @@ function initMenus()
     
     menuShape = new Menu('Shape nodes', true, false);
     menuShape.addItems([
-        new MenuItem('Rectangle',  {icon: iconRectangle, callback: e => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Line',       {icon: iconLine     , callback: e => actionManager.do(new CreateNodeAction(LINE,      btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Ellipse',    {icon: iconEllipse  , callback: e => actionManager.do(new CreateNodeAction(ELLIPSE,   btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Polygon',    {icon: iconPolygon  , callback: e => actionManager.do(new CreateNodeAction(POLYGON,   btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Star',       {icon: iconStar     , callback: e => actionManager.do(new CreateNodeAction(STAR,      btnShape.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Rectangle', {icon: iconRectangle, callback: e => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div, {insert: e.shiftKey}))}),
+        new MenuItem('Line',      {icon: iconLine     , callback: e => actionManager.do(new CreateNodeAction(LINE,      btnShape.div, {insert: e.shiftKey}))}),
+        new MenuItem('Ellipse',   {icon: iconEllipse  , callback: e => actionManager.do(new CreateNodeAction(ELLIPSE,   btnShape.div, {insert: e.shiftKey}))}),
+        new MenuItem('Polygon',   {icon: iconPolygon  , callback: e => actionManager.do(new CreateNodeAction(POLYGON,   btnShape.div, {insert: e.shiftKey}))}),
+        new MenuItem('Star',      {icon: iconStar     , callback: e => actionManager.do(new CreateNodeAction(STAR,      btnShape.div, {insert: e.shiftKey}))})]);
 
 
     menuZoom = new Menu('Zoom/view options', false);
@@ -29986,7 +30176,7 @@ graphView.unsoloNode = function()
 
 graphView.updateShowWires = function(updateNodes = true)
 {
-    graph.connections.forEach(c => show(c.wire, settings.showWires));
+    graph.connections.forEach(c => show(c.wire, true));//settings.showWires));
 
     if (updateNodes) 
         graph.nodes.forEach(n => n.updateNode());
@@ -30847,7 +31037,7 @@ graphView.endConnection = pointerId =>
             graphView.savedConn
             ? graphView.savedConn.input
             : null;
-        
+
         output.connecting = false;
         
         if (   input
@@ -31216,11 +31406,13 @@ function updateWires(wires)
         const ro = boundingRect(w.connection.output.div);
         const ri = boundingRect(w.connection.input .div);
 
+        // console.log('w.connection.output.div =', w.connection.output.div);
+        // console.log('ro =', ro);
         pOut.push(point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset));
         pIn .push(point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset));
     });
 
-    
+       
     for (let i = 0; i < wires.length; i++)
     {
         const wire = wires[i];
@@ -31257,10 +31449,10 @@ function updateWires(wires)
             && (    input.node == graphView._soloNode
                 || output.node == graphView._soloNode);
 
-        show(wires[i],         (settings.showWires || isSolo) && conn != graphView.savedConn);
-        show(wires[i].curve,   (settings.showWires || isSolo) && conn != graphView.savedConn);
-        show(wires[i].xp1,     (settings.showWires || isSolo) && conn != graphView.savedConn);
-        show(wires[i].xp2,     (settings.showWires || isSolo) && conn != graphView.savedConn);
+        show(wires[i],         /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i].curve,   /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i].xp1,     /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i].xp2,     /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
 
         if (wires[i].outBall) show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
         if (wires[i]. inBall) show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
@@ -31333,16 +31525,17 @@ extends EventTarget
     initInput(types)
     {
         this.input = new Input(types, this.input_getValuesForUndo);
-        this.input._param = this;
+
+        this.input._param              = this;
 
         this.input.div.style.float     = 'left';
         this.input.div.style.position  = 'absolute';
         this.input.div.style.top       = '50%';
         this.input.div.style.transform = 'translateY(-50%)';
 
-        this.input .colorLight = [0, 0, 0, 0.12];
-        this.input .colorDark  = [1, 1, 1, 0.12];
-        this.input .overFactor = 3;
+        this.input.colorLight          = [0, 0, 0, 0.12];
+        this.input.colorDark           = [1, 1, 1, 0.12];
+        this.input.overFactor          = 3;
         
         this.div.appendChild(this.input.div);
 
@@ -31355,16 +31548,17 @@ extends EventTarget
     initOutput(types, toString)
     {
         this.output = new Output(types, toString);
-        this.output._param = this;
+
+        this.output._param              = this;
 
         this.output.div.style.float     = 'right';
         this.output.div.style.position  = 'absolute';
         this.output.div.style.top       = '50%';
         this.output.div.style.transform = 'translateY(-50%)';
         
-        this.output.colorLight = [0, 0, 0, 0.12];
-        this.output.colorDark  = [1, 1, 1, 0.12];
-        this.output.overFactor = 3;
+        this.output.colorLight          = [0, 0, 0, 0.12];
+        this.output.colorDark           = [1, 1, 1, 0.12];
+        this.output.overFactor          = 3;
 
         this.div.appendChild(this.output.div);
     }
@@ -33965,10 +34159,9 @@ extends EventTarget
 
     get data()
     {
-        return (
-            this.connected
-            ? this.connectedOutput.data
-            : null);
+        return this.connected
+             ? this.connectedOutput.data
+             : null;
     }
 
 
@@ -33976,6 +34169,7 @@ extends EventTarget
     _param = null; get param() { return this._param; }
 
 
+    get id()    { return this.node.getInputId(this);     }
     get index() { return this.node.inputs.indexOf(this); }
 
     
@@ -34153,13 +34347,14 @@ extends EventTarget
             : this.colorLight;
                      
         const colorStyle = 
-            settings.showWires
-            ? rgba2style(rgb_a(
+            //settings.showWires
+            //? 
+            rgba2style(rgb_a(
                 color,
                 mouseOver 
                 ? Math.min(color[3] * this.overFactor, 1) 
-                : color[3]))
-            : 'transparent';
+                : color[3]));
+            //: 'transparent';
 
 
         const isConnected =
@@ -34180,7 +34375,7 @@ extends EventTarget
         this.div.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
         this.div.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
         this.div.style.boxShadow     = '0 0 0 1px ' + colorStyle;
-        this.div.style.pointerEvents = settings.showWires ? 'auto' : 'none';
+        this.div.style.pointerEvents = 'auto';//settings.showWires ? 'auto' : 'none';
 
         this.hitbox.style.left   = isConnected ? -2 : -3;
         this.hitbox.style.top    = isConnected ? -2 : -3;
@@ -34220,7 +34415,7 @@ extends EventTarget
 
     accepts(output)
     {
-        return this.types.find(t => output.types.includes(t));
+        return arraysIntersect(this.types, output.types);
     }
 }
 
@@ -34234,6 +34429,7 @@ class Output
     _param = null;  get param() { return this._param; }
     
     
+    get id()    { return this.node.getOutputId(this);     }
     get index() { return this.node.outputs.indexOf(this); }
 
 
@@ -34386,15 +34582,16 @@ class Output
             : this.colorLight;
 
         const colorStyle = 
-            settings.showWires
-            ? rgba2style(rgb_a(
+            //settings.showWires
+            //? 
+            rgba2style(rgb_a(
                 color, 
                 mouseOver 
                 ? Math.min(color[3] * this.overFactor, 1) 
-                : color[3]))
-            : 'transparent';
+                : color[3]));
+            //: 'transparent';
 
-        this.div.style.pointerEvents   = settings.showWires ? 'auto' : 'none';
+        this.div.style.pointerEvents   = 'auto';//settings.showWires ? 'auto' : 'none';
         this.div.style.backgroundColor = colorStyle;
 
         this.div.style.boxShadow = 
@@ -34607,14 +34804,14 @@ class Connection
             this.wire.style.zIndex    = 1;
 
 
-            const isSolo = 
-                   graphView._soloNode
-                && (   this. input.node == graphView._soloNode
-                    || this.output.node == graphView._soloNode);
+            // const isSolo = 
+            //        graphView._soloNode
+            //     && (   this. input.node == graphView._soloNode
+            //         || this.output.node == graphView._soloNode);
             
-            const showWire = 
-                   settings.showWires 
-                || isSolo;
+            const showWire = true;
+                //    settings.showWires 
+                // || isSolo;
 
 
             const isReordering =   
@@ -34692,9 +34889,9 @@ class Connection
                 && (   this. input.node == graphView._soloNode
                     || this.output.node == graphView._soloNode);
             
-            const showWire = 
-                   settings.showWires 
-                || isSolo;
+            const showWire = true;
+                //    settings.showWires 
+                // || isSolo;
 
             const isReordering =   
                    isNaN(newReorderIndex)
@@ -34966,6 +35163,7 @@ class Operator
     variableInputs   = false;
 
     alwaysLoadParams = false;
+    alwaysSaveParams = false;
 
     scrollName       = true;
 
@@ -35058,6 +35256,15 @@ class Operator
 
 
 
+    getInputId(input)
+    {
+        return input.param
+               ? input.param.id
+               : input.index;
+    }
+
+
+
     addInput(input)//, index = -1)
     {
         input._node = this;
@@ -35127,9 +35334,19 @@ class Operator
 
 
 
+    getOutputId(output)
+    {
+        return output.param
+               ? output.param.id
+               : output.index;
+    }
+
+
+
     addOutput(output)
     {
         output._node = this;
+
         this.outputs.push(output);
         this.outputControls.appendChild(output.div);
     }
@@ -35157,12 +35374,11 @@ class Operator
 
     addParam(param)
     {
+        param._node = this;
+
         this.params.push(param);
         this.inner.appendChild(param.div);
         
-
-        param._node = this;
-
 
         if (param.input)
         {
@@ -35183,7 +35399,6 @@ class Operator
     {
         removeFromArray(this.params, param);
         this.inner.removeChild(param.div);
-
 
         param._node = null;
 
@@ -35611,7 +35826,7 @@ class Operator
     toJson(nTab = 0) 
     {
         let   pos = ' '.repeat(nTab);
-        const tab = TAB;
+       //const tab = TAB;
         
 
         let json = 
@@ -35620,7 +35835,8 @@ class Operator
 
         const nonDefaultParams = this.params.filter(p => !this.paramIsConsideredDefault(p));
 
-        if (nonDefaultParams.length > 0) // don't include empty param section
+        if (   nonDefaultParams.length > 0 // don't include empty param section
+            || this.alwaysSaveParams)
             json += this.paramsToJson(nTab);
 
         json += '\n' + pos + '}';
@@ -35708,8 +35924,12 @@ class Operator
         for (const _param of _node.params)
         {
             const index = this.params.findIndex(p => p.id == _param[0]);
-
-            if (index >= 0)
+            console.assert(index >= 0, 'param not found, cannot load');
+            
+            right now loading assumes the parameter exists
+            but instead it has to check, and if the param doesn't exist, create it,
+            just like OpListItems does
+            //if (index >= 0)
                 this.params[index].loadParam(_param[1]);
         }
     }
@@ -36880,7 +37100,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(LIST, 'list', 90);
+        super(LIST, 'list', 100);
 
         this.variableInputs = true;
 
@@ -36973,17 +37193,17 @@ extends OperatorBase
         super(LIST_ITEMS, 'items', 100);
 
         this.addInput (new Input (LIST_TYPES, this.input_getValuesForUndo));
-        //this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.alwaysLoadParams = true;
+        this.alwaysSaveParams = true;
     }
 
 
 
-    // getParamFromId(paramId)
-    // {
-
-    // }
+    canAutoConnectFrom(output)
+    {
+        return arraysIntersect(LIST_TYPES, output.types);
+    }
 
 
 
@@ -37035,16 +37255,26 @@ extends OperatorBase
 
             switch (value.type)
             {
-                case NUMBER_VALUE: this.addParam(new NumberParam(name, name, true,  false,  true)); break;
-                case  COLOR_VALUE: this.addParam(new  ColorParam(name, name, true,  false,  true)); break;
-                case   FILL_VALUE: this.addParam(new   FillParam(name, name, true,  false,  true)); break;
-                case STROKE_VALUE: this.addParam(new StrokeParam(name, name, true,  false,  true)); break;
-                case  STYLE_VALUE: this.addParam(new  StyleParam(name, name, true,  false,  true)); break;
+                case NUMBER_VALUE: this.addParam(new NumberParam(name, name, false,  false,  true)); break;
+                case  COLOR_VALUE: this.addParam(new  ColorParam(name, name, false,  false,  true)); break;
+                case   FILL_VALUE: this.addParam(new   FillParam(name, name, false,  false,  true)); break;
+                case STROKE_VALUE: this.addParam(new StrokeParam(name, name, false,  false,  true)); break;
+                case  STYLE_VALUE: this.addParam(new  StyleParam(name, name, false,  false,  true)); break;
             }
         }
 
         
         super.updateValues(updateParamId, paramIds, values);
+    }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        for (const param of this.params)
+            param.enableControlText(false);
     }
 }
 
@@ -41509,49 +41739,55 @@ class ConnectAction
 extends Action
 {
     outputNodeId;
-    outputIndex;
+    outputId;
+
     get outputNode() { return nodeFromId(this.outputNodeId); }
-    get output()     { return this.outputNode.outputs[this.outputIndex]; }
+    get output()     { return this.outputNode.outputs.find(o => o.id == this.outputId); }
     
     oldOutputNodeId = '';
-    oldOutputIndex;
+    oldOutputId;
+    
     get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
     
     inputNodeId;
-    inputIndex;
-    get inputNode() { return nodeFromId(this.inputNodeId); }
-    get input()     { return this.inputNode.inputs[this.inputIndex]; }
+    inputId;
     
+    get inputNode() { return nodeFromId(this.inputNodeId); }
+    get input()     { return this.inputNode.inputs.find(i => i.id == this.inputId); }
+    
+
     oldOutputActiveNodeId;      // the active node in the output node's tree
     oldInputActiveNodeIds = []; // the active nodes in the input node's tree
     
-    newActiveNodeIds = [];
-
-    oldInputValues   = []; // in index,value pairs, to be restored on undo
+    newActiveNodeIds      = [];
+     
+    oldInputValues        = []; // in id,value pairs, to be restored on undo
 
 
 
     constructor(output, input)
     {
-        const oldOutIndex = 
+        console.log('output =', output);
+        console.log('output.node =', output.node);
+        const oldOutputId = 
             input.connected 
-            ? input.connectedOutput.index
-            : -1; 
+            ? input.connectedOutput.id
+            : ''; 
 
         super('CONNECT ' 
-            + output.node.id + ' ' + output.index
+            + output.node.id + '.' + output.id
             + ' → '
-            + input.node.id + ' ' + input.index);
+            + input.node.id + '.' + input.id);
 
 
         this.outputNodeId    = output.node.id;
-        this.outputIndex     = output.index;
+        this.outputId        = output.id;
    
         this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
-        this.oldOutputIndex  = oldOutIndex;
+        this.oldOutputIndex  = oldOutputId;
    
         this.inputNodeId     = input.node.id;
-        this.inputIndex      = input.index;
+        this.inputId         = input.id;
     }
 
 
@@ -41573,9 +41809,9 @@ extends Action
 
 
         uiConnect(
-            this.outputNode.outputs[this.outputIndex], 
-            this.inputNode. inputs [this. inputIndex],
-            this.inputIndex);
+            this.outputNode.outputs.find(o => o.id == this.outputId), 
+            this.inputNode. inputs .find(i => i.id == this. inputId),
+            this.inputId);
 
 
         this.newActiveNodeIds = [];
@@ -41615,16 +41851,16 @@ extends Action
     undo()
     {
 
-        uiDisconnect(this.inputNode.inputs[this.inputIndex]);
+        uiDisconnect(this.inputNode.inputs[this.inputId]);
 
 
         if (this.oldOutputNodeId != '')
         {
             uiVariableConnect(
                 this.oldOutputNode, 
-                this.oldOutputIndex, 
+                this.oldOutputId, 
                 this.inputNode, 
-                this.inputIndex);
+                this.inputId);
         }
 
 
@@ -43943,6 +44179,13 @@ function setAutoCursor()
 
 
 
+// var _loadingNodes       = null;
+// var _loadingConns       = null;
+// var  loadingNodes       = null;
+// var  loadingSetProgress = false;
+
+
+
 function      uiGetLocalData(key)        { uiQueueMessageToFigma({ cmd:      'figGetLocalData', key: key               }); }
 function      uiSetLocalData(key, value) { uiQueueMessageToFigma({ cmd:      'figSetLocalData', key: key, value: value }); }
 function    uiClearLocalData(key)        { uiQueueMessageToFigma({ cmd:      'figSetLocalData', key: key, value: ''    }); }
@@ -43987,7 +44230,7 @@ function uiGetLocalDataReturn(msg)
         case 'debugMode':
 
         case 'showNodeId':       
-        case 'showWires':        
+        //case 'showWires':        
 
         case 'logMessages':      
         case 'logActions':       
@@ -44129,6 +44372,16 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
     promise.then(nodes => 
     {
         graph.addNodes(nodes, false, false);
+
+        // _loadingNodes       = _nodes;
+        // _loadingConns       = _conns;
+        //  loadingNodes       =  nodes;
+        //  loadingSetProgress =  setProgress;
+
+        // some parameters exist as evaluation results, so the loaded nodes
+        // have to be evaluaged first before connecting everything
+        //pushUpdate(nodes);
+        
         loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
     });
 }
@@ -45020,12 +45273,12 @@ function uiSetNodeId(nodeId, newId)
 
 
 
-function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
+function uiVariableConnect(outputNode, outputId, inputNode, inputId)
 {
     //console.log('uiVariableConnect()');
 
-    const output = outputNode.outputs[outputIndex];
-    const  input =  inputNode. inputs[ inputIndex];
+    const output = outputNode.outputs.find(o => o.id == outputId);
+    const  input =  inputNode. inputs.find(i => i.id ==  inputId);
 
     if (    inputNode.variableInputs
         && !input.param)
@@ -45033,7 +45286,7 @@ function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
         const conn = uiConnect(
             output,
             lastOf(inputNode.headerInputs),
-            inputIndex);
+            inputId);
 
         uiUpdateSavedConnectionsToNodeId(inputNode.id);
 
@@ -45045,18 +45298,18 @@ function uiVariableConnect(outputNode, outputIndex, inputNode, inputIndex)
 
 
 
-function uiConnect(output, input, inputIndex = -1)
+function uiConnect(output, input, inputId = '')
 {
     // console.log('output =', output);
     // console.log('input =', input);
     // console.log('inputIndex =', inputIndex);
-    const conn = graph.connect(output, input, inputIndex);
+    const conn = graph.connect(output, input, inputId);
 
     uiSaveConnection(
         output.node.id,
-        output.index,
+        output.id,
         input.node.id,
-        input.index,
+        input.id,
         conn.toJson());
 
     return conn;
@@ -45114,7 +45367,7 @@ function uiMakeNodeActive(node)
     node.makeActive();
     node.updateNode();
 
-    uiSaveNodes([node.id]);
+    //uiSaveNodes([node.id]);
 
     pushUpdate([node]);
 }
@@ -45475,17 +45728,21 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
     }
 
 
+    // if (graphView.loadingNodes) // in case the loading nodes were just evaluated for the first time
+    // {
+    //     loadConnectionsAsync(
+    //         _loadingNodes, 
+    //         _loadingConns, 
+    //          loadingNodes, 
+    //          loadingSetProgress);    
 
-    // const nodeJson = [];
+    //     _loadingNodes       = null;
+    //     _loadingConns       = null;
+    //      loadingNodes       = null;
+    //      loadingSetProgress = false;
+    //}
 
-    // nodes.forEach(n => nodeJson.push(n.toJson()));
-
-
-    // if (   settings.logRawSaving
-    //     && updateNodeId  != NULL
-    //     && updateParamId != NULL)
-    //     logSaveNodes(nodeJson.join('\n'));
-
+    //else 
     if (objects.length > 0)
     {
         if (settings.logObjectUpdates)
@@ -45502,6 +45759,8 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
         
 
     graphView.update(nodes);
+
+    uiSaveNodes(nodes.map(n => n.id));
 }
 
 

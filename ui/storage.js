@@ -1,3 +1,10 @@
+// var _loadingNodes       = null;
+// var _loadingConns       = null;
+// var  loadingNodes       = null;
+// var  loadingSetProgress = false;
+
+
+
 function      uiGetLocalData(key)        { uiQueueMessageToFigma({ cmd:      'figGetLocalData', key: key               }); }
 function      uiSetLocalData(key, value) { uiQueueMessageToFigma({ cmd:      'figSetLocalData', key: key, value: value }); }
 function    uiClearLocalData(key)        { uiQueueMessageToFigma({ cmd:      'figSetLocalData', key: key, value: ''    }); }
@@ -42,7 +49,7 @@ function uiGetLocalDataReturn(msg)
         case 'debugMode':
 
         case 'showNodeId':       
-        case 'showWires':        
+        //case 'showWires':        
 
         case 'logMessages':      
         case 'logActions':       
@@ -184,6 +191,16 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
     promise.then(nodes => 
     {
         graph.addNodes(nodes, false, false);
+
+        // _loadingNodes       = _nodes;
+        // _loadingConns       = _conns;
+        //  loadingNodes       =  nodes;
+        //  loadingSetProgress =  setProgress;
+
+        // some parameters exist as evaluation results, so the loaded nodes
+        // have to be evaluaged first before connecting everything
+        //pushUpdate(nodes);
+        
         loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
     });
 }

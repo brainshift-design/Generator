@@ -10,17 +10,17 @@ extends OperatorBase
         super(LIST_ITEMS, 'items', 100);
 
         this.addInput (new Input (LIST_TYPES, this.input_getValuesForUndo));
-        //this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.alwaysLoadParams = true;
+        this.alwaysSaveParams = true;
     }
 
 
 
-    // getParamFromId(paramId)
-    // {
-
-    // }
+    canAutoConnectFrom(output)
+    {
+        return arraysIntersect(LIST_TYPES, output.types);
+    }
 
 
 
@@ -72,15 +72,25 @@ extends OperatorBase
 
             switch (value.type)
             {
-                case NUMBER_VALUE: this.addParam(new NumberParam(name, name, true,  false,  true)); break;
-                case  COLOR_VALUE: this.addParam(new  ColorParam(name, name, true,  false,  true)); break;
-                case   FILL_VALUE: this.addParam(new   FillParam(name, name, true,  false,  true)); break;
-                case STROKE_VALUE: this.addParam(new StrokeParam(name, name, true,  false,  true)); break;
-                case  STYLE_VALUE: this.addParam(new  StyleParam(name, name, true,  false,  true)); break;
+                case NUMBER_VALUE: this.addParam(new NumberParam(name, name, false,  false,  true)); break;
+                case  COLOR_VALUE: this.addParam(new  ColorParam(name, name, false,  false,  true)); break;
+                case   FILL_VALUE: this.addParam(new   FillParam(name, name, false,  false,  true)); break;
+                case STROKE_VALUE: this.addParam(new StrokeParam(name, name, false,  false,  true)); break;
+                case  STYLE_VALUE: this.addParam(new  StyleParam(name, name, false,  false,  true)); break;
             }
         }
 
         
         super.updateValues(updateParamId, paramIds, values);
+    }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        for (const param of this.params)
+            param.enableControlText(false);
     }
 }
