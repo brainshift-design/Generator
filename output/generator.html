@@ -8748,7 +8748,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
     {
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
-        case 'debugMode':             updateSettingAndMenu_(valid, settingName, value, menuItemDebugMode            );  break;
+        case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
         //case 'showWires':             updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
@@ -8777,7 +8777,8 @@ function updateSettingAndMenu_(valid, setting, value, menu)
     if (valid) 
         settings[setting] = value;  
 
-    menu.setChecked(settings[setting]);
+    if (menu)
+        menu.setChecked(settings[setting]);
 }
 
 
@@ -8786,7 +8787,6 @@ function updateSettingsMenus()
 {
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
-    menuItemDebugMode            .setChecked(settings.debugMode            );
 
     menuItemDebug                .setVisible(settings.debugMode            );
 
