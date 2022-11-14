@@ -285,6 +285,19 @@ class Operator
  
     
 
+    addParamByType(type, id, showName, hasInput, hasOutput)
+    {
+             if (NUMBER_TYPES.includes(type)) this.addParam(new NumberParam(id, id, showName, hasInput, hasOutput));
+        else if ( COLOR_TYPES.includes(type)) this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput));
+        else if (  FILL_TYPES.includes(type)) this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput));
+        else if (STROKE_TYPES.includes(type)) this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput));
+        else if ( STYLE_TYPES.includes(type)) this.addParam(new  StyleParam(id, id, showName, hasInput, hasOutput));
+
+        else console.assert(false, 'cannot create param of type \'' + type + '\'');
+    }
+
+
+
     removeParam(param)
     {
         removeFromArray(this.params, param);
@@ -813,14 +826,20 @@ class Operator
             
         for (const _param of _node.params)
         {
-            const index = this.params.findIndex(p => p.id == _param[0]);
-            console.assert(index >= 0, 'param not found, cannot load');
+            let index = this.params.findIndex(p => p.id == _param[1]);
+            //console.assert(index >= 0, 'param not found, cannot load');
             
-            right now loading assumes the parameter exists
-            but instead it has to check, and if the param doesn't exist, create it,
-            just like OpListItems does
-            //if (index >= 0)
-                this.params[index].loadParam(_param[1]);
+            // right now loading assumes the parameter exists
+            // but instead it has to check, and if the param doesn't exist, create it,
+            // just like OpListItems does
+
+            if (index < 0)
+            {
+                this.addParamByType(_param[0], _param[1], false, false, true);
+                index = this.params.length-1;
+            }
+
+            this.params[index].loadParam(_param[2]);
         }
     }
 

@@ -369,26 +369,7 @@ extends Parameter
     }
     
     
-    
-    toString()
-    {
-        return this.value.toString();
-    }
 
-
-
-    toJson(nTab = 0, id = '')
-    {
-        let pos = ' '.repeat(nTab);
-        
-        if (id == '')
-            id = this.id;
-
-        return pos + '["' + id  + '", "' + this.value.toString() + '"]';
-    }
-
-
-    
     loadParam(param)
     {
         this.setValue(parseStrokeValue(param)[0], true, true, false);

@@ -180,7 +180,7 @@ extends EventTarget
     
     toString()
     {
-        // parameter outputs call this method
+        return this.value.toString();
     }
 
 
@@ -188,11 +188,11 @@ extends EventTarget
     toJson(nTab = 0, id = '')
     {
         let pos = ' '.repeat(nTab);
-
+        
         if (id == '')
             id = this.id;
 
-        return pos + '["' + id  + '", "' + this.value + '"]';
+        return pos + '["' + this.type  + '", "' + id  + '", "' + this.value.toString() + '"]';
     }
 
 

@@ -23,7 +23,6 @@ const FLOW_TYPES =
 
 
 const NUMBER_VALUE       = 'NUM#';  // value (s) (with significant decimals)
-
 const NUMBER             = 'NUM';   // N | n
 const NUMBER_LIMITS      = 'LIM';   // N:min N:max
 const NUMBER_RANDOM      = 'RAND';  // N:seed N:scale N:min N:max
@@ -40,7 +39,6 @@ const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
 const NUMBER_TYPES =
 [
     NUMBER_VALUE,
-
     NUMBER,
     NUMBER_LIMITS,
     NUMBER_RANDOM,
@@ -56,7 +54,6 @@ const NUMBER_TYPES =
 
 
 const STRING_VALUE   = 'STR#';  // "..." (s) (escape \\ and \")
-
 const STRING         = 'STR';   // S | s
 const STRING_ADD     = 'SADD';  // S S
 const STRING_REPLACE = 'SREPL'; // S S:what S:with
@@ -64,6 +61,7 @@ const STRING_REPLACE = 'SREPL'; // S S:what S:with
 
 const STRING_TYPES =
 [
+    STRING_VALUE,
     STRING,
     STRING_ADD,
     STRING_REPLACE
@@ -71,7 +69,6 @@ const STRING_TYPES =
 
 
 const COLOR_VALUE       = 'COL#';  // color value
-
 const COLOR             = 'COL';   // C | N:space N:c1 N:c2 N:c3
 const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
 const COLOR_CORRECT     = 'CCOR';  // C

@@ -88,11 +88,4 @@ extends NumberParamBase
         super.setName(name, dispatchEvents);
         this.control.setName(name);
     }
-
-
-
-    toString()
-    {
-        return this.value.toString();
-    }
 }

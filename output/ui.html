@@ -5017,7 +5017,6 @@ const FLOW_TYPES =
 
 
 const NUMBER_VALUE       = 'NUM#';  // value (s) (with significant decimals)
-
 const NUMBER             = 'NUM';   // N | n
 const NUMBER_LIMITS      = 'LIM';   // N:min N:max
 const NUMBER_RANDOM      = 'RAND';  // N:seed N:scale N:min N:max
@@ -5034,7 +5033,6 @@ const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
 const NUMBER_TYPES =
 [
     NUMBER_VALUE,
-
     NUMBER,
     NUMBER_LIMITS,
     NUMBER_RANDOM,
@@ -5050,7 +5048,6 @@ const NUMBER_TYPES =
 
 
 const STRING_VALUE   = 'STR#';  // "..." (s) (escape \\ and \")
-
 const STRING         = 'STR';   // S | s
 const STRING_ADD     = 'SADD';  // S S
 const STRING_REPLACE = 'SREPL'; // S S:what S:with
@@ -5058,6 +5055,7 @@ const STRING_REPLACE = 'SREPL'; // S S:what S:with
 
 const STRING_TYPES =
 [
+    STRING_VALUE,
     STRING,
     STRING_ADD,
     STRING_REPLACE
@@ -5065,7 +5063,6 @@ const STRING_TYPES =
 
 
 const COLOR_VALUE       = 'COL#';  // color value
-
 const COLOR             = 'COL';   // C | N:space N:c1 N:c2 N:c3
 const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
 const COLOR_CORRECT     = 'CCOR';  // C
@@ -19717,7 +19714,6 @@ const FLOW_TYPES =
 
 
 const NUMBER_VALUE       = 'NUM#';  // value (s) (with significant decimals)
-
 const NUMBER             = 'NUM';   // N | n
 const NUMBER_LIMITS      = 'LIM';   // N:min N:max
 const NUMBER_RANDOM      = 'RAND';  // N:seed N:scale N:min N:max
@@ -19734,7 +19730,6 @@ const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
 const NUMBER_TYPES =
 [
     NUMBER_VALUE,
-
     NUMBER,
     NUMBER_LIMITS,
     NUMBER_RANDOM,
@@ -19750,7 +19745,6 @@ const NUMBER_TYPES =
 
 
 const STRING_VALUE   = 'STR#';  // "..." (s) (escape \\ and \")
-
 const STRING         = 'STR';   // S | s
 const STRING_ADD     = 'SADD';  // S S
 const STRING_REPLACE = 'SREPL'; // S S:what S:with
@@ -19758,6 +19752,7 @@ const STRING_REPLACE = 'SREPL'; // S S:what S:with
 
 const STRING_TYPES =
 [
+    STRING_VALUE,
     STRING,
     STRING_ADD,
     STRING_REPLACE
@@ -19765,7 +19760,6 @@ const STRING_TYPES =
 
 
 const COLOR_VALUE       = 'COL#';  // color value
-
 const COLOR             = 'COL';   // C | N:space N:c1 N:c2 N:c3
 const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
 const COLOR_CORRECT     = 'CCOR';  // C
@@ -31642,7 +31636,7 @@ extends EventTarget
     
     toString()
     {
-        // parameter outputs call this method
+        return this.value.toString();
     }
 
 
@@ -31650,11 +31644,11 @@ extends EventTarget
     toJson(nTab = 0, id = '')
     {
         let pos = ' '.repeat(nTab);
-
+        
         if (id == '')
             id = this.id;
 
-        return pos + '["' + id  + '", "' + this.value + '"]';
+        return pos + '["' + this.type  + '", "' + id  + '", "' + this.value.toString() + '"]';
     }
 
 
@@ -31789,18 +31783,6 @@ extends Parameter
 
 
 
-    toJson(nTab = 0, id = '')
-    {
-        let pos = ' '.repeat(nTab);
-        
-        if (id == '')
-            id = this.id;
-
-        return pos + '["' + id  + '", "' + this.value.toString() + '"]';
-    }
-
-
-
     loadParam(param)
     {
         this.setValue(parseNumberValue(param)[0], true, true, false);
@@ -31897,13 +31879,6 @@ extends NumberParamBase
     {
         super.setName(name, dispatchEvents);
         this.control.setName(name);
-    }
-
-
-
-    toString()
-    {
-        return this.value.toString();
     }
 }
 
@@ -32224,25 +32199,6 @@ extends Parameter
     }
     
     
-    
-    toString()
-    {
-        return this.value.toString();
-    }
-
-
-
-    toJson(nTab = 0, id = '')
-    {
-        let pos = ' '.repeat(nTab);
-        
-        if (id == '')
-            id = this.id;
-
-        return pos + '["' + id  + '", "' + this.value.toString() + '"]';
-    }
-
-
     
     loadParam(param)
     {
@@ -32691,25 +32647,6 @@ extends Parameter
     
     
     
-    toString()
-    {
-        return this.value.toString();
-    }
-
-
-
-    toJson(nTab = 0, id = '')
-    {
-        let pos = ' '.repeat(nTab);
-        
-        if (id == '')
-            id = this.id;
-
-        return pos + '["' + id  + '", "' + this.value.toString() + '"]';
-    }
-
-
-    
     loadParam(param)
     {
         this.setValue(parseFillValue(param)[0], true, true, false);
@@ -33088,26 +33025,7 @@ extends Parameter
     }
     
     
-    
-    toString()
-    {
-        return this.value.toString();
-    }
 
-
-
-    toJson(nTab = 0, id = '')
-    {
-        let pos = ' '.repeat(nTab);
-        
-        if (id == '')
-            id = this.id;
-
-        return pos + '["' + id  + '", "' + this.value.toString() + '"]';
-    }
-
-
-    
     loadParam(param)
     {
         this.setValue(parseStrokeValue(param)[0], true, true, false);
@@ -33319,25 +33237,6 @@ extends Parameter
 
 
 
-    toString()
-    {
-        return this.value.toString();
-    }
-
-
-
-    toJson(nTab = 0, id = '')
-    {
-        let pos = ' '.repeat(nTab);
-        
-        if (id == '')
-            id = this.id;
-
-        return pos + '["' + id  + '", "' + this.value.toString() + '"]';
-    }
-
-
-    
     loadParam(param)
     {
         this.setValue(parseListValue(param)[0], true, true, false);
@@ -35395,6 +35294,19 @@ class Operator
  
     
 
+    addParamByType(type, id, showName, hasInput, hasOutput)
+    {
+             if (NUMBER_TYPES.includes(type)) this.addParam(new NumberParam(id, id, showName, hasInput, hasOutput));
+        else if ( COLOR_TYPES.includes(type)) this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput));
+        else if (  FILL_TYPES.includes(type)) this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput));
+        else if (STROKE_TYPES.includes(type)) this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput));
+        else if ( STYLE_TYPES.includes(type)) this.addParam(new  StyleParam(id, id, showName, hasInput, hasOutput));
+
+        else console.assert(false, 'cannot create param of type \'' + type + '\'');
+    }
+
+
+
     removeParam(param)
     {
         removeFromArray(this.params, param);
@@ -35923,14 +35835,20 @@ class Operator
             
         for (const _param of _node.params)
         {
-            const index = this.params.findIndex(p => p.id == _param[0]);
-            console.assert(index >= 0, 'param not found, cannot load');
+            let index = this.params.findIndex(p => p.id == _param[1]);
+            //console.assert(index >= 0, 'param not found, cannot load');
             
-            right now loading assumes the parameter exists
-            but instead it has to check, and if the param doesn't exist, create it,
-            just like OpListItems does
-            //if (index >= 0)
-                this.params[index].loadParam(_param[1]);
+            // right now loading assumes the parameter exists
+            // but instead it has to check, and if the param doesn't exist, create it,
+            // just like OpListItems does
+
+            if (index < 0)
+            {
+                this.addParamByType(_param[0], _param[1], false, false, true);
+                index = this.params.length-1;
+            }
+
+            this.params[index].loadParam(_param[2]);
         }
     }
 
@@ -37251,16 +37169,9 @@ extends OperatorBase
         for (let i = 0; i < values.length; i++)
         {
             const value = values[i];
-            const name  = 'item' + i;
+            const id  = 'item' + i;
 
-            switch (value.type)
-            {
-                case NUMBER_VALUE: this.addParam(new NumberParam(name, name, false,  false,  true)); break;
-                case  COLOR_VALUE: this.addParam(new  ColorParam(name, name, false,  false,  true)); break;
-                case   FILL_VALUE: this.addParam(new   FillParam(name, name, false,  false,  true)); break;
-                case STROKE_VALUE: this.addParam(new StrokeParam(name, name, false,  false,  true)); break;
-                case  STYLE_VALUE: this.addParam(new  StyleParam(name, name, false,  false,  true)); break;
-            }
+            this.addParamByType(value.type, id, false, false, true);
         }
 
         
@@ -44307,8 +44218,8 @@ function uiLoadGraphView(json)
     }
 
 
-    graphView._zoom     = zoom;
-    graphView._pan      = pan;
+    graphView._zoom = zoom;
+    graphView._pan  = pan;
 }
 
 
@@ -44328,6 +44239,7 @@ function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
 
     const _nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
     const  conns = JSON.parse(connsJson).map(c => JSON.parse(c));
+    console.log('_nodes =', _nodes);
 
     _nodes.sort((a, b) => a.z - b.z);
 

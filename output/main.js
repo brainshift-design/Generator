@@ -72,6 +72,7 @@ const STRING = 'STR'; // S | s
 const STRING_ADD = 'SADD'; // S S
 const STRING_REPLACE = 'SREPL'; // S S:what S:with
 const STRING_TYPES = [
+    STRING_VALUE,
     STRING,
     STRING_ADD,
     STRING_REPLACE

@@ -68,16 +68,9 @@ extends OperatorBase
         for (let i = 0; i < values.length; i++)
         {
             const value = values[i];
-            const name  = 'item' + i;
+            const id  = 'item' + i;
 
-            switch (value.type)
-            {
-                case NUMBER_VALUE: this.addParam(new NumberParam(name, name, false,  false,  true)); break;
-                case  COLOR_VALUE: this.addParam(new  ColorParam(name, name, false,  false,  true)); break;
-                case   FILL_VALUE: this.addParam(new   FillParam(name, name, false,  false,  true)); break;
-                case STROKE_VALUE: this.addParam(new StrokeParam(name, name, false,  false,  true)); break;
-                case  STYLE_VALUE: this.addParam(new  StyleParam(name, name, false,  false,  true)); break;
-            }
+            this.addParamByType(value.type, id, false, false, true);
         }
 
         
