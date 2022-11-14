@@ -65,14 +65,19 @@ extends OperatorBase
         this.removeAllParams();
 
 
-        for (let i = 0; i < values.length; i++)
+        if (   paramIds.length > 1
+            ||    paramIds.length == 1 
+               && paramIds[0] != 'value')
         {
-            const value = values[i];
-            const id  = 'item' + i;
+            for (let i = 0; i < values.length; i++)
+            {
+                const value = values[i];
+                const id    = 'item' + i;
 
-            this.addParamByType(value.type, id, false, false, true);
+                this.addParamByType(value.type, id, false, false, true);
+            }
         }
-
+        
         
         super.updateValues(updateParamId, paramIds, values);
     }

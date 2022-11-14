@@ -645,7 +645,7 @@ div
     background:          url('data:image/svg+xml;utf8,<svg width="8" height="5" viewBox="0 0 8 5" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.507593 1.22627L1.2469 0.498783L4.01388 3.22151L6.78084 0.498783L7.52015 1.22627L4.01388 4.67648L0.507593 1.22627Z" fill="white"/></svg>');
     background-position: 50% 50%;
     background-repeat:   no-repeat;
-    transition:          0.2s;
+    transition:          0.25s;
     /* box-shadow:          0 0 0 1px magenta inset; */
 }
 
@@ -34916,10 +34916,10 @@ class Connection
               pos + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
             + ',' + NL + pos + tab + '"outputId": "' + (this.output.param ? this.output.param.id : this.output.index) + '"'
-            + (this.output.param ? ',' + NL + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
+            // + (this.output.param ? ',' + NL + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
             + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "' + (this.input.param ? this.input.param.id : this.input.index) + '"'
-            + (this.input.param ? ',' + NL + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
+            // + (this.input.param ? ',' + NL + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +       NL + pos + '}';
 
         return json;
@@ -34972,14 +34972,12 @@ class Connection
         else
         {
             return uiVariableConnect(
-                outputNode, 
-                isDigit(outputId[0]) 
-                ? parseInt(outputId) 
-                : outputNode.params.find(p => p.id == outputId).output.index,
-                inputNode, 
-                isDigit(inputId[0])
-                ? parseInt(inputId)
-                : inputNode.params.find(p => p.id == inputId).input.index);
+                outputNode, isDigit(outputId[0]) 
+                            ? parseInt(outputId) 
+                            : outputNode.params.find(p => p.id == outputId).output.id,
+                inputNode, isDigit(inputId[0])
+                           ? parseInt(inputId)
+                           : inputNode.params.find(p => p.id == inputId).input.id);
         }
     }
 }
@@ -34990,9 +34988,9 @@ function getConnectionForArrayWithIds(conn)
 {
     return {
         outputNodeId: conn.output.node.id,
-        outputIndex:  conn.output.index,
+        outputId:     conn.output.id,
         inputNodeId:  conn.input .node.id,
-        inputIndex:   conn.input .index };
+        inputId:      conn.input .id };
 }
 
 
@@ -35001,9 +34999,9 @@ function getConnectionForArrayWithNames(conn)
 {
     return {
         outputNodeName: conn.output.node.id,
-        outputIndex:    conn.output.index,
+        outputId:       conn.output.id,
         inputNodeName:  conn.input .node.id,
-        inputIndex:     conn.input .index };
+        inputId:        conn.input .id };
 }
 
 
@@ -35836,11 +35834,6 @@ class Operator
         for (const _param of _node.params)
         {
             let index = this.params.findIndex(p => p.id == _param[1]);
-            //console.assert(index >= 0, 'param not found, cannot load');
-            
-            // right now loading assumes the parameter exists
-            // but instead it has to check, and if the param doesn't exist, create it,
-            // just like OpListItems does
 
             if (index < 0)
             {
@@ -37166,14 +37159,19 @@ extends OperatorBase
         this.removeAllParams();
 
 
-        for (let i = 0; i < values.length; i++)
+        if (   paramIds.length > 1
+            ||    paramIds.length == 1 
+               && paramIds[0] != 'value')
         {
-            const value = values[i];
-            const id  = 'item' + i;
+            for (let i = 0; i < values.length; i++)
+            {
+                const value = values[i];
+                const id    = 'item' + i;
 
-            this.addParamByType(value.type, id, false, false, true);
+                this.addParamByType(value.type, id, false, false, true);
+            }
         }
-
+        
         
         super.updateValues(updateParamId, paramIds, values);
     }
@@ -42100,7 +42098,9 @@ extends Action
             const outputNode = nodeFromId(conn.outputNodeId);
             const  inputNode = nodeFromId(conn. inputNodeId);
 
-            uiVariableConnect(outputNode, conn.outputIndex, inputNode, conn.inputIndex);
+            uiVariableConnect(
+                outputNode, conn.outputId, 
+                inputNode,  conn.inputId);
         }
     }
 
@@ -42152,11 +42152,11 @@ class DisconnectAction
 extends Action
 {
     outputNodeId;
-    outputIndex;
+    outputId;
     get outputNode() { return nodeFromId(this.outputNodeId); }
 
     inputNodeId;
-    inputIndex;
+    inputId;
     get inputNode() { return nodeFromId(this.inputNodeId); }
 
     oldActiveNodeIds = [];
@@ -42167,16 +42167,16 @@ extends Action
     constructor(output, input)
     {
         super('DISCONNECT ' 
-            + output.node.id + ' ' + output.index
+            + output.node.id + '.' + output.id
             + ' → '
-            + input.node.id + ' ' + input.index);
+            + input.node.id + '.' + input.id);
 
 
         this.outputNodeId = output.node.id;
-        this.outputIndex  = output.index;
+        this.outputId     = output.id;
 
         this.inputNodeId  = input.node.id;
-        this.inputIndex   = input.index;
+        this.inputId      = input.id;
     }
 
 
@@ -42220,8 +42220,8 @@ extends Action
     undo()
     {
         uiVariableConnect(
-            this.outputNode, this.outputIndex, 
-            this. inputNode, this. inputIndex);
+            this.outputNode, this.outputId, 
+            this. inputNode, this. inputId);
 
         for (const id of this.newActiveNodeIds)
         {
@@ -42506,19 +42506,19 @@ class ReconnectAction
 extends Action
 {
     outputNodeId;
-    outputIndex;
+    outputId;
     get outputNode() { return nodeFromId(this.outputNodeId); }
 
     oldOutputNodeId = '';
-    oldOutputIndex;
+    oldOutputId;
     get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
 
     inputNodeId;
-    inputIndex;
+    inputId;
     get inputNode() { return nodeFromId(this.inputNodeId); }
 
     oldInputNodeId = '';
-    oldInputIndex;
+    oldInputId;
     get oldInputNode() { return nodeFromId(this.oldInputNodeId); }
     
     oldOutputActiveNodeId;      // the active node in the output node's tree
@@ -42530,32 +42530,32 @@ extends Action
 
     constructor(output, oldInput, input)
     {
-        const oldOutIndex = 
+        const oldOutId = 
             input.connected 
-            ? input.connectedOutput.index
+            ? input.connectedOutput.id
             : -1; 
 
 
         super(
              'RECONNECT '
-            + output.node.id + ' ' + output.index
+            + output.node.id + '.' + output.id
             + ' (← '
-            + oldInput.node.id + ' ' + oldInput.index
+            + oldInput.node.id + '.' + oldInput.id
             + ') → '
-            + input.node.id + ' ' + input.index);
+            + input.node.id + '.' + input.id);
 
 
         this.outputNodeId          = output.node.id;
-        this.outputIndex           = output.index;
+        this.outputId              = output.id;
                
         this.oldOutputNodeId       = input.connected ? input.connectedOutput.node.id : '';
-        this.oldOutputIndex        = oldOutIndex;
+        this.oldOutputId           = oldOutId;
        
         this.oldInputNodeId        = oldInput.node.id;
-        this.oldInputIndex         = oldInput.index;
+        this.oldInputId            = oldInput.id;
        
         this.inputNodeId           = input.node.id;
-        this.inputIndex            = input.index;
+        this.inputId               = input.id;
 
         this.oldOutputActiveNodeId = getActiveFromNodeId(this.outputNodeId).id;
         this.oldInputActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
@@ -42565,13 +42565,13 @@ extends Action
 
     do()
     {
-        uiDisconnect(this.oldInputNode.inputs[this.oldInputIndex]);
+        uiDisconnect(this.oldInputNode.inputs[this.oldInputId]);
         
 
         uiConnect(
-            this.outputNode.outputs[this.outputIndex], 
-            this. inputNode. inputs[this. inputIndex],
-            this.inputIndex);
+            this.outputNode.outputs[this.outputId], 
+            this. inputNode. inputs[this. inputId],
+            this.inputId);
             
 
         this.newActiveNodeIds = [];
@@ -42596,14 +42596,12 @@ extends Action
 
     undo()
     {
-        uiDisconnect(this.inputNode.inputs[this.inputIndex]);
+        uiDisconnect(this.inputNode.inputs[this.inputId]);
 
             
         uiVariableConnect(
-            this.outputNode, 
-            this.outputIndex, 
-            this.oldInputNode, 
-            this.oldInputIndex);
+            this.outputNode,   this.outputId, 
+            this.oldInputNode, this.oldInputId);
 
         uiSaveNodes([this.oldInputNodeId]);
     
@@ -42611,10 +42609,8 @@ extends Action
         if (this.oldOutputNodeId != '')
         {
             uiVariableConnect(
-                this.oldOutputNode, 
-                this.oldOutputIndex, 
-                this.inputNode, 
-                this.inputIndex);
+                this.oldOutputNode, this.oldOutputId, 
+                this.inputNode,     this.inputId);
 
             pushUpdate([this.inputNode]);
         }
@@ -42905,7 +42901,7 @@ extends Action
             const outputNode = nodeFromId(conn.outputNodeId);
             const  inputNode = nodeFromId(conn. inputNodeId);
 
-            uiVariableConnect(outputNode, conn.outputIndex, inputNode, conn.inputIndex);
+            uiVariableConnect(outputNode, conn.outputId, inputNode, conn.inputId);
         }
     }
 
@@ -43614,7 +43610,7 @@ var genMessagePosted = false;
 //uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
-//uiRemoveConnsToNodes(['num10']);
+//uiRemoveConnsToNodes(['num3']);
 //uiRemoveSavedNodesAndConns(['color']);
 //uiRemoveAllSavedNodesAndConns();
 
@@ -44239,7 +44235,6 @@ function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
 
     const _nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
     const  conns = JSON.parse(connsJson).map(c => JSON.parse(c));
-    console.log('_nodes =', _nodes);
 
     _nodes.sort((a, b) => a.z - b.z);
 

@@ -2,19 +2,19 @@ class ReconnectAction
 extends Action
 {
     outputNodeId;
-    outputIndex;
+    outputId;
     get outputNode() { return nodeFromId(this.outputNodeId); }
 
     oldOutputNodeId = '';
-    oldOutputIndex;
+    oldOutputId;
     get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
 
     inputNodeId;
-    inputIndex;
+    inputId;
     get inputNode() { return nodeFromId(this.inputNodeId); }
 
     oldInputNodeId = '';
-    oldInputIndex;
+    oldInputId;
     get oldInputNode() { return nodeFromId(this.oldInputNodeId); }
     
     oldOutputActiveNodeId;      // the active node in the output node's tree
@@ -26,32 +26,32 @@ extends Action
 
     constructor(output, oldInput, input)
     {
-        const oldOutIndex = 
+        const oldOutId = 
             input.connected 
-            ? input.connectedOutput.index
+            ? input.connectedOutput.id
             : -1; 
 
 
         super(
              'RECONNECT '
-            + output.node.id + ' ' + output.index
+            + output.node.id + '.' + output.id
             + ' (← '
-            + oldInput.node.id + ' ' + oldInput.index
+            + oldInput.node.id + '.' + oldInput.id
             + ') → '
-            + input.node.id + ' ' + input.index);
+            + input.node.id + '.' + input.id);
 
 
         this.outputNodeId          = output.node.id;
-        this.outputIndex           = output.index;
+        this.outputId              = output.id;
                
         this.oldOutputNodeId       = input.connected ? input.connectedOutput.node.id : '';
-        this.oldOutputIndex        = oldOutIndex;
+        this.oldOutputId           = oldOutId;
        
         this.oldInputNodeId        = oldInput.node.id;
-        this.oldInputIndex         = oldInput.index;
+        this.oldInputId            = oldInput.id;
        
         this.inputNodeId           = input.node.id;
-        this.inputIndex            = input.index;
+        this.inputId               = input.id;
 
         this.oldOutputActiveNodeId = getActiveFromNodeId(this.outputNodeId).id;
         this.oldInputActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
@@ -61,13 +61,13 @@ extends Action
 
     do()
     {
-        uiDisconnect(this.oldInputNode.inputs[this.oldInputIndex]);
+        uiDisconnect(this.oldInputNode.inputs[this.oldInputId]);
         
 
         uiConnect(
-            this.outputNode.outputs[this.outputIndex], 
-            this. inputNode. inputs[this. inputIndex],
-            this.inputIndex);
+            this.outputNode.outputs[this.outputId], 
+            this. inputNode. inputs[this. inputId],
+            this.inputId);
             
 
         this.newActiveNodeIds = [];
@@ -92,14 +92,12 @@ extends Action
 
     undo()
     {
-        uiDisconnect(this.inputNode.inputs[this.inputIndex]);
+        uiDisconnect(this.inputNode.inputs[this.inputId]);
 
             
         uiVariableConnect(
-            this.outputNode, 
-            this.outputIndex, 
-            this.oldInputNode, 
-            this.oldInputIndex);
+            this.outputNode,   this.outputId, 
+            this.oldInputNode, this.oldInputId);
 
         uiSaveNodes([this.oldInputNodeId]);
     
@@ -107,10 +105,8 @@ extends Action
         if (this.oldOutputNodeId != '')
         {
             uiVariableConnect(
-                this.oldOutputNode, 
-                this.oldOutputIndex, 
-                this.inputNode, 
-                this.inputIndex);
+                this.oldOutputNode, this.oldOutputId, 
+                this.inputNode,     this.inputId);
 
             pushUpdate([this.inputNode]);
         }

@@ -393,10 +393,10 @@ class Connection
               pos + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
             + ',' + NL + pos + tab + '"outputId": "' + (this.output.param ? this.output.param.id : this.output.index) + '"'
-            + (this.output.param ? ',' + NL + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
+            // + (this.output.param ? ',' + NL + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
             + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "' + (this.input.param ? this.input.param.id : this.input.index) + '"'
-            + (this.input.param ? ',' + NL + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
+            // + (this.input.param ? ',' + NL + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +       NL + pos + '}';
 
         return json;
@@ -449,14 +449,12 @@ class Connection
         else
         {
             return uiVariableConnect(
-                outputNode, 
-                isDigit(outputId[0]) 
-                ? parseInt(outputId) 
-                : outputNode.params.find(p => p.id == outputId).output.index,
-                inputNode, 
-                isDigit(inputId[0])
-                ? parseInt(inputId)
-                : inputNode.params.find(p => p.id == inputId).input.index);
+                outputNode, isDigit(outputId[0]) 
+                            ? parseInt(outputId) 
+                            : outputNode.params.find(p => p.id == outputId).output.id,
+                inputNode, isDigit(inputId[0])
+                           ? parseInt(inputId)
+                           : inputNode.params.find(p => p.id == inputId).input.id);
         }
     }
 }
@@ -467,9 +465,9 @@ function getConnectionForArrayWithIds(conn)
 {
     return {
         outputNodeId: conn.output.node.id,
-        outputIndex:  conn.output.index,
+        outputId:     conn.output.id,
         inputNodeId:  conn.input .node.id,
-        inputIndex:   conn.input .index };
+        inputId:      conn.input .id };
 }
 
 
@@ -478,7 +476,7 @@ function getConnectionForArrayWithNames(conn)
 {
     return {
         outputNodeName: conn.output.node.id,
-        outputIndex:    conn.output.index,
+        outputId:       conn.output.id,
         inputNodeName:  conn.input .node.id,
-        inputIndex:     conn.input .index };
+        inputId:        conn.input .id };
 }

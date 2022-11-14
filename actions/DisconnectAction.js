@@ -2,11 +2,11 @@ class DisconnectAction
 extends Action
 {
     outputNodeId;
-    outputIndex;
+    outputId;
     get outputNode() { return nodeFromId(this.outputNodeId); }
 
     inputNodeId;
-    inputIndex;
+    inputId;
     get inputNode() { return nodeFromId(this.inputNodeId); }
 
     oldActiveNodeIds = [];
@@ -17,16 +17,16 @@ extends Action
     constructor(output, input)
     {
         super('DISCONNECT ' 
-            + output.node.id + ' ' + output.index
+            + output.node.id + '.' + output.id
             + ' → '
-            + input.node.id + ' ' + input.index);
+            + input.node.id + '.' + input.id);
 
 
         this.outputNodeId = output.node.id;
-        this.outputIndex  = output.index;
+        this.outputId     = output.id;
 
         this.inputNodeId  = input.node.id;
-        this.inputIndex   = input.index;
+        this.inputId      = input.id;
     }
 
 
@@ -70,8 +70,8 @@ extends Action
     undo()
     {
         uiVariableConnect(
-            this.outputNode, this.outputIndex, 
-            this. inputNode, this. inputIndex);
+            this.outputNode, this.outputId, 
+            this. inputNode, this. inputId);
 
         for (const id of this.newActiveNodeIds)
         {

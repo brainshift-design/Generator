@@ -827,11 +827,6 @@ class Operator
         for (const _param of _node.params)
         {
             let index = this.params.findIndex(p => p.id == _param[1]);
-            //console.assert(index >= 0, 'param not found, cannot load');
-            
-            // right now loading assumes the parameter exists
-            // but instead it has to check, and if the param doesn't exist, create it,
-            // just like OpListItems does
 
             if (index < 0)
             {

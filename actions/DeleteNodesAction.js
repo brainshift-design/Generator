@@ -204,7 +204,9 @@ extends Action
             const outputNode = nodeFromId(conn.outputNodeId);
             const  inputNode = nodeFromId(conn. inputNodeId);
 
-            uiVariableConnect(outputNode, conn.outputIndex, inputNode, conn.inputIndex);
+            uiVariableConnect(
+                outputNode, conn.outputId, 
+                inputNode,  conn.inputId);
         }
     }
 

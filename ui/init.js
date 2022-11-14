@@ -10,7 +10,7 @@ var genMessagePosted = false;
 //uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
-//uiRemoveConnsToNodes(['num10']);
+//uiRemoveConnsToNodes(['num3']);
 //uiRemoveSavedNodesAndConns(['color']);
 //uiRemoveAllSavedNodesAndConns();
 

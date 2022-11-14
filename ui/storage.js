@@ -147,7 +147,6 @@ function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
 
     const _nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
     const  conns = JSON.parse(connsJson).map(c => JSON.parse(c));
-    console.log('_nodes =', _nodes);
 
     _nodes.sort((a, b) => a.z - b.z);
 
