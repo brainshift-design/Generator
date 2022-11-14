@@ -44,6 +44,297 @@
 }
 
 
+/* #productKeyBack
+{
+    display:          none;
+
+    z-index:          1;
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+
+    background-color: #0002
+} */
+
+
+.userInfoTable table
+{
+    height: auto;
+    box-shadow: 0 0 0 1px blue inset;
+    padding: 0;
+    margin: 0;
+}
+
+
+.userInfoTable tr
+{
+    padding: 0;
+    margin: 0;
+}
+
+
+.userInfoTable td
+{
+    box-shadow: 0 0 0 1px red inset;
+    height: 10px;
+    padding: 0;
+    margin: 0;
+}
+
+
+#productKeyDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       2;
+    position:      absolute;
+    top:           60px;
+    left:          calc(50% - 130px);
+    width:         220px;
+    height:        170px;
+    
+    background:    white;
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+    box-shadow:    0px 2px 14px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+}
+
+
+#productKeyTitle
+{
+    height:        40px;
+    border-bottom: 1px solid rgb(0, 0, 0, 0.15);
+    /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+#productKeyTitleText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          rgba(0, 0, 0, 0.8);
+
+    pointer-events: none;
+    user-select:    none;
+}
+
+
+.dialogButtonClose
+{
+    width:    32px;
+    height:   32px;
+    position: absolute;
+    left:     calc(100% - 36px);
+    top:      4px;
+}
+
+.dialogButtonClose:active
+{
+    box-shadow: none;
+}
+
+
+#productKeyUserNameTitle
+{
+    font-size:      11px;
+
+    margin-top:     16px;
+    margin-bottom:  0px;
+
+    /* position:       relative;
+    left:           21px; */
+
+    user-select:    none;
+}
+
+
+#productKeyUserName
+{
+    font-size:      11px;
+
+    margin-top:     16px;
+    margin-bottom:  0px;
+
+    /* position:       relative;
+    left:           60px; */
+
+    user-select:    text;
+}
+
+
+#productKeyUserIdTitle
+{
+    font-size:      11px;
+
+    margin-top:     0px;
+    margin-bottom:  12px;
+
+    /* position:       relative;
+    left:           21px; */
+
+    user-select:    none;
+}
+
+
+#productKeyUserId
+{
+    font-size:      11px;
+
+    margin-top:     0px;
+    margin-bottom:  12px;
+
+    /* position:       relative;
+    left:           60px; */
+
+    user-select:    text;
+}
+
+
+#productKeyWebsite
+{
+    font-size:      11px;
+    text-align:     center;
+
+    margin-top:     16px;
+    margin-bottom:   8px;
+}
+
+
+#productKeyInput
+{
+    font-family:  'Roboto Mono';
+    font-size:     16px;
+     
+    width:         calc(9em + 1px);
+    height:        24px;
+    padding-left:  10px;
+    padding-top:   -2px;
+    padding-bottom: 2px;
+
+    margin-bottom: -3px;
+
+    position:      relative;
+    left:          calc(50% - 4.5em);
+}
+
+
+
+#productKeyInputBack
+{
+    font-family:   'Roboto Mono';
+    font-size:      16px;
+    color:          #ddd;
+    
+    width:           9em;
+    padding-left:   10px;
+    padding-top:    -2px;
+    padding-bottom:  2px;
+
+    position:       absolute;
+    left:           calc(calc(50% - 4.5em) + 1px);
+    top:            calc(50% + 2px);
+
+    pointer-events: none;
+}
+
+
+
+#deleteConnectionsDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       2;
+    position:      absolute;
+    top:           60px;
+    left:          calc(50% - 130px);
+    width:         220px;
+    height:        170px;
+    
+    background:    white;
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+    box-shadow:    0px 2px 14px rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+}
+
+
+#deleteConnectionsTitle
+{
+    height:        40px;
+    border-bottom: 1px solid rgb(0, 0, 0, 0.15);
+}
+
+
+#deleteConnectionsTitleText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          rgba(0, 0, 0, 0.8);
+}
+
+
+#deleteConnectionsUserInfo
+{
+    font-size:      11px;
+
+    margin-top:     16px;
+    margin-bottom:  12px;
+
+    position:       relative;
+    left:           21px;
+
+    user-select:    text;
+}
+
+
+#deleteConnectionsInput
+{
+    font-family:  'Roboto Mono';
+    font-size:     11px;
+     
+    width:         calc(9em + 1px);
+    padding-left:  10px;
+    padding-top:   -2px;
+    padding-bottom: 2px;
+
+    margin-bottom: -3px;
+
+    position:      relative;
+    left:          calc(50% - 4.5em);
+}
+
+
 #loadingOverlay
 {
     position:   absolute;
@@ -172,146 +463,6 @@
     width:         0;
     height:        5px;
     background:    var(--figma-color-text);/*#333;*/
-}
-
-
-#productKeyBack
-{
-    display:          none;
-
-    z-index:          1;
-    
-    position:         fixed;
-    left:             0;
-    top:              0;
-    width:            100%;
-    height:           100%;
-    overflow:         auto;
-
-    background-color: #0002
-}
-
-
-#productKeyDialog
-{
-    display:       none;
-
-    font-family:   Inter;
-
-    z-index:       2;
-    position:      absolute;
-    top:           60px;
-    left:          calc(50% - 130px);
-    width:         220px;
-    height:        170px;
-    
-    background:    white;
-    
-    border:        0.5px solid rgba(0, 0, 0, 0.2);
-    box-shadow:    0px 2px 14px rgba(0, 0, 0, 0.15);
-    border-radius: 4px;
-}
-
-
-#productKeyTitle
-{
-    height:        40px;
-    border-bottom: 1px solid rgb(0, 0, 0, 0.15);
-}
-
-
-#productKeyText
-{
-    position:       absolute;
-    left:           16px;
-    top:            12px;
-    
-    font-style:     normal;
-    font-weight:    600;
-    font-size:      11px;
-    line-height:    16px;
-    
-    display:        flex;
-    align-items:    center;
-    letter-spacing: 0.005em;
-    
-    color:          rgba(0, 0, 0, 0.8);
-}
-
-
-#productKeyClose
-{
-    width:    32px;
-    height:   32px;
-    position: absolute;
-    left:     calc(100% - 36px);
-    top:      4px;
-}
-
-#productKeyClose:active
-{
-    box-shadow: none;
-}
-
-
-#productKeyUserInfo
-{
-    font-size:      12px;
-
-    margin-top:     16px;
-    margin-bottom:  12px;
-
-    position:       relative;
-    left:           21px;
-
-    user-select:    text;
-}
-
-
-#productKeyWebsite
-{
-    font-size:      12px;
-    text-align:     center;
-
-    margin-top:     16px;
-    margin-bottom:   8px;
-}
-
-
-#productKeyInput
-{
-    font-family:  'Roboto Mono';
-    font-size:     16px;
-     
-    width:         calc(9em + 1px);
-    padding-left:  10px;
-    padding-top:   -2px;
-    padding-bottom: 2px;
-
-    margin-bottom: -3px;
-
-    position:      relative;
-    left:          calc(50% - 4.5em);
-}
-
-
-
-#productKeyInputBack
-{
-    font-family:   'Roboto Mono';
-    font-size:      16px;
-    color:          #ddd;
-    
-    width:           9em;
-    padding-left:   10px;
-    padding-top:    -2px;
-    padding-bottom:  2px;
-
-    position:       absolute;
-    left:           calc(calc(50% - 4.5em) + 1px);
-    top:            calc(50% + 2px);
-
-    pointer-events: none;
 }
 
 
@@ -1756,13 +1907,13 @@ div
 </div>
 
 
-<div id='productKeyBack'></div>
+<!-- <div id='productKeyBack'></div>-->
 
 <div id='productKeyDialog'>
 
     <div id='productKeyTitle'>
-        <div id='productKeyText'>Enter product key</div>
-        <div class='button' id='productKeyClose' onclick='productKeyClose.blur();'>
+        <div id='productKeyTitleText'>Enter product key</div>
+        <div class='button dialogButtonClose' id='productKeyClose' onclick='productKeyClose.blur(); hideProductKeyDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="black" fill-opacity="0.8"/>
             </svg>
@@ -1770,10 +1921,40 @@ div
     </div>
     
     <div id='productKeyBody'>
-        <div id='productKeyUserInfo'></div>
+        <table class="userInfoTable">
+            <tr>
+                <td><div id='productKeyUserNameTitle'></div></td>
+                <td><div id='productKeyUserName'></div></td>
+            </tr>
+            <tr>
+                <td><div id='productKeyUserIdTitle'></div></td>
+                <td><div id='productKeyUserId'></div></td>
+            </tr>
+        </table>
+        
         <input type='text' id='productKeyInput' />
         <div id='productKeyInputBack'></div>
         <div id='productKeyWebsite'>Get product key at<br/><a href='http://www.bourt.com/generator' target='_blank'>bourt.com/generator</a></div>
+    </div>
+
+</div>
+
+
+
+<div id='deleteConnectionsDialog'>
+
+    <div id='deleteConnectionsTitle'>
+        <div id='deleteConnectionsTitleText'>Delete connections to node</div>
+        <div class='button dialogButtonClose' id='deleteConnectionsClose' onclick='deleteConnectionsClose.blur(); hideDeleteConnectionsDialog();'>
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="black" fill-opacity="0.8"/>
+            </svg>
+        </div>
+    </div>
+    
+    <div id='deleteConnectionsBody'>
+        <div id='deleteConnectionsUserInfo'></div>
+        <input type='text' id='deleteConnectionsInput' />
     </div>
 
 </div>
@@ -1980,6 +2161,12 @@ const NL             = '\n';
 
 const GENERATOR_LOGO = '◦G•';
 const OBJECT_PREFIX  = 'G.';
+
+
+function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
+function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
+
+function parseBool(str) { return str === 'true'; }
 
 
 
@@ -3989,13 +4176,6 @@ function subscriptChar(c)
 
 
 
-function parseBool(str)
-{
-    return str === 'true';
-}
-
-
-
 function osCtrl()  { return isMac ? '⌘' : 'Ctrl+';  }
 function osAlt()   { return isMac ? '⌥' : 'Alt+';   }
 function osShift() { return isMac ? '⇧'  : 'Shift+'; }
@@ -5844,10 +6024,7 @@ extends GValue
         super(NUMBER_VALUE);
 
         if (typeof val !== 'number')
-        { 
-            console.trace();
             console.assert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
-        }
 
 
         this.value    = val;
@@ -5943,10 +6120,7 @@ extends GValue
 function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
-    {
-        //console.trace();
         console.assert(false, 'number value missing \',\'');
-    }
     
     const parts = str.split(',');
 
@@ -6359,10 +6533,7 @@ extends GValue
                 miter  = new NumberValue(28.96, 2))
     {
         if (fill.type != FILL_VALUE)
-        {
-            console.trace();
             console.assert(false, 'fill.type must be FILL_VALUE');
-        }
 
 
         super(STROKE_VALUE);
@@ -10866,9 +11037,6 @@ function genPostMessageToUI(msg)
 
 function genQueueMessageToUI(msg)
 {
-    // console.log('genQueueMessageToUI()');
-    // console.trace();
-
     uiMessages.push(msg);
     genPostNextMessageToUI();
 }
@@ -10877,12 +11045,6 @@ function genQueueMessageToUI(msg)
 
 function genPostNextMessageToUI(msg)
 {
-    // console.log('genPostNextMessageToUI()');
-    // console.trace();
-
-    //console.log('gen.uiMessages.length = ', uiMessages.length);
-
-    
     if (uiMessages.length > 0)
         //&& !genFigMessagePosted)
     {
@@ -10948,10 +11110,6 @@ var lastUpdateObjects = [];
 
 function genRequest(request)
 {
-    // console.log('genRequest()');
-    // console.trace();
-
-
     const set = parseInt(request[0]);
 
     const includeLxxColorSpaces = (set >> 0) & 1 != 0;
@@ -11007,9 +11165,6 @@ function genRequest(request)
 
 function genPushUpdateValue(parse, nodeId, paramId, value, forceUpdate = false)
 {
-    //logFunction('genPushUpdateValue()');
-    //console.trace();
-    
     if (   nodeId  == parse.updateNodeId
         && paramId == parse.updateParamId
         && !forceUpdate)
@@ -12551,11 +12706,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == POLYGON           ) result = genParsePolygon         (parse);
     else if (parse.next == STAR              ) result = genParseStar            (parse);
 
-    else                                       
-    {
-        console.trace();
-        console.assert(false, 'unknown parse token \'' + parse.next + '\'');
-    }
+    else console.assert(false, 'unknown parse token \'' + parse.next + '\'');
 
 
     parse.inParam = false;
@@ -15072,6 +15223,12 @@ const GENERATOR_LOGO = '◦G•';
 const OBJECT_PREFIX  = 'G.';
 
 
+function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
+function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
+
+function parseBool(str) { return str === 'true'; }
+
+
 
 function rgbHeaderFromType(type, active)
 {
@@ -17075,13 +17232,6 @@ function subscriptChar(c)
         case '9': return '₉';
         case '.': return ' ';
     }
-}
-
-
-
-function parseBool(str)
-{
-    return str === 'true';
 }
 
 
@@ -20541,10 +20691,7 @@ extends GValue
         super(NUMBER_VALUE);
 
         if (typeof val !== 'number')
-        { 
-            console.trace();
             console.assert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
-        }
 
 
         this.value    = val;
@@ -20640,10 +20787,7 @@ extends GValue
 function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
-    {
-        //console.trace();
         console.assert(false, 'number value missing \',\'');
-    }
     
     const parts = str.split(',');
 
@@ -21056,10 +21200,7 @@ extends GValue
                 miter  = new NumberValue(28.96, 2))
     {
         if (fill.type != FILL_VALUE)
-        {
-            console.trace();
             console.assert(false, 'fill.type must be FILL_VALUE');
-        }
 
 
         super(STROKE_VALUE);
@@ -26330,8 +26471,9 @@ function initMenus()
     
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-                                   new MenuItem('Log\u2008all\u2008nodes',       {callback: () => uiLogAllSavedNodes()}),
-                                   new MenuItem('Log\u2008all\u2008connections', {callback: () => uiLogAllSavedConns()}),
+                                   new MenuItem('List\u2008all\u2008nodes',                    {callback: () => uiLogAllSavedNodes()}),
+                                   new MenuItem('List\u2008all\u2008connections',              {callback: () => uiLogAllSavedConns()}),
+                                   new MenuItem('Delete\u2008all\u2008connections\u2008to...', {callback: () => showDeleteConnectionsDialog()}),
                                    new MenuItem('',                    {separator: true}),
         menuItemShowNodeId       = new MenuItem('Show node IDs',
         {
@@ -26788,7 +26930,7 @@ function initNumberControlEvents(control)
 
             if (    graphView.tempConn.output
                 &&  control.param.input
-                &&  control.param.input.accepts(graphView.tempConn.output)
+                &&  control.param.input.supports(graphView.tempConn.output.types)
                 && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 && (  !control.param.input.connected // not already connected to this input
                     || control.param.input.connectedOutput != graphView.tempConn.output
@@ -26808,7 +26950,7 @@ function initNumberControlEvents(control)
             }
             else if ( graphView.tempConn.input
                   &&  control.param.output
-                  &&  graphView.tempConn.input.accepts(control.param.output)
+                  &&  graphView.tempConn.input.supports(control.param.output.types)
                   && !control.param.node.isOrFollows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = control.param.output;
@@ -27665,10 +27807,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.setValue = function(value, fireChangeEvent = true, confirm = true, fullRange = true)
     {
         if (typeof value != 'number')
-        {
-            console.trace();
             console.assert(false, 'numberControl.setValue(value) is ' + typeof value + ', must be a number');
-        }
 
 
         const oldValue = control.value;
@@ -28134,7 +28273,7 @@ function initColorControlEvents(control)
 
             if (    graphView.tempConn.output
                 &&  control.param.input
-                &&  control.param.input.accepts(graphView.tempConn.output)
+                &&  control.param.input.supports(graphView.tempConn.output.types)
                 && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 && (  !control.param.input.connected // not already connected to this input
                     || control.param.input.connectedOutput != graphView.tempConn.output
@@ -28154,7 +28293,7 @@ function initColorControlEvents(control)
             }
             else if ( graphView.tempConn.input
                   &&  control.param.output
-                  &&  graphView.tempConn.input.accepts(control.param.output)
+                  &&  graphView.tempConn.input.supports(control.param.output.types)
                   && !control.param.node.isOrFollows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = control.param.output;
@@ -28824,10 +28963,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
     control.setValue = function(value, fireChangeEvent = true, confirm = true)
     {
         if (!(value instanceof ColorValue))
-        {
-            console.trace();
             console.assert(false, 'colorControl.setValue(value) is ' + typeof value + ', must be a ColorValue');
-        }
 
 
         const oldValue = control.value.copy();
@@ -30313,7 +30449,7 @@ graphView.addEventListener('pointerdown', e =>
         }
         else if (graphView.overInput)
         {
-            if (graphView.overInput.connectedOutput) // pretend to disconnect
+            if (graphView.overInput.connectedOutput) // begin to disconnect
             {
                 oldReorderIndex = graphView.overInput.index;
 
@@ -31024,6 +31160,8 @@ graphView.endConnection = pointerId =>
 {
     if (graphView.tempConn.output) // FROM OUTPUT
     {
+        console.log('graphView.tempConn.output.node =', graphView.tempConn.output.node);
+
         let output = graphView.tempConn.output;
         let input  = graphView.overInput;
 
@@ -31035,7 +31173,7 @@ graphView.endConnection = pointerId =>
         output.connecting = false;
         
         if (   input
-            && input.accepts(output)) // TO INPUT
+            && input.supports(output.types)) // TO INPUT
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex)
@@ -31061,7 +31199,10 @@ graphView.endConnection = pointerId =>
             else if (   !savedConnInput
                      && (  !input.connected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new
+            {
+                console.log('output =', output.toString());
                 actionManager.do(new ConnectAction(output, input));
+            }
         }
         else if (savedConnInput) // disconnect old
             actionManager.do(new DisconnectAction(output, savedConnInput));
@@ -31077,7 +31218,7 @@ graphView.endConnection = pointerId =>
         input.connecting = false;
         
         if (   output
-            && input.accepts(output)) // TO OUTPUT
+            && input.supports(output.types)) // TO OUTPUT
             actionManager.do(new ConnectAction(output, input));
 
         graphView.cancelConnection(pointerId);
@@ -31699,8 +31840,8 @@ extends Parameter
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         // console.log(this.id + '.setValue() value =', value);
-        // console.trace();
 
+        
         console.assert(
             value instanceof NumberValue,
             'value must be a NumberValue');
@@ -32446,7 +32587,7 @@ extends Parameter
         {
             request.push(...pushInputOrParam(this.input, gen));
 
-            if (arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types))
+            if (this.input.connectedOutput.supports(COLOR_TYPES))
             {
                 request.push(
                     NUMBER_VALUE, 
@@ -32585,7 +32726,7 @@ extends Parameter
                 enable 
             || !this.input 
             || !this.input.connected 
-            ||  arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types);
+            ||  this.input.connectedOutput.supports(COLOR_TYPES);
 
         enableElementText(this.  colorControl, enable);
         enableElementText(this.opacityControl, opEnable);
@@ -32770,10 +32911,7 @@ extends Parameter
         //console.log('value =', value);
         
         if (!(value instanceof StrokeValue))
-        {
-            //console.trace();
             console.assert(false, 'StrokeParam.setValue(value) is ' + typeof value + ', must be a StrokeValue');
-        }
 
 
         console.assert(
@@ -32825,8 +32963,8 @@ extends Parameter
         {
             request.push(...pushInputOrParam(this.input, gen));
 
-            if (   arraysIntersect( FILL_TYPES, this.input.connectedOutput.types)
-                || arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types))
+            if (   this.input.connectedOutput.support( FILL_TYPES)
+                || this.input.connectedOutput.support(COLOR_TYPES))
             {
                 const val = noNaN(this.control.value,      1);
                 const dec = noNaN(this.control.displayDec, 0);
@@ -32963,8 +33101,8 @@ extends Parameter
                 enable 
             || !this.input 
             || !this.input.connected 
-            ||  arraysIntersect( FILL_TYPES, this.input.connectedOutput.types)
-            ||  arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types);
+            ||  this.input.connectedOutput.support( FILL_TYPES)
+            ||  this.input.connectedOutput.support(COLOR_TYPES);
 
         enableElementText(this.textControl, enable);
         enableElementText(this.control,     opEnable);
@@ -33088,10 +33226,7 @@ extends Parameter
         //console.log('value =', value);
         
         if (!(value instanceof ListValue))
-        {
-            //console.trace();
             console.assert(false, 'StyleParam.setValue(value) is ' + typeof value + ', must be a ListValue');
-        }
 
 
         console.assert(
@@ -33133,7 +33268,7 @@ extends Parameter
         {
             request.push(...pushInputOrParam(this.input, gen));
 
-            // if (arraysIntersect(ALL_TYPES, this.input.connectedOutput.types))
+            // if (this.input.connectedOutput.supports(ALL_TYPES))
             // {
             //     const val = noNaN(this.control.value,      1);
             //     const dec = noNaN(this.control.displayDec, 0);
@@ -33229,7 +33364,7 @@ extends Parameter
                 enable 
             || !this.input 
             || !this.input.connected 
-            ||  arraysIntersect(ALL_TYPES, this.input.connectedOutput.types);
+            ||  this.input.connectedOutput.supports(ALL_TYPES);
 
         enableElementText(this.textControl, enable);
         this.textControl.readOnly = !enable;
@@ -34180,7 +34315,7 @@ extends EventTarget
 
             if (   graphView.tempConn
                 && graphView.tempConn.output
-                && this.accepts(graphView.tempConn.output)
+                && this.supports(graphView.tempConn.output.types)
                 && (  !this.connected
                     || this.connectedOutput != graphView.tempConn.output
                     || this == savedInput))
@@ -34237,7 +34372,7 @@ extends EventTarget
                  && tc.input)
             && !(   tc
                  && tc.output
-                 && (  !this.accepts(tc.output)
+                 && (  !this.supports(tc.output.types)
                      || tc.output.node.isOrFollows(this.node)));
 
         const color =
@@ -34263,7 +34398,7 @@ extends EventTarget
                    ||    graphView.overInput == this
                       && !tc.input)
                && !(    tc.output
-                    && !this.accepts(tc.output));
+                    && !this.supports(tc.output.types));
 
         this.div.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -34291,7 +34426,7 @@ extends EventTarget
                : rgba2style(toRgba(this.connectedOutput.wireColor)))
             : (   tc
                && tc.output
-               && this.accepts(tc.output)
+               && this.supports(tc.output.types)
                && graphView.overInput == this
                ? rgba2style(toRgba(tc.output.wireColor))
                : (   tc
@@ -34312,9 +34447,9 @@ extends EventTarget
 
 
 
-    accepts(output)
+    supports(types)
     {
-        return arraysIntersect(this.types, output.types);
+        return arraysIntersect(this.types, types);
     }
 }
 
@@ -34455,6 +34590,12 @@ class Output
         this.mouseOver = false;
         this.updateControl();
 
+        // if (graphView.tempConn)
+        // {
+        //     console.log('graphView.tempConn.output =', graphView.tempConn.output);
+        //     console.log('graphView.tempConn.input =', graphView.tempConn.input);
+        // }
+
         if (   graphView.tempConn
             && graphView.tempConn.input)
             graphView.tempConn.wire2.outputPos =
@@ -34517,6 +34658,13 @@ class Output
 
 
         show(this.wireBall, isConnected);
+    }
+
+
+
+    supports(types)
+    {
+        return arraysIntersect(this.types, types);
     }
 }
 
@@ -34587,14 +34735,14 @@ class Connection
         this.wire.getColor = () =>
         {
             if (this.output)
-                return arraysIntersect(LIST_TYPES, this.output.types)
+                return this.output.supports(LIST_TYPES)
                        ? (rgbDocumentBody)
                        : this.output.wireColor;
 
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && this.input.accepts(graphView.overOutput)) 
+                    && this.input.supports(graphView.overOutput)) 
                     return graphView.overOutput.wireColor;
                 else
                     return this.input.wireColor;
@@ -34614,7 +34762,7 @@ class Connection
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && this.input.accepts(graphView.overOutput)) 
+                    && this.input.supports(graphView.overOutput.types)) 
                     return graphView.overOutput.wireColor;
                 else
                     return this.input.wireColor;
@@ -34686,7 +34834,7 @@ class Connection
             this.wire. inBall.style.fill   = rgba2style(color);
             this.wire.outBall.style.fill   = rgba2style(color);
 
-            //const listType = arraysIntersect(LIST_TYPES, this.output.types);
+            //const listType = this.output.supports(LIST_TYPES);
 
 
             let width = 1.6 * graphView.zoom;
@@ -34768,7 +34916,7 @@ class Connection
             }
 
 
-            const listType = arraysIntersect(LIST_TYPES, this.output.types);
+            const listType = this.output.supports(LIST_TYPES);
             this.wire2.curve.style.stroke = listType ? rgba2style(color)  : 'transparent';
 
 
@@ -34919,6 +35067,7 @@ class Connection
             // + (this.output.param ? ',' + NL + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
             + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "' + (this.input.param ? this.input.param.id : this.input.index) + '"'
+            + ',' + NL + pos + tab + '"list": "' + boolToString(this.output.supports(LIST_TYPES)) + '"'
             // + (this.input.param ? ',' + NL + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +       NL + pos + '}';
 
@@ -35155,9 +35304,10 @@ class Operator
 
     getInputId(input)
     {
+        console.log('input =', input);
         return input.param
-               ? input.param.id
-               : input.index;
+             ? input.param.id
+             : input.index.toString();
     }
 
 
@@ -35195,7 +35345,7 @@ class Operator
 
     getAutoInput(outTypes)
     {
-        const inputs = this.inputs.filter(i => arraysIntersect(i.types, outTypes));
+        const inputs = this.inputs.filter(i => i.supports(outTypes));
 
 
         if (graphView.overInput)
@@ -35234,8 +35384,8 @@ class Operator
     getOutputId(output)
     {
         return output.param
-               ? output.param.id
-               : output.index;
+             ? output.param.id
+             : output.index.toString();
     }
 
 
@@ -35883,7 +36033,6 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
-    //console.trace();
     //console.log('pushUpdateFromParam(' + (param ? param : '') +')', nodes);
 
     
@@ -37113,7 +37262,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return arraysIntersect(LIST_TYPES, output.types);
+        return output.supports(LIST_TYPES);
     }
 
 
@@ -37171,7 +37320,7 @@ extends OperatorBase
                 this.addParamByType(value.type, id, false, false, true);
             }
         }
-        
+
         
         super.updateValues(updateParamId, paramIds, values);
     }
@@ -38183,7 +38332,7 @@ extends OpColorBase
 
     canAutoConnectFrom(output)
     {
-        return arraysIntersect(COLOR_TYPES, output.types);
+        return output.supports(COLOR_TYPES);
     }
 
 
@@ -39622,7 +39771,7 @@ extends OpColorBase
 
     canAutoConnectFrom(output)
     {
-        return arraysIntersect(COLOR_TYPES, output.types);
+        return output.supports(COLOR_TYPES);
     }
 
 
@@ -40375,7 +40524,7 @@ extends OpColorBase
     get inputIsShape() 
     {
         return this.inputs[0].connected
-            && arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types);
+            && this.inputs[0].connectedOutput.supports(SHAPE_TYPES);
     }
     
     
@@ -40407,8 +40556,8 @@ extends OpColorBase
     
     canAutoConnectFrom(output)
     {
-        return arraysIntersect(OBJECT_TYPES, output.types)
-            || arraysIntersect( COLOR_TYPES, output.types);
+        return output.supports(OBJECT_TYPES)
+            || output.supports( COLOR_TYPES);
     }
 
 
@@ -40438,7 +40587,7 @@ extends OpColorBase
                 if (      param.input 
                        && param.input.connected
                        && param.canShow()
-                    || arraysIntersect(OBJECT_TYPES, input.connectedOutput.types)) 
+                    || input.connectedOutput.supports(OBJECT_TYPES)) 
                     paramIds.push(param.id);
         }
         else
@@ -40475,7 +40624,7 @@ extends OpColorBase
 
         this.outputs[0].types =
                this.inputs[0].connected
-            && arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types)
+            && this.inputs[0].connectedOutput.supports(SHAPE_TYPES)
             ? [...this.inputs[0].connectedOutput.types, FILL]
             : [FILL];
 
@@ -40620,8 +40769,8 @@ extends OpColorBase
     updateParams()
     {
         const enable = 
-               !this.inputs[0].connected
-            ||  arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types);
+              !this.inputs[0].connected
+            || this.inputs[0].connectedOutput.supports(SHAPE_TYPES);
 
         this.paramColor  .enableControlText(enable);
         this.paramOpacity.enableControlText(enable);
@@ -40648,7 +40797,7 @@ extends OpColorBase
     get inputIsShape() 
     {
         return this.inputs[0].connected
-            && arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types);
+            && this.inputs[0].connectedOutput.supports(SHAPE_TYPES);
     }
 
 
@@ -40683,8 +40832,8 @@ extends OpColorBase
     
     canAutoConnectFrom(output)
     {
-        return arraysIntersect(OBJECT_TYPES, output.types)
-            || arraysIntersect( COLOR_TYPES, output.types);
+        return output.supports(OBJECT_TYPES)
+            || output.supports( COLOR_TYPES);
     }
 
 
@@ -40714,8 +40863,8 @@ extends OpColorBase
                 if (      (      param.input 
                               && param.input.connected
                               && param.canShow()
-                           || arraysIntersect(OBJECT_TYPES, input.connectedOutput.types)
-                       && !arraysIntersect(STROKE_TYPES, input.connectedOutput.types))
+                           || input.connectedOutput.supports(OBJECT_TYPES)
+                       && !input.connectedOutput.supports(STROKE_TYPES))
                     || param.id == 'fill')
                     paramIds.push(param.id);
         }
@@ -40754,7 +40903,7 @@ extends OpColorBase
             
         this.outputs[0].types =
                this.inputs[0].connected
-            && arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types)
+            && this.inputs[0].connectedOutput.supports(SHAPE_TYPES)
             ? [...this.inputs[0].connectedOutput.types, STROKE]
             : [STROKE];
 
@@ -40845,8 +40994,8 @@ extends OpColorBase
  
         const enable = 
                !this.inputs[0].connected
-            //|| !arraysIntersect( SHAPE_TYPES, this.inputs[0].connectedOutput.types)
-            || !arraysIntersect(STROKE_TYPES, this.inputs[0].connectedOutput.types);
+            //|| !this.inputs[0].connectedOutput.supports(SHAPE_TYPES)
+            || !this.inputs[0].connectedOutput.supports(STROKE_TYPES);
 
         this.paramFill  .enableControlText(enableFill);
         this.paramWeight.enableControlText(enable);
@@ -41685,7 +41834,7 @@ extends Action
 
         super('CONNECT ' 
             + output.node.id + '.' + output.id
-            + ' → '
+            + ' ' + rightArrowChar(output.supports(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);
 
 
@@ -42166,9 +42315,12 @@ extends Action
 
     constructor(output, input)
     {
+        console.log('output =', output);
+        console.log('input =', input);
+
         super('DISCONNECT ' 
             + output.node.id + '.' + output.id
-            + ' → '
+            + ' ' + rightArrowChar(output.supports(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);
 
 
@@ -42189,7 +42341,7 @@ extends Action
             uiDeleteObjects([id]); // clean up now irrelevant objects
 
 
-        uiDisconnect(this.inputNode.inputs[this.inputIndex]);
+        uiDisconnect(this.inputNode.inputs.find(i => i.id == this.inputId));
         this.inputNode.invalidate();
         
         
@@ -42539,9 +42691,9 @@ extends Action
         super(
              'RECONNECT '
             + output.node.id + '.' + output.id
-            + ' (← '
+            + ' (' + leftArrowChar(oldInput.supports(LIST_TYPES)) + ' '
             + oldInput.node.id + '.' + oldInput.id
-            + ') → '
+            + ') ' + rightArrowChar(output.supports(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);
 
 
@@ -42691,7 +42843,7 @@ extends Action
 
                 for (const connectedInput of output.connectedInputs)
                 {
-                    if (arraysIntersect(input.connectedOutput.types, connectedInput.types))
+                    if (input.connectedOutput.supports(connectedInput.types))
                     {
                         this.newConnections.push(
                         {
@@ -43526,6 +43678,91 @@ const zoomOutCursor =
     + 'VsdD0iZWZmZWN0MV9kcm9wU2hhZG93Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBo'
     + 'aWMiIGluMj0iZWZmZWN0MV9kcm9wU2hhZG93IiByZXN1bHQ9InNoYXBlIi8+CjwvZmlsdGVyPgo8L2RlZnM+Cj'
     + 'wvc3ZnPgo=) 8 8, auto';
+
+
+function showDeleteConnectionsDialog()
+{
+    deleteConnectionsDialog.style.display = 'block';
+
+    deleteConnectionsUserInfo.innerHTML = '<span style="user-select: none; color: #aaa;">User ID: </span>' + currentUser.id;
+
+    setDefaultDeleteConnectionsInput();
+    deleteConnectionsInput.value = '';
+    
+    window.setTimeout(() => document.getElementById('deleteConnectionsInput').focus(), 0);
+}
+
+
+
+function hideDeleteConnectionsDialog()
+{
+    deleteConnectionsDialog.style.display = 'none';
+}
+
+
+
+deleteConnectionsInput.addEventListener('input', () =>
+{
+    let val = deleteConnectionsInput.value;
+    
+    val = val.toUpperCase();
+    val = val.replace(/[^12345679ABCDEFGHJKLMNPQRSTUVWXYZ]/g, '');
+    val = val.substring(0, Math.min(val.length, 13));
+    
+    deleteConnectionsInput.value = val;
+
+    // deleteConnectionsInputBack.innerHTML = 
+    //       '&nbsp;'.repeat(val.length)
+    //     + '•'.repeat(13 - val.length);
+
+    
+    // if (val.length == 13)
+    // {
+    //     if (validateProductKey(currentUser.id, val))
+    //     {
+    //         productKey = val;        
+    //         uiSetLocalData('productKey', productKey);
+            
+    //         productKeyInput.blur();
+    //         setGoodDeleteConnectionsInput();
+            
+    //         window.setTimeout(() => 
+    //         {
+    //             hideDeleteConnectionsDialog();
+    //             uiNotify('✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 6000, false, '');
+    //         }, 
+    //         1200);
+    //     }
+    //     else
+    //         setBadDeleteConnectionsInput();
+    // }
+    // else
+    //     setDefaultDeleteConnectionsInput();
+});
+
+
+
+function setBadDeleteConnectionsInput()
+{
+    deleteConnectionsInput.style.outline   = '2px dashed #e00';        
+    deleteConnectionsInput.style.boxShadow = 'none';
+}
+
+
+
+function setGoodDeleteConnectionsInput()
+{
+    deleteConnectionsInput.style.outline   = 'none';
+    deleteConnectionsInput.style.boxShadow = '0 0 0 2px #0b0';
+}
+
+
+
+function setDefaultDeleteConnectionsInput()
+{
+    deleteConnectionsInput.style.outline   = 'none';
+    deleteConnectionsInput.style.boxShadow = '0 0 0 2px var(--figma-color-bg-brand)'; 
+}
 
 
 document.addEventListener('pointerdown', function(e)
@@ -45105,7 +45342,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
 function canAutoConnectNode(node)
 {
     const selNode = graph.nodes.find(n => n.selected);
-    const inputs  = node.inputs.filter(i => arraysIntersect(i.types, selNode.outputs[0].types));
+    const inputs  = node.inputs.filter(i => i.supports(selNode.outputs[0].types));
 
     return selNode
         && selNode.outputs.length > 0
@@ -45117,7 +45354,7 @@ function canAutoConnectNode(node)
 function autoConnectNode(node, insert)
 {
     const selNode = graph.nodes.find(n => n.selected);
-    const inputs  = node.inputs.filter(i => arraysIntersect(i.types, selNode.outputs[0].types));
+    const inputs  = node.inputs.filter(i => i.supports(selNode.outputs[0].types));
 
     console.assert(
            selNode
@@ -45161,8 +45398,6 @@ function uiDeleteNodes(nodeIds)
 
 function uiDeleteObjects(nodeIds)
 {
-    //console.trace();
-
     uiQueueMessageToFigma({
         cmd:    'figDeleteObjects',
         nodeIds: nodeIds
@@ -46031,10 +46266,21 @@ var productKey = '';
 
 function showProductKeyDialog()
 {
-    productKeyBack  .style.display = 'block';
+    // productKeyBack  .style.display = 'block';
     productKeyDialog.style.display = 'block';
 
-    productKeyUserInfo.innerHTML = '<span style="user-select: none; color: #aaa;">User ID: </span>' + currentUser.id;
+
+    productKeyTitle.buttonDown0 = false;
+    
+    productKeyTitle.moveStart   = point_NaN;
+    productKeyTitle.pStart      = point_NaN;
+ 
+
+    productKeyUserNameTitle.innerHTML = '<span style="user-select: none; color: #aaa;">Name:</span>';
+    productKeyUserName     .innerHTML = currentUser.name;
+
+    productKeyUserIdTitle  .innerHTML = '<span style="user-select: none; color: #aaa;">User ID:</span>';
+    productKeyUserId       .innerHTML = currentUser.id;
 
     setDefaultProductKeyInput();
     productKeyInputBack.innerHTML = '•'.repeat(13);
@@ -46049,15 +46295,42 @@ function showProductKeyDialog()
 
 function hideProductKeyDialog()
 {
-    productKeyBack  .style.display = 'none';
+    // productKeyBack  .style.display = 'none';
     productKeyDialog.style.display = 'none';
 }
 
 
 
-productKeyBack.addEventListener('pointerdown', () =>
+// productKeyBack.addEventListener('pointerdown', () =>
+// {
+//     hideProductKeyDialog();
+// });
+
+
+
+productKeyTitle.addEventListener('pointerdown', e => 
 {
-    hideProductKeyDialog();
+    productKeyTitle.buttonDown0 = true;
+
+    productKeyTitle.moveStart = point(productKeyDialog.offsetX, productKeyDialog.offsetY);
+    productKeyTitle.pStart    = point(e.clientX, e.clientY);
+});
+
+
+
+productKeyTitle.addEventListener('pointermove', e =>
+{
+    productKeyTitle.buttonDown0 = true;
+
+    productKeyDialog.style.left = productKeyTitle.moveStart.x + (e.clientX - productKeyTitle.pStart.x);
+    productKeyDialog.style.top  = productKeyTitle.moveStart.y + (e.clientY - productKeyTitle.pStart.y);
+});
+
+
+
+productKeyTitle.addEventListener('pointerup', e =>
+{
+    productKeyTitle.buttonDown0 = false;
 });
 
 
@@ -46090,8 +46363,6 @@ productKeyInput.addEventListener('input', () =>
             window.setTimeout(() => 
             {
                 hideProductKeyDialog();
-                //updateMenuSelectItems();
-
                 uiNotify('✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 6000, false, '');
             }, 
             1200);

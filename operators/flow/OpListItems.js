@@ -19,7 +19,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return arraysIntersect(LIST_TYPES, output.types);
+        return output.supports(LIST_TYPES);
     }
 
 
@@ -77,7 +77,7 @@ extends OperatorBase
                 this.addParamByType(value.type, id, false, false, true);
             }
         }
-        
+
         
         super.updateValues(updateParamId, paramIds, values);
     }

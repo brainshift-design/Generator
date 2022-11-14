@@ -177,8 +177,8 @@ function figLogAllSavedConns()
 
         return 0;
     });
-    
-    connKeys.forEach(k => logSavedConn(k));
+
+    connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k))));
 }
 
 

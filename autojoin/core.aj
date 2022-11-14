@@ -1,4 +1,4 @@
-../core/def.js
+../core/common.js
 ../core/data.js
 ../core/lib.js
 ../core/math.js

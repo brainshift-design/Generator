@@ -1,6 +1,6 @@
 function logSavedNode(nodeKey)
 {
-    let txt = figGetPageData(nodeKey, false)
+    let log = figGetPageData(nodeKey, false)
         .replace('{\n', '')
         .replace('\n}', '')
 
@@ -21,11 +21,11 @@ function logSavedNode(nodeKey)
         .split('"],\n').join('\n');
 
 
-    if (txt[txt.length-1] == '"')    
-        txt = txt.substring(0, txt.length - 1);
+    if (log[log.length-1] == '"')    
+        log = log.substring(0, log.length - 1);
 
-    if (txt.substring(txt.length-2) == '"]')    
-        txt = txt.substring(0, txt.length - 2);
+    if (log.substring(log.length-2) == '"]')    
+        log = log.substring(0, log.length - 2);
 
 
     console.log(
@@ -33,22 +33,20 @@ function logSavedNode(nodeKey)
         'background: #fdb', 
          noNodeTag(nodeKey), 
         'background: #fed;',    
-         txt);
+         log);
 }
 
 
 
-function logSavedConn(connKey)
+function logSavedConn(conn)
 {
-    const parts = noConnTag(connKey).split(' ');
-
-    const conn = 
-          parts[0] + '.' + parts[1]
-        + ' → '
-        + parts[2] + '.' + parts[3];
+    const log = 
+          conn.outputNodeId + '.' + conn.outputId
+        + ' ' + rightArrowChar(parseBool(conn.list)) + ' '
+        + conn.inputNodeId + '.' + conn.inputId;
 
     console.log(
         '%c%s', 
         'background: #cfc', 
-        conn); 
+        log); 
 }

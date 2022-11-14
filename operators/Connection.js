@@ -64,14 +64,14 @@ class Connection
         this.wire.getColor = () =>
         {
             if (this.output)
-                return arraysIntersect(LIST_TYPES, this.output.types)
+                return this.output.supports(LIST_TYPES)
                        ? (rgbDocumentBody)
                        : this.output.wireColor;
 
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && this.input.accepts(graphView.overOutput)) 
+                    && this.input.supports(graphView.overOutput)) 
                     return graphView.overOutput.wireColor;
                 else
                     return this.input.wireColor;
@@ -91,7 +91,7 @@ class Connection
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && this.input.accepts(graphView.overOutput)) 
+                    && this.input.supports(graphView.overOutput.types)) 
                     return graphView.overOutput.wireColor;
                 else
                     return this.input.wireColor;
@@ -163,7 +163,7 @@ class Connection
             this.wire. inBall.style.fill   = rgba2style(color);
             this.wire.outBall.style.fill   = rgba2style(color);
 
-            //const listType = arraysIntersect(LIST_TYPES, this.output.types);
+            //const listType = this.output.supports(LIST_TYPES);
 
 
             let width = 1.6 * graphView.zoom;
@@ -245,7 +245,7 @@ class Connection
             }
 
 
-            const listType = arraysIntersect(LIST_TYPES, this.output.types);
+            const listType = this.output.supports(LIST_TYPES);
             this.wire2.curve.style.stroke = listType ? rgba2style(color)  : 'transparent';
 
 
@@ -396,6 +396,7 @@ class Connection
             // + (this.output.param ? ',' + NL + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
             + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "' + (this.input.param ? this.input.param.id : this.input.index) + '"'
+            + ',' + NL + pos + tab + '"list": "' + boolToString(this.output.supports(LIST_TYPES)) + '"'
             // + (this.input.param ? ',' + NL + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +       NL + pos + '}';
 

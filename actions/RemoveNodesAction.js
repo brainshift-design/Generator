@@ -61,7 +61,7 @@ extends Action
 
                 for (const connectedInput of output.connectedInputs)
                 {
-                    if (arraysIntersect(input.connectedOutput.types, connectedInput.types))
+                    if (input.connectedOutput.supports(connectedInput.types))
                     {
                         this.newConnections.push(
                         {

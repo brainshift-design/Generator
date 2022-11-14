@@ -422,7 +422,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
 function canAutoConnectNode(node)
 {
     const selNode = graph.nodes.find(n => n.selected);
-    const inputs  = node.inputs.filter(i => arraysIntersect(i.types, selNode.outputs[0].types));
+    const inputs  = node.inputs.filter(i => i.supports(selNode.outputs[0].types));
 
     return selNode
         && selNode.outputs.length > 0
@@ -434,7 +434,7 @@ function canAutoConnectNode(node)
 function autoConnectNode(node, insert)
 {
     const selNode = graph.nodes.find(n => n.selected);
-    const inputs  = node.inputs.filter(i => arraysIntersect(i.types, selNode.outputs[0].types));
+    const inputs  = node.inputs.filter(i => i.supports(selNode.outputs[0].types));
 
     console.assert(
            selNode
@@ -478,8 +478,6 @@ function uiDeleteNodes(nodeIds)
 
 function uiDeleteObjects(nodeIds)
 {
-    //console.trace();
-
     uiQueueMessageToFigma({
         cmd:    'figDeleteObjects',
         nodeIds: nodeIds

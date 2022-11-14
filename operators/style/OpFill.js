@@ -12,7 +12,7 @@ extends OpColorBase
     get inputIsShape() 
     {
         return this.inputs[0].connected
-            && arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types);
+            && this.inputs[0].connectedOutput.supports(SHAPE_TYPES);
     }
     
     
@@ -44,8 +44,8 @@ extends OpColorBase
     
     canAutoConnectFrom(output)
     {
-        return arraysIntersect(OBJECT_TYPES, output.types)
-            || arraysIntersect( COLOR_TYPES, output.types);
+        return output.supports(OBJECT_TYPES)
+            || output.supports( COLOR_TYPES);
     }
 
 
@@ -75,7 +75,7 @@ extends OpColorBase
                 if (      param.input 
                        && param.input.connected
                        && param.canShow()
-                    || arraysIntersect(OBJECT_TYPES, input.connectedOutput.types)) 
+                    || input.connectedOutput.supports(OBJECT_TYPES)) 
                     paramIds.push(param.id);
         }
         else
@@ -112,7 +112,7 @@ extends OpColorBase
 
         this.outputs[0].types =
                this.inputs[0].connected
-            && arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types)
+            && this.inputs[0].connectedOutput.supports(SHAPE_TYPES)
             ? [...this.inputs[0].connectedOutput.types, FILL]
             : [FILL];
 
@@ -257,8 +257,8 @@ extends OpColorBase
     updateParams()
     {
         const enable = 
-               !this.inputs[0].connected
-            ||  arraysIntersect(SHAPE_TYPES, this.inputs[0].connectedOutput.types);
+              !this.inputs[0].connected
+            || this.inputs[0].connectedOutput.supports(SHAPE_TYPES);
 
         this.paramColor  .enableControlText(enable);
         this.paramOpacity.enableControlText(enable);

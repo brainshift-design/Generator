@@ -16,9 +16,12 @@ extends Action
 
     constructor(output, input)
     {
+        console.log('output =', output);
+        console.log('input =', input);
+
         super('DISCONNECT ' 
             + output.node.id + '.' + output.id
-            + ' → '
+            + ' ' + rightArrowChar(output.supports(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);
 
 
@@ -39,7 +42,7 @@ extends Action
             uiDeleteObjects([id]); // clean up now irrelevant objects
 
 
-        uiDisconnect(this.inputNode.inputs[this.inputIndex]);
+        uiDisconnect(this.inputNode.inputs.find(i => i.id == this.inputId));
         this.inputNode.invalidate();
         
         

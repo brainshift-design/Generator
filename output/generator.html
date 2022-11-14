@@ -16,6 +16,12 @@ const GENERATOR_LOGO = '◦G•';
 const OBJECT_PREFIX  = 'G.';
 
 
+function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
+function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
+
+function parseBool(str) { return str === 'true'; }
+
+
 
 function rgbHeaderFromType(type, active)
 {
@@ -2023,13 +2029,6 @@ function subscriptChar(c)
 
 
 
-function parseBool(str)
-{
-    return str === 'true';
-}
-
-
-
 function osCtrl()  { return isMac ? '⌘' : 'Ctrl+';  }
 function osAlt()   { return isMac ? '⌥' : 'Alt+';   }
 function osShift() { return isMac ? '⇧'  : 'Shift+'; }
@@ -3878,10 +3877,7 @@ extends GValue
         super(NUMBER_VALUE);
 
         if (typeof val !== 'number')
-        { 
-            console.trace();
             console.assert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
-        }
 
 
         this.value    = val;
@@ -3977,10 +3973,7 @@ extends GValue
 function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
-    {
-        //console.trace();
         console.assert(false, 'number value missing \',\'');
-    }
     
     const parts = str.split(',');
 
@@ -4393,10 +4386,7 @@ extends GValue
                 miter  = new NumberValue(28.96, 2))
     {
         if (fill.type != FILL_VALUE)
-        {
-            console.trace();
             console.assert(false, 'fill.type must be FILL_VALUE');
-        }
 
 
         super(STROKE_VALUE);
@@ -8900,9 +8890,6 @@ function genPostMessageToUI(msg)
 
 function genQueueMessageToUI(msg)
 {
-    // console.log('genQueueMessageToUI()');
-    // console.trace();
-
     uiMessages.push(msg);
     genPostNextMessageToUI();
 }
@@ -8911,12 +8898,6 @@ function genQueueMessageToUI(msg)
 
 function genPostNextMessageToUI(msg)
 {
-    // console.log('genPostNextMessageToUI()');
-    // console.trace();
-
-    //console.log('gen.uiMessages.length = ', uiMessages.length);
-
-    
     if (uiMessages.length > 0)
         //&& !genFigMessagePosted)
     {
@@ -8982,10 +8963,6 @@ var lastUpdateObjects = [];
 
 function genRequest(request)
 {
-    // console.log('genRequest()');
-    // console.trace();
-
-
     const set = parseInt(request[0]);
 
     const includeLxxColorSpaces = (set >> 0) & 1 != 0;
@@ -9041,9 +9018,6 @@ function genRequest(request)
 
 function genPushUpdateValue(parse, nodeId, paramId, value, forceUpdate = false)
 {
-    //logFunction('genPushUpdateValue()');
-    //console.trace();
-    
     if (   nodeId  == parse.updateNodeId
         && paramId == parse.updateParamId
         && !forceUpdate)
@@ -10585,11 +10559,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == POLYGON           ) result = genParsePolygon         (parse);
     else if (parse.next == STAR              ) result = genParseStar            (parse);
 
-    else                                       
-    {
-        console.trace();
-        console.assert(false, 'unknown parse token \'' + parse.next + '\'');
-    }
+    else console.assert(false, 'unknown parse token \'' + parse.next + '\'');
 
 
     parse.inParam = false;

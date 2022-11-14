@@ -72,6 +72,8 @@ graphView.endConnection = pointerId =>
 {
     if (graphView.tempConn.output) // FROM OUTPUT
     {
+        console.log('graphView.tempConn.output.node =', graphView.tempConn.output.node);
+
         let output = graphView.tempConn.output;
         let input  = graphView.overInput;
 
@@ -83,7 +85,7 @@ graphView.endConnection = pointerId =>
         output.connecting = false;
         
         if (   input
-            && input.accepts(output)) // TO INPUT
+            && input.supports(output.types)) // TO INPUT
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex)
@@ -109,7 +111,10 @@ graphView.endConnection = pointerId =>
             else if (   !savedConnInput
                      && (  !input.connected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new
+            {
+                console.log('output =', output.toString());
                 actionManager.do(new ConnectAction(output, input));
+            }
         }
         else if (savedConnInput) // disconnect old
             actionManager.do(new DisconnectAction(output, savedConnInput));
@@ -125,7 +130,7 @@ graphView.endConnection = pointerId =>
         input.connecting = false;
         
         if (   output
-            && input.accepts(output)) // TO OUTPUT
+            && input.supports(output.types)) // TO OUTPUT
             actionManager.do(new ConnectAction(output, input));
 
         graphView.cancelConnection(pointerId);

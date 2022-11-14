@@ -125,8 +125,9 @@ function initMenus()
     
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-                                   new MenuItem('Log\u2008all\u2008nodes',       {callback: () => uiLogAllSavedNodes()}),
-                                   new MenuItem('Log\u2008all\u2008connections', {callback: () => uiLogAllSavedConns()}),
+                                   new MenuItem('List\u2008all\u2008nodes',                    {callback: () => uiLogAllSavedNodes()}),
+                                   new MenuItem('List\u2008all\u2008connections',              {callback: () => uiLogAllSavedConns()}),
+                                   new MenuItem('Delete\u2008all\u2008connections\u2008to...', {callback: () => showDeleteConnectionsDialog()}),
                                    new MenuItem('',                    {separator: true}),
         menuItemShowNodeId       = new MenuItem('Show node IDs',
         {

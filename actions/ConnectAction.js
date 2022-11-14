@@ -39,7 +39,7 @@ extends Action
 
         super('CONNECT ' 
             + output.node.id + '.' + output.id
-            + ' → '
+            + ' ' + rightArrowChar(output.supports(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);
 
 

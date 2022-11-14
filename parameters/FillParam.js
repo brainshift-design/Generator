@@ -237,7 +237,7 @@ extends Parameter
         {
             request.push(...pushInputOrParam(this.input, gen));
 
-            if (arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types))
+            if (this.input.connectedOutput.supports(COLOR_TYPES))
             {
                 request.push(
                     NUMBER_VALUE, 
@@ -376,7 +376,7 @@ extends Parameter
                 enable 
             || !this.input 
             || !this.input.connected 
-            ||  arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types);
+            ||  this.input.connectedOutput.supports(COLOR_TYPES);
 
         enableElementText(this.  colorControl, enable);
         enableElementText(this.opacityControl, opEnable);

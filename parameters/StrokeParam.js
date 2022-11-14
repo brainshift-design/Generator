@@ -114,10 +114,7 @@ extends Parameter
         //console.log('value =', value);
         
         if (!(value instanceof StrokeValue))
-        {
-            //console.trace();
             console.assert(false, 'StrokeParam.setValue(value) is ' + typeof value + ', must be a StrokeValue');
-        }
 
 
         console.assert(
@@ -169,8 +166,8 @@ extends Parameter
         {
             request.push(...pushInputOrParam(this.input, gen));
 
-            if (   arraysIntersect( FILL_TYPES, this.input.connectedOutput.types)
-                || arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types))
+            if (   this.input.connectedOutput.support( FILL_TYPES)
+                || this.input.connectedOutput.support(COLOR_TYPES))
             {
                 const val = noNaN(this.control.value,      1);
                 const dec = noNaN(this.control.displayDec, 0);
@@ -307,8 +304,8 @@ extends Parameter
                 enable 
             || !this.input 
             || !this.input.connected 
-            ||  arraysIntersect( FILL_TYPES, this.input.connectedOutput.types)
-            ||  arraysIntersect(COLOR_TYPES, this.input.connectedOutput.types);
+            ||  this.input.connectedOutput.support( FILL_TYPES)
+            ||  this.input.connectedOutput.support(COLOR_TYPES);
 
         enableElementText(this.textControl, enable);
         enableElementText(this.control,     opEnable);

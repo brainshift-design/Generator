@@ -53,10 +53,7 @@ extends Parameter
         //console.log('value =', value);
         
         if (!(value instanceof ListValue))
-        {
-            //console.trace();
             console.assert(false, 'StyleParam.setValue(value) is ' + typeof value + ', must be a ListValue');
-        }
 
 
         console.assert(
@@ -98,7 +95,7 @@ extends Parameter
         {
             request.push(...pushInputOrParam(this.input, gen));
 
-            // if (arraysIntersect(ALL_TYPES, this.input.connectedOutput.types))
+            // if (this.input.connectedOutput.supports(ALL_TYPES))
             // {
             //     const val = noNaN(this.control.value,      1);
             //     const dec = noNaN(this.control.displayDec, 0);
@@ -194,7 +191,7 @@ extends Parameter
                 enable 
             || !this.input 
             || !this.input.connected 
-            ||  arraysIntersect(ALL_TYPES, this.input.connectedOutput.types);
+            ||  this.input.connectedOutput.supports(ALL_TYPES);
 
         enableElementText(this.textControl, enable);
         this.textControl.readOnly = !enable;

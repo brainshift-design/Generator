@@ -11,10 +11,7 @@ extends GValue
         super(NUMBER_VALUE);
 
         if (typeof val !== 'number')
-        { 
-            console.trace();
             console.assert(false, 'NumberValue(value) is ' + typeof val + ', must be a number');
-        }
 
 
         this.value    = val;
@@ -110,10 +107,7 @@ extends GValue
 function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
-    {
-        //console.trace();
         console.assert(false, 'number value missing \',\'');
-    }
     
     const parts = str.split(',');
 

@@ -128,7 +128,7 @@ extends EventTarget
 
             if (   graphView.tempConn
                 && graphView.tempConn.output
-                && this.accepts(graphView.tempConn.output)
+                && this.supports(graphView.tempConn.output.types)
                 && (  !this.connected
                     || this.connectedOutput != graphView.tempConn.output
                     || this == savedInput))
@@ -185,7 +185,7 @@ extends EventTarget
                  && tc.input)
             && !(   tc
                  && tc.output
-                 && (  !this.accepts(tc.output)
+                 && (  !this.supports(tc.output.types)
                      || tc.output.node.isOrFollows(this.node)));
 
         const color =
@@ -211,7 +211,7 @@ extends EventTarget
                    ||    graphView.overInput == this
                       && !tc.input)
                && !(    tc.output
-                    && !this.accepts(tc.output));
+                    && !this.supports(tc.output.types));
 
         this.div.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -239,7 +239,7 @@ extends EventTarget
                : rgba2style(toRgba(this.connectedOutput.wireColor)))
             : (   tc
                && tc.output
-               && this.accepts(tc.output)
+               && this.supports(tc.output.types)
                && graphView.overInput == this
                ? rgba2style(toRgba(tc.output.wireColor))
                : (   tc
@@ -260,8 +260,8 @@ extends EventTarget
 
 
 
-    accepts(output)
+    supports(types)
     {
-        return arraysIntersect(this.types, output.types);
+        return arraysIntersect(this.types, types);
     }
 }

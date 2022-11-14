@@ -27,6 +27,9 @@ const TAB = '  ';
 const NL = '\n';
 const GENERATOR_LOGO = '◦G•';
 const OBJECT_PREFIX = 'G.';
+function leftArrowChar(list) { return list ? '⟸' : '⟵'; }
+function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
+function parseBool(str) { return str === 'true'; }
 const INVALID = '?';
 const DISPLAY_INVALID = INVALID; //'🤷‍♂️';
 const LIST_VALUE = 'LIST#';
@@ -173,7 +176,7 @@ VECTOR      V
 
 */
 function logSavedNode(nodeKey) {
-    let txt = figGetPageData(nodeKey, false)
+    let log = figGetPageData(nodeKey, false)
         .replace('{\n', '')
         .replace('\n}', '')
         .replace('[\n' + TAB, '')
@@ -186,18 +189,17 @@ function logSavedNode(nodeKey) {
         .split('",\n').join('\n')
         .split('"\n').join('\n')
         .split('"],\n').join('\n');
-    if (txt[txt.length - 1] == '"')
-        txt = txt.substring(0, txt.length - 1);
-    if (txt.substring(txt.length - 2) == '"]')
-        txt = txt.substring(0, txt.length - 2);
-    console.log('%c%s\n%c%s', 'background: #fdb', noNodeTag(nodeKey), 'background: #fed;', txt);
+    if (log[log.length - 1] == '"')
+        log = log.substring(0, log.length - 1);
+    if (log.substring(log.length - 2) == '"]')
+        log = log.substring(0, log.length - 2);
+    console.log('%c%s\n%c%s', 'background: #fdb', noNodeTag(nodeKey), 'background: #fed;', log);
 }
-function logSavedConn(connKey) {
-    const parts = noConnTag(connKey).split(' ');
-    const conn = parts[0] + '.' + parts[1]
-        + ' → '
-        + parts[2] + '.' + parts[3];
-    console.log('%c%s', 'background: #cfc', conn);
+function logSavedConn(conn) {
+    const log = conn.outputNodeId + '.' + conn.outputId
+        + ' ' + rightArrowChar(parseBool(conn.list)) + ' '
+        + conn.inputNodeId + '.' + conn.inputId;
+    console.log('%c%s', 'background: #cfc', log);
 }
 function logRequest(parse) {
     let log = '';
@@ -829,7 +831,7 @@ function figLogAllSavedConns() {
             return 1;
         return 0;
     });
-    connKeys.forEach(k => logSavedConn(k));
+    connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k))));
 }
 function figSaveConnection(name, json) {
     // console.log('key', connNameForStorage(name));

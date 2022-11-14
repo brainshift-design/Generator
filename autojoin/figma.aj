@@ -1,5 +1,5 @@
 ../core/tags.js
-../core/def.js
+../core/common.js
 ../core/types.js
 
 ../logging/log figma.js

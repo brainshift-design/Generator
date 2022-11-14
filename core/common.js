@@ -10,3 +10,9 @@ const NL             = '\n';
 
 const GENERATOR_LOGO = '◦G•';
 const OBJECT_PREFIX  = 'G.';
+
+
+function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
+function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
+
+function parseBool(str) { return str === 'true'; }

@@ -45,7 +45,7 @@ graphView.addEventListener('pointerdown', e =>
         }
         else if (graphView.overInput)
         {
-            if (graphView.overInput.connectedOutput) // pretend to disconnect
+            if (graphView.overInput.connectedOutput) // begin to disconnect
             {
                 oldReorderIndex = graphView.overInput.index;
 

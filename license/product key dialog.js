@@ -4,10 +4,21 @@ var productKey = '';
 
 function showProductKeyDialog()
 {
-    productKeyBack  .style.display = 'block';
+    // productKeyBack  .style.display = 'block';
     productKeyDialog.style.display = 'block';
 
-    productKeyUserInfo.innerHTML = '<span style="user-select: none; color: #aaa;">User ID: </span>' + currentUser.id;
+
+    productKeyTitle.buttonDown0 = false;
+    
+    productKeyTitle.moveStart   = point_NaN;
+    productKeyTitle.pStart      = point_NaN;
+ 
+
+    productKeyUserNameTitle.innerHTML = '<span style="user-select: none; color: #aaa;">Name:</span>';
+    productKeyUserName     .innerHTML = currentUser.name;
+
+    productKeyUserIdTitle  .innerHTML = '<span style="user-select: none; color: #aaa;">User ID:</span>';
+    productKeyUserId       .innerHTML = currentUser.id;
 
     setDefaultProductKeyInput();
     productKeyInputBack.innerHTML = '•'.repeat(13);
@@ -22,15 +33,42 @@ function showProductKeyDialog()
 
 function hideProductKeyDialog()
 {
-    productKeyBack  .style.display = 'none';
+    // productKeyBack  .style.display = 'none';
     productKeyDialog.style.display = 'none';
 }
 
 
 
-productKeyBack.addEventListener('pointerdown', () =>
+// productKeyBack.addEventListener('pointerdown', () =>
+// {
+//     hideProductKeyDialog();
+// });
+
+
+
+productKeyTitle.addEventListener('pointerdown', e => 
 {
-    hideProductKeyDialog();
+    productKeyTitle.buttonDown0 = true;
+
+    productKeyTitle.moveStart = point(productKeyDialog.offsetX, productKeyDialog.offsetY);
+    productKeyTitle.pStart    = point(e.clientX, e.clientY);
+});
+
+
+
+productKeyTitle.addEventListener('pointermove', e =>
+{
+    productKeyTitle.buttonDown0 = true;
+
+    productKeyDialog.style.left = productKeyTitle.moveStart.x + (e.clientX - productKeyTitle.pStart.x);
+    productKeyDialog.style.top  = productKeyTitle.moveStart.y + (e.clientY - productKeyTitle.pStart.y);
+});
+
+
+
+productKeyTitle.addEventListener('pointerup', e =>
+{
+    productKeyTitle.buttonDown0 = false;
 });
 
 
@@ -63,8 +101,6 @@ productKeyInput.addEventListener('input', () =>
             window.setTimeout(() => 
             {
                 hideProductKeyDialog();
-                //updateMenuSelectItems();
-
                 uiNotify('✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 6000, false, '');
             }, 
             1200);

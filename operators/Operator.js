@@ -148,9 +148,10 @@ class Operator
 
     getInputId(input)
     {
+        console.log('input =', input);
         return input.param
-               ? input.param.id
-               : input.index;
+             ? input.param.id
+             : input.index.toString();
     }
 
 
@@ -188,7 +189,7 @@ class Operator
 
     getAutoInput(outTypes)
     {
-        const inputs = this.inputs.filter(i => arraysIntersect(i.types, outTypes));
+        const inputs = this.inputs.filter(i => i.supports(outTypes));
 
 
         if (graphView.overInput)
@@ -227,8 +228,8 @@ class Operator
     getOutputId(output)
     {
         return output.param
-               ? output.param.id
-               : output.index;
+             ? output.param.id
+             : output.index.toString();
     }
 
 
@@ -876,7 +877,6 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
-    //console.trace();
     //console.log('pushUpdateFromParam(' + (param ? param : '') +')', nodes);
 
     

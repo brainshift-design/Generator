@@ -15,6 +15,7 @@
 
 ../html/ui_1.html
 
+../html/dialogs.html
 ../html/tooltips.html
 
     ../output/generator.html

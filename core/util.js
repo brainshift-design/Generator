@@ -459,13 +459,6 @@ function subscriptChar(c)
 
 
 
-function parseBool(str)
-{
-    return str === 'true';
-}
-
-
-
 function osCtrl()  { return isMac ? '⌘' : 'Ctrl+';  }
 function osAlt()   { return isMac ? '⌥' : 'Alt+';   }
 function osShift() { return isMac ? '⇧'  : 'Shift+'; }

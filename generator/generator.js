@@ -6,10 +6,6 @@ var lastUpdateObjects = [];
 
 function genRequest(request)
 {
-    // console.log('genRequest()');
-    // console.trace();
-
-
     const set = parseInt(request[0]);
 
     const includeLxxColorSpaces = (set >> 0) & 1 != 0;
@@ -65,9 +61,6 @@ function genRequest(request)
 
 function genPushUpdateValue(parse, nodeId, paramId, value, forceUpdate = false)
 {
-    //logFunction('genPushUpdateValue()');
-    //console.trace();
-    
     if (   nodeId  == parse.updateNodeId
         && paramId == parse.updateParamId
         && !forceUpdate)

@@ -134,6 +134,12 @@ class Output
         this.mouseOver = false;
         this.updateControl();
 
+        // if (graphView.tempConn)
+        // {
+        //     console.log('graphView.tempConn.output =', graphView.tempConn.output);
+        //     console.log('graphView.tempConn.input =', graphView.tempConn.input);
+        // }
+
         if (   graphView.tempConn
             && graphView.tempConn.input)
             graphView.tempConn.wire2.outputPos =
@@ -196,5 +202,12 @@ class Output
 
 
         show(this.wireBall, isConnected);
+    }
+
+
+
+    supports(types)
+    {
+        return arraysIntersect(this.types, types);
     }
 }
