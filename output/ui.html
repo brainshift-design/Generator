@@ -58,7 +58,7 @@
     height:           100%;
     overflow:         auto;
 
-    background-color: #0002
+    background-color: #0003
 }
 
 
@@ -71,15 +71,33 @@
     z-index:       2;
     position:      absolute;
     top:           50%;
-    left:          calc(50% - 130px);
+    left:          50%;
+    transform:     translateX(-50%)
+                   translateY(-50%);
     width:         220px;
     height:        170px;
     
-    background:    white;
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
     
     border:        0.5px solid rgba(0, 0, 0, 0.2);
-    box-shadow:    0px 2px 14px rgba(0, 0, 0, 0.15);
+
     border-radius: 4px;
+}
+
+
+.figma-light #productKeyDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #productKeyDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
 }
 
 
@@ -87,7 +105,8 @@
 {
     height:        40px;
     border-bottom: 1px solid rgb(0, 0, 0, 0.15);
-    /* box-shadow: 0 0 0 1px red inset; */
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
 }
 
 
@@ -106,7 +125,7 @@
     align-items:    center;
     letter-spacing: 0.005em;
     
-    color:          rgba(0, 0, 0, 0.8);
+    color:          var(--figma-color-text);
 
     pointer-events: none;
     user-select:    none;
@@ -138,7 +157,7 @@
     margin-bottom:  0px;
 
     position:       relative;
-    left:           34px;
+    left:           40px;
 
     user-select:    text;
 }
@@ -152,7 +171,8 @@
     margin-bottom:  12px;
 
     position:       relative;
-    left:           34px;
+    left:           40px;
+
     user-select:    text;
 }
 
@@ -171,7 +191,7 @@
 {
     font-family:   'Roboto Mono';
     font-size:      16px;
-    color:          #ddd;
+    color:          var(--figma-color-bg-disabled);
     
     width:           9em;
     padding-left:   10px;
@@ -180,7 +200,7 @@
 
     position:       absolute;
     left:           calc(calc(50% - 4.5em) + 1px);
-    top:            calc(50% + 2px);
+    top:            58%;
 
     pointer-events: none;
 }
@@ -199,6 +219,8 @@
     padding-bottom: 2px;
 
     margin-bottom: -3px;
+
+    background:    transparent;
 
     position:      relative;
     left:          calc(50% - 4.5em);
@@ -757,6 +779,11 @@ input[type=text]::selection
     background-color: var(--figma-color-border-brand);
 }
 
+
+a
+{
+    color: var(--figma-color-text-brand);
+}
 
 
 :root
@@ -1970,7 +1997,7 @@ input[type=text]::selection
         
         <div id='productKeyInputBack'></div>
         <input type='text' spellcheck="false" id='productKeyInput' />
-        <div id='productKeyWebsite'><a href='http://www.bourt.com/generator/subscribe' target='_blank'>bourt.com&hairsp;/&hairsp;generator&hairsp;/&hairsp;subscribe</a></div>
+        <div id='productKeyWebsite'><a href='http://www.bourt.com/generator/subscribe' target='_blank'>Buy subscription</a></div>
     </div>
 
 </div>
@@ -26508,10 +26535,6 @@ function initMenus()
     
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-                                   new MenuItem('List\u2008all\u2008nodes',       {callback: () => uiLogAllSavedNodes()}),
-                                   new MenuItem('List\u2008all\u2008connections', {callback: () => uiLogAllSavedConns()}),
-                                   new MenuItem('Delete connections to...',       {callback: () => showDeleteConnectionsDialog()}),
-                                   new MenuItem('',                               {separator: true}),
         menuItemShowNodeId       = new MenuItem('Show node IDs',
         {
             checkCallback: () => settings.showNodeId, 
@@ -26530,37 +26553,40 @@ function initMenus()
         //         graphView.updateShowWires(settings.showWires);  
         //     }
         // }),
-                                   new MenuItem('',                           {separator: true}),
-        menuItemLogRequests      = new MenuItem('Log\u2008requests',          {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
-        menuItemLogRawRequests   = new MenuItem('Log\u2008raw\u2008requests', {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests  )}),
-                                   new MenuItem('',                           {separator: true}),
-        menuItemLogValueUpdates  = new MenuItem('Log\u2008values',            {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
-        menuItemLogRawValues     = new MenuItem('Log\u2008raw\u2008values',   {checkCallback: () => settings.logRawValues    , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues    )}),
-                                   new MenuItem('',                           {separator: true}),
-        menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',           {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)}),
-                                   new MenuItem('',                           {separator: true}),
-        menuItemLogLoading       = new MenuItem('Log\u2008loading',           {checkCallback: () => settings.logLoading      , callback: () => updateSettingAndMenu('logLoading',       true, !settings.logLoading      )}),
-        menuItemLogRawLoading    = new MenuItem('Log\u2008raw\u2008loading',  {checkCallback: () => settings.logRawLoading   , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading   )}),
-                                   new MenuItem('',                           {separator: true}),
-        menuItemLogRawSaving     = new MenuItem('Log\u2008raw\u2008saving',   {checkCallback: () => settings.logRawSaving    , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving    )}),
-                                   new MenuItem('',                           {separator: true}),
-        menuItemLogMessages      = new MenuItem('Log\u2008messages',          {checkCallback: () => settings.logMessages     , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     )}),
-        menuItemLogActions       = new MenuItem('Log\u2008actions',           {checkCallback: () => settings.logActions      , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      )})]);
+                                   new MenuItem('',                               {separator: true}),
+                                   new MenuItem('List\u2008all\u2008nodes',       {callback: () => uiLogAllSavedNodes()}),
+                                   new MenuItem('List\u2008all\u2008connections', {callback: () => uiLogAllSavedConns()}),
+                                   new MenuItem('Delete connections to...',       {callback: () => showDeleteConnectionsDialog()}),
+                                   new MenuItem('',                               {separator: true}),
+        menuItemLogRequests      = new MenuItem('Log\u2008requests',              {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
+        menuItemLogValueUpdates  = new MenuItem('Log\u2008values',                {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
+        menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',               {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)}),
+                                   new MenuItem('',                               {separator: true}),
+        menuItemLogRawRequests   = new MenuItem('Log\u2008raw\u2008requests',     {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests  )}),
+        menuItemLogRawValues     = new MenuItem('Log\u2008raw\u2008values',       {checkCallback: () => settings.logRawValues    , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues    )}),
+                                   new MenuItem('',                               {separator: true}),
+        menuItemLogLoading       = new MenuItem('Log\u2008loading',               {checkCallback: () => settings.logLoading      , callback: () => updateSettingAndMenu('logLoading',       true, !settings.logLoading      )}),
+        menuItemLogRawLoading    = new MenuItem('Log\u2008raw\u2008loading',      {checkCallback: () => settings.logRawLoading   , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading   )}),
+        menuItemLogRawSaving     = new MenuItem('Log\u2008raw\u2008saving',       {checkCallback: () => settings.logRawSaving    , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving    )}),
+                                   new MenuItem('',                               {separator: true}),
+        menuItemLogMessages      = new MenuItem('Log\u2008messages',              {checkCallback: () => settings.logMessages     , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     )}),
+                                   new MenuItem('',                               {separator: true}),
+        menuItemLogActions       = new MenuItem('Log\u2008actions',               {checkCallback: () => settings.logActions      , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      )})]);
 
 
-    menuMainHelp = new Menu('Help and activation', false);
+    menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-        new MenuItem('Help page',            {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-        new MenuItem('',                     {separator: true}),
-        new MenuItem('Enter product key...', {callback:  () => showProductKeyDialog()})]);
+        new MenuItem('Help page',                 {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+        new MenuItem('',                          {separator: true}),
+        new MenuItem('Enter subscription key...', {callback:  () => showProductKeyDialog()})]);
 
 
     menuMain = new Menu('Main menu', false);
     menuMain.addItems([
-                        new MenuItem('Preferences',         {childMenu: menuMainPreferences}),
-        menuItemDebug = new MenuItem('Debug',               {childMenu: menuMainDebug}),
-                        new MenuItem('',                    {separator: true}),
-        menuItemHelp  = new MenuItem('Help and activation', {childMenu: menuMainHelp })]);
+                        new MenuItem('Preferences',           {childMenu: menuMainPreferences}),
+        menuItemDebug = new MenuItem('Debug',                 {childMenu: menuMainDebug}),
+                        new MenuItem('',                      {separator: true}),
+        menuItemHelp  = new MenuItem('Help and subscription', {childMenu: menuMainHelp })]);
   
         
     menuFlow = new Menu('Flow nodes', true, false);
@@ -45053,7 +45079,7 @@ createTooltip(ttCreateInterpolate);      createTooltipSrc(btnCreateInterpolate, 
 
 createTooltip(ttCreateColor);            createTooltipSrc(btnCreateColor,            () => ttCreateColor);
 createTooltip(ttCreateColorInterpolate); createTooltipSrc(btnCreateColorInterpolate, () => ttCreateColorInterpolate);
-createTooltip(ttCreateCorrectColor);    createTooltipSrc(btnCreateCorrectColor,    () => ttCreateCorrectColor);
+createTooltip(ttCreateCorrectColor);     createTooltipSrc(btnCreateCorrectColor,     () => ttCreateCorrectColor);
 createTooltip(ttCreateColorContrast);    createTooltipSrc(btnCreateColorContrast,    () => ttCreateColorContrast);
 createTooltip(ttCreateColorblind);       createTooltipSrc(btnCreateColorblind,       () => ttCreateColorblind);
 

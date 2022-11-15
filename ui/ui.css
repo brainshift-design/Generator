@@ -65,3 +65,9 @@ input[type=text]::selection
     color:            var(--figma-color-bg-inverse);
     background-color: var(--figma-color-border-brand);
 }
+
+
+a
+{
+    color: var(--figma-color-text-brand);
+}

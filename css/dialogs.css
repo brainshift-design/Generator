@@ -11,7 +11,7 @@
     height:           100%;
     overflow:         auto;
 
-    background-color: #0002
+    background-color: #0003
 }
 
 
@@ -24,15 +24,33 @@
     z-index:       2;
     position:      absolute;
     top:           50%;
-    left:          calc(50% - 130px);
+    left:          50%;
+    transform:     translateX(-50%)
+                   translateY(-50%);
     width:         220px;
     height:        170px;
     
-    background:    white;
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
     
     border:        0.5px solid rgba(0, 0, 0, 0.2);
-    box-shadow:    0px 2px 14px rgba(0, 0, 0, 0.15);
+
     border-radius: 4px;
+}
+
+
+.figma-light #productKeyDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #productKeyDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
 }
 
 
@@ -40,7 +58,8 @@
 {
     height:        40px;
     border-bottom: 1px solid rgb(0, 0, 0, 0.15);
-    /* box-shadow: 0 0 0 1px red inset; */
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
 }
 
 
@@ -59,7 +78,7 @@
     align-items:    center;
     letter-spacing: 0.005em;
     
-    color:          rgba(0, 0, 0, 0.8);
+    color:          var(--figma-color-text);
 
     pointer-events: none;
     user-select:    none;
@@ -91,7 +110,7 @@
     margin-bottom:  0px;
 
     position:       relative;
-    left:           34px;
+    left:           40px;
 
     user-select:    text;
 }
@@ -105,7 +124,8 @@
     margin-bottom:  12px;
 
     position:       relative;
-    left:           34px;
+    left:           40px;
+
     user-select:    text;
 }
 
@@ -124,7 +144,7 @@
 {
     font-family:   'Roboto Mono';
     font-size:      16px;
-    color:          #ddd;
+    color:          var(--figma-color-bg-disabled);
     
     width:           9em;
     padding-left:   10px;
@@ -133,7 +153,7 @@
 
     position:       absolute;
     left:           calc(calc(50% - 4.5em) + 1px);
-    top:            calc(50% + 2px);
+    top:            58%;
 
     pointer-events: none;
 }
@@ -152,6 +172,8 @@
     padding-bottom: 2px;
 
     margin-bottom: -3px;
+
+    background:    transparent;
 
     position:      relative;
     left:          calc(50% - 4.5em);
