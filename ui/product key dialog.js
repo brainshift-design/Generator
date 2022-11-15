@@ -29,6 +29,10 @@ function hideProductKeyDialog()
 
 
 
+productKeyClose.addEventListener('pointerdown', e => e.stopPropagation());
+
+
+
 productKeyBack.addEventListener('pointerdown', () =>
 {
     hideProductKeyDialog();

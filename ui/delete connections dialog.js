@@ -1,19 +1,26 @@
+var deleteConnectionsDialogVisible = false;
+
+
+
 function showDeleteConnectionsDialog()
 {
     deleteConnectionsDialog.style.left      = '50%';
     deleteConnectionsDialog.style.top       = '50%';
     deleteConnectionsDialog.style.transform = 'translateX(-50%) translateY(-50%)';
 
-    deleteConnectionsDialog.style.display  = 'block';
- 
-    deleteConnectionsTitle.buttonDown0     = false;
-      
-    deleteConnectionsTitle.moveStart       = point_NaN;
-    deleteConnectionsTitle.pStart          = point_NaN;
-   
-    deleteConnectionsInput.value           = '';
-    deleteConnectionsInput.focus();
+    deleteConnectionsDialog.style.display   = 'block';
+    deleteConnectionsDialogVisible          = true;
+  
+    deleteConnectionsTitle.buttonDown0      = false;
+       
+    deleteConnectionsTitle.moveStart        = point_NaN;
+    deleteConnectionsTitle.pStart           = point_NaN;
     
+    deleteConnectionsInput.value            = '';
+
+    updateDeleteConnectionsInputBack();
+
+
     window.setTimeout(() => document.getElementById('deleteConnectionsInput').focus(), 0);
 }
 
@@ -22,7 +29,12 @@ function showDeleteConnectionsDialog()
 function hideDeleteConnectionsDialog()
 {
     deleteConnectionsDialog.style.display = 'none';
+    deleteConnectionsDialogVisible        = false;
 }
+
+
+
+deleteConnectionsClose.addEventListener('pointerdown', e => e.stopPropagation());
 
 
 
@@ -58,42 +70,16 @@ deleteConnectionsTitle.addEventListener('pointerup', e =>
 
 deleteConnectionsInput.addEventListener('input', () =>
 {
-    let val = deleteConnectionsInput.value;
-    
-    // val = val.toUpperCase();
-    // val = val.replace(/[^12345679ABCDEFGHJKLMNPQRSTUVWXYZ]/g, '');
-    // val = val.substring(0, Math.min(val.length, 13));
-    
-    deleteConnectionsInput.value = val;
-
-    // deleteConnectionsInputBack.innerHTML = 
-    //       '&nbsp;'.repeat(val.length)
-    //     + '•'.repeat(13 - val.length);
-
-    
-    // if (val.length == 13)
-    // {
-    //     if (validatedeleteConnections(currentUser.id, val))
-    //     {
-    //         deleteConnections = val;        
-    //         uiSetLocalData('deleteConnections', deleteConnections);
-            
-    //         deleteConnectionsInput.blur();
-    //         setGoodDeleteConnectionsInput();
-            
-    //         window.setTimeout(() => 
-    //         {
-    //             hideDeleteConnectionsDialog();
-    //             uiNotify('✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 6000, false, '');
-    //         }, 
-    //         1200);
-    //     }
-    //     else
-    //         setBadDeleteConnectionsInput();
-    // }
-    // else
-    //     setDefaultDeleteConnectionsInput();
+    updateDeleteConnectionsInputBack();
 });
+
+
+
+function updateDeleteConnectionsInputBack()
+{
+    deleteConnectionsInputBack.innerHTML          = deleteConnectionsInput.value == '' ? 'Node IDs' : '';
+    deleteConnectionsInputBack.style.borderBottom = deleteConnectionsInput.value == '' ? '1px solid var(--figma-color-bg-tertiary)' : 'none';
+}
 
 
 
@@ -101,3 +87,17 @@ deleteConnectionsInput.addEventListener('pointerup', () =>
 {
     deleteConnectionsInput.select();
 });
+
+
+
+function deleteConnectionsToNodes(str)
+{
+    str = str.replace(',', ' ');
+    
+    const nodeIds = str.split(' ').filter(i => i);
+
+    uiRemoveConnsToNodes(nodeIds);
+
+    if (nodeIds.length > 0)
+        hideDeleteConnectionsDialog();
+}

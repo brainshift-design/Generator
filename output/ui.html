@@ -122,6 +122,7 @@
     top:        4px;
 }
 
+
 .dialogButtonClose:active
 {
     box-shadow: none;
@@ -166,25 +167,6 @@
 }
 
 
-#productKeyInput
-{
-    font-family:  'Roboto Mono';
-    font-size:     16px;
-     
-    width:         calc(9em + 1px);
-    height:        24px;
-    padding-left:  10px;
-    padding-top:   -2px;
-    padding-bottom: 2px;
-
-    margin-bottom: -3px;
-
-    position:      relative;
-    left:          calc(50% - 4.5em);
-}
-
-
-
 #productKeyInputBack
 {
     font-family:   'Roboto Mono';
@@ -205,6 +187,25 @@
 
 
 
+#productKeyInput
+{
+    font-family:  'Roboto Mono';
+    font-size:     16px;
+     
+    width:         calc(9em + 1px);
+    height:        24px;
+    padding-left:  10px;
+    padding-top:   -2px;
+    padding-bottom: 2px;
+
+    margin-bottom: -3px;
+
+    position:      relative;
+    left:          calc(50% - 4.5em);
+}
+
+
+
 #deleteConnectionsDialog
 {
     display:       none;
@@ -213,39 +214,34 @@
 
     z-index:       2;
     position:      absolute;
-    /* top:           60px;
-    left:          calc(50% - 130px); */
     width:         400px;
-    height:        122px;
+    height:        92px;
     
     color:         var(--figma-color-text);
     background:    var(--figma-color-bg);
     
-    /* border:        0.2px solid var(--figma-color-bg-secondary); */
     border-radius: 4px;
 }
 
 
 .figma-light #deleteConnectionsDialog
 {
-    box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.15),
-                      0px 5px 17px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
 }
 
 
 .figma-dark #deleteConnectionsDialog
 {
-    box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.45),
-                      0px 5px 25px rgba(0, 0, 0, 0.45),
-                      0 0px 2px 0px #fff3 inset;
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
 }
 
 
 #deleteConnectionsTitle
 {
     height:         40px;
-    /* border-bottom:  1px solid rgb(0, 0, 0, 0.15); */
-    pointer-events: all;
     font-weight:    900;
     border-top:     1px solid var(--figma-color-bg-tertiary);
     border-bottom:  1px solid var(--figma-color-bg-tertiary);
@@ -285,8 +281,28 @@
 }
 
 
+#deleteConnectionsInputBack
+{
+    font-size:       11px;
+    color:           var(--figma-color-bg-disabled);
+      
+    width:           266px;
+    height:          20px;
+ 
+    padding-top:     6px;
+    padding-bottom: -6px;
+
+    margin-top:      12px;
+    margin-bottom:  -3px;
+
+    position:        absolute;
+    left:            18px;
+}
+
+
 #deleteConnectionsInput
 {
+    background:     transparent;
     font-size:      11px;
       
     width:          278px;
@@ -297,6 +313,7 @@
     padding-top:   -2px;
     padding-bottom: 2px;
 
+    margin-top:     12px;
     margin-bottom: -3px;
 
     position:       absolute;
@@ -319,6 +336,8 @@
     transform:      translateY(-2px);
 
     padding:        8px 14px;
+
+    margin-top:     12px;
 
     border-radius:  6px;
     box-shadow:     0 0 0 1px var(--figma-color-text) inset;
@@ -1949,8 +1968,8 @@ input[type=text]::selection
         <div id='productKeyUserName'></div>
         <div id='productKeyUserId'></div>
         
-        <input type='text' spellcheck="false" id='productKeyInput' />
         <div id='productKeyInputBack'></div>
+        <input type='text' spellcheck="false" id='productKeyInput' />
         <div id='productKeyWebsite'><a href='http://www.bourt.com/generator/subscribe' target='_blank'>bourt.com&hairsp;/&hairsp;generator&hairsp;/&hairsp;subscribe</a></div>
     </div>
 
@@ -1970,9 +1989,9 @@ input[type=text]::selection
     </div>
     
     <div id='deleteConnectionsBody'>
-        <div id='deleteConnectionsLabel'><span style="user-select: none; color: #aaa;">Node IDs </span></div>
+        <div id='deleteConnectionsInputBack'></div>
         <input type='text' spellcheck="false" id='deleteConnectionsInput' />
-        <div id='deleteConnectionsButton'>Delete</div>
+        <div id='deleteConnectionsButton' onclick='deleteConnectionsToNodes(deleteConnectionsInput.value);'>Delete</div>
     </div>
 
 </div>
@@ -35520,6 +35539,9 @@ class Operator
             this._selected
             ? '0 0 0 2px var(--figma-color-bg-brand)'
             : 'none';
+
+        if (deleteConnectionsDialogVisible)
+            hideDeleteConnectionsDialog();
     }
     
 
@@ -43213,8 +43235,8 @@ extends Action
             const output = input.connectedOutput;
 
             uiSaveConnection(
-                output.node.id, output.index,
-                 input.node.id,  input.index,
+                output.node.id, output.id,
+                 input.node.id,  input.id,
                 input.connection.toJson());
         }
     }
@@ -43698,22 +43720,29 @@ const zoomOutCursor =
     + 'wvc3ZnPgo=) 8 8, auto';
 
 
+var deleteConnectionsDialogVisible = false;
+
+
+
 function showDeleteConnectionsDialog()
 {
     deleteConnectionsDialog.style.left      = '50%';
     deleteConnectionsDialog.style.top       = '50%';
     deleteConnectionsDialog.style.transform = 'translateX(-50%) translateY(-50%)';
 
-    deleteConnectionsDialog.style.display  = 'block';
- 
-    deleteConnectionsTitle.buttonDown0     = false;
-      
-    deleteConnectionsTitle.moveStart       = point_NaN;
-    deleteConnectionsTitle.pStart          = point_NaN;
-   
-    deleteConnectionsInput.value           = '';
-    deleteConnectionsInput.focus();
+    deleteConnectionsDialog.style.display   = 'block';
+    deleteConnectionsDialogVisible          = true;
+  
+    deleteConnectionsTitle.buttonDown0      = false;
+       
+    deleteConnectionsTitle.moveStart        = point_NaN;
+    deleteConnectionsTitle.pStart           = point_NaN;
     
+    deleteConnectionsInput.value            = '';
+
+    updateDeleteConnectionsInputBack();
+
+
     window.setTimeout(() => document.getElementById('deleteConnectionsInput').focus(), 0);
 }
 
@@ -43722,7 +43751,12 @@ function showDeleteConnectionsDialog()
 function hideDeleteConnectionsDialog()
 {
     deleteConnectionsDialog.style.display = 'none';
+    deleteConnectionsDialogVisible        = false;
 }
+
+
+
+deleteConnectionsClose.addEventListener('pointerdown', e => e.stopPropagation());
 
 
 
@@ -43758,42 +43792,16 @@ deleteConnectionsTitle.addEventListener('pointerup', e =>
 
 deleteConnectionsInput.addEventListener('input', () =>
 {
-    let val = deleteConnectionsInput.value;
-    
-    // val = val.toUpperCase();
-    // val = val.replace(/[^12345679ABCDEFGHJKLMNPQRSTUVWXYZ]/g, '');
-    // val = val.substring(0, Math.min(val.length, 13));
-    
-    deleteConnectionsInput.value = val;
-
-    // deleteConnectionsInputBack.innerHTML = 
-    //       '&nbsp;'.repeat(val.length)
-    //     + '•'.repeat(13 - val.length);
-
-    
-    // if (val.length == 13)
-    // {
-    //     if (validatedeleteConnections(currentUser.id, val))
-    //     {
-    //         deleteConnections = val;        
-    //         uiSetLocalData('deleteConnections', deleteConnections);
-            
-    //         deleteConnectionsInput.blur();
-    //         setGoodDeleteConnectionsInput();
-            
-    //         window.setTimeout(() => 
-    //         {
-    //             hideDeleteConnectionsDialog();
-    //             uiNotify('✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 6000, false, '');
-    //         }, 
-    //         1200);
-    //     }
-    //     else
-    //         setBadDeleteConnectionsInput();
-    // }
-    // else
-    //     setDefaultDeleteConnectionsInput();
+    updateDeleteConnectionsInputBack();
 });
+
+
+
+function updateDeleteConnectionsInputBack()
+{
+    deleteConnectionsInputBack.innerHTML          = deleteConnectionsInput.value == '' ? 'Node IDs' : '';
+    deleteConnectionsInputBack.style.borderBottom = deleteConnectionsInput.value == '' ? '1px solid var(--figma-color-bg-tertiary)' : 'none';
+}
 
 
 
@@ -43801,6 +43809,20 @@ deleteConnectionsInput.addEventListener('pointerup', () =>
 {
     deleteConnectionsInput.select();
 });
+
+
+
+function deleteConnectionsToNodes(str)
+{
+    str = str.replace(',', ' ');
+    
+    const nodeIds = str.split(' ').filter(i => i);
+
+    uiRemoveConnsToNodes(nodeIds);
+
+    if (nodeIds.length > 0)
+        hideDeleteConnectionsDialog();
+}
 
 
 document.addEventListener('pointerdown', function(e)
@@ -44386,6 +44408,10 @@ function hideProductKeyDialog()
     productKeyBack  .style.display = 'none';
     productKeyDialog.style.display = 'none';
 }
+
+
+
+productKeyClose.addEventListener('pointerdown', e => e.stopPropagation());
 
 
 
@@ -45607,9 +45633,9 @@ function uiDisconnect(input)
 
     uiRemoveSavedConnection(
         input.connectedOutput.node.id,
-        input.connectedOutput.index,
+        input.connectedOutput.id,
         input.node.id,
-        input.index);
+        input.id);
 
     graph.disconnect(input);
 
@@ -45617,6 +45643,21 @@ function uiDisconnect(input)
 
     if (node.variableInputs)
         uiUpdateSavedConnectionsToNodeId(node.id);
+}
+
+
+
+function uiDisconnectAny(input)
+{
+    //console.log('uiDisconnect()');
+    
+    const node = input.node;
+
+    uiRemoveSavedConnectionsToNodeId(input.node.id);
+
+    graph.disconnect(input);
+
+    node.updateNode();
 }
 
 
@@ -45632,9 +45673,9 @@ function uiUpdateSavedConnectionsToNodeId(nodeId)
     {
         uiSaveConnection(
             _input.connectedOutput.node.id,
-            _input.connectedOutput.index,
-            node.id,
-            _input.index,
+            _input.connectedOutput.id,
+             node.id,
+            _input.id,
             _input.connection.toJson());
     }
 }
@@ -46090,7 +46131,7 @@ function uiSaveNodes(nodeIds)
 
 
 
-function uiSaveConnection(outputNodeId, outputIndex, inputNodeId, inputIndex, connJson)
+function uiSaveConnection(outputNodeId, outputId, inputNodeId, inputId, connJson)
 {
     if (settings.logRawSaving)
         console.log('%cSAVING CONNECTION\n' + connJson, 'background: #ddeeff');
@@ -46098,16 +46139,16 @@ function uiSaveConnection(outputNodeId, outputIndex, inputNodeId, inputIndex, co
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
         name: outputNodeId + ' '
-            + outputIndex  + ' '
+            + outputId     + ' '
             + inputNodeId  + ' '
-            + inputIndex,
+            + inputId,
         json: connJson
     });
 }
 
 
 
-function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIndex)
+function uiRemoveSavedConnection(outputNodeId, outputId, inputNodeId, inputId)
 {
     if (settings.logRawSaving)
         console.log('%cREMOVING SAVED CONNECTION', 'background: #ddeeff');
@@ -46115,9 +46156,9 @@ function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIn
     uiQueueMessageToFigma({
         cmd: 'figRemoveSavedConnection',
         name: outputNodeId + ' '
-            + outputIndex  + ' '
+            + outputId     + ' '
             + inputNodeId  + ' '
-            + inputIndex
+            + inputId
     });
 }
 
@@ -46145,6 +46186,14 @@ function uiRemoveSavedNodesAndConns(nodeIds)
 
 function uiRemoveConnsToNodes(nodeIds)
 {
+    const nodes = nodeIds.map(id => nodeFromId(id));
+
+    for (const node of nodes)
+        for (const input of node.inputs)
+            if (input.connected)
+                uiDisconnectAny(input);
+
+                
     uiQueueMessageToFigma({
         cmd: 'figRemoveConnsToNodes',
         nodeIds: nodeIds

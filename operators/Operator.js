@@ -346,6 +346,9 @@ class Operator
             this._selected
             ? '0 0 0 2px var(--figma-color-bg-brand)'
             : 'none';
+
+        if (deleteConnectionsDialogVisible)
+            hideDeleteConnectionsDialog();
     }
     
 

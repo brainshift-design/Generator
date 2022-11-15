@@ -15,8 +15,8 @@
         <div id='productKeyUserName'></div>
         <div id='productKeyUserId'></div>
         
-        <input type='text' spellcheck="false" id='productKeyInput' />
         <div id='productKeyInputBack'></div>
+        <input type='text' spellcheck="false" id='productKeyInput' />
         <div id='productKeyWebsite'><a href='http://www.bourt.com/generator/subscribe' target='_blank'>bourt.com&hairsp;/&hairsp;generator&hairsp;/&hairsp;subscribe</a></div>
     </div>
 
@@ -36,9 +36,9 @@
     </div>
     
     <div id='deleteConnectionsBody'>
-        <div id='deleteConnectionsLabel'><span style="user-select: none; color: #aaa;">Node IDs </span></div>
+        <div id='deleteConnectionsInputBack'></div>
         <input type='text' spellcheck="false" id='deleteConnectionsInput' />
-        <div id='deleteConnectionsButton'>Delete</div>
+        <div id='deleteConnectionsButton' onclick='deleteConnectionsToNodes(deleteConnectionsInput.value);'>Delete</div>
     </div>
 
 </div>

@@ -547,9 +547,9 @@ function uiDisconnect(input)
 
     uiRemoveSavedConnection(
         input.connectedOutput.node.id,
-        input.connectedOutput.index,
+        input.connectedOutput.id,
         input.node.id,
-        input.index);
+        input.id);
 
     graph.disconnect(input);
 
@@ -557,6 +557,21 @@ function uiDisconnect(input)
 
     if (node.variableInputs)
         uiUpdateSavedConnectionsToNodeId(node.id);
+}
+
+
+
+function uiDisconnectAny(input)
+{
+    //console.log('uiDisconnect()');
+    
+    const node = input.node;
+
+    uiRemoveSavedConnectionsToNodeId(input.node.id);
+
+    graph.disconnect(input);
+
+    node.updateNode();
 }
 
 
@@ -572,9 +587,9 @@ function uiUpdateSavedConnectionsToNodeId(nodeId)
     {
         uiSaveConnection(
             _input.connectedOutput.node.id,
-            _input.connectedOutput.index,
-            node.id,
-            _input.index,
+            _input.connectedOutput.id,
+             node.id,
+            _input.id,
             _input.connection.toJson());
     }
 }
@@ -1030,7 +1045,7 @@ function uiSaveNodes(nodeIds)
 
 
 
-function uiSaveConnection(outputNodeId, outputIndex, inputNodeId, inputIndex, connJson)
+function uiSaveConnection(outputNodeId, outputId, inputNodeId, inputId, connJson)
 {
     if (settings.logRawSaving)
         console.log('%cSAVING CONNECTION\n' + connJson, 'background: #ddeeff');
@@ -1038,16 +1053,16 @@ function uiSaveConnection(outputNodeId, outputIndex, inputNodeId, inputIndex, co
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
         name: outputNodeId + ' '
-            + outputIndex  + ' '
+            + outputId     + ' '
             + inputNodeId  + ' '
-            + inputIndex,
+            + inputId,
         json: connJson
     });
 }
 
 
 
-function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIndex)
+function uiRemoveSavedConnection(outputNodeId, outputId, inputNodeId, inputId)
 {
     if (settings.logRawSaving)
         console.log('%cREMOVING SAVED CONNECTION', 'background: #ddeeff');
@@ -1055,9 +1070,9 @@ function uiRemoveSavedConnection(outputNodeId, outputIndex, inputNodeId, inputIn
     uiQueueMessageToFigma({
         cmd: 'figRemoveSavedConnection',
         name: outputNodeId + ' '
-            + outputIndex  + ' '
+            + outputId     + ' '
             + inputNodeId  + ' '
-            + inputIndex
+            + inputId
     });
 }
 
@@ -1085,6 +1100,14 @@ function uiRemoveSavedNodesAndConns(nodeIds)
 
 function uiRemoveConnsToNodes(nodeIds)
 {
+    const nodes = nodeIds.map(id => nodeFromId(id));
+
+    for (const node of nodes)
+        for (const input of node.inputs)
+            if (input.connected)
+                uiDisconnectAny(input);
+
+                
     uiQueueMessageToFigma({
         cmd: 'figRemoveConnsToNodes',
         nodeIds: nodeIds

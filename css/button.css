@@ -11,12 +11,13 @@
     border-radius: 2px;
     position:      relative;
     padding:       0;
+    background:    var(--figma-color-bg);
 }
 
 
 .button:hover
 {
-    background: #f0f0f0;
+    background: var(--figma-color-bg-hover);
 }
 
 
