@@ -37,3 +37,31 @@
 
 .figma-light #scrollbarY { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); }
 .figma-dark  #scrollbarY { box-shadow: 0 0 0 1px rgba( 60,  60,  60, 0.25); }
+
+
+
+input[type=text]
+{
+    color:      var(--figma-color-text);
+    background: var(--figma-color-bg);
+}
+
+
+input[type=text]:hover
+{
+    box-shadow: 0 0 0 1px var(--figma-color-bg-tertiary);
+}
+
+
+input[type=text]:focus
+{
+    box-shadow: 0 0 0 2px var(--figma-color-bg-brand);
+    outline: none;
+}
+
+
+input[type=text]::selection
+{
+    color:            var(--figma-color-bg-inverse);
+    background-color: var(--figma-color-border-brand);
+}

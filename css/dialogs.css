@@ -1,4 +1,4 @@
-/* #productKeyBack
+#productKeyBack
 {
     display:          none;
 
@@ -12,31 +12,6 @@
     overflow:         auto;
 
     background-color: #0002
-} */
-
-
-.userInfoTable table
-{
-    height: auto;
-    box-shadow: 0 0 0 1px blue inset;
-    padding: 0;
-    margin: 0;
-}
-
-
-.userInfoTable tr
-{
-    padding: 0;
-    margin: 0;
-}
-
-
-.userInfoTable td
-{
-    box-shadow: 0 0 0 1px red inset;
-    height: 10px;
-    padding: 0;
-    margin: 0;
 }
 
 
@@ -48,7 +23,7 @@
 
     z-index:       2;
     position:      absolute;
-    top:           60px;
+    top:           50%;
     left:          calc(50% - 130px);
     width:         220px;
     height:        170px;
@@ -93,11 +68,11 @@
 
 .dialogButtonClose
 {
-    width:    32px;
-    height:   32px;
-    position: absolute;
-    left:     calc(100% - 36px);
-    top:      4px;
+    width:      32px;
+    height:     32px;
+    position:   absolute;
+    left:       calc(100% - 36px);
+    top:        4px;
 }
 
 .dialogButtonClose:active
@@ -106,45 +81,18 @@
 }
 
 
-#productKeyUserNameTitle
-{
-    font-size:      11px;
-
-    margin-top:     16px;
-    margin-bottom:  0px;
-
-    /* position:       relative;
-    left:           21px; */
-
-    user-select:    none;
-}
-
-
 #productKeyUserName
 {
     font-size:      11px;
+    font-weight:    bold;
 
     margin-top:     16px;
     margin-bottom:  0px;
 
-    /* position:       relative;
-    left:           60px; */
+    position:       relative;
+    left:           34px;
 
     user-select:    text;
-}
-
-
-#productKeyUserIdTitle
-{
-    font-size:      11px;
-
-    margin-top:     0px;
-    margin-bottom:  12px;
-
-    /* position:       relative;
-    left:           21px; */
-
-    user-select:    none;
 }
 
 
@@ -155,9 +103,8 @@
     margin-top:     0px;
     margin-bottom:  12px;
 
-    /* position:       relative;
-    left:           60px; */
-
+    position:       relative;
+    left:           34px;
     user-select:    text;
 }
 
@@ -219,23 +166,42 @@
 
     z-index:       2;
     position:      absolute;
-    top:           60px;
-    left:          calc(50% - 130px);
-    width:         220px;
-    height:        170px;
+    /* top:           60px;
+    left:          calc(50% - 130px); */
+    width:         400px;
+    height:        122px;
     
-    background:    white;
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
     
-    border:        0.5px solid rgba(0, 0, 0, 0.2);
-    box-shadow:    0px 2px 14px rgba(0, 0, 0, 0.15);
+    /* border:        0.2px solid var(--figma-color-bg-secondary); */
     border-radius: 4px;
+}
+
+
+.figma-light #deleteConnectionsDialog
+{
+    box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.15),
+                      0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #deleteConnectionsDialog
+{
+    box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.45),
+                      0px 5px 25px rgba(0, 0, 0, 0.45),
+                      0 0px 2px 0px #fff3 inset;
 }
 
 
 #deleteConnectionsTitle
 {
-    height:        40px;
-    border-bottom: 1px solid rgb(0, 0, 0, 0.15);
+    height:         40px;
+    /* border-bottom:  1px solid rgb(0, 0, 0, 0.15); */
+    pointer-events: all;
+    font-weight:    900;
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
 }
 
 
@@ -254,11 +220,11 @@
     align-items:    center;
     letter-spacing: 0.005em;
     
-    color:          rgba(0, 0, 0, 0.8);
+    color:          var(--figma-color-text);
 }
 
 
-#deleteConnectionsUserInfo
+#deleteConnectionsLabel
 {
     font-size:      11px;
 
@@ -266,7 +232,7 @@
     margin-bottom:  12px;
 
     position:       relative;
-    left:           21px;
+    left:           17px;
 
     user-select:    text;
 }
@@ -274,16 +240,45 @@
 
 #deleteConnectionsInput
 {
-    font-family:  'Roboto Mono';
-    font-size:     11px;
-     
-    width:         calc(9em + 1px);
-    padding-left:  10px;
+    font-size:      11px;
+      
+    width:          278px;
+    height:         26px;
+ 
+    padding-left:   6px;
+    padding-right:  6px;
     padding-top:   -2px;
     padding-bottom: 2px;
 
     margin-bottom: -3px;
 
-    position:      relative;
-    left:          calc(50% - 4.5em);
+    position:       absolute;
+    left:           12px;
+}
+
+
+#deleteConnectionsButton
+{
+    color:          var(--figma-color-text);
+    background:     var(--figma-color-bg);
+
+    font-size:      11px;
+    text-align:     center;
+
+    width:          60px;
+
+    position:       absolute;
+    right:          12px;
+    transform:      translateY(-2px);
+
+    padding:        8px 14px;
+
+    border-radius:  6px;
+    box-shadow:     0 0 0 1px var(--figma-color-text) inset;
+}
+
+
+#deleteConnectionsButton:active
+{
+    box-shadow: 0 0 0 2px var(--figma-color-bg-brand) inset;
 }

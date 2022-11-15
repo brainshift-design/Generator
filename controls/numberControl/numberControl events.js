@@ -520,7 +520,7 @@ function initNumberControlEvents(control)
     {
         if (   !graphView.spaceDown
             && !control.buttonDown1
-            && control.pointerEvents)
+            &&  control.pointerEvents)
             control.showTextbox();
     });
 }

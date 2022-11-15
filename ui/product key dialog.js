@@ -4,27 +4,17 @@ var productKey = '';
 
 function showProductKeyDialog()
 {
-    // productKeyBack  .style.display = 'block';
+    productKeyBack  .style.display = 'block';
     productKeyDialog.style.display = 'block';
 
 
-    productKeyTitle.buttonDown0 = false;
-    
-    productKeyTitle.moveStart   = point_NaN;
-    productKeyTitle.pStart      = point_NaN;
- 
-
-    productKeyUserNameTitle.innerHTML = '<span style="user-select: none; color: #aaa;">Name:</span>';
-    productKeyUserName     .innerHTML = currentUser.name;
-
-    productKeyUserIdTitle  .innerHTML = '<span style="user-select: none; color: #aaa;">User ID:</span>';
-    productKeyUserId       .innerHTML = currentUser.id;
+    productKeyUserName.innerHTML = currentUser.name;
+    productKeyUserId  .innerHTML = '<span style="user-select: none; color: #aaa;">ID:&nbsp;&nbsp;</span>' + currentUser.id;
 
     setDefaultProductKeyInput();
     productKeyInputBack.innerHTML = '•'.repeat(13);
     productKeyInput.value = '';
-    
-    //menuSelect.setSelectedIndex(0);
+
     
     window.setTimeout(() => document.getElementById('productKeyInput').focus(), 0);
 }
@@ -33,42 +23,15 @@ function showProductKeyDialog()
 
 function hideProductKeyDialog()
 {
-    // productKeyBack  .style.display = 'none';
+    productKeyBack  .style.display = 'none';
     productKeyDialog.style.display = 'none';
 }
 
 
 
-// productKeyBack.addEventListener('pointerdown', () =>
-// {
-//     hideProductKeyDialog();
-// });
-
-
-
-productKeyTitle.addEventListener('pointerdown', e => 
+productKeyBack.addEventListener('pointerdown', () =>
 {
-    productKeyTitle.buttonDown0 = true;
-
-    productKeyTitle.moveStart = point(productKeyDialog.offsetX, productKeyDialog.offsetY);
-    productKeyTitle.pStart    = point(e.clientX, e.clientY);
-});
-
-
-
-productKeyTitle.addEventListener('pointermove', e =>
-{
-    productKeyTitle.buttonDown0 = true;
-
-    productKeyDialog.style.left = productKeyTitle.moveStart.x + (e.clientX - productKeyTitle.pStart.x);
-    productKeyDialog.style.top  = productKeyTitle.moveStart.y + (e.clientY - productKeyTitle.pStart.y);
-});
-
-
-
-productKeyTitle.addEventListener('pointerup', e =>
-{
-    productKeyTitle.buttonDown0 = false;
+    hideProductKeyDialog();
 });
 
 

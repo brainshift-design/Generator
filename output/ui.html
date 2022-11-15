@@ -22,12 +22,13 @@
     border-radius: 2px;
     position:      relative;
     padding:       0;
+    background:    var(--figma-color-bg);
 }
 
 
 .button:hover
 {
-    background: #f0f0f0;
+    background: var(--figma-color-bg-hover);
 }
 
 
@@ -44,7 +45,7 @@
 }
 
 
-/* #productKeyBack
+#productKeyBack
 {
     display:          none;
 
@@ -58,31 +59,6 @@
     overflow:         auto;
 
     background-color: #0002
-} */
-
-
-.userInfoTable table
-{
-    height: auto;
-    box-shadow: 0 0 0 1px blue inset;
-    padding: 0;
-    margin: 0;
-}
-
-
-.userInfoTable tr
-{
-    padding: 0;
-    margin: 0;
-}
-
-
-.userInfoTable td
-{
-    box-shadow: 0 0 0 1px red inset;
-    height: 10px;
-    padding: 0;
-    margin: 0;
 }
 
 
@@ -94,7 +70,7 @@
 
     z-index:       2;
     position:      absolute;
-    top:           60px;
+    top:           50%;
     left:          calc(50% - 130px);
     width:         220px;
     height:        170px;
@@ -139,11 +115,11 @@
 
 .dialogButtonClose
 {
-    width:    32px;
-    height:   32px;
-    position: absolute;
-    left:     calc(100% - 36px);
-    top:      4px;
+    width:      32px;
+    height:     32px;
+    position:   absolute;
+    left:       calc(100% - 36px);
+    top:        4px;
 }
 
 .dialogButtonClose:active
@@ -152,45 +128,18 @@
 }
 
 
-#productKeyUserNameTitle
-{
-    font-size:      11px;
-
-    margin-top:     16px;
-    margin-bottom:  0px;
-
-    /* position:       relative;
-    left:           21px; */
-
-    user-select:    none;
-}
-
-
 #productKeyUserName
 {
     font-size:      11px;
+    font-weight:    bold;
 
     margin-top:     16px;
     margin-bottom:  0px;
 
-    /* position:       relative;
-    left:           60px; */
+    position:       relative;
+    left:           34px;
 
     user-select:    text;
-}
-
-
-#productKeyUserIdTitle
-{
-    font-size:      11px;
-
-    margin-top:     0px;
-    margin-bottom:  12px;
-
-    /* position:       relative;
-    left:           21px; */
-
-    user-select:    none;
 }
 
 
@@ -201,9 +150,8 @@
     margin-top:     0px;
     margin-bottom:  12px;
 
-    /* position:       relative;
-    left:           60px; */
-
+    position:       relative;
+    left:           34px;
     user-select:    text;
 }
 
@@ -265,23 +213,42 @@
 
     z-index:       2;
     position:      absolute;
-    top:           60px;
-    left:          calc(50% - 130px);
-    width:         220px;
-    height:        170px;
+    /* top:           60px;
+    left:          calc(50% - 130px); */
+    width:         400px;
+    height:        122px;
     
-    background:    white;
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
     
-    border:        0.5px solid rgba(0, 0, 0, 0.2);
-    box-shadow:    0px 2px 14px rgba(0, 0, 0, 0.15);
+    /* border:        0.2px solid var(--figma-color-bg-secondary); */
     border-radius: 4px;
+}
+
+
+.figma-light #deleteConnectionsDialog
+{
+    box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.15),
+                      0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #deleteConnectionsDialog
+{
+    box-shadow:       0px 2px  7px rgba(0, 0, 0, 0.45),
+                      0px 5px 25px rgba(0, 0, 0, 0.45),
+                      0 0px 2px 0px #fff3 inset;
 }
 
 
 #deleteConnectionsTitle
 {
-    height:        40px;
-    border-bottom: 1px solid rgb(0, 0, 0, 0.15);
+    height:         40px;
+    /* border-bottom:  1px solid rgb(0, 0, 0, 0.15); */
+    pointer-events: all;
+    font-weight:    900;
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
 }
 
 
@@ -300,11 +267,11 @@
     align-items:    center;
     letter-spacing: 0.005em;
     
-    color:          rgba(0, 0, 0, 0.8);
+    color:          var(--figma-color-text);
 }
 
 
-#deleteConnectionsUserInfo
+#deleteConnectionsLabel
 {
     font-size:      11px;
 
@@ -312,7 +279,7 @@
     margin-bottom:  12px;
 
     position:       relative;
-    left:           21px;
+    left:           17px;
 
     user-select:    text;
 }
@@ -320,18 +287,47 @@
 
 #deleteConnectionsInput
 {
-    font-family:  'Roboto Mono';
-    font-size:     11px;
-     
-    width:         calc(9em + 1px);
-    padding-left:  10px;
+    font-size:      11px;
+      
+    width:          278px;
+    height:         26px;
+ 
+    padding-left:   6px;
+    padding-right:  6px;
     padding-top:   -2px;
     padding-bottom: 2px;
 
     margin-bottom: -3px;
 
-    position:      relative;
-    left:          calc(50% - 4.5em);
+    position:       absolute;
+    left:           12px;
+}
+
+
+#deleteConnectionsButton
+{
+    color:          var(--figma-color-text);
+    background:     var(--figma-color-bg);
+
+    font-size:      11px;
+    text-align:     center;
+
+    width:          60px;
+
+    position:       absolute;
+    right:          12px;
+    transform:      translateY(-2px);
+
+    padding:        8px 14px;
+
+    border-radius:  6px;
+    box-shadow:     0 0 0 1px var(--figma-color-text) inset;
+}
+
+
+#deleteConnectionsButton:active
+{
+    box-shadow: 0 0 0 2px var(--figma-color-bg-brand) inset;
 }
 
 
@@ -713,6 +709,35 @@ div
 
 .figma-light #scrollbarY { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); }
 .figma-dark  #scrollbarY { box-shadow: 0 0 0 1px rgba( 60,  60,  60, 0.25); }
+
+
+
+input[type=text]
+{
+    color:      var(--figma-color-text);
+    background: var(--figma-color-bg);
+}
+
+
+input[type=text]:hover
+{
+    box-shadow: 0 0 0 1px var(--figma-color-bg-tertiary);
+}
+
+
+input[type=text]:focus
+{
+    box-shadow: 0 0 0 2px var(--figma-color-bg-brand);
+    outline: none;
+}
+
+
+input[type=text]::selection
+{
+    color:            var(--figma-color-bg-inverse);
+    background-color: var(--figma-color-border-brand);
+}
+
 
 
 :root
@@ -1907,34 +1932,26 @@ div
 </div>
 
 
-<!-- <div id='productKeyBack'></div>-->
+<div id='productKeyBack'></div>
 
 <div id='productKeyDialog'>
 
     <div id='productKeyTitle'>
-        <div id='productKeyTitleText'>Enter product key</div>
+        <div id='productKeyTitleText'>Enter subscription key</div>
         <div class='button dialogButtonClose' id='productKeyClose' onclick='productKeyClose.blur(); hideProductKeyDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="black" fill-opacity="0.8"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
             </svg>
         </div>
     </div>
     
     <div id='productKeyBody'>
-        <table class="userInfoTable">
-            <tr>
-                <td><div id='productKeyUserNameTitle'></div></td>
-                <td><div id='productKeyUserName'></div></td>
-            </tr>
-            <tr>
-                <td><div id='productKeyUserIdTitle'></div></td>
-                <td><div id='productKeyUserId'></div></td>
-            </tr>
-        </table>
+        <div id='productKeyUserName'></div>
+        <div id='productKeyUserId'></div>
         
-        <input type='text' id='productKeyInput' />
+        <input type='text' spellcheck="false" id='productKeyInput' />
         <div id='productKeyInputBack'></div>
-        <div id='productKeyWebsite'>Get product key at<br/><a href='http://www.bourt.com/generator' target='_blank'>bourt.com/generator</a></div>
+        <div id='productKeyWebsite'><a href='http://www.bourt.com/generator/subscribe' target='_blank'>bourt.com&hairsp;/&hairsp;generator&hairsp;/&hairsp;subscribe</a></div>
     </div>
 
 </div>
@@ -1944,17 +1961,18 @@ div
 <div id='deleteConnectionsDialog'>
 
     <div id='deleteConnectionsTitle'>
-        <div id='deleteConnectionsTitleText'>Delete connections to node</div>
+        <div id='deleteConnectionsTitleText'>Delete connections to</div>
         <div class='button dialogButtonClose' id='deleteConnectionsClose' onclick='deleteConnectionsClose.blur(); hideDeleteConnectionsDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="black" fill-opacity="0.8"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
             </svg>
         </div>
     </div>
     
     <div id='deleteConnectionsBody'>
-        <div id='deleteConnectionsUserInfo'></div>
-        <input type='text' id='deleteConnectionsInput' />
+        <div id='deleteConnectionsLabel'><span style="user-select: none; color: #aaa;">Node IDs </span></div>
+        <input type='text' spellcheck="false" id='deleteConnectionsInput' />
+        <div id='deleteConnectionsButton'>Delete</div>
     </div>
 
 </div>
@@ -26471,10 +26489,10 @@ function initMenus()
     
     menuMainDebug = new Menu('Debug', false);
     menuMainDebug.addItems([
-                                   new MenuItem('List\u2008all\u2008nodes',                    {callback: () => uiLogAllSavedNodes()}),
-                                   new MenuItem('List\u2008all\u2008connections',              {callback: () => uiLogAllSavedConns()}),
-                                   new MenuItem('Delete\u2008all\u2008connections\u2008to...', {callback: () => showDeleteConnectionsDialog()}),
-                                   new MenuItem('',                    {separator: true}),
+                                   new MenuItem('List\u2008all\u2008nodes',       {callback: () => uiLogAllSavedNodes()}),
+                                   new MenuItem('List\u2008all\u2008connections', {callback: () => uiLogAllSavedConns()}),
+                                   new MenuItem('Delete connections to...',       {callback: () => showDeleteConnectionsDialog()}),
+                                   new MenuItem('',                               {separator: true}),
         menuItemShowNodeId       = new MenuItem('Show node IDs',
         {
             checkCallback: () => settings.showNodeId, 
@@ -27229,7 +27247,7 @@ function initNumberControlEvents(control)
     {
         if (   !graphView.spaceDown
             && !control.buttonDown1
-            && control.pointerEvents)
+            &&  control.pointerEvents)
             control.showTextbox();
     });
 }
@@ -43682,12 +43700,19 @@ const zoomOutCursor =
 
 function showDeleteConnectionsDialog()
 {
-    deleteConnectionsDialog.style.display = 'block';
+    deleteConnectionsDialog.style.left      = '50%';
+    deleteConnectionsDialog.style.top       = '50%';
+    deleteConnectionsDialog.style.transform = 'translateX(-50%) translateY(-50%)';
 
-    deleteConnectionsUserInfo.innerHTML = '<span style="user-select: none; color: #aaa;">User ID: </span>' + currentUser.id;
-
-    setDefaultDeleteConnectionsInput();
-    deleteConnectionsInput.value = '';
+    deleteConnectionsDialog.style.display  = 'block';
+ 
+    deleteConnectionsTitle.buttonDown0     = false;
+      
+    deleteConnectionsTitle.moveStart       = point_NaN;
+    deleteConnectionsTitle.pStart          = point_NaN;
+   
+    deleteConnectionsInput.value           = '';
+    deleteConnectionsInput.focus();
     
     window.setTimeout(() => document.getElementById('deleteConnectionsInput').focus(), 0);
 }
@@ -43701,13 +43726,43 @@ function hideDeleteConnectionsDialog()
 
 
 
+deleteConnectionsTitle.addEventListener('pointerdown', e => 
+{
+    deleteConnectionsTitle.setPointerCapture(e.pointerId);
+    deleteConnectionsTitle.buttonDown0 = true;
+
+    deleteConnectionsTitle.moveStart = point(deleteConnectionsDialog.offsetLeft, deleteConnectionsDialog.offsetTop);
+    deleteConnectionsTitle.pStart    = point(e.clientX, e.clientY);
+});
+
+
+
+deleteConnectionsTitle.addEventListener('pointermove', e =>
+{
+    if (deleteConnectionsTitle.buttonDown0)
+    {
+        deleteConnectionsDialog.style.left = (deleteConnectionsTitle.moveStart.x + (e.clientX - deleteConnectionsTitle.pStart.x)) + 'px';
+        deleteConnectionsDialog.style.top  = (deleteConnectionsTitle.moveStart.y + (e.clientY - deleteConnectionsTitle.pStart.y)) + 'px';
+    }
+});
+
+
+
+deleteConnectionsTitle.addEventListener('pointerup', e =>
+{
+    deleteConnectionsTitle.buttonDown0 = false;
+    deleteConnectionsTitle.releasePointerCapture(e.pointerId);
+});
+
+
+
 deleteConnectionsInput.addEventListener('input', () =>
 {
     let val = deleteConnectionsInput.value;
     
-    val = val.toUpperCase();
-    val = val.replace(/[^12345679ABCDEFGHJKLMNPQRSTUVWXYZ]/g, '');
-    val = val.substring(0, Math.min(val.length, 13));
+    // val = val.toUpperCase();
+    // val = val.replace(/[^12345679ABCDEFGHJKLMNPQRSTUVWXYZ]/g, '');
+    // val = val.substring(0, Math.min(val.length, 13));
     
     deleteConnectionsInput.value = val;
 
@@ -43718,12 +43773,12 @@ deleteConnectionsInput.addEventListener('input', () =>
     
     // if (val.length == 13)
     // {
-    //     if (validateProductKey(currentUser.id, val))
+    //     if (validatedeleteConnections(currentUser.id, val))
     //     {
-    //         productKey = val;        
-    //         uiSetLocalData('productKey', productKey);
+    //         deleteConnections = val;        
+    //         uiSetLocalData('deleteConnections', deleteConnections);
             
-    //         productKeyInput.blur();
+    //         deleteConnectionsInput.blur();
     //         setGoodDeleteConnectionsInput();
             
     //         window.setTimeout(() => 
@@ -43742,27 +43797,10 @@ deleteConnectionsInput.addEventListener('input', () =>
 
 
 
-function setBadDeleteConnectionsInput()
+deleteConnectionsInput.addEventListener('pointerup', () =>
 {
-    deleteConnectionsInput.style.outline   = '2px dashed #e00';        
-    deleteConnectionsInput.style.boxShadow = 'none';
-}
-
-
-
-function setGoodDeleteConnectionsInput()
-{
-    deleteConnectionsInput.style.outline   = 'none';
-    deleteConnectionsInput.style.boxShadow = '0 0 0 2px #0b0';
-}
-
-
-
-function setDefaultDeleteConnectionsInput()
-{
-    deleteConnectionsInput.style.outline   = 'none';
-    deleteConnectionsInput.style.boxShadow = '0 0 0 2px var(--figma-color-bg-brand)'; 
-}
+    deleteConnectionsInput.select();
+});
 
 
 document.addEventListener('pointerdown', function(e)
@@ -44318,6 +44356,108 @@ function setAutoCursor()
     else
         setCursor('default'); // 'auto');
 };
+
+
+var productKey = '';
+
+
+
+function showProductKeyDialog()
+{
+    productKeyBack  .style.display = 'block';
+    productKeyDialog.style.display = 'block';
+
+
+    productKeyUserName.innerHTML = currentUser.name;
+    productKeyUserId  .innerHTML = '<span style="user-select: none; color: #aaa;">ID:&nbsp;&nbsp;</span>' + currentUser.id;
+
+    setDefaultProductKeyInput();
+    productKeyInputBack.innerHTML = '•'.repeat(13);
+    productKeyInput.value = '';
+
+    
+    window.setTimeout(() => document.getElementById('productKeyInput').focus(), 0);
+}
+
+
+
+function hideProductKeyDialog()
+{
+    productKeyBack  .style.display = 'none';
+    productKeyDialog.style.display = 'none';
+}
+
+
+
+productKeyBack.addEventListener('pointerdown', () =>
+{
+    hideProductKeyDialog();
+});
+
+
+
+productKeyInput.addEventListener('input', () =>
+{
+    let val = productKeyInput.value;
+    
+    val = val.toUpperCase();
+    val = val.replace(/[^12345679ABCDEFGHJKLMNPQRSTUVWXYZ]/g, '');
+    val = val.substring(0, Math.min(val.length, 13));
+    
+    productKeyInput.value = val;
+
+    productKeyInputBack.innerHTML = 
+          '&nbsp;'.repeat(val.length)
+        + '•'.repeat(13 - val.length);
+
+    
+    if (val.length == 13)
+    {
+        if (validateProductKey(currentUser.id, val))
+        {
+            productKey = val;        
+            uiSetLocalData('productKey', productKey);
+            
+            productKeyInput.blur();
+            setGoodProductKeyInput();
+            
+            window.setTimeout(() => 
+            {
+                hideProductKeyDialog();
+                uiNotify('✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 6000, false, '');
+            }, 
+            1200);
+        }
+        else
+            setBadProductKeyInput();
+    }
+    else
+        setDefaultProductKeyInput();
+});
+
+
+
+function setBadProductKeyInput()
+{
+    productKeyInput.style.outline   = '2px dashed #e00';        
+    productKeyInput.style.boxShadow = 'none';
+}
+
+
+
+function setGoodProductKeyInput()
+{
+    productKeyInput.style.outline   = 'none';
+    productKeyInput.style.boxShadow = '0 0 0 2px #0b0';
+}
+
+
+
+function setDefaultProductKeyInput()
+{
+    productKeyInput.style.outline   = 'none';
+    productKeyInput.style.boxShadow = '0 0 0 2px var(--figma-color-bg-brand)'; 
+}
 
 
 
@@ -46257,145 +46397,6 @@ function hashLicenseName(name, nBytes)
     
 
     return newSizeArrayFrom(bytes, nBytes);
-}
-
-
-var productKey = '';
-
-
-
-function showProductKeyDialog()
-{
-    // productKeyBack  .style.display = 'block';
-    productKeyDialog.style.display = 'block';
-
-
-    productKeyTitle.buttonDown0 = false;
-    
-    productKeyTitle.moveStart   = point_NaN;
-    productKeyTitle.pStart      = point_NaN;
- 
-
-    productKeyUserNameTitle.innerHTML = '<span style="user-select: none; color: #aaa;">Name:</span>';
-    productKeyUserName     .innerHTML = currentUser.name;
-
-    productKeyUserIdTitle  .innerHTML = '<span style="user-select: none; color: #aaa;">User ID:</span>';
-    productKeyUserId       .innerHTML = currentUser.id;
-
-    setDefaultProductKeyInput();
-    productKeyInputBack.innerHTML = '•'.repeat(13);
-    productKeyInput.value = '';
-    
-    //menuSelect.setSelectedIndex(0);
-    
-    window.setTimeout(() => document.getElementById('productKeyInput').focus(), 0);
-}
-
-
-
-function hideProductKeyDialog()
-{
-    // productKeyBack  .style.display = 'none';
-    productKeyDialog.style.display = 'none';
-}
-
-
-
-// productKeyBack.addEventListener('pointerdown', () =>
-// {
-//     hideProductKeyDialog();
-// });
-
-
-
-productKeyTitle.addEventListener('pointerdown', e => 
-{
-    productKeyTitle.buttonDown0 = true;
-
-    productKeyTitle.moveStart = point(productKeyDialog.offsetX, productKeyDialog.offsetY);
-    productKeyTitle.pStart    = point(e.clientX, e.clientY);
-});
-
-
-
-productKeyTitle.addEventListener('pointermove', e =>
-{
-    productKeyTitle.buttonDown0 = true;
-
-    productKeyDialog.style.left = productKeyTitle.moveStart.x + (e.clientX - productKeyTitle.pStart.x);
-    productKeyDialog.style.top  = productKeyTitle.moveStart.y + (e.clientY - productKeyTitle.pStart.y);
-});
-
-
-
-productKeyTitle.addEventListener('pointerup', e =>
-{
-    productKeyTitle.buttonDown0 = false;
-});
-
-
-
-productKeyInput.addEventListener('input', () =>
-{
-    let val = productKeyInput.value;
-    
-    val = val.toUpperCase();
-    val = val.replace(/[^12345679ABCDEFGHJKLMNPQRSTUVWXYZ]/g, '');
-    val = val.substring(0, Math.min(val.length, 13));
-    
-    productKeyInput.value = val;
-
-    productKeyInputBack.innerHTML = 
-          '&nbsp;'.repeat(val.length)
-        + '•'.repeat(13 - val.length);
-
-    
-    if (val.length == 13)
-    {
-        if (validateProductKey(currentUser.id, val))
-        {
-            productKey = val;        
-            uiSetLocalData('productKey', productKey);
-            
-            productKeyInput.blur();
-            setGoodProductKeyInput();
-            
-            window.setTimeout(() => 
-            {
-                hideProductKeyDialog();
-                uiNotify('✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 6000, false, '');
-            }, 
-            1200);
-        }
-        else
-            setBadProductKeyInput();
-    }
-    else
-        setDefaultProductKeyInput();
-});
-
-
-
-function setBadProductKeyInput()
-{
-    productKeyInput.style.outline   = '2px dashed #e00';        
-    productKeyInput.style.boxShadow = 'none';
-}
-
-
-
-function setGoodProductKeyInput()
-{
-    productKeyInput.style.outline   = 'none';
-    productKeyInput.style.boxShadow = '0 0 0 2px #0b0';
-}
-
-
-
-function setDefaultProductKeyInput()
-{
-    productKeyInput.style.outline   = 'none';
-    productKeyInput.style.boxShadow = '0 0 0 2px var(--figma-color-bg-brand)'; 
 }
 
 

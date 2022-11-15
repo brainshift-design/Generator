@@ -1,31 +1,23 @@
-<!-- <div id='productKeyBack'></div>-->
+<div id='productKeyBack'></div>
 
 <div id='productKeyDialog'>
 
     <div id='productKeyTitle'>
-        <div id='productKeyTitleText'>Enter product key</div>
+        <div id='productKeyTitleText'>Enter subscription key</div>
         <div class='button dialogButtonClose' id='productKeyClose' onclick='productKeyClose.blur(); hideProductKeyDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="black" fill-opacity="0.8"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
             </svg>
         </div>
     </div>
     
     <div id='productKeyBody'>
-        <table class="userInfoTable">
-            <tr>
-                <td><div id='productKeyUserNameTitle'></div></td>
-                <td><div id='productKeyUserName'></div></td>
-            </tr>
-            <tr>
-                <td><div id='productKeyUserIdTitle'></div></td>
-                <td><div id='productKeyUserId'></div></td>
-            </tr>
-        </table>
+        <div id='productKeyUserName'></div>
+        <div id='productKeyUserId'></div>
         
-        <input type='text' id='productKeyInput' />
+        <input type='text' spellcheck="false" id='productKeyInput' />
         <div id='productKeyInputBack'></div>
-        <div id='productKeyWebsite'>Get product key at<br/><a href='http://www.bourt.com/generator' target='_blank'>bourt.com/generator</a></div>
+        <div id='productKeyWebsite'><a href='http://www.bourt.com/generator/subscribe' target='_blank'>bourt.com&hairsp;/&hairsp;generator&hairsp;/&hairsp;subscribe</a></div>
     </div>
 
 </div>
@@ -35,17 +27,18 @@
 <div id='deleteConnectionsDialog'>
 
     <div id='deleteConnectionsTitle'>
-        <div id='deleteConnectionsTitleText'>Delete connections to node</div>
+        <div id='deleteConnectionsTitleText'>Delete connections to</div>
         <div class='button dialogButtonClose' id='deleteConnectionsClose' onclick='deleteConnectionsClose.blur(); hideDeleteConnectionsDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="black" fill-opacity="0.8"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
             </svg>
         </div>
     </div>
     
     <div id='deleteConnectionsBody'>
-        <div id='deleteConnectionsUserInfo'></div>
-        <input type='text' id='deleteConnectionsInput' />
+        <div id='deleteConnectionsLabel'><span style="user-select: none; color: #aaa;">Node IDs </span></div>
+        <input type='text' spellcheck="false" id='deleteConnectionsInput' />
+        <div id='deleteConnectionsButton'>Delete</div>
     </div>
 
 </div>
