@@ -15,6 +15,9 @@ class Connection
 
         this.wire = this.createWire(this.wire);
    
+        this.wire.output = this.output;
+        this.wire.input  = this.input;
+
         this.wire.outBall                = createSvg('circle');
         this.wire.outBall.style.position = 'absolute';
 
@@ -393,11 +396,9 @@ class Connection
               pos + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
             + ',' + NL + pos + tab + '"outputId": "' + (this.output.param ? this.output.param.id : this.output.index) + '"'
-            // + (this.output.param ? ',' + NL + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
             + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "' + (this.input.param ? this.input.param.id : this.input.index) + '"'
             + ',' + NL + pos + tab + '"list": "' + boolToString(this.output.supports(LIST_TYPES)) + '"'
-            // + (this.input.param ? ',' + NL + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +       NL + pos + '}';
 
         return json;
@@ -407,25 +408,11 @@ class Connection
 
     static parseJson(_conn)
     {
-        const outputNode  = nodeFromId(_conn.outputNodeId);
-        const outputId    = _conn.outputId;
-        //const outputIndex = parseInt(_conn.outputIndex);
+        const outputNode = nodeFromId(_conn.outputNodeId);
+        const outputId   = _conn.outputId;
 
-        const inputNode   = nodeFromId(_conn.inputNodeId);
-        const inputId     = _conn.inputId;
-        //const inputIndex  = parseInt(_conn.inputIndex);
-
-
-        // log('---------------------------------------');
-
-        // log('outputNode',                outputNode);
-        // log('outputIndex',               outputIndex);
-        // log('outputNode.outputs.length', outputNode.outputs.length);
-        
-        // log('inputNode',               inputNode);
-        // log('inputIndex',              inputIndex);
-        // log('inputNode.inputs.length', inputNode.inputs.length);
-
+        const inputNode  = nodeFromId(_conn.inputNodeId);
+        const inputId    = _conn.inputId;
 
 
         if (   !outputNode 

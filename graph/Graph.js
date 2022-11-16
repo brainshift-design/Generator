@@ -135,7 +135,7 @@ class Graph
 
 
 
-    connect(output, input, inputIndex = -1)
+    connect(output, input, inputId = '')
     {
         //console.log('graph.connect()');
 
@@ -153,7 +153,7 @@ class Graph
 
         if (    input.node.variableInputs
             && !input.param
-            &&  inputIndex > -1)
+            &&  inputId != '')
         {
             input = lastOf(input.node.headerInputs);
             
@@ -161,11 +161,11 @@ class Graph
             moveInArray(
                 input.node.inputs, 
                 input.node.headerInputs.length-1, 
-                inputIndex);
+                input.index); //inputIndex
 
             input.node.inputControls.insertBefore(
                 lastOf(input.node.inputControls.childNodes), 
-                input.node.inputControls.childNodes[inputIndex]);
+                input.node.inputControls.childNodes[input.index]);//[inputIndex]);
         }
 
 
@@ -178,8 +178,7 @@ class Graph
         input .connection = conn;
         output.connection = conn;
         
-        graphView.addWire(conn.wire2);
-        graphView.addWire(conn.wire);
+        graphView.addConnWires(conn);
 
         this.connections.push(conn);
 
@@ -198,8 +197,7 @@ class Graph
         if (!output) return false;
 
 
-        graphView.removeWire(input.connection.wire2);
-        graphView.removeWire(input.connection.wire);
+        graphView.removeConnWires(input.connection);
 
         removeFromArray(this.connections, input.connection);
         removeFromArray(output.connectedInputs, input);

@@ -1,10 +1,3 @@
-// var _loadingNodes       = null;
-// var _loadingConns       = null;
-// var  loadingNodes       = null;
-// var  loadingSetProgress = false;
-
-
-
 function      uiGetLocalData(key)        { uiQueueMessageToFigma({ cmd:      'figGetLocalData', key: key               }); }
 function      uiSetLocalData(key, value) { uiQueueMessageToFigma({ cmd:      'figSetLocalData', key: key, value: value }); }
 function    uiClearLocalData(key)        { uiQueueMessageToFigma({ cmd:      'figSetLocalData', key: key, value: ''    }); }
@@ -132,7 +125,7 @@ function uiLoadGraphView(json)
 
 
 
-function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
+function uiEndLoadNodesAndConns(nodesJson, connsJson, activeJson)
 {
     if (settings.logRawLoading)
         console.log(
@@ -142,15 +135,26 @@ function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
                 .replaceAll('\\n', '\n')
                 .replaceAll('\\"', '\"'));
 
+
+    let _nodes = JSON.parse(nodesJson);
+    let _conns = JSON.parse(connsJson);
+
+    
+    if (dataMode)
+    {
+        loadNodesAndConnsData(_nodes, _conns);
+    }
+    else
+    {
+        _nodes = _nodes.map(n => JSON.parse(n));
+        _conns = _conns.map(c => JSON.parse(c));
+            
+        _nodes.sort((a, b) => a.z - b.z);
         
-    graph.clear();
+        graph.clear();
 
-    const _nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
-    const  conns = JSON.parse(connsJson).map(c => JSON.parse(c));
-
-    _nodes.sort((a, b) => a.z - b.z);
-
-    loadNodesAndConnsAsync(_nodes, conns, setLoadingProgress);
+        loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
+    }
 }
 
 
@@ -191,16 +195,6 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
     promise.then(nodes => 
     {
         graph.addNodes(nodes, false, false);
-
-        // _loadingNodes       = _nodes;
-        // _loadingConns       = _conns;
-        //  loadingNodes       =  nodes;
-        //  loadingSetProgress =  setProgress;
-
-        // some parameters exist as evaluation results, so the loaded nodes
-        // have to be evaluaged first before connecting everything
-        //pushUpdate(nodes);
-        
         loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
     });
 }

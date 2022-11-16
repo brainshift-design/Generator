@@ -11,6 +11,27 @@
 
 .button
 {
+    color:          var(--figma-color-text);
+    background:     var(--figma-color-bg);
+
+    font-size:      11px;
+    text-align:     center;
+
+    padding:        8px 14px;
+
+    border-radius:  6px;
+    box-shadow:     0 0 0 1px var(--figma-color-text) inset;
+}
+
+
+.button:active
+{
+    box-shadow: 0 0 0 2px var(--figma-color-bg-brand) inset;
+}
+
+
+.panelButton
+{
     font-family:   Inter;
     font-size:     11px;
     width:         30;
@@ -26,13 +47,13 @@
 }
 
 
-.button:hover
+.panelButton:hover
 {
     background: var(--figma-color-bg-hover);
 }
 
 
-.button:active
+.panelButton:active
 {
     box-shadow: 0 0 0 2px var(--activeObjectColor) inset;
     outline:    none;
@@ -43,6 +64,70 @@
 {
     /* --colFigmaBlue: #0c8ce9; */
 }
+
+
+#dataView
+{
+    position:   absolute;
+    left:       0;
+    top:        0;
+    width:      100%;
+    height:     100%;
+    display:    none;
+    background: var(--figma-color-bg);
+}
+
+
+
+#dataViewNodes
+{
+    margin-bottom:  10px;
+}
+
+
+.dataViewNode
+{
+    font-family:    Inter;
+    font-size:      11px;
+    text-align:     center;
+    display:        inline-block;
+    min-width:      70px;
+    background:     #fed; 
+    border-radius:  3px;
+    margin:         2px 0px 0px 2px;
+    padding:        8px 6px;
+    box-shadow:     0 0 0 1px #dba inset;
+    white-space:    pre;
+    vertical-align: top;
+}
+
+
+.dataViewNode:hover
+{
+    background:    #fdb; 
+}
+
+
+.dataViewConn
+{
+    font-family:   Inter;
+    font-size:     11px;
+    text-align:    center;
+    display:       inline-block;
+    min-width:     70px;
+    background:    #cfc; 
+    border-radius: 3px;
+    margin:        2px 0px 0px 2px;
+    padding:       3px 11px;
+    box-shadow:    0 0 0 1px #ad8 inset;
+}
+
+
+.dataViewConn:hover
+{
+    background:    #aea; 
+}
+
 
 
 #productKeyBack
@@ -58,7 +143,7 @@
     height:           100%;
     overflow:         auto;
 
-    background-color: #0003
+    background-color: #0005
 }
 
 
@@ -154,7 +239,7 @@
     font-weight:    bold;
 
     margin-top:     16px;
-    margin-bottom:  0px;
+    margin-bottom:  3px;
 
     position:       relative;
     left:           40px;
@@ -200,7 +285,7 @@
 
     position:       absolute;
     left:           calc(calc(50% - 4.5em) + 1px);
-    top:            58%;
+    top:            60%;
 
     pointer-events: none;
 }
@@ -345,41 +430,24 @@
 
 #deleteConnectionsButton
 {
-    color:          var(--figma-color-text);
-    background:     var(--figma-color-bg);
-
-    font-size:      11px;
-    text-align:     center;
-
     width:          60px;
 
     position:       absolute;
     right:          12px;
     transform:      translateY(-2px);
 
-    padding:        8px 14px;
-
     margin-top:     12px;
-
-    border-radius:  6px;
-    box-shadow:     0 0 0 1px var(--figma-color-text) inset;
-}
-
-
-#deleteConnectionsButton:active
-{
-    box-shadow: 0 0 0 2px var(--figma-color-bg-brand) inset;
 }
 
 
 #loadingOverlay
 {
-    position:   absolute;
-    left:       0;
-    top:        0;
-    width:      100%;
-    height:     100%;
-    display:    none;
+    position: absolute;
+    left:     0;
+    top:      0;
+    width:    100%;
+    height:   100%;
+    display:  none;
 }
 
 
@@ -499,7 +567,20 @@
     top:           0;
     width:         0;
     height:        5px;
-    background:    var(--figma-color-text);/*#333;*/
+    background:    var(--figma-color-text);
+}
+
+
+#debugModeButton
+{
+    background: transparent;
+    width:      120px;
+
+    position:   absolute;
+    left:       50%;
+    top:        75%;
+    transform:  translateX(-50%)
+                translateY(-50%);
 }
 
 
@@ -1967,14 +2048,22 @@ a
 
 <div id='loadingOverlay'>
     <div id='loadingGraphic'>
-        <svg id="loadingEmpty" width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 7C5.65685 7 7 5.65685 7 4C7 2.34315 5.65685 1 4 1C2.34315 1 1 2.34315 1 4C1 5.65685 2.34315 7 4 7ZM8 4C8 6.20914 6.20914 8 4 8C1.79086 8 0 6.20914 0 4C0 1.79086 1.79086 0 4 0C6.20914 0 8 1.79086 8 4Z" fill="white"/></svg>
-        <svg id="loadingG"     width="21" height="24" viewBox="0 0 21 24" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M16.4398 7.77947C16.2474 7.1635 15.9819 6.61217 15.6432 6.12548C15.3123 5.63118 14.912 5.20913 14.4426 4.85932C13.9808 4.50951 13.4497 4.24715 12.8494 4.07224C12.249 3.88973 11.5948 3.79848 10.8868 3.79848C9.61682 3.79848 8.48543 4.11407 7.49258 4.74525C6.49973 5.37643 5.71853 6.30418 5.14898 7.52852C4.58714 8.74525 4.30621 10.2281 4.30621 11.9772C4.30621 13.7414 4.58714 15.2357 5.14898 16.4601C5.71083 17.6844 6.49203 18.616 7.49258 19.2548C8.49313 19.8859 9.65531 20.2015 10.9791 20.2015C12.1798 20.2015 13.2188 19.9734 14.0962 19.5171C14.9813 19.0608 15.6625 18.4144 16.1396 17.5779C16.6168 16.7338 16.8554 15.7452 16.8554 14.6122L17.8252 14.7605H11.4063V11.4525H21V14.2586C21 16.2586 20.569 17.9886 19.707 19.4487C18.845 20.9087 17.6597 22.0342 16.1512 22.8251C14.6427 23.6084 12.9109 24 10.956 24C8.7779 24 6.86531 23.5171 5.21825 22.5513C3.57889 21.5779 2.29742 20.1977 1.37383 18.4106C0.457944 16.616 0 14.4867 0 12.0228C0 10.1369 0.269379 8.45247 0.808136 6.96958C1.35459 5.48669 2.11655 4.22814 3.09401 3.19392C4.07147 2.15209 5.21825 1.36122 6.53436 0.821293C7.85047 0.273764 9.28202 0 10.829 0C12.1374 0 13.3573 0.190114 14.4887 0.570342C15.6201 0.942966 16.6245 1.47529 17.5019 2.1673C18.387 2.85932 19.1143 3.68061 19.6839 4.63118C20.2534 5.58175 20.6267 6.63118 20.8037 7.77947H16.4398Z" fill="white"/></svg>
-        <svg id="loadingFull"  width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 4C8 6.20914 6.20914 8 4 8C1.79086 8 0 6.20914 0 4C0 1.79086 1.79086 0 4 0C6.20914 0 8 1.79086 8 4Z" fill="white"/></svg>
+        <svg id="loadingEmpty" width="8"  height="8"  viewBox="0 0 8 8"   fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4 7C5.65685 7 7 5.65685 7 4C7 2.34315 5.65685 1 4 1C2.34315 1 1 2.34315 1 4C1 5.65685 2.34315 7 4 7ZM8 4C8 6.20914 6.20914 8 4 8C1.79086 8 0 6.20914 0 4C0 1.79086 1.79086 0 4 0C6.20914 0 8 1.79086 8 4Z" fill="white"/></svg>
+        <svg id="loadingG"     width="21" height="24" viewBox="0 0 21 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16.4398 7.77947C16.2474 7.1635 15.9819 6.61217 15.6432 6.12548C15.3123 5.63118 14.912 5.20913 14.4426 4.85932C13.9808 4.50951 13.4497 4.24715 12.8494 4.07224C12.249 3.88973 11.5948 3.79848 10.8868 3.79848C9.61682 3.79848 8.48543 4.11407 7.49258 4.74525C6.49973 5.37643 5.71853 6.30418 5.14898 7.52852C4.58714 8.74525 4.30621 10.2281 4.30621 11.9772C4.30621 13.7414 4.58714 15.2357 5.14898 16.4601C5.71083 17.6844 6.49203 18.616 7.49258 19.2548C8.49313 19.8859 9.65531 20.2015 10.9791 20.2015C12.1798 20.2015 13.2188 19.9734 14.0962 19.5171C14.9813 19.0608 15.6625 18.4144 16.1396 17.5779C16.6168 16.7338 16.8554 15.7452 16.8554 14.6122L17.8252 14.7605H11.4063V11.4525H21V14.2586C21 16.2586 20.569 17.9886 19.707 19.4487C18.845 20.9087 17.6597 22.0342 16.1512 22.8251C14.6427 23.6084 12.9109 24 10.956 24C8.7779 24 6.86531 23.5171 5.21825 22.5513C3.57889 21.5779 2.29742 20.1977 1.37383 18.4106C0.457944 16.616 0 14.4867 0 12.0228C0 10.1369 0.269379 8.45247 0.808136 6.96958C1.35459 5.48669 2.11655 4.22814 3.09401 3.19392C4.07147 2.15209 5.21825 1.36122 6.53436 0.821293C7.85047 0.273764 9.28202 0 10.829 0C12.1374 0 13.3573 0.190114 14.4887 0.570342C15.6201 0.942966 16.6245 1.47529 17.5019 2.1673C18.387 2.85932 19.1143 3.68061 19.6839 4.63118C20.2534 5.58175 20.6267 6.63118 20.8037 7.77947H16.4398Z" fill="white"/></svg>
+        <svg id="loadingFull"  width="8"  height="8"  viewBox="0 0 8 8"   fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 4C8 6.20914 6.20914 8 4 8C1.79086 8 0 6.20914 0 4C0 1.79086 1.79086 0 4 0C6.20914 0 8 1.79086 8 4Z" fill="white"/></svg>
 
         <div id='loadingBar'>
             <div id='loadingProgress'></div>
         </div>
     </div>
+    <!-- <div class='button' id='debugModeButton' onclick=''>Restart in debug mode</div> -->
+</div>
+
+
+
+<div id='dataView'>
+    <div id='dataViewNodes'></div>
+    <div id='dataViewConns'></div>
 </div>
 
 
@@ -1984,7 +2073,7 @@ a
 
     <div id='productKeyTitle'>
         <div id='productKeyTitleText'>Enter subscription key</div>
-        <div class='button dialogButtonClose' id='productKeyClose' onclick='productKeyClose.blur(); hideProductKeyDialog();'>
+        <div class='panelButton dialogButtonClose' id='productKeyClose' onclick='productKeyClose.blur(); hideProductKeyDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
             </svg>
@@ -1996,7 +2085,7 @@ a
         <div id='productKeyUserId'></div>
         
         <div id='productKeyInputBack'></div>
-        <input type='text' spellcheck="false" id='productKeyInput' />
+        <input type='text' spellcheck='false' id='productKeyInput' />
         <div id='productKeyWebsite'><a href='http://www.bourt.com/generator/subscribe' target='_blank'>Buy subscription</a></div>
     </div>
 
@@ -2008,7 +2097,7 @@ a
 
     <div id='deleteConnectionsTitle'>
         <div id='deleteConnectionsTitleText'>Delete connections to</div>
-        <div class='button dialogButtonClose' id='deleteConnectionsClose' onclick='deleteConnectionsClose.blur(); hideDeleteConnectionsDialog();'>
+        <div class='panelButton dialogButtonClose' id='deleteConnectionsClose' onclick='deleteConnectionsClose.blur(); hideDeleteConnectionsDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
             </svg>
@@ -2017,8 +2106,8 @@ a
     
     <div id='deleteConnectionsBody'>
         <div id='deleteConnectionsInputBack'></div>
-        <input type='text' spellcheck="false" id='deleteConnectionsInput' />
-        <div id='deleteConnectionsButton' onclick='deleteConnectionsToNodes(deleteConnectionsInput.value);'>Delete</div>
+        <input type='text' spellcheck='false' id='deleteConnectionsInput' />
+        <div class='button' id='deleteConnectionsButton' onclick='deleteConnectionsToNodes(deleteConnectionsInput.value);'>Delete</div>
     </div>
 
 </div>
@@ -4795,6 +4884,68 @@ function logObjectUpdates(objects)
 function logSaveNodes(nodeJson)
 {
     console.log('%cSAVING NODES\n' + nodeJson, 'background: #ddeeff');
+}
+
+
+function logSavedNode(nodeKey)
+{
+    let log = formatSavedNodeJson(figGetPageData(nodeKey, false));
+
+    console.log(
+        '%c%s\n%c%s', 
+        'background: #fdb', 
+         noNodeTag(nodeKey), 
+        'background: #fed;',    
+         log);
+}
+
+
+
+function formatSavedNodeJson(json)
+{
+    let formJson = json
+        .replace('{\n', '')
+        .replace('\n}', '')
+
+        .replace('[\n' + TAB, '')
+        .replace('\n' + TAB + ']', '')
+
+        .split(TAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
+
+        .split('": "').join(': ')
+        .split('", "').join(': ')
+
+        .split(TAB + '"').join(TAB)
+        .split(TAB + TAB + '["').join(TAB + TAB)
+        
+        .split('",\n').join('\n')
+        .split('"\n').join('\n')
+        
+        .split('"],\n').join('\n');
+
+
+    if (formJson[formJson.length-1] == '"')    
+        formJson = formJson.substring(0, formJson.length - 1);
+
+    if (formJson.substring(formJson.length-2) == '"]')    
+        formJson = formJson.substring(0, formJson.length - 2);
+
+    return formJson;
+}
+
+
+
+function logSavedConn(conn)
+{
+    const log = 
+          conn.outputNodeId + '.' + conn.outputId
+        + ' ' + rightArrowChar(parseBool(conn.list)) + ' '
+        + conn.inputNodeId + '.' + conn.inputId;
+
+    console.log(
+        '%c%s', 
+        'background: #cfc', 
+        log); 
 }
 
 
@@ -17858,6 +18009,68 @@ function logSaveNodes(nodeJson)
 }
 
 
+function logSavedNode(nodeKey)
+{
+    let log = formatSavedNodeJson(figGetPageData(nodeKey, false));
+
+    console.log(
+        '%c%s\n%c%s', 
+        'background: #fdb', 
+         noNodeTag(nodeKey), 
+        'background: #fed;',    
+         log);
+}
+
+
+
+function formatSavedNodeJson(json)
+{
+    let formJson = json
+        .replace('{\n', '')
+        .replace('\n}', '')
+
+        .replace('[\n' + TAB, '')
+        .replace('\n' + TAB + ']', '')
+
+        .split(TAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
+
+        .split('": "').join(': ')
+        .split('", "').join(': ')
+
+        .split(TAB + '"').join(TAB)
+        .split(TAB + TAB + '["').join(TAB + TAB)
+        
+        .split('",\n').join('\n')
+        .split('"\n').join('\n')
+        
+        .split('"],\n').join('\n');
+
+
+    if (formJson[formJson.length-1] == '"')    
+        formJson = formJson.substring(0, formJson.length - 1);
+
+    if (formJson.substring(formJson.length-2) == '"]')    
+        formJson = formJson.substring(0, formJson.length - 2);
+
+    return formJson;
+}
+
+
+
+function logSavedConn(conn)
+{
+    const log = 
+          conn.outputNodeId + '.' + conn.outputId
+        + ' ' + rightArrowChar(parseBool(conn.list)) + ' '
+        + conn.inputNodeId + '.' + conn.inputId;
+
+    console.log(
+        '%c%s', 
+        'background: #cfc', 
+        log); 
+}
+
+
 function logRequest(parse)
 {
     let log = '';
@@ -26525,7 +26738,7 @@ var menuItemNodeEnableDisable;
 
 
 
-function initMenus()
+function initGeneratorMenus()
 {
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
@@ -26554,9 +26767,10 @@ function initMenus()
         //     }
         // }),
                                    new MenuItem('',                               {separator: true}),
+                                   new MenuItem('Delete connections to...',       {callback: () => showDeleteConnectionsDialog()}),
+                                   new MenuItem('',                               {separator: true}),
                                    new MenuItem('List\u2008all\u2008nodes',       {callback: () => uiLogAllSavedNodes()}),
                                    new MenuItem('List\u2008all\u2008connections', {callback: () => uiLogAllSavedConns()}),
-                                   new MenuItem('Delete connections to...',       {callback: () => showDeleteConnectionsDialog()}),
                                    new MenuItem('',                               {separator: true}),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',              {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',                {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
@@ -30049,7 +30263,7 @@ graphView.headerOutput    = null; // same as overOutput, but when snapping from 
     
 graphView.tempConn        = null;
 graphView.savedConn       = null;
-graphView.savedInputIndex = -1;
+//graphView.savedInputIndex = -1;
 
 graphView.connPointerId   = -1;
 
@@ -30507,8 +30721,7 @@ graphView.addEventListener('pointerdown', e =>
             graphView.overOutput.connecting = true;
             graphView.startConnectionFromOutput(e.pointerId, graphView.overOutput);
 
-            updateWire(graphView.tempConn.wire2, sx, sy);
-            updateWire(graphView.tempConn.wire,  sx, sy);
+            updateConnWires(graphView.tempConn, sx, sy);
         }
         else if (graphView.overInput)
         {
@@ -30518,11 +30731,10 @@ graphView.addEventListener('pointerdown', e =>
 
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false);
 
-                updateWire(graphView.tempConn.wire2, sx, sy);
-                updateWire(graphView.tempConn.wire,  sx, sy);
+                updateConnWires(graphView.tempConn, sx, sy);
                 
                 graphView.savedConn       = graphView.overInput.connection;
-                graphView.savedInputIndex = graphView.overInput.index;
+                //graphView.savedInputIndex = graphView.overInput.index;
 
                 hide(graphView.savedConn.wire2);
                 hide(graphView.savedConn.wire);
@@ -30532,8 +30744,7 @@ graphView.addEventListener('pointerdown', e =>
                 graphView.overInput.connecting = true;
                 graphView.startConnectionFromInput(e.pointerId, graphView.overInput);
 
-                updateWire(graphView.tempConn.wire2, sx, sy);
-                updateWire(graphView.tempConn.wire,  sx, sy);
+                updateConnWires(graphView.tempConn, sx, sy);
             }
         }
         else if (document.activeElement.type != 'text') // selection, unless a textbox is in focus
@@ -30599,8 +30810,7 @@ function graphView_onpointermove(e)
     
     else if (graphView.tempConn)
     {
-        updateWire(graphView.tempConn.wire2, e.clientX, e.clientY);
-        updateWire(graphView.tempConn.wire,  e.clientX, e.clientY);
+        updateConnWires(graphView.tempConn, e.clientX, e.clientY);
     }
 }
 
@@ -31156,14 +31366,10 @@ graphView.startConnectionFromOutput = (pointerId, output, updateTempWire = true)
     graphView.tempConn = new Connection(output, null);
     graphView.tempConn.wire.output = output;
 
-    graphView.addWire(graphView.tempConn.wire2, false);
-    graphView.addWire(graphView.tempConn.wire,  false);
+    graphView.addConnWires(graphView.tempConn, false);
 
     if (updateTempWire)
-    {
-        updateWire(graphView.tempConn.wire2, graphView.pStart.x, graphView.pStart.y);
-        updateWire(graphView.tempConn.wire,  graphView.pStart.x, graphView.pStart.y);
-    }
+        updateConnWires(graphView.tempConn, graphView.pStart.x, graphView.pStart.y);
 
     output.updateControl();
 };
@@ -31176,13 +31382,11 @@ graphView.startConnectionFromInput = (pointerId, input) =>
 
     graphView.tempConn = new Connection(null, input);
     
-    graphView.tempConn.wire.input = input;
+    //graphView.tempConn.wire.input = input;
     
-    graphView.addWire(graphView.tempConn.wire2, false);
-    graphView.addWire(graphView.tempConn.wire,  false);
+    graphView.addConnWires(graphView.tempConn, false);
 
-    updateWire(graphView.tempConn.wire2, graphView.pStart.x, graphView.pStart.y);
-    updateWire(graphView.tempConn.wire,  graphView.pStart.x, graphView.pStart.y);
+    updateConnWires(graphView.tempConn, graphView.pStart.x, graphView.pStart.y);
 
     input.updateControl();
 };
@@ -31194,8 +31398,7 @@ graphView.cancelConnection = pointerId =>
     const output = graphView.tempConn.output;
     const input  = graphView.tempConn.input;
 
-    graphView.removeWire(graphView.tempConn.wire2);    
-    graphView.removeWire(graphView.tempConn.wire);    
+    graphView.removeConnWires(graphView.tempConn);    
 
     graphView.savedConn = null;
     graphView.tempConn  = null;
@@ -31212,6 +31415,7 @@ graphView.cancelConnection = pointerId =>
 
     graphView.connPointerId = -1;
 
+
      newReorderIndex = Number.NaN;
     prevReorderIndex = Number.NaN;
      oldReorderIndex = Number.NaN;
@@ -31223,8 +31427,6 @@ graphView.endConnection = pointerId =>
 {
     if (graphView.tempConn.output) // FROM OUTPUT
     {
-        console.log('graphView.tempConn.output.node =', graphView.tempConn.output.node);
-
         let output = graphView.tempConn.output;
         let input  = graphView.overInput;
 
@@ -31249,9 +31451,7 @@ graphView.endConnection = pointerId =>
             else if (input == savedConnInput) // reconnect old
             {
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
-                
-                updateWire(input.connection.wire2);
-                updateWire(input.connection.wire );
+                updateConnWires(input.connection);
             }
 
             else if (savedConnInput)
@@ -31262,10 +31462,7 @@ graphView.endConnection = pointerId =>
             else if (   !savedConnInput
                      && (  !input.connected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new
-            {
-                console.log('output =', output.toString());
                 actionManager.do(new ConnectAction(output, input));
-            }
         }
         else if (savedConnInput) // disconnect old
             actionManager.do(new DisconnectAction(output, savedConnInput));
@@ -31528,6 +31725,14 @@ scrollbarY.addEventListener('pointermove', e =>
 });
 
 
+graphView.addConnWires = function(conn, updateTransform = true)
+{
+    graphView.addWire(conn.wire2, updateTransform);
+    graphView.addWire(conn.wire,  updateTransform);
+}
+
+
+
 graphView.addWire = function(wire, updateTransform = true)
 {
     graphView.wires.push(wire);
@@ -31535,6 +31740,14 @@ graphView.addWire = function(wire, updateTransform = true)
 
     if (updateTransform)
         updateWire(wire);
+};
+
+
+
+graphView.removeConnWires = function(conn)
+{
+    graphView.removeWire(conn.wire2);
+    graphView.removeWire(conn.wire);
 };
 
 
@@ -31547,6 +31760,14 @@ graphView.removeWire = function(wire)
     if (graphView.wires.includes(wire))
         removeFromArray(graphView.wires, wire);
 };
+
+
+
+function updateConnWires(conn, x = 0, y = 0)
+{
+    updateWire(conn.wire2, x, y);
+    updateWire(conn.wire,  x, y);
+}
 
 
 
@@ -31642,15 +31863,15 @@ function updateWires(wires)
         const input  = conn.input;
         const output = conn.output;
 
-        const isSolo = 
-                graphView._soloNode
-            && (    input.node == graphView._soloNode
-                || output.node == graphView._soloNode);
+        // const isSolo = 
+        //         graphView._soloNode
+        //     && (    input.node == graphView._soloNode
+        //         || output.node == graphView._soloNode);
 
-        show(wires[i],         /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
-        show(wires[i].curve,   /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
-        show(wires[i].xp1,     /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
-        show(wires[i].xp2,     /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i],       /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i].curve, /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i].xp1,   /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i].xp2,   /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
 
         if (wires[i].outBall) show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
         if (wires[i]. inBall) show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
@@ -33579,7 +33800,7 @@ class Graph
 
 
 
-    connect(output, input, inputIndex = -1)
+    connect(output, input, inputId = '')
     {
         //console.log('graph.connect()');
 
@@ -33597,7 +33818,7 @@ class Graph
 
         if (    input.node.variableInputs
             && !input.param
-            &&  inputIndex > -1)
+            &&  inputId != '')
         {
             input = lastOf(input.node.headerInputs);
             
@@ -33605,11 +33826,11 @@ class Graph
             moveInArray(
                 input.node.inputs, 
                 input.node.headerInputs.length-1, 
-                inputIndex);
+                input.index); //inputIndex
 
             input.node.inputControls.insertBefore(
                 lastOf(input.node.inputControls.childNodes), 
-                input.node.inputControls.childNodes[inputIndex]);
+                input.node.inputControls.childNodes[input.index]);//[inputIndex]);
         }
 
 
@@ -33622,8 +33843,7 @@ class Graph
         input .connection = conn;
         output.connection = conn;
         
-        graphView.addWire(conn.wire2);
-        graphView.addWire(conn.wire);
+        graphView.addConnWires(conn);
 
         this.connections.push(conn);
 
@@ -33642,8 +33862,7 @@ class Graph
         if (!output) return false;
 
 
-        graphView.removeWire(input.connection.wire2);
-        graphView.removeWire(input.connection.wire);
+        graphView.removeConnWires(input.connection);
 
         removeFromArray(this.connections, input.connection);
         removeFromArray(output.connectedInputs, input);
@@ -34282,6 +34501,7 @@ extends EventTarget
   
 
     _connectedOutput = null;
+    
     get connectedOutput() { return this._connectedOutput; }
     set connectedOutput(output)
     {
@@ -34324,10 +34544,6 @@ extends EventTarget
     isNew        = false; // this indicates that the input is the empty "new" input of a variable node
 
 
-    //onconnect    = new Event('connect');
-    //ondisconnect = new Event('disconnect');
-
-
     getValuesForUndo; // function pointer, return array of [index,value] tuples
 
 
@@ -34356,9 +34572,6 @@ extends EventTarget
         this.div.appendChild(this.wireBall);
 
                 
-        //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
-
-
         this.hitbox.addEventListener('pointerenter', e => 
         {
             if (graphView.headerInput)
@@ -34444,14 +34657,11 @@ extends EventTarget
             : this.colorLight;
                      
         const colorStyle = 
-            //settings.showWires
-            //? 
             rgba2style(rgb_a(
                 color,
                 mouseOver 
                 ? Math.min(color[3] * this.overFactor, 1) 
                 : color[3]));
-            //: 'transparent';
 
 
         const isConnected =
@@ -34472,7 +34682,7 @@ extends EventTarget
         this.div.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
         this.div.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
         this.div.style.boxShadow     = '0 0 0 1px ' + colorStyle;
-        this.div.style.pointerEvents = 'auto';//settings.showWires ? 'auto' : 'none';
+        this.div.style.pointerEvents = 'auto';
 
         this.hitbox.style.left   = isConnected ? -2 : -3;
         this.hitbox.style.top    = isConnected ? -2 : -3;
@@ -34749,6 +34959,9 @@ class Connection
 
         this.wire = this.createWire(this.wire);
    
+        this.wire.output = this.output;
+        this.wire.input  = this.input;
+
         this.wire.outBall                = createSvg('circle');
         this.wire.outBall.style.position = 'absolute';
 
@@ -35127,11 +35340,9 @@ class Connection
               pos + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
             + ',' + NL + pos + tab + '"outputId": "' + (this.output.param ? this.output.param.id : this.output.index) + '"'
-            // + (this.output.param ? ',' + NL + pos + tab + '"outputParam": "' + this.output.param.name + '"' : '')
             + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "' + (this.input.param ? this.input.param.id : this.input.index) + '"'
             + ',' + NL + pos + tab + '"list": "' + boolToString(this.output.supports(LIST_TYPES)) + '"'
-            // + (this.input.param ? ',' + NL + pos + tab  + '"inputParam": "' + this.input.param.name + '"' : '')
             +       NL + pos + '}';
 
         return json;
@@ -35141,25 +35352,11 @@ class Connection
 
     static parseJson(_conn)
     {
-        const outputNode  = nodeFromId(_conn.outputNodeId);
-        const outputId    = _conn.outputId;
-        //const outputIndex = parseInt(_conn.outputIndex);
+        const outputNode = nodeFromId(_conn.outputNodeId);
+        const outputId   = _conn.outputId;
 
-        const inputNode   = nodeFromId(_conn.inputNodeId);
-        const inputId     = _conn.inputId;
-        //const inputIndex  = parseInt(_conn.inputIndex);
-
-
-        // log('---------------------------------------');
-
-        // log('outputNode',                outputNode);
-        // log('outputIndex',               outputIndex);
-        // log('outputNode.outputs.length', outputNode.outputs.length);
-        
-        // log('inputNode',               inputNode);
-        // log('inputIndex',              inputIndex);
-        // log('inputNode.inputs.length', inputNode.inputs.length);
-
+        const inputNode  = nodeFromId(_conn.inputNodeId);
+        const inputId    = _conn.inputId;
 
 
         if (   !outputNode 
@@ -35367,7 +35564,6 @@ class Operator
 
     getInputId(input)
     {
-        console.log('input =', input);
         return input.param
              ? input.param.id
              : input.index.toString();
@@ -35375,22 +35571,21 @@ class Operator
 
 
 
-    addInput(input)//, index = -1)
+    inputFromId(id)
+    {
+        return this.inputs.find(i => i.id == id);
+    }
+
+
+
+    addInput(input)
     {
         input._node = this;
-        
-        //if (index < 0)
-        //{
-            // this.inputs.push(input);
-            // this.inputControls.appendChild(input.div);
-        //}
-        //else
-        //{
-            const index = this.headerInputs.length;
 
-            this.inputs.splice(index, 0, input);
-            this.inputControls.insertBefore(input.div, this.inputControls.children[index]);
-        //}
+        const index = this.headerInputs.length;
+
+        this.inputs.splice(index, 0, input);
+        this.inputControls.insertBefore(input.div, this.inputControls.children[index]);
     }
 
 
@@ -35449,6 +35644,13 @@ class Operator
         return output.param
              ? output.param.id
              : output.index.toString();
+    }
+
+
+
+    outputFromId(id)
+    {
+        return this.outputs.find(o => o.id == id);
     }
 
 
@@ -36214,7 +36416,7 @@ function getNodeRequest(node, gen)
 function createGenObject(paramNode)
 {
     return {
-        scope:       paramNode ? [{nodeId: paramNode.id, paramId: NULL}] : [], // [{nodeId, paramId}]
+        scope:       paramNode ? [{nodeId: paramNode.id, paramId: NULL}] : [],
         passedNodes: [],
         paramNodes:  [],
         markParams:  true
@@ -41877,7 +42079,7 @@ extends Action
     inputId;
     
     get inputNode() { return nodeFromId(this.inputNodeId); }
-    get input()     { return this.inputNode.inputs.find(i => i.id == this.inputId); }
+    get input()     { return this.inputNode.inputFromId(this.inputId); }
     
 
     oldOutputActiveNodeId;      // the active node in the output node's tree
@@ -41891,8 +42093,6 @@ extends Action
 
     constructor(output, input)
     {
-        console.log('output =', output);
-        console.log('output.node =', output.node);
         const oldOutputId = 
             input.connected 
             ? input.connectedOutput.id
@@ -41908,7 +42108,7 @@ extends Action
         this.outputId        = output.id;
    
         this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
-        this.oldOutputIndex  = oldOutputId;
+        this.oldOutputIi     = oldOutputId;
    
         this.inputNodeId     = input.node.id;
         this.inputId         = input.id;
@@ -41975,7 +42175,7 @@ extends Action
     undo()
     {
 
-        uiDisconnect(this.inputNode.inputs[this.inputId]);
+        uiDisconnect(this.inputNode.inputFromId(inputId));
 
 
         if (this.oldOutputNodeId != '')
@@ -42116,8 +42316,8 @@ extends Action
     nodes            = [];
     nodePos          = [];
 
-    oldConnections   = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
-    newConnections   = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
+    oldConnections   = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
+    newConnections   = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
 
     newActiveNodeIds = [];
     oldActiveNodeIds = [];
@@ -42139,9 +42339,9 @@ extends Action
     {
         if (!this.oldConnections.find(c => 
                    c.outputNodeId == conn.output.node.id
-                && c.outputIndex  == conn.output.index
+                && c.outputId     == conn.output.id
                 && c. inputNodeId == conn. input.node.id
-                && c. inputIndex  == conn. input.index))
+                && c. inputId     == conn. input.id))
             this.oldConnections.push(getConnectionForArrayWithIds(conn));
     }
 
@@ -42234,7 +42434,7 @@ extends Action
 
 
         for (const _conn of this.newConnections)
-            uiDisconnect(nodeFromId(_conn.inputNodeId).inputs[_conn.inputIndex]);
+            uiDisconnect(nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
 
 
         this.restoreNodes();
@@ -42296,7 +42496,7 @@ extends Action
         varConnections.sort((c1, c2) =>
         {
             if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
-            if (c1.inputIndex  != c2.inputIndex ) return c1.inputIndex  - c2.inputIndex;
+            if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
             return 0;
         });
         
@@ -42381,8 +42581,8 @@ extends Action
 
     constructor(output, input)
     {
-        console.log('output =', output);
-        console.log('input =', input);
+        //console.log('output =', output);
+        //console.log('input =', input);
 
         super('DISCONNECT ' 
             + output.node.id + '.' + output.id
@@ -42407,7 +42607,7 @@ extends Action
             uiDeleteObjects([id]); // clean up now irrelevant objects
 
 
-        uiDisconnect(this.inputNode.inputs.find(i => i.id == this.inputId));
+        uiDisconnect(this.inputNode.inputFromId(this.inputId));
         this.inputNode.invalidate();
         
         
@@ -42783,12 +42983,12 @@ extends Action
 
     do()
     {
-        uiDisconnect(this.oldInputNode.inputs[this.oldInputId]);
+        uiDisconnect(this.oldInputNode.inputFromId(this.oldInputId));
         
 
         uiConnect(
-            this.outputNode.outputs[this.outputId], 
-            this. inputNode. inputs[this. inputId],
+            this.outputNode.outputFromId(this.outputId), 
+            this. inputNode. inputFromId(this. inputId),
             this.inputId);
             
 
@@ -42814,7 +43014,7 @@ extends Action
 
     undo()
     {
-        uiDisconnect(this.inputNode.inputs[this.inputId]);
+        uiDisconnect(this.inputNode.inputFromId(this.inputId));
 
             
         uiVariableConnect(
@@ -42855,8 +43055,8 @@ extends Action
     nodes              = [];
     nodePos            = [];
 
-    oldConnections     = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
-    newConnections     = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
+    oldConnections     = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
+    newConnections     = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
 
     clusterActiveLeft  = [];
     clusterActiveRight = [];
@@ -42881,9 +43081,9 @@ extends Action
     {
         if (!this.oldConnections.find(c => 
                    c.outputNodeId == conn.output.node.id
-                && c.outputIndex  == conn.output.index
+                && c.outputId     == conn.output.id
                 && c. inputNodeId == conn. input.node.id
-                && c. inputIndex  == conn. input.index))
+                && c. inputId     == conn. input.id))
             this.oldConnections.push(getConnectionForArrayWithIds(conn));
     }
 
@@ -42914,9 +43114,9 @@ extends Action
                         this.newConnections.push(
                         {
                             outputNodeId: input.connectedOutput.node.id,
-                            outputIndex:  input.connectedOutput.index,
+                            outputId:     input.connectedOutput.id,
                             inputNodeId:  connectedInput.node.id,
-                            inputIndex:   connectedInput.index
+                            inputId:      connectedInput.id
                         });
                     }
                 }
@@ -43018,8 +43218,8 @@ extends Action
             const _conn = this.newConnections[i];
             
             uiConnect(
-                nodeFromId(_conn.outputNodeId).outputs[_conn.outputIndex], 
-                nodeFromId(_conn. inputNodeId). inputs[_conn. inputIndex]);
+                nodeFromId(_conn.outputNodeId).outputFromId(_conn.outputId), 
+                nodeFromId(_conn. inputNodeId). inputFromId(_conn. inputId));
 
                  if (this.clusterActiveLeft [i]) pushUpdate([this.clusterActiveLeft [i]]);
             else if (this.clusterActiveRight[i]) pushUpdate([this.clusterActiveRight[i]]);
@@ -43040,7 +43240,7 @@ extends Action
 
 
         for (const _conn of this.newConnections)
-            uiDisconnect(nodeFromId(_conn.inputNodeId).inputs[_conn.inputIndex]);
+            uiDisconnect(nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
 
 
         this.restoreNodes();
@@ -43102,7 +43302,7 @@ extends Action
         varConnections.sort((c1, c2) =>
         {
             if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
-            if (c1.inputIndex  != c2.inputIndex ) return c1.inputIndex  - c2.inputIndex;
+            if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
             return 0;
         });
         
@@ -43746,6 +43946,62 @@ const zoomOutCursor =
     + 'wvc3ZnPgo=) 8 8, auto';
 
 
+function loadNodesAndConnsData(_nodes, _conns)
+{
+    for (const _node of _nodes) dataViewNodes.appendChild(createNodeDataDiv(_node));
+    for (const _conn of _conns) dataViewConns.appendChild(createConnDataDiv(_conn));
+}
+
+
+
+function createNodeDataDiv(_node)
+{
+    const node = JSON.parse(_node);
+    const div  = createDiv('dataViewNode');
+
+    div.innerHTML = node.id;
+    div.showJson  = false;
+
+
+    div.addEventListener('dblclick', () =>
+    {
+        div.showJson = !div.showJson;
+
+        if (div.showJson)
+        {
+            div.innerHTML       = formatSavedNodeJson(_node);
+            div.style.textAlign = 'left';
+        }
+        else
+        {
+            div.innerHTML       = node.id;
+            div.style.textAlign = 'center';
+        }
+    });
+
+
+    return div;
+}
+
+
+
+function createConnDataDiv(_conn)
+{
+    const conn = JSON.parse(_conn);
+    const div  = createDiv('dataViewConn');
+
+    const arrow = ' ' + rightArrowChar(parseBool(conn.list)) + ' ';
+
+    div.innerHTML = 
+         (false ? '🛑&nbsp;&nbsp' : '')
+        + conn.outputNodeId + '.' + conn.outputId
+        + arrow
+        + conn.inputNodeId + '.' + conn.inputId;
+
+    return div;
+}
+
+
 var deleteConnectionsDialogVisible = false;
 
 
@@ -43927,6 +44183,9 @@ var genMessages   = []; // messages from UI to Generator
 var genMessagePosted = false;
 
 
+var dataMode = true;
+
+
 // uiClearAllLocalData();
 
 //uiClearLocalData('windowWidth');
@@ -43961,9 +44220,7 @@ var pasteOffsetDelta    = [40, 100];
 
 
 clearConsole();
-
 initUtilContext();
-
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
@@ -43971,28 +44228,37 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 function uiEndStartGenerator(msg)
 {
-    initThemeColors();
-    initMenus();
-
-
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
 
-    loadLocalSettings();
-    
+    initThemeColors();
 
+
+    if (dataMode)
+    {
+        dataView.style.display = 'block';
+        initDataModeMenus();
+    }
+    else
+    {
+        initGeneratorMenus();
+        loadLocalSettings();
+    }    
+ 
+    
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
 
 
     onClassChange(document.childNodes[0], () =>
     { 
         initThemeColors();
-    
-        graph.nodes.forEach(n => n.updateNode());
+        
+        if (!dataMode)
+            graph.nodes.forEach(n => n.updateNode());
     });
-    
-    
+
+
     window.focus();
 }
 
@@ -44075,9 +44341,7 @@ document.addEventListener('keydown', e =>
 
                 setTimeout(() => 
                 {
-                    updateWire(savedConn.wire2);
-                    updateWire(savedConn.wire );
-                    
+                    updateConnWires(savedConn);
                     savedConn.input.updateControl();
                 });
             }
@@ -44217,18 +44481,16 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiEndFigMessage':      uiEndFigMessage     (msg.msgCmd);                                   break;
+        case 'uiEndFigMessage':        uiEndFigMessage       (msg.msgCmd);                                   break;
         
+        case 'uiEndStartGenerator':    uiEndStartGenerator   (msg);                                          break;
         
-        case 'uiEndStartGenerator':  uiEndStartGenerator (msg);                                          break;
+        case 'uiEndLoadNodesAndConns': uiEndLoadNodesAndConns(msg.nodesJson, msg.connsJson, msg.activeJson); break;
         
-        case 'uiLoadNodesAndConns':  uiLoadNodesAndConns (msg.nodesJson, msg.connsJson, msg.activeJson); break;
+        case 'uiGetLocalDataReturn':   uiGetLocalDataReturn  (msg);                                          break;
+        case 'uiGetPageDataReturn':    uiGetPageDataReturn   (msg);                                          break;
         
-        case 'uiGetLocalDataReturn': uiGetLocalDataReturn(msg);                                          break;
-        case 'uiGetPageDataReturn':  uiGetPageDataReturn (msg);                                          break;
-        
-        
-        case 'uiEndResizeWindow':    uiEndResizeWindow   ();                                             break;
+        case 'uiEndResizeWindow':      uiEndResizeWindow     ();                                             break;
     }
 }    
 
@@ -44515,13 +44777,6 @@ function setDefaultProductKeyInput()
 
 
 
-// var _loadingNodes       = null;
-// var _loadingConns       = null;
-// var  loadingNodes       = null;
-// var  loadingSetProgress = false;
-
-
-
 function      uiGetLocalData(key)        { uiQueueMessageToFigma({ cmd:      'figGetLocalData', key: key               }); }
 function      uiSetLocalData(key, value) { uiQueueMessageToFigma({ cmd:      'figSetLocalData', key: key, value: value }); }
 function    uiClearLocalData(key)        { uiQueueMessageToFigma({ cmd:      'figSetLocalData', key: key, value: ''    }); }
@@ -44649,7 +44904,7 @@ function uiLoadGraphView(json)
 
 
 
-function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
+function uiEndLoadNodesAndConns(nodesJson, connsJson, activeJson)
 {
     if (settings.logRawLoading)
         console.log(
@@ -44659,15 +44914,26 @@ function uiLoadNodesAndConns(nodesJson, connsJson, activeJson)
                 .replaceAll('\\n', '\n')
                 .replaceAll('\\"', '\"'));
 
+
+    let _nodes = JSON.parse(nodesJson);
+    let _conns = JSON.parse(connsJson);
+
+    
+    if (dataMode)
+    {
+        loadNodesAndConnsData(_nodes, _conns);
+    }
+    else
+    {
+        _nodes = _nodes.map(n => JSON.parse(n));
+        _conns = _conns.map(c => JSON.parse(c));
+            
+        _nodes.sort((a, b) => a.z - b.z);
         
-    graph.clear();
+        graph.clear();
 
-    const _nodes = JSON.parse(nodesJson).map(n => JSON.parse(n));
-    const  conns = JSON.parse(connsJson).map(c => JSON.parse(c));
-
-    _nodes.sort((a, b) => a.z - b.z);
-
-    loadNodesAndConnsAsync(_nodes, conns, setLoadingProgress);
+        loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
+    }
 }
 
 
@@ -44708,16 +44974,6 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
     promise.then(nodes => 
     {
         graph.addNodes(nodes, false, false);
-
-        // _loadingNodes       = _nodes;
-        // _loadingConns       = _conns;
-        //  loadingNodes       =  nodes;
-        //  loadingSetProgress =  setProgress;
-
-        // some parameters exist as evaluation results, so the loaded nodes
-        // have to be evaluaged first before connecting everything
-        //pushUpdate(nodes);
-        
         loadConnectionsAsync(_nodes, _conns, nodes, setProgress);    
     });
 }
@@ -45611,8 +45867,8 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId)
 {
     //console.log('uiVariableConnect()');
 
-    const output = outputNode.outputs.find(o => o.id == outputId);
-    const  input =  inputNode. inputs.find(i => i.id ==  inputId);
+    const output = outputNode.outputFromId(outputId);
+    const  input =  inputNode. inputFromId(inputId);
 
     if (    inputNode.variableInputs
         && !input.param)
@@ -45634,9 +45890,6 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId)
 
 function uiConnect(output, input, inputId = '')
 {
-    // console.log('output =', output);
-    // console.log('input =', input);
-    // console.log('inputIndex =', inputIndex);
     const conn = graph.connect(output, input, inputId);
 
     uiSaveConnection(
@@ -45897,12 +46150,12 @@ function correctNodeNamesInConnections(data)
     {
         const _conn = data.connections[i];
 
-        let outputNodeIndex = data.nodes.findIndex(n => n.id == _conn.outputNodeId);
-        if (outputNodeIndex > -1) data.connections[i].outputNodeId = data.nodes[outputNodeIndex].newId;
+        let outputNode = data.nodes.find(n => n.id == _conn.outputNodeId);
+        if (outputNode) data.connections[i].outputNodeId = outputNode.newId;
 
-        const inputNodeIndex = data.nodes.findIndex(n => n.id == _conn.inputNodeId);
+        const inputNode = data.nodes.find(n => n.id == _conn.inputNodeId);
 
-        data.connections[i].inputNodeId = data.nodes[inputNodeIndex].newId;
+        data.connections[i].inputNodeId = inputNode.newId;
     }
 
     for (let i = 0; i < data.nodes.length; i++)
@@ -46077,21 +46330,6 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
     }
 
 
-    // if (graphView.loadingNodes) // in case the loading nodes were just evaluated for the first time
-    // {
-    //     loadConnectionsAsync(
-    //         _loadingNodes, 
-    //         _loadingConns, 
-    //          loadingNodes, 
-    //          loadingSetProgress);    
-
-    //     _loadingNodes       = null;
-    //     _loadingConns       = null;
-    //      loadingNodes       = null;
-    //      loadingSetProgress = false;
-    //}
-
-    //else 
     if (objects.length > 0)
     {
         if (settings.logObjectUpdates)
@@ -46102,7 +46340,6 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
             updateNodeId:  updateNodeId,
             updateParamId: updateParamId,
             nodeIds:       nodes.map(n => n.id),
-            // nodeJson:      nodeJson,
             objects:       [...objects]});
     }
         

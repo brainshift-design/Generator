@@ -32,6 +32,7 @@ extends EventTarget
   
 
     _connectedOutput = null;
+    
     get connectedOutput() { return this._connectedOutput; }
     set connectedOutput(output)
     {
@@ -74,10 +75,6 @@ extends EventTarget
     isNew        = false; // this indicates that the input is the empty "new" input of a variable node
 
 
-    //onconnect    = new Event('connect');
-    //ondisconnect = new Event('disconnect');
-
-
     getValuesForUndo; // function pointer, return array of [index,value] tuples
 
 
@@ -106,9 +103,6 @@ extends EventTarget
         this.div.appendChild(this.wireBall);
 
                 
-        //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
-
-
         this.hitbox.addEventListener('pointerenter', e => 
         {
             if (graphView.headerInput)
@@ -194,14 +188,11 @@ extends EventTarget
             : this.colorLight;
                      
         const colorStyle = 
-            //settings.showWires
-            //? 
             rgba2style(rgb_a(
                 color,
                 mouseOver 
                 ? Math.min(color[3] * this.overFactor, 1) 
                 : color[3]));
-            //: 'transparent';
 
 
         const isConnected =
@@ -222,7 +213,7 @@ extends EventTarget
         this.div.style.borderRadius  = (isConnected ? 4 : 4) + 'px';
         this.div.style.marginBottom  = (isConnected ? 4 : 6) + 'px';
         this.div.style.boxShadow     = '0 0 0 1px ' + colorStyle;
-        this.div.style.pointerEvents = 'auto';//settings.showWires ? 'auto' : 'none';
+        this.div.style.pointerEvents = 'auto';
 
         this.hitbox.style.left   = isConnected ? -2 : -3;
         this.hitbox.style.top    = isConnected ? -2 : -3;

@@ -7,8 +7,8 @@ extends Action
     nodes            = [];
     nodePos          = [];
 
-    oldConnections   = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
-    newConnections   = []; // [{outputNodeId, outputIndex, inputNodeId, inputIndex}]
+    oldConnections   = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
+    newConnections   = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
 
     newActiveNodeIds = [];
     oldActiveNodeIds = [];
@@ -30,9 +30,9 @@ extends Action
     {
         if (!this.oldConnections.find(c => 
                    c.outputNodeId == conn.output.node.id
-                && c.outputIndex  == conn.output.index
+                && c.outputId     == conn.output.id
                 && c. inputNodeId == conn. input.node.id
-                && c. inputIndex  == conn. input.index))
+                && c. inputId     == conn. input.id))
             this.oldConnections.push(getConnectionForArrayWithIds(conn));
     }
 
@@ -125,7 +125,7 @@ extends Action
 
 
         for (const _conn of this.newConnections)
-            uiDisconnect(nodeFromId(_conn.inputNodeId).inputs[_conn.inputIndex]);
+            uiDisconnect(nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
 
 
         this.restoreNodes();
@@ -187,7 +187,7 @@ extends Action
         varConnections.sort((c1, c2) =>
         {
             if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
-            if (c1.inputIndex  != c2.inputIndex ) return c1.inputIndex  - c2.inputIndex;
+            if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
             return 0;
         });
         

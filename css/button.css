@@ -1,5 +1,26 @@
 .button
 {
+    color:          var(--figma-color-text);
+    background:     var(--figma-color-bg);
+
+    font-size:      11px;
+    text-align:     center;
+
+    padding:        8px 14px;
+
+    border-radius:  6px;
+    box-shadow:     0 0 0 1px var(--figma-color-text) inset;
+}
+
+
+.button:active
+{
+    box-shadow: 0 0 0 2px var(--figma-color-bg-brand) inset;
+}
+
+
+.panelButton
+{
     font-family:   Inter;
     font-size:     11px;
     width:         30;
@@ -15,13 +36,13 @@
 }
 
 
-.button:hover
+.panelButton:hover
 {
     background: var(--figma-color-bg-hover);
 }
 
 
-.button:active
+.panelButton:active
 {
     box-shadow: 0 0 0 2px var(--activeObjectColor) inset;
     outline:    none;

@@ -148,7 +148,6 @@ class Operator
 
     getInputId(input)
     {
-        console.log('input =', input);
         return input.param
              ? input.param.id
              : input.index.toString();
@@ -156,22 +155,21 @@ class Operator
 
 
 
-    addInput(input)//, index = -1)
+    inputFromId(id)
+    {
+        return this.inputs.find(i => i.id == id);
+    }
+
+
+
+    addInput(input)
     {
         input._node = this;
-        
-        //if (index < 0)
-        //{
-            // this.inputs.push(input);
-            // this.inputControls.appendChild(input.div);
-        //}
-        //else
-        //{
-            const index = this.headerInputs.length;
 
-            this.inputs.splice(index, 0, input);
-            this.inputControls.insertBefore(input.div, this.inputControls.children[index]);
-        //}
+        const index = this.headerInputs.length;
+
+        this.inputs.splice(index, 0, input);
+        this.inputControls.insertBefore(input.div, this.inputControls.children[index]);
     }
 
 
@@ -230,6 +228,13 @@ class Operator
         return output.param
              ? output.param.id
              : output.index.toString();
+    }
+
+
+
+    outputFromId(id)
+    {
+        return this.outputs.find(o => o.id == id);
     }
 
 
@@ -995,7 +1000,7 @@ function getNodeRequest(node, gen)
 function createGenObject(paramNode)
 {
     return {
-        scope:       paramNode ? [{nodeId: paramNode.id, paramId: NULL}] : [], // [{nodeId, paramId}]
+        scope:       paramNode ? [{nodeId: paramNode.id, paramId: NULL}] : [],
         passedNodes: [],
         paramNodes:  [],
         markParams:  true

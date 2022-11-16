@@ -5,14 +5,10 @@ graphView.startConnectionFromOutput = (pointerId, output, updateTempWire = true)
     graphView.tempConn = new Connection(output, null);
     graphView.tempConn.wire.output = output;
 
-    graphView.addWire(graphView.tempConn.wire2, false);
-    graphView.addWire(graphView.tempConn.wire,  false);
+    graphView.addConnWires(graphView.tempConn, false);
 
     if (updateTempWire)
-    {
-        updateWire(graphView.tempConn.wire2, graphView.pStart.x, graphView.pStart.y);
-        updateWire(graphView.tempConn.wire,  graphView.pStart.x, graphView.pStart.y);
-    }
+        updateConnWires(graphView.tempConn, graphView.pStart.x, graphView.pStart.y);
 
     output.updateControl();
 };
@@ -25,13 +21,11 @@ graphView.startConnectionFromInput = (pointerId, input) =>
 
     graphView.tempConn = new Connection(null, input);
     
-    graphView.tempConn.wire.input = input;
+    //graphView.tempConn.wire.input = input;
     
-    graphView.addWire(graphView.tempConn.wire2, false);
-    graphView.addWire(graphView.tempConn.wire,  false);
+    graphView.addConnWires(graphView.tempConn, false);
 
-    updateWire(graphView.tempConn.wire2, graphView.pStart.x, graphView.pStart.y);
-    updateWire(graphView.tempConn.wire,  graphView.pStart.x, graphView.pStart.y);
+    updateConnWires(graphView.tempConn, graphView.pStart.x, graphView.pStart.y);
 
     input.updateControl();
 };
@@ -43,8 +37,7 @@ graphView.cancelConnection = pointerId =>
     const output = graphView.tempConn.output;
     const input  = graphView.tempConn.input;
 
-    graphView.removeWire(graphView.tempConn.wire2);    
-    graphView.removeWire(graphView.tempConn.wire);    
+    graphView.removeConnWires(graphView.tempConn);    
 
     graphView.savedConn = null;
     graphView.tempConn  = null;
@@ -61,6 +54,7 @@ graphView.cancelConnection = pointerId =>
 
     graphView.connPointerId = -1;
 
+
      newReorderIndex = Number.NaN;
     prevReorderIndex = Number.NaN;
      oldReorderIndex = Number.NaN;
@@ -72,8 +66,6 @@ graphView.endConnection = pointerId =>
 {
     if (graphView.tempConn.output) // FROM OUTPUT
     {
-        console.log('graphView.tempConn.output.node =', graphView.tempConn.output.node);
-
         let output = graphView.tempConn.output;
         let input  = graphView.overInput;
 
@@ -98,9 +90,7 @@ graphView.endConnection = pointerId =>
             else if (input == savedConnInput) // reconnect old
             {
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
-                
-                updateWire(input.connection.wire2);
-                updateWire(input.connection.wire );
+                updateConnWires(input.connection);
             }
 
             else if (savedConnInput)
@@ -111,10 +101,7 @@ graphView.endConnection = pointerId =>
             else if (   !savedConnInput
                      && (  !input.connected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new
-            {
-                console.log('output =', output.toString());
                 actionManager.do(new ConnectAction(output, input));
-            }
         }
         else if (savedConnInput) // disconnect old
             actionManager.do(new DisconnectAction(output, savedConnInput));

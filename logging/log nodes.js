@@ -1,6 +1,20 @@
 function logSavedNode(nodeKey)
 {
-    let log = figGetPageData(nodeKey, false)
+    let log = formatSavedNodeJson(figGetPageData(nodeKey, false));
+
+    console.log(
+        '%c%s\n%c%s', 
+        'background: #fdb', 
+         noNodeTag(nodeKey), 
+        'background: #fed;',    
+         log);
+}
+
+
+
+function formatSavedNodeJson(json)
+{
+    let formJson = json
         .replace('{\n', '')
         .replace('\n}', '')
 
@@ -21,19 +35,13 @@ function logSavedNode(nodeKey)
         .split('"],\n').join('\n');
 
 
-    if (log[log.length-1] == '"')    
-        log = log.substring(0, log.length - 1);
+    if (formJson[formJson.length-1] == '"')    
+        formJson = formJson.substring(0, formJson.length - 1);
 
-    if (log.substring(log.length-2) == '"]')    
-        log = log.substring(0, log.length - 2);
+    if (formJson.substring(formJson.length-2) == '"]')    
+        formJson = formJson.substring(0, formJson.length - 2);
 
-
-    console.log(
-        '%c%s\n%c%s', 
-        'background: #fdb', 
-         noNodeTag(nodeKey), 
-        'background: #fed;',    
-         log);
+    return formJson;
 }
 
 

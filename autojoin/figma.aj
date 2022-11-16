@@ -2,7 +2,7 @@
 ../core/common.js
 ../core/types.js
 
-../logging/log figma.js
+../logging/log nodes.js
 ../logging/log request.js
 
 ../figma/*.ts0

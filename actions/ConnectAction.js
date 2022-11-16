@@ -16,7 +16,7 @@ extends Action
     inputId;
     
     get inputNode() { return nodeFromId(this.inputNodeId); }
-    get input()     { return this.inputNode.inputs.find(i => i.id == this.inputId); }
+    get input()     { return this.inputNode.inputFromId(this.inputId); }
     
 
     oldOutputActiveNodeId;      // the active node in the output node's tree
@@ -30,8 +30,6 @@ extends Action
 
     constructor(output, input)
     {
-        console.log('output =', output);
-        console.log('output.node =', output.node);
         const oldOutputId = 
             input.connected 
             ? input.connectedOutput.id
@@ -47,7 +45,7 @@ extends Action
         this.outputId        = output.id;
    
         this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
-        this.oldOutputIndex  = oldOutputId;
+        this.oldOutputIi     = oldOutputId;
    
         this.inputNodeId     = input.node.id;
         this.inputId         = input.id;
@@ -114,7 +112,7 @@ extends Action
     undo()
     {
 
-        uiDisconnect(this.inputNode.inputs[this.inputId]);
+        uiDisconnect(this.inputNode.inputFromId(inputId));
 
 
         if (this.oldOutputNodeId != '')

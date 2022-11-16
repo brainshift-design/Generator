@@ -1,0 +1,61 @@
+#dataView
+{
+    position:   absolute;
+    left:       0;
+    top:        0;
+    width:      100%;
+    height:     100%;
+    display:    none;
+    background: var(--figma-color-bg);
+}
+
+
+
+#dataViewNodes
+{
+    margin-bottom:  10px;
+}
+
+
+.dataViewNode
+{
+    font-family:    Inter;
+    font-size:      11px;
+    text-align:     center;
+    display:        inline-block;
+    min-width:      70px;
+    background:     #fed; 
+    border-radius:  3px;
+    margin:         2px 0px 0px 2px;
+    padding:        8px 6px;
+    box-shadow:     0 0 0 1px #dba inset;
+    white-space:    pre;
+    vertical-align: top;
+}
+
+
+.dataViewNode:hover
+{
+    background:    #fdb; 
+}
+
+
+.dataViewConn
+{
+    font-family:   Inter;
+    font-size:     11px;
+    text-align:    center;
+    display:       inline-block;
+    min-width:     70px;
+    background:    #cfc; 
+    border-radius: 3px;
+    margin:        2px 0px 0px 2px;
+    padding:       3px 11px;
+    box-shadow:    0 0 0 1px #ad8 inset;
+}
+
+
+.dataViewConn:hover
+{
+    background:    #aea; 
+}

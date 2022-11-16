@@ -1,3 +1,11 @@
+graphView.addConnWires = function(conn, updateTransform = true)
+{
+    graphView.addWire(conn.wire2, updateTransform);
+    graphView.addWire(conn.wire,  updateTransform);
+}
+
+
+
 graphView.addWire = function(wire, updateTransform = true)
 {
     graphView.wires.push(wire);
@@ -5,6 +13,14 @@ graphView.addWire = function(wire, updateTransform = true)
 
     if (updateTransform)
         updateWire(wire);
+};
+
+
+
+graphView.removeConnWires = function(conn)
+{
+    graphView.removeWire(conn.wire2);
+    graphView.removeWire(conn.wire);
 };
 
 
@@ -17,6 +33,14 @@ graphView.removeWire = function(wire)
     if (graphView.wires.includes(wire))
         removeFromArray(graphView.wires, wire);
 };
+
+
+
+function updateConnWires(conn, x = 0, y = 0)
+{
+    updateWire(conn.wire2, x, y);
+    updateWire(conn.wire,  x, y);
+}
 
 
 
@@ -112,15 +136,15 @@ function updateWires(wires)
         const input  = conn.input;
         const output = conn.output;
 
-        const isSolo = 
-                graphView._soloNode
-            && (    input.node == graphView._soloNode
-                || output.node == graphView._soloNode);
+        // const isSolo = 
+        //         graphView._soloNode
+        //     && (    input.node == graphView._soloNode
+        //         || output.node == graphView._soloNode);
 
-        show(wires[i],         /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
-        show(wires[i].curve,   /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
-        show(wires[i].xp1,     /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
-        show(wires[i].xp2,     /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i],       /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i].curve, /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i].xp1,   /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i].xp2,   /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
 
         if (wires[i].outBall) show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
         if (wires[i]. inBall) show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);

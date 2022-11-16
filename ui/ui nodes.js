@@ -499,8 +499,8 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId)
 {
     //console.log('uiVariableConnect()');
 
-    const output = outputNode.outputs.find(o => o.id == outputId);
-    const  input =  inputNode. inputs.find(i => i.id ==  inputId);
+    const output = outputNode.outputFromId(outputId);
+    const  input =  inputNode. inputFromId(inputId);
 
     if (    inputNode.variableInputs
         && !input.param)
@@ -522,9 +522,6 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId)
 
 function uiConnect(output, input, inputId = '')
 {
-    // console.log('output =', output);
-    // console.log('input =', input);
-    // console.log('inputIndex =', inputIndex);
     const conn = graph.connect(output, input, inputId);
 
     uiSaveConnection(
@@ -785,12 +782,12 @@ function correctNodeNamesInConnections(data)
     {
         const _conn = data.connections[i];
 
-        let outputNodeIndex = data.nodes.findIndex(n => n.id == _conn.outputNodeId);
-        if (outputNodeIndex > -1) data.connections[i].outputNodeId = data.nodes[outputNodeIndex].newId;
+        let outputNode = data.nodes.find(n => n.id == _conn.outputNodeId);
+        if (outputNode) data.connections[i].outputNodeId = outputNode.newId;
 
-        const inputNodeIndex = data.nodes.findIndex(n => n.id == _conn.inputNodeId);
+        const inputNode = data.nodes.find(n => n.id == _conn.inputNodeId);
 
-        data.connections[i].inputNodeId = data.nodes[inputNodeIndex].newId;
+        data.connections[i].inputNodeId = inputNode.newId;
     }
 
     for (let i = 0; i < data.nodes.length; i++)
@@ -965,21 +962,6 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
     }
 
 
-    // if (graphView.loadingNodes) // in case the loading nodes were just evaluated for the first time
-    // {
-    //     loadConnectionsAsync(
-    //         _loadingNodes, 
-    //         _loadingConns, 
-    //          loadingNodes, 
-    //          loadingSetProgress);    
-
-    //     _loadingNodes       = null;
-    //     _loadingConns       = null;
-    //      loadingNodes       = null;
-    //      loadingSetProgress = false;
-    //}
-
-    //else 
     if (objects.length > 0)
     {
         if (settings.logObjectUpdates)
@@ -990,7 +972,6 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
             updateNodeId:  updateNodeId,
             updateParamId: updateParamId,
             nodeIds:       nodes.map(n => n.id),
-            // nodeJson:      nodeJson,
             objects:       [...objects]});
     }
         

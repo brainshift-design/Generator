@@ -40,8 +40,7 @@ graphView.addEventListener('pointerdown', e =>
             graphView.overOutput.connecting = true;
             graphView.startConnectionFromOutput(e.pointerId, graphView.overOutput);
 
-            updateWire(graphView.tempConn.wire2, sx, sy);
-            updateWire(graphView.tempConn.wire,  sx, sy);
+            updateConnWires(graphView.tempConn, sx, sy);
         }
         else if (graphView.overInput)
         {
@@ -51,11 +50,10 @@ graphView.addEventListener('pointerdown', e =>
 
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false);
 
-                updateWire(graphView.tempConn.wire2, sx, sy);
-                updateWire(graphView.tempConn.wire,  sx, sy);
+                updateConnWires(graphView.tempConn, sx, sy);
                 
                 graphView.savedConn       = graphView.overInput.connection;
-                graphView.savedInputIndex = graphView.overInput.index;
+                //graphView.savedInputIndex = graphView.overInput.index;
 
                 hide(graphView.savedConn.wire2);
                 hide(graphView.savedConn.wire);
@@ -65,8 +63,7 @@ graphView.addEventListener('pointerdown', e =>
                 graphView.overInput.connecting = true;
                 graphView.startConnectionFromInput(e.pointerId, graphView.overInput);
 
-                updateWire(graphView.tempConn.wire2, sx, sy);
-                updateWire(graphView.tempConn.wire,  sx, sy);
+                updateConnWires(graphView.tempConn, sx, sy);
             }
         }
         else if (document.activeElement.type != 'text') // selection, unless a textbox is in focus
@@ -132,8 +129,7 @@ function graphView_onpointermove(e)
     
     else if (graphView.tempConn)
     {
-        updateWire(graphView.tempConn.wire2, e.clientX, e.clientY);
-        updateWire(graphView.tempConn.wire,  e.clientX, e.clientY);
+        updateConnWires(graphView.tempConn, e.clientX, e.clientY);
     }
 }
 

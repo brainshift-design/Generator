@@ -115,7 +115,7 @@ var menuItemNodeEnableDisable;
 
 
 
-function initMenus()
+function initGeneratorMenus()
 {
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
@@ -144,9 +144,10 @@ function initMenus()
         //     }
         // }),
                                    new MenuItem('',                               {separator: true}),
+                                   new MenuItem('Delete connections to...',       {callback: () => showDeleteConnectionsDialog()}),
+                                   new MenuItem('',                               {separator: true}),
                                    new MenuItem('List\u2008all\u2008nodes',       {callback: () => uiLogAllSavedNodes()}),
                                    new MenuItem('List\u2008all\u2008connections', {callback: () => uiLogAllSavedConns()}),
-                                   new MenuItem('Delete connections to...',       {callback: () => showDeleteConnectionsDialog()}),
                                    new MenuItem('',                               {separator: true}),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',              {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',                {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),

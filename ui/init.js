@@ -4,6 +4,9 @@ var genMessages   = []; // messages from UI to Generator
 var genMessagePosted = false;
 
 
+var dataMode = true;
+
+
 // uiClearAllLocalData();
 
 //uiClearLocalData('windowWidth');
@@ -38,9 +41,7 @@ var pasteOffsetDelta    = [40, 100];
 
 
 clearConsole();
-
 initUtilContext();
-
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
@@ -48,27 +49,36 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 function uiEndStartGenerator(msg)
 {
-    initThemeColors();
-    initMenus();
-
-
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
 
-    loadLocalSettings();
-    
+    initThemeColors();
 
+
+    if (dataMode)
+    {
+        dataView.style.display = 'block';
+        initDataModeMenus();
+    }
+    else
+    {
+        initGeneratorMenus();
+        loadLocalSettings();
+    }    
+ 
+    
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
 
 
     onClassChange(document.childNodes[0], () =>
     { 
         initThemeColors();
-    
-        graph.nodes.forEach(n => n.updateNode());
+        
+        if (!dataMode)
+            graph.nodes.forEach(n => n.updateNode());
     });
-    
-    
+
+
     window.focus();
 }

@@ -61,12 +61,12 @@ extends Action
 
     do()
     {
-        uiDisconnect(this.oldInputNode.inputs[this.oldInputId]);
+        uiDisconnect(this.oldInputNode.inputFromId(this.oldInputId));
         
 
         uiConnect(
-            this.outputNode.outputs[this.outputId], 
-            this. inputNode. inputs[this. inputId],
+            this.outputNode.outputFromId(this.outputId), 
+            this. inputNode. inputFromId(this. inputId),
             this.inputId);
             
 
@@ -92,7 +92,7 @@ extends Action
 
     undo()
     {
-        uiDisconnect(this.inputNode.inputs[this.inputId]);
+        uiDisconnect(this.inputNode.inputFromId(this.inputId));
 
             
         uiVariableConnect(

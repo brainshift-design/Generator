@@ -82,7 +82,7 @@ function figLoadNodesAndConns()
     const connsJson = JSON.stringify(conns);
 
     figPostMessageToUI({
-        cmd:      'uiLoadNodesAndConns',
+        cmd:      'uiEndLoadNodesAndConns',
         nodesJson: nodesJson,
         connsJson: connsJson
     });

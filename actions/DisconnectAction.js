@@ -16,8 +16,8 @@ extends Action
 
     constructor(output, input)
     {
-        console.log('output =', output);
-        console.log('input =', input);
+        //console.log('output =', output);
+        //console.log('input =', input);
 
         super('DISCONNECT ' 
             + output.node.id + '.' + output.id
@@ -42,7 +42,7 @@ extends Action
             uiDeleteObjects([id]); // clean up now irrelevant objects
 
 
-        uiDisconnect(this.inputNode.inputs.find(i => i.id == this.inputId));
+        uiDisconnect(this.inputNode.inputFromId(this.inputId));
         this.inputNode.invalidate();
         
         

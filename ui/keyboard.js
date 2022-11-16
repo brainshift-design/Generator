@@ -76,9 +76,7 @@ document.addEventListener('keydown', e =>
 
                 setTimeout(() => 
                 {
-                    updateWire(savedConn.wire2);
-                    updateWire(savedConn.wire );
-                    
+                    updateConnWires(savedConn);
                     savedConn.input.updateControl();
                 });
             }
