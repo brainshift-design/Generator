@@ -74,6 +74,9 @@ var menuZoom;
 var menuGraph;
 var menuNode;
 
+var menuNodeData;
+var menuConnData;
+
 
 var menuItemAutoConnectNewNodes;
 var menuItemIncludeLxxColorSpaces;
@@ -312,4 +315,22 @@ function initGeneratorMenus()
     btnMain   .setIcon(iconGenerator);
     btnHand   .setIcon(iconHand);
     btnComment.setIcon(iconComment);
+}
+
+
+
+function initDataModeMenus()
+{
+    menuNodeData = new Menu('Node menu', false, false);
+    menuNodeData.addItems([
+        new MenuItem('Remove',                  { callback: e => { hideAllMenus(); }}),
+        new MenuItem('',                        { separator: true }),
+        new MenuItem('Remove all connections',  { callback: e => { hideAllMenus(); }} ),
+        new MenuItem('Remove connections from', { callback: e => { hideAllMenus(); }}),
+        new MenuItem('Remove connections to'  , { callback: e => { hideAllMenus(); }})]);
+
+
+    menuConnData = new Menu('Connection menu', false, false);
+    menuConnData.addItems([
+        new MenuItem('Remove', { callback: e => { hideAllMenus(); }})]);
 }
