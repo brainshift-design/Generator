@@ -174,7 +174,6 @@ function uiEndLoadNodesAndConns(nodesJson, connsJson, activeJson)
     if (settings.dataMode)
     {
         loadNodesAndConnsData(_nodes, _conns);
-        uiSetLocalData('dataMode', false);
     }
     else
     {
@@ -282,7 +281,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 function finishLoading()
 {
-    loadingOverlay.style.display = 'none';
+    //loadingOverlay.style.display = 'none';
     
     graphView.loadingNodes   = false;
     graphView.canUpdateNodes = true;

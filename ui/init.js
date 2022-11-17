@@ -44,10 +44,21 @@ clearConsole();
 
 initUtilContext();
 
-initCheckbox(chkDataModeRestartCheck, 'Restart in data mode', true);
+initDataMode();
 
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
+
+
+
+function initDataMode()
+{
+    initCheckbox(chkDataModeRestartCheck, 'Restart in debug mode', true );
+    initCheckbox(chkLoadingRestartCheck,  'Restart in debug mode', false);
+
+    chkDataModeRestartCheck.addEventListener('change', () => uiSetLocalData('dataMode', chkDataModeRestartCheck.checked));
+    chkLoadingRestartCheck .addEventListener('change', () => uiSetLocalData('dataMode', chkLoadingRestartCheck .checked));
+}
 
 
 

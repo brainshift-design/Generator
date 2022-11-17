@@ -61,6 +61,8 @@ var menuMainPreferences;
 var menuMainDebug;
 var menuMainHelp;
 
+var menuDebugLog;
+
 var menuFlow;
 var menuNumber;
 var menuString;
@@ -84,6 +86,8 @@ var menuItemAutoConnectNewNodes;
 var menuItemIncludeLxxColorSpaces;
 
 var menuItemDebug;
+var menuItemDebugLog;
+
 var menuItemHelp;
 
 var menuItemShowNodeId;
@@ -130,32 +134,9 @@ function initGeneratorMenus()
         menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces', {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }})]);
 
     
-    menuMainDebug = new Menu('Debug', false);
-    menuMainDebug.addItems([
-        menuItemShowNodeId       = new MenuItem('Show node IDs',
-        {
-            checkCallback: () => settings.showNodeId, 
-            callback:      () => 
-            {
-                updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
-                graph.nodes.forEach(n => n.updateNode());
-            }
-        }),
-        // menuItemShowWires = new MenuItem('Show wires',
-        // {
-        //     checkCallback: () => settings.showWires, 
-        //     callback:      () => 
-        //     {
-        //         updateSettingAndMenu('showWires', true, !settings.showWires);
-        //         graphView.updateShowWires(settings.showWires);  
-        //     }
-        // }),
-                                   new MenuItem('',                               {separator: true}),
-                                   new MenuItem('Delete connections to...',       {callback: () => showDeleteConnectionsDialog()}),
-        menuItemDataMode         = new MenuItem('Restart in debug mode',          {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        )}),
-                                   new MenuItem('',                               {separator: true}),
-                                   new MenuItem('List\u2008all\u2008nodes',       {callback: () => uiLogAllSavedNodes()}),
-                                   new MenuItem('List\u2008all\u2008connections', {callback: () => uiLogAllSavedConns()}),
+    menuDebugLog = new Menu('Log menu', false);
+    menuDebugLog.addItems([        new MenuItem('List\u2008all\u2008nodes',       {callback:      () => uiLogAllSavedNodes()}),
+                                   new MenuItem('List\u2008all\u2008connections', {callback:      () => uiLogAllSavedConns()}),
                                    new MenuItem('',                               {separator: true}),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',              {checkCallback: () => settings.logRequests        , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',                {checkCallback: () => settings.logValueUpdates    , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
@@ -171,6 +152,31 @@ function initGeneratorMenus()
         menuItemLogMessages      = new MenuItem('Log\u2008messages',              {checkCallback: () => settings.logMessages        , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     )}),
                                    new MenuItem('',                               {separator: true}),   
         menuItemLogActions       = new MenuItem('Log\u2008actions',               {checkCallback: () => settings.logActions         , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      )})]);
+
+
+    menuMainDebug = new Menu('Debug', false);
+    menuMainDebug.addItems([
+        // menuItemShowWires = new MenuItem('Show wires',
+        // {
+        //     checkCallback: () => settings.showWires, 
+        //     callback:      () => 
+        //     {
+        //         updateSettingAndMenu('showWires', true, !settings.showWires);
+        //         graphView.updateShowWires(settings.showWires);  
+        //     }
+        // }),
+        menuItemDataMode   = new MenuItem('Restart in debug mode',    {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        )}),
+                             new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
+        menuItemShowNodeId = new MenuItem('Show node IDs',
+        {
+            checkCallback: () => settings.showNodeId, 
+            callback:      () => 
+            {
+                updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
+                graph.nodes.forEach(n => n.updateNode());
+            }
+        }),
+        menuItemDebugLog   = new MenuItem('Log',                      {childMenu: menuDebugLog })]);
 
 
     menuMainHelp = new Menu('Help and subscription', false);

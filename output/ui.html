@@ -89,6 +89,12 @@
 
 
 
+#dataModeTitleBar
+{
+    padding:         12px 12px 14px 9px;
+}
+
+
 .dataModeRowWrapper
 {
     padding:         6px 12px 10px 5px;
@@ -579,14 +585,11 @@
 }
 
 
-#debugModeButton
+#chkLoadingRestartCheck
 {
-    background: transparent;
-    width:      120px;
-
     position:   absolute;
     left:       50%;
-    top:        75%;
+    top:        65%;
     transform:  translateX(-50%)
                 translateY(-50%);
 }
@@ -1647,10 +1650,30 @@ a
 
 .checkbox
 {
-    display:    inline-block;
-    width:      100px;
-    height:     24px;
-    box-shadow: 0 0 0 1px red inset;
+    font-family: Inter;
+    font-size:   11px;
+    display:     inline-block;
+    width:       auto;
+    height:      24px;
+}
+
+
+.checkboxCheck
+{
+    display:       inline-block;
+    width:         12px;
+    height:        12px;
+    border-radius: 2px;
+    transform:     translateY(2px);
+}
+
+
+.checkboxText
+{
+    display:     inline;
+    width:       auto;
+    height:      auto;
+    margin-left: 10px;
 }
 
 
@@ -2073,13 +2096,13 @@ a
             <div id='loadingProgress'></div>
         </div>
     </div>
-    <!-- <div class='button' id='debugModeButton' onclick=''>Restart in debug mode</div> -->
+    <div id='chkLoadingRestartCheck'></div>
 </div>
 
 
 
 <div id='dataModeView'>
-    <div class='dataModeRowWrapper'><div id='chkDataModeRestartCheck'></div></div>
+    <div class='dataModeRowWrapper' id="dataModeTitleBar"><div id='chkDataModeRestartCheck'></div></div>
     <div class='dataModeRowWrapper' id='dataModeNodesWrapper'><div class='dataModeRowTitle'>Nodes</div><div id='dataModeNodes'></div></div>
     <div class='dataModeRowWrapper'><div class='dataModeRowTitle'>Connections</div><div id='dataModeConns'></div></div>
 </div>
@@ -26796,6 +26819,8 @@ var menuMainPreferences;
 var menuMainDebug;
 var menuMainHelp;
 
+var menuDebugLog;
+
 var menuFlow;
 var menuNumber;
 var menuString;
@@ -26819,6 +26844,8 @@ var menuItemAutoConnectNewNodes;
 var menuItemIncludeLxxColorSpaces;
 
 var menuItemDebug;
+var menuItemDebugLog;
+
 var menuItemHelp;
 
 var menuItemShowNodeId;
@@ -26865,32 +26892,9 @@ function initGeneratorMenus()
         menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces', {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }})]);
 
     
-    menuMainDebug = new Menu('Debug', false);
-    menuMainDebug.addItems([
-        menuItemShowNodeId       = new MenuItem('Show node IDs',
-        {
-            checkCallback: () => settings.showNodeId, 
-            callback:      () => 
-            {
-                updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
-                graph.nodes.forEach(n => n.updateNode());
-            }
-        }),
-        // menuItemShowWires = new MenuItem('Show wires',
-        // {
-        //     checkCallback: () => settings.showWires, 
-        //     callback:      () => 
-        //     {
-        //         updateSettingAndMenu('showWires', true, !settings.showWires);
-        //         graphView.updateShowWires(settings.showWires);  
-        //     }
-        // }),
-                                   new MenuItem('',                               {separator: true}),
-                                   new MenuItem('Delete connections to...',       {callback: () => showDeleteConnectionsDialog()}),
-        menuItemDataMode         = new MenuItem('Restart in debug mode',          {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        )}),
-                                   new MenuItem('',                               {separator: true}),
-                                   new MenuItem('List\u2008all\u2008nodes',       {callback: () => uiLogAllSavedNodes()}),
-                                   new MenuItem('List\u2008all\u2008connections', {callback: () => uiLogAllSavedConns()}),
+    menuDebugLog = new Menu('Log menu', false);
+    menuDebugLog.addItems([        new MenuItem('List\u2008all\u2008nodes',       {callback:      () => uiLogAllSavedNodes()}),
+                                   new MenuItem('List\u2008all\u2008connections', {callback:      () => uiLogAllSavedConns()}),
                                    new MenuItem('',                               {separator: true}),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',              {checkCallback: () => settings.logRequests        , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',                {checkCallback: () => settings.logValueUpdates    , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
@@ -26906,6 +26910,31 @@ function initGeneratorMenus()
         menuItemLogMessages      = new MenuItem('Log\u2008messages',              {checkCallback: () => settings.logMessages        , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     )}),
                                    new MenuItem('',                               {separator: true}),   
         menuItemLogActions       = new MenuItem('Log\u2008actions',               {checkCallback: () => settings.logActions         , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      )})]);
+
+
+    menuMainDebug = new Menu('Debug', false);
+    menuMainDebug.addItems([
+        // menuItemShowWires = new MenuItem('Show wires',
+        // {
+        //     checkCallback: () => settings.showWires, 
+        //     callback:      () => 
+        //     {
+        //         updateSettingAndMenu('showWires', true, !settings.showWires);
+        //         graphView.updateShowWires(settings.showWires);  
+        //     }
+        // }),
+        menuItemDataMode   = new MenuItem('Restart in debug mode',    {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        )}),
+                             new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
+        menuItemShowNodeId = new MenuItem('Show node IDs',
+        {
+            checkCallback: () => settings.showNodeId, 
+            callback:      () => 
+            {
+                updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
+                graph.nodes.forEach(n => n.updateNode());
+            }
+        }),
+        menuItemDebugLog   = new MenuItem('Log',                      {childMenu: menuDebugLog })]);
 
 
     menuMainHelp = new Menu('Help and subscription', false);
@@ -30402,7 +30431,6 @@ function initCheckbox(checkbox, name, defaultChecked)
     checkbox.className         = 'checkbox';
     
     checkbox.checked           = defaultChecked;
-
     checkbox.name              = name;
      
     // checkbox.backStyleLight    = 'rgba(255, 255, 255, 0.95)';
@@ -30421,8 +30449,14 @@ function initCheckbox(checkbox, name, defaultChecked)
     checkbox.check = createDiv('checkboxCheck');
     checkbox.text  = createDiv('checkboxText');
 
+    checkbox.appendChild(checkbox.check);
     checkbox.appendChild(checkbox.text);
-    checkbox.appendChild(checkbox.focus);
+
+
+    checkbox.addEventListener('pointerup', () =>
+    {
+        checkbox.setChecked(!checkbox.checked);
+    })
 
 
     checkbox.setName = function(name)
@@ -30438,7 +30472,6 @@ function initCheckbox(checkbox, name, defaultChecked)
         const oldChecked = checkbox.checked;
 
         checkbox.checked = checked;
-
         checkbox.update();
 
         if (   fireChangeEvent
@@ -30448,22 +30481,28 @@ function initCheckbox(checkbox, name, defaultChecked)
 
 
 
-
     checkbox.update = function()
     {
-        // const sw = checkbox.getClientWidth();
-        // const sh = checkbox.getClientHeight();
+        if (checkbox.checked)
+        {
+            checkbox.check.style.backgroundColor    = 'var(--figma-color-bg-brand)';
+            checkbox.check.style.backgroundImage    = 'url(\'data:image/svg+xml;utf8,<svg width="8" height="7" viewBox="0 0 8 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.17647 1.88236L3.05882 3.76472L6.82353 0L8 1.17648L3.05882 6.11768L0 3.05884L1.17647 1.88236Z" fill="white"/></svg>\')';
+            checkbox.check.style.backgroundPosition = '50% 50%';
+            checkbox.check.style.backgroundRepeat   = 'no-repeat';
+            checkbox.check.style.boxShadow          = 'none';
+        }
+        else
+        {
+            checkbox.check.style.background         = 'transparent';
+            checkbox.check.style.boxShadow          = '0 0 0 1px var(--figma-color-text) inset';
+        }
 
-
-        // checkbox.updateColors();
-        // checkbox.updateText();
-        // checkbox.updateFocus(sw, sh);
-        
-
-        // checkbox.cachedOffsetLeft   = null;
-        // checkbox.cachedClientWidth  = null;
-        // checkbox.cachedClientHeight = null;
+        checkbox.text.innerHTML = name;
     };
+
+
+
+    checkbox.update();
 }
 
 
@@ -44671,10 +44710,21 @@ clearConsole();
 
 initUtilContext();
 
-initCheckbox(chkDataModeRestartCheck, 'Restart in data mode', true);
+initDataMode();
 
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
+
+
+
+function initDataMode()
+{
+    initCheckbox(chkDataModeRestartCheck, 'Restart in debug mode', true );
+    initCheckbox(chkLoadingRestartCheck,  'Restart in debug mode', false);
+
+    chkDataModeRestartCheck.addEventListener('change', () => uiSetLocalData('dataMode', chkDataModeRestartCheck.checked));
+    chkLoadingRestartCheck .addEventListener('change', () => uiSetLocalData('dataMode', chkLoadingRestartCheck .checked));
+}
 
 
 
@@ -45382,7 +45432,6 @@ function uiEndLoadNodesAndConns(nodesJson, connsJson, activeJson)
     if (settings.dataMode)
     {
         loadNodesAndConnsData(_nodes, _conns);
-        uiSetLocalData('dataMode', false);
     }
     else
     {
@@ -45490,7 +45539,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 function finishLoading()
 {
-    loadingOverlay.style.display = 'none';
+    //loadingOverlay.style.display = 'none';
     
     graphView.loadingNodes   = false;
     graphView.canUpdateNodes = true;

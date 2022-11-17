@@ -129,14 +129,11 @@
 }
 
 
-#debugModeButton
+#chkLoadingRestartCheck
 {
-    background: transparent;
-    width:      120px;
-
     position:   absolute;
     left:       50%;
-    top:        75%;
+    top:        65%;
     transform:  translateX(-50%)
                 translateY(-50%);
 }

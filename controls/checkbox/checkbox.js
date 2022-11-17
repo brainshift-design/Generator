@@ -5,7 +5,6 @@ function initCheckbox(checkbox, name, defaultChecked)
     checkbox.className         = 'checkbox';
     
     checkbox.checked           = defaultChecked;
-
     checkbox.name              = name;
      
     // checkbox.backStyleLight    = 'rgba(255, 255, 255, 0.95)';
@@ -24,8 +23,14 @@ function initCheckbox(checkbox, name, defaultChecked)
     checkbox.check = createDiv('checkboxCheck');
     checkbox.text  = createDiv('checkboxText');
 
+    checkbox.appendChild(checkbox.check);
     checkbox.appendChild(checkbox.text);
-    checkbox.appendChild(checkbox.focus);
+
+
+    checkbox.addEventListener('pointerup', () =>
+    {
+        checkbox.setChecked(!checkbox.checked);
+    })
 
 
     checkbox.setName = function(name)
@@ -41,7 +46,6 @@ function initCheckbox(checkbox, name, defaultChecked)
         const oldChecked = checkbox.checked;
 
         checkbox.checked = checked;
-
         checkbox.update();
 
         if (   fireChangeEvent
@@ -51,20 +55,26 @@ function initCheckbox(checkbox, name, defaultChecked)
 
 
 
-
     checkbox.update = function()
     {
-        // const sw = checkbox.getClientWidth();
-        // const sh = checkbox.getClientHeight();
+        if (checkbox.checked)
+        {
+            checkbox.check.style.backgroundColor    = 'var(--figma-color-bg-brand)';
+            checkbox.check.style.backgroundImage    = 'url(\'data:image/svg+xml;utf8,<svg width="8" height="7" viewBox="0 0 8 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.17647 1.88236L3.05882 3.76472L6.82353 0L8 1.17648L3.05882 6.11768L0 3.05884L1.17647 1.88236Z" fill="white"/></svg>\')';
+            checkbox.check.style.backgroundPosition = '50% 50%';
+            checkbox.check.style.backgroundRepeat   = 'no-repeat';
+            checkbox.check.style.boxShadow          = 'none';
+        }
+        else
+        {
+            checkbox.check.style.background         = 'transparent';
+            checkbox.check.style.boxShadow          = '0 0 0 1px var(--figma-color-text) inset';
+        }
 
-
-        // checkbox.updateColors();
-        // checkbox.updateText();
-        // checkbox.updateFocus(sw, sh);
-        
-
-        // checkbox.cachedOffsetLeft   = null;
-        // checkbox.cachedClientWidth  = null;
-        // checkbox.cachedClientHeight = null;
+        checkbox.text.innerHTML = name;
     };
+
+
+
+    checkbox.update();
 }

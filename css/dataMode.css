@@ -21,6 +21,12 @@
 
 
 
+#dataModeTitleBar
+{
+    padding:         12px 12px 14px 9px;
+}
+
+
 .dataModeRowWrapper
 {
     padding:         6px 12px 10px 5px;
