@@ -1,10 +1,10 @@
+var generatorStarted = false;
+
+
 var uiFigMessages = []; // messages from UI to Figma
 var genMessages   = []; // messages from UI to Generator
 
 var genMessagePosted = false;
-
-
-var dataMode = true;
 
 
 // uiClearAllLocalData();
@@ -41,7 +41,11 @@ var pasteOffsetDelta    = [40, 100];
 
 
 clearConsole();
+
 initUtilContext();
+
+initCheckbox(chkDataModeRestartCheck, 'Restart in data mode', true);
+
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
@@ -52,33 +56,10 @@ function uiEndStartGenerator(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
-
     initThemeColors();
+    loadLocalSettings();
 
-
-    if (dataMode)
-    {
-        dataView.style.display = 'block';
-        initDataModeMenus();
-    }
-    else
-    {
-        initGeneratorMenus();
-        loadLocalSettings();
-    }    
- 
-    
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
-
-
-    onClassChange(document.childNodes[0], () =>
-    { 
-        initThemeColors();
-        
-        if (!dataMode)
-            graph.nodes.forEach(n => n.updateNode());
-    });
-
 
     window.focus();
 }

@@ -16,10 +16,10 @@ document.addEventListener('pointerdown', function(e)
             document.resizingX = document.canResizeX;
             document.resizingY = document.canResizeY;
         }
-
-
-        hideAllMenus();
     }
+
+
+    hideAllMenus();
 });
 
 

@@ -16,13 +16,16 @@ class Menu
     showIcons;
     showChecks;
    
-    overMenu   = false;
+    overMenu = false;
     
-    items      = [];
-    lastItem   = null;
+    items    = [];
+    lastItem = null;
 
 
-    init       = null; // ()
+    init     = null; // ()
+
+
+    onHide   = null; // removes itself after firing
 
 
     constructor(name, showIcons = true, showChecks = true)
@@ -169,7 +172,7 @@ class Menu
             width = Math.max(width, mesName.width + mesShortcut.width + 30);
         }
 
-        
+
         this.div.style.width = Math.max(100, width);
     }
 
@@ -177,6 +180,13 @@ class Menu
 
     hide()
     {
+        if (this.onHide)
+        {
+            this.onHide();
+            this.onHide = null;
+        }
+
+
         this.div     .style.display = 'none';
         this.div     .style.opacity = '0%';
     

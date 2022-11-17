@@ -1069,6 +1069,16 @@ function uiRemoveSavedConnectionsToNodeId(nodeId)
 
 
 
+function uiRemoveSavedConnectionsFromNodeId(nodeId)
+{
+    uiQueueMessageToFigma({
+        cmd:   'figRemoveSavedConnectionsFromNode',
+        nodeId: nodeId
+    });
+}
+
+
+
 function uiRemoveSavedNodesAndConns(nodeIds)
 {
     uiQueueMessageToFigma({

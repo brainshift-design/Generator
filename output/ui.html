@@ -66,7 +66,17 @@
 }
 
 
-#dataView
+:root 
+{
+    --data-mode-node:        #fed;
+    --data-mode-node-active: #fdb;
+
+    --data-mode-conn:        #cfc;
+    --data-mode-conn-active: #aea;
+}
+
+
+#dataModeView
 {
     position:   absolute;
     left:       0;
@@ -74,61 +84,58 @@
     width:      100%;
     height:     100%;
     display:    none;
-    padding:    6px;
     background: var(--figma-color-bg);
 }
 
 
 
-#dataViewNodes
+.dataModeRowWrapper
 {
-    margin-bottom:  10px;
+    padding:         6px 12px 10px 5px;
+    border-bottom:   1px solid var(--figma-color-bg-tertiary);
 }
 
 
-.dataViewNode
+.dataModeRowTitle
+{
+    font-family: Inter;
+    font-size:   11px;
+    color:       var(--figma-color-text);
+    font-weight: 500;
+    margin:      4px 0 6px 4px;
+}
+
+
+.dataModeNode
 {
     font-family:    Inter;
     font-size:      11px;
     text-align:     center;
     display:        inline-block;
-    min-width:      70px;
-    background:     #fed; 
+    min-width:      50px;
+    background:     var(--data-mode-node); 
     border-radius:  3px;
-    margin:         2px 0px 0px 2px;
-    padding:        8px 6px;
-    box-shadow:     0 0 0 1px #dba inset;
+    margin:         2px 0px 0px 3px;
+    padding:        4px 4px;
+    box-shadow:     0 0 0 1px #dca inset;
     white-space:    pre;
     vertical-align: top;
 }
 
 
-.dataViewNode:hover
-{
-    background:    #fdb; 
-}
-
-
-.dataViewConn
+.dataModeConn
 {
     font-family:   Inter;
     font-size:     11px;
     text-align:    center;
     display:       inline-block;
     min-width:     70px;
-    background:    #cfc; 
+    background:    var(--data-mode-conn); 
     border-radius: 3px;
-    margin:        2px 0px 0px 2px;
+    margin:        2px 0px 0px 3px;
     padding:       3px 11px;
     box-shadow:    0 0 0 1px #ad8 inset;
 }
-
-
-.dataViewConn:hover
-{
-    background:    #aea; 
-}
-
 
 
 #productKeyBack
@@ -1638,6 +1645,15 @@ a
 }
 
 
+.checkbox
+{
+    display:    inline-block;
+    width:      100px;
+    height:     24px;
+    box-shadow: 0 0 0 1px red inset;
+}
+
+
 .inputControls
 {
     width:          12px;
@@ -2062,9 +2078,10 @@ a
 
 
 
-<div id='dataView'>
-    <div id='dataViewNodes'></div>
-    <div id='dataViewConns'></div>
+<div id='dataModeView'>
+    <div class='dataModeRowWrapper'><div id='chkDataModeRestartCheck'></div></div>
+    <div class='dataModeRowWrapper' id='dataModeNodesWrapper'><div class='dataModeRowTitle'>Nodes</div><div id='dataModeNodes'></div></div>
+    <div class='dataModeRowWrapper'><div class='dataModeRowTitle'>Connections</div><div id='dataModeConns'></div></div>
 </div>
 
 
@@ -11080,6 +11097,8 @@ const settings =
 {
     autoConnectNewNodes:   true,
     includeLxxColorSpaces: false,
+
+    dataMode:              false,
     debugMode:             false,
 
     showNodeId:            false, // instead of name
@@ -11107,6 +11126,8 @@ function updateSetting(settingName, value)
     {
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
+
+        case 'dataMode':              settings.dataMode              = value;  break;
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'showNodeId':            settings.showNodeId            = value;  break;
@@ -11134,6 +11155,8 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
     {
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
+
+        case 'dataMode':              updateSettingAndMenu_(valid, settingName, value, menuItemDataMode);                                 break;
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
@@ -11174,10 +11197,11 @@ function updateSettingsMenus()
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
 
+    menuItemDataMode             .setVisible(settings.dataMode             );
     menuItemDebug                .setVisible(settings.debugMode            );
 
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
-    //menuItemShowWires            .setChecked(settings.showWires            );
+    //menuItemShowWires            .setChecked(settings.showWires          );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
     menuItemLogActions           .setChecked(settings.logActions           );
@@ -11206,27 +11230,29 @@ function updateMenuItemIncludeLxxColorSpace()
 
 function loadLocalSettings()
 {
-    uiGetLocalData('graphView');
-
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
+
+    uiGetLocalData('dataMode'             );
     uiGetLocalData('debugMode'            );
 
     uiGetLocalData('showNodeId'           );
-    //uiGetLocalData('showWires'            );
- 
+    //uiGetLocalData('showWires'          );
+    
     uiGetLocalData('logMessages'          );
     uiGetLocalData('logActions'           );
-
+    
     uiGetLocalData('logLoading'           );
     uiGetLocalData('logRequests'          );
     uiGetLocalData('logValueUpdates'      );
     uiGetLocalData('logObjectUpdates'     );
-
+    
     uiGetLocalData('logRawLoading'        );
     uiGetLocalData('logRawSaving'         );
     uiGetLocalData('logRawRequests'       );
     uiGetLocalData('logRawValues'         );
+    
+    uiGetLocalData('graphView');
 }
 
 
@@ -25842,6 +25868,8 @@ const settings =
 {
     autoConnectNewNodes:   true,
     includeLxxColorSpaces: false,
+
+    dataMode:              false,
     debugMode:             false,
 
     showNodeId:            false, // instead of name
@@ -25869,6 +25897,8 @@ function updateSetting(settingName, value)
     {
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
+
+        case 'dataMode':              settings.dataMode              = value;  break;
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'showNodeId':            settings.showNodeId            = value;  break;
@@ -25896,6 +25926,8 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
     {
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
+
+        case 'dataMode':              updateSettingAndMenu_(valid, settingName, value, menuItemDataMode);                                 break;
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
@@ -25936,10 +25968,11 @@ function updateSettingsMenus()
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
 
+    menuItemDataMode             .setVisible(settings.dataMode             );
     menuItemDebug                .setVisible(settings.debugMode            );
 
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
-    //menuItemShowWires            .setChecked(settings.showWires            );
+    //menuItemShowWires            .setChecked(settings.showWires          );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
     menuItemLogActions           .setChecked(settings.logActions           );
@@ -25968,27 +26001,29 @@ function updateMenuItemIncludeLxxColorSpace()
 
 function loadLocalSettings()
 {
-    uiGetLocalData('graphView');
-
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
+
+    uiGetLocalData('dataMode'             );
     uiGetLocalData('debugMode'            );
 
     uiGetLocalData('showNodeId'           );
-    //uiGetLocalData('showWires'            );
- 
+    //uiGetLocalData('showWires'          );
+    
     uiGetLocalData('logMessages'          );
     uiGetLocalData('logActions'           );
-
+    
     uiGetLocalData('logLoading'           );
     uiGetLocalData('logRequests'          );
     uiGetLocalData('logValueUpdates'      );
     uiGetLocalData('logObjectUpdates'     );
-
+    
     uiGetLocalData('logRawLoading'        );
     uiGetLocalData('logRawSaving'         );
     uiGetLocalData('logRawRequests'       );
     uiGetLocalData('logRawValues'         );
+    
+    uiGetLocalData('graphView');
 }
 
 
@@ -26010,13 +26045,16 @@ class Menu
     showIcons;
     showChecks;
    
-    overMenu   = false;
+    overMenu = false;
     
-    items      = [];
-    lastItem   = null;
+    items    = [];
+    lastItem = null;
 
 
-    init       = null; // ()
+    init     = null; // ()
+
+
+    onHide   = null; // removes itself after firing
 
 
     constructor(name, showIcons = true, showChecks = true)
@@ -26163,7 +26201,7 @@ class Menu
             width = Math.max(width, mesName.width + mesShortcut.width + 30);
         }
 
-        
+
         this.div.style.width = Math.max(100, width);
     }
 
@@ -26171,6 +26209,13 @@ class Menu
 
     hide()
     {
+        if (this.onHide)
+        {
+            this.onHide();
+            this.onHide = null;
+        }
+
+
         this.div     .style.display = 'none';
         this.div     .style.opacity = '0%';
     
@@ -26765,7 +26810,9 @@ var menuGraph;
 var menuNode;
 
 var menuNodeData;
+var menuNodeDataNodes;
 var menuConnData;
+//var menuConnDataConns;
 
 
 var menuItemAutoConnectNewNodes;
@@ -26776,6 +26823,8 @@ var menuItemHelp;
 
 var menuItemShowNodeId;
 var menuItemShowWires;
+
+var menuItemDataMode;
 
 var menuItemLogMessages;
 var menuItemLogActions;
@@ -26838,24 +26887,25 @@ function initGeneratorMenus()
         // }),
                                    new MenuItem('',                               {separator: true}),
                                    new MenuItem('Delete connections to...',       {callback: () => showDeleteConnectionsDialog()}),
+        menuItemDataMode         = new MenuItem('Restart in debug mode',          {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        )}),
                                    new MenuItem('',                               {separator: true}),
                                    new MenuItem('List\u2008all\u2008nodes',       {callback: () => uiLogAllSavedNodes()}),
                                    new MenuItem('List\u2008all\u2008connections', {callback: () => uiLogAllSavedConns()}),
                                    new MenuItem('',                               {separator: true}),
-        menuItemLogRequests      = new MenuItem('Log\u2008requests',              {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
-        menuItemLogValueUpdates  = new MenuItem('Log\u2008values',                {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
-        menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',               {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)}),
-                                   new MenuItem('',                               {separator: true}),
-        menuItemLogRawRequests   = new MenuItem('Log\u2008raw\u2008requests',     {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests  )}),
-        menuItemLogRawValues     = new MenuItem('Log\u2008raw\u2008values',       {checkCallback: () => settings.logRawValues    , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues    )}),
-                                   new MenuItem('',                               {separator: true}),
-        menuItemLogLoading       = new MenuItem('Log\u2008loading',               {checkCallback: () => settings.logLoading      , callback: () => updateSettingAndMenu('logLoading',       true, !settings.logLoading      )}),
-        menuItemLogRawLoading    = new MenuItem('Log\u2008raw\u2008loading',      {checkCallback: () => settings.logRawLoading   , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading   )}),
-        menuItemLogRawSaving     = new MenuItem('Log\u2008raw\u2008saving',       {checkCallback: () => settings.logRawSaving    , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving    )}),
-                                   new MenuItem('',                               {separator: true}),
-        menuItemLogMessages      = new MenuItem('Log\u2008messages',              {checkCallback: () => settings.logMessages     , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     )}),
-                                   new MenuItem('',                               {separator: true}),
-        menuItemLogActions       = new MenuItem('Log\u2008actions',               {checkCallback: () => settings.logActions      , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      )})]);
+        menuItemLogRequests      = new MenuItem('Log\u2008requests',              {checkCallback: () => settings.logRequests        , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
+        menuItemLogValueUpdates  = new MenuItem('Log\u2008values',                {checkCallback: () => settings.logValueUpdates    , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
+        menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',               {checkCallback: () => settings.logObjectUpdates   , callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)}),
+                                   new MenuItem('',                               {separator: true}),   
+        menuItemLogRawRequests   = new MenuItem('Log\u2008raw\u2008requests',     {checkCallback: () => settings.logRawRequests     , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests  )}),
+        menuItemLogRawValues     = new MenuItem('Log\u2008raw\u2008values',       {checkCallback: () => settings.logRawValues       , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues    )}),
+                                   new MenuItem('',                               {separator: true}),   
+        menuItemLogLoading       = new MenuItem('Log\u2008loading',               {checkCallback: () => settings.logLoading         , callback: () => updateSettingAndMenu('logLoading',       true, !settings.logLoading      )}),
+        menuItemLogRawLoading    = new MenuItem('Log\u2008raw\u2008loading',      {checkCallback: () => settings.logRawLoading      , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading   )}),
+        menuItemLogRawSaving     = new MenuItem('Log\u2008raw\u2008saving',       {checkCallback: () => settings.logRawSaving       , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving    )}),
+                                   new MenuItem('',                               {separator: true}),   
+        menuItemLogMessages      = new MenuItem('Log\u2008messages',              {checkCallback: () => settings.logMessages        , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     )}),
+                                   new MenuItem('',                               {separator: true}),   
+        menuItemLogActions       = new MenuItem('Log\u2008actions',               {checkCallback: () => settings.logActions         , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      )})]);
 
 
     menuMainHelp = new Menu('Help and subscription', false);
@@ -27013,16 +27063,28 @@ function initDataModeMenus()
 {
     menuNodeData = new Menu('Node menu', false, false);
     menuNodeData.addItems([
-        new MenuItem('Remove',                  { callback: e => { hideAllMenus(); }}),
+        new MenuItem('Remove',                  { callback: () => { hideAllMenus(); dataModeDeleteNode(menuNodeData._div.node); }}),
         new MenuItem('',                        { separator: true }),
-        new MenuItem('Remove all connections',  { callback: e => { hideAllMenus(); }} ),
-        new MenuItem('Remove connections from', { callback: e => { hideAllMenus(); }}),
-        new MenuItem('Remove connections to'  , { callback: e => { hideAllMenus(); }})]);
+        new MenuItem('Remove all connections',  { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode(menuNodeData._div.node); dataModeDeleteConnectionsToNode(menuNodeData._div.node); }} ),
+        new MenuItem('Remove connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode(menuNodeData._div.node); }}),
+        new MenuItem('Remove connections to'  , { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode(menuNodeData._div.node); }})]);
+
+
+    menuNodeDataNodes = new Menu('Nodes menu', false, false);
+    menuNodeDataNodes.addItems([
+        new MenuItem('Expand all',   { callback: () => { hideAllMenus(); expandAllNodeData();   }}),
+        new MenuItem('Collapse all', { callback: () => { hideAllMenus(); collapseAllNodeData(); }})]);
 
 
     menuConnData = new Menu('Connection menu', false, false);
     menuConnData.addItems([
-        new MenuItem('Remove', { callback: e => { hideAllMenus(); }})]);
+        new MenuItem('Remove', { callback: () => { hideAllMenus(); dataModeDeleteConnection(menuConnData._div.conn); }})]);
+
+
+    // menuConnDataConns = new Menu('Connections menu', false, false);
+    // menuConnDataConns.addItems([
+    //     new MenuItem('Expand all',   { callback: e => { hideAllMenus(); }}),
+    //     new MenuItem('Collapse all', { callback: e => { hideAllMenus(); }})]);
 }
 
 
@@ -30333,6 +30395,78 @@ function initMenuSelect(select)
 
 
 
+function initCheckbox(checkbox, name, defaultChecked)
+{
+    // control is also the div
+
+    checkbox.className         = 'checkbox';
+    
+    checkbox.checked           = defaultChecked;
+
+    checkbox.name              = name;
+     
+    // checkbox.backStyleLight    = 'rgba(255, 255, 255, 0.95)';
+    // checkbox.valueStyleLight   = 'transparent';
+    // checkbox.textStyleLight    = '#000';
+                
+    // checkbox.backStyleDark     = 'rgba(56, 56, 56, 0.95)';
+    // checkbox.valueStyleDark    = 'transparent';
+    // checkbox.textStyleDark     = '#eee';
+
+    checkbox.style.display     = 'inline';
+             
+    checkbox.onchange          = new Event('change');
+
+
+    checkbox.check = createDiv('checkboxCheck');
+    checkbox.text  = createDiv('checkboxText');
+
+    checkbox.appendChild(checkbox.text);
+    checkbox.appendChild(checkbox.focus);
+
+
+    checkbox.setName = function(name)
+    {
+        checkbox.name = name;
+        checkbox.update();
+    };
+
+
+
+    checkbox.setChecked = function(checked, fireChangeEvent = true)
+    {
+        const oldChecked = checkbox.checked;
+
+        checkbox.checked = checked;
+
+        checkbox.update();
+
+        if (   fireChangeEvent
+            && checked != oldChecked)
+            checkbox.dispatchEvent(checkbox.onchange);
+    };
+
+
+
+
+    checkbox.update = function()
+    {
+        // const sw = checkbox.getClientWidth();
+        // const sh = checkbox.getClientHeight();
+
+
+        // checkbox.updateColors();
+        // checkbox.updateText();
+        // checkbox.updateFocus(sw, sh);
+        
+
+        // checkbox.cachedOffsetLeft   = null;
+        // checkbox.cachedClientWidth  = null;
+        // checkbox.cachedClientHeight = null;
+    };
+}
+
+
 graphView.wires           = [];
  
 graphView.loadingNodes    = false;
@@ -31165,10 +31299,10 @@ graphView.setPanAndZoom = (pan, zoom) =>
 graphView.updatePanAndZoom = () =>
 {
     graphView.update(graph.nodes);
-
+    
     btnZoom.divIcon.innerHTML       = Math.round(graphView.zoom * 100) + '%';
     btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
-
+    
     menuItemZoomTo100.setChecked(equal(graphView.zoom, 1));
 };
 
@@ -35472,9 +35606,9 @@ class Connection
                 outputNode, isDigit(outputId[0]) 
                             ? parseInt(outputId) 
                             : outputNode.params.find(p => p.id == outputId).output.id,
-                inputNode, isDigit(inputId[0])
-                           ? parseInt(inputId)
-                           : inputNode.params.find(p => p.id == inputId).input.id);
+                inputNode,  isDigit(inputId[0])
+                            ? parseInt(inputId)
+                            : inputNode.params.find(p => p.id == inputId).input.id);
         }
     }
 }
@@ -44039,21 +44173,51 @@ var _dataModeConns = [];
 
 
 
+dataModeNodesWrapper.addEventListener('pointerdown', e =>
+{
+    e.preventDefault();
+
+    if (e.button == 2)
+    {
+        hideAllMenus();
+        menuNodeDataNodes.showAt(e.clientX, e.clientY);
+    }
+});
+
+
+
+// dataModeConns.addEventListener('pointerdown', e =>
+// {
+//     e.preventDefault();
+
+//     if (e.button == 2)
+//     {
+//         hideAllMenus();
+//         menuConnDataConns.showAt(e.clientX, e.clientY);
+//     }
+// });
+
+
+
 function loadNodesAndConnsData(_nodes, _conns)
 {
     _dataModeNodes = _nodes;
     _dataModeConns = _conns;
 
-    for (const _node of daatModeNodes) dataViewNodes.appendChild(createNodeDataDiv(_node));
-    for (const _conn of daatModeConns) dataViewConns.appendChild(createConnDataDiv(_conn));
+    for (const _node of _dataModeNodes) dataModeNodes.appendChild(createNodeDataDiv(_node));
+    for (const _conn of _dataModeConns) dataModeConns.appendChild(createConnDataDiv(_conn));
 }
 
 
 
 function createNodeDataDiv(_node)
 {
+    const div  = createDiv('dataModeNode');
     const node = JSON.parse(_node);
-    const div  = createDiv('dataViewNode');
+
+
+    div._node     = _node;
+    div. node     =  node;
 
     div.innerHTML = node.id;
     div.showJson  = false;
@@ -44062,28 +44226,12 @@ function createNodeDataDiv(_node)
     div.addEventListener('dblclick', () =>
     {
         div.showJson = !div.showJson;
-
-        if (div.showJson)
-        {
-            div.innerHTML           = formatSavedNodeDataJson(_node);
-
-            div.style.paddingLeft   = '0px';
-            div.style.paddingRight  = '10px';
-            div.style.textAlign     = 'left';
-            div.style.fontFamily    = 'Roboto Mono';
-            div.style.letterSpacing = '-0.06em';
-        }
-        else
-        {
-            div.innerHTML           = node.id;
-
-            div.style.paddingLeft   = '6px';
-            div.style.paddingRight  = '6px';
-            div.style.textAlign     = 'center';
-            div.style.fontFamily    = 'Inter';
-            div.style.letterSpacing = 0;
-        }
+        expandNodeData(div, _node);
     });
+
+
+    div.addEventListener('pointerenter', () => div.style.background = 'var(--data-mode-node-active)');
+    div.addEventListener('pointerleave', () => { if (!menuNodeData._div) div.style.background = 'var(--data-mode-node)'; });
 
 
     div.addEventListener('pointerdown', e =>
@@ -44092,7 +44240,18 @@ function createNodeDataDiv(_node)
 
         if (e.button == 2)
         {
+            e.stopPropagation();
             hideAllMenus();
+
+            // div.style.background = 'var(--data-mode-node-active)';
+
+            createDataMenuOnHide(
+                menuNodeData, 
+                div, 
+                '.dataModeNode', 
+                'var(--data-mode-node)', 
+                'var(--data-mode-node-active)');
+
             menuNodeData.showAt(e.clientX, e.clientY);
         }
     });
@@ -44106,24 +44265,41 @@ function createNodeDataDiv(_node)
 function createConnDataDiv(_conn)
 {
     const conn = JSON.parse(_conn);
-    const div  = createDiv('dataViewConn');
+    const div  = createDiv('dataModeConn');
 
-    const arrow = ' ' + rightArrowChar(parseBool(conn.list)) + ' ';
+    const arrow = '&nbsp;&nbsp;' + rightArrowChar(parseBool(conn.list)) + '&nbsp;&nbsp;';
 
+    div.conn = conn;
+    
     div.innerHTML = 
          (false ? '🛑&nbsp;&nbsp' : '')
-        + conn.outputNodeId + '.' + conn.outputId
+        + conn.outputNodeId + '&hairsp;.&hairsp;' + conn.outputId
         + arrow
-        + conn.inputNodeId + '.' + conn.inputId;
+        + conn.inputNodeId + '&hairsp;.&hairsp;' + conn.inputId;
+
+
+    div.addEventListener('pointerenter', () => div.style.background = 'var(--data-mode-conn-active)');
+    div.addEventListener('pointerleave', () => { if (!menuConnData._div) div.style.background = 'var(--data-mode-conn)'; });
 
 
     div.addEventListener('pointerdown', e =>
     {
         e.preventDefault();
-
+        
         if (e.button == 2)
         {
+            e.stopPropagation();
             hideAllMenus();
+
+            div.style.background = 'var(--data-mode-conn-active)';
+
+            createDataMenuOnHide(
+                menuConnData, 
+                div, 
+                '.dataModeConn', 
+                'var(--data-mode-conn)', 
+                'var(--data-mode-conn-active)');
+
             menuConnData.showAt(e.clientX, e.clientY);
         }
     });
@@ -44134,22 +44310,144 @@ function createConnDataDiv(_conn)
 
 
 
-function dataModeDeleteNodes(node)
+function createDataMenuOnHide(menu, div, cssClass, normal, active)
 {
-    const conns = dataModeConns.filter(_conn => 
+    menu._div = div;
+    
+    menu.onHide = () => 
+    { 
+        menu._div.style.background = normal; 
+        setTimeout(() => menu._div = null); 
+    };
+}
+
+
+
+function expandNodeData(div, _node)
+{
+    if (div.showJson)
     {
-        const conn = JSON.parse(_conn);
+        div.innerHTML           = formatSavedNodeDataJson(div._node);
 
-        return conn.outputNodeId == node.id
-            || conn. inputNodeId == node.id;
-    });
+        div.style.paddingLeft   = '0px';
+        div.style.paddingRight  = '10px';
+        div.style.textAlign     = 'left';
+        div.style.fontFamily    = 'Roboto Mono';
+        div.style.letterSpacing = '-0.06em';
+    }
+    else
+    {
+        div.innerHTML           = div.node.id;
+
+        div.style.paddingLeft   = '6px';
+        div.style.paddingRight  = '6px';
+        div.style.textAlign     = 'center';
+        div.style.fontFamily    = 'Inter';
+        div.style.letterSpacing = 0;
+    }
+}
 
 
+
+function expandAllNodeData()
+{
+    for (const div of dataModeNodes.children)
+    {
+        div.showJson = true;
+        expandNodeData(div, div._node);
+    }
+}
+
+
+
+function collapseAllNodeData()
+{
+    for (const div of dataModeNodes.children)
+    {
+        div.showJson = false;
+        expandNodeData(div, div._node);
+    }
+}
+
+
+
+function dataModeDeleteNode(node)
+{
     uiRemoveSavedNodesAndConns([node.id]);
 
 
-    TODO remove node and connections from the data view (
+    for (let i = dataModeNodes.children.length-1; i >= 0; i--)
+    {
+        const div = dataModeNodes.children[i];
+
+        if (div.node.id == node.id)
+            dataModeNodes.removeChild(div);
+    }
+
+    
+    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+    {
+        const div = dataModeConns.children[i];
+
+        if (   div.conn.outputNodeId == node.id
+            || div.conn. inputNodeId == node.id)
+            dataModeConns.removeChild(div);
+    }
 }
+
+
+
+function dataModeDeleteConnectionsFromNode(node)
+{
+    uiRemoveSavedConnectionsFromNodeId(node.id);
+    
+    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+    {
+        const div = dataModeConns.children[i];
+
+        if (div.conn.outputNodeId == node.id)
+            dataModeConns.removeChild(div);
+    }
+}
+
+
+
+function dataModeDeleteConnectionsToNode(node)
+{
+    uiRemoveSavedConnectionsToNodeId(node.id);
+
+    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+    {
+        const div = dataModeConns.children[i];
+
+        if (div.conn. inputNodeId == node.id)
+            dataModeConns.removeChild(div);
+    }
+}
+
+
+
+function dataModeDeleteConnection(conn)
+{
+    uiRemoveSavedConnection(
+        conn.outputNodeId,
+        conn.outputId,
+        conn.inputNodeId,
+        conn.inputId);
+
+
+    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+    {
+        const div = dataModeConns.children[i];
+
+        if (   div.conn.outputNodeId == conn.outputNodeId
+            && div.conn.outputId     == conn.outputId
+            && div.conn.inputNodeId  == conn.inputNodeId
+            && div.conn.inputId      == conn.inputId)
+            dataModeConns.removeChild(div);
+    }
+}
+
 
 
 var deleteConnectionsDialogVisible = false;
@@ -44275,10 +44573,10 @@ document.addEventListener('pointerdown', function(e)
             document.resizingX = document.canResizeX;
             document.resizingY = document.canResizeY;
         }
-
-
-        hideAllMenus();
     }
+
+
+    hideAllMenus();
 });
 
 
@@ -44327,13 +44625,13 @@ document.addEventListener('pointerup', function(e)
 });
 
 
+var generatorStarted = false;
+
+
 var uiFigMessages = []; // messages from UI to Figma
 var genMessages   = []; // messages from UI to Generator
 
 var genMessagePosted = false;
-
-
-var dataMode = true;
 
 
 // uiClearAllLocalData();
@@ -44370,7 +44668,11 @@ var pasteOffsetDelta    = [40, 100];
 
 
 clearConsole();
+
 initUtilContext();
+
+initCheckbox(chkDataModeRestartCheck, 'Restart in data mode', true);
+
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
@@ -44381,33 +44683,10 @@ function uiEndStartGenerator(msg)
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
 
-
     initThemeColors();
+    loadLocalSettings();
 
-
-    if (dataMode)
-    {
-        dataView.style.display = 'block';
-        initDataModeMenus();
-    }
-    else
-    {
-        initGeneratorMenus();
-        loadLocalSettings();
-    }    
- 
-    
     uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
-
-
-    onClassChange(document.childNodes[0], () =>
-    { 
-        initThemeColors();
-        
-        if (!dataMode)
-            graph.nodes.forEach(n => n.updateNode());
-    });
-
 
     window.focus();
 }
@@ -44961,13 +45240,10 @@ function uiGetLocalDataReturn(msg)
 {
     switch (msg.key)
     {
-        case 'graphView':        
-            uiLoadGraphView(msg.value); 
-            graphView.updatePanAndZoom();
-            break;
-
         case 'autoConnectNewNodes':
         case 'includeLxxColorSpaces':
+
+        case 'dataMode':
         case 'debugMode':
 
         case 'showNodeId':       
@@ -44994,15 +45270,47 @@ function uiGetLocalDataReturn(msg)
                 false); 
 
             break;
+
+        case 'graphView':        
+            uiLoadGraphView(msg.value); 
+
+            if (generatorStarted)
+                graphView.updatePanAndZoom();
+    
+            break;
     }
 
 
-    if (msg.key == 'debugMode')
-        menuItemDebug.setVisible(settings.debugMode);
+    if (    msg.key == 'dataMode'
+        && !generatorStarted)
+    {
+        if (settings.dataMode)
+        {
+            dataModeView.style.display = 'block';
+            initDataModeMenus();
+        }
+        else
+        {
+            initGeneratorMenus();
+        }    
+     
+        
+        onClassChange(document.childNodes[0], () =>
+        { 
+            initThemeColors();
+            
+            if (!settings.dataMode)
+                graph.nodes.forEach(n => n.updateNode());
+        });
+    }
 
-    else if (msg.key == 'logLoading')
-        if (settings.logLoading)
-            uiLogAllSavedNodesAndConns();
+
+    // if (msg.key == 'debugMode')
+    //     menuItemDebug.setVisible(settings.debugMode);
+
+    //else if (msg.key == 'logLoading')
+    //     if (settings.logLoading)
+    //         uiLogAllSavedNodesAndConns();
 }
 
 
@@ -45067,19 +45375,20 @@ function uiEndLoadNodesAndConns(nodesJson, connsJson, activeJson)
 
     let _nodes = JSON.parse(nodesJson);
     let _conns = JSON.parse(connsJson);
-
     
-    if (dataMode)
+    _nodes.sort((a, b) => a.z - b.z);
+
+
+    if (settings.dataMode)
     {
         loadNodesAndConnsData(_nodes, _conns);
+        uiSetLocalData('dataMode', false);
     }
     else
     {
         _nodes = _nodes.map(n => JSON.parse(n));
         _conns = _conns.map(c => JSON.parse(c));
             
-        _nodes.sort((a, b) => a.z - b.z);
-        
         graph.clear();
 
         loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
@@ -45172,8 +45481,8 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
     promise.then(() => 
     {
-        finishLoading();
         finishLoadingNodes(_nodes, loadedNodes);
+        finishLoading();
     });
 }
 
@@ -45185,9 +45494,10 @@ function finishLoading()
     
     graphView.loadingNodes   = false;
     graphView.canUpdateNodes = true;
-    
-    //updateToggleShowWiresButton();
+
     graphView.updateShowWires(false);
+
+    generatorStarted = true;
 }
 
 
@@ -45198,8 +45508,6 @@ function finishLoadingNodes(_nodes, loadedNodes, duplicates = false)
         .filter(_n => _n.active)
         .map(_n => nodeFromId(duplicates ? _n.newId : _n.id))
         .forEach(n => n.makeActive());
-
-    // validateActiveNodess(loadedNodes);
 
     loadedNodes.forEach(n => n.updateNode());
     graphView.updateNodeTransforms(loadedNodes);
@@ -46587,6 +46895,16 @@ function uiRemoveSavedConnectionsToNodeId(nodeId)
 
 
 
+function uiRemoveSavedConnectionsFromNodeId(nodeId)
+{
+    uiQueueMessageToFigma({
+        cmd:   'figRemoveSavedConnectionsFromNode',
+        nodeId: nodeId
+    });
+}
+
+
+
 function uiRemoveSavedNodesAndConns(nodeIds)
 {
     uiQueueMessageToFigma({
@@ -46747,7 +47065,8 @@ function uiResizeWindow(width, height)
 
 function uiEndResizeWindow()
 {
-    graphView.updatePanAndZoom();
+    if (!settings.dataMode)
+        graphView.updatePanAndZoom();
 
     // btnZoom.style.top  = 0;
     // btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;

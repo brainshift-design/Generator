@@ -2,6 +2,8 @@ const settings =
 {
     autoConnectNewNodes:   true,
     includeLxxColorSpaces: false,
+
+    dataMode:              false,
     debugMode:             false,
 
     showNodeId:            false, // instead of name
@@ -29,6 +31,8 @@ function updateSetting(settingName, value)
     {
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
+
+        case 'dataMode':              settings.dataMode              = value;  break;
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'showNodeId':            settings.showNodeId            = value;  break;
@@ -56,6 +60,8 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
     {
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
+
+        case 'dataMode':              updateSettingAndMenu_(valid, settingName, value, menuItemDataMode);                                 break;
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
@@ -96,10 +102,11 @@ function updateSettingsMenus()
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
 
+    menuItemDataMode             .setVisible(settings.dataMode             );
     menuItemDebug                .setVisible(settings.debugMode            );
 
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
-    //menuItemShowWires            .setChecked(settings.showWires            );
+    //menuItemShowWires            .setChecked(settings.showWires          );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
     menuItemLogActions           .setChecked(settings.logActions           );
@@ -128,25 +135,27 @@ function updateMenuItemIncludeLxxColorSpace()
 
 function loadLocalSettings()
 {
-    uiGetLocalData('graphView');
-
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
+
+    uiGetLocalData('dataMode'             );
     uiGetLocalData('debugMode'            );
 
     uiGetLocalData('showNodeId'           );
-    //uiGetLocalData('showWires'            );
- 
+    //uiGetLocalData('showWires'          );
+    
     uiGetLocalData('logMessages'          );
     uiGetLocalData('logActions'           );
-
+    
     uiGetLocalData('logLoading'           );
     uiGetLocalData('logRequests'          );
     uiGetLocalData('logValueUpdates'      );
     uiGetLocalData('logObjectUpdates'     );
-
+    
     uiGetLocalData('logRawLoading'        );
     uiGetLocalData('logRawSaving'         );
     uiGetLocalData('logRawRequests'       );
     uiGetLocalData('logRawValues'         );
+    
+    uiGetLocalData('graphView');
 }

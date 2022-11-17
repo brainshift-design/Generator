@@ -76,10 +76,10 @@ graphView.setPanAndZoom = (pan, zoom) =>
 graphView.updatePanAndZoom = () =>
 {
     graphView.update(graph.nodes);
-
+    
     btnZoom.divIcon.innerHTML       = Math.round(graphView.zoom * 100) + '%';
     btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
-
+    
     menuItemZoomTo100.setChecked(equal(graphView.zoom, 1));
 };
 

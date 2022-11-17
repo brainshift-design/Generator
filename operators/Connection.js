@@ -440,9 +440,9 @@ class Connection
                 outputNode, isDigit(outputId[0]) 
                             ? parseInt(outputId) 
                             : outputNode.params.find(p => p.id == outputId).output.id,
-                inputNode, isDigit(inputId[0])
-                           ? parseInt(inputId)
-                           : inputNode.params.find(p => p.id == inputId).input.id);
+                inputNode,  isDigit(inputId[0])
+                            ? parseInt(inputId)
+                            : inputNode.params.find(p => p.id == inputId).input.id);
         }
     }
 }

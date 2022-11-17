@@ -10,6 +10,7 @@
     ../controls/colorControl/*.css
     ../controls/menuSelect/*.css
     ../controls/select/*.css
+    ../controls/checkbox/*.css
 
     ../operators/*.css
 

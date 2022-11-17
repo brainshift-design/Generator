@@ -45,7 +45,8 @@ function uiResizeWindow(width, height)
 
 function uiEndResizeWindow()
 {
-    graphView.updatePanAndZoom();
+    if (!settings.dataMode)
+        graphView.updatePanAndZoom();
 
     // btnZoom.style.top  = 0;
     // btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;

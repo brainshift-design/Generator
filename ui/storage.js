@@ -32,13 +32,10 @@ function uiGetLocalDataReturn(msg)
 {
     switch (msg.key)
     {
-        case 'graphView':        
-            uiLoadGraphView(msg.value); 
-            graphView.updatePanAndZoom();
-            break;
-
         case 'autoConnectNewNodes':
         case 'includeLxxColorSpaces':
+
+        case 'dataMode':
         case 'debugMode':
 
         case 'showNodeId':       
@@ -65,15 +62,47 @@ function uiGetLocalDataReturn(msg)
                 false); 
 
             break;
+
+        case 'graphView':        
+            uiLoadGraphView(msg.value); 
+
+            if (generatorStarted)
+                graphView.updatePanAndZoom();
+    
+            break;
     }
 
 
-    if (msg.key == 'debugMode')
-        menuItemDebug.setVisible(settings.debugMode);
+    if (    msg.key == 'dataMode'
+        && !generatorStarted)
+    {
+        if (settings.dataMode)
+        {
+            dataModeView.style.display = 'block';
+            initDataModeMenus();
+        }
+        else
+        {
+            initGeneratorMenus();
+        }    
+     
+        
+        onClassChange(document.childNodes[0], () =>
+        { 
+            initThemeColors();
+            
+            if (!settings.dataMode)
+                graph.nodes.forEach(n => n.updateNode());
+        });
+    }
 
-    else if (msg.key == 'logLoading')
-        if (settings.logLoading)
-            uiLogAllSavedNodesAndConns();
+
+    // if (msg.key == 'debugMode')
+    //     menuItemDebug.setVisible(settings.debugMode);
+
+    //else if (msg.key == 'logLoading')
+    //     if (settings.logLoading)
+    //         uiLogAllSavedNodesAndConns();
 }
 
 
@@ -138,19 +167,20 @@ function uiEndLoadNodesAndConns(nodesJson, connsJson, activeJson)
 
     let _nodes = JSON.parse(nodesJson);
     let _conns = JSON.parse(connsJson);
-
     
-    if (dataMode)
+    _nodes.sort((a, b) => a.z - b.z);
+
+
+    if (settings.dataMode)
     {
         loadNodesAndConnsData(_nodes, _conns);
+        uiSetLocalData('dataMode', false);
     }
     else
     {
         _nodes = _nodes.map(n => JSON.parse(n));
         _conns = _conns.map(c => JSON.parse(c));
             
-        _nodes.sort((a, b) => a.z - b.z);
-        
         graph.clear();
 
         loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
@@ -243,8 +273,8 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
     promise.then(() => 
     {
-        finishLoading();
         finishLoadingNodes(_nodes, loadedNodes);
+        finishLoading();
     });
 }
 
@@ -256,9 +286,10 @@ function finishLoading()
     
     graphView.loadingNodes   = false;
     graphView.canUpdateNodes = true;
-    
-    //updateToggleShowWiresButton();
+
     graphView.updateShowWires(false);
+
+    generatorStarted = true;
 }
 
 
@@ -269,8 +300,6 @@ function finishLoadingNodes(_nodes, loadedNodes, duplicates = false)
         .filter(_n => _n.active)
         .map(_n => nodeFromId(duplicates ? _n.newId : _n.id))
         .forEach(n => n.makeActive());
-
-    // validateActiveNodess(loadedNodes);
 
     loadedNodes.forEach(n => n.updateNode());
     graphView.updateNodeTransforms(loadedNodes);

@@ -4,6 +4,7 @@
 ../controls/colorControl/*.js
 ../controls/select/*.js
 ../controls/menuSelect/*.js
+../controls/checkbox/*.js
 
 
 // graphView files included explicitly because of dependencies
