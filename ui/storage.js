@@ -281,7 +281,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 function finishLoading()
 {
-    //loadingOverlay.style.display = 'none';
+    loadingOverlay.style.display = 'none';
     
     graphView.loadingNodes   = false;
     graphView.canUpdateNodes = true;

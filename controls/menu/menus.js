@@ -131,7 +131,16 @@ function initGeneratorMenus()
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',   {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                       }}),
-        menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces', {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }})]);
+        menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces', {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
+        menuItemShowNodeId            = new MenuItem('Show node IDs',
+        {
+            checkCallback: () => settings.showNodeId, 
+            callback:      () => 
+            {
+                updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
+                graph.nodes.forEach(n => n.updateNode());
+            }
+        })]);
 
     
     menuDebugLog = new Menu('Log menu', false);
@@ -167,15 +176,6 @@ function initGeneratorMenus()
         // }),
         menuItemDataMode   = new MenuItem('Restart in debug mode',    {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        )}),
                              new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
-        menuItemShowNodeId = new MenuItem('Show node IDs',
-        {
-            checkCallback: () => settings.showNodeId, 
-            callback:      () => 
-            {
-                updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
-                graph.nodes.forEach(n => n.updateNode());
-            }
-        }),
         menuItemDebugLog   = new MenuItem('Log',                      {childMenu: menuDebugLog })]);
 
 

@@ -588,7 +588,7 @@
 #chkLoadingRestartCheck
 {
     position:   absolute;
-    left:       50%;
+    left:       49.5%;
     top:        65%;
     transform:  translateX(-50%)
                 translateY(-50%);
@@ -11154,7 +11154,7 @@ function updateSetting(settingName, value)
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'showNodeId':            settings.showNodeId            = value;  break;
-        //case 'showWires':             settings.showWires             = value;  break;
+        //case 'showWires':           settings.showWires             = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
         case 'logActions':            settings.logActions            = value;  break;
@@ -11183,7 +11183,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
-        //case 'showWires':             updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
+        //case 'showWires':           updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
         case 'logActions':            updateSettingAndMenu_(valid, settingName, value, menuItemLogActions           );  break;
@@ -25925,7 +25925,7 @@ function updateSetting(settingName, value)
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'showNodeId':            settings.showNodeId            = value;  break;
-        //case 'showWires':             settings.showWires             = value;  break;
+        //case 'showWires':           settings.showWires             = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
         case 'logActions':            settings.logActions            = value;  break;
@@ -25954,7 +25954,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
-        //case 'showWires':             updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
+        //case 'showWires':           updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
         case 'logActions':            updateSettingAndMenu_(valid, settingName, value, menuItemLogActions           );  break;
@@ -26889,7 +26889,16 @@ function initGeneratorMenus()
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',   {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                       }}),
-        menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces', {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }})]);
+        menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces', {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
+        menuItemShowNodeId            = new MenuItem('Show node IDs',
+        {
+            checkCallback: () => settings.showNodeId, 
+            callback:      () => 
+            {
+                updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
+                graph.nodes.forEach(n => n.updateNode());
+            }
+        })]);
 
     
     menuDebugLog = new Menu('Log menu', false);
@@ -26925,15 +26934,6 @@ function initGeneratorMenus()
         // }),
         menuItemDataMode   = new MenuItem('Restart in debug mode',    {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        )}),
                              new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
-        menuItemShowNodeId = new MenuItem('Show node IDs',
-        {
-            checkCallback: () => settings.showNodeId, 
-            callback:      () => 
-            {
-                updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
-                graph.nodes.forEach(n => n.updateNode());
-            }
-        }),
         menuItemDebugLog   = new MenuItem('Log',                      {childMenu: menuDebugLog })]);
 
 
@@ -45539,7 +45539,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 function finishLoading()
 {
-    //loadingOverlay.style.display = 'none';
+    loadingOverlay.style.display = 'none';
     
     graphView.loadingNodes   = false;
     graphView.canUpdateNodes = true;
