@@ -21,7 +21,7 @@ extends Action
     {
         const data = JSON.parse(copiedNodesJson);
 
-        super('PASTE ' + data.nodes.length + ' ' + countToString(data.nodes, 'node'));
+        super('PASTE ' + data.nodes.length + ' ' + countString('node', data.nodes.length));
 
         this.copiedNodesJson = copiedNodesJson;
         this.pasteConnected  = pasteConnected;
@@ -113,6 +113,6 @@ extends Action
         if (pasteConnected)
             action += ' connected';
 
-        uiNotify(action + ' ' + nodes.length + ' ' + countToString(nodes, 'node'), 2500);
+        uiNotify(action + ' ' + nodes.length + ' ' + countString('node', nodes.length), 2500);
     }
 }

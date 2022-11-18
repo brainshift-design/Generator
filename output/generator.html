@@ -26,7 +26,7 @@ function parseBool(str) { return str === 'true'; }
 
 
 
-function getConnString(conn)
+function connToString(conn)
 {
     return getConnectionString(
         conn.outputNodeId,
@@ -1617,9 +1617,16 @@ function indexOfChild(parent, child)
 
 
 
-function countToString(items, itemName)
+function pluralString(count)
 {
-    return itemName + (items.length == 1 ? '' : 's');
+    return count == 1 ? '' : 's';
+}
+
+
+
+function countString(itemName, count)
+{
+    return itemName + pluralString(count);
 }
 
 
@@ -2695,7 +2702,7 @@ function formatSavedNodeDataJson(json)
 
 function logSavedConn(conn)
 {
-    const strConn = getConnString(conn);
+    const strConn = connToString(conn);
 
     console.log(
         '%c%s', 

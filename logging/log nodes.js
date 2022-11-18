@@ -81,7 +81,7 @@ function formatSavedNodeDataJson(json)
 
 function logSavedConn(conn)
 {
-    const strConn = getConnString(conn);
+    const strConn = connToString(conn);
 
     console.log(
         '%c%s', 

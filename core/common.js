@@ -22,7 +22,7 @@ function parseBool(str) { return str === 'true'; }
 
 
 
-function getConnString(conn)
+function connToString(conn)
 {
     return getConnectionString(
         conn.outputNodeId,

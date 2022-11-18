@@ -350,7 +350,7 @@ function resolveConnections(nodes, _connections, first, last)
                 const  inputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId);
 
 
-                const strConn = getConnString(_conn);
+                const strConn = connToString(_conn);
 
                 if (!outputNode)
                 { 

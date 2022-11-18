@@ -50,7 +50,7 @@ function parseBool(str) { return str === 'true'; }
 
 
 
-function getConnString(conn)
+function connToString(conn)
 {
     return getConnectionString(
         conn.outputNodeId,
@@ -364,7 +364,7 @@ function formatSavedNodeDataJson(json)
 
 function logSavedConn(conn)
 {
-    const strConn = getConnString(conn);
+    const strConn = connToString(conn);
 
     console.log(
         '%c%s', 
@@ -1247,15 +1247,8 @@ function figLoadNodesAndConns(dataMode)
     const nodeKeys  = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
     const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
-
     if (!dataMode)
-    {
         figMarkForLoading(nodeKeys, connKeys);
-            
-        nodeKeys.forEach(k => console.log(figma.currentPage.getPluginData(k)));
-        connKeys.forEach(k => console.log(figma.currentPage.getPluginData(k)));
-    }
-
 
     const nodes     = nodeKeys.map(k => figma.currentPage.getPluginData(k));
     const conns     = connKeys.map(k => figma.currentPage.getPluginData(k));

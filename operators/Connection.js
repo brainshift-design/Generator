@@ -426,7 +426,7 @@ class Connection
             ||   !isDigit(inputId[0])
                && !inputNode.params.find(p => p.id == inputId && p.input))
         {
-            uiError('cannot connect ' + getConnString(_conn));
+            uiError('cannot connect ' + connToString(_conn));
             return null;
         }
         else

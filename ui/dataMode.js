@@ -36,7 +36,6 @@ function loadNodesAndConnsData(_nodes, _conns)
     _dataModeNodes = _nodes;
     _dataModeConns = _conns;
 
-    console.log(_nodes);
     for (const _node of _dataModeNodes) dataModeNodes.appendChild(createNodeDataDiv(_node));
     for (const _conn of _dataModeConns) dataModeConns.appendChild(createConnDataDiv(_conn));
 }
@@ -107,7 +106,7 @@ function createConnDataDiv(_conn)
     
     div.innerHTML = 
          (conn.loading ? '🛑&nbsp;&nbsp' : '')
-        + getConnString(conn);
+        + connToString(conn);
 
 
     div.addEventListener('pointerenter', () => div.style.background = 'var(--data-mode-conn-active)');
@@ -218,17 +217,58 @@ function dataModeDeleteNode(node)
 
         if (div.node.id == node.id)
             dataModeNodes.removeChild(div);
+
     }
 
-    
+
+    let removedConns = 0;
+
     for (let i = dataModeConns.children.length-1; i >= 0; i--)
     {
         const div = dataModeConns.children[i];
 
         if (   div.conn.outputNodeId == node.id
             || div.conn. inputNodeId == node.id)
+        {
             dataModeConns.removeChild(div);
+            removedConns++;
+        }
     }
+
+
+    let notice = 'Removed node \'' + node.id + '\'';
+
+    if (removedConns > 0)
+        notice += ' and ' + removedConns + ' ' + countString('connection', removedConns);
+
+    uiNotify(notice);
+}
+
+
+
+function dataModeDeleteConnectionsToAndFromNode(node)
+{
+    uiRemoveSavedConnectionsToNodeId  (node.id);
+    uiRemoveSavedConnectionsFromNodeId(node.id);
+
+
+    let nRemovedConns = 0;
+
+    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+    {
+        const div = dataModeConns.children[i];
+
+        if (   div.conn.outputNodeId == node.id
+            || div.conn. inputNodeId == node.id)
+        {
+            dataModeConns.removeChild(div);
+            nRemovedConns++;
+        }
+    }
+
+
+    if (nRemovedConns > 0)
+        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to and from \'' + node.id + '\'');
 }
 
 
@@ -237,13 +277,23 @@ function dataModeDeleteConnectionsFromNode(node)
 {
     uiRemoveSavedConnectionsFromNodeId(node.id);
     
+
+    let nRemovedConns = 0;
+
     for (let i = dataModeConns.children.length-1; i >= 0; i--)
     {
         const div = dataModeConns.children[i];
 
         if (div.conn.outputNodeId == node.id)
+        {
             dataModeConns.removeChild(div);
+            nRemovedConns++;
+        }
     }
+
+
+    if (nRemovedConns > 0)
+        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' from \'' + node.id + '\'');
 }
 
 
@@ -252,13 +302,23 @@ function dataModeDeleteConnectionsToNode(node)
 {
     uiRemoveSavedConnectionsToNodeId(node.id);
 
+
+    let nRemovedConns = 0;
+
     for (let i = dataModeConns.children.length-1; i >= 0; i--)
     {
         const div = dataModeConns.children[i];
 
         if (div.conn. inputNodeId == node.id)
+        {
             dataModeConns.removeChild(div);
+            nRemovedConns++;
+        }
     }
+
+
+    if (nRemovedConns > 0)
+        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to \'' + node.id + '\'');
 }
 
 
@@ -282,4 +342,7 @@ function dataModeDeleteConnection(conn)
             && div.conn.inputId      == conn.inputId)
             dataModeConns.removeChild(div);
     }
+
+
+    uiNotify('Removed connection  ' + connToString(conn));
 }

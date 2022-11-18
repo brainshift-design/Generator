@@ -18,7 +18,7 @@ extends Action
     {
         super(
             'SELECT MOVE ' + newSelectedIds.length 
-          + ' ' + countToString(newSelectedIds, 'node'));
+          + ' ' + countString('node', newSelectedIds.length));
 
 
         this.prevSelectedIds = [...prevSelectedIds];

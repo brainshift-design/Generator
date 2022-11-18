@@ -9,7 +9,7 @@ extends Action
     {
         const data = JSON.parse(copiedJson);
 
-        super('DUPLICATE ' + data.nodes.length + ' ' + countToString(data.nodes, 'node'));
+        super('DUPLICATE ' + data.nodes.length + ' ' + countString('node', data.nodes.length));
 
         this.copiedJson = copiedJson;
     }

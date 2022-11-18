@@ -10,7 +10,7 @@ extends Action
     {
         super(
               'SELECT ' + selectedIds.length 
-            + ' ' + countToString(selectedIds, 'node'));
+            + ' ' + countString('node', selectedIds.length));
 
         this.selectedIds     = [...selectedIds];
         this.prevSelectedIds = [...prevSelectedIds];

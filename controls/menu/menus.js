@@ -175,7 +175,7 @@ function initGeneratorMenus()
         //     }
         // }),
         menuItemDataMode   = new MenuItem('Restart in debug mode',    {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        )}),
-                             new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
+        //                   new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
         menuItemDebugLog   = new MenuItem('Log',                      {childMenu: menuDebugLog })]);
 
 
@@ -334,9 +334,9 @@ function initDataModeMenus()
 {
     menuNodeData = new Menu('Node menu', false, false);
     menuNodeData.addItems([
-        new MenuItem('Remove connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode(menuNodeData._div.node); }}),
-        new MenuItem('Remove connections to'  , { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode(menuNodeData._div.node); }}),
-        new MenuItem('Remove all connections',  { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode(menuNodeData._div.node); dataModeDeleteConnectionsToNode(menuNodeData._div.node); }} ),
+        new MenuItem('Remove connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),
+        new MenuItem('Remove connections to'  , { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode       (menuNodeData._div.node); }}),
+        new MenuItem('Remove all connections',  { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToAndFromNode(menuNodeData._div.node); }}),
         new MenuItem('',                        { separator: true }),
         new MenuItem('Remove node',             { callback: () => { hideAllMenus(); dataModeDeleteNode(menuNodeData._div.node); }})]);
 

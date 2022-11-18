@@ -22,9 +22,16 @@ function indexOfChild(parent, child)
 
 
 
-function countToString(items, itemName)
+function pluralString(count)
 {
-    return itemName + (items.length == 1 ? '' : 's');
+    return count == 1 ? '' : 's';
+}
+
+
+
+function countString(itemName, count)
+{
+    return itemName + pluralString(count);
 }
 
 

@@ -2369,7 +2369,7 @@ function parseBool(str) { return str === 'true'; }
 
 
 
-function getConnString(conn)
+function connToString(conn)
 {
     return getConnectionString(
         conn.outputNodeId,
@@ -3960,9 +3960,16 @@ function indexOfChild(parent, child)
 
 
 
-function countToString(items, itemName)
+function pluralString(count)
 {
-    return itemName + (items.length == 1 ? '' : 's');
+    return count == 1 ? '' : 's';
+}
+
+
+
+function countString(itemName, count)
+{
+    return itemName + pluralString(count);
 }
 
 
@@ -5038,7 +5045,7 @@ function formatSavedNodeDataJson(json)
 
 function logSavedConn(conn)
 {
-    const strConn = getConnString(conn);
+    const strConn = connToString(conn);
 
     console.log(
         '%c%s', 
@@ -15550,7 +15557,7 @@ function parseBool(str) { return str === 'true'; }
 
 
 
-function getConnString(conn)
+function connToString(conn)
 {
     return getConnectionString(
         conn.outputNodeId,
@@ -17141,9 +17148,16 @@ function indexOfChild(parent, child)
 
 
 
-function countToString(items, itemName)
+function pluralString(count)
 {
-    return itemName + (items.length == 1 ? '' : 's');
+    return count == 1 ? '' : 's';
+}
+
+
+
+function countString(itemName, count)
+{
+    return itemName + pluralString(count);
 }
 
 
@@ -18219,7 +18233,7 @@ function formatSavedNodeDataJson(json)
 
 function logSavedConn(conn)
 {
-    const strConn = getConnString(conn);
+    const strConn = connToString(conn);
 
     console.log(
         '%c%s', 
@@ -26969,7 +26983,7 @@ function initGeneratorMenus()
         //     }
         // }),
         menuItemDataMode   = new MenuItem('Restart in debug mode',    {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        )}),
-                             new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
+        //                   new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
         menuItemDebugLog   = new MenuItem('Log',                      {childMenu: menuDebugLog })]);
 
 
@@ -27128,9 +27142,9 @@ function initDataModeMenus()
 {
     menuNodeData = new Menu('Node menu', false, false);
     menuNodeData.addItems([
-        new MenuItem('Remove connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode(menuNodeData._div.node); }}),
-        new MenuItem('Remove connections to'  , { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode(menuNodeData._div.node); }}),
-        new MenuItem('Remove all connections',  { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode(menuNodeData._div.node); dataModeDeleteConnectionsToNode(menuNodeData._div.node); }} ),
+        new MenuItem('Remove connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),
+        new MenuItem('Remove connections to'  , { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode       (menuNodeData._div.node); }}),
+        new MenuItem('Remove all connections',  { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToAndFromNode(menuNodeData._div.node); }}),
         new MenuItem('',                        { separator: true }),
         new MenuItem('Remove node',             { callback: () => { hideAllMenus(); dataModeDeleteNode(menuNodeData._div.node); }})]);
 
@@ -35661,7 +35675,7 @@ class Connection
             ||   !isDigit(inputId[0])
                && !inputNode.params.find(p => p.id == inputId && p.input))
         {
-            uiError('cannot connect ' + getConnString(_conn));
+            uiError('cannot connect ' + connToString(_conn));
             return null;
         }
         else
@@ -42612,7 +42626,7 @@ extends Action
 
     constructor(nodeIds)
     {
-        super('DELETE ' + nodeIds.length + ' ' + countToString(nodeIds, 'node'));
+        super('DELETE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
 
         this.nodeIds         = [...nodeIds]; // clone the array
         this.nodes           = nodeIds.map(id => nodeFromId(id));
@@ -42960,7 +42974,7 @@ extends Action
     {
         const data = JSON.parse(copiedJson);
 
-        super('DUPLICATE ' + data.nodes.length + ' ' + countToString(data.nodes, 'node'));
+        super('DUPLICATE ' + data.nodes.length + ' ' + countString('node', data.nodes.length));
 
         this.copiedJson = copiedJson;
     }
@@ -43109,7 +43123,7 @@ extends Action
     {
         const data = JSON.parse(copiedNodesJson);
 
-        super('PASTE ' + data.nodes.length + ' ' + countToString(data.nodes, 'node'));
+        super('PASTE ' + data.nodes.length + ' ' + countString('node', data.nodes.length));
 
         this.copiedNodesJson = copiedNodesJson;
         this.pasteConnected  = pasteConnected;
@@ -43201,7 +43215,7 @@ extends Action
         if (pasteConnected)
             action += ' connected';
 
-        uiNotify(action + ' ' + nodes.length + ' ' + countToString(nodes, 'node'), 2500);
+        uiNotify(action + ' ' + nodes.length + ' ' + countString('node', nodes.length), 2500);
     }
 }
 
@@ -43354,7 +43368,7 @@ extends Action
 
     constructor(nodeIds)
     {
-        super('REMOVE ' + nodeIds.length + ' ' + countToString(nodeIds, 'node'));
+        super('REMOVE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
 
         this.nodeIds         = [...nodeIds]; // clone the array
         this.nodes           = nodeIds.map(id => nodeFromId(id));
@@ -43807,7 +43821,7 @@ extends Action
     {
         super(
             'SELECT MOVE ' + newSelectedIds.length 
-          + ' ' + countToString(newSelectedIds, 'node'));
+          + ' ' + countString('node', newSelectedIds.length));
 
 
         this.prevSelectedIds = [...prevSelectedIds];
@@ -43913,7 +43927,7 @@ extends Action
     {
         super(
               'SELECT ' + selectedIds.length 
-            + ' ' + countToString(selectedIds, 'node'));
+            + ' ' + countString('node', selectedIds.length));
 
         this.selectedIds     = [...selectedIds];
         this.prevSelectedIds = [...prevSelectedIds];
@@ -44053,7 +44067,7 @@ extends Action
     {
         super(
               'TOGGLE DISABLE ' + selectedIds.length 
-            + ' ' + countToString(selectedIds, 'node'));
+            + ' ' + countString('node', selectedIds.length));
 
         this.selectedIds = [...selectedIds];
     }
@@ -44270,7 +44284,6 @@ function loadNodesAndConnsData(_nodes, _conns)
     _dataModeNodes = _nodes;
     _dataModeConns = _conns;
 
-    console.log(_nodes);
     for (const _node of _dataModeNodes) dataModeNodes.appendChild(createNodeDataDiv(_node));
     for (const _conn of _dataModeConns) dataModeConns.appendChild(createConnDataDiv(_conn));
 }
@@ -44341,7 +44354,7 @@ function createConnDataDiv(_conn)
     
     div.innerHTML = 
          (conn.loading ? '🛑&nbsp;&nbsp' : '')
-        + getConnString(conn);
+        + connToString(conn);
 
 
     div.addEventListener('pointerenter', () => div.style.background = 'var(--data-mode-conn-active)');
@@ -44452,17 +44465,58 @@ function dataModeDeleteNode(node)
 
         if (div.node.id == node.id)
             dataModeNodes.removeChild(div);
+
     }
 
-    
+
+    let removedConns = 0;
+
     for (let i = dataModeConns.children.length-1; i >= 0; i--)
     {
         const div = dataModeConns.children[i];
 
         if (   div.conn.outputNodeId == node.id
             || div.conn. inputNodeId == node.id)
+        {
             dataModeConns.removeChild(div);
+            removedConns++;
+        }
     }
+
+
+    let notice = 'Removed node \'' + node.id + '\'';
+
+    if (removedConns > 0)
+        notice += ' and ' + removedConns + ' ' + countString('connection', removedConns);
+
+    uiNotify(notice);
+}
+
+
+
+function dataModeDeleteConnectionsToAndFromNode(node)
+{
+    uiRemoveSavedConnectionsToNodeId  (node.id);
+    uiRemoveSavedConnectionsFromNodeId(node.id);
+
+
+    let nRemovedConns = 0;
+
+    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+    {
+        const div = dataModeConns.children[i];
+
+        if (   div.conn.outputNodeId == node.id
+            || div.conn. inputNodeId == node.id)
+        {
+            dataModeConns.removeChild(div);
+            nRemovedConns++;
+        }
+    }
+
+
+    if (nRemovedConns > 0)
+        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to and from \'' + node.id + '\'');
 }
 
 
@@ -44471,13 +44525,23 @@ function dataModeDeleteConnectionsFromNode(node)
 {
     uiRemoveSavedConnectionsFromNodeId(node.id);
     
+
+    let nRemovedConns = 0;
+
     for (let i = dataModeConns.children.length-1; i >= 0; i--)
     {
         const div = dataModeConns.children[i];
 
         if (div.conn.outputNodeId == node.id)
+        {
             dataModeConns.removeChild(div);
+            nRemovedConns++;
+        }
     }
+
+
+    if (nRemovedConns > 0)
+        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' from \'' + node.id + '\'');
 }
 
 
@@ -44486,13 +44550,23 @@ function dataModeDeleteConnectionsToNode(node)
 {
     uiRemoveSavedConnectionsToNodeId(node.id);
 
+
+    let nRemovedConns = 0;
+
     for (let i = dataModeConns.children.length-1; i >= 0; i--)
     {
         const div = dataModeConns.children[i];
 
         if (div.conn. inputNodeId == node.id)
+        {
             dataModeConns.removeChild(div);
+            nRemovedConns++;
+        }
     }
+
+
+    if (nRemovedConns > 0)
+        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to \'' + node.id + '\'');
 }
 
 
@@ -44516,6 +44590,9 @@ function dataModeDeleteConnection(conn)
             && div.conn.inputId      == conn.inputId)
             dataModeConns.removeChild(div);
     }
+
+
+    uiNotify('Removed connection  ' + connToString(conn));
 }
 
 
@@ -45637,7 +45714,7 @@ function resolveConnections(nodes, _connections, first, last)
                 const  inputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId);
 
 
-                const strConn = getConnString(_conn);
+                const strConn = connToString(_conn);
 
                 if (!outputNode)
                 { 

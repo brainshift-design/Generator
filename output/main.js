@@ -30,7 +30,7 @@ const OBJECT_PREFIX = 'G.';
 function leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 function parseBool(str) { return str === 'true'; }
-function getConnString(conn) {
+function connToString(conn) {
     return getConnectionString(conn.outputNodeId, conn.outputId, conn.inputNodeId, conn.inputId, conn.list);
 }
 function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, list) {
@@ -229,7 +229,7 @@ function formatSavedNodeDataJson(json) {
     return formJson;
 }
 function logSavedConn(conn) {
-    const strConn = getConnString(conn);
+    const strConn = connToString(conn);
     console.log('%c%s', 'background: #cfc', strConn);
 }
 function logRequest(parse) {
@@ -793,11 +793,8 @@ function figClearPageData(key) {
 function figLoadNodesAndConns(dataMode) {
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
-    if (!dataMode) {
+    if (!dataMode)
         figMarkForLoading(nodeKeys, connKeys);
-        nodeKeys.forEach(k => console.log(figma.currentPage.getPluginData(k)));
-        connKeys.forEach(k => console.log(figma.currentPage.getPluginData(k)));
-    }
     const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
     const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
     const nodesJson = JSON.stringify(nodes);
