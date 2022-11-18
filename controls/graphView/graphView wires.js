@@ -136,10 +136,10 @@ function updateWires(wires)
         const input  = conn.input;
         const output = conn.output;
 
-        // const isSolo = 
-        //         graphView._soloNode
-        //     && (    input.node == graphView._soloNode
-        //         || output.node == graphView._soloNode);
+        const isSolo = 
+                graphView._soloNode
+            && (    input.node == graphView._soloNode
+                || output.node == graphView._soloNode);
 
         show(wires[i],       /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
         show(wires[i].curve, /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);

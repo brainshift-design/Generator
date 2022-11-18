@@ -7,7 +7,6 @@ const settings =
     debugMode:             false,
 
     showNodeId:            false, // instead of name
-    // showWires:             true,
     
     logMessages:           false,
     logActions:            false, 
@@ -36,7 +35,6 @@ function updateSetting(settingName, value)
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'showNodeId':            settings.showNodeId            = value;  break;
-        //case 'showWires':           settings.showWires             = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
         case 'logActions':            settings.logActions            = value;  break;
@@ -65,7 +63,6 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
-        //case 'showWires':           updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
         case 'logActions':            updateSettingAndMenu_(valid, settingName, value, menuItemLogActions           );  break;
@@ -106,7 +103,6 @@ function updateSettingsMenus()
     menuItemDebug                .setVisible(settings.debugMode            );
 
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
-    //menuItemShowWires            .setChecked(settings.showWires          );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
     menuItemLogActions           .setChecked(settings.logActions           );
@@ -142,7 +138,6 @@ function loadLocalSettings()
     uiGetLocalData('debugMode'            );
 
     uiGetLocalData('showNodeId'           );
-    //uiGetLocalData('showWires'          );
     
     uiGetLocalData('logMessages'          );
     uiGetLocalData('logActions'           );

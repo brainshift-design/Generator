@@ -56,8 +56,10 @@ function initDataMode()
     initCheckbox(chkDataModeRestartCheck, 'Restart in debug mode', true );
     initCheckbox(chkLoadingRestartCheck,  'Restart in debug mode', false);
 
-    chkDataModeRestartCheck.addEventListener('change', () => uiSetLocalData('dataMode', chkDataModeRestartCheck.checked));
-    chkLoadingRestartCheck .addEventListener('change', () => uiSetLocalData('dataMode', chkLoadingRestartCheck .checked));
+    chkLoadingRestartCheck.style.display = 'none';
+
+    chkDataModeRestartCheck.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkDataModeRestartCheck.checked)));
+    chkLoadingRestartCheck .addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkLoadingRestartCheck .checked)));
 }
 
 

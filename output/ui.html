@@ -1670,6 +1670,7 @@ a
 
 .checkboxText
 {
+    color:       var(--figma-color-text);
     display:     inline;
     width:       auto;
     height:      auto;
@@ -2353,15 +2354,28 @@ const NULL           = '';
 const TAB            = '  ';
 const NL             = '\n';
 
-const GENERATOR_LOGO = '◦G•';
+const GENERATOR_LOGO = '◦ G •';
 const OBJECT_PREFIX  = 'G.';
+
 
 
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 
+
+
 function parseBool(str) { return str === 'true'; }
 
+
+
+function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, list)
+{
+    const arrow = '  ' + rightArrowChar(parseBool(list)) + '  ';
+
+    return outputNodeId + ' . ' + outputId
+         + arrow
+         + inputNodeId + ' . ' + inputId;
+}
 
 
 function rgbHeaderFromType(type, active)
@@ -5011,15 +5025,17 @@ function formatSavedNodeDataJson(json)
 
 function logSavedConn(conn)
 {
-    const log = 
-          conn.outputNodeId + '.' + conn.outputId
-        + ' ' + rightArrowChar(parseBool(conn.list)) + ' '
-        + conn.inputNodeId + '.' + conn.inputId;
+    const strConn = getConnectionString(
+          conn.outputNodeId, 
+          conn.outputId,
+          conn.inputNodeId,
+          conn.inputId,
+          conn.list);
 
     console.log(
         '%c%s', 
         'background: #cfc', 
-        log); 
+        strConn); 
 }
 
 
@@ -11125,7 +11141,6 @@ const settings =
     debugMode:             false,
 
     showNodeId:            false, // instead of name
-    // showWires:             true,
     
     logMessages:           false,
     logActions:            false, 
@@ -11154,7 +11169,6 @@ function updateSetting(settingName, value)
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'showNodeId':            settings.showNodeId            = value;  break;
-        //case 'showWires':           settings.showWires             = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
         case 'logActions':            settings.logActions            = value;  break;
@@ -11183,7 +11197,6 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
-        //case 'showWires':           updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
         case 'logActions':            updateSettingAndMenu_(valid, settingName, value, menuItemLogActions           );  break;
@@ -11224,7 +11237,6 @@ function updateSettingsMenus()
     menuItemDebug                .setVisible(settings.debugMode            );
 
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
-    //menuItemShowWires            .setChecked(settings.showWires          );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
     menuItemLogActions           .setChecked(settings.logActions           );
@@ -11260,7 +11272,6 @@ function loadLocalSettings()
     uiGetLocalData('debugMode'            );
 
     uiGetLocalData('showNodeId'           );
-    //uiGetLocalData('showWires'          );
     
     uiGetLocalData('logMessages'          );
     uiGetLocalData('logActions'           );
@@ -15517,15 +15528,28 @@ const NULL           = '';
 const TAB            = '  ';
 const NL             = '\n';
 
-const GENERATOR_LOGO = '◦G•';
+const GENERATOR_LOGO = '◦ G •';
 const OBJECT_PREFIX  = 'G.';
+
 
 
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 
+
+
 function parseBool(str) { return str === 'true'; }
 
+
+
+function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, list)
+{
+    const arrow = '  ' + rightArrowChar(parseBool(list)) + '  ';
+
+    return outputNodeId + ' . ' + outputId
+         + arrow
+         + inputNodeId + ' . ' + inputId;
+}
 
 
 function rgbHeaderFromType(type, active)
@@ -18175,15 +18199,17 @@ function formatSavedNodeDataJson(json)
 
 function logSavedConn(conn)
 {
-    const log = 
-          conn.outputNodeId + '.' + conn.outputId
-        + ' ' + rightArrowChar(parseBool(conn.list)) + ' '
-        + conn.inputNodeId + '.' + conn.inputId;
+    const strConn = getConnectionString(
+          conn.outputNodeId, 
+          conn.outputId,
+          conn.inputNodeId,
+          conn.inputId,
+          conn.list);
 
     console.log(
         '%c%s', 
         'background: #cfc', 
-        log); 
+        strConn); 
 }
 
 
@@ -25896,7 +25922,6 @@ const settings =
     debugMode:             false,
 
     showNodeId:            false, // instead of name
-    // showWires:             true,
     
     logMessages:           false,
     logActions:            false, 
@@ -25925,7 +25950,6 @@ function updateSetting(settingName, value)
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'showNodeId':            settings.showNodeId            = value;  break;
-        //case 'showWires':           settings.showWires             = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
         case 'logActions':            settings.logActions            = value;  break;
@@ -25954,7 +25978,6 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
-        //case 'showWires':           updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
         case 'logActions':            updateSettingAndMenu_(valid, settingName, value, menuItemLogActions           );  break;
@@ -25995,7 +26018,6 @@ function updateSettingsMenus()
     menuItemDebug                .setVisible(settings.debugMode            );
 
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
-    //menuItemShowWires            .setChecked(settings.showWires          );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
     menuItemLogActions           .setChecked(settings.logActions           );
@@ -26031,7 +26053,6 @@ function loadLocalSettings()
     uiGetLocalData('debugMode'            );
 
     uiGetLocalData('showNodeId'           );
-    //uiGetLocalData('showWires'          );
     
     uiGetLocalData('logMessages'          );
     uiGetLocalData('logActions'           );
@@ -30432,15 +30453,7 @@ function initCheckbox(checkbox, name, defaultChecked)
     
     checkbox.checked           = defaultChecked;
     checkbox.name              = name;
-     
-    // checkbox.backStyleLight    = 'rgba(255, 255, 255, 0.95)';
-    // checkbox.valueStyleLight   = 'transparent';
-    // checkbox.textStyleLight    = '#000';
-                
-    // checkbox.backStyleDark     = 'rgba(56, 56, 56, 0.95)';
-    // checkbox.valueStyleDark    = 'transparent';
-    // checkbox.textStyleDark     = '#eee';
-
+    
     checkbox.style.display     = 'inline';
              
     checkbox.onchange          = new Event('change');
@@ -30453,10 +30466,12 @@ function initCheckbox(checkbox, name, defaultChecked)
     checkbox.appendChild(checkbox.text);
 
 
+
     checkbox.addEventListener('pointerup', () =>
     {
         checkbox.setChecked(!checkbox.checked);
     })
+
 
 
     checkbox.setName = function(name)
@@ -32124,10 +32139,10 @@ function updateWires(wires)
         const input  = conn.input;
         const output = conn.output;
 
-        // const isSolo = 
-        //         graphView._soloNode
-        //     && (    input.node == graphView._soloNode
-        //         || output.node == graphView._soloNode);
+        const isSolo = 
+                graphView._soloNode
+            && (    input.node == graphView._soloNode
+                || output.node == graphView._soloNode);
 
         show(wires[i],       /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
         show(wires[i].curve, /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
@@ -44306,15 +44321,11 @@ function createConnDataDiv(_conn)
     const conn = JSON.parse(_conn);
     const div  = createDiv('dataModeConn');
 
-    const arrow = '&nbsp;&nbsp;' + rightArrowChar(parseBool(conn.list)) + '&nbsp;&nbsp;';
-
     div.conn = conn;
     
     div.innerHTML = 
          (false ? '🛑&nbsp;&nbsp' : '')
-        + conn.outputNodeId + '&hairsp;.&hairsp;' + conn.outputId
-        + arrow
-        + conn.inputNodeId + '&hairsp;.&hairsp;' + conn.inputId;
+        + getConnectionString(conn.outputNodeId, conn.outputId, conn.inputNodeId, conn.inputId, conn.list);
 
 
     div.addEventListener('pointerenter', () => div.style.background = 'var(--data-mode-conn-active)');
@@ -44722,8 +44733,10 @@ function initDataMode()
     initCheckbox(chkDataModeRestartCheck, 'Restart in debug mode', true );
     initCheckbox(chkLoadingRestartCheck,  'Restart in debug mode', false);
 
-    chkDataModeRestartCheck.addEventListener('change', () => uiSetLocalData('dataMode', chkDataModeRestartCheck.checked));
-    chkLoadingRestartCheck .addEventListener('change', () => uiSetLocalData('dataMode', chkLoadingRestartCheck .checked));
+    chkLoadingRestartCheck.style.display = 'none';
+
+    chkDataModeRestartCheck.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkDataModeRestartCheck.checked)));
+    chkLoadingRestartCheck .addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkLoadingRestartCheck .checked)));
 }
 
 
@@ -45592,17 +45605,22 @@ function resolveConnections(nodes, _connections, first, last)
                 const outputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId);
                 const  inputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId);
 
+                const strConn = getConnectionString(
+                    _conn.outputNodeId,
+                    _conn.outputId,
+                    _conn. inputNodeId,
+                    _conn. inputId,
+                    _conn. list);
+
                 if (!outputNode)
                 { 
-                    uiError('node \'' + _conn.outputNodeId + '\' not found'); 
-                    uiRemoveConnsToNodes([_conn.outputNodeId]); 
+                    uiError('Cannot connect  ' + strConn + ',  \'' + _conn.outputNodeId + '\' not found'); 
                     continue; 
                 }
 
                 if (!inputNode) 
                 { 
-                    uiError('node \'' + _conn. inputNodeId + '\' not found'); 
-                    uiRemoveConnsToNodes([_conn. inputNodeId]); 
+                    uiError('Cannot connect  ' + strConn + ',  \'' + _conn.inputNodeId + '\' not found'); 
                     continue; 
                 }
 
@@ -47055,7 +47073,7 @@ function uiError(text, delay = 6000)
 
 
 
-function uiNotify(text, delay = 4000, error = false, prefix = GENERATOR_LOGO + ' ')
+function uiNotify(text, delay = 4000, error = false, prefix = GENERATOR_LOGO + '  ')
 {
     uiQueueMessageToFigma({ 
         cmd:   'figNotify',

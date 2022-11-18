@@ -334,17 +334,22 @@ function resolveConnections(nodes, _connections, first, last)
                 const outputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId);
                 const  inputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId);
 
+                const strConn = getConnectionString(
+                    _conn.outputNodeId,
+                    _conn.outputId,
+                    _conn. inputNodeId,
+                    _conn. inputId,
+                    _conn. list);
+
                 if (!outputNode)
                 { 
-                    uiError('node \'' + _conn.outputNodeId + '\' not found'); 
-                    uiRemoveConnsToNodes([_conn.outputNodeId]); 
+                    uiError('Cannot connect  ' + strConn + ',  \'' + _conn.outputNodeId + '\' not found'); 
                     continue; 
                 }
 
                 if (!inputNode) 
                 { 
-                    uiError('node \'' + _conn. inputNodeId + '\' not found'); 
-                    uiRemoveConnsToNodes([_conn. inputNodeId]); 
+                    uiError('Cannot connect  ' + strConn + ',  \'' + _conn.inputNodeId + '\' not found'); 
                     continue; 
                 }
 

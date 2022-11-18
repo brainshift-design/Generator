@@ -97,15 +97,11 @@ function createConnDataDiv(_conn)
     const conn = JSON.parse(_conn);
     const div  = createDiv('dataModeConn');
 
-    const arrow = '&nbsp;&nbsp;' + rightArrowChar(parseBool(conn.list)) + '&nbsp;&nbsp;';
-
     div.conn = conn;
     
     div.innerHTML = 
          (false ? '🛑&nbsp;&nbsp' : '')
-        + conn.outputNodeId + '&hairsp;.&hairsp;' + conn.outputId
-        + arrow
-        + conn.inputNodeId + '&hairsp;.&hairsp;' + conn.inputId;
+        + getConnectionString(conn.outputNodeId, conn.outputId, conn.inputNodeId, conn.inputId, conn.list);
 
 
     div.addEventListener('pointerenter', () => div.style.background = 'var(--data-mode-conn-active)');

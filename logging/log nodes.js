@@ -81,13 +81,15 @@ function formatSavedNodeDataJson(json)
 
 function logSavedConn(conn)
 {
-    const log = 
-          conn.outputNodeId + '.' + conn.outputId
-        + ' ' + rightArrowChar(parseBool(conn.list)) + ' '
-        + conn.inputNodeId + '.' + conn.inputId;
+    const strConn = getConnectionString(
+          conn.outputNodeId, 
+          conn.outputId,
+          conn.inputNodeId,
+          conn.inputId,
+          conn.list);
 
     console.log(
         '%c%s', 
         'background: #cfc', 
-        log); 
+        strConn); 
 }

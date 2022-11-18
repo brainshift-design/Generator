@@ -33,7 +33,7 @@ function uiError(text, delay = 6000)
 
 
 
-function uiNotify(text, delay = 4000, error = false, prefix = GENERATOR_LOGO + ' ')
+function uiNotify(text, delay = 4000, error = false, prefix = GENERATOR_LOGO + '  ')
 {
     uiQueueMessageToFigma({ 
         cmd:   'figNotify',

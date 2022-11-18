@@ -20,6 +20,7 @@
 
 .checkboxText
 {
+    color:       var(--figma-color-text);
     display:     inline;
     width:       auto;
     height:      auto;

@@ -12,15 +12,28 @@ const NULL           = '';
 const TAB            = '  ';
 const NL             = '\n';
 
-const GENERATOR_LOGO = '◦G•';
+const GENERATOR_LOGO = '◦ G •';
 const OBJECT_PREFIX  = 'G.';
+
 
 
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 
+
+
 function parseBool(str) { return str === 'true'; }
 
+
+
+function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, list)
+{
+    const arrow = '  ' + rightArrowChar(parseBool(list)) + '  ';
+
+    return outputNodeId + ' . ' + outputId
+         + arrow
+         + inputNodeId + ' . ' + inputId;
+}
 
 
 function rgbHeaderFromType(type, active)
@@ -2670,15 +2683,17 @@ function formatSavedNodeDataJson(json)
 
 function logSavedConn(conn)
 {
-    const log = 
-          conn.outputNodeId + '.' + conn.outputId
-        + ' ' + rightArrowChar(parseBool(conn.list)) + ' '
-        + conn.inputNodeId + '.' + conn.inputId;
+    const strConn = getConnectionString(
+          conn.outputNodeId, 
+          conn.outputId,
+          conn.inputNodeId,
+          conn.inputId,
+          conn.list);
 
     console.log(
         '%c%s', 
         'background: #cfc', 
-        log); 
+        strConn); 
 }
 
 
@@ -8784,7 +8799,6 @@ const settings =
     debugMode:             false,
 
     showNodeId:            false, // instead of name
-    // showWires:             true,
     
     logMessages:           false,
     logActions:            false, 
@@ -8813,7 +8827,6 @@ function updateSetting(settingName, value)
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'showNodeId':            settings.showNodeId            = value;  break;
-        //case 'showWires':           settings.showWires             = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
         case 'logActions':            settings.logActions            = value;  break;
@@ -8842,7 +8855,6 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
-        //case 'showWires':           updateSettingAndMenu_(valid, settingName, value, menuItemShowWires            );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
         case 'logActions':            updateSettingAndMenu_(valid, settingName, value, menuItemLogActions           );  break;
@@ -8883,7 +8895,6 @@ function updateSettingsMenus()
     menuItemDebug                .setVisible(settings.debugMode            );
 
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
-    //menuItemShowWires            .setChecked(settings.showWires          );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
     menuItemLogActions           .setChecked(settings.logActions           );
@@ -8919,7 +8930,6 @@ function loadLocalSettings()
     uiGetLocalData('debugMode'            );
 
     uiGetLocalData('showNodeId'           );
-    //uiGetLocalData('showWires'          );
     
     uiGetLocalData('logMessages'          );
     uiGetLocalData('logActions'           );

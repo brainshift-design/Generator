@@ -6,15 +6,7 @@ function initCheckbox(checkbox, name, defaultChecked)
     
     checkbox.checked           = defaultChecked;
     checkbox.name              = name;
-     
-    // checkbox.backStyleLight    = 'rgba(255, 255, 255, 0.95)';
-    // checkbox.valueStyleLight   = 'transparent';
-    // checkbox.textStyleLight    = '#000';
-                
-    // checkbox.backStyleDark     = 'rgba(56, 56, 56, 0.95)';
-    // checkbox.valueStyleDark    = 'transparent';
-    // checkbox.textStyleDark     = '#eee';
-
+    
     checkbox.style.display     = 'inline';
              
     checkbox.onchange          = new Event('change');
@@ -27,10 +19,12 @@ function initCheckbox(checkbox, name, defaultChecked)
     checkbox.appendChild(checkbox.text);
 
 
+
     checkbox.addEventListener('pointerup', () =>
     {
         checkbox.setChecked(!checkbox.checked);
     })
+
 
 
     checkbox.setName = function(name)

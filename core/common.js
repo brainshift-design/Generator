@@ -8,11 +8,25 @@ const NULL           = '';
 const TAB            = '  ';
 const NL             = '\n';
 
-const GENERATOR_LOGO = '◦G•';
+const GENERATOR_LOGO = '◦ G •';
 const OBJECT_PREFIX  = 'G.';
+
 
 
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 
+
+
 function parseBool(str) { return str === 'true'; }
+
+
+
+function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, list)
+{
+    const arrow = '  ' + rightArrowChar(parseBool(list)) + '  ';
+
+    return outputNodeId + ' . ' + outputId
+         + arrow
+         + inputNodeId + ' . ' + inputId;
+}

@@ -36,15 +36,28 @@ const NULL           = '';
 const TAB            = '  ';
 const NL             = '\n';
 
-const GENERATOR_LOGO = '◦G•';
+const GENERATOR_LOGO = '◦ G •';
 const OBJECT_PREFIX  = 'G.';
+
 
 
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 
+
+
 function parseBool(str) { return str === 'true'; }
 
+
+
+function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, list)
+{
+    const arrow = '  ' + rightArrowChar(parseBool(list)) + '  ';
+
+    return outputNodeId + ' . ' + outputId
+         + arrow
+         + inputNodeId + ' . ' + inputId;
+}
 
 
 const INVALID             = '?';
@@ -339,15 +352,17 @@ function formatSavedNodeDataJson(json)
 
 function logSavedConn(conn)
 {
-    const log = 
-          conn.outputNodeId + '.' + conn.outputId
-        + ' ' + rightArrowChar(parseBool(conn.list)) + ' '
-        + conn.inputNodeId + '.' + conn.inputId;
+    const strConn = getConnectionString(
+          conn.outputNodeId, 
+          conn.outputId,
+          conn.inputNodeId,
+          conn.inputId,
+          conn.list);
 
     console.log(
         '%c%s', 
         'background: #cfc', 
-        log); 
+        strConn); 
 }
 
 

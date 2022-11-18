@@ -25,11 +25,17 @@ const MAX_INT32 = 2147483647;
 const NULL = '';
 const TAB = '  ';
 const NL = '\n';
-const GENERATOR_LOGO = '◦G•';
+const GENERATOR_LOGO = '◦ G •';
 const OBJECT_PREFIX = 'G.';
 function leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 function parseBool(str) { return str === 'true'; }
+function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, list) {
+    const arrow = '  ' + rightArrowChar(parseBool(list)) + '  ';
+    return outputNodeId + ' . ' + outputId
+        + arrow
+        + inputNodeId + ' . ' + inputId;
+}
 const INVALID = '?';
 const DISPLAY_INVALID = INVALID; //'🤷‍♂️';
 const LIST_VALUE = 'LIST#';
@@ -220,10 +226,8 @@ function formatSavedNodeDataJson(json) {
     return formJson;
 }
 function logSavedConn(conn) {
-    const log = conn.outputNodeId + '.' + conn.outputId
-        + ' ' + rightArrowChar(parseBool(conn.list)) + ' '
-        + conn.inputNodeId + '.' + conn.inputId;
-    console.log('%c%s', 'background: #cfc', log);
+    const strConn = getConnectionString(conn.outputNodeId, conn.outputId, conn.inputNodeId, conn.inputId, conn.list);
+    console.log('%c%s', 'background: #cfc', strConn);
 }
 function logRequest(parse) {
     let log = '';
