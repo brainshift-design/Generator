@@ -71,8 +71,4 @@ function uiEndStartGenerator(msg)
 
     initThemeColors();
     loadLocalSettings();
-
-    uiQueueMessageToFigma({cmd: 'figLoadNodesAndConns'});
-
-    window.focus();
 }

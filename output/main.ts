@@ -50,6 +50,18 @@ function parseBool(str) { return str === 'true'; }
 
 
 
+function getConnString(conn)
+{
+    return getConnectionString(
+        conn.outputNodeId,
+        conn.outputId,
+        conn.inputNodeId,
+        conn.inputId,
+        conn.list);
+}
+
+
+
 function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, list)
 {
     const arrow = '  ' + rightArrowChar(parseBool(list)) + '  ';
@@ -352,12 +364,7 @@ function formatSavedNodeDataJson(json)
 
 function logSavedConn(conn)
 {
-    const strConn = getConnectionString(
-          conn.outputNodeId, 
-          conn.outputId,
-          conn.inputNodeId,
-          conn.inputId,
-          conn.list);
+    const strConn = getConnString(conn);
 
     console.log(
         '%c%s', 
@@ -637,7 +644,7 @@ figma.ui.onmessage = msg =>
         case 'figGetPageData':                    figGetPageData                   (msg.key);                                    break;
         case 'figSetPageData':                    figSetPageData                   (msg.key, msg.value);                         break;
                     
-        case 'figLoadNodesAndConns':              figLoadNodesAndConns             ();                                           break;
+        case 'figLoadNodesAndConns':              figLoadNodesAndConns             (msg.dataMode);                               break;
         case 'figSaveNodes':                      figSaveNodes                     (msg.nodeIds, msg.nodeJson);                  break;        
             
         case 'figRemoveConnsToNodes':             figRemoveConnsToNodes            (msg.nodeIds);                                break;
@@ -1235,11 +1242,21 @@ function figClearPageData(key)
 
 
 
-function figLoadNodesAndConns()
+function figLoadNodesAndConns(dataMode)
 {
     const nodeKeys  = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
     const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
-    
+
+
+    if (!dataMode)
+    {
+        figMarkForLoading(nodeKeys, connKeys);
+            
+        nodeKeys.forEach(k => console.log(figma.currentPage.getPluginData(k)));
+        connKeys.forEach(k => console.log(figma.currentPage.getPluginData(k)));
+    }
+
+
     const nodes     = nodeKeys.map(k => figma.currentPage.getPluginData(k));
     const conns     = connKeys.map(k => figma.currentPage.getPluginData(k));
 
@@ -1251,6 +1268,25 @@ function figLoadNodesAndConns()
         nodesJson: nodesJson,
         connsJson: connsJson
     });
+}
+
+
+
+function figMarkForLoading(nodeKeys, connKeys)
+{
+    const loadingFlag = '"loading": "true"';
+    const not         = '{\n';
+    const set         = '{\n' + TAB + loadingFlag + ',\n';
+
+    nodeKeys.forEach(k => figma.currentPage.setPluginData(k, 
+        figma.currentPage.getPluginData(k)
+            .replace(set, not)
+            .replace(not, set)));
+    
+    connKeys.forEach(k => figma.currentPage.setPluginData(k, 
+        figma.currentPage.getPluginData(k)
+            .replace(set, not)
+            .replace(not, set)));
 }
 
 

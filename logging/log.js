@@ -112,5 +112,5 @@ function logObjectUpdates(objects)
 
 function logSaveNodes(nodeJson)
 {
-    console.log('%cSAVING NODES\n' + nodeJson, 'background: #ddeeff');
+    console.log('%cSAVING NODES\n' + nodeJson, 'color: black; background: #ddeeff;');
 }

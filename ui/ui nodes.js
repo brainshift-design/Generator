@@ -1029,7 +1029,7 @@ function uiSaveNodes(nodeIds)
 function uiSaveConnection(outputNodeId, outputId, inputNodeId, inputId, connJson)
 {
     if (settings.logRawSaving)
-        console.log('%cSAVING CONNECTION\n' + connJson, 'background: #ddeeff');
+        console.log('%cSAVING CONNECTION\n' + connJson, 'color: black; background: #ddeeff;');
 
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
@@ -1046,7 +1046,7 @@ function uiSaveConnection(outputNodeId, outputId, inputNodeId, inputId, connJson
 function uiRemoveSavedConnection(outputNodeId, outputId, inputNodeId, inputId)
 {
     if (settings.logRawSaving)
-        console.log('%cREMOVING SAVED CONNECTION', 'background: #ddeeff');
+        console.log('%cREMOVING SAVED CONNECTION', 'color: black; background: #ddeeff;');
 
     uiQueueMessageToFigma({
         cmd: 'figRemoveSavedConnection',

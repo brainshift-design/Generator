@@ -21,7 +21,7 @@ figma.ui.onmessage = msg =>
         case 'figGetPageData':                    figGetPageData                   (msg.key);                                    break;
         case 'figSetPageData':                    figSetPageData                   (msg.key, msg.value);                         break;
                     
-        case 'figLoadNodesAndConns':              figLoadNodesAndConns             ();                                           break;
+        case 'figLoadNodesAndConns':              figLoadNodesAndConns             (msg.dataMode);                               break;
         case 'figSaveNodes':                      figSaveNodes                     (msg.nodeIds, msg.nodeJson);                  break;        
             
         case 'figRemoveConnsToNodes':             figRemoveConnsToNodes            (msg.nodeIds);                                break;

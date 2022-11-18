@@ -69,6 +69,12 @@ function uiGetLocalDataReturn(msg)
             if (generatorStarted)
                 graphView.updatePanAndZoom();
     
+            window.focus();
+
+            uiQueueMessageToFigma({
+                cmd:     'figLoadNodesAndConns',
+                dataMode: settings.dataMode });
+        
             break;
     }
 
@@ -154,7 +160,7 @@ function uiLoadGraphView(json)
 
 
 
-function uiEndLoadNodesAndConns(nodesJson, connsJson, activeJson)
+function uiEndLoadNodesAndConns(nodesJson, connsJson)
 {
     if (settings.logRawLoading)
         console.log(
@@ -334,12 +340,8 @@ function resolveConnections(nodes, _connections, first, last)
                 const outputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId);
                 const  inputNode = nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId);
 
-                const strConn = getConnectionString(
-                    _conn.outputNodeId,
-                    _conn.outputId,
-                    _conn. inputNodeId,
-                    _conn. inputId,
-                    _conn. list);
+
+                const strConn = getConnString(_conn);
 
                 if (!outputNode)
                 { 
@@ -353,6 +355,7 @@ function resolveConnections(nodes, _connections, first, last)
                     continue; 
                 }
 
+                
                 Connection.parseJson(_conn);
             }
 

@@ -1,4 +1,4 @@
-const iconGenerator        = '<svg width="20" height="10" viewBox="0 0 20 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.7074 3.05966C12.6364 2.82955 12.5384 2.62358 12.4134 2.44176C12.2912 2.2571 12.1435 2.09943 11.9702 1.96875C11.7997 1.83807 11.6037 1.74006 11.3821 1.67472C11.1605 1.60653 10.919 1.57244 10.6577 1.57244C10.1889 1.57244 9.77131 1.69034 9.40483 1.92614C9.03835 2.16193 8.75 2.50852 8.53977 2.96591C8.33239 3.42045 8.22869 3.97443 8.22869 4.62784C8.22869 5.28693 8.33239 5.84517 8.53977 6.30256C8.74716 6.75994 9.03551 7.10795 9.40483 7.34659C9.77415 7.58239 10.2031 7.70028 10.6918 7.70028C11.1349 7.70028 11.5185 7.61506 11.8423 7.4446C12.169 7.27415 12.4205 7.03267 12.5966 6.72017C12.7727 6.40483 12.8608 6.03551 12.8608 5.61222L13.2188 5.66761H10.8494V4.43182H14.3906V5.48011C14.3906 6.22727 14.2315 6.87358 13.9134 7.41903C13.5952 7.96449 13.1577 8.38494 12.6009 8.6804C12.044 8.97301 11.4048 9.11932 10.6832 9.11932C9.87926 9.11932 9.1733 8.93892 8.56534 8.57812C7.96023 8.21449 7.48722 7.69886 7.14631 7.03125C6.80824 6.3608 6.6392 5.56534 6.6392 4.64489C6.6392 3.94034 6.73864 3.31108 6.9375 2.7571C7.1392 2.20312 7.42045 1.73295 7.78125 1.34659C8.14205 0.957386 8.56534 0.661932 9.05114 0.460227C9.53693 0.255682 10.0653 0.153409 10.6364 0.153409C11.1193 0.153409 11.5696 0.224432 11.9872 0.366477C12.4048 0.505682 12.7756 0.704545 13.0994 0.963068C13.4261 1.22159 13.6946 1.52841 13.9048 1.88352C14.1151 2.23864 14.2528 2.63068 14.3182 3.05966H12.7074Z" fill="white"/><circle cx="2.5" cy="4.5" r="2" stroke="white"/><circle cx="18" cy="4.9" r="2" fill="white"/></svg>';
+const iconGenerator        = '<svg width="20" height="10" viewBox="0 0 20 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.4662 3.05966C12.3952 2.82955 12.2972 2.62358 12.1722 2.44176C12.05 2.2571 11.9023 2.09943 11.729 1.96875C11.5585 1.83807 11.3625 1.74006 11.1409 1.67472C10.9193 1.60653 10.6779 1.57244 10.4165 1.57244C9.94775 1.57244 9.53014 1.69034 9.16366 1.92614C8.79718 2.16193 8.50883 2.50852 8.2986 2.96591C8.09122 3.42045 7.98752 3.97443 7.98752 4.62784C7.98752 5.28693 8.09122 5.84517 8.2986 6.30256C8.50599 6.75994 8.79434 7.10795 9.16366 7.34659C9.53298 7.58239 9.96196 7.70028 10.4506 7.70028C10.8938 7.70028 11.2773 7.61506 11.6012 7.4446C11.9279 7.27415 12.1793 7.03267 12.3554 6.72017C12.5316 6.40483 12.6196 6.03551 12.6196 5.61222L12.9776 5.66761H10.6083V4.43182H14.1495V5.48011C14.1495 6.22727 13.9904 6.87358 13.6722 7.41903C13.354 7.96449 12.9165 8.38494 12.3597 8.6804C11.8029 8.97301 11.1637 9.11932 10.4421 9.11932C9.63809 9.11932 8.93213 8.93892 8.32417 8.57812C7.71906 8.21449 7.24605 7.69886 6.90514 7.03125C6.56707 6.3608 6.39804 5.56534 6.39804 4.64489C6.39804 3.94034 6.49747 3.31108 6.69633 2.7571C6.89804 2.20312 7.17929 1.73295 7.54008 1.34659C7.90088 0.957386 8.32417 0.661932 8.80997 0.460227C9.29576 0.255682 9.82417 0.153409 10.3952 0.153409C10.8781 0.153409 11.3284 0.224432 11.746 0.366477C12.1637 0.505682 12.5344 0.704545 12.8583 0.963068C13.185 1.22159 13.4534 1.52841 13.6637 1.88352C13.8739 2.23864 14.0117 2.63068 14.077 3.05966H12.4662Z" fill="white"/><circle cx="2.5" cy="4.5" r="2" stroke="white"/><circle cx="18" cy="4.9" r="2" fill="white"/></svg>';
 
 const iconList             = '<svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
 const iconListItems        = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" transform="matrix(-1 0 0 1 9 1)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 9)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 9.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 5.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/></svg>';
@@ -334,11 +334,11 @@ function initDataModeMenus()
 {
     menuNodeData = new Menu('Node menu', false, false);
     menuNodeData.addItems([
-        new MenuItem('Remove',                  { callback: () => { hideAllMenus(); dataModeDeleteNode(menuNodeData._div.node); }}),
-        new MenuItem('',                        { separator: true }),
-        new MenuItem('Remove all connections',  { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode(menuNodeData._div.node); dataModeDeleteConnectionsToNode(menuNodeData._div.node); }} ),
         new MenuItem('Remove connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode(menuNodeData._div.node); }}),
-        new MenuItem('Remove connections to'  , { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode(menuNodeData._div.node); }})]);
+        new MenuItem('Remove connections to'  , { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode(menuNodeData._div.node); }}),
+        new MenuItem('Remove all connections',  { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode(menuNodeData._div.node); dataModeDeleteConnectionsToNode(menuNodeData._div.node); }} ),
+        new MenuItem('',                        { separator: true }),
+        new MenuItem('Remove node',             { callback: () => { hideAllMenus(); dataModeDeleteNode(menuNodeData._div.node); }})]);
 
 
     menuNodeDataNodes = new Menu('Nodes menu', false, false);
@@ -349,7 +349,7 @@ function initDataModeMenus()
 
     menuConnData = new Menu('Connection menu', false, false);
     menuConnData.addItems([
-        new MenuItem('Remove', { callback: () => { hideAllMenus(); dataModeDeleteConnection(menuConnData._div.conn); }})]);
+        new MenuItem('Remove connection', { callback: () => { hideAllMenus(); dataModeDeleteConnection(menuConnData._div.conn); }})]);
 
 
     // menuConnDataConns = new Menu('Connections menu', false, false);

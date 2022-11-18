@@ -22,6 +22,18 @@ function parseBool(str) { return str === 'true'; }
 
 
 
+function getConnString(conn)
+{
+    return getConnectionString(
+        conn.outputNodeId,
+        conn.outputId,
+        conn.inputNodeId,
+        conn.inputId,
+        conn.list);
+}
+
+
+
 function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, list)
 {
     const arrow = '  ' + rightArrowChar(parseBool(list)) + '  ';

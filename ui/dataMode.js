@@ -34,6 +34,7 @@ function loadNodesAndConnsData(_nodes, _conns)
     _dataModeNodes = _nodes;
     _dataModeConns = _conns;
 
+    console.log(_nodes);
     for (const _node of _dataModeNodes) dataModeNodes.appendChild(createNodeDataDiv(_node));
     for (const _conn of _dataModeConns) dataModeConns.appendChild(createConnDataDiv(_conn));
 }
@@ -49,14 +50,17 @@ function createNodeDataDiv(_node)
     div._node     = _node;
     div. node     =  node;
 
-    div.innerHTML = node.id;
+    div.innerHTML = 
+         (node.loading ? '🛑&nbsp;&nbsp' : '')
+        + node.id;
+
     div.showJson  = false;
 
 
     div.addEventListener('dblclick', () =>
     {
         div.showJson = !div.showJson;
-        expandNodeData(div, _node);
+        expandNodeData(div, node, _node);
     });
 
 
@@ -100,8 +104,8 @@ function createConnDataDiv(_conn)
     div.conn = conn;
     
     div.innerHTML = 
-         (false ? '🛑&nbsp;&nbsp' : '')
-        + getConnectionString(conn.outputNodeId, conn.outputId, conn.inputNodeId, conn.inputId, conn.list);
+         (conn.loading ? '🛑&nbsp;&nbsp' : '')
+        + getConnString(conn);
 
 
     div.addEventListener('pointerenter', () => div.style.background = 'var(--data-mode-conn-active)');
@@ -149,11 +153,13 @@ function createDataMenuOnHide(menu, div, cssClass, normal, active)
 
 
 
-function expandNodeData(div, _node)
+function expandNodeData(div, node, _node)
 {
     if (div.showJson)
     {
-        div.innerHTML           = formatSavedNodeDataJson(div._node);
+        div.innerHTML = 
+             (node.loading ? '🛑<br/>' : '')
+            + formatSavedNodeDataJson(div._node);
 
         div.style.paddingLeft   = '0px';
         div.style.paddingRight  = '10px';
@@ -163,7 +169,9 @@ function expandNodeData(div, _node)
     }
     else
     {
-        div.innerHTML           = div.node.id;
+        div.innerHTML = 
+             (node.loading ? '🛑&nbsp;&nbsp' : '')
+            + div.node.id;
 
         div.style.paddingLeft   = '6px';
         div.style.paddingRight  = '6px';
@@ -180,7 +188,7 @@ function expandAllNodeData()
     for (const div of dataModeNodes.children)
     {
         div.showJson = true;
-        expandNodeData(div, div._node);
+        expandNodeData(div, div.node, div._node);
     }
 }
 
@@ -191,7 +199,7 @@ function collapseAllNodeData()
     for (const div of dataModeNodes.children)
     {
         div.showJson = false;
-        expandNodeData(div, div._node);
+        expandNodeData(div, div.node, div._node);
     }
 }
 
