@@ -53,18 +53,18 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 function initDataMode()
 {
-    initCheckbox(chkDataModeRestartCheck, 'Restart in debug mode', true );
-    initCheckbox(chkLoadingRestartCheck,  'Restart in debug mode', false);
+    initCheckbox(chkDataModeRestart, 'Restart in debug mode', true );
+    initCheckbox(chkLoadingRestart,  'Restart in debug mode', false);
 
-    chkLoadingRestartCheck.style.display = 'none';
+    chkLoadingRestart.style.display = 'none';
 
-    chkDataModeRestartCheck.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkDataModeRestartCheck.checked)));
-    chkLoadingRestartCheck .addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkLoadingRestartCheck .checked)));
+    chkDataModeRestart.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkDataModeRestart.checked)));
+    chkLoadingRestart .addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkLoadingRestart .checked)));
 }
 
 
 
-function uiEndStartGenerator(msg)
+function uiReturnFigStartGenerator(msg)
 {
     currentUser = msg.currentUser;
     productKey  = msg.productKey;

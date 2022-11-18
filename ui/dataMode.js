@@ -1,6 +1,8 @@
 var _dataModeNodes = [];
 var _dataModeConns = [];
 
+var dataModeTimeout = null;
+
 
 
 dataModeNodesWrapper.addEventListener('pointerdown', e =>

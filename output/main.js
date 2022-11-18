@@ -393,7 +393,7 @@ function figStartGenerator() {
             figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
             figma.ui.show();
             figPostMessageToUI({
-                cmd: 'uiEndStartGenerator',
+                cmd: 'uiReturnFigStartGenerator',
                 currentUser: figma.currentUser,
                 productKey: productKey
             });
@@ -476,7 +476,7 @@ figma.ui.onmessage = msg => {
             break;
     }
     figPostMessageToUI({
-        cmd: 'uiEndFigMessage',
+        cmd: 'uiReturnFigMessage',
         msgCmd: msg.cmd
     });
 };
@@ -756,7 +756,7 @@ function figGetLocalData(key) {
     figma.clientStorage.getAsync(key).then(data => {
         //console.log('getAsync', data);
         figPostMessageToUI({
-            cmd: 'uiGetLocalDataReturn',
+            cmd: 'uiReturnFigGetLocalData',
             key: key,
             value: data
         });
@@ -776,7 +776,7 @@ function figGetPageData(key, postToUi = true) {
     const data = figma.currentPage.getPluginData(key);
     if (postToUi) {
         figPostMessageToUI({
-            cmd: 'uiGetPageDataReturn',
+            cmd: 'uiReturnFigGetPageData',
             key: key,
             value: data
         });
@@ -803,7 +803,7 @@ function figLoadNodesAndConns(dataMode) {
     const nodesJson = JSON.stringify(nodes);
     const connsJson = JSON.stringify(conns);
     figPostMessageToUI({
-        cmd: 'uiEndLoadNodesAndConns',
+        cmd: 'uiReturnFigLoadNodesAndConns',
         nodesJson: nodesJson,
         connsJson: connsJson
     });
@@ -923,7 +923,7 @@ function figResizeWindow(width, height) {
     figma.ui.resize(width, height);
     figma.clientStorage.setAsync('windowWidth', width);
     figma.clientStorage.setAsync('windowHeight', height);
-    figPostMessageToUI({ cmd: 'uiEndResizeWindow' });
+    figPostMessageToUI({ cmd: 'uiReturnFigResizeWindow' });
 }
 function figNotify(text, prefix = 'Generator ', delay = 400, error = false) {
     figma.notify(prefix + text, {

@@ -614,7 +614,7 @@ function figStartGenerator()
 
         
         figPostMessageToUI({
-            cmd:        'uiEndStartGenerator',
+            cmd:        'uiReturnFigStartGenerator',
             currentUser: figma.currentUser,
             productKey:  productKey });
     })();
@@ -667,7 +667,7 @@ figma.ui.onmessage = msg =>
 
     
     figPostMessageToUI({
-        cmd:   'uiEndFigMessage',
+        cmd:   'uiReturnFigMessage',
         msgCmd: msg.cmd });
 }
 
@@ -1183,7 +1183,7 @@ function figGetLocalData(key)
     {
         //console.log('getAsync', data);
         figPostMessageToUI({
-            cmd:  'uiGetLocalDataReturn',
+            cmd:  'uiReturnFigGetLocalData',
             key:   key,
             value: data
         });
@@ -1216,7 +1216,7 @@ function figGetPageData(key, postToUi = true)
     if (postToUi)
     {
         figPostMessageToUI({
-            cmd:  'uiGetPageDataReturn',
+            cmd:  'uiReturnFigGetPageData',
             key:   key,
             value: data
         });
@@ -1264,7 +1264,7 @@ function figLoadNodesAndConns(dataMode)
     const connsJson = JSON.stringify(conns);
 
     figPostMessageToUI({
-        cmd:      'uiEndLoadNodesAndConns',
+        cmd:      'uiReturnFigLoadNodesAndConns',
         nodesJson: nodesJson,
         connsJson: connsJson
     });
@@ -1473,7 +1473,7 @@ function figResizeWindow(width, height)
     figma.clientStorage.setAsync('windowHeight', height);
 
 
-    figPostMessageToUI({cmd: 'uiEndResizeWindow'});
+    figPostMessageToUI({cmd: 'uiReturnFigResizeWindow'});
 }
 
 

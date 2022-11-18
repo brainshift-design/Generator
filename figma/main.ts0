@@ -42,7 +42,7 @@ function figStartGenerator()
 
         
         figPostMessageToUI({
-            cmd:        'uiEndStartGenerator',
+            cmd:        'uiReturnFigStartGenerator',
             currentUser: figma.currentUser,
             productKey:  productKey });
     })();

@@ -585,13 +585,14 @@
 }
 
 
-#chkLoadingRestartCheck
+#chkLoadingRestart
 {
     position:   absolute;
     left:       49.5%;
-    top:        65%;
+    top:        64.5%;
     transform:  translateX(-50%)
                 translateY(-50%);
+    display:    none;
 }
 
 
@@ -2097,13 +2098,13 @@ a
             <div id='loadingProgress'></div>
         </div>
     </div>
-    <div id='chkLoadingRestartCheck'></div>
+    <div id='chkLoadingRestart'></div>
 </div>
 
 
 
 <div id='dataModeView'>
-    <div class='dataModeRowWrapper' id="dataModeTitleBar"><div id='chkDataModeRestartCheck'></div></div>
+    <div class='dataModeRowWrapper' id="dataModeTitleBar"><div id='chkDataModeRestart'></div></div>
     <div class='dataModeRowWrapper' id='dataModeNodesWrapper'><div class='dataModeRowTitle'>Nodes</div><div id='dataModeNodes'></div></div>
     <div class='dataModeRowWrapper'><div class='dataModeRowTitle'>Connections</div><div id='dataModeConns'></div></div>
 </div>
@@ -44234,6 +44235,8 @@ const zoomOutCursor =
 var _dataModeNodes = [];
 var _dataModeConns = [];
 
+var dataModeTimeout = null;
+
 
 
 dataModeNodesWrapper.addEventListener('pointerdown', e =>
@@ -44747,18 +44750,18 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 function initDataMode()
 {
-    initCheckbox(chkDataModeRestartCheck, 'Restart in debug mode', true );
-    initCheckbox(chkLoadingRestartCheck,  'Restart in debug mode', false);
+    initCheckbox(chkDataModeRestart, 'Restart in debug mode', true );
+    initCheckbox(chkLoadingRestart,  'Restart in debug mode', false);
 
-    chkLoadingRestartCheck.style.display = 'none';
+    chkLoadingRestart.style.display = 'none';
 
-    chkDataModeRestartCheck.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkDataModeRestartCheck.checked)));
-    chkLoadingRestartCheck .addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkLoadingRestartCheck .checked)));
+    chkDataModeRestart.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkDataModeRestart.checked)));
+    chkLoadingRestart .addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkLoadingRestart .checked)));
 }
 
 
 
-function uiEndStartGenerator(msg)
+function uiReturnFigStartGenerator(msg)
 {
     currentUser = msg.currentUser;
     productKey  = msg.productKey;
@@ -44977,7 +44980,7 @@ onmessage = e =>
     {
         let _msg = msg.cmd;
 
-        if (msg.cmd == 'uiEndFigMessage')
+        if (msg.cmd == 'uiReturnFigMessage')
             _msg += ': ' + msg.msgCmd;
 
             console.log('%cFIG '+_msg+' --► UI', 'background: #08f; color: white;');
@@ -44986,16 +44989,16 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiEndFigMessage':        uiEndFigMessage       (msg.msgCmd);                   break;
+        case 'uiReturnFigMessage':           uiReturnFigMessage          (msg.msgCmd);                   break;
+              
+        case 'uiReturnFigStartGenerator':    uiReturnFigStartGenerator   (msg);                          break;
         
-        case 'uiEndStartGenerator':    uiEndStartGenerator   (msg);                          break;
+        case 'uiReturnFigLoadNodesAndConns': uiReturnFigLoadNodesAndConns(msg.nodesJson, msg.connsJson); break;
         
-        case 'uiEndLoadNodesAndConns': uiEndLoadNodesAndConns(msg.nodesJson, msg.connsJson); break;
-        
-        case 'uiGetLocalDataReturn':   uiGetLocalDataReturn  (msg);                          break;
-        case 'uiGetPageDataReturn':    uiGetPageDataReturn   (msg);                          break;
-        
-        case 'uiEndResizeWindow':      uiEndResizeWindow     ();                             break;
+        case 'uiReturnFigGetLocalData':      uiReturnFigGetLocalData     (msg);                          break;
+        case 'uiReturnFigGetPageData':       uiReturnFigGetPageData      (msg);                          break;
+              
+        case 'uiReturnFigResizeWindow':      uiReturnFigResizeWindow     ();                             break;
     }
 }    
 
@@ -45046,7 +45049,7 @@ function uiPostNextMessageToFigma()
 
 
 
-function uiEndFigMessage(msgCmd)
+function uiReturnFigMessage(msgCmd)
 {
     uiFigMessagePosted = false;
 
@@ -45312,7 +45315,7 @@ function     uiClearPageData(key)        { uiQueueMessageToFigma({ cmd:       'f
    
 
 
-function uiGetLocalDataReturn(msg)
+function uiReturnFigGetLocalData(msg)
 {
     switch (msg.key)
     {
@@ -45396,7 +45399,7 @@ function uiGetLocalDataReturn(msg)
 }
 
 
-function uiGetPageDataReturn(msg)
+function uiReturnFigGetPageData(msg)
 {
     // switch (msg.key)
     // {
@@ -45444,7 +45447,7 @@ function uiLoadGraphView(json)
 
 
 
-function uiEndLoadNodesAndConns(nodesJson, connsJson)
+function uiReturnFigLoadNodesAndConns(nodesJson, connsJson)
 {
     if (settings.logRawLoading)
         console.log(
@@ -45497,6 +45500,9 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
     const chunkSize = 10; // nodes
     for (let i = 0; i < _nodes.length; i += chunkSize)
     {
+        if (dataModeTimeout) clearTimeout(dataModeTimeout);
+        dataModeTimeout = setTimeout(() => chkLoadingRestart.style.display = 'inline-block', 5000);
+
         promise = promise.then(nodes => 
         {
             const res = resolveNodes(
@@ -45542,6 +45548,9 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         });
 
 
+        if (dataModeTimeout) clearTimeout(dataModeTimeout);
+        dataModeTimeout = setTimeout(() => chkLoadingRestart.style.display = 'inline-block', 5000);
+
         const chunkSize = 10; // connections
         for (let i = 0; i < _conns.length; i += chunkSize)
         {
@@ -45571,6 +45580,9 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 function finishLoading()
 {
+    clearTimeout(dataModeTimeout);
+    dataModeTimeout = null;
+
     loadingOverlay.style.display = 'none';
     
     graphView.loadingNodes   = false;
@@ -45639,7 +45651,7 @@ function resolveConnections(nodes, _connections, first, last)
                     continue; 
                 }
 
-                
+
                 Connection.parseJson(_conn);
             }
 
@@ -47146,7 +47158,7 @@ function uiResizeWindow(width, height)
 
 
 
-function uiEndResizeWindow()
+function uiReturnFigResizeWindow()
 {
     if (!settings.dataMode)
         graphView.updatePanAndZoom();

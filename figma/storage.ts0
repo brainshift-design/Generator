@@ -11,7 +11,7 @@ function figGetLocalData(key)
     {
         //console.log('getAsync', data);
         figPostMessageToUI({
-            cmd:  'uiGetLocalDataReturn',
+            cmd:  'uiReturnFigGetLocalData',
             key:   key,
             value: data
         });
@@ -44,7 +44,7 @@ function figGetPageData(key, postToUi = true)
     if (postToUi)
     {
         figPostMessageToUI({
-            cmd:  'uiGetPageDataReturn',
+            cmd:  'uiReturnFigGetPageData',
             key:   key,
             value: data
         });
@@ -92,7 +92,7 @@ function figLoadNodesAndConns(dataMode)
     const connsJson = JSON.stringify(conns);
 
     figPostMessageToUI({
-        cmd:      'uiEndLoadNodesAndConns',
+        cmd:      'uiReturnFigLoadNodesAndConns',
         nodesJson: nodesJson,
         connsJson: connsJson
     });

@@ -43,7 +43,7 @@ function uiResizeWindow(width, height)
 
 
 
-function uiEndResizeWindow()
+function uiReturnFigResizeWindow()
 {
     if (!settings.dataMode)
         graphView.updatePanAndZoom();

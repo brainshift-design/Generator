@@ -14,7 +14,7 @@ onmessage = e =>
     {
         let _msg = msg.cmd;
 
-        if (msg.cmd == 'uiEndFigMessage')
+        if (msg.cmd == 'uiReturnFigMessage')
             _msg += ': ' + msg.msgCmd;
 
             console.log('%cFIG '+_msg+' --► UI', 'background: #08f; color: white;');
@@ -23,16 +23,16 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiEndFigMessage':        uiEndFigMessage       (msg.msgCmd);                   break;
+        case 'uiReturnFigMessage':           uiReturnFigMessage          (msg.msgCmd);                   break;
+              
+        case 'uiReturnFigStartGenerator':    uiReturnFigStartGenerator   (msg);                          break;
         
-        case 'uiEndStartGenerator':    uiEndStartGenerator   (msg);                          break;
+        case 'uiReturnFigLoadNodesAndConns': uiReturnFigLoadNodesAndConns(msg.nodesJson, msg.connsJson); break;
         
-        case 'uiEndLoadNodesAndConns': uiEndLoadNodesAndConns(msg.nodesJson, msg.connsJson); break;
-        
-        case 'uiGetLocalDataReturn':   uiGetLocalDataReturn  (msg);                          break;
-        case 'uiGetPageDataReturn':    uiGetPageDataReturn   (msg);                          break;
-        
-        case 'uiEndResizeWindow':      uiEndResizeWindow     ();                             break;
+        case 'uiReturnFigGetLocalData':      uiReturnFigGetLocalData     (msg);                          break;
+        case 'uiReturnFigGetPageData':       uiReturnFigGetPageData      (msg);                          break;
+              
+        case 'uiReturnFigResizeWindow':      uiReturnFigResizeWindow     ();                             break;
     }
 }    
 
@@ -83,7 +83,7 @@ function uiPostNextMessageToFigma()
 
 
 
-function uiEndFigMessage(msgCmd)
+function uiReturnFigMessage(msgCmd)
 {
     uiFigMessagePosted = false;
 

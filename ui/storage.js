@@ -28,7 +28,7 @@ function     uiClearPageData(key)        { uiQueueMessageToFigma({ cmd:       'f
    
 
 
-function uiGetLocalDataReturn(msg)
+function uiReturnFigGetLocalData(msg)
 {
     switch (msg.key)
     {
@@ -112,7 +112,7 @@ function uiGetLocalDataReturn(msg)
 }
 
 
-function uiGetPageDataReturn(msg)
+function uiReturnFigGetPageData(msg)
 {
     // switch (msg.key)
     // {
@@ -160,7 +160,7 @@ function uiLoadGraphView(json)
 
 
 
-function uiEndLoadNodesAndConns(nodesJson, connsJson)
+function uiReturnFigLoadNodesAndConns(nodesJson, connsJson)
 {
     if (settings.logRawLoading)
         console.log(
@@ -213,6 +213,9 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
     const chunkSize = 10; // nodes
     for (let i = 0; i < _nodes.length; i += chunkSize)
     {
+        if (dataModeTimeout) clearTimeout(dataModeTimeout);
+        dataModeTimeout = setTimeout(() => chkLoadingRestart.style.display = 'inline-block', 5000);
+
         promise = promise.then(nodes => 
         {
             const res = resolveNodes(
@@ -258,6 +261,9 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         });
 
 
+        if (dataModeTimeout) clearTimeout(dataModeTimeout);
+        dataModeTimeout = setTimeout(() => chkLoadingRestart.style.display = 'inline-block', 5000);
+
         const chunkSize = 10; // connections
         for (let i = 0; i < _conns.length; i += chunkSize)
         {
@@ -287,6 +293,9 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 function finishLoading()
 {
+    clearTimeout(dataModeTimeout);
+    dataModeTimeout = null;
+
     loadingOverlay.style.display = 'none';
     
     graphView.loadingNodes   = false;
@@ -355,7 +364,7 @@ function resolveConnections(nodes, _connections, first, last)
                     continue; 
                 }
 
-                
+
                 Connection.parseJson(_conn);
             }
 

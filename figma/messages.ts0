@@ -44,7 +44,7 @@ figma.ui.onmessage = msg =>
 
     
     figPostMessageToUI({
-        cmd:   'uiEndFigMessage',
+        cmd:   'uiReturnFigMessage',
         msgCmd: msg.cmd });
 }
 
