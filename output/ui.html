@@ -31767,7 +31767,7 @@ graphView.endConnection = pointerId =>
         let output = graphView.overOutput;
 
         input.connecting = false;
-        
+
         if (   output
             && input.supports(output.types)) // TO OUTPUT
             actionManager.do(new ConnectAction(output, input));
@@ -35309,7 +35309,7 @@ class Connection
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && this.input.supports(graphView.overOutput)) 
+                    && this.input.supports(graphView.overOutput.types)) 
                     return graphView.overOutput.wireColor;
                 else
                     return this.input.wireColor;
@@ -35397,10 +35397,17 @@ class Connection
             }
 
 
-            this.wire.  curve.style.stroke = rgba2style(color);
-            this.wire. inBall.style.fill   = rgba2style(color);
-            this.wire.outBall.style.fill   = rgba2style(color);
+            const wireStyle = rgba2style(color);
 
+            this.wire.  curve.style.stroke = wireStyle;
+            this.wire. inBall.style.fill   = wireStyle;
+            this.wire.outBall.style.fill   = wireStyle;
+
+
+            if (this.wire.input)
+                this.wire.input.updateControl();
+
+                
             //const listType = this.output.supports(LIST_TYPES);
 
 
@@ -35483,7 +35490,10 @@ class Connection
             }
 
 
-            const listType = this.output.supports(LIST_TYPES);
+            const listType = 
+                   this.output 
+                && this.output.supports(LIST_TYPES);
+
             this.wire2.curve.style.stroke = listType ? rgba2style(color)  : 'transparent';
 
 
@@ -35498,12 +35508,12 @@ class Connection
             this.wire2.style.zIndex = 0;
 
 
-            const isSolo = 
-                   graphView._soloNode
-                && (   this. input.node == graphView._soloNode
-                    || this.output.node == graphView._soloNode);
+            // const isSolo = 
+            //        graphView._soloNode
+            //     && (   this. input.node == graphView._soloNode
+            //         || this.output.node == graphView._soloNode);
             
-            const showWire = true;
+            // const showWire = true;
                 //    settings.showWires 
                 // || isSolo;
 
@@ -35512,10 +35522,10 @@ class Connection
                 || isNaN(oldReorderIndex);
 
 
-            show(this.wire2,       showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire2.curve, showWire && showCurve && (this != graphView.savedConn || isReordering));
-            show(this.wire2.xp1,   showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire2.xp2,   showWire && (this != graphView.savedConn || isReordering));
+            show(this.wire2,       /*showWire &&*/ (this != graphView.savedConn || isReordering));
+            show(this.wire2.curve, /*showWire &&*/ showCurve && (this != graphView.savedConn || isReordering));
+            show(this.wire2.xp1,   /*showWire &&*/ (this != graphView.savedConn || isReordering));
+            show(this.wire2.xp2,   /*showWire &&*/ (this != graphView.savedConn || isReordering));
         };
     }
 

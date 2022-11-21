@@ -115,7 +115,7 @@ graphView.endConnection = pointerId =>
         let output = graphView.overOutput;
 
         input.connecting = false;
-        
+
         if (   output
             && input.supports(output.types)) // TO OUTPUT
             actionManager.do(new ConnectAction(output, input));
