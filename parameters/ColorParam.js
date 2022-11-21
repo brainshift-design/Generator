@@ -32,7 +32,7 @@ extends Parameter
                 defaultValue = ColorValue.fromRgb([0x80, 0x80, 0x80]),
                 dragScale    = 0.05)
     {
-        super(COLOR, id, name);
+        super(COLOR_VALUE, id, name);
 
         this.checkers       = createDiv();
         this.control        = createDiv();

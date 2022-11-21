@@ -58,6 +58,7 @@ extends Action
 
         uiSaveNodes(nodes.map(n => n.id));
 
+        
         this.notify(nodes, this.isDuplicate, this.pasteConnected);
     }
 

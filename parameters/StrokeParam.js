@@ -31,7 +31,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = StrokeValue.NaN)
     {
-        super(STROKE, id, name);
+        super(STROKE_VALUE, id, name);
 
 
         this.checkers                     = createDiv();

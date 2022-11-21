@@ -39,7 +39,7 @@ extends Parameter
                 defaultValue = FillValue.NaN,
                 dragScale    = 0.05)
     {
-        super(FILL, id, name);
+        super(FILL_VALUE, id, name);
 
         this.checkers              = createDiv();
         this.controlWrapper        = createDiv();

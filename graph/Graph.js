@@ -252,14 +252,14 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
     {
         let node = nodes[i];
 
-        if (node.variableInputs)
-            continue;
+        // if (node.variableInputs)
+        //     continue;
 
         for (let j = 0; j < node.inputs.length; j++)
         {
             if (   !node.inputs[j].connected
-                ||    !nodes.includes(node.inputs[j].connectedOutput.node)
-                   && connOutputMustBeInNodes)
+                ||     connOutputMustBeInNodes
+                   && !nodes.includes(node.inputs[j].connectedOutput.node))
                 continue;
 
             connections.push(node.inputs[j].connection);

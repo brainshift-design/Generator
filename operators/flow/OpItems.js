@@ -62,10 +62,12 @@ extends OperatorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        //this.removeAllParams();
         for (const param of this.params)
         {
-            if (!paramIds.includes(param.id))
+            const paramIndex = paramIds.findIndex(id => id == param.id);
+
+            if (   paramIndex < 0
+                || values[paramIndex].type != param.type)
                 this.removeParam(param);
         }
 

@@ -32491,7 +32491,10 @@ extends Parameter
 
     enableControlText(enable)
     {
-        enable &= !this.input || !this.input.connected;
+        enable &= 
+               !this.input 
+            || !this.input.connected;
+            
         enableElementText(this.control, enable);
         this.control.readOnly = !enable;
     }
@@ -32523,7 +32526,7 @@ extends NumberParamBase
                 decimals     = 0,
                 dragScale    = 0.05)
     {
-        super(NUMBER, id, name);
+        super(NUMBER_VALUE, id, name);
 
         
         this.control        = createDiv('numberControl');
@@ -32718,7 +32721,7 @@ extends Parameter
                 defaultValue = ColorValue.fromRgb([0x80, 0x80, 0x80]),
                 dragScale    = 0.05)
     {
-        super(COLOR, id, name);
+        super(COLOR_VALUE, id, name);
 
         this.checkers       = createDiv();
         this.control        = createDiv();
@@ -32967,7 +32970,7 @@ extends Parameter
                 defaultValue = FillValue.NaN,
                 dragScale    = 0.05)
     {
-        super(FILL, id, name);
+        super(FILL_VALUE, id, name);
 
         this.checkers              = createDiv();
         this.controlWrapper        = createDiv();
@@ -33406,7 +33409,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = StrokeValue.NaN)
     {
-        super(STROKE, id, name);
+        super(STROKE_VALUE, id, name);
 
 
         this.checkers                     = createDiv();
@@ -33773,7 +33776,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new ListValue())
     {
-        super(LIST, id, name);
+        super(LIST_VALUE, id, name);
 
 
         this.textControl                  = createDiv('colorControlText');
@@ -34211,14 +34214,14 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
     {
         let node = nodes[i];
 
-        if (node.variableInputs)
-            continue;
+        // if (node.variableInputs)
+        //     continue;
 
         for (let j = 0; j < node.inputs.length; j++)
         {
             if (   !node.inputs[j].connected
-                ||    !nodes.includes(node.inputs[j].connectedOutput.node)
-                   && connOutputMustBeInNodes)
+                ||     connOutputMustBeInNodes
+                   && !nodes.includes(node.inputs[j].connectedOutput.node))
                 continue;
 
             connections.push(node.inputs[j].connection);
@@ -37867,10 +37870,12 @@ extends OperatorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        //this.removeAllParams();
         for (const param of this.params)
         {
-            if (!paramIds.includes(param.id))
+            const paramIndex = paramIds.findIndex(id => id == param.id);
+
+            if (   paramIndex < 0
+                || values[paramIndex].type != param.type)
                 this.removeParam(param);
         }
 
@@ -42963,45 +42968,6 @@ extends Action
 }
 
 
-class DuplicateNodesAction
-extends Action
-{
-    copiedJson;
-    pastedNodeIds = [];
-
-
-    constructor(copiedJson)
-    {
-        const data = JSON.parse(copiedJson);
-
-        super('DUPLICATE ' + data.nodes.length + ' ' + countString('node', data.nodes.length));
-
-        this.copiedJson = copiedJson;
-    }
-
-
-
-    do()
-    {
-        this.pastedNodeIds = uiPasteNodes(this.copiedJson).map(n => n.id);
-
-        uiSaveNodes(nodes.map(n => n.id));
-    }
-
-
-
-    undo()
-    {
-        uiDeleteNodes(this.pastedNodeIds);
-        
-        pasteOffset[0] -= pasteOffsetDelta[0];
-        pasteOffset[1] -= pasteOffsetDelta[1];
-
-        uiRemoveSavedNodesAndConns(this.pastedNodeIds);
-    }
-}
-
-
 class FindValidColorAction
 extends Action
 {
@@ -43160,6 +43126,7 @@ extends Action
 
         uiSaveNodes(nodes.map(n => n.id));
 
+        
         this.notify(nodes, this.isDuplicate, this.pasteConnected);
     }
 
@@ -46683,7 +46650,7 @@ function uiCopyNodes(nodeIds)
     const nodes      = graph.nodes.filter(n => nodeIds.includes(n.id));
     const copiedJson = nodesToJson(nodes, true, false);
 
-    //console.log(copiedJson);
+    // console.log(copiedJson);
 
     return copiedJson;
 }

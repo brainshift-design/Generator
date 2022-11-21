@@ -12,7 +12,7 @@ extends NumberParamBase
                 decimals     = 0,
                 dragScale    = 0.05)
     {
-        super(NUMBER, id, name);
+        super(NUMBER_VALUE, id, name);
 
         
         this.control        = createDiv('numberControl');

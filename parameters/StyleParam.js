@@ -22,7 +22,7 @@ extends Parameter
                 hasOutput,
                 defaultValue = new ListValue())
     {
-        super(LIST, id, name);
+        super(LIST_VALUE, id, name);
 
 
         this.textControl                  = createDiv('colorControlText');
