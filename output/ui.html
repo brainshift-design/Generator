@@ -104,11 +104,11 @@
 
 .dataModeRowTitle
 {
-    font-family: Inter;
-    font-size:   11px;
-    color:       var(--figma-color-text);
-    font-weight: 600;
-    margin:      4px 0 15px 4px;
+    font-family:    Inter;
+    font-size:      11px;
+    color:          var(--figma-color-text);
+    font-weight:    600;
+    margin:         4px 0 15px 4px;
 }
 
 
@@ -11208,7 +11208,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
 
-        case 'dataMode':              updateSettingAndMenu_(valid, settingName, value, menuItemDataMode);                                 break;
+        case 'dataMode':              updateSettingAndMenu_(valid, settingName, value, menuItemDataMode);               break;
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
@@ -11323,19 +11323,10 @@ onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'genFindCorrection':
-            genFindCorrection(
-                msg.nodeId, 
-                msg.inputColor, 
-                msg.param1,  msg.param2,  msg.param3,
-                msg.locked1, msg.locked2, msg.locked3);  
-        
-            break;
-        
-        case 'genRequest':        genRequest(msg.request);     break;
+        case 'genRequest':       genRequest(msg.request);     break;
 
-        case 'genEndUiMessage':   genEndUiMessage(msg.msgCmd); break;
-        case 'genEndFigMessage':  genEndFigMessage();          break;
+        case 'genEndUiMessage':  genEndUiMessage(msg.msgCmd); break;
+        case 'genEndFigMessage': genEndFigMessage();          break;
     }
 
 
@@ -26003,7 +25994,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
 
-        case 'dataMode':              updateSettingAndMenu_(valid, settingName, value, menuItemDataMode);                                 break;
+        case 'dataMode':              updateSettingAndMenu_(valid, settingName, value, menuItemDataMode);               break;
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
@@ -26108,7 +26099,7 @@ var currentMenuButton = null;
 class Menu
 {
     parentMenu = null;
-    
+
     name;
     button   = null;
 
@@ -26117,9 +26108,9 @@ class Menu
 
     showIcons;
     showChecks;
-   
+
     overMenu = false;
-    
+
     items    = [];
     lastItem = null;
 
@@ -26140,8 +26131,8 @@ class Menu
         this.div               = createDiv('menu');
         this.divArrow          = createDiv('menuArrow');
 
-        this.div.addEventListener('pointerenter', e => this.overMenu = true );
-        this.div.addEventListener('pointerleave', e => this.overMenu = false);
+        this.div.addEventListener('pointerenter', () => this.overMenu = true );
+        this.div.addEventListener('pointerleave', () => this.overMenu = false);
     }
 
 
@@ -26177,6 +26168,31 @@ class Menu
 
 
 
+    initMenu()
+    {
+        if (this.init)
+            this.init();
+
+
+        let width = 0;
+
+        utilContext.font = '13px Inter';
+
+
+        for (const item of this.items)
+        {
+            const mesName     = utilContext.measureText(item.name);
+            const mesShortcut = utilContext.measureText(item.shortcut);
+
+            width = Math.max(width, mesName.width + mesShortcut.width + 30);
+        }
+
+
+        this.div.style.width = Math.max(100, width) + 'px';
+    }
+
+
+
     show(srcDiv, right = false)
     {
         this.initMenu();
@@ -26184,7 +26200,7 @@ class Menu
 
         this.div.style.display = 'block';
         this.div.style.opacity = '100%';
-    
+
 
         if (!right)
         {
@@ -26196,86 +26212,66 @@ class Menu
         document.body.appendChild(this.div     );
         document.body.appendChild(this.divArrow);
 
-    
+
         let srcRect = srcDiv.getBoundingClientRect();
-    
+
         srcRect.y -= 5;
-    
-    
+
+
         const margin = 8;
-     
+
         this.div.style.left = Math.min(Math.max(
             margin, 
             right
             ? srcRect.x + srcRect.width 
             : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2),
             graphView.offsetWidth - this.div.offsetWidth - margin);
-    
+
         this.div.style.top = 
             right
             ? srcRect.y - 3
             : srcRect.y + srcRect.height + this.divArrow.offsetHeight;
 
-        
+
         this.divArrow.style.left = srcRect.x + srcRect.width/2;
-        
-    
+
+
         const menuRect = this.div.getBoundingClientRect();
-    
+
         this.divArrow.style.top = menuRect.y - this.divArrow.offsetHeight;
-    
-    
+
+
         currentMenus.push(this);
 
 
         if (this.button)
             this.button.update();
     }
-    
-    
-    
-    showAt(x, y)
+
+
+
+    showAt(x, y, hidePrev = true)
     {
+        if (hidePrev)
+            hideAllMenus();
+
+
         this.initMenu();
 
 
         this.div.style.display = 'block';
         this.div.style.opacity = '100%';
-    
+
         document.body.appendChild(this.div);
-    
+
+
         const margin = 8;
-     
+
         this.div.style.left = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
         this.div.style.top  = y - 4;
-    
+
 
         currentMenus.push(this);
-    }
-    
-    
-    
-    initMenu()
-    {
-        if (this.init)
-            this.init();
-
-
-        let width = 0;
-        
-        utilContext.font = '13px Inter';
-        
-
-        for (const item of this.items)
-        {
-            const mesName     = utilContext.measureText(item.name);
-            const mesShortcut = utilContext.measureText(item.shortcut);
-    
-            width = Math.max(width, mesName.width + mesShortcut.width + 30);
-        }
-
-
-        this.div.style.width = Math.max(100, width);
     }
 
 
@@ -26291,7 +26287,7 @@ class Menu
 
         this.div     .style.display = 'none';
         this.div     .style.opacity = '0%';
-    
+
         this.divArrow.style.display = 'none';
         this.divArrow.style.opacity = '0%';
 
@@ -26635,19 +26631,19 @@ class MenuItem
 
     initOptions(options)
     {
-        if (options.icon              != undefined) this.icon              = options.icon;
-        if (options.callback          != undefined) this.callback          = options.callback;
-        if (options.checkCallback     != undefined) this.checkCallback     = options.checkCallback;
-        if (options.childMenu         != undefined) 
+        if (options.icon          != undefined) this.icon          = options.icon;
+        if (options.checkCallback != undefined) this.checkCallback = options.checkCallback;
+        if (options.callback      != undefined) this.callback      = options.callback;
+        if (options.childMenu     != undefined) 
         { 
             this.childMenu = options.childMenu;  
-            
+
             if (this.childMenu)
                 this.childMenu.parentMenu = this.parentMenu; 
         }
-        if (options.separator         != undefined) this.separator = options.separator;
-        if (options.shortcut          != undefined) this.shortcut  = options.shortcut;
-        if (options.enabled           != undefined) this.enabled   = options.enabled;
+        if (options.separator     != undefined) this.separator    = options.separator;
+        if (options.shortcut      != undefined) this.shortcut     = options.shortcut;
+        if (options.enabled       != undefined) this.enabled      = options.enabled;
     }
 
 
@@ -26670,18 +26666,6 @@ class MenuItem
 
         this.divName.innerHTML = this.name;
 
-        // this.divCheck.style.visibility = 
-        //        this.checkCallback 
-        //     && this.checkCallback() 
-        //     ? 'visible' 
-        //     : 'hidden';
-
-        // this.divCheck.style.display = 
-        //     this.iconReplacesCheck
-        //     ? 'none'
-        //     : 'inline-block';
-
-
         if (this.childMenu)
             this.divExpand.style.visibility = 'visible';
 
@@ -26691,12 +26675,12 @@ class MenuItem
             this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + this.icon + '\')';
             this.divIcon.style.backgroundPosition = '50% 50%';
             this.divIcon.style.backgroundRepeat   = 'no-repeat';
-        }        
+        }
 
-        
+    
         this.divShortcut.innerHTML = this.shortcut;
 
-        
+    
         if (!this.separator)
         {
             this.div.appendChild(this.divCheck   );
@@ -26737,8 +26721,8 @@ class MenuItem
             else
                 hideAllMenusAfter(this.parentMenu);
         });
-        
-        
+    
+    
         this.div.addEventListener('pointerleave', () =>
         {
             this.div.style.background = 'transparent';
@@ -26769,8 +26753,8 @@ class MenuItem
         if (!isNaN(x)) e.clientX = x;
         if (!isNaN(y)) e.clientY = y;
 
-        if (this.callback) 
-            this.callback(e); 
+        if (this.callback)
+            this.callback(e);
     }
 
 
@@ -26788,7 +26772,7 @@ class MenuItem
         this.enabled = enabled;
         this.update();
     }
-    
+
 
 
     setVisible(visible)
@@ -26911,7 +26895,7 @@ var menuItemLogLoading;
 var menuItemLogRawRequests;
 var menuItemLogRawValues;
 var menuItemLogRequests;
-var menuItemLogValueUpdates
+var menuItemLogValueUpdates;
 var menuItemLogObjectUpdates;
 
 var menuItemZoomTo100;
@@ -31008,7 +30992,7 @@ graphView.addEventListener('pointerdown', e =>
     const sx = e.clientX;
     const sy = e.clientY;
 
-    if (   e.button == 0                 
+    if (   e.button == 0
         && !graphView.panning
         && !document.canResizeX
         && !document.canResizeY
@@ -31037,7 +31021,7 @@ graphView.addEventListener('pointerdown', e =>
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false);
 
                 updateConnWires(graphView.tempConn, sx, sy);
-                
+
                 graphView.savedConn       = graphView.overInput.connection;
                 //graphView.savedInputIndex = graphView.overInput.index;
 
@@ -31057,14 +31041,14 @@ graphView.addEventListener('pointerdown', e =>
             graphView.lastSelectedNodes = [...graphView.selectedNodes];
 
             graphView.startSelection(
-                e.pointerId, 
-                e.clientX, 
-                e.clientY, 
+                e.pointerId,
+                e.clientX,
+                e.clientY,
                 e.shiftKey,
                 getCtrlKey(e));
         }
     }
-    
+
     else if (e.button == 1)
     {
         graphView.btn1down = true;
@@ -31074,7 +31058,9 @@ graphView.addEventListener('pointerdown', e =>
 
     else if (e.button == 2)
     {
-        if (isEmpty(currentMenus)) menuGraph.showAt(e.clientX, e.clientY);
+        e.stopPropagation();
+
+        if (isEmpty(currentMenus)) menuGraph.showAt(e.clientX, e.clientY, false);
         else                       hideAllMenus();
     }
 });
@@ -31106,13 +31092,13 @@ function graphView_onpointermove(e)
                 graphView.zoom);
         //});
     }
-    
+
     else if (graphView.selecting)
         graphView.updateSelection(e.clientX, e.clientY, e.shiftKey, getCtrlKey(e));
-    
+
     else if (graphView.zoomSelecting)
         graphView.updateZoomSelection(e.clientX, e.clientY);
-    
+
     else if (graphView.tempConn)
     {
         updateConnWires(graphView.tempConn, e.clientX, e.clientY);
@@ -31152,7 +31138,7 @@ graphView.addEventListener('pointerup', e =>
                         graphView.zoom / graphView.oldZoom - 1));
             }
         }
-        
+
         graphView.endPan(e.pointerId, false);
     }
 
@@ -31186,7 +31172,7 @@ graphView.addEventListener('wheel', e =>
     const dZoom = Math.log(graphView.zoom) / Math.log(2);
 
 
-    const isTouchpad = 
+    const isTouchpad =
            Math.abs(e.deltaX) < 100
         && Math.abs(e.deltaY) < 100;
 
@@ -31219,13 +31205,13 @@ graphView.addEventListener('wheel', e =>
         {
             graphView.selectionRect.x -= dPanX;
             graphView.selectionRect.w += dPanX;
-            
+
             graphView.selectionRect.y -= dPanY;
             graphView.selectionRect.h += dPanY;
 
             graphView.updateSelection(
-                e.clientX, 
-                e.clientY, 
+                e.clientX,
+                e.clientY,
                 e.shiftKey);
         }
     }
@@ -36952,7 +36938,6 @@ function createNodeHeader(node)
 
             selectFromClick(node, getCtrlKey(e), e.shiftKey, e.altKey);
 
-            hideAllMenus();
             menuNode.showAt(e.clientX, e.clientY);
         }
 
@@ -44259,7 +44244,7 @@ dataModeNodesWrapper.addEventListener('pointerdown', e =>
 
     if (e.button == 2)
     {
-        hideAllMenus();
+        e.stopPropagation();
         menuNodeDataNodes.showAt(e.clientX, e.clientY);
     }
 });
@@ -44271,10 +44256,7 @@ dataModeNodesWrapper.addEventListener('pointerdown', e =>
 //     e.preventDefault();
 
 //     if (e.button == 2)
-//     {
-//         hideAllMenus();
 //         menuConnDataConns.showAt(e.clientX, e.clientY);
-//     }
 // });
 
 
@@ -44324,16 +44306,13 @@ function createNodeDataDiv(_node)
         if (e.button == 2)
         {
             e.stopPropagation();
-            hideAllMenus();
 
             // div.style.background = 'var(--data-mode-node-active)';
 
             createDataMenuOnHide(
-                menuNodeData, 
-                div, 
-                '.dataModeNode', 
-                'var(--data-mode-node)', 
-                'var(--data-mode-node-active)');
+                menuNodeData,
+                div,
+                'var(--data-mode-node)'); 
 
             menuNodeData.showAt(e.clientX, e.clientY);
         }
@@ -44368,16 +44347,13 @@ function createConnDataDiv(_conn)
         if (e.button == 2)
         {
             e.stopPropagation();
-            hideAllMenus();
 
             div.style.background = 'var(--data-mode-conn-active)';
 
             createDataMenuOnHide(
-                menuConnData, 
-                div, 
-                '.dataModeConn', 
-                'var(--data-mode-conn)', 
-                'var(--data-mode-conn-active)');
+                menuConnData,
+                div,
+                'var(--data-mode-conn)');
 
             menuConnData.showAt(e.clientX, e.clientY);
         }
@@ -44389,14 +44365,14 @@ function createConnDataDiv(_conn)
 
 
 
-function createDataMenuOnHide(menu, div, cssClass, normal, active)
+function createDataMenuOnHide(menu, div, normal)
 {
     menu._div = div;
     
-    menu.onHide = () => 
+    menu.onHide = () =>
     { 
-        menu._div.style.background = normal; 
-        setTimeout(() => menu._div = null); 
+        menu._div.style.background = normal;
+        setTimeout(() => menu._div = null);
     };
 }
 
@@ -44406,7 +44382,7 @@ function expandNodeData(div, node, _node)
 {
     if (div.showJson)
     {
-        div.innerHTML = 
+        div.innerHTML =
              (node.loading ? '🛑<br/>' : '')
             + formatSavedNodeDataJson(div._node);
 
@@ -44465,11 +44441,10 @@ function dataModeDeleteNode(node)
 
         if (div.node.id == node.id)
             dataModeNodes.removeChild(div);
-
     }
 
 
-    let removedConns = 0;
+    let nRemovedConns = 0;
 
     for (let i = dataModeConns.children.length-1; i >= 0; i--)
     {
@@ -44479,15 +44454,15 @@ function dataModeDeleteNode(node)
             || div.conn. inputNodeId == node.id)
         {
             dataModeConns.removeChild(div);
-            removedConns++;
+            nRemovedConns++;
         }
     }
 
 
     let notice = 'Removed node \'' + node.id + '\'';
 
-    if (removedConns > 0)
-        notice += ' and ' + removedConns + ' ' + countString('connection', removedConns);
+    if (nRemovedConns > 0)
+        notice += ' and ' + nRemovedConns + ' ' + countString('connection', nRemovedConns);
 
     uiNotify(notice);
 }
@@ -44524,7 +44499,7 @@ function dataModeDeleteConnectionsToAndFromNode(node)
 function dataModeDeleteConnectionsFromNode(node)
 {
     uiRemoveSavedConnectionsFromNodeId(node.id);
-    
+
 
     let nRemovedConns = 0;
 
@@ -45161,10 +45136,10 @@ generator.onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                             break;
-        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.updateNodeId, msg.updateParamId, msg.values, msg.objects);                        break;
-        case 'uiStartNodeProgress':      uiStartNodeProgress     (msg.nodeId);                                                                          break;
-        case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                                            break;
+        case 'uiEndGenMessage':          uiEndGenMessage();                                                                      break;
+        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.updateNodeId, msg.updateParamId, msg.values, msg.objects); break;
+        case 'uiStartNodeProgress':      uiStartNodeProgress     (msg.nodeId);                                                   break;
+        case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                     break;
     }
 };
 

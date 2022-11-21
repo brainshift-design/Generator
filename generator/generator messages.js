@@ -16,19 +16,10 @@ onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'genFindCorrection':
-            genFindCorrection(
-                msg.nodeId, 
-                msg.inputColor, 
-                msg.param1,  msg.param2,  msg.param3,
-                msg.locked1, msg.locked2, msg.locked3);  
-        
-            break;
-        
-        case 'genRequest':        genRequest(msg.request);     break;
+        case 'genRequest':       genRequest(msg.request);     break;
 
-        case 'genEndUiMessage':   genEndUiMessage(msg.msgCmd); break;
-        case 'genEndFigMessage':  genEndFigMessage();          break;
+        case 'genEndUiMessage':  genEndUiMessage(msg.msgCmd); break;
+        case 'genEndFigMessage': genEndFigMessage();          break;
     }
 
 

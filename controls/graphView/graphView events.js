@@ -22,7 +22,7 @@ graphView.addEventListener('pointerdown', e =>
     const sx = e.clientX;
     const sy = e.clientY;
 
-    if (   e.button == 0                 
+    if (   e.button == 0
         && !graphView.panning
         && !document.canResizeX
         && !document.canResizeY
@@ -51,7 +51,7 @@ graphView.addEventListener('pointerdown', e =>
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false);
 
                 updateConnWires(graphView.tempConn, sx, sy);
-                
+
                 graphView.savedConn       = graphView.overInput.connection;
                 //graphView.savedInputIndex = graphView.overInput.index;
 
@@ -71,14 +71,14 @@ graphView.addEventListener('pointerdown', e =>
             graphView.lastSelectedNodes = [...graphView.selectedNodes];
 
             graphView.startSelection(
-                e.pointerId, 
-                e.clientX, 
-                e.clientY, 
+                e.pointerId,
+                e.clientX,
+                e.clientY,
                 e.shiftKey,
                 getCtrlKey(e));
         }
     }
-    
+
     else if (e.button == 1)
     {
         graphView.btn1down = true;
@@ -88,7 +88,9 @@ graphView.addEventListener('pointerdown', e =>
 
     else if (e.button == 2)
     {
-        if (isEmpty(currentMenus)) menuGraph.showAt(e.clientX, e.clientY);
+        e.stopPropagation();
+
+        if (isEmpty(currentMenus)) menuGraph.showAt(e.clientX, e.clientY, false);
         else                       hideAllMenus();
     }
 });
@@ -120,13 +122,13 @@ function graphView_onpointermove(e)
                 graphView.zoom);
         //});
     }
-    
+
     else if (graphView.selecting)
         graphView.updateSelection(e.clientX, e.clientY, e.shiftKey, getCtrlKey(e));
-    
+
     else if (graphView.zoomSelecting)
         graphView.updateZoomSelection(e.clientX, e.clientY);
-    
+
     else if (graphView.tempConn)
     {
         updateConnWires(graphView.tempConn, e.clientX, e.clientY);
@@ -166,7 +168,7 @@ graphView.addEventListener('pointerup', e =>
                         graphView.zoom / graphView.oldZoom - 1));
             }
         }
-        
+
         graphView.endPan(e.pointerId, false);
     }
 
@@ -200,7 +202,7 @@ graphView.addEventListener('wheel', e =>
     const dZoom = Math.log(graphView.zoom) / Math.log(2);
 
 
-    const isTouchpad = 
+    const isTouchpad =
            Math.abs(e.deltaX) < 100
         && Math.abs(e.deltaY) < 100;
 
@@ -233,13 +235,13 @@ graphView.addEventListener('wheel', e =>
         {
             graphView.selectionRect.x -= dPanX;
             graphView.selectionRect.w += dPanX;
-            
+
             graphView.selectionRect.y -= dPanY;
             graphView.selectionRect.h += dPanY;
 
             graphView.updateSelection(
-                e.clientX, 
-                e.clientY, 
+                e.clientX,
+                e.clientY,
                 e.shiftKey);
         }
     }

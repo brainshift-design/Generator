@@ -59,7 +59,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
 
-        case 'dataMode':              updateSettingAndMenu_(valid, settingName, value, menuItemDataMode);                                 break;
+        case 'dataMode':              updateSettingAndMenu_(valid, settingName, value, menuItemDataMode);               break;
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;

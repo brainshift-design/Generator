@@ -183,7 +183,6 @@ function createNodeHeader(node)
 
             selectFromClick(node, getCtrlKey(e), e.shiftKey, e.altKey);
 
-            hideAllMenus();
             menuNode.showAt(e.clientX, e.clientY);
         }
 

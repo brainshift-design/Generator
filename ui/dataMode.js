@@ -11,7 +11,7 @@ dataModeNodesWrapper.addEventListener('pointerdown', e =>
 
     if (e.button == 2)
     {
-        hideAllMenus();
+        e.stopPropagation();
         menuNodeDataNodes.showAt(e.clientX, e.clientY);
     }
 });
@@ -23,10 +23,7 @@ dataModeNodesWrapper.addEventListener('pointerdown', e =>
 //     e.preventDefault();
 
 //     if (e.button == 2)
-//     {
-//         hideAllMenus();
 //         menuConnDataConns.showAt(e.clientX, e.clientY);
-//     }
 // });
 
 
@@ -76,16 +73,13 @@ function createNodeDataDiv(_node)
         if (e.button == 2)
         {
             e.stopPropagation();
-            hideAllMenus();
 
             // div.style.background = 'var(--data-mode-node-active)';
 
             createDataMenuOnHide(
-                menuNodeData, 
-                div, 
-                '.dataModeNode', 
-                'var(--data-mode-node)', 
-                'var(--data-mode-node-active)');
+                menuNodeData,
+                div,
+                'var(--data-mode-node)'); 
 
             menuNodeData.showAt(e.clientX, e.clientY);
         }
@@ -120,16 +114,13 @@ function createConnDataDiv(_conn)
         if (e.button == 2)
         {
             e.stopPropagation();
-            hideAllMenus();
 
             div.style.background = 'var(--data-mode-conn-active)';
 
             createDataMenuOnHide(
-                menuConnData, 
-                div, 
-                '.dataModeConn', 
-                'var(--data-mode-conn)', 
-                'var(--data-mode-conn-active)');
+                menuConnData,
+                div,
+                'var(--data-mode-conn)');
 
             menuConnData.showAt(e.clientX, e.clientY);
         }
@@ -141,14 +132,14 @@ function createConnDataDiv(_conn)
 
 
 
-function createDataMenuOnHide(menu, div, cssClass, normal, active)
+function createDataMenuOnHide(menu, div, normal)
 {
     menu._div = div;
     
-    menu.onHide = () => 
+    menu.onHide = () =>
     { 
-        menu._div.style.background = normal; 
-        setTimeout(() => menu._div = null); 
+        menu._div.style.background = normal;
+        setTimeout(() => menu._div = null);
     };
 }
 
@@ -158,7 +149,7 @@ function expandNodeData(div, node, _node)
 {
     if (div.showJson)
     {
-        div.innerHTML = 
+        div.innerHTML =
              (node.loading ? '🛑<br/>' : '')
             + formatSavedNodeDataJson(div._node);
 
@@ -217,11 +208,10 @@ function dataModeDeleteNode(node)
 
         if (div.node.id == node.id)
             dataModeNodes.removeChild(div);
-
     }
 
 
-    let removedConns = 0;
+    let nRemovedConns = 0;
 
     for (let i = dataModeConns.children.length-1; i >= 0; i--)
     {
@@ -231,15 +221,15 @@ function dataModeDeleteNode(node)
             || div.conn. inputNodeId == node.id)
         {
             dataModeConns.removeChild(div);
-            removedConns++;
+            nRemovedConns++;
         }
     }
 
 
     let notice = 'Removed node \'' + node.id + '\'';
 
-    if (removedConns > 0)
-        notice += ' and ' + removedConns + ' ' + countString('connection', removedConns);
+    if (nRemovedConns > 0)
+        notice += ' and ' + nRemovedConns + ' ' + countString('connection', nRemovedConns);
 
     uiNotify(notice);
 }
@@ -276,7 +266,7 @@ function dataModeDeleteConnectionsToAndFromNode(node)
 function dataModeDeleteConnectionsFromNode(node)
 {
     uiRemoveSavedConnectionsFromNodeId(node.id);
-    
+
 
     let nRemovedConns = 0;
 

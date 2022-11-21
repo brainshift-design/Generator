@@ -36,11 +36,11 @@
 
 .dataModeRowTitle
 {
-    font-family: Inter;
-    font-size:   11px;
-    color:       var(--figma-color-text);
-    font-weight: 600;
-    margin:      4px 0 15px 4px;
+    font-family:    Inter;
+    font-size:      11px;
+    color:          var(--figma-color-text);
+    font-weight:    600;
+    margin:         4px 0 15px 4px;
 }
 
 

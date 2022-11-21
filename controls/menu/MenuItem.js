@@ -44,19 +44,19 @@ class MenuItem
 
     initOptions(options)
     {
-        if (options.icon              != undefined) this.icon              = options.icon;
-        if (options.callback          != undefined) this.callback          = options.callback;
-        if (options.checkCallback     != undefined) this.checkCallback     = options.checkCallback;
-        if (options.childMenu         != undefined) 
+        if (options.icon          != undefined) this.icon          = options.icon;
+        if (options.checkCallback != undefined) this.checkCallback = options.checkCallback;
+        if (options.callback      != undefined) this.callback      = options.callback;
+        if (options.childMenu     != undefined) 
         { 
             this.childMenu = options.childMenu;  
-            
+
             if (this.childMenu)
                 this.childMenu.parentMenu = this.parentMenu; 
         }
-        if (options.separator         != undefined) this.separator = options.separator;
-        if (options.shortcut          != undefined) this.shortcut  = options.shortcut;
-        if (options.enabled           != undefined) this.enabled   = options.enabled;
+        if (options.separator     != undefined) this.separator    = options.separator;
+        if (options.shortcut      != undefined) this.shortcut     = options.shortcut;
+        if (options.enabled       != undefined) this.enabled      = options.enabled;
     }
 
 
@@ -79,18 +79,6 @@ class MenuItem
 
         this.divName.innerHTML = this.name;
 
-        // this.divCheck.style.visibility = 
-        //        this.checkCallback 
-        //     && this.checkCallback() 
-        //     ? 'visible' 
-        //     : 'hidden';
-
-        // this.divCheck.style.display = 
-        //     this.iconReplacesCheck
-        //     ? 'none'
-        //     : 'inline-block';
-
-
         if (this.childMenu)
             this.divExpand.style.visibility = 'visible';
 
@@ -100,12 +88,12 @@ class MenuItem
             this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + this.icon + '\')';
             this.divIcon.style.backgroundPosition = '50% 50%';
             this.divIcon.style.backgroundRepeat   = 'no-repeat';
-        }        
+        }
 
-        
+    
         this.divShortcut.innerHTML = this.shortcut;
 
-        
+    
         if (!this.separator)
         {
             this.div.appendChild(this.divCheck   );
@@ -146,8 +134,8 @@ class MenuItem
             else
                 hideAllMenusAfter(this.parentMenu);
         });
-        
-        
+    
+    
         this.div.addEventListener('pointerleave', () =>
         {
             this.div.style.background = 'transparent';
@@ -178,8 +166,8 @@ class MenuItem
         if (!isNaN(x)) e.clientX = x;
         if (!isNaN(y)) e.clientY = y;
 
-        if (this.callback) 
-            this.callback(e); 
+        if (this.callback)
+            this.callback(e);
     }
 
 
@@ -197,7 +185,7 @@ class MenuItem
         this.enabled = enabled;
         this.update();
     }
-    
+
 
 
     setVisible(visible)

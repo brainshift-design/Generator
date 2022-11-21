@@ -6,7 +6,7 @@ var currentMenuButton = null;
 class Menu
 {
     parentMenu = null;
-    
+
     name;
     button   = null;
 
@@ -15,9 +15,9 @@ class Menu
 
     showIcons;
     showChecks;
-   
+
     overMenu = false;
-    
+
     items    = [];
     lastItem = null;
 
@@ -38,8 +38,8 @@ class Menu
         this.div               = createDiv('menu');
         this.divArrow          = createDiv('menuArrow');
 
-        this.div.addEventListener('pointerenter', e => this.overMenu = true );
-        this.div.addEventListener('pointerleave', e => this.overMenu = false);
+        this.div.addEventListener('pointerenter', () => this.overMenu = true );
+        this.div.addEventListener('pointerleave', () => this.overMenu = false);
     }
 
 
@@ -75,6 +75,31 @@ class Menu
 
 
 
+    initMenu()
+    {
+        if (this.init)
+            this.init();
+
+
+        let width = 0;
+
+        utilContext.font = '13px Inter';
+
+
+        for (const item of this.items)
+        {
+            const mesName     = utilContext.measureText(item.name);
+            const mesShortcut = utilContext.measureText(item.shortcut);
+
+            width = Math.max(width, mesName.width + mesShortcut.width + 30);
+        }
+
+
+        this.div.style.width = Math.max(100, width) + 'px';
+    }
+
+
+
     show(srcDiv, right = false)
     {
         this.initMenu();
@@ -82,7 +107,7 @@ class Menu
 
         this.div.style.display = 'block';
         this.div.style.opacity = '100%';
-    
+
 
         if (!right)
         {
@@ -94,86 +119,66 @@ class Menu
         document.body.appendChild(this.div     );
         document.body.appendChild(this.divArrow);
 
-    
+
         let srcRect = srcDiv.getBoundingClientRect();
-    
+
         srcRect.y -= 5;
-    
-    
+
+
         const margin = 8;
-     
+
         this.div.style.left = Math.min(Math.max(
             margin, 
             right
             ? srcRect.x + srcRect.width 
             : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2),
             graphView.offsetWidth - this.div.offsetWidth - margin);
-    
+
         this.div.style.top = 
             right
             ? srcRect.y - 3
             : srcRect.y + srcRect.height + this.divArrow.offsetHeight;
 
-        
+
         this.divArrow.style.left = srcRect.x + srcRect.width/2;
-        
-    
+
+
         const menuRect = this.div.getBoundingClientRect();
-    
+
         this.divArrow.style.top = menuRect.y - this.divArrow.offsetHeight;
-    
-    
+
+
         currentMenus.push(this);
 
 
         if (this.button)
             this.button.update();
     }
-    
-    
-    
-    showAt(x, y)
+
+
+
+    showAt(x, y, hidePrev = true)
     {
+        if (hidePrev)
+            hideAllMenus();
+
+
         this.initMenu();
 
 
         this.div.style.display = 'block';
         this.div.style.opacity = '100%';
-    
+
         document.body.appendChild(this.div);
-    
+
+
         const margin = 8;
-     
+
         this.div.style.left = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
         this.div.style.top  = y - 4;
-    
+
 
         currentMenus.push(this);
-    }
-    
-    
-    
-    initMenu()
-    {
-        if (this.init)
-            this.init();
-
-
-        let width = 0;
-        
-        utilContext.font = '13px Inter';
-        
-
-        for (const item of this.items)
-        {
-            const mesName     = utilContext.measureText(item.name);
-            const mesShortcut = utilContext.measureText(item.shortcut);
-    
-            width = Math.max(width, mesName.width + mesShortcut.width + 30);
-        }
-
-
-        this.div.style.width = Math.max(100, width);
     }
 
 
@@ -189,7 +194,7 @@ class Menu
 
         this.div     .style.display = 'none';
         this.div     .style.opacity = '0%';
-    
+
         this.divArrow.style.display = 'none';
         this.divArrow.style.opacity = '0%';
 

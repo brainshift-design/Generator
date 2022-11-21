@@ -118,10 +118,10 @@ generator.onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                             break;
-        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.updateNodeId, msg.updateParamId, msg.values, msg.objects);                        break;
-        case 'uiStartNodeProgress':      uiStartNodeProgress     (msg.nodeId);                                                                          break;
-        case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                                            break;
+        case 'uiEndGenMessage':          uiEndGenMessage();                                                                      break;
+        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.updateNodeId, msg.updateParamId, msg.values, msg.objects); break;
+        case 'uiStartNodeProgress':      uiStartNodeProgress     (msg.nodeId);                                                   break;
+        case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                     break;
     }
 };
 

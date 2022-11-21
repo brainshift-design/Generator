@@ -103,7 +103,7 @@ var menuItemLogLoading;
 var menuItemLogRawRequests;
 var menuItemLogRawValues;
 var menuItemLogRequests;
-var menuItemLogValueUpdates
+var menuItemLogValueUpdates;
 var menuItemLogObjectUpdates;
 
 var menuItemZoomTo100;
