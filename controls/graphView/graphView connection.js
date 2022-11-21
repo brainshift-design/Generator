@@ -98,6 +98,7 @@ graphView.endConnection = pointerId =>
                 if (savedConnInput.connectedOutput != output)
                     actionManager.do(new ReconnectAction(output, savedConnInput, input));
             }
+
             else if (   !savedConnInput
                      && (  !input.connected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new

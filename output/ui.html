@@ -5137,7 +5137,7 @@ function logReqList(list, nValues, parse)
 
 function logReqListItems(list, parse)
 {
-    parse.log += parse.tab + LIST_ITEMS;
+    parse.log += parse.tab + ITEMS;
     parse.log += logReqNodeId(list);
 }
 
@@ -5499,20 +5499,21 @@ const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
 const LIST_VALUE = 'LIST#';
 const LIST       = 'LIST';
 
-const LIST_ITEMS = 'ITEMS';
+const ITEMS      = 'ITEMS';
+
 
 const LIST_TYPES =
 [
     LIST_VALUE,
     LIST,
-    LIST_ITEMS
+    ITEMS
 ];
 
 
 const FLOW_TYPES =
 [
     ...LIST_TYPES,
-    LIST_ITEMS
+    ITEMS
 ];
 
 
@@ -7885,7 +7886,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(LIST_ITEMS, nodeId, options);
+        super(ITEMS, nodeId, options);
     }
 
 
@@ -11999,7 +12000,7 @@ function genParseList(parse)
 
 
 
-function genParseListItems(parse)
+function genParseItems(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
@@ -12981,7 +12982,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == LIST_VALUE        ) result = genParseListValue       (parse);
     else if (parse.next == LIST              ) result = genParseList            (parse);
-    else if (parse.next == LIST_ITEMS        ) result = genParseListItems       (parse);
+    else if (parse.next == ITEMS             ) result = genParseItems           (parse);
 
     else if (parse.next == NUMBER_VALUE      ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER            ) result = genParseNumber          (parse);
@@ -18316,7 +18317,7 @@ function logReqList(list, nValues, parse)
 
 function logReqListItems(list, parse)
 {
-    parse.log += parse.tab + LIST_ITEMS;
+    parse.log += parse.tab + ITEMS;
     parse.log += logReqNodeId(list);
 }
 
@@ -20285,20 +20286,21 @@ const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
 const LIST_VALUE = 'LIST#';
 const LIST       = 'LIST';
 
-const LIST_ITEMS = 'ITEMS';
+const ITEMS      = 'ITEMS';
+
 
 const LIST_TYPES =
 [
     LIST_VALUE,
     LIST,
-    LIST_ITEMS
+    ITEMS
 ];
 
 
 const FLOW_TYPES =
 [
     ...LIST_TYPES,
-    LIST_ITEMS
+    ITEMS
 ];
 
 
@@ -22671,7 +22673,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(LIST_ITEMS, nodeId, options);
+        super(ITEMS, nodeId, options);
     }
 
 
@@ -26967,7 +26969,8 @@ function initGeneratorMenus()
         //     }
         // }),
         menuItemDataMode   = new MenuItem('Restart in debug mode',    {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        )}),
-        //                   new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
+                             new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
+                             new MenuItem('',                         {separator: true}),
         menuItemDebugLog   = new MenuItem('Log',                      {childMenu: menuDebugLog })]);
 
 
@@ -26988,8 +26991,8 @@ function initGeneratorMenus()
         
     menuFlow = new Menu('Flow nodes', true, false);
     menuFlow.addItems([
-        new MenuItem('List',  {icon: iconList,      callback: e => actionManager.do(new CreateNodeAction(LIST,       btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Items', {icon: iconListItems, callback: e => actionManager.do(new CreateNodeAction(LIST_ITEMS, btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('List',  {icon: iconList,      callback: e => actionManager.do(new CreateNodeAction(LIST,  btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Items', {icon: iconListItems, callback: e => actionManager.do(new CreateNodeAction(ITEMS, btnNumber.div, {insert: e.shiftKey}))})]);
     
     
     menuNumber = new Menu('Number nodes', true, false);
@@ -27031,9 +27034,9 @@ function initGeneratorMenus()
     
     menuStyle = new Menu('Style nodes', true, false);
     menuStyle.addItems([
-        new MenuItem('Solid fill', {icon: iconFill  , callback: e => actionManager.do(new CreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Stroke',     {icon: iconStroke, callback: e => actionManager.do(new CreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Style',      {icon: iconStyle , callback: e => actionManager.do(new CreateNodeAction(STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Fill',   {icon: iconFill  , callback: e => actionManager.do(new CreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Stroke', {icon: iconStroke, callback: e => actionManager.do(new CreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Style',  {icon: iconStyle , callback: e => actionManager.do(new CreateNodeAction(STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
     
     
     menuShape = new Menu('Shape nodes', true, false);
@@ -31022,8 +31025,7 @@ graphView.addEventListener('pointerdown', e =>
 
                 updateConnWires(graphView.tempConn, sx, sy);
 
-                graphView.savedConn       = graphView.overInput.connection;
-                //graphView.savedInputIndex = graphView.overInput.index;
+                graphView.savedConn = graphView.overInput.connection;
 
                 hide(graphView.savedConn.wire2);
                 hide(graphView.savedConn.wire);
@@ -31750,6 +31752,7 @@ graphView.endConnection = pointerId =>
                 if (savedConnInput.connectedOutput != output)
                     actionManager.do(new ReconnectAction(output, savedConnInput, input));
             }
+
             else if (   !savedConnInput
                      && (  !input.connected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new
@@ -34254,7 +34257,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     switch (nodeType)
     {
         case LIST:               node = new OpList();             break;
-        case LIST_ITEMS:         node = new OpListItems();        break;
+        case ITEMS:              node = new OpItems();            break;
 
         case NUMBER:             node = new OpNumber();           break;
         case NUMBER_LIMITS:      node = new OpLimits();           break;
@@ -34772,7 +34775,7 @@ extends EventTarget
     }
 
 
-    _node  = null; get node () { return this._node;  }
+    _node  = null; get node () { return this._param ? this._param.node : this._node; }
     _param = null; get param() { return this._param; }
 
 
@@ -35023,8 +35026,8 @@ class Output
     types = []; // an output can have multiple types
 
     
-    _node  = null;  get node () { return this._node;  }
-    _param = null;  get param() { return this._param; }
+    _node  = null; get node () { return this._param ? this._param.node : this._node; }
+    _param = null; get param() { return this._param; }
     
     
     get id()    { return this.node.getOutputId(this);     }
@@ -35039,18 +35042,18 @@ class Output
     div;
     hitbox;
     wireBall;
-    
-    
-    connectedInputs = [];
-    
-    mouseOver  = false;
-    connecting = false;
 
-    overFactor = 1.7;
-    
-    
-    genRequest = null; // function pointer, must be implemented
-    cache      = [];
+
+    connectedInputs = [];
+
+    mouseOver       = false;
+    connecting      = false;
+
+    overFactor      = 1.7;
+
+
+    genRequest      = null; // function pointer, must be implemented
+    cache           = [];
 
 
     _data;
@@ -35407,7 +35410,7 @@ class Connection
             if (this.wire.input)
                 this.wire.input.updateControl();
 
-                
+
             //const listType = this.output.supports(LIST_TYPES);
 
 
@@ -35661,15 +35664,11 @@ class Connection
 
 
         if (   !outputNode 
-            ||    isDigit(outputId[0])
-               && parseInt(outputId) >= outputNode.outputs.length
-            ||   !isDigit(outputId[0])
-               && !outputNode.params.find(p => p.id == outputId && p.output)
+            ||    isDigit(outputId[0]) && parseInt(outputId) >= outputNode.outputs.length
+            ||   !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
             || !inputNode  
-            ||    isDigit(inputId[0])
-               && parseInt(inputId) >= inputNode.inputs.length
-            ||   !isDigit(inputId[0])
-               && !inputNode.params.find(p => p.id == inputId && p.input))
+            ||    isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
+            ||   !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
         {
             uiError('cannot connect ' + connToString(_conn));
             return null;
@@ -35965,10 +35964,10 @@ class Operator
     {
         const outputs = this.outputs.filter(o => inputTypes.includes(o.type));
 
-        return     outputs.length == 1
-               && !this.isOrFollows(graphView.tempConn.input.node)
-               ? outputs[0]
-               : null;
+        return  outputs.length == 1
+            && !this.isOrFollows(graphView.tempConn.input.node)
+            ? outputs[0]
+            : null;
     }
 
 
@@ -35990,13 +35989,13 @@ class Operator
 
         if (param.input)
         {
-            param.input._node = this;
+            //param.input._node = this;
             this.inputs.push(param.input);
         }
 
         if (param.output)
         {
-            param.output._node = this;
+            //param.output._node = this;
             this.outputs.push(param.output);
         }
     }
@@ -37804,7 +37803,7 @@ function OpList_onDisconnectInput(node, input)
 }
 
 
-class   OpListItems
+class   OpItems
 extends OperatorBase
 {
     paramValue;
@@ -37813,7 +37812,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(LIST_ITEMS, 'items', 100);
+        super(ITEMS, 'items', 100);
 
         this.addInput (new Input (LIST_TYPES, this.input_getValuesForUndo));
 
@@ -37868,7 +37867,12 @@ extends OperatorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        this.removeAllParams();
+        //this.removeAllParams();
+        for (const param of this.params)
+        {
+            if (!paramIds.includes(param.id))
+                this.removeParam(param);
+        }
 
 
         if (   paramIds.length > 1
@@ -37880,7 +37884,8 @@ extends OperatorBase
                 const value = values[i];
                 const id    = 'item' + i;
 
-                this.addParamByType(value.type, id, false, false, true);
+                if (!this.params.find(p => p.id == id))
+                    this.addParamByType(value.type, id, false, false, true);
             }
         }
 
@@ -42403,7 +42408,7 @@ extends Action
         this.outputId        = output.id;
    
         this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
-        this.oldOutputIi     = oldOutputId;
+        this.oldOutputId     = oldOutputId;
    
         this.inputNodeId     = input.node.id;
         this.inputId         = input.id;

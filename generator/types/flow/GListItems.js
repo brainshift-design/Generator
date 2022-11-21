@@ -8,7 +8,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(LIST_ITEMS, nodeId, options);
+        super(ITEMS, nodeId, options);
     }
 
 

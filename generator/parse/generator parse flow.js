@@ -53,7 +53,7 @@ function genParseList(parse)
 
 
 
-function genParseListItems(parse)
+function genParseItems(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 

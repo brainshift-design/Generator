@@ -253,10 +253,10 @@ class Operator
     {
         const outputs = this.outputs.filter(o => inputTypes.includes(o.type));
 
-        return     outputs.length == 1
-               && !this.isOrFollows(graphView.tempConn.input.node)
-               ? outputs[0]
-               : null;
+        return  outputs.length == 1
+            && !this.isOrFollows(graphView.tempConn.input.node)
+            ? outputs[0]
+            : null;
     }
 
 
@@ -278,13 +278,13 @@ class Operator
 
         if (param.input)
         {
-            param.input._node = this;
+            //param.input._node = this;
             this.inputs.push(param.input);
         }
 
         if (param.output)
         {
-            param.output._node = this;
+            //param.output._node = this;
             this.outputs.push(param.output);
         }
     }

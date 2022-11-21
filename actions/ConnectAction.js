@@ -45,7 +45,7 @@ extends Action
         this.outputId        = output.id;
    
         this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
-        this.oldOutputIi     = oldOutputId;
+        this.oldOutputId     = oldOutputId;
    
         this.inputNodeId     = input.node.id;
         this.inputId         = input.id;

@@ -2794,7 +2794,7 @@ function logReqList(list, nValues, parse)
 
 function logReqListItems(list, parse)
 {
-    parse.log += parse.tab + LIST_ITEMS;
+    parse.log += parse.tab + ITEMS;
     parse.log += logReqNodeId(list);
 }
 
@@ -3156,20 +3156,21 @@ const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
 const LIST_VALUE = 'LIST#';
 const LIST       = 'LIST';
 
-const LIST_ITEMS = 'ITEMS';
+const ITEMS      = 'ITEMS';
+
 
 const LIST_TYPES =
 [
     LIST_VALUE,
     LIST,
-    LIST_ITEMS
+    ITEMS
 ];
 
 
 const FLOW_TYPES =
 [
     ...LIST_TYPES,
-    LIST_ITEMS
+    ITEMS
 ];
 
 
@@ -5542,7 +5543,7 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(LIST_ITEMS, nodeId, options);
+        super(ITEMS, nodeId, options);
     }
 
 
@@ -9656,7 +9657,7 @@ function genParseList(parse)
 
 
 
-function genParseListItems(parse)
+function genParseItems(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
@@ -10638,7 +10639,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == LIST_VALUE        ) result = genParseListValue       (parse);
     else if (parse.next == LIST              ) result = genParseList            (parse);
-    else if (parse.next == LIST_ITEMS        ) result = genParseListItems       (parse);
+    else if (parse.next == ITEMS             ) result = genParseItems           (parse);
 
     else if (parse.next == NUMBER_VALUE      ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER            ) result = genParseNumber          (parse);

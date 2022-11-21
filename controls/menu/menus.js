@@ -175,7 +175,8 @@ function initGeneratorMenus()
         //     }
         // }),
         menuItemDataMode   = new MenuItem('Restart in debug mode',    {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        )}),
-        //                   new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
+                             new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
+                             new MenuItem('',                         {separator: true}),
         menuItemDebugLog   = new MenuItem('Log',                      {childMenu: menuDebugLog })]);
 
 
@@ -196,8 +197,8 @@ function initGeneratorMenus()
         
     menuFlow = new Menu('Flow nodes', true, false);
     menuFlow.addItems([
-        new MenuItem('List',  {icon: iconList,      callback: e => actionManager.do(new CreateNodeAction(LIST,       btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Items', {icon: iconListItems, callback: e => actionManager.do(new CreateNodeAction(LIST_ITEMS, btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('List',  {icon: iconList,      callback: e => actionManager.do(new CreateNodeAction(LIST,  btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Items', {icon: iconListItems, callback: e => actionManager.do(new CreateNodeAction(ITEMS, btnNumber.div, {insert: e.shiftKey}))})]);
     
     
     menuNumber = new Menu('Number nodes', true, false);
@@ -239,9 +240,9 @@ function initGeneratorMenus()
     
     menuStyle = new Menu('Style nodes', true, false);
     menuStyle.addItems([
-        new MenuItem('Solid fill', {icon: iconFill  , callback: e => actionManager.do(new CreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Stroke',     {icon: iconStroke, callback: e => actionManager.do(new CreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Style',      {icon: iconStyle , callback: e => actionManager.do(new CreateNodeAction(STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Fill',   {icon: iconFill  , callback: e => actionManager.do(new CreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Stroke', {icon: iconStroke, callback: e => actionManager.do(new CreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Style',  {icon: iconStyle , callback: e => actionManager.do(new CreateNodeAction(STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
     
     
     menuShape = new Menu('Shape nodes', true, false);

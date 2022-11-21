@@ -79,20 +79,21 @@ const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
 const LIST_VALUE = 'LIST#';
 const LIST       = 'LIST';
 
-const LIST_ITEMS = 'ITEMS';
+const ITEMS      = 'ITEMS';
+
 
 const LIST_TYPES =
 [
     LIST_VALUE,
     LIST,
-    LIST_ITEMS
+    ITEMS
 ];
 
 
 const FLOW_TYPES =
 [
     ...LIST_TYPES,
-    LIST_ITEMS
+    ITEMS
 ];
 
 

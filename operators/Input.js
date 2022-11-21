@@ -12,7 +12,7 @@ extends EventTarget
     }
 
 
-    _node  = null; get node () { return this._node;  }
+    _node  = null; get node () { return this._param ? this._param.node : this._node; }
     _param = null; get param() { return this._param; }
 
 

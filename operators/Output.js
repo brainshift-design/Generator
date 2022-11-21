@@ -3,8 +3,8 @@ class Output
     types = []; // an output can have multiple types
 
     
-    _node  = null;  get node () { return this._node;  }
-    _param = null;  get param() { return this._param; }
+    _node  = null; get node () { return this._param ? this._param.node : this._node; }
+    _param = null; get param() { return this._param; }
     
     
     get id()    { return this.node.getOutputId(this);     }
@@ -19,18 +19,18 @@ class Output
     div;
     hitbox;
     wireBall;
-    
-    
-    connectedInputs = [];
-    
-    mouseOver  = false;
-    connecting = false;
 
-    overFactor = 1.7;
-    
-    
-    genRequest = null; // function pointer, must be implemented
-    cache      = [];
+
+    connectedInputs = [];
+
+    mouseOver       = false;
+    connecting      = false;
+
+    overFactor      = 1.7;
+
+
+    genRequest      = null; // function pointer, must be implemented
+    cache           = [];
 
 
     _data;

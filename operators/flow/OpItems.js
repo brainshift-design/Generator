@@ -1,4 +1,4 @@
-class   OpListItems
+class   OpItems
 extends OperatorBase
 {
     paramValue;
@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(LIST_ITEMS, 'items', 100);
+        super(ITEMS, 'items', 100);
 
         this.addInput (new Input (LIST_TYPES, this.input_getValuesForUndo));
 
@@ -62,7 +62,12 @@ extends OperatorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        this.removeAllParams();
+        //this.removeAllParams();
+        for (const param of this.params)
+        {
+            if (!paramIds.includes(param.id))
+                this.removeParam(param);
+        }
 
 
         if (   paramIds.length > 1
@@ -74,7 +79,8 @@ extends OperatorBase
                 const value = values[i];
                 const id    = 'item' + i;
 
-                this.addParamByType(value.type, id, false, false, true);
+                if (!this.params.find(p => p.id == id))
+                    this.addParamByType(value.type, id, false, false, true);
             }
         }
 

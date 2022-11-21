@@ -298,7 +298,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     switch (nodeType)
     {
         case LIST:               node = new OpList();             break;
-        case LIST_ITEMS:         node = new OpListItems();        break;
+        case ITEMS:              node = new OpItems();            break;
 
         case NUMBER:             node = new OpNumber();           break;
         case NUMBER_LIMITS:      node = new OpLimits();           break;

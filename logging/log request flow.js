@@ -16,6 +16,6 @@ function logReqList(list, nValues, parse)
 
 function logReqListItems(list, parse)
 {
-    parse.log += parse.tab + LIST_ITEMS;
+    parse.log += parse.tab + ITEMS;
     parse.log += logReqNodeId(list);
 }
