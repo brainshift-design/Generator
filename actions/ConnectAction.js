@@ -112,7 +112,7 @@ extends Action
     undo()
     {
 
-        uiDisconnect(this.inputNode.inputFromId(inputId));
+        uiDisconnect(this.inputNode.inputFromId(this.inputId));
 
 
         if (this.oldOutputNodeId != '')
