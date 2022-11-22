@@ -37876,14 +37876,8 @@ extends OperatorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        for (const param of this.params)
-        {
-            const paramIndex = paramIds.findIndex(id => id == param.id);
-
-            if (   paramIndex < 0
-                || values[paramIndex].type != param.type)
-                this.removeParam(param);
-        }
+        const oldParams = [...this.params];
+        this.removeAllParams();
 
 
         if (   paramIds.length > 1
@@ -37895,8 +37889,12 @@ extends OperatorBase
                 const value = values[i];
                 const id    = 'item' + i;
 
-                if (!this.params.find(p => p.id == id))
-                    this.addParamByType(value.type, id, false, false, true);
+                const param = oldParams.find(p => 
+                       p.id   == id
+                    && p.type == value.type);
+
+                if (param) this.addParam(param);
+                else       this.addParamByType(value.type, id, false, false, true);
             }
         }
 
