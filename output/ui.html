@@ -34119,15 +34119,21 @@ class Graph
         {
             input = lastOf(input.node.headerInputs);
             
+            const inputIndex = 
+                   inputId != ''
+                && isDigit(inputId[0])
+                ? parseInt(inputId)
+                : input.index;
+
             // move new input back to correct index
             moveInArray(
                 input.node.inputs, 
                 input.node.headerInputs.length-1, 
-                input.index); //inputIndex
+                inputIndex);
 
             input.node.inputControls.insertBefore(
                 lastOf(input.node.inputControls.childNodes), 
-                input.node.inputControls.childNodes[input.index]);//[inputIndex]);
+                input.node.inputControls.childNodes[inputIndex]);
         }
 
 
@@ -42946,6 +42952,7 @@ extends Action
             this.outputNode, this.outputId, 
             this. inputNode, this. inputId);
 
+            
         for (const id of this.newActiveNodeIds)
         {
             uiMakeNodePassive(nodeFromId(id));
@@ -46488,6 +46495,49 @@ function uiConnect(output, input, inputId = '')
 
     return conn;
 }
+
+
+
+// function uiVariableConnectByIndex(outputNode, outputIndex, inputNode, inputIndex)
+// {
+//     //console.log('uiVariableConnect()');
+
+//     if (inputNode.variableInputs)
+//     {
+//         const input = lastOf(inputNode.inputs);
+
+//         const conn = uiConnectByIndex(
+//             outputNode.outputs[outputIndex],
+//             input,
+//             inputIndex);
+
+//         uiUpdateSavedConnectionsToNodeId(inputNode.id);
+
+//         return conn;
+//     }
+//     else
+//     {
+//         return uiConnect(
+//             outputNode.outputs[outputIndex],
+//              inputNode. inputs[ inputIndex]);
+//     }
+// }
+
+
+
+// function uiConnectByIndex(output, input, inputIndex = -1)
+// {
+//     const conn = graph.connect(output, input, inputIndex);
+
+//     uiSaveConnection(
+//         output.node.id,
+//         output.index,
+//         input.node.id,
+//         input.index,
+//         conn.toJson());
+
+//     return conn;
+// }
 
 
 

@@ -157,15 +157,21 @@ class Graph
         {
             input = lastOf(input.node.headerInputs);
             
+            const inputIndex = 
+                   inputId != ''
+                && isDigit(inputId[0])
+                ? parseInt(inputId)
+                : input.index;
+
             // move new input back to correct index
             moveInArray(
                 input.node.inputs, 
                 input.node.headerInputs.length-1, 
-                input.index); //inputIndex
+                inputIndex);
 
             input.node.inputControls.insertBefore(
                 lastOf(input.node.inputControls.childNodes), 
-                input.node.inputControls.childNodes[input.index]);//[inputIndex]);
+                input.node.inputControls.childNodes[inputIndex]);
         }
 
 

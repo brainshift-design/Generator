@@ -76,6 +76,7 @@ extends Action
             this.outputNode, this.outputId, 
             this. inputNode, this. inputId);
 
+            
         for (const id of this.newActiveNodeIds)
         {
             uiMakeNodePassive(nodeFromId(id));

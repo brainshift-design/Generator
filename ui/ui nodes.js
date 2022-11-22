@@ -536,6 +536,49 @@ function uiConnect(output, input, inputId = '')
 
 
 
+// function uiVariableConnectByIndex(outputNode, outputIndex, inputNode, inputIndex)
+// {
+//     //console.log('uiVariableConnect()');
+
+//     if (inputNode.variableInputs)
+//     {
+//         const input = lastOf(inputNode.inputs);
+
+//         const conn = uiConnectByIndex(
+//             outputNode.outputs[outputIndex],
+//             input,
+//             inputIndex);
+
+//         uiUpdateSavedConnectionsToNodeId(inputNode.id);
+
+//         return conn;
+//     }
+//     else
+//     {
+//         return uiConnect(
+//             outputNode.outputs[outputIndex],
+//              inputNode. inputs[ inputIndex]);
+//     }
+// }
+
+
+
+// function uiConnectByIndex(output, input, inputIndex = -1)
+// {
+//     const conn = graph.connect(output, input, inputIndex);
+
+//     uiSaveConnection(
+//         output.node.id,
+//         output.index,
+//         input.node.id,
+//         input.index,
+//         conn.toJson());
+
+//     return conn;
+// }
+
+
+
 function uiDisconnect(input)
 {
     //console.log('uiDisconnect()');
