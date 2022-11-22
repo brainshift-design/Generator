@@ -1,4 +1,4 @@
-class GListItems
+class GItems
 extends GOperator
 {
     input = null;
@@ -15,7 +15,7 @@ extends GOperator
 
     copy()
     {
-        const items = new GListItems(this.nodeId, this.options);
+        const items = new GItems(this.nodeId, this.options);
         
         items.copyBase(this);
 
@@ -27,6 +27,15 @@ extends GOperator
 
         return items;
     }
+
+
+
+    // canBeValid()
+    // {
+    //     return this.input
+    //          ? this.input.canBeValid()
+    //          : super.canBeValid();
+    // }
 
 
 
@@ -63,7 +72,7 @@ extends GOperator
         }
         
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }

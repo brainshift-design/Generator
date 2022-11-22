@@ -62,7 +62,7 @@ function genParseLimits(parse)
     
     if (!ignore)
     {
-        nValues = parse.move();
+        nValues = parseInt(parse.move());
         console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
     }
 

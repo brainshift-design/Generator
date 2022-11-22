@@ -2792,7 +2792,7 @@ function logReqList(list, nValues, parse)
 
 
 
-function logReqListItems(items, parse)
+function logReqItems(items, parse)
 {
     parse.log += parse.tab + ITEMS;
     parse.log += logReqNodeId(items);
@@ -2800,10 +2800,11 @@ function logReqListItems(items, parse)
 
 
 
-function logReqRepeat(rep, parse)
+function logReqRepeat(rep, nValues, parse)
 {
     parse.log += parse.tab + REPEAT;
     parse.log += logReqNodeId(rep);
+    parse.log += ' ' + nValues;
 }
 
 
@@ -3166,16 +3167,18 @@ const LIST               = 'LIST';
 
 const ITEMS              = 'ITEMS';
 
+const REPEAT             = 'REP';
+
 
 const LIST_TYPES =
 [
     LIST_VALUE,
     LIST,
-    ITEMS
+    ITEMS,
+    REPEAT
 ];
 
 
-const REPEAT             = 'REP';
 const FOREACH            = 'FOR';
 
 
@@ -3413,6 +3416,21 @@ class GValue
 
         this.options  = clone(src.options);
         this.data     = clone(src.data);
+    }
+
+
+
+    // canBeValid()
+    // {
+    //     return true;
+    // }
+
+
+
+    validate()
+    {
+        //if (this.canBeValid())
+            this.valid = true;
     }
 
 
@@ -5506,6 +5524,18 @@ extends GOperator
 
 
 
+    // canBeValid()
+    // {
+    //     let canBeValid = true;
+
+    //     for (const input of this.inputs)
+    //         canBeValid &= input.canBeValid();
+
+    //     return canBeValid;
+    // }
+
+
+
     eval(parse)
     {
         if (this.valid)
@@ -5532,7 +5562,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -5547,7 +5577,7 @@ extends GOperator
 
 
 
-class GListItems
+class GItems
 extends GOperator
 {
     input = null;
@@ -5564,7 +5594,7 @@ extends GOperator
 
     copy()
     {
-        const items = new GListItems(this.nodeId, this.options);
+        const items = new GItems(this.nodeId, this.options);
         
         items.copyBase(this);
 
@@ -5576,6 +5606,15 @@ extends GOperator
 
         return items;
     }
+
+
+
+    // canBeValid()
+    // {
+    //     return this.input
+    //          ? this.input.canBeValid()
+    //          : super.canBeValid();
+    // }
 
 
 
@@ -5612,7 +5651,7 @@ extends GOperator
         }
         
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -5663,9 +5702,19 @@ extends GOperator
         if (this.input) rep.input = this.input.copy();
 
         rep.count = this.count.copy();
+        rep.value = this.value.copy();
 
         return rep;
     }
+
+
+
+    // canBeValid()
+    // {
+    //     return this.input
+    //          ? this.input.canBeValid()
+    //          : super.canBeValid();
+    // }
 
 
 
@@ -5703,7 +5752,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'count', count);
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -5773,6 +5822,15 @@ extends GNumberType
 
 
 
+    // canBeValid()
+    // {
+    //     return this.input
+    //          ? this.input.canBeValid()
+    //          : super.canBeValid();
+    // }
+
+
+
     eval(parse)
     {
         if (this.valid)
@@ -5792,7 +5850,7 @@ extends GNumberType
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -5851,6 +5909,15 @@ extends GNumberType
 
 
 
+    // canBeValid()
+    // {
+    //     return this.input
+    //          ? this.input.canBeValid()
+    //          : super.canBeValid();
+    // }
+
+
+
     eval(parse)
     {
         if (this.valid)
@@ -5890,7 +5957,7 @@ extends GNumberType
         genPushUpdateValue(parse, this.nodeId, 'max',   max);
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -5940,6 +6007,13 @@ extends GNumberType
 
 
 
+    // canBeValid()
+    // {
+    //     return false;
+    // }
+
+
+
     eval(parse)
     {
         if (!this.valid)
@@ -5964,15 +6038,15 @@ extends GNumberType
             Math.max(min.decimals, max.decimals));
 
 
-        if (!this.valid)
-        {
+        //if (!this.valid)
+        //{
             genPushUpdateValue(parse, this.nodeId, 'seed', seed);
             genPushUpdateValue(parse, this.nodeId, 'min',  min );
             genPushUpdateValue(parse, this.nodeId, 'max',  max );
-        }
+        //}
         
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -5984,6 +6058,18 @@ class GArithmetic
 extends GNumberType
 {
     inputs = [];
+
+
+
+    // canBeValid()
+    // {
+    //     let canBeValid = true;
+
+    //     for (const input of this.inputs)
+    //         canBeValid &= input.canBeValid();
+
+    //     return canBeValid;
+    // }
 }
 
 
@@ -6042,7 +6128,7 @@ extends GArithmetic
         genPushUpdateValue(parse, this.nodeId, 'operation', op);
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -6079,7 +6165,7 @@ extends GArithmetic
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -6143,7 +6229,7 @@ extends GArithmetic
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -6217,7 +6303,7 @@ extends GArithmetic
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -6286,7 +6372,7 @@ extends GArithmetic
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -6367,7 +6453,7 @@ extends GArithmetic
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -6448,7 +6534,7 @@ extends GArithmetic
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -6568,7 +6654,7 @@ extends GNumberType
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -6744,7 +6830,7 @@ extends GColorType
         // }
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -6902,7 +6988,7 @@ extends GColorType
         genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
 
 
-        this.valid = true;
+        this.validate();
         
         return this;
     }
@@ -7075,7 +7161,7 @@ extends GColorType
         genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -7114,6 +7200,15 @@ extends GColorType
 
         return cb;
     }
+
+
+
+    // canBeValid()
+    // {
+    //     return this.input
+    //          ? this.input.canBeValid()
+    //          : super.canBeValid();
+    // }
 
 
 
@@ -7177,7 +7272,7 @@ extends GColorType
         genPushUpdateValue(parse, this.nodeId, 's',     s         );
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -7223,6 +7318,15 @@ extends GColorType
 
         return val;
     }
+
+
+
+    // canBeValid()
+    // {
+    //     return this.input
+    //          ? this.input.canBeValid()
+    //          : super.canBeValid();
+    // }
 
 
 
@@ -7311,8 +7415,8 @@ extends GColorType
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-        
-        this.valid = true;
+
+        this.validate();
 
         return this;
     }
@@ -7981,7 +8085,7 @@ extends GShapeBase
         else                  this.evalObjects();
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -8116,7 +8220,7 @@ extends GShapeBase
         else                  this.evalObjects();
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -8247,7 +8351,7 @@ extends GShapeBase
         else                  this.evalObjects();
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
    }
@@ -8390,7 +8494,7 @@ extends GShapeBase
         else                  this.evalObjects();
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -8545,7 +8649,7 @@ extends GShapeBase
         else                  this.evalObjects();
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
    }
@@ -8682,7 +8786,7 @@ extends GShapeBase
             this.evalObjects();
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -8823,7 +8927,7 @@ extends GShapeBase
             this.evalObjects();
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }
@@ -9763,11 +9867,11 @@ function genParseItems(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const items = new GListItems(nodeId, options);
+    const items = new GItems(nodeId, options);
 
     
     if (parse.settings.logRequests) 
-        logReqListItems(items, parse);
+        logReqItems(items, parse);
 
 
     if (ignore) 
@@ -9805,13 +9909,13 @@ function genParseRepeat(parse)
     
     if (!ignore)
     {
-        nValues = parse.move();
+        nValues = parseInt(parse.move());
         console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
     }
 
 
     if (parse.settings.logRequests) 
-        logReqRepeat(rep, parse);
+        logReqRepeat(rep, nValues, parse);
 
 
     if (ignore) 
@@ -9828,7 +9932,7 @@ function genParseRepeat(parse)
         rep.input = genParse(parse);
 
     rep.count = genParse(parse);
-    
+
 
     parse.nTab--;
 
@@ -9903,7 +10007,7 @@ function genParseLimits(parse)
     
     if (!ignore)
     {
-        nValues = parse.move();
+        nValues = parseInt(parse.move());
         console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
     }
 

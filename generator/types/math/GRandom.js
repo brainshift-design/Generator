@@ -33,6 +33,13 @@ extends GNumberType
 
 
 
+    // canBeValid()
+    // {
+    //     return false;
+    // }
+
+
+
     eval(parse)
     {
         if (!this.valid)
@@ -57,15 +64,15 @@ extends GNumberType
             Math.max(min.decimals, max.decimals));
 
 
-        if (!this.valid)
-        {
+        //if (!this.valid)
+        //{
             genPushUpdateValue(parse, this.nodeId, 'seed', seed);
             genPushUpdateValue(parse, this.nodeId, 'min',  min );
             genPushUpdateValue(parse, this.nodeId, 'max',  max );
-        }
+        //}
         
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }

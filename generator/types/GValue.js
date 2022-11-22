@@ -42,6 +42,21 @@ class GValue
 
 
 
+    // canBeValid()
+    // {
+    //     return true;
+    // }
+
+
+
+    validate()
+    {
+        //if (this.canBeValid())
+            this.valid = true;
+    }
+
+
+
     isValid() // is a valid value
     {
         return false;

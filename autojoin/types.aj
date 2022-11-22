@@ -32,7 +32,7 @@
 
 
 ../generator/types/flow/GList.js
-../generator/types/flow/GListItems.js
+../generator/types/flow/GItems.js
 ../generator/types/flow/GRepeat.js
 
 

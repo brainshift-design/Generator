@@ -23,9 +23,19 @@ extends GOperator
         if (this.input) rep.input = this.input.copy();
 
         rep.count = this.count.copy();
+        rep.value = this.value.copy();
 
         return rep;
     }
+
+
+
+    // canBeValid()
+    // {
+    //     return this.input
+    //          ? this.input.canBeValid()
+    //          : super.canBeValid();
+    // }
 
 
 
@@ -63,7 +73,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'count', count);
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }

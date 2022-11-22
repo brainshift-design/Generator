@@ -81,16 +81,18 @@ const LIST               = 'LIST';
 
 const ITEMS              = 'ITEMS';
 
+const REPEAT             = 'REP';
+
 
 const LIST_TYPES =
 [
     LIST_VALUE,
     LIST,
-    ITEMS
+    ITEMS,
+    REPEAT
 ];
 
 
-const REPEAT             = 'REP';
 const FOREACH            = 'FOR';
 
 

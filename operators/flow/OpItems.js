@@ -99,6 +99,9 @@ extends OperatorBase
             }
         }
 
+        else if (paramIds.length == 0)
+            this.removeAllParams();
+    
         
         super.updateValues(updateParamId, paramIds, values);
     }

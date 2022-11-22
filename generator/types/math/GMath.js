@@ -52,7 +52,7 @@ extends GArithmetic
         genPushUpdateValue(parse, this.nodeId, 'operation', op);
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }

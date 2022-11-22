@@ -75,7 +75,7 @@ extends GShapeBase
         else                  this.evalObjects();
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }

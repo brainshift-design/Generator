@@ -44,12 +44,13 @@ const DISPLAY_INVALID = INVALID; //'🤷‍♂️';
 const LIST_VALUE = 'LIST#';
 const LIST = 'LIST';
 const ITEMS = 'ITEMS';
+const REPEAT = 'REP';
 const LIST_TYPES = [
     LIST_VALUE,
     LIST,
-    ITEMS
+    ITEMS,
+    REPEAT
 ];
-const REPEAT = 'REP';
 const FOREACH = 'FOR';
 const FLOW_TYPES = [
     REPEAT,

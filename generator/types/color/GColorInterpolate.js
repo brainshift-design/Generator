@@ -111,7 +111,7 @@ extends GColorType
         genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
 
 
-        this.valid = true;
+        this.validate();
         
         return this;
     }

@@ -28,6 +28,18 @@ extends GOperator
 
 
 
+    // canBeValid()
+    // {
+    //     let canBeValid = true;
+
+    //     for (const input of this.inputs)
+    //         canBeValid &= input.canBeValid();
+
+    //     return canBeValid;
+    // }
+
+
+
     eval(parse)
     {
         if (this.valid)
@@ -54,7 +66,7 @@ extends GOperator
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }

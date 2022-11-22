@@ -143,7 +143,7 @@ extends GColorType
         // }
 
 
-        this.valid = true;
+        this.validate();
 
         return this;
     }

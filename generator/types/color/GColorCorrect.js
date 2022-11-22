@@ -39,6 +39,15 @@ extends GColorType
 
 
 
+    // canBeValid()
+    // {
+    //     return this.input
+    //          ? this.input.canBeValid()
+    //          : super.canBeValid();
+    // }
+
+
+
     eval(parse)
     {
         if (this.valid)
@@ -124,8 +133,8 @@ extends GColorType
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
-        
-        this.valid = true;
+
+        this.validate();
 
         return this;
     }

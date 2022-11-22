@@ -58,11 +58,11 @@ function genParseItems(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const items = new GListItems(nodeId, options);
+    const items = new GItems(nodeId, options);
 
     
     if (parse.settings.logRequests) 
-        logReqListItems(items, parse);
+        logReqItems(items, parse);
 
 
     if (ignore) 
@@ -100,13 +100,13 @@ function genParseRepeat(parse)
     
     if (!ignore)
     {
-        nValues = parse.move();
+        nValues = parseInt(parse.move());
         console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
     }
 
 
     if (parse.settings.logRequests) 
-        logReqRepeat(rep, parse);
+        logReqRepeat(rep, nValues, parse);
 
 
     if (ignore) 
@@ -123,7 +123,7 @@ function genParseRepeat(parse)
         rep.input = genParse(parse);
 
     rep.count = genParse(parse);
-    
+
 
     parse.nTab--;
 
