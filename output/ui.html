@@ -5135,10 +5135,18 @@ function logReqList(list, nValues, parse)
 
 
 
-function logReqListItems(list, parse)
+function logReqListItems(items, parse)
 {
     parse.log += parse.tab + ITEMS;
-    parse.log += logReqNodeId(list);
+    parse.log += logReqNodeId(items);
+}
+
+
+
+function logReqRepeat(rep, parse)
+{
+    parse.log += parse.tab + REPEAT;
+    parse.log += logReqNodeId(rep);
 }
 
 
@@ -5492,14 +5500,14 @@ function normalizeSeed(x)
 }
 
 
-const INVALID             = '?';
-const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
+const INVALID            = '?';
+const DISPLAY_INVALID    = INVALID;//'🤷‍♂️';
 
 
-const LIST_VALUE = 'LIST#';
-const LIST       = 'LIST';
+const LIST_VALUE         = 'LIST#';
+const LIST               = 'LIST';
 
-const ITEMS      = 'ITEMS';
+const ITEMS              = 'ITEMS';
 
 
 const LIST_TYPES =
@@ -5510,8 +5518,14 @@ const LIST_TYPES =
 ];
 
 
+const REPEAT             = 'REP';
+const FOREACH            = 'FOR';
+
+
 const FLOW_TYPES =
 [
+    REPEAT,
+    FOREACH,
     ...LIST_TYPES,
     ITEMS
 ];
@@ -7967,6 +7981,86 @@ extends GOperator
 }
 
 
+class GRepeat
+extends GOperator
+{
+    input = null;
+
+    value;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(REPEAT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const rep = new GRepeat(this.nodeId, this.options);
+
+        rep.copyBase(this);
+
+        if (this.input) rep.input = this.input.copy();
+
+        rep.count = this.count.copy();
+
+        return rep;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+
+        this.count = this.count.eval(parse).copy();
+        const count = this.count.toValue();        
+
+       
+        this.value = new ListValue();
+
+        if (this.input)
+        {
+            this.input = this.input.eval(parse).copy();
+            const input = this.input.toValue();
+
+            for (let i = 0; i < count.value; i++)
+            {
+                if (input.type == LIST_VALUE)
+                {
+                    for (const item of input.items)
+                        this.value.items.push(item);   
+                }
+                else
+                    this.value.items.push(input);
+            }
+        }
+
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'count', count);
+
+
+        this.valid = true;
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+
 class GNumberType
 extends GOperator
 {
@@ -8142,6 +8236,13 @@ extends GNumberType
         this.valid = true;
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
     }
 }
 
@@ -12035,6 +12136,52 @@ function genParseItems(parse)
 
 
 
+function genParseRepeat(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const rep = new GRepeat(nodeId, options);
+
+
+    let nValues = -1;
+    
+    if (!ignore)
+    {
+        nValues = parse.move();
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReqRepeat(rep, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, rep);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nValues == 1)
+        rep.input = genParse(parse);
+
+    rep.count = genParse(parse);
+    
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, rep);
+    return rep;
+}
+
+
+
 function genParseNumValue(parse)
 {
     parse.pos++; // N
@@ -12983,6 +13130,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST_VALUE        ) result = genParseListValue       (parse);
     else if (parse.next == LIST              ) result = genParseList            (parse);
     else if (parse.next == ITEMS             ) result = genParseItems           (parse);
+    else if (parse.next == REPEAT            ) result = genParseRepeat          (parse);
 
     else if (parse.next == NUMBER_VALUE      ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER            ) result = genParseNumber          (parse);
@@ -18315,10 +18463,18 @@ function logReqList(list, nValues, parse)
 
 
 
-function logReqListItems(list, parse)
+function logReqListItems(items, parse)
 {
     parse.log += parse.tab + ITEMS;
-    parse.log += logReqNodeId(list);
+    parse.log += logReqNodeId(items);
+}
+
+
+
+function logReqRepeat(rep, parse)
+{
+    parse.log += parse.tab + REPEAT;
+    parse.log += logReqNodeId(rep);
 }
 
 
@@ -20279,14 +20435,14 @@ function base32toArray(base32, chars = base32chars)
 }
 
 
-const INVALID             = '?';
-const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
+const INVALID            = '?';
+const DISPLAY_INVALID    = INVALID;//'🤷‍♂️';
 
 
-const LIST_VALUE = 'LIST#';
-const LIST       = 'LIST';
+const LIST_VALUE         = 'LIST#';
+const LIST               = 'LIST';
 
-const ITEMS      = 'ITEMS';
+const ITEMS              = 'ITEMS';
 
 
 const LIST_TYPES =
@@ -20297,8 +20453,14 @@ const LIST_TYPES =
 ];
 
 
+const REPEAT             = 'REP';
+const FOREACH            = 'FOR';
+
+
 const FLOW_TYPES =
 [
+    REPEAT,
+    FOREACH,
     ...LIST_TYPES,
     ITEMS
 ];
@@ -22754,6 +22916,86 @@ extends GOperator
 }
 
 
+class GRepeat
+extends GOperator
+{
+    input = null;
+
+    value;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(REPEAT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const rep = new GRepeat(this.nodeId, this.options);
+
+        rep.copyBase(this);
+
+        if (this.input) rep.input = this.input.copy();
+
+        rep.count = this.count.copy();
+
+        return rep;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+
+        this.count = this.count.eval(parse).copy();
+        const count = this.count.toValue();        
+
+       
+        this.value = new ListValue();
+
+        if (this.input)
+        {
+            this.input = this.input.eval(parse).copy();
+            const input = this.input.toValue();
+
+            for (let i = 0; i < count.value; i++)
+            {
+                if (input.type == LIST_VALUE)
+                {
+                    for (const item of input.items)
+                        this.value.items.push(item);   
+                }
+                else
+                    this.value.items.push(input);
+            }
+        }
+
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'count', count);
+
+
+        this.valid = true;
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+
 class GNumberType
 extends GOperator
 {
@@ -22929,6 +23171,13 @@ extends GNumberType
         this.valid = true;
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
     }
 }
 
@@ -26796,6 +27045,8 @@ const iconGenerator        = '<svg width="20" height="10" viewBox="0 0 20 10" fi
 
 const iconList             = '<svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
 const iconListItems        = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" transform="matrix(-1 0 0 1 9 1)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 9)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 9.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 5.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/></svg>';
+const iconRepeat           = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle r="1.5" transform="matrix(-1 0 0 1 8.5 13.6003)" fill="white"/><path d="M12.996 11.5078C14.0482 10.4921 14.7227 9.16438 14.9093 7.74161C15.0958 6.31883 14.7834 4.88515 14.023 3.67489C13.2626 2.46463 12.0993 1.54937 10.7232 1.0787C9.34705 0.608019 7.83949 0.609769 6.44689 1.08365C5.05429 1.55754 3.85902 2.47553 3.05643 3.6876C2.25383 4.89967 1.89138 6.33413 2.02832 7.75654C2.12729 8.78463 2.48292 9.76246 3.05643 10.6082" stroke="white"/><rect width="4.97369" height="1" transform="matrix(-1 0 0 1 5.00183 10.0282)" fill="white"/><rect width="4.01843" height="1" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 5.00183 11.0282)" fill="white"/></svg>';
+const iconForEach          = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="9" width="9" height="1" fill="white"/><circle cx="1.5" cy="9.5" r="1.5" fill="white"/><circle cx="1.5" cy="5.5" r="1.5" fill="white"/><circle cx="1.5" cy="1.5" r="1.5" fill="white"/></svg>';
 
 const iconNumber           = '<svg width="18" height="7" viewBox="0 0 18 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.91122 0.0931559V6.90684H1.96124V0.958175H1.91528L0 2.06274V1.22433L1.96124 0.0931559H2.91122Z" fill="white"/><path d="M5.16742 6.90684V6.30798L7.75687 3.84601C8.06076 3.55767 8.31102 3.30703 8.50766 3.09411C8.7043 2.87896 8.84986 2.67712 8.94434 2.48859C9.04138 2.29785 9.0899 2.09823 9.0899 1.88973C9.0899 1.65019 9.02351 1.44281 8.89072 1.26759C8.76048 1.09236 8.58172 0.957066 8.35444 0.861692C8.12716 0.766318 7.87179 0.718631 7.58833 0.718631C7.28699 0.718631 7.02396 0.772972 6.79923 0.881654C6.57706 0.988118 6.40469 1.13783 6.28211 1.3308C6.16208 1.52376 6.10207 1.75 6.10207 2.00951H5.19806C5.19806 1.61027 5.30404 1.25982 5.516 0.958175C5.72796 0.656527 6.01652 0.421419 6.3817 0.252852C6.74944 0.0842839 7.16186 0 7.61897 0C8.07864 0 8.48595 0.0842839 8.84092 0.252852C9.19588 0.421419 9.47424 0.648764 9.67598 0.934886C9.87772 1.22101 9.97859 1.53929 9.97859 1.88973C9.97859 2.14037 9.92624 2.38546 9.82154 2.625C9.71939 2.86233 9.54063 3.12738 9.28526 3.42015C9.03245 3.71071 8.68131 4.06559 8.23186 4.48479L6.46981 6.12167V6.1749H10.1165V6.90684H5.16742Z" fill="white"/><path d="M14.5755 6.95327C14.0766 6.95327 13.6319 6.87886 13.2413 6.73005C12.8533 6.58124 12.5447 6.37444 12.3154 6.10965C12.0886 5.84266 11.9652 5.53301 11.945 5.18068H12.8974C12.9176 5.39733 13.0032 5.58443 13.1544 5.742C13.3056 5.89737 13.5034 6.01773 13.7478 6.10308C13.9922 6.18843 14.263 6.2311 14.5603 6.2311C14.8929 6.2311 15.1877 6.18077 15.4447 6.0801C15.7017 5.97944 15.9033 5.83938 16.0494 5.65993C16.1956 5.48049 16.2686 5.27259 16.2686 5.03624C16.2686 4.78896 16.1981 4.57121 16.057 4.38301C15.9159 4.19262 15.7093 4.04381 15.4372 3.93658C15.1651 3.82935 14.8325 3.77574 14.4394 3.77574H13.8196V3.05357H14.4394C14.7468 3.05357 15.0164 3.00543 15.2482 2.90914C15.4825 2.81285 15.6652 2.67717 15.7962 2.5021C15.9298 2.32703 15.9965 2.12132 15.9965 1.88497C15.9965 1.65738 15.9386 1.45933 15.8227 1.29083C15.7068 1.12232 15.543 0.991021 15.3313 0.89692C15.1222 0.80282 14.8753 0.75577 14.5906 0.75577C14.3235 0.75577 14.0715 0.798443 13.8347 0.88379C13.6004 0.966949 13.4089 1.0884 13.2602 1.24816C13.1116 1.40572 13.0309 1.59611 13.0184 1.81932H12.1113C12.1264 1.46699 12.2486 1.15843 12.4779 0.893638C12.7072 0.626655 13.007 0.418759 13.3774 0.269949C13.7503 0.121139 14.1597 0.0467339 14.6057 0.0467339C15.0844 0.0467339 15.4951 0.130986 15.8378 0.299492C16.1805 0.465809 16.4438 0.685741 16.6277 0.959289C16.8116 1.23284 16.9036 1.52827 16.9036 1.84558C16.9036 2.22417 16.7889 2.54696 16.5597 2.81394C16.3329 3.08093 16.0242 3.26584 15.6337 3.3687V3.42122C16.1225 3.49125 16.5042 3.67179 16.7789 3.96284C17.0535 4.25171 17.1908 4.60951 17.1908 5.03624C17.1908 5.4017 17.0762 5.72996 16.8469 6.02102C16.6201 6.30988 16.3102 6.53748 15.9172 6.70379C15.5241 6.87011 15.0769 6.95327 14.5755 6.95327Z" fill="white"/></svg>';
 const iconLimits           = '<svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H0.904239L3.03042 5.81055H3.10374L5.22992 0H6.13416V7H5.42543V1.68164H5.36434L3.40922 7H2.72494L0.769825 1.68164H0.708728V7H0V0Z" fill="white"/><path d="M7.9098 7H7.11553L9.41279 0H10.1948L12.4921 7H11.6978L9.82825 1.10742H9.77937L7.9098 7ZM8.20306 4.26563H11.4046V5.01758H8.20306V4.26563Z" fill="white"/><path d="M13.8332 0L15.4461 2.91211H15.495L17.108 0H18L16.0327 3.5L18 7H17.108L15.495 4.14258H15.4461L13.8332 7H12.9412L14.9574 3.5L12.9412 0H13.8332Z" fill="white"/><path d="M1 8H1.85014L3.84911 12.9805H3.91804L5.91702 8H6.76716V14H6.10083V9.44141H6.04339L4.20525 14H3.5619L1.72377 9.44141H1.66632V14H1V8Z" fill="white"/><path d="M9.90758 8V14H9.1953V8H9.90758Z" fill="white"/><path d="M17 8V14H16.3107L13.1054 9.28906H13.048V14H12.3357V8H13.025L16.2418 12.7227H16.2992V8H17Z" fill="white"/></svg>';
@@ -26991,8 +27242,9 @@ function initGeneratorMenus()
         
     menuFlow = new Menu('Flow nodes', true, false);
     menuFlow.addItems([
-        new MenuItem('List',  {icon: iconList,      callback: e => actionManager.do(new CreateNodeAction(LIST,  btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Items', {icon: iconListItems, callback: e => actionManager.do(new CreateNodeAction(ITEMS, btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('List',   {icon: iconList,      callback: e => actionManager.do(new CreateNodeAction(LIST,   btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Items',  {icon: iconListItems, callback: e => actionManager.do(new CreateNodeAction(ITEMS,  btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Repeat', {icon: iconRepeat,    callback: e => actionManager.do(new CreateNodeAction(REPEAT, btnNumber.div, {insert: e.shiftKey}))})]);
     
     
     menuNumber = new Menu('Number nodes', true, false);
@@ -34267,6 +34519,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     {
         case LIST:               node = new OpList();             break;
         case ITEMS:              node = new OpItems();            break;
+        case REPEAT:             node = new OpRepeat();           break;
 
         case NUMBER:             node = new OpNumber();           break;
         case NUMBER_LIMITS:      node = new OpLimits();           break;
@@ -35693,6 +35946,18 @@ class Connection
                             : inputNode.params.find(p => p.id == inputId).input.id);
         }
     }
+
+
+
+    toDataObject()
+    {
+        return {
+            outputNodeId: this.output.node.id,
+            outputId:     this.output.id,
+            inputNodeId:  this.input.node.id,
+            inputId:      this.input.id 
+        };
+    }
 }
 
 
@@ -36042,6 +36307,49 @@ class Operator
         {
             param.output._node = null;
             removeFromArray(this.outputs, param.output);
+        }
+    }
+
+
+
+    getAllParamConnections()
+    {
+        const conns = [];
+
+        for (let i = 0; i < this.params.length; i++)
+        {
+            const param = this.params[i];
+
+            if (   param.input 
+                && param.input.connected)
+                conns.push(param.input.connection.toDataObject());
+
+            if (param.output)
+            {
+                for (const input of param.output.connectedInputs)
+                    conns.push(input.connection.toDataObject());
+            }
+        }
+
+        return conns;
+    }
+
+
+
+    disconnectAllParams()
+    {
+        for (let i = this.params.length-1; i >= 0; i--)
+        {
+            const param = this.params[i];
+
+            if (param.input && param.input.connected)
+                uiDisconnect(param.input);
+
+            if (param.output)
+            {
+                for (const input of param.output.connectedInputs)
+                    uiDisconnect(input);
+            }
         }
     }
 
@@ -37876,7 +38184,11 @@ extends OperatorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const oldParams = [...this.params];
+        const oldParams     = [...this.params];
+        const oldParamConns = this.getAllParamConnections();
+
+
+        this.disconnectAllParams();
         this.removeAllParams();
 
 
@@ -37893,8 +38205,19 @@ extends OperatorBase
                        p.id   == id
                     && p.type == value.type);
 
-                if (param) this.addParam(param);
-                else       this.addParamByType(value.type, id, false, false, true);
+                if (param) 
+                {
+                    this.addParam(param);
+
+                    const _conn = oldParamConns.find(c =>
+                           c.outputNodeId == this.id
+                        && c.outputId     == param.id);
+
+                    if (_conn)
+                        uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                }
+                else       
+                    this.addParamByType(value.type, id, false, false, true);
             }
         }
 
@@ -37910,6 +38233,56 @@ extends OperatorBase
 
         for (const param of this.params)
             param.enableControlText(false);
+    }
+}
+
+
+class   OpRepeat
+extends OperatorBase
+{
+    paramCount;
+
+
+
+    constructor()
+    {
+        super(REPEAT, 'repeat', 100);
+
+        this.addInput (new Input(ALL_TYPES));
+        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramCount = new NumberParam('count', 'count', true,  true,  true, 1, 0, 100, 0));
+    }
+    
+    
+    
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramCount.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
     }
 }
 

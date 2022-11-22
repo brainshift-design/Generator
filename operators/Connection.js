@@ -446,6 +446,18 @@ class Connection
                             : inputNode.params.find(p => p.id == inputId).input.id);
         }
     }
+
+
+
+    toDataObject()
+    {
+        return {
+            outputNodeId: this.output.node.id,
+            outputId:     this.output.id,
+            inputNodeId:  this.input.node.id,
+            inputId:      this.input.id 
+        };
+    }
 }
 
 

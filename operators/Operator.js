@@ -327,6 +327,49 @@ class Operator
 
 
 
+    getAllParamConnections()
+    {
+        const conns = [];
+
+        for (let i = 0; i < this.params.length; i++)
+        {
+            const param = this.params[i];
+
+            if (   param.input 
+                && param.input.connected)
+                conns.push(param.input.connection.toDataObject());
+
+            if (param.output)
+            {
+                for (const input of param.output.connectedInputs)
+                    conns.push(input.connection.toDataObject());
+            }
+        }
+
+        return conns;
+    }
+
+
+
+    disconnectAllParams()
+    {
+        for (let i = this.params.length-1; i >= 0; i--)
+        {
+            const param = this.params[i];
+
+            if (param.input && param.input.connected)
+                uiDisconnect(param.input);
+
+            if (param.output)
+            {
+                for (const input of param.output.connectedInputs)
+                    uiDisconnect(input);
+            }
+        }
+    }
+
+
+
     removeAllParams()
     {
         for (let i = this.params.length-1; i >= 0; i--)

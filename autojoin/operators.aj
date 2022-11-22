@@ -28,6 +28,7 @@
 
 ../operators/flow/OpList.js
 ../operators/flow/OpItems.js
+../operators/flow/OpRepeat.js
 
 
 ../operators/math/OpNumber.js

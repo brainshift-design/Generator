@@ -78,4 +78,11 @@ extends GNumberType
 
         return this;
     }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
 }

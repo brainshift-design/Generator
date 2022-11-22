@@ -305,6 +305,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
     {
         case LIST:               node = new OpList();             break;
         case ITEMS:              node = new OpItems();            break;
+        case REPEAT:             node = new OpRepeat();           break;
 
         case NUMBER:             node = new OpNumber();           break;
         case NUMBER_LIMITS:      node = new OpLimits();           break;

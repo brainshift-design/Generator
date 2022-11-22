@@ -62,7 +62,11 @@ extends OperatorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const oldParams = [...this.params];
+        const oldParams     = [...this.params];
+        const oldParamConns = this.getAllParamConnections();
+
+
+        this.disconnectAllParams();
         this.removeAllParams();
 
 
@@ -79,8 +83,19 @@ extends OperatorBase
                        p.id   == id
                     && p.type == value.type);
 
-                if (param) this.addParam(param);
-                else       this.addParamByType(value.type, id, false, false, true);
+                if (param) 
+                {
+                    this.addParam(param);
+
+                    const _conn = oldParamConns.find(c =>
+                           c.outputNodeId == this.id
+                        && c.outputId     == param.id);
+
+                    if (_conn)
+                        uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                }
+                else       
+                    this.addParamByType(value.type, id, false, false, true);
             }
         }
 

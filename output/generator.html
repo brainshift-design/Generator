@@ -2792,10 +2792,18 @@ function logReqList(list, nValues, parse)
 
 
 
-function logReqListItems(list, parse)
+function logReqListItems(items, parse)
 {
     parse.log += parse.tab + ITEMS;
-    parse.log += logReqNodeId(list);
+    parse.log += logReqNodeId(items);
+}
+
+
+
+function logReqRepeat(rep, parse)
+{
+    parse.log += parse.tab + REPEAT;
+    parse.log += logReqNodeId(rep);
 }
 
 
@@ -3149,14 +3157,14 @@ function normalizeSeed(x)
 }
 
 
-const INVALID             = '?';
-const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
+const INVALID            = '?';
+const DISPLAY_INVALID    = INVALID;//'🤷‍♂️';
 
 
-const LIST_VALUE = 'LIST#';
-const LIST       = 'LIST';
+const LIST_VALUE         = 'LIST#';
+const LIST               = 'LIST';
 
-const ITEMS      = 'ITEMS';
+const ITEMS              = 'ITEMS';
 
 
 const LIST_TYPES =
@@ -3167,8 +3175,14 @@ const LIST_TYPES =
 ];
 
 
+const REPEAT             = 'REP';
+const FOREACH            = 'FOR';
+
+
 const FLOW_TYPES =
 [
+    REPEAT,
+    FOREACH,
     ...LIST_TYPES,
     ITEMS
 ];
@@ -5624,6 +5638,86 @@ extends GOperator
 }
 
 
+class GRepeat
+extends GOperator
+{
+    input = null;
+
+    value;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(REPEAT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const rep = new GRepeat(this.nodeId, this.options);
+
+        rep.copyBase(this);
+
+        if (this.input) rep.input = this.input.copy();
+
+        rep.count = this.count.copy();
+
+        return rep;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+
+        this.count = this.count.eval(parse).copy();
+        const count = this.count.toValue();        
+
+       
+        this.value = new ListValue();
+
+        if (this.input)
+        {
+            this.input = this.input.eval(parse).copy();
+            const input = this.input.toValue();
+
+            for (let i = 0; i < count.value; i++)
+            {
+                if (input.type == LIST_VALUE)
+                {
+                    for (const item of input.items)
+                        this.value.items.push(item);   
+                }
+                else
+                    this.value.items.push(input);
+            }
+        }
+
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'count', count);
+
+
+        this.valid = true;
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+
 class GNumberType
 extends GOperator
 {
@@ -5799,6 +5893,13 @@ extends GNumberType
         this.valid = true;
 
         return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
     }
 }
 
@@ -9692,6 +9793,52 @@ function genParseItems(parse)
 
 
 
+function genParseRepeat(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const rep = new GRepeat(nodeId, options);
+
+
+    let nValues = -1;
+    
+    if (!ignore)
+    {
+        nValues = parse.move();
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReqRepeat(rep, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, rep);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nValues == 1)
+        rep.input = genParse(parse);
+
+    rep.count = genParse(parse);
+    
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, rep);
+    return rep;
+}
+
+
+
 function genParseNumValue(parse)
 {
     parse.pos++; // N
@@ -10640,6 +10787,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST_VALUE        ) result = genParseListValue       (parse);
     else if (parse.next == LIST              ) result = genParseList            (parse);
     else if (parse.next == ITEMS             ) result = genParseItems           (parse);
+    else if (parse.next == REPEAT            ) result = genParseRepeat          (parse);
 
     else if (parse.next == NUMBER_VALUE      ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER            ) result = genParseNumber          (parse);

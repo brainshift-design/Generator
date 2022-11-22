@@ -33,6 +33,7 @@
 
 ../generator/types/flow/GList.js
 ../generator/types/flow/GListItems.js
+../generator/types/flow/GRepeat.js
 
 
 ../generator/types/math/GNumberType.js

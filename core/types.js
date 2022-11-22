@@ -1,11 +1,11 @@
-const INVALID             = '?';
-const DISPLAY_INVALID     = INVALID;//'🤷‍♂️';
+const INVALID            = '?';
+const DISPLAY_INVALID    = INVALID;//'🤷‍♂️';
 
 
-const LIST_VALUE = 'LIST#';
-const LIST       = 'LIST';
+const LIST_VALUE         = 'LIST#';
+const LIST               = 'LIST';
 
-const ITEMS      = 'ITEMS';
+const ITEMS              = 'ITEMS';
 
 
 const LIST_TYPES =
@@ -16,8 +16,14 @@ const LIST_TYPES =
 ];
 
 
+const REPEAT             = 'REP';
+const FOREACH            = 'FOR';
+
+
 const FLOW_TYPES =
 [
+    REPEAT,
+    FOREACH,
     ...LIST_TYPES,
     ITEMS
 ];

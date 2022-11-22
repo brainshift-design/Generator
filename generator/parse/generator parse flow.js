@@ -85,3 +85,49 @@ function genParseItems(parse)
     genParseNodeEnd(parse, items);
     return items;
 }
+
+
+
+function genParseRepeat(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const rep = new GRepeat(nodeId, options);
+
+
+    let nValues = -1;
+    
+    if (!ignore)
+    {
+        nValues = parse.move();
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReqRepeat(rep, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, rep);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nValues == 1)
+        rep.input = genParse(parse);
+
+    rep.count = genParse(parse);
+    
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, rep);
+    return rep;
+}

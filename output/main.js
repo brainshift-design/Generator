@@ -49,7 +49,11 @@ const LIST_TYPES = [
     LIST,
     ITEMS
 ];
+const REPEAT = 'REP';
+const FOREACH = 'FOR';
 const FLOW_TYPES = [
+    REPEAT,
+    FOREACH,
     ...LIST_TYPES,
     ITEMS
 ];
