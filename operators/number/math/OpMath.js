@@ -13,11 +13,11 @@ extends OperatorBase
         this.alwaysLoadParams = true;
 
 
-        this.addOutput(new Input (NUMBER_TYPES));
+        this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true,  false, MATH_OPS.map(s => s[1]), 1));
-        this.addParam(this.paramOperand   = new NumberParam('operand',   '', false, true,  false, 0));
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, false, MATH_OPS.map(s => s[1]), 1));
+        this.addParam(this.paramOperand   = new NumberParam('operand',   '', false, true, false, 0));
     }
 
 
@@ -56,23 +56,9 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramOperation.enableControlText(true );
+        this.paramOperation.enableControlText(true);
+        this.paramOperand  .enableControlText(true);
 
         super.updateParams();
     }
-}
-
-
-
-function OpList_onConnectInput(node)
-{
-    node.addNewInput();
-}
-
-
-
-function OpList_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
 }

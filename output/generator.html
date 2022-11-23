@@ -3366,7 +3366,7 @@ const MATH_OPS =
 [   // the order is important for logical keyboard value changes
     [NUMBER_SUBTRACT, '-' ],
     [NUMBER_ADD,      '+' ],
-    [NUMBER_DIVIDE,   '÷' ],
+    [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_MULTIPLY, '×' ],
     [NUMBER_MODULO,   '%' ],
     [NUMBER_EXPONENT, 'eˣ'] 
@@ -5830,7 +5830,7 @@ extends GNumberType
             this.value = this.value.eval(parse).copy();
 
         
-        console.assert(this.value.type == NUMBER_VALUE, 'this.value.type must be NUMBER_VALUE');
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
         this.validate();
@@ -6115,8 +6115,52 @@ extends GNumberType
     {
         super.copyBase(base);
 
-        if (base.operand) this.operand = base.operand.copy();
+        this.operand = base.operand.copy();
     }
+}
+
+
+
+function evalNodeValue(node, operation, isDiv, parse)
+{
+    if (!node.input)
+    {
+        node.value = NumberValue.NaN;
+        return;
+    }
+
+
+    node.input    = node.input  .eval(parse).copy();
+    node.operand  = node.operand.eval(parse).copy();
+    
+    const input   = node.input  .toValue();
+    const operand = node.operand.toValue();
+
+
+    if (isDiv)
+    {
+        if (operand.value == 0)
+        {
+            node.value = NumberValue.NaN;
+            return;
+        }
+
+        const dec = Math.max(input.decimals, operand.decimals);
+
+        node.value = new NumberValue(
+            floorTo(operation(input.value, operand.value), dec), 
+            dec);
+    }
+    else
+    {
+        node.value = new NumberValue(
+            operation(input.value,    operand.value   ),
+            Math.max (input.decimals, operand.decimals));
+    }
+
+
+
+    genPushUpdateValue(parse, node.nodeId, 'operand', operand);
 }
 
 
@@ -6141,7 +6185,6 @@ extends GArithmetic
 
         math.copyBase(this);
 
-        math.inputs    = this.inputs.map(i => i.copy());
         math.operation = this.operation.copy();
 
         return math;
@@ -6155,25 +6198,24 @@ extends GArithmetic
             return this;
 
 
-        this.operation = this.operation.eval(parse).copy();
-        const op = this.operation.toValue();
+        this.operation  = this.operation.eval(parse).copy();
+        const operation = this.operation.toValue();
 
-        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+        operation.value = Math.min(Math.max(0, operation.value), MATH_OPS.length-1);
 
-        switch (op.value)
+        switch (operation.value)
         {
-            case 0: this.value = evalSubtractInput(this.input, parse); break;
-            case 1: this.value = evalAddInput     (this.input, parse); break;
-            case 2: this.value = evalDivideInput  (this.input, parse); break;
-            case 3: this.value = evalMultiplyInput(this.input, parse); break;
-            case 4: this.value = evalModuloInput  (this.input, parse); break;
-            case 5: this.value = evalExponentInput(this.input, parse); break;
+            case 0: evalNodeValue(this, (a, b) => a - b,          false, parse); break;
+            case 1: evalNodeValue(this, (a, b) => a + b,          false, parse); break;
+            case 2: evalNodeValue(this, (a, b) => a / b,          true , parse); break;
+            case 3: evalNodeValue(this, (a, b) => a * b,          false, parse); break;
+            case 4: evalNodeValue(this, (a, b) => a % b,          true , parse); break;
+            case 5: evalNodeValue(this, (a, b) => Math.pow(a, b), false, parse); break;
+
+            default: console.assert(false, 'Invalid math operation');
         }
 
         
-        genPushUpdateValue(parse, this.nodeId, 'operation', op);
-
-
         this.validate();
 
         return this;
@@ -6207,39 +6249,11 @@ extends GArithmetic
         if (this.valid)
             return this;
 
-        this.value = evalAddInput(this.input, this.operand, parse);
-        
-        genPushUpdateValue(parse, this.nodeId, 'operand', this.operand.toValue());
-
+        evalNodeValue(this, (a, b) => a + b, false, parse);
         this.validate();
 
         return this;
     }
-}
-
-
-
-function evalAddInput(input, operand, parse)
-{
-    if (!input)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    input   = input  .eval(parse).copy();
-    opearnd = operand.eval(parse).copy();
-
-    const val1 = input  .toValue();
-    const val2 = operand.toValue();
-
-
-    value.value    = val1.value + val2.value;
-    value.decimals = Math.max(val1.decimals, val2.decimals);
-
-
-    return value;
 }
 
 
@@ -6268,50 +6282,11 @@ extends GArithmetic
         if (this.valid)
             return this;
 
-        this.value = evalSubtractInputs(this.inputs, parse);
-
+        evalNodeValue(this, (a, b) => a - b, false, parse);
         this.validate();
 
         return this;
     }
-}
-
-
-
-function evalSubtractInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    if (inputs.length > 0)
-    {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
-
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-                
-            value.value   -= val.value;
-            value.decimals = Math.max(value.decimals, val.decimals);
-        }
-    }
-
-
-    return value;
 }
 
 
@@ -6340,45 +6315,11 @@ extends GArithmetic
         if (this.valid)
             return this;
 
-        this.value = evalMultiplyInputs(this.inputs, parse);
-
+        evalNodeValue(this, (a, b) => a * b, false, parse);
         this.validate();
 
         return this;
     }
-}
-
-
-
-function evalMultiplyInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    if (inputs.length > 0)
-    {
-        value.value = 1;
-
-        for (let i = 0; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-
-            value.value   *= val.value;
-            value.decimals = Math.max(value.decimals, val.decimals);
-        }
-    }
-
-
-    return value;
 }
 
 
@@ -6407,57 +6348,11 @@ extends GArithmetic
         if (this.valid)
             return this;
 
-        this.value = evalDivideInputs(this.inputs, parse);
-
+        evalNodeValue(this, (a, b) => a / b, true, parse);
         this.validate();
 
         return this;
     }
-}
-
-
-
-function evalDivideInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-        
-    const value = new NumberValue(0);
-
-        
-    if (inputs.length > 0)
-    {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
-
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-
-            if (val.value == 0) 
-            { 
-                value.value    = Number.NaN; 
-                value.decimals = 0;
-                break; 
-            }
-
-            value.decimals = Math.max(value.decimals, val.decimals);
-            value.value    = floorTo(value.value / val.value, value.decimals);
-        }
-    }
-
-
-    return value;
 }
 
 
@@ -6486,57 +6381,11 @@ extends GArithmetic
         if (this.valid)
             return this;
 
-        this.value = evalModuloInputs(this.inputs, parse);
-
+        evalNodeValue(this, (a, b) => a % b, true, parse);
         this.validate();
 
         return this;
     }
-}
-
-
-
-function evalModuloInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-        
-    const value = new NumberValue(0);
-
-        
-    if (inputs.length > 0)
-    {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
-
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-
-            if (val.value == 0) 
-            { 
-                value.value    = Number.NaN; 
-                value.decimals = 0;
-                break; 
-            }
-
-            value.decimals = Math.max(value.decimals, val.decimals);
-            value.value    = floorTo(value.value % val.value, value.decimals);
-        }
-    }
-
-
-    return value;
 }
 
 
@@ -6565,50 +6414,11 @@ extends GArithmetic
         if (this.valid)
             return this;
 
-        this.value = evalExponentInputs(this.inputs, parse);
-
+        evalNodeValue(this, (a, b) => Math.pow(a, b), false, parse);
         this.validate();
 
         return this;
     }
-}
-
-
-
-function evalExponentInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    if (inputs.length > 0)
-    {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
-
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-                
-            value.value    = Math.pow(value.value,    val.value);
-            value.decimals = Math.max(value.decimals, val.decimals);
-        }
-    }
-
-
-    return value;
 }
 
 
@@ -10514,7 +10324,7 @@ function genParseMath(parse, newNode)
     if (!ignore)
     {
         nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be 0 or 1');
     }
 
 
@@ -10532,7 +10342,7 @@ function genParseMath(parse, newNode)
     parse.nTab++;
 
 
-    if (nValues == 1);
+    if (nValues == 1)
         math.input = genParse(parse);
 
     math.operation = genParse(parse);
@@ -10561,7 +10371,7 @@ function genParseArithmetic(parse, newNode)
     if (!ignore)
     {
         nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be 0 or 1');
     }
 
 

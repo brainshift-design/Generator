@@ -182,7 +182,7 @@ const LOG = 'LOG';
 const MATH_OPS = [
     [NUMBER_SUBTRACT, '-'],
     [NUMBER_ADD, '+'],
-    [NUMBER_DIVIDE, '÷'],
+    [NUMBER_DIVIDE, '/'],
     [NUMBER_MULTIPLY, '×'],
     [NUMBER_MODULO, '%'],
     [NUMBER_EXPONENT, 'eˣ']

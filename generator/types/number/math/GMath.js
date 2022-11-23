@@ -18,7 +18,6 @@ extends GArithmetic
 
         math.copyBase(this);
 
-        math.inputs    = this.inputs.map(i => i.copy());
         math.operation = this.operation.copy();
 
         return math;
@@ -32,25 +31,24 @@ extends GArithmetic
             return this;
 
 
-        this.operation = this.operation.eval(parse).copy();
-        const op = this.operation.toValue();
+        this.operation  = this.operation.eval(parse).copy();
+        const operation = this.operation.toValue();
 
-        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+        operation.value = Math.min(Math.max(0, operation.value), MATH_OPS.length-1);
 
-        switch (op.value)
+        switch (operation.value)
         {
-            case 0: this.value = evalSubtractInput(this.input, parse); break;
-            case 1: this.value = evalAddInput     (this.input, parse); break;
-            case 2: this.value = evalDivideInput  (this.input, parse); break;
-            case 3: this.value = evalMultiplyInput(this.input, parse); break;
-            case 4: this.value = evalModuloInput  (this.input, parse); break;
-            case 5: this.value = evalExponentInput(this.input, parse); break;
+            case 0: evalNodeValue(this, (a, b) => a - b,          false, parse); break;
+            case 1: evalNodeValue(this, (a, b) => a + b,          false, parse); break;
+            case 2: evalNodeValue(this, (a, b) => a / b,          true , parse); break;
+            case 3: evalNodeValue(this, (a, b) => a * b,          false, parse); break;
+            case 4: evalNodeValue(this, (a, b) => a % b,          true , parse); break;
+            case 5: evalNodeValue(this, (a, b) => Math.pow(a, b), false, parse); break;
+
+            default: console.assert(false, 'Invalid math operation');
         }
 
         
-        genPushUpdateValue(parse, this.nodeId, 'operation', op);
-
-
         this.validate();
 
         return this;

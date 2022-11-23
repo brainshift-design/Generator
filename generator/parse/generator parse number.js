@@ -146,7 +146,7 @@ function genParseMath(parse, newNode)
     if (!ignore)
     {
         nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be 0 or 1');
     }
 
 
@@ -164,7 +164,7 @@ function genParseMath(parse, newNode)
     parse.nTab++;
 
 
-    if (nValues == 1);
+    if (nValues == 1)
         math.input = genParse(parse);
 
     math.operation = genParse(parse);
@@ -193,7 +193,7 @@ function genParseArithmetic(parse, newNode)
     if (!ignore)
     {
         nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be 0 or 1');
     }
 
 

@@ -43,7 +43,7 @@ extends GNumberType
             this.value = this.value.eval(parse).copy();
 
         
-        console.assert(this.value.type == NUMBER_VALUE, 'this.value.type must be NUMBER_VALUE');
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
         this.validate();
