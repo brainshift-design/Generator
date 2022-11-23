@@ -1,10 +1,6 @@
 class   OpItems
 extends OperatorBase
 {
-    paramValue;
-
-
-
     constructor()
     {
         super(ITEMS, 'items', 100);

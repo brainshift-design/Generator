@@ -28,22 +28,13 @@ extends GNumberType
 
 
 
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
             return this;
 
 
-        if (this.input) 
+        if (this.input)
         { 
             this.input = this.input.eval(parse).copy();
             this.value = this.input.toValue();
@@ -53,7 +44,6 @@ extends GNumberType
 
         
         console.assert(this.value.type == NUMBER_VALUE, 'this.value.type must be NUMBER_VALUE');
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
         this.validate();

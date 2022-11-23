@@ -104,8 +104,6 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        
         genPushUpdateValue(parse, this.nodeId, 'space',  space );
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );

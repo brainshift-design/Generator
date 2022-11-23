@@ -39,15 +39,6 @@ extends GColorType
 
 
 
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -129,9 +120,6 @@ extends GColorType
         }
         else
             this.value = ColorValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();

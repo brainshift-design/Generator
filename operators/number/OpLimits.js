@@ -1,8 +1,6 @@
 class   OpLimits
 extends OperatorBase
 {
-    paramValue;
-
     paramMin;
     paramMax;
 
@@ -15,8 +13,6 @@ extends OperatorBase
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-
-        this.addParam(this.paramValue = new NumberParam('value', '',    false, false, false));      
         this.addParam(this.paramMin   = new NumberParam('min',   'min', true,  true,  true,    0));
         this.addParam(this.paramMax   = new NumberParam('max',   'max', true,  true,  true, 1000));
     }
@@ -55,24 +51,10 @@ extends OperatorBase
 
 
 
-    // updateValues(updateParamId, paramIds, values)
-    // {
-    //     //super.updateValues(updateParamId, paramIds, values);
-
-    //     const min = values[paramIds.findIndex(id => id == 'min')];
-    //     const max = values[paramIds.findIndex(id => id == 'max')];
-
-    //     this.paramMax.control.setMin(min, false, true, false);
-    //     this.paramMin.control.setMax(max, false, true, false);
-    // }
-
-
-
     updateParams()
     {
         super.updateParams();
 
-        this.paramValue.enableControlText(false);
         this.paramMin  .enableControlText(true);
         this.paramMax  .enableControlText(true);
     }

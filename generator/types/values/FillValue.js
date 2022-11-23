@@ -74,13 +74,6 @@ extends GValue
 
 
 
-    toValue()
-    {
-        return this.copy();
-    }
-
-
-
     toRgba()
     {
         return [

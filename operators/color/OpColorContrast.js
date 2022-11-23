@@ -20,9 +20,6 @@ extends OpColorBase
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
-        //this.paramValue.enableControlText(false);
-
-
         createTooltip(ttWcag2);
         createTooltip(ttWcag3);
 

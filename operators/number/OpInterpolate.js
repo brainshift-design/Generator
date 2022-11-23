@@ -1,7 +1,6 @@
 class   OpInterpolate
 extends OperatorBase
 {
-    paramValue;
     paramAmount;
 
 
@@ -15,10 +14,8 @@ extends OperatorBase
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue  = new NumberParam('value', '', false, false, false, 0));
         this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
 
-        //this.paramValue.enableControlText(false);
         
         this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
         this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
@@ -70,7 +67,6 @@ extends OperatorBase
     {
         super.updateParams();
 
-        this.paramValue .enableControlText(false);
         this.paramAmount.enableControlText(true);
     }
 }

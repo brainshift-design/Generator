@@ -35,15 +35,6 @@ extends GNumberType
 
 
 
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -78,7 +69,6 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         genPushUpdateValue(parse, this.nodeId, 'min',   min);
         genPushUpdateValue(parse, this.nodeId, 'max',   max);
 

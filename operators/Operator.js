@@ -694,7 +694,7 @@ class Operator
         // console.log('this.outputs', this.outputs);
 
         const inputs          = this.headerInputs;
-        const connectedInputs = this.headerInputs.filter(i => i.connected);
+        const connectedInputs = inputs.filter(i => i.connected);
         const outputs         = this.headerOutputs;
 
         const padding         = this.header.connectionPadding;

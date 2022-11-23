@@ -1,31 +1,29 @@
-class GMultiply
-extends GArithmetic
+class GVarSubtract
+extends GVarArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_MULTIPLY, nodeId, options);
+        super(NUMBER_VAR_SUBTRACT, nodeId, options);
     }
 
-
-
-    copy()
-    {
-        const mul = new GMultiply(this.nodeId, this.options);
-        mul.copyBase(this);
-        mul.inputs = this.inputs.map(i => i.copy());
-        return mul;
-    }
 
     
+    copy()
+    {
+        const sub = new GVarSubtract(this.nodeId, this.options);
+        sub.copyBase(this);
+        sub.inputs = this.inputs.map(i => i.copy());
+        return sub;
+    }
+
+
 
     eval(parse)
     {
         if (this.valid)
             return this;
 
-        this.value = evalMultiplyInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.value = evalVarSubtractInputs(this.inputs, parse);
 
         this.validate();
 
@@ -35,7 +33,7 @@ extends GArithmetic
 
 
 
-function evalMultiplyInputs(inputs, parse)
+function evalVarSubtractInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -46,9 +44,14 @@ function evalMultiplyInputs(inputs, parse)
 
     if (inputs.length > 0)
     {
-        value.value = 1;
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
 
-        for (let i = 0; i < inputs.length; i++)
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
         {
             inputs[i] = inputs[i].eval(parse).copy();
             const val = inputs[i].toValue();
@@ -56,8 +59,8 @@ function evalMultiplyInputs(inputs, parse)
             console.assert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
-
-            value.value   *= val.value;
+                
+            value.value   -= val.value;
             value.decimals = Math.max(value.decimals, val.decimals);
         }
     }

@@ -125,8 +125,6 @@ extends GColorType
         }
         
 
-        genPushUpdateValue(parse, this.nodeId, 'back',     this.value);
-
         genPushUpdateValue(parse, this.nodeId, 'standard', this.standard);
         genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
 

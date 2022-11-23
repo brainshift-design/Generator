@@ -9,7 +9,7 @@ extends GValue
 
 
 
-    constructor(fill   = FillValue  .NaN, 
+    constructor(fill   = FillValue.NaN, 
                 weight = new NumberValue(1),
                 fit    = new NumberValue(0),
                 join   = new NumberValue(0),

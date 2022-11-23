@@ -47,7 +47,7 @@ extends GColorType
         if (this.valid)
             return this;
 
-            
+        
         if (this.space) this.space = this.space.eval(parse).copy();
         if (this.c1   ) this.c1    = this.c1   .eval(parse).copy();
         if (this.c2   ) this.c2    = this.c2   .eval(parse).copy();
@@ -56,7 +56,6 @@ extends GColorType
 
         if (this.input)
         {
-            if (this.nodeId == 'color') console.log('this.input =', this.input);
             this.input = this.input.eval(parse).copy();
             const input = this.input.toValue();
 

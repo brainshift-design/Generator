@@ -5534,18 +5534,27 @@ const FLOW_TYPES =
 ];
 
 
-const NUMBER_VALUE       = 'NUM#';  // value (s) (with significant decimals)
-const NUMBER             = 'NUM';   // N | n
-const NUMBER_LIMITS      = 'LIM';   // N:min N:max
-const NUMBER_RANDOM      = 'RAND';  // N:seed N:scale N:min N:max
-const NUMBER_MATH        = 'MATH';  // op count N...
-const NUMBER_ADD         = 'ADD';   // count N...
-const NUMBER_SUBTRACT    = 'SUB';   // count N...
-const NUMBER_MULTIPLY    = 'MUL';   // count N...
-const NUMBER_DIVIDE      = 'DIV';   // count N...
-const NUMBER_MODULO      = 'MOD';   // count N...
-const NUMBER_EXPONENT    = 'EXP';   // count N...
-const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
+const NUMBER_VALUE        = 'NUM#';  
+const NUMBER              = 'NUM';   
+const NUMBER_LIMITS       = 'LIM';   
+const NUMBER_INTERPOLATE  = 'LERP';  
+const NUMBER_RANDOM       = 'RAND';  
+ 
+const NUMBER_MATH         = 'MATH';  
+const NUMBER_ADD          = 'ADD';   
+const NUMBER_SUBTRACT     = 'SUB';   
+const NUMBER_MULTIPLY     = 'MUL';   
+const NUMBER_DIVIDE       = 'DIV';   
+const NUMBER_MODULO       = 'MOD';   
+const NUMBER_EXPONENT     = 'EXP';   
+
+const NUMBER_VAR_MATH     = 'MATH*';  
+const NUMBER_VAR_ADD      = 'ADD*';   
+const NUMBER_VAR_SUBTRACT = 'SUB*';   
+const NUMBER_VAR_MULTIPLY = 'MUL*';   
+const NUMBER_VAR_DIVIDE   = 'DIV*';   
+const NUMBER_VAR_MODULO   = 'MOD*';   
+const NUMBER_VAR_EXPONENT = 'EXP*';   
 
 
 const NUMBER_TYPES =
@@ -5565,10 +5574,10 @@ const NUMBER_TYPES =
 ];
 
 
-const STRING_VALUE   = 'STR#';  // "..." (s) (escape \\ and \")
-const STRING         = 'STR';   // S | s
-const STRING_ADD     = 'SADD';  // S S
-const STRING_REPLACE = 'SREPL'; // S S:what S:with
+const STRING_VALUE   = 'STR#';  
+const STRING         = 'STR';   
+const STRING_ADD     = 'SADD';  
+const STRING_REPLACE = 'SREPL'; 
 
 
 const STRING_TYPES =
@@ -5580,12 +5589,12 @@ const STRING_TYPES =
 ];
 
 
-const COLOR_VALUE       = 'COL#';  // color value
-const COLOR             = 'COL';   // C | N:space N:c1 N:c2 N:c3
-const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
-const COLOR_CORRECT     = 'CCOR';  // C
-const COLOR_CONTRAST    = 'CCNT';  // C:text C:background
-const COLORBLIND        = 'BLND';  // C
+const COLOR_VALUE       = 'COL#';  
+const COLOR             = 'COL';   
+const COLOR_INTERPOLATE = 'CLERP'; 
+const COLOR_CORRECT     = 'CCOR';  
+const COLOR_CONTRAST    = 'CCNT';  
+const COLORBLIND        = 'BLND';  
 
 
 const COLOR_TYPES =
@@ -5621,23 +5630,23 @@ const STYLE_TYPES      = [STYLE_VALUE, STYLE];
 const SHAPE_VALUE      = 'SHP#'; // abstract placeholder
 
 const RECTANGLE_VALUE  = 'RECT#';
-const RECTANGLE        = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const RECTANGLE        = 'RECT'; 
 const RECTANGLE_TYPES  = [RECTANGLE_VALUE, RECTANGLE];
 
 const LINE_VALUE       = 'LINE#';
-const LINE             = 'LINE'; // N:x N:y N:width N:height N:angle
+const LINE             = 'LINE'; 
 const LINE_TYPES       = [LINE_VALUE, LINE];
 
 const ELLIPSE_VALUE    = 'ELPS#';
-const ELLIPSE          = 'ELPS'; // N:x N:y N:width N:height N:angle
+const ELLIPSE          = 'ELPS'; 
 const ELLIPSE_TYPES    = [ELLIPSE_VALUE, ELLIPSE];
 
 const POLYGON_VALUE    = 'POLY#';
-const POLYGON          = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
+const POLYGON          = 'POLY'; 
 const POLYGON_TYPES    = [POLYGON_VALUE, POLYGON];
 
 const STAR_VALUE       = 'STAR#';
-const STAR             = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
+const STAR             = 'STAR'; 
 const STAR_TYPES       = [STAR_VALUE, STAR];
 
 
@@ -5717,222 +5726,6 @@ TEXT        T
 VECTOR      V
 
 */
-
-
-class GValue
-{
-    type;
-
-    valid; // has been evaluated
-    topLevel;
-
-    options = {};
-
-    data    = {}; // for type conversion info
-
-
-
-    constructor(type, options) 
-    {
-        this.type     = type;
-       
-        this.valid    = false;
-        this.topLevel = false;
-
-        this.options  = options;
-    }
-
-
-
-    copy()
-    {
-        console.assert(false, 'abstract class GValue cannot be copied');
-        return null;
-    }
-
-
-
-    copyBase(src)
-    {
-        this.valid    = src.valid;
-        this.topLevel = src.topLevel;
-
-        this.options  = clone(src.options);
-        this.data     = clone(src.data);
-    }
-
-
-
-    // canBeValid()
-    // {
-    //     return true;
-    // }
-
-
-
-    validate()
-    {
-        //if (this.canBeValid())
-            this.valid = true;
-    }
-
-
-
-    isValid() // is a valid value
-    {
-        return false;
-    }
-
-
-
-    equalChans(c1, c2)
-    {
-        return !c1 && !c2
-            ||  c1 &&  c2 && c1.equals(c2);
-    }
-
-
-    eval(parse)
-    {
-        // calculate and add value update here
-
-        return this;
-    }
-
-
-
-    toValue()
-    {
-        return null;
-    }
-
-
-
-    toString() 
-    { 
-        return this.type; 
-    }
-}
-
-
-
-function displayValue(type, value)
-{
-    if (   type == NUMBER_VALUE
-        && value.indexOf(',') < 0)
-        return value;
-
-
-    switch (type)
-    {
-        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
-        case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
-        case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
-        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
-        case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
-        case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
-        case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
-        case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
-        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
-        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
-    }
-
-
-    console.assert(false, 'cannot display value of type \'' + type + '\'');
-}
-
-
-class GOperator
-extends GValue
-{
-    nodeId;
-
-
-
-    constructor(type, nodeId, options)
-    {
-        super(type, options);
-
-        this.nodeId = nodeId;
-    }
-
-
-
-    copyBase(src)
-    {
-        super.copyBase(src);
-        
-        this.nodeId = src.nodeId;
-    }
-
-
-
-    getParamFromId(paramId)
-    {
-        return this[paramId];
-    }
-
-
-
-    toValue()
-    {
-        return null;
-    }
-}
-
-
-
-// function evalValue(value)
-// {
-//     return value instanceof GOperator 
-//            ? value.value 
-//            : value;
-// }
-
-
-class GParam
-extends GOperator
-{
-    paramId;
-    
-    node;
-    param;
-    
-
-
-    constructor(nodeId, paramId)
-    {
-        super(PARAM, nodeId, false);
-
-        this.paramId = paramId;
-    }
-
-
-
-    copy()
-    {
-        const param = new GParam(this.nodeId, this.paramId);
-
-        param.copyBase(this);
-
-        param.node = this.node;
-    
-        return param;
-    }
-
-
-
-    eval(parse)
-    {
-        this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
-        console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
-
-        this.param = this.node.getParamFromId(this.paramId);
-        this.param = this.param.eval(parse).copy();
-
-        return this.param.toValue();
-    }
-}
 
 
 class FigmaObject
@@ -6200,6 +5993,264 @@ extends FigmaObject
 }
 
 
+class GNode
+{
+    type;
+
+    options = {};
+    data    = {}; // for type conversion info
+
+
+
+    constructor(type, options) 
+    {
+        this.type    = type;
+        this.options = options;
+    }
+
+
+
+    copy()
+    {
+        console.assert(false, 'abstract type GNode cannot be copied');
+        return null;
+    }
+
+
+
+    copyBase(src)
+    {
+        this.valid    = src.valid;
+        this.topLevel = src.topLevel;
+
+        this.options  = clone(src.options);
+        this.data     = clone(src.data);
+    }
+
+
+
+    validate()
+    {
+        this.valid = true;
+    }
+
+
+
+    isValid() // is a valid value
+    {
+        return false;
+    }
+
+
+
+    toValue()
+    {
+        return null;
+    }
+
+
+
+    toString() 
+    { 
+        return this.type; 
+    }
+}
+
+
+
+function displayValue(type, value)
+{
+    if (   type == NUMBER_VALUE
+        && value.indexOf(',') < 0)
+        return value;
+
+
+    switch (type)
+    {
+        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
+        case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
+        case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
+        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
+        case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
+        case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
+        case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
+        case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
+        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
+        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
+    }
+
+
+    console.assert(false, 'cannot display value of type \'' + type + '\'');
+}
+
+
+class GValue
+extends GNode
+{
+    constructor(type, options) 
+    {
+        super(type, options);
+    }
+
+
+
+    copy()
+    {
+        console.assert(false, 'abstract class GValue cannot be copied');
+        return null;
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toString() 
+    { 
+        return this.type; 
+    }
+}
+
+
+
+function displayValue(type, value)
+{
+    if (   type == NUMBER_VALUE
+        && value.indexOf(',') < 0)
+        return value;
+
+
+    switch (type)
+    {
+        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
+        case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
+        case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
+        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
+        case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
+        case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
+        case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
+        case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
+        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
+        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
+    }
+
+
+    console.assert(false, 'cannot display value of type \'' + type + '\'');
+}
+
+
+class GOperator
+extends GNode
+{
+    nodeId;
+
+    valid; // has been evaluated
+    topLevel;
+
+    
+    
+    constructor(type, nodeId, options)
+    {
+        super(type, options);
+
+        this.nodeId   = nodeId;
+
+        this.valid    = false;
+        this.topLevel = false;
+    }
+
+
+
+    copyBase(src)
+    {
+        super.copyBase(src);
+        
+        this.nodeId = src.nodeId;
+    }
+
+
+
+    getParamFromId(paramId)
+    {
+        return this[paramId];
+    }
+
+
+
+    eval(parse)
+    {
+        // calculate and add value update here
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return null;
+    }
+}
+
+
+
+// function evalValue(value)
+// {
+//     return value instanceof GOperator 
+//            ? value.value 
+//            : value;
+// }
+
+
+class GParam
+extends GOperator
+{
+    paramId;
+    
+    node;
+    param;
+    
+
+
+    constructor(nodeId, paramId)
+    {
+        super(PARAM, nodeId, false);
+
+        this.paramId = paramId;
+    }
+
+
+
+    copy()
+    {
+        const param = new GParam(this.nodeId, this.paramId);
+
+        param.copyBase(this);
+
+        param.node = this.node;
+    
+        return param;
+    }
+
+
+
+    eval(parse)
+    {
+        this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
+        console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
+
+        this.param = this.node.getParamFromId(this.paramId);
+        this.param = this.param.eval(parse).copy();
+
+        return this.param.toValue();
+    }
+}
+
+
 class ListValue
 extends GValue
 {
@@ -6423,13 +6474,6 @@ extends GValue
 
 
 
-    toValue()
-    {
-        return this.copy();
-    }
-
-
-
     toNumber()
     {
         return roundTo(this.value, this.decimals);
@@ -6588,13 +6632,6 @@ extends GValue
     eval(parse)
     {
         return this;
-    }
-
-
-
-    toValue()
-    {
-        return this.copy();
     }
 
 
@@ -6762,13 +6799,6 @@ extends GValue
 
 
 
-    toValue()
-    {
-        return this.copy();
-    }
-
-
-
     toRgba()
     {
         return [
@@ -6879,7 +6909,7 @@ extends GValue
 
 
 
-    constructor(fill   = FillValue  .NaN, 
+    constructor(fill   = FillValue.NaN, 
                 weight = new NumberValue(1),
                 fit    = new NumberValue(0),
                 join   = new NumberValue(0),
@@ -7867,18 +7897,6 @@ extends GOperator
 
 
 
-    // canBeValid()
-    // {
-    //     let canBeValid = true;
-
-    //     for (const input of this.inputs)
-    //         canBeValid &= input.canBeValid();
-
-    //     return canBeValid;
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -7901,9 +7919,6 @@ extends GOperator
                 this.value.items.push(input);
         }
     
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.validate();
 
@@ -7952,15 +7967,6 @@ extends GOperator
 
 
 
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -7973,10 +7979,7 @@ extends GOperator
             this.value = this.input.toValue();
         }
         else
-        {
             this.value = ListValue.NaN;
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        } 
 
 
         this.items = [];
@@ -8025,7 +8028,7 @@ extends GOperator
 {
     input = null;
 
-    value;
+    count;
 
 
 
@@ -8049,15 +8052,6 @@ extends GOperator
 
         return rep;
     }
-
-
-
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
 
 
 
@@ -8091,7 +8085,6 @@ extends GOperator
         }
 
         
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         genPushUpdateValue(parse, this.nodeId, 'count', count);
 
 
@@ -8165,22 +8158,13 @@ extends GNumberType
 
 
 
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
             return this;
 
 
-        if (this.input) 
+        if (this.input)
         { 
             this.input = this.input.eval(parse).copy();
             this.value = this.input.toValue();
@@ -8190,7 +8174,6 @@ extends GNumberType
 
         
         console.assert(this.value.type == NUMBER_VALUE, 'this.value.type must be NUMBER_VALUE');
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
         this.validate();
@@ -8252,15 +8235,6 @@ extends GNumberType
 
 
 
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -8295,7 +8269,6 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         genPushUpdateValue(parse, this.nodeId, 'min',   min);
         genPushUpdateValue(parse, this.nodeId, 'max',   max);
 
@@ -8313,613 +8286,6 @@ extends GNumberType
     }
 }
 
-
-
-class GRandom
-extends GNumberType
-{
-    seed;
-    min;
-    max;
-
-    random;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_RANDOM, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const rnd = new GRandom(this.nodeId, this.options);
-
-        rnd.copyBase(this);
-
-        rnd.seed   = this.seed.copy();
-        rnd.min    = this.min .copy();
-        rnd.max    = this.max .copy();
-
-        rnd.random = this.random.copy();
-
-        return rnd;
-    }
-
-
-
-    // canBeValid()
-    // {
-    //     return false;
-    // }
-
-
-
-    eval(parse)
-    {
-        if (!this.valid)
-        {
-            this.seed = this.seed.eval(parse).copy();
-            this.min  = this.min .eval(parse).copy();
-            this.max  = this.max .eval(parse).copy();
-        }
-
-
-        const seed = this.seed.toValue();
-        const min  = this.min .toValue();
-        const max  = this.max .toValue();
-    
-
-        if (!this.valid)
-            this.random = new Random(seed.value);
-        
-
-        this.value = new NumberValue(
-            min.value + this.random.next() * (max.value - min.value),
-            Math.max(min.decimals, max.decimals));
-
-
-        //if (!this.valid)
-        //{
-            genPushUpdateValue(parse, this.nodeId, 'seed', seed);
-            genPushUpdateValue(parse, this.nodeId, 'min',  min );
-            genPushUpdateValue(parse, this.nodeId, 'max',  max );
-        //}
-        
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GArithmetic
-extends GNumberType
-{
-    inputs = [];
-
-
-
-    // canBeValid()
-    // {
-    //     let canBeValid = true;
-
-    //     for (const input of this.inputs)
-    //         canBeValid &= input.canBeValid();
-
-    //     return canBeValid;
-    // }
-}
-
-
-
-class GMath
-extends GArithmetic
-{
-    operation;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_MATH, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const math = new GMath(this.nodeId, this.options);
-
-        math.copyBase(this);
-
-        math.inputs    = this.inputs.map(i => i.copy());
-        math.operation = this.operation.copy();
-
-        return math;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.valid)
-            return this;
-
-
-        this.operation = this.operation.eval(parse).copy();
-        const op = this.operation.toValue();
-
-        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
-
-        switch (op.value)
-        {
-            case 0: this.value = evalSubtractInputs(this.inputs, parse); break;
-            case 1: this.value = evalAddInputs     (this.inputs, parse); break;
-            case 2: this.value = evalDivideInputs  (this.inputs, parse); break;
-            case 3: this.value = evalMultiplyInputs(this.inputs, parse); break;
-            case 4: this.value = evalModuloInputs  (this.inputs, parse); break;
-            case 5: this.value = evalExponentInputs(this.inputs, parse); break;
-        }
-
-        
-        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-        genPushUpdateValue(parse, this.nodeId, 'operation', op);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GAdd
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_ADD, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const add = new GAdd(this.nodeId, this.options);
-        add.copyBase(this);
-        add.inputs = this.inputs.map(i => i.copy());
-        return add;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.valid)
-            return this;
-
-        this.value = evalAddInputs(this.inputs, parse);
-        
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-function evalAddInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    for (let i = 0; i < inputs.length; i++)
-    {
-        inputs[i] = inputs[i].eval(parse).copy();
-        const val = inputs[i].toValue();
-
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
-
-        value.value   += val.value;
-        value.decimals = Math.max(value.decimals, val.decimals);
-    }
-
-
-    return value;
-}
-
-
-class GSubtract
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_SUBTRACT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const sub = new GSubtract(this.nodeId, this.options);
-        sub.copyBase(this);
-        sub.inputs = this.inputs.map(i => i.copy());
-        return sub;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.valid)
-            return this;
-
-        this.value = evalSubtractInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-function evalSubtractInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    if (inputs.length > 0)
-    {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
-
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-                
-            value.value   -= val.value;
-            value.decimals = Math.max(value.decimals, val.decimals);
-        }
-    }
-
-
-    return value;
-}
-
-
-class GMultiply
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_MULTIPLY, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const mul = new GMultiply(this.nodeId, this.options);
-        mul.copyBase(this);
-        mul.inputs = this.inputs.map(i => i.copy());
-        return mul;
-    }
-
-    
-
-    eval(parse)
-    {
-        if (this.valid)
-            return this;
-
-        this.value = evalMultiplyInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-function evalMultiplyInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    if (inputs.length > 0)
-    {
-        value.value = 1;
-
-        for (let i = 0; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-
-            value.value   *= val.value;
-            value.decimals = Math.max(value.decimals, val.decimals);
-        }
-    }
-
-
-    return value;
-}
-
-
-class GDivide
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_DIVIDE, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const div = new GDivide(this.nodeId, this.options);
-        div.copyBase(this);
-        div.inputs = this.inputs.map(i => i.copy());
-        return div;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.valid)
-            return this;
-
-        this.value = evalDivideInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-function evalDivideInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-        
-    const value = new NumberValue(0);
-
-        
-    if (inputs.length > 0)
-    {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
-
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-
-            if (val.value == 0) 
-            { 
-                value.value    = Number.NaN; 
-                value.decimals = 0;
-                break; 
-            }
-
-            value.decimals = Math.max(value.decimals, val.decimals);
-            value.value    = floorTo(value.value / val.value, value.decimals);
-        }
-    }
-
-
-    return value;
-}
-
-
-class GModulo
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_MODULO, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const mod = new GModulo(this.nodeId, this.options);
-        mod.copyBase(this);
-        mod.inputs = this.inputs.map(i => i.copy());
-        return mod;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.valid)
-            return this;
-
-        this.value = evalModuloInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-function evalModuloInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-        
-    const value = new NumberValue(0);
-
-        
-    if (inputs.length > 0)
-    {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
-
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-
-            if (val.value == 0) 
-            { 
-                value.value    = Number.NaN; 
-                value.decimals = 0;
-                break; 
-            }
-
-            value.decimals = Math.max(value.decimals, val.decimals);
-            value.value    = floorTo(value.value % val.value, value.decimals);
-        }
-    }
-
-
-    return value;
-}
-
-
-class GExponent
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_EXPONENT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const exp = new GExponent(this.nodeId, this.options);
-        exp.copyBase(this);
-        exp.inputs = this.inputs.map(i => i.copy());
-        return exp;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.valid)
-            return this;
-
-        this.value = evalExponentInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-function evalExponentInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    if (inputs.length > 0)
-    {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
-
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-                
-            value.value    = Math.pow(value.value,    val.value);
-            value.decimals = Math.max(value.decimals, val.decimals);
-        }
-    }
-
-
-    return value;
-}
 
 
 class GInterpolate
@@ -8993,7 +8359,6 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
 
 
@@ -9003,6 +8368,1091 @@ extends GNumberType
     }
 }
 
+
+
+class GRandom
+extends GNumberType
+{
+    seed;
+    min;
+    max;
+
+    random;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_RANDOM, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const rnd = new GRandom(this.nodeId, this.options);
+
+        rnd.copyBase(this);
+
+        rnd.seed   = this.seed.copy();
+        rnd.min    = this.min .copy();
+        rnd.max    = this.max .copy();
+
+        rnd.random = this.random.copy();
+
+        return rnd;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.seed = this.seed.eval(parse).copy();
+            this.min  = this.min .eval(parse).copy();
+            this.max  = this.max .eval(parse).copy();
+        }
+
+
+        const seed = this.seed.toValue();
+        const min  = this.min .toValue();
+        const max  = this.max .toValue();
+    
+
+        if (!this.valid)
+            this.random = new Random(seed.value);
+        
+
+        this.value = new NumberValue(
+            min.value + this.random.next() * (max.value - min.value),
+            Math.max(min.decimals, max.decimals));
+
+            
+        if (!this.valid)
+        {
+            genPushUpdateValue(parse, this.nodeId, 'seed', seed);
+            genPushUpdateValue(parse, this.nodeId, 'min',  min );
+            genPushUpdateValue(parse, this.nodeId, 'max',  max );
+        }
+        
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GArithmetic
+extends GNumberType
+{
+    input = null;
+
+    operand;
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.operand) this.operand = base.operand.copy();
+    }
+}
+
+
+
+class GMath
+extends GArithmetic
+{
+    operation;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_MATH, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const math = new GMath(this.nodeId, this.options);
+
+        math.copyBase(this);
+
+        math.inputs    = this.inputs.map(i => i.copy());
+        math.operation = this.operation.copy();
+
+        return math;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+
+        this.operation = this.operation.eval(parse).copy();
+        const op = this.operation.toValue();
+
+        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+
+        switch (op.value)
+        {
+            case 0: this.value = evalSubtractInput(this.input, parse); break;
+            case 1: this.value = evalAddInput     (this.input, parse); break;
+            case 2: this.value = evalDivideInput  (this.input, parse); break;
+            case 3: this.value = evalMultiplyInput(this.input, parse); break;
+            case 4: this.value = evalModuloInput  (this.input, parse); break;
+            case 5: this.value = evalExponentInput(this.input, parse); break;
+        }
+
+        
+        genPushUpdateValue(parse, this.nodeId, 'operation', op);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GAdd
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_ADD, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const add = new GAdd(this.nodeId, this.options);
+        add.copyBase(this);
+        if (this.input) add.input = this.input.copy();
+        return add;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalAddInput(this.input, this.operand, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'operand', this.operand.toValue());
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalAddInput(input, operand, parse)
+{
+    if (!input)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    input   = input  .eval(parse).copy();
+    opearnd = operand.eval(parse).copy();
+
+    const val1 = input  .toValue();
+    const val2 = operand.toValue();
+
+
+    value.value    = val1.value + val2.value;
+    value.decimals = Math.max(val1.decimals, val2.decimals);
+
+
+    return value;
+}
+
+
+class GSubtract
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_SUBTRACT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const sub = new GSubtract(this.nodeId, this.options);
+        sub.copyBase(this);
+        if (this.input) sub.input = this.input.copy();
+        return sub;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalSubtractInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalSubtractInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value   -= val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GMultiply
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_MULTIPLY, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const mul = new GMultiply(this.nodeId, this.options);
+        mul.copyBase(this);
+        if (this.input) mul.input = this.input.copy();
+        return mul;
+    }
+
+    
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalMultiplyInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalMultiplyInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        value.value = 1;
+
+        for (let i = 0; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            value.value   *= val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GDivide
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_DIVIDE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const div = new GDivide(this.nodeId, this.options);
+        div.copyBase(this);
+        if (this.input) div.input = this.input.copy();
+        return div;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalDivideInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalDivideInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+        
+    const value = new NumberValue(0);
+
+        
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            if (val.value == 0) 
+            { 
+                value.value    = Number.NaN; 
+                value.decimals = 0;
+                break; 
+            }
+
+            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value    = floorTo(value.value / val.value, value.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GModulo
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_MODULO, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const mod = new GModulo(this.nodeId, this.options);
+        mod.copyBase(this);
+        if (this.input) mod.input = this.input.copy();
+        return mod;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalModuloInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalModuloInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+        
+    const value = new NumberValue(0);
+
+        
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            if (val.value == 0) 
+            { 
+                value.value    = Number.NaN; 
+                value.decimals = 0;
+                break; 
+            }
+
+            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value    = floorTo(value.value % val.value, value.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GExponent
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_EXPONENT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const exp = new GExponent(this.nodeId, this.options);
+        exp.copyBase(this);
+        if (this.input) exp.input = this.input.copy();
+        return exp;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalExponentInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalExponentInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value    = Math.pow(value.value,    val.value);
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GVarArithmetic
+extends GNumberType
+{
+    inputs = [];
+}
+
+
+
+class GVarMath
+extends GVarArithmetic
+{
+    operation;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_VAR_MATH, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const math = new GVarMath(this.nodeId, this.options);
+
+        math.copyBase(this);
+
+        math.inputs    = this.inputs.map(i => i.copy());
+        math.operation = this.operation.copy();
+
+        return math;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+
+        this.operation = this.operation.eval(parse).copy();
+        const op = this.operation.toValue();
+
+        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+
+        switch (op.value)
+        {
+            case 0: this.value = evalVarSubtractInputs(this.inputs, parse); break;
+            case 1: this.value = evalVarAddInputs     (this.inputs, parse); break;
+            case 2: this.value = evalVarDivideInputs  (this.inputs, parse); break;
+            case 3: this.value = evalVarMultiplyInputs(this.inputs, parse); break;
+            case 4: this.value = evalVarModuloInputs  (this.inputs, parse); break;
+            case 5: this.value = evalVarExponentInputs(this.inputs, parse); break;
+        }
+
+        
+        genPushUpdateValue(parse, this.nodeId, 'operation', op);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GVarAdd
+extends GVarArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_VAR_ADD, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const add = new GVarAdd(this.nodeId, this.options);
+        add.copyBase(this);
+        add.inputs = this.inputs.map(i => i.copy());
+        return add;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalVarAddInputs(this.inputs, parse);
+        
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalVarAddInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        inputs[i] = inputs[i].eval(parse).copy();
+        const val = inputs[i].toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        value.value   += val.value;
+        value.decimals = Math.max(value.decimals, val.decimals);
+    }
+
+
+    return value;
+}
+
+
+class GVarSubtract
+extends GVarArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_VAR_SUBTRACT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const sub = new GVarSubtract(this.nodeId, this.options);
+        sub.copyBase(this);
+        sub.inputs = this.inputs.map(i => i.copy());
+        return sub;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalVarSubtractInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalVarSubtractInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value   -= val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GVarMultiply
+extends GVarArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_VAR_MULTIPLY, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const mul = new GVarMultiply(this.nodeId, this.options);
+        mul.copyBase(this);
+        mul.inputs = this.inputs.map(i => i.copy());
+        return mul;
+    }
+
+    
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalVarMultiplyInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalVarMultiplyInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        value.value = 1;
+
+        for (let i = 0; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            value.value   *= val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GVarDivide
+extends GVarArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_VAR_DIVIDE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const div = new GVarDivide(this.nodeId, this.options);
+        div.copyBase(this);
+        div.inputs = this.inputs.map(i => i.copy());
+        return div;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalVarDivideInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalVarDivideInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+        
+    const value = new NumberValue(0);
+
+        
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            if (val.value == 0) 
+            { 
+                value.value    = Number.NaN; 
+                value.decimals = 0;
+                break; 
+            }
+
+            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value    = floorTo(value.value / val.value, value.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GVarModulo
+extends GVarArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_VAR_MODULO, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const mod = new GVarModulo(this.nodeId, this.options);
+        mod.copyBase(this);
+        mod.inputs = this.inputs.map(i => i.copy());
+        return mod;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalVarModuloInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalVarModuloInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+        
+    const value = new NumberValue(0);
+
+        
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            if (val.value == 0) 
+            { 
+                value.value    = Number.NaN; 
+                value.decimals = 0;
+                break; 
+            }
+
+            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value    = floorTo(value.value % val.value, value.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GVarExponent
+extends GVarArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_VAR_EXPONENT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const exp = new GVarExponent(this.nodeId, this.options);
+        exp.copyBase(this);
+        exp.inputs = this.inputs.map(i => i.copy());
+        return exp;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalVarExponentInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalVarExponentInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value    = Math.pow(value.value,    val.value);
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
 
 
 class GColorType
@@ -9077,7 +9527,7 @@ extends GColorType
         if (this.valid)
             return this;
 
-            
+        
         if (this.space) this.space = this.space.eval(parse).copy();
         if (this.c1   ) this.c1    = this.c1   .eval(parse).copy();
         if (this.c2   ) this.c2    = this.c2   .eval(parse).copy();
@@ -9086,7 +9536,6 @@ extends GColorType
 
         if (this.input)
         {
-            if (this.nodeId == 'color') console.log('this.input =', this.input);
             this.input = this.input.eval(parse).copy();
             const input = this.input.toValue();
 
@@ -9324,8 +9773,6 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        
         genPushUpdateValue(parse, this.nodeId, 'space',  space );
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
@@ -9498,8 +9945,6 @@ extends GColorType
         }
         
 
-        genPushUpdateValue(parse, this.nodeId, 'back',     this.value);
-
         genPushUpdateValue(parse, this.nodeId, 'standard', this.standard);
         genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
 
@@ -9543,15 +9988,6 @@ extends GColorType
 
         return cb;
     }
-
-
-
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
 
 
 
@@ -9609,10 +10045,9 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'l',     l         );
-        genPushUpdateValue(parse, this.nodeId, 'm',     m         );
-        genPushUpdateValue(parse, this.nodeId, 's',     s         );
+        genPushUpdateValue(parse, this.nodeId, 'l', l);
+        genPushUpdateValue(parse, this.nodeId, 'm', m);
+        genPushUpdateValue(parse, this.nodeId, 's', s);
 
 
         this.validate();
@@ -9661,15 +10096,6 @@ extends GColorType
 
         return val;
     }
-
-
-
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
 
 
 
@@ -9754,9 +10180,6 @@ extends GColorType
         }
         else
             this.value = ColorValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -12429,6 +12852,99 @@ function genParseMath(parse, newNode)
     const math = newNode(nodeId, options);
 
     
+    let nValues = -1;
+    
+    if (!ignore)
+    {
+        nValues = parseInt(parse.move());
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReqMath(math, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, math);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nValues == 1);
+        math.input = genParse(parse);
+
+    math.operation = genParse(parse);
+    math.operand   = genParse(parse);
+
+
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, math);
+    return math;
+}
+
+
+
+function genParseArithmetic(parse, newNode)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const arith = newNode(nodeId, options);
+
+
+    let nValues = -1;
+    
+    if (!ignore)
+    {
+        nValues = parseInt(parse.move());
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReqArithmetic(arith, type, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, arith);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    
+    if (nValues == 1)
+        arith.input = genParse(parse);
+
+    arith.operand = genParse(parse);
+
+    
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, arith);
+    return arith;
+}
+
+
+
+function genParseVarMath(parse, newNode)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const math = newNode(nodeId, options);
+
+    
     let nValues = 0;
     
     if (!ignore)
@@ -12464,7 +12980,7 @@ function genParseMath(parse, newNode)
 
 
 
-function genParseArithmetic(parse, newNode)
+function genParseVarArithmetic(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
 
@@ -13229,50 +13745,59 @@ function genParse(parse, inParam = true)
     let result = null;
 
 
-         if (parse.next == PARAM             ) result = genParseParam           (parse);
+         if (parse.next == PARAM              ) result = genParseParam           (parse);
+ 
+    else if (parse.next == LIST_VALUE         ) result = genParseListValue       (parse);
+    else if (parse.next == LIST               ) result = genParseList            (parse);
+    else if (parse.next == ITEMS              ) result = genParseItems           (parse);
+    else if (parse.next == REPEAT             ) result = genParseRepeat          (parse);
+ 
+    else if (parse.next == NUMBER_VALUE       ) result = genParseNumValue        (parse);
+    else if (parse.next == NUMBER             ) result = genParseNumber          (parse);
+    else if (parse.next == NUMBER_LIMITS      ) result = genParseLimits          (parse);
+    else if (parse.next == NUMBER_RANDOM      ) result = genParseRandom          (parse);
+    else if (parse.next == NUMBER_INTERPOLATE ) result = genParseInterpolate     (parse);
+ 
+    else if (parse.next == NUMBER_MATH        ) result = genParseMath            (parse, (nodeId, options) => new GMath    (nodeId, options));
+    else if (parse.next == NUMBER_ADD         ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd     (nodeId, options));
+    else if (parse.next == NUMBER_SUBTRACT    ) result = genParseArithmetic      (parse, (nodeId, options) => new GSubtract(nodeId, options));
+    else if (parse.next == NUMBER_MULTIPLY    ) result = genParseArithmetic      (parse, (nodeId, options) => new GMultiply(nodeId, options));
+    else if (parse.next == NUMBER_DIVIDE      ) result = genParseArithmetic      (parse, (nodeId, options) => new GDivide  (nodeId, options));
+    else if (parse.next == NUMBER_MODULO      ) result = genParseArithmetic      (parse, (nodeId, options) => new GModulo  (nodeId, options));
+    else if (parse.next == NUMBER_EXPONENT    ) result = genParseArithmetic      (parse, (nodeId, options) => new GExponent(nodeId, options));
 
-    else if (parse.next == LIST_VALUE        ) result = genParseListValue       (parse);
-    else if (parse.next == LIST              ) result = genParseList            (parse);
-    else if (parse.next == ITEMS             ) result = genParseItems           (parse);
-    else if (parse.next == REPEAT            ) result = genParseRepeat          (parse);
+    else if (parse.next == NUMBER_VAR_MATH    ) result = genParseVarMath         (parse, (nodeId, options) => new GVarMath    (nodeId, options));
+    else if (parse.next == NUMBER_VAR_ADD     ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarAdd     (nodeId, options));
+    else if (parse.next == NUMBER_VAR_SUBTRACT) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarSubtract(nodeId, options));
+    else if (parse.next == NUMBER_VAR_MULTIPLY) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarMultiply(nodeId, options));
+    else if (parse.next == NUMBER_VAR_DIVIDE  ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarDivide  (nodeId, options));
+    else if (parse.next == NUMBER_VAR_MODULO  ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarModulo  (nodeId, options));
+    else if (parse.next == NUMBER_VAR_EXPONENT) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarExponent(nodeId, options));
 
-    else if (parse.next == NUMBER_VALUE      ) result = genParseNumValue        (parse);
-    else if (parse.next == NUMBER            ) result = genParseNumber          (parse);
-    else if (parse.next == NUMBER_LIMITS     ) result = genParseLimits          (parse);
-    else if (parse.next == NUMBER_RANDOM     ) result = genParseRandom          (parse);
-    else if (parse.next == NUMBER_MATH       ) result = genParseMath            (parse, (nodeId, options) => new GMath    (nodeId, options));
-    else if (parse.next == NUMBER_ADD        ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd     (nodeId, options));
-    else if (parse.next == NUMBER_SUBTRACT   ) result = genParseArithmetic      (parse, (nodeId, options) => new GSubtract(nodeId, options));
-    else if (parse.next == NUMBER_MULTIPLY   ) result = genParseArithmetic      (parse, (nodeId, options) => new GMultiply(nodeId, options));
-    else if (parse.next == NUMBER_DIVIDE     ) result = genParseArithmetic      (parse, (nodeId, options) => new GDivide  (nodeId, options));
-    else if (parse.next == NUMBER_MODULO     ) result = genParseArithmetic      (parse, (nodeId, options) => new GModulo  (nodeId, options));
-    else if (parse.next == NUMBER_EXPONENT   ) result = genParseArithmetic      (parse, (nodeId, options) => new GExponent(nodeId, options));
-    else if (parse.next == NUMBER_INTERPOLATE) result = genParseInterpolate     (parse);
-
-    else if (parse.next == COLOR_VALUE       ) result = genParseColorValue      (parse);
-    else if (parse.next == COLOR             ) result = genParseColor           (parse);
-    else if (parse.next == COLOR_INTERPOLATE ) result = genParseColorInterpolate(parse);
-    else if (parse.next == COLOR_CONTRAST    ) result = genParseColorContrast   (parse);
-    else if (parse.next == COLORBLIND        ) result = genParseColorBlind      (parse);
-    else if (parse.next == COLOR_CORRECT     ) result = genParseColorCorrect    (parse);
-
-    else if (parse.next == FILL_VALUE        ) result = genParseFillValue       (parse);
-    else if (parse.next == FILL              ) result = genParseFill            (parse);
-
-    else if (parse.next == STROKE_VALUE      ) result = genParseStrokeValue     (parse);
-    else if (parse.next == STROKE            ) result = genParseStroke          (parse);
-
-    else if (parse.next == COLOR_STOP_VALUE  ) result = genParseColorStopValue  (parse);
-    else if (parse.next == COLOR_STOP        ) result = genParseColorStop       (parse);
-
-    else if (parse.next == STYLE_VALUE       ) result = genParseStyleValue      (parse);
-    else if (parse.next == STYLE             ) result = genParseStyle           (parse);
-
-    else if (parse.next == RECTANGLE         ) result = genParseRectangle       (parse);
-    else if (parse.next == LINE              ) result = genParseLine            (parse);
-    else if (parse.next == ELLIPSE           ) result = genParseEllipse         (parse);
-    else if (parse.next == POLYGON           ) result = genParsePolygon         (parse);
-    else if (parse.next == STAR              ) result = genParseStar            (parse);
+    else if (parse.next == COLOR_VALUE        ) result = genParseColorValue      (parse);
+    else if (parse.next == COLOR              ) result = genParseColor           (parse);
+    else if (parse.next == COLOR_INTERPOLATE  ) result = genParseColorInterpolate(parse);
+    else if (parse.next == COLOR_CONTRAST     ) result = genParseColorContrast   (parse);
+    else if (parse.next == COLORBLIND         ) result = genParseColorBlind      (parse);
+    else if (parse.next == COLOR_CORRECT      ) result = genParseColorCorrect    (parse);
+ 
+    else if (parse.next == FILL_VALUE         ) result = genParseFillValue       (parse);
+    else if (parse.next == FILL               ) result = genParseFill            (parse);
+ 
+    else if (parse.next == STROKE_VALUE       ) result = genParseStrokeValue     (parse);
+    else if (parse.next == STROKE             ) result = genParseStroke          (parse);
+ 
+    else if (parse.next == COLOR_STOP_VALUE   ) result = genParseColorStopValue  (parse);
+    else if (parse.next == COLOR_STOP         ) result = genParseColorStop       (parse);
+ 
+    else if (parse.next == STYLE_VALUE        ) result = genParseStyleValue      (parse);
+    else if (parse.next == STYLE              ) result = genParseStyle           (parse);
+ 
+    else if (parse.next == RECTANGLE          ) result = genParseRectangle       (parse);
+    else if (parse.next == LINE               ) result = genParseLine            (parse);
+    else if (parse.next == ELLIPSE            ) result = genParseEllipse         (parse);
+    else if (parse.next == POLYGON            ) result = genParsePolygon         (parse);
+    else if (parse.next == STAR               ) result = genParseStar            (parse);
 
     else console.assert(false, 'unknown parse token \'' + parse.next + '\'');
 
@@ -20573,18 +21098,27 @@ const FLOW_TYPES =
 ];
 
 
-const NUMBER_VALUE       = 'NUM#';  // value (s) (with significant decimals)
-const NUMBER             = 'NUM';   // N | n
-const NUMBER_LIMITS      = 'LIM';   // N:min N:max
-const NUMBER_RANDOM      = 'RAND';  // N:seed N:scale N:min N:max
-const NUMBER_MATH        = 'MATH';  // op count N...
-const NUMBER_ADD         = 'ADD';   // count N...
-const NUMBER_SUBTRACT    = 'SUB';   // count N...
-const NUMBER_MULTIPLY    = 'MUL';   // count N...
-const NUMBER_DIVIDE      = 'DIV';   // count N...
-const NUMBER_MODULO      = 'MOD';   // count N...
-const NUMBER_EXPONENT    = 'EXP';   // count N...
-const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
+const NUMBER_VALUE        = 'NUM#';  
+const NUMBER              = 'NUM';   
+const NUMBER_LIMITS       = 'LIM';   
+const NUMBER_INTERPOLATE  = 'LERP';  
+const NUMBER_RANDOM       = 'RAND';  
+ 
+const NUMBER_MATH         = 'MATH';  
+const NUMBER_ADD          = 'ADD';   
+const NUMBER_SUBTRACT     = 'SUB';   
+const NUMBER_MULTIPLY     = 'MUL';   
+const NUMBER_DIVIDE       = 'DIV';   
+const NUMBER_MODULO       = 'MOD';   
+const NUMBER_EXPONENT     = 'EXP';   
+
+const NUMBER_VAR_MATH     = 'MATH*';  
+const NUMBER_VAR_ADD      = 'ADD*';   
+const NUMBER_VAR_SUBTRACT = 'SUB*';   
+const NUMBER_VAR_MULTIPLY = 'MUL*';   
+const NUMBER_VAR_DIVIDE   = 'DIV*';   
+const NUMBER_VAR_MODULO   = 'MOD*';   
+const NUMBER_VAR_EXPONENT = 'EXP*';   
 
 
 const NUMBER_TYPES =
@@ -20604,10 +21138,10 @@ const NUMBER_TYPES =
 ];
 
 
-const STRING_VALUE   = 'STR#';  // "..." (s) (escape \\ and \")
-const STRING         = 'STR';   // S | s
-const STRING_ADD     = 'SADD';  // S S
-const STRING_REPLACE = 'SREPL'; // S S:what S:with
+const STRING_VALUE   = 'STR#';  
+const STRING         = 'STR';   
+const STRING_ADD     = 'SADD';  
+const STRING_REPLACE = 'SREPL'; 
 
 
 const STRING_TYPES =
@@ -20619,12 +21153,12 @@ const STRING_TYPES =
 ];
 
 
-const COLOR_VALUE       = 'COL#';  // color value
-const COLOR             = 'COL';   // C | N:space N:c1 N:c2 N:c3
-const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
-const COLOR_CORRECT     = 'CCOR';  // C
-const COLOR_CONTRAST    = 'CCNT';  // C:text C:background
-const COLORBLIND        = 'BLND';  // C
+const COLOR_VALUE       = 'COL#';  
+const COLOR             = 'COL';   
+const COLOR_INTERPOLATE = 'CLERP'; 
+const COLOR_CORRECT     = 'CCOR';  
+const COLOR_CONTRAST    = 'CCNT';  
+const COLORBLIND        = 'BLND';  
 
 
 const COLOR_TYPES =
@@ -20660,23 +21194,23 @@ const STYLE_TYPES      = [STYLE_VALUE, STYLE];
 const SHAPE_VALUE      = 'SHP#'; // abstract placeholder
 
 const RECTANGLE_VALUE  = 'RECT#';
-const RECTANGLE        = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const RECTANGLE        = 'RECT'; 
 const RECTANGLE_TYPES  = [RECTANGLE_VALUE, RECTANGLE];
 
 const LINE_VALUE       = 'LINE#';
-const LINE             = 'LINE'; // N:x N:y N:width N:height N:angle
+const LINE             = 'LINE'; 
 const LINE_TYPES       = [LINE_VALUE, LINE];
 
 const ELLIPSE_VALUE    = 'ELPS#';
-const ELLIPSE          = 'ELPS'; // N:x N:y N:width N:height N:angle
+const ELLIPSE          = 'ELPS'; 
 const ELLIPSE_TYPES    = [ELLIPSE_VALUE, ELLIPSE];
 
 const POLYGON_VALUE    = 'POLY#';
-const POLYGON          = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
+const POLYGON          = 'POLY'; 
 const POLYGON_TYPES    = [POLYGON_VALUE, POLYGON];
 
 const STAR_VALUE       = 'STAR#';
-const STAR             = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
+const STAR             = 'STAR'; 
 const STAR_TYPES       = [STAR_VALUE, STAR];
 
 
@@ -20756,222 +21290,6 @@ TEXT        T
 VECTOR      V
 
 */
-
-
-class GValue
-{
-    type;
-
-    valid; // has been evaluated
-    topLevel;
-
-    options = {};
-
-    data    = {}; // for type conversion info
-
-
-
-    constructor(type, options) 
-    {
-        this.type     = type;
-       
-        this.valid    = false;
-        this.topLevel = false;
-
-        this.options  = options;
-    }
-
-
-
-    copy()
-    {
-        console.assert(false, 'abstract class GValue cannot be copied');
-        return null;
-    }
-
-
-
-    copyBase(src)
-    {
-        this.valid    = src.valid;
-        this.topLevel = src.topLevel;
-
-        this.options  = clone(src.options);
-        this.data     = clone(src.data);
-    }
-
-
-
-    // canBeValid()
-    // {
-    //     return true;
-    // }
-
-
-
-    validate()
-    {
-        //if (this.canBeValid())
-            this.valid = true;
-    }
-
-
-
-    isValid() // is a valid value
-    {
-        return false;
-    }
-
-
-
-    equalChans(c1, c2)
-    {
-        return !c1 && !c2
-            ||  c1 &&  c2 && c1.equals(c2);
-    }
-
-
-    eval(parse)
-    {
-        // calculate and add value update here
-
-        return this;
-    }
-
-
-
-    toValue()
-    {
-        return null;
-    }
-
-
-
-    toString() 
-    { 
-        return this.type; 
-    }
-}
-
-
-
-function displayValue(type, value)
-{
-    if (   type == NUMBER_VALUE
-        && value.indexOf(',') < 0)
-        return value;
-
-
-    switch (type)
-    {
-        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
-        case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
-        case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
-        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
-        case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
-        case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
-        case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
-        case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
-        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
-        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
-    }
-
-
-    console.assert(false, 'cannot display value of type \'' + type + '\'');
-}
-
-
-class GOperator
-extends GValue
-{
-    nodeId;
-
-
-
-    constructor(type, nodeId, options)
-    {
-        super(type, options);
-
-        this.nodeId = nodeId;
-    }
-
-
-
-    copyBase(src)
-    {
-        super.copyBase(src);
-        
-        this.nodeId = src.nodeId;
-    }
-
-
-
-    getParamFromId(paramId)
-    {
-        return this[paramId];
-    }
-
-
-
-    toValue()
-    {
-        return null;
-    }
-}
-
-
-
-// function evalValue(value)
-// {
-//     return value instanceof GOperator 
-//            ? value.value 
-//            : value;
-// }
-
-
-class GParam
-extends GOperator
-{
-    paramId;
-    
-    node;
-    param;
-    
-
-
-    constructor(nodeId, paramId)
-    {
-        super(PARAM, nodeId, false);
-
-        this.paramId = paramId;
-    }
-
-
-
-    copy()
-    {
-        const param = new GParam(this.nodeId, this.paramId);
-
-        param.copyBase(this);
-
-        param.node = this.node;
-    
-        return param;
-    }
-
-
-
-    eval(parse)
-    {
-        this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
-        console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
-
-        this.param = this.node.getParamFromId(this.paramId);
-        this.param = this.param.eval(parse).copy();
-
-        return this.param.toValue();
-    }
-}
 
 
 class FigmaObject
@@ -21239,6 +21557,264 @@ extends FigmaObject
 }
 
 
+class GNode
+{
+    type;
+
+    options = {};
+    data    = {}; // for type conversion info
+
+
+
+    constructor(type, options) 
+    {
+        this.type    = type;
+        this.options = options;
+    }
+
+
+
+    copy()
+    {
+        console.assert(false, 'abstract type GNode cannot be copied');
+        return null;
+    }
+
+
+
+    copyBase(src)
+    {
+        this.valid    = src.valid;
+        this.topLevel = src.topLevel;
+
+        this.options  = clone(src.options);
+        this.data     = clone(src.data);
+    }
+
+
+
+    validate()
+    {
+        this.valid = true;
+    }
+
+
+
+    isValid() // is a valid value
+    {
+        return false;
+    }
+
+
+
+    toValue()
+    {
+        return null;
+    }
+
+
+
+    toString() 
+    { 
+        return this.type; 
+    }
+}
+
+
+
+function displayValue(type, value)
+{
+    if (   type == NUMBER_VALUE
+        && value.indexOf(',') < 0)
+        return value;
+
+
+    switch (type)
+    {
+        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
+        case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
+        case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
+        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
+        case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
+        case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
+        case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
+        case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
+        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
+        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
+    }
+
+
+    console.assert(false, 'cannot display value of type \'' + type + '\'');
+}
+
+
+class GValue
+extends GNode
+{
+    constructor(type, options) 
+    {
+        super(type, options);
+    }
+
+
+
+    copy()
+    {
+        console.assert(false, 'abstract class GValue cannot be copied');
+        return null;
+    }
+
+
+
+    toValue()
+    {
+        return this.copy();
+    }
+
+
+
+    toString() 
+    { 
+        return this.type; 
+    }
+}
+
+
+
+function displayValue(type, value)
+{
+    if (   type == NUMBER_VALUE
+        && value.indexOf(',') < 0)
+        return value;
+
+
+    switch (type)
+    {
+        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
+        case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
+        case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
+        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
+        case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
+        case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
+        case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
+        case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
+        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
+        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
+    }
+
+
+    console.assert(false, 'cannot display value of type \'' + type + '\'');
+}
+
+
+class GOperator
+extends GNode
+{
+    nodeId;
+
+    valid; // has been evaluated
+    topLevel;
+
+    
+    
+    constructor(type, nodeId, options)
+    {
+        super(type, options);
+
+        this.nodeId   = nodeId;
+
+        this.valid    = false;
+        this.topLevel = false;
+    }
+
+
+
+    copyBase(src)
+    {
+        super.copyBase(src);
+        
+        this.nodeId = src.nodeId;
+    }
+
+
+
+    getParamFromId(paramId)
+    {
+        return this[paramId];
+    }
+
+
+
+    eval(parse)
+    {
+        // calculate and add value update here
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return null;
+    }
+}
+
+
+
+// function evalValue(value)
+// {
+//     return value instanceof GOperator 
+//            ? value.value 
+//            : value;
+// }
+
+
+class GParam
+extends GOperator
+{
+    paramId;
+    
+    node;
+    param;
+    
+
+
+    constructor(nodeId, paramId)
+    {
+        super(PARAM, nodeId, false);
+
+        this.paramId = paramId;
+    }
+
+
+
+    copy()
+    {
+        const param = new GParam(this.nodeId, this.paramId);
+
+        param.copyBase(this);
+
+        param.node = this.node;
+    
+        return param;
+    }
+
+
+
+    eval(parse)
+    {
+        this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
+        console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
+
+        this.param = this.node.getParamFromId(this.paramId);
+        this.param = this.param.eval(parse).copy();
+
+        return this.param.toValue();
+    }
+}
+
+
 class ListValue
 extends GValue
 {
@@ -21462,13 +22038,6 @@ extends GValue
 
 
 
-    toValue()
-    {
-        return this.copy();
-    }
-
-
-
     toNumber()
     {
         return roundTo(this.value, this.decimals);
@@ -21627,13 +22196,6 @@ extends GValue
     eval(parse)
     {
         return this;
-    }
-
-
-
-    toValue()
-    {
-        return this.copy();
     }
 
 
@@ -21801,13 +22363,6 @@ extends GValue
 
 
 
-    toValue()
-    {
-        return this.copy();
-    }
-
-
-
     toRgba()
     {
         return [
@@ -21918,7 +22473,7 @@ extends GValue
 
 
 
-    constructor(fill   = FillValue  .NaN, 
+    constructor(fill   = FillValue.NaN, 
                 weight = new NumberValue(1),
                 fit    = new NumberValue(0),
                 join   = new NumberValue(0),
@@ -22906,18 +23461,6 @@ extends GOperator
 
 
 
-    // canBeValid()
-    // {
-    //     let canBeValid = true;
-
-    //     for (const input of this.inputs)
-    //         canBeValid &= input.canBeValid();
-
-    //     return canBeValid;
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -22940,9 +23483,6 @@ extends GOperator
                 this.value.items.push(input);
         }
     
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
 
         this.validate();
 
@@ -22991,15 +23531,6 @@ extends GOperator
 
 
 
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -23012,10 +23543,7 @@ extends GOperator
             this.value = this.input.toValue();
         }
         else
-        {
             this.value = ListValue.NaN;
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        } 
 
 
         this.items = [];
@@ -23064,7 +23592,7 @@ extends GOperator
 {
     input = null;
 
-    value;
+    count;
 
 
 
@@ -23088,15 +23616,6 @@ extends GOperator
 
         return rep;
     }
-
-
-
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
 
 
 
@@ -23130,7 +23649,6 @@ extends GOperator
         }
 
         
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         genPushUpdateValue(parse, this.nodeId, 'count', count);
 
 
@@ -23204,22 +23722,13 @@ extends GNumberType
 
 
 
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
             return this;
 
 
-        if (this.input) 
+        if (this.input)
         { 
             this.input = this.input.eval(parse).copy();
             this.value = this.input.toValue();
@@ -23229,7 +23738,6 @@ extends GNumberType
 
         
         console.assert(this.value.type == NUMBER_VALUE, 'this.value.type must be NUMBER_VALUE');
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
         this.validate();
@@ -23291,15 +23799,6 @@ extends GNumberType
 
 
 
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -23334,7 +23833,6 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         genPushUpdateValue(parse, this.nodeId, 'min',   min);
         genPushUpdateValue(parse, this.nodeId, 'max',   max);
 
@@ -23352,613 +23850,6 @@ extends GNumberType
     }
 }
 
-
-
-class GRandom
-extends GNumberType
-{
-    seed;
-    min;
-    max;
-
-    random;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_RANDOM, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const rnd = new GRandom(this.nodeId, this.options);
-
-        rnd.copyBase(this);
-
-        rnd.seed   = this.seed.copy();
-        rnd.min    = this.min .copy();
-        rnd.max    = this.max .copy();
-
-        rnd.random = this.random.copy();
-
-        return rnd;
-    }
-
-
-
-    // canBeValid()
-    // {
-    //     return false;
-    // }
-
-
-
-    eval(parse)
-    {
-        if (!this.valid)
-        {
-            this.seed = this.seed.eval(parse).copy();
-            this.min  = this.min .eval(parse).copy();
-            this.max  = this.max .eval(parse).copy();
-        }
-
-
-        const seed = this.seed.toValue();
-        const min  = this.min .toValue();
-        const max  = this.max .toValue();
-    
-
-        if (!this.valid)
-            this.random = new Random(seed.value);
-        
-
-        this.value = new NumberValue(
-            min.value + this.random.next() * (max.value - min.value),
-            Math.max(min.decimals, max.decimals));
-
-
-        //if (!this.valid)
-        //{
-            genPushUpdateValue(parse, this.nodeId, 'seed', seed);
-            genPushUpdateValue(parse, this.nodeId, 'min',  min );
-            genPushUpdateValue(parse, this.nodeId, 'max',  max );
-        //}
-        
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GArithmetic
-extends GNumberType
-{
-    inputs = [];
-
-
-
-    // canBeValid()
-    // {
-    //     let canBeValid = true;
-
-    //     for (const input of this.inputs)
-    //         canBeValid &= input.canBeValid();
-
-    //     return canBeValid;
-    // }
-}
-
-
-
-class GMath
-extends GArithmetic
-{
-    operation;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_MATH, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const math = new GMath(this.nodeId, this.options);
-
-        math.copyBase(this);
-
-        math.inputs    = this.inputs.map(i => i.copy());
-        math.operation = this.operation.copy();
-
-        return math;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.valid)
-            return this;
-
-
-        this.operation = this.operation.eval(parse).copy();
-        const op = this.operation.toValue();
-
-        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
-
-        switch (op.value)
-        {
-            case 0: this.value = evalSubtractInputs(this.inputs, parse); break;
-            case 1: this.value = evalAddInputs     (this.inputs, parse); break;
-            case 2: this.value = evalDivideInputs  (this.inputs, parse); break;
-            case 3: this.value = evalMultiplyInputs(this.inputs, parse); break;
-            case 4: this.value = evalModuloInputs  (this.inputs, parse); break;
-            case 5: this.value = evalExponentInputs(this.inputs, parse); break;
-        }
-
-        
-        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-        genPushUpdateValue(parse, this.nodeId, 'operation', op);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GAdd
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_ADD, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const add = new GAdd(this.nodeId, this.options);
-        add.copyBase(this);
-        add.inputs = this.inputs.map(i => i.copy());
-        return add;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.valid)
-            return this;
-
-        this.value = evalAddInputs(this.inputs, parse);
-        
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-function evalAddInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    for (let i = 0; i < inputs.length; i++)
-    {
-        inputs[i] = inputs[i].eval(parse).copy();
-        const val = inputs[i].toValue();
-
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
-
-        value.value   += val.value;
-        value.decimals = Math.max(value.decimals, val.decimals);
-    }
-
-
-    return value;
-}
-
-
-class GSubtract
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_SUBTRACT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const sub = new GSubtract(this.nodeId, this.options);
-        sub.copyBase(this);
-        sub.inputs = this.inputs.map(i => i.copy());
-        return sub;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.valid)
-            return this;
-
-        this.value = evalSubtractInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-function evalSubtractInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    if (inputs.length > 0)
-    {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
-
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-                
-            value.value   -= val.value;
-            value.decimals = Math.max(value.decimals, val.decimals);
-        }
-    }
-
-
-    return value;
-}
-
-
-class GMultiply
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_MULTIPLY, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const mul = new GMultiply(this.nodeId, this.options);
-        mul.copyBase(this);
-        mul.inputs = this.inputs.map(i => i.copy());
-        return mul;
-    }
-
-    
-
-    eval(parse)
-    {
-        if (this.valid)
-            return this;
-
-        this.value = evalMultiplyInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-function evalMultiplyInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    if (inputs.length > 0)
-    {
-        value.value = 1;
-
-        for (let i = 0; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-
-            value.value   *= val.value;
-            value.decimals = Math.max(value.decimals, val.decimals);
-        }
-    }
-
-
-    return value;
-}
-
-
-class GDivide
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_DIVIDE, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const div = new GDivide(this.nodeId, this.options);
-        div.copyBase(this);
-        div.inputs = this.inputs.map(i => i.copy());
-        return div;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.valid)
-            return this;
-
-        this.value = evalDivideInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-function evalDivideInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-        
-    const value = new NumberValue(0);
-
-        
-    if (inputs.length > 0)
-    {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
-
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-
-            if (val.value == 0) 
-            { 
-                value.value    = Number.NaN; 
-                value.decimals = 0;
-                break; 
-            }
-
-            value.decimals = Math.max(value.decimals, val.decimals);
-            value.value    = floorTo(value.value / val.value, value.decimals);
-        }
-    }
-
-
-    return value;
-}
-
-
-class GModulo
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_MODULO, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const mod = new GModulo(this.nodeId, this.options);
-        mod.copyBase(this);
-        mod.inputs = this.inputs.map(i => i.copy());
-        return mod;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.valid)
-            return this;
-
-        this.value = evalModuloInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-function evalModuloInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-        
-    const value = new NumberValue(0);
-
-        
-    if (inputs.length > 0)
-    {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
-
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-
-            if (val.value == 0) 
-            { 
-                value.value    = Number.NaN; 
-                value.decimals = 0;
-                break; 
-            }
-
-            value.decimals = Math.max(value.decimals, val.decimals);
-            value.value    = floorTo(value.value % val.value, value.decimals);
-        }
-    }
-
-
-    return value;
-}
-
-
-class GExponent
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_EXPONENT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const exp = new GExponent(this.nodeId, this.options);
-        exp.copyBase(this);
-        exp.inputs = this.inputs.map(i => i.copy());
-        return exp;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.valid)
-            return this;
-
-        this.value = evalExponentInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-function evalExponentInputs(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    if (inputs.length > 0)
-    {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
-
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
-
-
-        for (let i = 1; i < inputs.length; i++)
-        {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
-
-            console.assert(
-                val.type == NUMBER_VALUE, 
-                'val.type must be NUMBER_VALUE');
-                
-            value.value    = Math.pow(value.value,    val.value);
-            value.decimals = Math.max(value.decimals, val.decimals);
-        }
-    }
-
-
-    return value;
-}
 
 
 class GInterpolate
@@ -24032,7 +23923,6 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
 
 
@@ -24042,6 +23932,1091 @@ extends GNumberType
     }
 }
 
+
+
+class GRandom
+extends GNumberType
+{
+    seed;
+    min;
+    max;
+
+    random;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_RANDOM, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const rnd = new GRandom(this.nodeId, this.options);
+
+        rnd.copyBase(this);
+
+        rnd.seed   = this.seed.copy();
+        rnd.min    = this.min .copy();
+        rnd.max    = this.max .copy();
+
+        rnd.random = this.random.copy();
+
+        return rnd;
+    }
+
+
+
+    eval(parse)
+    {
+        if (!this.valid)
+        {
+            this.seed = this.seed.eval(parse).copy();
+            this.min  = this.min .eval(parse).copy();
+            this.max  = this.max .eval(parse).copy();
+        }
+
+
+        const seed = this.seed.toValue();
+        const min  = this.min .toValue();
+        const max  = this.max .toValue();
+    
+
+        if (!this.valid)
+            this.random = new Random(seed.value);
+        
+
+        this.value = new NumberValue(
+            min.value + this.random.next() * (max.value - min.value),
+            Math.max(min.decimals, max.decimals));
+
+            
+        if (!this.valid)
+        {
+            genPushUpdateValue(parse, this.nodeId, 'seed', seed);
+            genPushUpdateValue(parse, this.nodeId, 'min',  min );
+            genPushUpdateValue(parse, this.nodeId, 'max',  max );
+        }
+        
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GArithmetic
+extends GNumberType
+{
+    input = null;
+
+    operand;
+
+
+
+    copyBase(base)
+    {
+        super.copyBase(base);
+
+        if (base.operand) this.operand = base.operand.copy();
+    }
+}
+
+
+
+class GMath
+extends GArithmetic
+{
+    operation;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_MATH, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const math = new GMath(this.nodeId, this.options);
+
+        math.copyBase(this);
+
+        math.inputs    = this.inputs.map(i => i.copy());
+        math.operation = this.operation.copy();
+
+        return math;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+
+        this.operation = this.operation.eval(parse).copy();
+        const op = this.operation.toValue();
+
+        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+
+        switch (op.value)
+        {
+            case 0: this.value = evalSubtractInput(this.input, parse); break;
+            case 1: this.value = evalAddInput     (this.input, parse); break;
+            case 2: this.value = evalDivideInput  (this.input, parse); break;
+            case 3: this.value = evalMultiplyInput(this.input, parse); break;
+            case 4: this.value = evalModuloInput  (this.input, parse); break;
+            case 5: this.value = evalExponentInput(this.input, parse); break;
+        }
+
+        
+        genPushUpdateValue(parse, this.nodeId, 'operation', op);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GAdd
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_ADD, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const add = new GAdd(this.nodeId, this.options);
+        add.copyBase(this);
+        if (this.input) add.input = this.input.copy();
+        return add;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalAddInput(this.input, this.operand, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'operand', this.operand.toValue());
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalAddInput(input, operand, parse)
+{
+    if (!input)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    input   = input  .eval(parse).copy();
+    opearnd = operand.eval(parse).copy();
+
+    const val1 = input  .toValue();
+    const val2 = operand.toValue();
+
+
+    value.value    = val1.value + val2.value;
+    value.decimals = Math.max(val1.decimals, val2.decimals);
+
+
+    return value;
+}
+
+
+class GSubtract
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_SUBTRACT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const sub = new GSubtract(this.nodeId, this.options);
+        sub.copyBase(this);
+        if (this.input) sub.input = this.input.copy();
+        return sub;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalSubtractInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalSubtractInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value   -= val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GMultiply
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_MULTIPLY, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const mul = new GMultiply(this.nodeId, this.options);
+        mul.copyBase(this);
+        if (this.input) mul.input = this.input.copy();
+        return mul;
+    }
+
+    
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalMultiplyInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalMultiplyInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        value.value = 1;
+
+        for (let i = 0; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            value.value   *= val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GDivide
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_DIVIDE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const div = new GDivide(this.nodeId, this.options);
+        div.copyBase(this);
+        if (this.input) div.input = this.input.copy();
+        return div;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalDivideInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalDivideInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+        
+    const value = new NumberValue(0);
+
+        
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            if (val.value == 0) 
+            { 
+                value.value    = Number.NaN; 
+                value.decimals = 0;
+                break; 
+            }
+
+            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value    = floorTo(value.value / val.value, value.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GModulo
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_MODULO, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const mod = new GModulo(this.nodeId, this.options);
+        mod.copyBase(this);
+        if (this.input) mod.input = this.input.copy();
+        return mod;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalModuloInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalModuloInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+        
+    const value = new NumberValue(0);
+
+        
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            if (val.value == 0) 
+            { 
+                value.value    = Number.NaN; 
+                value.decimals = 0;
+                break; 
+            }
+
+            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value    = floorTo(value.value % val.value, value.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GExponent
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_EXPONENT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const exp = new GExponent(this.nodeId, this.options);
+        exp.copyBase(this);
+        if (this.input) exp.input = this.input.copy();
+        return exp;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalExponentInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalExponentInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value    = Math.pow(value.value,    val.value);
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GVarArithmetic
+extends GNumberType
+{
+    inputs = [];
+}
+
+
+
+class GVarMath
+extends GVarArithmetic
+{
+    operation;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_VAR_MATH, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const math = new GVarMath(this.nodeId, this.options);
+
+        math.copyBase(this);
+
+        math.inputs    = this.inputs.map(i => i.copy());
+        math.operation = this.operation.copy();
+
+        return math;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+
+        this.operation = this.operation.eval(parse).copy();
+        const op = this.operation.toValue();
+
+        op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
+
+        switch (op.value)
+        {
+            case 0: this.value = evalVarSubtractInputs(this.inputs, parse); break;
+            case 1: this.value = evalVarAddInputs     (this.inputs, parse); break;
+            case 2: this.value = evalVarDivideInputs  (this.inputs, parse); break;
+            case 3: this.value = evalVarMultiplyInputs(this.inputs, parse); break;
+            case 4: this.value = evalVarModuloInputs  (this.inputs, parse); break;
+            case 5: this.value = evalVarExponentInputs(this.inputs, parse); break;
+        }
+
+        
+        genPushUpdateValue(parse, this.nodeId, 'operation', op);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GVarAdd
+extends GVarArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_VAR_ADD, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const add = new GVarAdd(this.nodeId, this.options);
+        add.copyBase(this);
+        add.inputs = this.inputs.map(i => i.copy());
+        return add;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalVarAddInputs(this.inputs, parse);
+        
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalVarAddInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        inputs[i] = inputs[i].eval(parse).copy();
+        const val = inputs[i].toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        value.value   += val.value;
+        value.decimals = Math.max(value.decimals, val.decimals);
+    }
+
+
+    return value;
+}
+
+
+class GVarSubtract
+extends GVarArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_VAR_SUBTRACT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const sub = new GVarSubtract(this.nodeId, this.options);
+        sub.copyBase(this);
+        sub.inputs = this.inputs.map(i => i.copy());
+        return sub;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalVarSubtractInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalVarSubtractInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value   -= val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GVarMultiply
+extends GVarArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_VAR_MULTIPLY, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const mul = new GVarMultiply(this.nodeId, this.options);
+        mul.copyBase(this);
+        mul.inputs = this.inputs.map(i => i.copy());
+        return mul;
+    }
+
+    
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalVarMultiplyInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalVarMultiplyInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        value.value = 1;
+
+        for (let i = 0; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            value.value   *= val.value;
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GVarDivide
+extends GVarArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_VAR_DIVIDE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const div = new GVarDivide(this.nodeId, this.options);
+        div.copyBase(this);
+        div.inputs = this.inputs.map(i => i.copy());
+        return div;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalVarDivideInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalVarDivideInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+        
+    const value = new NumberValue(0);
+
+        
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            if (val.value == 0) 
+            { 
+                value.value    = Number.NaN; 
+                value.decimals = 0;
+                break; 
+            }
+
+            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value    = floorTo(value.value / val.value, value.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GVarModulo
+extends GVarArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_VAR_MODULO, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const mod = new GVarModulo(this.nodeId, this.options);
+        mod.copyBase(this);
+        mod.inputs = this.inputs.map(i => i.copy());
+        return mod;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalVarModuloInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalVarModuloInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+        
+    const value = new NumberValue(0);
+
+        
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+
+            if (val.value == 0) 
+            { 
+                value.value    = Number.NaN; 
+                value.decimals = 0;
+                break; 
+            }
+
+            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value    = floorTo(value.value % val.value, value.decimals);
+        }
+    }
+
+
+    return value;
+}
+
+
+class GVarExponent
+extends GVarArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_VAR_EXPONENT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const exp = new GVarExponent(this.nodeId, this.options);
+        exp.copyBase(this);
+        exp.inputs = this.inputs.map(i => i.copy());
+        return exp;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.valid)
+            return this;
+
+        this.value = evalVarExponentInputs(this.inputs, parse);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalVarExponentInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    if (inputs.length > 0)
+    {
+        inputs[0] = inputs[0].eval(parse).copy();
+        const val0 = inputs[0].toValue();
+
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
+
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            inputs[i] = inputs[i].eval(parse).copy();
+            const val = inputs[i].toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value    = Math.pow(value.value,    val.value);
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
+    }
+
+
+    return value;
+}
 
 
 class GColorType
@@ -24116,7 +25091,7 @@ extends GColorType
         if (this.valid)
             return this;
 
-            
+        
         if (this.space) this.space = this.space.eval(parse).copy();
         if (this.c1   ) this.c1    = this.c1   .eval(parse).copy();
         if (this.c2   ) this.c2    = this.c2   .eval(parse).copy();
@@ -24125,7 +25100,6 @@ extends GColorType
 
         if (this.input)
         {
-            if (this.nodeId == 'color') console.log('this.input =', this.input);
             this.input = this.input.eval(parse).copy();
             const input = this.input.toValue();
 
@@ -24363,8 +25337,6 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-        
         genPushUpdateValue(parse, this.nodeId, 'space',  space );
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
@@ -24537,8 +25509,6 @@ extends GColorType
         }
         
 
-        genPushUpdateValue(parse, this.nodeId, 'back',     this.value);
-
         genPushUpdateValue(parse, this.nodeId, 'standard', this.standard);
         genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
 
@@ -24582,15 +25552,6 @@ extends GColorType
 
         return cb;
     }
-
-
-
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
 
 
 
@@ -24648,10 +25609,9 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'l',     l         );
-        genPushUpdateValue(parse, this.nodeId, 'm',     m         );
-        genPushUpdateValue(parse, this.nodeId, 's',     s         );
+        genPushUpdateValue(parse, this.nodeId, 'l', l);
+        genPushUpdateValue(parse, this.nodeId, 'm', m);
+        genPushUpdateValue(parse, this.nodeId, 's', s);
 
 
         this.validate();
@@ -24700,15 +25660,6 @@ extends GColorType
 
         return val;
     }
-
-
-
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
 
 
 
@@ -24793,9 +25744,6 @@ extends GColorType
         }
         else
             this.value = ColorValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -27259,14 +28207,15 @@ const iconForEach          = '<svg width="15" height="11" viewBox="0 0 15 11" fi
 const iconNumber           = '<svg width="18" height="7" viewBox="0 0 18 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.91122 0.0931559V6.90684H1.96124V0.958175H1.91528L0 2.06274V1.22433L1.96124 0.0931559H2.91122Z" fill="white"/><path d="M5.16742 6.90684V6.30798L7.75687 3.84601C8.06076 3.55767 8.31102 3.30703 8.50766 3.09411C8.7043 2.87896 8.84986 2.67712 8.94434 2.48859C9.04138 2.29785 9.0899 2.09823 9.0899 1.88973C9.0899 1.65019 9.02351 1.44281 8.89072 1.26759C8.76048 1.09236 8.58172 0.957066 8.35444 0.861692C8.12716 0.766318 7.87179 0.718631 7.58833 0.718631C7.28699 0.718631 7.02396 0.772972 6.79923 0.881654C6.57706 0.988118 6.40469 1.13783 6.28211 1.3308C6.16208 1.52376 6.10207 1.75 6.10207 2.00951H5.19806C5.19806 1.61027 5.30404 1.25982 5.516 0.958175C5.72796 0.656527 6.01652 0.421419 6.3817 0.252852C6.74944 0.0842839 7.16186 0 7.61897 0C8.07864 0 8.48595 0.0842839 8.84092 0.252852C9.19588 0.421419 9.47424 0.648764 9.67598 0.934886C9.87772 1.22101 9.97859 1.53929 9.97859 1.88973C9.97859 2.14037 9.92624 2.38546 9.82154 2.625C9.71939 2.86233 9.54063 3.12738 9.28526 3.42015C9.03245 3.71071 8.68131 4.06559 8.23186 4.48479L6.46981 6.12167V6.1749H10.1165V6.90684H5.16742Z" fill="white"/><path d="M14.5755 6.95327C14.0766 6.95327 13.6319 6.87886 13.2413 6.73005C12.8533 6.58124 12.5447 6.37444 12.3154 6.10965C12.0886 5.84266 11.9652 5.53301 11.945 5.18068H12.8974C12.9176 5.39733 13.0032 5.58443 13.1544 5.742C13.3056 5.89737 13.5034 6.01773 13.7478 6.10308C13.9922 6.18843 14.263 6.2311 14.5603 6.2311C14.8929 6.2311 15.1877 6.18077 15.4447 6.0801C15.7017 5.97944 15.9033 5.83938 16.0494 5.65993C16.1956 5.48049 16.2686 5.27259 16.2686 5.03624C16.2686 4.78896 16.1981 4.57121 16.057 4.38301C15.9159 4.19262 15.7093 4.04381 15.4372 3.93658C15.1651 3.82935 14.8325 3.77574 14.4394 3.77574H13.8196V3.05357H14.4394C14.7468 3.05357 15.0164 3.00543 15.2482 2.90914C15.4825 2.81285 15.6652 2.67717 15.7962 2.5021C15.9298 2.32703 15.9965 2.12132 15.9965 1.88497C15.9965 1.65738 15.9386 1.45933 15.8227 1.29083C15.7068 1.12232 15.543 0.991021 15.3313 0.89692C15.1222 0.80282 14.8753 0.75577 14.5906 0.75577C14.3235 0.75577 14.0715 0.798443 13.8347 0.88379C13.6004 0.966949 13.4089 1.0884 13.2602 1.24816C13.1116 1.40572 13.0309 1.59611 13.0184 1.81932H12.1113C12.1264 1.46699 12.2486 1.15843 12.4779 0.893638C12.7072 0.626655 13.007 0.418759 13.3774 0.269949C13.7503 0.121139 14.1597 0.0467339 14.6057 0.0467339C15.0844 0.0467339 15.4951 0.130986 15.8378 0.299492C16.1805 0.465809 16.4438 0.685741 16.6277 0.959289C16.8116 1.23284 16.9036 1.52827 16.9036 1.84558C16.9036 2.22417 16.7889 2.54696 16.5597 2.81394C16.3329 3.08093 16.0242 3.26584 15.6337 3.3687V3.42122C16.1225 3.49125 16.5042 3.67179 16.7789 3.96284C17.0535 4.25171 17.1908 4.60951 17.1908 5.03624C17.1908 5.4017 17.0762 5.72996 16.8469 6.02102C16.6201 6.30988 16.3102 6.53748 15.9172 6.70379C15.5241 6.87011 15.0769 6.95327 14.5755 6.95327Z" fill="white"/></svg>';
 const iconLimits           = '<svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H0.904239L3.03042 5.81055H3.10374L5.22992 0H6.13416V7H5.42543V1.68164H5.36434L3.40922 7H2.72494L0.769825 1.68164H0.708728V7H0V0Z" fill="white"/><path d="M7.9098 7H7.11553L9.41279 0H10.1948L12.4921 7H11.6978L9.82825 1.10742H9.77937L7.9098 7ZM8.20306 4.26563H11.4046V5.01758H8.20306V4.26563Z" fill="white"/><path d="M13.8332 0L15.4461 2.91211H15.495L17.108 0H18L16.0327 3.5L18 7H17.108L15.495 4.14258H15.4461L13.8332 7H12.9412L14.9574 3.5L12.9412 0H13.8332Z" fill="white"/><path d="M1 8H1.85014L3.84911 12.9805H3.91804L5.91702 8H6.76716V14H6.10083V9.44141H6.04339L4.20525 14H3.5619L1.72377 9.44141H1.66632V14H1V8Z" fill="white"/><path d="M9.90758 8V14H9.1953V8H9.90758Z" fill="white"/><path d="M17 8V14H16.3107L13.1054 9.28906H13.048V14H12.3357V8H13.025L16.2418 12.7227H16.2992V8H17Z" fill="white"/></svg>';
 const iconRandom           = '<svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.57613 7.88313V7.82014C2.58313 7.15175 2.65312 6.61983 2.7861 6.22439C2.91908 5.82895 3.10805 5.50875 3.35302 5.26379C3.59798 5.01883 3.89193 4.79311 4.23488 4.58664C4.44135 4.46066 4.62682 4.31193 4.79129 4.14046C4.95577 3.96549 5.08525 3.76427 5.17973 3.5368C5.27772 3.30934 5.32671 3.05738 5.32671 2.78092C5.32671 2.43797 5.24622 2.14052 5.08525 1.88856C4.92427 1.6366 4.70906 1.44238 4.4396 1.3059C4.17014 1.16942 3.87094 1.10118 3.54199 1.10118C3.25503 1.10118 2.97857 1.16067 2.71261 1.27965C2.44665 1.39863 2.22444 1.58585 2.04597 1.84131C1.86749 2.09677 1.76426 2.43097 1.73626 2.84391H0.413467C0.441463 2.249 0.595439 1.73983 0.875396 1.31639C1.15885 0.89296 1.53155 0.56926 1.99347 0.345294C2.4589 0.121329 2.97507 0.00934601 3.54199 0.00934601C4.15789 0.00934601 4.69331 0.131827 5.14824 0.376789C5.60667 0.621752 5.96011 0.9577 6.20858 1.38463C6.46054 1.81157 6.58652 2.29799 6.58652 2.84391C6.58652 3.22885 6.52703 3.57705 6.40804 3.8885C6.29256 4.19995 6.12459 4.47816 5.90412 4.72312C5.68716 4.96808 5.4247 5.18505 5.11674 5.37402C4.80879 5.56649 4.56208 5.76946 4.37661 5.98293C4.19114 6.19289 4.05641 6.44311 3.97242 6.73356C3.88843 7.02402 3.84294 7.38621 3.83594 7.82014V7.88313H2.57613ZM3.24803 10.9907C2.98907 10.9907 2.76686 10.8979 2.58138 10.7124C2.39591 10.527 2.30318 10.3048 2.30318 10.0458C2.30318 9.78684 2.39591 9.56463 2.58138 9.37915C2.76686 9.19368 2.98907 9.10095 3.24803 9.10095C3.50699 9.10095 3.72921 9.19368 3.91468 9.37915C4.10015 9.56463 4.19289 9.78684 4.19289 10.0458C4.19289 10.2173 4.14914 10.3748 4.06166 10.5182C3.97767 10.6617 3.86394 10.7772 3.72046 10.8647C3.58048 10.9487 3.423 10.9907 3.24803 10.9907Z" fill="white"/></svg>';
+const iconInterpolate      = '<svg width="20" height="10" viewBox="0 0 20 10" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="-0.150566" y1="8.52321" x2="18.8494" y2="2.52321" stroke="white"/><ellipse cx="3.07097" cy="7.5" rx="0.732794" ry="3.23269" transform="rotate(-12.7132 3.07097 7.5)" fill="white"/><ellipse cx="11.3613" cy="4.88962" rx="0.732794" ry="3.23269" transform="rotate(-12.7132 11.3613 4.88962)" fill="white"/><ellipse cx="15.9295" cy="3.65694" rx="0.732794" ry="3.23269" transform="rotate(-12.7132 15.9295 3.65694)" fill="white"/></svg>';
+
 const iconMath             = '<svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.138 6.57967V0.485922H13.1039V6.57967H14.138ZM16.6678 4.04984V3.01575H10.5741V4.04984H16.6678Z" fill="white"/><path d="M11.3681 15.5004L16.5755 10.293L15.8738 9.59129L10.6664 14.7987L11.3681 15.5004ZM15.8738 15.5004L16.5755 14.7987L11.3681 9.59129L10.6664 10.293L15.8738 15.5004Z" fill="white"/><path d="M0.576652 12.0288V13.0629H6.48574V12.0288H0.576652ZM3.5312 15.7589C3.76202 15.7589 3.95899 15.6789 4.12211 15.5188C4.28214 15.3557 4.36216 15.1588 4.36216 14.9279C4.36216 14.7063 4.28214 14.5155 4.12211 14.3555C3.95899 14.1955 3.76202 14.1154 3.5312 14.1154C3.30961 14.1154 3.11879 14.1955 2.95875 14.3555C2.79872 14.5155 2.7187 14.7063 2.7187 14.9279C2.7187 15.1588 2.79872 15.3557 2.95875 15.5188C3.11879 15.6789 3.30961 15.7589 3.5312 15.7589ZM3.5312 10.9762C3.68508 10.9762 3.82511 10.9393 3.9513 10.8654C4.07748 10.7916 4.1775 10.6915 4.25137 10.5654C4.32523 10.4392 4.36216 10.2991 4.36216 10.1453C4.36216 9.92367 4.28214 9.73286 4.12211 9.57282C3.95899 9.41278 3.76202 9.33276 3.5312 9.33276C3.30961 9.33276 3.11879 9.41278 2.95875 9.57282C2.79872 9.73286 2.7187 9.92367 2.7187 10.1453C2.7187 10.3761 2.79872 10.5731 2.95875 10.7362C3.11879 10.8962 3.30961 10.9762 3.5312 10.9762Z" fill="white"/><path d="M0.576652 3.01575V4.04984H6.48574V3.01575H0.576652Z" fill="white"/></svg>';
 const iconAdd              = '<svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.78932 10.1318V0.756822H6.38023V10.1318H4.78932ZM0.897271 6.23978V4.64887H10.2723V6.23978H0.897271Z" fill="white"/></svg>';
-const iconSubtract         = '<svg width="10" height="3" viewBox="0 0 10 3" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.13023 0.648867V2.23978H0.0393206V0.648867H9.13023Z" fill="white"/></svg>';
+const iconSubtract         = '<svg width="10" height="3" viewBox="0 0 10 3" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.13022 0.648869V2.23978H0.0393143V0.648869H9.13022Z" fill="white"/></svg>';
 const iconMultiply         = '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.05068 9.98978L0.0393206 1.97841L1.11887 0.898868L9.13023 8.91023L8.05068 9.98978ZM1.11887 9.98978L0.0393206 8.91023L8.05068 0.898868L9.13023 1.97841L1.11887 9.98978Z" fill="white"/></svg>';
 const iconDivide           = '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.13023 4.64887V6.23978H0.0393206V4.64887H9.13023ZM4.58478 10.3875C4.22966 10.3875 3.92663 10.2644 3.67568 10.0182C3.42947 9.76724 3.30637 9.46421 3.30637 9.1091C3.30637 8.76819 3.42947 8.47463 3.67568 8.22841C3.92663 7.9822 4.22966 7.85909 4.58478 7.85909C4.92568 7.85909 5.21925 7.9822 5.46546 8.22841C5.71167 8.47463 5.83478 8.76819 5.83478 9.1091C5.83478 9.46421 5.71167 9.76724 5.46546 10.0182C5.21925 10.2644 4.92568 10.3875 4.58478 10.3875ZM4.58478 3.02955C4.34803 3.02955 4.1326 2.97273 3.93847 2.85909C3.74434 2.74546 3.59046 2.59158 3.47682 2.39745C3.36318 2.20332 3.30637 1.98788 3.30637 1.75114C3.30637 1.41023 3.42947 1.11667 3.67568 0.870458C3.92663 0.624246 4.22966 0.501141 4.58478 0.501141C4.92568 0.501141 5.21925 0.624246 5.46546 0.870458C5.71167 1.11667 5.83478 1.41023 5.83478 1.75114C5.83478 2.10625 5.71167 2.40928 5.46546 2.66023C5.21925 2.90644 4.92568 3.02955 4.58478 3.02955Z" fill="white"/></svg>';
 const iconExponent         = '<svg width="14" height="14" viewBox="-1 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.24574 13.6818C3.40483 13.6818 2.67945 13.4962 2.0696 13.125C1.46354 12.75 0.995739 12.2273 0.666193 11.5568C0.340436 10.8826 0.177557 10.0985 0.177557 9.20455C0.177557 8.31061 0.340436 7.52273 0.666193 6.84091C0.995739 6.1553 1.45407 5.62121 2.04119 5.23864C2.6321 4.85227 3.3215 4.65909 4.10938 4.65909C4.56392 4.65909 5.01278 4.73485 5.45597 4.88636C5.89915 5.03788 6.30256 5.28409 6.66619 5.625C7.02983 5.96212 7.3196 6.40909 7.53551 6.96591C7.75142 7.52273 7.85938 8.20833 7.85938 9.02273V9.59091H1.1321V8.43182H6.49574C6.49574 7.93939 6.39725 7.5 6.20028 7.11364C6.0071 6.72727 5.73059 6.42235 5.37074 6.19886C5.01468 5.97538 4.59422 5.86364 4.10938 5.86364C3.57528 5.86364 3.11316 5.99621 2.72301 6.26136C2.33665 6.52273 2.0393 6.86364 1.83097 7.28409C1.62263 7.70455 1.51847 8.1553 1.51847 8.63636V9.40909C1.51847 10.0682 1.6321 10.6269 1.85938 11.0852C2.09044 11.5398 2.41051 11.8864 2.8196 12.125C3.22869 12.3598 3.70407 12.4773 4.24574 12.4773C4.59801 12.4773 4.91619 12.428 5.20028 12.3295C5.48816 12.2273 5.73627 12.0758 5.9446 11.875C6.15294 11.6705 6.31392 11.4167 6.42756 11.1136L7.72301 11.4773C7.58665 11.9167 7.35748 12.303 7.03551 12.6364C6.71354 12.9659 6.31581 13.2235 5.84233 13.4091C5.36884 13.5909 4.83665 13.6818 4.24574 13.6818Z" fill="white"/><path d="M9.39205 0.545454L10.6989 2.77557L12.0057 0.545454H12.9716L11.2102 3.27273L12.9716 6H12.0057L10.6989 3.88352L9.39205 6H8.42614L10.1591 3.27273L8.42614 0.545454H9.39205Z" fill="white"/></svg>';
 const iconModulo           = '<svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.07556 8.75853V8.21776C6.07556 7.8439 6.15233 7.50175 6.30588 7.19131C6.46277 6.87753 6.68976 6.62718 6.98685 6.44024C7.28728 6.24997 7.65113 6.15484 8.0784 6.15484C8.51235 6.15484 8.8762 6.24997 9.16995 6.44024C9.4637 6.62718 9.68568 6.87753 9.83589 7.19131C9.9861 7.50175 10.0612 7.8439 10.0612 8.21776V8.75853C10.0612 9.1324 9.98444 9.47622 9.83088 9.78999C9.68067 10.1004 9.45702 10.3508 9.15993 10.5411C8.86618 10.728 8.50567 10.8215 8.0784 10.8215C7.64445 10.8215 7.27893 10.728 6.98184 10.5411C6.68475 10.3508 6.45943 10.1004 6.30588 9.78999C6.15233 9.47622 6.07556 9.1324 6.07556 8.75853ZM7.09701 8.21776V8.75853C7.09701 9.06897 7.17044 9.3477 7.31732 9.59472C7.46419 9.8384 7.71789 9.96024 8.0784 9.96024C8.4289 9.96024 8.67591 9.8384 8.81945 9.59472C8.96632 9.3477 9.03976 9.06897 9.03976 8.75853V8.21776C9.03976 7.90732 8.96966 7.63026 8.82946 7.38659C8.68926 7.13957 8.43891 7.01606 8.0784 7.01606C7.7279 7.01606 7.47588 7.13957 7.32233 7.38659C7.17211 7.63026 7.09701 7.90732 7.09701 8.21776ZM0.968313 2.89021V2.34944C0.968313 1.97558 1.04509 1.63342 1.19864 1.32298C1.35553 1.00921 1.58252 0.758851 1.87961 0.571919C2.18003 0.381649 2.54388 0.286514 2.97115 0.286514C3.4051 0.286514 3.76895 0.381649 4.0627 0.571919C4.35645 0.758851 4.57843 1.00921 4.72865 1.32298C4.87886 1.63342 4.95397 1.97558 4.95397 2.34944V2.89021C4.95397 3.26407 4.87719 3.60789 4.72364 3.92167C4.57343 4.23211 4.34978 4.48247 4.05269 4.67274C3.75894 4.85967 3.39843 4.95313 2.97115 4.95313C2.5372 4.95313 2.17169 4.85967 1.8746 4.67274C1.57751 4.48247 1.35219 4.23211 1.19864 3.92167C1.04509 3.60789 0.968313 3.26407 0.968313 2.89021ZM1.98976 2.34944V2.89021C1.98976 3.20065 2.0632 3.47938 2.21007 3.72639C2.35695 3.97007 2.61064 4.09191 2.97115 4.09191C3.32165 4.09191 3.56867 3.97007 3.7122 3.72639C3.85908 3.47938 3.93252 3.20065 3.93252 2.89021V2.34944C3.93252 2.039 3.86242 1.76194 3.72222 1.51826C3.58202 1.27124 3.33167 1.14774 2.97115 1.14774C2.62066 1.14774 2.36863 1.27124 2.21508 1.51826C2.06487 1.76194 1.98976 2.039 1.98976 2.34944ZM1.34885 10.6813L8.39885 0.426713H9.54047L2.49047 10.6813H1.34885Z" fill="white"/></svg>';
-const iconInterpolate      = '<svg width="20" height="10" viewBox="0 0 20 10" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="-0.150566" y1="8.52321" x2="18.8494" y2="2.52321" stroke="white"/><ellipse cx="3.07097" cy="7.5" rx="0.732794" ry="3.23269" transform="rotate(-12.7132 3.07097 7.5)" fill="white"/><ellipse cx="11.3613" cy="4.88962" rx="0.732794" ry="3.23269" transform="rotate(-12.7132 11.3613 4.88962)" fill="white"/><ellipse cx="15.9295" cy="3.65694" rx="0.732794" ry="3.23269" transform="rotate(-12.7132 15.9295 3.65694)" fill="white"/></svg>';
 
 const iconString           = '<svg width="20" height="7" viewBox="0 0 20 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.888729 6.90684H0L2.57048 0.0931559H3.44553L6.01601 6.90684H5.12728L3.03535 1.1711H2.98066L0.888729 6.90684ZM1.21687 4.24525H4.79914V4.97719H1.21687V4.24525Z" fill="white"/><path d="M7.10641 6.90684V0.0931559H9.55384C10.0415 0.0931559 10.4437 0.175222 10.7605 0.339354C11.0772 0.501267 11.3131 0.71974 11.468 0.994772C11.623 1.26759 11.7005 1.57034 11.7005 1.90304C11.7005 2.19582 11.6469 2.43758 11.5398 2.62833C11.435 2.81907 11.296 2.9699 11.1228 3.0808C10.9519 3.1917 10.7662 3.27376 10.5656 3.327V3.39354C10.7798 3.40684 10.9952 3.48004 11.2117 3.61312C11.4281 3.7462 11.6093 3.93695 11.7551 4.18536C11.901 4.43378 11.9739 4.73764 11.9739 5.09696C11.9739 5.43853 11.8942 5.74572 11.7346 6.01854C11.5751 6.29135 11.3233 6.5076 10.9792 6.6673C10.6351 6.827 10.1873 6.90684 9.63587 6.90684H7.10641ZM7.95412 6.1749H9.63587C10.1896 6.1749 10.5827 6.07066 10.8151 5.86217C11.0499 5.65146 11.1672 5.39639 11.1672 5.09696C11.1672 4.86629 11.1068 4.65336 10.9861 4.45818C10.8653 4.26077 10.6932 4.1033 10.4699 3.98574C10.2466 3.86597 9.98225 3.80608 9.67689 3.80608H7.95412V6.1749ZM7.95412 3.08745H9.52649C9.78172 3.08745 10.0119 3.03866 10.217 2.94106C10.4243 2.84347 10.5884 2.70596 10.7092 2.52852C10.8322 2.35108 10.8938 2.14259 10.8938 1.90304C10.8938 1.60361 10.7867 1.34965 10.5725 1.14116C10.3582 0.93045 10.0187 0.825095 9.55384 0.825095H7.95412V3.08745Z" fill="white"/><path d="M19.2496 2.22243H18.366C18.3138 1.98511 18.2224 1.77662 18.0917 1.59696C17.9635 1.4173 17.8067 1.26648 17.6215 1.14449C17.4386 1.02028 17.2355 0.927123 17.0123 0.865019C16.789 0.802915 16.5562 0.771863 16.314 0.771863C15.8722 0.771863 15.472 0.876109 15.1134 1.0846C14.7571 1.29309 14.4733 1.60029 14.2619 2.00618C14.0529 2.41207 13.9484 2.91001 13.9484 3.5C13.9484 4.08999 14.0529 4.58793 14.2619 4.99382C14.4733 5.39971 14.7571 5.70691 15.1134 5.9154C15.472 6.12389 15.8722 6.22814 16.314 6.22814C16.5562 6.22814 16.789 6.19709 17.0123 6.13498C17.2355 6.07288 17.4386 5.98083 17.6215 5.85884C17.8067 5.73463 17.9635 5.5827 18.0917 5.40304C18.2224 5.22117 18.3138 5.01267 18.366 4.77757H19.2496C19.1831 5.12579 19.0619 5.43742 18.8862 5.71245C18.7104 5.98748 18.4919 6.22148 18.2307 6.41445C17.9694 6.6052 17.6761 6.75048 17.3507 6.85029C17.0277 6.95009 16.6821 7 16.314 7C15.6917 7 15.1383 6.85805 14.6538 6.57414C14.1693 6.29024 13.7881 5.88657 13.5102 5.36312C13.2323 4.83967 13.0934 4.21863 13.0934 3.5C13.0934 2.78137 13.2323 2.16033 13.5102 1.63688C13.7881 1.11343 14.1693 0.709759 14.6538 0.425856C15.1383 0.141952 15.6917 0 16.314 0C16.6821 0 17.0277 0.049905 17.3507 0.149715C17.6761 0.249525 17.9694 0.395913 18.2307 0.588878C18.4919 0.779626 18.7104 1.01252 18.8862 1.28755C19.0619 1.56036 19.1831 1.87199 19.2496 2.22243Z" fill="white"/></svg>';
 const iconStringJoin       = '<svg width="20" height="7" viewBox="0 0 20 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.962017 7H0.0941198L2.60435 0.163636H3.45889L5.96912 7H5.10122L3.05832 1.24517H3.00492L0.962017 7ZM1.28247 4.32955H4.78077V5.06392H1.28247V4.32955ZM8.92999 5.7983V1.39205H9.67771V5.7983H8.92999ZM7.10072 3.96903V3.22131H11.507V3.96903H7.10072ZM13.2303 7V0.163636H15.6203C16.0965 0.163636 16.4893 0.245976 16.7986 0.410654C17.108 0.573106 17.3383 0.792306 17.4896 1.06825C17.641 1.34197 17.7166 1.64574 17.7166 1.97955C17.7166 2.2733 17.6643 2.51586 17.5597 2.70724C17.4574 2.89863 17.3216 3.04995 17.1525 3.16122C16.9856 3.27249 16.8042 3.35483 16.6084 3.40824V3.475C16.8176 3.48835 17.0279 3.56179 17.2393 3.69531C17.4507 3.82884 17.6276 4.02022 17.77 4.26946C17.9124 4.5187 17.9837 4.82358 17.9837 5.18409C17.9837 5.5268 17.9058 5.83501 17.75 6.10874C17.5942 6.38246 17.3483 6.59943 17.0123 6.75966C16.6763 6.91989 16.239 7 15.7004 7H13.2303ZM14.0581 6.26563H15.7004C16.2412 6.26563 16.6251 6.16103 16.8521 5.95185C17.0813 5.74044 17.1959 5.48452 17.1959 5.18409C17.1959 4.95265 17.1369 4.73902 17.019 4.54318C16.901 4.34512 16.733 4.18712 16.5149 4.06918C16.2968 3.94901 16.0387 3.88892 15.7405 3.88892H14.0581V6.26563ZM14.0581 3.1679H15.5936C15.8428 3.1679 16.0676 3.11894 16.2679 3.02102C16.4704 2.92311 16.6306 2.78513 16.7486 2.6071C16.8687 2.42907 16.9288 2.21989 16.9288 1.97955C16.9288 1.67912 16.8242 1.42431 16.6151 1.21513C16.4059 1.00372 16.0743 0.898011 15.6203 0.898011H14.0581V3.1679Z" fill="white"/></svg>';
@@ -27321,6 +28270,9 @@ var menuString;
 var menuColor;
 var menuStyle;
 var menuShape;
+
+var menuVariableMath;
+
 
 var menuZoom;
 
@@ -27454,6 +28406,17 @@ function initGeneratorMenus()
         new MenuItem('Repeat', {icon: iconRepeat, callback: e => actionManager.do(new CreateNodeAction(REPEAT, btnNumber.div, {insert: e.shiftKey}))})]);
     
     
+    menuVariableMath = new Menu('Variable math nodes', true, false);
+    menuVariableMath.addItems([
+        new MenuItem('...Math',     {icon: iconMath    , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MATH,        btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('...Add',      {icon: iconAdd     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_ADD,         btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('...Subtract', {icon: iconSubtract, callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_SUBTRACT,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('...Multiply', {icon: iconMultiply, callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MULTIPLY,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('...Divide',   {icon: iconDivide  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_DIVIDE,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('...Exponent', {icon: iconExponent, callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_EXPONENT,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('...Modulo',   {icon: iconModulo  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MODULO,      btnNumber.div, {insert: e.shiftKey}))})]);
+
+
     menuNumber = new Menu('Number nodes', true, false);
     menuNumber.addItems([
         new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(new CreateNodeAction(NUMBER,             btnNumber.div, {insert: e.shiftKey}))}),
@@ -27465,12 +28428,13 @@ function initGeneratorMenus()
         new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Exponent',    {icon: iconExponent   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Modulo',      {icon: iconModulo     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('...',         {childMenu: menuVariableMath }),
         new MenuItem('',            {separator: true}),
         new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('',            {separator: true}),
         new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_RANDOM,      btnNumber.div, {insert: e.shiftKey}))})]);
-    
+        
     
     // menuString = new Menu('String nodes', true, false);
     // menuString.addItems([
@@ -34724,44 +35688,53 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 
     switch (nodeType)
     {
-        case LIST:               node = new OpList();             break;
-        case ITEMS:              node = new OpItems();            break;
-        case REPEAT:             node = new OpRepeat();           break;
-
-        case NUMBER:             node = new OpNumber();           break;
-        case NUMBER_LIMITS:      node = new OpLimits();           break;
-        case NUMBER_RANDOM:      node = new OpRandom();           break;
-        case NUMBER_MATH:        node = new OpMath();             break;
-        case NUMBER_ADD:         node = new OpAdd();              break;
-        case NUMBER_SUBTRACT:    node = new OpSubtract();         break;
-        case NUMBER_MULTIPLY:    node = new OpMultiply();         break;
-        case NUMBER_DIVIDE:      node = new OpDivide();           break;
-        case NUMBER_MODULO:      node = new OpModulo();           break;
-        case NUMBER_EXPONENT:    node = new OpExponent();         break;
-        case NUMBER_INTERPOLATE: node = new OpInterpolate();      break;
+        case LIST:                node = new OpList();             break;
+        case ITEMS:               node = new OpItems();            break;
+        case REPEAT:              node = new OpRepeat();           break;
+ 
+        case NUMBER:              node = new OpNumber();           break;
+        case NUMBER_LIMITS:       node = new OpLimits();           break;
+        case NUMBER_RANDOM:       node = new OpRandom();           break;
+        case NUMBER_INTERPOLATE:  node = new OpInterpolate();      break;
+ 
+        case NUMBER_MATH:         node = new OpMath();             break;
+        case NUMBER_ADD:          node = new OpAdd();              break;
+        case NUMBER_SUBTRACT:     node = new OpSubtract();         break;
+        case NUMBER_MULTIPLY:     node = new OpMultiply();         break;
+        case NUMBER_DIVIDE:       node = new OpDivide();           break;
+        case NUMBER_MODULO:       node = new OpModulo();           break;
+        case NUMBER_EXPONENT:     node = new OpExponent();         break;
         
-        case COLOR:              node = new OpColor(options);     break;
-        case COLOR_CORRECT:      node = new OpColorCorrect();     break;
-        case COLOR_CONTRAST:     node = new OpColorContrast();    break;
-        case COLORBLIND:         node = new OpColorBlind();       break;
-        case COLOR_INTERPOLATE:  node = new OpColorInterpolate(); break;
+        case NUMBER_VAR_MATH:     node = new OpVarMath();          break;
+        case NUMBER_VAR_ADD:      node = new OpVarAdd();           break;
+        case NUMBER_VAR_SUBTRACT: node = new OpVarSubtract();      break;
+        case NUMBER_VAR_MULTIPLY: node = new OpVarMultiply();      break;
+        case NUMBER_VAR_DIVIDE:   node = new OpVarDivide();        break;
+        case NUMBER_VAR_MODULO:   node = new OpVarModulo();        break;
+        case NUMBER_VAR_EXPONENT: node = new OpVarExponent();      break;
         
-        case COLOR_STOP:         node = new OpColorStop();        break;
-        case GRADIENT:           node = new OpGradient();         break;
-
-        case FILL:               node = new OpFill();             break;
-        case STROKE:             node = new OpStroke();           break;
-        case STYLE:              node = new OpStyle();            break;
-
-        case RECTANGLE:          node = new OpRectangle();        break;
-        case LINE:               node = new OpLine();             break;
-        case ELLIPSE:            node = new OpEllipse();          break;
-        case POLYGON:            node = new OpPolygon();          break;
-        case STAR:               node = new OpStar();             break;
-
-        case COMMENT:            node = new OpComment();          break;
-
-        default:                 console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
+        case COLOR:               node = new OpColor(options);     break;
+        case COLOR_CORRECT:       node = new OpColorCorrect();     break;
+        case COLOR_CONTRAST:      node = new OpColorContrast();    break;
+        case COLORBLIND:          node = new OpColorBlind();       break;
+        case COLOR_INTERPOLATE:   node = new OpColorInterpolate(); break;
+        
+        case COLOR_STOP:          node = new OpColorStop();        break;
+        case GRADIENT:            node = new OpGradient();         break;
+ 
+        case FILL:                node = new OpFill();             break;
+        case STROKE:              node = new OpStroke();           break;
+        case STYLE:               node = new OpStyle();            break;
+ 
+        case RECTANGLE:           node = new OpRectangle();        break;
+        case LINE:                node = new OpLine();             break;
+        case ELLIPSE:             node = new OpEllipse();          break;
+        case POLYGON:             node = new OpPolygon();          break;
+        case STAR:                node = new OpStar();             break;
+ 
+        case COMMENT:             node = new OpComment();          break;
+ 
+        default:                  console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
     }
     
     node._creatingButton = creatingButton;
@@ -36886,7 +37859,7 @@ class Operator
         // console.log('this.outputs', this.outputs);
 
         const inputs          = this.headerInputs;
-        const connectedInputs = this.headerInputs.filter(i => i.connected);
+        const connectedInputs = inputs.filter(i => i.connected);
         const outputs         = this.headerOutputs;
 
         const padding         = this.header.connectionPadding;
@@ -38330,10 +39303,6 @@ function OpList_onDisconnectInput(node, input)
 class   OpItems
 extends OperatorBase
 {
-    paramValue;
-
-
-
     constructor()
     {
         super(ITEMS, 'items', 100);
@@ -38461,7 +39430,7 @@ extends OperatorBase
         this.addInput (new Input(ALL_TYPES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, true, 1, 0, 100, 0));
+        this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, false, 1, 0, 100, 0));
     }
     
     
@@ -38564,8 +39533,6 @@ extends OperatorBase
 class   OpLimits
 extends OperatorBase
 {
-    paramValue;
-
     paramMin;
     paramMax;
 
@@ -38578,8 +39545,6 @@ extends OperatorBase
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-
-        this.addParam(this.paramValue = new NumberParam('value', '',    false, false, false));      
         this.addParam(this.paramMin   = new NumberParam('min',   'min', true,  true,  true,    0));
         this.addParam(this.paramMax   = new NumberParam('max',   'max', true,  true,  true, 1000));
     }
@@ -38618,16 +39583,78 @@ extends OperatorBase
 
 
 
-    // updateValues(updateParamId, paramIds, values)
-    // {
-    //     //super.updateValues(updateParamId, paramIds, values);
+    updateParams()
+    {
+        super.updateParams();
 
-    //     const min = values[paramIds.findIndex(id => id == 'min')];
-    //     const max = values[paramIds.findIndex(id => id == 'max')];
+        this.paramMin  .enableControlText(true);
+        this.paramMax  .enableControlText(true);
+    }
+}
 
-    //     this.paramMax.control.setMin(min, false, true, false);
-    //     this.paramMin.control.setMax(max, false, true, false);
-    // }
+
+class   OpInterpolate
+extends OperatorBase
+{
+    paramAmount;
+
+
+
+    constructor()
+    {
+        super(NUMBER_INTERPOLATE, 'inter', 70);
+
+        this.addInput(new Input(NUMBER_TYPES));
+        this.addInput(new Input(NUMBER_TYPES));
+
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+
+        this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
+
+        
+        this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
+        this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
+        
+        this.paramAmount.control.setSuffix('%', true);
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
+
+        
+        if (   input0.connected
+            && input1.connected)   request.push(2,
+                                       ...pushInputOrParam(input0, gen),
+                                       ...pushInputOrParam(input1, gen));
+
+        else if (input0.connected) request.push(1, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) request.push(1, ...pushInputOrParam(input1, gen));
+            
+        else                       request.push(0);
+
+
+        request.push(...this.node.paramAmount.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
 
 
 
@@ -38635,9 +39662,7 @@ extends OperatorBase
     {
         super.updateParams();
 
-        this.paramValue.enableControlText(false);
-        this.paramMin  .enableControlText(true);
-        this.paramMax  .enableControlText(true);
+        this.paramAmount.enableControlText(true);
     }
 }
 
@@ -38657,9 +39682,9 @@ extends OperatorBase
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramSeed = new NumberParam('seed', 'seed', true, true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
-        this.addParam(this.paramMin  = new NumberParam('min',  'min',  true, true, true,    0));
-        this.addParam(this.paramMax  = new NumberParam('max',  'max',  true, true, true, 1000));
+        this.addParam(this.paramSeed = new NumberParam('seed', 'seed', true, true, false, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
+        this.addParam(this.paramMin  = new NumberParam('min',  'min',  true, true, false,    0));
+        this.addParam(this.paramMax  = new NumberParam('max',  'max',  true, true, false, 1000));
 
         this.paramSeed.control.allowEditDecimals = false;
         this.paramSeed.isDefault = () => false;
@@ -38692,13 +39717,94 @@ extends OperatorBase
 }
 
 
+class   OpMath
+extends OperatorBase
+{
+    paramOperation;
+    paramOperand;
+
+
+
+    constructor()
+    {
+        super(NUMBER_MATH, 'math', 70);
+
+        this.alwaysLoadParams = true;
+
+
+        this.addOutput(new Input (NUMBER_TYPES));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true,  false, MATH_OPS.map(s => s[1]), 1));
+        this.addParam(this.paramOperand   = new NumberParam('operand',   '', false, true,  false, 0));
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+        
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+        
+        request.push(...this.node.paramOperation.genRequest(gen));
+        request.push(...this.node.paramOperand  .genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramOperation.enableControlText(true );
+
+        super.updateParams();
+    }
+}
+
+
+
+function OpList_onConnectInput(node)
+{
+    node.addNewInput();
+}
+
+
+
+function OpList_onDisconnectInput(node, input)
+{
+    removeFromArray(node.inputs, input);
+    node.inputControls.removeChild(input.div);
+}
+
+
 class   OpArithmetic
 extends OperatorBase
 {
-    paramValue;
+    paramOperand;
 
     _symbol;
     _showOnlySymbol;
+
 
 
     constructor(type, shortName, symbol)
@@ -38711,11 +39817,11 @@ extends OperatorBase
         this._showOnlySymbol  = true;
 
 
-        this.addNewInput();
+        this.addInput (new Input(NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
 
-        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
+        this.addParam(this.paramOperand = new NumberParam('operand', '', false, true,  false, 0));
 
 
         this._symbol           = createDiv('arithmeticSymbol');
@@ -38758,21 +39864,6 @@ extends OperatorBase
     
     
     
-    addNewInput()
-    {
-        const newInput = new Input(NUMBER_TYPES);
-        newInput.isNew = true;
-
-        newInput.addEventListener('connect',    e => { OpArithmetic_onConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => OpArithmetic_onDisconnectInput(this, e.detail.input));
-
-        this.addInput(newInput);
-
-        return newInput;
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -38786,38 +39877,21 @@ extends OperatorBase
         if (ignore) return request;
             
 
-        const connectedInputs = this.node.inputs.filter(i => i.connected);
+        const input = this.node.inputs[0];
 
 
-        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        request.push(input.connected ? 1 : 0);
         
-        connectedInputs.forEach(input => 
-            request.push(...pushInputOrParam(input, gen)));
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+        request.push(...this.node.paramOperand.genRequest(gen));
 
         
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
         
         return request;
-    }
-
-
-
-    // updateValues(updateParamId, paramIds, values)
-    // {
-    //     super.updateValues(updateParamId, paramIds, values);
-
-    //     const value = values[paramIds.findIndex(id => id == 'value')];
-    //     this.paramValue.setValue(value, false, true, false);
-    // }
-
-
-
-    updateParams()
-    {
-        this.paramValue.enableControlText(false);
-
-        super.updateParams();
     }
 
 
@@ -38916,116 +39990,6 @@ function OpArithmetic_onDisconnectInput(node, input)
 }
 
 
-class   OpMath
-extends OperatorBase
-{
-    paramOperation;
-    paramValue;
-
-
-
-    constructor()
-    {
-        super(NUMBER_MATH, 'math', 70);
-
-        this.variableInputs   = true;
-        this.alwaysLoadParams = true;
-
-
-        this.addNewInput();
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
-        
-        this.addParam(this.paramValue     = new NumberParam('value',     '',   false, false, false));
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, MATH_OPS.map(s => s[1]), 1));
-    }
-    
-    
-    
-    addNewInput()
-    {
-        const newInput = new Input(NUMBER_TYPES);
-        newInput.isNew = true;
-
-        newInput.addEventListener('connect',    e => { OpList_onConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => OpList_onDisconnectInput(this, e.detail.input));
-
-        this.addInput(newInput);
-
-        return newInput;
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: '' });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-
-        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
-
-
-        request.push(connectedInputs.length); // utility values like param count are stored as numbers
-        
-        for (const input of connectedInputs)
-            request.push(...pushInputOrParam(input, gen));
-
-        
-        request.push(...this.node.paramOperation.genRequest(gen));
-
-        
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
-    }
-
-
-
-    // updateValues(updateParamId, paramIds, values)
-    // {
-    //     super.updateValues(updateParamId, paramIds, values);
-
-    //     const value     = values[paramIds.findIndex(id => id == 'value'    )];
-    //     const operation = values[paramIds.findIndex(id => id == 'operation')];
-
-    //     this.paramValue    .setValue(value,     false, true, false);
-    //     this.paramOperation.setValue(operation, false, true, false);
-    // }
-
-
-
-    updateParams()
-    {
-        this.paramValue    .enableControlText(false);
-        this.paramOperation.enableControlText(true );
-
-        super.updateParams();
-    }
-}
-
-
-
-function OpList_onConnectInput(node)
-{
-    node.addNewInput();
-}
-
-
-
-function OpList_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
-}
-
-
 class   OpAdd
 extends OpArithmetic
 {
@@ -39118,32 +40082,40 @@ extends OpArithmetic
 }
 
 
-class   OpInterpolate
+class   OpVarMath
 extends OperatorBase
 {
-    paramValue;
-    paramAmount;
+    paramOperation;
 
 
 
     constructor()
     {
-        super(NUMBER_INTERPOLATE, 'inter', 70);
+        super(NUMBER_VAR_MATH, 'math', 70);
 
-        this.addInput(new Input(NUMBER_TYPES));
-        this.addInput(new Input(NUMBER_TYPES));
+        this.variableInputs   = true;
+        this.alwaysLoadParams = true;
 
+
+        this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
-
-        this.addParam(this.paramValue  = new NumberParam('value', '', false, false, false, 0));
-        this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
-
-        //this.paramValue.enableControlText(false);
         
-        this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
-        this.paramAmount.control.max = Number.MAX_SAFE_INTEGER; // extrapolation
-        
-        this.paramAmount.control.setSuffix('%', true);
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, MATH_OPS.map(s => s[1]), 1));
+    }
+    
+    
+    
+    addNewInput()
+    {
+        const newInput = new Input(NUMBER_TYPES);
+        newInput.isNew = true;
+
+        newInput.addEventListener('connect',    e => { OpList_onConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => OpList_onDisconnectInput(this, e.detail.input));
+
+        this.addInput(newInput);
+
+        return newInput;
     }
 
 
@@ -39159,25 +40131,19 @@ extends OperatorBase
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
+
+        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
+
+
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
         
-        const input0 = this.node.inputs[0];
-        const input1 = this.node.inputs[1];
+        for (const input of connectedInputs)
+            request.push(...pushInputOrParam(input, gen));
 
         
-        if (   input0.connected
-            && input1.connected)   request.push(2,
-                                       ...pushInputOrParam(input0, gen),
-                                       ...pushInputOrParam(input1, gen));
+        request.push(...this.node.paramOperation.genRequest(gen));
 
-        else if (input0.connected) request.push(1, ...pushInputOrParam(input0, gen));
-        else if (input1.connected) request.push(1, ...pushInputOrParam(input1, gen));
-            
-        else                       request.push(0);
-
-
-        request.push(...this.node.paramAmount.genRequest(gen));
-
-
+        
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
@@ -39188,10 +40154,316 @@ extends OperatorBase
 
     updateParams()
     {
-        super.updateParams();
+        this.paramOperation.enableControlText(true );
 
-        this.paramValue .enableControlText(false);
-        this.paramAmount.enableControlText(true);
+        super.updateParams();
+    }
+}
+
+
+
+function OpList_onConnectInput(node)
+{
+    node.addNewInput();
+}
+
+
+
+function OpList_onDisconnectInput(node, input)
+{
+    removeFromArray(node.inputs, input);
+    node.inputControls.removeChild(input.div);
+}
+
+
+class   OpVarArithmetic
+extends OperatorBase
+{
+    _symbol;
+    _showOnlySymbol;
+
+
+    constructor(type, shortName, symbol)
+    {
+        super(type, shortName, 70);
+
+        this.variableInputs   = true;
+        this.alwaysLoadParams = true;
+
+        this._showOnlySymbol  = true;
+
+
+        this.addNewInput();
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        
+
+        this._symbol           = createDiv('arithmeticSymbol');
+        this._symbol.innerHTML = symbol;
+        this._symbol.clicked0  = false;
+        
+        this._symbol.addEventListener('pointerenter', () => this._symbol.style.opacity = this._showOnlySymbol ? 1 : 0.65);
+        this._symbol.addEventListener('pointerleave', () => this._symbol.style.opacity = 1);
+
+        this._symbol.addEventListener('pointerdown', e => 
+        { 
+            if (e.button == 0)
+            {
+                if (this._symbol.clicked0) // finish double click on small symbol
+                {
+                    this._symbol.clicked0      = false;
+                    this._symbol.style.opacity = 1;
+
+                    actionManager.do(new ToggleArithmeticSymbolAction(this.id, true));
+
+                    this.header.ignoreDoubleClick = true;
+                }
+                else if (!this._showOnlySymbol) // start double cick on small symbol
+                {
+                    this._symbol.clicked0 = true;
+                    setTimeout(() => this._symbol.clicked0 = false, 250); // seems like a good default guess
+                }
+            }
+        });
+
+        this.header.appendChild(this._symbol);
+
+        
+        this.textbox.addEventListener('finishedit', e => 
+        {
+            if (this._showOnlySymbol)
+                actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
+        });
+    }
+    
+    
+    
+    addNewInput()
+    {
+        const newInput = new Input(NUMBER_TYPES);
+        newInput.isNew = true;
+
+        newInput.addEventListener('connect',    e => { OpArithmetic_onConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => OpArithmetic_onDisconnectInput(this, e.detail.input));
+
+        this.addInput(newInput);
+
+        return newInput;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+            
+
+        const connectedInputs = this.node.inputs.filter(i => i.connected);
+
+
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+        connectedInputs.forEach(input => 
+            request.push(...pushInputOrParam(input, gen)));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+        
+        return request;
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+
+        const colBack = rgbHeaderFromType(this.type, this.active);
+        const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
+
+        this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
+        this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
+        this._symbol.style.color      = rgb2style(colText);
+        this._symbol.style.left       = 'calc(50% + 1px)';
+        
+
+        const padding         = this.header.connectionPadding;
+        const connectedInputs = this.headerInputs.filter(i => i.connected);
+
+
+        if (isEmpty(connectedInputs))
+        {
+            if (this._showOnlySymbol)
+            {
+                this._symbol.style.top = 2;
+            }
+            else
+            {
+                this._symbol.style.top = -1;
+                this.label  .style.top = 'calc(50% + 4px)';
+            }
+        }
+        else
+        {
+            const [connectedInputY, connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
+
+            if (this._showOnlySymbol)
+            {
+                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 9;
+            }
+            else
+            {
+                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 6;
+                this.label  .style.top = 'calc(50% + 5px)';
+            }
+        }
+        
+
+        this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
+    }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = TAB;
+
+        return super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"onlySymbol": "' + boolToString(this._showOnlySymbol) + '"';
+    }
+
+
+
+    paramsToJson(nTab = 0)
+    {
+        return '';
+    }
+
+
+
+    loadParams(_node)
+    {
+        if (_node.showOnlySymbol)
+            this._showOnlySymbol = isTrue(_node.showOnlySymbol);
+
+        super.loadParams(_node);
+    }
+}
+
+
+
+function OpArithmetic_onConnectInput(node)
+{
+    node.addNewInput();
+}
+
+
+
+function OpArithmetic_onDisconnectInput(node, input)
+{
+    removeFromArray(node.inputs, input);
+    node.inputControls.removeChild(input.div);
+}
+
+
+class   OpVarAdd
+extends OpVarArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_VAR_ADD, 'add', '+');
+    }
+}
+
+
+class   OpVarSubtract
+extends OpVarArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_VAR_SUBTRACT, 'sub', '−');
+    }
+}
+
+
+class   OpVarMultiply
+extends OpVarArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_VAR_MULTIPLY, 'mul', '×');
+    }
+}
+
+
+class   OpVarDivide
+extends OpVarArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_VAR_DIVIDE, 'div', '÷');
+    }
+}
+
+
+class   OpVarModulo
+extends OpVarArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_VAR_MODULO, 'mod', '%');
+    }
+    
+    
+    
+    updateNode()
+    {
+        super.updateNode();
+
+        // this._symbol.innerHTML =
+        //     this._showOnlySymbol
+        //     ? '<span style="font-size: 14px;">x</span><span style="position: relative; left: -1px; top: -7px; font-size: 7px; font-weight: bold;">y</span>'
+        //     : '<span style="position: relative; top: -1.5px; font-size: 8px;">x</span><span style="position: relative; left: -0.5px; top: -5.15px; font-size: 3.75px; font-weight: bold;">y</span>';
+
+        this._symbol.style.fontSize   = this._showOnlySymbol ? 11 : 8;
+        this._symbol.style.fontWeight = 'bold';
+        this._symbol.style.left       = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
+        this._symbol.style.top        = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 4 : 4.5);
+    }
+}
+
+
+class   OpVarExponent
+extends OpVarArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_VAR_EXPONENT, 'exp', 'xʸ'); // placeholder symbol, actual symbol set in updateNode()
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+
+        this._symbol.innerHTML =
+            this._showOnlySymbol
+            ? '<span style="font-size: 14px;">x</span><span style="position: relative; left: -1px; top: -7px; font-size: 7px; font-weight: bold;">y</span>'
+            : '<span style="position: relative; top: -2.5px; font-size: 9px;">x</span><span style="position: relative; left: -0.5px; top: -7.5px; font-size: 3.75px; font-weight: bold;">y</span>';
+
+        this._symbol.style.left = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
+        this._symbol.style.top  = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 1.5 : 6);
     }
 }
 
@@ -41202,9 +42474,6 @@ extends OpColorBase
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0, 0));
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
-
-        //this.paramValue.enableControlText(false);
-
 
         createTooltip(ttWcag2);
         createTooltip(ttWcag3);

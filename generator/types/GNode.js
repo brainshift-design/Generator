@@ -1,24 +1,56 @@
-class GValue
-extends GNode
+class GNode
 {
+    type;
+
+    options = {};
+    data    = {}; // for type conversion info
+
+
+
     constructor(type, options) 
     {
-        super(type, options);
+        this.type    = type;
+        this.options = options;
     }
 
 
 
     copy()
     {
-        console.assert(false, 'abstract class GValue cannot be copied');
+        console.assert(false, 'abstract type GNode cannot be copied');
         return null;
+    }
+
+
+
+    copyBase(src)
+    {
+        this.valid    = src.valid;
+        this.topLevel = src.topLevel;
+
+        this.options  = clone(src.options);
+        this.data     = clone(src.data);
+    }
+
+
+
+    validate()
+    {
+        this.valid = true;
+    }
+
+
+
+    isValid() // is a valid value
+    {
+        return false;
     }
 
 
 
     toValue()
     {
-        return this.copy();
+        return null;
     }
 
 

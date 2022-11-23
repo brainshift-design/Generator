@@ -1,16 +1,16 @@
-class GAdd
-extends GArithmetic
+class GVarAdd
+extends GVarArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_ADD, nodeId, options);
+        super(NUMBER_VAR_ADD, nodeId, options);
     }
 
 
     
     copy()
     {
-        const add = new GAdd(this.nodeId, this.options);
+        const add = new GVarAdd(this.nodeId, this.options);
         add.copyBase(this);
         add.inputs = this.inputs.map(i => i.copy());
         return add;
@@ -23,10 +23,8 @@ extends GArithmetic
         if (this.valid)
             return this;
 
-        this.value = evalAddInputs(this.inputs, parse);
+        this.value = evalVarAddInputs(this.inputs, parse);
         
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
         this.validate();
 
         return this;
@@ -35,7 +33,7 @@ extends GArithmetic
 
 
 
-function evalAddInputs(inputs, parse)
+function evalVarAddInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;

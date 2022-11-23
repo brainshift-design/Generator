@@ -141,6 +141,99 @@ function genParseMath(parse, newNode)
     const math = newNode(nodeId, options);
 
     
+    let nValues = -1;
+    
+    if (!ignore)
+    {
+        nValues = parseInt(parse.move());
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReqMath(math, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, math);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nValues == 1);
+        math.input = genParse(parse);
+
+    math.operation = genParse(parse);
+    math.operand   = genParse(parse);
+
+
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, math);
+    return math;
+}
+
+
+
+function genParseArithmetic(parse, newNode)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const arith = newNode(nodeId, options);
+
+
+    let nValues = -1;
+    
+    if (!ignore)
+    {
+        nValues = parseInt(parse.move());
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReqArithmetic(arith, type, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, arith);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    
+    if (nValues == 1)
+        arith.input = genParse(parse);
+
+    arith.operand = genParse(parse);
+
+    
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, arith);
+    return arith;
+}
+
+
+
+function genParseVarMath(parse, newNode)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const math = newNode(nodeId, options);
+
+    
     let nValues = 0;
     
     if (!ignore)
@@ -176,7 +269,7 @@ function genParseMath(parse, newNode)
 
 
 
-function genParseArithmetic(parse, newNode)
+function genParseVarArithmetic(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
 

@@ -3,7 +3,7 @@ extends GOperator
 {
     input = null;
 
-    value;
+    count;
 
 
 
@@ -27,15 +27,6 @@ extends GOperator
 
         return rep;
     }
-
-
-
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
 
 
 
@@ -69,7 +60,6 @@ extends GOperator
         }
 
         
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
         genPushUpdateValue(parse, this.nodeId, 'count', count);
 
 

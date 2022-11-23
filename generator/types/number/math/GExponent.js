@@ -12,7 +12,7 @@ extends GArithmetic
     {
         const exp = new GExponent(this.nodeId, this.options);
         exp.copyBase(this);
-        exp.inputs = this.inputs.map(i => i.copy());
+        if (this.input) exp.input = this.input.copy();
         return exp;
     }
 
@@ -24,8 +24,6 @@ extends GArithmetic
             return this;
 
         this.value = evalExponentInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.validate();
 

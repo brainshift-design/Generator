@@ -1,8 +1,6 @@
-class   OpArithmetic
+class   OpVarArithmetic
 extends OperatorBase
 {
-    paramValue;
-
     _symbol;
     _showOnlySymbol;
 
@@ -20,9 +18,6 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-
-        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
-
 
         this._symbol           = createDiv('arithmeticSymbol');
         this._symbol.innerHTML = symbol;
@@ -105,25 +100,6 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
         
         return request;
-    }
-
-
-
-    // updateValues(updateParamId, paramIds, values)
-    // {
-    //     super.updateValues(updateParamId, paramIds, values);
-
-    //     const value = values[paramIds.findIndex(id => id == 'value')];
-    //     this.paramValue.setValue(value, false, true, false);
-    // }
-
-
-
-    updateParams()
-    {
-        this.paramValue.enableControlText(false);
-
-        super.updateParams();
     }
 
 

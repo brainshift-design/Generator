@@ -78,50 +78,59 @@ function genParse(parse, inParam = true)
     let result = null;
 
 
-         if (parse.next == PARAM             ) result = genParseParam           (parse);
+         if (parse.next == PARAM              ) result = genParseParam           (parse);
+ 
+    else if (parse.next == LIST_VALUE         ) result = genParseListValue       (parse);
+    else if (parse.next == LIST               ) result = genParseList            (parse);
+    else if (parse.next == ITEMS              ) result = genParseItems           (parse);
+    else if (parse.next == REPEAT             ) result = genParseRepeat          (parse);
+ 
+    else if (parse.next == NUMBER_VALUE       ) result = genParseNumValue        (parse);
+    else if (parse.next == NUMBER             ) result = genParseNumber          (parse);
+    else if (parse.next == NUMBER_LIMITS      ) result = genParseLimits          (parse);
+    else if (parse.next == NUMBER_RANDOM      ) result = genParseRandom          (parse);
+    else if (parse.next == NUMBER_INTERPOLATE ) result = genParseInterpolate     (parse);
+ 
+    else if (parse.next == NUMBER_MATH        ) result = genParseMath            (parse, (nodeId, options) => new GMath    (nodeId, options));
+    else if (parse.next == NUMBER_ADD         ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd     (nodeId, options));
+    else if (parse.next == NUMBER_SUBTRACT    ) result = genParseArithmetic      (parse, (nodeId, options) => new GSubtract(nodeId, options));
+    else if (parse.next == NUMBER_MULTIPLY    ) result = genParseArithmetic      (parse, (nodeId, options) => new GMultiply(nodeId, options));
+    else if (parse.next == NUMBER_DIVIDE      ) result = genParseArithmetic      (parse, (nodeId, options) => new GDivide  (nodeId, options));
+    else if (parse.next == NUMBER_MODULO      ) result = genParseArithmetic      (parse, (nodeId, options) => new GModulo  (nodeId, options));
+    else if (parse.next == NUMBER_EXPONENT    ) result = genParseArithmetic      (parse, (nodeId, options) => new GExponent(nodeId, options));
 
-    else if (parse.next == LIST_VALUE        ) result = genParseListValue       (parse);
-    else if (parse.next == LIST              ) result = genParseList            (parse);
-    else if (parse.next == ITEMS             ) result = genParseItems           (parse);
-    else if (parse.next == REPEAT            ) result = genParseRepeat          (parse);
+    else if (parse.next == NUMBER_VAR_MATH    ) result = genParseVarMath         (parse, (nodeId, options) => new GVarMath    (nodeId, options));
+    else if (parse.next == NUMBER_VAR_ADD     ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarAdd     (nodeId, options));
+    else if (parse.next == NUMBER_VAR_SUBTRACT) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarSubtract(nodeId, options));
+    else if (parse.next == NUMBER_VAR_MULTIPLY) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarMultiply(nodeId, options));
+    else if (parse.next == NUMBER_VAR_DIVIDE  ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarDivide  (nodeId, options));
+    else if (parse.next == NUMBER_VAR_MODULO  ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarModulo  (nodeId, options));
+    else if (parse.next == NUMBER_VAR_EXPONENT) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarExponent(nodeId, options));
 
-    else if (parse.next == NUMBER_VALUE      ) result = genParseNumValue        (parse);
-    else if (parse.next == NUMBER            ) result = genParseNumber          (parse);
-    else if (parse.next == NUMBER_LIMITS     ) result = genParseLimits          (parse);
-    else if (parse.next == NUMBER_RANDOM     ) result = genParseRandom          (parse);
-    else if (parse.next == NUMBER_MATH       ) result = genParseMath            (parse, (nodeId, options) => new GMath    (nodeId, options));
-    else if (parse.next == NUMBER_ADD        ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd     (nodeId, options));
-    else if (parse.next == NUMBER_SUBTRACT   ) result = genParseArithmetic      (parse, (nodeId, options) => new GSubtract(nodeId, options));
-    else if (parse.next == NUMBER_MULTIPLY   ) result = genParseArithmetic      (parse, (nodeId, options) => new GMultiply(nodeId, options));
-    else if (parse.next == NUMBER_DIVIDE     ) result = genParseArithmetic      (parse, (nodeId, options) => new GDivide  (nodeId, options));
-    else if (parse.next == NUMBER_MODULO     ) result = genParseArithmetic      (parse, (nodeId, options) => new GModulo  (nodeId, options));
-    else if (parse.next == NUMBER_EXPONENT   ) result = genParseArithmetic      (parse, (nodeId, options) => new GExponent(nodeId, options));
-    else if (parse.next == NUMBER_INTERPOLATE) result = genParseInterpolate     (parse);
-
-    else if (parse.next == COLOR_VALUE       ) result = genParseColorValue      (parse);
-    else if (parse.next == COLOR             ) result = genParseColor           (parse);
-    else if (parse.next == COLOR_INTERPOLATE ) result = genParseColorInterpolate(parse);
-    else if (parse.next == COLOR_CONTRAST    ) result = genParseColorContrast   (parse);
-    else if (parse.next == COLORBLIND        ) result = genParseColorBlind      (parse);
-    else if (parse.next == COLOR_CORRECT     ) result = genParseColorCorrect    (parse);
-
-    else if (parse.next == FILL_VALUE        ) result = genParseFillValue       (parse);
-    else if (parse.next == FILL              ) result = genParseFill            (parse);
-
-    else if (parse.next == STROKE_VALUE      ) result = genParseStrokeValue     (parse);
-    else if (parse.next == STROKE            ) result = genParseStroke          (parse);
-
-    else if (parse.next == COLOR_STOP_VALUE  ) result = genParseColorStopValue  (parse);
-    else if (parse.next == COLOR_STOP        ) result = genParseColorStop       (parse);
-
-    else if (parse.next == STYLE_VALUE       ) result = genParseStyleValue      (parse);
-    else if (parse.next == STYLE             ) result = genParseStyle           (parse);
-
-    else if (parse.next == RECTANGLE         ) result = genParseRectangle       (parse);
-    else if (parse.next == LINE              ) result = genParseLine            (parse);
-    else if (parse.next == ELLIPSE           ) result = genParseEllipse         (parse);
-    else if (parse.next == POLYGON           ) result = genParsePolygon         (parse);
-    else if (parse.next == STAR              ) result = genParseStar            (parse);
+    else if (parse.next == COLOR_VALUE        ) result = genParseColorValue      (parse);
+    else if (parse.next == COLOR              ) result = genParseColor           (parse);
+    else if (parse.next == COLOR_INTERPOLATE  ) result = genParseColorInterpolate(parse);
+    else if (parse.next == COLOR_CONTRAST     ) result = genParseColorContrast   (parse);
+    else if (parse.next == COLORBLIND         ) result = genParseColorBlind      (parse);
+    else if (parse.next == COLOR_CORRECT      ) result = genParseColorCorrect    (parse);
+ 
+    else if (parse.next == FILL_VALUE         ) result = genParseFillValue       (parse);
+    else if (parse.next == FILL               ) result = genParseFill            (parse);
+ 
+    else if (parse.next == STROKE_VALUE       ) result = genParseStrokeValue     (parse);
+    else if (parse.next == STROKE             ) result = genParseStroke          (parse);
+ 
+    else if (parse.next == COLOR_STOP_VALUE   ) result = genParseColorStopValue  (parse);
+    else if (parse.next == COLOR_STOP         ) result = genParseColorStop       (parse);
+ 
+    else if (parse.next == STYLE_VALUE        ) result = genParseStyleValue      (parse);
+    else if (parse.next == STYLE              ) result = genParseStyle           (parse);
+ 
+    else if (parse.next == RECTANGLE          ) result = genParseRectangle       (parse);
+    else if (parse.next == LINE               ) result = genParseLine            (parse);
+    else if (parse.next == ELLIPSE            ) result = genParseEllipse         (parse);
+    else if (parse.next == POLYGON            ) result = genParsePolygon         (parse);
+    else if (parse.next == STAR               ) result = genParseStar            (parse);
 
     else console.assert(false, 'unknown parse token \'' + parse.next + '\'');
 

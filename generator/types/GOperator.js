@@ -1,15 +1,21 @@
 class GOperator
-extends GValue
+extends GNode
 {
     nodeId;
 
+    valid; // has been evaluated
+    topLevel;
 
-
+    
+    
     constructor(type, nodeId, options)
     {
         super(type, options);
 
-        this.nodeId = nodeId;
+        this.nodeId   = nodeId;
+
+        this.valid    = false;
+        this.topLevel = false;
     }
 
 
@@ -26,6 +32,15 @@ extends GValue
     getParamFromId(paramId)
     {
         return this[paramId];
+    }
+
+
+
+    eval(parse)
+    {
+        // calculate and add value update here
+
+        return this;
     }
 
 

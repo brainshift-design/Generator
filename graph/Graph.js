@@ -303,44 +303,53 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 
     switch (nodeType)
     {
-        case LIST:               node = new OpList();             break;
-        case ITEMS:              node = new OpItems();            break;
-        case REPEAT:             node = new OpRepeat();           break;
-
-        case NUMBER:             node = new OpNumber();           break;
-        case NUMBER_LIMITS:      node = new OpLimits();           break;
-        case NUMBER_RANDOM:      node = new OpRandom();           break;
-        case NUMBER_MATH:        node = new OpMath();             break;
-        case NUMBER_ADD:         node = new OpAdd();              break;
-        case NUMBER_SUBTRACT:    node = new OpSubtract();         break;
-        case NUMBER_MULTIPLY:    node = new OpMultiply();         break;
-        case NUMBER_DIVIDE:      node = new OpDivide();           break;
-        case NUMBER_MODULO:      node = new OpModulo();           break;
-        case NUMBER_EXPONENT:    node = new OpExponent();         break;
-        case NUMBER_INTERPOLATE: node = new OpInterpolate();      break;
+        case LIST:                node = new OpList();             break;
+        case ITEMS:               node = new OpItems();            break;
+        case REPEAT:              node = new OpRepeat();           break;
+ 
+        case NUMBER:              node = new OpNumber();           break;
+        case NUMBER_LIMITS:       node = new OpLimits();           break;
+        case NUMBER_RANDOM:       node = new OpRandom();           break;
+        case NUMBER_INTERPOLATE:  node = new OpInterpolate();      break;
+ 
+        case NUMBER_MATH:         node = new OpMath();             break;
+        case NUMBER_ADD:          node = new OpAdd();              break;
+        case NUMBER_SUBTRACT:     node = new OpSubtract();         break;
+        case NUMBER_MULTIPLY:     node = new OpMultiply();         break;
+        case NUMBER_DIVIDE:       node = new OpDivide();           break;
+        case NUMBER_MODULO:       node = new OpModulo();           break;
+        case NUMBER_EXPONENT:     node = new OpExponent();         break;
         
-        case COLOR:              node = new OpColor(options);     break;
-        case COLOR_CORRECT:      node = new OpColorCorrect();     break;
-        case COLOR_CONTRAST:     node = new OpColorContrast();    break;
-        case COLORBLIND:         node = new OpColorBlind();       break;
-        case COLOR_INTERPOLATE:  node = new OpColorInterpolate(); break;
+        case NUMBER_VAR_MATH:     node = new OpVarMath();          break;
+        case NUMBER_VAR_ADD:      node = new OpVarAdd();           break;
+        case NUMBER_VAR_SUBTRACT: node = new OpVarSubtract();      break;
+        case NUMBER_VAR_MULTIPLY: node = new OpVarMultiply();      break;
+        case NUMBER_VAR_DIVIDE:   node = new OpVarDivide();        break;
+        case NUMBER_VAR_MODULO:   node = new OpVarModulo();        break;
+        case NUMBER_VAR_EXPONENT: node = new OpVarExponent();      break;
         
-        case COLOR_STOP:         node = new OpColorStop();        break;
-        case GRADIENT:           node = new OpGradient();         break;
-
-        case FILL:               node = new OpFill();             break;
-        case STROKE:             node = new OpStroke();           break;
-        case STYLE:              node = new OpStyle();            break;
-
-        case RECTANGLE:          node = new OpRectangle();        break;
-        case LINE:               node = new OpLine();             break;
-        case ELLIPSE:            node = new OpEllipse();          break;
-        case POLYGON:            node = new OpPolygon();          break;
-        case STAR:               node = new OpStar();             break;
-
-        case COMMENT:            node = new OpComment();          break;
-
-        default:                 console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
+        case COLOR:               node = new OpColor(options);     break;
+        case COLOR_CORRECT:       node = new OpColorCorrect();     break;
+        case COLOR_CONTRAST:      node = new OpColorContrast();    break;
+        case COLORBLIND:          node = new OpColorBlind();       break;
+        case COLOR_INTERPOLATE:   node = new OpColorInterpolate(); break;
+        
+        case COLOR_STOP:          node = new OpColorStop();        break;
+        case GRADIENT:            node = new OpGradient();         break;
+ 
+        case FILL:                node = new OpFill();             break;
+        case STROKE:              node = new OpStroke();           break;
+        case STYLE:               node = new OpStyle();            break;
+ 
+        case RECTANGLE:           node = new OpRectangle();        break;
+        case LINE:                node = new OpLine();             break;
+        case ELLIPSE:             node = new OpEllipse();          break;
+        case POLYGON:             node = new OpPolygon();          break;
+        case STAR:                node = new OpStar();             break;
+ 
+        case COMMENT:             node = new OpComment();          break;
+ 
+        default:                  console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
     }
     
     node._creatingButton = creatingButton;

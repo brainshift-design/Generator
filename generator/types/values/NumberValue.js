@@ -57,13 +57,6 @@ extends GValue
 
 
 
-    toValue()
-    {
-        return this.copy();
-    }
-
-
-
     toNumber()
     {
         return roundTo(this.value, this.decimals);

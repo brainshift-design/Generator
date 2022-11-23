@@ -1,18 +1,19 @@
 ../core/types.js
 
 
-../generator/types/GValue.js
-../generator/types/GOperator.js
-
-../generator/types/GParam.js
-
-
 ../generator/types/figma/FigmaObject.js
 ../generator/types/figma/FigmaRectangle.js
 ../generator/types/figma/FigmaLine.js
 ../generator/types/figma/FigmaEllipse.js
 ../generator/types/figma/FigmaPolygon.js
 ../generator/types/figma/FigmaStar.js
+
+
+../generator/types/GNode.js
+../generator/types/GValue.js
+../generator/types/GOperator.js
+
+../generator/types/GParam.js
 
 
 ../generator/types/values/ListValue.js
@@ -36,19 +37,29 @@
 ../generator/types/flow/GRepeat.js
 
 
-../generator/types/math/GNumberType.js
-../generator/types/math/GNumber.js
-../generator/types/math/GLimits.js
-../generator/types/math/GRandom.js
-../generator/types/math/GArithmetic.js
-../generator/types/math/GMath.js
-../generator/types/math/GAdd.js
-../generator/types/math/GSubtract.js
-../generator/types/math/GMultiply.js
-../generator/types/math/GDivide.js
-../generator/types/math/GModulo.js
-../generator/types/math/GExponent.js
-../generator/types/math/GInterpolate.js
+../generator/types/number/GNumberType.js
+../generator/types/number/GNumber.js
+../generator/types/number/GLimits.js
+../generator/types/number/GInterpolate.js
+../generator/types/number/GRandom.js
+
+../generator/types/number/math/GArithmetic.js
+../generator/types/number/math/GMath.js
+../generator/types/number/math/GAdd.js
+../generator/types/number/math/GSubtract.js
+../generator/types/number/math/GMultiply.js
+../generator/types/number/math/GDivide.js
+../generator/types/number/math/GModulo.js
+../generator/types/number/math/GExponent.js
+
+../generator/types/number/math/variable/GVarArithmetic.js
+../generator/types/number/math/variable/GVarMath.js
+../generator/types/number/math/variable/GVarAdd.js
+../generator/types/number/math/variable/GVarSubtract.js
+../generator/types/number/math/variable/GVarMultiply.js
+../generator/types/number/math/variable/GVarDivide.js
+../generator/types/number/math/variable/GVarModulo.js
+../generator/types/number/math/variable/GVarExponent.js
 
 
 ../generator/types/color/GColorType.js

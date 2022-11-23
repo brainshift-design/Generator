@@ -91,13 +91,6 @@ extends GValue
 
 
 
-    toValue()
-    {
-        return this.copy();
-    }
-
-
-
     toDataColor()
     {
         if (!this.isValid())

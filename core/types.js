@@ -31,18 +31,27 @@ const FLOW_TYPES =
 ];
 
 
-const NUMBER_VALUE       = 'NUM#';  // value (s) (with significant decimals)
-const NUMBER             = 'NUM';   // N | n
-const NUMBER_LIMITS      = 'LIM';   // N:min N:max
-const NUMBER_RANDOM      = 'RAND';  // N:seed N:scale N:min N:max
-const NUMBER_MATH        = 'MATH';  // op count N...
-const NUMBER_ADD         = 'ADD';   // count N...
-const NUMBER_SUBTRACT    = 'SUB';   // count N...
-const NUMBER_MULTIPLY    = 'MUL';   // count N...
-const NUMBER_DIVIDE      = 'DIV';   // count N...
-const NUMBER_MODULO      = 'MOD';   // count N...
-const NUMBER_EXPONENT    = 'EXP';   // count N...
-const NUMBER_INTERPOLATE = 'LERP';  // count N... N:amount
+const NUMBER_VALUE        = 'NUM#';  
+const NUMBER              = 'NUM';   
+const NUMBER_LIMITS       = 'LIM';   
+const NUMBER_INTERPOLATE  = 'LERP';  
+const NUMBER_RANDOM       = 'RAND';  
+ 
+const NUMBER_MATH         = 'MATH';  
+const NUMBER_ADD          = 'ADD';   
+const NUMBER_SUBTRACT     = 'SUB';   
+const NUMBER_MULTIPLY     = 'MUL';   
+const NUMBER_DIVIDE       = 'DIV';   
+const NUMBER_MODULO       = 'MOD';   
+const NUMBER_EXPONENT     = 'EXP';   
+
+const NUMBER_VAR_MATH     = 'MATH*';  
+const NUMBER_VAR_ADD      = 'ADD*';   
+const NUMBER_VAR_SUBTRACT = 'SUB*';   
+const NUMBER_VAR_MULTIPLY = 'MUL*';   
+const NUMBER_VAR_DIVIDE   = 'DIV*';   
+const NUMBER_VAR_MODULO   = 'MOD*';   
+const NUMBER_VAR_EXPONENT = 'EXP*';   
 
 
 const NUMBER_TYPES =
@@ -62,10 +71,10 @@ const NUMBER_TYPES =
 ];
 
 
-const STRING_VALUE   = 'STR#';  // "..." (s) (escape \\ and \")
-const STRING         = 'STR';   // S | s
-const STRING_ADD     = 'SADD';  // S S
-const STRING_REPLACE = 'SREPL'; // S S:what S:with
+const STRING_VALUE   = 'STR#';  
+const STRING         = 'STR';   
+const STRING_ADD     = 'SADD';  
+const STRING_REPLACE = 'SREPL'; 
 
 
 const STRING_TYPES =
@@ -77,12 +86,12 @@ const STRING_TYPES =
 ];
 
 
-const COLOR_VALUE       = 'COL#';  // color value
-const COLOR             = 'COL';   // C | N:space N:c1 N:c2 N:c3
-const COLOR_INTERPOLATE = 'CLERP'; // C C N:amount
-const COLOR_CORRECT     = 'CCOR';  // C
-const COLOR_CONTRAST    = 'CCNT';  // C:text C:background
-const COLORBLIND        = 'BLND';  // C
+const COLOR_VALUE       = 'COL#';  
+const COLOR             = 'COL';   
+const COLOR_INTERPOLATE = 'CLERP'; 
+const COLOR_CORRECT     = 'CCOR';  
+const COLOR_CONTRAST    = 'CCNT';  
+const COLORBLIND        = 'BLND';  
 
 
 const COLOR_TYPES =
@@ -118,23 +127,23 @@ const STYLE_TYPES      = [STYLE_VALUE, STYLE];
 const SHAPE_VALUE      = 'SHP#'; // abstract placeholder
 
 const RECTANGLE_VALUE  = 'RECT#';
-const RECTANGLE        = 'RECT'; // N:x N:y N:width N:height N:angle N:roundTL N:roundTR N:roundBL N:roundBR
+const RECTANGLE        = 'RECT'; 
 const RECTANGLE_TYPES  = [RECTANGLE_VALUE, RECTANGLE];
 
 const LINE_VALUE       = 'LINE#';
-const LINE             = 'LINE'; // N:x N:y N:width N:height N:angle
+const LINE             = 'LINE'; 
 const LINE_TYPES       = [LINE_VALUE, LINE];
 
 const ELLIPSE_VALUE    = 'ELPS#';
-const ELLIPSE          = 'ELPS'; // N:x N:y N:width N:height N:angle
+const ELLIPSE          = 'ELPS'; 
 const ELLIPSE_TYPES    = [ELLIPSE_VALUE, ELLIPSE];
 
 const POLYGON_VALUE    = 'POLY#';
-const POLYGON          = 'POLY'; // N:x N:y N:width N:height N:angle N:corners
+const POLYGON          = 'POLY'; 
 const POLYGON_TYPES    = [POLYGON_VALUE, POLYGON];
 
 const STAR_VALUE       = 'STAR#';
-const STAR             = 'STAR'; // N:x N:y N:width N:height N:angle N:points N:convex
+const STAR             = 'STAR'; 
 const STAR_TYPES       = [STAR_VALUE, STAR];
 
 

@@ -1,16 +1,16 @@
-class GDivide
-extends GArithmetic
+class GVarDivide
+extends GVarArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_DIVIDE, nodeId, options);
+        super(NUMBER_VAR_DIVIDE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const div = new GDivide(this.nodeId, this.options);
+        const div = new GVarDivide(this.nodeId, this.options);
         div.copyBase(this);
         div.inputs = this.inputs.map(i => i.copy());
         return div;
@@ -23,9 +23,7 @@ extends GArithmetic
         if (this.valid)
             return this;
 
-        this.value = evalDivideInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.value = evalVarDivideInputs(this.inputs, parse);
 
         this.validate();
 
@@ -35,7 +33,7 @@ extends GArithmetic
 
 
 
-function evalDivideInputs(inputs, parse)
+function evalVarDivideInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;

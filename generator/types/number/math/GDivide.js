@@ -1,19 +1,19 @@
-class GModulo
+class GDivide
 extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_MODULO, nodeId, options);
+        super(NUMBER_DIVIDE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const mod = new GModulo(this.nodeId, this.options);
-        mod.copyBase(this);
-        mod.inputs = this.inputs.map(i => i.copy());
-        return mod;
+        const div = new GDivide(this.nodeId, this.options);
+        div.copyBase(this);
+        if (this.input) div.input = this.input.copy();
+        return div;
     }
 
 
@@ -23,9 +23,7 @@ extends GArithmetic
         if (this.valid)
             return this;
 
-        this.value = evalModuloInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        this.value = evalDivideInputs(this.inputs, parse);
 
         this.validate();
 
@@ -35,7 +33,7 @@ extends GArithmetic
 
 
 
-function evalModuloInputs(inputs, parse)
+function evalDivideInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -70,7 +68,7 @@ function evalModuloInputs(inputs, parse)
             }
 
             value.decimals = Math.max(value.decimals, val.decimals);
-            value.value    = floorTo(value.value % val.value, value.decimals);
+            value.value    = floorTo(value.value / val.value, value.decimals);
         }
     }
 

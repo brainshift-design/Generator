@@ -32,15 +32,6 @@ extends GColorType
 
 
 
-    // canBeValid()
-    // {
-    //     return this.input
-    //          ? this.input.canBeValid()
-    //          : super.canBeValid();
-    // }
-
-
-
     eval(parse)
     {
         if (this.valid)
@@ -95,10 +86,9 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        genPushUpdateValue(parse, this.nodeId, 'l',     l         );
-        genPushUpdateValue(parse, this.nodeId, 'm',     m         );
-        genPushUpdateValue(parse, this.nodeId, 's',     s         );
+        genPushUpdateValue(parse, this.nodeId, 'l', l);
+        genPushUpdateValue(parse, this.nodeId, 'm', m);
+        genPushUpdateValue(parse, this.nodeId, 's', s);
 
 
         this.validate();

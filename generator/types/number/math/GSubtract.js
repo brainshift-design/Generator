@@ -12,7 +12,7 @@ extends GArithmetic
     {
         const sub = new GSubtract(this.nodeId, this.options);
         sub.copyBase(this);
-        sub.inputs = this.inputs.map(i => i.copy());
+        if (this.input) sub.input = this.input.copy();
         return sub;
     }
 
@@ -24,8 +24,6 @@ extends GArithmetic
             return this;
 
         this.value = evalSubtractInputs(this.inputs, parse);
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.validate();
 
