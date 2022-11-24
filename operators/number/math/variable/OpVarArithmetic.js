@@ -74,6 +74,13 @@ extends OperatorBase
 
 
 
+    canAutoConnectFrom(output)
+    {
+        return output.supports(NUMBER_TYPES);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -107,6 +114,11 @@ extends OperatorBase
     updateHeader()
     {
         super.updateHeader();
+
+
+        this.div   .style.borderRadius = '4px';        
+        this.inner .style.borderRadius = '4px';        
+        this.header.style.borderRadius = '4px';        
 
 
         const colBack = rgbHeaderFromType(this.type, this.active);

@@ -5563,6 +5563,8 @@ const NUMBER_TYPES =
     NUMBER,
     NUMBER_LIMITS,
     NUMBER_RANDOM,
+    NUMBER_INTERPOLATE,
+
     NUMBER_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,
@@ -5570,7 +5572,14 @@ const NUMBER_TYPES =
     NUMBER_DIVIDE,
     NUMBER_MODULO,
     NUMBER_EXPONENT,
-    NUMBER_INTERPOLATE 
+
+    NUMBER_VAR_MATH,
+    NUMBER_VAR_ADD,
+    NUMBER_VAR_SUBTRACT,
+    NUMBER_VAR_MULTIPLY,
+    NUMBER_VAR_DIVIDE,
+    NUMBER_VAR_MODULO,
+    NUMBER_VAR_EXPONENT
 ];
 
 
@@ -8559,6 +8568,9 @@ extends GArithmetic
         }
 
         
+        genPushUpdateValue(parse, this.nodeId, 'operation', operation);
+
+
         this.validate();
 
         return this;
@@ -20937,6 +20949,8 @@ const NUMBER_TYPES =
     NUMBER,
     NUMBER_LIMITS,
     NUMBER_RANDOM,
+    NUMBER_INTERPOLATE,
+
     NUMBER_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,
@@ -20944,7 +20958,14 @@ const NUMBER_TYPES =
     NUMBER_DIVIDE,
     NUMBER_MODULO,
     NUMBER_EXPONENT,
-    NUMBER_INTERPOLATE 
+
+    NUMBER_VAR_MATH,
+    NUMBER_VAR_ADD,
+    NUMBER_VAR_SUBTRACT,
+    NUMBER_VAR_MULTIPLY,
+    NUMBER_VAR_DIVIDE,
+    NUMBER_VAR_MODULO,
+    NUMBER_VAR_EXPONENT
 ];
 
 
@@ -23933,6 +23954,9 @@ extends GArithmetic
         }
 
         
+        genPushUpdateValue(parse, this.nodeId, 'operation', operation);
+
+
         this.validate();
 
         return this;
@@ -28028,13 +28052,13 @@ function initGeneratorMenus()
     
     menuVariableMath = new Menu('Variable math nodes', true, false);
     menuVariableMath.addItems([
-        new MenuItem('...Math',     {icon: iconMath    , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MATH,        btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('...Add',      {icon: iconAdd     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_ADD,         btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('...Subtract', {icon: iconSubtract, callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_SUBTRACT,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('...Multiply', {icon: iconMultiply, callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MULTIPLY,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('...Divide',   {icon: iconDivide  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_DIVIDE,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('...Exponent', {icon: iconExponent, callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_EXPONENT,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('...Modulo',   {icon: iconModulo  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MODULO,      btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Math . . .',     {icon: iconMath    , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MATH,        btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Add . . .',      {icon: iconAdd     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_ADD,         btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Subtract . . .', {icon: iconSubtract, callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_SUBTRACT,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Multiply . . .', {icon: iconMultiply, callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MULTIPLY,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Divide . . .',   {icon: iconDivide  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_DIVIDE,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Exponent . . .', {icon: iconExponent, callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_EXPONENT,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Modulo . . .',   {icon: iconModulo  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MODULO,      btnNumber.div, {insert: e.shiftKey}))})]);
 
 
     menuNumber = new Menu('Number nodes', true, false);
@@ -28048,7 +28072,7 @@ function initGeneratorMenus()
         new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Exponent',    {icon: iconExponent   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Modulo',      {icon: iconModulo     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('...',         {childMenu: menuVariableMath }),
+        new MenuItem('. . .',         {childMenu: menuVariableMath }),
         new MenuItem('',            {separator: true}),
         new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnNumber.div, {insert: e.shiftKey}))}),
@@ -37221,6 +37245,13 @@ class Operator
 
 
 
+    canAutoConnectFrom(output)
+    {
+        return false;
+    }
+
+
+
     follows(node) 
     { 
         return this.isOrFollows(node, false); 
@@ -37270,13 +37301,6 @@ class Operator
         return param.isDefault()
             && (   !param.input 
                 || !param.input.connected);
-    }
-
-
-
-    canAutoConnectFrom(output)
-    {
-        return false;
     }
 
 
@@ -39107,6 +39131,13 @@ extends OperatorBase
 
 
 
+    canAutoConnectFrom(output)
+    {
+        return output.supports(NUMBER_TYPES);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output        
@@ -39361,6 +39392,13 @@ extends OperatorBase
 
 
 
+    canAutoConnectFrom(output)
+    {
+        return output.supports(NUMBER_TYPES);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -39468,6 +39506,13 @@ extends OperatorBase
     
     
     
+    canAutoConnectFrom(output)
+    {
+        return output.supports(NUMBER_TYPES);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -39496,6 +39541,15 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
         
         return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramOperand.enableControlText(true);
+
+        super.updateParams();
     }
 
 
@@ -39724,6 +39778,13 @@ extends OperatorBase
 
 
 
+    canAutoConnectFrom(output)
+    {
+        return output.supports(NUMBER_TYPES);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -39856,6 +39917,13 @@ extends OperatorBase
 
 
 
+    canAutoConnectFrom(output)
+    {
+        return output.supports(NUMBER_TYPES);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -39889,6 +39957,11 @@ extends OperatorBase
     updateHeader()
     {
         super.updateHeader();
+
+
+        this.div   .style.borderRadius = '4px';        
+        this.inner .style.borderRadius = '4px';        
+        this.header.style.borderRadius = '4px';        
 
 
         const colBack = rgbHeaderFromType(this.type, this.active);

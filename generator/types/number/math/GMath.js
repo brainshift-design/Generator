@@ -49,6 +49,9 @@ extends GArithmetic
         }
 
         
+        genPushUpdateValue(parse, this.nodeId, 'operation', operation);
+
+
         this.validate();
 
         return this;

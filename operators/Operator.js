@@ -436,6 +436,13 @@ class Operator
 
 
 
+    canAutoConnectFrom(output)
+    {
+        return false;
+    }
+
+
+
     follows(node) 
     { 
         return this.isOrFollows(node, false); 
@@ -485,13 +492,6 @@ class Operator
         return param.isDefault()
             && (   !param.input 
                 || !param.input.connected);
-    }
-
-
-
-    canAutoConnectFrom(output)
-    {
-        return false;
     }
 
 

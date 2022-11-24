@@ -63,6 +63,13 @@ extends OperatorBase
     
     
     
+    canAutoConnectFrom(output)
+    {
+        return output.supports(NUMBER_TYPES);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -91,6 +98,15 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
         
         return request;
+    }
+
+
+
+    updateParams()
+    {
+        this.paramOperand.enableControlText(true);
+
+        super.updateParams();
     }
 
 

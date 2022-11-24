@@ -22,6 +22,13 @@ extends OperatorBase
 
 
 
+    canAutoConnectFrom(output)
+    {
+        return output.supports(NUMBER_TYPES);
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
