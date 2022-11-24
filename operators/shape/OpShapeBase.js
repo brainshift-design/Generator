@@ -13,7 +13,7 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramStyle = new StyleParam('style', 'style', true, true));
+        this.addParam(this.paramStyle = new StyleParam('style', 'style', true, false));
     }
 
 

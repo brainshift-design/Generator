@@ -16,8 +16,8 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES));
 
 
+        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  false, ['WCAG 2', 'WCAG 3'], 1));
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0, 0));
-        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
         createTooltip(ttWcag2);
@@ -92,11 +92,14 @@ extends OpColorBase
         super.updateValues(updateParamId, paramIds, values);
 
 
-        const colText = values[paramIds.findIndex(id => id == 'text')];
-        const colBack = values[paramIds.findIndex(id => id == 'back')];
+        const colText  = values[paramIds.findIndex(id => id == 'text')];
+        const colBack  = values[paramIds.findIndex(id => id == 'back')];
+        const standard = values[paramIds.findIndex(id => id == 'text')];
+        const contrast = values[paramIds.findIndex(id => id == 'back')];
 
         console.assert(colText.type == COLOR_VALUE, 'colText.type = ' + colText.type);
         console.assert(colBack.type == COLOR_VALUE, 'colBack.type = ' + colBack.type);
+
 
         this.labelColor = 
             colText.isValid()
@@ -106,10 +109,7 @@ extends OpColorBase
         this._color = colBack.toDataColor();
 
 
-        const contrast = this.paramContrast.value;
-
-        
-        if (this.paramStandard.value == 0)
+        if (standard.value == 0)
         {
             let rating = getContrastRating2(contrast.value);
 

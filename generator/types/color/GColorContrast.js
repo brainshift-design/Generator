@@ -88,6 +88,7 @@ extends GColorType
 
 
             genPushUpdateValue(parse, this.nodeId, 'text', input0);
+            genPushUpdateValue(parse, this.nodeId, 'back', input1);
         }
 
         else if (this.input0) 
@@ -98,30 +99,37 @@ extends GColorType
             if (input0.isValid())
                 genPushUpdateValue(parse, this.nodeId, 'text', input0);
 
+            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
+
             this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
         }
+
         else if (this.input1) 
         {
             this.input1 = this.input1.eval(parse).copy();
             const input1 = this.input1.toValue();
 
+            genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+
             if (input1.isValid())
             {
                 this.value = input1;
-                genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'back', input);
             }
             else
                 this.value = ColorValue.NaN;
 
             this.contrast = NumberValue.NaN;
         }
+
         else
         {
             this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
 
             genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
         }
         
 

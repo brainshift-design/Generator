@@ -9730,6 +9730,7 @@ extends GColorType
 
 
             genPushUpdateValue(parse, this.nodeId, 'text', input0);
+            genPushUpdateValue(parse, this.nodeId, 'back', input1);
         }
 
         else if (this.input0) 
@@ -9740,30 +9741,37 @@ extends GColorType
             if (input0.isValid())
                 genPushUpdateValue(parse, this.nodeId, 'text', input0);
 
+            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
+
             this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
         }
+
         else if (this.input1) 
         {
             this.input1 = this.input1.eval(parse).copy();
             const input1 = this.input1.toValue();
 
+            genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+
             if (input1.isValid())
             {
                 this.value = input1;
-                genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'back', input);
             }
             else
                 this.value = ColorValue.NaN;
 
             this.contrast = NumberValue.NaN;
         }
+
         else
         {
             this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
 
             genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
         }
         
 
@@ -25116,6 +25124,7 @@ extends GColorType
 
 
             genPushUpdateValue(parse, this.nodeId, 'text', input0);
+            genPushUpdateValue(parse, this.nodeId, 'back', input1);
         }
 
         else if (this.input0) 
@@ -25126,30 +25135,37 @@ extends GColorType
             if (input0.isValid())
                 genPushUpdateValue(parse, this.nodeId, 'text', input0);
 
+            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
+
             this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
         }
+
         else if (this.input1) 
         {
             this.input1 = this.input1.eval(parse).copy();
             const input1 = this.input1.toValue();
 
+            genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+
             if (input1.isValid())
             {
                 this.value = input1;
-                genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'back', input);
             }
             else
                 this.value = ColorValue.NaN;
 
             this.contrast = NumberValue.NaN;
         }
+
         else
         {
             this.value    = ColorValue.NaN;
             this.contrast = NumberValue.NaN;
 
             genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
         }
         
 
@@ -27861,6 +27877,14 @@ const iconDivide           = '<svg width="10" height="11" viewBox="0 0 10 11" fi
 const iconExponent         = '<svg width="14" height="14" viewBox="-1 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.24574 13.6818C3.40483 13.6818 2.67945 13.4962 2.0696 13.125C1.46354 12.75 0.995739 12.2273 0.666193 11.5568C0.340436 10.8826 0.177557 10.0985 0.177557 9.20455C0.177557 8.31061 0.340436 7.52273 0.666193 6.84091C0.995739 6.1553 1.45407 5.62121 2.04119 5.23864C2.6321 4.85227 3.3215 4.65909 4.10938 4.65909C4.56392 4.65909 5.01278 4.73485 5.45597 4.88636C5.89915 5.03788 6.30256 5.28409 6.66619 5.625C7.02983 5.96212 7.3196 6.40909 7.53551 6.96591C7.75142 7.52273 7.85938 8.20833 7.85938 9.02273V9.59091H1.1321V8.43182H6.49574C6.49574 7.93939 6.39725 7.5 6.20028 7.11364C6.0071 6.72727 5.73059 6.42235 5.37074 6.19886C5.01468 5.97538 4.59422 5.86364 4.10938 5.86364C3.57528 5.86364 3.11316 5.99621 2.72301 6.26136C2.33665 6.52273 2.0393 6.86364 1.83097 7.28409C1.62263 7.70455 1.51847 8.1553 1.51847 8.63636V9.40909C1.51847 10.0682 1.6321 10.6269 1.85938 11.0852C2.09044 11.5398 2.41051 11.8864 2.8196 12.125C3.22869 12.3598 3.70407 12.4773 4.24574 12.4773C4.59801 12.4773 4.91619 12.428 5.20028 12.3295C5.48816 12.2273 5.73627 12.0758 5.9446 11.875C6.15294 11.6705 6.31392 11.4167 6.42756 11.1136L7.72301 11.4773C7.58665 11.9167 7.35748 12.303 7.03551 12.6364C6.71354 12.9659 6.31581 13.2235 5.84233 13.4091C5.36884 13.5909 4.83665 13.6818 4.24574 13.6818Z" fill="white"/><path d="M9.39205 0.545454L10.6989 2.77557L12.0057 0.545454H12.9716L11.2102 3.27273L12.9716 6H12.0057L10.6989 3.88352L9.39205 6H8.42614L10.1591 3.27273L8.42614 0.545454H9.39205Z" fill="white"/></svg>';
 const iconModulo           = '<svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.07556 8.75853V8.21776C6.07556 7.8439 6.15233 7.50175 6.30588 7.19131C6.46277 6.87753 6.68976 6.62718 6.98685 6.44024C7.28728 6.24997 7.65113 6.15484 8.0784 6.15484C8.51235 6.15484 8.8762 6.24997 9.16995 6.44024C9.4637 6.62718 9.68568 6.87753 9.83589 7.19131C9.9861 7.50175 10.0612 7.8439 10.0612 8.21776V8.75853C10.0612 9.1324 9.98444 9.47622 9.83088 9.78999C9.68067 10.1004 9.45702 10.3508 9.15993 10.5411C8.86618 10.728 8.50567 10.8215 8.0784 10.8215C7.64445 10.8215 7.27893 10.728 6.98184 10.5411C6.68475 10.3508 6.45943 10.1004 6.30588 9.78999C6.15233 9.47622 6.07556 9.1324 6.07556 8.75853ZM7.09701 8.21776V8.75853C7.09701 9.06897 7.17044 9.3477 7.31732 9.59472C7.46419 9.8384 7.71789 9.96024 8.0784 9.96024C8.4289 9.96024 8.67591 9.8384 8.81945 9.59472C8.96632 9.3477 9.03976 9.06897 9.03976 8.75853V8.21776C9.03976 7.90732 8.96966 7.63026 8.82946 7.38659C8.68926 7.13957 8.43891 7.01606 8.0784 7.01606C7.7279 7.01606 7.47588 7.13957 7.32233 7.38659C7.17211 7.63026 7.09701 7.90732 7.09701 8.21776ZM0.968313 2.89021V2.34944C0.968313 1.97558 1.04509 1.63342 1.19864 1.32298C1.35553 1.00921 1.58252 0.758851 1.87961 0.571919C2.18003 0.381649 2.54388 0.286514 2.97115 0.286514C3.4051 0.286514 3.76895 0.381649 4.0627 0.571919C4.35645 0.758851 4.57843 1.00921 4.72865 1.32298C4.87886 1.63342 4.95397 1.97558 4.95397 2.34944V2.89021C4.95397 3.26407 4.87719 3.60789 4.72364 3.92167C4.57343 4.23211 4.34978 4.48247 4.05269 4.67274C3.75894 4.85967 3.39843 4.95313 2.97115 4.95313C2.5372 4.95313 2.17169 4.85967 1.8746 4.67274C1.57751 4.48247 1.35219 4.23211 1.19864 3.92167C1.04509 3.60789 0.968313 3.26407 0.968313 2.89021ZM1.98976 2.34944V2.89021C1.98976 3.20065 2.0632 3.47938 2.21007 3.72639C2.35695 3.97007 2.61064 4.09191 2.97115 4.09191C3.32165 4.09191 3.56867 3.97007 3.7122 3.72639C3.85908 3.47938 3.93252 3.20065 3.93252 2.89021V2.34944C3.93252 2.039 3.86242 1.76194 3.72222 1.51826C3.58202 1.27124 3.33167 1.14774 2.97115 1.14774C2.62066 1.14774 2.36863 1.27124 2.21508 1.51826C2.06487 1.76194 1.98976 2.039 1.98976 2.34944ZM1.34885 10.6813L8.39885 0.426713H9.54047L2.49047 10.6813H1.34885Z" fill="white"/></svg>';
 
+const iconSimpleMath       = '<svg width="19" height="16" viewBox="0 0 19 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.138 6.57967V0.485922H11.1039V6.57967H12.138ZM14.6678 4.04984V3.01575H8.57408V4.04984H14.6678Z" fill="white"/><path d="M9.36811 15.5004L14.5755 10.293L13.8738 9.59129L8.66641 14.7987L9.36811 15.5004ZM13.8738 15.5004L14.5755 14.7987L9.36811 9.59129L8.66641 10.293L13.8738 15.5004Z" fill="white"/><path d="M0.576652 12.0288V13.0629H6.48574V12.0288H0.576652ZM3.5312 15.7589C3.76202 15.7589 3.95899 15.6789 4.12211 15.5188C4.28214 15.3557 4.36216 15.1588 4.36216 14.9279C4.36216 14.7063 4.28214 14.5155 4.12211 14.3555C3.95899 14.1955 3.76202 14.1154 3.5312 14.1154C3.30961 14.1154 3.11879 14.1955 2.95875 14.3555C2.79872 14.5155 2.7187 14.7063 2.7187 14.9279C2.7187 15.1588 2.79872 15.3557 2.95875 15.5188C3.11879 15.6789 3.30961 15.7589 3.5312 15.7589ZM3.5312 10.9762C3.68508 10.9762 3.82511 10.9393 3.9513 10.8654C4.07748 10.7916 4.1775 10.6915 4.25137 10.5654C4.32523 10.4392 4.36216 10.2991 4.36216 10.1453C4.36216 9.92367 4.28214 9.73286 4.12211 9.57282C3.95899 9.41278 3.76202 9.33276 3.5312 9.33276C3.30961 9.33276 3.11879 9.41278 2.95875 9.57282C2.79872 9.73286 2.7187 9.92367 2.7187 10.1453C2.7187 10.3761 2.79872 10.5731 2.95875 10.7362C3.11879 10.8962 3.30961 10.9762 3.5312 10.9762Z" fill="white"/><path d="M0.576652 3.01575V4.04984H6.48574V3.01575H0.576652Z" fill="white"/><circle cx="17.5003" cy="7.5" r="1.08553" fill="white"/></svg>';
+const iconSimpleAdd        = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.78932 10.1318V0.756822H6.38023V10.1318H4.78932ZM0.897271 6.23978V4.64887H10.2723V6.23978H0.897271Z" fill="white"/><circle cx="14.5103" cy="5.5" r="1.08553" fill="white"/></svg>';
+const iconSimpleSubtract   = '<svg width="15" height="3" viewBox="0 0 15 3" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.13022 0.648865V2.23977H0.0393143V0.648865H9.13022Z" fill="white"/><circle cx="13.4917" cy="1.5" r="1.08553" fill="white"/></svg>';
+const iconSimpleMultiply   = '<svg width="15" height="10" viewBox="0 0 15 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.05068 9.98978L0.0393206 1.97841L1.11887 0.898868L9.13023 8.91023L8.05068 9.98978ZM1.11887 9.98978L0.0393206 8.91023L8.05068 0.898868L9.13023 1.97841L1.11887 9.98978Z" fill="white"/><circle cx="13.5109" cy="5.5" r="1.08553" fill="white"/></svg>';
+const iconSimpleDivide     = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.13023 4.64887V6.23978H0.0393206V4.64887H9.13023ZM4.58478 10.3875C4.22966 10.3875 3.92663 10.2644 3.67568 10.0182C3.42947 9.76724 3.30637 9.46421 3.30637 9.1091C3.30637 8.76819 3.42947 8.47463 3.67568 8.22841C3.92663 7.9822 4.22966 7.85909 4.58478 7.85909C4.92568 7.85909 5.21925 7.9822 5.46546 8.22841C5.71167 8.47463 5.83478 8.76819 5.83478 9.1091C5.83478 9.46421 5.71167 9.76724 5.46546 10.0182C5.21925 10.2644 4.92568 10.3875 4.58478 10.3875ZM4.58478 3.02955C4.34803 3.02955 4.1326 2.97273 3.93847 2.85909C3.74434 2.74546 3.59046 2.59158 3.47682 2.39745C3.36318 2.20332 3.30637 1.98788 3.30637 1.75114C3.30637 1.41023 3.42947 1.11667 3.67568 0.870458C3.92663 0.624246 4.22966 0.501141 4.58478 0.501141C4.92568 0.501141 5.21925 0.624246 5.46546 0.870458C5.71167 1.11667 5.83478 1.41023 5.83478 1.75114C5.83478 2.10625 5.71167 2.40928 5.46546 2.66023C5.21925 2.90644 4.92568 3.02955 4.58478 3.02955Z" fill="white"/><circle cx="13.5" cy="5.5" r="1.08553" fill="white"/></svg>';
+const iconSimpleExponent   = '<svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.24574 13.6818C3.40483 13.6818 2.67945 13.4962 2.0696 13.125C1.46354 12.75 0.995739 12.2273 0.666193 11.5568C0.340436 10.8826 0.177557 10.0985 0.177557 9.20455C0.177557 8.31061 0.340436 7.52273 0.666193 6.84091C0.995739 6.1553 1.45407 5.62121 2.04119 5.23864C2.6321 4.85227 3.3215 4.65909 4.10938 4.65909C4.56392 4.65909 5.01278 4.73485 5.45597 4.88636C5.89915 5.03788 6.30256 5.28409 6.66619 5.625C7.02983 5.96212 7.3196 6.40909 7.53551 6.96591C7.75142 7.52273 7.85938 8.20833 7.85938 9.02273V9.59091H1.1321V8.43182H6.49574C6.49574 7.93939 6.39725 7.5 6.20028 7.11364C6.0071 6.72727 5.73059 6.42235 5.37074 6.19886C5.01468 5.97538 4.59422 5.86364 4.10938 5.86364C3.57528 5.86364 3.11316 5.99621 2.72301 6.26136C2.33665 6.52273 2.0393 6.86364 1.83097 7.28409C1.62263 7.70455 1.51847 8.1553 1.51847 8.63636V9.40909C1.51847 10.0682 1.6321 10.6269 1.85938 11.0852C2.09044 11.5398 2.41051 11.8864 2.8196 12.125C3.22869 12.3598 3.70407 12.4773 4.24574 12.4773C4.59801 12.4773 4.91619 12.428 5.20028 12.3295C5.48816 12.2273 5.73627 12.0758 5.9446 11.875C6.15294 11.6705 6.31392 11.4167 6.42756 11.1136L7.72301 11.4773C7.58665 11.9167 7.35748 12.303 7.03551 12.6364C6.71354 12.9659 6.31581 13.2235 5.84233 13.4091C5.36884 13.5909 4.83665 13.6818 4.24574 13.6818Z" fill="white"/><path d="M9.39205 0.545454L10.6989 2.77557L12.0057 0.545454H12.9716L11.2102 3.27273L12.9716 6H12.0057L10.6989 3.88352L9.39205 6H8.42614L10.1591 3.27273L8.42614 0.545454H9.39205Z" fill="white"/><circle cx="15.5116" cy="8.5" r="1.08553" fill="white"/></svg>';
+const iconSimpleModulo     = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.07556 8.75853V8.21776C6.07556 7.8439 6.15233 7.50175 6.30588 7.19131C6.46277 6.87753 6.68976 6.62718 6.98685 6.44024C7.28728 6.24997 7.65113 6.15484 8.0784 6.15484C8.51235 6.15484 8.8762 6.24997 9.16995 6.44024C9.4637 6.62718 9.68568 6.87753 9.83589 7.19131C9.9861 7.50175 10.0612 7.8439 10.0612 8.21776V8.75853C10.0612 9.1324 9.98444 9.47622 9.83088 9.78999C9.68067 10.1004 9.45702 10.3508 9.15993 10.5411C8.86618 10.728 8.50567 10.8215 8.0784 10.8215C7.64445 10.8215 7.27893 10.728 6.98184 10.5411C6.68475 10.3508 6.45943 10.1004 6.30588 9.78999C6.15233 9.47622 6.07556 9.1324 6.07556 8.75853ZM7.09701 8.21776V8.75853C7.09701 9.06897 7.17044 9.3477 7.31732 9.59472C7.46419 9.8384 7.71789 9.96024 8.0784 9.96024C8.4289 9.96024 8.67591 9.8384 8.81945 9.59472C8.96632 9.3477 9.03976 9.06897 9.03976 8.75853V8.21776C9.03976 7.90732 8.96966 7.63026 8.82946 7.38659C8.68926 7.13957 8.43891 7.01606 8.0784 7.01606C7.7279 7.01606 7.47588 7.13957 7.32233 7.38659C7.17211 7.63026 7.09701 7.90732 7.09701 8.21776ZM0.968313 2.89021V2.34944C0.968313 1.97558 1.04509 1.63342 1.19864 1.32298C1.35553 1.00921 1.58252 0.758851 1.87961 0.571919C2.18003 0.381649 2.54388 0.286514 2.97115 0.286514C3.4051 0.286514 3.76895 0.381649 4.0627 0.571919C4.35645 0.758851 4.57843 1.00921 4.72865 1.32298C4.87886 1.63342 4.95397 1.97558 4.95397 2.34944V2.89021C4.95397 3.26407 4.87719 3.60789 4.72364 3.92167C4.57343 4.23211 4.34978 4.48247 4.05269 4.67274C3.75894 4.85967 3.39843 4.95313 2.97115 4.95313C2.5372 4.95313 2.17169 4.85967 1.8746 4.67274C1.57751 4.48247 1.35219 4.23211 1.19864 3.92167C1.04509 3.60789 0.968313 3.26407 0.968313 2.89021ZM1.98976 2.34944V2.89021C1.98976 3.20065 2.0632 3.47938 2.21007 3.72639C2.35695 3.97007 2.61064 4.09191 2.97115 4.09191C3.32165 4.09191 3.56867 3.97007 3.7122 3.72639C3.85908 3.47938 3.93252 3.20065 3.93252 2.89021V2.34944C3.93252 2.039 3.86242 1.76194 3.72222 1.51826C3.58202 1.27124 3.33167 1.14774 2.97115 1.14774C2.62066 1.14774 2.36863 1.27124 2.21508 1.51826C2.06487 1.76194 1.98976 2.039 1.98976 2.34944ZM1.34885 10.6813L8.39885 0.426713H9.54047L2.49047 10.6813H1.34885Z" fill="white"/><circle cx="14.5224" cy="5.5" r="1.08553" fill="white"/></svg>';
+
 const iconString           = '<svg width="20" height="7" viewBox="0 0 20 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.888729 6.90684H0L2.57048 0.0931559H3.44553L6.01601 6.90684H5.12728L3.03535 1.1711H2.98066L0.888729 6.90684ZM1.21687 4.24525H4.79914V4.97719H1.21687V4.24525Z" fill="white"/><path d="M7.10641 6.90684V0.0931559H9.55384C10.0415 0.0931559 10.4437 0.175222 10.7605 0.339354C11.0772 0.501267 11.3131 0.71974 11.468 0.994772C11.623 1.26759 11.7005 1.57034 11.7005 1.90304C11.7005 2.19582 11.6469 2.43758 11.5398 2.62833C11.435 2.81907 11.296 2.9699 11.1228 3.0808C10.9519 3.1917 10.7662 3.27376 10.5656 3.327V3.39354C10.7798 3.40684 10.9952 3.48004 11.2117 3.61312C11.4281 3.7462 11.6093 3.93695 11.7551 4.18536C11.901 4.43378 11.9739 4.73764 11.9739 5.09696C11.9739 5.43853 11.8942 5.74572 11.7346 6.01854C11.5751 6.29135 11.3233 6.5076 10.9792 6.6673C10.6351 6.827 10.1873 6.90684 9.63587 6.90684H7.10641ZM7.95412 6.1749H9.63587C10.1896 6.1749 10.5827 6.07066 10.8151 5.86217C11.0499 5.65146 11.1672 5.39639 11.1672 5.09696C11.1672 4.86629 11.1068 4.65336 10.9861 4.45818C10.8653 4.26077 10.6932 4.1033 10.4699 3.98574C10.2466 3.86597 9.98225 3.80608 9.67689 3.80608H7.95412V6.1749ZM7.95412 3.08745H9.52649C9.78172 3.08745 10.0119 3.03866 10.217 2.94106C10.4243 2.84347 10.5884 2.70596 10.7092 2.52852C10.8322 2.35108 10.8938 2.14259 10.8938 1.90304C10.8938 1.60361 10.7867 1.34965 10.5725 1.14116C10.3582 0.93045 10.0187 0.825095 9.55384 0.825095H7.95412V3.08745Z" fill="white"/><path d="M19.2496 2.22243H18.366C18.3138 1.98511 18.2224 1.77662 18.0917 1.59696C17.9635 1.4173 17.8067 1.26648 17.6215 1.14449C17.4386 1.02028 17.2355 0.927123 17.0123 0.865019C16.789 0.802915 16.5562 0.771863 16.314 0.771863C15.8722 0.771863 15.472 0.876109 15.1134 1.0846C14.7571 1.29309 14.4733 1.60029 14.2619 2.00618C14.0529 2.41207 13.9484 2.91001 13.9484 3.5C13.9484 4.08999 14.0529 4.58793 14.2619 4.99382C14.4733 5.39971 14.7571 5.70691 15.1134 5.9154C15.472 6.12389 15.8722 6.22814 16.314 6.22814C16.5562 6.22814 16.789 6.19709 17.0123 6.13498C17.2355 6.07288 17.4386 5.98083 17.6215 5.85884C17.8067 5.73463 17.9635 5.5827 18.0917 5.40304C18.2224 5.22117 18.3138 5.01267 18.366 4.77757H19.2496C19.1831 5.12579 19.0619 5.43742 18.8862 5.71245C18.7104 5.98748 18.4919 6.22148 18.2307 6.41445C17.9694 6.6052 17.6761 6.75048 17.3507 6.85029C17.0277 6.95009 16.6821 7 16.314 7C15.6917 7 15.1383 6.85805 14.6538 6.57414C14.1693 6.29024 13.7881 5.88657 13.5102 5.36312C13.2323 4.83967 13.0934 4.21863 13.0934 3.5C13.0934 2.78137 13.2323 2.16033 13.5102 1.63688C13.7881 1.11343 14.1693 0.709759 14.6538 0.425856C15.1383 0.141952 15.6917 0 16.314 0C16.6821 0 17.0277 0.049905 17.3507 0.149715C17.6761 0.249525 17.9694 0.395913 18.2307 0.588878C18.4919 0.779626 18.7104 1.01252 18.8862 1.28755C19.0619 1.56036 19.1831 1.87199 19.2496 2.22243Z" fill="white"/></svg>';
 const iconStringJoin       = '<svg width="20" height="7" viewBox="0 0 20 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.962017 7H0.0941198L2.60435 0.163636H3.45889L5.96912 7H5.10122L3.05832 1.24517H3.00492L0.962017 7ZM1.28247 4.32955H4.78077V5.06392H1.28247V4.32955ZM8.92999 5.7983V1.39205H9.67771V5.7983H8.92999ZM7.10072 3.96903V3.22131H11.507V3.96903H7.10072ZM13.2303 7V0.163636H15.6203C16.0965 0.163636 16.4893 0.245976 16.7986 0.410654C17.108 0.573106 17.3383 0.792306 17.4896 1.06825C17.641 1.34197 17.7166 1.64574 17.7166 1.97955C17.7166 2.2733 17.6643 2.51586 17.5597 2.70724C17.4574 2.89863 17.3216 3.04995 17.1525 3.16122C16.9856 3.27249 16.8042 3.35483 16.6084 3.40824V3.475C16.8176 3.48835 17.0279 3.56179 17.2393 3.69531C17.4507 3.82884 17.6276 4.02022 17.77 4.26946C17.9124 4.5187 17.9837 4.82358 17.9837 5.18409C17.9837 5.5268 17.9058 5.83501 17.75 6.10874C17.5942 6.38246 17.3483 6.59943 17.0123 6.75966C16.6763 6.91989 16.239 7 15.7004 7H13.2303ZM14.0581 6.26563H15.7004C16.2412 6.26563 16.6251 6.16103 16.8521 5.95185C17.0813 5.74044 17.1959 5.48452 17.1959 5.18409C17.1959 4.95265 17.1369 4.73902 17.019 4.54318C16.901 4.34512 16.733 4.18712 16.5149 4.06918C16.2968 3.94901 16.0387 3.88892 15.7405 3.88892H14.0581V6.26563ZM14.0581 3.1679H15.5936C15.8428 3.1679 16.0676 3.11894 16.2679 3.02102C16.4704 2.92311 16.6306 2.78513 16.7486 2.6071C16.8687 2.42907 16.9288 2.21989 16.9288 1.97955C16.9288 1.67912 16.8242 1.42431 16.6151 1.21513C16.4059 1.00372 16.0743 0.898011 15.6203 0.898011H14.0581V3.1679Z" fill="white"/></svg>';
 const iconSubstring        = '<svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.884233 5.99355H0.191761L2.1946 0.539H2.87642L4.87926 5.99355H4.18679L2.55682 1.40193H2.5142L0.884233 5.99355ZM1.13991 3.86286H3.93111V4.4488H1.13991V3.86286ZM19.2367 2.24355H18.5762C18.5372 2.05356 18.4688 1.88666 18.3711 1.74284C18.2753 1.59901 18.1581 1.47828 18.0196 1.38062C17.8829 1.28119 17.731 1.20661 17.5641 1.1569C17.3972 1.10718 17.2232 1.08232 17.0421 1.08232C16.7119 1.08232 16.4127 1.16578 16.1446 1.33268C15.8782 1.49958 15.6661 1.7455 15.508 2.07043C15.3518 2.39536 15.2737 2.79397 15.2737 3.26627C15.2737 3.73857 15.3518 4.13719 15.508 4.46212C15.6661 4.78705 15.8782 5.03296 16.1446 5.19987C16.4127 5.36677 16.7119 5.45022 17.0421 5.45022C17.2232 5.45022 17.3972 5.42536 17.5641 5.37565C17.731 5.32593 17.8829 5.25225 18.0196 5.15459C18.1581 5.05516 18.2753 4.93353 18.3711 4.78971C18.4688 4.64411 18.5372 4.47721 18.5762 4.289H19.2367C19.187 4.56776 19.0965 4.81723 18.9651 5.0374C18.8337 5.25757 18.6703 5.44489 18.475 5.59937C18.2797 5.75207 18.0604 5.86837 17.8172 5.94827C17.5757 6.02817 17.3173 6.06812 17.0421 6.06812C16.5769 6.06812 16.1632 5.95448 15.801 5.72721C15.4388 5.49994 15.1538 5.17678 14.9461 4.75775C14.7383 4.33872 14.6345 3.84156 14.6345 3.26627C14.6345 2.69099 14.7383 2.19383 14.9461 1.7748C15.1538 1.35576 15.4388 1.03261 15.801 0.805335C16.1632 0.578062 16.5769 0.464426 17.0421 0.464426C17.3173 0.464426 17.5757 0.504376 17.8172 0.584277C18.0604 0.664178 18.2797 0.781365 18.475 0.935839C18.6703 1.08854 18.8337 1.27497 18.9651 1.49514C19.0965 1.71354 19.187 1.96301 19.2367 2.24355Z" fill="white"/><path d="M4.21673 10.3V9.69915C4.21673 9.51667 4.249 9.32306 4.31353 9.11832C4.3803 8.91136 4.47599 8.71219 4.60061 8.52081C4.72745 8.3272 4.87989 8.15919 5.05792 8.01676L5.4852 8.36392C5.345 8.5642 5.2226 8.77339 5.11801 8.99148C5.01564 9.20734 4.96446 9.43878 4.96446 9.6858V10.3H4.21673ZM5.92582 10.3V9.69915C5.92582 9.51667 5.95809 9.32306 6.02262 9.11832C6.08939 8.91136 6.18508 8.71219 6.3097 8.52081C6.43655 8.3272 6.58898 8.15919 6.76701 8.01676L7.19429 8.36392C7.05409 8.5642 6.93169 8.77339 6.8271 8.99148C6.72473 9.20734 6.67355 9.43878 6.67355 9.6858V10.3H5.92582ZM8.17067 15V8.16364H10.5607C11.037 8.16364 11.4297 8.24598 11.7391 8.41065C12.0484 8.57311 12.2787 8.79231 12.43 9.06825C12.5814 9.34197 12.657 9.64574 12.657 9.97955C12.657 10.2733 12.6047 10.5159 12.5001 10.7072C12.3978 10.8986 12.262 11.05 12.0929 11.1612C11.926 11.2725 11.7446 11.3548 11.5488 11.4082V11.475C11.758 11.4884 11.9683 11.5618 12.1797 11.6953C12.3911 11.8288 12.568 12.0202 12.7104 12.2695C12.8529 12.5187 12.9241 12.8236 12.9241 13.1841C12.9241 13.5268 12.8462 13.835 12.6904 14.1087C12.5346 14.3825 12.2887 14.5994 11.9527 14.7597C11.6167 14.9199 11.1794 15 10.6408 15H8.17067ZM8.99851 14.2656H10.6408C11.1816 14.2656 11.5655 14.161 11.7925 13.9518C12.0217 13.7404 12.1363 13.4845 12.1363 13.1841C12.1363 12.9527 12.0773 12.739 11.9594 12.5432C11.8414 12.3451 11.6734 12.1871 11.4553 12.0692C11.2372 11.949 10.9791 11.8889 10.6809 11.8889H8.99851V14.2656ZM8.99851 11.1679H10.534C10.7833 11.1679 11.008 11.1189 11.2083 11.021C11.4108 10.9231 11.5711 10.7851 11.689 10.6071C11.8092 10.4291 11.8693 10.2199 11.8693 9.97955C11.8693 9.67912 11.7647 9.42431 11.5555 9.21513C11.3463 9.00372 11.0147 8.89801 10.5607 8.89801H8.99851V11.1679ZM14.8718 8.16364V8.76449C14.8718 8.94697 14.8385 9.14169 14.7717 9.34865C14.7072 9.55339 14.6115 9.75256 14.4846 9.94616C14.36 10.1375 14.2087 10.3045 14.0306 10.4469L13.6034 10.0997C13.7436 9.89943 13.8649 9.69136 13.9672 9.4755C14.0718 9.25741 14.1241 9.02486 14.1241 8.77784V8.16364H14.8718ZM16.5809 8.16364V8.76449C16.5809 8.94697 16.5476 9.14169 16.4808 9.34865C16.4163 9.55339 16.3206 9.75256 16.1937 9.94616C16.0691 10.1375 15.9178 10.3045 15.7397 10.4469L15.3125 10.0997C15.4527 9.89943 15.5739 9.69136 15.6763 9.4755C15.7809 9.25741 15.8332 9.02486 15.8332 8.77784V8.16364H16.5809Z" fill="white"/></svg>';
@@ -27915,7 +27939,7 @@ var menuColor;
 var menuStyle;
 var menuShape;
 
-var menuVariableMath;
+var menuSimpleMath;
 
 
 var menuZoom;
@@ -28050,29 +28074,29 @@ function initGeneratorMenus()
         new MenuItem('Repeat', {icon: iconRepeat, callback: e => actionManager.do(new CreateNodeAction(REPEAT, btnNumber.div, {insert: e.shiftKey}))})]);
     
     
-    menuVariableMath = new Menu('Variable math nodes', true, false);
-    menuVariableMath.addItems([
-        new MenuItem('Math . . .',     {icon: iconMath    , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MATH,        btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Add . . .',      {icon: iconAdd     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_ADD,         btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Subtract . . .', {icon: iconSubtract, callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_SUBTRACT,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Multiply . . .', {icon: iconMultiply, callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MULTIPLY,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Divide . . .',   {icon: iconDivide  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_DIVIDE,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Exponent . . .', {icon: iconExponent, callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_EXPONENT,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Modulo . . .',   {icon: iconModulo  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MODULO,      btnNumber.div, {insert: e.shiftKey}))})]);
+    menuSimpleMath = new Menu('Variable math nodes', true, false);
+    menuSimpleMath.addItems([
+        new MenuItem('Math ·',     {icon: iconSimpleMath    , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MATH,        btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Add ·',      {icon: iconSimpleAdd     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_ADD,         btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Subtract ·', {icon: iconSimpleSubtract, callback: e => actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Multiply ·', {icon: iconSimpleMultiply, callback: e => actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Divide ·',   {icon: iconSimpleDivide  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Exponent ·', {icon: iconSimpleExponent, callback: e => actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Modulo ·',   {icon: iconSimpleModulo  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnNumber.div, {insert: e.shiftKey}))})]);
 
 
     menuNumber = new Menu('Number nodes', true, false);
     menuNumber.addItems([
         new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(new CreateNodeAction(NUMBER,             btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Math',        {icon: iconMath       , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MATH,        btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(new CreateNodeAction(NUMBER_ADD,         btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Exponent',    {icon: iconExponent   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Modulo',      {icon: iconModulo     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('. . .',         {childMenu: menuVariableMath }),
+        new MenuItem('Math',        {icon: iconMath       , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MATH,        btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_ADD,         btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_SUBTRACT,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MULTIPLY,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_DIVIDE,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Exponent',    {icon: iconExponent   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_EXPONENT,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Modulo',      {icon: iconModulo     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MODULO,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('· · ·',       {childMenu: menuSimpleMath }),
         new MenuItem('',            {separator: true}),
         new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnNumber.div, {insert: e.shiftKey}))}),
@@ -39196,8 +39220,8 @@ extends OperatorBase
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramMin   = new NumberParam('min',   'min', true,  true,  true,    0));
-        this.addParam(this.paramMax   = new NumberParam('max',   'max', true,  true,  true, 1000));
+        this.addParam(this.paramMin   = new NumberParam('min',   'min', true,  true,  false,    0));
+        this.addParam(this.paramMax   = new NumberParam('max',   'max', true,  true,  false, 1000));
     }
 
 
@@ -39260,7 +39284,7 @@ extends OperatorBase
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  true, 50, 0, 100, 0));
+        this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  false, 50, 0, 100, 0));
 
         
         this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
@@ -42148,8 +42172,8 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES));
 
 
+        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  false, ['WCAG 2', 'WCAG 3'], 1));
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0, 0));
-        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
         createTooltip(ttWcag2);
@@ -42224,11 +42248,14 @@ extends OpColorBase
         super.updateValues(updateParamId, paramIds, values);
 
 
-        const colText = values[paramIds.findIndex(id => id == 'text')];
-        const colBack = values[paramIds.findIndex(id => id == 'back')];
+        const colText  = values[paramIds.findIndex(id => id == 'text')];
+        const colBack  = values[paramIds.findIndex(id => id == 'back')];
+        const standard = values[paramIds.findIndex(id => id == 'text')];
+        const contrast = values[paramIds.findIndex(id => id == 'back')];
 
         console.assert(colText.type == COLOR_VALUE, 'colText.type = ' + colText.type);
         console.assert(colBack.type == COLOR_VALUE, 'colBack.type = ' + colBack.type);
+
 
         this.labelColor = 
             colText.isValid()
@@ -42238,10 +42265,7 @@ extends OpColorBase
         this._color = colBack.toDataColor();
 
 
-        const contrast = this.paramContrast.value;
-
-        
-        if (this.paramStandard.value == 0)
+        if (standard.value == 0)
         {
             let rating = getContrastRating2(contrast.value);
 
@@ -42392,9 +42416,9 @@ extends OpColorBase
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
-        this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, true, 50, 0,  100, 0));
-        this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, true, 1,  0.01, 4, 2));
+        this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, false, OpColorSpaces.map(s => s[1]), 1));
+        this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, false, 50, 0,  100, 0));
+        this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, false, 1,  0.01, 4, 2));
       
         
         this.paramSpace.control.setMin(1);
@@ -42539,9 +42563,9 @@ extends OpColorBase
         this.addOutput(new Output([COLOR], this.output_genRequest));
 
 
-        this.addParam(this.paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0, 0.02));
-        this.addParam(this.paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0, 0.02));
-        this.addParam(this.paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0, 0.02));
+        this.addParam(this.paramL = new NumberParam('l', 'L', false, true, false, 2, 0, 2, 0, 0.02));
+        this.addParam(this.paramM = new NumberParam('m', 'M', false, true, false, 2, 0, 2, 0, 0.02));
+        this.addParam(this.paramS = new NumberParam('s', 'S', false, true, false, 2, 0, 2, 0, 0.02));
 
         this.paramL.addEventListener('change', () => this.paramL.control.dragScale = decCount(numToString(this.paramL.value, this.paramL.control.displayDec)) == 0 ? 0.02 : 0.05);
         this.paramM.addEventListener('change', () => this.paramM.control.dragScale = decCount(numToString(this.paramM.value, this.paramM.control.displayDec)) == 0 ? 0.02 : 0.05);
@@ -42651,8 +42675,8 @@ extends OpColorBase
         this.addOutput(new Output([FILL], this.output_genRequest));
 
 
-        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
-        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
+        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, false, ColorValue.fromRgb(rgbDefaultFill)));
+        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, false, 100, 0, 100));
 
 
         this.paramOpacity.control.suffix = '%';
@@ -42920,11 +42944,11 @@ extends OpColorBase
         this.addOutput(new Output([STROKE], this.output_genRequest));
 
 
-        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
-        this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
-        this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 0));
-        this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
-        this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
+        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, false, FillValue.create(0, 0, 0, 100)));
+        this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, false, 1, 0));
+        this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, false, ['inside', 'center', 'outside'], 0));
+        this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, false, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, false, 28.96, 0, 180, 2));
 
         this.paramMiter.control.setSuffix('°', true);
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
@@ -43207,6 +43231,17 @@ extends OpColorBase
 
         return request;
     }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+        this.div   .style.borderRadius = '4px';        
+        this.inner .style.borderRadius = '4px';        
+        this.header.style.borderRadius = '4px';        
+    }
 }
 
 
@@ -43427,7 +43462,7 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramStyle = new StyleParam('style', 'style', true, true));
+        this.addParam(this.paramStyle = new StyleParam('style', 'style', true, false));
     }
 
 
@@ -43516,12 +43551,12 @@ extends OpShapeBase
         this.addOutput(new Output([RECTANGLE], this.output_genRequest));
 
 
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
-        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, false,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, false,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, false, 100,    0.01));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, false, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, false,   0, -180,   180));
+        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, false,   0,    0));
 
 
         this.paramWidth .addEventListener('change', () => this.updateRound());
@@ -43566,10 +43601,10 @@ extends OpShapeBase
         this.addInput (this.createInputForObjects([LINE, LINE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([LINE], this.output_genRequest));
 
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, false,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, false,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, false, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, false,   0, -180,   180));
         
 
         this.paramAngle.control.setSuffix('°', true);
@@ -43601,11 +43636,11 @@ extends OpShapeBase
         this.addOutput(new Output([ELLIPSE], this.output_genRequest));
 
 
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, false,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, false,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, false, 100,    0.01));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, false, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, false,   0, -180,   180));
         
 
         this.paramAngle.control.setSuffix('°', true);
@@ -43638,13 +43673,13 @@ extends OpShapeBase
         this.addInput (this.createInputForObjects([POLYGON, POLYGON_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([POLYGON], this.output_genRequest));
 
-        this.addParam(this.paramX       = new NumberParam('x',       'x',       true, true, true,   0));
-        this.addParam(this.paramY       = new NumberParam('y',       'y',       true, true, true,   0));
-        this.addParam(this.paramWidth   = new NumberParam('width',   'width',   true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight  = new NumberParam('height',  'height',  true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',   true, true, true,   0, -180,   180));
-        this.addParam(this.paramRound   = new NumberParam('round',   'round',   true, true, true,   0,    0));
-        this.addParam(this.paramCorners = new NumberParam('corners', 'corners', true, true, true,   3,    3));
+        this.addParam(this.paramX       = new NumberParam('x',       'x',       true, true, false,   0));
+        this.addParam(this.paramY       = new NumberParam('y',       'y',       true, true, false,   0));
+        this.addParam(this.paramWidth   = new NumberParam('width',   'width',   true, true, false, 100,    0.01));
+        this.addParam(this.paramHeight  = new NumberParam('height',  'height',  true, true, false, 100,    0.01));
+        this.addParam(this.paramAngle   = new NumberParam('angle',   'angle',   true, true, false,   0, -180,   180));
+        this.addParam(this.paramRound   = new NumberParam('round',   'round',   true, true, false,   0,    0));
+        this.addParam(this.paramCorners = new NumberParam('corners', 'corners', true, true, false,   3,    3));
         
 
         this.paramAngle.control.setSuffix('°', true);
@@ -43691,14 +43726,14 @@ extends OpShapeBase
         this.addInput (this.createInputForObjects([STAR, STAR_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([STAR], this.output_genRequest));
 
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true,   0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true,   0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 100,    0.01));
-        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 100,    0.01));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true,   0, -180,   180));
-        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, true,   0,    0));
-        this.addParam(this.paramPoints = new NumberParam('points', 'points', true, true, true,   5,    3));
-        this.addParam(this.paramConvex = new NumberParam('convex', 'convex', true, true, true,   38.2, 0, 100));
+        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, false,   0));
+        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, false,   0));
+        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, false, 100,    0.01));
+        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, false, 100,    0.01));
+        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, false,   0, -180,   180));
+        this.addParam(this.paramRound  = new NumberParam('round',  'round',  true, true, false,   0,    0));
+        this.addParam(this.paramPoints = new NumberParam('points', 'points', true, true, false,   5,    3));
+        this.addParam(this.paramConvex = new NumberParam('convex', 'convex', true, true, false,   38.2, 0, 100));
         
 
         this.paramAngle.control.setSuffix('°', true);
