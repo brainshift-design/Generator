@@ -6,6 +6,8 @@ extends GNode
     valid; // has been evaluated
     topLevel;
 
+    value;
+
     
     
     constructor(type, nodeId, options)
@@ -36,6 +38,15 @@ extends GNode
 
 
 
+    isCached()
+    {
+        //console.log(this.nodeId + '.options.cached =', this.options.cached);
+        return this.options.cached
+            && this.valid;
+    }
+
+
+
     eval(parse)
     {
         // calculate and add value update here
@@ -50,12 +61,3 @@ extends GNode
         return null;
     }
 }
-
-
-
-// function evalValue(value)
-// {
-//     return value instanceof GOperator 
-//            ? value.value 
-//            : value;
-// }

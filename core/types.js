@@ -204,6 +204,8 @@ const COMMENT       = 'CMNT';
 const ACTIVE        = 'ACT';
 const BEFORE_ACTIVE = 'BEF';
 const DISABLED      = 'DIS';
+const NOCACHE       = 'NOC';
+
 const PARAM         = 'PARAM'; // nodeId paramId
 
 

@@ -44,10 +44,10 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
-        
+
         if (this.space) this.space = this.space.eval(parse).copy();
         if (this.c1   ) this.c1    = this.c1   .eval(parse).copy();
         if (this.c2   ) this.c2    = this.c2   .eval(parse).copy();
@@ -56,7 +56,7 @@ extends GColorType
 
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
+            this.input  = this.input.eval(parse).copy();
             const input = this.input.toValue();
 
 
@@ -127,18 +127,12 @@ extends GColorType
         }
 
 
-        this.space = this.value.space;
-        this.c1    = this.value.c1;
-        this.c2    = this.value.c2;
-        this.c3    = this.value.c3;
-
-
         // if (this.options.enabled)
         // {
-            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue(), true);
-            if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .toValue());
-            if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .toValue());
-            if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .toValue());
+            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.value.space.toValue(), true);
+            if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   .toValue());
+            if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   .toValue());
+            if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   .toValue());
         // }
 
 

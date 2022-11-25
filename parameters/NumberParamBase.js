@@ -54,6 +54,14 @@ extends Parameter
 
 
 
+    showValue(show)
+    {
+        this.control.showValue = show;
+        this.control.update();
+    }
+
+
+
     genRequest(gen)
     {
         // this function exists because a parameter without an output

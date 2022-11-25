@@ -9,7 +9,7 @@ extends GOperator
     {
         super.copyBase(src);
 
-        this.value = src.value.copy();
+        if (src.value) this.value = src.value.copy();
     }
 
 

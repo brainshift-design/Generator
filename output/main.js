@@ -184,6 +184,7 @@ const COMMENT = 'CMNT';
 const ACTIVE = 'ACT';
 const BEFORE_ACTIVE = 'BEF';
 const DISABLED = 'DIS';
+const NOCACHE = 'NOC';
 const PARAM = 'PARAM'; // nodeId paramId
 const LOG = 'LOG';
 const MATH_OPS = [
@@ -275,6 +276,8 @@ function logReqOptions(node) {
         log += ' ' + BEFORE_ACTIVE;
     if (!node.options.enabled)
         log += ' ' + DISABLED;
+    if (!node.options.cached)
+        log += ' ' + NOCACHE;
     return log;
 }
 function logReqParam(param, type, parse) {

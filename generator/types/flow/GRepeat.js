@@ -32,7 +32,7 @@ extends GOperator
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -44,11 +44,11 @@ extends GOperator
 
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
-            const input = this.input.toValue();
-
             for (let i = 0; i < count.value; i++)
             {
+                this.input = this.input.eval(parse).copy();
+                const input = this.input.toValue();
+
                 if (input.type == LIST_VALUE)
                 {
                     for (const item of input.items)

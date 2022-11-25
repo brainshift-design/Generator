@@ -41,15 +41,16 @@ class Operator
 
 
     enabled;
+    cached;
 
     
     inputs           = [];
     outputs          = [];
-
+  
     params           = [];
     hiddenParams     = [];
-
-    
+  
+      
     variableInputs   = false;
 
     alwaysLoadParams = false;
@@ -129,6 +130,7 @@ class Operator
         this.id                = shortName;
         
         this.enabled           = true;
+        this.cached            = true;
 
         this.defShortName      = shortName;
         this.defaultWidth      = defWidth;
@@ -443,6 +445,20 @@ class Operator
 
 
 
+    isCached()
+    {
+        for (const input of this.inputs)
+        {
+            if (    input.connected
+                && !input.cached)
+                return false;
+        }
+
+        return this.cached;
+    }
+
+
+
     follows(node) 
     { 
         return this.isOrFollows(node, false); 
@@ -567,9 +583,10 @@ class Operator
             const beforeActive = nextActive && nextActive.follows(this);
 
             const options =
-                  ((this.active  ? 1 : 0) << 0)
-                | ((beforeActive ? 1 : 0) << 1)
-                | ((this.enabled ? 1 : 0) << 2);
+                  ((this.active     ? 1 : 0) << 0)
+                | ((beforeActive    ? 1 : 0) << 1)
+                | ((this.enabled    ? 1 : 0) << 2)
+                | ((this.isCached() ? 1 : 0) << 3);
 
             request.push(options);
         }

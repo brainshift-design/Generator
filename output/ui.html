@@ -3893,17 +3893,17 @@ class Random
 
 
 
-    constructor(seed = 0xb9ef7ca4)
+    constructor(seed = 0xb9ef7ca4, last = seed)
     { 
         this.seed = seed; 
-        this.last = seed;
+        this.last = last;
     }
 
 
 
     copy()
     {
-        return new Random(this.seed);
+        return new Random(this.seed, this.last);
     }
 
 
@@ -3922,17 +3922,6 @@ class Random
         return this.seed / -0x7fffffff;
     }
 
-	/*	Using Thomas Wang's 64-bit int hashing algorithm to generate
-		predictable pseudo-random values that work with clip regions.  */
-
-	//#define HASH(x)	\
-	//	(x) = (~(x)) + ((x) << 21); \
-	//	(x) = (x) ^ ((x) >> 24); \
-	//	(x) = ((x) + ((x) << 3)) + ((x) << 8); \
-	//	(x) = (x) ^ ((x) >> 14); \
-	//	(x) = ((x) + ((x) << 2)) + ((x) << 4); \
-	//	(x) = (x) ^ ((x) >> 28); \
-	//	(x) = (x) + ((x) << 31);
 }
 
 
@@ -5095,6 +5084,7 @@ function logReqOptions(node)
     if ( node.options.active      ) log += ' ' + ACTIVE;
     if ( node.options.beforeActive) log += ' ' + BEFORE_ACTIVE;
     if (!node.options.enabled     ) log += ' ' + DISABLED;
+    if (!node.options.cached      ) log += ' ' + NOCACHE;
 
     return log;
 }
@@ -5707,6 +5697,8 @@ const COMMENT       = 'CMNT';
 const ACTIVE        = 'ACT';
 const BEFORE_ACTIVE = 'BEF';
 const DISABLED      = 'DIS';
+const NOCACHE       = 'NOC';
+
 const PARAM         = 'PARAM'; // nodeId paramId
 
 
@@ -6160,6 +6152,8 @@ extends GNode
     valid; // has been evaluated
     topLevel;
 
+    value;
+
     
     
     constructor(type, nodeId, options)
@@ -6190,6 +6184,15 @@ extends GNode
 
 
 
+    isCached()
+    {
+        //console.log(this.nodeId + '.options.cached =', this.options.cached);
+        return this.options.cached
+            && this.valid;
+    }
+
+
+
     eval(parse)
     {
         // calculate and add value update here
@@ -6204,15 +6207,6 @@ extends GNode
         return null;
     }
 }
-
-
-
-// function evalValue(value)
-// {
-//     return value instanceof GOperator 
-//            ? value.value 
-//            : value;
-// }
 
 
 class GParam
@@ -7978,7 +7972,7 @@ extends GOperator
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -7994,7 +7988,8 @@ extends GOperator
         this.items = [];
 
 
-        if (this.value.isValid())
+        if (   this.value.isValid()
+            && this.value.items.length > 0)
         {
             for (let i = 0; i < this.value.items.length; i++)
             {
@@ -8004,6 +7999,9 @@ extends GOperator
                 genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
             }
         }
+        else
+            genPushUpdateValue(parse, this.nodeId, 'noitems', new NumberValue(0));
+
         
 
         this.validate();
@@ -8066,7 +8064,7 @@ extends GOperator
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -8078,11 +8076,11 @@ extends GOperator
 
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
-            const input = this.input.toValue();
-
             for (let i = 0; i < count.value; i++)
             {
+                this.input = this.input.eval(parse).copy();
+                const input = this.input.toValue();
+
                 if (input.type == LIST_VALUE)
                 {
                     for (const item of input.items)
@@ -8123,7 +8121,7 @@ extends GOperator
     {
         super.copyBase(src);
 
-        this.value = src.value.copy();
+        if (src.value) this.value = src.value.copy();
     }
 
 
@@ -8403,11 +8401,11 @@ extends GNumberType
 
         rnd.copyBase(this);
 
-        rnd.seed   = this.seed.copy();
-        rnd.min    = this.min .copy();
-        rnd.max    = this.max .copy();
+        if (this.seed  ) rnd.seed   = this.seed.copy();
+        if (this.min   ) rnd.min    = this.min .copy();
+        if (this.max   ) rnd.max    = this.max .copy();
 
-        rnd.random = this.random.copy();
+        if (this.random) rnd.random = this.random.copy();
 
         return rnd;
     }
@@ -8433,6 +8431,7 @@ extends GNumberType
             this.random = new Random(seed.value);
         
 
+        //console.log('new value');
         this.value = new NumberValue(
             min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
@@ -9288,7 +9287,7 @@ extends GOperator
     {
         super.copyBase(src);
 
-        this.value = src.value.copy();
+        if (src.value) this.value = src.value.copy();
     }
 
 
@@ -9346,10 +9345,10 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
-        
+
         if (this.space) this.space = this.space.eval(parse).copy();
         if (this.c1   ) this.c1    = this.c1   .eval(parse).copy();
         if (this.c2   ) this.c2    = this.c2   .eval(parse).copy();
@@ -9358,7 +9357,7 @@ extends GColorType
 
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
+            this.input  = this.input.eval(parse).copy();
             const input = this.input.toValue();
 
 
@@ -9429,18 +9428,12 @@ extends GColorType
         }
 
 
-        this.space = this.value.space;
-        this.c1    = this.value.c1;
-        this.c2    = this.value.c2;
-        this.c3    = this.value.c3;
-
-
         // if (this.options.enabled)
         // {
-            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue(), true);
-            if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .toValue());
-            if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .toValue());
-            if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .toValue());
+            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.value.space.toValue(), true);
+            if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   .toValue());
+            if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   .toValue());
+            if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   .toValue());
         // }
 
 
@@ -13686,7 +13679,8 @@ function genParseNodeOptions(parse)
     {
         active:       ((opt >> 0) & 1) != 0,
         beforeActive: ((opt >> 1) & 1) != 0,
-        enabled:      ((opt >> 2) & 1) != 0
+        enabled:      ((opt >> 2) & 1) != 0,
+        cached:       ((opt >> 3) & 1) != 0
     };
 
     return options;
@@ -17680,17 +17674,17 @@ class Random
 
 
 
-    constructor(seed = 0xb9ef7ca4)
+    constructor(seed = 0xb9ef7ca4, last = seed)
     { 
         this.seed = seed; 
-        this.last = seed;
+        this.last = last;
     }
 
 
 
     copy()
     {
-        return new Random(this.seed);
+        return new Random(this.seed, this.last);
     }
 
 
@@ -17709,17 +17703,6 @@ class Random
         return this.seed / -0x7fffffff;
     }
 
-	/*	Using Thomas Wang's 64-bit int hashing algorithm to generate
-		predictable pseudo-random values that work with clip regions.  */
-
-	//#define HASH(x)	\
-	//	(x) = (~(x)) + ((x) << 21); \
-	//	(x) = (x) ^ ((x) >> 24); \
-	//	(x) = ((x) + ((x) << 3)) + ((x) << 8); \
-	//	(x) = (x) ^ ((x) >> 14); \
-	//	(x) = ((x) + ((x) << 2)) + ((x) << 4); \
-	//	(x) = (x) ^ ((x) >> 28); \
-	//	(x) = (x) + ((x) << 31);
 }
 
 
@@ -18882,6 +18865,7 @@ function logReqOptions(node)
     if ( node.options.active      ) log += ' ' + ACTIVE;
     if ( node.options.beforeActive) log += ' ' + BEFORE_ACTIVE;
     if (!node.options.enabled     ) log += ' ' + DISABLED;
+    if (!node.options.cached      ) log += ' ' + NOCACHE;
 
     return log;
 }
@@ -21101,6 +21085,8 @@ const COMMENT       = 'CMNT';
 const ACTIVE        = 'ACT';
 const BEFORE_ACTIVE = 'BEF';
 const DISABLED      = 'DIS';
+const NOCACHE       = 'NOC';
+
 const PARAM         = 'PARAM'; // nodeId paramId
 
 
@@ -21554,6 +21540,8 @@ extends GNode
     valid; // has been evaluated
     topLevel;
 
+    value;
+
     
     
     constructor(type, nodeId, options)
@@ -21584,6 +21572,15 @@ extends GNode
 
 
 
+    isCached()
+    {
+        //console.log(this.nodeId + '.options.cached =', this.options.cached);
+        return this.options.cached
+            && this.valid;
+    }
+
+
+
     eval(parse)
     {
         // calculate and add value update here
@@ -21598,15 +21595,6 @@ extends GNode
         return null;
     }
 }
-
-
-
-// function evalValue(value)
-// {
-//     return value instanceof GOperator 
-//            ? value.value 
-//            : value;
-// }
 
 
 class GParam
@@ -23372,7 +23360,7 @@ extends GOperator
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -23388,7 +23376,8 @@ extends GOperator
         this.items = [];
 
 
-        if (this.value.isValid())
+        if (   this.value.isValid()
+            && this.value.items.length > 0)
         {
             for (let i = 0; i < this.value.items.length; i++)
             {
@@ -23398,6 +23387,9 @@ extends GOperator
                 genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
             }
         }
+        else
+            genPushUpdateValue(parse, this.nodeId, 'noitems', new NumberValue(0));
+
         
 
         this.validate();
@@ -23460,7 +23452,7 @@ extends GOperator
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -23472,11 +23464,11 @@ extends GOperator
 
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
-            const input = this.input.toValue();
-
             for (let i = 0; i < count.value; i++)
             {
+                this.input = this.input.eval(parse).copy();
+                const input = this.input.toValue();
+
                 if (input.type == LIST_VALUE)
                 {
                     for (const item of input.items)
@@ -23517,7 +23509,7 @@ extends GOperator
     {
         super.copyBase(src);
 
-        this.value = src.value.copy();
+        if (src.value) this.value = src.value.copy();
     }
 
 
@@ -23797,11 +23789,11 @@ extends GNumberType
 
         rnd.copyBase(this);
 
-        rnd.seed   = this.seed.copy();
-        rnd.min    = this.min .copy();
-        rnd.max    = this.max .copy();
+        if (this.seed  ) rnd.seed   = this.seed.copy();
+        if (this.min   ) rnd.min    = this.min .copy();
+        if (this.max   ) rnd.max    = this.max .copy();
 
-        rnd.random = this.random.copy();
+        if (this.random) rnd.random = this.random.copy();
 
         return rnd;
     }
@@ -23827,6 +23819,7 @@ extends GNumberType
             this.random = new Random(seed.value);
         
 
+        //console.log('new value');
         this.value = new NumberValue(
             min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
@@ -24682,7 +24675,7 @@ extends GOperator
     {
         super.copyBase(src);
 
-        this.value = src.value.copy();
+        if (src.value) this.value = src.value.copy();
     }
 
 
@@ -24740,10 +24733,10 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
-        
+
         if (this.space) this.space = this.space.eval(parse).copy();
         if (this.c1   ) this.c1    = this.c1   .eval(parse).copy();
         if (this.c2   ) this.c2    = this.c2   .eval(parse).copy();
@@ -24752,7 +24745,7 @@ extends GColorType
 
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
+            this.input  = this.input.eval(parse).copy();
             const input = this.input.toValue();
 
 
@@ -24823,18 +24816,12 @@ extends GColorType
         }
 
 
-        this.space = this.value.space;
-        this.c1    = this.value.c1;
-        this.c2    = this.value.c2;
-        this.c3    = this.value.c3;
-
-
         // if (this.options.enabled)
         // {
-            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue(), true);
-            if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .toValue());
-            if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .toValue());
-            if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .toValue());
+            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.value.space.toValue(), true);
+            if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   .toValue());
+            if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   .toValue());
+            if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   .toValue());
         // }
 
 
@@ -29346,6 +29333,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.wrapValue              = false;
      
     control.showName               = showName;
+    control.showValue              = true;
     control.showHex                = false;
          
     control.enableChangeEvent      = true;
@@ -29508,7 +29496,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             v *= -1;
 
             
-        if (isNaN(control.value))
+        if (    isNaN(control.value)
+            || !control.showValue)
             control.bar.style.display = 'none';
 
         else
@@ -29555,7 +29544,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             control.text.innerHTML += '<span style="color: '+nameStyle+';">' + control.name + "</span>&nbsp;&nbsp;";
         }
         
-        control.text.innerHTML += control.getValueText() + control.suffix;
+        if (control.showValue)
+            control.text.innerHTML += control.getValueText() + control.suffix;
     };
 
 
@@ -33534,6 +33524,14 @@ extends Parameter
 
 
 
+    showValue(show)
+    {
+        this.control.showValue = show;
+        this.control.update();
+    }
+
+
+
     genRequest(gen)
     {
         // this function exists because a parameter without an output
@@ -36874,15 +36872,16 @@ class Operator
 
 
     enabled;
+    cached;
 
     
     inputs           = [];
     outputs          = [];
-
+  
     params           = [];
     hiddenParams     = [];
-
-    
+  
+      
     variableInputs   = false;
 
     alwaysLoadParams = false;
@@ -36962,6 +36961,7 @@ class Operator
         this.id                = shortName;
         
         this.enabled           = true;
+        this.cached            = true;
 
         this.defShortName      = shortName;
         this.defaultWidth      = defWidth;
@@ -37276,6 +37276,20 @@ class Operator
 
 
 
+    isCached()
+    {
+        for (const input of this.inputs)
+        {
+            if (    input.connected
+                && !input.cached)
+                return false;
+        }
+
+        return this.cached;
+    }
+
+
+
     follows(node) 
     { 
         return this.isOrFollows(node, false); 
@@ -37400,9 +37414,10 @@ class Operator
             const beforeActive = nextActive && nextActive.follows(this);
 
             const options =
-                  ((this.active  ? 1 : 0) << 0)
-                | ((beforeActive ? 1 : 0) << 1)
-                | ((this.enabled ? 1 : 0) << 2);
+                  ((this.active     ? 1 : 0) << 0)
+                | ((beforeActive    ? 1 : 0) << 1)
+                | ((this.enabled    ? 1 : 0) << 2)
+                | ((this.isCached() ? 1 : 0) << 3);
 
             request.push(options);
         }
@@ -39038,7 +39053,7 @@ extends OperatorBase
 
         if (   paramIds.length > 1
             ||    paramIds.length == 1 
-               && paramIds[0] != 'value')
+               && paramIds[0] != 'noitems')
         {
             for (let i = 0; i < values.length; i++)
             {
@@ -39355,6 +39370,8 @@ extends OperatorBase
     {
         super(NUMBER_RANDOM, 'random', 90);
 
+        this.cached = false;
+        
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramSeed = new NumberParam('seed', 'seed', true, true, false, Math.floor(Math.random() * 10000), 0, 0x7fffffff));

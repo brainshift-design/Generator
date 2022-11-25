@@ -76,6 +76,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.wrapValue              = false;
      
     control.showName               = showName;
+    control.showValue              = true;
     control.showHex                = false;
          
     control.enableChangeEvent      = true;
@@ -238,7 +239,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             v *= -1;
 
             
-        if (isNaN(control.value))
+        if (    isNaN(control.value)
+            || !control.showValue)
             control.bar.style.display = 'none';
 
         else
@@ -285,7 +287,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             control.text.innerHTML += '<span style="color: '+nameStyle+';">' + control.name + "</span>&nbsp;&nbsp;";
         }
         
-        control.text.innerHTML += control.getValueText() + control.suffix;
+        if (control.showValue)
+            control.text.innerHTML += control.getValueText() + control.suffix;
     };
 
 

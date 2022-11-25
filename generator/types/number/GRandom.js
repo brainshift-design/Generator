@@ -22,11 +22,11 @@ extends GNumberType
 
         rnd.copyBase(this);
 
-        rnd.seed   = this.seed.copy();
-        rnd.min    = this.min .copy();
-        rnd.max    = this.max .copy();
+        if (this.seed  ) rnd.seed   = this.seed.copy();
+        if (this.min   ) rnd.min    = this.min .copy();
+        if (this.max   ) rnd.max    = this.max .copy();
 
-        rnd.random = this.random.copy();
+        if (this.random) rnd.random = this.random.copy();
 
         return rnd;
     }
@@ -52,6 +52,7 @@ extends GNumberType
             this.random = new Random(seed.value);
         
 
+        //console.log('new value');
         this.value = new NumberValue(
             min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));

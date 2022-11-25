@@ -32,7 +32,7 @@ extends GOperator
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -48,7 +48,8 @@ extends GOperator
         this.items = [];
 
 
-        if (this.value.isValid())
+        if (   this.value.isValid()
+            && this.value.items.length > 0)
         {
             for (let i = 0; i < this.value.items.length; i++)
             {
@@ -58,6 +59,9 @@ extends GOperator
                 genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
             }
         }
+        else
+            genPushUpdateValue(parse, this.nodeId, 'noitems', new NumberValue(0));
+
         
 
         this.validate();

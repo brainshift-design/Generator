@@ -1550,17 +1550,17 @@ class Random
 
 
 
-    constructor(seed = 0xb9ef7ca4)
+    constructor(seed = 0xb9ef7ca4, last = seed)
     { 
         this.seed = seed; 
-        this.last = seed;
+        this.last = last;
     }
 
 
 
     copy()
     {
-        return new Random(this.seed);
+        return new Random(this.seed, this.last);
     }
 
 
@@ -1579,17 +1579,6 @@ class Random
         return this.seed / -0x7fffffff;
     }
 
-	/*	Using Thomas Wang's 64-bit int hashing algorithm to generate
-		predictable pseudo-random values that work with clip regions.  */
-
-	//#define HASH(x)	\
-	//	(x) = (~(x)) + ((x) << 21); \
-	//	(x) = (x) ^ ((x) >> 24); \
-	//	(x) = ((x) + ((x) << 3)) + ((x) << 8); \
-	//	(x) = (x) ^ ((x) >> 14); \
-	//	(x) = ((x) + ((x) << 2)) + ((x) << 4); \
-	//	(x) = (x) ^ ((x) >> 28); \
-	//	(x) = (x) + ((x) << 31);
 }
 
 
@@ -2752,6 +2741,7 @@ function logReqOptions(node)
     if ( node.options.active      ) log += ' ' + ACTIVE;
     if ( node.options.beforeActive) log += ' ' + BEFORE_ACTIVE;
     if (!node.options.enabled     ) log += ' ' + DISABLED;
+    if (!node.options.cached      ) log += ' ' + NOCACHE;
 
     return log;
 }
@@ -3364,6 +3354,8 @@ const COMMENT       = 'CMNT';
 const ACTIVE        = 'ACT';
 const BEFORE_ACTIVE = 'BEF';
 const DISABLED      = 'DIS';
+const NOCACHE       = 'NOC';
+
 const PARAM         = 'PARAM'; // nodeId paramId
 
 
@@ -3817,6 +3809,8 @@ extends GNode
     valid; // has been evaluated
     topLevel;
 
+    value;
+
     
     
     constructor(type, nodeId, options)
@@ -3847,6 +3841,15 @@ extends GNode
 
 
 
+    isCached()
+    {
+        //console.log(this.nodeId + '.options.cached =', this.options.cached);
+        return this.options.cached
+            && this.valid;
+    }
+
+
+
     eval(parse)
     {
         // calculate and add value update here
@@ -3861,15 +3864,6 @@ extends GNode
         return null;
     }
 }
-
-
-
-// function evalValue(value)
-// {
-//     return value instanceof GOperator 
-//            ? value.value 
-//            : value;
-// }
 
 
 class GParam
@@ -5635,7 +5629,7 @@ extends GOperator
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -5651,7 +5645,8 @@ extends GOperator
         this.items = [];
 
 
-        if (this.value.isValid())
+        if (   this.value.isValid()
+            && this.value.items.length > 0)
         {
             for (let i = 0; i < this.value.items.length; i++)
             {
@@ -5661,6 +5656,9 @@ extends GOperator
                 genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
             }
         }
+        else
+            genPushUpdateValue(parse, this.nodeId, 'noitems', new NumberValue(0));
+
         
 
         this.validate();
@@ -5723,7 +5721,7 @@ extends GOperator
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -5735,11 +5733,11 @@ extends GOperator
 
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
-            const input = this.input.toValue();
-
             for (let i = 0; i < count.value; i++)
             {
+                this.input = this.input.eval(parse).copy();
+                const input = this.input.toValue();
+
                 if (input.type == LIST_VALUE)
                 {
                     for (const item of input.items)
@@ -5780,7 +5778,7 @@ extends GOperator
     {
         super.copyBase(src);
 
-        this.value = src.value.copy();
+        if (src.value) this.value = src.value.copy();
     }
 
 
@@ -6060,11 +6058,11 @@ extends GNumberType
 
         rnd.copyBase(this);
 
-        rnd.seed   = this.seed.copy();
-        rnd.min    = this.min .copy();
-        rnd.max    = this.max .copy();
+        if (this.seed  ) rnd.seed   = this.seed.copy();
+        if (this.min   ) rnd.min    = this.min .copy();
+        if (this.max   ) rnd.max    = this.max .copy();
 
-        rnd.random = this.random.copy();
+        if (this.random) rnd.random = this.random.copy();
 
         return rnd;
     }
@@ -6090,6 +6088,7 @@ extends GNumberType
             this.random = new Random(seed.value);
         
 
+        //console.log('new value');
         this.value = new NumberValue(
             min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
@@ -6945,7 +6944,7 @@ extends GOperator
     {
         super.copyBase(src);
 
-        this.value = src.value.copy();
+        if (src.value) this.value = src.value.copy();
     }
 
 
@@ -7003,10 +7002,10 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
-        
+
         if (this.space) this.space = this.space.eval(parse).copy();
         if (this.c1   ) this.c1    = this.c1   .eval(parse).copy();
         if (this.c2   ) this.c2    = this.c2   .eval(parse).copy();
@@ -7015,7 +7014,7 @@ extends GColorType
 
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
+            this.input  = this.input.eval(parse).copy();
             const input = this.input.toValue();
 
 
@@ -7086,18 +7085,12 @@ extends GColorType
         }
 
 
-        this.space = this.value.space;
-        this.c1    = this.value.c1;
-        this.c2    = this.value.c2;
-        this.c3    = this.value.c3;
-
-
         // if (this.options.enabled)
         // {
-            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.space.toValue(), true);
-            if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.c1   .toValue());
-            if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.c2   .toValue());
-            if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.c3   .toValue());
+            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.value.space.toValue(), true);
+            if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   .toValue());
+            if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   .toValue());
+            if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   .toValue());
         // }
 
 
@@ -11343,7 +11336,8 @@ function genParseNodeOptions(parse)
     {
         active:       ((opt >> 0) & 1) != 0,
         beforeActive: ((opt >> 1) & 1) != 0,
-        enabled:      ((opt >> 2) & 1) != 0
+        enabled:      ((opt >> 2) & 1) != 0,
+        cached:       ((opt >> 3) & 1) != 0
     };
 
     return options;

@@ -278,6 +278,8 @@ const COMMENT       = 'CMNT';
 const ACTIVE        = 'ACT';
 const BEFORE_ACTIVE = 'BEF';
 const DISABLED      = 'DIS';
+const NOCACHE       = 'NOC';
+
 const PARAM         = 'PARAM'; // nodeId paramId
 
 
@@ -441,6 +443,7 @@ function logReqOptions(node)
     if ( node.options.active      ) log += ' ' + ACTIVE;
     if ( node.options.beforeActive) log += ' ' + BEFORE_ACTIVE;
     if (!node.options.enabled     ) log += ' ' + DISABLED;
+    if (!node.options.cached      ) log += ' ' + NOCACHE;
 
     return log;
 }

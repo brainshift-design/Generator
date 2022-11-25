@@ -5,17 +5,17 @@ class Random
 
 
 
-    constructor(seed = 0xb9ef7ca4)
+    constructor(seed = 0xb9ef7ca4, last = seed)
     { 
         this.seed = seed; 
-        this.last = seed;
+        this.last = last;
     }
 
 
 
     copy()
     {
-        return new Random(this.seed);
+        return new Random(this.seed, this.last);
     }
 
 
@@ -34,15 +34,4 @@ class Random
         return this.seed / -0x7fffffff;
     }
 
-	/*	Using Thomas Wang's 64-bit int hashing algorithm to generate
-		predictable pseudo-random values that work with clip regions.  */
-
-	//#define HASH(x)	\
-	//	(x) = (~(x)) + ((x) << 21); \
-	//	(x) = (x) ^ ((x) >> 24); \
-	//	(x) = ((x) + ((x) << 3)) + ((x) << 8); \
-	//	(x) = (x) ^ ((x) >> 14); \
-	//	(x) = ((x) + ((x) << 2)) + ((x) << 4); \
-	//	(x) = (x) ^ ((x) >> 28); \
-	//	(x) = (x) + ((x) << 31);
 }
