@@ -33601,29 +33601,17 @@ extends Parameter
     
     updateShowControlValue()
     {
-        const inputNoneOrCached =
-               !this.input
-            || !this.input.connected
-            ||  this.input.connectedOutput.node.isCached();
+        let nodeOutputsMultiplied = false;
 
-        const outputConnected =
-               !this.output
-            || !this.output.connected
-            || !this.output.followedByMultiplier();
- 
-
-        let headerOutputsConnected = false;
-
-        for (const output of this.node.headerOutputs)
-            headerOutputsConnected |= output.followedByMultiplier();
+        for (const output of this.node.outputs)
+            nodeOutputsMultiplied ||= output.followedByMultiplier();
 
 
         this.control.showValue = 
-               inputNoneOrCached
-            || outputConnected
-            || headerOutputsConnected;
-
-            
+               !this.input
+            || !this.input.connected
+            || !nodeOutputsMultiplied;
+        
         this.control.update();
     }
     
