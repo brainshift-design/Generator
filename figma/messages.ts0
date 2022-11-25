@@ -35,6 +35,7 @@ figma.ui.onmessage = msg =>
         case 'figSaveConnection':                 figSaveConnection                (msg.name, msg.json);                         break;
         case 'figRemoveSavedConnection':          figRemoveSavedConnection         (msg.name);                                   break;
   
+        case 'figRemoveAllSavedConnections':      figRemoveAllSavedConnections     ();                                           break;
         case 'figRemoveSavedConnectionsToNode':   figRemoveSavedConnectionsToNode  (msg.nodeId);                                 break;
         case 'figRemoveSavedConnectionsFromNode': figRemoveSavedConnectionsFromNode(msg.nodeId);                                 break;
            

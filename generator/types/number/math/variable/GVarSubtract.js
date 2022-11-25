@@ -20,7 +20,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarSubtractInputs(this.inputs, parse);

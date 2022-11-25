@@ -13,7 +13,7 @@ extends OperatorBase
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
-        
+
         this.alwaysLoadParams = true;
     }
 
@@ -22,6 +22,13 @@ extends OperatorBase
     canAutoConnectFrom(output)
     {
         return output.supports(NUMBER_TYPES);
+    }
+
+
+
+    isCached()
+    {
+        return this.cached;
     }
 
 
@@ -54,7 +61,35 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramValue.enableControlText(!this.inputs[0].connected);
+        const input = this.inputs[0];
+
+        const showValue = 
+               !input.connected
+            ||  input.connectedOutput.node.isCached();
+
+            
+        if (showValue)
+        {
+            this.paramValue.control.style.display = 'block';
+            this.paramValue.enableControlText(!input.connected);
+
+            this.div   .style.borderBottomLeftRadius  = '0px';        
+            this.inner .style.borderBottomLeftRadius  = '0px';        
+            this.header.style.borderBottomLeftRadius  = '0px';        
+
+            this.div   .style.borderBottomRightRadius = '0px';        
+            this.inner .style.borderBottomRightRadius = '0px';        
+            this.header.style.borderBottomRightRadius = '0px';        
+        }
+        else
+        {
+            this.paramValue.control.style.display = 'none';
+
+            this.div   .style.borderRadius = '4px';        
+            this.inner .style.borderRadius = '4px';        
+            this.header.style.borderRadius = '4px';        
+        }
+
 
         super.updateParams();
     }

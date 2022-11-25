@@ -20,7 +20,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a - b, false, parse);

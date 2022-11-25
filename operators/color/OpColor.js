@@ -346,11 +346,11 @@ extends OpColorBase
 
         const enable = !this.inputs[0].connected;
 
-        this.paramSpace.enableControlText(!this.paramSpace.input.connected);
+        this.paramSpace.formatControl(!this.paramSpace.input.connected);
 
-        this.param1.enableControlText(enable);
-        this.param2.enableControlText(enable);
-        this.param3.enableControlText(enable);
+        this.param1.formatControl(enable);
+        this.param2.formatControl(enable);
+        this.param3.formatControl(enable);
 
         enableElementText(this.paramColor.control, !this.isConnected());
 

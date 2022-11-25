@@ -5559,7 +5559,7 @@ extends GOperator
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -5824,7 +5824,7 @@ extends GNumberType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -5901,7 +5901,7 @@ extends GNumberType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -5986,7 +5986,7 @@ extends GNumberType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -6202,7 +6202,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -6257,7 +6257,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a + b, false, parse);
@@ -6290,7 +6290,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a - b, false, parse);
@@ -6323,7 +6323,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a * b, false, parse);
@@ -6356,7 +6356,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a / b, true, parse);
@@ -6389,7 +6389,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a % b, true, parse);
@@ -6422,7 +6422,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => Math.pow(a, b), false, parse);
@@ -6471,7 +6471,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -6524,7 +6524,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarAddInputs(this.inputs, parse);
@@ -6586,7 +6586,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarSubtractInputs(this.inputs, parse);
@@ -6658,7 +6658,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarMultiplyInputs(this.inputs, parse);
@@ -6725,7 +6725,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarDivideInputs(this.inputs, parse);
@@ -6804,7 +6804,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarModuloInputs(this.inputs, parse);
@@ -6883,7 +6883,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarExponentInputs(this.inputs, parse);
@@ -7177,7 +7177,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -7326,7 +7326,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -7473,7 +7473,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -7581,7 +7581,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -8298,7 +8298,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
             
@@ -8437,7 +8437,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -8566,7 +8566,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
             
@@ -8705,7 +8705,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
             
@@ -8858,7 +8858,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
             
@@ -9005,7 +9005,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -9128,7 +9128,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 

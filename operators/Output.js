@@ -210,4 +210,24 @@ class Output
     {
         return arraysIntersect(this.types, types);
     }
+
+
+
+    followedByMultiplier()
+    {
+        for (const input of this.connectedInputs)
+        {
+            if (input.node instanceof OpRepeat) 
+                return true;
+
+            else
+            {
+                for (const output of input.node.outputs)
+                    if (output.followedByMultiplier())
+                        return true;
+            }
+
+            return false;
+        }
+    }
 }

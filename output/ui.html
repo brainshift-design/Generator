@@ -7902,7 +7902,7 @@ extends GOperator
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -8167,7 +8167,7 @@ extends GNumberType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -8244,7 +8244,7 @@ extends GNumberType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -8329,7 +8329,7 @@ extends GNumberType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -8545,7 +8545,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -8600,7 +8600,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a + b, false, parse);
@@ -8633,7 +8633,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a - b, false, parse);
@@ -8666,7 +8666,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a * b, false, parse);
@@ -8699,7 +8699,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a / b, true, parse);
@@ -8732,7 +8732,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a % b, true, parse);
@@ -8765,7 +8765,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => Math.pow(a, b), false, parse);
@@ -8814,7 +8814,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -8867,7 +8867,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarAddInputs(this.inputs, parse);
@@ -8929,7 +8929,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarSubtractInputs(this.inputs, parse);
@@ -9001,7 +9001,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarMultiplyInputs(this.inputs, parse);
@@ -9068,7 +9068,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarDivideInputs(this.inputs, parse);
@@ -9147,7 +9147,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarModuloInputs(this.inputs, parse);
@@ -9226,7 +9226,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarExponentInputs(this.inputs, parse);
@@ -9520,7 +9520,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -9669,7 +9669,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -9816,7 +9816,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -9924,7 +9924,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -10641,7 +10641,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
             
@@ -10780,7 +10780,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -10909,7 +10909,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
             
@@ -11048,7 +11048,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
             
@@ -11201,7 +11201,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
             
@@ -11348,7 +11348,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -11471,7 +11471,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -23290,7 +23290,7 @@ extends GOperator
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -23555,7 +23555,7 @@ extends GNumberType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -23632,7 +23632,7 @@ extends GNumberType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -23717,7 +23717,7 @@ extends GNumberType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -23933,7 +23933,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -23988,7 +23988,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a + b, false, parse);
@@ -24021,7 +24021,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a - b, false, parse);
@@ -24054,7 +24054,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a * b, false, parse);
@@ -24087,7 +24087,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a / b, true, parse);
@@ -24120,7 +24120,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => a % b, true, parse);
@@ -24153,7 +24153,7 @@ extends GArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         evalNodeValue(this, (a, b) => Math.pow(a, b), false, parse);
@@ -24202,7 +24202,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -24255,7 +24255,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarAddInputs(this.inputs, parse);
@@ -24317,7 +24317,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarSubtractInputs(this.inputs, parse);
@@ -24389,7 +24389,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarMultiplyInputs(this.inputs, parse);
@@ -24456,7 +24456,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarDivideInputs(this.inputs, parse);
@@ -24535,7 +24535,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarModuloInputs(this.inputs, parse);
@@ -24614,7 +24614,7 @@ extends GVarArithmetic
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
         this.value = evalVarExponentInputs(this.inputs, parse);
@@ -24908,7 +24908,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -25057,7 +25057,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -25204,7 +25204,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -25312,7 +25312,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -26029,7 +26029,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
             
@@ -26168,7 +26168,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -26297,7 +26297,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
             
@@ -26436,7 +26436,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
             
@@ -26589,7 +26589,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
             
@@ -26736,7 +26736,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -26859,7 +26859,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
 
@@ -27938,7 +27938,7 @@ var menuNode;
 var menuNodeData;
 var menuNodeDataNodes;
 var menuConnData;
-//var menuConnDataConns;
+var menuConnDataConns;
 
 
 var menuItemAutoConnectNewNodes;
@@ -28216,8 +28216,10 @@ function initDataModeMenus()
 
     menuNodeDataNodes = new Menu('Nodes menu', false, false);
     menuNodeDataNodes.addItems([
-        new MenuItem('Expand all',   { callback: () => { hideAllMenus(); expandAllNodeData();   }}),
-        new MenuItem('Collapse all', { callback: () => { hideAllMenus(); collapseAllNodeData(); }})]);
+        new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllNodeData();   }}),
+        new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllNodeData(); }}),
+        new MenuItem('',                 { separator: true }),
+        new MenuItem('Remove all nodes', { callback: () => { hideAllMenus(); dataModeDeleteAllNodes(); }})]);
 
 
     menuConnData = new Menu('Connection menu', false, false);
@@ -28225,10 +28227,9 @@ function initDataModeMenus()
         new MenuItem('Remove connection', { callback: () => { hideAllMenus(); dataModeDeleteConnection(menuConnData._div.conn); }})]);
 
 
-    // menuConnDataConns = new Menu('Connections menu', false, false);
-    // menuConnDataConns.addItems([
-    //     new MenuItem('Expand all',   { callback: e => { hideAllMenus(); }}),
-    //     new MenuItem('Collapse all', { callback: e => { hideAllMenus(); }})]);
+    menuConnDataConns = new Menu('Connections menu', false, false);
+    menuConnDataConns.addItems([
+        new MenuItem('Remove all connections', { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
 }
 
 
@@ -33578,6 +33579,14 @@ extends Parameter
 
 
 
+    formatControl(enableText)
+    {
+        this.enableControlText(enableText);
+        this.updateShowControlValue();
+    }
+
+
+
     enableControlText(enable)
     {
         enable &= 
@@ -33586,6 +33595,36 @@ extends Parameter
             
         enableElementText(this.control, enable);
         this.control.readOnly = !enable;
+    }
+    
+    
+    
+    updateShowControlValue()
+    {
+        const inputNoneOrCached =
+               !this.input
+            || !this.input.connected
+            ||  this.input.connectedOutput.node.isCached();
+
+        const outputConnected =
+               !this.output
+            || !this.output.connected
+            || !this.output.followedByMultiplier();
+ 
+
+        let headerOutputsConnected = false;
+
+        for (const output of this.node.headerOutputs)
+            headerOutputsConnected |= output.followedByMultiplier();
+
+
+        this.control.showValue = 
+               inputNoneOrCached
+            || outputConnected
+            || headerOutputsConnected;
+
+            
+        this.control.update();
     }
     
     
@@ -36340,6 +36379,26 @@ class Output
     supports(types)
     {
         return arraysIntersect(this.types, types);
+    }
+
+
+
+    followedByMultiplier()
+    {
+        for (const input of this.connectedInputs)
+        {
+            if (input.node instanceof OpRepeat) 
+                return true;
+
+            else
+            {
+                for (const output of input.node.outputs)
+                    if (output.followedByMultiplier())
+                        return true;
+            }
+
+            return false;
+        }
     }
 }
 
@@ -39164,7 +39223,7 @@ extends OperatorBase
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
-        
+
         this.alwaysLoadParams = true;
     }
 
@@ -39173,6 +39232,13 @@ extends OperatorBase
     canAutoConnectFrom(output)
     {
         return output.supports(NUMBER_TYPES);
+    }
+
+
+
+    isCached()
+    {
+        return this.cached;
     }
 
 
@@ -39205,7 +39271,35 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramValue.enableControlText(!this.inputs[0].connected);
+        const input = this.inputs[0];
+
+        const showValue = 
+               !input.connected
+            ||  input.connectedOutput.node.isCached();
+
+            
+        if (showValue)
+        {
+            this.paramValue.control.style.display = 'block';
+            this.paramValue.enableControlText(!input.connected);
+
+            this.div   .style.borderBottomLeftRadius  = '0px';        
+            this.inner .style.borderBottomLeftRadius  = '0px';        
+            this.header.style.borderBottomLeftRadius  = '0px';        
+
+            this.div   .style.borderBottomRightRadius = '0px';        
+            this.inner .style.borderBottomRightRadius = '0px';        
+            this.header.style.borderBottomRightRadius = '0px';        
+        }
+        else
+        {
+            this.paramValue.control.style.display = 'none';
+
+            this.div   .style.borderRadius = '4px';        
+            this.inner .style.borderRadius = '4px';        
+            this.header.style.borderRadius = '4px';        
+        }
+
 
         super.updateParams();
     }
@@ -40703,11 +40797,11 @@ extends OpColorBase
 
         const enable = !this.inputs[0].connected;
 
-        this.paramSpace.enableControlText(!this.paramSpace.input.connected);
+        this.paramSpace.formatControl(!this.paramSpace.input.connected);
 
-        this.param1.enableControlText(enable);
-        this.param2.enableControlText(enable);
-        this.param3.enableControlText(enable);
+        this.param1.formatControl(enable);
+        this.param2.formatControl(enable);
+        this.param3.formatControl(enable);
 
         enableElementText(this.paramColor.control, !this.isConnected());
 
@@ -45819,13 +45913,16 @@ dataModeNodesWrapper.addEventListener('pointerdown', e =>
 
 
 
-// dataModeConns.addEventListener('pointerdown', e =>
-// {
-//     e.preventDefault();
+dataModeConns.addEventListener('pointerdown', e =>
+{
+    e.preventDefault();
 
-//     if (e.button == 2)
-//         menuConnDataConns.showAt(e.clientX, e.clientY);
-// });
+    if (e.button == 2)
+    {
+        e.stopPropagation();
+        menuConnDataConns.showAt(e.clientX, e.clientY);
+    }
+});
 
 
 
@@ -46037,12 +46134,56 @@ function dataModeDeleteNode(node)
 
 
 
+function dataModeDeleteAllNodes()
+{
+    uiRemoveAllSavedNodesAndConns();
+
+
+    let nRemovedNodes = dataModeNodes.children.length;
+
+    for (let i = dataModeNodes.children.length-1; i >= 0; i--)
+        dataModeNodes.removeChild(dataModeNodes.children[i]);
+
+
+    let nRemovedConns = dataModeConns.children.length;
+
+    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+        dataModeConns.removeChild(dataModeConns.children[i]);
+
+
+    let notice = 'Removed ' + nRemovedNodes + ' ' + countString('node', nRemovedNodes);
+
+    if (nRemovedConns > 0)
+        notice += ' and ' + nRemovedConns + ' ' + countString('connection', nRemovedConns);
+
+    uiNotify(notice);
+}
+
+
+
+function dataModeDeleteAllConnections()
+{
+    uiRemoveAllSavedConnections();
+
+
+    let nRemovedConns = dataModeConns.children.length;
+
+    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+        dataModeConns.removeChild(dataModeConns.children[i]);
+
+
+    if (nRemovedConns > 0)
+        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to and from \'' + node.id + '\'');
+}
+
+
+
 function dataModeDeleteConnectionsToAndFromNode(node)
 {
     uiRemoveSavedConnectionsToNodeId  (node.id);
     uiRemoveSavedConnectionsFromNodeId(node.id);
 
-
+    
     let nRemovedConns = 0;
 
     for (let i = dataModeConns.children.length-1; i >= 0; i--)
@@ -48638,6 +48779,15 @@ function uiRemoveSavedConnection(outputNodeId, outputId, inputNodeId, inputId)
             + outputId     + ' '
             + inputNodeId  + ' '
             + inputId
+    });
+}
+
+
+
+function uiRemoveAllSavedConnections()
+{
+    uiQueueMessageToFigma({
+        cmd: 'figRemoveAllSavedConnections'
     });
 }
 

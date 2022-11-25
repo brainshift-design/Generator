@@ -92,7 +92,7 @@ var menuNode;
 var menuNodeData;
 var menuNodeDataNodes;
 var menuConnData;
-//var menuConnDataConns;
+var menuConnDataConns;
 
 
 var menuItemAutoConnectNewNodes;
@@ -370,8 +370,10 @@ function initDataModeMenus()
 
     menuNodeDataNodes = new Menu('Nodes menu', false, false);
     menuNodeDataNodes.addItems([
-        new MenuItem('Expand all',   { callback: () => { hideAllMenus(); expandAllNodeData();   }}),
-        new MenuItem('Collapse all', { callback: () => { hideAllMenus(); collapseAllNodeData(); }})]);
+        new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllNodeData();   }}),
+        new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllNodeData(); }}),
+        new MenuItem('',                 { separator: true }),
+        new MenuItem('Remove all nodes', { callback: () => { hideAllMenus(); dataModeDeleteAllNodes(); }})]);
 
 
     menuConnData = new Menu('Connection menu', false, false);
@@ -379,8 +381,7 @@ function initDataModeMenus()
         new MenuItem('Remove connection', { callback: () => { hideAllMenus(); dataModeDeleteConnection(menuConnData._div.conn); }})]);
 
 
-    // menuConnDataConns = new Menu('Connections menu', false, false);
-    // menuConnDataConns.addItems([
-    //     new MenuItem('Expand all',   { callback: e => { hideAllMenus(); }}),
-    //     new MenuItem('Collapse all', { callback: e => { hideAllMenus(); }})]);
+    menuConnDataConns = new Menu('Connections menu', false, false);
+    menuConnDataConns.addItems([
+        new MenuItem('Remove all connections', { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
 }

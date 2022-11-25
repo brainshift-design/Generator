@@ -44,7 +44,7 @@ extends GShapeBase
 
     eval(parse)
     {
-        if (this.valid)
+        if (this.isCached())
             return this;
 
             

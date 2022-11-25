@@ -108,6 +108,14 @@ extends Parameter
 
 
 
+    formatControl(enableText)
+    {
+        this.enableControlText(enableText);
+        this.updateShowControlValue();
+    }
+
+
+
     enableControlText(enable)
     {
         enable &= 
@@ -116,6 +124,36 @@ extends Parameter
             
         enableElementText(this.control, enable);
         this.control.readOnly = !enable;
+    }
+    
+    
+    
+    updateShowControlValue()
+    {
+        const inputNoneOrCached =
+               !this.input
+            || !this.input.connected
+            ||  this.input.connectedOutput.node.isCached();
+
+        const outputConnected =
+               !this.output
+            || !this.output.connected
+            || !this.output.followedByMultiplier();
+ 
+
+        let headerOutputsConnected = false;
+
+        for (const output of this.node.headerOutputs)
+            headerOutputsConnected |= output.followedByMultiplier();
+
+
+        this.control.showValue = 
+               inputNoneOrCached
+            || outputConnected
+            || headerOutputsConnected;
+
+            
+        this.control.update();
     }
     
     

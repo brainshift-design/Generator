@@ -18,13 +18,16 @@ dataModeNodesWrapper.addEventListener('pointerdown', e =>
 
 
 
-// dataModeConns.addEventListener('pointerdown', e =>
-// {
-//     e.preventDefault();
+dataModeConns.addEventListener('pointerdown', e =>
+{
+    e.preventDefault();
 
-//     if (e.button == 2)
-//         menuConnDataConns.showAt(e.clientX, e.clientY);
-// });
+    if (e.button == 2)
+    {
+        e.stopPropagation();
+        menuConnDataConns.showAt(e.clientX, e.clientY);
+    }
+});
 
 
 
@@ -236,12 +239,56 @@ function dataModeDeleteNode(node)
 
 
 
+function dataModeDeleteAllNodes()
+{
+    uiRemoveAllSavedNodesAndConns();
+
+
+    let nRemovedNodes = dataModeNodes.children.length;
+
+    for (let i = dataModeNodes.children.length-1; i >= 0; i--)
+        dataModeNodes.removeChild(dataModeNodes.children[i]);
+
+
+    let nRemovedConns = dataModeConns.children.length;
+
+    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+        dataModeConns.removeChild(dataModeConns.children[i]);
+
+
+    let notice = 'Removed ' + nRemovedNodes + ' ' + countString('node', nRemovedNodes);
+
+    if (nRemovedConns > 0)
+        notice += ' and ' + nRemovedConns + ' ' + countString('connection', nRemovedConns);
+
+    uiNotify(notice);
+}
+
+
+
+function dataModeDeleteAllConnections()
+{
+    uiRemoveAllSavedConnections();
+
+
+    let nRemovedConns = dataModeConns.children.length;
+
+    for (let i = dataModeConns.children.length-1; i >= 0; i--)
+        dataModeConns.removeChild(dataModeConns.children[i]);
+
+
+    if (nRemovedConns > 0)
+        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to and from \'' + node.id + '\'');
+}
+
+
+
 function dataModeDeleteConnectionsToAndFromNode(node)
 {
     uiRemoveSavedConnectionsToNodeId  (node.id);
     uiRemoveSavedConnectionsFromNodeId(node.id);
 
-
+    
     let nRemovedConns = 0;
 
     for (let i = dataModeConns.children.length-1; i >= 0; i--)
