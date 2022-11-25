@@ -96,9 +96,11 @@ extends GValue
         if (!this.isValid())
             return dataColor_NaN;
 
-        //Math.min(Math.max(0, this.space), colorSpaceCount()-1),
+        const space = this.space.copy();
+        space.value = Math.round(Math.min(Math.max(0, space.value), colorSpaceCount()-1));
+
         return makeDataColor(
-            this.space,
+            space,
             this.c1,
             this.c2,
             this.c3);

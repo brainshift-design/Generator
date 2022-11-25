@@ -203,7 +203,6 @@ extends OpColorBase
         const c2    = values[paramIds.findIndex(id => id == 'c2'   )];
         const c3    = values[paramIds.findIndex(id => id == 'c3'   )];
 
-console.log('space =', space);
         if (space) this.paramSpace.setValue(space, false, true, false);
 
         switchToSpace(this, colorSpace(space.value));

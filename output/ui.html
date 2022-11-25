@@ -6644,9 +6644,11 @@ extends GValue
         if (!this.isValid())
             return dataColor_NaN;
 
-        //Math.min(Math.max(0, this.space), colorSpaceCount()-1),
+        const space = this.space.copy();
+        space.value = Math.round(Math.min(Math.max(0, space.value), colorSpaceCount()-1));
+
         return makeDataColor(
-            this.space,
+            space,
             this.c1,
             this.c2,
             this.c3);
@@ -22033,9 +22035,11 @@ extends GValue
         if (!this.isValid())
             return dataColor_NaN;
 
-        //Math.min(Math.max(0, this.space), colorSpaceCount()-1),
+        const space = this.space.copy();
+        space.value = Math.round(Math.min(Math.max(0, space.value), colorSpaceCount()-1));
+
         return makeDataColor(
-            this.space,
+            space,
             this.c1,
             this.c2,
             this.c3);
@@ -40676,7 +40680,6 @@ extends OpColorBase
         const c2    = values[paramIds.findIndex(id => id == 'c2'   )];
         const c3    = values[paramIds.findIndex(id => id == 'c3'   )];
 
-console.log('space =', space);
         if (space) this.paramSpace.setValue(space, false, true, false);
 
         switchToSpace(this, colorSpace(space.value));
