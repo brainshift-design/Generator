@@ -47102,8 +47102,7 @@ function uiReturnFigGetLocalData(msg)
         case 'graphView':        
             uiLoadGraphView(msg.value); 
 
-            if (generatorStarted)
-                graphView.updatePanAndZoom();
+            graphView.updatePanAndZoom();
     
             window.focus();
 
