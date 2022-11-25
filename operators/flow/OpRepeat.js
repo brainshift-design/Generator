@@ -16,7 +16,14 @@ extends OperatorBase
     }
     
     
+
+    canAutoConnectFrom(output)
+    {
+        return true;
+    }
+
     
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -44,5 +51,22 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(updateParamId, paramIds, values)
+    {
+        const count = values[paramIds.findIndex(id => id == 'count')];
+        if (count) this.paramCount.setValue(count, false, true, false);
+    }
+
+
+
+    updateParams()
+    {
+        this.paramCount.formatControl(true);
+
+        super.updateParams();
     }
 }

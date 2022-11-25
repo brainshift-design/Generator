@@ -41,11 +41,11 @@ extends OpColorBase
         this.addOutput(new Output([COLOR], this.output_genRequest));
 
         
-        this.addParam(this.paramSpace = new SelectParam('space', '', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
-        this.addParam(this.param1     = new NumberParam('c1',    '', true,  true,  true,  Math.round(defColor[1] * rgbFactor[0])));
-        this.addParam(this.param2     = new NumberParam('c2',    '', true,  true,  true,  Math.round(defColor[2] * rgbFactor[1])));
-        this.addParam(this.param3     = new NumberParam('c3',    '', true,  true,  true,  Math.round(defColor[3] * rgbFactor[2])));
-        this.addParam(this.paramColor = new ColorParam ('color', '', false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
+        this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
+        this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true,  true,  Math.round(defColor[1] * rgbFactor[0])));
+        this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true,  true,  Math.round(defColor[2] * rgbFactor[1])));
+        this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true,  Math.round(defColor[3] * rgbFactor[2])));
+        this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
         this.param1.setValue(new NumberValue(Math.round(this._color[1] * rgbFactor[0])), false, true, false);
         this.param2.setValue(new NumberValue(Math.round(this._color[2] * rgbFactor[1])), false, true, false);
@@ -203,7 +203,7 @@ extends OpColorBase
         const c2    = values[paramIds.findIndex(id => id == 'c2'   )];
         const c3    = values[paramIds.findIndex(id => id == 'c3'   )];
 
-
+console.log('space =', space);
         if (space) this.paramSpace.setValue(space, false, true, false);
 
         switchToSpace(this, colorSpace(space.value));
@@ -346,11 +346,11 @@ extends OpColorBase
 
         const enable = !this.inputs[0].connected;
 
-        this.paramSpace.formatControl(!this.paramSpace.input.connected);
+        this.paramSpace.formatControl(!this.paramSpace.input.connected, true);
 
-        this.param1.formatControl(enable);
-        this.param2.formatControl(enable);
-        this.param3.formatControl(enable);
+        this.param1    .formatControl(enable);
+        this.param2    .formatControl(enable);
+        this.param3    .formatControl(enable);
 
         enableElementText(this.paramColor.control, !this.isConnected());
 

@@ -61,11 +61,13 @@ extends OperatorBase
 
     updateParams()
     {
-        const input = this.inputs[0];
+        const input  = this.inputs[0];
+        const output = this.outputs[0];
+
 
         const showValue = 
                !input.connected
-            ||  input.connectedOutput.node.isCached();
+            || !output.followedByMultiplier();
 
             
         if (showValue)

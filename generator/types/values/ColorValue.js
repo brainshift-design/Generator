@@ -96,6 +96,7 @@ extends GValue
         if (!this.isValid())
             return dataColor_NaN;
 
+        //Math.min(Math.max(0, this.space), colorSpaceCount()-1),
         return makeDataColor(
             this.space,
             this.c1,

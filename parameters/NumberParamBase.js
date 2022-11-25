@@ -108,10 +108,10 @@ extends Parameter
 
 
 
-    formatControl(enableText)
+    formatControl(enableText, showNameOnlyIfNoValue = false)
     {
         this.enableControlText(enableText);
-        this.updateShowControlValue();
+        this.updateShowControlValue(showNameOnlyIfNoValue);
     }
 
 
@@ -128,7 +128,7 @@ extends Parameter
     
     
     
-    updateShowControlValue()
+    updateShowControlValue(showNameOnlyIfNoValue = false)
     {
         let nodeOutputsMultiplied = false;
 
@@ -140,8 +140,14 @@ extends Parameter
                !this.input
             || !this.input.connected
             || !nodeOutputsMultiplied;
-        
-        this.control.update();
+    
+        this.control.showName = 
+            showNameOnlyIfNoValue
+            ? !this.control.showValue
+            : true;
+
+
+       this.control.update();
     }
     
     

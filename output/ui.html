@@ -6644,6 +6644,7 @@ extends GValue
         if (!this.isValid())
             return dataColor_NaN;
 
+        //Math.min(Math.max(0, this.space), colorSpaceCount()-1),
         return makeDataColor(
             this.space,
             this.c1,
@@ -22032,6 +22033,7 @@ extends GValue
         if (!this.isValid())
             return dataColor_NaN;
 
+        //Math.min(Math.max(0, this.space), colorSpaceCount()-1),
         return makeDataColor(
             this.space,
             this.c1,
@@ -33579,10 +33581,10 @@ extends Parameter
 
 
 
-    formatControl(enableText)
+    formatControl(enableText, showNameOnlyIfNoValue = false)
     {
         this.enableControlText(enableText);
-        this.updateShowControlValue();
+        this.updateShowControlValue(showNameOnlyIfNoValue);
     }
 
 
@@ -33599,7 +33601,7 @@ extends Parameter
     
     
     
-    updateShowControlValue()
+    updateShowControlValue(showNameOnlyIfNoValue = false)
     {
         let nodeOutputsMultiplied = false;
 
@@ -33611,8 +33613,14 @@ extends Parameter
                !this.input
             || !this.input.connected
             || !nodeOutputsMultiplied;
-        
-        this.control.update();
+    
+        this.control.showName = 
+            showNameOnlyIfNoValue
+            ? !this.control.showValue
+            : true;
+
+
+       this.control.update();
     }
     
     
@@ -39164,7 +39172,14 @@ extends OperatorBase
     }
     
     
+
+    canAutoConnectFrom(output)
+    {
+        return true;
+    }
+
     
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -39192,6 +39207,23 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
+    }
+
+
+
+    updateValues(updateParamId, paramIds, values)
+    {
+        const count = values[paramIds.findIndex(id => id == 'count')];
+        if (count) this.paramCount.setValue(count, false, true, false);
+    }
+
+
+
+    updateParams()
+    {
+        this.paramCount.formatControl(true);
+
+        super.updateParams();
     }
 }
 
@@ -39259,11 +39291,13 @@ extends OperatorBase
 
     updateParams()
     {
-        const input = this.inputs[0];
+        const input  = this.inputs[0];
+        const output = this.outputs[0];
+
 
         const showValue = 
                !input.connected
-            ||  input.connectedOutput.node.isCached();
+            || !output.followedByMultiplier();
 
             
         if (showValue)
@@ -40480,11 +40514,11 @@ extends OpColorBase
         this.addOutput(new Output([COLOR], this.output_genRequest));
 
         
-        this.addParam(this.paramSpace = new SelectParam('space', '', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
-        this.addParam(this.param1     = new NumberParam('c1',    '', true,  true,  true,  Math.round(defColor[1] * rgbFactor[0])));
-        this.addParam(this.param2     = new NumberParam('c2',    '', true,  true,  true,  Math.round(defColor[2] * rgbFactor[1])));
-        this.addParam(this.param3     = new NumberParam('c3',    '', true,  true,  true,  Math.round(defColor[3] * rgbFactor[2])));
-        this.addParam(this.paramColor = new ColorParam ('color', '', false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
+        this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
+        this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true,  true,  Math.round(defColor[1] * rgbFactor[0])));
+        this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true,  true,  Math.round(defColor[2] * rgbFactor[1])));
+        this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true,  Math.round(defColor[3] * rgbFactor[2])));
+        this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
         this.param1.setValue(new NumberValue(Math.round(this._color[1] * rgbFactor[0])), false, true, false);
         this.param2.setValue(new NumberValue(Math.round(this._color[2] * rgbFactor[1])), false, true, false);
@@ -40642,7 +40676,7 @@ extends OpColorBase
         const c2    = values[paramIds.findIndex(id => id == 'c2'   )];
         const c3    = values[paramIds.findIndex(id => id == 'c3'   )];
 
-
+console.log('space =', space);
         if (space) this.paramSpace.setValue(space, false, true, false);
 
         switchToSpace(this, colorSpace(space.value));
@@ -40785,11 +40819,11 @@ extends OpColorBase
 
         const enable = !this.inputs[0].connected;
 
-        this.paramSpace.formatControl(!this.paramSpace.input.connected);
+        this.paramSpace.formatControl(!this.paramSpace.input.connected, true);
 
-        this.param1.formatControl(enable);
-        this.param2.formatControl(enable);
-        this.param3.formatControl(enable);
+        this.param1    .formatControl(enable);
+        this.param2    .formatControl(enable);
+        this.param3    .formatControl(enable);
 
         enableElementText(this.paramColor.control, !this.isConnected());
 
@@ -47102,7 +47136,8 @@ function uiReturnFigGetLocalData(msg)
         case 'graphView':        
             uiLoadGraphView(msg.value); 
 
-            graphView.updatePanAndZoom();
+            if (!settings.dataMode)
+                graphView.updatePanAndZoom();
     
             window.focus();
 
