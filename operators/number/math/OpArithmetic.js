@@ -173,13 +173,6 @@ extends OperatorBase
 
 
 
-    paramsToJson(nTab = 0)
-    {
-        return '';
-    }
-
-
-
     loadParams(_node)
     {
         if (_node.showOnlySymbol)
