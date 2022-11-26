@@ -63,19 +63,19 @@ extends EventTarget
     outputMustBeCached = false;
 
 
-    connection   = null;
+    connection  = null;
     
-    connecting   = false;
-    mouseOver    = false;
+    connecting  = false;
+    mouseOver   = false;
     
-    overFactor   = 1.7;
+    overFactor  = 1.7;
     
 
-    initialSeed  = 0;
-    currentSeed  = 0;
+    initialSeed = 0;
+    currentSeed = 0;
 
 
-    isNew        = false; // this indicates that the input is the empty "new" input of a variable node
+    isNew       = false; // this indicates that the input is the empty "new" input of a variable node
 
 
     getValuesForUndo; // function pointer, return array of [index,value] tuples
@@ -114,37 +114,41 @@ extends EventTarget
                 graphView.headerInput = null;
             }
 
-            this.mouseOver = true;
-            this.updateControl();
-
-
+            
             let savedInput = 
                 graphView.savedConn
                 ? graphView.savedConn.input
                 : null;
 
-            if (   graphView.tempConn
-                && graphView.tempConn.output
-                && this.canConnect(graphView.tempConn.output)
+                
+            const tc = graphView.tempConn;
+            
+            if (   tc
+                && tc.output
+                && this.canConnect(tc.output)
                 && (  !this.connected
-                    || this.connectedOutput != graphView.tempConn.output
+                    || this.connectedOutput != tc.output
                     || this == savedInput))
             {
                 const rect = boundingRect(this.div);
-                const loop = graphView.tempConn.output.node.isOrFollows(this.node);
+                const loop = tc.output.node.isOrFollows(this.node);
 
                 if (!loop)
                 {
-                    graphView.tempConn.wire2.inputPos = 
-                    graphView.tempConn.wire .inputPos = point(
+                    tc.wire2.inputPos = 
+                    tc.wire .inputPos = point(
                         rect.x + rect.w/2,
                         rect.y + rect.h/2 - menuBar.offsetHeight);
                 }
 
+                this.mouseOver = true;
+                this.updateControl();
+
                 graphView.overInput = !loop ? this : null;
                 this.node.inputs.forEach(i => i.updateControl());
             }
-            else
+            else if (!tc
+                   || this.canConnect(tc.output))
                 graphView.overInput = this;
         });
 
@@ -263,7 +267,7 @@ extends EventTarget
 
     canConnect(output)
     {
-        if (!arraysIntersect(this.types, output.types))
+        if (!this.supportsTypes(output.types))
             return false;
 
         if (    this.outputMustBeCached 

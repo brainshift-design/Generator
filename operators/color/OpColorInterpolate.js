@@ -23,7 +23,6 @@ extends OpColorBase
         this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, false, 1,  0.01, 4, 2));
       
         
-        this.paramSpace.input.outputMustBeCached = true;
         this.paramSpace.control.setMin(1);
 
         

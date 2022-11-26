@@ -129,9 +129,7 @@ function graphView_onpointermove(e)
         graphView.updateZoomSelection(e.clientX, e.clientY);
 
     else if (graphView.tempConn)
-    {
         updateConnWires(graphView.tempConn, e.clientX, e.clientY);
-    }
 }
 
 

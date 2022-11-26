@@ -32190,9 +32190,7 @@ function graphView_onpointermove(e)
         graphView.updateZoomSelection(e.clientX, e.clientY);
 
     else if (graphView.tempConn)
-    {
         updateConnWires(graphView.tempConn, e.clientX, e.clientY);
-    }
 }
 
 
@@ -35958,19 +35956,19 @@ extends EventTarget
     outputMustBeCached = false;
 
 
-    connection   = null;
+    connection  = null;
     
-    connecting   = false;
-    mouseOver    = false;
+    connecting  = false;
+    mouseOver   = false;
     
-    overFactor   = 1.7;
+    overFactor  = 1.7;
     
 
-    initialSeed  = 0;
-    currentSeed  = 0;
+    initialSeed = 0;
+    currentSeed = 0;
 
 
-    isNew        = false; // this indicates that the input is the empty "new" input of a variable node
+    isNew       = false; // this indicates that the input is the empty "new" input of a variable node
 
 
     getValuesForUndo; // function pointer, return array of [index,value] tuples
@@ -36009,37 +36007,41 @@ extends EventTarget
                 graphView.headerInput = null;
             }
 
-            this.mouseOver = true;
-            this.updateControl();
-
-
+            
             let savedInput = 
                 graphView.savedConn
                 ? graphView.savedConn.input
                 : null;
 
-            if (   graphView.tempConn
-                && graphView.tempConn.output
-                && this.canConnect(graphView.tempConn.output)
+                
+            const tc = graphView.tempConn;
+            
+            if (   tc
+                && tc.output
+                && this.canConnect(tc.output)
                 && (  !this.connected
-                    || this.connectedOutput != graphView.tempConn.output
+                    || this.connectedOutput != tc.output
                     || this == savedInput))
             {
                 const rect = boundingRect(this.div);
-                const loop = graphView.tempConn.output.node.isOrFollows(this.node);
+                const loop = tc.output.node.isOrFollows(this.node);
 
                 if (!loop)
                 {
-                    graphView.tempConn.wire2.inputPos = 
-                    graphView.tempConn.wire .inputPos = point(
+                    tc.wire2.inputPos = 
+                    tc.wire .inputPos = point(
                         rect.x + rect.w/2,
                         rect.y + rect.h/2 - menuBar.offsetHeight);
                 }
 
+                this.mouseOver = true;
+                this.updateControl();
+
                 graphView.overInput = !loop ? this : null;
                 this.node.inputs.forEach(i => i.updateControl());
             }
-            else
+            else if (!tc
+                   || this.canConnect(tc.output))
                 graphView.overInput = this;
         });
 
@@ -36158,7 +36160,7 @@ extends EventTarget
 
     canConnect(output)
     {
-        if (!arraysIntersect(this.types, output.types))
+        if (!this.supportsTypes(output.types))
             return false;
 
         if (    this.outputMustBeCached 
@@ -40544,6 +40546,8 @@ extends OpColorBase
         this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true,  Math.round(defColor[3] * rgbFactor[2])));
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
+        this.paramSpace.input.outputMustBeCached = true;
+
         this.param1.setValue(new NumberValue(Math.round(this._color[1] * rgbFactor[0])), false, true, false);
         this.param2.setValue(new NumberValue(Math.round(this._color[2] * rgbFactor[1])), false, true, false);
         this.param3.setValue(new NumberValue(Math.round(this._color[3] * rgbFactor[2])), false, true, false);
@@ -40839,18 +40843,6 @@ extends OpColorBase
     updateParams()
     {
         this.updateAllControlRanges();
-
-        const ncSpace =
-                this.paramSpace.input 
-            &&  this.paramSpace.input.connected 
-            && !this.paramSpace.input.connectedOutput.node.isCached()
-            &&  this.followedByMultiplier();
-
-
-        this.paramSpace.control.overrideText = ncSpace ? INVALID_VALUE : '';
-        this.param1    .control.overrideText = ncSpace ? INVALID_VALUE : '';
-        this.param2    .control.overrideText = ncSpace ? INVALID_VALUE : '';
-        this.param3    .control.overrideText = ncSpace ? INVALID_VALUE : '';
 
 
         const enable = !this.inputs[0].connected;
@@ -42591,7 +42583,6 @@ extends OpColorBase
         this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, false, 1,  0.01, 4, 2));
       
         
-        this.paramSpace.input.outputMustBeCached = true;
         this.paramSpace.control.setMin(1);
 
         

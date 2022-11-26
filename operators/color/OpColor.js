@@ -47,6 +47,8 @@ extends OpColorBase
         this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true,  Math.round(defColor[3] * rgbFactor[2])));
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
+        this.paramSpace.input.outputMustBeCached = true;
+
         this.param1.setValue(new NumberValue(Math.round(this._color[1] * rgbFactor[0])), false, true, false);
         this.param2.setValue(new NumberValue(Math.round(this._color[2] * rgbFactor[1])), false, true, false);
         this.param3.setValue(new NumberValue(Math.round(this._color[3] * rgbFactor[2])), false, true, false);
@@ -342,18 +344,6 @@ extends OpColorBase
     updateParams()
     {
         this.updateAllControlRanges();
-
-        const ncSpace =
-                this.paramSpace.input 
-            &&  this.paramSpace.input.connected 
-            && !this.paramSpace.input.connectedOutput.node.isCached()
-            &&  this.followedByMultiplier();
-
-
-        this.paramSpace.control.overrideText = ncSpace ? INVALID_VALUE : '';
-        this.param1    .control.overrideText = ncSpace ? INVALID_VALUE : '';
-        this.param2    .control.overrideText = ncSpace ? INVALID_VALUE : '';
-        this.param3    .control.overrideText = ncSpace ? INVALID_VALUE : '';
 
 
         const enable = !this.inputs[0].connected;
