@@ -187,9 +187,9 @@ class Operator
 
 
 
-    getAutoInput(output) //outTypes)
+    getAutoInput(output)
     {
-        const inputs = this.inputs.filter(i => i.canConnect(output));//supportsTypes(outTypes));
+        const inputs = this.inputs.filter(i => i.canConnect(output));
 
 
         if (graphView.overInput)

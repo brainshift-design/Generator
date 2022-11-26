@@ -37086,9 +37086,9 @@ class Operator
 
 
 
-    getAutoInput(output) //outTypes)
+    getAutoInput(output)
     {
-        const inputs = this.inputs.filter(i => i.canConnect(output));//supportsTypes(outTypes));
+        const inputs = this.inputs.filter(i => i.canConnect(output));
 
 
         if (graphView.overInput)
@@ -39079,7 +39079,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supportsTypes(LIST_TYPES);
+        return this.inputs[0].canConnect(output);
     }
 
 
@@ -39275,7 +39275,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supportsTypes(NUMBER_TYPES);
+        return this.inputs[0].canConnect(output);
     }
 
 
@@ -39575,7 +39575,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supportsTypes(NUMBER_TYPES);
+        return this.inputs[0].canConnect(output);
     }
 
 
@@ -39689,7 +39689,7 @@ extends OperatorBase
     
     canAutoConnectFrom(output)
     {
-        return output.supportsTypes(NUMBER_TYPES);
+        return this.inputs[0].canConnect(output);
     }
 
 
@@ -39961,7 +39961,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supportsTypes(NUMBER_TYPES);
+        return this.inputs[0].canConnect(output);
     }
 
 
@@ -40100,7 +40100,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supportsTypes(NUMBER_TYPES);
+        return this.inputs[0].canConnect(output);
     }
 
 
@@ -40622,7 +40622,7 @@ extends OpColorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supportsTypes(COLOR_TYPES);
+        return this.inputs[0].canConnect(output);
     }
 
 
@@ -42074,7 +42074,7 @@ extends OpColorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supportsTypes(COLOR_TYPES);
+        return this.inputs[0].canConnect(output);
     }
 
 
@@ -42822,11 +42822,11 @@ extends OpColorBase
 
 
 
-    get inputIsShape() 
-    {
-        return this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
-    }
+    // get inputIsShape() 
+    // {
+    //     return this.inputs[0].connected
+    //         && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
+    // }
     
     
     
@@ -42857,8 +42857,7 @@ extends OpColorBase
     
     canAutoConnectFrom(output)
     {
-        return output.supportsTypes(OBJECT_TYPES)
-            || output.supportsTypes( COLOR_TYPES);
+        return this.inputs[0].canConnect(output);
     }
 
 

@@ -21,7 +21,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supportsTypes(NUMBER_TYPES);
+        return this.inputs[0].canConnect(output);
     }
 
 

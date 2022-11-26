@@ -9,11 +9,11 @@ extends OpColorBase
 
 
 
-    get inputIsShape() 
-    {
-        return this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
-    }
+    // get inputIsShape() 
+    // {
+    //     return this.inputs[0].connected
+    //         && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
+    // }
     
     
     
@@ -44,8 +44,7 @@ extends OpColorBase
     
     canAutoConnectFrom(output)
     {
-        return output.supportsTypes(OBJECT_TYPES)
-            || output.supportsTypes( COLOR_TYPES);
+        return this.inputs[0].canConnect(output);
     }
 
 

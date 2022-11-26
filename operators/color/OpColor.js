@@ -125,7 +125,7 @@ extends OpColorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supportsTypes(COLOR_TYPES);
+        return this.inputs[0].canConnect(output);
     }
 
 
