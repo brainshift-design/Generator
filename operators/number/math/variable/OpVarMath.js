@@ -38,7 +38,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supports(NUMBER_TYPES);
+        return output.supportsTypes(NUMBER_TYPES);
     }
 
 

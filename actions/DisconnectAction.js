@@ -21,7 +21,7 @@ extends Action
 
         super('DISCONNECT ' 
             + output.node.id + '.' + output.id
-            + ' ' + rightArrowChar(output.supports(LIST_TYPES)) + ' '
+            + ' ' + rightArrowChar(output.supportsTypes(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);
 
 

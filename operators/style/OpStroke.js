@@ -15,7 +15,7 @@ extends OpColorBase
     get inputIsShape() 
     {
         return this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supports(SHAPE_TYPES);
+            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
     }
 
 
@@ -50,8 +50,8 @@ extends OpColorBase
     
     canAutoConnectFrom(output)
     {
-        return output.supports(OBJECT_TYPES)
-            || output.supports( COLOR_TYPES);
+        return output.supportsTypes(OBJECT_TYPES)
+            || output.supportsTypes( COLOR_TYPES);
     }
 
 
@@ -81,8 +81,8 @@ extends OpColorBase
                 if (      (      param.input 
                               && param.input.connected
                               && param.canShow()
-                           || input.connectedOutput.supports(OBJECT_TYPES)
-                       && !input.connectedOutput.supports(STROKE_TYPES))
+                           || input.connectedOutput.supportsTypes(OBJECT_TYPES)
+                       && !input.connectedOutput.supportsTypes(STROKE_TYPES))
                     || param.id == 'fill')
                     paramIds.push(param.id);
         }
@@ -121,7 +121,7 @@ extends OpColorBase
             
         this.outputs[0].types =
                this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supports(SHAPE_TYPES)
+            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
             ? [...this.inputs[0].connectedOutput.types, STROKE]
             : [STROKE];
 
@@ -212,8 +212,8 @@ extends OpColorBase
  
         const enable = 
                !this.inputs[0].connected
-            //|| !this.inputs[0].connectedOutput.supports(SHAPE_TYPES)
-            || !this.inputs[0].connectedOutput.supports(STROKE_TYPES);
+            //|| !this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
+            || !this.inputs[0].connectedOutput.supportsTypes(STROKE_TYPES);
 
         this.paramFill  .enableControlText(enableFill);
         this.paramWeight.enableControlText(enable);

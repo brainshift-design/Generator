@@ -25,7 +25,7 @@ extends EventTarget
 
     wireColor;
 
-
+  
     div;
     hitbox;
     wireBall;
@@ -58,6 +58,9 @@ extends EventTarget
 
 
     get connected() { return this.connectedOutput != null; }
+
+
+    outputMustBeCached = false;
 
 
     connection   = null;
@@ -122,7 +125,7 @@ extends EventTarget
 
             if (   graphView.tempConn
                 && graphView.tempConn.output
-                && this.supports(graphView.tempConn.output.types)
+                && this.canConnect(graphView.tempConn.output)
                 && (  !this.connected
                     || this.connectedOutput != graphView.tempConn.output
                     || this == savedInput))
@@ -179,7 +182,7 @@ extends EventTarget
                  && tc.input)
             && !(   tc
                  && tc.output
-                 && (  !this.supports(tc.output.types)
+                 && (  !this.canConnect(tc.output)
                      || tc.output.node.isOrFollows(this.node)));
 
         const color =
@@ -202,7 +205,7 @@ extends EventTarget
                    ||    graphView.overInput == this
                       && !tc.input)
                && !(    tc.output
-                    && !this.supports(tc.output.types));
+                    && !this.canConnect(tc.output));
 
         this.div.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -230,7 +233,7 @@ extends EventTarget
                : rgba2style(toRgba(this.connectedOutput.wireColor)))
             : (   tc
                && tc.output
-               && this.supports(tc.output.types)
+               && this.canConnect(tc.output)
                && graphView.overInput == this
                ? rgba2style(toRgba(tc.output.wireColor))
                : (   tc
@@ -251,8 +254,22 @@ extends EventTarget
 
 
 
-    supports(types)
+    supportsTypes(types)
     {
         return arraysIntersect(this.types, types);
+    }
+
+
+
+    canConnect(output)
+    {
+        if (!arraysIntersect(this.types, output.types))
+            return false;
+
+        if (    this.outputMustBeCached 
+            && !output.node.isCached())
+            return false;
+
+        return true;
     }
 }

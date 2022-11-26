@@ -206,9 +206,16 @@ class Output
 
 
 
-    supports(types)
+    supportsTypes(types)
     {
         return arraysIntersect(this.types, types);
+    }
+
+
+
+    canConnect(input)
+    {
+        return arraysIntersect(this.types, input.types);
     }
 
 

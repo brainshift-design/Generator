@@ -15,7 +15,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supports(LIST_TYPES);
+        return output.supportsTypes(LIST_TYPES);
     }
 
 

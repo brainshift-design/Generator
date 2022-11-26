@@ -119,7 +119,7 @@ extends ShapeBaseValue
 
 function parsePolygonValue(str)
 {
-    if (str == INVALID)
+    if (str == INVALID_VALUE)
         return PolygonValue.NaN;
 
     const poly = str.split(' ');

@@ -111,8 +111,8 @@ extends ShapeBaseValue
 
 function parseRectangleValue(str, i = -1)
 {
-    if (   i <  0 && str    == INVALID
-        || i >= 0 && str[i] == INVALID)
+    if (   i <  0 && str    == INVALID_VALUE
+        || i >= 0 && str[i] == INVALID_VALUE)
         return [RectangleValue.NaN, 1];
 
 

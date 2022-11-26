@@ -4278,14 +4278,17 @@ function boolToString(bool)
 
 function printNum(num)
 {
-    return !isNaN(num) ? num : INVALID;
+    return !isNaN(num) ? num : INVALID_VALUE;
 }
 
 
 
 function parseNum(str)
 {
-    return str == '?' ? Number.NaN : parseFloat(str);
+    return str == INVALID_CHAR
+        || str == INVALID_VALUE
+        ? Number.NaN 
+        : parseFloat(str);
 }
 
 
@@ -5491,8 +5494,9 @@ function normalizeSeed(x)
 }
 
 
-const INVALID            = '?';
-const DISPLAY_INVALID    = INVALID;//'🤷‍♂️';
+const INVALID_CHAR       = '?';
+const INVALID_VALUE      = '?';
+const INVALID_DISPLAY    = INVALID_VALUE;//'🤷‍♂️';
 
 
 const LIST_VALUE         = 'LIST#';
@@ -6495,7 +6499,7 @@ extends GValue
     {
         return !isNaN(this.value)
             ? numToString(this.value, this.decimals)
-            : INVALID; // only NumberValue can do this, other _Values have to list all members
+            : INVALID_VALUE; // only NumberValue can do this, other _Values have to list all members
     }
 
 
@@ -6536,7 +6540,7 @@ function parseNumberValue(str)
 function parseSimpleNumberValue(str)
 {
     const num = 
-        str == INVALID
+        str == INVALID_VALUE
         ? NumberValue.NaN
         : new NumberValue(
               parseFloat(str),
@@ -6686,7 +6690,7 @@ extends GValue
     toRgbString()
     {
         if (!this.isValid())
-            return INVALID;
+            return INVALID_VALUE;
 
         const rgb = this.toRgb();
 
@@ -7095,8 +7099,8 @@ extends GValue
 
 function parseStrokeValue(str, i = -1)
 {
-    if (   i <  0 && str    == INVALID
-        || i >= 0 && str[i] == INVALID)
+    if (   i <  0 && str    == INVALID_VALUE
+        || i >= 0 && str[i] == INVALID_VALUE)
         return [StrokeValue.NaN, 1];
 
 
@@ -7323,8 +7327,8 @@ extends ShapeBaseValue
 
 function parseRectangleValue(str, i = -1)
 {
-    if (   i <  0 && str    == INVALID
-        || i >= 0 && str[i] == INVALID)
+    if (   i <  0 && str    == INVALID_VALUE
+        || i >= 0 && str[i] == INVALID_VALUE)
         return [RectangleValue.NaN, 1];
 
 
@@ -7460,7 +7464,7 @@ extends ShapeBaseValue
 
 function parseLineValue(str)
 {
-    if (str == INVALID)
+    if (str == INVALID_VALUE)
         return LineValue.NaN;
 
     const rect = str.split(' ');
@@ -7572,7 +7576,7 @@ extends ShapeBaseValue
 
 function parseEllipseValue(str)
 {
-    if (str == INVALID)
+    if (str == INVALID_VALUE)
         return EllipseValue.NaN;
 
     const rect = str.split(' ');
@@ -7708,7 +7712,7 @@ extends ShapeBaseValue
 
 function parsePolygonValue(str)
 {
-    if (str == INVALID)
+    if (str == INVALID_VALUE)
         return PolygonValue.NaN;
 
     const poly = str.split(' ');
@@ -7855,7 +7859,7 @@ extends ShapeBaseValue
 
 function parseStarValue(str)
 {
-    if (str == INVALID)
+    if (str == INVALID_VALUE)
         return StarValue.NaN;
 
     const star = str.split(' ');
@@ -11952,7 +11956,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value, forceUpdate = false)
         {
             nodeId:  nodeId,
             paramId: paramId,
-            type:    value.type, // needed to correctly parse INVALID
+            type:    value.type, // needed to correctly parse INVALID_VALUE
             value:   value
         });
     }
@@ -12093,7 +12097,7 @@ function genQueueChunk(updateNodeId, updateParamId, nodeValChunkId, nodeValChunk
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
         chunkId:       nodeValChunkId,
-        values:        [...nodeValChunk].map(v => v ? v.toString() : INVALID),
+        values:        [...nodeValChunk].map(v => v ? v.toString() : INVALID_VALUE),
         objects:       [...objChunk]
     });
 
@@ -12386,10 +12390,10 @@ function genParseColorCorrect(parse)
     if (COLOR_TYPES.includes(parse.next))
         val.input = genParse(parse);
 
-    if (parse.next != INVALID) val.order   = genParse(parse); else { val.order   = null; parse.move(); }
-    if (parse.next != INVALID) val.margin1 = genParse(parse); else { val.margin1 = null; parse.move(); }
-    if (parse.next != INVALID) val.margin2 = genParse(parse); else { val.margin2 = null; parse.move(); }
-    if (parse.next != INVALID) val.margin3 = genParse(parse); else { val.margin3 = null; parse.move(); }
+    if (parse.next != INVALID_VALUE) val.order   = genParse(parse); else { val.order   = null; parse.move(); }
+    if (parse.next != INVALID_VALUE) val.margin1 = genParse(parse); else { val.margin1 = null; parse.move(); }
+    if (parse.next != INVALID_VALUE) val.margin2 = genParse(parse); else { val.margin2 = null; parse.move(); }
+    if (parse.next != INVALID_VALUE) val.margin3 = genParse(parse); else { val.margin3 = null; parse.move(); }
 
     parse.nTab--;
 
@@ -14810,8 +14814,8 @@ function getTextColorFromBackColor(rgb, opacity = 1)
 {
     return !rgbIsNaN(rgb)
            ? (opacity >= 0.5
-               ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
-               : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
+               ? (isDark(rgb)  ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75])
+               : (isDarkMode() ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75]))
            : (isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight);
 }
 
@@ -14928,18 +14932,18 @@ function rgba2hex(rgba)
 
 
 
-function validHex2rgb(hex) // can process invalid '?'
+function validHex2rgb(hex) // can process invalid '-'
 {
-    return hex.indexOf(INVALID) > -1 
+    return hex.indexOf(INVALID_CHAR) > -1 
            ? rgb_NaN 
            : hex2rgb(hex);
 }
 
 
 
-function validHex2rgba(hex) // can process invalid '?'
+function validHex2rgba(hex) // can process invalid '-'
 {
-    return hex.indexOf(INVALID) > -1 
+    return hex.indexOf(INVALID_CHAR) > -1 
            ? rgba_NaN 
            : hex2rgba(hex);
 }
@@ -18062,14 +18066,17 @@ function boolToString(bool)
 
 function printNum(num)
 {
-    return !isNaN(num) ? num : INVALID;
+    return !isNaN(num) ? num : INVALID_VALUE;
 }
 
 
 
 function parseNum(str)
 {
-    return str == '?' ? Number.NaN : parseFloat(str);
+    return str == INVALID_CHAR
+        || str == INVALID_VALUE
+        ? Number.NaN 
+        : parseFloat(str);
 }
 
 
@@ -20161,8 +20168,8 @@ function getTextColorFromBackColor(rgb, opacity = 1)
 {
     return !rgbIsNaN(rgb)
            ? (opacity >= 0.5
-               ? (isDark(rgb)  ? [1, 1, 1, 1] : [0, 0, 0, 0.92])
-               : (isDarkMode() ? [1, 1, 1, 1] : [0, 0, 0, 0.92]))
+               ? (isDark(rgb)  ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75])
+               : (isDarkMode() ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75]))
            : (isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight);
 }
 
@@ -20279,18 +20286,18 @@ function rgba2hex(rgba)
 
 
 
-function validHex2rgb(hex) // can process invalid '?'
+function validHex2rgb(hex) // can process invalid '-'
 {
-    return hex.indexOf(INVALID) > -1 
+    return hex.indexOf(INVALID_CHAR) > -1 
            ? rgb_NaN 
            : hex2rgb(hex);
 }
 
 
 
-function validHex2rgba(hex) // can process invalid '?'
+function validHex2rgba(hex) // can process invalid '-'
 {
-    return hex.indexOf(INVALID) > -1 
+    return hex.indexOf(INVALID_CHAR) > -1 
            ? rgba_NaN 
            : hex2rgba(hex);
 }
@@ -20882,8 +20889,9 @@ function base32toArray(base32, chars = base32chars)
 }
 
 
-const INVALID            = '?';
-const DISPLAY_INVALID    = INVALID;//'🤷‍♂️';
+const INVALID_CHAR       = '?';
+const INVALID_VALUE      = '?';
+const INVALID_DISPLAY    = INVALID_VALUE;//'🤷‍♂️';
 
 
 const LIST_VALUE         = 'LIST#';
@@ -21886,7 +21894,7 @@ extends GValue
     {
         return !isNaN(this.value)
             ? numToString(this.value, this.decimals)
-            : INVALID; // only NumberValue can do this, other _Values have to list all members
+            : INVALID_VALUE; // only NumberValue can do this, other _Values have to list all members
     }
 
 
@@ -21927,7 +21935,7 @@ function parseNumberValue(str)
 function parseSimpleNumberValue(str)
 {
     const num = 
-        str == INVALID
+        str == INVALID_VALUE
         ? NumberValue.NaN
         : new NumberValue(
               parseFloat(str),
@@ -22077,7 +22085,7 @@ extends GValue
     toRgbString()
     {
         if (!this.isValid())
-            return INVALID;
+            return INVALID_VALUE;
 
         const rgb = this.toRgb();
 
@@ -22486,8 +22494,8 @@ extends GValue
 
 function parseStrokeValue(str, i = -1)
 {
-    if (   i <  0 && str    == INVALID
-        || i >= 0 && str[i] == INVALID)
+    if (   i <  0 && str    == INVALID_VALUE
+        || i >= 0 && str[i] == INVALID_VALUE)
         return [StrokeValue.NaN, 1];
 
 
@@ -22714,8 +22722,8 @@ extends ShapeBaseValue
 
 function parseRectangleValue(str, i = -1)
 {
-    if (   i <  0 && str    == INVALID
-        || i >= 0 && str[i] == INVALID)
+    if (   i <  0 && str    == INVALID_VALUE
+        || i >= 0 && str[i] == INVALID_VALUE)
         return [RectangleValue.NaN, 1];
 
 
@@ -22851,7 +22859,7 @@ extends ShapeBaseValue
 
 function parseLineValue(str)
 {
-    if (str == INVALID)
+    if (str == INVALID_VALUE)
         return LineValue.NaN;
 
     const rect = str.split(' ');
@@ -22963,7 +22971,7 @@ extends ShapeBaseValue
 
 function parseEllipseValue(str)
 {
-    if (str == INVALID)
+    if (str == INVALID_VALUE)
         return EllipseValue.NaN;
 
     const rect = str.split(' ');
@@ -23099,7 +23107,7 @@ extends ShapeBaseValue
 
 function parsePolygonValue(str)
 {
-    if (str == INVALID)
+    if (str == INVALID_VALUE)
         return PolygonValue.NaN;
 
     const poly = str.split(' ');
@@ -23246,7 +23254,7 @@ extends ShapeBaseValue
 
 function parseStarValue(str)
 {
-    if (str == INVALID)
+    if (str == INVALID_VALUE)
         return StarValue.NaN;
 
     const star = str.split(' ');
@@ -28508,7 +28516,7 @@ function initNumberControlEvents(control)
 
             if (    graphView.tempConn.output
                 &&  control.param.input
-                &&  control.param.input.supports(graphView.tempConn.output.types)
+                &&  control.param.input.canConnect(graphView.tempConn.output)
                 && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 && (  !control.param.input.connected // not already connected to this input
                     || control.param.input.connectedOutput != graphView.tempConn.output
@@ -28528,7 +28536,7 @@ function initNumberControlEvents(control)
             }
             else if ( graphView.tempConn.input
                   &&  control.param.output
-                  &&  graphView.tempConn.input.supports(control.param.output.types)
+                  &&  graphView.tempConn.input.canConnect(control.param.output)
                   && !control.param.node.isOrFollows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = control.param.output;
@@ -28840,7 +28848,10 @@ class NumberControlRange
 
 function updateControlRanges(control, controlWidth, controlHeight)
 {
-    if (control.ranges.length == control.rangeDivs.length) // update
+    if (control.overrideText != '') // assuming this is only used in emergencies where ranges are irrelevant
+        resetControlRangeDivs(control);
+
+    else if (control.ranges.length == control.rangeDivs.length) // update
     {
         for (let i = 0; i < control.ranges.length; i++)
         {
@@ -29077,7 +29088,7 @@ function initNumberControlTextbox(control)
 
             if (      e.key.length == 1
                    && !isDigit(e.key)
-                   && e.key != '?'
+                   && e.key != INVALID_CHAR
                    && (   !control.valueCanContainSuffix
                        || !control.suffix.includes(e.key))
                    && (   !control.showHex 
@@ -29100,7 +29111,7 @@ function initNumberControlTextbox(control)
                 
                     
             curVal =
-                curVal == INVALID
+                curVal == INVALID_VALUE
                 ? ''
                 :   curVal.substring(0, control.textbox.selectionStart) 
                   + curVal.substring(control.textbox.selectionEnd, curVal.length);
@@ -29161,8 +29172,8 @@ function initNumberControlTextbox(control)
         value = value.replace(control.suffix, '');
         
         
-        let val      = value     .indexOf(INVALID) > -1 ? Number.NaN : (control.showHex ? parseInt(value,      16) : parseFloat(value     ));
-        let savedVal = savedValue.indexOf(INVALID) > -1 ? Number.NaN : (control.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
+        let val      = value     .indexOf(INVALID_VALUE) > -1 ? Number.NaN : (control.showHex ? parseInt(value,      16) : parseFloat(value     ));
+        let savedVal = savedValue.indexOf(INVALID_VALUE) > -1 ? Number.NaN : (control.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
 
         if (!isNaN(val))
             val /= control.valueScale;
@@ -29183,7 +29194,7 @@ function initNumberControlTextbox(control)
             {
                 control.setValue(
                        value.trim() != '' 
-                    && value.trim() != '-'
+                    && value.trim() != INVALID_CHAR
                     ? val 
                     : savedVal);
             }
@@ -29210,28 +29221,12 @@ function initNumberControlTextbox(control)
         control.inFocus = 
                hasFocus(control)
             && !control.clicked;
-    
-        // control.textbox.style.position  = 'absolute';
-        // control.textbox.style.left      = '50%';
-        // control.textbox.style.transform = 'translate(-50%)';
-        // control.textbox.style.top       = control.offsetTop    + 1;
-        // control.textbox.style.width     = control.offsetWidth  - 2;
-        // control.textbox.style.height    = control.offsetHeight - 2;
+
+            
         control.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         control.textbox.style.outline   = 'none';
         control.textbox.style.textAlign = 'center';
-        //control.textbox.style.color     = control.text.style.color;
 
-
-        const isConnected =    
-               control.param != null
-            && control.param.input
-            && control.param.input.connected;
-
-        // enableElementText(
-        //     control.textbox, 
-        //        !control.readOnly
-        //     && !isConnected);
 
         control.updateTextbox();
         
@@ -29249,7 +29244,7 @@ function initNumberControlTextbox(control)
     {
         control.textbox.value =
             (isNaN(control.value)
-             ? DISPLAY_INVALID
+             ? INVALID_CHAR
              : numToString(
                    control.value * control.valueScale, 
                    control.displayDec, 
@@ -29281,6 +29276,9 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     
     control.param                  = param;
      
+    control.name                   = '';
+    control.savedName              = '';
+
     control.width                  = width;
     control.height                 = height;
              
@@ -29340,7 +29338,6 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.wrapValue              = false;
      
     control.showName               = showName;
-    control.showValue              = true;
     control.showHex                = false;
          
     control.enableChangeEvent      = true;
@@ -29354,6 +29351,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.allowEditDecimals      = true;
     
     control.valueText              = '';
+    control.overrideText           = '';
      
     control.barTop                 = 0;
     control.barBottom              = 1;
@@ -29377,7 +29375,9 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.setName = function(name)
     {
-        control.name = name;
+        control.name     = name;
+        control.savedName = name;
+        
         control.update();
     };
 
@@ -29503,8 +29503,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             v *= -1;
 
             
-        if (    isNaN(control.value)
-            || !control.showValue)
+        if (   isNaN(control.value)
+            || control.overrideText != '') // assuminng the display bar is irrelevant in override mode
             control.bar.style.display = 'none';
 
         else
@@ -29538,21 +29538,26 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.updateText = function()
     {
-        control.text.innerHTML = '';
-        
-        if (   control.name.length > 0
-            && control.showName)
-        {
-            const nameStyle = 
-                isDarkMode() 
-                ? rgba2style(rgb_a(style2rgba(control.textStyleDark),  0.4))
-                : rgba2style(rgb_a(style2rgba(control.textStyleLight), 0.6));
+        if (control.overrideText != '')
+            control.text.innerHTML = control.overrideText;
 
-            control.text.innerHTML += '<span style="color: '+nameStyle+';">' + control.name + "</span>&nbsp;&nbsp;";
-        }
-        
-        if (control.showValue)
+        else
+        {
+            control.text.innerHTML = '';
+            
+            if (   control.name.length > 0
+                && control.showName)
+            {
+                const nameStyle = 
+                    isDarkMode() 
+                    ? rgba2style(rgb_a(style2rgba(control.textStyleDark),  0.4))
+                    : rgba2style(rgb_a(style2rgba(control.textStyleLight), 0.6));
+
+                control.text.innerHTML += '<span style="color: '+nameStyle+';">' + control.name + "</span>&nbsp;&nbsp;";
+            }
+            
             control.text.innerHTML += control.getValueText() + control.suffix;
+        }
     };
 
 
@@ -29569,23 +29574,23 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.getValueText = function()
     {
-        if (   control.options.length > 0
+        if (control.valueText != '')
+        {
+            return control.valueText;
+        }
+        else if (   control.options.length > 0
             && control.displayDec == 0)
         {
             if (   control.value <  0 
                 || control.value >= control.options.length)
-                return DISPLAY_INVALID;
+                return INVALID_DISPLAY;
             else
                 return control.options[Math.round(control.value)];
-        }
-        else if (control.valueText != '')
-        {
-            return control.valueText;
         }
         else
         {
             return isNaN(control.value)
-                   ? DISPLAY_INVALID
+                   ? INVALID_DISPLAY
                    : Math.abs(control.value * control.valueScale) > 999999
                      ? (control.value * control.valueScale).toExponential(1)
                      : numToString(
@@ -29854,7 +29859,7 @@ function initColorControlEvents(control)
 
             if (    graphView.tempConn.output
                 &&  control.param.input
-                &&  control.param.input.supports(graphView.tempConn.output.types)
+                &&  control.param.input.canConnect(graphView.tempConn.output)
                 && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 && (  !control.param.input.connected // not already connected to this input
                     || control.param.input.connectedOutput != graphView.tempConn.output
@@ -29874,7 +29879,7 @@ function initColorControlEvents(control)
             }
             else if ( graphView.tempConn.input
                   &&  control.param.output
-                  &&  graphView.tempConn.input.supports(control.param.output.types)
+                  &&  graphView.tempConn.input.canConnect(control.param.output)
                   && !control.param.node.isOrFollows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = control.param.output;
@@ -30182,8 +30187,8 @@ function initColorControlTextbox(control)
 
     control.textbox.addEventListener('focus', e =>
     {
-        if (control.textbox.value == DISPLAY_INVALID)
-            control.textbox.value = INVALID;
+        if (control.textbox.value == INVALID_DISPLAY)
+            control.textbox.value = INVALID_VALUE;
     });
 
 
@@ -30286,7 +30291,7 @@ function initColorControlTextbox(control)
             let curVal = control.textbox.value;
 
             if (      e.key.length == 1
-                   && e.key != '?'
+                   && e.key != INVALID_CHAR
                    && !isDigit(e.key)
                    && !isHexDigit(e.key)
                 ||     control.readOnly
@@ -30294,7 +30299,7 @@ function initColorControlTextbox(control)
                 e.preventDefault();
 
             curVal =
-                curVal == INVALID
+                curVal == INVALID_VALUE
                 ? ''
                 :   curVal.substring(0, control.textbox.selectionStart) 
                   + curVal.substring(control.textbox.selectionEnd, curVal.length);
@@ -30435,7 +30440,7 @@ function initColorControlTextbox(control)
 
         control.textbox.value =
             !control.value.isValid()
-            ? DISPLAY_INVALID
+            ? INVALID_DISPLAY
             : rgb2hex(rgb).toUpperCase();
                            
         control.textbox.savedValue  = control.textbox.value;
@@ -30642,7 +30647,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
                control.value.isValid()
             && rgbIsValid(control.value.toRgb())
             ? rgb2hex(control.value.toRgb())
-            : DISPLAY_INVALID;
+            : INVALID_DISPLAY;
     };
 
 
@@ -31294,13 +31299,8 @@ function initMenuSelectTextbox(select)
         select.inFocus = 
                hasFocus(select)
             && !select.clicked;
-    
-        // select.textbox.style.position = 'absolute';
-    
-        // select.textbox.style.left      = select.offsetLeft   + 1;
-        // select.textbox.style.top       = select.offsetTop    + 1;
-        // select.textbox.style.width     = select.offsetWidth  - 2;
-        // select.textbox.style.height    = select.offsetHeight - 2;
+
+            
         select.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         select.textbox.style.outline   = 'none';
     
@@ -32819,7 +32819,7 @@ graphView.endConnection = pointerId =>
         output.connecting = false;
         
         if (   input
-            && input.supports(output.types)) // TO INPUT
+            && input.canConnect(output)) // TO INPUT
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex)
@@ -32860,7 +32860,7 @@ graphView.endConnection = pointerId =>
         input.connecting = false;
 
         if (   output
-            && input.supports(output.types)) // TO OUTPUT
+            && input.canConnect(output)) // TO OUTPUT
             actionManager.do(new ConnectAction(output, input));
 
         graphView.cancelConnection(pointerId);
@@ -33585,14 +33585,6 @@ extends Parameter
 
 
 
-    formatControl(enableText, showNameOnlyIfNoValue = false)
-    {
-        this.enableControlText(enableText);
-        this.updateShowControlValue(showNameOnlyIfNoValue);
-    }
-
-
-
     enableControlText(enable)
     {
         enable &= 
@@ -33601,34 +33593,27 @@ extends Parameter
             
         enableElementText(this.control, enable);
         this.control.readOnly = !enable;
+
+
+        this.updateValueText();
     }
     
     
     
-    updateShowControlValue(showNameOnlyIfNoValue = false)
+    updateValueText()
     {
-        let nodeOutputsMultiplied = false;
+        const nc =
+                this.input 
+            &&  this.input.connected 
+            && !this.input.connectedOutput.node.isCached()
+            &&  this.node.outputs.length > 0
+            &&  this.node.followedByMultiplier();
 
-        for (const output of this.node.outputs)
-            nodeOutputsMultiplied ||= output.followedByMultiplier();
-
-
-        this.control.showValue = 
-               !this.input
-            || !this.input.connected
-            || !nodeOutputsMultiplied;
-    
-        this.control.showName = 
-            showNameOnlyIfNoValue
-            ? !this.control.showValue
-            : true;
-
-
-       this.control.update();
+        this.control.valueText = nc ? INVALID_VALUE : '';
     }
-    
-    
-    
+
+
+
     isDefault = () => this.value.equals(this.defaultValue);
 
 
@@ -34296,7 +34281,7 @@ extends Parameter
         {
             request.push(...pushInputOrParam(this.input, gen));
 
-            if (this.input.connectedOutput.supports(COLOR_TYPES))
+            if (this.input.connectedOutput.supportsTypes(COLOR_TYPES))
             {
                 request.push(
                     NUMBER_VALUE, 
@@ -34435,7 +34420,7 @@ extends Parameter
                 enable 
             || !this.input 
             || !this.input.connected 
-            ||  this.input.connectedOutput.supports(COLOR_TYPES);
+            ||  this.input.connectedOutput.supportsTypes(COLOR_TYPES);
 
         enableElementText(this.  colorControl, enable);
         enableElementText(this.opacityControl, opEnable);
@@ -34977,7 +34962,7 @@ extends Parameter
         {
             request.push(...pushInputOrParam(this.input, gen));
 
-            // if (this.input.connectedOutput.supports(ALL_TYPES))
+            // if (this.input.connectedOutput.supportsTypes(ALL_TYPES))
             // {
             //     const val = noNaN(this.control.value,      1);
             //     const dec = noNaN(this.control.displayDec, 0);
@@ -35073,7 +35058,7 @@ extends Parameter
                 enable 
             || !this.input 
             || !this.input.connected 
-            ||  this.input.connectedOutput.supports(ALL_TYPES);
+            ||  this.input.connectedOutput.supportsTypes(ALL_TYPES);
 
         enableElementText(this.textControl, enable);
         this.textControl.readOnly = !enable;
@@ -35935,7 +35920,7 @@ extends EventTarget
 
     wireColor;
 
-
+  
     div;
     hitbox;
     wireBall;
@@ -35968,6 +35953,9 @@ extends EventTarget
 
 
     get connected() { return this.connectedOutput != null; }
+
+
+    outputMustBeCached = false;
 
 
     connection   = null;
@@ -36032,7 +36020,7 @@ extends EventTarget
 
             if (   graphView.tempConn
                 && graphView.tempConn.output
-                && this.supports(graphView.tempConn.output.types)
+                && this.canConnect(graphView.tempConn.output)
                 && (  !this.connected
                     || this.connectedOutput != graphView.tempConn.output
                     || this == savedInput))
@@ -36089,7 +36077,7 @@ extends EventTarget
                  && tc.input)
             && !(   tc
                  && tc.output
-                 && (  !this.supports(tc.output.types)
+                 && (  !this.canConnect(tc.output)
                      || tc.output.node.isOrFollows(this.node)));
 
         const color =
@@ -36112,7 +36100,7 @@ extends EventTarget
                    ||    graphView.overInput == this
                       && !tc.input)
                && !(    tc.output
-                    && !this.supports(tc.output.types));
+                    && !this.canConnect(tc.output));
 
         this.div.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -36140,7 +36128,7 @@ extends EventTarget
                : rgba2style(toRgba(this.connectedOutput.wireColor)))
             : (   tc
                && tc.output
-               && this.supports(tc.output.types)
+               && this.canConnect(tc.output)
                && graphView.overInput == this
                ? rgba2style(toRgba(tc.output.wireColor))
                : (   tc
@@ -36161,9 +36149,23 @@ extends EventTarget
 
 
 
-    supports(types)
+    supportsTypes(types)
     {
         return arraysIntersect(this.types, types);
+    }
+
+
+
+    canConnect(output)
+    {
+        if (!arraysIntersect(this.types, output.types))
+            return false;
+
+        if (    this.outputMustBeCached 
+            && !output.node.isCached())
+            return false;
+
+        return true;
     }
 }
 
@@ -36376,9 +36378,16 @@ class Output
 
 
 
-    supports(types)
+    supportsTypes(types)
     {
         return arraysIntersect(this.types, types);
+    }
+
+
+
+    canConnect(input)
+    {
+        return arraysIntersect(this.types, input.types);
     }
 
 
@@ -36472,14 +36481,14 @@ class Connection
         this.wire.getColor = () =>
         {
             if (this.output)
-                return this.output.supports(LIST_TYPES)
+                return this.output.supportsTypes(LIST_TYPES)
                        ? (rgbDocumentBody)
                        : this.output.wireColor;
 
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && this.input.supports(graphView.overOutput.types)) 
+                    && this.input.canConnect(graphView.overOutput)) 
                     return graphView.overOutput.wireColor;
                 else
                     return this.input.wireColor;
@@ -36499,7 +36508,7 @@ class Connection
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && this.input.supports(graphView.overOutput.types)) 
+                    && this.input.canConnect(graphView.overOutput)) 
                     return graphView.overOutput.wireColor;
                 else
                     return this.input.wireColor;
@@ -36578,7 +36587,7 @@ class Connection
                 this.wire.input.updateControl();
 
 
-            //const listType = this.output.supports(LIST_TYPES);
+            //const listType = this.output.supportsTypes(LIST_TYPES);
 
 
             let width = 1.6 * graphView.zoom;
@@ -36662,7 +36671,7 @@ class Connection
 
             const listType = 
                    this.output 
-                && this.output.supports(LIST_TYPES);
+                && this.output.supportsTypes(LIST_TYPES);
 
             this.wire2.curve.style.stroke = listType ? rgba2style(color)  : 'transparent';
 
@@ -36813,7 +36822,7 @@ class Connection
             + ',' + NL + pos + tab + '"outputId": "' + (this.output.param ? this.output.param.id : this.output.index) + '"'
             + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "' + (this.input.param ? this.input.param.id : this.input.index) + '"'
-            + ',' + NL + pos + tab + '"list": "' + boolToString(this.output.supports(LIST_TYPES)) + '"'
+            + ',' + NL + pos + tab + '"list": "' + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
             +       NL + pos + '}';
 
         return json;
@@ -37077,9 +37086,9 @@ class Operator
 
 
 
-    getAutoInput(outTypes)
+    getAutoInput(output) //outTypes)
     {
-        const inputs = this.inputs.filter(i => i.supports(outTypes));
+        const inputs = this.inputs.filter(i => i.canConnect(output));//supportsTypes(outTypes));
 
 
         if (graphView.overInput)
@@ -37387,6 +37396,17 @@ class Operator
                 && input.connectedOutput.node == node)
                 return true;
         }
+
+        return false;
+    }
+
+
+
+    followedByMultiplier()
+    {
+        for (const output of this.outputs)
+            if (output.followedByMultiplier())
+                return true;
 
         return false;
     }
@@ -38269,7 +38289,7 @@ function createNodeHeader(node)
                 }
                 else
                 {
-                    const input = node.getAutoInput(tempConn.output.types);
+                    const input = node.getAutoInput(tempConn.output);
 
                     if ( !input)
                         // ||    input.connected
@@ -39059,7 +39079,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supports(LIST_TYPES);
+        return output.supportsTypes(LIST_TYPES);
     }
 
 
@@ -39225,7 +39245,7 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramCount.formatControl(true);
+        this.paramCount.enableControlText(true);
 
         super.updateParams();
     }
@@ -39255,7 +39275,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supports(NUMBER_TYPES);
+        return output.supportsTypes(NUMBER_TYPES);
     }
 
 
@@ -39555,7 +39575,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supports(NUMBER_TYPES);
+        return output.supportsTypes(NUMBER_TYPES);
     }
 
 
@@ -39669,7 +39689,7 @@ extends OperatorBase
     
     canAutoConnectFrom(output)
     {
-        return output.supports(NUMBER_TYPES);
+        return output.supportsTypes(NUMBER_TYPES);
     }
 
 
@@ -39941,7 +39961,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supports(NUMBER_TYPES);
+        return output.supportsTypes(NUMBER_TYPES);
     }
 
 
@@ -40080,7 +40100,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supports(NUMBER_TYPES);
+        return output.supportsTypes(NUMBER_TYPES);
     }
 
 
@@ -40602,7 +40622,7 @@ extends OpColorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supports(COLOR_TYPES);
+        return output.supportsTypes(COLOR_TYPES);
     }
 
 
@@ -40820,15 +40840,29 @@ extends OpColorBase
     {
         this.updateAllControlRanges();
 
+        const ncSpace =
+                this.paramSpace.input 
+            &&  this.paramSpace.input.connected 
+            && !this.paramSpace.input.connectedOutput.node.isCached()
+            &&  this.followedByMultiplier();
+
+
+        this.paramSpace.control.overrideText = ncSpace ? INVALID_VALUE : '';
+        this.param1    .control.overrideText = ncSpace ? INVALID_VALUE : '';
+        this.param2    .control.overrideText = ncSpace ? INVALID_VALUE : '';
+        this.param3    .control.overrideText = ncSpace ? INVALID_VALUE : '';
+
+
         const enable = !this.inputs[0].connected;
 
-        this.paramSpace.formatControl(!this.paramSpace.input.connected, true);
+        this.paramSpace.enableControlText(!this.paramSpace.input.connected);
+        this.param1    .enableControlText(enable);
+        this.param2    .enableControlText(enable);
+        this.param3    .enableControlText(enable);
 
-        this.param1    .formatControl(enable);
-        this.param2    .formatControl(enable);
-        this.param3    .formatControl(enable);
 
         enableElementText(this.paramColor.control, !this.isConnected());
+
 
         super.updateParams();
     }
@@ -42040,7 +42074,7 @@ extends OpColorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supports(COLOR_TYPES);
+        return output.supportsTypes(COLOR_TYPES);
     }
 
 
@@ -42557,6 +42591,7 @@ extends OpColorBase
         this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, false, 1,  0.01, 4, 2));
       
         
+        this.paramSpace.input.outputMustBeCached = true;
         this.paramSpace.control.setMin(1);
 
         
@@ -42790,7 +42825,7 @@ extends OpColorBase
     get inputIsShape() 
     {
         return this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supports(SHAPE_TYPES);
+            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
     }
     
     
@@ -42822,8 +42857,8 @@ extends OpColorBase
     
     canAutoConnectFrom(output)
     {
-        return output.supports(OBJECT_TYPES)
-            || output.supports( COLOR_TYPES);
+        return output.supportsTypes(OBJECT_TYPES)
+            || output.supportsTypes( COLOR_TYPES);
     }
 
 
@@ -42853,7 +42888,7 @@ extends OpColorBase
                 if (      param.input 
                        && param.input.connected
                        && param.canShow()
-                    || input.connectedOutput.supports(OBJECT_TYPES)) 
+                    || input.connectedOutput.supportsTypes(OBJECT_TYPES)) 
                     paramIds.push(param.id);
         }
         else
@@ -42890,7 +42925,7 @@ extends OpColorBase
 
         this.outputs[0].types =
                this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supports(SHAPE_TYPES)
+            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
             ? [...this.inputs[0].connectedOutput.types, FILL]
             : [FILL];
 
@@ -43036,7 +43071,7 @@ extends OpColorBase
     {
         const enable = 
               !this.inputs[0].connected
-            || this.inputs[0].connectedOutput.supports(SHAPE_TYPES);
+            || this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
 
         this.paramColor  .enableControlText(enable);
         this.paramOpacity.enableControlText(enable);
@@ -43063,7 +43098,7 @@ extends OpColorBase
     get inputIsShape() 
     {
         return this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supports(SHAPE_TYPES);
+            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
     }
 
 
@@ -43098,8 +43133,8 @@ extends OpColorBase
     
     canAutoConnectFrom(output)
     {
-        return output.supports(OBJECT_TYPES)
-            || output.supports( COLOR_TYPES);
+        return output.supportsTypes(OBJECT_TYPES)
+            || output.supportsTypes( COLOR_TYPES);
     }
 
 
@@ -43129,8 +43164,8 @@ extends OpColorBase
                 if (      (      param.input 
                               && param.input.connected
                               && param.canShow()
-                           || input.connectedOutput.supports(OBJECT_TYPES)
-                       && !input.connectedOutput.supports(STROKE_TYPES))
+                           || input.connectedOutput.supportsTypes(OBJECT_TYPES)
+                       && !input.connectedOutput.supportsTypes(STROKE_TYPES))
                     || param.id == 'fill')
                     paramIds.push(param.id);
         }
@@ -43169,7 +43204,7 @@ extends OpColorBase
             
         this.outputs[0].types =
                this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supports(SHAPE_TYPES)
+            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
             ? [...this.inputs[0].connectedOutput.types, STROKE]
             : [STROKE];
 
@@ -43260,8 +43295,8 @@ extends OpColorBase
  
         const enable = 
                !this.inputs[0].connected
-            //|| !this.inputs[0].connectedOutput.supports(SHAPE_TYPES)
-            || !this.inputs[0].connectedOutput.supports(STROKE_TYPES);
+            //|| !this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
+            || !this.inputs[0].connectedOutput.supportsTypes(STROKE_TYPES);
 
         this.paramFill  .enableControlText(enableFill);
         this.paramWeight.enableControlText(enable);
@@ -44109,7 +44144,7 @@ extends Action
 
         super('CONNECT ' 
             + output.node.id + '.' + output.id
-            + ' ' + rightArrowChar(output.supports(LIST_TYPES)) + ' '
+            + ' ' + rightArrowChar(output.supportsTypes(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);
 
 
@@ -44595,7 +44630,7 @@ extends Action
 
         super('DISCONNECT ' 
             + output.node.id + '.' + output.id
-            + ' ' + rightArrowChar(output.supports(LIST_TYPES)) + ' '
+            + ' ' + rightArrowChar(output.supportsTypes(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);
 
 
@@ -44929,9 +44964,9 @@ extends Action
         super(
              'RECONNECT '
             + output.node.id + '.' + output.id
-            + ' (' + leftArrowChar(oldInput.supports(LIST_TYPES)) + ' '
+            + ' (' + leftArrowChar(oldInput.supportsTypes(LIST_TYPES)) + ' '
             + oldInput.node.id + '.' + oldInput.id
-            + ') ' + rightArrowChar(output.supports(LIST_TYPES)) + ' '
+            + ') ' + rightArrowChar(output.supportsTypes(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);
 
 
@@ -45081,7 +45116,7 @@ extends Action
 
                 for (const connectedInput of output.connectedInputs)
                 {
-                    if (input.connectedOutput.supports(connectedInput.types))
+                    if (input.connectedOutput.canConnect(connectedInput))
                     {
                         this.newConnections.push(
                         {
@@ -47369,14 +47404,14 @@ function finishLoading()
     clearTimeout(dataModeTimeout);
     dataModeTimeout = null;
 
-    loadingOverlay.style.display = 'none';
-    
     graphView.loadingNodes   = false;
     graphView.canUpdateNodes = true;
 
     graphView.updateShowWires(false);
 
     generatorStarted = true;
+
+    loadingOverlay.style.display = 'none';
 }
 
 
@@ -48129,7 +48164,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
 function canAutoConnectNode(node)
 {
     const selNode = graph.nodes.find(n => n.selected);
-    const inputs  = node.inputs.filter(i => i.supports(selNode.outputs[0].types));
+    const inputs  = node.inputs.filter(i => i.canConnect(selNode.outputs[0]));
 
     return selNode
         && selNode.outputs.length > 0
@@ -48141,7 +48176,7 @@ function canAutoConnectNode(node)
 function autoConnectNode(node, insert)
 {
     const selNode = graph.nodes.find(n => n.selected);
-    const inputs  = node.inputs.filter(i => i.supports(selNode.outputs[0].types));
+    const inputs  = node.inputs.filter(i => i.canConnect(selNode.outputs[0]));
 
     console.assert(
            selNode

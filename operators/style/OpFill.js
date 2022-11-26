@@ -12,7 +12,7 @@ extends OpColorBase
     get inputIsShape() 
     {
         return this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supports(SHAPE_TYPES);
+            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
     }
     
     
@@ -44,8 +44,8 @@ extends OpColorBase
     
     canAutoConnectFrom(output)
     {
-        return output.supports(OBJECT_TYPES)
-            || output.supports( COLOR_TYPES);
+        return output.supportsTypes(OBJECT_TYPES)
+            || output.supportsTypes( COLOR_TYPES);
     }
 
 
@@ -75,7 +75,7 @@ extends OpColorBase
                 if (      param.input 
                        && param.input.connected
                        && param.canShow()
-                    || input.connectedOutput.supports(OBJECT_TYPES)) 
+                    || input.connectedOutput.supportsTypes(OBJECT_TYPES)) 
                     paramIds.push(param.id);
         }
         else
@@ -112,7 +112,7 @@ extends OpColorBase
 
         this.outputs[0].types =
                this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supports(SHAPE_TYPES)
+            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
             ? [...this.inputs[0].connectedOutput.types, FILL]
             : [FILL];
 
@@ -258,7 +258,7 @@ extends OpColorBase
     {
         const enable = 
               !this.inputs[0].connected
-            || this.inputs[0].connectedOutput.supports(SHAPE_TYPES);
+            || this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
 
         this.paramColor  .enableControlText(enable);
         this.paramOpacity.enableControlText(enable);

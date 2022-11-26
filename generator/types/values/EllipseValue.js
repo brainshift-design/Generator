@@ -96,7 +96,7 @@ extends ShapeBaseValue
 
 function parseEllipseValue(str)
 {
-    if (str == INVALID)
+    if (str == INVALID_VALUE)
         return EllipseValue.NaN;
 
     const rect = str.split(' ');

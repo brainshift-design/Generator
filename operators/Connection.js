@@ -67,14 +67,14 @@ class Connection
         this.wire.getColor = () =>
         {
             if (this.output)
-                return this.output.supports(LIST_TYPES)
+                return this.output.supportsTypes(LIST_TYPES)
                        ? (rgbDocumentBody)
                        : this.output.wireColor;
 
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && this.input.supports(graphView.overOutput.types)) 
+                    && this.input.canConnect(graphView.overOutput)) 
                     return graphView.overOutput.wireColor;
                 else
                     return this.input.wireColor;
@@ -94,7 +94,7 @@ class Connection
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && this.input.supports(graphView.overOutput.types)) 
+                    && this.input.canConnect(graphView.overOutput)) 
                     return graphView.overOutput.wireColor;
                 else
                     return this.input.wireColor;
@@ -173,7 +173,7 @@ class Connection
                 this.wire.input.updateControl();
 
 
-            //const listType = this.output.supports(LIST_TYPES);
+            //const listType = this.output.supportsTypes(LIST_TYPES);
 
 
             let width = 1.6 * graphView.zoom;
@@ -257,7 +257,7 @@ class Connection
 
             const listType = 
                    this.output 
-                && this.output.supports(LIST_TYPES);
+                && this.output.supportsTypes(LIST_TYPES);
 
             this.wire2.curve.style.stroke = listType ? rgba2style(color)  : 'transparent';
 
@@ -408,7 +408,7 @@ class Connection
             + ',' + NL + pos + tab + '"outputId": "' + (this.output.param ? this.output.param.id : this.output.index) + '"'
             + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "' + (this.input.param ? this.input.param.id : this.input.index) + '"'
-            + ',' + NL + pos + tab + '"list": "' + boolToString(this.output.supports(LIST_TYPES)) + '"'
+            + ',' + NL + pos + tab + '"list": "' + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
             +       NL + pos + '}';
 
         return json;

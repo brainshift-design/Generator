@@ -95,7 +95,7 @@ extends Parameter
         {
             request.push(...pushInputOrParam(this.input, gen));
 
-            // if (this.input.connectedOutput.supports(ALL_TYPES))
+            // if (this.input.connectedOutput.supportsTypes(ALL_TYPES))
             // {
             //     const val = noNaN(this.control.value,      1);
             //     const dec = noNaN(this.control.displayDec, 0);
@@ -191,7 +191,7 @@ extends Parameter
                 enable 
             || !this.input 
             || !this.input.connected 
-            ||  this.input.connectedOutput.supports(ALL_TYPES);
+            ||  this.input.connectedOutput.supportsTypes(ALL_TYPES);
 
         enableElementText(this.textControl, enable);
         this.textControl.readOnly = !enable;

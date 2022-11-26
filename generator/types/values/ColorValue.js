@@ -138,7 +138,7 @@ extends GValue
     toRgbString()
     {
         if (!this.isValid())
-            return INVALID;
+            return INVALID_VALUE;
 
         const rgb = this.toRgb();
 

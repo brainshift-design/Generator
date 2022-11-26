@@ -187,9 +187,9 @@ class Operator
 
 
 
-    getAutoInput(outTypes)
+    getAutoInput(output) //outTypes)
     {
-        const inputs = this.inputs.filter(i => i.supports(outTypes));
+        const inputs = this.inputs.filter(i => i.canConnect(output));//supportsTypes(outTypes));
 
 
         if (graphView.overInput)
@@ -497,6 +497,17 @@ class Operator
                 && input.connectedOutput.node == node)
                 return true;
         }
+
+        return false;
+    }
+
+
+
+    followedByMultiplier()
+    {
+        for (const output of this.outputs)
+            if (output.followedByMultiplier())
+                return true;
 
         return false;
     }

@@ -422,7 +422,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
 function canAutoConnectNode(node)
 {
     const selNode = graph.nodes.find(n => n.selected);
-    const inputs  = node.inputs.filter(i => i.supports(selNode.outputs[0].types));
+    const inputs  = node.inputs.filter(i => i.canConnect(selNode.outputs[0]));
 
     return selNode
         && selNode.outputs.length > 0
@@ -434,7 +434,7 @@ function canAutoConnectNode(node)
 function autoConnectNode(node, insert)
 {
     const selNode = graph.nodes.find(n => n.selected);
-    const inputs  = node.inputs.filter(i => i.supports(selNode.outputs[0].types));
+    const inputs  = node.inputs.filter(i => i.canConnect(selNode.outputs[0]));
 
     console.assert(
            selNode

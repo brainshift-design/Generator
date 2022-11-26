@@ -65,7 +65,7 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramCount.formatControl(true);
+        this.paramCount.enableControlText(true);
 
         super.updateParams();
     }

@@ -23,18 +23,18 @@ function rgba2hex(rgba)
 
 
 
-function validHex2rgb(hex) // can process invalid '?'
+function validHex2rgb(hex) // can process invalid '-'
 {
-    return hex.indexOf(INVALID) > -1 
+    return hex.indexOf(INVALID_CHAR) > -1 
            ? rgb_NaN 
            : hex2rgb(hex);
 }
 
 
 
-function validHex2rgba(hex) // can process invalid '?'
+function validHex2rgba(hex) // can process invalid '-'
 {
-    return hex.indexOf(INVALID) > -1 
+    return hex.indexOf(INVALID_CHAR) > -1 
            ? rgba_NaN 
            : hex2rgba(hex);
 }

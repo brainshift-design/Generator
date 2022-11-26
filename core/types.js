@@ -1,5 +1,6 @@
-const INVALID            = '?';
-const DISPLAY_INVALID    = INVALID;//'🤷‍♂️';
+const INVALID_CHAR       = '?';
+const INVALID_VALUE      = '?';
+const INVALID_DISPLAY    = INVALID_VALUE;//'🤷‍♂️';
 
 
 const LIST_VALUE         = 'LIST#';

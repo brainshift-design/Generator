@@ -61,7 +61,7 @@ extends Action
 
                 for (const connectedInput of output.connectedInputs)
                 {
-                    if (input.connectedOutput.supports(connectedInput.types))
+                    if (input.connectedOutput.canConnect(connectedInput))
                     {
                         this.newConnections.push(
                         {

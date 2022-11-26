@@ -169,7 +169,7 @@ function initNumberControlTextbox(control)
 
             if (      e.key.length == 1
                    && !isDigit(e.key)
-                   && e.key != '?'
+                   && e.key != INVALID_CHAR
                    && (   !control.valueCanContainSuffix
                        || !control.suffix.includes(e.key))
                    && (   !control.showHex 
@@ -192,7 +192,7 @@ function initNumberControlTextbox(control)
                 
                     
             curVal =
-                curVal == INVALID
+                curVal == INVALID_VALUE
                 ? ''
                 :   curVal.substring(0, control.textbox.selectionStart) 
                   + curVal.substring(control.textbox.selectionEnd, curVal.length);
@@ -253,8 +253,8 @@ function initNumberControlTextbox(control)
         value = value.replace(control.suffix, '');
         
         
-        let val      = value     .indexOf(INVALID) > -1 ? Number.NaN : (control.showHex ? parseInt(value,      16) : parseFloat(value     ));
-        let savedVal = savedValue.indexOf(INVALID) > -1 ? Number.NaN : (control.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
+        let val      = value     .indexOf(INVALID_VALUE) > -1 ? Number.NaN : (control.showHex ? parseInt(value,      16) : parseFloat(value     ));
+        let savedVal = savedValue.indexOf(INVALID_VALUE) > -1 ? Number.NaN : (control.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
 
         if (!isNaN(val))
             val /= control.valueScale;
@@ -275,7 +275,7 @@ function initNumberControlTextbox(control)
             {
                 control.setValue(
                        value.trim() != '' 
-                    && value.trim() != '-'
+                    && value.trim() != INVALID_CHAR
                     ? val 
                     : savedVal);
             }
@@ -302,28 +302,12 @@ function initNumberControlTextbox(control)
         control.inFocus = 
                hasFocus(control)
             && !control.clicked;
-    
-        // control.textbox.style.position  = 'absolute';
-        // control.textbox.style.left      = '50%';
-        // control.textbox.style.transform = 'translate(-50%)';
-        // control.textbox.style.top       = control.offsetTop    + 1;
-        // control.textbox.style.width     = control.offsetWidth  - 2;
-        // control.textbox.style.height    = control.offsetHeight - 2;
+
+            
         control.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         control.textbox.style.outline   = 'none';
         control.textbox.style.textAlign = 'center';
-        //control.textbox.style.color     = control.text.style.color;
 
-
-        const isConnected =    
-               control.param != null
-            && control.param.input
-            && control.param.input.connected;
-
-        // enableElementText(
-        //     control.textbox, 
-        //        !control.readOnly
-        //     && !isConnected);
 
         control.updateTextbox();
         
@@ -341,7 +325,7 @@ function initNumberControlTextbox(control)
     {
         control.textbox.value =
             (isNaN(control.value)
-             ? DISPLAY_INVALID
+             ? INVALID_CHAR
              : numToString(
                    control.value * control.valueScale, 
                    control.displayDec, 

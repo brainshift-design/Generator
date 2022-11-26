@@ -17,6 +17,9 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     
     control.param                  = param;
      
+    control.name                   = '';
+    control.savedName              = '';
+
     control.width                  = width;
     control.height                 = height;
              
@@ -76,7 +79,6 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.wrapValue              = false;
      
     control.showName               = showName;
-    control.showValue              = true;
     control.showHex                = false;
          
     control.enableChangeEvent      = true;
@@ -90,6 +92,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.allowEditDecimals      = true;
     
     control.valueText              = '';
+    control.overrideText           = '';
      
     control.barTop                 = 0;
     control.barBottom              = 1;
@@ -113,7 +116,9 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.setName = function(name)
     {
-        control.name = name;
+        control.name     = name;
+        control.savedName = name;
+        
         control.update();
     };
 
@@ -239,8 +244,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             v *= -1;
 
             
-        if (    isNaN(control.value)
-            || !control.showValue)
+        if (   isNaN(control.value)
+            || control.overrideText != '') // assuminng the display bar is irrelevant in override mode
             control.bar.style.display = 'none';
 
         else
@@ -274,21 +279,26 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.updateText = function()
     {
-        control.text.innerHTML = '';
-        
-        if (   control.name.length > 0
-            && control.showName)
-        {
-            const nameStyle = 
-                isDarkMode() 
-                ? rgba2style(rgb_a(style2rgba(control.textStyleDark),  0.4))
-                : rgba2style(rgb_a(style2rgba(control.textStyleLight), 0.6));
+        if (control.overrideText != '')
+            control.text.innerHTML = control.overrideText;
 
-            control.text.innerHTML += '<span style="color: '+nameStyle+';">' + control.name + "</span>&nbsp;&nbsp;";
-        }
-        
-        if (control.showValue)
+        else
+        {
+            control.text.innerHTML = '';
+            
+            if (   control.name.length > 0
+                && control.showName)
+            {
+                const nameStyle = 
+                    isDarkMode() 
+                    ? rgba2style(rgb_a(style2rgba(control.textStyleDark),  0.4))
+                    : rgba2style(rgb_a(style2rgba(control.textStyleLight), 0.6));
+
+                control.text.innerHTML += '<span style="color: '+nameStyle+';">' + control.name + "</span>&nbsp;&nbsp;";
+            }
+            
             control.text.innerHTML += control.getValueText() + control.suffix;
+        }
     };
 
 
@@ -305,23 +315,23 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.getValueText = function()
     {
-        if (   control.options.length > 0
+        if (control.valueText != '')
+        {
+            return control.valueText;
+        }
+        else if (   control.options.length > 0
             && control.displayDec == 0)
         {
             if (   control.value <  0 
                 || control.value >= control.options.length)
-                return DISPLAY_INVALID;
+                return INVALID_DISPLAY;
             else
                 return control.options[Math.round(control.value)];
-        }
-        else if (control.valueText != '')
-        {
-            return control.valueText;
         }
         else
         {
             return isNaN(control.value)
-                   ? DISPLAY_INVALID
+                   ? INVALID_DISPLAY
                    : Math.abs(control.value * control.valueScale) > 999999
                      ? (control.value * control.valueScale).toExponential(1)
                      : numToString(

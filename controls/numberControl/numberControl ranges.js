@@ -25,7 +25,10 @@ class NumberControlRange
 
 function updateControlRanges(control, controlWidth, controlHeight)
 {
-    if (control.ranges.length == control.rangeDivs.length) // update
+    if (control.overrideText != '') // assuming this is only used in emergencies where ranges are irrelevant
+        resetControlRangeDivs(control);
+
+    else if (control.ranges.length == control.rangeDivs.length) // update
     {
         for (let i = 0; i < control.ranges.length; i++)
         {

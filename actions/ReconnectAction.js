@@ -35,9 +35,9 @@ extends Action
         super(
              'RECONNECT '
             + output.node.id + '.' + output.id
-            + ' (' + leftArrowChar(oldInput.supports(LIST_TYPES)) + ' '
+            + ' (' + leftArrowChar(oldInput.supportsTypes(LIST_TYPES)) + ' '
             + oldInput.node.id + '.' + oldInput.id
-            + ') ' + rightArrowChar(output.supports(LIST_TYPES)) + ' '
+            + ') ' + rightArrowChar(output.supportsTypes(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);
 
 

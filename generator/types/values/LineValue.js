@@ -95,7 +95,7 @@ extends ShapeBaseValue
 
 function parseLineValue(str)
 {
-    if (str == INVALID)
+    if (str == INVALID_VALUE)
         return LineValue.NaN;
 
     const rect = str.split(' ');

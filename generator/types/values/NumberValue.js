@@ -75,7 +75,7 @@ extends GValue
     {
         return !isNaN(this.value)
             ? numToString(this.value, this.decimals)
-            : INVALID; // only NumberValue can do this, other _Values have to list all members
+            : INVALID_VALUE; // only NumberValue can do this, other _Values have to list all members
     }
 
 
@@ -116,7 +116,7 @@ function parseNumberValue(str)
 function parseSimpleNumberValue(str)
 {
     const num = 
-        str == INVALID
+        str == INVALID_VALUE
         ? NumberValue.NaN
         : new NumberValue(
               parseFloat(str),

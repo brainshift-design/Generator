@@ -125,7 +125,7 @@ extends OpColorBase
 
     canAutoConnectFrom(output)
     {
-        return output.supports(COLOR_TYPES);
+        return output.supportsTypes(COLOR_TYPES);
     }
 
 
@@ -343,15 +343,29 @@ extends OpColorBase
     {
         this.updateAllControlRanges();
 
+        const ncSpace =
+                this.paramSpace.input 
+            &&  this.paramSpace.input.connected 
+            && !this.paramSpace.input.connectedOutput.node.isCached()
+            &&  this.followedByMultiplier();
+
+
+        this.paramSpace.control.overrideText = ncSpace ? INVALID_VALUE : '';
+        this.param1    .control.overrideText = ncSpace ? INVALID_VALUE : '';
+        this.param2    .control.overrideText = ncSpace ? INVALID_VALUE : '';
+        this.param3    .control.overrideText = ncSpace ? INVALID_VALUE : '';
+
+
         const enable = !this.inputs[0].connected;
 
-        this.paramSpace.formatControl(!this.paramSpace.input.connected, true);
+        this.paramSpace.enableControlText(!this.paramSpace.input.connected);
+        this.param1    .enableControlText(enable);
+        this.param2    .enableControlText(enable);
+        this.param3    .enableControlText(enable);
 
-        this.param1    .formatControl(enable);
-        this.param2    .formatControl(enable);
-        this.param3    .formatControl(enable);
 
         enableElementText(this.paramColor.control, !this.isConnected());
+
 
         super.updateParams();
     }

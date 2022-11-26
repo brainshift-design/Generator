@@ -296,14 +296,14 @@ function finishLoading()
     clearTimeout(dataModeTimeout);
     dataModeTimeout = null;
 
-    loadingOverlay.style.display = 'none';
-    
     graphView.loadingNodes   = false;
     graphView.canUpdateNodes = true;
 
     graphView.updateShowWires(false);
 
     generatorStarted = true;
+
+    loadingOverlay.style.display = 'none';
 }
 
 

@@ -108,14 +108,6 @@ extends Parameter
 
 
 
-    formatControl(enableText, showNameOnlyIfNoValue = false)
-    {
-        this.enableControlText(enableText);
-        this.updateShowControlValue(showNameOnlyIfNoValue);
-    }
-
-
-
     enableControlText(enable)
     {
         enable &= 
@@ -124,34 +116,27 @@ extends Parameter
             
         enableElementText(this.control, enable);
         this.control.readOnly = !enable;
+
+
+        this.updateValueText();
     }
     
     
     
-    updateShowControlValue(showNameOnlyIfNoValue = false)
+    updateValueText()
     {
-        let nodeOutputsMultiplied = false;
+        const nc =
+                this.input 
+            &&  this.input.connected 
+            && !this.input.connectedOutput.node.isCached()
+            &&  this.node.outputs.length > 0
+            &&  this.node.followedByMultiplier();
 
-        for (const output of this.node.outputs)
-            nodeOutputsMultiplied ||= output.followedByMultiplier();
-
-
-        this.control.showValue = 
-               !this.input
-            || !this.input.connected
-            || !nodeOutputsMultiplied;
-    
-        this.control.showName = 
-            showNameOnlyIfNoValue
-            ? !this.control.showValue
-            : true;
-
-
-       this.control.update();
+        this.control.valueText = nc ? INVALID_VALUE : '';
     }
-    
-    
-    
+
+
+
     isDefault = () => this.value.equals(this.defaultValue);
 
 
