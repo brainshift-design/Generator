@@ -3847,7 +3847,7 @@ class Random
 
 
 
-    constructor(seed = 0xb9ef7ca4, last = seed)
+    constructor(seed = 0, last = seed)//(seed = 0xb9ef7ca4, last = seed)
     { 
         this.seed = seed; 
         this.last = last;
@@ -3866,14 +3866,14 @@ class Random
     {
         this.last = this.seed;
         
-        this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
-        this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
-        this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
-        this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
-        this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
-        this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
+        // this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
+        // this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
+        // this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
+        // this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
+        // this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
+        // this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
 
-        return this.seed / -0x7fffffff;
+        return this.seed++;// / -0x7fffffff;
     }
 
 }
@@ -8200,6 +8200,10 @@ extends GOperator
         else
             this.value = null;
 
+
+        if (this.value)
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
         
         this.validate();
 
@@ -8544,8 +8548,8 @@ extends GNumberType
         
 
         //console.log('new value');
-        this.value = new NumberValue(
-            min.value + this.random.next() * (max.value - min.value),
+        this.value = new NumberValue(this.random.next(),
+//            min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
 
             
@@ -17880,7 +17884,7 @@ class Random
 
 
 
-    constructor(seed = 0xb9ef7ca4, last = seed)
+    constructor(seed = 0, last = seed)//(seed = 0xb9ef7ca4, last = seed)
     { 
         this.seed = seed; 
         this.last = last;
@@ -17899,14 +17903,14 @@ class Random
     {
         this.last = this.seed;
         
-        this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
-        this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
-        this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
-        this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
-        this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
-        this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
+        // this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
+        // this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
+        // this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
+        // this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
+        // this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
+        // this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
 
-        return this.seed / -0x7fffffff;
+        return this.seed++;// / -0x7fffffff;
     }
 
 }
@@ -23845,6 +23849,10 @@ extends GOperator
         else
             this.value = null;
 
+
+        if (this.value)
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
         
         this.validate();
 
@@ -24189,8 +24197,8 @@ extends GNumberType
         
 
         //console.log('new value');
-        this.value = new NumberValue(
-            min.value + this.random.next() * (max.value - min.value),
+        this.value = new NumberValue(this.random.next(),
+//            min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
 
             
@@ -37103,7 +37111,7 @@ function updateWireStyle(wire)
     wire.curve .style.stroke = wireStyle;
     wire.curve2.style.stroke = rgb2style(rgbDocumentBody);//wireStyle;
 
-    wire.curve.style.strokeDasharray = uncached ? 1.5 * graphView.zoom : 0;
+    wire.curve.style.strokeDasharray = uncached ? 1.7 * graphView.zoom : 0;
 
     wire. inBall .style.fill = wireStyle;
     wire.outBall .style.fill = wireStyle;
@@ -39293,6 +39301,11 @@ extends OperatorBase
 
         this.addNewInput();
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+
+
+        this.div   .style.borderRadius = '4px';        
+        this.inner .style.borderRadius = '4px';        
+        this.header.style.borderRadius = '4px';        
     }
     
     
@@ -39337,17 +39350,6 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
-    }
-
-
-
-    updateHeader()
-    {
-        super.updateHeader();
-
-        this.div   .style.borderRadius = '4px';        
-        this.inner .style.borderRadius = '4px';        
-        this.header.style.borderRadius = '4px';        
     }
 }
 
@@ -39479,6 +39481,18 @@ extends OperatorBase
 
         for (const param of this.params)
             param.enableControlText(false);
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+        const colors = this.getHeaderColors();
+        
+        this.header.style.background = rgb2style(rgbDocumentBody);
+        this.header.style.boxShadow  = '0 0 0 1px ' + rgba2style(colors.back) + ' inset';
     }
 }
 
@@ -39637,6 +39651,11 @@ extends OperatorBase
 class   OpCache
 extends OperatorBase
 {
+    paramNumber;
+    paramColor;
+
+
+
     constructor()
     {
         super(CACHE, 'cache', 90);
@@ -39646,12 +39665,13 @@ extends OperatorBase
         this.addInput (new Input(ALL_TYPES));
         this.addOutput(new Output([], this.output_genRequest));
 
+        this.paramNumber = new NumberParam('value', '', false, false, false);
+        this.paramColor  = new  ColorParam('value', '', false, false, false);
+
         this.inputs[0].addEventListener('connect',    () => OpCache_onConnectInput(this));
         this.inputs[0].addEventListener('disconnect', () => OpCache_onDisconnectInput(this));
 
-        this.div   .style.borderRadius = '4px';        
-        this.inner .style.borderRadius = '4px';        
-        this.header.style.borderRadius = '4px';        
+        this.alwaysLoadParams = true;
     }
     
     
@@ -39696,13 +39716,65 @@ extends OperatorBase
 
         return request;
     }
+
+
+
+    updateValues(updateParamId, paramIds, values) // virtual
+    {
+        const val = values[paramIds.findIndex(id => id == 'value')];
+
+        if (this.params.length > 0) 
+            this.params[0].setValue(val);
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+        const colors = this.getHeaderColors();
+        
+        this.header.style.background = rgb2style(rgbDocumentBody);
+        this.header.style.boxShadow  = '0 0 0 1px ' + rgba2style(colors.back) + ' inset';
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+
+
+        if (this.params.length > 0)
+        {
+            this.div   .style.borderBottomLeftRadius  = '0px';        
+            this.inner .style.borderBottomLeftRadius  = '0px';        
+            this.header.style.borderBottomLeftRadius  = '0px';        
+
+            this.div   .style.borderBottomRightRadius = '0px';        
+            this.inner .style.borderBottomRightRadius = '0px';        
+            this.header.style.borderBottomRightRadius = '0px';        
+        }
+        else
+        {
+            this.div   .style.borderRadius = '4px';        
+            this.inner .style.borderRadius = '4px';        
+            this.header.style.borderRadius = '4px';        
+        }
+    }
 }
 
 
 
 function OpCache_onConnectInput(node)
 {
-    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+    const inOutput = node.inputs[0].connectedOutput;
+
+    node.outputs[0].types = [...inOutput.types];
+
+         if (inOutput.supportsTypes(NUMBER_TYPES)) node.addParam(node.paramNumber);
+    else if (inOutput.supportsTypes( COLOR_TYPES)) node.addParam(node.paramColor);
 }
 
 
@@ -39710,6 +39782,8 @@ function OpCache_onConnectInput(node)
 function OpCache_onDisconnectInput(node)
 {
     node.outputs[0].types = [];
+    
+    node.removeAllParams();
 }
 
 

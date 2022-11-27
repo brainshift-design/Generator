@@ -1,6 +1,11 @@
 class   OpCache
 extends OperatorBase
 {
+    paramNumber;
+    paramColor;
+
+
+
     constructor()
     {
         super(CACHE, 'cache', 90);
@@ -10,12 +15,13 @@ extends OperatorBase
         this.addInput (new Input(ALL_TYPES));
         this.addOutput(new Output([], this.output_genRequest));
 
+        this.paramNumber = new NumberParam('value', '', false, false, false);
+        this.paramColor  = new  ColorParam('value', '', false, false, false);
+
         this.inputs[0].addEventListener('connect',    () => OpCache_onConnectInput(this));
         this.inputs[0].addEventListener('disconnect', () => OpCache_onDisconnectInput(this));
 
-        this.div   .style.borderRadius = '4px';        
-        this.inner .style.borderRadius = '4px';        
-        this.header.style.borderRadius = '4px';        
+        this.alwaysLoadParams = true;
     }
     
     
@@ -60,13 +66,65 @@ extends OperatorBase
 
         return request;
     }
+
+
+
+    updateValues(updateParamId, paramIds, values) // virtual
+    {
+        const val = values[paramIds.findIndex(id => id == 'value')];
+
+        if (this.params.length > 0) 
+            this.params[0].setValue(val);
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+        const colors = this.getHeaderColors();
+        
+        this.header.style.background = rgb2style(rgbDocumentBody);
+        this.header.style.boxShadow  = '0 0 0 1px ' + rgba2style(colors.back) + ' inset';
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+
+
+        if (this.params.length > 0)
+        {
+            this.div   .style.borderBottomLeftRadius  = '0px';        
+            this.inner .style.borderBottomLeftRadius  = '0px';        
+            this.header.style.borderBottomLeftRadius  = '0px';        
+
+            this.div   .style.borderBottomRightRadius = '0px';        
+            this.inner .style.borderBottomRightRadius = '0px';        
+            this.header.style.borderBottomRightRadius = '0px';        
+        }
+        else
+        {
+            this.div   .style.borderRadius = '4px';        
+            this.inner .style.borderRadius = '4px';        
+            this.header.style.borderRadius = '4px';        
+        }
+    }
 }
 
 
 
 function OpCache_onConnectInput(node)
 {
-    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+    const inOutput = node.inputs[0].connectedOutput;
+
+    node.outputs[0].types = [...inOutput.types];
+
+         if (inOutput.supportsTypes(NUMBER_TYPES)) node.addParam(node.paramNumber);
+    else if (inOutput.supportsTypes( COLOR_TYPES)) node.addParam(node.paramColor);
 }
 
 
@@ -74,4 +132,6 @@ function OpCache_onConnectInput(node)
 function OpCache_onDisconnectInput(node)
 {
     node.outputs[0].types = [];
+    
+    node.removeAllParams();
 }

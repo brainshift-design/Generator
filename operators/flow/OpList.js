@@ -10,6 +10,11 @@ extends OperatorBase
 
         this.addNewInput();
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
+
+
+        this.div   .style.borderRadius = '4px';        
+        this.inner .style.borderRadius = '4px';        
+        this.header.style.borderRadius = '4px';        
     }
     
     
@@ -54,17 +59,6 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
 
         return request;
-    }
-
-
-
-    updateHeader()
-    {
-        super.updateHeader();
-
-        this.div   .style.borderRadius = '4px';        
-        this.inner .style.borderRadius = '4px';        
-        this.header.style.borderRadius = '4px';        
     }
 }
 

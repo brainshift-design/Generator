@@ -53,8 +53,8 @@ extends GNumberType
         
 
         //console.log('new value');
-        this.value = new NumberValue(
-            min.value + this.random.next() * (max.value - min.value),
+        this.value = new NumberValue(this.random.next(),
+//            min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
 
             

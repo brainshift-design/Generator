@@ -111,4 +111,16 @@ extends OperatorBase
         for (const param of this.params)
             param.enableControlText(false);
     }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+        const colors = this.getHeaderColors();
+        
+        this.header.style.background = rgb2style(rgbDocumentBody);
+        this.header.style.boxShadow  = '0 0 0 1px ' + rgba2style(colors.back) + ' inset';
+    }
 }

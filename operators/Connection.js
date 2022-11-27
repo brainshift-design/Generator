@@ -350,7 +350,7 @@ function updateWireStyle(wire)
     wire.curve .style.stroke = wireStyle;
     wire.curve2.style.stroke = rgb2style(rgbDocumentBody);//wireStyle;
 
-    wire.curve.style.strokeDasharray = uncached ? 1.5 * graphView.zoom : 0;
+    wire.curve.style.strokeDasharray = uncached ? 1.7 * graphView.zoom : 0;
 
     wire. inBall .style.fill = wireStyle;
     wire.outBall .style.fill = wireStyle;
