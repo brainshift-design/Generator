@@ -503,6 +503,15 @@ class Operator
 
 
 
+    isOrFollowedByMultiplier()
+    {
+        return isMultiplier(this)
+             ? true
+             : this.followedByMultiplier();
+    }
+
+
+
     followedByMultiplier()
     {
         for (const output of this.outputs)

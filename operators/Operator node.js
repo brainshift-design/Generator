@@ -259,8 +259,7 @@ function createNodeHeader(node)
                     
                     const inputRect = boundingRect(savedConn.input.div);
 
-                    tempConn.wire2.inputPos = 
-                    tempConn.wire .inputPos = point(
+                    tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
                         inputRect.y + inputRect.h/2 - menuBar.offsetHeight);
                 }
@@ -282,8 +281,7 @@ function createNodeHeader(node)
 
                     const inputRect = boundingRect(input.div);
 
-                    tempConn.wire2.inputPos = 
-                    tempConn.wire .inputPos = point(
+                    tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
                         inputRect.y + inputRect.h/2 - menuBar.offsetHeight);
                 }
@@ -303,8 +301,7 @@ function createNodeHeader(node)
 
                 const rect = boundingRect(output.div);
 
-                tempConn.wire2.outputPos =
-                tempConn.wire .outputPos = point(
+                tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - menuBar.offsetHeight);
 
@@ -383,8 +380,7 @@ function createNodeHeader(node)
                     input.updateControl();
                 }
                 
-                graphView.tempConn.wire2.inputPos =
-                graphView.tempConn.wire .inputPos = point_NaN;
+                graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
                   && graphView.tempConn.input.node != node)
@@ -400,8 +396,7 @@ function createNodeHeader(node)
                     output.updateControl();
                 }
 
-                graphView.tempConn.wire2.outputPos =
-                graphView.tempConn.wire .outputPos = point_NaN;
+                graphView.tempConn.wire.outputPos = point_NaN;
                 
                 graphView.tempConn.input.updateControl();
            }

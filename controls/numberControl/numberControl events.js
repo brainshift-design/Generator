@@ -234,8 +234,7 @@ function initNumberControlEvents(control)
 
                 const rect = boundingRect(control.param.input.div);
 
-                graphView.tempConn.wire2.inputPos = 
-                graphView.tempConn.wire .inputPos = point(
+                graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - menuBar.offsetHeight);
             }
@@ -252,7 +251,6 @@ function initNumberControlEvents(control)
 
                 const rect = boundingRect(control.param.output.div);
 
-                graphView.tempConn.wire2.outputPos =
                 graphView.tempConn.wire .outputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - menuBar.offsetHeight);
@@ -294,8 +292,7 @@ function initNumberControlEvents(control)
                     input.updateControl();
                 }
                 
-                graphView.tempConn.wire2.inputPos =
-                graphView.tempConn.wire .inputPos = point_NaN;
+                graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
                   && graphView.tempConn.input.node != control.param.node)
@@ -310,9 +307,7 @@ function initNumberControlEvents(control)
                     output.updateControl();
                 }
 
-                graphView.tempConn.wire2.outputPos =
-                graphView.tempConn.wire .outputPos = point_NaN;
-
+                graphView.tempConn.wire.outputPos = point_NaN;
                 graphView.tempConn.input.updateControl();
            }
         }

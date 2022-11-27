@@ -5,14 +5,13 @@ const UNKNOWN_CHAR        = '?';
 const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
 
 
-const CACHE               = 'CACHE';
-
 const LIST_VALUE          = 'LIST#';
 const LIST                = 'LIST';
 
 const ITEMS               = 'ITEMS';
 
-const REPEAT              = 'REP';
+const START               = 'STRT';
+const REPEAT              = 'REPT';
 
 
 const LIST_TYPES =
@@ -29,10 +28,11 @@ const FOREACH             = 'FOR';
 
 const FLOW_TYPES =
 [
-    REPEAT,
-    FOREACH,
     ...LIST_TYPES,
-    ITEMS
+    ITEMS,
+    START,
+    REPEAT,
+    FOREACH
 ];
 
 

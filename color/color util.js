@@ -1,13 +1,18 @@
-const rgb_NaN = [
+const rgbNaN = [
     Number.NaN,
     Number.NaN,
     Number.NaN ];
 
-const rgba_NaN = [
+const rgbaNaN = [
     Number.NaN,
     Number.NaN,
     Number.NaN,
     Number.NaN ];
+
+
+const rgbInvalid  = [0xff, 0, 0xff];
+const rgbaInvalid = [0xff, 0, 0xff, 0xff];
+
 
 const dataColor_NaN = [
     'rgb',

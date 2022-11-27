@@ -23,7 +23,7 @@ extends EventTarget
     colorLight;
     colorDark;
 
-    wireColor;
+    //wireColor;
 
   
     div;
@@ -99,7 +99,7 @@ extends EventTarget
         this.colorLight       = [0, 0, 0, 1];
         this.colorDark        = [1, 1, 1, 1];
 
-        this.wireColor        = rgbHeaderFromType(this.types[0], true);
+        //this.wireColor        = rgbHeaderFromType(this.types[0], true);
 
         
         this.div.appendChild(this.hitbox);
@@ -135,8 +135,7 @@ extends EventTarget
 
                 if (!loop)
                 {
-                    tc.wire2.inputPos = 
-                    tc.wire .inputPos = point(
+                    tc.wire.inputPos = point(
                         rect.x + rect.w/2,
                         rect.y + rect.h/2 - menuBar.offsetHeight);
                 }
@@ -170,8 +169,7 @@ extends EventTarget
 
         if (   graphView.tempConn
             && graphView.tempConn.output)
-            graphView.tempConn.wire2.inputPos =
-            graphView.tempConn.wire .inputPos = point_NaN;
+            graphView.tempConn.wire.inputPos = point_NaN;
     }
 
 
@@ -228,27 +226,27 @@ extends EventTarget
         this.wireBall.style.left = '1px';
         this.wireBall.style.top  = 'calc(50% - 3px)';
 
-        this.wireBall.style.backgroundColor = 
-            this.connected
-            ? (   graphView.savedConn
-               && graphView.savedConn.input == this
-               && graphView.overInput != this
-               ? 'transparent'
-               : rgba2style(toRgba(this.connectedOutput.wireColor)))
-            : (   tc
-               && tc.output
-               && this.canConnect(tc.output)
-               && graphView.overInput == this
-               ? rgba2style(toRgba(tc.output.wireColor))
-               : (   tc
-                  && tc.input
-                  && tc.input == this)
-                  ? (graphView.overOutput
-                     ? rgba2style(toRgba(graphView.overOutput.wireColor))
-                     : (graphView.headerOutput
-                        ? rgba2style(toRgba(graphView.headerOutput.wireColor))
-                        : rgba2style(toRgba(tc.input.wireColor))))
-                  : colorStyle);
+        this.wireBall.style.backgroundColor = [255, 0, 255];
+            // this.connected
+            // ? (   graphView.savedConn
+            //    && graphView.savedConn.input == this
+            //    && graphView.overInput != this
+            //    ? 'transparent'
+            //    : rgba2style(toRgba(this.connectedOutput.wireColor)))
+            // : (   tc
+            //    && tc.output
+            //    && this.canConnect(tc.output)
+            //    && graphView.overInput == this
+            //    ? rgba2style(toRgba(tc.output.wireColor))
+            //    : (   tc
+            //       && tc.input
+            //       && tc.input == this)
+            //       ? (graphView.overOutput
+            //          ? rgba2style(toRgba(graphView.overOutput.wireColor))
+            //          : (graphView.headerOutput
+            //             ? rgba2style(toRgba(graphView.headerOutput.wireColor))
+            //             : rgba2style(toRgba(tc.input.wireColor))))
+            //       : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;
 

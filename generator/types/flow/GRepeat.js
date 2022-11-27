@@ -52,10 +52,10 @@ extends GOperator
                 if (input.type == LIST_VALUE)
                 {
                     for (const item of input.items)
-                        this.value.items.push(item);   
+                        this.value.items.push(item.toValue());   
                 }
                 else
-                    this.value.items.push(input);
+                    this.value.items.push(input.toValue());
             }
         }
 

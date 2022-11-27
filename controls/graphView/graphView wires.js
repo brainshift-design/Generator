@@ -1,6 +1,5 @@
 graphView.addConnWires = function(conn, updateTransform = true)
 {
-    graphView.addWire(conn.wire2, updateTransform);
     graphView.addWire(conn.wire,  updateTransform);
 }
 
@@ -19,7 +18,6 @@ graphView.addWire = function(wire, updateTransform = true)
 
 graphView.removeConnWires = function(conn)
 {
-    graphView.removeWire(conn.wire2);
     graphView.removeWire(conn.wire);
 };
 
@@ -38,7 +36,6 @@ graphView.removeWire = function(wire)
 
 function updateConnWires(conn, x = 0, y = 0)
 {
-    updateWire(conn.wire2, x, y);
     updateWire(conn.wire,  x, y);
 }
 
@@ -112,12 +109,12 @@ function updateWires(wires)
         // the yOffset is to start wire coords just below the control bar,
         // not at the top of the window
 
-        wire.updateCurve  (pOut[i].x, pOut[i].y, pIn[i].x, pIn[i].y);
+        updateWireCurve(wire, pOut[i].x, pOut[i].y, pIn[i].x, pIn[i].y);
 
-        if (wire.outBall) wire.updateOutBall(pOut[i].x, pOut[i].y);
-        if (wire. inBall) wire.updateInBall (pIn [i].x, pIn [i].y);
+        if (wire.outBall) updateWireOutBall(wire, pOut[i].x, pOut[i].y);
+        if (wire. inBall) updateWireInBall (wire, pIn [i].x, pIn [i].y);
 
-        wire.updateStyle(wire.getColor());
+        updateWireStyle(wire);
 
         wire.setAttribute('width',  cw);
         wire.setAttribute('height', ch);
@@ -136,10 +133,10 @@ function updateWires(wires)
         const input  = conn.input;
         const output = conn.output;
 
-        const isSolo = 
-                graphView._soloNode
-            && (    input.node == graphView._soloNode
-                || output.node == graphView._soloNode);
+        // const isSolo = 
+        //         graphView._soloNode
+        //     && (    input.node == graphView._soloNode
+        //         || output.node == graphView._soloNode);
 
         show(wires[i],       /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
         show(wires[i].curve, /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);

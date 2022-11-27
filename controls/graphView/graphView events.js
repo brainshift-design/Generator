@@ -54,7 +54,6 @@ graphView.addEventListener('pointerdown', e =>
 
                 graphView.savedConn = graphView.overInput.connection;
 
-                hide(graphView.savedConn.wire2);
                 hide(graphView.savedConn.wire);
             }
             else

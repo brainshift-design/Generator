@@ -18,6 +18,8 @@ extends GNode
 
         this.valid    = false;
         this.topLevel = false;
+
+        this.value    = null;
     }
 
 

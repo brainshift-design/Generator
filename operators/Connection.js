@@ -4,7 +4,6 @@ class Connection
     input;
 
     wire;
-    wire2;
 
 
     constructor(output, input)
@@ -25,272 +24,60 @@ class Connection
         this.wire.inBall.style.position  = 'absolute';
 
         this.wire .appendChild(this.wire .curve  );
+        this.wire .appendChild(this.wire .curve2 );
         this.wire .appendChild(this.wire .xp1    );
         this.wire .appendChild(this.wire .xp2    );
         this.wire .appendChild(this.wire .outBall);
         this.wire .appendChild(this.wire .inBall );
 
         
-        this.wire2 = this.createWire(this.wire2);
-
-        this.wire2.appendChild(this.wire2.curve  );
-        this.wire2.appendChild(this.wire2.xp1    );
-        this.wire2.appendChild(this.wire2.xp2    );
-        
-
         this.wire.update = (x1, y1, x2, y2) =>
         {
             const cw = graphView.clientWidth;
             const ch = graphView.clientHeight;
         
             
-            this.wire .updateCurve  (x1, y1, x2, y2);
-            this.wire .updateOutBall(x1, y1        );
-            this.wire .updateInBall (        x2, y2);
-           
-            this.wire .updateStyle(this.wire.getColor());
+            updateWireCurve  (this.wire, x1, y1, x2, y2);
+            updateWireOutBall(this.wire, x1, y1        );
+            updateWireInBall (this.wire,         x2, y2);
+            updateWireStyle  (this.wire);
 
             this.wire .setAttribute('width',  cw);
             this.wire .setAttribute('height', ch);
-
-
-            this.wire2.updateCurve (x1, y1, x2, y2);
-
-            this.wire2.updateStyle (this.wire2.getColor());
-
-            this.wire2.setAttribute('width',  cw);
-            this.wire2.setAttribute('height', ch);
         };
 
 
 
         this.wire.getColor = () =>
         {
-            if (this.output)
-                return this.output.supportsTypes(LIST_TYPES)
-                       ? (rgbDocumentBody)
-                       : this.output.wireColor;
+            const types = [];
 
+
+            if (this.output)
+            {
+                if (this.output.types.length > 0)
+                    types.push(...this.output.types);
+                else
+                    types.push(this.output.node.type);
+            }
             else if (this.input)
             {
                 if (   graphView.overOutput
                     && this.input.canConnect(graphView.overOutput)) 
-                    return graphView.overOutput.wireColor;
+                    types.push(...graphView.overOutput.types);
                 else
-                    return this.input.wireColor;
-            }
-                
-            else 
-                return [255, 0, 255];
-        };
-
-
-
-        this.wire2.getColor = () =>
-        {
-            if (this.output)
-                return this.output.wireColor;
-
-            else if (this.input)
-            {
-                if (   graphView.overOutput
-                    && this.input.canConnect(graphView.overOutput)) 
-                    return graphView.overOutput.wireColor;
-                else
-                    return this.input.wireColor;
-            }
-                
-            else 
-                return [255, 0, 255];
-        };
-
-
-
-        this.wire.updateOutBall = (x, y) =>
-        {
-            this.wire.outBall.setAttribute('cx', x);
-            this.wire.outBall.setAttribute('cy', y);
-        };
-
-
-
-        this.wire.updateInBall = (x, y) =>
-        {
-            this.wire.inBall.setAttribute('cx', x);
-            this.wire.inBall.setAttribute('cy', y);
-        };
-
-
-
-        this.wire.updateStyle = (color) =>
-        {
-            const l = rgb2hclokl(color)[2];
-            
-            const bright       = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
-            const innerOpacity = Math.round(bright * 44 * Math.min(graphView.zoom, 1)).toString(16).padStart(2, '0');
-            const outerOpacity = Math.round(bright * 60).toString(16).padStart(2, '0');
-
-            this.wire.curve.style.filter = 
-                !isDark(color)
-                ?   'drop-shadow(0px 0px 1px #000000' + innerOpacity + ') '
-                  + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
-                : 'none';
-
-             
-            let showCurve = true;
-
-            if (   this.output && this.output.wireColor[3] < 1
-                || this. input && this. input.wireColor[3] < 1)
-            {
-                showCurve = 
-                       this.output && this.output.wireColor[3] > 0
-                    || this. input && this. input.wireColor[3] > 0;
-
-                this.wire.xp1.style.display          = 'inline';
-                this.wire.xp1.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
-                this.wire.xp1.style.strokeDasharray  = 9 * graphView.zoom;
-
-                this.wire.xp2.style.display          = 'inline';
-                this.wire.xp2.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//isDarkMode() ? '#4d4d4d' : '#fff';
-                this.wire.xp2.style.strokeDasharray  = 9 * graphView.zoom;
-                this.wire.xp2.style.strokeDashoffset = 9 * graphView.zoom;
-            }
-            else
-            {
-                this.wire.xp1.style.display = 'none';
-                this.wire.xp2.style.display = 'none';
+                {
+                    if (this.input.types.length > 0)
+                        types.push(...this.input.types);
+                    else
+                        types.push(this.input.node.type);
+                }
             }
 
 
-            const wireStyle = rgba2style(color);
-
-            this.wire.  curve.style.stroke = wireStyle;
-            this.wire. inBall.style.fill   = wireStyle;
-            this.wire.outBall.style.fill   = wireStyle;
-
-
-            if (this.wire.input)
-                this.wire.input.updateControl();
-
-
-            //const listType = this.output.supportsTypes(LIST_TYPES);
-
-
-            let width = 1.6 * graphView.zoom;
-
-                 if (graphView.zoom < 1/7) width += 1 * (1 - graphView.zoom) * (7 * graphView.zoom);
-            else if (graphView.zoom < 1  ) width += 1 * (1 - graphView.zoom);
-
-            this.wire.setAttribute('stroke-width', width);
-
-
-            this.wire. inBall.style.r = 3 * graphView.zoom;
-            this.wire.outBall.style.r = 3 * graphView.zoom;
-
-            this.wire.style.zIndex    = 1;
-
-
-            // const isSolo = 
-            //        graphView._soloNode
-            //     && (   this. input.node == graphView._soloNode
-            //         || this.output.node == graphView._soloNode);
-            
-            const showWire = true;
-                //    settings.showWires 
-                // || isSolo;
-
-
-            const isReordering =   
-                   isNaN(newReorderIndex)
-                || isNaN(oldReorderIndex);
-
-
-            show(this.wire,         showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire.curve,   showWire && showCurve && (this != graphView.savedConn || isReordering));
-            show(this.wire.xp1,     showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire.xp2,     showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire.outBall, showWire && (!graphView.tempConn || graphView.tempConn.output));
-            show(this.wire. inBall, showWire && (!graphView.tempConn || graphView.tempConn. input));
-        };
-
-
-
-        this.wire2.updateStyle = (color) =>
-        {
-            const l = rgb2hclokl(color)[2];
-            
-            const bright       = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
-            const innerOpacity = Math.round(bright * 44 * Math.min(graphView.zoom, 1)).toString(16).padStart(2, '0');
-            const outerOpacity = Math.round(bright * 60).toString(16).padStart(2, '0');
-
-            this.wire2.curve.style.filter = 
-                !isDark(color)
-                ?   'drop-shadow(0px 0px 1px #000000' + innerOpacity + ') '
-                  + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
-                : 'none';
-
-
-            let showCurve = true;
-
-            if (   this.output && this.output.wireColor[3] < 1
-                || this. input && this. input.wireColor[3] < 1)
-            {
-                showCurve = 
-                       this.output && this.output.wireColor[3] > 0
-                    || this. input && this. input.wireColor[3] > 0;
-
-                this.wire2.xp1.style.display          = 'inline';
-                this.wire2.xp1.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
-                this.wire2.xp1.style.strokeDasharray  = 9 * graphView.zoom;
-
-                this.wire2.xp2.style.display          = 'inline';
-                this.wire2.xp2.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//isDarkMode() ? '#4d4d4d' : '#fff';
-                this.wire2.xp2.style.strokeDasharray  = 9 * graphView.zoom;
-                this.wire2.xp2.style.strokeDashoffset = 9 * graphView.zoom;
-            }
-            else
-            {
-                this.wire2.xp1.style.display = 'none';
-                this.wire2.xp2.style.display = 'none';
-            }
-
-
-            const listType = 
-                   this.output 
-                && this.output.supportsTypes(LIST_TYPES);
-
-            this.wire2.curve.style.stroke = listType ? rgba2style(color)  : 'transparent';
-
-
-            let width = 4.4 * graphView.zoom;
-
-                 if (graphView.zoom < 1/7) width += 2 * (1 - graphView.zoom) * (7 * graphView.zoom);
-            else if (graphView.zoom < 1  ) width += 2 * (1 - graphView.zoom);
-
-            this.wire2.setAttribute('stroke-width', width);
-
-
-            this.wire2.style.zIndex = 0;
-
-
-            // const isSolo = 
-            //        graphView._soloNode
-            //     && (   this. input.node == graphView._soloNode
-            //         || this.output.node == graphView._soloNode);
-            
-            // const showWire = true;
-                //    settings.showWires 
-                // || isSolo;
-
-            const isReordering =   
-                   isNaN(newReorderIndex)
-                || isNaN(oldReorderIndex);
-
-
-            show(this.wire2,       /*showWire &&*/ (this != graphView.savedConn || isReordering));
-            show(this.wire2.curve, /*showWire &&*/ showCurve && (this != graphView.savedConn || isReordering));
-            show(this.wire2.xp1,   /*showWire &&*/ (this != graphView.savedConn || isReordering));
-            show(this.wire2.xp2,   /*showWire &&*/ (this != graphView.savedConn || isReordering));
+            return types.length > 0
+                 ? rgb_a(rgbHeaderFromType(types[0], true), 1)
+                 : rgbaInvalid;
         };
     }
 
@@ -298,98 +85,32 @@ class Connection
 
     createWire(wire)
     {
-        wire                      = createSvg('svg');
-        wire.connection           = this;
-        wire.style.position       = 'absolute';
-        wire.style.left           = 0;
-        wire.style.top            = 0;
-        wire.style.overflow       = 'hidden';
+        wire                       = createSvg('svg');
+        wire.connection            = this;
+        wire.style.position        = 'absolute';
+        wire.style.left            = 0;
+        wire.style.top             = 0;
+        wire.style.overflow        = 'hidden';
   
-        wire.curve                = createSvg('path');
-        wire.curve.style.position = 'absolute';
-        wire.curve.style.fill     = 'none';
+        wire.curve                 = createSvg('path');
+        wire.curve.style.position  = 'absolute';
+        wire.curve.style.fill      = 'none';
 
-        wire.xp1                  = createSvg('path');
-        wire.xp1.style.position   = 'absolute';
-        wire.xp1.style.fill       = 'none';
+        wire.curve2                = createSvg('path');
+        wire.curve2.style.position = 'absolute';
+        wire.curve2.style.fill     = 'none';
+
+        wire.xp1                   = createSvg('path');
+        wire.xp1.style.position    = 'absolute';
+        wire.xp1.style.fill        = 'none';
   
-        wire.xp2                  = createSvg('path');
-        wire.xp2.style.position   = 'absolute';
-        wire.xp2.style.fill       = 'none';
+        wire.xp2                   = createSvg('path');
+        wire.xp2.style.position    = 'absolute';
+        wire.xp2.style.fill        = 'none';
 
 
-        wire.outputPos            = point_NaN;
-        wire. inputPos            = point_NaN;
-
-
-        wire.updateCurve = (x1, y1, x2, y2) =>
-        {
-            if (!pointIsNaN(wire.outputPos))
-            {
-                x1 = wire.outputPos.x;
-                y1 = wire.outputPos.y;
-            }
-
-            if (!pointIsNaN(wire.inputPos))
-            {
-                x2 = wire.inputPos.x;
-                y2 = wire.inputPos.y;
-            }
-
-            
-            const _x0 = x1;
-            const _y0 = y1;
-
-            const _x3 = x2;
-            const _y3 = y2;
-
-
-            const tx  = 600 * graphView.zoom;
-            const ty  = 300 * graphView.zoom;
-            const ecc = 100 * graphView.zoom;
-
-            const yf  = (0.3 + Math.min(Math.abs(y2 - y1) / ty, 0.8));
-
-            const df  = Math.pow((1 - Math.min(Math.abs(_x3 - _x0) / tx, 0.65)), 0.5)
-                      * yf;
-
-            const dx = 
-                  (_x3 - _x0) * df 
-                * (_x3 < _x0 ? -1 : 1);
-
-
-            let _x1 = Math.max(_x0 + ecc * Math.pow(0.1 + yf*0.9, 1.5), _x0 + dx);
-            let _y1 = _y0;
-
-            let _x2 = Math.min(_x3 - ecc * Math.pow(0.1 + yf*0.9, 1.5), _x3 - dx);
-            let _y2 = _y3;
-
-
-            if (   graphView.tempConn == this
-                && graphView.tempConn.output == graphView.overOutput)
-            {
-                _x1 += (_x0 - _x1) * 5/8;
-                _y1 += (_y0 - _y1) * 5/8;
-            }
-
-            if (   graphView.tempConn == this
-                && graphView.tempConn.input == graphView.overInput)
-            {
-                _x2 += (_x3 - _x2) * 5/8;
-                _y2 += (_y3 - _y2) * 5/8;
-            }
-
-            
-            const points =
-                   'M ' + _x0 + ',' + _y0
-                + ' C ' + _x1 + ',' + _y1
-                + ' '   + _x2 + ',' + _y2
-                + ' '   + _x3 + ',' + _y3;
-
-            wire.xp1  .setAttribute('d', points);
-            wire.xp2  .setAttribute('d', points);
-            wire.curve.setAttribute('d', points);
-        };
+        wire.outputPos             = point_NaN;
+        wire. inputPos             = point_NaN;
 
 
         return wire;
@@ -480,4 +201,208 @@ function getConnectionForArrayWithNames(conn)
         outputId:       conn.output.id,
         inputNodeName:  conn.input .node.id,
         inputId:        conn.input .id };
+}
+
+
+
+function updateWireCurve(wire, x1, y1, x2, y2)
+{
+    if (!pointIsNaN(wire.outputPos))
+    {
+        x1 = wire.outputPos.x;
+        y1 = wire.outputPos.y;
+    }
+
+    if (!pointIsNaN(wire.inputPos))
+    {
+        x2 = wire.inputPos.x;
+        y2 = wire.inputPos.y;
+    }
+
+    
+    const _x0 = x1;
+    const _y0 = y1;
+
+    const _x3 = x2;
+    const _y3 = y2;
+
+
+    const tx  = 600 * graphView.zoom;
+    const ty  = 300 * graphView.zoom;
+    const ecc = 100 * graphView.zoom;
+
+    const yf  = (0.3 + Math.min(Math.abs(y2 - y1) / ty, 0.8));
+
+    const df  = Math.pow((1 - Math.min(Math.abs(_x3 - _x0) / tx, 0.65)), 0.5)
+              * yf;
+
+    const dx = 
+          (_x3 - _x0) * df 
+        * (_x3 < _x0 ? -1 : 1);
+
+
+    let _x1 = Math.max(_x0 + ecc * Math.pow(0.1 + yf*0.9, 1.5), _x0 + dx);
+    let _y1 = _y0;
+
+    let _x2 = Math.min(_x3 - ecc * Math.pow(0.1 + yf*0.9, 1.5), _x3 - dx);
+    let _y2 = _y3;
+
+
+    if (   graphView.tempConn        == wire.connection
+        && graphView.tempConn.output == graphView.overOutput)
+    {
+        _x1 += (_x0 - _x1) * 5/8;
+        _y1 += (_y0 - _y1) * 5/8;
+    }
+
+    if (   graphView.tempConn       == wire.connection
+        && graphView.tempConn.input == graphView.overInput)
+    {
+        _x2 += (_x3 - _x2) * 5/8;
+        _y2 += (_y3 - _y2) * 5/8;
+    }
+
+    
+    const points =
+           'M ' + _x0 + ',' + _y0
+        + ' C ' + _x1 + ',' + _y1
+        + ' '   + _x2 + ',' + _y2
+        + ' '   + _x3 + ',' + _y3;
+
+    wire.xp1   .setAttribute('d', points);
+    wire.xp2   .setAttribute('d', points);
+    wire.curve .setAttribute('d', points);
+    wire.curve2.setAttribute('d', points);
+}
+
+
+
+function updateWireOutBall(wire, x, y)
+{
+    wire.outBall.setAttribute('cx', x);
+    wire.outBall.setAttribute('cy', y);
+}
+
+
+
+function updateWireInBall(wire, x, y)
+{
+    wire.inBall.setAttribute('cx', x);
+    wire.inBall.setAttribute('cy', y);
+}
+
+
+
+function updateWireStyle(wire)
+{
+    const conn  = wire.connection;
+    const color = wire.getColor();
+
+
+    const l = rgb2hclokl(color)[2];
+    
+    const bright       = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
+    const innerOpacity = Math.round(bright * 44 * Math.min(graphView.zoom, 1)).toString(16).padStart(2, '0');
+    const outerOpacity = Math.round(bright * 60).toString(16).padStart(2, '0');
+
+    
+    wire.curve.style.filter = 
+        !isDark(color)
+        ?   'drop-shadow(0px 0px 1px #000000' + innerOpacity + ') '
+          + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
+        :   'drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ') '
+          + 'drop-shadow(0px 0px 6px #ffffff' + outerOpacity + ')';
+
+     
+    let showCurve = true;
+
+    if (   conn.output && color[3] < 1
+        || conn. input && color[3] < 1)
+    {
+        showCurve = 
+               conn.output && color[3] > 0
+            || conn. input && color[3] > 0;
+
+        wire.xp1.style.display          = 'inline';
+        wire.xp1.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
+        wire.xp1.style.strokeDasharray  = 9 * graphView.zoom;
+
+        wire.xp2.style.display          = 'inline';
+        wire.xp2.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//isDarkMode() ? '#4d4d4d' : '#fff';
+        wire.xp2.style.strokeDasharray  = 9 * graphView.zoom;
+        wire.xp2.style.strokeDashoffset = 9 * graphView.zoom;
+    }
+    else
+    {
+        wire.xp1.style.display = 'none';
+        wire.xp2.style.display = 'none';
+    }
+
+
+    const wireStyle = rgba2style(color);
+
+    const uncached = 
+          !conn.output.node.isCached()
+        && conn.input
+        && conn.input.node.isOrFollowedByMultiplier();
+
+
+    wire.curve .style.stroke = wireStyle;
+    wire.curve2.style.stroke = rgb2style(rgbDocumentBody);//wireStyle;
+
+    wire.curve.style.strokeDasharray = uncached ? 1.5 * graphView.zoom : 0;
+
+    wire. inBall .style.fill = wireStyle;
+    wire.outBall .style.fill = wireStyle;
+
+
+    if (conn.output) conn.output.wireBall.style.background = wireStyle;
+    if (conn. input) conn. input.wireBall.style.background = wireStyle;
+
+    // if (this.wire.input)
+    //     this.wire.input.updateControl();
+
+
+    const listType = conn.output.supportsTypes(LIST_TYPES);
+
+
+    let width = 1.6 * graphView.zoom;
+
+         if (graphView.zoom < 1/7) width += 1 * (1 - graphView.zoom) * (7 * graphView.zoom);
+    else if (graphView.zoom < 1  ) width += 1 * (1 - graphView.zoom);
+
+
+    wire.curve .setAttribute('stroke-width', width * (listType ? (uncached ? 3.6 : 3.2) : (uncached ? 1.3 : 1)));
+    wire.curve2.setAttribute('stroke-width', width * 1.4);
+
+    wire.curve2.setAttribute('display', listType ? 'inline' : 'none');
+
+
+    wire. inBall.style.r = 3 * graphView.zoom;
+    wire.outBall.style.r = 3 * graphView.zoom;
+
+    wire.style.zIndex    = 1;
+
+
+    // const isSolo = 
+    //        graphView._soloNode
+    //     && (   this. input.node == graphView._soloNode
+    //         || this.output.node == graphView._soloNode);
+    
+    //const showWire = true;
+        //    settings.showWires 
+        // || isSolo;
+
+
+    const isReordering =   
+           isNaN(newReorderIndex)
+        || isNaN(oldReorderIndex);
+
+
+    show(wire,         /*showWire &&*/ (this != graphView.savedConn || isReordering));
+    show(wire.curve,   /*showWire &&*/ showCurve && (this != graphView.savedConn || isReordering));
+    show(wire.xp1,     /*showWire &&*/ (this != graphView.savedConn || isReordering));
+    show(wire.xp2,     /*showWire &&*/ (this != graphView.savedConn || isReordering));
+    show(wire.outBall, /*showWire &&*/ (!graphView.tempConn || graphView.tempConn.output));
+    show(wire. inBall, /*showWire &&*/ (!graphView.tempConn || graphView.tempConn. input));
 }

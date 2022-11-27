@@ -22,6 +22,15 @@ function logReqItems(items, parse)
 
 
 
+function logReqStart(rep, nValues, parse)
+{
+    parse.log += parse.tab + START;
+    parse.log += logReqNodeId(rep);
+    parse.log += ' ' + nValues;
+}
+
+
+
 function logReqRepeat(rep, nValues, parse)
 {
     parse.log += parse.tab + REPEAT;

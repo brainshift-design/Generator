@@ -14,7 +14,7 @@ class Output
     colorLight;
     colorDark;
 
-    wireColor;
+    //wireColor;
 
     div;
     hitbox;
@@ -69,7 +69,7 @@ class Output
         this.colorLight = [0, 0, 0, 1];
         this.colorDark  = [1, 1, 1, 1];
 
-        this.wireColor  = rgbHeaderFromType(this.types[0], true);
+        //this.wireColor  = rgbHeaderFromType(this.types[0], true);
         
 
         this.div.appendChild(this.hitbox);
@@ -104,8 +104,7 @@ class Output
 
                 if (!loop)
                 {
-                    graphView.tempConn.wire2.outputPos =
-                    graphView.tempConn.wire .outputPos = point(
+                    graphView.tempConn.wire.outputPos = point(
                         rect.x + rect.w/2,
                         rect.y + rect.h/2 - menuBar.offsetHeight);
                 }
@@ -142,8 +141,7 @@ class Output
 
         if (   graphView.tempConn
             && graphView.tempConn.input)
-            graphView.tempConn.wire2.outputPos =
-            graphView.tempConn.wire .outputPos = point_NaN;
+            graphView.tempConn.wire.outputPos = point_NaN;
     }
 
 
@@ -186,7 +184,7 @@ class Output
             ? '0 0 0 1px ' + colorStyle
             : 'none';
 
-        this.wireBall.style.backgroundColor = rgba2style(toRgba(this.wireColor));
+        //this.wireBall.style.backgroundColor = rgba2style(toRgba(this.wireColor));
 
         this.wireBall.style.zIndex = MAX_INT32;
 
@@ -222,19 +220,21 @@ class Output
 
     followedByMultiplier()
     {
-        for (const input of this.connectedInputs)
+        for (const input of this.connectedInputs.filter(i => !i.param))
         {
-            if (input.node instanceof OpRepeat) 
+            if (isMultiplier(input.node))
                 return true;
 
-            else
-            {
-                for (const output of input.node.outputs)
-                    if (output.followedByMultiplier())
-                        return true;
-            }
+            else return input.node.followedByMultiplier();
+            // {
+            //     for (const output of input.node.outputs)
+            //         if (output.followedByMultiplier())
+            //             return true;
+            // }
 
-            return false;
+            // return false;
         }
+
+        return false
     }
 }

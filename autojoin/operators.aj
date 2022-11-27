@@ -26,9 +26,9 @@
 ../operators/utility/OpComment.js
 
 
-../operators/flow/OpCache.js
 ../operators/flow/OpList.js
 ../operators/flow/OpItems.js
+../operators/flow/OpStart.js
 ../operators/flow/OpRepeat.js
 
 ../operators/number/OpNumber.js

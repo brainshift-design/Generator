@@ -226,7 +226,6 @@ function initColorControlEvents(control)
 
                 const rect = boundingRect(control.param.input.div);
 
-                graphView.tempConn.wire2.inputPos = 
                 graphView.tempConn.wire .inputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - menuBar.offsetHeight);
@@ -244,7 +243,6 @@ function initColorControlEvents(control)
 
                 const rect = boundingRect(control.param.output.div);
 
-                graphView.tempConn.wire2.outputPos = 
                 graphView.tempConn.wire .outputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - menuBar.offsetHeight);
@@ -286,7 +284,6 @@ function initColorControlEvents(control)
                     input.updateControl();
                 }
                 
-                graphView.tempConn.wire2.inputPos = 
                 graphView.tempConn.wire .inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
@@ -302,7 +299,6 @@ function initColorControlEvents(control)
                     output.updateControl();
                 }
 
-                graphView.tempConn.wire2.outputPos =
                 graphView.tempConn.wire .outputPos = point_NaN;
 
                 graphView.tempConn.input.updateControl();

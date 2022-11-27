@@ -43,6 +43,10 @@ extends GNumberType
             this.value = this.value.eval(parse).copy();
 
         
+        if (!this.value)
+            this.value = NumberValue.NaN;
+
+
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         

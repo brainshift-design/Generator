@@ -136,11 +136,11 @@ extends Parameter
             const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
 
 
-            this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+            //this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
-            this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+            //this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
 
@@ -153,11 +153,11 @@ extends Parameter
             const rgbaText = isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight;
 
 
-            this.input.wireColor           = noColor;
+            //this.input.wireColor           = noColor;
             this.input.colorLight          = 
             this.input.colorDark           = rgb_a(rgbaText, 0.12);
         
-            this.output.wireColor          = noColor;
+            //this.output.wireColor          = noColor;
             this.output.colorLight         =
             this.output.colorDark          = rgb_a(rgbaText, 0.12);
 

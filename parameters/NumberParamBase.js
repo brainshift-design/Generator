@@ -129,7 +129,6 @@ extends Parameter
                 this.input 
             &&  this.input.connected 
             && !this.input.connectedOutput.node.isCached()
-            &&  this.node.outputs.length > 0
             &&  this.node.followedByMultiplier();
 
         this.control.valueText = nc ? UNKNOWN_DISPLAY : '';

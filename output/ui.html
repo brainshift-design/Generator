@@ -4354,6 +4354,13 @@ function osAlt()   { return isMac ? '⌥' : 'Alt+';   }
 function osShift() { return isMac ? '⇧'  : 'Shift+'; }
 
 
+
+function isMultiplier(node)
+{
+    return node instanceof OpRepeat;
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -5089,6 +5096,15 @@ function logReqItems(items, parse)
 
 
 
+function logReqStart(rep, nValues, parse)
+{
+    parse.log += parse.tab + START;
+    parse.log += logReqNodeId(rep);
+    parse.log += ' ' + nValues;
+}
+
+
+
 function logReqRepeat(rep, nValues, parse)
 {
     parse.log += parse.tab + REPEAT;
@@ -5454,14 +5470,13 @@ const UNKNOWN_CHAR        = '?';
 const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
 
 
-const CACHE               = 'CACHE';
-
 const LIST_VALUE          = 'LIST#';
 const LIST                = 'LIST';
 
 const ITEMS               = 'ITEMS';
 
-const REPEAT              = 'REP';
+const START               = 'STRT';
+const REPEAT              = 'REPT';
 
 
 const LIST_TYPES =
@@ -5478,10 +5493,11 @@ const FOREACH             = 'FOR';
 
 const FLOW_TYPES =
 [
-    REPEAT,
-    FOREACH,
     ...LIST_TYPES,
-    ITEMS
+    ITEMS,
+    START,
+    REPEAT,
+    FOREACH
 ];
 
 
@@ -6125,6 +6141,8 @@ extends GNode
 
         this.valid    = false;
         this.topLevel = false;
+
+        this.value    = null;
     }
 
 
@@ -7834,76 +7852,6 @@ function parseStarValue(str)
 
 
 
-class GCache
-extends GOperator
-{
-    input = null;
-    
-
-
-    constructor(nodeId, options)
-    {
-        super(CACHE, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const num = new GNumber(this.nodeId, this.options);
-        
-        num.copyBase(this);
-
-        if (this.input) 
-            num.input = this.input.copy();
-        
-        num.value = this.value;
-
-        return num;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        if (this.input)
-        { 
-            this.input = this.input.eval(parse).copy();
-            this.value = this.input.toValue();
-        }
-        else
-            this.value = this.value.eval(parse).copy();
-
-        
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        
-        this.validate();
-
-        return this;
-    }
-
-
-
-    isValid()
-    {
-        return !isNaN(this.value)
-            && !isNaN(this.decimals);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
-
-
 class GList
 extends GOperator
 {
@@ -8064,6 +8012,60 @@ extends GOperator
 }
 
 
+class GStart
+extends GOperator
+{
+    input = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(START, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const start = new GStart(this.nodeId, this.options);
+
+        start.copyBase(this);
+
+        if (this.input) start.input = this.input.copy();
+        if (this.value) start.value = this.value.copy();
+
+        return start;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.input)
+        {
+            this.input = this.input.eval(parse).copy();
+            this.value = this.input.toValue();
+        }
+        else
+            this.value = null;
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value ? this.value.copy() : null;
+    }
+}
+
+
+
 class GRepeat
 extends GOperator
 {
@@ -8118,10 +8120,10 @@ extends GOperator
                 if (input.type == LIST_VALUE)
                 {
                     for (const item of input.items)
-                        this.value.items.push(item);   
+                        this.value.items.push(item.toValue());   
                 }
                 else
-                    this.value.items.push(input);
+                    this.value.items.push(input.toValue());
             }
         }
 
@@ -8214,6 +8216,10 @@ extends GNumberType
             this.value = this.value.eval(parse).copy();
 
         
+        if (!this.value)
+            this.value = NumberValue.NaN;
+
+
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
@@ -12520,6 +12526,50 @@ function genParseItems(parse)
 
 
 
+function genParseStart(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const rep = new GStart(nodeId, options);
+
+
+    let nValues = -1;
+    
+    if (!ignore)
+    {
+        nValues = parseInt(parse.move());
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReqCache(rep, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, rep);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nValues == 1)
+        rep.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, rep);
+    return rep;
+}
+
+
+
 function genParseRepeat(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -12563,7 +12613,6 @@ function genParseRepeat(parse)
     genParseNodeEnd(parse, rep);
     return rep;
 }
-
 
 
 function genParseNumValue(parse)
@@ -13607,8 +13656,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST_VALUE         ) result = genParseListValue       (parse);
     else if (parse.next == LIST               ) result = genParseList            (parse);
     else if (parse.next == ITEMS              ) result = genParseItems           (parse);
+    else if (parse.next == START              ) result = genParseStart           (parse);
     else if (parse.next == REPEAT             ) result = genParseRepeat          (parse);
-    else if (parse.next == CACHE              ) result = genParseCache           (parse);
 
     else if (parse.next == NUMBER_VALUE       ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER             ) result = genParseNumber          (parse);
@@ -14651,16 +14700,21 @@ function dataColorIsOk(col, lim = Eps)
 }
 
 
-const rgb_NaN = [
+const rgbNaN = [
     Number.NaN,
     Number.NaN,
     Number.NaN ];
 
-const rgba_NaN = [
+const rgbaNaN = [
     Number.NaN,
     Number.NaN,
     Number.NaN,
     Number.NaN ];
+
+
+const rgbInvalid  = [0xff, 0, 0xff];
+const rgbaInvalid = [0xff, 0, 0xff, 0xff];
+
 
 const dataColor_NaN = [
     'rgb',
@@ -18216,6 +18270,13 @@ function osAlt()   { return isMac ? '⌥' : 'Alt+';   }
 function osShift() { return isMac ? '⇧'  : 'Shift+'; }
 
 
+
+function isMultiplier(node)
+{
+    return node instanceof OpRepeat;
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -18947,6 +19008,15 @@ function logReqItems(items, parse)
 {
     parse.log += parse.tab + ITEMS;
     parse.log += logReqNodeId(items);
+}
+
+
+
+function logReqStart(rep, nValues, parse)
+{
+    parse.log += parse.tab + START;
+    parse.log += logReqNodeId(rep);
+    parse.log += ' ' + nValues;
 }
 
 
@@ -20004,16 +20074,21 @@ function dataColorIsOk(col, lim = Eps)
 }
 
 
-const rgb_NaN = [
+const rgbNaN = [
     Number.NaN,
     Number.NaN,
     Number.NaN ];
 
-const rgba_NaN = [
+const rgbaNaN = [
     Number.NaN,
     Number.NaN,
     Number.NaN,
     Number.NaN ];
+
+
+const rgbInvalid  = [0xff, 0, 0xff];
+const rgbaInvalid = [0xff, 0, 0xff, 0xff];
+
 
 const dataColor_NaN = [
     'rgb',
@@ -20923,14 +20998,13 @@ const UNKNOWN_CHAR        = '?';
 const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
 
 
-const CACHE               = 'CACHE';
-
 const LIST_VALUE          = 'LIST#';
 const LIST                = 'LIST';
 
 const ITEMS               = 'ITEMS';
 
-const REPEAT              = 'REP';
+const START               = 'STRT';
+const REPEAT              = 'REPT';
 
 
 const LIST_TYPES =
@@ -20947,10 +21021,11 @@ const FOREACH             = 'FOR';
 
 const FLOW_TYPES =
 [
-    REPEAT,
-    FOREACH,
     ...LIST_TYPES,
-    ITEMS
+    ITEMS,
+    START,
+    REPEAT,
+    FOREACH
 ];
 
 
@@ -21594,6 +21669,8 @@ extends GNode
 
         this.valid    = false;
         this.topLevel = false;
+
+        this.value    = null;
     }
 
 
@@ -23303,76 +23380,6 @@ function parseStarValue(str)
 
 
 
-class GCache
-extends GOperator
-{
-    input = null;
-    
-
-
-    constructor(nodeId, options)
-    {
-        super(CACHE, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const num = new GNumber(this.nodeId, this.options);
-        
-        num.copyBase(this);
-
-        if (this.input) 
-            num.input = this.input.copy();
-        
-        num.value = this.value;
-
-        return num;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        if (this.input)
-        { 
-            this.input = this.input.eval(parse).copy();
-            this.value = this.input.toValue();
-        }
-        else
-            this.value = this.value.eval(parse).copy();
-
-        
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        
-        this.validate();
-
-        return this;
-    }
-
-
-
-    isValid()
-    {
-        return !isNaN(this.value)
-            && !isNaN(this.decimals);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
-
-
 class GList
 extends GOperator
 {
@@ -23533,6 +23540,60 @@ extends GOperator
 }
 
 
+class GStart
+extends GOperator
+{
+    input = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(START, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const start = new GStart(this.nodeId, this.options);
+
+        start.copyBase(this);
+
+        if (this.input) start.input = this.input.copy();
+        if (this.value) start.value = this.value.copy();
+
+        return start;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.input)
+        {
+            this.input = this.input.eval(parse).copy();
+            this.value = this.input.toValue();
+        }
+        else
+            this.value = null;
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value ? this.value.copy() : null;
+    }
+}
+
+
+
 class GRepeat
 extends GOperator
 {
@@ -23587,10 +23648,10 @@ extends GOperator
                 if (input.type == LIST_VALUE)
                 {
                     for (const item of input.items)
-                        this.value.items.push(item);   
+                        this.value.items.push(item.toValue());   
                 }
                 else
-                    this.value.items.push(input);
+                    this.value.items.push(input.toValue());
             }
         }
 
@@ -23683,6 +23744,10 @@ extends GNumberType
             this.value = this.value.eval(parse).copy();
 
         
+        if (!this.value)
+            this.value = NumberValue.NaN;
+
+
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
@@ -27508,9 +27573,9 @@ const iconGenerator        = '<svg width="20" height="10" viewBox="0 0 20 10" fi
 
 const iconList             = '<svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
 const iconItems            = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" transform="matrix(-1 0 0 1 9 1)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 9)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 9.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 5.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/></svg>';
+const iconStart            = '<svg width="15" height="8" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="4.97369" height="1" transform="matrix(-0.707107 0.707107 0.707107 0.707107 13.53 2.86006)" fill="white"/><rect x="5.505" y="3" width="7.495" height="1" fill="white"/><circle cx="1.5" cy="3.5" r="1.5" fill="white"/><rect width="5" height="1" transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 14.2426 3.53554)" fill="white"/></svg>';
 const iconRepeat           = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle r="1.5" transform="matrix(-1 0 0 1 8.5 13.6003)" fill="white"/><path d="M12.996 11.5078C14.0482 10.4921 14.7227 9.16438 14.9093 7.74161C15.0958 6.31883 14.7834 4.88515 14.023 3.67489C13.2626 2.46463 12.0993 1.54937 10.7232 1.0787C9.34705 0.608019 7.83949 0.609769 6.44689 1.08365C5.05429 1.55754 3.85902 2.47553 3.05643 3.6876C2.25383 4.89967 1.89138 6.33413 2.02832 7.75654C2.12729 8.78463 2.48292 9.76246 3.05643 10.6082" stroke="white"/><rect width="4.97369" height="1" transform="matrix(-1 0 0 1 5.00183 10.0282)" fill="white"/><rect width="4.01843" height="1" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 5.00183 11.0282)" fill="white"/></svg>';
 const iconForEach          = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="9" width="9" height="1" fill="white"/><circle cx="1.5" cy="9.5" r="1.5" fill="white"/><circle cx="1.5" cy="5.5" r="1.5" fill="white"/><circle cx="1.5" cy="1.5" r="1.5" fill="white"/></svg>';
-const iconCache            = '<svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg"><circle r="0.9436" transform="matrix(-1 0 0 1 6.50229 5.5)" fill="white"/><path d="M2.30351 1C1.68386 1.65376 1.20533 2.44219 0.906274 3.31653C0.435594 4.69266 0.437344 6.20022 0.911224 7.59282C1.21856 8.49597 1.71269 9.31613 2.35268 10" stroke="white"/><path d="M10.7415 1C11.3612 1.65376 11.8397 2.44219 12.1387 3.31653C12.6094 4.69266 12.6077 6.20022 12.1338 7.59282C11.8265 8.49597 11.3323 9.31613 10.6923 10" stroke="white"/></svg>';
 
 const iconNumber           = '<svg width="18" height="7" viewBox="0 0 18 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.91122 0.0931559V6.90684H1.96124V0.958175H1.91528L0 2.06274V1.22433L1.96124 0.0931559H2.91122Z" fill="white"/><path d="M5.16742 6.90684V6.30798L7.75687 3.84601C8.06076 3.55767 8.31102 3.30703 8.50766 3.09411C8.7043 2.87896 8.84986 2.67712 8.94434 2.48859C9.04138 2.29785 9.0899 2.09823 9.0899 1.88973C9.0899 1.65019 9.02351 1.44281 8.89072 1.26759C8.76048 1.09236 8.58172 0.957066 8.35444 0.861692C8.12716 0.766318 7.87179 0.718631 7.58833 0.718631C7.28699 0.718631 7.02396 0.772972 6.79923 0.881654C6.57706 0.988118 6.40469 1.13783 6.28211 1.3308C6.16208 1.52376 6.10207 1.75 6.10207 2.00951H5.19806C5.19806 1.61027 5.30404 1.25982 5.516 0.958175C5.72796 0.656527 6.01652 0.421419 6.3817 0.252852C6.74944 0.0842839 7.16186 0 7.61897 0C8.07864 0 8.48595 0.0842839 8.84092 0.252852C9.19588 0.421419 9.47424 0.648764 9.67598 0.934886C9.87772 1.22101 9.97859 1.53929 9.97859 1.88973C9.97859 2.14037 9.92624 2.38546 9.82154 2.625C9.71939 2.86233 9.54063 3.12738 9.28526 3.42015C9.03245 3.71071 8.68131 4.06559 8.23186 4.48479L6.46981 6.12167V6.1749H10.1165V6.90684H5.16742Z" fill="white"/><path d="M14.5755 6.95327C14.0766 6.95327 13.6319 6.87886 13.2413 6.73005C12.8533 6.58124 12.5447 6.37444 12.3154 6.10965C12.0886 5.84266 11.9652 5.53301 11.945 5.18068H12.8974C12.9176 5.39733 13.0032 5.58443 13.1544 5.742C13.3056 5.89737 13.5034 6.01773 13.7478 6.10308C13.9922 6.18843 14.263 6.2311 14.5603 6.2311C14.8929 6.2311 15.1877 6.18077 15.4447 6.0801C15.7017 5.97944 15.9033 5.83938 16.0494 5.65993C16.1956 5.48049 16.2686 5.27259 16.2686 5.03624C16.2686 4.78896 16.1981 4.57121 16.057 4.38301C15.9159 4.19262 15.7093 4.04381 15.4372 3.93658C15.1651 3.82935 14.8325 3.77574 14.4394 3.77574H13.8196V3.05357H14.4394C14.7468 3.05357 15.0164 3.00543 15.2482 2.90914C15.4825 2.81285 15.6652 2.67717 15.7962 2.5021C15.9298 2.32703 15.9965 2.12132 15.9965 1.88497C15.9965 1.65738 15.9386 1.45933 15.8227 1.29083C15.7068 1.12232 15.543 0.991021 15.3313 0.89692C15.1222 0.80282 14.8753 0.75577 14.5906 0.75577C14.3235 0.75577 14.0715 0.798443 13.8347 0.88379C13.6004 0.966949 13.4089 1.0884 13.2602 1.24816C13.1116 1.40572 13.0309 1.59611 13.0184 1.81932H12.1113C12.1264 1.46699 12.2486 1.15843 12.4779 0.893638C12.7072 0.626655 13.007 0.418759 13.3774 0.269949C13.7503 0.121139 14.1597 0.0467339 14.6057 0.0467339C15.0844 0.0467339 15.4951 0.130986 15.8378 0.299492C16.1805 0.465809 16.4438 0.685741 16.6277 0.959289C16.8116 1.23284 16.9036 1.52827 16.9036 1.84558C16.9036 2.22417 16.7889 2.54696 16.5597 2.81394C16.3329 3.08093 16.0242 3.26584 15.6337 3.3687V3.42122C16.1225 3.49125 16.5042 3.67179 16.7789 3.96284C17.0535 4.25171 17.1908 4.60951 17.1908 5.03624C17.1908 5.4017 17.0762 5.72996 16.8469 6.02102C16.6201 6.30988 16.3102 6.53748 15.9172 6.70379C15.5241 6.87011 15.0769 6.95327 14.5755 6.95327Z" fill="white"/></svg>';
 const iconLimits           = '<svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H0.904239L3.03042 5.81055H3.10374L5.22992 0H6.13416V7H5.42543V1.68164H5.36434L3.40922 7H2.72494L0.769825 1.68164H0.708728V7H0V0Z" fill="white"/><path d="M7.9098 7H7.11553L9.41279 0H10.1948L12.4921 7H11.6978L9.82825 1.10742H9.77937L7.9098 7ZM8.20306 4.26563H11.4046V5.01758H8.20306V4.26563Z" fill="white"/><path d="M13.8332 0L15.4461 2.91211H15.495L17.108 0H18L16.0327 3.5L18 7H17.108L15.495 4.14258H15.4461L13.8332 7H12.9412L14.9574 3.5L12.9412 0H13.8332Z" fill="white"/><path d="M1 8H1.85014L3.84911 12.9805H3.91804L5.91702 8H6.76716V14H6.10083V9.44141H6.04339L4.20525 14H3.5619L1.72377 9.44141H1.66632V14H1V8Z" fill="white"/><path d="M9.90758 8V14H9.1953V8H9.90758Z" fill="white"/><path d="M17 8V14H16.3107L13.1054 9.28906H13.048V14H12.3357V8H13.025L16.2418 12.7227H16.2992V8H17Z" fill="white"/></svg>';
@@ -27720,9 +27785,8 @@ function initGeneratorMenus()
         new MenuItem('List',   {icon: iconList,   callback: e => actionManager.do(new CreateNodeAction(LIST,   btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Items',  {icon: iconItems,  callback: e => actionManager.do(new CreateNodeAction(ITEMS,  btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('',       {separator: true}),
-        new MenuItem('Repeat', {icon: iconRepeat, callback: e => actionManager.do(new CreateNodeAction(REPEAT, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('',       {separator: true}),
-        new MenuItem('Cache',  {icon: iconCache,  callback: e => actionManager.do(new CreateNodeAction(CACHE,  btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Start',  {icon: iconStart,  callback: e => actionManager.do(new CreateNodeAction(START,  btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Repeat', {icon: iconRepeat, callback: e => actionManager.do(new CreateNodeAction(REPEAT, btnNumber.div, {insert: e.shiftKey}))})]);
     
     
     menuSimpleMath = new Menu('Variable math nodes', true, false);
@@ -27740,6 +27804,8 @@ function initGeneratorMenus()
     menuNumber.addItems([
         new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(new CreateNodeAction(NUMBER,             btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('',            {separator: true}),
+        new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_RANDOM,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('',            {separator: true}),
         new MenuItem('Math',        {icon: iconMath       , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MATH,        btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_ADD,         btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_SUBTRACT,    btnNumber.div, {insert: e.shiftKey}))}),
@@ -27750,9 +27816,7 @@ function initGeneratorMenus()
         new MenuItem('· · ·',       {childMenu: menuSimpleMath }),
         new MenuItem('',            {separator: true}),
         new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('',            {separator: true}),
-        new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_RANDOM,      btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnNumber.div, {insert: e.shiftKey}))})]);
         
     
     // menuString = new Menu('String nodes', true, false);
@@ -28634,8 +28698,7 @@ function initNumberControlEvents(control)
 
                 const rect = boundingRect(control.param.input.div);
 
-                graphView.tempConn.wire2.inputPos = 
-                graphView.tempConn.wire .inputPos = point(
+                graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - menuBar.offsetHeight);
             }
@@ -28652,7 +28715,6 @@ function initNumberControlEvents(control)
 
                 const rect = boundingRect(control.param.output.div);
 
-                graphView.tempConn.wire2.outputPos =
                 graphView.tempConn.wire .outputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - menuBar.offsetHeight);
@@ -28694,8 +28756,7 @@ function initNumberControlEvents(control)
                     input.updateControl();
                 }
                 
-                graphView.tempConn.wire2.inputPos =
-                graphView.tempConn.wire .inputPos = point_NaN;
+                graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
                   && graphView.tempConn.input.node != control.param.node)
@@ -28710,9 +28771,7 @@ function initNumberControlEvents(control)
                     output.updateControl();
                 }
 
-                graphView.tempConn.wire2.outputPos =
-                graphView.tempConn.wire .outputPos = point_NaN;
-
+                graphView.tempConn.wire.outputPos = point_NaN;
                 graphView.tempConn.input.updateControl();
            }
         }
@@ -29988,7 +30047,6 @@ function initColorControlEvents(control)
 
                 const rect = boundingRect(control.param.input.div);
 
-                graphView.tempConn.wire2.inputPos = 
                 graphView.tempConn.wire .inputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - menuBar.offsetHeight);
@@ -30006,7 +30064,6 @@ function initColorControlEvents(control)
 
                 const rect = boundingRect(control.param.output.div);
 
-                graphView.tempConn.wire2.outputPos = 
                 graphView.tempConn.wire .outputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - menuBar.offsetHeight);
@@ -30048,7 +30105,6 @@ function initColorControlEvents(control)
                     input.updateControl();
                 }
                 
-                graphView.tempConn.wire2.inputPos = 
                 graphView.tempConn.wire .inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
@@ -30064,7 +30120,6 @@ function initColorControlEvents(control)
                     output.updateControl();
                 }
 
-                graphView.tempConn.wire2.outputPos =
                 graphView.tempConn.wire .outputPos = point_NaN;
 
                 graphView.tempConn.input.updateControl();
@@ -31912,10 +31967,7 @@ graphView.putWiresOnTop = function(node)
 
     for (const input of node.inputs.filter(i => i.connected))
     {
-        wireContainer.removeChild(input.connection.wire2);
         wireContainer.removeChild(input.connection.wire);
-
-        wireContainer.appendChild(input.connection.wire2);
         wireContainer.appendChild(input.connection.wire);
     }
         
@@ -31923,10 +31975,7 @@ graphView.putWiresOnTop = function(node)
     {
         for (const connInput of output.connectedInputs)
         {
-            wireContainer.removeChild(connInput.connection.wire2);
             wireContainer.removeChild(connInput.connection.wire);
-
-            wireContainer.appendChild(connInput.connection.wire2);
             wireContainer.appendChild(connInput.connection.wire);
         }
     }
@@ -31949,19 +31998,13 @@ graphView.updateNodeTransforms = function(nodes, _updateWires = true)
             if (   input.connected
                 && input.connection
                 && !wires.includes(input.connection.wire))
-            {
-                wires.push(input.connection.wire2);        
                 wires.push(input.connection.wire);        
-            }
 
         for (const output of node.outputs)
             for (const connInput of output.connectedInputs)
                 if (   connInput.connection
                     && !wires.includes(connInput.connection.wire))
-                {
-                    wires.push(connInput.connection.wire2);
                     wires.push(connInput.connection.wire);
-                }
     }
 
 
@@ -31987,18 +32030,12 @@ graphView.updateNodeTransform = function(node)
     for (const input of node.inputs)
         if (   input.connected
             && input.connection)
-        {
-            wires.push(input.connection.wire2);        
             wires.push(input.connection.wire);        
-        }
 
     for (const output of node.outputs)
         for (const connInput of output.connectedInputs)
             if (connInput.connection)
-            {
-                wires.push(connInput.connection.wire2);
                 wires.push(connInput.connection.wire);
-            }
 
     graphView.setNodeTransform(node, nodeLeft, nodeTop, nodeRect);
 
@@ -32050,7 +32087,6 @@ graphView.soloNode = function(node)
 
     graph.connections.forEach(c =>
     { 
-        c.wire2.style.opacity = 
         c.wire .style.opacity = 
                c.input  && graphView._soloNode == c.input .node
             || c.output && graphView._soloNode == c.output.node
@@ -32058,7 +32094,6 @@ graphView.soloNode = function(node)
             : 0.09;
     });
 
-    updateWires(graph.connections.map(c => c.wire2));
     updateWires(graph.connections.map(c => c.wire));
 };
 
@@ -32068,12 +32103,9 @@ graphView.unsoloNode = function()
 {
     graphView._soloNode = null;
 
-    graph.nodes.forEach(n => n.div.style.opacity = 1);
-
-    graph.connections.forEach(c => c.wire2.style.opacity = 1);
+    graph.nodes      .forEach(n => n.div.style.opacity = 1);
     graph.connections.forEach(c => c.wire .style.opacity = 1);
 
-    updateWires(graph.connections.map(c => c.wire2));
     updateWires(graph.connections.map(c => c.wire));
 };
 
@@ -32233,7 +32265,6 @@ graphView.addEventListener('pointerdown', e =>
 
                 graphView.savedConn = graphView.overInput.connection;
 
-                hide(graphView.savedConn.wire2);
                 hide(graphView.savedConn.wire);
             }
             else
@@ -33225,7 +33256,6 @@ scrollbarY.addEventListener('pointermove', e =>
 
 graphView.addConnWires = function(conn, updateTransform = true)
 {
-    graphView.addWire(conn.wire2, updateTransform);
     graphView.addWire(conn.wire,  updateTransform);
 }
 
@@ -33244,7 +33274,6 @@ graphView.addWire = function(wire, updateTransform = true)
 
 graphView.removeConnWires = function(conn)
 {
-    graphView.removeWire(conn.wire2);
     graphView.removeWire(conn.wire);
 };
 
@@ -33263,7 +33292,6 @@ graphView.removeWire = function(wire)
 
 function updateConnWires(conn, x = 0, y = 0)
 {
-    updateWire(conn.wire2, x, y);
     updateWire(conn.wire,  x, y);
 }
 
@@ -33337,12 +33365,12 @@ function updateWires(wires)
         // the yOffset is to start wire coords just below the control bar,
         // not at the top of the window
 
-        wire.updateCurve  (pOut[i].x, pOut[i].y, pIn[i].x, pIn[i].y);
+        updateWireCurve(wire, pOut[i].x, pOut[i].y, pIn[i].x, pIn[i].y);
 
-        if (wire.outBall) wire.updateOutBall(pOut[i].x, pOut[i].y);
-        if (wire. inBall) wire.updateInBall (pIn [i].x, pIn [i].y);
+        if (wire.outBall) updateWireOutBall(wire, pOut[i].x, pOut[i].y);
+        if (wire. inBall) updateWireInBall (wire, pIn [i].x, pIn [i].y);
 
-        wire.updateStyle(wire.getColor());
+        updateWireStyle(wire);
 
         wire.setAttribute('width',  cw);
         wire.setAttribute('height', ch);
@@ -33361,10 +33389,10 @@ function updateWires(wires)
         const input  = conn.input;
         const output = conn.output;
 
-        const isSolo = 
-                graphView._soloNode
-            && (    input.node == graphView._soloNode
-                || output.node == graphView._soloNode);
+        // const isSolo = 
+        //         graphView._soloNode
+        //     && (    input.node == graphView._soloNode
+        //         || output.node == graphView._soloNode);
 
         show(wires[i],       /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
         show(wires[i].curve, /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
@@ -33722,7 +33750,6 @@ extends Parameter
                 this.input 
             &&  this.input.connected 
             && !this.input.connectedOutput.node.isCached()
-            &&  this.node.outputs.length > 0
             &&  this.node.followedByMultiplier();
 
         this.control.valueText = nc ? UNKNOWN_DISPLAY : '';
@@ -34458,11 +34485,11 @@ extends Parameter
         }
 
 
-        this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+        //this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
         this.input.colorLight  = 
         this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
-        this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+        //this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
         this.output.colorLight =
         this.output.colorDark  = rgb_a(rgbaText, 0.2);
 
@@ -34815,11 +34842,11 @@ extends Parameter
             const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
 
 
-            this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+            //this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
-            this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+            //this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
 
@@ -34861,11 +34888,11 @@ extends Parameter
             const rgbaText = isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight;
 
 
-            this.input.wireColor           = noColor;
+            //this.input.wireColor           = noColor;
             this.input.colorLight          = 
             this.input.colorDark           = rgb_a(rgbaText, 0.12);
         
-            this.output.wireColor          = noColor;
+            //this.output.wireColor          = noColor;
             this.output.colorLight         =
             this.output.colorDark          = rgb_a(rgbaText, 0.12);
 
@@ -35119,11 +35146,11 @@ extends Parameter
             const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
 
 
-            this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+            //this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.input.colorLight  = 
             this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
-            this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+            //this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
             this.output.colorLight =
             this.output.colorDark  = rgb_a(rgbaText, 0.2);
 
@@ -35136,11 +35163,11 @@ extends Parameter
             const rgbaText = isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight;
 
 
-            this.input.wireColor           = noColor;
+            //this.input.wireColor           = noColor;
             this.input.colorLight          = 
             this.input.colorDark           = rgb_a(rgbaText, 0.12);
         
-            this.output.wireColor          = noColor;
+            //this.output.wireColor          = noColor;
             this.output.colorLight         =
             this.output.colorDark          = rgb_a(rgbaText, 0.12);
 
@@ -35494,9 +35521,9 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 
     switch (nodeType)
     {
-        case CACHE:               node = new OpCache();            break;
         case LIST:                node = new OpList();             break;
         case ITEMS:               node = new OpItems();            break;
+        case START:               node = new OpStart();            break;
         case REPEAT:              node = new OpRepeat();           break;
  
         case NUMBER:              node = new OpNumber();           break;
@@ -36035,7 +36062,7 @@ extends EventTarget
     colorLight;
     colorDark;
 
-    wireColor;
+    //wireColor;
 
   
     div;
@@ -36111,7 +36138,7 @@ extends EventTarget
         this.colorLight       = [0, 0, 0, 1];
         this.colorDark        = [1, 1, 1, 1];
 
-        this.wireColor        = rgbHeaderFromType(this.types[0], true);
+        //this.wireColor        = rgbHeaderFromType(this.types[0], true);
 
         
         this.div.appendChild(this.hitbox);
@@ -36147,8 +36174,7 @@ extends EventTarget
 
                 if (!loop)
                 {
-                    tc.wire2.inputPos = 
-                    tc.wire .inputPos = point(
+                    tc.wire.inputPos = point(
                         rect.x + rect.w/2,
                         rect.y + rect.h/2 - menuBar.offsetHeight);
                 }
@@ -36182,8 +36208,7 @@ extends EventTarget
 
         if (   graphView.tempConn
             && graphView.tempConn.output)
-            graphView.tempConn.wire2.inputPos =
-            graphView.tempConn.wire .inputPos = point_NaN;
+            graphView.tempConn.wire.inputPos = point_NaN;
     }
 
 
@@ -36240,27 +36265,27 @@ extends EventTarget
         this.wireBall.style.left = '1px';
         this.wireBall.style.top  = 'calc(50% - 3px)';
 
-        this.wireBall.style.backgroundColor = 
-            this.connected
-            ? (   graphView.savedConn
-               && graphView.savedConn.input == this
-               && graphView.overInput != this
-               ? 'transparent'
-               : rgba2style(toRgba(this.connectedOutput.wireColor)))
-            : (   tc
-               && tc.output
-               && this.canConnect(tc.output)
-               && graphView.overInput == this
-               ? rgba2style(toRgba(tc.output.wireColor))
-               : (   tc
-                  && tc.input
-                  && tc.input == this)
-                  ? (graphView.overOutput
-                     ? rgba2style(toRgba(graphView.overOutput.wireColor))
-                     : (graphView.headerOutput
-                        ? rgba2style(toRgba(graphView.headerOutput.wireColor))
-                        : rgba2style(toRgba(tc.input.wireColor))))
-                  : colorStyle);
+        this.wireBall.style.backgroundColor = [255, 0, 255];
+            // this.connected
+            // ? (   graphView.savedConn
+            //    && graphView.savedConn.input == this
+            //    && graphView.overInput != this
+            //    ? 'transparent'
+            //    : rgba2style(toRgba(this.connectedOutput.wireColor)))
+            // : (   tc
+            //    && tc.output
+            //    && this.canConnect(tc.output)
+            //    && graphView.overInput == this
+            //    ? rgba2style(toRgba(tc.output.wireColor))
+            //    : (   tc
+            //       && tc.input
+            //       && tc.input == this)
+            //       ? (graphView.overOutput
+            //          ? rgba2style(toRgba(graphView.overOutput.wireColor))
+            //          : (graphView.headerOutput
+            //             ? rgba2style(toRgba(graphView.headerOutput.wireColor))
+            //             : rgba2style(toRgba(tc.input.wireColor))))
+            //       : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;
 
@@ -36307,7 +36332,7 @@ class Output
     colorLight;
     colorDark;
 
-    wireColor;
+    //wireColor;
 
     div;
     hitbox;
@@ -36362,7 +36387,7 @@ class Output
         this.colorLight = [0, 0, 0, 1];
         this.colorDark  = [1, 1, 1, 1];
 
-        this.wireColor  = rgbHeaderFromType(this.types[0], true);
+        //this.wireColor  = rgbHeaderFromType(this.types[0], true);
         
 
         this.div.appendChild(this.hitbox);
@@ -36397,8 +36422,7 @@ class Output
 
                 if (!loop)
                 {
-                    graphView.tempConn.wire2.outputPos =
-                    graphView.tempConn.wire .outputPos = point(
+                    graphView.tempConn.wire.outputPos = point(
                         rect.x + rect.w/2,
                         rect.y + rect.h/2 - menuBar.offsetHeight);
                 }
@@ -36435,8 +36459,7 @@ class Output
 
         if (   graphView.tempConn
             && graphView.tempConn.input)
-            graphView.tempConn.wire2.outputPos =
-            graphView.tempConn.wire .outputPos = point_NaN;
+            graphView.tempConn.wire.outputPos = point_NaN;
     }
 
 
@@ -36479,7 +36502,7 @@ class Output
             ? '0 0 0 1px ' + colorStyle
             : 'none';
 
-        this.wireBall.style.backgroundColor = rgba2style(toRgba(this.wireColor));
+        //this.wireBall.style.backgroundColor = rgba2style(toRgba(this.wireColor));
 
         this.wireBall.style.zIndex = MAX_INT32;
 
@@ -36515,20 +36538,22 @@ class Output
 
     followedByMultiplier()
     {
-        for (const input of this.connectedInputs)
+        for (const input of this.connectedInputs.filter(i => !i.param))
         {
-            if (input.node instanceof OpRepeat) 
+            if (isMultiplier(input.node))
                 return true;
 
-            else
-            {
-                for (const output of input.node.outputs)
-                    if (output.followedByMultiplier())
-                        return true;
-            }
+            else return input.node.followedByMultiplier();
+            // {
+            //     for (const output of input.node.outputs)
+            //         if (output.followedByMultiplier())
+            //             return true;
+            // }
 
-            return false;
+            // return false;
         }
+
+        return false
     }
 }
 
@@ -36539,7 +36564,6 @@ class Connection
     input;
 
     wire;
-    wire2;
 
 
     constructor(output, input)
@@ -36560,272 +36584,60 @@ class Connection
         this.wire.inBall.style.position  = 'absolute';
 
         this.wire .appendChild(this.wire .curve  );
+        this.wire .appendChild(this.wire .curve2 );
         this.wire .appendChild(this.wire .xp1    );
         this.wire .appendChild(this.wire .xp2    );
         this.wire .appendChild(this.wire .outBall);
         this.wire .appendChild(this.wire .inBall );
 
         
-        this.wire2 = this.createWire(this.wire2);
-
-        this.wire2.appendChild(this.wire2.curve  );
-        this.wire2.appendChild(this.wire2.xp1    );
-        this.wire2.appendChild(this.wire2.xp2    );
-        
-
         this.wire.update = (x1, y1, x2, y2) =>
         {
             const cw = graphView.clientWidth;
             const ch = graphView.clientHeight;
         
             
-            this.wire .updateCurve  (x1, y1, x2, y2);
-            this.wire .updateOutBall(x1, y1        );
-            this.wire .updateInBall (        x2, y2);
-           
-            this.wire .updateStyle(this.wire.getColor());
+            updateWireCurve  (this.wire, x1, y1, x2, y2);
+            updateWireOutBall(this.wire, x1, y1        );
+            updateWireInBall (this.wire,         x2, y2);
+            updateWireStyle  (this.wire);
 
             this.wire .setAttribute('width',  cw);
             this.wire .setAttribute('height', ch);
-
-
-            this.wire2.updateCurve (x1, y1, x2, y2);
-
-            this.wire2.updateStyle (this.wire2.getColor());
-
-            this.wire2.setAttribute('width',  cw);
-            this.wire2.setAttribute('height', ch);
         };
 
 
 
         this.wire.getColor = () =>
         {
-            if (this.output)
-                return this.output.supportsTypes(LIST_TYPES)
-                       ? (rgbDocumentBody)
-                       : this.output.wireColor;
+            const types = [];
 
+
+            if (this.output)
+            {
+                if (this.output.types.length > 0)
+                    types.push(...this.output.types);
+                else
+                    types.push(this.output.node.type);
+            }
             else if (this.input)
             {
                 if (   graphView.overOutput
                     && this.input.canConnect(graphView.overOutput)) 
-                    return graphView.overOutput.wireColor;
+                    types.push(...graphView.overOutput.types);
                 else
-                    return this.input.wireColor;
-            }
-                
-            else 
-                return [255, 0, 255];
-        };
-
-
-
-        this.wire2.getColor = () =>
-        {
-            if (this.output)
-                return this.output.wireColor;
-
-            else if (this.input)
-            {
-                if (   graphView.overOutput
-                    && this.input.canConnect(graphView.overOutput)) 
-                    return graphView.overOutput.wireColor;
-                else
-                    return this.input.wireColor;
-            }
-                
-            else 
-                return [255, 0, 255];
-        };
-
-
-
-        this.wire.updateOutBall = (x, y) =>
-        {
-            this.wire.outBall.setAttribute('cx', x);
-            this.wire.outBall.setAttribute('cy', y);
-        };
-
-
-
-        this.wire.updateInBall = (x, y) =>
-        {
-            this.wire.inBall.setAttribute('cx', x);
-            this.wire.inBall.setAttribute('cy', y);
-        };
-
-
-
-        this.wire.updateStyle = (color) =>
-        {
-            const l = rgb2hclokl(color)[2];
-            
-            const bright       = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
-            const innerOpacity = Math.round(bright * 44 * Math.min(graphView.zoom, 1)).toString(16).padStart(2, '0');
-            const outerOpacity = Math.round(bright * 60).toString(16).padStart(2, '0');
-
-            this.wire.curve.style.filter = 
-                !isDark(color)
-                ?   'drop-shadow(0px 0px 1px #000000' + innerOpacity + ') '
-                  + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
-                : 'none';
-
-             
-            let showCurve = true;
-
-            if (   this.output && this.output.wireColor[3] < 1
-                || this. input && this. input.wireColor[3] < 1)
-            {
-                showCurve = 
-                       this.output && this.output.wireColor[3] > 0
-                    || this. input && this. input.wireColor[3] > 0;
-
-                this.wire.xp1.style.display          = 'inline';
-                this.wire.xp1.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
-                this.wire.xp1.style.strokeDasharray  = 9 * graphView.zoom;
-
-                this.wire.xp2.style.display          = 'inline';
-                this.wire.xp2.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//isDarkMode() ? '#4d4d4d' : '#fff';
-                this.wire.xp2.style.strokeDasharray  = 9 * graphView.zoom;
-                this.wire.xp2.style.strokeDashoffset = 9 * graphView.zoom;
-            }
-            else
-            {
-                this.wire.xp1.style.display = 'none';
-                this.wire.xp2.style.display = 'none';
+                {
+                    if (this.input.types.length > 0)
+                        types.push(...this.input.types);
+                    else
+                        types.push(this.input.node.type);
+                }
             }
 
 
-            const wireStyle = rgba2style(color);
-
-            this.wire.  curve.style.stroke = wireStyle;
-            this.wire. inBall.style.fill   = wireStyle;
-            this.wire.outBall.style.fill   = wireStyle;
-
-
-            if (this.wire.input)
-                this.wire.input.updateControl();
-
-
-            //const listType = this.output.supportsTypes(LIST_TYPES);
-
-
-            let width = 1.6 * graphView.zoom;
-
-                 if (graphView.zoom < 1/7) width += 1 * (1 - graphView.zoom) * (7 * graphView.zoom);
-            else if (graphView.zoom < 1  ) width += 1 * (1 - graphView.zoom);
-
-            this.wire.setAttribute('stroke-width', width);
-
-
-            this.wire. inBall.style.r = 3 * graphView.zoom;
-            this.wire.outBall.style.r = 3 * graphView.zoom;
-
-            this.wire.style.zIndex    = 1;
-
-
-            // const isSolo = 
-            //        graphView._soloNode
-            //     && (   this. input.node == graphView._soloNode
-            //         || this.output.node == graphView._soloNode);
-            
-            const showWire = true;
-                //    settings.showWires 
-                // || isSolo;
-
-
-            const isReordering =   
-                   isNaN(newReorderIndex)
-                || isNaN(oldReorderIndex);
-
-
-            show(this.wire,         showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire.curve,   showWire && showCurve && (this != graphView.savedConn || isReordering));
-            show(this.wire.xp1,     showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire.xp2,     showWire && (this != graphView.savedConn || isReordering));
-            show(this.wire.outBall, showWire && (!graphView.tempConn || graphView.tempConn.output));
-            show(this.wire. inBall, showWire && (!graphView.tempConn || graphView.tempConn. input));
-        };
-
-
-
-        this.wire2.updateStyle = (color) =>
-        {
-            const l = rgb2hclokl(color)[2];
-            
-            const bright       = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
-            const innerOpacity = Math.round(bright * 44 * Math.min(graphView.zoom, 1)).toString(16).padStart(2, '0');
-            const outerOpacity = Math.round(bright * 60).toString(16).padStart(2, '0');
-
-            this.wire2.curve.style.filter = 
-                !isDark(color)
-                ?   'drop-shadow(0px 0px 1px #000000' + innerOpacity + ') '
-                  + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
-                : 'none';
-
-
-            let showCurve = true;
-
-            if (   this.output && this.output.wireColor[3] < 1
-                || this. input && this. input.wireColor[3] < 1)
-            {
-                showCurve = 
-                       this.output && this.output.wireColor[3] > 0
-                    || this. input && this. input.wireColor[3] > 0;
-
-                this.wire2.xp1.style.display          = 'inline';
-                this.wire2.xp1.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
-                this.wire2.xp1.style.strokeDasharray  = 9 * graphView.zoom;
-
-                this.wire2.xp2.style.display          = 'inline';
-                this.wire2.xp2.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//isDarkMode() ? '#4d4d4d' : '#fff';
-                this.wire2.xp2.style.strokeDasharray  = 9 * graphView.zoom;
-                this.wire2.xp2.style.strokeDashoffset = 9 * graphView.zoom;
-            }
-            else
-            {
-                this.wire2.xp1.style.display = 'none';
-                this.wire2.xp2.style.display = 'none';
-            }
-
-
-            const listType = 
-                   this.output 
-                && this.output.supportsTypes(LIST_TYPES);
-
-            this.wire2.curve.style.stroke = listType ? rgba2style(color)  : 'transparent';
-
-
-            let width = 4.4 * graphView.zoom;
-
-                 if (graphView.zoom < 1/7) width += 2 * (1 - graphView.zoom) * (7 * graphView.zoom);
-            else if (graphView.zoom < 1  ) width += 2 * (1 - graphView.zoom);
-
-            this.wire2.setAttribute('stroke-width', width);
-
-
-            this.wire2.style.zIndex = 0;
-
-
-            // const isSolo = 
-            //        graphView._soloNode
-            //     && (   this. input.node == graphView._soloNode
-            //         || this.output.node == graphView._soloNode);
-            
-            // const showWire = true;
-                //    settings.showWires 
-                // || isSolo;
-
-            const isReordering =   
-                   isNaN(newReorderIndex)
-                || isNaN(oldReorderIndex);
-
-
-            show(this.wire2,       /*showWire &&*/ (this != graphView.savedConn || isReordering));
-            show(this.wire2.curve, /*showWire &&*/ showCurve && (this != graphView.savedConn || isReordering));
-            show(this.wire2.xp1,   /*showWire &&*/ (this != graphView.savedConn || isReordering));
-            show(this.wire2.xp2,   /*showWire &&*/ (this != graphView.savedConn || isReordering));
+            return types.length > 0
+                 ? rgb_a(rgbHeaderFromType(types[0], true), 1)
+                 : rgbaInvalid;
         };
     }
 
@@ -36833,98 +36645,32 @@ class Connection
 
     createWire(wire)
     {
-        wire                      = createSvg('svg');
-        wire.connection           = this;
-        wire.style.position       = 'absolute';
-        wire.style.left           = 0;
-        wire.style.top            = 0;
-        wire.style.overflow       = 'hidden';
+        wire                       = createSvg('svg');
+        wire.connection            = this;
+        wire.style.position        = 'absolute';
+        wire.style.left            = 0;
+        wire.style.top             = 0;
+        wire.style.overflow        = 'hidden';
   
-        wire.curve                = createSvg('path');
-        wire.curve.style.position = 'absolute';
-        wire.curve.style.fill     = 'none';
+        wire.curve                 = createSvg('path');
+        wire.curve.style.position  = 'absolute';
+        wire.curve.style.fill      = 'none';
 
-        wire.xp1                  = createSvg('path');
-        wire.xp1.style.position   = 'absolute';
-        wire.xp1.style.fill       = 'none';
+        wire.curve2                = createSvg('path');
+        wire.curve2.style.position = 'absolute';
+        wire.curve2.style.fill     = 'none';
+
+        wire.xp1                   = createSvg('path');
+        wire.xp1.style.position    = 'absolute';
+        wire.xp1.style.fill        = 'none';
   
-        wire.xp2                  = createSvg('path');
-        wire.xp2.style.position   = 'absolute';
-        wire.xp2.style.fill       = 'none';
+        wire.xp2                   = createSvg('path');
+        wire.xp2.style.position    = 'absolute';
+        wire.xp2.style.fill        = 'none';
 
 
-        wire.outputPos            = point_NaN;
-        wire. inputPos            = point_NaN;
-
-
-        wire.updateCurve = (x1, y1, x2, y2) =>
-        {
-            if (!pointIsNaN(wire.outputPos))
-            {
-                x1 = wire.outputPos.x;
-                y1 = wire.outputPos.y;
-            }
-
-            if (!pointIsNaN(wire.inputPos))
-            {
-                x2 = wire.inputPos.x;
-                y2 = wire.inputPos.y;
-            }
-
-            
-            const _x0 = x1;
-            const _y0 = y1;
-
-            const _x3 = x2;
-            const _y3 = y2;
-
-
-            const tx  = 600 * graphView.zoom;
-            const ty  = 300 * graphView.zoom;
-            const ecc = 100 * graphView.zoom;
-
-            const yf  = (0.3 + Math.min(Math.abs(y2 - y1) / ty, 0.8));
-
-            const df  = Math.pow((1 - Math.min(Math.abs(_x3 - _x0) / tx, 0.65)), 0.5)
-                      * yf;
-
-            const dx = 
-                  (_x3 - _x0) * df 
-                * (_x3 < _x0 ? -1 : 1);
-
-
-            let _x1 = Math.max(_x0 + ecc * Math.pow(0.1 + yf*0.9, 1.5), _x0 + dx);
-            let _y1 = _y0;
-
-            let _x2 = Math.min(_x3 - ecc * Math.pow(0.1 + yf*0.9, 1.5), _x3 - dx);
-            let _y2 = _y3;
-
-
-            if (   graphView.tempConn == this
-                && graphView.tempConn.output == graphView.overOutput)
-            {
-                _x1 += (_x0 - _x1) * 5/8;
-                _y1 += (_y0 - _y1) * 5/8;
-            }
-
-            if (   graphView.tempConn == this
-                && graphView.tempConn.input == graphView.overInput)
-            {
-                _x2 += (_x3 - _x2) * 5/8;
-                _y2 += (_y3 - _y2) * 5/8;
-            }
-
-            
-            const points =
-                   'M ' + _x0 + ',' + _y0
-                + ' C ' + _x1 + ',' + _y1
-                + ' '   + _x2 + ',' + _y2
-                + ' '   + _x3 + ',' + _y3;
-
-            wire.xp1  .setAttribute('d', points);
-            wire.xp2  .setAttribute('d', points);
-            wire.curve.setAttribute('d', points);
-        };
+        wire.outputPos             = point_NaN;
+        wire. inputPos             = point_NaN;
 
 
         return wire;
@@ -37015,6 +36761,210 @@ function getConnectionForArrayWithNames(conn)
         outputId:       conn.output.id,
         inputNodeName:  conn.input .node.id,
         inputId:        conn.input .id };
+}
+
+
+
+function updateWireCurve(wire, x1, y1, x2, y2)
+{
+    if (!pointIsNaN(wire.outputPos))
+    {
+        x1 = wire.outputPos.x;
+        y1 = wire.outputPos.y;
+    }
+
+    if (!pointIsNaN(wire.inputPos))
+    {
+        x2 = wire.inputPos.x;
+        y2 = wire.inputPos.y;
+    }
+
+    
+    const _x0 = x1;
+    const _y0 = y1;
+
+    const _x3 = x2;
+    const _y3 = y2;
+
+
+    const tx  = 600 * graphView.zoom;
+    const ty  = 300 * graphView.zoom;
+    const ecc = 100 * graphView.zoom;
+
+    const yf  = (0.3 + Math.min(Math.abs(y2 - y1) / ty, 0.8));
+
+    const df  = Math.pow((1 - Math.min(Math.abs(_x3 - _x0) / tx, 0.65)), 0.5)
+              * yf;
+
+    const dx = 
+          (_x3 - _x0) * df 
+        * (_x3 < _x0 ? -1 : 1);
+
+
+    let _x1 = Math.max(_x0 + ecc * Math.pow(0.1 + yf*0.9, 1.5), _x0 + dx);
+    let _y1 = _y0;
+
+    let _x2 = Math.min(_x3 - ecc * Math.pow(0.1 + yf*0.9, 1.5), _x3 - dx);
+    let _y2 = _y3;
+
+
+    if (   graphView.tempConn        == wire.connection
+        && graphView.tempConn.output == graphView.overOutput)
+    {
+        _x1 += (_x0 - _x1) * 5/8;
+        _y1 += (_y0 - _y1) * 5/8;
+    }
+
+    if (   graphView.tempConn       == wire.connection
+        && graphView.tempConn.input == graphView.overInput)
+    {
+        _x2 += (_x3 - _x2) * 5/8;
+        _y2 += (_y3 - _y2) * 5/8;
+    }
+
+    
+    const points =
+           'M ' + _x0 + ',' + _y0
+        + ' C ' + _x1 + ',' + _y1
+        + ' '   + _x2 + ',' + _y2
+        + ' '   + _x3 + ',' + _y3;
+
+    wire.xp1   .setAttribute('d', points);
+    wire.xp2   .setAttribute('d', points);
+    wire.curve .setAttribute('d', points);
+    wire.curve2.setAttribute('d', points);
+}
+
+
+
+function updateWireOutBall(wire, x, y)
+{
+    wire.outBall.setAttribute('cx', x);
+    wire.outBall.setAttribute('cy', y);
+}
+
+
+
+function updateWireInBall(wire, x, y)
+{
+    wire.inBall.setAttribute('cx', x);
+    wire.inBall.setAttribute('cy', y);
+}
+
+
+
+function updateWireStyle(wire)
+{
+    const conn  = wire.connection;
+    const color = wire.getColor();
+
+
+    const l = rgb2hclokl(color)[2];
+    
+    const bright       = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
+    const innerOpacity = Math.round(bright * 44 * Math.min(graphView.zoom, 1)).toString(16).padStart(2, '0');
+    const outerOpacity = Math.round(bright * 60).toString(16).padStart(2, '0');
+
+    
+    wire.curve.style.filter = 
+        !isDark(color)
+        ?   'drop-shadow(0px 0px 1px #000000' + innerOpacity + ') '
+          + 'drop-shadow(0px 0px 6px #000000' + outerOpacity + ')'
+        :   'drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ') '
+          + 'drop-shadow(0px 0px 6px #ffffff' + outerOpacity + ')';
+
+     
+    let showCurve = true;
+
+    if (   conn.output && color[3] < 1
+        || conn. input && color[3] < 1)
+    {
+        showCurve = 
+               conn.output && color[3] > 0
+            || conn. input && color[3] > 0;
+
+        wire.xp1.style.display          = 'inline';
+        wire.xp1.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.067, 0.067, 0.067] : [0.784, 0.784, 0.784], 1 - color[3]));
+        wire.xp1.style.strokeDasharray  = 9 * graphView.zoom;
+
+        wire.xp2.style.display          = 'inline';
+        wire.xp2.style.stroke           = rgba2style(rgb_a(isDarkMode() ? [0.302, 0.302, 0.302] : [1, 1, 1], 1 - color[3]));//isDarkMode() ? '#4d4d4d' : '#fff';
+        wire.xp2.style.strokeDasharray  = 9 * graphView.zoom;
+        wire.xp2.style.strokeDashoffset = 9 * graphView.zoom;
+    }
+    else
+    {
+        wire.xp1.style.display = 'none';
+        wire.xp2.style.display = 'none';
+    }
+
+
+    const wireStyle = rgba2style(color);
+
+    const uncached = 
+          !conn.output.node.isCached()
+        && conn.input
+        && conn.input.node.isOrFollowedByMultiplier();
+
+
+    wire.curve .style.stroke = wireStyle;
+    wire.curve2.style.stroke = rgb2style(rgbDocumentBody);//wireStyle;
+
+    wire.curve.style.strokeDasharray = uncached ? 1.5 * graphView.zoom : 0;
+
+    wire. inBall .style.fill = wireStyle;
+    wire.outBall .style.fill = wireStyle;
+
+
+    if (conn.output) conn.output.wireBall.style.background = wireStyle;
+    if (conn. input) conn. input.wireBall.style.background = wireStyle;
+
+    // if (this.wire.input)
+    //     this.wire.input.updateControl();
+
+
+    const listType = conn.output.supportsTypes(LIST_TYPES);
+
+
+    let width = 1.6 * graphView.zoom;
+
+         if (graphView.zoom < 1/7) width += 1 * (1 - graphView.zoom) * (7 * graphView.zoom);
+    else if (graphView.zoom < 1  ) width += 1 * (1 - graphView.zoom);
+
+
+    wire.curve .setAttribute('stroke-width', width * (listType ? (uncached ? 3.6 : 3.2) : (uncached ? 1.3 : 1)));
+    wire.curve2.setAttribute('stroke-width', width * 1.4);
+
+    wire.curve2.setAttribute('display', listType ? 'inline' : 'none');
+
+
+    wire. inBall.style.r = 3 * graphView.zoom;
+    wire.outBall.style.r = 3 * graphView.zoom;
+
+    wire.style.zIndex    = 1;
+
+
+    // const isSolo = 
+    //        graphView._soloNode
+    //     && (   this. input.node == graphView._soloNode
+    //         || this.output.node == graphView._soloNode);
+    
+    //const showWire = true;
+        //    settings.showWires 
+        // || isSolo;
+
+
+    const isReordering =   
+           isNaN(newReorderIndex)
+        || isNaN(oldReorderIndex);
+
+
+    show(wire,         /*showWire &&*/ (this != graphView.savedConn || isReordering));
+    show(wire.curve,   /*showWire &&*/ showCurve && (this != graphView.savedConn || isReordering));
+    show(wire.xp1,     /*showWire &&*/ (this != graphView.savedConn || isReordering));
+    show(wire.xp2,     /*showWire &&*/ (this != graphView.savedConn || isReordering));
+    show(wire.outBall, /*showWire &&*/ (!graphView.tempConn || graphView.tempConn.output));
+    show(wire. inBall, /*showWire &&*/ (!graphView.tempConn || graphView.tempConn. input));
 }
 
 
@@ -37519,6 +37469,15 @@ class Operator
         }
 
         return false;
+    }
+
+
+
+    isOrFollowedByMultiplier()
+    {
+        return isMultiplier(this)
+             ? true
+             : this.followedByMultiplier();
     }
 
 
@@ -38136,7 +38095,7 @@ extends Operator
             output.colorLight =
             output.colorDark  = colors.output;
 
-            output.wireColor  = colors.wire;
+            //output.wireColor  = colors.wire;
         }
     }
 }
@@ -38403,8 +38362,7 @@ function createNodeHeader(node)
                     
                     const inputRect = boundingRect(savedConn.input.div);
 
-                    tempConn.wire2.inputPos = 
-                    tempConn.wire .inputPos = point(
+                    tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
                         inputRect.y + inputRect.h/2 - menuBar.offsetHeight);
                 }
@@ -38426,8 +38384,7 @@ function createNodeHeader(node)
 
                     const inputRect = boundingRect(input.div);
 
-                    tempConn.wire2.inputPos = 
-                    tempConn.wire .inputPos = point(
+                    tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
                         inputRect.y + inputRect.h/2 - menuBar.offsetHeight);
                 }
@@ -38447,8 +38404,7 @@ function createNodeHeader(node)
 
                 const rect = boundingRect(output.div);
 
-                tempConn.wire2.outputPos =
-                tempConn.wire .outputPos = point(
+                tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
                     rect.y + rect.h/2 - menuBar.offsetHeight);
 
@@ -38527,8 +38483,7 @@ function createNodeHeader(node)
                     input.updateControl();
                 }
                 
-                graphView.tempConn.wire2.inputPos =
-                graphView.tempConn.wire .inputPos = point_NaN;
+                graphView.tempConn.wire.inputPos = point_NaN;
             }
             else if (graphView.tempConn.input
                   && graphView.tempConn.input.node != node)
@@ -38544,8 +38499,7 @@ function createNodeHeader(node)
                     output.updateControl();
                 }
 
-                graphView.tempConn.wire2.outputPos =
-                graphView.tempConn.wire .outputPos = point_NaN;
+                graphView.tempConn.wire.outputPos = point_NaN;
                 
                 graphView.tempConn.input.updateControl();
            }
@@ -39097,142 +39051,6 @@ extends OperatorBase
 }
 
 
-class   OpCache
-extends OperatorBase
-{
-    paramNumber;
-    paramColor;
-    // paramFill;
-    // paramStroke;
-    // paramStyle;
-    // paramList;
-
-
-
-    constructor()
-    {
-        super(CACHE, 'cache', 90);
-
-        this.addInput (new Input (ALL_TYPES, this.input_getValuesForUndo));
-        this.addOutput(new Output([], this.output_genRequest));
-
-        this.inputs[0].addEventListener('connect',    e => { OpCache_onConnectInput(this); });
-        this.inputs[0].addEventListener('disconnect', e => OpCache_onDisconnectInput(this));
-
-
-        this.paramNumber = new NumberParam('value', '', false, false, false);
-        this.paramColor  = new ColorParam ('value', '', false, false, false);
-        // this.paramFill   = new FillParam  ('value', '', false, false, false);
-        // this.paramStroke = new StrokeParam('value', '', false, false, false);
-        // this.paramStyle  = new StyleParam ('value', '', false, false, false);
-        // this.paramList   = new ListParam  ('value', '', false, false, false);
-
-        this.alwaysLoadParams = true;
-    }
-
-
-
-    canAutoConnectFrom(output)
-    {
-        return this.inputs[0].canConnect(output);
-    }
-
-
-
-    isCached()
-    {
-        return this.cached;
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        // 'this' is the output        
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: '' });
-        
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-        
-        // const input = this.node.inputs[0];
-
-        // if (input.connected) request.push(...pushInputOrParam(input, gen));
-        // else                 request.push(...this.node.paramValue.genRequest(gen));
-
-            
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
-    }
-
-
-
-    updateParams()
-    {
-        // const input  = this.inputs[0];
-        // const output = this.outputs[0];
-
-
-        // const showValue = 
-        //        !input.connected
-        //     || !output.followedByMultiplier();
-
-            
-        // if (showValue)
-        // {
-        //     this.paramValue.control.style.display = 'block';
-        //     this.paramValue.enableControlText(!input.connected);
-
-        //     this.div   .style.borderBottomLeftRadius  = '0px';        
-        //     this.inner .style.borderBottomLeftRadius  = '0px';        
-        //     this.header.style.borderBottomLeftRadius  = '0px';        
-
-        //     this.div   .style.borderBottomRightRadius = '0px';        
-        //     this.inner .style.borderBottomRightRadius = '0px';        
-        //     this.header.style.borderBottomRightRadius = '0px';        
-        // }
-        // else
-        // {
-        //     this.paramValue.control.style.display = 'none';
-
-        //     this.div   .style.borderRadius = '4px';        
-        //     this.inner .style.borderRadius = '4px';        
-        //     this.header.style.borderRadius = '4px';        
-        // }
-
-
-        super.updateParams();
-    }
-
-
-
-    paramIsConsideredDefault(param)
-    {
-        return param.isDefault()
-            && !this.inputs[0].connected;
-    }
-}
-
-
-
-function OpCache_onConnectInput(node)
-{
-    node.outputs[0].types = [...node.inputs[0].types];
-}
-
-
-
-function OpCache_onDisconnectInput(node)
-{
-    node.outputs[0].types = [];
-}
-
-
 class   OpList
 extends OperatorBase
 {
@@ -39435,6 +39253,83 @@ extends OperatorBase
 }
 
 
+class   OpStart
+extends OperatorBase
+{
+    constructor()
+    {
+        super(START, 'start', 70);
+
+        this.addInput (new Input (ALL_TYPES));
+        this.addOutput(new Output([], this.output_genRequest));
+
+        this.inputs[0].addEventListener('connect',    e => { OpStart_onConnectInput(this); });
+        this.inputs[0].addEventListener('disconnect', e => OpStart_onDisconnectInput(this));
+
+        this.div   .style.borderRadius = '4px';        
+        this.inner .style.borderRadius = '4px';        
+        this.header.style.borderRadius = '4px';        
+    }
+
+
+
+    canAutoConnectFrom(output)
+    {
+        return this.inputs[0].canConnect(output);
+    }
+
+
+
+    isCached()
+    {
+        return false;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output        
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+        
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+            
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+}
+
+
+
+function OpStart_onConnectInput(node)
+{
+    node.outputs[0].types = [...node.inputs[0].connectedOutput.types];
+}
+
+
+
+function OpStart_onDisconnectInput(node)
+{
+    node.outputs[0].types = [];
+}
+
+
 class   OpRepeat
 extends OperatorBase
 {
@@ -39572,39 +39467,47 @@ extends OperatorBase
 
     updateParams()
     {
-        const input  = this.inputs[0];
+        const input  = this. inputs[0];
         const output = this.outputs[0];
+        
+        //this.paramValue.control.style.display = 'block';
+        this.paramValue.enableControlText(!input.connected);
+
+        // const output = this.outputs[0];
 
 
-        const showValue = 
-               !input.connected
-            || !output.followedByMultiplier();
+        this.paramValue.control.valueText = 
+                input.connected
+            && !input.connectedOutput.node.isCached()
+            &&  this.followedByMultiplier()
+            ? UNKNOWN_DISPLAY
+            : '';
 
             
-        if (showValue)
-        {
-            this.paramValue.control.style.display = 'block';
-            this.paramValue.enableControlText(!input.connected);
+        // if (showValue)
+        // {
+        //     this.paramValue.control.style.display = 'block';
+        //     this.paramValue.enableControlText(!input.connected);
 
-            this.div   .style.borderBottomLeftRadius  = '0px';        
-            this.inner .style.borderBottomLeftRadius  = '0px';        
-            this.header.style.borderBottomLeftRadius  = '0px';        
+        //     this.div   .style.borderBottomLeftRadius  = '0px';        
+        //     this.inner .style.borderBottomLeftRadius  = '0px';        
+        //     this.header.style.borderBottomLeftRadius  = '0px';        
 
-            this.div   .style.borderBottomRightRadius = '0px';        
-            this.inner .style.borderBottomRightRadius = '0px';        
-            this.header.style.borderBottomRightRadius = '0px';        
-        }
-        else
-        {
-            this.paramValue.control.style.display = 'none';
+        //     this.div   .style.borderBottomRightRadius = '0px';        
+        //     this.inner .style.borderBottomRightRadius = '0px';        
+        //     this.header.style.borderBottomRightRadius = '0px';        
+        // }
+        // else
+        // {
+        //     this.paramValue.control.style.display = 'none';
 
-            this.div   .style.borderRadius = '4px';        
-            this.inner .style.borderRadius = '4px';        
-            this.header.style.borderRadius = '4px';        
-        }
+        //     this.div   .style.borderRadius = '4px';        
+        //     this.inner .style.borderRadius = '4px';        
+        //     this.header.style.borderRadius = '4px';        
+        // }
 
 
-        super.updateParams();
+         super.updateParams();
     }
 
 
@@ -40637,7 +40540,7 @@ extends Operator
             input.colorLight =
             input.colorDark  = colors.input;
 
-            input.wireColor  = colors.wire;
+            //input.wireColor  = colors.wire;
         }
 
 
@@ -40646,7 +40549,7 @@ extends Operator
             output.colorLight = 
             output.colorDark  = colors.output;
 
-            output.wireColor  = colors.wire;
+            //output.wireColor  = colors.wire;
         }
 
 
@@ -40674,7 +40577,7 @@ extends Operator
 
         const rgbBack = 
             dataColorIsNaN(this._color)
-            ? rgb_NaN
+            ? rgbNaN
             : dataColor2rgb(this._color);
             
         const rgbText = getTextColorFromBackColor(rgbBack);
@@ -43205,8 +43108,8 @@ extends OpColorBase
         this.paramColor.output.colorLight       =
         this.paramColor.output.colorDark        = colors.output;
         
-        this.paramColor. input.wireColor        = rgb_a(colors.wire, 1);
-        this.paramColor.output.wireColor        = rgb_a(colors.wire, 1);
+        //this.paramColor. input.wireColor        = rgb_a(colors.wire, 1);
+        //this.paramColor.output.wireColor        = rgb_a(colors.wire, 1);
     }
 
 
@@ -43262,11 +43165,11 @@ extends OpColorBase
 
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;
-        this.inputs[0] .wireColor  = colors.wire;
+        //this.inputs[0] .wireColor  = colors.wire;
 
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = colors.output;
-        this.outputs[0].wireColor  = colors.wire;
+        //this.outputs[0].wireColor  = colors.wire;
 
 
         this.updateWarningOverlay();
@@ -43501,11 +43404,11 @@ extends OpColorBase
 
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;
-        this.inputs[0] .wireColor  = colors.wire;
+        //this.inputs[0] .wireColor  = colors.wire;
 
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = colors.output;
-        this.outputs[0].wireColor  = colors.wire;
+        //this.outputs[0].wireColor  = colors.wire;
 
 
         this.updateWarningOverlay();

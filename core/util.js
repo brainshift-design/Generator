@@ -471,3 +471,10 @@ function subscriptChar(c)
 function osCtrl()  { return isMac ? '⌘' : 'Ctrl+';  }
 function osAlt()   { return isMac ? '⌥' : 'Alt+';   }
 function osShift() { return isMac ? '⇧'  : 'Shift+'; }
+
+
+
+function isMultiplier(node)
+{
+    return node instanceof OpRepeat;
+}

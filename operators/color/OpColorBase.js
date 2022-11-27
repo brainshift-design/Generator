@@ -59,7 +59,7 @@ extends Operator
             input.colorLight =
             input.colorDark  = colors.input;
 
-            input.wireColor  = colors.wire;
+            //input.wireColor  = colors.wire;
         }
 
 
@@ -68,7 +68,7 @@ extends Operator
             output.colorLight = 
             output.colorDark  = colors.output;
 
-            output.wireColor  = colors.wire;
+            //output.wireColor  = colors.wire;
         }
 
 
@@ -96,7 +96,7 @@ extends Operator
 
         const rgbBack = 
             dataColorIsNaN(this._color)
-            ? rgb_NaN
+            ? rgbNaN
             : dataColor2rgb(this._color);
             
         const rgbText = getTextColorFromBackColor(rgbBack);

@@ -153,8 +153,8 @@ extends OpColorBase
         this.paramColor.output.colorLight       =
         this.paramColor.output.colorDark        = colors.output;
         
-        this.paramColor. input.wireColor        = rgb_a(colors.wire, 1);
-        this.paramColor.output.wireColor        = rgb_a(colors.wire, 1);
+        //this.paramColor. input.wireColor        = rgb_a(colors.wire, 1);
+        //this.paramColor.output.wireColor        = rgb_a(colors.wire, 1);
     }
 
 
@@ -210,11 +210,11 @@ extends OpColorBase
 
         this.inputs[0] .colorLight = 
         this.inputs[0] .colorDark  = colors.input;
-        this.inputs[0] .wireColor  = colors.wire;
+        //this.inputs[0] .wireColor  = colors.wire;
 
         this.outputs[0].colorLight =
         this.outputs[0].colorDark  = colors.output;
-        this.outputs[0].wireColor  = colors.wire;
+        //this.outputs[0].wireColor  = colors.wire;
 
 
         this.updateWarningOverlay();

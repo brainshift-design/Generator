@@ -298,11 +298,11 @@ extends Parameter
         }
 
 
-        this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+        //this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
         this.input.colorLight  = 
         this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
-        this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+        //this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
         this.output.colorLight =
         this.output.colorDark  = rgb_a(rgbaText, 0.2);
 

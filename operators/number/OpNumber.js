@@ -61,39 +61,47 @@ extends OperatorBase
 
     updateParams()
     {
-        const input  = this.inputs[0];
+        const input  = this. inputs[0];
         const output = this.outputs[0];
+        
+        //this.paramValue.control.style.display = 'block';
+        this.paramValue.enableControlText(!input.connected);
+
+        // const output = this.outputs[0];
 
 
-        const showValue = 
-               !input.connected
-            || !output.followedByMultiplier();
+        this.paramValue.control.valueText = 
+                input.connected
+            && !input.connectedOutput.node.isCached()
+            &&  this.followedByMultiplier()
+            ? UNKNOWN_DISPLAY
+            : '';
 
             
-        if (showValue)
-        {
-            this.paramValue.control.style.display = 'block';
-            this.paramValue.enableControlText(!input.connected);
+        // if (showValue)
+        // {
+        //     this.paramValue.control.style.display = 'block';
+        //     this.paramValue.enableControlText(!input.connected);
 
-            this.div   .style.borderBottomLeftRadius  = '0px';        
-            this.inner .style.borderBottomLeftRadius  = '0px';        
-            this.header.style.borderBottomLeftRadius  = '0px';        
+        //     this.div   .style.borderBottomLeftRadius  = '0px';        
+        //     this.inner .style.borderBottomLeftRadius  = '0px';        
+        //     this.header.style.borderBottomLeftRadius  = '0px';        
 
-            this.div   .style.borderBottomRightRadius = '0px';        
-            this.inner .style.borderBottomRightRadius = '0px';        
-            this.header.style.borderBottomRightRadius = '0px';        
-        }
-        else
-        {
-            this.paramValue.control.style.display = 'none';
+        //     this.div   .style.borderBottomRightRadius = '0px';        
+        //     this.inner .style.borderBottomRightRadius = '0px';        
+        //     this.header.style.borderBottomRightRadius = '0px';        
+        // }
+        // else
+        // {
+        //     this.paramValue.control.style.display = 'none';
 
-            this.div   .style.borderRadius = '4px';        
-            this.inner .style.borderRadius = '4px';        
-            this.header.style.borderRadius = '4px';        
-        }
+        //     this.div   .style.borderRadius = '4px';        
+        //     this.inner .style.borderRadius = '4px';        
+        //     this.header.style.borderRadius = '4px';        
+        // }
 
 
-        super.updateParams();
+         super.updateParams();
     }
 
 
