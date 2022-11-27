@@ -324,14 +324,14 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         {
             if (   control.value <  0 
                 || control.value >= control.options.length)
-                return INVALID_DISPLAY;
+                return NAN_DISPLAY;
             else
                 return control.options[Math.round(control.value)];
         }
         else
         {
             return isNaN(control.value)
-                   ? INVALID_DISPLAY
+                   ? NAN_DISPLAY
                    : Math.abs(control.value * control.valueScale) > 999999
                      ? (control.value * control.valueScale).toExponential(1)
                      : numToString(

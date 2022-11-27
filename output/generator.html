@@ -1935,17 +1935,16 @@ function boolToString(bool)
 
 function printNum(num)
 {
-    return !isNaN(num) ? num : INVALID_VALUE;
+    return !isNaN(num) ? num : NAN_CHAR;
 }
 
 
 
 function parseNum(str)
 {
-    return str == INVALID_CHAR
-        || str == INVALID_VALUE
-        ? Number.NaN 
-        : parseFloat(str);
+    return str == NAN_CHAR
+         ? Number.NaN 
+         : parseFloat(str);
 }
 
 
@@ -3151,17 +3150,21 @@ function normalizeSeed(x)
 }
 
 
-const INVALID_CHAR       = '?';
-const INVALID_VALUE      = '?';
-const INVALID_DISPLAY    = INVALID_VALUE;//'🤷‍♂️';
+const NAN_CHAR            = '-';
+const NAN_DISPLAY         = '—';
+
+const UNKNOWN_CHAR        = '?';
+const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
 
 
-const LIST_VALUE         = 'LIST#';
-const LIST               = 'LIST';
+const CACHE               = 'CACHE';
 
-const ITEMS              = 'ITEMS';
+const LIST_VALUE          = 'LIST#';
+const LIST                = 'LIST';
 
-const REPEAT             = 'REP';
+const ITEMS               = 'ITEMS';
+
+const REPEAT              = 'REP';
 
 
 const LIST_TYPES =
@@ -3173,7 +3176,7 @@ const LIST_TYPES =
 ];
 
 
-const FOREACH            = 'FOR';
+const FOREACH             = 'FOR';
 
 
 const FLOW_TYPES =
@@ -4155,8 +4158,8 @@ extends GValue
     toSimpleString()
     {
         return !isNaN(this.value)
-            ? numToString(this.value, this.decimals)
-            : INVALID_VALUE; // only NumberValue can do this, other _Values have to list all members
+              ? numToString(this.value, this.decimals)
+              : NAN_CHAR; // only NumberValue can do this, other _Values have to list all members
     }
 
 
@@ -4197,7 +4200,7 @@ function parseNumberValue(str)
 function parseSimpleNumberValue(str)
 {
     const num = 
-        str == INVALID_VALUE
+        str == NAN_CHAR
         ? NumberValue.NaN
         : new NumberValue(
               parseFloat(str),
@@ -4347,7 +4350,7 @@ extends GValue
     toRgbString()
     {
         if (!this.isValid())
-            return INVALID_VALUE;
+            return UNKNOWN_DISPLAY;
 
         const rgb = this.toRgb();
 
@@ -4756,8 +4759,8 @@ extends GValue
 
 function parseStrokeValue(str, i = -1)
 {
-    if (   i <  0 && str    == INVALID_VALUE
-        || i >= 0 && str[i] == INVALID_VALUE)
+    if (   i <  0 && str    == NAN_CHAR
+        || i >= 0 && str[i] == NAN_CHAR)
         return [StrokeValue.NaN, 1];
 
 
@@ -4984,8 +4987,8 @@ extends ShapeBaseValue
 
 function parseRectangleValue(str, i = -1)
 {
-    if (   i <  0 && str    == INVALID_VALUE
-        || i >= 0 && str[i] == INVALID_VALUE)
+    if (   i <  0 && str    == NAN_CHAR
+        || i >= 0 && str[i] == NAN_CHAR)
         return [RectangleValue.NaN, 1];
 
 
@@ -5121,7 +5124,7 @@ extends ShapeBaseValue
 
 function parseLineValue(str)
 {
-    if (str == INVALID_VALUE)
+    if (str == NAN_CHAE)
         return LineValue.NaN;
 
     const rect = str.split(' ');
@@ -5233,7 +5236,7 @@ extends ShapeBaseValue
 
 function parseEllipseValue(str)
 {
-    if (str == INVALID_VALUE)
+    if (str == NAN_CHAR)
         return EllipseValue.NaN;
 
     const rect = str.split(' ');
@@ -5369,7 +5372,7 @@ extends ShapeBaseValue
 
 function parsePolygonValue(str)
 {
-    if (str == INVALID_VALUE)
+    if (str == NAN_CHAR)
         return PolygonValue.NaN;
 
     const poly = str.split(' ');
@@ -5516,7 +5519,7 @@ extends ShapeBaseValue
 
 function parseStarValue(str)
 {
-    if (str == INVALID_VALUE)
+    if (str == NAN_CHAR)
         return StarValue.NaN;
 
     const star = str.split(' ');
@@ -5532,6 +5535,76 @@ function parseStarValue(str)
         new NumberValue(parseNumberValue(star[7])));
 }
 
+
+
+class GCache
+extends GOperator
+{
+    input = null;
+    
+
+
+    constructor(nodeId, options)
+    {
+        super(CACHE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const num = new GNumber(this.nodeId, this.options);
+        
+        num.copyBase(this);
+
+        if (this.input) 
+            num.input = this.input.copy();
+        
+        num.value = this.value;
+
+        return num;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.input)
+        { 
+            this.input = this.input.eval(parse).copy();
+            this.value = this.input.toValue();
+        }
+        else
+            this.value = this.value.eval(parse).copy();
+
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.value)
+            && !isNaN(this.decimals);
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
 
 
 class GList
@@ -9613,7 +9686,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value, forceUpdate = false)
         {
             nodeId:  nodeId,
             paramId: paramId,
-            type:    value.type, // needed to correctly parse INVALID_VALUE
+            type:    value.type, // needed to correctly parse NAN_CHAR
             value:   value
         });
     }
@@ -9754,7 +9827,7 @@ function genQueueChunk(updateNodeId, updateParamId, nodeValChunkId, nodeValChunk
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
         chunkId:       nodeValChunkId,
-        values:        [...nodeValChunk].map(v => v ? v.toString() : INVALID_VALUE),
+        values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_CHAR),
         objects:       [...objChunk]
     });
 
@@ -10047,10 +10120,10 @@ function genParseColorCorrect(parse)
     if (COLOR_TYPES.includes(parse.next))
         val.input = genParse(parse);
 
-    if (parse.next != INVALID_VALUE) val.order   = genParse(parse); else { val.order   = null; parse.move(); }
-    if (parse.next != INVALID_VALUE) val.margin1 = genParse(parse); else { val.margin1 = null; parse.move(); }
-    if (parse.next != INVALID_VALUE) val.margin2 = genParse(parse); else { val.margin2 = null; parse.move(); }
-    if (parse.next != INVALID_VALUE) val.margin3 = genParse(parse); else { val.margin3 = null; parse.move(); }
+    if (parse.next != UNKNOWN_CHAR) val.order   = genParse(parse); else { val.order   = null; parse.move(); }
+    if (parse.next != UNKNOWN_CHAR) val.margin1 = genParse(parse); else { val.margin1 = null; parse.move(); }
+    if (parse.next != UNKNOWN_CHAR) val.margin2 = genParse(parse); else { val.margin2 = null; parse.move(); }
+    if (parse.next != UNKNOWN_CHAR) val.margin3 = genParse(parse); else { val.margin3 = null; parse.move(); }
 
     parse.nTab--;
 
@@ -11233,12 +11306,13 @@ function genParse(parse, inParam = true)
 
 
          if (parse.next == PARAM              ) result = genParseParam           (parse);
- 
+    
     else if (parse.next == LIST_VALUE         ) result = genParseListValue       (parse);
     else if (parse.next == LIST               ) result = genParseList            (parse);
     else if (parse.next == ITEMS              ) result = genParseItems           (parse);
     else if (parse.next == REPEAT             ) result = genParseRepeat          (parse);
- 
+    else if (parse.next == CACHE              ) result = genParseCache           (parse);
+
     else if (parse.next == NUMBER_VALUE       ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER             ) result = genParseNumber          (parse);
     else if (parse.next == NUMBER_LIMITS      ) result = genParseLimits          (parse);
@@ -12591,7 +12665,7 @@ function rgba2hex(rgba)
 
 function validHex2rgb(hex) // can process invalid '-'
 {
-    return hex.indexOf(INVALID_CHAR) > -1 
+    return hex.indexOf(NAN_CHAR) > -1 
            ? rgb_NaN 
            : hex2rgb(hex);
 }
@@ -12600,7 +12674,7 @@ function validHex2rgb(hex) // can process invalid '-'
 
 function validHex2rgba(hex) // can process invalid '-'
 {
-    return hex.indexOf(INVALID_CHAR) > -1 
+    return hex.indexOf(NAN_CHAR) > -1 
            ? rgba_NaN 
            : hex2rgba(hex);
 }

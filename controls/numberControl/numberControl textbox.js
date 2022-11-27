@@ -169,7 +169,7 @@ function initNumberControlTextbox(control)
 
             if (      e.key.length == 1
                    && !isDigit(e.key)
-                   && e.key != INVALID_CHAR
+                   && e.key != NAN_CHAR
                    && (   !control.valueCanContainSuffix
                        || !control.suffix.includes(e.key))
                    && (   !control.showHex 
@@ -192,7 +192,8 @@ function initNumberControlTextbox(control)
                 
                     
             curVal =
-                curVal == INVALID_VALUE
+                   curVal ==     NAN_DISPLAY
+                || curVal == UNKNOWN_DISPLAY
                 ? ''
                 :   curVal.substring(0, control.textbox.selectionStart) 
                   + curVal.substring(control.textbox.selectionEnd, curVal.length);
@@ -231,7 +232,7 @@ function initNumberControlTextbox(control)
         //console.log('control.successOnFocusOut', control.successOnFocusOut);
 
         if (!control.textbox.keyBlur) control.textbox.finish(true);
-        else                         control.textbox.keyBlur = false;
+        else                          control.textbox.keyBlur = false;
 
         if (control.savedSuccessOnFocusOut != null)
         {
@@ -253,9 +254,19 @@ function initNumberControlTextbox(control)
         value = value.replace(control.suffix, '');
         
         
-        let val      = value     .indexOf(INVALID_VALUE) > -1 ? Number.NaN : (control.showHex ? parseInt(value,      16) : parseFloat(value     ));
-        let savedVal = savedValue.indexOf(INVALID_VALUE) > -1 ? Number.NaN : (control.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
+        let val = 
+            value.trim() == NAN_CHAR 
+            ? Number.NaN 
+            : (control.showHex 
+               ? parseInt(value, 16) 
+               : parseFloat(value));
 
+        let savedVal = 
+            savedValue.trim() == NAN_CHAR  
+            ? Number.NaN 
+            : (control.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
+
+        
         if (!isNaN(val))
             val /= control.valueScale;
 
@@ -275,7 +286,7 @@ function initNumberControlTextbox(control)
             {
                 control.setValue(
                        value.trim() != '' 
-                    && value.trim() != INVALID_CHAR
+                    && value.trim() != NAN_CHAR
                     ? val 
                     : savedVal);
             }
@@ -325,7 +336,7 @@ function initNumberControlTextbox(control)
     {
         control.textbox.value =
             (isNaN(control.value)
-             ? INVALID_CHAR
+             ? NAN_CHAR
              : numToString(
                    control.value * control.valueScale, 
                    control.displayDec, 

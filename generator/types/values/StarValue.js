@@ -127,7 +127,7 @@ extends ShapeBaseValue
 
 function parseStarValue(str)
 {
-    if (str == INVALID_VALUE)
+    if (str == NAN_CHAR)
         return StarValue.NaN;
 
     const star = str.split(' ');

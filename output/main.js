@@ -39,9 +39,11 @@ function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, list)
         + arrow
         + inputNodeId + ' . ' + inputId;
 }
-const INVALID_CHAR = '?';
-const INVALID_VALUE = '?';
-const INVALID_DISPLAY = INVALID_VALUE; //'🤷‍♂️';
+const NAN_CHAR = '-';
+const NAN_DISPLAY = '—';
+const UNKNOWN_CHAR = '?';
+const UNKNOWN_DISPLAY = UNKNOWN_CHAR; //'🤷‍♂️';
+const CACHE = 'CACHE';
 const LIST_VALUE = 'LIST#';
 const LIST = 'LIST';
 const ITEMS = 'ITEMS';

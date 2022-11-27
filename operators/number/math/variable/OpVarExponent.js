@@ -3,7 +3,7 @@ extends OpVarArithmetic
 {
     constructor()
     {
-        super(NUMBER_VAR_EXPONENT, 'exp', 'xʸ'); // placeholder symbol, actual symbol set in updateNode()
+        super(NUMBER_VAR_EXPONENT, 'pow', 'eˣ'); // placeholder symbol, actual symbol set in updateNode()
     }
 
 

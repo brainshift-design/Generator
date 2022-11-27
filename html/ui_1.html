@@ -1,52 +1,8 @@
 </style>
 
-<div id='menuBar'>
-    <!-- <div id='menuSelect' style='margin-left: 10px;'></div> -->
-    
-    <!-- &nbsp;
-    <button class='menuButton' id='btnLoad'                   onclick='graph.clear(); Operator.nextId = 0; uiGetPageData("graph"); this.blur();'>LOAD</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class='menuButton' id='btnSave'                   onclick='saveGraph(); this.blur();'>SAVE</button>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-    <!-- <button class='menuButton' id='btnCreateNumber'           onclick='actionManager.do(new CreateNodeAction(NUMBER,             btnCreateNumber          ));  this.blur();'><span style='font-size: 13px; letter-spacing: -0.05em;'>123</span></button> -->
-    <!-- <button class='menuButton' id='btnCreateLimits'           onclick='actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnCreateLimits          ));  this.blur();'><span style='font-size: 8px;'>MAX<br/>MIN</span></button> -->
-    <!-- <button class='menuButton' id='btnCreateAdd'              onclick='actionManager.do(new CreateNodeAction(NUMBER_ADD,         btnCreateAdd             ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>+</span></button> -->
-    <!-- <button class='menuButton' id='btnCreateSubtract'         onclick='actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,    btnCreateSubtract        ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>−</span></button> -->
-    <!-- <button class='menuButton' id='btnCreateMultiply'         onclick='actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,    btnCreateMultiply        ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>×</span></button> -->
-    <!-- <button class='menuButton' id='btnCreateDivide'           onclick='actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnCreateDivide          ));  this.blur();'><span style='font-size: 22px; position: relative; top: -1px;'>÷</span></button> -->
-    <!-- <button class='menuButton' id='btnCreateModulo'           onclick='actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnCreateModulo          ));  this.blur();'><span style='font-size: 15px;'>%</span></button> -->
-    <!-- <button class='menuButton' id='btnCreateExponent'         onclick='actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnCreateExponent        ));  this.blur();'><span style='font-size: 16px;'>x<sup><sub><sup>y</sup></sub></sup></span></button> -->
-    <!-- <button class='menuButton' id='btnCreateInterpolate'      onclick='actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnCreateInterpolate     ));  this.blur();'></button> -->
-    <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-    <!-- <button class='menuButton' id='btnCreateColor'            onclick='actionManager.do(new CreateNodeAction(COLOR,              btnCreateColor           ));  this.blur();'><span style='font-size: 17px;'>Ͼ</span></button> -->
-    <!-- <button class='menuButton' id='btnCreateColorInterpolate' onclick='actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE,  btnCreateColorInterpolate));  this.blur();'></button> -->
-    <!-- <button class='menuButton' id='btnCreateCorrectColor'    onclick='actionManager.do(new CreateNodeAction(COLOR_VALIDATE,     btnCreateCorrectColor   ));  this.blur();'></span></button> -->
-    <!-- <button class='menuButton' id='btnCreateColorContrast'    onclick='actionManager.do(new CreateNodeAction(COLOR_CONTRAST,     btnCreateColorContrast   ));  this.blur();'></button> -->
-    <!-- <button class='menuButton' id='btnCreateColorblind'       onclick='actionManager.do(new CreateNodeAction(COLORBLIND,         btnCreateColorblind      ));  this.blur();'></button> -->
-    <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-    <!-- <button class='menuButton' id='btnCreateFill'             onclick='actionManager.do(new CreateNodeAction(FILL,               btnCreateFill            ));  this.blur();'>FILL</button> -->
-    <!-- <button class='menuButton' id='btnCreateStroke'           onclick='actionManager.do(new CreateNodeAction(STROKE,             btnCreateStroke          ));  this.blur();'>STRK</button> -->
-    <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-    <!-- <button class='menuButton' id='btnCreateRectangle'        onclick='actionManager.do(new CreateNodeAction(RECTANGLE,          btnCreateRectangle       ));  this.blur();'>RECT</button> -->
-    <!-- <button class='menuButton' id='btnCreateLine'             onclick='actionManager.do(new CreateNodeAction(LINE,               btnCreateLine            ));  this.blur();'>LINE</button> -->
-    <!-- <button class='menuButton' id='btnCreateEllipse'          onclick='actionManager.do(new CreateNodeAction(ELLIPSE,            btnCreateEllipse         ));  this.blur();'>ELPS</button> -->
-    <!-- <button class='menuButton' id='btnCreatePolygon'          onclick='actionManager.do(new CreateNodeAction(POLYGON,            btnCreatePolygon         ));  this.blur();'>POLY</button> -->
-    <!-- <button class='menuButton' id='btnCreateStar'             onclick='actionManager.do(new CreateNodeAction(STAR,               btnCreateStar            ));  this.blur();'>STAR</button> -->
-    <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-    <!-- <button class='menuButton' id='btnCreateColorStop'        onclick='actionManager.do(new CreateNodeAction(COLOR_STOP,         btnCreateColorStop       ));  this.blur();'>STP</button> -->
-    <!-- <button class='menuButton' id='btnCreateGradient'         onclick='actionManager.do(new CreateNodeAction(GRADIENT,           btnCreateGradient        ));  this.blur();'>GRD</button> -->
-    <!-- <button class='menuButton' id='btnCreateColorStroke' onclick='actionManager.do(new CreateNodeAction(COLOR_STROKE,       btnCreateColorStroke));  this.blur();'>CSTK</button> -->
-    <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-    <!-- <button class='menuButton' id='btnCreateComment'          onclick='actionManager.do(new CreateNodeAction(COMMENT,            btnCreateComment         ));  this.blur();'></button> -->
-    <!-- <button class='menuButton' id='btnCreateRow'              onclick='actionManager.do(new CreateNodeAction("row",              btnCreateRow        ));  this.blur();'>ROW</button> -->
-    <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
-    <!-- <button class='menuButton' id='btnToggleWires'            onclick='graphView.toggleShowWires(); this.blur();'></button> -->
 
-    <!-- <button class='menuButton' id='btnZoom'                   onclick='graphView.zoom = 1; this.blur();'></button> -->
+<div id='menuBar'></div>
     
-</div>
-    
-
 
 <div id='graphView'>
     <div id="wireContainer"></div>
@@ -55,7 +11,6 @@
 </div>
 
 <div id='selectBox'></div>
-
 
 
 <div id='loadingOverlay'>
@@ -70,7 +25,6 @@
     </div>
     <div id='chkLoadingRestart'></div>
 </div>
-
 
 
 <div id='dataModeView'>

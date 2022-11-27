@@ -22,8 +22,9 @@ function initColorControlTextbox(control)
 
     control.textbox.addEventListener('focus', e =>
     {
-        if (control.textbox.value == INVALID_DISPLAY)
-            control.textbox.value = INVALID_VALUE;
+        if (   control.textbox.value ==     NAN_DISPLAY
+            || control.textbox.value == UNKNOWN_DISPLAY)
+            control.textbox.value = NAN_CHAR;
     });
 
 
@@ -126,7 +127,7 @@ function initColorControlTextbox(control)
             let curVal = control.textbox.value;
 
             if (      e.key.length == 1
-                   && e.key != INVALID_CHAR
+                   && e.key != NAN_CHAR
                    && !isDigit(e.key)
                    && !isHexDigit(e.key)
                 ||     control.readOnly
@@ -134,7 +135,8 @@ function initColorControlTextbox(control)
                 e.preventDefault();
 
             curVal =
-                curVal == INVALID_VALUE
+                   curVal ==     NAN_DISPLAY
+                || curVal == UNKNOWN_DISPLAY
                 ? ''
                 :   curVal.substring(0, control.textbox.selectionStart) 
                   + curVal.substring(control.textbox.selectionEnd, curVal.length);
@@ -275,7 +277,7 @@ function initColorControlTextbox(control)
 
         control.textbox.value =
             !control.value.isValid()
-            ? INVALID_DISPLAY
+            ? UNKNOWN_DISPLAY
             : rgb2hex(rgb).toUpperCase();
                            
         control.textbox.savedValue  = control.textbox.value;

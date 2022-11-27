@@ -351,17 +351,16 @@ function boolToString(bool)
 
 function printNum(num)
 {
-    return !isNaN(num) ? num : INVALID_VALUE;
+    return !isNaN(num) ? num : NAN_CHAR;
 }
 
 
 
 function parseNum(str)
 {
-    return str == INVALID_CHAR
-        || str == INVALID_VALUE
-        ? Number.NaN 
-        : parseFloat(str);
+    return str == NAN_CHAR
+         ? Number.NaN 
+         : parseFloat(str);
 }
 
 

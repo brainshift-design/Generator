@@ -74,8 +74,8 @@ extends GValue
     toSimpleString()
     {
         return !isNaN(this.value)
-            ? numToString(this.value, this.decimals)
-            : INVALID_VALUE; // only NumberValue can do this, other _Values have to list all members
+              ? numToString(this.value, this.decimals)
+              : NAN_CHAR; // only NumberValue can do this, other _Values have to list all members
     }
 
 
@@ -116,7 +116,7 @@ function parseNumberValue(str)
 function parseSimpleNumberValue(str)
 {
     const num = 
-        str == INVALID_VALUE
+        str == NAN_CHAR
         ? NumberValue.NaN
         : new NumberValue(
               parseFloat(str),

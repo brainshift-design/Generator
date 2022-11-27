@@ -72,7 +72,7 @@ extends GValue
 
 function parseColorStopValue(str)
 {
-    if (str == INVALID_VALUE)
+    if (str == NAN_CHAR)
         return ColorStopValue.NaN;
 
     const stop = str.split(' ');

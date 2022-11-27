@@ -26,10 +26,10 @@ extends OperatorBase
 
 
 
-    isCached()
-    {
-        return this.cached;
-    }
+    // isCached()
+    // {
+    //     return this.cached;
+    // }
 
 
 

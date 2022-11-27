@@ -32,6 +32,7 @@
 ../generator/types/values/StarValue.js
 
 
+../generator/types/flow/GCache.js
 ../generator/types/flow/GList.js
 ../generator/types/flow/GItems.js
 ../generator/types/flow/GRepeat.js

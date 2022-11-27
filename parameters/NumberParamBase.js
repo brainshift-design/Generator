@@ -132,7 +132,7 @@ extends Parameter
             &&  this.node.outputs.length > 0
             &&  this.node.followedByMultiplier();
 
-        this.control.valueText = nc ? INVALID_VALUE : '';
+        this.control.valueText = nc ? UNKNOWN_DISPLAY : '';
     }
 
 

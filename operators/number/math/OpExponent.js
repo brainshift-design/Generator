@@ -3,7 +3,7 @@ extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_EXPONENT, 'exp', 'xʸ'); // placeholder symbol, actual symbol set in updateNode()
+        super(NUMBER_EXPONENT, 'pow', 'eˣ'); // placeholder symbol, actual symbol set in updateNode()
     }
 
 

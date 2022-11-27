@@ -226,7 +226,7 @@ function figRemoveSavedConnection(name)
 function figRemoveAllSavedConnections()
 {
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
-    connKeys.forEach(k => figClearPageData(k);
+    connKeys.forEach(k => figClearPageData(k));
 }
 
 

@@ -303,6 +303,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
 
     switch (nodeType)
     {
+        case CACHE:               node = new OpCache();            break;
         case LIST:                node = new OpList();             break;
         case ITEMS:               node = new OpItems();            break;
         case REPEAT:              node = new OpRepeat();           break;

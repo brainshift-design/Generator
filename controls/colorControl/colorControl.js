@@ -196,7 +196,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
                control.value.isValid()
             && rgbIsValid(control.value.toRgb())
             ? rgb2hex(control.value.toRgb())
-            : INVALID_DISPLAY;
+            : UNKNOWN_DISPLAY;
     };
 
 

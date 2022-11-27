@@ -151,10 +151,10 @@ class MenuItem
 
         if (currentMenus.length > 0) // this lets the item be selected without its parent menu being involved
         {
-            currentMenus[0].lastItem = this;
+            this.parentMenu.lastItem = this;
 
-            if (currentMenus[0].button)
-                currentMenus[0].button.update();
+            if (this.parentMenu.button)
+                this.parentMenu.button.update();
         }
 
         if (!shift)

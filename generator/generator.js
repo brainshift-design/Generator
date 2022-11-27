@@ -78,7 +78,7 @@ function genPushUpdateValue(parse, nodeId, paramId, value, forceUpdate = false)
         {
             nodeId:  nodeId,
             paramId: paramId,
-            type:    value.type, // needed to correctly parse INVALID_VALUE
+            type:    value.type, // needed to correctly parse NAN_CHAR
             value:   value
         });
     }
@@ -219,7 +219,7 @@ function genQueueChunk(updateNodeId, updateParamId, nodeValChunkId, nodeValChunk
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
         chunkId:       nodeValChunkId,
-        values:        [...nodeValChunk].map(v => v ? v.toString() : INVALID_VALUE),
+        values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_CHAR),
         objects:       [...objChunk]
     });
 

@@ -1,14 +1,18 @@
-const INVALID_CHAR       = '?';
-const INVALID_VALUE      = '?';
-const INVALID_DISPLAY    = INVALID_VALUE;//'🤷‍♂️';
+const NAN_CHAR            = '-';
+const NAN_DISPLAY         = '—';
+
+const UNKNOWN_CHAR        = '?';
+const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
 
 
-const LIST_VALUE         = 'LIST#';
-const LIST               = 'LIST';
+const CACHE               = 'CACHE';
 
-const ITEMS              = 'ITEMS';
+const LIST_VALUE          = 'LIST#';
+const LIST                = 'LIST';
 
-const REPEAT             = 'REP';
+const ITEMS               = 'ITEMS';
+
+const REPEAT              = 'REP';
 
 
 const LIST_TYPES =
@@ -20,7 +24,7 @@ const LIST_TYPES =
 ];
 
 
-const FOREACH            = 'FOR';
+const FOREACH             = 'FOR';
 
 
 const FLOW_TYPES =

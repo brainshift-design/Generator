@@ -26,10 +26,10 @@
 ../operators/utility/OpComment.js
 
 
+../operators/flow/OpCache.js
 ../operators/flow/OpList.js
 ../operators/flow/OpItems.js
 ../operators/flow/OpRepeat.js
-
 
 ../operators/number/OpNumber.js
 ../operators/number/OpLimits.js

@@ -3,7 +3,7 @@ extends OpVarArithmetic
 {
     constructor()
     {
-        super(NUMBER_VAR_MODULO, 'mod', '%');
+        super(NUMBER_VAR_MODULO, 'rem', '%');
     }
     
     

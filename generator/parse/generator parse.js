@@ -79,12 +79,13 @@ function genParse(parse, inParam = true)
 
 
          if (parse.next == PARAM              ) result = genParseParam           (parse);
- 
+    
     else if (parse.next == LIST_VALUE         ) result = genParseListValue       (parse);
     else if (parse.next == LIST               ) result = genParseList            (parse);
     else if (parse.next == ITEMS              ) result = genParseItems           (parse);
     else if (parse.next == REPEAT             ) result = genParseRepeat          (parse);
- 
+    else if (parse.next == CACHE              ) result = genParseCache           (parse);
+
     else if (parse.next == NUMBER_VALUE       ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER             ) result = genParseNumber          (parse);
     else if (parse.next == NUMBER_LIMITS      ) result = genParseLimits          (parse);
