@@ -48,6 +48,7 @@ const LIST = 'LIST';
 const ITEMS = 'ITEMS';
 const START = 'STRT';
 const REPEAT = 'REPT';
+const CACHE = 'CACHE';
 const LIST_TYPES = [
     LIST_VALUE,
     LIST,
@@ -60,7 +61,8 @@ const FLOW_TYPES = [
     ITEMS,
     START,
     REPEAT,
-    FOREACH
+    FOREACH,
+    CACHE
 ];
 const NUMBER_VALUE = 'NUM#';
 const NUMBER = 'NUM';

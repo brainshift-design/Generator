@@ -65,7 +65,12 @@ extends Action
         this.inputNode .updateNode();
 
 
-        pushUpdate([this.inputNode]);
+        const updateNodes = [this.inputNode];
+
+        if (!this.outputNode.cached)
+            updateNodes.push(this.outputNode);
+
+        pushUpdate(updateNodes);
     }
     
     

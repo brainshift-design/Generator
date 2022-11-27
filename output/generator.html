@@ -2816,6 +2816,15 @@ function logReqRepeat(rep, nValues, parse)
 }
 
 
+
+function logReqCache(rep, nValues, parse)
+{
+    parse.log += parse.tab + CACHE;
+    parse.log += logReqNodeId(rep);
+    parse.log += ' ' + nValues;
+}
+
+
 function logReqNumberValue(val, parse)
 {
     parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
@@ -3181,6 +3190,8 @@ const ITEMS               = 'ITEMS';
 const START               = 'STRT';
 const REPEAT              = 'REPT';
 
+const CACHE               = 'CACHE';
+
 
 const LIST_TYPES =
 [
@@ -3200,7 +3211,8 @@ const FLOW_TYPES =
     ITEMS,
     START,
     REPEAT,
-    FOREACH
+    FOREACH,
+    CACHE
 ];
 
 
@@ -5844,6 +5856,66 @@ extends GOperator
     toValue()
     {
         return this.value.copy();
+    }
+}
+
+
+
+class GCache
+extends GOperator
+{
+    input = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(CACHE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const cache = new GCache(this.nodeId, this.options);
+
+        cache.copyBase(this);
+
+        if (this.input) cache.input = this.input.copy();
+        if (this.value) cache.value = this.value.copy();
+
+        return cache;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.input)
+        {
+            this.input = this.input.eval(parse).copy();
+            this.value = this.input.toValue();
+        }
+        else
+            this.value = null;
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value 
+             ? this.value.copy() 
+             : null;
     }
 }
 
@@ -10318,6 +10390,50 @@ function genParseRepeat(parse)
 }
 
 
+
+function genParseCache(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const rep = new GCache(nodeId, options);
+
+
+    let nValues = -1;
+    
+    if (!ignore)
+    {
+        nValues = parseInt(parse.move());
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReqCache(rep, nValues, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, rep);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nValues == 1)
+        rep.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, rep);
+    return rep;
+}
+
+
 function genParseNumValue(parse)
 {
     parse.pos++; // N
@@ -11361,6 +11477,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == ITEMS              ) result = genParseItems           (parse);
     else if (parse.next == START              ) result = genParseStart           (parse);
     else if (parse.next == REPEAT             ) result = genParseRepeat          (parse);
+    else if (parse.next == CACHE              ) result = genParseCache           (parse);
 
     else if (parse.next == NUMBER_VALUE       ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER             ) result = genParseNumber          (parse);

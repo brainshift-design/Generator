@@ -59,7 +59,7 @@ extends OperatorBase
     {
         const count = values[paramIds.findIndex(id => id == 'count')];
         if (count) this.paramCount.setValue(count, false, true, false);
-    }
+   }
 
 
 

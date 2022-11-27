@@ -30,6 +30,7 @@
 ../operators/flow/OpItems.js
 ../operators/flow/OpStart.js
 ../operators/flow/OpRepeat.js
+../operators/flow/OpCache.js
 
 ../operators/number/OpNumber.js
 ../operators/number/OpLimits.js

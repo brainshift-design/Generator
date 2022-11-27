@@ -26,13 +26,6 @@ extends OperatorBase
 
 
 
-    // isCached()
-    // {
-    //     return this.cached;
-    // }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output        

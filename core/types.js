@@ -13,6 +13,8 @@ const ITEMS               = 'ITEMS';
 const START               = 'STRT';
 const REPEAT              = 'REPT';
 
+const CACHE               = 'CACHE';
+
 
 const LIST_TYPES =
 [
@@ -32,7 +34,8 @@ const FLOW_TYPES =
     ITEMS,
     START,
     REPEAT,
-    FOREACH
+    FOREACH,
+    CACHE
 ];
 
 

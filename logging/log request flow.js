@@ -37,3 +37,12 @@ function logReqRepeat(rep, nValues, parse)
     parse.log += logReqNodeId(rep);
     parse.log += ' ' + nValues;
 }
+
+
+
+function logReqCache(rep, nValues, parse)
+{
+    parse.log += parse.tab + CACHE;
+    parse.log += logReqNodeId(rep);
+    parse.log += ' ' + nValues;
+}

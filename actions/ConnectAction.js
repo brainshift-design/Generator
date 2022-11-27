@@ -102,8 +102,18 @@ extends Action
         }
 
 
-        pushUpdate(oldInputActiveNodeIds.map(id => nodeFromId(id)));
+        const pushUpdateNodes = oldInputActiveNodeIds.map(id => nodeFromId(id));
 
+        if (!this.outputNode.cached) 
+            pushUnique(pushUpdateNodes, this.   outputNode);
+
+        if (    this.oldOutputNode
+            && !this.oldOutputNode.cached) 
+            pushUnique(pushUpdateNodes, this.oldOutputNode);
+
+        pushUpdate(pushUpdateNodes);
+
+        
         updateNodes.forEach(n => n.updateNode());
     }
 
