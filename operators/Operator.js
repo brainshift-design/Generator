@@ -251,6 +251,26 @@ class Operator
 
 
 
+    getUncachedInputNodes()
+    {
+        const uncachedNodes = [];
+
+        for (const input of this.inputs)
+        {
+            if (input.connected)
+            {
+                const node = input.connectedOutput.node;
+
+                if (!node.cached) pushUnique(uncachedNodes, node);
+                pushUnique(uncachedNodes, node.getUncachedInputNodes());
+            }
+        }
+        
+        return uncachedNodes;
+    }
+ 
+ 
+ 
     getAutoOutput(inputTypes)
     {
         const outputs = this.outputs.filter(o => inputTypes.includes(o.type));
@@ -966,6 +986,24 @@ function pushUpdate(nodes)
 function pushUpdateFromParam(nodes, param)
 {
     //console.log('pushUpdateFromParam(' + (param ? param : '') +')', nodes);
+
+
+    // first check if any nodes to the left are uncached
+    // and replace as necessary
+    for (let i = nodes.length-1; i >= 0; i--)
+    {
+        const node               = nodes[i];
+        const uncachedInputNodes = node.getUncachedInputNodes();
+        
+        console.log("uncachedInputNodes =", uncachedInputNodes);
+        if (uncachedInputNodes.length > 0)
+        {
+            removeFromArray(nodes, node);
+            pushUnique(nodes, uncachedInputNodes);
+
+            param = null;
+        }
+    }
 
     
     const set =
