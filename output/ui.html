@@ -8195,10 +8195,8 @@ extends GOperator
 
         if (this.input)
         {
-            if (!this.input.value)
-                this.input = this.input.eval(parse).copy();
-
-            this.value = this.input.value.copy();//toValue();
+            this.input = this.input.eval(parse).copy();
+            this.value = this.input.toValue();
         }
         else
             this.value = null;
@@ -23847,10 +23845,8 @@ extends GOperator
 
         if (this.input)
         {
-            if (!this.input.value)
-                this.input = this.input.eval(parse).copy();
-
-            this.value = this.input.value.copy();//toValue();
+            this.input = this.input.eval(parse).copy();
+            this.value = this.input.toValue();
         }
         else
             this.value = null;
@@ -39687,7 +39683,7 @@ extends OperatorBase
         super(CACHE, 'cache', 90);
 
         this.cached = true;
-        this.inert  = true;
+        //this.inert  = true;
         
         this.addInput (new Input(ALL_TYPES));
         this.addOutput(new Output([], this.output_genRequest));

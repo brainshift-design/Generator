@@ -11,7 +11,7 @@ extends OperatorBase
         super(CACHE, 'cache', 90);
 
         this.cached = true;
-        this.inert  = true;
+        //this.inert  = true;
         
         this.addInput (new Input(ALL_TYPES));
         this.addOutput(new Output([], this.output_genRequest));
