@@ -274,4 +274,12 @@ extends EventTarget
 
         return true;
     }
+
+
+
+    isConnectedUncached()
+    {
+        return  this.connected 
+            && !this.connectedOutput.node.isCached();
+    }
 }

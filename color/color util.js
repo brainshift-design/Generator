@@ -1,9 +1,9 @@
-const rgbNaN = [
+const rgb_NaN = [
     Number.NaN,
     Number.NaN,
     Number.NaN ];
 
-const rgbaNaN = [
+const rgba_NaN = [
     Number.NaN,
     Number.NaN,
     Number.NaN,

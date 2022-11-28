@@ -481,6 +481,13 @@ class Operator
 
 
 
+    isConnectedUncached()
+    {
+        return this.inputs.find(i => i.isConnectedUncached());
+    }
+
+
+
     follows(node) 
     { 
         return this.isOrFollows(node, false); 
@@ -529,15 +536,15 @@ class Operator
     {
         return isMultiplier(this)
              ? true
-             : this.followedByMultiplier();
+             : this.isFollowedByMultiplier();
     }
 
 
 
-    followedByMultiplier()
+    isFollowedByMultiplier()
     {
         for (const output of this.outputs)
-            if (output.followedByMultiplier())
+            if (output.isFollowedByMultiplier())
                 return true;
 
         return false;

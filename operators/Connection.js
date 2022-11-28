@@ -23,12 +23,12 @@ class Connection
         this.wire.inBall                 = createSvg('circle');
         this.wire.inBall.style.position  = 'absolute';
 
-        this.wire .appendChild(this.wire .curve  );
-        this.wire .appendChild(this.wire .curve2 );
-        this.wire .appendChild(this.wire .xp1    );
-        this.wire .appendChild(this.wire .xp2    );
-        this.wire .appendChild(this.wire .outBall);
-        this.wire .appendChild(this.wire .inBall );
+        this.wire.appendChild(this.wire .curve  );
+        this.wire.appendChild(this.wire .curve2 );
+        this.wire.appendChild(this.wire .xp1    );
+        this.wire.appendChild(this.wire .xp2    );
+        this.wire.appendChild(this.wire .outBall);
+        this.wire.appendChild(this.wire .inBall );
 
         
         this.wire.update = (x1, y1, x2, y2) =>
@@ -75,7 +75,10 @@ class Connection
             }
 
 
-            return types.length > 0
+            return     this.output
+                   && !rgbIsNaN(this.output.wireColor)
+                 ? this.output.wireColor
+                 : types.length > 0
                  ? rgb_a(rgbHeaderFromType(types[0], true), 1)
                  : rgbaInvalid;
         };
@@ -147,11 +150,11 @@ class Connection
 
 
         if (   !outputNode 
-            ||    isDigit(outputId[0]) && parseInt(outputId) >= outputNode.outputs.length
-            ||   !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
+            ||  isDigit(outputId[0]) && parseInt(outputId) >= outputNode.outputs.length
+            || !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
             || !inputNode  
-            ||    isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
-            ||   !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
+            ||  isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
+            || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
         {
             uiError('cannot connect ' + connToString(_conn));
             return null;

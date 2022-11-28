@@ -14,7 +14,8 @@ class Output
     colorLight;
     colorDark;
 
-    //wireColor;
+    wireColor;
+
 
     div;
     hitbox;
@@ -69,7 +70,7 @@ class Output
         this.colorLight = [0, 0, 0, 1];
         this.colorDark  = [1, 1, 1, 1];
 
-        //this.wireColor  = rgbHeaderFromType(this.types[0], true);
+        this.wireColor  = rgb_NaN;//rgbHeaderFromType(this.types[0], true);
         
 
         this.div.appendChild(this.hitbox);
@@ -218,17 +219,17 @@ class Output
 
 
 
-    followedByMultiplier()
+    isFollowedByMultiplier()
     {
         for (const input of this.connectedInputs.filter(i => !i.param))
         {
             if (isMultiplier(input.node))
                 return true;
 
-            else return input.node.followedByMultiplier();
+            else return input.node.isFollowedByMultiplier();
             // {
             //     for (const output of input.node.outputs)
-            //         if (output.followedByMultiplier())
+            //         if (output.isFollowedByMultiplier())
             //             return true;
             // }
 

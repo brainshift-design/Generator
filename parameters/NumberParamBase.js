@@ -126,10 +126,9 @@ extends Parameter
     updateValueText()
     {
         const nc =
-                this.input 
-            &&  this.input.connected 
-            && !this.input.connectedOutput.node.isCached()
-            &&  this.node.followedByMultiplier();
+               this.input 
+            && this.input.isConnectedUncached()
+            && this.node.isFollowedByMultiplier();
 
         this.control.valueText = nc ? UNKNOWN_DISPLAY : '';
     }

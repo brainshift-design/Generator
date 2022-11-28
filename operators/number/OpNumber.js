@@ -66,7 +66,7 @@ extends OperatorBase
         this.paramValue.control.valueText = 
                 input.connected
             && !input.connectedOutput.node.isCached()
-            &&  this.followedByMultiplier()
+            &&  this.isFollowedByMultiplier()
             ? UNKNOWN_DISPLAY
             : '';
 

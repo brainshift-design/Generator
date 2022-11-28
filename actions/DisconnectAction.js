@@ -68,7 +68,7 @@ extends Action
         const updateNodes = [this.inputNode];
 
         if (!this.outputNode.cached)
-            updateNodes.push(this.outputNode);
+            pushUnique(updateNodes, this.outputNode.getUncachedInputNodes());
 
         pushUpdate(updateNodes);
     }

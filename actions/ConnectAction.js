@@ -105,15 +105,15 @@ extends Action
         const pushUpdateNodes = oldInputActiveNodeIds.map(id => nodeFromId(id));
 
         if (!this.outputNode.cached) 
-            pushUnique(pushUpdateNodes, this.   outputNode);
+            pushUnique(pushUpdateNodes, this.outputNode.getUncachedInputNodes());
 
         if (    this.oldOutputNode
             && !this.oldOutputNode.cached) 
-            pushUnique(pushUpdateNodes, this.oldOutputNode);
+            pushUnique(pushUpdateNodes, this.oldOutputNode.getUncachedInputNodes());
 
         pushUpdate(pushUpdateNodes);
 
-        
+
         updateNodes.forEach(n => n.updateNode());
     }
 
