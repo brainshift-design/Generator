@@ -1,6 +1,8 @@
 class Connection
 {
     output;
+    outputOrder; // used to urder connections from outputs
+    
     input;
 
     wire;
@@ -8,8 +10,10 @@ class Connection
 
     constructor(output, input)
     {
-        this.output = output;
-        this.input  = input;
+        this.output      = output;
+        this.outputOrder = -1;
+ 
+        this.input       = input;
 
 
         this.wire = this.createWire(this.wire);
@@ -130,6 +134,7 @@ class Connection
               pos + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
             + ',' + NL + pos + tab + '"outputId": "' + (this.output.param ? this.output.param.id : this.output.index) + '"'
+            + ',' + NL + pos + tab + '"outputOrder": "' + this.outputOrder + '"'
             + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "' + (this.input.param ? this.input.param.id : this.input.index) + '"'
             + ',' + NL + pos + tab + '"list": "' + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
@@ -142,11 +147,13 @@ class Connection
 
     static parseJson(_conn)
     {
-        const outputNode = nodeFromId(_conn.outputNodeId);
-        const outputId   = _conn.outputId;
+        const outputNode  = nodeFromId(_conn.outputNodeId);
+        const outputId    = _conn.outputId;
 
-        const inputNode  = nodeFromId(_conn.inputNodeId);
-        const inputId    = _conn.inputId;
+        const outputOrder = parseInt(_conn.outputOrder);
+
+        const inputNode   = nodeFromId(_conn.inputNodeId);
+        const inputId     = _conn.inputId;
 
 
         if (   !outputNode 
@@ -161,13 +168,17 @@ class Connection
         }
         else
         {
-            return uiVariableConnect(
+            const conn = uiVariableConnect(
                 outputNode, isDigit(outputId[0]) 
                             ? parseInt(outputId) 
                             : outputNode.params.find(p => p.id == outputId).output.id,
                 inputNode,  isDigit(inputId[0])
                             ? parseInt(inputId)
                             : inputNode.params.find(p => p.id == inputId).input.id);
+
+            conn.outputOrder = outputOrder;
+
+            return conn;
         }
     }
 

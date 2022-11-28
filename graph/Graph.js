@@ -175,14 +175,19 @@ class Graph
         }
 
 
-        output.connectedInputs.push(input);
-        input .connectedOutput = output;
-
-
         const conn = new Connection(output, input);
 
-        input .connection = conn;
+        conn.outputOrder = 
+            output.connectedInputs.length > 0
+            ? Math.max(...output.connectedInputs.map(i => i.connection.outputOrder)) + 1
+            : 0;
+
         output.connection = conn;
+        output.connectedInputs.push(input);
+        
+        input .connection = conn;
+        input .connectedOutput = output;
+
         
         graphView.addConnWires(conn);
 
@@ -203,12 +208,22 @@ class Graph
         if (!output) return false;
 
 
+        const outputOrder = input.connection.outputOrder;
+
+
         graphView.removeConnWires(input.connection);
 
         removeFromArray(this.connections, input.connection);
         removeFromArray(output.connectedInputs, input);
 
-        
+
+        for (const input of output.connectedInputs)
+        {
+            if (input.connection.outputOrder > outputOrder)
+                input.connection.outputOrder--;
+        }
+
+
         input .connectedOutput = null;
         input .connection      = null;
         output.connection      = null;

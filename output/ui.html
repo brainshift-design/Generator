@@ -35594,14 +35594,19 @@ class Graph
         }
 
 
-        output.connectedInputs.push(input);
-        input .connectedOutput = output;
-
-
         const conn = new Connection(output, input);
 
-        input .connection = conn;
+        conn.outputOrder = 
+            output.connectedInputs.length > 0
+            ? Math.max(...output.connectedInputs.map(i => i.connection.outputOrder)) + 1
+            : 0;
+
         output.connection = conn;
+        output.connectedInputs.push(input);
+        
+        input .connection = conn;
+        input .connectedOutput = output;
+
         
         graphView.addConnWires(conn);
 
@@ -35622,12 +35627,22 @@ class Graph
         if (!output) return false;
 
 
+        const outputOrder = input.connection.outputOrder;
+
+
         graphView.removeConnWires(input.connection);
 
         removeFromArray(this.connections, input.connection);
         removeFromArray(output.connectedInputs, input);
 
-        
+
+        for (const input of output.connectedInputs)
+        {
+            if (input.connection.outputOrder > outputOrder)
+                input.connection.outputOrder--;
+        }
+
+
         input .connectedOutput = null;
         input .connection      = null;
         output.connection      = null;
@@ -36772,6 +36787,8 @@ class Output
 class Connection
 {
     output;
+    outputOrder; // used to urder connections from outputs
+    
     input;
 
     wire;
@@ -36779,8 +36796,10 @@ class Connection
 
     constructor(output, input)
     {
-        this.output = output;
-        this.input  = input;
+        this.output      = output;
+        this.outputOrder = -1;
+ 
+        this.input       = input;
 
 
         this.wire = this.createWire(this.wire);
@@ -36901,6 +36920,7 @@ class Connection
               pos + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
             + ',' + NL + pos + tab + '"outputId": "' + (this.output.param ? this.output.param.id : this.output.index) + '"'
+            + ',' + NL + pos + tab + '"outputOrder": "' + this.outputOrder + '"'
             + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "' + (this.input.param ? this.input.param.id : this.input.index) + '"'
             + ',' + NL + pos + tab + '"list": "' + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
@@ -36913,11 +36933,13 @@ class Connection
 
     static parseJson(_conn)
     {
-        const outputNode = nodeFromId(_conn.outputNodeId);
-        const outputId   = _conn.outputId;
+        const outputNode  = nodeFromId(_conn.outputNodeId);
+        const outputId    = _conn.outputId;
 
-        const inputNode  = nodeFromId(_conn.inputNodeId);
-        const inputId    = _conn.inputId;
+        const outputOrder = parseInt(_conn.outputOrder);
+
+        const inputNode   = nodeFromId(_conn.inputNodeId);
+        const inputId     = _conn.inputId;
 
 
         if (   !outputNode 
@@ -36932,13 +36954,17 @@ class Connection
         }
         else
         {
-            return uiVariableConnect(
+            const conn = uiVariableConnect(
                 outputNode, isDigit(outputId[0]) 
                             ? parseInt(outputId) 
                             : outputNode.params.find(p => p.id == outputId).output.id,
                 inputNode,  isDigit(inputId[0])
                             ? parseInt(inputId)
                             : inputNode.params.find(p => p.id == inputId).input.id);
+
+            conn.outputOrder = outputOrder;
+
+            return conn;
         }
     }
 
@@ -39694,7 +39720,7 @@ extends OperatorBase
         this.inputs[0].addEventListener('connect',    () => OpCache_onConnectInput(this));
         this.inputs[0].addEventListener('disconnect', () => OpCache_onDisconnectInput(this));
 
-        this.alwaysLoadParams = true;
+        //this.alwaysLoadParams = true;
     }
     
     
@@ -39773,6 +39799,13 @@ extends OperatorBase
             this.inner .style.borderRadius = '4px';        
             this.header.style.borderRadius = '4px';        
         }
+    }
+
+
+    
+    paramsToJson(nTab = 0)
+    {
+        return '';
     }
 }
 
@@ -45253,7 +45286,7 @@ extends Action
         this.inputNode .updateNode();
 
 
-        const updateNodes = [this.inputNode];
+        const updateNodes = [this.inputNode, this.outputNode];
 
         if (!this.outputNode.cached)
             pushUnique(updateNodes, this.outputNode.getUncachedInputNodes());
@@ -45892,6 +45925,7 @@ extends Action
         
         varConnections.sort((c1, c2) =>
         {
+            if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
             if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
             if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
             return 0;

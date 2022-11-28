@@ -22,7 +22,7 @@ extends OperatorBase
         this.inputs[0].addEventListener('connect',    () => OpCache_onConnectInput(this));
         this.inputs[0].addEventListener('disconnect', () => OpCache_onDisconnectInput(this));
 
-        this.alwaysLoadParams = true;
+        //this.alwaysLoadParams = true;
     }
     
     
@@ -101,6 +101,13 @@ extends OperatorBase
             this.inner .style.borderRadius = '4px';        
             this.header.style.borderRadius = '4px';        
         }
+    }
+
+
+    
+    paramsToJson(nTab = 0)
+    {
+        return '';
     }
 }
 
