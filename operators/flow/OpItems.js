@@ -5,6 +5,8 @@ extends OperatorBase
     {
         super(ITEMS, 'items', 100);
 
+        this.inert = true;
+        
         this.addInput (new Input (LIST_TYPES, this.input_getValuesForUndo));
 
         this.alwaysLoadParams = true;
@@ -110,17 +112,5 @@ extends OperatorBase
 
         for (const param of this.params)
             param.enableControlText(false);
-    }
-
-
-
-    updateHeader()
-    {
-        super.updateHeader();
-
-        const colors = this.getHeaderColors();
-        
-        this.header.style.background = rgb2style(rgbDocumentBody);
-        this.header.style.boxShadow  = '0 0 0 1px ' + rgba2style(colors.back) + ' inset';
     }
 }

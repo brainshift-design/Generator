@@ -36,10 +36,12 @@ extends GOperator
             return this;
 
 
-        if (this.input) 
-        { 
-            this.input = this.input.eval(parse).copy();
-            this.value = this.input.toValue();
+        if (this.input)
+        {
+            if (!this.input.value)
+                this.input = this.input.eval(parse).copy();
+
+            this.value = this.input.value.copy();//toValue();
         }
         else
             this.value = ListValue.NaN;
@@ -62,7 +64,6 @@ extends GOperator
         else
             genPushUpdateValue(parse, this.nodeId, 'noitems', new NumberValue(0));
 
-        
 
         this.validate();
 

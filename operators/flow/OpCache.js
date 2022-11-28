@@ -11,6 +11,7 @@ extends OperatorBase
         super(CACHE, 'cache', 90);
 
         this.cached = true;
+        this.inert  = true;
         
         this.addInput (new Input(ALL_TYPES));
         this.addOutput(new Output([], this.output_genRequest));
@@ -75,18 +76,6 @@ extends OperatorBase
 
         if (this.params.length > 0) 
             this.params[0].setValue(val);
-    }
-
-
-
-    updateHeader()
-    {
-        super.updateHeader();
-
-        const colors = this.getHeaderColors();
-        
-        this.header.style.background = rgb2style(rgbDocumentBody);
-        this.header.style.boxShadow  = '0 0 0 1px ' + rgba2style(colors.back) + ' inset';
     }
 
 

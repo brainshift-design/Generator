@@ -34,8 +34,10 @@ extends GOperator
 
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
-            this.value = this.input.toValue();
+            if (!this.input.value)
+                this.input = this.input.eval(parse).copy();
+
+            this.value = this.input.value.copy();//toValue();
         }
         else
             this.value = null;
