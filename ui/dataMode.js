@@ -278,7 +278,7 @@ function dataModeDeleteAllConnections()
 
 
     if (nRemovedConns > 0)
-        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to and from \'' + node.id + '\'');
+        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns));
 }
 
 
@@ -365,8 +365,10 @@ function dataModeDeleteConnection(conn)
     uiRemoveSavedConnection(
         conn.outputNodeId,
         conn.outputId,
+        conn.outputOrder,
         conn.inputNodeId,
-        conn.inputId);
+        conn.inputId,
+        conn.list);
 
 
     for (let i = dataModeConns.children.length-1; i >= 0; i--)

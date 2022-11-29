@@ -129,16 +129,18 @@ class Connection
     {
         let   pos = ' '.repeat(nTab);
         const tab = TAB;
-        
-        let json = 
-              pos + '{'
+
+        let json =
+              pos
+            + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
-            + ',' + NL + pos + tab + '"outputId": "' + (this.output.param ? this.output.param.id : this.output.index) + '"'
-            + ',' + NL + pos + tab + '"outputOrder": "' + this.outputOrder + '"'
-            + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
-            + ',' + NL + pos + tab + '"inputId": "' + (this.input.param ? this.input.param.id : this.input.index) + '"'
-            + ',' + NL + pos + tab + '"list": "' + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
-            +       NL + pos + '}';
+            + ',' + NL + pos + tab + '"outputId": "'     + (this.output.param ? this.output.param.id : this.output.index) + '"'
+            + ',' + NL + pos + tab + '"outputOrder": "'  + this.outputOrder + '"'
+            + ',' + NL + pos + tab + '"inputNodeId": "'  + this.input.node.id + '"'
+            + ',' + NL + pos + tab + '"inputId": "'      + (this.input.param ? this.input.param.id : this.input.index) + '"'
+            + ',' + NL + pos + tab + '"list": "'         + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
+            +       NL + pos
+            + '}';
 
         return json;
     }
@@ -147,6 +149,7 @@ class Connection
 
     static parseJson(_conn)
     {
+        // console.trace();
         const outputNode  = nodeFromId(_conn.outputNodeId);
         const outputId    = _conn.outputId;
 

@@ -115,9 +115,10 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
     selectBox.style.zIndex = MAX_INT32-3;
         
         
-    selected.forEach(n => n.updateNode());
-    graphView._prevSelectedNodes.forEach(n => n.updateNode());
-    graphView.lastSelectedNodes.forEach(n => n.updateNode());
+    [...selected,                    
+     ...graphView._prevSelectedNodes,
+     ...graphView.lastSelectedNodes]
+        .forEach(n => n.updateNode());
 
 
     graphView._prevSelectedNodes = selected;

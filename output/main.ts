@@ -50,25 +50,97 @@ function parseBool(str) { return str === 'true'; }
 
 
 
-function connToString(conn)
+function connToString(_conn)
 {
     return getConnectionString(
-        conn.outputNodeId,
-        conn.outputId,
-        conn.inputNodeId,
-        conn.inputId,
-        conn.list);
+        _conn.outputNodeId,
+        _conn.outputId,
+        _conn.outputOrder,
+        _conn.inputNodeId,
+        _conn.inputId,
+        _conn.list);
 }
 
 
 
-function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, list)
+function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
 {
-    const arrow = '  ' + rightArrowChar(parseBool(list)) + '  ';
+    const arrow = 
+          '  ' 
+        + rightArrowChar(parseBool(list)) + subscriptNumber(outputOrder)
+        + '  ';
 
     return outputNodeId + ' . ' + outputId
          + arrow
          + inputNodeId + ' . ' + inputId;
+}
+
+
+
+function superscriptNumber(num)
+{
+    const str = num.toString();
+
+    let sup = '';
+
+    for (const c of str)
+        sup += superscriptChar(c);
+
+    return sup;
+}
+
+
+
+function superscriptChar(c)
+{
+    switch (c)
+    {
+        case '0': return '⁰';
+        case '1': return '¹';
+        case '2': return '²';
+        case '3': return '³';
+        case '4': return '⁴';
+        case '5': return '⁵';
+        case '6': return '⁶';
+        case '7': return '⁷';
+        case '8': return '⁸';
+        case '9': return '⁹';
+        case '.': return '·';
+    }
+}
+
+
+
+function subscriptNumber(num)
+{
+    const str = num.toString();
+
+    let sup = '';
+
+    for (const c of str)
+        sup += subscriptChar(c);
+
+    return sup;
+}
+
+
+
+function subscriptChar(c)
+{
+    switch (c)
+    {
+        case '0': return '₀';
+        case '1': return '₁';
+        case '2': return '₂';
+        case '3': return '₃';
+        case '4': return '₄';
+        case '5': return '₅';
+        case '6': return '₆';
+        case '7': return '₇';
+        case '8': return '₈';
+        case '9': return '₉';
+        case '.': return ' ';
+    }
 }
 
 
@@ -668,40 +740,41 @@ figma.ui.onmessage = msg =>
     
     switch (msg.cmd)
     {
-        case 'figStartGenerator':                 figStartGenerator                ();                                           break;
-            
-        case 'figPositionWindow':                 figPositionWindow                (msg.x, msg.y);                               break; 
-        case 'figResizeWindow':                   figResizeWindow                  (msg.width, msg.height);                      break; 
-        case 'figNotify':                         figNotify                        (msg.text, msg.prefix, msg.delay, msg.error); break;
-                            
-        case 'figGetLocalData':                   figGetLocalData                  (msg.key);                                    break;
-        case 'figSetLocalData':                   figSetLocalData                  (msg.key, msg.value);                         break;
-    
-        case 'figClearAllLocalData':              figClearAllLocalData             ();                                           break;
-                    
-        case 'figGetPageData':                    figGetPageData                   (msg.key);                                    break;
-        case 'figSetPageData':                    figSetPageData                   (msg.key, msg.value);                         break;
-                    
-        case 'figLoadNodesAndConns':              figLoadNodesAndConns             (msg.dataMode);                               break;
-        case 'figSaveNodes':                      figSaveNodes                     (msg.nodeIds, msg.nodeJson);                  break;        
-            
-        case 'figRemoveConnsToNodes':             figRemoveConnsToNodes            (msg.nodeIds);                                break;
-        case 'figRemoveSavedNodesAndConns':       figRemoveSavedNodesAndConns      (msg.nodeIds);                                break;
-        case 'figRemoveAllSavedNodesAndConns':    figRemoveAllSavedNodesAndConns   ();                                           break;
-            
-        case 'figLogAllSavedNodesAndConns':       figLogAllSavedNodesAndConns      ();                                           break;
-        case 'figLogAllSavedNodes':               figLogAllSavedNodes              ();                                           break;
-        case 'figLogAllSavedConns':               figLogAllSavedConns              ();                                           break;
+        case 'figStartGenerator':                 figStartGenerator                ();                                            break;
+             
+        case 'figPositionWindow':                 figPositionWindow                (msg.x, msg.y);                                break; 
+        case 'figResizeWindow':                   figResizeWindow                  (msg.width, msg.height);                       break; 
+        case 'figNotify':                         figNotify                        (msg.text, msg.prefix, msg.delay, msg.error);  break;
+                             
+        case 'figGetLocalData':                   figGetLocalData                  (msg.key);                                     break;
+        case 'figSetLocalData':                   figSetLocalData                  (msg.key, msg.value);                          break;
+     
+        case 'figClearAllLocalData':              figClearAllLocalData             ();                                            break;
+                     
+        case 'figGetPageData':                    figGetPageData                   (msg.key);                                     break;
+        case 'figSetPageData':                    figSetPageData                   (msg.key, msg.value);                          break;
+                     
+        case 'figLoadNodesAndConns':              figLoadNodesAndConns             (msg.dataMode);                                break;
+        case 'figSaveNodes':                      figSaveNodes                     (msg.nodeIds, msg.nodeJson);                   break;        
+             
+        case 'figRemoveConnsToNodes':             figRemoveConnsToNodes            (msg.nodeIds);                                 break;
+        case 'figRemoveSavedNodesAndConns':       figRemoveSavedNodesAndConns      (msg.nodeIds);                                 break;
+        case 'figRemoveAllSavedNodesAndConns':    figRemoveAllSavedNodesAndConns   ();                                            break;
+             
+        case 'figLogAllSavedNodesAndConns':       figLogAllSavedNodesAndConns      ();                                            break;
+        case 'figLogAllSavedNodes':               figLogAllSavedNodes              ();                                            break;
+        case 'figLogAllSavedConns':               figLogAllSavedConns              ();                                            break;
         
-        case 'figSaveConnection':                 figSaveConnection                (msg.name, msg.json);                         break;
-        case 'figRemoveSavedConnection':          figRemoveSavedConnection         (msg.name);                                   break;
+        case 'figSaveConnection':                 figSaveConnection                (msg.name, msg.json);                          break;
+        case 'figSaveConnections':                figSaveConnections               (msg.names, msg.json);                         break;
+        case 'figRemoveSavedConnection':          figRemoveSavedConnection         (msg.name);                                    break;
   
-        case 'figRemoveAllSavedConnections':      figRemoveAllSavedConnections     ();                                           break;
-        case 'figRemoveSavedConnectionsToNode':   figRemoveSavedConnectionsToNode  (msg.nodeId);                                 break;
-        case 'figRemoveSavedConnectionsFromNode': figRemoveSavedConnectionsFromNode(msg.nodeId);                                 break;
+        case 'figRemoveAllSavedConnections':      figRemoveAllSavedConnections     ();                                            break;
+        case 'figRemoveSavedConnectionsToNode':   figRemoveSavedConnectionsToNode  (msg.nodeId);                                  break;
+        case 'figRemoveSavedConnectionsFromNode': figRemoveSavedConnectionsFromNode(msg.nodeId);                                  break;
            
-        case 'figUpdateObjects':                  figUpdateObjects                 (msg);                                        break;
-        case 'figDeleteObjects':                  figDeleteObjectsFromNodeIds      (msg.nodeIds);                                break; 
+        case 'figUpdateObjects':                  figUpdateObjects                 (msg);                                         break;
+        case 'figDeleteObjects':                  figDeleteObjectsFromNodeIds      (msg.nodeIds);                                 break; 
     }
 
     
@@ -1418,17 +1491,24 @@ function figLogAllSavedConns()
 
 function figSaveConnection(name, json)
 {
-    // console.log('key', connNameForStorage(name));
-    // console.log('connection', json);
-    
     figSetPageData(connNameForStorage(name), json);        
+}
+
+
+
+function figSaveConnections(_names, _json)
+{
+    const names = JSON.parse(_names);
+    const json  = JSON.parse(_json);
+
+    for (let i = 0; i < names.length; i++)
+        figSetPageData(connNameForStorage(names[i]), json[i]);
 }
 
 
 
 function figRemoveSavedConnection(name)
 {
-    //console.log('figRemoveSavedConnection('+name+')');
     figClearPageData(connNameForStorage(name));        
 }
 

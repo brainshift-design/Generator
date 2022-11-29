@@ -69,10 +69,17 @@ extends Action
             uiDeleteObjects([id]); // clean up now irrelevant objects
 
 
-        uiConnect(
+        const conn = uiConnect(
             this.outputNode.outputs.find(o => o.id == this.outputId), 
             this.inputNode. inputs .find(i => i.id == this. inputId),
             this.inputId);
+
+        uiSaveConnection(
+            this.outputNodeId,
+            this.outputId,
+            this.inputNodeId,
+            this.inputId,
+            conn.toJson());
 
 
         this.newActiveNodeIds = [];
@@ -112,26 +119,29 @@ extends Action
             pushUnique(pushUpdateNodes, this.oldOutputNode.getUncachedInputNodes());
 
         pushUpdate(pushUpdateNodes);
-
-
-        updateNodes.forEach(n => n.updateNode());
     }
 
 
 
     undo()
     {
+        const input = this.inputNode.inputFromId(this.inputId);
+        
+        uiDisconnect(input);
+        uiRemoveSavedConn(input.connection);
 
-        uiDisconnect(this.inputNode.inputFromId(this.inputId));
-
-
+            
         if (this.oldOutputNodeId != '')
         {
-            uiVariableConnect(
-                this.oldOutputNode, 
-                this.oldOutputId, 
-                this.inputNode, 
-                this.inputId);
+            const oldConn = uiVariableConnect(
+                this.oldOutputNode, this.oldOutputId, 
+                this.inputNode,     this.inputId);
+
+            uiSaveConnection(
+                this.oldOutputNodeId, this.oldOutputId,
+                this.inputNodeId,     this.inputId,
+                oldConn.toJson());
+
         }
 
 
@@ -141,9 +151,6 @@ extends Action
             this.inputNode.params[this.inputNode.params.findIndex(p => p.id == param[0])]
                 .setValue(param[1], true, true, false);
         }
-
-
-        //const updateNodes = [];
 
 
         for (const id of this.newActiveNodeIds)
@@ -170,8 +177,6 @@ extends Action
 
 
         pushUpdate(this.oldInputActiveNodeIds.map(id => nodeFromId(id)));
-
-        this.inputNode.updateNode();
  
 
         // cleanup

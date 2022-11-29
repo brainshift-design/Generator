@@ -1005,7 +1005,7 @@ function pushUpdate(nodes)
 function pushUpdateFromParam(nodes, param)
 {
     //console.log('pushUpdateFromParam(' + (param ? param : '') +')', nodes);
-
+    //console.trace();
 
     // first check if any nodes to the left are uncached
     // and replace as necessary

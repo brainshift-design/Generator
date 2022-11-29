@@ -53,10 +53,10 @@ extends Action
 
         updateTerminalsAfterNodes(nodes);
         
-        graphView.updateNodeTransforms(nodes);
-        graphView.updateScrollWithBounds();
+        //graphView.updateNodeTransforms(nodes);
+        //graphView.updateScrollWithBounds();
 
-        uiSaveNodes(nodes.map(n => n.id));
+        // uiSaveNodes(nodes.map(n => n.id));
 
         
         this.notify(nodes, this.isDuplicate, this.pasteConnected);
@@ -98,9 +98,9 @@ extends Action
         }
 
         updateTerminalsAfterNodes(nodes);
-        graphView.updateNodeTransforms(nodes);
+        // graphView.updateNodeTransforms(nodes);
 
-        uiSaveNodes(nodes.map(n => n.id));
+        // uiSaveNodes(nodes.map(n => n.id));
         
         this.notify(nodes, this.isDuplicate, this.pasteConnected);
     }

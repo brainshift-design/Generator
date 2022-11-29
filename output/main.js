@@ -30,14 +30,60 @@ const OBJECT_PREFIX = 'G.';
 function leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 function parseBool(str) { return str === 'true'; }
-function connToString(conn) {
-    return getConnectionString(conn.outputNodeId, conn.outputId, conn.inputNodeId, conn.inputId, conn.list);
+function connToString(_conn) {
+    return getConnectionString(_conn.outputNodeId, _conn.outputId, _conn.outputOrder, _conn.inputNodeId, _conn.inputId, _conn.list);
 }
-function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, list) {
-    const arrow = '  ' + rightArrowChar(parseBool(list)) + '  ';
+function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list) {
+    const arrow = '  '
+        + rightArrowChar(parseBool(list)) + subscriptNumber(outputOrder)
+        + '  ';
     return outputNodeId + ' . ' + outputId
         + arrow
         + inputNodeId + ' . ' + inputId;
+}
+function superscriptNumber(num) {
+    const str = num.toString();
+    let sup = '';
+    for (const c of str)
+        sup += superscriptChar(c);
+    return sup;
+}
+function superscriptChar(c) {
+    switch (c) {
+        case '0': return '⁰';
+        case '1': return '¹';
+        case '2': return '²';
+        case '3': return '³';
+        case '4': return '⁴';
+        case '5': return '⁵';
+        case '6': return '⁶';
+        case '7': return '⁷';
+        case '8': return '⁸';
+        case '9': return '⁹';
+        case '.': return '·';
+    }
+}
+function subscriptNumber(num) {
+    const str = num.toString();
+    let sup = '';
+    for (const c of str)
+        sup += subscriptChar(c);
+    return sup;
+}
+function subscriptChar(c) {
+    switch (c) {
+        case '0': return '₀';
+        case '1': return '₁';
+        case '2': return '₂';
+        case '3': return '₃';
+        case '4': return '₄';
+        case '5': return '₅';
+        case '6': return '₆';
+        case '7': return '₇';
+        case '8': return '₈';
+        case '9': return '₉';
+        case '.': return ' ';
+    }
 }
 const NAN_CHAR = '-';
 const NAN_DISPLAY = '—';
@@ -487,6 +533,9 @@ figma.ui.onmessage = msg => {
         case 'figSaveConnection':
             figSaveConnection(msg.name, msg.json);
             break;
+        case 'figSaveConnections':
+            figSaveConnections(msg.names, msg.json);
+            break;
         case 'figRemoveSavedConnection':
             figRemoveSavedConnection(msg.name);
             break;
@@ -903,12 +952,15 @@ function figLogAllSavedConns() {
     connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k))));
 }
 function figSaveConnection(name, json) {
-    // console.log('key', connNameForStorage(name));
-    // console.log('connection', json);
     figSetPageData(connNameForStorage(name), json);
 }
+function figSaveConnections(_names, _json) {
+    const names = JSON.parse(_names);
+    const json = JSON.parse(_json);
+    for (let i = 0; i < names.length; i++)
+        figSetPageData(connNameForStorage(names[i]), json[i]);
+}
 function figRemoveSavedConnection(name) {
-    //console.log('figRemoveSavedConnection('+name+')');
     figClearPageData(connNameForStorage(name));
 }
 function figRemoveAllSavedConnections() {

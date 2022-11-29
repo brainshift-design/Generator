@@ -37,10 +37,8 @@ extends Action
 
         this.createdNodeId = node.id;
 
-        graphView.updateNodeTransform(node);
-        setTimeout(() => graphView.updateScrollWithBounds());
-        
         uiMakeNodeActive(node);
+        pushUpdate([node]);
     }
 
 
@@ -63,9 +61,7 @@ extends Action
             true, 
             this.options);
 
-        graphView.updateNodeTransform(node);
-        setTimeout(() => graphView.updateScrollWithBounds());
-
         uiMakeNodeActive(node);
+        pushUpdate([node]);
     }
 }

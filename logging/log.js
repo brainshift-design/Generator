@@ -114,3 +114,17 @@ function logSaveNodes(nodeJson)
 {
     console.log('%cSAVING NODES\n' + nodeJson, 'color: black; background: #ddeeff;');
 }
+
+
+
+function logSaveConnections(conns)
+{
+    let log = 'SAVING ' + conns.length + ' ' + countString('CONNECTION', conns.length);
+
+    for (const conn of conns)
+        log += '\n' + conn.toJson();
+
+    console.log(
+        '%c' + log, 
+        'color: black; background: #ddeeff;');
+}

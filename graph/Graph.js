@@ -135,7 +135,7 @@ class Graph
 
 
 
-    connect(output, input, inputId = '')
+    connect(output, input, inputId = '', outputOrder = -1)
     {
         //console.log('graph.connect()');
 
@@ -183,7 +183,9 @@ class Graph
             : 0;
 
         output.connection = conn;
-        output.connectedInputs.push(input);
+
+        if (outputOrder > -1) output.connectedInputs.splice(outputOrder, 0, input);
+        else                  output.connectedInputs.push(input);
         
         input .connection = conn;
         input .connectedOutput = output;
@@ -217,11 +219,12 @@ class Graph
         removeFromArray(output.connectedInputs, input);
 
 
-        for (const input of output.connectedInputs)
-        {
-            if (input.connection.outputOrder > outputOrder)
-                input.connection.outputOrder--;
-        }
+        // const afterConns = output.connectedInputs
+        //     .map   (i => i.connection)
+        //     .filter(c => c.outputOrder > outputOrder);
+
+        // afterConns.forEach(c => c.outputOrder--);
+        // uiSaveConnections(afterConns);
 
 
         input .connectedOutput = null;

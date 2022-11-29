@@ -410,7 +410,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [node];
 
-        node.updateNode();
+        //node.updateNode();
     }
 
 
@@ -495,7 +495,7 @@ function uiSetNodeId(nodeId, newId)
 
 
 
-function uiVariableConnect(outputNode, outputId, inputNode, inputId)
+function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder = -1)
 {
     //console.log('uiVariableConnect()');
 
@@ -508,7 +508,12 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId)
         const conn = uiConnect(
             output,
             lastOf(inputNode.headerInputs),
-            inputId);
+            inputId,
+            outputOrder);
+
+
+        if (outputOrder > -1)
+            conn.outputOrder = outputOrder;
 
         uiUpdateSavedConnectionsToNodeId(inputNode.id);
 
@@ -520,16 +525,16 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId)
 
 
 
-function uiConnect(output, input, inputId = '')
+function uiConnect(output, input, inputId = '', outputOrder = -1)
 {
-    const conn = graph.connect(output, input, inputId);
+    const conn = graph.connect(output, input, inputId, outputOrder);
 
-    uiSaveConnection(
-        output.node.id,
-        output.id,
-        input.node.id,
-        input.id,
-        conn.toJson());
+    // uiSaveConnection(
+    //     output.node.id,
+    //     output.id,
+    //     input.node.id,
+    //     input.id,
+    //     conn.toJson());
 
     return conn;
 }
@@ -585,15 +590,9 @@ function uiDisconnect(input)
     
     const node = input.node;
 
-    uiRemoveSavedConnection(
-        input.connectedOutput.node.id,
-        input.connectedOutput.id,
-        input.node.id,
-        input.id);
-
     graph.disconnect(input);
 
-    node.updateNode();
+    //node.updateNode();
 
     if (node.variableInputs)
         uiUpdateSavedConnectionsToNodeId(node.id);
@@ -611,7 +610,7 @@ function uiDisconnectAny(input)
 
     graph.disconnect(input);
 
-    node.updateNode();
+    //node.updateNode();
 }
 
 
@@ -642,11 +641,11 @@ function uiMakeNodeActive(node)
     uiMakeNodeRightPassive(node);
 
     node.makeActive();
-    node.updateNode();
+    //node.updateNode();
 
     //uiSaveNodes([node.id]);
 
-    pushUpdate([node]);
+    //pushUpdate([node]);
 }
 
 
@@ -664,12 +663,12 @@ function uiMakeNodesActive(nodes)
     {
         pushUnique(graphView.activeNodes, node);
         node._active = true;
-        node.updateNode();
+        //node.updateNode();
     }
 
-    uiSaveNodes(nodes.map(n => n.id));
+    //uiSaveNodes(nodes.map(n => n.id));
 
-    pushUpdate(nodes);
+    //pushUpdate(nodes);
 }
 
 
@@ -679,9 +678,9 @@ function uiMakeNodePassive(node)
     if (!node.active) return;
 
     node.makePassive();
-    node.updateNode();
+    //node.updateNode();
 
-    uiSaveNodes([node.id]);
+    //uiSaveNodes([node.id]);
 }
 
 
@@ -848,9 +847,10 @@ function updateGraphNodes()
 {
     //console.log('updateGraphNodes()');
 
-    for (const node of graphView.selectedNodes     ) node.updateNode();
-    for (const node of graphView._prevSelectedNodes) node.updateNode();
-    for (const node of graphView.lastSelectedNodes ) node.updateNode();
+    [...graphView.selectedNodes,     
+     ...graphView._prevSelectedNodes,
+     ...graphView.lastSelectedNodes]
+        .forEach(n => n.updateNode());
 }
 
 
@@ -1018,10 +1018,12 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
             objects:       [...objects]});
     }
         
-
-    graphView.update(nodes);
-
+    
     uiSaveNodes(nodes.map(n => n.id));
+    
+    
+    graphView.update(nodes);
+    graphView.updateScrollWithBounds();
 }
 
 
@@ -1086,10 +1088,80 @@ function uiSaveConnection(outputNodeId, outputId, inputNodeId, inputId, connJson
 
 
 
-function uiRemoveSavedConnection(outputNodeId, outputId, inputNodeId, inputId)
+function uiSaveConnections(conns)
 {
     if (settings.logRawSaving)
-        console.log('%cREMOVING SAVED CONNECTION', 'color: black; background: #ddeeff;');
+        logSaveConnections(conns);
+
+
+    const names    = [];
+    const connJson = [];
+
+    for (const conn of conns)
+    {
+        names.push( 
+              conn.outputNodeId + ' '
+            + conn.outputId     + ' '
+            + conn.inputNodeId  + ' '
+            + conn.inputId);
+
+        connJson.push(conn.toJson());
+    }
+
+
+    uiQueueMessageToFigma({
+        cmd:  'figSaveConnections',
+        names: JSON.stringify(names),
+        json:  JSON.stringify(connJson)
+    });
+}
+
+
+
+function uiRemoveSavedConn(conn)
+{
+    if (settings.logRawSaving)
+    {
+        console.log(
+              '%cREMOVING SAVED CONNECTION ' 
+            + getConnectionString(
+                conn.output.node.id,
+                conn.output.id,
+                conn.outputOrder,
+                conn.input.node.id,
+                conn.input.id,
+                conn.list), 
+            'color: black; background: #ddeeff;');
+    }
+
+
+    uiQueueMessageToFigma({
+        cmd: 'figRemoveSavedConnection',
+        name: conn.outputNodeId + ' '
+            + conn.outputId     + ' '
+            + conn.inputNodeId  + ' '
+            + conn.inputId
+    });
+}
+
+
+
+function uiRemoveSavedConnection(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
+{
+    if (settings.logRawSaving)
+    {
+        console.log(
+              '%cREMOVING SAVED CONNECTION ' 
+            + getConnectionString(
+                outputNodeId,
+                outputId,
+                outputOrder,
+                inputNodeId,
+                inputId,
+                list), 
+            'color: black; background: #ddeeff;');
+    }
+
 
     uiQueueMessageToFigma({
         cmd: 'figRemoveSavedConnection',

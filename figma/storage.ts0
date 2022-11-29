@@ -207,17 +207,24 @@ function figLogAllSavedConns()
 
 function figSaveConnection(name, json)
 {
-    // console.log('key', connNameForStorage(name));
-    // console.log('connection', json);
-    
     figSetPageData(connNameForStorage(name), json);        
+}
+
+
+
+function figSaveConnections(_names, _json)
+{
+    const names = JSON.parse(_names);
+    const json  = JSON.parse(_json);
+
+    for (let i = 0; i < names.length; i++)
+        figSetPageData(connNameForStorage(names[i]), json[i]);
 }
 
 
 
 function figRemoveSavedConnection(name)
 {
-    //console.log('figRemoveSavedConnection('+name+')');
     figClearPageData(connNameForStorage(name));        
 }
 

@@ -5,6 +5,10 @@ extends Action
     outputId;
     get outputNode() { return nodeFromId(this.outputNodeId); }
 
+    get output() { return nodeFromId(this.outputNodeId).outputFromId(this.outputId); }
+
+    outputOrder;
+
     inputNodeId;
     inputId;
     get inputNode() { return nodeFromId(this.inputNodeId); }
@@ -28,6 +32,8 @@ extends Action
         this.outputNodeId = output.node.id;
         this.outputId     = output.id;
 
+        this.outputOrder  = input.connection.outputOrder;
+
         this.inputNodeId  = input.node.id;
         this.inputId      = input.id;
     }
@@ -42,7 +48,23 @@ extends Action
             uiDeleteObjects([id]); // clean up now irrelevant objects
 
 
-        uiDisconnect(this.inputNode.inputFromId(this.inputId));
+        const input = this.inputNode.inputFromId(this.inputId);
+        
+
+        // update output order on existing connections created after this one
+        const afterConns = this.output.connectedInputs
+            .map   (i => i.connection)
+            .filter(c => c.outputOrder > this.outputOrder);
+
+        afterConns.forEach(c => c.outputOrder--);
+
+
+        uiRemoveSavedConn(input.connection);
+        uiDisconnect(input);
+
+        uiSaveConnections(afterConns);
+        
+        
         this.inputNode.invalidate();
         
         
@@ -61,10 +83,6 @@ extends Action
         }
 
 
-        this.outputNode.updateNode();
-        this.inputNode .updateNode();
-
-
         const updateNodes = [this.inputNode, this.outputNode];
 
         if (!this.outputNode.cached)
@@ -77,9 +95,24 @@ extends Action
     
     undo()
     {
-        uiVariableConnect(
+        const conn = uiVariableConnect(
             this.outputNode, this.outputId, 
-            this. inputNode, this. inputId);
+            this. inputNode, this. inputId,
+            this.outputOrder);
+
+
+        // update output order on existing connections
+        const afterConns = this.output.connectedInputs
+            .map   (i => i.connection)
+            .filter(c => c.outputOrder >= this.outputOrder);
+
+        afterConns.forEach(c => c.outputOrder++);
+
+
+        uiSaveConnection(
+            this.outputNodeId, this.outputId,
+            this.inputNodeId,  this.inputId,
+            conn.toJson());
 
             
         for (const id of this.newActiveNodeIds)
@@ -98,7 +131,7 @@ extends Action
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
-
-        this.inputNode.updateNode();
+        
+        pushUpdate([this.outputNode]);
     }
 }

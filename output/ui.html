@@ -2323,25 +2323,97 @@ function parseBool(str) { return str === 'true'; }
 
 
 
-function connToString(conn)
+function connToString(_conn)
 {
     return getConnectionString(
-        conn.outputNodeId,
-        conn.outputId,
-        conn.inputNodeId,
-        conn.inputId,
-        conn.list);
+        _conn.outputNodeId,
+        _conn.outputId,
+        _conn.outputOrder,
+        _conn.inputNodeId,
+        _conn.inputId,
+        _conn.list);
 }
 
 
 
-function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, list)
+function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
 {
-    const arrow = '  ' + rightArrowChar(parseBool(list)) + '  ';
+    const arrow = 
+          '  ' 
+        + rightArrowChar(parseBool(list)) + subscriptNumber(outputOrder)
+        + '  ';
 
     return outputNodeId + ' . ' + outputId
          + arrow
          + inputNodeId + ' . ' + inputId;
+}
+
+
+
+function superscriptNumber(num)
+{
+    const str = num.toString();
+
+    let sup = '';
+
+    for (const c of str)
+        sup += superscriptChar(c);
+
+    return sup;
+}
+
+
+
+function superscriptChar(c)
+{
+    switch (c)
+    {
+        case '0': return '⁰';
+        case '1': return '¹';
+        case '2': return '²';
+        case '3': return '³';
+        case '4': return '⁴';
+        case '5': return '⁵';
+        case '6': return '⁶';
+        case '7': return '⁷';
+        case '8': return '⁸';
+        case '9': return '⁹';
+        case '.': return '·';
+    }
+}
+
+
+
+function subscriptNumber(num)
+{
+    const str = num.toString();
+
+    let sup = '';
+
+    for (const c of str)
+        sup += subscriptChar(c);
+
+    return sup;
+}
+
+
+
+function subscriptChar(c)
+{
+    switch (c)
+    {
+        case '0': return '₀';
+        case '1': return '₁';
+        case '2': return '₂';
+        case '3': return '₃';
+        case '4': return '₄';
+        case '5': return '₅';
+        case '6': return '₆';
+        case '7': return '₇';
+        case '8': return '₈';
+        case '9': return '₉';
+        case '.': return ' ';
+    }
 }
 
 
@@ -4281,74 +4353,6 @@ function readonly(target, name, descriptor)
 
 
 
-function superscriptNumber(num)
-{
-    const str = num.toString();
-
-    let sup = '';
-
-    for (const c of str)
-        sup += superscriptChar(c);
-
-    return sup;
-}
-
-
-
-function superscriptChar(c)
-{
-    switch (c)
-    {
-        case '0': return '⁰';
-        case '1': return '¹';
-        case '2': return '²';
-        case '3': return '³';
-        case '4': return '⁴';
-        case '5': return '⁵';
-        case '6': return '⁶';
-        case '7': return '⁷';
-        case '8': return '⁸';
-        case '9': return '⁹';
-        case '.': return '·';
-    }
-}
-
-
-
-function subscriptNumber(num)
-{
-    const str = num.toString();
-
-    let sup = '';
-
-    for (const c of str)
-        sup += subscriptChar(c);
-
-    return sup;
-}
-
-
-
-function subscriptChar(c)
-{
-    switch (c)
-    {
-        case '0': return '₀';
-        case '1': return '₁';
-        case '2': return '₂';
-        case '3': return '₃';
-        case '4': return '₄';
-        case '5': return '₅';
-        case '6': return '₆';
-        case '7': return '₇';
-        case '8': return '₈';
-        case '9': return '₉';
-        case '.': return ' ';
-    }
-}
-
-
-
 function osCtrl()  { return isMac ? '⌘' : 'Ctrl+';  }
 function osAlt()   { return isMac ? '⌥' : 'Alt+';   }
 function osShift() { return isMac ? '⇧'  : 'Shift+'; }
@@ -4911,6 +4915,20 @@ function logObjectUpdates(objects)
 function logSaveNodes(nodeJson)
 {
     console.log('%cSAVING NODES\n' + nodeJson, 'color: black; background: #ddeeff;');
+}
+
+
+
+function logSaveConnections(conns)
+{
+    let log = 'SAVING ' + conns.length + ' ' + countString('CONNECTION', conns.length);
+
+    for (const conn of conns)
+        log += '\n' + conn.toJson();
+
+    console.log(
+        '%c' + log, 
+        'color: black; background: #ddeeff;');
 }
 
 
@@ -8202,8 +8220,8 @@ extends GOperator
             this.value = null;
 
 
-        if (this.value)
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        else            genPushUpdateValue(parse, this.nodeId, '',      NumberValue.NaN);
 
         
         this.validate();
@@ -15707,7 +15725,7 @@ function switchToSliders(node)
         node.inner.appendChild(node.param2.div);
         node.inner.appendChild(node.param3.div);
 
-        node.updateNode();
+        //node.updateNode();
     }
 }
 
@@ -16361,25 +16379,97 @@ function parseBool(str) { return str === 'true'; }
 
 
 
-function connToString(conn)
+function connToString(_conn)
 {
     return getConnectionString(
-        conn.outputNodeId,
-        conn.outputId,
-        conn.inputNodeId,
-        conn.inputId,
-        conn.list);
+        _conn.outputNodeId,
+        _conn.outputId,
+        _conn.outputOrder,
+        _conn.inputNodeId,
+        _conn.inputId,
+        _conn.list);
 }
 
 
 
-function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, list)
+function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
 {
-    const arrow = '  ' + rightArrowChar(parseBool(list)) + '  ';
+    const arrow = 
+          '  ' 
+        + rightArrowChar(parseBool(list)) + subscriptNumber(outputOrder)
+        + '  ';
 
     return outputNodeId + ' . ' + outputId
          + arrow
          + inputNodeId + ' . ' + inputId;
+}
+
+
+
+function superscriptNumber(num)
+{
+    const str = num.toString();
+
+    let sup = '';
+
+    for (const c of str)
+        sup += superscriptChar(c);
+
+    return sup;
+}
+
+
+
+function superscriptChar(c)
+{
+    switch (c)
+    {
+        case '0': return '⁰';
+        case '1': return '¹';
+        case '2': return '²';
+        case '3': return '³';
+        case '4': return '⁴';
+        case '5': return '⁵';
+        case '6': return '⁶';
+        case '7': return '⁷';
+        case '8': return '⁸';
+        case '9': return '⁹';
+        case '.': return '·';
+    }
+}
+
+
+
+function subscriptNumber(num)
+{
+    const str = num.toString();
+
+    let sup = '';
+
+    for (const c of str)
+        sup += subscriptChar(c);
+
+    return sup;
+}
+
+
+
+function subscriptChar(c)
+{
+    switch (c)
+    {
+        case '0': return '₀';
+        case '1': return '₁';
+        case '2': return '₂';
+        case '3': return '₃';
+        case '4': return '₄';
+        case '5': return '₅';
+        case '6': return '₆';
+        case '7': return '₇';
+        case '8': return '₈';
+        case '9': return '₉';
+        case '.': return ' ';
+    }
 }
 
 
@@ -18319,74 +18409,6 @@ function readonly(target, name, descriptor)
 
 
 
-function superscriptNumber(num)
-{
-    const str = num.toString();
-
-    let sup = '';
-
-    for (const c of str)
-        sup += superscriptChar(c);
-
-    return sup;
-}
-
-
-
-function superscriptChar(c)
-{
-    switch (c)
-    {
-        case '0': return '⁰';
-        case '1': return '¹';
-        case '2': return '²';
-        case '3': return '³';
-        case '4': return '⁴';
-        case '5': return '⁵';
-        case '6': return '⁶';
-        case '7': return '⁷';
-        case '8': return '⁸';
-        case '9': return '⁹';
-        case '.': return '·';
-    }
-}
-
-
-
-function subscriptNumber(num)
-{
-    const str = num.toString();
-
-    let sup = '';
-
-    for (const c of str)
-        sup += subscriptChar(c);
-
-    return sup;
-}
-
-
-
-function subscriptChar(c)
-{
-    switch (c)
-    {
-        case '0': return '₀';
-        case '1': return '₁';
-        case '2': return '₂';
-        case '3': return '₃';
-        case '4': return '₄';
-        case '5': return '₅';
-        case '6': return '₆';
-        case '7': return '₇';
-        case '8': return '₈';
-        case '9': return '₉';
-        case '.': return ' ';
-    }
-}
-
-
-
 function osCtrl()  { return isMac ? '⌘' : 'Ctrl+';  }
 function osAlt()   { return isMac ? '⌥' : 'Alt+';   }
 function osShift() { return isMac ? '⇧'  : 'Shift+'; }
@@ -18949,6 +18971,20 @@ function logObjectUpdates(objects)
 function logSaveNodes(nodeJson)
 {
     console.log('%cSAVING NODES\n' + nodeJson, 'color: black; background: #ddeeff;');
+}
+
+
+
+function logSaveConnections(conns)
+{
+    let log = 'SAVING ' + conns.length + ' ' + countString('CONNECTION', conns.length);
+
+    for (const conn of conns)
+        log += '\n' + conn.toJson();
+
+    console.log(
+        '%c' + log, 
+        'color: black; background: #ddeeff;');
 }
 
 
@@ -23852,8 +23888,8 @@ extends GOperator
             this.value = null;
 
 
-        if (this.value)
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        else            genPushUpdateValue(parse, this.nodeId, '',      NumberValue.NaN);
 
         
         this.validate();
@@ -33058,9 +33094,10 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
     selectBox.style.zIndex = MAX_INT32-3;
         
         
-    selected.forEach(n => n.updateNode());
-    graphView._prevSelectedNodes.forEach(n => n.updateNode());
-    graphView.lastSelectedNodes.forEach(n => n.updateNode());
+    [...selected,                    
+     ...graphView._prevSelectedNodes,
+     ...graphView.lastSelectedNodes]
+        .forEach(n => n.updateNode());
 
 
     graphView._prevSelectedNodes = selected;
@@ -35554,7 +35591,7 @@ class Graph
 
 
 
-    connect(output, input, inputId = '')
+    connect(output, input, inputId = '', outputOrder = -1)
     {
         //console.log('graph.connect()');
 
@@ -35602,7 +35639,9 @@ class Graph
             : 0;
 
         output.connection = conn;
-        output.connectedInputs.push(input);
+
+        if (outputOrder > -1) output.connectedInputs.splice(outputOrder, 0, input);
+        else                  output.connectedInputs.push(input);
         
         input .connection = conn;
         input .connectedOutput = output;
@@ -35636,11 +35675,12 @@ class Graph
         removeFromArray(output.connectedInputs, input);
 
 
-        for (const input of output.connectedInputs)
-        {
-            if (input.connection.outputOrder > outputOrder)
-                input.connection.outputOrder--;
-        }
+        // const afterConns = output.connectedInputs
+        //     .map   (i => i.connection)
+        //     .filter(c => c.outputOrder > outputOrder);
+
+        // afterConns.forEach(c => c.outputOrder--);
+        // uiSaveConnections(afterConns);
 
 
         input .connectedOutput = null;
@@ -36915,16 +36955,18 @@ class Connection
     {
         let   pos = ' '.repeat(nTab);
         const tab = TAB;
-        
-        let json = 
-              pos + '{'
+
+        let json =
+              pos
+            + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
-            + ',' + NL + pos + tab + '"outputId": "' + (this.output.param ? this.output.param.id : this.output.index) + '"'
-            + ',' + NL + pos + tab + '"outputOrder": "' + this.outputOrder + '"'
-            + ',' + NL + pos + tab + '"inputNodeId": "' + this.input.node.id + '"'
-            + ',' + NL + pos + tab + '"inputId": "' + (this.input.param ? this.input.param.id : this.input.index) + '"'
-            + ',' + NL + pos + tab + '"list": "' + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
-            +       NL + pos + '}';
+            + ',' + NL + pos + tab + '"outputId": "'     + (this.output.param ? this.output.param.id : this.output.index) + '"'
+            + ',' + NL + pos + tab + '"outputOrder": "'  + this.outputOrder + '"'
+            + ',' + NL + pos + tab + '"inputNodeId": "'  + this.input.node.id + '"'
+            + ',' + NL + pos + tab + '"inputId": "'      + (this.input.param ? this.input.param.id : this.input.index) + '"'
+            + ',' + NL + pos + tab + '"list": "'         + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
+            +       NL + pos
+            + '}';
 
         return json;
     }
@@ -36933,6 +36975,7 @@ class Connection
 
     static parseJson(_conn)
     {
+        // console.trace();
         const outputNode  = nodeFromId(_conn.outputNodeId);
         const outputId    = _conn.outputId;
 
@@ -38215,7 +38258,7 @@ function pushUpdate(nodes)
 function pushUpdateFromParam(nodes, param)
 {
     //console.log('pushUpdateFromParam(' + (param ? param : '') +')', nodes);
-
+    //console.trace();
 
     // first check if any nodes to the left are uncached
     // and replace as necessary
@@ -41990,7 +42033,7 @@ function switchToSliders(node)
         node.inner.appendChild(node.param2.div);
         node.inner.appendChild(node.param3.div);
 
-        node.updateNode();
+        //node.updateNode();
     }
 }
 
@@ -44778,10 +44821,17 @@ extends Action
             uiDeleteObjects([id]); // clean up now irrelevant objects
 
 
-        uiConnect(
+        const conn = uiConnect(
             this.outputNode.outputs.find(o => o.id == this.outputId), 
             this.inputNode. inputs .find(i => i.id == this. inputId),
             this.inputId);
+
+        uiSaveConnection(
+            this.outputNodeId,
+            this.outputId,
+            this.inputNodeId,
+            this.inputId,
+            conn.toJson());
 
 
         this.newActiveNodeIds = [];
@@ -44821,26 +44871,29 @@ extends Action
             pushUnique(pushUpdateNodes, this.oldOutputNode.getUncachedInputNodes());
 
         pushUpdate(pushUpdateNodes);
-
-
-        updateNodes.forEach(n => n.updateNode());
     }
 
 
 
     undo()
     {
+        const input = this.inputNode.inputFromId(this.inputId);
+        
+        uiDisconnect(input);
+        uiRemoveSavedConn(input.connection);
 
-        uiDisconnect(this.inputNode.inputFromId(this.inputId));
-
-
+            
         if (this.oldOutputNodeId != '')
         {
-            uiVariableConnect(
-                this.oldOutputNode, 
-                this.oldOutputId, 
-                this.inputNode, 
-                this.inputId);
+            const oldConn = uiVariableConnect(
+                this.oldOutputNode, this.oldOutputId, 
+                this.inputNode,     this.inputId);
+
+            uiSaveConnection(
+                this.oldOutputNodeId, this.oldOutputId,
+                this.inputNodeId,     this.inputId,
+                oldConn.toJson());
+
         }
 
 
@@ -44850,9 +44903,6 @@ extends Action
             this.inputNode.params[this.inputNode.params.findIndex(p => p.id == param[0])]
                 .setValue(param[1], true, true, false);
         }
-
-
-        //const updateNodes = [];
 
 
         for (const id of this.newActiveNodeIds)
@@ -44879,8 +44929,6 @@ extends Action
 
 
         pushUpdate(this.oldInputActiveNodeIds.map(id => nodeFromId(id)));
-
-        this.inputNode.updateNode();
  
 
         // cleanup
@@ -44929,10 +44977,8 @@ extends Action
 
         this.createdNodeId = node.id;
 
-        graphView.updateNodeTransform(node);
-        setTimeout(() => graphView.updateScrollWithBounds());
-        
         uiMakeNodeActive(node);
+        pushUpdate([node]);
     }
 
 
@@ -44955,10 +45001,8 @@ extends Action
             true, 
             this.options);
 
-        graphView.updateNodeTransform(node);
-        setTimeout(() => graphView.updateScrollWithBounds());
-
         uiMakeNodeActive(node);
+        pushUpdate([node]);
     }
 }
 
@@ -45226,6 +45270,10 @@ extends Action
     outputId;
     get outputNode() { return nodeFromId(this.outputNodeId); }
 
+    get output() { return nodeFromId(this.outputNodeId).outputFromId(this.outputId); }
+
+    outputOrder;
+
     inputNodeId;
     inputId;
     get inputNode() { return nodeFromId(this.inputNodeId); }
@@ -45249,6 +45297,8 @@ extends Action
         this.outputNodeId = output.node.id;
         this.outputId     = output.id;
 
+        this.outputOrder  = input.connection.outputOrder;
+
         this.inputNodeId  = input.node.id;
         this.inputId      = input.id;
     }
@@ -45263,7 +45313,23 @@ extends Action
             uiDeleteObjects([id]); // clean up now irrelevant objects
 
 
-        uiDisconnect(this.inputNode.inputFromId(this.inputId));
+        const input = this.inputNode.inputFromId(this.inputId);
+        
+
+        // update output order on existing connections created after this one
+        const afterConns = this.output.connectedInputs
+            .map   (i => i.connection)
+            .filter(c => c.outputOrder > this.outputOrder);
+
+        afterConns.forEach(c => c.outputOrder--);
+
+
+        uiRemoveSavedConn(input.connection);
+        uiDisconnect(input);
+
+        uiSaveConnections(afterConns);
+        
+        
         this.inputNode.invalidate();
         
         
@@ -45282,10 +45348,6 @@ extends Action
         }
 
 
-        this.outputNode.updateNode();
-        this.inputNode .updateNode();
-
-
         const updateNodes = [this.inputNode, this.outputNode];
 
         if (!this.outputNode.cached)
@@ -45298,9 +45360,24 @@ extends Action
     
     undo()
     {
-        uiVariableConnect(
+        const conn = uiVariableConnect(
             this.outputNode, this.outputId, 
-            this. inputNode, this. inputId);
+            this. inputNode, this. inputId,
+            this.outputOrder);
+
+
+        // update output order on existing connections
+        const afterConns = this.output.connectedInputs
+            .map   (i => i.connection)
+            .filter(c => c.outputOrder >= this.outputOrder);
+
+        afterConns.forEach(c => c.outputOrder++);
+
+
+        uiSaveConnection(
+            this.outputNodeId, this.outputId,
+            this.inputNodeId,  this.inputId,
+            conn.toJson());
 
             
         for (const id of this.newActiveNodeIds)
@@ -45319,8 +45396,8 @@ extends Action
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
-
-        this.inputNode.updateNode();
+        
+        pushUpdate([this.outputNode]);
     }
 }
 
@@ -45478,10 +45555,10 @@ extends Action
 
         updateTerminalsAfterNodes(nodes);
         
-        graphView.updateNodeTransforms(nodes);
-        graphView.updateScrollWithBounds();
+        //graphView.updateNodeTransforms(nodes);
+        //graphView.updateScrollWithBounds();
 
-        uiSaveNodes(nodes.map(n => n.id));
+        // uiSaveNodes(nodes.map(n => n.id));
 
         
         this.notify(nodes, this.isDuplicate, this.pasteConnected);
@@ -45523,9 +45600,9 @@ extends Action
         }
 
         updateTerminalsAfterNodes(nodes);
-        graphView.updateNodeTransforms(nodes);
+        // graphView.updateNodeTransforms(nodes);
 
-        uiSaveNodes(nodes.map(n => n.id));
+        // uiSaveNodes(nodes.map(n => n.id));
         
         this.notify(nodes, this.isDuplicate, this.pasteConnected);
     }
@@ -46851,7 +46928,7 @@ function dataModeDeleteAllConnections()
 
 
     if (nRemovedConns > 0)
-        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to and from \'' + node.id + '\'');
+        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns));
 }
 
 
@@ -46938,8 +47015,10 @@ function dataModeDeleteConnection(conn)
     uiRemoveSavedConnection(
         conn.outputNodeId,
         conn.outputId,
+        conn.outputOrder,
         conn.inputNodeId,
-        conn.inputId);
+        conn.inputId,
+        conn.list);
 
 
     for (let i = dataModeConns.children.length-1; i >= 0; i--)
@@ -47832,9 +47911,9 @@ function uiReturnFigGetLocalData(msg)
     // if (msg.key == 'debugMode')
     //     menuItemDebug.setVisible(settings.debugMode);
 
-    //else if (msg.key == 'logLoading')
-    //     if (settings.logLoading)
-    //         uiLogAllSavedNodesAndConns();
+    if (msg.key == 'logLoading')
+        if (settings.logLoading)
+            uiLogAllSavedNodesAndConns();
 }
 
 
@@ -47889,12 +47968,21 @@ function uiLoadGraphView(json)
 function uiReturnFigLoadNodesAndConns(nodesJson, connsJson)
 {
     if (settings.logRawLoading)
+    {
         console.log(
-            '%cnodes json = %s', 
+            '%cnodes JSON = %s', 
             'background: #fed',
             nodesJson
                 .replaceAll('\\n', '\n')
                 .replaceAll('\\"', '\"'));
+
+        console.log(
+            '%cconnections JSON = %s', 
+            'background: #fed',
+            connsJson
+                .replaceAll('\\n', '\n')
+                .replaceAll('\\"', '\"'));
+    }
 
 
     let _nodes = JSON.parse(nodesJson);
@@ -48041,7 +48129,7 @@ function finishLoadingNodes(_nodes, loadedNodes, duplicates = false)
         .map(_n => nodeFromId(duplicates ? _n.newId : _n.id))
         .forEach(n => n.makeActive());
 
-    loadedNodes.forEach(n => n.updateNode());
+    //loadedNodes.forEach(n => n.updateNode());
     graphView.updateNodeTransforms(loadedNodes);
 
     updateTerminalsAfterNodes(loadedNodes);
@@ -48770,7 +48858,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [node];
 
-        node.updateNode();
+        //node.updateNode();
     }
 
 
@@ -48855,7 +48943,7 @@ function uiSetNodeId(nodeId, newId)
 
 
 
-function uiVariableConnect(outputNode, outputId, inputNode, inputId)
+function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder = -1)
 {
     //console.log('uiVariableConnect()');
 
@@ -48868,7 +48956,12 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId)
         const conn = uiConnect(
             output,
             lastOf(inputNode.headerInputs),
-            inputId);
+            inputId,
+            outputOrder);
+
+
+        if (outputOrder > -1)
+            conn.outputOrder = outputOrder;
 
         uiUpdateSavedConnectionsToNodeId(inputNode.id);
 
@@ -48880,16 +48973,16 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId)
 
 
 
-function uiConnect(output, input, inputId = '')
+function uiConnect(output, input, inputId = '', outputOrder = -1)
 {
-    const conn = graph.connect(output, input, inputId);
+    const conn = graph.connect(output, input, inputId, outputOrder);
 
-    uiSaveConnection(
-        output.node.id,
-        output.id,
-        input.node.id,
-        input.id,
-        conn.toJson());
+    // uiSaveConnection(
+    //     output.node.id,
+    //     output.id,
+    //     input.node.id,
+    //     input.id,
+    //     conn.toJson());
 
     return conn;
 }
@@ -48945,15 +49038,9 @@ function uiDisconnect(input)
     
     const node = input.node;
 
-    uiRemoveSavedConnection(
-        input.connectedOutput.node.id,
-        input.connectedOutput.id,
-        input.node.id,
-        input.id);
-
     graph.disconnect(input);
 
-    node.updateNode();
+    //node.updateNode();
 
     if (node.variableInputs)
         uiUpdateSavedConnectionsToNodeId(node.id);
@@ -48971,7 +49058,7 @@ function uiDisconnectAny(input)
 
     graph.disconnect(input);
 
-    node.updateNode();
+    //node.updateNode();
 }
 
 
@@ -49002,11 +49089,11 @@ function uiMakeNodeActive(node)
     uiMakeNodeRightPassive(node);
 
     node.makeActive();
-    node.updateNode();
+    //node.updateNode();
 
     //uiSaveNodes([node.id]);
 
-    pushUpdate([node]);
+    //pushUpdate([node]);
 }
 
 
@@ -49024,12 +49111,12 @@ function uiMakeNodesActive(nodes)
     {
         pushUnique(graphView.activeNodes, node);
         node._active = true;
-        node.updateNode();
+        //node.updateNode();
     }
 
-    uiSaveNodes(nodes.map(n => n.id));
+    //uiSaveNodes(nodes.map(n => n.id));
 
-    pushUpdate(nodes);
+    //pushUpdate(nodes);
 }
 
 
@@ -49039,9 +49126,9 @@ function uiMakeNodePassive(node)
     if (!node.active) return;
 
     node.makePassive();
-    node.updateNode();
+    //node.updateNode();
 
-    uiSaveNodes([node.id]);
+    //uiSaveNodes([node.id]);
 }
 
 
@@ -49208,9 +49295,10 @@ function updateGraphNodes()
 {
     //console.log('updateGraphNodes()');
 
-    for (const node of graphView.selectedNodes     ) node.updateNode();
-    for (const node of graphView._prevSelectedNodes) node.updateNode();
-    for (const node of graphView.lastSelectedNodes ) node.updateNode();
+    [...graphView.selectedNodes,     
+     ...graphView._prevSelectedNodes,
+     ...graphView.lastSelectedNodes]
+        .forEach(n => n.updateNode());
 }
 
 
@@ -49378,10 +49466,12 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
             objects:       [...objects]});
     }
         
-
-    graphView.update(nodes);
-
+    
     uiSaveNodes(nodes.map(n => n.id));
+    
+    
+    graphView.update(nodes);
+    graphView.updateScrollWithBounds();
 }
 
 
@@ -49446,10 +49536,80 @@ function uiSaveConnection(outputNodeId, outputId, inputNodeId, inputId, connJson
 
 
 
-function uiRemoveSavedConnection(outputNodeId, outputId, inputNodeId, inputId)
+function uiSaveConnections(conns)
 {
     if (settings.logRawSaving)
-        console.log('%cREMOVING SAVED CONNECTION', 'color: black; background: #ddeeff;');
+        logSaveConnections(conns);
+
+
+    const names    = [];
+    const connJson = [];
+
+    for (const conn of conns)
+    {
+        names.push( 
+              conn.outputNodeId + ' '
+            + conn.outputId     + ' '
+            + conn.inputNodeId  + ' '
+            + conn.inputId);
+
+        connJson.push(conn.toJson());
+    }
+
+
+    uiQueueMessageToFigma({
+        cmd:  'figSaveConnections',
+        names: JSON.stringify(names),
+        json:  JSON.stringify(connJson)
+    });
+}
+
+
+
+function uiRemoveSavedConn(conn)
+{
+    if (settings.logRawSaving)
+    {
+        console.log(
+              '%cREMOVING SAVED CONNECTION ' 
+            + getConnectionString(
+                conn.output.node.id,
+                conn.output.id,
+                conn.outputOrder,
+                conn.input.node.id,
+                conn.input.id,
+                conn.list), 
+            'color: black; background: #ddeeff;');
+    }
+
+
+    uiQueueMessageToFigma({
+        cmd: 'figRemoveSavedConnection',
+        name: conn.outputNodeId + ' '
+            + conn.outputId     + ' '
+            + conn.inputNodeId  + ' '
+            + conn.inputId
+    });
+}
+
+
+
+function uiRemoveSavedConnection(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
+{
+    if (settings.logRawSaving)
+    {
+        console.log(
+              '%cREMOVING SAVED CONNECTION ' 
+            + getConnectionString(
+                outputNodeId,
+                outputId,
+                outputOrder,
+                inputNodeId,
+                inputId,
+                list), 
+            'color: black; background: #ddeeff;');
+    }
+
 
     uiQueueMessageToFigma({
         cmd: 'figRemoveSavedConnection',

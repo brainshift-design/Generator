@@ -106,9 +106,9 @@ function uiReturnFigGetLocalData(msg)
     // if (msg.key == 'debugMode')
     //     menuItemDebug.setVisible(settings.debugMode);
 
-    //else if (msg.key == 'logLoading')
-    //     if (settings.logLoading)
-    //         uiLogAllSavedNodesAndConns();
+    if (msg.key == 'logLoading')
+        if (settings.logLoading)
+            uiLogAllSavedNodesAndConns();
 }
 
 
@@ -163,12 +163,21 @@ function uiLoadGraphView(json)
 function uiReturnFigLoadNodesAndConns(nodesJson, connsJson)
 {
     if (settings.logRawLoading)
+    {
         console.log(
-            '%cnodes json = %s', 
+            '%cnodes JSON = %s', 
             'background: #fed',
             nodesJson
                 .replaceAll('\\n', '\n')
                 .replaceAll('\\"', '\"'));
+
+        console.log(
+            '%cconnections JSON = %s', 
+            'background: #fed',
+            connsJson
+                .replaceAll('\\n', '\n')
+                .replaceAll('\\"', '\"'));
+    }
 
 
     let _nodes = JSON.parse(nodesJson);
@@ -315,7 +324,7 @@ function finishLoadingNodes(_nodes, loadedNodes, duplicates = false)
         .map(_n => nodeFromId(duplicates ? _n.newId : _n.id))
         .forEach(n => n.makeActive());
 
-    loadedNodes.forEach(n => n.updateNode());
+    //loadedNodes.forEach(n => n.updateNode());
     graphView.updateNodeTransforms(loadedNodes);
 
     updateTerminalsAfterNodes(loadedNodes);

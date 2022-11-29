@@ -296,7 +296,7 @@ function switchToSliders(node)
         node.inner.appendChild(node.param2.div);
         node.inner.appendChild(node.param3.div);
 
-        node.updateNode();
+        //node.updateNode();
     }
 }
 
