@@ -7,7 +7,7 @@ extends Action
 
     get output() { return nodeFromId(this.outputNodeId).outputFromId(this.outputId); }
 
-    outputOrder;
+    connectionOrder;
 
     inputNodeId;
     inputId;
@@ -32,7 +32,7 @@ extends Action
         this.outputNodeId = output.node.id;
         this.outputId     = output.id;
 
-        this.outputOrder  = input.connection.outputOrder;
+        this.connectionOrder  = input.connection.connectionOrder;
 
         this.inputNodeId  = input.node.id;
         this.inputId      = input.id;
@@ -54,9 +54,9 @@ extends Action
         // update output order on existing connections created after this one
         const afterConns = this.output.connectedInputs
             .map   (i => i.connection)
-            .filter(c => c.outputOrder > this.outputOrder);
+            .filter(c => c.connectionOrder > this.connectionOrder);
 
-        afterConns.forEach(c => c.outputOrder--);
+        afterConns.forEach(c => c.connectionOrder--);
 
 
         uiRemoveSavedConn(input.connection);
@@ -98,15 +98,15 @@ extends Action
         const conn = uiVariableConnect(
             this.outputNode, this.outputId, 
             this. inputNode, this. inputId,
-            this.outputOrder);
+            this.connectionOrder);
 
 
         // update output order on existing connections
         const afterConns = this.output.connectedInputs
             .map   (i => i.connection)
-            .filter(c => c.outputOrder >= this.outputOrder);
+            .filter(c => c.connectionOrder >= this.connectionOrder);
 
-        afterConns.forEach(c => c.outputOrder++);
+        afterConns.forEach(c => c.connectionOrder++);
 
 
         uiSaveConnection(

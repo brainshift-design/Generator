@@ -495,7 +495,7 @@ function uiSetNodeId(nodeId, newId)
 
 
 
-function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder = -1)
+function uiVariableConnect(outputNode, outputId, inputNode, inputId, connectionOrder = -1)
 {
     //console.log('uiVariableConnect()');
 
@@ -509,11 +509,11 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder
             output,
             lastOf(inputNode.headerInputs),
             inputId,
-            outputOrder);
+            connectionOrder);
 
 
-        if (outputOrder > -1)
-            conn.outputOrder = outputOrder;
+        if (connectionOrder > -1)
+            conn.connectionOrder = connectionOrder;
 
         uiUpdateSavedConnectionsToNodeId(inputNode.id);
 
@@ -525,9 +525,9 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder
 
 
 
-function uiConnect(output, input, inputId = '', outputOrder = -1)
+function uiConnect(output, input, inputId = '', connectionOrder = -1)
 {
-    const conn = graph.connect(output, input, inputId, outputOrder);
+    const conn = graph.connect(output, input, inputId, connectionOrder);
 
     // uiSaveConnection(
     //     output.node.id,
@@ -1127,7 +1127,7 @@ function uiRemoveSavedConn(conn)
             + getConnectionString(
                 conn.output.node.id,
                 conn.output.id,
-                conn.outputOrder,
+                conn.connectionOrder,
                 conn.input.node.id,
                 conn.input.id,
                 conn.list), 
@@ -1146,7 +1146,7 @@ function uiRemoveSavedConn(conn)
 
 
 
-function uiRemoveSavedConnection(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
+function uiRemoveSavedConnection(outputNodeId, outputId, connectionOrder, inputNodeId, inputId, list)
 {
     if (settings.logRawSaving)
     {
@@ -1155,7 +1155,7 @@ function uiRemoveSavedConnection(outputNodeId, outputId, outputOrder, inputNodeI
             + getConnectionString(
                 outputNodeId,
                 outputId,
-                outputOrder,
+                connectionOrder,
                 inputNodeId,
                 inputId,
                 list), 

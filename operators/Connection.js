@@ -1,7 +1,7 @@
 class Connection
 {
     output;
-    outputOrder; // used to urder connections from outputs
+    connectionOrder; // used to urder connections from outputs
     
     input;
 
@@ -11,7 +11,7 @@ class Connection
     constructor(output, input)
     {
         this.output      = output;
-        this.outputOrder = -1;
+        this.connectionOrder = -1;
  
         this.input       = input;
 
@@ -135,7 +135,7 @@ class Connection
             + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
             + ',' + NL + pos + tab + '"outputId": "'     + (this.output.param ? this.output.param.id : this.output.index) + '"'
-            + ',' + NL + pos + tab + '"outputOrder": "'  + this.outputOrder + '"'
+            + ',' + NL + pos + tab + '"connectionOrder": "'  + this.connectionOrder + '"'
             + ',' + NL + pos + tab + '"inputNodeId": "'  + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "'      + (this.input.param ? this.input.param.id : this.input.index) + '"'
             + ',' + NL + pos + tab + '"list": "'         + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
@@ -153,7 +153,7 @@ class Connection
         const outputNode  = nodeFromId(_conn.outputNodeId);
         const outputId    = _conn.outputId;
 
-        const outputOrder = parseInt(_conn.outputOrder);
+        const connectionOrder = parseInt(_conn.connectionOrder);
 
         const inputNode   = nodeFromId(_conn.inputNodeId);
         const inputId     = _conn.inputId;
@@ -179,7 +179,7 @@ class Connection
                             ? parseInt(inputId)
                             : inputNode.params.find(p => p.id == inputId).input.id);
 
-            conn.outputOrder = outputOrder;
+            conn.connectionOrder = connectionOrder;
 
             return conn;
         }

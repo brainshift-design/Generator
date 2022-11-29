@@ -27,7 +27,7 @@ function connToString(_conn)
     return getConnectionString(
         _conn.outputNodeId,
         _conn.outputId,
-        _conn.outputOrder,
+        _conn.connectionOrder,
         _conn.inputNodeId,
         _conn.inputId,
         _conn.list);
@@ -35,11 +35,11 @@ function connToString(_conn)
 
 
 
-function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
+function getConnectionString(outputNodeId, outputId, connectionOrder, inputNodeId, inputId, list)
 {
     const arrow = 
           '  ' 
-        + rightArrowChar(parseBool(list)) + subscriptNumber(outputOrder)
+        + rightArrowChar(parseBool(list)) + subscriptNumber(connectionOrder)
         + '  ';
 
     return outputNodeId + ' . ' + outputId

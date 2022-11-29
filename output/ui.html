@@ -2328,7 +2328,7 @@ function connToString(_conn)
     return getConnectionString(
         _conn.outputNodeId,
         _conn.outputId,
-        _conn.outputOrder,
+        _conn.connectionOrder,
         _conn.inputNodeId,
         _conn.inputId,
         _conn.list);
@@ -2336,11 +2336,11 @@ function connToString(_conn)
 
 
 
-function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
+function getConnectionString(outputNodeId, outputId, connectionOrder, inputNodeId, inputId, list)
 {
     const arrow = 
           '  ' 
-        + rightArrowChar(parseBool(list)) + subscriptNumber(outputOrder)
+        + rightArrowChar(parseBool(list)) + subscriptNumber(connectionOrder)
         + '  ';
 
     return outputNodeId + ' . ' + outputId
@@ -16384,7 +16384,7 @@ function connToString(_conn)
     return getConnectionString(
         _conn.outputNodeId,
         _conn.outputId,
-        _conn.outputOrder,
+        _conn.connectionOrder,
         _conn.inputNodeId,
         _conn.inputId,
         _conn.list);
@@ -16392,11 +16392,11 @@ function connToString(_conn)
 
 
 
-function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
+function getConnectionString(outputNodeId, outputId, connectionOrder, inputNodeId, inputId, list)
 {
     const arrow = 
           '  ' 
-        + rightArrowChar(parseBool(list)) + subscriptNumber(outputOrder)
+        + rightArrowChar(parseBool(list)) + subscriptNumber(connectionOrder)
         + '  ';
 
     return outputNodeId + ' . ' + outputId
@@ -35591,7 +35591,7 @@ class Graph
 
 
 
-    connect(output, input, inputId = '', outputOrder = -1)
+    connect(output, input, inputId = '', connectionOrder = -1)
     {
         //console.log('graph.connect()');
 
@@ -35633,14 +35633,14 @@ class Graph
 
         const conn = new Connection(output, input);
 
-        conn.outputOrder = 
+        conn.connectionOrder = 
             output.connectedInputs.length > 0
-            ? Math.max(...output.connectedInputs.map(i => i.connection.outputOrder)) + 1
+            ? Math.max(...output.connectedInputs.map(i => i.connection.connectionOrder)) + 1
             : 0;
 
         output.connection = conn;
 
-        if (outputOrder > -1) output.connectedInputs.splice(outputOrder, 0, input);
+        if (connectionOrder > -1) output.connectedInputs.splice(connectionOrder, 0, input);
         else                  output.connectedInputs.push(input);
         
         input .connection = conn;
@@ -35666,7 +35666,7 @@ class Graph
         if (!output) return false;
 
 
-        const outputOrder = input.connection.outputOrder;
+        const connectionOrder = input.connection.connectionOrder;
 
 
         graphView.removeConnWires(input.connection);
@@ -35677,9 +35677,9 @@ class Graph
 
         // const afterConns = output.connectedInputs
         //     .map   (i => i.connection)
-        //     .filter(c => c.outputOrder > outputOrder);
+        //     .filter(c => c.connectionOrder > connectionOrder);
 
-        // afterConns.forEach(c => c.outputOrder--);
+        // afterConns.forEach(c => c.connectionOrder--);
         // uiSaveConnections(afterConns);
 
 
@@ -36827,7 +36827,7 @@ class Output
 class Connection
 {
     output;
-    outputOrder; // used to urder connections from outputs
+    connectionOrder; // used to urder connections from outputs
     
     input;
 
@@ -36837,7 +36837,7 @@ class Connection
     constructor(output, input)
     {
         this.output      = output;
-        this.outputOrder = -1;
+        this.connectionOrder = -1;
  
         this.input       = input;
 
@@ -36961,7 +36961,7 @@ class Connection
             + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
             + ',' + NL + pos + tab + '"outputId": "'     + (this.output.param ? this.output.param.id : this.output.index) + '"'
-            + ',' + NL + pos + tab + '"outputOrder": "'  + this.outputOrder + '"'
+            + ',' + NL + pos + tab + '"connectionOrder": "'  + this.connectionOrder + '"'
             + ',' + NL + pos + tab + '"inputNodeId": "'  + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "'      + (this.input.param ? this.input.param.id : this.input.index) + '"'
             + ',' + NL + pos + tab + '"list": "'         + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
@@ -36979,7 +36979,7 @@ class Connection
         const outputNode  = nodeFromId(_conn.outputNodeId);
         const outputId    = _conn.outputId;
 
-        const outputOrder = parseInt(_conn.outputOrder);
+        const connectionOrder = parseInt(_conn.connectionOrder);
 
         const inputNode   = nodeFromId(_conn.inputNodeId);
         const inputId     = _conn.inputId;
@@ -37005,7 +37005,7 @@ class Connection
                             ? parseInt(inputId)
                             : inputNode.params.find(p => p.id == inputId).input.id);
 
-            conn.outputOrder = outputOrder;
+            conn.connectionOrder = connectionOrder;
 
             return conn;
         }
@@ -45272,7 +45272,7 @@ extends Action
 
     get output() { return nodeFromId(this.outputNodeId).outputFromId(this.outputId); }
 
-    outputOrder;
+    connectionOrder;
 
     inputNodeId;
     inputId;
@@ -45297,7 +45297,7 @@ extends Action
         this.outputNodeId = output.node.id;
         this.outputId     = output.id;
 
-        this.outputOrder  = input.connection.outputOrder;
+        this.connectionOrder  = input.connection.connectionOrder;
 
         this.inputNodeId  = input.node.id;
         this.inputId      = input.id;
@@ -45319,9 +45319,9 @@ extends Action
         // update output order on existing connections created after this one
         const afterConns = this.output.connectedInputs
             .map   (i => i.connection)
-            .filter(c => c.outputOrder > this.outputOrder);
+            .filter(c => c.connectionOrder > this.connectionOrder);
 
-        afterConns.forEach(c => c.outputOrder--);
+        afterConns.forEach(c => c.connectionOrder--);
 
 
         uiRemoveSavedConn(input.connection);
@@ -45363,15 +45363,15 @@ extends Action
         const conn = uiVariableConnect(
             this.outputNode, this.outputId, 
             this. inputNode, this. inputId,
-            this.outputOrder);
+            this.connectionOrder);
 
 
         // update output order on existing connections
         const afterConns = this.output.connectedInputs
             .map   (i => i.connection)
-            .filter(c => c.outputOrder >= this.outputOrder);
+            .filter(c => c.connectionOrder >= this.connectionOrder);
 
-        afterConns.forEach(c => c.outputOrder++);
+        afterConns.forEach(c => c.connectionOrder++);
 
 
         uiSaveConnection(
@@ -46002,7 +46002,7 @@ extends Action
         
         varConnections.sort((c1, c2) =>
         {
-            if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
+            if (c1.connectionOrder != c2.connectionOrder) return c1.connectionOrder - c2.connectionOrder;
             if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
             if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
             return 0;
@@ -47015,7 +47015,7 @@ function dataModeDeleteConnection(conn)
     uiRemoveSavedConnection(
         conn.outputNodeId,
         conn.outputId,
-        conn.outputOrder,
+        conn.connectionOrder,
         conn.inputNodeId,
         conn.inputId,
         conn.list);
@@ -48943,7 +48943,7 @@ function uiSetNodeId(nodeId, newId)
 
 
 
-function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder = -1)
+function uiVariableConnect(outputNode, outputId, inputNode, inputId, connectionOrder = -1)
 {
     //console.log('uiVariableConnect()');
 
@@ -48957,11 +48957,11 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder
             output,
             lastOf(inputNode.headerInputs),
             inputId,
-            outputOrder);
+            connectionOrder);
 
 
-        if (outputOrder > -1)
-            conn.outputOrder = outputOrder;
+        if (connectionOrder > -1)
+            conn.connectionOrder = connectionOrder;
 
         uiUpdateSavedConnectionsToNodeId(inputNode.id);
 
@@ -48973,9 +48973,9 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder
 
 
 
-function uiConnect(output, input, inputId = '', outputOrder = -1)
+function uiConnect(output, input, inputId = '', connectionOrder = -1)
 {
-    const conn = graph.connect(output, input, inputId, outputOrder);
+    const conn = graph.connect(output, input, inputId, connectionOrder);
 
     // uiSaveConnection(
     //     output.node.id,
@@ -49575,7 +49575,7 @@ function uiRemoveSavedConn(conn)
             + getConnectionString(
                 conn.output.node.id,
                 conn.output.id,
-                conn.outputOrder,
+                conn.connectionOrder,
                 conn.input.node.id,
                 conn.input.id,
                 conn.list), 
@@ -49594,7 +49594,7 @@ function uiRemoveSavedConn(conn)
 
 
 
-function uiRemoveSavedConnection(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
+function uiRemoveSavedConnection(outputNodeId, outputId, connectionOrder, inputNodeId, inputId, list)
 {
     if (settings.logRawSaving)
     {
@@ -49603,7 +49603,7 @@ function uiRemoveSavedConnection(outputNodeId, outputId, outputOrder, inputNodeI
             + getConnectionString(
                 outputNodeId,
                 outputId,
-                outputOrder,
+                connectionOrder,
                 inputNodeId,
                 inputId,
                 list), 

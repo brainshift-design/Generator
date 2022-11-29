@@ -31,11 +31,11 @@ function leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 function parseBool(str) { return str === 'true'; }
 function connToString(_conn) {
-    return getConnectionString(_conn.outputNodeId, _conn.outputId, _conn.outputOrder, _conn.inputNodeId, _conn.inputId, _conn.list);
+    return getConnectionString(_conn.outputNodeId, _conn.outputId, _conn.connectionOrder, _conn.inputNodeId, _conn.inputId, _conn.list);
 }
-function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list) {
+function getConnectionString(outputNodeId, outputId, connectionOrder, inputNodeId, inputId, list) {
     const arrow = '  '
-        + rightArrowChar(parseBool(list)) + subscriptNumber(outputOrder)
+        + rightArrowChar(parseBool(list)) + subscriptNumber(connectionOrder)
         + '  ';
     return outputNodeId + ' . ' + outputId
         + arrow

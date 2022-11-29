@@ -365,7 +365,7 @@ function dataModeDeleteConnection(conn)
     uiRemoveSavedConnection(
         conn.outputNodeId,
         conn.outputId,
-        conn.outputOrder,
+        conn.connectionOrder,
         conn.inputNodeId,
         conn.inputId,
         conn.list);
