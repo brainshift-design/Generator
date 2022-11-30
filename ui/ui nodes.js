@@ -495,12 +495,15 @@ function uiSetNodeId(nodeId, newId)
 
 
 
-function uiVariableConnect(outputNode, outputId, inputNode, inputId, connectionOrder = -1)
+function uiVariableConnect(outputNode, outputId, inputNode, inputId, order = -1)
 {
     //console.log('uiVariableConnect()');
 
     const output = outputNode.outputFromId(outputId);
     const  input =  inputNode. inputFromId(inputId);
+
+    console.log('output =', output);
+    console.log('input =', input);
 
     if (    inputNode.variableInputs
         && !input.param)
@@ -509,25 +512,25 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, connectionO
             output,
             lastOf(inputNode.headerInputs),
             inputId,
-            connectionOrder);
+            order);
 
 
-        if (connectionOrder > -1)
-            conn.connectionOrder = connectionOrder;
+        if (order > -1)
+            conn.order = order;
 
         uiUpdateSavedConnectionsToNodeId(inputNode.id);
 
         return conn;
     }
     else
-        return uiConnect(output, input);
+        return uiConnect(output, input, order);
 }
 
 
 
-function uiConnect(output, input, inputId = '', connectionOrder = -1)
+function uiConnect(output, input, inputId = '', order = -1)
 {
-    const conn = graph.connect(output, input, inputId, connectionOrder);
+    const conn = graph.connect(output, input, inputId, order);
 
     // uiSaveConnection(
     //     output.node.id,
@@ -1127,10 +1130,11 @@ function uiRemoveSavedConn(conn)
             + getConnectionString(
                 conn.output.node.id,
                 conn.output.id,
-                conn.connectionOrder,
                 conn.input.node.id,
                 conn.input.id,
-                conn.list), 
+                conn.order,
+                conn.list,
+                true), 
             'color: black; background: #ddeeff;');
     }
 
@@ -1140,13 +1144,14 @@ function uiRemoveSavedConn(conn)
         name: conn.outputNodeId + ' '
             + conn.outputId     + ' '
             + conn.inputNodeId  + ' '
-            + conn.inputId
+            + conn.inputId      + ' '
+            + conn.order
     });
 }
 
 
 
-function uiRemoveSavedConnection(outputNodeId, outputId, connectionOrder, inputNodeId, inputId, list)
+function uiRemoveSavedConnection(outputNodeId, outputId, inputNodeId, inputId, order, list)
 {
     if (settings.logRawSaving)
     {
@@ -1155,10 +1160,11 @@ function uiRemoveSavedConnection(outputNodeId, outputId, connectionOrder, inputN
             + getConnectionString(
                 outputNodeId,
                 outputId,
-                connectionOrder,
                 inputNodeId,
                 inputId,
-                list), 
+                order,
+                list,
+                true), 
             'color: black; background: #ddeeff;');
     }
 
@@ -1168,7 +1174,8 @@ function uiRemoveSavedConnection(outputNodeId, outputId, connectionOrder, inputN
         name: outputNodeId + ' '
             + outputId     + ' '
             + inputNodeId  + ' '
-            + inputId
+            + inputId      + ' '
+            + order
     });
 }
 

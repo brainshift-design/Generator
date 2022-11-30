@@ -1,7 +1,7 @@
 class Connection
 {
     output;
-    connectionOrder; // used to urder connections from outputs
+    order; // in which connections FROM THIS OUTPUT were made
     
     input;
 
@@ -10,13 +10,13 @@ class Connection
 
     constructor(output, input)
     {
-        this.output      = output;
-        this.connectionOrder = -1;
+        this.output = output;
+        this.order  = -1;
  
-        this.input       = input;
+        this.input  = input;
 
 
-        this.wire = this.createWire(this.wire);
+        this.wire   = this.createWire(this.wire);
    
         this.wire.output = this.output;
         this.wire.input  = this.input;
@@ -135,9 +135,9 @@ class Connection
             + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
             + ',' + NL + pos + tab + '"outputId": "'     + (this.output.param ? this.output.param.id : this.output.index) + '"'
-            + ',' + NL + pos + tab + '"connectionOrder": "'  + this.connectionOrder + '"'
             + ',' + NL + pos + tab + '"inputNodeId": "'  + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "'      + (this.input.param ? this.input.param.id : this.input.index) + '"'
+            + ',' + NL + pos + tab + '"order": "'        + this.order + '"'
             + ',' + NL + pos + tab + '"list": "'         + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
             +       NL + pos
             + '}';
@@ -153,10 +153,10 @@ class Connection
         const outputNode  = nodeFromId(_conn.outputNodeId);
         const outputId    = _conn.outputId;
 
-        const connectionOrder = parseInt(_conn.connectionOrder);
-
         const inputNode   = nodeFromId(_conn.inputNodeId);
         const inputId     = _conn.inputId;
+
+        const order       = parseInt(_conn.order);
 
 
         if (   !outputNode 
@@ -179,7 +179,7 @@ class Connection
                             ? parseInt(inputId)
                             : inputNode.params.find(p => p.id == inputId).input.id);
 
-            conn.connectionOrder = connectionOrder;
+            conn.order = order;
 
             return conn;
         }

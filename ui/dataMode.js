@@ -18,7 +18,7 @@ dataModeNodesWrapper.addEventListener('pointerdown', e =>
 
 
 
-dataModeConns.addEventListener('pointerdown', e =>
+dataModeConnsWrapper.addEventListener('pointerdown', e =>
 {
     e.preventDefault();
 
@@ -48,14 +48,12 @@ function createNodeDataDiv(_node)
     const node = JSON.parse(_node);
 
 
-    div._node     = _node;
-    div. node     =  node;
+    div._node    = _node;
+    div. node    =  node;
 
-    div.innerHTML = 
-         (node.loading ? '🛑&nbsp;&nbsp' : '')
-        + node.id;
+    div.showJson = false;
 
-    div.showJson  = false;
+    expandNodeData(div, node, _node);
 
 
     div.addEventListener('dblclick', () =>
@@ -99,11 +97,19 @@ function createConnDataDiv(_conn)
     const conn = JSON.parse(_conn);
     const div  = createDiv('dataModeConn');
 
-    div.conn = conn;
-    
-    div.innerHTML = 
-         (conn.loading ? '🛑&nbsp;&nbsp' : '')
-        + connToString(conn);
+    div._conn    = _conn;
+    div. conn    =  conn;
+
+    div.showJson = false;
+
+    expandConnData(div, conn, _conn);
+
+
+    div.addEventListener('dblclick', () =>
+    {
+        div.showJson = !div.showJson;
+        expandConnData(div, conn, _conn);
+    });
 
 
     div.addEventListener('pointerenter', () => div.style.background = 'var(--data-mode-conn-active)');
@@ -153,8 +159,8 @@ function expandNodeData(div, node, _node)
     if (div.showJson)
     {
         div.innerHTML =
-             (node.loading ? '🛑<br/>' : '')
-            + formatSavedNodeDataJson(div._node);
+             (node.loading ? '&nbsp;🛑<br/>' : '')
+            + formatSavedDataJson(div._node);
 
         div.style.paddingLeft   = '0px';
         div.style.paddingRight  = '10px';
@@ -167,6 +173,36 @@ function expandNodeData(div, node, _node)
         div.innerHTML = 
              (node.loading ? '🛑&nbsp;&nbsp' : '')
             + div.node.id;
+
+        div.style.paddingLeft   = '6px';
+        div.style.paddingRight  = '6px';
+        div.style.textAlign     = 'center';
+        div.style.fontFamily    = 'Inter';
+        div.style.letterSpacing = 0;
+    }
+}
+
+
+
+function expandConnData(div, conn, _conn)
+{
+    if (div.showJson)
+    {
+        div.innerHTML =
+             (conn.loading ? '&nbsp;🛑<br/>' : '')
+            + formatSavedDataJson(div._conn);
+
+        div.style.paddingLeft   = '0px';
+        div.style.paddingRight  = '10px';
+        div.style.textAlign     = 'left';
+        div.style.fontFamily    = 'Roboto Mono';
+        div.style.letterSpacing = '-0.06em';
+    }
+    else
+    {
+        div.innerHTML = 
+             (conn.loading ? '🛑&nbsp;&nbsp' : '')
+            + connToString(conn);
 
         div.style.paddingLeft   = '6px';
         div.style.paddingRight  = '6px';
@@ -195,6 +231,28 @@ function collapseAllNodeData()
     {
         div.showJson = false;
         expandNodeData(div, div.node, div._node);
+    }
+}
+
+
+
+function expandAllConnData()
+{
+    for (const div of dataModeConns.children)
+    {
+        div.showJson = true;
+        expandConnData(div, div.conn, div._conn);
+    }
+}
+
+
+
+function collapseAllConnData()
+{
+    for (const div of dataModeConns.children)
+    {
+        div.showJson = false;
+        expandConnData(div, div.conn, div._conn);
     }
 }
 
@@ -365,9 +423,9 @@ function dataModeDeleteConnection(conn)
     uiRemoveSavedConnection(
         conn.outputNodeId,
         conn.outputId,
-        conn.connectionOrder,
         conn.inputNodeId,
         conn.inputId,
+        conn.order,
         conn.list);
 
 
@@ -378,7 +436,8 @@ function dataModeDeleteConnection(conn)
         if (   div.conn.outputNodeId == conn.outputNodeId
             && div.conn.outputId     == conn.outputId
             && div.conn.inputNodeId  == conn.inputNodeId
-            && div.conn.inputId      == conn.inputId)
+            && div.conn.inputId      == conn.inputId
+            && div.conn.order        == conn.order)
             dataModeConns.removeChild(div);
     }
 

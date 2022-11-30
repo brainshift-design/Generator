@@ -63,14 +63,16 @@
 
 .dataModeConn
 {
-    font-family:   Inter;
-    font-size:     11px;
-    text-align:    center;
-    display:       inline-block;
-    min-width:     70px;
-    background:    var(--data-mode-conn); 
-    border-radius: 3px;
-    margin:        2px 0px 0px 3px;
-    padding:       3px 11px;
-    box-shadow:    0 0 0 1px #ad8 inset;
+    font-family:    Inter;
+    font-size:      11px;
+    text-align:     center;
+    display:        inline-block;
+    min-width:      70px;
+    background:     var(--data-mode-conn); 
+    border-radius:  3px;
+    margin:         2px 0px 0px 3px;
+    padding:        4px 11px;
+    box-shadow:     0 0 0 1px #ad8 inset;
+    white-space:    pre;
+    vertical-align: top;
 }

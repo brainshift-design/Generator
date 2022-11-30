@@ -30,16 +30,17 @@ const OBJECT_PREFIX = 'G.';
 function leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 function parseBool(str) { return str === 'true'; }
-function connToString(_conn) {
-    return getConnectionString(_conn.outputNodeId, _conn.outputId, _conn.connectionOrder, _conn.inputNodeId, _conn.inputId, _conn.list);
+function connToString(_conn, logSpace = false) {
+    return getConnectionString(_conn.outputNodeId, _conn.outputId, _conn.inputNodeId, _conn.inputId, _conn.order, _conn.list, logSpace);
 }
-function getConnectionString(outputNodeId, outputId, connectionOrder, inputNodeId, inputId, list) {
-    const arrow = '  '
-        + rightArrowChar(parseBool(list)) + subscriptNumber(connectionOrder)
-        + '  ';
-    return outputNodeId + ' . ' + outputId
+function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, order, list, logSpace = false) {
+    const sp = logSpace ? ' ' : '  ';
+    const jsp = logSpace ? '' : ' ';
+    const arrow = sp + subscriptNumber(parseInt(order)) + rightArrowChar(parseBool(list)) + sp;
+    const join = jsp + '.' + jsp;
+    return outputNodeId + join + outputId
         + arrow
-        + inputNodeId + ' . ' + inputId;
+        + inputNodeId + join + inputId;
 }
 function superscriptNumber(num) {
     const str = num.toString();
@@ -280,28 +281,16 @@ function formatSavedNodeJson(json) {
         formJson = formJson.substring(0, formJson.length - 2);
     return formJson;
 }
-function formatSavedNodeDataJson(json) {
+function formatSavedDataJson(json) {
     let formJson = json
         .replace('{\n', '')
         .replace('\n}', '')
         .replace('[\n' + TAB, '')
         .replace('\n' + TAB + ']', '');
-    // .split(TAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
-    // .split('": "').join(': ')
-    // .split('", "').join(': ')
-    // .split(TAB + '"').join(TAB)
-    // .split(TAB + TAB + '["').join(TAB + TAB)
-    // .split('",\n').join('\n')
-    // .split('"\n').join('\n')
-    // .split('"],\n').join('\n');
-    // if (formJson[formJson.length-1] == '"')    
-    //     formJson = formJson.substring(0, formJson.length - 1);
-    // if (formJson.substring(formJson.length-2) == '"]')    
-    //     formJson = formJson.substring(0, formJson.length - 2);
     return formJson;
 }
 function logSavedConn(conn) {
-    const strConn = connToString(conn);
+    const strConn = connToString(conn, true);
     console.log('%c%s', 'background: #cfc', strConn);
 }
 function logRequest(parse) {

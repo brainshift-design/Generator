@@ -389,5 +389,8 @@ function initDataModeMenus()
 
     menuConnDataConns = new Menu('Connections menu', false, false);
     menuConnDataConns.addItems([
+        new MenuItem('Expand all',             { callback: () => { hideAllMenus(); expandAllConnData();   }}),
+        new MenuItem('Collapse all',           { callback: () => { hideAllMenus(); collapseAllConnData(); }}),
+        new MenuItem('',                       { separator: true }),
         new MenuItem('Remove all connections', { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
 }

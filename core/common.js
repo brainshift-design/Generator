@@ -22,29 +22,31 @@ function parseBool(str) { return str === 'true'; }
 
 
 
-function connToString(_conn)
+function connToString(_conn, logSpace = false)
 {
     return getConnectionString(
         _conn.outputNodeId,
         _conn.outputId,
-        _conn.connectionOrder,
         _conn.inputNodeId,
         _conn.inputId,
-        _conn.list);
+        _conn.order,
+        _conn.list,
+        logSpace);
 }
 
 
 
-function getConnectionString(outputNodeId, outputId, connectionOrder, inputNodeId, inputId, list)
+function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, order, list, logSpace = false)
 {
-    const arrow = 
-          '  ' 
-        + rightArrowChar(parseBool(list)) + subscriptNumber(connectionOrder)
-        + '  ';
+    const  sp = logSpace ? ' ' : '  '; 
+    const jsp = logSpace ? '' : ' '; 
 
-    return outputNodeId + ' . ' + outputId
+    const arrow = sp + subscriptNumber(parseInt(order)) + rightArrowChar(parseBool(list)) + sp;
+    const join  = jsp + '.' + jsp;
+
+    return outputNodeId + join + outputId
          + arrow
-         + inputNodeId + ' . ' + inputId;
+         + inputNodeId  + join + inputId;
 }
 
 
