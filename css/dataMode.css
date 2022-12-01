@@ -71,8 +71,42 @@
     background:     var(--data-mode-conn); 
     border-radius:  3px;
     margin:         2px 0px 0px 3px;
-    padding:        4px 11px;
+    padding:        4px 0px;
     box-shadow:     0 0 0 1px #ad8 inset;
     white-space:    pre;
     vertical-align: top;
+}
+
+
+.nodeDataHeader
+{
+    border-bottom: 1px solid #ba8; 
+    padding:       0px 11px 4px 9px;
+}
+
+
+.nodeDataBody
+{
+    padding:       4px 11px 0px 0px;
+}
+
+
+.connDataHeader
+{
+    border-bottom: 1px solid #8b6; 
+    padding:       0px 11px 4px 9px;
+}
+
+
+.connDataBody
+{
+    padding:       4px 11px 0px 0px;
+}
+
+
+.dataUndefined
+{
+    background: red;
+    color:      white;
+    padding:    0 3px;
 }

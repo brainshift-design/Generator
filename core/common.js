@@ -41,7 +41,7 @@ function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, order
     const  sp = logSpace ? ' ' : '  '; 
     const jsp = logSpace ? '' : ' '; 
 
-    const arrow = sp + subscriptNumber(parseInt(order)) + rightArrowChar(parseBool(list)) + sp;
+    const arrow = subscriptNumber(parseInt(order)) + sp + rightArrowChar(parseBool(list)) + sp;
     const join  = jsp + '.' + jsp;
 
     return outputNodeId + join + outputId

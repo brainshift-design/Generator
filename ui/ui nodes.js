@@ -502,9 +502,6 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, order = -1)
     const output = outputNode.outputFromId(outputId);
     const  input =  inputNode. inputFromId(inputId);
 
-    console.log('output =', output);
-    console.log('input =', input);
-
     if (    inputNode.variableInputs
         && !input.param)
     {
@@ -632,6 +629,7 @@ function uiUpdateSavedConnectionsToNodeId(nodeId)
             _input.connectedOutput.id,
              node.id,
             _input.id,
+            _input.connection.order,
             _input.connection.toJson());
     }
 }
@@ -1074,7 +1072,7 @@ function uiSaveNodes(nodeIds)
 
 
 
-function uiSaveConnection(outputNodeId, outputId, inputNodeId, inputId, connJson)
+function uiSaveConnection(outputNodeId, outputId, inputNodeId, inputId, order, connJson)
 {
     if (settings.logRawSaving)
         console.log('%cSAVING CONNECTION\n' + connJson, 'color: black; background: #ddeeff;');
@@ -1084,7 +1082,8 @@ function uiSaveConnection(outputNodeId, outputId, inputNodeId, inputId, connJson
         name: outputNodeId + ' '
             + outputId     + ' '
             + inputNodeId  + ' '
-            + inputId,
+            + inputId      + ' '
+            + order,
         json: connJson
     });
 }
@@ -1106,7 +1105,8 @@ function uiSaveConnections(conns)
               conn.outputNodeId + ' '
             + conn.outputId     + ' '
             + conn.inputNodeId  + ' '
-            + conn.inputId);
+            + conn.inputId      + ' '
+            + conn.order);
 
         connJson.push(conn.toJson());
     }
@@ -1141,17 +1141,17 @@ function uiRemoveSavedConn(conn)
 
     uiQueueMessageToFigma({
         cmd: 'figRemoveSavedConnection',
-        name: conn.outputNodeId + ' '
-            + conn.outputId     + ' '
-            + conn.inputNodeId  + ' '
-            + conn.inputId      + ' '
+        name: conn.output.node.id + ' '
+            + conn.output.id     + ' '
+            + conn.input.node.id  + ' '
+            + conn.input.id      + ' '
             + conn.order
     });
 }
 
 
 
-function uiRemoveSavedConnection(outputNodeId, outputId, inputNodeId, inputId, order, list)
+function uiRemoveSavedConnection(key, outputNodeId, outputId, inputNodeId, inputId, order, list)
 {
     if (settings.logRawSaving)
     {
@@ -1171,11 +1171,7 @@ function uiRemoveSavedConnection(outputNodeId, outputId, inputNodeId, inputId, o
 
     uiQueueMessageToFigma({
         cmd: 'figRemoveSavedConnection',
-        name: outputNodeId + ' '
-            + outputId     + ' '
-            + inputNodeId  + ' '
-            + inputId      + ' '
-            + order
+        key: key
     });
 }
 

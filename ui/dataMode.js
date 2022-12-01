@@ -36,6 +36,22 @@ function loadNodesAndConnsData(_nodes, _conns)
     _dataModeNodes = _nodes;
     _dataModeConns = _conns;
 
+    _dataModeNodes.sort((n1, n2) => 
+    {
+        if (n1.y != n2.y ) return floatParse(n1.value.y) - floatParse(n2.value.y);
+        if (n1.x != n2.x ) return floatParse(n1.value.x) - floatParse(n2.value.x);
+        return 0;
+    });
+
+    _dataModeConns.sort((c1, c2) => 
+    {
+        if (c1.value.outputNodeId != c2.value.outputNodeId ) return c1.value.outputNodeId < c2.value.outputNodeId ? -1 : 1;
+        if (c1.value.outputId     != c2.value.outputId     ) return c1.value.outputId     < c2.value.outputId     ? -1 : 1;
+        if (c1.value.order        != c2.value.order        ) return parseInt(c1.value.order) - parseInt(c2.value.order);
+        return 0;
+    });
+
+    
     for (const _node of _dataModeNodes) dataModeNodes.appendChild(createNodeDataDiv(_node));
     for (const _conn of _dataModeConns) dataModeConns.appendChild(createConnDataDiv(_conn));
 }
@@ -44,16 +60,18 @@ function loadNodesAndConnsData(_nodes, _conns)
 
 function createNodeDataDiv(_node)
 {
-    const div  = createDiv('dataModeNode');
-    const node = JSON.parse(_node);
+    const div    = createDiv('dataModeNode');
+    
+    const node   = JSON.parse(_node.value);
+    node._key    = _node.key;
 
 
-    div._node    = _node;
+    div._node    = _node.value;
     div. node    =  node;
 
     div.showJson = false;
 
-    expandNodeData(div, node, _node);
+    expandNodeData(div);
 
 
     div.addEventListener('dblclick', () =>
@@ -94,15 +112,17 @@ function createNodeDataDiv(_node)
 
 function createConnDataDiv(_conn)
 {
-    const conn = JSON.parse(_conn);
-    const div  = createDiv('dataModeConn');
+    const div    = createDiv('dataModeConn');
 
-    div._conn    = _conn;
+    const conn   = JSON.parse(_conn.value);
+    conn._key    = _conn.key;
+
+    div._conn    = _conn.value;
     div. conn    =  conn;
 
     div.showJson = false;
 
-    expandConnData(div, conn, _conn);
+    expandConnData(div);
 
 
     div.addEventListener('dblclick', () =>
@@ -154,16 +174,18 @@ function createDataMenuOnHide(menu, div, normal)
 
 
 
-function expandNodeData(div, node, _node)
+function expandNodeData(div)
 {
     if (div.showJson)
     {
         div.innerHTML =
-             (node.loading ? '&nbsp;🛑<br/>' : '')
-            + formatSavedDataJson(div._node);
+        //   '<div>' + div._key + '</div><div>'
+        // + (div.node.loading ? '&nbsp;🛑<br/>' : '')
+              '<div class="nodeDataHeader">' + (div.node.loading ? '🛑&nbsp;' : '') + div.node._key + '</div>'
+            + '<div class="connDataBody">' + formatSavedDataJson(div._node) + '</div>';
 
         div.style.paddingLeft   = '0px';
-        div.style.paddingRight  = '10px';
+        div.style.paddingRight  = '0px';
         div.style.textAlign     = 'left';
         div.style.fontFamily    = 'Roboto Mono';
         div.style.letterSpacing = '-0.06em';
@@ -171,7 +193,7 @@ function expandNodeData(div, node, _node)
     else
     {
         div.innerHTML = 
-             (node.loading ? '🛑&nbsp;&nbsp' : '')
+             (div.node.loading ? '🛑&nbsp;&nbsp' : '')
             + div.node.id;
 
         div.style.paddingLeft   = '6px';
@@ -184,16 +206,19 @@ function expandNodeData(div, node, _node)
 
 
 
-function expandConnData(div, conn, _conn)
+function expandConnData(div)
 {
     if (div.showJson)
     {
         div.innerHTML =
-             (conn.loading ? '&nbsp;🛑<br/>' : '')
-            + formatSavedDataJson(div._conn);
+                '<div class="connDataHeader">' 
+                  + (div.conn.loading ? '🛑&nbsp;' : '') 
+                  + div.conn._key.replaceAll('undefined', '<span class="dataUndefined">undefined</span>') 
+              + '</div>'
+              + '<div class="connDataBody">' + formatSavedDataJson(div._conn) + '</div>';
 
         div.style.paddingLeft   = '0px';
-        div.style.paddingRight  = '10px';
+        div.style.paddingRight  = '0px';
         div.style.textAlign     = 'left';
         div.style.fontFamily    = 'Roboto Mono';
         div.style.letterSpacing = '-0.06em';
@@ -201,8 +226,8 @@ function expandConnData(div, conn, _conn)
     else
     {
         div.innerHTML = 
-             (conn.loading ? '🛑&nbsp;&nbsp' : '')
-            + connToString(conn);
+             (div.conn.loading ? '🛑&nbsp;&nbsp' : '')
+            + connToString(div.conn);
 
         div.style.paddingLeft   = '6px';
         div.style.paddingRight  = '6px';
@@ -287,7 +312,7 @@ function dataModeDeleteNode(node)
     }
 
 
-    let notice = 'Removed node \'' + node.id + '\'';
+    let notice = 'Deleted node \'' + node.id + '\'';
 
     if (nRemovedConns > 0)
         notice += ' and ' + nRemovedConns + ' ' + countString('connection', nRemovedConns);
@@ -314,7 +339,7 @@ function dataModeDeleteAllNodes()
         dataModeConns.removeChild(dataModeConns.children[i]);
 
 
-    let notice = 'Removed ' + nRemovedNodes + ' ' + countString('node', nRemovedNodes);
+    let notice = 'Deleted ' + nRemovedNodes + ' ' + countString('node', nRemovedNodes);
 
     if (nRemovedConns > 0)
         notice += ' and ' + nRemovedConns + ' ' + countString('connection', nRemovedConns);
@@ -336,7 +361,7 @@ function dataModeDeleteAllConnections()
 
 
     if (nRemovedConns > 0)
-        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns));
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns));
 }
 
 
@@ -363,7 +388,7 @@ function dataModeDeleteConnectionsToAndFromNode(node)
 
 
     if (nRemovedConns > 0)
-        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to and from \'' + node.id + '\'');
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to and from \'' + node.id + '\'');
 }
 
 
@@ -388,7 +413,7 @@ function dataModeDeleteConnectionsFromNode(node)
 
 
     if (nRemovedConns > 0)
-        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' from \'' + node.id + '\'');
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' from \'' + node.id + '\'');
 }
 
 
@@ -413,7 +438,7 @@ function dataModeDeleteConnectionsToNode(node)
 
 
     if (nRemovedConns > 0)
-        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to \'' + node.id + '\'');
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to \'' + node.id + '\'');
 }
 
 
@@ -421,6 +446,7 @@ function dataModeDeleteConnectionsToNode(node)
 function dataModeDeleteConnection(conn)
 {
     uiRemoveSavedConnection(
+        conn._key,
         conn.outputNodeId,
         conn.outputId,
         conn.inputNodeId,
@@ -442,5 +468,5 @@ function dataModeDeleteConnection(conn)
     }
 
 
-    uiNotify('Removed connection  ' + connToString(conn));
+    uiNotify('Deleted connection  ' + connToString(conn));
 }

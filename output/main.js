@@ -36,7 +36,7 @@ function connToString(_conn, logSpace = false) {
 function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, order, list, logSpace = false) {
     const sp = logSpace ? ' ' : '  ';
     const jsp = logSpace ? '' : ' ';
-    const arrow = sp + subscriptNumber(parseInt(order)) + rightArrowChar(parseBool(list)) + sp;
+    const arrow = subscriptNumber(parseInt(order)) + sp + rightArrowChar(parseBool(list)) + sp;
     const join = jsp + '.' + jsp;
     return outputNodeId + join + outputId
         + arrow
@@ -519,6 +519,9 @@ figma.ui.onmessage = msg => {
         case 'figLogAllSavedConns':
             figLogAllSavedConns();
             break;
+        case 'figLogAllSavedConnKeys':
+            figLogAllSavedConnKeys();
+            break;
         case 'figSaveConnection':
             figSaveConnection(msg.name, msg.json);
             break;
@@ -526,7 +529,7 @@ figma.ui.onmessage = msg => {
             figSaveConnections(msg.names, msg.json);
             break;
         case 'figRemoveSavedConnection':
-            figRemoveSavedConnection(msg.name);
+            figRemoveSavedConnection(msg.key);
             break;
         case 'figRemoveAllSavedConnections':
             figRemoveAllSavedConnections();
@@ -866,12 +869,12 @@ function figLoadNodesAndConns(dataMode) {
         figMarkForLoading(nodeKeys, connKeys);
     const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
     const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
-    const nodesJson = JSON.stringify(nodes);
-    const connsJson = JSON.stringify(conns);
     figPostMessageToUI({
         cmd: 'uiReturnFigLoadNodesAndConns',
-        nodesJson: nodesJson,
-        connsJson: connsJson
+        nodeKeys: JSON.stringify(nodeKeys),
+        nodeJson: JSON.stringify(nodes),
+        connKeys: JSON.stringify(connKeys),
+        connJson: JSON.stringify(conns)
     });
 }
 function figMarkForLoading(nodeKeys, connKeys) {
@@ -940,7 +943,13 @@ function figLogAllSavedConns() {
     });
     connKeys.forEach(k => logSavedConn(JSON.parse(figma.currentPage.getPluginData(k))));
 }
+function figLogAllSavedConnKeys() {
+    const connKeys = figma.currentPage.getPluginDataKeys()
+        .filter(k => isConnKey(k));
+    connKeys.forEach(k => console.log('%c' + k, 'background: #dff'));
+}
 function figSaveConnection(name, json) {
+    console.log('fig saving connection name =', name);
     figSetPageData(connNameForStorage(name), json);
 }
 function figSaveConnections(_names, _json) {
@@ -949,8 +958,8 @@ function figSaveConnections(_names, _json) {
     for (let i = 0; i < names.length; i++)
         figSetPageData(connNameForStorage(names[i]), json[i]);
 }
-function figRemoveSavedConnection(name) {
-    figClearPageData(connNameForStorage(name));
+function figRemoveSavedConnection(key) {
+    figClearPageData(key);
 }
 function figRemoveAllSavedConnections() {
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));

@@ -253,7 +253,7 @@ extends Action
         
         varConnections.sort((c1, c2) =>
         {
-            if (c1.order != c2.order) return c1.order - c2.order;
+            if (c1.order       != c2.order      ) return c1.order       - c2.order;
             if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
             if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
             return 0;
@@ -272,7 +272,10 @@ extends Action
             const outputNode = nodeFromId(conn.outputNodeId);
             const  inputNode = nodeFromId(conn. inputNodeId);
 
-            uiVariableConnect(outputNode, conn.outputId, inputNode, conn.inputId);
+            uiVariableConnect(
+                outputNode, conn.outputId, 
+                inputNode, conn.inputId,
+                conn.order);
         }
     }
 

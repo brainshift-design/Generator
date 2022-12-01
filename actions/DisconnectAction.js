@@ -20,9 +20,6 @@ extends Action
 
     constructor(output, input)
     {
-        //console.log('output =', output);
-        //console.log('input =', input);
-
         super('DISCONNECT ' 
             + output.node.id + '.' + output.id
             + ' ' + rightArrowChar(output.supportsTypes(LIST_TYPES)) + ' '
@@ -95,23 +92,27 @@ extends Action
     
     undo()
     {
+        // update output order on existing connections
+        const afterConns = this.output.connectedInputs
+            .map   (i => i.connection)
+            .filter(c => c.order >= this.order);
+        
+        for (const c of afterConns)
+        {
+            console.log('c.order =', c.order);
+            c.order++;
+        }
+
+
         const conn = uiVariableConnect(
             this.outputNode, this.outputId, 
             this. inputNode, this. inputId,
             this.order);
 
-
-        // update output order on existing connections
-        const afterConns = this.output.connectedInputs
-            .map   (i => i.connection)
-            .filter(c => c.order >= this.order);
-
-        afterConns.forEach(c => c.order++);
-
-
         uiSaveConnection(
             this.outputNodeId, this.outputId,
             this.inputNodeId,  this.inputId,
+            this.order,
             conn.toJson());
 
             

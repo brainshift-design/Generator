@@ -3,10 +3,12 @@ extends Action
 {
     outputNodeId;
     outputId;
+    order;
     get outputNode() { return nodeFromId(this.outputNodeId); }
 
     oldOutputNodeId = '';
     oldOutputId;
+    oldOrder;
     get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
 
     inputNodeId;
@@ -46,6 +48,7 @@ extends Action
                
         this.oldOutputNodeId       = input.connected ? input.connectedOutput.node.id : '';
         this.oldOutputId           = oldOutId;
+        this.oldOrder              = input.connected ? input.connection.order : -1;
        
         this.oldInputNodeId        = oldInput.node.id;
         this.oldInputId            = oldInput.id;
@@ -64,11 +67,13 @@ extends Action
         uiDisconnect(this.oldInputNode.inputFromId(this.oldInputId));
         
 
-        uiConnect(
+        const conn = uiConnect(
             this.outputNode.outputFromId(this.outputId), 
             this. inputNode. inputFromId(this. inputId),
             this.inputId);
             
+        this.order = conn.order;
+
 
         this.newActiveNodeIds = [];
 
@@ -97,7 +102,8 @@ extends Action
             
         uiVariableConnect(
             this.outputNode,   this.outputId, 
-            this.oldInputNode, this.oldInputId);
+            this.oldInputNode, this.oldInputId,
+            this.order);
 
         uiSaveNodes([this.oldInputNodeId]);
     
@@ -106,7 +112,8 @@ extends Action
         {
             uiVariableConnect(
                 this.oldOutputNode, this.oldOutputId, 
-                this.inputNode,     this.inputId);
+                this.inputNode,     this.inputId,
+                this.oldOrder);
 
             pushUpdate([this.inputNode]);
         }

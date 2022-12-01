@@ -177,7 +177,8 @@ class Connection
                             : outputNode.params.find(p => p.id == outputId).output.id,
                 inputNode,  isDigit(inputId[0])
                             ? parseInt(inputId)
-                            : inputNode.params.find(p => p.id == inputId).input.id);
+                            : inputNode.params.find(p => p.id == inputId).input.id,
+                order);
 
             conn.order = order;
 
@@ -193,7 +194,8 @@ class Connection
             outputNodeId: this.output.node.id,
             outputId:     this.output.id,
             inputNodeId:  this.input.node.id,
-            inputId:      this.input.id 
+            inputId:      this.input.id,
+            order:        this.order
         };
     }
 }

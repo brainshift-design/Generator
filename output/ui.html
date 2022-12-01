@@ -139,10 +139,44 @@
     background:     var(--data-mode-conn); 
     border-radius:  3px;
     margin:         2px 0px 0px 3px;
-    padding:        4px 11px;
+    padding:        4px 0px;
     box-shadow:     0 0 0 1px #ad8 inset;
     white-space:    pre;
     vertical-align: top;
+}
+
+
+.nodeDataHeader
+{
+    border-bottom: 1px solid #ba8; 
+    padding:       0px 11px 4px 9px;
+}
+
+
+.nodeDataBody
+{
+    padding:       4px 11px 0px 0px;
+}
+
+
+.connDataHeader
+{
+    border-bottom: 1px solid #8b6; 
+    padding:       0px 11px 4px 9px;
+}
+
+
+.connDataBody
+{
+    padding:       4px 11px 0px 0px;
+}
+
+
+.dataUndefined
+{
+    background: red;
+    color:      white;
+    padding:    0 3px;
 }
 
 
@@ -2344,7 +2378,7 @@ function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, order
     const  sp = logSpace ? ' ' : '  '; 
     const jsp = logSpace ? '' : ' '; 
 
-    const arrow = sp + subscriptNumber(parseInt(order)) + rightArrowChar(parseBool(list)) + sp;
+    const arrow = subscriptNumber(parseInt(order)) + sp + rightArrowChar(parseBool(list)) + sp;
     const join  = jsp + '.' + jsp;
 
     return outputNodeId + join + outputId
@@ -16382,7 +16416,7 @@ function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, order
     const  sp = logSpace ? ' ' : '  '; 
     const jsp = logSpace ? '' : ' '; 
 
-    const arrow = sp + subscriptNumber(parseInt(order)) + rightArrowChar(parseBool(list)) + sp;
+    const arrow = subscriptNumber(parseInt(order)) + sp + rightArrowChar(parseBool(list)) + sp;
     const join  = jsp + '.' + jsp;
 
     return outputNodeId + join + outputId
@@ -28386,9 +28420,11 @@ function initGeneratorMenus()
 
     
     menuDebugLog = new Menu('Log menu', false);
-    menuDebugLog.addItems([        new MenuItem('List\u2008all\u2008nodes',       {callback:      () => uiLogAllSavedNodes()}),
-                                   new MenuItem('List\u2008all\u2008connections', {callback:      () => uiLogAllSavedConns()}),
+    menuDebugLog.addItems([        new MenuItem('List\u2008all\u2008nodes',       {                                                   callback:      () => uiLogAllSavedNodes()}),
+                                   new MenuItem('List\u2008all\u2008connections', {                                                   callback:      () => uiLogAllSavedConns()}),
                                    new MenuItem('',                               {separator: true}),
+                                   new MenuItem('List all connection keys',       {                                                   callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+                                   new MenuItem('',                               { separator: true }),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',              {checkCallback: () => settings.logRequests        , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',                {checkCallback: () => settings.logValueUpdates    , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
         menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',               {checkCallback: () => settings.logObjectUpdates   , callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)}),
@@ -28594,11 +28630,11 @@ function initDataModeMenus()
 {
     menuNodeData = new Menu('Node menu', false, false);
     menuNodeData.addItems([
-        new MenuItem('Remove connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),
-        new MenuItem('Remove connections to'  , { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode       (menuNodeData._div.node); }}),
-        new MenuItem('Remove all connections',  { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToAndFromNode(menuNodeData._div.node); }}),
+        new MenuItem('Delete connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),
+        new MenuItem('Delete connections to'  , { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode       (menuNodeData._div.node); }}),
+        new MenuItem('Delete all connections',  { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToAndFromNode(menuNodeData._div.node); }}),
         new MenuItem('',                        { separator: true }),
-        new MenuItem('Remove node',             { callback: () => { hideAllMenus(); dataModeDeleteNode(menuNodeData._div.node); }})]);
+        new MenuItem('Delete node',             { callback: () => { hideAllMenus(); dataModeDeleteNode(menuNodeData._div.node); }})]);
 
 
     menuNodeDataNodes = new Menu('Nodes menu', false, false);
@@ -28606,20 +28642,22 @@ function initDataModeMenus()
         new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllNodeData();   }}),
         new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllNodeData(); }}),
         new MenuItem('',                 { separator: true }),
-        new MenuItem('Remove all nodes', { callback: () => { hideAllMenus(); dataModeDeleteAllNodes(); }})]);
+        new MenuItem('Delete all nodes', { callback: () => { hideAllMenus(); dataModeDeleteAllNodes(); }})]);
 
 
     menuConnData = new Menu('Connection menu', false, false);
     menuConnData.addItems([
-        new MenuItem('Remove connection', { callback: () => { hideAllMenus(); dataModeDeleteConnection(menuConnData._div.conn); }})]);
+        new MenuItem('Delete connection', { callback: () => { hideAllMenus(); dataModeDeleteConnection(menuConnData._div.conn); }})]);
 
 
     menuConnDataConns = new Menu('Connections menu', false, false);
     menuConnDataConns.addItems([
-        new MenuItem('Expand all',             { callback: () => { hideAllMenus(); expandAllConnData();   }}),
-        new MenuItem('Collapse all',           { callback: () => { hideAllMenus(); collapseAllConnData(); }}),
-        new MenuItem('',                       { separator: true }),
-        new MenuItem('Remove all connections', { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
+        new MenuItem('Expand all',               { callback: () => { hideAllMenus(); expandAllConnData();   }}),
+        new MenuItem('Collapse all',             { callback: () => { hideAllMenus(); collapseAllConnData(); }}),
+        new MenuItem('',                         { separator: true }),
+        new MenuItem('List all connection keys', { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+        new MenuItem('',                         { separator: true }),
+        new MenuItem('Delete all connections',   { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
 }
 
 
@@ -36972,7 +37010,8 @@ class Connection
                             : outputNode.params.find(p => p.id == outputId).output.id,
                 inputNode,  isDigit(inputId[0])
                             ? parseInt(inputId)
-                            : inputNode.params.find(p => p.id == inputId).input.id);
+                            : inputNode.params.find(p => p.id == inputId).input.id,
+                order);
 
             conn.order = order;
 
@@ -36988,7 +37027,8 @@ class Connection
             outputNodeId: this.output.node.id,
             outputId:     this.output.id,
             inputNodeId:  this.input.node.id,
-            inputId:      this.input.id 
+            inputId:      this.input.id,
+            order:        this.order
         };
     }
 }
@@ -44725,14 +44765,20 @@ extends Action
     outputNodeId;
     outputId;
 
+    order = -1;
+
     get outputNode() { return nodeFromId(this.outputNodeId); }
     get output()     { return this.outputNode.outputs.find(o => o.id == this.outputId); }
     
+
     oldOutputNodeId = '';
     oldOutputId;
+
+    oldOrder = -1;
     
     get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
     
+
     inputNodeId;
     inputId;
     
@@ -44767,6 +44813,7 @@ extends Action
    
         this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
         this.oldOutputId     = oldOutputId;
+        this.oldOrder        = input.connected ? input.connection.order : -1;
    
         this.inputNodeId     = input.node.id;
         this.inputId         = input.id;
@@ -44795,11 +44842,15 @@ extends Action
             this.inputNode. inputs .find(i => i.id == this. inputId),
             this.inputId);
 
+        
+        this.order = conn.order;
+
         uiSaveConnection(
             this.outputNodeId,
             this.outputId,
             this.inputNodeId,
             this.inputId,
+            this.order,
             conn.toJson());
 
 
@@ -44856,11 +44907,13 @@ extends Action
         {
             const oldConn = uiVariableConnect(
                 this.oldOutputNode, this.oldOutputId, 
-                this.inputNode,     this.inputId);
+                this.inputNode,     this.inputId,
+                this.oldOrder);
 
             uiSaveConnection(
                 this.oldOutputNodeId, this.oldOutputId,
                 this.inputNodeId,     this.inputId,
+                this.order,
                 oldConn.toJson());
 
         }
@@ -45254,9 +45307,6 @@ extends Action
 
     constructor(output, input)
     {
-        //console.log('output =', output);
-        //console.log('input =', input);
-
         super('DISCONNECT ' 
             + output.node.id + '.' + output.id
             + ' ' + rightArrowChar(output.supportsTypes(LIST_TYPES)) + ' '
@@ -45329,23 +45379,27 @@ extends Action
     
     undo()
     {
+        // update output order on existing connections
+        const afterConns = this.output.connectedInputs
+            .map   (i => i.connection)
+            .filter(c => c.order >= this.order);
+        
+        for (const c of afterConns)
+        {
+            console.log('c.order =', c.order);
+            c.order++;
+        }
+
+
         const conn = uiVariableConnect(
             this.outputNode, this.outputId, 
             this. inputNode, this. inputId,
             this.order);
 
-
-        // update output order on existing connections
-        const afterConns = this.output.connectedInputs
-            .map   (i => i.connection)
-            .filter(c => c.order >= this.order);
-
-        afterConns.forEach(c => c.order++);
-
-
         uiSaveConnection(
             this.outputNodeId, this.outputId,
             this.inputNodeId,  this.inputId,
+            this.order,
             conn.toJson());
 
             
@@ -45595,10 +45649,12 @@ extends Action
 {
     outputNodeId;
     outputId;
+    order;
     get outputNode() { return nodeFromId(this.outputNodeId); }
 
     oldOutputNodeId = '';
     oldOutputId;
+    oldOrder;
     get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
 
     inputNodeId;
@@ -45638,6 +45694,7 @@ extends Action
                
         this.oldOutputNodeId       = input.connected ? input.connectedOutput.node.id : '';
         this.oldOutputId           = oldOutId;
+        this.oldOrder              = input.connected ? input.connection.order : -1;
        
         this.oldInputNodeId        = oldInput.node.id;
         this.oldInputId            = oldInput.id;
@@ -45656,11 +45713,13 @@ extends Action
         uiDisconnect(this.oldInputNode.inputFromId(this.oldInputId));
         
 
-        uiConnect(
+        const conn = uiConnect(
             this.outputNode.outputFromId(this.outputId), 
             this. inputNode. inputFromId(this. inputId),
             this.inputId);
             
+        this.order = conn.order;
+
 
         this.newActiveNodeIds = [];
 
@@ -45689,7 +45748,8 @@ extends Action
             
         uiVariableConnect(
             this.outputNode,   this.outputId, 
-            this.oldInputNode, this.oldInputId);
+            this.oldInputNode, this.oldInputId,
+            this.order);
 
         uiSaveNodes([this.oldInputNodeId]);
     
@@ -45698,7 +45758,8 @@ extends Action
         {
             uiVariableConnect(
                 this.oldOutputNode, this.oldOutputId, 
-                this.inputNode,     this.inputId);
+                this.inputNode,     this.inputId,
+                this.oldOrder);
 
             pushUpdate([this.inputNode]);
         }
@@ -45971,7 +46032,7 @@ extends Action
         
         varConnections.sort((c1, c2) =>
         {
-            if (c1.order != c2.order) return c1.order - c2.order;
+            if (c1.order       != c2.order      ) return c1.order       - c2.order;
             if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
             if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
             return 0;
@@ -45990,7 +46051,10 @@ extends Action
             const outputNode = nodeFromId(conn.outputNodeId);
             const  inputNode = nodeFromId(conn. inputNodeId);
 
-            uiVariableConnect(outputNode, conn.outputId, inputNode, conn.inputId);
+            uiVariableConnect(
+                outputNode, conn.outputId, 
+                inputNode, conn.inputId,
+                conn.order);
         }
     }
 
@@ -46134,6 +46198,7 @@ extends Action
             uiSaveConnection(
                 output.node.id, output.id,
                  input.node.id,  input.id,
+                input.connection.order,
                 input.connection.toJson());
         }
     }
@@ -46655,6 +46720,22 @@ function loadNodesAndConnsData(_nodes, _conns)
     _dataModeNodes = _nodes;
     _dataModeConns = _conns;
 
+    _dataModeNodes.sort((n1, n2) => 
+    {
+        if (n1.y != n2.y ) return floatParse(n1.value.y) - floatParse(n2.value.y);
+        if (n1.x != n2.x ) return floatParse(n1.value.x) - floatParse(n2.value.x);
+        return 0;
+    });
+
+    _dataModeConns.sort((c1, c2) => 
+    {
+        if (c1.value.outputNodeId != c2.value.outputNodeId ) return c1.value.outputNodeId < c2.value.outputNodeId ? -1 : 1;
+        if (c1.value.outputId     != c2.value.outputId     ) return c1.value.outputId     < c2.value.outputId     ? -1 : 1;
+        if (c1.value.order        != c2.value.order        ) return parseInt(c1.value.order) - parseInt(c2.value.order);
+        return 0;
+    });
+
+    
     for (const _node of _dataModeNodes) dataModeNodes.appendChild(createNodeDataDiv(_node));
     for (const _conn of _dataModeConns) dataModeConns.appendChild(createConnDataDiv(_conn));
 }
@@ -46663,16 +46744,18 @@ function loadNodesAndConnsData(_nodes, _conns)
 
 function createNodeDataDiv(_node)
 {
-    const div  = createDiv('dataModeNode');
-    const node = JSON.parse(_node);
+    const div    = createDiv('dataModeNode');
+    
+    const node   = JSON.parse(_node.value);
+    node._key    = _node.key;
 
 
-    div._node    = _node;
+    div._node    = _node.value;
     div. node    =  node;
 
     div.showJson = false;
 
-    expandNodeData(div, node, _node);
+    expandNodeData(div);
 
 
     div.addEventListener('dblclick', () =>
@@ -46713,15 +46796,17 @@ function createNodeDataDiv(_node)
 
 function createConnDataDiv(_conn)
 {
-    const conn = JSON.parse(_conn);
-    const div  = createDiv('dataModeConn');
+    const div    = createDiv('dataModeConn');
 
-    div._conn    = _conn;
+    const conn   = JSON.parse(_conn.value);
+    conn._key    = _conn.key;
+
+    div._conn    = _conn.value;
     div. conn    =  conn;
 
     div.showJson = false;
 
-    expandConnData(div, conn, _conn);
+    expandConnData(div);
 
 
     div.addEventListener('dblclick', () =>
@@ -46773,16 +46858,18 @@ function createDataMenuOnHide(menu, div, normal)
 
 
 
-function expandNodeData(div, node, _node)
+function expandNodeData(div)
 {
     if (div.showJson)
     {
         div.innerHTML =
-             (node.loading ? '&nbsp;🛑<br/>' : '')
-            + formatSavedDataJson(div._node);
+        //   '<div>' + div._key + '</div><div>'
+        // + (div.node.loading ? '&nbsp;🛑<br/>' : '')
+              '<div class="nodeDataHeader">' + (div.node.loading ? '🛑&nbsp;' : '') + div.node._key + '</div>'
+            + '<div class="connDataBody">' + formatSavedDataJson(div._node) + '</div>';
 
         div.style.paddingLeft   = '0px';
-        div.style.paddingRight  = '10px';
+        div.style.paddingRight  = '0px';
         div.style.textAlign     = 'left';
         div.style.fontFamily    = 'Roboto Mono';
         div.style.letterSpacing = '-0.06em';
@@ -46790,7 +46877,7 @@ function expandNodeData(div, node, _node)
     else
     {
         div.innerHTML = 
-             (node.loading ? '🛑&nbsp;&nbsp' : '')
+             (div.node.loading ? '🛑&nbsp;&nbsp' : '')
             + div.node.id;
 
         div.style.paddingLeft   = '6px';
@@ -46803,16 +46890,19 @@ function expandNodeData(div, node, _node)
 
 
 
-function expandConnData(div, conn, _conn)
+function expandConnData(div)
 {
     if (div.showJson)
     {
         div.innerHTML =
-             (conn.loading ? '&nbsp;🛑<br/>' : '')
-            + formatSavedDataJson(div._conn);
+                '<div class="connDataHeader">' 
+                  + (div.conn.loading ? '🛑&nbsp;' : '') 
+                  + div.conn._key.replaceAll('undefined', '<span class="dataUndefined">undefined</span>') 
+              + '</div>'
+              + '<div class="connDataBody">' + formatSavedDataJson(div._conn) + '</div>';
 
         div.style.paddingLeft   = '0px';
-        div.style.paddingRight  = '10px';
+        div.style.paddingRight  = '0px';
         div.style.textAlign     = 'left';
         div.style.fontFamily    = 'Roboto Mono';
         div.style.letterSpacing = '-0.06em';
@@ -46820,8 +46910,8 @@ function expandConnData(div, conn, _conn)
     else
     {
         div.innerHTML = 
-             (conn.loading ? '🛑&nbsp;&nbsp' : '')
-            + connToString(conn);
+             (div.conn.loading ? '🛑&nbsp;&nbsp' : '')
+            + connToString(div.conn);
 
         div.style.paddingLeft   = '6px';
         div.style.paddingRight  = '6px';
@@ -46906,7 +46996,7 @@ function dataModeDeleteNode(node)
     }
 
 
-    let notice = 'Removed node \'' + node.id + '\'';
+    let notice = 'Deleted node \'' + node.id + '\'';
 
     if (nRemovedConns > 0)
         notice += ' and ' + nRemovedConns + ' ' + countString('connection', nRemovedConns);
@@ -46933,7 +47023,7 @@ function dataModeDeleteAllNodes()
         dataModeConns.removeChild(dataModeConns.children[i]);
 
 
-    let notice = 'Removed ' + nRemovedNodes + ' ' + countString('node', nRemovedNodes);
+    let notice = 'Deleted ' + nRemovedNodes + ' ' + countString('node', nRemovedNodes);
 
     if (nRemovedConns > 0)
         notice += ' and ' + nRemovedConns + ' ' + countString('connection', nRemovedConns);
@@ -46955,7 +47045,7 @@ function dataModeDeleteAllConnections()
 
 
     if (nRemovedConns > 0)
-        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns));
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns));
 }
 
 
@@ -46982,7 +47072,7 @@ function dataModeDeleteConnectionsToAndFromNode(node)
 
 
     if (nRemovedConns > 0)
-        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to and from \'' + node.id + '\'');
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to and from \'' + node.id + '\'');
 }
 
 
@@ -47007,7 +47097,7 @@ function dataModeDeleteConnectionsFromNode(node)
 
 
     if (nRemovedConns > 0)
-        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' from \'' + node.id + '\'');
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' from \'' + node.id + '\'');
 }
 
 
@@ -47032,7 +47122,7 @@ function dataModeDeleteConnectionsToNode(node)
 
 
     if (nRemovedConns > 0)
-        uiNotify('Removed ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to \'' + node.id + '\'');
+        uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to \'' + node.id + '\'');
 }
 
 
@@ -47040,6 +47130,7 @@ function dataModeDeleteConnectionsToNode(node)
 function dataModeDeleteConnection(conn)
 {
     uiRemoveSavedConnection(
+        conn._key,
         conn.outputNodeId,
         conn.outputId,
         conn.inputNodeId,
@@ -47061,7 +47152,7 @@ function dataModeDeleteConnection(conn)
     }
 
 
-    uiNotify('Removed connection  ' + connToString(conn));
+    uiNotify('Deleted connection  ' + connToString(conn));
 }
 
 
@@ -47535,16 +47626,16 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiReturnFigMessage':           uiReturnFigMessage          (msg.msgCmd);                   break;
+        case 'uiReturnFigMessage':           uiReturnFigMessage          (msg.msgCmd); break;
               
-        case 'uiReturnFigStartGenerator':    uiReturnFigStartGenerator   (msg);                          break;
+        case 'uiReturnFigStartGenerator':    uiReturnFigStartGenerator   (msg);        break;
         
-        case 'uiReturnFigLoadNodesAndConns': uiReturnFigLoadNodesAndConns(msg.nodesJson, msg.connsJson); break;
+        case 'uiReturnFigLoadNodesAndConns': uiReturnFigLoadNodesAndConns(msg);        break;
         
-        case 'uiReturnFigGetLocalData':      uiReturnFigGetLocalData     (msg);                          break;
-        case 'uiReturnFigGetPageData':       uiReturnFigGetPageData      (msg);                          break;
+        case 'uiReturnFigGetLocalData':      uiReturnFigGetLocalData     (msg);        break;
+        case 'uiReturnFigGetPageData':       uiReturnFigGetPageData      (msg);        break;
               
-        case 'uiReturnFigResizeWindow':      uiReturnFigResizeWindow     ();                             break;
+        case 'uiReturnFigResizeWindow':      uiReturnFigResizeWindow     ();           break;
     }
 }    
 
@@ -47993,35 +48084,46 @@ function uiLoadGraphView(json)
 
 
 
-function uiReturnFigLoadNodesAndConns(nodesJson, connsJson)
+function uiReturnFigLoadNodesAndConns(msg)
 {
     if (settings.logRawLoading)
     {
         console.log(
             '%cnodes JSON = %s', 
             'background: #fed',
-            nodesJson
+            msg.nodesJson
                 .replaceAll('\\n', '\n')
                 .replaceAll('\\"', '\"'));
 
         console.log(
             '%cconnections JSON = %s', 
             'background: #fed',
-            connsJson
+            msg.connsJson
                 .replaceAll('\\n', '\n')
                 .replaceAll('\\"', '\"'));
     }
 
 
-    let _nodes = JSON.parse(nodesJson);
-    let _conns = JSON.parse(connsJson);
+    let _nodeKeys = JSON.parse(msg.nodeKeys);
+    let _nodes    = JSON.parse(msg.nodeJson);
+
+    let _connKeys = JSON.parse(msg.connKeys);
+    let _conns    = JSON.parse(msg.connJson);
+
     
-    _nodes.sort((a, b) => a.z - b.z);
+    const _n = [];
+    const _c = [];
+
+    for (let i = 0; i < _nodes.length; i++) _n.push({key: _nodeKeys[i], value: _nodes[i]});
+    for (let i = 0; i < _conns.length; i++) _c.push({key: _connKeys[i], value: _conns[i]});
+    
+
+    _n.sort((a, b) => a.value.z - b.value.z);
 
 
     if (settings.dataMode)
     {
-        loadNodesAndConnsData(_nodes, _conns);
+        loadNodesAndConnsData(_n, _c);
     }
     else
     {
@@ -48094,7 +48196,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         _conns.sort((c1, c2) => 
         {
             if (c1.inputNodeId != c2.inputNodeId ) return c1.inputNodeId < c2.inputNodeId ? -1 : 1;
-            if (c1.inputIdd    != c2.inputId     ) return c1.inputId - c2.inputId;
+            if (c1.inputId     != c2.inputId     ) return c1.inputId     < c2.inputId     ? -1 : 1;
             
             if (c1.inputNodeId == c2.outputNodeId) return -1;
             if (c2.inputNodeId == c1.outputNodeId) return  1;
@@ -48978,9 +49080,6 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, order = -1)
     const output = outputNode.outputFromId(outputId);
     const  input =  inputNode. inputFromId(inputId);
 
-    console.log('output =', output);
-    console.log('input =', input);
-
     if (    inputNode.variableInputs
         && !input.param)
     {
@@ -49108,6 +49207,7 @@ function uiUpdateSavedConnectionsToNodeId(nodeId)
             _input.connectedOutput.id,
              node.id,
             _input.id,
+            _input.connection.order,
             _input.connection.toJson());
     }
 }
@@ -49550,7 +49650,7 @@ function uiSaveNodes(nodeIds)
 
 
 
-function uiSaveConnection(outputNodeId, outputId, inputNodeId, inputId, connJson)
+function uiSaveConnection(outputNodeId, outputId, inputNodeId, inputId, order, connJson)
 {
     if (settings.logRawSaving)
         console.log('%cSAVING CONNECTION\n' + connJson, 'color: black; background: #ddeeff;');
@@ -49560,7 +49660,8 @@ function uiSaveConnection(outputNodeId, outputId, inputNodeId, inputId, connJson
         name: outputNodeId + ' '
             + outputId     + ' '
             + inputNodeId  + ' '
-            + inputId,
+            + inputId      + ' '
+            + order,
         json: connJson
     });
 }
@@ -49582,7 +49683,8 @@ function uiSaveConnections(conns)
               conn.outputNodeId + ' '
             + conn.outputId     + ' '
             + conn.inputNodeId  + ' '
-            + conn.inputId);
+            + conn.inputId      + ' '
+            + conn.order);
 
         connJson.push(conn.toJson());
     }
@@ -49617,17 +49719,17 @@ function uiRemoveSavedConn(conn)
 
     uiQueueMessageToFigma({
         cmd: 'figRemoveSavedConnection',
-        name: conn.outputNodeId + ' '
-            + conn.outputId     + ' '
-            + conn.inputNodeId  + ' '
-            + conn.inputId      + ' '
+        name: conn.output.node.id + ' '
+            + conn.output.id     + ' '
+            + conn.input.node.id  + ' '
+            + conn.input.id      + ' '
             + conn.order
     });
 }
 
 
 
-function uiRemoveSavedConnection(outputNodeId, outputId, inputNodeId, inputId, order, list)
+function uiRemoveSavedConnection(key, outputNodeId, outputId, inputNodeId, inputId, order, list)
 {
     if (settings.logRawSaving)
     {
@@ -49647,11 +49749,7 @@ function uiRemoveSavedConnection(outputNodeId, outputId, inputNodeId, inputId, o
 
     uiQueueMessageToFigma({
         cmd: 'figRemoveSavedConnection',
-        name: outputNodeId + ' '
-            + outputId     + ' '
-            + inputNodeId  + ' '
-            + inputId      + ' '
-            + order
+        key: key
     });
 }
 

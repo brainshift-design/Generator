@@ -23,16 +23,16 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiReturnFigMessage':           uiReturnFigMessage          (msg.msgCmd);                   break;
+        case 'uiReturnFigMessage':           uiReturnFigMessage          (msg.msgCmd); break;
               
-        case 'uiReturnFigStartGenerator':    uiReturnFigStartGenerator   (msg);                          break;
+        case 'uiReturnFigStartGenerator':    uiReturnFigStartGenerator   (msg);        break;
         
-        case 'uiReturnFigLoadNodesAndConns': uiReturnFigLoadNodesAndConns(msg.nodesJson, msg.connsJson); break;
+        case 'uiReturnFigLoadNodesAndConns': uiReturnFigLoadNodesAndConns(msg);        break;
         
-        case 'uiReturnFigGetLocalData':      uiReturnFigGetLocalData     (msg);                          break;
-        case 'uiReturnFigGetPageData':       uiReturnFigGetPageData      (msg);                          break;
+        case 'uiReturnFigGetLocalData':      uiReturnFigGetLocalData     (msg);        break;
+        case 'uiReturnFigGetPageData':       uiReturnFigGetPageData      (msg);        break;
               
-        case 'uiReturnFigResizeWindow':      uiReturnFigResizeWindow     ();                             break;
+        case 'uiReturnFigResizeWindow':      uiReturnFigResizeWindow     ();           break;
     }
 }    
 

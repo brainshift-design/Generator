@@ -4,14 +4,20 @@ extends Action
     outputNodeId;
     outputId;
 
+    order = -1;
+
     get outputNode() { return nodeFromId(this.outputNodeId); }
     get output()     { return this.outputNode.outputs.find(o => o.id == this.outputId); }
     
+
     oldOutputNodeId = '';
     oldOutputId;
+
+    oldOrder = -1;
     
     get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
     
+
     inputNodeId;
     inputId;
     
@@ -46,6 +52,7 @@ extends Action
    
         this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
         this.oldOutputId     = oldOutputId;
+        this.oldOrder        = input.connected ? input.connection.order : -1;
    
         this.inputNodeId     = input.node.id;
         this.inputId         = input.id;
@@ -74,11 +81,15 @@ extends Action
             this.inputNode. inputs .find(i => i.id == this. inputId),
             this.inputId);
 
+        
+        this.order = conn.order;
+
         uiSaveConnection(
             this.outputNodeId,
             this.outputId,
             this.inputNodeId,
             this.inputId,
+            this.order,
             conn.toJson());
 
 
@@ -135,11 +146,13 @@ extends Action
         {
             const oldConn = uiVariableConnect(
                 this.oldOutputNode, this.oldOutputId, 
-                this.inputNode,     this.inputId);
+                this.inputNode,     this.inputId,
+                this.oldOrder);
 
             uiSaveConnection(
                 this.oldOutputNodeId, this.oldOutputId,
                 this.inputNodeId,     this.inputId,
+                this.order,
                 oldConn.toJson());
 
         }

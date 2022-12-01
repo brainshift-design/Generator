@@ -43,6 +43,7 @@ extends Action
             uiSaveConnection(
                 output.node.id, output.id,
                  input.node.id,  input.id,
+                input.connection.order,
                 input.connection.toJson());
         }
     }

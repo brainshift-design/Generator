@@ -159,9 +159,11 @@ function initGeneratorMenus()
 
     
     menuDebugLog = new Menu('Log menu', false);
-    menuDebugLog.addItems([        new MenuItem('List\u2008all\u2008nodes',       {callback:      () => uiLogAllSavedNodes()}),
-                                   new MenuItem('List\u2008all\u2008connections', {callback:      () => uiLogAllSavedConns()}),
+    menuDebugLog.addItems([        new MenuItem('List\u2008all\u2008nodes',       {                                                   callback:      () => uiLogAllSavedNodes()}),
+                                   new MenuItem('List\u2008all\u2008connections', {                                                   callback:      () => uiLogAllSavedConns()}),
                                    new MenuItem('',                               {separator: true}),
+                                   new MenuItem('List all connection keys',       {                                                   callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+                                   new MenuItem('',                               { separator: true }),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',              {checkCallback: () => settings.logRequests        , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',                {checkCallback: () => settings.logValueUpdates    , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
         menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',               {checkCallback: () => settings.logObjectUpdates   , callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)}),
@@ -367,11 +369,11 @@ function initDataModeMenus()
 {
     menuNodeData = new Menu('Node menu', false, false);
     menuNodeData.addItems([
-        new MenuItem('Remove connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),
-        new MenuItem('Remove connections to'  , { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode       (menuNodeData._div.node); }}),
-        new MenuItem('Remove all connections',  { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToAndFromNode(menuNodeData._div.node); }}),
+        new MenuItem('Delete connections from', { callback: () => { hideAllMenus(); dataModeDeleteConnectionsFromNode     (menuNodeData._div.node); }}),
+        new MenuItem('Delete connections to'  , { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToNode       (menuNodeData._div.node); }}),
+        new MenuItem('Delete all connections',  { callback: () => { hideAllMenus(); dataModeDeleteConnectionsToAndFromNode(menuNodeData._div.node); }}),
         new MenuItem('',                        { separator: true }),
-        new MenuItem('Remove node',             { callback: () => { hideAllMenus(); dataModeDeleteNode(menuNodeData._div.node); }})]);
+        new MenuItem('Delete node',             { callback: () => { hideAllMenus(); dataModeDeleteNode(menuNodeData._div.node); }})]);
 
 
     menuNodeDataNodes = new Menu('Nodes menu', false, false);
@@ -379,18 +381,20 @@ function initDataModeMenus()
         new MenuItem('Expand all',       { callback: () => { hideAllMenus(); expandAllNodeData();   }}),
         new MenuItem('Collapse all',     { callback: () => { hideAllMenus(); collapseAllNodeData(); }}),
         new MenuItem('',                 { separator: true }),
-        new MenuItem('Remove all nodes', { callback: () => { hideAllMenus(); dataModeDeleteAllNodes(); }})]);
+        new MenuItem('Delete all nodes', { callback: () => { hideAllMenus(); dataModeDeleteAllNodes(); }})]);
 
 
     menuConnData = new Menu('Connection menu', false, false);
     menuConnData.addItems([
-        new MenuItem('Remove connection', { callback: () => { hideAllMenus(); dataModeDeleteConnection(menuConnData._div.conn); }})]);
+        new MenuItem('Delete connection', { callback: () => { hideAllMenus(); dataModeDeleteConnection(menuConnData._div.conn); }})]);
 
 
     menuConnDataConns = new Menu('Connections menu', false, false);
     menuConnDataConns.addItems([
-        new MenuItem('Expand all',             { callback: () => { hideAllMenus(); expandAllConnData();   }}),
-        new MenuItem('Collapse all',           { callback: () => { hideAllMenus(); collapseAllConnData(); }}),
-        new MenuItem('',                       { separator: true }),
-        new MenuItem('Remove all connections', { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
+        new MenuItem('Expand all',               { callback: () => { hideAllMenus(); expandAllConnData();   }}),
+        new MenuItem('Collapse all',             { callback: () => { hideAllMenus(); collapseAllConnData(); }}),
+        new MenuItem('',                         { separator: true }),
+        new MenuItem('List all connection keys', { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+        new MenuItem('',                         { separator: true }),
+        new MenuItem('Delete all connections',   { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
 }

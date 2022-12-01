@@ -160,35 +160,46 @@ function uiLoadGraphView(json)
 
 
 
-function uiReturnFigLoadNodesAndConns(nodesJson, connsJson)
+function uiReturnFigLoadNodesAndConns(msg)
 {
     if (settings.logRawLoading)
     {
         console.log(
             '%cnodes JSON = %s', 
             'background: #fed',
-            nodesJson
+            msg.nodesJson
                 .replaceAll('\\n', '\n')
                 .replaceAll('\\"', '\"'));
 
         console.log(
             '%cconnections JSON = %s', 
             'background: #fed',
-            connsJson
+            msg.connsJson
                 .replaceAll('\\n', '\n')
                 .replaceAll('\\"', '\"'));
     }
 
 
-    let _nodes = JSON.parse(nodesJson);
-    let _conns = JSON.parse(connsJson);
+    let _nodeKeys = JSON.parse(msg.nodeKeys);
+    let _nodes    = JSON.parse(msg.nodeJson);
+
+    let _connKeys = JSON.parse(msg.connKeys);
+    let _conns    = JSON.parse(msg.connJson);
+
     
-    _nodes.sort((a, b) => a.z - b.z);
+    const _n = [];
+    const _c = [];
+
+    for (let i = 0; i < _nodes.length; i++) _n.push({key: _nodeKeys[i], value: _nodes[i]});
+    for (let i = 0; i < _conns.length; i++) _c.push({key: _connKeys[i], value: _conns[i]});
+    
+
+    _n.sort((a, b) => a.value.z - b.value.z);
 
 
     if (settings.dataMode)
     {
-        loadNodesAndConnsData(_nodes, _conns);
+        loadNodesAndConnsData(_n, _c);
     }
     else
     {
@@ -261,7 +272,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
         _conns.sort((c1, c2) => 
         {
             if (c1.inputNodeId != c2.inputNodeId ) return c1.inputNodeId < c2.inputNodeId ? -1 : 1;
-            if (c1.inputIdd    != c2.inputId     ) return c1.inputId - c2.inputId;
+            if (c1.inputId     != c2.inputId     ) return c1.inputId     < c2.inputId     ? -1 : 1;
             
             if (c1.inputNodeId == c2.outputNodeId) return -1;
             if (c2.inputNodeId == c1.outputNodeId) return  1;
