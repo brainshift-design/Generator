@@ -35,13 +35,14 @@ figma.ui.onmessage = msg =>
         case 'figLogAllSavedConnKeys':            figLogAllSavedConnKeys           ();                                            break;
         
         
-        case 'figSaveConnection':                 figSaveConnection                (msg.name, msg.json);                          break;
-        case 'figSaveConnections':                figSaveConnections               (msg.names, msg.json);                         break;
-        case 'figRemoveSavedConnection':          figRemoveSavedConnection         (msg.key);                                     break;
+        case 'figSaveConnection':                 figSaveConnection                (msg.key, msg.json);                           break;
+        case 'figSaveConnections':                figSaveConnections               (msg.keys, msg.json);                          break;
+        case 'figUpdateSavedConnections':         figUpdateSavedConnections        (msg.curKeys, msg.newKeys, msg.json);          break;
+        case 'figDeleteSavedConnection':          figDeleteSavedConnection         (msg.key);                                     break;
   
         case 'figRemoveAllSavedConnections':      figRemoveAllSavedConnections     ();                                            break;
-        case 'figRemoveSavedConnectionsToNode':   figRemoveSavedConnectionsToNode  (msg.nodeId);                                  break;
-        case 'figRemoveSavedConnectionsFromNode': figRemoveSavedConnectionsFromNode(msg.nodeId);                                  break;
+        case 'figDeleteSavedConnectionsToNode':   figDeleteSavedConnectionsToNode  (msg.nodeId);                                  break;
+        case 'figDeleteSavedConnectionsFromNode': figDeleteSavedConnectionsFromNode(msg.nodeId);                                  break;
            
         case 'figUpdateObjects':                  figUpdateObjects                 (msg);                                         break;
         case 'figDeleteObjects':                  figDeleteObjectsFromNodeIds      (msg.nodeIds);                                 break; 

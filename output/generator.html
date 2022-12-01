@@ -15,10 +15,15 @@ const NL             = '\n';
 const GENERATOR_LOGO = '◦ G •';
 const OBJECT_PREFIX  = 'G.';
 
+const nodeTag        = 'G_NODE';
+const connTag        = 'G_CONN';
 
 
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
+
+function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
+function connNameForStorage(name)   { return connTag + ' ' + name;   }
 
 
 
@@ -31,16 +36,54 @@ function connToString(_conn, logSpace = false)
     return getConnectionString(
         _conn.outputNodeId,
         _conn.outputId,
+        _conn.order,
         _conn.inputNodeId,
         _conn.inputId,
-        _conn.order,
         _conn.list,
         logSpace);
 }
 
 
 
-function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, order, list, logSpace = false)
+function getConnectionKey(outputNodeId, outputId, order, inputNodeId, inputId)
+{
+    return connNameForStorage(
+          outputNodeId + ' '
+        + outputId     + ' '
+        + order        + ' '
+        + inputNodeId  + ' '
+        + inputId);
+}
+
+
+
+function getConnKey(conn)
+{
+    return getConnectionKey(
+        conn.output.node.id,
+        conn.output.id,
+        conn.order,
+        conn.input.node.id,
+        conn.input.id);
+}
+
+
+
+function getConnString(conn, logSpace = false)
+{
+    return getConnectionString(
+        conn.output.node.id,
+        conn.output.id,
+        conn.order,
+        conn.input.node.id,
+        conn.input.id,
+        conn.list,
+        logSpace);
+}
+
+
+
+function getConnectionString(outputNodeId, outputId, order, inputNodeId, inputId, list, logSpace = false)
 {
     const  sp = logSpace ? ' ' : '  '; 
     const jsp = logSpace ? '' : ' '; 
@@ -2463,11 +2506,6 @@ function writeTextToClipboard(str)
 // }
 
 
-const nodeTag = 'G_NODE';
-const connTag = 'G_CONN';
-
-
-
 function isTagKey(key, tag) 
 {
     return key.substring(0, tag.length+1) == tag + ' ';
@@ -2627,6 +2665,20 @@ function logSaveNodes(nodeJson)
 function logSaveConnections(conns)
 {
     let log = 'SAVING ' + conns.length + ' ' + countString('CONNECTION', conns.length);
+
+    for (const conn of conns)
+        log += '\n' + conn.toJson();
+
+    console.log(
+        '%c' + log, 
+        'color: black; background: #ddeeff;');
+}
+
+
+
+function logUpdateSavedConnections(conns)
+{
+    let log = 'UPDATING ' + conns.length + ' ' + countString('SAVED CONNECTION', conns.length);
 
     for (const conn of conns)
         log += '\n' + conn.toJson();

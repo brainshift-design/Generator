@@ -128,3 +128,17 @@ function logSaveConnections(conns)
         '%c' + log, 
         'color: black; background: #ddeeff;');
 }
+
+
+
+function logUpdateSavedConnections(conns)
+{
+    let log = 'UPDATING ' + conns.length + ' ' + countString('SAVED CONNECTION', conns.length);
+
+    for (const conn of conns)
+        log += '\n' + conn.toJson();
+
+    console.log(
+        '%c' + log, 
+        'color: black; background: #ddeeff;');
+}

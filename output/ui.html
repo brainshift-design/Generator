@@ -625,7 +625,7 @@
 {
     position:   absolute;
     left:       49.5%;
-    top:        64.5%;
+    top:        calc(64.5% + 0.5px);
     transform:  translateX(-50%)
                 translateY(-50%);
     display:    none;
@@ -2348,10 +2348,15 @@ const NL             = '\n';
 const GENERATOR_LOGO = '◦ G •';
 const OBJECT_PREFIX  = 'G.';
 
+const nodeTag        = 'G_NODE';
+const connTag        = 'G_CONN';
 
 
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
+
+function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
+function connNameForStorage(name)   { return connTag + ' ' + name;   }
 
 
 
@@ -2364,16 +2369,54 @@ function connToString(_conn, logSpace = false)
     return getConnectionString(
         _conn.outputNodeId,
         _conn.outputId,
+        _conn.order,
         _conn.inputNodeId,
         _conn.inputId,
-        _conn.order,
         _conn.list,
         logSpace);
 }
 
 
 
-function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, order, list, logSpace = false)
+function getConnectionKey(outputNodeId, outputId, order, inputNodeId, inputId)
+{
+    return connNameForStorage(
+          outputNodeId + ' '
+        + outputId     + ' '
+        + order        + ' '
+        + inputNodeId  + ' '
+        + inputId);
+}
+
+
+
+function getConnKey(conn)
+{
+    return getConnectionKey(
+        conn.output.node.id,
+        conn.output.id,
+        conn.order,
+        conn.input.node.id,
+        conn.input.id);
+}
+
+
+
+function getConnString(conn, logSpace = false)
+{
+    return getConnectionString(
+        conn.output.node.id,
+        conn.output.id,
+        conn.order,
+        conn.input.node.id,
+        conn.input.id,
+        conn.list,
+        logSpace);
+}
+
+
+
+function getConnectionString(outputNodeId, outputId, order, inputNodeId, inputId, list, logSpace = false)
 {
     const  sp = logSpace ? ' ' : '  '; 
     const jsp = logSpace ? '' : ' '; 
@@ -4796,11 +4839,6 @@ function writeTextToClipboard(str)
 // }
 
 
-const nodeTag = 'G_NODE';
-const connTag = 'G_CONN';
-
-
-
 function isTagKey(key, tag) 
 {
     return key.substring(0, tag.length+1) == tag + ' ';
@@ -4960,6 +4998,20 @@ function logSaveNodes(nodeJson)
 function logSaveConnections(conns)
 {
     let log = 'SAVING ' + conns.length + ' ' + countString('CONNECTION', conns.length);
+
+    for (const conn of conns)
+        log += '\n' + conn.toJson();
+
+    console.log(
+        '%c' + log, 
+        'color: black; background: #ddeeff;');
+}
+
+
+
+function logUpdateSavedConnections(conns)
+{
+    let log = 'UPDATING ' + conns.length + ' ' + countString('SAVED CONNECTION', conns.length);
 
     for (const conn of conns)
         log += '\n' + conn.toJson();
@@ -16386,10 +16438,15 @@ const NL             = '\n';
 const GENERATOR_LOGO = '◦ G •';
 const OBJECT_PREFIX  = 'G.';
 
+const nodeTag        = 'G_NODE';
+const connTag        = 'G_CONN';
 
 
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
+
+function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
+function connNameForStorage(name)   { return connTag + ' ' + name;   }
 
 
 
@@ -16402,16 +16459,54 @@ function connToString(_conn, logSpace = false)
     return getConnectionString(
         _conn.outputNodeId,
         _conn.outputId,
+        _conn.order,
         _conn.inputNodeId,
         _conn.inputId,
-        _conn.order,
         _conn.list,
         logSpace);
 }
 
 
 
-function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, order, list, logSpace = false)
+function getConnectionKey(outputNodeId, outputId, order, inputNodeId, inputId)
+{
+    return connNameForStorage(
+          outputNodeId + ' '
+        + outputId     + ' '
+        + order        + ' '
+        + inputNodeId  + ' '
+        + inputId);
+}
+
+
+
+function getConnKey(conn)
+{
+    return getConnectionKey(
+        conn.output.node.id,
+        conn.output.id,
+        conn.order,
+        conn.input.node.id,
+        conn.input.id);
+}
+
+
+
+function getConnString(conn, logSpace = false)
+{
+    return getConnectionString(
+        conn.output.node.id,
+        conn.output.id,
+        conn.order,
+        conn.input.node.id,
+        conn.input.id,
+        conn.list,
+        logSpace);
+}
+
+
+
+function getConnectionString(outputNodeId, outputId, order, inputNodeId, inputId, list, logSpace = false)
 {
     const  sp = logSpace ? ' ' : '  '; 
     const jsp = logSpace ? '' : ' '; 
@@ -18834,11 +18929,6 @@ function writeTextToClipboard(str)
 // }
 
 
-const nodeTag = 'G_NODE';
-const connTag = 'G_CONN';
-
-
-
 function isTagKey(key, tag) 
 {
     return key.substring(0, tag.length+1) == tag + ' ';
@@ -18998,6 +19088,20 @@ function logSaveNodes(nodeJson)
 function logSaveConnections(conns)
 {
     let log = 'SAVING ' + conns.length + ' ' + countString('CONNECTION', conns.length);
+
+    for (const conn of conns)
+        log += '\n' + conn.toJson();
+
+    console.log(
+        '%c' + log, 
+        'color: black; background: #ddeeff;');
+}
+
+
+
+function logUpdateSavedConnections(conns)
+{
+    let log = 'UPDATING ' + conns.length + ' ' + countString('SAVED CONNECTION', conns.length);
 
     for (const conn of conns)
         log += '\n' + conn.toJson();
@@ -28453,7 +28557,7 @@ function initGeneratorMenus()
         //     }
         // }),
         menuItemDataMode   = new MenuItem('Restart in debug mode',    {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        )}),
-                             new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
+        //                   new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
                              new MenuItem('',                         {separator: true}),
         menuItemDebugLog   = new MenuItem('Log',                      {childMenu: menuDebugLog })]);
 
@@ -35946,8 +36050,8 @@ function getNodesAcrossNode(node)
 {
     let nodes = [];
 
-    nodes = [...nodes, ...nodesBeforeNode(node)];
-    nodes = [...nodes, ...getNodesAfterNode (node)];
+    nodes = [...nodes, ...nodesBeforeNode  (node)];
+    nodes = [...nodes, ...getNodesAfterNode(node)];
 
     return nodes;
 }
@@ -35975,6 +36079,7 @@ function getNodesAfterNode(node)
     let after = [];
 
     for (const output of node.outputs)
+    {
         for (const input of output.connectedInputs)
         {
             if (!after.includes(input.node)) // avoid including diamond tips twice
@@ -35982,6 +36087,7 @@ function getNodesAfterNode(node)
 
             after.push(...getNodesAfterNode(input.node));
         }
+    }
 
     return after;
 }
@@ -36012,6 +36118,7 @@ function getTerminalsAfterNode(node)
 {
     let after = [];
 
+
     for (const output of node.outputs)
     {
         for (const input of output.connectedInputs)
@@ -36024,6 +36131,7 @@ function getTerminalsAfterNode(node)
             pushUnique(after, getTerminalsAfterNode(input.node));
         }
     }
+
 
     return after.length > 0 ? after : [node];
 }
@@ -36047,6 +36155,7 @@ function getTerminalsAfterParam(param)
 
         pushUnique(after, getTerminalsAfterNode(input.node));
     }
+
 
     return after.length > 0 ? after : [];
 }
@@ -36614,6 +36723,7 @@ class Output
 
     connectedInputs = [];
 
+
     mouseOver       = false;
     connecting      = false;
 
@@ -36968,9 +37078,9 @@ class Connection
             + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
             + ',' + NL + pos + tab + '"outputId": "'     + (this.output.param ? this.output.param.id : this.output.index) + '"'
+            + ',' + NL + pos + tab + '"order": "'        + this.order + '"'
             + ',' + NL + pos + tab + '"inputNodeId": "'  + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "'      + (this.input.param ? this.input.param.id : this.input.index) + '"'
-            + ',' + NL + pos + tab + '"order": "'        + this.order + '"'
             + ',' + NL + pos + tab + '"list": "'         + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
             +       NL + pos
             + '}';
@@ -36986,12 +37096,12 @@ class Connection
         const outputNode  = nodeFromId(_conn.outputNodeId);
         const outputId    = _conn.outputId;
 
+        const order       = parseInt(_conn.order);
+
         const inputNode   = nodeFromId(_conn.inputNodeId);
         const inputId     = _conn.inputId;
 
-        const order       = parseInt(_conn.order);
-
-
+        
         if (   !outputNode 
             ||  isDigit(outputId[0]) && parseInt(outputId) >= outputNode.outputs.length
             || !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
@@ -37026,9 +37136,9 @@ class Connection
         return {
             outputNodeId: this.output.node.id,
             outputId:     this.output.id,
+            order:        this.order,
             inputNodeId:  this.input.node.id,
-            inputId:      this.input.id,
-            order:        this.order
+            inputId:      this.input.id
         };
     }
 }
@@ -39825,7 +39935,10 @@ extends OperatorBase
         const val = values[paramIds.findIndex(id => id == 'value')];
 
         if (this.params.length > 0) 
+        {
             this.params[0].setValue(val);
+            this.params[0].enableControlText(false);
+        }
     }
 
 
@@ -39940,12 +40053,8 @@ extends OperatorBase
     updateParams()
     {
         const input  = this. inputs[0];
-        const output = this.outputs[0];
         
-        //this.paramValue.control.style.display = 'block';
         this.paramValue.enableControlText(!input.connected);
-
-        // const output = this.outputs[0];
 
 
         this.paramValue.control.valueText = 
@@ -39956,29 +40065,6 @@ extends OperatorBase
             : '';
 
             
-        // if (showValue)
-        // {
-        //     this.paramValue.control.style.display = 'block';
-        //     this.paramValue.enableControlText(!input.connected);
-
-        //     this.div   .style.borderBottomLeftRadius  = '0px';        
-        //     this.inner .style.borderBottomLeftRadius  = '0px';        
-        //     this.header.style.borderBottomLeftRadius  = '0px';        
-
-        //     this.div   .style.borderBottomRightRadius = '0px';        
-        //     this.inner .style.borderBottomRightRadius = '0px';        
-        //     this.header.style.borderBottomRightRadius = '0px';        
-        // }
-        // else
-        // {
-        //     this.paramValue.control.style.display = 'none';
-
-        //     this.div   .style.borderRadius = '4px';        
-        //     this.inner .style.borderRadius = '4px';        
-        //     this.header.style.borderRadius = '4px';        
-        // }
-
-
          super.updateParams();
     }
 
@@ -44842,15 +44928,12 @@ extends Action
             this.inputNode. inputs .find(i => i.id == this. inputId),
             this.inputId);
 
-        
+            
         this.order = conn.order;
 
         uiSaveConnection(
-            this.outputNodeId,
-            this.outputId,
-            this.inputNodeId,
-            this.inputId,
-            this.order,
+            this.outputNodeId, this.outputId, this.order,
+            this.inputNodeId,  this.inputId,
             conn.toJson());
 
 
@@ -44900,20 +44983,20 @@ extends Action
         const input = this.inputNode.inputFromId(this.inputId);
         
         uiDisconnect(input);
-        uiRemoveSavedConn(input.connection);
+        uiDeleteSavedConn(input.connection);
 
             
         if (this.oldOutputNodeId != '')
         {
             const oldConn = uiVariableConnect(
                 this.oldOutputNode, this.oldOutputId, 
-                this.inputNode,     this.inputId,
+                this.inputNode, this.inputId,
                 this.oldOrder);
 
             uiSaveConnection(
                 this.oldOutputNodeId, this.oldOutputId,
-                this.inputNodeId,     this.inputId,
                 this.order,
+                this.inputNodeId, this.inputId,
                 oldConn.toJson());
 
         }
@@ -45315,8 +45398,7 @@ extends Action
 
         this.outputNodeId = output.node.id;
         this.outputId     = output.id;
-
-        this.order  = input.connection.order;
+        this.order        = input.connection.order;
 
         this.inputNodeId  = input.node.id;
         this.inputId      = input.id;
@@ -45335,18 +45417,20 @@ extends Action
         const input = this.inputNode.inputFromId(this.inputId);
         
 
+        uiDeleteSavedConn(input.connection);
+        uiDisconnect(input);
+
+
         // update output order on existing connections created after this one
         const afterConns = this.output.connectedInputs
             .map   (i => i.connection)
             .filter(c => c.order > this.order);
 
+        const oldKeys = afterConns.map(c => getConnKey(c));
         afterConns.forEach(c => c.order--);
+        const newKeys = afterConns.map(c => getConnKey(c));
 
-
-        uiRemoveSavedConn(input.connection);
-        uiDisconnect(input);
-
-        uiSaveConnections(afterConns);
+        uiUpdateSavedConnections(oldKeys, newKeys, afterConns);
         
         
         this.inputNode.invalidate();
@@ -45383,12 +45467,12 @@ extends Action
         const afterConns = this.output.connectedInputs
             .map   (i => i.connection)
             .filter(c => c.order >= this.order);
-        
-        for (const c of afterConns)
-        {
-            console.log('c.order =', c.order);
-            c.order++;
-        }
+
+        const oldKeys = afterConns.map(c => getConnKey(c));
+        afterConns.forEach(c => c.order++);
+        const newKeys = afterConns.map(c => getConnKey(c));
+
+        uiUpdateSavedConnections(oldKeys, newKeys, afterConns);
 
 
         const conn = uiVariableConnect(
@@ -45397,9 +45481,8 @@ extends Action
             this.order);
 
         uiSaveConnection(
-            this.outputNodeId, this.outputId,
+            this.outputNodeId, this.outputId, this.order,
             this.inputNodeId,  this.inputId,
-            this.order,
             conn.toJson());
 
             
@@ -46186,7 +46269,7 @@ extends Action
         uiSaveNodes([this.nodeId]);
 
 
-        uiRemoveSavedConnectionsToNodeId(this.nodeId);
+        uiDeleteSavedConnectionsToNodeId(this.nodeId);
 
 
         const node = nodeFromId(this.nodeId);
@@ -46197,8 +46280,8 @@ extends Action
 
             uiSaveConnection(
                 output.node.id, output.id,
-                 input.node.id,  input.id,
                 input.connection.order,
+                input.node.id, input.id,
                 input.connection.toJson());
         }
     }
@@ -47052,8 +47135,8 @@ function dataModeDeleteAllConnections()
 
 function dataModeDeleteConnectionsToAndFromNode(node)
 {
-    uiRemoveSavedConnectionsToNodeId  (node.id);
-    uiRemoveSavedConnectionsFromNodeId(node.id);
+    uiDeleteSavedConnectionsToNodeId  (node.id);
+    uiDeleteSavedConnectionsFromNodeId(node.id);
 
     
     let nRemovedConns = 0;
@@ -47079,7 +47162,7 @@ function dataModeDeleteConnectionsToAndFromNode(node)
 
 function dataModeDeleteConnectionsFromNode(node)
 {
-    uiRemoveSavedConnectionsFromNodeId(node.id);
+    uiDeleteSavedConnectionsFromNodeId(node.id);
 
 
     let nRemovedConns = 0;
@@ -47104,7 +47187,7 @@ function dataModeDeleteConnectionsFromNode(node)
 
 function dataModeDeleteConnectionsToNode(node)
 {
-    uiRemoveSavedConnectionsToNodeId(node.id);
+    uiDeleteSavedConnectionsToNodeId(node.id);
 
 
     let nRemovedConns = 0;
@@ -47129,13 +47212,13 @@ function dataModeDeleteConnectionsToNode(node)
 
 function dataModeDeleteConnection(conn)
 {
-    uiRemoveSavedConnection(
+    uiDeleteSavedConnection(
         conn._key,
         conn.outputNodeId,
         conn.outputId,
+        conn.order,
         conn.inputNodeId,
         conn.inputId,
-        conn.order,
         conn.list);
 
 
@@ -47143,11 +47226,7 @@ function dataModeDeleteConnection(conn)
     {
         const div = dataModeConns.children[i];
 
-        if (   div.conn.outputNodeId == conn.outputNodeId
-            && div.conn.outputId     == conn.outputId
-            && div.conn.inputNodeId  == conn.inputNodeId
-            && div.conn.inputId      == conn.inputId
-            && div.conn.order        == conn.order)
+        if (div.conn._key == conn._key)
             dataModeConns.removeChild(div);
     }
 
@@ -49098,7 +49177,7 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, order = -1)
         return conn;
     }
     else
-        return uiConnect(output, input, order);
+        return uiConnect(output, input, '', order);
 }
 
 
@@ -49184,7 +49263,7 @@ function uiDisconnectAny(input)
     
     const node = input.node;
 
-    uiRemoveSavedConnectionsToNodeId(input.node.id);
+    uiDeleteSavedConnectionsToNodeId(input.node.id);
 
     graph.disconnect(input);
 
@@ -49198,16 +49277,16 @@ function uiUpdateSavedConnectionsToNodeId(nodeId)
     const node = nodeFromId(nodeId);
 
 
-    uiRemoveSavedConnectionsToNodeId(node.id);
+    uiDeleteSavedConnectionsToNodeId(node.id);
 
     for (const _input of node.inputs.filter(i => i.connected))
     {
         uiSaveConnection(
             _input.connectedOutput.node.id,
             _input.connectedOutput.id,
+            _input.connection.order,
              node.id,
             _input.id,
-            _input.connection.order,
             _input.connection.toJson());
     }
 }
@@ -49650,19 +49729,17 @@ function uiSaveNodes(nodeIds)
 
 
 
-function uiSaveConnection(outputNodeId, outputId, inputNodeId, inputId, order, connJson)
+function uiSaveConnection(outputNodeId, outputId, order, inputNodeId, inputId, connJson)
 {
     if (settings.logRawSaving)
         console.log('%cSAVING CONNECTION\n' + connJson, 'color: black; background: #ddeeff;');
 
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
-        name: outputNodeId + ' '
-            + outputId     + ' '
-            + inputNodeId  + ' '
-            + inputId      + ' '
-            + order,
-        json: connJson
+        key:  getConnectionKey(
+                  outputNodeId, outputId, order,
+                  inputNodeId, inputId),
+        json:  connJson
     });
 }
 
@@ -49674,73 +49751,80 @@ function uiSaveConnections(conns)
         logSaveConnections(conns);
 
 
-    const names    = [];
+    const keys     = [];
     const connJson = [];
 
     for (const conn of conns)
     {
-        names.push( 
-              conn.outputNodeId + ' '
-            + conn.outputId     + ' '
-            + conn.inputNodeId  + ' '
-            + conn.inputId      + ' '
-            + conn.order);
-
+        keys.push(getConnKey(conn));
         connJson.push(conn.toJson());
     }
 
 
     uiQueueMessageToFigma({
-        cmd:  'figSaveConnections',
-        names: JSON.stringify(names),
-        json:  JSON.stringify(connJson)
+        cmd: 'figSaveConnections',
+        keys: JSON.stringify(keys),
+        json: JSON.stringify(connJson)
     });
 }
 
 
 
-function uiRemoveSavedConn(conn)
+function uiUpdateSavedConnections(curKeys, newKeys, conns)
+{
+    if (settings.logRawSaving)
+        logUpdateSavedConnections(conns);
+
+
+    const connJson = [];
+
+    for (const conn of conns)
+        connJson.push(conn.toJson());
+
+
+    uiQueueMessageToFigma({
+        cmd:    'figUpdateSavedConnections',
+        curKeys: JSON.stringify(curKeys),
+        newKeys: JSON.stringify(newKeys),
+        json:    JSON.stringify(connJson)
+    });
+}
+
+
+
+function uiDeleteSavedConn(conn)
 {
     if (settings.logRawSaving)
     {
         console.log(
-              '%cREMOVING SAVED CONNECTION ' 
-            + getConnectionString(
-                conn.output.node.id,
-                conn.output.id,
-                conn.input.node.id,
-                conn.input.id,
-                conn.order,
-                conn.list,
-                true), 
+             '%cDELETING SAVED CONNECTION ' 
+            + getConnString(conn, true),
             'color: black; background: #ddeeff;');
     }
 
 
+    console.log('conn =', conn);
+    console.log('getConnKey(conn) =', getConnKey(conn));
     uiQueueMessageToFigma({
-        cmd: 'figRemoveSavedConnection',
-        name: conn.output.node.id + ' '
-            + conn.output.id     + ' '
-            + conn.input.node.id  + ' '
-            + conn.input.id      + ' '
-            + conn.order
+        cmd: 'figDeleteSavedConnection',
+        key:  getConnKey(conn)
     });
 }
 
 
 
-function uiRemoveSavedConnection(key, outputNodeId, outputId, inputNodeId, inputId, order, list)
+function uiDeleteSavedConnection(key, outputNodeId, outputId, order, inputNodeId, inputId, list)
 {
     if (settings.logRawSaving)
     {
         console.log(
-              '%cREMOVING SAVED CONNECTION ' 
+             '%cDELETING SAVED CONNECTION ' 
             + getConnectionString(
                 outputNodeId,
                 outputId,
+                order,
                 inputNodeId,
                 inputId,
-                order,
                 list,
                 true), 
             'color: black; background: #ddeeff;');
@@ -49748,8 +49832,8 @@ function uiRemoveSavedConnection(key, outputNodeId, outputId, inputNodeId, input
 
 
     uiQueueMessageToFigma({
-        cmd: 'figRemoveSavedConnection',
-        key: key
+        cmd: 'figDeleteSavedConnection',
+        key:  key
     });
 }
 
@@ -49764,20 +49848,20 @@ function uiRemoveAllSavedConnections()
 
 
 
-function uiRemoveSavedConnectionsToNodeId(nodeId)
+function uiDeleteSavedConnectionsToNodeId(nodeId)
 {
     uiQueueMessageToFigma({
-        cmd:   'figRemoveSavedConnectionsToNode',
+        cmd:   'figDeleteSavedConnectionsToNode',
         nodeId: nodeId
     });
 }
 
 
 
-function uiRemoveSavedConnectionsFromNodeId(nodeId)
+function uiDeleteSavedConnectionsFromNodeId(nodeId)
 {
     uiQueueMessageToFigma({
-        cmd:   'figRemoveSavedConnectionsFromNode',
+        cmd:   'figDeleteSavedConnectionsFromNode',
         nodeId: nodeId
     });
 }

@@ -24,6 +24,7 @@ class Output
 
     connectedInputs = [];
 
+
     mouseOver       = false;
     connecting      = false;
 

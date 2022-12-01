@@ -28,8 +28,7 @@ extends Action
 
         this.outputNodeId = output.node.id;
         this.outputId     = output.id;
-
-        this.order  = input.connection.order;
+        this.order        = input.connection.order;
 
         this.inputNodeId  = input.node.id;
         this.inputId      = input.id;
@@ -48,18 +47,20 @@ extends Action
         const input = this.inputNode.inputFromId(this.inputId);
         
 
+        uiDeleteSavedConn(input.connection);
+        uiDisconnect(input);
+
+
         // update output order on existing connections created after this one
         const afterConns = this.output.connectedInputs
             .map   (i => i.connection)
             .filter(c => c.order > this.order);
 
+        const oldKeys = afterConns.map(c => getConnKey(c));
         afterConns.forEach(c => c.order--);
+        const newKeys = afterConns.map(c => getConnKey(c));
 
-
-        uiRemoveSavedConn(input.connection);
-        uiDisconnect(input);
-
-        uiSaveConnections(afterConns);
+        uiUpdateSavedConnections(oldKeys, newKeys, afterConns);
         
         
         this.inputNode.invalidate();
@@ -96,12 +97,12 @@ extends Action
         const afterConns = this.output.connectedInputs
             .map   (i => i.connection)
             .filter(c => c.order >= this.order);
-        
-        for (const c of afterConns)
-        {
-            console.log('c.order =', c.order);
-            c.order++;
-        }
+
+        const oldKeys = afterConns.map(c => getConnKey(c));
+        afterConns.forEach(c => c.order++);
+        const newKeys = afterConns.map(c => getConnKey(c));
+
+        uiUpdateSavedConnections(oldKeys, newKeys, afterConns);
 
 
         const conn = uiVariableConnect(
@@ -110,9 +111,8 @@ extends Action
             this.order);
 
         uiSaveConnection(
-            this.outputNodeId, this.outputId,
+            this.outputNodeId, this.outputId, this.order,
             this.inputNodeId,  this.inputId,
-            this.order,
             conn.toJson());
 
             

@@ -133,7 +133,7 @@
 {
     position:   absolute;
     left:       49.5%;
-    top:        64.5%;
+    top:        calc(64.5% + 0.5px);
     transform:  translateX(-50%)
                 translateY(-50%);
     display:    none;

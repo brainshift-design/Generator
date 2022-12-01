@@ -1,8 +1,3 @@
-const nodeTag = 'G_NODE';
-const connTag = 'G_CONN';
-
-
-
 function isTagKey(key, tag) 
 {
     return key.substring(0, tag.length+1) == tag + ' ';

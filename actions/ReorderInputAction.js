@@ -31,7 +31,7 @@ extends Action
         uiSaveNodes([this.nodeId]);
 
 
-        uiRemoveSavedConnectionsToNodeId(this.nodeId);
+        uiDeleteSavedConnectionsToNodeId(this.nodeId);
 
 
         const node = nodeFromId(this.nodeId);
@@ -42,8 +42,8 @@ extends Action
 
             uiSaveConnection(
                 output.node.id, output.id,
-                 input.node.id,  input.id,
                 input.connection.order,
+                input.node.id, input.id,
                 input.connection.toJson());
         }
     }

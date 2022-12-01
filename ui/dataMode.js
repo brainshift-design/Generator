@@ -368,8 +368,8 @@ function dataModeDeleteAllConnections()
 
 function dataModeDeleteConnectionsToAndFromNode(node)
 {
-    uiRemoveSavedConnectionsToNodeId  (node.id);
-    uiRemoveSavedConnectionsFromNodeId(node.id);
+    uiDeleteSavedConnectionsToNodeId  (node.id);
+    uiDeleteSavedConnectionsFromNodeId(node.id);
 
     
     let nRemovedConns = 0;
@@ -395,7 +395,7 @@ function dataModeDeleteConnectionsToAndFromNode(node)
 
 function dataModeDeleteConnectionsFromNode(node)
 {
-    uiRemoveSavedConnectionsFromNodeId(node.id);
+    uiDeleteSavedConnectionsFromNodeId(node.id);
 
 
     let nRemovedConns = 0;
@@ -420,7 +420,7 @@ function dataModeDeleteConnectionsFromNode(node)
 
 function dataModeDeleteConnectionsToNode(node)
 {
-    uiRemoveSavedConnectionsToNodeId(node.id);
+    uiDeleteSavedConnectionsToNodeId(node.id);
 
 
     let nRemovedConns = 0;
@@ -445,13 +445,13 @@ function dataModeDeleteConnectionsToNode(node)
 
 function dataModeDeleteConnection(conn)
 {
-    uiRemoveSavedConnection(
+    uiDeleteSavedConnection(
         conn._key,
         conn.outputNodeId,
         conn.outputId,
+        conn.order,
         conn.inputNodeId,
         conn.inputId,
-        conn.order,
         conn.list);
 
 
@@ -459,11 +459,7 @@ function dataModeDeleteConnection(conn)
     {
         const div = dataModeConns.children[i];
 
-        if (   div.conn.outputNodeId == conn.outputNodeId
-            && div.conn.outputId     == conn.outputId
-            && div.conn.inputNodeId  == conn.inputNodeId
-            && div.conn.inputId      == conn.inputId
-            && div.conn.order        == conn.order)
+        if (div.conn._key == conn._key)
             dataModeConns.removeChild(div);
     }
 

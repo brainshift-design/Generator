@@ -75,7 +75,10 @@ extends OperatorBase
         const val = values[paramIds.findIndex(id => id == 'value')];
 
         if (this.params.length > 0) 
+        {
             this.params[0].setValue(val);
+            this.params[0].enableControlText(false);
+        }
     }
 
 

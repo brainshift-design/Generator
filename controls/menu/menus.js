@@ -192,7 +192,7 @@ function initGeneratorMenus()
         //     }
         // }),
         menuItemDataMode   = new MenuItem('Restart in debug mode',    {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        )}),
-                             new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
+        //                   new MenuItem('Delete connections to...', {callback:      () => showDeleteConnectionsDialog()}),
                              new MenuItem('',                         {separator: true}),
         menuItemDebugLog   = new MenuItem('Log',                      {childMenu: menuDebugLog })]);
 

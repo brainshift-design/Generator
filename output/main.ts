@@ -1,8 +1,3 @@
-const nodeTag = 'G_NODE';
-const connTag = 'G_CONN';
-
-
-
 function isTagKey(key, tag) 
 {
     return key.substring(0, tag.length+1) == tag + ' ';
@@ -39,10 +34,15 @@ const NL             = '\n';
 const GENERATOR_LOGO = '◦ G •';
 const OBJECT_PREFIX  = 'G.';
 
+const nodeTag        = 'G_NODE';
+const connTag        = 'G_CONN';
 
 
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
+
+function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
+function connNameForStorage(name)   { return connTag + ' ' + name;   }
 
 
 
@@ -55,16 +55,54 @@ function connToString(_conn, logSpace = false)
     return getConnectionString(
         _conn.outputNodeId,
         _conn.outputId,
+        _conn.order,
         _conn.inputNodeId,
         _conn.inputId,
-        _conn.order,
         _conn.list,
         logSpace);
 }
 
 
 
-function getConnectionString(outputNodeId, outputId, inputNodeId, inputId, order, list, logSpace = false)
+function getConnectionKey(outputNodeId, outputId, order, inputNodeId, inputId)
+{
+    return connNameForStorage(
+          outputNodeId + ' '
+        + outputId     + ' '
+        + order        + ' '
+        + inputNodeId  + ' '
+        + inputId);
+}
+
+
+
+function getConnKey(conn)
+{
+    return getConnectionKey(
+        conn.output.node.id,
+        conn.output.id,
+        conn.order,
+        conn.input.node.id,
+        conn.input.id);
+}
+
+
+
+function getConnString(conn, logSpace = false)
+{
+    return getConnectionString(
+        conn.output.node.id,
+        conn.output.id,
+        conn.order,
+        conn.input.node.id,
+        conn.input.id,
+        conn.list,
+        logSpace);
+}
+
+
+
+function getConnectionString(outputNodeId, outputId, order, inputNodeId, inputId, list, logSpace = false)
 {
     const  sp = logSpace ? ' ' : '  '; 
     const jsp = logSpace ? '' : ' '; 
@@ -750,13 +788,14 @@ figma.ui.onmessage = msg =>
         case 'figLogAllSavedConnKeys':            figLogAllSavedConnKeys           ();                                            break;
         
         
-        case 'figSaveConnection':                 figSaveConnection                (msg.name, msg.json);                          break;
-        case 'figSaveConnections':                figSaveConnections               (msg.names, msg.json);                         break;
-        case 'figRemoveSavedConnection':          figRemoveSavedConnection         (msg.key);                                     break;
+        case 'figSaveConnection':                 figSaveConnection                (msg.key, msg.json);                           break;
+        case 'figSaveConnections':                figSaveConnections               (msg.keys, msg.json);                          break;
+        case 'figUpdateSavedConnections':         figUpdateSavedConnections        (msg.curKeys, msg.newKeys, msg.json);          break;
+        case 'figDeleteSavedConnection':          figDeleteSavedConnection         (msg.key);                                     break;
   
         case 'figRemoveAllSavedConnections':      figRemoveAllSavedConnections     ();                                            break;
-        case 'figRemoveSavedConnectionsToNode':   figRemoveSavedConnectionsToNode  (msg.nodeId);                                  break;
-        case 'figRemoveSavedConnectionsFromNode': figRemoveSavedConnectionsFromNode(msg.nodeId);                                  break;
+        case 'figDeleteSavedConnectionsToNode':   figDeleteSavedConnectionsToNode  (msg.nodeId);                                  break;
+        case 'figDeleteSavedConnectionsFromNode': figDeleteSavedConnectionsFromNode(msg.nodeId);                                  break;
            
         case 'figUpdateObjects':                  figUpdateObjects                 (msg);                                         break;
         case 'figDeleteObjects':                  figDeleteObjectsFromNodeIds      (msg.nodeIds);                                 break; 
@@ -1483,27 +1522,44 @@ function figLogAllSavedConnKeys()
 
 
 
-function figSaveConnection(name, json)
+function figSaveConnection(key, json)
 {
-    console.log('fig saving connection name =', name);
-    figSetPageData(connNameForStorage(name), json);        
+    console.log('fig saving connection key =', key);
+    figSetPageData(key, json);        
 }
 
 
 
-function figSaveConnections(_names, _json)
+function figSaveConnections(_keys, _json)
 {
-    const names = JSON.parse(_names);
-    const json  = JSON.parse(_json);
+    const keys = JSON.parse(_keys);
+    const json = JSON.parse(_json);
 
-    for (let i = 0; i < names.length; i++)
-        figSetPageData(connNameForStorage(names[i]), json[i]);
+    for (let i = 0; i < keys.length; i++)
+        figSetPageData(keys[i], json[i]);
 }
 
 
 
-function figRemoveSavedConnection(key)
+function figUpdateSavedConnections(_curKeys, _newKeys, _json)
 {
+    const curKeys = JSON.parse(_curKeys);
+    const newKeys = JSON.parse(_newKeys);
+    const json    = JSON.parse(_json);
+
+    for (let i = 0; i < curKeys.length; i++)
+    {
+        console.log('fig updating saved connection key = %s => %s', curKeys[i], newKeys[i]);
+        figClearPageData(curKeys[i]);
+        figSetPageData(newKeys[i], json[i]);
+    }
+}
+
+
+
+function figDeleteSavedConnection(key)
+{
+    console.log('fig deleting connection key =', key);
     figClearPageData(key);        
 }
 
@@ -1517,7 +1573,7 @@ function figRemoveAllSavedConnections()
 
 
 
-function figRemoveSavedConnectionsToNode(nodeId)
+function figDeleteSavedConnectionsToNode(nodeId)
 {
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
@@ -1532,7 +1588,7 @@ function figRemoveSavedConnectionsToNode(nodeId)
 
 
 
-function figRemoveSavedConnectionsFromNode(nodeId)
+function figDeleteSavedConnectionsFromNode(nodeId)
 {
     const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
@@ -1544,11 +1600,6 @@ function figRemoveSavedConnectionsFromNode(nodeId)
             figClearPageData(key);        
     }
 }
-
-
-
-function nodeNameForStorage(nodeId) { return nodeTag+' '+nodeId; }
-function connNameForStorage(name)   { return connTag+' '+name;   }
 
 
 function figPositionWindow(x, y)

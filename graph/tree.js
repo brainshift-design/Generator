@@ -82,8 +82,8 @@ function getNodesAcrossNode(node)
 {
     let nodes = [];
 
-    nodes = [...nodes, ...nodesBeforeNode(node)];
-    nodes = [...nodes, ...getNodesAfterNode (node)];
+    nodes = [...nodes, ...nodesBeforeNode  (node)];
+    nodes = [...nodes, ...getNodesAfterNode(node)];
 
     return nodes;
 }
@@ -111,6 +111,7 @@ function getNodesAfterNode(node)
     let after = [];
 
     for (const output of node.outputs)
+    {
         for (const input of output.connectedInputs)
         {
             if (!after.includes(input.node)) // avoid including diamond tips twice
@@ -118,6 +119,7 @@ function getNodesAfterNode(node)
 
             after.push(...getNodesAfterNode(input.node));
         }
+    }
 
     return after;
 }
@@ -148,6 +150,7 @@ function getTerminalsAfterNode(node)
 {
     let after = [];
 
+
     for (const output of node.outputs)
     {
         for (const input of output.connectedInputs)
@@ -160,6 +163,7 @@ function getTerminalsAfterNode(node)
             pushUnique(after, getTerminalsAfterNode(input.node));
         }
     }
+
 
     return after.length > 0 ? after : [node];
 }
@@ -183,6 +187,7 @@ function getTerminalsAfterParam(param)
 
         pushUnique(after, getTerminalsAfterNode(input.node));
     }
+
 
     return after.length > 0 ? after : [];
 }

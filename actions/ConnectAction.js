@@ -81,15 +81,12 @@ extends Action
             this.inputNode. inputs .find(i => i.id == this. inputId),
             this.inputId);
 
-        
+            
         this.order = conn.order;
 
         uiSaveConnection(
-            this.outputNodeId,
-            this.outputId,
-            this.inputNodeId,
-            this.inputId,
-            this.order,
+            this.outputNodeId, this.outputId, this.order,
+            this.inputNodeId,  this.inputId,
             conn.toJson());
 
 
@@ -139,20 +136,20 @@ extends Action
         const input = this.inputNode.inputFromId(this.inputId);
         
         uiDisconnect(input);
-        uiRemoveSavedConn(input.connection);
+        uiDeleteSavedConn(input.connection);
 
             
         if (this.oldOutputNodeId != '')
         {
             const oldConn = uiVariableConnect(
                 this.oldOutputNode, this.oldOutputId, 
-                this.inputNode,     this.inputId,
+                this.inputNode, this.inputId,
                 this.oldOrder);
 
             uiSaveConnection(
                 this.oldOutputNodeId, this.oldOutputId,
-                this.inputNodeId,     this.inputId,
                 this.order,
+                this.inputNodeId, this.inputId,
                 oldConn.toJson());
 
         }

@@ -55,12 +55,8 @@ extends OperatorBase
     updateParams()
     {
         const input  = this. inputs[0];
-        const output = this.outputs[0];
         
-        //this.paramValue.control.style.display = 'block';
         this.paramValue.enableControlText(!input.connected);
-
-        // const output = this.outputs[0];
 
 
         this.paramValue.control.valueText = 
@@ -71,29 +67,6 @@ extends OperatorBase
             : '';
 
             
-        // if (showValue)
-        // {
-        //     this.paramValue.control.style.display = 'block';
-        //     this.paramValue.enableControlText(!input.connected);
-
-        //     this.div   .style.borderBottomLeftRadius  = '0px';        
-        //     this.inner .style.borderBottomLeftRadius  = '0px';        
-        //     this.header.style.borderBottomLeftRadius  = '0px';        
-
-        //     this.div   .style.borderBottomRightRadius = '0px';        
-        //     this.inner .style.borderBottomRightRadius = '0px';        
-        //     this.header.style.borderBottomRightRadius = '0px';        
-        // }
-        // else
-        // {
-        //     this.paramValue.control.style.display = 'none';
-
-        //     this.div   .style.borderRadius = '4px';        
-        //     this.inner .style.borderRadius = '4px';        
-        //     this.header.style.borderRadius = '4px';        
-        // }
-
-
          super.updateParams();
     }
 

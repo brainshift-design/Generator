@@ -135,9 +135,9 @@ class Connection
             + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
             + ',' + NL + pos + tab + '"outputId": "'     + (this.output.param ? this.output.param.id : this.output.index) + '"'
+            + ',' + NL + pos + tab + '"order": "'        + this.order + '"'
             + ',' + NL + pos + tab + '"inputNodeId": "'  + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "'      + (this.input.param ? this.input.param.id : this.input.index) + '"'
-            + ',' + NL + pos + tab + '"order": "'        + this.order + '"'
             + ',' + NL + pos + tab + '"list": "'         + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
             +       NL + pos
             + '}';
@@ -153,12 +153,12 @@ class Connection
         const outputNode  = nodeFromId(_conn.outputNodeId);
         const outputId    = _conn.outputId;
 
+        const order       = parseInt(_conn.order);
+
         const inputNode   = nodeFromId(_conn.inputNodeId);
         const inputId     = _conn.inputId;
 
-        const order       = parseInt(_conn.order);
-
-
+        
         if (   !outputNode 
             ||  isDigit(outputId[0]) && parseInt(outputId) >= outputNode.outputs.length
             || !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
@@ -193,9 +193,9 @@ class Connection
         return {
             outputNodeId: this.output.node.id,
             outputId:     this.output.id,
+            order:        this.order,
             inputNodeId:  this.input.node.id,
-            inputId:      this.input.id,
-            order:        this.order
+            inputId:      this.input.id
         };
     }
 }
