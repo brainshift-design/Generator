@@ -158,7 +158,7 @@ class Connection
         const inputNode   = nodeFromId(_conn.inputNodeId);
         const inputId     = _conn.inputId;
 
-        
+
         if (   !outputNode 
             ||  isDigit(outputId[0]) && parseInt(outputId) >= outputNode.outputs.length
             || !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
@@ -360,16 +360,17 @@ function updateWireStyle(wire)
 
     const wireStyle = rgba2style(color);
 
-    const uncached = 
-          !conn.output.node.isCached()
-        && conn.input
-        && conn.input.node.isOrFollowedByMultiplier();
+    const unknown = 
+            conn.output
+        && !conn.output.node.isCached()
+        &&  conn.input
+        &&  conn.input.node.isOrFollowedByMultiplier();
 
 
     wire.curve .style.stroke = wireStyle;
     wire.curve2.style.stroke = rgb2style(rgbDocumentBody);//wireStyle;
 
-    wire.curve.style.strokeDasharray = uncached ? 1.7 * graphView.zoom : 0;
+    wire.curve.style.strokeDasharray = unknown ? 1.7 * graphView.zoom : 0;
 
     wire. inBall .style.fill = wireStyle;
     wire.outBall .style.fill = wireStyle;
@@ -382,7 +383,9 @@ function updateWireStyle(wire)
     //     this.wire.input.updateControl();
 
 
-    const listType = conn.output.supportsTypes(LIST_TYPES);
+    const listType = 
+           conn.output
+        && conn.output.supportsTypes(LIST_TYPES);
 
 
     let width = 1.6 * graphView.zoom;
@@ -391,7 +394,7 @@ function updateWireStyle(wire)
     else if (graphView.zoom < 1  ) width += 1 * (1 - graphView.zoom);
 
 
-    wire.curve .setAttribute('stroke-width', width * (listType ? (uncached ? 3.6 : 3.2) : (uncached ? 1.3 : 1)));
+    wire.curve .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
     wire.curve2.setAttribute('stroke-width', width * 1.4);
 
     wire.curve2.setAttribute('display', listType ? 'inline' : 'none');

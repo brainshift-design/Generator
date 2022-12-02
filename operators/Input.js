@@ -265,6 +265,7 @@ extends EventTarget
 
     canConnect(output)
     {
+        console.log('output =', output);
         if (!this.supportsTypes(output.types))
             return false;
 
