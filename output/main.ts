@@ -1524,7 +1524,6 @@ function figLogAllSavedConnKeys()
 
 function figSaveConnection(key, json)
 {
-    console.log('fig saving connection key =', key);
     figSetPageData(key, json);        
 }
 
@@ -1549,7 +1548,6 @@ function figUpdateSavedConnections(_curKeys, _newKeys, _json)
 
     for (let i = 0; i < curKeys.length; i++)
     {
-        console.log('fig updating saved connection key = %s => %s', curKeys[i], newKeys[i]);
         figClearPageData(curKeys[i]);
         figSetPageData(newKeys[i], json[i]);
     }
@@ -1559,7 +1557,6 @@ function figUpdateSavedConnections(_curKeys, _newKeys, _json)
 
 function figDeleteSavedConnection(key)
 {
-    console.log('fig deleting connection key =', key);
     figClearPageData(key);        
 }
 

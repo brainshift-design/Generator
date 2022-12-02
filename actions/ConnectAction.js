@@ -72,7 +72,7 @@ extends Action
         this.oldInputActiveNodeIds = getActiveNodesRightFromNodeId(this.inputNodeId).map(n => n.id);
 
 
-        for (const id of [this.oldOutputActiveNodeId, ...this.oldInputActiveNodeIds]) 
+        for (const id of [this.oldOutputActiveNodeId, ...this.oldInputActiveNodeIds])
             uiDeleteObjects([id]); // clean up now irrelevant objects
 
 
@@ -135,8 +135,8 @@ extends Action
     {
         const input = this.inputNode.inputFromId(this.inputId);
         
-        uiDisconnect(input);
         uiDeleteSavedConn(input.connection);
+        uiDisconnect(input);
 
             
         if (this.oldOutputNodeId != '')
@@ -179,18 +179,23 @@ extends Action
         }
 
 
+        const updateNodes = this.oldInputActiveNodeIds.map(id => nodeFromId(id));
+
         if (!this.oldInputActiveNodeIds.includes(this.oldOutputActiveNodeId))
         {
+            console.assert(this.oldOutputActiveNodeId, 'there should be an old output active node ID at this point')
             const node = nodeFromId(this.oldOutputActiveNodeId);
+
             uiMakeNodeActive(node);
+            pushUnique(updateNodes, node);
         }
 
 
-        pushUpdate(this.oldInputActiveNodeIds.map(id => nodeFromId(id)));
+        pushUpdate(updateNodes);
  
 
         // cleanup
-        this.oldOutputActiveNodeId = [];
+        this.oldOutputActiveNodeId = '';
         this.oldInputActiveNodeIds = [];
-   }
+    }
 }

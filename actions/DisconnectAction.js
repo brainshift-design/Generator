@@ -57,10 +57,8 @@ extends Action
             .filter(c => c.order > this.order);
 
         const oldKeys = afterConns.map(c => getConnKey(c));
-        console.log('oldKeys =', oldKeys);
         afterConns.forEach(c => c.order--);
         const newKeys = afterConns.map(c => getConnKey(c));
-        console.log('newKeys =', newKeys);
 
         uiUpdateSavedConnections(oldKeys, newKeys, afterConns);
         
@@ -113,9 +111,8 @@ extends Action
             this.order);
         
         uiSaveConn(conn);
-console.log('conn.order =', conn.order);
-console.log('conn.toJson() =', conn.toJson());
-            
+
+        
         for (const id of this.newActiveNodeIds)
         {
             uiMakeNodePassive(nodeFromId(id));
