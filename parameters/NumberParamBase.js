@@ -125,12 +125,13 @@ extends Parameter
     
     updateValueText()
     {
-        const nc =
+        const unknown =
                this.input 
             && this.input.isConnectedUncached()
             && this.node.isFollowedByMultiplier();
 
-        this.control.valueText = nc ? UNKNOWN_DISPLAY : '';
+        this.control.valueText = unknown ? UNKNOWN_DISPLAY : '';
+        this.control.showBar   = !unknown;
     }
 
 

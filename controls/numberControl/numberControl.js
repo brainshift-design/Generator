@@ -77,10 +77,10 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.oldValue; 
  
     control.wrapValue              = false;
-     
+    
     control.showName               = showName;
     control.showHex                = false;
-         
+
     control.enableChangeEvent      = true;
     
     control.successOnFocusOut      = false;
@@ -94,6 +94,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.valueText              = '';
     control.overrideText           = '';
      
+    control.showBar                = true;
+
     control.barTop                 = 0;
     control.barBottom              = 1;
      
@@ -244,8 +246,9 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             v *= -1;
 
             
-        if (   isNaN(control.value)
-            || control.overrideText != '') // assuminng the display bar is irrelevant in override mode
+        if (    isNaN(control.value)
+            ||  control.overrideText != '' // assuminng the display bar is irrelevant in override mode
+            || !control.showBar)
             control.bar.style.display = 'none';
 
         else

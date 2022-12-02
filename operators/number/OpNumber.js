@@ -54,20 +54,20 @@ extends OperatorBase
 
     updateParams()
     {
-        const input  = this. inputs[0];
+        const input = this.inputs[0];
         
         this.paramValue.enableControlText(!input.connected);
 
 
-        this.paramValue.control.valueText = 
-                input.connected
-            && !input.connectedOutput.node.isCached()
-            &&  this.isFollowedByMultiplier()
-            ? UNKNOWN_DISPLAY
-            : '';
+        const unknown = 
+               this.isConnectedUncached()
+            && this.isFollowedByMultiplier();
 
+
+        this.paramValue.control.valueText = unknown ? UNKNOWN_DISPLAY : '';
+        this.paramValue.control.showBar   = !unknown;
             
-         super.updateParams();
+        super.updateParams();
     }
 
 

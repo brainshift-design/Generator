@@ -1162,8 +1162,6 @@ function uiDeleteSavedConn(conn)
     }
 
 
-    console.log('conn =', conn);
-    console.log('getConnKey(conn) =', getConnKey(conn));
     uiQueueMessageToFigma({
         cmd: 'figDeleteSavedConnection',
         key:  getConnKey(conn)
