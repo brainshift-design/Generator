@@ -1072,6 +1072,22 @@ function uiSaveNodes(nodeIds)
 
 
 
+function uiSaveConn(conn)
+{
+    if (settings.logRawSaving)
+        console.log('%cSAVING CONNECTION\n' + conn.toJson(), 'color: black; background: #ddeeff;');
+
+    uiQueueMessageToFigma({
+        cmd: 'figSaveConnection',
+        key:  getConnectionKey(
+                  conn.output.nodeId, conn.output.id, conn.order,
+                  conn.input .nodeId, conn.input .id),
+        json: conn.toJson()
+    });
+}
+
+
+
 function uiSaveConnection(outputNodeId, outputId, order, inputNodeId, inputId, connJson)
 {
     if (settings.logRawSaving)

@@ -104,8 +104,8 @@ function getConnString(conn, logSpace = false)
 
 function getConnectionString(outputNodeId, outputId, order, inputNodeId, inputId, list, logSpace = false)
 {
-    const  sp = logSpace ? ' ' : '  '; 
-    const jsp = logSpace ? '' : ' '; 
+    const  sp   = logSpace ? ' ' : '  '; 
+    const jsp   = logSpace ? ''  : ' '; 
 
     const arrow = subscriptNumber(parseInt(order)) + sp + rightArrowChar(parseBool(list)) + sp;
     const join  = jsp + '.' + jsp;

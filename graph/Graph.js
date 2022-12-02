@@ -178,7 +178,9 @@ class Graph
         const conn = new Connection(output, input);
 
         conn.order = 
-            output.connectedInputs.length > 0
+            order > -1
+            ? order
+            : output.connectedInputs.length > 0
             ? Math.max(...output.connectedInputs.map(i => i.connection.order)) + 1
             : 0;
 
