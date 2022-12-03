@@ -29023,7 +29023,7 @@ function initNumberControlEvents(control)
 
             if (    graphView.tempConn.output
                 &&  control.param.input
-                &&  control.param.input.canConnect(graphView.tempConn.output)
+                &&  control.param.input.canConnectFrom(graphView.tempConn.output)
                 && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 && (  !control.param.input.connected // not already connected to this input
                     || control.param.input.connectedOutput != graphView.tempConn.output
@@ -29042,7 +29042,7 @@ function initNumberControlEvents(control)
             }
             else if ( graphView.tempConn.input
                   &&  control.param.output
-                  &&  graphView.tempConn.input.canConnect(control.param.output)
+                  &&  graphView.tempConn.input.canConnectFrom(control.param.output)
                   && !control.param.node.isOrFollows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = control.param.output;
@@ -30375,7 +30375,7 @@ function initColorControlEvents(control)
 
             if (    graphView.tempConn.output
                 &&  control.param.input
-                &&  control.param.input.canConnect(graphView.tempConn.output)
+                &&  control.param.input.canConnectFrom(graphView.tempConn.output)
                 && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 && (  !control.param.input.connected // not already connected to this input
                     || control.param.input.connectedOutput != graphView.tempConn.output
@@ -30394,7 +30394,7 @@ function initColorControlEvents(control)
             }
             else if ( graphView.tempConn.input
                   &&  control.param.output
-                  &&  graphView.tempConn.input.canConnect(control.param.output)
+                  &&  graphView.tempConn.input.canConnectTo(control.param.output)
                   && !control.param.node.isOrFollows(graphView.tempConn.input.node))
             {
                 graphView.overOutput = control.param.output;
@@ -33308,7 +33308,7 @@ graphView.endConnection = pointerId =>
         output.connecting = false;
         
         if (   input
-            && input.canConnect(output)) // TO INPUT
+            && input.canConnectFrom(output)) // TO INPUT
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex)
@@ -33349,7 +33349,7 @@ graphView.endConnection = pointerId =>
         input.connecting = false;
 
         if (   output
-            && input.canConnect(output)) // TO OUTPUT
+            && input.canConnectFrom(output)) // TO OUTPUT
             actionManager.do(new ConnectAction(output, input));
 
         graphView.cancelConnection(pointerId);
@@ -36529,10 +36529,10 @@ extends EventTarget
 
                 
             const tc = graphView.tempConn;
-            
+
             if (   tc
                 && tc.output
-                && this.canConnect(tc.output)
+                && this.canConnectFrom(tc.output)
                 && (  !this.connected
                     || this.connectedOutput != tc.output
                     || this == savedInput))
@@ -36554,7 +36554,8 @@ extends EventTarget
                 this.node.inputs.forEach(i => i.updateControl());
             }
             else if (!tc
-                   || this.canConnect(tc.output))
+                   ||    tc.output
+                      && this.canConnectFrom(tc.output))
                 graphView.overInput = this;
         });
 
@@ -36591,7 +36592,7 @@ extends EventTarget
                  && tc.input)
             && !(   tc
                  && tc.output
-                 && (  !this.canConnect(tc.output)
+                 && (  !this.canConnectFrom(tc.output)
                      || tc.output.node.isOrFollows(this.node)));
 
         const color =
@@ -36614,7 +36615,7 @@ extends EventTarget
                    ||    graphView.overInput == this
                       && !tc.input)
                && !(    tc.output
-                    && !this.canConnect(tc.output));
+                    && !this.canConnectFrom(tc.output));
 
         this.div.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -36642,7 +36643,7 @@ extends EventTarget
             //    : rgba2style(toRgba(this.connectedOutput.wireColor)))
             // : (   tc
             //    && tc.output
-            //    && this.canConnect(tc.output)
+            //    && this.canConnectFrom(tc.output)
             //    && graphView.overInput == this
             //    ? rgba2style(toRgba(tc.output.wireColor))
             //    : (   tc
@@ -36670,9 +36671,8 @@ extends EventTarget
 
 
 
-    canConnect(output)
+    canConnectFrom(output)
     {
-        console.log('output =', output);
         if (!this.supportsTypes(output.types))
             return false;
 
@@ -36908,7 +36908,7 @@ class Output
 
 
 
-    canConnect(input)
+    canConnectTo(input)
     {
         return arraysIntersect(this.types, input.types);
     }
@@ -37006,7 +37006,7 @@ class Connection
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && this.input.canConnect(graphView.overOutput)) 
+                    && this.input.canConnectFrom(graphView.overOutput)) 
                     types.push(...graphView.overOutput.types);
                 else
                 {
@@ -37562,7 +37562,7 @@ class Operator
 
     getAutoInput(output)
     {
-        const inputs = this.inputs.filter(i => i.canConnect(output));
+        const inputs = this.inputs.filter(i => i.canConnectFrom(output));
 
 
         if (graphView.overInput)
@@ -39607,7 +39607,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return this.inputs[0].canConnect(output);
+        return this.inputs[0].canConnectFrom(output);
     }
 
 
@@ -39728,7 +39728,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return this.inputs[0].canConnect(output);
+        return this.inputs[0].canConnectFrom(output);
     }
 
 
@@ -40018,7 +40018,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return this.inputs[0].canConnect(output);
+        return this.inputs[0].canConnectFrom(output);
     }
 
 
@@ -40292,7 +40292,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return this.inputs[0].canConnect(output);
+        return this.inputs[0].canConnectFrom(output);
     }
 
 
@@ -40406,7 +40406,7 @@ extends OperatorBase
     
     canAutoConnectFrom(output)
     {
-        return this.inputs[0].canConnect(output);
+        return this.inputs[0].canConnectFrom(output);
     }
 
 
@@ -40671,7 +40671,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return this.inputs[0].canConnect(output);
+        return this.inputs[0].canConnectFrom(output);
     }
 
 
@@ -40810,7 +40810,7 @@ extends OperatorBase
 
     canAutoConnectFrom(output)
     {
-        return this.inputs[0].canConnect(output);
+        return this.inputs[0].canConnectFrom(output);
     }
 
 
@@ -41354,7 +41354,7 @@ extends OpColorBase
 
     canAutoConnectFrom(output)
     {
-        return this.inputs[0].canConnect(output);
+        return this.inputs[0].canConnectFrom(output);
     }
 
 
@@ -42825,7 +42825,7 @@ extends OpColorBase
 
     canAutoConnectFrom(output)
     {
-        return this.inputs[0].canConnect(output);
+        return this.inputs[0].canConnectFrom(output);
     }
 
 
@@ -43607,7 +43607,7 @@ extends OpColorBase
     
     canAutoConnectFrom(output)
     {
-        return this.inputs[0].canConnect(output);
+        return this.inputs[0].canConnectFrom(output);
     }
 
 
@@ -45934,7 +45934,7 @@ extends Action
 
                 for (const connectedInput of output.connectedInputs)
                 {
-                    if (input.connectedOutput.canConnect(connectedInput))
+                    if (input.connectedOutput.canConnectTo(connectedInput))
                     {
                         this.newConnections.push(
                         {
@@ -49090,7 +49090,7 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
 function canAutoConnectNode(node)
 {
     const selNode = graph.nodes.find(n => n.selected);
-    const inputs  = node.inputs.filter(i => i.canConnect(selNode.outputs[0]));
+    const inputs  = node.inputs.filter(i => i.canConnectFrom(selNode.outputs[0]));
 
     return selNode
         && selNode.outputs.length > 0
@@ -49102,7 +49102,7 @@ function canAutoConnectNode(node)
 function autoConnectNode(node, insert)
 {
     const selNode = graph.nodes.find(n => n.selected);
-    const inputs  = node.inputs.filter(i => i.canConnect(selNode.outputs[0]));
+    const inputs  = node.inputs.filter(i => i.canConnectFrom(selNode.outputs[0]));
 
     console.assert(
            selNode

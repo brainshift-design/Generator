@@ -77,7 +77,7 @@ graphView.endConnection = pointerId =>
         output.connecting = false;
         
         if (   input
-            && input.canConnect(output)) // TO INPUT
+            && input.canConnectFrom(output)) // TO INPUT
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex)
@@ -118,7 +118,7 @@ graphView.endConnection = pointerId =>
         input.connecting = false;
 
         if (   output
-            && input.canConnect(output)) // TO OUTPUT
+            && input.canConnectFrom(output)) // TO OUTPUT
             actionManager.do(new ConnectAction(output, input));
 
         graphView.cancelConnection(pointerId);

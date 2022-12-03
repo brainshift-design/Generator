@@ -44,7 +44,7 @@ extends OpColorBase
     
     canAutoConnectFrom(output)
     {
-        return this.inputs[0].canConnect(output);
+        return this.inputs[0].canConnectFrom(output);
     }
 
 

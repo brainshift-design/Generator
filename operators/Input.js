@@ -122,10 +122,10 @@ extends EventTarget
 
                 
             const tc = graphView.tempConn;
-            
+
             if (   tc
                 && tc.output
-                && this.canConnect(tc.output)
+                && this.canConnectFrom(tc.output)
                 && (  !this.connected
                     || this.connectedOutput != tc.output
                     || this == savedInput))
@@ -147,7 +147,8 @@ extends EventTarget
                 this.node.inputs.forEach(i => i.updateControl());
             }
             else if (!tc
-                   || this.canConnect(tc.output))
+                   ||    tc.output
+                      && this.canConnectFrom(tc.output))
                 graphView.overInput = this;
         });
 
@@ -184,7 +185,7 @@ extends EventTarget
                  && tc.input)
             && !(   tc
                  && tc.output
-                 && (  !this.canConnect(tc.output)
+                 && (  !this.canConnectFrom(tc.output)
                      || tc.output.node.isOrFollows(this.node)));
 
         const color =
@@ -207,7 +208,7 @@ extends EventTarget
                    ||    graphView.overInput == this
                       && !tc.input)
                && !(    tc.output
-                    && !this.canConnect(tc.output));
+                    && !this.canConnectFrom(tc.output));
 
         this.div.style.transform = 
               'translateX(' + (isConnected ? -1 : 0) + 'px)'
@@ -235,7 +236,7 @@ extends EventTarget
             //    : rgba2style(toRgba(this.connectedOutput.wireColor)))
             // : (   tc
             //    && tc.output
-            //    && this.canConnect(tc.output)
+            //    && this.canConnectFrom(tc.output)
             //    && graphView.overInput == this
             //    ? rgba2style(toRgba(tc.output.wireColor))
             //    : (   tc
@@ -263,9 +264,8 @@ extends EventTarget
 
 
 
-    canConnect(output)
+    canConnectFrom(output)
     {
-        console.log('output =', output);
         if (!this.supportsTypes(output.types))
             return false;
 

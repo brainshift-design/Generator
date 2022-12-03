@@ -213,7 +213,7 @@ class Output
 
 
 
-    canConnect(input)
+    canConnectTo(input)
     {
         return arraysIntersect(this.types, input.types);
     }

@@ -67,7 +67,7 @@ class Connection
             else if (this.input)
             {
                 if (   graphView.overOutput
-                    && this.input.canConnect(graphView.overOutput)) 
+                    && this.input.canConnectFrom(graphView.overOutput)) 
                     types.push(...graphView.overOutput.types);
                 else
                 {
