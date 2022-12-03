@@ -51,16 +51,7 @@ extends Action
         uiDisconnect(input);
 
 
-        // update output order on existing connections created after this one
-        const afterConns = this.output.connectedInputs
-            .map   (i => i.connection)
-            .filter(c => c.order > this.order);
-
-        const oldKeys = afterConns.map(c => getConnKey(c));
-        afterConns.forEach(c => c.order--);
-        const newKeys = afterConns.map(c => getConnKey(c));
-
-        uiUpdateSavedConnections(oldKeys, newKeys, afterConns);
+        this.output.updateSavedConnectionOrder(this.order, -1);
         
         
         this.inputNode.invalidate();
@@ -93,16 +84,7 @@ extends Action
     
     undo()
     {
-        // update output order on existing connections
-        const afterConns = this.output.connectedInputs
-            .map   (i => i.connection)
-            .filter(c => c.order >= this.order);
-
-        const oldKeys = afterConns.map(c => getConnKey(c));
-        afterConns.forEach(c => c.order++);
-        const newKeys = afterConns.map(c => getConnKey(c));
-
-        uiUpdateSavedConnections(oldKeys, newKeys, afterConns);
+        this.output.updateSavedConnectionOrder(this.order, +1);
 
 
         const conn = uiVariableConnect(
@@ -128,7 +110,6 @@ extends Action
 
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
-
         
         pushUpdate([this.outputNode]);
     }

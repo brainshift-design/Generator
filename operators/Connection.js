@@ -207,8 +207,9 @@ function getConnectionForArrayWithIds(conn)
     return {
         outputNodeId: conn.output.node.id,
         outputId:     conn.output.id,
-        inputNodeId:  conn.input .node.id,
-        inputId:      conn.input .id };
+        order:        conn.order,
+        inputNodeId:  conn.input.node.id,
+        inputId:      conn.input.id };
 }
 
 

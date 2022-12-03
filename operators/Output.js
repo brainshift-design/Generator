@@ -148,6 +148,26 @@ class Output
 
 
 
+    updateSavedConnectionOrder(orderAfter, delta)
+    {
+        // update output order on existing connections created after this one
+        
+        const afterConns = this.connectedInputs
+            .map   (i => i.connection)
+            .filter(c => delta < 1 
+                         ? (c.order >  orderAfter) 
+                         : (c.order >= orderAfter));
+
+        const oldKeys = afterConns.map(c => getConnKey(c));
+        afterConns.forEach(c => c.order += delta);
+        
+        const newKeys = afterConns.map(c => getConnKey(c));
+
+        uiUpdateSavedConnections(oldKeys, newKeys, afterConns);
+    }
+
+
+
     updateControl()
     {
         const mouseOver =

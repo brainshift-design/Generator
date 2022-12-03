@@ -31,6 +31,7 @@ extends Action
         if (!this.oldConnections.find(c => 
                    c.outputNodeId == conn.output.node.id
                 && c.outputId     == conn.output.id
+                && c.order        == conn.order
                 && c. inputNodeId == conn. input.node.id
                 && c. inputId     == conn. input.id))
             this.oldConnections.push(getConnectionForArrayWithIds(conn));
@@ -80,7 +81,16 @@ extends Action
             const nodeInputs = [...node.inputs.filter(i => i.connected)];
 
             for (let i = nodeInputs.length-1; i >= 0; i--)
+            {
+                const input  = nodeInputs[i];
+                const output = input.connectedOutput;
+                const order  = input.connection.order;
+                
+                uiDeleteSavedConn(nodeInputs[i].connection);
                 updateNodes.push(...this.disconnect(nodeInputs[i], this.nodeIds));
+
+                output.updateSavedConnectionOrder(order, -1);
+            }
 
                 
             for (const output of node.outputs)
@@ -104,17 +114,21 @@ extends Action
  
 
                 for (const input of connectedInputs)
+                {
+                    uiDeleteSavedConn(input.connection);
                     updateNodes.push(...this.disconnect(input, this.nodeIds));
+                    // don't need to update order as the output is deleted
+                }
             }
         }
 
 
         uiDeleteNodes(this.nodeIds);
 
-
         uiSaveNodes(this.newActiveNodeIds);
-      
-        //pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
+
+        
+        pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
     }
 
 
@@ -151,8 +165,12 @@ extends Action
         let oldActiveNodeIds = [...this.oldActiveNodeIds];
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
+
+        const oldActiveNodes = oldActiveNodeIds.map(id => nodeFromId(id));
         
-        uiMakeNodesActive(oldActiveNodeIds.map(id => nodeFromId(id)));
+        uiMakeNodesActive(oldActiveNodes);
+
+        pushUpdate(oldActiveNodes);
     }
 
 
@@ -203,10 +221,13 @@ extends Action
         {
             const outputNode = nodeFromId(conn.outputNodeId);
             const  inputNode = nodeFromId(conn. inputNodeId);
+            
+            outputNode.outputFromId(conn.outputId).updateSavedConnectionOrder(conn.order, +1);
 
             uiVariableConnect(
                 outputNode, conn.outputId, 
-                inputNode,  conn.inputId);
+                inputNode,  conn.inputId,
+                conn.order);
         }
     }
 
