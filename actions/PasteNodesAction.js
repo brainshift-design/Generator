@@ -45,7 +45,14 @@ extends Action
             pushUnique(this.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
 
 
-        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y);
+        const [nodes, conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y);
+
+        for (const conn of conns)
+            uiSaveConnection(
+                conn.outputNodeId, conn.outputId, conn.order,
+                conn.inputNodeId,  conn.inputId,
+                JSON.stringify(conn));
+
 
         this.pastedNodeIds = nodes.map(n => n.id);
         this.pastedNodePos = nodes.map(n => { return point(n.div.offsetLeft, n.div.offsetTop); });
@@ -83,27 +90,27 @@ extends Action
 
 
 
-    redo()
-    {
-        const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y);
+    // redo()
+    // {
+    //     const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y);
         
-        this.pastedNodeIds = nodes.map(n => n.id);
+    //     this.pastedNodeIds = nodes.map(n => n.id);
 
-        for (let i = 0; i < nodes.length; i++)
-        {
-            setNodePosition(
-                nodes[i], 
-                this.pastedNodePos[i].x,
-                this.pastedNodePos[i].y);
-        }
+    //     for (let i = 0; i < nodes.length; i++)
+    //     {
+    //         setNodePosition(
+    //             nodes[i], 
+    //             this.pastedNodePos[i].x,
+    //             this.pastedNodePos[i].y);
+    //     }
 
-        updateTerminalsAfterNodes(nodes);
-        // graphView.updateNodeTransforms(nodes);
+    //     updateTerminalsAfterNodes(nodes);
+    //     // graphView.updateNodeTransforms(nodes);
 
-        // uiSaveNodes(nodes.map(n => n.id));
+    //     // uiSaveNodes(nodes.map(n => n.id));
         
-        this.notify(nodes, this.isDuplicate, this.pasteConnected);
-    }
+    //     this.notify(nodes, this.isDuplicate, this.pasteConnected);
+    // }
 
 
 

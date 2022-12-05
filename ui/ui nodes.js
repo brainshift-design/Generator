@@ -792,7 +792,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y)
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
-        loadConnections(data, pasteConnected);
+        loadConnectionsAndConnect(data, pasteConnected);
     }
 
     graphView.selectedNodes = nodes;
@@ -814,7 +814,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y)
     finishLoadingNodes(data.nodes, nodes, true);
 
 
-    return nodes;
+    return [nodes, data.connections];
 }
 
 
@@ -1098,7 +1098,7 @@ function uiSaveConnection(outputNodeId, outputId, order, inputNodeId, inputId, c
         key:  getConnectionKey(
                   outputNodeId, outputId, order,
                   inputNodeId, inputId),
-        json:  connJson
+        json: connJson
     });
 }
 

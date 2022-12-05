@@ -147,7 +147,7 @@ class Connection
 
 
 
-    static parseJson(_conn)
+    static parseJsonAndConnect(_conn)
     {
         // console.trace();
         const outputNode  = nodeFromId(_conn.outputNodeId);

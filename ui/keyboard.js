@@ -12,8 +12,10 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'KeyV'
           && getCtrlKey(e)
           && !e.altKey)
-          pasteCopiedNodes(e.shiftKey);
-
+    {
+        e.preventDefault();
+        pasteCopiedNodes(e.shiftKey);
+    }
     // duplicate
     else if (e.code == 'KeyD'
           && getCtrlKey(e)

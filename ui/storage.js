@@ -385,7 +385,7 @@ function resolveConnections(nodes, _connections, first, last)
                 }
 
 
-                Connection.parseJson(_conn);
+                Connection.parseJsonAndConnect(_conn);
             }
 
             resolve();
@@ -430,7 +430,7 @@ function loadNode(_node)
 
 
 
-function loadConnections(data, loadConnected, setProgress = null)
+function loadConnectionsAndConnect(data, loadConnected, setProgress = null)
 {
     for (let i = 0; i < data.connections.length; i++)
     {
@@ -439,7 +439,7 @@ function loadConnections(data, loadConnected, setProgress = null)
         if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId)
                && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId)
             || loadConnected)
-            Connection.parseJson(_conn);
+            Connection.parseJsonAndConnect(_conn);
 
         if (setProgress)
             setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
