@@ -385,7 +385,7 @@ function resolveConnections(nodes, _connections, first, last)
                 }
 
 
-                Connection.parseJsonAndConnect(_conn);
+                Connection.parseJsonAndConnect(_conn, false);
             }
 
             resolve();
@@ -430,7 +430,7 @@ function loadNode(_node)
 
 
 
-function loadConnectionsAndConnect(data, loadConnected, setProgress = null)
+function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
 {
     for (let i = 0; i < data.connections.length; i++)
     {
@@ -438,8 +438,8 @@ function loadConnectionsAndConnect(data, loadConnected, setProgress = null)
         
         if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId)
                && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId)
-            || loadConnected)
-            Connection.parseJsonAndConnect(_conn);
+            || pasteConnected)
+            Connection.parseJsonAndConnect(_conn, pasteConnected);
 
         if (setProgress)
             setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
@@ -465,7 +465,7 @@ function dataColorToJson(color, nTab)
         + pos + tab + tab + '"'+color[0] +'",\n'
         + pos + tab + tab +     color[1] + ',\n'
         + pos + tab + tab +     color[2] + ',\n'
-        + pos + tab + tab +     color[3] + '\n'
+        + pos + tab + tab +     color[3] +  '\n'
         + pos + tab + ']';
 
     return json;

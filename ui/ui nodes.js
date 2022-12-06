@@ -792,7 +792,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y)
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
-        loadConnectionsAndConnect(data, pasteConnected);
+        parseConnectionsAndConnect(data, pasteConnected);
     }
 
     graphView.selectedNodes = nodes;

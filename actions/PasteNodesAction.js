@@ -55,17 +55,12 @@ extends Action
 
 
         this.pastedNodeIds = nodes.map(n => n.id);
-        this.pastedNodePos = nodes.map(n => { return point(n.div.offsetLeft, n.div.offsetTop); });
+        this.pastedNodePos = nodes.map(n => point(n.div.offsetLeft, n.div.offsetTop));
 
 
         updateTerminalsAfterNodes(nodes);
         
-        //graphView.updateNodeTransforms(nodes);
-        //graphView.updateScrollWithBounds();
-
-        // uiSaveNodes(nodes.map(n => n.id));
-
-        
+       
         this.notify(nodes, this.isDuplicate, this.pasteConnected);
     }
 
@@ -87,30 +82,6 @@ extends Action
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
     }
-
-
-
-    // redo()
-    // {
-    //     const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y);
-        
-    //     this.pastedNodeIds = nodes.map(n => n.id);
-
-    //     for (let i = 0; i < nodes.length; i++)
-    //     {
-    //         setNodePosition(
-    //             nodes[i], 
-    //             this.pastedNodePos[i].x,
-    //             this.pastedNodePos[i].y);
-    //     }
-
-    //     updateTerminalsAfterNodes(nodes);
-    //     // graphView.updateNodeTransforms(nodes);
-
-    //     // uiSaveNodes(nodes.map(n => n.id));
-        
-    //     this.notify(nodes, this.isDuplicate, this.pasteConnected);
-    // }
 
 
 

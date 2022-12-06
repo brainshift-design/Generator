@@ -147,7 +147,7 @@ class Connection
 
 
 
-    static parseJsonAndConnect(_conn)
+    static parseJsonAndConnect(_conn, pasteConnected)
     {
         // console.trace();
         const outputNode  = nodeFromId(_conn.outputNodeId);
@@ -178,7 +178,7 @@ class Connection
                 inputNode,  isDigit(inputId[0])
                             ? parseInt(inputId)
                             : inputNode.params.find(p => p.id == inputId).input.id,
-                order);
+                pasteConnected ? -1 : order);
 
             conn.order = order;
 

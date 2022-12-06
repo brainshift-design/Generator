@@ -37106,7 +37106,7 @@ class Connection
 
 
 
-    static parseJsonAndConnect(_conn)
+    static parseJsonAndConnect(_conn, pasteConnected)
     {
         // console.trace();
         const outputNode  = nodeFromId(_conn.outputNodeId);
@@ -37137,7 +37137,7 @@ class Connection
                 inputNode,  isDigit(inputId[0])
                             ? parseInt(inputId)
                             : inputNode.params.find(p => p.id == inputId).input.id,
-                order);
+                pasteConnected ? -1 : order);
 
             conn.order = order;
 
@@ -45647,17 +45647,12 @@ extends Action
 
 
         this.pastedNodeIds = nodes.map(n => n.id);
-        this.pastedNodePos = nodes.map(n => { return point(n.div.offsetLeft, n.div.offsetTop); });
+        this.pastedNodePos = nodes.map(n => point(n.div.offsetLeft, n.div.offsetTop));
 
 
         updateTerminalsAfterNodes(nodes);
         
-        //graphView.updateNodeTransforms(nodes);
-        //graphView.updateScrollWithBounds();
-
-        // uiSaveNodes(nodes.map(n => n.id));
-
-        
+       
         this.notify(nodes, this.isDuplicate, this.pasteConnected);
     }
 
@@ -45679,30 +45674,6 @@ extends Action
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
     }
-
-
-
-    // redo()
-    // {
-    //     const nodes = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y);
-        
-    //     this.pastedNodeIds = nodes.map(n => n.id);
-
-    //     for (let i = 0; i < nodes.length; i++)
-    //     {
-    //         setNodePosition(
-    //             nodes[i], 
-    //             this.pastedNodePos[i].x,
-    //             this.pastedNodePos[i].y);
-    //     }
-
-    //     updateTerminalsAfterNodes(nodes);
-    //     // graphView.updateNodeTransforms(nodes);
-
-    //     // uiSaveNodes(nodes.map(n => n.id));
-        
-    //     this.notify(nodes, this.isDuplicate, this.pasteConnected);
-    // }
 
 
 
@@ -48381,7 +48352,7 @@ function resolveConnections(nodes, _connections, first, last)
                 }
 
 
-                Connection.parseJsonAndConnect(_conn);
+                Connection.parseJsonAndConnect(_conn, false);
             }
 
             resolve();
@@ -48426,7 +48397,7 @@ function loadNode(_node)
 
 
 
-function loadConnectionsAndConnect(data, loadConnected, setProgress = null)
+function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
 {
     for (let i = 0; i < data.connections.length; i++)
     {
@@ -48434,8 +48405,8 @@ function loadConnectionsAndConnect(data, loadConnected, setProgress = null)
         
         if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId)
                && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId)
-            || loadConnected)
-            Connection.parseJsonAndConnect(_conn);
+            || pasteConnected)
+            Connection.parseJsonAndConnect(_conn, pasteConnected);
 
         if (setProgress)
             setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
@@ -48461,7 +48432,7 @@ function dataColorToJson(color, nTab)
         + pos + tab + tab + '"'+color[0] +'",\n'
         + pos + tab + tab +     color[1] + ',\n'
         + pos + tab + tab +     color[2] + ',\n'
-        + pos + tab + tab +     color[3] + '\n'
+        + pos + tab + tab +     color[3] +  '\n'
         + pos + tab + ']';
 
     return json;
@@ -49442,7 +49413,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y)
     if (data.connections)
     {
         correctNodeNamesInConnections(data);
-        loadConnectionsAndConnect(data, pasteConnected);
+        parseConnectionsAndConnect(data, pasteConnected);
     }
 
     graphView.selectedNodes = nodes;
