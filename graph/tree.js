@@ -52,12 +52,12 @@ function getAllNodesFromNode(node, ignore = [])
         ignore.push(node);
 
 
-    for (const input of node.inputs)
+    for (const input of node.inputs.filter(i => i.connected))
     {
-        const node = input.connectedOutput.node;
-        if (ignore.includes(node)) continue;
+        const _node = input.connectedOutput.node;
+        if (ignore.includes(_node)) continue;
 
-        nodes.push(...getAllNodesFromNode(node, ignore));
+        nodes.push(...getAllNodesFromNode(_node, ignore));
     }
 
 
@@ -65,10 +65,10 @@ function getAllNodesFromNode(node, ignore = [])
     {
         for (const _input of output.connectedInputs)
         {
-            const node = _input.node;
-            if (ignore.includes(node)) continue;
+            const _node = _input.node;
+            if (ignore.includes(_node)) continue;
 
-            nodes.push(...getAllNodesFromNode(node, ignore));
+            nodes.push(...getAllNodesFromNode(_node, ignore));
         }
     }
 
@@ -80,25 +80,22 @@ function getAllNodesFromNode(node, ignore = [])
 
 function getNodesAcrossNode(node)
 {
-    let nodes = [];
-
-    nodes = [...nodes, ...nodesBeforeNode  (node)];
-    nodes = [...nodes, ...getNodesAfterNode(node)];
-
-    return nodes;
+    return [ ...getNodesBeforeNode(node),
+             ...getNodesAfterNode (node) ];
 }
 
 
-function nodesBeforeNode(node)
+
+function getNodesBeforeNode(node)
 {
     let before = [];
 
-    for (const input of node.inputs)
+    for (const input of node.inputs.filter(i => i.connected))
     {
         if (!before.includes(input.connectedOutput.node)) // avoid including diamond tips twice
             before.push(input.connectedOutput.node);
     
-        before.push(...nodesBeforeNode(input.connectedOutput.node));
+        before.push(...getNodesBeforeNode(input.connectedOutput.node));
     }
 
     return before;

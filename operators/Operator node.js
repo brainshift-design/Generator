@@ -528,19 +528,18 @@ function selectFromClick(node, ctrl, shift, alt)
         && alt)
     {
         graphView.selectedNodes = getAllNodesFromNode(node);
-        console.log('graphView.selectedNodes = ', graphView.selectedNodes);
     }
     else if (shift
           && alt)
     {
-        if (isMac) graphView.selectedNodes = nodesBeforeNode(node);
+        if (isMac) graphView.selectedNodes = getNodesBeforeNode(node);
         else       graphView.selectedNodes = getNodesAcrossNode(node);
     }
     else if (ctrl
           && shift)
     {
         if (isMac) graphView.selectedNodes = getNodesAcrossNode(node);
-        else       graphView.selectedNodes = nodesBeforeNode(node);
+        else       graphView.selectedNodes = getNodesBeforeNode(node);
     }
     else if (ctrl
           && alt)
