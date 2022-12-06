@@ -28,7 +28,7 @@ extends GOperator
 
     eval(parse)
     {
-        if (this.vaoid)//isCached())
+        if (this.valid)//isCached())
             return this;
 
 

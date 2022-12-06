@@ -46,9 +46,9 @@ extends Operator
 
         const colors = this.getHeaderColors();
 
-        const unknown = 
-               this.isConnectedUncached()
-            && this.isFollowedByMultiplier();
+        // const unknown = 
+        //        this.isConnectedUncached()
+        //     && this.hasMultipliedOutputs();
 
 
         this.header.style.background = 

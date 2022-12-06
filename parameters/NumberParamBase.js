@@ -128,7 +128,7 @@ extends Parameter
         const unknown =
                this.input 
             && this.input.isConnectedUncached()
-            && this.node.isFollowedByMultiplier();
+            && this.node.hasMultipliedOutputs();
 
         this.control.valueText = unknown ? UNKNOWN_DISPLAY : '';
         this.control.showBar   = !unknown;

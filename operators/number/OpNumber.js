@@ -61,7 +61,7 @@ extends OperatorBase
 
         const unknown = 
                this.isConnectedUncached()
-            && this.isFollowedByMultiplier();
+            && this.hasMultipliedOutputs();
 
 
         this.paramValue.control.valueText = unknown ? UNKNOWN_DISPLAY : '';

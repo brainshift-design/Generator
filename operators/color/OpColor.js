@@ -231,7 +231,7 @@ extends OpColorBase
         {
             const unknown = 
                    this.isConnectedUncached()
-                && this.isFollowedByMultiplier();
+                && this.hasMultipliedOutputs();
 
             this._color =
                 unknown
@@ -319,7 +319,7 @@ extends OpColorBase
 
         const unknown = 
                this.isConnectedUncached()
-            && this.isFollowedByMultiplier();
+            && this.hasMultipliedOutputs();
 
         const unknownBackStyle = isDarkMode() ? '#444' : '#ccc';
 

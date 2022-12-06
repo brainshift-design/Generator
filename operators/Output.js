@@ -240,21 +240,18 @@ class Output
 
 
 
-    isFollowedByMultiplier()
+    isMultiplied()
     {
-        for (const input of this.connectedInputs.filter(i => !i.param))
+        if (this.connectedInputs.length > 1)
+            return true;
+
+        for (const input of this.connectedInputs)
         {
             if (isMultiplier(input.node))
                 return true;
 
-            else return input.node.isFollowedByMultiplier();
-            // {
-            //     for (const output of input.node.outputs)
-            //         if (output.isFollowedByMultiplier())
-            //             return true;
-            // }
-
-            // return false;
+            else if (input.node.hasMultipliedOutputs())
+                return true;
         }
 
         return false

@@ -169,23 +169,23 @@ function initGeneratorMenus()
         //         graphView.updateShowWires(settings.showWires);  
         //     }
         // }),
-        menuItemDataMode         = new MenuItem('Restart in debug mode',      {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        )}),
+        menuItemDataMode         = new MenuItem('Restart in debug mode',      {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        ), setting: true}),
         //                         new MenuItem('Delete connections to...',   {callback:      () => showDeleteConnectionsDialog()}),
                                    new MenuItem('',                           {separator: true}),
-        menuItemLogRequests      = new MenuItem('Log\u2008requests',          {checkCallback: () => settings.logRequests        , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     )}),
-        menuItemLogValueUpdates  = new MenuItem('Log\u2008values',            {checkCallback: () => settings.logValueUpdates    , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates )}),
-        menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',           {checkCallback: () => settings.logObjectUpdates   , callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates)}),
+        menuItemLogRequests      = new MenuItem('Log\u2008requests',          {checkCallback: () => settings.logRequests        , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     ), setting: true}),
+        menuItemLogValueUpdates  = new MenuItem('Log\u2008values',            {checkCallback: () => settings.logValueUpdates    , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates ), setting: true}),
+        menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',           {checkCallback: () => settings.logObjectUpdates   , callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates), setting: true}),
                                    new MenuItem('',                           {separator: true}),   
-        menuItemLogRawRequests   = new MenuItem('Log\u2008raw\u2008requests', {checkCallback: () => settings.logRawRequests     , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests  )}),
-        menuItemLogRawValues     = new MenuItem('Log\u2008raw\u2008values',   {checkCallback: () => settings.logRawValues       , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues    )}),
+        menuItemLogRawRequests   = new MenuItem('Log\u2008raw\u2008requests', {checkCallback: () => settings.logRawRequests     , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests  ), setting: true}),
+        menuItemLogRawValues     = new MenuItem('Log\u2008raw\u2008values',   {checkCallback: () => settings.logRawValues       , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues    ), setting: true}),
                                    new MenuItem('',                           {separator: true}),   
-        menuItemLogLoading       = new MenuItem('Log\u2008loading',           {checkCallback: () => settings.logLoading         , callback: () => updateSettingAndMenu('logLoading',       true, !settings.logLoading      )}),
-        menuItemLogRawLoading    = new MenuItem('Log\u2008raw\u2008loading',  {checkCallback: () => settings.logRawLoading      , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading   )}),
-        menuItemLogRawSaving     = new MenuItem('Log\u2008raw\u2008saving',   {checkCallback: () => settings.logRawSaving       , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving    )}),
+        menuItemLogLoading       = new MenuItem('Log\u2008loading',           {checkCallback: () => settings.logLoading         , callback: () => updateSettingAndMenu('logLoading',       true, !settings.logLoading      ), setting: true}),
+        menuItemLogRawLoading    = new MenuItem('Log\u2008raw\u2008loading',  {checkCallback: () => settings.logRawLoading      , callback: () => updateSettingAndMenu('logRawLoading',    true, !settings.logRawLoading   ), setting: true}),
+        menuItemLogRawSaving     = new MenuItem('Log\u2008raw\u2008saving',   {checkCallback: () => settings.logRawSaving       , callback: () => updateSettingAndMenu('logRawSaving',     true, !settings.logRawSaving    ), setting: true}),
                                    new MenuItem('',                           {separator: true}),   
-        menuItemLogMessages      = new MenuItem('Log\u2008messages',          {checkCallback: () => settings.logMessages        , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     )}),
+        menuItemLogMessages      = new MenuItem('Log\u2008messages',          {checkCallback: () => settings.logMessages        , callback: () => updateSettingAndMenu('logMessages',      true, !settings.logMessages     ), setting: true}),
                                    new MenuItem('',                           {separator: true}),   
-        menuItemLogActions       = new MenuItem('Log\u2008actions',           {checkCallback: () => settings.logActions         , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      )})]);
+        menuItemLogActions       = new MenuItem('Log\u2008actions',           {checkCallback: () => settings.logActions         , callback: () => updateSettingAndMenu('logActions',       true, !settings.logActions      ), setting: true})]);
                      
 
     menuMainHelp = new Menu('Help and subscription', false);
@@ -216,32 +216,32 @@ function initGeneratorMenus()
     
     menuSimpleMath = new Menu('Variable math nodes', true, false);
     menuSimpleMath.addItems([
-        new MenuItem('Math ·',      {icon: iconSimpleMath    , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MATH,        btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Add ·',       {icon: iconSimpleAdd     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_ADD,         btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Subtract ·',  {icon: iconSimpleSubtract, callback: e => actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Multiply ·',  {icon: iconSimpleMultiply, callback: e => actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Divide ·',    {icon: iconSimpleDivide  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Power ·',     {icon: iconSimpleExponent, callback: e => actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Remainder ·', {icon: iconSimpleModulo  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MODULO,      btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Math ·',      {icon: iconSimpleMath    , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MATH,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Add ·',       {icon: iconSimpleAdd     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_ADD,       btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Subtract ·',  {icon: iconSimpleSubtract, callback: e => actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,  btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Multiply ·',  {icon: iconSimpleMultiply, callback: e => actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,  btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Divide ·',    {icon: iconSimpleDivide  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,    btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Power ·',     {icon: iconSimpleExponent, callback: e => actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,  btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Remainder ·', {icon: iconSimpleModulo  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MODULO,    btnNumber.div, {insert: e.shiftKey}))})]);
 
 
     menuNumber = new Menu('Number nodes', true, false);
     menuNumber.addItems([
-        new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(new CreateNodeAction(NUMBER,             btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(new CreateNodeAction(NUMBER,              btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_RANDOM,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_RANDOM,       btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Math',        {icon: iconMath       , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MATH,        btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_ADD,         btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_SUBTRACT,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MULTIPLY,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_DIVIDE,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Power',       {icon: iconExponent   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_EXPONENT,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Remainder',   {icon: iconModulo     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MODULO,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Math',        {icon: iconMath       , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MATH,     btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_ADD,      btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_SUBTRACT, btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MULTIPLY, btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_DIVIDE,   btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Power',       {icon: iconExponent   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_EXPONENT, btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Remainder',   {icon: iconModulo     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MODULO,   btnNumber.div, {insert: e.shiftKey}))}),
         new MenuItem('· · ·',       {childMenu: menuSimpleMath }),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_LIMITS,      btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE,  btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_LIMITS,       btnNumber.div, {insert: e.shiftKey}))})]);
         
     
     // menuString = new Menu('String nodes', true, false);

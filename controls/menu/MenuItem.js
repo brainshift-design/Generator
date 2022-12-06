@@ -17,6 +17,8 @@ class MenuItem
 
     separator         = false;
 
+    isSetting         = false;
+
 
     div;
 
@@ -54,9 +56,10 @@ class MenuItem
             if (this.childMenu)
                 this.childMenu.parentMenu = this.parentMenu; 
         }
-        if (options.separator     != undefined) this.separator    = options.separator;
-        if (options.shortcut      != undefined) this.shortcut     = options.shortcut;
-        if (options.enabled       != undefined) this.enabled      = options.enabled;
+        if (options.separator     != undefined) this.separator     = options.separator;
+        if (options.shortcut      != undefined) this.shortcut      = options.shortcut;
+        if (options.enabled       != undefined) this.enabled       = options.enabled;
+        if (options.setting       != undefined) this.isSetting     = options.setting;
     }
 
 
@@ -106,7 +109,9 @@ class MenuItem
             this.div.appendChild(this.divSeparator);
 
 
+
         this.div.addEventListener('pointerdown', e => e.stopPropagation());
+
 
 
         this.div.addEventListener('pointerup', e => 
@@ -116,6 +121,7 @@ class MenuItem
             if (!this.childMenu) 
                 this.select(e.shiftKey, rect.x, rect.y); 
         });
+
 
 
         this.div.addEventListener('pointerenter', () =>
@@ -135,6 +141,7 @@ class MenuItem
                 hideAllMenusAfter(this.parentMenu);
         });
     
+
     
         this.div.addEventListener('pointerleave', () =>
         {
@@ -157,7 +164,8 @@ class MenuItem
                 this.parentMenu.button.update();
         }
 
-        if (!shift)
+        if (   !shift 
+            || !this.isSetting)
             hideAllMenus();
 
 

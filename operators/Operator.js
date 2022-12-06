@@ -536,15 +536,15 @@ class Operator
     {
         return isMultiplier(this)
              ? true
-             : this.isFollowedByMultiplier();
+             : this.hasMultipliedOutputs();
     }
 
 
 
-    isFollowedByMultiplier()
+    hasMultipliedOutputs()
     {
         for (const output of this.outputs)
-            if (output.isFollowedByMultiplier())
+            if (output.isMultiplied())
                 return true;
 
         return false;
