@@ -37,7 +37,9 @@ extends Action
 
         this.createdNodeId = node.id;
 
-        uiMakeNodeActive(node);
+        if (!this.options.insert)
+            uiMakeNodeActive(node);
+
         pushUpdate([node]);
     }
 
@@ -61,7 +63,9 @@ extends Action
             true, 
             this.options);
 
-        uiMakeNodeActive(node);
+        if (!this.options.insert)
+            uiMakeNodeActive(node);
+
         pushUpdate([node]);
     }
 }
