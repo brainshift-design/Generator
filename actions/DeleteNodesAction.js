@@ -44,6 +44,7 @@ extends Action
         this.newActiveNodeIds = [];
         this.oldActiveNodeIds = [];
 
+
         for (const nodeId of this.nodeIds)
             pushUnique(this.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
         
@@ -51,83 +52,14 @@ extends Action
         
 
         this.newConnections = [];
+        addDeleteActionConnections(this);
 
 
-        for (const nodeId of this.nodeIds)
-        {
-            const node = nodeFromId(nodeId);
-
-            this.nodePos.push(point(
-                node.div.offsetLeft, 
-                node.div.offsetTop));
-
-            for (const input of node.inputs.filter(i => i.connected))
-                this.addConnection(input.connection);
-
-            for (const output of node.outputs)
-                for (const input of output.connectedInputs)
-                    this.addConnection(input.connection);
-        }
-
-
-        const updateNodes = [];
-
-
-        for (const nodeId of this.nodeIds)
-        {
-            const node = nodeFromId(nodeId);
-
-
-            const nodeInputs = [...node.inputs.filter(i => i.connected)];
-
-            for (let i = nodeInputs.length-1; i >= 0; i--)
-            {
-                const input  = nodeInputs[i];
-                const output = input.connectedOutput;
-                const order  = input.connection.order;
-                
-                uiDeleteSavedConn(nodeInputs[i].connection);
-                updateNodes.push(...this.disconnect(nodeInputs[i], this.nodeIds));
-
-                output.updateSavedConnectionOrder(order, -1);
-            }
-
-                
-            for (const output of node.outputs)
-            {
-                const connectedInputs = [...output.connectedInputs];
-                removeFromArrayWhere(connectedInputs, i => i.node == node);
-
-                // connected inputs need to be sorted by input index
-                connectedInputs.sort((i1, i2) => 
-                {
-                    const node1 = i1.node;
-                    const node2 = i2.node;
-                        
-                    const index1 = node1.inputs.indexOf(i1);
-                    const index2 = node2.inputs.indexOf(i2);
-                    
-                    if (node1.id != node2.id) return node1.id - node2.id;
-                    if (index1   != index2)   return index1   - index2;
-                    return 0;
-                });
- 
-
-                for (const input of connectedInputs)
-                {
-                    uiDeleteSavedConn(input.connection);
-                    updateNodes.push(...this.disconnect(input, this.nodeIds));
-                    // don't need to update order as the output is deleted
-                }
-            }
-        }
-
+        const updateNodes = getDeleteActionUpdateNodes(this);
 
         uiDeleteNodes(this.nodeIds);
-
         uiSaveNodes(this.newActiveNodeIds);
 
-        
         pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
     }
 
@@ -271,5 +203,86 @@ extends Action
         
 
         return updateNodes;
+    }
+}
+
+
+
+function getDeleteActionUpdateNodes(action)
+{
+    const updateNodes = [];
+
+
+    for (const nodeId of action.nodeIds)
+    {
+        const node = nodeFromId(nodeId);
+
+
+        const nodeInputs = [...node.inputs.filter(i => i.connected)];
+
+        for (let i = nodeInputs.length-1; i >= 0; i--)
+        {
+            const input  = nodeInputs[i];
+            const output = input.connectedOutput;
+            const order  = input.connection.order;
+            
+            uiDeleteSavedConn(nodeInputs[i].connection);
+            updateNodes.push(...action.disconnect(nodeInputs[i], action.nodeIds));
+
+            output.updateSavedConnectionOrder(order, -1);
+        }
+
+            
+        for (const output of node.outputs)
+        {
+            const connectedInputs = [...output.connectedInputs];
+            removeFromArrayWhere(connectedInputs, i => i.node == node);
+
+            // connected inputs need to be sorted by input index
+            connectedInputs.sort((i1, i2) => 
+            {
+                const node1 = i1.node;
+                const node2 = i2.node;
+                    
+                const index1 = node1.inputs.indexOf(i1);
+                const index2 = node2.inputs.indexOf(i2);
+                
+                if (node1.id != node2.id) return node1.id - node2.id;
+                if (index1   != index2)   return index1   - index2;
+                return 0;
+            });
+
+
+            for (const input of connectedInputs)
+            {
+                uiDeleteSavedConn(input.connection);
+                updateNodes.push(...action.disconnect(input, action.nodeIds));
+                // don't need to update order as the output is deleted
+            }
+        }
+    }
+
+
+    return updateNodes;
+}
+
+
+
+function addDeleteActionConnections(action)
+{
+    for (const nodeId of action.nodeIds)
+    {
+        const node = nodeFromId(nodeId);
+
+        action.nodePos.push(point(
+            node.div.offsetLeft, 
+            node.div.offsetTop));
+
+        for (const input of node.inputs.filter(i => i.connected))
+            action.addConnection(input.connection);
+
+        for (const output of node.outputs)
+            for (const input of output.connectedInputs)
+                action.addConnection(input.connection);
     }
 }

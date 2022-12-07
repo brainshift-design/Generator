@@ -80,8 +80,8 @@ extends Action
 
         for (const cluster of clusters)
         {
-            this.clusterActiveLeft .push(getActiveLeftFromNode(firstOf(cluster), [firstOf(cluster)]));
-            this.clusterActiveRight.push(getActiveRightFromNode(lastOf(cluster), [lastOf(cluster)]));
+            this.clusterActiveLeft .push(getActiveLeftFromNode (firstOf(cluster), [firstOf(cluster)]));
+            this.clusterActiveRight.push(getActiveRightFromNode(lastOf (cluster), [lastOf (cluster)]));
         }
     }
 
@@ -100,67 +100,13 @@ extends Action
         this.newConnections = [];
 
         this.prepareReconnections();
-
-
         uiDeleteObjects(this.oldActiveNodeIds); // clean up now irrelevant objects
+
         
-
-        for (const nodeId of this.nodeIds)
-        {
-            const node = nodeFromId(nodeId);
-
-            this.nodePos.push(point(
-                node.div.offsetLeft, 
-                node.div.offsetTop));
-
-            for (const input of node.inputs.filter(i => i.connected))
-                this.addConnection(input.connection);
-
-            for (const output of node.outputs)
-                for (const input of output.connectedInputs)
-                    this.addConnection(input.connection);
-        }
+        addDeleteActionConnections(this);
 
 
-        const updateNodes = [];
-
-
-        for (const nodeId of this.nodeIds)
-        {
-            const node = nodeFromId(nodeId);
-
-            
-            const nodeInputs = [...node.inputs.filter(i => i.connected)];
-
-            for (let i = nodeInputs.length-1; i >= 0; i--)
-                updateNodes.push(...this.disconnect(nodeInputs[i], this.nodeIds));
-
-                
-            for (const output of node.outputs)
-            {
-                const connectedInputs = [...output.connectedInputs];
-                removeFromArrayWhere(connectedInputs, i => i.node == node);
-
-                // connected inputs need to be sorted by input index
-                connectedInputs.sort((i1, i2) => 
-                {
-                    const node1 = i1.node;
-                    const node2 = i2.node;
-                        
-                    const index1 = node1.inputs.indexOf(i1);
-                    const index2 = node2.inputs.indexOf(i2);
-                    
-                    if (node1.id != node2.id) return node1.id - node2.id;
-                    if (index1   != index2)   return index1   - index2;
-                    return 0;
-                });
- 
-
-                for (const input of connectedInputs)
-                    updateNodes.push(...this.disconnect(input, this.nodeIds));
-            }
-        }
-
+        const updateNodes = getDeleteActionUpdateNodes(this);
 
         uiDeleteNodes(this.nodeIds);
 
@@ -181,7 +127,7 @@ extends Action
 
         uiSaveNodes(this.newActiveNodeIds);
        
-        //pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
+        pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
     }
 
 
@@ -219,7 +165,11 @@ extends Action
         oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         
-        uiMakeNodesActive(oldActiveNodeIds.map(id => nodeFromId(id)));
+        const oldActiveNodes = oldActiveNodeIds.map(id => nodeFromId(id));
+        
+        uiMakeNodesActive(oldActiveNodes);
+
+        pushUpdate(oldActiveNodes);
     }
 
 
