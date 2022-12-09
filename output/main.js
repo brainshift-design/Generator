@@ -33,25 +33,25 @@ function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
 function connNameForStorage(name) { return connTag + ' ' + name; }
 function parseBool(str) { return str === 'true'; }
 function connToString(_conn, logSpace = false) {
-    return getConnectionString(_conn.outputNodeId, _conn.outputId, _conn.order, _conn.inputNodeId, _conn.inputId, _conn.list, logSpace);
+    return getConnectionString(_conn.outputNodeId, _conn.outputId, _conn.outputOrder, _conn.inputNodeId, _conn.inputId, _conn.list, logSpace);
 }
-function getConnectionKey(outputNodeId, outputId, order, inputNodeId, inputId) {
+function getConnectionKey(outputNodeId, outputId, outputOrder, inputNodeId, inputId) {
     return connNameForStorage(outputNodeId + ' '
         + outputId + ' '
-        + order + ' '
+        + outputOrder + ' '
         + inputNodeId + ' '
         + inputId);
 }
 function getConnKey(conn) {
-    return getConnectionKey(conn.output.node.id, conn.output.id, conn.order, conn.input.node.id, conn.input.id);
+    return getConnectionKey(conn.output.node.id, conn.output.id, conn.outputOrder, conn.input.node.id, conn.input.id);
 }
 function getConnString(conn, logSpace = false) {
-    return getConnectionString(conn.output.node.id, conn.output.id, conn.order, conn.input.node.id, conn.input.id, conn.list, logSpace);
+    return getConnectionString(conn.output.node.id, conn.output.id, conn.outputOrder, conn.input.node.id, conn.input.id, conn.list, logSpace);
 }
-function getConnectionString(outputNodeId, outputId, order, inputNodeId, inputId, list, logSpace = false) {
+function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list, logSpace = false) {
     const sp = logSpace ? ' ' : '  ';
     const jsp = logSpace ? '' : ' ';
-    const arrow = sp + subscriptNumber(parseInt(order)) + rightArrowChar(parseBool(list)) + sp;
+    const arrow = sp + subscriptNumber(parseInt(outputOrder)) + rightArrowChar(parseBool(list)) + sp;
     const join = jsp + '.' + jsp;
     return outputNodeId + join + outputId
         + arrow

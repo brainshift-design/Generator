@@ -93,11 +93,9 @@ graphView.endConnection = pointerId =>
                 updateConnWires(input.connection);
             }
 
-            else if (savedConnInput)
-            {
-                if (savedConnInput.connectedOutput != output)
-                    actionManager.do(new ReconnectAction(output, savedConnInput, input));
-            }
+            else if (savedConnInput
+                  && savedConnInput.connectedOutput == output)
+                actionManager.do(new ReconnectAction(output, savedConnInput, input));
 
             else if (   !savedConnInput
                      && (  !input.connected

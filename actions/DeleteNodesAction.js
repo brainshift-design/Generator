@@ -2,15 +2,15 @@ class DeleteNodesAction
 extends Action
 {
     nodeIds          = [];
-    prevSelectedIds  = [];
-    
     nodes            = [];
     nodePos          = [];
+    
+    prevSelectedIds  = [];
 
     oldConnections   = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
-    newConnections   = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
-
     newActiveNodeIds = [];
+
+    newConnections   = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
     oldActiveNodeIds = [];
    
 
@@ -31,7 +31,7 @@ extends Action
         if (!this.oldConnections.find(c => 
                    c.outputNodeId == conn.output.node.id
                 && c.outputId     == conn.output.id
-                && c.order        == conn.order
+                && c.outputOrder  == conn.outputOrder
                 && c. inputNodeId == conn. input.node.id
                 && c. inputId     == conn. input.id))
             this.oldConnections.push(getConnectionForArrayWithIds(conn));
@@ -154,12 +154,12 @@ extends Action
             const outputNode = nodeFromId(conn.outputNodeId);
             const  inputNode = nodeFromId(conn. inputNodeId);
             
-            outputNode.outputFromId(conn.outputId).updateSavedConnectionOrder(conn.order, +1);
+            outputNode.outputFromId(conn.outputId).updateSavedConnectionOrder(conn.outputOrder, +1);
 
             uiVariableConnect(
                 outputNode, conn.outputId, 
                 inputNode,  conn.inputId,
-                conn.order);
+                conn.outputOrder);
         }
     }
 
@@ -222,14 +222,14 @@ function getDeleteActionUpdateNodes(action)
 
         for (let i = nodeInputs.length-1; i >= 0; i--)
         {
-            const input  = nodeInputs[i];
-            const output = input.connectedOutput;
-            const order  = input.connection.order;
+            const input       = nodeInputs[i];
+            const output      = input.connectedOutput;
+            const outputOrder = input.connection.outputOrder;
             
             uiDeleteSavedConn(nodeInputs[i].connection);
             updateNodes.push(...action.disconnect(nodeInputs[i], action.nodeIds));
 
-            output.updateSavedConnectionOrder(order, -1);
+            output.updateSavedConnectionOrder(outputOrder, -1);
         }
 
             

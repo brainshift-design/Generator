@@ -49,7 +49,7 @@ extends Action
 
         for (const conn of conns)
             uiSaveConnection(
-                conn.outputNodeId, conn.outputId, conn.order,
+                conn.outputNodeId, conn.outputId, conn.outputOrder,
                 conn.inputNodeId,  conn.inputId,
                 JSON.stringify(conn));
 

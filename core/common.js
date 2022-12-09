@@ -15,6 +15,7 @@ const nodeTag        = 'G_NODE';
 const connTag        = 'G_CONN';
 
 
+
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 
@@ -32,7 +33,7 @@ function connToString(_conn, logSpace = false)
     return getConnectionString(
         _conn.outputNodeId,
         _conn.outputId,
-        _conn.order,
+        _conn.outputOrder,
         _conn.inputNodeId,
         _conn.inputId,
         _conn.list,
@@ -41,12 +42,12 @@ function connToString(_conn, logSpace = false)
 
 
 
-function getConnectionKey(outputNodeId, outputId, order, inputNodeId, inputId)
+function getConnectionKey(outputNodeId, outputId, outputOrder, inputNodeId, inputId)
 {
     return connNameForStorage(
           outputNodeId + ' '
         + outputId     + ' '
-        + order        + ' '
+        + outputOrder  + ' '
         + inputNodeId  + ' '
         + inputId);
 }
@@ -58,7 +59,7 @@ function getConnKey(conn)
     return getConnectionKey(
         conn.output.node.id,
         conn.output.id,
-        conn.order,
+        conn.outputOrder,
         conn.input.node.id,
         conn.input.id);
 }
@@ -70,7 +71,7 @@ function getConnString(conn, logSpace = false)
     return getConnectionString(
         conn.output.node.id,
         conn.output.id,
-        conn.order,
+        conn.outputOrder,
         conn.input.node.id,
         conn.input.id,
         conn.list,
@@ -79,12 +80,12 @@ function getConnString(conn, logSpace = false)
 
 
 
-function getConnectionString(outputNodeId, outputId, order, inputNodeId, inputId, list, logSpace = false)
+function getConnectionString(outputNodeId, outputId, outputOrder, inputNodeId, inputId, list, logSpace = false)
 {
     const  sp   = logSpace ? ' ' : '  '; 
     const jsp   = logSpace ? ''  : ' '; 
 
-    const arrow = sp + subscriptNumber(parseInt(order)) + rightArrowChar(parseBool(list)) + sp;
+    const arrow = sp + subscriptNumber(parseInt(outputOrder)) + rightArrowChar(parseBool(list)) + sp;
     const join  = jsp + '.' + jsp;
 
     return outputNodeId + join + outputId

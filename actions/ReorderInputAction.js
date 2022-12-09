@@ -26,10 +26,6 @@ extends Action
     {
         // .. already done
 
-        pushUpdate([nodeFromId(this.nodeId)]);
-
-        uiSaveNodes([this.nodeId]);
-
 
         uiDeleteSavedConnectionsToNodeId(this.nodeId);
 
@@ -41,11 +37,15 @@ extends Action
             const output = input.connectedOutput;
 
             uiSaveConnection(
-                output.node.id, output.id,
-                input.connection.order,
+                output.node.id, output.id, input.connection.outputOrder,
                 input.node.id, input.id,
                 input.connection.toJson());
         }
+
+        
+        // update nodes
+
+        pushUpdate([nodeFromId(this.nodeId)]);
     }
 
 

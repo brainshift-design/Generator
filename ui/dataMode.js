@@ -47,7 +47,7 @@ function loadNodesAndConnsData(_nodes, _conns)
     {
         if (c1.value.outputNodeId != c2.value.outputNodeId ) return c1.value.outputNodeId < c2.value.outputNodeId ? -1 : 1;
         if (c1.value.outputId     != c2.value.outputId     ) return c1.value.outputId     < c2.value.outputId     ? -1 : 1;
-        if (c1.value.order        != c2.value.order        ) return parseInt(c1.value.order) - parseInt(c2.value.order);
+        if (c1.value.outputOrder  != c2.value.outputOrder  ) return parseInt(c1.value.outputOrder) - parseInt(c2.value.outputOrder);
         return 0;
     });
 
@@ -449,7 +449,7 @@ function dataModeDeleteConnection(conn)
         conn._key,
         conn.outputNodeId,
         conn.outputId,
-        conn.order,
+        conn.outputOrder,
         conn.inputNodeId,
         conn.inputId,
         conn.list);

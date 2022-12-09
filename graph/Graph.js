@@ -135,7 +135,7 @@ class Graph
 
 
 
-    connect(output, input, inputId = '', order = -1)
+    connect(output, input, inputId = '', outputOrder = -1)
     {
         //console.log('graph.connect()');
 
@@ -177,16 +177,16 @@ class Graph
 
         const conn = new Connection(output, input);
 
-        conn.order = 
-            order > -1
-            ? order
+        conn.outputOrder = 
+            outputOrder > -1
+            ? outputOrder
             : output.connectedInputs.length > 0
-            ? Math.max(...output.connectedInputs.map(i => i.connection.order)) + 1
+            ? Math.max(...output.connectedInputs.map(i => i.connection.outputOrder)) + 1
             : 0;
 
         output.connection = conn;
 
-        if (order > -1) output.connectedInputs.splice(order, 0, input);
+        if (outputOrder > -1) output.connectedInputs.splice(outputOrder, 0, input);
         else            output.connectedInputs.push(input);
         
         input.connection      = conn;
@@ -212,7 +212,7 @@ class Graph
         if (!output) return false;
 
 
-        const order = input.connection.order;
+        //const outputOrder = input.connection.outputOrder;
 
 
         graphView.removeConnWires(input.connection);
@@ -223,9 +223,9 @@ class Graph
 
         // const afterConns = output.connectedInputs
         //     .map   (i => i.connection)
-        //     .filter(c => c.order > order);
+        //     .filter(c => c.outputOrder > outputOrder);
 
-        // afterConns.forEach(c => c.order--);
+        // afterConns.forEach(c => c.outputOrder--);
         // uiSaveConnections(afterConns);
 
 

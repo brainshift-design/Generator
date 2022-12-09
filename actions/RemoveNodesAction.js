@@ -203,7 +203,7 @@ extends Action
         
         varConnections.sort((c1, c2) =>
         {
-            if (c1.order       != c2.order      ) return c1.order       - c2.order;
+            if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
             if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
             if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
             return 0;
@@ -224,8 +224,8 @@ extends Action
 
             uiVariableConnect(
                 outputNode, conn.outputId, 
-                inputNode, conn.inputId,
-                conn.order);
+                inputNode,  conn.inputId,
+                conn.outputOrder);
         }
     }
 

@@ -3,18 +3,20 @@ extends Action
 {
     outputNodeId;
     outputId;
-    get outputNode() { return nodeFromId(this.outputNodeId); }
-
-    get output() { return nodeFromId(this.outputNodeId).outputFromId(this.outputId); }
-
-    order;
-
+    outputOrder      = -1;
+    
     inputNodeId;
     inputId;
-    get inputNode() { return nodeFromId(this.inputNodeId); }
 
+    
     oldActiveNodeIds = [];
     newActiveNodeIds = [];
+
+
+    get outputNode() { return nodeFromId(this.outputNodeId); }
+    get output()     { return this.outputNode.outputFromId(this.outputId); }
+    
+    get inputNode()  { return nodeFromId(this.inputNodeId); }
 
 
 
@@ -28,7 +30,7 @@ extends Action
 
         this.outputNodeId = output.node.id;
         this.outputId     = output.id;
-        this.order        = input.connection.order;
+        this.outputOrder  = input.connection.outputOrder;
 
         this.inputNodeId  = input.node.id;
         this.inputId      = input.id;
@@ -38,45 +40,59 @@ extends Action
 
     do()
     {
+        this.newActiveNodeIds = [];
+        const updateNodes     = [];
+
+
+        // save old active nodes
+
         this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
 
-        for (const id of this.oldActiveNodeIds)
-            uiDeleteObjects([id]); // clean up now irrelevant objects
 
+        // remove connection
 
         const input = this.inputNode.inputFromId(this.inputId);
-        
 
         uiDeleteSavedConn(input.connection);
         uiDisconnect(input);
 
+        this.output.updateSavedConnectionOrder(this.outputOrder, -1);
+        
 
-        this.output.updateSavedConnectionOrder(this.order, -1);
-        
-        
-        this.inputNode.invalidate();
-        
+        // activate input node
         
         if (!getActiveFromNode(this.inputNode))
         {
-            uiMakeNodeActive(this.inputNode);
             this.newActiveNodeIds.push(this.inputNodeId);
+            uiMakeNodeActive(this.inputNode);
         }
 
+
+        // activate output node
 
         if (   !getActiveLeftOnlyFromNode(this.outputNode)
-            && !getActiveRightFromNode(this.outputNode))
+            && !getActiveRightFromNode   (this.outputNode))
         {
-            uiMakeNodeActive(this.outputNode);
             this.newActiveNodeIds.push(this.outputNodeId);
+            uiMakeNodeActive(this.outputNode);
         }
 
 
-        const updateNodes = [this.inputNode, this.outputNode];
+        // update nodes
+
+        pushUnique(updateNodes, [this.inputNode, this.outputNode]);
 
         if (!this.outputNode.cached)
             pushUnique(updateNodes, this.outputNode.getUncachedInputNodes());
 
+        
+        // clean up now irrelevant objects
+
+        uiDeleteObjects(this.oldActiveNodeIds); 
+
+
+        //
+        
         pushUpdate(updateNodes);
     }
     
@@ -84,33 +100,54 @@ extends Action
     
     undo()
     {
-        this.output.updateSavedConnectionOrder(this.order, +1);
+        const updateNodes = [];
 
+
+        // restore old connection
+
+        this.output.updateSavedConnectionOrder(this.outputOrder, +1);
 
         const conn = uiVariableConnect(
             this.outputNode, this.outputId, 
             this. inputNode, this. inputId,
-            this.order);
+            this.outputOrder);
         
         uiSaveConn(conn);
 
         
+        // deactivate new active nodes & clean up their objects
+
         for (const id of this.newActiveNodeIds)
-        {
             uiMakeNodePassive(nodeFromId(id));
-            uiDeleteObjects([id]); // clean up now irrelevant objects
+
+        uiDeleteObjects(this.newActiveNodeIds);
+
+
+        // activate old active nodes
+
+        const oldActiveNodeIds = [...this.oldActiveNodeIds].sort((x, y) => 
+            (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
+
+        for (const id of oldActiveNodeIds)
+        {
+            const node = nodeFromId(id);
+            uiMakeNodeActive(node);
+            pushUnique(updateNodes, node);
         }
 
 
-        let oldActiveNodeIds = [...this.oldActiveNodeIds];
+        // update nodes
+
+        pushUnique(updateNodes, this.outputNode);
+
+
+        // clean up
+        
         this.oldActiveNodeIds = [];
-        
 
-        oldActiveNodeIds.sort((x, y) => (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
-        for (const id of oldActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(id));
-        
-        pushUpdate([this.outputNode]);
+        //
+
+        pushUpdate(updateNodes);
     }
 }

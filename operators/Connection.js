@@ -1,7 +1,7 @@
 class Connection
 {
     output;
-    order; // in which connections FROM THIS OUTPUT were made
+    outputOrder; // in which connections FROM THIS OUTPUT were made
     
     input;
 
@@ -10,13 +10,13 @@ class Connection
 
     constructor(output, input)
     {
-        this.output = output;
-        this.order  = -1;
+        this.output      = output;
+        this.outputOrder = -1;
  
-        this.input  = input;
+        this.input       = input;
 
 
-        this.wire   = this.createWire(this.wire);
+        this.wire        = this.createWire(this.wire);
    
         this.wire.output = this.output;
         this.wire.input  = this.input;
@@ -135,7 +135,7 @@ class Connection
             + '{'
             +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
             + ',' + NL + pos + tab + '"outputId": "'     + (this.output.param ? this.output.param.id : this.output.index) + '"'
-            + ',' + NL + pos + tab + '"order": "'        + this.order + '"'
+            + ',' + NL + pos + tab + '"outputOrder": "'  + this.outputOrder + '"'
             + ',' + NL + pos + tab + '"inputNodeId": "'  + this.input.node.id + '"'
             + ',' + NL + pos + tab + '"inputId": "'      + (this.input.param ? this.input.param.id : this.input.index) + '"'
             + ',' + NL + pos + tab + '"list": "'         + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
@@ -152,8 +152,7 @@ class Connection
         // console.trace();
         const outputNode  = nodeFromId(_conn.outputNodeId);
         const outputId    = _conn.outputId;
-
-        const order       = parseInt(_conn.order);
+        const outputOrder = parseInt(_conn.outputOrder);
 
         const inputNode   = nodeFromId(_conn.inputNodeId);
         const inputId     = _conn.inputId;
@@ -178,9 +177,9 @@ class Connection
                 inputNode,  isDigit(inputId[0])
                             ? parseInt(inputId)
                             : inputNode.params.find(p => p.id == inputId).input.id,
-                pasteConnected ? -1 : order);
+                pasteConnected ? -1 : outputOrder);
 
-            conn.order = order;
+            conn.outputOrder = outputOrder;
 
             return conn;
         }
@@ -193,7 +192,7 @@ class Connection
         return {
             outputNodeId: this.output.node.id,
             outputId:     this.output.id,
-            order:        this.order,
+            outputOrder:  this.outputOrder,
             inputNodeId:  this.input.node.id,
             inputId:      this.input.id
         };
@@ -207,7 +206,7 @@ function getConnectionForArrayWithIds(conn)
     return {
         outputNodeId: conn.output.node.id,
         outputId:     conn.output.id,
-        order:        conn.order,
+        outputOrder:  conn.outputOrder,
         inputNodeId:  conn.input.node.id,
         inputId:      conn.input.id };
 }

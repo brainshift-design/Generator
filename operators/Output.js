@@ -155,11 +155,11 @@ class Output
         const afterConns = this.connectedInputs
             .map   (i => i.connection)
             .filter(c => delta < 1 
-                         ? (c.order >  orderAfter) 
-                         : (c.order >= orderAfter));
+                         ? (c.outputOrder >  orderAfter) 
+                         : (c.outputOrder >= orderAfter));
 
         const oldKeys = afterConns.map(c => getConnKey(c));
-        afterConns.forEach(c => c.order += delta);
+        afterConns.forEach(c => c.outputOrder += delta);
         
         const newKeys = afterConns.map(c => getConnKey(c));
 

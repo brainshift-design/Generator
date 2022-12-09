@@ -495,7 +495,7 @@ function uiSetNodeId(nodeId, newId)
 
 
 
-function uiVariableConnect(outputNode, outputId, inputNode, inputId, order = -1)
+function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder = -1)
 {
     //console.log('uiVariableConnect()');
 
@@ -509,25 +509,25 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, order = -1)
             output,
             lastOf(inputNode.headerInputs),
             inputId,
-            order);
+            outputOrder);
 
 
-        if (order > -1)
-            conn.order = order;
+        if (outputOrder > -1)
+            conn.outputOrder = outputOrder;
 
         uiUpdateSavedConnectionsToNodeId(inputNode.id);
 
         return conn;
     }
     else
-        return uiConnect(output, input, '', order);
+        return uiConnect(output, input, '', outputOrder);
 }
 
 
 
-function uiConnect(output, input, inputId = '', order = -1)
+function uiConnect(output, input, inputId = '', outputOrder = -1)
 {
-    const conn = graph.connect(output, input, inputId, order);
+    const conn = graph.connect(output, input, inputId, outputOrder);
 
     // uiSaveConnection(
     //     output.node.id,
@@ -627,7 +627,7 @@ function uiUpdateSavedConnectionsToNodeId(nodeId)
         uiSaveConnection(
             _input.connectedOutput.node.id,
             _input.connectedOutput.id,
-            _input.connection.order,
+            _input.connection.outputOrder,
              node.id,
             _input.id,
             _input.connection.toJson());
@@ -1080,7 +1080,7 @@ function uiSaveConn(conn)
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
         key:  getConnectionKey(
-                  conn.output.nodeId, conn.output.id, conn.order,
+                  conn.output.nodeId, conn.output.id, conn.outputOrder,
                   conn.input .nodeId, conn.input .id),
         json: conn.toJson()
     });
@@ -1088,7 +1088,7 @@ function uiSaveConn(conn)
 
 
 
-function uiSaveConnection(outputNodeId, outputId, order, inputNodeId, inputId, connJson)
+function uiSaveConnection(outputNodeId, outputId, outputOrder, inputNodeId, inputId, connJson)
 {
     if (settings.logRawSaving)
         console.log('%cSAVING CONNECTION\n' + connJson, 'color: black; background: #ddeeff;');
@@ -1096,7 +1096,7 @@ function uiSaveConnection(outputNodeId, outputId, order, inputNodeId, inputId, c
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
         key:  getConnectionKey(
-                  outputNodeId, outputId, order,
+                  outputNodeId, outputId, outputOrder,
                   inputNodeId, inputId),
         json: connJson
     });
@@ -1170,7 +1170,7 @@ function uiDeleteSavedConn(conn)
 
 
 
-function uiDeleteSavedConnection(key, outputNodeId, outputId, order, inputNodeId, inputId, list)
+function uiDeleteSavedConnection(key, outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
 {
     if (settings.logRawSaving)
     {
@@ -1179,7 +1179,7 @@ function uiDeleteSavedConnection(key, outputNodeId, outputId, order, inputNodeId
             + getConnectionString(
                 outputNodeId,
                 outputId,
-                order,
+                outputOrder,
                 inputNodeId,
                 inputId,
                 list,
