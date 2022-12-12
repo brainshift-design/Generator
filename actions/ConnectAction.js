@@ -29,7 +29,8 @@ extends Action
     
 
     get oldOutputNode() { return nodeFromId(this.oldOutputNodeId); }
-    
+    get oldOutput()     { return this.oldOutputNode.outputFromId(this.oldOutputId); }
+
 
 
     constructor(output, input)
@@ -59,81 +60,17 @@ extends Action
         this.newActiveNodeIds = [];
         const updateNodes     = [];
 
-
-        // save old output active nodes
-
-        this.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(this.outputNodeId));
-
-
-        // save old input active nodes & values
-
-        this.oldInputValues        = this.input.getValuesForUndo ? this.input.getValuesForUndo() : [];
-        this.oldInputActiveNodeIds = getActiveNodesRightFromNodeId(this.inputNodeId).map(n => n.id);
-
-
-        // make new connection
+        connectAction_saveOutputInput(this);
         
-        const conn = uiConnect(this.output, this.input, this.inputId);
-            
-        this.outputOrder = conn.outputOrder;
+        connectAction_removeOldOutputConnection(this);
+        
+        connectAction_updateOldOutput(this, updateNodes);
+        connectAction_updateOldInput(this, updateNodes);
 
-        uiSaveConnection(
-            this.outputNodeId, this.outputId, this.outputOrder,
-            this.inputNodeId,  this.inputId,
-            conn.toJson());
+        connectAction_makeNewConnection(this);
 
-
-        // activate old output & active node
-
-        if (    this.oldOutputNode
-            && !getActiveFromNode(this.oldOutputNode))
-        {
-            this.oldOutput.updateSavedConnectionOrder(this.oldOutputOrder, -1);
-
-            this.newActiveNodeIds.push(this.oldOutputNodeId);
-            
-            uiMakeNodeActive(this.oldOutputNode);
-
-            pushUnique(updateNodes, this.oldOutputNode);
-            pushUnique(updateNodes, nodeFromId(this.oldOutputActiveNodeId));
-        }
-
-
-        // activate old input & active nodes
-
-        const oldInputActiveNodeIds = [...this.oldInputActiveNodeIds].sort((x, y) => 
-            (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
-
-        for (const id of oldInputActiveNodeIds)
-        {
-            this.newActiveNodeIds.push(id);
-
-            const node = nodeFromId(id);
-            uiMakeNodeActive(node);
-            pushUnique(updateNodes, node);
-        }
-
-
-        // update nodes
-
-        pushUnique(updateNodes, this.inputNode);
-
-        if (!this.outputNode.cached) 
-            pushUnique(updateNodes, this.outputNode.getUncachedInputNodes());
-
-        if (    this.oldOutputNode
-            && !this.oldOutputNode.cached) 
-            pushUnique(updateNodes, this.oldOutputNode.getUncachedInputNodes());
-
-
-        // clean up now irrelevant objects
-
-        uiDeleteObjects([
-               this.oldOutputActiveNodeId, 
-            ...this.oldInputActiveNodeIds]); 
-
-
-        //
+        connectAction_updateNodes(this, updateNodes);
+        connectAction_cleanup(this);
 
         pushUpdate(updateNodes);
     }
@@ -144,78 +81,193 @@ extends Action
     {
         const updateNodes = [];
 
+        connectAction_removeNewConnection(this);
 
-        // remove new connection
+        connectAction_restoreOldConnection(this);
+        connectAction_restoreOldInputValues(this);
 
-        const input = this.inputNode.inputFromId(this.inputId);
-        
-        uiDeleteSavedConn(input.connection);
-        uiDisconnect(input);
+        connectAction_deactivateNewActiveNodes(this);
+        connectAction_activateOldActiveNodes(this, updateNodes); 
 
-            
-        // restore old connection
-
-        if (this.oldOutputNodeId != '')
-        {
-            this.oldOutput.updateSavedConnectionOrder(this.oldOutputOrder, +1);
-
-            const oldConn = uiVariableConnect(
-                this.oldOutputNode, this.oldOutputId, 
-                this.inputNode, this.inputId,
-                this.oldOutputOrder);
-
-            uiSaveConnection(
-                this.oldOutputNodeId, this.oldOutputId,
-                this.outputOrder,
-                this.inputNodeId, this.inputId,
-                oldConn.toJson());
-        }
-
-
-        // restore old input values
-
-        for (const param of this.oldInputValues)
-        {
-            this.inputNode.params[this.inputNode.params.findIndex(p => p.id == param[0])]
-                .setValue(param[1], true, true, false);
-        }
-
-
-        // deactivate new active nodes & clean up their objects
-
-        for (const id of this.newActiveNodeIds)
-            uiMakeNodePassive(nodeFromId(id));
-
-        uiDeleteObjects(this.newActiveNodeIds); 
-
-
-        // activate old active nodes
-        
-        for (const id of this.oldInputActiveNodeIds)
-        {
-            const node = nodeFromId(id);
-            uiMakeNodeActive(node);
-            pushUnique(updateNodes, node);
-        }
-        
-        if (!this.oldInputActiveNodeIds.includes(this.oldOutputActiveNodeId))
-        {
-            console.assert(this.oldOutputActiveNodeId, 'there should be an old output active node ID at this point')
-
-            const node = nodeFromId(this.oldOutputActiveNodeId);
-            uiMakeNodeActive(node);
-            pushUnique(updateNodes, node);
-        }
- 
-
-        // cleanup
-
-        this.oldOutputActiveNodeId = '';
-        this.oldInputActiveNodeIds = [];
-
-
-        //
-        
+        connectAction_restoreCleanup(this);
+       
         pushUpdate(updateNodes);
     }
+}
+
+
+
+function connectAction_saveOutputInput(act)
+{
+    // save old output active nodes
+
+    act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
+
+
+    // save old input active nodes & values
+
+    act.oldInputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo() : [];
+    act.oldInputActiveNodeIds = getActiveNodesRightFromNodeId(act.inputNodeId).map(n => n.id);
+}
+
+
+
+function connectAction_makeNewConnection(act)
+{
+    const conn = uiConnect(act.output, act.input, act.inputId);
+            
+    act.outputOrder = conn.outputOrder;
+
+    uiSaveConnection(
+        act.outputNodeId, act.outputId, act.outputOrder,
+        act.inputNodeId,  act.inputId,
+        conn.toJson());
+}
+
+
+
+function connectAction_removeOldOutputConnection(act)
+{
+    if (act.oldOutputNode)
+        uiDeleteSavedConn(act.input.connection);
+}
+
+
+
+function connectAction_updateOldOutput(act, updateNodes)
+{
+    if (act.oldOutputNode)
+    {
+        act.oldOutput.updateSavedConnectionOrder(act.oldOutputOrder, -1);
+
+        pushUnique(updateNodes, act.oldOutputNode);
+        
+        if (!getActiveFromNode(act.oldOutputNode))
+        {
+            uiMakeNodeActive(act.oldOutputNode);
+
+            act.newActiveNodeIds.push(act.oldOutputNodeId);
+            pushUnique(updateNodes, nodeFromId(act.oldOutputActiveNodeId));
+        }
+    }
+}
+
+
+
+function connectAction_updateOldInput(act, updateNodes)
+{
+    const oldInputActiveNodeIds = [...act.oldInputActiveNodeIds].sort((x, y) => 
+        (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
+
+    for (const id of oldInputActiveNodeIds)
+    {
+        act.newActiveNodeIds.push(id);
+
+        const node = nodeFromId(id);
+        uiMakeNodeActive(node);
+        pushUnique(updateNodes, node);
+    }
+}
+
+
+
+function connectAction_updateNodes(act, updateNodes)
+{
+    pushUnique(updateNodes, act.inputNode);
+
+    if (!act.outputNode.cached) 
+        pushUnique(updateNodes, act.outputNode.getUncachedInputNodes());
+
+    if (    act.oldOutputNode
+        && !act.oldOutputNode.cached) 
+        pushUnique(updateNodes, act.oldOutputNode.getUncachedInputNodes());
+}
+
+
+
+function connectAction_cleanup(act)
+{
+    uiDeleteObjects([
+        act.oldOutputActiveNodeId, 
+     ...act.oldInputActiveNodeIds]); 
+}
+
+
+
+function connectAction_removeNewConnection(act)
+{
+    const input = act.inputNode.inputFromId(act.inputId);
+
+    uiDeleteSavedConn(input.connection);
+    uiDisconnect(input);
+}
+
+
+
+function connectAction_restoreOldConnection(act)
+{
+    if (act.oldOutputNodeId != '')
+    {
+        act.oldOutput.updateSavedConnectionOrder(act.oldOutputOrder, +1);
+
+        const oldConn = uiVariableConnect(
+            act.oldOutputNode, act.oldOutputId, 
+            act.inputNode,     act.inputId,
+            act.oldOutputOrder);
+
+        uiSaveConnection(
+            act.oldOutputNodeId, act.oldOutputId, act.outputOrder,
+            act.inputNodeId, act.inputId,
+            oldConn.toJson());
+    }
+}
+
+
+
+function connectAction_restoreOldInputValues(act)
+{
+    for (const param of act.oldInputValues)
+    {
+        act.inputNode.params[act.inputNode.params.findIndex(p => p.id == param[0])]
+            .setValue(param[1], true, true, false);
+    }
+}
+
+
+
+function connectAction_deactivateNewActiveNodes(act)
+{
+    for (const id of act.newActiveNodeIds)
+        uiMakeNodePassive(nodeFromId(id));
+
+    uiDeleteObjects(act.newActiveNodeIds); 
+}
+
+
+
+function connectAction_activateOldActiveNodes(act, updateNodes)
+{
+    for (const id of act.oldInputActiveNodeIds)
+    {
+        const node = nodeFromId(id);
+        uiMakeNodeActive(node);
+        pushUnique(updateNodes, node);
+    }
+    
+    if (!act.oldInputActiveNodeIds.includes(act.oldOutputActiveNodeId))
+    {
+        console.assert(act.oldOutputActiveNodeId, 'there should be an old output active node ID at this point')
+
+        const node = nodeFromId(act.oldOutputActiveNodeId);
+        uiMakeNodeActive(node);
+        pushUnique(updateNodes, node);
+    }
+}
+
+
+
+function connectAction_restoreCleanup(act)
+{
+    act.oldOutputActiveNodeId = '';
+    act.oldInputActiveNodeIds = [];
 }
