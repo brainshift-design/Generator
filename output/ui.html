@@ -45092,10 +45092,10 @@ function connectAction_restoreOldConnection(act)
             act.inputNode,     act.inputId,
             act.oldOutputOrder);
 
-        uiSaveConnection(
-            act.oldOutputNodeId, act.oldOutputId, act.outputOrder,
-            act.inputNodeId, act.inputId,
-            oldConn.toJson());
+        uiSaveConn(oldConn);//ction(
+            // act.oldOutputNodeId, act.oldOutputId, act.outputOrder,
+            // act.inputNodeId, act.inputId,
+            // oldConn.toJson());
     }
 }
 
@@ -49780,9 +49780,9 @@ function uiSaveConn(conn)
 
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
-        key:  getConnectionKey(
-                  conn.output.nodeId, conn.output.id, conn.outputOrder,
-                  conn.input .nodeId, conn.input .id),
+        key:  getConnKey(conn),//getConnectionKey(
+                //   conn.output.nodeId, conn.output.id, conn.outputOrder,
+                //   conn.input .nodeId, conn.input .id),
         json: conn.toJson()
     });
 }
@@ -49861,7 +49861,7 @@ function uiDeleteSavedConn(conn)
             + getConnString(conn, true),
             'color: black; background: #ddeeff;');
     }
-
+console.log('getConnKey(conn) =', getConnKey(conn));
 
     uiQueueMessageToFigma({
         cmd: 'figDeleteSavedConnection',

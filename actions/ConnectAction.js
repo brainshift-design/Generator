@@ -215,10 +215,10 @@ function connectAction_restoreOldConnection(act)
             act.inputNode,     act.inputId,
             act.oldOutputOrder);
 
-        uiSaveConnection(
-            act.oldOutputNodeId, act.oldOutputId, act.outputOrder,
-            act.inputNodeId, act.inputId,
-            oldConn.toJson());
+        uiSaveConn(oldConn);//ction(
+            // act.oldOutputNodeId, act.oldOutputId, act.outputOrder,
+            // act.inputNodeId, act.inputId,
+            // oldConn.toJson());
     }
 }
 

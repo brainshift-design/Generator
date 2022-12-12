@@ -1079,9 +1079,9 @@ function uiSaveConn(conn)
 
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
-        key:  getConnectionKey(
-                  conn.output.nodeId, conn.output.id, conn.outputOrder,
-                  conn.input .nodeId, conn.input .id),
+        key:  getConnKey(conn),//getConnectionKey(
+                //   conn.output.nodeId, conn.output.id, conn.outputOrder,
+                //   conn.input .nodeId, conn.input .id),
         json: conn.toJson()
     });
 }
@@ -1160,7 +1160,7 @@ function uiDeleteSavedConn(conn)
             + getConnString(conn, true),
             'color: black; background: #ddeeff;');
     }
-
+console.log('getConnKey(conn) =', getConnKey(conn));
 
     uiQueueMessageToFigma({
         cmd: 'figDeleteSavedConnection',
