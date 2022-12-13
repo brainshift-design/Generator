@@ -1160,8 +1160,8 @@ function uiDeleteSavedConn(conn)
             + getConnString(conn, true),
             'color: black; background: #ddeeff;');
     }
-console.log('getConnKey(conn) =', getConnKey(conn));
 
+    
     uiQueueMessageToFigma({
         cmd: 'figDeleteSavedConnection',
         key:  getConnKey(conn)
