@@ -4020,14 +4020,14 @@ class Random
     {
         this.last = this.seed;
         
-        this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
-        this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
-        this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
-        this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
-        this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
-        this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
+        // this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
+        // this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
+        // this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
+        // this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
+        // this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
+        // this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
 
-        return this.seed / -0x7fffffff;
+        return this.seed++;// / -0x7fffffff;
     }
 
 }
@@ -4812,32 +4812,32 @@ function writeTextToClipboard(str)
 
 
 
-// function readTextFromClipboard() 
-// {
-//     if (   navigator.clipboard 
-//         && window.isSecureContext) 
-//         return navigator.clipboard.readText();
+function readTextFromClipboard() 
+{
+    if (   navigator.clipboard 
+        && window.isSecureContext) 
+        return navigator.clipboard.readText();
 
-//     else 
-//     {
-//         let textArea = document.createElement('textarea');
+    else 
+    {
+        let textArea = document.createElement('textarea');
 
-//         textArea.style.position = 'fixed';
-//         textArea.style.left     = '-999999px';
-//         textArea.style.top      = '-999999px';
+        textArea.style.position = 'fixed';
+        textArea.style.left     = '-999999px';
+        textArea.style.top      = '-999999px';
         
-//         document.body.appendChild(textArea);
+        document.body.appendChild(textArea);
         
-//         textArea.focus();
-//         textArea.select();
+        textArea.focus();
+        textArea.select();
         
-//         return new Promise((res, rej) => 
-//         {
-//             document.execCommand('paste') ? res(textArea.value) : rej();
-//             textArea.remove();
-//         });
-//     }
-// }
+        return new Promise((res, rej) => 
+        {
+            document.execCommand('paste') ? res(textArea.value) : rej();
+            textArea.remove();
+        });
+    }
+}
 
 
 function isTagKey(key, tag) 
@@ -5177,10 +5177,11 @@ function logReqList(list, nValues, parse)
 
 
 
-function logReqItems(items, parse)
+function logReqItems(items, nValues, parse)
 {
     parse.log += parse.tab + ITEMS;
     parse.log += logReqNodeId(items);
+    parse.log += ' ' + nValues;
 }
 
 
@@ -8064,7 +8065,7 @@ extends GOperator
             if (!this.input.value)
                 this.input = this.input.eval(parse).copy();
 
-            this.value = this.input.value.copy();//toValue();
+            this.value = this.input.toValue();//value.copy();//toValue();
         }
         else
             this.value = ListValue.NaN;
@@ -8637,8 +8638,8 @@ extends GNumberType
             this.random = new Random(seed.value);
         
 
-        this.value = new NumberValue(
-            min.value + this.random.next() * (max.value - min.value),
+        this.value = new NumberValue(this.random.next(),
+            //min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
 
             
@@ -12664,8 +12665,17 @@ function genParseItems(parse)
     const items = new GItems(nodeId, options);
 
     
+    let nValues = -1;
+    
+    if (!ignore)
+    {
+        nValues = parseInt(parse.move());
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
-        logReqItems(items, parse);
+        logReqItems(items, nValues, parse);
 
 
     if (ignore) 
@@ -12678,7 +12688,7 @@ function genParseItems(parse)
     parse.nTab++;
 
 
-    if (LIST_TYPES.includes(parse.next))
+    if (nValues == 1)
         items.input = genParse(parse);
 
 
@@ -18110,14 +18120,14 @@ class Random
     {
         this.last = this.seed;
         
-        this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
-        this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
-        this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
-        this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
-        this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
-        this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
+        // this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
+        // this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
+        // this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
+        // this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
+        // this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
+        // this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
 
-        return this.seed / -0x7fffffff;
+        return this.seed++;// / -0x7fffffff;
     }
 
 }
@@ -18902,32 +18912,32 @@ function writeTextToClipboard(str)
 
 
 
-// function readTextFromClipboard() 
-// {
-//     if (   navigator.clipboard 
-//         && window.isSecureContext) 
-//         return navigator.clipboard.readText();
+function readTextFromClipboard() 
+{
+    if (   navigator.clipboard 
+        && window.isSecureContext) 
+        return navigator.clipboard.readText();
 
-//     else 
-//     {
-//         let textArea = document.createElement('textarea');
+    else 
+    {
+        let textArea = document.createElement('textarea');
 
-//         textArea.style.position = 'fixed';
-//         textArea.style.left     = '-999999px';
-//         textArea.style.top      = '-999999px';
+        textArea.style.position = 'fixed';
+        textArea.style.left     = '-999999px';
+        textArea.style.top      = '-999999px';
         
-//         document.body.appendChild(textArea);
+        document.body.appendChild(textArea);
         
-//         textArea.focus();
-//         textArea.select();
+        textArea.focus();
+        textArea.select();
         
-//         return new Promise((res, rej) => 
-//         {
-//             document.execCommand('paste') ? res(textArea.value) : rej();
-//             textArea.remove();
-//         });
-//     }
-// }
+        return new Promise((res, rej) => 
+        {
+            document.execCommand('paste') ? res(textArea.value) : rej();
+            textArea.remove();
+        });
+    }
+}
 
 
 function isTagKey(key, tag) 
@@ -19267,10 +19277,11 @@ function logReqList(list, nValues, parse)
 
 
 
-function logReqItems(items, parse)
+function logReqItems(items, nValues, parse)
 {
     parse.log += parse.tab + ITEMS;
     parse.log += logReqNodeId(items);
+    parse.log += ' ' + nValues;
 }
 
 
@@ -23766,7 +23777,7 @@ extends GOperator
             if (!this.input.value)
                 this.input = this.input.eval(parse).copy();
 
-            this.value = this.input.value.copy();//toValue();
+            this.value = this.input.toValue();//value.copy();//toValue();
         }
         else
             this.value = ListValue.NaN;
@@ -24339,8 +24350,8 @@ extends GNumberType
             this.random = new Random(seed.value);
         
 
-        this.value = new NumberValue(
-            min.value + this.random.next() * (max.value - min.value),
+        this.value = new NumberValue(this.random.next(),
+            //min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
 
             
@@ -32500,19 +32511,26 @@ function copySelectedNodes()
 {
     pasteOffset     = [0, 0];
     copiedNodesJson = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
+
+    writeTextToClipboard(copiedNodesJson);
 }
 
 
 
 function pasteCopiedNodes(pasteConnected, clientX = Number.NaN, clientY = Number.NaN)
 {
-    if (copiedNodesJson == '')
-        return;
+    readTextFromClipboard().then(clipboardText =>
+    {
+        console.log('clipboardText =', clipboardText);
 
-    const x = (clientX - graphView.pan.x) / graphView.zoom;
-    const y = (clientY - graphView.pan.y) / graphView.zoom;
+        if (clipboardText == '')//if (copiedNodesJson == '')
+            return;
 
-    actionManager.do(new PasteNodesAction(copiedNodesJson, pasteConnected, false, x, y));
+        const x = (clientX - graphView.pan.x) / graphView.zoom;
+        const y = (clientY - graphView.pan.y) / graphView.zoom;
+            
+        actionManager.do(new PasteNodesAction(clipboardText, pasteConnected, false, x, y));
+    });
 }
 
 
@@ -39654,6 +39672,9 @@ extends OperatorBase
 
 
         const input = this.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
 
         if (input.connected) 
             request.push(...pushInputOrParam(input, gen));
@@ -49883,7 +49904,7 @@ function uiDeleteSavedConn(conn)
             'color: black; background: #ddeeff;');
     }
 
-    
+
     uiQueueMessageToFigma({
         cmd: 'figDeleteSavedConnection',
         key:  getConnKey(conn)

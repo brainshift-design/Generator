@@ -61,8 +61,17 @@ function genParseItems(parse)
     const items = new GItems(nodeId, options);
 
     
+    let nValues = -1;
+    
+    if (!ignore)
+    {
+        nValues = parseInt(parse.move());
+        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
-        logReqItems(items, parse);
+        logReqItems(items, nValues, parse);
 
 
     if (ignore) 
@@ -75,7 +84,7 @@ function genParseItems(parse)
     parse.nTab++;
 
 
-    if (LIST_TYPES.includes(parse.next))
+    if (nValues == 1)
         items.input = genParse(parse);
 
 

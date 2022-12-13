@@ -14,10 +14,11 @@ function logReqList(list, nValues, parse)
 
 
 
-function logReqItems(items, parse)
+function logReqItems(items, nValues, parse)
 {
     parse.log += parse.tab + ITEMS;
     parse.log += logReqNodeId(items);
+    parse.log += ' ' + nValues;
 }
 
 

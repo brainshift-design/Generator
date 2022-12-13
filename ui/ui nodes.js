@@ -1161,7 +1161,7 @@ function uiDeleteSavedConn(conn)
             'color: black; background: #ddeeff;');
     }
 
-    
+
     uiQueueMessageToFigma({
         cmd: 'figDeleteSavedConnection',
         key:  getConnKey(conn)

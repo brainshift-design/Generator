@@ -29,29 +29,29 @@ function writeTextToClipboard(str)
 
 
 
-// function readTextFromClipboard() 
-// {
-//     if (   navigator.clipboard 
-//         && window.isSecureContext) 
-//         return navigator.clipboard.readText();
+function readTextFromClipboard() 
+{
+    if (   navigator.clipboard 
+        && window.isSecureContext) 
+        return navigator.clipboard.readText();
 
-//     else 
-//     {
-//         let textArea = document.createElement('textarea');
+    else 
+    {
+        let textArea = document.createElement('textarea');
 
-//         textArea.style.position = 'fixed';
-//         textArea.style.left     = '-999999px';
-//         textArea.style.top      = '-999999px';
+        textArea.style.position = 'fixed';
+        textArea.style.left     = '-999999px';
+        textArea.style.top      = '-999999px';
         
-//         document.body.appendChild(textArea);
+        document.body.appendChild(textArea);
         
-//         textArea.focus();
-//         textArea.select();
+        textArea.focus();
+        textArea.select();
         
-//         return new Promise((res, rej) => 
-//         {
-//             document.execCommand('paste') ? res(textArea.value) : rej();
-//             textArea.remove();
-//         });
-//     }
-// }
+        return new Promise((res, rej) => 
+        {
+            document.execCommand('paste') ? res(textArea.value) : rej();
+            textArea.remove();
+        });
+    }
+}

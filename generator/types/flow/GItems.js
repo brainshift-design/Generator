@@ -41,7 +41,7 @@ extends GOperator
             if (!this.input.value)
                 this.input = this.input.eval(parse).copy();
 
-            this.value = this.input.value.copy();//toValue();
+            this.value = this.input.toValue();//value.copy();//toValue();
         }
         else
             this.value = ListValue.NaN;

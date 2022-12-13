@@ -349,19 +349,26 @@ function copySelectedNodes()
 {
     pasteOffset     = [0, 0];
     copiedNodesJson = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
+
+    writeTextToClipboard(copiedNodesJson);
 }
 
 
 
 function pasteCopiedNodes(pasteConnected, clientX = Number.NaN, clientY = Number.NaN)
 {
-    if (copiedNodesJson == '')
-        return;
+    readTextFromClipboard().then(clipboardText =>
+    {
+        console.log('clipboardText =', clipboardText);
 
-    const x = (clientX - graphView.pan.x) / graphView.zoom;
-    const y = (clientY - graphView.pan.y) / graphView.zoom;
+        if (clipboardText == '')//if (copiedNodesJson == '')
+            return;
 
-    actionManager.do(new PasteNodesAction(copiedNodesJson, pasteConnected, false, x, y));
+        const x = (clientX - graphView.pan.x) / graphView.zoom;
+        const y = (clientY - graphView.pan.y) / graphView.zoom;
+            
+        actionManager.do(new PasteNodesAction(clipboardText, pasteConnected, false, x, y));
+    });
 }
 
 
