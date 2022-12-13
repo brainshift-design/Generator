@@ -59,7 +59,7 @@ extends GColorType
             this.input  = this.input.eval(parse).copy();
             const input = this.input.toValue();
 
-
+            
             if (input.isValid())
             {
                 this.value = new ColorValue(
@@ -129,10 +129,10 @@ extends GColorType
 
         // if (this.options.enabled)
         // {
-            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.value.space.toValue(), true);
-            if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   .toValue());
-            if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   .toValue());
-            if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   .toValue());
+            genPushUpdateValue(parse, this.nodeId, 'space', this.value.space.toValue(), true);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   .toValue());
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   .toValue());
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   .toValue());
         // }
 
 

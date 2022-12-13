@@ -74,6 +74,8 @@ extends EventTarget
         this.input.colorLight          = [0, 0, 0, 0.12];
         this.input.colorDark           = [1, 1, 1, 0.12];
         this.input.overFactor          = 3;
+
+        this.input.canAutoConnect      = false;
         
         this.div.appendChild(this.input.div);
 

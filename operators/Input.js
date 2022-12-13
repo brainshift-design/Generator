@@ -60,6 +60,7 @@ extends EventTarget
     get connected() { return this.connectedOutput != null; }
 
 
+    canAutoConnect     = true;
     outputMustBeCached = false;
 
 

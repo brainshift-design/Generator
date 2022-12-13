@@ -1687,14 +1687,14 @@ class Random
     {
         this.last = this.seed;
         
-        // this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
-        // this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
-        // this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
-        // this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
-        // this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
-        // this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
+        this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
+        this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
+        this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
+        this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
+        this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
+        this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
 
-        return this.seed++;// / -0x7fffffff;
+        return this.seed / -0x7fffffff;
     }
 
 }
@@ -6304,8 +6304,8 @@ extends GNumberType
             this.random = new Random(seed.value);
         
 
-        this.value = new NumberValue(this.random.next(),
-            //min.value + this.random.next() * (max.value - min.value),
+        this.value = new NumberValue(
+            min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
 
             
@@ -7232,7 +7232,7 @@ extends GColorType
             this.input  = this.input.eval(parse).copy();
             const input = this.input.toValue();
 
-
+            
             if (input.isValid())
             {
                 this.value = new ColorValue(
@@ -7302,10 +7302,10 @@ extends GColorType
 
         // if (this.options.enabled)
         // {
-            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.value.space.toValue(), true);
-            if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   .toValue());
-            if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   .toValue());
-            if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   .toValue());
+            genPushUpdateValue(parse, this.nodeId, 'space', this.value.space.toValue(), true);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   .toValue());
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   .toValue());
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   .toValue());
         // }
 
 

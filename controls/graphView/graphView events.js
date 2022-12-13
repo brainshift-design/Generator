@@ -40,7 +40,7 @@ graphView.addEventListener('pointerdown', e =>
             graphView.overOutput.connecting = true;
             graphView.startConnectionFromOutput(e.pointerId, graphView.overOutput);
 
-            updateConnWires(graphView.tempConn, sx, sy);
+            updateWire(graphView.tempConn.wire, sx, sy);
         }
         else if (graphView.overInput)
         {
@@ -50,7 +50,7 @@ graphView.addEventListener('pointerdown', e =>
 
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false);
 
-                updateConnWires(graphView.tempConn, sx, sy);
+                updateWire(graphView.tempConn.wire, sx, sy);
 
                 graphView.savedConn = graphView.overInput.connection;
 
@@ -61,7 +61,7 @@ graphView.addEventListener('pointerdown', e =>
                 graphView.overInput.connecting = true;
                 graphView.startConnectionFromInput(e.pointerId, graphView.overInput);
 
-                updateConnWires(graphView.tempConn, sx, sy);
+                updateWire(graphView.tempConn.wire, sx, sy);
             }
         }
         else if (document.activeElement.type != 'text') // selection, unless a textbox is in focus
@@ -128,7 +128,7 @@ function graphView_onpointermove(e)
         graphView.updateZoomSelection(e.clientX, e.clientY);
 
     else if (graphView.tempConn)
-        updateConnWires(graphView.tempConn, e.clientX, e.clientY);
+        updateWire(graphView.tempConn.wire, e.clientX, e.clientY);
 }
 
 

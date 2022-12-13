@@ -4020,14 +4020,14 @@ class Random
     {
         this.last = this.seed;
         
-        // this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
-        // this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
-        // this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
-        // this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
-        // this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
-        // this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
+        this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
+        this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
+        this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
+        this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
+        this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
+        this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
 
-        return this.seed++;// / -0x7fffffff;
+        return this.seed / -0x7fffffff;
     }
 
 }
@@ -8637,8 +8637,8 @@ extends GNumberType
             this.random = new Random(seed.value);
         
 
-        this.value = new NumberValue(this.random.next(),
-            //min.value + this.random.next() * (max.value - min.value),
+        this.value = new NumberValue(
+            min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
 
             
@@ -9565,7 +9565,7 @@ extends GColorType
             this.input  = this.input.eval(parse).copy();
             const input = this.input.toValue();
 
-
+            
             if (input.isValid())
             {
                 this.value = new ColorValue(
@@ -9635,10 +9635,10 @@ extends GColorType
 
         // if (this.options.enabled)
         // {
-            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.value.space.toValue(), true);
-            if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   .toValue());
-            if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   .toValue());
-            if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   .toValue());
+            genPushUpdateValue(parse, this.nodeId, 'space', this.value.space.toValue(), true);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   .toValue());
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   .toValue());
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   .toValue());
         // }
 
 
@@ -18110,14 +18110,14 @@ class Random
     {
         this.last = this.seed;
         
-        // this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
-        // this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
-        // this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
-        // this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
-        // this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
-        // this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
+        this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
+        this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
+        this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
+        this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
+        this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
+        this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
 
-        return this.seed++;// / -0x7fffffff;
+        return this.seed / -0x7fffffff;
     }
 
 }
@@ -24339,8 +24339,8 @@ extends GNumberType
             this.random = new Random(seed.value);
         
 
-        this.value = new NumberValue(this.random.next(),
-            //min.value + this.random.next() * (max.value - min.value),
+        this.value = new NumberValue(
+            min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
 
             
@@ -25267,7 +25267,7 @@ extends GColorType
             this.input  = this.input.eval(parse).copy();
             const input = this.input.toValue();
 
-
+            
             if (input.isValid())
             {
                 this.value = new ColorValue(
@@ -25337,10 +25337,10 @@ extends GColorType
 
         // if (this.options.enabled)
         // {
-            if (this.space) genPushUpdateValue(parse, this.nodeId, 'space', this.value.space.toValue(), true);
-            if (this.c1   ) genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   .toValue());
-            if (this.c2   ) genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   .toValue());
-            if (this.c3   ) genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   .toValue());
+            genPushUpdateValue(parse, this.nodeId, 'space', this.value.space.toValue(), true);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   .toValue());
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   .toValue());
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   .toValue());
         // }
 
 
@@ -32602,7 +32602,7 @@ graphView.addEventListener('pointerdown', e =>
             graphView.overOutput.connecting = true;
             graphView.startConnectionFromOutput(e.pointerId, graphView.overOutput);
 
-            updateConnWires(graphView.tempConn, sx, sy);
+            updateWire(graphView.tempConn.wire, sx, sy);
         }
         else if (graphView.overInput)
         {
@@ -32612,7 +32612,7 @@ graphView.addEventListener('pointerdown', e =>
 
                 graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false);
 
-                updateConnWires(graphView.tempConn, sx, sy);
+                updateWire(graphView.tempConn.wire, sx, sy);
 
                 graphView.savedConn = graphView.overInput.connection;
 
@@ -32623,7 +32623,7 @@ graphView.addEventListener('pointerdown', e =>
                 graphView.overInput.connecting = true;
                 graphView.startConnectionFromInput(e.pointerId, graphView.overInput);
 
-                updateConnWires(graphView.tempConn, sx, sy);
+                updateWire(graphView.tempConn.wire, sx, sy);
             }
         }
         else if (document.activeElement.type != 'text') // selection, unless a textbox is in focus
@@ -32690,7 +32690,7 @@ function graphView_onpointermove(e)
         graphView.updateZoomSelection(e.clientX, e.clientY);
 
     else if (graphView.tempConn)
-        updateConnWires(graphView.tempConn, e.clientX, e.clientY);
+        updateWire(graphView.tempConn.wire, e.clientX, e.clientY);
 }
 
 
@@ -33249,7 +33249,7 @@ graphView.startConnectionFromOutput = (pointerId, output, updateTempWire = true)
     graphView.addConnWires(graphView.tempConn, false);
 
     if (updateTempWire)
-        updateConnWires(graphView.tempConn, graphView.pStart.x, graphView.pStart.y);
+        updateWire(graphView.tempConn.wire, graphView.pStart.x, graphView.pStart.y);
 
     output.updateControl();
 };
@@ -33266,7 +33266,7 @@ graphView.startConnectionFromInput = (pointerId, input) =>
     
     graphView.addConnWires(graphView.tempConn, false);
 
-    updateConnWires(graphView.tempConn, graphView.pStart.x, graphView.pStart.y);
+    updateWire(graphView.tempConn.wire, graphView.pStart.x, graphView.pStart.y);
 
     input.updateControl();
 };
@@ -33331,7 +33331,7 @@ graphView.endConnection = pointerId =>
             else if (input == savedConnInput) // reconnect old
             {
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
-                updateConnWires(input.connection);
+                updateWire(input.connection.wire);
             }
 
             else if (savedConnInput
@@ -33640,13 +33640,6 @@ graphView.removeWire = function(wire)
 
 
 
-function updateConnWires(conn, x = 0, y = 0)
-{
-    updateWire(conn.wire,  x, y);
-}
-
-
-
 function updateWire(wire, x = 0, y = 0)
 {
     const yOffset = menuBar.offsetHeight;
@@ -33831,6 +33824,8 @@ extends EventTarget
         this.input.colorLight          = [0, 0, 0, 0.12];
         this.input.colorDark           = [1, 1, 1, 0.12];
         this.input.overFactor          = 3;
+
+        this.input.canAutoConnect      = false;
         
         this.div.appendChild(this.input.div);
 
@@ -36472,6 +36467,7 @@ extends EventTarget
     get connected() { return this.connectedOutput != null; }
 
 
+    canAutoConnect     = true;
     outputMustBeCached = false;
 
 
@@ -37584,10 +37580,13 @@ class Operator
 
     getAutoInput(output)
     {
-        const inputs = this.inputs.filter(i => i.canConnectFrom(output));
+        const inputs = this.inputs.filter(i => 
+               i.canAutoConnect
+            && i.canConnectFrom(output));
 
-
-        if (graphView.overInput)
+        
+        if (   graphView.overInput
+            && inputs.includes(graphView.overInput))
             return graphView.overInput;
 
 
@@ -37601,7 +37600,7 @@ class Operator
             if (this.variableInputs)
                 return lastOf(inputs.filter(i => !i.param));
 
-            else
+            else if (inputs.length > 0)
             {
                 for (const input of inputs)
                 {
@@ -38849,7 +38848,7 @@ function createNodeHeader(node)
                 {
                     const input = node.getAutoInput(tempConn.output);
 
-                    if ( !input)
+                    if (!input)
                         // ||    input.connected
                         //    && input.connectedOutput.node == tempConn.output.node) 
                         return;
@@ -38860,9 +38859,8 @@ function createNodeHeader(node)
                     input.mouseOver = true;
                     input.updateControl();
 
-
                     const inputRect = boundingRect(input.div);
-
+                    
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
                         inputRect.y + inputRect.h/2 - menuBar.offsetHeight);
@@ -47632,7 +47630,7 @@ document.addEventListener('keydown', e =>
 
                 setTimeout(() => 
                 {
-                    updateConnWires(savedConn);
+                    updateWire(savedConn.wire);
                     savedConn.input.updateControl();
                 });
             }

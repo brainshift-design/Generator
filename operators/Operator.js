@@ -191,10 +191,13 @@ class Operator
 
     getAutoInput(output)
     {
-        const inputs = this.inputs.filter(i => i.canConnectFrom(output));
+        const inputs = this.inputs.filter(i => 
+               i.canAutoConnect
+            && i.canConnectFrom(output));
 
-
-        if (graphView.overInput)
+        
+        if (   graphView.overInput
+            && inputs.includes(graphView.overInput))
             return graphView.overInput;
 
 
@@ -208,7 +211,7 @@ class Operator
             if (this.variableInputs)
                 return lastOf(inputs.filter(i => !i.param));
 
-            else
+            else if (inputs.length > 0)
             {
                 for (const input of inputs)
                 {

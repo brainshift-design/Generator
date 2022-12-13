@@ -267,7 +267,7 @@ function createNodeHeader(node)
                 {
                     const input = node.getAutoInput(tempConn.output);
 
-                    if ( !input)
+                    if (!input)
                         // ||    input.connected
                         //    && input.connectedOutput.node == tempConn.output.node) 
                         return;
@@ -278,9 +278,8 @@ function createNodeHeader(node)
                     input.mouseOver = true;
                     input.updateControl();
 
-
                     const inputRect = boundingRect(input.div);
-
+                    
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
                         inputRect.y + inputRect.h/2 - menuBar.offsetHeight);
