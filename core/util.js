@@ -22,16 +22,19 @@ function indexOfChild(parent, child)
 
 
 
-function pluralString(count)
+function pluralString(count, pluralChar = 's')
 {
-    return count == 1 ? '' : 's';
+    return count == 1 ? '' : pluralChar;
 }
 
 
 
 function countString(itemName, count)
 {
-    return itemName + pluralString(count);
+    const lastChar   = lastOf(itemName);
+    const pluralChar = lastChar == lastChar.toUpperCase() ? 'S' : 's';
+
+    return itemName + pluralString(count, pluralChar);
 }
 
 
