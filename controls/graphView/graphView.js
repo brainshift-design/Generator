@@ -359,8 +359,6 @@ function pasteCopiedNodes(pasteConnected, clientX = Number.NaN, clientY = Number
 {
     readTextFromClipboard().then(clipboardText =>
     {
-        console.log('clipboardText =', clipboardText);
-
         if (clipboardText == '')//if (copiedNodesJson == '')
             return;
 

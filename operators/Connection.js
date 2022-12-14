@@ -147,46 +147,6 @@ class Connection
 
 
 
-    static parseJsonAndConnect(_conn, pasteConnected)
-    {
-        // console.trace();
-        const outputNode  = nodeFromId(_conn.outputNodeId);
-        const outputId    = _conn.outputId;
-        const outputOrder = parseInt(_conn.outputOrder);
-
-        const inputNode   = nodeFromId(_conn.inputNodeId);
-        const inputId     = _conn.inputId;
-
-
-        if (   !outputNode 
-            ||  isDigit(outputId[0]) && parseInt(outputId) >= outputNode.outputs.length
-            || !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
-            || !inputNode  
-            ||  isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
-            || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
-        {
-            uiError('cannot connect ' + connToString(_conn));
-            return null;
-        }
-        else
-        {
-            const conn = uiVariableConnect(
-                outputNode, isDigit(outputId[0]) 
-                            ? parseInt(outputId) 
-                            : outputNode.params.find(p => p.id == outputId).output.id,
-                inputNode,  isDigit(inputId[0])
-                            ? parseInt(inputId)
-                            : inputNode.params.find(p => p.id == inputId).input.id,
-                pasteConnected ? -1 : outputOrder);
-
-            conn.outputOrder = outputOrder;
-
-            return conn;
-        }
-    }
-
-
-
     toDataObject()
     {
         return {
@@ -196,6 +156,46 @@ class Connection
             inputNodeId:  this.input.node.id,
             inputId:      this.input.id
         };
+    }
+}
+
+
+
+function parseConnectionJsonAndConnect(_conn, pasteConnected)
+{
+    // console.trace();
+    const outputNode  = nodeFromId(_conn.outputNodeId);
+    const outputId    = _conn.outputId;
+    const outputOrder = parseInt(_conn.outputOrder);
+
+    const inputNode   = nodeFromId(_conn.inputNodeId);
+    const inputId     = _conn.inputId;
+
+
+    if (   !outputNode 
+        ||  isDigit(outputId[0]) && parseInt(outputId) >= outputNode.outputs.length
+        || !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
+        || !inputNode  
+        ||  isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
+        || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
+    {
+        uiError('cannot connect ' + connToString(_conn));
+        return null;
+    }
+    else
+    {
+        const conn = uiVariableConnect(
+            outputNode, isDigit(outputId[0]) 
+                        ? parseInt(outputId) 
+                        : outputNode.params.find(p => p.id == outputId).output.id,
+            inputNode,  isDigit(inputId[0])
+                        ? parseInt(inputId)
+                        : inputNode.params.find(p => p.id == inputId).input.id,
+            pasteConnected ? -1 : outputOrder);
+
+        conn.outputOrder = outputOrder;
+
+        return conn;
     }
 }
 

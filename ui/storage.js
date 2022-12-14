@@ -385,7 +385,7 @@ function resolveConnections(nodes, _connections, first, last)
                 }
 
 
-                Connection.parseJsonAndConnect(_conn, false);
+                parseConnectionJsonAndConnect(_conn, false);
             }
 
             resolve();
@@ -432,6 +432,15 @@ function loadNode(_node)
 
 function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
 {
+    data.connections.sort((c1, c2) =>
+    {
+        if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
+        if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
+        if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
+        return 0;
+    });
+
+
     for (let i = 0; i < data.connections.length; i++)
     {
         const _conn = data.connections[i];
@@ -439,7 +448,7 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
         if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId)
                && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId)
             || pasteConnected)
-            Connection.parseJsonAndConnect(_conn, pasteConnected);
+            parseConnectionJsonAndConnect(_conn, pasteConnected);
 
         if (setProgress)
             setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));

@@ -32521,8 +32521,6 @@ function pasteCopiedNodes(pasteConnected, clientX = Number.NaN, clientY = Number
 {
     readTextFromClipboard().then(clipboardText =>
     {
-        console.log('clipboardText =', clipboardText);
-
         if (clipboardText == '')//if (copiedNodesJson == '')
             return;
 
@@ -37122,46 +37120,6 @@ class Connection
 
 
 
-    static parseJsonAndConnect(_conn, pasteConnected)
-    {
-        // console.trace();
-        const outputNode  = nodeFromId(_conn.outputNodeId);
-        const outputId    = _conn.outputId;
-        const outputOrder = parseInt(_conn.outputOrder);
-
-        const inputNode   = nodeFromId(_conn.inputNodeId);
-        const inputId     = _conn.inputId;
-
-
-        if (   !outputNode 
-            ||  isDigit(outputId[0]) && parseInt(outputId) >= outputNode.outputs.length
-            || !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
-            || !inputNode  
-            ||  isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
-            || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
-        {
-            uiError('cannot connect ' + connToString(_conn));
-            return null;
-        }
-        else
-        {
-            const conn = uiVariableConnect(
-                outputNode, isDigit(outputId[0]) 
-                            ? parseInt(outputId) 
-                            : outputNode.params.find(p => p.id == outputId).output.id,
-                inputNode,  isDigit(inputId[0])
-                            ? parseInt(inputId)
-                            : inputNode.params.find(p => p.id == inputId).input.id,
-                pasteConnected ? -1 : outputOrder);
-
-            conn.outputOrder = outputOrder;
-
-            return conn;
-        }
-    }
-
-
-
     toDataObject()
     {
         return {
@@ -37171,6 +37129,46 @@ class Connection
             inputNodeId:  this.input.node.id,
             inputId:      this.input.id
         };
+    }
+}
+
+
+
+function parseConnectionJsonAndConnect(_conn, pasteConnected)
+{
+    // console.trace();
+    const outputNode  = nodeFromId(_conn.outputNodeId);
+    const outputId    = _conn.outputId;
+    const outputOrder = parseInt(_conn.outputOrder);
+
+    const inputNode   = nodeFromId(_conn.inputNodeId);
+    const inputId     = _conn.inputId;
+
+
+    if (   !outputNode 
+        ||  isDigit(outputId[0]) && parseInt(outputId) >= outputNode.outputs.length
+        || !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
+        || !inputNode  
+        ||  isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
+        || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
+    {
+        uiError('cannot connect ' + connToString(_conn));
+        return null;
+    }
+    else
+    {
+        const conn = uiVariableConnect(
+            outputNode, isDigit(outputId[0]) 
+                        ? parseInt(outputId) 
+                        : outputNode.params.find(p => p.id == outputId).output.id,
+            inputNode,  isDigit(inputId[0])
+                        ? parseInt(inputId)
+                        : inputNode.params.find(p => p.id == inputId).input.id,
+            pasteConnected ? -1 : outputOrder);
+
+        conn.outputOrder = outputOrder;
+
+        return conn;
     }
 }
 
@@ -48474,7 +48472,7 @@ function resolveConnections(nodes, _connections, first, last)
                 }
 
 
-                Connection.parseJsonAndConnect(_conn, false);
+                parseConnectionJsonAndConnect(_conn, false);
             }
 
             resolve();
@@ -48521,6 +48519,15 @@ function loadNode(_node)
 
 function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
 {
+    data.connections.sort((c1, c2) =>
+    {
+        if (c1.outputOrder != c2.outputOrder) return c1.outputOrder - c2.outputOrder;
+        if (c1.inputNodeId != c2.inputNodeId) return c1.inputNodeId - c2.inputNodeId;
+        if (c1.inputId     != c2.inputId    ) return c1.inputId     - c2.inputId;
+        return 0;
+    });
+
+
     for (let i = 0; i < data.connections.length; i++)
     {
         const _conn = data.connections[i];
@@ -48528,7 +48535,7 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
         if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputNodeId)
                && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputNodeId)
             || pasteConnected)
-            Connection.parseJsonAndConnect(_conn, pasteConnected);
+            parseConnectionJsonAndConnect(_conn, pasteConnected);
 
         if (setProgress)
             setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
