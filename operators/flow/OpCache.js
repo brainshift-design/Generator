@@ -11,18 +11,18 @@ extends OperatorBase
         super(CACHE, 'cache', 90);
 
         this.cached = true;
-        //this.inert  = true;
         
+
         this.addInput (new Input(ALL_TYPES));
         this.addOutput(new Output([], this.output_genRequest));
+
 
         this.paramNumber = new NumberParam('value', '', false, false, false);
         this.paramColor  = new  ColorParam('value', '', false, false, false);
 
+        
         this.inputs[0].addEventListener('connect',    () => OpCache_onConnectInput(this));
         this.inputs[0].addEventListener('disconnect', () => OpCache_onDisconnectInput(this));
-
-        //this.alwaysLoadParams = true;
     }
     
     

@@ -51,6 +51,9 @@ extends GOperator
         }
     
 
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
         this.validate();
 
         return this;
