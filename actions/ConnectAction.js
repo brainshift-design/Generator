@@ -34,7 +34,7 @@ extends Action
 
 
 
-    constructor(output, input, options = {})
+    constructor(output, input, options = {noActivate: false})
     {
         super('CONNECT ' 
             + output.node.id + '.' + output.id
@@ -69,10 +69,10 @@ extends Action
         
         connectAction_removeOldOutputConnection(this);
         
+        connectAction_makeNewConnection(this);
+
         connectAction_updateOldOutput(this, updateNodes);
         connectAction_updateInputActiveNodes(this, updateNodes);
-
-        connectAction_makeNewConnection(this);
 
         connectAction_updateNodes(this, updateNodes);
         connectAction_cleanup(this);
@@ -124,10 +124,6 @@ function connectAction_makeNewConnection(act)
     act.outputOrder = conn.outputOrder;
 
     uiSaveConn(conn);
-    // uiSaveConnection(
-    //     act.outputNodeId, act.outputId, act.outputOrder,
-    //     act.inputNodeId,  act.inputId,
-    //     conn.toJson());
 }
 
 
@@ -171,7 +167,7 @@ function connectAction_updateInputActiveNodes(act, updateNodes)
         act.newActiveNodeIds.push(id);
 
         const node = nodeFromId(id);
-        
+
         if (!act.options.noActivate)
             uiMakeNodeActive(node);
         

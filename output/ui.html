@@ -44940,7 +44940,7 @@ extends Action
 
 
 
-    constructor(output, input, options = {})
+    constructor(output, input, options = {noActivate: false})
     {
         super('CONNECT ' 
             + output.node.id + '.' + output.id
@@ -44975,10 +44975,10 @@ extends Action
         
         connectAction_removeOldOutputConnection(this);
         
+        connectAction_makeNewConnection(this);
+
         connectAction_updateOldOutput(this, updateNodes);
         connectAction_updateInputActiveNodes(this, updateNodes);
-
-        connectAction_makeNewConnection(this);
 
         connectAction_updateNodes(this, updateNodes);
         connectAction_cleanup(this);
@@ -45030,10 +45030,6 @@ function connectAction_makeNewConnection(act)
     act.outputOrder = conn.outputOrder;
 
     uiSaveConn(conn);
-    // uiSaveConnection(
-    //     act.outputNodeId, act.outputId, act.outputOrder,
-    //     act.inputNodeId,  act.inputId,
-    //     conn.toJson());
 }
 
 
@@ -45077,7 +45073,7 @@ function connectAction_updateInputActiveNodes(act, updateNodes)
         act.newActiveNodeIds.push(id);
 
         const node = nodeFromId(id);
-        
+
         if (!act.options.noActivate)
             uiMakeNodeActive(node);
         
@@ -45210,7 +45206,7 @@ extends Action
     
 
 
-    constructor(nodeType, creatingButton, options = {})
+    constructor(nodeType, creatingButton, options = {insert: false, noActivate: false})
     {
         super('CREATE \'' + nodeType + '\'');
         
@@ -45621,7 +45617,7 @@ extends Action
 
 
 
-    constructor(output, input, options = {})
+    constructor(output, input, options = {noActivate: false})
     {
         super('DISCONNECT ' 
             + output.node.id + '.' + output.id
@@ -45994,10 +45990,10 @@ extends Action
         connectAction_removeOldOutputConnection(this);
       reconnectAction_removePrevInputConnection(this);        
 
+        connectAction_makeNewConnection(this);
+
         connectAction_updateOldOutput(this, updateNodes);
         connectAction_updateInputActiveNodes(this, updateNodes);
-
-        connectAction_makeNewConnection(this);
 
         connectAction_updateNodes(this, updateNodes);
         connectAction_cleanup(this);
@@ -49350,7 +49346,7 @@ function uiUpdateSavedConnectionsToNodeId(nodeId)
 
 
 function uiMakeNodeActive(node)
-{
+{console.log('node =', node);
     uiMakeNodeLeftPassive (node);
     uiMakeNodeRightPassive(node);
 

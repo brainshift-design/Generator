@@ -83,10 +83,10 @@ extends Action
         connectAction_removeOldOutputConnection(this);
       reconnectAction_removePrevInputConnection(this);        
 
+        connectAction_makeNewConnection(this);
+
         connectAction_updateOldOutput(this, updateNodes);
         connectAction_updateInputActiveNodes(this, updateNodes);
-
-        connectAction_makeNewConnection(this);
 
         connectAction_updateNodes(this, updateNodes);
         connectAction_cleanup(this);

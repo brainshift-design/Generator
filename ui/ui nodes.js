@@ -632,7 +632,7 @@ function uiUpdateSavedConnectionsToNodeId(nodeId)
 
 
 function uiMakeNodeActive(node)
-{
+{console.log('node =', node);
     uiMakeNodeLeftPassive (node);
     uiMakeNodeRightPassive(node);
 

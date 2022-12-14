@@ -13,7 +13,7 @@ extends Action
     
 
 
-    constructor(nodeType, creatingButton, options = {})
+    constructor(nodeType, creatingButton, options = {insert: false, noActivate: false})
     {
         super('CREATE \'' + nodeType + '\'');
         

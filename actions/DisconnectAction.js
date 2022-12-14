@@ -23,7 +23,7 @@ extends Action
 
 
 
-    constructor(output, input, options = {})
+    constructor(output, input, options = {noActivate: false})
     {
         super('DISCONNECT ' 
             + output.node.id + '.' + output.id
