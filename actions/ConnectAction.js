@@ -1,6 +1,9 @@
 class ConnectAction
 extends Action
 {
+    options = {};
+
+
     outputNodeId;
     outputId;
     outputOrder           = -1;
@@ -31,7 +34,7 @@ extends Action
 
 
 
-    constructor(output, input)
+    constructor(output, input, options = {})
     {
         super('CONNECT ' 
             + output.node.id + '.' + output.id
@@ -49,6 +52,9 @@ extends Action
         this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
         this.oldOutputId     = input.connected ? input.connectedOutput.id      : '';
         this.oldOutputOrder  = input.connected ? input.connection.outputOrder  : -1;
+
+
+        this.options         = options;
     }
 
 
@@ -89,7 +95,7 @@ extends Action
         connectAction_activateOldActiveNodes(this, updateNodes); 
 
         connectAction_restoreCleanup(this);
-       
+
         pushUpdate(updateNodes);
     }
 }
@@ -144,7 +150,8 @@ function connectAction_updateOldOutput(act, updateNodes)
         
         if (!getActiveFromNode(act.oldOutputNode))
         {
-            uiMakeNodeActive(act.oldOutputNode);
+            if (!act.options.noActivate)
+                uiMakeNodeActive(act.oldOutputNode);
 
             act.newActiveNodeIds.push(act.oldOutputNodeId);
             pushUnique(updateNodes, nodeFromId(act.oldOutputActiveNodeId));
@@ -164,7 +171,10 @@ function connectAction_updateInputActiveNodes(act, updateNodes)
         act.newActiveNodeIds.push(id);
 
         const node = nodeFromId(id);
-        uiMakeNodeActive(node);
+        
+        if (!act.options.noActivate)
+            uiMakeNodeActive(node);
+        
         pushUnique(updateNodes, node);
     }
 }
@@ -234,8 +244,9 @@ function connectAction_restoreInputValues(act)
 
 function connectAction_deactivateNewActiveNodes(act)
 {
-    for (const id of act.newActiveNodeIds)
-        uiMakeNodePassive(nodeFromId(id));
+    if (!act.options.noActivate)
+        for (const id of act.newActiveNodeIds)
+            uiMakeNodePassive(nodeFromId(id));
 
     uiDeleteObjects(act.newActiveNodeIds); 
 }
@@ -247,17 +258,24 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
     for (const id of act.inputActiveNodeIds)
     {
         const oldInputActiveNode = nodeFromId(id);
-        uiMakeNodeActive(oldInputActiveNode);
+        
+        if (!act.options.noActivate)
+            uiMakeNodeActive(oldInputActiveNode);
+        
         pushUnique(updateNodes, oldInputActiveNode);
     }
+
     
-    
-    if (!act.inputActiveNodeIds.includes(act.oldOutputActiveNodeId))
+    if (    act.oldOutputActiveNodeId != ''
+        && !act.inputActiveNodeIds.includes(act.oldOutputActiveNodeId))
     {
         console.assert(act.oldOutputActiveNodeId != '', 'there should be an old output active node ID at this point')
 
         const oldOutputActiveNode = nodeFromId(act.oldOutputActiveNodeId);
-        uiMakeNodeActive(oldOutputActiveNode);
+
+        if (!act.options.noActivate)
+            uiMakeNodeActive(oldOutputActiveNode);
+
         pushUnique(updateNodes, oldOutputActiveNode);
     }
 }

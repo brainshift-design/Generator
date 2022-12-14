@@ -44907,6 +44907,9 @@ const actionManager = new ActionManager();
 class ConnectAction
 extends Action
 {
+    options = {};
+
+
     outputNodeId;
     outputId;
     outputOrder           = -1;
@@ -44937,7 +44940,7 @@ extends Action
 
 
 
-    constructor(output, input)
+    constructor(output, input, options = {})
     {
         super('CONNECT ' 
             + output.node.id + '.' + output.id
@@ -44955,6 +44958,9 @@ extends Action
         this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
         this.oldOutputId     = input.connected ? input.connectedOutput.id      : '';
         this.oldOutputOrder  = input.connected ? input.connection.outputOrder  : -1;
+
+
+        this.options         = options;
     }
 
 
@@ -44995,7 +45001,7 @@ extends Action
         connectAction_activateOldActiveNodes(this, updateNodes); 
 
         connectAction_restoreCleanup(this);
-       
+
         pushUpdate(updateNodes);
     }
 }
@@ -45050,7 +45056,8 @@ function connectAction_updateOldOutput(act, updateNodes)
         
         if (!getActiveFromNode(act.oldOutputNode))
         {
-            uiMakeNodeActive(act.oldOutputNode);
+            if (!act.options.noActivate)
+                uiMakeNodeActive(act.oldOutputNode);
 
             act.newActiveNodeIds.push(act.oldOutputNodeId);
             pushUnique(updateNodes, nodeFromId(act.oldOutputActiveNodeId));
@@ -45070,7 +45077,10 @@ function connectAction_updateInputActiveNodes(act, updateNodes)
         act.newActiveNodeIds.push(id);
 
         const node = nodeFromId(id);
-        uiMakeNodeActive(node);
+        
+        if (!act.options.noActivate)
+            uiMakeNodeActive(node);
+        
         pushUnique(updateNodes, node);
     }
 }
@@ -45140,8 +45150,9 @@ function connectAction_restoreInputValues(act)
 
 function connectAction_deactivateNewActiveNodes(act)
 {
-    for (const id of act.newActiveNodeIds)
-        uiMakeNodePassive(nodeFromId(id));
+    if (!act.options.noActivate)
+        for (const id of act.newActiveNodeIds)
+            uiMakeNodePassive(nodeFromId(id));
 
     uiDeleteObjects(act.newActiveNodeIds); 
 }
@@ -45153,17 +45164,24 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
     for (const id of act.inputActiveNodeIds)
     {
         const oldInputActiveNode = nodeFromId(id);
-        uiMakeNodeActive(oldInputActiveNode);
+        
+        if (!act.options.noActivate)
+            uiMakeNodeActive(oldInputActiveNode);
+        
         pushUnique(updateNodes, oldInputActiveNode);
     }
+
     
-    
-    if (!act.inputActiveNodeIds.includes(act.oldOutputActiveNodeId))
+    if (    act.oldOutputActiveNodeId != ''
+        && !act.inputActiveNodeIds.includes(act.oldOutputActiveNodeId))
     {
         console.assert(act.oldOutputActiveNodeId != '', 'there should be an old output active node ID at this point')
 
         const oldOutputActiveNode = nodeFromId(act.oldOutputActiveNodeId);
-        uiMakeNodeActive(oldOutputActiveNode);
+
+        if (!act.options.noActivate)
+            uiMakeNodeActive(oldOutputActiveNode);
+
         pushUnique(updateNodes, oldOutputActiveNode);
     }
 }
@@ -45180,10 +45198,11 @@ function connectAction_restoreCleanup(act)
 class CreateNodeAction
 extends Action
 {
+    options = {};
+
+    
     nodeType;
     createdNodeId;
-
-    options = {};
 
     prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
 
@@ -45580,6 +45599,9 @@ function deleteNodesAction_cleanup(act)
 class DisconnectAction
 extends Action
 {
+    options = {};
+
+
     outputNodeId;
     outputId;
     outputOrder      = -1;
@@ -45599,7 +45621,7 @@ extends Action
 
 
 
-    constructor(output, input)
+    constructor(output, input, options = {})
     {
         super('DISCONNECT ' 
             + output.node.id + '.' + output.id
@@ -45613,6 +45635,8 @@ extends Action
 
         this.inputNodeId  = input.node.id;
         this.inputId      = input.id;
+
+        this.options      = options;
     }
 
 
@@ -45638,23 +45662,24 @@ extends Action
         this.output.updateSavedConnectionOrder(this.outputOrder, -1);
         
 
-        // activate input node
+        // save input node
         
         if (!getActiveFromNode(this.inputNode))
-        {
             this.newActiveNodeIds.push(this.inputNodeId);
-            uiMakeNodeActive(this.inputNode);
-        }
 
 
-        // activate output node
+        // save output node
 
         if (   !getActiveLeftOnlyFromNode(this.outputNode)
             && !getActiveRightFromNode   (this.outputNode))
-        {
             this.newActiveNodeIds.push(this.outputNodeId);
-            uiMakeNodeActive(this.outputNode);
-        }
+
+
+        // activate nodes
+
+        if (!this.options.noActivate)
+            for (const id of this.newActiveNodeIds)
+                uiMakeNodeActive(nodeFromId(id));
 
 
         // update nodes
@@ -45696,23 +45721,28 @@ extends Action
         
         // deactivate new active nodes & clean up their objects
 
-        for (const id of this.newActiveNodeIds)
-            uiMakeNodePassive(nodeFromId(id));
+        if (!this.options.noActivate)
+        {
+            for (const id of this.newActiveNodeIds)
+               uiMakeNodePassive(nodeFromId(id));
 
-        uiDeleteObjects(this.newActiveNodeIds);
+            uiDeleteObjects(this.newActiveNodeIds);
+        }
+        
 
-
-        // activate old active nodes
+        // update old active nodes
 
         const oldActiveNodeIds = [...this.oldActiveNodeIds].sort((x, y) => 
             (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
-        for (const id of oldActiveNodeIds)
-        {
-            const node = nodeFromId(id);
-            uiMakeNodeActive(node);
-            pushUnique(updateNodes, node);
-        }
+        pushUnique(updateNodes, oldActiveNodeIds.map(id => nodeFromId(id)));
+
+
+        // activate old active nodes
+
+        if (!this.options.noActivate)
+            for (const id of oldActiveNodeIds)
+               uiMakeNodeActive(nodeFromId(id));
 
 
         // update nodes
@@ -49090,15 +49120,10 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
         autoConnectNode(node, !!options.insert);
     
 
-    // uiSaveNodes([node.id]);
-
-
     if (updateUi)
     {
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [node];
-
-        //node.updateNode();
     }
 
 
@@ -49136,7 +49161,7 @@ function autoConnectNode(node, insert)
     if (insert)
     {
         connectedInputs = [...selNode.outputs[0].connectedInputs];
-        connectedInputs.forEach(i => actionManager.do(new DisconnectAction(selNode.outputs[0], i), true));
+        connectedInputs.forEach(i => actionManager.do(new DisconnectAction(selNode.outputs[0], i, {noActivate: true}), true));
     }
 
 
@@ -49144,7 +49169,7 @@ function autoConnectNode(node, insert)
 
     
     if (insert)
-        connectedInputs.forEach(i => actionManager.do(new ConnectAction(node.outputs[0], i), true));
+        connectedInputs.forEach(i => actionManager.do(new ConnectAction(node.outputs[0], i, {noActivate: true}), true));
 
 
     graphView.autoPlaceNewNode(selNode.outputs[0], inputs[0]);

@@ -402,15 +402,10 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
         autoConnectNode(node, !!options.insert);
     
 
-    // uiSaveNodes([node.id]);
-
-
     if (updateUi)
     {
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [node];
-
-        //node.updateNode();
     }
 
 
@@ -448,7 +443,7 @@ function autoConnectNode(node, insert)
     if (insert)
     {
         connectedInputs = [...selNode.outputs[0].connectedInputs];
-        connectedInputs.forEach(i => actionManager.do(new DisconnectAction(selNode.outputs[0], i), true));
+        connectedInputs.forEach(i => actionManager.do(new DisconnectAction(selNode.outputs[0], i, {noActivate: true}), true));
     }
 
 
@@ -456,7 +451,7 @@ function autoConnectNode(node, insert)
 
     
     if (insert)
-        connectedInputs.forEach(i => actionManager.do(new ConnectAction(node.outputs[0], i), true));
+        connectedInputs.forEach(i => actionManager.do(new ConnectAction(node.outputs[0], i, {noActivate: true}), true));
 
 
     graphView.autoPlaceNewNode(selNode.outputs[0], inputs[0]);

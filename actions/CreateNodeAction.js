@@ -1,10 +1,11 @@
 class CreateNodeAction
 extends Action
 {
+    options = {};
+
+    
     nodeType;
     createdNodeId;
-
-    options = {};
 
     prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
 

@@ -1,6 +1,9 @@
 class DisconnectAction
 extends Action
 {
+    options = {};
+
+
     outputNodeId;
     outputId;
     outputOrder      = -1;
@@ -20,7 +23,7 @@ extends Action
 
 
 
-    constructor(output, input)
+    constructor(output, input, options = {})
     {
         super('DISCONNECT ' 
             + output.node.id + '.' + output.id
@@ -34,6 +37,8 @@ extends Action
 
         this.inputNodeId  = input.node.id;
         this.inputId      = input.id;
+
+        this.options      = options;
     }
 
 
@@ -59,23 +64,24 @@ extends Action
         this.output.updateSavedConnectionOrder(this.outputOrder, -1);
         
 
-        // activate input node
+        // save input node
         
         if (!getActiveFromNode(this.inputNode))
-        {
             this.newActiveNodeIds.push(this.inputNodeId);
-            uiMakeNodeActive(this.inputNode);
-        }
 
 
-        // activate output node
+        // save output node
 
         if (   !getActiveLeftOnlyFromNode(this.outputNode)
             && !getActiveRightFromNode   (this.outputNode))
-        {
             this.newActiveNodeIds.push(this.outputNodeId);
-            uiMakeNodeActive(this.outputNode);
-        }
+
+
+        // activate nodes
+
+        if (!this.options.noActivate)
+            for (const id of this.newActiveNodeIds)
+                uiMakeNodeActive(nodeFromId(id));
 
 
         // update nodes
@@ -117,23 +123,28 @@ extends Action
         
         // deactivate new active nodes & clean up their objects
 
-        for (const id of this.newActiveNodeIds)
-            uiMakeNodePassive(nodeFromId(id));
+        if (!this.options.noActivate)
+        {
+            for (const id of this.newActiveNodeIds)
+               uiMakeNodePassive(nodeFromId(id));
 
-        uiDeleteObjects(this.newActiveNodeIds);
+            uiDeleteObjects(this.newActiveNodeIds);
+        }
+        
 
-
-        // activate old active nodes
+        // update old active nodes
 
         const oldActiveNodeIds = [...this.oldActiveNodeIds].sort((x, y) => 
             (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
-        for (const id of oldActiveNodeIds)
-        {
-            const node = nodeFromId(id);
-            uiMakeNodeActive(node);
-            pushUnique(updateNodes, node);
-        }
+        pushUnique(updateNodes, oldActiveNodeIds.map(id => nodeFromId(id)));
+
+
+        // activate old active nodes
+
+        if (!this.options.noActivate)
+            for (const id of oldActiveNodeIds)
+               uiMakeNodeActive(nodeFromId(id));
 
 
         // update nodes
