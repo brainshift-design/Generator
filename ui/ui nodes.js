@@ -385,17 +385,14 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
     let node = createNode(nodeType, creatingButton, createdId, options);
 
 
-    const selNode = graph.nodes.find(n => n.selected);
+    //const selNode = graph.nodes.find(n => n.selected);
 
     const autoConnect = 
            settings.autoConnectNewNodes
         && graphView.selectedNodes.length > 0
-        && canAutoConnectNode(node)
-        && selNode
-        && selNode.headerOutputs.length > 0
-        && node.canAutoConnectFrom(selNode.headerOutputs[0]);
+        && canAutoConnectNode(node);
 
-
+        
     graph.addNode(node, !autoConnect);
     
     if (autoConnect)
@@ -417,11 +414,15 @@ function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true,
 function canAutoConnectNode(node)
 {
     const selNode = graph.nodes.find(n => n.selected);
-    const inputs  = node.inputs.filter(i => i.canConnectFrom(selNode.outputs[0]));
 
-    return selNode
-        && selNode.outputs.length > 0
-        && inputs.length > 0;
+    if (  !selNode
+        || selNode.headerOutputs.length == 0)
+        return false;
+
+    const inputs = node.inputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
+
+    return inputs.length > 0
+        && node.canAutoConnectFrom(selNode.headerOutputs[0]);
 }
 
 
@@ -429,11 +430,11 @@ function canAutoConnectNode(node)
 function autoConnectNode(node, insert)
 {
     const selNode = graph.nodes.find(n => n.selected);
-    const inputs  = node.inputs.filter(i => i.canConnectFrom(selNode.outputs[0]));
+    const inputs  = node.inputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
 
     console.assert(
            selNode
-        && selNode.outputs.length > 0
+        && selNode.headerOutputs.length > 0
         && inputs.length > 0,
         'cannot auto-connect node');
 
@@ -632,16 +633,11 @@ function uiUpdateSavedConnectionsToNodeId(nodeId)
 
 
 function uiMakeNodeActive(node)
-{console.log('node =', node);
+{
     uiMakeNodeLeftPassive (node);
     uiMakeNodeRightPassive(node);
 
     node.makeActive();
-    //node.updateNode();
-
-    //uiSaveNodes([node.id]);
-
-    //pushUpdate([node]);
 }
 
 
@@ -659,24 +655,15 @@ function uiMakeNodesActive(nodes)
     {
         pushUnique(graphView.activeNodes, node);
         node._active = true;
-        //node.updateNode();
     }
-
-    //uiSaveNodes(nodes.map(n => n.id));
-
-    //pushUpdate(nodes);
 }
 
 
 
 function uiMakeNodePassive(node)
 {
-    if (!node.active) return;
-
-    node.makePassive();
-    //node.updateNode();
-
-    //uiSaveNodes([node.id]);
+    if (node.active)
+        node.makePassive();
 }
 
 

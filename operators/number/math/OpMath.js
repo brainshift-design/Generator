@@ -22,13 +22,6 @@ extends OperatorBase
 
 
 
-    canAutoConnectFrom(output)
-    {
-        return this.inputs[0].canConnectFrom(output);
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output

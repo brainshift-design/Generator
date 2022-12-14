@@ -1,6 +1,13 @@
 class OperatorBase
 extends Operator
 {
+    canAutoConnectFrom(output)
+    {
+        return this.inputs[0].canConnectFrom(output);
+    }
+
+
+
     updateHeader()
     {
         //console.log(this.id + '.OperatorBase.updateHeader()');

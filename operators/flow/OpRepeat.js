@@ -17,13 +17,6 @@ extends OperatorBase
     
     
 
-    canAutoConnectFrom(output)
-    {
-        return true;
-    }
-
-    
-
     output_genRequest(gen)
     {
         // 'this' is the output

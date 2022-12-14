@@ -125,13 +125,6 @@ extends OpColorBase
 
 
 
-    canAutoConnectFrom(output)
-    {
-        return this.inputs[0].canConnectFrom(output);
-    }
-
-
-
     output_genRequest(gen)
     {
         // 'this' is the output
