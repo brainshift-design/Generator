@@ -126,7 +126,7 @@ class Graph
             node.selected = false;
             node.graph    = null;
 
-            removeFromArray(this.nodes, node);
+            removeFromArray(this.nodes, node);  
             graphView.removeChild(node.div);
         }
 
@@ -320,7 +320,7 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 function createNode(nodeType, creatingButton = null, createdNodeId = -1, options = {})
 {
     let node;
-
+ 
     switch (nodeType)
     {
         case LIST:                node = new OpList();             break;

@@ -205,43 +205,43 @@ function initGeneratorMenus()
         
     menuFlow = new Menu('Flow nodes', true, false);
     menuFlow.addItems([
-        new MenuItem('List',   {icon: iconList,   callback: e => actionManager.do(new CreateNodeAction(LIST,   btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Items',  {icon: iconItems,  callback: e => actionManager.do(new CreateNodeAction(ITEMS,  btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('List',   {icon: iconList,   callback: e => actionManager.do(getCreateNodeAction(LIST,   btnNumber.div, e.shiftKey))}),
+        new MenuItem('Items',  {icon: iconItems,  callback: e => actionManager.do(getCreateNodeAction(ITEMS,  btnNumber.div, e.shiftKey))}),
         new MenuItem('',       {separator: true}),
-        //new MenuItem('Start',{icon: iconStart,  callback: e => actionManager.do(new CreateNodeAction(START,  btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Repeat', {icon: iconRepeat, callback: e => actionManager.do(new CreateNodeAction(REPEAT, btnNumber.div, {insert: e.shiftKey}))}),
+        //new MenuItem('Start',{icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Repeat', {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT, btnNumber.div, e.shiftKey))}),
         new MenuItem('',       {separator: true}),
-        new MenuItem('Cache',  {icon: iconCache,  callback: e => actionManager.do(new CreateNodeAction(CACHE,  btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Cache',  {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,  btnNumber.div, e.shiftKey))})]);
     
     
     menuSimpleMath = new Menu('Variable math nodes', true, false);
     menuSimpleMath.addItems([
-        new MenuItem('Math ·',      {icon: iconSimpleMath    , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MATH,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Add ·',       {icon: iconSimpleAdd     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_ADD,       btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Subtract ·',  {icon: iconSimpleSubtract, callback: e => actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,  btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Multiply ·',  {icon: iconSimpleMultiply, callback: e => actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,  btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Divide ·',    {icon: iconSimpleDivide  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Power ·',     {icon: iconSimpleExponent, callback: e => actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,  btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Remainder ·', {icon: iconSimpleModulo  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MODULO,    btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Math ·',      {icon: iconSimpleMath    , callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, e.shiftKey))}),
+        new MenuItem('Add ·',       {icon: iconSimpleAdd     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,       btnNumber.div, e.shiftKey))}),
+        new MenuItem('Subtract ·',  {icon: iconSimpleSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Multiply ·',  {icon: iconSimpleMultiply, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Divide ·',    {icon: iconSimpleDivide  , callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,    btnNumber.div, e.shiftKey))}),
+        new MenuItem('Power ·',     {icon: iconSimpleExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Remainder ·', {icon: iconSimpleModulo  , callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,    btnNumber.div, e.shiftKey))})]);
 
 
     menuNumber = new Menu('Number nodes', true, false);
     menuNumber.addItems([
-        new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(new CreateNodeAction(NUMBER,              btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(getCreateNodeAction(NUMBER,              btnNumber.div, e.shiftKey))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_RANDOM,       btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,       btnNumber.div, e.shiftKey))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Math',        {icon: iconMath       , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MATH,     btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_ADD,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_SUBTRACT, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MULTIPLY, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_DIVIDE,   btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Power',       {icon: iconExponent   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_EXPONENT, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Remainder',   {icon: iconModulo     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MODULO,   btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Math',        {icon: iconMath       , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_MATH,     btnNumber.div, e.shiftKey))}),
+        new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_ADD,      btnNumber.div, e.shiftKey))}),
+        new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_SUBTRACT, btnNumber.div, e.shiftKey))}),
+        new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_MULTIPLY, btnNumber.div, e.shiftKey))}),
+        new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_DIVIDE,   btnNumber.div, e.shiftKey))}),
+        new MenuItem('Power',       {icon: iconExponent   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_EXPONENT, btnNumber.div, e.shiftKey))}),
+        new MenuItem('Remainder',   {icon: iconModulo     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_MODULO,   btnNumber.div, e.shiftKey))}),
         new MenuItem('· · ·',       {childMenu: menuSimpleMath }),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE,  btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_LIMITS,       btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,       btnNumber.div, e.shiftKey))})]);
         
     
     // menuString = new Menu('String nodes', true, false);
@@ -254,29 +254,29 @@ function initGeneratorMenus()
     
     menuColor = new Menu('Color nodes', true, false);
     menuColor.addItems([
-        new MenuItem('Color',             {icon: iconColor           , callback: e => actionManager.do(new CreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Color',             {icon: iconColor           , callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, e.shiftKey))}),
         new MenuItem('',                  {separator: true}),
-        new MenuItem('Correct color',     {icon: iconColorCorrect    , callback: e => actionManager.do(new CreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Web contrast',      {icon: iconColorContrast   , callback: e => actionManager.do(new CreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Colorblind',        {icon: iconColorblind      , callback: e => actionManager.do(new CreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Correct color',     {icon: iconColorCorrect    , callback: e => actionManager.do(getCreateNodeAction(COLOR_CORRECT,     btnColor.div, e.shiftKey))}),
+        new MenuItem('Web contrast',      {icon: iconColorContrast   , callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, e.shiftKey))}),
+        new MenuItem('Colorblind',        {icon: iconColorblind      , callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, e.shiftKey))}),
         new MenuItem('',                  {separator: true}),
-        new MenuItem('Color interpolate', {icon: iconColorInterpolate, callback: e => actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Color interpolate', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, e.shiftKey))})]);
     
     
     menuStyle = new Menu('Style nodes', true, false);
     menuStyle.addItems([
-        new MenuItem('Fill',   {icon: iconFill  , callback: e => actionManager.do(new CreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Stroke', {icon: iconStroke, callback: e => actionManager.do(new CreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Style',  {icon: iconStyle , callback: e => actionManager.do(new CreateNodeAction(STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Fill',   {icon: iconFill  , callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, e.shiftKey))}),
+        new MenuItem('Stroke', {icon: iconStroke, callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, e.shiftKey))}),
+        new MenuItem('Style',  {icon: iconStyle , callback: e => actionManager.do(getCreateNodeAction(STYLE,  btnColor.div, e.shiftKey))})]);
     
     
     menuShape = new Menu('Shape nodes', true, false);
     menuShape.addItems([
-        new MenuItem('Rectangle', {icon: iconRectangle, callback: e => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Line',      {icon: iconLine     , callback: e => actionManager.do(new CreateNodeAction(LINE,      btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Ellipse',   {icon: iconEllipse  , callback: e => actionManager.do(new CreateNodeAction(ELLIPSE,   btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Polygon',   {icon: iconPolygon  , callback: e => actionManager.do(new CreateNodeAction(POLYGON,   btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Star',      {icon: iconStar     , callback: e => actionManager.do(new CreateNodeAction(STAR,      btnShape.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Rectangle', {icon: iconRectangle, callback: e => actionManager.do(getCreateNodeAction(RECTANGLE, btnShape.div, e.shiftKey))}),
+        new MenuItem('Line',      {icon: iconLine     , callback: e => actionManager.do(getCreateNodeAction(LINE,      btnShape.div, e.shiftKey))}),
+        new MenuItem('Ellipse',   {icon: iconEllipse  , callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,   btnShape.div, e.shiftKey))}),
+        new MenuItem('Polygon',   {icon: iconPolygon  , callback: e => actionManager.do(getCreateNodeAction(POLYGON,   btnShape.div, e.shiftKey))}),
+        new MenuItem('Star',      {icon: iconStar     , callback: e => actionManager.do(getCreateNodeAction(STAR,      btnShape.div, e.shiftKey))})]);
 
 
     menuZoom = new Menu('Zoom/view options', false);

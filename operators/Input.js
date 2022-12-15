@@ -64,19 +64,19 @@ extends EventTarget
     outputMustBeCached = false;
 
 
-    connection  = null;
-    
-    connecting  = false;
-    mouseOver   = false;
-    
-    overFactor  = 1.7;
-    
+    connection         = null;
+           
+    connecting         = false;
+    mouseOver          = false;
 
-    initialSeed = 0;
-    currentSeed = 0;
-
-
-    isNew       = false; // this indicates that the input is the empty "new" input of a variable node
+    overFactor         = 1.7;
+           
+       
+    initialSeed        = 0;
+    currentSeed        = 0;
+       
+       
+    isNew              = false; // this indicates that the input is the empty "new" input of a variable node
 
 
     getValuesForUndo; // function pointer, return array of [index,value] tuples

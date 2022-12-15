@@ -413,3 +413,12 @@ function isMultiplier(node)
 {
     return node instanceof OpRepeat;
 }
+
+
+
+function getCreateNodeAction(type, creatingButton, insert)
+{
+    return insert
+           ? new CreateInsertNodeAction(type, creatingButton)
+           : new CreateNodeAction      (type, creatingButton, settings.autoConnectNewNodes);
+}

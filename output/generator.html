@@ -2117,6 +2117,15 @@ function isMultiplier(node)
 }
 
 
+
+function getCreateNodeAction(type, creatingButton, insert)
+{
+    return insert
+           ? new CreateInsertNodeAction(type, creatingButton)
+           : new CreateNodeAction      (type, creatingButton, settings.autoConnectNewNodes);
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities

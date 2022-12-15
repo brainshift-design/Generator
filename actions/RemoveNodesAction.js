@@ -80,6 +80,7 @@ extends Action
         if (!this.oldConnections.find(c => 
                    c.outputNodeId == conn.output.node.id
                 && c.outputId     == conn.output.id
+                && c.outputOrder  == conn.outputOrder
                 && c. inputNodeId == conn. input.node.id
                 && c. inputId     == conn. input.id))
             this.oldConnections.push(getConnectionForArrayWithIds(conn));
@@ -113,6 +114,7 @@ extends Action
                         {
                             outputNodeId: input.connectedOutput.node.id,
                             outputId:     input.connectedOutput.id,
+                            outputOrder:  input.connection.outputOrder,
                             inputNodeId:  connectedInput.node.id,
                             inputId:      connectedInput.id
                         });

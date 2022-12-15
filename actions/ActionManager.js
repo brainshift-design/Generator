@@ -52,6 +52,7 @@ class ActionManager
         if (isEmpty(this.actions))
             return;
 
+            
         for (;;)
         {
             let last = removeLast(this.actions);
@@ -82,7 +83,8 @@ class ActionManager
     {
         if (isEmpty(this.redoActions))
             return;
-    
+
+            
         for (;;)
         {
             let last = removeLast(this.redoActions);

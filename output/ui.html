@@ -4450,6 +4450,15 @@ function isMultiplier(node)
 }
 
 
+
+function getCreateNodeAction(type, creatingButton, insert)
+{
+    return insert
+           ? new CreateInsertNodeAction(type, creatingButton)
+           : new CreateNodeAction      (type, creatingButton, settings.autoConnectNewNodes);
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -18556,6 +18565,15 @@ function isMultiplier(node)
 }
 
 
+
+function getCreateNodeAction(type, creatingButton, insert)
+{
+    return insert
+           ? new CreateInsertNodeAction(type, creatingButton)
+           : new CreateNodeAction      (type, creatingButton, settings.autoConnectNewNodes);
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -28601,43 +28619,43 @@ function initGeneratorMenus()
         
     menuFlow = new Menu('Flow nodes', true, false);
     menuFlow.addItems([
-        new MenuItem('List',   {icon: iconList,   callback: e => actionManager.do(new CreateNodeAction(LIST,   btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Items',  {icon: iconItems,  callback: e => actionManager.do(new CreateNodeAction(ITEMS,  btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('List',   {icon: iconList,   callback: e => actionManager.do(getCreateNodeAction(LIST,   btnNumber.div, e.shiftKey))}),
+        new MenuItem('Items',  {icon: iconItems,  callback: e => actionManager.do(getCreateNodeAction(ITEMS,  btnNumber.div, e.shiftKey))}),
         new MenuItem('',       {separator: true}),
-        //new MenuItem('Start',{icon: iconStart,  callback: e => actionManager.do(new CreateNodeAction(START,  btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Repeat', {icon: iconRepeat, callback: e => actionManager.do(new CreateNodeAction(REPEAT, btnNumber.div, {insert: e.shiftKey}))}),
+        //new MenuItem('Start',{icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Repeat', {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT, btnNumber.div, e.shiftKey))}),
         new MenuItem('',       {separator: true}),
-        new MenuItem('Cache',  {icon: iconCache,  callback: e => actionManager.do(new CreateNodeAction(CACHE,  btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Cache',  {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,  btnNumber.div, e.shiftKey))})]);
     
     
     menuSimpleMath = new Menu('Variable math nodes', true, false);
     menuSimpleMath.addItems([
-        new MenuItem('Math ·',      {icon: iconSimpleMath    , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MATH,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Add ·',       {icon: iconSimpleAdd     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_ADD,       btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Subtract ·',  {icon: iconSimpleSubtract, callback: e => actionManager.do(new CreateNodeAction(NUMBER_SUBTRACT,  btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Multiply ·',  {icon: iconSimpleMultiply, callback: e => actionManager.do(new CreateNodeAction(NUMBER_MULTIPLY,  btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Divide ·',    {icon: iconSimpleDivide  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_DIVIDE,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Power ·',     {icon: iconSimpleExponent, callback: e => actionManager.do(new CreateNodeAction(NUMBER_EXPONENT,  btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Remainder ·', {icon: iconSimpleModulo  , callback: e => actionManager.do(new CreateNodeAction(NUMBER_MODULO,    btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Math ·',      {icon: iconSimpleMath    , callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, e.shiftKey))}),
+        new MenuItem('Add ·',       {icon: iconSimpleAdd     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,       btnNumber.div, e.shiftKey))}),
+        new MenuItem('Subtract ·',  {icon: iconSimpleSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Multiply ·',  {icon: iconSimpleMultiply, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Divide ·',    {icon: iconSimpleDivide  , callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,    btnNumber.div, e.shiftKey))}),
+        new MenuItem('Power ·',     {icon: iconSimpleExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Remainder ·', {icon: iconSimpleModulo  , callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,    btnNumber.div, e.shiftKey))})]);
 
 
     menuNumber = new Menu('Number nodes', true, false);
     menuNumber.addItems([
-        new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(new CreateNodeAction(NUMBER,              btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(getCreateNodeAction(NUMBER,              btnNumber.div, e.shiftKey))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_RANDOM,       btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,       btnNumber.div, e.shiftKey))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Math',        {icon: iconMath       , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MATH,     btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_ADD,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_SUBTRACT, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MULTIPLY, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_DIVIDE,   btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Power',       {icon: iconExponent   , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_EXPONENT, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Remainder',   {icon: iconModulo     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_VAR_MODULO,   btnNumber.div, {insert: e.shiftKey}))}),
+        new MenuItem('Math',        {icon: iconMath       , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_MATH,     btnNumber.div, e.shiftKey))}),
+        new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_ADD,      btnNumber.div, e.shiftKey))}),
+        new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_SUBTRACT, btnNumber.div, e.shiftKey))}),
+        new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_MULTIPLY, btnNumber.div, e.shiftKey))}),
+        new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_DIVIDE,   btnNumber.div, e.shiftKey))}),
+        new MenuItem('Power',       {icon: iconExponent   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_EXPONENT, btnNumber.div, e.shiftKey))}),
+        new MenuItem('Remainder',   {icon: iconModulo     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_MODULO,   btnNumber.div, e.shiftKey))}),
         new MenuItem('· · ·',       {childMenu: menuSimpleMath }),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(new CreateNodeAction(NUMBER_INTERPOLATE,  btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(new CreateNodeAction(NUMBER_LIMITS,       btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,       btnNumber.div, e.shiftKey))})]);
         
     
     // menuString = new Menu('String nodes', true, false);
@@ -28650,29 +28668,29 @@ function initGeneratorMenus()
     
     menuColor = new Menu('Color nodes', true, false);
     menuColor.addItems([
-        new MenuItem('Color',             {icon: iconColor           , callback: e => actionManager.do(new CreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Color',             {icon: iconColor           , callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, e.shiftKey))}),
         new MenuItem('',                  {separator: true}),
-        new MenuItem('Correct color',     {icon: iconColorCorrect    , callback: e => actionManager.do(new CreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Web contrast',      {icon: iconColorContrast   , callback: e => actionManager.do(new CreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Colorblind',        {icon: iconColorblind      , callback: e => actionManager.do(new CreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Correct color',     {icon: iconColorCorrect    , callback: e => actionManager.do(getCreateNodeAction(COLOR_CORRECT,     btnColor.div, e.shiftKey))}),
+        new MenuItem('Web contrast',      {icon: iconColorContrast   , callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, e.shiftKey))}),
+        new MenuItem('Colorblind',        {icon: iconColorblind      , callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, e.shiftKey))}),
         new MenuItem('',                  {separator: true}),
-        new MenuItem('Color interpolate', {icon: iconColorInterpolate, callback: e => actionManager.do(new CreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Color interpolate', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, e.shiftKey))})]);
     
     
     menuStyle = new Menu('Style nodes', true, false);
     menuStyle.addItems([
-        new MenuItem('Fill',   {icon: iconFill  , callback: e => actionManager.do(new CreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Stroke', {icon: iconStroke, callback: e => actionManager.do(new CreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Style',  {icon: iconStyle , callback: e => actionManager.do(new CreateNodeAction(STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Fill',   {icon: iconFill  , callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, e.shiftKey))}),
+        new MenuItem('Stroke', {icon: iconStroke, callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, e.shiftKey))}),
+        new MenuItem('Style',  {icon: iconStyle , callback: e => actionManager.do(getCreateNodeAction(STYLE,  btnColor.div, e.shiftKey))})]);
     
     
     menuShape = new Menu('Shape nodes', true, false);
     menuShape.addItems([
-        new MenuItem('Rectangle', {icon: iconRectangle, callback: e => actionManager.do(new CreateNodeAction(RECTANGLE, btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Line',      {icon: iconLine     , callback: e => actionManager.do(new CreateNodeAction(LINE,      btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Ellipse',   {icon: iconEllipse  , callback: e => actionManager.do(new CreateNodeAction(ELLIPSE,   btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Polygon',   {icon: iconPolygon  , callback: e => actionManager.do(new CreateNodeAction(POLYGON,   btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Star',      {icon: iconStar     , callback: e => actionManager.do(new CreateNodeAction(STAR,      btnShape.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Rectangle', {icon: iconRectangle, callback: e => actionManager.do(getCreateNodeAction(RECTANGLE, btnShape.div, e.shiftKey))}),
+        new MenuItem('Line',      {icon: iconLine     , callback: e => actionManager.do(getCreateNodeAction(LINE,      btnShape.div, e.shiftKey))}),
+        new MenuItem('Ellipse',   {icon: iconEllipse  , callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,   btnShape.div, e.shiftKey))}),
+        new MenuItem('Polygon',   {icon: iconPolygon  , callback: e => actionManager.do(getCreateNodeAction(POLYGON,   btnShape.div, e.shiftKey))}),
+        new MenuItem('Star',      {icon: iconStar     , callback: e => actionManager.do(getCreateNodeAction(STAR,      btnShape.div, e.shiftKey))})]);
 
 
     menuZoom = new Menu('Zoom/view options', false);
@@ -35717,7 +35735,7 @@ class Graph
             node.selected = false;
             node.graph    = null;
 
-            removeFromArray(this.nodes, node);
+            removeFromArray(this.nodes, node);  
             graphView.removeChild(node.div);
         }
 
@@ -35911,7 +35929,7 @@ function connectionsToJson(nodes, connOutputMustBeInNodes)
 function createNode(nodeType, creatingButton = null, createdNodeId = -1, options = {})
 {
     let node;
-
+ 
     switch (nodeType)
     {
         case LIST:                node = new OpList();             break;
@@ -36499,19 +36517,19 @@ extends EventTarget
     outputMustBeCached = false;
 
 
-    connection  = null;
-    
-    connecting  = false;
-    mouseOver   = false;
-    
-    overFactor  = 1.7;
-    
+    connection         = null;
+           
+    connecting         = false;
+    mouseOver          = false;
 
-    initialSeed = 0;
-    currentSeed = 0;
-
-
-    isNew       = false; // this indicates that the input is the empty "new" input of a variable node
+    overFactor         = 1.7;
+           
+       
+    initialSeed        = 0;
+    currentSeed        = 0;
+       
+       
+    isNew              = false; // this indicates that the input is the empty "new" input of a variable node
 
 
     getValuesForUndo; // function pointer, return array of [index,value] tuples
@@ -44780,6 +44798,7 @@ class ActionManager
         if (isEmpty(this.actions))
             return;
 
+            
         for (;;)
         {
             let last = removeLast(this.actions);
@@ -44810,7 +44829,8 @@ class ActionManager
     {
         if (isEmpty(this.redoActions))
             return;
-    
+
+            
         for (;;)
         {
             let last = removeLast(this.redoActions);
@@ -44844,9 +44864,6 @@ const actionManager = new ActionManager();
 class ConnectAction
 extends Action
 {
-    options = {};
-
-
     outputNodeId;
     outputId;
     outputOrder           = -1;
@@ -44877,7 +44894,7 @@ extends Action
 
 
 
-    constructor(output, input, options = {noActivate: false})
+    constructor(output, input)
     {
         super('CONNECT ' 
             + output.node.id + '.' + output.id
@@ -44895,9 +44912,6 @@ extends Action
         this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
         this.oldOutputId     = input.connected ? input.connectedOutput.id      : '';
         this.oldOutputOrder  = input.connected ? input.connection.outputOrder  : -1;
-
-
-        this.options         = options;
     }
 
 
@@ -44989,8 +45003,7 @@ function connectAction_updateOldOutput(act, updateNodes)
         
         if (!getActiveFromNode(act.oldOutputNode))
         {
-            if (!act.options.noActivate)
-                uiMakeNodeActive(act.oldOutputNode);
+            uiMakeNodeActive(act.oldOutputNode);
 
             act.newActiveNodeIds.push(act.oldOutputNodeId);
             pushUnique(updateNodes, nodeFromId(act.oldOutputActiveNodeId));
@@ -45011,9 +45024,7 @@ function connectAction_updateInputActiveNodes(act, updateNodes)
 
         const node = nodeFromId(id);
 
-        if (!act.options.noActivate)
-            uiMakeNodeActive(node);
-        
+        uiMakeNodeActive(node);
         pushUnique(updateNodes, node);
     }
 }
@@ -45083,9 +45094,8 @@ function connectAction_restoreInputValues(act)
 
 function connectAction_deactivateNewActiveNodes(act)
 {
-    if (!act.options.noActivate)
-        for (const id of act.newActiveNodeIds)
-            uiMakeNodePassive(nodeFromId(id));
+    for (const id of act.newActiveNodeIds)
+        uiMakeNodePassive(nodeFromId(id));
 
     uiDeleteObjects(act.newActiveNodeIds); 
 }
@@ -45098,9 +45108,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
     {
         const oldInputActiveNode = nodeFromId(id);
         
-        if (!act.options.noActivate)
-            uiMakeNodeActive(oldInputActiveNode);
-        
+        uiMakeNodeActive(oldInputActiveNode);
         pushUnique(updateNodes, oldInputActiveNode);
     }
 
@@ -45112,9 +45120,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
 
         const oldOutputActiveNode = nodeFromId(act.oldOutputActiveNodeId);
 
-        if (!act.options.noActivate)
-            uiMakeNodeActive(oldOutputActiveNode);
-
+        uiMakeNodeActive(oldOutputActiveNode);
         pushUnique(updateNodes, oldOutputActiveNode);
     }
 }
@@ -45128,29 +45134,31 @@ function connectAction_restoreCleanup(act)
 }
 
 
-class CreateNodeAction
+class CreateInsertNodeAction
 extends Action
 {
-    options = {};
-
-    
     nodeType;
     createdNodeId;
 
     prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
 
+    oldInputActiveNodeId = '';
+
+
+    oldConnections = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
+    newConnections = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
+
+
     creatingButton;
     
 
 
-    constructor(nodeType, creatingButton, options = {insert: false, noActivate: false})
+    constructor(nodeType, creatingButton)
     {
-        super('CREATE \'' + nodeType + '\'');
+        super('CREATE / INSERT \'' + nodeType + '\'');
         
         this.nodeType       = nodeType;
         this.creatingButton = creatingButton;
-
-        this.options        = options;
     }
 
 
@@ -45159,17 +45167,62 @@ extends Action
     {
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
-        const node = uiCreateNode(
-            this.nodeType, 
-            this.creatingButton, 
-            -1, 
-            true, 
-            this.options);
+        createInsertNodeAction_saveOldConnections(this);
 
+
+        const node = createNode(this.nodeType, this.creatingButton, this.createdId);
+
+
+        const autoConnect = 
+               this.prevSelectedIds.length > 0
+            && canAutoConnectNode(node);
+   
+            
+        graph.addNode(node, !autoConnect);
+        
         this.createdNodeId = node.id;
 
-        if (!this.options.insert)
-            uiMakeNodeActive(node);
+
+        if (autoConnect)
+        {
+            const selNode   = nodeFromId(this.prevSelectedIds[0]);
+            const selOutput = selNode.headerOutputs[0];
+
+            for (let i = selOutput.connectedInputs.length-1; i >= 0; i--)
+            {
+                const input = selOutput.connectedInputs[i];
+                
+                uiDeleteSavedConn(input.connection);
+                uiDisconnect(input);
+            }
+
+
+            const inputs = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
+
+            if (inputs.length > 0)
+            {
+                const newConn = createNodeAction_connect(this, selNode.outputs[0], inputs[0]);
+                graphView.autoPlaceNewNode(newConn.output, newConn.input);
+
+
+                for (const _conn of this.oldConnections)
+                {
+                    createNodeAction_connect(
+                        this, 
+                        node.headerOutputs[0], 
+                        nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId),
+                        _conn.outputOrder);
+                }
+            }
+        }
+
+            
+        graphView.lastSelectedNodes = graphView.selectedNodes;
+        graphView.selectedNodes     = [node];
+
+
+        //uiMakeNodeActive(node);
+
 
         pushUpdate([node]);
     }
@@ -45178,27 +45231,187 @@ extends Action
 
     undo()
     {
+        for (const _conn of this.newConnections)
+        {
+            const input = nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId);
+
+            uiDeleteSavedConn(input.connection);
+            uiDisconnect(input);
+        }
+        
+        this.newConnections = [];
+
+
         uiDeleteNodes([this.createdNodeId]);
 
+
+        for (const _conn of this.oldConnections)
+        {
+            createNodeAction_connect(
+                this, 
+                nodeFromId(_conn.outputNodeId).outputFromId(_conn.outputId),
+                nodeFromId(_conn. inputNodeId). inputFromId(_conn. inputId),
+                _conn.outputOrder);
+        }
+
+
         graphView.selectByIds(this.prevSelectedIds);
+
+
+        this.oldConnections = [];
+        this.newConnections = [];
+    }
+}
+
+
+
+function createInsertNodeAction_saveOldConnections(act)
+{
+    act.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(act.prevSelectedIds[0]));
+
+    const selNode = nodeFromId(act.prevSelectedIds[0]);
+    const output  = selNode.outputs[0];
+
+    for (const input of output.connectedInputs)
+    {
+        act.oldConnections.push(
+        {
+            outputNodeId: output.node.id,
+            outputId:     output.id,
+            outputOrder:  input.connection.outputOrder,
+            inputNodeId:  input.node.id,
+            inputId:      input.id
+        });
+    }
+}
+
+
+class CreateNodeAction
+extends Action
+{
+    nodeType;
+    createdNodeId;
+
+    prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
+
+    oldActiveNodeId = '';
+
+
+    autoConnect;
+
+    newConnections  = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
+
+
+    creatingButton;
+    
+
+
+    constructor(nodeType, creatingButton, autoConnect)
+    {
+        super('CREATE \'' + nodeType + '\'');
+        
+        this.nodeType       = nodeType;
+        this.creatingButton = creatingButton;
+
+        this.autoConnect    = autoConnect;
     }
 
 
 
-    redo()
+    do()
     {
-        const node = uiCreateNode(
-            this.nodeType, 
-            this.creatingButton, 
-            this.createdNodeId, 
-            true, 
-            this.options);
+        this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
-        if (!this.options.insert)
-            uiMakeNodeActive(node);
+
+        const node = createNode(this.nodeType, this.creatingButton, this.createdId);
+        
+
+        const autoConnect = 
+               this.autoConnect
+            && this.prevSelectedIds.length > 0
+            && canAutoConnectNode(node);
+
+            
+        graph.addNode(node, !autoConnect);
+
+        this.createdNodeId = node.id;
+        
+
+        if (autoConnect)
+        {
+            this.oldActiveNodeId = idFromNode(getActiveFromNodeId(this.prevSelectedIds[0]));
+
+            const selNode = nodeFromId(this.prevSelectedIds[0]);
+            const inputs  = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
+            
+            if (inputs.length > 0)
+            {
+                const conn = createNodeAction_connect(this, selNode.outputs[0], inputs[0]);
+                graphView.autoPlaceNewNode(conn.output, conn.input);
+            }
+        }
+
+
+        uiMakeNodeActive(node);
+
+
+        graphView.lastSelectedNodes = graphView.selectedNodes;
+        graphView.selectedNodes     = [node];
+
 
         pushUpdate([node]);
     }
+
+
+
+    undo()
+    {
+        for (const _conn of this.newConnections)
+        {
+            const input = nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId);
+
+            uiDeleteSavedConn(input.connection);
+            uiDisconnect(input);
+        }
+        
+        this.newConnections = [];
+            
+            
+        uiDeleteNodes([this.createdNodeId]);
+
+
+        if (this.oldActiveNodeId != '')
+        {
+            const oldInputActiveNode = nodeFromId(this.oldActiveNodeId);
+            
+            uiMakeNodeActive(oldInputActiveNode);
+            pushUpdate([oldInputActiveNode]);
+
+            this.oldActiveNodeId = '';
+        }
+
+        
+        graphView.selectByIds(this.prevSelectedIds);
+    }
+}
+
+
+
+function createNodeAction_connect(act, output, input)
+{
+    const conn = uiConnect(output, input);
+    uiSaveConn(conn);
+
+    act.newConnections.push(
+    {
+        outputNodeId: conn.output.node.id,
+        outputId:     conn.output.id,
+        outputOrder:  conn.outputOrder,
+        inputNodeId:  conn.input.node.id,
+        inputId:      conn.input.id
+    });
+
+    return conn;
 }
 
 
@@ -45532,9 +45745,6 @@ function deleteNodesAction_cleanup(act)
 class DisconnectAction
 extends Action
 {
-    options = {};
-
-
     outputNodeId;
     outputId;
     outputOrder      = -1;
@@ -45554,7 +45764,7 @@ extends Action
 
 
 
-    constructor(output, input, options = {noActivate: false})
+    constructor(output, input)
     {
         super('DISCONNECT ' 
             + output.node.id + '.' + output.id
@@ -45568,8 +45778,6 @@ extends Action
 
         this.inputNodeId  = input.node.id;
         this.inputId      = input.id;
-
-        this.options      = options;
     }
 
 
@@ -45610,9 +45818,8 @@ extends Action
 
         // activate nodes
 
-        if (!this.options.noActivate)
-            for (const id of this.newActiveNodeIds)
-                uiMakeNodeActive(nodeFromId(id));
+        for (const id of this.newActiveNodeIds)
+            uiMakeNodeActive(nodeFromId(id));
 
 
         // update nodes
@@ -45654,13 +45861,10 @@ extends Action
         
         // deactivate new active nodes & clean up their objects
 
-        if (!this.options.noActivate)
-        {
-            for (const id of this.newActiveNodeIds)
-               uiMakeNodePassive(nodeFromId(id));
+        for (const id of this.newActiveNodeIds)
+            uiMakeNodePassive(nodeFromId(id));
 
-            uiDeleteObjects(this.newActiveNodeIds);
-        }
+        uiDeleteObjects(this.newActiveNodeIds);
         
 
         // update old active nodes
@@ -45673,9 +45877,8 @@ extends Action
 
         // activate old active nodes
 
-        if (!this.options.noActivate)
-            for (const id of oldActiveNodeIds)
-               uiMakeNodeActive(nodeFromId(id));
+        for (const id of oldActiveNodeIds)
+            uiMakeNodeActive(nodeFromId(id));
 
 
         // update nodes
@@ -46086,6 +46289,7 @@ extends Action
         if (!this.oldConnections.find(c => 
                    c.outputNodeId == conn.output.node.id
                 && c.outputId     == conn.output.id
+                && c.outputOrder  == conn.outputOrder
                 && c. inputNodeId == conn. input.node.id
                 && c. inputId     == conn. input.id))
             this.oldConnections.push(getConnectionForArrayWithIds(conn));
@@ -46119,6 +46323,7 @@ extends Action
                         {
                             outputNodeId: input.connectedOutput.node.id,
                             outputId:     input.connectedOutput.id,
+                            outputOrder:  input.connection.outputOrder,
                             inputNodeId:  connectedInput.node.id,
                             inputId:      connectedInput.id
                         });
@@ -49031,37 +49236,6 @@ productKeyClose.addEventListener('click', e =>
 
 
 
-function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true, options = {})
-{
-    let node = createNode(nodeType, creatingButton, createdId, options);
-
-
-    //const selNode = graph.nodes.find(n => n.selected);
-
-    const autoConnect = 
-           settings.autoConnectNewNodes
-        && graphView.selectedNodes.length > 0
-        && canAutoConnectNode(node);
-
-        
-    graph.addNode(node, !autoConnect);
-    
-    if (autoConnect)
-        autoConnectNode(node, !!options.insert);
-    
-
-    if (updateUi)
-    {
-        graphView.lastSelectedNodes = graphView.selectedNodes;
-        graphView.selectedNodes     = [node];
-    }
-
-
-    return node;
-}
-
-
-
 function canAutoConnectNode(node)
 {
     const selNode = graph.nodes.find(n => n.selected);
@@ -49074,39 +49248,6 @@ function canAutoConnectNode(node)
 
     return inputs.length > 0
         && node.canAutoConnectFrom(selNode.headerOutputs[0]);
-}
-
-
-
-function autoConnectNode(node, insert)
-{
-    const selNode = graph.nodes.find(n => n.selected);
-    const inputs  = node.inputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
-
-    console.assert(
-           selNode
-        && selNode.headerOutputs.length > 0
-        && inputs.length > 0,
-        'cannot auto-connect node');
-
-
-    let connectedInputs = [];
-    
-    if (insert)
-    {
-        connectedInputs = [...selNode.outputs[0].connectedInputs];
-        connectedInputs.forEach(i => actionManager.do(new DisconnectAction(selNode.outputs[0], i, {noActivate: true}), true));
-    }
-
-
-    actionManager.do(new ConnectAction(selNode.outputs[0], inputs[0]), true);
-
-    
-    if (insert)
-        connectedInputs.forEach(i => actionManager.do(new ConnectAction(node.outputs[0], i, {noActivate: true}), true));
-
-
-    graphView.autoPlaceNewNode(selNode.outputs[0], inputs[0]);
 }
 
 

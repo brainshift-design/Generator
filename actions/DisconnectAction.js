@@ -1,9 +1,6 @@
 class DisconnectAction
 extends Action
 {
-    options = {};
-
-
     outputNodeId;
     outputId;
     outputOrder      = -1;
@@ -23,7 +20,7 @@ extends Action
 
 
 
-    constructor(output, input, options = {noActivate: false})
+    constructor(output, input)
     {
         super('DISCONNECT ' 
             + output.node.id + '.' + output.id
@@ -37,8 +34,6 @@ extends Action
 
         this.inputNodeId  = input.node.id;
         this.inputId      = input.id;
-
-        this.options      = options;
     }
 
 
@@ -79,9 +74,8 @@ extends Action
 
         // activate nodes
 
-        if (!this.options.noActivate)
-            for (const id of this.newActiveNodeIds)
-                uiMakeNodeActive(nodeFromId(id));
+        for (const id of this.newActiveNodeIds)
+            uiMakeNodeActive(nodeFromId(id));
 
 
         // update nodes
@@ -123,13 +117,10 @@ extends Action
         
         // deactivate new active nodes & clean up their objects
 
-        if (!this.options.noActivate)
-        {
-            for (const id of this.newActiveNodeIds)
-               uiMakeNodePassive(nodeFromId(id));
+        for (const id of this.newActiveNodeIds)
+            uiMakeNodePassive(nodeFromId(id));
 
-            uiDeleteObjects(this.newActiveNodeIds);
-        }
+        uiDeleteObjects(this.newActiveNodeIds);
         
 
         // update old active nodes
@@ -142,9 +133,8 @@ extends Action
 
         // activate old active nodes
 
-        if (!this.options.noActivate)
-            for (const id of oldActiveNodeIds)
-               uiMakeNodeActive(nodeFromId(id));
+        for (const id of oldActiveNodeIds)
+            uiMakeNodeActive(nodeFromId(id));
 
 
         // update nodes

@@ -380,37 +380,6 @@
 
 
 
-function uiCreateNode(nodeType, creatingButton, createdId = -1, updateUi = true, options = {})
-{
-    let node = createNode(nodeType, creatingButton, createdId, options);
-
-
-    //const selNode = graph.nodes.find(n => n.selected);
-
-    const autoConnect = 
-           settings.autoConnectNewNodes
-        && graphView.selectedNodes.length > 0
-        && canAutoConnectNode(node);
-
-        
-    graph.addNode(node, !autoConnect);
-    
-    if (autoConnect)
-        autoConnectNode(node, !!options.insert);
-    
-
-    if (updateUi)
-    {
-        graphView.lastSelectedNodes = graphView.selectedNodes;
-        graphView.selectedNodes     = [node];
-    }
-
-
-    return node;
-}
-
-
-
 function canAutoConnectNode(node)
 {
     const selNode = graph.nodes.find(n => n.selected);
@@ -423,39 +392,6 @@ function canAutoConnectNode(node)
 
     return inputs.length > 0
         && node.canAutoConnectFrom(selNode.headerOutputs[0]);
-}
-
-
-
-function autoConnectNode(node, insert)
-{
-    const selNode = graph.nodes.find(n => n.selected);
-    const inputs  = node.inputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
-
-    console.assert(
-           selNode
-        && selNode.headerOutputs.length > 0
-        && inputs.length > 0,
-        'cannot auto-connect node');
-
-
-    let connectedInputs = [];
-    
-    if (insert)
-    {
-        connectedInputs = [...selNode.outputs[0].connectedInputs];
-        connectedInputs.forEach(i => actionManager.do(new DisconnectAction(selNode.outputs[0], i, {noActivate: true}), true));
-    }
-
-
-    actionManager.do(new ConnectAction(selNode.outputs[0], inputs[0]), true);
-
-    
-    if (insert)
-        connectedInputs.forEach(i => actionManager.do(new ConnectAction(node.outputs[0], i, {noActivate: true}), true));
-
-
-    graphView.autoPlaceNewNode(selNode.outputs[0], inputs[0]);
 }
 
 

@@ -1,9 +1,6 @@
 class ConnectAction
 extends Action
 {
-    options = {};
-
-
     outputNodeId;
     outputId;
     outputOrder           = -1;
@@ -34,7 +31,7 @@ extends Action
 
 
 
-    constructor(output, input, options = {noActivate: false})
+    constructor(output, input)
     {
         super('CONNECT ' 
             + output.node.id + '.' + output.id
@@ -52,9 +49,6 @@ extends Action
         this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
         this.oldOutputId     = input.connected ? input.connectedOutput.id      : '';
         this.oldOutputOrder  = input.connected ? input.connection.outputOrder  : -1;
-
-
-        this.options         = options;
     }
 
 
@@ -146,8 +140,7 @@ function connectAction_updateOldOutput(act, updateNodes)
         
         if (!getActiveFromNode(act.oldOutputNode))
         {
-            if (!act.options.noActivate)
-                uiMakeNodeActive(act.oldOutputNode);
+            uiMakeNodeActive(act.oldOutputNode);
 
             act.newActiveNodeIds.push(act.oldOutputNodeId);
             pushUnique(updateNodes, nodeFromId(act.oldOutputActiveNodeId));
@@ -168,9 +161,7 @@ function connectAction_updateInputActiveNodes(act, updateNodes)
 
         const node = nodeFromId(id);
 
-        if (!act.options.noActivate)
-            uiMakeNodeActive(node);
-        
+        uiMakeNodeActive(node);
         pushUnique(updateNodes, node);
     }
 }
@@ -240,9 +231,8 @@ function connectAction_restoreInputValues(act)
 
 function connectAction_deactivateNewActiveNodes(act)
 {
-    if (!act.options.noActivate)
-        for (const id of act.newActiveNodeIds)
-            uiMakeNodePassive(nodeFromId(id));
+    for (const id of act.newActiveNodeIds)
+        uiMakeNodePassive(nodeFromId(id));
 
     uiDeleteObjects(act.newActiveNodeIds); 
 }
@@ -255,9 +245,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
     {
         const oldInputActiveNode = nodeFromId(id);
         
-        if (!act.options.noActivate)
-            uiMakeNodeActive(oldInputActiveNode);
-        
+        uiMakeNodeActive(oldInputActiveNode);
         pushUnique(updateNodes, oldInputActiveNode);
     }
 
@@ -269,9 +257,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
 
         const oldOutputActiveNode = nodeFromId(act.oldOutputActiveNodeId);
 
-        if (!act.options.noActivate)
-            uiMakeNodeActive(oldOutputActiveNode);
-
+        uiMakeNodeActive(oldOutputActiveNode);
         pushUnique(updateNodes, oldOutputActiveNode);
     }
 }
