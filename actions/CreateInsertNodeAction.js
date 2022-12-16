@@ -55,7 +55,7 @@ extends Action
             for (let i = selOutput.connectedInputs.length-1; i >= 0; i--)
             {
                 const input = selOutput.connectedInputs[i];
-                
+
                 uiDeleteSavedConn(input.connection);
                 uiDisconnect(input);
             }
@@ -85,7 +85,8 @@ extends Action
         graphView.selectedNodes     = [node];
 
 
-        //uiMakeNodeActive(node);
+        if (this.oldConnections.length == 0)
+            uiMakeNodeActive(node);
 
 
         pushUpdate([node]);
@@ -119,6 +120,10 @@ extends Action
         }
 
 
+        if (this.oldConnections.length == 0)
+            createNodeAction_activateOldInput(this);
+
+            
         graphView.selectByIds(this.prevSelectedIds);
 
 
@@ -131,6 +136,10 @@ extends Action
 
 function createInsertNodeAction_saveOldConnections(act)
 {
+    if (act.prevSelectedIds.length == 0)
+        return;
+
+        
     act.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(act.prevSelectedIds[0]));
 
     const selNode = nodeFromId(act.prevSelectedIds[0]);
