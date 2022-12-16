@@ -185,15 +185,12 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
     else
     {
         const conn = uiVariableConnect(
-            outputNode, isDigit(outputId[0]) 
-                        ? parseInt(outputId) 
-                        : outputNode.params.find(p => p.id == outputId).output.id,
-            inputNode,  isDigit(inputId[0])
-                        ? parseInt(inputId)
-                        : inputNode.params.find(p => p.id == inputId).input.id,
+            outputNode, isDigit(outputId[0]) ? parseInt(outputId) : outputNode.params.find(p => p.id == outputId).output.id,
+             inputNode, isDigit( inputId[0]) ? parseInt( inputId) :  inputNode.params.find(p => p.id ==  inputId). input.id,
             pasteConnected ? -1 : outputOrder);
 
-        conn.outputOrder = outputOrder;
+        _conn.outputOrder = conn.outputOrder;
+        //conn.outputOrder = outputOrder;
 
         return conn;
     }

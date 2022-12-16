@@ -26,32 +26,18 @@ extends Action
 
 
 
-    addConnection(conn)
-    {
-        if (!this.oldConnections.find(c => 
-                   c.outputNodeId == conn.output.node.id
-                && c.outputId     == conn.output.id
-                && c.outputOrder  == conn.outputOrder
-                && c. inputNodeId == conn. input.node.id
-                && c. inputId     == conn. input.id))
-            this.oldConnections.push(getConnectionForArrayWithIds(conn));
-    }
-
-
-
     do()
     {
-        this.newActiveNodeIds = [];
         this.oldActiveNodeIds = [];
+        this.newActiveNodeIds = [];
         const updateNodes     = [];
 
         deleteNodesAction_saveActiveNodes(this);
+
+        deleteNodesAction_addOldConnections(this);
+        deleteNodesAction_updateConnections(this.oldConnections, -1);
+
         
-
-        this.newConnections = [];
-
-        deleteNodesAction_addNewConnections(this);
-
         deleteNodesAction_getUpdateNodes(this, updateNodes);
         deleteNodesAction_deleteNodes(this);
 
@@ -68,7 +54,7 @@ extends Action
         deleteNodesAction_removeNewConnections(this);
 
         deleteNodesAction_restoreNodes(this);
-        deleteNodesAction_restoreConns(this);
+        deleteNodesAction_restoreOldConnections(this);
         
         deleteNodesAction_activateOldActiveNodes(this);
 
@@ -77,6 +63,19 @@ extends Action
             ...this.newActiveNodeIds]);
 
         deleteNodesAction_cleanup(this);
+    }
+
+
+
+    addOldConnection(conn)
+    {
+        if (!this.oldConnections.find(c => 
+                   c.outputNodeId == conn.output.node.id
+                && c.outputId     == conn.output.id
+                && c.outputOrder  == conn.outputOrder
+                && c. inputNodeId == conn. input.node.id
+                && c. inputId     == conn. input.id))
+            this.oldConnections.push(getConnectionForArrayWithIds(conn));
     }
 
 
@@ -108,14 +107,6 @@ extends Action
             uiMakeNodeActive(output.node);
             pushUnique(this.newActiveNodeIds, output.node.id);
         }
-
-
-        // if (   !activeRight
-        //     && !ignoreNodeIds.includes(input.node.id))
-        // {
-        //     uiMakeNodeActive(input.node);
-        //     pushUnique(this.newActiveNodeIds, input.node.id);
-        // }
         
 
         return updateNodes;
@@ -173,7 +164,7 @@ function deleteNodesAction_restoreNodes(act)
 
 
 
-function deleteNodesAction_restoreConns(act)
+function deleteNodesAction_restoreOldConnections(act)
 {
     const connections    = act.oldConnections.filter(c => !nodeFromId(c.inputNodeId).variableInputs);
     const varConnections = act.oldConnections.filter(c =>  nodeFromId(c.inputNodeId).variableInputs);
@@ -186,8 +177,22 @@ function deleteNodesAction_restoreConns(act)
         return 0;
     });
     
+    deleteNodesAction_updateConnections(connections);
     deleteNodesAction_connect(connections);
+    
+    deleteNodesAction_updateConnections(varConnections);
     deleteNodesAction_connect(varConnections);
+}
+
+
+
+function deleteNodesAction_updateConnections(connections, delta = +1)
+{
+    for (const _conn of connections)
+    {
+        nodeFromId(_conn.outputNodeId).outputFromId(_conn.outputId)
+            .updateSavedConnectionOrder(_conn.outputOrder, delta);
+    }
 }
 
 
@@ -199,8 +204,6 @@ function deleteNodesAction_connect(connections)
         const outputNode = nodeFromId(_conn.outputNodeId);
         const  inputNode = nodeFromId(_conn. inputNodeId);
         
-        outputNode.outputFromId(_conn.outputId).updateSavedConnectionOrder(_conn.outputOrder, +1);
-
         const conn = uiVariableConnect(
             outputNode, _conn.outputId, 
             inputNode,  _conn.inputId,
@@ -274,7 +277,7 @@ function deleteNodesAction_deleteNodes(act)
 
 
 
-function deleteNodesAction_addNewConnections(act)
+function deleteNodesAction_addOldConnections(act)
 {
     for (const nodeId of act.nodeIds)
     {
@@ -285,11 +288,11 @@ function deleteNodesAction_addNewConnections(act)
             node.div.offsetTop));
 
         for (const input of node.inputs.filter(i => i.connected))
-            act.addConnection(input.connection);
+            act.addOldConnection(input.connection);
 
         for (const output of node.outputs)
             for (const input of output.connectedInputs)
-                act.addConnection(input.connection);
+                act.addOldConnection(input.connection);
     }
 }
 

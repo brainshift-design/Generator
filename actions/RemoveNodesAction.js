@@ -2,19 +2,19 @@ class RemoveNodesAction
 extends Action
 {
     nodeIds            = [];
-    prevSelectedIds    = [];
-    
     nodes              = [];
     nodePos            = [];
-
+    
+    prevSelectedIds    = [];
+    
     oldConnections     = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
     newConnections     = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
 
     clusterActiveLeft  = [];
     clusterActiveRight = [];
     
-    newActiveNodeIds   = [];
     oldActiveNodeIds   = [];
+    newActiveNodeIds   = [];
 
 
 
@@ -31,17 +31,16 @@ extends Action
 
     do()
     {
-        this.newActiveNodeIds = [];
         this.oldActiveNodeIds = [];
+        this.newActiveNodeIds = [];
         const updateNodes     = [];
 
         deleteNodesAction_saveActiveNodes(this);
 
-
-        this.newConnections = [];
         this.prepareReconnections();
 
-        deleteNodesAction_addNewConnections(this);
+        deleteNodesAction_addOldConnections(this);
+
 
         deleteNodesAction_getUpdateNodes(this, updateNodes);
         deleteNodesAction_deleteNodes(this);
@@ -52,6 +51,7 @@ extends Action
 
         uiSaveNodes(this.newActiveNodeIds);
        
+        console.log('RemoveNodesAction updateNodes =', updateNodes);
         pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
     }
 
@@ -62,7 +62,7 @@ extends Action
         deleteNodesAction_removeNewConnections(this);
 
         deleteNodesAction_restoreNodes(this);
-        deleteNodesAction_restoreConns(this);
+        deleteNodesAction_restoreOldConnections(this);
         
         deleteNodesAction_activateOldActiveNodes(this);
 
@@ -75,7 +75,7 @@ extends Action
 
 
 
-    addConnection(conn)
+    addOldConnection(conn)
     {
         if (!this.oldConnections.find(c => 
                    c.outputNodeId == conn.output.node.id
@@ -122,6 +122,7 @@ extends Action
                 }
             }
         }
+
 
         this.clusterActiveLeft  = [];
         this.clusterActiveRight = [];
