@@ -45529,28 +45529,28 @@ extends Action
 
         const activeLeft     = getActiveLeftFromNode(output.node);
         const activeLeftOnly = getActiveLeftOnlyFromNode(output.node);
-        const activeRight    = getActiveRightFromNode(input.node);
+        const activeRight    = getActiveRightFromNode(output.node);
 
 
         if (  !activeLeftOnly
             && activeLeft != activeRight)
-        {
-            if (!ignoreNodeIds.includes(output.node.id))
-            {
-                uiMakeNodeActive(output.node);
-                pushUnique(this.newActiveNodeIds, output.node.id);
-            }
-
             updateNodes.push(output.node);
-        }
 
 
         if (   !activeRight
-            && !ignoreNodeIds.includes(input.node.id))
+            && !ignoreNodeIds.includes(output.node.id))
         {
-            uiMakeNodeActive(input.node);
-            pushUnique(this.newActiveNodeIds, input.node.id);
+            uiMakeNodeActive(output.node);
+            pushUnique(this.newActiveNodeIds, output.node.id);
         }
+
+
+        // if (   !activeRight
+        //     && !ignoreNodeIds.includes(input.node.id))
+        // {
+        //     uiMakeNodeActive(input.node);
+        //     pushUnique(this.newActiveNodeIds, input.node.id);
+        // }
         
 
         return updateNodes;

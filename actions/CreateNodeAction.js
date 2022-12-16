@@ -6,7 +6,7 @@ extends Action
 
     prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
 
-    oldActiveNodeId = '';
+    oldInputActiveNodeId = '';
 
 
     autoConnect;
@@ -51,7 +51,7 @@ extends Action
 
         if (autoConnect)
         {
-            this.oldActiveNodeId = idFromNode(getActiveFromNodeId(this.prevSelectedIds[0]));
+            this.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(this.prevSelectedIds[0]));
 
             const selNode = nodeFromId(this.prevSelectedIds[0]);
             const inputs  = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
@@ -91,19 +91,13 @@ extends Action
             
         uiDeleteNodes([this.createdNodeId]);
 
-
-        if (this.oldActiveNodeId != '')
-        {
-            const oldInputActiveNode = nodeFromId(this.oldActiveNodeId);
-            
-            uiMakeNodeActive(oldInputActiveNode);
-            pushUpdate([oldInputActiveNode]);
-
-            this.oldActiveNodeId = '';
-        }
+        createNodeAction_activateOldInput(this);
 
         
         graphView.selectByIds(this.prevSelectedIds);
+
+
+        this.newConnections = [];
     }
 }
 
@@ -124,4 +118,19 @@ function createNodeAction_connect(act, output, input)
     });
 
     return conn;
+}
+
+
+
+function createNodeAction_activateOldInput(act)
+{
+    if (act.oldInputActiveNodeId != '')
+    {
+        const oldInputActiveNode = nodeFromId(act.oldInputActiveNodeId);
+        
+        uiMakeNodeActive(oldInputActiveNode);
+        pushUpdate([oldInputActiveNode]);
+
+        act.oldInputActiveNodeId = '';
+    }
 }
