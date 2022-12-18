@@ -24,6 +24,8 @@ class Output
 
     connectedInputs = [];
 
+    get connectedHeaderInputs() { return this.connectedInputs.filter(i => !i.param); }
+
 
     mouseOver       = false;
     connecting      = false;

@@ -342,21 +342,32 @@ function getActiveLeftOnlyFromNode(node, alreadyChecked = [])
 
 
 
-function getActiveRightFromNode(node, alreadyChecked = [])
+function getActiveRightFromNode(node, includeParams = false, alreadyChecked = [])
 {
     if (    node.active
         && !alreadyChecked.includes(node)) 
         return node;
 
 
-    for (const output of node.headerOutputs)
+    const outputs = 
+        includeParams 
+        ? node.outputs 
+        : node.headerOutputs;
+
+    for (const output of outputs)
     {
-        for (const input of output.connectedInputs.filter(i => !i.param))
+        const connectedInputs = 
+            includeParams 
+            ? output.connectedInputs
+            : output.connectedHeaderInputs;
+
+        for (const input of connectedInputs.filter(i => !i.param))
         {
             if (!alreadyChecked.includes(input.node))
             {
                 const rightActive = getActiveRightFromNode(
                     input.node, 
+                    includeParams,
                     [...alreadyChecked, node]);
 
                 if (rightActive) return rightActive;

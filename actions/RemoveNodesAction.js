@@ -63,7 +63,7 @@ extends Action
         
         deleteNodesAction_activateOldActiveNodes(this);
 
-        
+
         uiSaveNodes([
             ...this.nodeIds,
             ...this.newActiveNodeIds]);
@@ -127,8 +127,8 @@ extends Action
 
         for (const cluster of clusters)
         {
-            this.clusterActiveLeft .push(getActiveLeftFromNode (firstOf(cluster), [firstOf(cluster)]));
-            this.clusterActiveRight.push(getActiveRightFromNode(lastOf (cluster), [lastOf (cluster)]));
+            this.clusterActiveLeft .push(getActiveLeftFromNode (firstOf(cluster),        [firstOf(cluster)]));
+            this.clusterActiveRight.push(getActiveRightFromNode(lastOf (cluster), false, [lastOf (cluster)]));
         }
     }
 

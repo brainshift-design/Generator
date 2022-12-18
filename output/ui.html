@@ -36354,21 +36354,32 @@ function getActiveLeftOnlyFromNode(node, alreadyChecked = [])
 
 
 
-function getActiveRightFromNode(node, alreadyChecked = [])
+function getActiveRightFromNode(node, includeParams = false, alreadyChecked = [])
 {
     if (    node.active
         && !alreadyChecked.includes(node)) 
         return node;
 
 
-    for (const output of node.headerOutputs)
+    const outputs = 
+        includeParams 
+        ? node.outputs 
+        : node.headerOutputs;
+
+    for (const output of outputs)
     {
-        for (const input of output.connectedInputs.filter(i => !i.param))
+        const connectedInputs = 
+            includeParams 
+            ? output.connectedInputs
+            : output.connectedHeaderInputs;
+
+        for (const input of connectedInputs.filter(i => !i.param))
         {
             if (!alreadyChecked.includes(input.node))
             {
                 const rightActive = getActiveRightFromNode(
                     input.node, 
+                    includeParams,
                     [...alreadyChecked, node]);
 
                 if (rightActive) return rightActive;
@@ -36765,6 +36776,8 @@ class Output
 
 
     connectedInputs = [];
+
+    get connectedHeaderInputs() { return this.connectedInputs.filter(i => !i.param); }
 
 
     mouseOver       = false;
@@ -45611,20 +45624,22 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
     uiDisconnect(input);
 
 
-    const activeLeft     = getActiveLeftFromNode    (output.node);
-    const activeLeftOnly = getActiveLeftOnlyFromNode(output.node);
-    const activeRight    = getActiveRightFromNode   (output.node);
+    const activeLeft        = getActiveLeftFromNode    (output.node);
+    const activeLeftOnly    = getActiveLeftOnlyFromNode(output.node);
+    const activeRight       = getActiveRightFromNode   (output.node);
+    const activeRightHeader = getActiveRightFromNode   (output.node, true);
     
     if (  !activeLeftOnly
         && activeLeft != activeRight)
         pushUnique(updateNodes, output.node);
 
 
-    if (   !activeRight
+    if (   !activeRightHeader
         && !ignoreNodeIds.includes(output.node.id))
     {
         uiMakeNodeActive(output.node);
         pushUnique(act.newActiveNodeIds, output.node.id);
+        pushUnique(updateNodes, output.node);
     }
     
 
@@ -46276,7 +46291,7 @@ extends Action
         
         deleteNodesAction_activateOldActiveNodes(this);
 
-        
+
         uiSaveNodes([
             ...this.nodeIds,
             ...this.newActiveNodeIds]);
@@ -46340,8 +46355,8 @@ extends Action
 
         for (const cluster of clusters)
         {
-            this.clusterActiveLeft .push(getActiveLeftFromNode (firstOf(cluster), [firstOf(cluster)]));
-            this.clusterActiveRight.push(getActiveRightFromNode(lastOf (cluster), [lastOf (cluster)]));
+            this.clusterActiveLeft .push(getActiveLeftFromNode (firstOf(cluster),        [firstOf(cluster)]));
+            this.clusterActiveRight.push(getActiveRightFromNode(lastOf (cluster), false, [lastOf (cluster)]));
         }
     }
 
