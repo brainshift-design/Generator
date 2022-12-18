@@ -190,7 +190,6 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
             pasteConnected ? -1 : outputOrder);
 
         _conn.outputOrder = conn.outputOrder;
-        //conn.outputOrder = outputOrder;
 
         return conn;
     }

@@ -32,11 +32,9 @@ extends Action
         this.newActiveNodeIds = [];
         const updateNodes     = [];
 
+
         deleteNodesAction_saveActiveNodes(this);
-
-        deleteNodesAction_addOldConnections(this);
-        deleteNodesAction_updateConnections(this.oldConnections, -1);
-
+        deleteNodesAction_saveOldConnections(this);
         
         deleteNodesAction_getUpdateNodes(this, updateNodes);
         deleteNodesAction_deleteNodes(this);
@@ -58,6 +56,7 @@ extends Action
         
         deleteNodesAction_activateOldActiveNodes(this);
 
+
         uiSaveNodes([
             ...this.nodeIds,
             ...this.newActiveNodeIds]);
@@ -77,40 +76,6 @@ extends Action
                 && c. inputId     == conn. input.id))
             this.oldConnections.push(getConnectionForArrayWithIds(conn));
     }
-
-
-
-    disconnect(input, ignoreNodeIds = [])
-    {
-        //console.log('disconnect');
-
-        const output      = input.connectedOutput;
-        const updateNodes = [input.node];        
-
-
-        uiDisconnect(input);
-
-
-        const activeLeft     = getActiveLeftFromNode(output.node);
-        const activeLeftOnly = getActiveLeftOnlyFromNode(output.node);
-        const activeRight    = getActiveRightFromNode(output.node);
-
-
-        if (  !activeLeftOnly
-            && activeLeft != activeRight)
-            updateNodes.push(output.node);
-
-
-        if (   !activeRight
-            && !ignoreNodeIds.includes(output.node.id))
-        {
-            uiMakeNodeActive(output.node);
-            pushUnique(this.newActiveNodeIds, output.node.id);
-        }
-        
-
-        return updateNodes;
-    }
 }
 
 
@@ -119,6 +84,27 @@ function deleteNodesAction_saveActiveNodes(act)
 {
     for (const nodeId of act.nodeIds)
         pushUnique(act.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
+}
+
+
+
+function deleteNodesAction_saveOldConnections(act)
+{
+    for (const nodeId of act.nodeIds)
+    {
+        const node = nodeFromId(nodeId);
+
+        act.nodePos.push(point(
+            node.div.offsetLeft, 
+            node.div.offsetTop));
+
+        for (const input of node.inputs.filter(i => i.connected))
+            act.addOldConnection(input.connection);
+
+        for (const output of node.outputs)
+            for (const input of output.connectedInputs)
+                act.addOldConnection(input.connection);
+    }
 }
 
 
@@ -177,22 +163,41 @@ function deleteNodesAction_restoreOldConnections(act)
         return 0;
     });
     
-    deleteNodesAction_updateConnections(connections);
     deleteNodesAction_connect(connections);
-    
-    deleteNodesAction_updateConnections(varConnections);
     deleteNodesAction_connect(varConnections);
 }
 
 
 
-function deleteNodesAction_updateConnections(connections, delta = +1)
+function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
 {
-    for (const _conn of connections)
+    // console.log('deleteNodesAction_disconnect');
+
+    const output      = input.connectedOutput;
+    const updateNodes = [input.node];        
+
+
+    uiDisconnect(input);
+
+
+    const activeLeft     = getActiveLeftFromNode    (output.node);
+    const activeLeftOnly = getActiveLeftOnlyFromNode(output.node);
+    const activeRight    = getActiveRightFromNode   (output.node);
+    
+    if (  !activeLeftOnly
+        && activeLeft != activeRight)
+        pushUnique(updateNodes, output.node);
+
+
+    if (   !activeRight
+        && !ignoreNodeIds.includes(output.node.id))
     {
-        nodeFromId(_conn.outputNodeId).outputFromId(_conn.outputId)
-            .updateSavedConnectionOrder(_conn.outputOrder, delta);
+        uiMakeNodeActive(output.node);
+        pushUnique(act.newActiveNodeIds, output.node.id);
     }
+    
+
+    return updateNodes;
 }
 
 
@@ -204,6 +209,9 @@ function deleteNodesAction_connect(connections)
         const outputNode = nodeFromId(_conn.outputNodeId);
         const  inputNode = nodeFromId(_conn. inputNodeId);
         
+        outputNode.outputFromId(_conn.outputId)
+            .updateSavedConnectionOrder(_conn.outputOrder, +1);
+
         const conn = uiVariableConnect(
             outputNode, _conn.outputId, 
             inputNode,  _conn.inputId,
@@ -222,21 +230,21 @@ function deleteNodesAction_getUpdateNodes(act, updateNodes)
         const node = nodeFromId(nodeId);
 
 
-        const nodeInputs = [...node.inputs.filter(i => i.connected)];
-
+        const nodeInputs = node.inputs.filter(i => i.connected);
+        
         for (let i = nodeInputs.length-1; i >= 0; i--)
         {
             const input       = nodeInputs[i];
             const output      = input.connectedOutput;
             const outputOrder = input.connection.outputOrder;
             
-            uiDeleteSavedConn(nodeInputs[i].connection);
-            updateNodes.push(...act.disconnect(nodeInputs[i], act.nodeIds));
+            uiDeleteSavedConn(input.connection);
+            pushUnique(updateNodes, deleteNodesAction_disconnect(act, input, act.nodeIds));
 
             output.updateSavedConnectionOrder(outputOrder, -1);
         }
 
-            
+        
         for (const output of node.outputs)
         {
             const connectedInputs = [...output.connectedInputs];
@@ -260,7 +268,7 @@ function deleteNodesAction_getUpdateNodes(act, updateNodes)
             for (const input of connectedInputs)
             {
                 uiDeleteSavedConn(input.connection);
-                updateNodes.push(...act.disconnect(input, act.nodeIds));
+                pushUnique(updateNodes, deleteNodesAction_disconnect(act, input, act.nodeIds));
                 // don't need to update order as the output is deleted
             }
         }
@@ -273,27 +281,6 @@ function deleteNodesAction_deleteNodes(act)
 {
     uiDeleteNodes(act.nodeIds);
     uiDeleteObjects(act.oldActiveNodeIds); // clean up now irrelevant objects
-}
-
-
-
-function deleteNodesAction_addOldConnections(act)
-{
-    for (const nodeId of act.nodeIds)
-    {
-        const node = nodeFromId(nodeId);
-
-        act.nodePos.push(point(
-            node.div.offsetLeft, 
-            node.div.offsetTop));
-
-        for (const input of node.inputs.filter(i => i.connected))
-            act.addOldConnection(input.connection);
-
-        for (const output of node.outputs)
-            for (const input of output.connectedInputs)
-                act.addOldConnection(input.connection);
-    }
 }
 
 
