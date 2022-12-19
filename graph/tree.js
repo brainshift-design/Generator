@@ -177,10 +177,10 @@ function getTerminalsAfterParam(param)
 
     for (const input of param.output.connectedInputs)
     {
-        if (   input.param 
-            && (   !input.param.output
-                || !input.param.output.connected))
-            pushUnique(after, input.node);
+        // if (   input.param 
+        //     && (   !input.param.output
+        //         || !input.param.output.connected))
+        //     pushUnique(after, input.node);
 
         pushUnique(after, getTerminalsAfterNode(input.node));
     }

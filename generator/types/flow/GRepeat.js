@@ -38,8 +38,7 @@ extends GOperator
             return this;
 
 
-        this.count = this.count.eval(parse).copy();
-        const count = this.count.toValue();        
+        const count = this.count.eval(parse).toValue();
 
        
         this.value = new ListValue();
@@ -48,16 +47,15 @@ extends GOperator
         {
             for (let i = 0; i < count.value; i++)
             {
-                this.input = this.input.eval(parse).copy();
-                const input = this.input.toValue();
+                const input = this.input.eval(parse).toValue();
 
                 if (input.type == LIST_VALUE)
                 {
                     for (const item of input.items)
-                        this.value.items.push(item.toValue());   
+                        this.value.items.push(item);
                 }
                 else
-                    this.value.items.push(input.toValue());
+                    this.value.items.push(input);
             }
         }
 

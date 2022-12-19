@@ -39,9 +39,9 @@ extends GNumberType
 
         if (!this.valid)
         {
-            this.seed = this.seed.eval(parse).copy();
-            this.min  = this.min .eval(parse).copy();
-            this.max  = this.max .eval(parse).copy();
+            this.seed.eval(parse);
+            this.min .eval(parse);
+            this.max .eval(parse);
         }
 
 
