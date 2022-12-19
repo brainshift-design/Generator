@@ -31,7 +31,7 @@ class Random
         // this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
         // this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
 
-        return this.seed++;// / -0x7fffffff;
+        return ++this.seed;// / -0x7fffffff;
     }
 
 }

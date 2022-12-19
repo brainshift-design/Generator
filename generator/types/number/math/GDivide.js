@@ -24,6 +24,7 @@ extends GArithmetic
             return this;
 
         evalNodeValue(this, (a, b) => a / b, true, parse);
+        
         this.validate();
 
         return this;

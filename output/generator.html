@@ -1694,7 +1694,7 @@ class Random
         // this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
         // this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
 
-        return this.seed++;// / -0x7fffffff;
+        return ++this.seed;// / -0x7fffffff;
     }
 
 }
@@ -2601,6 +2601,15 @@ function logFunction(funcName, obj = null)
     console.log(
         '%c ' + str + ' ', 
         'background: #fc0; color: #632;');
+}
+
+
+
+function logString(str, color = 'white', background = 'red')
+{
+    console.log(
+        '%c ' + str + ' ', 
+        'background: ' + background + '; color: ' + color + ';');
 }
 
 
@@ -5738,6 +5747,8 @@ extends GOperator
 
     eval(parse)
     {
+        logString('GItems.eval()', 'white', 'green');
+
         if (this.isCached())
             return this;
 
@@ -5885,6 +5896,8 @@ extends GOperator
 
     eval(parse)
     {
+        logString('GRepeat.eval()', 'black', 'yellow');
+
         if (this.isCached())
             return this;
 
@@ -6273,7 +6286,7 @@ extends GNumberType
     min;
     max;
 
-    random;
+    random = null;
 
 
 
@@ -6290,9 +6303,9 @@ extends GNumberType
 
         rnd.copyBase(this);
 
-        if (this.seed  ) rnd.seed   = this.seed.copy();
-        if (this.min   ) rnd.min    = this.min .copy();
-        if (this.max   ) rnd.max    = this.max .copy();
+        if (this.seed  ) rnd.seed   = this.seed  .copy();
+        if (this.min   ) rnd.min    = this.min   .copy();
+        if (this.max   ) rnd.max    = this.max   .copy();
 
         if (this.random) rnd.random = this.random.copy();
 
@@ -6303,6 +6316,8 @@ extends GNumberType
 
     eval(parse)
     {
+        logString('GRandom.eval()');
+
         if (!this.valid)
         {
             this.seed = this.seed.eval(parse).copy();
@@ -6317,14 +6332,20 @@ extends GNumberType
     
 
         if (!this.valid)
+        {
+        //if (!this.random)
             this.random = new Random(seed.value);
-        
+            console.log('new random');
+        }
 
+        
         this.value = new NumberValue(this.random.next(),
             //min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
 
-            
+        console.log('random.seed =', this.random.seed);
+
+
         if (!this.valid)
         {
             genPushUpdateValue(parse, this.nodeId, 'seed', seed);
@@ -6591,6 +6612,7 @@ extends GArithmetic
             return this;
 
         evalNodeValue(this, (a, b) => a / b, true, parse);
+        
         this.validate();
 
         return this;
@@ -6657,6 +6679,7 @@ extends GArithmetic
             return this;
 
         evalNodeValue(this, (a, b) => Math.pow(a, b), false, parse);
+        
         this.validate();
 
         return this;
@@ -7233,11 +7256,13 @@ extends GColorType
 
     eval(parse)
     {
+        logString('GColor.eval()', 'white', 'orange');
+
         if (this.isCached())
             return this;
 
             
-        if (this.space) this.space = this.space.eval(parse).copy();
+        if (this.space) this.space = this.space.eval(parse).copy(); 
         if (this.c1   ) this.c1    = this.c1   .eval(parse).copy();
         if (this.c2   ) this.c2    = this.c2   .eval(parse).copy();
         if (this.c3   ) this.c3    = this.c3   .eval(parse).copy();
@@ -9761,6 +9786,7 @@ var lastUpdateNodeId  = NULL;
 var lastUpdateParamId = NULL;
 var lastUpdateValues  = [];
 var lastUpdateObjects = [];
+
 
 
 function genRequest(request)

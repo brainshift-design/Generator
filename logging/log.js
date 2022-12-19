@@ -47,6 +47,15 @@ function logFunction(funcName, obj = null)
 
 
 
+function logString(str, color = 'white', background = 'red')
+{
+    console.log(
+        '%c ' + str + ' ', 
+        'background: ' + background + '; color: ' + color + ';');
+}
+
+
+
 function logValueUpdates(updateNodeId, updateParamId, values)
 {
     //console.log('values = ', values);

@@ -44,11 +44,13 @@ extends GColorType
 
     eval(parse)
     {
+        logString('GColor.eval()', 'white', 'orange');
+
         if (this.isCached())
             return this;
 
             
-        if (this.space) this.space = this.space.eval(parse).copy();
+        if (this.space) this.space = this.space.eval(parse).copy(); 
         if (this.c1   ) this.c1    = this.c1   .eval(parse).copy();
         if (this.c2   ) this.c2    = this.c2   .eval(parse).copy();
         if (this.c3   ) this.c3    = this.c3   .eval(parse).copy();

@@ -1041,22 +1041,15 @@ function pushUpdateFromParam(nodes, param)
 
     const gen = createGenObject(param ? param.node : null);
 
-        
+        //console.log('nodes =', nodes);
     nodes.forEach(n => n.invalidate());
 
         
     const terminals = [];
-    
-    nodes.forEach(n => pushUnique(
-        terminals, 
-        getTerminalsAfterNode(n)));
-
+    nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
 
     const progressNodes = [];
-
-    nodes.forEach(n => pushUnique(
-        progressNodes, 
-        getProgressNodesAfterNode(n)));
+    nodes.forEach(n => pushUnique(progressNodes, getProgressNodesAfterNode(n)));
 
 
     for (const node of terminals)
