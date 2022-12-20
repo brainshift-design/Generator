@@ -76,17 +76,17 @@ function logValueUpdates(updateNodeId, updateParamId, values)
     while (i < values.length)
     {
         const nodeId  = values[i++];
-        const nValues = parseInt(values[i++]);
+        const nInputs = parseInt(values[i++]);
 
         log += 
               (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
-            + nodeId;// + ' ' + nValues;
+            + nodeId;// + ' ' + nInputs;
 
         newLine = true;
 
         nTab++;
 
-        for (let j = 0; j < nValues; j++)
+        for (let j = 0; j < nInputs; j++)
         {
             const index = values[i++];
             const type  = values[i++];

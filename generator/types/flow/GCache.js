@@ -25,20 +25,17 @@ extends GOperator
     }
 
 
-
+// 
     eval(parse)
     {
         if (this.valid)//isCached())
             return this;
 
 
-        if (this.input)
-        {
-            this.input = this.input.eval(parse).copy();
-            this.value = this.input.toValue();
-        }
-        else
-            this.value = null;
+        this.value = 
+            this.input
+            ? this.input.eval(parse).copy().toValue()
+            : null;
 
 
         if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);

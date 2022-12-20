@@ -20,14 +20,14 @@ function genParseList(parse)
     const list = new GList(nodeId, options);
 
     
-    let nValues = 0;
+    let nInputs = 0;
     
     if (!ignore)
-        nValues = parseInt(parse.move());
+        nInputs = parseInt(parse.move());
 
 
     if (parse.settings.logRequests) 
-        logReqList(list, nValues, parse);
+        logReqList(list, nInputs, parse);
 
 
     if (ignore) 
@@ -40,7 +40,7 @@ function genParseList(parse)
     parse.nTab++;
 
     
-    for (let i = 0; i < nValues; i++)
+    for (let i = 0; i < nInputs; i++)
         list.inputs.push(genParse(parse));
 
 
@@ -61,17 +61,17 @@ function genParseItems(parse)
     const items = new GItems(nodeId, options);
 
     
-    let nValues = -1;
+    let nInputs = -1;
     
     if (!ignore)
     {
-        nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
     if (parse.settings.logRequests) 
-        logReqItems(items, nValues, parse);
+        logReqItems(items, nInputs, parse);
 
 
     if (ignore) 
@@ -84,7 +84,7 @@ function genParseItems(parse)
     parse.nTab++;
 
 
-    if (nValues == 1)
+    if (nInputs == 1)
         items.input = genParse(parse);
 
 
@@ -105,17 +105,17 @@ function genParseStart(parse)
     const rep = new GStart(nodeId, options);
 
 
-    let nValues = -1;
+    let nInputs = -1;
     
     if (!ignore)
     {
-        nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
     if (parse.settings.logRequests) 
-        logReqCache(rep, nValues, parse);
+        logReqCache(rep, nInputs, parse);
 
 
     if (ignore) 
@@ -128,7 +128,7 @@ function genParseStart(parse)
     parse.nTab++;
 
 
-    if (nValues == 1)
+    if (nInputs == 1)
         rep.input = genParse(parse);
 
 
@@ -149,17 +149,17 @@ function genParseRepeat(parse)
     const rep = new GRepeat(nodeId, options);
 
 
-    let nValues = -1;
+    let nInputs = -1;
     
     if (!ignore)
     {
-        nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
     if (parse.settings.logRequests) 
-        logReqRepeat(rep, nValues, parse);
+        logReqRepeat(rep, nInputs, parse);
 
 
     if (ignore) 
@@ -172,7 +172,7 @@ function genParseRepeat(parse)
     parse.nTab++;
 
 
-    if (nValues == 1)
+    if (nInputs == 1)
         rep.input = genParse(parse);
 
     rep.count = genParse(parse);
@@ -195,17 +195,17 @@ function genParseCache(parse)
     const rep = new GCache(nodeId, options);
 
 
-    let nValues = -1;
+    let nInputs = -1;
     
     if (!ignore)
     {
-        nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
     if (parse.settings.logRequests) 
-        logReqCache(rep, nValues, parse);
+        logReqCache(rep, nInputs, parse);
 
 
     if (ignore) 
@@ -218,7 +218,7 @@ function genParseCache(parse)
     parse.nTab++;
 
 
-    if (nValues == 1)
+    if (nInputs == 1)
         rep.input = genParse(parse);
 
 

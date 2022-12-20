@@ -32,7 +32,7 @@ extends GOperator
 
     eval(parse)
     {
-        logString('GItems.eval()', 'white', 'green');
+        //logString('GItems.eval()', 'white', 'green');
 
         if (this.isCached())
             return this;

@@ -20,8 +20,17 @@ function genParseColor(parse)
     const col = new GColor(nodeId, options);
 
   
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
-        logReqColor(col, parse);
+        logReqColor(col, nInputs, parse);
 
 
     if (ignore) 
@@ -36,15 +45,19 @@ function genParseColor(parse)
     
     let paramIds;
 
-    if (   COLOR_TYPES.includes(parse.next)
-        ||    parse.next == PARAM
-           && COLOR_TYPES.includes(parse.afterNext))
+    if (nInputs == 1)
     {
         col.input = genParse(parse);
-        paramIds  = parse.move().split(',');
+        paramIds = parse.move().split(',');
     }
     else
         paramIds = ['space', 'convert', 'c1', 'c2', 'c3'];
+
+
+
+    // if (   COLOR_TYPES.includes(parse.next)
+    //     ||    parse.next == PARAM
+    //        && COLOR_TYPES.includes(parse.afterNext))
 
     
     parse.inParam = false;
@@ -79,17 +92,17 @@ function genParseColorInterpolate(parse)
     const lerp = new GColorInterpolate(nodeId, options);
 
 
-    let nValues = -1;
+    let nInputs = -1;
 
     if (!ignore)
     {
-        nValues = parse.move();
-        console.assert(nValues => 0 && nValues <= 2, 'nValues must be [0, 2]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
     if (parse.settings.logRequests) 
-        logReqColorInterpolate(lerp, nValues, parse);
+        logReqColorInterpolate(lerp, nInputs, parse);
 
 
     if (ignore) 
@@ -102,17 +115,17 @@ function genParseColorInterpolate(parse)
     parse.nTab++;
 
 
-    if (nValues == 2)
+    if (nInputs == 2)
     {
         lerp.input0 = genParse(parse);
         lerp.input1 = genParse(parse);
     }
 
-    else if (nValues == 1)
+    else if (nInputs == 1)
         lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
 
-    else if (nValues != 0)
-        console.assert(false, 'nValues must be [0, 2]');
+    else if (nInputs != 0)
+        console.assert(false, 'nInputs must be [0, 2]');
 
 
     lerp.space  = genParse(parse);
@@ -137,23 +150,23 @@ function genParseColorContrast(parse)
     const cnt = new GColorContrast(nodeId, options);
 
 
-    let nValues = -1;
+    let nInputs = -1;
 
     if (!ignore)
     {
-        nValues = parse.move();
-        console.assert(nValues => 0 && nValues <= 2, 'nValues must be [0, 2]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
 
     const valueIndex = 
-        nValues == 1
+        nInputs == 1
         ? parseInt(parse.move())
         : -1;
 
     
-        if (parse.settings.logRequests) 
-        logReqColorContrast(cnt, nValues, valueIndex, parse);
+    if (parse.settings.logRequests) 
+        logReqColorContrast(cnt, nInputs, valueIndex, parse);
 
 
     if (ignore) 
@@ -165,20 +178,20 @@ function genParseColorContrast(parse)
 
     parse.nTab++;
 
-    if (nValues == 2)
+    if (nInputs == 2)
     {
         cnt.input0   = genParse(parse);
         cnt.input1   = genParse(parse);
         cnt.standard = genParse(parse);
     }
-    else if (nValues == 1)
+    else if (nInputs == 1)
     {
              if (valueIndex == 0) cnt.input0 = genParse(parse); 
         else if (valueIndex == 1) cnt.input1 = genParse(parse); 
 
         cnt.standard = genParse(parse);
     }
-    else if (nValues == 0)
+    else if (nInputs == 0)
     {
         cnt.standard = genParse(parse);
     }

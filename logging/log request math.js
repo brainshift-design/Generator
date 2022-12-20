@@ -13,13 +13,13 @@ function logReqNumber(num, parse)
 
 
 
-function logReqLimits(lim, nValues, parse)
+function logReqLimits(lim, nInputs, parse)
 {
     parse.log += parse.tab + NUMBER_LIMITS;
     parse.log += logReqNodeId(lim);
 
-    if (nValues > -1)
-        parse.log += ' ' + nValues;
+    if (nInputs > -1)
+        parse.log += ' ' + nInputs;
 }
 
 
@@ -32,27 +32,27 @@ function logReqRandom(rnd, parse)
 
 
 
-function logReqMath(math, nValues, parse)
+function logReqMath(math, nInputs, parse)
 {
     parse.log += parse.tab + NUMBER_MATH;
     parse.log += logReqNodeId(math);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqArithmetic(arith, type, nValues, parse)
+function logReqArithmetic(arith, type, nInputs, parse)
 {
     parse.log += parse.tab + type;
     parse.log += logReqNodeId(arith);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqInterpolate(lerp, nValues, parse)
+function logReqInterpolate(lerp, nInputs, parse)
 {
     parse.log += parse.tab + NUMBER_INTERPOLATE;
     parse.log += logReqNodeId(lerp);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }

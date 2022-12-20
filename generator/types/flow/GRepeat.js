@@ -32,7 +32,7 @@ extends GOperator
 
     eval(parse)
     {
-        logString('GRepeat.eval()', 'black', 'yellow');
+        //logString('GRepeat.eval()', 'black', 'yellow');
 
         if (this.isCached())
             return this;

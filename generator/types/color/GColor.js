@@ -44,7 +44,7 @@ extends GColorType
 
     eval(parse)
     {
-        logString('GColor.eval()', 'white', 'orange');
+        //logString('GColor.eval()', 'white', 'orange');
 
         if (this.isCached())
             return this;
@@ -55,6 +55,8 @@ extends GColorType
         const c2    = this.c2    ? this.c2   .eval(parse).toValue() : null;
         const c3    = this.c3    ? this.c3   .eval(parse).toValue() : null;
 
+        //console.log('space =', space);
+        //console.log('this.input =', this.input);
 
         if (this.input)
         {
@@ -69,6 +71,7 @@ extends GColorType
                     input.c2, 
                     input.c3);
                     
+                //console.log('1 this.value =', this.value);
 
                 const fromSpaceIndex = input.space.value;
 
@@ -101,7 +104,7 @@ extends GColorType
         else
         {
             this.value = new ColorValue(space, c1, c2, c3);
-
+//console.log('2 this.value =', this.value);
             const toSpaceIndex = Math.min(Math.max(
                 0,
                 Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
@@ -127,9 +130,9 @@ extends GColorType
         // if (this.options.enabled)
         // {
             genPushUpdateValue(parse, this.nodeId, 'space', this.value.space, true);
-            genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   );
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1         );
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2         );
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3         );
         // }
 
 

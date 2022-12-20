@@ -5,45 +5,45 @@ function logReqListValue(list, parse)
 
 
 
-function logReqList(list, nValues, parse)
+function logReqList(list, nInputs, parse)
 {
     parse.log += parse.tab + LIST;
     parse.log += logReqNodeId(list);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqItems(items, nValues, parse)
+function logReqItems(items, nInputs, parse)
 {
     parse.log += parse.tab + ITEMS;
     parse.log += logReqNodeId(items);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqStart(rep, nValues, parse)
+function logReqStart(rep, nInputs, parse)
 {
     parse.log += parse.tab + START;
     parse.log += logReqNodeId(rep);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqRepeat(rep, nValues, parse)
+function logReqRepeat(rep, nInputs, parse)
 {
     parse.log += parse.tab + REPEAT;
     parse.log += logReqNodeId(rep);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqCache(rep, nValues, parse)
+function logReqCache(rep, nInputs, parse)
 {
     parse.log += parse.tab + CACHE;
     parse.log += logReqNodeId(rep);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }

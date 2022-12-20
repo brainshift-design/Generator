@@ -4020,14 +4020,14 @@ class Random
     {
         this.last = this.seed;
         
-        // this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
-        // this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
-        // this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
-        // this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
-        // this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
-        // this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
+        this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
+        this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
+        this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
+        this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
+        this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
+        this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
 
-        return ++this.seed;// / -0x7fffffff;
+        return this.seed / -0x7fffffff;
     }
 
 }
@@ -4967,17 +4967,17 @@ function logValueUpdates(updateNodeId, updateParamId, values)
     while (i < values.length)
     {
         const nodeId  = values[i++];
-        const nValues = parseInt(values[i++]);
+        const nInputs = parseInt(values[i++]);
 
         log += 
               (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
-            + nodeId;// + ' ' + nValues;
+            + nodeId;// + ' ' + nInputs;
 
         newLine = true;
 
         nTab++;
 
-        for (let j = 0; j < nValues; j++)
+        for (let j = 0; j < nInputs; j++)
         {
             const index = values[i++];
             const type  = values[i++];
@@ -5189,47 +5189,47 @@ function logReqListValue(list, parse)
 
 
 
-function logReqList(list, nValues, parse)
+function logReqList(list, nInputs, parse)
 {
     parse.log += parse.tab + LIST;
     parse.log += logReqNodeId(list);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqItems(items, nValues, parse)
+function logReqItems(items, nInputs, parse)
 {
     parse.log += parse.tab + ITEMS;
     parse.log += logReqNodeId(items);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqStart(rep, nValues, parse)
+function logReqStart(rep, nInputs, parse)
 {
     parse.log += parse.tab + START;
     parse.log += logReqNodeId(rep);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqRepeat(rep, nValues, parse)
+function logReqRepeat(rep, nInputs, parse)
 {
     parse.log += parse.tab + REPEAT;
     parse.log += logReqNodeId(rep);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqCache(rep, nValues, parse)
+function logReqCache(rep, nInputs, parse)
 {
     parse.log += parse.tab + CACHE;
     parse.log += logReqNodeId(rep);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
@@ -5248,13 +5248,13 @@ function logReqNumber(num, parse)
 
 
 
-function logReqLimits(lim, nValues, parse)
+function logReqLimits(lim, nInputs, parse)
 {
     parse.log += parse.tab + NUMBER_LIMITS;
     parse.log += logReqNodeId(lim);
 
-    if (nValues > -1)
-        parse.log += ' ' + nValues;
+    if (nInputs > -1)
+        parse.log += ' ' + nInputs;
 }
 
 
@@ -5267,29 +5267,29 @@ function logReqRandom(rnd, parse)
 
 
 
-function logReqMath(math, nValues, parse)
+function logReqMath(math, nInputs, parse)
 {
     parse.log += parse.tab + NUMBER_MATH;
     parse.log += logReqNodeId(math);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqArithmetic(arith, type, nValues, parse)
+function logReqArithmetic(arith, type, nInputs, parse)
 {
     parse.log += parse.tab + type;
     parse.log += logReqNodeId(arith);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqInterpolate(lerp, nValues, parse)
+function logReqInterpolate(lerp, nInputs, parse)
 {
     parse.log += parse.tab + NUMBER_INTERPOLATE;
     parse.log += logReqNodeId(lerp);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
@@ -5300,29 +5300,31 @@ function logReqColorValue(val, parse)
 
 
 
-function logReqColor(col, parse) 
+function logReqColor(col, nInputs, parse) 
 {
-    logReqNode(col, parse); 
+    parse.log += parse.tab + COLOR;
+    parse.log += logReqNodeId(col);
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqColorInterpolate(lerp, nValues, parse)
+function logReqColorInterpolate(lerp, nInputs, parse)
 {
     parse.log += parse.tab + COLOR_INTERPOLATE;
     parse.log += logReqNodeId(lerp);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqColorContrast(lerp, nValues, valueIndex, parse)
+function logReqColorContrast(lerp, nInputs, valueIndex, parse)
 {
     parse.log += parse.tab + COLOR_CONTRAST;
     parse.log += logReqNodeId(lerp);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 
-    if (nValues == 1)
+    if (nInputs == 1)
         parse.log += ' ' + valueIndex;
 }
 
@@ -6495,10 +6497,10 @@ function parseListValue(str, i = -1)
     const list = new ListValue();
     
 
-    const nValues = parseInt(str[i++]);
+    const nInputs = parseInt(str[i++]);
 
 
-    for (let j = 0; j < nValues; j++)
+    for (let j = 0; j < nInputs; j++)
     {
         const type = str[i++];
         
@@ -8080,7 +8082,7 @@ extends GOperator
 
     eval(parse)
     {
-        logString('GItems.eval()', 'white', 'green');
+        //logString('GItems.eval()', 'white', 'green');
 
         if (this.isCached())
             return this;
@@ -8229,7 +8231,7 @@ extends GOperator
 
     eval(parse)
     {
-        logString('GRepeat.eval()', 'black', 'yellow');
+        //logString('GRepeat.eval()', 'black', 'yellow');
 
         if (this.isCached())
             return this;
@@ -8302,20 +8304,17 @@ extends GOperator
     }
 
 
-
+// 
     eval(parse)
     {
         if (this.valid)//isCached())
             return this;
 
 
-        if (this.input)
-        {
-            this.input = this.input.eval(parse).copy();
-            this.value = this.input.toValue();
-        }
-        else
-            this.value = null;
+        this.value = 
+            this.input
+            ? this.input.eval(parse).copy().toValue()
+            : null;
 
 
         if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
@@ -8647,7 +8646,7 @@ extends GNumberType
 
     eval(parse)
     {
-        logString('GRandom.eval()');
+        //logString('GRandom.eval()');
 
         if (!this.valid)
         {
@@ -8663,18 +8662,12 @@ extends GNumberType
     
 
         if (!this.valid)
-        {
-        //if (!this.random)
             this.random = new Random(seed.value);
-            console.log('new random');
-        }
 
         
-        this.value = new NumberValue(this.random.next(),
-            //min.value + this.random.next() * (max.value - min.value),
+        this.value = new NumberValue(
+            min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
-
-        console.log('random.seed =', this.random.seed);
 
 
         if (!this.valid)
@@ -9587,7 +9580,7 @@ extends GColorType
 
     eval(parse)
     {
-        logString('GColor.eval()', 'white', 'orange');
+        //logString('GColor.eval()', 'white', 'orange');
 
         if (this.isCached())
             return this;
@@ -9598,6 +9591,8 @@ extends GColorType
         const c2    = this.c2    ? this.c2   .eval(parse).toValue() : null;
         const c3    = this.c3    ? this.c3   .eval(parse).toValue() : null;
 
+        //console.log('space =', space);
+        //console.log('this.input =', this.input);
 
         if (this.input)
         {
@@ -9612,6 +9607,7 @@ extends GColorType
                     input.c2, 
                     input.c3);
                     
+                //console.log('1 this.value =', this.value);
 
                 const fromSpaceIndex = input.space.value;
 
@@ -9644,7 +9640,7 @@ extends GColorType
         else
         {
             this.value = new ColorValue(space, c1, c2, c3);
-
+//console.log('2 this.value =', this.value);
             const toSpaceIndex = Math.min(Math.max(
                 0,
                 Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
@@ -9670,9 +9666,9 @@ extends GColorType
         // if (this.options.enabled)
         // {
             genPushUpdateValue(parse, this.nodeId, 'space', this.value.space, true);
-            genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   );
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1         );
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2         );
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3         );
         // }
 
 
@@ -12389,8 +12385,17 @@ function genParseColor(parse)
     const col = new GColor(nodeId, options);
 
   
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
-        logReqColor(col, parse);
+        logReqColor(col, nInputs, parse);
 
 
     if (ignore) 
@@ -12405,15 +12410,19 @@ function genParseColor(parse)
     
     let paramIds;
 
-    if (   COLOR_TYPES.includes(parse.next)
-        ||    parse.next == PARAM
-           && COLOR_TYPES.includes(parse.afterNext))
+    if (nInputs == 1)
     {
         col.input = genParse(parse);
-        paramIds  = parse.move().split(',');
+        paramIds = parse.move().split(',');
     }
     else
         paramIds = ['space', 'convert', 'c1', 'c2', 'c3'];
+
+
+
+    // if (   COLOR_TYPES.includes(parse.next)
+    //     ||    parse.next == PARAM
+    //        && COLOR_TYPES.includes(parse.afterNext))
 
     
     parse.inParam = false;
@@ -12448,17 +12457,17 @@ function genParseColorInterpolate(parse)
     const lerp = new GColorInterpolate(nodeId, options);
 
 
-    let nValues = -1;
+    let nInputs = -1;
 
     if (!ignore)
     {
-        nValues = parse.move();
-        console.assert(nValues => 0 && nValues <= 2, 'nValues must be [0, 2]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
     if (parse.settings.logRequests) 
-        logReqColorInterpolate(lerp, nValues, parse);
+        logReqColorInterpolate(lerp, nInputs, parse);
 
 
     if (ignore) 
@@ -12471,17 +12480,17 @@ function genParseColorInterpolate(parse)
     parse.nTab++;
 
 
-    if (nValues == 2)
+    if (nInputs == 2)
     {
         lerp.input0 = genParse(parse);
         lerp.input1 = genParse(parse);
     }
 
-    else if (nValues == 1)
+    else if (nInputs == 1)
         lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
 
-    else if (nValues != 0)
-        console.assert(false, 'nValues must be [0, 2]');
+    else if (nInputs != 0)
+        console.assert(false, 'nInputs must be [0, 2]');
 
 
     lerp.space  = genParse(parse);
@@ -12506,23 +12515,23 @@ function genParseColorContrast(parse)
     const cnt = new GColorContrast(nodeId, options);
 
 
-    let nValues = -1;
+    let nInputs = -1;
 
     if (!ignore)
     {
-        nValues = parse.move();
-        console.assert(nValues => 0 && nValues <= 2, 'nValues must be [0, 2]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
 
     const valueIndex = 
-        nValues == 1
+        nInputs == 1
         ? parseInt(parse.move())
         : -1;
 
     
-        if (parse.settings.logRequests) 
-        logReqColorContrast(cnt, nValues, valueIndex, parse);
+    if (parse.settings.logRequests) 
+        logReqColorContrast(cnt, nInputs, valueIndex, parse);
 
 
     if (ignore) 
@@ -12534,20 +12543,20 @@ function genParseColorContrast(parse)
 
     parse.nTab++;
 
-    if (nValues == 2)
+    if (nInputs == 2)
     {
         cnt.input0   = genParse(parse);
         cnt.input1   = genParse(parse);
         cnt.standard = genParse(parse);
     }
-    else if (nValues == 1)
+    else if (nInputs == 1)
     {
              if (valueIndex == 0) cnt.input0 = genParse(parse); 
         else if (valueIndex == 1) cnt.input1 = genParse(parse); 
 
         cnt.standard = genParse(parse);
     }
-    else if (nValues == 0)
+    else if (nInputs == 0)
     {
         cnt.standard = genParse(parse);
     }
@@ -12658,14 +12667,14 @@ function genParseList(parse)
     const list = new GList(nodeId, options);
 
     
-    let nValues = 0;
+    let nInputs = 0;
     
     if (!ignore)
-        nValues = parseInt(parse.move());
+        nInputs = parseInt(parse.move());
 
 
     if (parse.settings.logRequests) 
-        logReqList(list, nValues, parse);
+        logReqList(list, nInputs, parse);
 
 
     if (ignore) 
@@ -12678,7 +12687,7 @@ function genParseList(parse)
     parse.nTab++;
 
     
-    for (let i = 0; i < nValues; i++)
+    for (let i = 0; i < nInputs; i++)
         list.inputs.push(genParse(parse));
 
 
@@ -12699,17 +12708,17 @@ function genParseItems(parse)
     const items = new GItems(nodeId, options);
 
     
-    let nValues = -1;
+    let nInputs = -1;
     
     if (!ignore)
     {
-        nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
     if (parse.settings.logRequests) 
-        logReqItems(items, nValues, parse);
+        logReqItems(items, nInputs, parse);
 
 
     if (ignore) 
@@ -12722,7 +12731,7 @@ function genParseItems(parse)
     parse.nTab++;
 
 
-    if (nValues == 1)
+    if (nInputs == 1)
         items.input = genParse(parse);
 
 
@@ -12743,17 +12752,17 @@ function genParseStart(parse)
     const rep = new GStart(nodeId, options);
 
 
-    let nValues = -1;
+    let nInputs = -1;
     
     if (!ignore)
     {
-        nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
     if (parse.settings.logRequests) 
-        logReqCache(rep, nValues, parse);
+        logReqCache(rep, nInputs, parse);
 
 
     if (ignore) 
@@ -12766,7 +12775,7 @@ function genParseStart(parse)
     parse.nTab++;
 
 
-    if (nValues == 1)
+    if (nInputs == 1)
         rep.input = genParse(parse);
 
 
@@ -12787,17 +12796,17 @@ function genParseRepeat(parse)
     const rep = new GRepeat(nodeId, options);
 
 
-    let nValues = -1;
+    let nInputs = -1;
     
     if (!ignore)
     {
-        nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
     if (parse.settings.logRequests) 
-        logReqRepeat(rep, nValues, parse);
+        logReqRepeat(rep, nInputs, parse);
 
 
     if (ignore) 
@@ -12810,7 +12819,7 @@ function genParseRepeat(parse)
     parse.nTab++;
 
 
-    if (nValues == 1)
+    if (nInputs == 1)
         rep.input = genParse(parse);
 
     rep.count = genParse(parse);
@@ -12833,17 +12842,17 @@ function genParseCache(parse)
     const rep = new GCache(nodeId, options);
 
 
-    let nValues = -1;
+    let nInputs = -1;
     
     if (!ignore)
     {
-        nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
 
     if (parse.settings.logRequests) 
-        logReqCache(rep, nValues, parse);
+        logReqCache(rep, nInputs, parse);
 
 
     if (ignore) 
@@ -12856,7 +12865,7 @@ function genParseCache(parse)
     parse.nTab++;
 
 
-    if (nValues == 1)
+    if (nInputs == 1)
         rep.input = genParse(parse);
 
 
@@ -12928,17 +12937,17 @@ function genParseLimits(parse)
     const lim = new GLimits(nodeId, options);
    
 
-    let nValues = -1;
+    let nInputs = -1;
     
     if (!ignore)
     {
-        nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
     if (parse.settings.logRequests) 
-        logReqLimits(lim, nValues, parse);
+        logReqLimits(lim, nInputs, parse);
 
 
     if (ignore) 
@@ -12951,7 +12960,7 @@ function genParseLimits(parse)
     parse.nTab++;
 
 
-    if (nValues == 1)
+    if (nInputs == 1)
         lim.input = genParse(parse);
 
     lim.min = genParse(parse);
@@ -13011,17 +13020,17 @@ function genParseMath(parse, newNode)
     const math = newNode(nodeId, options);
 
     
-    let nValues = -1;
+    let nInputs = -1;
     
     if (!ignore)
     {
-        nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be 0 or 1');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be 0 or 1');
     }
 
 
     if (parse.settings.logRequests) 
-        logReqMath(math, nValues, parse);
+        logReqMath(math, nInputs, parse);
 
 
     if (ignore) 
@@ -13034,7 +13043,7 @@ function genParseMath(parse, newNode)
     parse.nTab++;
 
 
-    if (nValues == 1)
+    if (nInputs == 1)
         math.input = genParse(parse);
 
     math.operation = genParse(parse);
@@ -13058,17 +13067,17 @@ function genParseArithmetic(parse, newNode)
     const arith = newNode(nodeId, options);
 
 
-    let nValues = -1;
+    let nInputs = -1;
     
     if (!ignore)
     {
-        nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be 0 or 1');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be 0 or 1');
     }
 
 
     if (parse.settings.logRequests) 
-        logReqArithmetic(arith, type, nValues, parse);
+        logReqArithmetic(arith, type, nInputs, parse);
 
 
     if (ignore) 
@@ -13081,7 +13090,7 @@ function genParseArithmetic(parse, newNode)
     parse.nTab++;
 
     
-    if (nValues == 1)
+    if (nInputs == 1)
         arith.input = genParse(parse);
 
     arith.operand = genParse(parse);
@@ -13104,14 +13113,14 @@ function genParseVarMath(parse, newNode)
     const math = newNode(nodeId, options);
 
     
-    let nValues = 0;
+    let nInputs = 0;
     
     if (!ignore)
-        nValues = parseInt(parse.move());
+        nInputs = parseInt(parse.move());
 
 
     if (parse.settings.logRequests) 
-        logReqMath(math, nValues, parse);
+        logReqMath(math, nInputs, parse);
 
 
     if (ignore) 
@@ -13123,7 +13132,7 @@ function genParseVarMath(parse, newNode)
 
     parse.nTab++;
 
-    for (let i = 0; i < nValues; i++)
+    for (let i = 0; i < nInputs; i++)
         math.inputs.push(genParse(parse));
 
 
@@ -13147,14 +13156,14 @@ function genParseVarArithmetic(parse, newNode)
     const arith = newNode(nodeId, options);
 
 
-    let nValues = 0;
+    let nInputs = 0;
     
     if (!ignore)
-        nValues = parseInt(parse.move());
+        nInputs = parseInt(parse.move());
 
 
     if (parse.settings.logRequests) 
-        logReqArithmetic(arith, type, nValues, parse);
+        logReqArithmetic(arith, type, nInputs, parse);
 
 
     if (ignore) 
@@ -13166,7 +13175,7 @@ function genParseVarArithmetic(parse, newNode)
 
     parse.nTab++;
 
-    for (let i = 0; i < nValues; i++)
+    for (let i = 0; i < nInputs; i++)
         arith.inputs.push(genParse(parse));
 
     parse.nTab--;
@@ -13186,17 +13195,17 @@ function genParseInterpolate(parse)
     const lerp = new GInterpolate(nodeId, options);
 
 
-    let nValues = -1;
+    let nInputs = -1;
 
     if (!ignore)
     {
-        nValues = parse.move();
-        console.assert(nValues => 0 && nValues <= 2, 'nValues must be [0, 2]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
     if (parse.settings.logRequests) 
-        logReqInterpolate(lerp, nValues, parse);
+        logReqInterpolate(lerp, nInputs, parse);
 
 
     if (ignore) 
@@ -13208,18 +13217,18 @@ function genParseInterpolate(parse)
 
     parse.nTab++;
 
-    if (nValues == 2)
+    if (nInputs == 2)
     {
         lerp.input0 = genParse(parse);
         lerp.input1 = genParse(parse);
         lerp.amount = genParse(parse);
     }
-    else if (nValues == 1)
+    else if (nInputs == 1)
     {
         lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
         lerp.amount = genParse(parse);
     }
-    else if (nValues == 0)
+    else if (nInputs == 0)
     {
         lerp.amount = genParse(parse);
     }
@@ -18154,14 +18163,14 @@ class Random
     {
         this.last = this.seed;
         
-        // this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
-        // this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
-        // this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
-        // this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
-        // this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
-        // this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
+        this.seed = (this.seed + 0x7ed55d16) + (this.seed << 12);
+        this.seed = (this.seed ^ 0xc761c23c) ^ (this.seed >> 19);
+        this.seed = (this.seed + 0x165667b1) + (this.seed <<  5);
+        this.seed = (this.seed + 0xd3a2646c) ^ (this.seed <<  9);
+        this.seed = (this.seed + 0xfd7046c5) + (this.seed <<  3);
+        this.seed = (this.seed ^ 0xb55a4f09) ^ (this.seed >> 16);
 
-        return ++this.seed;// / -0x7fffffff;
+        return this.seed / -0x7fffffff;
     }
 
 }
@@ -19101,17 +19110,17 @@ function logValueUpdates(updateNodeId, updateParamId, values)
     while (i < values.length)
     {
         const nodeId  = values[i++];
-        const nValues = parseInt(values[i++]);
+        const nInputs = parseInt(values[i++]);
 
         log += 
               (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
-            + nodeId;// + ' ' + nValues;
+            + nodeId;// + ' ' + nInputs;
 
         newLine = true;
 
         nTab++;
 
-        for (let j = 0; j < nValues; j++)
+        for (let j = 0; j < nInputs; j++)
         {
             const index = values[i++];
             const type  = values[i++];
@@ -19323,47 +19332,47 @@ function logReqListValue(list, parse)
 
 
 
-function logReqList(list, nValues, parse)
+function logReqList(list, nInputs, parse)
 {
     parse.log += parse.tab + LIST;
     parse.log += logReqNodeId(list);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqItems(items, nValues, parse)
+function logReqItems(items, nInputs, parse)
 {
     parse.log += parse.tab + ITEMS;
     parse.log += logReqNodeId(items);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqStart(rep, nValues, parse)
+function logReqStart(rep, nInputs, parse)
 {
     parse.log += parse.tab + START;
     parse.log += logReqNodeId(rep);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqRepeat(rep, nValues, parse)
+function logReqRepeat(rep, nInputs, parse)
 {
     parse.log += parse.tab + REPEAT;
     parse.log += logReqNodeId(rep);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqCache(rep, nValues, parse)
+function logReqCache(rep, nInputs, parse)
 {
     parse.log += parse.tab + CACHE;
     parse.log += logReqNodeId(rep);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
@@ -19382,13 +19391,13 @@ function logReqNumber(num, parse)
 
 
 
-function logReqLimits(lim, nValues, parse)
+function logReqLimits(lim, nInputs, parse)
 {
     parse.log += parse.tab + NUMBER_LIMITS;
     parse.log += logReqNodeId(lim);
 
-    if (nValues > -1)
-        parse.log += ' ' + nValues;
+    if (nInputs > -1)
+        parse.log += ' ' + nInputs;
 }
 
 
@@ -19401,29 +19410,29 @@ function logReqRandom(rnd, parse)
 
 
 
-function logReqMath(math, nValues, parse)
+function logReqMath(math, nInputs, parse)
 {
     parse.log += parse.tab + NUMBER_MATH;
     parse.log += logReqNodeId(math);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqArithmetic(arith, type, nValues, parse)
+function logReqArithmetic(arith, type, nInputs, parse)
 {
     parse.log += parse.tab + type;
     parse.log += logReqNodeId(arith);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqInterpolate(lerp, nValues, parse)
+function logReqInterpolate(lerp, nInputs, parse)
 {
     parse.log += parse.tab + NUMBER_INTERPOLATE;
     parse.log += logReqNodeId(lerp);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
@@ -19434,29 +19443,31 @@ function logReqColorValue(val, parse)
 
 
 
-function logReqColor(col, parse) 
+function logReqColor(col, nInputs, parse) 
 {
-    logReqNode(col, parse); 
+    parse.log += parse.tab + COLOR;
+    parse.log += logReqNodeId(col);
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqColorInterpolate(lerp, nValues, parse)
+function logReqColorInterpolate(lerp, nInputs, parse)
 {
     parse.log += parse.tab + COLOR_INTERPOLATE;
     parse.log += logReqNodeId(lerp);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqColorContrast(lerp, nValues, valueIndex, parse)
+function logReqColorContrast(lerp, nInputs, valueIndex, parse)
 {
     parse.log += parse.tab + COLOR_CONTRAST;
     parse.log += logReqNodeId(lerp);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 
-    if (nValues == 1)
+    if (nInputs == 1)
         parse.log += ' ' + valueIndex;
 }
 
@@ -22241,10 +22252,10 @@ function parseListValue(str, i = -1)
     const list = new ListValue();
     
 
-    const nValues = parseInt(str[i++]);
+    const nInputs = parseInt(str[i++]);
 
 
-    for (let j = 0; j < nValues; j++)
+    for (let j = 0; j < nInputs; j++)
     {
         const type = str[i++];
         
@@ -23826,7 +23837,7 @@ extends GOperator
 
     eval(parse)
     {
-        logString('GItems.eval()', 'white', 'green');
+        //logString('GItems.eval()', 'white', 'green');
 
         if (this.isCached())
             return this;
@@ -23975,7 +23986,7 @@ extends GOperator
 
     eval(parse)
     {
-        logString('GRepeat.eval()', 'black', 'yellow');
+        //logString('GRepeat.eval()', 'black', 'yellow');
 
         if (this.isCached())
             return this;
@@ -24048,20 +24059,17 @@ extends GOperator
     }
 
 
-
+// 
     eval(parse)
     {
         if (this.valid)//isCached())
             return this;
 
 
-        if (this.input)
-        {
-            this.input = this.input.eval(parse).copy();
-            this.value = this.input.toValue();
-        }
-        else
-            this.value = null;
+        this.value = 
+            this.input
+            ? this.input.eval(parse).copy().toValue()
+            : null;
 
 
         if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
@@ -24393,7 +24401,7 @@ extends GNumberType
 
     eval(parse)
     {
-        logString('GRandom.eval()');
+        //logString('GRandom.eval()');
 
         if (!this.valid)
         {
@@ -24409,18 +24417,12 @@ extends GNumberType
     
 
         if (!this.valid)
-        {
-        //if (!this.random)
             this.random = new Random(seed.value);
-            console.log('new random');
-        }
 
         
-        this.value = new NumberValue(this.random.next(),
-            //min.value + this.random.next() * (max.value - min.value),
+        this.value = new NumberValue(
+            min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
-
-        console.log('random.seed =', this.random.seed);
 
 
         if (!this.valid)
@@ -25333,7 +25335,7 @@ extends GColorType
 
     eval(parse)
     {
-        logString('GColor.eval()', 'white', 'orange');
+        //logString('GColor.eval()', 'white', 'orange');
 
         if (this.isCached())
             return this;
@@ -25344,6 +25346,8 @@ extends GColorType
         const c2    = this.c2    ? this.c2   .eval(parse).toValue() : null;
         const c3    = this.c3    ? this.c3   .eval(parse).toValue() : null;
 
+        //console.log('space =', space);
+        //console.log('this.input =', this.input);
 
         if (this.input)
         {
@@ -25358,6 +25362,7 @@ extends GColorType
                     input.c2, 
                     input.c3);
                     
+                //console.log('1 this.value =', this.value);
 
                 const fromSpaceIndex = input.space.value;
 
@@ -25390,7 +25395,7 @@ extends GColorType
         else
         {
             this.value = new ColorValue(space, c1, c2, c3);
-
+//console.log('2 this.value =', this.value);
             const toSpaceIndex = Math.min(Math.max(
                 0,
                 Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
@@ -25416,9 +25421,9 @@ extends GColorType
         // if (this.options.enabled)
         // {
             genPushUpdateValue(parse, this.nodeId, 'space', this.value.space, true);
-            genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1   );
-            genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2   );
-            genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3   );
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1         );
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2         );
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3         );
         // }
 
 
@@ -41431,8 +41436,11 @@ extends OpColorBase
         
         const paramIds = [];
 
-
         const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
 
         if (input.connected)
         {

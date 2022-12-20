@@ -58,17 +58,17 @@ function genParseLimits(parse)
     const lim = new GLimits(nodeId, options);
    
 
-    let nValues = -1;
+    let nInputs = -1;
     
     if (!ignore)
     {
-        nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be [0, 1]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
     }
 
     
     if (parse.settings.logRequests) 
-        logReqLimits(lim, nValues, parse);
+        logReqLimits(lim, nInputs, parse);
 
 
     if (ignore) 
@@ -81,7 +81,7 @@ function genParseLimits(parse)
     parse.nTab++;
 
 
-    if (nValues == 1)
+    if (nInputs == 1)
         lim.input = genParse(parse);
 
     lim.min = genParse(parse);
@@ -141,17 +141,17 @@ function genParseMath(parse, newNode)
     const math = newNode(nodeId, options);
 
     
-    let nValues = -1;
+    let nInputs = -1;
     
     if (!ignore)
     {
-        nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be 0 or 1');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be 0 or 1');
     }
 
 
     if (parse.settings.logRequests) 
-        logReqMath(math, nValues, parse);
+        logReqMath(math, nInputs, parse);
 
 
     if (ignore) 
@@ -164,7 +164,7 @@ function genParseMath(parse, newNode)
     parse.nTab++;
 
 
-    if (nValues == 1)
+    if (nInputs == 1)
         math.input = genParse(parse);
 
     math.operation = genParse(parse);
@@ -188,17 +188,17 @@ function genParseArithmetic(parse, newNode)
     const arith = newNode(nodeId, options);
 
 
-    let nValues = -1;
+    let nInputs = -1;
     
     if (!ignore)
     {
-        nValues = parseInt(parse.move());
-        console.assert(nValues == 0 || nValues == 1, 'nValues must be 0 or 1');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be 0 or 1');
     }
 
 
     if (parse.settings.logRequests) 
-        logReqArithmetic(arith, type, nValues, parse);
+        logReqArithmetic(arith, type, nInputs, parse);
 
 
     if (ignore) 
@@ -211,7 +211,7 @@ function genParseArithmetic(parse, newNode)
     parse.nTab++;
 
     
-    if (nValues == 1)
+    if (nInputs == 1)
         arith.input = genParse(parse);
 
     arith.operand = genParse(parse);
@@ -234,14 +234,14 @@ function genParseVarMath(parse, newNode)
     const math = newNode(nodeId, options);
 
     
-    let nValues = 0;
+    let nInputs = 0;
     
     if (!ignore)
-        nValues = parseInt(parse.move());
+        nInputs = parseInt(parse.move());
 
 
     if (parse.settings.logRequests) 
-        logReqMath(math, nValues, parse);
+        logReqMath(math, nInputs, parse);
 
 
     if (ignore) 
@@ -253,7 +253,7 @@ function genParseVarMath(parse, newNode)
 
     parse.nTab++;
 
-    for (let i = 0; i < nValues; i++)
+    for (let i = 0; i < nInputs; i++)
         math.inputs.push(genParse(parse));
 
 
@@ -277,14 +277,14 @@ function genParseVarArithmetic(parse, newNode)
     const arith = newNode(nodeId, options);
 
 
-    let nValues = 0;
+    let nInputs = 0;
     
     if (!ignore)
-        nValues = parseInt(parse.move());
+        nInputs = parseInt(parse.move());
 
 
     if (parse.settings.logRequests) 
-        logReqArithmetic(arith, type, nValues, parse);
+        logReqArithmetic(arith, type, nInputs, parse);
 
 
     if (ignore) 
@@ -296,7 +296,7 @@ function genParseVarArithmetic(parse, newNode)
 
     parse.nTab++;
 
-    for (let i = 0; i < nValues; i++)
+    for (let i = 0; i < nInputs; i++)
         arith.inputs.push(genParse(parse));
 
     parse.nTab--;
@@ -316,17 +316,17 @@ function genParseInterpolate(parse)
     const lerp = new GInterpolate(nodeId, options);
 
 
-    let nValues = -1;
+    let nInputs = -1;
 
     if (!ignore)
     {
-        nValues = parse.move();
-        console.assert(nValues => 0 && nValues <= 2, 'nValues must be [0, 2]');
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
     
     if (parse.settings.logRequests) 
-        logReqInterpolate(lerp, nValues, parse);
+        logReqInterpolate(lerp, nInputs, parse);
 
 
     if (ignore) 
@@ -338,18 +338,18 @@ function genParseInterpolate(parse)
 
     parse.nTab++;
 
-    if (nValues == 2)
+    if (nInputs == 2)
     {
         lerp.input0 = genParse(parse);
         lerp.input1 = genParse(parse);
         lerp.amount = genParse(parse);
     }
-    else if (nValues == 1)
+    else if (nInputs == 1)
     {
         lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
         lerp.amount = genParse(parse);
     }
-    else if (nValues == 0)
+    else if (nInputs == 0)
     {
         lerp.amount = genParse(parse);
     }

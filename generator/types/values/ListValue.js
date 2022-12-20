@@ -137,10 +137,10 @@ function parseListValue(str, i = -1)
     const list = new ListValue();
     
 
-    const nValues = parseInt(str[i++]);
+    const nInputs = parseInt(str[i++]);
 
 
-    for (let j = 0; j < nValues; j++)
+    for (let j = 0; j < nInputs; j++)
     {
         const type = str[i++];
         

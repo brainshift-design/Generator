@@ -35,7 +35,7 @@ extends GNumberType
 
     eval(parse)
     {
-        logString('GRandom.eval()');
+        //logString('GRandom.eval()');
 
         if (!this.valid)
         {
@@ -51,18 +51,12 @@ extends GNumberType
     
 
         if (!this.valid)
-        {
-        //if (!this.random)
             this.random = new Random(seed.value);
-            console.log('new random');
-        }
 
         
-        this.value = new NumberValue(this.random.next(),
-            //min.value + this.random.next() * (max.value - min.value),
+        this.value = new NumberValue(
+            min.value + this.random.next() * (max.value - min.value),
             Math.max(min.decimals, max.decimals));
-
-        console.log('random.seed =', this.random.seed);
 
 
         if (!this.valid)

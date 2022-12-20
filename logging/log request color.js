@@ -5,29 +5,31 @@ function logReqColorValue(val, parse)
 
 
 
-function logReqColor(col, parse) 
+function logReqColor(col, nInputs, parse) 
 {
-    logReqNode(col, parse); 
+    parse.log += parse.tab + COLOR;
+    parse.log += logReqNodeId(col);
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqColorInterpolate(lerp, nValues, parse)
+function logReqColorInterpolate(lerp, nInputs, parse)
 {
     parse.log += parse.tab + COLOR_INTERPOLATE;
     parse.log += logReqNodeId(lerp);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqColorContrast(lerp, nValues, valueIndex, parse)
+function logReqColorContrast(lerp, nInputs, valueIndex, parse)
 {
     parse.log += parse.tab + COLOR_CONTRAST;
     parse.log += logReqNodeId(lerp);
-    parse.log += ' ' + nValues;
+    parse.log += ' ' + nInputs;
 
-    if (nValues == 1)
+    if (nInputs == 1)
         parse.log += ' ' + valueIndex;
 }
 
