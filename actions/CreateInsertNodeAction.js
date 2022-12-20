@@ -120,7 +120,7 @@ extends Action
         }
 
 
-        if (this.oldConnections.length == 0)
+        if (this.oldInputActiveNodeId != '')//Connections.length == 0)
             createNodeAction_activateOldInput(this);
 
             
