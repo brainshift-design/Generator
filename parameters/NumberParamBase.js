@@ -126,9 +126,11 @@ extends Parameter
     updateValueText()
     {
         const unknown =
-               this.input 
-            && this.input.isConnectedUncached()
-            && this.node.hasMultipliedOutputs();
+                  this.input 
+               && this.input.isConnectedUncached()
+               && this.node.hasMultipliedOutputs()
+            || this.node.isParamUnknown(this);
+            //|| this.node.isUnknown();
 
         this.control.valueText = unknown ? UNKNOWN_DISPLAY : '';
         this.control.showBar   = !unknown;

@@ -52,13 +52,8 @@ extends OperatorBase
         this.paramValue.enableControlText(!input.connected);
 
 
-        const unknown = 
-               this.isConnectedUncached()
-            && this.hasMultipliedOutputs();
-
-
-        this.paramValue.control.valueText = unknown ? UNKNOWN_DISPLAY : '';
-        this.paramValue.control.showBar   = !unknown;
+        this.paramValue.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.control.showBar   = !this.isUnknown();
             
         super.updateParams();
     }

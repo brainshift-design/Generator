@@ -555,6 +555,21 @@ class Operator
 
 
 
+    isUnknown()
+    {
+        return this.isConnectedUncached()
+            && this.hasMultipliedOutputs();
+    }
+
+
+
+    isParamUnknown(param)
+    {
+        return false;
+    }
+
+
+
     paramIsConsideredDefault(param) // this has to be an op virtual method, not a param method
     {
         return param.isDefault()
