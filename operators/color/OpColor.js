@@ -127,8 +127,7 @@ extends OpColorBase
 
     isParamUnknown(param)
     {
-        return param.id != this.paramSpace.id
-            && this.isUnknown();
+        return param.id != this.paramSpace.id;
     }
 
 
