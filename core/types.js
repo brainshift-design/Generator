@@ -1,5 +1,5 @@
 const NAN_CHAR            = '-';
-const NAN_DISPLAY         = '—';
+const NAN_DISPLAY         = '–';
 
 const UNKNOWN_CHAR        = '?';
 const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';

@@ -5586,7 +5586,7 @@ function normalizeSeed(x)
 
 
 const NAN_CHAR            = '-';
-const NAN_DISPLAY         = '—';
+const NAN_DISPLAY         = '–';
 
 const UNKNOWN_CHAR        = '?';
 const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
@@ -21271,7 +21271,7 @@ function base32toArray(base32, chars = base32chars)
 
 
 const NAN_CHAR            = '-';
-const NAN_DISPLAY         = '—';
+const NAN_DISPLAY         = '–';
 
 const UNKNOWN_CHAR        = '?';
 const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
@@ -34371,7 +34371,7 @@ extends Parameter
         this.control.value = value.copy();
 
         if (updateControl)
-            this.control.setValue(this.control.value, false, true); 
+            this.control.setValue(this.control.value, true, false); 
 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);
