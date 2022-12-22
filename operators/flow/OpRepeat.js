@@ -13,6 +13,8 @@ extends OperatorBase
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
 
         this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, false, 1, 0, 100, 0));
+
+        this.paramCount.affectsHeader = false;
     }
     
     

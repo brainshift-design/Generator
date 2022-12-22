@@ -360,7 +360,8 @@ function updateWireStyle(wire)
             conn.output
         && !conn.output.node.isCached()
         &&  conn.input
-        &&  conn.input.node.isOrFollowedByMultiplier();
+        &&  conn.input.node.isOrFollowedByMultiplier()
+        && (!conn.input.param || conn.input.param.affectsHeader);
 
 
     wire.curve .style.stroke = wireStyle;

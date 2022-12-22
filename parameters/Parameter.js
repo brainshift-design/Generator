@@ -23,6 +23,8 @@ extends EventTarget
 
     noUpdate = false;
 
+    affectsHeader = true; // indicates whether the parameter contributes to the header's result data
+
 
 
     canShow = () => true;
