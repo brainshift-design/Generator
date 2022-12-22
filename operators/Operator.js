@@ -563,7 +563,7 @@ class Operator
 
 
 
-    isParamUnknown(param)
+    paramCanBeUnknown(param)
     {
         return false;
     }

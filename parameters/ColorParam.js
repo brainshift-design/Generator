@@ -124,7 +124,7 @@ extends Parameter
         this.control.value = value.copy();
 
         if (updateControl)
-            this.control.setValue(this.control.value, false, true); 
+            this.control.setValue(this.control.value, true, false); 
 
 
         super.setValue(value, createAction, updateControl, dispatchEvents);

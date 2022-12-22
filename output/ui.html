@@ -34048,9 +34048,9 @@ extends Parameter
                 && this.node.hasMultipliedOutputs())
                 unknown = true;
         }
-        else if (this.node.isUnknown()
-              && this.node.isParamUnknown(this))
-            unknown = true;
+        // else if (this.node.isUnknown()
+        //       && this.node.paramCanBeUnknown(this))
+        //     unknown = true;
 
 
         this.control.valueText = unknown ? UNKNOWN_DISPLAY : '';
@@ -37893,7 +37893,7 @@ class Operator
 
 
 
-    isParamUnknown(param)
+    paramCanBeUnknown(param)
     {
         return false;
     }
@@ -41312,7 +41312,7 @@ extends OpColorBase
 
 
 
-    isParamUnknown(param)
+    paramCanBeUnknown(param)
     {
         return param.id != this.paramSpace.id;
     }
@@ -41433,9 +41433,9 @@ extends OpColorBase
             this.prevSpace = colorSpace(_space.value);
 
 
-            this.param1.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-            this.param2.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-            this.param3.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+            // this.param1.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+            // this.param2.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+            // this.param3.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
         }
         else
         {

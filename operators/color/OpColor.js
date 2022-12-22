@@ -125,7 +125,7 @@ extends OpColorBase
 
 
 
-    isParamUnknown(param)
+    paramCanBeUnknown(param)
     {
         return param.id != this.paramSpace.id;
     }
@@ -246,9 +246,9 @@ extends OpColorBase
             this.prevSpace = colorSpace(_space.value);
 
 
-            this.param1.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-            this.param2.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-            this.param3.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+            // this.param1.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+            // this.param2.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+            // this.param3.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
         }
         else
         {

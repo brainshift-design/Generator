@@ -134,9 +134,9 @@ extends Parameter
                 && this.node.hasMultipliedOutputs())
                 unknown = true;
         }
-        else if (this.node.isUnknown()
-              && this.node.isParamUnknown(this))
-            unknown = true;
+        // else if (this.node.isUnknown()
+        //       && this.node.paramCanBeUnknown(this))
+        //     unknown = true;
 
 
         this.control.valueText = unknown ? UNKNOWN_DISPLAY : '';
