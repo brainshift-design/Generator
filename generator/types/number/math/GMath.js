@@ -31,8 +31,7 @@ extends GArithmetic
             return this;
 
 
-        this.operation  = this.operation.eval(parse).copy();
-        const operation = this.operation.toValue();
+        const operation = this.operation.eval(parse).toValue();
 
         operation.value = Math.min(Math.max(0, operation.value), MATH_OPS.length-1);
 

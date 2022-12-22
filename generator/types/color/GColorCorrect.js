@@ -45,24 +45,16 @@ extends GColorType
             return this;
 
 
-        this.order   = this.order  .eval(parse).copy();
-        this.margin1 = this.margin1.eval(parse).copy();
-        this.margin2 = this.margin2.eval(parse).copy();
-        this.margin3 = this.margin3.eval(parse).copy();
-
-        const order   = this.order  .toValue();
-        const margin1 = this.margin1.toValue();
-        const margin2 = this.margin2.toValue();
-        const margin3 = this.margin3.toValue();
+        const order   = this.order  .eval(parse).toValue();
+        const margin1 = this.margin1.eval(parse).toValue();
+        const margin2 = this.margin2.eval(parse).toValue();
+        const margin3 = this.margin3.eval(parse).toValue();
 
         
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
-            const input = this.input.toValue();
-
-            
-            const rgb = input.toRgb();
+            const input = this.input.eval(parse).toValue();
+            const rgb   = input.toRgb();
             
             if (!rgbIsOk(rgb))
                 genQueueMessageToUI(

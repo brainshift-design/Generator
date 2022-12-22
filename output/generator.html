@@ -5684,8 +5684,7 @@ extends GOperator
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            this.inputs[i] = this.inputs[i].eval(parse).copy();
-            const input = this.inputs[i].toValue();
+            const input = this.inputs[i].eval(parse).toValue();
 
             if (input.type == LIST_VALUE)
             {
@@ -5749,8 +5748,6 @@ extends GOperator
 
     eval(parse)
     {
-        //logString('GItems.eval()', 'white', 'green');
-
         if (this.isCached())
             return this;
 
@@ -5758,9 +5755,9 @@ extends GOperator
         if (this.input)
         {
             if (!this.input.value)
-                this.input = this.input.eval(parse).copy();
+                this.input.eval(parse);
 
-            this.value = this.input.toValue();//value.copy();//toValue();
+            this.value = this.input.toValue();
         }
         else
             this.value = ListValue.NaN;
@@ -5980,7 +5977,7 @@ extends GOperator
 
         this.value = 
             this.input
-            ? this.input.eval(parse).copy().toValue()
+            ? this.input.eval(parse).toValue()
             : null;
 
 
@@ -5997,7 +5994,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value 
+        return this.value
              ? this.value.copy() 
              : null;
     }
@@ -6067,15 +6064,10 @@ extends GNumberType
 
 
         if (this.input)
-        { 
-            this.input = this.input.eval(parse).copy();
-            this.value = this.input.toValue();
-        }
+            this.value = this.input.eval(parse).toValue();
+        else if (this.value)
+            this.value.eval(parse);
         else
-            this.value = this.value.eval(parse).copy();
-
-        
-        if (!this.value)
             this.value = NumberValue.NaN;
 
 
@@ -6150,17 +6142,13 @@ extends GNumberType
         this.value = new NumberValue(0);
 
         
-        this.min = this.min.eval(parse).copy();
-        this.max = this.max.eval(parse).copy();
-
-        const min = this.min.toValue();
-        const max = this.max.toValue();
+        const min = this.min.eval(parse).toValue();
+        const max = this.max.eval(parse).toValue();
 
 
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
-            this.value = this.input.toValue();
+            this.value = this.input.eval(parse).toValue();
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 
@@ -6232,18 +6220,14 @@ extends GNumberType
             return this;
 
 
-        this.amount = this.amount.eval(parse).copy();
-        const amount = this.amount.toValue();
+        const amount = this.amount.eval(parse).toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            this.input0 = this.input0.eval(parse).copy();
-            this.input1 = this.input1.eval(parse).copy();
-
-            const val0 = this.input0.toValue();
-            const val1 = this.input1.toValue();
+            const val0 = this.input0.eval(parse).toValue();
+            const val1 = this.input1.eval(parse).toValue();
 
             const maxDec = Math.max(val0.decimals, val1.decimals);
 
@@ -6252,15 +6236,11 @@ extends GNumberType
                 maxDec);
         }
         else if (this.input0)
-        {
-            this.input0 = this.input0.eval(parse).copy();
-            this.value = this.input0.toValue();
-        } 
+            this.value = this.input0.eval(parse).toValue();
+
         else if (this.input1) 
-        {
-            this.input1 = this.input1.eval(parse).copy();
-            this.value = this.input1.toValue();
-        }
+            this.value = this.input1.eval(parse).toValue();
+
         else                  
             this.value = NumberValue.NaN;
 
@@ -6449,8 +6429,7 @@ extends GArithmetic
             return this;
 
 
-        this.operation  = this.operation.eval(parse).copy();
-        const operation = this.operation.toValue();
+        const operation = this.operation.eval(parse).toValue();
 
         operation.value = Math.min(Math.max(0, operation.value), MATH_OPS.length-1);
 
@@ -6720,8 +6699,7 @@ extends GVarArithmetic
             return this;
 
 
-        this.operation = this.operation.eval(parse).copy();
-        const op = this.operation.toValue();
+        const op = this.operation.eval(parse).toValue();
 
         op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
 
@@ -6793,8 +6771,7 @@ function evalVarAddInputs(inputs, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        inputs[i] = inputs[i].eval(parse).copy();
-        const val = inputs[i].toValue();
+        const val = inputs[i].eval(parse).toValue();
 
         console.assert(
             val.type == NUMBER_VALUE, 
@@ -6855,8 +6832,7 @@ function evalVarSubtractInputs(inputs, parse)
 
     if (inputs.length > 0)
     {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
         value.value    = val0.value;
         value.decimals = val0.decimals;
@@ -6864,8 +6840,7 @@ function evalVarSubtractInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
+            const val = inputs[i].eval(parse).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -6931,8 +6906,7 @@ function evalVarMultiplyInputs(inputs, parse)
 
         for (let i = 0; i < inputs.length; i++)
         {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
+            const val = inputs[i].eval(parse).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -6994,8 +6968,7 @@ function evalVarDivideInputs(inputs, parse)
         
     if (inputs.length > 0)
     {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
         value.value    = val0.value;
         value.decimals = val0.decimals;
@@ -7003,8 +6976,7 @@ function evalVarDivideInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
+            const val = inputs[i].eval(parse).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -7073,8 +7045,7 @@ function evalVarModuloInputs(inputs, parse)
         
     if (inputs.length > 0)
     {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
         value.value    = val0.value;
         value.decimals = val0.decimals;
@@ -7082,8 +7053,7 @@ function evalVarModuloInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
+            const val = inputs[i].eval(parse).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -7152,8 +7122,7 @@ function evalVarExponentInputs(inputs, parse)
 
     if (inputs.length > 0)
     {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
         value.value    = val0.value;
         value.decimals = val0.decimals;
@@ -7161,8 +7130,7 @@ function evalVarExponentInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
+            const val = inputs[i].eval(parse).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 
@@ -7421,23 +7389,16 @@ extends GColorType
             return this;
 
 
-        this.space  = this.space .eval(parse).copy();
-        this.amount = this.amount.eval(parse).copy();
-        this.gamma  = this.gamma .eval(parse).copy();
-
-        const space  = this.space .toValue();
-        const amount = this.amount.toValue();
-        const gamma  = this.gamma .toValue();
+        const space  = this.space .eval(parse).toValue();
+        const amount = this.amount.eval(parse).toValue();
+        const gamma  = this.gamma .eval(parse).toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            this.input0 = this.input0.eval(parse).copy();
-            this.input1 = this.input1.eval(parse).copy();
-
-            const input0 = this.input0.toValue();
-            const input1 = this.input1.toValue();
+            const input0 = this.input0.eval(parse).toValue();
+            const input1 = this.input1.eval(parse).toValue();
 
             console.assert(
                 amount.type == NUMBER_VALUE, 
@@ -7472,15 +7433,11 @@ extends GColorType
         }
 
         else if (this.input0) 
-        {
-            this.input0 = this.input0.eval(parse).copy();
-            this.value = this.input0.toValue();
-        }
+            this.value = this.input0.eval(parse).toValue();
+
         else if (this.input1) 
-        {
-            this.input1 = this.input1.eval(parse).copy();
-            this.value = this.input1.toValue();
-        }
+            this.value = this.input1.eval(parse).toValue();
+            
         else 
             this.value = ColorValue.NaN;
 
@@ -7570,18 +7527,14 @@ extends GColorType
             return this;
 
 
-        this.standard = this.standard.eval(parse).copy();
-        const standard = this.standard.toValue();
+        const standard = this.standard.eval(parse).toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            this.input0 = this.input0.eval(parse).copy();
-            this.input1 = this.input1.eval(parse).copy();
-
-            const input0 = this.input0.toValue();
-            const input1 = this.input1.toValue();
+            const input0 = this.input0.eval(parse).toValue();
+            const input1 = this.input1.eval(parse).toValue();
 
 
             if (   input0.isValid()
@@ -7625,8 +7578,7 @@ extends GColorType
 
         else if (this.input0) 
         {
-            this.input0 = this.input0.eval(parse).copy();
-            const input0 = this.input0.toValue();
+            const input0 = this.input0.eval(parse).toValue();
 
             if (input0.isValid())
                 genPushUpdateValue(parse, this.nodeId, 'text', input0);
@@ -7639,8 +7591,7 @@ extends GColorType
 
         else if (this.input1) 
         {
-            this.input1 = this.input1.eval(parse).copy();
-            const input1 = this.input1.toValue();
+            const input1 = this.input1.eval(parse).toValue();
 
             genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
 
@@ -7717,23 +7668,15 @@ extends GColorType
             return this;
 
 
-        this.l = this.l.eval(parse).copy();
-        this.m = this.m.eval(parse).copy();
-        this.s = this.s.eval(parse).copy();
-
-        const l = this.l.toValue();        
-        const m = this.m.toValue();
-        const s = this.s.toValue();
+        const l = this.l.eval(parse).toValue();        
+        const m = this.m.eval(parse).toValue();
+        const s = this.s.eval(parse).toValue();
 
 
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
-            const input = this.input.toValue();
-
-            const rgb = input.toRgb();
-
-            //const validRgb = invalid2validRgb(rgb);
+            const input = this.input.eval(parse).toValue();
+            const rgb   = input.toRgb();
 
             const rgbCb = rgb2colorblind(
                 rgb,
@@ -7744,7 +7687,7 @@ extends GColorType
             if (   rgbIsOk(rgb)
                 && rgbIsOk(rgbCb))
             {
-                const validRgbCb = rgbCb;//invalid2validRgb(cb);
+                const validRgbCb = rgbCb;
             
                 const validCol = convertDataColorToSpace(
                     rgb2dataColor(validRgbCb), 
@@ -7825,24 +7768,16 @@ extends GColorType
             return this;
 
 
-        this.order   = this.order  .eval(parse).copy();
-        this.margin1 = this.margin1.eval(parse).copy();
-        this.margin2 = this.margin2.eval(parse).copy();
-        this.margin3 = this.margin3.eval(parse).copy();
-
-        const order   = this.order  .toValue();
-        const margin1 = this.margin1.toValue();
-        const margin2 = this.margin2.toValue();
-        const margin3 = this.margin3.toValue();
+        const order   = this.order  .eval(parse).toValue();
+        const margin1 = this.margin1.eval(parse).toValue();
+        const margin2 = this.margin2.eval(parse).toValue();
+        const margin3 = this.margin3.eval(parse).toValue();
 
         
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
-            const input = this.input.toValue();
-
-            
-            const rgb = input.toRgb();
+            const input = this.input.eval(parse).toValue();
+            const rgb   = input.toRgb();
             
             if (!rgbIsOk(rgb))
                 genQueueMessageToUI(
@@ -8682,17 +8617,17 @@ extends GShapeBase
 
 
         if (this.input)
-            this.input = this.input.eval(parse).copy();
+            this.input.eval(parse);
 
         const hasInput =     
                this.input 
             && LINE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x     = this.x     .eval(parse).copy(); else if (hasInput) this.x     = this.input.x     .copy();
-        if (this.y     ) this.y     = this.y     .eval(parse).copy(); else if (hasInput) this.y     = this.input.y     .copy();
-        if (this.width ) this.width = this.width .eval(parse).copy(); else if (hasInput) this.width = this.input.width .copy();
-        if (this.angle ) this.angle = this.angle .eval(parse).copy(); else if (hasInput) this.angle = this.input.angle .copy();
+        if (this.x     ) this.x     .eval(parse); else if (hasInput) this.x     = this.input.x    ;
+        if (this.y     ) this.y     .eval(parse); else if (hasInput) this.y     = this.input.y    ;
+        if (this.width ) this.width .eval(parse); else if (hasInput) this.width = this.input.width;
+        if (this.angle ) this.angle .eval(parse); else if (hasInput) this.angle = this.input.angle;
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
@@ -8811,18 +8746,18 @@ extends GShapeBase
 
             
         if (this.input)
-            this.input = this.input.eval(parse).copy();
+            this.input.eval(parse);
 
         const hasInput =     
                this.input 
             && ELLIPSE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x      = this.x     .eval(parse).copy(); else if (hasInput) this.x      = this.input.x     .copy();
-        if (this.y     ) this.y      = this.y     .eval(parse).copy(); else if (hasInput) this.y      = this.input.y     .copy();
-        if (this.width ) this.width  = this.width .eval(parse).copy(); else if (hasInput) this.width  = this.input.width .copy();
-        if (this.height) this.height = this.height.eval(parse).copy(); else if (hasInput) this.height = this.input.height.copy();
-        if (this.angle ) this.angle  = this.angle .eval(parse).copy(); else if (hasInput) this.angle  = this.input.angle .copy();
+        if (this.x     ) this.x     .eval(parse); else if (hasInput) this.x      = this.input.x     ;
+        if (this.y     ) this.y     .eval(parse); else if (hasInput) this.y      = this.input.y     ;
+        if (this.width ) this.width .eval(parse); else if (hasInput) this.width  = this.input.width ;
+        if (this.height) this.height.eval(parse); else if (hasInput) this.height = this.input.height;
+        if (this.angle ) this.angle .eval(parse); else if (hasInput) this.angle  = this.input.angle ;
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());

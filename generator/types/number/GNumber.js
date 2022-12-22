@@ -35,15 +35,10 @@ extends GNumberType
 
 
         if (this.input)
-        { 
-            this.input = this.input.eval(parse).copy();
-            this.value = this.input.toValue();
-        }
+            this.value = this.input.eval(parse).toValue();
+        else if (this.value)
+            this.value.eval(parse);
         else
-            this.value = this.value.eval(parse).copy();
-
-        
-        if (!this.value)
             this.value = NumberValue.NaN;
 
 

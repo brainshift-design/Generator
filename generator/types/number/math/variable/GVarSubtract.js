@@ -44,8 +44,7 @@ function evalVarSubtractInputs(inputs, parse)
 
     if (inputs.length > 0)
     {
-        inputs[0] = inputs[0].eval(parse).copy();
-        const val0 = inputs[0].toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
         value.value    = val0.value;
         value.decimals = val0.decimals;
@@ -53,8 +52,7 @@ function evalVarSubtractInputs(inputs, parse)
 
         for (let i = 1; i < inputs.length; i++)
         {
-            inputs[i] = inputs[i].eval(parse).copy();
-            const val = inputs[i].toValue();
+            const val = inputs[i].eval(parse).toValue();
 
             console.assert(
                 val.type == NUMBER_VALUE, 

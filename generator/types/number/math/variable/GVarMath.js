@@ -32,8 +32,7 @@ extends GVarArithmetic
             return this;
 
 
-        this.operation = this.operation.eval(parse).copy();
-        const op = this.operation.toValue();
+        const op = this.operation.eval(parse).toValue();
 
         op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
 

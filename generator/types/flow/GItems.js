@@ -32,8 +32,6 @@ extends GOperator
 
     eval(parse)
     {
-        //logString('GItems.eval()', 'white', 'green');
-
         if (this.isCached())
             return this;
 
@@ -41,9 +39,9 @@ extends GOperator
         if (this.input)
         {
             if (!this.input.value)
-                this.input = this.input.eval(parse).copy();
+                this.input.eval(parse);
 
-            this.value = this.input.toValue();//value.copy();//toValue();
+            this.value = this.input.toValue();
         }
         else
             this.value = ListValue.NaN;

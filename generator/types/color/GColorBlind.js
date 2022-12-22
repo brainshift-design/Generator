@@ -38,23 +38,15 @@ extends GColorType
             return this;
 
 
-        this.l = this.l.eval(parse).copy();
-        this.m = this.m.eval(parse).copy();
-        this.s = this.s.eval(parse).copy();
-
-        const l = this.l.toValue();        
-        const m = this.m.toValue();
-        const s = this.s.toValue();
+        const l = this.l.eval(parse).toValue();        
+        const m = this.m.eval(parse).toValue();
+        const s = this.s.eval(parse).toValue();
 
 
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
-            const input = this.input.toValue();
-
-            const rgb = input.toRgb();
-
-            //const validRgb = invalid2validRgb(rgb);
+            const input = this.input.eval(parse).toValue();
+            const rgb   = input.toRgb();
 
             const rgbCb = rgb2colorblind(
                 rgb,
@@ -65,7 +57,7 @@ extends GColorType
             if (   rgbIsOk(rgb)
                 && rgbIsOk(rgbCb))
             {
-                const validRgbCb = rgbCb;//invalid2validRgb(cb);
+                const validRgbCb = rgbCb;
             
                 const validCol = convertDataColorToSpace(
                     rgb2dataColor(validRgbCb), 

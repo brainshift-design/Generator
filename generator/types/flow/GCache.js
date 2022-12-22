@@ -34,7 +34,7 @@ extends GOperator
 
         this.value = 
             this.input
-            ? this.input.eval(parse).copy().toValue()
+            ? this.input.eval(parse).toValue()
             : null;
 
 
@@ -51,7 +51,7 @@ extends GOperator
 
     toValue()
     {
-        return this.value 
+        return this.value
              ? this.value.copy() 
              : null;
     }

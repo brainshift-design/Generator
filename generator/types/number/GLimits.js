@@ -44,17 +44,13 @@ extends GNumberType
         this.value = new NumberValue(0);
 
         
-        this.min = this.min.eval(parse).copy();
-        this.max = this.max.eval(parse).copy();
-
-        const min = this.min.toValue();
-        const max = this.max.toValue();
+        const min = this.min.eval(parse).toValue();
+        const max = this.max.eval(parse).toValue();
 
 
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
-            this.value = this.input.toValue();
+            this.value = this.input.eval(parse).toValue();
 
             console.assert(
                 this.value.type == NUMBER_VALUE, 

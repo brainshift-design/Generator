@@ -44,8 +44,7 @@ function evalVarAddInputs(inputs, parse)
 
     for (let i = 0; i < inputs.length; i++)
     {
-        inputs[i] = inputs[i].eval(parse).copy();
-        const val = inputs[i].toValue();
+        const val = inputs[i].eval(parse).toValue();
 
         console.assert(
             val.type == NUMBER_VALUE, 

@@ -38,18 +38,14 @@ extends GColorType
             return this;
 
 
-        this.standard = this.standard.eval(parse).copy();
-        const standard = this.standard.toValue();
+        const standard = this.standard.eval(parse).toValue();
 
 
         if (   this.input0 
             && this.input1)
         {
-            this.input0 = this.input0.eval(parse).copy();
-            this.input1 = this.input1.eval(parse).copy();
-
-            const input0 = this.input0.toValue();
-            const input1 = this.input1.toValue();
+            const input0 = this.input0.eval(parse).toValue();
+            const input1 = this.input1.eval(parse).toValue();
 
 
             if (   input0.isValid()
@@ -93,8 +89,7 @@ extends GColorType
 
         else if (this.input0) 
         {
-            this.input0 = this.input0.eval(parse).copy();
-            const input0 = this.input0.toValue();
+            const input0 = this.input0.eval(parse).toValue();
 
             if (input0.isValid())
                 genPushUpdateValue(parse, this.nodeId, 'text', input0);
@@ -107,8 +102,7 @@ extends GColorType
 
         else if (this.input1) 
         {
-            this.input1 = this.input1.eval(parse).copy();
-            const input1 = this.input1.toValue();
+            const input1 = this.input1.eval(parse).toValue();
 
             genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
 

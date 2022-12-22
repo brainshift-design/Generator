@@ -38,8 +38,7 @@ extends GOperator
 
         for (let i = 0; i < this.inputs.length; i++)
         {
-            this.inputs[i] = this.inputs[i].eval(parse).copy();
-            const input = this.inputs[i].toValue();
+            const input = this.inputs[i].eval(parse).toValue();
 
             if (input.type == LIST_VALUE)
             {

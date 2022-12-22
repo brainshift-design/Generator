@@ -43,17 +43,17 @@ extends GShapeBase
 
 
         if (this.input)
-            this.input = this.input.eval(parse).copy();
+            this.input.eval(parse);
 
         const hasInput =     
                this.input 
             && LINE_TYPES.includes(this.input.type);   
 
             
-        if (this.x     ) this.x     = this.x     .eval(parse).copy(); else if (hasInput) this.x     = this.input.x     .copy();
-        if (this.y     ) this.y     = this.y     .eval(parse).copy(); else if (hasInput) this.y     = this.input.y     .copy();
-        if (this.width ) this.width = this.width .eval(parse).copy(); else if (hasInput) this.width = this.input.width .copy();
-        if (this.angle ) this.angle = this.angle .eval(parse).copy(); else if (hasInput) this.angle = this.input.angle .copy();
+        if (this.x     ) this.x     .eval(parse); else if (hasInput) this.x     = this.input.x    ;
+        if (this.y     ) this.y     .eval(parse); else if (hasInput) this.y     = this.input.y    ;
+        if (this.width ) this.width .eval(parse); else if (hasInput) this.width = this.input.width;
+        if (this.angle ) this.angle .eval(parse); else if (hasInput) this.angle = this.input.angle;
 
         
         if (this.x     ) genPushUpdateValue(parse, this.nodeId, 'x',      this.x     .toValue());
