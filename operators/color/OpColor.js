@@ -238,7 +238,7 @@ extends OpColorBase
                 : makeDataColor(_space, _c1, _c2, _c3);
 
             this.outputs[0].wireColor = 
-            this.isUnknown()
+                this.isUnknown()
                 ? rgbHeaderFromType(CACHE, true)
                 : dataColor2rgb(this._color);
 

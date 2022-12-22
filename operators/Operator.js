@@ -1022,11 +1022,9 @@ function pushUpdate(nodes)
 
 function pushUpdateFromParam(nodes, param)
 {
-    //console.log('pushUpdateFromParam(' + (param ? param : '') +')', nodes);
-    //console.trace();
-
     // first check if any nodes to the left are uncached
-    // and replace as necessary
+    // and replace in update array as necessary
+
     for (let i = nodes.length-1; i >= 0; i--)
     {
         const node               = nodes[i];
@@ -1035,7 +1033,11 @@ function pushUpdateFromParam(nodes, param)
         if (uncachedInputNodes.length > 0)
         {
             removeFromArray(nodes, node);
+
             pushUnique(nodes, uncachedInputNodes);
+
+            for (const uncached of uncachedInputNodes)
+                pushUnique(nodes, getTerminalsAfterNode(uncached));
 
             param = null;
         }
@@ -1056,12 +1058,16 @@ function pushUpdateFromParam(nodes, param)
 
     const gen = createGenObject(param ? param.node : null);
 
-        //console.log('nodes =', nodes);
+
     nodes.forEach(n => n.invalidate());
 
         
     const terminals = [];
     nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
+
+    const uncachedInputNodes = [];
+    terminals.forEach(n => pushUnique(uncachedInputNodes, n.getUncachedInputNodes()));
+    uncachedInputNodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
 
     const progressNodes = [];
     nodes.forEach(n => pushUnique(progressNodes, getProgressNodesAfterNode(n)));
@@ -1069,11 +1075,11 @@ function pushUpdateFromParam(nodes, param)
 
     for (const node of terminals)
     {
-        if (!gen.passedNodes.includes(node))
-        {
-            request.push(...getNodeRequest(node, gen));
-            pushUnique(gen.passedNodes, node);
-        }
+        if (gen.passedNodes.includes(node))
+            continue;
+
+        request.push(...getNodeRequest(node, gen));
+        pushUnique(gen.passedNodes, node);
     }
 
 
