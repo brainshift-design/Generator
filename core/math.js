@@ -27,6 +27,14 @@ function roundTo(x, dec)
 
 
 
+function ceilTo(x, dec)
+{
+    const div = Math.ceil(Math.pow(10, dec));
+    return Math.ceil((x + Number.EPSILON) * div) / div;    
+}
+
+
+
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
 

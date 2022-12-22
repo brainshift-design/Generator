@@ -330,6 +330,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case CACHE:               node = new OpCache();            break;
  
         case NUMBER:              node = new OpNumber();           break;
+        case NUMBER_ROUND:        node = new OpRound();            break;
         case NUMBER_LIMITS:       node = new OpLimits();           break;
         case NUMBER_RANDOM:       node = new OpRandom();           break;
         case NUMBER_SERIES:       node = new OpSeries();           break;

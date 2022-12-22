@@ -13,6 +13,17 @@ function logReqNumber(num, parse)
 
 
 
+function logReqRound(round, nInputs, parse)
+{
+    parse.log += parse.tab + NUMBER_ROUND;
+    parse.log += logReqNodeId(round);
+
+    if (nInputs > -1)
+        parse.log += ' ' + nInputs;
+}
+
+
+
 function logReqLimits(lim, nInputs, parse)
 {
     parse.log += parse.tab + NUMBER_LIMITS;
@@ -24,10 +35,10 @@ function logReqLimits(lim, nInputs, parse)
 
 
 
-function logReqSeries(rnd, parse)
+function logReqSeries(series, parse)
 {
     parse.log += parse.tab + NUMBER_SERIES;
-    parse.log += logReqNodeId(rnd);
+    parse.log += logReqNodeId(series);
 }
 
 

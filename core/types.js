@@ -41,6 +41,7 @@ const FLOW_TYPES =
 
 const NUMBER_VALUE        = 'NUM#';  
 const NUMBER              = 'NUM';   
+const NUMBER_ROUND        = 'ROUND';   
 const NUMBER_LIMITS       = 'LIM';   
 const NUMBER_SERIES       = 'SER';  
 const NUMBER_RANDOM       = 'RAND';  
@@ -67,6 +68,7 @@ const NUMBER_TYPES =
 [
     NUMBER_VALUE,
     NUMBER,
+    NUMBER_ROUND,
     NUMBER_LIMITS,
     NUMBER_SERIES,
     NUMBER_RANDOM,

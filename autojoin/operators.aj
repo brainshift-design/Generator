@@ -33,28 +33,29 @@
 ../operators/flow/OpCache.js
 
 ../operators/number/OpNumber.js
+../operators/number/OpRound.js
 ../operators/number/OpLimits.js
 ../operators/number/OpRandom.js
 ../operators/number/OpSeries.js
 ../operators/number/OpInterpolate.js
 
-../operators/number/math/OpMath.js
-../operators/number/math/OpArithmetic.js
-../operators/number/math/OpAdd.js
-../operators/number/math/OpSubtract.js
-../operators/number/math/OpMultiply.js
-../operators/number/math/OpDivide.js
-../operators/number/math/OpModulo.js
-../operators/number/math/OpExponent.js
+../operators/number/arithmetic/OpMath.js
+../operators/number/arithmetic/OpArithmetic.js
+../operators/number/arithmetic/OpAdd.js
+../operators/number/arithmetic/OpSubtract.js
+../operators/number/arithmetic/OpMultiply.js
+../operators/number/arithmetic/OpDivide.js
+../operators/number/arithmetic/OpModulo.js
+../operators/number/arithmetic/OpExponent.js
 
-../operators/number/math/variable/OpVarMath.js
-../operators/number/math/variable/OpVarArithmetic.js
-../operators/number/math/variable/OpVarAdd.js
-../operators/number/math/variable/OpVarSubtract.js
-../operators/number/math/variable/OpVarMultiply.js
-../operators/number/math/variable/OpVarDivide.js
-../operators/number/math/variable/OpVarModulo.js
-../operators/number/math/variable/OpVarExponent.js
+../operators/number/arithmetic/variable/OpVarMath.js
+../operators/number/arithmetic/variable/OpVarArithmetic.js
+../operators/number/arithmetic/variable/OpVarAdd.js
+../operators/number/arithmetic/variable/OpVarSubtract.js
+../operators/number/arithmetic/variable/OpVarMultiply.js
+../operators/number/arithmetic/variable/OpVarDivide.js
+../operators/number/arithmetic/variable/OpVarModulo.js
+../operators/number/arithmetic/variable/OpVarExponent.js
 
 
 ../operators/color/OpColorBase.js
