@@ -97,42 +97,6 @@ function genParseLimits(parse)
 
 
 
-function genParseRandom(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const rnd = new GRandom(nodeId, options);
-
-
-    if (parse.settings.logRequests) 
-        logReqRandom(rnd, parse);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, rnd);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    rnd.seed = genParse(parse);
-    rnd.min  = genParse(parse);
-    rnd.max  = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, rnd);
-    return rnd;
-}
-
-
-
 function genParseMath(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -304,6 +268,77 @@ function genParseVarArithmetic(parse, newNode)
         
     genParseNodeEnd(parse, arith);
     return arith;
+}
+
+
+
+function genParseSeries(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const series = new GSeries(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReqSeries(series, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, series);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    series.start = genParse(parse);
+    series.step  = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, series);
+    return series;
+}
+
+
+
+function genParseRandom(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const rnd = new GRandom(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReqRandom(rnd, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, rnd);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    rnd.seed = genParse(parse);
+    rnd.min  = genParse(parse);
+    rnd.max  = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, rnd);
+    return rnd;
 }
 
 

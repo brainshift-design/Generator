@@ -2926,6 +2926,14 @@ function logReqLimits(lim, nInputs, parse)
 
 
 
+function logReqSeries(rnd, parse)
+{
+    parse.log += parse.tab + NUMBER_SERIES;
+    parse.log += logReqNodeId(rnd);
+}
+
+
+
 function logReqRandom(rnd, parse)
 {
     parse.log += parse.tab + NUMBER_RANDOM;
@@ -3296,8 +3304,9 @@ const FLOW_TYPES =
 const NUMBER_VALUE        = 'NUM#';  
 const NUMBER              = 'NUM';   
 const NUMBER_LIMITS       = 'LIM';   
-const NUMBER_INTERPOLATE  = 'LERP';  
+const NUMBER_SERIES       = 'SER';  
 const NUMBER_RANDOM       = 'RAND';  
+const NUMBER_INTERPOLATE  = 'LERP';  
  
 const NUMBER_MATH         = 'MATH';  
 const NUMBER_ADD          = 'ADD';   
@@ -3321,6 +3330,7 @@ const NUMBER_TYPES =
     NUMBER_VALUE,
     NUMBER,
     NUMBER_LIMITS,
+    NUMBER_SERIES,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
 
@@ -6182,71 +6192,71 @@ extends GNumberType
 
 
 
-class GInterpolate
+class GSeries
 extends GNumberType
 {
-    input0 = null;
-    input1 = null;
+    start;
+    step;
 
-    amount;
+    current;
+
 
 
     constructor(nodeId, options)
     {
-        super(NUMBER_INTERPOLATE, nodeId, options);
+        super(NUMBER_SERIES, nodeId, options);
     }
 
 
     
     copy()
     {
-        const lerp = new GInterpolate(this.nodeId, this.options);
+        const series = new GSeries(this.nodeId, this.options);
 
-        lerp.copyBase(this);
+        series.copyBase(this);
 
-        if (this.input0) lerp.input0 = this.input0.copy();
-        if (this.input1) lerp.input1 = this.input1.copy();
+        if (this.start  ) series.start   = this.start  .copy();
+        if (this.step   ) series.step    = this.step   .copy();
 
-        lerp.amount = this.amount.copy();
+        if (this.current) series.current = this.current.copy();
 
-        return lerp;
+        return series;
     }
 
 
 
     eval(parse)
     {
-        if (this.isCached())
-            return this;
+        //logString('GSeries.eval()');
 
-
-        const amount = this.amount.eval(parse).toValue();
-
-
-        if (   this.input0 
-            && this.input1)
+        if (!this.valid)
         {
-            const val0 = this.input0.eval(parse).toValue();
-            const val1 = this.input1.eval(parse).toValue();
-
-            const maxDec = Math.max(val0.decimals, val1.decimals);
-
-            this.value = new NumberValue(
-                floorTo(val0.value + amount.value * (val1.value - val0.value) / 100, maxDec),
-                maxDec);
+            this.start.eval(parse);
+            this.step .eval(parse);
         }
-        else if (this.input0)
-            this.value = this.input0.eval(parse).toValue();
-
-        else if (this.input1) 
-            this.value = this.input1.eval(parse).toValue();
-
-        else                  
-            this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+        const start = this.start.toValue();
+        const step  = this.step .toValue();
+    
 
+        if (!this.valid)
+            this.current = start.copy();
+
+        
+        this.value = new NumberValue(
+            this.current.value,
+            Math.max(start.decimals, step.decimals));
+
+        this.current.value += step.value;
+
+
+        if (!this.valid)
+        {
+            genPushUpdateValue(parse, this.nodeId, 'start', start);
+            genPushUpdateValue(parse, this.nodeId, 'step',  step );
+        }
+        
 
         this.validate();
 
@@ -6324,6 +6334,80 @@ extends GNumberType
             genPushUpdateValue(parse, this.nodeId, 'max',  max );
         }
         
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GInterpolate
+extends GNumberType
+{
+    input0 = null;
+    input1 = null;
+
+    amount;
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_INTERPOLATE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const lerp = new GInterpolate(this.nodeId, this.options);
+
+        lerp.copyBase(this);
+
+        if (this.input0) lerp.input0 = this.input0.copy();
+        if (this.input1) lerp.input1 = this.input1.copy();
+
+        lerp.amount = this.amount.copy();
+
+        return lerp;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const amount = this.amount.eval(parse).toValue();
+
+
+        if (   this.input0 
+            && this.input1)
+        {
+            const val0 = this.input0.eval(parse).toValue();
+            const val1 = this.input1.eval(parse).toValue();
+
+            const maxDec = Math.max(val0.decimals, val1.decimals);
+
+            this.value = new NumberValue(
+                floorTo(val0.value + amount.value * (val1.value - val0.value) / 100, maxDec),
+                maxDec);
+        }
+        else if (this.input0)
+            this.value = this.input0.eval(parse).toValue();
+
+        else if (this.input1) 
+            this.value = this.input1.eval(parse).toValue();
+
+        else                  
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+
 
         this.validate();
 
@@ -10573,42 +10657,6 @@ function genParseLimits(parse)
 
 
 
-function genParseRandom(parse)
-{
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const rnd = new GRandom(nodeId, options);
-
-
-    if (parse.settings.logRequests) 
-        logReqRandom(rnd, parse);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, rnd);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    rnd.seed = genParse(parse);
-    rnd.min  = genParse(parse);
-    rnd.max  = genParse(parse);
-
-
-    parse.nTab--;
-
-
-    genParseNodeEnd(parse, rnd);
-    return rnd;
-}
-
-
-
 function genParseMath(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -10780,6 +10828,77 @@ function genParseVarArithmetic(parse, newNode)
         
     genParseNodeEnd(parse, arith);
     return arith;
+}
+
+
+
+function genParseSeries(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const series = new GSeries(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReqSeries(series, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, series);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    series.start = genParse(parse);
+    series.step  = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, series);
+    return series;
+}
+
+
+
+function genParseRandom(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const rnd = new GRandom(nodeId, options);
+
+
+    if (parse.settings.logRequests) 
+        logReqRandom(rnd, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, rnd);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    rnd.seed = genParse(parse);
+    rnd.min  = genParse(parse);
+    rnd.max  = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, rnd);
+    return rnd;
 }
 
 
@@ -11523,6 +11642,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER             ) result = genParseNumber          (parse);
     else if (parse.next == NUMBER_LIMITS      ) result = genParseLimits          (parse);
     else if (parse.next == NUMBER_RANDOM      ) result = genParseRandom          (parse);
+    else if (parse.next == NUMBER_SERIES      ) result = genParseSeries          (parse);
     else if (parse.next == NUMBER_INTERPOLATE ) result = genParseInterpolate     (parse);
  
     else if (parse.next == NUMBER_MATH        ) result = genParseMath            (parse, (nodeId, options) => new GMath    (nodeId, options));

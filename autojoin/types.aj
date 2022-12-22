@@ -42,8 +42,9 @@
 ../generator/types/number/GNumberType.js
 ../generator/types/number/GNumber.js
 ../generator/types/number/GLimits.js
-../generator/types/number/GInterpolate.js
+../generator/types/number/GSeries.js
 ../generator/types/number/GRandom.js
+../generator/types/number/GInterpolate.js
 
 ../generator/types/number/math/GArithmetic.js
 ../generator/types/number/math/GMath.js

@@ -34,8 +34,9 @@
 
 ../operators/number/OpNumber.js
 ../operators/number/OpLimits.js
-../operators/number/OpInterpolate.js
 ../operators/number/OpRandom.js
+../operators/number/OpSeries.js
+../operators/number/OpInterpolate.js
 
 ../operators/number/math/OpMath.js
 ../operators/number/math/OpArithmetic.js

@@ -42,8 +42,9 @@ const FLOW_TYPES =
 const NUMBER_VALUE        = 'NUM#';  
 const NUMBER              = 'NUM';   
 const NUMBER_LIMITS       = 'LIM';   
-const NUMBER_INTERPOLATE  = 'LERP';  
+const NUMBER_SERIES       = 'SER';  
 const NUMBER_RANDOM       = 'RAND';  
+const NUMBER_INTERPOLATE  = 'LERP';  
  
 const NUMBER_MATH         = 'MATH';  
 const NUMBER_ADD          = 'ADD';   
@@ -67,6 +68,7 @@ const NUMBER_TYPES =
     NUMBER_VALUE,
     NUMBER,
     NUMBER_LIMITS,
+    NUMBER_SERIES,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
 
