@@ -752,7 +752,7 @@ class Operator
         updateHeaderLabelOffset(this);
 
 
-        const colors          = Operator.prototype.getHeaderColors.call(this);
+        const colors = this.getHeaderColors();//          = Operator.prototype.getHeaderColors.call(this);
 
         
         let fontSize = 11;

@@ -4,6 +4,7 @@ extends OperatorBase
     paramNumber;
     paramColor;
 
+    headerColor = null;
 
 
     constructor()
@@ -74,6 +75,11 @@ extends OperatorBase
     {
         const val = values[paramIds.findIndex(id => id == 'value')];
 
+        this.headerColor =
+            val && val.type == COLOR_VALUE
+            ? rgb_a(val.toRgb(), 1)
+            : null;
+
         if (this.params.length > 0) 
         {
             this.params[0].setValue(val);
@@ -108,6 +114,35 @@ extends OperatorBase
 
 
     
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+
+        const type = 
+            this.inputs[0].connected 
+            ? this.inputs[0].connectedOutput.node.type 
+            : this.type;
+
+        colors.back = 
+            this.headerColor
+            ? this.headerColor
+            : this.inert
+            ? rgb_a(rgbDocumentBody, 0.95)
+            : rgb_a(rgbHeaderFromType(type, this.active), 0.95);
+
+        // colors.border = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
+
+        colors.text    = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.8);
+        colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.7);
+        colors.wire    = rgbHeaderFromType(type, true);
+
+        return colors;
+    }
+
+
+
     paramsToJson(nTab = 0)
     {
         return '';

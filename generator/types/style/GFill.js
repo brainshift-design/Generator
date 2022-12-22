@@ -36,11 +36,11 @@ extends GShapeBase
     {
         if (this.isCached())
             return this;
-
+``
 
         if (this.input)
         {
-            this.input = this.input.eval(parse).copy();
+            this.input.eval(parse);
             this.copyObjects(this.input.objects);
         }
 
