@@ -87,12 +87,12 @@ extends Parameter
             if (!e.detail.success)
                 return;
 
-
             if (e.detail.value != e.detail.oldValue)
             {
                 const rgb = validHex2rgb(e.detail.value);
+                const val = ColorValue.fromRgb(scaleRgb(rgb));
 
-                this.setValue(ColorValue.fromRgb(scaleRgb(rgb)), true);
+                this.setValue(val, true);
                 e.preventSetValue = true;
             }
         });
@@ -124,9 +124,11 @@ extends Parameter
         this.control.value = value.copy();
 
         if (updateControl)
-            this.control.setValue(this.control.value, false, true, false); 
+            this.control.setValue(this.control.value, false, true); 
 
-        //super.setValue(value, createAction, updateControl, dispatchEvents);
+
+        super.setValue(value, createAction, updateControl, dispatchEvents);
+
 
         this.oldValue = this.value.copy();
     }    
@@ -135,32 +137,6 @@ extends Parameter
 
     updateControls()
     {
-        // const rgb = this.value.toRgb();
-
-        // const col = 
-        //     !rgbIsNaN(rgb)
-        //     ? (isDark(rgb)
-        //        ? [1, 1, 1]
-        //        : [0, 0, 0])
-        //     : (isDarkMode()
-        //        ? [1, 1, 1]
-        //        : [0, 0, 0]);
-
-
-        // const noColor = 
-        //     isDarkMode()
-        //     ? rgbNoColorDark
-        //     : rgbNoColorLight;
-
-        // this.input.wireColor   = !rgbIsNaN(rgb) ? rgb : noColor;
-        // this.input.colorLight  = 
-        // this.input.colorDark   = rgb_a(col, 0.2);
-
-        // this.output.wireColor  = !rgbIsNaN(rgb) ? rgb : noColor;
-        // this.output.colorLight =
-        // this.output.colorDark  = rgb_a(col, 0.2);
-
-
         this.checkers.style.background = 
             isDarkMode()
             ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
@@ -168,7 +144,6 @@ extends Parameter
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
-        //this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
         this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
 
         this.checkers.style.backgroundSize     = '20px 20px';
