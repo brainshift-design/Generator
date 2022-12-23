@@ -25,6 +25,8 @@ extends GVarArithmetic
 
         this.value = evalVarExponentInputs(this.inputs, parse);
 
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
         this.validate();
 
         return this;

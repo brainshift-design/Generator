@@ -245,7 +245,7 @@ function initGeneratorMenus()
         new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_DIVIDE,   btnNumber.div, e.shiftKey))}),
         new MenuItem('Power',       {icon: iconExponent   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_EXPONENT, btnNumber.div, e.shiftKey))}),
         new MenuItem('Remainder',   {icon: iconModulo     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_MODULO,   btnNumber.div, e.shiftKey))}),
-        new MenuItem('· · ·',       {childMenu: menuSimpleMath }),
+        //new MenuItem('· · ·',       {childMenu: menuSimpleMath }),
         new MenuItem('',            {separator: true}),
         new MenuItem('Series',      {icon: iconSeries     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_SERIES,       btnNumber.div, e.shiftKey))}),
         new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,       btnNumber.div, e.shiftKey))})]);

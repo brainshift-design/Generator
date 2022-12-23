@@ -38,7 +38,8 @@ extends GOperator
             return this;
 
 
-        const count = this.count.eval(parse).toValue();
+        let count = this.count.eval(parse).toValue();
+        count = new NumberValue(Math.round(count.value));
 
        
         this.value = new ListValue();

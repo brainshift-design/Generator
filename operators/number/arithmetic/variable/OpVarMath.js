@@ -1,6 +1,7 @@
 class   OpVarMath
 extends OperatorBase
 {
+    paramValue;
     paramOperation;
 
 
@@ -17,6 +18,7 @@ extends OperatorBase
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
         this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, MATH_OPS.map(s => s[1]), 1));
+        this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
     }
     
     

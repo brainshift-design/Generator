@@ -220,10 +220,12 @@ function connectAction_restoreOldConnection(act)
 
 function connectAction_restoreInputValues(act)
 {
-    for (const param of act.inputValues)
+    for (const value of act.inputValues)
     {
-        act.inputNode.params[act.inputNode.params.findIndex(p => p.id == param[0])]
-            .setValue(param[1], true, true, false);
+        const param = act.inputNode.params.find(p => p.id == value[0]);
+
+        if (param)
+            param.setValue(value[1], true, true, false);
     }
 }
 

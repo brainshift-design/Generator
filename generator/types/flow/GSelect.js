@@ -36,7 +36,10 @@ extends GOperator
             return this;
 
 
-        const index = this.index.eval(parse).toValue();
+        let index = this.index.eval(parse).toValue();
+        index = new NumberValue(Math.round(index.value));
+
+
         let length = 0;
 
 
@@ -46,23 +49,22 @@ extends GOperator
                 this.input.eval(parse);
 
             const input = this.input.toValue();
+            length = input.items.length;
+
+            index.value = Math.min(index.value, input.items.length-1);
 
             this.value = input.items[index.value];
-            length = input.items.length;
         }
         else
         {
             this.value = null;
-            index = null;
         }
-
-
-        this.items = [];
 
 
         if (this.value)
             genPushUpdateValue(parse, this.nodeId, 'value', this.value);
             
+
         genPushUpdateValue(parse, this.nodeId, 'index',  index);
         genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length));
 

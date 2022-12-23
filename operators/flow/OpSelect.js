@@ -15,9 +15,7 @@ extends OperatorBase
         this.inert = true;
 
 
-        this.addInput (new Input (LIST_TYPES));
-        //this.addOutput(new Output([], this.output_genRequest));
-
+        this.addInput(new Input (LIST_TYPES, this.input_getValuesForUndo));
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
 
@@ -26,10 +24,6 @@ extends OperatorBase
 
         this.paramNumber = new NumberParam('value', '', false, false, false);
         this.paramColor  = new  ColorParam('value', '', false, false, false);
-
-
-        // this.inputs[0].addEventListener('connect',    () => OpSelect_onConnectInput(this));
-        // this.inputs[0].addEventListener('disconnect', () => OpSelect_onDisconnectInput(this));
     }
 
 
@@ -89,10 +83,35 @@ extends OperatorBase
             this.removeParam(paramValue);
 
 
-        if (!paramValue && val) paramValue = this.addParamByType(val.type, 'value', false, false, true);
-        if (length)             this.paramIndex.control.setMax(length.value-1);
+        if (  !paramValue 
+            && val) 
+            paramValue = this.addParamByType(val.type, 'value', false, false, true);
+
+        this.paramIndex.control.setMax(
+               length
+            && length.value > 0
+            ? length.value-1
+            : Number.MAX_SAFE_INTEGER);
   
         
         super.updateValues(updateParamId, paramIds, values);
+    }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        //const paramValue = this.params.find(p => p.id == 'value');
+
+        this.paramIndex.enableControlText(true);
+
+
+        // if (paramValue)
+        // {
+        //     paramValue.enableControlText(true);
+        //     paramValue.control.valueText = this.paramIndex.value < 0 ? UNKNOWN_DISPLAY : '';
+        // }
     }
 }

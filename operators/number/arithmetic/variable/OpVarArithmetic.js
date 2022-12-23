@@ -1,6 +1,8 @@
 class   OpVarArithmetic
 extends OperatorBase
 {
+    paramValue;
+    
     _symbol;
     _showOnlySymbol;
 
@@ -18,6 +20,8 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
+        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
+
 
         this._symbol           = createDiv('arithmeticSymbol');
         this._symbol.innerHTML = symbol;
@@ -109,9 +113,9 @@ extends OperatorBase
         super.updateHeader();
 
 
-        this.div   .style.borderRadius = '4px';        
-        this.inner .style.borderRadius = '4px';        
-        this.header.style.borderRadius = '4px';        
+        // this.div   .style.borderRadius = '4px';        
+        // this.inner .style.borderRadius = '4px';        
+        // this.header.style.borderRadius = '4px';        
 
 
         const colBack = rgbHeaderFromType(this.type, this.active);

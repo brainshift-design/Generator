@@ -8220,7 +8220,10 @@ extends GOperator
             return this;
 
 
-        const index = this.index.eval(parse).toValue();
+        let index = this.index.eval(parse).toValue();
+        index = new NumberValue(Math.round(index.value));
+
+
         let length = 0;
 
 
@@ -8230,23 +8233,22 @@ extends GOperator
                 this.input.eval(parse);
 
             const input = this.input.toValue();
+            length = input.items.length;
+
+            index.value = Math.min(index.value, input.items.length-1);
 
             this.value = input.items[index.value];
-            length = input.items.length;
         }
         else
         {
             this.value = null;
-            index = null;
         }
-
-
-        this.items = [];
 
 
         if (this.value)
             genPushUpdateValue(parse, this.nodeId, 'value', this.value);
             
+
         genPushUpdateValue(parse, this.nodeId, 'index',  index);
         genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length));
 
@@ -8359,7 +8361,8 @@ extends GOperator
             return this;
 
 
-        const count = this.count.eval(parse).toValue();
+        let count = this.count.eval(parse).toValue();
+        count = new NumberValue(Math.round(count.value));
 
        
         this.value = new ListValue();
@@ -9334,6 +9337,8 @@ extends GVarArithmetic
 
         
         genPushUpdateValue(parse, this.nodeId, 'operation', op);
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+
 
 
         this.validate();
@@ -9371,6 +9376,8 @@ extends GVarArithmetic
 
         this.value = evalVarAddInputs(this.inputs, parse);
         
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
         this.validate();
 
         return this;
@@ -9431,6 +9438,8 @@ extends GVarArithmetic
             return this;
 
         this.value = evalVarSubtractInputs(this.inputs, parse);
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.validate();
 
@@ -9502,6 +9511,8 @@ extends GVarArithmetic
 
         this.value = evalVarMultiplyInputs(this.inputs, parse);
 
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
         this.validate();
 
         return this;
@@ -9567,6 +9578,8 @@ extends GVarArithmetic
             return this;
 
         this.value = evalVarDivideInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.validate();
 
@@ -9645,6 +9658,8 @@ extends GVarArithmetic
 
         this.value = evalVarModuloInputs(this.inputs, parse);
 
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
         this.validate();
 
         return this;
@@ -9721,6 +9736,8 @@ extends GVarArithmetic
             return this;
 
         this.value = evalVarExponentInputs(this.inputs, parse);
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.validate();
 
@@ -24322,7 +24339,10 @@ extends GOperator
             return this;
 
 
-        const index = this.index.eval(parse).toValue();
+        let index = this.index.eval(parse).toValue();
+        index = new NumberValue(Math.round(index.value));
+
+
         let length = 0;
 
 
@@ -24332,23 +24352,22 @@ extends GOperator
                 this.input.eval(parse);
 
             const input = this.input.toValue();
+            length = input.items.length;
+
+            index.value = Math.min(index.value, input.items.length-1);
 
             this.value = input.items[index.value];
-            length = input.items.length;
         }
         else
         {
             this.value = null;
-            index = null;
         }
-
-
-        this.items = [];
 
 
         if (this.value)
             genPushUpdateValue(parse, this.nodeId, 'value', this.value);
             
+
         genPushUpdateValue(parse, this.nodeId, 'index',  index);
         genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length));
 
@@ -24461,7 +24480,8 @@ extends GOperator
             return this;
 
 
-        const count = this.count.eval(parse).toValue();
+        let count = this.count.eval(parse).toValue();
+        count = new NumberValue(Math.round(count.value));
 
        
         this.value = new ListValue();
@@ -25436,6 +25456,8 @@ extends GVarArithmetic
 
         
         genPushUpdateValue(parse, this.nodeId, 'operation', op);
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+
 
 
         this.validate();
@@ -25473,6 +25495,8 @@ extends GVarArithmetic
 
         this.value = evalVarAddInputs(this.inputs, parse);
         
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
         this.validate();
 
         return this;
@@ -25533,6 +25557,8 @@ extends GVarArithmetic
             return this;
 
         this.value = evalVarSubtractInputs(this.inputs, parse);
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.validate();
 
@@ -25604,6 +25630,8 @@ extends GVarArithmetic
 
         this.value = evalVarMultiplyInputs(this.inputs, parse);
 
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
         this.validate();
 
         return this;
@@ -25669,6 +25697,8 @@ extends GVarArithmetic
             return this;
 
         this.value = evalVarDivideInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.validate();
 
@@ -25747,6 +25777,8 @@ extends GVarArithmetic
 
         this.value = evalVarModuloInputs(this.inputs, parse);
 
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
         this.validate();
 
         return this;
@@ -25823,6 +25855,8 @@ extends GVarArithmetic
             return this;
 
         this.value = evalVarExponentInputs(this.inputs, parse);
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.validate();
 
@@ -29264,7 +29298,7 @@ function initGeneratorMenus()
         new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_DIVIDE,   btnNumber.div, e.shiftKey))}),
         new MenuItem('Power',       {icon: iconExponent   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_EXPONENT, btnNumber.div, e.shiftKey))}),
         new MenuItem('Remainder',   {icon: iconModulo     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_MODULO,   btnNumber.div, e.shiftKey))}),
-        new MenuItem('· · ·',       {childMenu: menuSimpleMath }),
+        //new MenuItem('· · ·',       {childMenu: menuSimpleMath }),
         new MenuItem('',            {separator: true}),
         new MenuItem('Series',      {icon: iconSeries     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_SERIES,       btnNumber.div, e.shiftKey))}),
         new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,       btnNumber.div, e.shiftKey))})]);
@@ -40412,9 +40446,7 @@ extends OperatorBase
         this.inert = true;
 
 
-        this.addInput (new Input (LIST_TYPES));
-        //this.addOutput(new Output([], this.output_genRequest));
-
+        this.addInput(new Input (LIST_TYPES, this.input_getValuesForUndo));
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
 
@@ -40423,10 +40455,6 @@ extends OperatorBase
 
         this.paramNumber = new NumberParam('value', '', false, false, false);
         this.paramColor  = new  ColorParam('value', '', false, false, false);
-
-
-        // this.inputs[0].addEventListener('connect',    () => OpSelect_onConnectInput(this));
-        // this.inputs[0].addEventListener('disconnect', () => OpSelect_onDisconnectInput(this));
     }
 
 
@@ -40486,11 +40514,36 @@ extends OperatorBase
             this.removeParam(paramValue);
 
 
-        if (!paramValue && val) paramValue = this.addParamByType(val.type, 'value', false, false, true);
-        if (length)             this.paramIndex.control.setMax(length.value-1);
+        if (  !paramValue 
+            && val) 
+            paramValue = this.addParamByType(val.type, 'value', false, false, true);
+
+        this.paramIndex.control.setMax(
+               length
+            && length.value > 0
+            ? length.value-1
+            : Number.MAX_SAFE_INTEGER);
   
         
         super.updateValues(updateParamId, paramIds, values);
+    }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        //const paramValue = this.params.find(p => p.id == 'value');
+
+        this.paramIndex.enableControlText(true);
+
+
+        // if (paramValue)
+        // {
+        //     paramValue.enableControlText(true);
+        //     paramValue.control.valueText = this.paramIndex.value < 0 ? UNKNOWN_DISPLAY : '';
+        // }
     }
 }
 
@@ -40581,6 +40634,7 @@ extends OperatorBase
 
         this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, false, 1, 0, 100, 0));
 
+        this.paramCount.control.allowEditDecimals = false;
         this.paramCount.affectsHeader = false;
     }
     
@@ -41529,6 +41583,7 @@ extends OpArithmetic
 class   OpVarMath
 extends OperatorBase
 {
+    paramValue;
     paramOperation;
 
 
@@ -41545,6 +41600,7 @@ extends OperatorBase
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
         this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, MATH_OPS.map(s => s[1]), 1));
+        this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
     }
     
     
@@ -41623,6 +41679,8 @@ function OpList_onDisconnectInput(node, input)
 class   OpVarArithmetic
 extends OperatorBase
 {
+    paramValue;
+    
     _symbol;
     _showOnlySymbol;
 
@@ -41640,6 +41698,8 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
+        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
+
 
         this._symbol           = createDiv('arithmeticSymbol');
         this._symbol.innerHTML = symbol;
@@ -41731,9 +41791,9 @@ extends OperatorBase
         super.updateHeader();
 
 
-        this.div   .style.borderRadius = '4px';        
-        this.inner .style.borderRadius = '4px';        
-        this.header.style.borderRadius = '4px';        
+        // this.div   .style.borderRadius = '4px';        
+        // this.inner .style.borderRadius = '4px';        
+        // this.header.style.borderRadius = '4px';        
 
 
         const colBack = rgbHeaderFromType(this.type, this.active);
@@ -45944,10 +46004,12 @@ function connectAction_restoreOldConnection(act)
 
 function connectAction_restoreInputValues(act)
 {
-    for (const param of act.inputValues)
+    for (const value of act.inputValues)
     {
-        act.inputNode.params[act.inputNode.params.findIndex(p => p.id == param[0])]
-            .setValue(param[1], true, true, false);
+        const param = act.inputNode.params.find(p => p.id == value[0]);
+
+        if (param)
+            param.setValue(value[1], true, true, false);
     }
 }
 
