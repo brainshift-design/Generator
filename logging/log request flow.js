@@ -23,6 +23,15 @@ function logReqItems(items, nInputs, parse)
 
 
 
+function logReqSelect(sel, nInputs, parse)
+{
+    parse.log += parse.tab + SELECT;
+    parse.log += logReqNodeId(sel);
+    parse.log += ' ' + nInputs;
+}
+
+
+
 function logReqStart(rep, nInputs, parse)
 {
     parse.log += parse.tab + START;

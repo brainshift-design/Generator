@@ -108,6 +108,7 @@ const UNKNOWN_DISPLAY = UNKNOWN_CHAR; //'🤷‍♂️';
 const LIST_VALUE = 'LIST#';
 const LIST = 'LIST';
 const ITEMS = 'ITEMS';
+const SELECT = 'SEL';
 const START = 'STRT';
 const REPEAT = 'REPT';
 const CACHE = 'CACHE';
@@ -121,6 +122,7 @@ const FOREACH = 'FOR';
 const FLOW_TYPES = [
     ...LIST_TYPES,
     ITEMS,
+    SELECT,
     START,
     REPEAT,
     FOREACH,

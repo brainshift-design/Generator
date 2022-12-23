@@ -115,9 +115,6 @@ extends OpColorBase
             : dataColor_NaN;
 
         super.updateValues(updateParamId, paramIds, values);
-
-
-        //showOpColorInterpolateGammaControl(this, this.paramSpace.value == 1);    
     }
 }
 

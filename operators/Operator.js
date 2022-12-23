@@ -314,19 +314,23 @@ class Operator
             //param.output._node = this;
             this.outputs.push(param.output);
         }
+
+        return param;
     }
  
     
 
     addParamByType(type, id, showName, hasInput, hasOutput)
     {
-             if (NUMBER_TYPES.includes(type)) this.addParam(new NumberParam(id, id, showName, hasInput, hasOutput));
-        else if ( COLOR_TYPES.includes(type)) this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput));
-        else if (  FILL_TYPES.includes(type)) this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput));
-        else if (STROKE_TYPES.includes(type)) this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput));
-        else if ( STYLE_TYPES.includes(type)) this.addParam(new  StyleParam(id, id, showName, hasInput, hasOutput));
+             if (NUMBER_TYPES.includes(type)) return this.addParam(new NumberParam(id, id, showName, hasInput, hasOutput));
+        else if ( COLOR_TYPES.includes(type)) return this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput));
+        else if (  FILL_TYPES.includes(type)) return this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput));
+        else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput));
+        else if ( STYLE_TYPES.includes(type)) return this.addParam(new  StyleParam(id, id, showName, hasInput, hasOutput));
 
         else console.assert(false, 'cannot create param of type \'' + type + '\'');
+
+        return null;
     }
 
 

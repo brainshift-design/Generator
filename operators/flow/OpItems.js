@@ -6,8 +6,9 @@ extends OperatorBase
         super(ITEMS, 'items', 100);
 
         this.inert = true;
+
         
-        this.addInput (new Input (LIST_TYPES, this.input_getValuesForUndo));
+        this.addInput(new Input(LIST_TYPES));
 
         this.alwaysLoadParams = true;
         this.alwaysSaveParams = true;

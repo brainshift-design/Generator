@@ -254,8 +254,8 @@ extends OpColorBase
         margin.setName(correction.name, false);
         margin.control.name = correction.name;
 
-        margin.control.setMin(0,              false);
-        margin.control.setMax(correction.max, false);
+        margin.control.setMin(0);
+        margin.control.setMax(correction.max);
     }
 
 

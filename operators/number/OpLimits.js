@@ -55,7 +55,7 @@ extends OperatorBase
     {
         super.updateParams();
 
-        this.paramMin  .enableControlText(true);
-        this.paramMax  .enableControlText(true);
+        this.paramMin.enableControlText(true);
+        this.paramMax.enableControlText(true);
     }
 }

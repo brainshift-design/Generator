@@ -2882,6 +2882,15 @@ function logReqItems(items, nInputs, parse)
 
 
 
+function logReqSelect(sel, nInputs, parse)
+{
+    parse.log += parse.tab + SELECT;
+    parse.log += logReqNodeId(sel);
+    parse.log += ' ' + nInputs;
+}
+
+
+
 function logReqStart(rep, nInputs, parse)
 {
     parse.log += parse.tab + START;
@@ -3290,6 +3299,7 @@ const LIST_VALUE          = 'LIST#';
 const LIST                = 'LIST';
 
 const ITEMS               = 'ITEMS';
+const SELECT              = 'SEL';
 
 const START               = 'STRT';
 const REPEAT              = 'REPT';
@@ -3313,6 +3323,7 @@ const FLOW_TYPES =
 [
     ...LIST_TYPES,
     ITEMS,
+    SELECT,
     START,
     REPEAT,
     FOREACH,
@@ -5827,6 +5838,89 @@ extends GOperator
             return this.items[parseInt(paramId.substring(4))];
 
         return null;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+class GSelect
+extends GOperator
+{
+    input = null;
+    
+    index;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(SELECT, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const sel = new GSelect(this.nodeId, this.options);
+        
+        sel.copyBase(this);
+
+        if (this.input) 
+            sel.input = this.input.copy();
+        
+        sel.index = this.index.copy();
+
+        return sel;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const index = this.index.eval(parse).toValue();
+        let length = 0;
+
+
+        if (this.input)
+        {
+            if (!this.input.value)
+                this.input.eval(parse);
+
+            const input = this.input.toValue();
+
+            this.value = input.items[index.value];
+            length = input.items.length;
+        }
+        else
+        {
+            this.value = null;
+            index = null;
+        }
+
+
+        this.items = [];
+
+
+        if (this.value)
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+            
+        genPushUpdateValue(parse, this.nodeId, 'index',  index);
+        genPushUpdateValue(parse, this.nodeId, 'length', new NumberValue(length));
+
+
+        this.validate();
+
+        return this;
     }
 
 
@@ -10533,6 +10627,52 @@ function genParseItems(parse)
 
 
 
+function genParseSelect(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const sel = new GSelect(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReqSelect(sel, nInputs, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, sel);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        sel.input = genParse(parse);
+
+    sel.index = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, sel);
+    return sel;
+}
+
+
+
 function genParseStart(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -11789,6 +11929,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST_VALUE         ) result = genParseListValue       (parse);
     else if (parse.next == LIST               ) result = genParseList            (parse);
     else if (parse.next == ITEMS              ) result = genParseItems           (parse);
+    else if (parse.next == SELECT             ) result = genParseSelect          (parse);
     else if (parse.next == START              ) result = genParseStart           (parse);
     else if (parse.next == REPEAT             ) result = genParseRepeat          (parse);
     else if (parse.next == CACHE              ) result = genParseCache           (parse);
@@ -13667,13 +13808,13 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c
     node.param1.control.wrapValue = c1wrap;
     node.param1.control.setSuffix(c1suffix, c1suffix != '');
 
-    node.param1.control.setMin(c1min, false); 
-    node.param2.control.setMin(c2min, false);
-    node.param3.control.setMin(c3min, false);
+    node.param1.control.setMin(c1min); 
+    node.param2.control.setMin(c2min);
+    node.param3.control.setMin(c3min);
     
-    node.param1.control.setMax(c1max, false); 
-    node.param2.control.setMax(c2max, false); 
-    node.param3.control.setMax(c3max, false); 
+    node.param1.control.setMax(c1max); 
+    node.param2.control.setMax(c2max); 
+    node.param3.control.setMax(c3max); 
     
     node.param1.updateControls();
     node.param2.updateControls();

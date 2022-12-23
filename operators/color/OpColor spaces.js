@@ -242,13 +242,13 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c
     node.param1.control.wrapValue = c1wrap;
     node.param1.control.setSuffix(c1suffix, c1suffix != '');
 
-    node.param1.control.setMin(c1min, false); 
-    node.param2.control.setMin(c2min, false);
-    node.param3.control.setMin(c3min, false);
+    node.param1.control.setMin(c1min); 
+    node.param2.control.setMin(c2min);
+    node.param3.control.setMin(c3min);
     
-    node.param1.control.setMax(c1max, false); 
-    node.param2.control.setMax(c2max, false); 
-    node.param3.control.setMax(c3max, false); 
+    node.param1.control.setMax(c1max); 
+    node.param2.control.setMax(c2max); 
+    node.param3.control.setMax(c3max); 
     
     node.param1.updateControls();
     node.param2.updateControls();

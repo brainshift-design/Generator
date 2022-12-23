@@ -182,24 +182,18 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     
 
 
-    control.setMin = (min, dispatchEvents = true) =>
+    control.setMin = (min) =>
     {
         control.min        = min;
         control.displayMin = min;
-
-        // if (control.value < min) 
-        //     control.setValue(min, true, true, dispatchEvents);
     };
 
 
 
-    control.setMax = (max, dispatchEvents = true) =>
+    control.setMax = (max) =>
     {
         control.max        = max;
         control.displayMax = max;
-
-        // if (max < control.value) 
-        //     control.setValue(max, true, true, dispatchEvents);
     };
 
 
