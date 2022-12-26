@@ -10,16 +10,16 @@ class Connection
 
     constructor(output, input)
     {
-        this.output      = output;
-        this.outputOrder = -1;
- 
-        this.input       = input;
+        this.output                      = output;
+        this.outputOrder                 = -1;
+                 
+        this.input                       = input;
 
 
-        this.wire        = this.createWire(this.wire);
+        this.wire                        = this.createWire(this.wire);
    
-        this.wire.output = this.output;
-        this.wire.input  = this.input;
+        this.wire.output                 = this.output;
+        this.wire.input                  = this.input;
 
         this.wire.outBall                = createSvg('circle');
         this.wire.outBall.style.position = 'absolute';
@@ -27,12 +27,13 @@ class Connection
         this.wire.inBall                 = createSvg('circle');
         this.wire.inBall.style.position  = 'absolute';
 
-        this.wire.appendChild(this.wire .curve  );
-        this.wire.appendChild(this.wire .curve2 );
-        this.wire.appendChild(this.wire .xp1    );
-        this.wire.appendChild(this.wire .xp2    );
-        this.wire.appendChild(this.wire .outBall);
-        this.wire.appendChild(this.wire .inBall );
+
+        this.wire.appendChild(this.wire.curve  );
+        this.wire.appendChild(this.wire.curve2 );
+        this.wire.appendChild(this.wire.xp1    );
+        this.wire.appendChild(this.wire.xp2    );
+        this.wire.appendChild(this.wire.outBall);
+        this.wire.appendChild(this.wire.inBall );
 
         
         this.wire.update = (x1, y1, x2, y2) =>
@@ -59,10 +60,8 @@ class Connection
 
             if (this.output)
             {
-                if (this.output.types.length > 0)
-                    types.push(...this.output.types);
-                else
-                    types.push(this.output.node.type);
+                if (this.output.types.length > 0) types.push(...this.output.types);
+                else                              types.push(this.output.node.type);
             }
             else if (this.input)
             {
@@ -71,10 +70,8 @@ class Connection
                     types.push(...graphView.overOutput.types);
                 else
                 {
-                    if (this.input.types.length > 0)
-                        types.push(...this.input.types);
-                    else
-                        types.push(this.input.node.type);
+                    if (this.input.types.length > 0) types.push(...this.input.types);
+                    else                             types.push(this.input.node.type);
                 }
             }
 
@@ -163,7 +160,6 @@ class Connection
 
 function parseConnectionJsonAndConnect(_conn, pasteConnected)
 {
-    // console.trace();
     const outputNode  = nodeFromId(_conn.outputNodeId);
     const outputId    = _conn.outputId;
     const outputOrder = parseInt(_conn.outputOrder);
@@ -356,12 +352,14 @@ function updateWireStyle(wire)
 
     const wireStyle = rgba2style(color);
 
+
     const unknown = 
             conn.output
         && !conn.output.node.isCached()
         &&  conn.input
         &&  conn.input.node.isOrFollowedByMultiplier()
-        && (!conn.input.param || conn.input.param.affectsHeader);
+        && (  !conn.input.param 
+            || conn.input.param.affectsHeader);
 
 
     wire.curve .style.stroke = wireStyle;
@@ -369,8 +367,8 @@ function updateWireStyle(wire)
 
     wire.curve.style.strokeDasharray = unknown ? 1.7 * graphView.zoom : 0;
 
-    wire. inBall .style.fill = wireStyle;
-    wire.outBall .style.fill = wireStyle;
+    wire. inBall.style.fill = wireStyle;
+    wire.outBall.style.fill = wireStyle;
 
 
     if (conn.output) conn.output.wireBall.style.background = wireStyle;

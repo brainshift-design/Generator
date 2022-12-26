@@ -11,6 +11,7 @@ extends OperatorBase
     {
         super(type, shortName, 70);
 
+        
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
 
