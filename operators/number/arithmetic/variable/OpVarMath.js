@@ -72,9 +72,10 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramOperation.enableControlText(true );
-
         super.updateParams();
+        
+        this.paramOperation.enableControlText(true);
+        this.paramValue    .enableControlText(false);
     }
 }
 

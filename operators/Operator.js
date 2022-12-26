@@ -598,7 +598,7 @@ class Operator
 
     invalidate()
     {
-        //if (!this.valid) // stops a node with inputs from same output 
+        //if (!this.valid) // stops a node with inputs from same output
         //    return;      // from being invalidated more than once
     
         //console.log(this.id + '.Operator.invalidate()');
@@ -619,10 +619,10 @@ class Operator
 
     input_getValuesForUndo()
     {
-        const values = [];
+        const values = []; 
 
         for (const param of this.node.params)
-            values.push([param.id, param.value]);
+            values.push(param.getValueForUndo());
 
         return values;
     }

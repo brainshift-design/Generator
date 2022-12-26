@@ -222,10 +222,19 @@ function connectAction_restoreInputValues(act)
 {
     for (const value of act.inputValues)
     {
-        const param = act.inputNode.params.find(p => p.id == value[0]);
+        const param = act.inputNode.params.find(p => p.id == value.paramId);
 
         if (param)
-            param.setValue(value[1], true, true, false);
+        {
+            if (   value.min != undefined
+                && value.max != undefined)
+            {
+                param.control.setMin(value.min);
+                param.control.setMax(value.max);
+            }
+                
+            param.setValue(value.value, true, true, false);
+        }
     }
 }
 

@@ -30,7 +30,6 @@ extends Parameter
     {
         // console.log(this.id + '.setValue() value =', value);
 
-        
         console.assert(
             value instanceof NumberValue,
             'value must be a NumberValue');
@@ -45,7 +44,7 @@ extends Parameter
             this.control.setValue(value.value, false, false); 
         }
 
-
+        
         super.setValue(value, createAction, updateControl, dispatchEvents);
 
         
@@ -58,6 +57,18 @@ extends Parameter
     {
         this.control.showValue = show;
         this.control.update();
+    }
+
+
+
+    getValueForUndo()
+    {
+        return {
+            paramId: this.id, 
+            value:   this.value,
+            min:     this.control.min,
+            max:     this.control.max
+        };
     }
 
 

@@ -135,7 +135,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         const oldValue = control.value;
 
 
-        const dec = Math.pow(10, Math.abs(control.dec));
+        // const dec = Math.pow(10, Math.abs(control.dec));
 
         //value = Math.round(value * dec) / dec;
 
@@ -145,8 +145,10 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             while (value < control.displayMin) value += control.displayMax - control.displayMin;
             while (value > control.displayMax) value -= control.displayMax - control.displayMin;
         }
+
         else if (fullRange)
             value = Math.min(Math.max(control.min, value), control.max);
+
         else
             value = Math.min(Math.max(control.displayMin, value), control.displayMax);
 

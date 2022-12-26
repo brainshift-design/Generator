@@ -30604,7 +30604,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         const oldValue = control.value;
 
 
-        const dec = Math.pow(10, Math.abs(control.dec));
+        // const dec = Math.pow(10, Math.abs(control.dec));
 
         //value = Math.round(value * dec) / dec;
 
@@ -30614,8 +30614,10 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             while (value < control.displayMin) value += control.displayMax - control.displayMin;
             while (value > control.displayMax) value -= control.displayMax - control.displayMin;
         }
+
         else if (fullRange)
             value = Math.min(Math.max(control.min, value), control.max);
+
         else
             value = Math.min(Math.max(control.displayMin, value), control.displayMax);
 
@@ -34547,11 +34549,12 @@ extends EventTarget
 
 
     
-    input_getValuesForUndo()
+    getValueForUndo()
     {
-        return [[
-            this.param.id, 
-            this.param.value]];
+        return {
+            paramId: this.id, 
+            value:   this.value
+        };
     }
 
 
@@ -34684,7 +34687,6 @@ extends Parameter
     {
         // console.log(this.id + '.setValue() value =', value);
 
-        
         console.assert(
             value instanceof NumberValue,
             'value must be a NumberValue');
@@ -34699,7 +34701,7 @@ extends Parameter
             this.control.setValue(value.value, false, false); 
         }
 
-
+        
         super.setValue(value, createAction, updateControl, dispatchEvents);
 
         
@@ -34712,6 +34714,18 @@ extends Parameter
     {
         this.control.showValue = show;
         this.control.update();
+    }
+
+
+
+    getValueForUndo()
+    {
+        return {
+            paramId: this.id, 
+            value:   this.value,
+            min:     this.control.min,
+            max:     this.control.max
+        };
     }
 
 
@@ -38669,7 +38683,7 @@ class Operator
 
     invalidate()
     {
-        //if (!this.valid) // stops a node with inputs from same output 
+        //if (!this.valid) // stops a node with inputs from same output
         //    return;      // from being invalidated more than once
     
         //console.log(this.id + '.Operator.invalidate()');
@@ -38690,10 +38704,10 @@ class Operator
 
     input_getValuesForUndo()
     {
-        const values = [];
+        const values = []; 
 
         for (const param of this.node.params)
-            values.push([param.id, param.value]);
+            values.push(param.getValueForUndo());
 
         return values;
     }
@@ -40446,7 +40460,7 @@ extends OperatorBase
         this.inert = true;
 
 
-        this.addInput(new Input (LIST_TYPES, this.input_getValuesForUndo));
+        this.addInput(new Input(LIST_TYPES, this.input_getValuesForUndo));
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
 
@@ -41654,9 +41668,10 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramOperation.enableControlText(true );
-
         super.updateParams();
+        
+        this.paramOperation.enableControlText(true);
+        this.paramValue    .enableControlText(false);
     }
 }
 
@@ -41782,6 +41797,15 @@ extends OperatorBase
         pushUnique(gen.passedNodes, this.node);
         
         return request;
+    }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+
+        this.paramValue.enableControlText(false);
     }
 
 
@@ -46006,10 +46030,19 @@ function connectAction_restoreInputValues(act)
 {
     for (const value of act.inputValues)
     {
-        const param = act.inputNode.params.find(p => p.id == value[0]);
+        const param = act.inputNode.params.find(p => p.id == value.paramId);
 
         if (param)
-            param.setValue(value[1], true, true, false);
+        {
+            if (   value.min != undefined
+                && value.max != undefined)
+            {
+                param.control.setMin(value.min);
+                param.control.setMax(value.max);
+            }
+                
+            param.setValue(value.value, true, true, false);
+        }
     }
 }
 

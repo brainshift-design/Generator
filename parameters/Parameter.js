@@ -111,11 +111,12 @@ extends EventTarget
 
 
     
-    input_getValuesForUndo()
+    getValueForUndo()
     {
-        return [[
-            this.param.id, 
-            this.param.value]];
+        return {
+            paramId: this.id, 
+            value:   this.value
+        };
     }
 
 

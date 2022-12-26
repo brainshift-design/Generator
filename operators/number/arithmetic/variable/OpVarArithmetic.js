@@ -108,6 +108,15 @@ extends OperatorBase
 
 
 
+    updateParams()
+    {
+        super.updateParams();
+
+        this.paramValue.enableControlText(false);
+    }
+
+
+
     updateHeader()
     {
         super.updateHeader();
