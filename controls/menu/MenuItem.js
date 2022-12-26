@@ -164,8 +164,8 @@ class MenuItem
                 this.parentMenu.button.update();
         }
 
-        if (   !shift 
-            || !this.isSetting)
+        if (   !shift) 
+            //|| !this.isSetting)
             hideAllMenus();
 
 
