@@ -120,6 +120,8 @@ extends OperatorBase
 
     updateHeader()
     {
+        // console.log('OpVarArithmetic.updateHeader()');
+        
         super.updateHeader();
 
 
@@ -194,8 +196,8 @@ extends OperatorBase
 
     loadParams(_node)
     {
-        if (_node.showOnlySymbol)
-            this._showOnlySymbol = isTrue(_node.showOnlySymbol);
+        if (_node.onlySymbol != undefined)
+            this._showOnlySymbol = isTrue(_node.onlySymbol);
 
         super.loadParams(_node);
     }

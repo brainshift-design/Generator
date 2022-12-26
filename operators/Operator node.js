@@ -416,7 +416,8 @@ function createNodeHeader(node)
         if (   e.clientX >= bounds.left && e.clientX < bounds.right
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             node.showLabelTextbox();
-        else if (!node.header.ignoreDoubleClick)
+        else 
+        if (!node.header.ignoreDoubleClick)
             actionManager.do(new MakeActiveNodeAction(node.id));
 
 

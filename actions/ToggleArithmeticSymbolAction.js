@@ -21,6 +21,7 @@ extends Action
     do()
     {
         this.node._showOnlySymbol = this.showOnlySymbol;
+
         this.node.updateNode();
 
         uiSaveNodes([this.nodeId]);
@@ -31,6 +32,7 @@ extends Action
     undo()
     {
         this.node._showOnlySymbol = !this.showOnlySymbol;
+
         this.node.updateNode();
 
         uiSaveNodes([this.nodeId]);
