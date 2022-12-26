@@ -41810,11 +41810,11 @@ extends OperatorBase
 
 
 
-    updateHeader()
+    updateHeaderLabel()
     {
         // console.log('OpVarArithmetic.updateHeader()');
         
-        super.updateHeader();
+        super.updateHeaderLabel();
 
 
         // this.div   .style.borderRadius = '4px';        
@@ -41844,7 +41844,7 @@ extends OperatorBase
             else
             {
                 this._symbol.style.top = -1;
-                this.label  .style.top = 'calc(50% + 4px)';
+                this.label  .style.top = 'calc(50% + 6px)';
             }
         }
         else
@@ -41858,7 +41858,7 @@ extends OperatorBase
             else
             {
                 this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 6;
-                this.label  .style.top = 'calc(50% + 5px)';
+                this.label  .style.top = 'calc(50% + 7px)';
             }
         }
         
