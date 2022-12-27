@@ -26,6 +26,10 @@ extends Parameter
 
 
     
+    getTooltip = () => null;
+
+
+
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         // console.log(this.id + '.setValue() value =', value);
@@ -44,7 +48,7 @@ extends Parameter
             this.control.setValue(value.value, false, false); 
         }
 
-        
+
         super.setValue(value, createAction, updateControl, dispatchEvents);
 
         

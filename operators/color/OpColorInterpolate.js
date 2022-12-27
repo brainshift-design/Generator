@@ -55,11 +55,27 @@ extends OpColorBase
         // });
 
 
-        this.paramSpace.control.addEventListener('change', () => hideTooltip(ttInterpolationSpace));
+        //this.paramSpace.control.addEventListener('change', () => hideTooltip(ttInterpolationSpace));
 
 
         createTooltip(ttInterpolationSpace);
-        createTooltipSrc(this.paramSpace.control, this.paramSpace.control, () => ttInterpolationSpace);
+
+        this.paramSpace.initTooltip = (tooltip, options) =>
+        {
+            let strOptions = '';
+    
+            for (let i = 1; i < options.length; i++)
+            {
+                     if (i == 4 || i == 7) strOptions += ',<br/>';
+                else if (strOptions != '') strOptions += ', ';
+                
+                strOptions += options[i];
+            }
+    
+            ttInterpolationSpaces.innerHTML = strOptions;
+        };
+
+        this.paramSpace.getTooltip = () => ttInterpolationSpace;
     }
 
 

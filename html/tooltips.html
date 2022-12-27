@@ -12,10 +12,10 @@
 <div id='ttCreateInterpolate' class='tooltip'>Interpolate</div>
 
 
-<div id='ttCreateColor' class='tooltip'>Color</div>
+<div id='ttCreateColor'            class='tooltip'>Color</div>
 <div id='ttCreateColorInterpolate' class='tooltip'>Interpolate color</div>
-<div id='ttCreateCorrectColor' class='tooltip'>Correct color</div>
-<div id='ttCreateColorContrast' class='tooltip'>Web contrast</div>
+<div id='ttCreateCorrectColor'     class='tooltip'>Correct color</div>
+<div id='ttCreateColorContrast'    class='tooltip'>Web contrast</div>
 
 <div id='ttCreateColorblind' class='tooltip'>
 
@@ -84,17 +84,19 @@
 
 <div id='ttInterpolationSpace' class='tooltip'>
 
-    <div style="margin-left: 20px;">
-        The color space determines<br/>the path of interpolation.
+    <div style="margin-left: 20px;" id="ttInterpolationSpaces">
+    </div>
+    <div style="margin-left: 20px; margin-top: 14px;">
+        Determines the path<br/>of interpolation.
     </div>
     <div style="margin-left: 20px; margin-top: 14px;">
         In RGB it's a straight line,<br/>in spaces with Hue it's a circle.
     </div>
 
-    <div style="position: absolute; left:  47px; top: 110px;">RGB</div>
-    <div style="position: absolute; left: 152px; top: 110px;">HSV</div>
+    <div style="position: absolute; left:  47px; top: 165px;">RGB</div>
+    <div style="position: absolute; left: 152px; top: 165px;">HSV</div>
 
-    <svg width="192" height="88" viewBox="0 0 192 88" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: 13px; margin-left: 4px;">
+    <svg width="192" height="88" viewBox="0 0 192 88" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: 15px; margin-left: 4px;">
         <circle cx="43.945" cy="43.6699" r="42.9129" transform="rotate(164.053 43.945 43.6699)" stroke="white"/>
         <circle cx="148.459" cy="43.6699" r="42.9129" transform="rotate(164.053 148.459 43.6699)" stroke="white"/>
         <path d="M177.161 53.8683C175.042 59.8328 171.117 64.9889 165.932 68.6199C160.747 72.2509 154.56 74.1764 148.23 74.1287C141.9 74.081 135.743 72.0626 130.613 68.3539C125.484 64.6453 121.637 59.4307 119.607 53.4349" stroke="white" stroke-width="0.8" stroke-dasharray="2 2"/>

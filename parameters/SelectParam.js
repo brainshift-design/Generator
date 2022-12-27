@@ -3,6 +3,9 @@ extends NumberParamBase
 {
     options = [];
     
+    tooltip = null;
+
+
 
     constructor(id,
                 name,
@@ -54,10 +57,46 @@ extends NumberParamBase
 
             
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });
+
+
+        this.tooltip = createDiv('tooltip');
+        document.body.appendChild(this.tooltip);
+
+        createTooltip(this.tooltip);
+
+        createTooltipSrc(this.control, this.control, () => 
+        {
+            this.initTooltip(this.tooltip, this.options);
+
+            const tooltip = this.getTooltip();
+            this.control.addEventListener('change', () => hideTooltip(tooltip));
+            return tooltip;
+        });
     }
 
 
 
+    initTooltip = (tooltip, options) =>
+    {
+        let strOptions = '';
+
+        for (const option of options)
+        {
+            if (strOptions != '') strOptions += ', ';
+            strOptions += option;
+        }
+
+        tooltip.innerHTML = strOptions;
+
+        return tooltip;
+    };
+
+
+    
+    getTooltip = () => this.tooltip;
+
+
+    
     setOptions(options)
     {
         this        .options = [...options];

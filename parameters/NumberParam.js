@@ -79,6 +79,17 @@ extends NumberParamBase
                 e.preventSetValue = true;
             }
         });
+
+
+        createTooltipSrc(this.control, this.control, () => 
+        {
+            const tooltip = this.getTooltip();
+
+            if (tooltip)
+                this.control.addEventListener('change', () => hideTooltip(tooltip));
+    
+            return tooltip;
+        });
     }
 
 
