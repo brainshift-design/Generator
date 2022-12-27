@@ -46247,11 +46247,11 @@ extends Action
 
                 for (const _conn of this.oldConnections)
                 {
-                    createNodeAction_connect(
-                        this, 
-                        node.headerOutputs[0], 
-                        nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId),
-                        _conn.outputOrder);
+                    const _output = node.headerOutputs[0];
+                    const _input  = nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId);
+
+                    if (_input.canConnectFrom(_output))
+                        createNodeAction_connect(this, _output, _input, _conn.outputOrder);
                 }
             }
         }
