@@ -432,10 +432,10 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder
     //console.log('uiVariableConnect()');
 
     const output = outputNode.outputFromId(outputId);
-    const  input =  inputNode. inputFromId(inputId);
+    const  input =  inputNode. inputFromId( inputId);
 
     if (    inputNode.variableInputs
-        && !input.param)
+        && (!input || !input.param))
     {
         const conn = uiConnect(
             output,
