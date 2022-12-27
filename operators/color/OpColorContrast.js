@@ -22,10 +22,8 @@ extends OpColorBase
 
         createTooltip(ttWcag2);
         createTooltip(ttWcag3);
-
         
-        //this.paramContrast.initTooltip = (tooltip, options) => {};
-        this.paramContrast.getTooltip = () => this.paramStandard.value == 1 ? ttWcag3 : ttWcag2;
+        this.paramContrast.getTooltip = () => this.paramStandard.value.value == 1 ? ttWcag3 : ttWcag2;
 
 
         this.header.connectionPadding = 12.5;
