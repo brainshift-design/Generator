@@ -81,19 +81,25 @@ extends NumberParamBase
         });
 
 
+
         createTooltipSrc(this.control, this.control, () => 
         {
-            const tooltip = this.getTooltip();
-
-            if (tooltip)
-                this.control.addEventListener('change', () => hideTooltip(tooltip));
-    
-            return tooltip;
+            this.control.addEventListener('change', () => 
+            {
+                const tooltip = this.getTooltip();
+                if (tooltip) hideTooltip(tooltip);
+            });
+            
+            return this.getTooltip();
         });
     }
 
 
 
+    getTooltip = () => null;
+
+
+    
     setName(name, dispatchEvents = true)
     {
         super.setName(name, dispatchEvents);

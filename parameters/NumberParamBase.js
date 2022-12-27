@@ -3,6 +3,9 @@ extends Parameter
 {
     control;
 
+    tooltip = null;
+
+    
     
     get value() 
     { 
@@ -26,10 +29,6 @@ extends Parameter
 
 
     
-    getTooltip = () => null;
-
-
-
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         // console.log(this.id + '.setValue() value =', value);

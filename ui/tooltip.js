@@ -19,7 +19,8 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
         {
             tooltipTimer = setTimeout(() =>
             {
-                showTooltip(ref, getTooltip(), bottomArrow);
+                const tooltip = getTooltip();
+                if (tooltip) showTooltip(ref, tooltip, bottomArrow);
 
                 clearTimeout(tooltipTimer);
                 tooltipTimer = null;
@@ -36,7 +37,8 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
 
         tooltipOutTimer = setTimeout(() => 
         {
-            hideTooltip(getTooltip());
+            const tooltip = getTooltip();
+            if (tooltip) hideTooltip(tooltip);
         }, 
         400);
     });

@@ -34662,6 +34662,9 @@ extends Parameter
 {
     control;
 
+    tooltip = null;
+
+    
     
     get value() 
     { 
@@ -34685,10 +34688,6 @@ extends Parameter
 
 
     
-    getTooltip = () => null;
-
-
-
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         // console.log(this.id + '.setValue() value =', value);
@@ -34910,19 +34909,25 @@ extends NumberParamBase
         });
 
 
+
         createTooltipSrc(this.control, this.control, () => 
         {
-            const tooltip = this.getTooltip();
-
-            if (tooltip)
-                this.control.addEventListener('change', () => hideTooltip(tooltip));
-    
-            return tooltip;
+            this.control.addEventListener('change', () => 
+            {
+                const tooltip = this.getTooltip();
+                if (tooltip) hideTooltip(tooltip);
+            });
+            
+            return this.getTooltip();
         });
     }
 
 
 
+    getTooltip = () => null;
+
+
+    
     setName(name, dispatchEvents = true)
     {
         super.setName(name, dispatchEvents);
@@ -34936,8 +34941,6 @@ extends NumberParamBase
 {
     options = [];
     
-    tooltip = null;
-
 
 
     constructor(id,
@@ -35001,9 +35004,13 @@ extends NumberParamBase
         {
             this.initTooltip(this.tooltip, this.options);
 
-            const tooltip = this.getTooltip();
-            this.control.addEventListener('change', () => hideTooltip(tooltip));
-            return tooltip;
+            this.control.addEventListener('change', () => 
+            {
+                const tooltip = this.getTooltip();
+                if (tooltip) hideTooltip(tooltip);
+            });
+
+            return this.getTooltip();
         });
     }
 
@@ -35020,8 +35027,6 @@ extends NumberParamBase
         }
 
         tooltip.innerHTML = strOptions;
-
-        return tooltip;
     };
 
 
@@ -35029,7 +35034,7 @@ extends NumberParamBase
     getTooltip = () => this.tooltip;
 
 
-    
+
     setOptions(options)
     {
         this        .options = [...options];
@@ -44134,6 +44139,7 @@ extends OpColorBase
         createTooltip(ttWcag2);
         createTooltip(ttWcag3);
         
+        this.paramStandard.getTooltip = () => null;
         this.paramContrast.getTooltip = () => this.paramStandard.value.value == 1 ? ttWcag3 : ttWcag2;
 
 
@@ -49740,7 +49746,8 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
         {
             tooltipTimer = setTimeout(() =>
             {
-                showTooltip(ref, getTooltip(), bottomArrow);
+                const tooltip = getTooltip();
+                if (tooltip) showTooltip(ref, tooltip, bottomArrow);
 
                 clearTimeout(tooltipTimer);
                 tooltipTimer = null;
@@ -49757,7 +49764,8 @@ function createTooltipSrc(source, ref, getTooltip, bottomArrow = false)
 
         tooltipOutTimer = setTimeout(() => 
         {
-            hideTooltip(getTooltip());
+            const tooltip = getTooltip();
+            if (tooltip) hideTooltip(tooltip);
         }, 
         400);
     });
