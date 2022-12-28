@@ -158,7 +158,17 @@ extends OpColorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+
+        const hasInputs =
+               this.node.param1.input.connected
+            || this.node.param2.input.connected
+            || this.node.param3.input.connected;
+
+        const options =
+                ((hasInputs ? 1 : 0) << 20)
+
+                
+        const [request, ignore] = this.node.genRequestStart(gen, options);
         if (ignore) return request;
 
         

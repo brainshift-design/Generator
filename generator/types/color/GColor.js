@@ -10,6 +10,8 @@ extends GColorType
 
     convert = null;
 
+    hasInputs;
+
 
 
     constructor(nodeId, options)
@@ -75,7 +77,6 @@ extends GColorType
                     Math.round(space.value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
 
-                console.log('fromSpaceIndex =', fromSpaceIndex);
 
                 this.convertColor(
                     this.value,
@@ -108,10 +109,11 @@ extends GColorType
 
             this.value.space.value = toSpaceIndex;
 
-            if (   this.convert
-                && this.convert.isValid()
-                && this.convert.value > -1
-                && this.value.isValid())
+            if (    this.convert
+                &&  this.convert.isValid()
+                &&  this.convert.value > -1
+                &&  this.value.isValid()
+                && !this.hasInputs)
             {
                 this.convert.eval(parse);
 

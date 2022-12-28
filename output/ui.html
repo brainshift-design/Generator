@@ -9835,6 +9835,8 @@ extends GColorType
 
     convert = null;
 
+    hasInputs;
+
 
 
     constructor(nodeId, options)
@@ -9900,7 +9902,6 @@ extends GColorType
                     Math.round(space.value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
 
-                console.log('fromSpaceIndex =', fromSpaceIndex);
 
                 this.convertColor(
                     this.value,
@@ -9933,10 +9934,11 @@ extends GColorType
 
             this.value.space.value = toSpaceIndex;
 
-            if (   this.convert
-                && this.convert.isValid()
-                && this.convert.value > -1
-                && this.value.isValid())
+            if (    this.convert
+                &&  this.convert.isValid()
+                &&  this.convert.value > -1
+                &&  this.value.isValid()
+                && !this.hasInputs)
             {
                 this.convert.eval(parse);
 
@@ -12636,6 +12638,8 @@ function genParseColor(parse)
 
     const col = new GColor(nodeId, options);
 
+    col.hasInputs = options.hasInputs;
+    
   
     let nInputs = -1;
 
@@ -14407,10 +14411,11 @@ function genParseNodeOptions(parse)
 
     const options = 
     {
-        active:       ((opt >> 0) & 1) != 0,
-        beforeActive: ((opt >> 1) & 1) != 0,
-        enabled:      ((opt >> 2) & 1) != 0,
-        cached:       ((opt >> 3) & 1) != 0
+        active:       ((opt >>  0) & 1) != 0,
+        beforeActive: ((opt >>  1) & 1) != 0,
+        enabled:      ((opt >>  2) & 1) != 0,
+        cached:       ((opt >>  3) & 1) != 0,
+        hasInputs:    ((opt >> 20) & 1) != 0
     };
 
     return options;
@@ -25976,6 +25981,8 @@ extends GColorType
 
     convert = null;
 
+    hasInputs;
+
 
 
     constructor(nodeId, options)
@@ -26041,7 +26048,6 @@ extends GColorType
                     Math.round(space.value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
 
-                console.log('fromSpaceIndex =', fromSpaceIndex);
 
                 this.convertColor(
                     this.value,
@@ -26074,10 +26080,11 @@ extends GColorType
 
             this.value.space.value = toSpaceIndex;
 
-            if (   this.convert
-                && this.convert.isValid()
-                && this.convert.value > -1
-                && this.value.isValid())
+            if (    this.convert
+                &&  this.convert.isValid()
+                &&  this.convert.value > -1
+                &&  this.value.isValid()
+                && !this.hasInputs)
             {
                 this.convert.eval(parse);
 
@@ -38822,7 +38829,7 @@ class Operator
 
 
 
-    genRequestStart(gen)
+    genRequestStart(gen, nodeOptions = 0)
     {
         const request = [
             this.type, 
@@ -38840,7 +38847,8 @@ class Operator
                   ((this.active     ? 1 : 0) << 0)
                 | ((beforeActive    ? 1 : 0) << 1)
                 | ((this.enabled    ? 1 : 0) << 2)
-                | ((this.isCached() ? 1 : 0) << 3);
+                | ((this.isCached() ? 1 : 0) << 3)
+                | nodeOptions;
 
             request.push(options);
         }
@@ -42456,7 +42464,17 @@ extends OpColorBase
             nodeId:  this.node.id, 
             paramId: '' });
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+
+        const hasInputs =
+               this.node.param1.input.connected
+            || this.node.param2.input.connected
+            || this.node.param3.input.connected;
+
+        const options =
+                ((hasInputs ? 1 : 0) << 20)
+
+                
+        const [request, ignore] = this.node.genRequestStart(gen, options);
         if (ignore) return request;
 
         

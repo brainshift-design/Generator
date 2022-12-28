@@ -639,7 +639,7 @@ class Operator
 
 
 
-    genRequestStart(gen)
+    genRequestStart(gen, nodeOptions = 0)
     {
         const request = [
             this.type, 
@@ -657,7 +657,8 @@ class Operator
                   ((this.active     ? 1 : 0) << 0)
                 | ((beforeActive    ? 1 : 0) << 1)
                 | ((this.enabled    ? 1 : 0) << 2)
-                | ((this.isCached() ? 1 : 0) << 3);
+                | ((this.isCached() ? 1 : 0) << 3)
+                | nodeOptions;
 
             request.push(options);
         }

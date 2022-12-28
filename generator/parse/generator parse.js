@@ -192,10 +192,11 @@ function genParseNodeOptions(parse)
 
     const options = 
     {
-        active:       ((opt >> 0) & 1) != 0,
-        beforeActive: ((opt >> 1) & 1) != 0,
-        enabled:      ((opt >> 2) & 1) != 0,
-        cached:       ((opt >> 3) & 1) != 0
+        active:       ((opt >>  0) & 1) != 0,
+        beforeActive: ((opt >>  1) & 1) != 0,
+        enabled:      ((opt >>  2) & 1) != 0,
+        cached:       ((opt >>  3) & 1) != 0,
+        hasInputs:    ((opt >> 20) & 1) != 0
     };
 
     return options;

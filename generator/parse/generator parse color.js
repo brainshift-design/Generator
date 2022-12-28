@@ -19,6 +19,8 @@ function genParseColor(parse)
 
     const col = new GColor(nodeId, options);
 
+    col.hasInputs = options.hasInputs;
+    
   
     let nInputs = -1;
 
