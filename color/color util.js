@@ -14,11 +14,11 @@ const rgbInvalid  = [0xff, 0, 0xff];
 const rgbaInvalid = [0xff, 0, 0xff, 0xff];
 
 
-const dataColor_NaN = [
+const dataColor_NaN = Object.freeze([
     'rgb',
     Number.NaN,
     Number.NaN,
-    Number.NaN ];
+    Number.NaN ]);
 
 
 function allConesWork(cones)

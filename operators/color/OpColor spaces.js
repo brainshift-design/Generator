@@ -259,16 +259,26 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c
 
 function switchToTextbox(node)
 {
-    if (!node.inner.contains(node.paramColor.div))
-    {
-        removeOpColorParamWires(node);
+    removeOpColorParamWires(node);
 
-        node.inner.removeChild(node.param1.div);
-        node.inner.removeChild(node.param2.div);
-        node.inner.removeChild(node.param3.div);
+    removeDivFrom(node.param1.div, node.inner);
+    removeDivFrom(node.param2.div, node.inner);
+    removeDivFrom(node.param3.div, node.inner);
         
-        node.inner.appendChild(node.paramColor.div);
-    }
+    appendDivTo(node.paramColor.div, node.inner);
+}
+
+
+
+function removeParamDivs(node)
+{
+    removeOpColorParamWires(node);
+
+    removeDivFrom(node.param1.div,     node.inner);
+    removeDivFrom(node.param2.div,     node.inner);
+    removeDivFrom(node.param3.div,     node.inner);
+    
+    removeDivFrom(node.paramColor.div, node.inner);
 }
 
 
@@ -288,16 +298,11 @@ function removeOpColorParamWires(node)
 
 function switchToSliders(node)
 {
-    if (node.inner.contains(node.paramColor.div))
-    {
-        node.inner.removeChild(node.paramColor.div);
+    removeDivFrom(node.paramColor.div, node.inner);
 
-        node.inner.appendChild(node.param1.div);
-        node.inner.appendChild(node.param2.div);
-        node.inner.appendChild(node.param3.div);
-
-        //node.updateNode();
-    }
+    appendDivTo(node.param1.div, node.inner);
+    appendDivTo(node.param2.div, node.inner);
+    appendDivTo(node.param3.div, node.inner);
 }
 
 

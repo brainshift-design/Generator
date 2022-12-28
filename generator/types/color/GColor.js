@@ -44,7 +44,6 @@ extends GColorType
 
     eval(parse)
     {
-        console.log('GColor.isCached() =', this.isCached());
         if (this.isCached())
             return this;
 
@@ -76,6 +75,7 @@ extends GColorType
                     Math.round(space.value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
 
+                console.log('fromSpaceIndex =', fromSpaceIndex);
 
                 this.convertColor(
                     this.value,

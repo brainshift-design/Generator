@@ -2402,6 +2402,22 @@ function createDiv(className = '', id = '')
 
 
 
+function appendDivTo(div, to)
+{
+    if (!to.contains(div))
+        to.appendChild(div);
+}
+
+
+
+function removeDivFrom(div, from)
+{
+    if (from.contains(div))
+        from.removeChild(div);
+}
+
+
+
 function createTextbox(className = '')
 {
     const textbox = document.createElement('INPUT');
@@ -7518,7 +7534,6 @@ extends GColorType
 
     eval(parse)
     {
-        console.log('GColor.isCached() =', this.isCached());
         if (this.isCached())
             return this;
 
@@ -7550,6 +7565,7 @@ extends GColorType
                     Math.round(space.value)), // round because a value can come in with decimals (TODO fix this)
                     colorSpaceCount(parse)-1);
 
+                console.log('fromSpaceIndex =', fromSpaceIndex);
 
                 this.convertColor(
                     this.value,
@@ -13011,11 +13027,11 @@ const rgbInvalid  = [0xff, 0, 0xff];
 const rgbaInvalid = [0xff, 0, 0xff, 0xff];
 
 
-const dataColor_NaN = [
+const dataColor_NaN = Object.freeze([
     'rgb',
     Number.NaN,
     Number.NaN,
-    Number.NaN ];
+    Number.NaN ]);
 
 
 function allConesWork(cones)
@@ -13843,16 +13859,26 @@ function switchToControls(node, c1, c1min, c1max, c1suffix, c1wrap, c2, c2min, c
 
 function switchToTextbox(node)
 {
-    if (!node.inner.contains(node.paramColor.div))
-    {
-        removeOpColorParamWires(node);
+    removeOpColorParamWires(node);
 
-        node.inner.removeChild(node.param1.div);
-        node.inner.removeChild(node.param2.div);
-        node.inner.removeChild(node.param3.div);
+    removeDivFrom(node.param1.div, node.inner);
+    removeDivFrom(node.param2.div, node.inner);
+    removeDivFrom(node.param3.div, node.inner);
         
-        node.inner.appendChild(node.paramColor.div);
-    }
+    appendDivTo(node.paramColor.div, node.inner);
+}
+
+
+
+function removeParamDivs(node)
+{
+    removeOpColorParamWires(node);
+
+    removeDivFrom(node.param1.div,     node.inner);
+    removeDivFrom(node.param2.div,     node.inner);
+    removeDivFrom(node.param3.div,     node.inner);
+    
+    removeDivFrom(node.paramColor.div, node.inner);
 }
 
 
@@ -13872,16 +13898,11 @@ function removeOpColorParamWires(node)
 
 function switchToSliders(node)
 {
-    if (node.inner.contains(node.paramColor.div))
-    {
-        node.inner.removeChild(node.paramColor.div);
+    removeDivFrom(node.paramColor.div, node.inner);
 
-        node.inner.appendChild(node.param1.div);
-        node.inner.appendChild(node.param2.div);
-        node.inner.appendChild(node.param3.div);
-
-        //node.updateNode();
-    }
+    appendDivTo(node.param1.div, node.inner);
+    appendDivTo(node.param2.div, node.inner);
+    appendDivTo(node.param3.div, node.inner);
 }
 
 

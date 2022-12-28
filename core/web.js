@@ -42,6 +42,22 @@ function createDiv(className = '', id = '')
 
 
 
+function appendDivTo(div, to)
+{
+    if (!to.contains(div))
+        to.appendChild(div);
+}
+
+
+
+function removeDivFrom(div, from)
+{
+    if (from.contains(div))
+        from.removeChild(div);
+}
+
+
+
 function createTextbox(className = '')
 {
     const textbox = document.createElement('INPUT');

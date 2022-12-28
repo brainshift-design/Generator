@@ -224,56 +224,60 @@ extends OpColorBase
         const c2    = values[paramIds.findIndex(id => id == 'c2'   )];
         const c3    = values[paramIds.findIndex(id => id == 'c3'   )];
 
-        if (space) this.paramSpace.setValue(space, false, true, false);
-
-        switchToSpace(this, colorSpace(space.value));
-
-        
-        if (c1) this.param1.setValue(c1, false, true, false);
-        if (c2) this.param2.setValue(c2, false, true, false);
-        if (c3) this.param3.setValue(c3, false, true, false);
-
-
-        const _space = this.paramSpace.value;
-        const _c1    = this.param1    .value;
-        const _c2    = this.param2    .value;
-        const _c3    = this.param3    .value;
-
-        const valid =
-               _space && _space.isValid()
-            && _c1    && _c1   .isValid()
-            && _c2    && _c2   .isValid()
-            && _c3    && _c3   .isValid();
-
-
-        if (valid)
+        if (space.isValid())
         {
-            this._color =
-                this.isUnknown()
-                ? dataColor_NaN
-                : makeDataColor(_space, _c1, _c2, _c3);
+            if (space) this.paramSpace.setValue(space, false, true, false);
 
-            this.outputs[0].wireColor = 
-                this.isUnknown()
-                ? rgbHeaderFromType(CACHE, true)
-                : dataColor2rgb(this._color);
+            switchToSpace(this, colorSpace(space.value));
 
-
-            this.prevSpace = colorSpace(_space.value);
+            
+            if (c1) this.param1.setValue(c1, false, true, false);
+            if (c2) this.param2.setValue(c2, false, true, false);
+            if (c3) this.param3.setValue(c3, false, true, false);
 
 
-            // this.param1.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-            // this.param2.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-            // this.param3.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+            const _space = this.paramSpace.value;
+            const _c1    = this.param1    .value;
+            const _c2    = this.param2    .value;
+            const _c3    = this.param3    .value;
+
+            const valid =
+                   _space && _space.isValid()
+                && _c1    && _c1   .isValid()
+                && _c2    && _c2   .isValid()
+                && _c3    && _c3   .isValid();
+
+
+            if (valid)
+            {
+                this._color =
+                    this.isUnknown()
+                    ? dataColor_NaN
+                    : makeDataColor(_space, _c1, _c2, _c3);
+
+                this.outputs[0].wireColor = 
+                    this.isUnknown()
+                    ? rgbHeaderFromType(CACHE, true)
+                    : dataColor2rgb(this._color);
+
+                this.prevSpace = colorSpace(_space.value);
+            }
+            else
+            {
+                this.paramColor.setValue(ColorValue.NaN, false, true, false);
+
+                this._color    = dataColor_NaN;
+                this.prevSpace = NumberValue.NaN;
+
+                this.outputs[0].wireColor = rgb_NaN;
+            }
         }
         else
         {
-            this.paramColor.setValue(ColorValue.NaN, false, true, false);
+            this.paramSpace.setValue(NumberValue.NaN, false, true, false);
+            removeParamDivs(this);
 
-            this._color    = dataColor_NaN;
-            this.prevSpace = NumberValue.NaN;
-
-            this.outputs[0].wireColor = rgb_NaN;
+            this._color = dataColor_NaN;
         }
     }
 
@@ -314,9 +318,6 @@ extends OpColorBase
 
         this.paramSpace.output.colorLight =
         this.paramSpace.output.colorDark  = colors.output;
-
-
-        //this.paramSpace.updateControls();
 
 
         super.updateNode();
@@ -616,13 +617,18 @@ extends OpColorBase
         this.prevSpace = _node.prevSpace;    
 
 
-        const space  = colorSpace(Math.max(1, this.paramSpace.value.value));
-        const factor = colorFactor(space);
+        if (this.paramSpace.value.isValid())
+        {
+            const space  = colorSpace(Math.max(1, this.paramSpace.value.value));
+            const factor = colorFactor(space);
 
-        this._color = [
-            space,
-            this.param1.value.value / factor[0],
-            this.param2.value.value / factor[1],
-            this.param3.value.value / factor[2]];
+            this._color = [
+                space,
+                this.param1.value.value / factor[0],
+                this.param2.value.value / factor[1],
+                this.param3.value.value / factor[2]];
+        }
+        else
+            this._color = dataColor_NaN;
     }
 }
