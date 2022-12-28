@@ -650,7 +650,7 @@ class Operator
 
         if (!ignore)
         {
-            const nextActive   = getActiveRightFromNode(this);
+            const nextActive   = getActiveAfterNode(this);
             const beforeActive = nextActive && nextActive.follows(this);
 
             const options =

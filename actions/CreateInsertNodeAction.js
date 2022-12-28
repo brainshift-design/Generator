@@ -85,7 +85,7 @@ extends Action
         graphView.selectedNodes     = [node];
 
 
-        if (this.oldConnections.length == 0)
+        if (!getActiveAfterNode(node))
             uiMakeNodeActive(node);
 
 

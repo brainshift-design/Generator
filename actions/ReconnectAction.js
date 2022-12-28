@@ -121,7 +121,7 @@ extends Action
 function reconnectAction_savePrevInputActiveNodesAndValues(act)
 {
     //act.prevInputValues        = act.prevInput.getValuesForUndo ? act.prevInput.getValuesForUndo() : [];
-    act.prevInputActiveNodeIds = getActiveNodesRightFromNodeId(act.prevInputNodeId).map(n => n.id);
+    act.prevInputActiveNodeIds = getActiveNodesAfterNodeId(act.prevInputNodeId).map(n => n.id);
 }
 
 

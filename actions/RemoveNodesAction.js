@@ -127,8 +127,8 @@ extends Action
 
         for (const cluster of clusters)
         {
-            this.clusterActiveLeft .push(getActiveLeftFromNode (firstOf(cluster),        [firstOf(cluster)]));
-            this.clusterActiveRight.push(getActiveRightFromNode(lastOf (cluster), false, [lastOf (cluster)]));
+            this.clusterActiveLeft .push(getActiveBeforeNode (firstOf(cluster),        [firstOf(cluster)]));
+            this.clusterActiveRight.push(getActiveAfterNode(lastOf (cluster), false, [lastOf (cluster)]));
         }
     }
 

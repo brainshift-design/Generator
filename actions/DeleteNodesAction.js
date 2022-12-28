@@ -180,10 +180,10 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
     uiDisconnect(input);
 
 
-    const activeLeft        = getActiveLeftFromNode    (output.node);
-    const activeLeftOnly    = getActiveLeftOnlyFromNode(output.node);
-    const activeRight       = getActiveRightFromNode   (output.node);
-    const activeRightHeader = getActiveRightFromNode   (output.node, true);
+    const activeLeft        = getActiveBeforeNode    (output.node);
+    const activeLeftOnly    = getActiveOnlyBeforeNode(output.node);
+    const activeRight       = getActiveAfterNode   (output.node);
+    const activeRightHeader = getActiveAfterNode   (output.node, true);
     
     if (  !activeLeftOnly
         && activeLeft != activeRight)

@@ -258,7 +258,7 @@ function getActiveFromNode(node, alreadyChecked = [])
         return node;
 
 
-    const leftActive = getActiveLeftFromNode(node, [...alreadyChecked]);
+    const leftActive = getActiveBeforeNode(node, [...alreadyChecked]);
     if (leftActive) return leftActive;
 
 
@@ -283,7 +283,7 @@ function getActiveFromNode(node, alreadyChecked = [])
 
 
 
-function getActiveLeftFromNode(node, alreadyChecked = [])
+function getActiveBeforeNode(node, alreadyChecked = [])
 {
     //  this is different from LeftOnly in that it will check the left node, 
     //  but then it will also check the right nodes of that left node
@@ -313,7 +313,7 @@ function getActiveLeftFromNode(node, alreadyChecked = [])
 
 
 
-function getActiveLeftOnlyFromNode(node, alreadyChecked = [])
+function getActiveOnlyBeforeNode(node, alreadyChecked = [])
 {
     // this is different from Left in that it will only check left nodes
 
@@ -328,7 +328,7 @@ function getActiveLeftOnlyFromNode(node, alreadyChecked = [])
             && !input.connectedOutput.param
             && !alreadyChecked.includes(input.connectedOutput.node))
         {
-            const leftActive = getActiveLeftOnlyFromNode(
+            const leftActive = getActiveOnlyBeforeNode(
                 input.connectedOutput.node, 
                 [...alreadyChecked, node]);
 
@@ -342,7 +342,7 @@ function getActiveLeftOnlyFromNode(node, alreadyChecked = [])
 
 
 
-function getActiveRightFromNode(node, includeParams = false, alreadyChecked = [])
+function getActiveAfterNode(node, includeParams = false, alreadyChecked = [])
 {
     if (    node.active
         && !alreadyChecked.includes(node)) 
@@ -365,7 +365,7 @@ function getActiveRightFromNode(node, includeParams = false, alreadyChecked = []
         {
             if (!alreadyChecked.includes(input.node))
             {
-                const rightActive = getActiveRightFromNode(
+                const rightActive = getActiveAfterNode(
                     input.node, 
                     includeParams,
                     [...alreadyChecked, node]);
@@ -381,7 +381,7 @@ function getActiveRightFromNode(node, includeParams = false, alreadyChecked = []
 
 
 
-function getActiveNodesRightFromNodeId(nodeId, alreadyChecked = [])
+function getActiveNodesAfterNodeId(nodeId, alreadyChecked = [])
 {
     const rightActive = [];
     
@@ -398,7 +398,7 @@ function getActiveNodesRightFromNodeId(nodeId, alreadyChecked = [])
         {
             if (!alreadyChecked.includes(input.node))
             {
-                rightActive.push(...getActiveNodesRightFromNodeId(
+                rightActive.push(...getActiveNodesAfterNodeId(
                     input.node.id, 
                     [...alreadyChecked, node]));
             }

@@ -37017,7 +37017,7 @@ function getActiveFromNode(node, alreadyChecked = [])
         return node;
 
 
-    const leftActive = getActiveLeftFromNode(node, [...alreadyChecked]);
+    const leftActive = getActiveBeforeNode(node, [...alreadyChecked]);
     if (leftActive) return leftActive;
 
 
@@ -37042,7 +37042,7 @@ function getActiveFromNode(node, alreadyChecked = [])
 
 
 
-function getActiveLeftFromNode(node, alreadyChecked = [])
+function getActiveBeforeNode(node, alreadyChecked = [])
 {
     //  this is different from LeftOnly in that it will check the left node, 
     //  but then it will also check the right nodes of that left node
@@ -37072,7 +37072,7 @@ function getActiveLeftFromNode(node, alreadyChecked = [])
 
 
 
-function getActiveLeftOnlyFromNode(node, alreadyChecked = [])
+function getActiveOnlyBeforeNode(node, alreadyChecked = [])
 {
     // this is different from Left in that it will only check left nodes
 
@@ -37087,7 +37087,7 @@ function getActiveLeftOnlyFromNode(node, alreadyChecked = [])
             && !input.connectedOutput.param
             && !alreadyChecked.includes(input.connectedOutput.node))
         {
-            const leftActive = getActiveLeftOnlyFromNode(
+            const leftActive = getActiveOnlyBeforeNode(
                 input.connectedOutput.node, 
                 [...alreadyChecked, node]);
 
@@ -37101,7 +37101,7 @@ function getActiveLeftOnlyFromNode(node, alreadyChecked = [])
 
 
 
-function getActiveRightFromNode(node, includeParams = false, alreadyChecked = [])
+function getActiveAfterNode(node, includeParams = false, alreadyChecked = [])
 {
     if (    node.active
         && !alreadyChecked.includes(node)) 
@@ -37124,7 +37124,7 @@ function getActiveRightFromNode(node, includeParams = false, alreadyChecked = []
         {
             if (!alreadyChecked.includes(input.node))
             {
-                const rightActive = getActiveRightFromNode(
+                const rightActive = getActiveAfterNode(
                     input.node, 
                     includeParams,
                     [...alreadyChecked, node]);
@@ -37140,7 +37140,7 @@ function getActiveRightFromNode(node, includeParams = false, alreadyChecked = []
 
 
 
-function getActiveNodesRightFromNodeId(nodeId, alreadyChecked = [])
+function getActiveNodesAfterNodeId(nodeId, alreadyChecked = [])
 {
     const rightActive = [];
     
@@ -37157,7 +37157,7 @@ function getActiveNodesRightFromNodeId(nodeId, alreadyChecked = [])
         {
             if (!alreadyChecked.includes(input.node))
             {
-                rightActive.push(...getActiveNodesRightFromNodeId(
+                rightActive.push(...getActiveNodesAfterNodeId(
                     input.node.id, 
                     [...alreadyChecked, node]));
             }
@@ -38840,7 +38840,7 @@ class Operator
 
         if (!ignore)
         {
-            const nextActive   = getActiveRightFromNode(this);
+            const nextActive   = getActiveAfterNode(this);
             const beforeActive = nextActive && nextActive.follows(this);
 
             const options =
@@ -46084,7 +46084,7 @@ function connectAction_saveOutputActiveNodes(act)
 function connectAction_saveInputActiveNodesAndValues(act)
 {
     act.inputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo() : [];
-    act.inputActiveNodeIds = getActiveNodesRightFromNodeId(act.inputNodeId).map(n => n.id);
+    act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
 }
 
 
@@ -46347,7 +46347,7 @@ extends Action
         graphView.selectedNodes     = [node];
 
 
-        if (this.oldConnections.length == 0)
+        if (!getActiveAfterNode(node))
             uiMakeNodeActive(node);
 
 
@@ -46741,10 +46741,10 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
     uiDisconnect(input);
 
 
-    const activeLeft        = getActiveLeftFromNode    (output.node);
-    const activeLeftOnly    = getActiveLeftOnlyFromNode(output.node);
-    const activeRight       = getActiveRightFromNode   (output.node);
-    const activeRightHeader = getActiveRightFromNode   (output.node, true);
+    const activeLeft        = getActiveBeforeNode    (output.node);
+    const activeLeftOnly    = getActiveOnlyBeforeNode(output.node);
+    const activeRight       = getActiveAfterNode   (output.node);
+    const activeRightHeader = getActiveAfterNode   (output.node, true);
     
     if (  !activeLeftOnly
         && activeLeft != activeRight)
@@ -46947,8 +46947,8 @@ extends Action
 
         // save output node
 
-        if (   !getActiveLeftOnlyFromNode(this.outputNode)
-            && !getActiveRightFromNode   (this.outputNode))
+        if (   !getActiveOnlyBeforeNode(this.outputNode)
+            && !getActiveAfterNode   (this.outputNode))
             this.newActiveNodeIds.push(this.outputNodeId);
 
 
@@ -47304,7 +47304,7 @@ extends Action
 function reconnectAction_savePrevInputActiveNodesAndValues(act)
 {
     //act.prevInputValues        = act.prevInput.getValuesForUndo ? act.prevInput.getValuesForUndo() : [];
-    act.prevInputActiveNodeIds = getActiveNodesRightFromNodeId(act.prevInputNodeId).map(n => n.id);
+    act.prevInputActiveNodeIds = getActiveNodesAfterNodeId(act.prevInputNodeId).map(n => n.id);
 }
 
 
@@ -47472,8 +47472,8 @@ extends Action
 
         for (const cluster of clusters)
         {
-            this.clusterActiveLeft .push(getActiveLeftFromNode (firstOf(cluster),        [firstOf(cluster)]));
-            this.clusterActiveRight.push(getActiveRightFromNode(lastOf (cluster), false, [lastOf (cluster)]));
+            this.clusterActiveLeft .push(getActiveBeforeNode (firstOf(cluster),        [firstOf(cluster)]));
+            this.clusterActiveRight.push(getActiveAfterNode(lastOf (cluster), false, [lastOf (cluster)]));
         }
     }
 
@@ -50958,7 +50958,7 @@ function uiToggleDisableNodes(nodes)
     });
 
 
-    update.forEach(_id => uiDeleteObjects([getActiveRightFromNode(nodeFromId(_id)).id]));
+    update.forEach(_id => uiDeleteObjects([getActiveAfterNode(nodeFromId(_id)).id]));
 
 
     uiSaveNodes(nodes.map(n => n.id));

@@ -67,8 +67,8 @@ extends Action
 
         // save output node
 
-        if (   !getActiveLeftOnlyFromNode(this.outputNode)
-            && !getActiveRightFromNode   (this.outputNode))
+        if (   !getActiveOnlyBeforeNode(this.outputNode)
+            && !getActiveAfterNode   (this.outputNode))
             this.newActiveNodeIds.push(this.outputNodeId);
 
 

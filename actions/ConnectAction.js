@@ -106,7 +106,7 @@ function connectAction_saveOutputActiveNodes(act)
 function connectAction_saveInputActiveNodesAndValues(act)
 {
     act.inputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo() : [];
-    act.inputActiveNodeIds = getActiveNodesRightFromNodeId(act.inputNodeId).map(n => n.id);
+    act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
 }
 
 
