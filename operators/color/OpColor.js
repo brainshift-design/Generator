@@ -45,8 +45,10 @@ extends OpColorBase
         this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true,  true,  Math.round(defColor[1] * rgbFactor[0])));
         this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true,  true,  Math.round(defColor[2] * rgbFactor[1])));
         this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true,  Math.round(defColor[3] * rgbFactor[2])));
+        
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
+        
         this.paramSpace.input.outputMustBeCached = true;
 
         this.param1.setValue(new NumberValue(Math.round(this._color[1] * rgbFactor[0])), false, true, false);
@@ -303,21 +305,21 @@ extends OpColorBase
         this.paramSpace.control.setMax(colorSpaceCount()-1);
 
 
-        this.paramSpace.control. backStyleLight =
-        this.paramSpace.control. backStyleDark  = 'transparent';
+        this.paramSpace.control.backStyleLight  =
+        this.paramSpace.control.backStyleDark   = 'transparent';
 
         this.paramSpace.control.valueStyleLight =
         this.paramSpace.control.valueStyleDark  = rgba2style(colSpaceBar);
 
-        this.paramSpace.control. textStyleLight =
-        this.paramSpace.control. textStyleDark  = rgba2style(colors.text);
+        this.paramSpace.control.textStyleLight  =
+        this.paramSpace.control.textStyleDark   = rgba2style(colors.text);
 
 
-        this.paramSpace.input .colorLight =
-        this.paramSpace.input .colorDark  = colors.input;
+        this.paramSpace. input.colorLight       =
+        this.paramSpace. input.colorDark        = colors.input;
 
-        this.paramSpace.output.colorLight =
-        this.paramSpace.output.colorDark  = colors.output;
+        this.paramSpace.output.colorLight       =
+        this.paramSpace.output.colorDark        = colors.output;
 
 
         super.updateNode();
