@@ -9853,6 +9853,7 @@ extends GColorType
 
     eval(parse)
     {
+        console.log('GColor.isCached() =', this.isCached());
         if (this.isCached())
             return this;
 
@@ -25972,6 +25973,7 @@ extends GColorType
 
     eval(parse)
     {
+        console.log('GColor.isCached() =', this.isCached());
         if (this.isCached())
             return this;
 
@@ -38623,7 +38625,7 @@ class Operator
         for (const input of this.inputs)
         {
             if (    input.connected
-                && !input.connectedOutput.node.cached)
+                && !input.connectedOutput.node.isCached())
                 return false;
         }
 
@@ -40988,8 +40990,7 @@ extends OperatorBase
         
         this.paramValue.enableControlText(!input.connected);
 
-
-        this.paramValue.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         this.paramValue.control.showBar   = !this.isUnknown();
             
         super.updateParams();
@@ -41864,9 +41865,12 @@ extends OperatorBase
 
     updateParams()
     {
-        super.updateParams();
-
         this.paramValue.enableControlText(false);
+        
+        this.paramValue.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.control.showBar   = !this.isUnknown();
+
+        super.updateParams();
     }
 
 
@@ -47155,7 +47159,7 @@ extends Action
         this.prevInputNodeId      = prevInput.node.id;
         this.prevInputId          = prevInput.id;
         this.prevInputOutputOrder = this.prevInput.connection.outputOrder;
-               console.log('this.prevInputOutputOrder =', this.prevInputOutputOrder);
+
         this.inputNodeId          = input.node.id;
         this.inputId              = input.id;
         

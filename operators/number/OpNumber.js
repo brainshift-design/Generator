@@ -51,8 +51,7 @@ extends OperatorBase
         
         this.paramValue.enableControlText(!input.connected);
 
-
-        this.paramValue.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         this.paramValue.control.showBar   = !this.isUnknown();
             
         super.updateParams();

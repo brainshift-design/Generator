@@ -479,7 +479,7 @@ class Operator
         for (const input of this.inputs)
         {
             if (    input.connected
-                && !input.connectedOutput.node.cached)
+                && !input.connectedOutput.node.isCached())
                 return false;
         }
 

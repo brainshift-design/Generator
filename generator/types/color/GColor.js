@@ -44,6 +44,7 @@ extends GColorType
 
     eval(parse)
     {
+        console.log('GColor.isCached() =', this.isCached());
         if (this.isCached())
             return this;
 

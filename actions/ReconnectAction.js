@@ -58,7 +58,7 @@ extends Action
         this.prevInputNodeId      = prevInput.node.id;
         this.prevInputId          = prevInput.id;
         this.prevInputOutputOrder = this.prevInput.connection.outputOrder;
-               console.log('this.prevInputOutputOrder =', this.prevInputOutputOrder);
+
         this.inputNodeId          = input.node.id;
         this.inputId              = input.id;
         
