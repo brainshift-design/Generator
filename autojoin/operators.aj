@@ -32,6 +32,7 @@
 ../operators/flow/OpStart.js
 ../operators/flow/OpRepeat.js
 ../operators/flow/OpCache.js
+../operators/flow/OpPass.js
 
 ../operators/number/OpNumber.js
 ../operators/number/OpRound.js
@@ -39,6 +40,8 @@
 ../operators/number/OpRandom.js
 ../operators/number/OpSeries.js
 ../operators/number/OpInterpolate.js
+../operators/number/OpBoolean.js
+../operators/number/OpCondition.js
 
 ../operators/number/arithmetic/OpMath.js
 ../operators/number/arithmetic/OpArithmetic.js

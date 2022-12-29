@@ -5656,6 +5656,7 @@ const START               = 'STRT';
 const REPEAT              = 'REPT';
 
 const CACHE               = 'CACHE';
+const PASS                = 'PASS';
 
 
 const LIST_TYPES =
@@ -5678,7 +5679,8 @@ const FLOW_TYPES =
     START,
     REPEAT,
     FOREACH,
-    CACHE
+    CACHE,
+    PASS
 ];
 
 
@@ -5689,6 +5691,8 @@ const NUMBER_LIMITS       = 'LIM';
 const NUMBER_SERIES       = 'SER';  
 const NUMBER_RANDOM       = 'RAND';  
 const NUMBER_INTERPOLATE  = 'LERP';  
+const NUMBER_BOOLEAN      = 'BOOL';  
+const NUMBER_CONDITION    = 'COND';
  
 const NUMBER_MATH         = 'MATH';  
 const NUMBER_ADD          = 'ADD';   
@@ -5696,7 +5700,7 @@ const NUMBER_SUBTRACT     = 'SUB';
 const NUMBER_MULTIPLY     = 'MUL';   
 const NUMBER_DIVIDE       = 'DIV';   
 const NUMBER_MODULO       = 'MOD';   
-const NUMBER_EXPONENT     = 'EXP';   
+const NUMBER_EXPONENT     = 'EXP';
 
 const NUMBER_VAR_MATH     = 'MATH*';  
 const NUMBER_VAR_ADD      = 'ADD*';   
@@ -5716,6 +5720,8 @@ const NUMBER_TYPES =
     NUMBER_SERIES,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
+    NUMBER_BOOLEAN,
+    NUMBER_CONDITION,
 
     NUMBER_MATH,
     NUMBER_ADD,
@@ -8481,6 +8487,9 @@ extends GOperator
 
 
 
+
+
+
 class GNumberType
 extends GOperator
 {
@@ -8970,6 +8979,12 @@ extends GNumberType
         return this;
     }
 }
+
+
+
+
+
+
 
 
 
@@ -21821,6 +21836,7 @@ const START               = 'STRT';
 const REPEAT              = 'REPT';
 
 const CACHE               = 'CACHE';
+const PASS                = 'PASS';
 
 
 const LIST_TYPES =
@@ -21843,7 +21859,8 @@ const FLOW_TYPES =
     START,
     REPEAT,
     FOREACH,
-    CACHE
+    CACHE,
+    PASS
 ];
 
 
@@ -21854,6 +21871,8 @@ const NUMBER_LIMITS       = 'LIM';
 const NUMBER_SERIES       = 'SER';  
 const NUMBER_RANDOM       = 'RAND';  
 const NUMBER_INTERPOLATE  = 'LERP';  
+const NUMBER_BOOLEAN      = 'BOOL';  
+const NUMBER_CONDITION    = 'COND';
  
 const NUMBER_MATH         = 'MATH';  
 const NUMBER_ADD          = 'ADD';   
@@ -21861,7 +21880,7 @@ const NUMBER_SUBTRACT     = 'SUB';
 const NUMBER_MULTIPLY     = 'MUL';   
 const NUMBER_DIVIDE       = 'DIV';   
 const NUMBER_MODULO       = 'MOD';   
-const NUMBER_EXPONENT     = 'EXP';   
+const NUMBER_EXPONENT     = 'EXP';
 
 const NUMBER_VAR_MATH     = 'MATH*';  
 const NUMBER_VAR_ADD      = 'ADD*';   
@@ -21881,6 +21900,8 @@ const NUMBER_TYPES =
     NUMBER_SERIES,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
+    NUMBER_BOOLEAN,
+    NUMBER_CONDITION,
 
     NUMBER_MATH,
     NUMBER_ADD,
@@ -24646,6 +24667,9 @@ extends GOperator
 
 
 
+
+
+
 class GNumberType
 extends GOperator
 {
@@ -25135,6 +25159,12 @@ extends GNumberType
         return this;
     }
 }
+
+
+
+
+
+
 
 
 
@@ -29136,8 +29166,8 @@ const iconMath             = '<svg width="17" height="18" viewBox="0 0 17 18" fi
 const iconAdd              = '<svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.78932 10.1318V0.756822H6.38023V10.1318H4.78932ZM0.897271 6.23978V4.64887H10.2723V6.23978H0.897271Z" fill="white"/></svg>';
 const iconSubtract         = '<svg width="10" height="3" viewBox="0 0 10 3" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.13022 0.648869V2.23978H0.0393143V0.648869H9.13022Z" fill="white"/></svg>';
 const iconMultiply         = '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.05068 9.98978L0.0393206 1.97841L1.11887 0.898868L9.13023 8.91023L8.05068 9.98978ZM1.11887 9.98978L0.0393206 8.91023L8.05068 0.898868L9.13023 1.97841L1.11887 9.98978Z" fill="white"/></svg>';
-const iconDivide           = '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.13023 4.64887V6.23978H0.0393206V4.64887H9.13023ZM4.58478 10.3875C4.22966 10.3875 3.92663 10.2644 3.67568 10.0182C3.42947 9.76724 3.30637 9.46421 3.30637 9.1091C3.30637 8.76819 3.42947 8.47463 3.67568 8.22841C3.92663 7.9822 4.22966 7.85909 4.58478 7.85909C4.92568 7.85909 5.21925 7.9822 5.46546 8.22841C5.71167 8.47463 5.83478 8.76819 5.83478 9.1091C5.83478 9.46421 5.71167 9.76724 5.46546 10.0182C5.21925 10.2644 4.92568 10.3875 4.58478 10.3875ZM4.58478 3.02955C4.34803 3.02955 4.1326 2.97273 3.93847 2.85909C3.74434 2.74546 3.59046 2.59158 3.47682 2.39745C3.36318 2.20332 3.30637 1.98788 3.30637 1.75114C3.30637 1.41023 3.42947 1.11667 3.67568 0.870458C3.92663 0.624246 4.22966 0.501141 4.58478 0.501141C4.92568 0.501141 5.21925 0.624246 5.46546 0.870458C5.71167 1.11667 5.83478 1.41023 5.83478 1.75114C5.83478 2.10625 5.71167 2.40928 5.46546 2.66023C5.21925 2.90644 4.92568 3.02955 4.58478 3.02955Z" fill="white"/></svg>';
-const iconExponent         = '<svg width="14" height="14" viewBox="-1 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.24574 13.6818C3.40483 13.6818 2.67945 13.4962 2.0696 13.125C1.46354 12.75 0.995739 12.2273 0.666193 11.5568C0.340436 10.8826 0.177557 10.0985 0.177557 9.20455C0.177557 8.31061 0.340436 7.52273 0.666193 6.84091C0.995739 6.1553 1.45407 5.62121 2.04119 5.23864C2.6321 4.85227 3.3215 4.65909 4.10938 4.65909C4.56392 4.65909 5.01278 4.73485 5.45597 4.88636C5.89915 5.03788 6.30256 5.28409 6.66619 5.625C7.02983 5.96212 7.3196 6.40909 7.53551 6.96591C7.75142 7.52273 7.85938 8.20833 7.85938 9.02273V9.59091H1.1321V8.43182H6.49574C6.49574 7.93939 6.39725 7.5 6.20028 7.11364C6.0071 6.72727 5.73059 6.42235 5.37074 6.19886C5.01468 5.97538 4.59422 5.86364 4.10938 5.86364C3.57528 5.86364 3.11316 5.99621 2.72301 6.26136C2.33665 6.52273 2.0393 6.86364 1.83097 7.28409C1.62263 7.70455 1.51847 8.1553 1.51847 8.63636V9.40909C1.51847 10.0682 1.6321 10.6269 1.85938 11.0852C2.09044 11.5398 2.41051 11.8864 2.8196 12.125C3.22869 12.3598 3.70407 12.4773 4.24574 12.4773C4.59801 12.4773 4.91619 12.428 5.20028 12.3295C5.48816 12.2273 5.73627 12.0758 5.9446 11.875C6.15294 11.6705 6.31392 11.4167 6.42756 11.1136L7.72301 11.4773C7.58665 11.9167 7.35748 12.303 7.03551 12.6364C6.71354 12.9659 6.31581 13.2235 5.84233 13.4091C5.36884 13.5909 4.83665 13.6818 4.24574 13.6818Z" fill="white"/><path d="M9.39205 0.545454L10.6989 2.77557L12.0057 0.545454H12.9716L11.2102 3.27273L12.9716 6H12.0057L10.6989 3.88352L9.39205 6H8.42614L10.1591 3.27273L8.42614 0.545454H9.39205Z" fill="white"/></svg>';
+const iconDivide           = '<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.1054 1.42632L2.05001 11.9731L0.832778 11.1289L8.88819 0.582087L10.1054 1.42632Z" fill="white"/></svg>';
+const iconExponent         = '<svg width="15" height="14" viewBox="-2 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.24574 13.6818C3.40483 13.6818 2.67945 13.4962 2.0696 13.125C1.46354 12.75 0.995739 12.2273 0.666193 11.5568C0.340436 10.8826 0.177557 10.0985 0.177557 9.20455C0.177557 8.31061 0.340436 7.52273 0.666193 6.84091C0.995739 6.1553 1.45407 5.62121 2.04119 5.23864C2.6321 4.85227 3.3215 4.65909 4.10938 4.65909C4.56392 4.65909 5.01278 4.73485 5.45597 4.88636C5.89915 5.03788 6.30256 5.28409 6.66619 5.625C7.02983 5.96212 7.3196 6.40909 7.53551 6.96591C7.75142 7.52273 7.85938 8.20833 7.85938 9.02273V9.59091H1.1321V8.43182H6.49574C6.49574 7.93939 6.39725 7.5 6.20028 7.11364C6.0071 6.72727 5.73059 6.42235 5.37074 6.19886C5.01468 5.97538 4.59422 5.86364 4.10938 5.86364C3.57528 5.86364 3.11316 5.99621 2.72301 6.26136C2.33665 6.52273 2.0393 6.86364 1.83097 7.28409C1.62263 7.70455 1.51847 8.1553 1.51847 8.63636V9.40909C1.51847 10.0682 1.6321 10.6269 1.85938 11.0852C2.09044 11.5398 2.41051 11.8864 2.8196 12.125C3.22869 12.3598 3.70407 12.4773 4.24574 12.4773C4.59801 12.4773 4.91619 12.428 5.20028 12.3295C5.48816 12.2273 5.73627 12.0758 5.9446 11.875C6.15294 11.6705 6.31392 11.4167 6.42756 11.1136L7.72301 11.4773C7.58665 11.9167 7.35748 12.303 7.03551 12.6364C6.71354 12.9659 6.31581 13.2235 5.84233 13.4091C5.36884 13.5909 4.83665 13.6818 4.24574 13.6818Z" fill="white"/><path d="M9.39205 0.545454L10.6989 2.77557L12.0057 0.545454H12.9716L11.2102 3.27273L12.9716 6H12.0057L10.6989 3.88352L9.39205 6H8.42614L10.1591 3.27273L8.42614 0.545454H9.39205Z" fill="white"/></svg>';
 const iconModulo           = '<svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.07556 8.75853V8.21776C6.07556 7.8439 6.15233 7.50175 6.30588 7.19131C6.46277 6.87753 6.68976 6.62718 6.98685 6.44024C7.28728 6.24997 7.65113 6.15484 8.0784 6.15484C8.51235 6.15484 8.8762 6.24997 9.16995 6.44024C9.4637 6.62718 9.68568 6.87753 9.83589 7.19131C9.9861 7.50175 10.0612 7.8439 10.0612 8.21776V8.75853C10.0612 9.1324 9.98444 9.47622 9.83088 9.78999C9.68067 10.1004 9.45702 10.3508 9.15993 10.5411C8.86618 10.728 8.50567 10.8215 8.0784 10.8215C7.64445 10.8215 7.27893 10.728 6.98184 10.5411C6.68475 10.3508 6.45943 10.1004 6.30588 9.78999C6.15233 9.47622 6.07556 9.1324 6.07556 8.75853ZM7.09701 8.21776V8.75853C7.09701 9.06897 7.17044 9.3477 7.31732 9.59472C7.46419 9.8384 7.71789 9.96024 8.0784 9.96024C8.4289 9.96024 8.67591 9.8384 8.81945 9.59472C8.96632 9.3477 9.03976 9.06897 9.03976 8.75853V8.21776C9.03976 7.90732 8.96966 7.63026 8.82946 7.38659C8.68926 7.13957 8.43891 7.01606 8.0784 7.01606C7.7279 7.01606 7.47588 7.13957 7.32233 7.38659C7.17211 7.63026 7.09701 7.90732 7.09701 8.21776ZM0.968313 2.89021V2.34944C0.968313 1.97558 1.04509 1.63342 1.19864 1.32298C1.35553 1.00921 1.58252 0.758851 1.87961 0.571919C2.18003 0.381649 2.54388 0.286514 2.97115 0.286514C3.4051 0.286514 3.76895 0.381649 4.0627 0.571919C4.35645 0.758851 4.57843 1.00921 4.72865 1.32298C4.87886 1.63342 4.95397 1.97558 4.95397 2.34944V2.89021C4.95397 3.26407 4.87719 3.60789 4.72364 3.92167C4.57343 4.23211 4.34978 4.48247 4.05269 4.67274C3.75894 4.85967 3.39843 4.95313 2.97115 4.95313C2.5372 4.95313 2.17169 4.85967 1.8746 4.67274C1.57751 4.48247 1.35219 4.23211 1.19864 3.92167C1.04509 3.60789 0.968313 3.26407 0.968313 2.89021ZM1.98976 2.34944V2.89021C1.98976 3.20065 2.0632 3.47938 2.21007 3.72639C2.35695 3.97007 2.61064 4.09191 2.97115 4.09191C3.32165 4.09191 3.56867 3.97007 3.7122 3.72639C3.85908 3.47938 3.93252 3.20065 3.93252 2.89021V2.34944C3.93252 2.039 3.86242 1.76194 3.72222 1.51826C3.58202 1.27124 3.33167 1.14774 2.97115 1.14774C2.62066 1.14774 2.36863 1.27124 2.21508 1.51826C2.06487 1.76194 1.98976 2.039 1.98976 2.34944ZM1.34885 10.6813L8.39885 0.426713H9.54047L2.49047 10.6813H1.34885Z" fill="white"/></svg>';
 
 const iconSimpleMath       = '<svg width="19" height="16" viewBox="0 0 19 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.138 6.57967V0.485922H11.1039V6.57967H12.138ZM14.6678 4.04984V3.01575H8.57408V4.04984H14.6678Z" fill="white"/><path d="M9.36811 15.5004L14.5755 10.293L13.8738 9.59129L8.66641 14.7987L9.36811 15.5004ZM13.8738 15.5004L14.5755 14.7987L9.36811 9.59129L8.66641 10.293L13.8738 15.5004Z" fill="white"/><path d="M0.576652 12.0288V13.0629H6.48574V12.0288H0.576652ZM3.5312 15.7589C3.76202 15.7589 3.95899 15.6789 4.12211 15.5188C4.28214 15.3557 4.36216 15.1588 4.36216 14.9279C4.36216 14.7063 4.28214 14.5155 4.12211 14.3555C3.95899 14.1955 3.76202 14.1154 3.5312 14.1154C3.30961 14.1154 3.11879 14.1955 2.95875 14.3555C2.79872 14.5155 2.7187 14.7063 2.7187 14.9279C2.7187 15.1588 2.79872 15.3557 2.95875 15.5188C3.11879 15.6789 3.30961 15.7589 3.5312 15.7589ZM3.5312 10.9762C3.68508 10.9762 3.82511 10.9393 3.9513 10.8654C4.07748 10.7916 4.1775 10.6915 4.25137 10.5654C4.32523 10.4392 4.36216 10.2991 4.36216 10.1453C4.36216 9.92367 4.28214 9.73286 4.12211 9.57282C3.95899 9.41278 3.76202 9.33276 3.5312 9.33276C3.30961 9.33276 3.11879 9.41278 2.95875 9.57282C2.79872 9.73286 2.7187 9.92367 2.7187 10.1453C2.7187 10.3761 2.79872 10.5731 2.95875 10.7362C3.11879 10.8962 3.30961 10.9762 3.5312 10.9762Z" fill="white"/><path d="M0.576652 3.01575V4.04984H6.48574V3.01575H0.576652Z" fill="white"/><circle cx="17.5003" cy="7.5" r="0.749313" fill="white"/></svg>';
@@ -41113,6 +41143,9 @@ function OpCache_onDisconnectInput(node)
 }
 
 
+
+
+
 class   OpNumber
 extends OperatorBase
 {
@@ -41480,6 +41513,106 @@ extends OperatorBase
 }
 
 
+class   OpBoolean
+extends OperatorBase
+{
+    paramOperation;
+    paramValue;
+
+
+
+    constructor()
+    {
+        super(NUMBER_VAR_MATH, 'math', 70);
+
+        this.variableInputs   = true;
+        this.alwaysLoadParams = true;
+
+
+        this.addNewInput();
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, MATH_OPS.map(s => s[1]), 1));
+        this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
+    }
+    
+    
+    
+    addNewInput()
+    {
+        const newInput = new Input(NUMBER_TYPES);
+        newInput.isNew = true;
+
+        newInput.addEventListener('connect',    e => { OpList_onConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => OpList_onDisconnectInput(this, e.detail.input));
+
+        this.addInput(newInput);
+
+        return newInput;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
+
+
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+        for (const input of connectedInputs)
+            request.push(...pushInputOrParam(input, gen));
+
+        
+        request.push(...this.node.paramOperation.genRequest(gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateParams()
+    {
+        super.updateParams();
+        
+        this.paramOperation.enableControlText(true);
+        this.paramValue    .enableControlText(false);
+    }
+}
+
+
+
+function OpList_onConnectInput(node)
+{
+    node.addNewInput();
+}
+
+
+
+function OpList_onDisconnectInput(node, input)
+{
+    removeFromArray(node.inputs, input);
+    node.inputControls.removeChild(input.div);
+}
+
+
+
+
+
 class   OpMath
 extends OperatorBase
 {
@@ -41834,8 +41967,8 @@ extends OpArithmetic
 class   OpVarMath
 extends OperatorBase
 {
-    paramValue;
     paramOperation;
+    paramValue;
 
 
 
@@ -42187,8 +42320,25 @@ extends OpVarArithmetic
 {
     constructor()
     {
-        super(NUMBER_VAR_DIVIDE, 'div', '÷');
+        super(NUMBER_VAR_DIVIDE, 'div', '/');//'÷');
     }
+
+
+
+    // updateNode()
+    // {
+    //     super.updateNode();
+
+    //     const colors = this.getHeaderColors();
+
+    //     this._symbol.innerHTML =
+    //         this._showOnlySymbol
+    //         ? '<svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 2L2.44458 12.5468L0.698218 11.3084L8.75363 0.761576L10.5 2Z" fill="' + rgba2style(colors.text) + '"/></svg>'
+    //         : '<svg width="11" height="13" viewBox="0 0 11 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 2L2.44458 12.5468L0.698218 11.3084L8.75363 0.761576L10.5 2Z" fill="' + rgba2style(colors.text) + '"/></svg>';
+
+    //     this._symbol.style.left = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
+    //     this._symbol.style.top  = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 1.5 : 6);
+    // }
 }
 
 
@@ -42229,18 +42379,18 @@ extends OpVarArithmetic
 
 
 
-    updateNode()
-    {
-        super.updateNode();
+    // updateNode()
+    // {
+    //     super.updateNode();
 
-        this._symbol.innerHTML =
-            this._showOnlySymbol
-            ? '<span style="font-size: 14px;">x</span><span style="position: relative; left: -1px; top: -7px; font-size: 7px; font-weight: bold;">y</span>'
-            : '<span style="position: relative; top: -2.5px; font-size: 9px;">x</span><span style="position: relative; left: -0.5px; top: -7.5px; font-size: 3.75px; font-weight: bold;">y</span>';
+    //     this._symbol.innerHTML =
+    //         this._showOnlySymbol
+    //         ? '<span style="font-size: 14px;">x</span><span style="position: relative; left: -1px; top: -7px; font-size: 7px; font-weight: bold;">y</span>'
+    //         : '<span style="position: relative; top: -2.5px; font-size: 9px;">x</span><span style="position: relative; left: -0.5px; top: -7.5px; font-size: 3.75px; font-weight: bold;">y</span>';
 
-        this._symbol.style.left = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
-        this._symbol.style.top  = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 1.5 : 6);
-    }
+    //     this._symbol.style.left = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
+    //     this._symbol.style.top  = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 1.5 : 6);
+    // }
 }
 
 

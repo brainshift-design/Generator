@@ -112,6 +112,7 @@ const SELECT = 'SEL';
 const START = 'STRT';
 const REPEAT = 'REPT';
 const CACHE = 'CACHE';
+const PASS = 'PASS';
 const LIST_TYPES = [
     LIST_VALUE,
     LIST,
@@ -126,7 +127,8 @@ const FLOW_TYPES = [
     START,
     REPEAT,
     FOREACH,
-    CACHE
+    CACHE,
+    PASS
 ];
 const NUMBER_VALUE = 'NUM#';
 const NUMBER = 'NUM';
@@ -135,6 +137,8 @@ const NUMBER_LIMITS = 'LIM';
 const NUMBER_SERIES = 'SER';
 const NUMBER_RANDOM = 'RAND';
 const NUMBER_INTERPOLATE = 'LERP';
+const NUMBER_BOOLEAN = 'BOOL';
+const NUMBER_CONDITION = 'COND';
 const NUMBER_MATH = 'MATH';
 const NUMBER_ADD = 'ADD';
 const NUMBER_SUBTRACT = 'SUB';
@@ -157,6 +161,8 @@ const NUMBER_TYPES = [
     NUMBER_SERIES,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
+    NUMBER_BOOLEAN,
+    NUMBER_CONDITION,
     NUMBER_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,

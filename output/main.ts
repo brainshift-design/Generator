@@ -202,6 +202,7 @@ const START               = 'STRT';
 const REPEAT              = 'REPT';
 
 const CACHE               = 'CACHE';
+const PASS                = 'PASS';
 
 
 const LIST_TYPES =
@@ -224,7 +225,8 @@ const FLOW_TYPES =
     START,
     REPEAT,
     FOREACH,
-    CACHE
+    CACHE,
+    PASS
 ];
 
 
@@ -235,6 +237,8 @@ const NUMBER_LIMITS       = 'LIM';
 const NUMBER_SERIES       = 'SER';  
 const NUMBER_RANDOM       = 'RAND';  
 const NUMBER_INTERPOLATE  = 'LERP';  
+const NUMBER_BOOLEAN      = 'BOOL';  
+const NUMBER_CONDITION    = 'COND';
  
 const NUMBER_MATH         = 'MATH';  
 const NUMBER_ADD          = 'ADD';   
@@ -242,7 +246,7 @@ const NUMBER_SUBTRACT     = 'SUB';
 const NUMBER_MULTIPLY     = 'MUL';   
 const NUMBER_DIVIDE       = 'DIV';   
 const NUMBER_MODULO       = 'MOD';   
-const NUMBER_EXPONENT     = 'EXP';   
+const NUMBER_EXPONENT     = 'EXP';
 
 const NUMBER_VAR_MATH     = 'MATH*';  
 const NUMBER_VAR_ADD      = 'ADD*';   
@@ -262,6 +266,8 @@ const NUMBER_TYPES =
     NUMBER_SERIES,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
+    NUMBER_BOOLEAN,
+    NUMBER_CONDITION,
 
     NUMBER_MATH,
     NUMBER_ADD,

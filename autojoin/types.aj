@@ -38,6 +38,7 @@
 ../generator/types/flow/GStart.js
 ../generator/types/flow/GRepeat.js
 ../generator/types/flow/GCache.js
+../generator/types/flow/GPass.js
 
 
 ../generator/types/number/GNumberType.js
@@ -47,6 +48,8 @@
 ../generator/types/number/GSeries.js
 ../generator/types/number/GRandom.js
 ../generator/types/number/GInterpolate.js
+../generator/types/number/GBoolean.js
+../generator/types/number/GCondition.js
 
 ../generator/types/number/arithmetic/GArithmetic.js
 ../generator/types/number/arithmetic/GMath.js

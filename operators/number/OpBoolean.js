@@ -1,4 +1,4 @@
-class   OpVarMath
+class   OpBoolean
 extends OperatorBase
 {
     paramOperation;
