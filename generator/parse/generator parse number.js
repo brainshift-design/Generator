@@ -485,3 +485,58 @@ function genParseBoolean(parse)
     genParseNodeEnd(parse, bool);
     return bool;
 }
+
+
+
+function genParseCondition(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cond = new GCondition(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReqCondition(cond, nInputs, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cond);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    if (nInputs == 2)
+    {
+        cond.input0    = genParse(parse);
+        cond.input1    = genParse(parse);
+        cond.operation = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        cond.input0    = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+        cond.operation = genParse(parse);
+    }
+    else if (nInputs == 0)
+    {
+        cond.operation = genParse(parse);
+    }
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cond);
+    return cond;
+}

@@ -84,3 +84,12 @@ function logReqBoolean(bool, nInputs, parse)
     parse.log += logReqNodeId(bool);
     parse.log += ' ' + nInputs;
 }
+
+
+
+function logReqCondition(cond, nInputs, parse)
+{
+    parse.log += parse.tab + NUMBER_CONDITION;
+    parse.log += logReqNodeId(cond);
+    parse.log += ' ' + nInputs;
+}

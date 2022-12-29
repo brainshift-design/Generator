@@ -3021,6 +3021,16 @@ function logReqBoolean(bool, nInputs, parse)
 }
 
 
+
+function logReqCondition(cond, nInputs, parse)
+{
+    parse.log += parse.tab + NUMBER_CONDITION;
+    parse.log += logReqNodeId(cond);
+    parse.log += ' ' + nInputs;
+}
+
+
+
 function logReqColorValue(val, parse)
 {
     parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
@@ -7555,6 +7565,7 @@ extends GVarArithmetic
 
         op.value = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
 
+        
         switch (op.value)
         {
             case BOOLEAN_NOT: this.value = evalBoolInputsNand(this.inputs, parse); break;
@@ -7694,7 +7705,112 @@ function evalBoolInputsXor(inputs, parse)
 }
 
 
+class GCondition
+extends GNumberType
+{
+    input0 = null;
+    input1 = null;
 
+    operation;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_CONDITION, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const cond = new GCondition(this.nodeId, this.options);
+
+        cond.copyBase(this);
+
+        if (this.input0) cond.input0 = this.input0.copy();
+        if (this.input1) cond.input1 = this.input1.copy();
+
+        cond.operation = this.operation.copy();
+
+        return cond;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const op = this.operation.eval(parse).toValue();
+
+        op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
+
+        
+        if (   this.input0 
+            && this.input1)
+        {
+            const val0 = this.input0.eval(parse).toValue();
+            const val1 = this.input1.eval(parse).toValue();
+
+            switch (op.value)
+            {
+                case CONDITION_EQUAL:             this.value = evalConditionInputsEqual         (val0, val1);  break;
+                case CONDITION_NOT_EQUAL:         this.value = evalConditionInputsNotEqual      (val0, val1);  break;
+                case CONDITION_LESS:              this.value = evalConditionInputsLess          (val0, val1);  break;
+                case CONDITION_LESS_OR_EQUAL:     this.value = evalConditionInputsLessOrEqual   (val0, val1);  break;
+                case CONDITION_GREATER:           this.value = evalConditionInputsGreater       (val0, val1);  break;
+                case CONDITION_GREATER_OR_EQUAL:  this.value = evalConditionInputsGreaterOrEqual(val0, val1);  break;
+            }
+        }
+        else if (this.input0)
+        {
+            this.input0.eval(parse).toValue();
+
+            switch (op.value)
+            {
+                case CONDITION_EQUAL:             
+                case CONDITION_LESS_OR_EQUAL:     
+                case CONDITION_GREATER_OR_EQUAL: this.value = new NumberValue(1); break;
+                default:                         this.value = new NumberValue(0); break;
+            }
+        }
+        else if (this.input1) 
+        {
+            this.input1.eval(parse).toValue();
+
+            switch (op.value)
+            {
+                case CONDITION_EQUAL:             
+                case CONDITION_LESS_OR_EQUAL:     
+                case CONDITION_GREATER_OR_EQUAL: this.value = new NumberValue(1); break;
+                default:                         this.value = new NumberValue(0); break;
+            }
+        }
+        else                  
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'operation', op);
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalConditionInputsEqual         (val0, val1) { return new NumberValue(val0.value == val1.value ? 1 : 0); }
+function evalConditionInputsNotEqual      (val0, val1) { return new NumberValue(val0.value != val1.value ? 1 : 0); }
+function evalConditionInputsLess          (val0, val1) { return new NumberValue(val0.value <  val1.value ? 1 : 0); }
+function evalConditionInputsLessOrEqual   (val0, val1) { return new NumberValue(val0.value <= val1.value ? 1 : 0); }
+function evalConditionInputsGreater       (val0, val1) { return new NumberValue(val0.value >  val1.value ? 1 : 0); }
+function evalConditionInputsGreaterOrEqual(val0, val1) { return new NumberValue(val0.value >= val1.value ? 1 : 0); }
 
 
 class GColorType
@@ -11561,6 +11677,60 @@ function genParseBoolean(parse)
 
 
 
+function genParseCondition(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cond = new GCondition(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReqCondition(cond, nInputs, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cond);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    if (nInputs == 2)
+    {
+        cond.input0    = genParse(parse);
+        cond.input1    = genParse(parse);
+        cond.operation = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        cond.input0    = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+        cond.operation = genParse(parse);
+    }
+    else if (nInputs == 0)
+    {
+        cond.operation = genParse(parse);
+    }
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cond);
+    return cond;
+}
+
+
 function genParseRectangle(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -12251,6 +12421,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_SERIES      ) result = genParseSeries          (parse);
     else if (parse.next == NUMBER_INTERPOLATE ) result = genParseInterpolate     (parse);
     else if (parse.next == NUMBER_BOOLEAN     ) result = genParseBoolean         (parse);
+    else if (parse.next == NUMBER_CONDITION   ) result = genParseCondition       (parse);
  
     else if (parse.next == NUMBER_MATH        ) result = genParseMath            (parse, (nodeId, options) => new GMath    (nodeId, options));
     else if (parse.next == NUMBER_ADD         ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd     (nodeId, options));

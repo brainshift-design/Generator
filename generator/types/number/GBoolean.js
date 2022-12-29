@@ -36,6 +36,7 @@ extends GVarArithmetic
 
         op.value = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
 
+        
         switch (op.value)
         {
             case BOOLEAN_NOT: this.value = evalBoolInputsNand(this.inputs, parse); break;
