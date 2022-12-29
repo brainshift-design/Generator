@@ -142,8 +142,10 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
         if (control.wrapValue)
         {
-            while (value < control.displayMin) value += control.displayMax - control.displayMin;
-            while (value > control.displayMax) value -= control.displayMax - control.displayMin;
+            const range = control.displayMax - control.displayMin;
+
+            value %= range;
+            while (value < control.displayMin) value += range;
         }
 
         else if (fullRange)
