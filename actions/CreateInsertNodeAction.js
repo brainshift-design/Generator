@@ -117,7 +117,8 @@ extends Action
             createNodeAction_connect(
                 this, 
                 nodeFromId(_conn.outputNodeId).outputFromId(_conn.outputId),
-                nodeFromId(_conn. inputNodeId). inputFromId(_conn. inputId),
+                nodeFromId(_conn. inputNodeId),
+                _conn. inputId,
                 _conn.outputOrder);
         }
 

@@ -127,8 +127,8 @@ extends Action
 
         for (const cluster of clusters)
         {
-            this.clusterActiveLeft .push(getActiveBeforeNode (firstOf(cluster),        [firstOf(cluster)]));
-            this.clusterActiveRight.push(getActiveAfterNode(lastOf (cluster), false, [lastOf (cluster)]));
+            this.clusterActiveLeft .push(getActiveBeforeNode(firstOf(cluster),        [firstOf(cluster)]));
+            this.clusterActiveRight.push(getActiveAfterNode (lastOf (cluster), false, [lastOf (cluster)]));
         }
     }
 
@@ -149,9 +149,10 @@ function removeNodesAction_makeNewConnections(act)
     {
         const _conn = act.newConnections[i];
         
-        const conn = uiConnect(
-            nodeFromId(_conn.outputNodeId).outputFromId(_conn.outputId), 
-            nodeFromId(_conn. inputNodeId). inputFromId(_conn. inputId));
+        const conn = uiVariableConnect(
+            nodeFromId(_conn.outputNodeId), _conn.outputId, 
+            nodeFromId(_conn. inputNodeId), _conn. inputId,
+            _conn.outputOrder);
 
         uiSaveConn(conn);
 
