@@ -1585,7 +1585,7 @@ function figDeleteSavedConnectionsToNode(nodeId)
     {
         const parts = key.split(' ');
 
-        if (parts[3] == nodeId)
+        if (parts[4] == nodeId)
             figClearPageData(key);        
     }
 }

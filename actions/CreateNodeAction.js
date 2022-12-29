@@ -58,7 +58,7 @@ extends Action
             
             if (inputs.length > 0)
             {
-                const conn = createNodeAction_connect(this, selNode.outputs[0], inputs[0]);
+                const conn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
                 graphView.autoPlaceNewNode(conn.output, conn.input);
             }
         }
@@ -103,9 +103,13 @@ extends Action
 
 
 
-function createNodeAction_connect(act, output, input)
+function createNodeAction_connect(act, output, inputNode, inputId, outputOrder = -1)
 {
-    const conn = uiConnect(output, input);
+    const conn = uiVariableConnect(
+        output.node, output.id,
+        inputNode,  inputId,
+        outputOrder);
+        
     uiSaveConn(conn);
 
     act.newConnections.push(

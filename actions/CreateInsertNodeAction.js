@@ -37,20 +37,21 @@ extends Action
         const node = createNode(this.nodeType, this.creatingButton, this.createdId);
 
 
-        const autoConnect = 
+        const insert = 
                this.prevSelectedIds.length > 0
             && canAutoConnectNode(node);
    
             
-        graph.addNode(node, !autoConnect);
+        graph.addNode(node, !insert);
         
         this.createdNodeId = node.id;
 
 
-        if (autoConnect)
+        if (insert)
         {
             const selNode   = nodeFromId(this.prevSelectedIds[0]);
             const selOutput = selNode.headerOutputs[0];
+
 
             for (let i = selOutput.connectedInputs.length-1; i >= 0; i--)
             {
@@ -65,17 +66,18 @@ extends Action
 
             if (inputs.length > 0)
             {
-                const newConn = createNodeAction_connect(this, selNode.outputs[0], inputs[0]);
+                const newConn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
                 graphView.autoPlaceNewNode(newConn.output, newConn.input);
 
 
                 for (const _conn of this.oldConnections)
                 {
-                    const _output = node.headerOutputs[0];
-                    const _input  = nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId);
+                    const _output    = node.headerOutputs[0];
+                    const _inputNode = nodeFromId(_conn.inputNodeId);
+                    const _input     = _inputNode.inputFromId(_conn.inputId);
 
                     if (_input.canConnectFrom(_output))
-                        createNodeAction_connect(this, _output, _input, _conn.outputOrder);
+                        createNodeAction_connect(this, _output, _inputNode, _conn.inputId, _conn.outputOrder);
                 }
             }
         }
@@ -120,7 +122,7 @@ extends Action
         }
 
 
-        if (this.oldInputActiveNodeId != '')//Connections.length == 0)
+        if (this.oldInputActiveNodeId != '')
             createNodeAction_activateOldInput(this);
 
             

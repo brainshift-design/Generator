@@ -29276,6 +29276,8 @@ function initGeneratorMenus()
         menuItemDataMode         = new MenuItem('Restart in debug mode',      {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        ), setting: true}),
         //                         new MenuItem('Delete connections to...',   {callback:      () => showDeleteConnectionsDialog()}),
                                    new MenuItem('',                           {separator: true}),
+                                   new MenuItem('Log all connection keys',   {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+                                   new MenuItem('',                           {separator: true }),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',          {checkCallback: () => settings.logRequests        , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     ), setting: true}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',            {checkCallback: () => settings.logValueUpdates    , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates ), setting: true}),
         menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',           {checkCallback: () => settings.logObjectUpdates   , callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates), setting: true}),
@@ -46299,20 +46301,21 @@ extends Action
         const node = createNode(this.nodeType, this.creatingButton, this.createdId);
 
 
-        const autoConnect = 
+        const insert = 
                this.prevSelectedIds.length > 0
             && canAutoConnectNode(node);
    
             
-        graph.addNode(node, !autoConnect);
+        graph.addNode(node, !insert);
         
         this.createdNodeId = node.id;
 
 
-        if (autoConnect)
+        if (insert)
         {
             const selNode   = nodeFromId(this.prevSelectedIds[0]);
             const selOutput = selNode.headerOutputs[0];
+
 
             for (let i = selOutput.connectedInputs.length-1; i >= 0; i--)
             {
@@ -46327,17 +46330,18 @@ extends Action
 
             if (inputs.length > 0)
             {
-                const newConn = createNodeAction_connect(this, selNode.outputs[0], inputs[0]);
+                const newConn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
                 graphView.autoPlaceNewNode(newConn.output, newConn.input);
 
 
                 for (const _conn of this.oldConnections)
                 {
-                    const _output = node.headerOutputs[0];
-                    const _input  = nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId);
+                    const _output    = node.headerOutputs[0];
+                    const _inputNode = nodeFromId(_conn.inputNodeId);
+                    const _input     = _inputNode.inputFromId(_conn.inputId);
 
                     if (_input.canConnectFrom(_output))
-                        createNodeAction_connect(this, _output, _input, _conn.outputOrder);
+                        createNodeAction_connect(this, _output, _inputNode, _conn.inputId, _conn.outputOrder);
                 }
             }
         }
@@ -46382,7 +46386,7 @@ extends Action
         }
 
 
-        if (this.oldInputActiveNodeId != '')//Connections.length == 0)
+        if (this.oldInputActiveNodeId != '')
             createNodeAction_activateOldInput(this);
 
             
@@ -46481,7 +46485,7 @@ extends Action
             
             if (inputs.length > 0)
             {
-                const conn = createNodeAction_connect(this, selNode.outputs[0], inputs[0]);
+                const conn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
                 graphView.autoPlaceNewNode(conn.output, conn.input);
             }
         }
@@ -46526,9 +46530,13 @@ extends Action
 
 
 
-function createNodeAction_connect(act, output, input)
+function createNodeAction_connect(act, output, inputNode, inputId, outputOrder = -1)
 {
-    const conn = uiConnect(output, input);
+    const conn = uiVariableConnect(
+        output.node, output.id,
+        inputNode,  inputId,
+        outputOrder);
+        
     uiSaveConn(conn);
 
     act.newConnections.push(

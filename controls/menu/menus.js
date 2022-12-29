@@ -175,6 +175,8 @@ function initGeneratorMenus()
         menuItemDataMode         = new MenuItem('Restart in debug mode',      {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        ), setting: true}),
         //                         new MenuItem('Delete connections to...',   {callback:      () => showDeleteConnectionsDialog()}),
                                    new MenuItem('',                           {separator: true}),
+                                   new MenuItem('Log all connection keys',   {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+                                   new MenuItem('',                           {separator: true }),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',          {checkCallback: () => settings.logRequests        , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     ), setting: true}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',            {checkCallback: () => settings.logValueUpdates    , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates ), setting: true}),
         menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',           {checkCallback: () => settings.logObjectUpdates   , callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates), setting: true}),
