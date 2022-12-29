@@ -12899,6 +12899,16 @@ function rgbIsValid(rgb, lim = Eps)
 
 
 
+function rgbaIsValid(rgba, lim = Eps)
+{
+    return rgba[0] > -lim && rgba[0] < 1 + lim 
+        && rgba[1] > -lim && rgba[1] < 1 + lim 
+        && rgba[2] > -lim && rgba[2] < 1 + lim
+        && rgba[3] > -lim && rgba[3] < 1 + lim;
+}
+
+
+
 function rgbIsOk(rgb, lim = Eps)
 {
     return !rgbIsNaN  (rgb)

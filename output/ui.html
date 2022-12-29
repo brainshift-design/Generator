@@ -15234,6 +15234,16 @@ function rgbIsValid(rgb, lim = Eps)
 
 
 
+function rgbaIsValid(rgba, lim = Eps)
+{
+    return rgba[0] > -lim && rgba[0] < 1 + lim 
+        && rgba[1] > -lim && rgba[1] < 1 + lim 
+        && rgba[2] > -lim && rgba[2] < 1 + lim
+        && rgba[3] > -lim && rgba[3] < 1 + lim;
+}
+
+
+
 function rgbIsOk(rgb, lim = Eps)
 {
     return !rgbIsNaN  (rgb)
@@ -20747,6 +20757,16 @@ function rgbIsValid(rgb, lim = Eps)
     return rgb[0] > -lim && rgb[0] < 1 + lim 
         && rgb[1] > -lim && rgb[1] < 1 + lim 
         && rgb[2] > -lim && rgb[2] < 1 + lim;
+}
+
+
+
+function rgbaIsValid(rgba, lim = Eps)
+{
+    return rgba[0] > -lim && rgba[0] < 1 + lim 
+        && rgba[1] > -lim && rgba[1] < 1 + lim 
+        && rgba[2] > -lim && rgba[2] < 1 + lim
+        && rgba[3] > -lim && rgba[3] < 1 + lim;
 }
 
 
@@ -35113,6 +35133,12 @@ extends Parameter
     oldValue = null;
 
     
+    _warningOverlay;
+    
+    forceShowWarning = false;
+    warningStyle;
+
+
     checkers;
     
     control;
@@ -35148,6 +35174,11 @@ extends Parameter
         this.control.zIndex = 0;
    
         this.defaultValue   = defaultValue;
+
+
+        this._warningOverlay = createDiv('colorWarningOverlay');
+        this._warningOverlay.style.zIndex = 21;
+        this.div.appendChild(this._warningOverlay);
 
 
         initColorControl(
@@ -35244,6 +35275,9 @@ extends Parameter
 
     updateControls()
     {
+        this.updateWarningOverlay();
+
+
         this.checkers.style.background = 
             isDarkMode()
             ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
@@ -35311,6 +35345,57 @@ extends Parameter
         enable &= !this.input || !this.input.connected;
         enableElementText(this.control, enable);
         this.control.readOnly = !enable;
+    }
+    
+    
+    
+    updateWarningOverlay() 
+    {
+        //console.log(this.id + '.updateWarningOverlay()');
+
+        const rgb = this.value.toRgb();
+
+        if (!rgbIsNaN(rgb))
+        {
+            if (  !rgbIsValid(rgb)
+                || this.forceShowWarning)
+            {
+                if (!this.forceShowWarning)
+                    this.warningStyle = getDefaultWarningStyle(rgb);
+
+                this.updateWarningOverlayStyle(rgb);
+            }
+            else
+                this._warningOverlay.style.display = 'none';
+        }
+        else
+        {
+            this.warningStyle = getDefaultWarningStyle(rgb);
+            this.updateWarningOverlayStyle(rgb);
+        }
+    }
+
+
+
+    updateWarningOverlayStyle(colBack, height = -1)
+    {
+        //console.log('colBack =', colBack);
+        
+        this._warningOverlay.style.height = 
+            height < 0
+            ? this.div.offsetHeight
+            : height;
+
+        this._warningOverlay.style.background =
+               rgbIsOk(colBack)
+            && !this.forceShowWarning
+            ? 'transparent'
+            : 'repeating-linear-gradient('
+               + '-45deg, '
+               + 'transparent 0 7px,'
+               +  this.warningStyle + ' 7px 14px)';
+
+        this._warningOverlay.style.display = 'block';
     }
     
     
@@ -35589,10 +35674,10 @@ extends Parameter
 
     updateControls()
     {
-        const noColor = 
-            isDarkMode()
-            ? rgbNoColorDark
-            : rgbNoColorLight;
+        // const noColor = 
+        //     isDarkMode()
+        //     ? rgbNoColorDark
+        //     : rgbNoColorLight;
 
         const rgbaVal  = this.value.toRgba();
         const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
@@ -35717,9 +35802,9 @@ extends Parameter
 
         const rgba = this.value.toRgba();
 
-        if (!rgbIsNaN(rgba))
+        if (!rgbaIsNaN(rgba))
         {
-            if (  !rgbIsValid(rgba)
+            if (  !rgbaIsValid(rgba)
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)

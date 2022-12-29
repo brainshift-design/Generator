@@ -265,10 +265,10 @@ extends Parameter
 
     updateControls()
     {
-        const noColor = 
-            isDarkMode()
-            ? rgbNoColorDark
-            : rgbNoColorLight;
+        // const noColor = 
+        //     isDarkMode()
+        //     ? rgbNoColorDark
+        //     : rgbNoColorLight;
 
         const rgbaVal  = this.value.toRgba();
         const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
@@ -393,9 +393,9 @@ extends Parameter
 
         const rgba = this.value.toRgba();
 
-        if (!rgbIsNaN(rgba))
+        if (!rgbaIsNaN(rgba))
         {
-            if (  !rgbIsValid(rgba)
+            if (  !rgbaIsValid(rgba)
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)

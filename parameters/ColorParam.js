@@ -6,6 +6,12 @@ extends Parameter
     oldValue = null;
 
     
+    _warningOverlay;
+    
+    forceShowWarning = false;
+    warningStyle;
+
+
     checkers;
     
     control;
@@ -41,6 +47,11 @@ extends Parameter
         this.control.zIndex = 0;
    
         this.defaultValue   = defaultValue;
+
+
+        this._warningOverlay = createDiv('colorWarningOverlay');
+        this._warningOverlay.style.zIndex = 21;
+        this.div.appendChild(this._warningOverlay);
 
 
         initColorControl(
@@ -137,6 +148,9 @@ extends Parameter
 
     updateControls()
     {
+        this.updateWarningOverlay();
+
+
         this.checkers.style.background = 
             isDarkMode()
             ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
@@ -204,6 +218,57 @@ extends Parameter
         enable &= !this.input || !this.input.connected;
         enableElementText(this.control, enable);
         this.control.readOnly = !enable;
+    }
+    
+    
+    
+    updateWarningOverlay() 
+    {
+        //console.log(this.id + '.updateWarningOverlay()');
+
+        const rgb = this.value.toRgb();
+
+        if (!rgbIsNaN(rgb))
+        {
+            if (  !rgbIsValid(rgb)
+                || this.forceShowWarning)
+            {
+                if (!this.forceShowWarning)
+                    this.warningStyle = getDefaultWarningStyle(rgb);
+
+                this.updateWarningOverlayStyle(rgb);
+            }
+            else
+                this._warningOverlay.style.display = 'none';
+        }
+        else
+        {
+            this.warningStyle = getDefaultWarningStyle(rgb);
+            this.updateWarningOverlayStyle(rgb);
+        }
+    }
+
+
+
+    updateWarningOverlayStyle(colBack, height = -1)
+    {
+        //console.log('colBack =', colBack);
+        
+        this._warningOverlay.style.height = 
+            height < 0
+            ? this.div.offsetHeight
+            : height;
+
+        this._warningOverlay.style.background =
+               rgbIsOk(colBack)
+            && !this.forceShowWarning
+            ? 'transparent'
+            : 'repeating-linear-gradient('
+               + '-45deg, '
+               + 'transparent 0 7px,'
+               +  this.warningStyle + ' 7px 14px)';
+
+        this._warningOverlay.style.display = 'block';
     }
     
     
