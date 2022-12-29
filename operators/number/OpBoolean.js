@@ -15,10 +15,10 @@ extends OperatorBase
 
 
         this.addNewInput();
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        //this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
         this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, false, BOOLEAN_OPS.map(s => s[1]), 1));
-        this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
+        this.addParam(this.paramValue     = new NumberParam('value', '', false, false, true));
     }
     
     
@@ -38,19 +38,19 @@ extends OperatorBase
 
 
 
-    output_genRequest(gen)
+    genRequest(gen)
     {
-        // 'this' is the output
+        // 'this' is the node
 
         gen.scope.push({
-            nodeId:  this.node.id, 
+            nodeId:  this.id, 
             paramId: '' });
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+        const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
 
 
-        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
+        const connectedInputs = this.inputs.filter(i => i.connected && !i.param);
 
 
         request.push(connectedInputs.length); // utility values like param count are stored as numbers
@@ -59,11 +59,11 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         
-        request.push(...this.node.paramOperation.genRequest(gen));
+        request.push(...this.paramOperation.genRequest(gen));
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
+        pushUnique(gen.passedNodes, this);
 
         return request;
     }

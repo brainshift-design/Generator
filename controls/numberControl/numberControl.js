@@ -295,7 +295,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
                     ? rgba2style(rgb_a(style2rgba(control.textStyleDark ), 0.4))
                     : rgba2style(rgb_a(style2rgba(control.textStyleLight), 0.6));
 
-                control.text.innerHTML += '<span style="color: '+nameStyle+';">' + control.name + "</span>&nbsp;&nbsp;";
+                control.text.innerHTML += '<span style="color: ' + nameStyle + ';">' + control.name + "</span>&nbsp;&nbsp;";
             }
             
             control.text.innerHTML += control.getValueText() + control.suffix;
