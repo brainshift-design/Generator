@@ -188,7 +188,7 @@ extends OpColorBase
 
             for (const param of this.node.params.filter(p => p.id != this.node.paramSpace.id))
                 if (   param.input 
-                    && param.input.connected) 
+                    && param.input.connected)
                     paramIds.push(param.id);
 
             request.push(paramIds.join(','));
@@ -369,7 +369,9 @@ extends OpColorBase
         this.colorBack.style.backgroundRepeat   = 'no-repeat';
 
 
-        this.label.style.color     = rgb2style(colors.text);
+        this.label.style.color                = rgb2style(colors.text);
+        //this.paramSpace.control.textbox.color = rgb2style(colors.text);
+
         
         this. inputs[0].colorLight =
         this. inputs[0].colorDark  = colors.input;

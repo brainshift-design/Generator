@@ -272,8 +272,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     {
         control        .style.background = isDarkMode() ? control. backStyleDark : control. backStyleLight;
         control.bar    .style.background = isDarkMode() ? control.valueStyleDark : control.valueStyleLight;
-        control.text   .style.color      = 
-        control.textbox.style.color      = isDarkMode() ? control. textStyleDark : control. textStyleLight;
+        control.text   .style.color      = isDarkMode() ? control. textStyleDark : control. textStyleLight;
+        //control.textbox.style.color      = isDarkMode() ? control. textStyleDark : control. textStyleLight;
     };
 
 
@@ -292,7 +292,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             {
                 const nameStyle = 
                     isDarkMode() 
-                    ? rgba2style(rgb_a(style2rgba(control.textStyleDark),  0.4))
+                    ? rgba2style(rgb_a(style2rgba(control.textStyleDark ), 0.4))
                     : rgba2style(rgb_a(style2rgba(control.textStyleLight), 0.6));
 
                 control.text.innerHTML += '<span style="color: '+nameStyle+';">' + control.name + "</span>&nbsp;&nbsp;";
