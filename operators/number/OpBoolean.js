@@ -15,10 +15,10 @@ extends OperatorBase
 
 
         this.addNewInput();
-        //this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
         this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, false, BOOLEAN_OPS.map(s => s[1]), 1));
-        this.addParam(this.paramValue     = new NumberParam('value', '', false, false, true));
+        this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
     }
     
     
@@ -38,19 +38,19 @@ extends OperatorBase
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
+        // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: '' });
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
 
-        const connectedInputs = this.inputs.filter(i => i.connected && !i.param);
+        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
 
 
         request.push(connectedInputs.length); // utility values like param count are stored as numbers
@@ -59,11 +59,11 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         
-        request.push(...this.paramOperation.genRequest(gen));
+        request.push(...this.node.paramOperation.genRequest(gen));
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
         return request;
     }
@@ -72,10 +72,13 @@ extends OperatorBase
 
     updateParams()
     {
-        super.updateParams();
-        
         this.paramOperation.enableControlText(true);
         this.paramValue    .enableControlText(false);
+
+        this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.control.showBar   = !this.isUnknown();
+
+        super.updateParams();
     }
 }
 

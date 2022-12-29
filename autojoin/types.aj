@@ -35,10 +35,11 @@
 ../generator/types/flow/GList.js
 ../generator/types/flow/GItems.js
 ../generator/types/flow/GSelect.js
+../generator/types/flow/GPass.js
 ../generator/types/flow/GStart.js
 ../generator/types/flow/GRepeat.js
 ../generator/types/flow/GCache.js
-../generator/types/flow/GPass.js
+../generator/types/flow/GCopy.js
 
 
 ../generator/types/number/GNumberType.js

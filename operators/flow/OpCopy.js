@@ -1,4 +1,4 @@
-class   OpCache
+class   OpCopy
 extends OperatorBase
 {
     paramNumber;
@@ -9,29 +9,29 @@ extends OperatorBase
 
     constructor()
     {
-        super(CACHE, 'cache', 90);
+        super(COPY, 'copy', 90);
 
-        this.cached = true;
+        //this.cached = true;
         
 
         this.addInput (new Input(ALL_TYPES));
         this.addOutput(new Output([], this.output_genRequest));
 
 
-        this.paramNumber = new NumberParam('value', '', false, false, false);
-        this.paramColor  = new  ColorParam('value', '', false, false, false);
+        this.paramNumber = new NumberParam('value', '', false, false, true);
+        this.paramColor  = new  ColorParam('value', '', false, false, true);
 
         
-        this.inputs[0].addEventListener('connect',    () => OpCache_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpCache_onDisconnectInput(this));
+        this.inputs[0].addEventListener('connect',    () => OpCopy_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpCopy_onDisconnectInput(this));
     }
     
     
 
-    isCached()
-    {
-        return true;
-    }
+    // isCached()
+    // {
+    //     return true;
+    // }
 
 
 
@@ -89,6 +89,23 @@ extends OperatorBase
 
 
 
+    updateParams()
+    {
+        const paramValue = this.params.find(p => p.id == 'value');
+
+        if (paramValue)
+        {
+            paramValue.enableControlText(true);
+
+            paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+            paramValue.control.showBar   = !this.isUnknown();
+        }
+
+        super.updateParams();
+    }
+
+
+
     getHeaderColors()
     {
         const colors = super.getHeaderColors();
@@ -126,7 +143,7 @@ extends OperatorBase
 
 
 
-function OpCache_onConnectInput(node)
+function OpCopy_onConnectInput(node)
 {
     const inOutput = node.inputs[0].connectedOutput;
 
@@ -138,7 +155,7 @@ function OpCache_onConnectInput(node)
 
 
 
-function OpCache_onDisconnectInput(node)
+function OpCopy_onDisconnectInput(node)
 {
     node.outputs[0].types = [];
     

@@ -19,6 +19,9 @@ extends OperatorBase
         this.addOutput(new Output([], this.output_genRequest));
 
 
+        this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, false));
+
+
         this.paramNumber = new NumberParam('value', '', false, false, false);
         this.paramColor  = new  ColorParam('value', '', false, false, false);
 

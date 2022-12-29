@@ -32,6 +32,15 @@ function logReqSelect(sel, nInputs, parse)
 
 
 
+function logReqPass(pass, nInputs, parse)
+{
+    parse.log += parse.tab + PASS;
+    parse.log += logReqNodeId(pass);
+    parse.log += ' ' + nInputs;
+}
+
+
+
 function logReqStart(rep, nInputs, parse)
 {
     parse.log += parse.tab + START;
@@ -50,9 +59,18 @@ function logReqRepeat(rep, nInputs, parse)
 
 
 
-function logReqCache(rep, nInputs, parse)
+function logReqCache(cache, nInputs, parse)
 {
     parse.log += parse.tab + CACHE;
-    parse.log += logReqNodeId(rep);
+    parse.log += logReqNodeId(cache);
+    parse.log += ' ' + nInputs;
+}
+
+
+
+function logReqCopy(copy, nInputs, parse)
+{
+    parse.log += parse.tab + COPY;
+    parse.log += logReqNodeId(copy);
     parse.log += ' ' + nInputs;
 }

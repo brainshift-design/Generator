@@ -1,4 +1,4 @@
-class GCache
+class GCopy
 extends GOperator
 {
     input = null;
@@ -7,28 +7,28 @@ extends GOperator
 
     constructor(nodeId, options)
     {
-        super(CACHE, nodeId, options);
+        super(COPY, nodeId, options);
     }
 
 
     
     copy()
     {
-        const cache = new GCache(this.nodeId, this.options);
+        const copy = new GCopy(this.nodeId, this.options);
 
-        cache.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input) cache.input = this.input.copy();
-        if (this.value) cache.value = this.value.copy();
+        if (this.input) copy.input = this.input.copy();
+        if (this.value) copy.value = this.value.copy();
 
-        return cache;
+        return copy;
     }
 
 
 
     eval(parse)
     {
-        if (this.valid)//isCached())
+        if (this.isCached())
             return this;
 
 

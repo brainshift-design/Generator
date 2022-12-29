@@ -59,9 +59,12 @@ extends OperatorBase
 
     updateParams()
     {
-        super.updateParams();
-
         this.paramOperation.enableControlText(true);
         this.paramValue    .enableControlText(false);
+
+        this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.control.showBar   = !this.isUnknown();
+
+        super.updateParams();
     }
 }

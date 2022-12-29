@@ -5242,6 +5242,15 @@ function logReqSelect(sel, nInputs, parse)
 
 
 
+function logReqPass(pass, nInputs, parse)
+{
+    parse.log += parse.tab + PASS;
+    parse.log += logReqNodeId(pass);
+    parse.log += ' ' + nInputs;
+}
+
+
+
 function logReqStart(rep, nInputs, parse)
 {
     parse.log += parse.tab + START;
@@ -5260,10 +5269,19 @@ function logReqRepeat(rep, nInputs, parse)
 
 
 
-function logReqCache(rep, nInputs, parse)
+function logReqCache(cache, nInputs, parse)
 {
     parse.log += parse.tab + CACHE;
-    parse.log += logReqNodeId(rep);
+    parse.log += logReqNodeId(cache);
+    parse.log += ' ' + nInputs;
+}
+
+
+
+function logReqCopy(copy, nInputs, parse)
+{
+    parse.log += parse.tab + COPY;
+    parse.log += logReqNodeId(copy);
     parse.log += ' ' + nInputs;
 }
 
@@ -5670,12 +5688,13 @@ const LIST                = 'LIST';
 
 const ITEMS               = 'ITEMS';
 const SELECT              = 'SEL';
+const PASS                = 'PASS';
 
 const START               = 'STRT';
 const REPEAT              = 'REPT';
 
 const CACHE               = 'CACHE';
-const PASS                = 'PASS';
+const COPY                = 'COPY';
 
 
 const LIST_TYPES =
@@ -5695,11 +5714,12 @@ const FLOW_TYPES =
     ...LIST_TYPES,
     ITEMS,
     SELECT,
+    PASS,
     START,
     REPEAT,
     FOREACH,
     CACHE,
-    PASS
+    COPY
 ];
 
 
@@ -8344,6 +8364,75 @@ extends GOperator
 }
 
 
+class GPass
+extends GOperator
+{
+    input = null;
+
+    condition;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(PASS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const pass = new GPass(this.nodeId, this.options);
+
+        pass.copyBase(this);
+
+        if (this.input    ) pass.input     = this.input    .copy();
+        if (this.condition) pass.condition = this.condition.copy();
+        if (this.value    ) pass.value     = this.value    .copy();
+
+        return pass;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const cond = this.condition.eval(parse).toValue();
+
+
+        this.value = 
+               this.input
+            && cond.value != 0
+            ? this.input.eval(parse).toValue()
+            : null;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'condition', cond);
+        
+        if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
+}
+
+
+
 class GStart
 extends GOperator
 {
@@ -8506,7 +8595,7 @@ extends GOperator
     }
 
 
-// 
+
     eval(parse)
     {
         if (this.valid)//isCached())
@@ -8540,6 +8629,64 @@ extends GOperator
 
 
 
+class GCopy
+extends GOperator
+{
+    input = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(COPY, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCopy(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        if (this.value) copy.value = this.value.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = 
+            this.input
+            ? this.input.eval(parse).toValue()
+            : null;
+
+
+        if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        else            genPushUpdateValue(parse, this.nodeId, '',      NumberValue.NaN);
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
+}
 
 
 
@@ -13389,6 +13536,52 @@ function genParseSelect(parse)
 
 
 
+function genParsePass(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const pass = new GPass(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReqPass(pass, nInputs, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, pass);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        pass.input = genParse(parse);
+
+    pass.condition = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, pass);
+    return pass;
+}
+
+
+
 function genParseStart(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -13484,7 +13677,7 @@ function genParseCache(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const rep = new GCache(nodeId, options);
+    const cache = new GCache(nodeId, options);
 
 
     let nInputs = -1;
@@ -13497,12 +13690,12 @@ function genParseCache(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqCache(rep, nInputs, parse);
+        logReqCache(cache, nInputs, parse);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, rep);
+        genParseNodeEnd(parse, cache);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -13511,14 +13704,58 @@ function genParseCache(parse)
 
 
     if (nInputs == 1)
-        rep.input = genParse(parse);
+        cache.input = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, rep);
-    return rep;
+    genParseNodeEnd(parse, cache);
+    return cache;
+}
+
+
+
+function genParseCopy(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const copy = new GCopy(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReqCopy(copy, nInputs, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, copy);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        copy.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, copy);
+    return copy;
 }
 
 
@@ -14744,9 +14981,11 @@ function genParse(parse, inParam = true)
     else if (parse.next == LIST               ) result = genParseList            (parse);
     else if (parse.next == ITEMS              ) result = genParseItems           (parse);
     else if (parse.next == SELECT             ) result = genParseSelect          (parse);
+    else if (parse.next == PASS               ) result = genParsePass            (parse);
     else if (parse.next == START              ) result = genParseStart           (parse);
     else if (parse.next == REPEAT             ) result = genParseRepeat          (parse);
     else if (parse.next == CACHE              ) result = genParseCache           (parse);
+    else if (parse.next == COPY               ) result = genParseCopy            (parse);
 
     else if (parse.next == NUMBER_VALUE       ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER             ) result = genParseNumber          (parse);
@@ -20231,6 +20470,15 @@ function logReqSelect(sel, nInputs, parse)
 
 
 
+function logReqPass(pass, nInputs, parse)
+{
+    parse.log += parse.tab + PASS;
+    parse.log += logReqNodeId(pass);
+    parse.log += ' ' + nInputs;
+}
+
+
+
 function logReqStart(rep, nInputs, parse)
 {
     parse.log += parse.tab + START;
@@ -20249,10 +20497,19 @@ function logReqRepeat(rep, nInputs, parse)
 
 
 
-function logReqCache(rep, nInputs, parse)
+function logReqCache(cache, nInputs, parse)
 {
     parse.log += parse.tab + CACHE;
-    parse.log += logReqNodeId(rep);
+    parse.log += logReqNodeId(cache);
+    parse.log += ' ' + nInputs;
+}
+
+
+
+function logReqCopy(copy, nInputs, parse)
+{
+    parse.log += parse.tab + COPY;
+    parse.log += logReqNodeId(copy);
     parse.log += ' ' + nInputs;
 }
 
@@ -22283,12 +22540,13 @@ const LIST                = 'LIST';
 
 const ITEMS               = 'ITEMS';
 const SELECT              = 'SEL';
+const PASS                = 'PASS';
 
 const START               = 'STRT';
 const REPEAT              = 'REPT';
 
 const CACHE               = 'CACHE';
-const PASS                = 'PASS';
+const COPY                = 'COPY';
 
 
 const LIST_TYPES =
@@ -22308,11 +22566,12 @@ const FLOW_TYPES =
     ...LIST_TYPES,
     ITEMS,
     SELECT,
+    PASS,
     START,
     REPEAT,
     FOREACH,
     CACHE,
-    PASS
+    COPY
 ];
 
 
@@ -24957,6 +25216,75 @@ extends GOperator
 }
 
 
+class GPass
+extends GOperator
+{
+    input = null;
+
+    condition;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(PASS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const pass = new GPass(this.nodeId, this.options);
+
+        pass.copyBase(this);
+
+        if (this.input    ) pass.input     = this.input    .copy();
+        if (this.condition) pass.condition = this.condition.copy();
+        if (this.value    ) pass.value     = this.value    .copy();
+
+        return pass;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        
+        const cond = this.condition.eval(parse).toValue();
+
+
+        this.value = 
+               this.input
+            && cond.value != 0
+            ? this.input.eval(parse).toValue()
+            : null;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'condition', cond);
+        
+        if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
+}
+
+
+
 class GStart
 extends GOperator
 {
@@ -25119,7 +25447,7 @@ extends GOperator
     }
 
 
-// 
+
     eval(parse)
     {
         if (this.valid)//isCached())
@@ -25153,6 +25481,64 @@ extends GOperator
 
 
 
+class GCopy
+extends GOperator
+{
+    input = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(COPY, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCopy(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) copy.input = this.input.copy();
+        if (this.value) copy.value = this.value.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = 
+            this.input
+            ? this.input.eval(parse).toValue()
+            : null;
+
+
+        if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        else            genPushUpdateValue(parse, this.nodeId, '',      NumberValue.NaN);
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
+}
 
 
 
@@ -29916,10 +30302,12 @@ const iconGenerator        = '<svg width="20" height="10" viewBox="0 0 20 10" fi
 const iconList             = '<svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" fill="white"/><rect y="4" width="9" height="1" fill="white"/><rect y="8" width="9" height="1" fill="white"/></svg>';
 const iconItems            = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="1" transform="matrix(-1 0 0 1 9 1)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 5)" fill="white"/><rect width="9" height="1" transform="matrix(-1 0 0 1 9 9)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 9.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 5.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/></svg>';
 const iconSelect           = '<svg width="15" height="9" viewBox="0 0 15 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H9V1H0V0Z" fill="white"/><path d="M0 4H9V5H0V4Z" fill="white"/><path d="M0 8H9V9H0V8Z" fill="white"/><path d="M13.5 6C12.6716 6 12 5.32843 12 4.5C12 3.67157 12.6716 3 13.5 3C14.3284 3 15 3.67157 15 4.5C15 5.32843 14.3284 6 13.5 6Z" fill="white"/></svg>';
+const iconPass             = '<svg width="19" height="9" viewBox="0 0 19 9" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="5.32888" height="1.33" transform="matrix(-0.707107 0.707107 0.707107 0.707107 17.7916 3.60892)" fill="white"/><rect x="12.0104" y="4" width="5" height="1" fill="white"/><rect x="-0.0471039" y="4" width="4.4986" height="1" fill="white"/><rect width="5.3565" height="1.32888" transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 18.7377 4.55505)" fill="white"/><path d="M7.14408 6.01141V5.90275C7.14621 5.52988 7.17923 5.23265 7.24315 5.01106C7.3092 4.78947 7.40508 4.61049 7.53079 4.47413C7.6565 4.33776 7.80778 4.21418 7.98463 4.10339C8.11673 4.01816 8.23498 3.92974 8.33939 3.83812C8.44379 3.7465 8.52689 3.64529 8.58868 3.53449C8.65047 3.42157 8.68136 3.29586 8.68136 3.15736C8.68136 3.01035 8.64621 2.88144 8.57589 2.77065C8.50558 2.65985 8.41077 2.57462 8.29145 2.51496C8.17426 2.4553 8.04429 2.42547 7.90153 2.42547C7.76304 2.42547 7.632 2.45637 7.50842 2.51816C7.38484 2.57782 7.28364 2.66731 7.2048 2.78663C7.12596 2.90381 7.08335 3.04976 7.07696 3.22448H5.77298C5.78364 2.79834 5.88591 2.44678 6.0798 2.16979C6.27369 1.89067 6.53044 1.68293 6.85004 1.54657C7.16964 1.40807 7.52227 1.33883 7.90792 1.33883C8.33193 1.33883 8.70693 1.40914 9.03293 1.54976C9.35892 1.68826 9.6146 1.88961 9.79997 2.15381C9.98534 2.41802 10.078 2.73655 10.078 3.10942C10.078 3.35871 10.0365 3.5803 9.95338 3.7742C9.87241 3.96596 9.75842 4.13641 9.61141 4.28556C9.46439 4.43258 9.29074 4.56574 9.09045 4.68506C8.92213 4.7852 8.78364 4.88961 8.67497 4.99827C8.56844 5.10694 8.48854 5.23265 8.43527 5.3754C8.38413 5.51816 8.3575 5.69394 8.35537 5.90275V6.01141H7.14408ZM7.77689 8.05687C7.56382 8.05687 7.38165 7.98229 7.23037 7.83315C7.08122 7.68187 7.00771 7.50076 7.00984 7.28982C7.00771 7.08101 7.08122 6.90204 7.23037 6.75289C7.38165 6.60374 7.56382 6.52917 7.77689 6.52917C7.9793 6.52917 8.15721 6.60374 8.31062 6.75289C8.46403 6.90204 8.5418 7.08101 8.54393 7.28982C8.5418 7.43045 8.50452 7.55935 8.43207 7.67654C8.36176 7.7916 8.26908 7.88428 8.15402 7.95459C8.03896 8.02278 7.91325 8.05687 7.77689 8.05687Z" fill="white"/></svg>';
 const iconStart            = '<svg width="15" height="8" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="4.97369" height="1" transform="matrix(-0.707107 0.707107 0.707107 0.707107 13.53 2.86006)" fill="white"/><rect x="5.505" y="3" width="7.495" height="1" fill="white"/><circle cx="1.5" cy="3.5" r="1.5" fill="white"/><rect width="5" height="1" transform="matrix(-0.707107 -0.707107 -0.707107 0.707107 14.2426 3.53554)" fill="white"/></svg>';
 const iconRepeat           = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle r="1.5" transform="matrix(-1 0 0 1 8.5 13.6003)" fill="white"/><path d="M12.996 11.5078C14.0482 10.4921 14.7227 9.16438 14.9093 7.74161C15.0958 6.31883 14.7834 4.88515 14.023 3.67489C13.2626 2.46463 12.0993 1.54937 10.7232 1.0787C9.34705 0.608019 7.83949 0.609769 6.44689 1.08365C5.05429 1.55754 3.85902 2.47553 3.05643 3.6876C2.25383 4.89967 1.89138 6.33413 2.02832 7.75654C2.12729 8.78463 2.48292 9.76246 3.05643 10.6082" stroke="white"/><rect width="4.97369" height="1" transform="matrix(-1 0 0 1 5.00183 10.0282)" fill="white"/><rect width="4.01843" height="1" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 5.00183 11.0282)" fill="white"/></svg>';
 const iconForEach          = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="9" width="9" height="1" fill="white"/><circle cx="1.5" cy="9.5" r="1.5" fill="white"/><circle cx="1.5" cy="5.5" r="1.5" fill="white"/><circle cx="1.5" cy="1.5" r="1.5" fill="white"/></svg>';
 const iconCache            = '<svg width="15" height="11" viewBox="0 0 15 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.30351 1C1.68386 1.65376 1.20533 2.44219 0.906274 3.31653C0.435594 4.69266 0.437344 6.20022 0.911224 7.59282C1.21856 8.49597 1.71269 9.31613 2.35268 10" stroke="white"/><path d="M12.7415 1C13.3612 1.65376 13.8397 2.44219 14.1387 3.31653C14.6094 4.69266 14.6077 6.20022 14.1338 7.59282C13.8265 8.49597 13.3323 9.31613 12.6923 10" stroke="white"/><circle r="1.5" transform="matrix(-1 0 0 1 7.5 5.5)" fill="white"/></svg>';
+const iconCopy             = '<svg width="15" height="8" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg"><circle r="1.5" transform="matrix(-1 0 0 1 13.5 1.5)" fill="white"/><circle r="1.5" transform="matrix(-1 0 0 1 13.5 6.5)" fill="white"/><path d="M0 1H9V2H0V1Z" fill="white"/></svg>';
 
 const iconNumber           = '<svg width="18" height="7" viewBox="0 0 18 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.91122 0.0931559V6.90684H1.96124V0.958175H1.91528L0 2.06274V1.22433L1.96124 0.0931559H2.91122Z" fill="white"/><path d="M5.16742 6.90684V6.30798L7.75687 3.84601C8.06076 3.55767 8.31102 3.30703 8.50766 3.09411C8.7043 2.87896 8.84986 2.67712 8.94434 2.48859C9.04138 2.29785 9.0899 2.09823 9.0899 1.88973C9.0899 1.65019 9.02351 1.44281 8.89072 1.26759C8.76048 1.09236 8.58172 0.957066 8.35444 0.861692C8.12716 0.766318 7.87179 0.718631 7.58833 0.718631C7.28699 0.718631 7.02396 0.772972 6.79923 0.881654C6.57706 0.988118 6.40469 1.13783 6.28211 1.3308C6.16208 1.52376 6.10207 1.75 6.10207 2.00951H5.19806C5.19806 1.61027 5.30404 1.25982 5.516 0.958175C5.72796 0.656527 6.01652 0.421419 6.3817 0.252852C6.74944 0.0842839 7.16186 0 7.61897 0C8.07864 0 8.48595 0.0842839 8.84092 0.252852C9.19588 0.421419 9.47424 0.648764 9.67598 0.934886C9.87772 1.22101 9.97859 1.53929 9.97859 1.88973C9.97859 2.14037 9.92624 2.38546 9.82154 2.625C9.71939 2.86233 9.54063 3.12738 9.28526 3.42015C9.03245 3.71071 8.68131 4.06559 8.23186 4.48479L6.46981 6.12167V6.1749H10.1165V6.90684H5.16742Z" fill="white"/><path d="M14.5755 6.95327C14.0766 6.95327 13.6319 6.87886 13.2413 6.73005C12.8533 6.58124 12.5447 6.37444 12.3154 6.10965C12.0886 5.84266 11.9652 5.53301 11.945 5.18068H12.8974C12.9176 5.39733 13.0032 5.58443 13.1544 5.742C13.3056 5.89737 13.5034 6.01773 13.7478 6.10308C13.9922 6.18843 14.263 6.2311 14.5603 6.2311C14.8929 6.2311 15.1877 6.18077 15.4447 6.0801C15.7017 5.97944 15.9033 5.83938 16.0494 5.65993C16.1956 5.48049 16.2686 5.27259 16.2686 5.03624C16.2686 4.78896 16.1981 4.57121 16.057 4.38301C15.9159 4.19262 15.7093 4.04381 15.4372 3.93658C15.1651 3.82935 14.8325 3.77574 14.4394 3.77574H13.8196V3.05357H14.4394C14.7468 3.05357 15.0164 3.00543 15.2482 2.90914C15.4825 2.81285 15.6652 2.67717 15.7962 2.5021C15.9298 2.32703 15.9965 2.12132 15.9965 1.88497C15.9965 1.65738 15.9386 1.45933 15.8227 1.29083C15.7068 1.12232 15.543 0.991021 15.3313 0.89692C15.1222 0.80282 14.8753 0.75577 14.5906 0.75577C14.3235 0.75577 14.0715 0.798443 13.8347 0.88379C13.6004 0.966949 13.4089 1.0884 13.2602 1.24816C13.1116 1.40572 13.0309 1.59611 13.0184 1.81932H12.1113C12.1264 1.46699 12.2486 1.15843 12.4779 0.893638C12.7072 0.626655 13.007 0.418759 13.3774 0.269949C13.7503 0.121139 14.1597 0.0467339 14.6057 0.0467339C15.0844 0.0467339 15.4951 0.130986 15.8378 0.299492C16.1805 0.465809 16.4438 0.685741 16.6277 0.959289C16.8116 1.23284 16.9036 1.52827 16.9036 1.84558C16.9036 2.22417 16.7889 2.54696 16.5597 2.81394C16.3329 3.08093 16.0242 3.26584 15.6337 3.3687V3.42122C16.1225 3.49125 16.5042 3.67179 16.7789 3.96284C17.0535 4.25171 17.1908 4.60951 17.1908 5.03624C17.1908 5.4017 17.0762 5.72996 16.8469 6.02102C16.6201 6.30988 16.3102 6.53748 15.9172 6.70379C15.5241 6.87011 15.0769 6.95327 14.5755 6.95327Z" fill="white"/></svg>';
 const iconRound            = '<svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.01527 10.4817C2.54199 10.4817 0.537004 8.25129 0.537004 5.5C0.537004 2.74871 2.54199 0.518341 5.01527 0.518341" stroke="white"/><path d="M11 10.4817C13.5214 10.4817 15.5654 8.25129 15.5654 5.5C15.5654 2.74871 13.5214 0.518341 11 0.518341" stroke="white"/></svg>';
@@ -30129,11 +30517,13 @@ function initGeneratorMenus()
         new MenuItem('',       {separator: true}),
         new MenuItem('Items',  {icon: iconItems,  callback: e => actionManager.do(getCreateNodeAction(ITEMS,  btnNumber.div, e.shiftKey))}),
         new MenuItem('Select', {icon: iconSelect, callback: e => actionManager.do(getCreateNodeAction(SELECT, btnNumber.div, e.shiftKey))}),
+        new MenuItem('Pass',   {icon: iconPass,   callback: e => actionManager.do(getCreateNodeAction(PASS,   btnNumber.div, e.shiftKey))}),
         new MenuItem('',       {separator: true}),
         //new MenuItem('Start',{icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,  btnNumber.div, e.shiftKey))}),
         new MenuItem('Repeat', {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT, btnNumber.div, e.shiftKey))}),
         new MenuItem('',       {separator: true}),
-        new MenuItem('Cache',  {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,  btnNumber.div, e.shiftKey))})]);
+        new MenuItem('Cache',  {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Copy',   {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,   btnNumber.div, e.shiftKey))})]);
     
     
     menuSimpleMath = new Menu('Variable math nodes', true, false);
@@ -37608,9 +37998,11 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case LIST:                node = new OpList();             break;
         case ITEMS:               node = new OpItems();            break;
         case SELECT:              node = new OpSelect();           break;
+        case PASS:                node = new OpPass();             break;
         case START:               node = new OpStart();            break;
         case REPEAT:              node = new OpRepeat();           break;
         case CACHE:               node = new OpCache();            break;
+        case COPY:                node = new OpCopy();             break;
  
         case NUMBER:              node = new OpNumber();           break;
         case NUMBER_ROUND:        node = new OpRound();            break;
@@ -39802,6 +40194,25 @@ class Operator
         this.updateParams();
         this.updateDisabled();
 
+        
+        if (this.params.length > 0)
+        {
+            this.div   .style.borderBottomLeftRadius  = '0px';        
+            this.inner .style.borderBottomLeftRadius  = '0px';        
+            this.header.style.borderBottomLeftRadius  = '0px';        
+
+            this.div   .style.borderBottomRightRadius = '0px';        
+            this.inner .style.borderBottomRightRadius = '0px';        
+            this.header.style.borderBottomRightRadius = '0px';        
+        }
+        else
+        {
+            this.div   .style.borderRadius = '4px';        
+            this.inner .style.borderRadius = '4px';        
+            this.header.style.borderRadius = '4px';        
+        }
+
+
         graphView.updateNodeTransform(this);
     }
 
@@ -41603,6 +42014,178 @@ extends OperatorBase
 }
 
 
+class   OpPass
+extends OperatorBase
+{
+    paramCondition;
+
+    paramNumber;
+    paramColor;
+
+    headerColor = null;
+
+
+
+    constructor()
+    {
+        super(PASS, 'pass', 90);
+
+
+        this.addInput (new Input(ALL_TYPES));
+        this.addOutput(new Output([], this.output_genRequest));
+
+
+        this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, false));
+
+
+        this.paramNumber = new NumberParam('value', '', false, false, false);
+        this.paramColor  = new  ColorParam('value', '', false, false, false);
+
+        
+        this.inputs[0].addEventListener('connect',    () => OpPass_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpPass_onDisconnectInput(this));
+    }
+    
+    
+
+    canAutoConnectFrom(output)
+    {
+        return true;
+    }
+
+    
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+        
+        request.push(...this.node.paramCondition.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    // updateValues(updateParamId, paramIds, values) // virtual
+    // {
+    //     const val = values[paramIds.findIndex(id => id == 'value')];
+
+    //     this.headerColor =
+    //         val && val.type == COLOR_VALUE
+    //         ? rgb_a(val.toRgb(), 1)
+    //         : null;
+
+    //     if (this.params.length > 0) 
+    //     {
+    //         this.params[0].setValue(val);
+    //         this.params[0].enableControlText(false);
+    //     }
+    // }
+
+
+
+    // updateNode()
+    // {
+    //     super.updateNode();
+
+
+    //     if (this.params.length > 0)
+    //     {
+    //         this.div   .style.borderBottomLeftRadius  = '0px';        
+    //         this.inner .style.borderBottomLeftRadius  = '0px';        
+    //         this.header.style.borderBottomLeftRadius  = '0px';        
+
+    //         this.div   .style.borderBottomRightRadius = '0px';        
+    //         this.inner .style.borderBottomRightRadius = '0px';        
+    //         this.header.style.borderBottomRightRadius = '0px';        
+    //     }
+    //     else
+    //     {
+    //         this.div   .style.borderRadius = '4px';        
+    //         this.inner .style.borderRadius = '4px';        
+    //         this.header.style.borderRadius = '4px';        
+    //     }
+    // }
+
+
+    
+    // getHeaderColors()
+    // {
+    //     const colors = super.getHeaderColors();
+
+    //     const type = 
+    //         this.inputs[0].connected 
+    //         ? this.inputs[0].connectedOutput.node.type 
+    //         : this.type;
+
+    //     colors.back = 
+    //         this.headerColor
+    //         ? this.headerColor
+    //         : this.inert
+    //         ? rgb_a(rgbDocumentBody, 0.95)
+    //         : rgb_a(rgbHeaderFromType(type, this.active), 0.95);
+
+    //     // colors.border = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
+
+    //     colors.text    = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+    //     colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.8);
+    //     colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.7);
+    //     colors.wire    = rgbHeaderFromType(type, true);
+
+    //     return colors;
+    // }
+
+
+
+    // paramsToJson(nTab = 0)
+    // {
+    //     return '';
+    // }
+}
+
+
+
+function OpPass_onConnectInput(node)
+{
+    const inOutput = node.inputs[0].connectedOutput;
+
+    node.outputs[0].types = [...inOutput.types];
+
+         if (inOutput.supportsTypes(NUMBER_TYPES)) node.addParam(node.paramNumber);
+    else if (inOutput.supportsTypes( COLOR_TYPES)) node.addParam(node.paramColor);
+}
+
+
+
+function OpPass_onDisconnectInput(node)
+{
+    node.outputs[0].types = [];
+    
+    node.removeAllParams();
+}
+
+
 class   OpStart
 extends OperatorBase
 {
@@ -41834,31 +42417,6 @@ extends OperatorBase
 
 
 
-    updateNode()
-    {
-        super.updateNode();
-
-
-        if (this.params.length > 0)
-        {
-            this.div   .style.borderBottomLeftRadius  = '0px';        
-            this.inner .style.borderBottomLeftRadius  = '0px';        
-            this.header.style.borderBottomLeftRadius  = '0px';        
-
-            this.div   .style.borderBottomRightRadius = '0px';        
-            this.inner .style.borderBottomRightRadius = '0px';        
-            this.header.style.borderBottomRightRadius = '0px';        
-        }
-        else
-        {
-            this.div   .style.borderRadius = '4px';        
-            this.inner .style.borderRadius = '4px';        
-            this.header.style.borderRadius = '4px';        
-        }
-    }
-
-
-    
     getHeaderColors()
     {
         const colors = super.getHeaderColors();
@@ -41916,36 +42474,42 @@ function OpCache_onDisconnectInput(node)
 }
 
 
-class   OpPass
+class   OpCopy
 extends OperatorBase
 {
-    paramCondition;
-
     paramNumber;
     paramColor;
 
     headerColor = null;
 
 
-
     constructor()
     {
-        super(PASS, 'pass', 90);
+        super(COPY, 'copy', 90);
 
+        //this.cached = true;
+        
 
         this.addInput (new Input(ALL_TYPES));
         this.addOutput(new Output([], this.output_genRequest));
 
 
-        this.paramNumber = new NumberParam('value', '', false, false, false);
-        this.paramColor  = new  ColorParam('value', '', false, false, false);
+        this.paramNumber = new NumberParam('value', '', false, false, true);
+        this.paramColor  = new  ColorParam('value', '', false, false, true);
 
         
-        this.inputs[0].addEventListener('connect',    () => OpPass_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpPass_onDisconnectInput(this));
+        this.inputs[0].addEventListener('connect',    () => OpCopy_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpCopy_onDisconnectInput(this));
     }
     
     
+
+    // isCached()
+    // {
+    //     return true;
+    // }
+
+
 
     canAutoConnectFrom(output)
     {
@@ -41973,10 +42537,8 @@ extends OperatorBase
 
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
+
         
-        request.push(...this.node.paramCondition.genRequest(gen));
-
-
         gen.scope.pop();
         pushUnique(gen.passedNodes, this.node);
 
@@ -41985,87 +42547,79 @@ extends OperatorBase
 
 
 
-    // updateValues(updateParamId, paramIds, values) // virtual
-    // {
-    //     const val = values[paramIds.findIndex(id => id == 'value')];
+    updateValues(updateParamId, paramIds, values) // virtual
+    {
+        const val = values[paramIds.findIndex(id => id == 'value')];
 
-    //     this.headerColor =
-    //         val && val.type == COLOR_VALUE
-    //         ? rgb_a(val.toRgb(), 1)
-    //         : null;
+        this.headerColor =
+            val && val.type == COLOR_VALUE
+            ? rgb_a(val.toRgb(), 1)
+            : null;
 
-    //     if (this.params.length > 0) 
-    //     {
-    //         this.params[0].setValue(val);
-    //         this.params[0].enableControlText(false);
-    //     }
-    // }
-
-
-
-    // updateNode()
-    // {
-    //     super.updateNode();
-
-
-    //     if (this.params.length > 0)
-    //     {
-    //         this.div   .style.borderBottomLeftRadius  = '0px';        
-    //         this.inner .style.borderBottomLeftRadius  = '0px';        
-    //         this.header.style.borderBottomLeftRadius  = '0px';        
-
-    //         this.div   .style.borderBottomRightRadius = '0px';        
-    //         this.inner .style.borderBottomRightRadius = '0px';        
-    //         this.header.style.borderBottomRightRadius = '0px';        
-    //     }
-    //     else
-    //     {
-    //         this.div   .style.borderRadius = '4px';        
-    //         this.inner .style.borderRadius = '4px';        
-    //         this.header.style.borderRadius = '4px';        
-    //     }
-    // }
-
-
-    
-    // getHeaderColors()
-    // {
-    //     const colors = super.getHeaderColors();
-
-    //     const type = 
-    //         this.inputs[0].connected 
-    //         ? this.inputs[0].connectedOutput.node.type 
-    //         : this.type;
-
-    //     colors.back = 
-    //         this.headerColor
-    //         ? this.headerColor
-    //         : this.inert
-    //         ? rgb_a(rgbDocumentBody, 0.95)
-    //         : rgb_a(rgbHeaderFromType(type, this.active), 0.95);
-
-    //     // colors.border = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
-
-    //     colors.text    = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
-
-    //     colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.8);
-    //     colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.7);
-    //     colors.wire    = rgbHeaderFromType(type, true);
-
-    //     return colors;
-    // }
+        if (this.params.length > 0) 
+        {
+            this.params[0].setValue(val);
+            this.params[0].enableControlText(false);
+        }
+    }
 
 
 
-    // paramsToJson(nTab = 0)
-    // {
-    //     return '';
-    // }
+    updateParams()
+    {
+        const paramValue = this.params.find(p => p.id == 'value');
+
+        if (paramValue)
+        {
+            paramValue.enableControlText(true);
+
+            paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+            paramValue.control.showBar   = !this.isUnknown();
+        }
+
+        super.updateParams();
+    }
+
+
+
+    getHeaderColors()
+    {
+        const colors = super.getHeaderColors();
+
+        const type = 
+            this.inputs[0].connected 
+            ? this.inputs[0].connectedOutput.node.type 
+            : this.type;
+
+        colors.back = 
+            this.headerColor
+            ? this.headerColor
+            : this.inert
+            ? rgb_a(rgbDocumentBody, 0.95)
+            : rgb_a(rgbHeaderFromType(type, this.active), 0.95);
+
+        // colors.border = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
+
+        colors.text    = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+
+        colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.8);
+        colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.7);
+        colors.wire    = rgbHeaderFromType(type, true);
+
+        return colors;
+    }
+
+
+
+    paramsToJson(nTab = 0)
+    {
+        return '';
+    }
 }
 
 
 
-function OpPass_onConnectInput(node)
+function OpCopy_onConnectInput(node)
 {
     const inOutput = node.inputs[0].connectedOutput;
 
@@ -42077,7 +42631,7 @@ function OpPass_onConnectInput(node)
 
 
 
-function OpPass_onDisconnectInput(node)
+function OpCopy_onDisconnectInput(node)
 {
     node.outputs[0].types = [];
     
@@ -42469,10 +43023,10 @@ extends OperatorBase
 
 
         this.addNewInput();
-        //this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
         this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, false, BOOLEAN_OPS.map(s => s[1]), 1));
-        this.addParam(this.paramValue     = new NumberParam('value', '', false, false, true));
+        this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
     }
     
     
@@ -42492,19 +43046,19 @@ extends OperatorBase
 
 
 
-    genRequest(gen)
+    output_genRequest(gen)
     {
-        // 'this' is the node
+        // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.id, 
+            nodeId:  this.node.id, 
             paramId: '' });
 
-        const [request, ignore] = this.genRequestStart(gen);
+        const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
 
 
-        const connectedInputs = this.inputs.filter(i => i.connected && !i.param);
+        const connectedInputs = this.node.inputs.filter(i => i.connected && !i.param);
 
 
         request.push(connectedInputs.length); // utility values like param count are stored as numbers
@@ -42513,11 +43067,11 @@ extends OperatorBase
             request.push(...pushInputOrParam(input, gen));
 
         
-        request.push(...this.paramOperation.genRequest(gen));
+        request.push(...this.node.paramOperation.genRequest(gen));
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
+        pushUnique(gen.passedNodes, this.node);
 
         return request;
     }
@@ -42526,10 +43080,13 @@ extends OperatorBase
 
     updateParams()
     {
-        super.updateParams();
-        
         this.paramOperation.enableControlText(true);
         this.paramValue    .enableControlText(false);
+
+        this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.control.showBar   = !this.isUnknown();
+
+        super.updateParams();
     }
 }
 
@@ -42610,10 +43167,13 @@ extends OperatorBase
 
     updateParams()
     {
-        super.updateParams();
-
         this.paramOperation.enableControlText(true);
         this.paramValue    .enableControlText(false);
+
+        this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.control.showBar   = !this.isUnknown();
+
+        super.updateParams();
     }
 }
 

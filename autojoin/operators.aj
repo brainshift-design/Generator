@@ -29,10 +29,11 @@
 ../operators/flow/OpList.js
 ../operators/flow/OpItems.js
 ../operators/flow/OpSelect.js
+../operators/flow/OpPass.js
 ../operators/flow/OpStart.js
 ../operators/flow/OpRepeat.js
 ../operators/flow/OpCache.js
-../operators/flow/OpPass.js
+../operators/flow/OpCopy.js
 
 ../operators/number/OpNumber.js
 ../operators/number/OpRound.js

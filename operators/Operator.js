@@ -681,6 +681,25 @@ class Operator
         this.updateParams();
         this.updateDisabled();
 
+        
+        if (this.params.length > 0)
+        {
+            this.div   .style.borderBottomLeftRadius  = '0px';        
+            this.inner .style.borderBottomLeftRadius  = '0px';        
+            this.header.style.borderBottomLeftRadius  = '0px';        
+
+            this.div   .style.borderBottomRightRadius = '0px';        
+            this.inner .style.borderBottomRightRadius = '0px';        
+            this.header.style.borderBottomRightRadius = '0px';        
+        }
+        else
+        {
+            this.div   .style.borderRadius = '4px';        
+            this.inner .style.borderRadius = '4px';        
+            this.header.style.borderRadius = '4px';        
+        }
+
+
         graphView.updateNodeTransform(this);
     }
 

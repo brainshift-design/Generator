@@ -197,12 +197,13 @@ const LIST                = 'LIST';
 
 const ITEMS               = 'ITEMS';
 const SELECT              = 'SEL';
+const PASS                = 'PASS';
 
 const START               = 'STRT';
 const REPEAT              = 'REPT';
 
 const CACHE               = 'CACHE';
-const PASS                = 'PASS';
+const COPY                = 'COPY';
 
 
 const LIST_TYPES =
@@ -222,11 +223,12 @@ const FLOW_TYPES =
     ...LIST_TYPES,
     ITEMS,
     SELECT,
+    PASS,
     START,
     REPEAT,
     FOREACH,
     CACHE,
-    PASS
+    COPY
 ];
 
 
