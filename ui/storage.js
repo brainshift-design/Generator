@@ -32,12 +32,11 @@ function uiReturnFigGetLocalData(msg)
 {
     switch (msg.key)
     {
-        case 'autoConnectNewNodes':
-        case 'includeLxxColorSpaces':
-
         case 'dataMode':
         case 'debugMode':
 
+        case 'autoConnectNewNodes':
+        case 'includeLxxColorSpaces':
         case 'showNodeId':       
         //case 'showWires':        
 

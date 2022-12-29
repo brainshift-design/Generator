@@ -1,11 +1,10 @@
 const settings =
 {
-    autoConnectNewNodes:   true,
-    includeLxxColorSpaces: false,
-
     dataMode:              false,
     debugMode:             false,
 
+    autoConnectNewNodes:   true,
+    includeLxxColorSpaces: false,
     showNodeId:            false, // instead of name
     
     logMessages:           false,
@@ -28,12 +27,11 @@ function updateSetting(settingName, value)
 {
     switch (settingName)
     {
-        case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
-        case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
-
         case 'dataMode':              settings.dataMode              = value;  break;
         case 'debugMode':             settings.debugMode             = value;  break;
 
+        case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
+        case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
         case 'showNodeId':            settings.showNodeId            = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
@@ -56,12 +54,11 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 {
     switch (settingName)
     {
-        case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
-        case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
-
         case 'dataMode':              updateSettingAndMenu_(valid, settingName, value, menuItemDataMode);               break;
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
+        case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
+        case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
@@ -96,12 +93,11 @@ function updateSettingAndMenu_(valid, setting, value, menu)
 
 function updateSettingsMenus()
 {
-    menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
-    menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
-
     menuItemDataMode             .setVisible(settings.dataMode             );
     menuItemDebug                .setVisible(settings.debugMode            );
 
+    menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
+    menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
@@ -131,12 +127,11 @@ function updateMenuItemIncludeLxxColorSpace()
 
 function loadLocalSettings()
 {
-    uiGetLocalData('autoConnectNewNodes'  );
-    uiGetLocalData('includeLxxColorSpaces');
-
     uiGetLocalData('dataMode'             );
     uiGetLocalData('debugMode'            );
 
+    uiGetLocalData('autoConnectNewNodes'  );
+    uiGetLocalData('includeLxxColorSpaces');
     uiGetLocalData('showNodeId'           );
     
     uiGetLocalData('logMessages'          );

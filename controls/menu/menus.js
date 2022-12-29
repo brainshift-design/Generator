@@ -102,14 +102,14 @@ var menuConnDataConns;
 
 var menuItemAutoConnectNewNodes;
 var menuItemIncludeLxxColorSpaces;
+var menuItemShowNodeId;
+//var menuItemShowWires;
 
 var menuItemDebug;
 var menuItemDebugLog;
 
 var menuItemHelp;
 
-var menuItemShowNodeId;
-var menuItemShowWires;
 
 var menuItemDataMode;
 
