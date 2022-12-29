@@ -298,13 +298,19 @@ extends Parameter
         }
 
 
-        //this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
-        this.input.colorLight  = 
-        this.input.colorDark   = rgb_a(rgbaText, 0.2);
+        if (this.input)
+        {
+            //this.input.wireColor   = !rgbaIsNaN(rgbaVal) ? rgbaVal : noColor;
+            this.input.colorLight  = 
+            this.input.colorDark   = rgb_a(rgbaText, 0.2);
+        }
 
-        //this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
-        this.output.colorLight =
-        this.output.colorDark  = rgb_a(rgbaText, 0.2);
+        if (this.output)
+        {
+            //this.output.wireColor  = !rgbaIsNaN(rgbaVal) ? rgbaVal : noColor;
+            this.output.colorLight =
+            this.output.colorDark  = rgb_a(rgbaText, 0.2);
+        }
 
 
         this.checkers.style.background = 

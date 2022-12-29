@@ -151,6 +151,29 @@ extends Parameter
         this.updateWarningOverlay();
 
 
+        const noColor = 
+            isDarkMode()
+            ? rgbNoColorDark
+            : rgbNoColorLight;
+
+        const rgbVal   = this.value.toRgb();
+        const rgbaText = getTextColorFromBackColor(rgbVal, 1);
+
+        if (this.input)
+        {
+            this.input.colorLight  = 
+            this.input.colorDark   = rgb_a(rgbaText, 0.2);
+            this.input.wireColor   = !rgbIsNaN(rgbVal) ? rgbVal : noColor;
+        }
+
+        if (this.output)
+        {
+            this.output.colorLight =
+            this.output.colorDark  = rgb_a(rgbaText, 0.2);
+            this.output.wireColor  = !rgbIsNaN(rgbVal) ? rgbVal : noColor;
+        }
+
+
         this.checkers.style.background = 
             isDarkMode()
             ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
