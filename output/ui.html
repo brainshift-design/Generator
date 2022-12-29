@@ -5347,6 +5347,15 @@ function logReqInterpolate(lerp, nInputs, parse)
 }
 
 
+
+function logReqBoolean(bool, nInputs, parse)
+{
+    parse.log += parse.tab + NUMBER_BOOLEAN;
+    parse.log += logReqNodeId(bool);
+    parse.log += ' ' + nInputs;
+}
+
+
 function logReqColorValue(val, parse)
 {
     parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
@@ -5882,6 +5891,40 @@ const MATH_OPS =
     [NUMBER_MULTIPLY, '×' ],
     [NUMBER_MODULO,   '%' ],
     [NUMBER_EXPONENT, 'eˣ'] 
+];
+
+
+
+const BOOLEAN_NOT = 0;
+const BOOLEAN_AND = 1;
+const BOOLEAN_OR  = 2;
+const BOOLEAN_XOR = 3;
+
+const BOOLEAN_OPS = 
+[   
+    [BOOLEAN_NOT, 'not'],
+    [BOOLEAN_AND, 'and'],
+    [BOOLEAN_OR,  'or' ],
+    [BOOLEAN_XOR, 'xor'] 
+];
+
+
+
+const CONDITION_EQUAL            = 0;
+const CONDITION_NOT_EQUAL        = 1;
+const CONDITION_LESS             = 2;
+const CONDITION_LESS_OR_EQUAL    = 3;
+const CONDITION_GREATER          = 4;
+const CONDITION_GREATER_OR_EQUAL = 5;
+
+const CONDITION_OPS = 
+[   
+    [CONDITION_EQUAL,            '='],
+    [CONDITION_NOT_EQUAL,        '≠'],
+    [CONDITION_LESS,             '<'],
+    [CONDITION_LESS_OR_EQUAL,    '≤'],
+    [CONDITION_GREATER,          '>'],
+    [CONDITION_GREATER_OR_EQUAL, '≥'] 
 ];
 
 
@@ -8515,479 +8558,6 @@ extends GOperator
 }
 
 
-class GNumber
-extends GNumberType
-{
-    input = null;
-    
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const num = new GNumber(this.nodeId, this.options);
-        
-        num.copyBase(this);
-
-        if (this.input) 
-            num.input = this.input.copy();
-        
-        num.value = this.value;
-
-        return num;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        if (this.input)
-            this.value = this.input.eval(parse).toValue();
-        else if (this.value)
-            this.value.eval(parse);
-        else
-            this.value = NumberValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        
-        this.validate();
-
-        return this;
-    }
-
-
-
-    isValid()
-    {
-        return !isNaN(this.value)
-            && !isNaN(this.decimals);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
-
-
-class GRound
-extends GNumberType
-{
-    input = null;
-
-    type;
-    decimals;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_ROUND, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const round = new GRound(this.nodeId, this.options);
-
-        round.copyBase(this);
-
-        if (this.input) 
-            round.input = this.input.copy();
-
-        round.type     = this.type    .copy();
-        round.decimals = this.decimals.copy();
-
-        return round;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = new NumberValue(0);
-
-        
-        const type = this.type    .eval(parse).toValue();
-        const dec  = this.decimals.eval(parse).toValue();
-
-
-        if (this.input)
-        {
-            this.value = this.input.eval(parse).toValue();
-
-            console.assert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must belong to NUMBER_VALUE');
-
-            switch (type.value)
-            {
-                case 0: this.value.value = floorTo(this.value.value, dec.value); break;
-                case 1: this.value.value = roundTo(this.value.value, dec.value); break;
-                case 2: this.value.value =  ceilTo(this.value.value, dec.value); break;
-            }
-
-            this.value.decimals = dec.value;
-        }
-        else
-            this.value = NumberValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'type',     type);
-        genPushUpdateValue(parse, this.nodeId, 'decimals', dec );
-
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
-
-
-
-class GLimits
-extends GNumberType
-{
-    input = null;
-
-    min;
-    max;
-
-    //minMaxPriority = -1; 
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_LIMITS, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const lim = new GLimits(this.nodeId, this.options);
-
-        lim.copyBase(this);
-
-        if (this.input) 
-            lim.input = this.input.copy();
-
-        lim.min = this.min.copy();
-        lim.max = this.max.copy();
-
-        //lim.minMaxPriority = this.minMaxPriority;
-
-        return lim;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = new NumberValue(0);
-
-        
-        const min = this.min.eval(parse).toValue();
-        const max = this.max.eval(parse).toValue();
-
-
-        if (this.input)
-        {
-            this.value = this.input.eval(parse).toValue();
-
-            console.assert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must belong to NUMBER_VALUE');
-
-            this.value.value = Math.min(Math.max(
-                min.value,
-                this.value.value),
-                max.value);
-        }
-        else
-            this.value = NumberValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'min',   min);
-        genPushUpdateValue(parse, this.nodeId, 'max',   max);
-
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
-
-
-
-class GSeries
-extends GNumberType
-{
-    start;
-    step;
-
-    current;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_SERIES, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const series = new GSeries(this.nodeId, this.options);
-
-        series.copyBase(this);
-
-        if (this.start  ) series.start   = this.start  .copy();
-        if (this.step   ) series.step    = this.step   .copy();
-
-        if (this.current) series.current = this.current.copy();
-
-        return series;
-    }
-
-
-
-    eval(parse)
-    {
-        //logString('GSeries.eval()');
-
-        if (!this.valid)
-        {
-            this.start.eval(parse);
-            this.step .eval(parse);
-        }
-
-
-        const start = this.start.toValue();
-        const step  = this.step .toValue();
-    
-
-        if (!this.valid)
-            this.current = start.copy();
-
-        
-        this.value = new NumberValue(
-            this.current.value,
-            Math.max(start.decimals, step.decimals));
-
-        this.current.value += step.value;
-
-
-        if (!this.valid)
-        {
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'step',  step );
-        }
-        
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GRandom
-extends GNumberType
-{
-    seed;
-    min;
-    max;
-
-    random = null;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_RANDOM, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const rnd = new GRandom(this.nodeId, this.options);
-
-        rnd.copyBase(this);
-
-        if (this.seed  ) rnd.seed   = this.seed  .copy();
-        if (this.min   ) rnd.min    = this.min   .copy();
-        if (this.max   ) rnd.max    = this.max   .copy();
-
-        if (this.random) rnd.random = this.random.copy();
-
-        return rnd;
-    }
-
-
-
-    eval(parse)
-    {
-        //logString('GRandom.eval()');
-
-        if (!this.valid)
-        {
-            this.seed.eval(parse);
-            this.min .eval(parse);
-            this.max .eval(parse);
-        }
-
-
-        const seed = this.seed.toValue();
-        const min  = this.min .toValue();
-        const max  = this.max .toValue();
-    
-
-        if (!this.valid)
-            this.random = new Random(seed.value);
-
-        
-        this.value = new NumberValue(
-            min.value + this.random.next() * (max.value - min.value),
-            Math.max(min.decimals, max.decimals));
-
-
-        if (!this.valid)
-        {
-            genPushUpdateValue(parse, this.nodeId, 'seed', seed);
-            genPushUpdateValue(parse, this.nodeId, 'min',  min );
-            genPushUpdateValue(parse, this.nodeId, 'max',  max );
-        }
-        
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GInterpolate
-extends GNumberType
-{
-    input0 = null;
-    input1 = null;
-
-    amount;
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_INTERPOLATE, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const lerp = new GInterpolate(this.nodeId, this.options);
-
-        lerp.copyBase(this);
-
-        if (this.input0) lerp.input0 = this.input0.copy();
-        if (this.input1) lerp.input1 = this.input1.copy();
-
-        lerp.amount = this.amount.copy();
-
-        return lerp;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const amount = this.amount.eval(parse).toValue();
-
-
-        if (   this.input0 
-            && this.input1)
-        {
-            const val0 = this.input0.eval(parse).toValue();
-            const val1 = this.input1.eval(parse).toValue();
-
-            const maxDec = Math.max(val0.decimals, val1.decimals);
-
-            this.value = new NumberValue(
-                floorTo(val0.value + amount.value * (val1.value - val0.value) / 100, maxDec),
-                maxDec);
-        }
-        else if (this.input0)
-            this.value = this.input0.eval(parse).toValue();
-
-        else if (this.input1) 
-            this.value = this.input1.eval(parse).toValue();
-
-        else                  
-            this.value = NumberValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-
-
-
-
-
-
 class GArithmetic
 extends GNumberType
 {
@@ -9813,6 +9383,653 @@ function evalVarExponentInputs(inputs, parse)
 
     return value;
 }
+
+
+class GNumber
+extends GNumberType
+{
+    input = null;
+    
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const num = new GNumber(this.nodeId, this.options);
+        
+        num.copyBase(this);
+
+        if (this.input) 
+            num.input = this.input.copy();
+        
+        num.value = this.value;
+
+        return num;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.input)
+            this.value = this.input.eval(parse).toValue();
+        else if (this.value)
+            this.value.eval(parse);
+        else
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.value)
+            && !isNaN(this.decimals);
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+class GRound
+extends GNumberType
+{
+    input = null;
+
+    type;
+    decimals;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_ROUND, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const round = new GRound(this.nodeId, this.options);
+
+        round.copyBase(this);
+
+        if (this.input) 
+            round.input = this.input.copy();
+
+        round.type     = this.type    .copy();
+        round.decimals = this.decimals.copy();
+
+        return round;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = new NumberValue(0);
+
+        
+        const type = this.type    .eval(parse).toValue();
+        const dec  = this.decimals.eval(parse).toValue();
+
+
+        if (this.input)
+        {
+            this.value = this.input.eval(parse).toValue();
+
+            console.assert(
+                this.value.type == NUMBER_VALUE, 
+                'this.value.type must belong to NUMBER_VALUE');
+
+            switch (type.value)
+            {
+                case 0: this.value.value = floorTo(this.value.value, dec.value); break;
+                case 1: this.value.value = roundTo(this.value.value, dec.value); break;
+                case 2: this.value.value =  ceilTo(this.value.value, dec.value); break;
+            }
+
+            this.value.decimals = dec.value;
+        }
+        else
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'type',     type);
+        genPushUpdateValue(parse, this.nodeId, 'decimals', dec );
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+
+class GLimits
+extends GNumberType
+{
+    input = null;
+
+    min;
+    max;
+
+    //minMaxPriority = -1; 
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_LIMITS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const lim = new GLimits(this.nodeId, this.options);
+
+        lim.copyBase(this);
+
+        if (this.input) 
+            lim.input = this.input.copy();
+
+        lim.min = this.min.copy();
+        lim.max = this.max.copy();
+
+        //lim.minMaxPriority = this.minMaxPriority;
+
+        return lim;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = new NumberValue(0);
+
+        
+        const min = this.min.eval(parse).toValue();
+        const max = this.max.eval(parse).toValue();
+
+
+        if (this.input)
+        {
+            this.value = this.input.eval(parse).toValue();
+
+            console.assert(
+                this.value.type == NUMBER_VALUE, 
+                'this.value.type must belong to NUMBER_VALUE');
+
+            this.value.value = Math.min(Math.max(
+                min.value,
+                this.value.value),
+                max.value);
+        }
+        else
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'min',   min);
+        genPushUpdateValue(parse, this.nodeId, 'max',   max);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+
+class GSeries
+extends GNumberType
+{
+    start;
+    step;
+
+    current;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_SERIES, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const series = new GSeries(this.nodeId, this.options);
+
+        series.copyBase(this);
+
+        if (this.start  ) series.start   = this.start  .copy();
+        if (this.step   ) series.step    = this.step   .copy();
+
+        if (this.current) series.current = this.current.copy();
+
+        return series;
+    }
+
+
+
+    eval(parse)
+    {
+        //logString('GSeries.eval()');
+
+        if (!this.valid)
+        {
+            this.start.eval(parse);
+            this.step .eval(parse);
+        }
+
+
+        const start = this.start.toValue();
+        const step  = this.step .toValue();
+    
+
+        if (!this.valid)
+            this.current = start.copy();
+
+        
+        this.value = new NumberValue(
+            this.current.value,
+            Math.max(start.decimals, step.decimals));
+
+        this.current.value += step.value;
+
+
+        if (!this.valid)
+        {
+            genPushUpdateValue(parse, this.nodeId, 'start', start);
+            genPushUpdateValue(parse, this.nodeId, 'step',  step );
+        }
+        
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GRandom
+extends GNumberType
+{
+    seed;
+    min;
+    max;
+
+    random = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_RANDOM, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const rnd = new GRandom(this.nodeId, this.options);
+
+        rnd.copyBase(this);
+
+        if (this.seed  ) rnd.seed   = this.seed  .copy();
+        if (this.min   ) rnd.min    = this.min   .copy();
+        if (this.max   ) rnd.max    = this.max   .copy();
+
+        if (this.random) rnd.random = this.random.copy();
+
+        return rnd;
+    }
+
+
+
+    eval(parse)
+    {
+        //logString('GRandom.eval()');
+
+        if (!this.valid)
+        {
+            this.seed.eval(parse);
+            this.min .eval(parse);
+            this.max .eval(parse);
+        }
+
+
+        const seed = this.seed.toValue();
+        const min  = this.min .toValue();
+        const max  = this.max .toValue();
+    
+
+        if (!this.valid)
+            this.random = new Random(seed.value);
+
+        
+        this.value = new NumberValue(
+            min.value + this.random.next() * (max.value - min.value),
+            Math.max(min.decimals, max.decimals));
+
+
+        if (!this.valid)
+        {
+            genPushUpdateValue(parse, this.nodeId, 'seed', seed);
+            genPushUpdateValue(parse, this.nodeId, 'min',  min );
+            genPushUpdateValue(parse, this.nodeId, 'max',  max );
+        }
+        
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GInterpolate
+extends GNumberType
+{
+    input0 = null;
+    input1 = null;
+
+    amount;
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_INTERPOLATE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const lerp = new GInterpolate(this.nodeId, this.options);
+
+        lerp.copyBase(this);
+
+        if (this.input0) lerp.input0 = this.input0.copy();
+        if (this.input1) lerp.input1 = this.input1.copy();
+
+        lerp.amount = this.amount.copy();
+
+        return lerp;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const amount = this.amount.eval(parse).toValue();
+
+
+        if (   this.input0 
+            && this.input1)
+        {
+            const val0 = this.input0.eval(parse).toValue();
+            const val1 = this.input1.eval(parse).toValue();
+
+            const maxDec = Math.max(val0.decimals, val1.decimals);
+
+            this.value = new NumberValue(
+                floorTo(val0.value + amount.value * (val1.value - val0.value) / 100, maxDec),
+                maxDec);
+        }
+        else if (this.input0)
+            this.value = this.input0.eval(parse).toValue();
+
+        else if (this.input1) 
+            this.value = this.input1.eval(parse).toValue();
+
+        else                  
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GBoolean
+extends GVarArithmetic
+{
+    operation;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_BOOLEAN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const bool = new GBoolean(this.nodeId, this.options);
+
+        bool.copyBase(this);
+
+        bool.inputs    = this.inputs.map(i => i.copy());
+        bool.operation = this.operation.copy();
+
+        return bool;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const op = this.operation.eval(parse).toValue();
+
+        op.value = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
+
+        switch (op.value)
+        {
+            case BOOLEAN_NOT: this.value = evalBoolInputsNand(this.inputs, parse); break;
+            case BOOLEAN_AND: this.value = evalBoolInputsAnd (this.inputs, parse); break;
+            case BOOLEAN_OR:  this.value = evalBoolInputsOr  (this.inputs, parse); break;
+            case BOOLEAN_XOR: this.value = evalBoolInputsXor (this.inputs, parse); break;
+        }
+
+        
+        genPushUpdateValue(parse, this.nodeId, 'operation', op);
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalBoolInputsNand(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        if (val.toNumber() == 0)
+            value.value = 1;
+    }
+
+
+    return value;
+}
+
+
+
+function evalBoolInputsAnd(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(1);
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        if (val.toNumber() == 0)
+            value.value = 0;
+    }
+
+
+    return value;
+}
+
+
+
+function evalBoolInputsOr(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        if (val.toNumber() != 0)
+            value.value = 1;
+    }
+
+
+    return value;
+}
+
+
+
+function evalBoolInputsXor(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    let flipped = 0;
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        if (val.toNumber() != 0)
+        {
+            value.value = 1;
+            flipped++;
+        }
+    }
+
+
+    if (   value.value != 0
+        && flipped == inputs.length)
+        value.value = 0;
+
+
+    return value;
+}
+
+
+
 
 
 class GColorType
@@ -13635,6 +13852,50 @@ function genParseInterpolate(parse)
 }
 
 
+
+function genParseBoolean(parse)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const bool = new GBoolean(nodeId, options);
+
+    
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReqBoolean(bool, nInputs, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, bool);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    for (let i = 0; i < nInputs; i++)
+        bool.inputs.push(genParse(parse));
+
+
+    bool.operation = genParse(parse);
+
+
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, bool);
+    return bool;
+}
+
+
+
 function genParseRectangle(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -14324,6 +14585,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_RANDOM      ) result = genParseRandom          (parse);
     else if (parse.next == NUMBER_SERIES      ) result = genParseSeries          (parse);
     else if (parse.next == NUMBER_INTERPOLATE ) result = genParseInterpolate     (parse);
+    else if (parse.next == NUMBER_BOOLEAN     ) result = genParseBoolean         (parse);
  
     else if (parse.next == NUMBER_MATH        ) result = genParseMath            (parse, (nodeId, options) => new GMath    (nodeId, options));
     else if (parse.next == NUMBER_ADD         ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd     (nodeId, options));
@@ -19903,6 +20165,15 @@ function logReqInterpolate(lerp, nInputs, parse)
 }
 
 
+
+function logReqBoolean(bool, nInputs, parse)
+{
+    parse.log += parse.tab + NUMBER_BOOLEAN;
+    parse.log += logReqNodeId(bool);
+    parse.log += ' ' + nInputs;
+}
+
+
 function logReqColorValue(val, parse)
 {
     parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
@@ -22062,6 +22333,40 @@ const MATH_OPS =
     [NUMBER_MULTIPLY, '×' ],
     [NUMBER_MODULO,   '%' ],
     [NUMBER_EXPONENT, 'eˣ'] 
+];
+
+
+
+const BOOLEAN_NOT = 0;
+const BOOLEAN_AND = 1;
+const BOOLEAN_OR  = 2;
+const BOOLEAN_XOR = 3;
+
+const BOOLEAN_OPS = 
+[   
+    [BOOLEAN_NOT, 'not'],
+    [BOOLEAN_AND, 'and'],
+    [BOOLEAN_OR,  'or' ],
+    [BOOLEAN_XOR, 'xor'] 
+];
+
+
+
+const CONDITION_EQUAL            = 0;
+const CONDITION_NOT_EQUAL        = 1;
+const CONDITION_LESS             = 2;
+const CONDITION_LESS_OR_EQUAL    = 3;
+const CONDITION_GREATER          = 4;
+const CONDITION_GREATER_OR_EQUAL = 5;
+
+const CONDITION_OPS = 
+[   
+    [CONDITION_EQUAL,            '='],
+    [CONDITION_NOT_EQUAL,        '≠'],
+    [CONDITION_LESS,             '<'],
+    [CONDITION_LESS_OR_EQUAL,    '≤'],
+    [CONDITION_GREATER,          '>'],
+    [CONDITION_GREATER_OR_EQUAL, '≥'] 
 ];
 
 
@@ -24695,479 +25000,6 @@ extends GOperator
 }
 
 
-class GNumber
-extends GNumberType
-{
-    input = null;
-    
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const num = new GNumber(this.nodeId, this.options);
-        
-        num.copyBase(this);
-
-        if (this.input) 
-            num.input = this.input.copy();
-        
-        num.value = this.value;
-
-        return num;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        if (this.input)
-            this.value = this.input.eval(parse).toValue();
-        else if (this.value)
-            this.value.eval(parse);
-        else
-            this.value = NumberValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-        
-        this.validate();
-
-        return this;
-    }
-
-
-
-    isValid()
-    {
-        return !isNaN(this.value)
-            && !isNaN(this.decimals);
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
-
-
-class GRound
-extends GNumberType
-{
-    input = null;
-
-    type;
-    decimals;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_ROUND, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const round = new GRound(this.nodeId, this.options);
-
-        round.copyBase(this);
-
-        if (this.input) 
-            round.input = this.input.copy();
-
-        round.type     = this.type    .copy();
-        round.decimals = this.decimals.copy();
-
-        return round;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = new NumberValue(0);
-
-        
-        const type = this.type    .eval(parse).toValue();
-        const dec  = this.decimals.eval(parse).toValue();
-
-
-        if (this.input)
-        {
-            this.value = this.input.eval(parse).toValue();
-
-            console.assert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must belong to NUMBER_VALUE');
-
-            switch (type.value)
-            {
-                case 0: this.value.value = floorTo(this.value.value, dec.value); break;
-                case 1: this.value.value = roundTo(this.value.value, dec.value); break;
-                case 2: this.value.value =  ceilTo(this.value.value, dec.value); break;
-            }
-
-            this.value.decimals = dec.value;
-        }
-        else
-            this.value = NumberValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'type',     type);
-        genPushUpdateValue(parse, this.nodeId, 'decimals', dec );
-
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
-
-
-
-class GLimits
-extends GNumberType
-{
-    input = null;
-
-    min;
-    max;
-
-    //minMaxPriority = -1; 
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_LIMITS, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const lim = new GLimits(this.nodeId, this.options);
-
-        lim.copyBase(this);
-
-        if (this.input) 
-            lim.input = this.input.copy();
-
-        lim.min = this.min.copy();
-        lim.max = this.max.copy();
-
-        //lim.minMaxPriority = this.minMaxPriority;
-
-        return lim;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = new NumberValue(0);
-
-        
-        const min = this.min.eval(parse).toValue();
-        const max = this.max.eval(parse).toValue();
-
-
-        if (this.input)
-        {
-            this.value = this.input.eval(parse).toValue();
-
-            console.assert(
-                this.value.type == NUMBER_VALUE, 
-                'this.value.type must belong to NUMBER_VALUE');
-
-            this.value.value = Math.min(Math.max(
-                min.value,
-                this.value.value),
-                max.value);
-        }
-        else
-            this.value = NumberValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'min',   min);
-        genPushUpdateValue(parse, this.nodeId, 'max',   max);
-
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
-
-
-
-class GSeries
-extends GNumberType
-{
-    start;
-    step;
-
-    current;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_SERIES, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const series = new GSeries(this.nodeId, this.options);
-
-        series.copyBase(this);
-
-        if (this.start  ) series.start   = this.start  .copy();
-        if (this.step   ) series.step    = this.step   .copy();
-
-        if (this.current) series.current = this.current.copy();
-
-        return series;
-    }
-
-
-
-    eval(parse)
-    {
-        //logString('GSeries.eval()');
-
-        if (!this.valid)
-        {
-            this.start.eval(parse);
-            this.step .eval(parse);
-        }
-
-
-        const start = this.start.toValue();
-        const step  = this.step .toValue();
-    
-
-        if (!this.valid)
-            this.current = start.copy();
-
-        
-        this.value = new NumberValue(
-            this.current.value,
-            Math.max(start.decimals, step.decimals));
-
-        this.current.value += step.value;
-
-
-        if (!this.valid)
-        {
-            genPushUpdateValue(parse, this.nodeId, 'start', start);
-            genPushUpdateValue(parse, this.nodeId, 'step',  step );
-        }
-        
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GRandom
-extends GNumberType
-{
-    seed;
-    min;
-    max;
-
-    random = null;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_RANDOM, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const rnd = new GRandom(this.nodeId, this.options);
-
-        rnd.copyBase(this);
-
-        if (this.seed  ) rnd.seed   = this.seed  .copy();
-        if (this.min   ) rnd.min    = this.min   .copy();
-        if (this.max   ) rnd.max    = this.max   .copy();
-
-        if (this.random) rnd.random = this.random.copy();
-
-        return rnd;
-    }
-
-
-
-    eval(parse)
-    {
-        //logString('GRandom.eval()');
-
-        if (!this.valid)
-        {
-            this.seed.eval(parse);
-            this.min .eval(parse);
-            this.max .eval(parse);
-        }
-
-
-        const seed = this.seed.toValue();
-        const min  = this.min .toValue();
-        const max  = this.max .toValue();
-    
-
-        if (!this.valid)
-            this.random = new Random(seed.value);
-
-        
-        this.value = new NumberValue(
-            min.value + this.random.next() * (max.value - min.value),
-            Math.max(min.decimals, max.decimals));
-
-
-        if (!this.valid)
-        {
-            genPushUpdateValue(parse, this.nodeId, 'seed', seed);
-            genPushUpdateValue(parse, this.nodeId, 'min',  min );
-            genPushUpdateValue(parse, this.nodeId, 'max',  max );
-        }
-        
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GInterpolate
-extends GNumberType
-{
-    input0 = null;
-    input1 = null;
-
-    amount;
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_INTERPOLATE, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const lerp = new GInterpolate(this.nodeId, this.options);
-
-        lerp.copyBase(this);
-
-        if (this.input0) lerp.input0 = this.input0.copy();
-        if (this.input1) lerp.input1 = this.input1.copy();
-
-        lerp.amount = this.amount.copy();
-
-        return lerp;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const amount = this.amount.eval(parse).toValue();
-
-
-        if (   this.input0 
-            && this.input1)
-        {
-            const val0 = this.input0.eval(parse).toValue();
-            const val1 = this.input1.eval(parse).toValue();
-
-            const maxDec = Math.max(val0.decimals, val1.decimals);
-
-            this.value = new NumberValue(
-                floorTo(val0.value + amount.value * (val1.value - val0.value) / 100, maxDec),
-                maxDec);
-        }
-        else if (this.input0)
-            this.value = this.input0.eval(parse).toValue();
-
-        else if (this.input1) 
-            this.value = this.input1.eval(parse).toValue();
-
-        else                  
-            this.value = NumberValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-
-
-
-
-
-
 class GArithmetic
 extends GNumberType
 {
@@ -25993,6 +25825,653 @@ function evalVarExponentInputs(inputs, parse)
 
     return value;
 }
+
+
+class GNumber
+extends GNumberType
+{
+    input = null;
+    
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const num = new GNumber(this.nodeId, this.options);
+        
+        num.copyBase(this);
+
+        if (this.input) 
+            num.input = this.input.copy();
+        
+        num.value = this.value;
+
+        return num;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.input)
+            this.value = this.input.eval(parse).toValue();
+        else if (this.value)
+            this.value.eval(parse);
+        else
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    isValid()
+    {
+        return !isNaN(this.value)
+            && !isNaN(this.decimals);
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+class GRound
+extends GNumberType
+{
+    input = null;
+
+    type;
+    decimals;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_ROUND, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const round = new GRound(this.nodeId, this.options);
+
+        round.copyBase(this);
+
+        if (this.input) 
+            round.input = this.input.copy();
+
+        round.type     = this.type    .copy();
+        round.decimals = this.decimals.copy();
+
+        return round;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = new NumberValue(0);
+
+        
+        const type = this.type    .eval(parse).toValue();
+        const dec  = this.decimals.eval(parse).toValue();
+
+
+        if (this.input)
+        {
+            this.value = this.input.eval(parse).toValue();
+
+            console.assert(
+                this.value.type == NUMBER_VALUE, 
+                'this.value.type must belong to NUMBER_VALUE');
+
+            switch (type.value)
+            {
+                case 0: this.value.value = floorTo(this.value.value, dec.value); break;
+                case 1: this.value.value = roundTo(this.value.value, dec.value); break;
+                case 2: this.value.value =  ceilTo(this.value.value, dec.value); break;
+            }
+
+            this.value.decimals = dec.value;
+        }
+        else
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'type',     type);
+        genPushUpdateValue(parse, this.nodeId, 'decimals', dec );
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+
+class GLimits
+extends GNumberType
+{
+    input = null;
+
+    min;
+    max;
+
+    //minMaxPriority = -1; 
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_LIMITS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const lim = new GLimits(this.nodeId, this.options);
+
+        lim.copyBase(this);
+
+        if (this.input) 
+            lim.input = this.input.copy();
+
+        lim.min = this.min.copy();
+        lim.max = this.max.copy();
+
+        //lim.minMaxPriority = this.minMaxPriority;
+
+        return lim;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = new NumberValue(0);
+
+        
+        const min = this.min.eval(parse).toValue();
+        const max = this.max.eval(parse).toValue();
+
+
+        if (this.input)
+        {
+            this.value = this.input.eval(parse).toValue();
+
+            console.assert(
+                this.value.type == NUMBER_VALUE, 
+                'this.value.type must belong to NUMBER_VALUE');
+
+            this.value.value = Math.min(Math.max(
+                min.value,
+                this.value.value),
+                max.value);
+        }
+        else
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'min',   min);
+        genPushUpdateValue(parse, this.nodeId, 'max',   max);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+
+class GSeries
+extends GNumberType
+{
+    start;
+    step;
+
+    current;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_SERIES, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const series = new GSeries(this.nodeId, this.options);
+
+        series.copyBase(this);
+
+        if (this.start  ) series.start   = this.start  .copy();
+        if (this.step   ) series.step    = this.step   .copy();
+
+        if (this.current) series.current = this.current.copy();
+
+        return series;
+    }
+
+
+
+    eval(parse)
+    {
+        //logString('GSeries.eval()');
+
+        if (!this.valid)
+        {
+            this.start.eval(parse);
+            this.step .eval(parse);
+        }
+
+
+        const start = this.start.toValue();
+        const step  = this.step .toValue();
+    
+
+        if (!this.valid)
+            this.current = start.copy();
+
+        
+        this.value = new NumberValue(
+            this.current.value,
+            Math.max(start.decimals, step.decimals));
+
+        this.current.value += step.value;
+
+
+        if (!this.valid)
+        {
+            genPushUpdateValue(parse, this.nodeId, 'start', start);
+            genPushUpdateValue(parse, this.nodeId, 'step',  step );
+        }
+        
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GRandom
+extends GNumberType
+{
+    seed;
+    min;
+    max;
+
+    random = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_RANDOM, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const rnd = new GRandom(this.nodeId, this.options);
+
+        rnd.copyBase(this);
+
+        if (this.seed  ) rnd.seed   = this.seed  .copy();
+        if (this.min   ) rnd.min    = this.min   .copy();
+        if (this.max   ) rnd.max    = this.max   .copy();
+
+        if (this.random) rnd.random = this.random.copy();
+
+        return rnd;
+    }
+
+
+
+    eval(parse)
+    {
+        //logString('GRandom.eval()');
+
+        if (!this.valid)
+        {
+            this.seed.eval(parse);
+            this.min .eval(parse);
+            this.max .eval(parse);
+        }
+
+
+        const seed = this.seed.toValue();
+        const min  = this.min .toValue();
+        const max  = this.max .toValue();
+    
+
+        if (!this.valid)
+            this.random = new Random(seed.value);
+
+        
+        this.value = new NumberValue(
+            min.value + this.random.next() * (max.value - min.value),
+            Math.max(min.decimals, max.decimals));
+
+
+        if (!this.valid)
+        {
+            genPushUpdateValue(parse, this.nodeId, 'seed', seed);
+            genPushUpdateValue(parse, this.nodeId, 'min',  min );
+            genPushUpdateValue(parse, this.nodeId, 'max',  max );
+        }
+        
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GInterpolate
+extends GNumberType
+{
+    input0 = null;
+    input1 = null;
+
+    amount;
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_INTERPOLATE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const lerp = new GInterpolate(this.nodeId, this.options);
+
+        lerp.copyBase(this);
+
+        if (this.input0) lerp.input0 = this.input0.copy();
+        if (this.input1) lerp.input1 = this.input1.copy();
+
+        lerp.amount = this.amount.copy();
+
+        return lerp;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const amount = this.amount.eval(parse).toValue();
+
+
+        if (   this.input0 
+            && this.input1)
+        {
+            const val0 = this.input0.eval(parse).toValue();
+            const val1 = this.input1.eval(parse).toValue();
+
+            const maxDec = Math.max(val0.decimals, val1.decimals);
+
+            this.value = new NumberValue(
+                floorTo(val0.value + amount.value * (val1.value - val0.value) / 100, maxDec),
+                maxDec);
+        }
+        else if (this.input0)
+            this.value = this.input0.eval(parse).toValue();
+
+        else if (this.input1) 
+            this.value = this.input1.eval(parse).toValue();
+
+        else                  
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GBoolean
+extends GVarArithmetic
+{
+    operation;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_BOOLEAN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const bool = new GBoolean(this.nodeId, this.options);
+
+        bool.copyBase(this);
+
+        bool.inputs    = this.inputs.map(i => i.copy());
+        bool.operation = this.operation.copy();
+
+        return bool;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const op = this.operation.eval(parse).toValue();
+
+        op.value = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
+
+        switch (op.value)
+        {
+            case BOOLEAN_NOT: this.value = evalBoolInputsNand(this.inputs, parse); break;
+            case BOOLEAN_AND: this.value = evalBoolInputsAnd (this.inputs, parse); break;
+            case BOOLEAN_OR:  this.value = evalBoolInputsOr  (this.inputs, parse); break;
+            case BOOLEAN_XOR: this.value = evalBoolInputsXor (this.inputs, parse); break;
+        }
+
+        
+        genPushUpdateValue(parse, this.nodeId, 'operation', op);
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalBoolInputsNand(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        if (val.toNumber() == 0)
+            value.value = 1;
+    }
+
+
+    return value;
+}
+
+
+
+function evalBoolInputsAnd(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(1);
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        if (val.toNumber() == 0)
+            value.value = 0;
+    }
+
+
+    return value;
+}
+
+
+
+function evalBoolInputsOr(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        if (val.toNumber() != 0)
+            value.value = 1;
+    }
+
+
+    return value;
+}
+
+
+
+function evalBoolInputsXor(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    let flipped = 0;
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        if (val.toNumber() != 0)
+        {
+            value.value = 1;
+            flipped++;
+        }
+    }
+
+
+    if (   value.value != 0
+        && flipped == inputs.length)
+        value.value = 0;
+
+
+    return value;
+}
+
+
+
 
 
 class GColorType
@@ -29161,6 +29640,7 @@ const iconLimits           = '<svg width="18" height="14" viewBox="0 0 18 14" fi
 const iconRandom           = '<svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.57613 7.88313V7.82014C2.58313 7.15175 2.65312 6.61983 2.7861 6.22439C2.91908 5.82895 3.10805 5.50875 3.35302 5.26379C3.59798 5.01883 3.89193 4.79311 4.23488 4.58664C4.44135 4.46066 4.62682 4.31193 4.79129 4.14046C4.95577 3.96549 5.08525 3.76427 5.17973 3.5368C5.27772 3.30934 5.32671 3.05738 5.32671 2.78092C5.32671 2.43797 5.24622 2.14052 5.08525 1.88856C4.92427 1.6366 4.70906 1.44238 4.4396 1.3059C4.17014 1.16942 3.87094 1.10118 3.54199 1.10118C3.25503 1.10118 2.97857 1.16067 2.71261 1.27965C2.44665 1.39863 2.22444 1.58585 2.04597 1.84131C1.86749 2.09677 1.76426 2.43097 1.73626 2.84391H0.413467C0.441463 2.249 0.595439 1.73983 0.875396 1.31639C1.15885 0.89296 1.53155 0.56926 1.99347 0.345294C2.4589 0.121329 2.97507 0.00934601 3.54199 0.00934601C4.15789 0.00934601 4.69331 0.131827 5.14824 0.376789C5.60667 0.621752 5.96011 0.9577 6.20858 1.38463C6.46054 1.81157 6.58652 2.29799 6.58652 2.84391C6.58652 3.22885 6.52703 3.57705 6.40804 3.8885C6.29256 4.19995 6.12459 4.47816 5.90412 4.72312C5.68716 4.96808 5.4247 5.18505 5.11674 5.37402C4.80879 5.56649 4.56208 5.76946 4.37661 5.98293C4.19114 6.19289 4.05641 6.44311 3.97242 6.73356C3.88843 7.02402 3.84294 7.38621 3.83594 7.82014V7.88313H2.57613ZM3.24803 10.9907C2.98907 10.9907 2.76686 10.8979 2.58138 10.7124C2.39591 10.527 2.30318 10.3048 2.30318 10.0458C2.30318 9.78684 2.39591 9.56463 2.58138 9.37915C2.76686 9.19368 2.98907 9.10095 3.24803 9.10095C3.50699 9.10095 3.72921 9.19368 3.91468 9.37915C4.10015 9.56463 4.19289 9.78684 4.19289 10.0458C4.19289 10.2173 4.14914 10.3748 4.06166 10.5182C3.97767 10.6617 3.86394 10.7772 3.72046 10.8647C3.58048 10.9487 3.423 10.9907 3.24803 10.9907Z" fill="white"/></svg>';
 const iconSeries           = '<svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="9" width="1" height="2" fill="white"/><rect x="5" y="6" width="1" height="5" fill="white"/><rect x="10" y="3" width="1" height="8" fill="white"/><rect x="15" width="1" height="11" fill="white"/></svg>';
 const iconInterpolate      = '<svg width="20" height="10" viewBox="0 0 20 10" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="-0.150566" y1="8.52321" x2="18.8494" y2="2.52321" stroke="white"/><ellipse cx="3.07097" cy="7.5" rx="0.732794" ry="3.23269" transform="rotate(-12.7132 3.07097 7.5)" fill="white"/><ellipse cx="11.3613" cy="4.88962" rx="0.732794" ry="3.23269" transform="rotate(-12.7132 11.3613 4.88962)" fill="white"/><ellipse cx="15.9295" cy="3.65694" rx="0.732794" ry="3.23269" transform="rotate(-12.7132 15.9295 3.65694)" fill="white"/></svg>';
+const iconBoolean          = '<svg width="13" height="17" viewBox="0 0 13 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.00284 10.1586V15.9768H1.77273V11.3263H1.73864L0.40625 12.1615V11.0706L1.84659 10.1586H3.00284Z" fill="white"/><path d="M2.49679 6.02495C2.00815 6.02306 1.5877 5.90279 1.23543 5.66416C0.885048 5.42552 0.615162 5.07988 0.425768 4.62722C0.238268 4.17457 0.145465 3.63006 0.147359 2.9937C0.147359 2.35923 0.241109 1.81851 0.428609 1.37154C0.618003 0.924572 0.887889 0.58461 1.23827 0.351655C1.59054 0.116807 2.01005 -0.000617504 2.49679 -0.000617504C2.98353 -0.000617504 3.40209 0.116807 3.75247 0.351655C4.10475 0.586504 4.37558 0.927413 4.56497 1.37438C4.75437 1.81946 4.84812 2.35923 4.84622 2.9937C4.84622 3.63196 4.75153 4.17741 4.56213 4.63006C4.37463 5.08272 4.10569 5.42836 3.75531 5.667C3.40493 5.90563 2.98543 6.02495 2.49679 6.02495ZM2.49679 5.00506C2.83012 5.00506 3.09622 4.83745 3.29509 4.50222C3.49395 4.167 3.59243 3.66416 3.59054 2.9937C3.59054 2.55241 3.54509 2.18499 3.45418 1.89143C3.36516 1.59787 3.23827 1.37722 3.0735 1.2295C2.91062 1.08177 2.71838 1.00791 2.49679 1.00791C2.16535 1.00791 1.9002 1.17363 1.70134 1.50506C1.50247 1.8365 1.40209 2.33272 1.4002 2.9937C1.4002 3.44067 1.44471 3.81378 1.53372 4.11302C1.62463 4.41037 1.75247 4.63385 1.91725 4.78347C2.08202 4.9312 2.2752 5.00506 2.49679 5.00506Z" fill="white"/><path d="M9.87382 16.0282C9.38518 16.0263 8.96473 15.9061 8.61246 15.6674C8.26208 15.4288 7.99219 15.0831 7.8028 14.6305C7.6153 14.1778 7.52249 13.6333 7.52439 12.997C7.52439 12.3625 7.61814 11.8218 7.80564 11.3748C7.99503 10.9278 8.26492 10.5879 8.6153 10.3549C8.96757 10.1201 9.38708 10.0027 9.87382 10.0027C10.3606 10.0027 10.7791 10.1201 11.1295 10.3549C11.4818 10.5898 11.7526 10.9307 11.942 11.3777C12.1314 11.8227 12.2251 12.3625 12.2233 12.997C12.2233 13.6352 12.1286 14.1807 11.9392 14.6333C11.7517 15.086 11.4827 15.4316 11.1323 15.6703C10.782 15.9089 10.3625 16.0282 9.87382 16.0282ZM9.87382 15.0083C10.2072 15.0083 10.4733 14.8407 10.6721 14.5055C10.871 14.1703 10.9695 13.6674 10.9676 12.997C10.9676 12.5557 10.9221 12.1883 10.8312 11.8947C10.7422 11.6011 10.6153 11.3805 10.4505 11.2328C10.2876 11.085 10.0954 11.0112 9.87382 11.0112C9.54238 11.0112 9.27723 11.1769 9.07837 11.5083C8.8795 11.8398 8.77912 12.336 8.77723 12.997C8.77723 13.4439 8.82174 13.817 8.91075 14.1163C9.00166 14.4136 9.1295 14.6371 9.29427 14.7867C9.45905 14.9345 9.65223 15.0083 9.87382 15.0083Z" fill="white"/><path d="M11.0028 0.181818V6H9.77273V1.34943H9.73864L8.40625 2.18466V1.09375L9.84659 0.181818H11.0028Z" fill="white"/></svg>';
 
 const iconMath             = '<svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14.138 6.57967V0.485922H13.1039V6.57967H14.138ZM16.6678 4.04984V3.01575H10.5741V4.04984H16.6678Z" fill="white"/><path d="M11.3681 15.5004L16.5755 10.293L15.8738 9.59129L10.6664 14.7987L11.3681 15.5004ZM15.8738 15.5004L16.5755 14.7987L11.3681 9.59129L10.6664 10.293L15.8738 15.5004Z" fill="white"/><path d="M0.576652 12.0288V13.0629H6.48574V12.0288H0.576652ZM3.5312 15.7589C3.76202 15.7589 3.95899 15.6789 4.12211 15.5188C4.28214 15.3557 4.36216 15.1588 4.36216 14.9279C4.36216 14.7063 4.28214 14.5155 4.12211 14.3555C3.95899 14.1955 3.76202 14.1154 3.5312 14.1154C3.30961 14.1154 3.11879 14.1955 2.95875 14.3555C2.79872 14.5155 2.7187 14.7063 2.7187 14.9279C2.7187 15.1588 2.79872 15.3557 2.95875 15.5188C3.11879 15.6789 3.30961 15.7589 3.5312 15.7589ZM3.5312 10.9762C3.68508 10.9762 3.82511 10.9393 3.9513 10.8654C4.07748 10.7916 4.1775 10.6915 4.25137 10.5654C4.32523 10.4392 4.36216 10.2991 4.36216 10.1453C4.36216 9.92367 4.28214 9.73286 4.12211 9.57282C3.95899 9.41278 3.76202 9.33276 3.5312 9.33276C3.30961 9.33276 3.11879 9.41278 2.95875 9.57282C2.79872 9.73286 2.7187 9.92367 2.7187 10.1453C2.7187 10.3761 2.79872 10.5731 2.95875 10.7362C3.11879 10.8962 3.30961 10.9762 3.5312 10.9762Z" fill="white"/><path d="M0.576652 3.01575V4.04984H6.48574V3.01575H0.576652Z" fill="white"/></svg>';
 const iconAdd              = '<svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.78932 10.1318V0.756822H6.38023V10.1318H4.78932ZM0.897271 6.23978V4.64887H10.2723V6.23978H0.897271Z" fill="white"/></svg>';
@@ -29394,6 +29874,8 @@ function initGeneratorMenus()
         new MenuItem('Power',       {icon: iconExponent   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_EXPONENT, btnNumber.div, e.shiftKey))}),
         new MenuItem('Remainder',   {icon: iconModulo     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_MODULO,   btnNumber.div, e.shiftKey))}),
         //new MenuItem('· · ·',       {childMenu: menuSimpleMath }),
+        new MenuItem('',            {separator: true}),
+        new MenuItem('Boolean',     {icon: iconBoolean    , callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,      btnNumber.div, e.shiftKey))}),
         new MenuItem('',            {separator: true}),
         new MenuItem('Series',      {icon: iconSeries     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_SERIES,       btnNumber.div, e.shiftKey))}),
         new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,       btnNumber.div, e.shiftKey))}),
@@ -36847,6 +37329,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_RANDOM:       node = new OpRandom();           break;
         case NUMBER_SERIES:       node = new OpSeries();           break;
         case NUMBER_INTERPOLATE:  node = new OpInterpolate();      break;
+        case NUMBER_BOOLEAN:      node = new OpBoolean();          break;
  
         case NUMBER_MATH:         node = new OpMath();             break;
         case NUMBER_ADD:          node = new OpAdd();              break;
@@ -41523,7 +42006,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_VAR_MATH, 'math', 70);
+        super(NUMBER_BOOLEAN, 'bool', 70);
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -41532,7 +42015,7 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, MATH_OPS.map(s => s[1]), 1));
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, BOOLEAN_OPS.map(s => s[1]), 1));
         this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
     }
     

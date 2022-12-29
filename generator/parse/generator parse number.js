@@ -442,3 +442,46 @@ function genParseInterpolate(parse)
     genParseNodeEnd(parse, lerp);
     return lerp;
 }
+
+
+
+function genParseBoolean(parse)
+{
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const bool = new GBoolean(nodeId, options);
+
+    
+    let nInputs = 0;
+    
+    if (!ignore)
+        nInputs = parseInt(parse.move());
+
+
+    if (parse.settings.logRequests) 
+        logReqBoolean(bool, nInputs, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, bool);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    for (let i = 0; i < nInputs; i++)
+        bool.inputs.push(genParse(parse));
+
+
+    bool.operation = genParse(parse);
+
+
+    parse.nTab--;
+
+        
+    genParseNodeEnd(parse, bool);
+    return bool;
+}

@@ -75,3 +75,12 @@ function logReqInterpolate(lerp, nInputs, parse)
     parse.log += logReqNodeId(lerp);
     parse.log += ' ' + nInputs;
 }
+
+
+
+function logReqBoolean(bool, nInputs, parse)
+{
+    parse.log += parse.tab + NUMBER_BOOLEAN;
+    parse.log += logReqNodeId(bool);
+    parse.log += ' ' + nInputs;
+}

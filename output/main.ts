@@ -432,6 +432,40 @@ const MATH_OPS =
 
 
 
+const BOOLEAN_NOT = 0;
+const BOOLEAN_AND = 1;
+const BOOLEAN_OR  = 2;
+const BOOLEAN_XOR = 3;
+
+const BOOLEAN_OPS = 
+[   
+    [BOOLEAN_NOT, 'not'],
+    [BOOLEAN_AND, 'and'],
+    [BOOLEAN_OR,  'or' ],
+    [BOOLEAN_XOR, 'xor'] 
+];
+
+
+
+const CONDITION_EQUAL            = 0;
+const CONDITION_NOT_EQUAL        = 1;
+const CONDITION_LESS             = 2;
+const CONDITION_LESS_OR_EQUAL    = 3;
+const CONDITION_GREATER          = 4;
+const CONDITION_GREATER_OR_EQUAL = 5;
+
+const CONDITION_OPS = 
+[   
+    [CONDITION_EQUAL,            '='],
+    [CONDITION_NOT_EQUAL,        '≠'],
+    [CONDITION_LESS,             '<'],
+    [CONDITION_LESS_OR_EQUAL,    '≤'],
+    [CONDITION_GREATER,          '>'],
+    [CONDITION_GREATER_OR_EQUAL, '≥'] 
+];
+
+
+
 /*
 
 FRAME       F

@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_VAR_MATH, 'math', 70);
+        super(NUMBER_BOOLEAN, 'bool', 70);
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -17,7 +17,7 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, MATH_OPS.map(s => s[1]), 1));
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, BOOLEAN_OPS.map(s => s[1]), 1));
         this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
     }
     

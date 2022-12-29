@@ -42,14 +42,6 @@
 
 
 ../generator/types/number/GNumberType.js
-../generator/types/number/GNumber.js
-../generator/types/number/GRound.js
-../generator/types/number/GLimits.js
-../generator/types/number/GSeries.js
-../generator/types/number/GRandom.js
-../generator/types/number/GInterpolate.js
-../generator/types/number/GBoolean.js
-../generator/types/number/GCondition.js
 
 ../generator/types/number/arithmetic/GArithmetic.js
 ../generator/types/number/arithmetic/GMath.js
@@ -68,6 +60,15 @@
 ../generator/types/number/arithmetic/variable/GVarDivide.js
 ../generator/types/number/arithmetic/variable/GVarModulo.js
 ../generator/types/number/arithmetic/variable/GVarExponent.js
+
+../generator/types/number/GNumber.js
+../generator/types/number/GRound.js
+../generator/types/number/GLimits.js
+../generator/types/number/GSeries.js
+../generator/types/number/GRandom.js
+../generator/types/number/GInterpolate.js
+../generator/types/number/GBoolean.js
+../generator/types/number/GCondition.js
 
 
 ../generator/types/color/GColorType.js
