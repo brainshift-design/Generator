@@ -29454,14 +29454,23 @@ function initGeneratorMenus()
     //btnString  = new MenuButton('', menuString);
     btnColor   = new MenuButton('', menuColor );
     btnStyle   = new MenuButton('', menuStyle );
-    btnShape   = new MenuButton('', menuShape );
+    // btnShape   = new MenuButton('', menuShape );
+
     btnHand    = new MenuButton('Hand tool', null, {callback: () => 
-                 { 
-                     panMode = !panMode;  
-                     currentMenuButton = panMode ? btnHand : null;
-                     btnHand.update();
-                 }});
-    btnComment = new MenuButton('Add comment', null, {callback: () => actionManager.do(new CreateNodeAction(COMMENT, btnComment.div))});
+    { 
+        panMode = !panMode;  
+        currentMenuButton = panMode ? btnHand : null;
+        btnHand.update();
+    }});
+
+    btnComment = new MenuButton('Add comment', null, {callback: () => 
+    {
+        const create = new CreateNodeAction(COMMENT, btnComment.div);
+        actionManager.do(create);
+
+        graphView.update([create.node]);
+        graphView.updateScrollWithBounds();
+    }});
 
 
     btnZoom = new MenuButton('', menuZoom, 
@@ -40369,8 +40378,6 @@ extends OperatorBase
         super(COMMENT, 'comment', 0);
 
 
-        //this.div.style.pointerEvents = 'auto';
-
         this.scrollName = false;
 
 
@@ -40386,6 +40393,10 @@ extends OperatorBase
             if (this.textbox.value.trim() == '')
                 actionManager.do(new DeleteNodesAction([this.id], false), true);
         });
+
+
+        this.updateNode();
+        graphView.updateNodeTransform(this);
     }
 
 
@@ -41246,8 +41257,8 @@ extends OperatorBase
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramMin   = new NumberParam('min',   'min', true,  true,  false,    0));
-        this.addParam(this.paramMax   = new NumberParam('max',   'max', true,  true,  false, 1000));
+        this.addParam(this.paramMin   = new NumberParam('min', 'min', true,  true,  false,    0));
+        this.addParam(this.paramMax   = new NumberParam('max', 'max', true,  true,  false, 1000));
     }
 
 
@@ -46547,6 +46558,9 @@ extends Action
     nodeType;
     createdNodeId;
 
+    node;
+
+
     prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
 
     oldInputActiveNodeId = '';
@@ -46578,18 +46592,18 @@ extends Action
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
 
-        const node = createNode(this.nodeType, this.creatingButton, this.createdId);
+        this.node = createNode(this.nodeType, this.creatingButton, this.createdId);
         
 
         const autoConnect = 
                this.autoConnect
             && this.prevSelectedIds.length > 0
-            && canAutoConnectNode(node);
+            && canAutoConnectNode(this.node);
 
             
-        graph.addNode(node, !autoConnect);
+        graph.addNode(this.node, !autoConnect);
 
-        this.createdNodeId = node.id;
+        this.createdNodeId = this.node.id;
         
 
         if (autoConnect)
@@ -46597,24 +46611,24 @@ extends Action
             this.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(this.prevSelectedIds[0]));
 
             const selNode = nodeFromId(this.prevSelectedIds[0]);
-            const inputs  = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
+            const inputs  = this.node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
             
             if (inputs.length > 0)
             {
-                const conn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
+                const conn = createNodeAction_connect(this, selNode.outputs[0], this.node, inputs[0].id);
                 graphView.autoPlaceNewNode(conn.output, conn.input);
             }
         }
 
 
-        uiMakeNodeActive(node);
+        uiMakeNodeActive(this.node);
 
 
         graphView.lastSelectedNodes = graphView.selectedNodes;
-        graphView.selectedNodes     = [node];
+        graphView.selectedNodes     = [this.node];
 
 
-        pushUpdate([node]);
+        pushUpdate([this.node]);
     }
 
 

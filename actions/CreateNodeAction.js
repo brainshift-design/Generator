@@ -4,6 +4,9 @@ extends Action
     nodeType;
     createdNodeId;
 
+    node;
+
+
     prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
 
     oldInputActiveNodeId = '';
@@ -35,18 +38,18 @@ extends Action
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
 
-        const node = createNode(this.nodeType, this.creatingButton, this.createdId);
+        this.node = createNode(this.nodeType, this.creatingButton, this.createdId);
         
 
         const autoConnect = 
                this.autoConnect
             && this.prevSelectedIds.length > 0
-            && canAutoConnectNode(node);
+            && canAutoConnectNode(this.node);
 
             
-        graph.addNode(node, !autoConnect);
+        graph.addNode(this.node, !autoConnect);
 
-        this.createdNodeId = node.id;
+        this.createdNodeId = this.node.id;
         
 
         if (autoConnect)
@@ -54,24 +57,24 @@ extends Action
             this.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(this.prevSelectedIds[0]));
 
             const selNode = nodeFromId(this.prevSelectedIds[0]);
-            const inputs  = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
+            const inputs  = this.node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
             
             if (inputs.length > 0)
             {
-                const conn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
+                const conn = createNodeAction_connect(this, selNode.outputs[0], this.node, inputs[0].id);
                 graphView.autoPlaceNewNode(conn.output, conn.input);
             }
         }
 
 
-        uiMakeNodeActive(node);
+        uiMakeNodeActive(this.node);
 
 
         graphView.lastSelectedNodes = graphView.selectedNodes;
-        graphView.selectedNodes     = [node];
+        graphView.selectedNodes     = [this.node];
 
 
-        pushUpdate([node]);
+        pushUpdate([this.node]);
     }
 
 

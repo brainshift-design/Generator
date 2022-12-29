@@ -333,14 +333,23 @@ function initGeneratorMenus()
     //btnString  = new MenuButton('', menuString);
     btnColor   = new MenuButton('', menuColor );
     btnStyle   = new MenuButton('', menuStyle );
-    btnShape   = new MenuButton('', menuShape );
+    // btnShape   = new MenuButton('', menuShape );
+
     btnHand    = new MenuButton('Hand tool', null, {callback: () => 
-                 { 
-                     panMode = !panMode;  
-                     currentMenuButton = panMode ? btnHand : null;
-                     btnHand.update();
-                 }});
-    btnComment = new MenuButton('Add comment', null, {callback: () => actionManager.do(new CreateNodeAction(COMMENT, btnComment.div))});
+    { 
+        panMode = !panMode;  
+        currentMenuButton = panMode ? btnHand : null;
+        btnHand.update();
+    }});
+
+    btnComment = new MenuButton('Add comment', null, {callback: () => 
+    {
+        const create = new CreateNodeAction(COMMENT, btnComment.div);
+        actionManager.do(create);
+
+        graphView.update([create.node]);
+        graphView.updateScrollWithBounds();
+    }});
 
 
     btnZoom = new MenuButton('', menuZoom, 

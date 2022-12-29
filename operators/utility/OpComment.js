@@ -6,8 +6,6 @@ extends OperatorBase
         super(COMMENT, 'comment', 0);
 
 
-        //this.div.style.pointerEvents = 'auto';
-
         this.scrollName = false;
 
 
@@ -23,6 +21,10 @@ extends OperatorBase
             if (this.textbox.value.trim() == '')
                 actionManager.do(new DeleteNodesAction([this.id], false), true);
         });
+
+
+        this.updateNode();
+        graphView.updateNodeTransform(this);
     }
 
 
