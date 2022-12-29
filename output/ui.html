@@ -28771,7 +28771,9 @@ class MenuButton
                 }
             });
         }
-        else if (this.callback) 
+        
+        
+        if (this.callback) 
         {
             this.div.addEventListener('click', () =>
             {
@@ -29448,19 +29450,17 @@ function initGeneratorMenus()
 
 
 
-    btnMain    = new MenuButton('', menuMain, {useMenuName: true, highlight: () => currentMenus.includes(menuMain)});
-    btnFlow    = new MenuButton('', menuFlow  );
-    btnNumber  = new MenuButton('', menuNumber);
-    //btnString  = new MenuButton('', menuString);
-    btnColor   = new MenuButton('', menuColor );
-    btnStyle   = new MenuButton('', menuStyle );
-    // btnShape   = new MenuButton('', menuShape );
+    btnMain    = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain), callback: () => updatePanMode(false)});
+    btnFlow    = new MenuButton('', menuFlow,   {callback: () => updatePanMode(false)});
+    btnNumber  = new MenuButton('', menuNumber, {callback: () => updatePanMode(false)});
+    //btnString  = new MenuButton('', menuString, {callback: () => updatePanMode(false)});
+    btnColor   = new MenuButton('', menuColor,  {callback: () => updatePanMode(false)});
+    btnStyle   = new MenuButton('', menuStyle,  {callback: () => updatePanMode(false)});
+    // btnShape   = new MenuButton('', menuShape, {callback: () => updatePanMode(false)});
 
     btnHand    = new MenuButton('Hand tool', null, {callback: () => 
     { 
-        panMode = !panMode;  
-        currentMenuButton = panMode ? btnHand : null;
-        btnHand.update();
+        updatePanMode(!panMode);
     }});
 
     btnComment = new MenuButton('Add comment', null, {callback: () => 
@@ -29470,15 +29470,12 @@ function initGeneratorMenus()
 
         graphView.update([create.node]);
         graphView.updateScrollWithBounds();
+
+        updatePanMode(false);
     }});
 
 
-    btnZoom = new MenuButton('', menuZoom, 
-              {
-                  useMenuName: true, 
-                  selectLast:  false,
-                  highlight:   () => currentMenus.includes(menuZoom)
-              });
+    btnZoom = new MenuButton('', menuZoom, { useMenuName: true, selectLast: false, highlight: () => currentMenus.includes(menuZoom) });
 
         
     btnZoom.div.style.position     = 'absolute';
@@ -29527,6 +29524,15 @@ function initDataModeMenus()
         // new MenuItem('List all connection keys', { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
         // new MenuItem('',                         { separator: true }),
         new MenuItem('Delete all connections',   { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
+}
+
+
+
+function updatePanMode(enabled)
+{
+    panMode = enabled;  
+    currentMenuButton = panMode ? btnHand : null;
+    btnHand.update();
 }
 
 

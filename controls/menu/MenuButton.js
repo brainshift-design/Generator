@@ -113,7 +113,9 @@ class MenuButton
                 }
             });
         }
-        else if (this.callback) 
+        
+        
+        if (this.callback) 
         {
             this.div.addEventListener('click', () =>
             {
