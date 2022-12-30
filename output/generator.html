@@ -6078,8 +6078,6 @@ extends GOperator
 
         genPushUpdateValue(parse, this.nodeId, 'condition', cond);
         
-        if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
         
         this.validate();
 
@@ -6204,13 +6202,16 @@ extends GOperator
             {
                 const input = this.input.eval(parse).toValue();
 
-                if (input.type == LIST_VALUE)
+                if (input)
                 {
-                    for (const item of input.items)
-                        this.value.items.push(item);
+                    if (input.type == LIST_VALUE)
+                    {
+                        for (const item of input.items)
+                            this.value.items.push(item);
+                    }
+                    else
+                        this.value.items.push(input);
                 }
-                else
-                    this.value.items.push(input);
             }
         }
 
@@ -6299,6 +6300,7 @@ extends GOperator
 {
     input = null;
 
+    copy;
 
 
     constructor(nodeId, options)
@@ -6316,6 +6318,7 @@ extends GOperator
 
         if (this.input) copy.input = this.input.copy();
         if (this.value) copy.value = this.value.copy();
+        if (this.copy)  copy.copy  = this.copy .copy();
 
         return copy;
     }
@@ -6328,14 +6331,12 @@ extends GOperator
             return this;
 
 
-        this.value = 
-            this.input
-            ? this.input.eval(parse).toValue()
-            : null;
+        this.value = this.input ? this.input.eval(parse).toValue() : null;
+        this.copy  = this.value ? this.value.copy()                : null;
 
 
-        if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        else            genPushUpdateValue(parse, this.nodeId, '',      NumberValue.NaN);
+        if (this.copy) genPushUpdateValue(parse, this.nodeId, 'copy', this.copy);
+        else           genPushUpdateValue(parse, this.nodeId, '', NumberValue.NaN);
 
         
         this.validate();
@@ -7508,11 +7509,11 @@ extends GNumberType
         this.current.value += step.value;
 
 
-        if (!this.valid)
-        {
+        //if (!this.valid)
+        //{
             genPushUpdateValue(parse, this.nodeId, 'start', start);
             genPushUpdateValue(parse, this.nodeId, 'step',  step );
-        }
+        //}
         
 
         this.validate();

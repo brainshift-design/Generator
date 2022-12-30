@@ -3,6 +3,7 @@ extends GOperator
 {
     input = null;
 
+    copy;
 
 
     constructor(nodeId, options)
@@ -20,6 +21,7 @@ extends GOperator
 
         if (this.input) copy.input = this.input.copy();
         if (this.value) copy.value = this.value.copy();
+        if (this.copy)  copy.copy  = this.copy .copy();
 
         return copy;
     }
@@ -32,14 +34,12 @@ extends GOperator
             return this;
 
 
-        this.value = 
-            this.input
-            ? this.input.eval(parse).toValue()
-            : null;
+        this.value = this.input ? this.input.eval(parse).toValue() : null;
+        this.copy  = this.value ? this.value.copy()                : null;
 
 
-        if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        else            genPushUpdateValue(parse, this.nodeId, '',      NumberValue.NaN);
+        if (this.copy) genPushUpdateValue(parse, this.nodeId, 'copy', this.copy);
+        else           genPushUpdateValue(parse, this.nodeId, '', NumberValue.NaN);
 
         
         this.validate();

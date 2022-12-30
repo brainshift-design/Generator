@@ -18,8 +18,8 @@ extends OperatorBase
         this.addOutput(new Output([], this.output_genRequest));
 
 
-        this.paramNumber = new NumberParam('value', '', false, false, true);
-        this.paramColor  = new  ColorParam('value', '', false, false, true);
+        this.paramNumber = new NumberParam('copy', '', false, false, true);
+        this.paramColor  = new  ColorParam('copy', '', false, false, true);
 
         
         this.inputs[0].addEventListener('connect',    () => OpCopy_onConnectInput(this));
@@ -73,7 +73,10 @@ extends OperatorBase
 
     updateValues(updateParamId, paramIds, values) // virtual
     {
-        const val = values[paramIds.findIndex(id => id == 'value')];
+        //super.updateValues(updateParamId, paramIds, values);
+
+
+        const val = values[paramIds.findIndex(id => id == 'copy')];
 
         this.headerColor =
             val && val.type == COLOR_VALUE
@@ -91,7 +94,10 @@ extends OperatorBase
 
     updateParams()
     {
-        const paramValue = this.params.find(p => p.id == 'value');
+        super.updateParams();
+
+
+        const paramValue = this.params.find(p => p.id == 'copy');
 
         if (paramValue)
         {
@@ -100,8 +106,6 @@ extends OperatorBase
             paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
             paramValue.control.showBar   = !this.isUnknown();
         }
-
-        super.updateParams();
     }
 
 

@@ -4,7 +4,7 @@ extends OperatorBase
     paramNumber;
     paramColor;
 
-    headerColor = null;
+    //headerColor = null;
 
 
     constructor()
@@ -15,11 +15,11 @@ extends OperatorBase
         
 
         this.addInput (new Input(ALL_TYPES));
-        this.addOutput(new Output([], this.output_genRequest));
+        //this.addOutput(new Output([], this.output_genRequest));
 
 
-        this.paramNumber = new NumberParam('value', '', false, false, false);
-        this.paramColor  = new  ColorParam('value', '', false, false, false);
+        this.paramNumber = new NumberParam('value', '', false, false, true);
+        this.paramColor  = new  ColorParam('value', '', false, false, true);
 
         
         this.inputs[0].addEventListener('connect',    () => OpCache_onConnectInput(this));
@@ -42,19 +42,19 @@ extends OperatorBase
 
     
 
-    output_genRequest(gen)
+    genRequest(gen)
     {
         // 'this' is the output
 
         gen.scope.push({
-            nodeId:  this.node.id, 
+            nodeId:  this.id, 
             paramId: '' });
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+        const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
 
 
-        const input = this.node.inputs[0];
+        const input = this.inputs[0];
 
 
         request.push(input.connected ? 1 : 0);
@@ -64,7 +64,7 @@ extends OperatorBase
 
         
         gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
+        pushUnique(gen.passedNodes, this);
 
         return request;
     }
@@ -75,10 +75,10 @@ extends OperatorBase
     {
         const val = values[paramIds.findIndex(id => id == 'value')];
 
-        this.headerColor =
-            val && val.type == COLOR_VALUE
-            ? rgb_a(val.toRgb(), 1)
-            : null;
+        // this.headerColor =
+        //     val && val.type == COLOR_VALUE
+        //     ? rgb_a(val.toRgb(), 1)
+        //     : null;
 
         if (this.params.length > 0) 
         {
@@ -89,32 +89,32 @@ extends OperatorBase
 
 
 
-    getHeaderColors()
-    {
-        const colors = super.getHeaderColors();
+    // getHeaderColors()
+    // {
+    //     const colors = super.getHeaderColors();
 
-        const type = 
-            this.inputs[0].connected 
-            ? this.inputs[0].connectedOutput.node.type 
-            : this.type;
+    //     const type = 
+    //         this.inputs[0].connected 
+    //         ? this.inputs[0].connectedOutput.node.type 
+    //         : this.type;
 
-        colors.back = 
-            this.headerColor
-            ? this.headerColor
-            : this.inert
-            ? rgb_a(rgbDocumentBody, 0.95)
-            : rgb_a(rgbHeaderFromType(type, this.active), 0.95);
+    //     // colors.back = 
+    //     //     this.headerColor
+    //     //     ? this.headerColor
+    //     //     : this.inert
+    //     //     ? rgb_a(rgbDocumentBody, 0.95)
+    //     //     : rgb_a(rgbHeaderFromType(type, this.active), 0.95);
 
-        // colors.border = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
+    //     // colors.border = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
 
-        colors.text    = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
+    //     colors.text    = isDark(colors.back) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-        colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.8);
-        colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.7);
-        colors.wire    = rgbHeaderFromType(type, true);
+    //     colors.input   = this.active ? rgb_a(colors.text, 0.4)  : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.8);
+    //     colors.output  = this.active ? rgb_a(colors.text, 0.35) : rgb_a(rgbSaturateHsv(rgbHeaderFromType(type, true), 0.5), 0.7);
+    //     colors.wire    = rgbHeaderFromType(type, true);
 
-        return colors;
-    }
+    //     return colors;
+    // }
 
 
 
@@ -130,17 +130,17 @@ function OpCache_onConnectInput(node)
 {
     const inOutput = node.inputs[0].connectedOutput;
 
-    node.outputs[0].types = [...inOutput.types];
+    // node.outputs[0].types = [...inOutput.types];
 
          if (inOutput.supportsTypes(NUMBER_TYPES)) node.addParam(node.paramNumber);
-    else if (inOutput.supportsTypes( COLOR_TYPES)) node.addParam(node.paramColor);
+    else if (inOutput.supportsTypes( COLOR_TYPES)) node.addParam(node.paramColor );
 }
 
 
 
 function OpCache_onDisconnectInput(node)
 {
-    node.outputs[0].types = [];
+    // node.outputs[0].types = [];
     
     node.removeAllParams();
 }

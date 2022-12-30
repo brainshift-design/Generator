@@ -57,11 +57,11 @@ extends GNumberType
         this.current.value += step.value;
 
 
-        if (!this.valid)
-        {
+        //if (!this.valid)
+        //{
             genPushUpdateValue(parse, this.nodeId, 'start', start);
             genPushUpdateValue(parse, this.nodeId, 'step',  step );
-        }
+        //}
         
 
         this.validate();

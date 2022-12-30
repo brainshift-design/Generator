@@ -214,28 +214,28 @@ function initGeneratorMenus()
         
     menuFlow = new Menu('Flow nodes', true, false);
     menuFlow.addItems([
-        new MenuItem('List',   {icon: iconList,   callback: e => actionManager.do(getCreateNodeAction(LIST,   btnNumber.div, e.shiftKey))}),
-        new MenuItem('',       {separator: true}),
-        new MenuItem('Items',  {icon: iconItems,  callback: e => actionManager.do(getCreateNodeAction(ITEMS,  btnNumber.div, e.shiftKey))}),
-        new MenuItem('Select', {icon: iconSelect, callback: e => actionManager.do(getCreateNodeAction(SELECT, btnNumber.div, e.shiftKey))}),
-        new MenuItem('Pass',   {icon: iconPass,   callback: e => actionManager.do(getCreateNodeAction(PASS,   btnNumber.div, e.shiftKey))}),
-        new MenuItem('',       {separator: true}),
-        //new MenuItem('Start',{icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,  btnNumber.div, e.shiftKey))}),
-        new MenuItem('Repeat', {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT, btnNumber.div, e.shiftKey))}),
-        new MenuItem('',       {separator: true}),
-        new MenuItem('Cache',  {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,  btnNumber.div, e.shiftKey))}),
-        new MenuItem('Copy',   {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,   btnNumber.div, e.shiftKey))})]);
+        new MenuItem('List',           {icon: iconList,   callback: e => actionManager.do(getCreateNodeAction(LIST,   btnNumber.div, e.shiftKey))}),
+        new MenuItem('',               {separator: true}),
+        new MenuItem('Items',          {icon: iconItems,  callback: e => actionManager.do(getCreateNodeAction(ITEMS,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Select',         {icon: iconSelect, callback: e => actionManager.do(getCreateNodeAction(SELECT, btnNumber.div, e.shiftKey))}),
+        new MenuItem('Pass condition', {icon: iconPass,   callback: e => actionManager.do(getCreateNodeAction(PASS,   btnNumber.div, e.shiftKey))}),
+        new MenuItem('',               {separator: true}),
+      //new MenuItem('Start',          {icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Repeat',         {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT, btnNumber.div, e.shiftKey))}),
+        new MenuItem('',               {separator: true}),
+        new MenuItem('Cache',          {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Copy',           {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,   btnNumber.div, e.shiftKey))})]);
     
     
     menuSimpleMath = new Menu('Variable math nodes', true, false);
     menuSimpleMath.addItems([
-        new MenuItem('Math ·',      {icon: iconSimpleMath    , callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,      btnNumber.div, e.shiftKey))}),
-        new MenuItem('Add ·',       {icon: iconSimpleAdd     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,       btnNumber.div, e.shiftKey))}),
-        new MenuItem('Subtract ·',  {icon: iconSimpleSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT,  btnNumber.div, e.shiftKey))}),
-        new MenuItem('Multiply ·',  {icon: iconSimpleMultiply, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY,  btnNumber.div, e.shiftKey))}),
-        new MenuItem('Divide ·',    {icon: iconSimpleDivide  , callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,    btnNumber.div, e.shiftKey))}),
-        new MenuItem('Power ·',     {icon: iconSimpleExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT,  btnNumber.div, e.shiftKey))}),
-        new MenuItem('Remainder ·', {icon: iconSimpleModulo  , callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,    btnNumber.div, e.shiftKey))})]);
+        new MenuItem('Math ·',      {icon: iconSimpleMath    , callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,     btnNumber.div, e.shiftKey))}),
+        new MenuItem('Add ·',       {icon: iconSimpleAdd     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,      btnNumber.div, e.shiftKey))}),
+        new MenuItem('Subtract ·',  {icon: iconSimpleSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, e.shiftKey))}),
+        new MenuItem('Multiply ·',  {icon: iconSimpleMultiply, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY, btnNumber.div, e.shiftKey))}),
+        new MenuItem('Divide ·',    {icon: iconSimpleDivide  , callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,   btnNumber.div, e.shiftKey))}),
+        new MenuItem('Power ·',     {icon: iconSimpleExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, e.shiftKey))}),
+        new MenuItem('Remainder ·', {icon: iconSimpleModulo  , callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,   btnNumber.div, e.shiftKey))})]);
 
 
     menuNumber = new Menu('Number nodes', true, false);
@@ -252,7 +252,7 @@ function initGeneratorMenus()
         new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_DIVIDE,   btnNumber.div, e.shiftKey))}),
         new MenuItem('Power',       {icon: iconExponent   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_EXPONENT, btnNumber.div, e.shiftKey))}),
         new MenuItem('Remainder',   {icon: iconModulo     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_MODULO,   btnNumber.div, e.shiftKey))}),
-        //new MenuItem('· · ·',       {childMenu: menuSimpleMath }),
+      //new MenuItem('· · ·',       {childMenu: menuSimpleMath }),
         new MenuItem('',            {separator: true}),
         new MenuItem('Boolean',     {icon: iconBoolean    , callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,      btnNumber.div, e.shiftKey))}),
         new MenuItem('Condition',   {icon: iconCondition  , callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,    btnNumber.div, e.shiftKey))}),

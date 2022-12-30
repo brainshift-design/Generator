@@ -50,13 +50,16 @@ extends GOperator
             {
                 const input = this.input.eval(parse).toValue();
 
-                if (input.type == LIST_VALUE)
+                if (input)
                 {
-                    for (const item of input.items)
-                        this.value.items.push(item);
+                    if (input.type == LIST_VALUE)
+                    {
+                        for (const item of input.items)
+                            this.value.items.push(item);
+                    }
+                    else
+                        this.value.items.push(input);
                 }
-                else
-                    this.value.items.push(input);
             }
         }
 

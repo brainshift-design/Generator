@@ -681,7 +681,7 @@ class Operator
         this.updateParams();
         this.updateDisabled();
 
-        
+
         if (this.params.length > 0)
         {
             this.div   .style.borderBottomLeftRadius  = '0px';        
@@ -733,7 +733,11 @@ class Operator
 
     updateParams()
     {
-        this.params.forEach(p => p.updateControls());
+        for (const param of this.params)
+        {
+            param.enableControlText(true);
+            param.updateControls();
+        }
     }
 
 

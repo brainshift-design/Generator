@@ -47,8 +47,6 @@ extends GOperator
 
         genPushUpdateValue(parse, this.nodeId, 'condition', cond);
         
-        if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
         
         this.validate();
 
