@@ -74,7 +74,7 @@ extends Action
         graphView.selectedNodes     = [this.node];
 
 
-        pushUpdate([this.node]);
+        pushUpdate(this, [this.node]);
     }
 
 
@@ -136,7 +136,7 @@ function createNodeAction_activateOldInput(act)
         const oldInputActiveNode = nodeFromId(act.oldInputActiveNodeId);
         
         uiMakeNodeActive(oldInputActiveNode);
-        pushUpdate([oldInputActiveNode]);
+        pushUpdate(act, [oldInputActiveNode]);
 
         act.oldInputActiveNodeId = '';
     }

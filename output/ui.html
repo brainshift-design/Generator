@@ -12841,7 +12841,7 @@ function genEndFigMessage()
     
     if (   lastUpdateValues .length > 0
         || lastUpdateObjects.length > 0)
-        genUpdateValuesAndObjects('', '', [], []);
+        genUpdateValuesAndObjects(-1, '', '', [], []);
 
     genPostNextMessageToUI();
 }
@@ -12858,18 +12858,20 @@ var lastUpdateObjects = [];
 
 function genRequest(request)
 {
-    const set = parseInt(request[0]);
+    const actionId = parseInt(request[0]);
+    const set      = parseInt(request[1]);
 
     const includeLxxColorSpaces = (set >> 0) & 1 != 0;
     const logRequests           = (set >> 1) & 1 != 0;
 
 
-    const updateNodeId  = request[1];
-    const updateParamId = request[2];
+    const updateNodeId  = request[2];
+    const updateParamId = request[3];
 
 
     const parse = new Parse(
         request, 
+        4,
         updateNodeId, 
         updateParamId, 
         includeLxxColorSpaces,
@@ -12903,6 +12905,7 @@ function genRequest(request)
 
 
     genUpdateValuesAndObjects(
+        actionId,
         parse.updateNodeId,
         parse.updateParamId,
         parse.updateValues,
@@ -12959,15 +12962,11 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, updateObjects)
+function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects)
 {
-    //console.log('genUpdateValuesAndObjects()');
-    //console.log('updateValues =', updateValues);
-
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects))
     {
-        //console.log('restoring');
         updateNodeId  = lastUpdateNodeId;
         updateParamId = lastUpdateParamId;
         updateValues  = lastUpdateValues;
@@ -12977,7 +12976,6 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
     }
     else if (genFigMessagePosted)
     {
-        // console.log('saving');
         lastUpdateNodeId  = updateNodeId;
         lastUpdateParamId = updateParamId;
         lastUpdateValues  = updateValues;
@@ -14940,11 +14938,11 @@ class Parse
 
 
 
-    constructor(request, updateNodeId, updateParamId, includeLxxColorSpaces, logRequests)
+    constructor(request, firstPos, updateNodeId, updateParamId, includeLxxColorSpaces, logRequests)
     {
         this.request       = request;
           
-        this.pos           = 3; 
+        this.pos           = firstPos; 
         this.so            = 0;
         
         this.updateNodeId  = updateNodeId; 
@@ -30967,7 +30965,7 @@ function initNumberControlEvents(control)
 
 
                     if (control.value != control.prevValue)
-                        pushUpdateFromParam([control.param.node], control.param);
+                        pushUpdateFromParam(null, [control.param.node], control.param);
 
                     control.prevValue = control.value;
                 }
@@ -32317,7 +32315,7 @@ function initColorControlEvents(control)
 
 
             //         if (control.value != control.prevValue)
-            //             pushUpdateFromParam([control.param.node], control.param);
+            //             pushUpdateFromParam(null, [control.param.node], control.param);
 
             //         control.prevValue = control.value;
             //     }
@@ -38282,7 +38280,7 @@ function updateTerminalsAfterNodes(nodes)
     for (const node of nodes)
         pushUnique(terminals, getTerminalsAfterNode(node));
 
-    pushUpdate(terminals);
+    pushUpdate(null, terminals);
 }
 
 
@@ -40557,14 +40555,14 @@ function getHeaderConnY(conns, padding, offset)
 
 
 
-function pushUpdate(nodes)
+function pushUpdate(action, nodes)
 {
-    pushUpdateFromParam(nodes, null);
+    pushUpdateFromParam(action, nodes, null);
 }
 
 
 
-function pushUpdateFromParam(nodes, param)
+function pushUpdateFromParam(action, nodes, param)
 {
     // first check if any nodes to the left are uncached
     // and replace in update array as necessary
@@ -40593,7 +40591,11 @@ function pushUpdateFromParam(nodes, param)
         | ((settings.logRequests           ? 1 : 0) << 1);
 
 
-    const request = [set.toString()];
+    const request = 
+    [
+        action ? action.id : -1,
+        set.toString()
+    ];
 
 
     if (param) request.push(param.node.id, param.id);
@@ -47596,6 +47598,16 @@ class Action
     
     _linkWithNext = false;
 
+    
+    prevSelectedIds  = []; // currently selected nodes that are deselected as a result of creation
+    
+    oldActiveNodeIds = [];
+    newActiveNodeIds = [];
+
+    oldConnections   = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    newConnections   = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+
+
 
     constructor(name)
     {
@@ -47823,7 +47835,7 @@ extends Action
         connectAction_updateNodes(this, updateNodes);
         connectAction_cleanup(this);
 
-        pushUpdate(updateNodes);
+        pushUpdate(this, updateNodes);
     }
 
 
@@ -47842,7 +47854,7 @@ extends Action
 
         connectAction_restoreCleanup(this);
 
-        pushUpdate(updateNodes);
+        pushUpdate(this, updateNodes);
     }
 }
 
@@ -48045,8 +48057,8 @@ extends Action
     oldInputActiveNodeId = '';
 
 
-    oldConnections = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
-    newConnections = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
+    oldConnections = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    newConnections = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
 
 
     creatingButton;
@@ -48127,7 +48139,7 @@ extends Action
             uiMakeNodeActive(node);
 
 
-        pushUpdate([node]);
+        pushUpdate(this, [node]);
     }
 
 
@@ -48274,7 +48286,7 @@ extends Action
         graphView.selectedNodes     = [this.node];
 
 
-        pushUpdate([this.node]);
+        pushUpdate(this, [this.node]);
     }
 
 
@@ -48336,7 +48348,7 @@ function createNodeAction_activateOldInput(act)
         const oldInputActiveNode = nodeFromId(act.oldInputActiveNodeId);
         
         uiMakeNodeActive(oldInputActiveNode);
-        pushUpdate([oldInputActiveNode]);
+        pushUpdate(act, [oldInputActiveNode]);
 
         act.oldInputActiveNodeId = '';
     }
@@ -48387,7 +48399,7 @@ extends Action
 
         uiSaveNodes(this.newActiveNodeIds);
 
-        pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
+        pushUpdate(this, updateNodes.filter(n => graph.nodes.includes(n)));
     }
 
 
@@ -48649,7 +48661,7 @@ function deleteNodesAction_activateOldActiveNodes(act)
     graphView.selectByIds(act.prevSelectedIds);
     uiMakeNodesActive(oldActiveNodes);
 
-    pushUpdate(oldActiveNodes);
+    pushUpdate(act, oldActiveNodes);
 }
 
 
@@ -48673,14 +48685,14 @@ extends Action
     inputId;
 
     
-    oldActiveNodeIds = [];
-    newActiveNodeIds = [];
-
-
     get outputNode() { return nodeFromId(this.outputNodeId); }
     get output()     { return this.outputNode.outputFromId(this.outputId); }
     
     get inputNode()  { return nodeFromId(this.inputNodeId); }
+    
+    
+    oldActiveNodeIds = [];
+    newActiveNodeIds = [];
 
 
 
@@ -48757,7 +48769,7 @@ extends Action
 
         //
         
-        pushUpdate(updateNodes);
+        pushUpdate(this, updateNodes);
     }
     
     
@@ -48813,7 +48825,7 @@ extends Action
 
         //
 
-        pushUpdate(updateNodes);
+        pushUpdate(this, updateNodes);
     }
 }
 
@@ -48844,7 +48856,7 @@ extends Action
         const node = nodeFromId(this.activeId);
 
         uiMakeNodeActive(node);
-        pushUpdate([node]);
+        pushUpdate(this, [node]);
 
         uiSaveNodes(filterUnique([this.activeId, ...this.oldActiveNodeIds]));
     }
@@ -48859,7 +48871,7 @@ extends Action
         for (const id of this.oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
-        pushUpdate(this.oldActiveNodeIds.map(id => nodeFromId(id)));
+        pushUpdate(this, this.oldActiveNodeIds.map(id => nodeFromId(id)));
 
         uiSaveNodes(filterUnique([this.activeId, ...this.oldActiveNodeIds]));
     }
@@ -49058,7 +49070,7 @@ extends Action
         connectAction_updateNodes(this, updateNodes);
         connectAction_cleanup(this);
 
-        pushUpdate(updateNodes);
+        pushUpdate(this, updateNodes);
     }
 
 
@@ -49079,7 +49091,7 @@ extends Action
 
         connectAction_restoreCleanup(this);
 
-        pushUpdate(updateNodes);
+        pushUpdate(this, updateNodes);
     }
 }
 
@@ -49178,7 +49190,7 @@ extends Action
 
         uiSaveNodes(this.newActiveNodeIds);
        
-        pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
+        pushUpdate(this, updateNodes.filter(n => graph.nodes.includes(n)));
     }
 
 
@@ -49286,8 +49298,8 @@ function removeNodesAction_makeNewConnections(act)
         uiSaveConn(conn);
 
 
-             if (act.clusterActiveLeft [i]) pushUpdate([act.clusterActiveLeft [i]]);
-        else if (act.clusterActiveRight[i]) pushUpdate([act.clusterActiveRight[i]]);
+             if (act.clusterActiveLeft [i]) pushUpdate(act, [act.clusterActiveLeft [i]]);
+        else if (act.clusterActiveRight[i]) pushUpdate(act, [act.clusterActiveRight[i]]);
         else                                uiMakeNodeActive(nodeFromId(_conn.inputNodeId));
     }
 }
@@ -49391,7 +49403,7 @@ extends Action
         
         // update nodes
 
-        pushUpdate([nodeFromId(this.nodeId)]);
+        pushUpdate(this, [nodeFromId(this.nodeId)]);
     }
 
 
@@ -49405,7 +49417,7 @@ extends Action
             this.newIndex,
             this.oldIndex);
             
-        pushUpdate([node]);
+        pushUpdate(this, [node]);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -49423,7 +49435,7 @@ extends Action
 
         uiSaveNodes([this.nodeId]);
 
-        pushUpdate([node]);
+        pushUpdate(this, [node]);
     }
 }
 
@@ -49616,7 +49628,7 @@ extends Action
     do()
     {
         this.oldValue = this.param.oldValue;
-        pushUpdateFromParam([this.param.node], this.param);
+        pushUpdateFromParam(this, [this.param.node], this.param);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -49626,7 +49638,7 @@ extends Action
     undo()
     {
         this.param.setValue(this.oldValue, false, true);
-        pushUpdateFromParam([this.param.node], this.param);
+        pushUpdateFromParam(this, [this.param.node], this.param);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -49636,7 +49648,7 @@ extends Action
     redo()
     {
         this.param.setValue(this.newValue);
-        pushUpdateFromParam([this.param.node], this.param);
+        pushUpdateFromParam(this, [this.param.node], this.param);
 
         uiSaveNodes([this.nodeId]);
     }
@@ -52754,7 +52766,7 @@ function uiToggleDisableNodes(nodes)
 
 
     uiSaveNodes(nodes.map(n => n.id));
-    pushUpdate(nodes);
+    pushUpdate(null, nodes);
 }
 
 

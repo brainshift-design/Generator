@@ -187,7 +187,7 @@ function initColorControlEvents(control)
 
 
             //         if (control.value != control.prevValue)
-            //             pushUpdateFromParam([control.param.node], control.param);
+            //             pushUpdateFromParam(null, [control.param.node], control.param);
 
             //         control.prevValue = control.value;
             //     }

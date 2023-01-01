@@ -42,7 +42,7 @@ extends Action
 
         uiSaveNodes(this.newActiveNodeIds);
 
-        pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
+        pushUpdate(this, updateNodes.filter(n => graph.nodes.includes(n)));
     }
 
 
@@ -304,7 +304,7 @@ function deleteNodesAction_activateOldActiveNodes(act)
     graphView.selectByIds(act.prevSelectedIds);
     uiMakeNodesActive(oldActiveNodes);
 
-    pushUpdate(oldActiveNodes);
+    pushUpdate(act, oldActiveNodes);
 }
 
 

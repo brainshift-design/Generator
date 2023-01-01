@@ -42,11 +42,11 @@ class Parse
 
 
 
-    constructor(request, updateNodeId, updateParamId, includeLxxColorSpaces, logRequests)
+    constructor(request, firstPos, updateNodeId, updateParamId, includeLxxColorSpaces, logRequests)
     {
         this.request       = request;
           
-        this.pos           = 3; 
+        this.pos           = firstPos; 
         this.so            = 0;
         
         this.updateNodeId  = updateNodeId; 

@@ -71,7 +71,7 @@ extends Action
         connectAction_updateNodes(this, updateNodes);
         connectAction_cleanup(this);
 
-        pushUpdate(updateNodes);
+        pushUpdate(this, updateNodes);
     }
 
 
@@ -90,7 +90,7 @@ extends Action
 
         connectAction_restoreCleanup(this);
 
-        pushUpdate(updateNodes);
+        pushUpdate(this, updateNodes);
     }
 }
 

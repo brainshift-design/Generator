@@ -24,7 +24,7 @@ extends Action
         const node = nodeFromId(this.activeId);
 
         uiMakeNodeActive(node);
-        pushUpdate([node]);
+        pushUpdate(this, [node]);
 
         uiSaveNodes(filterUnique([this.activeId, ...this.oldActiveNodeIds]));
     }
@@ -39,7 +39,7 @@ extends Action
         for (const id of this.oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
-        pushUpdate(this.oldActiveNodeIds.map(id => nodeFromId(id)));
+        pushUpdate(this, this.oldActiveNodeIds.map(id => nodeFromId(id)));
 
         uiSaveNodes(filterUnique([this.activeId, ...this.oldActiveNodeIds]));
     }

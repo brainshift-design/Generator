@@ -198,7 +198,7 @@ function updateTerminalsAfterNodes(nodes)
     for (const node of nodes)
         pushUnique(terminals, getTerminalsAfterNode(node));
 
-    pushUpdate(terminals);
+    pushUpdate(null, terminals);
 }
 
 

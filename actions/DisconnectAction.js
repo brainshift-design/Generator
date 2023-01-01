@@ -9,14 +9,14 @@ extends Action
     inputId;
 
     
-    oldActiveNodeIds = [];
-    newActiveNodeIds = [];
-
-
     get outputNode() { return nodeFromId(this.outputNodeId); }
     get output()     { return this.outputNode.outputFromId(this.outputId); }
     
     get inputNode()  { return nodeFromId(this.inputNodeId); }
+    
+    
+    oldActiveNodeIds = [];
+    newActiveNodeIds = [];
 
 
 
@@ -93,7 +93,7 @@ extends Action
 
         //
         
-        pushUpdate(updateNodes);
+        pushUpdate(this, updateNodes);
     }
     
     
@@ -149,6 +149,6 @@ extends Action
 
         //
 
-        pushUpdate(updateNodes);
+        pushUpdate(this, updateNodes);
     }
 }

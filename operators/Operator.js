@@ -1042,14 +1042,14 @@ function getHeaderConnY(conns, padding, offset)
 
 
 
-function pushUpdate(nodes)
+function pushUpdate(action, nodes)
 {
-    pushUpdateFromParam(nodes, null);
+    pushUpdateFromParam(action, nodes, null);
 }
 
 
 
-function pushUpdateFromParam(nodes, param)
+function pushUpdateFromParam(action, nodes, param)
 {
     // first check if any nodes to the left are uncached
     // and replace in update array as necessary
@@ -1078,7 +1078,11 @@ function pushUpdateFromParam(nodes, param)
         | ((settings.logRequests           ? 1 : 0) << 1);
 
 
-    const request = [set.toString()];
+    const request = 
+    [
+        action ? action.id : -1,
+        set.toString()
+    ];
 
 
     if (param) request.push(param.node.id, param.id);

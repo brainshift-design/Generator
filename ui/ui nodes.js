@@ -967,7 +967,7 @@ function uiToggleDisableNodes(nodes)
 
 
     uiSaveNodes(nodes.map(n => n.id));
-    pushUpdate(nodes);
+    pushUpdate(null, nodes);
 }
 
 

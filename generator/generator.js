@@ -7,18 +7,20 @@ var lastUpdateObjects = [];
 
 function genRequest(request)
 {
-    const set = parseInt(request[0]);
+    const actionId = parseInt(request[0]);
+    const set      = parseInt(request[1]);
 
     const includeLxxColorSpaces = (set >> 0) & 1 != 0;
     const logRequests           = (set >> 1) & 1 != 0;
 
 
-    const updateNodeId  = request[1];
-    const updateParamId = request[2];
+    const updateNodeId  = request[2];
+    const updateParamId = request[3];
 
 
     const parse = new Parse(
         request, 
+        4,
         updateNodeId, 
         updateParamId, 
         includeLxxColorSpaces,
@@ -52,6 +54,7 @@ function genRequest(request)
 
 
     genUpdateValuesAndObjects(
+        actionId,
         parse.updateNodeId,
         parse.updateParamId,
         parse.updateValues,
@@ -108,15 +111,11 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, updateObjects)
+function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects)
 {
-    //console.log('genUpdateValuesAndObjects()');
-    //console.log('updateValues =', updateValues);
-
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects))
     {
-        //console.log('restoring');
         updateNodeId  = lastUpdateNodeId;
         updateParamId = lastUpdateParamId;
         updateValues  = lastUpdateValues;
@@ -126,7 +125,6 @@ function genUpdateValuesAndObjects(updateNodeId, updateParamId, updateValues, up
     }
     else if (genFigMessagePosted)
     {
-        // console.log('saving');
         lastUpdateNodeId  = updateNodeId;
         lastUpdateParamId = updateParamId;
         lastUpdateValues  = updateValues;

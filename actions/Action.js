@@ -19,6 +19,16 @@ class Action
     
     _linkWithNext = false;
 
+    
+    prevSelectedIds  = []; // currently selected nodes that are deselected as a result of creation
+    
+    oldActiveNodeIds = [];
+    newActiveNodeIds = [];
+
+    oldConnections   = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    newConnections   = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+
+
 
     constructor(name)
     {

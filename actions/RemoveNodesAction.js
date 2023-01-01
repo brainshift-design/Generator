@@ -49,7 +49,7 @@ extends Action
 
         uiSaveNodes(this.newActiveNodeIds);
        
-        pushUpdate(updateNodes.filter(n => graph.nodes.includes(n)));
+        pushUpdate(this, updateNodes.filter(n => graph.nodes.includes(n)));
     }
 
 
@@ -157,8 +157,8 @@ function removeNodesAction_makeNewConnections(act)
         uiSaveConn(conn);
 
 
-             if (act.clusterActiveLeft [i]) pushUpdate([act.clusterActiveLeft [i]]);
-        else if (act.clusterActiveRight[i]) pushUpdate([act.clusterActiveRight[i]]);
+             if (act.clusterActiveLeft [i]) pushUpdate(act, [act.clusterActiveLeft [i]]);
+        else if (act.clusterActiveRight[i]) pushUpdate(act, [act.clusterActiveRight[i]]);
         else                                uiMakeNodeActive(nodeFromId(_conn.inputNodeId));
     }
 }

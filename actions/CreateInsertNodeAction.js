@@ -9,8 +9,8 @@ extends Action
     oldInputActiveNodeId = '';
 
 
-    oldConnections = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
-    newConnections = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
+    oldConnections = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    newConnections = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
 
 
     creatingButton;
@@ -91,7 +91,7 @@ extends Action
             uiMakeNodeActive(node);
 
 
-        pushUpdate([node]);
+        pushUpdate(this, [node]);
     }
 
 
