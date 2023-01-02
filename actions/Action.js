@@ -94,16 +94,7 @@ class Action
     saveOldConnections()
     {
         for (const conn of graph.connections)
-        {
-            this.oldConnections.push(
-            {
-                outputNodeId: conn.output.node.id,
-                outputId:     conn.output.id,
-                outputOrder:  conn.outputOrder,
-                inputNodeId:  conn.input.node.id,
-                inputId:      conn.input.id
-            });
-        }
+            this.oldConnections.push(conn.toDataObject());
     }
 
 
@@ -119,11 +110,12 @@ class Action
 
     updateOldActiveNodes()
     {
-        this.oldActiveNodeIds = this.oldActiveNodeIds
-            .map(id => nodeFromId(id))
-            .filter(n => !graph.nodes.filter(n => n.active).includes(n));
+        // this.oldActiveNodeIds = this.oldActiveNodeIds
+        //     .filter(id => !graph.nodes
+        //         .filter(n => n.active)
+        //         .find(n => n.id == id));
 
-        uiDeleteObjects(this.oldActiveNodeIds); 
+        uiDeleteObjects(this.oldActiveNodeIds);
     }
 
 
@@ -132,11 +124,11 @@ class Action
     {
         this.oldConnections = this.oldConnections
             .filter(c => !graph.connections.find(gc =>
-                c.outputNodeId   == gc.outputNodeId
-                && c.outputId    == gc.outputId
-                && c.outputOrder == gc.outputOrder
-                && c.inputNodeId == gc.inputNodeId
-                && c.inputId     == gc.inputId));
+                   c.outputNodeId == gc.outputNodeId
+                && c.outputId     == gc.outputId
+                && c.outputOrder  == gc.outputOrder
+                && c.inputNodeId  == gc.inputNodeId
+                && c.inputId      == gc.inputId));
     }
 
 
@@ -175,7 +167,7 @@ class Action
 
     selectOldSelectedNodes()
     {
-
+        graphView.selectedNodes = this.oldSelectedNodeIds.map(id => nodeFromId(id));
     }
 
 

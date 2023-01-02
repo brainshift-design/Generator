@@ -55,8 +55,8 @@ extends Action
     
     do(updateNodes)
     {
-        //this.newActiveNodeIds = [];
-        //const updateNodes     = [];
+        this.oldOutputActiveNodeId = '';
+        this.inputActiveNodeIds    = [];
 
         connectAction_saveOutputActiveNodes(this);
         connectAction_saveInputActiveNodesAndValues(this);
@@ -100,6 +100,9 @@ extends Action
 function connectAction_saveOutputActiveNodes(act)
 {
     act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
+
+    if (act.oldOutputActiveNodeId != '')
+        pushUnique(act.oldActiveNodeIds, act.oldOutputActiveNodeId);
 }
 
 
@@ -108,6 +111,8 @@ function connectAction_saveInputActiveNodesAndValues(act)
 {
     act.inputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo() : [];
     act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
+
+    pushUnique(act.oldActiveNodeIds, act.inputActiveNodeIds);
 }
 
 

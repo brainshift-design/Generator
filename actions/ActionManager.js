@@ -7,17 +7,17 @@ class ActionManager
    
     
     
-    do(action, linkWithPrevious = false, linkWithNext = false)
+    do(act, linkWithPrevious = false, linkWithNext = false)
     {
         // this is a fresh new action so any 
         // old redo queue is no longer relevant
         this.redoActions = [];
 
-        this.actions.push(action);
+        this.actions.push(act);
 
-        action.id            = this.nextActionId++;
-        action.manager       = this;
-        action._linkWithNext = linkWithNext;
+        act.id            = this.nextActionId++;
+        act.manager       = this;
+        act._linkWithNext = linkWithNext;
 
         if (this.actions.length > 1)
         {
@@ -33,7 +33,7 @@ class ActionManager
         }
 
 
-        this.doAction(action);
+        this.doAction(act);
     }
 
 
@@ -84,60 +84,60 @@ class ActionManager
 
 
 
-    doAction(action, redo)
+    doAction(act, redo)
     {
         if (settings.logActions)
         {
-            if (redo) console.log("%cREDO %s", 'background: #ffd;    color: #b80;', action.name);
-            else      console.log("%cDO %s",   'background: #e8ffe8; color: #282;', action.name);
+            if (redo) console.log("%cREDO %s", 'background: #ffd;    color: #b80;', act.name);
+            else      console.log("%cDO %s",   'background: #e8ffe8; color: #282;', act.name);
         }
 
 
         const updateNodes = [];
-        action.initSaveArrays();
+        act.initSaveArrays();
 
 
-        action.saveOldSelectedNodes();
-        action.saveOldActiveNodes();
-        action.saveOldConnections();
+        act.saveOldSelectedNodes();
+        act.saveOldActiveNodes();
+        act.saveOldConnections();
 
 
-        action.do(updateNodes);
+        act.do(updateNodes);
 
 
-        action.updateOldSelectedNodes();
-        action.updateOldActiveNodes();
-        action.updateOldConnections();
+        act.updateOldSelectedNodes();
+        act.updateOldActiveNodes();
+        act.updateOldConnections();
 
 
-        pushUpdate(this, updateNodes);
+        pushUpdate(act, updateNodes);
     }
 
 
 
-    undoAction(action)
+    undoAction(act)
     {
         if (settings.logActions)
-            console.log("%cUNDO %s", 'background: #fff4e8; color: #c64;', action.name);
+            console.log("%cUNDO %s", 'background: #fff4e8; color: #c64;', act.name);
 
 
         const updateNodes = [];
 
 
-        action.deleteNewConnections();
-        action.deactivateNewActiveNodes();
-        action.deselectNewSelectedNodes();
+        act.deleteNewConnections();
+        act.deactivateNewActiveNodes();
+        act.deselectNewSelectedNodes();
 
 
-        action.undo(updateNodes); 
+        act.undo(updateNodes); 
 
 
-        action.restoreOldConnections();
-        action.activateOldActiveNodes(updateNodes);
-        action.selectOldSelectedNodes();
+        act.restoreOldConnections();
+        act.activateOldActiveNodes(updateNodes);
+        act.selectOldSelectedNodes();
 
 
-        pushUpdate(this, updateNodes);
+        pushUpdate(act, updateNodes);
     }
 }
 
