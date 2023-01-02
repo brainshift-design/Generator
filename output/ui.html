@@ -47599,13 +47599,14 @@ class Action
     _linkWithNext = false;
 
     
-    prevSelectedIds  = []; // currently selected nodes that are deselected as a result of creation
-    
-    oldActiveNodeIds = [];
-    newActiveNodeIds = [];
+    oldSelectedNodeIds = []; // currently selected nodes that are deselected as a result of the action
+    newSelectedNodeIds = []; // nodes newly selected as a result of the action
+   
+    oldActiveNodeIds   = [];
+    newActiveNodeIds   = [];
 
-    oldConnections   = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
-    newConnections   = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    oldConnections     = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    newConnections     = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
 
 
 
@@ -47634,6 +47635,161 @@ class Action
 
 
     undo() {}
+
+
+
+    initSaveArrays()
+    {
+        this.oldSelectedNodeIds = [];
+        this.newSelectedNodeIds = [];
+    
+        this.oldActiveNodeIds   = [];
+        this.newActiveNodeIds   = [];
+
+        this.oldConnections     = [];
+        this.newConnections     = [];
+    }
+
+
+
+    ////////////////////////////////////////////////////////////////////////
+
+
+
+    saveOldSelectedNodes()
+    {
+        this.oldSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
+    }
+
+
+
+    saveOldActiveNodes()
+    {
+        this.oldActiveNodeIds = graph.nodes.filter(n => n.active).map(n => n.id);
+    }
+
+
+
+    saveOldConnections()
+    {
+        for (const conn of graph.connections)
+        {
+            this.oldConnections.push(
+            {
+                outputNodeId: conn.output.node.id,
+                outputId:     conn.output.id,
+                outputOrder:  conn.outputOrder,
+                inputNodeId:  conn.input.node.id,
+                inputId:      conn.input.id
+            });
+        }
+    }
+
+
+
+    updateOldSelectedNodes()
+    {
+        this.oldSelectedNodeIds = this.oldSelectedNodeIds
+            .map(id => nodeFromId(id))
+            .filter(n => !graphView.selectedNodes.includes(n));
+    }
+
+
+
+    updateOldActiveNodes()
+    {
+        this.oldActiveNodeIds = this.oldActiveNodeIds
+            .map(id => nodeFromId(id))
+            .filter(n => !graph.nodes.filter(n => n.active).includes(n));
+
+        uiDeleteObjects(this.oldActiveNodeIds); 
+    }
+
+
+
+    updateOldConnections()
+    {
+        this.oldConnections = this.oldConnections
+            .filter(c => !graph.connections.find(gc =>
+                c.outputNodeId   == gc.outputNodeId
+                && c.outputId    == gc.outputId
+                && c.outputOrder == gc.outputOrder
+                && c.inputNodeId == gc.inputNodeId
+                && c.inputId     == gc.inputId));
+    }
+
+
+
+    ////////////////////////////////////////////////////////////////////////
+
+
+
+    deselectNewSelectedNodes()
+    {
+
+    }
+
+
+
+    deactivateNewActiveNodes()
+    {
+        for (const id of this.newActiveNodeIds)
+            uiMakeNodePassive(nodeFromId(id));
+
+        uiDeleteObjects(this.newActiveNodeIds); 
+    }
+
+
+
+    deleteNewConnections()
+    {
+        for (const conn of this.newConnections)
+        {
+            uiDeleteSavedConn(conn);
+            uiDisconnect(conn.input);
+        }
+    }
+
+
+
+    selectOldSelectedNodes()
+    {
+
+    }
+
+
+
+    activateOldActiveNodes(updateNodes)
+    {
+        for (const id of this.oldActiveNodeIds)
+        {
+            const node = nodeFromId(id);
+            
+            uiMakeNodeActive(node);
+            pushUnique(updateNodes, node);
+        }
+    }
+
+
+
+    restoreOldConnections()
+    {
+        for (const _conn of this.oldConnections)
+        {
+            const outputNode = nodeFromId(_conn.outputNodeId);
+            const output     = outputNode.outputFromId(_conn.outputId);
+
+            output.updateSavedConnectionOrder(_conn.outputOrder, +1);
+
+
+            const oldConn = uiVariableConnect(
+                outputNode,                    _conn.outputId,
+                nodeFromId(_conn.inputNodeId), _conn.inputId,
+                _conn.outputOrder);
+
+            uiSaveConn(oldConn);
+        }
+    }
 };
 
 
@@ -47680,16 +47836,7 @@ class ActionManager
         }
 
 
-        if (settings.logActions)
-        {
-            console.log(
-                "%cDO %s", 
-                'background: #e8ffe8; \
-                 color:      #282;', 
-                action.name);
-        }
-        
-        action.do(); 
+        this.doAction(action);
     }
 
 
@@ -47706,16 +47853,7 @@ class ActionManager
             this.redoActions.push(last);
 
 
-            if (settings.logActions)
-            {
-                console.log(
-                    "%cUNDO %s", 
-                    'background: #fff4e8; \
-                     color:      #c64;', 
-                    last.name);
-            }
-
-            last.undo(); 
+            this.undoAction(last);
 
 
             if (   isEmpty(this.actions)
@@ -47738,22 +47876,71 @@ class ActionManager
             this.actions.push(last);
 
 
-            if (settings.logActions)
-            {
-                console.log(
-                    "%cREDO %s", 
-                    'background: #ffd; \
-                     color:      #b80;', 
-                    last.name);
-            }
+            this.doAction(last);
 
-            last.redo(); 
-        
 
             if (   isEmpty(this.redoActions)
                 || last.nextAction != lastOf(this.redoActions))
                 break;
         }
+    }
+
+
+
+    doAction(action, redo)
+    {
+        if (settings.logActions)
+        {
+            if (redo) console.log("%cREDO %s", 'background: #ffd;    color: #b80;', action.name);
+            else      console.log("%cDO %s",   'background: #e8ffe8; color: #282;', action.name);
+        }
+
+
+        const updateNodes = [];
+        action.initSaveArrays();
+
+
+        action.saveOldSelectedNodes();
+        action.saveOldActiveNodes();
+        action.saveOldConnections();
+
+
+        action.do(updateNodes);
+
+
+        action.updateOldSelectedNodes();
+        action.updateOldActiveNodes();
+        action.updateOldConnections();
+
+
+        pushUpdate(this, updateNodes);
+    }
+
+
+
+    undoAction(action)
+    {
+        if (settings.logActions)
+            console.log("%cUNDO %s", 'background: #fff4e8; color: #c64;', action.name);
+
+
+        const updateNodes = [];
+
+
+        action.deleteNewConnections();
+        action.deactivateNewActiveNodes();
+        action.deselectNewSelectedNodes();
+
+
+        action.undo(updateNodes); 
+
+
+        action.restoreOldConnections();
+        action.activateOldActiveNodes(updateNodes);
+        action.selectOldSelectedNodes();
+
+
+        pushUpdate(this, updateNodes);
     }
 }
 
@@ -47774,7 +47961,7 @@ extends Action
     inputActiveNodeIds    = [];
     inputValues           = []; // in id,value pairs, to be restored on undo
 
-    newActiveNodeIds      = [];
+    //newActiveNodeIds      = [];
     
     oldOutputNodeId       = '';
     oldOutputId;
@@ -47817,13 +48004,14 @@ extends Action
 
 
     
-    do()
+    do(updateNodes)
     {
-        this.newActiveNodeIds = [];
-        const updateNodes     = [];
+        //this.newActiveNodeIds = [];
+        //const updateNodes     = [];
 
         connectAction_saveOutputActiveNodes(this);
         connectAction_saveInputActiveNodesAndValues(this);
+        //connectAction_saveInputValues(this);
         
         connectAction_removeOldOutputConnection(this);
         
@@ -47833,28 +48021,28 @@ extends Action
         connectAction_updateInputActiveNodes(this, updateNodes);
 
         connectAction_updateNodes(this, updateNodes);
-        connectAction_cleanup(this);
+        // connectAction_cleanup(this);
 
-        pushUpdate(this, updateNodes);
+        //pushUpdate(this, updateNodes);
     }
 
 
 
-    undo()
+    undo(updateNodes)
     {
-        const updateNodes = [];
+        //const updateNodes = [];
 
-        connectAction_removeNewConnection(this);
+        // connectAction_removeNewConnection(this);
 
-        connectAction_restoreOldConnection(this);
+        // connectAction_restoreOldConnection(this);
         connectAction_restoreInputValues(this);
 
-        connectAction_deactivateNewActiveNodes(this);
-        connectAction_activateOldActiveNodes(this, updateNodes); 
+        //connectAction_deactivateNewActiveNodes(this);
+        //connectAction_activateOldActiveNodes(this, updateNodes); 
 
-        connectAction_restoreCleanup(this);
+        // connectAction_restoreCleanup(this);
 
-        pushUpdate(this, updateNodes);
+        //pushUpdate(this, updateNodes);
     }
 }
 
@@ -47875,10 +48063,18 @@ function connectAction_saveInputActiveNodesAndValues(act)
 
 
 
+// function connectAction_saveInputValues(act)
+// {
+//     act.inputValues = act.input.getValuesForUndo ? act.input.getValuesForUndo() : [];
+// }
+
+
+
 function connectAction_makeNewConnection(act)
 {
     const conn = uiConnect(act.output, act.input, act.inputId);
             
+    act.newConnections.push(conn);
     act.outputOrder = conn.outputOrder;
 
     uiSaveConn(conn);
@@ -47946,39 +48142,39 @@ function connectAction_updateNodes(act, updateNodes)
 
 
 
-function connectAction_cleanup(act)
-{
-    uiDeleteObjects([
-        act.oldOutputActiveNodeId, 
-     ...act.inputActiveNodeIds]); 
-}
+// function connectAction_cleanup(act)
+// {
+//     uiDeleteObjects([
+//         act.oldOutputActiveNodeId, 
+//      ...act.inputActiveNodeIds]); 
+// }
 
 
 
-function connectAction_removeNewConnection(act)
-{
-    const input = act.inputNode.inputFromId(act.inputId);
+// function connectAction_removeNewConnection(act)
+// {
+//     const input = act.inputNode.inputFromId(act.inputId);
 
-    uiDeleteSavedConn(input.connection);
-    uiDisconnect(input);
-}
+//     uiDeleteSavedConn(input.connection);
+//     uiDisconnect(input);
+// }
 
 
 
-function connectAction_restoreOldConnection(act)
-{
-    if (act.oldOutputNodeId != '')
-    {
-        act.oldOutput.updateSavedConnectionOrder(act.oldOutputOrder, +1);
+// function connectAction_restoreOldConnection(act)
+// {
+//     if (act.oldOutputNodeId != '')
+//     {
+//         act.oldOutput.updateSavedConnectionOrder(act.oldOutputOrder, +1);
 
-        const oldConn = uiVariableConnect(
-            act.oldOutputNode, act.oldOutputId, 
-            act.inputNode,     act.inputId,
-            act.oldOutputOrder);
+//         const oldConn = uiVariableConnect(
+//             act.oldOutputNode, act.oldOutputId, 
+//             act.inputNode,     act.inputId,
+//             act.oldOutputOrder);
 
-        uiSaveConn(oldConn);
-    }
-}
+//         uiSaveConn(oldConn);
+//     }
+// }
 
 
 
@@ -48004,46 +48200,46 @@ function connectAction_restoreInputValues(act)
 
 
 
-function connectAction_deactivateNewActiveNodes(act)
-{
-    for (const id of act.newActiveNodeIds)
-        uiMakeNodePassive(nodeFromId(id));
+// function connectAction_deactivateNewActiveNodes(act)
+// {
+//     for (const id of act.newActiveNodeIds)
+//         uiMakeNodePassive(nodeFromId(id));
 
-    uiDeleteObjects(act.newActiveNodeIds); 
-}
+//     uiDeleteObjects(act.newActiveNodeIds); 
+// }
 
 
 
-function connectAction_activateOldActiveNodes(act, updateNodes)
-{
-    for (const id of act.inputActiveNodeIds)
-    {
-        const oldInputActiveNode = nodeFromId(id);
+// function connectAction_activateOldActiveNodes(act, updateNodes)
+// {
+//     for (const id of act.inputActiveNodeIds)
+//     {
+//         const oldInputActiveNode = nodeFromId(id);
         
-        uiMakeNodeActive(oldInputActiveNode);
-        pushUnique(updateNodes, oldInputActiveNode);
-    }
+//         uiMakeNodeActive(oldInputActiveNode);
+//         pushUnique(updateNodes, oldInputActiveNode);
+//     }
 
     
-    if (    act.oldOutputActiveNodeId != ''
-        && !act.inputActiveNodeIds.includes(act.oldOutputActiveNodeId))
-    {
-        console.assert(act.oldOutputActiveNodeId != '', 'there should be an old output active node ID at this point')
+//     if (    act.oldOutputActiveNodeId != ''
+//         && !act.inputActiveNodeIds.includes(act.oldOutputActiveNodeId))
+//     {
+//         console.assert(act.oldOutputActiveNodeId != '', 'there should be an old output active node ID at this point')
 
-        const oldOutputActiveNode = nodeFromId(act.oldOutputActiveNodeId);
+//         const oldOutputActiveNode = nodeFromId(act.oldOutputActiveNodeId);
 
-        uiMakeNodeActive(oldOutputActiveNode);
-        pushUnique(updateNodes, oldOutputActiveNode);
-    }
-}
+//         uiMakeNodeActive(oldOutputActiveNode);
+//         pushUnique(updateNodes, oldOutputActiveNode);
+//     }
+// }
 
 
 
-function connectAction_restoreCleanup(act)
-{
-    act.oldOutputActiveNodeId = '';
-    act.inputActiveNodeIds = [];
-}
+// function connectAction_restoreCleanup(act)
+// {
+//     act.oldOutputActiveNodeId = '';
+//     act.inputActiveNodeIds = [];
+// }
 
 
 class CreateInsertNodeAction

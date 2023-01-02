@@ -33,16 +33,7 @@ class ActionManager
         }
 
 
-        if (settings.logActions)
-        {
-            console.log(
-                "%cDO %s", 
-                'background: #e8ffe8; \
-                 color:      #282;', 
-                action.name);
-        }
-        
-        action.do(); 
+        this.doAction(action);
     }
 
 
@@ -59,16 +50,7 @@ class ActionManager
             this.redoActions.push(last);
 
 
-            if (settings.logActions)
-            {
-                console.log(
-                    "%cUNDO %s", 
-                    'background: #fff4e8; \
-                     color:      #c64;', 
-                    last.name);
-            }
-
-            last.undo(); 
+            this.undoAction(last);
 
 
             if (   isEmpty(this.actions)
@@ -91,22 +73,71 @@ class ActionManager
             this.actions.push(last);
 
 
-            if (settings.logActions)
-            {
-                console.log(
-                    "%cREDO %s", 
-                    'background: #ffd; \
-                     color:      #b80;', 
-                    last.name);
-            }
+            this.doAction(last);
 
-            last.redo(); 
-        
 
             if (   isEmpty(this.redoActions)
                 || last.nextAction != lastOf(this.redoActions))
                 break;
         }
+    }
+
+
+
+    doAction(action, redo)
+    {
+        if (settings.logActions)
+        {
+            if (redo) console.log("%cREDO %s", 'background: #ffd;    color: #b80;', action.name);
+            else      console.log("%cDO %s",   'background: #e8ffe8; color: #282;', action.name);
+        }
+
+
+        const updateNodes = [];
+        action.initSaveArrays();
+
+
+        action.saveOldSelectedNodes();
+        action.saveOldActiveNodes();
+        action.saveOldConnections();
+
+
+        action.do(updateNodes);
+
+
+        action.updateOldSelectedNodes();
+        action.updateOldActiveNodes();
+        action.updateOldConnections();
+
+
+        pushUpdate(this, updateNodes);
+    }
+
+
+
+    undoAction(action)
+    {
+        if (settings.logActions)
+            console.log("%cUNDO %s", 'background: #fff4e8; color: #c64;', action.name);
+
+
+        const updateNodes = [];
+
+
+        action.deleteNewConnections();
+        action.deactivateNewActiveNodes();
+        action.deselectNewSelectedNodes();
+
+
+        action.undo(updateNodes); 
+
+
+        action.restoreOldConnections();
+        action.activateOldActiveNodes(updateNodes);
+        action.selectOldSelectedNodes();
+
+
+        pushUpdate(this, updateNodes);
     }
 }
 
