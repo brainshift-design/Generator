@@ -42529,12 +42529,12 @@ extends OperatorBase
 
     updateParams()
     {
+        super.updateParams();
+
         this.paramValue.enableControlText(false);
         
         this.paramValue.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
         this.paramValue.control.showBar   = !this.isUnknown();
-
-        super.updateParams();
     }
 
 
@@ -46461,12 +46461,6 @@ class Action
     _linkWithNext = false;
 
     
-    oldSelectedNodeIds = []; // currently selected nodes that are deselected as a result of the action
-    newSelectedNodeIds = []; // nodes newly selected as a result of the action
-   
-    oldActiveNodeIds   = [];
-    newActiveNodeIds   = [];
-
     oldConnections     = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
     newConnections     = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
 
@@ -46485,29 +46479,14 @@ class Action
 
 
 
-    do() {}
-
-
-
-    redo()
-    {
-        this.do();
-    }
-
-
-
+    do  () {}
     undo() {}
+    redo() { this.do(); }
 
 
 
     initSaveArrays()
     {
-        this.oldSelectedNodeIds = [];
-        this.newSelectedNodeIds = [];
-    
-        this.oldActiveNodeIds   = [];
-        this.newActiveNodeIds   = [];
-
         this.oldConnections     = [];
         this.newConnections     = [];
     }
@@ -46518,45 +46497,10 @@ class Action
 
 
 
-    saveOldSelectedNodes()
-    {
-        this.oldSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
-    }
-
-
-
-    saveOldActiveNodes()
-    {
-        this.oldActiveNodeIds = graph.nodes.filter(n => n.active).map(n => n.id);
-    }
-
-
-
     saveOldConnections()
     {
         for (const conn of graph.connections)
             this.oldConnections.push(conn.toDataObject());
-    }
-
-
-
-    updateOldSelectedNodes()
-    {
-        this.oldSelectedNodeIds = this.oldSelectedNodeIds
-            .map(id => nodeFromId(id))
-            .filter(n => !graphView.selectedNodes.includes(n));
-    }
-
-
-
-    updateOldActiveNodes()
-    {
-        this.oldActiveNodeIds = this.oldActiveNodeIds
-            .filter(id => !graph.nodes
-                .filter(n => n.active)
-                .find(n => n.id == id));
-
-        uiDeleteObjects(this.oldActiveNodeIds);
     }
 
 
@@ -46578,49 +46522,12 @@ class Action
 
 
 
-    deselectNewSelectedNodes()
-    {
-
-    }
-
-
-
-    deactivateNewActiveNodes()
-    {
-        for (const id of this.newActiveNodeIds)
-            uiMakeNodePassive(nodeFromId(id));
-
-        uiDeleteObjects(this.newActiveNodeIds); 
-    }
-
-
-
     deleteNewConnections()
     {
         for (const conn of this.newConnections)
         {
             uiDeleteSavedConn(conn);
             uiDisconnect(conn.input);
-        }
-    }
-
-
-
-    selectOldSelectedNodes()
-    {
-        graphView.selectedNodes = this.oldSelectedNodeIds.map(id => nodeFromId(id));
-    }
-
-
-
-    activateOldActiveNodes(updateNodes)
-    {
-        for (const id of this.oldActiveNodeIds)
-        {
-            const node = nodeFromId(id);
-            
-            uiMakeNodeActive(node);
-            pushUnique(updateNodes, node);
         }
     }
 
@@ -46754,16 +46661,16 @@ class ActionManager
         act.initSaveArrays();
 
 
-        act.saveOldSelectedNodes();
-        act.saveOldActiveNodes();
+        //act.saveOldSelectedNodes();
+        //act.saveOldActiveNodes();
         act.saveOldConnections();
 
 
         act.do(updateNodes);
 
 
-        act.updateOldSelectedNodes();
-        act.updateOldActiveNodes();
+        //act.updateOldSelectedNodes();
+        //act.updateOldActiveNodes();
         act.updateOldConnections();
 
 
@@ -46782,16 +46689,16 @@ class ActionManager
 
 
         act.deleteNewConnections();
-        act.deactivateNewActiveNodes();
-        act.deselectNewSelectedNodes();
+        //act.deactivateNewActiveNodes();
+        //act.deselectNewSelectedNodes();
 
 
         act.undo(updateNodes); 
 
 
         act.restoreOldConnections();
-        act.activateOldActiveNodes(updateNodes);
-        act.selectOldSelectedNodes();
+        // act.activateOldActiveNodes(updateNodes);
+        //act.selectOldSelectedNodes();
 
 
         pushUpdate(act, updateNodes);
@@ -46815,7 +46722,7 @@ extends Action
     inputActiveNodeIds    = [];
     inputValues           = []; // in id,value pairs, to be restored on undo
 
-    //newActiveNodeIds      = [];
+    newActiveNodeIds      = [];
     
     oldOutputNodeId       = '';
     oldOutputId;
@@ -46865,7 +46772,6 @@ extends Action
 
         connectAction_saveOutputActiveNodes(this);
         connectAction_saveInputActiveNodesAndValues(this);
-        //connectAction_saveInputValues(this);
         
         connectAction_removeOldOutputConnection(this);
         
@@ -46891,8 +46797,8 @@ extends Action
         // connectAction_restoreOldConnection(this);
         connectAction_restoreInputValues(this);
 
-        //connectAction_deactivateNewActiveNodes(this);
-        //connectAction_activateOldActiveNodes(this, updateNodes); 
+        connectAction_deactivateNewActiveNodes(this);
+        connectAction_activateOldActiveNodes(this, updateNodes); 
 
         // connectAction_restoreCleanup(this);
 
@@ -46905,9 +46811,6 @@ extends Action
 function connectAction_saveOutputActiveNodes(act)
 {
     act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
-
-    // if (act.oldOutputActiveNodeId != '')
-    //     pushUnique(act.oldActiveNodeIds, act.oldOutputActiveNodeId);
 }
 
 
@@ -46916,16 +46819,7 @@ function connectAction_saveInputActiveNodesAndValues(act)
 {
     act.inputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo() : [];
     act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
-
-    //pushUnique(act.oldActiveNodeIds, act.inputActiveNodeIds);
 }
-
-
-
-// function connectAction_saveInputValues(act)
-// {
-//     act.inputValues = act.input.getValuesForUndo ? act.input.getValuesForUndo() : [];
-// }
 
 
 
@@ -47059,38 +46953,38 @@ function connectAction_restoreInputValues(act)
 
 
 
-// function connectAction_deactivateNewActiveNodes(act)
-// {
-//     for (const id of act.newActiveNodeIds)
-//         uiMakeNodePassive(nodeFromId(id));
+function connectAction_deactivateNewActiveNodes(act)
+{
+    for (const id of act.newActiveNodeIds)
+        uiMakeNodePassive(nodeFromId(id));
 
-//     uiDeleteObjects(act.newActiveNodeIds); 
-// }
+    uiDeleteObjects(act.newActiveNodeIds); 
+}
 
 
 
-// function connectAction_activateOldActiveNodes(act, updateNodes)
-// {
-//     for (const id of act.inputActiveNodeIds)
-//     {
-//         const oldInputActiveNode = nodeFromId(id);
+function connectAction_activateOldActiveNodes(act, updateNodes)
+{
+    for (const id of act.inputActiveNodeIds)
+    {
+        const oldInputActiveNode = nodeFromId(id);
         
-//         uiMakeNodeActive(oldInputActiveNode);
-//         pushUnique(updateNodes, oldInputActiveNode);
-//     }
+        uiMakeNodeActive(oldInputActiveNode);
+        pushUnique(updateNodes, oldInputActiveNode);
+    }
 
     
-//     if (    act.oldOutputActiveNodeId != ''
-//         && !act.inputActiveNodeIds.includes(act.oldOutputActiveNodeId))
-//     {
-//         console.assert(act.oldOutputActiveNodeId != '', 'there should be an old output active node ID at this point')
+    if (    act.oldOutputActiveNodeId != ''
+        && !act.inputActiveNodeIds.includes(act.oldOutputActiveNodeId))
+    {
+        console.assert(act.oldOutputActiveNodeId != '', 'there should be an old output active node ID at this point')
 
-//         const oldOutputActiveNode = nodeFromId(act.oldOutputActiveNodeId);
+        const oldOutputActiveNode = nodeFromId(act.oldOutputActiveNodeId);
 
-//         uiMakeNodeActive(oldOutputActiveNode);
-//         pushUnique(updateNodes, oldOutputActiveNode);
-//     }
-// }
+        uiMakeNodeActive(oldOutputActiveNode);
+        pushUnique(updateNodes, oldOutputActiveNode);
+    }
+}
 
 
 
@@ -51313,60 +51207,8 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder
 
 function uiConnect(output, input, inputId = '', outputOrder = -1)
 {
-    const conn = graph.connect(output, input, inputId, outputOrder);
-
-    // uiSaveConnection(
-    //     output.node.id,
-    //     output.id,
-    //     input.node.id,
-    //     input.id,
-    //     conn.toJson());
-
-    return conn;
+    return graph.connect(output, input, inputId, outputOrder);
 }
-
-
-
-// function uiVariableConnectByIndex(outputNode, outputIndex, inputNode, inputIndex)
-// {
-//     //console.log('uiVariableConnect()');
-
-//     if (inputNode.variableInputs)
-//     {
-//         const input = lastOf(inputNode.inputs);
-
-//         const conn = uiConnectByIndex(
-//             outputNode.outputs[outputIndex],
-//             input,
-//             inputIndex);
-
-//         uiUpdateSavedConnectionsToNodeId(inputNode.id);
-
-//         return conn;
-//     }
-//     else
-//     {
-//         return uiConnect(
-//             outputNode.outputs[outputIndex],
-//              inputNode. inputs[ inputIndex]);
-//     }
-// }
-
-
-
-// function uiConnectByIndex(output, input, inputIndex = -1)
-// {
-//     const conn = graph.connect(output, input, inputIndex);
-
-//     uiSaveConnection(
-//         output.node.id,
-//         output.index,
-//         input.node.id,
-//         input.index,
-//         conn.toJson());
-
-//     return conn;
-// }
 
 
 
@@ -51377,8 +51219,6 @@ function uiDisconnect(input)
     const node = input.node;
 
     graph.disconnect(input);
-
-    //node.updateNode();
 
     if (node.variableInputs)
         uiUpdateSavedConnectionsToNodeId(node.id);
@@ -51395,8 +51235,6 @@ function uiDisconnectAny(input)
     uiDeleteSavedConnectionsToNodeId(input.node.id);
 
     graph.disconnect(input);
-
-    //node.updateNode();
 }
 
 

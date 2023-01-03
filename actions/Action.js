@@ -20,12 +20,6 @@ class Action
     _linkWithNext = false;
 
     
-    oldSelectedNodeIds = []; // currently selected nodes that are deselected as a result of the action
-    newSelectedNodeIds = []; // nodes newly selected as a result of the action
-   
-    oldActiveNodeIds   = [];
-    newActiveNodeIds   = [];
-
     oldConnections     = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
     newConnections     = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
 
@@ -44,29 +38,14 @@ class Action
 
 
 
-    do() {}
-
-
-
-    redo()
-    {
-        this.do();
-    }
-
-
-
+    do  () {}
     undo() {}
+    redo() { this.do(); }
 
 
 
     initSaveArrays()
     {
-        this.oldSelectedNodeIds = [];
-        this.newSelectedNodeIds = [];
-    
-        this.oldActiveNodeIds   = [];
-        this.newActiveNodeIds   = [];
-
         this.oldConnections     = [];
         this.newConnections     = [];
     }
@@ -77,45 +56,10 @@ class Action
 
 
 
-    saveOldSelectedNodes()
-    {
-        this.oldSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
-    }
-
-
-
-    saveOldActiveNodes()
-    {
-        this.oldActiveNodeIds = graph.nodes.filter(n => n.active).map(n => n.id);
-    }
-
-
-
     saveOldConnections()
     {
         for (const conn of graph.connections)
             this.oldConnections.push(conn.toDataObject());
-    }
-
-
-
-    updateOldSelectedNodes()
-    {
-        this.oldSelectedNodeIds = this.oldSelectedNodeIds
-            .map(id => nodeFromId(id))
-            .filter(n => !graphView.selectedNodes.includes(n));
-    }
-
-
-
-    updateOldActiveNodes()
-    {
-        this.oldActiveNodeIds = this.oldActiveNodeIds
-            .filter(id => !graph.nodes
-                .filter(n => n.active)
-                .find(n => n.id == id));
-
-        uiDeleteObjects(this.oldActiveNodeIds);
     }
 
 
@@ -137,49 +81,12 @@ class Action
 
 
 
-    deselectNewSelectedNodes()
-    {
-
-    }
-
-
-
-    deactivateNewActiveNodes()
-    {
-        for (const id of this.newActiveNodeIds)
-            uiMakeNodePassive(nodeFromId(id));
-
-        uiDeleteObjects(this.newActiveNodeIds); 
-    }
-
-
-
     deleteNewConnections()
     {
         for (const conn of this.newConnections)
         {
             uiDeleteSavedConn(conn);
             uiDisconnect(conn.input);
-        }
-    }
-
-
-
-    selectOldSelectedNodes()
-    {
-        graphView.selectedNodes = this.oldSelectedNodeIds.map(id => nodeFromId(id));
-    }
-
-
-
-    activateOldActiveNodes(updateNodes)
-    {
-        for (const id of this.oldActiveNodeIds)
-        {
-            const node = nodeFromId(id);
-            
-            uiMakeNodeActive(node);
-            pushUnique(updateNodes, node);
         }
     }
 

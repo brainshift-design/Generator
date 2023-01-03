@@ -97,16 +97,16 @@ class ActionManager
         act.initSaveArrays();
 
 
-        act.saveOldSelectedNodes();
-        act.saveOldActiveNodes();
+        //act.saveOldSelectedNodes();
+        //act.saveOldActiveNodes();
         act.saveOldConnections();
 
 
         act.do(updateNodes);
 
 
-        act.updateOldSelectedNodes();
-        act.updateOldActiveNodes();
+        //act.updateOldSelectedNodes();
+        //act.updateOldActiveNodes();
         act.updateOldConnections();
 
 
@@ -125,16 +125,16 @@ class ActionManager
 
 
         act.deleteNewConnections();
-        act.deactivateNewActiveNodes();
-        act.deselectNewSelectedNodes();
+        //act.deactivateNewActiveNodes();
+        //act.deselectNewSelectedNodes();
 
 
         act.undo(updateNodes); 
 
 
         act.restoreOldConnections();
-        act.activateOldActiveNodes(updateNodes);
-        act.selectOldSelectedNodes();
+        // act.activateOldActiveNodes(updateNodes);
+        //act.selectOldSelectedNodes();
 
 
         pushUpdate(act, updateNodes);

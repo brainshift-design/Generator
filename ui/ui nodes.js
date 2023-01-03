@@ -459,60 +459,8 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder
 
 function uiConnect(output, input, inputId = '', outputOrder = -1)
 {
-    const conn = graph.connect(output, input, inputId, outputOrder);
-
-    // uiSaveConnection(
-    //     output.node.id,
-    //     output.id,
-    //     input.node.id,
-    //     input.id,
-    //     conn.toJson());
-
-    return conn;
+    return graph.connect(output, input, inputId, outputOrder);
 }
-
-
-
-// function uiVariableConnectByIndex(outputNode, outputIndex, inputNode, inputIndex)
-// {
-//     //console.log('uiVariableConnect()');
-
-//     if (inputNode.variableInputs)
-//     {
-//         const input = lastOf(inputNode.inputs);
-
-//         const conn = uiConnectByIndex(
-//             outputNode.outputs[outputIndex],
-//             input,
-//             inputIndex);
-
-//         uiUpdateSavedConnectionsToNodeId(inputNode.id);
-
-//         return conn;
-//     }
-//     else
-//     {
-//         return uiConnect(
-//             outputNode.outputs[outputIndex],
-//              inputNode. inputs[ inputIndex]);
-//     }
-// }
-
-
-
-// function uiConnectByIndex(output, input, inputIndex = -1)
-// {
-//     const conn = graph.connect(output, input, inputIndex);
-
-//     uiSaveConnection(
-//         output.node.id,
-//         output.index,
-//         input.node.id,
-//         input.index,
-//         conn.toJson());
-
-//     return conn;
-// }
 
 
 
@@ -523,8 +471,6 @@ function uiDisconnect(input)
     const node = input.node;
 
     graph.disconnect(input);
-
-    //node.updateNode();
 
     if (node.variableInputs)
         uiUpdateSavedConnectionsToNodeId(node.id);
@@ -541,8 +487,6 @@ function uiDisconnectAny(input)
     uiDeleteSavedConnectionsToNodeId(input.node.id);
 
     graph.disconnect(input);
-
-    //node.updateNode();
 }
 
 
