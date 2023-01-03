@@ -67,12 +67,9 @@ class Action
     updateOldConnections()
     {
         this.oldConnections = this.oldConnections
-            .filter(c => !graph.connections.find(gc =>
-                   c.outputNodeId == gc.outputNodeId
-                && c.outputId     == gc.outputId
-                && c.outputOrder  == gc.outputOrder
-                && c.inputNodeId  == gc.inputNodeId
-                && c.inputId      == gc.inputId));
+            .filter(c => !graph.connections.find(gc => !connEqual(gc, c)));
+
+        console.log('this.oldConnections =', this.oldConnections);
     }
 
 

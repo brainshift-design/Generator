@@ -38724,6 +38724,17 @@ function updateWireStyle(wire)
 }
 
 
+
+function connEqual(c1, c2)
+{
+    return c1.outputNodeId == c2.outputNodeId
+        && c1.outputId     == c2.outputId
+        && c1.outputOrder  == c2.outputOrder
+        && c1.inputNodeId  == c2.inputNodeId
+        && c1.inputId      == c2.inputId;
+}
+
+
 /*
     Operators don't have data types, those are inferred from the outputs.
 
@@ -46508,12 +46519,9 @@ class Action
     updateOldConnections()
     {
         this.oldConnections = this.oldConnections
-            .filter(c => !graph.connections.find(gc =>
-                   c.outputNodeId == gc.outputNodeId
-                && c.outputId     == gc.outputId
-                && c.outputOrder  == gc.outputOrder
-                && c.inputNodeId  == gc.inputNodeId
-                && c.inputId      == gc.inputId));
+            .filter(c => !graph.connections.find(gc => !connEqual(gc, c)));
+
+        console.log('this.oldConnections =', this.oldConnections);
     }
 
 
