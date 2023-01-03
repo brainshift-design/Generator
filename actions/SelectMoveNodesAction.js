@@ -63,9 +63,9 @@ extends Action
 
 
     
-    do()
+    do(updateNodes)
     {
-        const movedIds   = this.getMovedIds();
+        const movedIds   = [...this.getMovedIds()];
         const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
         for (var i = 0; i < movedNodes.length; i++)
@@ -82,9 +82,9 @@ extends Action
 
 
 
-    undo()
+    undo(updateNodes)
     {
-        const movedIds   = this.getMovedIds();
+        const movedIds   = [...this.getMovedIds()];
         const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
         for (var i = 0; i < movedNodes.length; i++)
@@ -103,10 +103,10 @@ extends Action
 
 
 
-    redo()
+    redo(updateNodes)
     {
-        this.do();
-
+        this.do(updateNodes);
+console.log('this.getMovedIds() =', this.getMovedIds());
         graphView.selectByIds(this.getMovedIds());
     }
 }

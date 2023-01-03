@@ -31,14 +31,15 @@ graphView.deselectAll = () =>
 
 graphView.selectByIds = (nodeIds) =>
 {
-    graphView.deselectAll();
+    graphView.selectedNodes = nodeIds.map(id => nodeFromId(id));
+    // graphView.deselectAll();
 
-    for (const id of nodeIds)
-    {
-        const node = nodeFromId(id);
-        graphView._selectedNodes.push(node);
-        node.setSelected(true);
-    }
+    // for (const id of nodeIds)
+    // {
+    //     const node = nodeFromId(id);
+    //     graphView._selectedNodes.push(node);
+    //     node.setSelected(true);
+    // }
 };
 
 

@@ -33,7 +33,7 @@ class ActionManager
         }
 
 
-        this.doAction(act);
+        this.doAction(act, false);
     }
 
 
@@ -73,7 +73,7 @@ class ActionManager
             this.actions.push(last);
 
 
-            this.doAction(last);
+            this.doAction(last, true);
 
 
             if (   isEmpty(this.redoActions)
@@ -94,21 +94,16 @@ class ActionManager
 
 
         const updateNodes = [];
+
         act.initSaveArrays();
-
-
-        //act.saveOldSelectedNodes();
-        //act.saveOldActiveNodes();
         act.saveOldConnections();
 
 
-        act.do(updateNodes);
+        if (!redo) act.do  (updateNodes);
+        else       act.redo(updateNodes);
 
 
-        //act.updateOldSelectedNodes();
-        //act.updateOldActiveNodes();
         act.updateOldConnections();
-
 
         pushUpdate(act, updateNodes);
     }
@@ -123,19 +118,13 @@ class ActionManager
 
         const updateNodes = [];
 
-
         act.deleteNewConnections();
-        //act.deactivateNewActiveNodes();
-        //act.deselectNewSelectedNodes();
 
 
         act.undo(updateNodes); 
 
 
         act.restoreOldConnections();
-        // act.activateOldActiveNodes(updateNodes);
-        //act.selectOldSelectedNodes();
-
 
         pushUpdate(act, updateNodes);
     }

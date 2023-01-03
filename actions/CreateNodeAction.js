@@ -14,7 +14,7 @@ extends Action
 
     autoConnect;
 
-    newConnections  = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
+    //newConnections  = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
 
 
     creatingButton;
@@ -33,7 +33,7 @@ extends Action
 
 
 
-    do()
+    do(updateNodes)
     {
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
@@ -67,40 +67,34 @@ extends Action
         }
 
 
-        uiMakeNodeActive(this.node);
-
-
         graphView.lastSelectedNodes = graphView.selectedNodes;
         graphView.selectedNodes     = [this.node];
 
-
-        pushUpdate(this, [this.node]);
+        uiMakeNodeActive(this.node);
+        pushUnique(updateNodes, this.node);
     }
 
 
 
-    undo()
+    undo(updateNodes)
     {
-        for (const _conn of this.newConnections)
-        {
-            const input = nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId);
+        // for (const _conn of this.newConnections)
+        // {
+        //     const input = nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId);
 
-            uiDeleteSavedConn(input.connection);
-            uiDisconnect(input);
-        }
+        //     uiDeleteSavedConn(input.connection);
+        //     uiDisconnect(input);
+        // }
         
-        this.newConnections = [];
+        //this.newConnections = [];
             
             
         uiDeleteNodes([this.createdNodeId]);
 
-        createNodeAction_activateOldInput(this);
+        createNodeAction_activateOldInput(this, updateNodes);
 
         
         graphView.selectByIds(this.prevSelectedIds);
-
-
-        this.newConnections = [];
     }
 }
 
@@ -129,14 +123,14 @@ function createNodeAction_connect(act, output, inputNode, inputId, outputOrder =
 
 
 
-function createNodeAction_activateOldInput(act)
+function createNodeAction_activateOldInput(act, updateNodes)
 {
     if (act.oldInputActiveNodeId != '')
     {
         const oldInputActiveNode = nodeFromId(act.oldInputActiveNodeId);
         
         uiMakeNodeActive(oldInputActiveNode);
-        pushUpdate(act, [oldInputActiveNode]);
+        pushUnique(updateNodes, oldInputActiveNode);
 
         act.oldInputActiveNodeId = '';
     }

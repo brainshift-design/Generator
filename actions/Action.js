@@ -38,9 +38,9 @@ class Action
 
 
 
-    do  () {}
-    undo() {}
-    redo() { this.do(); }
+    do  (updateNodes) {}
+    undo(updateNodes) {}
+    redo(updateNodes) { this.do(updateNodes); }
 
 
 
@@ -68,8 +68,6 @@ class Action
     {
         this.oldConnections = this.oldConnections
             .filter(c => !graph.connections.find(gc => !connEqual(gc, c)));
-
-        console.log('this.oldConnections =', this.oldConnections);
     }
 
 
@@ -85,6 +83,8 @@ class Action
             uiDeleteSavedConn(conn);
             uiDisconnect(conn.input);
         }
+
+        this.newConnections = [];
     }
 
 
@@ -106,6 +106,8 @@ class Action
 
             uiSaveConn(oldConn);
         }
+
+        this.oldConnections = [];
     }
 };
 

@@ -401,27 +401,17 @@ function updateWireStyle(wire)
     wire.style.zIndex    = 1;
 
 
-    // const isSolo = 
-    //        graphView._soloNode
-    //     && (   this. input.node == graphView._soloNode
-    //         || this.output.node == graphView._soloNode);
-    
-    //const showWire = true;
-        //    settings.showWires 
-        // || isSolo;
-
-
     const isReordering =   
            isNaN(newReorderIndex)
         || isNaN(oldReorderIndex);
 
 
-    show(wire,         /*showWire &&*/ (this != graphView.savedConn || isReordering));
-    show(wire.curve,   /*showWire &&*/ showCurve && (this != graphView.savedConn || isReordering));
-    show(wire.xp1,     /*showWire &&*/ (this != graphView.savedConn || isReordering));
-    show(wire.xp2,     /*showWire &&*/ (this != graphView.savedConn || isReordering));
-    show(wire.outBall, /*showWire &&*/ (!graphView.tempConn || graphView.tempConn.output));
-    show(wire. inBall, /*showWire &&*/ (!graphView.tempConn || graphView.tempConn. input));
+    show(wire,         (this != graphView.savedConn || isReordering));
+    show(wire.curve,   showCurve && (this != graphView.savedConn || isReordering));
+    show(wire.xp1,     (this != graphView.savedConn || isReordering));
+    show(wire.xp2,     (this != graphView.savedConn || isReordering));
+    show(wire.outBall, (!graphView.tempConn || graphView.tempConn.output));
+    show(wire. inBall, (!graphView.tempConn || graphView.tempConn. input));
 }
 
 
