@@ -53,15 +53,6 @@
 ../operators/number/arithmetic/OpModulo.js
 ../operators/number/arithmetic/OpExponent.js
 
-../operators/number/arithmetic/variable/OpVarMath.js
-../operators/number/arithmetic/variable/OpVarArithmetic.js
-../operators/number/arithmetic/variable/OpVarAdd.js
-../operators/number/arithmetic/variable/OpVarSubtract.js
-../operators/number/arithmetic/variable/OpVarMultiply.js
-../operators/number/arithmetic/variable/OpVarDivide.js
-../operators/number/arithmetic/variable/OpVarModulo.js
-../operators/number/arithmetic/variable/OpVarExponent.js
-
 
 ../operators/color/OpColorBase.js
 ../operators/color/OpColor.js

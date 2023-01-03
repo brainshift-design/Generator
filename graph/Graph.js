@@ -349,14 +349,6 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_MODULO:       node = new OpModulo();           break;
         case NUMBER_EXPONENT:     node = new OpExponent();         break;
         
-        case NUMBER_VAR_MATH:     node = new OpVarMath();          break;
-        case NUMBER_VAR_ADD:      node = new OpVarAdd();           break;
-        case NUMBER_VAR_SUBTRACT: node = new OpVarSubtract();      break;
-        case NUMBER_VAR_MULTIPLY: node = new OpVarMultiply();      break;
-        case NUMBER_VAR_DIVIDE:   node = new OpVarDivide();        break;
-        case NUMBER_VAR_MODULO:   node = new OpVarModulo();        break;
-        case NUMBER_VAR_EXPONENT: node = new OpVarExponent();      break;
-        
         case COLOR:               node = new OpColor(options);     break;
         case COLOR_CORRECT:       node = new OpColorCorrect();     break;
         case COLOR_CONTRAST:      node = new OpColorContrast();    break;

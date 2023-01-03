@@ -53,15 +53,6 @@
 ../generator/types/number/arithmetic/GModulo.js
 ../generator/types/number/arithmetic/GExponent.js
 
-../generator/types/number/arithmetic/variable/GVarArithmetic.js
-../generator/types/number/arithmetic/variable/GVarMath.js
-../generator/types/number/arithmetic/variable/GVarAdd.js
-../generator/types/number/arithmetic/variable/GVarSubtract.js
-../generator/types/number/arithmetic/variable/GVarMultiply.js
-../generator/types/number/arithmetic/variable/GVarDivide.js
-../generator/types/number/arithmetic/variable/GVarModulo.js
-../generator/types/number/arithmetic/variable/GVarExponent.js
-
 ../generator/types/number/GNumber.js
 ../generator/types/number/GRound.js
 ../generator/types/number/GLimits.js

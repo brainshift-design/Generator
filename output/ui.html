@@ -5741,14 +5741,6 @@ const NUMBER_DIVIDE       = 'DIV';
 const NUMBER_MODULO       = 'MOD';   
 const NUMBER_EXPONENT     = 'EXP';
 
-const NUMBER_VAR_MATH     = 'MATH*';  
-const NUMBER_VAR_ADD      = 'ADD*';   
-const NUMBER_VAR_SUBTRACT = 'SUB*';   
-const NUMBER_VAR_MULTIPLY = 'MUL*';   
-const NUMBER_VAR_DIVIDE   = 'DIV*';   
-const NUMBER_VAR_MODULO   = 'MOD*';   
-const NUMBER_VAR_EXPONENT = 'EXP*';   
-
 
 const NUMBER_TYPES =
 [
@@ -5768,15 +5760,7 @@ const NUMBER_TYPES =
     NUMBER_MULTIPLY,
     NUMBER_DIVIDE,
     NUMBER_MODULO,
-    NUMBER_EXPONENT,
-
-    NUMBER_VAR_MATH,
-    NUMBER_VAR_ADD,
-    NUMBER_VAR_SUBTRACT,
-    NUMBER_VAR_MULTIPLY,
-    NUMBER_VAR_DIVIDE,
-    NUMBER_VAR_MODULO,
-    NUMBER_VAR_EXPONENT
+    NUMBER_EXPONENT
 ];
 
 
@@ -8719,62 +8703,7 @@ extends GOperator
 class GArithmetic
 extends GNumberType
 {
-    input = null;
-
-    operand;
-
-
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        this.operand = base.operand.copy();
-    }
-}
-
-
-
-function evalNodeValue(node, operation, isDiv, parse)
-{
-    if (!node.input)
-    {
-        node.value = NumberValue.NaN;
-        return;
-    }
-
-
-    node.input    = node.input  .eval(parse).copy();
-    node.operand  = node.operand.eval(parse).copy();
-    
-    const input   = node.input  .toValue();
-    const operand = node.operand.toValue();
-
-
-    if (isDiv)
-    {
-        if (operand.value == 0)
-        {
-            node.value = NumberValue.NaN;
-            return;
-        }
-
-        const dec = Math.max(input.decimals, operand.decimals);
-
-        node.value = new NumberValue(
-            floorTo(operation(input.value, operand.value), dec), 
-            dec);
-    }
-    else
-    {
-        node.value = new NumberValue(
-            operation(input.value,    operand.value   ),
-            Math.max (input.decimals, operand.decimals));
-    }
-
-
-
-    genPushUpdateValue(parse, node.nodeId, 'operand', operand);
+    inputs = [];
 }
 
 
@@ -8796,275 +8725,6 @@ extends GArithmetic
     copy()
     {
         const math = new GMath(this.nodeId, this.options);
-
-        math.copyBase(this);
-
-        math.operation = this.operation.copy();
-
-        return math;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const operation = this.operation.eval(parse).toValue();
-
-        operation.value = Math.min(Math.max(0, operation.value), MATH_OPS.length-1);
-
-        switch (operation.value)
-        {
-            case 0: evalNodeValue(this, (a, b) => a - b,          false, parse); break;
-            case 1: evalNodeValue(this, (a, b) => a + b,          false, parse); break;
-            case 2: evalNodeValue(this, (a, b) => a / b,          true , parse); break;
-            case 3: evalNodeValue(this, (a, b) => a * b,          false, parse); break;
-            case 4: evalNodeValue(this, (a, b) => a % b,          true , parse); break;
-            case 5: evalNodeValue(this, (a, b) => Math.pow(a, b), false, parse); break;
-
-            default: console.assert(false, 'Invalid math operation');
-        }
-
-        
-        genPushUpdateValue(parse, this.nodeId, 'operation', operation);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GAdd
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_ADD, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const add = new GAdd(this.nodeId, this.options);
-        add.copyBase(this);
-        if (this.input) add.input = this.input.copy();
-        return add;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a + b, false, parse);
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GSubtract
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_SUBTRACT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const sub = new GSubtract(this.nodeId, this.options);
-        sub.copyBase(this);
-        if (this.input) sub.input = this.input.copy();
-        return sub;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a - b, false, parse);
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GMultiply
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_MULTIPLY, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const mul = new GMultiply(this.nodeId, this.options);
-        mul.copyBase(this);
-        if (this.input) mul.input = this.input.copy();
-        return mul;
-    }
-
-    
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a * b, false, parse);
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GDivide
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_DIVIDE, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const div = new GDivide(this.nodeId, this.options);
-        div.copyBase(this);
-        if (this.input) div.input = this.input.copy();
-        return div;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a / b, true, parse);
-        
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GModulo
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_MODULO, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const mod = new GModulo(this.nodeId, this.options);
-        mod.copyBase(this);
-        if (this.input) mod.input = this.input.copy();
-        return mod;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a % b, true, parse);
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GExponent
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_EXPONENT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const exp = new GExponent(this.nodeId, this.options);
-        exp.copyBase(this);
-        if (this.input) exp.input = this.input.copy();
-        return exp;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => Math.pow(a, b), false, parse);
-        
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GVarArithmetic
-extends GNumberType
-{
-    inputs = [];
-}
-
-
-
-class GVarMath
-extends GVarArithmetic
-{
-    operation;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_VAR_MATH, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const math = new GVarMath(this.nodeId, this.options);
 
         math.copyBase(this);
 
@@ -9110,19 +8770,19 @@ extends GVarArithmetic
 
 
 
-class GVarAdd
-extends GVarArithmetic
+class GAdd
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_ADD, nodeId, options);
+        super(NUMBER_ADD, nodeId, options);
     }
 
 
     
     copy()
     {
-        const add = new GVarAdd(this.nodeId, this.options);
+        const add = new GAdd(this.nodeId, this.options);
         add.copyBase(this);
         add.inputs = this.inputs.map(i => i.copy());
         return add;
@@ -9173,19 +8833,19 @@ function evalVarAddInputs(inputs, parse)
 }
 
 
-class GVarSubtract
-extends GVarArithmetic
+class GSubtract
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_SUBTRACT, nodeId, options);
+        super(NUMBER_SUBTRACT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const sub = new GVarSubtract(this.nodeId, this.options);
+        const sub = new GSubtract(this.nodeId, this.options);
         sub.copyBase(this);
         sub.inputs = this.inputs.map(i => i.copy());
         return sub;
@@ -9245,19 +8905,19 @@ function evalVarSubtractInputs(inputs, parse)
 }
 
 
-class GVarMultiply
-extends GVarArithmetic
+class GMultiply
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_MULTIPLY, nodeId, options);
+        super(NUMBER_MULTIPLY, nodeId, options);
     }
 
 
 
     copy()
     {
-        const mul = new GVarMultiply(this.nodeId, this.options);
+        const mul = new GMultiply(this.nodeId, this.options);
         mul.copyBase(this);
         mul.inputs = this.inputs.map(i => i.copy());
         return mul;
@@ -9313,19 +8973,19 @@ function evalVarMultiplyInputs(inputs, parse)
 }
 
 
-class GVarDivide
-extends GVarArithmetic
+class GDivide
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_DIVIDE, nodeId, options);
+        super(NUMBER_DIVIDE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const div = new GVarDivide(this.nodeId, this.options);
+        const div = new GDivide(this.nodeId, this.options);
         div.copyBase(this);
         div.inputs = this.inputs.map(i => i.copy());
         return div;
@@ -9392,19 +9052,19 @@ function evalVarDivideInputs(inputs, parse)
 }
 
 
-class GVarModulo
-extends GVarArithmetic
+class GModulo
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_MODULO, nodeId, options);
+        super(NUMBER_MODULO, nodeId, options);
     }
 
 
     
     copy()
     {
-        const mod = new GVarModulo(this.nodeId, this.options);
+        const mod = new GModulo(this.nodeId, this.options);
         mod.copyBase(this);
         mod.inputs = this.inputs.map(i => i.copy());
         return mod;
@@ -9471,19 +9131,19 @@ function evalVarModuloInputs(inputs, parse)
 }
 
 
-class GVarExponent
-extends GVarArithmetic
+class GExponent
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_EXPONENT, nodeId, options);
+        super(NUMBER_EXPONENT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const exp = new GVarExponent(this.nodeId, this.options);
+        const exp = new GExponent(this.nodeId, this.options);
         exp.copyBase(this);
         exp.inputs = this.inputs.map(i => i.copy());
         return exp;
@@ -10011,7 +9671,7 @@ extends GNumberType
 
 
 class GBoolean
-extends GVarArithmetic
+extends GArithmetic
 {
     operation;
 
@@ -13912,99 +13572,6 @@ function genParseMath(parse, newNode)
     const math = newNode(nodeId, options);
 
     
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be 0 or 1');
-    }
-
-
-    if (parse.settings.logRequests) 
-        logReqMath(math, nInputs, parse);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, math);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (nInputs == 1)
-        math.input = genParse(parse);
-
-    math.operation = genParse(parse);
-    math.operand   = genParse(parse);
-
-
-    parse.nTab--;
-
-        
-    genParseNodeEnd(parse, math);
-    return math;
-}
-
-
-
-function genParseArithmetic(parse, newNode)
-{
-    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const arith = newNode(nodeId, options);
-
-
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be 0 or 1');
-    }
-
-
-    if (parse.settings.logRequests) 
-        logReqArithmetic(arith, type, nInputs, parse);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, arith);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-    
-    if (nInputs == 1)
-        arith.input = genParse(parse);
-
-    arith.operand = genParse(parse);
-
-    
-    parse.nTab--;
-
-        
-    genParseNodeEnd(parse, arith);
-    return arith;
-}
-
-
-
-function genParseVarMath(parse, newNode)
-{
-    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const math = newNode(nodeId, options);
-
-    
     let nInputs = 0;
     
     if (!ignore)
@@ -14040,7 +13607,7 @@ function genParseVarMath(parse, newNode)
 
 
 
-function genParseVarArithmetic(parse, newNode)
+function genParseArithmetic(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
 
@@ -14988,6 +14555,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == NUMBER_VALUE       ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER             ) result = genParseNumber          (parse);
+
     else if (parse.next == NUMBER_ROUND       ) result = genParseRound           (parse);
     else if (parse.next == NUMBER_LIMITS      ) result = genParseLimits          (parse);
     else if (parse.next == NUMBER_RANDOM      ) result = genParseRandom          (parse);
@@ -15004,16 +14572,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_MODULO      ) result = genParseArithmetic      (parse, (nodeId, options) => new GModulo  (nodeId, options));
     else if (parse.next == NUMBER_EXPONENT    ) result = genParseArithmetic      (parse, (nodeId, options) => new GExponent(nodeId, options));
 
-    else if (parse.next == NUMBER_VAR_MATH    ) result = genParseVarMath         (parse, (nodeId, options) => new GVarMath    (nodeId, options));
-    else if (parse.next == NUMBER_VAR_ADD     ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarAdd     (nodeId, options));
-    else if (parse.next == NUMBER_VAR_SUBTRACT) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarSubtract(nodeId, options));
-    else if (parse.next == NUMBER_VAR_MULTIPLY) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarMultiply(nodeId, options));
-    else if (parse.next == NUMBER_VAR_DIVIDE  ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarDivide  (nodeId, options));
-    else if (parse.next == NUMBER_VAR_MODULO  ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarModulo  (nodeId, options));
-    else if (parse.next == NUMBER_VAR_EXPONENT) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarExponent(nodeId, options));
-
     else if (parse.next == COLOR_VALUE        ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR              ) result = genParseColor           (parse);
+    
     else if (parse.next == COLOR_INTERPOLATE  ) result = genParseColorInterpolate(parse);
     else if (parse.next == COLOR_CONTRAST     ) result = genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND         ) result = genParseColorBlind      (parse);
@@ -22592,14 +22153,6 @@ const NUMBER_DIVIDE       = 'DIV';
 const NUMBER_MODULO       = 'MOD';   
 const NUMBER_EXPONENT     = 'EXP';
 
-const NUMBER_VAR_MATH     = 'MATH*';  
-const NUMBER_VAR_ADD      = 'ADD*';   
-const NUMBER_VAR_SUBTRACT = 'SUB*';   
-const NUMBER_VAR_MULTIPLY = 'MUL*';   
-const NUMBER_VAR_DIVIDE   = 'DIV*';   
-const NUMBER_VAR_MODULO   = 'MOD*';   
-const NUMBER_VAR_EXPONENT = 'EXP*';   
-
 
 const NUMBER_TYPES =
 [
@@ -22619,15 +22172,7 @@ const NUMBER_TYPES =
     NUMBER_MULTIPLY,
     NUMBER_DIVIDE,
     NUMBER_MODULO,
-    NUMBER_EXPONENT,
-
-    NUMBER_VAR_MATH,
-    NUMBER_VAR_ADD,
-    NUMBER_VAR_SUBTRACT,
-    NUMBER_VAR_MULTIPLY,
-    NUMBER_VAR_DIVIDE,
-    NUMBER_VAR_MODULO,
-    NUMBER_VAR_EXPONENT
+    NUMBER_EXPONENT
 ];
 
 
@@ -25570,62 +25115,7 @@ extends GOperator
 class GArithmetic
 extends GNumberType
 {
-    input = null;
-
-    operand;
-
-
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        this.operand = base.operand.copy();
-    }
-}
-
-
-
-function evalNodeValue(node, operation, isDiv, parse)
-{
-    if (!node.input)
-    {
-        node.value = NumberValue.NaN;
-        return;
-    }
-
-
-    node.input    = node.input  .eval(parse).copy();
-    node.operand  = node.operand.eval(parse).copy();
-    
-    const input   = node.input  .toValue();
-    const operand = node.operand.toValue();
-
-
-    if (isDiv)
-    {
-        if (operand.value == 0)
-        {
-            node.value = NumberValue.NaN;
-            return;
-        }
-
-        const dec = Math.max(input.decimals, operand.decimals);
-
-        node.value = new NumberValue(
-            floorTo(operation(input.value, operand.value), dec), 
-            dec);
-    }
-    else
-    {
-        node.value = new NumberValue(
-            operation(input.value,    operand.value   ),
-            Math.max (input.decimals, operand.decimals));
-    }
-
-
-
-    genPushUpdateValue(parse, node.nodeId, 'operand', operand);
+    inputs = [];
 }
 
 
@@ -25647,275 +25137,6 @@ extends GArithmetic
     copy()
     {
         const math = new GMath(this.nodeId, this.options);
-
-        math.copyBase(this);
-
-        math.operation = this.operation.copy();
-
-        return math;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const operation = this.operation.eval(parse).toValue();
-
-        operation.value = Math.min(Math.max(0, operation.value), MATH_OPS.length-1);
-
-        switch (operation.value)
-        {
-            case 0: evalNodeValue(this, (a, b) => a - b,          false, parse); break;
-            case 1: evalNodeValue(this, (a, b) => a + b,          false, parse); break;
-            case 2: evalNodeValue(this, (a, b) => a / b,          true , parse); break;
-            case 3: evalNodeValue(this, (a, b) => a * b,          false, parse); break;
-            case 4: evalNodeValue(this, (a, b) => a % b,          true , parse); break;
-            case 5: evalNodeValue(this, (a, b) => Math.pow(a, b), false, parse); break;
-
-            default: console.assert(false, 'Invalid math operation');
-        }
-
-        
-        genPushUpdateValue(parse, this.nodeId, 'operation', operation);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GAdd
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_ADD, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const add = new GAdd(this.nodeId, this.options);
-        add.copyBase(this);
-        if (this.input) add.input = this.input.copy();
-        return add;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a + b, false, parse);
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GSubtract
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_SUBTRACT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const sub = new GSubtract(this.nodeId, this.options);
-        sub.copyBase(this);
-        if (this.input) sub.input = this.input.copy();
-        return sub;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a - b, false, parse);
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GMultiply
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_MULTIPLY, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const mul = new GMultiply(this.nodeId, this.options);
-        mul.copyBase(this);
-        if (this.input) mul.input = this.input.copy();
-        return mul;
-    }
-
-    
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a * b, false, parse);
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GDivide
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_DIVIDE, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const div = new GDivide(this.nodeId, this.options);
-        div.copyBase(this);
-        if (this.input) div.input = this.input.copy();
-        return div;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a / b, true, parse);
-        
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GModulo
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_MODULO, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const mod = new GModulo(this.nodeId, this.options);
-        mod.copyBase(this);
-        if (this.input) mod.input = this.input.copy();
-        return mod;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a % b, true, parse);
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GExponent
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_EXPONENT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const exp = new GExponent(this.nodeId, this.options);
-        exp.copyBase(this);
-        if (this.input) exp.input = this.input.copy();
-        return exp;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => Math.pow(a, b), false, parse);
-        
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GVarArithmetic
-extends GNumberType
-{
-    inputs = [];
-}
-
-
-
-class GVarMath
-extends GVarArithmetic
-{
-    operation;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_VAR_MATH, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const math = new GVarMath(this.nodeId, this.options);
 
         math.copyBase(this);
 
@@ -25961,19 +25182,19 @@ extends GVarArithmetic
 
 
 
-class GVarAdd
-extends GVarArithmetic
+class GAdd
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_ADD, nodeId, options);
+        super(NUMBER_ADD, nodeId, options);
     }
 
 
     
     copy()
     {
-        const add = new GVarAdd(this.nodeId, this.options);
+        const add = new GAdd(this.nodeId, this.options);
         add.copyBase(this);
         add.inputs = this.inputs.map(i => i.copy());
         return add;
@@ -26024,19 +25245,19 @@ function evalVarAddInputs(inputs, parse)
 }
 
 
-class GVarSubtract
-extends GVarArithmetic
+class GSubtract
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_SUBTRACT, nodeId, options);
+        super(NUMBER_SUBTRACT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const sub = new GVarSubtract(this.nodeId, this.options);
+        const sub = new GSubtract(this.nodeId, this.options);
         sub.copyBase(this);
         sub.inputs = this.inputs.map(i => i.copy());
         return sub;
@@ -26096,19 +25317,19 @@ function evalVarSubtractInputs(inputs, parse)
 }
 
 
-class GVarMultiply
-extends GVarArithmetic
+class GMultiply
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_MULTIPLY, nodeId, options);
+        super(NUMBER_MULTIPLY, nodeId, options);
     }
 
 
 
     copy()
     {
-        const mul = new GVarMultiply(this.nodeId, this.options);
+        const mul = new GMultiply(this.nodeId, this.options);
         mul.copyBase(this);
         mul.inputs = this.inputs.map(i => i.copy());
         return mul;
@@ -26164,19 +25385,19 @@ function evalVarMultiplyInputs(inputs, parse)
 }
 
 
-class GVarDivide
-extends GVarArithmetic
+class GDivide
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_DIVIDE, nodeId, options);
+        super(NUMBER_DIVIDE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const div = new GVarDivide(this.nodeId, this.options);
+        const div = new GDivide(this.nodeId, this.options);
         div.copyBase(this);
         div.inputs = this.inputs.map(i => i.copy());
         return div;
@@ -26243,19 +25464,19 @@ function evalVarDivideInputs(inputs, parse)
 }
 
 
-class GVarModulo
-extends GVarArithmetic
+class GModulo
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_MODULO, nodeId, options);
+        super(NUMBER_MODULO, nodeId, options);
     }
 
 
     
     copy()
     {
-        const mod = new GVarModulo(this.nodeId, this.options);
+        const mod = new GModulo(this.nodeId, this.options);
         mod.copyBase(this);
         mod.inputs = this.inputs.map(i => i.copy());
         return mod;
@@ -26322,19 +25543,19 @@ function evalVarModuloInputs(inputs, parse)
 }
 
 
-class GVarExponent
-extends GVarArithmetic
+class GExponent
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_EXPONENT, nodeId, options);
+        super(NUMBER_EXPONENT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const exp = new GVarExponent(this.nodeId, this.options);
+        const exp = new GExponent(this.nodeId, this.options);
         exp.copyBase(this);
         exp.inputs = this.inputs.map(i => i.copy());
         return exp;
@@ -26862,7 +26083,7 @@ extends GNumberType
 
 
 class GBoolean
-extends GVarArithmetic
+extends GArithmetic
 {
     operation;
 
@@ -30539,27 +29760,27 @@ function initGeneratorMenus()
 
     menuNumber = new Menu('Number nodes', true, false);
     menuNumber.addItems([
-        new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(getCreateNodeAction(NUMBER,              btnNumber.div, e.shiftKey))}),
+        new MenuItem('Number',      {icon: iconNumber     , callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, e.shiftKey))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Round',       {icon: iconRound      , callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,        btnNumber.div, e.shiftKey))}),
-        new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,       btnNumber.div, e.shiftKey))}),
+        new MenuItem('Round',       {icon: iconRound      , callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, e.shiftKey))}),
+        new MenuItem('Limits',      {icon: iconLimits     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, e.shiftKey))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Math',        {icon: iconMath       , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_MATH,     btnNumber.div, e.shiftKey))}),
-        new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_ADD,      btnNumber.div, e.shiftKey))}),
-        new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_SUBTRACT, btnNumber.div, e.shiftKey))}),
-        new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_MULTIPLY, btnNumber.div, e.shiftKey))}),
-        new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_DIVIDE,   btnNumber.div, e.shiftKey))}),
-        new MenuItem('Power',       {icon: iconExponent   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_EXPONENT, btnNumber.div, e.shiftKey))}),
-        new MenuItem('Remainder',   {icon: iconModulo     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_VAR_MODULO,   btnNumber.div, e.shiftKey))}),
+        new MenuItem('Math',        {icon: iconMath       , callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,        btnNumber.div, e.shiftKey))}),
+        new MenuItem('Add',         {icon: iconAdd        , callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,         btnNumber.div, e.shiftKey))}),
+        new MenuItem('Subtract',    {icon: iconSubtract   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT,    btnNumber.div, e.shiftKey))}),
+        new MenuItem('Multiply',    {icon: iconMultiply   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY,    btnNumber.div, e.shiftKey))}),
+        new MenuItem('Divide',      {icon: iconDivide     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,      btnNumber.div, e.shiftKey))}),
+        new MenuItem('Power',       {icon: iconExponent   , callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT,    btnNumber.div, e.shiftKey))}),
+        new MenuItem('Remainder',   {icon: iconModulo     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,      btnNumber.div, e.shiftKey))}),
       //new MenuItem('· · ·',       {childMenu: menuSimpleMath }),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Boolean',     {icon: iconBoolean    , callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,      btnNumber.div, e.shiftKey))}),
-        new MenuItem('Condition',   {icon: iconCondition  , callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,    btnNumber.div, e.shiftKey))}),
+        new MenuItem('Boolean',     {icon: iconBoolean    , callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, e.shiftKey))}),
+        new MenuItem('Condition',   {icon: iconCondition  , callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, e.shiftKey))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Series',      {icon: iconSeries     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_SERIES,       btnNumber.div, e.shiftKey))}),
-        new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,       btnNumber.div, e.shiftKey))}),
+        new MenuItem('Series',      {icon: iconSeries     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_SERIES,      btnNumber.div, e.shiftKey))}),
+        new MenuItem('Random',      {icon: iconRandom     , callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, e.shiftKey))}),
         new MenuItem('',            {separator: true}),
-        new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE,  btnNumber.div, e.shiftKey))})]);
+        new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, e.shiftKey))})]);
         
     
     // menuString = new Menu('String nodes', true, false);
@@ -38021,14 +37242,6 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_MODULO:       node = new OpModulo();           break;
         case NUMBER_EXPONENT:     node = new OpExponent();         break;
         
-        case NUMBER_VAR_MATH:     node = new OpVarMath();          break;
-        case NUMBER_VAR_ADD:      node = new OpVarAdd();           break;
-        case NUMBER_VAR_SUBTRACT: node = new OpVarSubtract();      break;
-        case NUMBER_VAR_MULTIPLY: node = new OpVarMultiply();      break;
-        case NUMBER_VAR_DIVIDE:   node = new OpVarDivide();        break;
-        case NUMBER_VAR_MODULO:   node = new OpVarModulo();        break;
-        case NUMBER_VAR_EXPONENT: node = new OpVarExponent();      break;
-        
         case COLOR:               node = new OpColor(options);     break;
         case COLOR_CORRECT:       node = new OpColorCorrect();     break;
         case COLOR_CONTRAST:      node = new OpColorContrast();    break;
@@ -43110,364 +42323,13 @@ class   OpMath
 extends OperatorBase
 {
     paramOperation;
-    paramOperand;
-
-
-
-    constructor()
-    {
-        super(NUMBER_MATH, 'math', 70);
-
-        this.alwaysLoadParams = true;
-
-
-        this.addInput (new Input (NUMBER_TYPES));
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
-        
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, false, MATH_OPS.map(s => s[1]), 1));
-        this.addParam(this.paramOperand   = new NumberParam('operand',   '', false, true, false, 0));
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: '' });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-
-        const input = this.node.inputs[0];
-
-
-        request.push(input.connected ? 1 : 0);
-        
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
-        
-        request.push(...this.node.paramOperation.genRequest(gen));
-        request.push(...this.node.paramOperand  .genRequest(gen));
-
-        
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
-    }
-
-
-
-    updateParams()
-    {
-        this.paramOperation.enableControlText(true);
-        this.paramOperand  .enableControlText(true);
-
-        super.updateParams();
-    }
-}
-
-
-class   OpArithmetic
-extends OperatorBase
-{
-    paramOperand;
-
-    _symbol;
-    _showOnlySymbol;
-
-
-
-    constructor(type, shortName, symbol)
-    {
-        super(type, shortName, 70);
-
-        this.alwaysLoadParams = true;
-        this._showOnlySymbol  = true;
-
-
-        this.addInput (new Input(NUMBER_TYPES));
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
-        
-
-        this.addParam(this.paramOperand = new NumberParam('operand', '', false, true,  false, 0));
-
-
-        this._symbol           = createDiv('arithmeticSymbol');
-        this._symbol.innerHTML = symbol;
-        this._symbol.clicked0  = false;
-        
-        this._symbol.addEventListener('pointerenter', () => this._symbol.style.opacity = this._showOnlySymbol ? 1 : 0.65);
-        this._symbol.addEventListener('pointerleave', () => this._symbol.style.opacity = 1);
-
-        this._symbol.addEventListener('pointerdown', e => 
-        { 
-            if (e.button == 0)
-            {
-                if (this._symbol.clicked0) // finish double click on small symbol
-                {
-                    this._symbol.clicked0      = false;
-                    this._symbol.style.opacity = 1;
-
-                    actionManager.do(new ToggleArithmeticSymbolAction(this.id, true));
-
-                    this.header.ignoreDoubleClick = true;
-                }
-                else if (!this._showOnlySymbol) // start double cick on small symbol
-                {
-                    this._symbol.clicked0 = true;
-                    setTimeout(() => this._symbol.clicked0 = false, 250); // seems like a good default guess
-                }
-            }
-        });
-
-        this.header.appendChild(this._symbol);
-
-        
-        this.textbox.addEventListener('finishedit', e => 
-        {
-            if (this._showOnlySymbol)
-                actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
-        });
-    }
-    
-    
-    
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: '' });
-
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-            
-
-        const input = this.node.inputs[0];
-
-
-        request.push(input.connected ? 1 : 0);
-        
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
-
-        request.push(...this.node.paramOperand.genRequest(gen));
-
-        
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-        
-        return request;
-    }
-
-
-
-    updateParams()
-    {
-        this.paramOperand.enableControlText(true);
-
-        super.updateParams();
-    }
-
-
-
-    updateHeader()
-    {
-        super.updateHeader();
-
-
-        const colBack = rgbHeaderFromType(this.type, this.active);
-        const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
-
-        this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
-        this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
-        this._symbol.style.color      = rgb2style(colText);
-        this._symbol.style.left       = 'calc(50% + 1px)';
-        
-
-        const padding         = this.header.connectionPadding;
-        const connectedInputs = this.headerInputs.filter(i => i.connected);
-
-
-        if (isEmpty(connectedInputs))
-        {
-            if (this._showOnlySymbol)
-            {
-                this._symbol.style.top = 2;
-            }
-            else
-            {
-                this._symbol.style.top = -1;
-                this.label  .style.top = 'calc(50% + 4px)';
-            }
-        }
-        else
-        {
-            const [connectedInputY, connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
-
-            if (this._showOnlySymbol)
-            {
-                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 9;
-            }
-            else
-            {
-                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 6;
-                this.label  .style.top = 'calc(50% + 5px)';
-            }
-        }
-        
-
-        this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
-    }
-
-
-
-    toJsonBase(nTab = 0) 
-    {
-        let   pos = ' '.repeat(nTab);
-        const tab = TAB;
-
-        return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"onlySymbol": "' + boolToString(this._showOnlySymbol) + '"';
-    }
-
-
-
-    loadParams(_node)
-    {
-        if (_node.showOnlySymbol)
-            this._showOnlySymbol = isTrue(_node.showOnlySymbol);
-
-        super.loadParams(_node);
-    }
-}
-
-
-
-function OpArithmetic_onConnectInput(node)
-{
-    node.addNewInput();
-}
-
-
-
-function OpArithmetic_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
-}
-
-
-class   OpAdd
-extends OpArithmetic
-{
-    constructor()
-    {
-        super(NUMBER_ADD, 'add', '+');
-    }
-}
-
-
-class   OpSubtract
-extends OpArithmetic
-{
-    constructor()
-    {
-        super(NUMBER_SUBTRACT, 'sub', '−');
-    }
-}
-
-
-class   OpMultiply
-extends OpArithmetic
-{
-    constructor()
-    {
-        super(NUMBER_MULTIPLY, 'mul', '×');
-    }
-}
-
-
-class   OpDivide
-extends OpArithmetic
-{
-    constructor()
-    {
-        super(NUMBER_DIVIDE, 'div', '÷');
-    }
-}
-
-
-class   OpModulo
-extends OpArithmetic
-{
-    constructor()
-    {
-        super(NUMBER_MODULO, 'rem', '%');
-    }
-    
-    
-    
-    updateNode()
-    {
-        super.updateNode();
-
-        // this._symbol.innerHTML =
-        //     this._showOnlySymbol
-        //     ? '<span style="font-size: 14px;">x</span><span style="position: relative; left: -1px; top: -7px; font-size: 7px; font-weight: bold;">y</span>'
-        //     : '<span style="position: relative; top: -1.5px; font-size: 8px;">x</span><span style="position: relative; left: -0.5px; top: -5.15px; font-size: 3.75px; font-weight: bold;">y</span>';
-
-        this._symbol.style.fontSize   = this._showOnlySymbol ? 11 : 8;
-        this._symbol.style.fontWeight = 'bold';
-        this._symbol.style.left       = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
-        this._symbol.style.top        = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 4 : 4.5);
-    }
-}
-
-
-class   OpExponent
-extends OpArithmetic
-{
-    constructor()
-    {
-        super(NUMBER_EXPONENT, 'pow', 'eˣ'); // placeholder symbol, actual symbol set in updateNode()
-    }
-
-
-
-    updateNode()
-    {
-        super.updateNode();
-
-        this._symbol.innerHTML =
-            this._showOnlySymbol
-            ? '<span style="font-size: 14px;">x</span><span style="position: relative; left: -1px; top: -7px; font-size: 7px; font-weight: bold;">y</span>'
-            : '<span style="position: relative; top: -2.5px; font-size: 9px;">x</span><span style="position: relative; left: -0.5px; top: -7.5px; font-size: 3.75px; font-weight: bold;">y</span>';
-
-        this._symbol.style.left = 'calc(50% + ' + (this._showOnlySymbol ? 1.5 : 1) + 'px)';
-        this._symbol.style.top  = parseFloat(this._symbol.style.top) + (this._showOnlySymbol ? 1.5 : 6);
-    }
-}
-
-
-class   OpVarMath
-extends OperatorBase
-{
-    paramOperation;
     paramValue;
 
 
 
     constructor()
     {
-        super(NUMBER_VAR_MATH, 'math', 70);
+        super(NUMBER_MATH, 'math', 70);
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -43554,7 +42416,7 @@ function OpList_onDisconnectInput(node, input)
 }
 
 
-class   OpVarArithmetic
+class   OpArithmetic
 extends OperatorBase
 {
     paramValue;
@@ -43679,7 +42541,7 @@ extends OperatorBase
 
     updateHeaderLabel()
     {
-        // console.log('OpVarArithmetic.updateHeader()');
+        // console.log('OpArithmetic.updateHeader()');
         
         super.updateHeaderLabel();
 
@@ -43778,42 +42640,42 @@ function OpArithmetic_onDisconnectInput(node, input)
 }
 
 
-class   OpVarAdd
-extends OpVarArithmetic
+class   OpAdd
+extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_VAR_ADD, 'add', '+');
+        super(NUMBER_ADD, 'add', '+');
     }
 }
 
 
-class   OpVarSubtract
-extends OpVarArithmetic
+class   OpSubtract
+extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_VAR_SUBTRACT, 'sub', '−');
+        super(NUMBER_SUBTRACT, 'sub', '−');
     }
 }
 
 
-class   OpVarMultiply
-extends OpVarArithmetic
+class   OpMultiply
+extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_VAR_MULTIPLY, 'mul', '×');
+        super(NUMBER_MULTIPLY, 'mul', '×');
     }
 }
 
 
-class   OpVarDivide
-extends OpVarArithmetic
+class   OpDivide
+extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_VAR_DIVIDE, 'div', '/');//'÷');
+        super(NUMBER_DIVIDE, 'div', '/');//'÷');
     }
 
 
@@ -43835,12 +42697,12 @@ extends OpVarArithmetic
 }
 
 
-class   OpVarModulo
-extends OpVarArithmetic
+class   OpModulo
+extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_VAR_MODULO, 'rem', '%');
+        super(NUMBER_MODULO, 'rem', '%');
     }
     
     
@@ -43862,12 +42724,12 @@ extends OpVarArithmetic
 }
 
 
-class   OpVarExponent
-extends OpVarArithmetic
+class   OpExponent
+extends OpArithmetic
 {
     constructor()
     {
-        super(NUMBER_VAR_EXPONENT, 'pow', 'eˣ'); // placeholder symbol, actual symbol set in updateNode()
+        super(NUMBER_EXPONENT, 'pow', 'eˣ'); // placeholder symbol, actual symbol set in updateNode()
     }
 
 
@@ -47652,7 +46514,7 @@ class Action
 
 
 
-    ////////////////////////////////////////////////////////////////////////
+    //   DO   ////////////////////////////////////////////////////////////////////////
 
 
 
@@ -47689,10 +46551,10 @@ class Action
 
     updateOldActiveNodes()
     {
-        // this.oldActiveNodeIds = this.oldActiveNodeIds
-        //     .filter(id => !graph.nodes
-        //         .filter(n => n.active)
-        //         .find(n => n.id == id));
+        this.oldActiveNodeIds = this.oldActiveNodeIds
+            .filter(id => !graph.nodes
+                .filter(n => n.active)
+                .find(n => n.id == id));
 
         uiDeleteObjects(this.oldActiveNodeIds);
     }
@@ -47712,7 +46574,7 @@ class Action
 
 
 
-    ////////////////////////////////////////////////////////////////////////
+    //   UNDO   ////////////////////////////////////////////////////////////////////////
 
 
 
@@ -48044,8 +46906,8 @@ function connectAction_saveOutputActiveNodes(act)
 {
     act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
 
-    if (act.oldOutputActiveNodeId != '')
-        pushUnique(act.oldActiveNodeIds, act.oldOutputActiveNodeId);
+    // if (act.oldOutputActiveNodeId != '')
+    //     pushUnique(act.oldActiveNodeIds, act.oldOutputActiveNodeId);
 }
 
 
@@ -48055,7 +46917,7 @@ function connectAction_saveInputActiveNodesAndValues(act)
     act.inputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo() : [];
     act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
 
-    pushUnique(act.oldActiveNodeIds, act.inputActiveNodeIds);
+    //pushUnique(act.oldActiveNodeIds, act.inputActiveNodeIds);
 }
 
 
@@ -48071,7 +46933,7 @@ function connectAction_makeNewConnection(act)
 {
     const conn = uiConnect(act.output, act.input, act.inputId);
             
-    act.newConnections.push(conn);
+    pushUnique(act.newConnections, conn);
     act.outputOrder = conn.outputOrder;
 
     uiSaveConn(conn);
@@ -48732,8 +47594,8 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
 
     const activeLeft        = getActiveBeforeNode    (output.node);
     const activeLeftOnly    = getActiveOnlyBeforeNode(output.node);
-    const activeRight       = getActiveAfterNode   (output.node);
-    const activeRightHeader = getActiveAfterNode   (output.node, true);
+    const activeRight       = getActiveAfterNode     (output.node);
+    const activeRightHeader = getActiveAfterNode     (output.node, true);
     
     if (  !activeLeftOnly
         && activeLeft != activeRight)

@@ -73,7 +73,7 @@ class Action
 
 
 
-    ////////////////////////////////////////////////////////////////////////
+    //   DO   ////////////////////////////////////////////////////////////////////////
 
 
 
@@ -110,10 +110,10 @@ class Action
 
     updateOldActiveNodes()
     {
-        // this.oldActiveNodeIds = this.oldActiveNodeIds
-        //     .filter(id => !graph.nodes
-        //         .filter(n => n.active)
-        //         .find(n => n.id == id));
+        this.oldActiveNodeIds = this.oldActiveNodeIds
+            .filter(id => !graph.nodes
+                .filter(n => n.active)
+                .find(n => n.id == id));
 
         uiDeleteObjects(this.oldActiveNodeIds);
     }
@@ -133,7 +133,7 @@ class Action
 
 
 
-    ////////////////////////////////////////////////////////////////////////
+    //   UNDO   ////////////////////////////////////////////////////////////////////////
 
 
 

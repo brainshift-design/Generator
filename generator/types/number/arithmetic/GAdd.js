@@ -12,7 +12,7 @@ extends GArithmetic
     {
         const add = new GAdd(this.nodeId, this.options);
         add.copyBase(this);
-        if (this.input) add.input = this.input.copy();
+        add.inputs = this.inputs.map(i => i.copy());
         return add;
     }
 
@@ -23,9 +23,39 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        evalNodeValue(this, (a, b) => a + b, false, parse);
+        this.value = evalVarAddInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
         this.validate();
 
         return this;
     }
+}
+
+
+
+function evalVarAddInputs(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        value.value   += val.value;
+        value.decimals = Math.max(value.decimals, val.decimals);
+    }
+
+
+    return value;
 }

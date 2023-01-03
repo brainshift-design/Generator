@@ -1,26 +1,27 @@
 class   OpArithmetic
 extends OperatorBase
 {
-    paramOperand;
-
+    paramValue;
+    
     _symbol;
     _showOnlySymbol;
-
 
 
     constructor(type, shortName, symbol)
     {
         super(type, shortName, 70);
 
+        
+        this.variableInputs   = true;
         this.alwaysLoadParams = true;
+
         this._showOnlySymbol  = true;
 
 
-        this.addInput (new Input(NUMBER_TYPES));
+        this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-
-        this.addParam(this.paramOperand = new NumberParam('operand', '', false, true,  false, 0));
+        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
 
 
         this._symbol           = createDiv('arithmeticSymbol');
@@ -63,6 +64,21 @@ extends OperatorBase
     
     
     
+    addNewInput()
+    {
+        const newInput = new Input(NUMBER_TYPES);
+        newInput.isNew = true;
+
+        newInput.addEventListener('connect',    e => { OpArithmetic_onConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => OpArithmetic_onDisconnectInput(this, e.detail.input));
+
+        this.addInput(newInput);
+
+        return newInput;
+    }
+
+
+
     output_genRequest(gen)
     {
         // 'this' is the output
@@ -76,15 +92,13 @@ extends OperatorBase
         if (ignore) return request;
             
 
-        const input = this.node.inputs[0];
+        const connectedInputs = this.node.inputs.filter(i => i.connected);
 
 
-        request.push(input.connected ? 1 : 0);
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
         
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
-
-        request.push(...this.node.paramOperand.genRequest(gen));
+        connectedInputs.forEach(input => 
+            request.push(...pushInputOrParam(input, gen)));
 
         
         gen.scope.pop();
@@ -97,16 +111,26 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramOperand.enableControlText(true);
+        this.paramValue.enableControlText(false);
+        
+        this.paramValue.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        this.paramValue.control.showBar   = !this.isUnknown();
 
         super.updateParams();
     }
 
 
 
-    updateHeader()
+    updateHeaderLabel()
     {
-        super.updateHeader();
+        // console.log('OpArithmetic.updateHeader()');
+        
+        super.updateHeaderLabel();
+
+
+        // this.div   .style.borderRadius = '4px';        
+        // this.inner .style.borderRadius = '4px';        
+        // this.header.style.borderRadius = '4px';        
 
 
         const colBack = rgbHeaderFromType(this.type, this.active);
@@ -131,7 +155,7 @@ extends OperatorBase
             else
             {
                 this._symbol.style.top = -1;
-                this.label  .style.top = 'calc(50% + 4px)';
+                this.label  .style.top = 'calc(50% + 6px)';
             }
         }
         else
@@ -145,7 +169,7 @@ extends OperatorBase
             else
             {
                 this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 6;
-                this.label  .style.top = 'calc(50% + 5px)';
+                this.label  .style.top = 'calc(50% + 7px)';
             }
         }
         
@@ -166,10 +190,17 @@ extends OperatorBase
 
 
 
+    paramsToJson(nTab = 0)
+    {
+        return '';
+    }
+
+
+
     loadParams(_node)
     {
-        if (_node.showOnlySymbol)
-            this._showOnlySymbol = isTrue(_node.showOnlySymbol);
+        if (_node.onlySymbol != undefined)
+            this._showOnlySymbol = isTrue(_node.onlySymbol);
 
         super.loadParams(_node);
     }

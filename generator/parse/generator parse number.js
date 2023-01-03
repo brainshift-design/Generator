@@ -152,99 +152,6 @@ function genParseMath(parse, newNode)
     const math = newNode(nodeId, options);
 
     
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be 0 or 1');
-    }
-
-
-    if (parse.settings.logRequests) 
-        logReqMath(math, nInputs, parse);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, math);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (nInputs == 1)
-        math.input = genParse(parse);
-
-    math.operation = genParse(parse);
-    math.operand   = genParse(parse);
-
-
-    parse.nTab--;
-
-        
-    genParseNodeEnd(parse, math);
-    return math;
-}
-
-
-
-function genParseArithmetic(parse, newNode)
-{
-    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const arith = newNode(nodeId, options);
-
-
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be 0 or 1');
-    }
-
-
-    if (parse.settings.logRequests) 
-        logReqArithmetic(arith, type, nInputs, parse);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, arith);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-    
-    if (nInputs == 1)
-        arith.input = genParse(parse);
-
-    arith.operand = genParse(parse);
-
-    
-    parse.nTab--;
-
-        
-    genParseNodeEnd(parse, arith);
-    return arith;
-}
-
-
-
-function genParseVarMath(parse, newNode)
-{
-    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const math = newNode(nodeId, options);
-
-    
     let nInputs = 0;
     
     if (!ignore)
@@ -280,7 +187,7 @@ function genParseVarMath(parse, newNode)
 
 
 
-function genParseVarArithmetic(parse, newNode)
+function genParseArithmetic(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
 

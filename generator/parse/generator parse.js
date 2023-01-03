@@ -92,6 +92,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == NUMBER_VALUE       ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER             ) result = genParseNumber          (parse);
+
     else if (parse.next == NUMBER_ROUND       ) result = genParseRound           (parse);
     else if (parse.next == NUMBER_LIMITS      ) result = genParseLimits          (parse);
     else if (parse.next == NUMBER_RANDOM      ) result = genParseRandom          (parse);
@@ -108,16 +109,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_MODULO      ) result = genParseArithmetic      (parse, (nodeId, options) => new GModulo  (nodeId, options));
     else if (parse.next == NUMBER_EXPONENT    ) result = genParseArithmetic      (parse, (nodeId, options) => new GExponent(nodeId, options));
 
-    else if (parse.next == NUMBER_VAR_MATH    ) result = genParseVarMath         (parse, (nodeId, options) => new GVarMath    (nodeId, options));
-    else if (parse.next == NUMBER_VAR_ADD     ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarAdd     (nodeId, options));
-    else if (parse.next == NUMBER_VAR_SUBTRACT) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarSubtract(nodeId, options));
-    else if (parse.next == NUMBER_VAR_MULTIPLY) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarMultiply(nodeId, options));
-    else if (parse.next == NUMBER_VAR_DIVIDE  ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarDivide  (nodeId, options));
-    else if (parse.next == NUMBER_VAR_MODULO  ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarModulo  (nodeId, options));
-    else if (parse.next == NUMBER_VAR_EXPONENT) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarExponent(nodeId, options));
-
     else if (parse.next == COLOR_VALUE        ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR              ) result = genParseColor           (parse);
+    
     else if (parse.next == COLOR_INTERPOLATE  ) result = genParseColorInterpolate(parse);
     else if (parse.next == COLOR_CONTRAST     ) result = genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND         ) result = genParseColorBlind      (parse);

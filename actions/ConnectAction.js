@@ -101,8 +101,8 @@ function connectAction_saveOutputActiveNodes(act)
 {
     act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
 
-    if (act.oldOutputActiveNodeId != '')
-        pushUnique(act.oldActiveNodeIds, act.oldOutputActiveNodeId);
+    // if (act.oldOutputActiveNodeId != '')
+    //     pushUnique(act.oldActiveNodeIds, act.oldOutputActiveNodeId);
 }
 
 
@@ -112,7 +112,7 @@ function connectAction_saveInputActiveNodesAndValues(act)
     act.inputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo() : [];
     act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
 
-    pushUnique(act.oldActiveNodeIds, act.inputActiveNodeIds);
+    //pushUnique(act.oldActiveNodeIds, act.inputActiveNodeIds);
 }
 
 
@@ -128,7 +128,7 @@ function connectAction_makeNewConnection(act)
 {
     const conn = uiConnect(act.output, act.input, act.inputId);
             
-    act.newConnections.push(conn);
+    pushUnique(act.newConnections, conn);
     act.outputOrder = conn.outputOrder;
 
     uiSaveConn(conn);

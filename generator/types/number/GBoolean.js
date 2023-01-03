@@ -1,5 +1,5 @@
 class GBoolean
-extends GVarArithmetic
+extends GArithmetic
 {
     operation;
 

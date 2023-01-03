@@ -3406,14 +3406,6 @@ const NUMBER_DIVIDE       = 'DIV';
 const NUMBER_MODULO       = 'MOD';   
 const NUMBER_EXPONENT     = 'EXP';
 
-const NUMBER_VAR_MATH     = 'MATH*';  
-const NUMBER_VAR_ADD      = 'ADD*';   
-const NUMBER_VAR_SUBTRACT = 'SUB*';   
-const NUMBER_VAR_MULTIPLY = 'MUL*';   
-const NUMBER_VAR_DIVIDE   = 'DIV*';   
-const NUMBER_VAR_MODULO   = 'MOD*';   
-const NUMBER_VAR_EXPONENT = 'EXP*';   
-
 
 const NUMBER_TYPES =
 [
@@ -3433,15 +3425,7 @@ const NUMBER_TYPES =
     NUMBER_MULTIPLY,
     NUMBER_DIVIDE,
     NUMBER_MODULO,
-    NUMBER_EXPONENT,
-
-    NUMBER_VAR_MATH,
-    NUMBER_VAR_ADD,
-    NUMBER_VAR_SUBTRACT,
-    NUMBER_VAR_MULTIPLY,
-    NUMBER_VAR_DIVIDE,
-    NUMBER_VAR_MODULO,
-    NUMBER_VAR_EXPONENT
+    NUMBER_EXPONENT
 ];
 
 
@@ -6384,62 +6368,7 @@ extends GOperator
 class GArithmetic
 extends GNumberType
 {
-    input = null;
-
-    operand;
-
-
-
-    copyBase(base)
-    {
-        super.copyBase(base);
-
-        this.operand = base.operand.copy();
-    }
-}
-
-
-
-function evalNodeValue(node, operation, isDiv, parse)
-{
-    if (!node.input)
-    {
-        node.value = NumberValue.NaN;
-        return;
-    }
-
-
-    node.input    = node.input  .eval(parse).copy();
-    node.operand  = node.operand.eval(parse).copy();
-    
-    const input   = node.input  .toValue();
-    const operand = node.operand.toValue();
-
-
-    if (isDiv)
-    {
-        if (operand.value == 0)
-        {
-            node.value = NumberValue.NaN;
-            return;
-        }
-
-        const dec = Math.max(input.decimals, operand.decimals);
-
-        node.value = new NumberValue(
-            floorTo(operation(input.value, operand.value), dec), 
-            dec);
-    }
-    else
-    {
-        node.value = new NumberValue(
-            operation(input.value,    operand.value   ),
-            Math.max (input.decimals, operand.decimals));
-    }
-
-
-
-    genPushUpdateValue(parse, node.nodeId, 'operand', operand);
+    inputs = [];
 }
 
 
@@ -6461,275 +6390,6 @@ extends GArithmetic
     copy()
     {
         const math = new GMath(this.nodeId, this.options);
-
-        math.copyBase(this);
-
-        math.operation = this.operation.copy();
-
-        return math;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const operation = this.operation.eval(parse).toValue();
-
-        operation.value = Math.min(Math.max(0, operation.value), MATH_OPS.length-1);
-
-        switch (operation.value)
-        {
-            case 0: evalNodeValue(this, (a, b) => a - b,          false, parse); break;
-            case 1: evalNodeValue(this, (a, b) => a + b,          false, parse); break;
-            case 2: evalNodeValue(this, (a, b) => a / b,          true , parse); break;
-            case 3: evalNodeValue(this, (a, b) => a * b,          false, parse); break;
-            case 4: evalNodeValue(this, (a, b) => a % b,          true , parse); break;
-            case 5: evalNodeValue(this, (a, b) => Math.pow(a, b), false, parse); break;
-
-            default: console.assert(false, 'Invalid math operation');
-        }
-
-        
-        genPushUpdateValue(parse, this.nodeId, 'operation', operation);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GAdd
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_ADD, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const add = new GAdd(this.nodeId, this.options);
-        add.copyBase(this);
-        if (this.input) add.input = this.input.copy();
-        return add;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a + b, false, parse);
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GSubtract
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_SUBTRACT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const sub = new GSubtract(this.nodeId, this.options);
-        sub.copyBase(this);
-        if (this.input) sub.input = this.input.copy();
-        return sub;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a - b, false, parse);
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GMultiply
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_MULTIPLY, nodeId, options);
-    }
-
-
-
-    copy()
-    {
-        const mul = new GMultiply(this.nodeId, this.options);
-        mul.copyBase(this);
-        if (this.input) mul.input = this.input.copy();
-        return mul;
-    }
-
-    
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a * b, false, parse);
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GDivide
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_DIVIDE, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const div = new GDivide(this.nodeId, this.options);
-        div.copyBase(this);
-        if (this.input) div.input = this.input.copy();
-        return div;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a / b, true, parse);
-        
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GModulo
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_MODULO, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const mod = new GModulo(this.nodeId, this.options);
-        mod.copyBase(this);
-        if (this.input) mod.input = this.input.copy();
-        return mod;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => a % b, true, parse);
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GExponent
-extends GArithmetic
-{
-    constructor(nodeId, options)
-    {
-        super(NUMBER_EXPONENT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const exp = new GExponent(this.nodeId, this.options);
-        exp.copyBase(this);
-        if (this.input) exp.input = this.input.copy();
-        return exp;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-        evalNodeValue(this, (a, b) => Math.pow(a, b), false, parse);
-        
-        this.validate();
-
-        return this;
-    }
-}
-
-
-class GVarArithmetic
-extends GNumberType
-{
-    inputs = [];
-}
-
-
-
-class GVarMath
-extends GVarArithmetic
-{
-    operation;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_VAR_MATH, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const math = new GVarMath(this.nodeId, this.options);
 
         math.copyBase(this);
 
@@ -6775,19 +6435,19 @@ extends GVarArithmetic
 
 
 
-class GVarAdd
-extends GVarArithmetic
+class GAdd
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_ADD, nodeId, options);
+        super(NUMBER_ADD, nodeId, options);
     }
 
 
     
     copy()
     {
-        const add = new GVarAdd(this.nodeId, this.options);
+        const add = new GAdd(this.nodeId, this.options);
         add.copyBase(this);
         add.inputs = this.inputs.map(i => i.copy());
         return add;
@@ -6838,19 +6498,19 @@ function evalVarAddInputs(inputs, parse)
 }
 
 
-class GVarSubtract
-extends GVarArithmetic
+class GSubtract
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_SUBTRACT, nodeId, options);
+        super(NUMBER_SUBTRACT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const sub = new GVarSubtract(this.nodeId, this.options);
+        const sub = new GSubtract(this.nodeId, this.options);
         sub.copyBase(this);
         sub.inputs = this.inputs.map(i => i.copy());
         return sub;
@@ -6910,19 +6570,19 @@ function evalVarSubtractInputs(inputs, parse)
 }
 
 
-class GVarMultiply
-extends GVarArithmetic
+class GMultiply
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_MULTIPLY, nodeId, options);
+        super(NUMBER_MULTIPLY, nodeId, options);
     }
 
 
 
     copy()
     {
-        const mul = new GVarMultiply(this.nodeId, this.options);
+        const mul = new GMultiply(this.nodeId, this.options);
         mul.copyBase(this);
         mul.inputs = this.inputs.map(i => i.copy());
         return mul;
@@ -6978,19 +6638,19 @@ function evalVarMultiplyInputs(inputs, parse)
 }
 
 
-class GVarDivide
-extends GVarArithmetic
+class GDivide
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_DIVIDE, nodeId, options);
+        super(NUMBER_DIVIDE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const div = new GVarDivide(this.nodeId, this.options);
+        const div = new GDivide(this.nodeId, this.options);
         div.copyBase(this);
         div.inputs = this.inputs.map(i => i.copy());
         return div;
@@ -7057,19 +6717,19 @@ function evalVarDivideInputs(inputs, parse)
 }
 
 
-class GVarModulo
-extends GVarArithmetic
+class GModulo
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_MODULO, nodeId, options);
+        super(NUMBER_MODULO, nodeId, options);
     }
 
 
     
     copy()
     {
-        const mod = new GVarModulo(this.nodeId, this.options);
+        const mod = new GModulo(this.nodeId, this.options);
         mod.copyBase(this);
         mod.inputs = this.inputs.map(i => i.copy());
         return mod;
@@ -7136,19 +6796,19 @@ function evalVarModuloInputs(inputs, parse)
 }
 
 
-class GVarExponent
-extends GVarArithmetic
+class GExponent
+extends GArithmetic
 {
     constructor(nodeId, options)
     {
-        super(NUMBER_VAR_EXPONENT, nodeId, options);
+        super(NUMBER_EXPONENT, nodeId, options);
     }
 
 
     
     copy()
     {
-        const exp = new GVarExponent(this.nodeId, this.options);
+        const exp = new GExponent(this.nodeId, this.options);
         exp.copyBase(this);
         exp.inputs = this.inputs.map(i => i.copy());
         return exp;
@@ -7676,7 +7336,7 @@ extends GNumberType
 
 
 class GBoolean
-extends GVarArithmetic
+extends GArithmetic
 {
     operation;
 
@@ -11577,99 +11237,6 @@ function genParseMath(parse, newNode)
     const math = newNode(nodeId, options);
 
     
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be 0 or 1');
-    }
-
-
-    if (parse.settings.logRequests) 
-        logReqMath(math, nInputs, parse);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, math);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-
-    if (nInputs == 1)
-        math.input = genParse(parse);
-
-    math.operation = genParse(parse);
-    math.operand   = genParse(parse);
-
-
-    parse.nTab--;
-
-        
-    genParseNodeEnd(parse, math);
-    return math;
-}
-
-
-
-function genParseArithmetic(parse, newNode)
-{
-    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const arith = newNode(nodeId, options);
-
-
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be 0 or 1');
-    }
-
-
-    if (parse.settings.logRequests) 
-        logReqArithmetic(arith, type, nInputs, parse);
-
-
-    if (ignore) 
-    {
-        genParseNodeEnd(parse, arith);
-        return parse.parsedNodes.find(n => n.nodeId == nodeId);
-    }
-
-
-    parse.nTab++;
-
-    
-    if (nInputs == 1)
-        arith.input = genParse(parse);
-
-    arith.operand = genParse(parse);
-
-    
-    parse.nTab--;
-
-        
-    genParseNodeEnd(parse, arith);
-    return arith;
-}
-
-
-
-function genParseVarMath(parse, newNode)
-{
-    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
-
-
-    const math = newNode(nodeId, options);
-
-    
     let nInputs = 0;
     
     if (!ignore)
@@ -11705,7 +11272,7 @@ function genParseVarMath(parse, newNode)
 
 
 
-function genParseVarArithmetic(parse, newNode)
+function genParseArithmetic(parse, newNode)
 {
     const [type, nodeId, options, ignore] = genParseNodeStart(parse);
 
@@ -12653,6 +12220,7 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == NUMBER_VALUE       ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER             ) result = genParseNumber          (parse);
+
     else if (parse.next == NUMBER_ROUND       ) result = genParseRound           (parse);
     else if (parse.next == NUMBER_LIMITS      ) result = genParseLimits          (parse);
     else if (parse.next == NUMBER_RANDOM      ) result = genParseRandom          (parse);
@@ -12669,16 +12237,9 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_MODULO      ) result = genParseArithmetic      (parse, (nodeId, options) => new GModulo  (nodeId, options));
     else if (parse.next == NUMBER_EXPONENT    ) result = genParseArithmetic      (parse, (nodeId, options) => new GExponent(nodeId, options));
 
-    else if (parse.next == NUMBER_VAR_MATH    ) result = genParseVarMath         (parse, (nodeId, options) => new GVarMath    (nodeId, options));
-    else if (parse.next == NUMBER_VAR_ADD     ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarAdd     (nodeId, options));
-    else if (parse.next == NUMBER_VAR_SUBTRACT) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarSubtract(nodeId, options));
-    else if (parse.next == NUMBER_VAR_MULTIPLY) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarMultiply(nodeId, options));
-    else if (parse.next == NUMBER_VAR_DIVIDE  ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarDivide  (nodeId, options));
-    else if (parse.next == NUMBER_VAR_MODULO  ) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarModulo  (nodeId, options));
-    else if (parse.next == NUMBER_VAR_EXPONENT) result = genParseVarArithmetic   (parse, (nodeId, options) => new GVarExponent(nodeId, options));
-
     else if (parse.next == COLOR_VALUE        ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR              ) result = genParseColor           (parse);
+    
     else if (parse.next == COLOR_INTERPOLATE  ) result = genParseColorInterpolate(parse);
     else if (parse.next == COLOR_CONTRAST     ) result = genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND         ) result = genParseColorBlind      (parse);
