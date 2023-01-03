@@ -17,6 +17,8 @@ class Action
     onAfterUndo;
 
     
+    selfUpdate    = false;
+
     _linkWithNext = false;
 
     

@@ -105,7 +105,8 @@ class ActionManager
 
         act.updateOldConnections();
 
-        pushUpdate(act, updateNodes);
+        if (!act.selfUpdate)
+            pushUpdate(act, updateNodes);
     }
 
 
@@ -126,7 +127,8 @@ class ActionManager
 
         act.restoreOldConnections();
 
-        pushUpdate(act, updateNodes);
+        if (!act.selfUpdate)
+            pushUpdate(act, updateNodes);
     }
 }
 

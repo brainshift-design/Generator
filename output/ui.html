@@ -41791,7 +41791,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER, 'num', 70);
+        super(NUMBER, 'num', 100);
 
         this.addInput (new Input (NUMBER_TYPES, this.input_getValuesForUndo));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
@@ -42429,7 +42429,7 @@ extends OperatorBase
 
     constructor(type, shortName, symbol)
     {
-        super(type, shortName, 70);
+        super(type, shortName, 100);
 
         
         this.variableInputs   = true;
@@ -46460,6 +46460,8 @@ class Action
     onAfterUndo;
 
     
+    selfUpdate    = false;
+
     _linkWithNext = false;
 
     
@@ -46670,7 +46672,8 @@ class ActionManager
 
         act.updateOldConnections();
 
-        pushUpdate(act, updateNodes);
+        if (!act.selfUpdate)
+            pushUpdate(act, updateNodes);
     }
 
 
@@ -46691,7 +46694,8 @@ class ActionManager
 
         act.restoreOldConnections();
 
-        pushUpdate(act, updateNodes);
+        if (!act.selfUpdate)
+            pushUpdate(act, updateNodes);
     }
 }
 
@@ -47255,19 +47259,12 @@ function createNodeAction_connect(act, output, inputNode, inputId, outputOrder =
 {
     const conn = uiVariableConnect(
         output.node, output.id,
-        inputNode,  inputId,
+        inputNode,   inputId,
         outputOrder);
         
     uiSaveConn(conn);
 
-    act.newConnections.push(
-    {
-        outputNodeId: conn.output.node.id,
-        outputId:     conn.output.id,
-        outputOrder:  conn.outputOrder,
-        inputNodeId:  conn.input.node.id,
-        inputId:      conn.input.id
-    });
+    act.newConnections.push(conn);
 
     return conn;
 }
@@ -47276,15 +47273,15 @@ function createNodeAction_connect(act, output, inputNode, inputId, outputOrder =
 
 function createNodeAction_activateOldInput(act, updateNodes)
 {
-    if (act.oldInputActiveNodeId != '')
-    {
-        const oldInputActiveNode = nodeFromId(act.oldInputActiveNodeId);
-        
-        uiMakeNodeActive(oldInputActiveNode);
-        pushUnique(updateNodes, oldInputActiveNode);
+    if (act.oldInputActiveNodeId == '')
+        return;
 
-        act.oldInputActiveNodeId = '';
-    }
+    const oldInputActiveNode = nodeFromId(act.oldInputActiveNodeId);
+    
+    uiMakeNodeActive(oldInputActiveNode);
+    pushUnique(updateNodes, oldInputActiveNode);
+
+    act.oldInputActiveNodeId = '';
 }
 
 
@@ -48550,15 +48547,17 @@ extends Action
     {
         super('SET VALUE ' + param.node.id + '.' + param.id + ' = ' + value.toDisplayString());
 
-        this.nodeId   = param.node.id;
-        this.paramId  = param.id;
+        this.nodeId     = param.node.id;
+        this.paramId    = param.id;
+  
+        this.newValue   = value;
 
-        this.newValue = value;
+        this.selfUpdate = true;
     }
 
 
 
-    do()
+    do(updateNodes)
     {
         this.oldValue = this.param.oldValue;
         pushUpdateFromParam(this, [this.param.node], this.param);
@@ -48568,7 +48567,7 @@ extends Action
 
 
 
-    undo()
+    undo(updateNodes)
     {
         this.param.setValue(this.oldValue, false, true);
         pushUpdateFromParam(this, [this.param.node], this.param);
@@ -48578,7 +48577,7 @@ extends Action
 
 
 
-    redo()
+    redo(updateNodes)
     {
         this.param.setValue(this.newValue);
         pushUpdateFromParam(this, [this.param.node], this.param);
@@ -49899,27 +49898,31 @@ function uiQueueMessageToGenerator(msg)
 
 function uiPostNextMessageToGenerator()
 {
-    if (    genMessages.length > 0
-        && !genMessagePosted)
+    if (genMessages.length > 0)
     {
-        //console.log('message');
-        let msg = genMessages.shift();
-
+        let msg = genMessages[0];
+        
         if (msg.cmd == 'genRequest')
         {
             // move along the queue since only the last message is important
-            while (genMessages.length > 0
-                && genMessages[0].cmd        == msg.cmd
-                && genMessages[0].request[0] == msg.request[0]
-                && genMessages[0].request[1] == msg.request[1])
+            while (genMessages.length > 1
+                && genMessages[1].cmd        == msg.cmd
+                && genMessages[1].request[2] == msg.request[2]
+                && genMessages[1].request[3] == msg.request[3])
             {
-                //console.log('skipping');
-                msg = genMessages.shift();//deepCopy(genMessages.shift());
+                genMessages.shift();
+                msg = genMessages[0];
             }
         }
 
-        uiPostMessageToGenerator(msg);
-        genMessagePosted = true;
+        
+        if (!genMessagePosted)
+        {
+            genMessages.shift();
+            uiPostMessageToGenerator(msg);
+
+            genMessagePosted = true;
+        }
     }
 }
 

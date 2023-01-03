@@ -9,7 +9,7 @@ extends OperatorBase
 
     constructor(type, shortName, symbol)
     {
-        super(type, shortName, 70);
+        super(type, shortName, 100);
 
         
         this.variableInputs   = true;

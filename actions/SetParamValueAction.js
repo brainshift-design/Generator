@@ -20,15 +20,17 @@ extends Action
     {
         super('SET VALUE ' + param.node.id + '.' + param.id + ' = ' + value.toDisplayString());
 
-        this.nodeId   = param.node.id;
-        this.paramId  = param.id;
+        this.nodeId     = param.node.id;
+        this.paramId    = param.id;
+  
+        this.newValue   = value;
 
-        this.newValue = value;
+        this.selfUpdate = true;
     }
 
 
 
-    do()
+    do(updateNodes)
     {
         this.oldValue = this.param.oldValue;
         pushUpdateFromParam(this, [this.param.node], this.param);
@@ -38,7 +40,7 @@ extends Action
 
 
 
-    undo()
+    undo(updateNodes)
     {
         this.param.setValue(this.oldValue, false, true);
         pushUpdateFromParam(this, [this.param.node], this.param);
@@ -48,7 +50,7 @@ extends Action
 
 
 
-    redo()
+    redo(updateNodes)
     {
         this.param.setValue(this.newValue);
         pushUpdateFromParam(this, [this.param.node], this.param);

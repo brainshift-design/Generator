@@ -104,19 +104,12 @@ function createNodeAction_connect(act, output, inputNode, inputId, outputOrder =
 {
     const conn = uiVariableConnect(
         output.node, output.id,
-        inputNode,  inputId,
+        inputNode,   inputId,
         outputOrder);
         
     uiSaveConn(conn);
 
-    act.newConnections.push(
-    {
-        outputNodeId: conn.output.node.id,
-        outputId:     conn.output.id,
-        outputOrder:  conn.outputOrder,
-        inputNodeId:  conn.input.node.id,
-        inputId:      conn.input.id
-    });
+    act.newConnections.push(conn);
 
     return conn;
 }
@@ -125,13 +118,13 @@ function createNodeAction_connect(act, output, inputNode, inputId, outputOrder =
 
 function createNodeAction_activateOldInput(act, updateNodes)
 {
-    if (act.oldInputActiveNodeId != '')
-    {
-        const oldInputActiveNode = nodeFromId(act.oldInputActiveNodeId);
-        
-        uiMakeNodeActive(oldInputActiveNode);
-        pushUnique(updateNodes, oldInputActiveNode);
+    if (act.oldInputActiveNodeId == '')
+        return;
 
-        act.oldInputActiveNodeId = '';
-    }
+    const oldInputActiveNode = nodeFromId(act.oldInputActiveNodeId);
+    
+    uiMakeNodeActive(oldInputActiveNode);
+    pushUnique(updateNodes, oldInputActiveNode);
+
+    act.oldInputActiveNodeId = '';
 }

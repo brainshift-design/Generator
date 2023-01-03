@@ -152,27 +152,31 @@ function uiQueueMessageToGenerator(msg)
 
 function uiPostNextMessageToGenerator()
 {
-    if (    genMessages.length > 0
-        && !genMessagePosted)
+    if (genMessages.length > 0)
     {
-        //console.log('message');
-        let msg = genMessages.shift();
-
+        let msg = genMessages[0];
+        
         if (msg.cmd == 'genRequest')
         {
             // move along the queue since only the last message is important
-            while (genMessages.length > 0
-                && genMessages[0].cmd        == msg.cmd
-                && genMessages[0].request[0] == msg.request[0]
-                && genMessages[0].request[1] == msg.request[1])
+            while (genMessages.length > 1
+                && genMessages[1].cmd        == msg.cmd
+                && genMessages[1].request[2] == msg.request[2]
+                && genMessages[1].request[3] == msg.request[3])
             {
-                //console.log('skipping');
-                msg = genMessages.shift();//deepCopy(genMessages.shift());
+                genMessages.shift();
+                msg = genMessages[0];
             }
         }
 
-        uiPostMessageToGenerator(msg);
-        genMessagePosted = true;
+        
+        if (!genMessagePosted)
+        {
+            genMessages.shift();
+            uiPostMessageToGenerator(msg);
+
+            genMessagePosted = true;
+        }
     }
 }
 
