@@ -41,8 +41,6 @@
 ../operators/number/OpRandom.js
 ../operators/number/OpSeries.js
 ../operators/number/OpInterpolate.js
-../operators/number/OpBoolean.js
-../operators/number/OpCondition.js
 
 ../operators/number/arithmetic/OpMath.js
 ../operators/number/arithmetic/OpArithmetic.js
@@ -52,6 +50,22 @@
 ../operators/number/arithmetic/OpDivide.js
 ../operators/number/arithmetic/OpModulo.js
 ../operators/number/arithmetic/OpExponent.js
+
+../operators/number/boolean/OpBoolean.js
+../operators/number/boolean/OpBooleanBase.js
+../operators/number/boolean/OpNot.js
+../operators/number/boolean/OpAnd.js
+../operators/number/boolean/OpOr.js
+../operators/number/boolean/OpXor.js
+
+../operators/number/condition/OpCondition.js
+../operators/number/condition/OpConditionBase.js
+../operators/number/condition/OpEqual.js
+../operators/number/condition/OpNotEqual.js
+../operators/number/condition/OpLess.js
+../operators/number/condition/OpLessOrEqual.js
+../operators/number/condition/OpGreater.js
+../operators/number/condition/OpGreaterOrEqual.js
 
 
 ../operators/color/OpColorBase.js

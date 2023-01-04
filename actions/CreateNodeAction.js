@@ -14,8 +14,6 @@ extends Action
 
     autoConnect;
 
-    //newConnections  = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
-
 
     creatingButton;
     
@@ -78,21 +76,9 @@ extends Action
 
     undo(updateNodes)
     {
-        // for (const _conn of this.newConnections)
-        // {
-        //     const input = nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId);
-
-        //     uiDeleteSavedConn(input.connection);
-        //     uiDisconnect(input);
-        // }
-        
-        //this.newConnections = [];
-            
-            
         uiDeleteNodes([this.createdNodeId]);
 
         createNodeAction_activateOldInput(this, updateNodes);
-
         
         graphView.selectByIds(this.prevSelectedIds);
     }

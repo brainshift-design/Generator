@@ -45,23 +45,35 @@ const FLOW_TYPES =
 ];
 
 
-const NUMBER_VALUE        = 'NUM#';  
-const NUMBER              = 'NUM';   
-const NUMBER_ROUND        = 'ROUND';   
-const NUMBER_LIMITS       = 'LIM';   
-const NUMBER_SERIES       = 'SER';  
-const NUMBER_RANDOM       = 'RAND';  
-const NUMBER_INTERPOLATE  = 'LERP';  
-const NUMBER_BOOLEAN      = 'BOOL';  
-const NUMBER_CONDITION    = 'COND';
- 
-const NUMBER_MATH         = 'MATH';  
-const NUMBER_ADD          = 'ADD';   
-const NUMBER_SUBTRACT     = 'SUB';   
-const NUMBER_MULTIPLY     = 'MUL';   
-const NUMBER_DIVIDE       = 'DIV';   
-const NUMBER_MODULO       = 'MOD';   
-const NUMBER_EXPONENT     = 'EXP';
+const NUMBER_VALUE            = 'NUM#';  
+const NUMBER                  = 'NUM';   
+const NUMBER_ROUND            = 'ROUND';   
+const NUMBER_LIMITS           = 'LIM';   
+const NUMBER_SERIES           = 'SER';  
+const NUMBER_RANDOM           = 'RAND';  
+const NUMBER_INTERPOLATE      = 'LERP';  
+
+const NUMBER_MATH             = 'MATH';  
+const NUMBER_ADD              = 'ADD';   
+const NUMBER_SUBTRACT         = 'SUB';   
+const NUMBER_MULTIPLY         = 'MUL';   
+const NUMBER_DIVIDE           = 'DIV';   
+const NUMBER_MODULO           = 'MOD';   
+const NUMBER_EXPONENT         = 'EXP';
+
+const NUMBER_BOOLEAN          = 'BOOL';  
+const NUMBER_NOT              = 'NOT';
+const NUMBER_AND              = 'AND';
+const NUMBER_OR               = 'OR';
+const NUMBER_XOR              = 'XOR';
+
+const NUMBER_CONDITION        = 'COND';
+const NUMBER_EQUAL            = 'EQ';
+const NUMBER_NOT_EQUAL        = 'NE';
+const NUMBER_LESS             = 'LT';
+const NUMBER_LESS_OR_EQUAL    = 'LE';
+const NUMBER_GREATER          = 'GT';
+const NUMBER_GREATER_OR_EQUAL = 'GE';
 
 
 const NUMBER_TYPES =

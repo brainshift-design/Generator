@@ -9,8 +9,7 @@ extends Action
     oldInputActiveNodeId = '';
 
 
-    oldConnections = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
-    newConnections = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    prevConnections = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
 
 
     creatingButton;
@@ -27,11 +26,11 @@ extends Action
 
 
 
-    do()
+    do(updateNodes)
     {
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
-        createInsertNodeAction_saveOldConnections(this);
+        createInsertNodeAction_savePrevConnections(this);
 
 
         const node = createNode(this.nodeType, this.creatingButton, this.createdId);
@@ -70,7 +69,7 @@ extends Action
                 graphView.autoPlaceNewNode(newConn.output, newConn.input);
 
 
-                for (const _conn of this.oldConnections)
+                for (const _conn of this.prevConnections)
                 {
                     const _output    = node.headerOutputs[0];
                     const _inputNode = nodeFromId(_conn.inputNodeId);
@@ -91,57 +90,29 @@ extends Action
             uiMakeNodeActive(node);
 
 
-        pushUpdate(this, [node]);
+        pushUnique(updateNodes, node);
     }
 
 
 
-    undo()
+    undo(updateNodes)
     {
-        for (const _conn of this.newConnections)
-        {
-            const input = nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId);
-
-            uiDeleteSavedConn(input.connection);
-            uiDisconnect(input);
-        }
-        
-        this.newConnections = [];
-
-
         uiDeleteNodes([this.createdNodeId]);
 
+        createNodeAction_activateOldInput(this, updateNodes);
 
-        for (const _conn of this.oldConnections)
-        {
-            createNodeAction_connect(
-                this, 
-                nodeFromId(_conn.outputNodeId).outputFromId(_conn.outputId),
-                nodeFromId(_conn. inputNodeId),
-                _conn. inputId,
-                _conn.outputOrder);
-        }
-
-
-        if (this.oldInputActiveNodeId != '')
-            createNodeAction_activateOldInput(this);
-
+        this.prevConnections = [];
             
         graphView.selectByIds(this.prevSelectedIds);
-
-
-        this.oldConnections = [];
-        this.newConnections = [];
     }
 }
 
 
 
-function createInsertNodeAction_saveOldConnections(act)
+function createInsertNodeAction_savePrevConnections(act)
 {
     if (act.prevSelectedIds.length == 0)
         return;
-
         
     act.oldInputActiveNodeId = idFromNode(getActiveFromNodeId(act.prevSelectedIds[0]));
 
@@ -149,14 +120,5 @@ function createInsertNodeAction_saveOldConnections(act)
     const output  = selNode.outputs[0];
 
     for (const input of output.connectedInputs)
-    {
-        act.oldConnections.push(
-        {
-            outputNodeId: output.node.id,
-            outputId:     output.id,
-            outputOrder:  input.connection.outputOrder,
-            inputNodeId:  input.node.id,
-            inputId:      input.id
-        });
-    }
+        act.prevConnections.push(connDataObject(output, input));
 }

@@ -48,8 +48,8 @@ class Action
 
     initSaveArrays()
     {
-        this.oldConnections     = [];
-        this.newConnections     = [];
+        this.oldConnections = [];
+        this.newConnections = [];
     }
 
 
@@ -69,7 +69,7 @@ class Action
     updateOldConnections()
     {
         this.oldConnections = this.oldConnections
-            .filter(c => !graph.connections.find(gc => !connEqual(gc, c)));
+            .filter(c => !graph.connections.find(gc => connEqual(gc, c)));
     }
 
 

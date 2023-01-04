@@ -118,7 +118,8 @@ class MenuItem
         {
             const rect = boundingRect(this.div);
 
-            if (!this.childMenu) 
+            //if (!this.childMenu) 
+            if (this.callback)
                 this.select(e.shiftKey, rect.x, rect.y); 
         });
 

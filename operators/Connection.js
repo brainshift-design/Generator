@@ -424,3 +424,16 @@ function connEqual(c1, c2)
         && c1.inputNodeId  == c2.inputNodeId
         && c1.inputId      == c2.inputId;
 }
+
+
+
+function connDataObject(output, input)
+{
+    return {
+        outputNodeId: output.node.id,
+        outputId:     output.id,
+        outputOrder:  input.connection.outputOrder,
+        inputNodeId:  input.node.id,
+        inputId:      input.id
+    };
+}

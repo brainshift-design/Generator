@@ -53,14 +53,28 @@
 ../generator/types/number/arithmetic/GModulo.js
 ../generator/types/number/arithmetic/GExponent.js
 
+../generator/types/number/boolean/GBoolean.js
+../generator/types/number/boolean/GBooleanBase.js
+../generator/types/number/boolean/GNot.js
+../generator/types/number/boolean/GAnd.js
+../generator/types/number/boolean/GOr.js
+../generator/types/number/boolean/GXor.js
+
+../generator/types/number/condition/GCondition.js
+../generator/types/number/condition/GConditionBase.js
+../generator/types/number/condition/GEqual.js
+../generator/types/number/condition/GNotEqual.js
+../generator/types/number/condition/GLess.js
+../generator/types/number/condition/GLessOrEqual.js
+../generator/types/number/condition/GGreater.js
+../generator/types/number/condition/GGreaterOrEqual.js
+
 ../generator/types/number/GNumber.js
 ../generator/types/number/GRound.js
 ../generator/types/number/GLimits.js
 ../generator/types/number/GSeries.js
 ../generator/types/number/GRandom.js
 ../generator/types/number/GInterpolate.js
-../generator/types/number/GBoolean.js
-../generator/types/number/GCondition.js
 
 
 ../generator/types/color/GColorType.js

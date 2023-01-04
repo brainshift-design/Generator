@@ -3388,23 +3388,35 @@ const FLOW_TYPES =
 ];
 
 
-const NUMBER_VALUE        = 'NUM#';  
-const NUMBER              = 'NUM';   
-const NUMBER_ROUND        = 'ROUND';   
-const NUMBER_LIMITS       = 'LIM';   
-const NUMBER_SERIES       = 'SER';  
-const NUMBER_RANDOM       = 'RAND';  
-const NUMBER_INTERPOLATE  = 'LERP';  
-const NUMBER_BOOLEAN      = 'BOOL';  
-const NUMBER_CONDITION    = 'COND';
- 
-const NUMBER_MATH         = 'MATH';  
-const NUMBER_ADD          = 'ADD';   
-const NUMBER_SUBTRACT     = 'SUB';   
-const NUMBER_MULTIPLY     = 'MUL';   
-const NUMBER_DIVIDE       = 'DIV';   
-const NUMBER_MODULO       = 'MOD';   
-const NUMBER_EXPONENT     = 'EXP';
+const NUMBER_VALUE            = 'NUM#';  
+const NUMBER                  = 'NUM';   
+const NUMBER_ROUND            = 'ROUND';   
+const NUMBER_LIMITS           = 'LIM';   
+const NUMBER_SERIES           = 'SER';  
+const NUMBER_RANDOM           = 'RAND';  
+const NUMBER_INTERPOLATE      = 'LERP';  
+
+const NUMBER_MATH             = 'MATH';  
+const NUMBER_ADD              = 'ADD';   
+const NUMBER_SUBTRACT         = 'SUB';   
+const NUMBER_MULTIPLY         = 'MUL';   
+const NUMBER_DIVIDE           = 'DIV';   
+const NUMBER_MODULO           = 'MOD';   
+const NUMBER_EXPONENT         = 'EXP';
+
+const NUMBER_BOOLEAN          = 'BOOL';  
+const NUMBER_NOT              = 'NOT';
+const NUMBER_AND              = 'AND';
+const NUMBER_OR               = 'OR';
+const NUMBER_XOR              = 'XOR';
+
+const NUMBER_CONDITION        = 'COND';
+const NUMBER_EQUAL            = 'EQ';
+const NUMBER_NOT_EQUAL        = 'NE';
+const NUMBER_LESS             = 'LT';
+const NUMBER_LESS_OR_EQUAL    = 'LE';
+const NUMBER_GREATER          = 'GT';
+const NUMBER_GREATER_OR_EQUAL = 'GE';
 
 
 const NUMBER_TYPES =
@@ -6868,6 +6880,328 @@ function evalVarExponentInputs(inputs, parse)
 }
 
 
+class GBoolean
+extends GArithmetic
+{
+    operation;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_BOOLEAN, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const bool = new GBoolean(this.nodeId, this.options);
+
+        bool.copyBase(this);
+
+        bool.inputs    = this.inputs.map(i => i.copy());
+        bool.operation = this.operation.copy();
+
+        return bool;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const op = this.operation.eval(parse).toValue();
+
+        op.value = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
+
+        
+        switch (op.value)
+        {
+            case BOOLEAN_NOT: this.value = evalBoolInputsNand(this.inputs, parse); break;
+            case BOOLEAN_AND: this.value = evalBoolInputsAnd (this.inputs, parse); break;
+            case BOOLEAN_OR:  this.value = evalBoolInputsOr  (this.inputs, parse); break;
+            case BOOLEAN_XOR: this.value = evalBoolInputsXor (this.inputs, parse); break;
+        }
+
+        
+        genPushUpdateValue(parse, this.nodeId, 'operation', op);
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalBoolInputsNand(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        if (val.toNumber() == 0)
+            value.value = 1;
+    }
+
+
+    return value;
+}
+
+
+
+function evalBoolInputsAnd(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(1);
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        if (val.toNumber() == 0)
+            value.value = 0;
+    }
+
+
+    return value;
+}
+
+
+
+function evalBoolInputsOr(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        if (val.toNumber() != 0)
+            value.value = 1;
+    }
+
+
+    return value;
+}
+
+
+
+function evalBoolInputsXor(inputs, parse)
+{
+    if (inputs.length == 0)
+        return NumberValue.NaN;
+
+
+    const value = new NumberValue(0);
+
+
+    let flipped = 0;
+
+    for (let i = 0; i < inputs.length; i++)
+    {
+        const val = inputs[i].eval(parse).toValue();
+
+        console.assert(
+            val.type == NUMBER_VALUE, 
+            'val.type must belong to NUMBER_VALUE');
+
+        if (val.toNumber() != 0)
+        {
+            value.value = 1;
+            flipped++;
+        }
+    }
+
+
+    if (   value.value != 0
+        && flipped == inputs.length)
+        value.value = 0;
+
+
+    return value;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class GCondition
+extends GNumberType
+{
+    input0 = null;
+    input1 = null;
+
+    operation;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(NUMBER_CONDITION, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const cond = new GCondition(this.nodeId, this.options);
+
+        cond.copyBase(this);
+
+        if (this.input0) cond.input0 = this.input0.copy();
+        if (this.input1) cond.input1 = this.input1.copy();
+
+        cond.operation = this.operation.copy();
+
+        return cond;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const op = this.operation.eval(parse).toValue();
+
+        op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
+
+        
+        if (   this.input0 
+            && this.input1)
+        {
+            const val0 = this.input0.eval(parse).toValue();
+            const val1 = this.input1.eval(parse).toValue();
+
+            switch (op.value)
+            {
+                case CONDITION_EQUAL:             this.value = evalConditionInputsEqual         (val0, val1);  break;
+                case CONDITION_NOT_EQUAL:         this.value = evalConditionInputsNotEqual      (val0, val1);  break;
+                case CONDITION_LESS:              this.value = evalConditionInputsLess          (val0, val1);  break;
+                case CONDITION_LESS_OR_EQUAL:     this.value = evalConditionInputsLessOrEqual   (val0, val1);  break;
+                case CONDITION_GREATER:           this.value = evalConditionInputsGreater       (val0, val1);  break;
+                case CONDITION_GREATER_OR_EQUAL:  this.value = evalConditionInputsGreaterOrEqual(val0, val1);  break;
+            }
+        }
+        else if (this.input0)
+        {
+            this.input0.eval(parse).toValue();
+
+            switch (op.value)
+            {
+                case CONDITION_EQUAL:             
+                case CONDITION_LESS_OR_EQUAL:     
+                case CONDITION_GREATER_OR_EQUAL: this.value = new NumberValue(1); break;
+                default:                         this.value = new NumberValue(0); break;
+            }
+        }
+        else if (this.input1) 
+        {
+            this.input1.eval(parse).toValue();
+
+            switch (op.value)
+            {
+                case CONDITION_EQUAL:             
+                case CONDITION_LESS_OR_EQUAL:     
+                case CONDITION_GREATER_OR_EQUAL: this.value = new NumberValue(1); break;
+                default:                         this.value = new NumberValue(0); break;
+            }
+        }
+        else                  
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'operation', op);
+        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalConditionInputsEqual         (val0, val1) { return new NumberValue(val0.value == val1.value ? 1 : 0); }
+function evalConditionInputsNotEqual      (val0, val1) { return new NumberValue(val0.value != val1.value ? 1 : 0); }
+function evalConditionInputsLess          (val0, val1) { return new NumberValue(val0.value <  val1.value ? 1 : 0); }
+function evalConditionInputsLessOrEqual   (val0, val1) { return new NumberValue(val0.value <= val1.value ? 1 : 0); }
+function evalConditionInputsGreater       (val0, val1) { return new NumberValue(val0.value >  val1.value ? 1 : 0); }
+function evalConditionInputsGreaterOrEqual(val0, val1) { return new NumberValue(val0.value >= val1.value ? 1 : 0); }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class GNumber
 extends GNumberType
 {
@@ -7333,292 +7667,6 @@ extends GNumberType
     }
 }
 
-
-
-class GBoolean
-extends GArithmetic
-{
-    operation;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_BOOLEAN, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const bool = new GBoolean(this.nodeId, this.options);
-
-        bool.copyBase(this);
-
-        bool.inputs    = this.inputs.map(i => i.copy());
-        bool.operation = this.operation.copy();
-
-        return bool;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const op = this.operation.eval(parse).toValue();
-
-        op.value = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
-
-        
-        switch (op.value)
-        {
-            case BOOLEAN_NOT: this.value = evalBoolInputsNand(this.inputs, parse); break;
-            case BOOLEAN_AND: this.value = evalBoolInputsAnd (this.inputs, parse); break;
-            case BOOLEAN_OR:  this.value = evalBoolInputsOr  (this.inputs, parse); break;
-            case BOOLEAN_XOR: this.value = evalBoolInputsXor (this.inputs, parse); break;
-        }
-
-        
-        genPushUpdateValue(parse, this.nodeId, 'operation', op);
-        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-function evalBoolInputsNand(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    for (let i = 0; i < inputs.length; i++)
-    {
-        const val = inputs[i].eval(parse).toValue();
-
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
-
-        if (val.toNumber() == 0)
-            value.value = 1;
-    }
-
-
-    return value;
-}
-
-
-
-function evalBoolInputsAnd(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(1);
-
-
-    for (let i = 0; i < inputs.length; i++)
-    {
-        const val = inputs[i].eval(parse).toValue();
-
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
-
-        if (val.toNumber() == 0)
-            value.value = 0;
-    }
-
-
-    return value;
-}
-
-
-
-function evalBoolInputsOr(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    for (let i = 0; i < inputs.length; i++)
-    {
-        const val = inputs[i].eval(parse).toValue();
-
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
-
-        if (val.toNumber() != 0)
-            value.value = 1;
-    }
-
-
-    return value;
-}
-
-
-
-function evalBoolInputsXor(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    let flipped = 0;
-
-    for (let i = 0; i < inputs.length; i++)
-    {
-        const val = inputs[i].eval(parse).toValue();
-
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
-
-        if (val.toNumber() != 0)
-        {
-            value.value = 1;
-            flipped++;
-        }
-    }
-
-
-    if (   value.value != 0
-        && flipped == inputs.length)
-        value.value = 0;
-
-
-    return value;
-}
-
-
-class GCondition
-extends GNumberType
-{
-    input0 = null;
-    input1 = null;
-
-    operation;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(NUMBER_CONDITION, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const cond = new GCondition(this.nodeId, this.options);
-
-        cond.copyBase(this);
-
-        if (this.input0) cond.input0 = this.input0.copy();
-        if (this.input1) cond.input1 = this.input1.copy();
-
-        cond.operation = this.operation.copy();
-
-        return cond;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const op = this.operation.eval(parse).toValue();
-
-        op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
-
-        
-        if (   this.input0 
-            && this.input1)
-        {
-            const val0 = this.input0.eval(parse).toValue();
-            const val1 = this.input1.eval(parse).toValue();
-
-            switch (op.value)
-            {
-                case CONDITION_EQUAL:             this.value = evalConditionInputsEqual         (val0, val1);  break;
-                case CONDITION_NOT_EQUAL:         this.value = evalConditionInputsNotEqual      (val0, val1);  break;
-                case CONDITION_LESS:              this.value = evalConditionInputsLess          (val0, val1);  break;
-                case CONDITION_LESS_OR_EQUAL:     this.value = evalConditionInputsLessOrEqual   (val0, val1);  break;
-                case CONDITION_GREATER:           this.value = evalConditionInputsGreater       (val0, val1);  break;
-                case CONDITION_GREATER_OR_EQUAL:  this.value = evalConditionInputsGreaterOrEqual(val0, val1);  break;
-            }
-        }
-        else if (this.input0)
-        {
-            this.input0.eval(parse).toValue();
-
-            switch (op.value)
-            {
-                case CONDITION_EQUAL:             
-                case CONDITION_LESS_OR_EQUAL:     
-                case CONDITION_GREATER_OR_EQUAL: this.value = new NumberValue(1); break;
-                default:                         this.value = new NumberValue(0); break;
-            }
-        }
-        else if (this.input1) 
-        {
-            this.input1.eval(parse).toValue();
-
-            switch (op.value)
-            {
-                case CONDITION_EQUAL:             
-                case CONDITION_LESS_OR_EQUAL:     
-                case CONDITION_GREATER_OR_EQUAL: this.value = new NumberValue(1); break;
-                default:                         this.value = new NumberValue(0); break;
-            }
-        }
-        else                  
-            this.value = NumberValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'operation', op);
-        genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-function evalConditionInputsEqual         (val0, val1) { return new NumberValue(val0.value == val1.value ? 1 : 0); }
-function evalConditionInputsNotEqual      (val0, val1) { return new NumberValue(val0.value != val1.value ? 1 : 0); }
-function evalConditionInputsLess          (val0, val1) { return new NumberValue(val0.value <  val1.value ? 1 : 0); }
-function evalConditionInputsLessOrEqual   (val0, val1) { return new NumberValue(val0.value <= val1.value ? 1 : 0); }
-function evalConditionInputsGreater       (val0, val1) { return new NumberValue(val0.value >  val1.value ? 1 : 0); }
-function evalConditionInputsGreaterOrEqual(val0, val1) { return new NumberValue(val0.value >= val1.value ? 1 : 0); }
 
 
 class GColorType
