@@ -107,16 +107,16 @@ extends Action
                 for (const connectedInput of output.connectedInputs)
                 {
                     if (input.connectedOutput.canConnectTo(connectedInput))
-                    {
-                        this.newConnections.push(
-                        {
-                            outputNodeId: input.connectedOutput.node.id,
-                            outputId:     input.connectedOutput.id,
-                            outputOrder:  input.connection.outputOrder,
-                            inputNodeId:  connectedInput.node.id,
-                            inputId:      connectedInput.id
-                        });
-                    }
+                    // {
+                        this.newConnections.push(connDataObject(input.connectedOutput, connectedInput));
+                        // {
+                        //     outputNodeId: input.connectedOutput.node.id,
+                        //     outputId:     input.connectedOutput.id,
+                        //     outputOrder:  input.connection.outputOrder,
+                        //     inputNodeId:  connectedInput.node.id,
+                        //     inputId:      connectedInput.id
+                        // });
+                    // }
                 }
             }
         }

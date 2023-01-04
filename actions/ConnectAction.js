@@ -115,7 +115,7 @@ function connectAction_makeNewConnection(act)
 {
     const conn = uiConnect(act.output, act.input, act.inputId);
             
-    pushUnique(act.newConnections, conn);
+    pushUnique(act.newConnections, conn.toDataObject());
     act.outputOrder = conn.outputOrder;
 
     uiSaveConn(conn);

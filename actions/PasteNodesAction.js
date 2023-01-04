@@ -45,9 +45,11 @@ extends Action
             pushUnique(this.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
 
 
-        const [nodes, conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
+        const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
 
-        for (const conn of conns)
+        pushUnique(this.newConnections, _conns);
+        
+        for (const conn of _conns)
             uiSaveConnection(
                 conn.outputNodeId, conn.outputId, conn.outputOrder,
                 conn.inputNodeId,  conn.inputId,

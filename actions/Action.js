@@ -72,10 +72,20 @@ class Action
 
     deleteNewConnections()
     {
-        for (const conn of this.newConnections)
+        for (const _conn of this.newConnections)
         {
-            uiDeleteSavedConn(conn);
-            uiDisconnect(conn.input);
+            uiDeleteSavedConnection(
+                getConnectionKey(
+                    _conn.outputNodeId, _conn.outputId, _conn.outputOrder,
+                    _conn.inputNodeId,  _conn.inputId),
+                    _conn.outputNodeId,
+                    _conn.outputId,
+                    _conn.outputOrder,
+                    _conn.inputNodeId,
+                    _conn.inputId,
+                    _conn.list);
+  
+            uiDisconnect(nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
         }
 
         this.newConnections = [];
