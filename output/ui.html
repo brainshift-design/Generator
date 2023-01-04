@@ -38832,7 +38832,7 @@ function connEqual(c1, c2)
 {
     return c1.outputNodeId == c2.outputNodeId
         && c1.outputId     == c2.outputId
-        && c1.outputOrder  == c2.outputOrder
+        //&& c1.outputOrder  == c2.outputOrder // irrelevant to equality
         && c1.inputNodeId  == c2.inputNodeId
         && c1.inputId      == c2.inputId;
 }
@@ -46658,10 +46658,6 @@ class Action
 
 
 
-    //   DO   ////////////////////////////////////////////////////////////////////////
-
-
-
     saveOldConnections()
     {
         for (const conn of graph.connections)
@@ -46673,12 +46669,13 @@ class Action
     updateOldConnections()
     {
         this.oldConnections = this.oldConnections
-            .filter(c => !graph.connections.find(gc => connEqual(gc, c)));
+            .filter(c => !graph.connections.find(gc => 
+                   gc.output.node.id == c.outputNodeId
+                && gc.output.id      == c.outputId
+                //&& gc.outputOrder  == c.outputOrder // irrelevant to equality
+                && gc.input.node.id  == c.inputNodeId
+                && gc.input.id       == c.inputId));
     }
-
-
-
-    //   UNDO   ////////////////////////////////////////////////////////////////////////
 
 
 

@@ -54,10 +54,6 @@ class Action
 
 
 
-    //   DO   ////////////////////////////////////////////////////////////////////////
-
-
-
     saveOldConnections()
     {
         for (const conn of graph.connections)
@@ -69,12 +65,13 @@ class Action
     updateOldConnections()
     {
         this.oldConnections = this.oldConnections
-            .filter(c => !graph.connections.find(gc => connEqual(gc, c)));
+            .filter(c => !graph.connections.find(gc => 
+                   gc.output.node.id == c.outputNodeId
+                && gc.output.id      == c.outputId
+                //&& gc.outputOrder  == c.outputOrder // irrelevant to equality
+                && gc.input.node.id  == c.inputNodeId
+                && gc.input.id       == c.inputId));
     }
-
-
-
-    //   UNDO   ////////////////////////////////////////////////////////////////////////
 
 
 

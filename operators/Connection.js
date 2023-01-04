@@ -420,7 +420,7 @@ function connEqual(c1, c2)
 {
     return c1.outputNodeId == c2.outputNodeId
         && c1.outputId     == c2.outputId
-        && c1.outputOrder  == c2.outputOrder
+        //&& c1.outputOrder  == c2.outputOrder // irrelevant to equality
         && c1.inputNodeId  == c2.inputNodeId
         && c1.inputId      == c2.inputId;
 }
