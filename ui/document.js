@@ -1,6 +1,6 @@
 document.addEventListener('pointerdown', function(e)
 {
-    if (   e.button == 0)
+    if (e.button == 0)
     {
         if (   document.canResizeX
             || document.canResizeY)

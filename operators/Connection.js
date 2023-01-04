@@ -427,6 +427,18 @@ function connEqual(c1, c2)
 
 
 
+function _connEquals(_c, c)
+{
+
+    return _c.output.node.id == c.outputNodeId
+        && _c.output.id      == c.outputId
+        //&& _c.outputOrder  == c.outputOrder // irrelevant to equality
+        && _c.input.node.id  == c.inputNodeId
+        && _c.input.id       == c.inputId;
+}
+
+
+
 function connDataObject(output, input)
 {
     return {
