@@ -608,7 +608,7 @@ function uiCopyNodes(nodeIds)
 
 
 
-function uiPasteNodes(nodesJson, pasteConnected, x, y)
+function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
 {
     //console.log(nodesJson);
 
@@ -677,7 +677,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y)
 
 
     graphView.loadingNodes = false;
-    finishLoadingNodes(data.nodes, nodes, true);
+    finishLoadingNodes(data.nodes, nodes, updateNodes, true);
 
 
     return [nodes, data.connections];

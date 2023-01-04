@@ -34,7 +34,7 @@ extends Action
 
 
 
-    do()
+    do(updateNodes)
     {
         this.prevSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
 
@@ -45,7 +45,7 @@ extends Action
             pushUnique(this.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
 
 
-        const [nodes, conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y);
+        const [nodes, conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
 
         for (const conn of conns)
             uiSaveConnection(
@@ -58,15 +58,12 @@ extends Action
         this.pastedNodePos = nodes.map(n => point(n.div.offsetLeft, n.div.offsetTop));
 
 
-        updateTerminalsAfterNodes(nodes);
-        
-       
         this.notify(nodes, this.isDuplicate, this.pasteConnected);
     }
 
 
 
-    undo()
+    undo(updateNodes)
     {
         uiDeleteNodes(this.pastedNodeIds);
         

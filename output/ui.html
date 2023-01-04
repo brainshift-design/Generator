@@ -29648,7 +29648,7 @@ const iconAnd              = '<svg width="9" height="8" viewBox="0 0 9 8" fill="
 const iconOr               = '<svg width="9" height="8" viewBox="0 0 9 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.93182 7.54546L3.65909 7.54546L-3.29822e-07 9.53674e-07L1.73295 8.77924e-07L4.27273 5.56818L4.17045 5.51705L4.41477 5.51705L4.31818 5.56818L6.85227 6.54152e-07L8.59091 5.78154e-07L4.93182 7.54546Z" fill="white"/></svg>';
 const iconXor              = '<svg width="9" height="9" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M4.5 7.96154C6.41176 7.96154 7.96154 6.41176 7.96154 4.5C7.96154 2.58825 6.41176 1.03846 4.5 1.03846C2.58825 1.03846 1.03846 2.58825 1.03846 4.5C1.03846 6.41176 2.58825 7.96154 4.5 7.96154ZM4.5 9C6.98528 9 9 6.98528 9 4.5C9 2.01472 6.98528 0 4.5 0C2.01472 0 0 2.01472 0 4.5C0 6.98528 2.01472 9 4.5 9Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M8 5L1 5L1 4L8 4V5Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M5 1L5 8L4 8L4 1L5 1Z" fill="white"/></svg>';
 
-const iconCondition        = '<svg width="15" height="17" viewBox="0 0 15 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.53527 4.67614L14.4813 7.70455V6.52273L9.92021 4.32528L9.95715 4.39915V4.21449L9.92021 4.28835L14.4813 2.09091V0.909091L8.53527 3.9375V4.67614Z" fill="white"/><path d="M12.661 9.92212H13.6951L10.9622 16.7176H9.9281L12.661 9.92212ZM8.96787 12.452V11.4548H14.6554V12.452H8.96787ZM8.96787 15.1849V14.1877H14.6554V15.1849H8.96787Z" fill="white"/><path d="M6.39154 13.6892V12.9505L0.445519 9.92212V11.1039L5.0066 13.3014L4.96967 13.2275V13.4122L5.0066 13.3383L0.445519 15.5358V16.7176L6.39154 13.6892Z" fill="white"/><path d="M6.26228 3.43892V2.44176H0.57478V3.43892H6.26228ZM6.26228 6.17188V5.17472H0.57478V6.17188H6.26228Z" fill="white"/></svg>';
+const iconCondition        = '<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.53875 4.35405L15.9422 7.61541V6.34268L11.0302 3.97621L11.07 4.05575V3.85689L11.0302 3.93643L15.9422 1.56996V0.29723L9.53875 3.55859V4.35405Z" fill="white"/><path d="M13.5986 9.37666H15.1207L12.1775 16.6948H10.6554L13.5986 9.37666ZM9.87942 12.1011V11.0272H16.0044V12.1011H9.87942ZM9.87942 15.0443V13.9704H16.0044V15.0443H9.87942Z" fill="white"/><path d="M7.29069 13.4335V12.638L0.887281 9.37667V10.6494L5.79921 13.0159L5.75944 12.9363V13.1352L5.79921 13.0556L0.887281 15.4221V16.6948L7.29069 13.4335Z" fill="white"/><path d="M7.15149 3.02166V1.9478H1.02648V3.02166H7.15149ZM7.15149 5.96484V4.89098H1.02648V5.96484H7.15149Z" fill="white"/></svg>';
 const iconEqual            = '<svg width="9" height="7" viewBox="0 0 9 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.78409 1.98295V0.448863H0.03409V1.98295H8.78409ZM8.78409 6.1875V4.65341H0.03409V6.1875H8.78409Z" fill="white"/></svg>';
 const iconNotEqual         = '<svg width="9" height="11" viewBox="0 0 9 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.89773 0.0909088H7.48864L3.28409 10.5455H1.69318L5.89773 0.0909088ZM0.215909 3.98295V2.44886H8.96591V3.98295H0.215909ZM0.215909 8.1875V6.65341H8.96591V8.1875H0.215909Z" fill="white"/></svg>';
 const iconLess             = '<svg width="10" height="11" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.0170455 5.88636V4.75L9.16477 0.0909088V1.90909L2.14773 5.28977L2.20455 5.17614V5.46023L2.14773 5.34659L9.16477 8.72727V10.5455L0.0170455 5.88636Z" fill="white"/></svg>';
@@ -37601,14 +37601,14 @@ function getTerminalsAfterParam(param)
 
 
 
-function updateTerminalsAfterNodes(nodes)
+function updateTerminalsAfterNodes(nodes, updateNodes)
 {
-    const terminals = [];
+    //const terminals = [];
 
     for (const node of nodes)
-        pushUnique(terminals, getTerminalsAfterNode(node));
+        pushUnique(updateNodes, getTerminalsAfterNode(node));
 
-    pushUpdate(null, terminals);
+    //pushUpdate(null, terminals);
 }
 
 
@@ -47959,7 +47959,7 @@ extends Action
 
 
 
-    do()
+    do(updateNodes)
     {
         this.prevSelectedNodeIds = graphView.selectedNodes.map(n => n.id);
 
@@ -47970,7 +47970,7 @@ extends Action
             pushUnique(this.oldActiveNodeIds, getActiveNodesFromNodeId(nodeId).map(n => n.id));
 
 
-        const [nodes, conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y);
+        const [nodes, conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
 
         for (const conn of conns)
             uiSaveConnection(
@@ -47983,15 +47983,12 @@ extends Action
         this.pastedNodePos = nodes.map(n => point(n.div.offsetLeft, n.div.offsetTop));
 
 
-        updateTerminalsAfterNodes(nodes);
-        
-       
         this.notify(nodes, this.isDuplicate, this.pasteConnected);
     }
 
 
 
-    undo()
+    undo(updateNodes)
     {
         uiDeleteNodes(this.pastedNodeIds);
         
@@ -50489,8 +50486,11 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
     promise.then(() => 
     {
-        finishLoadingNodes(_nodes, loadedNodes);
+        const updateNodes = [];
+        finishLoadingNodes(_nodes, loadedNodes, updateNodes);
         finishLoading();
+        
+        pushUpdate(null, updateNodes);
     });
 }
 
@@ -50513,17 +50513,16 @@ function finishLoading()
 
 
 
-function finishLoadingNodes(_nodes, loadedNodes, duplicates = false)
+function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false)
 {
     _nodes
         .filter(_n => _n.active)
         .map(_n => nodeFromId(duplicates ? _n.newId : _n.id))
         .forEach(n => n.makeActive());
 
-    //loadedNodes.forEach(n => n.updateNode());
     graphView.updateNodeTransforms(loadedNodes);
 
-    updateTerminalsAfterNodes(loadedNodes);
+    updateTerminalsAfterNodes(loadedNodes, updateNodes);
 }
 
 
@@ -51458,7 +51457,7 @@ function uiCopyNodes(nodeIds)
 
 
 
-function uiPasteNodes(nodesJson, pasteConnected, x, y)
+function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
 {
     //console.log(nodesJson);
 
@@ -51527,7 +51526,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y)
 
 
     graphView.loadingNodes = false;
-    finishLoadingNodes(data.nodes, nodes, true);
+    finishLoadingNodes(data.nodes, nodes, updateNodes, true);
 
 
     return [nodes, data.connections];

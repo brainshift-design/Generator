@@ -191,14 +191,14 @@ function getTerminalsAfterParam(param)
 
 
 
-function updateTerminalsAfterNodes(nodes)
+function updateTerminalsAfterNodes(nodes, updateNodes)
 {
-    const terminals = [];
+    //const terminals = [];
 
     for (const node of nodes)
-        pushUnique(terminals, getTerminalsAfterNode(node));
+        pushUnique(updateNodes, getTerminalsAfterNode(node));
 
-    pushUpdate(null, terminals);
+    //pushUpdate(null, terminals);
 }
 
 

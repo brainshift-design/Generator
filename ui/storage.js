@@ -303,8 +303,11 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
     promise.then(() => 
     {
-        finishLoadingNodes(_nodes, loadedNodes);
+        const updateNodes = [];
+        finishLoadingNodes(_nodes, loadedNodes, updateNodes);
         finishLoading();
+        
+        pushUpdate(null, updateNodes);
     });
 }
 
@@ -327,17 +330,16 @@ function finishLoading()
 
 
 
-function finishLoadingNodes(_nodes, loadedNodes, duplicates = false)
+function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false)
 {
     _nodes
         .filter(_n => _n.active)
         .map(_n => nodeFromId(duplicates ? _n.newId : _n.id))
         .forEach(n => n.makeActive());
 
-    //loadedNodes.forEach(n => n.updateNode());
     graphView.updateNodeTransforms(loadedNodes);
 
-    updateTerminalsAfterNodes(loadedNodes);
+    updateTerminalsAfterNodes(loadedNodes, updateNodes);
 }
 
 
