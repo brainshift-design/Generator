@@ -665,17 +665,17 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
 
 
     // if there are no active nodes, activate terminals
-    if (!nodes.find(n => n.active))
-    {
-        const terminals = [];
+    // if (!nodes.find(n => n.active))
+    // {
+    //     const terminals = [];
 
-        for (const node of nodes)
-            pushUnique(terminals, getTerminalsAfterNode(node));
+    //     for (const node of nodes)
+    //         pushUnique(terminals, getTerminalsAfterNode(node));
 
-        terminals.forEach(n => n.makeActive());
-    }
+    //     terminals.forEach(n => n.makeActive());
+    // }
 
-
+    
     graphView.loadingNodes = false;
     finishLoadingNodes(data.nodes, nodes, updateNodes, true);
 

@@ -7,9 +7,6 @@ extends Action
     
     prevSelectedIds  = [];
 
-    oldConnections   = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
-    newConnections   = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
-    
     oldActiveNodeIds = [];
     newActiveNodeIds = [];
    
@@ -26,11 +23,10 @@ extends Action
 
 
 
-    do()
+    do(updateNodes)
     {
         this.oldActiveNodeIds = [];
         this.newActiveNodeIds = [];
-        const updateNodes     = [];
 
 
         deleteNodesAction_saveActiveNodes(this);
@@ -47,7 +43,7 @@ extends Action
 
 
 
-    undo()
+    undo(updateNodes)
     {
         deleteNodesAction_removeNewConnections(this);
 
