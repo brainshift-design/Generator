@@ -102,8 +102,6 @@ class ActionManager
         if (!redo) act.do  (updateNodes);
         else       act.redo(updateNodes);
 
-        console.log('updateNodes =', updateNodes);
-        console.log('act.selfUpdate =', act.selfUpdate);
 
         act.updateOldConnections();
 

@@ -31,10 +31,8 @@ extends Action
         this.oldActiveNodeIds = [];
         this.newActiveNodeIds = [];
 
-
         deleteNodesAction_saveNodePositions(this);
         deleteNodesAction_saveOldActiveNodes(this);
-        //deleteNodesAction_saveOldConnections(this);
 
         this.prepareNewReconnections();
 
@@ -43,30 +41,21 @@ extends Action
 
         removeNodesAction_makeNewConnections(this);
 
-
         uiSaveNodes(this.newActiveNodeIds);
-       
-        // pushUpdate(this, updateNodes.filter(n => graph.nodes.includes(n)));
     }
 
 
 
     undo(updateNodes)
     {
-        //deleteNodesAction_removeNewConnections(this);
-
         deleteNodesAction_restoreNodes(this);
-        //deleteNodesAction_restoreOldConnections(this);
         
         this.deactivateNewActiveNodes();
         deleteNodesAction_activateOldActiveNodes(this, updateNodes);
 
-
         uiSaveNodes([
             ...this.nodeIds,
             ...this.newActiveNodeIds]);
-
-        //deleteNodesAction_cleanup(this);
     }
 
 
@@ -105,16 +94,7 @@ extends Action
                 for (const connectedInput of output.connectedInputs)
                 {
                     if (input.connectedOutput.canConnectTo(connectedInput))
-                    // {
                         this.newConnections.push(connDataObject(input.connectedOutput, connectedInput));
-                        // {
-                        //     outputNodeId: input.connectedOutput.node.id,
-                        //     outputId:     input.connectedOutput.id,
-                        //     outputOrder:  input.connection.outputOrder,
-                        //     inputNodeId:  connectedInput.node.id,
-                        //     inputId:      connectedInput.id
-                        // });
-                    // }
                 }
             }
         }
