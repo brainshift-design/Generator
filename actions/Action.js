@@ -113,6 +113,16 @@ class Action
 
         this.oldConnections = [];
     }
+
+
+
+    deactivateNewActiveNodes()
+    {
+        for (const id of this.newActiveNodeIds)
+            uiMakeNodePassive(nodeFromId(id));
+    
+        uiDeleteObjects(this.newActiveNodeIds); 
+    }
 };
 
 

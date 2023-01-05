@@ -625,12 +625,12 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
     if (   !isNaN(x) 
         && !isNaN(y)) // position new nodes
     {
-        const positions = data.nodes.map(n => [parseFloat(n.x), parseFloat(n.y)]);
+        const positions = data.nodes.map(n => point(parseFloat(n.x), parseFloat(n.y)));
 
         for (let i = 0; i < data.nodes.length; i++)
         {
-            data.nodes[i].x = x + positions[i][0] - positions[0][0] + 5 / graphView.zoom;
-            data.nodes[i].y = y + positions[i][1] - positions[0][1];
+            data.nodes[i].x = x + positions[i].x - positions[0].x + 5 / graphView.zoom;
+            data.nodes[i].y = y + positions[i].y - positions[0].y;
         }
     }
     else // offset new nodes (must be done before loading)

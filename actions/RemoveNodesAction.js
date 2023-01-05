@@ -7,9 +7,6 @@ extends Action
     
     prevSelectedIds    = [];
     
-    oldConnections     = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
-    newConnections     = []; // [{outputNodeId, outputId, inputNodeId, inputId}]
-
     oldActiveNodeIds   = [];
     newActiveNodeIds   = [];
     
@@ -29,15 +26,15 @@ extends Action
 
 
 
-    do()
+    do(updateNodes)
     {
         this.oldActiveNodeIds = [];
         this.newActiveNodeIds = [];
-        const updateNodes     = [];
 
 
-        deleteNodesAction_saveActiveNodes(this);
-        deleteNodesAction_saveOldConnections(this);
+        deleteNodesAction_saveNodePositions(this);
+        deleteNodesAction_saveOldActiveNodes(this);
+        //deleteNodesAction_saveOldConnections(this);
 
         this.prepareNewReconnections();
 
@@ -49,26 +46,27 @@ extends Action
 
         uiSaveNodes(this.newActiveNodeIds);
        
-        pushUpdate(this, updateNodes.filter(n => graph.nodes.includes(n)));
+        // pushUpdate(this, updateNodes.filter(n => graph.nodes.includes(n)));
     }
 
 
 
-    undo()
+    undo(updateNodes)
     {
-        deleteNodesAction_removeNewConnections(this);
+        //deleteNodesAction_removeNewConnections(this);
 
         deleteNodesAction_restoreNodes(this);
-        deleteNodesAction_restoreOldConnections(this);
+        //deleteNodesAction_restoreOldConnections(this);
         
-        deleteNodesAction_activateOldActiveNodes(this);
+        this.deactivateNewActiveNodes();
+        deleteNodesAction_activateOldActiveNodes(this, updateNodes);
 
 
         uiSaveNodes([
             ...this.nodeIds,
             ...this.newActiveNodeIds]);
 
-        deleteNodesAction_cleanup(this);
+        //deleteNodesAction_cleanup(this);
     }
 
 
@@ -81,7 +79,7 @@ extends Action
                 && c.outputOrder  == conn.outputOrder
                 && c. inputNodeId == conn. input.node.id
                 && c. inputId     == conn. input.id))
-            this.oldConnections.push(getConnectionForArrayWithIds(conn));
+            this.oldConnections.push(conn.toDataObject());
     }
 
 

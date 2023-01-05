@@ -107,7 +107,7 @@ extends Action
         connectAction_restoreInputValues(this);
       reconnectAction_restorePrevInputValues(this);
 
-        connectAction_deactivateNewActiveNodes(this);
+        this.deactivateNewActiveNodes();
         connectAction_activateOldActiveNodes(this, updateNodes); 
 
         connectAction_restoreCleanup(this);

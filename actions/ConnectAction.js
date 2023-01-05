@@ -85,7 +85,7 @@ extends Action
         // connectAction_restoreOldConnection(this);
         connectAction_restoreInputValues(this);
 
-        connectAction_deactivateNewActiveNodes(this);
+        this.deactivateNewActiveNodes();
         connectAction_activateOldActiveNodes(this, updateNodes); 
 
         // connectAction_restoreCleanup(this);
@@ -237,16 +237,6 @@ function connectAction_restoreInputValues(act)
             param.setValue(value.value, true, true, false);
         }
     }
-}
-
-
-
-function connectAction_deactivateNewActiveNodes(act)
-{
-    for (const id of act.newActiveNodeIds)
-        uiMakeNodePassive(nodeFromId(id));
-
-    uiDeleteObjects(act.newActiveNodeIds); 
 }
 
 

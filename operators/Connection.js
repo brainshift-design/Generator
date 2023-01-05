@@ -193,29 +193,6 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
 
 
 
-function getConnectionForArrayWithIds(conn)
-{
-    return {
-        outputNodeId: conn.output.node.id,
-        outputId:     conn.output.id,
-        outputOrder:  conn.outputOrder,
-        inputNodeId:  conn.input.node.id,
-        inputId:      conn.input.id };
-}
-
-
-
-function getConnectionForArrayWithNames(conn)
-{
-    return {
-        outputNodeName: conn.output.node.id,
-        outputId:       conn.output.id,
-        inputNodeName:  conn.input .node.id,
-        inputId:        conn.input .id };
-}
-
-
-
 function updateWireCurve(wire, x1, y1, x2, y2)
 {
     if (!pointIsNaN(wire.outputPos))
