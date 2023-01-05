@@ -38,12 +38,12 @@ extends GArithmetic
 
         switch (op.value)
         {
-            case 0: this.value = evalVarSubtractInputs(this.inputs, parse); break;
-            case 1: this.value = evalVarAddInputs     (this.inputs, parse); break;
-            case 2: this.value = evalVarDivideInputs  (this.inputs, parse); break;
-            case 3: this.value = evalVarMultiplyInputs(this.inputs, parse); break;
-            case 4: this.value = evalVarModuloInputs  (this.inputs, parse); break;
-            case 5: this.value = evalVarExponentInputs(this.inputs, parse); break;
+            case 0: this.value = evalSubtractInputs(this.inputs, parse); break;
+            case 1: this.value = evalAddInputs     (this.inputs, parse); break;
+            case 2: this.value = evalDivideInputs  (this.inputs, parse); break;
+            case 3: this.value = evalMultiplyInputs(this.inputs, parse); break;
+            case 4: this.value = evalModuloInputs  (this.inputs, parse); break;
+            case 5: this.value = evalExponentInputs(this.inputs, parse); break;
         }
 
         

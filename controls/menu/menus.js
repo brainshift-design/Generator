@@ -245,20 +245,20 @@ function initGeneratorMenus()
 
     menuBoolean = new Menu('Boolean nodes', true, false);
     menuBoolean.addItems([
-        new MenuItem('Not', {enabled: false, icon: iconNot, callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT, btnNumber.div, e.shiftKey))}),
-        new MenuItem('And', {enabled: false, icon: iconAnd, callback: e => actionManager.do(getCreateNodeAction(NUMBER_AND, btnNumber.div, e.shiftKey))}),
-        new MenuItem('Or',  {enabled: false, icon: iconOr , callback: e => actionManager.do(getCreateNodeAction(NUMBER_OR,  btnNumber.div, e.shiftKey))}),
-        new MenuItem('Xor', {enabled: false, icon: iconXor, callback: e => actionManager.do(getCreateNodeAction(NUMBER_XOR, btnNumber.div, e.shiftKey))})]);
+        new MenuItem('Not', {icon: iconNot, callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT, btnNumber.div, e.shiftKey))}),
+        new MenuItem('And', {icon: iconAnd, callback: e => actionManager.do(getCreateNodeAction(NUMBER_AND, btnNumber.div, e.shiftKey))}),
+        new MenuItem('Or',  {icon: iconOr , callback: e => actionManager.do(getCreateNodeAction(NUMBER_OR,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Xor', {icon: iconXor, callback: e => actionManager.do(getCreateNodeAction(NUMBER_XOR, btnNumber.div, e.shiftKey))})]);
         
     
     menuCondition = new Menu('Condition nodes', true, false);
     menuCondition.addItems([
-        new MenuItem('Equal',            {enabled: false, icon: iconEqual,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_EQUAL,            btnNumber.div, e.shiftKey))}),
-        new MenuItem('Not equal',        {enabled: false, icon: iconNotEqual,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT_EQUAL,        btnNumber.div, e.shiftKey))}),
-        new MenuItem('Less',             {enabled: false, icon: iconLess ,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS,             btnNumber.div, e.shiftKey))}),
-        new MenuItem('Less or equal',    {enabled: false, icon: iconLessOrEqual ,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS_OR_EQUAL,    btnNumber.div, e.shiftKey))}),
-        new MenuItem('Greater',          {enabled: false, icon: iconGreater ,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_GREATER,          btnNumber.div, e.shiftKey))}),
-        new MenuItem('Greater or equal', {enabled: false, icon: iconGreaterOrEqual, callback: e => actionManager.do(getCreateNodeAction(NUMBER_GREATER_OR_EQUAL, btnNumber.div, e.shiftKey))})]);
+        new MenuItem('Equal',            {icon: iconEqual,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_EQUAL,            btnNumber.div, e.shiftKey))}),
+        new MenuItem('Not equal',        {icon: iconNotEqual,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT_EQUAL,        btnNumber.div, e.shiftKey))}),
+        new MenuItem('Less',             {icon: iconLess ,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS,             btnNumber.div, e.shiftKey))}),
+        new MenuItem('Less or equal',    {icon: iconLessOrEqual ,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS_OR_EQUAL,    btnNumber.div, e.shiftKey))}),
+        new MenuItem('Greater',          {icon: iconGreater ,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_GREATER,          btnNumber.div, e.shiftKey))}),
+        new MenuItem('Greater or equal', {icon: iconGreaterOrEqual, callback: e => actionManager.do(getCreateNodeAction(NUMBER_GREATER_OR_EQUAL, btnNumber.div, e.shiftKey))})]);
         
     
     menuNumber = new Menu('Number nodes', true, false);

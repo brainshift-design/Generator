@@ -50,12 +50,12 @@ extends GNumberType
 
             switch (op.value)
             {
-                case CONDITION_EQUAL:             this.value = evalConditionInputsEqual         (val0, val1);  break;
-                case CONDITION_NOT_EQUAL:         this.value = evalConditionInputsNotEqual      (val0, val1);  break;
-                case CONDITION_LESS:              this.value = evalConditionInputsLess          (val0, val1);  break;
-                case CONDITION_LESS_OR_EQUAL:     this.value = evalConditionInputsLessOrEqual   (val0, val1);  break;
-                case CONDITION_GREATER:           this.value = evalConditionInputsGreater       (val0, val1);  break;
-                case CONDITION_GREATER_OR_EQUAL:  this.value = evalConditionInputsGreaterOrEqual(val0, val1);  break;
+                case CONDITION_EQUAL:             this.value = evalEqualInputs         (val0, val1);  break;
+                case CONDITION_NOT_EQUAL:         this.value = evalNotEqualInputs      (val0, val1);  break;
+                case CONDITION_LESS:              this.value = evalLessInputs          (val0, val1);  break;
+                case CONDITION_LESS_OR_EQUAL:     this.value = evalLessOrEqualInputs   (val0, val1);  break;
+                case CONDITION_GREATER:           this.value = evalGreaterInputs       (val0, val1);  break;
+                case CONDITION_GREATER_OR_EQUAL:  this.value = evalGreaterOrEqualInputs(val0, val1);  break;
             }
         }
         else if (this.input0)
@@ -95,12 +95,3 @@ extends GNumberType
         return this;
     }
 }
-
-
-
-function evalConditionInputsEqual         (val0, val1) { return new NumberValue(val0.value == val1.value ? 1 : 0); }
-function evalConditionInputsNotEqual      (val0, val1) { return new NumberValue(val0.value != val1.value ? 1 : 0); }
-function evalConditionInputsLess          (val0, val1) { return new NumberValue(val0.value <  val1.value ? 1 : 0); }
-function evalConditionInputsLessOrEqual   (val0, val1) { return new NumberValue(val0.value <= val1.value ? 1 : 0); }
-function evalConditionInputsGreater       (val0, val1) { return new NumberValue(val0.value >  val1.value ? 1 : 0); }
-function evalConditionInputsGreaterOrEqual(val0, val1) { return new NumberValue(val0.value >= val1.value ? 1 : 0); }

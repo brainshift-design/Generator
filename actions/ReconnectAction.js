@@ -100,10 +100,10 @@ extends Action
     {
         const updateNodes = [];
 
-        connectAction_removeNewConnection(this);
+        //connectAction_removeNewConnection(this);
       reconnectAction_restorePrevConnection(this);    
 
-        connectAction_restoreOldConnection(this);
+        //connectAction_restoreOldConnection(this);
         connectAction_restoreInputValues(this);
       reconnectAction_restorePrevInputValues(this);
 

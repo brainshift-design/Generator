@@ -95,6 +95,7 @@ class Action
 
     restoreOldConnections()
     {
+        console.log('this.oldConnections =', [...this.oldConnections]);
         for (const _conn of this.oldConnections)
         {
             const outputNode = nodeFromId(_conn.outputNodeId);

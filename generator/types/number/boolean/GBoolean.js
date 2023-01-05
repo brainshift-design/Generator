@@ -39,10 +39,10 @@ extends GArithmetic
         
         switch (op.value)
         {
-            case BOOLEAN_NOT: this.value = evalBoolInputsNand(this.inputs, parse); break;
-            case BOOLEAN_AND: this.value = evalBoolInputsAnd (this.inputs, parse); break;
-            case BOOLEAN_OR:  this.value = evalBoolInputsOr  (this.inputs, parse); break;
-            case BOOLEAN_XOR: this.value = evalBoolInputsXor (this.inputs, parse); break;
+            case BOOLEAN_NOT: this.value = evalNandInputs(this.inputs, parse); break;
+            case BOOLEAN_AND: this.value = evalAndInputs (this.inputs, parse); break;
+            case BOOLEAN_OR:  this.value = evalOrInputs  (this.inputs, parse); break;
+            case BOOLEAN_XOR: this.value = evalXorInputs (this.inputs, parse); break;
         }
 
         
@@ -55,122 +55,4 @@ extends GArithmetic
 
         return this;
     }
-}
-
-
-
-function evalBoolInputsNand(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    for (let i = 0; i < inputs.length; i++)
-    {
-        const val = inputs[i].eval(parse).toValue();
-
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
-
-        if (val.toNumber() == 0)
-            value.value = 1;
-    }
-
-
-    return value;
-}
-
-
-
-function evalBoolInputsAnd(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(1);
-
-
-    for (let i = 0; i < inputs.length; i++)
-    {
-        const val = inputs[i].eval(parse).toValue();
-
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
-
-        if (val.toNumber() == 0)
-            value.value = 0;
-    }
-
-
-    return value;
-}
-
-
-
-function evalBoolInputsOr(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    for (let i = 0; i < inputs.length; i++)
-    {
-        const val = inputs[i].eval(parse).toValue();
-
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
-
-        if (val.toNumber() != 0)
-            value.value = 1;
-    }
-
-
-    return value;
-}
-
-
-
-function evalBoolInputsXor(inputs, parse)
-{
-    if (inputs.length == 0)
-        return NumberValue.NaN;
-
-
-    const value = new NumberValue(0);
-
-
-    let flipped = 0;
-
-    for (let i = 0; i < inputs.length; i++)
-    {
-        const val = inputs[i].eval(parse).toValue();
-
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
-
-        if (val.toNumber() != 0)
-        {
-            value.value = 1;
-            flipped++;
-        }
-    }
-
-
-    if (   value.value != 0
-        && flipped == inputs.length)
-        value.value = 0;
-
-
-    return value;
 }

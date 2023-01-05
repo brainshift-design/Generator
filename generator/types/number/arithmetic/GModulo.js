@@ -23,7 +23,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalVarModuloInputs(this.inputs, parse);
+        this.value = evalModuloInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -35,7 +35,7 @@ extends GArithmetic
 
 
 
-function evalVarModuloInputs(inputs, parse)
+function evalModuloInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;

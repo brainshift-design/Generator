@@ -1,4 +1,4 @@
-class ToggleArithmeticSymbolAction
+class ToggleOperatorSymbolAction
 extends Action
 {
     nodeId;
@@ -18,7 +18,7 @@ extends Action
 
 
 
-    do()
+    do(updateNodes)
     {
         this.node._showOnlySymbol = this.showOnlySymbol;
 
@@ -29,7 +29,7 @@ extends Action
 
 
 
-    undo()
+    undo(updateNodes)
     {
         this.node._showOnlySymbol = !this.showOnlySymbol;
 

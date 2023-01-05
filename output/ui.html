@@ -917,7 +917,7 @@ a
 
 :root
 {
-    --arithmeticSymbolSize: 26;
+    --operatorSymbolSize: 26;
     --colorBackSize:        45px;
 }
 
@@ -1899,12 +1899,12 @@ a
 }
 
 
-.arithmeticSymbol
+.operatorSymbol
 {
     font-family:    Inter;
     font-size:      20px;
-    width:          auto;/*var(--arithmeticSymbolSize);*/
-    height:         auto;/*var(--arithmeticSymbolSize);*/
+    width:          auto;/*var(--operatorSymbolSize);*/
+    height:         auto;/*var(--operatorSymbolSize);*/
     position:       absolute;
     left:           50%;
     transform:      translateX(-50%);
@@ -5763,16 +5763,28 @@ const NUMBER_TYPES =
     NUMBER_SERIES,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
-    NUMBER_BOOLEAN,
-    NUMBER_CONDITION,
-
+    
     NUMBER_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,
     NUMBER_MULTIPLY,
     NUMBER_DIVIDE,
     NUMBER_MODULO,
-    NUMBER_EXPONENT
+    NUMBER_EXPONENT,
+
+    NUMBER_BOOLEAN,
+    NUMBER_NOT,
+    NUMBER_AND,
+    NUMBER_OR,
+    NUMBER_XOR,
+
+    NUMBER_CONDITION,
+    NUMBER_EQUAL,
+    NUMBER_NOT_EQUAL,
+    NUMBER_LESS,
+    NUMBER_LESS_OR_EQUAL,
+    NUMBER_GREATER,
+    NUMBER_GREATER_OR_EQUAL
 ];
 
 
@@ -8760,12 +8772,12 @@ extends GArithmetic
 
         switch (op.value)
         {
-            case 0: this.value = evalVarSubtractInputs(this.inputs, parse); break;
-            case 1: this.value = evalVarAddInputs     (this.inputs, parse); break;
-            case 2: this.value = evalVarDivideInputs  (this.inputs, parse); break;
-            case 3: this.value = evalVarMultiplyInputs(this.inputs, parse); break;
-            case 4: this.value = evalVarModuloInputs  (this.inputs, parse); break;
-            case 5: this.value = evalVarExponentInputs(this.inputs, parse); break;
+            case 0: this.value = evalSubtractInputs(this.inputs, parse); break;
+            case 1: this.value = evalAddInputs     (this.inputs, parse); break;
+            case 2: this.value = evalDivideInputs  (this.inputs, parse); break;
+            case 3: this.value = evalMultiplyInputs(this.inputs, parse); break;
+            case 4: this.value = evalModuloInputs  (this.inputs, parse); break;
+            case 5: this.value = evalExponentInputs(this.inputs, parse); break;
         }
 
         
@@ -8807,7 +8819,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalVarAddInputs(this.inputs, parse);
+        this.value = evalAddInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -8819,7 +8831,7 @@ extends GArithmetic
 
 
 
-function evalVarAddInputs(inputs, parse)
+function evalAddInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -8870,7 +8882,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalVarSubtractInputs(this.inputs, parse);
+        this.value = evalSubtractInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -8882,7 +8894,7 @@ extends GArithmetic
 
 
 
-function evalVarSubtractInputs(inputs, parse)
+function evalSubtractInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -8942,7 +8954,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalVarMultiplyInputs(this.inputs, parse);
+        this.value = evalMultiplyInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -8954,7 +8966,7 @@ extends GArithmetic
 
 
 
-function evalVarMultiplyInputs(inputs, parse)
+function evalMultiplyInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -9010,7 +9022,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalVarDivideInputs(this.inputs, parse);
+        this.value = evalDivideInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -9022,7 +9034,7 @@ extends GArithmetic
 
 
 
-function evalVarDivideInputs(inputs, parse)
+function evalDivideInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -9089,7 +9101,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalVarModuloInputs(this.inputs, parse);
+        this.value = evalModuloInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -9101,7 +9113,7 @@ extends GArithmetic
 
 
 
-function evalVarModuloInputs(inputs, parse)
+function evalModuloInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -9168,7 +9180,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalVarExponentInputs(this.inputs, parse);
+        this.value = evalExponentInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -9180,7 +9192,7 @@ extends GArithmetic
 
 
 
-function evalVarExponentInputs(inputs, parse)
+function evalExponentInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -9256,10 +9268,10 @@ extends GArithmetic
         
         switch (op.value)
         {
-            case BOOLEAN_NOT: this.value = evalBoolInputsNand(this.inputs, parse); break;
-            case BOOLEAN_AND: this.value = evalBoolInputsAnd (this.inputs, parse); break;
-            case BOOLEAN_OR:  this.value = evalBoolInputsOr  (this.inputs, parse); break;
-            case BOOLEAN_XOR: this.value = evalBoolInputsXor (this.inputs, parse); break;
+            case BOOLEAN_NOT: this.value = evalNandInputs(this.inputs, parse); break;
+            case BOOLEAN_AND: this.value = evalAndInputs (this.inputs, parse); break;
+            case BOOLEAN_OR:  this.value = evalOrInputs  (this.inputs, parse); break;
+            case BOOLEAN_XOR: this.value = evalXorInputs (this.inputs, parse); break;
         }
 
         
@@ -9275,8 +9287,44 @@ extends GArithmetic
 }
 
 
+class GNot
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_NOT, nodeId, options);
+    }
 
-function evalBoolInputsNand(inputs, parse)
+
+    
+    copy()
+    {
+        const not = new GNot(this.nodeId, this.options);
+        not.copyBase(this);
+        not.inputs = this.inputs.map(i => i.copy());
+        return not;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalNandInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalNandInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -9303,7 +9351,44 @@ function evalBoolInputsNand(inputs, parse)
 
 
 
-function evalBoolInputsAnd(inputs, parse)
+class GAnd
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_AND, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const and = new GAnd(this.nodeId, this.options);
+        and.copyBase(this);
+        and.inputs = this.inputs.map(i => i.copy());
+        return and;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalAndInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalAndInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -9329,8 +9414,44 @@ function evalBoolInputsAnd(inputs, parse)
 }
 
 
+class GOr
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_OR, nodeId, options);
+    }
 
-function evalBoolInputsOr(inputs, parse)
+
+    
+    copy()
+    {
+        const or = new GOr(this.nodeId, this.options);
+        or.copyBase(this);
+        or.inputs = this.inputs.map(i => i.copy());
+        return or;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalOrInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalOrInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -9357,7 +9478,44 @@ function evalBoolInputsOr(inputs, parse)
 
 
 
-function evalBoolInputsXor(inputs, parse)
+class GXor
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_XOR, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const xor = new GXor(this.nodeId, this.options);
+        xor.copyBase(this);
+        xor.inputs = this.inputs.map(i => i.copy());
+        return xor;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalXorInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalXorInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -9391,21 +9549,6 @@ function evalBoolInputsXor(inputs, parse)
 
     return value;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 class GCondition
@@ -9460,12 +9603,12 @@ extends GNumberType
 
             switch (op.value)
             {
-                case CONDITION_EQUAL:             this.value = evalConditionInputsEqual         (val0, val1);  break;
-                case CONDITION_NOT_EQUAL:         this.value = evalConditionInputsNotEqual      (val0, val1);  break;
-                case CONDITION_LESS:              this.value = evalConditionInputsLess          (val0, val1);  break;
-                case CONDITION_LESS_OR_EQUAL:     this.value = evalConditionInputsLessOrEqual   (val0, val1);  break;
-                case CONDITION_GREATER:           this.value = evalConditionInputsGreater       (val0, val1);  break;
-                case CONDITION_GREATER_OR_EQUAL:  this.value = evalConditionInputsGreaterOrEqual(val0, val1);  break;
+                case CONDITION_EQUAL:             this.value = evalEqualInputs         (val0, val1);  break;
+                case CONDITION_NOT_EQUAL:         this.value = evalNotEqualInputs      (val0, val1);  break;
+                case CONDITION_LESS:              this.value = evalLessInputs          (val0, val1);  break;
+                case CONDITION_LESS_OR_EQUAL:     this.value = evalLessOrEqualInputs   (val0, val1);  break;
+                case CONDITION_GREATER:           this.value = evalGreaterInputs       (val0, val1);  break;
+                case CONDITION_GREATER_OR_EQUAL:  this.value = evalGreaterOrEqualInputs(val0, val1);  break;
             }
         }
         else if (this.input0)
@@ -9507,34 +9650,267 @@ extends GNumberType
 }
 
 
-
-function evalConditionInputsEqual         (val0, val1) { return new NumberValue(val0.value == val1.value ? 1 : 0); }
-function evalConditionInputsNotEqual      (val0, val1) { return new NumberValue(val0.value != val1.value ? 1 : 0); }
-function evalConditionInputsLess          (val0, val1) { return new NumberValue(val0.value <  val1.value ? 1 : 0); }
-function evalConditionInputsLessOrEqual   (val0, val1) { return new NumberValue(val0.value <= val1.value ? 1 : 0); }
-function evalConditionInputsGreater       (val0, val1) { return new NumberValue(val0.value >  val1.value ? 1 : 0); }
-function evalConditionInputsGreaterOrEqual(val0, val1) { return new NumberValue(val0.value >= val1.value ? 1 : 0); }
-
-
+class GEqual
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_EQUAL, nodeId, options);
+    }
 
 
-
-
-
-
-
-
-
-
+    
+    copy()
+    {
+        const eq = new GEqual(this.nodeId, this.options);
+        eq.copyBase(this);
+        eq.inputs = this.inputs.map(i => i.copy());
+        return eq;
+    }
 
 
 
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalEqualInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
 
 
 
+function evalEqualInputs(val0, val1) 
+{ 
+    return new NumberValue(val0.value == val1.value ? 1 : 0); 
+}
 
 
 
+class GNotEqual
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_NOT_EQUAL, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const ne = new GNotEqual(this.nodeId, this.options);
+        ne.copyBase(this);
+        ne.inputs = this.inputs.map(i => i.copy());
+        return ne;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalNotEqualInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalNotEqualInputs(val0, val1) 
+{ 
+    return new NumberValue(val0.value != val1.value ? 1 : 0); 
+}
+
+
+
+class GLess
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_LESS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const lt = new GLess(this.nodeId, this.options);
+        lt.copyBase(this);
+        lt.inputs = this.inputs.map(i => i.copy());
+        return lt;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalLessInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalLessInputs(val0, val1) 
+{ 
+    return new NumberValue(val0.value <  val1.value ? 1 : 0); 
+}
+
+
+
+class GLessOrEqual
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_LESS_OR_EQUAL, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const le = new GLessOrEqual(this.nodeId, this.options);
+        le.copyBase(this);
+        le.inputs = this.inputs.map(i => i.copy());
+        return le;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalLessOrEqualInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalLessOrEqualInputs(val0, val1) 
+{ 
+    return new NumberValue(val0.value <= val1.value ? 1 : 0); 
+}
+
+
+
+class GGreater
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_GREATER, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const gt = new GGreater(this.nodeId, this.options);
+        gt.copyBase(this);
+        gt.inputs = this.inputs.map(i => i.copy());
+        return gt;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalGreaterInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalGreaterInputs(val0, val1) 
+{ 
+    return new NumberValue(val0.value >  val1.value ? 1 : 0); 
+}
+
+
+
+class GGreaterOrEqual
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_GREATER_OR_EQUAL, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const ge = new GGreaterOrEqual(this.nodeId, this.options);
+        ge.copyBase(this);
+        ge.inputs = this.inputs.map(i => i.copy());
+        return ge;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalGreaterOrEqualInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalGreaterOrEqualInputs(val0, val1) 
+{ 
+    return new NumberValue(val0.value >= val1.value ? 1 : 0); 
+}
 
 
 class GNumber
@@ -14589,62 +14965,74 @@ function genParse(parse, inParam = true)
     let result = null;
 
 
-         if (parse.next == PARAM              ) result = genParseParam           (parse);
+         if (parse.next == PARAM                  ) result = genParseParam           (parse);
+        
+    else if (parse.next == LIST_VALUE             ) result = genParseListValue       (parse);
+    else if (parse.next == LIST                   ) result = genParseList            (parse);
+    else if (parse.next == ITEMS                  ) result = genParseItems           (parse);
+    else if (parse.next == SELECT                 ) result = genParseSelect          (parse);
+    else if (parse.next == PASS                   ) result = genParsePass            (parse);
+    else if (parse.next == START                  ) result = genParseStart           (parse);
+    else if (parse.next == REPEAT                 ) result = genParseRepeat          (parse);
+    else if (parse.next == CACHE                  ) result = genParseCache           (parse);
+    else if (parse.next == COPY                   ) result = genParseCopy            (parse);
     
-    else if (parse.next == LIST_VALUE         ) result = genParseListValue       (parse);
-    else if (parse.next == LIST               ) result = genParseList            (parse);
-    else if (parse.next == ITEMS              ) result = genParseItems           (parse);
-    else if (parse.next == SELECT             ) result = genParseSelect          (parse);
-    else if (parse.next == PASS               ) result = genParsePass            (parse);
-    else if (parse.next == START              ) result = genParseStart           (parse);
-    else if (parse.next == REPEAT             ) result = genParseRepeat          (parse);
-    else if (parse.next == CACHE              ) result = genParseCache           (parse);
-    else if (parse.next == COPY               ) result = genParseCopy            (parse);
-
-    else if (parse.next == NUMBER_VALUE       ) result = genParseNumValue        (parse);
-    else if (parse.next == NUMBER             ) result = genParseNumber          (parse);
-
-    else if (parse.next == NUMBER_ROUND       ) result = genParseRound           (parse);
-    else if (parse.next == NUMBER_LIMITS      ) result = genParseLimits          (parse);
-    else if (parse.next == NUMBER_RANDOM      ) result = genParseRandom          (parse);
-    else if (parse.next == NUMBER_SERIES      ) result = genParseSeries          (parse);
-    else if (parse.next == NUMBER_INTERPOLATE ) result = genParseInterpolate     (parse);
-    else if (parse.next == NUMBER_BOOLEAN     ) result = genParseBoolean         (parse);
-    else if (parse.next == NUMBER_CONDITION   ) result = genParseCondition       (parse);
- 
-    else if (parse.next == NUMBER_MATH        ) result = genParseMath            (parse, (nodeId, options) => new GMath    (nodeId, options));
-    else if (parse.next == NUMBER_ADD         ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd     (nodeId, options));
-    else if (parse.next == NUMBER_SUBTRACT    ) result = genParseArithmetic      (parse, (nodeId, options) => new GSubtract(nodeId, options));
-    else if (parse.next == NUMBER_MULTIPLY    ) result = genParseArithmetic      (parse, (nodeId, options) => new GMultiply(nodeId, options));
-    else if (parse.next == NUMBER_DIVIDE      ) result = genParseArithmetic      (parse, (nodeId, options) => new GDivide  (nodeId, options));
-    else if (parse.next == NUMBER_MODULO      ) result = genParseArithmetic      (parse, (nodeId, options) => new GModulo  (nodeId, options));
-    else if (parse.next == NUMBER_EXPONENT    ) result = genParseArithmetic      (parse, (nodeId, options) => new GExponent(nodeId, options));
-
-    else if (parse.next == COLOR_VALUE        ) result = genParseColorValue      (parse);
-    else if (parse.next == COLOR              ) result = genParseColor           (parse);
+    else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue        (parse);
+    else if (parse.next == NUMBER                 ) result = genParseNumber          (parse);
     
-    else if (parse.next == COLOR_INTERPOLATE  ) result = genParseColorInterpolate(parse);
-    else if (parse.next == COLOR_CONTRAST     ) result = genParseColorContrast   (parse);
-    else if (parse.next == COLORBLIND         ) result = genParseColorBlind      (parse);
-    else if (parse.next == COLOR_CORRECT      ) result = genParseColorCorrect    (parse);
- 
-    else if (parse.next == FILL_VALUE         ) result = genParseFillValue       (parse);
-    else if (parse.next == FILL               ) result = genParseFill            (parse);
- 
-    else if (parse.next == STROKE_VALUE       ) result = genParseStrokeValue     (parse);
-    else if (parse.next == STROKE             ) result = genParseStroke          (parse);
- 
-    else if (parse.next == COLOR_STOP_VALUE   ) result = genParseColorStopValue  (parse);
-    else if (parse.next == COLOR_STOP         ) result = genParseColorStop       (parse);
- 
-    else if (parse.next == STYLE_VALUE        ) result = genParseStyleValue      (parse);
-    else if (parse.next == STYLE              ) result = genParseStyle           (parse);
- 
-    else if (parse.next == RECTANGLE          ) result = genParseRectangle       (parse);
-    else if (parse.next == LINE               ) result = genParseLine            (parse);
-    else if (parse.next == ELLIPSE            ) result = genParseEllipse         (parse);
-    else if (parse.next == POLYGON            ) result = genParsePolygon         (parse);
-    else if (parse.next == STAR               ) result = genParseStar            (parse);
+    else if (parse.next == NUMBER_ROUND           ) result = genParseRound           (parse);
+    else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits          (parse);
+    else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom          (parse);
+    else if (parse.next == NUMBER_SERIES          ) result = genParseSeries          (parse);
+    else if (parse.next == NUMBER_INTERPOLATE     ) result = genParseInterpolate     (parse);
+    
+    else if (parse.next == NUMBER_MATH            ) result = genParseMath            (parse, (nodeId, options) => new GMath          (nodeId, options));
+    else if (parse.next == NUMBER_ADD             ) result = genParseArithmetic      (parse, (nodeId, options) => new GAdd           (nodeId, options));
+    else if (parse.next == NUMBER_SUBTRACT        ) result = genParseArithmetic      (parse, (nodeId, options) => new GSubtract      (nodeId, options));
+    else if (parse.next == NUMBER_MULTIPLY        ) result = genParseArithmetic      (parse, (nodeId, options) => new GMultiply      (nodeId, options));
+    else if (parse.next == NUMBER_DIVIDE          ) result = genParseArithmetic      (parse, (nodeId, options) => new GDivide        (nodeId, options));
+    else if (parse.next == NUMBER_MODULO          ) result = genParseArithmetic      (parse, (nodeId, options) => new GModulo        (nodeId, options));
+    else if (parse.next == NUMBER_EXPONENT        ) result = genParseArithmetic      (parse, (nodeId, options) => new GExponent      (nodeId, options));
+    
+    else if (parse.next == NUMBER_BOOLEAN         ) result = genParseBoolean         (parse);
+    else if (parse.next == NUMBER_NOT             ) result = genParseArithmetic      (parse, (nodeId, options) => new GNot           (nodeId, options));
+    else if (parse.next == NUMBER_AND             ) result = genParseArithmetic      (parse, (nodeId, options) => new GAnd           (nodeId, options));
+    else if (parse.next == NUMBER_OR              ) result = genParseArithmetic      (parse, (nodeId, options) => new GOr            (nodeId, options));
+    else if (parse.next == NUMBER_XOR             ) result = genParseArithmetic      (parse, (nodeId, options) => new GXor           (nodeId, options));
+    
+    else if (parse.next == NUMBER_CONDITION       ) result = genParseCondition       (parse);
+    else if (parse.next == NUMBER_EQUAL           ) result = genParseArithmetic      (parse, (nodeId, options) => new GEqual         (nodeId, options));
+    else if (parse.next == NUMBER_NOT_EQUAL       ) result = genParseArithmetic      (parse, (nodeId, options) => new GNotEqual      (nodeId, options));
+    else if (parse.next == NUMBER_LESS            ) result = genParseArithmetic      (parse, (nodeId, options) => new GLess          (nodeId, options));
+    else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseArithmetic      (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
+    else if (parse.next == NUMBER_GREATER         ) result = genParseArithmetic      (parse, (nodeId, options) => new GGreater       (nodeId, options));
+    else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseArithmetic      (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
+
+    else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
+    else if (parse.next == COLOR                  ) result = genParseColor           (parse);
+        
+    else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate(parse);
+    else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast   (parse);
+    else if (parse.next == COLORBLIND             ) result = genParseColorBlind      (parse);
+    else if (parse.next == COLOR_CORRECT          ) result = genParseColorCorrect    (parse);
+     
+    else if (parse.next == FILL_VALUE             ) result = genParseFillValue       (parse);
+    else if (parse.next == FILL                   ) result = genParseFill            (parse);
+     
+    else if (parse.next == STROKE_VALUE           ) result = genParseStrokeValue     (parse);
+    else if (parse.next == STROKE                 ) result = genParseStroke          (parse);
+     
+    else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue  (parse);
+    else if (parse.next == COLOR_STOP             ) result = genParseColorStop       (parse);
+     
+    else if (parse.next == STYLE_VALUE            ) result = genParseStyleValue      (parse);
+    else if (parse.next == STYLE                  ) result = genParseStyle           (parse);
+     
+    else if (parse.next == RECTANGLE              ) result = genParseRectangle       (parse);
+    else if (parse.next == LINE                   ) result = genParseLine            (parse);
+    else if (parse.next == ELLIPSE                ) result = genParseEllipse         (parse);
+    else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
+    else if (parse.next == STAR                   ) result = genParseStar            (parse);
 
     else console.assert(false, 'unknown parse token \'' + parse.next + '\'');
 
@@ -22223,16 +22611,28 @@ const NUMBER_TYPES =
     NUMBER_SERIES,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
-    NUMBER_BOOLEAN,
-    NUMBER_CONDITION,
-
+    
     NUMBER_MATH,
     NUMBER_ADD,
     NUMBER_SUBTRACT,
     NUMBER_MULTIPLY,
     NUMBER_DIVIDE,
     NUMBER_MODULO,
-    NUMBER_EXPONENT
+    NUMBER_EXPONENT,
+
+    NUMBER_BOOLEAN,
+    NUMBER_NOT,
+    NUMBER_AND,
+    NUMBER_OR,
+    NUMBER_XOR,
+
+    NUMBER_CONDITION,
+    NUMBER_EQUAL,
+    NUMBER_NOT_EQUAL,
+    NUMBER_LESS,
+    NUMBER_LESS_OR_EQUAL,
+    NUMBER_GREATER,
+    NUMBER_GREATER_OR_EQUAL
 ];
 
 
@@ -25220,12 +25620,12 @@ extends GArithmetic
 
         switch (op.value)
         {
-            case 0: this.value = evalVarSubtractInputs(this.inputs, parse); break;
-            case 1: this.value = evalVarAddInputs     (this.inputs, parse); break;
-            case 2: this.value = evalVarDivideInputs  (this.inputs, parse); break;
-            case 3: this.value = evalVarMultiplyInputs(this.inputs, parse); break;
-            case 4: this.value = evalVarModuloInputs  (this.inputs, parse); break;
-            case 5: this.value = evalVarExponentInputs(this.inputs, parse); break;
+            case 0: this.value = evalSubtractInputs(this.inputs, parse); break;
+            case 1: this.value = evalAddInputs     (this.inputs, parse); break;
+            case 2: this.value = evalDivideInputs  (this.inputs, parse); break;
+            case 3: this.value = evalMultiplyInputs(this.inputs, parse); break;
+            case 4: this.value = evalModuloInputs  (this.inputs, parse); break;
+            case 5: this.value = evalExponentInputs(this.inputs, parse); break;
         }
 
         
@@ -25267,7 +25667,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalVarAddInputs(this.inputs, parse);
+        this.value = evalAddInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -25279,7 +25679,7 @@ extends GArithmetic
 
 
 
-function evalVarAddInputs(inputs, parse)
+function evalAddInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -25330,7 +25730,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalVarSubtractInputs(this.inputs, parse);
+        this.value = evalSubtractInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -25342,7 +25742,7 @@ extends GArithmetic
 
 
 
-function evalVarSubtractInputs(inputs, parse)
+function evalSubtractInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -25402,7 +25802,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalVarMultiplyInputs(this.inputs, parse);
+        this.value = evalMultiplyInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -25414,7 +25814,7 @@ extends GArithmetic
 
 
 
-function evalVarMultiplyInputs(inputs, parse)
+function evalMultiplyInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -25470,7 +25870,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalVarDivideInputs(this.inputs, parse);
+        this.value = evalDivideInputs(this.inputs, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -25482,7 +25882,7 @@ extends GArithmetic
 
 
 
-function evalVarDivideInputs(inputs, parse)
+function evalDivideInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -25549,7 +25949,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalVarModuloInputs(this.inputs, parse);
+        this.value = evalModuloInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -25561,7 +25961,7 @@ extends GArithmetic
 
 
 
-function evalVarModuloInputs(inputs, parse)
+function evalModuloInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -25628,7 +26028,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalVarExponentInputs(this.inputs, parse);
+        this.value = evalExponentInputs(this.inputs, parse);
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -25640,7 +26040,7 @@ extends GArithmetic
 
 
 
-function evalVarExponentInputs(inputs, parse)
+function evalExponentInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -25716,10 +26116,10 @@ extends GArithmetic
         
         switch (op.value)
         {
-            case BOOLEAN_NOT: this.value = evalBoolInputsNand(this.inputs, parse); break;
-            case BOOLEAN_AND: this.value = evalBoolInputsAnd (this.inputs, parse); break;
-            case BOOLEAN_OR:  this.value = evalBoolInputsOr  (this.inputs, parse); break;
-            case BOOLEAN_XOR: this.value = evalBoolInputsXor (this.inputs, parse); break;
+            case BOOLEAN_NOT: this.value = evalNandInputs(this.inputs, parse); break;
+            case BOOLEAN_AND: this.value = evalAndInputs (this.inputs, parse); break;
+            case BOOLEAN_OR:  this.value = evalOrInputs  (this.inputs, parse); break;
+            case BOOLEAN_XOR: this.value = evalXorInputs (this.inputs, parse); break;
         }
 
         
@@ -25735,8 +26135,44 @@ extends GArithmetic
 }
 
 
+class GNot
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_NOT, nodeId, options);
+    }
 
-function evalBoolInputsNand(inputs, parse)
+
+    
+    copy()
+    {
+        const not = new GNot(this.nodeId, this.options);
+        not.copyBase(this);
+        not.inputs = this.inputs.map(i => i.copy());
+        return not;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalNandInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalNandInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -25763,7 +26199,44 @@ function evalBoolInputsNand(inputs, parse)
 
 
 
-function evalBoolInputsAnd(inputs, parse)
+class GAnd
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_AND, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const and = new GAnd(this.nodeId, this.options);
+        and.copyBase(this);
+        and.inputs = this.inputs.map(i => i.copy());
+        return and;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalAndInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalAndInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -25789,8 +26262,44 @@ function evalBoolInputsAnd(inputs, parse)
 }
 
 
+class GOr
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_OR, nodeId, options);
+    }
 
-function evalBoolInputsOr(inputs, parse)
+
+    
+    copy()
+    {
+        const or = new GOr(this.nodeId, this.options);
+        or.copyBase(this);
+        or.inputs = this.inputs.map(i => i.copy());
+        return or;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalOrInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalOrInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -25817,7 +26326,44 @@ function evalBoolInputsOr(inputs, parse)
 
 
 
-function evalBoolInputsXor(inputs, parse)
+class GXor
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_XOR, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const xor = new GXor(this.nodeId, this.options);
+        xor.copyBase(this);
+        xor.inputs = this.inputs.map(i => i.copy());
+        return xor;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalXorInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalXorInputs(inputs, parse)
 {
     if (inputs.length == 0)
         return NumberValue.NaN;
@@ -25851,21 +26397,6 @@ function evalBoolInputsXor(inputs, parse)
 
     return value;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 class GCondition
@@ -25920,12 +26451,12 @@ extends GNumberType
 
             switch (op.value)
             {
-                case CONDITION_EQUAL:             this.value = evalConditionInputsEqual         (val0, val1);  break;
-                case CONDITION_NOT_EQUAL:         this.value = evalConditionInputsNotEqual      (val0, val1);  break;
-                case CONDITION_LESS:              this.value = evalConditionInputsLess          (val0, val1);  break;
-                case CONDITION_LESS_OR_EQUAL:     this.value = evalConditionInputsLessOrEqual   (val0, val1);  break;
-                case CONDITION_GREATER:           this.value = evalConditionInputsGreater       (val0, val1);  break;
-                case CONDITION_GREATER_OR_EQUAL:  this.value = evalConditionInputsGreaterOrEqual(val0, val1);  break;
+                case CONDITION_EQUAL:             this.value = evalEqualInputs         (val0, val1);  break;
+                case CONDITION_NOT_EQUAL:         this.value = evalNotEqualInputs      (val0, val1);  break;
+                case CONDITION_LESS:              this.value = evalLessInputs          (val0, val1);  break;
+                case CONDITION_LESS_OR_EQUAL:     this.value = evalLessOrEqualInputs   (val0, val1);  break;
+                case CONDITION_GREATER:           this.value = evalGreaterInputs       (val0, val1);  break;
+                case CONDITION_GREATER_OR_EQUAL:  this.value = evalGreaterOrEqualInputs(val0, val1);  break;
             }
         }
         else if (this.input0)
@@ -25967,34 +26498,267 @@ extends GNumberType
 }
 
 
-
-function evalConditionInputsEqual         (val0, val1) { return new NumberValue(val0.value == val1.value ? 1 : 0); }
-function evalConditionInputsNotEqual      (val0, val1) { return new NumberValue(val0.value != val1.value ? 1 : 0); }
-function evalConditionInputsLess          (val0, val1) { return new NumberValue(val0.value <  val1.value ? 1 : 0); }
-function evalConditionInputsLessOrEqual   (val0, val1) { return new NumberValue(val0.value <= val1.value ? 1 : 0); }
-function evalConditionInputsGreater       (val0, val1) { return new NumberValue(val0.value >  val1.value ? 1 : 0); }
-function evalConditionInputsGreaterOrEqual(val0, val1) { return new NumberValue(val0.value >= val1.value ? 1 : 0); }
-
-
+class GEqual
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_EQUAL, nodeId, options);
+    }
 
 
-
-
-
-
-
-
-
-
+    
+    copy()
+    {
+        const eq = new GEqual(this.nodeId, this.options);
+        eq.copyBase(this);
+        eq.inputs = this.inputs.map(i => i.copy());
+        return eq;
+    }
 
 
 
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalEqualInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
 
 
 
+function evalEqualInputs(val0, val1) 
+{ 
+    return new NumberValue(val0.value == val1.value ? 1 : 0); 
+}
 
 
 
+class GNotEqual
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_NOT_EQUAL, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const ne = new GNotEqual(this.nodeId, this.options);
+        ne.copyBase(this);
+        ne.inputs = this.inputs.map(i => i.copy());
+        return ne;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalNotEqualInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalNotEqualInputs(val0, val1) 
+{ 
+    return new NumberValue(val0.value != val1.value ? 1 : 0); 
+}
+
+
+
+class GLess
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_LESS, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const lt = new GLess(this.nodeId, this.options);
+        lt.copyBase(this);
+        lt.inputs = this.inputs.map(i => i.copy());
+        return lt;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalLessInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalLessInputs(val0, val1) 
+{ 
+    return new NumberValue(val0.value <  val1.value ? 1 : 0); 
+}
+
+
+
+class GLessOrEqual
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_LESS_OR_EQUAL, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const le = new GLessOrEqual(this.nodeId, this.options);
+        le.copyBase(this);
+        le.inputs = this.inputs.map(i => i.copy());
+        return le;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalLessOrEqualInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalLessOrEqualInputs(val0, val1) 
+{ 
+    return new NumberValue(val0.value <= val1.value ? 1 : 0); 
+}
+
+
+
+class GGreater
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_GREATER, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const gt = new GGreater(this.nodeId, this.options);
+        gt.copyBase(this);
+        gt.inputs = this.inputs.map(i => i.copy());
+        return gt;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalGreaterInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalGreaterInputs(val0, val1) 
+{ 
+    return new NumberValue(val0.value >  val1.value ? 1 : 0); 
+}
+
+
+
+class GGreaterOrEqual
+extends GArithmetic
+{
+    constructor(nodeId, options)
+    {
+        super(NUMBER_GREATER_OR_EQUAL, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const ge = new GGreaterOrEqual(this.nodeId, this.options);
+        ge.copyBase(this);
+        ge.inputs = this.inputs.map(i => i.copy());
+        return ge;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+        this.value = evalGreaterOrEqualInputs(this.inputs, parse);
+        
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+function evalGreaterOrEqualInputs(val0, val1) 
+{ 
+    return new NumberValue(val0.value >= val1.value ? 1 : 0); 
+}
 
 
 class GNumber
@@ -29862,20 +30626,20 @@ function initGeneratorMenus()
 
     menuBoolean = new Menu('Boolean nodes', true, false);
     menuBoolean.addItems([
-        new MenuItem('Not', {enabled: false, icon: iconNot, callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT, btnNumber.div, e.shiftKey))}),
-        new MenuItem('And', {enabled: false, icon: iconAnd, callback: e => actionManager.do(getCreateNodeAction(NUMBER_AND, btnNumber.div, e.shiftKey))}),
-        new MenuItem('Or',  {enabled: false, icon: iconOr , callback: e => actionManager.do(getCreateNodeAction(NUMBER_OR,  btnNumber.div, e.shiftKey))}),
-        new MenuItem('Xor', {enabled: false, icon: iconXor, callback: e => actionManager.do(getCreateNodeAction(NUMBER_XOR, btnNumber.div, e.shiftKey))})]);
+        new MenuItem('Not', {icon: iconNot, callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT, btnNumber.div, e.shiftKey))}),
+        new MenuItem('And', {icon: iconAnd, callback: e => actionManager.do(getCreateNodeAction(NUMBER_AND, btnNumber.div, e.shiftKey))}),
+        new MenuItem('Or',  {icon: iconOr , callback: e => actionManager.do(getCreateNodeAction(NUMBER_OR,  btnNumber.div, e.shiftKey))}),
+        new MenuItem('Xor', {icon: iconXor, callback: e => actionManager.do(getCreateNodeAction(NUMBER_XOR, btnNumber.div, e.shiftKey))})]);
         
     
     menuCondition = new Menu('Condition nodes', true, false);
     menuCondition.addItems([
-        new MenuItem('Equal',            {enabled: false, icon: iconEqual,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_EQUAL,            btnNumber.div, e.shiftKey))}),
-        new MenuItem('Not equal',        {enabled: false, icon: iconNotEqual,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT_EQUAL,        btnNumber.div, e.shiftKey))}),
-        new MenuItem('Less',             {enabled: false, icon: iconLess ,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS,             btnNumber.div, e.shiftKey))}),
-        new MenuItem('Less or equal',    {enabled: false, icon: iconLessOrEqual ,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS_OR_EQUAL,    btnNumber.div, e.shiftKey))}),
-        new MenuItem('Greater',          {enabled: false, icon: iconGreater ,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_GREATER,          btnNumber.div, e.shiftKey))}),
-        new MenuItem('Greater or equal', {enabled: false, icon: iconGreaterOrEqual, callback: e => actionManager.do(getCreateNodeAction(NUMBER_GREATER_OR_EQUAL, btnNumber.div, e.shiftKey))})]);
+        new MenuItem('Equal',            {icon: iconEqual,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_EQUAL,            btnNumber.div, e.shiftKey))}),
+        new MenuItem('Not equal',        {icon: iconNotEqual,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT_EQUAL,        btnNumber.div, e.shiftKey))}),
+        new MenuItem('Less',             {icon: iconLess ,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS,             btnNumber.div, e.shiftKey))}),
+        new MenuItem('Less or equal',    {icon: iconLessOrEqual ,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS_OR_EQUAL,    btnNumber.div, e.shiftKey))}),
+        new MenuItem('Greater',          {icon: iconGreater ,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_GREATER,          btnNumber.div, e.shiftKey))}),
+        new MenuItem('Greater or equal', {icon: iconGreaterOrEqual, callback: e => actionManager.do(getCreateNodeAction(NUMBER_GREATER_OR_EQUAL, btnNumber.div, e.shiftKey))})]);
         
     
     menuNumber = new Menu('Number nodes', true, false);
@@ -37331,54 +38095,66 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
  
     switch (nodeType)
     {
-        case LIST:                node = new OpList();             break;
-        case ITEMS:               node = new OpItems();            break;
-        case SELECT:              node = new OpSelect();           break;
-        case PASS:                node = new OpPass();             break;
-        case START:               node = new OpStart();            break;
-        case REPEAT:              node = new OpRepeat();           break;
-        case CACHE:               node = new OpCache();            break;
-        case COPY:                node = new OpCopy();             break;
- 
-        case NUMBER:              node = new OpNumber();           break;
-        case NUMBER_ROUND:        node = new OpRound();            break;
-        case NUMBER_LIMITS:       node = new OpLimits();           break;
-        case NUMBER_RANDOM:       node = new OpRandom();           break;
-        case NUMBER_SERIES:       node = new OpSeries();           break;
-        case NUMBER_INTERPOLATE:  node = new OpInterpolate();      break;
-        case NUMBER_BOOLEAN:      node = new OpBoolean();          break;
-        case NUMBER_CONDITION:    node = new OpCondition();        break;
- 
-        case NUMBER_MATH:         node = new OpMath();             break;
-        case NUMBER_ADD:          node = new OpAdd();              break;
-        case NUMBER_SUBTRACT:     node = new OpSubtract();         break;
-        case NUMBER_MULTIPLY:     node = new OpMultiply();         break;
-        case NUMBER_DIVIDE:       node = new OpDivide();           break;
-        case NUMBER_MODULO:       node = new OpModulo();           break;
-        case NUMBER_EXPONENT:     node = new OpExponent();         break;
+        case LIST:                    node = new OpList();             break;
+        case ITEMS:                   node = new OpItems();            break;
+        case SELECT:                  node = new OpSelect();           break;
+        case PASS:                    node = new OpPass();             break;
+        case START:                   node = new OpStart();            break;
+        case REPEAT:                  node = new OpRepeat();           break;
+        case CACHE:                   node = new OpCache();            break;
+        case COPY:                    node = new OpCopy();             break;
+     
+        case NUMBER:                  node = new OpNumber();           break;
+        case NUMBER_ROUND:            node = new OpRound();            break;
+        case NUMBER_LIMITS:           node = new OpLimits();           break;
+        case NUMBER_RANDOM:           node = new OpRandom();           break;
+        case NUMBER_SERIES:           node = new OpSeries();           break;
+        case NUMBER_INTERPOLATE:      node = new OpInterpolate();      break;
+            
+        case NUMBER_MATH:             node = new OpMath();             break;
+        case NUMBER_ADD:              node = new OpAdd();              break;
+        case NUMBER_SUBTRACT:         node = new OpSubtract();         break;
+        case NUMBER_MULTIPLY:         node = new OpMultiply();         break;
+        case NUMBER_DIVIDE:           node = new OpDivide();           break;
+        case NUMBER_MODULO:           node = new OpModulo();           break;
+        case NUMBER_EXPONENT:         node = new OpExponent();         break;
+            
+        case NUMBER_BOOLEAN:          node = new OpBoolean();          break;
+        case NUMBER_NOT:              node = new OpNot();              break;
+        case NUMBER_AND:              node = new OpAnd();              break;
+        case NUMBER_OR:               node = new OpOr();               break;
+        case NUMBER_XOR:              node = new OpXor();              break;
         
-        case COLOR:               node = new OpColor(options);     break;
-        case COLOR_CORRECT:       node = new OpColorCorrect();     break;
-        case COLOR_CONTRAST:      node = new OpColorContrast();    break;
-        case COLORBLIND:          node = new OpColorBlind();       break;
-        case COLOR_INTERPOLATE:   node = new OpColorInterpolate(); break;
+        case NUMBER_CONDITION:        node = new OpCondition();        break;
+        case NUMBER_EQUAL:            node = new OpEqual();            break;
+        case NUMBER_NOT_EQUAL:        node = new OpNotEqual();         break;
+        case NUMBER_LESS:             node = new OpLess();             break;
+        case NUMBER_LESS_OR_EQUAL:    node = new OpLessOrEqual();      break;
+        case NUMBER_GREATER:          node = new OpGreater();          break;
+        case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();   break;
         
-        case COLOR_STOP:          node = new OpColorStop();        break;
-        case GRADIENT:            node = new OpGradient();         break;
- 
-        case FILL:                node = new OpFill();             break;
-        case STROKE:              node = new OpStroke();           break;
-        case STYLE:               node = new OpStyle();            break;
- 
-        case RECTANGLE:           node = new OpRectangle();        break;
-        case LINE:                node = new OpLine();             break;
-        case ELLIPSE:             node = new OpEllipse();          break;
-        case POLYGON:             node = new OpPolygon();          break;
-        case STAR:                node = new OpStar();             break;
- 
-        case COMMENT:             node = new OpComment();          break;
- 
-        default:                  console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
+        case COLOR:                   node = new OpColor(options);     break;
+        case COLOR_CORRECT:           node = new OpColorCorrect();     break;
+        case COLOR_CONTRAST:          node = new OpColorContrast();    break;
+        case COLORBLIND:              node = new OpColorBlind();       break;
+        case COLOR_INTERPOLATE:       node = new OpColorInterpolate(); break;
+            
+        case COLOR_STOP:              node = new OpColorStop();        break;
+        case GRADIENT:                node = new OpGradient();         break;
+     
+        case FILL:                    node = new OpFill();             break;
+        case STROKE:                  node = new OpStroke();           break;
+        case STYLE:                   node = new OpStyle();            break;
+     
+        case RECTANGLE:               node = new OpRectangle();        break;
+        case LINE:                    node = new OpLine();             break;
+        case ELLIPSE:                 node = new OpEllipse();          break;
+        case POLYGON:                 node = new OpPolygon();          break;
+        case STAR:                    node = new OpStar();             break;
+     
+        case COMMENT:                 node = new OpComment();          break;
+     
+        default:                      console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
     }
     
     node._creatingButton = creatingButton;
@@ -42388,7 +43164,7 @@ extends OperatorBase
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
 
 
-        this._symbol           = createDiv('arithmeticSymbol');
+        this._symbol           = createDiv('operatorSymbol');
         this._symbol.innerHTML = symbol;
         this._symbol.clicked0  = false;
         
@@ -42404,7 +43180,7 @@ extends OperatorBase
                     this._symbol.clicked0      = false;
                     this._symbol.style.opacity = 1;
 
-                    actionManager.do(new ToggleArithmeticSymbolAction(this.id, true));
+                    actionManager.do(new ToggleOperatorSymbolAction(this.id, true));
 
                     this.header.ignoreDoubleClick = true;
                 }
@@ -42422,7 +43198,7 @@ extends OperatorBase
         this.textbox.addEventListener('finishedit', e => 
         {
             if (this._showOnlySymbol)
-                actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
+                actionManager.do(new ToggleOperatorSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
         });
     }
     
@@ -42795,19 +43571,268 @@ function OpList_onDisconnectInput(node, input)
 }
 
 
+// class   OpBooleanBase
+// extends OperatorBase
+// {
+//     paramValue;
+    
+//     _symbol;
+//     _showOnlySymbol;
+
+
+//     constructor(type, shortName, symbol)
+//     {
+//         super(type, shortName, 100);
+
+        
+//         this.variableInputs   = true;
+//         this.alwaysLoadParams = true;
+
+//         this._showOnlySymbol  = true;
+
+
+//         this.addNewInput();
+//         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        
+//         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
+
+
+//         this._symbol           = createDiv('operatorSymbol');
+//         this._symbol.innerHTML = symbol;
+//         this._symbol.clicked0  = false;
+        
+//         this._symbol.addEventListener('pointerenter', () => this._symbol.style.opacity = this._showOnlySymbol ? 1 : 0.65);
+//         this._symbol.addEventListener('pointerleave', () => this._symbol.style.opacity = 1);
+
+//         this._symbol.addEventListener('pointerdown', e => 
+//         { 
+//             if (e.button == 0)
+//             {
+//                 if (this._symbol.clicked0) // finish double click on small symbol
+//                 {
+//                     this._symbol.clicked0      = false;
+//                     this._symbol.style.opacity = 1;
+
+//                     actionManager.do(new ToggleOperatorSymbolAction(this.id, true));
+
+//                     this.header.ignoreDoubleClick = true;
+//                 }
+//                 else if (!this._showOnlySymbol) // start double cick on small symbol
+//                 {
+//                     this._symbol.clicked0 = true;
+//                     setTimeout(() => this._symbol.clicked0 = false, 250); // seems like a good default guess
+//                 }
+//             }
+//         });
+
+//         this.header.appendChild(this._symbol);
+
+        
+//         this.textbox.addEventListener('finishedit', e => 
+//         {
+//             if (this._showOnlySymbol)
+//                 actionManager.do(new ToggleOperatorSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
+//         });
+//     }
+    
+    
+    
+//     addNewInput()
+//     {
+//         const newInput = new Input(NUMBER_TYPES);
+//         newInput.isNew = true;
+
+//         newInput.addEventListener('connect',    e => { OpBooleanBase_onConnectInput(this); e.detail.input.isNew = false; });
+//         newInput.addEventListener('disconnect', e => OpBooleanBase_onDisconnectInput(this, e.detail.input));
+
+//         this.addInput(newInput);
+
+//         return newInput;
+//     }
 
 
 
+//     output_genRequest(gen)
+//     {
+//         // 'this' is the output
+
+//         gen.scope.push({
+//             nodeId:  this.node.id, 
+//             paramId: '' });
+
+
+//         const [request, ignore] = this.node.genRequestStart(gen);
+//         if (ignore) return request;
+            
+
+//         const connectedInputs = this.node.inputs.filter(i => i.connected);
+
+
+//         request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        
+//         connectedInputs.forEach(input => 
+//             request.push(...pushInputOrParam(input, gen)));
+
+        
+//         gen.scope.pop();
+//         pushUnique(gen.passedNodes, this.node);
+        
+//         return request;
+//     }
 
 
 
+//     updateParams()
+//     {
+//         super.updateParams();
+
+//         this.paramValue.enableControlText(false);
+        
+//         this.paramValue.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+//         this.paramValue.control.showBar   = !this.isUnknown();
+//     }
 
 
 
+//     updateHeaderLabel()
+//     {
+//         // console.log('OpArithmetic.updateHeader()');
+        
+//         super.updateHeaderLabel();
+
+
+//         // this.div   .style.borderRadius = '4px';        
+//         // this.inner .style.borderRadius = '4px';        
+//         // this.header.style.borderRadius = '4px';        
+
+
+//         const colBack = rgbHeaderFromType(this.type, this.active);
+//         const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
+
+//         this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
+//         this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
+//         this._symbol.style.color      = rgb2style(colText);
+//         this._symbol.style.left       = 'calc(50% + 1px)';
+        
+
+//         const padding         = this.header.connectionPadding;
+//         const connectedInputs = this.headerInputs.filter(i => i.connected);
+
+
+//         if (isEmpty(connectedInputs))
+//         {
+//             if (this._showOnlySymbol)
+//             {
+//                 this._symbol.style.top = 2;
+//             }
+//             else
+//             {
+//                 this._symbol.style.top = -1;
+//                 this.label  .style.top = 'calc(50% + 6px)';
+//             }
+//         }
+//         else
+//         {
+//             const [connectedInputY, connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
+
+//             if (this._showOnlySymbol)
+//             {
+//                 this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 9;
+//             }
+//             else
+//             {
+//                 this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 6;
+//                 this.label  .style.top = 'calc(50% + 7px)';
+//             }
+//         }
+        
+
+//         this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
+//     }
 
 
 
+//     toJsonBase(nTab = 0) 
+//     {
+//         let   pos = ' '.repeat(nTab);
+//         const tab = TAB;
 
+//         return super.toJsonBase(nTab)
+//              + ',\n' + pos + tab + '"onlySymbol": "' + boolToString(this._showOnlySymbol) + '"';
+//     }
+
+
+
+//     paramsToJson(nTab = 0)
+//     {
+//         return '';
+//     }
+
+
+
+//     loadParams(_node)
+//     {
+//         if (_node.onlySymbol != undefined)
+//             this._showOnlySymbol = isTrue(_node.onlySymbol);
+
+//         super.loadParams(_node);
+//     }
+// }
+
+
+
+// function OpBooleanBase_onConnectInput(node)
+// {
+//     node.addNewInput();
+// }
+
+
+
+// function OpBooleanBase_onDisconnectInput(node, input)
+// {
+//     removeFromArray(node.inputs, input);
+//     node.inputControls.removeChild(input.div);
+// }
+
+
+class   OpNot
+extends OpArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_NOT, 'not', '¬');
+    }
+}
+
+
+class   OpAnd
+extends OpArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_AND, 'and', 'Λ');
+    }
+}
+
+
+class   OpOr
+extends OpArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_OR, 'or', 'V');
+    }
+}
+
+
+class   OpXor
+extends OpArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_XOR, 'xor', '∅');
+    }
+}
 
 
 class   OpCondition
@@ -42885,22 +43910,64 @@ extends OperatorBase
 
 
 
+class   OpEqual
+extends OpArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_EQUAL, 'equal', '=');
+    }
+}
 
 
+class   OpNotEqual
+extends OpArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_NOT_EQUAL, 'notEqual', '≠');
+    }
+}
 
 
+class   OpLess
+extends OpArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_LESS, 'less', '<');
+    }
+}
 
 
+class   OpLessOrEqual
+extends OpArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_LESS_OR_EQUAL, 'lessOrEqual', '≤');
+    }
+}
 
 
+class   OpGreater
+extends OpArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_GREATER, 'greater', '>');
+    }
+}
 
 
-
-
-
-
-
-
+class   OpGreaterOrEqual
+extends OpArithmetic
+{
+    constructor()
+    {
+        super(NUMBER_GREATER_OR_EQUAL, 'greaterOrEqual', '≥');
+    }
+}
 
 
 class OpColorBase
@@ -46690,6 +47757,7 @@ class Action
 
     restoreOldConnections()
     {
+        console.log('this.oldConnections =', [...this.oldConnections]);
         for (const _conn of this.oldConnections)
         {
             const outputNode = nodeFromId(_conn.outputNodeId);
@@ -46835,6 +47903,7 @@ class ActionManager
 
 
         act.updateOldConnections();
+console.log('act.oldConnections =', [...act.oldConnections]);
 
         if (!act.selfUpdate)
             pushUpdate(act, updateNodes);
@@ -46939,7 +48008,7 @@ extends Action
         connectAction_updateInputActiveNodes(this, updateNodes);
 
         connectAction_updateNodes(this, updateNodes);
-        // connectAction_cleanup(this);
+        connectAction_cleanup(this);
 
         //pushUpdate(this, updateNodes);
     }
@@ -46958,7 +48027,7 @@ extends Action
         this.deactivateNewActiveNodes();
         connectAction_activateOldActiveNodes(this, updateNodes); 
 
-        // connectAction_restoreCleanup(this);
+        connectAction_restoreCleanup(this);
 
         //pushUpdate(this, updateNodes);
     }
@@ -47053,12 +48122,12 @@ function connectAction_updateNodes(act, updateNodes)
 
 
 
-// function connectAction_cleanup(act)
-// {
-//     uiDeleteObjects([
-//         act.oldOutputActiveNodeId, 
-//      ...act.inputActiveNodeIds]); 
-// }
+function connectAction_cleanup(act)
+{
+    uiDeleteObjects([
+        act.oldOutputActiveNodeId, 
+     ...act.inputActiveNodeIds]); 
+}
 
 
 
@@ -47136,11 +48205,11 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
 
 
 
-// function connectAction_restoreCleanup(act)
-// {
-//     act.oldOutputActiveNodeId = '';
-//     act.inputActiveNodeIds = [];
-// }
+function connectAction_restoreCleanup(act)
+{
+    act.oldOutputActiveNodeId = '';
+    act.inputActiveNodeIds = [];
+}
 
 
 class CreateInsertNodeAction
@@ -47659,118 +48728,105 @@ extends Action
 
 
 
-    do()
+    do(updateNodes)
     {
         this.newActiveNodeIds = [];
-        const updateNodes     = [];
+
+        this.saveOldActiveNodes();
+        this.removeConnection();        
+
+        this.activateNewNodes();
+
+        this.updateNodes(updateNodes);
+
+        this.cleanup();
+    }
+    
+    
+    
+    undo(updateNodes)
+    {
+        this.deactivateNewActiveNodes();
+
+        this.activateOldActiveNodes(updateNodes);
+        pushUnique(updateNodes, this.outputNode);
+
+        this.oldActiveNodeIds = [];
+    }
 
 
-        // save old active nodes
 
+    saveOldActiveNodes()
+    {
         this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
+    }
 
 
-        // remove connection
 
+    removeConnection()
+    {
         const input = this.inputNode.inputFromId(this.inputId);
 
         uiDeleteSavedConn(input.connection);
         uiDisconnect(input);
 
         this.output.updateSavedConnectionOrder(this.outputOrder, -1);
-        
+    }
 
-        // save input node
-        
+
+
+    activateNewNodes()
+    {
         if (!getActiveFromNode(this.inputNode))
             this.newActiveNodeIds.push(this.inputNodeId);
-
-
-        // save output node
 
         if (   !getActiveOnlyBeforeNode(this.outputNode)
             && !getActiveAfterNode   (this.outputNode))
             this.newActiveNodeIds.push(this.outputNodeId);
 
 
-        // activate nodes
-
         for (const id of this.newActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
+    }
 
 
-        // update nodes
 
+    updateNodes(updateNodes)
+    {
         pushUnique(updateNodes, [this.inputNode, this.outputNode]);
 
         if (!this.outputNode.cached)
             pushUnique(updateNodes, this.outputNode.getUncachedInputNodes());
-
-        
-        // clean up now irrelevant objects
-
-        uiDeleteObjects(this.oldActiveNodeIds); 
-
-
-        //
-        
-        pushUpdate(this, updateNodes);
     }
-    
-    
-    
-    undo()
+
+
+
+    cleanup()
     {
-        const updateNodes = [];
+        uiDeleteObjects(this.oldActiveNodeIds); 
+    }
 
 
-        // restore old connection
 
-        this.output.updateSavedConnectionOrder(this.outputOrder, +1);
-
-        const conn = uiVariableConnect(
-            this.outputNode, this.outputId, 
-            this. inputNode, this. inputId,
-            this.outputOrder);
-        
-        uiSaveConn(conn);
-
-        
-        // deactivate new active nodes & clean up their objects
-
+    deactivateNewActiveNodes()
+    {
         for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
 
         uiDeleteObjects(this.newActiveNodeIds);
-        
+    }
 
-        // update old active nodes
 
+
+    activateOldActiveNodes(updateNodes)
+    {
         const oldActiveNodeIds = [...this.oldActiveNodeIds].sort((x, y) => 
             (nodeFromId(x) === nodeFromId(y)) ? 0 : nodeFromId(y).isOrFollows(nodeFromId(x)) ? -1 : 1);
 
         pushUnique(updateNodes, oldActiveNodeIds.map(id => nodeFromId(id)));
 
-
-        // activate old active nodes
-
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
-
-
-        // update nodes
-
-        pushUnique(updateNodes, this.outputNode);
-
-
-        // clean up
-        
-        this.oldActiveNodeIds = [];
-
-
-        //
-
-        pushUpdate(this, updateNodes);
     }
 }
 
@@ -48023,10 +49079,10 @@ extends Action
     {
         const updateNodes = [];
 
-        connectAction_removeNewConnection(this);
+        //connectAction_removeNewConnection(this);
       reconnectAction_restorePrevConnection(this);    
 
-        connectAction_restoreOldConnection(this);
+        //connectAction_restoreOldConnection(this);
         connectAction_restoreInputValues(this);
       reconnectAction_restorePrevInputValues(this);
 
@@ -48579,48 +49635,6 @@ extends Action
 }
 
 
-class ToggleArithmeticSymbolAction
-extends Action
-{
-    nodeId;
-    get node() { return nodeFromId(this.nodeId) } 
-
-    showOnlySymbol;
-
-
-
-    constructor(nodeId, showOnlySymbol)
-    {
-        super('TOGGLE MATH SYMBOL ' + boolToString(showOnlySymbol));
-
-        this.nodeId         = nodeId;
-        this.showOnlySymbol = showOnlySymbol;
-    }
-
-
-
-    do()
-    {
-        this.node._showOnlySymbol = this.showOnlySymbol;
-
-        this.node.updateNode();
-
-        uiSaveNodes([this.nodeId]);
-    }
-
-
-
-    undo()
-    {
-        this.node._showOnlySymbol = !this.showOnlySymbol;
-
-        this.node.updateNode();
-
-        uiSaveNodes([this.nodeId]);
-    }    
-}
-
-
 class ToggleDisableNodesAction
 extends Action
 {
@@ -48650,6 +49664,48 @@ extends Action
     {
         this.do();
     }
+}
+
+
+class ToggleOperatorSymbolAction
+extends Action
+{
+    nodeId;
+    get node() { return nodeFromId(this.nodeId) } 
+
+    showOnlySymbol;
+
+
+
+    constructor(nodeId, showOnlySymbol)
+    {
+        super('TOGGLE MATH SYMBOL ' + boolToString(showOnlySymbol));
+
+        this.nodeId         = nodeId;
+        this.showOnlySymbol = showOnlySymbol;
+    }
+
+
+
+    do(updateNodes)
+    {
+        this.node._showOnlySymbol = this.showOnlySymbol;
+
+        this.node.updateNode();
+
+        uiSaveNodes([this.nodeId]);
+    }
+
+
+
+    undo(updateNodes)
+    {
+        this.node._showOnlySymbol = !this.showOnlySymbol;
+
+        this.node.updateNode();
+
+        uiSaveNodes([this.nodeId]);
+    }    
 }
 
 

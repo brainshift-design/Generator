@@ -24,7 +24,7 @@ extends OperatorBase
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
 
 
-        this._symbol           = createDiv('arithmeticSymbol');
+        this._symbol           = createDiv('operatorSymbol');
         this._symbol.innerHTML = symbol;
         this._symbol.clicked0  = false;
         
@@ -40,7 +40,7 @@ extends OperatorBase
                     this._symbol.clicked0      = false;
                     this._symbol.style.opacity = 1;
 
-                    actionManager.do(new ToggleArithmeticSymbolAction(this.id, true));
+                    actionManager.do(new ToggleOperatorSymbolAction(this.id, true));
 
                     this.header.ignoreDoubleClick = true;
                 }
@@ -58,7 +58,7 @@ extends OperatorBase
         this.textbox.addEventListener('finishedit', e => 
         {
             if (this._showOnlySymbol)
-                actionManager.do(new ToggleArithmeticSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
+                actionManager.do(new ToggleOperatorSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
         });
     }
     

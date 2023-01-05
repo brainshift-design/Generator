@@ -69,7 +69,7 @@ extends Action
         connectAction_updateInputActiveNodes(this, updateNodes);
 
         connectAction_updateNodes(this, updateNodes);
-        // connectAction_cleanup(this);
+        connectAction_cleanup(this);
 
         //pushUpdate(this, updateNodes);
     }
@@ -88,7 +88,7 @@ extends Action
         this.deactivateNewActiveNodes();
         connectAction_activateOldActiveNodes(this, updateNodes); 
 
-        // connectAction_restoreCleanup(this);
+        connectAction_restoreCleanup(this);
 
         //pushUpdate(this, updateNodes);
     }
@@ -183,12 +183,12 @@ function connectAction_updateNodes(act, updateNodes)
 
 
 
-// function connectAction_cleanup(act)
-// {
-//     uiDeleteObjects([
-//         act.oldOutputActiveNodeId, 
-//      ...act.inputActiveNodeIds]); 
-// }
+function connectAction_cleanup(act)
+{
+    uiDeleteObjects([
+        act.oldOutputActiveNodeId, 
+     ...act.inputActiveNodeIds]); 
+}
 
 
 
@@ -266,8 +266,8 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
 
 
 
-// function connectAction_restoreCleanup(act)
-// {
-//     act.oldOutputActiveNodeId = '';
-//     act.inputActiveNodeIds = [];
-// }
+function connectAction_restoreCleanup(act)
+{
+    act.oldOutputActiveNodeId = '';
+    act.inputActiveNodeIds = [];
+}

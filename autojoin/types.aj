@@ -54,14 +54,12 @@
 ../generator/types/number/arithmetic/GExponent.js
 
 ../generator/types/number/boolean/GBoolean.js
-../generator/types/number/boolean/GBooleanBase.js
 ../generator/types/number/boolean/GNot.js
 ../generator/types/number/boolean/GAnd.js
 ../generator/types/number/boolean/GOr.js
 ../generator/types/number/boolean/GXor.js
 
 ../generator/types/number/condition/GCondition.js
-../generator/types/number/condition/GConditionBase.js
 ../generator/types/number/condition/GEqual.js
 ../generator/types/number/condition/GNotEqual.js
 ../generator/types/number/condition/GLess.js

@@ -130,12 +130,12 @@
 }
 
 
-.arithmeticSymbol
+.operatorSymbol
 {
     font-family:    Inter;
     font-size:      20px;
-    width:          auto;/*var(--arithmeticSymbolSize);*/
-    height:         auto;/*var(--arithmeticSymbolSize);*/
+    width:          auto;/*var(--operatorSymbolSize);*/
+    height:         auto;/*var(--operatorSymbolSize);*/
     position:       absolute;
     left:           50%;
     transform:      translateX(-50%);
