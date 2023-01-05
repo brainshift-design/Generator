@@ -122,7 +122,7 @@ graphView.placeNewNode = function(node)
     }
     else
     {
-        node.div.style.left = (graphView.offsetWidth /2 - graphView.pan.x                       ) / graphView.zoom - nodeRect.width/2;
+        node.div.style.left = (graphView.offsetWidth /2 - graphView.pan.x                       ) / graphView.zoom - nodeRect.width /2;
         node.div.style.top  = (graphView.offsetHeight/2 - graphView.pan.y - menuBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
     }
 };
@@ -347,7 +347,7 @@ function selectAllNodes()
 
 function copySelectedNodes()
 {
-    pasteOffset     = [0, 0];
+    pasteOffset     = point(0, 0);
     copiedNodesJson = uiCopyNodes(graphView.selectedNodes.map(n => n.id));
 
     writeTextToClipboard(copiedNodesJson);
@@ -375,7 +375,7 @@ function duplicateSelectedNodes(pasteConnected)
 {
     if (graphView.selectedNodes.length > 0)
     {
-        pasteOffset = [0, 0];
+        pasteOffset = point(0, 0);
         actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), pasteConnected, true));
     }
 }

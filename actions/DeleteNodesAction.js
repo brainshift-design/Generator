@@ -30,7 +30,7 @@ extends Action
 
 
         deleteNodesAction_saveActiveNodes(this);
-        deleteNodesAction_saveOldConnections(this);
+        //deleteNodesAction_saveOldConnections(this);
         
         deleteNodesAction_getUpdateNodes(this, updateNodes);
         deleteNodesAction_deleteNodes(this);
@@ -38,17 +38,17 @@ extends Action
 
         uiSaveNodes(this.newActiveNodeIds);
 
-        pushUpdate(this, updateNodes.filter(n => graph.nodes.includes(n)));
+        //pushUpdate(this, updateNodes.filter(n => graph.nodes.includes(n)));
     }
 
 
 
     undo(updateNodes)
     {
-        deleteNodesAction_removeNewConnections(this);
+        //deleteNodesAction_removeNewConnections(this);
 
         deleteNodesAction_restoreNodes(this);
-        deleteNodesAction_restoreOldConnections(this);
+        //deleteNodesAction_restoreOldConnections(this);
         
         deleteNodesAction_activateOldActiveNodes(this);
 
@@ -308,6 +308,6 @@ function deleteNodesAction_activateOldActiveNodes(act)
 function deleteNodesAction_cleanup(act)
 {
     act.nodePos        = [];
-    act.oldConnections = [];
-    act.newConnections = [];
+    // act.oldConnections = [];
+    // act.newConnections = [];
 }

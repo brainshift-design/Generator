@@ -69,8 +69,8 @@ extends Action
     {
         uiDeleteNodes(this.pastedNodeIds);
         
-        pasteOffset[0] -= pasteOffsetDelta[0];
-        pasteOffset[1] -= pasteOffsetDelta[1];
+        pasteOffset.x -= pasteOffsetDelta.x;
+        pasteOffset.y -= pasteOffsetDelta.y;
 
         graphView.selectedNodes = graph.nodes.filter(n => this.prevSelectedNodeIds.includes(n.id));
 

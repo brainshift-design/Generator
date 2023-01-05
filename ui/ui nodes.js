@@ -615,8 +615,8 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
     graphView.loadingNodes = true;
 
 
-    pasteOffset[0] += pasteOffsetDelta[0];
-    pasteOffset[1] += pasteOffsetDelta[1];
+    pasteOffset.x += pasteOffsetDelta.x;
+    pasteOffset.y += pasteOffsetDelta.y;
 
 
     const data = JSON.parse(nodesJson);
@@ -637,8 +637,8 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
     {
         for (let i = 0; i < data.nodes.length; i++)
         {
-            data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset[0] / graphView.zoom;
-            data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset[1] / graphView.zoom;
+            data.nodes[i].x = parseFloat(data.nodes[i].x) + pasteOffset.x;
+            data.nodes[i].y = parseFloat(data.nodes[i].y) + pasteOffset.y;
         }
     }
 
