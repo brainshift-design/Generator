@@ -1,5 +1,5 @@
 class   OpNotEqual
-extends OpArithmetic
+extends OpConditionBase
 {
     constructor()
     {

@@ -1,5 +1,5 @@
 class GNotEqual
-extends GArithmetic
+extends GConditionBase
 {
     constructor(nodeId, options)
     {
@@ -23,7 +23,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalNotEqualInputs(this.inputs, parse);
+        this.value = evalNotEqualInputs(this.input0, this.input1, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -38,4 +38,20 @@ extends GArithmetic
 function evalNotEqualInputs(val0, val1) 
 { 
     return new NumberValue(val0.value != val1.value ? 1 : 0); 
+}
+
+
+
+function evalNotEqualInputs(input0, input1, parse) 
+{
+    if (   input0 
+        && input1)
+    {
+        const val0 = input0.eval(parse).toValue();
+        const val1 = input1.eval(parse).toValue();
+
+        return new NumberValue(val0.toNumber() == val1.toNumber() ? 1 : 0);
+    }
+    else                  
+        return NumberValue.NaN;
 }

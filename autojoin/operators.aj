@@ -19,6 +19,7 @@
 ../operators/Connection.js
 ../operators/Operator.js
 ../operators/OperatorBase.js
+../operators/OperatorWithSymbol.js
 ../operators/Operator node.js
 ../operators/Operator label.js
 ../operators/Operator textbox.js

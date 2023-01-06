@@ -59,6 +59,7 @@
 ../generator/types/number/boolean/GOr.js
 ../generator/types/number/boolean/GXor.js
 
+../generator/types/number/condition/GConditionBase.js
 ../generator/types/number/condition/GCondition.js
 ../generator/types/number/condition/GEqual.js
 ../generator/types/number/condition/GNotEqual.js

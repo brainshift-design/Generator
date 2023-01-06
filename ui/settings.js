@@ -132,7 +132,9 @@ function updateMenuItemIncludeLxxColorSpace()
 function updateMenuItemShowBoolValues()
 {
     graph.nodes
-        .filter(n => BOOLEAN_TYPES.includes(n.type))
+        .filter(n => 
+               BOOLEAN_TYPES.includes(n.type)
+            || CONDITION_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
 }
 

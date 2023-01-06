@@ -114,12 +114,12 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_XOR             ) result = genParseArithmetic      (parse, (nodeId, options) => new GXor           (nodeId, options));
     
     else if (parse.next == NUMBER_CONDITION       ) result = genParseCondition       (parse);
-    else if (parse.next == NUMBER_EQUAL           ) result = genParseArithmetic      (parse, (nodeId, options) => new GEqual         (nodeId, options));
-    else if (parse.next == NUMBER_NOT_EQUAL       ) result = genParseArithmetic      (parse, (nodeId, options) => new GNotEqual      (nodeId, options));
-    else if (parse.next == NUMBER_LESS            ) result = genParseArithmetic      (parse, (nodeId, options) => new GLess          (nodeId, options));
-    else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseArithmetic      (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
-    else if (parse.next == NUMBER_GREATER         ) result = genParseArithmetic      (parse, (nodeId, options) => new GGreater       (nodeId, options));
-    else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseArithmetic      (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
+    else if (parse.next == NUMBER_EQUAL           ) result = genParseConditionBase   (parse, (nodeId, options) => new GEqual         (nodeId, options));
+    else if (parse.next == NUMBER_NOT_EQUAL       ) result = genParseConditionBase   (parse, (nodeId, options) => new GNotEqual      (nodeId, options));
+    else if (parse.next == NUMBER_LESS            ) result = genParseConditionBase   (parse, (nodeId, options) => new GLess          (nodeId, options));
+    else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseConditionBase   (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
+    else if (parse.next == NUMBER_GREATER         ) result = genParseConditionBase   (parse, (nodeId, options) => new GGreater       (nodeId, options));
+    else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseConditionBase   (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
 
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR                  ) result = genParseColor           (parse);

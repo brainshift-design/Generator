@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_MATH, 'math', 70);
+        super(NUMBER_MATH, 'math', 100);
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;

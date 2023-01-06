@@ -93,3 +93,12 @@ function logReqCondition(cond, nInputs, parse)
     parse.log += logReqNodeId(cond);
     parse.log += ' ' + nInputs;
 }
+
+
+
+function logReqConditionBase(cond, type, nInputs, parse)
+{
+    parse.log += parse.tab + type;
+    parse.log += logReqNodeId(cond);
+    parse.log += ' ' + nInputs;
+}

@@ -3049,6 +3049,14 @@ function logReqCondition(cond, nInputs, parse)
 
 
 
+function logReqConditionBase(cond, type, nInputs, parse)
+{
+    parse.log += parse.tab + type;
+    parse.log += logReqNodeId(cond);
+    parse.log += ' ' + nInputs;
+}
+
+
 function logReqColorValue(val, parse)
 {
     parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
@@ -7272,6 +7280,15 @@ function evalXorInputs(inputs, parse)
 }
 
 
+class GConditionBase
+extends GNumberType
+{
+    input0 = null;
+    input1 = null;
+}
+
+
+
 class GCondition
 extends GNumberType
 {
@@ -7316,48 +7333,48 @@ extends GNumberType
         op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
         
-        if (   this.input0 
-            && this.input1)
-        {
-            const val0 = this.input0.eval(parse).toValue();
-            const val1 = this.input1.eval(parse).toValue();
+        // if (   this.input0 
+        //     && this.input1)
+        // {
+            // const val0 = this.input0.eval(parse).toValue();
+            // const val1 = this.input1.eval(parse).toValue();
 
             switch (op.value)
             {
-                case CONDITION_EQUAL:             this.value = evalEqualInputs         (val0, val1);  break;
-                case CONDITION_NOT_EQUAL:         this.value = evalNotEqualInputs      (val0, val1);  break;
-                case CONDITION_LESS:              this.value = evalLessInputs          (val0, val1);  break;
-                case CONDITION_LESS_OR_EQUAL:     this.value = evalLessOrEqualInputs   (val0, val1);  break;
-                case CONDITION_GREATER:           this.value = evalGreaterInputs       (val0, val1);  break;
-                case CONDITION_GREATER_OR_EQUAL:  this.value = evalGreaterOrEqualInputs(val0, val1);  break;
+                case CONDITION_EQUAL:             this.value = evalEqualInputs         (this.input0, this.input1, parse);  break;
+                case CONDITION_NOT_EQUAL:         this.value = evalNotEqualInputs      (this.input0, this.input1, parse);  break;
+                case CONDITION_LESS:              this.value = evalLessInputs          (this.input0, this.input1, parse);  break;
+                case CONDITION_LESS_OR_EQUAL:     this.value = evalLessOrEqualInputs   (this.input0, this.input1, parse);  break;
+                case CONDITION_GREATER:           this.value = evalGreaterInputs       (this.input0, this.input1, parse);  break;
+                case CONDITION_GREATER_OR_EQUAL:  this.value = evalGreaterOrEqualInputs(this.input0, this.input1, parse);  break;
             }
-        }
-        else if (this.input0)
-        {
-            this.input0.eval(parse).toValue();
+        // }
+        // else if (this.input0)
+        // {
+        //     // this.input0.eval(parse).toValue();
 
-            switch (op.value)
-            {
-                case CONDITION_EQUAL:             
-                case CONDITION_LESS_OR_EQUAL:     
-                case CONDITION_GREATER_OR_EQUAL: this.value = new NumberValue(1); break;
-                default:                         this.value = new NumberValue(0); break;
-            }
-        }
-        else if (this.input1) 
-        {
-            this.input1.eval(parse).toValue();
+        //     switch (op.value)
+        //     {
+        //         case CONDITION_EQUAL:             
+        //         case CONDITION_LESS_OR_EQUAL:     
+        //         case CONDITION_GREATER_OR_EQUAL: this.value = new NumberValue(1); break;
+        //         default:                         this.value = new NumberValue(0); break;
+        //     }
+        // }
+        // else if (this.input1) 
+        // {
+        //     this.input1.eval(parse).toValue();
 
-            switch (op.value)
-            {
-                case CONDITION_EQUAL:             
-                case CONDITION_LESS_OR_EQUAL:     
-                case CONDITION_GREATER_OR_EQUAL: this.value = new NumberValue(1); break;
-                default:                         this.value = new NumberValue(0); break;
-            }
-        }
-        else                  
-            this.value = NumberValue.NaN;
+        //     switch (op.value)
+        //     {
+        //         case CONDITION_EQUAL:             
+        //         case CONDITION_LESS_OR_EQUAL:     
+        //         case CONDITION_GREATER_OR_EQUAL: this.value = new NumberValue(1); break;
+        //         default:                         this.value = new NumberValue(0); break;
+        //     }
+        // }
+        // else                  
+        //     this.value = NumberValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'operation', op);
@@ -7372,7 +7389,7 @@ extends GNumberType
 
 
 class GEqual
-extends GArithmetic
+extends GConditionBase
 {
     constructor(nodeId, options)
     {
@@ -7396,7 +7413,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalEqualInputs(this.inputs, parse);
+        this.value = evalEqualInputs(this.input0, this.input1, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -7408,15 +7425,24 @@ extends GArithmetic
 
 
 
-function evalEqualInputs(val0, val1) 
-{ 
-    return new NumberValue(val0.value == val1.value ? 1 : 0); 
+function evalEqualInputs(input0, input1, parse) 
+{
+    if (   input0 
+        && input1)
+    {
+        const val0 = input0.eval(parse).toValue();
+        const val1 = input1.eval(parse).toValue();
+
+        return new NumberValue(val0.toNumber() == val1.toNumber() ? 1 : 0);
+    }
+    else                  
+        return NumberValue.NaN;
 }
 
 
 
 class GNotEqual
-extends GArithmetic
+extends GConditionBase
 {
     constructor(nodeId, options)
     {
@@ -7440,7 +7466,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalNotEqualInputs(this.inputs, parse);
+        this.value = evalNotEqualInputs(this.input0, this.input1, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -7459,8 +7485,24 @@ function evalNotEqualInputs(val0, val1)
 
 
 
+function evalNotEqualInputs(input0, input1, parse) 
+{
+    if (   input0 
+        && input1)
+    {
+        const val0 = input0.eval(parse).toValue();
+        const val1 = input1.eval(parse).toValue();
+
+        return new NumberValue(val0.toNumber() == val1.toNumber() ? 1 : 0);
+    }
+    else                  
+        return NumberValue.NaN;
+}
+
+
+
 class GLess
-extends GArithmetic
+extends GConditionBase
 {
     constructor(nodeId, options)
     {
@@ -7484,7 +7526,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalLessInputs(this.inputs, parse);
+        this.value = evalLessInputs(this.input0, this.input1, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -7496,15 +7538,24 @@ extends GArithmetic
 
 
 
-function evalLessInputs(val0, val1) 
-{ 
-    return new NumberValue(val0.value <  val1.value ? 1 : 0); 
+function evalLessInputs(input0, input1, parse) 
+{
+    if (   input0 
+        && input1)
+    {
+        const val0 = input0.eval(parse).toValue();
+        const val1 = input1.eval(parse).toValue();
+
+        return new NumberValue(val0.toNumber() < val1.toNumber() ? 1 : 0);
+    }
+    else                  
+        return NumberValue.NaN;
 }
 
 
 
 class GLessOrEqual
-extends GArithmetic
+extends GConditionBase
 {
     constructor(nodeId, options)
     {
@@ -7528,7 +7579,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalLessOrEqualInputs(this.inputs, parse);
+        this.value = evalLessOrEqualInputs(this.input0, this.input1, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -7540,15 +7591,24 @@ extends GArithmetic
 
 
 
-function evalLessOrEqualInputs(val0, val1) 
-{ 
-    return new NumberValue(val0.value <= val1.value ? 1 : 0); 
+function evalLessOrEqualInputs(input0, input1, parse) 
+{
+    if (   input0 
+        && input1)
+    {
+        const val0 = input0.eval(parse).toValue();
+        const val1 = input1.eval(parse).toValue();
+
+        return new NumberValue(val0.toNumber() <= val1.toNumber() ? 1 : 0);
+    }
+    else                  
+        return NumberValue.NaN;
 }
 
 
 
 class GGreater
-extends GArithmetic
+extends GConditionBase
 {
     constructor(nodeId, options)
     {
@@ -7572,7 +7632,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalGreaterInputs(this.inputs, parse);
+        this.value = evalGreaterInputs(this.input0, this.input1, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -7584,15 +7644,24 @@ extends GArithmetic
 
 
 
-function evalGreaterInputs(val0, val1) 
-{ 
-    return new NumberValue(val0.value >  val1.value ? 1 : 0); 
+function evalGreaterInputs(input0, input1, parse) 
+{
+    if (   input0 
+        && input1)
+    {
+        const val0 = input0.eval(parse).toValue();
+        const val1 = input1.eval(parse).toValue();
+
+        return new NumberValue(val0.toNumber() > val1.toNumber() ? 1 : 0);
+    }
+    else                  
+        return NumberValue.NaN;
 }
 
 
 
 class GGreaterOrEqual
-extends GArithmetic
+extends GConditionBase
 {
     constructor(nodeId, options)
     {
@@ -7616,7 +7685,7 @@ extends GArithmetic
         if (this.isCached())
             return this;
 
-        this.value = evalGreaterOrEqualInputs(this.inputs, parse);
+        this.value = evalGreaterOrEqualInputs(this.input0, this.input1, parse);
         
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
@@ -7628,10 +7697,20 @@ extends GArithmetic
 
 
 
-function evalGreaterOrEqualInputs(val0, val1) 
-{ 
-    return new NumberValue(val0.value >= val1.value ? 1 : 0); 
+function evalGreaterOrEqualInputs(input0, input1, parse) 
+{
+    if (   input0 
+        && input1)
+    {
+        const val0 = input0.eval(parse).toValue();
+        const val1 = input1.eval(parse).toValue();
+
+        return new NumberValue(val0.toNumber() >= val1.toNumber() ? 1 : 0);
+    }
+    else                  
+        return NumberValue.NaN;
 }
+
 
 
 class GNumber
@@ -10523,7 +10602,9 @@ function updateMenuItemIncludeLxxColorSpace()
 function updateMenuItemShowBoolValues()
 {
     graph.nodes
-        .filter(n => BOOLEAN_TYPES.includes(n.type))
+        .filter(n => 
+               BOOLEAN_TYPES.includes(n.type)
+            || CONDITION_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
 }
 
@@ -12028,6 +12109,56 @@ function genParseCondition(parse)
 }
 
 
+
+function genParseConditionBase(parse, newNode)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cond = newNode(nodeId, options);
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReqConditionBase(arith, type, nInputs, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cond);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+    if (nInputs == 2)
+    {
+        cond.input0 = genParse(parse);
+        cond.input1 = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+        cond.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+    }
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cond);
+    return cond;
+}
+
+
+
 function genParseRectangle(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -12736,12 +12867,12 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_XOR             ) result = genParseArithmetic      (parse, (nodeId, options) => new GXor           (nodeId, options));
     
     else if (parse.next == NUMBER_CONDITION       ) result = genParseCondition       (parse);
-    else if (parse.next == NUMBER_EQUAL           ) result = genParseArithmetic      (parse, (nodeId, options) => new GEqual         (nodeId, options));
-    else if (parse.next == NUMBER_NOT_EQUAL       ) result = genParseArithmetic      (parse, (nodeId, options) => new GNotEqual      (nodeId, options));
-    else if (parse.next == NUMBER_LESS            ) result = genParseArithmetic      (parse, (nodeId, options) => new GLess          (nodeId, options));
-    else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseArithmetic      (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
-    else if (parse.next == NUMBER_GREATER         ) result = genParseArithmetic      (parse, (nodeId, options) => new GGreater       (nodeId, options));
-    else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseArithmetic      (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
+    else if (parse.next == NUMBER_EQUAL           ) result = genParseConditionBase   (parse, (nodeId, options) => new GEqual         (nodeId, options));
+    else if (parse.next == NUMBER_NOT_EQUAL       ) result = genParseConditionBase   (parse, (nodeId, options) => new GNotEqual      (nodeId, options));
+    else if (parse.next == NUMBER_LESS            ) result = genParseConditionBase   (parse, (nodeId, options) => new GLess          (nodeId, options));
+    else if (parse.next == NUMBER_LESS_OR_EQUAL   ) result = genParseConditionBase   (parse, (nodeId, options) => new GLessOrEqual   (nodeId, options));
+    else if (parse.next == NUMBER_GREATER         ) result = genParseConditionBase   (parse, (nodeId, options) => new GGreater       (nodeId, options));
+    else if (parse.next == NUMBER_GREATER_OR_EQUAL) result = genParseConditionBase   (parse, (nodeId, options) => new GGreaterOrEqual(nodeId, options));
 
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR                  ) result = genParseColor           (parse);

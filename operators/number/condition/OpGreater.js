@@ -1,5 +1,5 @@
 class   OpGreater
-extends OpArithmetic
+extends OpConditionBase
 {
     constructor()
     {

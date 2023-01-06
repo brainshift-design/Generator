@@ -1,5 +1,5 @@
 class   OpLessOrEqual
-extends OpArithmetic
+extends OpConditionBase
 {
     constructor()
     {
