@@ -1063,6 +1063,15 @@ a
 }
 
 
+.menuItemHighlight
+{
+    display:  block;
+    position: absolute;
+    /* width:    100%; */
+    height:   25px;
+}
+
+
 .menuItemCheck
 {
     display:             inline-block;
@@ -30560,8 +30569,12 @@ class MenuItem
 
     isSetting         = false;
 
+    enteredDiv        = false;
+    enteredExpand     = false;
+
 
     div;
+    divHighlight;
 
     divCheck;
     divIcon;
@@ -30607,15 +30620,16 @@ class MenuItem
 
     createControls()
     {
-        this.div          = createDiv('menuItem'        );
+        this.div          = createDiv('menuItem'         );
+        this.divHighlight = createDiv('menuItemHighlight');
 
-        this.divCheck     = createDiv('menuItemCheck'   );
-        this.divIcon      = createDiv('menuItemIcon'    );
-        this.divName      = createDiv('menuItemName'    );
-        this.divExpand    = createDiv('menuItemExpand'  );
-        this.divShortcut  = createDiv('menuItemShortcut');
+        this.divCheck     = createDiv('menuItemCheck'    );
+        this.divIcon      = createDiv('menuItemIcon'     );
+        this.divName      = createDiv('menuItemName'     );
+        this.divExpand    = createDiv('menuItemExpand'   );
+        this.divShortcut  = createDiv('menuItemShortcut' );
 
-        this.divSeparator = createDiv('menuSeparator'   );
+        this.divSeparator = createDiv('menuSeparator'    );
 
 
         this.div.style.pointerEvents = this.separator ? 'none' : 'all';
@@ -30638,13 +30652,15 @@ class MenuItem
         this.divShortcut.innerHTML = this.shortcut;
 
     
+        
         if (!this.separator)
         {
-            this.div.appendChild(this.divCheck   );
-            this.div.appendChild(this.divIcon    );
-            this.div.appendChild(this.divName    );
-            this.div.appendChild(this.divExpand  );
-            this.div.appendChild(this.divShortcut);
+            this.div.appendChild(this.divHighlight);
+            this.div.appendChild(this.divCheck    );
+            this.div.appendChild(this.divIcon     );
+            this.div.appendChild(this.divName     );
+            this.div.appendChild(this.divExpand   );
+            this.div.appendChild(this.divShortcut );
         }
         else
             this.div.appendChild(this.divSeparator);
@@ -30666,29 +30682,99 @@ class MenuItem
 
 
 
-        this.div.addEventListener('pointerenter', () =>
+        // this.div.addEventListener('pointerenter', () =>
+        // {
+        //     if (this.enabled)
+        //     {
+        //         this.divHighlight.style.background = 'var(--figma-color-bg-brand)';
+
+        //         this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? 48 : 0) + 'px)';
+        //     }
+
+        //     if (this.childMenu)
+        //     {
+        //         if (!currentMenus.includes(this.childMenu))
+        //         {
+        //             hideAllMenusAfter(this.parentMenu);
+        //             this.childMenu.show(this.div, true);
+        //         }
+        //     }
+        //     else
+        //         hideAllMenusAfter(this.parentMenu);
+        // });
+    
+
+    
+        this.div.addEventListener('pointermove', e =>
         {
             if (this.enabled)
-                this.div.style.background = 'var(--figma-color-bg-brand)';
-
-            if (this.childMenu)
             {
-                if (!currentMenus.includes(this.childMenu))
+                this.divHighlight.style.background = 'var(--figma-color-bg-brand)';
+
+                if (   this.callback
+                    && this.childMenu)
                 {
-                    hideAllMenusAfter(this.parentMenu);
-                    this.childMenu.show(this.div, true);
+                    if (    e.clientX < this.div.offsetWidth - 23
+                        && !this.enteredDiv)
+                    {
+                        this.divHighlight.style.left  = 0;
+                        this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? 48 : 0) + 'px)';
+
+                        hideAllMenusAfter(this.parentMenu);
+
+                        this.enteredDiv    = true;
+                        this.enteredExpand = false;
+                    }
+                    else if ( e.clientX >= this.div.offsetWidth - 23
+                          && !this.enteredExpand)
+                    {
+                        this.divHighlight.style.left  = 'calc(100% - ' + (this.childMenu && this.callback ? 48 : 0) + 'px)';
+                        this.divHighlight.style.width = '48px';
+
+                        this.showChildMenu();
+
+                        this.enteredDiv    = false;
+                        this.enteredExpand = true;
+                    }
+                }
+                else if (!this.enteredDiv)
+                {
+                    this.divHighlight.style.left  = 0;
+                    this.divHighlight.style.width = '100%';
+
+                    this.showChildMenu();
+
+                    this.enteredDiv    = true;
+                    this.enteredExpand = false;
                 }
             }
-            else
-                hideAllMenusAfter(this.parentMenu);
         });
     
 
     
         this.div.addEventListener('pointerleave', () =>
         {
-            this.div.style.background = 'transparent';
+            this.divHighlight.style.background = 'transparent';
+
+            this.enteredDiv    = false;
+            this.enteredExpand = false;
         });
+    }
+
+
+
+    showChildMenu()
+    {
+        if (this.childMenu)
+        {
+            if (!currentMenus.includes(this.childMenu))
+            {
+                hideAllMenusAfter(this.parentMenu);
+                this.childMenu.show(this.div, true);
+            }
+        }
+        else
+            hideAllMenusAfter(this.parentMenu);
     }
 
 
@@ -30782,8 +30868,8 @@ const iconModulo           = '<svg width="12" height="11" viewBox="0 0 12 11" fi
 
 const iconBoolean          = '<svg width="13" height="16" viewBox="0 0 13 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.28269 9.19418V15.0124H2.05257V10.3618H2.01848L0.686096 11.197V10.1061L2.12644 9.19418H3.28269Z" fill="white"/><path d="M2.53269 6.02495C2.04405 6.02306 1.6236 5.90279 1.27132 5.66416C0.920945 5.42552 0.651058 5.07988 0.461664 4.62722C0.274164 4.17457 0.181361 3.63006 0.183255 2.9937C0.183255 2.35923 0.277005 1.81851 0.464505 1.37154C0.653899 0.924572 0.923786 0.58461 1.27416 0.351655C1.62644 0.116807 2.04594 -0.000617504 2.53269 -0.000617504C3.01943 -0.000617504 3.43799 0.116807 3.78837 0.351655C4.14064 0.586504 4.41148 0.927413 4.60087 1.37438C4.79026 1.81946 4.88401 2.35923 4.88212 2.9937C4.88212 3.63196 4.78742 4.17741 4.59803 4.63006C4.41053 5.08272 4.14159 5.42836 3.79121 5.667C3.44083 5.90563 3.02132 6.02495 2.53269 6.02495ZM2.53269 5.00506C2.86602 5.00506 3.13212 4.83745 3.33098 4.50222C3.52985 4.167 3.62833 3.66416 3.62644 2.9937C3.62644 2.55241 3.58098 2.18499 3.49007 1.89143C3.40106 1.59787 3.27416 1.37722 3.10939 1.2295C2.94651 1.08177 2.75428 1.00791 2.53269 1.00791C2.20125 1.00791 1.9361 1.17363 1.73723 1.50506C1.53837 1.8365 1.43799 2.33272 1.4361 2.9937C1.4361 3.44067 1.4806 3.81378 1.56962 4.11302C1.66053 4.41037 1.78837 4.63385 1.95314 4.78347C2.11791 4.9312 2.3111 5.00506 2.53269 5.00506Z" fill="white"/><path d="M9.87382 15.0638C9.38518 15.0619 8.96473 14.9416 8.61246 14.703C8.26208 14.4643 7.99219 14.1187 7.8028 13.666C7.6153 13.2134 7.52249 12.6689 7.52439 12.0325C7.52439 11.398 7.61814 10.8573 7.80564 10.4104C7.99503 9.96339 8.26492 9.62343 8.6153 9.39047C8.96757 9.15563 9.38708 9.0382 9.87382 9.0382C10.3606 9.0382 10.7791 9.15563 11.1295 9.39047C11.4818 9.62532 11.7526 9.96623 11.942 10.4132C12.1314 10.8583 12.2251 11.398 12.2233 12.0325C12.2233 12.6708 12.1286 13.2162 11.9392 13.6689C11.7517 14.1215 11.4827 14.4672 11.1323 14.7058C10.782 14.9445 10.3625 15.0638 9.87382 15.0638ZM9.87382 14.0439C10.2072 14.0439 10.4733 13.8763 10.6721 13.541C10.871 13.2058 10.9695 12.703 10.9676 12.0325C10.9676 11.5912 10.9221 11.2238 10.8312 10.9302C10.7422 10.6367 10.6153 10.416 10.4505 10.2683C10.2876 10.1206 10.0954 10.0467 9.87382 10.0467C9.54238 10.0467 9.27723 10.2124 9.07837 10.5439C8.8795 10.8753 8.77912 11.3715 8.77723 12.0325C8.77723 12.4795 8.82174 12.8526 8.91075 13.1518C9.00166 13.4492 9.1295 13.6727 9.29427 13.8223C9.45905 13.97 9.65223 14.0439 9.87382 14.0439Z" fill="white"/><path d="M11.0028 0.181818V6H9.77273V1.34943H9.73864L8.40625 2.18466V1.09375L9.84659 0.181818H11.0028Z" fill="white"/></svg>';
 const iconNot              = '<svg width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 0V1.59459H0V0H8ZM8 0.729729V4H6.08298V0.729729H8Z" fill="white"/></svg>';
-const iconAnd              = '<svg width="9" height="8" viewBox="0 0 9 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.93182 2.15577e-07L3.65909 1.59944e-07L-3.29822e-07 7.54545L1.73295 7.54546L4.27273 1.97727L4.17045 2.02841L4.41477 2.02841L4.31818 1.97727L6.85227 7.54546L8.59091 7.54546L4.93182 2.15577e-07Z" fill="white"/></svg>';
-const iconOr               = '<svg width="9" height="8" viewBox="0 0 9 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.93182 7.54546L3.65909 7.54546L-3.29822e-07 9.53674e-07L1.73295 8.77924e-07L4.27273 5.56818L4.17045 5.51705L4.41477 5.51705L4.31818 5.56818L6.85227 6.54152e-07L8.59091 5.78154e-07L4.93182 7.54546Z" fill="white"/></svg>';
+const iconAnd              = '<svg width="9" height="9" viewBox="0 -1 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.93182 2.15577e-07L3.65909 1.59944e-07L-3.29822e-07 7.54545L1.73295 7.54546L4.27273 1.97727L4.17045 2.02841L4.41477 2.02841L4.31818 1.97727L6.85227 7.54546L8.59091 7.54546L4.93182 2.15577e-07Z" fill="white"/></svg>';
+const iconOr               = '<svg width="9" height="9" viewBox="0 -1 9 9" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.93182 7.54546L3.65909 7.54546L-3.29822e-07 9.53674e-07L1.73295 8.77924e-07L4.27273 5.56818L4.17045 5.51705L4.41477 5.51705L4.31818 5.56818L6.85227 6.54152e-07L8.59091 5.78154e-07L4.93182 7.54546Z" fill="white"/></svg>';
 const iconXor              = '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.5 10.2363C8.11581 10.2363 10.2363 8.11581 10.2363 5.5C10.2363 2.88419 8.11581 0.763657 5.5 0.763657C2.88419 0.763657 0.763657 2.88419 0.763657 5.5C0.763657 8.11581 2.88419 10.2363 5.5 10.2363ZM5.5 9C7.433 9 9 7.433 9 5.5C9 3.567 7.433 2 5.5 2C3.567 2 2 3.567 2 5.5C2 7.433 3.567 9 5.5 9Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M9 6L2 6L2 5L9 5V6Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M6 2L6 9L5 9L5 2L6 2Z" fill="white"/></svg>';
 
 const iconCondition        = '<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.53875 4.35405L15.9422 7.61541V6.34268L11.0302 3.97621L11.07 4.05575V3.85689L11.0302 3.93643L15.9422 1.56996V0.29723L9.53875 3.55859V4.35405Z" fill="white"/><path d="M13.5986 9.37666H15.1207L12.1775 16.6948H10.6554L13.5986 9.37666ZM9.87942 12.1011V11.0272H16.0044V12.1011H9.87942ZM9.87942 15.0443V13.9704H16.0044V15.0443H9.87942Z" fill="white"/><path d="M7.29069 13.4335V12.638L0.887281 9.37667V10.6494L5.79921 13.0159L5.75944 12.9363V13.1352L5.79921 13.0556L0.887281 15.4221V16.6948L7.29069 13.4335Z" fill="white"/><path d="M6.67738 3.02166V1.9478H0.552379V3.02166H6.67738ZM6.67738 5.96484V4.89098H0.552379V5.96484H6.67738Z" fill="white"/></svg>';
@@ -43481,7 +43567,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_INTERPOLATE, 'inter', 70);
+        super(NUMBER_INTERPOLATE, 'inter', 100);
 
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));

@@ -19,8 +19,12 @@ class MenuItem
 
     isSetting         = false;
 
+    enteredDiv        = false;
+    enteredExpand     = false;
+
 
     div;
+    divHighlight;
 
     divCheck;
     divIcon;
@@ -66,15 +70,16 @@ class MenuItem
 
     createControls()
     {
-        this.div          = createDiv('menuItem'        );
+        this.div          = createDiv('menuItem'         );
+        this.divHighlight = createDiv('menuItemHighlight');
 
-        this.divCheck     = createDiv('menuItemCheck'   );
-        this.divIcon      = createDiv('menuItemIcon'    );
-        this.divName      = createDiv('menuItemName'    );
-        this.divExpand    = createDiv('menuItemExpand'  );
-        this.divShortcut  = createDiv('menuItemShortcut');
+        this.divCheck     = createDiv('menuItemCheck'    );
+        this.divIcon      = createDiv('menuItemIcon'     );
+        this.divName      = createDiv('menuItemName'     );
+        this.divExpand    = createDiv('menuItemExpand'   );
+        this.divShortcut  = createDiv('menuItemShortcut' );
 
-        this.divSeparator = createDiv('menuSeparator'   );
+        this.divSeparator = createDiv('menuSeparator'    );
 
 
         this.div.style.pointerEvents = this.separator ? 'none' : 'all';
@@ -97,13 +102,15 @@ class MenuItem
         this.divShortcut.innerHTML = this.shortcut;
 
     
+        
         if (!this.separator)
         {
-            this.div.appendChild(this.divCheck   );
-            this.div.appendChild(this.divIcon    );
-            this.div.appendChild(this.divName    );
-            this.div.appendChild(this.divExpand  );
-            this.div.appendChild(this.divShortcut);
+            this.div.appendChild(this.divHighlight);
+            this.div.appendChild(this.divCheck    );
+            this.div.appendChild(this.divIcon     );
+            this.div.appendChild(this.divName     );
+            this.div.appendChild(this.divExpand   );
+            this.div.appendChild(this.divShortcut );
         }
         else
             this.div.appendChild(this.divSeparator);
@@ -125,29 +132,99 @@ class MenuItem
 
 
 
-        this.div.addEventListener('pointerenter', () =>
+        // this.div.addEventListener('pointerenter', () =>
+        // {
+        //     if (this.enabled)
+        //     {
+        //         this.divHighlight.style.background = 'var(--figma-color-bg-brand)';
+
+        //         this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? 48 : 0) + 'px)';
+        //     }
+
+        //     if (this.childMenu)
+        //     {
+        //         if (!currentMenus.includes(this.childMenu))
+        //         {
+        //             hideAllMenusAfter(this.parentMenu);
+        //             this.childMenu.show(this.div, true);
+        //         }
+        //     }
+        //     else
+        //         hideAllMenusAfter(this.parentMenu);
+        // });
+    
+
+    
+        this.div.addEventListener('pointermove', e =>
         {
             if (this.enabled)
-                this.div.style.background = 'var(--figma-color-bg-brand)';
-
-            if (this.childMenu)
             {
-                if (!currentMenus.includes(this.childMenu))
+                this.divHighlight.style.background = 'var(--figma-color-bg-brand)';
+
+                if (   this.callback
+                    && this.childMenu)
                 {
-                    hideAllMenusAfter(this.parentMenu);
-                    this.childMenu.show(this.div, true);
+                    if (    e.clientX < this.div.offsetWidth - 23
+                        && !this.enteredDiv)
+                    {
+                        this.divHighlight.style.left  = 0;
+                        this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? 48 : 0) + 'px)';
+
+                        hideAllMenusAfter(this.parentMenu);
+
+                        this.enteredDiv    = true;
+                        this.enteredExpand = false;
+                    }
+                    else if ( e.clientX >= this.div.offsetWidth - 23
+                          && !this.enteredExpand)
+                    {
+                        this.divHighlight.style.left  = 'calc(100% - ' + (this.childMenu && this.callback ? 48 : 0) + 'px)';
+                        this.divHighlight.style.width = '48px';
+
+                        this.showChildMenu();
+
+                        this.enteredDiv    = false;
+                        this.enteredExpand = true;
+                    }
+                }
+                else if (!this.enteredDiv)
+                {
+                    this.divHighlight.style.left  = 0;
+                    this.divHighlight.style.width = '100%';
+
+                    this.showChildMenu();
+
+                    this.enteredDiv    = true;
+                    this.enteredExpand = false;
                 }
             }
-            else
-                hideAllMenusAfter(this.parentMenu);
         });
     
 
     
         this.div.addEventListener('pointerleave', () =>
         {
-            this.div.style.background = 'transparent';
+            this.divHighlight.style.background = 'transparent';
+
+            this.enteredDiv    = false;
+            this.enteredExpand = false;
         });
+    }
+
+
+
+    showChildMenu()
+    {
+        if (this.childMenu)
+        {
+            if (!currentMenus.includes(this.childMenu))
+            {
+                hideAllMenusAfter(this.parentMenu);
+                this.childMenu.show(this.div, true);
+            }
+        }
+        else
+            hideAllMenusAfter(this.parentMenu);
     }
 
 
