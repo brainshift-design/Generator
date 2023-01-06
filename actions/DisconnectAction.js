@@ -13,6 +13,7 @@ extends Action
     get output()     { return this.outputNode.outputFromId(this.outputId); }
     
     get inputNode()  { return nodeFromId(this.inputNodeId); }
+    get input()      { return this.inputNode.inputFromId(this.inputId); }
     
     
     oldActiveNodeIds = [];
@@ -43,10 +44,11 @@ extends Action
         this.newActiveNodeIds = [];
 
         this.saveOldActiveNodes();
+        disconnectAction_updateOldConnectionIndices(this, this.inputNodeId, this.inputId)
+
         this.removeConnection();        
 
         this.activateNewNodes();
-
         this.updateNodes(updateNodes);
 
         this.cleanup();
@@ -75,23 +77,8 @@ extends Action
 
     removeConnection()
     {
-        const input = this.inputNode.inputFromId(this.inputId);
-
-
-        for (const _conn of this.oldConnections)
-        {
-            const inputNode = nodeFromId(_conn.inputNodeId);
-
-            if (   inputNode.id == input.node.id
-                && inputNode.variableInputs
-                && strIsNum(_conn.inputId)
-                && _conn.inputId > this.inputId)
-                _conn.inputId = (parseInt(_conn.inputId) - 1).toString();
-        }
-
-
-        uiDeleteSavedConn(input.connection);
-        uiDisconnect(input);
+        uiDeleteSavedConn(this.input.connection);
+        uiDisconnect(this.input);
 
 
         this.output.updateSavedConnectionOrder(this.outputOrder, -1);
@@ -151,5 +138,22 @@ extends Action
 
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
+    }
+}
+
+
+
+function disconnectAction_updateOldConnectionIndices(act, inputNodeId, inputId)
+{
+    for (const _conn of act.oldConnections)
+    {
+        const inputNode = nodeFromId(_conn.inputNodeId);
+
+        if (   inputNode.id == inputNodeId
+            && inputNode.variableInputs
+            && strIsNum(_conn.inputId)
+            && strIsNum(inputId)
+            && _conn.inputId > inputId)
+            _conn.inputId = (parseInt(_conn.inputId) - 1).toString();
     }
 }

@@ -269,5 +269,5 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
 function connectAction_restoreCleanup(act)
 {
     act.oldOutputActiveNodeId = '';
-    act.inputActiveNodeIds = [];
+    act.inputActiveNodeIds    = [];
 }

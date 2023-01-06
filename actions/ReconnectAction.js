@@ -70,18 +70,19 @@ extends Action
 
 
 
-    do()
+    do(updateNodes)
     {
         this.newActiveNodeIds = [];
-        const updateNodes     = [];
 
-        //this.oldInputActiveNodeIds = getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id);
         connectAction_saveOutputActiveNodes(this);
         connectAction_saveInputActiveNodesAndValues(this);
-      reconnectAction_savePrevInputActiveNodesAndValues(this);
+        this.savePrevInputActiveNodesAndValues();
+
+        disconnectAction_updateOldConnectionIndices(this, this.inputNodeId, this.inputId)
+        //disconnectAction_updateOldConnectionIndices(this, this.prevInputNodeId, this.prevInputId)
 
         connectAction_removeOldOutputConnection(this);
-      reconnectAction_removePrevInputConnection(this);        
+        this.removePrevInputConnection();
 
         connectAction_makeNewConnection(this);
 
@@ -90,71 +91,71 @@ extends Action
 
         connectAction_updateNodes(this, updateNodes);
         connectAction_cleanup(this);
-
-        pushUpdate(this, updateNodes);
     }
 
 
 
-    undo()
+    undo(updateNodes)
     {
-        const updateNodes = [];
+        this.restorePrevConnection();
 
-        //connectAction_removeNewConnection(this);
-      reconnectAction_restorePrevConnection(this);    
-
-        //connectAction_restoreOldConnection(this);
         connectAction_restoreInputValues(this);
-      reconnectAction_restorePrevInputValues(this);
+        this.restorePrevInputValues();
 
         this.deactivateNewActiveNodes();
         connectAction_activateOldActiveNodes(this, updateNodes); 
 
         connectAction_restoreCleanup(this);
-
-        pushUpdate(this, updateNodes);
     }
-}
 
 
 
-function reconnectAction_savePrevInputActiveNodesAndValues(act)
-{
-    //act.prevInputValues        = act.prevInput.getValuesForUndo ? act.prevInput.getValuesForUndo() : [];
-    act.prevInputActiveNodeIds = getActiveNodesAfterNodeId(act.prevInputNodeId).map(n => n.id);
-}
-
-
-
-function reconnectAction_removePrevInputConnection(act)
-{
-    const prevInput = act.prevInputNode.inputFromId(act.prevInputId);
-
-    uiDeleteSavedConn(prevInput.connection);
-    uiDisconnect(prevInput);
-}
-
-
-
-function reconnectAction_restorePrevInputValues(act)
-{
-    for (const param of act.prevInputValues)
+    savePrevInputActiveNodesAndValues()
     {
-        act.prevInputNode.params[act.prevInputNode.params.findIndex(p => p.id == param[0])]
-            .setValue(param[1], true, true, false);
+        this.prevInputActiveNodeIds = getActiveNodesAfterNodeId(this.prevInputNodeId).map(n => n.id);
     }
-}
+    
+    
+    
+    removePrevInputConnection()
+    {
+        // for (const _conn of this.oldConnections)
+        // {
+        //     const inputNode = nodeFromId(_conn.inputNodeId);
 
+        //     if (   inputNode.id == this.prevInputNodeId
+        //         && inputNode.variableInputs
+        //         && strIsNum(_conn.inputId)
+        //         && _conn.inputId > this.prevInputId)
+        //         _conn.inputId = (parseInt(_conn.inputId) - 1).toString();
+        // }
 
-
-function reconnectAction_restorePrevConnection(act)
-{
-    act.output.updateSavedConnectionOrder(act.prevInputOutputOrder, +1);
-
-    const prevConn = uiVariableConnect(
-        act.outputNode,    act.outputId, 
-        act.prevInputNode, act.prevInputId,
-        act.prevInputOutputOrder);
-
-    uiSaveConn(prevConn);
-}
+        
+        uiDeleteSavedConn(this.prevInput.connection);
+        uiDisconnect(this.prevInput);
+    }
+    
+    
+    
+    restorePrevInputValues()
+    {
+        for (const param of this.prevInputValues)
+        {
+            this.prevInputNode.params[this.prevInputNode.params.findIndex(p => p.id == param[0])]
+                .setValue(param[1], true, true, false);
+        }
+    }
+    
+    
+    
+    restorePrevConnection()
+    {
+        this.output.updateSavedConnectionOrder(this.prevInputOutputOrder, +1);
+    
+        const prevConn = uiVariableConnect(
+            this.outputNode,    this.outputId, 
+            this.prevInputNode, this.prevInputId,
+            this.prevInputOutputOrder);
+    
+        uiSaveConn(prevConn);
+    }}
