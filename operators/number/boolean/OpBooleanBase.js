@@ -70,13 +70,17 @@ extends OperatorBase
     updateParams()
     {
         this.paramValue.enableControlText(false);
+        this.paramValue.control.text.style.fontStyle = settings.showBoolValues ? 'normal' : 'italic';
+        
 
         const v = Math.round(this.paramValue.value.value);
 
              if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
-        else if (settings.showBoolValues) this.paramValue.control.valueText = v == 0 ? 'false' : 'true';
+        else if (settings.showBoolValues) this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
         else                              this.paramValue.control.valueText = '';
-    
+
+        this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
+        
         this.paramValue.control.showBar = !this.isUnknown();
 
 

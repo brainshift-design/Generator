@@ -41,19 +41,27 @@ function evalNandInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(0);
+    const value = new NumberValue();
 
 
-    for (let i = 0; i < inputs.length; i++)
+    if (inputs.length > 0)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
+        value.value = val0.toNumber() != 0 ? 0 : 1;
 
-        if (val.toNumber() == 0)
-            value.value = 1;
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            const val = inputs[i].eval(parse).toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must belong to NUMBER_VALUE');
+
+            if (val.toNumber() == 0)
+                value.value = 1;
+        }
     }
 
 

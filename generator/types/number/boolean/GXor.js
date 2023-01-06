@@ -41,29 +41,42 @@ function evalXorInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(0);
+    const value = new NumberValue();
 
 
-    let flipped = 0;
+    let flipped;
 
-    for (let i = 0; i < inputs.length; i++)
+    if (inputs.length > 0)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
 
-        if (val.toNumber() != 0)
+        flipped = val0.toNumber() != 0;
+
+
+        for (let i = 1; i < inputs.length; i++)
         {
-            value.value = 1;
-            flipped++;
+            const val = inputs[i].eval(parse).toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            if (val.toNumber() != 0)
+            {
+                value.value    = val.value;
+                value.decimals = val.decimals;
+
+                flipped++;
+            }
         }
     }
 
 
     if (   value.value != 0
-        && flipped == inputs.length)
+        && flipped > 1)
         value.value = 0;
 
 

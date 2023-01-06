@@ -6,7 +6,7 @@ extends GValue
 
 
 
-    constructor(val, dec = 0)
+    constructor(val = Number.NaN, dec = 0)
     {
         super(NUMBER_VALUE);
 

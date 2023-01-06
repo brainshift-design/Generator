@@ -41,19 +41,28 @@ function evalAndInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(1);
+    const value = new NumberValue();
 
 
-    for (let i = 0; i < inputs.length; i++)
+    if (inputs.length > 0)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
 
-        if (val.toNumber() == 0)
-            value.value = 0;
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            const val = inputs[i].eval(parse).toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value    = Math.min(value.value,    val.value);
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
     }
 
 

@@ -5682,6 +5682,8 @@ const NAN_DISPLAY         = '–';
 const UNKNOWN_CHAR        = '?';
 const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
 
+const TRUE_DISPLAY        = '✓';//'true';
+const FALSE_DISPLAY       = '❌';//'false';
 
 const LIST_VALUE          = 'LIST#';
 const LIST                = 'LIST';
@@ -6693,7 +6695,7 @@ extends GValue
 
 
 
-    constructor(val, dec = 0)
+    constructor(val = Number.NaN, dec = 0)
     {
         super(NUMBER_VALUE);
 
@@ -9346,19 +9348,27 @@ function evalNandInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(0);
+    const value = new NumberValue();
 
 
-    for (let i = 0; i < inputs.length; i++)
+    if (inputs.length > 0)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
+        value.value = val0.toNumber() != 0 ? 0 : 1;
 
-        if (val.toNumber() == 0)
-            value.value = 1;
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            const val = inputs[i].eval(parse).toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must belong to NUMBER_VALUE');
+
+            if (val.toNumber() == 0)
+                value.value = 1;
+        }
     }
 
 
@@ -9410,19 +9420,28 @@ function evalAndInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(1);
+    const value = new NumberValue();
 
 
-    for (let i = 0; i < inputs.length; i++)
+    if (inputs.length > 0)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
 
-        if (val.toNumber() == 0)
-            value.value = 0;
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            const val = inputs[i].eval(parse).toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value    = Math.min(value.value,    val.value);
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
     }
 
 
@@ -9473,25 +9492,33 @@ function evalOrInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(0);
+    const value = new NumberValue();
 
 
-    for (let i = 0; i < inputs.length; i++)
+    if (inputs.length > 0)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
 
-        if (val.toNumber() != 0)
-            value.value = 1;
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            const val = inputs[i].eval(parse).toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value    = Math.max(value.value,    val.value);
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
     }
 
 
     return value;
 }
-
 
 
 class GXor
@@ -9537,29 +9564,42 @@ function evalXorInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(0);
+    const value = new NumberValue();
 
 
-    let flipped = 0;
+    let flipped;
 
-    for (let i = 0; i < inputs.length; i++)
+    if (inputs.length > 0)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
 
-        if (val.toNumber() != 0)
+        flipped = val0.toNumber() != 0;
+
+
+        for (let i = 1; i < inputs.length; i++)
         {
-            value.value = 1;
-            flipped++;
+            const val = inputs[i].eval(parse).toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            if (val.toNumber() != 0)
+            {
+                value.value    = val.value;
+                value.decimals = val.decimals;
+
+                flipped++;
+            }
         }
     }
 
 
     if (   value.value != 0
-        && flipped == inputs.length)
+        && flipped > 1)
         value.value = 0;
 
 
@@ -22560,6 +22600,8 @@ const NAN_DISPLAY         = '–';
 const UNKNOWN_CHAR        = '?';
 const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
 
+const TRUE_DISPLAY        = '✓';//'true';
+const FALSE_DISPLAY       = '❌';//'false';
 
 const LIST_VALUE          = 'LIST#';
 const LIST                = 'LIST';
@@ -23571,7 +23613,7 @@ extends GValue
 
 
 
-    constructor(val, dec = 0)
+    constructor(val = Number.NaN, dec = 0)
     {
         super(NUMBER_VALUE);
 
@@ -26224,19 +26266,27 @@ function evalNandInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(0);
+    const value = new NumberValue();
 
 
-    for (let i = 0; i < inputs.length; i++)
+    if (inputs.length > 0)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
+        value.value = val0.toNumber() != 0 ? 0 : 1;
 
-        if (val.toNumber() == 0)
-            value.value = 1;
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            const val = inputs[i].eval(parse).toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must belong to NUMBER_VALUE');
+
+            if (val.toNumber() == 0)
+                value.value = 1;
+        }
     }
 
 
@@ -26288,19 +26338,28 @@ function evalAndInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(1);
+    const value = new NumberValue();
 
 
-    for (let i = 0; i < inputs.length; i++)
+    if (inputs.length > 0)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
 
-        if (val.toNumber() == 0)
-            value.value = 0;
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            const val = inputs[i].eval(parse).toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value    = Math.min(value.value,    val.value);
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
     }
 
 
@@ -26351,25 +26410,33 @@ function evalOrInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(0);
+    const value = new NumberValue();
 
 
-    for (let i = 0; i < inputs.length; i++)
+    if (inputs.length > 0)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
 
-        if (val.toNumber() != 0)
-            value.value = 1;
+
+        for (let i = 1; i < inputs.length; i++)
+        {
+            const val = inputs[i].eval(parse).toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            value.value    = Math.max(value.value,    val.value);
+            value.decimals = Math.max(value.decimals, val.decimals);
+        }
     }
 
 
     return value;
 }
-
 
 
 class GXor
@@ -26415,29 +26482,42 @@ function evalXorInputs(inputs, parse)
         return NumberValue.NaN;
 
 
-    const value = new NumberValue(0);
+    const value = new NumberValue();
 
 
-    let flipped = 0;
+    let flipped;
 
-    for (let i = 0; i < inputs.length; i++)
+    if (inputs.length > 0)
     {
-        const val = inputs[i].eval(parse).toValue();
+        const val0 = inputs[0].eval(parse).toValue();
 
-        console.assert(
-            val.type == NUMBER_VALUE, 
-            'val.type must belong to NUMBER_VALUE');
+        value.value    = val0.value;
+        value.decimals = val0.decimals;
 
-        if (val.toNumber() != 0)
+        flipped = val0.toNumber() != 0;
+
+
+        for (let i = 1; i < inputs.length; i++)
         {
-            value.value = 1;
-            flipped++;
+            const val = inputs[i].eval(parse).toValue();
+
+            console.assert(
+                val.type == NUMBER_VALUE, 
+                'val.type must be NUMBER_VALUE');
+                
+            if (val.toNumber() != 0)
+            {
+                value.value    = val.value;
+                value.decimals = val.decimals;
+
+                flipped++;
+            }
         }
     }
 
 
     if (   value.value != 0
-        && flipped == inputs.length)
+        && flipped > 1)
         value.value = 0;
 
 
@@ -30602,7 +30682,7 @@ function initGeneratorMenus()
     menuMainPreferences.addItems([
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',            {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                       }}),
         menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces',          {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
-        menuItemShowBoolValues        = new MenuItem('Show boolean values as true/false', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues       ); updateMenuItemShowBoolValues();       }}),
+        menuItemShowBoolValues        = new MenuItem('Show boolean values as ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues       ); updateMenuItemShowBoolValues();       }}),
         menuItemShowNodeId            = new MenuItem('Show node IDs',
         {
             checkCallback: () => settings.showNodeId, 
@@ -43603,15 +43683,19 @@ extends OperatorBase
     updateParams()
     {
         this.paramOperation.enableControlText(true);
-        this.paramValue    .enableControlText(false);
+
+        this.paramValue.enableControlText(false);
+        this.paramValue.control.text.style.fontStyle = settings.showBoolValues ? 'normal' : 'italic';
 
         const v = Math.round(this.paramValue.value.value);
 
-        if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
-        else if (settings.showBoolValues) this.paramValue.control.valueText = v == 0 ? 'false' : 'true';
+             if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
+        else if (settings.showBoolValues) this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
         else                              this.paramValue.control.valueText = '';
 
-        this.paramValue.control.showBar   = !this.isUnknown();
+        this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
+
+        this.paramValue.control.showBar = !this.isUnknown();
 
 
         for (const param of this.params)
@@ -43707,13 +43791,17 @@ extends OperatorBase
     updateParams()
     {
         this.paramValue.enableControlText(false);
+        this.paramValue.control.text.style.fontStyle = settings.showBoolValues ? 'normal' : 'italic';
+        
 
         const v = Math.round(this.paramValue.value.value);
 
              if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
-        else if (settings.showBoolValues) this.paramValue.control.valueText = v == 0 ? 'false' : 'true';
+        else if (settings.showBoolValues) this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
         else                              this.paramValue.control.valueText = '';
-    
+
+        this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
+        
         this.paramValue.control.showBar = !this.isUnknown();
 
 

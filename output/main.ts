@@ -191,6 +191,8 @@ const NAN_DISPLAY         = '–';
 const UNKNOWN_CHAR        = '?';
 const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
 
+const TRUE_DISPLAY        = '✓';//'true';
+const FALSE_DISPLAY       = '❌';//'false';
 
 const LIST_VALUE          = 'LIST#';
 const LIST                = 'LIST';
