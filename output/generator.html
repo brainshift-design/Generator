@@ -3419,6 +3419,40 @@ const NUMBER_GREATER          = 'GT';
 const NUMBER_GREATER_OR_EQUAL = 'GE';
 
 
+const MATH_TYPES =
+[
+    NUMBER_MATH,
+    NUMBER_ADD,
+    NUMBER_SUBTRACT,
+    NUMBER_MULTIPLY,
+    NUMBER_DIVIDE,
+    NUMBER_MODULO,
+    NUMBER_EXPONENT
+];
+
+
+const BOOLEAN_TYPES =
+[
+    NUMBER_BOOLEAN,
+    NUMBER_NOT,
+    NUMBER_AND,
+    NUMBER_OR,
+    NUMBER_XOR
+];
+
+
+const CONDITION_TYPES =
+[
+    NUMBER_CONDITION,
+    NUMBER_EQUAL,
+    NUMBER_NOT_EQUAL,
+    NUMBER_LESS,
+    NUMBER_LESS_OR_EQUAL,
+    NUMBER_GREATER,
+    NUMBER_GREATER_OR_EQUAL
+];
+
+
 const NUMBER_TYPES =
 [
     NUMBER_VALUE,
@@ -3428,28 +3462,10 @@ const NUMBER_TYPES =
     NUMBER_SERIES,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
-    
-    NUMBER_MATH,
-    NUMBER_ADD,
-    NUMBER_SUBTRACT,
-    NUMBER_MULTIPLY,
-    NUMBER_DIVIDE,
-    NUMBER_MODULO,
-    NUMBER_EXPONENT,
 
-    NUMBER_BOOLEAN,
-    NUMBER_NOT,
-    NUMBER_AND,
-    NUMBER_OR,
-    NUMBER_XOR,
-
-    NUMBER_CONDITION,
-    NUMBER_EQUAL,
-    NUMBER_NOT_EQUAL,
-    NUMBER_LESS,
-    NUMBER_LESS_OR_EQUAL,
-    NUMBER_GREATER,
-    NUMBER_GREATER_OR_EQUAL
+    ...MATH_TYPES,
+    ...BOOLEAN_TYPES,
+    ...CONDITION_TYPES
 ];
 
 
@@ -10340,6 +10356,7 @@ const settings =
 
     autoConnectNewNodes:   true,
     includeLxxColorSpaces: false,
+    showBoolValues:        true,
     showNodeId:            false, // instead of name
     
     logMessages:           false,
@@ -10367,6 +10384,7 @@ function updateSetting(settingName, value)
 
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
+        case 'showBoolValues':        settings.showBoolValues        = value;  break;
         case 'showNodeId':            settings.showNodeId            = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
@@ -10394,6 +10412,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
+        case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
@@ -10433,6 +10452,7 @@ function updateSettingsMenus()
 
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
+    menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
@@ -10460,6 +10480,15 @@ function updateMenuItemIncludeLxxColorSpace()
 
 
 
+function updateMenuItemShowBoolValues()
+{
+    graph.nodes
+        .filter(n => BOOLEAN_TYPES.includes(n.type))
+        .forEach(n => n.updateNode());
+}
+
+
+
 function loadLocalSettings()
 {
     uiGetLocalData('dataMode'             );
@@ -10467,6 +10496,7 @@ function loadLocalSettings()
 
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
+    uiGetLocalData('showBoolValues'       );
     uiGetLocalData('showNodeId'           );
     
     uiGetLocalData('logMessages'          );

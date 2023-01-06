@@ -37,8 +37,8 @@ function uiReturnFigGetLocalData(msg)
 
         case 'autoConnectNewNodes':
         case 'includeLxxColorSpaces':
+        case 'showBoolValues':
         case 'showNodeId':       
-        //case 'showWires':        
 
         case 'logMessages':      
         case 'logActions':       

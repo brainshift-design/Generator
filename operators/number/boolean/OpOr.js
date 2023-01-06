@@ -1,8 +1,8 @@
 class   OpOr
-extends OpArithmetic
+extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_OR, 'or', 'V');
+        super(NUMBER_OR, 'or');
     }
 }

@@ -1,8 +1,8 @@
 class   OpAnd
-extends OpArithmetic
+extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_AND, 'and', 'Λ');
+        super(NUMBER_AND, 'and');
     }
 }

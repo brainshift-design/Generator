@@ -5754,6 +5754,40 @@ const NUMBER_GREATER          = 'GT';
 const NUMBER_GREATER_OR_EQUAL = 'GE';
 
 
+const MATH_TYPES =
+[
+    NUMBER_MATH,
+    NUMBER_ADD,
+    NUMBER_SUBTRACT,
+    NUMBER_MULTIPLY,
+    NUMBER_DIVIDE,
+    NUMBER_MODULO,
+    NUMBER_EXPONENT
+];
+
+
+const BOOLEAN_TYPES =
+[
+    NUMBER_BOOLEAN,
+    NUMBER_NOT,
+    NUMBER_AND,
+    NUMBER_OR,
+    NUMBER_XOR
+];
+
+
+const CONDITION_TYPES =
+[
+    NUMBER_CONDITION,
+    NUMBER_EQUAL,
+    NUMBER_NOT_EQUAL,
+    NUMBER_LESS,
+    NUMBER_LESS_OR_EQUAL,
+    NUMBER_GREATER,
+    NUMBER_GREATER_OR_EQUAL
+];
+
+
 const NUMBER_TYPES =
 [
     NUMBER_VALUE,
@@ -5763,28 +5797,10 @@ const NUMBER_TYPES =
     NUMBER_SERIES,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
-    
-    NUMBER_MATH,
-    NUMBER_ADD,
-    NUMBER_SUBTRACT,
-    NUMBER_MULTIPLY,
-    NUMBER_DIVIDE,
-    NUMBER_MODULO,
-    NUMBER_EXPONENT,
 
-    NUMBER_BOOLEAN,
-    NUMBER_NOT,
-    NUMBER_AND,
-    NUMBER_OR,
-    NUMBER_XOR,
-
-    NUMBER_CONDITION,
-    NUMBER_EQUAL,
-    NUMBER_NOT_EQUAL,
-    NUMBER_LESS,
-    NUMBER_LESS_OR_EQUAL,
-    NUMBER_GREATER,
-    NUMBER_GREATER_OR_EQUAL
+    ...MATH_TYPES,
+    ...BOOLEAN_TYPES,
+    ...CONDITION_TYPES
 ];
 
 
@@ -12675,6 +12691,7 @@ const settings =
 
     autoConnectNewNodes:   true,
     includeLxxColorSpaces: false,
+    showBoolValues:        true,
     showNodeId:            false, // instead of name
     
     logMessages:           false,
@@ -12702,6 +12719,7 @@ function updateSetting(settingName, value)
 
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
+        case 'showBoolValues':        settings.showBoolValues        = value;  break;
         case 'showNodeId':            settings.showNodeId            = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
@@ -12729,6 +12747,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
+        case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
@@ -12768,6 +12787,7 @@ function updateSettingsMenus()
 
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
+    menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
@@ -12795,6 +12815,15 @@ function updateMenuItemIncludeLxxColorSpace()
 
 
 
+function updateMenuItemShowBoolValues()
+{
+    graph.nodes
+        .filter(n => BOOLEAN_TYPES.includes(n.type))
+        .forEach(n => n.updateNode());
+}
+
+
+
 function loadLocalSettings()
 {
     uiGetLocalData('dataMode'             );
@@ -12802,6 +12831,7 @@ function loadLocalSettings()
 
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
+    uiGetLocalData('showBoolValues'       );
     uiGetLocalData('showNodeId'           );
     
     uiGetLocalData('logMessages'          );
@@ -22602,6 +22632,40 @@ const NUMBER_GREATER          = 'GT';
 const NUMBER_GREATER_OR_EQUAL = 'GE';
 
 
+const MATH_TYPES =
+[
+    NUMBER_MATH,
+    NUMBER_ADD,
+    NUMBER_SUBTRACT,
+    NUMBER_MULTIPLY,
+    NUMBER_DIVIDE,
+    NUMBER_MODULO,
+    NUMBER_EXPONENT
+];
+
+
+const BOOLEAN_TYPES =
+[
+    NUMBER_BOOLEAN,
+    NUMBER_NOT,
+    NUMBER_AND,
+    NUMBER_OR,
+    NUMBER_XOR
+];
+
+
+const CONDITION_TYPES =
+[
+    NUMBER_CONDITION,
+    NUMBER_EQUAL,
+    NUMBER_NOT_EQUAL,
+    NUMBER_LESS,
+    NUMBER_LESS_OR_EQUAL,
+    NUMBER_GREATER,
+    NUMBER_GREATER_OR_EQUAL
+];
+
+
 const NUMBER_TYPES =
 [
     NUMBER_VALUE,
@@ -22611,28 +22675,10 @@ const NUMBER_TYPES =
     NUMBER_SERIES,
     NUMBER_RANDOM,
     NUMBER_INTERPOLATE,
-    
-    NUMBER_MATH,
-    NUMBER_ADD,
-    NUMBER_SUBTRACT,
-    NUMBER_MULTIPLY,
-    NUMBER_DIVIDE,
-    NUMBER_MODULO,
-    NUMBER_EXPONENT,
 
-    NUMBER_BOOLEAN,
-    NUMBER_NOT,
-    NUMBER_AND,
-    NUMBER_OR,
-    NUMBER_XOR,
-
-    NUMBER_CONDITION,
-    NUMBER_EQUAL,
-    NUMBER_NOT_EQUAL,
-    NUMBER_LESS,
-    NUMBER_LESS_OR_EQUAL,
-    NUMBER_GREATER,
-    NUMBER_GREATER_OR_EQUAL
+    ...MATH_TYPES,
+    ...BOOLEAN_TYPES,
+    ...CONDITION_TYPES
 ];
 
 
@@ -29523,6 +29569,7 @@ const settings =
 
     autoConnectNewNodes:   true,
     includeLxxColorSpaces: false,
+    showBoolValues:        true,
     showNodeId:            false, // instead of name
     
     logMessages:           false,
@@ -29550,6 +29597,7 @@ function updateSetting(settingName, value)
 
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
+        case 'showBoolValues':        settings.showBoolValues        = value;  break;
         case 'showNodeId':            settings.showNodeId            = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
@@ -29577,6 +29625,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
+        case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
@@ -29616,6 +29665,7 @@ function updateSettingsMenus()
 
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
+    menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
@@ -29643,6 +29693,15 @@ function updateMenuItemIncludeLxxColorSpace()
 
 
 
+function updateMenuItemShowBoolValues()
+{
+    graph.nodes
+        .filter(n => BOOLEAN_TYPES.includes(n.type))
+        .forEach(n => n.updateNode());
+}
+
+
+
 function loadLocalSettings()
 {
     uiGetLocalData('dataMode'             );
@@ -29650,6 +29709,7 @@ function loadLocalSettings()
 
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
+    uiGetLocalData('showBoolValues'       );
     uiGetLocalData('showNodeId'           );
     
     uiGetLocalData('logMessages'          );
@@ -30493,6 +30553,7 @@ var menuConnDataConns;
 
 var menuItemAutoConnectNewNodes;
 var menuItemIncludeLxxColorSpaces;
+var menuItemShowBoolValues;
 var menuItemShowNodeId;
 //var menuItemShowWires;
 
@@ -30539,8 +30600,9 @@ function initGeneratorMenus()
 {
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
-        menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',   {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                       }}),
-        menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces', {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
+        menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',            {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                       }}),
+        menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces',          {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
+        menuItemShowBoolValues        = new MenuItem('Show boolean values as true/false', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues       ); updateMenuItemShowBoolValues();       }}),
         menuItemShowNodeId            = new MenuItem('Show node IDs',
         {
             checkCallback: () => settings.showNodeId, 
@@ -30566,7 +30628,7 @@ function initGeneratorMenus()
         menuItemDataMode         = new MenuItem('Restart in debug mode',      {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        ), setting: true}),
         //                         new MenuItem('Delete connections to...',   {callback:      () => showDeleteConnectionsDialog()}),
                                    new MenuItem('',                           {separator: true}),
-                                   new MenuItem('Log all connection keys',   {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+                                   new MenuItem('Log all connection keys',    {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
                                    new MenuItem('',                           {separator: true }),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',          {checkCallback: () => settings.logRequests        , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     ), setting: true}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',            {checkCallback: () => settings.logValueUpdates    , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates ), setting: true}),
@@ -43268,11 +43330,6 @@ extends OperatorBase
         super.updateHeaderLabel();
 
 
-        // this.div   .style.borderRadius = '4px';        
-        // this.inner .style.borderRadius = '4px';        
-        // this.header.style.borderRadius = '4px';        
-
-
         const colBack = rgbHeaderFromType(this.type, this.active);
         const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
 
@@ -43481,7 +43538,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_BOOLEAN, 'bool', 70);
+        super(NUMBER_BOOLEAN, 'bool', 100);
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -43548,10 +43605,17 @@ extends OperatorBase
         this.paramOperation.enableControlText(true);
         this.paramValue    .enableControlText(false);
 
-        this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        const v = Math.round(this.paramValue.value.value);
+
+        if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
+        else if (settings.showBoolValues) this.paramValue.control.valueText = v == 0 ? 'false' : 'true';
+        else                              this.paramValue.control.valueText = '';
+
         this.paramValue.control.showBar   = !this.isUnknown();
 
-        super.updateParams();
+
+        for (const param of this.params)
+            param.updateControls();
     }
 }
 
@@ -43571,266 +43635,152 @@ function OpList_onDisconnectInput(node, input)
 }
 
 
-// class   OpBooleanBase
-// extends OperatorBase
-// {
-//     paramValue;
+class   OpBooleanBase
+extends OperatorBase
+{
+    paramValue;
     
-//     _symbol;
-//     _showOnlySymbol;
 
 
-//     constructor(type, shortName, symbol)
-//     {
-//         super(type, shortName, 100);
+    constructor(type, shortName)
+    {
+        super(type, shortName, 100);
 
         
-//         this.variableInputs   = true;
-//         this.alwaysLoadParams = true;
-
-//         this._showOnlySymbol  = true;
+        this.variableInputs   = true;
+        this.alwaysLoadParams = true;
 
 
-//         this.addNewInput();
-//         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        this.addNewInput();
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-//         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
-
-
-//         this._symbol           = createDiv('operatorSymbol');
-//         this._symbol.innerHTML = symbol;
-//         this._symbol.clicked0  = false;
-        
-//         this._symbol.addEventListener('pointerenter', () => this._symbol.style.opacity = this._showOnlySymbol ? 1 : 0.65);
-//         this._symbol.addEventListener('pointerleave', () => this._symbol.style.opacity = 1);
-
-//         this._symbol.addEventListener('pointerdown', e => 
-//         { 
-//             if (e.button == 0)
-//             {
-//                 if (this._symbol.clicked0) // finish double click on small symbol
-//                 {
-//                     this._symbol.clicked0      = false;
-//                     this._symbol.style.opacity = 1;
-
-//                     actionManager.do(new ToggleOperatorSymbolAction(this.id, true));
-
-//                     this.header.ignoreDoubleClick = true;
-//                 }
-//                 else if (!this._showOnlySymbol) // start double cick on small symbol
-//                 {
-//                     this._symbol.clicked0 = true;
-//                     setTimeout(() => this._symbol.clicked0 = false, 250); // seems like a good default guess
-//                 }
-//             }
-//         });
-
-//         this.header.appendChild(this._symbol);
-
-        
-//         this.textbox.addEventListener('finishedit', e => 
-//         {
-//             if (this._showOnlySymbol)
-//                 actionManager.do(new ToggleOperatorSymbolAction(this.id, false), e.detail.value != e.detail.oldValue);
-//         });
-//     }
+        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
+    }
     
     
     
-//     addNewInput()
-//     {
-//         const newInput = new Input(NUMBER_TYPES);
-//         newInput.isNew = true;
+    addNewInput()
+    {
+        const newInput = new Input(NUMBER_TYPES);
+        newInput.isNew = true;
 
-//         newInput.addEventListener('connect',    e => { OpBooleanBase_onConnectInput(this); e.detail.input.isNew = false; });
-//         newInput.addEventListener('disconnect', e => OpBooleanBase_onDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { OpArithmetic_onConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => OpArithmetic_onDisconnectInput(this, e.detail.input));
 
-//         this.addInput(newInput);
+        this.addInput(newInput);
 
-//         return newInput;
-//     }
-
-
-
-//     output_genRequest(gen)
-//     {
-//         // 'this' is the output
-
-//         gen.scope.push({
-//             nodeId:  this.node.id, 
-//             paramId: '' });
+        return newInput;
+    }
 
 
-//         const [request, ignore] = this.node.genRequestStart(gen);
-//         if (ignore) return request;
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: '' });
+
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
             
 
-//         const connectedInputs = this.node.inputs.filter(i => i.connected);
+        const connectedInputs = this.node.inputs.filter(i => i.connected);
 
 
-//         request.push(connectedInputs.length); // utility values like param count are stored as numbers
+        request.push(connectedInputs.length); // utility values like param count are stored as numbers
         
-//         connectedInputs.forEach(input => 
-//             request.push(...pushInputOrParam(input, gen)));
+        connectedInputs.forEach(input => 
+            request.push(...pushInputOrParam(input, gen)));
 
         
-//         gen.scope.pop();
-//         pushUnique(gen.passedNodes, this.node);
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
         
-//         return request;
-//     }
+        return request;
+    }
 
 
 
-//     updateParams()
-//     {
-//         super.updateParams();
+    updateParams()
+    {
+        this.paramValue.enableControlText(false);
 
-//         this.paramValue.enableControlText(false);
-        
-//         this.paramValue.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
-//         this.paramValue.control.showBar   = !this.isUnknown();
-//     }
+        const v = Math.round(this.paramValue.value.value);
 
-
-
-//     updateHeaderLabel()
-//     {
-//         // console.log('OpArithmetic.updateHeader()');
-        
-//         super.updateHeaderLabel();
+             if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
+        else if (settings.showBoolValues) this.paramValue.control.valueText = v == 0 ? 'false' : 'true';
+        else                              this.paramValue.control.valueText = '';
+    
+        this.paramValue.control.showBar = !this.isUnknown();
 
 
-//         // this.div   .style.borderRadius = '4px';        
-//         // this.inner .style.borderRadius = '4px';        
-//         // this.header.style.borderRadius = '4px';        
-
-
-//         const colBack = rgbHeaderFromType(this.type, this.active);
-//         const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
-
-//         this._symbol.style.fontSize   = this._showOnlySymbol ? 17 : 12;
-//         this._symbol.style.fontWeight = this.active ? 'bold' : 'normal';
-//         this._symbol.style.color      = rgb2style(colText);
-//         this._symbol.style.left       = 'calc(50% + 1px)';
-        
-
-//         const padding         = this.header.connectionPadding;
-//         const connectedInputs = this.headerInputs.filter(i => i.connected);
-
-
-//         if (isEmpty(connectedInputs))
-//         {
-//             if (this._showOnlySymbol)
-//             {
-//                 this._symbol.style.top = 2;
-//             }
-//             else
-//             {
-//                 this._symbol.style.top = -1;
-//                 this.label  .style.top = 'calc(50% + 6px)';
-//             }
-//         }
-//         else
-//         {
-//             const [connectedInputY, connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
-
-//             if (this._showOnlySymbol)
-//             {
-//                 this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 9;
-//             }
-//             else
-//             {
-//                 this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 6;
-//                 this.label  .style.top = 'calc(50% + 7px)';
-//             }
-//         }
-        
-
-//         this.label.style.visibility = this._showOnlySymbol ? 'hidden'  : 'visible';
-//     }
+        for (const param of this.params)
+            param.updateControls();
+    }
 
 
 
-//     toJsonBase(nTab = 0) 
-//     {
-//         let   pos = ' '.repeat(nTab);
-//         const tab = TAB;
-
-//         return super.toJsonBase(nTab)
-//              + ',\n' + pos + tab + '"onlySymbol": "' + boolToString(this._showOnlySymbol) + '"';
-//     }
+    paramsToJson(nTab = 0)
+    {
+        return '';
+    }
+}
 
 
 
-//     paramsToJson(nTab = 0)
-//     {
-//         return '';
-//     }
+function OpArithmetic_onConnectInput(node)
+{
+    node.addNewInput();
+}
 
 
 
-//     loadParams(_node)
-//     {
-//         if (_node.onlySymbol != undefined)
-//             this._showOnlySymbol = isTrue(_node.onlySymbol);
-
-//         super.loadParams(_node);
-//     }
-// }
-
-
-
-// function OpBooleanBase_onConnectInput(node)
-// {
-//     node.addNewInput();
-// }
-
-
-
-// function OpBooleanBase_onDisconnectInput(node, input)
-// {
-//     removeFromArray(node.inputs, input);
-//     node.inputControls.removeChild(input.div);
-// }
+function OpArithmetic_onDisconnectInput(node, input)
+{
+    removeFromArray(node.inputs, input);
+    node.inputControls.removeChild(input.div);
+}
 
 
 class   OpNot
-extends OpArithmetic
+extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_NOT, 'not', '¬');
+        super(NUMBER_NOT, 'not');
     }
 }
 
 
 class   OpAnd
-extends OpArithmetic
+extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_AND, 'and', 'Λ');
+        super(NUMBER_AND, 'and');
     }
 }
 
 
 class   OpOr
-extends OpArithmetic
+extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_OR, 'or', 'V');
+        super(NUMBER_OR, 'or');
     }
 }
 
 
 class   OpXor
-extends OpArithmetic
+extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_XOR, 'xor', '∅');
+        super(NUMBER_XOR, 'xor');
     }
 }
 
@@ -51156,8 +51106,8 @@ function uiReturnFigGetLocalData(msg)
 
         case 'autoConnectNewNodes':
         case 'includeLxxColorSpaces':
+        case 'showBoolValues':
         case 'showNodeId':       
-        //case 'showWires':        
 
         case 'logMessages':      
         case 'logActions':       

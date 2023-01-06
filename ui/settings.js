@@ -5,6 +5,7 @@ const settings =
 
     autoConnectNewNodes:   true,
     includeLxxColorSpaces: false,
+    showBoolValues:        true,
     showNodeId:            false, // instead of name
     
     logMessages:           false,
@@ -32,6 +33,7 @@ function updateSetting(settingName, value)
 
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
+        case 'showBoolValues':        settings.showBoolValues        = value;  break;
         case 'showNodeId':            settings.showNodeId            = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
@@ -59,6 +61,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
 
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
+        case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
@@ -98,6 +101,7 @@ function updateSettingsMenus()
 
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
+    menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
@@ -125,6 +129,15 @@ function updateMenuItemIncludeLxxColorSpace()
 
 
 
+function updateMenuItemShowBoolValues()
+{
+    graph.nodes
+        .filter(n => BOOLEAN_TYPES.includes(n.type))
+        .forEach(n => n.updateNode());
+}
+
+
+
 function loadLocalSettings()
 {
     uiGetLocalData('dataMode'             );
@@ -132,6 +145,7 @@ function loadLocalSettings()
 
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
+    uiGetLocalData('showBoolValues'       );
     uiGetLocalData('showNodeId'           );
     
     uiGetLocalData('logMessages'          );

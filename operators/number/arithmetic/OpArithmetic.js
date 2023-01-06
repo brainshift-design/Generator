@@ -128,11 +128,6 @@ extends OperatorBase
         super.updateHeaderLabel();
 
 
-        // this.div   .style.borderRadius = '4px';        
-        // this.inner .style.borderRadius = '4px';        
-        // this.header.style.borderRadius = '4px';        
-
-
         const colBack = rgbHeaderFromType(this.type, this.active);
         const colText = isDark(colBack) ? [1, 1, 1] : [0, 0, 0];
 

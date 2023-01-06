@@ -1,8 +1,8 @@
 class   OpXor
-extends OpArithmetic
+extends OpBooleanBase
 {
     constructor()
     {
-        super(NUMBER_XOR, 'xor', '∅');
+        super(NUMBER_XOR, 'xor');
     }
 }

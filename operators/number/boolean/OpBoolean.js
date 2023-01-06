@@ -8,7 +8,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_BOOLEAN, 'bool', 70);
+        super(NUMBER_BOOLEAN, 'bool', 100);
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -75,10 +75,17 @@ extends OperatorBase
         this.paramOperation.enableControlText(true);
         this.paramValue    .enableControlText(false);
 
-        this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
+        const v = Math.round(this.paramValue.value.value);
+
+        if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
+        else if (settings.showBoolValues) this.paramValue.control.valueText = v == 0 ? 'false' : 'true';
+        else                              this.paramValue.control.valueText = '';
+
         this.paramValue.control.showBar   = !this.isUnknown();
 
-        super.updateParams();
+
+        for (const param of this.params)
+            param.updateControls();
     }
 }
 
