@@ -226,13 +226,14 @@ function initGeneratorMenus()
         new MenuItem('',               {separator: true}),
         new MenuItem('Items',          {icon: iconItems,  callback: e => actionManager.do(getCreateNodeAction(ITEMS,  btnNumber.div, e.shiftKey))}),
         new MenuItem('Select',         {icon: iconSelect, callback: e => actionManager.do(getCreateNodeAction(SELECT, btnNumber.div, e.shiftKey))}),
-        new MenuItem('Pass condition', {icon: iconPass,   callback: e => actionManager.do(getCreateNodeAction(PASS,   btnNumber.div, e.shiftKey))}),
         new MenuItem('',               {separator: true}),
-      //new MenuItem('Start',          {icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,  btnNumber.div, e.shiftKey))}),
+        //new MenuItem('Start',          {icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,  btnNumber.div, e.shiftKey))}),
         new MenuItem('Repeat',         {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT, btnNumber.div, e.shiftKey))}),
         new MenuItem('',               {separator: true}),
         new MenuItem('Cache',          {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,  btnNumber.div, e.shiftKey))}),
-        new MenuItem('Copy',           {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,   btnNumber.div, e.shiftKey))})]);
+        new MenuItem('Copy',           {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,   btnNumber.div, e.shiftKey))}),
+        new MenuItem('',               {separator: true}),
+        new MenuItem('Pass condition', {icon: iconPass,   callback: e => actionManager.do(getCreateNodeAction(PASS,   btnNumber.div, e.shiftKey))})]);
     
     
     menuMath = new Menu('Math nodes', true, false);
@@ -296,7 +297,7 @@ function initGeneratorMenus()
         new MenuItem('Web contrast',      {icon: iconColorContrast   , callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, e.shiftKey))}),
         new MenuItem('Colorblind',        {icon: iconColorblind      , callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, e.shiftKey))}),
         new MenuItem('',                  {separator: true}),
-        new MenuItem('Color interpolate', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, e.shiftKey))})]);
+        new MenuItem('Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, e.shiftKey))})]);
     
     
     menuStyle = new Menu('Style nodes', true, false);

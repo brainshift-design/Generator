@@ -77,8 +77,22 @@ extends Action
     {
         const input = this.inputNode.inputFromId(this.inputId);
 
+
+        for (const _conn of this.oldConnections)
+        {
+            const inputNode = nodeFromId(_conn.inputNodeId);
+
+            if (   inputNode.id == input.node.id
+                && inputNode.variableInputs
+                && strIsNum(_conn.inputId)
+                && _conn.inputId > this.inputId)
+                _conn.inputId = (parseInt(_conn.inputId) - 1).toString();
+        }
+
+
         uiDeleteSavedConn(input.connection);
         uiDisconnect(input);
+
 
         this.output.updateSavedConnectionOrder(this.outputOrder, -1);
     }
