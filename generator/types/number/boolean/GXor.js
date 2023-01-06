@@ -50,8 +50,8 @@ function evalXorInputs(inputs, parse)
     {
         const val0 = inputs[0].eval(parse).toValue();
 
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
+        //value.value = val0.toNumber();
+        //value.decimals = val0.decimals;
 
         flipped = val0.toNumber() != 0;
 
@@ -66,18 +66,21 @@ function evalXorInputs(inputs, parse)
                 
             if (val.toNumber() != 0)
             {
-                value.value    = val.value;
-                value.decimals = val.decimals;
+                //value.value    = val.value;
+                //value.decimals = val.decimals;
 
                 flipped++;
             }
         }
+
+
+        value.value = flipped == 1 ? 1 : 0;
     }
 
 
-    if (   value.value != 0
-        && flipped > 1)
-        value.value = 0;
+    // if (   value.value != 0
+    //     && flipped > 1)
+    //     value.value = 0;
 
 
     return value;

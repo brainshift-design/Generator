@@ -48,8 +48,8 @@ function evalOrInputs(inputs, parse)
     {
         const val0 = inputs[0].eval(parse).toValue();
 
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
+        value.value    = val0.toNumber();
+        // value.decimals = val0.decimals;
 
 
         for (let i = 1; i < inputs.length; i++)
@@ -60,9 +60,13 @@ function evalOrInputs(inputs, parse)
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
-            value.value    = Math.max(value.value,    val.value);
-            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value = Math.max(value.value, val.toNumber());
+            // value.decimals = Math.max(value.decimals, val.decimals);
         }
+
+
+        if (value.value != 0)
+            value.value = 1;
     }
 
 

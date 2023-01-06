@@ -9435,8 +9435,8 @@ function evalAndInputs(inputs, parse)
     {
         const val0 = inputs[0].eval(parse).toValue();
 
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
+        value.value = val0.toNumber();
+        // value.decimals = val0.decimals;
 
 
         for (let i = 1; i < inputs.length; i++)
@@ -9447,9 +9447,13 @@ function evalAndInputs(inputs, parse)
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
-            value.value    = Math.min(value.value,    val.value);
-            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value = Math.min(value.value, val.toNumber());
+            // value.decimals = Math.max(value.decimals, val.decimals);
         }
+
+        
+        if (value.value != 0)
+            value.value = 1;
     }
 
 
@@ -9507,8 +9511,8 @@ function evalOrInputs(inputs, parse)
     {
         const val0 = inputs[0].eval(parse).toValue();
 
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
+        value.value    = val0.toNumber();
+        // value.decimals = val0.decimals;
 
 
         for (let i = 1; i < inputs.length; i++)
@@ -9519,9 +9523,13 @@ function evalOrInputs(inputs, parse)
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
-            value.value    = Math.max(value.value,    val.value);
-            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value = Math.max(value.value, val.toNumber());
+            // value.decimals = Math.max(value.decimals, val.decimals);
         }
+
+
+        if (value.value != 0)
+            value.value = 1;
     }
 
 
@@ -9581,8 +9589,8 @@ function evalXorInputs(inputs, parse)
     {
         const val0 = inputs[0].eval(parse).toValue();
 
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
+        //value.value = val0.toNumber();
+        //value.decimals = val0.decimals;
 
         flipped = val0.toNumber() != 0;
 
@@ -9597,18 +9605,21 @@ function evalXorInputs(inputs, parse)
                 
             if (val.toNumber() != 0)
             {
-                value.value    = val.value;
-                value.decimals = val.decimals;
+                //value.value    = val.value;
+                //value.decimals = val.decimals;
 
                 flipped++;
             }
         }
+
+
+        value.value = flipped == 1 ? 1 : 0;
     }
 
 
-    if (   value.value != 0
-        && flipped > 1)
-        value.value = 0;
+    // if (   value.value != 0
+    //     && flipped > 1)
+    //     value.value = 0;
 
 
     return value;
@@ -26484,8 +26495,8 @@ function evalAndInputs(inputs, parse)
     {
         const val0 = inputs[0].eval(parse).toValue();
 
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
+        value.value = val0.toNumber();
+        // value.decimals = val0.decimals;
 
 
         for (let i = 1; i < inputs.length; i++)
@@ -26496,9 +26507,13 @@ function evalAndInputs(inputs, parse)
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
-            value.value    = Math.min(value.value,    val.value);
-            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value = Math.min(value.value, val.toNumber());
+            // value.decimals = Math.max(value.decimals, val.decimals);
         }
+
+        
+        if (value.value != 0)
+            value.value = 1;
     }
 
 
@@ -26556,8 +26571,8 @@ function evalOrInputs(inputs, parse)
     {
         const val0 = inputs[0].eval(parse).toValue();
 
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
+        value.value    = val0.toNumber();
+        // value.decimals = val0.decimals;
 
 
         for (let i = 1; i < inputs.length; i++)
@@ -26568,9 +26583,13 @@ function evalOrInputs(inputs, parse)
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
-            value.value    = Math.max(value.value,    val.value);
-            value.decimals = Math.max(value.decimals, val.decimals);
+            value.value = Math.max(value.value, val.toNumber());
+            // value.decimals = Math.max(value.decimals, val.decimals);
         }
+
+
+        if (value.value != 0)
+            value.value = 1;
     }
 
 
@@ -26630,8 +26649,8 @@ function evalXorInputs(inputs, parse)
     {
         const val0 = inputs[0].eval(parse).toValue();
 
-        value.value    = val0.value;
-        value.decimals = val0.decimals;
+        //value.value = val0.toNumber();
+        //value.decimals = val0.decimals;
 
         flipped = val0.toNumber() != 0;
 
@@ -26646,18 +26665,21 @@ function evalXorInputs(inputs, parse)
                 
             if (val.toNumber() != 0)
             {
-                value.value    = val.value;
-                value.decimals = val.decimals;
+                //value.value    = val.value;
+                //value.decimals = val.decimals;
 
                 flipped++;
             }
         }
+
+
+        value.value = flipped == 1 ? 1 : 0;
     }
 
 
-    if (   value.value != 0
-        && flipped > 1)
-        value.value = 0;
+    // if (   value.value != 0
+    //     && flipped > 1)
+    //     value.value = 0;
 
 
     return value;
@@ -43912,7 +43934,8 @@ extends OperatorBase
         const v = Math.round(this.paramValue.value.value);
 
              if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
-        else if (settings.showBoolValues) this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+        else if (settings.showBoolValues
+              && !isNaN(v))               this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
         else                              this.paramValue.control.valueText = '';
 
         this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
@@ -44019,7 +44042,8 @@ extends OperatorBase
         const v = Math.round(this.paramValue.value.value);
 
              if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
-        else if (settings.showBoolValues) this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+        else if (settings.showBoolValues
+              && !isNaN(v))               this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
         else                              this.paramValue.control.valueText = '';
 
         //this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
@@ -44164,7 +44188,8 @@ extends OperatorBase
         const v = Math.round(this.paramValue.value.value);
 
              if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
-        else if (settings.showBoolValues) this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+        else if (settings.showBoolValues
+              && !isNaN(v))               this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
         else                              this.paramValue.control.valueText = '';
 
         this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
@@ -44241,7 +44266,8 @@ extends OperatorWithSymbol
         const v = Math.round(this.paramValue.value.value);
 
              if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
-        else if (settings.showBoolValues) this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+        else if (settings.showBoolValues
+              && !isNaN(v))               this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
         else                              this.paramValue.control.valueText = '';
 
         //this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
