@@ -809,6 +809,7 @@ class Operator
         // console.log('this.outputs', this.outputs);
 
         const inputs          = this.headerInputs;
+
         const connectedInputs = inputs.filter(i => i.connected);
         const outputs         = this.headerOutputs;
 

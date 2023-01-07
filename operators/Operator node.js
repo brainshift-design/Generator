@@ -224,7 +224,9 @@ function createNodeHeader(node)
                  && toTheRightOfInputs)
         {
             if (    tempConn.output
-                && !tempConn.output.node.isOrFollows(node))
+                && !tempConn.output.node.isOrFollows(node)
+                &&  tempConn.input
+                &&  tempConn.input.node.id == node.id)
             {
                 if (   node.variableInputs
                     && savedConn)
@@ -266,11 +268,7 @@ function createNodeHeader(node)
                 else
                 {
                     const input = node.getAutoInput(tempConn.output);
-
-                    if (!input)
-                        // ||    input.connected
-                        //    && input.connectedOutput.node == tempConn.output.node) 
-                        return;
+                    if (!input) return;
 
                     graphView.overInput   = input;
                     graphView.headerInput = input;
@@ -400,8 +398,6 @@ function createNodeHeader(node)
                 graphView.tempConn.input.updateControl();
            }
         }
-
-        //updateHeaderLabelOffset(node, 0.5);
     });
 
 

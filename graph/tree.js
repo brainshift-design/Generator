@@ -292,7 +292,7 @@ function getActiveBeforeNode(node, alreadyChecked = [])
         && !alreadyChecked.includes(node)) 
         return node;
 
-
+console.log('before node =', node);
     for (const input of node.headerInputs)
     {
         if (    input.connected
@@ -322,6 +322,7 @@ function getActiveOnlyBeforeNode(node, alreadyChecked = [])
         return node;
 
 
+console.log('only before node =', node);
     for (const input of node.headerInputs)
     {
         if (    input.connected
