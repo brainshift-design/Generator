@@ -78,8 +78,7 @@ extends Action
         connectAction_saveInputActiveNodesAndValues(this);
         this.savePrevInputActiveNodesAndValues();
 
-        disconnectAction_updateOldConnectionIndices(this, this.inputNodeId, this.inputId)
-        //disconnectAction_updateOldConnectionIndices(this, this.prevInputNodeId, this.prevInputId)
+        disconnectAction_updateOldConnectionIndices(this, this.prevInputNodeId, this.prevInputId)
 
         connectAction_removeOldOutputConnection(this);
         this.removePrevInputConnection();
@@ -97,8 +96,6 @@ extends Action
 
     undo(updateNodes)
     {
-        this.restorePrevConnection();
-
         connectAction_restoreInputValues(this);
         this.restorePrevInputValues();
 
@@ -119,18 +116,6 @@ extends Action
     
     removePrevInputConnection()
     {
-        // for (const _conn of this.oldConnections)
-        // {
-        //     const inputNode = nodeFromId(_conn.inputNodeId);
-
-        //     if (   inputNode.id == this.prevInputNodeId
-        //         && inputNode.variableInputs
-        //         && strIsNum(_conn.inputId)
-        //         && _conn.inputId > this.prevInputId)
-        //         _conn.inputId = (parseInt(_conn.inputId) - 1).toString();
-        // }
-
-        
         uiDeleteSavedConn(this.prevInput.connection);
         uiDisconnect(this.prevInput);
     }

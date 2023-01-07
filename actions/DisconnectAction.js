@@ -153,7 +153,7 @@ function disconnectAction_updateOldConnectionIndices(act, inputNodeId, inputId)
             && inputNode.variableInputs
             && strIsNum(_conn.inputId)
             && strIsNum(inputId)
-            && _conn.inputId > inputId)
+            && parseInt(_conn.inputId) > parseInt(inputId))
             _conn.inputId = (parseInt(_conn.inputId) - 1).toString();
     }
 }
