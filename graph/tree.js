@@ -151,14 +151,7 @@ function getTerminalsAfterNode(node)
     for (const output of node.outputs)
     {
         for (const input of output.connectedInputs)
-        {
-            // if (   input.param 
-            //     && (   !input.param.output
-            //         || !input.param.output.connected))
-            //     pushUnique(after, input.node);
-
             pushUnique(after, getTerminalsAfterNode(input.node));
-        }
     }
 
 
@@ -176,14 +169,7 @@ function getTerminalsAfterParam(param)
     let after = [];
 
     for (const input of param.output.connectedInputs)
-    {
-        // if (   input.param 
-        //     && (   !input.param.output
-        //         || !input.param.output.connected))
-        //     pushUnique(after, input.node);
-
         pushUnique(after, getTerminalsAfterNode(input.node));
-    }
 
 
     return after.length > 0 ? after : [];
@@ -193,12 +179,8 @@ function getTerminalsAfterParam(param)
 
 function updateTerminalsAfterNodes(nodes, updateNodes)
 {
-    //const terminals = [];
-
     for (const node of nodes)
         pushUnique(updateNodes, getTerminalsAfterNode(node));
-
-    //pushUpdate(null, terminals);
 }
 
 
@@ -292,7 +274,7 @@ function getActiveBeforeNode(node, alreadyChecked = [])
         && !alreadyChecked.includes(node)) 
         return node;
 
-console.log('before node =', node);
+
     for (const input of node.headerInputs)
     {
         if (    input.connected
@@ -322,7 +304,6 @@ function getActiveOnlyBeforeNode(node, alreadyChecked = [])
         return node;
 
 
-console.log('only before node =', node);
     for (const input of node.headerInputs)
     {
         if (    input.connected

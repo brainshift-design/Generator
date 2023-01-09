@@ -50,19 +50,6 @@ extends Action
             ...this.nodeIds,
             ...this.newActiveNodeIds]);
     }
-
-
-
-    addOldConnection(conn)
-    {
-        if (!this.oldConnections.find(c => 
-                   c.outputNodeId == conn.output.node.id
-                && c.outputId     == conn.output.id
-                && c.outputOrder  == conn.outputOrder
-                && c. inputNodeId == conn. input.node.id
-                && c. inputId     == conn. input.id))
-            this.oldConnections.push(conn.toDataObject());
-    }
 }
 
 
@@ -93,11 +80,8 @@ function deleteNodesAction_saveNodePositions(act)
 
 function deleteNodesAction_getUpdateNodes(act, updateNodes)
 {
-    for (const nodeId of act.nodeIds)
+    for (const node of act.nodes)
     {
-        const node = nodeFromId(nodeId);
-
-
         const nodeInputs = node.inputs.filter(i => i.connected);
         
         for (let i = nodeInputs.length-1; i >= 0; i--)
@@ -158,24 +142,28 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
 
     const activeLeft        = getActiveBeforeNode    (output.node);
     const activeLeftOnly    = getActiveOnlyBeforeNode(output.node);
-    const activeRight       = getActiveAfterNode     (output.node);
-    const activeRightHeader = getActiveAfterNode     (output.node, true);
+    const activeRight       = getActiveAfterNode     (output.node, true);
+    const activeRightHeader = getActiveAfterNode     (output.node);
 
   
+    console.log('activeRightHeader =', activeRightHeader);
     if (  !activeLeftOnly
         && activeLeft != activeRight)
         pushUnique(updateNodes, output.node);
 
-    if (   !activeRightHeader
-        && !ignoreNodeIds.includes(output.node.id))
+    if (!activeRightHeader)
     {
-        uiMakeNodeActive(output.node);
-        pushUnique(act.newActiveNodeIds, output.node.id);
-
-        pushUnique(updateNodes, output.node);
+        if (!ignoreNodeIds.includes(input.node.id))
+        {
+            uiMakeNodeActive(input.node);
+            pushUnique(act.newActiveNodeIds, input.node.id);
+            pushUnique(updateNodes, input.node);
+        }
     }
-    
+    else
+        pushUnique(updateNodes, activeRightHeader);
 
+    
     return updateNodes;
 }
 

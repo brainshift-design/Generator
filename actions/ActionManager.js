@@ -104,8 +104,8 @@ class ActionManager
 
 
         act.updateOldConnections();
-console.log('act.oldConnections =', [...act.oldConnections]);
 
+        
         if (!act.selfUpdate)
             pushUpdate(act, updateNodes);
     }

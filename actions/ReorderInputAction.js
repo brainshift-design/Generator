@@ -22,7 +22,7 @@ extends Action
 
 
 
-    do()
+    do(updateNodes)
     {
         // .. already done
 
@@ -43,40 +43,30 @@ extends Action
         }
 
         
-        // update nodes
-
-        pushUpdate(this, [nodeFromId(this.nodeId)]);
+        pushUnique(updateNodes, node);
     }
 
 
 
-    undo()
+    undo(updateNodes)
     {
         const node = nodeFromId(this.nodeId);
 
-        moveInArray(
-            node.inputs,
-            this.newIndex,
-            this.oldIndex);
-            
-        pushUpdate(this, [node]);
-
+        moveInArray(node.inputs, this.newIndex, this.oldIndex);
         uiSaveNodes([this.nodeId]);
+        
+        pushUnique(updateNodes, node);
     }
 
 
 
-    redo()
+    redo(updateNodes)
     {
         const node = nodeFromId(this.nodeId);
 
-        moveInArray(
-            node.inputs,
-            this.oldIndex,
-            this.newIndex);
-
+        moveInArray(node.inputs, this.oldIndex, this.newIndex);
         uiSaveNodes([this.nodeId]);
 
-        pushUpdate(this, [node]);
+        pushUnique(updateNodes, node);
     }
 }

@@ -35846,6 +35846,7 @@ graphView.endConnection = pointerId =>
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex)
+                &&  newReorderIndex != oldReorderIndex
                 &&  newReorderIndex >= 0
                 &&  input.node.variableInputs
                 && !input.param
@@ -38800,14 +38801,7 @@ function getTerminalsAfterNode(node)
     for (const output of node.outputs)
     {
         for (const input of output.connectedInputs)
-        {
-            // if (   input.param 
-            //     && (   !input.param.output
-            //         || !input.param.output.connected))
-            //     pushUnique(after, input.node);
-
             pushUnique(after, getTerminalsAfterNode(input.node));
-        }
     }
 
 
@@ -38825,14 +38819,7 @@ function getTerminalsAfterParam(param)
     let after = [];
 
     for (const input of param.output.connectedInputs)
-    {
-        // if (   input.param 
-        //     && (   !input.param.output
-        //         || !input.param.output.connected))
-        //     pushUnique(after, input.node);
-
         pushUnique(after, getTerminalsAfterNode(input.node));
-    }
 
 
     return after.length > 0 ? after : [];
@@ -38842,12 +38829,8 @@ function getTerminalsAfterParam(param)
 
 function updateTerminalsAfterNodes(nodes, updateNodes)
 {
-    //const terminals = [];
-
     for (const node of nodes)
         pushUnique(updateNodes, getTerminalsAfterNode(node));
-
-    //pushUpdate(null, terminals);
 }
 
 
@@ -38941,7 +38924,7 @@ function getActiveBeforeNode(node, alreadyChecked = [])
         && !alreadyChecked.includes(node)) 
         return node;
 
-console.log('before node =', node);
+
     for (const input of node.headerInputs)
     {
         if (    input.connected
@@ -38971,7 +38954,6 @@ function getActiveOnlyBeforeNode(node, alreadyChecked = [])
         return node;
 
 
-console.log('only before node =', node);
     for (const input of node.headerInputs)
     {
         if (    input.connected
@@ -41684,9 +41666,9 @@ function createNodeHeader(node)
                  && toTheRightOfInputs)
         {
             if (    tempConn.output
-                && !tempConn.output.node.isOrFollows(node)
-                &&  tempConn.input
-                &&  tempConn.input.node.id == node.id)
+                && !tempConn.output.node.isOrFollows(node))
+                //&&  tempConn.input)
+                //&&  tempConn.input.node.id == node.id)
             {
                 if (   node.variableInputs
                     && savedConn)
@@ -48220,7 +48202,6 @@ class Action
 
     restoreOldConnections()
     {
-        console.log('this.oldConnections =', [...this.oldConnections]);
         for (const _conn of this.oldConnections)
         {
             const outputNode = nodeFromId(_conn.outputNodeId);
@@ -48366,8 +48347,8 @@ class ActionManager
 
 
         act.updateOldConnections();
-console.log('act.oldConnections =', [...act.oldConnections]);
 
+        
         if (!act.selfUpdate)
             pushUpdate(act, updateNodes);
     }
@@ -48971,19 +48952,6 @@ extends Action
             ...this.nodeIds,
             ...this.newActiveNodeIds]);
     }
-
-
-
-    addOldConnection(conn)
-    {
-        if (!this.oldConnections.find(c => 
-                   c.outputNodeId == conn.output.node.id
-                && c.outputId     == conn.output.id
-                && c.outputOrder  == conn.outputOrder
-                && c. inputNodeId == conn. input.node.id
-                && c. inputId     == conn. input.id))
-            this.oldConnections.push(conn.toDataObject());
-    }
 }
 
 
@@ -49014,11 +48982,8 @@ function deleteNodesAction_saveNodePositions(act)
 
 function deleteNodesAction_getUpdateNodes(act, updateNodes)
 {
-    for (const nodeId of act.nodeIds)
+    for (const node of act.nodes)
     {
-        const node = nodeFromId(nodeId);
-
-
         const nodeInputs = node.inputs.filter(i => i.connected);
         
         for (let i = nodeInputs.length-1; i >= 0; i--)
@@ -49079,24 +49044,28 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
 
     const activeLeft        = getActiveBeforeNode    (output.node);
     const activeLeftOnly    = getActiveOnlyBeforeNode(output.node);
-    const activeRight       = getActiveAfterNode     (output.node);
-    const activeRightHeader = getActiveAfterNode     (output.node, true);
+    const activeRight       = getActiveAfterNode     (output.node, true);
+    const activeRightHeader = getActiveAfterNode     (output.node);
 
   
+    console.log('activeRightHeader =', activeRightHeader);
     if (  !activeLeftOnly
         && activeLeft != activeRight)
         pushUnique(updateNodes, output.node);
 
-    if (   !activeRightHeader
-        && !ignoreNodeIds.includes(output.node.id))
+    if (!activeRightHeader)
     {
-        uiMakeNodeActive(output.node);
-        pushUnique(act.newActiveNodeIds, output.node.id);
-
-        pushUnique(updateNodes, output.node);
+        if (!ignoreNodeIds.includes(input.node.id))
+        {
+            uiMakeNodeActive(input.node);
+            pushUnique(act.newActiveNodeIds, input.node.id);
+            pushUnique(updateNodes, input.node);
+        }
     }
-    
+    else
+        pushUnique(updateNodes, activeRightHeader);
 
+    
     return updateNodes;
 }
 
@@ -49825,7 +49794,7 @@ extends Action
 
 
 
-    do()
+    do(updateNodes)
     {
         // .. already done
 
@@ -49846,41 +49815,31 @@ extends Action
         }
 
         
-        // update nodes
-
-        pushUpdate(this, [nodeFromId(this.nodeId)]);
+        pushUnique(updateNodes, node);
     }
 
 
 
-    undo()
+    undo(updateNodes)
     {
         const node = nodeFromId(this.nodeId);
 
-        moveInArray(
-            node.inputs,
-            this.newIndex,
-            this.oldIndex);
-            
-        pushUpdate(this, [node]);
-
+        moveInArray(node.inputs, this.newIndex, this.oldIndex);
         uiSaveNodes([this.nodeId]);
+        
+        pushUnique(updateNodes, node);
     }
 
 
 
-    redo()
+    redo(updateNodes)
     {
         const node = nodeFromId(this.nodeId);
 
-        moveInArray(
-            node.inputs,
-            this.oldIndex,
-            this.newIndex);
-
+        moveInArray(node.inputs, this.oldIndex, this.newIndex);
         uiSaveNodes([this.nodeId]);
 
-        pushUpdate(this, [node]);
+        pushUnique(updateNodes, node);
     }
 }
 

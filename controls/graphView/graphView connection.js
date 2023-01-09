@@ -81,6 +81,7 @@ graphView.endConnection = pointerId =>
         {
             if (   !isNaN(newReorderIndex)
                 && !isNaN(oldReorderIndex)
+                &&  newReorderIndex != oldReorderIndex
                 &&  newReorderIndex >= 0
                 &&  input.node.variableInputs
                 && !input.param

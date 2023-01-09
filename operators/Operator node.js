@@ -224,9 +224,9 @@ function createNodeHeader(node)
                  && toTheRightOfInputs)
         {
             if (    tempConn.output
-                && !tempConn.output.node.isOrFollows(node)
-                &&  tempConn.input
-                &&  tempConn.input.node.id == node.id)
+                && !tempConn.output.node.isOrFollows(node))
+                //&&  tempConn.input)
+                //&&  tempConn.input.node.id == node.id)
             {
                 if (   node.variableInputs
                     && savedConn)
