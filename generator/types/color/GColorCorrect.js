@@ -106,6 +106,7 @@ extends GColorType
                 genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
                 genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
                 genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
+                genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
             }
             else
                 this.value = ColorValue.NaN;

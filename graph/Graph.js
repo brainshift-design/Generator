@@ -235,7 +235,7 @@ class Graph
 
 
         if (input.param)
-            input.param.valueText = '';
+            input.param.control.valueText = '';
 
 
         return true;

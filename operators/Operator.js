@@ -91,9 +91,6 @@ class Operator
     paramBack;
     hiddenParamBack;
 
-    //separator;
-    //showAllParams = true;
-    
 
     valid = false;
 

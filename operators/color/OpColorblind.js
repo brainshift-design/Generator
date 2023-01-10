@@ -64,27 +64,32 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
 
         this._color = 
-            col
-            ? col.toDataColor()
+            value
+            ? value.toDataColor()
             : dataColor_NaN;
 
-
         super.updateValues(updateParamId, paramIds, values);
+    }
 
 
+
+    updateParams()
+    {
         this.updateParamText(this.paramL, 'L');
         this.updateParamText(this.paramM, 'M');
         this.updateParamText(this.paramS, 'S');
+
+        super.updateParams();
     }
 
 
 
     updateParamText(param, cone)
     {
-        const v = Math.round(param.value);
+        const v = Math.round(param.value.value);
 
              if (v == 2) param.control.valueText = cone;
         else if (v == 1) param.control.valueText = cone + ' weak';

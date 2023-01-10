@@ -542,7 +542,7 @@ function formatSavedNodeJson(json)
         .split('"],\n').join('\n');
 
 
-    if (lastOf(formJson) == '"')
+    if (formJson[formJson.length-1] == '"')
         formJson = formJson.substring(0, formJson.length - 1);
 
     if (formJson.substring(formJson.length-2) == '"]')    

@@ -17,9 +17,9 @@ class Action
     onAfterUndo;
 
     
-    selfUpdate     = false;
+    selfUpdate        = false;
 
-    _linkWithNext  = false;
+    _linkWithNext     = false;
 
     
     oldConnectionData = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]

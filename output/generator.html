@@ -8496,6 +8496,7 @@ extends GColorType
         genPushUpdateValue(parse, this.nodeId, 'space',  space );
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
 
 
         this.validate();
@@ -8759,9 +8760,10 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'l', l);
-        genPushUpdateValue(parse, this.nodeId, 'm', m);
-        genPushUpdateValue(parse, this.nodeId, 's', s);
+        genPushUpdateValue(parse, this.nodeId, 'l',     l);
+        genPushUpdateValue(parse, this.nodeId, 'm',     m);
+        genPushUpdateValue(parse, this.nodeId, 's',     s);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -8880,6 +8882,7 @@ extends GColorType
                 genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
                 genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
                 genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
+                genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
             }
             else
                 this.value = ColorValue.NaN;

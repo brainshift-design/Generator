@@ -10840,6 +10840,7 @@ extends GColorType
         genPushUpdateValue(parse, this.nodeId, 'space',  space );
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
 
 
         this.validate();
@@ -11103,9 +11104,10 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'l', l);
-        genPushUpdateValue(parse, this.nodeId, 'm', m);
-        genPushUpdateValue(parse, this.nodeId, 's', s);
+        genPushUpdateValue(parse, this.nodeId, 'l',     l);
+        genPushUpdateValue(parse, this.nodeId, 'm',     m);
+        genPushUpdateValue(parse, this.nodeId, 's',     s);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -11224,6 +11226,7 @@ extends GColorType
                 genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
                 genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
                 genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
+                genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
             }
             else
                 this.value = ColorValue.NaN;
@@ -27903,6 +27906,7 @@ extends GColorType
         genPushUpdateValue(parse, this.nodeId, 'space',  space );
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
         genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
 
 
         this.validate();
@@ -28166,9 +28170,10 @@ extends GColorType
             this.value = ColorValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'l', l);
-        genPushUpdateValue(parse, this.nodeId, 'm', m);
-        genPushUpdateValue(parse, this.nodeId, 's', s);
+        genPushUpdateValue(parse, this.nodeId, 'l',     l);
+        genPushUpdateValue(parse, this.nodeId, 'm',     m);
+        genPushUpdateValue(parse, this.nodeId, 's',     s);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -28287,6 +28292,7 @@ extends GColorType
                 genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
                 genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
                 genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
+                genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
             }
             else
                 this.value = ColorValue.NaN;
@@ -32622,12 +32628,15 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.getValueText = function()
     {
+        // if (control.param.id == 'l')
+        //     console.log('control.valueText =', control.valueText);
+
         if (control.valueText != '')
         {
             return control.valueText;
         }
         else if (   control.options.length > 0
-            && control.displayDec == 0)
+                 && control.displayDec == 0)
         {
             if (   control.value <  0 
                 || control.value >= control.options.length)
@@ -36655,8 +36664,10 @@ extends Parameter
         }
 
 
-        this.control.valueText = unknown ? UNKNOWN_DISPLAY : '';
-        this.control.showBar   = !unknown;
+        if (unknown)
+            this.control.valueText = UNKNOWN_DISPLAY;
+
+        this.control.showBar = !unknown;
     }
 
 
@@ -38482,7 +38493,7 @@ class Graph
 
 
         if (input.param)
-            input.param.valueText = '';
+            input.param.control.valueText = '';
 
 
         return true;
@@ -40150,9 +40161,6 @@ class Operator
     paramBack;
     hiddenParamBack;
 
-    //separator;
-    //showAllParams = true;
-    
 
     valid = false;
 
@@ -46351,12 +46359,12 @@ extends OpColorBase
 
     updateParams()
     {
+        super.updateParams();
+
         this.paramOrder  .enableControlText(false);
         this.paramMargin1.enableControlText(false);
         this.paramMargin2.enableControlText(false);
         this.paramMargin3.enableControlText(false);
-
-        super.updateParams();
     }
 
 
@@ -46800,8 +46808,8 @@ extends OpColorBase
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, false, OpColorSpaces.map(s => s[1]), 1));
         this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, false, 50, 0,  100, 0));
+        this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, false, OpColorSpaces.map(s => s[1]), 1));
         this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, false, 1,  0.01, 4, 2));
       
         
@@ -47008,27 +47016,32 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
 
         this._color = 
-            col
-            ? col.toDataColor()
+            value
+            ? value.toDataColor()
             : dataColor_NaN;
 
-
         super.updateValues(updateParamId, paramIds, values);
+    }
 
 
+
+    updateParams()
+    {
         this.updateParamText(this.paramL, 'L');
         this.updateParamText(this.paramM, 'M');
         this.updateParamText(this.paramS, 'S');
+
+        super.updateParams();
     }
 
 
 
     updateParamText(param, cone)
     {
-        const v = Math.round(param.value);
+        const v = Math.round(param.value.value);
 
              if (v == 2) param.control.valueText = cone;
         else if (v == 1) param.control.valueText = cone + ' weak';
@@ -48169,9 +48182,9 @@ class Action
     onAfterUndo;
 
     
-    selfUpdate     = false;
+    selfUpdate        = false;
 
-    _linkWithNext  = false;
+    _linkWithNext     = false;
 
     
     oldConnectionData = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]

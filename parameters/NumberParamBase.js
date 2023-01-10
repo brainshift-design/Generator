@@ -150,8 +150,10 @@ extends Parameter
         }
 
 
-        this.control.valueText = unknown ? UNKNOWN_DISPLAY : '';
-        this.control.showBar   = !unknown;
+        if (unknown)
+            this.control.valueText = UNKNOWN_DISPLAY;
+
+        this.control.showBar = !unknown;
     }
 
 

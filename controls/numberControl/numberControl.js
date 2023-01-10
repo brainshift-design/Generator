@@ -316,12 +316,15 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.getValueText = function()
     {
+        // if (control.param.id == 'l')
+        //     console.log('control.valueText =', control.valueText);
+
         if (control.valueText != '')
         {
             return control.valueText;
         }
         else if (   control.options.length > 0
-            && control.displayDec == 0)
+                 && control.displayDec == 0)
         {
             if (   control.value <  0 
                 || control.value >= control.options.length)
