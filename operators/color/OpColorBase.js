@@ -10,7 +10,7 @@ extends Operator
     
 
 
-    constructor(nodeType, shortType, defWidth = 90, progressBar = false)
+    constructor(nodeType, shortType, defWidth = 100, progressBar = false)
     {
         super(nodeType, shortType, defWidth, progressBar);
 

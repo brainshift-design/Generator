@@ -93,7 +93,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     
     control.valueText              = '';
     control.overrideText           = '';
-     
+
+    control.showNanValueName       = true; // show the name even if the value is NaN
     control.showBar                = true;
 
     control.barTop                 = 0;
@@ -288,7 +289,9 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             control.text.innerHTML = '';
             
             if (   control.name.length > 0
-                && control.showName)
+                && control.showName
+                && (  !isNaN(control.value) 
+                    || control.showNanValueName))
             {
                 const nameStyle = 
                     isDarkMode() 

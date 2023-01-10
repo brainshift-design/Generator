@@ -31,7 +31,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_CORRECT, 'correct', 100, true);
+        super(COLOR_CORRECT, 'valid', 100, true);
 
 
         this.addInput(new Input(COLOR_TYPES));
@@ -39,16 +39,19 @@ extends OpColorBase
 
 
         this.alwaysLoadParams = true;
-
-
+        
         this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [0, 1, 2, 3, 4, 5], 2));
-
+        
         this.paramOrder.addEventListener('change', () => this.updateCorrections());
-
-
+        
+        
         this.addParam(this.paramMargin1 = new NumberParam('margin1', '', true, true, true, 0));
         this.addParam(this.paramMargin2 = new NumberParam('margin2', '', true, true, true, 0));
         this.addParam(this.paramMargin3 = new NumberParam('margin3', '', true, true, true, 0));
+        
+        this.paramMargin1.control.showNaNValueName = false;
+        this.paramMargin2.control.showNaNValueName = false;
+        this.paramMargin3.control.showNaNValueName = false;
 
 
         this.initCorrections('');
@@ -107,7 +110,6 @@ extends OpColorBase
 
 
         this.initCorrections(this._color[0]);
-        this.updateCorrections();
 
         endNodeProgress(this);
 
@@ -125,6 +127,8 @@ extends OpColorBase
         this.paramMargin1.enableControlText(false);
         this.paramMargin2.enableControlText(false);
         this.paramMargin3.enableControlText(false);
+
+        this.updateCorrections();
     }
 
 
@@ -232,6 +236,12 @@ extends OpColorBase
             this.updateMargin(this.paramMargin2, this.corrections[i2]);
             this.updateMargin(this.paramMargin3, this.corrections[i3]);
         }
+        else
+        {
+            this.resetMargin(this.paramMargin1);
+            this.resetMargin(this.paramMargin2);
+            this.resetMargin(this.paramMargin3);
+        }
     }
 
 
@@ -246,11 +256,23 @@ extends OpColorBase
 
     updateMargin(margin, correction)
     {
-        margin.setName(correction.name, false);
-        margin.control.name = '±' + correction.name;
+        const correctionName = '<span style="position: relative; top: -1px; font-weight: 200;">±</span>&thinsp;' + correction.name;
+
+        margin.setName(correctionName, false);
+        margin.control.name = correctionName;
 
         margin.control.setMin(0);
         margin.control.setMax(correction.max);
+    }
+
+
+
+    resetMargin(margin)
+    {
+        margin.setName('', false);
+        margin.control.name = '';
+        margin.control.setMin(0);
+        margin.control.setMax(0);
     }
 
 

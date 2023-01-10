@@ -11231,13 +11231,23 @@ extends GColorType
             else
             {
                 this.value = ColorValue.NaN;
-                genPushUpdateValue(parse, this.nodeId, '', NumberValue.NaN);
+
+                genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue.NaN);
             }
         }
         else
         {
             this.value = ColorValue.NaN;
-            genPushUpdateValue(parse, this.nodeId, '', NumberValue.NaN);
+
+            genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue.NaN);
         }
 
 
@@ -28303,13 +28313,23 @@ extends GColorType
             else
             {
                 this.value = ColorValue.NaN;
-                genPushUpdateValue(parse, this.nodeId, '', NumberValue.NaN);
+
+                genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue.NaN);
             }
         }
         else
         {
             this.value = ColorValue.NaN;
-            genPushUpdateValue(parse, this.nodeId, '', NumberValue.NaN);
+
+            genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue.NaN);
         }
 
 
@@ -31164,7 +31184,7 @@ function initGeneratorMenus()
     menuColor.addItems([
         new MenuItem('Color',             {icon: iconColor           , callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey, random: e.altKey}))}),
         new MenuItem('',                  {separator: true}),
-        new MenuItem('Correct color',     {icon: iconColorCorrect    , callback: e => actionManager.do(getCreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Valid color',       {icon: iconColorCorrect    , callback: e => actionManager.do(getCreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Web contrast',      {icon: iconColorContrast   , callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Colorblind',        {icon: iconColorblind      , callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('',                  {separator: true}),
@@ -32423,7 +32443,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     
     control.valueText              = '';
     control.overrideText           = '';
-     
+
+    control.showNanValueName       = true; // show the name even if the value is NaN
     control.showBar                = true;
 
     control.barTop                 = 0;
@@ -32618,7 +32639,9 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             control.text.innerHTML = '';
             
             if (   control.name.length > 0
-                && control.showName)
+                && control.showName
+                && (  !isNaN(control.value) 
+                    || control.showNanValueName))
             {
                 const nameStyle = 
                     isDarkMode() 
@@ -44498,7 +44521,7 @@ extends Operator
     
 
 
-    constructor(nodeType, shortType, defWidth = 90, progressBar = false)
+    constructor(nodeType, shortType, defWidth = 100, progressBar = false)
     {
         super(nodeType, shortType, defWidth, progressBar);
 
@@ -46283,7 +46306,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_CORRECT, 'correct', 100, true);
+        super(COLOR_CORRECT, 'valid', 100, true);
 
 
         this.addInput(new Input(COLOR_TYPES));
@@ -46291,16 +46314,19 @@ extends OpColorBase
 
 
         this.alwaysLoadParams = true;
-
-
+        
         this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [0, 1, 2, 3, 4, 5], 2));
-
+        
         this.paramOrder.addEventListener('change', () => this.updateCorrections());
-
-
+        
+        
         this.addParam(this.paramMargin1 = new NumberParam('margin1', '', true, true, true, 0));
         this.addParam(this.paramMargin2 = new NumberParam('margin2', '', true, true, true, 0));
         this.addParam(this.paramMargin3 = new NumberParam('margin3', '', true, true, true, 0));
+        
+        this.paramMargin1.control.showNaNValueName = false;
+        this.paramMargin2.control.showNaNValueName = false;
+        this.paramMargin3.control.showNaNValueName = false;
 
 
         this.initCorrections('');
@@ -46359,7 +46385,6 @@ extends OpColorBase
 
 
         this.initCorrections(this._color[0]);
-        this.updateCorrections();
 
         endNodeProgress(this);
 
@@ -46377,6 +46402,8 @@ extends OpColorBase
         this.paramMargin1.enableControlText(false);
         this.paramMargin2.enableControlText(false);
         this.paramMargin3.enableControlText(false);
+
+        this.updateCorrections();
     }
 
 
@@ -46484,6 +46511,12 @@ extends OpColorBase
             this.updateMargin(this.paramMargin2, this.corrections[i2]);
             this.updateMargin(this.paramMargin3, this.corrections[i3]);
         }
+        else
+        {
+            this.resetMargin(this.paramMargin1);
+            this.resetMargin(this.paramMargin2);
+            this.resetMargin(this.paramMargin3);
+        }
     }
 
 
@@ -46498,11 +46531,23 @@ extends OpColorBase
 
     updateMargin(margin, correction)
     {
-        margin.setName(correction.name, false);
-        margin.control.name = '±' + correction.name;
+        const correctionName = '<span style="position: relative; top: -1px; font-weight: 200;">±</span>&thinsp;' + correction.name;
+
+        margin.setName(correctionName, false);
+        margin.control.name = correctionName;
 
         margin.control.setMin(0);
         margin.control.setMax(correction.max);
+    }
+
+
+
+    resetMargin(margin)
+    {
+        margin.setName('', false);
+        margin.control.name = '';
+        margin.control.setMin(0);
+        margin.control.setMax(0);
     }
 
 

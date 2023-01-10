@@ -293,7 +293,7 @@ function initGeneratorMenus()
     menuColor.addItems([
         new MenuItem('Color',             {icon: iconColor           , callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey, random: e.altKey}))}),
         new MenuItem('',                  {separator: true}),
-        new MenuItem('Correct color',     {icon: iconColorCorrect    , callback: e => actionManager.do(getCreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Valid color',       {icon: iconColorCorrect    , callback: e => actionManager.do(getCreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Web contrast',      {icon: iconColorContrast   , callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Colorblind',        {icon: iconColorblind      , callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('',                  {separator: true}),

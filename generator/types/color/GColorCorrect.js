@@ -111,13 +111,23 @@ extends GColorType
             else
             {
                 this.value = ColorValue.NaN;
-                genPushUpdateValue(parse, this.nodeId, '', NumberValue.NaN);
+
+                genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue.NaN);
             }
         }
         else
         {
             this.value = ColorValue.NaN;
-            genPushUpdateValue(parse, this.nodeId, '', NumberValue.NaN);
+
+            genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue.NaN);
         }
 
 
