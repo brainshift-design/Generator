@@ -145,15 +145,15 @@ extends Action
 
 function disconnectAction_updateOldConnectionIndices(act, inputNodeId, inputId)
 {
-    for (const _conn of act.oldConnections)
-    {
-        const inputNode = nodeFromId(_conn.inputNodeId);
+    // for (const _conn of act.oldConnectionData)
+    // {
+    //     const inputNode = nodeFromId(_conn.inputNodeId);
 
-        if (   inputNode.id == inputNodeId
-            && inputNode.variableInputs
-            && strIsNum(_conn.inputId)
-            && strIsNum(inputId)
-            && parseInt(_conn.inputId) > parseInt(inputId))
-            _conn.inputId = (parseInt(_conn.inputId) - 1).toString();
-    }
+    //     if (   inputNode.id == inputNodeId
+    //         && inputNode.variableInputs
+    //         && strIsNum(_conn.inputId)
+    //         && strIsNum(inputId)
+    //         && parseInt(_conn.inputId) > parseInt(inputId))
+    //         _conn.inputId = (parseInt(_conn.inputId) - 1).toString();
+    // }
 }

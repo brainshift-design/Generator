@@ -39088,14 +39088,6 @@ extends EventTarget
     types = []; // an input can accept multiple types
 
 
-    get data()
-    {
-        return this.connected
-             ? this.connectedOutput.data
-             : null;
-    }
-
-
     _node  = null; get node () { return this._param ? this._param.node : this._node; }
     _param = null; get param() { return this._param; }
 
@@ -39106,8 +39098,6 @@ extends EventTarget
     
     colorLight;
     colorDark;
-
-    //wireColor;
 
   
     div;
@@ -39410,23 +39400,6 @@ class Output
     cache           = [];
 
 
-    _data;
-
-    get data() 
-    {
-        if (this.param) this.param.setOutputData();
-        //if (this.node ) this.node.update();
-
-        return this._data;
-    }
-    
-    set data(value)
-    {
-        this._data = value;
-    }
-
-
-
     get connected() { return this.connectedInputs.length > 0; }
 
 
@@ -39636,6 +39609,10 @@ class Output
 
 class Connection
 {
+    static nextId = 0;
+
+    id;
+
     output;
     outputOrder; // in which connections FROM THIS OUTPUT were made
     
@@ -39644,8 +39621,11 @@ class Connection
     wire;
 
 
+
     constructor(output, input)
     {
+        this.id                          = Connection.nextId++;
+
         this.output                      = output;
         this.outputOrder                 = -1;
                  
@@ -39783,6 +39763,7 @@ class Connection
     toDataObject()
     {
         return {
+            id:           this.id,
             outputNodeId: this.output.node.id,
             outputId:     this.output.id,
             outputOrder:  this.outputOrder,
@@ -40029,32 +40010,33 @@ function updateWireStyle(wire)
 
 
 
-function connEqual(c1, c2)
-{
-    return c1.outputNodeId == c2.outputNodeId
-        && c1.outputId     == c2.outputId
-        //&& c1.outputOrder  == c2.outputOrder // irrelevant to equality
-        && c1.inputNodeId  == c2.inputNodeId
-        && c1.inputId      == c2.inputId;
-}
+// function connEqual(c1, c2)
+// {
+//     return c1.outputNodeId == c2.outputNodeId
+//         && c1.outputId     == c2.outputId
+//         //&& c1.outputOrder  == c2.outputOrder // irrelevant to equality
+//         && c1.inputNodeId  == c2.inputNodeId
+//         && c1.inputId      == c2.inputId;
+// }
 
 
 
-function _connEquals(_c, c)
-{
+// function _connEquals(_c, c)
+// {
 
-    return _c.output.node.id == c.outputNodeId
-        && _c.output.id      == c.outputId
-        //&& _c.outputOrder  == c.outputOrder // irrelevant to equality
-        && _c.input.node.id  == c.inputNodeId
-        && _c.input.id       == c.inputId;
-}
+//     return _c.output.node.id == c.outputNodeId
+//         && _c.output.id      == c.outputId
+//         //&& _c.outputOrder  == c.outputOrder // irrelevant to equality
+//         && _c.input.node.id  == c.inputNodeId
+//         && _c.input.id       == c.inputId;
+// }
 
 
 
 function connDataObject(output, input)
 {
     return {
+        id:           -1,
         outputNodeId: output.node.id,
         outputId:     output.id,
         outputOrder:  input.connection.outputOrder,
@@ -40188,6 +40170,9 @@ class Operator
 
     get headerInputs () { return this.inputs .filter(i => !i.param); }
     get headerOutputs() { return this.outputs.filter(o => !o.param); }
+
+    get connectedHeaderInputs () { return this.inputs .filter(i => !i.param && i.connected); }
+    get connectedHeaderOutputs() { return this.outputs.filter(o => !o.param && o.connected); }
 
 
 
@@ -48124,13 +48109,13 @@ class Action
     onAfterUndo;
 
     
-    selfUpdate    = false;
+    selfUpdate     = false;
 
-    _linkWithNext = false;
+    _linkWithNext  = false;
 
     
-    oldConnections     = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
-    newConnections     = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    oldConnectionData = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    newConnectionData = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
 
 
 
@@ -48155,8 +48140,8 @@ class Action
 
     initSaveArrays()
     {
-        this.oldConnections = [];
-        this.newConnections = [];
+        this.oldConnectionData = [];
+        this.newConnectionData = [];
     }
 
 
@@ -48164,22 +48149,22 @@ class Action
     saveOldConnections()
     {
         for (const conn of graph.connections)
-            this.oldConnections.push(conn.toDataObject());
+            this.oldConnectionData.push(conn.toDataObject());
     }
 
 
 
     updateOldConnections()
     {
-        this.oldConnections = this.oldConnections
-            .filter(c => !graph.connections.find(gc => _connEquals(gc, c)));
+        this.oldConnectionData = this.oldConnectionData
+            .filter(c => !graph.connections.find(gc => gc.id == c.id));//_connEquals(gc, c)));
     }
 
 
 
     deleteNewConnections()
     {
-        for (const _conn of this.newConnections)
+        for (const _conn of this.newConnectionData)
         {
             uiDeleteSavedConnection(
                 getConnectionKey(
@@ -48195,14 +48180,14 @@ class Action
             uiDisconnect(nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
         }
 
-        this.newConnections = [];
+        this.newConnectionData = [];
     }
 
 
 
     restoreOldConnections()
     {
-        for (const _conn of this.oldConnections)
+        for (const _conn of this.oldConnectionData)
         {
             const outputNode = nodeFromId(_conn.outputNodeId);
             const output     = outputNode.outputFromId(_conn.outputId);
@@ -48218,7 +48203,7 @@ class Action
             uiSaveConn(oldConn);
         }
 
-        this.oldConnections = [];
+        this.oldConnectionData = [];
     }
 
 
@@ -48332,7 +48317,7 @@ class ActionManager
         if (settings.logActions)
         {
             if (redo) console.log("%cREDO %s", 'background: #ffd;    color: #b80;', act.name);
-            else      console.log("%cDO %s",   'background: #e8ffe8; color: #282;', act.name);
+            else      console.log("%c%s",      'background: #e8ffe8; color: #282;', act.name);
         }
 
 
@@ -48498,7 +48483,7 @@ function connectAction_makeNewConnection(act)
 {
     const conn = uiConnect(act.output, act.input, act.inputId);
             
-    pushUnique(act.newConnections, conn.toDataObject());
+    pushUnique(act.newConnectionData, conn.toDataObject());
     act.outputOrder = conn.outputOrder;
 
     uiSaveConn(conn);
@@ -48778,7 +48763,7 @@ function createInsertNodeAction_savePrevConnections(act)
     const output  = selNode.outputs[0];
 
     for (const input of output.connectedInputs)
-        act.prevConnections.push(connDataObject(output, input));
+        act.prevConnections.push(input.connection.toDataObject());//connDataObject(output, input));
 }
 
 
@@ -48879,7 +48864,7 @@ function createNodeAction_connect(act, output, inputNode, inputId, outputOrder =
         
     uiSaveConn(conn);
 
-    pushUnique(act.newConnections, conn.toDataObject());
+    pushUnique(act.newConnectionData, conn.toDataObject());
 
     return conn;
 }
@@ -48933,6 +48918,13 @@ extends Action
         deleteNodesAction_saveNodePositions(this);
         deleteNodesAction_saveOldActiveNodes(this);
         
+        this.oldConnectionData.sort((c1, c2) => c2.inputId - c1.inputId); // reverse sort
+
+        for (const node of this.nodes)
+            for (const output of node.connectedHeaderOutputs)
+                for (const input of output.connectedInputs)
+                    disconnectAction_updateOldConnectionIndices(this, input.node.id, input.id);
+
         deleteNodesAction_getUpdateNodes(this, updateNodes);
         deleteNodesAction_deleteNodes(this);
 
@@ -49015,6 +49007,7 @@ function deleteNodesAction_getUpdateNodes(act, updateNodes)
                 
                 if (node1.id != node2.id) return node1.id - node2.id;
                 if (index1   != index2)   return index1   - index2;
+
                 return 0;
             });
 
@@ -49027,6 +49020,8 @@ function deleteNodesAction_getUpdateNodes(act, updateNodes)
             }
         }
     }
+
+    console.log('updateNodes =', updateNodes);
 }
 
 
@@ -49048,7 +49043,6 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
     const activeRightHeader = getActiveAfterNode     (output.node);
 
   
-    console.log('activeRightHeader =', activeRightHeader);
     if (  !activeLeftOnly
         && activeLeft != activeRight)
         pushUnique(updateNodes, output.node);
@@ -49267,17 +49261,17 @@ extends Action
 
 function disconnectAction_updateOldConnectionIndices(act, inputNodeId, inputId)
 {
-    for (const _conn of act.oldConnections)
-    {
-        const inputNode = nodeFromId(_conn.inputNodeId);
+    // for (const _conn of act.oldConnectionData)
+    // {
+    //     const inputNode = nodeFromId(_conn.inputNodeId);
 
-        if (   inputNode.id == inputNodeId
-            && inputNode.variableInputs
-            && strIsNum(_conn.inputId)
-            && strIsNum(inputId)
-            && parseInt(_conn.inputId) > parseInt(inputId))
-            _conn.inputId = (parseInt(_conn.inputId) - 1).toString();
-    }
+    //     if (   inputNode.id == inputNodeId
+    //         && inputNode.variableInputs
+    //         && strIsNum(_conn.inputId)
+    //         && strIsNum(inputId)
+    //         && parseInt(_conn.inputId) > parseInt(inputId))
+    //         _conn.inputId = (parseInt(_conn.inputId) - 1).toString();
+    // }
 }
 
 
@@ -49378,7 +49372,7 @@ extends Action
 
         const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
 
-        pushUnique(this.newConnections, _conns);
+        pushUnique(this.newConnectionData, _conns);
         
         for (const conn of _conns)
             uiSaveConnection(
@@ -49639,13 +49633,13 @@ extends Action
 
     addOldConnection(conn)
     {
-        if (!this.oldConnections.find(c => 
+        if (!this.oldConnectionData.find(c => 
                    c.outputNodeId == conn.output.node.id
                 && c.outputId     == conn.output.id
                 && c.outputOrder  == conn.outputOrder
                 && c. inputNodeId == conn. input.node.id
                 && c. inputId     == conn. input.id))
-            this.oldConnections.push(conn.toDataObject());
+            this.oldConnectionData.push(conn.toDataObject());
     }
 
 
@@ -49671,7 +49665,7 @@ extends Action
                 for (const connectedInput of output.connectedInputs)
                 {
                     if (input.connectedOutput.canConnectTo(connectedInput))
-                        this.newConnections.push(connDataObject(input.connectedOutput, connectedInput));
+                        this.newConnectionData.push(connDataObject(input.connectedOutput, connectedInput));
                 }
             }
         }
@@ -49700,9 +49694,9 @@ extends Action
 
 function removeNodesAction_makeNewConnections(act)
 {
-    for (let i = 0; i < act.newConnections.length; i++)
+    for (let i = 0; i < act.newConnectionData.length; i++)
     {
-        const _conn = act.newConnections[i];
+        const _conn = act.newConnectionData[i];
         
         const conn = uiVariableConnect(
             nodeFromId(_conn.outputNodeId), _conn.outputId, 
@@ -49784,8 +49778,8 @@ extends Action
     {
         super(
               'REORDER ' + nodeFromId(nodeId).id 
-            + ' ' + oldIndex
-            + ' to ' + newIndex);
+            + '.' + oldIndex
+            + ' to .' + newIndex);
 
         this.nodeId   = nodeId;
         this.oldIndex = oldIndex;
@@ -53024,20 +53018,15 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
         const node   = nodeFromId(nodeId);
 
 
-        if (!node) // was deleted
-        {
-            i += count*2;
-            continue;
-        }
-
-
-        pushUnique(nodes, node);
+        if (node)
+            pushUnique(nodes, node);
 
 
         if (count > 0)
         {
             const _ids    = [];
             const _values = [];
+
 
             for (let j = 0; j < count; j++)
             {
@@ -53055,7 +53044,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                     case      COLOR_VALUE: value = parseColorValue    (values[i++])[0]; break;
                     case       FILL_VALUE: value = parseFillValue     (values[i++])[0]; break;
                     case     STROKE_VALUE: value = parseStrokeValue   (values[i++])[0]; break;
-                    case COLOR_STOP_VALUE: value = parseColorStopValue(values[i++])[0]; break;
+                    //case COLOR_STOP_VALUE: value = parseColorStopValue(values[i++])[0]; break;
                     case  RECTANGLE_VALUE: value = parseRectangleValue(values[i++])[0]; break;
                     case       LINE_VALUE: value = parseLineValue     (values[i++])[0]; break;
                     case    ELLIPSE_VALUE: value = parseEllipseValue  (values[i++])[0]; break;
@@ -53071,14 +53060,17 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                 _values.push(value);
             }
 
-            node.updateValues(
-                updateNodeId == nodeId ? updateParamId : '',
-                _ids,
-                _values);
 
+            if (node)
+            {
+                node.updateValues(
+                    updateNodeId == nodeId ? updateParamId : '',
+                    _ids,
+                    _values);
 
-            node.valid = true;
-            node.updateNode();
+                node.valid = true;
+                node.updateNode();
+            }
         }
     }
 
@@ -53095,7 +53087,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
             nodeIds:       nodes.map(n => n.id),
             objects:       [...objects]});
     }
-        
+        console.log('nodes =', nodes);
     
     uiSaveNodes(nodes.map(n => n.id));
     

@@ -813,20 +813,15 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
         const node   = nodeFromId(nodeId);
 
 
-        if (!node) // was deleted
-        {
-            i += count*2;
-            continue;
-        }
-
-
-        pushUnique(nodes, node);
+        if (node)
+            pushUnique(nodes, node);
 
 
         if (count > 0)
         {
             const _ids    = [];
             const _values = [];
+
 
             for (let j = 0; j < count; j++)
             {
@@ -844,7 +839,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                     case      COLOR_VALUE: value = parseColorValue    (values[i++])[0]; break;
                     case       FILL_VALUE: value = parseFillValue     (values[i++])[0]; break;
                     case     STROKE_VALUE: value = parseStrokeValue   (values[i++])[0]; break;
-                    case COLOR_STOP_VALUE: value = parseColorStopValue(values[i++])[0]; break;
+                    //case COLOR_STOP_VALUE: value = parseColorStopValue(values[i++])[0]; break;
                     case  RECTANGLE_VALUE: value = parseRectangleValue(values[i++])[0]; break;
                     case       LINE_VALUE: value = parseLineValue     (values[i++])[0]; break;
                     case    ELLIPSE_VALUE: value = parseEllipseValue  (values[i++])[0]; break;
@@ -860,14 +855,17 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
                 _values.push(value);
             }
 
-            node.updateValues(
-                updateNodeId == nodeId ? updateParamId : '',
-                _ids,
-                _values);
 
+            if (node)
+            {
+                node.updateValues(
+                    updateNodeId == nodeId ? updateParamId : '',
+                    _ids,
+                    _values);
 
-            node.valid = true;
-            node.updateNode();
+                node.valid = true;
+                node.updateNode();
+            }
         }
     }
 
@@ -884,7 +882,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
             nodeIds:       nodes.map(n => n.id),
             objects:       [...objects]});
     }
-        
+        console.log('nodes =', nodes);
     
     uiSaveNodes(nodes.map(n => n.id));
     

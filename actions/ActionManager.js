@@ -89,7 +89,7 @@ class ActionManager
         if (settings.logActions)
         {
             if (redo) console.log("%cREDO %s", 'background: #ffd;    color: #b80;', act.name);
-            else      console.log("%cDO %s",   'background: #e8ffe8; color: #282;', act.name);
+            else      console.log("%c%s",      'background: #e8ffe8; color: #282;', act.name);
         }
 
 

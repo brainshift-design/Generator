@@ -37,23 +37,6 @@ class Output
     cache           = [];
 
 
-    _data;
-
-    get data() 
-    {
-        if (this.param) this.param.setOutputData();
-        //if (this.node ) this.node.update();
-
-        return this._data;
-    }
-    
-    set data(value)
-    {
-        this._data = value;
-    }
-
-
-
     get connected() { return this.connectedInputs.length > 0; }
 
 

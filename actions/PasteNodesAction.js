@@ -47,7 +47,7 @@ extends Action
 
         const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
 
-        pushUnique(this.newConnections, _conns);
+        pushUnique(this.newConnectionData, _conns);
         
         for (const conn of _conns)
             uiSaveConnection(

@@ -31,6 +31,13 @@ extends Action
         deleteNodesAction_saveNodePositions(this);
         deleteNodesAction_saveOldActiveNodes(this);
         
+        this.oldConnectionData.sort((c1, c2) => c2.inputId - c1.inputId); // reverse sort
+
+        for (const node of this.nodes)
+            for (const output of node.connectedHeaderOutputs)
+                for (const input of output.connectedInputs)
+                    disconnectAction_updateOldConnectionIndices(this, input.node.id, input.id);
+
         deleteNodesAction_getUpdateNodes(this, updateNodes);
         deleteNodesAction_deleteNodes(this);
 
@@ -113,6 +120,7 @@ function deleteNodesAction_getUpdateNodes(act, updateNodes)
                 
                 if (node1.id != node2.id) return node1.id - node2.id;
                 if (index1   != index2)   return index1   - index2;
+
                 return 0;
             });
 
@@ -125,6 +133,8 @@ function deleteNodesAction_getUpdateNodes(act, updateNodes)
             }
         }
     }
+
+    console.log('updateNodes =', updateNodes);
 }
 
 
@@ -146,7 +156,6 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
     const activeRightHeader = getActiveAfterNode     (output.node);
 
   
-    console.log('activeRightHeader =', activeRightHeader);
     if (  !activeLeftOnly
         && activeLeft != activeRight)
         pushUnique(updateNodes, output.node);

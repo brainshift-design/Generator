@@ -4,14 +4,6 @@ extends EventTarget
     types = []; // an input can accept multiple types
 
 
-    get data()
-    {
-        return this.connected
-             ? this.connectedOutput.data
-             : null;
-    }
-
-
     _node  = null; get node () { return this._param ? this._param.node : this._node; }
     _param = null; get param() { return this._param; }
 
@@ -22,8 +14,6 @@ extends EventTarget
     
     colorLight;
     colorDark;
-
-    //wireColor;
 
   
     div;

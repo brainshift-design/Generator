@@ -12,8 +12,8 @@ extends Action
     {
         super(
               'REORDER ' + nodeFromId(nodeId).id 
-            + ' ' + oldIndex
-            + ' to ' + newIndex);
+            + '.' + oldIndex
+            + ' to .' + newIndex);
 
         this.nodeId   = nodeId;
         this.oldIndex = oldIndex;

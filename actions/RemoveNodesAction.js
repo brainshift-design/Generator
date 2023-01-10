@@ -62,13 +62,13 @@ extends Action
 
     addOldConnection(conn)
     {
-        if (!this.oldConnections.find(c => 
+        if (!this.oldConnectionData.find(c => 
                    c.outputNodeId == conn.output.node.id
                 && c.outputId     == conn.output.id
                 && c.outputOrder  == conn.outputOrder
                 && c. inputNodeId == conn. input.node.id
                 && c. inputId     == conn. input.id))
-            this.oldConnections.push(conn.toDataObject());
+            this.oldConnectionData.push(conn.toDataObject());
     }
 
 
@@ -94,7 +94,7 @@ extends Action
                 for (const connectedInput of output.connectedInputs)
                 {
                     if (input.connectedOutput.canConnectTo(connectedInput))
-                        this.newConnections.push(connDataObject(input.connectedOutput, connectedInput));
+                        this.newConnectionData.push(connDataObject(input.connectedOutput, connectedInput));
                 }
             }
         }
@@ -123,9 +123,9 @@ extends Action
 
 function removeNodesAction_makeNewConnections(act)
 {
-    for (let i = 0; i < act.newConnections.length; i++)
+    for (let i = 0; i < act.newConnectionData.length; i++)
     {
-        const _conn = act.newConnections[i];
+        const _conn = act.newConnectionData[i];
         
         const conn = uiVariableConnect(
             nodeFromId(_conn.outputNodeId), _conn.outputId, 

@@ -17,13 +17,13 @@ class Action
     onAfterUndo;
 
     
-    selfUpdate    = false;
+    selfUpdate     = false;
 
-    _linkWithNext = false;
+    _linkWithNext  = false;
 
     
-    oldConnections     = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
-    newConnections     = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    oldConnectionData = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    newConnectionData = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
 
 
 
@@ -48,8 +48,8 @@ class Action
 
     initSaveArrays()
     {
-        this.oldConnections = [];
-        this.newConnections = [];
+        this.oldConnectionData = [];
+        this.newConnectionData = [];
     }
 
 
@@ -57,22 +57,22 @@ class Action
     saveOldConnections()
     {
         for (const conn of graph.connections)
-            this.oldConnections.push(conn.toDataObject());
+            this.oldConnectionData.push(conn.toDataObject());
     }
 
 
 
     updateOldConnections()
     {
-        this.oldConnections = this.oldConnections
-            .filter(c => !graph.connections.find(gc => _connEquals(gc, c)));
+        this.oldConnectionData = this.oldConnectionData
+            .filter(c => !graph.connections.find(gc => gc.id == c.id));//_connEquals(gc, c)));
     }
 
 
 
     deleteNewConnections()
     {
-        for (const _conn of this.newConnections)
+        for (const _conn of this.newConnectionData)
         {
             uiDeleteSavedConnection(
                 getConnectionKey(
@@ -88,14 +88,14 @@ class Action
             uiDisconnect(nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
         }
 
-        this.newConnections = [];
+        this.newConnectionData = [];
     }
 
 
 
     restoreOldConnections()
     {
-        for (const _conn of this.oldConnections)
+        for (const _conn of this.oldConnectionData)
         {
             const outputNode = nodeFromId(_conn.outputNodeId);
             const output     = outputNode.outputFromId(_conn.outputId);
@@ -111,7 +111,7 @@ class Action
             uiSaveConn(oldConn);
         }
 
-        this.oldConnections = [];
+        this.oldConnectionData = [];
     }
 
 

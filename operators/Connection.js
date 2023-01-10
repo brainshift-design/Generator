@@ -1,5 +1,9 @@
 class Connection
 {
+    static nextId = 0;
+
+    id;
+
     output;
     outputOrder; // in which connections FROM THIS OUTPUT were made
     
@@ -8,8 +12,11 @@ class Connection
     wire;
 
 
+
     constructor(output, input)
     {
+        this.id                          = Connection.nextId++;
+
         this.output                      = output;
         this.outputOrder                 = -1;
                  
@@ -147,6 +154,7 @@ class Connection
     toDataObject()
     {
         return {
+            id:           this.id,
             outputNodeId: this.output.node.id,
             outputId:     this.output.id,
             outputOrder:  this.outputOrder,
@@ -393,32 +401,33 @@ function updateWireStyle(wire)
 
 
 
-function connEqual(c1, c2)
-{
-    return c1.outputNodeId == c2.outputNodeId
-        && c1.outputId     == c2.outputId
-        //&& c1.outputOrder  == c2.outputOrder // irrelevant to equality
-        && c1.inputNodeId  == c2.inputNodeId
-        && c1.inputId      == c2.inputId;
-}
+// function connEqual(c1, c2)
+// {
+//     return c1.outputNodeId == c2.outputNodeId
+//         && c1.outputId     == c2.outputId
+//         //&& c1.outputOrder  == c2.outputOrder // irrelevant to equality
+//         && c1.inputNodeId  == c2.inputNodeId
+//         && c1.inputId      == c2.inputId;
+// }
 
 
 
-function _connEquals(_c, c)
-{
+// function _connEquals(_c, c)
+// {
 
-    return _c.output.node.id == c.outputNodeId
-        && _c.output.id      == c.outputId
-        //&& _c.outputOrder  == c.outputOrder // irrelevant to equality
-        && _c.input.node.id  == c.inputNodeId
-        && _c.input.id       == c.inputId;
-}
+//     return _c.output.node.id == c.outputNodeId
+//         && _c.output.id      == c.outputId
+//         //&& _c.outputOrder  == c.outputOrder // irrelevant to equality
+//         && _c.input.node.id  == c.inputNodeId
+//         && _c.input.id       == c.inputId;
+// }
 
 
 
 function connDataObject(output, input)
 {
     return {
+        id:           -1,
         outputNodeId: output.node.id,
         outputId:     output.id,
         outputOrder:  input.connection.outputOrder,

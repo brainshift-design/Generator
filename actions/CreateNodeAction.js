@@ -95,7 +95,7 @@ function createNodeAction_connect(act, output, inputNode, inputId, outputOrder =
         
     uiSaveConn(conn);
 
-    pushUnique(act.newConnections, conn.toDataObject());
+    pushUnique(act.newConnectionData, conn.toDataObject());
 
     return conn;
 }

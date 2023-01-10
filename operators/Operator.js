@@ -123,6 +123,9 @@ class Operator
     get headerInputs () { return this.inputs .filter(i => !i.param); }
     get headerOutputs() { return this.outputs.filter(o => !o.param); }
 
+    get connectedHeaderInputs () { return this.inputs .filter(i => !i.param && i.connected); }
+    get connectedHeaderOutputs() { return this.outputs.filter(o => !o.param && o.connected); }
+
 
 
     constructor(type, shortName, defWidth = 100, progressBar = false)
