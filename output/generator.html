@@ -8736,8 +8736,8 @@ extends GColorType
                 m.value / 2,
                 s.value / 2);
 
-            if (   rgbIsOk(rgb)
-                && rgbIsOk(rgbCb))
+            if (   !rgbIsNaN(rgb)
+                && !rgbIsNaN(rgbCb))
             {
                 const validRgbCb = rgbCb;
             

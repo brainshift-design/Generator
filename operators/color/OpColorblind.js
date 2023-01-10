@@ -64,11 +64,11 @@ extends OpColorBase
 
     updateValues(updateParamId, paramIds, values)
     {
-        const value = values[paramIds.findIndex(id => id == 'value')];
+        const col = values[paramIds.findIndex(id => id == 'value')];
 
         this._color = 
-            value
-            ? value.toDataColor()
+            col
+            ? col.toDataColor()
             : dataColor_NaN;
 
         super.updateValues(updateParamId, paramIds, values);
