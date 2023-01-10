@@ -45068,7 +45068,9 @@ extends OpColorBase
     {
         this.updateAllControlRanges();
 
+        super.updateParams();
 
+        
         const enable = !this.inputs[0].connected;
 
         this.paramSpace.enableControlText(!this.paramSpace.input.connected);
@@ -45078,9 +45080,6 @@ extends OpColorBase
 
 
         enableElementText(this.paramColor.control, !this.isConnected());
-
-
-        super.updateParams();
     }
 
 
@@ -46487,7 +46486,7 @@ extends OpColorBase
     updateMargin(margin, correction)
     {
         margin.setName(correction.name, false);
-        margin.control.name = correction.name;
+        margin.control.name = '±' + correction.name;
 
         margin.control.setMin(0);
         margin.control.setMax(correction.max);

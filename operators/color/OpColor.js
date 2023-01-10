@@ -407,7 +407,9 @@ extends OpColorBase
     {
         this.updateAllControlRanges();
 
+        super.updateParams();
 
+        
         const enable = !this.inputs[0].connected;
 
         this.paramSpace.enableControlText(!this.paramSpace.input.connected);
@@ -417,9 +419,6 @@ extends OpColorBase
 
 
         enableElementText(this.paramColor.control, !this.isConnected());
-
-
-        super.updateParams();
     }
 
 
