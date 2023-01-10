@@ -44,7 +44,7 @@ extends Action
         this.newActiveNodeIds = [];
 
         this.saveOldActiveNodes();
-        disconnectAction_updateOldConnectionIndices(this, this.inputNodeId, this.inputId)
+        //disconnectAction_updateOldConnectionIndices(this, this.inputNodeId, this.inputId)
 
         this.removeConnection();        
 
@@ -143,8 +143,8 @@ extends Action
 
 
 
-function disconnectAction_updateOldConnectionIndices(act, inputNodeId, inputId)
-{
+//function disconnectAction_updateOldConnectionIndices(act, inputNodeId, inputId)
+//{
     // for (const _conn of act.oldConnectionData)
     // {
     //     const inputNode = nodeFromId(_conn.inputNodeId);
@@ -156,4 +156,4 @@ function disconnectAction_updateOldConnectionIndices(act, inputNodeId, inputId)
     //         && parseInt(_conn.inputId) > parseInt(inputId))
     //         _conn.inputId = (parseInt(_conn.inputId) - 1).toString();
     // }
-}
+//}

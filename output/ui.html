@@ -48918,13 +48918,6 @@ extends Action
         deleteNodesAction_saveNodePositions(this);
         deleteNodesAction_saveOldActiveNodes(this);
         
-        this.oldConnectionData.sort((c1, c2) => c2.inputId - c1.inputId); // reverse sort
-
-        for (const node of this.nodes)
-            for (const output of node.connectedHeaderOutputs)
-                for (const input of output.connectedInputs)
-                    disconnectAction_updateOldConnectionIndices(this, input.node.id, input.id);
-
         deleteNodesAction_getUpdateNodes(this, updateNodes);
         deleteNodesAction_deleteNodes(this);
 
@@ -49160,7 +49153,7 @@ extends Action
         this.newActiveNodeIds = [];
 
         this.saveOldActiveNodes();
-        disconnectAction_updateOldConnectionIndices(this, this.inputNodeId, this.inputId)
+        //disconnectAction_updateOldConnectionIndices(this, this.inputNodeId, this.inputId)
 
         this.removeConnection();        
 
@@ -49259,8 +49252,8 @@ extends Action
 
 
 
-function disconnectAction_updateOldConnectionIndices(act, inputNodeId, inputId)
-{
+//function disconnectAction_updateOldConnectionIndices(act, inputNodeId, inputId)
+//{
     // for (const _conn of act.oldConnectionData)
     // {
     //     const inputNode = nodeFromId(_conn.inputNodeId);
@@ -49272,7 +49265,7 @@ function disconnectAction_updateOldConnectionIndices(act, inputNodeId, inputId)
     //         && parseInt(_conn.inputId) > parseInt(inputId))
     //         _conn.inputId = (parseInt(_conn.inputId) - 1).toString();
     // }
-}
+//}
 
 
 class MakeActiveNodeAction
@@ -49500,8 +49493,6 @@ extends Action
         connectAction_saveOutputActiveNodes(this);
         connectAction_saveInputActiveNodesAndValues(this);
         this.savePrevInputActiveNodesAndValues();
-
-        disconnectAction_updateOldConnectionIndices(this, this.prevInputNodeId, this.prevInputId)
 
         connectAction_removeOldOutputConnection(this);
         this.removePrevInputConnection();

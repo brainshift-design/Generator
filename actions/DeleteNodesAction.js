@@ -31,13 +31,6 @@ extends Action
         deleteNodesAction_saveNodePositions(this);
         deleteNodesAction_saveOldActiveNodes(this);
         
-        this.oldConnectionData.sort((c1, c2) => c2.inputId - c1.inputId); // reverse sort
-
-        for (const node of this.nodes)
-            for (const output of node.connectedHeaderOutputs)
-                for (const input of output.connectedInputs)
-                    disconnectAction_updateOldConnectionIndices(this, input.node.id, input.id);
-
         deleteNodesAction_getUpdateNodes(this, updateNodes);
         deleteNodesAction_deleteNodes(this);
 

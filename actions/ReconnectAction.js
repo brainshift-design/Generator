@@ -78,8 +78,6 @@ extends Action
         connectAction_saveInputActiveNodesAndValues(this);
         this.savePrevInputActiveNodesAndValues();
 
-        disconnectAction_updateOldConnectionIndices(this, this.prevInputNodeId, this.prevInputId)
-
         connectAction_removeOldOutputConnection(this);
         this.removePrevInputConnection();
 
