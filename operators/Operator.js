@@ -345,12 +345,18 @@ class Operator
 
         if (param.input)
         {
+            if (param.input.connected)
+                actionManager.do(new DisconnectAction(param.input.connectedOutput, param.input), true);
+
             param.input._node = null;
             removeFromArray(this.inputs, param.input);
         }
 
         if (param.output)
         {
+            for (const input of param.output.connectedInputs)
+                actionManager.do(new DisconnectAction(param.output, input), true);
+
             param.output._node = null;
             removeFromArray(this.outputs, param.output);
         }
