@@ -1,8 +1,7 @@
 class   OpBoolean
-extends OperatorBase
+extends OperatorWithValue
 {
     paramOperation;
-    paramValue;
 
 
 
@@ -17,8 +16,8 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, false, BOOLEAN_OPS.map(s => s[1]), 1));
         this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, false, BOOLEAN_OPS.map(s => s[1]), 1));
     }
     
     

@@ -9,15 +9,15 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_CONTRAST, 'contrast', 80);
+        super(COLOR_CONTRAST, 'contrast', 100);
 
 
         this.addInput(new Input(COLOR_TYPES));
         this.addInput(new Input(COLOR_TYPES));
 
 
-        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  false, ['WCAG 2', 'WCAG 3'], 1));
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0, 0));
+        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  false, ['WCAG 2', 'WCAG 3'], 1));
       
 
         createTooltip(ttWcag2);

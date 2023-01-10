@@ -16,7 +16,8 @@ function createOperatorNode(node)
     node.div.dragging           = false;
     node.div.shiftOnPointerDown = false;
     node.div.moved              = false;
-       
+    
+    node.enterTimer             = null;
 
     node.inner = createDiv('nodeInner');
     node.div.appendChild(node.inner);
@@ -225,8 +226,6 @@ function createNodeHeader(node)
         {
             if (    tempConn.output
                 && !tempConn.output.node.isOrFollows(node))
-                //&&  tempConn.input)
-                //&&  tempConn.input.node.id == node.id)
             {
                 if (   node.variableInputs
                     && savedConn)

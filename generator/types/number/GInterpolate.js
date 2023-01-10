@@ -62,6 +62,7 @@ extends GNumberType
 
 
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
 
 
         this.validate();

@@ -1,5 +1,5 @@
 class   OpLimits
-extends OperatorBase
+extends OperatorWithValue
 {
     paramMin;
     paramMax;
@@ -8,11 +8,12 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_LIMITS, 'lim', 90);
+        super(NUMBER_LIMITS, 'lim', 100);
 
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
+        this.addParam(this.paramValue = new NumberParam('value', '',  false, false, false));
         this.addParam(this.paramMin   = new NumberParam('min', 'min', true,  true,  false,    0));
         this.addParam(this.paramMax   = new NumberParam('max', 'max', true,  true,  false, 1000));
     }
@@ -55,7 +56,8 @@ extends OperatorBase
     {
         super.updateParams();
 
-        this.paramMin.enableControlText(true);
-        this.paramMax.enableControlText(true);
+        this.paramMin  .enableControlText(true);
+        this.paramMax  .enableControlText(true);
+        this.paramValue.enableControlText(false);
     }
 }

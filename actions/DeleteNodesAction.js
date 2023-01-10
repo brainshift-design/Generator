@@ -126,8 +126,6 @@ function deleteNodesAction_getUpdateNodes(act, updateNodes)
             }
         }
     }
-
-    console.log('updateNodes =', updateNodes);
 }
 
 

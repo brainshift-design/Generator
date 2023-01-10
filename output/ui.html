@@ -5116,7 +5116,7 @@ function formatSavedNodeJson(json)
         .split('"],\n').join('\n');
 
 
-    if (formJson[formJson.length-1] == '"')    
+    if (lastOf(formJson) == '"')
         formJson = formJson.substring(0, formJson.length - 1);
 
     if (formJson.substring(formJson.length-2) == '"]')    
@@ -10207,6 +10207,7 @@ extends GNumberType
 
         genPushUpdateValue(parse, this.nodeId, 'type',     type);
         genPushUpdateValue(parse, this.nodeId, 'decimals', dec );
+        genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
 
 
         this.validate();
@@ -10293,6 +10294,7 @@ extends GNumberType
 
         genPushUpdateValue(parse, this.nodeId, 'min',   min);
         genPushUpdateValue(parse, this.nodeId, 'max',   max);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -10525,6 +10527,7 @@ extends GNumberType
 
 
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
 
 
         this.validate();
@@ -20552,7 +20555,7 @@ function formatSavedNodeJson(json)
         .split('"],\n').join('\n');
 
 
-    if (formJson[formJson.length-1] == '"')    
+    if (lastOf(formJson) == '"')
         formJson = formJson.substring(0, formJson.length - 1);
 
     if (formJson.substring(formJson.length-2) == '"]')    
@@ -27267,6 +27270,7 @@ extends GNumberType
 
         genPushUpdateValue(parse, this.nodeId, 'type',     type);
         genPushUpdateValue(parse, this.nodeId, 'decimals', dec );
+        genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
 
 
         this.validate();
@@ -27353,6 +27357,7 @@ extends GNumberType
 
         genPushUpdateValue(parse, this.nodeId, 'min',   min);
         genPushUpdateValue(parse, this.nodeId, 'max',   max);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -27585,6 +27590,7 @@ extends GNumberType
 
 
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
 
 
         this.validate();
@@ -38380,14 +38386,10 @@ class Graph
     {
         //console.log('graph.connect()');
 
-        console.log('1');
-        console.log('output =', output);
-        console.log('input =', input);
         if (input.connectedOutput == output)
             return null;
             
 
-        console.log('2');
         if (input.connectedOutput)
         {
             const output = input.connectedOutput;
@@ -38396,7 +38398,6 @@ class Graph
         }
 
 
-        console.log('3');
         if (    input.node.variableInputs
             && !input.param
             &&  inputId != '')
@@ -38420,10 +38421,8 @@ class Graph
                 input.node.inputControls.childNodes[inputIndex]);
         }
 
-        console.log('4');
 
         const conn = new Connection(output, input);
-        console.log('5');
 
         conn.outputOrder = 
             outputOrder > -1
@@ -38432,25 +38431,20 @@ class Graph
             ? Math.max(...output.connectedInputs.map(i => i.connection.outputOrder)) + 1
             : 0;
 
-        console.log('6');
         output.connection = conn;
 
-        console.log('7');
         if (outputOrder > -1) output.connectedInputs.splice(outputOrder, 0, input);
         else                  output.connectedInputs.push(input);
         
-        console.log('8');
         input.connection      = conn;
         input.connectedOutput = output;
 
         
-        console.log('9');
         graphView.addConnWires(conn);
 
         this.connections.push(conn);
 
         
-        console.log('10');
         output.updateControl();
 
 
@@ -41313,12 +41307,52 @@ extends Operator
 }
 
 
-class   OperatorWithSymbol
+class   OperatorWithValue
 extends OperatorBase
+{
+    paramValue;
+    
+
+
+    updateValueParam()
+    {
+        const colors = this.getHeaderColors();
+
+        const colSpaceBar = 
+              !rgbIsNaN(colors.back)
+            && isDark(colors.back)
+            ? [1, 1, 1, 0.12]
+            : [0, 0, 0, 0.09]; 
+
+
+        this.paramValue.control.backStyleLight  =
+        this.paramValue.control.backStyleDark   = rgb2style_a(rgbHeaderFromType(this.type, this.active), 0.95);
+
+        this.paramValue.control.valueStyleLight =
+        this.paramValue.control.valueStyleDark  = rgba2style(colSpaceBar);
+
+        this.paramValue.control.textStyleLight  =
+        this.paramValue.control.textStyleDark   = rgba2style(colors.text);
+    }
+
+
+
+    updateNode()
+    {
+        this.updateValueParam();
+
+        super.updateNode();
+    }
+}
+
+
+class   OperatorWithSymbol
+extends OperatorWithValue
 {
     _symbol;
     _showOnlySymbol;
 
+    
 
     constructor(type, shortName, symbol)
     {
@@ -41460,7 +41494,8 @@ function createOperatorNode(node)
     node.div.dragging           = false;
     node.div.shiftOnPointerDown = false;
     node.div.moved              = false;
-       
+    
+    node.enterTimer             = null;
 
     node.inner = createDiv('nodeInner');
     node.div.appendChild(node.inner);
@@ -41669,8 +41704,6 @@ function createNodeHeader(node)
         {
             if (    tempConn.output
                 && !tempConn.output.node.isOrFollows(node))
-                //&&  tempConn.input)
-                //&&  tempConn.input.node.id == node.id)
             {
                 if (   node.variableInputs
                     && savedConn)
@@ -43318,7 +43351,7 @@ extends OperatorBase
 
 
 class   OpRound
-extends OperatorBase
+extends OperatorWithValue
 {
     paramType;
     paramDec;
@@ -43332,8 +43365,9 @@ extends OperatorBase
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramType = new SelectParam('type',     'type',     false, true, false, ['floor', 'round', 'ceiling'], 1));
-        this.addParam(this.paramDec  = new NumberParam('decimals', 'decimals', true,  true, false, 0, 0, 10));
+        this.addParam(this.paramValue = new NumberParam('value',    '',         false, false, true,  50, 0, 100, 0));
+        this.addParam(this.paramType  = new SelectParam('type',     'type',     false, true,  false, ['floor', 'round', 'ceiling'], 1));
+        this.addParam(this.paramDec   = new NumberParam('decimals', 'decimals', true,  true,  false, 0, 0, 10));
     }
 
 
@@ -43381,7 +43415,7 @@ extends OperatorBase
 
 
 class   OpLimits
-extends OperatorBase
+extends OperatorWithValue
 {
     paramMin;
     paramMax;
@@ -43390,11 +43424,12 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_LIMITS, 'lim', 90);
+        super(NUMBER_LIMITS, 'lim', 100);
 
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
+        this.addParam(this.paramValue = new NumberParam('value', '',  false, false, false));
         this.addParam(this.paramMin   = new NumberParam('min', 'min', true,  true,  false,    0));
         this.addParam(this.paramMax   = new NumberParam('max', 'max', true,  true,  false, 1000));
     }
@@ -43437,8 +43472,9 @@ extends OperatorBase
     {
         super.updateParams();
 
-        this.paramMin.enableControlText(true);
-        this.paramMax.enableControlText(true);
+        this.paramMin  .enableControlText(true);
+        this.paramMax  .enableControlText(true);
+        this.paramValue.enableControlText(false);
     }
 }
 
@@ -43542,10 +43578,10 @@ extends OperatorBase
 
 
 class   OpInterpolate
-extends OperatorBase
+extends OperatorWithValue
 {
     paramAmount;
-
+    
 
 
     constructor()
@@ -43557,6 +43593,7 @@ extends OperatorBase
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
+        this.addParam(this.paramValue  = new NumberParam('value',  '', false, false, false));
         this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  false, 50, 0, 100, 0));
 
         
@@ -43611,15 +43648,15 @@ extends OperatorBase
         super.updateParams();
 
         this.paramAmount.enableControlText(true);
+        this.paramValue .enableControlText(false);
     }
 }
 
 
 class   OpMath
-extends OperatorBase
+extends OperatorWithValue
 {
     paramOperation;
-    paramValue;
 
 
 
@@ -43634,8 +43671,8 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, MATH_OPS.map(s => s[1]), 1));
         this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, MATH_OPS.map(s => s[1]), 1));
     }
     
     
@@ -43715,8 +43752,6 @@ function OpList_onDisconnectInput(node, input)
 class   OpArithmetic
 extends OperatorWithSymbol
 {
-    paramValue;
-    
     constructor(type, shortName, symbol)
     {
         super(type, shortName, symbol);
@@ -43922,10 +43957,9 @@ extends OpArithmetic
 
 
 class   OpBoolean
-extends OperatorBase
+extends OperatorWithValue
 {
     paramOperation;
-    paramValue;
 
 
 
@@ -43940,8 +43974,8 @@ extends OperatorBase
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, false, BOOLEAN_OPS.map(s => s[1]), 1));
         this.addParam(this.paramValue     = new NumberParam('value', '', false, false, false));
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, false, BOOLEAN_OPS.map(s => s[1]), 1));
     }
     
     
@@ -44034,12 +44068,8 @@ function OpList_onDisconnectInput(node, input)
 
 
 class   OpBooleanBase
-extends OperatorBase
+extends OperatorWithValue
 {
-    paramValue;
-    
-
-
     constructor(type, shortName)
     {
         super(type, shortName, 100);
@@ -44189,10 +44219,9 @@ extends OpBooleanBase
 
 
 class   OpCondition
-extends OperatorBase
+extends OperatorWithValue
 {
     paramOperation;
-    paramValue;
 
 
 
@@ -44203,8 +44232,8 @@ extends OperatorBase
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));
 
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true,  false, CONDITION_OPS.map(s => s[1]), 1));
         this.addParam(this.paramValue     = new NumberParam('value',     '', false, false, true,  50, 0, 100, 0));
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true,  false, CONDITION_OPS.map(s => s[1]), 1));
     }
 
 
@@ -44275,9 +44304,6 @@ extends OperatorBase
 class   OpConditionBase
 extends OperatorWithSymbol
 {
-    paramValue;
-
-
     constructor(type, shortName, symbol)
     {
         super(type, shortName, symbol);
@@ -45146,7 +45172,7 @@ extends OpColorBase
             }
             else if (open && rgbIsValid(rgb)) 
             {
-                ranges[ranges.length-1].end = f;
+                lastOf(ranges).end = f;
                 open = false;
             }
         }
@@ -46215,7 +46241,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_CORRECT, 'correct', 90, true);
+        super(COLOR_CORRECT, 'correct', 100, true);
 
 
         this.addInput(new Input(COLOR_TYPES));
@@ -46503,15 +46529,15 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_CONTRAST, 'contrast', 80);
+        super(COLOR_CONTRAST, 'contrast', 100);
 
 
         this.addInput(new Input(COLOR_TYPES));
         this.addInput(new Input(COLOR_TYPES));
 
 
-        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  false, ['WCAG 2', 'WCAG 3'], 1));
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0, 0));
+        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  false, ['WCAG 2', 'WCAG 3'], 1));
       
 
         createTooltip(ttWcag2);
@@ -46910,7 +46936,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLORBLIND, 'colorblind', 90);
+        super(COLORBLIND, 'colorblind', 100);
 
 
         this.addInput(new Input(COLOR_TYPES));
@@ -49030,8 +49056,6 @@ function deleteNodesAction_getUpdateNodes(act, updateNodes)
             }
         }
     }
-
-    console.log('updateNodes =', updateNodes);
 }
 
 
@@ -53516,7 +53540,7 @@ function validateProductKey(name, key, rec = false)
     {
         var lowerKey  = key;
 
-        var lastChar  = lowerKey[lowerKey.length-1];
+        var lastChar  = lastOf(lowerKey);
         var lastIndex = base32chars.indexOf(lastChar);
 
         if (lastIndex > 0)

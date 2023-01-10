@@ -1,9 +1,10 @@
 class   OperatorWithSymbol
-extends OperatorBase
+extends OperatorWithValue
 {
     _symbol;
     _showOnlySymbol;
 
+    
 
     constructor(type, shortName, symbol)
     {

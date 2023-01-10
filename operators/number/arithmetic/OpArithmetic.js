@@ -1,8 +1,6 @@
 class   OpArithmetic
 extends OperatorWithSymbol
 {
-    paramValue;
-    
     constructor(type, shortName, symbol)
     {
         super(type, shortName, symbol);

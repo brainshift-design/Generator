@@ -2772,7 +2772,7 @@ function formatSavedNodeJson(json)
         .split('"],\n').join('\n');
 
 
-    if (formJson[formJson.length-1] == '"')    
+    if (lastOf(formJson) == '"')
         formJson = formJson.substring(0, formJson.length - 1);
 
     if (formJson.substring(formJson.length-2) == '"]')    
@@ -7863,6 +7863,7 @@ extends GNumberType
 
         genPushUpdateValue(parse, this.nodeId, 'type',     type);
         genPushUpdateValue(parse, this.nodeId, 'decimals', dec );
+        genPushUpdateValue(parse, this.nodeId, 'value',    this.value);
 
 
         this.validate();
@@ -7949,6 +7950,7 @@ extends GNumberType
 
         genPushUpdateValue(parse, this.nodeId, 'min',   min);
         genPushUpdateValue(parse, this.nodeId, 'max',   max);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -8181,6 +8183,7 @@ extends GNumberType
 
 
         genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
 
 
         this.validate();

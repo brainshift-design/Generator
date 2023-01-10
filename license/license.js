@@ -31,7 +31,7 @@ function validateProductKey(name, key, rec = false)
     {
         var lowerKey  = key;
 
-        var lastChar  = lowerKey[lowerKey.length-1];
+        var lastChar  = lastOf(lowerKey);
         var lastIndex = base32chars.indexOf(lastChar);
 
         if (lastIndex > 0)

@@ -1,10 +1,6 @@
 class   OpBooleanBase
-extends OperatorBase
+extends OperatorWithValue
 {
-    paramValue;
-    
-
-
     constructor(type, shortName)
     {
         super(type, shortName, 100);

@@ -1,5 +1,5 @@
 class   OpRound
-extends OperatorBase
+extends OperatorWithValue
 {
     paramType;
     paramDec;
@@ -13,8 +13,9 @@ extends OperatorBase
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramType = new SelectParam('type',     'type',     false, true, false, ['floor', 'round', 'ceiling'], 1));
-        this.addParam(this.paramDec  = new NumberParam('decimals', 'decimals', true,  true, false, 0, 0, 10));
+        this.addParam(this.paramValue = new NumberParam('value',    '',         false, false, true,  50, 0, 100, 0));
+        this.addParam(this.paramType  = new SelectParam('type',     'type',     false, true,  false, ['floor', 'round', 'ceiling'], 1));
+        this.addParam(this.paramDec   = new NumberParam('decimals', 'decimals', true,  true,  false, 0, 0, 10));
     }
 
 

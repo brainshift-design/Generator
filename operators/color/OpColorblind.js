@@ -9,7 +9,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLORBLIND, 'colorblind', 90);
+        super(COLORBLIND, 'colorblind', 100);
 
 
         this.addInput(new Input(COLOR_TYPES));

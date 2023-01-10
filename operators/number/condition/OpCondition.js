@@ -1,8 +1,7 @@
 class   OpCondition
-extends OperatorBase
+extends OperatorWithValue
 {
     paramOperation;
-    paramValue;
 
 
 
@@ -13,8 +12,8 @@ extends OperatorBase
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));
 
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true,  false, CONDITION_OPS.map(s => s[1]), 1));
         this.addParam(this.paramValue     = new NumberParam('value',     '', false, false, true,  50, 0, 100, 0));
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true,  false, CONDITION_OPS.map(s => s[1]), 1));
     }
 
 

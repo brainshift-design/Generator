@@ -1,8 +1,8 @@
 class   OpInterpolate
-extends OperatorBase
+extends OperatorWithValue
 {
     paramAmount;
-
+    
 
 
     constructor()
@@ -14,6 +14,7 @@ extends OperatorBase
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
+        this.addParam(this.paramValue  = new NumberParam('value',  '', false, false, false));
         this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  false, 50, 0, 100, 0));
 
         
@@ -68,5 +69,6 @@ extends OperatorBase
         super.updateParams();
 
         this.paramAmount.enableControlText(true);
+        this.paramValue .enableControlText(false);
     }
 }

@@ -67,6 +67,7 @@ extends GNumberType
 
         genPushUpdateValue(parse, this.nodeId, 'min',   min);
         genPushUpdateValue(parse, this.nodeId, 'max',   max);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();

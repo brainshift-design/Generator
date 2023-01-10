@@ -536,7 +536,7 @@ extends OpColorBase
             }
             else if (open && rgbIsValid(rgb)) 
             {
-                ranges[ranges.length-1].end = f;
+                lastOf(ranges).end = f;
                 open = false;
             }
         }
