@@ -71,4 +71,6 @@ function uiReturnFigStartGenerator(msg)
 
     initThemeColors();
     loadLocalSettings();
+
+    //showWhatsNewDialog();
 }

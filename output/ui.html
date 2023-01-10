@@ -490,6 +490,116 @@
 }
 
 
+
+#whatsNewBack
+{
+    display:          block;
+
+    z-index:          1;
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+
+    background-color: #0005
+}
+
+
+
+#whatsNewDialog
+{
+    display:       block;
+
+    font-family:   Inter;
+
+    z-index:       2;
+    position:      absolute;
+    top:           58px;
+    left:          calc(50% + 12px);
+    transform:     translateX(-50%);
+    width:         600px;
+    height:        calc(100% - 80px);
+    overflow:      hidden;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+
+    border-radius: 4px;
+}
+
+
+
+.figma-light #whatsNewDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #whatsNewDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#whatsNewWatermark
+{
+    position:    absolute;
+    left:        40px;
+    top:        -40px;
+    font-size:   500px;
+    font-weight: 600;
+    white-space: nowrap;
+    color:       var(--figma-color-bg-secondary);
+    z-index:     -1;
+}
+
+
+
+#whatsNewTitle
+{
+    height:        40px;
+    border-bottom:  1px solid rgb(0, 0, 0, 0.15);
+    border-top:     1px solid var(--figma-color-bg-tertiary);
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+}
+
+
+#whatsNewTitleText
+{
+    position:       absolute;
+    left:           16px;
+    top:            12px;
+    
+    font-style:     normal;
+    font-weight:    600;
+    font-size:      11px;
+    line-height:    16px;
+    
+    display:        flex;
+    align-items:    center;
+    letter-spacing: 0.005em;
+    
+    color:          var(--figma-color-text);
+
+    pointer-events: none;
+    user-select:    none;
+}
+
+
+#whatsNewBody
+{
+    margin:  0 30px 0 30px;
+}
+
+
 #loadingOverlay
 {
     position: absolute;
@@ -2150,6 +2260,44 @@ a
         <div id='deleteConnectionsInputBack'></div>
         <input type='text' spellcheck='false' id='deleteConnectionsInput' />
         <div class='button' id='deleteConnectionsButton' onclick='deleteConnectionsToNodes(deleteConnectionsInput.value);'>Delete</div>
+    </div>
+
+</div>
+
+
+
+<div id='whatsNewBack'></div>
+
+<div id='whatsNewDialog'>
+
+    <div id='whatsNewTitle'>
+        <div id='whatsNewTitleText'>Version 94</div>
+        <div class='panelButton dialogButtonClose' id='whatsNewClose' onclick='whatsNewClose.blur(); hideWhatsNewDialog();'>
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
+            </svg>
+        </div>
+    </div>
+    
+    <div id='whatsNewWatermark'>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
+
+    <div id='whatsNewBody'>
+        <h1>What's new in Generator</h1>
+        <p>A completely rewritten back end designed for data safety, UI performance and project scalability.</p>
+        <p>This is especially important for the beta stage, so if there is a bug, as little data as possible will be lost.</p>
+        <p>UI updated to completely match Figma.</p>
+        <p>Fills, strokes & styles</p>
+        <p>Flow operators</p>
+        <p>-- Lists</p>
+        <p>Comments</p>
+        <img src="http://www.bourt.com/generator/whatsnew/94/test.jpg" />
+
+        <!-- <div id='productKeyUserName'></div>
+        <div id='productKeyUserId'></div>
+        
+        <div id='productKeyInputBack'></div>
+        <input type='text' spellcheck='false' id='productKeyInput' />
+        <div id='productKeyWebsite'><a href='http://www.bourt.com/generator/subscribe' target='_blank'>Buy subscription</a></div> -->
     </div>
 
 </div>
@@ -51144,6 +51292,8 @@ function uiReturnFigStartGenerator(msg)
 
     initThemeColors();
     loadLocalSettings();
+
+    //showWhatsNewDialog();
 }
 
 
@@ -53531,6 +53681,44 @@ function uiNotify(text, delay = 4000, error = false, prefix = GENERATOR_LOGO + '
         error:  error
     });        
 }
+
+
+
+function showWhatsNewDialog()
+{
+    whatsNewBack  .style.display = 'block';
+    whatsNewDialog.style.display = 'block';
+
+
+    // whatsNewUserName.innerHTML = currentUser.name;
+    // whatsNewUserId  .innerHTML = '<span style="user-select: none; color: #aaa;">ID:&nbsp;&nbsp;</span>' + currentUser.id;
+
+    // setDefaultWhatsNewInput();
+    // whatsNewInputBack.innerHTML = '•'.repeat(13);
+    // whatsNewInput.value = '';
+
+    
+    // window.setTimeout(() => document.getElementById('whatsNewInput').focus(), 0);
+}
+
+
+
+function hideWhatsNewDialog()
+{
+    whatsNewBack  .style.display = 'none';
+    whatsNewDialog.style.display = 'none';
+}
+
+
+
+whatsNewClose.addEventListener('pointerdown', e => e.stopPropagation());
+
+
+
+whatsNewBack.addEventListener('pointerdown', () =>
+{
+    hideWhatsNewDialog();
+});
 
 
 document.canResizeX = false;
