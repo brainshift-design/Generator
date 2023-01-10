@@ -19,7 +19,7 @@ extends Action
 
 
 
-    do()
+    do(updateNodes)
     {
         this.oldName = this.node.name;
         this.node.setName(this.newName);
@@ -29,7 +29,7 @@ extends Action
 
 
 
-    undo()
+    undo(updateNodes)
     {
         this.node.setName(this.oldName);
         this.node.updateNode();
@@ -39,7 +39,7 @@ extends Action
 
 
 
-    redo()
+    redo(updateNodes)
     {
         this.node.setName(this.newName);
         this.node.updateNode();

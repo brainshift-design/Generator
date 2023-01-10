@@ -161,16 +161,7 @@ function initGeneratorMenus()
     menuMainPreferences.addItems([
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',      {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                       }}),
         menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces',    {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
-        menuItemShowBoolValues        = new MenuItem('Show boolean values as ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues       ); updateMenuItemShowBoolValues();       }}),
-        menuItemShowNodeId            = new MenuItem('Show node IDs',
-        {
-            checkCallback: () => settings.showNodeId, 
-            callback:      () => 
-            {
-                updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
-                graph.nodes.forEach(n => n.updateNode());
-            }
-        })]);
+        menuItemShowBoolValues        = new MenuItem('Show boolean values as ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues       ); updateMenuItemShowBoolValues();       }})]);
 
     
     menuMainDebug = new Menu('Debug', false);
@@ -185,8 +176,17 @@ function initGeneratorMenus()
         //     }
         // }),
         menuItemDataMode         = new MenuItem('Restart in debug mode',      {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        ), setting: true}),
-        //                         new MenuItem('Delete connections to...',   {callback:      () => showDeleteConnectionsDialog()}),
-                                   new MenuItem('',                           {separator: true}),
+        menuItemShowNodeId       = new MenuItem('Show node IDs',
+                                   {
+                                       checkCallback: () => settings.showNodeId, 
+                                       callback:      () => 
+                                       {
+                                           updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
+                                           graph.nodes.forEach(n => n.updateNode());
+                                       }
+                                   }),
+        //                         new MenuItem('Delete connections to...',   {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
+                                   new MenuItem('',                           {separator: true}),   
                                    new MenuItem('Log all connection keys',    {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
                                    new MenuItem('',                           {separator: true }),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',          {checkCallback: () => settings.logRequests        , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     ), setting: true}),
