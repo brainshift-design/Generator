@@ -44,8 +44,6 @@ extends Action
         this.newActiveNodeIds = [];
 
         this.saveOldActiveNodes();
-        //disconnectAction_updateOldConnectionIndices(this, this.inputNodeId, this.inputId)
-
         this.removeConnection();        
 
         this.activateNewNodes();
@@ -140,20 +138,3 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
     }
 }
-
-
-
-//function disconnectAction_updateOldConnectionIndices(act, inputNodeId, inputId)
-//{
-    // for (const _conn of act.oldConnectionData)
-    // {
-    //     const inputNode = nodeFromId(_conn.inputNodeId);
-
-    //     if (   inputNode.id == inputNodeId
-    //         && inputNode.variableInputs
-    //         && strIsNum(_conn.inputId)
-    //         && strIsNum(inputId)
-    //         && parseInt(_conn.inputId) > parseInt(inputId))
-    //         _conn.inputId = (parseInt(_conn.inputId) - 1).toString();
-    // }
-//}

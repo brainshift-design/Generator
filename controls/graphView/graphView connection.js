@@ -32,12 +32,15 @@ graphView.startConnectionFromInput = (pointerId, input) =>
 
 
 
-graphView.cancelConnection = pointerId =>
+graphView.cancelConnection = (pointerId) =>
 {
     const output = graphView.tempConn.output;
     const input  = graphView.tempConn.input;
 
     graphView.removeConnWires(graphView.tempConn);    
+
+    if (graphView.savedConn)
+        updateWire(graphView.savedConn.wire);
 
     graphView.savedConn = null;
     graphView.tempConn  = null;
@@ -95,7 +98,9 @@ graphView.endConnection = pointerId =>
             }
 
             else if (savedConnInput
-                  && savedConnInput.connectedOutput == output)
+                  && savedConnInput.connectedOutput == output
+                  && (  !input.node.variableInputs 
+                      || input.index < input.node.headerInputs.length-1))
                 actionManager.do(new ReconnectAction(output, savedConnInput, input));
 
             else if (   !savedConnInput

@@ -35797,12 +35797,15 @@ graphView.startConnectionFromInput = (pointerId, input) =>
 
 
 
-graphView.cancelConnection = pointerId =>
+graphView.cancelConnection = (pointerId) =>
 {
     const output = graphView.tempConn.output;
     const input  = graphView.tempConn.input;
 
     graphView.removeConnWires(graphView.tempConn);    
+
+    if (graphView.savedConn)
+        updateWire(graphView.savedConn.wire);
 
     graphView.savedConn = null;
     graphView.tempConn  = null;
@@ -35860,7 +35863,9 @@ graphView.endConnection = pointerId =>
             }
 
             else if (savedConnInput
-                  && savedConnInput.connectedOutput == output)
+                  && savedConnInput.connectedOutput == output
+                  && (  !input.node.variableInputs 
+                      || input.index < input.node.headerInputs.length-1))
                 actionManager.do(new ReconnectAction(output, savedConnInput, input));
 
             else if (   !savedConnInput
@@ -38375,10 +38380,14 @@ class Graph
     {
         //console.log('graph.connect()');
 
+        console.log('1');
+        console.log('output =', output);
+        console.log('input =', input);
         if (input.connectedOutput == output)
             return null;
             
 
+        console.log('2');
         if (input.connectedOutput)
         {
             const output = input.connectedOutput;
@@ -38387,6 +38396,7 @@ class Graph
         }
 
 
+        console.log('3');
         if (    input.node.variableInputs
             && !input.param
             &&  inputId != '')
@@ -38410,8 +38420,10 @@ class Graph
                 input.node.inputControls.childNodes[inputIndex]);
         }
 
+        console.log('4');
 
         const conn = new Connection(output, input);
+        console.log('5');
 
         conn.outputOrder = 
             outputOrder > -1
@@ -38420,20 +38432,25 @@ class Graph
             ? Math.max(...output.connectedInputs.map(i => i.connection.outputOrder)) + 1
             : 0;
 
+        console.log('6');
         output.connection = conn;
 
+        console.log('7');
         if (outputOrder > -1) output.connectedInputs.splice(outputOrder, 0, input);
-        else            output.connectedInputs.push(input);
+        else                  output.connectedInputs.push(input);
         
+        console.log('8');
         input.connection      = conn;
         input.connectedOutput = output;
 
         
+        console.log('9');
         graphView.addConnWires(conn);
 
         this.connections.push(conn);
 
         
+        console.log('10');
         output.updateControl();
 
 
@@ -49153,8 +49170,6 @@ extends Action
         this.newActiveNodeIds = [];
 
         this.saveOldActiveNodes();
-        //disconnectAction_updateOldConnectionIndices(this, this.inputNodeId, this.inputId)
-
         this.removeConnection();        
 
         this.activateNewNodes();
@@ -49249,23 +49264,6 @@ extends Action
             uiMakeNodeActive(nodeFromId(id));
     }
 }
-
-
-
-//function disconnectAction_updateOldConnectionIndices(act, inputNodeId, inputId)
-//{
-    // for (const _conn of act.oldConnectionData)
-    // {
-    //     const inputNode = nodeFromId(_conn.inputNodeId);
-
-    //     if (   inputNode.id == inputNodeId
-    //         && inputNode.variableInputs
-    //         && strIsNum(_conn.inputId)
-    //         && strIsNum(inputId)
-    //         && parseInt(_conn.inputId) > parseInt(inputId))
-    //         _conn.inputId = (parseInt(_conn.inputId) - 1).toString();
-    // }
-//}
 
 
 class MakeActiveNodeAction
@@ -53078,7 +53076,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
             nodeIds:       nodes.map(n => n.id),
             objects:       [...objects]});
     }
-        console.log('nodes =', nodes);
+
     
     uiSaveNodes(nodes.map(n => n.id));
     

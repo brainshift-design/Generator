@@ -882,7 +882,7 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
             nodeIds:       nodes.map(n => n.id),
             objects:       [...objects]});
     }
-        console.log('nodes =', nodes);
+
     
     uiSaveNodes(nodes.map(n => n.id));
     

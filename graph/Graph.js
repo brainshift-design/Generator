@@ -139,10 +139,14 @@ class Graph
     {
         //console.log('graph.connect()');
 
+        console.log('1');
+        console.log('output =', output);
+        console.log('input =', input);
         if (input.connectedOutput == output)
             return null;
             
 
+        console.log('2');
         if (input.connectedOutput)
         {
             const output = input.connectedOutput;
@@ -151,6 +155,7 @@ class Graph
         }
 
 
+        console.log('3');
         if (    input.node.variableInputs
             && !input.param
             &&  inputId != '')
@@ -174,8 +179,10 @@ class Graph
                 input.node.inputControls.childNodes[inputIndex]);
         }
 
+        console.log('4');
 
         const conn = new Connection(output, input);
+        console.log('5');
 
         conn.outputOrder = 
             outputOrder > -1
@@ -184,20 +191,25 @@ class Graph
             ? Math.max(...output.connectedInputs.map(i => i.connection.outputOrder)) + 1
             : 0;
 
+        console.log('6');
         output.connection = conn;
 
+        console.log('7');
         if (outputOrder > -1) output.connectedInputs.splice(outputOrder, 0, input);
-        else            output.connectedInputs.push(input);
+        else                  output.connectedInputs.push(input);
         
+        console.log('8');
         input.connection      = conn;
         input.connectedOutput = output;
 
         
+        console.log('9');
         graphView.addConnWires(conn);
 
         this.connections.push(conn);
 
         
+        console.log('10');
         output.updateControl();
 
 
