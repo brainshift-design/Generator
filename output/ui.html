@@ -5693,8 +5693,8 @@ function normalizeSeed(x)
 }
 
 
-const NAN_CHAR            = '-';
-const NAN_DISPLAY         = '–';
+const NAN_CHAR            = '?';
+const NAN_DISPLAY         = '?';
 
 const UNKNOWN_CHAR        = '?';
 const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
@@ -22756,8 +22756,8 @@ function base32toArray(base32, chars = base32chars)
 }
 
 
-const NAN_CHAR            = '-';
-const NAN_DISPLAY         = '–';
+const NAN_CHAR            = '?';
+const NAN_DISPLAY         = '?';
 
 const UNKNOWN_CHAR        = '?';
 const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
@@ -34689,7 +34689,7 @@ graphView.headerOutput    = null; // same as overOutput, but when snapping from 
     
 graphView.tempConn        = null;
 graphView.savedConn       = null;
-//graphView.savedInputIndex = -1;
+graphView.tempConnected   = false;
 
 graphView.connPointerId   = -1;
 
@@ -35776,6 +35776,7 @@ graphView.startConnectionFromOutput = (pointerId, output, updateTempWire = true)
     graphView.tempConn = new Connection(output, null);
     graphView.tempConn.wire.output = output;
 
+    //graphView.tempConnected = false;
     graphView.addConnWires(graphView.tempConn, false);
 
     if (updateTempWire)
@@ -35791,8 +35792,6 @@ graphView.startConnectionFromInput = (pointerId, input) =>
     graphView.connPointerId = pointerId;
 
     graphView.tempConn = new Connection(null, input);
-    
-    //graphView.tempConn.wire.input = input;
     
     graphView.addConnWires(graphView.tempConn, false);
 
@@ -35862,7 +35861,8 @@ graphView.endConnection = pointerId =>
                 && !isLastInArray(input.node.headerInputs, input))
                 actionManager.do(new ReorderInputAction(input.node.id, oldReorderIndex, newReorderIndex));
 
-            else if (input == savedConnInput) // reconnect old
+            else if (   input == savedConnInput
+                     && input.connection) // reconnect old
             {
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
                 updateWire(input.connection.wire);
@@ -41677,8 +41677,8 @@ function createNodeHeader(node)
 
         const toTheRightOfInputs = e.clientX - boundingRect(node.header).x > 12 * graphView.zoom;
 
-        const  tempConn = graphView. tempConn;
-        const savedConn = graphView.savedConn;
+        const tempConn  = graphView. tempConn;
+        let   savedConn = graphView.savedConn;
 
 
         if (node.div.dragging)
@@ -41758,6 +41758,22 @@ function createNodeHeader(node)
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
                         inputRect.y + inputRect.h/2 - menuBar.offsetHeight);
+
+                    // if (!graphView.tempConnected)
+                    // {
+                    //     node.enterTimer = setTimeout(() =>
+                    //     {
+                    //         actionManager.do(new ConnectAction(tempConn.output, input));
+                            
+                    //         graphView.savedConn = input.connection;
+                    //         graphView.removeConnWires(graphView.tempConn);    
+
+                    //         node.enterTimer = null;
+                    //     },
+                    //     400);
+
+                    //     graphView.tempConnected = true;
+                    // }
                 }
             }
             else if (tempConn.input
@@ -49805,24 +49821,9 @@ extends Action
     {
         // .. already done
 
-
-        uiDeleteSavedConnectionsToNodeId(this.nodeId);
-
-
-        const node = nodeFromId(this.nodeId);
-
-        for (const input of node.inputs.filter(i => i.connected))
-        {
-            const output = input.connectedOutput;
-
-            uiSaveConnection(
-                output.node.id, output.id, input.connection.outputOrder,
-                input.node.id, input.id,
-                input.connection.toJson());
-        }
-
+        this.saveInputConnections();
         
-        pushUnique(updateNodes, node);
+        pushUnique(updateNodes, nodeFromId(this.nodeId));
     }
 
 
@@ -49834,6 +49835,8 @@ extends Action
         moveInArray(node.inputs, this.newIndex, this.oldIndex);
         uiSaveNodes([this.nodeId]);
         
+        this.saveInputConnections();
+
         pushUnique(updateNodes, node);
     }
 
@@ -49846,7 +49849,29 @@ extends Action
         moveInArray(node.inputs, this.oldIndex, this.newIndex);
         uiSaveNodes([this.nodeId]);
 
+        this.saveInputConnections();
+
         pushUnique(updateNodes, node);
+    }
+
+
+
+    saveInputConnections()
+    {
+        uiDeleteSavedConnectionsToNodeId(this.nodeId);
+        
+        const node = nodeFromId(this.nodeId);
+
+        for (const input of node.inputs.filter(i => i.connected))
+            uiSaveConn(input.connection);
+        // {
+        //     const output = input.connectedOutput;
+
+        //     uiSaveConnection(
+        //         output.node.id, output.id, input.connection.outputOrder,
+        //         input.node.id, input.id,
+        //         input.connection.toJson());
+        // }
     }
 }
 

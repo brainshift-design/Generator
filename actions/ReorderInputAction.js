@@ -26,24 +26,9 @@ extends Action
     {
         // .. already done
 
-
-        uiDeleteSavedConnectionsToNodeId(this.nodeId);
-
-
-        const node = nodeFromId(this.nodeId);
-
-        for (const input of node.inputs.filter(i => i.connected))
-        {
-            const output = input.connectedOutput;
-
-            uiSaveConnection(
-                output.node.id, output.id, input.connection.outputOrder,
-                input.node.id, input.id,
-                input.connection.toJson());
-        }
-
+        this.saveInputConnections();
         
-        pushUnique(updateNodes, node);
+        pushUnique(updateNodes, nodeFromId(this.nodeId));
     }
 
 
@@ -55,6 +40,8 @@ extends Action
         moveInArray(node.inputs, this.newIndex, this.oldIndex);
         uiSaveNodes([this.nodeId]);
         
+        this.saveInputConnections();
+
         pushUnique(updateNodes, node);
     }
 
@@ -67,6 +54,28 @@ extends Action
         moveInArray(node.inputs, this.oldIndex, this.newIndex);
         uiSaveNodes([this.nodeId]);
 
+        this.saveInputConnections();
+
         pushUnique(updateNodes, node);
+    }
+
+
+
+    saveInputConnections()
+    {
+        uiDeleteSavedConnectionsToNodeId(this.nodeId);
+        
+        const node = nodeFromId(this.nodeId);
+
+        for (const input of node.inputs.filter(i => i.connected))
+            uiSaveConn(input.connection);
+        // {
+        //     const output = input.connectedOutput;
+
+        //     uiSaveConnection(
+        //         output.node.id, output.id, input.connection.outputOrder,
+        //         input.node.id, input.id,
+        //         input.connection.toJson());
+        // }
     }
 }

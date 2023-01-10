@@ -199,8 +199,8 @@ function createNodeHeader(node)
 
         const toTheRightOfInputs = e.clientX - boundingRect(node.header).x > 12 * graphView.zoom;
 
-        const  tempConn = graphView. tempConn;
-        const savedConn = graphView.savedConn;
+        const tempConn  = graphView. tempConn;
+        let   savedConn = graphView.savedConn;
 
 
         if (node.div.dragging)
@@ -280,6 +280,22 @@ function createNodeHeader(node)
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
                         inputRect.y + inputRect.h/2 - menuBar.offsetHeight);
+
+                    // if (!graphView.tempConnected)
+                    // {
+                    //     node.enterTimer = setTimeout(() =>
+                    //     {
+                    //         actionManager.do(new ConnectAction(tempConn.output, input));
+                            
+                    //         graphView.savedConn = input.connection;
+                    //         graphView.removeConnWires(graphView.tempConn);    
+
+                    //         node.enterTimer = null;
+                    //     },
+                    //     400);
+
+                    //     graphView.tempConnected = true;
+                    // }
                 }
             }
             else if (tempConn.input

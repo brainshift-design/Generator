@@ -101,8 +101,8 @@ function subscriptChar(c) {
         case '.': return ' ';
     }
 }
-const NAN_CHAR = '-';
-const NAN_DISPLAY = '–';
+const NAN_CHAR = '?';
+const NAN_DISPLAY = '?';
 const UNKNOWN_CHAR = '?';
 const UNKNOWN_DISPLAY = UNKNOWN_CHAR; //'🤷‍♂️';
 const TRUE_DISPLAY = '✓'; //'true';
@@ -345,7 +345,7 @@ function formatSavedNodeJson(json) {
         .split('",\n').join('\n')
         .split('"\n').join('\n')
         .split('"],\n').join('\n');
-    if (formJson[formJson.length - 1] == '"')
+    if (lastOf(formJson) == '"')
         formJson = formJson.substring(0, formJson.length - 1);
     if (formJson.substring(formJson.length - 2) == '"]')
         formJson = formJson.substring(0, formJson.length - 2);

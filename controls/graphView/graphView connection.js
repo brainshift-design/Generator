@@ -5,6 +5,7 @@ graphView.startConnectionFromOutput = (pointerId, output, updateTempWire = true)
     graphView.tempConn = new Connection(output, null);
     graphView.tempConn.wire.output = output;
 
+    //graphView.tempConnected = false;
     graphView.addConnWires(graphView.tempConn, false);
 
     if (updateTempWire)
@@ -20,8 +21,6 @@ graphView.startConnectionFromInput = (pointerId, input) =>
     graphView.connPointerId = pointerId;
 
     graphView.tempConn = new Connection(null, input);
-    
-    //graphView.tempConn.wire.input = input;
     
     graphView.addConnWires(graphView.tempConn, false);
 
@@ -91,7 +90,8 @@ graphView.endConnection = pointerId =>
                 && !isLastInArray(input.node.headerInputs, input))
                 actionManager.do(new ReorderInputAction(input.node.id, oldReorderIndex, newReorderIndex));
 
-            else if (input == savedConnInput) // reconnect old
+            else if (   input == savedConnInput
+                     && input.connection) // reconnect old
             {
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
                 updateWire(input.connection.wire);
