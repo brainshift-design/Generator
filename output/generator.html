@@ -2126,11 +2126,11 @@ function isMultiplier(node)
 
 
 
-function getCreateNodeAction(type, creatingButton, insert)
+function getCreateNodeAction(type, creatingButton, options)
 {
-    return insert
-           ? new CreateInsertNodeAction(type, creatingButton)
-           : new CreateNodeAction      (type, creatingButton, settings.autoConnectNewNodes);
+    return !!options.insert
+           ? new CreateInsertNodeAction(type, creatingButton, options)
+           : new CreateNodeAction      (type, creatingButton, options, settings.autoConnectNewNodes);
 }
 
 
@@ -2772,7 +2772,7 @@ function formatSavedNodeJson(json)
         .split('"],\n').join('\n');
 
 
-    if (lastOf(formJson) == '"')
+    if (formJson[formJson.length-1] == '"')
         formJson = formJson.substring(0, formJson.length - 1);
 
     if (formJson.substring(formJson.length-2) == '"]')    
@@ -8885,10 +8885,16 @@ extends GColorType
                 genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
             }
             else
+            {
                 this.value = ColorValue.NaN;
+                genPushUpdateValue(parse, this.nodeId, '', NumberValue.NaN);
+            }
         }
         else
+        {
             this.value = ColorValue.NaN;
+            genPushUpdateValue(parse, this.nodeId, '', NumberValue.NaN);
+        }
 
 
         this.validate();

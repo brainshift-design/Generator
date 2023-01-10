@@ -105,11 +105,6 @@ extends OpColorBase
             ? col.toDataColor()
             : dataColor_NaN;
 
-        // const order   = values[paramIds.findIndex(id => id == 'order'  )];
-        // const margin1 = values[paramIds.findIndex(id => id == 'margin1')];
-        // const margin2 = values[paramIds.findIndex(id => id == 'margin2')];
-        // const margin3 = values[paramIds.findIndex(id => id == 'margin3')];
-
 
         this.initCorrections(this._color[0]);
         this.updateCorrections();

@@ -109,10 +109,16 @@ extends GColorType
                 genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
             }
             else
+            {
                 this.value = ColorValue.NaN;
+                genPushUpdateValue(parse, this.nodeId, '', NumberValue.NaN);
+            }
         }
         else
+        {
             this.value = ColorValue.NaN;
+            genPushUpdateValue(parse, this.nodeId, '', NumberValue.NaN);
+        }
 
 
         this.validate();

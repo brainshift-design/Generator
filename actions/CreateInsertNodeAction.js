@@ -4,6 +4,9 @@ extends Action
     nodeType;
     createdNodeId;
 
+    options;
+
+
     prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
 
     oldInputActiveNodeId = '';
@@ -16,12 +19,14 @@ extends Action
     
 
 
-    constructor(nodeType, creatingButton)
+    constructor(nodeType, creatingButton, options)
     {
         super('CREATE / INSERT \'' + nodeType + '\'');
         
         this.nodeType       = nodeType;
         this.creatingButton = creatingButton;
+
+        this.options        = options;
     }
 
 
@@ -33,7 +38,7 @@ extends Action
         createInsertNodeAction_savePrevConnections(this);
 
 
-        const node = createNode(this.nodeType, this.creatingButton, this.createdId);
+        const node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
 
 
         const insert = 

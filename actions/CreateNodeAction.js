@@ -4,6 +4,9 @@ extends Action
     nodeType;
     createdNodeId;
 
+    options;
+
+
     node;
 
 
@@ -19,12 +22,14 @@ extends Action
     
 
 
-    constructor(nodeType, creatingButton, autoConnect)
+    constructor(nodeType, creatingButton, options, autoConnect)
     {
         super('CREATE \'' + nodeType + '\'');
         
         this.nodeType       = nodeType;
         this.creatingButton = creatingButton;
+
+        this.options        = options;
 
         this.autoConnect    = autoConnect;
     }
@@ -36,7 +41,7 @@ extends Action
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
 
-        this.node = createNode(this.nodeType, this.creatingButton, this.createdId);
+        this.node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
         
 
         const autoConnect = 

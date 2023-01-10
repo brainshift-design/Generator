@@ -127,7 +127,7 @@ class MenuItem
 
             //if (!this.childMenu) 
             if (this.callback)
-                this.select(e.shiftKey, rect.x, rect.y); 
+                this.select(e.shiftKey, this.altKey, rect.x, rect.y); 
         });
 
 
@@ -229,10 +229,11 @@ class MenuItem
 
 
 
-    select(shift = false, x = Number.NaN, y = Number.NaN)
+    select(shift = false, alt = false, x = Number.NaN, y = Number.NaN)
     {
         if (!this.enabled)
             return;
+
 
         if (currentMenus.length > 0) // this lets the item be selected without its parent menu being involved
         {
@@ -247,7 +248,12 @@ class MenuItem
             hideAllMenus();
 
 
-        const e = {shiftKey: shift};
+        const e = 
+        {
+            shiftKey: shift,
+            altKey:   alt
+        };
+
 
         if (!isNaN(x)) e.clientX = x;
         if (!isNaN(y)) e.clientY = y;

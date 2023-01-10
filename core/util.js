@@ -416,9 +416,9 @@ function isMultiplier(node)
 
 
 
-function getCreateNodeAction(type, creatingButton, insert)
+function getCreateNodeAction(type, creatingButton, options)
 {
-    return insert
-           ? new CreateInsertNodeAction(type, creatingButton)
-           : new CreateNodeAction      (type, creatingButton, settings.autoConnectNewNodes);
+    return !!options.insert
+           ? new CreateInsertNodeAction(type, creatingButton, options)
+           : new CreateNodeAction      (type, creatingButton, options, settings.autoConnectNewNodes);
 }

@@ -22,7 +22,7 @@ extends OpColorBase
     {
         super(COLOR, 'color');
 
-
+        
         const defColor = ['hex', 0.85, 0.85, 0.85];
 
         this._color = 
@@ -409,7 +409,7 @@ extends OpColorBase
 
         super.updateParams();
 
-        
+
         const enable = !this.inputs[0].connected;
 
         this.paramSpace.enableControlText(!this.paramSpace.input.connected);

@@ -91,7 +91,7 @@ class MenuButton
                     }
                     else if (this.selectLast
                           && this.menu.lastItem)
-                        this.menu.lastItem.select(e.shiftKey);
+                        this.menu.lastItem.select(e.shiftKey, e.altKey);
 
                     
                     this.update();
