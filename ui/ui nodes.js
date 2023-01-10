@@ -907,10 +907,6 @@ function uiToggleDisableNodes(nodes)
 
 
     update.forEach(_id => uiDeleteObjects([getActiveAfterNode(nodeFromId(_id)).id]));
-
-
-    uiSaveNodes(nodes.map(n => n.id));
-    pushUpdate(null, nodes);
 }
 
 

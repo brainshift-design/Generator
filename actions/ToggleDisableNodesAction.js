@@ -16,15 +16,20 @@ extends Action
 
 
 
-    do()
+    do(updateNodes)
     {
-        uiToggleDisableNodes(this.selectedIds.map(id => nodeFromId(id)));
+        const nodes = this.selectedIds.map(id => nodeFromId(id));
+
+        uiToggleDisableNodes(nodes);
+        uiSaveNodes(nodes.map(n => n.id));
+
+        pushUnique(updateNodes, nodes);
     }
 
 
 
-    undo()
+    undo(updateNodes)
     {
-        this.do();
+        this.do(updateNodes);
     }
 }
