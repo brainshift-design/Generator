@@ -75,7 +75,7 @@ extends Action
         }
 
         for (const node of movedNodes)
-            node.updateNode();//Border();
+            node.updateNode();
 
         uiSaveNodes(movedIds);
     }
@@ -106,7 +106,7 @@ extends Action
     redo(updateNodes)
     {
         this.do(updateNodes);
-console.log('this.getMovedIds() =', this.getMovedIds());
+
         graphView.selectByIds(this.getMovedIds());
     }
 }
