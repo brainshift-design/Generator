@@ -18,21 +18,21 @@ extends Action
 
 
 
-    do()
+    do(updateNodes)
     {
         // this happens in the UI
     }
 
 
 
-    undo()
+    undo(updateNodes)
     {
         graphView.selectByIds(this.prevSelectedIds);
     }
 
 
 
-    redo()
+    redo(updateNodes)
     {
         graphView.selectByIds(this.selectedIds);
     }
