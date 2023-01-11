@@ -493,7 +493,7 @@
 
 #whatsNewBack
 {
-    display:          block;
+    display:          none;
 
     z-index:          1;
     
@@ -511,7 +511,7 @@
 
 #whatsNewDialog
 {
-    display:       block;
+    display:       none;
 
     font-family:   Inter;
 
@@ -597,6 +597,15 @@
 #whatsNewBody
 {
     margin:  0 30px 0 30px;
+}
+
+
+
+#chkHideWhatsNew
+{
+    display: inline-block;
+    position: relative;
+    top: 0.5px;
 }
 
 
@@ -2283,14 +2292,17 @@ a
 
     <div id='whatsNewBody'>
         <h1>What's new in Generator</h1>
-        <p>A completely rewritten back end designed for data safety, UI performance and project scalability.</p>
+        <p>The back end was completely rewritten with a focus on data safety, UI performance and project scalability.</p>
         <p>This is especially important for the beta stage, so if there is a bug, as little data as possible will be lost.</p>
         <p>UI updated to completely match Figma.</p>
         <p>Fills, strokes & styles</p>
         <p>Flow operators</p>
         <p>-- Lists</p>
         <p>Comments</p>
+        <p>Subscription features</p>
         <img src="http://www.bourt.com/generator/whatsnew/94/test.jpg" />
+
+        <p><div id='chkHideWhatsNew'></div></p>
 
         <!-- <div id='productKeyUserName'></div>
         <div id='productKeyUserId'></div>
@@ -51234,6 +51246,9 @@ var genMessagePosted = false;
 //uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
+//uiSetLocalData('showWhatsNew', 'true');
+//uiClearLocalData('showWhatsNew');
+
 //uiRemoveConnsToNodes(['num3']);
 //uiRemoveSavedNodesAndConns(['color']);
 //uiRemoveAllSavedNodesAndConns();
@@ -51266,6 +51281,7 @@ clearConsole();
 initUtilContext();
 
 initDataMode();
+initWhatsNew();
 
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
@@ -51285,6 +51301,14 @@ function initDataMode()
 
 
 
+function initWhatsNew()
+{
+    initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);
+    chkHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', boolToString(!chkHideWhatsNew.checked)));
+}
+
+
+
 function uiReturnFigStartGenerator(msg)
 {
     currentUser = msg.currentUser;
@@ -51293,7 +51317,7 @@ function uiReturnFigStartGenerator(msg)
     initThemeColors();
     loadLocalSettings();
 
-    //showWhatsNewDialog();
+    uiGetLocalData('showWhatsNew');
 }
 
 
@@ -51893,6 +51917,13 @@ function uiReturnFigGetLocalData(msg)
                 cmd:     'figLoadNodesAndConns',
                 dataMode: settings.dataMode });
         
+            break;
+
+        case 'showWhatsNew':
+            if (  !msg.value
+                || parseBool(msg.value))
+                showWhatsNewDialog();
+
             break;
     }
 

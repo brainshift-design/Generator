@@ -75,6 +75,13 @@ function uiReturnFigGetLocalData(msg)
                 dataMode: settings.dataMode });
         
             break;
+
+        case 'showWhatsNew':
+            if (  !msg.value
+                || parseBool(msg.value))
+                showWhatsNewDialog();
+
+            break;
     }
 
 

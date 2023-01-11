@@ -311,7 +311,7 @@
 
 #whatsNewBack
 {
-    display:          block;
+    display:          none;
 
     z-index:          1;
     
@@ -329,7 +329,7 @@
 
 #whatsNewDialog
 {
-    display:       block;
+    display:       none;
 
     font-family:   Inter;
 
@@ -415,4 +415,13 @@
 #whatsNewBody
 {
     margin:  0 30px 0 30px;
+}
+
+
+
+#chkHideWhatsNew
+{
+    display: inline-block;
+    position: relative;
+    top: 0.5px;
 }

@@ -13,6 +13,9 @@ var genMessagePosted = false;
 //uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
+//uiSetLocalData('showWhatsNew', 'true');
+//uiClearLocalData('showWhatsNew');
+
 //uiRemoveConnsToNodes(['num3']);
 //uiRemoveSavedNodesAndConns(['color']);
 //uiRemoveAllSavedNodesAndConns();
@@ -45,6 +48,7 @@ clearConsole();
 initUtilContext();
 
 initDataMode();
+initWhatsNew();
 
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
@@ -64,6 +68,14 @@ function initDataMode()
 
 
 
+function initWhatsNew()
+{
+    initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);
+    chkHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', boolToString(!chkHideWhatsNew.checked)));
+}
+
+
+
 function uiReturnFigStartGenerator(msg)
 {
     currentUser = msg.currentUser;
@@ -72,5 +84,5 @@ function uiReturnFigStartGenerator(msg)
     initThemeColors();
     loadLocalSettings();
 
-    //showWhatsNewDialog();
+    uiGetLocalData('showWhatsNew');
 }
