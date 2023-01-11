@@ -18,6 +18,7 @@ class MenuItem
     separator         = false;
 
     isSetting         = false;
+    disambiguate      = false;
 
     enteredDiv        = false;
     enteredExpand     = false;
@@ -64,13 +65,14 @@ class MenuItem
         if (options.shortcut      != undefined) this.shortcut      = options.shortcut;
         if (options.enabled       != undefined) this.enabled       = options.enabled;
         if (options.setting       != undefined) this.isSetting     = options.setting;
+        if (options.disambiguate  != undefined) this.disambiguate  = options.disambiguate;
     }
 
 
 
     createControls()
     {
-        this.div          = createDiv('menuItem'         );
+        this.div          = createDiv('menuItem' + (this.disambiguate ? ' disambiguate' : ''));
         this.divHighlight = createDiv('menuItemHighlight');
 
         this.divCheck     = createDiv('menuItemCheck'    );

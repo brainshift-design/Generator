@@ -301,19 +301,9 @@ class Operator
 
         this.params.push(param);
         this.inner.appendChild(param.div);
-        
 
-        if (param.input)
-        {
-            //param.input._node = this;
-            this.inputs.push(param.input);
-        }
-
-        if (param.output)
-        {
-            //param.output._node = this;
-            this.outputs.push(param.output);
-        }
+        if (param. input) this. inputs.push(param. input);
+        if (param.output) this.outputs.push(param.output);
 
         return param;
     }
@@ -337,12 +327,6 @@ class Operator
 
     removeParam(param)
     {
-        removeFromArray(this.params, param);
-        this.inner.removeChild(param.div);
-
-        param._node = null;
-
-
         if (param.input)
         {
             if (param.input.connected)
@@ -360,6 +344,12 @@ class Operator
             param.output._node = null;
             removeFromArray(this.outputs, param.output);
         }
+
+        
+        this.inner.removeChild(param.div);
+        removeFromArray(this.params, param);
+
+        param._node = null;
     }
 
 

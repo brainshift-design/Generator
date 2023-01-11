@@ -327,6 +327,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case ITEMS:                   node = new OpItems();            break;
         case SELECT:                  node = new OpSelect();           break;
         case PASS:                    node = new OpPass();             break;
+        case IFELSE:                  node = new OpIfElse();           break;
         case START:                   node = new OpStart();            break;
         case REPEAT:                  node = new OpRepeat();           break;
         case CACHE:                   node = new OpCache();            break;

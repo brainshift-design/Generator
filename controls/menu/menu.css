@@ -189,6 +189,13 @@
 }
 
 
+.disambiguate
+{
+    font-variant-alternates: stylistic(), styleset();
+    font-feature-settings:   'salt' on, 'ss02' on;
+}
+
+
 .menuSeparator
 {
     display:    inline-block;

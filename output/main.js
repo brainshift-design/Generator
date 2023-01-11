@@ -112,6 +112,7 @@ const LIST = 'LIST';
 const ITEMS = 'ITEMS';
 const SELECT = 'SEL';
 const PASS = 'PASS';
+const IFELSE = 'IFELSE';
 const START = 'STRT';
 const REPEAT = 'REPT';
 const CACHE = 'CACHE';
