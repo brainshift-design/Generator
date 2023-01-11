@@ -32,10 +32,10 @@ function logReqSelect(sel, nInputs, parse)
 
 
 
-function logReqPass(pass, nInputs, parse)
+function logReqIfElse(ifElse, nInputs, parse)
 {
-    parse.log += parse.tab + PASS;
-    parse.log += logReqNodeId(pass);
+    parse.log += parse.tab + IF_ELSE;
+    parse.log += logReqNodeId(ifElse);
     parse.log += ' ' + nInputs;
 }
 

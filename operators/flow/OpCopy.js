@@ -9,7 +9,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(COPY, 'copy', 90);
+        super(COPY, 'copy', 100);
 
         //this.cached = true;
         
@@ -101,7 +101,7 @@ extends OperatorBase
 
         if (paramValue)
         {
-            paramValue.enableControlText(true);
+            paramValue.enableControlText(false);
 
             paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
             paramValue.control.showBar   = !this.isUnknown();

@@ -13,7 +13,7 @@ extends OperatorWithValue
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
+        this.addParam(this.paramValue = new NumberParam('value', '', false, false, true));
     }
     
     
@@ -66,7 +66,6 @@ extends OperatorWithValue
     updateParams()
     {
         this.paramValue.enableControlText(false);
-        this.paramValue.control.text.style.fontStyle = settings.showBoolValues ? 'normal' : 'italic';
         
 
         const v = Math.round(this.paramValue.value.value);
@@ -76,7 +75,15 @@ extends OperatorWithValue
               && !isNaN(v))               this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
         else                              this.paramValue.control.valueText = '';
 
-        //this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
+
+        this.paramValue.control.text.style.fontStyle = 
+               settings.showBoolValues 
+            && this.paramValue.control.valueText != UNKNOWN_DISPLAY
+            ? 'normal' 
+            : 'italic';
+
+
+        //this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0; // this is if "true" and "false" are used
         
         this.paramValue.control.showBar = !this.isUnknown();
 

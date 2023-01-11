@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(PASS, 'pass', 90);
+        super(IF_ELSE, 'if/else', 90);
 
 
         this.addInput (new Input(ALL_TYPES));
@@ -18,8 +18,8 @@ extends OperatorBase
         this.addParam(this.paramCondition = new NumberParam('condition', 'condition', true, true, false, 1, 0, 1));
 
 
-        this.inputs[0].addEventListener('connect',    () => OpPass_onConnectInput(this));
-        this.inputs[0].addEventListener('disconnect', () => OpPass_onDisconnectInput(this));
+        this.inputs[0].addEventListener('connect',    () => OpIfElse_onConnectInput(this));
+        this.inputs[0].addEventListener('disconnect', () => OpIfElse_onDisconnectInput(this));
     }
     
     
@@ -43,13 +43,20 @@ extends OperatorBase
         if (ignore) return request;
 
 
-        const input = this.node.inputs[0];
+        const input0 = this.node.inputs[0];
+        const input1 = this.node.inputs[1];
 
+        
+        if (   input0.connected
+            && input1.connected)   request.push(2,
+                                       ...pushInputOrParam(input0, gen),
+                                       ...pushInputOrParam(input1, gen));
 
-        request.push(input.connected ? 1 : 0);
+        else if (input0.connected) request.push(1, 0, ...pushInputOrParam(input0, gen));
+        else if (input1.connected) request.push(1, 1, ...pushInputOrParam(input1, gen));
+            
+        else                       request.push(0);
 
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
         
         request.push(...this.node.paramCondition.genRequest(gen));
 
@@ -72,7 +79,7 @@ extends OperatorBase
 
 
 
-function OpPass_onConnectInput(node)
+function OpIfElse_onConnectInput(node)
 {
     const inOutput = node.inputs[0].connectedOutput;
 
@@ -81,7 +88,7 @@ function OpPass_onConnectInput(node)
 
 
 
-function OpPass_onDisconnectInput(node)
+function OpIfElse_onDisconnectInput(node)
 {
     node.outputs[0].types = [];
 }

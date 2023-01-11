@@ -199,8 +199,7 @@ const LIST                = 'LIST';
 
 const ITEMS               = 'ITEMS';
 const SELECT              = 'SEL';
-const PASS                = 'PASS';
-const IFELSE              = 'IFELSE';
+const IF_ELSE             = 'IF';
 
 const START               = 'STRT';
 const REPEAT              = 'REPT';
@@ -226,7 +225,7 @@ const FLOW_TYPES =
     ...LIST_TYPES,
     ITEMS,
     SELECT,
-    PASS,
+    IF_ELSE,
     START,
     REPEAT,
     FOREACH,

@@ -38,8 +38,8 @@ extends GOperator
         this.copy  = this.value ? this.value.copy()                : null;
 
 
-        if (this.copy) genPushUpdateValue(parse, this.nodeId, 'copy', this.copy);
-        else           genPushUpdateValue(parse, this.nodeId, '', NumberValue.NaN);
+        if (this.copy) genPushUpdateValue(parse, this.nodeId, 'copy', this.copy      );
+        else           genPushUpdateValue(parse, this.nodeId, '',     NumberValue.NaN);
 
         
         this.validate();

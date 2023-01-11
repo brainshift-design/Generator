@@ -452,7 +452,7 @@ function genParseCondition(parse)
 
 function genParseConditionBase(parse, newNode)
 {
-    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+    const [type, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
     const cond = newNode(nodeId, options);
@@ -468,7 +468,7 @@ function genParseConditionBase(parse, newNode)
 
     
     if (parse.settings.logRequests) 
-        logReqConditionBase(arith, type, nInputs, parse);
+        logReqConditionBase(cond, type, nInputs, parse);
 
 
     if (ignore) 

@@ -143,12 +143,12 @@ function genParseSelect(parse)
 
 
 
-function genParsePass(parse)
+function genParseIfElse(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const pass = new GPass(nodeId, options);
+    const ifElse = new GIfElse(nodeId, options);
 
 
     let nInputs = -1;
@@ -156,35 +156,52 @@ function genParsePass(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
 
+    const valueIndex = 
+        nInputs == 1
+        ? parseInt(parse.move())
+        : -1;
+
+
     if (parse.settings.logRequests) 
-        logReqPass(pass, nInputs, parse);
+        logReqIfElse(ifElse, nInputs, parse);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, pass);
+        genParseNodeEnd(parse, ifElse);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
 
     parse.nTab++;
 
+    if (nInputs == 2)
+    {
+        ifElse.input0    = genParse(parse);
+        ifElse.input1    = genParse(parse);
+        ifElse.condition = genParse(parse);
+    }
+    else if (nInputs == 1)
+    {
+             if (valueIndex == 0) ifElse.input0 = genParse(parse); 
+        else if (valueIndex == 1) ifElse.input1 = genParse(parse); 
 
-    if (nInputs == 1)
-        pass.input = genParse(parse);
-
-    pass.condition = genParse(parse);
-
+        ifElse.condition = genParse(parse);
+    }
+    else if (nInputs == 0)
+    {
+        ifElse.condition = genParse(parse);
+    }
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, pass);
-    return pass;
+    genParseNodeEnd(parse, ifElse);
+    return ifElse;
 }
 
 

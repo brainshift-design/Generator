@@ -89,9 +89,9 @@ class MenuButton
                         e.stopPropagation();
                         this.showMenu();
                     }
-                    else if (this.selectLast
-                          && this.menu.lastItem)
-                        this.menu.lastItem.select(e.shiftKey, e.altKey);
+                    // else if (this.selectLast
+                    //       && this.menu.lastItem)
+                    //     this.menu.lastItem.select(e.shiftKey, e.altKey);
 
                     
                     this.update();
