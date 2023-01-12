@@ -14,7 +14,7 @@ const ITEMS               = 'ITEMS';
 const SELECT              = 'SEL';
 const IF_ELSE             = 'IF';
 
-const START               = 'STRT';
+const START               = 'START';
 const REPEAT              = 'REPT';
 
 const CACHE               = 'CACHE';

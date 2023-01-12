@@ -33,6 +33,7 @@ class MenuButton
         if (this.menu)
             this.menu.button = this;
 
+
         this.initOptions(options);
         
         this.createControls();
@@ -84,11 +85,11 @@ class MenuButton
                     disableCurrentMenuButton();
 
 
-                    if (this.useMenuName)
-                    {
+                    //if (this.useMenuName)
+                    //{
                         e.stopPropagation();
                         this.showMenu();
-                    }
+                    //}
                     // else if (this.selectLast
                     //       && this.menu.lastItem)
                     //     this.menu.lastItem.select(e.shiftKey, e.altKey);
@@ -163,17 +164,31 @@ class MenuButton
         div.addEventListener('pointerenter', e =>
         {
             this.overArrow = true;
-            this.divArrow.style.transform = 'translateY(3px)';
+            this.moveArrowDown();
         });
 
 
         div.addEventListener('pointerleave', e =>
         {
             if (!currentMenus.includes(this.menu))
-                this.divArrow.style.transform = 'translateY(0)';
+                this.moveArrowUp();
 
             this.overArrow = false;
         });
+    }
+
+
+
+    moveArrowDown()
+    {
+        this.divArrow.style.transform = 'translateY(3px)';
+    }
+
+
+
+    moveArrowUp()
+    {
+        this.divArrow.style.transform = 'translateY(0)';
     }
 
 

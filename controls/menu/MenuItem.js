@@ -1,27 +1,27 @@
 class MenuItem
 {
-    parentMenu        = null;
-    index             = -1;
+    parentMenu    = null;
+    index         = -1;
 
-    enabled           = true;
+    enabled       = true;
 
-    checked           = false;
-    icon              = ''; // svg
-    name              = '';
-    shortcut          = '';
+    checked       = false;
+    icon          = ''; // svg
+    name          = '';
+    shortcut      = '';
 
-    callback          = null;
-    checkCallback     = null;
+    callback      = null;
+    checkCallback = null;
 
-    childMenu         = null;
+    childMenu     = null;
 
-    separator         = false;
+    separator     = false;
 
-    isSetting         = false;
-    disambiguate      = false;
+    isSetting     = false;
+    disambiguate  = false;
 
-    enteredDiv        = false;
-    enteredExpand     = false;
+    enteredDiv    = false;
+    enteredExpand = false;
 
 
     div;
