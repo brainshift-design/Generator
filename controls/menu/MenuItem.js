@@ -127,9 +127,9 @@ class MenuItem
         {
             const rect = boundingRect(this.div);
 
-            //if (!this.childMenu) 
+            //if (!this.childMenu)
             if (this.callback)
-                this.select(e.shiftKey, this.altKey, rect.x, rect.y); 
+                this.select(e.shiftKey, e.ctrlKey, this.altKey, rect.x, rect.y);
         });
 
 
@@ -231,7 +231,7 @@ class MenuItem
 
 
 
-    select(shift = false, alt = false, x = Number.NaN, y = Number.NaN)
+    select(shift = false, ctrl = false, alt = false, x = Number.NaN, y = Number.NaN)
     {
         if (!this.enabled)
             return;
@@ -245,7 +245,7 @@ class MenuItem
                 this.parentMenu.button.update();
         }
 
-        if (   !shift) 
+        if (   !ctrl) 
             //|| !this.isSetting)
             hideAllMenus();
 
@@ -253,6 +253,7 @@ class MenuItem
         const e = 
         {
             shiftKey: shift,
+            ctrlKey:  ctrl,
             altKey:   alt
         };
 

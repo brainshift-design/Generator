@@ -97,6 +97,7 @@ class Action
     {
         for (const _conn of this.oldConnectionData)
         {
+            console.log('_conn =', _conn);
             const outputNode = nodeFromId(_conn.outputNodeId);
             const output     = outputNode.outputFromId(_conn.outputId);
 

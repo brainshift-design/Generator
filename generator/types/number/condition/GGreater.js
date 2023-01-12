@@ -42,8 +42,9 @@ function evalGreaterInputs(input0, input1, parse)
     {
         const val0 = input0.eval(parse).toValue();
         const val1 = input1.eval(parse).toValue();
-console.log('val0 =', val0);
-console.log('val1 =', val1);
+console.log('val0 =', val0.value);
+console.log('val1 =', val1.value);
+console.log('');
         return new NumberValue(val0.toNumber() > val1.toNumber() ? 1 : 0);
     }
     else                  

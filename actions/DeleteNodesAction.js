@@ -180,10 +180,12 @@ function deleteNodesAction_deleteNodes(act)
 function deleteNodesAction_restoreNodes(act)
 {
     //console.log('this.nodes', this.nodes);
-
+console.log('act.nodes =', act.nodes);
     graph.addNodes(act.nodes);
-    graphView.selected = act.nodes;
     graphView.putNodeOnTop(lastOf(act.nodes));
+
+    graphView.selected = act.nodes;
+
 
     for (let i = 0; i < act.nodes.length; i++)
     {

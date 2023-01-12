@@ -36,8 +36,8 @@ extends GOperator
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
         this.param = this.node.getParamFromId(this.paramId);
-        this.param = this.param.eval(parse).copy();
-
+        this.param.eval(parse);
+        
         return this.param.toValue();
     }
 }
