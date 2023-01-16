@@ -6970,6 +6970,10 @@ extends GValue
 
 
 
+const NullValue = Object.freeze(NumberValue.NaN);
+
+
+
 function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
@@ -8831,12 +8835,11 @@ extends GOperator
         this.value = 
             this.input
             ? this.input.eval(parse).toValue()
-            : null;
+            : NullValue;
 
 
-        if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        else            genPushUpdateValue(parse, this.nodeId, '',      NumberValue.NaN);
-
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        
         
         this.validate();
 
@@ -8891,12 +8894,12 @@ extends GOperator
             return this;
 
 
-        this.value = this.input ? this.input.eval(parse).toValue() : null;
-        this.copy  = this.value ? this.value.copy()                : null;
+        this.value = this.input ? this.input.eval(parse).toValue() : NullValue;
+        this.copy  = this.value ? this.value.copy()                : NullValue;
 
 
-        if (this.copy) genPushUpdateValue(parse, this.nodeId, 'copy', this.copy      );
-        else           genPushUpdateValue(parse, this.nodeId, '',     NumberValue.NaN);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'copy',  this.copy);
 
         
         this.validate();
@@ -24085,6 +24088,10 @@ extends GValue
 
 
 
+const NullValue = Object.freeze(NumberValue.NaN);
+
+
+
 function parseNumberValue(str)
 {
     if (str.indexOf(',') < 0)
@@ -25946,12 +25953,11 @@ extends GOperator
         this.value = 
             this.input
             ? this.input.eval(parse).toValue()
-            : null;
+            : NullValue;
 
 
-        if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        else            genPushUpdateValue(parse, this.nodeId, '',      NumberValue.NaN);
-
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        
         
         this.validate();
 
@@ -26006,12 +26012,12 @@ extends GOperator
             return this;
 
 
-        this.value = this.input ? this.input.eval(parse).toValue() : null;
-        this.copy  = this.value ? this.value.copy()                : null;
+        this.value = this.input ? this.input.eval(parse).toValue() : NullValue;
+        this.copy  = this.value ? this.value.copy()                : NullValue;
 
 
-        if (this.copy) genPushUpdateValue(parse, this.nodeId, 'copy', this.copy      );
-        else           genPushUpdateValue(parse, this.nodeId, '',     NumberValue.NaN);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'copy',  this.copy);
 
         
         this.validate();
@@ -36591,9 +36597,10 @@ extends EventTarget
     onchangelock   = new Event('changelock');
 
 
-    noUpdate = false;
-
-    affectsHeader = true; // indicates whether the parameter contributes to the header's result data
+    volatile       = false;
+    noUpdate       = false;
+ 
+    affectsHeader  = true; // indicates whether the parameter contributes to the header's result data
 
 
 
@@ -39667,8 +39674,8 @@ class Output
     _param = null; get param() { return this._param; }
     
     
-    get id()    { return this.node.getOutputId(this);     }
-    get index() { return this.node.outputs.indexOf(this); }
+    get id()    { return this.node ? this.node.getOutputId(this)     : ''; }
+    get index() { return this.node ? this.node.outputs.indexOf(this) : ''; }
 
 
     colorLight;
@@ -40333,6 +40340,7 @@ function updateWireStyle(wire)
 function connDataObject(output, input)
 {
     return {
+        connection:   input.connection,
         id:           -1,
         outputNodeId: output.node.id,
         outputId:     output.id,
@@ -40640,9 +40648,10 @@ class Operator
 
 
 
-    addParam(param)
+    addParam(param, volatile = false)
     {
-        param._node = this;
+        param._node    = this;
+        param.volatile = volatile;
 
         this.params.push(param);
         this.inner.appendChild(param.div);
@@ -40655,15 +40664,15 @@ class Operator
  
     
 
-    addParamByType(type, id, showName, hasInput, hasOutput)
+    addParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
     {
-             if (NUMBER_TYPES.includes(type)) return this.addParam(new NumberParam(id, id, showName, hasInput, hasOutput));
-        else if ( COLOR_TYPES.includes(type)) return this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput));
-        else if (  FILL_TYPES.includes(type)) return this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput));
-        else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput));
-        else if ( STYLE_TYPES.includes(type)) return this.addParam(new  StyleParam(id, id, showName, hasInput, hasOutput));
+             if (NUMBER_TYPES.includes(type)) return this.addParam(new NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if ( COLOR_TYPES.includes(type)) return this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  FILL_TYPES.includes(type)) return this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if ( STYLE_TYPES.includes(type)) return this.addParam(new  StyleParam(id, id, showName, hasInput, hasOutput), volatile);
 
-        else console.assert(false, 'cannot create param of type \'' + type + '\'');
+        else console.assert(false, 'cannot create parameter of type \'' + type + '\'');
 
         return null;
     }
@@ -40690,7 +40699,7 @@ class Operator
             removeFromArray(this.outputs, param.output);
         }
 
-        
+
         this.inner.removeChild(param.div);
         removeFromArray(this.params, param);
 
@@ -41419,6 +41428,10 @@ function pushUpdateFromParam(action, nodes, param)
           ((settings.includeLxxColorSpaces ? 1 : 0) << 0)
         | ((settings.logRequests           ? 1 : 0) << 1);
 
+
+    if (action)
+        actionManager.updateActions.push(action);
+        
 
     const request = 
     [
@@ -48502,6 +48515,9 @@ class Action
     
     oldConnectionData = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
     newConnectionData = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    
+    oldOutputParams   = []; // actual Parameter objects
+    newOutputParams   = []; // copies of old params for paste/duplicate
 
 
 
@@ -48528,6 +48544,9 @@ class Action
     {
         this.oldConnectionData = [];
         this.newConnectionData = [];
+
+        this.oldOutputParams   = [];
+        this.newOutputParams   = [];
     }
 
 
@@ -48535,7 +48554,15 @@ class Action
     saveOldConnections()
     {
         for (const conn of graph.connections)
+        {
             this.oldConnectionData.push(conn.toDataObject());
+
+            if (conn.output.param)
+            {
+                conn.output.param._nodeId = conn.output.param.node.id;
+                this.oldOutputParams.push(conn.output.param);
+            }
+        }
     }
 
 
@@ -48543,7 +48570,12 @@ class Action
     updateOldConnections()
     {
         this.oldConnectionData = this.oldConnectionData
-            .filter(c => !graph.connections.find(gc => gc.id == c.id));//_connEquals(gc, c)));
+            .filter(c => !graph.connections.find(gc => gc.id == c.id));
+
+        this.oldOutputParams = this.oldOutputParams
+            .filter(p => this.oldConnectionData.find(c => 
+                   p._nodeId   == c.outputNodeId
+                && p.output.id == c.outputId));
     }
 
 
@@ -48556,12 +48588,12 @@ class Action
                 getConnectionKey(
                     _conn.outputNodeId, _conn.outputId, _conn.outputOrder,
                     _conn.inputNodeId,  _conn.inputId),
-                    _conn.outputNodeId,
-                    _conn.outputId,
-                    _conn.outputOrder,
-                    _conn.inputNodeId,
-                    _conn.inputId,
-                    _conn.list);
+                _conn.outputNodeId,
+                _conn.outputId,
+                _conn.outputOrder,
+                _conn.inputNodeId,
+                _conn.inputId,
+                _conn.list);
   
             uiDisconnect(nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
         }
@@ -48575,20 +48607,34 @@ class Action
     {
         for (const _conn of this.oldConnectionData)
         {
-            console.log('_conn =', _conn);
             const outputNode = nodeFromId(_conn.outputNodeId);
-            const output     = outputNode.outputFromId(_conn.outputId);
+            let   output     = outputNode.outputFromId(_conn.outputId);
+            
+            if (!output)
+                output = this.oldOutputParams.find(p => 
+                       p._nodeId == _conn.outputNodeId
+                    && p.id      == _conn.outputId).output; 
+
+            console.assert(output, 'output should be found at this point');
+
 
             output.updateSavedConnectionOrder(_conn.outputOrder, +1);
 
 
-            const oldConn = uiVariableConnect(
+            // const oldConn = 
+            uiVariableConnect(
                 outputNode,                    _conn.outputId,
                 nodeFromId(_conn.inputNodeId), _conn.inputId,
                 _conn.outputOrder);
-
-            uiSaveConn(oldConn);
+                
+            // uiSaveConn(oldConn);
         }
+
+
+        // at this point a request should be sent 
+        // and the update received with some flag to indicate that this is that kind of an update
+        // at the end of the update reconnect the connections to the real connections and save them
+
 
         this.oldConnectionData = [];
     }
@@ -48602,7 +48648,7 @@ class Action
     
         uiDeleteObjects(this.newActiveNodeIds); 
     }
-};
+}
 
 
 
@@ -48613,12 +48659,25 @@ function linkActions(prevAction, nextAction)
 }
 
 
+/*
+    when deleting parameters, store them in a parameter trash bin
+    when looking for nodes and params during undo, check that bin also
+    but also when just changing values or connecting etc params could come back,
+        maybe the actions themselves should store deleted params along with
+        deleted connections
+    this will also come into play with copy/paste/duplicating
+    when performing an actionn, clear that bin
+*/
+
+
+
 class ActionManager
 {
-    actions      = [];
-    redoActions  = [];
+    actions       = [];
+    redoActions   = [];
+    updateActions = [];
     
-    nextActionId = 0;
+    nextActionId  = 0;
    
     
     
@@ -49325,6 +49384,8 @@ extends Action
 
     undo(updateNodes)
     {
+        //console.log('DeleteNodesAction.undo()');
+
         deleteNodesAction_restoreNodes(this);
         
         this.deactivateNewActiveNodes();
@@ -49463,8 +49524,8 @@ function deleteNodesAction_deleteNodes(act)
 
 function deleteNodesAction_restoreNodes(act)
 {
-    //console.log('this.nodes', this.nodes);
-console.log('act.nodes =', act.nodes);
+    console.log('act.nodes', act.nodes);
+
     graph.addNodes(act.nodes);
     graphView.putNodeOnTop(lastOf(act.nodes));
 
@@ -49709,7 +49770,7 @@ extends Action
 
     prevSelectedNodeIds = [];
 
-    oldActiveNodeIds = [];
+    oldActiveNodeIds    = [];
 
 
 

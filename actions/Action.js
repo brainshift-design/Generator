@@ -24,6 +24,9 @@ class Action
     
     oldConnectionData = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
     newConnectionData = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    
+    oldOutputParams   = []; // actual Parameter objects
+    newOutputParams   = []; // copies of old params for paste/duplicate
 
 
 
@@ -50,6 +53,9 @@ class Action
     {
         this.oldConnectionData = [];
         this.newConnectionData = [];
+
+        this.oldOutputParams   = [];
+        this.newOutputParams   = [];
     }
 
 
@@ -57,7 +63,15 @@ class Action
     saveOldConnections()
     {
         for (const conn of graph.connections)
+        {
             this.oldConnectionData.push(conn.toDataObject());
+
+            if (conn.output.param)
+            {
+                conn.output.param._nodeId = conn.output.param.node.id;
+                this.oldOutputParams.push(conn.output.param);
+            }
+        }
     }
 
 
@@ -65,7 +79,12 @@ class Action
     updateOldConnections()
     {
         this.oldConnectionData = this.oldConnectionData
-            .filter(c => !graph.connections.find(gc => gc.id == c.id));//_connEquals(gc, c)));
+            .filter(c => !graph.connections.find(gc => gc.id == c.id));
+
+        this.oldOutputParams = this.oldOutputParams
+            .filter(p => this.oldConnectionData.find(c => 
+                   p._nodeId   == c.outputNodeId
+                && p.output.id == c.outputId));
     }
 
 
@@ -78,12 +97,12 @@ class Action
                 getConnectionKey(
                     _conn.outputNodeId, _conn.outputId, _conn.outputOrder,
                     _conn.inputNodeId,  _conn.inputId),
-                    _conn.outputNodeId,
-                    _conn.outputId,
-                    _conn.outputOrder,
-                    _conn.inputNodeId,
-                    _conn.inputId,
-                    _conn.list);
+                _conn.outputNodeId,
+                _conn.outputId,
+                _conn.outputOrder,
+                _conn.inputNodeId,
+                _conn.inputId,
+                _conn.list);
   
             uiDisconnect(nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
         }
@@ -97,20 +116,34 @@ class Action
     {
         for (const _conn of this.oldConnectionData)
         {
-            console.log('_conn =', _conn);
             const outputNode = nodeFromId(_conn.outputNodeId);
-            const output     = outputNode.outputFromId(_conn.outputId);
+            let   output     = outputNode.outputFromId(_conn.outputId);
+            
+            if (!output)
+                output = this.oldOutputParams.find(p => 
+                       p._nodeId == _conn.outputNodeId
+                    && p.id      == _conn.outputId).output; 
+
+            console.assert(output, 'output should be found at this point');
+
 
             output.updateSavedConnectionOrder(_conn.outputOrder, +1);
 
 
-            const oldConn = uiVariableConnect(
+            // const oldConn = 
+            uiVariableConnect(
                 outputNode,                    _conn.outputId,
                 nodeFromId(_conn.inputNodeId), _conn.inputId,
                 _conn.outputOrder);
-
-            uiSaveConn(oldConn);
+                
+            // uiSaveConn(oldConn);
         }
+
+
+        // at this point a request should be sent 
+        // and the update received with some flag to indicate that this is that kind of an update
+        // at the end of the update reconnect the connections to the real connections and save them
+
 
         this.oldConnectionData = [];
     }
@@ -124,7 +157,7 @@ class Action
     
         uiDeleteObjects(this.newActiveNodeIds); 
     }
-};
+}
 
 
 

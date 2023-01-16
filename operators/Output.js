@@ -7,8 +7,8 @@ class Output
     _param = null; get param() { return this._param; }
     
     
-    get id()    { return this.node.getOutputId(this);     }
-    get index() { return this.node.outputs.indexOf(this); }
+    get id()    { return this.node ? this.node.getOutputId(this)     : ''; }
+    get index() { return this.node ? this.node.outputs.indexOf(this) : ''; }
 
 
     colorLight;

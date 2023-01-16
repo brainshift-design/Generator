@@ -41,6 +41,8 @@ extends Action
 
     undo(updateNodes)
     {
+        //console.log('DeleteNodesAction.undo()');
+
         deleteNodesAction_restoreNodes(this);
         
         this.deactivateNewActiveNodes();
@@ -179,8 +181,8 @@ function deleteNodesAction_deleteNodes(act)
 
 function deleteNodesAction_restoreNodes(act)
 {
-    //console.log('this.nodes', this.nodes);
-console.log('act.nodes =', act.nodes);
+    console.log('act.nodes', act.nodes);
+
     graph.addNodes(act.nodes);
     graphView.putNodeOnTop(lastOf(act.nodes));
 

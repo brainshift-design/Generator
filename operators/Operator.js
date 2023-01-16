@@ -295,9 +295,10 @@ class Operator
 
 
 
-    addParam(param)
+    addParam(param, volatile = false)
     {
-        param._node = this;
+        param._node    = this;
+        param.volatile = volatile;
 
         this.params.push(param);
         this.inner.appendChild(param.div);
@@ -310,15 +311,15 @@ class Operator
  
     
 
-    addParamByType(type, id, showName, hasInput, hasOutput)
+    addParamByType(type, id, showName, hasInput, hasOutput, volatile = false)
     {
-             if (NUMBER_TYPES.includes(type)) return this.addParam(new NumberParam(id, id, showName, hasInput, hasOutput));
-        else if ( COLOR_TYPES.includes(type)) return this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput));
-        else if (  FILL_TYPES.includes(type)) return this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput));
-        else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput));
-        else if ( STYLE_TYPES.includes(type)) return this.addParam(new  StyleParam(id, id, showName, hasInput, hasOutput));
+             if (NUMBER_TYPES.includes(type)) return this.addParam(new NumberParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if ( COLOR_TYPES.includes(type)) return this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (  FILL_TYPES.includes(type)) return this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
+        else if ( STYLE_TYPES.includes(type)) return this.addParam(new  StyleParam(id, id, showName, hasInput, hasOutput), volatile);
 
-        else console.assert(false, 'cannot create param of type \'' + type + '\'');
+        else console.assert(false, 'cannot create parameter of type \'' + type + '\'');
 
         return null;
     }
@@ -345,7 +346,7 @@ class Operator
             removeFromArray(this.outputs, param.output);
         }
 
-        
+
         this.inner.removeChild(param.div);
         removeFromArray(this.params, param);
 
@@ -1074,6 +1075,10 @@ function pushUpdateFromParam(action, nodes, param)
           ((settings.includeLxxColorSpaces ? 1 : 0) << 0)
         | ((settings.logRequests           ? 1 : 0) << 1);
 
+
+    if (action)
+        actionManager.updateActions.push(action);
+        
 
     const request = 
     [

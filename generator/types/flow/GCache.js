@@ -35,12 +35,11 @@ extends GOperator
         this.value = 
             this.input
             ? this.input.eval(parse).toValue()
-            : null;
+            : NullValue;
 
 
-        if (this.value) genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        else            genPushUpdateValue(parse, this.nodeId, '',      NumberValue.NaN);
-
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        
         
         this.validate();
 

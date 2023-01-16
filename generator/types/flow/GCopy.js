@@ -34,12 +34,12 @@ extends GOperator
             return this;
 
 
-        this.value = this.input ? this.input.eval(parse).toValue() : null;
-        this.copy  = this.value ? this.value.copy()                : null;
+        this.value = this.input ? this.input.eval(parse).toValue() : NullValue;
+        this.copy  = this.value ? this.value.copy()                : NullValue;
 
 
-        if (this.copy) genPushUpdateValue(parse, this.nodeId, 'copy', this.copy      );
-        else           genPushUpdateValue(parse, this.nodeId, '',     NumberValue.NaN);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'copy',  this.copy);
 
         
         this.validate();

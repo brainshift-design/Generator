@@ -13,7 +13,7 @@ extends Action
 
     prevSelectedNodeIds = [];
 
-    oldActiveNodeIds = [];
+    oldActiveNodeIds    = [];
 
 
 

@@ -427,6 +427,7 @@ function updateWireStyle(wire)
 function connDataObject(output, input)
 {
     return {
+        connection:   input.connection,
         id:           -1,
         outputNodeId: output.node.id,
         outputId:     output.id,

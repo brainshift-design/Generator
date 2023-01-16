@@ -21,9 +21,10 @@ extends EventTarget
     onchangelock   = new Event('changelock');
 
 
-    noUpdate = false;
-
-    affectsHeader = true; // indicates whether the parameter contributes to the header's result data
+    volatile       = false;
+    noUpdate       = false;
+ 
+    affectsHeader  = true; // indicates whether the parameter contributes to the header's result data
 
 
 

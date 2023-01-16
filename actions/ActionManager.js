@@ -1,9 +1,22 @@
+/*
+    when deleting parameters, store them in a parameter trash bin
+    when looking for nodes and params during undo, check that bin also
+    but also when just changing values or connecting etc params could come back,
+        maybe the actions themselves should store deleted params along with
+        deleted connections
+    this will also come into play with copy/paste/duplicating
+    when performing an actionn, clear that bin
+*/
+
+
+
 class ActionManager
 {
-    actions      = [];
-    redoActions  = [];
+    actions       = [];
+    redoActions   = [];
+    updateActions = [];
     
-    nextActionId = 0;
+    nextActionId  = 0;
    
     
     
