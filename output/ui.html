@@ -48574,13 +48574,22 @@ class Action
 
     updateOldConnections()
     {
+        console.log('1 this.oldOutputParams =', [...this.oldOutputParams]);
+        console.log('1 this.oldConnectionData =', [...this.oldConnectionData]);
+
         this.oldConnectionData = this.oldConnectionData
             .filter(c => !graph.connections.find(gc => gc.id == c.id));
 
-        this.oldOutputParams = this.oldOutputParams
-            .filter(p => this.oldConnectionData.find(c => 
+        console.log('2 this.oldConnectionData =', [...this.oldConnectionData]);
+
+        const oldOutputParams = this.oldOutputParams
+            .filter(p => this.oldConnectionData.find(c =>
                    p._nodeId   == c.outputNodeId
                 && p.output.id == c.outputId));
+        
+        this.oldOutputParams = oldOutputParams;
+
+        console.log('2 this.oldOutputParams =', [...this.oldOutputParams]);
     }
 
 
@@ -48614,13 +48623,25 @@ class Action
         {
             const outputNode = nodeFromId(_conn.outputNodeId);
             let   output     = outputNode.outputFromId(_conn.outputId);
-            
-            if (!output)
-                output = this.oldOutputParams.find(p => 
-                       p._nodeId == _conn.outputNodeId
-                    && p.id      == _conn.outputId).output; 
 
-            console.assert(output, 'output should be found at this point');
+            if (  !output
+                || output == undefined)
+            {
+                const param = this.oldOutputParams.find(p => 
+                       p._nodeId == _conn.outputNodeId
+                    && p.id      == _conn.outputId); 
+
+console.log('*******************************');
+console.log('_conn.outputNodeId =', _conn.outputNodeId);
+console.log('_conn.outputId =', _conn.outputId);
+console.log('this.oldOutputParams =', [...this.oldOutputParams]);
+console.log('param =', param);
+console.log('-------------------------------');
+
+                output = param.output; 
+            }
+
+            console.assert(output && output != undefined, 'output should be found at this point');
 
 
             output.updateSavedConnectionOrder(_conn.outputOrder, +1);
