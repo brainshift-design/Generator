@@ -41,8 +41,6 @@ extends Action
 
     undo(updateNodes)
     {
-        //console.log('DeleteNodesAction.undo()');
-
         deleteNodesAction_restoreNodes(this);
         
         this.deactivateNewActiveNodes();

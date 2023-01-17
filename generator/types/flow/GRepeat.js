@@ -32,8 +32,6 @@ extends GOperator
 
     eval(parse)
     {
-        //logString('GRepeat.eval()', 'black', 'yellow');
-
         if (this.isCached())
             return this;
 
@@ -65,6 +63,7 @@ extends GOperator
 
         
         genPushUpdateValue(parse, this.nodeId, 'count', count);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();

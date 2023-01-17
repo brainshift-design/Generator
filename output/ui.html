@@ -6699,6 +6699,8 @@ extends GOperator
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
+        this.node.eval(parse);
+        
         this.param = this.node.getParamFromId(this.paramId);
         this.param.eval(parse);
         
@@ -8748,8 +8750,6 @@ extends GOperator
 
     eval(parse)
     {
-        //logString('GRepeat.eval()', 'black', 'yellow');
-
         if (this.isCached())
             return this;
 
@@ -8781,6 +8781,7 @@ extends GOperator
 
         
         genPushUpdateValue(parse, this.nodeId, 'count', count);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -23817,6 +23818,8 @@ extends GOperator
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
+        this.node.eval(parse);
+        
         this.param = this.node.getParamFromId(this.paramId);
         this.param.eval(parse);
         
@@ -25866,8 +25869,6 @@ extends GOperator
 
     eval(parse)
     {
-        //logString('GRepeat.eval()', 'black', 'yellow');
-
         if (this.isCached())
             return this;
 
@@ -25899,6 +25900,7 @@ extends GOperator
 
         
         genPushUpdateValue(parse, this.nodeId, 'count', count);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -43297,12 +43299,15 @@ extends OperatorBase
         this.cached = true;
         
 
-        this.addInput (new Input(ALL_TYPES));
+        this.addInput(new Input(ALL_TYPES));
         //this.addOutput(new Output([], this.output_genRequest));
 
 
         this.paramNumber = new NumberParam('value', '', false, false, true);
         this.paramColor  = new  ColorParam('value', '', false, false, true);
+
+        this.paramNumber.volatile = true;
+        this.paramColor .volatile = true;
 
         
         this.inputs[0].addEventListener('connect',    () => OpCache_onConnectInput(this));
@@ -49384,8 +49389,6 @@ extends Action
 
     undo(updateNodes)
     {
-        //console.log('DeleteNodesAction.undo()');
-
         deleteNodesAction_restoreNodes(this);
         
         this.deactivateNewActiveNodes();
@@ -53504,17 +53507,17 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
                 switch (type)
                 {
-                    case       LIST_VALUE: value = parseListValue     (values[i++])[0]; break;
-                    case     NUMBER_VALUE: value = parseNumberValue   (values[i++])[0]; break;
-                    case      COLOR_VALUE: value = parseColorValue    (values[i++])[0]; break;
-                    case       FILL_VALUE: value = parseFillValue     (values[i++])[0]; break;
-                    case     STROKE_VALUE: value = parseStrokeValue   (values[i++])[0]; break;
+                    case       LIST_VALUE:  value = parseListValue     (values[i++])[0];  break;
+                    case     NUMBER_VALUE:  value = parseNumberValue   (values[i++])[0];  break;
+                    case      COLOR_VALUE:  value = parseColorValue    (values[i++])[0];  break;
+                    case       FILL_VALUE:  value = parseFillValue     (values[i++])[0];  break;
+                    case     STROKE_VALUE:  value = parseStrokeValue   (values[i++])[0];  break;
                     //case COLOR_STOP_VALUE: value = parseColorStopValue(values[i++])[0]; break;
-                    case  RECTANGLE_VALUE: value = parseRectangleValue(values[i++])[0]; break;
-                    case       LINE_VALUE: value = parseLineValue     (values[i++])[0]; break;
-                    case    ELLIPSE_VALUE: value = parseEllipseValue  (values[i++])[0]; break;
-                    case    POLYGON_VALUE: value = parsePolygonValue  (values[i++])[0]; break;
-                    case       STAR_VALUE: value = parseStarValue     (values[i++])[0]; break;
+                    case  RECTANGLE_VALUE:  value = parseRectangleValue(values[i++])[0];  break;
+                    case       LINE_VALUE:  value = parseLineValue     (values[i++])[0];  break;
+                    case    ELLIPSE_VALUE:  value = parseEllipseValue  (values[i++])[0];  break;
+                    case    POLYGON_VALUE:  value = parsePolygonValue  (values[i++])[0];  break;
+                    case       STAR_VALUE:  value = parseStarValue     (values[i++])[0];  break;
                     
                     default: console.assert(false, 'unknown type \'' + type + '\'');
                 }
@@ -53540,6 +53543,9 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
     }
 
 
+    uiSaveNodes(nodes.map(n => n.id));
+    
+    
     if (objects.length > 0)
     {
         if (settings.logObjectUpdates)
@@ -53553,9 +53559,6 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
             objects:       [...objects]});
     }
 
-    
-    uiSaveNodes(nodes.map(n => n.id));
-    
     
     graphView.update(nodes);
     graphView.updateScrollWithBounds();

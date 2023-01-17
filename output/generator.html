@@ -4188,6 +4188,8 @@ extends GOperator
         this.node = parse.parsedNodes.find(v => v.nodeId == this.nodeId);
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
+        this.node.eval(parse);
+        
         this.param = this.node.getParamFromId(this.paramId);
         this.param.eval(parse);
         
@@ -6237,8 +6239,6 @@ extends GOperator
 
     eval(parse)
     {
-        //logString('GRepeat.eval()', 'black', 'yellow');
-
         if (this.isCached())
             return this;
 
@@ -6270,6 +6270,7 @@ extends GOperator
 
         
         genPushUpdateValue(parse, this.nodeId, 'count', count);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();

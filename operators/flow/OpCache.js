@@ -14,12 +14,15 @@ extends OperatorBase
         this.cached = true;
         
 
-        this.addInput (new Input(ALL_TYPES));
+        this.addInput(new Input(ALL_TYPES));
         //this.addOutput(new Output([], this.output_genRequest));
 
 
         this.paramNumber = new NumberParam('value', '', false, false, true);
         this.paramColor  = new  ColorParam('value', '', false, false, true);
+
+        this.paramNumber.volatile = true;
+        this.paramColor .volatile = true;
 
         
         this.inputs[0].addEventListener('connect',    () => OpCache_onConnectInput(this));
