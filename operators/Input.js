@@ -8,7 +8,15 @@ extends EventTarget
     _param = null; get param() { return this._param; }
 
 
-    get id()    { return this.node.getInputId(this);     }
+    get id()   
+    { 
+        return this.node
+             ? this.node.getInputId(this)
+             : this.param
+             ? this.param.id
+             : '';     
+    }
+    
     get index() { return this.node.inputs.indexOf(this); }
 
     

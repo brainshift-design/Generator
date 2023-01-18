@@ -65,7 +65,7 @@ class Action
         for (const conn of graph.connections)
         {
             this.oldConnectionData.push(conn.toDataObject());
-
+ 
             if (conn.output.param)
             {
                 conn.output.param._nodeId = conn.output.param.node.id;
@@ -86,13 +86,26 @@ class Action
 
         console.log('2 this.oldConnectionData =', [...this.oldConnectionData]);
 
-        const oldOutputParams = this.oldOutputParams
-            .filter(p => this.oldConnectionData.find(c =>
-                   p._nodeId   == c.outputNodeId
-                && p.output.id == c.outputId));
+        const oldOutputParams = this.oldOutputParams.filter(p => 
+            {
+                console.log('!!!!!!!!');
+                console.log('p._nodeId =',      p._nodeId);
+                console.log('p.output.id =',    p.output.id);
+
+                return this.oldConnectionData.find(c =>
+                    {
+                        console.log('********');
+                        console.log('c.outputNodeId =', c.outputNodeId);
+                        console.log('c.outputId =',     c.outputId);
+
+                        return p._nodeId   == c.outputNodeId
+                            && p.output.id == c.outputId;
+                    });
+            });
         
         this.oldOutputParams = oldOutputParams;
 
+        console.log('--------');
         console.log('2 this.oldOutputParams =', [...this.oldOutputParams]);
     }
 

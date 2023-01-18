@@ -7,7 +7,15 @@ class Output
     _param = null; get param() { return this._param; }
     
     
-    get id()    { return this.node ? this.node.getOutputId(this)     : ''; }
+    get id()    
+    { 
+        return this.node 
+             ? this.node.getOutputId(this) 
+             : this.param
+             ? this.param.id
+             : ''; 
+    }
+
     get index() { return this.node ? this.node.outputs.indexOf(this) : ''; }
 
 
@@ -27,14 +35,14 @@ class Output
     get connectedHeaderInputs() { return this.connectedInputs.filter(i => !i.param); }
 
 
-    mouseOver       = false;
-    connecting      = false;
+    mouseOver  = false;
+    connecting = false;
 
-    overFactor      = 1.7;
+    overFactor = 1.7;
 
 
-    genRequest      = null; // function pointer, must be implemented
-    cache           = [];
+    genRequest = null; // function pointer, must be implemented
+    cache      = [];
 
 
     get connected() { return this.connectedInputs.length > 0; }
