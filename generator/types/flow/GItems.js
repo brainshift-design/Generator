@@ -2,8 +2,12 @@ class GItems
 extends GOperator
 {
     input = null;
-    
-    items = [];
+
+    //item0
+    //item1
+    //item2
+    //...
+
 
 
     constructor(nodeId, options)
@@ -22,8 +26,15 @@ extends GOperator
         if (this.input) 
             items.input = this.input.copy();
         
-        for (const item of this.items)
-            items.items.push(item.copy());
+        for (const key of this.keys())
+        {
+            if (   key.length >= 4
+                && key.substring(0, 4) == 'item')
+                Object.assign(items, {[key]: this[key]});
+        }
+
+        // for (const item of this.items)
+        //     items.items.push(item.copy());
 
         return items;
     }
@@ -47,9 +58,6 @@ extends GOperator
             this.value = ListValue.NaN;
 
 
-        this.items = [];
-
-
         if (   this.value.isValid()
             && this.value.items.length > 0)
         {
@@ -57,7 +65,7 @@ extends GOperator
             {
                 const item = this.value.items[i];
 
-                this.items.push(item);
+                Object.assign(this, {['item' + i]: item});
                 genPushUpdateValue(parse, this.nodeId, 'item' + i, item);
             }
         }
@@ -77,7 +85,7 @@ extends GOperator
         if (   paramId.length > 4
             && paramId.substring(0, 4) == 'item'
             && strIsNum(paramId.substring(4)))
-            return this.items[parseInt(paramId.substring(4))];
+            return this[paramId];
 
         return null;
     }
