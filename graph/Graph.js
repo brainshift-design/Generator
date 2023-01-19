@@ -122,13 +122,20 @@ class Graph
                 for (const connInput of output.connectedInputs)
                     this.disconnect(connInput, true);
             }
-            
+        }
+
+
+        for (const id of nodeIds)
+        {
+            const node = this.nodes.find(n => n.id == id);
+
             node.selected = false;
             node.graph    = null;
 
             removeFromArray(this.nodes, node);  
             graphView.removeChild(node.div);
         }
+
 
         graphView.updateScrollWithBounds();
     }

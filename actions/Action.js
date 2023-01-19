@@ -17,16 +17,17 @@ class Action
     onAfterUndo;
 
     
-    selfUpdate        = false;
+    selfUpdate         = false;
+    affectsConnections = true;
 
-    _linkWithNext     = false;
+    _linkWithNext      = false;
 
     
-    oldConnectionData = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
-    newConnectionData = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    oldConnectionData  = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    newConnectionData  = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
     
-    oldOutputParams   = []; // actual Parameter objects
-    newOutputParams   = []; // copies of old params for paste/duplicate
+    oldOutputParams    = []; // actual Parameter objects
+    newOutputParams    = []; // copies of old params for paste/duplicate
 
 
 
@@ -78,35 +79,15 @@ class Action
 
     updateOldConnections()
     {
-        console.log('1 this.oldOutputParams =', [...this.oldOutputParams]);
-        console.log('1 this.oldConnectionData =', [...this.oldConnectionData]);
-
         this.oldConnectionData = this.oldConnectionData
             .filter(c => !graph.connections.find(gc => gc.id == c.id));
 
-        console.log('2 this.oldConnectionData =', [...this.oldConnectionData]);
-
         const oldOutputParams = this.oldOutputParams.filter(p => 
-            {
-                console.log('!!!!!!!!');
-                console.log('p._nodeId =',      p._nodeId);
-                console.log('p.output.id =',    p.output.id);
+            this.oldConnectionData.find(c =>
+                       p._nodeId   == c.outputNodeId
+                    && p.output.id == c.outputId));
 
-                return this.oldConnectionData.find(c =>
-                    {
-                        console.log('********');
-                        console.log('c.outputNodeId =', c.outputNodeId);
-                        console.log('c.outputId =',     c.outputId);
-
-                        return p._nodeId   == c.outputNodeId
-                            && p.output.id == c.outputId;
-                    });
-            });
-        
         this.oldOutputParams = oldOutputParams;
-
-        console.log('--------');
-        console.log('2 this.oldOutputParams =', [...this.oldOutputParams]);
     }
 
 
@@ -148,13 +129,6 @@ class Action
                        p._nodeId == _conn.outputNodeId
                     && p.id      == _conn.outputId); 
 
-console.log('*******************************');
-console.log('_conn.outputNodeId =', _conn.outputNodeId);
-console.log('_conn.outputId =', _conn.outputId);
-console.log('this.oldOutputParams =', [...this.oldOutputParams]);
-console.log('param =', param);
-console.log('-------------------------------');
-
                 output = param.output; 
             }
 
@@ -164,13 +138,12 @@ console.log('-------------------------------');
             output.updateSavedConnectionOrder(_conn.outputOrder, +1);
 
 
-            // const oldConn = 
-            uiVariableConnect(
+            const oldConn = uiVariableConnect(
                 outputNode,                    _conn.outputId,
                 nodeFromId(_conn.inputNodeId), _conn.inputId,
                 _conn.outputOrder);
                 
-            // uiSaveConn(oldConn);
+            uiSaveConn(oldConn);
         }
 
 

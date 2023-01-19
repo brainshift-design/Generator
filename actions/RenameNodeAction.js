@@ -13,6 +13,8 @@ extends Action
     {
         super('RENAME ' + nodeId + ' to \'' + newName + '\'');
 
+        this.affectsConnections = false;
+
         this.nodeId  = nodeId;
         this.newName = newName;
     }

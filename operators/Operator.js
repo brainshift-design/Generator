@@ -331,7 +331,7 @@ class Operator
         if (param.input)
         {
             if (param.input.connected)
-                actionManager.do(new DisconnectAction(param.input.connectedOutput, param.input), true);
+                uiDisconnect(param.input);
 
             param.input._node = null;
             removeFromArray(this.inputs, param.input);
@@ -340,7 +340,7 @@ class Operator
         if (param.output)
         {
             for (const input of param.output.connectedInputs)
-                actionManager.do(new DisconnectAction(param.output, input), true);
+                uiDisconnect(input);
 
             param.output._node = null;
             removeFromArray(this.outputs, param.output);

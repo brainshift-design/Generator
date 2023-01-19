@@ -105,8 +105,8 @@ function deleteNodesAction_getUpdateNodes(act, updateNodes)
             // connected inputs need to be sorted by input index
             connectedInputs.sort((i1, i2) => 
             {
-                const node1 = i1.node;
-                const node2 = i2.node;
+                const node1  = i1.node;
+                const node2  = i2.node;
                     
                 const index1 = node1.inputs.indexOf(i1);
                 const index2 = node2.inputs.indexOf(i2);

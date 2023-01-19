@@ -70,27 +70,18 @@ extends Action
 
         connectAction_updateNodes(this, updateNodes);
         connectAction_cleanup(this);
-
-        //pushUpdate(this, updateNodes);
     }
 
 
 
     undo(updateNodes)
     {
-        //const updateNodes = [];
-
-        // connectAction_removeNewConnection(this);
-
-        // connectAction_restoreOldConnection(this);
         connectAction_restoreInputValues(this);
 
         this.deactivateNewActiveNodes();
         connectAction_activateOldActiveNodes(this, updateNodes); 
 
         connectAction_restoreCleanup(this);
-
-        //pushUpdate(this, updateNodes);
     }
 }
 

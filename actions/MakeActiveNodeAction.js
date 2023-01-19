@@ -12,6 +12,8 @@ extends Action
         super('MAKE ACTIVE ' + activeId);
 
         this.activeId = activeId;
+
+        this.affectsConnections = false;
     }
 
 

@@ -12,8 +12,10 @@ extends Action
               'SELECT ' + selectedIds.length 
             + ' ' + countString('node', selectedIds.length));
 
-        this.selectedIds     = [...selectedIds];
-        this.prevSelectedIds = [...prevSelectedIds];
+        this.affectsConnections = false;
+
+        this.selectedIds        = [...selectedIds];
+        this.prevSelectedIds    = [...prevSelectedIds];
     }
 
 

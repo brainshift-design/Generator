@@ -20,17 +20,18 @@ extends Action
             'SELECT MOVE ' + newSelectedIds.length 
           + ' ' + countString('node', newSelectedIds.length));
 
-
-        this.prevSelectedIds = [...prevSelectedIds];
-        this.newSelectedIds  = [...newSelectedIds];
-          
-        this.shiftPressed    = shiftPressed;
-
-        this.fromPos         = fromPos;
-        this.toPos           = toPos;
+        this.affectsConnections = false;
 
 
-        
+        this.prevSelectedIds    = [...prevSelectedIds];
+        this.newSelectedIds     = [...newSelectedIds];
+             
+        this.shiftPressed       = shiftPressed;
+   
+        this.fromPos            = fromPos;
+        this.toPos              = toPos;
+
+                
         const dx = this.toPos.x - this.fromPos.x;
         const dy = this.toPos.y - this.fromPos.y;
 

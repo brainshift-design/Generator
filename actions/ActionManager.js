@@ -108,15 +108,20 @@ class ActionManager
 
         const updateNodes = [];
 
-        act.initSaveArrays();
-        act.saveOldConnections();
+
+        if (act.affectsConnections)
+        {
+            act.initSaveArrays();
+            act.saveOldConnections();
+        }
 
 
         if (!redo) act.do  (updateNodes);
         else       act.redo(updateNodes);
 
 
-        act.updateOldConnections();
+        if (act.affectsConnections)
+            act.updateOldConnections();
 
         
         if (!act.selfUpdate)
@@ -130,16 +135,19 @@ class ActionManager
         if (settings.logActions)
             console.log("%cUNDO %s", 'background: #fff4e8; color: #c64;', act.name);
 
-
+            
+        if (act.affectsConnections)
+            act.deleteNewConnections();
+            
+            
         const updateNodes = [];
-
-        act.deleteNewConnections();
-
 
         act.undo(updateNodes); 
 
 
-        act.restoreOldConnections();
+        if (act.affectsConnections)
+            act.restoreOldConnections();
+
 
         if (!act.selfUpdate)
             pushUpdate(act, updateNodes);
