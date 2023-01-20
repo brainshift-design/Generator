@@ -36,12 +36,15 @@ extends GOperator
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
         this.node.eval(parse);
-        console.log('this.node =', this.node);
-        console.log('this.paramId =', this.paramId);
         
         this.param = this.node.getParamFromId(this.paramId);
-        this.param.eval(parse);
-        
-        return this.param.toValue();
+
+        if (isValid(this.param)) // could have been deleted from OpRepeat for example
+        {
+            this.param.eval(parse);
+            return this.param.toValue();
+        }
+        else
+            return NullValue;
     }
 }

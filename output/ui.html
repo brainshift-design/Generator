@@ -4645,6 +4645,14 @@ function getCreateNodeAction(type, creatingButton, options)
 }
 
 
+
+function isValid(val)
+{
+    return val
+        && val != undefined;
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -6700,13 +6708,16 @@ extends GOperator
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
         this.node.eval(parse);
-        console.log('this.node =', this.node);
-        console.log('this.paramId =', this.paramId);
         
         this.param = this.node.getParamFromId(this.paramId);
-        this.param.eval(parse);
-        
-        return this.param.toValue();
+
+        if (isValid(this.param)) // could have been deleted from OpRepeat for example
+        {
+            this.param.eval(parse);
+            return this.param.toValue();
+        }
+        else
+            return NullValue;
     }
 }
 
@@ -8434,13 +8445,10 @@ extends GOperator
         
         for (const key of this.keys())
         {
-            if (   key.length >= 4
+            if (   key.length > 4
                 && key.substring(0, 4) == 'item')
                 Object.assign(items, {[key]: this[key]});
         }
-
-        // for (const item of this.items)
-        //     items.items.push(item.copy());
 
         return items;
     }
@@ -10202,9 +10210,7 @@ function evalGreaterInputs(input0, input1, parse)
     {
         const val0 = input0.eval(parse).toValue();
         const val1 = input1.eval(parse).toValue();
-console.log('val0 =', val0.value);
-console.log('val1 =', val1.value);
-console.log('');
+
         return new NumberValue(val0.toNumber() > val1.toNumber() ? 1 : 0);
     }
     else                  
@@ -13510,6 +13516,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
             || oc == objChunkSize)
         {
             genQueueChunk(
+                actionId,
                 updateNodeId,
                 updateParamId,
                 nodeValChunkId++,
@@ -13526,6 +13533,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         || objChunk.length > 0)
     {
         genQueueChunk(
+            actionId,
             updateNodeId,
             updateParamId,
             nodeValChunkId++,
@@ -13536,10 +13544,11 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
 
 
 
-function genQueueChunk(updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk)
+function genQueueChunk(actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk)
 {
     genQueueMessageToUI({
         cmd:          'uiUpdateValuesAndObjects',
+        actionId:      actionId,
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
         chunkId:       nodeValChunkId,
@@ -20150,6 +20159,14 @@ function getCreateNodeAction(type, creatingButton, options)
 }
 
 
+
+function isValid(val)
+{
+    return val
+        && val != undefined;
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities
@@ -23829,13 +23846,16 @@ extends GOperator
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
         this.node.eval(parse);
-        console.log('this.node =', this.node);
-        console.log('this.paramId =', this.paramId);
         
         this.param = this.node.getParamFromId(this.paramId);
-        this.param.eval(parse);
-        
-        return this.param.toValue();
+
+        if (isValid(this.param)) // could have been deleted from OpRepeat for example
+        {
+            this.param.eval(parse);
+            return this.param.toValue();
+        }
+        else
+            return NullValue;
     }
 }
 
@@ -25563,13 +25583,10 @@ extends GOperator
         
         for (const key of this.keys())
         {
-            if (   key.length >= 4
+            if (   key.length > 4
                 && key.substring(0, 4) == 'item')
                 Object.assign(items, {[key]: this[key]});
         }
-
-        // for (const item of this.items)
-        //     items.items.push(item.copy());
 
         return items;
     }
@@ -27331,9 +27348,7 @@ function evalGreaterInputs(input0, input1, parse)
     {
         const val0 = input0.eval(parse).toValue();
         const val1 = input1.eval(parse).toValue();
-console.log('val0 =', val0.value);
-console.log('val1 =', val1.value);
-console.log('');
+
         return new NumberValue(val0.toNumber() > val1.toNumber() ? 1 : 0);
     }
     else                  
@@ -30957,6 +30972,8 @@ class MenuItem
         this.divShortcut.innerHTML = this.shortcut;
 
     
+        this.divHighlight.style.zIndex = -2;
+
         
         if (!this.separator)
         {
@@ -31329,6 +31346,7 @@ function initGeneratorMenus()
         //     }
         // }),
         menuItemDataMode         = new MenuItem('Restart in debug mode',      {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        ), setting: true}),
+                                   new MenuItem('',                           {separator: true}),   
         menuItemShowNodeId       = new MenuItem('Show node IDs',
                                    {
                                        checkCallback: () => settings.showNodeId, 
@@ -40295,12 +40313,20 @@ function updateWireStyle(wire)
 
     const wireStyle = rgba2style(color);
 
+    const isNotCached = 
+               conn.output.node
+           && !conn.output.node.isCached()
+        ||     conn.output.param
+           &&  conn.output.param._nodeId != undefined
+           &&  nodeFromId(conn.output.param._nodeId)
+           && !nodeFromId(conn.output.param._nodeId).isCached();
+
 
     const unknown = 
-            conn.output
-        && !conn.output.node.isCached()
-        &&  conn.input
-        &&  conn.input.node.isOrFollowedByMultiplier()
+           conn.output
+        && isNotCached
+        && conn.input
+        && conn.input.node.isOrFollowedByMultiplier()
         && (  !conn.input.param 
             || conn.input.param.affectsHeader);
 
@@ -41237,7 +41263,7 @@ class Operator
 
 
 
-    updateValues(updateParamId, paramIds, values) // virtual
+    updateValues(actionId, updateParamId, paramIds, values) // virtual
     {
         // logFunction(this.id + '.Operator.updateValues()');
 
@@ -42913,9 +42939,17 @@ extends OperatorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
-        const oldParams     = [...this.params];
+        logFunction('OpItems.updateValues()');
+
+        const oldParams = [...this.params];
+
+        if (actionId > -1)
+            pushUnique(actionFromId(actionId).oldOutputParams);
+
+        console.log('oldParams =', [...oldParams]);
+
         const oldParamConns = this.getAllParamConnections();
 
 
@@ -42927,18 +42961,18 @@ extends OperatorBase
             ||    paramIds.length == 1 
                && paramIds[0] != 'noitems')
         {
-            for (let i = 0; i < values.length; i++)
+            for (let i = 0; i < values.length; i++) 
             {
                 const value = values[i];
                 const id    = 'item' + i;
 
-                const param = oldParams.find(p => 
-                       p.id   == id
-                    && p.type == value.type);
+                const param = oldParams.find(p => p.id == id);
+                    // && p.type == value.type);
 
-                if (param) 
+                if (   param
+                    && paramIds.includes(param.id)) 
                 {
-                    this.addParam(param);
+                    this.addParam(param, true);
 
                     const _conn = oldParamConns.find(c =>
                            c.outputNodeId == this.id
@@ -42956,7 +42990,7 @@ extends OperatorBase
             this.removeAllParams();
     
         
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateValues(actionId, updateParamId, paramIds, values);
     }
 
 
@@ -43042,7 +43076,7 @@ extends OperatorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         const val    = values[paramIds.findIndex(id => id == 'value' )];
         const length = values[paramIds.findIndex(id => id == 'length')];
@@ -43067,7 +43101,7 @@ extends OperatorBase
             : Number.MAX_SAFE_INTEGER);
   
         
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateValues(actionId, updateParamId, paramIds, values);
     }
 
 
@@ -43272,6 +43306,7 @@ extends OperatorBase
 
         this.addParam(this.paramCount = new NumberParam('count', 'count', true, true, false, 1, 0, 100, 0));
 
+
         this.paramCount.control.allowEditDecimals = false;
         this.paramCount.affectsHeader = false;
     }
@@ -43309,7 +43344,7 @@ extends OperatorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         const count = values[paramIds.findIndex(id => id == 'count')];
         if (count) this.paramCount.setValue(count, false, true, false);
@@ -43324,6 +43359,18 @@ extends OperatorBase
         super.updateParams();
     }
 }
+
+
+
+// function OpRepeat_onConnectInput(node)
+// {
+//     const inOutput = node.inputs[0].connectedOutput;
+
+//     // node.outputs[0].types = [...inOutput.types];
+
+//          if (inOutput.supportsTypes(NUMBER_TYPES)) node.addParam(node.paramNumber);
+//     else if (inOutput.supportsTypes( COLOR_TYPES)) node.addParam(node.paramColor );
+// }
 
 
 class   OpCache
@@ -43402,7 +43449,7 @@ extends OperatorBase
 
 
 
-    updateValues(updateParamId, paramIds, values) // virtual
+    updateValues(actionId, updateParamId, paramIds, values) // virtual
     {
         const val = values[paramIds.findIndex(id => id == 'value')];
 
@@ -43550,9 +43597,9 @@ extends OperatorBase
 
 
 
-    updateValues(updateParamId, paramIds, values) // virtual
+    updateValues(actionId, updateParamId, paramIds, values) // virtual
     {
-        //super.updateValues(updateParamId, paramIds, values);
+        //super.updateValues(actionId, updateParamId, paramIds, values);
 
 
         const val = values[paramIds.findIndex(id => id == 'copy')];
@@ -44854,11 +44901,11 @@ extends Operator
 
 
 
-    // updateValues(updateParamId, paramIds, values)
+    // updateValues(actionId, updateParamId, paramIds, values)
     // {
     //     //logFunction('OpColorBase.updateValues()');
 
-    //     super.updateValues(updateParamId, paramIds, values);
+    //     super.updateValues(actionId, updateParamId, paramIds, values);
         
     //     //this.updateHeader();
     // }
@@ -45248,7 +45295,7 @@ extends OpColorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         const space = values[paramIds.findIndex(id => id == 'space')];
         const c1    = values[paramIds.findIndex(id => id == 'c1'   )];
@@ -46691,7 +46738,7 @@ extends OpColorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         const col = values[paramIds.findIndex(id => id == 'value')];
 
@@ -46706,7 +46753,7 @@ extends OpColorBase
         endNodeProgress(this);
 
         
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateValues(actionId, updateParamId, paramIds, values);
     }
 
 
@@ -46991,13 +47038,13 @@ extends OpColorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         console.assert(
             paramIds.length == values.length,
             'paramIds.length must equal values.length');
 
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateValues(actionId, updateParamId, paramIds, values);
 
 
         const colText  = values[paramIds.findIndex(id => id == 'text'    )];
@@ -47285,7 +47332,7 @@ extends OpColorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         const col = values[paramIds.findIndex(id => id == 'value')];
 
@@ -47294,7 +47341,7 @@ extends OpColorBase
             ? col.toDataColor()
             : dataColor_NaN;
 
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateValues(actionId, updateParamId, paramIds, values);
     }
 }
 
@@ -47388,7 +47435,7 @@ extends OpColorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         const col = values[paramIds.findIndex(id => id == 'value')];
 
@@ -47397,7 +47444,7 @@ extends OpColorBase
             ? col.toDataColor()
             : dataColor_NaN;
 
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateValues(actionId, updateParamId, paramIds, values);
     }
 
 
@@ -47518,7 +47565,7 @@ extends OpColorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         const color = values[paramIds.findIndex(id => id == 'color')];
 
@@ -47535,7 +47582,7 @@ extends OpColorBase
             : [FILL];
 
 
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateValues(actionId, updateParamId, paramIds, values);
     }
 
 
@@ -47796,7 +47843,7 @@ extends OpColorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         const fill = values[paramIds.findIndex(id => id == 'fill')];
 
@@ -47817,7 +47864,7 @@ extends OpColorBase
         //     && 
         // input.addEventListener('disconnect', () => uiDeleteObjects([this.id]));
 
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateValues(actionId, updateParamId, paramIds, values);
     }
 
 
@@ -48079,7 +48126,7 @@ extends OpColorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         const stop = values[paramIds.findIndex(id => id == 'value')];
 
@@ -48100,7 +48147,7 @@ extends OpColorBase
         }
 
 
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateValues(actionId, updateParamId, paramIds, values);
     }
 }
 
@@ -48196,9 +48243,9 @@ extends OperatorBase
 
 
 
-    // updateValues(updateParamId, paramIds, values)
+    // updateValues(actionId, updateParamId, paramIds, values)
     // {
-    //     super.updateValues(updateParamId, paramIds, values);
+    //     super.updateValues(actionId, updateParamId, paramIds, values);
 
     //     if (paramIds.includes('value'))
     //         this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
@@ -48612,6 +48659,8 @@ class Action
                 this.oldOutputParams.push(conn.output.param);
             }
         }
+
+        console.log('1 this.oldConnectionData =', [...this.oldConnectionData]);
     }
 
 
@@ -48619,7 +48668,11 @@ class Action
     updateOldConnections()
     {
         this.oldConnectionData = this.oldConnectionData
-            .filter(c => !graph.connections.find(gc => gc.id == c.id));
+            .filter(c => 
+                  !graph.connections.find(gc => 
+                         gc.id == c.id
+                      && (   !gc.output.param
+                          || !gc.output.param.volatile)));
 
         const oldOutputParams = this.oldOutputParams.filter(p => 
             this.oldConnectionData.find(c =>
@@ -48627,6 +48680,9 @@ class Action
                     && p.output.id == c.outputId));
 
         this.oldOutputParams = oldOutputParams;
+
+        console.log('2 this.oldConnectionData =', [...this.oldConnectionData]);
+        console.log('2 this.oldOutputParams =',   [...this.oldOutputParams]);
     }
 
 
@@ -48661,27 +48717,40 @@ class Action
             const outputNode = nodeFromId(_conn.outputNodeId);
             let   output     = outputNode.outputFromId(_conn.outputId);
 
-            if (  !output
-                || output == undefined)
+            if (!isValid(output))
             {
                 const param = this.oldOutputParams.find(p => 
                        p._nodeId == _conn.outputNodeId
                     && p.id      == _conn.outputId); 
 
                 output = param.output; 
+
+                output._node = nodeFromId(param._nodeId);
             }
 
-            console.assert(output && output != undefined, 'output should be found at this point');
+            console.assert(isValid(output), 'output should be found at this point');
 
 
             output.updateSavedConnectionOrder(_conn.outputOrder, +1);
 
 
-            const oldConn = uiVariableConnect(
-                outputNode,                    _conn.outputId,
+            console.log('-----------------------------');
+            console.log('outputNode =',        outputNode);
+            console.log('_conn.outputId =',    _conn.outputId);
+            console.log('_conn.inputNodeId =', _conn.inputNodeId);
+            console.log('_conn.inputId =',     _conn.inputId);
+            console.log('_conn.outputOrder =', _conn.outputOrder);
+
+
+            const oldConn = uiVariableConnectFromOutput(
+                output,
                 nodeFromId(_conn.inputNodeId), _conn.inputId,
                 _conn.outputOrder);
-                
+
+ 
+            console.log('oldConn =', oldConn);
+
+            
             uiSaveConn(oldConn);
         }
 
@@ -48873,6 +48942,18 @@ class ActionManager
 
 
 const actionManager = new ActionManager();
+
+
+
+function actionFromId(actionId)
+{
+    let action = actionManager.actions.find(a => a.id == actionId);
+
+    if (!isValid(action))
+        action = actionManager.redoActions.find(a => a.id == actionId);
+
+    return action;
+}
 
 
 class ConnectAction
@@ -51851,10 +51932,10 @@ generator.onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'uiEndGenMessage':          uiEndGenMessage();                                                                      break;
-        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.updateNodeId, msg.updateParamId, msg.values, msg.objects); break;
-        case 'uiStartNodeProgress':      uiStartNodeProgress     (msg.nodeId);                                                   break;
-        case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                     break;
+        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                    break;
+        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.actionId, msg.updateNodeId, msg.updateParamId, msg.values, msg.objects); break;
+        case 'uiStartNodeProgress':      uiStartNodeProgress     (msg.nodeId);                                                                 break;
+        case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                                   break;
     }
 };
 
@@ -53163,7 +53244,17 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder
     //console.log('uiVariableConnect()');
 
     const output = outputNode.outputFromId(outputId);
-    const  input =  inputNode. inputFromId( inputId);
+    return uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder);
+}
+
+
+
+function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -1)
+{
+    //console.log('uiVariableConnectFromOutput()');
+
+    const input = inputNode. inputFromId( inputId);
+
 
     if (    inputNode.variableInputs
         && (!input || !input.param))
@@ -53524,7 +53615,7 @@ function findConnectedClusters(nodes)
 
 
 
-function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
+function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values, objects)
 {
     if (settings.logRawValues)  
         console.log('raw values = ', values);
@@ -53589,7 +53680,8 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
             if (node)
             {
-                node.updateValues(
+                node.updateValues( 
+                    actionId,
                     updateNodeId == nodeId ? updateParamId : '',
                     _ids,
                     _values);

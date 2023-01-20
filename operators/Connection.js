@@ -337,12 +337,20 @@ function updateWireStyle(wire)
 
     const wireStyle = rgba2style(color);
 
+    const isNotCached = 
+               conn.output.node
+           && !conn.output.node.isCached()
+        ||     conn.output.param
+           &&  conn.output.param._nodeId != undefined
+           &&  nodeFromId(conn.output.param._nodeId)
+           && !nodeFromId(conn.output.param._nodeId).isCached();
+
 
     const unknown = 
-            conn.output
-        && !conn.output.node.isCached()
-        &&  conn.input
-        &&  conn.input.node.isOrFollowedByMultiplier()
+           conn.output
+        && isNotCached
+        && conn.input
+        && conn.input.node.isOrFollowedByMultiplier()
         && (  !conn.input.param 
             || conn.input.param.affectsHeader);
 

@@ -72,13 +72,13 @@ extends OpColorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         console.assert(
             paramIds.length == values.length,
             'paramIds.length must equal values.length');
 
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateValues(actionId, updateParamId, paramIds, values);
 
 
         const colText  = values[paramIds.findIndex(id => id == 'text'    )];

@@ -26,11 +26,11 @@ extends Operator
 
 
 
-    // updateValues(updateParamId, paramIds, values)
+    // updateValues(actionId, updateParamId, paramIds, values)
     // {
     //     //logFunction('OpColorBase.updateValues()');
 
-    //     super.updateValues(updateParamId, paramIds, values);
+    //     super.updateValues(actionId, updateParamId, paramIds, values);
         
     //     //this.updateHeader();
     // }

@@ -92,7 +92,7 @@ extends OpColorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         const color = values[paramIds.findIndex(id => id == 'color')];
 
@@ -109,7 +109,7 @@ extends OpColorBase
             : [FILL];
 
 
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateValues(actionId, updateParamId, paramIds, values);
     }
 
 

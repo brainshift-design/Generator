@@ -422,3 +422,11 @@ function getCreateNodeAction(type, creatingButton, options)
            ? new CreateInsertNodeAction(type, creatingButton, options)
            : new CreateNodeAction      (type, creatingButton, options, settings.autoConnectNewNodes);
 }
+
+
+
+function isValid(val)
+{
+    return val
+        && val != undefined;
+}

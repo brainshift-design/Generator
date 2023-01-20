@@ -157,3 +157,15 @@ class ActionManager
 
 
 const actionManager = new ActionManager();
+
+
+
+function actionFromId(actionId)
+{
+    let action = actionManager.actions.find(a => a.id == actionId);
+
+    if (!isValid(action))
+        action = actionManager.redoActions.find(a => a.id == actionId);
+
+    return action;
+}

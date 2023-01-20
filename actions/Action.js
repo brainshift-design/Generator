@@ -73,6 +73,8 @@ class Action
                 this.oldOutputParams.push(conn.output.param);
             }
         }
+
+        console.log('1 this.oldConnectionData =', [...this.oldConnectionData]);
     }
 
 
@@ -80,7 +82,11 @@ class Action
     updateOldConnections()
     {
         this.oldConnectionData = this.oldConnectionData
-            .filter(c => !graph.connections.find(gc => gc.id == c.id));
+            .filter(c => 
+                  !graph.connections.find(gc => 
+                         gc.id == c.id
+                      && (   !gc.output.param
+                          || !gc.output.param.volatile)));
 
         const oldOutputParams = this.oldOutputParams.filter(p => 
             this.oldConnectionData.find(c =>
@@ -88,6 +94,9 @@ class Action
                     && p.output.id == c.outputId));
 
         this.oldOutputParams = oldOutputParams;
+
+        console.log('2 this.oldConnectionData =', [...this.oldConnectionData]);
+        console.log('2 this.oldOutputParams =',   [...this.oldOutputParams]);
     }
 
 
@@ -122,27 +131,40 @@ class Action
             const outputNode = nodeFromId(_conn.outputNodeId);
             let   output     = outputNode.outputFromId(_conn.outputId);
 
-            if (  !output
-                || output == undefined)
+            if (!isValid(output))
             {
                 const param = this.oldOutputParams.find(p => 
                        p._nodeId == _conn.outputNodeId
                     && p.id      == _conn.outputId); 
 
                 output = param.output; 
+
+                output._node = nodeFromId(param._nodeId);
             }
 
-            console.assert(output && output != undefined, 'output should be found at this point');
+            console.assert(isValid(output), 'output should be found at this point');
 
 
             output.updateSavedConnectionOrder(_conn.outputOrder, +1);
 
 
-            const oldConn = uiVariableConnect(
-                outputNode,                    _conn.outputId,
+            console.log('-----------------------------');
+            console.log('outputNode =',        outputNode);
+            console.log('_conn.outputId =',    _conn.outputId);
+            console.log('_conn.inputNodeId =', _conn.inputNodeId);
+            console.log('_conn.inputId =',     _conn.inputId);
+            console.log('_conn.outputOrder =', _conn.outputOrder);
+
+
+            const oldConn = uiVariableConnectFromOutput(
+                output,
                 nodeFromId(_conn.inputNodeId), _conn.inputId,
                 _conn.outputOrder);
-                
+
+ 
+            console.log('oldConn =', oldConn);
+
+            
             uiSaveConn(oldConn);
         }
 

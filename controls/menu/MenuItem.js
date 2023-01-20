@@ -104,6 +104,8 @@ class MenuItem
         this.divShortcut.innerHTML = this.shortcut;
 
     
+        this.divHighlight.style.zIndex = -2;
+
         
         if (!this.separator)
         {

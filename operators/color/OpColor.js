@@ -229,7 +229,7 @@ extends OpColorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         const space = values[paramIds.findIndex(id => id == 'space')];
         const c1    = values[paramIds.findIndex(id => id == 'c1'   )];

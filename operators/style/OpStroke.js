@@ -108,7 +108,7 @@ extends OpColorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         const fill = values[paramIds.findIndex(id => id == 'fill')];
 
@@ -129,7 +129,7 @@ extends OpColorBase
         //     && 
         // input.addEventListener('disconnect', () => uiDeleteObjects([this.id]));
 
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateValues(actionId, updateParamId, paramIds, values);
     }
 
 

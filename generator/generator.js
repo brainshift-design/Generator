@@ -185,6 +185,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
             || oc == objChunkSize)
         {
             genQueueChunk(
+                actionId,
                 updateNodeId,
                 updateParamId,
                 nodeValChunkId++,
@@ -201,6 +202,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         || objChunk.length > 0)
     {
         genQueueChunk(
+            actionId,
             updateNodeId,
             updateParamId,
             nodeValChunkId++,
@@ -211,10 +213,11 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
 
 
 
-function genQueueChunk(updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk)
+function genQueueChunk(actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk)
 {
     genQueueMessageToUI({
         cmd:          'uiUpdateValuesAndObjects',
+        actionId:      actionId,
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
         chunkId:       nodeValChunkId,

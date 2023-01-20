@@ -839,7 +839,7 @@ class Operator
 
 
 
-    updateValues(updateParamId, paramIds, values) // virtual
+    updateValues(actionId, updateParamId, paramIds, values) // virtual
     {
         // logFunction(this.id + '.Operator.updateValues()');
 

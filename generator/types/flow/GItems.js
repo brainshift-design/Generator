@@ -28,13 +28,10 @@ extends GOperator
         
         for (const key of this.keys())
         {
-            if (   key.length >= 4
+            if (   key.length > 4
                 && key.substring(0, 4) == 'item')
                 Object.assign(items, {[key]: this[key]});
         }
-
-        // for (const item of this.items)
-        //     items.items.push(item.copy());
 
         return items;
     }

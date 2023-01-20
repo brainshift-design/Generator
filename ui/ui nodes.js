@@ -432,7 +432,17 @@ function uiVariableConnect(outputNode, outputId, inputNode, inputId, outputOrder
     //console.log('uiVariableConnect()');
 
     const output = outputNode.outputFromId(outputId);
-    const  input =  inputNode. inputFromId( inputId);
+    return uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder);
+}
+
+
+
+function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -1)
+{
+    //console.log('uiVariableConnectFromOutput()');
+
+    const input = inputNode. inputFromId( inputId);
+
 
     if (    inputNode.variableInputs
         && (!input || !input.param))
@@ -793,7 +803,7 @@ function findConnectedClusters(nodes)
 
 
 
-function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
+function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values, objects)
 {
     if (settings.logRawValues)  
         console.log('raw values = ', values);
@@ -858,7 +868,8 @@ function uiUpdateValuesAndObjects(updateNodeId, updateParamId, values, objects)
 
             if (node)
             {
-                node.updateValues(
+                node.updateValues( 
+                    actionId,
                     updateNodeId == nodeId ? updateParamId : '',
                     _ids,
                     _values);

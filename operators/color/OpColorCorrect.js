@@ -99,7 +99,7 @@ extends OpColorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
         const col = values[paramIds.findIndex(id => id == 'value')];
 
@@ -114,7 +114,7 @@ extends OpColorBase
         endNodeProgress(this);
 
         
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateValues(actionId, updateParamId, paramIds, values);
     }
 
 

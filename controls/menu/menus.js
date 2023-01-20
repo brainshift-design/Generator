@@ -176,6 +176,7 @@ function initGeneratorMenus()
         //     }
         // }),
         menuItemDataMode         = new MenuItem('Restart in debug mode',      {checkCallback: () => settings.dataMode           , callback: () => updateSettingAndMenu('dataMode',         true, !settings.dataMode        ), setting: true}),
+                                   new MenuItem('',                           {separator: true}),   
         menuItemShowNodeId       = new MenuItem('Show node IDs',
                                    {
                                        checkCallback: () => settings.showNodeId, 

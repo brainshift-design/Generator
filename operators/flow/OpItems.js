@@ -55,9 +55,17 @@ extends OperatorBase
 
 
 
-    updateValues(updateParamId, paramIds, values)
+    updateValues(actionId, updateParamId, paramIds, values)
     {
-        const oldParams     = [...this.params];
+        logFunction('OpItems.updateValues()');
+
+        const oldParams = [...this.params];
+
+        if (actionId > -1)
+            pushUnique(actionFromId(actionId).oldOutputParams);
+
+        console.log('oldParams =', [...oldParams]);
+
         const oldParamConns = this.getAllParamConnections();
 
 
@@ -69,18 +77,18 @@ extends OperatorBase
             ||    paramIds.length == 1 
                && paramIds[0] != 'noitems')
         {
-            for (let i = 0; i < values.length; i++)
+            for (let i = 0; i < values.length; i++) 
             {
                 const value = values[i];
                 const id    = 'item' + i;
 
-                const param = oldParams.find(p => 
-                       p.id   == id
-                    && p.type == value.type);
+                const param = oldParams.find(p => p.id == id);
+                    // && p.type == value.type);
 
-                if (param) 
+                if (   param
+                    && paramIds.includes(param.id)) 
                 {
-                    this.addParam(param);
+                    this.addParam(param, true);
 
                     const _conn = oldParamConns.find(c =>
                            c.outputNodeId == this.id
@@ -98,7 +106,7 @@ extends OperatorBase
             this.removeAllParams();
     
         
-        super.updateValues(updateParamId, paramIds, values);
+        super.updateValues(actionId, updateParamId, paramIds, values);
     }
 
 
