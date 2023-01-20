@@ -441,7 +441,7 @@ function uiVariableConnectFromOutput(output, inputNode, inputId, outputOrder = -
 {
     //console.log('uiVariableConnectFromOutput()');
 
-    const input = inputNode. inputFromId( inputId);
+    const input = inputNode.inputFromId( inputId);
 
 
     if (    inputNode.variableInputs

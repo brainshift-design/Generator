@@ -61,9 +61,12 @@ extends OperatorBase
 
         const oldParams = [...this.params];
 
-        if (actionId > -1)
-            pushUnique(actionFromId(actionId).oldOutputParams);
+        const action = actionFromId(actionId);
 
+        if (action)
+            pushUnique(action.oldOutputParams);
+
+        console.log('action =', action);
         console.log('oldParams =', [...oldParams]);
 
         const oldParamConns = this.getAllParamConnections();

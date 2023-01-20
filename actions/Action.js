@@ -137,9 +137,12 @@ class Action
                        p._nodeId == _conn.outputNodeId
                     && p.id      == _conn.outputId); 
 
-                output = param.output; 
+                output = param.output;
 
-                output._node = nodeFromId(param._nodeId);
+                const node = nodeFromId(_conn.outputNodeId);
+                
+                param ._node = node;
+                output._node = node; 
             }
 
             console.assert(isValid(output), 'output should be found at this point');
