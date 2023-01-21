@@ -40804,19 +40804,29 @@ class Operator
 
 
 
-    disconnectAllParams()
+    disconnectAllParams(deleteSavedConnections = false)
     {
         for (let i = this.params.length-1; i >= 0; i--)
         {
             const param = this.params[i];
 
             if (param.input && param.input.connected)
+            {
+                if (deleteSavedConnections)
+                    uiDeleteSavedConn(param.input.connection);
+
                 uiDisconnect(param.input);
+            }
 
             if (param.output)
             {
                 for (const input of param.output.connectedInputs)
+                {
+                    if (deleteSavedConnections)
+                        uiDeleteSavedConn(input.connection);
+
                     uiDisconnect(input);
+                }
             }
         }
     }
@@ -42945,19 +42955,19 @@ extends OperatorBase
         logFunction('OpItems.updateValues()');
 
         const oldParams = [...this.params];
+        //console.log('oldParams =', [...oldParams]);
 
         const action = actionFromId(actionId);
 
         if (action)
-            pushUnique(action.oldOutputParams);
+            pushUnique(oldParams, action.oldOutputParams);
 
-        console.log('action =', action);
-        console.log('oldParams =', [...oldParams]);
+        // console.log('action =', action);
 
         const oldParamConns = this.getAllParamConnections();
 
 
-        this.disconnectAllParams();
+        this.disconnectAllParams(true);
         this.removeAllParams();
 
 
@@ -42973,9 +42983,12 @@ extends OperatorBase
                 const param = oldParams.find(p => p.id == id);
                     // && p.type == value.type);
 
+                console.log('$$$ param =', param);
+                console.log('$$$ paramIds =', [...paramIds]);
                 if (   param
                     && paramIds.includes(param.id)) 
                 {
+                    console.log('1');
                     this.addParam(param, true);
 
                     const _conn = oldParamConns.find(c =>
@@ -42983,10 +42996,16 @@ extends OperatorBase
                         && c.outputId     == param.id);
 
                     if (_conn)
-                        uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                    {
+                        const conn = uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                        uiSaveConn(conn);
+                    }
                 }
                 else       
+                {
+                    console.log('2');
                     this.addParamByType(value.type, id, false, false, true);
+                }
             }
         }
 
@@ -48663,8 +48682,6 @@ class Action
                 this.oldOutputParams.push(conn.output.param);
             }
         }
-
-        console.log('1 this.oldConnectionData =', [...this.oldConnectionData]);
     }
 
 
@@ -48684,9 +48701,6 @@ class Action
                     && p.output.id == c.outputId));
 
         this.oldOutputParams = oldOutputParams;
-
-        console.log('2 this.oldConnectionData =', [...this.oldConnectionData]);
-        console.log('2 this.oldOutputParams =',   [...this.oldOutputParams]);
     }
 
 
@@ -48741,12 +48755,12 @@ class Action
             output.updateSavedConnectionOrder(_conn.outputOrder, +1);
 
 
-            console.log('-----------------------------');
-            console.log('outputNode =',        outputNode);
-            console.log('_conn.outputId =',    _conn.outputId);
-            console.log('_conn.inputNodeId =', _conn.inputNodeId);
-            console.log('_conn.inputId =',     _conn.inputId);
-            console.log('_conn.outputOrder =', _conn.outputOrder);
+            // console.log('-----------------------------');
+            // console.log('outputNode =',        outputNode);
+            // console.log('_conn.outputId =',    _conn.outputId);
+            // console.log('_conn.inputNodeId =', _conn.inputNodeId);
+            // console.log('_conn.inputId =',     _conn.inputId);
+            // console.log('_conn.outputOrder =', _conn.outputOrder);
 
 
             const oldConn = uiVariableConnectFromOutput(
@@ -48755,7 +48769,7 @@ class Action
                 _conn.outputOrder);
 
  
-            console.log('oldConn =', oldConn);
+            // console.log('oldConn =', oldConn);
 
             
             uiSaveConn(oldConn);

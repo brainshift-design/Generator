@@ -379,19 +379,29 @@ class Operator
 
 
 
-    disconnectAllParams()
+    disconnectAllParams(deleteSavedConnections = false)
     {
         for (let i = this.params.length-1; i >= 0; i--)
         {
             const param = this.params[i];
 
             if (param.input && param.input.connected)
+            {
+                if (deleteSavedConnections)
+                    uiDeleteSavedConn(param.input.connection);
+
                 uiDisconnect(param.input);
+            }
 
             if (param.output)
             {
                 for (const input of param.output.connectedInputs)
+                {
+                    if (deleteSavedConnections)
+                        uiDeleteSavedConn(input.connection);
+
                     uiDisconnect(input);
+                }
             }
         }
     }

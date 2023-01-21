@@ -73,8 +73,6 @@ class Action
                 this.oldOutputParams.push(conn.output.param);
             }
         }
-
-        console.log('1 this.oldConnectionData =', [...this.oldConnectionData]);
     }
 
 
@@ -94,9 +92,6 @@ class Action
                     && p.output.id == c.outputId));
 
         this.oldOutputParams = oldOutputParams;
-
-        console.log('2 this.oldConnectionData =', [...this.oldConnectionData]);
-        console.log('2 this.oldOutputParams =',   [...this.oldOutputParams]);
     }
 
 
@@ -151,12 +146,12 @@ class Action
             output.updateSavedConnectionOrder(_conn.outputOrder, +1);
 
 
-            console.log('-----------------------------');
-            console.log('outputNode =',        outputNode);
-            console.log('_conn.outputId =',    _conn.outputId);
-            console.log('_conn.inputNodeId =', _conn.inputNodeId);
-            console.log('_conn.inputId =',     _conn.inputId);
-            console.log('_conn.outputOrder =', _conn.outputOrder);
+            // console.log('-----------------------------');
+            // console.log('outputNode =',        outputNode);
+            // console.log('_conn.outputId =',    _conn.outputId);
+            // console.log('_conn.inputNodeId =', _conn.inputNodeId);
+            // console.log('_conn.inputId =',     _conn.inputId);
+            // console.log('_conn.outputOrder =', _conn.outputOrder);
 
 
             const oldConn = uiVariableConnectFromOutput(
@@ -165,7 +160,7 @@ class Action
                 _conn.outputOrder);
 
  
-            console.log('oldConn =', oldConn);
+            // console.log('oldConn =', oldConn);
 
             
             uiSaveConn(oldConn);

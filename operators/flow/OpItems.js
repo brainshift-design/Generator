@@ -60,19 +60,19 @@ extends OperatorBase
         logFunction('OpItems.updateValues()');
 
         const oldParams = [...this.params];
+        //console.log('oldParams =', [...oldParams]);
 
         const action = actionFromId(actionId);
 
         if (action)
-            pushUnique(action.oldOutputParams);
+            pushUnique(oldParams, action.oldOutputParams);
 
-        console.log('action =', action);
-        console.log('oldParams =', [...oldParams]);
+        // console.log('action =', action);
 
         const oldParamConns = this.getAllParamConnections();
 
 
-        this.disconnectAllParams();
+        this.disconnectAllParams(true);
         this.removeAllParams();
 
 
@@ -88,9 +88,12 @@ extends OperatorBase
                 const param = oldParams.find(p => p.id == id);
                     // && p.type == value.type);
 
+                console.log('$$$ param =', param);
+                console.log('$$$ paramIds =', [...paramIds]);
                 if (   param
                     && paramIds.includes(param.id)) 
                 {
+                    console.log('1');
                     this.addParam(param, true);
 
                     const _conn = oldParamConns.find(c =>
@@ -98,10 +101,16 @@ extends OperatorBase
                         && c.outputId     == param.id);
 
                     if (_conn)
-                        uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                    {
+                        const conn = uiConnect(param.output, nodeFromId(_conn.inputNodeId).inputFromId(_conn.inputId));
+                        uiSaveConn(conn);
+                    }
                 }
                 else       
+                {
+                    console.log('2');
                     this.addParamByType(value.type, id, false, false, true);
+                }
             }
         }
 
