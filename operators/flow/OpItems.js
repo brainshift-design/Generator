@@ -86,14 +86,10 @@ extends OperatorBase
                 const id    = 'item' + i;
 
                 const param = oldParams.find(p => p.id == id);
-                    // && p.type == value.type);
 
-                console.log('$$$ param =', param);
-                console.log('$$$ paramIds =', [...paramIds]);
                 if (   param
                     && paramIds.includes(param.id)) 
                 {
-                    console.log('1');
                     this.addParam(param, true);
 
                     const _conn = oldParamConns.find(c =>
@@ -107,10 +103,7 @@ extends OperatorBase
                     }
                 }
                 else       
-                {
-                    console.log('2');
                     this.addParamByType(value.type, id, false, false, true);
-                }
             }
         }
 

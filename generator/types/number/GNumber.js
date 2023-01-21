@@ -42,7 +42,8 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        if (this.value.isValid())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
         this.validate();

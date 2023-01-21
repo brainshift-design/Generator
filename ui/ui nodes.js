@@ -950,9 +950,7 @@ function uiSaveConn(conn)
 
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
-        key:  getConnKey(conn),//getConnectionKey(
-                //   conn.output.nodeId, conn.output.id, conn.outputOrder,
-                //   conn.input .nodeId, conn.input .id),
+        key:  getConnKey(conn),
         json: conn.toJson()
     });
 }

@@ -10315,7 +10315,8 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        if (this.value.isValid())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
         this.validate();
@@ -27453,7 +27454,8 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        if (this.value.isValid())
+            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
         this.validate();
@@ -42981,14 +42983,10 @@ extends OperatorBase
                 const id    = 'item' + i;
 
                 const param = oldParams.find(p => p.id == id);
-                    // && p.type == value.type);
 
-                console.log('$$$ param =', param);
-                console.log('$$$ paramIds =', [...paramIds]);
                 if (   param
                     && paramIds.includes(param.id)) 
                 {
-                    console.log('1');
                     this.addParam(param, true);
 
                     const _conn = oldParamConns.find(c =>
@@ -43002,10 +43000,7 @@ extends OperatorBase
                     }
                 }
                 else       
-                {
-                    console.log('2');
                     this.addParamByType(value.type, id, false, false, true);
-                }
             }
         }
 
@@ -53783,9 +53778,7 @@ function uiSaveConn(conn)
 
     uiQueueMessageToFigma({
         cmd: 'figSaveConnection',
-        key:  getConnKey(conn),//getConnectionKey(
-                //   conn.output.nodeId, conn.output.id, conn.outputOrder,
-                //   conn.input .nodeId, conn.input .id),
+        key:  getConnKey(conn),
         json: conn.toJson()
     });
 }
