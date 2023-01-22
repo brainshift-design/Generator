@@ -121,14 +121,14 @@ extends OpColorBase
 
     updateParams()
     {
-        super.updateParams();
-
         this.paramOrder  .enableControlText(false);
         this.paramMargin1.enableControlText(false);
         this.paramMargin2.enableControlText(false);
         this.paramMargin3.enableControlText(false);
 
         this.updateCorrections();
+
+        this.updateParamControls();
     }
 
 

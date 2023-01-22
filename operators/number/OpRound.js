@@ -54,9 +54,9 @@ extends OperatorWithValue
 
     updateParams()
     {
-        super.updateParams();
-
         this.paramType.enableControlText(true);
         this.paramDec .enableControlText(true);
+
+        this.updateParamControls();
     }
 }

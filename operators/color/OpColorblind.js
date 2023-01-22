@@ -82,7 +82,7 @@ extends OpColorBase
         this.updateParamText(this.paramM, 'M');
         this.updateParamText(this.paramS, 'S');
 
-        super.updateParams();
+        this.updateParamControls();
     }
 
 

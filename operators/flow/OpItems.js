@@ -118,9 +118,9 @@ extends OperatorBase
 
     updateParams()
     {
-        super.updateParams();
-
         for (const param of this.params)
             param.enableControlText(false);
+
+        this.updateParamControls();
     }
 }

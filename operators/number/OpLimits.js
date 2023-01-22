@@ -54,10 +54,10 @@ extends OperatorWithValue
 
     updateParams()
     {
-        super.updateParams();
-
         this.paramMin  .enableControlText(true);
         this.paramMax  .enableControlText(true);
         this.paramValue.enableControlText(false);
+
+        this.updateParamControls();
     }
 }

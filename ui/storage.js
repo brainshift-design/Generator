@@ -40,6 +40,8 @@ function uiReturnFigGetLocalData(msg)
         case 'showBoolValues':
         case 'showNodeId':       
 
+        case 'enableBetaFeatures':       
+
         case 'logMessages':      
         case 'logActions':       
 
@@ -111,6 +113,9 @@ function uiReturnFigGetLocalData(msg)
 
     // if (msg.key == 'debugMode')
     //     menuItemDebug.setVisible(settings.debugMode);
+
+    if (msg.key == 'enableBetaFeatures');
+        updateMenuItemEnableBetaFeatures();
 
     if (msg.key == 'logLoading')
         if (settings.logLoading)

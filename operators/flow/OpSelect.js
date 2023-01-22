@@ -101,8 +101,6 @@ extends OperatorBase
 
     updateParams()
     {
-        super.updateParams();
-
         //const paramValue = this.params.find(p => p.id == 'value');
 
         this.paramIndex.enableControlText(true);
@@ -113,5 +111,8 @@ extends OperatorBase
         //     paramValue.enableControlText(true);
         //     paramValue.control.valueText = this.paramIndex.value < 0 ? UNKNOWN_DISPLAY : '';
         // }
+
+
+        this.updateParamControls();
     }
 }

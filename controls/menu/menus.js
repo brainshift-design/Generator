@@ -122,6 +122,9 @@ var menuItemDebugLog;
 var menuItemHelp;
 
 
+var menuItemEnableBetaFeatures;
+
+
 var menuItemDataMode;
 
 var menuItemLogMessages;
@@ -209,9 +212,11 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-        new MenuItem('Help page',                 {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-        new MenuItem('',                          {separator: true}),
-        new MenuItem('Enter subscription key...', {callback:  () => showProductKeyDialog()})]);
+                                     new MenuItem('Help page',                 {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+                                     new MenuItem('',                          {separator: true}),
+        menuItemEnableBetaFeatures = new MenuItem('Enable beta features',      {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures); updateMenuItemEnableBetaFeatures(); }}),
+                                     new MenuItem('',                          {separator: true}),
+                                     new MenuItem('Enter subscription key...', {callback:  () => showProductKeyDialog()})]);
 
 
     menuMain = new Menu('Main menu', false);
@@ -295,7 +300,7 @@ function initGeneratorMenus()
     menuColor.addItems([
         new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey, random: e.altKey}))}),
         new MenuItem('',                  {separator: true}),
-        new MenuItem('Valid color',       {icon: iconColorCorrect,     callback: e => actionManager.do(getCreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Valid sRGB',     {icon: iconColorCorrect,     callback: e => actionManager.do(getCreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Web contrast',      {icon: iconColorContrast,    callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('',                  {separator: true}),
@@ -363,7 +368,8 @@ function initGeneratorMenus()
     //btnString = new MenuButton('', menuString, {useMenuName: true, callback: () => updatePanMode(false)});
     btnColor    = new MenuButton('', menuColor,  {useMenuName: true, callback: () => updatePanMode(false)});
     btnStyle    = new MenuButton('', menuStyle,  {useMenuName: true, callback: () => updatePanMode(false)});
-    //btnShape  = new MenuButton('', menuShape,  {useMenuName: true, callback: () => updatePanMode(false)});
+    btnShape    = new MenuButton('', menuShape,  {useMenuName: true, callback: () => updatePanMode(false)});
+
 
     btnHand    = new MenuButton('Hand tool', null, {callback: () => 
     { 

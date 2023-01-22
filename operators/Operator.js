@@ -741,10 +741,17 @@ class Operator
     updateParams()
     {
         for (const param of this.params)
-        {
             param.enableControlText(true);
+
+        this.updateParamControls();
+    }
+
+
+
+    updateParamControls()
+    {
+        for (const param of this.params)
             param.updateControls();
-        }
     }
 
 

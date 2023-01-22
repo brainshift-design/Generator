@@ -40,10 +40,7 @@ extends GOperator
         this.param = this.node.getParamFromId(this.paramId);
 
         if (isValid(this.param)) // could have been deleted from OpRepeat for example
-        {
-            this.param.eval(parse);
-            return this.param.toValue();
-        }
+            return this.param.eval(parse).toValue();
         else
             return NullValue;
     }

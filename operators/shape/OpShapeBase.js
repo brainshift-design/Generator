@@ -75,6 +75,6 @@ extends OperatorBase
         for (const param of this.params)
             param.enableControlText(enable);
 
-        super.updateParams();
+        this.updateParamControls();
     }
 }

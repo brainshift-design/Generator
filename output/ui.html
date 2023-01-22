@@ -6712,10 +6712,7 @@ extends GOperator
         this.param = this.node.getParamFromId(this.paramId);
 
         if (isValid(this.param)) // could have been deleted from OpRepeat for example
-        {
-            this.param.eval(parse);
-            return this.param.toValue();
-        }
+            return this.param.eval(parse).toValue();
         else
             return NullValue;
     }
@@ -9518,7 +9515,6 @@ extends GArithmetic
         genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
 
 
-
         this.validate();
 
         return this;
@@ -10315,8 +10311,7 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (this.value.isValid())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
         this.validate();
@@ -10472,9 +10467,6 @@ extends GNumberType
             return this;
 
 
-        this.value = new NumberValue(0);
-
-        
         const min = this.min.eval(parse).toValue();
         const max = this.max.eval(parse).toValue();
 
@@ -13058,6 +13050,8 @@ const settings =
     includeLxxColorSpaces: false,
     showBoolValues:        true,
     showNodeId:            false, // instead of name
+
+    enableBetaFeatures:    false,
     
     logMessages:           false,
     logActions:            false, 
@@ -13086,6 +13080,8 @@ function updateSetting(settingName, value)
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
         case 'showNodeId':            settings.showNodeId            = value;  break;
+
+        case 'enableBetaFeatures':    settings.enableBetaFeatures    = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
         case 'logActions':            settings.logActions            = value;  break;
@@ -13114,6 +13110,8 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
+        
+        case 'enableBetaFeatures':    updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures   );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
         case 'logActions':            updateSettingAndMenu_(valid, settingName, value, menuItemLogActions           );  break;
@@ -13154,6 +13152,8 @@ function updateSettingsMenus()
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
+
+    menuItemEnableBetaFeatures   .setChecked(settings.enableBetaFeatures   );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
     menuItemLogActions           .setChecked(settings.logActions           );
@@ -13184,9 +13184,16 @@ function updateMenuItemShowBoolValues()
 {
     graph.nodes
         .filter(n => 
-               BOOLEAN_TYPES.includes(n.type)
+               BOOLEAN_TYPES  .includes(n.type)
             || CONDITION_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
+}
+
+
+
+function updateMenuItemEnableBetaFeatures()
+{
+    btnShape.div.style.display = settings.enableBetaFeatures ? 'inline-block' : 'none';
 }
 
 
@@ -13200,6 +13207,8 @@ function loadLocalSettings()
     uiGetLocalData('includeLxxColorSpaces');
     uiGetLocalData('showBoolValues'       );
     uiGetLocalData('showNodeId'           );
+
+    uiGetLocalData('enableBetaFeatures'   );
     
     uiGetLocalData('logMessages'          );
     uiGetLocalData('logActions'           );
@@ -23851,10 +23860,7 @@ extends GOperator
         this.param = this.node.getParamFromId(this.paramId);
 
         if (isValid(this.param)) // could have been deleted from OpRepeat for example
-        {
-            this.param.eval(parse);
-            return this.param.toValue();
-        }
+            return this.param.eval(parse).toValue();
         else
             return NullValue;
     }
@@ -26657,7 +26663,6 @@ extends GArithmetic
         genPushUpdateValue(parse, this.nodeId, 'value',     this.value);
 
 
-
         this.validate();
 
         return this;
@@ -27454,8 +27459,7 @@ extends GNumberType
             this.value = NumberValue.NaN;
 
 
-        if (this.value.isValid())
-            genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         
         this.validate();
@@ -27611,9 +27615,6 @@ extends GNumberType
             return this;
 
 
-        this.value = new NumberValue(0);
-
-        
         const min = this.min.eval(parse).toValue();
         const max = this.max.eval(parse).toValue();
 
@@ -30197,6 +30198,8 @@ const settings =
     includeLxxColorSpaces: false,
     showBoolValues:        true,
     showNodeId:            false, // instead of name
+
+    enableBetaFeatures:    false,
     
     logMessages:           false,
     logActions:            false, 
@@ -30225,6 +30228,8 @@ function updateSetting(settingName, value)
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
         case 'showNodeId':            settings.showNodeId            = value;  break;
+
+        case 'enableBetaFeatures':    settings.enableBetaFeatures    = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
         case 'logActions':            settings.logActions            = value;  break;
@@ -30253,6 +30258,8 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
+        
+        case 'enableBetaFeatures':    updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures   );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
         case 'logActions':            updateSettingAndMenu_(valid, settingName, value, menuItemLogActions           );  break;
@@ -30293,6 +30300,8 @@ function updateSettingsMenus()
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
+
+    menuItemEnableBetaFeatures   .setChecked(settings.enableBetaFeatures   );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
     menuItemLogActions           .setChecked(settings.logActions           );
@@ -30323,9 +30332,16 @@ function updateMenuItemShowBoolValues()
 {
     graph.nodes
         .filter(n => 
-               BOOLEAN_TYPES.includes(n.type)
+               BOOLEAN_TYPES  .includes(n.type)
             || CONDITION_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
+}
+
+
+
+function updateMenuItemEnableBetaFeatures()
+{
+    btnShape.div.style.display = settings.enableBetaFeatures ? 'inline-block' : 'none';
 }
 
 
@@ -30339,6 +30355,8 @@ function loadLocalSettings()
     uiGetLocalData('includeLxxColorSpaces');
     uiGetLocalData('showBoolValues'       );
     uiGetLocalData('showNodeId'           );
+
+    uiGetLocalData('enableBetaFeatures'   );
     
     uiGetLocalData('logMessages'          );
     uiGetLocalData('logActions'           );
@@ -31294,6 +31312,9 @@ var menuItemDebugLog;
 var menuItemHelp;
 
 
+var menuItemEnableBetaFeatures;
+
+
 var menuItemDataMode;
 
 var menuItemLogMessages;
@@ -31381,9 +31402,11 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-        new MenuItem('Help page',                 {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-        new MenuItem('',                          {separator: true}),
-        new MenuItem('Enter subscription key...', {callback:  () => showProductKeyDialog()})]);
+                                     new MenuItem('Help page',                 {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+                                     new MenuItem('',                          {separator: true}),
+        menuItemEnableBetaFeatures = new MenuItem('Enable beta features',      {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures); updateMenuItemEnableBetaFeatures(); }}),
+                                     new MenuItem('',                          {separator: true}),
+                                     new MenuItem('Enter subscription key...', {callback:  () => showProductKeyDialog()})]);
 
 
     menuMain = new Menu('Main menu', false);
@@ -31467,7 +31490,7 @@ function initGeneratorMenus()
     menuColor.addItems([
         new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey, random: e.altKey}))}),
         new MenuItem('',                  {separator: true}),
-        new MenuItem('Valid color',       {icon: iconColorCorrect,     callback: e => actionManager.do(getCreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Valid sRGB',     {icon: iconColorCorrect,     callback: e => actionManager.do(getCreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Web contrast',      {icon: iconColorContrast,    callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('',                  {separator: true}),
@@ -31535,7 +31558,8 @@ function initGeneratorMenus()
     //btnString = new MenuButton('', menuString, {useMenuName: true, callback: () => updatePanMode(false)});
     btnColor    = new MenuButton('', menuColor,  {useMenuName: true, callback: () => updatePanMode(false)});
     btnStyle    = new MenuButton('', menuStyle,  {useMenuName: true, callback: () => updatePanMode(false)});
-    //btnShape  = new MenuButton('', menuShape,  {useMenuName: true, callback: () => updatePanMode(false)});
+    btnShape    = new MenuButton('', menuShape,  {useMenuName: true, callback: () => updatePanMode(false)});
+
 
     btnHand    = new MenuButton('Hand tool', null, {callback: () => 
     { 
@@ -41168,10 +41192,17 @@ class Operator
     updateParams()
     {
         for (const param of this.params)
-        {
             param.enableControlText(true);
+
+        this.updateParamControls();
+    }
+
+
+
+    updateParamControls()
+    {
+        for (const param of this.params)
             param.updateControls();
-        }
     }
 
 
@@ -43015,10 +43046,10 @@ extends OperatorBase
 
     updateParams()
     {
-        super.updateParams();
-
         for (const param of this.params)
             param.enableControlText(false);
+
+        this.updateParamControls();
     }
 }
 
@@ -43126,8 +43157,6 @@ extends OperatorBase
 
     updateParams()
     {
-        super.updateParams();
-
         //const paramValue = this.params.find(p => p.id == 'value');
 
         this.paramIndex.enableControlText(true);
@@ -43138,6 +43167,9 @@ extends OperatorBase
         //     paramValue.enableControlText(true);
         //     paramValue.control.valueText = this.paramIndex.value < 0 ? UNKNOWN_DISPLAY : '';
         // }
+
+
+        this.updateParamControls();
     }
 }
 
@@ -43217,7 +43249,7 @@ extends OperatorBase
     {
         this.paramCondition.enableControlText(true);
 
-        super.updateParams();
+        this.updateParamControls();
     }
 }
 
@@ -43374,7 +43406,7 @@ extends OperatorBase
     {
         this.paramCount.enableControlText(true);
 
-        super.updateParams();
+        this.updateParamControls();
     }
 }
 
@@ -43638,9 +43670,6 @@ extends OperatorBase
 
     updateParams()
     {
-        super.updateParams();
-
-
         const paramValue = this.params.find(p => p.id == 'copy');
 
         if (paramValue)
@@ -43650,6 +43679,9 @@ extends OperatorBase
             paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
             paramValue.control.showBar   = !this.isUnknown();
         }
+
+        
+        this.updateParamControls();
     }
 
 
@@ -43766,8 +43798,9 @@ extends OperatorBase
 
         this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         this.paramValue.control.showBar   = !this.isUnknown();
-            
-        super.updateParams();
+
+
+        this.updateParamControls();
     }
 
 
@@ -43836,10 +43869,10 @@ extends OperatorWithValue
 
     updateParams()
     {
-        super.updateParams();
-
         this.paramType.enableControlText(true);
         this.paramDec .enableControlText(true);
+
+        this.updateParamControls();
     }
 }
 
@@ -43900,11 +43933,11 @@ extends OperatorWithValue
 
     updateParams()
     {
-        super.updateParams();
-
         this.paramMin  .enableControlText(true);
         this.paramMax  .enableControlText(true);
         this.paramValue.enableControlText(false);
+
+        this.updateParamControls();
     }
 }
 
@@ -44075,10 +44108,10 @@ extends OperatorWithValue
 
     updateParams()
     {
-        super.updateParams();
-
         this.paramAmount.enableControlText(true);
         this.paramValue .enableControlText(false);
+
+        this.updateParamControls();
     }
 }
 
@@ -44156,10 +44189,10 @@ extends OperatorWithValue
 
     updateParams()
     {
-        super.updateParams();
-        
         this.paramOperation.enableControlText(true);
         this.paramValue    .enableControlText(false);
+
+        this.updateParamControls();
     }
 }
 
@@ -44245,12 +44278,13 @@ extends OperatorWithSymbol
 
     updateParams()
     {
-        super.updateParams();
-
         this.paramValue.enableControlText(false);
         
         this.paramValue.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
         this.paramValue.control.showBar   = !this.isUnknown();
+
+
+        this.updateParamControls();
     }
 
 
@@ -44476,8 +44510,7 @@ extends OperatorWithValue
         this.paramValue.control.showBar = !this.isUnknown();
 
 
-        for (const param of this.params)
-            param.updateControls();
+        this.updateParamControls();
     }
 }
 
@@ -44587,8 +44620,7 @@ extends OperatorWithValue
         this.paramValue.control.showBar = !this.isUnknown();
 
 
-        for (const param of this.params)
-            param.updateControls();
+        this.updateParamControls();
     }
 
 
@@ -44734,8 +44766,7 @@ extends OperatorWithValue
         this.paramValue.control.showBar = !this.isUnknown();
 
 
-        for (const param of this.params)
-            param.updateControls();
+        this.updateParamControls();
     }
 }
 
@@ -44818,8 +44849,7 @@ extends OperatorWithSymbol
         this.paramValue.control.showBar = !this.isUnknown();
 
 
-        for (const param of this.params)
-            param.updateControls();
+        this.updateParamControls();
     }
 
 
@@ -45491,8 +45521,6 @@ extends OpColorBase
     {
         this.updateAllControlRanges();
 
-        super.updateParams();
-
 
         const enable = !this.inputs[0].connected;
 
@@ -45503,6 +45531,9 @@ extends OpColorBase
 
 
         enableElementText(this.paramColor.control, !this.isConnected());
+
+
+        this.updateParamControls();
     }
 
 
@@ -46778,14 +46809,14 @@ extends OpColorBase
 
     updateParams()
     {
-        super.updateParams();
-
         this.paramOrder  .enableControlText(false);
         this.paramMargin1.enableControlText(false);
         this.paramMargin2.enableControlText(false);
         this.paramMargin3.enableControlText(false);
 
         this.updateCorrections();
+
+        this.updateParamControls();
     }
 
 
@@ -47154,7 +47185,7 @@ extends OpColorBase
         this.paramStandard.enableControlText(true);
         this.paramContrast.enableControlText(false);
             
-        super.updateParams();
+        this.updateParamControls();
     }
 
 
@@ -47473,7 +47504,7 @@ extends OpColorBase
         this.updateParamText(this.paramM, 'M');
         this.updateParamText(this.paramS, 'S');
 
-        super.updateParams();
+        this.updateParamControls();
     }
 
 
@@ -47746,7 +47777,7 @@ extends OpColorBase
         this.paramColor  .enableControlText(enable);
         this.paramOpacity.enableControlText(enable);
 
-        super.updateParams();
+        this.updateParamControls();
     }
 }
 
@@ -47974,7 +48005,7 @@ extends OpColorBase
         this.paramJoin  .enableControlText(enable);
         this.paramMiter .enableControlText(enable);
 
-        super.updateParams();
+        this.updateParamControls();
     }
 
     
@@ -48365,7 +48396,7 @@ extends OperatorBase
         for (const param of this.params)
             param.enableControlText(enable);
 
-        super.updateParams();
+        this.updateParamControls();
     }
 }
 
@@ -52195,6 +52226,8 @@ function uiReturnFigGetLocalData(msg)
         case 'showBoolValues':
         case 'showNodeId':       
 
+        case 'enableBetaFeatures':       
+
         case 'logMessages':      
         case 'logActions':       
 
@@ -52266,6 +52299,9 @@ function uiReturnFigGetLocalData(msg)
 
     // if (msg.key == 'debugMode')
     //     menuItemDebug.setVisible(settings.debugMode);
+
+    if (msg.key == 'enableBetaFeatures');
+        updateMenuItemEnableBetaFeatures();
 
     if (msg.key == 'logLoading')
         if (settings.logLoading)

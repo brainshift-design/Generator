@@ -77,7 +77,6 @@ extends OperatorWithValue
         this.paramValue.control.showBar = !this.isUnknown();
 
 
-        for (const param of this.params)
-            param.updateControls();
+        this.updateParamControls();
     }
 }

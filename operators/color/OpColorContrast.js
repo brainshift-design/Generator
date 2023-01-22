@@ -170,7 +170,7 @@ extends OpColorBase
         this.paramStandard.enableControlText(true);
         this.paramContrast.enableControlText(false);
             
-        super.updateParams();
+        this.updateParamControls();
     }
 
 

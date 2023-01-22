@@ -53,8 +53,9 @@ extends OperatorBase
 
         this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         this.paramValue.control.showBar   = !this.isUnknown();
-            
-        super.updateParams();
+
+
+        this.updateParamControls();
     }
 
 

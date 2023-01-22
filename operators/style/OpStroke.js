@@ -221,7 +221,7 @@ extends OpColorBase
         this.paramJoin  .enableControlText(enable);
         this.paramMiter .enableControlText(enable);
 
-        super.updateParams();
+        this.updateParamControls();
     }
 
     

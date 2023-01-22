@@ -41,9 +41,6 @@ extends GNumberType
             return this;
 
 
-        this.value = new NumberValue(0);
-
-        
         const min = this.min.eval(parse).toValue();
         const max = this.max.eval(parse).toValue();
 

@@ -255,6 +255,6 @@ extends OpColorBase
         this.paramColor  .enableControlText(enable);
         this.paramOpacity.enableControlText(enable);
 
-        super.updateParams();
+        this.updateParamControls();
     }
 }

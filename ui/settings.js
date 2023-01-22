@@ -7,6 +7,8 @@ const settings =
     includeLxxColorSpaces: false,
     showBoolValues:        true,
     showNodeId:            false, // instead of name
+
+    enableBetaFeatures:    false,
     
     logMessages:           false,
     logActions:            false, 
@@ -35,6 +37,8 @@ function updateSetting(settingName, value)
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
         case 'showNodeId':            settings.showNodeId            = value;  break;
+
+        case 'enableBetaFeatures':    settings.enableBetaFeatures    = value;  break;
    
         case 'logMessages':           settings.logMessages           = value;  break;
         case 'logActions':            settings.logActions            = value;  break;
@@ -63,6 +67,8 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
+        
+        case 'enableBetaFeatures':    updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures   );  break;
  
         case 'logMessages':           updateSettingAndMenu_(valid, settingName, value, menuItemLogMessages          );  break;
         case 'logActions':            updateSettingAndMenu_(valid, settingName, value, menuItemLogActions           );  break;
@@ -103,6 +109,8 @@ function updateSettingsMenus()
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
+
+    menuItemEnableBetaFeatures   .setChecked(settings.enableBetaFeatures   );
   
     menuItemLogMessages          .setChecked(settings.logMessages          );
     menuItemLogActions           .setChecked(settings.logActions           );
@@ -133,9 +141,16 @@ function updateMenuItemShowBoolValues()
 {
     graph.nodes
         .filter(n => 
-               BOOLEAN_TYPES.includes(n.type)
+               BOOLEAN_TYPES  .includes(n.type)
             || CONDITION_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
+}
+
+
+
+function updateMenuItemEnableBetaFeatures()
+{
+    btnShape.div.style.display = settings.enableBetaFeatures ? 'inline-block' : 'none';
 }
 
 
@@ -149,6 +164,8 @@ function loadLocalSettings()
     uiGetLocalData('includeLxxColorSpaces');
     uiGetLocalData('showBoolValues'       );
     uiGetLocalData('showNodeId'           );
+
+    uiGetLocalData('enableBetaFeatures'   );
     
     uiGetLocalData('logMessages'          );
     uiGetLocalData('logActions'           );

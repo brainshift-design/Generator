@@ -73,7 +73,7 @@ extends OperatorBase
     {
         this.paramCondition.enableControlText(true);
 
-        super.updateParams();
+        this.updateParamControls();
     }
 }
 

@@ -94,9 +94,6 @@ extends OperatorBase
 
     updateParams()
     {
-        super.updateParams();
-
-
         const paramValue = this.params.find(p => p.id == 'copy');
 
         if (paramValue)
@@ -106,6 +103,9 @@ extends OperatorBase
             paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
             paramValue.control.showBar   = !this.isUnknown();
         }
+
+        
+        this.updateParamControls();
     }
 
 
