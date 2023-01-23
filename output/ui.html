@@ -13049,6 +13049,8 @@ const settings =
     autoConnectNewNodes:   true,
     includeLxxColorSpaces: false,
     showBoolValues:        true,
+    showDebugMenu:         false,
+
     showNodeId:            false, // instead of name
 
     enableBetaFeatures:    false,
@@ -13079,6 +13081,8 @@ function updateSetting(settingName, value)
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
+        case 'showDebugMenu':         settings.showDebugMenu         = value;  break;
+        
         case 'showNodeId':            settings.showNodeId            = value;  break;
 
         case 'enableBetaFeatures':    settings.enableBetaFeatures    = value;  break;
@@ -13109,6 +13113,8 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
+        case 'showDebugMenu':         updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu        );  break;
+
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
         
         case 'enableBetaFeatures':    updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures   );  break;
@@ -13151,6 +13157,8 @@ function updateSettingsMenus()
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
+    menuItemShowDebugMenu        .setChecked(settings.showDebugMenu        );
+
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
 
     menuItemEnableBetaFeatures   .setChecked(settings.enableBetaFeatures   );
@@ -13193,7 +13201,29 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    btnShape.div.style.display = settings.enableBetaFeatures ? 'inline-block' : 'none';
+    updateMenuItemBetaDisplay(btnShape      .div, settings.enableBetaFeatures);
+
+    updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuItemStart .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuItemRepeat.div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuSep2      .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
+}
+
+
+
+function updateMenuItemShowDebugMenu()
+{
+    updateMenuItemBetaDisplay(menuItemDebug.div, settings.showDebugMenu);
+}
+
+
+
+function updateMenuItemBetaDisplay(menuItem, enable)
+{
+    menuItem.style.display = enable ? 'block' : 'none';
 }
 
 
@@ -13206,6 +13236,8 @@ function loadLocalSettings()
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
     uiGetLocalData('showBoolValues'       );
+    uiGetLocalData('showDebugMenu'        );
+
     uiGetLocalData('showNodeId'           );
 
     uiGetLocalData('enableBetaFeatures'   );
@@ -13223,7 +13255,7 @@ function loadLocalSettings()
     uiGetLocalData('logRawRequests'       );
     uiGetLocalData('logRawValues'         );
     
-    uiGetLocalData('graphView');
+    uiGetLocalData('graphView'            );
 }
 
 
@@ -30197,6 +30229,8 @@ const settings =
     autoConnectNewNodes:   true,
     includeLxxColorSpaces: false,
     showBoolValues:        true,
+    showDebugMenu:         false,
+
     showNodeId:            false, // instead of name
 
     enableBetaFeatures:    false,
@@ -30227,6 +30261,8 @@ function updateSetting(settingName, value)
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
+        case 'showDebugMenu':         settings.showDebugMenu         = value;  break;
+        
         case 'showNodeId':            settings.showNodeId            = value;  break;
 
         case 'enableBetaFeatures':    settings.enableBetaFeatures    = value;  break;
@@ -30257,6 +30293,8 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
+        case 'showDebugMenu':         updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu        );  break;
+
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
         
         case 'enableBetaFeatures':    updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures   );  break;
@@ -30299,6 +30337,8 @@ function updateSettingsMenus()
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
+    menuItemShowDebugMenu        .setChecked(settings.showDebugMenu        );
+
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
 
     menuItemEnableBetaFeatures   .setChecked(settings.enableBetaFeatures   );
@@ -30341,7 +30381,29 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    btnShape.div.style.display = settings.enableBetaFeatures ? 'inline-block' : 'none';
+    updateMenuItemBetaDisplay(btnShape      .div, settings.enableBetaFeatures);
+
+    updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuItemStart .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuItemRepeat.div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuSep2      .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
+}
+
+
+
+function updateMenuItemShowDebugMenu()
+{
+    updateMenuItemBetaDisplay(menuItemDebug.div, settings.showDebugMenu);
+}
+
+
+
+function updateMenuItemBetaDisplay(menuItem, enable)
+{
+    menuItem.style.display = enable ? 'block' : 'none';
 }
 
 
@@ -30354,6 +30416,8 @@ function loadLocalSettings()
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
     uiGetLocalData('showBoolValues'       );
+    uiGetLocalData('showDebugMenu'        );
+
     uiGetLocalData('showNodeId'           );
 
     uiGetLocalData('enableBetaFeatures'   );
@@ -30371,7 +30435,7 @@ function loadLocalSettings()
     uiGetLocalData('logRawRequests'       );
     uiGetLocalData('logRawValues'         );
     
-    uiGetLocalData('graphView');
+    uiGetLocalData('graphView'            );
 }
 
 
@@ -30385,7 +30449,7 @@ class Menu
     parentMenu = null;
 
     name;
-    button   = null;
+    button = null;
 
     div;
     divArrow;
@@ -30403,6 +30467,7 @@ class Menu
 
 
     onHide   = null; // removes itself after firing
+
 
 
     constructor(name, showIcons = true, showChecks = true)
@@ -30429,7 +30494,7 @@ class Menu
         for (let i = 0; i < this.items.length; i++)
         {
             if (i > 0) 
-                this.div.appendChild(document.createElement('br'));
+                this.items[i].div.appendChild(document.createElement('br'));
 
             if (!this.showIcons)  this.items[i].divIcon .style.display = 'none';
             if (!this.showChecks) this.items[i].divCheck.style.width   = this.showIcons ? 18 : 15;
@@ -30511,7 +30576,7 @@ class Menu
             : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2),
             graphView.offsetWidth - this.div.offsetWidth - margin);
 
-        this.div.style.top = 
+        this.div.style.top =
             right
             ? srcRect.y - 3
             : srcRect.y + srcRect.height + this.divArrow.offsetHeight;
@@ -31303,8 +31368,9 @@ var menuConnDataConns;
 var menuItemAutoConnectNewNodes;
 var menuItemIncludeLxxColorSpaces;
 var menuItemShowBoolValues;
+var menuItemShowDebugMenu;
+
 var menuItemShowNodeId;
-//var menuItemShowWires;
 
 var menuItemDebug;
 var menuItemDebugLog;
@@ -31313,6 +31379,15 @@ var menuItemHelp;
 
 
 var menuItemEnableBetaFeatures;
+
+
+var menuItemIfElse;
+var menuSep1;      
+var menuItemStart; 
+var menuItemRepeat;
+var menuSep2;      
+var menuItemCache; 
+var menuItemCopy;  
 
 
 var menuItemDataMode;
@@ -31354,7 +31429,9 @@ function initGeneratorMenus()
     menuMainPreferences.addItems([
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',      {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                       }}),
         menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces',    {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
-        menuItemShowBoolValues        = new MenuItem('Show boolean values as ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues       ); updateMenuItemShowBoolValues();       }})]);
+        menuItemShowBoolValues        = new MenuItem('Show boolean values as ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues       ); updateMenuItemShowBoolValues();       }}),
+                                        new MenuItem('',                            {separator: true}),   
+        menuItemShowDebugMenu         = new MenuItem('Show debug menu',             {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu        ); updateMenuItemShowDebugMenu();        }})]);
 
     
     menuMainDebug = new Menu('Debug', false);
@@ -31404,9 +31481,9 @@ function initGeneratorMenus()
     menuMainHelp.addItems([
                                      new MenuItem('Help page',                 {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
                                      new MenuItem('',                          {separator: true}),
-        menuItemEnableBetaFeatures = new MenuItem('Enable beta features',      {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures); updateMenuItemEnableBetaFeatures(); }}),
+                                     new MenuItem('Enter subscription key...', {callback:  () => showProductKeyDialog()}),
                                      new MenuItem('',                          {separator: true}),
-                                     new MenuItem('Enter subscription key...', {callback:  () => showProductKeyDialog()})]);
+        menuItemEnableBetaFeatures = new MenuItem('Enable beta features',      {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures); updateMenuItemEnableBetaFeatures(); }})]);
 
 
     menuMain = new Menu('Main menu', false);
@@ -31419,18 +31496,17 @@ function initGeneratorMenus()
         
     menuFlow = new Menu('Flow nodes', true, false);
     menuFlow.addItems([
-        new MenuItem('List',              {icon: iconList,   callback: e => actionManager.do(getCreateNodeAction(LIST,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('',                  {separator: true}),
-        new MenuItem('Items',             {icon: iconItems,  callback: e => actionManager.do(getCreateNodeAction(ITEMS,   btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Select',            {icon: iconSelect, callback: e => actionManager.do(getCreateNodeAction(SELECT,  btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('I&hairsp;f / else', {icon: iconIfElse, callback: e => actionManager.do(getCreateNodeAction(IF_ELSE, btnNumber.div, {insert: e.shiftKey})), disambiguate: true}),
-        new MenuItem('',                  {separator: true}),
-        new MenuItem('Start',             {icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,   btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Repeat',            {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT,  btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('',                  {separator: true}),
-        new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,   btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,    btnNumber.div, {insert: e.shiftKey}))})]);
-        new MenuItem('',                  {separator: true}),
+                         new MenuItem('List',              {icon: iconList,   callback: e => actionManager.do(getCreateNodeAction(LIST,    btnNumber.div, {insert: e.shiftKey}))}),
+                         new MenuItem('',                  {separator: true}),
+                         new MenuItem('Items',             {icon: iconItems,  callback: e => actionManager.do(getCreateNodeAction(ITEMS,   btnNumber.div, {insert: e.shiftKey}))}),
+                         new MenuItem('Select',            {icon: iconSelect, callback: e => actionManager.do(getCreateNodeAction(SELECT,  btnNumber.div, {insert: e.shiftKey}))}),
+        menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse, callback: e => actionManager.do(getCreateNodeAction(IF_ELSE, btnNumber.div, {insert: e.shiftKey})), disambiguate: true}),
+        menuSep1       = new MenuItem('',                  {separator: true}),
+        menuItemStart  = new MenuItem('Start',             {icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,   btnNumber.div, {insert: e.shiftKey}))}),
+        menuItemRepeat = new MenuItem('Repeat',            {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT,  btnNumber.div, {insert: e.shiftKey}))}),
+        menuSep2       = new MenuItem('',                  {separator: true}),
+        menuItemCache  = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,   btnNumber.div, {insert: e.shiftKey}))}),
+        menuItemCopy   = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,    btnNumber.div, {insert: e.shiftKey}))})]);
     
     
     menuMath = new Menu('Math nodes', true, false);
@@ -31490,7 +31566,7 @@ function initGeneratorMenus()
     menuColor.addItems([
         new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey, random: e.altKey}))}),
         new MenuItem('',                  {separator: true}),
-        new MenuItem('Valid sRGB',     {icon: iconColorCorrect,     callback: e => actionManager.do(getCreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('Valid sRGB',        {icon: iconColorCorrect,     callback: e => actionManager.do(getCreateNodeAction(COLOR_CORRECT,     btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Web contrast',      {icon: iconColorContrast,    callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('',                  {separator: true}),
@@ -31540,15 +31616,15 @@ function initGeneratorMenus()
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
-        menuItemNodeCopy               = new MenuItem('Copy',                {shortcut: osCtrl()             + 'C',  callback: () => copySelectedNodes() }),
-        menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut: osCtrl()             + 'D',  callback: e => { hideAllMenus(); duplicateSelectedNodes(false); }}),
-        menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut: osCtrl() + osShift() + 'D',  callback: e => { hideAllMenus(); duplicateSelectedNodes(true ); }}),
+        menuItemNodeCopy               = new MenuItem('Copy',                {shortcut:  osCtrl()             + 'C',  callback: () => copySelectedNodes() }),
+        menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut:  osCtrl()             + 'D',  callback: e => { hideAllMenus(); duplicateSelectedNodes(false); }}),
+        menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut:  osCtrl() + osShift() + 'D',  callback: e => { hideAllMenus(); duplicateSelectedNodes(true ); }}),
                                          new MenuItem('',                    {separator: true}),
-        menuItemNodeRemove             = new MenuItem('Remove',              {shortcut: osShift()            + '⌫', callback: e => { hideAllMenus(); removeSelectedNodes(true); }}),
+        menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift()            + '⌫', callback: e => { hideAllMenus(); removeSelectedNodes(true); }}),
                                          new MenuItem('',                    {separator: true}),
-        menuItemNodeLayout             = new MenuItem('Layout',              {enabled: false, shortcut: osCtrl()             + 'L',  callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
+        menuItemNodeLayout             = new MenuItem('Layout',              {enabled:   false, shortcut: osCtrl()             + 'L',  callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
                                          new MenuItem('',                    {separator: true}),
-        menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut: osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
+        menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
 
 
 
@@ -52224,6 +52300,8 @@ function uiReturnFigGetLocalData(msg)
         case 'autoConnectNewNodes':
         case 'includeLxxColorSpaces':
         case 'showBoolValues':
+        case 'showDebugMenu':
+
         case 'showNodeId':       
 
         case 'enableBetaFeatures':       
@@ -52282,9 +52360,7 @@ function uiReturnFigGetLocalData(msg)
             initDataModeMenus();
         }
         else
-        {
             initGeneratorMenus();
-        }    
      
         
         onClassChange(document.childNodes[0], () =>
@@ -52297,15 +52373,15 @@ function uiReturnFigGetLocalData(msg)
     }
 
 
-    // if (msg.key == 'debugMode')
-    //     menuItemDebug.setVisible(settings.debugMode);
-
-    if (msg.key == 'enableBetaFeatures');
+    if (msg.key == 'enableBetaFeatures')
         updateMenuItemEnableBetaFeatures();
 
-    if (msg.key == 'logLoading')
-        if (settings.logLoading)
-            uiLogAllSavedNodesAndConns();
+    if (msg.key == 'showDebugMenu')
+        updateMenuItemShowDebugMenu();
+
+    if (   msg.key == 'logLoading'
+        && settings.logLoading)
+        uiLogAllSavedNodesAndConns();
 }
 
 
@@ -52347,7 +52423,7 @@ function uiLoadGraphView(json)
 
         
         zoom = parseFloat(data.zoom);
-        if (isNaN(zoom)) zoom  = 1;
+        if (isNaN(zoom)) zoom = 1;
     }
 
 

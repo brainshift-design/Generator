@@ -8,7 +8,7 @@ class Menu
     parentMenu = null;
 
     name;
-    button   = null;
+    button = null;
 
     div;
     divArrow;
@@ -26,6 +26,7 @@ class Menu
 
 
     onHide   = null; // removes itself after firing
+
 
 
     constructor(name, showIcons = true, showChecks = true)
@@ -52,7 +53,7 @@ class Menu
         for (let i = 0; i < this.items.length; i++)
         {
             if (i > 0) 
-                this.div.appendChild(document.createElement('br'));
+                this.items[i].div.appendChild(document.createElement('br'));
 
             if (!this.showIcons)  this.items[i].divIcon .style.display = 'none';
             if (!this.showChecks) this.items[i].divCheck.style.width   = this.showIcons ? 18 : 15;
@@ -134,7 +135,7 @@ class Menu
             : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2),
             graphView.offsetWidth - this.div.offsetWidth - margin);
 
-        this.div.style.top = 
+        this.div.style.top =
             right
             ? srcRect.y - 3
             : srcRect.y + srcRect.height + this.divArrow.offsetHeight;

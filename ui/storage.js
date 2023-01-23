@@ -38,6 +38,8 @@ function uiReturnFigGetLocalData(msg)
         case 'autoConnectNewNodes':
         case 'includeLxxColorSpaces':
         case 'showBoolValues':
+        case 'showDebugMenu':
+
         case 'showNodeId':       
 
         case 'enableBetaFeatures':       
@@ -96,9 +98,7 @@ function uiReturnFigGetLocalData(msg)
             initDataModeMenus();
         }
         else
-        {
             initGeneratorMenus();
-        }    
      
         
         onClassChange(document.childNodes[0], () =>
@@ -111,15 +111,15 @@ function uiReturnFigGetLocalData(msg)
     }
 
 
-    // if (msg.key == 'debugMode')
-    //     menuItemDebug.setVisible(settings.debugMode);
-
-    if (msg.key == 'enableBetaFeatures');
+    if (msg.key == 'enableBetaFeatures')
         updateMenuItemEnableBetaFeatures();
 
-    if (msg.key == 'logLoading')
-        if (settings.logLoading)
-            uiLogAllSavedNodesAndConns();
+    if (msg.key == 'showDebugMenu')
+        updateMenuItemShowDebugMenu();
+
+    if (   msg.key == 'logLoading'
+        && settings.logLoading)
+        uiLogAllSavedNodesAndConns();
 }
 
 
@@ -161,7 +161,7 @@ function uiLoadGraphView(json)
 
         
         zoom = parseFloat(data.zoom);
-        if (isNaN(zoom)) zoom  = 1;
+        if (isNaN(zoom)) zoom = 1;
     }
 
 

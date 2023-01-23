@@ -6,6 +6,8 @@ const settings =
     autoConnectNewNodes:   true,
     includeLxxColorSpaces: false,
     showBoolValues:        true,
+    showDebugMenu:         false,
+
     showNodeId:            false, // instead of name
 
     enableBetaFeatures:    false,
@@ -36,6 +38,8 @@ function updateSetting(settingName, value)
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
+        case 'showDebugMenu':         settings.showDebugMenu         = value;  break;
+        
         case 'showNodeId':            settings.showNodeId            = value;  break;
 
         case 'enableBetaFeatures':    settings.enableBetaFeatures    = value;  break;
@@ -66,6 +70,8 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
+        case 'showDebugMenu':         updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu        );  break;
+
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
         
         case 'enableBetaFeatures':    updateSettingAndMenu_(valid, settingName, value, menuItemEnableBetaFeatures   );  break;
@@ -108,6 +114,8 @@ function updateSettingsMenus()
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
+    menuItemShowDebugMenu        .setChecked(settings.showDebugMenu        );
+
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
 
     menuItemEnableBetaFeatures   .setChecked(settings.enableBetaFeatures   );
@@ -150,7 +158,29 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    btnShape.div.style.display = settings.enableBetaFeatures ? 'inline-block' : 'none';
+    updateMenuItemBetaDisplay(btnShape      .div, settings.enableBetaFeatures);
+
+    updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuItemStart .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuItemRepeat.div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuSep2      .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
+}
+
+
+
+function updateMenuItemShowDebugMenu()
+{
+    updateMenuItemBetaDisplay(menuItemDebug.div, settings.showDebugMenu);
+}
+
+
+
+function updateMenuItemBetaDisplay(menuItem, enable)
+{
+    menuItem.style.display = enable ? 'block' : 'none';
 }
 
 
@@ -163,6 +193,8 @@ function loadLocalSettings()
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
     uiGetLocalData('showBoolValues'       );
+    uiGetLocalData('showDebugMenu'        );
+
     uiGetLocalData('showNodeId'           );
 
     uiGetLocalData('enableBetaFeatures'   );
@@ -180,5 +212,5 @@ function loadLocalSettings()
     uiGetLocalData('logRawRequests'       );
     uiGetLocalData('logRawValues'         );
     
-    uiGetLocalData('graphView');
+    uiGetLocalData('graphView'            );
 }
