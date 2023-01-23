@@ -55,7 +55,7 @@ class Menu
             if (i > 0) 
                 this.items[i].div.appendChild(document.createElement('br'));
 
-            if (!this.showIcons)  this.items[i].divIcon .style.display = 'none';
+            if (!this.showIcons ) this.items[i].divIcon .style.display = 'none';
             if (!this.showChecks) this.items[i].divCheck.style.width   = this.showIcons ? 18 : 15;
 
             this.items[i].parentMenu = this;

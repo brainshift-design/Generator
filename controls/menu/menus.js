@@ -134,6 +134,8 @@ var menuSep2;
 var menuItemCache; 
 var menuItemCopy;  
 
+var menuItemSeries;
+
 
 var menuItemDataMode;
 
@@ -284,19 +286,19 @@ function initGeneratorMenus()
     
     menuNumber = new Menu('Number nodes', true, false);
     menuNumber.addItems([
-        new MenuItem('Number',      {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('',            {separator: true}),
-        new MenuItem('Round',       {icon: iconRound,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Limits',      {icon: iconLimits,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('',            {separator: true}),
-        new MenuItem('Math',        {icon: iconMath,        childMenu: menuMath,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,        btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Boolean',     {icon: iconBoolean,     childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Condition',   {icon: iconCondition,   childMenu: menuCondition, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('',            {separator: true}),
-        new MenuItem('Series',      {icon: iconSeries,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_SERIES,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Random',      {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('',            {separator: true}),
-        new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, {insert: e.shiftKey}))})]);
+                         new MenuItem('Number',      {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, {insert: e.shiftKey}))}),
+                         new MenuItem('',            {separator: true}),
+                         new MenuItem('Round',       {icon: iconRound,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, {insert: e.shiftKey}))}),
+                         new MenuItem('Limits',      {icon: iconLimits,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, {insert: e.shiftKey}))}),
+                         new MenuItem('',            {separator: true}),
+                         new MenuItem('Math',        {icon: iconMath,        childMenu: menuMath,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,        btnNumber.div, {insert: e.shiftKey}))}),
+                         new MenuItem('Boolean',     {icon: iconBoolean,     childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, {insert: e.shiftKey}))}),
+                         new MenuItem('Condition',   {icon: iconCondition,   childMenu: menuCondition, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, {insert: e.shiftKey}))}),
+                         new MenuItem('',            {separator: true}),
+        menuItemSeries = new MenuItem('Series',      {icon: iconSeries,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_SERIES,      btnNumber.div, {insert: e.shiftKey}))}),
+                         new MenuItem('Random',      {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, {insert: e.shiftKey}))}),
+                         new MenuItem('',            {separator: true}),
+                         new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, {insert: e.shiftKey}))})]);
         
     
     // menuString = new Menu('String nodes', true, false);
