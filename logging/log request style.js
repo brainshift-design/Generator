@@ -50,9 +50,8 @@ function logReqColorStop(stop, parse)
 
 
 
-function logReqColorStyle(style, nInputs, parse)
+function logReqColorStyle(style, parse)
 {
     parse.log += parse.tab + COLOR_STYLE;
     parse.log += logReqNodeId(style);
-    parse.log += ' ' + nInputs;
 }

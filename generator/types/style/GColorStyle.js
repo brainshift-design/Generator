@@ -1,7 +1,7 @@
 class GColorStyle
-extends GShapeBase
+extends GColorType
 {
-    input = null;
+    style;
 
 
 
@@ -16,9 +16,6 @@ extends GShapeBase
     {
         const style = new GColorStyle(this.nodeId, this.options);
 
-        if (this.input) 
-            style.input = this.input.copy();
-
         return style;
     }
 
@@ -29,17 +26,18 @@ extends GShapeBase
         if (this.isCached())
             return this;
 
-            
-        if (this.input)
-        {
-            const input = this.input.eval(parse).toValue();
-            const rgb   = input.toRgb();
 
+        this.value = this.value.eval(parse).toValue();
+      
+
+        if (this.value.isValid())
+        {
+            const rgb = this.value.toRgb();
             this.evalObjects({rgb: rgb});
         }
 
 
-        genPushUpdateValue(parse, this.nodeId, '', NullValue);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -55,23 +53,17 @@ extends GShapeBase
             return;
 
             
-        const style = new FigmaColorStyle(this.nodeId, -1);
+        this.style = new FigmaColorStyle(this.nodeId, -1);
 
         
-        if (!style.fills) 
-            style.fills = [];
+        if (!this.style.fills) 
+            this.style.fills = [];
 
-        style.fills.push([
+        this.style.fills.push([
             'SOLID', 
                     0xff * options.rgb[0]
             + ' ' + 0xff * options.rgb[1]
             + ' ' + 0xff * options.rgb[2]
             + ' ' + 0xff]);
-
-
-        this.objects = [style];
-
-        
-        super.evalObjects();
     }
 }

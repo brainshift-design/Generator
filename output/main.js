@@ -481,7 +481,7 @@ function figUpdateObject(figObj, genObj) {
 function figDeleteObjectsFromNodeIds(nodeIds) {
     figma.currentPage
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
-        .forEach(o => o.remove());
+        .forEach(o => { console.log('o =', o); o.remove(); });
 }
 function figDeleteAllObjects() {
     for (const obj of figma.currentPage.children)

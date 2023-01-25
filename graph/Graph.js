@@ -379,7 +379,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
      
         case FILL:                    node = new OpFill();             break;
         case STROKE:                  node = new OpStroke();           break;
-        case COLOR_STYLE:             node = new OpColorStyle();            break;
+
+        case COLOR_STYLE:             node = new OpColorStyle();       break;
      
         case RECTANGLE:               node = new OpRectangle();        break;
         case LINE:                    node = new OpLine();             break;

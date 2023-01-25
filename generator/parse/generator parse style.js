@@ -248,17 +248,8 @@ function genParseColorStyle(parse)
     const style = new GColorStyle(nodeId, options);
 
 
-    let nInputs = -1;
-    
-    if (!ignore)
-    {
-        nInputs = parseInt(parse.move());
-        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
-    }
-
-
     if (parse.settings.logRequests) 
-        logReqColorStyle(style, nInputs, parse);
+        logReqColorStyle(style, parse);
 
 
     if (ignore) 
@@ -269,11 +260,11 @@ function genParseColorStyle(parse)
 
 
     parse.nTab++;
+    parse.inParam = false;
 
 
-    if (nInputs == 1)
-        style.input = genParse(parse);
-
+    style.value = genParse(parse);
+   
 
     parse.nTab--;
 

@@ -62,7 +62,7 @@ extends OperatorBase
 
     paramIsConsideredDefault(param)
     {
-        return param.isDefault()
+        return  param.isDefault()
             && !this.inputs[0].connected;
     }
 }

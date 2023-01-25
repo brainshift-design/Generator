@@ -88,7 +88,7 @@ function figDeleteObjectsFromNodeIds(nodeIds)
 {
     figma.currentPage
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
-        .forEach(o => o.remove());
+        .forEach(o => {console.log('o =', o); o.remove(); });
 }
 
 

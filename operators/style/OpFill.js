@@ -9,14 +9,6 @@ extends OpColorBase
 
 
 
-    // get inputIsShape() 
-    // {
-    //     return this.inputs[0].connected
-    //         && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
-    // }
-    
-    
-    
     constructor()
     {
         super(FILL, 'fill');
