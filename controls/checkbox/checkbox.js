@@ -2,18 +2,18 @@ function initCheckbox(checkbox, name, defaultChecked)
 {
     // control is also the div
 
-    checkbox.className         = 'checkbox';
+    checkbox.className     = 'checkbox';
     
-    checkbox.checked           = defaultChecked;
-    checkbox.name              = name;
+    checkbox.checked       = defaultChecked;
+    checkbox.name          = name;
     
-    checkbox.style.display     = 'inline';
+    checkbox.style.display = 'inline';
              
-    checkbox.onchange          = new Event('change');
+    checkbox.onchange      = new Event('change');
 
 
-    checkbox.check = createDiv('checkboxCheck');
-    checkbox.text  = createDiv('checkboxText');
+    checkbox.check         = createDiv('checkboxCheck');
+    checkbox.text          = createDiv('checkboxText');
 
     checkbox.appendChild(checkbox.check);
     checkbox.appendChild(checkbox.text);
@@ -23,7 +23,7 @@ function initCheckbox(checkbox, name, defaultChecked)
     checkbox.addEventListener('pointerup', () =>
     {
         checkbox.setChecked(!checkbox.checked);
-    })
+    });
 
 
 

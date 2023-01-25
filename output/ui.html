@@ -539,6 +539,7 @@
     height:   calc(100% - 42px);
     overflow: hidden;
     padding:  0;
+    z-index:  1;
     /* box-shadow: 0 0 0 1px red inset; */
 }
 
@@ -546,7 +547,6 @@
 #whatsNewDialogContent
 {
     font-size: 12px;
-    z-index:  -1;
     margin:    0;
     padding:   1px 0 5px 0;
     position:  absolute;
@@ -585,11 +585,13 @@
 
 #whatsNewTitle
 {
-    height:        40px;
+    position:       relative;
+    height:         40px;
     border-bottom:  1px solid rgb(0, 0, 0, 0.15);
     border-top:     1px solid var(--figma-color-bg-tertiary);
     border-bottom:  1px solid var(--figma-color-bg-tertiary);
     background:     var(--figma-color-bg);
+    z-index:        10;
 }
 
 
@@ -624,9 +626,7 @@
 
 #chkHideWhatsNew
 {
-    display: inline-block;
-    position: relative;
-    top: 0.5px;
+    display:  inline-block;
 }
 
 
@@ -35276,18 +35276,18 @@ function initCheckbox(checkbox, name, defaultChecked)
 {
     // control is also the div
 
-    checkbox.className         = 'checkbox';
+    checkbox.className     = 'checkbox';
     
-    checkbox.checked           = defaultChecked;
-    checkbox.name              = name;
+    checkbox.checked       = defaultChecked;
+    checkbox.name          = name;
     
-    checkbox.style.display     = 'inline';
+    checkbox.style.display = 'inline';
              
-    checkbox.onchange          = new Event('change');
+    checkbox.onchange      = new Event('change');
 
 
-    checkbox.check = createDiv('checkboxCheck');
-    checkbox.text  = createDiv('checkboxText');
+    checkbox.check         = createDiv('checkboxCheck');
+    checkbox.text          = createDiv('checkboxText');
 
     checkbox.appendChild(checkbox.check);
     checkbox.appendChild(checkbox.text);
@@ -35297,7 +35297,7 @@ function initCheckbox(checkbox, name, defaultChecked)
     checkbox.addEventListener('pointerup', () =>
     {
         checkbox.setChecked(!checkbox.checked);
-    })
+    });
 
 
 
