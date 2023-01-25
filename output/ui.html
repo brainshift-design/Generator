@@ -5257,6 +5257,16 @@ function logObjectUpdates(objects)
 
 
 
+function logStyleUpdates(styles)
+{
+    console.log(
+        '%cstyles', 
+        'background: #07e; color: white;', 
+        styles);
+}
+
+
+
 function logSaveNodes(nodeJson)
 {
     console.log('%cSAVING NODES\n' + nodeJson, 'color: black; background: #ddeeff;');
@@ -13525,8 +13535,9 @@ function genEndFigMessage()
     genFigMessagePosted = false;
     
     if (   lastUpdateValues .length > 0
-        || lastUpdateObjects.length > 0)
-        genUpdateValuesAndObjects(-1, '', '', [], []);
+        || lastUpdateObjects.length > 0
+        || lastUpdateStyles .length > 0)
+        genUpdateValuesAndObjects(-1, '', '', [], [], []);
 
     genPostNextMessageToUI();
 }
@@ -13650,7 +13661,7 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects)
+function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects))
@@ -20936,6 +20947,16 @@ function logObjectUpdates(objects)
         '%cobjects', 
         'background: #07e; color: white;', 
         objects);
+}
+
+
+
+function logStyleUpdates(styles)
+{
+    console.log(
+        '%cstyles', 
+        'background: #07e; color: white;', 
+        styles);
 }
 
 
@@ -52153,10 +52174,10 @@ generator.onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                    break;
-        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.actionId, msg.updateNodeId, msg.updateParamId, msg.values, msg.objects); break;
-        case 'uiStartNodeProgress':      uiStartNodeProgress     (msg.nodeId);                                                                 break;
-        case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                                   break;
+        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                 break;
+        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.actionId, msg.updateNodeId, msg.updateParamId, msg.values, msg.objects, msg.styles);  break;
+        case 'uiStartNodeProgress':      uiStartNodeProgress     (msg.nodeId);                                                                              break;
+        case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                                                break;
     }
 };
 
@@ -53939,15 +53960,15 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
     
     if (styles.length > 0)
     {
-        // if (settings.logStyleUpdates)
-        //     logStyleUpdates([...styles]);
+        if (settings.logStyleUpdates)
+            logStyleUpdates([...styles]);
 
-        // uiPostMessageToFigma({
-        //     cmd:          'figUpdateStyles',
-        //     updateNodeId:  updateNodeId,
-        //     updateParamId: updateParamId,
-        //     nodeIds:       nodes.map(n => n.id),
-        //     styles:        [...styles]});
+        uiPostMessageToFigma({
+            cmd:          'figUpdateStyles',
+            updateNodeId:  updateNodeId,
+            updateParamId: updateParamId,
+            nodeIds:       nodes.map(n => n.id),
+            styles:        [...styles]});
     }
 
     

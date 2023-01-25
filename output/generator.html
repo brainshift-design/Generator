@@ -2709,6 +2709,16 @@ function logObjectUpdates(objects)
 
 
 
+function logStyleUpdates(styles)
+{
+    console.log(
+        '%cstyles', 
+        'background: #07e; color: white;', 
+        styles);
+}
+
+
+
 function logSaveNodes(nodeJson)
 {
     console.log('%cSAVING NODES\n' + nodeJson, 'color: black; background: #ddeeff;');
@@ -10977,8 +10987,9 @@ function genEndFigMessage()
     genFigMessagePosted = false;
     
     if (   lastUpdateValues .length > 0
-        || lastUpdateObjects.length > 0)
-        genUpdateValuesAndObjects(-1, '', '', [], []);
+        || lastUpdateObjects.length > 0
+        || lastUpdateStyles .length > 0)
+        genUpdateValuesAndObjects(-1, '', '', [], [], []);
 
     genPostNextMessageToUI();
 }
@@ -11102,7 +11113,7 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects)
+function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects))

@@ -900,15 +900,15 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
     
     if (styles.length > 0)
     {
-        // if (settings.logStyleUpdates)
-        //     logStyleUpdates([...styles]);
+        if (settings.logStyleUpdates)
+            logStyleUpdates([...styles]);
 
-        // uiPostMessageToFigma({
-        //     cmd:          'figUpdateStyles',
-        //     updateNodeId:  updateNodeId,
-        //     updateParamId: updateParamId,
-        //     nodeIds:       nodes.map(n => n.id),
-        //     styles:        [...styles]});
+        uiPostMessageToFigma({
+            cmd:          'figUpdateStyles',
+            updateNodeId:  updateNodeId,
+            updateParamId: updateParamId,
+            nodeIds:       nodes.map(n => n.id),
+            styles:        [...styles]});
     }
 
     

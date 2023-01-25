@@ -724,8 +724,6 @@ function figUpdateObject(figObj, genObj)
         case ELLIPSE:     figUpdateEllipse   (figObj, genObj); break;
         case POLYGON:     figUpdatePolygon   (figObj, genObj); break;
         case STAR:        figUpdateStar      (figObj, genObj); break;
-
-        case COLOR_STYLE: figUpdateColorStyle(figObj, genObj); break;
     }
 }
 
@@ -880,6 +878,9 @@ figma.ui.onmessage = msg =>
            
         case 'figUpdateObjects':                  figUpdateObjects                 (msg);                                         break;
         case 'figDeleteObjects':                  figDeleteObjectsFromNodeIds      (msg.nodeIds);                                 break; 
+
+        case 'figUpdateStyles':                   figUpdateStyles                  (msg);                                         break;
+        //case 'figDeleteStyles':                   figDeleteStylesFromNodeIds       (msg.nodeIds);                                 break; 
     }
 
     
@@ -1680,6 +1681,47 @@ function figDeleteSavedConnectionsFromNode(nodeId)
             figClearPageData(key);        
     }
 }
+
+
+function figUpdateStyles(msg)
+{
+    let curNodeId = NULL;
+    let figStyles = null;
+
+    for (const genStyle of msg.styles)
+    {
+        if (genStyle.nodeId != curNodeId)
+        {
+            curNodeId  = genStyle.nodeId;
+            
+            figStyles = figObjectArrays.find(a => a.nodeId == genStyle.nodeId);
+
+            if (!figStyles) 
+                figObjectArrays.push(figStyles = {nodeId: genStyle.nodeId, objects: []});
+        }
+
+        const figStyle = figStyles[genStyle.id];
+
+
+        if (  !figStyle 
+            || figStyle.removed) // no existing object, create new object
+            figCreateColorStyle(genStyle);
+
+        else if (figStyle.getPluginData('type') == genStyle.type.toString()) // update existing object
+            figUpdateColorStyle(figStyle, genStyle);
+
+        else // delete existing object, create new object
+        {
+            figStyle.remove();
+            figCreateColorStyle(genStyle);
+        }
+    }
+}
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 function figCreateColorStyle(stl)

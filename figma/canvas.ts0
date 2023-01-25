@@ -78,8 +78,6 @@ function figUpdateObject(figObj, genObj)
         case ELLIPSE:     figUpdateEllipse   (figObj, genObj); break;
         case POLYGON:     figUpdatePolygon   (figObj, genObj); break;
         case STAR:        figUpdateStar      (figObj, genObj); break;
-
-        case COLOR_STYLE: figUpdateColorStyle(figObj, genObj); break;
     }
 }
 

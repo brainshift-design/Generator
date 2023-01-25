@@ -101,8 +101,9 @@ function genEndFigMessage()
     genFigMessagePosted = false;
     
     if (   lastUpdateValues .length > 0
-        || lastUpdateObjects.length > 0)
-        genUpdateValuesAndObjects(-1, '', '', [], []);
+        || lastUpdateObjects.length > 0
+        || lastUpdateStyles .length > 0)
+        genUpdateValuesAndObjects(-1, '', '', [], [], []);
 
     genPostNextMessageToUI();
 }

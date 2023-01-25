@@ -119,6 +119,16 @@ function logObjectUpdates(objects)
 
 
 
+function logStyleUpdates(styles)
+{
+    console.log(
+        '%cstyles', 
+        'background: #07e; color: white;', 
+        styles);
+}
+
+
+
 function logSaveNodes(nodeJson)
 {
     console.log('%cSAVING NODES\n' + nodeJson, 'color: black; background: #ddeeff;');

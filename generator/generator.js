@@ -114,7 +114,7 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects)
+function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects))
