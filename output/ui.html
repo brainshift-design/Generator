@@ -504,7 +504,7 @@
     height:           100%;
     overflow:         auto;
 
-    background-color: #0005
+    background-color: #0005;
 }
 
 
@@ -522,6 +522,7 @@
     transform:     translateX(-50%);
     width:         600px;
     height:        calc(100% - 80px);
+
     overflow:      hidden;
     
     color:         var(--figma-color-text);
@@ -532,6 +533,25 @@
     border-radius: 4px;
 }
 
+
+#whatsNewDialogContainer
+{
+    height:   calc(100% - 42px);
+    overflow: hidden;
+    padding:  0;
+    /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+#whatsNewDialogContent
+{
+    font-size: 12px;
+    z-index:  -1;
+    margin:    0;
+    padding:   1px 0 5px 0;
+    position:  absolute;
+    /* box-shadow: 0 0 0 1px blue inset; */
+}
 
 
 .figma-light #whatsNewDialog
@@ -569,6 +589,7 @@
     border-bottom:  1px solid rgb(0, 0, 0, 0.15);
     border-top:     1px solid var(--figma-color-bg-tertiary);
     border-bottom:  1px solid var(--figma-color-bg-tertiary);
+    background:     var(--figma-color-bg);
 }
 
 
@@ -607,6 +628,24 @@
     position: relative;
     top: 0.5px;
 }
+
+
+
+#whatsNewScrollbarY
+{
+    background-color: var(--figma-color-text-tertiary);
+    width:            6px;
+    border-radius:    3px;
+    position:         absolute;
+    z-index:          1;
+    display:          none;
+    margin:           6px 0 18px 0;
+}
+
+
+.figma-light #whatsNewScrollbarY { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); }
+.figma-dark  #whatsNewScrollbarY { box-shadow: 0 0 0 1px rgba( 60,  60,  60, 0.25); }
+
 
 
 #loadingOverlay
@@ -2285,7 +2324,7 @@ a
 <div id='whatsNewBack'></div>
 
 <div id='whatsNewDialog'>
-
+    
     <div id='whatsNewTitle'>
         <div id='whatsNewTitleText'>Version 94</div>
         <div class='panelButton dialogButtonClose' id='whatsNewClose' onclick='whatsNewClose.blur(); hideWhatsNewDialog();'>
@@ -2295,28 +2334,25 @@ a
         </div>
     </div>
     
-    <div id='whatsNewWatermark'>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
+    <div id='whatsNewDialogContainer'>
+        <div id='whatsNewDialogContent'>
+            <div id='whatsNewWatermark'>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
 
-    <div id='whatsNewBody'>
-        <h1>What's new in Generator</h1>
-        <p>The back end was completely rewritten with a focus on data safety, UI performance and project scalability.</p>
-        <p>This is especially important for the beta stage, so if there is a bug, as little data as possible will be lost.</p>
-        <p>UI updated to completely match Figma.</p>
-        <p>Fills, strokes & styles</p>
-        <p>Flow operators</p>
-        <p>-- Lists</p>
-        <p>Comments</p>
-        <p>Subscription features</p>
-        <img src="http://www.bourt.com/generator/whatsnew/94/test.jpg" />
+            <div id='whatsNewBody'>
+                <h1>What's new in Generator</h1>
+                <p>The back end was completely rewritten to be robust and scalable, and to provide a responsive UI.</p>
+                <p>Updated menu bar and other UI to completely match Figma</p>
+                <p>Dark mode is now fully supported</p>
+                <p>Added context menus</p>
+                <p>Color styles are now created directly in Figma</p>
+                <p>Comments can now be added to the graph</p>
+                <p>More features will now be available by subscription</p>
+                <img src="http://www.bourt.com/generator/whatsnew/94/test.jpg" />
 
-        <p><div id='chkHideWhatsNew'></div></p>
-
-        <!-- <div id='productKeyUserName'></div>
-        <div id='productKeyUserId'></div>
-        
-        <div id='productKeyInputBack'></div>
-        <input type='text' spellcheck='false' id='productKeyInput' />
-        <div id='productKeyWebsite'><a href='http://www.bourt.com/generator/subscribe' target='_blank'>Buy subscription</a></div> -->
+                <p><div id='chkHideWhatsNew'></div></p>
+            </div>
+        </div>
+        <div id='whatsNewScrollbarY'></div>
     </div>
 
 </div>
@@ -2699,7 +2735,7 @@ function rgbHeaderFromType(type, active)
         ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
         : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );
 
-    if (STYLE_TYPES.includes(type))
+    if (type == COLOR_STYLE)//COLOR_STYLE_TYPES.includes(type))
         return active 
         ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
         : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );
@@ -5673,17 +5709,18 @@ function logReqColorStop(stop, parse)
 
 
 
-function logReqStyleValue(style, parse)
+// function logReqColorStyleValue(style, parse)
+// {
+//     parse.log += parse.tab + COLOR_STYLE_VALUE + ' ' + displayValue(COLOR_STYLE_VALUE, style);
+// }
+
+
+
+function logReqColorStyle(style, nInputs, parse)
 {
-    parse.log += parse.tab + STYLE_VALUE + ' ' + displayValue(STYLE_VALUE, style);
-}
-
-
-
-function logReqStyle(style, parse)
-{
-    parse.log += parse.tab + style.type;
+    parse.log += parse.tab + COLOR_STYLE;
     parse.log += logReqNodeId(style);
+    parse.log += ' ' + nInputs;
 }
 
 
@@ -6046,9 +6083,9 @@ const GRADIENT_VALUE   = 'GRAD#';
 const GRADIENT         = 'GRAD';
 const GRADIENT_TYPES   = [GRADIENT_VALUE, GRADIENT];
 
-const STYLE_VALUE      = 'STYLE#';
-const STYLE            = 'STYLE';
-const STYLE_TYPES      = [STYLE_VALUE, STYLE];
+//const COLOR_STYLE_VALUE = 'CSTL#';
+const COLOR_STYLE       = 'CSTL';
+//const COLOR_STYLE_TYPES = [COLOR_STYLE_VALUE, COLOR_STYLE];
 
 
 const SHAPE_VALUE      = 'SHP#'; // abstract placeholder
@@ -6108,7 +6145,8 @@ const ALL_TYPES =
     ...FILL_TYPES,
     ...STROKE_TYPES,
     ...GRADIENT_TYPES,
-    ...STYLE_TYPES,
+    //...COLOR_STYLE_TYPES,
+    COLOR_STYLE,
     ...SHAPE_TYPES
 ];
 
@@ -6449,6 +6487,29 @@ extends FigmaObject
         star.copyBase(this);
 
         return star;
+    }
+}
+
+
+class FigmaColorStyle
+extends FigmaObject
+{
+    constructor(nodeId, id)
+    {
+        super(COLOR_STYLE, nodeId, id);
+    }
+
+
+
+    copy()
+    {
+        const style = new FigmaColorStyle(
+            this.nodeId,
+            this.id);
+
+        style.copyBase(this);
+
+        return style;
     }
 }
 
@@ -6867,12 +6928,12 @@ function parseListValue(str, i = -1)
         
         switch (type)
         {
-            case NUMBER_VALUE: { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
-            case COLOR_VALUE:  { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
-            case FILL_VALUE:   { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
-            case STROKE_VALUE: { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
-            case STYLE_VALUE:  { const style  = parseStyleValue (str, i); i += style [1]; list.items.push(style [0]); break; }
-            case LIST_VALUE:   { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
+            case NUMBER_VALUE:      { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
+            case COLOR_VALUE:       { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
+            case FILL_VALUE:        { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
+            case STROKE_VALUE:      { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
+            //case COLOR_STYLE_VALUE: { const style  = parseStyleValue (str, i); i += style [1]; list.items.push(style [0]); break; }
+            case LIST_VALUE:        { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
         }
     }
  
@@ -8481,7 +8542,7 @@ extends GOperator
             }
         }
         else
-            genPushUpdateValue(parse, this.nodeId, 'noitems', new NumberValue(0));
+            genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
         this.validate();
@@ -10302,7 +10363,7 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-
+            
         if (this.input)
             this.value = this.input.eval(parse).toValue();
         else if (this.value)
@@ -11243,7 +11304,8 @@ extends GColorType
 
         cb.copyBase(this);
 
-        if (this.input) cb.input = this.input.copy();
+        if (this.input) 
+            cb.input = this.input.copy();
 
         cb.l = this.l.copy();
         cb.m = this.m.copy();
@@ -12031,7 +12093,7 @@ extends GOperator
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         for (const obj of this.objects)
             obj.nodeId = this.nodeId;
@@ -12123,7 +12185,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.options.enabled)
             return;
@@ -12258,7 +12320,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.options.enabled)
             return;
@@ -12389,7 +12451,7 @@ extends GShapeBase
 
 
 
-   evalObjects()
+   evalObjects(options = {})
    {
        if (!this.options.enabled)
            return;
@@ -12532,7 +12594,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.options.enabled)
             return;
@@ -12687,7 +12749,7 @@ extends GShapeBase
 
 
 
-   evalObjects()
+   evalObjects(options = {})
    {
        if (!this.options.enabled)
            return;
@@ -12824,7 +12886,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.objects)
             return;
@@ -12965,7 +13027,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.objects)
             return;
@@ -13037,6 +13099,85 @@ extends GShapeBase
             this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
             this.join   ? this.join  .toValue() : this.input.join  .toValue(),
             this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+    }
+}
+
+
+class GColorStyle
+extends GShapeBase
+{
+    input = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_STYLE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const style = new GColorStyle(this.nodeId, this.options);
+
+        if (this.input) 
+            style.input = this.input.copy();
+
+        return style;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        if (this.input)
+        {
+            const input = this.input.eval(parse).toValue();
+            const rgb   = input.toRgb();
+
+            this.evalObjects({rgb: rgb});
+        }
+
+
+        genPushUpdateValue(parse, this.nodeId, '', NullValue);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalObjects(options = {})
+    {
+        if (!this.options.enabled)
+            return;
+
+            
+        const style = new FigmaColorStyle(this.nodeId, -1);
+
+        
+        if (!style.fills) 
+            style.fills = [];
+
+        style.fills.push([
+            'SOLID', 
+                    0xff * options.rgb[0]
+            + ' ' + 0xff * options.rgb[1]
+            + ' ' + 0xff * options.rgb[2]
+            + ' ' + 0xff]);
+
+
+        this.objects = [style];
+
+        
+        super.evalObjects();
     }
 }
 
@@ -13201,15 +13342,17 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    updateMenuItemBetaDisplay(btnShape      .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(btnFlow .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(btnShape.div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(btnStyle.div, settings.enableBetaFeatures);
 
-    updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemStart .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemRepeat.div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuSep2      .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
+    // updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemStart .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemRepeat.div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuSep2      .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
 
     updateMenuItemBetaDisplay(menuItemSeries.div, settings.enableBetaFeatures);    
 }
@@ -15310,33 +15453,42 @@ function genParseColorStop(parse)
 
 
 
-function genParseStyleValue(parse)
-{
-    parse.pos++; // STYLE_VALUE
+// function genParseColorStyleValue(parse)
+// {
+//     parse.pos++; // COLOR_STYLE_VALUE
 
-    const style = parse.move();
+//     const style = parse.move();
 
-    if (parse.settings.logRequests) 
-        logReqStyleValue(style, parse);
+//     if (parse.settings.logRequests) 
+//         logReqStyleValue(style, parse);
 
-    return parseStyleValue(style)[0];
-}
+//     return parseColorStyleValue(style)[0];
+// }
 
 
 
-function genParseStyle(parse)
+function genParseColorStyle(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const style = new GStyle(nodeId, options);
+    const style = new GColorStyle(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
 
 
     if (parse.settings.logRequests) 
-        logReqStyle(style, parse);
+        logReqColorStyle(style, nInputs, parse);
 
 
-    if (ignore)
+    if (ignore) 
     {
         genParseNodeEnd(parse, style);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
@@ -15346,34 +15498,10 @@ function genParseStyle(parse)
     parse.nTab++;
 
 
-    if (OBJECT_TYPES.includes(parse.next))
+    if (nInputs == 1)
         style.input = genParse(parse);
-    // ||    parse.next == PARAM
-    //    && FILL_TYPES.includes(parse.afterNext))
 
 
-    // const nParamIds = genParseParamCount(parse);
-
-    // for (let i = 0; i < nParamIds; i++)
-    // {
-    //     const paramId = genParseParamId(parse);
-
-    //     parse.nTab++;
-    //     parse.inParam = true;
-
-        
-    //     switch (paramId)
-    //     {
-    //     case 'color'  : style.color   = genParse(parse); break;
-    //     case 'opacity': style.opacity = genParse(parse); break;
-    //     }
-
-
-    //     parse.nTab--;
-    // }
-
-    
-    // parse.inParam = false;
     parse.nTab--;
 
 
@@ -15383,15 +15511,15 @@ function genParseStyle(parse)
 
 
 
-function genParseStyleParam(parse)
-{
+//function genParseStyleParam(parse)
+//{
     // const style = genParse(parse); 
 
     // if (STYLE_TYPES.includes(style.type))
     //     style.options.opacity = genParse(parse);
 
     // return style;
-}
+//}
 
 
 
@@ -15535,8 +15663,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue  (parse);
     else if (parse.next == COLOR_STOP             ) result = genParseColorStop       (parse);
      
-    else if (parse.next == STYLE_VALUE            ) result = genParseStyleValue      (parse);
-    else if (parse.next == STYLE                  ) result = genParseStyle           (parse);
+    //else if (parse.next == COLOR_STYLE_VALUE      ) result = genParseStyleValue      (parse);
+    else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle      (parse);
      
     else if (parse.next == RECTANGLE              ) result = genParseRectangle       (parse);
     else if (parse.next == LINE                   ) result = genParseLine            (parse);
@@ -18257,7 +18385,7 @@ function rgbHeaderFromType(type, active)
         ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
         : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );
 
-    if (STYLE_TYPES.includes(type))
+    if (type == COLOR_STYLE)//COLOR_STYLE_TYPES.includes(type))
         return active 
         ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
         : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );
@@ -21231,17 +21359,18 @@ function logReqColorStop(stop, parse)
 
 
 
-function logReqStyleValue(style, parse)
+// function logReqColorStyleValue(style, parse)
+// {
+//     parse.log += parse.tab + COLOR_STYLE_VALUE + ' ' + displayValue(COLOR_STYLE_VALUE, style);
+// }
+
+
+
+function logReqColorStyle(style, nInputs, parse)
 {
-    parse.log += parse.tab + STYLE_VALUE + ' ' + displayValue(STYLE_VALUE, style);
-}
-
-
-
-function logReqStyle(style, parse)
-{
-    parse.log += parse.tab + style.type;
+    parse.log += parse.tab + COLOR_STYLE;
     parse.log += logReqNodeId(style);
+    parse.log += ' ' + nInputs;
 }
 
 
@@ -23228,9 +23357,9 @@ const GRADIENT_VALUE   = 'GRAD#';
 const GRADIENT         = 'GRAD';
 const GRADIENT_TYPES   = [GRADIENT_VALUE, GRADIENT];
 
-const STYLE_VALUE      = 'STYLE#';
-const STYLE            = 'STYLE';
-const STYLE_TYPES      = [STYLE_VALUE, STYLE];
+//const COLOR_STYLE_VALUE = 'CSTL#';
+const COLOR_STYLE       = 'CSTL';
+//const COLOR_STYLE_TYPES = [COLOR_STYLE_VALUE, COLOR_STYLE];
 
 
 const SHAPE_VALUE      = 'SHP#'; // abstract placeholder
@@ -23290,7 +23419,8 @@ const ALL_TYPES =
     ...FILL_TYPES,
     ...STROKE_TYPES,
     ...GRADIENT_TYPES,
-    ...STYLE_TYPES,
+    //...COLOR_STYLE_TYPES,
+    COLOR_STYLE,
     ...SHAPE_TYPES
 ];
 
@@ -23631,6 +23761,29 @@ extends FigmaObject
         star.copyBase(this);
 
         return star;
+    }
+}
+
+
+class FigmaColorStyle
+extends FigmaObject
+{
+    constructor(nodeId, id)
+    {
+        super(COLOR_STYLE, nodeId, id);
+    }
+
+
+
+    copy()
+    {
+        const style = new FigmaColorStyle(
+            this.nodeId,
+            this.id);
+
+        style.copyBase(this);
+
+        return style;
     }
 }
 
@@ -24049,12 +24202,12 @@ function parseListValue(str, i = -1)
         
         switch (type)
         {
-            case NUMBER_VALUE: { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
-            case COLOR_VALUE:  { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
-            case FILL_VALUE:   { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
-            case STROKE_VALUE: { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
-            case STYLE_VALUE:  { const style  = parseStyleValue (str, i); i += style [1]; list.items.push(style [0]); break; }
-            case LIST_VALUE:   { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
+            case NUMBER_VALUE:      { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
+            case COLOR_VALUE:       { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
+            case FILL_VALUE:        { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
+            case STROKE_VALUE:      { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
+            //case COLOR_STYLE_VALUE: { const style  = parseStyleValue (str, i); i += style [1]; list.items.push(style [0]); break; }
+            case LIST_VALUE:        { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
         }
     }
  
@@ -25663,7 +25816,7 @@ extends GOperator
             }
         }
         else
-            genPushUpdateValue(parse, this.nodeId, 'noitems', new NumberValue(0));
+            genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
         this.validate();
@@ -27484,7 +27637,7 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-
+            
         if (this.input)
             this.value = this.input.eval(parse).toValue();
         else if (this.value)
@@ -28425,7 +28578,8 @@ extends GColorType
 
         cb.copyBase(this);
 
-        if (this.input) cb.input = this.input.copy();
+        if (this.input) 
+            cb.input = this.input.copy();
 
         cb.l = this.l.copy();
         cb.m = this.m.copy();
@@ -29213,7 +29367,7 @@ extends GOperator
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         for (const obj of this.objects)
             obj.nodeId = this.nodeId;
@@ -29305,7 +29459,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.options.enabled)
             return;
@@ -29440,7 +29594,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.options.enabled)
             return;
@@ -29571,7 +29725,7 @@ extends GShapeBase
 
 
 
-   evalObjects()
+   evalObjects(options = {})
    {
        if (!this.options.enabled)
            return;
@@ -29714,7 +29868,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.options.enabled)
             return;
@@ -29869,7 +30023,7 @@ extends GShapeBase
 
 
 
-   evalObjects()
+   evalObjects(options = {})
    {
        if (!this.options.enabled)
            return;
@@ -30006,7 +30160,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.objects)
             return;
@@ -30147,7 +30301,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.objects)
             return;
@@ -30219,6 +30373,85 @@ extends GShapeBase
             this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
             this.join   ? this.join  .toValue() : this.input.join  .toValue(),
             this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+    }
+}
+
+
+class GColorStyle
+extends GShapeBase
+{
+    input = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_STYLE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const style = new GColorStyle(this.nodeId, this.options);
+
+        if (this.input) 
+            style.input = this.input.copy();
+
+        return style;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        if (this.input)
+        {
+            const input = this.input.eval(parse).toValue();
+            const rgb   = input.toRgb();
+
+            this.evalObjects({rgb: rgb});
+        }
+
+
+        genPushUpdateValue(parse, this.nodeId, '', NullValue);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalObjects(options = {})
+    {
+        if (!this.options.enabled)
+            return;
+
+            
+        const style = new FigmaColorStyle(this.nodeId, -1);
+
+        
+        if (!style.fills) 
+            style.fills = [];
+
+        style.fills.push([
+            'SOLID', 
+                    0xff * options.rgb[0]
+            + ' ' + 0xff * options.rgb[1]
+            + ' ' + 0xff * options.rgb[2]
+            + ' ' + 0xff]);
+
+
+        this.objects = [style];
+
+        
+        super.evalObjects();
     }
 }
 
@@ -30383,15 +30616,17 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    updateMenuItemBetaDisplay(btnShape      .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(btnFlow .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(btnShape.div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(btnStyle.div, settings.enableBetaFeatures);
 
-    updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemStart .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemRepeat.div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuSep2      .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
+    // updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemStart .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemRepeat.div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuSep2      .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
 
     updateMenuItemBetaDisplay(menuItemSeries.div, settings.enableBetaFeatures);    
 }
@@ -31576,14 +31811,16 @@ function initGeneratorMenus()
         new MenuItem('Web contrast',      {icon: iconColorContrast,    callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
         new MenuItem('',                  {separator: true}),
-        new MenuItem('Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))}),
+        new MenuItem('',                  {separator: true}),
+        new MenuItem('Color style',       {icon: iconStyle,  callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
     
     
     menuStyle = new Menu('Style nodes', true, false);
     menuStyle.addItems([
         new MenuItem('Fill',   {icon: iconFill,   callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Stroke', {icon: iconStroke, callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Style',  {icon: iconStyle,  callback: e => actionManager.do(getCreateNodeAction(STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Stroke', {icon: iconStroke, callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))})]);//,
+        //new MenuItem('Style',  {icon: iconStyle,  callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
     
     
     menuShape = new Menu('Shape nodes', true, false);
@@ -38479,214 +38716,6 @@ extends Parameter
 }
 
 
-class   StyleParam
-extends Parameter
-{
-    defaultValue;
-
-    oldValue = null;
-    
-
-    textControl;
-
-    
-    // get valueText() { return this.colorControl.valueText; }
-
-    
-    value;
-    
-
-    
-    constructor(id,
-                name, 
-                hasInput,
-                hasOutput,
-                defaultValue = new ListValue())
-    {
-        super(LIST_VALUE, id, name);
-
-
-        this.textControl                  = createDiv('colorControlText');
-
-        this.defaultValue                 = defaultValue.copy();
-        this.value                        = defaultValue.copy();
-
-        
-        this.textControl.style.width      = '100%';
-        this.textControl.style.textAlign  = 'center';
-
-
-        this.div.appendChild(this.textControl);
-
-       
-        if (hasInput)  this.initInput(ALL_TYPES);
-        if (hasOutput) this.initOutput([LIST_VALUE], this.output_genRequest);
-    }
-
-
-
-    isDefault = () => arraysAreEqual(this.value, this.defaultValue);
-
-
-
-    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
-    {
-        //console.log('value =', value);
-        
-        if (!(value instanceof ListValue))
-            console.assert(false, 'StyleParam.setValue(value) is ' + typeof value + ', must be a ListValue');
-
-
-        console.assert(
-               value.type 
-            && value.type == LIST_VALUE, 
-            'StyleParam value.type must be LIST_VALUE');
-
-        this.preSetValue(value, createAction, dispatchEvents);
-
-
-        this.value = value.copy();
-
-
-        super.setValue(this.value, createAction, updateControl, dispatchEvents);
-
-
-        this.oldValue = this.value;
-    }    
-
-
-
-    genRequest(gen)
-    {
-        // this function exists because a parameter without an output
-        // should still be able to generate a request
-        
-        // 'this' is the param
-
-        if (    this.output
-            && !isEmpty(this.output.cache)
-            &&  gen.passedNodes.includes(this.node))
-            return this.output.cache;
-
-
-        const request = [];
-
-        if (   this.input
-            && this.input.connected)
-        {
-            request.push(...pushInputOrParam(this.input, gen));
-
-            // if (this.input.connectedOutput.supportsTypes(ALL_TYPES))
-            // {
-            //     const val = noNaN(this.control.value,      1);
-            //     const dec = noNaN(this.control.displayDec, 0);
-                
-            //     request.push(
-            //         NUMBER_VALUE, 
-            //         new NumberValue(val, dec).toString());
-            // }
-        }
-
-        else request.push( 
-            LIST_VALUE, 
-            this.value.toString());
-
-        return request;
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        return this.param.genRequest(gen);
-    }
-
-
-
-    updateControls()
-    {
-        if (   this.input.connected
-            && this.value.isValid())
-        {
-            const noColor = 
-                isDarkMode()
-                ? rgbNoColorDark
-                : rgbNoColorLight;
-
-            const rgbaVal = this.value.fill.toRgba();
-            const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
-
-
-            //this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
-            this.input.colorLight  = 
-            this.input.colorDark   = rgb_a(rgbaText, 0.2);
-
-            //this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
-            this.output.colorLight =
-            this.output.colorDark  = rgb_a(rgbaText, 0.2);
-
-
-            this.textControl.style.display = 'none';
-        }
-        else
-        {
-            const noColor  = isDarkMode() ? rgbNoColorDark      : rgbNoColorLight;
-            const rgbaText = isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight;
-
-
-            //this.input.wireColor           = noColor;
-            this.input.colorLight          = 
-            this.input.colorDark           = rgb_a(rgbaText, 0.12);
-        
-            //this.output.wireColor          = noColor;
-            this.output.colorLight         =
-            this.output.colorDark          = rgb_a(rgbaText, 0.12);
-
-
-            this.textControl.style.display = 'inline-block';
-            this.textControl.style.color   = rgba2style(rgbaText);
-
-            this.textControl.innerHTML     = 'no style';
-            
-            this.div.style.background =
-                isDarkMode()
-                ? 'rgba(56, 56, 56, 0.95)'
-                : 'rgba(255, 255, 255, 0.95)';
-        }
-
-
-        this.div.style.height = '20px';
-
-
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
-    }
-
-
-
-    enableControlText(enable)
-    {
-        enable &= !this.input || !this.input.connected;
-
-        const opEnable = 
-                enable 
-            || !this.input 
-            || !this.input.connected 
-            ||  this.input.connectedOutput.supportsTypes(ALL_TYPES);
-
-        enableElementText(this.textControl, enable);
-        this.textControl.readOnly = !enable;
-    }
-
-
-
-    loadParam(param)
-    {
-        this.setValue(parseListValue(param)[0], true, true, false);
-    }
-}
-
-
 class Graph
 {
     nodes        = [];
@@ -39022,7 +39051,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case LIST:                    node = new OpList();             break;
         case ITEMS:                   node = new OpItems();            break;
         case SELECT:                  node = new OpSelect();           break;
-        case IF_ELSE:                  node = new OpIfElse();           break;
+        case IF_ELSE:                 node = new OpIfElse();           break;
         case START:                   node = new OpStart();            break;
         case REPEAT:                  node = new OpRepeat();           break;
         case CACHE:                   node = new OpCache();            break;
@@ -39068,7 +39097,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
      
         case FILL:                    node = new OpFill();             break;
         case STROKE:                  node = new OpStroke();           break;
-        case STYLE:                   node = new OpStyle();            break;
+        case COLOR_STYLE:             node = new OpColorStyle();            break;
      
         case RECTANGLE:               node = new OpRectangle();        break;
         case LINE:                    node = new OpLine();             break;
@@ -40850,7 +40879,7 @@ class Operator
         else if ( COLOR_TYPES.includes(type)) return this.addParam(new  ColorParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (  FILL_TYPES.includes(type)) return this.addParam(new   FillParam(id, id, showName, hasInput, hasOutput), volatile);
         else if (STROKE_TYPES.includes(type)) return this.addParam(new StrokeParam(id, id, showName, hasInput, hasOutput), volatile);
-        else if ( STYLE_TYPES.includes(type)) return this.addParam(new  StyleParam(id, id, showName, hasInput, hasOutput), volatile);
+        //else if ( COLOR_STYLE_TYPES.includes(type)) return this.addParam(new  StyleParam(id, id, showName, hasInput, hasOutput), volatile);
 
         else console.assert(false, 'cannot create parameter of type \'' + type + '\'');
 
@@ -43088,7 +43117,7 @@ extends OperatorBase
 
         if (   paramIds.length > 1
             ||    paramIds.length == 1 
-               && paramIds[0] != 'noitems')
+               && paramIds[0] != '')
         {
             for (let i = 0; i < values.length; i++) 
             {
@@ -48124,81 +48153,6 @@ extends OpColorBase
 }
 
 
-class   OpStyle
-extends OpColorBase
-{
-    constructor()
-    {
-        super(STYLE, 'style');
-
-
-        this.addInput (new Input([...LIST_TYPES, ...COLOR_TYPES, ...STYLE_TYPES]), this.input_getValuesForUndo);
-        this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: '' });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-                
-        
-        const paramIds = [];
-        
-        
-        const input = this.node.inputs[0];
-
-        if (input.connected)
-        {
-            request.push(...pushInputOrParam(input, gen));
-
-            for (const param of this.node.params)
-                if (   param.input 
-                    && param.input.connected
-                    && param.canShow())
-                    paramIds.push(param.id);
-        }
-        else
-        {
-            for (const param of this.node.params)
-                if (param.canShow())
-                    paramIds.push(param.id);
-        }
-
-
-        request.push(paramIds.length);
-
-        for (const paramId of paramIds)
-            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
-
-
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
-    }
-
-
-
-    updateHeader()
-    {
-        super.updateHeader();
-
-        this.div   .style.borderRadius = '4px';        
-        this.inner .style.borderRadius = '4px';        
-        this.header.style.borderRadius = '4px';        
-    }
-}
-
-
 class   OpColorStop
 extends OpColorBase
 {
@@ -48416,7 +48370,7 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramStyle = new StyleParam('style', 'style', true, false));
+        //this.addParam(this.paramStyle = new StyleParam('style', 'style', true, false));
     }
 
 
@@ -48431,7 +48385,6 @@ extends OperatorBase
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
-
                 
         
         const paramIds = [];
@@ -48711,6 +48664,58 @@ extends OpShapeBase
         control.setMax(min/2);
 
         this.paramRound.control.update();
+    }
+}
+
+
+class   OpColorStyle
+extends OpColorBase
+{
+    constructor()
+    {
+        super(COLOR_STYLE, 'style');
+
+        this.addInput(new Input(COLOR_TYPES));
+    }
+
+
+
+    genRequest(gen)
+    {
+        // 'this' is the node
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: '' });
+
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
+
+                
+        const input = this.inputs[0];
+
+
+    request.push(input.connected ? 1 : 0);
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
+
+        return request;
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+        this.div   .style.borderRadius = '4px';        
+        this.inner .style.borderRadius = '4px';        
+        this.header.style.borderRadius = '4px';        
     }
 }
 
@@ -51665,7 +51670,7 @@ var genMessages   = []; // messages from UI to Generator
 var genMessagePosted = false;
 
 
-// uiClearAllLocalData();
+//uiClearAllLocalData();
 
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');
@@ -51706,7 +51711,7 @@ clearConsole();
 initUtilContext();
 
 initDataMode();
-initWhatsNew();
+initWhatsNewDialog();
 
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
@@ -51722,14 +51727,6 @@ function initDataMode()
 
     chkDataModeRestart.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkDataModeRestart.checked)));
     chkLoadingRestart .addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkLoadingRestart .checked)));
-}
-
-
-
-function initWhatsNew()
-{
-    initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);
-    chkHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', boolToString(!chkHideWhatsNew.checked)));
 }
 
 
@@ -54153,22 +54150,73 @@ function uiNotify(text, delay = 4000, error = false, prefix = GENERATOR_LOGO + '
 }
 
 
+function initWhatsNewDialog()
+{
+    initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);
+    chkHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', boolToString(!chkHideWhatsNew.checked)));
+
+
+    whatsNewBack.addEventListener('pointerdown', e =>
+    {
+        e.preventDefault();
+    });
+
+
+
+    whatsNewScrollbarY.addEventListener('pointerdown', e =>
+    {
+        if (e.button == 0)
+        {
+            whatsNewScrollbarY.moving = true;
+            whatsNewScrollbarY.yStart = whatsNewScrollbarY.offsetTop;
+            whatsNewScrollbarY.hStart = whatsNewScrollbarY.offsetHeight;
+            whatsNewScrollbarY.pStart = e.clientY;
+            whatsNewScrollbarY.setPointerCapture(e.pointerId);
+    
+            for (const node of graph.nodes)
+                node.div.sly = node.div.offsetTop;
+    
+            whatsNewDialogContent.topStart = whatsNewDialogContent.offsetTop;
+        }
+    });
+    
+    
+    
+    whatsNewScrollbarY.addEventListener('pointerup', e =>
+    {
+        if (   e.button == 0
+            && whatsNewScrollbarY.moving)
+        {
+            whatsNewScrollbarY.moving = false;
+            whatsNewScrollbarY.releasePointerCapture(e.pointerId);
+ 
+            let bounds = Rect.NaN;
+    
+            for (const node of graph.nodes)
+                bounds = expandRect(bounds, boundingRect(node.div));
+    
+            // if (bounds.t >= 0 && bounds.b < whatsNewDialog.clientHeight)
+            //     whatsNewScrollbarY.style.display = 'none';
+        }
+    });
+    
+    
+    
+    whatsNewScrollbarY.addEventListener('pointermove', e =>
+    {
+        if (whatsNewScrollbarY.moving)
+            updateWhatsNewScrollbar(e.clientY);
+    });
+}
+
+
 
 function showWhatsNewDialog()
 {
     whatsNewBack  .style.display = 'block';
     whatsNewDialog.style.display = 'block';
 
-
-    // whatsNewUserName.innerHTML = currentUser.name;
-    // whatsNewUserId  .innerHTML = '<span style="user-select: none; color: #aaa;">ID:&nbsp;&nbsp;</span>' + currentUser.id;
-
-    // setDefaultWhatsNewInput();
-    // whatsNewInputBack.innerHTML = '•'.repeat(13);
-    // whatsNewInput.value = '';
-
-    
-    // window.setTimeout(() => document.getElementById('whatsNewInput').focus(), 0);
+    updateWhatsNewScroll();
 }
 
 
@@ -54189,6 +54237,87 @@ whatsNewBack.addEventListener('pointerdown', () =>
 {
     hideWhatsNewDialog();
 });
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function updateWhatsNewScrollbar(clientY)
+{
+    let y = whatsNewScrollbarY.yStart + clientY - whatsNewScrollbarY.pStart;
+    
+    let t = y;
+    let b = t + whatsNewScrollbarY.hStart;
+
+    t = Math.max(whatsNewTitle.clientHeight + smallScrollGap, t);
+    b = Math.min(b, whatsNewDialogContainer.clientHeight - largeScrollGap);
+
+    t = Math.max(smallScrollGap, Math.min(t, b - smallScrollGap));
+    b = Math.max(t + smallScrollGap, b);
+
+    // whatsNewScrollbarY.style.top    = t;
+    // whatsNewScrollbarY.style.height = b-t;
+
+    // console.log('t =', t);
+    // console.log('b =', b);
+    // console.log('bounds.top =', bounds.top);
+    // console.log('bounds.bottom =', bounds.bottom);
+    // console.log('bounds.height =', bounds.height);
+    // console.log('yOffset =', yOffset);
+
+    let oy = 
+          whatsNewDialogContent.topStart 
+        - (clientY - whatsNewScrollbarY.pStart) / whatsNewScrollbarY.hStart * whatsNewDialogContainer.clientHeight;
+
+    oy = Math.max(oy, whatsNewDialogContainer.clientHeight - whatsNewDialogContent.clientHeight + whatsNewTitle.clientHeight);
+
+    // console.log('oy =', oy);
+
+    whatsNewDialogContent.style.top = Math.min(
+        oy,
+        menuBar.offsetHeight);
+
+    updateWhatsNewScroll();
+}
+
+
+
+function updateWhatsNewScroll()
+{
+    const x       = whatsNewDialog.clientLeft;
+    const w       = whatsNewDialog.clientWidth;
+    const h       = whatsNewDialogContainer.clientHeight;
+    const yOffset = menuBar.offsetHeight;
+    
+    const bounds = whatsNewDialogContent.getBoundingClientRect();
+    updateWhatsNewScrollY(x, w, h, bounds, yOffset);
+}
+
+
+
+function updateWhatsNewScrollY(x, w, h, bounds, yOffset)
+{
+    console.log('h =', h);
+    console.log('bounds.top =', bounds.top);
+    console.log('bounds.bottom =', bounds.bottom);
+    console.log('bounds.height =', bounds.height);
+    console.log('yOffset =', yOffset);
+    console.log('whatsNewTitle.clientHeight =', whatsNewTitle.clientHeight);
+
+    if (bounds.bottom - bounds.top > h)
+    {
+        const height = sqr(h) / bounds.height - 2*smallScrollGap;
+
+        whatsNewScrollbarY.style.display = 'inline-block';
+        whatsNewScrollbarY.style.height  =  height;
+        whatsNewScrollbarY.style.left    =  x + w - smallScrollGap - 6;
+        whatsNewScrollbarY.style.top     =  yOffset - (bounds.top - 100) * h / bounds.height;
+    }
+    else
+       whatsNewScrollbarY.style.display = 'none';
+}
 
 
 document.canResizeX = false;
@@ -54239,7 +54368,10 @@ function uiResizeWindow(width, height)
 function uiReturnFigResizeWindow()
 {
     if (!settings.dataMode)
+    {
         graphView.updatePanAndZoom();
+        updateWhatsNewScrollbar(0);
+    }
 
     // btnZoom.style.top  = 0;
     // btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;

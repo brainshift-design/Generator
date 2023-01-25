@@ -33,7 +33,7 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-
+            
         if (this.input)
             this.value = this.input.eval(parse).toValue();
         else if (this.value)

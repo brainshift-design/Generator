@@ -21,7 +21,8 @@ extends GColorType
 
         cb.copyBase(this);
 
-        if (this.input) cb.input = this.input.copy();
+        if (this.input) 
+            cb.input = this.input.copy();
 
         cb.l = this.l.copy();
         cb.m = this.m.copy();

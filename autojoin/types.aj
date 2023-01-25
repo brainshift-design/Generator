@@ -8,6 +8,8 @@
 ../generator/types/figma/FigmaPolygon.js
 ../generator/types/figma/FigmaStar.js
 
+../generator/types/figma/FigmaColorStyle.js
+
 
 ../generator/types/GNode.js
 ../generator/types/GValue.js
@@ -97,3 +99,6 @@
 
 ../generator/types/style/GFill.js
 ../generator/types/style/GStroke.js
+
+
+../generator/types/style/GColorStyle.js

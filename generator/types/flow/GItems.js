@@ -67,7 +67,7 @@ extends GOperator
             }
         }
         else
-            genPushUpdateValue(parse, this.nodeId, 'noitems', new NumberValue(0));
+            genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
         this.validate();

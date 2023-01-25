@@ -90,7 +90,7 @@ extends GShapeBase
 
 
 
-   evalObjects()
+   evalObjects(options = {})
    {
        if (!this.options.enabled)
            return;

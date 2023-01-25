@@ -1,206 +1,206 @@
-class   StyleParam
-extends Parameter
-{
-    defaultValue;
+// class   StyleParam
+// extends Parameter
+// {
+//     defaultValue;
 
-    oldValue = null;
+//     oldValue = null;
     
 
-    textControl;
+//     textControl;
 
     
-    // get valueText() { return this.colorControl.valueText; }
+//     // get valueText() { return this.colorControl.valueText; }
 
     
-    value;
+//     value;
     
 
     
-    constructor(id,
-                name, 
-                hasInput,
-                hasOutput,
-                defaultValue = new ListValue())
-    {
-        super(LIST_VALUE, id, name);
+//     constructor(id,
+//                 name, 
+//                 hasInput,
+//                 hasOutput,
+//                 defaultValue = new ListValue())
+//     {
+//         super(LIST_VALUE, id, name);
 
 
-        this.textControl                  = createDiv('colorControlText');
+//         this.textControl                  = createDiv('colorControlText');
 
-        this.defaultValue                 = defaultValue.copy();
-        this.value                        = defaultValue.copy();
+//         this.defaultValue                 = defaultValue.copy();
+//         this.value                        = defaultValue.copy();
 
         
-        this.textControl.style.width      = '100%';
-        this.textControl.style.textAlign  = 'center';
+//         this.textControl.style.width      = '100%';
+//         this.textControl.style.textAlign  = 'center';
 
 
-        this.div.appendChild(this.textControl);
+//         this.div.appendChild(this.textControl);
 
        
-        if (hasInput)  this.initInput(ALL_TYPES);
-        if (hasOutput) this.initOutput([LIST_VALUE], this.output_genRequest);
-    }
+//         if (hasInput)  this.initInput(ALL_TYPES);
+//         if (hasOutput) this.initOutput([LIST_VALUE], this.output_genRequest);
+//     }
 
 
 
-    isDefault = () => arraysAreEqual(this.value, this.defaultValue);
+//     isDefault = () => arraysAreEqual(this.value, this.defaultValue);
 
 
 
-    setValue(value, createAction, updateControl = true, dispatchEvents = true) 
-    {
-        //console.log('value =', value);
+//     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
+//     {
+//         //console.log('value =', value);
         
-        if (!(value instanceof ListValue))
-            console.assert(false, 'StyleParam.setValue(value) is ' + typeof value + ', must be a ListValue');
+//         if (!(value instanceof ListValue))
+//             console.assert(false, 'StyleParam.setValue(value) is ' + typeof value + ', must be a ListValue');
 
 
-        console.assert(
-               value.type 
-            && value.type == LIST_VALUE, 
-            'StyleParam value.type must be LIST_VALUE');
+//         console.assert(
+//                value.type 
+//             && value.type == LIST_VALUE, 
+//             'StyleParam value.type must be STYLE_VALUE');
 
-        this.preSetValue(value, createAction, dispatchEvents);
-
-
-        this.value = value.copy();
+//         this.preSetValue(value, createAction, dispatchEvents);
 
 
-        super.setValue(this.value, createAction, updateControl, dispatchEvents);
+//         this.value = value.copy();
 
 
-        this.oldValue = this.value;
-    }    
+//         super.setValue(this.value, createAction, updateControl, dispatchEvents);
+
+
+//         this.oldValue = this.value;
+//     }    
 
 
 
-    genRequest(gen)
-    {
-        // this function exists because a parameter without an output
-        // should still be able to generate a request
+//     genRequest(gen)
+//     {
+//         // this function exists because a parameter without an output
+//         // should still be able to generate a request
         
-        // 'this' is the param
+//         // 'this' is the param
 
-        if (    this.output
-            && !isEmpty(this.output.cache)
-            &&  gen.passedNodes.includes(this.node))
-            return this.output.cache;
+//         if (    this.output
+//             && !isEmpty(this.output.cache)
+//             &&  gen.passedNodes.includes(this.node))
+//             return this.output.cache;
 
 
-        const request = [];
+//         const request = [];
 
-        if (   this.input
-            && this.input.connected)
-        {
-            request.push(...pushInputOrParam(this.input, gen));
+//         if (   this.input
+//             && this.input.connected)
+//         {
+//             request.push(...pushInputOrParam(this.input, gen));
 
-            // if (this.input.connectedOutput.supportsTypes(ALL_TYPES))
-            // {
-            //     const val = noNaN(this.control.value,      1);
-            //     const dec = noNaN(this.control.displayDec, 0);
+//             // if (this.input.connectedOutput.supportsTypes(ALL_TYPES))
+//             // {
+//             //     const val = noNaN(this.control.value,      1);
+//             //     const dec = noNaN(this.control.displayDec, 0);
                 
-            //     request.push(
-            //         NUMBER_VALUE, 
-            //         new NumberValue(val, dec).toString());
-            // }
-        }
+//             //     request.push(
+//             //         NUMBER_VALUE, 
+//             //         new NumberValue(val, dec).toString());
+//             // }
+//         }
 
-        else request.push( 
-            LIST_VALUE, 
-            this.value.toString());
+//         else request.push( 
+//             LIST_VALUE, 
+//             this.value.toString());
 
-        return request;
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        return this.param.genRequest(gen);
-    }
+//         return request;
+//     }
 
 
 
-    updateControls()
-    {
-        if (   this.input.connected
-            && this.value.isValid())
-        {
-            const noColor = 
-                isDarkMode()
-                ? rgbNoColorDark
-                : rgbNoColorLight;
-
-            const rgbaVal = this.value.fill.toRgba();
-            const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
+//     output_genRequest(gen)
+//     {
+//         return this.param.genRequest(gen);
+//     }
 
 
-            //this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
-            this.input.colorLight  = 
-            this.input.colorDark   = rgb_a(rgbaText, 0.2);
 
-            //this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
-            this.output.colorLight =
-            this.output.colorDark  = rgb_a(rgbaText, 0.2);
+//     updateControls()
+//     {
+//         if (   this.input.connected
+//             && this.value.isValid())
+//         {
+//             const noColor = 
+//                 isDarkMode()
+//                 ? rgbNoColorDark
+//                 : rgbNoColorLight;
 
-
-            this.textControl.style.display = 'none';
-        }
-        else
-        {
-            const noColor  = isDarkMode() ? rgbNoColorDark      : rgbNoColorLight;
-            const rgbaText = isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight;
+//             const rgbaVal = this.value.fill.toRgba();
+//             const rgbaText = getTextColorFromBackColor(rgbaVal, rgbaVal[3]);
 
 
-            //this.input.wireColor           = noColor;
-            this.input.colorLight          = 
-            this.input.colorDark           = rgb_a(rgbaText, 0.12);
+//             //this.input.wireColor   = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+//             this.input.colorLight  = 
+//             this.input.colorDark   = rgb_a(rgbaText, 0.2);
+
+//             //this.output.wireColor  = !rgbIsNaN(rgbaVal) ? rgbaVal : noColor;
+//             this.output.colorLight =
+//             this.output.colorDark  = rgb_a(rgbaText, 0.2);
+
+
+//             this.textControl.style.display = 'none';
+//         }
+//         else
+//         {
+//             const noColor  = isDarkMode() ? rgbNoColorDark      : rgbNoColorLight;
+//             const rgbaText = isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight;
+
+
+//             //this.input.wireColor           = noColor;
+//             this.input.colorLight          = 
+//             this.input.colorDark           = rgb_a(rgbaText, 0.12);
         
-            //this.output.wireColor          = noColor;
-            this.output.colorLight         =
-            this.output.colorDark          = rgb_a(rgbaText, 0.12);
+//             //this.output.wireColor          = noColor;
+//             this.output.colorLight         =
+//             this.output.colorDark          = rgb_a(rgbaText, 0.12);
 
 
-            this.textControl.style.display = 'inline-block';
-            this.textControl.style.color   = rgba2style(rgbaText);
+//             this.textControl.style.display = 'inline-block';
+//             this.textControl.style.color   = rgba2style(rgbaText);
 
-            this.textControl.innerHTML     = 'no style';
+//             this.textControl.innerHTML     = 'no style';
             
-            this.div.style.background =
-                isDarkMode()
-                ? 'rgba(56, 56, 56, 0.95)'
-                : 'rgba(255, 255, 255, 0.95)';
-        }
+//             this.div.style.background =
+//                 isDarkMode()
+//                 ? 'rgba(56, 56, 56, 0.95)'
+//                 : 'rgba(255, 255, 255, 0.95)';
+//         }
 
 
-        this.div.style.height = '20px';
+//         this.div.style.height = '20px';
 
 
-        if (this.input ) this.input .updateControl();
-        if (this.output) this.output.updateControl();
-    }
-
-
-
-    enableControlText(enable)
-    {
-        enable &= !this.input || !this.input.connected;
-
-        const opEnable = 
-                enable 
-            || !this.input 
-            || !this.input.connected 
-            ||  this.input.connectedOutput.supportsTypes(ALL_TYPES);
-
-        enableElementText(this.textControl, enable);
-        this.textControl.readOnly = !enable;
-    }
+//         if (this.input ) this.input .updateControl();
+//         if (this.output) this.output.updateControl();
+//     }
 
 
 
-    loadParam(param)
-    {
-        this.setValue(parseListValue(param)[0], true, true, false);
-    }
-}
+//     enableControlText(enable)
+//     {
+//         enable &= !this.input || !this.input.connected;
+
+//         const opEnable = 
+//                 enable 
+//             || !this.input 
+//             || !this.input.connected 
+//             ||  this.input.connectedOutput.supportsTypes(ALL_TYPES);
+
+//         enableElementText(this.textControl, enable);
+//         this.textControl.readOnly = !enable;
+//     }
+
+
+
+//     loadParam(param)
+//     {
+//         this.setValue(parseListValue(param)[0], true, true, false);
+//     }
+// }

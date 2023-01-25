@@ -20,7 +20,7 @@ function rgbHeaderFromType(type, active)
         ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
         : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );
 
-    if (STYLE_TYPES.includes(type))
+    if (type == COLOR_STYLE)//COLOR_STYLE_TYPES.includes(type))
         return active 
         ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
         : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );

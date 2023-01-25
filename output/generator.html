@@ -188,7 +188,7 @@ function rgbHeaderFromType(type, active)
         ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
         : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );
 
-    if (STYLE_TYPES.includes(type))
+    if (type == COLOR_STYLE)//COLOR_STYLE_TYPES.includes(type))
         return active 
         ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
         : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );
@@ -3162,17 +3162,18 @@ function logReqColorStop(stop, parse)
 
 
 
-function logReqStyleValue(style, parse)
+// function logReqColorStyleValue(style, parse)
+// {
+//     parse.log += parse.tab + COLOR_STYLE_VALUE + ' ' + displayValue(COLOR_STYLE_VALUE, style);
+// }
+
+
+
+function logReqColorStyle(style, nInputs, parse)
 {
-    parse.log += parse.tab + STYLE_VALUE + ' ' + displayValue(STYLE_VALUE, style);
-}
-
-
-
-function logReqStyle(style, parse)
-{
-    parse.log += parse.tab + style.type;
+    parse.log += parse.tab + COLOR_STYLE;
     parse.log += logReqNodeId(style);
+    parse.log += ' ' + nInputs;
 }
 
 
@@ -3535,9 +3536,9 @@ const GRADIENT_VALUE   = 'GRAD#';
 const GRADIENT         = 'GRAD';
 const GRADIENT_TYPES   = [GRADIENT_VALUE, GRADIENT];
 
-const STYLE_VALUE      = 'STYLE#';
-const STYLE            = 'STYLE';
-const STYLE_TYPES      = [STYLE_VALUE, STYLE];
+//const COLOR_STYLE_VALUE = 'CSTL#';
+const COLOR_STYLE       = 'CSTL';
+//const COLOR_STYLE_TYPES = [COLOR_STYLE_VALUE, COLOR_STYLE];
 
 
 const SHAPE_VALUE      = 'SHP#'; // abstract placeholder
@@ -3597,7 +3598,8 @@ const ALL_TYPES =
     ...FILL_TYPES,
     ...STROKE_TYPES,
     ...GRADIENT_TYPES,
-    ...STYLE_TYPES,
+    //...COLOR_STYLE_TYPES,
+    COLOR_STYLE,
     ...SHAPE_TYPES
 ];
 
@@ -3938,6 +3940,29 @@ extends FigmaObject
         star.copyBase(this);
 
         return star;
+    }
+}
+
+
+class FigmaColorStyle
+extends FigmaObject
+{
+    constructor(nodeId, id)
+    {
+        super(COLOR_STYLE, nodeId, id);
+    }
+
+
+
+    copy()
+    {
+        const style = new FigmaColorStyle(
+            this.nodeId,
+            this.id);
+
+        style.copyBase(this);
+
+        return style;
     }
 }
 
@@ -4356,12 +4381,12 @@ function parseListValue(str, i = -1)
         
         switch (type)
         {
-            case NUMBER_VALUE: { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
-            case COLOR_VALUE:  { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
-            case FILL_VALUE:   { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
-            case STROKE_VALUE: { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
-            case STYLE_VALUE:  { const style  = parseStyleValue (str, i); i += style [1]; list.items.push(style [0]); break; }
-            case LIST_VALUE:   { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
+            case NUMBER_VALUE:      { const num    = parseNumberValue(str[i]); i += num   [1]; list.items.push(num   [0]); break; }
+            case COLOR_VALUE:       { const col    = parseColorValue (str, i); i += col   [1]; list.items.push(col   [0]); break; }
+            case FILL_VALUE:        { const fill   = parseFillValue  (str, i); i += fill  [1]; list.items.push(fill  [0]); break; }
+            case STROKE_VALUE:      { const stroke = parseStrokeValue(str, i); i += stroke[1]; list.items.push(stroke[0]); break; }
+            //case COLOR_STYLE_VALUE: { const style  = parseStyleValue (str, i); i += style [1]; list.items.push(style [0]); break; }
+            case LIST_VALUE:        { const _list  = parseListValue  (str, i); i += _list [1]; list.items.push(_list [0]); break; }
         }
     }
  
@@ -5970,7 +5995,7 @@ extends GOperator
             }
         }
         else
-            genPushUpdateValue(parse, this.nodeId, 'noitems', new NumberValue(0));
+            genPushUpdateValue(parse, this.nodeId, '', NullValue);
 
 
         this.validate();
@@ -7791,7 +7816,7 @@ extends GNumberType
         if (this.isCached())
             return this;
 
-
+            
         if (this.input)
             this.value = this.input.eval(parse).toValue();
         else if (this.value)
@@ -8732,7 +8757,8 @@ extends GColorType
 
         cb.copyBase(this);
 
-        if (this.input) cb.input = this.input.copy();
+        if (this.input) 
+            cb.input = this.input.copy();
 
         cb.l = this.l.copy();
         cb.m = this.m.copy();
@@ -9520,7 +9546,7 @@ extends GOperator
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         for (const obj of this.objects)
             obj.nodeId = this.nodeId;
@@ -9612,7 +9638,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.options.enabled)
             return;
@@ -9747,7 +9773,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.options.enabled)
             return;
@@ -9878,7 +9904,7 @@ extends GShapeBase
 
 
 
-   evalObjects()
+   evalObjects(options = {})
    {
        if (!this.options.enabled)
            return;
@@ -10021,7 +10047,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.options.enabled)
             return;
@@ -10176,7 +10202,7 @@ extends GShapeBase
 
 
 
-   evalObjects()
+   evalObjects(options = {})
    {
        if (!this.options.enabled)
            return;
@@ -10313,7 +10339,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.objects)
             return;
@@ -10454,7 +10480,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.objects)
             return;
@@ -10526,6 +10552,85 @@ extends GShapeBase
             this.fit    ? this.fit   .toValue() : this.input.fit   .toValue(),
             this.join   ? this.join  .toValue() : this.input.join  .toValue(),
             this.miter  ? this.miter .toValue() : this.input.miter .toValue());
+    }
+}
+
+
+class GColorStyle
+extends GShapeBase
+{
+    input = null;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_STYLE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const style = new GColorStyle(this.nodeId, this.options);
+
+        if (this.input) 
+            style.input = this.input.copy();
+
+        return style;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        if (this.input)
+        {
+            const input = this.input.eval(parse).toValue();
+            const rgb   = input.toRgb();
+
+            this.evalObjects({rgb: rgb});
+        }
+
+
+        genPushUpdateValue(parse, this.nodeId, '', NullValue);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalObjects(options = {})
+    {
+        if (!this.options.enabled)
+            return;
+
+            
+        const style = new FigmaColorStyle(this.nodeId, -1);
+
+        
+        if (!style.fills) 
+            style.fills = [];
+
+        style.fills.push([
+            'SOLID', 
+                    0xff * options.rgb[0]
+            + ' ' + 0xff * options.rgb[1]
+            + ' ' + 0xff * options.rgb[2]
+            + ' ' + 0xff]);
+
+
+        this.objects = [style];
+
+        
+        super.evalObjects();
     }
 }
 
@@ -10690,15 +10795,17 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    updateMenuItemBetaDisplay(btnShape      .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(btnFlow .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(btnShape.div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(btnStyle.div, settings.enableBetaFeatures);
 
-    updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemStart .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemRepeat.div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuSep2      .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
+    // updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemStart .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemRepeat.div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuSep2      .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
 
     updateMenuItemBetaDisplay(menuItemSeries.div, settings.enableBetaFeatures);    
 }
@@ -12799,33 +12906,42 @@ function genParseColorStop(parse)
 
 
 
-function genParseStyleValue(parse)
-{
-    parse.pos++; // STYLE_VALUE
+// function genParseColorStyleValue(parse)
+// {
+//     parse.pos++; // COLOR_STYLE_VALUE
 
-    const style = parse.move();
+//     const style = parse.move();
 
-    if (parse.settings.logRequests) 
-        logReqStyleValue(style, parse);
+//     if (parse.settings.logRequests) 
+//         logReqStyleValue(style, parse);
 
-    return parseStyleValue(style)[0];
-}
+//     return parseColorStyleValue(style)[0];
+// }
 
 
 
-function genParseStyle(parse)
+function genParseColorStyle(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const style = new GStyle(nodeId, options);
+    const style = new GColorStyle(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
 
 
     if (parse.settings.logRequests) 
-        logReqStyle(style, parse);
+        logReqColorStyle(style, nInputs, parse);
 
 
-    if (ignore)
+    if (ignore) 
     {
         genParseNodeEnd(parse, style);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
@@ -12835,34 +12951,10 @@ function genParseStyle(parse)
     parse.nTab++;
 
 
-    if (OBJECT_TYPES.includes(parse.next))
+    if (nInputs == 1)
         style.input = genParse(parse);
-    // ||    parse.next == PARAM
-    //    && FILL_TYPES.includes(parse.afterNext))
 
 
-    // const nParamIds = genParseParamCount(parse);
-
-    // for (let i = 0; i < nParamIds; i++)
-    // {
-    //     const paramId = genParseParamId(parse);
-
-    //     parse.nTab++;
-    //     parse.inParam = true;
-
-        
-    //     switch (paramId)
-    //     {
-    //     case 'color'  : style.color   = genParse(parse); break;
-    //     case 'opacity': style.opacity = genParse(parse); break;
-    //     }
-
-
-    //     parse.nTab--;
-    // }
-
-    
-    // parse.inParam = false;
     parse.nTab--;
 
 
@@ -12872,15 +12964,15 @@ function genParseStyle(parse)
 
 
 
-function genParseStyleParam(parse)
-{
+//function genParseStyleParam(parse)
+//{
     // const style = genParse(parse); 
 
     // if (STYLE_TYPES.includes(style.type))
     //     style.options.opacity = genParse(parse);
 
     // return style;
-}
+//}
 
 
 
@@ -13024,8 +13116,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue  (parse);
     else if (parse.next == COLOR_STOP             ) result = genParseColorStop       (parse);
      
-    else if (parse.next == STYLE_VALUE            ) result = genParseStyleValue      (parse);
-    else if (parse.next == STYLE                  ) result = genParseStyle           (parse);
+    //else if (parse.next == COLOR_STYLE_VALUE      ) result = genParseStyleValue      (parse);
+    else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle      (parse);
      
     else if (parse.next == RECTANGLE              ) result = genParseRectangle       (parse);
     else if (parse.next == LINE                   ) result = genParseLine            (parse);

@@ -69,7 +69,7 @@ extends GOperator
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         for (const obj of this.objects)
             obj.nodeId = this.nodeId;

@@ -138,8 +138,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue  (parse);
     else if (parse.next == COLOR_STOP             ) result = genParseColorStop       (parse);
      
-    else if (parse.next == STYLE_VALUE            ) result = genParseStyleValue      (parse);
-    else if (parse.next == STYLE                  ) result = genParseStyle           (parse);
+    //else if (parse.next == COLOR_STYLE_VALUE      ) result = genParseStyleValue      (parse);
+    else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle      (parse);
      
     else if (parse.next == RECTANGLE              ) result = genParseRectangle       (parse);
     else if (parse.next == LINE                   ) result = genParseLine            (parse);

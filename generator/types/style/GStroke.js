@@ -92,7 +92,7 @@ extends GShapeBase
 
 
 
-    evalObjects()
+    evalObjects(options = {})
     {
         if (!this.objects)
             return;

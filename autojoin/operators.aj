@@ -6,7 +6,7 @@
 ../parameters/ColorParam.js
 ../parameters/FillParam.js
 ../parameters/StrokeParam.js
-../parameters/StyleParam.js
+//../parameters/StyleParam.js
 
 ../graph/Graph.js
 ../graph/tree.js
@@ -82,7 +82,6 @@
 
 ../operators/style/OpFill.js
 ../operators/style/OpStroke.js
-../operators/style/OpStyle.js
 
 ../operators/style/OpColorStop.js
 ../operators/style/OpGradient.js
@@ -94,6 +93,9 @@
 ../operators/shape/OpEllipse.js
 ../operators/shape/OpPolygon.js
 ../operators/shape/OpStar.js
+
+
+../operators/style/OpColorStyle.js
 
 
 //../operators/shape/OpColorStroke.js

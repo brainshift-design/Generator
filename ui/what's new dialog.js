@@ -1,19 +1,70 @@
+function initWhatsNewDialog()
+{
+    initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);
+    chkHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', boolToString(!chkHideWhatsNew.checked)));
+
+
+    whatsNewBack.addEventListener('pointerdown', e =>
+    {
+        e.preventDefault();
+    });
+
+
+
+    whatsNewScrollbarY.addEventListener('pointerdown', e =>
+    {
+        if (e.button == 0)
+        {
+            whatsNewScrollbarY.moving = true;
+            whatsNewScrollbarY.yStart = whatsNewScrollbarY.offsetTop;
+            whatsNewScrollbarY.hStart = whatsNewScrollbarY.offsetHeight;
+            whatsNewScrollbarY.pStart = e.clientY;
+            whatsNewScrollbarY.setPointerCapture(e.pointerId);
+    
+            for (const node of graph.nodes)
+                node.div.sly = node.div.offsetTop;
+    
+            whatsNewDialogContent.topStart = whatsNewDialogContent.offsetTop;
+        }
+    });
+    
+    
+    
+    whatsNewScrollbarY.addEventListener('pointerup', e =>
+    {
+        if (   e.button == 0
+            && whatsNewScrollbarY.moving)
+        {
+            whatsNewScrollbarY.moving = false;
+            whatsNewScrollbarY.releasePointerCapture(e.pointerId);
+ 
+            let bounds = Rect.NaN;
+    
+            for (const node of graph.nodes)
+                bounds = expandRect(bounds, boundingRect(node.div));
+    
+            // if (bounds.t >= 0 && bounds.b < whatsNewDialog.clientHeight)
+            //     whatsNewScrollbarY.style.display = 'none';
+        }
+    });
+    
+    
+    
+    whatsNewScrollbarY.addEventListener('pointermove', e =>
+    {
+        if (whatsNewScrollbarY.moving)
+            updateWhatsNewScrollbar(e.clientY);
+    });
+}
+
+
 
 function showWhatsNewDialog()
 {
     whatsNewBack  .style.display = 'block';
     whatsNewDialog.style.display = 'block';
 
-
-    // whatsNewUserName.innerHTML = currentUser.name;
-    // whatsNewUserId  .innerHTML = '<span style="user-select: none; color: #aaa;">ID:&nbsp;&nbsp;</span>' + currentUser.id;
-
-    // setDefaultWhatsNewInput();
-    // whatsNewInputBack.innerHTML = '•'.repeat(13);
-    // whatsNewInput.value = '';
-
-    
-    // window.setTimeout(() => document.getElementById('whatsNewInput').focus(), 0);
+    updateWhatsNewScroll();
 }
 
 
@@ -34,3 +85,84 @@ whatsNewBack.addEventListener('pointerdown', () =>
 {
     hideWhatsNewDialog();
 });
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function updateWhatsNewScrollbar(clientY)
+{
+    let y = whatsNewScrollbarY.yStart + clientY - whatsNewScrollbarY.pStart;
+    
+    let t = y;
+    let b = t + whatsNewScrollbarY.hStart;
+
+    t = Math.max(whatsNewTitle.clientHeight + smallScrollGap, t);
+    b = Math.min(b, whatsNewDialogContainer.clientHeight - largeScrollGap);
+
+    t = Math.max(smallScrollGap, Math.min(t, b - smallScrollGap));
+    b = Math.max(t + smallScrollGap, b);
+
+    // whatsNewScrollbarY.style.top    = t;
+    // whatsNewScrollbarY.style.height = b-t;
+
+    // console.log('t =', t);
+    // console.log('b =', b);
+    // console.log('bounds.top =', bounds.top);
+    // console.log('bounds.bottom =', bounds.bottom);
+    // console.log('bounds.height =', bounds.height);
+    // console.log('yOffset =', yOffset);
+
+    let oy = 
+          whatsNewDialogContent.topStart 
+        - (clientY - whatsNewScrollbarY.pStart) / whatsNewScrollbarY.hStart * whatsNewDialogContainer.clientHeight;
+
+    oy = Math.max(oy, whatsNewDialogContainer.clientHeight - whatsNewDialogContent.clientHeight + whatsNewTitle.clientHeight);
+
+    // console.log('oy =', oy);
+
+    whatsNewDialogContent.style.top = Math.min(
+        oy,
+        menuBar.offsetHeight);
+
+    updateWhatsNewScroll();
+}
+
+
+
+function updateWhatsNewScroll()
+{
+    const x       = whatsNewDialog.clientLeft;
+    const w       = whatsNewDialog.clientWidth;
+    const h       = whatsNewDialogContainer.clientHeight;
+    const yOffset = menuBar.offsetHeight;
+    
+    const bounds = whatsNewDialogContent.getBoundingClientRect();
+    updateWhatsNewScrollY(x, w, h, bounds, yOffset);
+}
+
+
+
+function updateWhatsNewScrollY(x, w, h, bounds, yOffset)
+{
+    console.log('h =', h);
+    console.log('bounds.top =', bounds.top);
+    console.log('bounds.bottom =', bounds.bottom);
+    console.log('bounds.height =', bounds.height);
+    console.log('yOffset =', yOffset);
+    console.log('whatsNewTitle.clientHeight =', whatsNewTitle.clientHeight);
+
+    if (bounds.bottom - bounds.top > h)
+    {
+        const height = sqr(h) / bounds.height - 2*smallScrollGap;
+
+        whatsNewScrollbarY.style.display = 'inline-block';
+        whatsNewScrollbarY.style.height  =  height;
+        whatsNewScrollbarY.style.left    =  x + w - smallScrollGap - 6;
+        whatsNewScrollbarY.style.top     =  yOffset - (bounds.top - 100) * h / bounds.height;
+    }
+    else
+       whatsNewScrollbarY.style.display = 'none';
+}

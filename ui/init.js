@@ -7,7 +7,7 @@ var genMessages   = []; // messages from UI to Generator
 var genMessagePosted = false;
 
 
-// uiClearAllLocalData();
+//uiClearAllLocalData();
 
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');
@@ -48,7 +48,7 @@ clearConsole();
 initUtilContext();
 
 initDataMode();
-initWhatsNew();
+initWhatsNewDialog();
 
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});
@@ -64,14 +64,6 @@ function initDataMode()
 
     chkDataModeRestart.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkDataModeRestart.checked)));
     chkLoadingRestart .addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkLoadingRestart .checked)));
-}
-
-
-
-function initWhatsNew()
-{
-    initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);
-    chkHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', boolToString(!chkHideWhatsNew.checked)));
 }
 
 

@@ -226,33 +226,42 @@ function genParseColorStop(parse)
 
 
 
-function genParseStyleValue(parse)
-{
-    parse.pos++; // STYLE_VALUE
+// function genParseColorStyleValue(parse)
+// {
+//     parse.pos++; // COLOR_STYLE_VALUE
 
-    const style = parse.move();
+//     const style = parse.move();
 
-    if (parse.settings.logRequests) 
-        logReqStyleValue(style, parse);
+//     if (parse.settings.logRequests) 
+//         logReqStyleValue(style, parse);
 
-    return parseStyleValue(style)[0];
-}
+//     return parseColorStyleValue(style)[0];
+// }
 
 
 
-function genParseStyle(parse)
+function genParseColorStyle(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const style = new GStyle(nodeId, options);
+    const style = new GColorStyle(nodeId, options);
+
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
 
 
     if (parse.settings.logRequests) 
-        logReqStyle(style, parse);
+        logReqColorStyle(style, nInputs, parse);
 
 
-    if (ignore)
+    if (ignore) 
     {
         genParseNodeEnd(parse, style);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
@@ -262,34 +271,10 @@ function genParseStyle(parse)
     parse.nTab++;
 
 
-    if (OBJECT_TYPES.includes(parse.next))
+    if (nInputs == 1)
         style.input = genParse(parse);
-    // ||    parse.next == PARAM
-    //    && FILL_TYPES.includes(parse.afterNext))
 
 
-    // const nParamIds = genParseParamCount(parse);
-
-    // for (let i = 0; i < nParamIds; i++)
-    // {
-    //     const paramId = genParseParamId(parse);
-
-    //     parse.nTab++;
-    //     parse.inParam = true;
-
-        
-    //     switch (paramId)
-    //     {
-    //     case 'color'  : style.color   = genParse(parse); break;
-    //     case 'opacity': style.opacity = genParse(parse); break;
-    //     }
-
-
-    //     parse.nTab--;
-    // }
-
-    
-    // parse.inParam = false;
     parse.nTab--;
 
 
@@ -299,12 +284,12 @@ function genParseStyle(parse)
 
 
 
-function genParseStyleParam(parse)
-{
+//function genParseStyleParam(parse)
+//{
     // const style = genParse(parse); 
 
     // if (STYLE_TYPES.includes(style.type))
     //     style.options.opacity = genParse(parse);
 
     // return style;
-}
+//}

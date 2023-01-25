@@ -46,7 +46,10 @@ function uiResizeWindow(width, height)
 function uiReturnFigResizeWindow()
 {
     if (!settings.dataMode)
+    {
         graphView.updatePanAndZoom();
+        updateWhatsNewScrollbar(0);
+    }
 
     // btnZoom.style.top  = 0;
     // btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;

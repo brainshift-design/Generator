@@ -158,15 +158,17 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    updateMenuItemBetaDisplay(btnShape      .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(btnFlow .div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(btnShape.div, settings.enableBetaFeatures);
+    updateMenuItemBetaDisplay(btnStyle.div, settings.enableBetaFeatures);
 
-    updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemStart .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemRepeat.div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuSep2      .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
+    // updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemStart .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemRepeat.div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuSep2      .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
+    // updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
 
     updateMenuItemBetaDisplay(menuItemSeries.div, settings.enableBetaFeatures);    
 }

@@ -176,9 +176,9 @@ const GRADIENT_VALUE   = 'GRAD#';
 const GRADIENT         = 'GRAD';
 const GRADIENT_TYPES   = [GRADIENT_VALUE, GRADIENT];
 
-const STYLE_VALUE      = 'STYLE#';
-const STYLE            = 'STYLE';
-const STYLE_TYPES      = [STYLE_VALUE, STYLE];
+//const COLOR_STYLE_VALUE = 'CSTL#';
+const COLOR_STYLE       = 'CSTL';
+//const COLOR_STYLE_TYPES = [COLOR_STYLE_VALUE, COLOR_STYLE];
 
 
 const SHAPE_VALUE      = 'SHP#'; // abstract placeholder
@@ -238,7 +238,8 @@ const ALL_TYPES =
     ...FILL_TYPES,
     ...STROKE_TYPES,
     ...GRADIENT_TYPES,
-    ...STYLE_TYPES,
+    //...COLOR_STYLE_TYPES,
+    COLOR_STYLE,
     ...SHAPE_TYPES
 ];
 

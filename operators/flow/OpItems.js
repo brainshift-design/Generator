@@ -78,7 +78,7 @@ extends OperatorBase
 
         if (   paramIds.length > 1
             ||    paramIds.length == 1 
-               && paramIds[0] != 'noitems')
+               && paramIds[0] != '')
         {
             for (let i = 0; i < values.length; i++) 
             {

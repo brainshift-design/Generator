@@ -13,7 +13,7 @@ extends OperatorBase
 
     addBaseParams()
     {
-        this.addParam(this.paramStyle = new StyleParam('style', 'style', true, false));
+        //this.addParam(this.paramStyle = new StyleParam('style', 'style', true, false));
     }
 
 
@@ -28,7 +28,6 @@ extends OperatorBase
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
-
                 
         
         const paramIds = [];

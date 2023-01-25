@@ -333,7 +333,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case LIST:                    node = new OpList();             break;
         case ITEMS:                   node = new OpItems();            break;
         case SELECT:                  node = new OpSelect();           break;
-        case IF_ELSE:                  node = new OpIfElse();           break;
+        case IF_ELSE:                 node = new OpIfElse();           break;
         case START:                   node = new OpStart();            break;
         case REPEAT:                  node = new OpRepeat();           break;
         case CACHE:                   node = new OpCache();            break;
@@ -379,7 +379,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
      
         case FILL:                    node = new OpFill();             break;
         case STROKE:                  node = new OpStroke();           break;
-        case STYLE:                   node = new OpStyle();            break;
+        case COLOR_STYLE:             node = new OpColorStyle();            break;
      
         case RECTANGLE:               node = new OpRectangle();        break;
         case LINE:                    node = new OpLine();             break;
