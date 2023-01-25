@@ -11,6 +11,28 @@ function initWhatsNewDialog()
 
 
 
+    whatsNewDialogContainer.addEventListener('wheel', e =>
+    {    
+        const bounds = whatsNewDialogContent.getBoundingClientRect();
+
+        if (bounds.bottom - bounds.top <= whatsNewDialogContainer.clientHeight)
+            return;
+
+
+        let oy = whatsNewDialogContent.style.top = whatsNewDialogContent.offsetTop - e.deltaY / 3;
+
+        oy = Math.max(oy, whatsNewDialogContainer.clientHeight - whatsNewDialogContent.clientHeight + whatsNewTitle.clientHeight);
+
+        whatsNewDialogContent.style.top = Math.min(
+            oy,
+            menuBar.offsetHeight);
+
+
+        updateWhatsNewScroll();
+    });
+
+
+
     whatsNewScrollbarY.addEventListener('pointerdown', e =>
     {
         if (e.button == 0)
@@ -94,9 +116,7 @@ whatsNewBack.addEventListener('pointerdown', () =>
 
 function updateWhatsNewScrollbar(clientY)
 {
-    let y = whatsNewScrollbarY.yStart + clientY - whatsNewScrollbarY.pStart;
-    
-    let t = y;
+    let t = whatsNewScrollbarY.yStart + clientY - whatsNewScrollbarY.pStart;
     let b = t + whatsNewScrollbarY.hStart;
 
     t = Math.max(whatsNewTitle.clientHeight + smallScrollGap, t);
@@ -105,15 +125,6 @@ function updateWhatsNewScrollbar(clientY)
     t = Math.max(smallScrollGap, Math.min(t, b - smallScrollGap));
     b = Math.max(t + smallScrollGap, b);
 
-    // whatsNewScrollbarY.style.top    = t;
-    // whatsNewScrollbarY.style.height = b-t;
-
-    // console.log('t =', t);
-    // console.log('b =', b);
-    // console.log('bounds.top =', bounds.top);
-    // console.log('bounds.bottom =', bounds.bottom);
-    // console.log('bounds.height =', bounds.height);
-    // console.log('yOffset =', yOffset);
 
     let oy = 
           whatsNewDialogContent.topStart 
@@ -121,11 +132,11 @@ function updateWhatsNewScrollbar(clientY)
 
     oy = Math.max(oy, whatsNewDialogContainer.clientHeight - whatsNewDialogContent.clientHeight + whatsNewTitle.clientHeight);
 
-    // console.log('oy =', oy);
 
     whatsNewDialogContent.style.top = Math.min(
         oy,
         menuBar.offsetHeight);
+
 
     updateWhatsNewScroll();
 }
@@ -147,13 +158,6 @@ function updateWhatsNewScroll()
 
 function updateWhatsNewScrollY(x, w, h, bounds, yOffset)
 {
-    console.log('h =', h);
-    console.log('bounds.top =', bounds.top);
-    console.log('bounds.bottom =', bounds.bottom);
-    console.log('bounds.height =', bounds.height);
-    console.log('yOffset =', yOffset);
-    console.log('whatsNewTitle.clientHeight =', whatsNewTitle.clientHeight);
-
     if (bounds.bottom - bounds.top > h)
     {
         const height = sqr(h) / bounds.height - 2*smallScrollGap;

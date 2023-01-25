@@ -409,8 +409,8 @@ function initColorControlEvents(control)
         }
 
 
-        const dWheelX = e.deltaX /  20 * (control.dragReverse ? -1 : 1);
-        const dWheelY = e.deltaY / 100 * (control.dragReverse ? -1 : 1);
+        // const dWheelX = e.deltaX /  20 * (control.dragReverse ? -1 : 1);
+        // const dWheelY = e.deltaY / 100 * (control.dragReverse ? -1 : 1);
 
 
         if (   !getCtrlKey(e)
