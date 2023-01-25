@@ -1,5 +1,5 @@
 class GStar
-extends GShapeBase
+extends GObjectBase
 {
     input  = null;
 

@@ -1,5 +1,5 @@
 class GLine
-extends GShapeBase
+extends GObjectBase
 {
     input  = null;
 

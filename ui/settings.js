@@ -19,6 +19,7 @@ const settings =
     logRequests:           false, 
     logValueUpdates:       false, 
     logObjectUpdates:      false,
+    logStyleUpdates:       false,
     
     logRawLoading:         false, 
     logRawSaving:          false, 
@@ -50,6 +51,7 @@ function updateSetting(settingName, value)
         case 'logRequests':           settings.logRequests           = value;  break;
         case 'logValueUpdates':       settings.logValueUpdates       = value;  break;
         case 'logObjectUpdates':      settings.logObjectUpdates      = value;  break;
+        case 'logStyleUpdates':       settings.logStyleUpdates       = value;  break;
    
         case 'logRawLoading':         settings.logRawLoading         = value;  break;
         case 'logRawSaving':          settings.logRawSaving          = value;  break;
@@ -82,6 +84,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'logRequests':           updateSettingAndMenu_(valid, settingName, value, menuItemLogRequests          );  break;
         case 'logValueUpdates':       updateSettingAndMenu_(valid, settingName, value, menuItemLogValueUpdates      );  break;
         case 'logObjectUpdates':      updateSettingAndMenu_(valid, settingName, value, menuItemLogObjectUpdates     );  break;
+        case 'logStyleUpdates':       updateSettingAndMenu_(valid, settingName, value, menuItemLogStyleUpdates      );  break;
   
         case 'logRawLoading':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoading        );  break;
         case 'logRawSaving':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaving         );  break;
@@ -127,6 +130,7 @@ function updateSettingsMenus()
     menuItemLogRequests          .setChecked(settings.logRequests          );
     menuItemLogValueUpdates      .setChecked(settings.logValueUpdates      );
     menuItemLogObjectUpdates     .setChecked(settings.logObjectUpdates     );
+    menuItemLogStyleUpdates      .setChecked(settings.logStyleUpdates      );
   
     menuItemLogRawLoading        .setChecked(settings.logRawLoading        );
     menuItemLogRawSaving         .setChecked(settings.logRawSaving         );
@@ -210,6 +214,7 @@ function loadLocalSettings()
     uiGetLocalData('logRequests'          );
     uiGetLocalData('logValueUpdates'      );
     uiGetLocalData('logObjectUpdates'     );
+    uiGetLocalData('logStyleUpdates'      );
     
     uiGetLocalData('logRawLoading'        );
     uiGetLocalData('logRawSaving'         );

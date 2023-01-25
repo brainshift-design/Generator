@@ -803,7 +803,7 @@ function findConnectedClusters(nodes)
 
 
 
-function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values, objects)
+function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values, objects, styles)
 {
     if (settings.logRawValues)  
         console.log('raw values = ', values);
@@ -895,6 +895,20 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
             updateParamId: updateParamId,
             nodeIds:       nodes.map(n => n.id),
             objects:       [...objects]});
+    }
+
+    
+    if (styles.length > 0)
+    {
+        // if (settings.logStyleUpdates)
+        //     logStyleUpdates([...styles]);
+
+        // uiPostMessageToFigma({
+        //     cmd:          'figUpdateStyles',
+        //     updateNodeId:  updateNodeId,
+        //     updateParamId: updateParamId,
+        //     nodeIds:       nodes.map(n => n.id),
+        //     styles:        [...styles]});
     }
 
     

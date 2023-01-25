@@ -29,6 +29,7 @@ class Parse
     updateParams  = [];
     updateValues  = [];
     updateObjects = [];
+    updateStyles  = [];
 
     
     get next() { return this.request[this.pos]; }

@@ -2,6 +2,7 @@ var lastUpdateNodeId  = NULL;
 var lastUpdateParamId = NULL;
 var lastUpdateValues  = [];
 var lastUpdateObjects = [];
+var lastUpdateStyles  = [];
 
 
 
@@ -47,7 +48,7 @@ function genRequest(request)
 
     for (const node of parse.parsedNodes)
     {
-        if (   node instanceof GShapeBase
+        if (   node instanceof GObjectBase
             && node.options.active)
             node.objects.forEach(o => genPushUpdateObject(parse, o));
     }
@@ -58,7 +59,8 @@ function genRequest(request)
         parse.updateNodeId,
         parse.updateParamId,
         parse.updateValues,
-        parse.updateObjects);
+        parse.updateObjects,
+        parse.updateStyles);
 }
 
 
@@ -107,6 +109,7 @@ function clearLastUpdate()
 
     lastUpdateValues  = [];
     lastUpdateObjects = [];
+    lastUpdateStyles  = [];
 }
 
 
@@ -120,6 +123,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         updateParamId = lastUpdateParamId;
         updateValues  = lastUpdateValues;
         updateObjects = lastUpdateObjects;
+        updateStyles  = lastUpdateStyles;
 
         clearLastUpdate();
     }
@@ -129,6 +133,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         lastUpdateParamId = updateParamId;
         lastUpdateValues  = updateValues;
         lastUpdateObjects = updateObjects;
+        lastUpdateStyles  = updateStyles;
 
         return;
     }
@@ -142,23 +147,28 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
 
     const approxNodeChunkSize = 20;
     const objChunkSize        = 100;
+    const styleChunkSize      = 20;
 
     
-    let n  = 0;
+    let n  = 0; // node
     let o  = 0; // object
+    let s  = 0; // style
 
     let nc = 0; // node cunk count
-    let oc = 0; // objectchunk counts
+    let oc = 0; // object chunk count
+    let sc = 0; // style chunk count
 
 
     let nodeValChunk   = [],
-        objChunk       = [];
+        objChunk       = [],
+        styleChunk     = [];
 
     let nodeValChunkId = 0;
         
 
     while (   n < nodeIds.length
-           || o < updateObjects.length)
+           || o < updateObjects.length
+           || s < updateStyles.length)
     {
         if (n < nodeIds.length)
         {
@@ -181,8 +191,16 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         }
 
 
+        if (s < updateStyles.length)
+        {
+            styleChunk.push(updateStyles[s]);
+            s++, sc++;
+        }
+
+
         if (   nc >= approxNodeChunkSize
-            || oc == objChunkSize)
+            || oc == objChunkSize
+            || sc == styleChunkSize)
         {
             genQueueChunk(
                 actionId,
@@ -190,16 +208,19 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
                 updateParamId,
                 nodeValChunkId++,
                 nodeValChunk,
-                objChunk);
+                objChunk,
+                styleChunk);
 
             nodeValChunk = [];  nc = 0;
             objChunk     = [];  oc = 0;
+            styleChunk   = [];  sc = 0;
         }
     }
 
 
     if (   nodeValChunk.length > 0
-        || objChunk.length > 0)
+        || objChunk    .length > 0
+        || styleChunk  .length > 0)
     {
         genQueueChunk(
             actionId,
@@ -207,13 +228,14 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
             updateParamId,
             nodeValChunkId++,
             nodeValChunk,
-            objChunk);
+            objChunk,
+            styleChunk);
     }
 }
 
 
 
-function genQueueChunk(actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk)
+function genQueueChunk(actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk)
 {
     genQueueMessageToUI({
         cmd:          'uiUpdateValuesAndObjects',
@@ -222,9 +244,11 @@ function genQueueChunk(actionId, updateNodeId, updateParamId, nodeValChunkId, no
         updateParamId: updateParamId,
         chunkId:       nodeValChunkId,
         values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_CHAR),
-        objects:       [...objChunk]
+        objects:       [...objChunk],
+        styles:        [...styleChunk]
     });
 
-    if (objChunk.length > 0)
+    if (   objChunk  .length > 0
+        || styleChunk.length > 0)
         genFigMessagePosted = true;
 }

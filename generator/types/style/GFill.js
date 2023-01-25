@@ -1,5 +1,5 @@
 class GFill
-extends GShapeBase
+extends GObjectBase
 {
     input   = null;
 

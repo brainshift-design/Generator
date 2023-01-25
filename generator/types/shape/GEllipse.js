@@ -1,5 +1,5 @@
 class GEllipse
-extends GShapeBase
+extends GObjectBase
 {
     input  = null;
 

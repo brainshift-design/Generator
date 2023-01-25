@@ -672,6 +672,7 @@ function figCreateObject(objects, genObj)
     
 
     objects[genObj.id] = figObj;
+    
     figma.currentPage.appendChild(figObj);
 }
 
@@ -1365,7 +1366,7 @@ function setObjectFills(obj, src)
         && src.fills.length > 0)
         obj.fills = getObjectFills(src.fills);
     else
-        obj.fills = [];//{type: 'SOLID', color: {r: 0.85, g: 0.85, b: 0.85}}];
+        obj.fills = [];
 }
 
 
@@ -1681,32 +1682,13 @@ function figDeleteSavedConnectionsFromNode(nodeId)
 }
 
 
-// function genStyleIsValid(genRect)
-// {
-//     return genRect.x      != null && !isNaN(genRect.x     )
-//         && genRect.y      != null && !isNaN(genRect.y     )
-//         && genRect.width  != null && !isNaN(genRect.width )
-//         && genRect.height != null && !isNaN(genRect.height)
-//         && genRect.angle  != null && !isNaN(genRect.angle )
-//         && genRect.round  != null && !isNaN(genRect.round );
-// }
-
-
-
 function figCreateColorStyle(stl)
 {
-    //console.log(obj);
-
     const style = figma.createPaintStyle();
 
     style.name = makeObjectName(stl);
 
-    // if (!genRectIsValid(stl))
-    //     return style;
-
-
     setStylePaints(style, stl);
-
 
     return style;
 }
@@ -1715,9 +1697,6 @@ function figCreateColorStyle(stl)
 
 function figUpdateColorStyle(figStyle, genStyle)
 {
-    // if (!genRectIsValid(genStyle))
-    //     return;
-
     setStylePaints(figStyle, genStyle);
 }
 
@@ -1730,10 +1709,10 @@ function figUpdateColorStyle(figStyle, genStyle)
 function setStylePaints(style, src)
 {
     if (   !!src.fills
-        && src.fills.length > 0)
+        &&   src.fills.length > 0)
         style.paints = getObjectFills(src.fills);
     else
-        style.paints = [];//{type: 'SOLID', color: {r: 0.85, g: 0.85, b: 0.85}}];
+        style.paints = [];
 }
 
 

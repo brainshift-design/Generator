@@ -1,5 +1,5 @@
 class GColorStyle
-extends GColorType
+extends GObjectBase
 {
     style;
 
@@ -33,7 +33,7 @@ extends GColorType
         if (this.value.isValid())
         {
             const rgb = this.value.toRgb();
-            this.evalObjects({rgb: rgb});
+            this.evalStyles({rgb: rgb});
         }
 
 
@@ -47,23 +47,26 @@ extends GColorType
 
 
 
-    evalObjects(options = {})
+    evalStyles(options = {})
     {
         if (!this.options.enabled)
             return;
 
             
-        this.style = new FigmaColorStyle(this.nodeId, -1);
+        const style = new FigmaColorStyle(this.nodeId, -1);
 
         
-        if (!this.style.fills) 
-            this.style.fills = [];
+        if (!style.paints) 
+            style.paints = [];
 
-        this.style.fills.push([
+        style.paints.push([
             'SOLID', 
                     0xff * options.rgb[0]
             + ' ' + 0xff * options.rgb[1]
             + ' ' + 0xff * options.rgb[2]
             + ' ' + 0xff]);
+
+
+        this.styles = [style];
     }
 }

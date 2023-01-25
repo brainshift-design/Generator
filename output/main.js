@@ -885,7 +885,7 @@ function setObjectFills(obj, src) {
         && src.fills.length > 0)
         obj.fills = getObjectFills(src.fills);
     else
-        obj.fills = []; //{type: 'SOLID', color: {r: 0.85, g: 0.85, b: 0.85}}];
+        obj.fills = [];
 }
 function setObjectStrokes(obj, src) {
     if (src.strokes != null
@@ -1069,27 +1069,13 @@ function figDeleteSavedConnectionsFromNode(nodeId) {
             figClearPageData(key);
     }
 }
-// function genStyleIsValid(genRect)
-// {
-//     return genRect.x      != null && !isNaN(genRect.x     )
-//         && genRect.y      != null && !isNaN(genRect.y     )
-//         && genRect.width  != null && !isNaN(genRect.width )
-//         && genRect.height != null && !isNaN(genRect.height)
-//         && genRect.angle  != null && !isNaN(genRect.angle )
-//         && genRect.round  != null && !isNaN(genRect.round );
-// }
 function figCreateColorStyle(stl) {
-    //console.log(obj);
     const style = figma.createPaintStyle();
     style.name = makeObjectName(stl);
-    // if (!genRectIsValid(stl))
-    //     return style;
     setStylePaints(style, stl);
     return style;
 }
 function figUpdateColorStyle(figStyle, genStyle) {
-    // if (!genRectIsValid(genStyle))
-    //     return;
     setStylePaints(figStyle, genStyle);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1098,7 +1084,7 @@ function setStylePaints(style, src) {
         && src.fills.length > 0)
         style.paints = getObjectFills(src.fills);
     else
-        style.paints = []; //{type: 'SOLID', color: {r: 0.85, g: 0.85, b: 0.85}}];
+        style.paints = [];
 }
 function figPositionWindow(x, y) {
     // x = Math.floor(Math.max(0, x ));

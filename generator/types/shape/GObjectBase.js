@@ -1,4 +1,4 @@
-class GShapeBase
+class GObjectBase
 extends GOperator
 {
     // fill    = null;
@@ -6,6 +6,7 @@ extends GOperator
     
 
     objects = [];
+    styles  = [];
 
 
 
@@ -22,6 +23,7 @@ extends GOperator
         // if (base.stroke) this.stroke = base.stroke.copy();
 
         this.copyObjects(base.objects);
+        this.copyStyles (base.styles );
     }
 
 
@@ -29,6 +31,13 @@ extends GOperator
     copyObjects(objects)
     {
         this.objects = objects.map(o => o.copy());
+    }
+
+
+
+    copyStyles(styles)
+    {
+        this.styles = styles.map(s => s.copy());
     }
 
 
@@ -71,7 +80,16 @@ extends GOperator
 
     evalObjects(options = {})
     {
-        for (const obj of this.objects)
-            obj.nodeId = this.nodeId;
+        // for (const obj of this.objects)
+        //     obj.nodeId = this.nodeId;
+    }
+
+
+
+    
+    evalStyles(options = {})
+    {
+        // for (const style of this.styles)
+        //     style.nodeId = this.nodeId;
     }
 }

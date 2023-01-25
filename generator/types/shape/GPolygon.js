@@ -1,5 +1,5 @@
 class GPolygon
-extends GShapeBase
+extends GObjectBase
 {
     input   = null;
 

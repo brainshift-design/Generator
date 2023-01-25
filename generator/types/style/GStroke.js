@@ -1,5 +1,5 @@
 class GStroke
-extends GShapeBase
+extends GObjectBase
 {
     input  = null;
 

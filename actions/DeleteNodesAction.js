@@ -179,7 +179,7 @@ function deleteNodesAction_deleteNodes(act)
 
 function deleteNodesAction_restoreNodes(act)
 {
-    console.log('act.nodes', act.nodes);
+    // console.log('act.nodes', act.nodes);
 
     graph.addNodes(act.nodes);
     graphView.putNodeOnTop(lastOf(act.nodes));

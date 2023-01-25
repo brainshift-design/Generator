@@ -89,7 +89,7 @@
 ../generator/types/style/GColorStop.js
 
 
-../generator/types/shape/GShapeBase.js
+../generator/types/shape/GObjectBase.js
 
 ../generator/types/shape/GRectangle.js
 ../generator/types/shape/GLine.js

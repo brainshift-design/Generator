@@ -12022,7 +12022,7 @@ extends GOperator
 }
 
 
-class GShapeBase
+class GObjectBase
 extends GOperator
 {
     // fill    = null;
@@ -12030,6 +12030,7 @@ extends GOperator
     
 
     objects = [];
+    styles  = [];
 
 
 
@@ -12046,6 +12047,7 @@ extends GOperator
         // if (base.stroke) this.stroke = base.stroke.copy();
 
         this.copyObjects(base.objects);
+        this.copyStyles (base.styles );
     }
 
 
@@ -12053,6 +12055,13 @@ extends GOperator
     copyObjects(objects)
     {
         this.objects = objects.map(o => o.copy());
+    }
+
+
+
+    copyStyles(styles)
+    {
+        this.styles = styles.map(s => s.copy());
     }
 
 
@@ -12095,14 +12104,23 @@ extends GOperator
 
     evalObjects(options = {})
     {
-        for (const obj of this.objects)
-            obj.nodeId = this.nodeId;
+        // for (const obj of this.objects)
+        //     obj.nodeId = this.nodeId;
+    }
+
+
+
+    
+    evalStyles(options = {})
+    {
+        // for (const style of this.styles)
+        //     style.nodeId = this.nodeId;
     }
 }
 
 
 class GRectangle
-extends GShapeBase
+extends GObjectBase
 {
     input  = null;
 
@@ -12245,7 +12263,7 @@ extends GShapeBase
 
 
 class GLine
-extends GShapeBase
+extends GObjectBase
 {
     input  = null;
 
@@ -12372,7 +12390,7 @@ extends GShapeBase
 
 
 class GEllipse
-extends GShapeBase
+extends GObjectBase
 {
     input  = null;
 
@@ -12507,7 +12525,7 @@ extends GShapeBase
 
 
 class GPolygon
-extends GShapeBase
+extends GObjectBase
 {
     input   = null;
 
@@ -12658,7 +12676,7 @@ extends GShapeBase
 
 
 class GStar
-extends GShapeBase
+extends GObjectBase
 {
     input  = null;
 
@@ -12817,7 +12835,7 @@ extends GShapeBase
 
 
 class GFill
-extends GShapeBase
+extends GObjectBase
 {
     input   = null;
 
@@ -12934,7 +12952,7 @@ extends GShapeBase
 
 
 class GStroke
-extends GShapeBase
+extends GObjectBase
 {
     input  = null;
 
@@ -13104,7 +13122,7 @@ extends GShapeBase
 
 
 class GColorStyle
-extends GColorType
+extends GObjectBase
 {
     style;
 
@@ -13138,7 +13156,7 @@ extends GColorType
         if (this.value.isValid())
         {
             const rgb = this.value.toRgb();
-            this.evalObjects({rgb: rgb});
+            this.evalStyles({rgb: rgb});
         }
 
 
@@ -13152,24 +13170,27 @@ extends GColorType
 
 
 
-    evalObjects(options = {})
+    evalStyles(options = {})
     {
         if (!this.options.enabled)
             return;
 
             
-        this.style = new FigmaColorStyle(this.nodeId, -1);
+        const style = new FigmaColorStyle(this.nodeId, -1);
 
         
-        if (!this.style.fills) 
-            this.style.fills = [];
+        if (!style.paints) 
+            style.paints = [];
 
-        this.style.fills.push([
+        style.paints.push([
             'SOLID', 
                     0xff * options.rgb[0]
             + ' ' + 0xff * options.rgb[1]
             + ' ' + 0xff * options.rgb[2]
             + ' ' + 0xff]);
+
+
+        this.styles = [style];
     }
 }
 
@@ -13195,6 +13216,7 @@ const settings =
     logRequests:           false, 
     logValueUpdates:       false, 
     logObjectUpdates:      false,
+    logStyleUpdates:       false,
     
     logRawLoading:         false, 
     logRawSaving:          false, 
@@ -13226,6 +13248,7 @@ function updateSetting(settingName, value)
         case 'logRequests':           settings.logRequests           = value;  break;
         case 'logValueUpdates':       settings.logValueUpdates       = value;  break;
         case 'logObjectUpdates':      settings.logObjectUpdates      = value;  break;
+        case 'logStyleUpdates':       settings.logStyleUpdates       = value;  break;
    
         case 'logRawLoading':         settings.logRawLoading         = value;  break;
         case 'logRawSaving':          settings.logRawSaving          = value;  break;
@@ -13258,6 +13281,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'logRequests':           updateSettingAndMenu_(valid, settingName, value, menuItemLogRequests          );  break;
         case 'logValueUpdates':       updateSettingAndMenu_(valid, settingName, value, menuItemLogValueUpdates      );  break;
         case 'logObjectUpdates':      updateSettingAndMenu_(valid, settingName, value, menuItemLogObjectUpdates     );  break;
+        case 'logStyleUpdates':       updateSettingAndMenu_(valid, settingName, value, menuItemLogStyleUpdates      );  break;
   
         case 'logRawLoading':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoading        );  break;
         case 'logRawSaving':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaving         );  break;
@@ -13303,6 +13327,7 @@ function updateSettingsMenus()
     menuItemLogRequests          .setChecked(settings.logRequests          );
     menuItemLogValueUpdates      .setChecked(settings.logValueUpdates      );
     menuItemLogObjectUpdates     .setChecked(settings.logObjectUpdates     );
+    menuItemLogStyleUpdates      .setChecked(settings.logStyleUpdates      );
   
     menuItemLogRawLoading        .setChecked(settings.logRawLoading        );
     menuItemLogRawSaving         .setChecked(settings.logRawSaving         );
@@ -13386,6 +13411,7 @@ function loadLocalSettings()
     uiGetLocalData('logRequests'          );
     uiGetLocalData('logValueUpdates'      );
     uiGetLocalData('logObjectUpdates'     );
+    uiGetLocalData('logStyleUpdates'      );
     
     uiGetLocalData('logRawLoading'        );
     uiGetLocalData('logRawSaving'         );
@@ -13512,6 +13538,7 @@ var lastUpdateNodeId  = NULL;
 var lastUpdateParamId = NULL;
 var lastUpdateValues  = [];
 var lastUpdateObjects = [];
+var lastUpdateStyles  = [];
 
 
 
@@ -13557,7 +13584,7 @@ function genRequest(request)
 
     for (const node of parse.parsedNodes)
     {
-        if (   node instanceof GShapeBase
+        if (   node instanceof GObjectBase
             && node.options.active)
             node.objects.forEach(o => genPushUpdateObject(parse, o));
     }
@@ -13568,7 +13595,8 @@ function genRequest(request)
         parse.updateNodeId,
         parse.updateParamId,
         parse.updateValues,
-        parse.updateObjects);
+        parse.updateObjects,
+        parse.updateStyles);
 }
 
 
@@ -13617,6 +13645,7 @@ function clearLastUpdate()
 
     lastUpdateValues  = [];
     lastUpdateObjects = [];
+    lastUpdateStyles  = [];
 }
 
 
@@ -13630,6 +13659,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         updateParamId = lastUpdateParamId;
         updateValues  = lastUpdateValues;
         updateObjects = lastUpdateObjects;
+        updateStyles  = lastUpdateStyles;
 
         clearLastUpdate();
     }
@@ -13639,6 +13669,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         lastUpdateParamId = updateParamId;
         lastUpdateValues  = updateValues;
         lastUpdateObjects = updateObjects;
+        lastUpdateStyles  = updateStyles;
 
         return;
     }
@@ -13652,23 +13683,28 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
 
     const approxNodeChunkSize = 20;
     const objChunkSize        = 100;
+    const styleChunkSize      = 20;
 
     
-    let n  = 0;
+    let n  = 0; // node
     let o  = 0; // object
+    let s  = 0; // style
 
     let nc = 0; // node cunk count
-    let oc = 0; // objectchunk counts
+    let oc = 0; // object chunk count
+    let sc = 0; // style chunk count
 
 
     let nodeValChunk   = [],
-        objChunk       = [];
+        objChunk       = [],
+        styleChunk     = [];
 
     let nodeValChunkId = 0;
         
 
     while (   n < nodeIds.length
-           || o < updateObjects.length)
+           || o < updateObjects.length
+           || s < updateStyles.length)
     {
         if (n < nodeIds.length)
         {
@@ -13691,8 +13727,16 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         }
 
 
+        if (s < updateStyles.length)
+        {
+            styleChunk.push(updateStyles[s]);
+            s++, sc++;
+        }
+
+
         if (   nc >= approxNodeChunkSize
-            || oc == objChunkSize)
+            || oc == objChunkSize
+            || sc == styleChunkSize)
         {
             genQueueChunk(
                 actionId,
@@ -13700,16 +13744,19 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
                 updateParamId,
                 nodeValChunkId++,
                 nodeValChunk,
-                objChunk);
+                objChunk,
+                styleChunk);
 
             nodeValChunk = [];  nc = 0;
             objChunk     = [];  oc = 0;
+            styleChunk   = [];  sc = 0;
         }
     }
 
 
     if (   nodeValChunk.length > 0
-        || objChunk.length > 0)
+        || objChunk    .length > 0
+        || styleChunk  .length > 0)
     {
         genQueueChunk(
             actionId,
@@ -13717,13 +13764,14 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
             updateParamId,
             nodeValChunkId++,
             nodeValChunk,
-            objChunk);
+            objChunk,
+            styleChunk);
     }
 }
 
 
 
-function genQueueChunk(actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk)
+function genQueueChunk(actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk)
 {
     genQueueMessageToUI({
         cmd:          'uiUpdateValuesAndObjects',
@@ -13732,10 +13780,12 @@ function genQueueChunk(actionId, updateNodeId, updateParamId, nodeValChunkId, no
         updateParamId: updateParamId,
         chunkId:       nodeValChunkId,
         values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_CHAR),
-        objects:       [...objChunk]
+        objects:       [...objChunk],
+        styles:        [...styleChunk]
     });
 
-    if (objChunk.length > 0)
+    if (   objChunk  .length > 0
+        || styleChunk.length > 0)
         genFigMessagePosted = true;
 }
 
@@ -15537,6 +15587,7 @@ class Parse
     updateParams  = [];
     updateValues  = [];
     updateObjects = [];
+    updateStyles  = [];
 
     
     get next() { return this.request[this.pos]; }
@@ -29278,7 +29329,7 @@ extends GOperator
 }
 
 
-class GShapeBase
+class GObjectBase
 extends GOperator
 {
     // fill    = null;
@@ -29286,6 +29337,7 @@ extends GOperator
     
 
     objects = [];
+    styles  = [];
 
 
 
@@ -29302,6 +29354,7 @@ extends GOperator
         // if (base.stroke) this.stroke = base.stroke.copy();
 
         this.copyObjects(base.objects);
+        this.copyStyles (base.styles );
     }
 
 
@@ -29309,6 +29362,13 @@ extends GOperator
     copyObjects(objects)
     {
         this.objects = objects.map(o => o.copy());
+    }
+
+
+
+    copyStyles(styles)
+    {
+        this.styles = styles.map(s => s.copy());
     }
 
 
@@ -29351,14 +29411,23 @@ extends GOperator
 
     evalObjects(options = {})
     {
-        for (const obj of this.objects)
-            obj.nodeId = this.nodeId;
+        // for (const obj of this.objects)
+        //     obj.nodeId = this.nodeId;
+    }
+
+
+
+    
+    evalStyles(options = {})
+    {
+        // for (const style of this.styles)
+        //     style.nodeId = this.nodeId;
     }
 }
 
 
 class GRectangle
-extends GShapeBase
+extends GObjectBase
 {
     input  = null;
 
@@ -29501,7 +29570,7 @@ extends GShapeBase
 
 
 class GLine
-extends GShapeBase
+extends GObjectBase
 {
     input  = null;
 
@@ -29628,7 +29697,7 @@ extends GShapeBase
 
 
 class GEllipse
-extends GShapeBase
+extends GObjectBase
 {
     input  = null;
 
@@ -29763,7 +29832,7 @@ extends GShapeBase
 
 
 class GPolygon
-extends GShapeBase
+extends GObjectBase
 {
     input   = null;
 
@@ -29914,7 +29983,7 @@ extends GShapeBase
 
 
 class GStar
-extends GShapeBase
+extends GObjectBase
 {
     input  = null;
 
@@ -30073,7 +30142,7 @@ extends GShapeBase
 
 
 class GFill
-extends GShapeBase
+extends GObjectBase
 {
     input   = null;
 
@@ -30190,7 +30259,7 @@ extends GShapeBase
 
 
 class GStroke
-extends GShapeBase
+extends GObjectBase
 {
     input  = null;
 
@@ -30360,7 +30429,7 @@ extends GShapeBase
 
 
 class GColorStyle
-extends GColorType
+extends GObjectBase
 {
     style;
 
@@ -30394,7 +30463,7 @@ extends GColorType
         if (this.value.isValid())
         {
             const rgb = this.value.toRgb();
-            this.evalObjects({rgb: rgb});
+            this.evalStyles({rgb: rgb});
         }
 
 
@@ -30408,24 +30477,27 @@ extends GColorType
 
 
 
-    evalObjects(options = {})
+    evalStyles(options = {})
     {
         if (!this.options.enabled)
             return;
 
             
-        this.style = new FigmaColorStyle(this.nodeId, -1);
+        const style = new FigmaColorStyle(this.nodeId, -1);
 
         
-        if (!this.style.fills) 
-            this.style.fills = [];
+        if (!style.paints) 
+            style.paints = [];
 
-        this.style.fills.push([
+        style.paints.push([
             'SOLID', 
                     0xff * options.rgb[0]
             + ' ' + 0xff * options.rgb[1]
             + ' ' + 0xff * options.rgb[2]
             + ' ' + 0xff]);
+
+
+        this.styles = [style];
     }
 }
 
@@ -30451,6 +30523,7 @@ const settings =
     logRequests:           false, 
     logValueUpdates:       false, 
     logObjectUpdates:      false,
+    logStyleUpdates:       false,
     
     logRawLoading:         false, 
     logRawSaving:          false, 
@@ -30482,6 +30555,7 @@ function updateSetting(settingName, value)
         case 'logRequests':           settings.logRequests           = value;  break;
         case 'logValueUpdates':       settings.logValueUpdates       = value;  break;
         case 'logObjectUpdates':      settings.logObjectUpdates      = value;  break;
+        case 'logStyleUpdates':       settings.logStyleUpdates       = value;  break;
    
         case 'logRawLoading':         settings.logRawLoading         = value;  break;
         case 'logRawSaving':          settings.logRawSaving          = value;  break;
@@ -30514,6 +30588,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'logRequests':           updateSettingAndMenu_(valid, settingName, value, menuItemLogRequests          );  break;
         case 'logValueUpdates':       updateSettingAndMenu_(valid, settingName, value, menuItemLogValueUpdates      );  break;
         case 'logObjectUpdates':      updateSettingAndMenu_(valid, settingName, value, menuItemLogObjectUpdates     );  break;
+        case 'logStyleUpdates':       updateSettingAndMenu_(valid, settingName, value, menuItemLogStyleUpdates      );  break;
   
         case 'logRawLoading':         updateSettingAndMenu_(valid, settingName, value, menuItemLogRawLoading        );  break;
         case 'logRawSaving':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRawSaving         );  break;
@@ -30559,6 +30634,7 @@ function updateSettingsMenus()
     menuItemLogRequests          .setChecked(settings.logRequests          );
     menuItemLogValueUpdates      .setChecked(settings.logValueUpdates      );
     menuItemLogObjectUpdates     .setChecked(settings.logObjectUpdates     );
+    menuItemLogStyleUpdates      .setChecked(settings.logStyleUpdates      );
   
     menuItemLogRawLoading        .setChecked(settings.logRawLoading        );
     menuItemLogRawSaving         .setChecked(settings.logRawSaving         );
@@ -30642,6 +30718,7 @@ function loadLocalSettings()
     uiGetLocalData('logRequests'          );
     uiGetLocalData('logValueUpdates'      );
     uiGetLocalData('logObjectUpdates'     );
+    uiGetLocalData('logStyleUpdates'      );
     
     uiGetLocalData('logRawLoading'        );
     uiGetLocalData('logRawSaving'         );
@@ -31609,14 +31686,15 @@ var menuItemDataMode;
 
 var menuItemLogMessages;
 var menuItemLogActions;
-var menuItemLogRawLoading;
-var menuItemLogRawSaving;
 var menuItemLogLoading;
-var menuItemLogRawRequests;
-var menuItemLogRawValues;
 var menuItemLogRequests;
 var menuItemLogValueUpdates;
 var menuItemLogObjectUpdates;
+var menuItemLogStyleUpdates;
+var menuItemLogRawLoading;
+var menuItemLogRawSaving;
+var menuItemLogRawRequests;
+var menuItemLogRawValues;
 
 var menuItemZoomTo100;
 var menuItemZoomTop;
@@ -31679,6 +31757,7 @@ function initGeneratorMenus()
         menuItemLogRequests      = new MenuItem('Log\u2008requests',            {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     ), setting: true}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',              {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates ), setting: true}),
         menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',             {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates), setting: true}),
+        menuItemLogStyleUpdates  = new MenuItem('Log\u2008styles',              {checkCallback: () => settings.logStyleUpdates , callback: () => updateSettingAndMenu('logStyleUpdates',  true, !settings.logStyleUpdates ), setting: true}),
                                    new MenuItem('',                             {separator: true}),   
         menuItemLogRawRequests   = new MenuItem('Log\u2008raw\u2008requests',   {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests  ), setting: true}),
         menuItemLogRawValues     = new MenuItem('Log\u2008raw\u2008values',     {checkCallback: () => settings.logRawValues    , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues    ), setting: true}),
@@ -48692,6 +48771,7 @@ extends OpColorBase
     {
         const input = this.inputs[0];
         
+        
         this.paramValue.enableControlText(!input.connected);
 
         this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
@@ -49806,7 +49886,7 @@ function deleteNodesAction_deleteNodes(act)
 
 function deleteNodesAction_restoreNodes(act)
 {
-    console.log('act.nodes', act.nodes);
+    // console.log('act.nodes', act.nodes);
 
     graph.addNodes(act.nodes);
     graphView.putNodeOnTop(lastOf(act.nodes));
@@ -52331,6 +52411,7 @@ function uiReturnFigGetLocalData(msg)
         case 'logRequests':      
         case 'logValueUpdates':  
         case 'logObjectUpdates': 
+        case 'logStyleUpdates': 
 
         case 'logRawLoading':    
         case 'logRawSaving':     
@@ -53761,7 +53842,7 @@ function findConnectedClusters(nodes)
 
 
 
-function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values, objects)
+function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values, objects, styles)
 {
     if (settings.logRawValues)  
         console.log('raw values = ', values);
@@ -53853,6 +53934,20 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
             updateParamId: updateParamId,
             nodeIds:       nodes.map(n => n.id),
             objects:       [...objects]});
+    }
+
+    
+    if (styles.length > 0)
+    {
+        // if (settings.logStyleUpdates)
+        //     logStyleUpdates([...styles]);
+
+        // uiPostMessageToFigma({
+        //     cmd:          'figUpdateStyles',
+        //     updateNodeId:  updateNodeId,
+        //     updateParamId: updateParamId,
+        //     nodeIds:       nodes.map(n => n.id),
+        //     styles:        [...styles]});
     }
 
     

@@ -51,6 +51,7 @@ function uiReturnFigGetLocalData(msg)
         case 'logRequests':      
         case 'logValueUpdates':  
         case 'logObjectUpdates': 
+        case 'logStyleUpdates': 
 
         case 'logRawLoading':    
         case 'logRawSaving':     

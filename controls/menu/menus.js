@@ -141,14 +141,15 @@ var menuItemDataMode;
 
 var menuItemLogMessages;
 var menuItemLogActions;
-var menuItemLogRawLoading;
-var menuItemLogRawSaving;
 var menuItemLogLoading;
-var menuItemLogRawRequests;
-var menuItemLogRawValues;
 var menuItemLogRequests;
 var menuItemLogValueUpdates;
 var menuItemLogObjectUpdates;
+var menuItemLogStyleUpdates;
+var menuItemLogRawLoading;
+var menuItemLogRawSaving;
+var menuItemLogRawRequests;
+var menuItemLogRawValues;
 
 var menuItemZoomTo100;
 var menuItemZoomTop;
@@ -211,6 +212,7 @@ function initGeneratorMenus()
         menuItemLogRequests      = new MenuItem('Log\u2008requests',            {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     ), setting: true}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',              {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates ), setting: true}),
         menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',             {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates), setting: true}),
+        menuItemLogStyleUpdates  = new MenuItem('Log\u2008styles',              {checkCallback: () => settings.logStyleUpdates , callback: () => updateSettingAndMenu('logStyleUpdates',  true, !settings.logStyleUpdates ), setting: true}),
                                    new MenuItem('',                             {separator: true}),   
         menuItemLogRawRequests   = new MenuItem('Log\u2008raw\u2008requests',   {checkCallback: () => settings.logRawRequests  , callback: () => updateSettingAndMenu('logRawRequests',   true, !settings.logRawRequests  ), setting: true}),
         menuItemLogRawValues     = new MenuItem('Log\u2008raw\u2008values',     {checkCallback: () => settings.logRawValues    , callback: () => updateSettingAndMenu('logRawValues',     true, !settings.logRawValues    ), setting: true}),

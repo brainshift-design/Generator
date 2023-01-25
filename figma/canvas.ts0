@@ -26,6 +26,7 @@ function figCreateObject(objects, genObj)
     
 
     objects[genObj.id] = figObj;
+    
     figma.currentPage.appendChild(figObj);
 }
 
