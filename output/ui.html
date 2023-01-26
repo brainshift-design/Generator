@@ -1680,7 +1680,7 @@ a
     transform:            translateX(-50%);
     width:                100%;
     white-space:          nowrap;
-    background-color:     transparent;
+    letter-spacing:       -0.35px;
 }
 
 
@@ -1962,7 +1962,7 @@ a
     overflow:      hidden;
     border-radius: 4px 4px 0 0;
     padding:       0;
-    box-shadow:    0 0 0 1px #0001;
+    box-shadow:    0 0 0 1px var(--figma-color-bg-tertiary);
     overflow:      visible;
 }    
 
@@ -2203,7 +2203,7 @@ a
     width:         16px;
     height:        16px;
     border-radius:  8px;
-    margin-right:   6px;
+    margin-right:   7px;
     position:      relative;
     top:          -1px;
 }
@@ -13228,7 +13228,7 @@ extends GObjectBase
         if (this.isCached())
             return this;
 
-
+            
         this.value = this.value.eval(parse).toValue();
       
 
@@ -30597,7 +30597,7 @@ extends GObjectBase
         if (this.isCached())
             return this;
 
-
+            
         this.value = this.value.eval(parse).toValue();
       
 
@@ -34331,27 +34331,12 @@ function initColorControlTextbox(control)
                hasFocus(control)
             && !control.clicked;
     
-        // control.textbox.style.position  = 'absolute';
-        // control.textbox.style.left      = '50%';
-        // control.textbox.style.transform = 'translate(-50%)';
-        // control.textbox.style.top       = control.offsetTop    + 1;
-        // control.textbox.style.width     = control.offsetWidth  - 2;
-        // control.textbox.style.height    = control.offsetHeight - 2;
         control.textbox.style.boxShadow = '0 0 0 1px var(--figma-color-bg-brand)';
         control.textbox.style.outline   = 'none';
         control.textbox.style.textAlign = 'center';
 
-        const isConnected =    
-               control.param != null
-            && control.param.input
-            && control.param.input.connected;
-
-        // enableElementText(
-        //     control.textbox, 
-        //        !control.readOnly
-        //     && !isConnected);
-
         control.updateTextbox();
+
         
         control.parentNode.appendChild(control.textbox);
         
@@ -34373,7 +34358,6 @@ function initColorControlTextbox(control)
             : rgb2hex(rgb).toUpperCase();
                            
         control.textbox.savedValue  = control.textbox.value;
-        //control.textbox.style.color = control.text.style.color;
     };
 }
 
@@ -34546,7 +34530,8 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
     control.updateColors = function()
     {
-        control.style.background = 
+        control        .style.background = 
+        control.textbox.style.background = 
             control.showColor
             ? (isDarkMode() 
                ? control.valueStyleDark 

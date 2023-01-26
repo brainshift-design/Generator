@@ -62,7 +62,7 @@
     transform:            translateX(-50%);
     width:                100%;
     white-space:          nowrap;
-    background-color:     transparent;
+    letter-spacing:       -0.35px;
 }
 
 

@@ -166,7 +166,8 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
     control.updateColors = function()
     {
-        control.style.background = 
+        control        .style.background = 
+        control.textbox.style.background = 
             control.showColor
             ? (isDarkMode() 
                ? control.valueStyleDark 

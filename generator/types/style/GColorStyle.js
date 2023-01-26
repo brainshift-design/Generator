@@ -26,7 +26,7 @@ extends GObjectBase
         if (this.isCached())
             return this;
 
-
+            
         this.value = this.value.eval(parse).toValue();
       
 
