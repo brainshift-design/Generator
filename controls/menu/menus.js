@@ -165,6 +165,8 @@ var menuItemNodeDuplicate;
 var menuItemNodeDuplicateConnected;
 var menuItemNodeRemove;
 var menuItemNodeLayout;
+var menuItemNodeSep1;
+var menuItemNodeRename;
 // var menuItemNodeBringToFront;
 // var menuItemNodeSendToBack;
 var menuItemNodeEnableDisable;
@@ -374,8 +376,19 @@ function initGeneratorMenus()
         menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift()            + '⌫', callback: e => { hideAllMenus(); removeSelectedNodes(true); }}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeLayout             = new MenuItem('Layout',              {enabled:   false, shortcut: osCtrl()             + 'L',  callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
+        //menuItemNodeSep1               = new MenuItem('',                    {separator: true}),
+        menuItemNodeRename             = new MenuItem('Rename',              {callback: e => { hideAllMenus(); renameSelectedNode(); }}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
+
+    menuNode.init = () => 
+    {
+        const single = graphView.selectedNodes.length == 1;
+
+        //updateMenuItemDisplay(menuItemNodeSep1  .div, showRename);
+        updateMenuItemDisplay(menuItemNodeRename.div,  single);
+        updateMenuItemDisplay(menuItemNodeLayout.div, !single);
+    };
 
 
 

@@ -10,9 +10,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, height, angle, round)
+    constructor(nodeId, objectId, x, y, width, height, angle, round)
     {
-        super(RECTANGLE, nodeId, id);
+        super(RECTANGLE, nodeId, nodeName, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -28,7 +28,8 @@ extends FigmaObject
     {
         const rect = new FigmaRectangle(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,

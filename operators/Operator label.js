@@ -1,12 +1,16 @@
 function createNodeLabel(node)
 {
-    node.labelWrapper = createDiv('nodeLabelWrapper');
-
-    node.label        = createDiv('nodeLabel');
-    node.label.node   = node;
+    node.labelWrapper   = createDiv('nodeLabelWrapper');
+  
+    node.label          = createDiv('nodeLabel');
+    node.label.node     = node;
     
+    node.labelText      = createDiv('nodeLabelText');
+    node.labelText.node = node;
+    
+    node.label       .appendChild(node.labelText);
     node.labelWrapper.appendChild(node.label);
-    node.header.appendChild(node.labelWrapper);
+    node.header      .appendChild(node.labelWrapper);
 
 
     node.labelWrapper.addEventListener('pointerdown', e =>

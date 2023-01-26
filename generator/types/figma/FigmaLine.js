@@ -8,9 +8,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, angle)
+    constructor(nodeId, objectId, x, y, width, angle)
     {
-        super(LINE, nodeId, id);
+        super(LINE, nodeId, nodeName, objectId);
         
         this.x     = x;
         this.y     = y;
@@ -24,7 +24,8 @@ extends FigmaObject
     {
         const line = new FigmaLine(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,

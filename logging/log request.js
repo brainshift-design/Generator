@@ -19,7 +19,8 @@ function logRequest(parse)
 function logReqNodeId(node)
 {
     return ' ' 
-         + logReqId(node.nodeId)
+         + logReqId(node.nodeId) + ' '
+         + logReqId(node.nodeName)
          + logReqOptions(node);
 }
 

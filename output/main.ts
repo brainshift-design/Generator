@@ -599,7 +599,8 @@ function logRequest(parse)
 function logReqNodeId(node)
 {
     return ' ' 
-         + logReqId(node.nodeId)
+         + logReqId(node.nodeId) + ' '
+         + logReqId(node.nodeName)
          + logReqOptions(node);
 }
 
@@ -645,95 +646,24 @@ function logReqNode(node, parse)
 
 
 const figObjectArrays = []; // {nodeId, [objects]}
+const figStyleArrays  = []; // {nodeId, [styles]}
 
 
 
-function figCreateObject(objects, genObj)
+function figDeleteObjectsAndStylesFromNodeIds(nodeIds)
 {
-    let figObj;
-
-    switch (genObj.type)
-    {
-        case RECTANGLE:   figObj = figCreateRect      (genObj); break;
-        case LINE:        figObj = figCreateLine      (genObj); break;
-        case ELLIPSE:     figObj = figCreateEllipse   (genObj); break;
-        case POLYGON:     figObj = figCreatePolygon   (genObj); break;
-        case STAR:        figObj = figCreateStar      (genObj); break;
-
-        case COLOR_STYLE: figObj = figCreateColorStyle(genObj); break;
-    }
-
-    console.assert(!!figObj, 'no Figma object created');
-
-
-    figObj.setPluginData('id',     genObj.id    .toString());
-    figObj.setPluginData('type',   genObj.type  .toString());
-    figObj.setPluginData('nodeId', genObj.nodeId.toString());
+    // styles are deleted first
     
+    const paintStyles = figma.getLocalPaintStyles();
 
-    objects[genObj.id] = figObj;
-    
-    figma.currentPage.appendChild(figObj);
-}
+    paintStyles
+        .filter(s => nodeIds.includes(s.getPluginData('nodeId')))
+        .forEach(s => s.remove());
 
-
-
-function figUpdateObjects(msg)
-{
-    let curNodeId  = NULL;
-    let figObjects = null;
-
-    for (const genObj of msg.objects)
-    {
-        if (genObj.nodeId != curNodeId)
-        {
-            curNodeId  = genObj.nodeId;
-            
-            figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
-
-            if (!figObjects) 
-                figObjectArrays.push(figObjects = {nodeId: genObj.nodeId, objects: []});
-        }
-
-        const figObj = figObjects[genObj.id];
-
-
-        if (  !figObj 
-            || figObj.removed) // no existing object, create new object
-            figCreateObject(figObjects, genObj);
-
-        else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
-            figUpdateObject(figObj, genObj);
-
-        else // delete existing object, create new object
-        {
-            figObj.remove();
-            figCreateObject(figObjects, genObj);
-        }
-    }
-}
-
-
-
-function figUpdateObject(figObj, genObj)
-{
-    switch (genObj.type)
-    {
-        case RECTANGLE:   figUpdateRect      (figObj, genObj); break;
-        case LINE:        figUpdateLine      (figObj, genObj); break;
-        case ELLIPSE:     figUpdateEllipse   (figObj, genObj); break;
-        case POLYGON:     figUpdatePolygon   (figObj, genObj); break;
-        case STAR:        figUpdateStar      (figObj, genObj); break;
-    }
-}
-
-
-
-function figDeleteObjectsFromNodeIds(nodeIds)
-{
+        
     figma.currentPage
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
-        .forEach(o => {console.log('o =', o); o.remove(); });
+        .forEach(o => o.remove());
 }
 
 
@@ -839,48 +769,48 @@ figma.ui.onmessage = msg =>
     
     switch (msg.cmd)
     {
-        case 'figStartGenerator':                 figStartGenerator                ();                                            break;
-             
-        case 'figPositionWindow':                 figPositionWindow                (msg.x, msg.y);                                break; 
-        case 'figResizeWindow':                   figResizeWindow                  (msg.width, msg.height);                       break; 
-        case 'figNotify':                         figNotify                        (msg.text, msg.prefix, msg.delay, msg.error);  break;
-                             
-        case 'figGetLocalData':                   figGetLocalData                  (msg.key);                                     break;
-        case 'figSetLocalData':                   figSetLocalData                  (msg.key, msg.value);                          break;
-     
-        case 'figClearAllLocalData':              figClearAllLocalData             ();                                            break;
-                     
-        case 'figGetPageData':                    figGetPageData                   (msg.key);                                     break;
-        case 'figSetPageData':                    figSetPageData                   (msg.key, msg.value);                          break;
-                     
-        case 'figLoadNodesAndConns':              figLoadNodesAndConns             (msg.dataMode);                                break;
-        case 'figSaveNodes':                      figSaveNodes                     (msg.nodeIds, msg.nodeJson);                   break;        
-             
-        case 'figRemoveConnsToNodes':             figRemoveConnsToNodes            (msg.nodeIds);                                 break;
-        case 'figRemoveSavedNodesAndConns':       figRemoveSavedNodesAndConns      (msg.nodeIds);                                 break;
-        case 'figRemoveAllSavedNodesAndConns':    figRemoveAllSavedNodesAndConns   ();                                            break;
-             
-        case 'figLogAllSavedNodesAndConns':       figLogAllSavedNodesAndConns      ();                                            break;
-        case 'figLogAllSavedNodes':               figLogAllSavedNodes              ();                                            break;
-        case 'figLogAllSavedConns':               figLogAllSavedConns              ();                                            break;
-        
-        case 'figLogAllSavedConnKeys':            figLogAllSavedConnKeys           ();                                            break;
-        
-        
-        case 'figSaveConnection':                 figSaveConnection                (msg.key, msg.json);                           break;
-        case 'figSaveConnections':                figSaveConnections               (msg.keys, msg.json);                          break;
-        case 'figUpdateSavedConnections':         figUpdateSavedConnections        (msg.curKeys, msg.newKeys, msg.json);          break;
-        case 'figDeleteSavedConnection':          figDeleteSavedConnection         (msg.key);                                     break;
-  
-        case 'figRemoveAllSavedConnections':      figRemoveAllSavedConnections     ();                                            break;
-        case 'figDeleteSavedConnectionsToNode':   figDeleteSavedConnectionsToNode  (msg.nodeId);                                  break;
-        case 'figDeleteSavedConnectionsFromNode': figDeleteSavedConnectionsFromNode(msg.nodeId);                                  break;
-           
-        case 'figUpdateObjects':                  figUpdateObjects                 (msg);                                         break;
-        case 'figDeleteObjects':                  figDeleteObjectsFromNodeIds      (msg.nodeIds);                                 break; 
+        case 'figStartGenerator':                 figStartGenerator                   ();                                            break;
+                
+        case 'figPositionWindow':                 figPositionWindow                   (msg.x, msg.y);                                break; 
+        case 'figResizeWindow':                   figResizeWindow                     (msg.width, msg.height);                       break; 
+        case 'figNotify':                         figNotify                           (msg.text, msg.prefix, msg.delay, msg.error);  break;
 
-        case 'figUpdateStyles':                   figUpdateStyles                  (msg);                                         break;
-        //case 'figDeleteStyles':                   figDeleteStylesFromNodeIds       (msg.nodeIds);                                 break; 
+        case 'figGetLocalData':                   figGetLocalData                     (msg.key);                                     break;
+        case 'figSetLocalData':                   figSetLocalData                     (msg.key, msg.value);                          break;
+
+        case 'figClearAllLocalData':              figClearAllLocalData                ();                                            break;
+
+        case 'figGetPageData':                    figGetPageData                      (msg.key);                                     break;
+        case 'figSetPageData':                    figSetPageData                      (msg.key, msg.value);                          break;
+
+        case 'figLoadNodesAndConns':              figLoadNodesAndConns                (msg.dataMode);                                break;
+        case 'figSaveNodes':                      figSaveNodes                        (msg.nodeIds, msg.nodeJson);                   break;        
+
+        case 'figRemoveConnsToNodes':             figRemoveConnsToNodes               (msg.nodeIds);                                 break;
+        case 'figRemoveSavedNodesAndConns':       figRemoveSavedNodesAndConns         (msg.nodeIds);                                 break;
+        case 'figRemoveAllSavedNodesAndConns':    figRemoveAllSavedNodesAndConns      ();                                            break;
+
+        case 'figLogAllSavedNodesAndConns':       figLogAllSavedNodesAndConns         ();                                            break;
+        case 'figLogAllSavedNodes':               figLogAllSavedNodes                 ();                                            break;
+        case 'figLogAllSavedConns':               figLogAllSavedConns                 ();                                            break;
+
+        case 'figLogAllSavedConnKeys':            figLogAllSavedConnKeys              ();                                            break;
+
+        case 'figSaveConnection':                 figSaveConnection                   (msg.key, msg.json);                           break;
+        case 'figSaveConnections':                figSaveConnections                  (msg.keys, msg.json);                          break;
+        case 'figUpdateSavedConnections':         figUpdateSavedConnections           (msg.curKeys, msg.newKeys, msg.json);          break;
+        case 'figDeleteSavedConnection':          figDeleteSavedConnection            (msg.key);                                     break;
+
+        case 'figRemoveAllSavedConnections':      figRemoveAllSavedConnections        ();                                            break;
+        case 'figDeleteSavedConnectionsToNode':   figDeleteSavedConnectionsToNode     (msg.nodeId);                                  break;
+        case 'figDeleteSavedConnectionsFromNode': figDeleteSavedConnectionsFromNode   (msg.nodeId);                                  break;
+
+        case 'figUpdateObjects':                  figUpdateObjects                    (msg);                                         break;
+        case 'figUpdateStyles':                   figUpdateStyles                     (msg);                                         break;
+
+        case 'figDeleteObjectsAndStyles':         figDeleteObjectsAndStylesFromNodeIds(msg.nodeIds);                                 break; 
+
+        //case 'figDeleteStyles':                 figDeleteStylesFromNodeIds          (msg.nodeIds);                                 break; 
     }
 
     
@@ -926,15 +856,94 @@ function figPostMessageToUI(msg)
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-function makeObjectName(obj)
+function figCreateObject(objects, genObj)
 {
-    return OBJECT_PREFIX + obj.nodeId
-         + (obj.id > -1 ? '.'+obj.id : '');
+    let figObj;
+
+    switch (genObj.type)
+    {
+        case RECTANGLE:   figObj = figCreateRect      (genObj); break;
+        case LINE:        figObj = figCreateLine      (genObj); break;
+        case ELLIPSE:     figObj = figCreateEllipse   (genObj); break;
+        case POLYGON:     figObj = figCreatePolygon   (genObj); break;
+        case STAR:        figObj = figCreateStar      (genObj); break;
+    }
+
+    console.assert(!!figObj, 'no Figma object created');
+
+
+    figObj.setPluginData('id',     genObj.objectId.toString());
+    figObj.setPluginData('type',   genObj.type    .toString());
+    figObj.setPluginData('nodeId', genObj.nodeId  .toString());
+    
+
+    objects[genObj.id] = figObj;
+    
+    figma.currentPage.appendChild(figObj);
+}
+
+
+
+function figUpdateObjects(msg)
+{
+    let curNodeId  = NULL;
+    let figObjects = null;
+
+    for (const genObj of msg.objects)
+    {
+        if (genObj.nodeId != curNodeId)
+        {
+            curNodeId  = genObj.nodeId;
+            
+            figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
+
+            if (!figObjects) 
+                figObjectArrays.push(figObjects = {nodeId: genObj.nodeId, objects: []});
+        }
+
+        const figObj = figObjects[genObj.id];
+
+
+        if (  !figObj 
+            || figObj.removed) // no existing object, create new object
+            figCreateObject(figObjects, genObj);
+
+        else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
+            figUpdateObject(figObj, genObj);
+
+        else // delete existing object, create new object
+        {
+            figObj.remove();
+            figCreateObject(figObjects, genObj);
+        }
+    }
+}
+
+
+
+function figUpdateObject(figObj, genObj)
+{
+    switch (genObj.type)
+    {
+        case RECTANGLE:   figUpdateRect      (figObj, genObj); break;
+        case LINE:        figUpdateLine      (figObj, genObj); break;
+        case ELLIPSE:     figUpdateEllipse   (figObj, genObj); break;
+        case POLYGON:     figUpdatePolygon   (figObj, genObj); break;
+        case STAR:        figUpdateStar      (figObj, genObj); break;
+    }
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function makeObjectName(obj)
+{
+    return OBJECT_PREFIX + obj.nodeId
+         + (obj.id > -1 ? '.'+obj.id : '');
+}
 
 
 
@@ -1724,13 +1733,49 @@ function figUpdateStyles(msg)
 
 
 
+function getStylePaints(stylePaints)
+{
+    const paints = [];
+
+    for (const _paint of stylePaints)
+    {
+        const fill = _paint[1].split(' ');
+
+        switch (_paint[0])
+        {
+            case 'SOLID':
+                paints.push(
+                {
+                    type: 'SOLID', 
+                    color: {
+                        r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1), 
+                        g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1), 
+                        b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1) },
+                    opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)
+                });
+
+                break;
+        }
+    }
+
+    return paints;
+}
+
+
+
 function figCreateColorStyle(stl)
 {
     const style = figma.createPaintStyle();
 
-    style.name = makeObjectName(stl);
+    style.name = stl.nodeName;//makeObjectName(stl);
 
     setStylePaints(style, stl);
+
+
+    style.setPluginData('id',     stl.styleId.toString());
+    style.setPluginData('type',   stl.type   .toString());
+    style.setPluginData('nodeId', stl.nodeId .toString());
+
 
     return style;
 }
@@ -1750,9 +1795,9 @@ function figUpdateColorStyle(figStyle, genStyle)
 
 function setStylePaints(style, src)
 {
-    if (   !!src.fills
-        &&   src.fills.length > 0)
-        style.paints = getObjectFills(src.fills);
+    if (   !!src.paints
+        &&   src.paints.length > 0)
+        style.paints = getStylePaints(src.paints);
     else
         style.paints = [];
 }

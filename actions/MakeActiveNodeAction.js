@@ -21,7 +21,7 @@ extends Action
     do(updateNodes)
     {
         this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.activeId).map(n => n.id)]; 
-        uiDeleteObjects(this.oldActiveNodeIds);
+        uiDeleteObjectsAndStyles(this.oldActiveNodeIds);
 
         const node = nodeFromId(this.activeId);
 

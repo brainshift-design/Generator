@@ -50,7 +50,10 @@ function genRequest(request)
     {
         if (   node instanceof GObjectBase
             && node.options.active)
+        {
             node.objects.forEach(o => genPushUpdateObject(parse, o));
+            node.styles .forEach(s => genPushUpdateStyle (parse, s));
+        }
     }
 
 
@@ -67,12 +70,6 @@ function genRequest(request)
 
 function genPushUpdateValue(parse, nodeId, paramId, value, forceUpdate = false)
 {
-    // if (   nodeId  == parse.updateNodeId
-    //     && paramId == parse.updateParamId
-    //     && !forceUpdate)
-    //     return;
- 
-        
     const found = parse.updateValues.find(v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId
@@ -98,6 +95,16 @@ function genPushUpdateObject(parse, object)
         parse.updateObjects,
         object,
         o => o.nodeId == object.nodeId);
+}
+
+
+
+function genPushUpdateStyle(parse, style)
+{
+    pushUniqueExcept(
+        parse.updateStyles,
+        style,
+        o => o.nodeId == style.nodeId);
 }
 
 
@@ -166,9 +173,9 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
     let nodeValChunkId = 0;
         
 
-    while (   n < nodeIds.length
+    while (   n < nodeIds      .length
            || o < updateObjects.length
-           || s < updateStyles.length)
+           || s < updateStyles .length)
     {
         if (n < nodeIds.length)
         {

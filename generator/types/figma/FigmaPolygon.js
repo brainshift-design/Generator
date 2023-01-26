@@ -11,9 +11,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, height, angle, round, corners)
+    constructor(nodeId, objectId, x, y, width, height, angle, round, corners)
     {
-        super(POLYGON, nodeId, id);
+        super(POLYGON, nodeId, nodeName, objectId);
         
         this.x       = x;
         this.y       = y;
@@ -30,7 +30,8 @@ extends FigmaObject
     {
         const poly = new FigmaPolygon(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,

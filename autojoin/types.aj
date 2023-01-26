@@ -2,6 +2,8 @@
 
 
 ../generator/types/figma/FigmaObject.js
+
+../generator/types/figma/FigmaShape.js
 ../generator/types/figma/FigmaRectangle.js
 ../generator/types/figma/FigmaLine.js
 ../generator/types/figma/FigmaEllipse.js

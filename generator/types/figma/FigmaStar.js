@@ -12,9 +12,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, objectId, x, y, width, height, angle, round, points, convex)
     {
-        super(STAR, nodeId, id);
+        super(STAR, nodeId, nodeName, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -32,7 +32,8 @@ extends FigmaObject
     {
         const star = new FigmaStar(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,

@@ -162,9 +162,9 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    updateMenuItemBetaDisplay(btnFlow .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(btnShape.div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(btnStyle.div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnFlow .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnShape.div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnStyle.div, settings.enableBetaFeatures);
 
     // updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
     // updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
@@ -174,19 +174,19 @@ function updateMenuItemEnableBetaFeatures()
     // updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
     // updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
 
-    updateMenuItemBetaDisplay(menuItemSeries.div, settings.enableBetaFeatures);    
+    updateMenuItemDisplay(menuItemSeries.div, settings.enableBetaFeatures);    
 }
 
 
 
 function updateMenuItemShowDebugMenu()
 {
-    updateMenuItemBetaDisplay(menuItemDebug.div, settings.showDebugMenu);
+    updateMenuItemDisplay(menuItemDebug.div, settings.showDebugMenu);
 }
 
 
 
-function updateMenuItemBetaDisplay(menuItem, enable)
+function updateMenuItemDisplay(menuItem, enable)
 {
     menuItem.style.display = enable ? 'block' : 'none';
 }

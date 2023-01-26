@@ -1,17 +1,23 @@
-class FigmaObject
+class FigmaShape
+extends FigmaObject
 {
-    type;
+    objectId    = -1;
 
-    nodeId   = '';
-    nodeName = '';
+    fills       = [];
+    strokeFills = [];
+
+    strokeWeight;
+    strokeFit;
+    strokeJoin;
+    strokeMiter;
 
 
-    constructor(type, nodeId, nodeName)
+
+    constructor(type, nodeId, nodeName, objectId)
     {
-        this.type     = type;
+        super(type, nodeId, nodeName);
 
-        this.nodeId   = nodeId;
-        this.nodeName = nodeName;
+        this.objectId = objectId;
     }
 
 

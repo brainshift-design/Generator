@@ -1,12 +1,91 @@
-function makeObjectName(obj)
+function figCreateObject(objects, genObj)
 {
-    return OBJECT_PREFIX + obj.nodeId
-         + (obj.id > -1 ? '.'+obj.id : '');
+    let figObj;
+
+    switch (genObj.type)
+    {
+        case RECTANGLE:   figObj = figCreateRect      (genObj); break;
+        case LINE:        figObj = figCreateLine      (genObj); break;
+        case ELLIPSE:     figObj = figCreateEllipse   (genObj); break;
+        case POLYGON:     figObj = figCreatePolygon   (genObj); break;
+        case STAR:        figObj = figCreateStar      (genObj); break;
+    }
+
+    console.assert(!!figObj, 'no Figma object created');
+
+
+    figObj.setPluginData('id',     genObj.objectId.toString());
+    figObj.setPluginData('type',   genObj.type    .toString());
+    figObj.setPluginData('nodeId', genObj.nodeId  .toString());
+    
+
+    objects[genObj.id] = figObj;
+    
+    figma.currentPage.appendChild(figObj);
+}
+
+
+
+function figUpdateObjects(msg)
+{
+    let curNodeId  = NULL;
+    let figObjects = null;
+
+    for (const genObj of msg.objects)
+    {
+        if (genObj.nodeId != curNodeId)
+        {
+            curNodeId  = genObj.nodeId;
+            
+            figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
+
+            if (!figObjects) 
+                figObjectArrays.push(figObjects = {nodeId: genObj.nodeId, objects: []});
+        }
+
+        const figObj = figObjects[genObj.id];
+
+
+        if (  !figObj 
+            || figObj.removed) // no existing object, create new object
+            figCreateObject(figObjects, genObj);
+
+        else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
+            figUpdateObject(figObj, genObj);
+
+        else // delete existing object, create new object
+        {
+            figObj.remove();
+            figCreateObject(figObjects, genObj);
+        }
+    }
+}
+
+
+
+function figUpdateObject(figObj, genObj)
+{
+    switch (genObj.type)
+    {
+        case RECTANGLE:   figUpdateRect      (figObj, genObj); break;
+        case LINE:        figUpdateLine      (figObj, genObj); break;
+        case ELLIPSE:     figUpdateEllipse   (figObj, genObj); break;
+        case POLYGON:     figUpdatePolygon   (figObj, genObj); break;
+        case STAR:        figUpdateStar      (figObj, genObj); break;
+    }
 }
 
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+function makeObjectName(obj)
+{
+    return OBJECT_PREFIX + obj.nodeId
+         + (obj.id > -1 ? '.'+obj.id : '');
+}
 
 
 

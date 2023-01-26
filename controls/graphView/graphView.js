@@ -412,3 +412,11 @@ function layoutSelectedNodes()
 {
     
 }
+
+
+
+function renameSelectedNode()
+{
+    if (graphView.selectedNodes.length == 1)
+        graphView.selectedNodes[0].showLabelTextbox();
+}

@@ -176,7 +176,7 @@ function connectAction_updateNodes(act, updateNodes)
 
 function connectAction_cleanup(act)
 {
-    uiDeleteObjects([
+    uiDeleteObjectsAndStyles([
         act.oldOutputActiveNodeId, 
      ...act.inputActiveNodeIds]); 
 }

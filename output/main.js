@@ -374,7 +374,8 @@ function logRequest(parse) {
 }
 function logReqNodeId(node) {
     return ' '
-        + logReqId(node.nodeId)
+        + logReqId(node.nodeId) + ' '
+        + logReqId(node.nodeName)
         + logReqOptions(node);
 }
 function logReqId(nodeId) {
@@ -404,81 +405,16 @@ function logReqNode(node, parse) {
     parse.log += logReqNodeId(node);
 }
 const figObjectArrays = []; // {nodeId, [objects]}
-function figCreateObject(objects, genObj) {
-    let figObj;
-    switch (genObj.type) {
-        case RECTANGLE:
-            figObj = figCreateRect(genObj);
-            break;
-        case LINE:
-            figObj = figCreateLine(genObj);
-            break;
-        case ELLIPSE:
-            figObj = figCreateEllipse(genObj);
-            break;
-        case POLYGON:
-            figObj = figCreatePolygon(genObj);
-            break;
-        case STAR:
-            figObj = figCreateStar(genObj);
-            break;
-        case COLOR_STYLE:
-            figObj = figCreateColorStyle(genObj);
-            break;
-    }
-    console.assert(!!figObj, 'no Figma object created');
-    figObj.setPluginData('id', genObj.id.toString());
-    figObj.setPluginData('type', genObj.type.toString());
-    figObj.setPluginData('nodeId', genObj.nodeId.toString());
-    objects[genObj.id] = figObj;
-    figma.currentPage.appendChild(figObj);
-}
-function figUpdateObjects(msg) {
-    let curNodeId = NULL;
-    let figObjects = null;
-    for (const genObj of msg.objects) {
-        if (genObj.nodeId != curNodeId) {
-            curNodeId = genObj.nodeId;
-            figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
-            if (!figObjects)
-                figObjectArrays.push(figObjects = { nodeId: genObj.nodeId, objects: [] });
-        }
-        const figObj = figObjects[genObj.id];
-        if (!figObj
-            || figObj.removed) // no existing object, create new object
-            figCreateObject(figObjects, genObj);
-        else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
-            figUpdateObject(figObj, genObj);
-        else // delete existing object, create new object
-         {
-            figObj.remove();
-            figCreateObject(figObjects, genObj);
-        }
-    }
-}
-function figUpdateObject(figObj, genObj) {
-    switch (genObj.type) {
-        case RECTANGLE:
-            figUpdateRect(figObj, genObj);
-            break;
-        case LINE:
-            figUpdateLine(figObj, genObj);
-            break;
-        case ELLIPSE:
-            figUpdateEllipse(figObj, genObj);
-            break;
-        case POLYGON:
-            figUpdatePolygon(figObj, genObj);
-            break;
-        case STAR:
-            figUpdateStar(figObj, genObj);
-            break;
-    }
-}
-function figDeleteObjectsFromNodeIds(nodeIds) {
+const figStyleArrays = []; // {nodeId, [styles]}
+function figDeleteObjectsAndStylesFromNodeIds(nodeIds) {
+    // styles are deleted first
+    const paintStyles = figma.getLocalPaintStyles();
+    paintStyles
+        .filter(s => nodeIds.includes(s.getPluginData('nodeId')))
+        .forEach(s => s.remove());
     figma.currentPage
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
-        .forEach(o => { console.log('o =', o); o.remove(); });
+        .forEach(o => o.remove());
 }
 function figDeleteAllObjects() {
     for (const obj of figma.currentPage.children)
@@ -620,13 +556,13 @@ figma.ui.onmessage = msg => {
         case 'figUpdateObjects':
             figUpdateObjects(msg);
             break;
-        case 'figDeleteObjects':
-            figDeleteObjectsFromNodeIds(msg.nodeIds);
-            break;
         case 'figUpdateStyles':
             figUpdateStyles(msg);
             break;
-        //case 'figDeleteStyles':                   figDeleteStylesFromNodeIds       (msg.nodeIds);                                 break; 
+        case 'figDeleteObjectsAndStyles':
+            figDeleteObjectsAndStylesFromNodeIds(msg.nodeIds);
+            break;
+        //case 'figDeleteStyles':                 figDeleteStylesFromNodeIds          (msg.nodeIds);                                 break; 
     }
     figPostMessageToUI({
         cmd: 'uiReturnFigMessage',
@@ -654,11 +590,79 @@ function figPostMessageToUI(msg) {
 //     figPostMessageToGenerator({cmd: 'genEndFigMessage'}); 
 // }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+function figCreateObject(objects, genObj) {
+    let figObj;
+    switch (genObj.type) {
+        case RECTANGLE:
+            figObj = figCreateRect(genObj);
+            break;
+        case LINE:
+            figObj = figCreateLine(genObj);
+            break;
+        case ELLIPSE:
+            figObj = figCreateEllipse(genObj);
+            break;
+        case POLYGON:
+            figObj = figCreatePolygon(genObj);
+            break;
+        case STAR:
+            figObj = figCreateStar(genObj);
+            break;
+    }
+    console.assert(!!figObj, 'no Figma object created');
+    figObj.setPluginData('id', genObj.objectId.toString());
+    figObj.setPluginData('type', genObj.type.toString());
+    figObj.setPluginData('nodeId', genObj.nodeId.toString());
+    objects[genObj.id] = figObj;
+    figma.currentPage.appendChild(figObj);
+}
+function figUpdateObjects(msg) {
+    let curNodeId = NULL;
+    let figObjects = null;
+    for (const genObj of msg.objects) {
+        if (genObj.nodeId != curNodeId) {
+            curNodeId = genObj.nodeId;
+            figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
+            if (!figObjects)
+                figObjectArrays.push(figObjects = { nodeId: genObj.nodeId, objects: [] });
+        }
+        const figObj = figObjects[genObj.id];
+        if (!figObj
+            || figObj.removed) // no existing object, create new object
+            figCreateObject(figObjects, genObj);
+        else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
+            figUpdateObject(figObj, genObj);
+        else // delete existing object, create new object
+         {
+            figObj.remove();
+            figCreateObject(figObjects, genObj);
+        }
+    }
+}
+function figUpdateObject(figObj, genObj) {
+    switch (genObj.type) {
+        case RECTANGLE:
+            figUpdateRect(figObj, genObj);
+            break;
+        case LINE:
+            figUpdateLine(figObj, genObj);
+            break;
+        case ELLIPSE:
+            figUpdateEllipse(figObj, genObj);
+            break;
+        case POLYGON:
+            figUpdatePolygon(figObj, genObj);
+            break;
+        case STAR:
+            figUpdateStar(figObj, genObj);
+            break;
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////
 function makeObjectName(obj) {
     return OBJECT_PREFIX + obj.nodeId
         + (obj.id > -1 ? '.' + obj.id : '');
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////
 function genRectIsValid(genRect) {
     return genRect.x != null && !isNaN(genRect.x)
         && genRect.y != null && !isNaN(genRect.y)
@@ -1094,10 +1098,33 @@ function figUpdateStyles(msg) {
     }
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+function getStylePaints(stylePaints) {
+    const paints = [];
+    for (const _paint of stylePaints) {
+        const fill = _paint[1].split(' ');
+        switch (_paint[0]) {
+            case 'SOLID':
+                paints.push({
+                    type: 'SOLID',
+                    color: {
+                        r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1),
+                        g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1),
+                        b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1)
+                    },
+                    opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)
+                });
+                break;
+        }
+    }
+    return paints;
+}
 function figCreateColorStyle(stl) {
     const style = figma.createPaintStyle();
-    style.name = makeObjectName(stl);
+    style.name = stl.nodeName; //makeObjectName(stl);
     setStylePaints(style, stl);
+    style.setPluginData('id', stl.styleId.toString());
+    style.setPluginData('type', stl.type.toString());
+    style.setPluginData('nodeId', stl.nodeId.toString());
     return style;
 }
 function figUpdateColorStyle(figStyle, genStyle) {
@@ -1105,9 +1132,9 @@ function figUpdateColorStyle(figStyle, genStyle) {
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function setStylePaints(style, src) {
-    if (!!src.fills
-        && src.fills.length > 0)
-        style.paints = getObjectFills(src.fills);
+    if (!!src.paints
+        && src.paints.length > 0)
+        style.paints = getStylePaints(src.paints);
     else
         style.paints = [];
 }

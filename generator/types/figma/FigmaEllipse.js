@@ -1,5 +1,5 @@
 class FigmaEllipse
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;
@@ -9,9 +9,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, height, angle)
+    constructor(nodeId, objectId, x, y, width, height, angle)
     {
-        super(ELLIPSE, nodeId, id);
+        super(ELLIPSE, nodeId, nodeName, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -26,7 +26,8 @@ extends FigmaObject
     {
         const ellipse = new FigmaEllipse(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,

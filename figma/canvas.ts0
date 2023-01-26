@@ -1,93 +1,22 @@
 const figObjectArrays = []; // {nodeId, [objects]}
+const figStyleArrays  = []; // {nodeId, [styles]}
 
 
 
-function figCreateObject(objects, genObj)
+function figDeleteObjectsAndStylesFromNodeIds(nodeIds)
 {
-    let figObj;
-
-    switch (genObj.type)
-    {
-        case RECTANGLE:   figObj = figCreateRect      (genObj); break;
-        case LINE:        figObj = figCreateLine      (genObj); break;
-        case ELLIPSE:     figObj = figCreateEllipse   (genObj); break;
-        case POLYGON:     figObj = figCreatePolygon   (genObj); break;
-        case STAR:        figObj = figCreateStar      (genObj); break;
-
-        case COLOR_STYLE: figObj = figCreateColorStyle(genObj); break;
-    }
-
-    console.assert(!!figObj, 'no Figma object created');
-
-
-    figObj.setPluginData('id',     genObj.id    .toString());
-    figObj.setPluginData('type',   genObj.type  .toString());
-    figObj.setPluginData('nodeId', genObj.nodeId.toString());
+    // styles are deleted first
     
+    const paintStyles = figma.getLocalPaintStyles();
 
-    objects[genObj.id] = figObj;
-    
-    figma.currentPage.appendChild(figObj);
-}
+    paintStyles
+        .filter(s => nodeIds.includes(s.getPluginData('nodeId')))
+        .forEach(s => s.remove());
 
-
-
-function figUpdateObjects(msg)
-{
-    let curNodeId  = NULL;
-    let figObjects = null;
-
-    for (const genObj of msg.objects)
-    {
-        if (genObj.nodeId != curNodeId)
-        {
-            curNodeId  = genObj.nodeId;
-            
-            figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
-
-            if (!figObjects) 
-                figObjectArrays.push(figObjects = {nodeId: genObj.nodeId, objects: []});
-        }
-
-        const figObj = figObjects[genObj.id];
-
-
-        if (  !figObj 
-            || figObj.removed) // no existing object, create new object
-            figCreateObject(figObjects, genObj);
-
-        else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
-            figUpdateObject(figObj, genObj);
-
-        else // delete existing object, create new object
-        {
-            figObj.remove();
-            figCreateObject(figObjects, genObj);
-        }
-    }
-}
-
-
-
-function figUpdateObject(figObj, genObj)
-{
-    switch (genObj.type)
-    {
-        case RECTANGLE:   figUpdateRect      (figObj, genObj); break;
-        case LINE:        figUpdateLine      (figObj, genObj); break;
-        case ELLIPSE:     figUpdateEllipse   (figObj, genObj); break;
-        case POLYGON:     figUpdatePolygon   (figObj, genObj); break;
-        case STAR:        figUpdateStar      (figObj, genObj); break;
-    }
-}
-
-
-
-function figDeleteObjectsFromNodeIds(nodeIds)
-{
+        
     figma.currentPage
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
-        .forEach(o => {console.log('o =', o); o.remove(); });
+        .forEach(o => o.remove());
 }
 
 

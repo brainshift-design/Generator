@@ -3,6 +3,8 @@ extends OpColorBase
 {
     paramValue;
 
+    circle;
+
 
 
     constructor()
@@ -10,6 +12,10 @@ extends OpColorBase
         super(COLOR_STYLE, 'style');
 
         this.addParam(this.paramValue = new ColorParam('value', '', false, true, false, ColorValue.fromRgb(rgbDefaultFill)));
+
+        this.circle = createDiv('styleCircle');
+        
+        this.label.insertBefore(this.circle, this.labelText);
     }
 
 
@@ -55,7 +61,7 @@ extends OpColorBase
     {
         const input = this.inputs[0];
         
-        
+
         this.paramValue.enableControlText(!input.connected);
 
         this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
@@ -74,20 +80,9 @@ extends OpColorBase
         this._warningOverlay.style.display = 'none';
 
         this.header.style.height = '25px';
+
+        this.circle.style.background = rgb2style(this.paramValue.value.toRgb());
     }
-
-
-
-    // updateHeaderLabel()
-    // {
-    //     super.updateHeaderLabel();
-      
-    //     const strCircle = '●&nbsp;&nbsp;';
-
-    //     if (   this.label.innerHTML.length < strCircle.length
-    //         || this.label.innerHTML.substring(0, strCircle.length) != strCircle)
-    //         this.label.innerHTML = strCircle + this.label.innerHTML;
-    // }
 
 
 

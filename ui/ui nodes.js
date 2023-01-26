@@ -403,15 +403,15 @@ function uiDeleteNodes(nodeIds)
     graph.deleteNodes(nodeIds);
 
     uiRemoveSavedNodesAndConns(nodeIds);
-    uiDeleteObjects(nodeIds);
+    uiDeleteObjectsAndStyles(nodeIds);
 }
 
 
 
-function uiDeleteObjects(nodeIds)
+function uiDeleteObjectsAndStyles(nodeIds)
 {
     uiQueueMessageToFigma({
-        cmd:    'figDeleteObjects',
+        cmd:    'figDeleteObjectsAndStyles',
         nodeIds: nodeIds
     });
 }
@@ -931,7 +931,7 @@ function uiToggleDisableNodes(nodes)
     });
 
 
-    update.forEach(_id => uiDeleteObjects([getActiveAfterNode(nodeFromId(_id)).id]));
+    update.forEach(_id => uiDeleteObjectsAndStyles([getActiveAfterNode(nodeFromId(_id)).id]));
 }
 
 

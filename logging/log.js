@@ -123,7 +123,7 @@ function logStyleUpdates(styles)
 {
     console.log(
         '%cstyles', 
-        'background: #07e; color: white;', 
+        'background: #b4d; color: white;', 
         styles);
 }
 

@@ -88,30 +88,39 @@
     position:   absolute;
     width:      100%;
     height:     100%;   
-    overflow:   visible;
+    overflow:   hidden;
     /* box-shadow: 0 0 0 1px blue inset; */
 }
 
 
 .nodeLabel
 {
-    font-family:    Inter;
-    font-size:      11px;
     padding:        0;
     margin:         0;
     display:        block;
     width:          auto;
-    height:         14;
-    text-align:     center;
+    height:         auto;
     position:       absolute;
-    /* left:           50%;
-    top:            50%; */
-    /* transform:      translateX(-50%) 
-                    translateY(calc(-50% - 0.5px)); */
     pointer-events: none;
     z-index:        10;
     white-space:    nowrap;
     /* box-shadow:     0 0 0 1px magenta inset; */
+}
+
+
+.nodeLabelText
+{
+    font-family:    Inter;
+    font-size:      11px;
+    padding:        0;
+    margin:         0;
+    display:        inline;
+    width:          auto;
+    height:         14;
+    text-align:     center;
+    white-space:    nowrap;
+    vertical-align: top;
+    /* box-shadow:     0 0 0 1px green inset; */
 }
 
 
@@ -242,4 +251,16 @@
     font-size: 8px;
     position:  relative;
     top:       -2px;
+}
+
+
+.styleCircle
+{
+    display:       inline-block;
+    width:         16px;
+    height:        16px;
+    border-radius:  8px;
+    margin-right:   6px;
+    position:      relative;
+    top:          -1px;
 }

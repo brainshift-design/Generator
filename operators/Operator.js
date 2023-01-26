@@ -84,6 +84,7 @@ class Operator
 
     labelWrapper;
     label;
+    labelText;
     textbox;
     inputControls;
     outputControls;
@@ -182,7 +183,7 @@ class Operator
     {
         const input = new Input(types, getValuesForUndo);
 
-        //input.addEventListener('disconnect', () => uiDeleteObjects([this.id]));
+        //input.addEventListener('disconnect', () => uiDeleteObjectsAndStyles([this.id]));
 
         return input;
     }
@@ -650,7 +651,8 @@ class Operator
     {
         const request = [
             this.type, 
-            this.id];
+            this.id,
+            this.name ];
 
 
         const ignore = gen.passedNodes.includes(this);
@@ -783,7 +785,7 @@ class Operator
 
     updateHeaderLabel()
     {
-        this.label.innerHTML = 
+        this.labelText.innerHTML = 
             settings.showNodeId 
             ? this.id 
             : this.name;

@@ -167,15 +167,22 @@ function genParse(parse, inParam = true)
 
 function genParseNodeStart(parse)
 {
-    const type   = parse.move();
-    const nodeId = parse.move();
+    const type     = parse.move();
+    const nodeId   = parse.move();
+    const nodeName = parse.move();
 
+    
     parse.scope.push(nodeId);
+
 
     if (parse.parsedNodes.find(n => n.nodeId == nodeId))
         return [type, nodeId, false, true];
 
+
     const options = genParseNodeOptions(parse);
+
+    options.nodeName = nodeName;
+
 
     return [type, nodeId, options, false];
 }
@@ -263,14 +270,3 @@ function genParseParamId(parse)
 
     return paramId;
 }
-
-
-
-// function genCreateNumber(input)
-// {
-//     const num = new NumberValue(input.nodeId);
-
-//     num.input = input;
-
-//     return num;
-// }

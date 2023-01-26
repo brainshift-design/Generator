@@ -2,6 +2,7 @@ class GOperator
 extends GNode
 {
     nodeId;
+    nodeName;
 
     valid; // has been evaluated
     topLevel;
@@ -15,6 +16,7 @@ extends GNode
         super(type, options);
 
         this.nodeId   = nodeId;
+        this.nodeName = options.nodeName;
 
         this.valid    = false;
         this.topLevel = false;

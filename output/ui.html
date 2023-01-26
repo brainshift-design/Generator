@@ -2031,30 +2031,39 @@ a
     position:   absolute;
     width:      100%;
     height:     100%;   
-    overflow:   visible;
+    overflow:   hidden;
     /* box-shadow: 0 0 0 1px blue inset; */
 }
 
 
 .nodeLabel
 {
-    font-family:    Inter;
-    font-size:      11px;
     padding:        0;
     margin:         0;
     display:        block;
     width:          auto;
-    height:         14;
-    text-align:     center;
+    height:         auto;
     position:       absolute;
-    /* left:           50%;
-    top:            50%; */
-    /* transform:      translateX(-50%) 
-                    translateY(calc(-50% - 0.5px)); */
     pointer-events: none;
     z-index:        10;
     white-space:    nowrap;
     /* box-shadow:     0 0 0 1px magenta inset; */
+}
+
+
+.nodeLabelText
+{
+    font-family:    Inter;
+    font-size:      11px;
+    padding:        0;
+    margin:         0;
+    display:        inline;
+    width:          auto;
+    height:         14;
+    text-align:     center;
+    white-space:    nowrap;
+    vertical-align: top;
+    /* box-shadow:     0 0 0 1px green inset; */
 }
 
 
@@ -2185,6 +2194,18 @@ a
     font-size: 8px;
     position:  relative;
     top:       -2px;
+}
+
+
+.styleCircle
+{
+    display:       inline-block;
+    width:         16px;
+    height:        16px;
+    border-radius:  8px;
+    margin-right:   6px;
+    position:      relative;
+    top:          -1px;
 }
 
 
@@ -5261,7 +5282,7 @@ function logStyleUpdates(styles)
 {
     console.log(
         '%cstyles', 
-        'background: #07e; color: white;', 
+        'background: #b4d; color: white;', 
         styles);
 }
 
@@ -5394,7 +5415,8 @@ function logRequest(parse)
 function logReqNodeId(node)
 {
     return ' ' 
-         + logReqId(node.nodeId)
+         + logReqId(node.nodeId) + ' '
+         + logReqId(node.nodeName)
          + logReqOptions(node);
 }
 
@@ -6240,8 +6262,37 @@ class FigmaObject
 {
     type;
 
-    nodeId      = '';
-    id          = -1;
+    nodeId   = '';
+    nodeName = '';
+
+
+    constructor(type, nodeId, nodeName)
+    {
+        this.type     = type;
+
+        this.nodeId   = nodeId;
+        this.nodeName = nodeName;
+    }
+
+
+
+    copyBase(base)
+    {
+        this.fills        = clone(base.fills);
+        this.strokeFills  = clone(base.strokeFills);
+
+        this.strokeWeight = base.strokeWeight;
+        this.strokeFit    = base.strokeFit;
+        this.strokeJoin   = base.strokeJoin;
+        this.strokeMiter  = base.strokeMiter;
+    }
+}
+
+
+class FigmaShape
+extends FigmaObject
+{
+    objectId    = -1;
 
     fills       = [];
     strokeFills = [];
@@ -6253,12 +6304,11 @@ class FigmaObject
 
 
 
-    constructor(type, nodeId, id)
+    constructor(type, nodeId, nodeName, objectId)
     {
-        this.type   = type;
+        super(type, nodeId, nodeName);
 
-        this.nodeId = nodeId;
-        this.id     = id;
+        this.objectId = objectId;
     }
 
 
@@ -6288,9 +6338,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, height, angle, round)
+    constructor(nodeId, objectId, x, y, width, height, angle, round)
     {
-        super(RECTANGLE, nodeId, id);
+        super(RECTANGLE, nodeId, nodeName, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -6306,7 +6356,8 @@ extends FigmaObject
     {
         const rect = new FigmaRectangle(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,
@@ -6331,9 +6382,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, angle)
+    constructor(nodeId, objectId, x, y, width, angle)
     {
-        super(LINE, nodeId, id);
+        super(LINE, nodeId, nodeName, objectId);
         
         this.x     = x;
         this.y     = y;
@@ -6347,7 +6398,8 @@ extends FigmaObject
     {
         const line = new FigmaLine(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,
@@ -6361,7 +6413,7 @@ extends FigmaObject
 
 
 class FigmaEllipse
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;
@@ -6371,9 +6423,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, height, angle)
+    constructor(nodeId, objectId, x, y, width, height, angle)
     {
-        super(ELLIPSE, nodeId, id);
+        super(ELLIPSE, nodeId, nodeName, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -6388,7 +6440,8 @@ extends FigmaObject
     {
         const ellipse = new FigmaEllipse(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,
@@ -6415,9 +6468,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, height, angle, round, corners)
+    constructor(nodeId, objectId, x, y, width, height, angle, round, corners)
     {
-        super(POLYGON, nodeId, id);
+        super(POLYGON, nodeId, nodeName, objectId);
         
         this.x       = x;
         this.y       = y;
@@ -6434,7 +6487,8 @@ extends FigmaObject
     {
         const poly = new FigmaPolygon(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,
@@ -6464,9 +6518,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, objectId, x, y, width, height, angle, round, points, convex)
     {
-        super(STAR, nodeId, id);
+        super(STAR, nodeId, nodeName, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -6484,7 +6538,8 @@ extends FigmaObject
     {
         const star = new FigmaStar(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,
@@ -6504,9 +6559,15 @@ extends FigmaObject
 class FigmaColorStyle
 extends FigmaObject
 {
-    constructor(nodeId, id)
+    styleId;
+
+
+
+    constructor(nodeId, nodeName, styleId)
     {
-        super(COLOR_STYLE, nodeId, id);
+        super(COLOR_STYLE, nodeId, nodeName, nodeName);
+
+        this.styleId = styleId;
     }
 
 
@@ -6515,7 +6576,8 @@ extends FigmaObject
     {
         const style = new FigmaColorStyle(
             this.nodeId,
-            this.id);
+            this.nodeName,
+            this.styleId);
 
         style.copyBase(this);
 
@@ -6678,6 +6740,7 @@ class GOperator
 extends GNode
 {
     nodeId;
+    nodeName;
 
     valid; // has been evaluated
     topLevel;
@@ -6691,6 +6754,7 @@ extends GNode
         super(type, options);
 
         this.nodeId   = nodeId;
+        this.nodeName = options.nodeName;
 
         this.valid    = false;
         this.topLevel = false;
@@ -11022,7 +11086,7 @@ extends GColorType
 
     constructor(nodeId, options)
     {
-        super(COLOR_INTERPOLATE, nodeId, options);
+        super(COLOR_INTERPOLATE, nodeId, nodeName, options);
     }
 
 
@@ -12230,6 +12294,7 @@ extends GObjectBase
             [
                 new FigmaRectangle(
                                 this.nodeId,
+                                this.nodeName,
                                 -1,
                                 this.x     .toValue().value,
                                 this.y     .toValue().value,
@@ -12363,6 +12428,7 @@ extends GObjectBase
             [
                 new FigmaLine(
                     this.nodeId,
+                    this.nodeName,
                     -1,
                     this.x    .toValue().value,
                     this.y    .toValue().value,
@@ -12495,6 +12561,7 @@ extends GObjectBase
            [
                new FigmaEllipse(
                                this.nodeId,
+                               this.nodeName,
                                -1,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
@@ -12640,6 +12707,7 @@ extends GObjectBase
             [
                 new FigmaPolygon(
                                 this.nodeId,
+                                this.nodeName,
                                 -1,
                                 this.x      .toValue().value,
                                 this.y      .toValue().value,
@@ -12796,6 +12864,7 @@ extends GObjectBase
            [
                new FigmaStar(
                                this.nodeId,
+                               this.nodeName,
                                -1,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
@@ -13186,7 +13255,7 @@ extends GObjectBase
             return;
 
             
-        const style = new FigmaColorStyle(this.nodeId, -1);
+        const style = new FigmaColorStyle(this.nodeId, this.nodeName, -1);
 
         
         if (!style.paints) 
@@ -13369,9 +13438,9 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    updateMenuItemBetaDisplay(btnFlow .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(btnShape.div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(btnStyle.div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnFlow .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnShape.div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnStyle.div, settings.enableBetaFeatures);
 
     // updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
     // updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
@@ -13381,19 +13450,19 @@ function updateMenuItemEnableBetaFeatures()
     // updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
     // updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
 
-    updateMenuItemBetaDisplay(menuItemSeries.div, settings.enableBetaFeatures);    
+    updateMenuItemDisplay(menuItemSeries.div, settings.enableBetaFeatures);    
 }
 
 
 
 function updateMenuItemShowDebugMenu()
 {
-    updateMenuItemBetaDisplay(menuItemDebug.div, settings.showDebugMenu);
+    updateMenuItemDisplay(menuItemDebug.div, settings.showDebugMenu);
 }
 
 
 
-function updateMenuItemBetaDisplay(menuItem, enable)
+function updateMenuItemDisplay(menuItem, enable)
 {
     menuItem.style.display = enable ? 'block' : 'none';
 }
@@ -13597,7 +13666,10 @@ function genRequest(request)
     {
         if (   node instanceof GObjectBase
             && node.options.active)
+        {
             node.objects.forEach(o => genPushUpdateObject(parse, o));
+            node.styles .forEach(s => genPushUpdateStyle (parse, s));
+        }
     }
 
 
@@ -13614,12 +13686,6 @@ function genRequest(request)
 
 function genPushUpdateValue(parse, nodeId, paramId, value, forceUpdate = false)
 {
-    // if (   nodeId  == parse.updateNodeId
-    //     && paramId == parse.updateParamId
-    //     && !forceUpdate)
-    //     return;
- 
-        
     const found = parse.updateValues.find(v =>
            v.nodeId     == nodeId
         && v.paramId    == paramId
@@ -13645,6 +13711,16 @@ function genPushUpdateObject(parse, object)
         parse.updateObjects,
         object,
         o => o.nodeId == object.nodeId);
+}
+
+
+
+function genPushUpdateStyle(parse, style)
+{
+    pushUniqueExcept(
+        parse.updateStyles,
+        style,
+        o => o.nodeId == style.nodeId);
 }
 
 
@@ -13713,9 +13789,9 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
     let nodeValChunkId = 0;
         
 
-    while (   n < nodeIds.length
+    while (   n < nodeIds      .length
            || o < updateObjects.length
-           || s < updateStyles.length)
+           || s < updateStyles .length)
     {
         if (n < nodeIds.length)
         {
@@ -15736,15 +15812,22 @@ function genParse(parse, inParam = true)
 
 function genParseNodeStart(parse)
 {
-    const type   = parse.move();
-    const nodeId = parse.move();
+    const type     = parse.move();
+    const nodeId   = parse.move();
+    const nodeName = parse.move();
 
+    
     parse.scope.push(nodeId);
+
 
     if (parse.parsedNodes.find(n => n.nodeId == nodeId))
         return [type, nodeId, false, true];
 
+
     const options = genParseNodeOptions(parse);
+
+    options.nodeName = nodeName;
+
 
     return [type, nodeId, options, false];
 }
@@ -15832,17 +15915,6 @@ function genParseParamId(parse)
 
     return paramId;
 }
-
-
-
-// function genCreateNumber(input)
-// {
-//     const num = new NumberValue(input.nodeId);
-
-//     num.input = input;
-
-//     return num;
-// }
 
 
 // Observer = 2°
@@ -20955,7 +21027,7 @@ function logStyleUpdates(styles)
 {
     console.log(
         '%cstyles', 
-        'background: #07e; color: white;', 
+        'background: #b4d; color: white;', 
         styles);
 }
 
@@ -21088,7 +21160,8 @@ function logRequest(parse)
 function logReqNodeId(node)
 {
     return ' ' 
-         + logReqId(node.nodeId)
+         + logReqId(node.nodeId) + ' '
+         + logReqId(node.nodeName)
          + logReqOptions(node);
 }
 
@@ -23558,8 +23631,37 @@ class FigmaObject
 {
     type;
 
-    nodeId      = '';
-    id          = -1;
+    nodeId   = '';
+    nodeName = '';
+
+
+    constructor(type, nodeId, nodeName)
+    {
+        this.type     = type;
+
+        this.nodeId   = nodeId;
+        this.nodeName = nodeName;
+    }
+
+
+
+    copyBase(base)
+    {
+        this.fills        = clone(base.fills);
+        this.strokeFills  = clone(base.strokeFills);
+
+        this.strokeWeight = base.strokeWeight;
+        this.strokeFit    = base.strokeFit;
+        this.strokeJoin   = base.strokeJoin;
+        this.strokeMiter  = base.strokeMiter;
+    }
+}
+
+
+class FigmaShape
+extends FigmaObject
+{
+    objectId    = -1;
 
     fills       = [];
     strokeFills = [];
@@ -23571,12 +23673,11 @@ class FigmaObject
 
 
 
-    constructor(type, nodeId, id)
+    constructor(type, nodeId, nodeName, objectId)
     {
-        this.type   = type;
+        super(type, nodeId, nodeName);
 
-        this.nodeId = nodeId;
-        this.id     = id;
+        this.objectId = objectId;
     }
 
 
@@ -23606,9 +23707,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, height, angle, round)
+    constructor(nodeId, objectId, x, y, width, height, angle, round)
     {
-        super(RECTANGLE, nodeId, id);
+        super(RECTANGLE, nodeId, nodeName, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -23624,7 +23725,8 @@ extends FigmaObject
     {
         const rect = new FigmaRectangle(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,
@@ -23649,9 +23751,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, angle)
+    constructor(nodeId, objectId, x, y, width, angle)
     {
-        super(LINE, nodeId, id);
+        super(LINE, nodeId, nodeName, objectId);
         
         this.x     = x;
         this.y     = y;
@@ -23665,7 +23767,8 @@ extends FigmaObject
     {
         const line = new FigmaLine(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,
@@ -23679,7 +23782,7 @@ extends FigmaObject
 
 
 class FigmaEllipse
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;
@@ -23689,9 +23792,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, height, angle)
+    constructor(nodeId, objectId, x, y, width, height, angle)
     {
-        super(ELLIPSE, nodeId, id);
+        super(ELLIPSE, nodeId, nodeName, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -23706,7 +23809,8 @@ extends FigmaObject
     {
         const ellipse = new FigmaEllipse(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,
@@ -23733,9 +23837,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, height, angle, round, corners)
+    constructor(nodeId, objectId, x, y, width, height, angle, round, corners)
     {
-        super(POLYGON, nodeId, id);
+        super(POLYGON, nodeId, nodeName, objectId);
         
         this.x       = x;
         this.y       = y;
@@ -23752,7 +23856,8 @@ extends FigmaObject
     {
         const poly = new FigmaPolygon(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,
@@ -23782,9 +23887,9 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, id, x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, objectId, x, y, width, height, angle, round, points, convex)
     {
-        super(STAR, nodeId, id);
+        super(STAR, nodeId, nodeName, objectId);
         
         this.x      = x;
         this.y      = y;
@@ -23802,7 +23907,8 @@ extends FigmaObject
     {
         const star = new FigmaStar(
             this.nodeId,
-            this.id,
+            this.nodeName,
+            this.objectId,
             this.x,
             this.y,
             this.width,
@@ -23822,9 +23928,15 @@ extends FigmaObject
 class FigmaColorStyle
 extends FigmaObject
 {
-    constructor(nodeId, id)
+    styleId;
+
+
+
+    constructor(nodeId, nodeName, styleId)
     {
-        super(COLOR_STYLE, nodeId, id);
+        super(COLOR_STYLE, nodeId, nodeName, nodeName);
+
+        this.styleId = styleId;
     }
 
 
@@ -23833,7 +23945,8 @@ extends FigmaObject
     {
         const style = new FigmaColorStyle(
             this.nodeId,
-            this.id);
+            this.nodeName,
+            this.styleId);
 
         style.copyBase(this);
 
@@ -23996,6 +24109,7 @@ class GOperator
 extends GNode
 {
     nodeId;
+    nodeName;
 
     valid; // has been evaluated
     topLevel;
@@ -24009,6 +24123,7 @@ extends GNode
         super(type, options);
 
         this.nodeId   = nodeId;
+        this.nodeName = options.nodeName;
 
         this.valid    = false;
         this.topLevel = false;
@@ -28340,7 +28455,7 @@ extends GColorType
 
     constructor(nodeId, options)
     {
-        super(COLOR_INTERPOLATE, nodeId, options);
+        super(COLOR_INTERPOLATE, nodeId, nodeName, options);
     }
 
 
@@ -29548,6 +29663,7 @@ extends GObjectBase
             [
                 new FigmaRectangle(
                                 this.nodeId,
+                                this.nodeName,
                                 -1,
                                 this.x     .toValue().value,
                                 this.y     .toValue().value,
@@ -29681,6 +29797,7 @@ extends GObjectBase
             [
                 new FigmaLine(
                     this.nodeId,
+                    this.nodeName,
                     -1,
                     this.x    .toValue().value,
                     this.y    .toValue().value,
@@ -29813,6 +29930,7 @@ extends GObjectBase
            [
                new FigmaEllipse(
                                this.nodeId,
+                               this.nodeName,
                                -1,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
@@ -29958,6 +30076,7 @@ extends GObjectBase
             [
                 new FigmaPolygon(
                                 this.nodeId,
+                                this.nodeName,
                                 -1,
                                 this.x      .toValue().value,
                                 this.y      .toValue().value,
@@ -30114,6 +30233,7 @@ extends GObjectBase
            [
                new FigmaStar(
                                this.nodeId,
+                               this.nodeName,
                                -1,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
@@ -30504,7 +30624,7 @@ extends GObjectBase
             return;
 
             
-        const style = new FigmaColorStyle(this.nodeId, -1);
+        const style = new FigmaColorStyle(this.nodeId, this.nodeName, -1);
 
         
         if (!style.paints) 
@@ -30687,9 +30807,9 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    updateMenuItemBetaDisplay(btnFlow .div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(btnShape.div, settings.enableBetaFeatures);
-    updateMenuItemBetaDisplay(btnStyle.div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnFlow .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnShape.div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnStyle.div, settings.enableBetaFeatures);
 
     // updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
     // updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
@@ -30699,19 +30819,19 @@ function updateMenuItemEnableBetaFeatures()
     // updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
     // updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
 
-    updateMenuItemBetaDisplay(menuItemSeries.div, settings.enableBetaFeatures);    
+    updateMenuItemDisplay(menuItemSeries.div, settings.enableBetaFeatures);    
 }
 
 
 
 function updateMenuItemShowDebugMenu()
 {
-    updateMenuItemBetaDisplay(menuItemDebug.div, settings.showDebugMenu);
+    updateMenuItemDisplay(menuItemDebug.div, settings.showDebugMenu);
 }
 
 
 
-function updateMenuItemBetaDisplay(menuItem, enable)
+function updateMenuItemDisplay(menuItem, enable)
 {
     menuItem.style.display = enable ? 'block' : 'none';
 }
@@ -31731,6 +31851,8 @@ var menuItemNodeDuplicate;
 var menuItemNodeDuplicateConnected;
 var menuItemNodeRemove;
 var menuItemNodeLayout;
+var menuItemNodeSep1;
+var menuItemNodeRename;
 // var menuItemNodeBringToFront;
 // var menuItemNodeSendToBack;
 var menuItemNodeEnableDisable;
@@ -31940,8 +32062,19 @@ function initGeneratorMenus()
         menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift()            + '⌫', callback: e => { hideAllMenus(); removeSelectedNodes(true); }}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeLayout             = new MenuItem('Layout',              {enabled:   false, shortcut: osCtrl()             + 'L',  callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
+        //menuItemNodeSep1               = new MenuItem('',                    {separator: true}),
+        menuItemNodeRename             = new MenuItem('Rename',              {callback: e => { hideAllMenus(); renameSelectedNode(); }}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
+
+    menuNode.init = () => 
+    {
+        const single = graphView.selectedNodes.length == 1;
+
+        //updateMenuItemDisplay(menuItemNodeSep1  .div, showRename);
+        updateMenuItemDisplay(menuItemNodeRename.div,  single);
+        updateMenuItemDisplay(menuItemNodeLayout.div, !single);
+    };
 
 
 
@@ -35834,6 +35967,14 @@ function removeSelectedNodes()
 function layoutSelectedNodes()
 {
     
+}
+
+
+
+function renameSelectedNode()
+{
+    if (graphView.selectedNodes.length == 1)
+        graphView.selectedNodes[0].showLabelTextbox();
 }
 
 
@@ -40721,6 +40862,7 @@ class Operator
 
     labelWrapper;
     label;
+    labelText;
     textbox;
     inputControls;
     outputControls;
@@ -40819,7 +40961,7 @@ class Operator
     {
         const input = new Input(types, getValuesForUndo);
 
-        //input.addEventListener('disconnect', () => uiDeleteObjects([this.id]));
+        //input.addEventListener('disconnect', () => uiDeleteObjectsAndStyles([this.id]));
 
         return input;
     }
@@ -41287,7 +41429,8 @@ class Operator
     {
         const request = [
             this.type, 
-            this.id];
+            this.id,
+            this.name ];
 
 
         const ignore = gen.passedNodes.includes(this);
@@ -41420,7 +41563,7 @@ class Operator
 
     updateHeaderLabel()
     {
-        this.label.innerHTML = 
+        this.labelText.innerHTML = 
             settings.showNodeId 
             ? this.id 
             : this.name;
@@ -42496,10 +42639,10 @@ function createNodeHeader(node)
         
         var bounds = boundingRect(node.label);
 
-        if (   e.clientX >= bounds.left && e.clientX < bounds.right
-            && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
-            node.showLabelTextbox();
-        else 
+        // if (   e.clientX >= bounds.left && e.clientX < bounds.right
+        //     && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
+        //     node.showLabelTextbox();
+        // else 
         if (!node.header.ignoreDoubleClick)
             actionManager.do(new MakeActiveNodeAction(node.id));
 
@@ -42640,13 +42783,17 @@ function selectFromClick(node, ctrl, shift, alt)
 
 function createNodeLabel(node)
 {
-    node.labelWrapper = createDiv('nodeLabelWrapper');
-
-    node.label        = createDiv('nodeLabel');
-    node.label.node   = node;
+    node.labelWrapper   = createDiv('nodeLabelWrapper');
+  
+    node.label          = createDiv('nodeLabel');
+    node.label.node     = node;
     
+    node.labelText      = createDiv('nodeLabelText');
+    node.labelText.node = node;
+    
+    node.label       .appendChild(node.labelText);
     node.labelWrapper.appendChild(node.label);
-    node.header.appendChild(node.labelWrapper);
+    node.header      .appendChild(node.labelWrapper);
 
 
     node.labelWrapper.addEventListener('pointerdown', e =>
@@ -42997,7 +43144,7 @@ extends OperatorBase
 
     updateHeaderLabel()
     {
-        this.label.innerHTML = this.name;
+        this.labelText.innerHTML = this.name;
 
 
         if (this.selected)
@@ -48089,7 +48236,7 @@ extends OpColorBase
 
         // if (!this.inputs[0].connected
         //     && 
-        // input.addEventListener('disconnect', () => uiDeleteObjects([this.id]));
+        // input.addEventListener('disconnect', () => uiDeleteObjectsAndStyles([this.id]));
 
         super.updateValues(actionId, updateParamId, paramIds, values);
     }
@@ -48740,6 +48887,8 @@ extends OpColorBase
 {
     paramValue;
 
+    circle;
+
 
 
     constructor()
@@ -48747,6 +48896,10 @@ extends OpColorBase
         super(COLOR_STYLE, 'style');
 
         this.addParam(this.paramValue = new ColorParam('value', '', false, true, false, ColorValue.fromRgb(rgbDefaultFill)));
+
+        this.circle = createDiv('styleCircle');
+        
+        this.label.insertBefore(this.circle, this.labelText);
     }
 
 
@@ -48792,7 +48945,7 @@ extends OpColorBase
     {
         const input = this.inputs[0];
         
-        
+
         this.paramValue.enableControlText(!input.connected);
 
         this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
@@ -48811,20 +48964,9 @@ extends OpColorBase
         this._warningOverlay.style.display = 'none';
 
         this.header.style.height = '25px';
+
+        this.circle.style.background = rgb2style(this.paramValue.value.toRgb());
     }
-
-
-
-    // updateHeaderLabel()
-    // {
-    //     super.updateHeaderLabel();
-      
-    //     const strCircle = '●&nbsp;&nbsp;';
-
-    //     if (   this.label.innerHTML.length < strCircle.length
-    //         || this.label.innerHTML.substring(0, strCircle.length) != strCircle)
-    //         this.label.innerHTML = strCircle + this.label.innerHTML;
-    // }
 
 
 
@@ -49020,7 +49162,7 @@ class Action
         for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
     
-        uiDeleteObjects(this.newActiveNodeIds); 
+        uiDeleteObjectsAndStyles(this.newActiveNodeIds); 
     }
 }
 
@@ -49384,7 +49526,7 @@ function connectAction_updateNodes(act, updateNodes)
 
 function connectAction_cleanup(act)
 {
-    uiDeleteObjects([
+    uiDeleteObjectsAndStyles([
         act.oldOutputActiveNodeId, 
      ...act.inputActiveNodeIds]); 
 }
@@ -49900,7 +50042,7 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
 function deleteNodesAction_deleteNodes(act)
 {
     uiDeleteNodes(act.nodeIds);
-    uiDeleteObjects(act.oldActiveNodeIds); // clean up now irrelevant objects
+    uiDeleteObjectsAndStyles(act.oldActiveNodeIds); // clean up now irrelevant objects
 }
 
 
@@ -50062,7 +50204,7 @@ extends Action
 
     cleanup()
     {
-        uiDeleteObjects(this.oldActiveNodeIds); 
+        uiDeleteObjectsAndStyles(this.oldActiveNodeIds); 
     }
 
 
@@ -50072,7 +50214,7 @@ extends Action
         for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
 
-        uiDeleteObjects(this.newActiveNodeIds);
+        uiDeleteObjectsAndStyles(this.newActiveNodeIds);
     }
 
 
@@ -50113,7 +50255,7 @@ extends Action
     do(updateNodes)
     {
         this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.activeId).map(n => n.id)]; 
-        uiDeleteObjects(this.oldActiveNodeIds);
+        uiDeleteObjectsAndStyles(this.oldActiveNodeIds);
 
         const node = nodeFromId(this.activeId);
 
@@ -53463,15 +53605,15 @@ function uiDeleteNodes(nodeIds)
     graph.deleteNodes(nodeIds);
 
     uiRemoveSavedNodesAndConns(nodeIds);
-    uiDeleteObjects(nodeIds);
+    uiDeleteObjectsAndStyles(nodeIds);
 }
 
 
 
-function uiDeleteObjects(nodeIds)
+function uiDeleteObjectsAndStyles(nodeIds)
 {
     uiQueueMessageToFigma({
-        cmd:    'figDeleteObjects',
+        cmd:    'figDeleteObjectsAndStyles',
         nodeIds: nodeIds
     });
 }
@@ -53991,7 +54133,7 @@ function uiToggleDisableNodes(nodes)
     });
 
 
-    update.forEach(_id => uiDeleteObjects([getActiveAfterNode(nodeFromId(_id)).id]));
+    update.forEach(_id => uiDeleteObjectsAndStyles([getActiveAfterNode(nodeFromId(_id)).id]));
 }
 
 

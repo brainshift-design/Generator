@@ -127,7 +127,7 @@ extends OpColorBase
 
         // if (!this.inputs[0].connected
         //     && 
-        // input.addEventListener('disconnect', () => uiDeleteObjects([this.id]));
+        // input.addEventListener('disconnect', () => uiDeleteObjectsAndStyles([this.id]));
 
         super.updateValues(actionId, updateParamId, paramIds, values);
     }

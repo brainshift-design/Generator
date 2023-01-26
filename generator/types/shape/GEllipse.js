@@ -94,6 +94,7 @@ extends GObjectBase
            [
                new FigmaEllipse(
                                this.nodeId,
+                               this.nodeName,
                                -1,
                                this.x     .toValue().value,
                                this.y     .toValue().value,

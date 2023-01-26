@@ -172,7 +172,7 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
 function deleteNodesAction_deleteNodes(act)
 {
     uiDeleteNodes(act.nodeIds);
-    uiDeleteObjects(act.oldActiveNodeIds); // clean up now irrelevant objects
+    uiDeleteObjectsAndStyles(act.oldActiveNodeIds); // clean up now irrelevant objects
 }
 
 

@@ -76,7 +76,7 @@ extends OperatorBase
 
     updateHeaderLabel()
     {
-        this.label.innerHTML = this.name;
+        this.labelText.innerHTML = this.name;
 
 
         if (this.selected)

@@ -39,13 +39,49 @@ function figUpdateStyles(msg)
 
 
 
+function getStylePaints(stylePaints)
+{
+    const paints = [];
+
+    for (const _paint of stylePaints)
+    {
+        const fill = _paint[1].split(' ');
+
+        switch (_paint[0])
+        {
+            case 'SOLID':
+                paints.push(
+                {
+                    type: 'SOLID', 
+                    color: {
+                        r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1), 
+                        g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1), 
+                        b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1) },
+                    opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)
+                });
+
+                break;
+        }
+    }
+
+    return paints;
+}
+
+
+
 function figCreateColorStyle(stl)
 {
     const style = figma.createPaintStyle();
 
-    style.name = makeObjectName(stl);
+    style.name = stl.nodeName;//makeObjectName(stl);
 
     setStylePaints(style, stl);
+
+
+    style.setPluginData('id',     stl.styleId.toString());
+    style.setPluginData('type',   stl.type   .toString());
+    style.setPluginData('nodeId', stl.nodeId .toString());
+
 
     return style;
 }
@@ -65,9 +101,9 @@ function figUpdateColorStyle(figStyle, genStyle)
 
 function setStylePaints(style, src)
 {
-    if (   !!src.fills
-        &&   src.fills.length > 0)
-        style.paints = getObjectFills(src.fills);
+    if (   !!src.paints
+        &&   src.paints.length > 0)
+        style.paints = getStylePaints(src.paints);
     else
         style.paints = [];
 }
