@@ -123,7 +123,7 @@ function clearLastUpdate()
 
 function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
-    console.log('1 updateStyles =', [...updateStyles]);
+    //console.log('1 updateStyles =', [...updateStyles]);
 
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects)
@@ -148,7 +148,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         return;
     }
 
-    console.log('2 updateStyles =', [...updateStyles]);
+    //console.log('2 updateStyles =', [...updateStyles]);
 
     const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
     const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);

@@ -11,7 +11,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, round, corners)
+    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, corners)
     {
         super(POLYGON, nodeId, nodeName, objectId);
         

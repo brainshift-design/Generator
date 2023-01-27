@@ -1,5 +1,5 @@
 class FigmaLine
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;
@@ -8,7 +8,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, objectId, x, y, width, angle)
+    constructor(nodeId, nodeName, objectId, x, y, width, angle)
     {
         super(LINE, nodeId, nodeName, objectId);
         

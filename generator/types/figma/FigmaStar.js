@@ -12,7 +12,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, points, convex)
     {
         super(STAR, nodeId, nodeName, objectId);
         

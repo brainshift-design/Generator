@@ -6327,7 +6327,7 @@ extends FigmaObject
 
 
 class FigmaRectangle
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;
@@ -6338,7 +6338,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, round)
+    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round)
     {
         super(RECTANGLE, nodeId, nodeName, objectId);
         
@@ -6373,7 +6373,7 @@ extends FigmaObject
 
 
 class FigmaLine
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;
@@ -6382,7 +6382,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, objectId, x, y, width, angle)
+    constructor(nodeId, nodeName, objectId, x, y, width, angle)
     {
         super(LINE, nodeId, nodeName, objectId);
         
@@ -6423,7 +6423,7 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle)
+    constructor(nodeId, nodeName, objectId, x, y, width, height, angle)
     {
         super(ELLIPSE, nodeId, nodeName, objectId);
         
@@ -6468,7 +6468,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, round, corners)
+    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, corners)
     {
         super(POLYGON, nodeId, nodeName, objectId);
         
@@ -6518,7 +6518,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, points, convex)
     {
         super(STAR, nodeId, nodeName, objectId);
         
@@ -13745,7 +13745,7 @@ function clearLastUpdate()
 
 function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
-    console.log('1 updateStyles =', [...updateStyles]);
+    //console.log('1 updateStyles =', [...updateStyles]);
 
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects)
@@ -13770,7 +13770,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         return;
     }
 
-    console.log('2 updateStyles =', [...updateStyles]);
+    //console.log('2 updateStyles =', [...updateStyles]);
 
     const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
     const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);
@@ -23706,7 +23706,7 @@ extends FigmaObject
 
 
 class FigmaRectangle
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;
@@ -23717,7 +23717,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, round)
+    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round)
     {
         super(RECTANGLE, nodeId, nodeName, objectId);
         
@@ -23752,7 +23752,7 @@ extends FigmaObject
 
 
 class FigmaLine
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;
@@ -23761,7 +23761,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, objectId, x, y, width, angle)
+    constructor(nodeId, nodeName, objectId, x, y, width, angle)
     {
         super(LINE, nodeId, nodeName, objectId);
         
@@ -23802,7 +23802,7 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle)
+    constructor(nodeId, nodeName, objectId, x, y, width, height, angle)
     {
         super(ELLIPSE, nodeId, nodeName, objectId);
         
@@ -23847,7 +23847,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, round, corners)
+    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, corners)
     {
         super(POLYGON, nodeId, nodeName, objectId);
         
@@ -23897,7 +23897,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, round, points, convex)
+    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round, points, convex)
     {
         super(STAR, nodeId, nodeName, objectId);
         
@@ -54081,6 +54081,8 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
 
     uiSaveNodes(nodes.map(n => n.id));
     
+    console.log('objects =', [...objects]);
+    console.log('styles  =', [...styles ]);
     
     if (objects.length > 0)
     {

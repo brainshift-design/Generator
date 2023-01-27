@@ -883,6 +883,8 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
 
     uiSaveNodes(nodes.map(n => n.id));
     
+    console.log('objects =', [...objects]);
+    console.log('styles  =', [...styles ]);
     
     if (objects.length > 0)
     {

@@ -1,5 +1,5 @@
 class FigmaRectangle
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;
@@ -10,7 +10,7 @@ extends FigmaObject
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle, round)
+    constructor(nodeId, nodeName, objectId, x, y, width, height, angle, round)
     {
         super(RECTANGLE, nodeId, nodeName, objectId);
         

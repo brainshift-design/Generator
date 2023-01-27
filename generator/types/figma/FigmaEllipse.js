@@ -9,7 +9,7 @@ extends FigmaShape
 
 
 
-    constructor(nodeId, objectId, x, y, width, height, angle)
+    constructor(nodeId, nodeName, objectId, x, y, width, height, angle)
     {
         super(ELLIPSE, nodeId, nodeName, objectId);
         
