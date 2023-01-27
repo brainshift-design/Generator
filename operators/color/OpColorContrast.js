@@ -38,7 +38,7 @@ extends OpColorBase
 
         gen.scope.push({
             nodeId:  this.id, 
-            paramId: '' });
+            paramId: NULL });
 
 
 

@@ -87,7 +87,8 @@ function uiReturnFigMessage(msgCmd)
 {
     uiFigMessagePosted = false;
 
-    if (msgCmd == 'figUpdateObjects')
+    if (   msgCmd == 'figUpdateObjects'
+        || msgCmd == 'figUpdateStyles')
         uiPostMessageToGenerator({
             cmd:   'genEndFigMessage',
             msgCmd: msgCmd});

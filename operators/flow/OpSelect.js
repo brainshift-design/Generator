@@ -43,7 +43,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.id, 
-            paramId: '' });
+            paramId: NULL });
 
 
         const [request, ignore] = this.genRequestStart(gen);

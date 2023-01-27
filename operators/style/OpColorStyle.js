@@ -26,7 +26,7 @@ extends OpColorBase
 
         gen.scope.push({
             nodeId:  this.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;

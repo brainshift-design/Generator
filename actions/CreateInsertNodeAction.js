@@ -7,12 +7,12 @@ extends Action
     options;
 
 
-    prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
+    prevSelectedIds      = []; // currently selected nodes that are deselected as a result of creation
 
-    oldInputActiveNodeId = '';
+    oldInputActiveNodeId = NULL;
 
 
-    prevConnections = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    prevConnections      = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
 
 
     creatingButton;

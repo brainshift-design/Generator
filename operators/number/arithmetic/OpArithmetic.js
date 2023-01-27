@@ -38,7 +38,7 @@ extends OperatorWithSymbol
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
 
         const [request, ignore] = this.node.genRequestStart(gen);

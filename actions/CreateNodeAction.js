@@ -10,9 +10,9 @@ extends Action
     node;
 
 
-    prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
+    prevSelectedIds      = []; // currently selected nodes that are deselected as a result of creation
 
-    oldInputActiveNodeId = '';
+    oldInputActiveNodeId = NULL;
 
 
     autoConnect;
@@ -109,7 +109,7 @@ function createNodeAction_connect(act, output, inputNode, inputId, outputOrder =
 
 function createNodeAction_activateOldInput(act, updateNodes)
 {
-    if (act.oldInputActiveNodeId == '')
+    if (act.oldInputActiveNodeId == NULL)
         return;
 
     const oldInputActiveNode = nodeFromId(act.oldInputActiveNodeId);
@@ -117,5 +117,5 @@ function createNodeAction_activateOldInput(act, updateNodes)
     uiMakeNodeActive(oldInputActiveNode);
     pushUnique(updateNodes, oldInputActiveNode);
 
-    act.oldInputActiveNodeId = '';
+    act.oldInputActiveNodeId = NULL;
 }

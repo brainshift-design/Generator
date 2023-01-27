@@ -13232,14 +13232,14 @@ extends GObjectBase
         this.value = this.value.eval(parse).toValue();
       
 
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
         if (this.value.isValid())
         {
             const rgb = this.value.toRgb();
             this.evalStyles({rgb: rgb});
         }
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -13606,7 +13606,13 @@ function genEndFigMessage()
     if (   lastUpdateValues .length > 0
         || lastUpdateObjects.length > 0
         || lastUpdateStyles .length > 0)
-        genUpdateValuesAndObjects(-1, '', '', [], [], []);
+        genUpdateValuesAndObjects(
+            -1, 
+            lastUpdateNodeId, 
+            lastUpdateParamId, 
+            lastUpdateValues, 
+            lastUpdateObjects, 
+            lastUpdateStyles);
 
     genPostNextMessageToUI();
 }
@@ -13739,8 +13745,11 @@ function clearLastUpdate()
 
 function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
+    console.log('1 updateStyles =', [...updateStyles]);
+
     if (   isEmpty(updateValues )
-        && isEmpty(updateObjects))
+        && isEmpty(updateObjects)
+        && isEmpty(updateStyles ))
     {
         updateNodeId  = lastUpdateNodeId;
         updateParamId = lastUpdateParamId;
@@ -13761,6 +13770,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         return;
     }
 
+    console.log('2 updateStyles =', [...updateStyles]);
 
     const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
     const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);
@@ -30601,14 +30611,14 @@ extends GObjectBase
         this.value = this.value.eval(parse).toValue();
       
 
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
         if (this.value.isValid())
         {
             const rgb = this.value.toRgb();
             this.evalStyles({rgb: rgb});
         }
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -43206,7 +43216,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -43277,7 +43287,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.id, 
-            paramId: '' });
+            paramId: NULL });
 
 
         const [request, ignore] = this.genRequestStart(gen);
@@ -43417,7 +43427,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.id, 
-            paramId: '' });
+            paramId: NULL });
 
 
         const [request, ignore] = this.genRequestStart(gen);
@@ -43531,7 +43541,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -43621,7 +43631,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
         
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -43687,7 +43697,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -43794,7 +43804,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
@@ -43942,7 +43952,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -44088,7 +44098,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
         
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -44159,7 +44169,7 @@ extends OperatorWithValue
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -44223,7 +44233,7 @@ extends OperatorWithValue
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -44293,7 +44303,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -44340,7 +44350,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -44392,7 +44402,7 @@ extends OperatorWithValue
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -44479,7 +44489,7 @@ extends OperatorWithValue
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -44570,7 +44580,7 @@ extends OperatorWithSymbol
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
 
         const [request, ignore] = this.node.genRequestStart(gen);
@@ -44783,7 +44793,7 @@ extends OperatorWithValue
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -44889,7 +44899,7 @@ extends OperatorWithValue
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
 
         const [request, ignore] = this.node.genRequestStart(gen);
@@ -45033,7 +45043,7 @@ extends OperatorWithValue
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -45113,7 +45123,7 @@ extends OperatorWithSymbol
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -45588,7 +45598,7 @@ extends OpColorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
 
         const hasInputs =
@@ -47078,7 +47088,7 @@ extends OpColorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
 
         const [request, ignore] = this.node.genRequestStart(gen);
@@ -47371,7 +47381,7 @@ extends OpColorBase
 
         gen.scope.push({
             nodeId:  this.id, 
-            paramId: '' });
+            paramId: NULL });
 
 
 
@@ -47664,7 +47674,7 @@ extends OpColorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
 
         const [request, ignore] = this.node.genRequestStart(gen);
@@ -47776,7 +47786,7 @@ extends OpColorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
             
         const [request, ignore] = this.node.genRequestStart(gen);
@@ -47880,7 +47890,7 @@ extends OpColorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -48156,7 +48166,7 @@ extends OpColorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -48387,7 +48397,7 @@ extends OpColorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -48495,7 +48505,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
 
         const [request, ignore] = this.node.genRequestStart(gen);
@@ -48580,7 +48590,7 @@ extends OperatorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.node.genRequestStart(gen);
         if (ignore) return request;
@@ -48895,7 +48905,7 @@ extends OpColorBase
 
         gen.scope.push({
             nodeId:  this.id, 
-            paramId: '' });
+            paramId: NULL });
 
         const [request, ignore] = this.genRequestStart(gen);
         if (ignore) return request;
@@ -49347,10 +49357,10 @@ extends Action
 
     newActiveNodeIds      = [];
     
-    oldOutputNodeId       = '';
+    oldOutputNodeId       = NULL;
     oldOutputId;
     oldOutputOrder        = -1;
-    oldOutputActiveNodeId = '';
+    oldOutputActiveNodeId = NULL;
     
    
 
@@ -49381,8 +49391,8 @@ extends Action
         this.inputId         = input.id;
 
 
-        this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
-        this.oldOutputId     = input.connected ? input.connectedOutput.id      : '';
+        this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : NULL;
+        this.oldOutputId     = input.connected ? input.connectedOutput.id      : NULL;
         this.oldOutputOrder  = input.connected ? input.connection.outputOrder  : -1;
     }
 
@@ -49390,7 +49400,7 @@ extends Action
     
     do(updateNodes)
     {
-        this.oldOutputActiveNodeId = '';
+        this.oldOutputActiveNodeId = NULL;
         this.inputActiveNodeIds    = [];
 
         connectAction_saveOutputActiveNodes(this);
@@ -49530,7 +49540,7 @@ function connectAction_cleanup(act)
 
 // function connectAction_restoreOldConnection(act)
 // {
-//     if (act.oldOutputNodeId != '')
+//     if (act.oldOutputNodeId != NULL)
 //     {
 //         act.oldOutput.updateSavedConnectionOrder(act.oldOutputOrder, +1);
 
@@ -49578,10 +49588,10 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
     }
 
     
-    if (    act.oldOutputActiveNodeId != ''
+    if (    act.oldOutputActiveNodeId != NULL
         && !act.inputActiveNodeIds.includes(act.oldOutputActiveNodeId))
     {
-        console.assert(act.oldOutputActiveNodeId != '', 'there should be an old output active node ID at this point')
+        console.assert(act.oldOutputActiveNodeId != NULL, 'there should be an old output active node ID at this point')
 
         const oldOutputActiveNode = nodeFromId(act.oldOutputActiveNodeId);
 
@@ -49594,7 +49604,7 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
 
 function connectAction_restoreCleanup(act)
 {
-    act.oldOutputActiveNodeId = '';
+    act.oldOutputActiveNodeId = NULL;
     act.inputActiveNodeIds    = [];
 }
 
@@ -49608,12 +49618,12 @@ extends Action
     options;
 
 
-    prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
+    prevSelectedIds      = []; // currently selected nodes that are deselected as a result of creation
 
-    oldInputActiveNodeId = '';
+    oldInputActiveNodeId = NULL;
 
 
-    prevConnections = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
+    prevConnections      = []; // [{outputNodeId, outputId, outputOrder, inputNodeId, inputId}]
 
 
     creatingButton;
@@ -49742,9 +49752,9 @@ extends Action
     node;
 
 
-    prevSelectedIds = []; // currently selected nodes that are deselected as a result of creation
+    prevSelectedIds      = []; // currently selected nodes that are deselected as a result of creation
 
-    oldInputActiveNodeId = '';
+    oldInputActiveNodeId = NULL;
 
 
     autoConnect;
@@ -49841,7 +49851,7 @@ function createNodeAction_connect(act, output, inputNode, inputId, outputOrder =
 
 function createNodeAction_activateOldInput(act, updateNodes)
 {
-    if (act.oldInputActiveNodeId == '')
+    if (act.oldInputActiveNodeId == NULL)
         return;
 
     const oldInputActiveNode = nodeFromId(act.oldInputActiveNodeId);
@@ -49849,7 +49859,7 @@ function createNodeAction_activateOldInput(act, updateNodes)
     uiMakeNodeActive(oldInputActiveNode);
     pushUnique(updateNodes, oldInputActiveNode);
 
-    act.oldInputActiveNodeId = '';
+    act.oldInputActiveNodeId = NULL;
 }
 
 
@@ -50372,7 +50382,7 @@ extends Action
     outputId;
     outputOrder            = -1;
     
-    prevInputNodeId        = '';
+    prevInputNodeId        = NULL;
     prevInputId;
     prevInputOutputOrder   = -1; // output order of previous connection
     prevInputActiveNodeIds = [];
@@ -50385,10 +50395,10 @@ extends Action
     
     newActiveNodeIds       = [];
         
-    oldOutputNodeId        = '';
+    oldOutputNodeId        = NULL;
     oldOutputId;
     oldOutputOrder;
-    oldOutputActiveNodeId  = '';
+    oldOutputActiveNodeId  = NULL;
 
     
 
@@ -50430,8 +50440,8 @@ extends Action
         this.inputId              = input.id;
         
 
-        this.oldOutputNodeId      = input.connected ? input.connectedOutput.node.id : '';
-        this.oldOutputId          = input.connected ? input.connectedOutput.id      : '';
+        this.oldOutputNodeId      = input.connected ? input.connectedOutput.node.id : NULL;
+        this.oldOutputId          = input.connected ? input.connectedOutput.id      : NULL;
         this.oldOutputOrder       = input.connected ? input.connection.outputOrder  : -1;
     }
 
@@ -52270,7 +52280,8 @@ function uiReturnFigMessage(msgCmd)
 {
     uiFigMessagePosted = false;
 
-    if (msgCmd == 'figUpdateObjects')
+    if (   msgCmd == 'figUpdateObjects'
+        || msgCmd == 'figUpdateStyles')
         uiPostMessageToGenerator({
             cmd:   'genEndFigMessage',
             msgCmd: msgCmd});

@@ -10663,14 +10663,14 @@ extends GObjectBase
         this.value = this.value.eval(parse).toValue();
       
 
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
         if (this.value.isValid())
         {
             const rgb = this.value.toRgb();
             this.evalStyles({rgb: rgb});
         }
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -11037,7 +11037,13 @@ function genEndFigMessage()
     if (   lastUpdateValues .length > 0
         || lastUpdateObjects.length > 0
         || lastUpdateStyles .length > 0)
-        genUpdateValuesAndObjects(-1, '', '', [], [], []);
+        genUpdateValuesAndObjects(
+            -1, 
+            lastUpdateNodeId, 
+            lastUpdateParamId, 
+            lastUpdateValues, 
+            lastUpdateObjects, 
+            lastUpdateStyles);
 
     genPostNextMessageToUI();
 }
@@ -11170,8 +11176,11 @@ function clearLastUpdate()
 
 function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
+    console.log('1 updateStyles =', [...updateStyles]);
+
     if (   isEmpty(updateValues )
-        && isEmpty(updateObjects))
+        && isEmpty(updateObjects)
+        && isEmpty(updateStyles ))
     {
         updateNodeId  = lastUpdateNodeId;
         updateParamId = lastUpdateParamId;
@@ -11192,6 +11201,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         return;
     }
 
+    console.log('2 updateStyles =', [...updateStyles]);
 
     const nodeIds = filterUnique(updateValues.map(v => v.nodeId));
     const counts  = nodeIds.map(id => updateValues.filter(v => v.nodeId == id).length);

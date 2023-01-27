@@ -5,7 +5,7 @@ extends Action
     outputId;
     outputOrder            = -1;
     
-    prevInputNodeId        = '';
+    prevInputNodeId        = NULL;
     prevInputId;
     prevInputOutputOrder   = -1; // output order of previous connection
     prevInputActiveNodeIds = [];
@@ -18,10 +18,10 @@ extends Action
     
     newActiveNodeIds       = [];
         
-    oldOutputNodeId        = '';
+    oldOutputNodeId        = NULL;
     oldOutputId;
     oldOutputOrder;
-    oldOutputActiveNodeId  = '';
+    oldOutputActiveNodeId  = NULL;
 
     
 
@@ -63,8 +63,8 @@ extends Action
         this.inputId              = input.id;
         
 
-        this.oldOutputNodeId      = input.connected ? input.connectedOutput.node.id : '';
-        this.oldOutputId          = input.connected ? input.connectedOutput.id      : '';
+        this.oldOutputNodeId      = input.connected ? input.connectedOutput.node.id : NULL;
+        this.oldOutputId          = input.connected ? input.connectedOutput.id      : NULL;
         this.oldOutputOrder       = input.connected ? input.connection.outputOrder  : -1;
     }
 

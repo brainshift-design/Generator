@@ -12,10 +12,10 @@ extends Action
 
     newActiveNodeIds      = [];
     
-    oldOutputNodeId       = '';
+    oldOutputNodeId       = NULL;
     oldOutputId;
     oldOutputOrder        = -1;
-    oldOutputActiveNodeId = '';
+    oldOutputActiveNodeId = NULL;
     
    
 
@@ -46,8 +46,8 @@ extends Action
         this.inputId         = input.id;
 
 
-        this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : '';
-        this.oldOutputId     = input.connected ? input.connectedOutput.id      : '';
+        this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : NULL;
+        this.oldOutputId     = input.connected ? input.connectedOutput.id      : NULL;
         this.oldOutputOrder  = input.connected ? input.connection.outputOrder  : -1;
     }
 
@@ -55,7 +55,7 @@ extends Action
     
     do(updateNodes)
     {
-        this.oldOutputActiveNodeId = '';
+        this.oldOutputActiveNodeId = NULL;
         this.inputActiveNodeIds    = [];
 
         connectAction_saveOutputActiveNodes(this);
@@ -195,7 +195,7 @@ function connectAction_cleanup(act)
 
 // function connectAction_restoreOldConnection(act)
 // {
-//     if (act.oldOutputNodeId != '')
+//     if (act.oldOutputNodeId != NULL)
 //     {
 //         act.oldOutput.updateSavedConnectionOrder(act.oldOutputOrder, +1);
 
@@ -243,10 +243,10 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
     }
 
     
-    if (    act.oldOutputActiveNodeId != ''
+    if (    act.oldOutputActiveNodeId != NULL
         && !act.inputActiveNodeIds.includes(act.oldOutputActiveNodeId))
     {
-        console.assert(act.oldOutputActiveNodeId != '', 'there should be an old output active node ID at this point')
+        console.assert(act.oldOutputActiveNodeId != NULL, 'there should be an old output active node ID at this point')
 
         const oldOutputActiveNode = nodeFromId(act.oldOutputActiveNodeId);
 
@@ -259,6 +259,6 @@ function connectAction_activateOldActiveNodes(act, updateNodes)
 
 function connectAction_restoreCleanup(act)
 {
-    act.oldOutputActiveNodeId = '';
+    act.oldOutputActiveNodeId = NULL;
     act.inputActiveNodeIds    = [];
 }

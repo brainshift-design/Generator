@@ -156,7 +156,7 @@ extends OpColorBase
 
         gen.scope.push({
             nodeId:  this.node.id, 
-            paramId: '' });
+            paramId: NULL });
 
 
         const hasInputs =

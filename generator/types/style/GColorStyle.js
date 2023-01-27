@@ -30,14 +30,14 @@ extends GObjectBase
         this.value = this.value.eval(parse).toValue();
       
 
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
         if (this.value.isValid())
         {
             const rgb = this.value.toRgb();
             this.evalStyles({rgb: rgb});
         }
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
