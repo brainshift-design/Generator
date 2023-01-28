@@ -53,7 +53,7 @@ extends GObjectBase
             return;
 
             
-        const style = new FigmaColorStyle(this.nodeId, this.nodeName, -1);
+        const style = new FigmaColorStyle(this.nodeId, this.nodeName, 0);
 
         
         if (!style.paints) 

@@ -19,7 +19,7 @@ function figCreateObject(objects, genObj)
     figObj.setPluginData('nodeId', genObj.nodeId  .toString());
     
 
-    objects.push(figObj);//[genObj.objectId] = figObj;
+    objects.push(figObj);
 
 
     figma.currentPage.appendChild(figObj);

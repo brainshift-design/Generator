@@ -619,7 +619,7 @@ function figCreateObject(objects, genObj) {
     figObj.setPluginData('id', genObj.objectId.toString());
     figObj.setPluginData('type', genObj.type.toString());
     figObj.setPluginData('nodeId', genObj.nodeId.toString());
-    objects.push(figObj); //[genObj.objectId] = figObj;
+    objects.push(figObj);
     figma.currentPage.appendChild(figObj);
 }
 function figUpdateObjects(msg) {
@@ -1087,12 +1087,12 @@ function figCreateColorStyle(styles, genStyle) {
     figStyle.setPluginData('id', genStyle.styleId.toString());
     figStyle.setPluginData('type', genStyle.type.toString());
     figStyle.setPluginData('nodeId', genStyle.nodeId.toString());
-    styles[genStyle.id] = figStyle;
+    styles.push(figStyle);
     return figStyle;
 }
 function figUpdateStyles(msg) {
     //console.log('figUpdateStyles()');
-    console.log('msg.styles =', msg.styles);
+    //console.log('msg.styles =', msg.styles);
     let curNodeId = NULL;
     let figStyles = null;
     for (const genStyle of msg.styles) {
@@ -1104,12 +1104,12 @@ function figUpdateStyles(msg) {
         }
         // console.log('figStyles =', figStyles);
         // console.log('genStyle.styleId =', genStyle.styleId);
-        const figStyle = figStyles[genStyle.styleId];
+        const figStyle = figStyles.styles[genStyle.styleId];
         if (!isValid(figStyle)
             || figStyle.removed) // no existing object, create new object
          {
             console.log('create');
-            figCreateColorStyle(figStyles, genStyle);
+            figCreateColorStyle(figStyles.styles, genStyle);
         }
         else if (figStyle.getPluginData('type') == genStyle.type.toString()) // update existing object
          {
@@ -1120,7 +1120,7 @@ function figUpdateStyles(msg) {
          {
             console.log('RE-create');
             figStyle.remove();
-            figCreateColorStyle(figStyles, genStyle);
+            figCreateColorStyle(figStyles.styles, genStyle);
         }
     }
 }
