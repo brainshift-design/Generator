@@ -131,7 +131,7 @@ extends GObjectBase
     toValue()
     {
         return new RectangleValue(
-            this.id,
+            this.nodeId,
             this.x     .toValue(),
             this.y     .toValue(),
             this.width .toValue(),

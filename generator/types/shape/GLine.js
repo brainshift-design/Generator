@@ -117,7 +117,7 @@ extends GObjectBase
     toValue()
     {
         return new LineValue(
-            this.id,
+            this.nodeId,
             this.x     .toValue(),
             this.y     .toValue(),
             this.width .toValue(),

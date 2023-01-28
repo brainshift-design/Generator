@@ -138,7 +138,7 @@ extends GObjectBase
     toValue()
     {
         return new PolygonValue(
-            this.id,
+            this.nodeId,
             this.x      .toValue(),
             this.y      .toValue(),
             this.width  .toValue(),

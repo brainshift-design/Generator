@@ -6456,7 +6456,7 @@ extends FigmaShape
 
 
 class FigmaPolygon
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;
@@ -6505,7 +6505,7 @@ extends FigmaObject
 
 
 class FigmaStar
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;
@@ -12326,7 +12326,7 @@ extends GObjectBase
     toValue()
     {
         return new RectangleValue(
-            this.id,
+            this.nodeId,
             this.x     .toValue(),
             this.y     .toValue(),
             this.width .toValue(),
@@ -12456,7 +12456,7 @@ extends GObjectBase
     toValue()
     {
         return new LineValue(
-            this.id,
+            this.nodeId,
             this.x     .toValue(),
             this.y     .toValue(),
             this.width .toValue(),
@@ -12590,7 +12590,7 @@ extends GObjectBase
    toValue()
    {
        return new EllipseValue(
-           this.id,
+           this.nodeId,
            this.x     .toValue(),
            this.y     .toValue(),
            this.width .toValue(),
@@ -12740,7 +12740,7 @@ extends GObjectBase
     toValue()
     {
         return new PolygonValue(
-            this.id,
+            this.nodeId,
             this.x      .toValue(),
             this.y      .toValue(),
             this.width  .toValue(),
@@ -12899,7 +12899,7 @@ extends GObjectBase
    toValue()
    {
        return new StarValue(
-           this.id,
+           this.nodeId,
            this.x     .toValue(),
            this.y     .toValue(),
            this.width .toValue(),
@@ -23830,7 +23830,7 @@ extends FigmaShape
 
 
 class FigmaPolygon
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;
@@ -23879,7 +23879,7 @@ extends FigmaObject
 
 
 class FigmaStar
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;
@@ -29700,7 +29700,7 @@ extends GObjectBase
     toValue()
     {
         return new RectangleValue(
-            this.id,
+            this.nodeId,
             this.x     .toValue(),
             this.y     .toValue(),
             this.width .toValue(),
@@ -29830,7 +29830,7 @@ extends GObjectBase
     toValue()
     {
         return new LineValue(
-            this.id,
+            this.nodeId,
             this.x     .toValue(),
             this.y     .toValue(),
             this.width .toValue(),
@@ -29964,7 +29964,7 @@ extends GObjectBase
    toValue()
    {
        return new EllipseValue(
-           this.id,
+           this.nodeId,
            this.x     .toValue(),
            this.y     .toValue(),
            this.width .toValue(),
@@ -30114,7 +30114,7 @@ extends GObjectBase
     toValue()
     {
         return new PolygonValue(
-            this.id,
+            this.nodeId,
             this.x      .toValue(),
             this.y      .toValue(),
             this.width  .toValue(),
@@ -30273,7 +30273,7 @@ extends GObjectBase
    toValue()
    {
        return new StarValue(
-           this.id,
+           this.nodeId,
            this.x     .toValue(),
            this.y     .toValue(),
            this.width .toValue(),
@@ -48778,7 +48778,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(POLYGON, 'poly', 90);
+        super(POLYGON, 'poly', 100);
 
         this.addInput (this.createInputForObjects([POLYGON, POLYGON_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([POLYGON], this.output_genRequest));

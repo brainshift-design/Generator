@@ -145,7 +145,7 @@ extends GObjectBase
    toValue()
    {
        return new StarValue(
-           this.id,
+           this.nodeId,
            this.x     .toValue(),
            this.y     .toValue(),
            this.width .toValue(),

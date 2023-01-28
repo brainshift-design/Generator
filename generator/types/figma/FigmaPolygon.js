@@ -1,5 +1,5 @@
 class FigmaPolygon
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;

@@ -1,5 +1,5 @@
 class FigmaStar
-extends FigmaObject
+extends FigmaShape
 {
     x;
     y;

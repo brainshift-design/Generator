@@ -48,18 +48,11 @@ function figUpdateObjects(msg)
 
         if (  !isValid(figObj)
             || figObj.removed) // no existing object, create new object
-        {
-            console.log('1');
             figCreateObject(figObjects.objects, genObj);
-        }
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
-        {
-            console.log('2');
             figUpdateObject(figObj, genObj);
-        }
         else // delete existing object, create new object
         {
-            console.log('3');
             figObj.remove();
             figCreateObject(figObjects.objects, genObj);
         }
