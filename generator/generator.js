@@ -131,6 +131,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
     {
         updateNodeId  = lastUpdateNodeId;
         updateParamId = lastUpdateParamId;
+        
         updateValues  = lastUpdateValues;
         updateObjects = lastUpdateObjects;
         updateStyles  = lastUpdateStyles;
@@ -141,6 +142,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
     {
         lastUpdateNodeId  = updateNodeId;
         lastUpdateParamId = updateParamId;
+
         lastUpdateValues  = updateValues;
         lastUpdateObjects = updateObjects;
         lastUpdateStyles  = updateStyles;

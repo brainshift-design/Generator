@@ -110,7 +110,7 @@ extends GObjectBase
                new FigmaStar(
                                this.nodeId,
                                this.nodeName,
-                               -1,
+                               0,
                                this.x     .toValue().value,
                                this.y     .toValue().value,
                                this.width .toValue().value,

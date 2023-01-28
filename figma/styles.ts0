@@ -14,8 +14,6 @@ function figCreateColorStyle(styles, genStyle)
 
     styles[genStyle.id] = figStyle;
 
-    figma.currentPage.appendChild(figStyle);
-
 
     return figStyle;
 }
@@ -46,7 +44,7 @@ function figUpdateStyles(msg)
         const figStyle = figStyles[genStyle.styleId];
 
 
-        if (  !figStyle 
+        if (  !isValid(figStyle)
             || figStyle.removed) // no existing object, create new object
         {
             console.log('create');

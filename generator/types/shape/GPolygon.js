@@ -49,20 +49,20 @@ extends GObjectBase
 
             
         if (this.input)
-            this.input = this.input.eval(parse).copy();
+            this.input.eval(parse);
 
         const hasInput =     
                this.input 
             && POLYGON_TYPES.includes(this.input.type);   
 
              
-        if (this.x      ) this.x       = this.x      .eval(parse).copy(); else if (hasInput) this.x       = this.input.x      .copy();
-        if (this.y      ) this.y       = this.y      .eval(parse).copy(); else if (hasInput) this.y       = this.input.y      .copy();
-        if (this.width  ) this.width   = this.width  .eval(parse).copy(); else if (hasInput) this.width   = this.input.width  .copy();
-        if (this.height ) this.height  = this.height .eval(parse).copy(); else if (hasInput) this.height  = this.input.height .copy();
-        if (this.angle  ) this.angle   = this.angle  .eval(parse).copy(); else if (hasInput) this.angle   = this.input.angle  .copy();
-        if (this.round  ) this.round   = this.round  .eval(parse).copy(); else if (hasInput) this.round   = this.input.round  .copy();
-        if (this.corners) this.corners = this.corners.eval(parse).copy(); else if (hasInput) this.corners = this.input.corners.copy();
+        if (this.x      ) this.x      .eval(parse); else if (hasInput) this.x       = this.input.x      ;
+        if (this.y      ) this.y      .eval(parse); else if (hasInput) this.y       = this.input.y      ;
+        if (this.width  ) this.width  .eval(parse); else if (hasInput) this.width   = this.input.width  ;
+        if (this.height ) this.height .eval(parse); else if (hasInput) this.height  = this.input.height ;
+        if (this.angle  ) this.angle  .eval(parse); else if (hasInput) this.angle   = this.input.angle  ;
+        if (this.round  ) this.round  .eval(parse); else if (hasInput) this.round   = this.input.round  ;
+        if (this.corners) this.corners.eval(parse); else if (hasInput) this.corners = this.input.corners;
 
         
         if (this.x      ) genPushUpdateValue(parse, this.nodeId, 'x',       this.x      .toValue());
@@ -105,7 +105,7 @@ extends GObjectBase
                 new FigmaPolygon(
                                 this.nodeId,
                                 this.nodeName,
-                                -1,
+                                0,
                                 this.x      .toValue().value,
                                 this.y      .toValue().value,
                                 this.width  .toValue().value,

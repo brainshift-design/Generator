@@ -103,13 +103,7 @@ function genEndFigMessage()
     if (   lastUpdateValues .length > 0
         || lastUpdateObjects.length > 0
         || lastUpdateStyles .length > 0)
-        genUpdateValuesAndObjects(
-            -1, 
-            lastUpdateNodeId, 
-            lastUpdateParamId, 
-            lastUpdateValues, 
-            lastUpdateObjects, 
-            lastUpdateStyles);
+        genUpdateValuesAndObjects(-1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
 
     genPostNextMessageToUI();
 }

@@ -160,3 +160,11 @@ function subscriptChar(c)
         case '.': return ' ';
     }
 }
+
+
+
+function isValid(val)
+{
+    return val != null
+        && val != undefined;
+}

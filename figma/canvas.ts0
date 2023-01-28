@@ -1,5 +1,5 @@
-const figObjectArrays = []; // {nodeId, [objects]}
-const figStyleArrays  = []; // {nodeId, [styles]}
+var figObjectArrays = []; // {nodeId, [objects]}
+var figStyleArrays  = []; // {nodeId, [styles]}
 
 
 
@@ -9,14 +9,17 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds)
     
     const paintStyles = figma.getLocalPaintStyles();
 
+    figma.currentPage
+        .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
+        .forEach(o => o.remove());
+
     paintStyles
         .filter(s => nodeIds.includes(s.getPluginData('nodeId')))
         .forEach(s => s.remove());
 
-        
-    figma.currentPage
-        .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
-        .forEach(o => o.remove());
+
+    figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
+    figStyleArrays  = figStyleArrays .filter(a => !nodeIds.includes(a.nodeId));
 }
 
 

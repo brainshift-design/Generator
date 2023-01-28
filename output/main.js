@@ -101,6 +101,10 @@ function subscriptChar(c) {
         case '.': return ' ';
     }
 }
+function isValid(val) {
+    return val != null
+        && val != undefined;
+}
 const NAN_CHAR = '?';
 const NAN_DISPLAY = '?';
 const UNKNOWN_CHAR = '?';
@@ -404,17 +408,19 @@ function logReqNode(node, parse) {
     parse.log += parse.tab + node.type;
     parse.log += logReqNodeId(node);
 }
-const figObjectArrays = []; // {nodeId, [objects]}
-const figStyleArrays = []; // {nodeId, [styles]}
+var figObjectArrays = []; // {nodeId, [objects]}
+var figStyleArrays = []; // {nodeId, [styles]}
 function figDeleteObjectsAndStylesFromNodeIds(nodeIds) {
     // styles are deleted first
     const paintStyles = figma.getLocalPaintStyles();
-    paintStyles
-        .filter(s => nodeIds.includes(s.getPluginData('nodeId')))
-        .forEach(s => s.remove());
     figma.currentPage
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
         .forEach(o => o.remove());
+    paintStyles
+        .filter(s => nodeIds.includes(s.getPluginData('nodeId')))
+        .forEach(s => s.remove());
+    figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
+    figStyleArrays = figStyleArrays.filter(a => !nodeIds.includes(a.nodeId));
 }
 function figDeleteAllObjects() {
     for (const obj of figma.currentPage.children)
@@ -613,7 +619,7 @@ function figCreateObject(objects, genObj) {
     figObj.setPluginData('id', genObj.objectId.toString());
     figObj.setPluginData('type', genObj.type.toString());
     figObj.setPluginData('nodeId', genObj.nodeId.toString());
-    objects[genObj.id] = figObj;
+    objects.push(figObj); //[genObj.objectId] = figObj;
     figma.currentPage.appendChild(figObj);
 }
 function figUpdateObjects(msg) {
@@ -626,16 +632,23 @@ function figUpdateObjects(msg) {
             if (!figObjects)
                 figObjectArrays.push(figObjects = { nodeId: genObj.nodeId, objects: [] });
         }
-        const figObj = figObjects[genObj.id];
-        if (!figObj
+        const figObj = figObjects.objects[genObj.objectId];
+        if (!isValid(figObj)
             || figObj.removed) // no existing object, create new object
-            figCreateObject(figObjects, genObj);
+         {
+            console.log('1');
+            figCreateObject(figObjects.objects, genObj);
+        }
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
+         {
+            console.log('2');
             figUpdateObject(figObj, genObj);
+        }
         else // delete existing object, create new object
          {
+            console.log('3');
             figObj.remove();
-            figCreateObject(figObjects, genObj);
+            figCreateObject(figObjects.objects, genObj);
         }
     }
 }
@@ -661,7 +674,7 @@ function figUpdateObject(figObj, genObj) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 function makeObjectName(obj) {
     return OBJECT_PREFIX + obj.nodeId
-        + (obj.id > -1 ? '.' + obj.id : '');
+        + (obj.objectId > -1 ? '.' + obj.objectId : '');
 }
 function genRectIsValid(genRect) {
     return genRect.x != null && !isNaN(genRect.x)
@@ -1082,7 +1095,6 @@ function figCreateColorStyle(styles, genStyle) {
     figStyle.setPluginData('type', genStyle.type.toString());
     figStyle.setPluginData('nodeId', genStyle.nodeId.toString());
     styles[genStyle.id] = figStyle;
-    figma.currentPage.appendChild(figStyle);
     return figStyle;
 }
 function figUpdateStyles(msg) {
@@ -1100,7 +1112,7 @@ function figUpdateStyles(msg) {
         // console.log('figStyles =', figStyles);
         // console.log('genStyle.styleId =', genStyle.styleId);
         const figStyle = figStyles[genStyle.styleId];
-        if (!figStyle
+        if (!isValid(figStyle)
             || figStyle.removed) // no existing object, create new object
          {
             console.log('create');
