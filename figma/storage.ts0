@@ -111,11 +111,11 @@ function initPageStyles(nodes)
         {
             const style = paintStyles.find(s =>
             {
-                const nodeId   = s.getPluginData('nodeId');
-                const nodeName = s.getPluginData('nodeName');
+                const nodeId  = s.getPluginData('nodeId');
+                //const styleId = s.getPluginData('styleId');
 
-                return nodeId   == node.id
-                    && nodeName == node.name;
+                return nodeId  == node.id;
+                    //&& styleId == node.styleId;
             });
 
             if (style)

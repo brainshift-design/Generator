@@ -1012,9 +1012,9 @@ function initPageStyles(nodes) {
         if (node.type == COLOR_STYLE) {
             const style = paintStyles.find(s => {
                 const nodeId = s.getPluginData('nodeId');
-                const nodeName = s.getPluginData('nodeName');
-                return nodeId == node.id
-                    && nodeName == node.name;
+                //const styleId = s.getPluginData('styleId');
+                return nodeId == node.id;
+                //&& styleId == node.styleId;
             });
             if (style)
                 figStyleArrays.push({ nodeId: node.id, styles: [style] });
@@ -1158,9 +1158,9 @@ function figUpdateStyles(msg) {
         const paintStyles = figma.getLocalPaintStyles();
         const removed = !paintStyles.find(s => {
             const nodeId = s.getPluginData('nodeId');
-            const nodeName = s.getPluginData('nodeName');
+            const styleId = s.getPluginData('styleId');
             return nodeId == genStyle.nodeId
-                && nodeName == genStyle.nodeName;
+                && styleId == genStyle.styleId;
         });
         if (isValid(figStyle)
             && removed)

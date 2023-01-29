@@ -47,14 +47,14 @@ function figUpdateStyles(msg)
 
         const removed = !paintStyles.find(s => 
         {
-            const nodeId   = s.getPluginData('nodeId');
-            const nodeName = s.getPluginData('nodeName');
+            const nodeId  = s.getPluginData('nodeId');
+            const styleId = s.getPluginData('styleId');
  
-            return nodeId   == genStyle.nodeId
-                && nodeName == genStyle.nodeName;
+            return nodeId  == genStyle.nodeId
+                && styleId == genStyle.styleId;
         });
-        
 
+        
         if (   isValid(figStyle)
             && removed)
             removeFrom(figStyles.styles, figStyle);
