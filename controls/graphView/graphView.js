@@ -97,9 +97,7 @@ graphView.getIntersectingNodes = node =>
         
         if (   n != node
             && rectsIntersect(nBounds, nodeBounds))
-        {
             intersecting.push(n);
-        }
     }
 
     return intersecting;

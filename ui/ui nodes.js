@@ -388,7 +388,7 @@ function canAutoConnectNode(node)
         || selNode.headerOutputs.length == 0)
         return false;
 
-    const inputs = node.inputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
+    const inputs = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
 
     return inputs.length > 0
         && node.canAutoConnectFrom(selNode.headerOutputs[0]);
