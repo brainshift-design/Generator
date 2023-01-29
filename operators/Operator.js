@@ -467,7 +467,7 @@ class Operator
 
 
 
-    setName(newName)
+    setName(newName, options = {})
     {
         this._name = newName;
         return true;

@@ -913,13 +913,17 @@ function figUpdateObjects(msg)
                 figObjectArrays.push(figObjects = {nodeId: genObj.nodeId, objects: []});
         }
 
+        
         const figObj = figObjects.objects[genObj.objectId];
+
 
         if (  !isValid(figObj)
             || figObj.removed) // no existing object, create new object
             figCreateObject(figObjects.objects, genObj);
+            
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
             figUpdateObject(figObj, genObj);
+
         else // delete existing object, create new object
         {
             figObj.remove();
@@ -1705,6 +1709,7 @@ function figCreateColorStyle(styles, genStyle)
 {
     const figStyle = figma.createPaintStyle();
 
+
     figStyle.name = genStyle.nodeName;//makeObjectName(stl);
 
     setStylePaints(figStyle, genStyle);
@@ -1725,9 +1730,6 @@ function figCreateColorStyle(styles, genStyle)
 
 function figUpdateStyles(msg)
 {
-    //console.log('figUpdateStyles()');
-    //console.log('msg.styles =', msg.styles);
-
     let curNodeId = NULL;
     let figStyles = null;
 
@@ -1743,27 +1745,19 @@ function figUpdateStyles(msg)
                 figStyleArrays.push(figStyles = {nodeId: genStyle.nodeId, styles: []});
         }
 
-        // console.log('figStyles =', figStyles);
-        // console.log('genStyle.styleId =', genStyle.styleId);
+
         const figStyle = figStyles.styles[genStyle.styleId];
 
 
         if (  !isValid(figStyle)
-            || figStyle.removed) // no existing object, create new object
-        {
-            console.log('create');
+            || figStyle.removed) // no existing style, create new style
             figCreateColorStyle(figStyles.styles, genStyle);
-        }
 
-        else if (figStyle.getPluginData('type') == genStyle.type.toString()) // update existing object
-        {
-            console.log('update');
+        else if (figStyle.getPluginData('type') == genStyle.type.toString()) // update existing style
             figUpdateColorStyle(figStyle, genStyle);
-        }
 
-        else // delete existing object, create new object
+        else // delete existing style, create new style
         {
-            console.log('RE-create');
             figStyle.remove();
             figCreateColorStyle(figStyles.styles, genStyle);
         }
@@ -1775,6 +1769,8 @@ function figUpdateStyles(msg)
 function figUpdateColorStyle(figStyle, genStyle)
 {
     setStylePaints(figStyle, genStyle);
+
+    figStyle.name = genStyle.nodeName;
 }
 
 

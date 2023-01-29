@@ -20,6 +20,16 @@ extends OpColorBase
 
 
 
+    setName(newName, options = {})
+    {
+        super.setName(newName, options);
+
+        if (isValid(options.updateNodes))
+            pushUnique(options.updateNodes, this);
+    }
+
+
+
     genRequest(gen)
     {
         // 'this' is the node

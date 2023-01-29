@@ -24,7 +24,7 @@ extends Action
     do(updateNodes)
     {
         this.oldName = this.node.name;
-        this.node.setName(this.newName);
+        this.node.setName(this.newName, {updateNodes: updateNodes});
 
         uiSaveNodes([this.nodeId]);
     }
@@ -33,7 +33,7 @@ extends Action
 
     undo(updateNodes)
     {
-        this.node.setName(this.oldName);
+        this.node.setName(this.oldName, {updateNodes: updateNodes});
         this.node.updateNode();
 
         uiSaveNodes([this.nodeId]);
@@ -43,7 +43,7 @@ extends Action
 
     redo(updateNodes)
     {
-        this.node.setName(this.newName);
+        this.node.setName(this.newName, {updateNodes: updateNodes});
         this.node.updateNode();
         
         uiSaveNodes([this.nodeId]);

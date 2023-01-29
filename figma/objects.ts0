@@ -44,13 +44,17 @@ function figUpdateObjects(msg)
                 figObjectArrays.push(figObjects = {nodeId: genObj.nodeId, objects: []});
         }
 
+        
         const figObj = figObjects.objects[genObj.objectId];
+
 
         if (  !isValid(figObj)
             || figObj.removed) // no existing object, create new object
             figCreateObject(figObjects.objects, genObj);
+            
         else if (figObj.getPluginData('type') == genObj.type.toString()) // update existing object
             figUpdateObject(figObj, genObj);
+
         else // delete existing object, create new object
         {
             figObj.remove();
