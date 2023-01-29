@@ -1553,14 +1553,18 @@ function figClearPageData(key)
 
 function figLoadNodesAndConns(dataMode)
 {
-    const nodeKeys  = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
-    const connKeys  = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
+    const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
+    const connKeys = figma.currentPage.getPluginDataKeys().filter(k => isConnKey(k));
 
     if (!dataMode)
         figMarkForLoading(nodeKeys, connKeys);
 
-    const nodes     = nodeKeys.map(k => figma.currentPage.getPluginData(k));
-    const conns     = connKeys.map(k => figma.currentPage.getPluginData(k));
+    const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
+    const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
+
+
+    initPageStyles(nodes);
+
 
     figPostMessageToUI({
         cmd:      'uiReturnFigLoadNodesAndConns',
@@ -1569,6 +1573,36 @@ function figLoadNodesAndConns(dataMode)
         connKeys: JSON.stringify(connKeys),
         connJson: JSON.stringify(conns)
     });
+}
+
+
+
+function initPageStyles(nodes)
+{
+    figStyleArrays = [];
+
+    const paintStyles = figma.getLocalPaintStyles();
+
+
+    for (const _node of nodes)
+    {
+        const node = JSON.parse(_node);
+
+        if (node.type == COLOR_STYLE)
+        {
+            const style = paintStyles.find(s =>
+            {
+                const nodeId   = s.getPluginData('nodeId');
+                const nodeName = s.getPluginData('nodeName');
+
+                return nodeId   == node.id
+                    && nodeName == node.name;
+            });
+
+            if (style)
+                figStyleArrays.push({nodeId: node.id, styles: [style]});
+        }
+    }
 }
 
 
