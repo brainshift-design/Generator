@@ -338,9 +338,11 @@ function updateWireStyle(wire)
     const wireStyle = rgba2style(color);
 
     const isNotCached = 
-               conn.output.node
+               conn.output
+           &&  conn.output.node
            && !conn.output.node.isCached()
-        ||     conn.output.param
+        ||     conn.output
+           &&  conn.output.param
            &&  conn.output.param._nodeId != undefined
            &&  nodeFromId(conn.output.param._nodeId)
            && !nodeFromId(conn.output.param._nodeId).isCached();
