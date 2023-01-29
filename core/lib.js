@@ -135,66 +135,6 @@ function numToString(num, dec, showHex = false)
 
 
 
-function removeFrom(array, item)
-{
-    removeAt(array, array.indexOf(item));
-}
-
-
-
-function removeAt(array, index)
-{
-    if (   index > -1 
-        && index < array.length)
-        array.splice(index, 1)
-}
-
-
-
-function removeLast(array)
-{
-    if (isEmpty(array))
-        return null;
-
-    let last = lastOf(array);
-    array.splice(array.length-1, 1)
-
-    return last;
-}
-
-
-
-function beforeLastOf(array)
-{
-    return array.length > 1 
-         ? array[array.length-2]
-         : null;
-}
-
-
-
-function lastOf(array)
-{
-    return array[array.length-1];
-}
-
-
-
-function firstOf(array)
-{
-    return array[0];
-}
-
-
-
-function moveInArray(array, from, to) 
-{
-    const item = array[from];
-    array.splice(from, 1);
-    array.splice(to, 0, item);
-}
-
-
 function capitalize(str)
 {
     let cap = "";

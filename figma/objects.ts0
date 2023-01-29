@@ -14,9 +14,10 @@ function figCreateObject(objects, genObj)
     console.assert(!!figObj, 'no Figma object created');
 
 
-    figObj.setPluginData('id',     genObj.objectId.toString());
-    figObj.setPluginData('type',   genObj.type    .toString());
-    figObj.setPluginData('nodeId', genObj.nodeId  .toString());
+    figObj.setPluginData('id',       genObj.objectId.toString());
+    figObj.setPluginData('type',     genObj.type);
+    figObj.setPluginData('nodeId',   genObj.nodeId);
+    figObj.setPluginData('nodeName', genObj.nodeName);
     
 
     objects.push(figObj);
@@ -44,10 +45,15 @@ function figUpdateObjects(msg)
                 figObjectArrays.push(figObjects = {nodeId: genObj.nodeId, objects: []});
         }
 
-        
+
         const figObj = figObjects.objects[genObj.objectId];
 
 
+        if (   isValid(figObj)
+            && figObj.removed)
+            removeFrom(figSObjects.objects, figObj);
+
+            
         if (  !isValid(figObj)
             || figObj.removed) // no existing object, create new object
             figCreateObject(figObjects.objects, genObj);

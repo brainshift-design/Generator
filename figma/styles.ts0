@@ -3,14 +3,15 @@ function figCreateColorStyle(styles, genStyle)
     const figStyle = figma.createPaintStyle();
 
 
-    figStyle.name = genStyle.nodeName;//makeObjectName(stl);
+    figStyle.name = genStyle.nodeName;
 
     setStylePaints(figStyle, genStyle);
 
 
-    figStyle.setPluginData('id',     genStyle.styleId.toString());
-    figStyle.setPluginData('type',   genStyle.type   .toString());
-    figStyle.setPluginData('nodeId', genStyle.nodeId .toString());
+    figStyle.setPluginData('id',       genStyle.styleId.toString());
+    figStyle.setPluginData('type',     genStyle.type);
+    figStyle.setPluginData('nodeId',   genStyle.nodeId);
+    figStyle.setPluginData('nodeName', genStyle.nodeName);
 
 
     styles.push(figStyle);
@@ -42,8 +43,25 @@ function figUpdateStyles(msg)
         const figStyle = figStyles.styles[genStyle.styleId];
 
 
+        const paintStyles = figma.getLocalPaintStyles();
+
+        const removed = !paintStyles.find(s => 
+        {
+            const nodeId   = s.getPluginData('nodeId');
+            const nodeName = s.getPluginData('nodeName');
+ 
+            return nodeId   == genStyle.nodeId
+                && nodeName == genStyle.nodeName;
+        });
+        
+
+        if (   isValid(figStyle)
+            && removed)
+            removeFrom(figStyles.styles, figStyle);
+
+
         if (  !isValid(figStyle)
-            || figStyle.removed) // no existing style, create new style
+            || removed) // no existing style, create new style
             figCreateColorStyle(figStyles.styles, genStyle);
 
         else if (figStyle.getPluginData('type') == genStyle.type.toString()) // update existing style
