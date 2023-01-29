@@ -931,7 +931,7 @@ function uiToggleDisableNodes(nodes)
     });
 
 
-    update.forEach(_id => uiDeleteObjectsAndStyles([getActiveAfterNode(nodeFromId(_id)).id]));
+    //update.forEach(_id => uiDeleteObjectsAndStyles([getActiveAfterNode(nodeFromId(_id)).id]));
 }
 
 

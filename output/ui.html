@@ -40950,11 +40950,7 @@ class Operator
 
     createInputForObjects(types, getValuesForUndo)
     {
-        const input = new Input(types, getValuesForUndo);
-
-        //input.addEventListener('disconnect', () => uiDeleteObjectsAndStyles([this.id]));
-
-        return input;
+        return new Input(types, getValuesForUndo);
     }
 
 
@@ -48928,20 +48924,6 @@ extends OpColorBase
 
 
 
-    // updateValues(actionId, updateParamId, paramIds, values)
-    // {
-    //     const col = values[paramIds.findIndex(id => id == 'value')];
-
-    //     this._color = 
-    //         col
-    //         ? col.toDataColor()
-    //         : dataColor_NaN;
-
-    //     super.updateValues(actionId, updateParamId, paramIds, values);
-    // }
-
-
-
     updateParams()
     {
         const input = this.inputs[0];
@@ -54131,7 +54113,7 @@ function uiToggleDisableNodes(nodes)
     });
 
 
-    update.forEach(_id => uiDeleteObjectsAndStyles([getActiveAfterNode(nodeFromId(_id)).id]));
+    //update.forEach(_id => uiDeleteObjectsAndStyles([getActiveAfterNode(nodeFromId(_id)).id]));
 }
 
 

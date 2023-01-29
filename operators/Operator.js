@@ -181,11 +181,7 @@ class Operator
 
     createInputForObjects(types, getValuesForUndo)
     {
-        const input = new Input(types, getValuesForUndo);
-
-        //input.addEventListener('disconnect', () => uiDeleteObjectsAndStyles([this.id]));
-
-        return input;
+        return new Input(types, getValuesForUndo);
     }
 
 

@@ -53,20 +53,6 @@ extends OpColorBase
 
 
 
-    // updateValues(actionId, updateParamId, paramIds, values)
-    // {
-    //     const col = values[paramIds.findIndex(id => id == 'value')];
-
-    //     this._color = 
-    //         col
-    //         ? col.toDataColor()
-    //         : dataColor_NaN;
-
-    //     super.updateValues(actionId, updateParamId, paramIds, values);
-    // }
-
-
-
     updateParams()
     {
         const input = this.inputs[0];
