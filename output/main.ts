@@ -194,6 +194,13 @@ function isValid(val)
 
 
 
+function isEmpty(array)
+{
+    return array.length == 0;
+}
+
+
+
 function removeFrom(array, item)
 {
     removeAt(array, array.indexOf(item));
@@ -750,8 +757,8 @@ function figDeleteAllObjects()
 
 
 
-function figOnSelectionChange(e)
-{
+//function figOnSelectionChange(e)
+//{
     /*  Every time a selection changes, check that all objects in the object table
         still exist in the canvas. If not, remove the pointer from the object table.  
         
@@ -771,7 +778,7 @@ function figOnSelectionChange(e)
     //         if (!exists) objNodes[i][j] = null;
     //     }
     // }
-}
+//}
 
 
 
@@ -800,7 +807,7 @@ function figOnPluginClose()
 
 
 
-figma.on('selectionchange', figOnSelectionChange);
+//figma.on('selectionchange', figOnSelectionChange);
 //figma.on('documentchange',  figOnDocumentChange);
 
 figma.on('close',           figOnPluginClose);
@@ -889,6 +896,8 @@ figma.ui.onmessage = msg =>
         case 'figDeleteSavedConnectionsToNode':   figDeleteSavedConnectionsToNode     (msg.nodeId);                                  break;
         case 'figDeleteSavedConnectionsFromNode': figDeleteSavedConnectionsFromNode   (msg.nodeId);                                  break;
 
+        case 'figGetAllLocalColorStyles':         figGetAllLocalColorStyles           ();                                            break;
+
         case 'figUpdateObjects':                  figUpdateObjects                    (msg);                                         break;
         case 'figUpdateStyles':                   figUpdateStyles                     (msg);                                         break;
 
@@ -970,6 +979,17 @@ function figCreateObject(objects, genObj)
 
 
 
+function figGetAllLocalColorStyles()
+{
+    const styles = figma.getLocalPaintStyles();
+
+    figPostMessageToUI({
+        cmd:   'uiReturnFigGetAllLocalColorStyles',
+        styles: JSON.stringify(styles)});
+}
+
+
+
 function figUpdateObjects(msg)
 {
     let curNodeId  = NULL;
@@ -993,9 +1013,9 @@ function figUpdateObjects(msg)
 
         if (   isValid(figObj)
             && figObj.removed)
-            removeFrom(figSObjects.objects, figObj);
+            removeFrom(figObjects.objects, figObj);
 
-            
+
         if (  !isValid(figObj)
             || figObj.removed) // no existing object, create new object
             figCreateObject(figObjects.objects, genObj);

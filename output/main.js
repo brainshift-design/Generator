@@ -105,6 +105,9 @@ function isValid(val) {
     return val != null
         && val != undefined;
 }
+function isEmpty(array) {
+    return array.length == 0;
+}
 function removeFrom(array, item) {
     removeAt(array, array.indexOf(item));
 }
@@ -458,23 +461,24 @@ function figDeleteAllObjects() {
         if (!!obj.getPluginData('id'))
             obj.remove();
 }
-function figOnSelectionChange(e) {
-    /*  Every time a selection changes, check that all objects in the object table
-        still exist in the canvas. If not, remove the pointer from the object table.
-        
-        NOTE: at this point I don't know if objects are deleted by the API, but then again,
-        only one plugin runs at a time right now, so maybe it's not an issue.  */
-    // for (let i = 0; i < objNodes.length; i++)
-    // {
-    //     if (!objNodes[i]) continue;
-    //     for (let j = 0; j < objNodes[i].length; j++)
-    //     {
-    //         if (!objNodes[i][j]) continue;
-    //         const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
-    //         if (!exists) objNodes[i][j] = null;
-    //     }
-    // }
-}
+//function figOnSelectionChange(e)
+//{
+/*  Every time a selection changes, check that all objects in the object table
+    still exist in the canvas. If not, remove the pointer from the object table.
+    
+    NOTE: at this point I don't know if objects are deleted by the API, but then again,
+    only one plugin runs at a time right now, so maybe it's not an issue.  */
+// for (let i = 0; i < objNodes.length; i++)
+// {
+//     if (!objNodes[i]) continue;
+//     for (let j = 0; j < objNodes[i].length; j++)
+//     {
+//         if (!objNodes[i][j]) continue;
+//         const exists = figma.currentPage.children.findIndex(obj => parseInt(obj.getPluginData('id')) == i);
+//         if (!exists) objNodes[i][j] = null;
+//     }
+// }
+//}
 // function figOnDocumentChange(e)
 // {
 //     for (const change of e.documentChanges)
@@ -489,7 +493,7 @@ function figOnPluginClose() {
 //const objNodes    = new Array(MAX_NODES).fill(null);
 //var   minNodeId   = Number.MAX_SAFE_INTEGER;
 //var   maxNodeId   = Number.MIN_SAFE_INTEGER;
-figma.on('selectionchange', figOnSelectionChange);
+//figma.on('selectionchange', figOnSelectionChange);
 //figma.on('documentchange',  figOnDocumentChange);
 figma.on('close', figOnPluginClose);
 figma.showUI(__html__, {
@@ -598,6 +602,9 @@ figma.ui.onmessage = msg => {
         case 'figDeleteSavedConnectionsFromNode':
             figDeleteSavedConnectionsFromNode(msg.nodeId);
             break;
+        case 'figGetAllLocalColorStyles':
+            figGetAllLocalColorStyles();
+            break;
         case 'figUpdateObjects':
             figUpdateObjects(msg);
             break;
@@ -662,6 +669,13 @@ function figCreateObject(objects, genObj) {
     objects.push(figObj);
     figma.currentPage.appendChild(figObj);
 }
+function figGetAllLocalColorStyles() {
+    const styles = figma.getLocalPaintStyles();
+    figPostMessageToUI({
+        cmd: 'uiReturnFigGetAllLocalColorStyles',
+        styles: JSON.stringify(styles)
+    });
+}
 function figUpdateObjects(msg) {
     let curNodeId = NULL;
     let figObjects = null;
@@ -675,7 +689,7 @@ function figUpdateObjects(msg) {
         const figObj = figObjects.objects[genObj.objectId];
         if (isValid(figObj)
             && figObj.removed)
-            removeFrom(figSObjects.objects, figObj);
+            removeFrom(figObjects.objects, figObj);
         if (!isValid(figObj)
             || figObj.removed) // no existing object, create new object
             figCreateObject(figObjects.objects, genObj);

@@ -43,6 +43,8 @@ figma.ui.onmessage = msg =>
         case 'figDeleteSavedConnectionsToNode':   figDeleteSavedConnectionsToNode     (msg.nodeId);                                  break;
         case 'figDeleteSavedConnectionsFromNode': figDeleteSavedConnectionsFromNode   (msg.nodeId);                                  break;
 
+        case 'figGetAllLocalColorStyles':         figGetAllLocalColorStyles           ();                                            break;
+
         case 'figUpdateObjects':                  figUpdateObjects                    (msg);                                         break;
         case 'figUpdateStyles':                   figUpdateStyles                     (msg);                                         break;
 

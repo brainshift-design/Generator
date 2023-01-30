@@ -28,6 +28,17 @@ function figCreateObject(objects, genObj)
 
 
 
+function figGetAllLocalColorStyles()
+{
+    const styles = figma.getLocalPaintStyles();
+
+    figPostMessageToUI({
+        cmd:   'uiReturnFigGetAllLocalColorStyles',
+        styles: JSON.stringify(styles)});
+}
+
+
+
 function figUpdateObjects(msg)
 {
     let curNodeId  = NULL;
@@ -51,9 +62,9 @@ function figUpdateObjects(msg)
 
         if (   isValid(figObj)
             && figObj.removed)
-            removeFrom(figSObjects.objects, figObj);
+            removeFrom(figObjects.objects, figObj);
 
-            
+
         if (  !isValid(figObj)
             || figObj.removed) // no existing object, create new object
             figCreateObject(figObjects.objects, genObj);

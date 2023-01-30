@@ -175,6 +175,13 @@ function isValid(val)
 
 
 
+function isEmpty(array)
+{
+    return array.length == 0;
+}
+
+
+
 function removeFrom(array, item)
 {
     removeAt(array, array.indexOf(item));
@@ -1920,13 +1927,6 @@ function newSizeArrayFrom(array, size) // resizes an array and returns a new arr
     var newArray = new Uint8Array(size);
     copyArray(array, newArray);
     return newArray;
-}
-
-
-
-function isEmpty(array)
-{
-    return array.length == 0;
 }
 
 

@@ -7,7 +7,7 @@
 
 
 
-figma.on('selectionchange', figOnSelectionChange);
+//figma.on('selectionchange', figOnSelectionChange);
 //figma.on('documentchange',  figOnDocumentChange);
 
 figma.on('close',           figOnPluginClose);

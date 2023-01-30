@@ -15,6 +15,13 @@
 
 
 
+function uiReturnFigGetAllLocalColorStyles(styles)
+{
+    console.log('styles =', styles);
+}
+
+
+
 function dockWindowTop()
 {
     uiQueueMessageToFigma({ 

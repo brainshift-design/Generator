@@ -112,12 +112,16 @@ function uiReturnFigGetLocalData(msg)
     }
 
 
-    if (msg.key == 'enableBetaFeatures')
-        updateMenuItemEnableBetaFeatures();
+    if (!settings.dataMode)
+    {
+        if (msg.key == 'enableBetaFeatures')
+            updateMenuItemEnableBetaFeatures();
 
-    if (msg.key == 'showDebugMenu')
-        updateMenuItemShowDebugMenu();
+        if (msg.key == 'showDebugMenu')
+            updateMenuItemShowDebugMenu();
+    }
 
+    
     if (   msg.key == 'logLoading'
         && settings.logLoading)
         uiLogAllSavedNodesAndConns();

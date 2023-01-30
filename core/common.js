@@ -171,6 +171,13 @@ function isValid(val)
 
 
 
+function isEmpty(array)
+{
+    return array.length == 0;
+}
+
+
+
 function removeFrom(array, item)
 {
     removeAt(array, array.indexOf(item));

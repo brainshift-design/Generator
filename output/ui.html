@@ -2753,6 +2753,13 @@ function isValid(val)
 
 
 
+function isEmpty(array)
+{
+    return array.length == 0;
+}
+
+
+
 function removeFrom(array, item)
 {
     removeAt(array, array.indexOf(item));
@@ -4498,13 +4505,6 @@ function newSizeArrayFrom(array, size) // resizes an array and returns a new arr
     var newArray = new Uint8Array(size);
     copyArray(array, newArray);
     return newArray;
-}
-
-
-
-function isEmpty(array)
-{
-    return array.length == 0;
 }
 
 
@@ -18504,6 +18504,13 @@ function isValid(val)
 
 
 
+function isEmpty(array)
+{
+    return array.length == 0;
+}
+
+
+
 function removeFrom(array, item)
 {
     removeAt(array, array.indexOf(item));
@@ -20249,13 +20256,6 @@ function newSizeArrayFrom(array, size) // resizes an array and returns a new arr
     var newArray = new Uint8Array(size);
     copyArray(array, newArray);
     return newArray;
-}
-
-
-
-function isEmpty(array)
-{
-    return array.length == 0;
 }
 
 
@@ -48920,6 +48920,8 @@ extends OperatorBase
 
         this.circle.addEventListener('pointerenter', e => { this.circle.over = true;  this.updateLinkIcon(); });
         this.circle.addEventListener('pointerleave', e => { this.circle.over = false; this.updateLinkIcon(); });
+        this.circle.addEventListener('pointerup',    e => { console.log('pointer up'); uiQueueMessageToFigma({cmd: 'figGetAllLocalColorStyles'}); });
+
 
         this.link = createDiv('styleLink');
 
@@ -52298,16 +52300,18 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiReturnFigMessage':           uiReturnFigMessage          (msg.msgCmd); break;
-              
-        case 'uiReturnFigStartGenerator':    uiReturnFigStartGenerator   (msg);        break;
-        
-        case 'uiReturnFigLoadNodesAndConns': uiReturnFigLoadNodesAndConns(msg);        break;
-        
-        case 'uiReturnFigGetLocalData':      uiReturnFigGetLocalData     (msg);        break;
-        case 'uiReturnFigGetPageData':       uiReturnFigGetPageData      (msg);        break;
-              
-        case 'uiReturnFigResizeWindow':      uiReturnFigResizeWindow     ();           break;
+        case 'uiReturnFigMessage':                uiReturnFigMessage               (msg.msgCmd); break;
+                        
+        case 'uiReturnFigStartGenerator':         uiReturnFigStartGenerator        (msg);        break;
+                  
+        case 'uiReturnFigLoadNodesAndConns':      uiReturnFigLoadNodesAndConns     (msg);        break;
+                  
+        case 'uiReturnFigGetLocalData':           uiReturnFigGetLocalData          (msg);        break;
+        case 'uiReturnFigGetPageData':            uiReturnFigGetPageData           (msg);        break;
+                        
+        case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          ();           break;
+
+        case 'uiReturnFigGetAllLocalColorStyles': uiReturnFigGetAllLocalColorStyles(msg.styles); break;
     }
 }    
 
@@ -52713,12 +52717,16 @@ function uiReturnFigGetLocalData(msg)
     }
 
 
-    if (msg.key == 'enableBetaFeatures')
-        updateMenuItemEnableBetaFeatures();
+    if (!settings.dataMode)
+    {
+        if (msg.key == 'enableBetaFeatures')
+            updateMenuItemEnableBetaFeatures();
 
-    if (msg.key == 'showDebugMenu')
-        updateMenuItemShowDebugMenu();
+        if (msg.key == 'showDebugMenu')
+            updateMenuItemShowDebugMenu();
+    }
 
+    
     if (   msg.key == 'logLoading'
         && settings.logLoading)
         uiLogAllSavedNodesAndConns();
@@ -54464,6 +54472,13 @@ function uiLogAllSavedConns()
 //     removeAt(menuSelect.items, index);
 //     menuSelect.updateItems();
 // }
+
+
+
+function uiReturnFigGetAllLocalColorStyles(styles)
+{
+    console.log('styles =', styles);
+}
 
 
 
