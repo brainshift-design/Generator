@@ -603,7 +603,7 @@ figma.ui.onmessage = msg => {
             figDeleteSavedConnectionsFromNode(msg.nodeId);
             break;
         case 'figGetAllLocalColorStyles':
-            figGetAllLocalColorStyles();
+            figGetAllLocalColorStyles(msg.nodeId);
             break;
         case 'figUpdateObjects':
             figUpdateObjects(msg);
@@ -669,10 +669,29 @@ function figCreateObject(objects, genObj) {
     objects.push(figObj);
     figma.currentPage.appendChild(figObj);
 }
-function figGetAllLocalColorStyles() {
-    const styles = figma.getLocalPaintStyles();
+function figGetAllLocalColorStyles(nodeId) {
+    const _styles = figma.getLocalPaintStyles();
+    const styles = [];
+    for (const _style of _styles) {
+        const style = {
+            id: _style.id,
+            name: _style.name,
+            paints: []
+        };
+        for (const _paint of _style.paints) {
+            if (_paint.type == 'SOLID') {
+                style.paints.push([
+                    _paint.color.r,
+                    _paint.color.g,
+                    _paint.color.b
+                ]);
+            }
+        }
+        styles.push(style);
+    }
     figPostMessageToUI({
         cmd: 'uiReturnFigGetAllLocalColorStyles',
+        nodeId: nodeId,
         styles: JSON.stringify(styles)
     });
 }

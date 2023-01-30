@@ -108,6 +108,7 @@ var menuZoom;
 var menuGraph;
 var menuNode;
 
+
 var menuNodeData;
 var menuNodeDataNodes;
 var menuConnData;
@@ -397,7 +398,6 @@ function initGeneratorMenus()
         updateMenuItemDisplay(menuItemNodeRename.div, single);
         //updateMenuItemDisplay(menuItemNodeLayout.div, !single);
     };
-
 
 
     btnMain     = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain), callback: () => updatePanMode(false)});

@@ -31809,6 +31809,7 @@ var menuZoom;
 var menuGraph;
 var menuNode;
 
+
 var menuNodeData;
 var menuNodeDataNodes;
 var menuConnData;
@@ -32098,7 +32099,6 @@ function initGeneratorMenus()
         updateMenuItemDisplay(menuItemNodeRename.div, single);
         //updateMenuItemDisplay(menuItemNodeLayout.div, !single);
     };
-
 
 
     btnMain     = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain), callback: () => updatePanMode(false)});
@@ -48920,7 +48920,15 @@ extends OperatorBase
 
         this.circle.addEventListener('pointerenter', e => { this.circle.over = true;  this.updateLinkIcon(); });
         this.circle.addEventListener('pointerleave', e => { this.circle.over = false; this.updateLinkIcon(); });
-        this.circle.addEventListener('pointerup',    e => { console.log('pointer up'); uiQueueMessageToFigma({cmd: 'figGetAllLocalColorStyles'}); });
+
+        this.circle.addEventListener('pointerdown',  e => 
+        { 
+            hideAllMenus(); 
+            
+            uiQueueMessageToFigma({
+                cmd:   'figGetAllLocalColorStyles',
+                nodeId: this.id }); 
+        });
 
 
         this.link = createDiv('styleLink');
@@ -52311,7 +52319,7 @@ onmessage = e =>
                         
         case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          ();           break;
 
-        case 'uiReturnFigGetAllLocalColorStyles': uiReturnFigGetAllLocalColorStyles(msg.styles); break;
+        case 'uiReturnFigGetAllLocalColorStyles': uiReturnFigGetAllLocalColorStyles(msg);        break;
     }
 }    
 
@@ -54475,9 +54483,35 @@ function uiLogAllSavedConns()
 
 
 
-function uiReturnFigGetAllLocalColorStyles(styles)
+function uiReturnFigGetAllLocalColorStyles(msg)
 {
-    console.log('styles =', styles);
+    const styles = JSON.parse(msg.styles);
+    const node   = nodeFromId(msg.nodeId);
+
+    const menu = initExistingStylesMenu(styles);
+    menu.show(node.circle);
+}
+
+
+
+function initExistingStylesMenu(styles)
+{
+    const menu = new Menu('Existing styles', true, false);
+
+    for (const style of styles)
+    {
+        const options = {};
+
+        if (style.paints.length == 1)
+        {
+            const rgb = style.paints[0];
+            options.icon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="' + rgb2style(rgb) + '"/></svg>';
+        }
+            
+        menu.addItems([new MenuItem(style.name, options)]);
+    }
+
+    return menu;
 }
 
 

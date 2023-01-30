@@ -33,7 +33,15 @@ extends OperatorBase
 
         this.circle.addEventListener('pointerenter', e => { this.circle.over = true;  this.updateLinkIcon(); });
         this.circle.addEventListener('pointerleave', e => { this.circle.over = false; this.updateLinkIcon(); });
-        this.circle.addEventListener('pointerup',    e => { console.log('pointer up'); uiQueueMessageToFigma({cmd: 'figGetAllLocalColorStyles'}); });
+
+        this.circle.addEventListener('pointerdown',  e => 
+        { 
+            hideAllMenus(); 
+            
+            uiQueueMessageToFigma({
+                cmd:   'figGetAllLocalColorStyles',
+                nodeId: this.id }); 
+        });
 
 
         this.link = createDiv('styleLink');

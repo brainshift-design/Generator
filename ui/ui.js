@@ -15,9 +15,35 @@
 
 
 
-function uiReturnFigGetAllLocalColorStyles(styles)
+function uiReturnFigGetAllLocalColorStyles(msg)
 {
-    console.log('styles =', styles);
+    const styles = JSON.parse(msg.styles);
+    const node   = nodeFromId(msg.nodeId);
+
+    const menu = initExistingStylesMenu(styles);
+    menu.show(node.circle);
+}
+
+
+
+function initExistingStylesMenu(styles)
+{
+    const menu = new Menu('Existing styles', true, false);
+
+    for (const style of styles)
+    {
+        const options = {};
+
+        if (style.paints.length == 1)
+        {
+            const rgb = style.paints[0];
+            options.icon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="' + rgb2style(rgb) + '"/></svg>';
+        }
+            
+        menu.addItems([new MenuItem(style.name, options)]);
+    }
+
+    return menu;
 }
 
 
