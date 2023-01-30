@@ -2199,13 +2199,22 @@ a
 
 .styleCircle
 {
-    display:       inline-block;
-    width:         16px;
-    height:        16px;
-    border-radius:  8px;
-    margin-right:   7px;
-    position:      relative;
-    top:          -1px;
+    display:        inline-block;
+    width:          16px;
+    height:         16px;
+    border-radius:   8px;
+    margin-right:    7px;
+    position:       relative;
+    top:           -1px;
+    pointer-events: all;
+}
+
+
+.styleLink
+{
+    width:          16px;
+    height:         16px;
+    pointer-events: none;
 }
 
 
@@ -2828,8 +2837,8 @@ function rgbHeaderFromType(type, active)
 
     if (type == COLOR_STYLE)//COLOR_STYLE_TYPES.includes(type))
         return active 
-        ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
-        : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );
+        ? (isDarkMode() ? rgbActiveFlowDark : rgbActiveFlowLight)
+        : (isDarkMode() ? rgbFlowDark       : rgbFlowLight      );
 
         
     switch (type)
@@ -18579,8 +18588,8 @@ function rgbHeaderFromType(type, active)
 
     if (type == COLOR_STYLE)//COLOR_STYLE_TYPES.includes(type))
         return active 
-        ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
-        : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );
+        ? (isDarkMode() ? rgbActiveFlowDark : rgbActiveFlowLight)
+        : (isDarkMode() ? rgbFlowDark       : rgbFlowLight      );
 
         
     switch (type)
@@ -31747,7 +31756,7 @@ const iconStroke            = '<svg width="18" height="17" viewBox="0 0 18 17" f
  
 const iconStyle             = '<svg width="10" height="9"  viewBox="0 0 10 9"  fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="7.5" cy="1.5" r="1.5" transform="rotate(90 7.5 1.5)" fill="white"/><circle cx="1.5" cy="1.5" r="1.5" transform="rotate(90 1.5 1.5)" fill="white"/><circle cx="7.5" cy="7.5" r="1.5" transform="rotate(90 7.5 7.5)" fill="white"/><circle cx="1.5" cy="7.5" r="1.5" transform="rotate(90 1.5 7.5)" fill="white"/></svg>';
 const iconColorStyle        = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.53553 9.53552C8.63071 10.4403 7.38071 11 6 11C3.23858 11 1 8.76141 1 6C1 4.61929 1.55965 3.36929 2.46447 2.46448L6 6L9.53553 9.53552ZM12 6C12 9.31372 9.31371 12 6 12C2.68629 12 0 9.31372 0 6C0 4.34314 0.67157 2.84314 1.75735 1.75735C1.77346 1.74124 1.78965 1.72525 1.80592 1.70935C2.88722 0.652252 4.36652 0.000518799 5.99803 0C5.99869 0 5.99934 0 6 0C9.31305 0 11.9989 2.68521 12 5.99802C12 5.99869 12 5.99933 12 6Z" fill="white"/></svg>';
-const iconColorStyleReplace = '<svg width="19" height="12" viewBox="0 0 19 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.53553 9.53554C8.63071 10.4404 7.38071 11 6 11C3.23858 11 1 8.76142 1 6C1 4.61929 1.55964 3.36929 2.46446 2.46447L6 6.00001L9.53553 9.53554ZM10.2426 10.2427C9.15685 11.3284 7.65685 12 6 12C2.68629 12 0 9.31371 0 6C0 2.68629 2.68629 0 6 0C9.31371 0 12 2.68629 12 6C12 7.60508 11.3697 9.06295 10.3432 10.1396C10.3101 10.1744 10.2766 10.2087 10.2426 10.2427Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M15 2.5C15 1.67157 15.6716 1 16.5 1C17.3284 1 18 1.67157 18 2.5V4.5H19V2.5C19 1.11929 17.8807 0 16.5 0C15.1193 0 14 1.11929 14 2.5V4.5H15V2.5ZM16 8.5V3.5H17V8.5H16ZM14 9.5V7.5H15V9.5C15 10.3284 15.6716 11 16.5 11C17.3284 11 18 10.3284 18 9.5V7.5H19V9.5C19 10.8807 17.8807 12 16.5 12C15.1193 12 14 10.8807 14 9.5Z" fill="white"/></svg>';
+const iconColorStyleReplace = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.18718 13.3189L7.83883 10.6673L8.54594 11.3744L5.89429 14.026C4.62509 15.2952 2.5673 15.2952 1.2981 14.026C0.0288918 12.7568 0.0288916 10.699 1.2981 9.42982L3.94975 6.77817L4.65685 7.48528L2.0052 10.1369C1.12652 11.0156 1.12652 12.4402 2.0052 13.3189C2.88388 14.1976 4.3085 14.1976 5.18718 13.3189ZM11.3744 8.54594L10.6673 7.83883L13.3189 5.18718C14.1976 4.3085 14.1976 2.88388 13.3189 2.0052C12.4402 1.12652 11.0156 1.12652 10.1369 2.0052L7.48528 4.65685L6.77817 3.94975L9.42982 1.2981C10.699 0.0288935 12.7568 0.0288931 14.026 1.2981C15.2952 2.5673 15.2952 4.62509 14.026 5.89429L11.3744 8.54594ZM5.92375 10.1664L10.1664 5.92375L9.40036 5.15772L5.15772 9.40036L5.92375 10.1664Z" fill="white"/></svg>';
 
 const iconRectangle         = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="15" height="15" stroke="white"/></svg>';
 const iconLine              = '<svg width="17" height="17" viewBox="0 1 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.772299" y1="15.9778" x2="15.6598" y2="1.09027" stroke="white" stroke-width="1.3"/></svg>';
@@ -31902,10 +31911,10 @@ function initGeneratorMenus()
                                            graph.nodes.forEach(n => n.updateNode());
                                        }
                                    }),
-        //                         new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
-                                   new MenuItem('',                             {separator: true}),   
-                                   new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
-                                   new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
+                             //    new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
+                             //    new MenuItem('',                             {separator: true}),   
+                             //    new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+                             //    new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
                                    new MenuItem('',                             {separator: true }),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',            {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     ), setting: true}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',              {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates ), setting: true}),
@@ -32010,7 +32019,7 @@ function initGeneratorMenus()
     
     menuColorStyle = new Menu('Color style', true, false);
     menuColorStyle.addItems([
-        new MenuItem('Link existing...', {icon: iconColorStyleReplace, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Link existing...', {icon: iconColorStyleReplace, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.shiftKey, existing: true}))})]);
 
         
     menuColor = new Menu('Color nodes', true, false);
@@ -33701,7 +33710,7 @@ function initColorControlEvents(control)
 
             if (control.param)
             {
-                control.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
+                control.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
 
                 if (    control.param.node
                     &&  control.param.node.params.includes(control.param)
@@ -39260,65 +39269,65 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
  
     switch (nodeType)
     {
-        case LIST:                    node = new OpList();             break;
-        case ITEMS:                   node = new OpItems();            break;
-        case SELECT:                  node = new OpSelect();           break;
-        case IF_ELSE:                 node = new OpIfElse();           break;
-        case START:                   node = new OpStart();            break;
-        case REPEAT:                  node = new OpRepeat();           break;
-        case CACHE:                   node = new OpCache();            break;
-        case COPY:                    node = new OpCopy();             break;
-     
-        case NUMBER:                  node = new OpNumber();           break;
-        case NUMBER_ROUND:            node = new OpRound();            break;
-        case NUMBER_LIMITS:           node = new OpLimits();           break;
-        case NUMBER_RANDOM:           node = new OpRandom();           break;
-        case NUMBER_SERIES:           node = new OpSeries();           break;
-        case NUMBER_INTERPOLATE:      node = new OpInterpolate();      break;
-            
-        case NUMBER_MATH:             node = new OpMath();             break;
-        case NUMBER_ADD:              node = new OpAdd();              break;
-        case NUMBER_SUBTRACT:         node = new OpSubtract();         break;
-        case NUMBER_MULTIPLY:         node = new OpMultiply();         break;
-        case NUMBER_DIVIDE:           node = new OpDivide();           break;
-        case NUMBER_MODULO:           node = new OpModulo();           break;
-        case NUMBER_EXPONENT:         node = new OpExponent();         break;
-            
-        case NUMBER_BOOLEAN:          node = new OpBoolean();          break;
-        case NUMBER_NOT:              node = new OpNot();              break;
-        case NUMBER_AND:              node = new OpAnd();              break;
-        case NUMBER_OR:               node = new OpOr();               break;
-        case NUMBER_XOR:              node = new OpXor();              break;
-        
-        case NUMBER_CONDITION:        node = new OpCondition();        break;
-        case NUMBER_EQUAL:            node = new OpEqual();            break;
-        case NUMBER_NOT_EQUAL:        node = new OpNotEqual();         break;
-        case NUMBER_LESS:             node = new OpLess();             break;
-        case NUMBER_LESS_OR_EQUAL:    node = new OpLessOrEqual();      break;
-        case NUMBER_GREATER:          node = new OpGreater();          break;
-        case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();   break;
-        
-        case COLOR:                   node = new OpColor(options);     break;
-        case COLOR_CORRECT:           node = new OpColorCorrect();     break;
-        case COLOR_CONTRAST:          node = new OpColorContrast();    break;
-        case COLORBLIND:              node = new OpColorBlind();       break;
-        case COLOR_INTERPOLATE:       node = new OpColorInterpolate(); break;
-            
-        case COLOR_STOP:              node = new OpColorStop();        break;
-        case GRADIENT:                node = new OpGradient();         break;
-     
-        case FILL:                    node = new OpFill();             break;
-        case STROKE:                  node = new OpStroke();           break;
+        case LIST:                    node = new OpList();              break;
+        case ITEMS:                   node = new OpItems();             break;
+        case SELECT:                  node = new OpSelect();            break;
+        case IF_ELSE:                 node = new OpIfElse();            break;
+        case START:                   node = new OpStart();             break;
+        case REPEAT:                  node = new OpRepeat();            break;
+        case CACHE:                   node = new OpCache();             break;
+        case COPY:                    node = new OpCopy();              break;
+      
+        case NUMBER:                  node = new OpNumber();            break;
+        case NUMBER_ROUND:            node = new OpRound();             break;
+        case NUMBER_LIMITS:           node = new OpLimits();            break;
+        case NUMBER_RANDOM:           node = new OpRandom();            break;
+        case NUMBER_SERIES:           node = new OpSeries();            break;
+        case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
+             
+        case NUMBER_MATH:             node = new OpMath();              break;
+        case NUMBER_ADD:              node = new OpAdd();               break;
+        case NUMBER_SUBTRACT:         node = new OpSubtract();          break;
+        case NUMBER_MULTIPLY:         node = new OpMultiply();          break;
+        case NUMBER_DIVIDE:           node = new OpDivide();            break;
+        case NUMBER_MODULO:           node = new OpModulo();            break;
+        case NUMBER_EXPONENT:         node = new OpExponent();          break;
+             
+        case NUMBER_BOOLEAN:          node = new OpBoolean();           break;
+        case NUMBER_NOT:              node = new OpNot();               break;
+        case NUMBER_AND:              node = new OpAnd();               break;
+        case NUMBER_OR:               node = new OpOr();                break;
+        case NUMBER_XOR:              node = new OpXor();               break;
+         
+        case NUMBER_CONDITION:        node = new OpCondition();         break;
+        case NUMBER_EQUAL:            node = new OpEqual();             break;
+        case NUMBER_NOT_EQUAL:        node = new OpNotEqual();          break;
+        case NUMBER_LESS:             node = new OpLess();              break;
+        case NUMBER_LESS_OR_EQUAL:    node = new OpLessOrEqual();       break;
+        case NUMBER_GREATER:          node = new OpGreater();           break;
+        case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();    break;
+         
+        case COLOR:                   node = new OpColor(options);      break;
+        case COLOR_CORRECT:           node = new OpColorCorrect();      break;
+        case COLOR_CONTRAST:          node = new OpColorContrast();     break;
+        case COLORBLIND:              node = new OpColorBlind();        break;
+        case COLOR_INTERPOLATE:       node = new OpColorInterpolate();  break;
+             
+        case COLOR_STOP:              node = new OpColorStop();         break;
+        case GRADIENT:                node = new OpGradient();          break;
+      
+        case FILL:                    node = new OpFill();              break;
+        case STROKE:                  node = new OpStroke();            break;
 
-        case COLOR_STYLE:             node = new OpColorStyle();       break;
+        case COLOR_STYLE:             node = new OpColorStyle(options); break;
      
-        case RECTANGLE:               node = new OpRectangle();        break;
-        case LINE:                    node = new OpLine();             break;
-        case ELLIPSE:                 node = new OpEllipse();          break;
-        case POLYGON:                 node = new OpPolygon();          break;
-        case STAR:                    node = new OpStar();             break;
-     
-        case COMMENT:                 node = new OpComment();          break;
+        case RECTANGLE:               node = new OpRectangle();         break;
+        case LINE:                    node = new OpLine();              break;
+        case ELLIPSE:                 node = new OpEllipse();           break;
+        case POLYGON:                 node = new OpPolygon();           break;
+        case STAR:                    node = new OpStar();              break;
+      
+        case COMMENT:                 node = new OpComment();           break;
      
         default:                      console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
     }
@@ -40374,8 +40383,7 @@ class Connection
         {
             const cw = graphView.clientWidth;
             const ch = graphView.clientHeight;
-        
-            
+
             updateWireCurve  (this.wire, x1, y1, x2, y2);
             updateWireOutBall(this.wire, x1, y1        );
             updateWireInBall (this.wire,         x2, y2);
@@ -41491,10 +41499,10 @@ class Operator
     {
         const colors = this.getHeaderColors();
         
-        this.header.style.boxShadow = 
-            this.inert
-            ? '0 0 0 1px ' + rgba2style(colors.border) + ' inset'
-            : 'none';
+        // this.header.style.boxShadow = 
+        //     this.inert
+        //     ? '0 0 0 1px ' + rgb2style_a(colors.border, 0.5) + ' inset'
+        //     : 'none';
     }
 
 
@@ -43313,7 +43321,7 @@ extends OperatorBase
 
     updateValues(actionId, updateParamId, paramIds, values)
     {
-        logFunction('OpItems.updateValues()');
+        //logFunction('OpItems.updateValues()');
 
         const oldParams = [...this.params];
         //console.log('oldParams =', [...oldParams]);
@@ -48878,22 +48886,45 @@ extends OpShapeBase
 
 
 class   OpColorStyle
-extends OpColorBase
+extends OperatorBase
 {
     paramValue;
 
     circle;
+    link;
+
+    existing = false;
+    //picking  = false;
 
 
 
-    constructor()
+    constructor(options = {})
     {
         super(COLOR_STYLE, 'style');
 
+        this.inert = true;
+
+
         this.addParam(this.paramValue = new ColorParam('value', '', false, true, false, ColorValue.fromRgb(rgbDefaultFill)));
 
+
+        if (!!options.existing)
+        {
+            this.existing = true;
+            this.paramValue.setValue(ColorValue.NaN, false, false, false);
+        }
+
+
         this.circle = createDiv('styleCircle');
-        
+        this.circle.over = false;
+
+        this.circle.addEventListener('pointerenter', e => { this.circle.over = true;  this.updateLinkIcon(); });
+        this.circle.addEventListener('pointerleave', e => { this.circle.over = false; this.updateLinkIcon(); });
+
+        this.link = createDiv('styleLink');
+
+
+        this.circle.appendChild(this.link);
         this.label.insertBefore(this.circle, this.labelText);
     }
 
@@ -48952,11 +48983,41 @@ extends OpColorBase
     {
         super.updateHeader();
 
-        this._warningOverlay.style.display = 'none';
-
         this.header.style.height = '25px';
 
-        this.circle.style.background = rgb2style(this.paramValue.value.toRgb());
+        if (this.paramValue.value.isValid())
+        {
+            const rgb = this.paramValue.value.toRgb();
+            
+            this.circle.style.background = rgb2style(rgb);
+            this.circle.style.boxShadow  = 'none';
+        }
+        else
+        {
+            const colors = this.getHeaderColors();
+
+            this.circle.style.background = 'transparent';
+            this.circle.style.boxShadow  = '0 0 0 1px ' + rgb2style_a(colors.text, 0.15) + ' inset';
+        }
+
+        this.updateLinkIcon();
+    }
+
+
+
+    updateLinkIcon()
+    {
+        if (this.existing)
+        {
+            const colors = this.getHeaderColors();
+
+            this.link.style.display            = 'inline-block';
+            this.link.style.background         = 'url(\'data:image/svg+xml;utf8,<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.5962 8.54594C3.01041 9.13173 2.06066 9.13173 1.47488 8.54594C0.889091 7.96015 0.889091 7.01041 1.47488 6.42462L2.88909 5.01041L2.18198 4.3033L0.767771 5.71751C-0.20854 6.69382 -0.20854 8.27674 0.767771 9.25305C1.74408 10.2294 3.32699 10.2294 4.3033 9.25305L5.71752 7.83883L5.01041 7.13173L3.5962 8.54594ZM6.77818 3.94975L3.94975 6.77817L3.24264 6.07107L6.07107 3.24264L6.77818 3.94975ZM9.25305 4.3033L7.83884 5.71751L7.13173 5.01041L8.54595 3.59619C9.13173 3.01041 9.13173 2.06066 8.54595 1.47487C7.96016 0.889085 7.01041 0.889085 6.42462 1.47487L5.01041 2.88909L4.3033 2.18198L5.71752 0.767765C6.69383 -0.208546 8.27674 -0.208546 9.25305 0.767765C10.2294 1.74408 10.2294 3.32699 9.25305 4.3033Z" fill="' + rgba2style(rgb_a(colors.text, this.circle.over ? 1 : 0.5)) + '"/></svg>\')';
+            this.link.style.backgroundPosition = '50% 50%';
+            this.link.style.backgroundRepeat   = 'no-repeat';
+        }
+        else
+            this.link.style.display            = 'none';    
     }
 
 
@@ -48965,6 +49026,27 @@ extends OpColorBase
     {
         return  param.isDefault()
             && !this.inputs[0].connected;
+    }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = TAB;
+
+        return super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"existing": "' + boolToString(this.existing) + '"';
+    }
+
+
+
+    loadParams(_node)
+    {
+        if (_node.existing != undefined)
+            this.existing = isTrue(_node.existing);
+
+        super.loadParams(_node);
     }
 }
 

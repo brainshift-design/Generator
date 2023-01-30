@@ -714,10 +714,10 @@ class Operator
     {
         const colors = this.getHeaderColors();
         
-        this.header.style.boxShadow = 
-            this.inert
-            ? '0 0 0 1px ' + rgba2style(colors.border) + ' inset'
-            : 'none';
+        // this.header.style.boxShadow = 
+        //     this.inert
+        //     ? '0 0 0 1px ' + rgb2style_a(colors.border, 0.5) + ' inset'
+        //     : 'none';
     }
 
 

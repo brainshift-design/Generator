@@ -750,7 +750,7 @@ function figDeleteAllObjects()
 
 
 
-function figOnSelectionChange()
+function figOnSelectionChange(e)
 {
     /*  Every time a selection changes, check that all objects in the object table
         still exist in the canvas. If not, remove the pointer from the object table.  
@@ -775,6 +775,16 @@ function figOnSelectionChange()
 
 
 
+// function figOnDocumentChange(e)
+// {
+//     for (const change of e.documentChanges)
+//     {
+//         console.log('change =', change);
+//     }
+// }
+
+
+
 function figOnPluginClose()
 {
     figDeleteAllObjects();
@@ -791,6 +801,8 @@ function figOnPluginClose()
 
 
 figma.on('selectionchange', figOnSelectionChange);
+//figma.on('documentchange',  figOnDocumentChange);
+
 figma.on('close',           figOnPluginClose);
 
 

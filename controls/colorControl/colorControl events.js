@@ -110,7 +110,7 @@ function initColorControlEvents(control)
 
             if (control.param)
             {
-                control.focus.style.boxShadow = '0  1px 0 0 ' + colShadow + ' inset';
+                control.focus.style.boxShadow = '0 1px 0 0 ' + colShadow + ' inset';
 
                 if (    control.param.node
                     &&  control.param.node.params.includes(control.param)

@@ -458,7 +458,7 @@ function figDeleteAllObjects() {
         if (!!obj.getPluginData('id'))
             obj.remove();
 }
-function figOnSelectionChange() {
+function figOnSelectionChange(e) {
     /*  Every time a selection changes, check that all objects in the object table
         still exist in the canvas. If not, remove the pointer from the object table.
         
@@ -475,6 +475,13 @@ function figOnSelectionChange() {
     //     }
     // }
 }
+// function figOnDocumentChange(e)
+// {
+//     for (const change of e.documentChanges)
+//     {
+//         console.log('change =', change);
+//     }
+// }
 function figOnPluginClose() {
     figDeleteAllObjects();
 }
@@ -483,6 +490,7 @@ function figOnPluginClose() {
 //var   minNodeId   = Number.MAX_SAFE_INTEGER;
 //var   maxNodeId   = Number.MIN_SAFE_INTEGER;
 figma.on('selectionchange', figOnSelectionChange);
+//figma.on('documentchange',  figOnDocumentChange);
 figma.on('close', figOnPluginClose);
 figma.showUI(__html__, {
     visible: false,

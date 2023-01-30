@@ -57,7 +57,7 @@ extends OperatorBase
 
     updateValues(actionId, updateParamId, paramIds, values)
     {
-        logFunction('OpItems.updateValues()');
+        //logFunction('OpItems.updateValues()');
 
         const oldParams = [...this.params];
         //console.log('oldParams =', [...oldParams]);

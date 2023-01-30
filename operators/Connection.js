@@ -47,8 +47,7 @@ class Connection
         {
             const cw = graphView.clientWidth;
             const ch = graphView.clientHeight;
-        
-            
+
             updateWireCurve  (this.wire, x1, y1, x2, y2);
             updateWireOutBall(this.wire, x1, y1        );
             updateWireInBall (this.wire,         x2, y2);
