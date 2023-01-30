@@ -49498,14 +49498,12 @@ function connectAction_updateNodes(act, updateNodes)
 
 function connectAction_cleanup(act)
 {
-    const nodeIds = [];
+    const nodeIds = [act.oldOutputActiveNodeId];
 
-    if (act.oldOutputActiveNodeId != act.newOutputActiveNodeId)
-        nodeIds.push(act.oldOutputActiveNodeId);
-console.log('nodeIds =', nodeIds);
-    uiDeleteObjectsAndStyles([
-        ...nodeIds, 
-        ...act.inputActiveNodeIds]); 
+    nodeIds.push(act.inputActiveNodeIds.filter(id => 
+        !act.newActiveNodeIds.includes(id)));
+
+    uiDeleteObjectsAndStyles(nodeIds);
 }
 
 
