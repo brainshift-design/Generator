@@ -112,7 +112,12 @@ extends Action
 
     cleanup()
     {
-        uiDeleteObjectsAndStyles(this.oldActiveNodeIds); 
+        const nodeIds = [];
+
+        nodeIds.push(this.oldActiveNodeIds.filter(id => 
+            !this.newActiveNodeIds.includes(id)));
+
+        uiDeleteObjectsAndStyles(nodeIds);
     }
 
 
