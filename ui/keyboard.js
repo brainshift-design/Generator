@@ -16,6 +16,7 @@ document.addEventListener('keydown', e =>
         e.preventDefault();
         pasteCopiedNodes(e.shiftKey);
     }
+
     // duplicate
     else if (e.code == 'KeyD'
           && getCtrlKey(e)
@@ -65,6 +66,12 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'KeyL'
           && getCtrlKey(e))
         layoutSelectedNodes();
+
+
+    // rename
+    else if (e.code == 'KeyR'
+          && getCtrlKey(e))
+        renameSelectedNode();
 
 
     // escape

@@ -146,23 +146,12 @@ class Action
             output.updateSavedConnectionOrder(_conn.outputOrder, +1);
 
 
-            // console.log('-----------------------------');
-            // console.log('outputNode =',        outputNode);
-            // console.log('_conn.outputId =',    _conn.outputId);
-            // console.log('_conn.inputNodeId =', _conn.inputNodeId);
-            // console.log('_conn.inputId =',     _conn.inputId);
-            // console.log('_conn.outputOrder =', _conn.outputOrder);
-
-
             const oldConn = uiVariableConnectFromOutput(
                 output,
                 nodeFromId(_conn.inputNodeId), _conn.inputId,
                 _conn.outputOrder);
 
  
-            // console.log('oldConn =', oldConn);
-
-            
             uiSaveConn(oldConn);
         }
 

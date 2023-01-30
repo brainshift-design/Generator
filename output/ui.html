@@ -32061,15 +32061,15 @@ function initGeneratorMenus()
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
-        menuItemNodeCopy               = new MenuItem('Copy',                {shortcut:  osCtrl()             + 'C',  callback: () => copySelectedNodes() }),
-        menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut:  osCtrl()             + 'D',  callback: e => { hideAllMenus(); duplicateSelectedNodes(false); }}),
+        menuItemNodeCopy               = new MenuItem('Copy',                {shortcut:  osCtrl() + 'C',              callback: () => copySelectedNodes() }),
+        menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut:  osCtrl() + 'D',              callback: e => { hideAllMenus(); duplicateSelectedNodes(false); }}),
         menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut:  osCtrl() + osShift() + 'D',  callback: e => { hideAllMenus(); duplicateSelectedNodes(true ); }}),
                                          new MenuItem('',                    {separator: true}),
-        menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift()            + '⌫', callback: e => { hideAllMenus(); removeSelectedNodes(true); }}),
-                                         new MenuItem('',                    {separator: true}),
-        menuItemNodeLayout             = new MenuItem('Layout',              {enabled:   false, shortcut: osCtrl()             + 'L',  callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
-        //menuItemNodeSep1               = new MenuItem('',                    {separator: true}),
-        menuItemNodeRename             = new MenuItem('Rename',              {callback: e => { hideAllMenus(); renameSelectedNode(); }}),
+        menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift() + '⌫',            callback: e => { hideAllMenus(); removeSelectedNodes(true); }}),
+        //new MenuItem('',                    {separator: true}),
+         menuItemNodeSep1               = new MenuItem('',                    {separator: true}),
+        //  menuItemNodeLayout             = new MenuItem('Layout',              {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
+        menuItemNodeRename             = new MenuItem('Rename',              {shortcut:  osCtrl() + 'R',              callback: e => { hideAllMenus(); renameSelectedNode(); }}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
 
@@ -32077,9 +32077,9 @@ function initGeneratorMenus()
     {
         const single = graphView.selectedNodes.length == 1;
 
-        //updateMenuItemDisplay(menuItemNodeSep1  .div, showRename);
-        updateMenuItemDisplay(menuItemNodeRename.div,  single);
-        updateMenuItemDisplay(menuItemNodeLayout.div, !single);
+        updateMenuItemDisplay(menuItemNodeSep1  .div, single);
+        updateMenuItemDisplay(menuItemNodeRename.div, single);
+        //updateMenuItemDisplay(menuItemNodeLayout.div, !single);
     };
 
 
@@ -49109,23 +49109,12 @@ class Action
             output.updateSavedConnectionOrder(_conn.outputOrder, +1);
 
 
-            // console.log('-----------------------------');
-            // console.log('outputNode =',        outputNode);
-            // console.log('_conn.outputId =',    _conn.outputId);
-            // console.log('_conn.inputNodeId =', _conn.inputNodeId);
-            // console.log('_conn.inputId =',     _conn.inputId);
-            // console.log('_conn.outputOrder =', _conn.outputOrder);
-
-
             const oldConn = uiVariableConnectFromOutput(
                 output,
                 nodeFromId(_conn.inputNodeId), _conn.inputId,
                 _conn.outputOrder);
 
  
-            // console.log('oldConn =', oldConn);
-
-            
             uiSaveConn(oldConn);
         }
 
@@ -49509,9 +49498,14 @@ function connectAction_updateNodes(act, updateNodes)
 
 function connectAction_cleanup(act)
 {
+    const nodeIds = [];
+
+    if (act.oldOutputActiveNodeId != act.newOutputActiveNodeId)
+        nodeIds.push(act.oldOutputActiveNodeId);
+console.log('nodeIds =', nodeIds);
     uiDeleteObjectsAndStyles([
-        act.oldOutputActiveNodeId, 
-     ...act.inputActiveNodeIds]); 
+        ...nodeIds, 
+        ...act.inputActiveNodeIds]); 
 }
 
 
@@ -52002,6 +51996,7 @@ document.addEventListener('keydown', e =>
         e.preventDefault();
         pasteCopiedNodes(e.shiftKey);
     }
+
     // duplicate
     else if (e.code == 'KeyD'
           && getCtrlKey(e)
@@ -52051,6 +52046,12 @@ document.addEventListener('keydown', e =>
     else if (e.code == 'KeyL'
           && getCtrlKey(e))
         layoutSelectedNodes();
+
+
+    // rename
+    else if (e.code == 'KeyR'
+          && getCtrlKey(e))
+        renameSelectedNode();
 
 
     // escape

@@ -176,9 +176,14 @@ function connectAction_updateNodes(act, updateNodes)
 
 function connectAction_cleanup(act)
 {
+    const nodeIds = [];
+
+    if (act.oldOutputActiveNodeId != act.newOutputActiveNodeId)
+        nodeIds.push(act.oldOutputActiveNodeId);
+console.log('nodeIds =', nodeIds);
     uiDeleteObjectsAndStyles([
-        act.oldOutputActiveNodeId, 
-     ...act.inputActiveNodeIds]); 
+        ...nodeIds, 
+        ...act.inputActiveNodeIds]); 
 }
 
 

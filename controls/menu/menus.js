@@ -369,15 +369,15 @@ function initGeneratorMenus()
 
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
-        menuItemNodeCopy               = new MenuItem('Copy',                {shortcut:  osCtrl()             + 'C',  callback: () => copySelectedNodes() }),
-        menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut:  osCtrl()             + 'D',  callback: e => { hideAllMenus(); duplicateSelectedNodes(false); }}),
+        menuItemNodeCopy               = new MenuItem('Copy',                {shortcut:  osCtrl() + 'C',              callback: () => copySelectedNodes() }),
+        menuItemNodeDuplicate          = new MenuItem('Duplicate',           {shortcut:  osCtrl() + 'D',              callback: e => { hideAllMenus(); duplicateSelectedNodes(false); }}),
         menuItemNodeDuplicateConnected = new MenuItem('Duplicate connected', {shortcut:  osCtrl() + osShift() + 'D',  callback: e => { hideAllMenus(); duplicateSelectedNodes(true ); }}),
                                          new MenuItem('',                    {separator: true}),
-        menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift()            + '⌫', callback: e => { hideAllMenus(); removeSelectedNodes(true); }}),
-                                         new MenuItem('',                    {separator: true}),
-        menuItemNodeLayout             = new MenuItem('Layout',              {enabled:   false, shortcut: osCtrl()             + 'L',  callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
-        //menuItemNodeSep1               = new MenuItem('',                    {separator: true}),
-        menuItemNodeRename             = new MenuItem('Rename',              {callback: e => { hideAllMenus(); renameSelectedNode(); }}),
+        menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift() + '⌫',            callback: e => { hideAllMenus(); removeSelectedNodes(true); }}),
+        //new MenuItem('',                    {separator: true}),
+         menuItemNodeSep1               = new MenuItem('',                    {separator: true}),
+        //  menuItemNodeLayout             = new MenuItem('Layout',              {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
+        menuItemNodeRename             = new MenuItem('Rename',              {shortcut:  osCtrl() + 'R',              callback: e => { hideAllMenus(); renameSelectedNode(); }}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))})]);
 
@@ -385,9 +385,9 @@ function initGeneratorMenus()
     {
         const single = graphView.selectedNodes.length == 1;
 
-        //updateMenuItemDisplay(menuItemNodeSep1  .div, showRename);
-        updateMenuItemDisplay(menuItemNodeRename.div,  single);
-        updateMenuItemDisplay(menuItemNodeLayout.div, !single);
+        updateMenuItemDisplay(menuItemNodeSep1  .div, single);
+        updateMenuItemDisplay(menuItemNodeRename.div, single);
+        //updateMenuItemDisplay(menuItemNodeLayout.div, !single);
     };
 
 
