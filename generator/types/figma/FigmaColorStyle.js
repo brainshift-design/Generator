@@ -2,14 +2,16 @@ class FigmaColorStyle
 extends FigmaObject
 {
     styleId;
+    styleIndex;
 
 
 
-    constructor(nodeId, nodeName, styleId)
+    constructor(nodeId, nodeName, styleId, styleIndex)
     {
         super(COLOR_STYLE, nodeId, nodeName, nodeName);
 
-        this.styleId = styleId;
+        this.styleId    = styleId;
+        this.styleIndex = styleIndex;
     }
 
 
@@ -19,7 +21,8 @@ extends FigmaObject
         const style = new FigmaColorStyle(
             this.nodeId,
             this.nodeName,
-            this.styleId);
+            this.styleId,
+            this.styleIndex);
 
         style.copyBase(this);
 

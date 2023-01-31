@@ -18,17 +18,18 @@
 function uiReturnFigGetAllLocalColorStyles(msg)
 {
     const styles = JSON.parse(msg.styles);
-    const node   = nodeFromId(msg.nodeId);
 
-    const menu = initExistingStylesMenu(styles);
-    menu.show(node.circle);
+    initLocalStylesMenu(styles, msg.nodeId);
+
+    menuLocalStyles.showAt(msg.px, msg.py);
 }
 
 
 
-function initExistingStylesMenu(styles)
+function initLocalStylesMenu(styles, nodeId)
 {
-    const menu = new Menu('Existing styles', true, false);
+    menuLocalStyles.clearItems();
+
 
     for (const style of styles)
     {
@@ -37,13 +38,19 @@ function initExistingStylesMenu(styles)
         if (style.paints.length == 1)
         {
             const rgb = style.paints[0];
+
             options.icon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="' + rgb2style(rgb) + '"/></svg>';
         }
+        
+        options.callback = e => actionManager.do(
+            new LinkExistingStyleAction(
+                nodeId, 
+                style.name,
+                //style.styleIndex, 
+                style.paints));
             
-        menu.addItems([new MenuItem(style.name, options)]);
+        menuLocalStyles.addItems([new MenuItem(style.name, options)]);
     }
-
-    return menu;
 }
 
 

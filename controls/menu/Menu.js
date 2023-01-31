@@ -45,6 +45,19 @@ class Menu
 
 
 
+    clearItems()
+    {
+        while (this.div.firstChild)
+            this.div.removeChild(this.div.firstChild);
+        // for (const item of this.items)
+        //     this.div.removeChild(item.div);
+
+        this.items    = [];
+        this.lastItem = null;
+    }
+
+
+
     addItems(items)
     {
         this.items = [...items];
@@ -52,16 +65,18 @@ class Menu
 
         for (let i = 0; i < this.items.length; i++)
         {
+            const item = this.items[i];
+
             if (i > 0) 
-                this.items[i].div.appendChild(document.createElement('br'));
+                item.div.appendChild(document.createElement('br'));
 
-            if (!this.showIcons ) this.items[i].divIcon .style.display = 'none';
-            if (!this.showChecks) this.items[i].divCheck.style.width   = this.showIcons ? 18 : 15;
+            if (!this.showIcons ) item.divIcon .style.display = 'none';
+            if (!this.showChecks) item.divCheck.style.width   = this.showIcons ? 18 : 15;
 
-            this.items[i].parentMenu = this;
-            this.items[i].index      = i;
+            item.parentMenu = this;
+            item.index      = i;
 
-            this.div.appendChild(this.items[i].div);
+            this.div.appendChild(item.div);
         }
 
 
@@ -175,8 +190,21 @@ class Menu
 
         const margin = 8;
 
-        this.div.style.left = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
-        this.div.style.top  = y - 4;
+        const left = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
+
+        let top    = y - 4;
+        let height = this.div.offsetHeight;
+
+        if (top + height > graphView.offsetHeight-8)
+            top = Math.max(8, top - (graphView.offsetHeight-8 - height));
+
+        if (height > graphView.offsetHeight-16)
+            height = graphView.offsetHeight-16;
+
+        
+        this.div.style.left   = left;
+        this.div.style.top    = top;
+        //this.div.style.height = height;
 
 
         currentMenus.push(this);

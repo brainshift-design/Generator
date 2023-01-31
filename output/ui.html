@@ -6570,14 +6570,16 @@ class FigmaColorStyle
 extends FigmaObject
 {
     styleId;
+    styleIndex;
 
 
 
-    constructor(nodeId, nodeName, styleId)
+    constructor(nodeId, nodeName, styleId, styleIndex)
     {
         super(COLOR_STYLE, nodeId, nodeName, nodeName);
 
-        this.styleId = styleId;
+        this.styleId    = styleId;
+        this.styleIndex = styleIndex;
     }
 
 
@@ -6587,7 +6589,8 @@ extends FigmaObject
         const style = new FigmaColorStyle(
             this.nodeId,
             this.nodeName,
-            this.styleId);
+            this.styleId,
+            this.styleIndex);
 
         style.copyBase(this);
 
@@ -23945,14 +23948,16 @@ class FigmaColorStyle
 extends FigmaObject
 {
     styleId;
+    styleIndex;
 
 
 
-    constructor(nodeId, nodeName, styleId)
+    constructor(nodeId, nodeName, styleId, styleIndex)
     {
         super(COLOR_STYLE, nodeId, nodeName, nodeName);
 
-        this.styleId = styleId;
+        this.styleId    = styleId;
+        this.styleIndex = styleIndex;
     }
 
 
@@ -23962,7 +23967,8 @@ extends FigmaObject
         const style = new FigmaColorStyle(
             this.nodeId,
             this.nodeName,
-            this.styleId);
+            this.styleId,
+            this.styleIndex);
 
         style.copyBase(this);
 
@@ -30932,6 +30938,19 @@ class Menu
 
 
 
+    clearItems()
+    {
+        while (this.div.firstChild)
+            this.div.removeChild(this.div.firstChild);
+        // for (const item of this.items)
+        //     this.div.removeChild(item.div);
+
+        this.items    = [];
+        this.lastItem = null;
+    }
+
+
+
     addItems(items)
     {
         this.items = [...items];
@@ -30939,16 +30958,18 @@ class Menu
 
         for (let i = 0; i < this.items.length; i++)
         {
+            const item = this.items[i];
+
             if (i > 0) 
-                this.items[i].div.appendChild(document.createElement('br'));
+                item.div.appendChild(document.createElement('br'));
 
-            if (!this.showIcons ) this.items[i].divIcon .style.display = 'none';
-            if (!this.showChecks) this.items[i].divCheck.style.width   = this.showIcons ? 18 : 15;
+            if (!this.showIcons ) item.divIcon .style.display = 'none';
+            if (!this.showChecks) item.divCheck.style.width   = this.showIcons ? 18 : 15;
 
-            this.items[i].parentMenu = this;
-            this.items[i].index      = i;
+            item.parentMenu = this;
+            item.index      = i;
 
-            this.div.appendChild(this.items[i].div);
+            this.div.appendChild(item.div);
         }
 
 
@@ -31062,8 +31083,21 @@ class Menu
 
         const margin = 8;
 
-        this.div.style.left = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
-        this.div.style.top  = y - 4;
+        const left = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
+
+        let top    = y - 4;
+        let height = this.div.offsetHeight;
+
+        if (top + height > graphView.offsetHeight-8)
+            top = Math.max(8, top - (graphView.offsetHeight-8 - height));
+
+        if (height > graphView.offsetHeight-16)
+            height = graphView.offsetHeight-16;
+
+        
+        this.div.style.left   = left;
+        this.div.style.top    = top;
+        //this.div.style.height = height;
 
 
         currentMenus.push(this);
@@ -31810,6 +31844,9 @@ var menuGraph;
 var menuNode;
 
 
+var menuLocalStyles;
+
+
 var menuNodeData;
 var menuNodeDataNodes;
 var menuConnData;
@@ -32101,6 +32138,9 @@ function initGeneratorMenus()
     };
 
 
+    menuLocalStyles = new Menu('Local styles', true, false);
+
+    
     btnMain     = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain), callback: () => updatePanMode(false)});
     btnFlow     = new MenuButton('', menuFlow,   {useMenuName: true, callback: () => updatePanMode(false)});
     btnNumber   = new MenuButton('', menuNumber, {useMenuName: true, callback: () => updatePanMode(false)});
@@ -48923,11 +48963,17 @@ extends OperatorBase
 
         this.circle.addEventListener('pointerdown',  e => 
         { 
-            hideAllMenus(); 
-            
-            uiQueueMessageToFigma({
-                cmd:   'figGetAllLocalColorStyles',
-                nodeId: this.id }); 
+            if (   e.button == 0
+                && this.existing)
+            {
+                hideAllMenus(); 
+
+                uiQueueMessageToFigma({
+                    cmd:   'figGetAllLocalColorStyles',
+                    nodeId: this.id,
+                    px:     e.clientX,
+                    py:     e.clientY }); 
+            }
         });
 
 
@@ -49021,8 +49067,16 @@ extends OperatorBase
         {
             const colors = this.getHeaderColors();
 
+            const rgb = this.paramValue.value.toRgb();
+            const linkStyle = rgba2style(
+                rgb_a(
+                    this.paramValue.value.isValid()
+                    ? (isDark(rgb) ? [1, 1, 1] : [0, 0, 0])
+                    : colors.text, 
+                    this.circle.over ? 1 : 0.5));
+
             this.link.style.display            = 'inline-block';
-            this.link.style.background         = 'url(\'data:image/svg+xml;utf8,<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.5962 8.54594C3.01041 9.13173 2.06066 9.13173 1.47488 8.54594C0.889091 7.96015 0.889091 7.01041 1.47488 6.42462L2.88909 5.01041L2.18198 4.3033L0.767771 5.71751C-0.20854 6.69382 -0.20854 8.27674 0.767771 9.25305C1.74408 10.2294 3.32699 10.2294 4.3033 9.25305L5.71752 7.83883L5.01041 7.13173L3.5962 8.54594ZM6.77818 3.94975L3.94975 6.77817L3.24264 6.07107L6.07107 3.24264L6.77818 3.94975ZM9.25305 4.3033L7.83884 5.71751L7.13173 5.01041L8.54595 3.59619C9.13173 3.01041 9.13173 2.06066 8.54595 1.47487C7.96016 0.889085 7.01041 0.889085 6.42462 1.47487L5.01041 2.88909L4.3033 2.18198L5.71752 0.767765C6.69383 -0.208546 8.27674 -0.208546 9.25305 0.767765C10.2294 1.74408 10.2294 3.32699 9.25305 4.3033Z" fill="' + rgba2style(rgb_a(colors.text, this.circle.over ? 1 : 0.5)) + '"/></svg>\')';
+            this.link.style.background         = 'url(\'data:image/svg+xml;utf8,<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.5962 8.54594C3.01041 9.13173 2.06066 9.13173 1.47488 8.54594C0.889091 7.96015 0.889091 7.01041 1.47488 6.42462L2.88909 5.01041L2.18198 4.3033L0.767771 5.71751C-0.20854 6.69382 -0.20854 8.27674 0.767771 9.25305C1.74408 10.2294 3.32699 10.2294 4.3033 9.25305L5.71752 7.83883L5.01041 7.13173L3.5962 8.54594ZM6.77818 3.94975L3.94975 6.77817L3.24264 6.07107L6.07107 3.24264L6.77818 3.94975ZM9.25305 4.3033L7.83884 5.71751L7.13173 5.01041L8.54595 3.59619C9.13173 3.01041 9.13173 2.06066 8.54595 1.47487C7.96016 0.889085 7.01041 0.889085 6.42462 1.47487L5.01041 2.88909L4.3033 2.18198L5.71752 0.767765C6.69383 -0.208546 8.27674 -0.208546 9.25305 0.767765C10.2294 1.74408 10.2294 3.32699 9.25305 4.3033Z" fill="' + linkStyle + '"/></svg>\')';
             this.link.style.backgroundPosition = '50% 50%';
             this.link.style.backgroundRepeat   = 'no-repeat';
         }
@@ -50309,6 +50363,64 @@ extends Action
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
     }
+}
+
+
+class LinkExistingStyleAction
+extends Action
+{
+    nodeId;
+    get node() { return nodeFromId(this.nodeId) } 
+
+    styleName;
+    //styleIndex;
+
+    stylePaints = [];
+
+
+
+    constructor(nodeId, styleName, /*styleIndex,*/ stylePaints)
+    {
+        super('LINK STYLE \'' + nodeId + ' <-- ' + styleName + ')');
+        
+        this.affectsConnections = false;
+
+        this.nodeId      = nodeId;
+        this.styleName   = styleName;
+        // this.styleIndex  = styleIndex;
+        this.stylePaints = [...stylePaints];
+    }
+
+
+
+    do(updateNodes)
+    {
+        this.node.name = this.styleName;
+
+        if (this.stylePaints.length > 0)
+        {
+            const c = this.stylePaints[0];
+
+            this.node.paramValue.setValue(ColorValue.fromRgb([
+                Math.round(c[0] * 0xff),
+                Math.round(c[1] * 0xff),
+                Math.round(c[2] * 0xff)]));
+        }
+
+        pushUnique(updateNodes, this.node);
+
+        uiSaveNodes([this.nodeId]);
+    }
+
+
+
+    undo(updateNodes)
+    {
+
+        this.node.updateNode();
+
+        uiSaveNodes([this.nodeId]);
+    }    
 }
 
 
@@ -54486,17 +54598,18 @@ function uiLogAllSavedConns()
 function uiReturnFigGetAllLocalColorStyles(msg)
 {
     const styles = JSON.parse(msg.styles);
-    const node   = nodeFromId(msg.nodeId);
 
-    const menu = initExistingStylesMenu(styles);
-    menu.show(node.circle);
+    initLocalStylesMenu(styles, msg.nodeId);
+
+    menuLocalStyles.showAt(msg.px, msg.py);
 }
 
 
 
-function initExistingStylesMenu(styles)
+function initLocalStylesMenu(styles, nodeId)
 {
-    const menu = new Menu('Existing styles', true, false);
+    menuLocalStyles.clearItems();
+
 
     for (const style of styles)
     {
@@ -54505,13 +54618,19 @@ function initExistingStylesMenu(styles)
         if (style.paints.length == 1)
         {
             const rgb = style.paints[0];
+
             options.icon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="' + rgb2style(rgb) + '"/></svg>';
         }
+        
+        options.callback = e => actionManager.do(
+            new LinkExistingStyleAction(
+                nodeId, 
+                style.name,
+                //style.styleIndex, 
+                style.paints));
             
-        menu.addItems([new MenuItem(style.name, options)]);
+        menuLocalStyles.addItems([new MenuItem(style.name, options)]);
     }
-
-    return menu;
 }
 
 

@@ -109,6 +109,9 @@ var menuGraph;
 var menuNode;
 
 
+var menuLocalStyles;
+
+
 var menuNodeData;
 var menuNodeDataNodes;
 var menuConnData;
@@ -400,6 +403,9 @@ function initGeneratorMenus()
     };
 
 
+    menuLocalStyles = new Menu('Local styles', true, false);
+
+    
     btnMain     = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain), callback: () => updatePanMode(false)});
     btnFlow     = new MenuButton('', menuFlow,   {useMenuName: true, callback: () => updatePanMode(false)});
     btnNumber   = new MenuButton('', menuNumber, {useMenuName: true, callback: () => updatePanMode(false)});

@@ -896,7 +896,7 @@ figma.ui.onmessage = msg =>
         case 'figDeleteSavedConnectionsToNode':   figDeleteSavedConnectionsToNode     (msg.nodeId);                                  break;
         case 'figDeleteSavedConnectionsFromNode': figDeleteSavedConnectionsFromNode   (msg.nodeId);                                  break;
 
-        case 'figGetAllLocalColorStyles':         figGetAllLocalColorStyles           (msg.nodeId);                                  break;
+        case 'figGetAllLocalColorStyles':         figGetAllLocalColorStyles           (msg.nodeId, msg.px, msg.py);                  break;
 
         case 'figUpdateObjects':                  figUpdateObjects                    (msg);                                         break;
         case 'figUpdateStyles':                   figUpdateStyles                     (msg);                                         break;
@@ -979,7 +979,7 @@ function figCreateObject(objects, genObj)
 
 
 
-function figGetAllLocalColorStyles(nodeId)
+function figGetAllLocalColorStyles(nodeId, px, py)
 {
     const _styles = figma.getLocalPaintStyles();
 
@@ -1014,6 +1014,8 @@ function figGetAllLocalColorStyles(nodeId)
     figPostMessageToUI({
         cmd:   'uiReturnFigGetAllLocalColorStyles',
         nodeId: nodeId,
+        px:     px,
+        py:     py,
         styles: JSON.stringify(styles)});
 }
 
@@ -1653,11 +1655,8 @@ function initPageStyles(nodes)
         {
             const style = paintStyles.find(s =>
             {
-                const nodeId  = s.getPluginData('nodeId');
-                //const styleId = s.getPluginData('styleId');
-
-                return nodeId  == node.id;
-                    //&& styleId == node.styleId;
+                const nodeId = s.getPluginData('nodeId');
+                return nodeId == node.id;
             });
 
             if (style)
@@ -1877,10 +1876,10 @@ function figCreateColorStyle(styles, genStyle)
     setStylePaints(figStyle, genStyle);
 
 
-    figStyle.setPluginData('id',       genStyle.styleId.toString());
-    figStyle.setPluginData('type',     genStyle.type);
-    figStyle.setPluginData('nodeId',   genStyle.nodeId);
-    figStyle.setPluginData('nodeName', genStyle.nodeName);
+    //figStyle.setPluginData('type',       genStyle.type);
+    figStyle.setPluginData('nodeId',     genStyle.nodeId);
+    //figStyle.setPluginData('Name',   genStyle.nodeName);
+    //figStyle.setPluginData('styleIndex', genStyle.styleIndex.toString());
 
 
     styles.push(figStyle);
@@ -1900,7 +1899,7 @@ function figUpdateStyles(msg)
     {
         if (genStyle.nodeId != curNodeId)
         {
-            curNodeId  = genStyle.nodeId;
+            curNodeId = genStyle.nodeId;
             
             figStyles = figStyleArrays.find(a => a.nodeId == genStyle.nodeId);
 
@@ -1916,11 +1915,11 @@ function figUpdateStyles(msg)
 
         const removed = !paintStyles.find(s => 
         {
-            const nodeId  = s.getPluginData('nodeId');
-            const styleId = s.getPluginData('styleId');
+            const nodeId = s.getPluginData('nodeId');
+            //const styleIndex = s.getPluginData('styleIndex');
  
-            return nodeId  == genStyle.nodeId
-                && styleId == genStyle.styleId;
+            return nodeId     == genStyle.nodeId;
+                //&& styleIndex == genStyle.styleIndex;
         });
 
         

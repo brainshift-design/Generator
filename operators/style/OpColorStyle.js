@@ -36,11 +36,17 @@ extends OperatorBase
 
         this.circle.addEventListener('pointerdown',  e => 
         { 
-            hideAllMenus(); 
-            
-            uiQueueMessageToFigma({
-                cmd:   'figGetAllLocalColorStyles',
-                nodeId: this.id }); 
+            if (   e.button == 0
+                && this.existing)
+            {
+                hideAllMenus(); 
+
+                uiQueueMessageToFigma({
+                    cmd:   'figGetAllLocalColorStyles',
+                    nodeId: this.id,
+                    px:     e.clientX,
+                    py:     e.clientY }); 
+            }
         });
 
 
@@ -134,8 +140,16 @@ extends OperatorBase
         {
             const colors = this.getHeaderColors();
 
+            const rgb = this.paramValue.value.toRgb();
+            const linkStyle = rgba2style(
+                rgb_a(
+                    this.paramValue.value.isValid()
+                    ? (isDark(rgb) ? [1, 1, 1] : [0, 0, 0])
+                    : colors.text, 
+                    this.circle.over ? 1 : 0.5));
+
             this.link.style.display            = 'inline-block';
-            this.link.style.background         = 'url(\'data:image/svg+xml;utf8,<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.5962 8.54594C3.01041 9.13173 2.06066 9.13173 1.47488 8.54594C0.889091 7.96015 0.889091 7.01041 1.47488 6.42462L2.88909 5.01041L2.18198 4.3033L0.767771 5.71751C-0.20854 6.69382 -0.20854 8.27674 0.767771 9.25305C1.74408 10.2294 3.32699 10.2294 4.3033 9.25305L5.71752 7.83883L5.01041 7.13173L3.5962 8.54594ZM6.77818 3.94975L3.94975 6.77817L3.24264 6.07107L6.07107 3.24264L6.77818 3.94975ZM9.25305 4.3033L7.83884 5.71751L7.13173 5.01041L8.54595 3.59619C9.13173 3.01041 9.13173 2.06066 8.54595 1.47487C7.96016 0.889085 7.01041 0.889085 6.42462 1.47487L5.01041 2.88909L4.3033 2.18198L5.71752 0.767765C6.69383 -0.208546 8.27674 -0.208546 9.25305 0.767765C10.2294 1.74408 10.2294 3.32699 9.25305 4.3033Z" fill="' + rgba2style(rgb_a(colors.text, this.circle.over ? 1 : 0.5)) + '"/></svg>\')';
+            this.link.style.background         = 'url(\'data:image/svg+xml;utf8,<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.5962 8.54594C3.01041 9.13173 2.06066 9.13173 1.47488 8.54594C0.889091 7.96015 0.889091 7.01041 1.47488 6.42462L2.88909 5.01041L2.18198 4.3033L0.767771 5.71751C-0.20854 6.69382 -0.20854 8.27674 0.767771 9.25305C1.74408 10.2294 3.32699 10.2294 4.3033 9.25305L5.71752 7.83883L5.01041 7.13173L3.5962 8.54594ZM6.77818 3.94975L3.94975 6.77817L3.24264 6.07107L6.07107 3.24264L6.77818 3.94975ZM9.25305 4.3033L7.83884 5.71751L7.13173 5.01041L8.54595 3.59619C9.13173 3.01041 9.13173 2.06066 8.54595 1.47487C7.96016 0.889085 7.01041 0.889085 6.42462 1.47487L5.01041 2.88909L4.3033 2.18198L5.71752 0.767765C6.69383 -0.208546 8.27674 -0.208546 9.25305 0.767765C10.2294 1.74408 10.2294 3.32699 9.25305 4.3033Z" fill="' + linkStyle + '"/></svg>\')';
             this.link.style.backgroundPosition = '50% 50%';
             this.link.style.backgroundRepeat   = 'no-repeat';
         }
