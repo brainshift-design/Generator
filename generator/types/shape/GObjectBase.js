@@ -87,7 +87,7 @@ extends GOperator
 
 
     
-    evalStyles(options = {})
+    evalStyle(options = {})
     {
         // for (const style of this.styles)
         //     style.nodeId = this.nodeId;

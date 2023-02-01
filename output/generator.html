@@ -3991,32 +3991,28 @@ extends FigmaShape
 class FigmaColorStyle
 extends FigmaObject
 {
-    styleId;
-    styleIndex;
+    styleName;
 
 
 
-    constructor(nodeId, nodeName, styleId, styleIndex)
+    constructor(nodeId, nodeName)
     {
-        super(COLOR_STYLE, nodeId, nodeName, nodeName);
+        super(COLOR_STYLE, nodeId, nodeName);
 
-        this.styleId    = styleId;
-        this.styleIndex = styleIndex;
+        this.styleName = nodeName;
     }
 
 
 
     copy()
     {
-        const style = new FigmaColorStyle(
+        const copy = new FigmaColorStyle(
             this.nodeId,
-            this.nodeName,
-            this.styleId,
-            this.styleIndex);
+            this.nodeName);
 
-        style.copyBase(this);
+        copy.copyBase(this);
 
-        return style;
+        return copy;
     }
 }
 
@@ -7796,10 +7792,13 @@ extends GConditionBase
     
     copy()
     {
-        const ge = new GGreaterOrEqual(this.nodeId, this.options);
-        ge.copyBase(this);
-        ge.inputs = this.inputs.map(i => i.copy());
-        return ge;
+        const copy = new GGreaterOrEqual(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        copy.inputs = this.inputs.map(i => i.copy());
+
+        return copy;
     }
 
 
@@ -8690,9 +8689,8 @@ extends GColorType
 
 
         const standard = this.standard.eval(parse).toValue();
-        let   contrast;
 
-
+        
         if (standard.isValid())
             standard.value = Math.min(Math.max(0, standard.value), 1);
 
@@ -8715,21 +8713,21 @@ extends GColorType
                     if (standard.value == 0)
                     {
                         const value = getContrastRatio2(input0.toRgb(), input1.toRgb());
-                        contrast = new NumberValue(value, 2);
+                        this.contrast = new NumberValue(value, 2);
                     }
                     else
                     {
                         const value = getContrastRatio3(input0.toRgb(), input1.toRgb());
-                        contrast = new NumberValue(Math.abs(value), 1);
+                        this.contrast = new NumberValue(Math.abs(value), 1);
                     }
                 }
                 else
-                    contrast = NumberValue.NaN;
+                    this.contrast = NumberValue.NaN;
             }
             else
             {
-                this.value = ColorValue.NaN;
-                contrast   = NumberValue.NaN;
+                this.value    = ColorValue.NaN;
+                this.contrast = NumberValue.NaN;
             }
 
 
@@ -8746,8 +8744,8 @@ extends GColorType
 
             genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
 
-            this.value = ColorValue.NaN;
-            contrast   = NumberValue.NaN;
+            this.value    = ColorValue.NaN;
+            this.contrast = NumberValue.NaN;
         }
 
         else if (this.input1) 
@@ -8759,18 +8757,18 @@ extends GColorType
             if (input1.isValid())
             {
                 this.value = input1;
-                genPushUpdateValue(parse, this.nodeId, 'back', input);
+                genPushUpdateValue(parse, this.nodeId, 'back', input1);
             }
             else
                 this.value = ColorValue.NaN;
 
-            contrast = NumberValue.NaN;
+            this.contrast = NumberValue.NaN;
         }
 
         else
         {
-            this.value = ColorValue.NaN;
-            contrast   = NumberValue.NaN;
+            this.value    = ColorValue.NaN;
+            this.contrast = NumberValue.NaN;
 
             genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
             genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
@@ -8779,7 +8777,7 @@ extends GColorType
 
 
         genPushUpdateValue(parse, this.nodeId, 'standard', standard);
-        genPushUpdateValue(parse, this.nodeId, 'contrast', contrast);
+        genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
 
 
         this.validate();
@@ -9620,7 +9618,7 @@ extends GOperator
 
 
     
-    evalStyles(options = {})
+    evalStyle(options = {})
     {
         // for (const style of this.styles)
         //     style.nodeId = this.nodeId;
@@ -10650,9 +10648,11 @@ extends GObjectBase
 
     copy()
     {
-        const style = new GColorStyle(this.nodeId, this.options);
+        const copy = new GColorStyle(this.nodeId, this.options);
 
-        return style;
+        copy.style = this.style.copy();
+        
+        return copy;
     }
 
 
@@ -10672,7 +10672,7 @@ extends GObjectBase
         if (this.value.isValid())
         {
             const rgb = this.value.toRgb();
-            this.evalStyles({rgb: rgb});
+            this.evalStyle({rgb: rgb});
         }
 
 
@@ -10683,13 +10683,13 @@ extends GObjectBase
 
 
 
-    evalStyles(options = {})
+    evalStyle(options = {})
     {
         if (!this.options.enabled)
             return;
 
             
-        const style = new FigmaColorStyle(this.nodeId, this.nodeName, 0);
+        const style = new FigmaColorStyle(this.nodeId, this.nodeName);
 
         
         if (!style.paints) 
@@ -10703,7 +10703,7 @@ extends GObjectBase
             + ' ' + 0xff]);
 
 
-        this.styles = [style];
+        this.style = style;
     }
 }
 
@@ -11102,7 +11102,7 @@ function genRequest(request)
             && node.options.active)
         {
             node.objects.forEach(o => genPushUpdateObject(parse, o));
-            node.styles .forEach(s => genPushUpdateStyle (parse, s));
+            if (!!node.style) genPushUpdateStyle(parse, node.style);
         }
     }
 

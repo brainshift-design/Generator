@@ -39,9 +39,8 @@ extends GColorType
 
 
         const standard = this.standard.eval(parse).toValue();
-        let   contrast;
 
-
+        
         if (standard.isValid())
             standard.value = Math.min(Math.max(0, standard.value), 1);
 
@@ -64,21 +63,21 @@ extends GColorType
                     if (standard.value == 0)
                     {
                         const value = getContrastRatio2(input0.toRgb(), input1.toRgb());
-                        contrast = new NumberValue(value, 2);
+                        this.contrast = new NumberValue(value, 2);
                     }
                     else
                     {
                         const value = getContrastRatio3(input0.toRgb(), input1.toRgb());
-                        contrast = new NumberValue(Math.abs(value), 1);
+                        this.contrast = new NumberValue(Math.abs(value), 1);
                     }
                 }
                 else
-                    contrast = NumberValue.NaN;
+                    this.contrast = NumberValue.NaN;
             }
             else
             {
-                this.value = ColorValue.NaN;
-                contrast   = NumberValue.NaN;
+                this.value    = ColorValue.NaN;
+                this.contrast = NumberValue.NaN;
             }
 
 
@@ -95,8 +94,8 @@ extends GColorType
 
             genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
 
-            this.value = ColorValue.NaN;
-            contrast   = NumberValue.NaN;
+            this.value    = ColorValue.NaN;
+            this.contrast = NumberValue.NaN;
         }
 
         else if (this.input1) 
@@ -108,18 +107,18 @@ extends GColorType
             if (input1.isValid())
             {
                 this.value = input1;
-                genPushUpdateValue(parse, this.nodeId, 'back', input);
+                genPushUpdateValue(parse, this.nodeId, 'back', input1);
             }
             else
                 this.value = ColorValue.NaN;
 
-            contrast = NumberValue.NaN;
+            this.contrast = NumberValue.NaN;
         }
 
         else
         {
-            this.value = ColorValue.NaN;
-            contrast   = NumberValue.NaN;
+            this.value    = ColorValue.NaN;
+            this.contrast = NumberValue.NaN;
 
             genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
             genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
@@ -128,7 +127,7 @@ extends GColorType
 
 
         genPushUpdateValue(parse, this.nodeId, 'standard', standard);
-        genPushUpdateValue(parse, this.nodeId, 'contrast', contrast);
+        genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
 
 
         this.validate();

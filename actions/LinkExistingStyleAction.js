@@ -5,13 +5,12 @@ extends Action
     get node() { return nodeFromId(this.nodeId) } 
 
     styleName;
-    //styleIndex;
 
     stylePaints = [];
 
 
 
-    constructor(nodeId, styleName, /*styleIndex,*/ stylePaints)
+    constructor(nodeId, styleName, stylePaints)
     {
         super('LINK STYLE \'' + nodeId + ' <-- ' + styleName + ')');
         
@@ -19,7 +18,6 @@ extends Action
 
         this.nodeId      = nodeId;
         this.styleName   = styleName;
-        // this.styleIndex  = styleIndex;
         this.stylePaints = [...stylePaints];
     }
 

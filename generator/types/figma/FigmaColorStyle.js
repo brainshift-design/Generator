@@ -1,31 +1,27 @@
 class FigmaColorStyle
 extends FigmaObject
 {
-    styleId;
-    styleIndex;
+    styleName;
 
 
 
-    constructor(nodeId, nodeName, styleId, styleIndex)
+    constructor(nodeId, nodeName)
     {
-        super(COLOR_STYLE, nodeId, nodeName, nodeName);
+        super(COLOR_STYLE, nodeId, nodeName);
 
-        this.styleId    = styleId;
-        this.styleIndex = styleIndex;
+        this.styleName = nodeName;
     }
 
 
 
     copy()
     {
-        const style = new FigmaColorStyle(
+        const copy = new FigmaColorStyle(
             this.nodeId,
-            this.nodeName,
-            this.styleId,
-            this.styleIndex);
+            this.nodeName);
 
-        style.copyBase(this);
+        copy.copyBase(this);
 
-        return style;
+        return copy;
     }
 }

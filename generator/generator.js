@@ -52,7 +52,7 @@ function genRequest(request)
             && node.options.active)
         {
             node.objects.forEach(o => genPushUpdateObject(parse, o));
-            node.styles .forEach(s => genPushUpdateStyle (parse, s));
+            if (!!node.style) genPushUpdateStyle(parse, node.style);
         }
     }
 

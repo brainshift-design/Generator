@@ -46,7 +46,6 @@ function initLocalStylesMenu(styles, nodeId)
             new LinkExistingStyleAction(
                 nodeId, 
                 style.name,
-                //style.styleIndex, 
                 style.paints));
             
         menuLocalStyles.addItems([new MenuItem(style.name, options)]);

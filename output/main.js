@@ -1176,12 +1176,10 @@ function figDeleteSavedConnectionsFromNode(nodeId) {
 }
 function figCreateColorStyle(styles, genStyle) {
     const figStyle = figma.createPaintStyle();
-    figStyle.name = genStyle.nodeName;
-    setStylePaints(figStyle, genStyle);
-    //figStyle.setPluginData('type',       genStyle.type);
+    figStyle.setPluginData('type', genStyle.type);
     figStyle.setPluginData('nodeId', genStyle.nodeId);
-    //figStyle.setPluginData('Name',   genStyle.nodeName);
-    //figStyle.setPluginData('styleIndex', genStyle.styleIndex.toString());
+    figStyle.name = genStyle.styleName;
+    setStylePaints(figStyle, genStyle);
     styles.push(figStyle);
     return figStyle;
 }
@@ -1195,13 +1193,11 @@ function figUpdateStyles(msg) {
             if (!figStyles)
                 figStyleArrays.push(figStyles = { nodeId: genStyle.nodeId, styles: [] });
         }
-        const figStyle = figStyles.styles[genStyle.styleId];
+        const figStyle = figStyles.styles[0];
         const paintStyles = figma.getLocalPaintStyles();
         const removed = !paintStyles.find(s => {
             const nodeId = s.getPluginData('nodeId');
-            //const styleIndex = s.getPluginData('styleIndex');
             return nodeId == genStyle.nodeId;
-            //&& styleIndex == genStyle.styleIndex;
         });
         if (isValid(figStyle)
             && removed)
@@ -1209,7 +1205,7 @@ function figUpdateStyles(msg) {
         if (!isValid(figStyle)
             || removed) // no existing style, create new style
             figCreateColorStyle(figStyles.styles, genStyle);
-        else if (figStyle.getPluginData('type') == genStyle.type.toString()) // update existing style
+        else if (figStyle.getPluginData('type') == genStyle.type) // update existing style
             figUpdateColorStyle(figStyle, genStyle);
         else // delete existing style, create new style
          {

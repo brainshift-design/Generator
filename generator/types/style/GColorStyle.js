@@ -14,9 +14,11 @@ extends GObjectBase
 
     copy()
     {
-        const style = new GColorStyle(this.nodeId, this.options);
+        const copy = new GColorStyle(this.nodeId, this.options);
 
-        return style;
+        copy.style = this.style.copy();
+        
+        return copy;
     }
 
 
@@ -36,7 +38,7 @@ extends GObjectBase
         if (this.value.isValid())
         {
             const rgb = this.value.toRgb();
-            this.evalStyles({rgb: rgb});
+            this.evalStyle({rgb: rgb});
         }
 
 
@@ -47,13 +49,13 @@ extends GObjectBase
 
 
 
-    evalStyles(options = {})
+    evalStyle(options = {})
     {
         if (!this.options.enabled)
             return;
 
             
-        const style = new FigmaColorStyle(this.nodeId, this.nodeName, 0);
+        const style = new FigmaColorStyle(this.nodeId, this.nodeName);
 
         
         if (!style.paints) 
@@ -67,6 +69,6 @@ extends GObjectBase
             + ' ' + 0xff]);
 
 
-        this.styles = [style];
+        this.style = style;
     }
 }
