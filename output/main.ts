@@ -1889,7 +1889,6 @@ function figGetAllLocalColorStyles(nodeId, px, py)
 
     for (const _style of _styles)
     {
-        console.log('_style.type =', _style.type);
         const _existing = _style.getPluginData('existing');
 
         const existing = !!_existing;

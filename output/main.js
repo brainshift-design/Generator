@@ -1182,7 +1182,6 @@ function figGetAllLocalColorStyles(nodeId, px, py) {
     const _styles = figma.getLocalPaintStyles();
     const styles = new Array();
     for (const _style of _styles) {
-        console.log('_style.type =', _style.type);
         const _existing = _style.getPluginData('existing');
         const existing = !!_existing;
         const style = {

@@ -66,10 +66,30 @@
     z-index:          10000;
     font-family:      Inter;
     font-size:        11px;
-    overflow-x:       hidden;
-    overflow-y:       scroll;
+    overflow:         hidden;
+    overflow-y:       hidden;
     color:            #eee;
     background-color: #1e1e1e;
+}
+
+
+.menu::-webkit-scrollbar
+{
+    background: transparent;
+    width:      6px;
+}
+
+
+.menu::-webkit-scrollbar-track
+{
+    margin: 4px 4px 4px 0;
+}
+
+
+.menu::-webkit-scrollbar-thumb
+{
+    background:    #fff4;
+    border-radius: 3px;
 }
 
 

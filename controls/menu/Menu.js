@@ -12,7 +12,6 @@ class Menu
 
     div;
     divArrow;
-    //divScrollbar;
 
     showIcons;
     showChecks;
@@ -40,10 +39,8 @@ class Menu
         this.divArrow     = createDiv('menuArrow');
         this.div          = createDiv('menu');
         this.divItems     = createDiv('menuItems');
-        //this.divScrollbar = createDiv('menuScrollbar');
 
         this.div.appendChild(this.divItems);
-        //this.div.appendChild(this.divScrollbar);
 
         this.div.addEventListener('pointerenter', () => this.overMenu = true );
         this.div.addEventListener('pointerleave', () => this.overMenu = false);
@@ -197,8 +194,8 @@ class Menu
         const left   = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
 
         let   top    = y - 4;
-        let   height = this.divItems.children.length * 25;// - 16;
-console.log('height =', height);
+        let   height = this.divItems.children.length * 25;
+
         const graphHeight = graphView.offsetHeight - menuBar.offsetHeight;
         
         if (top + height > graphHeight-8)
@@ -206,6 +203,12 @@ console.log('height =', height);
             height = graphHeight - 16;
             top    = menuBar.offsetHeight + Math.max(8, graphHeight - height);
         }
+
+
+        this.div.style.overflowY = 
+            top + height > graphHeight-8 
+            ? 'overlay' 
+            : 'hidden';
 
         
         this.div.style.left   = left;
