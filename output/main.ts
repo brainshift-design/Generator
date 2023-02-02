@@ -917,7 +917,7 @@ figma.ui.onmessage = msg =>
     {
         case 'figStartGenerator':                 figStartGenerator                   ();                                            break;
                 
-        case 'figPositionWindow':                 figPositionWindow                   (msg.x, msg.y);                                break; 
+        //case 'figPositionWindow':                 figPositionWindow                   (msg.x, msg.y);                                break; 
         case 'figResizeWindow':                   figResizeWindow                     (msg.width, msg.height);                       break; 
         case 'figNotify':                         figNotify                           (msg.text, msg.prefix, msg.delay, msg.error);  break;
 
@@ -1970,8 +1970,6 @@ function figCreateColorStyle(styles, genStyle)
 
 function figUpdateStyles(msg)
 {
-    console.log('figUpdateStyles()');
-
     let curNodeId = NULL;
     let figStyles;
 
@@ -1992,8 +1990,6 @@ function figUpdateStyles(msg)
         else
             figStyles = null;
 
-        console.assert(figStyles, 'figStyles should not be null here');
-        
 
         const figStyle    = figStyles.styles[0];
         const existing    = figStyle && figStyle.getPluginData('existing');
@@ -2001,11 +1997,6 @@ function figUpdateStyles(msg)
         const localStyles = figma.getLocalPaintStyles();
         const localStyle  = localStyles.find(s => s.getPluginData('nodeId') == genStyle.nodeId);
 
-
-        console.log('genStyle =', genStyle);
-
-        if (isValid(figStyle))
-            console.log('figStyle.getPluginData(\'type\') =', figStyle.getPluginData('type'));
 
         if (   isValid(figStyle)
             && !localStyle) // removed
@@ -2015,18 +2006,15 @@ function figUpdateStyles(msg)
         if (   !isValid(figStyle)
             || !localStyle) // no existing style, create new style
         {
-            console.log('1');
             if (!existing)
                 figCreateColorStyle(figStyles.styles, genStyle);
         }
         else if (figStyle.getPluginData('type') == genStyle.type) // update existing style
         {
-            console.log('2');
             figUpdateColorStyle(localStyle, genStyle);
         }
         else // delete existing style, create new style
         {
-            console.log('3');
             if (!existing)
             {
                 localStyle.remove();
@@ -2088,8 +2076,8 @@ function setStylePaints(style, src)
 
 
 
-function figPositionWindow(x, y)
-{
+//function figPositionWindow(x, y)
+//{
     // x = Math.floor(Math.max(0, x ));
     // y = Math.floor(Math.max(0, y));
 
@@ -2109,8 +2097,8 @@ function figPositionWindow(x, y)
     // figma.clientStorage.setAsync('windowHeight', y);
 
 
-    figPostMessageToUI({cmd: 'uiEndPositionWindow'});
-}
+//    figPostMessageToUI({cmd: 'uiEndPositionWindow'});
+//}
 
 
 

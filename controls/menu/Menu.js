@@ -194,13 +194,16 @@ class Menu
 
         let top    = y - 4;
         let height = this.div.offsetHeight;
+        
+        if (height > graphView.offsetHeight-16)
+            height = graphView.offsetHeight-16;
 
         if (top + height > graphView.offsetHeight-8)
             top = Math.max(8, top - (graphView.offsetHeight-8 - height));
 
-        if (height > graphView.offsetHeight-16)
-            height = graphView.offsetHeight-16;
-
+console.log('top =', top);
+console.log('left =', left);
+console.log('height =', height);
         
         this.div.style.left   = left;
         this.div.style.top    = top;

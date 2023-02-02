@@ -1,5 +1,5 @@
-function figPositionWindow(x, y)
-{
+//function figPositionWindow(x, y)
+//{
     // x = Math.floor(Math.max(0, x ));
     // y = Math.floor(Math.max(0, y));
 
@@ -19,8 +19,8 @@ function figPositionWindow(x, y)
     // figma.clientStorage.setAsync('windowHeight', y);
 
 
-    figPostMessageToUI({cmd: 'uiEndPositionWindow'});
-}
+//    figPostMessageToUI({cmd: 'uiEndPositionWindow'});
+//}
 
 
 

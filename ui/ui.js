@@ -58,14 +58,14 @@ function initLocalStylesMenu(styles, nodeId)
 
 
 
-function dockWindowTop()
-{
-    uiQueueMessageToFigma({ 
-        cmd: 'figPositionWindow',
-        x:    0,
-        y:    0
-    });        
-}
+// function dockWindowTop()
+// {
+//     uiQueueMessageToFigma({ 
+//         cmd: 'figPositionWindow',
+//         x:    0,
+//         y:    0
+//     });        
+// }
 
 
 
