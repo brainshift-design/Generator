@@ -23,6 +23,8 @@ class MenuItem
     enteredDiv    = false;
     enteredExpand = false;
 
+    arrowWidth    = 48;
+
 
     div;
     divHighlight;
@@ -129,8 +131,13 @@ class MenuItem
         {
             const rect = boundingRect(this.div);
 
-            //if (!this.childMenu)
-            if (this.callback)
+            if (   this.callback
+                && this.childMenu)
+            {
+                if (e.clientX - rect.x < rect.width - this.arrowWidth)
+                    this.select(e.shiftKey, e.ctrlKey, this.altKey, rect.x, rect.y);
+            }
+            else if (this.callback)
                 this.select(e.shiftKey, e.ctrlKey, this.altKey, rect.x, rect.y);
         });
 
@@ -142,7 +149,7 @@ class MenuItem
         //     {
         //         this.divHighlight.style.background = 'var(--figma-color-bg-brand)';
 
-        //         this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? 48 : 0) + 'px)';
+        //         this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
         //     }
 
         //     if (this.childMenu)
@@ -168,24 +175,24 @@ class MenuItem
                 if (   this.callback
                     && this.childMenu)
                 {
-                    const bounds = this.div.getBoundingClientRect();
+                    const rect = boundingRect(this.div);
 
-                    if (    e.clientX - bounds.x < this.div.offsetWidth - 48
+                    if (    e.clientX - rect.x < rect.width - this.arrowWidth
                         && !this.enteredDiv)
                     {
                         this.divHighlight.style.left  = 0;
-                        this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? 48 : 0) + 'px)';
+                        this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
 
                         hideAllMenusAfter(this.parentMenu);
 
                         this.enteredDiv    = true;
                         this.enteredExpand = false;
                     }
-                    else if ( e.clientX - bounds.x >= this.div.offsetWidth - 48
+                    else if ( e.clientX - rect.x >= rect.width - this.arrowWidth
                           && !this.enteredExpand)
                     {
-                        this.divHighlight.style.left  = 'calc(100% - ' + (this.childMenu && this.callback ? 48 : 0) + 'px)';
-                        this.divHighlight.style.width = '48px';
+                        this.divHighlight.style.left  = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
+                        this.divHighlight.style.width = this.arrowWidth + 'px';
 
                         this.showChildMenu();
 
@@ -243,14 +250,11 @@ class MenuItem
 
         if (currentMenus.length > 0) // this lets the item be selected without its parent menu being involved
         {
-            //this.parentMenu.lastItem = this;
-
             if (this.parentMenu.button)
                 this.parentMenu.button.update();
         }
 
-        if (   !ctrl) 
-            //|| !this.isSetting)
+        if (!ctrl) 
             hideAllMenus();
 
 

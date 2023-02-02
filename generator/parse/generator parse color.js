@@ -56,12 +56,6 @@ function genParseColor(parse)
         paramIds = ['space', 'convert', 'c1', 'c2', 'c3'];
 
 
-
-    // if (   COLOR_TYPES.includes(parse.next)
-    //     ||    parse.next == PARAM
-    //        && COLOR_TYPES.includes(parse.afterNext))
-
-    
     parse.inParam = false;
     
     for (const id of paramIds)
