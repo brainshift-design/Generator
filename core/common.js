@@ -163,6 +163,13 @@ function subscriptChar(c)
 
 
 
+function boolToString(bool)
+{
+    return bool ? 'true' : 'false';
+}
+
+
+
 function isValid(val)
 {
     return val != null

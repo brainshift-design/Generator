@@ -3,6 +3,8 @@ extends GObjectBase
 {
     style;
 
+    existing;
+
 
 
     constructor(nodeId, options)
@@ -16,8 +18,9 @@ extends GObjectBase
     {
         const copy = new GColorStyle(this.nodeId, this.options);
 
-        copy.style = this.style.copy();
-        
+        copy.style    = this.style.copy();
+        copy.existing = this.existing;
+
         return copy;
     }
 
@@ -57,16 +60,17 @@ extends GObjectBase
             
         const style = new FigmaColorStyle(this.nodeId, this.nodeName);
 
-        
-        if (!style.paints) 
-            style.paints = [];
+        style.existing = this.existing;
 
-        style.paints.push([
-            'SOLID', 
-                    0xff * options.rgb[0]
-            + ' ' + 0xff * options.rgb[1]
-            + ' ' + 0xff * options.rgb[2]
-            + ' ' + 0xff]);
+
+        style.paints = 
+        [
+            [ 'SOLID', 
+                      0xff * options.rgb[0]
+              + ' ' + 0xff * options.rgb[1]
+              + ' ' + 0xff * options.rgb[2]
+              + ' ' + 0xff ]
+        ];
 
 
         this.style = style;

@@ -338,13 +338,6 @@ function logTrace()
 
 
 
-function boolToString(bool)
-{
-    return bool ? 'true' : 'false';
-}
-
-
-
 function printNum(num)
 {
     return !isNaN(num) ? num : NAN_CHAR;

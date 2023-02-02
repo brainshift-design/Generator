@@ -164,8 +164,7 @@ extends OpColorBase
             || this.node.param2.input.connected
             || this.node.param3.input.connected;
 
-        const options =
-                ((hasInputs ? 1 : 0) << 20)
+        const options = (hasInputs ? 1 : 0) << 20;
 
                 
         const [request, ignore] = this.node.genRequestStart(gen, options);

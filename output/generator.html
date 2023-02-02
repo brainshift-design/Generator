@@ -167,6 +167,13 @@ function subscriptChar(c)
 
 
 
+function boolToString(bool)
+{
+    return bool ? 'true' : 'false';
+}
+
+
+
 function isValid(val)
 {
     return val != null
@@ -2060,13 +2067,6 @@ function log(...params)
 function logTrace()
 {
     setTimeout(console.trace.bind(console));
-}
-
-
-
-function boolToString(bool)
-{
-    return bool ? 'true' : 'false';
 }
 
 
@@ -3992,6 +3992,7 @@ class FigmaColorStyle
 extends FigmaObject
 {
     styleName;
+    existing;
 
 
 
@@ -4011,6 +4012,8 @@ extends FigmaObject
             this.nodeName);
 
         copy.copyBase(this);
+
+        copy.existing = this.existing;
 
         return copy;
     }
@@ -10637,6 +10640,8 @@ extends GObjectBase
 {
     style;
 
+    existing;
+
 
 
     constructor(nodeId, options)
@@ -10650,8 +10655,9 @@ extends GObjectBase
     {
         const copy = new GColorStyle(this.nodeId, this.options);
 
-        copy.style = this.style.copy();
-        
+        copy.style    = this.style.copy();
+        copy.existing = this.existing;
+
         return copy;
     }
 
@@ -10691,16 +10697,17 @@ extends GObjectBase
             
         const style = new FigmaColorStyle(this.nodeId, this.nodeName);
 
-        
-        if (!style.paints) 
-            style.paints = [];
+        style.existing = this.existing;
 
-        style.paints.push([
-            'SOLID', 
-                    0xff * options.rgb[0]
-            + ' ' + 0xff * options.rgb[1]
-            + ' ' + 0xff * options.rgb[2]
-            + ' ' + 0xff]);
+
+        style.paints = 
+        [
+            [ 'SOLID', 
+                      0xff * options.rgb[0]
+              + ' ' + 0xff * options.rgb[1]
+              + ' ' + 0xff * options.rgb[2]
+              + ' ' + 0xff ]
+        ];
 
 
         this.style = style;
@@ -10872,19 +10879,14 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    updateMenuItemDisplay(btnFlow .div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(btnShape.div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(btnStyle.div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnFlow .div,            settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnShape.div,            settings.enableBetaFeatures);
 
-    // updateMenuItemBetaDisplay(menuItemIfElse.div, settings.enableBetaFeatures);
-    // updateMenuItemBetaDisplay(menuSep1      .div, settings.enableBetaFeatures);
-    // updateMenuItemBetaDisplay(menuItemStart .div, settings.enableBetaFeatures);
-    // updateMenuItemBetaDisplay(menuItemRepeat.div, settings.enableBetaFeatures);
-    // updateMenuItemBetaDisplay(menuSep2      .div, settings.enableBetaFeatures);
-    // updateMenuItemBetaDisplay(menuItemCache .div, settings.enableBetaFeatures);
-    // updateMenuItemBetaDisplay(menuItemCopy  .div, settings.enableBetaFeatures);    
+    updateMenuItemDisplay(menuItemStyleFill  .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemStyleStroke.div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemStyleSep1  .div, settings.enableBetaFeatures);
 
-    updateMenuItemDisplay(menuItemSeries.div, settings.enableBetaFeatures);    
+    updateMenuItemDisplay(menuItemSeries.div,      settings.enableBetaFeatures);    
 }
 
 
@@ -13042,6 +13044,8 @@ function genParseColorStyle(parse)
 
 
     const style = new GColorStyle(nodeId, options);
+    
+    style.existing = options.existing;
 
 
     if (parse.settings.logRequests) 
@@ -13299,7 +13303,8 @@ function genParseNodeOptions(parse)
         beforeActive: ((opt >>  1) & 1) != 0,
         enabled:      ((opt >>  2) & 1) != 0,
         cached:       ((opt >>  3) & 1) != 0,
-        hasInputs:    ((opt >> 20) & 1) != 0
+        hasInputs:    ((opt >> 20) & 1) != 0,
+        existing:     ((opt >> 21) & 1) != 0
     };
 
     return options;

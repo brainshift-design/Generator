@@ -246,6 +246,8 @@ function genParseColorStyle(parse)
 
 
     const style = new GColorStyle(nodeId, options);
+    
+    style.existing = options.existing;
 
 
     if (parse.settings.logRequests) 

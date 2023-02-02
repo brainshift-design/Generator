@@ -101,6 +101,9 @@ function subscriptChar(c) {
         case '.': return ' ';
     }
 }
+function boolToString(bool) {
+    return bool ? 'true' : 'false';
+}
 function isValid(val) {
     return val != null
         && val != undefined;
@@ -669,34 +672,6 @@ function figCreateObject(objects, genObj) {
     objects.push(figObj);
     figma.currentPage.appendChild(figObj);
 }
-function figGetAllLocalColorStyles(nodeId, px, py) {
-    const _styles = figma.getLocalPaintStyles();
-    const styles = [];
-    for (const _style of _styles) {
-        const style = {
-            id: _style.id,
-            name: _style.name,
-            paints: []
-        };
-        for (const _paint of _style.paints) {
-            if (_paint.type == 'SOLID') {
-                style.paints.push([
-                    _paint.color.r,
-                    _paint.color.g,
-                    _paint.color.b
-                ]);
-            }
-        }
-        styles.push(style);
-    }
-    figPostMessageToUI({
-        cmd: 'uiReturnFigGetAllLocalColorStyles',
-        nodeId: nodeId,
-        px: px,
-        py: py,
-        styles: JSON.stringify(styles)
-    });
-}
 function figUpdateObjects(msg) {
     let curNodeId = NULL;
     let figObjects = null;
@@ -1174,10 +1149,44 @@ function figDeleteSavedConnectionsFromNode(nodeId) {
             figClearPageData(key);
     }
 }
+function figGetAllLocalColorStyles(nodeId, px, py) {
+    const _styles = figma.getLocalPaintStyles();
+    const styles = [];
+    for (const _style of _styles) {
+        console.log('_style =', _style);
+        const _existing = _style.getPluginData('existing');
+        const existing = !!_existing;
+        const style = {
+            id: _style.id,
+            name: _style.name,
+            existing: existing,
+            paints: []
+        };
+        for (const _paint of _style.paints) {
+            if (_paint.type == 'SOLID') {
+                console.log('_paint =', _paint);
+                style.paints.push([
+                    _paint.color.r,
+                    _paint.color.g,
+                    _paint.color.b
+                ]);
+            }
+        }
+        styles.push(style);
+    }
+    figPostMessageToUI({
+        cmd: 'uiReturnFigGetAllLocalColorStyles',
+        nodeId: nodeId,
+        px: px,
+        py: py,
+        styles: JSON.stringify(styles)
+    });
+}
 function figCreateColorStyle(styles, genStyle) {
     const figStyle = figma.createPaintStyle();
     figStyle.setPluginData('type', genStyle.type);
     figStyle.setPluginData('nodeId', genStyle.nodeId);
+    figStyle.setPluginData('existing', boolToString(genStyle.existing));
     figStyle.name = genStyle.styleName;
     setStylePaints(figStyle, genStyle);
     styles.push(figStyle);
@@ -1185,7 +1194,7 @@ function figCreateColorStyle(styles, genStyle) {
 }
 function figUpdateStyles(msg) {
     let curNodeId = NULL;
-    let figStyles = null;
+    let figStyles;
     for (const genStyle of msg.styles) {
         if (genStyle.nodeId != curNodeId) {
             curNodeId = genStyle.nodeId;
@@ -1193,21 +1202,23 @@ function figUpdateStyles(msg) {
             if (!figStyles)
                 figStyleArrays.push(figStyles = { nodeId: genStyle.nodeId, styles: [] });
         }
+        else
+            figStyles = null;
         const figStyle = figStyles.styles[0];
+        console.log('figStyle =', figStyle);
+        const existing = figStyle.getPluginData('existing');
         const paintStyles = figma.getLocalPaintStyles();
-        const removed = !paintStyles.find(s => {
-            const nodeId = s.getPluginData('nodeId');
-            return nodeId == genStyle.nodeId;
-        });
+        const removed = !paintStyles.find(s => genStyle.nodeId == s.getPluginData('nodeId'));
         if (isValid(figStyle)
             && removed)
             removeFrom(figStyles.styles, figStyle);
-        if (!isValid(figStyle)
-            || removed) // no existing style, create new style
+        if (!existing
+            && (!isValid(figStyle)
+                || removed)) // no existing style, create new style
             figCreateColorStyle(figStyles.styles, genStyle);
         else if (figStyle.getPluginData('type') == genStyle.type) // update existing style
             figUpdateColorStyle(figStyle, genStyle);
-        else // delete existing style, create new style
+        else if (!existing) // delete existing style, create new style
          {
             figStyle.remove();
             figCreateColorStyle(figStyles.styles, genStyle);

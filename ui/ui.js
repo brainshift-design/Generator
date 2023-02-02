@@ -38,9 +38,11 @@ function initLocalStylesMenu(styles, nodeId)
         if (style.paints.length == 1)
         {
             const rgb = style.paints[0];
-
             options.icon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="' + rgb2style(rgb) + '"/></svg>';
         }
+
+        if (style.existing)
+            options.enabled = false;
         
         options.callback = e => actionManager.do(
             new LinkExistingStyleAction(

@@ -2,6 +2,7 @@ class FigmaColorStyle
 extends FigmaObject
 {
     styleName;
+    existing;
 
 
 
@@ -21,6 +22,8 @@ extends FigmaObject
             this.nodeName);
 
         copy.copyBase(this);
+
+        copy.existing = this.existing;
 
         return copy;
     }

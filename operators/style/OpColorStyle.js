@@ -7,7 +7,6 @@ extends OperatorBase
     link;
 
     existing = false;
-    //picking  = false;
 
 
 
@@ -77,7 +76,11 @@ extends OperatorBase
             nodeId:  this.id, 
             paramId: NULL });
 
-        const [request, ignore] = this.genRequestStart(gen);
+
+        const options = (this.existing ? 1 : 0) << 21;
+
+
+        const [request, ignore] = this.genRequestStart(gen, options);
         if (ignore) return request;
 
                 
@@ -112,7 +115,9 @@ extends OperatorBase
     {
         super.updateHeader();
 
+
         this.header.style.height = '25px';
+
 
         if (this.paramValue.value.isValid())
         {
@@ -133,6 +138,7 @@ extends OperatorBase
             this.circle.style.background = 'transparent';
             this.circle.style.boxShadow  = '0 0 0 1px var(--figma-color-bg-tertiary) inset';
         }
+
 
         this.updateLinkIcon();
     }
