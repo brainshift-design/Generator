@@ -561,9 +561,7 @@ figma.ui.onmessage = msg => {
         case 'figStartGenerator':
             figStartGenerator();
             break;
-        case 'figPositionWindow':
-            figPositionWindow(msg.x, msg.y);
-            break;
+        //case 'figPositionWindow':                 figPositionWindow                   (msg.x, msg.y);                                break; 
         case 'figResizeWindow':
             figResizeWindow(msg.width, msg.height);
             break;
@@ -1233,7 +1231,6 @@ function figCreateColorStyle(styles, genStyle) {
     return figStyle;
 }
 function figUpdateStyles(msg) {
-    console.log('figUpdateStyles()');
     let curNodeId = NULL;
     let figStyles;
     for (const genStyle of msg.styles) {
@@ -1247,32 +1244,25 @@ function figUpdateStyles(msg) {
         }
         else
             figStyles = null;
-        console.assert(figStyles, 'figStyles should not be null here');
         const figStyle = figStyles.styles[0];
         const existing = figStyle && figStyle.getPluginData('existing');
         const localStyles = figma.getLocalPaintStyles();
         const localStyle = localStyles.find(s => s.getPluginData('nodeId') == genStyle.nodeId);
-        console.log('genStyle =', genStyle);
-        if (isValid(figStyle))
-            console.log('figStyle.getPluginData(\'type\') =', figStyle.getPluginData('type'));
         if (isValid(figStyle)
             && !localStyle) // removed
             removeFrom(figStyles.styles, figStyle);
         if (!isValid(figStyle)
             || !localStyle) // no existing style, create new style
          {
-            console.log('1');
             if (!existing)
                 figCreateColorStyle(figStyles.styles, genStyle);
         }
         else if (figStyle.getPluginData('type') == genStyle.type) // update existing style
          {
-            console.log('2');
             figUpdateColorStyle(localStyle, genStyle);
         }
         else // delete existing style, create new style
          {
-            console.log('3');
             if (!existing) {
                 localStyle.remove();
                 figCreateColorStyle(figStyles.styles, genStyle);
@@ -1311,22 +1301,23 @@ function setStylePaints(style, src) {
     else
         style.paints = [];
 }
-function figPositionWindow(x, y) {
-    // x = Math.floor(Math.max(0, x ));
-    // y = Math.floor(Math.max(0, y));
-    // figma.ui.resize(x, y);
-    // figma.ui.close();
-    // figma.showUI(
-    //     __html__,
-    //     {
-    //         visible:     false,
-    //         themeColors: true,
-    //         position: {x: x, y: y}
-    //     });
-    // figma.clientStorage.setAsync('windowWidth',  x);
-    // figma.clientStorage.setAsync('windowHeight', y);
-    figPostMessageToUI({ cmd: 'uiEndPositionWindow' });
-}
+//function figPositionWindow(x, y)
+//{
+// x = Math.floor(Math.max(0, x ));
+// y = Math.floor(Math.max(0, y));
+// figma.ui.resize(x, y);
+// figma.ui.close();
+// figma.showUI(
+//     __html__,
+//     {
+//         visible:     false,
+//         themeColors: true,
+//         position: {x: x, y: y}
+//     });
+// figma.clientStorage.setAsync('windowWidth',  x);
+// figma.clientStorage.setAsync('windowHeight', y);
+//    figPostMessageToUI({cmd: 'uiEndPositionWindow'});
+//}
 function figResizeWindow(width, height) {
     width = Math.floor(Math.max(0, width));
     height = Math.floor(Math.max(0, height));

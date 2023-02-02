@@ -51,6 +51,7 @@ function initLocalStylesMenu(styles, nodeId)
                 nodeId, 
                 style.name,
                 style.paints));
+
             
         menuLocalStyles.addItems([new MenuItem(style.name, options)]);
     }

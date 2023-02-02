@@ -12,6 +12,7 @@ class Menu
 
     div;
     divArrow;
+    //divScrollbar;
 
     showIcons;
     showChecks;
@@ -31,13 +32,18 @@ class Menu
 
     constructor(name, showIcons = true, showChecks = true)
     {
-        this.name              = name;
+        this.name       = name;
 
-        this.showIcons         = showIcons;
-        this.showChecks        = showChecks;
+        this.showIcons  = showIcons;
+        this.showChecks = showChecks;
 
-        this.div               = createDiv('menu');
-        this.divArrow          = createDiv('menuArrow');
+        this.divArrow     = createDiv('menuArrow');
+        this.div          = createDiv('menu');
+        this.divItems     = createDiv('menuItems');
+        //this.divScrollbar = createDiv('menuScrollbar');
+
+        this.div.appendChild(this.divItems);
+        //this.div.appendChild(this.divScrollbar);
 
         this.div.addEventListener('pointerenter', () => this.overMenu = true );
         this.div.addEventListener('pointerleave', () => this.overMenu = false);
@@ -49,8 +55,6 @@ class Menu
     {
         while (this.div.firstChild)
             this.div.removeChild(this.div.firstChild);
-        // for (const item of this.items)
-        //     this.div.removeChild(item.div);
 
         this.items    = [];
         this.lastItem = null;
@@ -76,7 +80,7 @@ class Menu
             item.parentMenu = this;
             item.index      = i;
 
-            this.div.appendChild(item.div);
+            this.divItems.appendChild(item.div);
         }
 
 
@@ -111,7 +115,7 @@ class Menu
         }
 
 
-        this.div.style.width = Math.max(100, width) + 'px';
+        this.divItems.style.width = Math.max(100, width) + 'px';
     }
 
 
@@ -155,7 +159,7 @@ class Menu
             ? srcRect.y - 3
             : srcRect.y + srcRect.height + this.divArrow.offsetHeight;
 
-
+            
         this.divArrow.style.left = srcRect.x + srcRect.width/2;
 
 
@@ -190,22 +194,19 @@ class Menu
 
         const margin = 8;
 
-        const left = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
+        const left   = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
 
-        let   top         = y - 4;
-        let   height      = this.div.offsetHeight;
+        let   top    = y - 4;
+        let   height = this.div.offsetHeight - 16;
 
         const graphHeight = graphView.offsetHeight - menuBar.offsetHeight;
         
         if (top + height > graphHeight-8)
         {
-            height = graphHeight-16;
-            top = menuBar.offsetHeight + Math.max(8, graphHeight - height);
+            height = graphHeight - 16;
+            top    = menuBar.offsetHeight + Math.max(8, graphHeight - height);
         }
 
-console.log('top =', top);
-console.log('left =', left);
-console.log('height =', height);
         
         this.div.style.left   = left;
         this.div.style.top    = top + 4;

@@ -46,6 +46,8 @@ extends OperatorBase
                     px:     e.clientX,
                     py:     e.clientY }); 
             }
+            else
+                e.stopPropagation();
         });
 
 
