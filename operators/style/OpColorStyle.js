@@ -27,7 +27,7 @@ extends OperatorBase
         }
 
 
-        this.circle = createDiv('styleCircle');
+        this.circle      = createDiv('styleCircle');
         this.circle.over = false;
 
         this.circle.addEventListener('pointerenter', e => { this.circle.over = true;  this.updateLinkIcon(); });
@@ -35,6 +35,8 @@ extends OperatorBase
 
         this.circle.addEventListener('pointerdown',  e => 
         { 
+            e.stopPropagation();
+
             if (   e.button == 0
                 && this.existing)
             {
@@ -46,8 +48,6 @@ extends OperatorBase
                     px:     e.clientX,
                     py:     e.clientY }); 
             }
-            else
-                e.stopPropagation();
         });
 
 

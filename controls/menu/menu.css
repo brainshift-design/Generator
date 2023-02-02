@@ -67,7 +67,7 @@
     font-family:      Inter;
     font-size:        11px;
     overflow-x:       hidden;
-    overflow-y:       hidden;
+    overflow-y:       scroll;
     color:            #eee;
     background-color: #1e1e1e;
 }
@@ -79,7 +79,7 @@
     min-width:        200px;
     width:            auto;
     height:           fit-content;
-    box-shadow:       0 0 0 1px red inset;
+    /* box-shadow:       0 0 0 1px red inset; */
 }
 
 

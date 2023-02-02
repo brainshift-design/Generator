@@ -53,8 +53,8 @@ class Menu
 
     clearItems()
     {
-        while (this.div.firstChild)
-            this.div.removeChild(this.div.firstChild);
+        while (this.divItems.firstChild)
+            this.divItems.removeChild(this.divItems.firstChild);
 
         this.items    = [];
         this.lastItem = null;
@@ -197,8 +197,8 @@ class Menu
         const left   = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
 
         let   top    = y - 4;
-        let   height = this.div.offsetHeight - 16;
-
+        let   height = this.divItems.children.length * 25;// - 16;
+console.log('height =', height);
         const graphHeight = graphView.offsetHeight - menuBar.offsetHeight;
         
         if (top + height > graphHeight-8)
@@ -210,7 +210,7 @@ class Menu
         
         this.div.style.left   = left;
         this.div.style.top    = top + 4;
-        this.div.style.height = height;
+        this.div.style.height = height + 'px';
 
 
         currentMenus.push(this);

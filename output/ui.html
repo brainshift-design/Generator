@@ -1171,7 +1171,7 @@ a
     font-family:      Inter;
     font-size:        11px;
     overflow-x:       hidden;
-    overflow-y:       hidden;
+    overflow-y:       scroll;
     color:            #eee;
     background-color: #1e1e1e;
 }
@@ -1183,7 +1183,7 @@ a
     min-width:        200px;
     width:            auto;
     height:           fit-content;
-    box-shadow:       0 0 0 1px red inset;
+    /* box-shadow:       0 0 0 1px red inset; */
 }
 
 
@@ -30954,8 +30954,8 @@ class Menu
 
     clearItems()
     {
-        while (this.div.firstChild)
-            this.div.removeChild(this.div.firstChild);
+        while (this.divItems.firstChild)
+            this.divItems.removeChild(this.divItems.firstChild);
 
         this.items    = [];
         this.lastItem = null;
@@ -31098,8 +31098,8 @@ class Menu
         const left   = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
 
         let   top    = y - 4;
-        let   height = this.div.offsetHeight - 16;
-
+        let   height = this.divItems.children.length * 25;// - 16;
+console.log('height =', height);
         const graphHeight = graphView.offsetHeight - menuBar.offsetHeight;
         
         if (top + height > graphHeight-8)
@@ -31111,7 +31111,7 @@ class Menu
         
         this.div.style.left   = left;
         this.div.style.top    = top + 4;
-        this.div.style.height = height;
+        this.div.style.height = height + 'px';
 
 
         currentMenus.push(this);
@@ -48982,7 +48982,7 @@ extends OperatorBase
         }
 
 
-        this.circle = createDiv('styleCircle');
+        this.circle      = createDiv('styleCircle');
         this.circle.over = false;
 
         this.circle.addEventListener('pointerenter', e => { this.circle.over = true;  this.updateLinkIcon(); });
@@ -48990,6 +48990,8 @@ extends OperatorBase
 
         this.circle.addEventListener('pointerdown',  e => 
         { 
+            e.stopPropagation();
+
             if (   e.button == 0
                 && this.existing)
             {
@@ -49001,8 +49003,6 @@ extends OperatorBase
                     px:     e.clientX,
                     py:     e.clientY }); 
             }
-            else
-                e.stopPropagation();
         });
 
 

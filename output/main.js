@@ -1182,6 +1182,7 @@ function figGetAllLocalColorStyles(nodeId, px, py) {
     const _styles = figma.getLocalPaintStyles();
     const styles = new Array();
     for (const _style of _styles) {
+        console.log('_style.type =', _style.type);
         const _existing = _style.getPluginData('existing');
         const existing = !!_existing;
         const style = {
@@ -1190,6 +1191,7 @@ function figGetAllLocalColorStyles(nodeId, px, py) {
             existing: existing,
             paints: new Array()
         };
+        let onlyPaint = true;
         for (const _paint of _style.paints) {
             if (_paint.type == 'SOLID') {
                 style.paints.push([
@@ -1198,8 +1200,13 @@ function figGetAllLocalColorStyles(nodeId, px, py) {
                     _paint.color.b
                 ]);
             }
+            else {
+                onlyPaint = false;
+                break;
+            }
         }
-        styles.push(style);
+        if (onlyPaint)
+            styles.push(style);
     }
     figPostMessageToUI({
         cmd: 'uiReturnFigGetAllLocalColorStyles',
