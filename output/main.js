@@ -462,8 +462,8 @@ function logReqNode(node, parse) {
     parse.log += parse.tab + node.type;
     parse.log += logReqNodeId(node);
 }
-var figObjectArrays = []; // {nodeId, [objects]}
-var figStyleArrays = []; // {nodeId, [styles]}
+var figObjectArrays = new Array(); // [ {nodeId, [objects]} ]
+var figStyleArrays = new Array(); // [ {nodeId, [styles]}  ]
 function figDeleteObjectsAndStylesFromNodeIds(nodeIds) {
     // styles are deleted first
     const paintStyles = figma.getLocalPaintStyles();
@@ -484,8 +484,8 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds) {
             s.setPluginData('existing', NULL);
         }
     });
-    figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
-    figStyleArrays = figStyleArrays.filter(a => !nodeIds.includes(a.nodeId));
+    figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a['nodeId']));
+    figStyleArrays = figStyleArrays.filter(a => !nodeIds.includes(a['nodeId']));
 }
 function figDeleteAllObjects() {
     for (const obj of figma.currentPage.children)
@@ -1182,16 +1182,15 @@ function figDeleteSavedConnectionsFromNode(nodeId) {
 }
 function figGetAllLocalColorStyles(nodeId, px, py) {
     const _styles = figma.getLocalPaintStyles();
-    const styles = [];
+    const styles = new Array();
     for (const _style of _styles) {
-        console.log('_style =', _style);
         const _existing = _style.getPluginData('existing');
         const existing = !!_existing;
         const style = {
             id: _style.id,
             name: _style.name,
             existing: existing,
-            paints: []
+            paints: new Array()
         };
         for (const _paint of _style.paints) {
             if (_paint.type == 'SOLID') {
@@ -1213,12 +1212,12 @@ function figGetAllLocalColorStyles(nodeId, px, py) {
     });
 }
 function figLinkNodeToExistingColorStyle(nodeId, styleName) {
-    let figStyles = figStyleArrays.find(a => a.nodeId == genStyle.nodeId);
+    let figStyles = figStyleArrays.find(a => a.nodeId == nodeId);
     console.assert(!figStyles, 'figStyles should not be found here');
     const _styles = figma.getLocalPaintStyles();
     const figStyle = _styles.find(s => s.name == styleName);
     console.assert(!!figStyle, 'figStyle should be found here');
-    figStyle.setPluginData('type', 'COLOR_STYLE');
+    figStyle.setPluginData('type', COLOR_STYLE);
     figStyle.setPluginData('nodeId', nodeId);
     figStyle.setPluginData('existing', boolToString(true));
     figStyleArrays.push({ nodeId: nodeId, styles: [figStyle] });
@@ -1234,37 +1233,50 @@ function figCreateColorStyle(styles, genStyle) {
     return figStyle;
 }
 function figUpdateStyles(msg) {
+    console.log('figUpdateStyles()');
     let curNodeId = NULL;
     let figStyles;
     for (const genStyle of msg.styles) {
         if (genStyle.nodeId != curNodeId) {
             curNodeId = genStyle.nodeId;
             figStyles = figStyleArrays.find(a => a.nodeId == genStyle.nodeId);
-            if (!figStyles)
-                figStyleArrays.push(figStyles = { nodeId: genStyle.nodeId, styles: [] });
+            if (!figStyles) {
+                figStyles = { nodeId: genStyle.nodeId, styles: [] };
+                figStyleArrays.push(figStyles);
+            }
         }
         else
             figStyles = null;
         console.assert(figStyles, 'figStyles should not be null here');
         const figStyle = figStyles.styles[0];
-        console.log('figStyle =', figStyle);
-        const existing = figStyle.getPluginData('existing');
-        // const existing = false;
-        const paintStyles = figma.getLocalPaintStyles();
-        const removed = !paintStyles.find(s => genStyle.nodeId == s.getPluginData('nodeId'));
+        const existing = figStyle && figStyle.getPluginData('existing');
+        const localStyles = figma.getLocalPaintStyles();
+        const localStyle = localStyles.find(s => s.getPluginData('nodeId') == genStyle.nodeId);
+        console.log('genStyle =', genStyle);
+        if (isValid(figStyle))
+            console.log('figStyle.getPluginData(\'type\') =', figStyle.getPluginData('type'));
         if (isValid(figStyle)
-            && removed)
+            && !localStyle) // removed
             removeFrom(figStyles.styles, figStyle);
-        if (!existing
-            && (!isValid(figStyle)
-                || removed)) // no existing style, create new style
-            figCreateColorStyle(figStyles.styles, genStyle);
-        else if (figStyle.getPluginData('type') == genStyle.type) // update existing style
-            figUpdateColorStyle(figStyle, genStyle);
-        else if (!existing) // delete existing style, create new style
+        if (!isValid(figStyle)
+            || !localStyle) // no existing style, create new style
          {
-            figStyle.remove();
-            figCreateColorStyle(figStyles.styles, genStyle);
+            console.log('1');
+            if (!existing)
+                figCreateColorStyle(figStyles.styles, genStyle);
+        }
+        else if (figStyle.getPluginData('type') == genStyle.type) // update existing style
+         {
+            console.log('2');
+            figUpdateColorStyle(localStyle, genStyle);
+        }
+        else // delete existing style, create new style
+         {
+            console.log('3');
+            if (!existing) {
+                localStyle.remove();
+                figCreateColorStyle(figStyles.styles, genStyle);
+            }
         }
     }
 }
@@ -1272,9 +1284,8 @@ function figUpdateColorStyle(figStyle, genStyle) {
     setStylePaints(figStyle, genStyle);
     figStyle.name = genStyle.nodeName;
 }
-///////////////////////////////////////////////////////////////////////////////////////////////////
 function getStylePaints(stylePaints) {
-    const paints = [];
+    const paints = new Array();
     for (const _paint of stylePaints) {
         const fill = _paint[1].split(' ');
         switch (_paint[0]) {

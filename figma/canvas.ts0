@@ -1,5 +1,5 @@
-var figObjectArrays = []; // {nodeId, [objects]}
-var figStyleArrays  = []; // {nodeId, [styles]}
+var figObjectArrays = new Array(); // [ {nodeId, [objects]} ]
+var figStyleArrays  = new Array(); // [ {nodeId, [styles]}  ]
 
 
 
@@ -18,7 +18,7 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds)
         .forEach(s => 
         {
             const nodeId   = s.getPluginData('nodeId');
-            const existing = parseBool(s.getPluginData('existing');
+            const existing = parseBool(s.getPluginData('existing'));
             
             if (!existing) 
                 s.remove();
@@ -33,8 +33,8 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds)
         });
 
 
-    figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
-    figStyleArrays  = figStyleArrays .filter(a => !nodeIds.includes(a.nodeId));
+    figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a['nodeId']));
+    figStyleArrays  = figStyleArrays .filter(a => !nodeIds.includes(a['nodeId']));
 }
 
 
