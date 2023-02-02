@@ -1177,6 +1177,7 @@ a
     top:              44px;
     font-family:      Inter;
     font-size:        11px;
+    overflow:         hidden;
 }
 
 
@@ -31086,22 +31087,24 @@ class Menu
 
         const left = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
 
-        let top    = y - 4;
-        let height = this.div.offsetHeight;
-        
-        if (height > graphView.offsetHeight-16)
-            height = graphView.offsetHeight-16;
+        let   top         = y - 4;
+        let   height      = this.div.offsetHeight;
 
-        if (top + height > graphView.offsetHeight-8)
-            top = Math.max(8, top - (graphView.offsetHeight-8 - height));
+        const graphHeight = graphView.offsetHeight - menuBar.offsetHeight;
+        
+        if (top + height > graphHeight-8)
+        {
+            height = graphHeight-16;
+            top = menuBar.offsetHeight + Math.max(8, graphHeight - height);
+        }
 
 console.log('top =', top);
 console.log('left =', left);
 console.log('height =', height);
         
         this.div.style.left   = left;
-        this.div.style.top    = top;
-        //this.div.style.height = height;
+        this.div.style.top    = top + 4;
+        this.div.style.height = height;
 
 
         currentMenus.push(this);
