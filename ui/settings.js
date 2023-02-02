@@ -179,7 +179,7 @@ function updateMenuItemShowDebugMenu()
     updateMenuItemDisplay(menuItemDebug.div, settings.showDebugMenu);
 }
 
-
+ 
 
 function updateMenuItemDisplay(menuItem, enable)
 {

@@ -168,7 +168,9 @@ class MenuItem
                 if (   this.callback
                     && this.childMenu)
                 {
-                    if (    e.clientX < this.div.offsetWidth - 23
+                    const bounds = this.div.getBoundingClientRect();
+
+                    if (    e.clientX - bounds.x < this.div.offsetWidth - 48
                         && !this.enteredDiv)
                     {
                         this.divHighlight.style.left  = 0;
@@ -179,7 +181,7 @@ class MenuItem
                         this.enteredDiv    = true;
                         this.enteredExpand = false;
                     }
-                    else if ( e.clientX >= this.div.offsetWidth - 23
+                    else if ( e.clientX - bounds.x >= this.div.offsetWidth - 48
                           && !this.enteredExpand)
                     {
                         this.divHighlight.style.left  = 'calc(100% - ' + (this.childMenu && this.callback ? 48 : 0) + 'px)';
