@@ -2827,6 +2827,39 @@ function moveInArray(array, from, to)
 }
 
 
+
+function removeFromArray(array, item)
+{
+    var index = array.indexOf(item);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
+
+function removeArrayFromArray(fromArray, array)
+{
+    for (const item of array)
+    {
+        var index = fromArray.indexOf(item);
+        
+        if (index > -1)
+            fromArray.splice(index, 1);
+    }
+}
+
+
+
+function removeFromArrayWhere(array, where)
+{
+    var index = array.findIndex(where);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
 function rgbHeaderFromType(type, active)
 {
     if (FLOW_TYPES.includes(type))
@@ -4535,39 +4568,6 @@ function arraysAreEqual(arr1, arr2)
 function arraysIntersect(array1, array2)
 {
     return array1.findIndex(i => array2.includes(i)) > -1;
-}
-
-
-
-function removeFromArray(array, item)
-{
-    var index = array.indexOf(item);
-    
-    if (index > -1)
-        array.splice(index, 1);
-}
-
-
-
-function removeArrayFromArray(fromArray, array)
-{
-    for (const item of array)
-    {
-        var index = fromArray.indexOf(item);
-        
-        if (index > -1)
-            fromArray.splice(index, 1);
-    }
-}
-
-
-
-function removeFromArrayWhere(array, where)
-{
-    var index = array.findIndex(where);
-    
-    if (index > -1)
-        array.splice(index, 1);
 }
 
 
@@ -13299,7 +13299,7 @@ const settings =
     debugMode:             false,
 
     autoConnectNewNodes:   true,
-    includeLxxColorSpaces: false,
+    includeLxxColorSpaces: true,
     showBoolValues:        true,
     showDebugMenu:         false,
 
@@ -18580,6 +18580,39 @@ function moveInArray(array, from, to)
 }
 
 
+
+function removeFromArray(array, item)
+{
+    var index = array.indexOf(item);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
+
+function removeArrayFromArray(fromArray, array)
+{
+    for (const item of array)
+    {
+        var index = fromArray.indexOf(item);
+        
+        if (index > -1)
+            fromArray.splice(index, 1);
+    }
+}
+
+
+
+function removeFromArrayWhere(array, where)
+{
+    var index = array.findIndex(where);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
 function rgbHeaderFromType(type, active)
 {
     if (FLOW_TYPES.includes(type))
@@ -20288,39 +20321,6 @@ function arraysAreEqual(arr1, arr2)
 function arraysIntersect(array1, array2)
 {
     return array1.findIndex(i => array2.includes(i)) > -1;
-}
-
-
-
-function removeFromArray(array, item)
-{
-    var index = array.indexOf(item);
-    
-    if (index > -1)
-        array.splice(index, 1);
-}
-
-
-
-function removeArrayFromArray(fromArray, array)
-{
-    for (const item of array)
-    {
-        var index = fromArray.indexOf(item);
-        
-        if (index > -1)
-            fromArray.splice(index, 1);
-    }
-}
-
-
-
-function removeFromArrayWhere(array, where)
-{
-    var index = array.findIndex(where);
-    
-    if (index > -1)
-        array.splice(index, 1);
 }
 
 
@@ -30676,7 +30676,7 @@ const settings =
     debugMode:             false,
 
     autoConnectNewNodes:   true,
-    includeLxxColorSpaces: false,
+    includeLxxColorSpaces: true,
     showBoolValues:        true,
     showDebugMenu:         false,
 
@@ -31933,7 +31933,7 @@ function initGeneratorMenus()
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',      {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                       }}),
-        menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces',    {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
+        //menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces',    {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues       ); updateMenuItemShowBoolValues();       }}),
                                         new MenuItem('',                            {separator: true}),   
         menuItemShowDebugMenu         = new MenuItem('Show debug menu',             {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu        ); updateMenuItemShowDebugMenu();        }})]);
@@ -32152,13 +32152,13 @@ function initGeneratorMenus()
     menuLocalStyles = new Menu('Local styles', true, false);
 
     
-    btnMain     = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain), callback: () => updatePanMode(false)});
-    btnFlow     = new MenuButton('', menuFlow,   {useMenuName: true, callback: () => updatePanMode(false)});
-    btnNumber   = new MenuButton('', menuNumber, {useMenuName: true, callback: () => updatePanMode(false)});
-    //btnString = new MenuButton('', menuString, {useMenuName: true, callback: () => updatePanMode(false)});
-    btnColor    = new MenuButton('', menuColor,  {useMenuName: true, callback: () => updatePanMode(false)});
-    btnStyle    = new MenuButton('', menuStyle,  {useMenuName: true, callback: () => updatePanMode(false)});
-    btnShape    = new MenuButton('', menuShape,  {useMenuName: true, callback: () => updatePanMode(false)});
+    btnMain     = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
+    btnFlow     = new MenuButton('', menuFlow,   {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
+    btnNumber   = new MenuButton('', menuNumber, {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
+    //btnString = new MenuButton('', menuString, {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
+    btnColor    = new MenuButton('', menuColor,  {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
+    btnStyle    = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
+    btnShape    = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
 
     btnHand    = new MenuButton('Hand tool', null, {callback: () => 
@@ -32181,6 +32181,9 @@ function initGeneratorMenus()
     btnZoom = new MenuButton('', menuZoom, { useMenuName: true, selectLast: false, highlight: () => currentMenus.includes(menuZoom) });
 
         
+
+    btnMain.div.style.paddingLeft = '6px';
+
     btnStyle.setIcon(iconStyle);
 
     btnZoom.div.style.position     = 'absolute';
@@ -50397,36 +50400,29 @@ extends Action
 
     styleName;
 
-    stylePaints = [];
+    paints = [];
 
 
 
-    constructor(nodeId, styleName, stylePaints)
+    constructor(nodeId, styleName, paints)
     {
         super('LINK STYLE \'' + nodeId + ' <-- ' + styleName + ')');
         
         this.affectsConnections = false;
 
-        this.nodeId      = nodeId;
-        this.styleName   = styleName;
-        this.stylePaints = [...stylePaints];
+        this.nodeId    = nodeId;
+        this.styleName = styleName;
+        this.paints    = [...paints];
     }
 
 
 
     do(updateNodes)
     {
-        this.node.name = this.styleName;
-
-        if (this.stylePaints.length > 0)
-        {
-            const c = this.stylePaints[0];
-
-            this.node.paramValue.setValue(ColorValue.fromRgb([
-                Math.round(c[0] * 0xff),
-                Math.round(c[1] * 0xff),
-                Math.round(c[2] * 0xff)]));
-        }
+        uiLinkNodeToExistingColorStyle(
+            this.node, 
+            this.styleName, 
+            this.paints);
 
         pushUnique(updateNodes, this.node);
 
@@ -54314,7 +54310,7 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
         if (settings.logObjectUpdates)
             logObjectUpdates([...objects]);
 
-        uiPostMessageToFigma({
+        uiQueueMessageToFigma({
             cmd:          'figUpdateObjects',
             updateNodeId:  updateNodeId,
             updateParamId: updateParamId,
@@ -54328,7 +54324,7 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
         if (settings.logStyleUpdates)
             logStyleUpdates([...styles]);
 
-        uiPostMessageToFigma({
+        uiQueueMessageToFigma({
             cmd:          'figUpdateStyles',
             updateNodeId:  updateNodeId,
             updateParamId: updateParamId,
@@ -54599,6 +54595,28 @@ function uiLogAllSavedConns()
 }
 
 
+
+function uiLinkNodeToExistingColorStyle(node, styleName, paints)
+{
+    node.name = styleName;
+
+    if (paints.length > 0)
+    {
+        const c = paints[0];
+
+        node.paramValue.setValue(ColorValue.fromRgb([
+            Math.round(c[0] * 0xff),
+            Math.round(c[1] * 0xff),
+            Math.round(c[2] * 0xff)]));
+    }
+
+    uiQueueMessageToFigma({
+        cmd:      'figLinkNodeToExistingColorStyle',
+        nodeId:    node.id,
+        styleName: styleName});
+}
+
+
 // function checkAddMenuItemProductKey(menuSelectItems)
 // {
 //     if (!validateProductKey(currentUser.id, productKey))
@@ -54642,9 +54660,11 @@ function initLocalStylesMenu(styles, nodeId)
             options.icon = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="8" fill="' + rgb2style(rgb) + '"/></svg>';
         }
 
-        if (style.existing)
+        if (   style.existing == undefined
+            || style.existing)
             options.enabled = false;
         
+            
         options.callback = e => actionManager.do(
             new LinkExistingStyleAction(
                 nodeId, 

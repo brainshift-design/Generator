@@ -191,7 +191,7 @@ function initGeneratorMenus()
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',      {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                       }}),
-        menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces',    {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
+        //menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces',    {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues       ); updateMenuItemShowBoolValues();       }}),
                                         new MenuItem('',                            {separator: true}),   
         menuItemShowDebugMenu         = new MenuItem('Show debug menu',             {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu        ); updateMenuItemShowDebugMenu();        }})]);
@@ -410,13 +410,13 @@ function initGeneratorMenus()
     menuLocalStyles = new Menu('Local styles', true, false);
 
     
-    btnMain     = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain), callback: () => updatePanMode(false)});
-    btnFlow     = new MenuButton('', menuFlow,   {useMenuName: true, callback: () => updatePanMode(false)});
-    btnNumber   = new MenuButton('', menuNumber, {useMenuName: true, callback: () => updatePanMode(false)});
-    //btnString = new MenuButton('', menuString, {useMenuName: true, callback: () => updatePanMode(false)});
-    btnColor    = new MenuButton('', menuColor,  {useMenuName: true, callback: () => updatePanMode(false)});
-    btnStyle    = new MenuButton('', menuStyle,  {useMenuName: true, callback: () => updatePanMode(false)});
-    btnShape    = new MenuButton('', menuShape,  {useMenuName: true, callback: () => updatePanMode(false)});
+    btnMain     = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
+    btnFlow     = new MenuButton('', menuFlow,   {useMenuName: true, highlight: () => currentMenus.includes(menuFlow  ), callback: () => updatePanMode(false)});
+    btnNumber   = new MenuButton('', menuNumber, {useMenuName: true, highlight: () => currentMenus.includes(menuNumber), callback: () => updatePanMode(false)});
+    //btnString = new MenuButton('', menuString, {useMenuName: true, highlight: () => currentMenus.includes(menuString), callback: () => updatePanMode(false)});
+    btnColor    = new MenuButton('', menuColor,  {useMenuName: true, highlight: () => currentMenus.includes(menuColor ), callback: () => updatePanMode(false)});
+    btnStyle    = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
+    btnShape    = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
 
     btnHand    = new MenuButton('Hand tool', null, {callback: () => 
@@ -439,6 +439,9 @@ function initGeneratorMenus()
     btnZoom = new MenuButton('', menuZoom, { useMenuName: true, selectLast: false, highlight: () => currentMenus.includes(menuZoom) });
 
         
+
+    btnMain.div.style.paddingLeft = '6px';
+
     btnStyle.setIcon(iconStyle);
 
     btnZoom.div.style.position     = 'absolute';

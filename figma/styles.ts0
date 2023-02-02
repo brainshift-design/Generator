@@ -24,7 +24,6 @@ function figGetAllLocalColorStyles(nodeId, px, py)
         {
             if (_paint.type == 'SOLID')
             {
-                console.log('_paint =', _paint);
                 style.paints.push([
                     _paint.color.r,
                     _paint.color.g,
@@ -43,6 +42,24 @@ function figGetAllLocalColorStyles(nodeId, px, py)
         px:     px,
         py:     py,
         styles: JSON.stringify(styles)});
+}
+
+
+
+function figLinkNodeToExistingColorStyle(nodeId, styleName)
+{
+    let figStyles = figStyleArrays.find(a => a.nodeId == genStyle.nodeId);
+    console.assert(!figStyles, 'figStyles should not be found here');
+
+    const _styles  = figma.getLocalPaintStyles();
+    const figStyle = _styles.find(s => s.name == styleName);
+    console.assert(!!figStyle, 'figStyle should be found here');
+
+    figStyle.setPluginData('type',     'COLOR_STYLE');
+    figStyle.setPluginData('nodeId',   nodeId);
+    figStyle.setPluginData('existing', boolToString(true));
+
+    figStyleArrays.push({nodeId: nodeId, styles: [figStyle]});
 }
 
 
@@ -89,10 +106,13 @@ function figUpdateStyles(msg)
         else
             figStyles = null;
 
+        console.assert(figStyles, 'figStyles should not be null here');
+        
 
         const figStyle = figStyles.styles[0];
         console.log('figStyle =', figStyle);
         const existing = figStyle.getPluginData('existing');
+        // const existing = false;
 
         
         const paintStyles = figma.getLocalPaintStyles();

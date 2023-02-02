@@ -889,7 +889,7 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
         if (settings.logObjectUpdates)
             logObjectUpdates([...objects]);
 
-        uiPostMessageToFigma({
+        uiQueueMessageToFigma({
             cmd:          'figUpdateObjects',
             updateNodeId:  updateNodeId,
             updateParamId: updateParamId,
@@ -903,7 +903,7 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
         if (settings.logStyleUpdates)
             logStyleUpdates([...styles]);
 
-        uiPostMessageToFigma({
+        uiQueueMessageToFigma({
             cmd:          'figUpdateStyles',
             updateNodeId:  updateNodeId,
             updateParamId: updateParamId,
@@ -1171,4 +1171,26 @@ function uiLogAllSavedConns()
         cmd:     'figLogAllSavedConns',
         settings: settings
     });
+}
+
+
+
+function uiLinkNodeToExistingColorStyle(node, styleName, paints)
+{
+    node.name = styleName;
+
+    if (paints.length > 0)
+    {
+        const c = paints[0];
+
+        node.paramValue.setValue(ColorValue.fromRgb([
+            Math.round(c[0] * 0xff),
+            Math.round(c[1] * 0xff),
+            Math.round(c[2] * 0xff)]));
+    }
+
+    uiQueueMessageToFigma({
+        cmd:      'figLinkNodeToExistingColorStyle',
+        nodeId:    node.id,
+        styleName: styleName});
 }

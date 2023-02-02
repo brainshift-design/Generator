@@ -249,6 +249,39 @@ function moveInArray(array, from, to)
 }
 
 
+
+function removeFromArray(array, item)
+{
+    var index = array.indexOf(item);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
+
+function removeArrayFromArray(fromArray, array)
+{
+    for (const item of array)
+    {
+        var index = fromArray.indexOf(item);
+        
+        if (index > -1)
+            fromArray.splice(index, 1);
+    }
+}
+
+
+
+function removeFromArrayWhere(array, where)
+{
+    var index = array.findIndex(where);
+    
+    if (index > -1)
+        array.splice(index, 1);
+}
+
+
 function rgbHeaderFromType(type, active)
 {
     if (FLOW_TYPES.includes(type))
@@ -1957,39 +1990,6 @@ function arraysAreEqual(arr1, arr2)
 function arraysIntersect(array1, array2)
 {
     return array1.findIndex(i => array2.includes(i)) > -1;
-}
-
-
-
-function removeFromArray(array, item)
-{
-    var index = array.indexOf(item);
-    
-    if (index > -1)
-        array.splice(index, 1);
-}
-
-
-
-function removeArrayFromArray(fromArray, array)
-{
-    for (const item of array)
-    {
-        var index = fromArray.indexOf(item);
-        
-        if (index > -1)
-            fromArray.splice(index, 1);
-    }
-}
-
-
-
-function removeFromArrayWhere(array, where)
-{
-    var index = array.findIndex(where);
-    
-    if (index > -1)
-        array.splice(index, 1);
 }
 
 
@@ -10721,7 +10721,7 @@ const settings =
     debugMode:             false,
 
     autoConnectNewNodes:   true,
-    includeLxxColorSpaces: false,
+    includeLxxColorSpaces: true,
     showBoolValues:        true,
     showDebugMenu:         false,
 

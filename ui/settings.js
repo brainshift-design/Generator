@@ -4,7 +4,7 @@ const settings =
     debugMode:             false,
 
     autoConnectNewNodes:   true,
-    includeLxxColorSpaces: false,
+    includeLxxColorSpaces: true,
     showBoolValues:        true,
     showDebugMenu:         false,
 

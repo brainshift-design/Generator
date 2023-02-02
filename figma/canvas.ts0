@@ -15,7 +15,22 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds)
 
     paintStyles
         .filter(s => nodeIds.includes(s.getPluginData('nodeId')))
-        .forEach(s => s.remove());
+        .forEach(s => 
+        {
+            const nodeId   = s.getPluginData('nodeId');
+            const existing = parseBool(s.getPluginData('existing');
+            
+            if (!existing) 
+                s.remove();
+            else
+            {
+                removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
+
+                s.setPluginData('type',     NULL);
+                s.setPluginData('nodeId',   NULL);
+                s.setPluginData('existing', NULL);
+            }
+        });
 
 
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));

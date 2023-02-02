@@ -228,39 +228,6 @@ function arraysIntersect(array1, array2)
 
 
 
-function removeFromArray(array, item)
-{
-    var index = array.indexOf(item);
-    
-    if (index > -1)
-        array.splice(index, 1);
-}
-
-
-
-function removeArrayFromArray(fromArray, array)
-{
-    for (const item of array)
-    {
-        var index = fromArray.indexOf(item);
-        
-        if (index > -1)
-            fromArray.splice(index, 1);
-    }
-}
-
-
-
-function removeFromArrayWhere(array, where)
-{
-    var index = array.findIndex(where);
-    
-    if (index > -1)
-        array.splice(index, 1);
-}
-
-
-
 function isLastInArray(array, item)
 {
     return array.indexOf(item) == array.length-1;

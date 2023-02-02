@@ -6,36 +6,29 @@ extends Action
 
     styleName;
 
-    stylePaints = [];
+    paints = [];
 
 
 
-    constructor(nodeId, styleName, stylePaints)
+    constructor(nodeId, styleName, paints)
     {
         super('LINK STYLE \'' + nodeId + ' <-- ' + styleName + ')');
         
         this.affectsConnections = false;
 
-        this.nodeId      = nodeId;
-        this.styleName   = styleName;
-        this.stylePaints = [...stylePaints];
+        this.nodeId    = nodeId;
+        this.styleName = styleName;
+        this.paints    = [...paints];
     }
 
 
 
     do(updateNodes)
     {
-        this.node.name = this.styleName;
-
-        if (this.stylePaints.length > 0)
-        {
-            const c = this.stylePaints[0];
-
-            this.node.paramValue.setValue(ColorValue.fromRgb([
-                Math.round(c[0] * 0xff),
-                Math.round(c[1] * 0xff),
-                Math.round(c[2] * 0xff)]));
-        }
+        uiLinkNodeToExistingColorStyle(
+            this.node, 
+            this.styleName, 
+            this.paints);
 
         pushUnique(updateNodes, this.node);
 
