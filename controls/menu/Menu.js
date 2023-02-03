@@ -95,18 +95,24 @@ class Menu
         if (this.init)
             this.init();
 
+            
+        utilContext.font = '12px Inter';
 
+        
         let width = 0;
-
-        utilContext.font = '13px Inter';
-
 
         for (const item of this.items)
         {
             const mesName     = utilContext.measureText(item.name);
             const mesShortcut = utilContext.measureText(item.shortcut);
 
-            width = Math.max(width, mesName.width + mesShortcut.width + 30);
+            width = Math.max(
+                width, 
+                  (item.parentMenu.showChecks ? 32 : 0)
+                + (item.parentMenu.showIcons  ? 32 : 0)
+                + mesName.width 
+                + mesShortcut.width 
+                + 30);
         }
 
         
