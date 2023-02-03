@@ -407,7 +407,7 @@ function initGeneratorMenus()
     };
 
 
-    menuLocalStyles = new Menu('Local styles', true, false);
+    menuLocalStyles = new Menu('Local styles', true, true);
 
     
     btnMain     = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});

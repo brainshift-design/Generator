@@ -28,8 +28,11 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
 function initLocalStylesMenu(styles, nodeId)
 {
-    menuLocalStyles.clearItems();
+    const node = nodeFromId(nodeId);
+    console.assert(node.type == COLOR_STYLE, 'node must be COLOR_STYLE');
 
+
+    menuLocalStyles.clearItems();
 
     for (const style of styles)
     {
@@ -44,16 +47,20 @@ function initLocalStylesMenu(styles, nodeId)
         if (   style.existing == undefined
             || style.existing)
             options.enabled = false;
-        
-            
-        options.callback = e => actionManager.do(
+
+        options.callback = () => actionManager.do(
             new LinkExistingStyleAction(
                 nodeId, 
                 style.name,
                 style.paints));
-
             
-        menuLocalStyles.addItems([new MenuItem(style.name, options)]);
+        const item = new MenuItem(style.name, options);
+
+        item.setChecked(
+               style.name != NULL 
+            && style.name == node.linkedStyle);
+
+        menuLocalStyles.addItems([item]);
     }
 
 
@@ -61,7 +68,7 @@ function initLocalStylesMenu(styles, nodeId)
         new MenuItem('',     {separator: true}),   
         new MenuItem('None', {
             callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, [])),
-            enabled:  nodeFromId(nodeId).linkedStyle != NULL})
+            enabled:  node.linkedStyle != NULL})
     ]);
 }
 
