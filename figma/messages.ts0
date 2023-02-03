@@ -45,7 +45,7 @@ figma.ui.onmessage = msg =>
         case 'figRemovePluginDataFromAllLocalStyles': figRemovePluginDataFromAllLocalStyles();                                            break;
 
         case 'figGetAllLocalColorStyles':             figGetAllLocalColorStyles            (msg.nodeId, msg.px, msg.py);                  break;
-        case 'figLinkNodeToExistingColorStyle':       figLinkNodeToExistingColorStyle      (msg.nodeId, msg.styleName);                   break;
+        case 'figLinkNodeToExistingColorStyle':       figLinkNodeToExistingColorStyle      (msg.nodeId, msg.styleId);                     break;
      
         case 'figUpdateObjects':                      figUpdateObjects                     (msg);                                         break;
         case 'figUpdateStyles':                       figUpdateStyles                      (msg);                                         break;

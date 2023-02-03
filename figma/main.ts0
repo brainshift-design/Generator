@@ -8,9 +8,9 @@
 
 
 //figma.on('selectionchange', figOnSelectionChange);
-//figma.on('documentchange',  figOnDocumentChange);
 
-figma.on('close',           figOnPluginClose);
+figma.on('documentchange', figOnDocumentChange);
+figma.on('close',          figOnPluginClose);
 
 
 figma.showUI(

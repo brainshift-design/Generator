@@ -23,13 +23,32 @@
 
 
 
-// function figOnDocumentChange(e)
-// {
-//     for (const change of e.documentChanges)
-//     {
-//         console.log('change =', change);
-//     }
-// }
+function figOnDocumentChange(e)
+{
+    for (const change of e.documentChanges)
+    {
+        switch (change.type)
+        {
+            // case STYLE_CREATE: 
+            //    break;
+
+            case 'STYLE_PROPERTY_CHANGE': 
+                figPostMessageToUI({
+                    cmd:       'uiStylePropertyChange',
+                    styleId:    change.id,
+                    properties: change.properties });
+  
+                break;
+            
+            case 'STYLE_DELETE':
+                figPostMessageToUI({
+                    cmd:    'uiStyleDelete',
+                    styleId: change.id });
+
+                break;
+        }
+    }
+}
 
 
 

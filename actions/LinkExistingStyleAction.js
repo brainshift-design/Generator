@@ -4,35 +4,40 @@ extends Action
     nodeId;
     get node() { return nodeFromId(this.nodeId) } 
 
+    styleId;
     styleName;
     paints;
 
+    prevStyleId;
     prevStyleName;
     prevPaints;
 
 
 
-    constructor(nodeId, styleName, paints)
+    constructor(nodeId, styleId, styleName, paints)
     {
         super('LINK STYLE \'' + nodeId + ' ⟶ ' + styleName + ')');
         
         this.affectsConnections = false;
 
         this.nodeId    = nodeId;
+        this.styleId   = styleId;
         this.styleName = styleName;
-        this.paints    = [...paints];
+
+        this.paints  = [...paints];
     }
 
 
 
     do(updateNodes)
     {
-        this.prevStyleName = this.node.linkedStyle;
-        this.prevPaints    = [this.node.paramValue.value.toRgb()];
+        this.prevStyleId = this.node.linkedStyleId;
+        this.prevPaints  = [this.node.paramValue.value.toRgb()];
         
         uiLinkNodeToExistingColorStyle(
             this.node, 
-            this.styleName, 
+            this.styleId, 
+            this.styleName,
             [...this.paints]);
 
         pushUnique(updateNodes, this.node);
@@ -46,7 +51,8 @@ extends Action
     {
         uiLinkNodeToExistingColorStyle(
             this.node, 
-            this.prevStyleName, 
+            this.prevStyleId, 
+            this.prevStyleName,
             [...this.prevPaints]);
 
         this.node.updateNode();

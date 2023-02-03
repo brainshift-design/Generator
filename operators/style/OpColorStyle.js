@@ -6,8 +6,10 @@ extends OperatorBase
     circle;
     link;
 
-    existing    = false;
-    linkedStyle = NULL;
+    existing        = false;
+
+    linkedStyleId   = NULL;
+    linkedStyleName = NULL;
 
 
 
@@ -188,8 +190,8 @@ extends OperatorBase
         const tab = TAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"existing": "'    + boolToString(this.existing) + '"'
-             + ',\n' + pos + tab + '"linkedStyle": "' + this.linkedStyle            + '"';
+             + ',\n' + pos + tab + '"existing": "'      + boolToString(this.existing) + '"'
+             + ',\n' + pos + tab + '"linkedStyleId": "' + this.linkedStyleId          + '"';
     }
 
 
@@ -201,12 +203,12 @@ extends OperatorBase
             if (_node.existing != undefined) 
                 this.existing = isTrue(_node.existing);
             
-            this.linkedStyle = _node.linkedStyle;
+            this.linkedStyleId = _node.linkedStyleId;
         }
         else
         {
-            this.existing    = false;
-            this.linkedStyle = NULL;
+            this.existing      = false;
+            this.linkedStyleId = NULL;
         }
 
 

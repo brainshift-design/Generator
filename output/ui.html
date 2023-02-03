@@ -48989,8 +48989,10 @@ extends OperatorBase
     circle;
     link;
 
-    existing    = false;
-    linkedStyle = NULL;
+    existing        = false;
+
+    linkedStyleId   = NULL;
+    linkedStyleName = NULL;
 
 
 
@@ -49171,8 +49173,8 @@ extends OperatorBase
         const tab = TAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"existing": "'    + boolToString(this.existing) + '"'
-             + ',\n' + pos + tab + '"linkedStyle": "' + this.linkedStyle            + '"';
+             + ',\n' + pos + tab + '"existing": "'      + boolToString(this.existing) + '"'
+             + ',\n' + pos + tab + '"linkedStyleId": "' + this.linkedStyleId          + '"';
     }
 
 
@@ -49184,12 +49186,12 @@ extends OperatorBase
             if (_node.existing != undefined) 
                 this.existing = isTrue(_node.existing);
             
-            this.linkedStyle = _node.linkedStyle;
+            this.linkedStyleId = _node.linkedStyleId;
         }
         else
         {
-            this.existing    = false;
-            this.linkedStyle = NULL;
+            this.existing      = false;
+            this.linkedStyleId = NULL;
         }
 
 
@@ -50455,35 +50457,40 @@ extends Action
     nodeId;
     get node() { return nodeFromId(this.nodeId) } 
 
+    styleId;
     styleName;
     paints;
 
+    prevStyleId;
     prevStyleName;
     prevPaints;
 
 
 
-    constructor(nodeId, styleName, paints)
+    constructor(nodeId, styleId, styleName, paints)
     {
         super('LINK STYLE \'' + nodeId + ' ⟶ ' + styleName + ')');
         
         this.affectsConnections = false;
 
         this.nodeId    = nodeId;
+        this.styleId   = styleId;
         this.styleName = styleName;
-        this.paints    = [...paints];
+
+        this.paints  = [...paints];
     }
 
 
 
     do(updateNodes)
     {
-        this.prevStyleName = this.node.linkedStyle;
-        this.prevPaints    = [this.node.paramValue.value.toRgb()];
+        this.prevStyleId = this.node.linkedStyleId;
+        this.prevPaints  = [this.node.paramValue.value.toRgb()];
         
         uiLinkNodeToExistingColorStyle(
             this.node, 
-            this.styleName, 
+            this.styleId, 
+            this.styleName,
             [...this.paints]);
 
         pushUnique(updateNodes, this.node);
@@ -50497,7 +50504,8 @@ extends Action
     {
         uiLinkNodeToExistingColorStyle(
             this.node, 
-            this.prevStyleName, 
+            this.prevStyleId, 
+            this.prevStyleName,
             [...this.prevPaints]);
 
         this.node.updateNode();
@@ -52504,18 +52512,22 @@ onmessage = e =>
 
     switch (msg.cmd)
     {
-        case 'uiReturnFigMessage':                uiReturnFigMessage               (msg.msgCmd); break;
-                        
-        case 'uiReturnFigStartGenerator':         uiReturnFigStartGenerator        (msg);        break;
-                  
-        case 'uiReturnFigLoadNodesAndConns':      uiReturnFigLoadNodesAndConns     (msg);        break;
-                  
-        case 'uiReturnFigGetLocalData':           uiReturnFigGetLocalData          (msg);        break;
-        case 'uiReturnFigGetPageData':            uiReturnFigGetPageData           (msg);        break;
-                        
-        case 'uiReturnFigResizeWindow':           uiReturnFigResizeWindow          ();           break;
-
-        case 'uiReturnFigGetAllLocalColorStyles': uiReturnFigGetAllLocalColorStyles(msg);        break;
+        case 'uiStylePropertyChange':                   uiStylePropertyChange                  (msg);        break;
+        case 'uiStyleDelete':                           uiStyleDelete                          (msg);        break;
+            
+        case 'uiReturnFigMessage':                      uiReturnFigMessage                     (msg.msgCmd); break;
+                                    
+        case 'uiReturnFigStartGenerator':               uiReturnFigStartGenerator              (msg);        break;
+                              
+        case 'uiReturnFigLoadNodesAndConns':            uiReturnFigLoadNodesAndConns           (msg);        break;
+                              
+        case 'uiReturnFigGetLocalData':                 uiReturnFigGetLocalData                (msg);        break;
+        case 'uiReturnFigGetPageData':                  uiReturnFigGetPageData                 (msg);        break;
+                                    
+        case 'uiReturnFigResizeWindow':                 uiReturnFigResizeWindow                ();           break;
+            
+        case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);        break;
+        case 'uiReturnFigLinkNodeToExistingColorStyle': uiReturnFigLinkNodeToExistingColorStyle(msg);        break;
     }
 }    
 
@@ -54661,19 +54673,21 @@ function uiLogAllSavedConns()
 }
 
 
-
-function uiLinkNodeToExistingColorStyle(node, styleName, paints)
+function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
 {
+    console.log('styleId =', styleId);
+    
+    node.linkedStyleId   = styleId;
+    node.linkedStyleName = styleName;
+
+
     node.name =
         styleName != NULL
         ? styleName
         : node.defShortName;
 
-        
-    node.linkedStyle = styleName;
 
-
-    if (styleName != NULL)
+    if (styleId != NULL)
     {
         if (paints.length > 0)
         {
@@ -54692,26 +54706,36 @@ function uiLinkNodeToExistingColorStyle(node, styleName, paints)
 
 
     uiQueueMessageToFigma({
-        cmd:      'figLinkNodeToExistingColorStyle',
-        nodeId:    node.id,
-        styleName: styleName});
+        cmd:    'figLinkNodeToExistingColorStyle',
+        nodeId:  node.id,
+        styleId: styleId});
 }
 
 
-// function checkAddMenuItemProductKey(menuSelectItems)
-// {
-//     if (!validateProductKey(currentUser.id, productKey))
-//         menuSelectItems.push({value: 'productKey', text: 'Enter product key'});
-// }
+
+function uiStylePropertyChange(msg)
+{
+    //console.log('msg =', msg);
+}
 
 
 
-// function removeMenuItemProductKey()
-// {
-//     let index = menuSelect.items.findIndex(item => item.value == 'productKey');
-//     removeAt(menuSelect.items, index);
-//     menuSelect.updateItems();
-// }
+function uiStyleDelete(msg)
+{
+    console.log('msg =', msg);
+    const node = graph.nodes.find(n => 
+    {
+        console.log('n =', n);
+
+        return n.type == COLOR_STYLE 
+            && n.linkedStyleId == msg.styleId;
+    });
+
+    console.log('node =', node);
+
+    if (node)
+        uiLinkNodeToExistingColorStyle(node, NULL, '', []);
+}
 
 
 
@@ -54750,7 +54774,8 @@ function initLocalStylesMenu(styles, nodeId)
 
         options.callback = () => actionManager.do(
             new LinkExistingStyleAction(
-                nodeId, 
+                nodeId,
+                style.id, 
                 style.name,
                 style.paints));
             
@@ -54765,10 +54790,30 @@ function initLocalStylesMenu(styles, nodeId)
     menuLocalStyles.addItems([
         new MenuItem('',     {separator: true}),   
         new MenuItem('None', {
-            callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, [])),
+            callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, '', [])),
             enabled:  node.linkedStyle != NULL})
     ]);
 }
+
+
+
+
+
+
+// function checkAddMenuItemProductKey(menuSelectItems)
+// {
+//     if (!validateProductKey(currentUser.id, productKey))
+//         menuSelectItems.push({value: 'productKey', text: 'Enter product key'});
+// }
+
+
+
+// function removeMenuItemProductKey()
+// {
+//     let index = menuSelect.items.findIndex(item => item.value == 'productKey');
+//     removeAt(menuSelect.items, index);
+//     menuSelect.updateItems();
+// }
 
 
 
