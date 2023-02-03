@@ -17,7 +17,7 @@ extends OperatorBase
         this.inert = true;
 
 
-        this.addParam(this.paramValue = new ColorParam('value', '', false, true, false, ColorValue.fromRgb(rgbDefaultFill)));
+        this.addParam(this.paramValue = new ColorParam('value', '', false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
 
 
         if (!!options.existing)

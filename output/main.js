@@ -561,7 +561,7 @@ figma.ui.onmessage = msg => {
         case 'figStartGenerator':
             figStartGenerator();
             break;
-        //case 'figPositionWindow':                 figPositionWindow                   (msg.x, msg.y);                                break; 
+        //case 'figPositionWindow':                   figPositionWindow                    (msg.x, msg.y);                                break; 
         case 'figResizeWindow':
             figResizeWindow(msg.width, msg.height);
             break;
@@ -631,6 +631,9 @@ figma.ui.onmessage = msg => {
         case 'figDeleteSavedConnectionsFromNode':
             figDeleteSavedConnectionsFromNode(msg.nodeId);
             break;
+        case 'figRemovePluginDataFromAllLocalStyles':
+            figRemovePluginDataFromAllLocalStyles();
+            break;
         case 'figGetAllLocalColorStyles':
             figGetAllLocalColorStyles(msg.nodeId, msg.px, msg.py);
             break;
@@ -646,7 +649,7 @@ figma.ui.onmessage = msg => {
         case 'figDeleteObjectsAndStyles':
             figDeleteObjectsAndStylesFromNodeIds(msg.nodeIds);
             break;
-        //case 'figDeleteStyles':                 figDeleteStylesFromNodeIds          (msg.nodeIds);                                 break; 
+        //case 'figDeleteStyles':                     figDeleteStylesFromNodeIds           (msg.nodeIds);                                 break; 
     }
     figPostMessageToUI({
         cmd: 'uiReturnFigMessage',
@@ -1176,6 +1179,14 @@ function figDeleteSavedConnectionsFromNode(nodeId) {
         const parts = key.split(' ');
         if (parts[1] == nodeId)
             figClearPageData(key);
+    }
+}
+function figRemovePluginDataFromAllLocalStyles() {
+    const localStyles = figma.getLocalPaintStyles();
+    for (const style of localStyles) {
+        style.setPluginData('type', '');
+        style.setPluginData('nodeId', '');
+        style.setPluginData('existing', '');
     }
 }
 function figGetAllLocalColorStyles(nodeId, px, py) {

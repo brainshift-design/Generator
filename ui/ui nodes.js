@@ -1145,6 +1145,15 @@ function uiRemoveAllSavedNodesAndConns()
 
 
 
+function uiRemovePluginDataFromAllLocalStyles()
+{
+    uiQueueMessageToFigma({
+        cmd: 'figRemovePluginDataFromAllLocalStyles'
+    });
+}
+
+
+
 function uiLogAllSavedNodesAndConns()
 {
     uiQueueMessageToFigma({

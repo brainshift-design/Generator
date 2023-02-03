@@ -915,51 +915,52 @@ figma.ui.onmessage = msg =>
     
     switch (msg.cmd)
     {
-        case 'figStartGenerator':                 figStartGenerator                   ();                                            break;
-                
-        //case 'figPositionWindow':                 figPositionWindow                   (msg.x, msg.y);                                break; 
-        case 'figResizeWindow':                   figResizeWindow                     (msg.width, msg.height);                       break; 
-        case 'figNotify':                         figNotify                           (msg.text, msg.prefix, msg.delay, msg.error);  break;
+        case 'figStartGenerator':                     figStartGenerator                    ();                                            break;
+                     
+        //case 'figPositionWindow':                   figPositionWindow                    (msg.x, msg.y);                                break; 
+        case 'figResizeWindow':                       figResizeWindow                      (msg.width, msg.height);                       break; 
+        case 'figNotify':                             figNotify                            (msg.text, msg.prefix, msg.delay, msg.error);  break;
+     
+        case 'figGetLocalData':                       figGetLocalData                      (msg.key);                                     break;
+        case 'figSetLocalData':                       figSetLocalData                      (msg.key, msg.value);                          break;
+     
+        case 'figClearAllLocalData':                  figClearAllLocalData                 ();                                            break;
+     
+        case 'figGetPageData':                        figGetPageData                       (msg.key);                                     break;
+        case 'figSetPageData':                        figSetPageData                       (msg.key, msg.value);                          break;
+     
+        case 'figLoadNodesAndConns':                  figLoadNodesAndConns                 (msg.dataMode);                                break;
+        case 'figSaveNodes':                          figSaveNodes                         (msg.nodeIds, msg.nodeJson);                   break;        
+     
+        case 'figRemoveConnsToNodes':                 figRemoveConnsToNodes                (msg.nodeIds);                                 break;
+        case 'figRemoveSavedNodesAndConns':           figRemoveSavedNodesAndConns          (msg.nodeIds);                                 break;
+        case 'figRemoveAllSavedNodesAndConns':        figRemoveAllSavedNodesAndConns       ();                                            break;
+     
+        case 'figLogAllSavedNodesAndConns':           figLogAllSavedNodesAndConns          ();                                            break;
+        case 'figLogAllSavedNodes':                   figLogAllSavedNodes                  ();                                            break;
+        case 'figLogAllSavedConns':                   figLogAllSavedConns                  ();                                            break;
+     
+        case 'figLogAllSavedConnKeys':                figLogAllSavedConnKeys               ();                                            break;
+     
+        case 'figSaveConnection':                     figSaveConnection                    (msg.key, msg.json);                           break;
+        case 'figSaveConnections':                    figSaveConnections                   (msg.keys, msg.json);                          break;
+        case 'figUpdateSavedConnections':             figUpdateSavedConnections            (msg.curKeys, msg.newKeys, msg.json);          break;
+        case 'figDeleteSavedConnection':              figDeleteSavedConnection             (msg.key);                                     break;
+     
+        case 'figRemoveAllSavedConnections':          figRemoveAllSavedConnections         ();                                            break;
+        case 'figDeleteSavedConnectionsToNode':       figDeleteSavedConnectionsToNode      (msg.nodeId);                                  break;
+        case 'figDeleteSavedConnectionsFromNode':     figDeleteSavedConnectionsFromNode    (msg.nodeId);                                  break;
+        case 'figRemovePluginDataFromAllLocalStyles': figRemovePluginDataFromAllLocalStyles();                                            break;
 
-        case 'figGetLocalData':                   figGetLocalData                     (msg.key);                                     break;
-        case 'figSetLocalData':                   figSetLocalData                     (msg.key, msg.value);                          break;
-
-        case 'figClearAllLocalData':              figClearAllLocalData                ();                                            break;
-
-        case 'figGetPageData':                    figGetPageData                      (msg.key);                                     break;
-        case 'figSetPageData':                    figSetPageData                      (msg.key, msg.value);                          break;
-
-        case 'figLoadNodesAndConns':              figLoadNodesAndConns                (msg.dataMode);                                break;
-        case 'figSaveNodes':                      figSaveNodes                        (msg.nodeIds, msg.nodeJson);                   break;        
-
-        case 'figRemoveConnsToNodes':             figRemoveConnsToNodes               (msg.nodeIds);                                 break;
-        case 'figRemoveSavedNodesAndConns':       figRemoveSavedNodesAndConns         (msg.nodeIds);                                 break;
-        case 'figRemoveAllSavedNodesAndConns':    figRemoveAllSavedNodesAndConns      ();                                            break;
-
-        case 'figLogAllSavedNodesAndConns':       figLogAllSavedNodesAndConns         ();                                            break;
-        case 'figLogAllSavedNodes':               figLogAllSavedNodes                 ();                                            break;
-        case 'figLogAllSavedConns':               figLogAllSavedConns                 ();                                            break;
-
-        case 'figLogAllSavedConnKeys':            figLogAllSavedConnKeys              ();                                            break;
-
-        case 'figSaveConnection':                 figSaveConnection                   (msg.key, msg.json);                           break;
-        case 'figSaveConnections':                figSaveConnections                  (msg.keys, msg.json);                          break;
-        case 'figUpdateSavedConnections':         figUpdateSavedConnections           (msg.curKeys, msg.newKeys, msg.json);          break;
-        case 'figDeleteSavedConnection':          figDeleteSavedConnection            (msg.key);                                     break;
-
-        case 'figRemoveAllSavedConnections':      figRemoveAllSavedConnections        ();                                            break;
-        case 'figDeleteSavedConnectionsToNode':   figDeleteSavedConnectionsToNode     (msg.nodeId);                                  break;
-        case 'figDeleteSavedConnectionsFromNode': figDeleteSavedConnectionsFromNode   (msg.nodeId);                                  break;
-
-        case 'figGetAllLocalColorStyles':         figGetAllLocalColorStyles           (msg.nodeId, msg.px, msg.py);                  break;
-        case 'figLinkNodeToExistingColorStyle':   figLinkNodeToExistingColorStyle     (msg.nodeId, msg.styleName);                   break;
-
-        case 'figUpdateObjects':                  figUpdateObjects                    (msg);                                         break;
-        case 'figUpdateStyles':                   figUpdateStyles                     (msg);                                         break;
-
-        case 'figDeleteObjectsAndStyles':         figDeleteObjectsAndStylesFromNodeIds(msg.nodeIds);                                 break; 
-
-        //case 'figDeleteStyles':                 figDeleteStylesFromNodeIds          (msg.nodeIds);                                 break; 
+        case 'figGetAllLocalColorStyles':             figGetAllLocalColorStyles            (msg.nodeId, msg.px, msg.py);                  break;
+        case 'figLinkNodeToExistingColorStyle':       figLinkNodeToExistingColorStyle      (msg.nodeId, msg.styleName);                   break;
+     
+        case 'figUpdateObjects':                      figUpdateObjects                     (msg);                                         break;
+        case 'figUpdateStyles':                       figUpdateStyles                      (msg);                                         break;
+     
+        case 'figDeleteObjectsAndStyles':             figDeleteObjectsAndStylesFromNodeIds (msg.nodeIds);                                 break; 
+    
+        //case 'figDeleteStyles':                     figDeleteStylesFromNodeIds           (msg.nodeIds);                                 break; 
     }
 
     
@@ -1876,6 +1877,20 @@ function figDeleteSavedConnectionsFromNode(nodeId)
 
         if (parts[1] == nodeId)
             figClearPageData(key);        
+    }
+}
+
+
+
+function figRemovePluginDataFromAllLocalStyles()
+{
+    const localStyles = figma.getLocalPaintStyles();
+
+    for (const style of localStyles)
+    {
+        style.setPluginData('type',     '');
+        style.setPluginData('nodeId',   '');
+        style.setPluginData('existing', '');
     }
 }
 

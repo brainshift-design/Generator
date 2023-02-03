@@ -19,6 +19,7 @@ var genMessagePosted = false;
 //uiRemoveConnsToNodes(['num3']);
 //uiRemoveSavedNodesAndConns(['color']);
 //uiRemoveAllSavedNodesAndConns();
+//uiRemovePluginDataFromAllLocalStyles();
 
 
 

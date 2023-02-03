@@ -108,10 +108,10 @@ class Menu
             const mesName     = utilContext.measureText(item.name);
             const mesShortcut = utilContext.measureText(item.shortcut);
 
-            width = Math.max(width, mesName.width + mesShortcut.width + 30);
+            width = Math.max(width, (mesName.width + mesShortcut.width) * 1.1 + 30);
         }
 
-
+        
         this.divItems.style.width = Math.max(100, width) + 'px';
     }
 
@@ -200,7 +200,7 @@ class Menu
         
         if (top + height > graphHeight-8)
         {
-            height = graphHeight - 16;
+            height = Math.min(height, graphHeight - 16);
             top    = menuBar.offsetHeight + Math.max(8, graphHeight - height);
         }
 

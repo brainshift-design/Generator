@@ -320,3 +320,17 @@ function figDeleteSavedConnectionsFromNode(nodeId)
             figClearPageData(key);        
     }
 }
+
+
+
+function figRemovePluginDataFromAllLocalStyles()
+{
+    const localStyles = figma.getLocalPaintStyles();
+
+    for (const style of localStyles)
+    {
+        style.setPluginData('type',     '');
+        style.setPluginData('nodeId',   '');
+        style.setPluginData('existing', '');
+    }
+}
