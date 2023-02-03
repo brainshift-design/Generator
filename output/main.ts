@@ -1956,9 +1956,10 @@ function figLinkNodeToExistingColorStyle(nodeId, styleName)
 
     if (styleName != NULL)
     {
-        let figStyles = figStyleArrays.find(a => a.nodeId == nodeId);
-        console.assert(!figStyles, 'figStyles should not be found here');
+        const figStyles = figStyleArrays.find(a => a.nodeId == nodeId);
+        if (figStyles) figClearColorStyle(localStyles, nodeId);
 
+        
         const figStyle = localStyles.find(s => s.name == styleName);
         console.assert(!!figStyle, 'figStyle should be found here');
 
@@ -1970,15 +1971,22 @@ function figLinkNodeToExistingColorStyle(nodeId, styleName)
     }
     else
     {
-        const figStyle = localStyles.find(s => s.getPluginData('nodeId') == nodeId);
-        console.assert(!!figStyle, 'figStyle should be found here');
-
-        figStyle.setPluginData('type',     NULL);
-        figStyle.setPluginData('nodeId',   NULL);
-        figStyle.setPluginData('existing', NULL);
-
-        removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
+        figClearColorStyle(localStyles, nodeId);
     }
+}
+
+
+
+function figClearColorStyle(localStyles, nodeId)
+{
+    const figStyle = localStyles.find(s => s.getPluginData('nodeId') == nodeId);
+    console.assert(!!figStyle, 'figStyle should be found here');
+
+    figStyle.setPluginData('type',     NULL);
+    figStyle.setPluginData('nodeId',   NULL);
+    figStyle.setPluginData('existing', NULL);
+
+    removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
 }
 
 
