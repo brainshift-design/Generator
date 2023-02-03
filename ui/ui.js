@@ -54,7 +54,7 @@ function initLocalStylesMenu(styles, nodeId)
                 style.name,
                 style.paints));
             
-        const item = new MenuItem(style.name, options);
+        const item = new MenuItem(style.name.replaceAll('/', ' / '), options);
 
         item.setChecked(
                style.name != NULL 

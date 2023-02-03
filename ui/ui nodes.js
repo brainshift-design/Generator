@@ -1186,8 +1186,11 @@ function uiLogAllSavedConns()
 
 function uiLinkNodeToExistingColorStyle(node, styleName, paints)
 {
-    if (styleName != NULL)
-        node.name = styleName;
+    node.name =
+        styleName != NULL
+        ? styleName
+        : node.defShortName;
+
         
     node.linkedStyle = styleName;
 

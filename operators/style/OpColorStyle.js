@@ -188,15 +188,18 @@ extends OperatorBase
         const tab = TAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"existing": "' + boolToString(this.existing) + '"';
+             + ',\n' + pos + tab + '"existing": "'    + boolToString(this.existing) + '"'
+             + ',\n' + pos + tab + '"linkedStyle": "' + this.linkedStyle            + '"';
     }
 
 
 
     loadParams(_node)
     {
-        if (_node.existing != undefined)
+        if (_node.existing != undefined) 
             this.existing = isTrue(_node.existing);
+        
+        this.linkedStyle = _node.linkedStyle;
 
         super.loadParams(_node);
     }

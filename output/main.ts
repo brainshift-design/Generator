@@ -1954,25 +1954,29 @@ function figLinkNodeToExistingColorStyle(nodeId, styleName)
 {
     const localStyles = figma.getLocalPaintStyles();
 
-    if (styleName != NULL)
-    {
-        const figStyles = figStyleArrays.find(a => a.nodeId == nodeId);
-        if (figStyles) figClearColorStyle(localStyles, nodeId);
+    if (styleName != NULL) figLinkColorStyle(localStyles, nodeId, styleName);
+    else                   figClearColorStyle(localStyles, nodeId);
+}
 
-        
-        const figStyle = localStyles.find(s => s.name == styleName);
-        console.assert(!!figStyle, 'figStyle should be found here');
 
-        figStyle.setPluginData('type',     COLOR_STYLE);
-        figStyle.setPluginData('nodeId',   nodeId);
-        figStyle.setPluginData('existing', boolToString(true));
 
-        figStyleArrays.push({nodeId: nodeId, styles: [figStyle]});
-    }
-    else
-    {
+function figLinkColorStyle(localStyles, nodeId, styleName, clearExisting = true)
+{
+    const figStyles = figStyleArrays.find(a => a.nodeId == nodeId);
+    
+    if (   figStyles 
+        && clearExisting) 
         figClearColorStyle(localStyles, nodeId);
-    }
+
+
+    const figStyle = localStyles.find(s => s.name == styleName);
+    console.assert(!!figStyle, 'figStyle should be found here');
+
+    figStyle.setPluginData('type',     COLOR_STYLE);
+    figStyle.setPluginData('nodeId',   nodeId);
+    figStyle.setPluginData('existing', boolToString(true));
+
+    figStyleArrays.push({nodeId: nodeId, styles: [figStyle]});
 }
 
 
