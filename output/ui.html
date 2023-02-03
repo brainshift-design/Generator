@@ -41692,6 +41692,8 @@ class Operator
 
         this.label.style.fontWeight = 
             this.active 
+            && (   this.headerInputs .length > 0
+                || this.headerOutputs.length > 0)
             ? (graphView.zoom < 1.2 ? '900' : 'bold') 
             : (graphView.zoom < 1.2 ? '600' : 'normal');
     }
