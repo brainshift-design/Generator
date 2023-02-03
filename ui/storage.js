@@ -258,7 +258,8 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
                 _nodes, 
                 i, 
                 Math.min(i + chunkSize, _nodes.length), // exclusive
-                nodes);
+                nodes,
+                false);
 
             setProgress(i / (_nodes.length + (_conns ? _conns.length : 0)));
             return res;
@@ -361,13 +362,13 @@ function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false
 
 
 
-function resolveNodes(_nodes, first, last, nodes)
+function resolveNodes(_nodes, first, last, nodes, pasting)
 {
     return new Promise(resolve => 
         requestAnimationFrame(() => 
         {
             for (let i = first; i < last; i++)
-                nodes.push(loadNode(_nodes[i]));
+                nodes.push(loadNode(_nodes[i], pasting));
 
             resolve(nodes);
         }));
@@ -412,24 +413,24 @@ function resolveConnections(nodes, _connections, first, last)
 
 
 
-function loadNodes(data)
+function loadNodes(data, pasting)
 {
     const nodes = [];
     
     for (let i = 0; i < data.nodes.length; i++)
-        nodes.push(loadNode(data.nodes[i]));
+        nodes.push(loadNode(data.nodes[i], pasting));
 
     return nodes;
 }
 
 
 
-function loadNode(_node)
+function loadNode(_node, pasting)
 {
     const node = createNode(_node.type);
 
 
-    node.loadFromParsedJson(_node);
+    node.loadFromParsedJson(_node, pasting);
 
 
     setNodePosition(

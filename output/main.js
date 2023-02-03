@@ -1193,10 +1193,12 @@ function figGetAllLocalColorStyles(nodeId, px, py) {
     const _styles = figma.getLocalPaintStyles();
     const styles = new Array();
     for (const _style of _styles) {
+        const _nodeId = _style.getPluginData('nodeId');
         const _existing = _style.getPluginData('existing');
         const existing = !!_existing;
         const style = {
             id: _style.id,
+            nodeId: _nodeId,
             name: _style.name,
             existing: existing,
             paints: new Array()

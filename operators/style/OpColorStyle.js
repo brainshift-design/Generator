@@ -6,9 +6,9 @@ extends OperatorBase
     circle;
     link;
 
+    existing    = false;
     linkedStyle = NULL;
 
-    existing    = false;
 
 
 
@@ -194,13 +194,22 @@ extends OperatorBase
 
 
 
-    loadParams(_node)
+    loadParams(_node, pasting)
     {
-        if (_node.existing != undefined) 
-            this.existing = isTrue(_node.existing);
-        
-        this.linkedStyle = _node.linkedStyle;
+        if (!pasting)
+        {
+            if (_node.existing != undefined) 
+                this.existing = isTrue(_node.existing);
+            
+            this.linkedStyle = _node.linkedStyle;
+        }
+        else
+        {
+            this.existing    = false;
+            this.linkedStyle = NULL;
+        }
 
-        super.loadParams(_node);
+
+        super.loadParams(_node, pasting);
     }
 }

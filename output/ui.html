@@ -41675,7 +41675,7 @@ class Operator
         updateHeaderLabelOffset(this);
 
 
-        const colors = this.getHeaderColors();//          = Operator.prototype.getHeaderColors.call(this);
+        const colors = this.getHeaderColors();
 
         
         let fontSize = 11;
@@ -41702,9 +41702,6 @@ class Operator
 
     updateHeaderInputsAndOutputs()
     {
-        // console.log('this.inputs',  this.inputs);
-        // console.log('this.outputs', this.outputs);
-
         const inputs          = this.headerInputs;
 
         const connectedInputs = inputs.filter(i => i.connected);
@@ -41877,7 +41874,7 @@ class Operator
 
 
 
-    loadFromParsedJson(_node)
+    loadFromParsedJson(_node, pasting)
     {
         this.id   = _node.id;
         this.name = _node.name;
@@ -41887,12 +41884,12 @@ class Operator
     
         if (   _node.params
             || this.alwaysLoadParams)
-            this.loadParams(_node);
+            this.loadParams(_node, pasting);
     }
 
 
 
-    loadParams(_node)
+    loadParams(_node, pasting)
     {
         if (!_node.params)
             return;
@@ -42305,12 +42302,12 @@ extends OperatorWithValue
 
 
 
-    loadParams(_node)
+    loadParams(_node, pasting)
     {
         if (_node.onlySymbol != undefined)
             this._showOnlySymbol = isTrue(_node.onlySymbol);
 
-        super.loadParams(_node);
+        super.loadParams(_node, pasting);
     }
 }
 
@@ -46169,9 +46166,9 @@ extends OpColorBase
 
 
 
-    loadParams(_node)
+    loadParams(_node, pasting)
     {
-        super.loadParams(_node);
+        super.loadParams(_node, pasting);
 
 
         if (_node.colorBeforeNaN)
@@ -48992,9 +48989,9 @@ extends OperatorBase
     circle;
     link;
 
+    existing    = false;
     linkedStyle = NULL;
 
-    existing    = false;
 
 
 
@@ -49180,14 +49177,23 @@ extends OperatorBase
 
 
 
-    loadParams(_node)
+    loadParams(_node, pasting)
     {
-        if (_node.existing != undefined) 
-            this.existing = isTrue(_node.existing);
-        
-        this.linkedStyle = _node.linkedStyle;
+        if (!pasting)
+        {
+            if (_node.existing != undefined) 
+                this.existing = isTrue(_node.existing);
+            
+            this.linkedStyle = _node.linkedStyle;
+        }
+        else
+        {
+            this.existing    = false;
+            this.linkedStyle = NULL;
+        }
 
-        super.loadParams(_node);
+
+        super.loadParams(_node, pasting);
     }
 }
 
@@ -53052,7 +53058,8 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
                 _nodes, 
                 i, 
                 Math.min(i + chunkSize, _nodes.length), // exclusive
-                nodes);
+                nodes,
+                false);
 
             setProgress(i / (_nodes.length + (_conns ? _conns.length : 0)));
             return res;
@@ -53155,13 +53162,13 @@ function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false
 
 
 
-function resolveNodes(_nodes, first, last, nodes)
+function resolveNodes(_nodes, first, last, nodes, pasting)
 {
     return new Promise(resolve => 
         requestAnimationFrame(() => 
         {
             for (let i = first; i < last; i++)
-                nodes.push(loadNode(_nodes[i]));
+                nodes.push(loadNode(_nodes[i], pasting));
 
             resolve(nodes);
         }));
@@ -53206,24 +53213,24 @@ function resolveConnections(nodes, _connections, first, last)
 
 
 
-function loadNodes(data)
+function loadNodes(data, pasting)
 {
     const nodes = [];
     
     for (let i = 0; i < data.nodes.length; i++)
-        nodes.push(loadNode(data.nodes[i]));
+        nodes.push(loadNode(data.nodes[i], pasting));
 
     return nodes;
 }
 
 
 
-function loadNode(_node)
+function loadNode(_node, pasting)
 {
     const node = createNode(_node.type);
 
 
-    node.loadFromParsedJson(_node);
+    node.loadFromParsedJson(_node, pasting);
 
 
     setNodePosition(
@@ -54126,8 +54133,9 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
     }
 
 
-    const nodes = loadNodes(data);
+    const nodes = loadNodes(data, true);
 
+    
     // get the new names of the nodes after they've been added
     for (let i = 0; i < nodes.length; i++)
     {
@@ -54147,18 +54155,6 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
     graphView.selectedNodes = nodes;
 
 
-    // if there are no active nodes, activate terminals
-    // if (!nodes.find(n => n.active))
-    // {
-    //     const terminals = [];
-
-    //     for (const node of nodes)
-    //         pushUnique(terminals, getTerminalsAfterNode(node));
-
-    //     terminals.forEach(n => n.makeActive());
-    // }
-
-    
     graphView.loadingNodes = false;
     finishLoadingNodes(data.nodes, nodes, updateNodes, true);
 
@@ -54751,9 +54747,7 @@ function initLocalStylesMenu(styles, nodeId)
             
         const item = new MenuItem(style.name.replaceAll('/', ' / '), options);
 
-        item.setChecked(
-               style.name != NULL 
-            && style.name == node.linkedStyle);
+        item.setChecked(style.nodeId == node.id);
 
         menuLocalStyles.addItems([item]);
     }

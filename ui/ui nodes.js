@@ -653,8 +653,9 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
     }
 
 
-    const nodes = loadNodes(data);
+    const nodes = loadNodes(data, true);
 
+    
     // get the new names of the nodes after they've been added
     for (let i = 0; i < nodes.length; i++)
     {
@@ -674,18 +675,6 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
     graphView.selectedNodes = nodes;
 
 
-    // if there are no active nodes, activate terminals
-    // if (!nodes.find(n => n.active))
-    // {
-    //     const terminals = [];
-
-    //     for (const node of nodes)
-    //         pushUnique(terminals, getTerminalsAfterNode(node));
-
-    //     terminals.forEach(n => n.makeActive());
-    // }
-
-    
     graphView.loadingNodes = false;
     finishLoadingNodes(data.nodes, nodes, updateNodes, true);
 

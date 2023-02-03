@@ -792,7 +792,7 @@ class Operator
         updateHeaderLabelOffset(this);
 
 
-        const colors = this.getHeaderColors();//          = Operator.prototype.getHeaderColors.call(this);
+        const colors = this.getHeaderColors();
 
         
         let fontSize = 11;
@@ -819,9 +819,6 @@ class Operator
 
     updateHeaderInputsAndOutputs()
     {
-        // console.log('this.inputs',  this.inputs);
-        // console.log('this.outputs', this.outputs);
-
         const inputs          = this.headerInputs;
 
         const connectedInputs = inputs.filter(i => i.connected);
@@ -994,7 +991,7 @@ class Operator
 
 
 
-    loadFromParsedJson(_node)
+    loadFromParsedJson(_node, pasting)
     {
         this.id   = _node.id;
         this.name = _node.name;
@@ -1004,12 +1001,12 @@ class Operator
     
         if (   _node.params
             || this.alwaysLoadParams)
-            this.loadParams(_node);
+            this.loadParams(_node, pasting);
     }
 
 
 
-    loadParams(_node)
+    loadParams(_node, pasting)
     {
         if (!_node.params)
             return;

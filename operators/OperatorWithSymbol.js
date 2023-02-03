@@ -118,11 +118,11 @@ extends OperatorWithValue
 
 
 
-    loadParams(_node)
+    loadParams(_node, pasting)
     {
         if (_node.onlySymbol != undefined)
             this._showOnlySymbol = isTrue(_node.onlySymbol);
 
-        super.loadParams(_node);
+        super.loadParams(_node, pasting);
     }
 }

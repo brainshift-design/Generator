@@ -56,9 +56,7 @@ function initLocalStylesMenu(styles, nodeId)
             
         const item = new MenuItem(style.name.replaceAll('/', ' / '), options);
 
-        item.setChecked(
-               style.name != NULL 
-            && style.name == node.linkedStyle);
+        item.setChecked(style.nodeId == node.id);
 
         menuLocalStyles.addItems([item]);
     }

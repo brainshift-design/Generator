@@ -619,9 +619,9 @@ extends OpColorBase
 
 
 
-    loadParams(_node)
+    loadParams(_node, pasting)
     {
-        super.loadParams(_node);
+        super.loadParams(_node, pasting);
 
 
         if (_node.colorBeforeNaN)
