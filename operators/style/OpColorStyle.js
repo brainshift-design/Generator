@@ -6,7 +6,9 @@ extends OperatorBase
     circle;
     link;
 
-    existing = false;
+    linkedStyle = NULL;
+
+    existing    = false;
 
 
 

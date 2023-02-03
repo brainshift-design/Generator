@@ -55,6 +55,14 @@ function initLocalStylesMenu(styles, nodeId)
             
         menuLocalStyles.addItems([new MenuItem(style.name, options)]);
     }
+
+
+    menuLocalStyles.addItems([
+        new MenuItem('',     {separator: true}),   
+        new MenuItem('None', {
+            callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, [])),
+            enabled:  nodeFromId(nodeId).linkedStyle != NULL})
+    ]);
 }
 
 

@@ -61,12 +61,9 @@ class Menu
 
     addItems(items)
     {
-        this.items = [...items];
-
-
-        for (let i = 0; i < this.items.length; i++)
+        for (let i = 0; i < items.length; i++)
         {
-            const item = this.items[i];
+            const item = items[i];
 
             if (i > 0) 
                 item.div.appendChild(document.createElement('br'));
@@ -77,6 +74,7 @@ class Menu
             item.parentMenu = this;
             item.index      = i;
 
+            this.items.push(item);
             this.divItems.appendChild(item.div);
         }
 
@@ -108,7 +106,7 @@ class Menu
             const mesName     = utilContext.measureText(item.name);
             const mesShortcut = utilContext.measureText(item.shortcut);
 
-            width = Math.max(width, (mesName.width + mesShortcut.width) * 1.1 + 30);
+            width = Math.max(width, mesName.width + mesShortcut.width + 30);
         }
 
         
@@ -192,9 +190,13 @@ class Menu
         const margin = 8;
 
         const left   = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
-
         let   top    = y - 4;
-        let   height = this.divItems.children.length * 25;
+
+
+        let height = 0;
+        for (const item of this.items)
+            height += item.separator ? 17 : 25;
+
 
         const graphHeight = graphView.offsetHeight - menuBar.offsetHeight;
         

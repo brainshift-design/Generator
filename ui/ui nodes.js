@@ -1186,17 +1186,29 @@ function uiLogAllSavedConns()
 
 function uiLinkNodeToExistingColorStyle(node, styleName, paints)
 {
-    node.name = styleName;
+    if (styleName != NULL)
+        node.name = styleName;
+        
+    node.linkedStyle = styleName;
 
-    if (paints.length > 0)
+
+    if (styleName != NULL)
     {
-        const c = paints[0];
+        if (paints.length > 0)
+        {
+            const c = paints[0];
 
-        node.paramValue.setValue(ColorValue.fromRgb([
-            Math.round(c[0] * 0xff),
-            Math.round(c[1] * 0xff),
-            Math.round(c[2] * 0xff)]));
+            node.paramValue.setValue(ColorValue.fromRgb([
+                Math.round(c[0] * 0xff),
+                Math.round(c[1] * 0xff),
+                Math.round(c[2] * 0xff)]));
+        }
     }
+    else
+    {
+        node.paramValue.setValue(ColorValue.NaN);
+    }
+
 
     uiQueueMessageToFigma({
         cmd:      'figLinkNodeToExistingColorStyle',

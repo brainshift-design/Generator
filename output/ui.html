@@ -30981,12 +30981,9 @@ class Menu
 
     addItems(items)
     {
-        this.items = [...items];
-
-
-        for (let i = 0; i < this.items.length; i++)
+        for (let i = 0; i < items.length; i++)
         {
-            const item = this.items[i];
+            const item = items[i];
 
             if (i > 0) 
                 item.div.appendChild(document.createElement('br'));
@@ -30997,6 +30994,7 @@ class Menu
             item.parentMenu = this;
             item.index      = i;
 
+            this.items.push(item);
             this.divItems.appendChild(item.div);
         }
 
@@ -31028,7 +31026,7 @@ class Menu
             const mesName     = utilContext.measureText(item.name);
             const mesShortcut = utilContext.measureText(item.shortcut);
 
-            width = Math.max(width, (mesName.width + mesShortcut.width) * 1.1 + 30);
+            width = Math.max(width, mesName.width + mesShortcut.width + 30);
         }
 
         
@@ -31112,9 +31110,13 @@ class Menu
         const margin = 8;
 
         const left   = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
-
         let   top    = y - 4;
-        let   height = this.divItems.children.length * 25;
+
+
+        let height = 0;
+        for (const item of this.items)
+            height += item.separator ? 17 : 25;
+
 
         const graphHeight = graphView.offsetHeight - menuBar.offsetHeight;
         
@@ -48983,7 +48985,9 @@ extends OperatorBase
     circle;
     link;
 
-    existing = false;
+    linkedStyle = NULL;
+
+    existing    = false;
 
 
 
@@ -54645,17 +54649,29 @@ function uiLogAllSavedConns()
 
 function uiLinkNodeToExistingColorStyle(node, styleName, paints)
 {
-    node.name = styleName;
+    if (styleName != NULL)
+        node.name = styleName;
+        
+    node.linkedStyle = styleName;
 
-    if (paints.length > 0)
+
+    if (styleName != NULL)
     {
-        const c = paints[0];
+        if (paints.length > 0)
+        {
+            const c = paints[0];
 
-        node.paramValue.setValue(ColorValue.fromRgb([
-            Math.round(c[0] * 0xff),
-            Math.round(c[1] * 0xff),
-            Math.round(c[2] * 0xff)]));
+            node.paramValue.setValue(ColorValue.fromRgb([
+                Math.round(c[0] * 0xff),
+                Math.round(c[1] * 0xff),
+                Math.round(c[2] * 0xff)]));
+        }
     }
+    else
+    {
+        node.paramValue.setValue(ColorValue.NaN);
+    }
+
 
     uiQueueMessageToFigma({
         cmd:      'figLinkNodeToExistingColorStyle',
@@ -54721,6 +54737,14 @@ function initLocalStylesMenu(styles, nodeId)
             
         menuLocalStyles.addItems([new MenuItem(style.name, options)]);
     }
+
+
+    menuLocalStyles.addItems([
+        new MenuItem('',     {separator: true}),   
+        new MenuItem('None', {
+            callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, [])),
+            enabled:  nodeFromId(nodeId).linkedStyle != NULL})
+    ]);
 }
 
 
