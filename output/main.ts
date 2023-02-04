@@ -301,6 +301,13 @@ function removeFromArrayWhere(array, where)
 }
 
 
+
+function localStyleId(styleId)
+{
+    return styleId.split(',')[0] + ',';
+}
+
+
 const NAN_CHAR            = '?';
 const NAN_DISPLAY         = '?';
 
@@ -2007,13 +2014,16 @@ function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true)
 function figClearColorStyle(localStyles, nodeId)
 {
     const figStyle = localStyles.find(s => s.getPluginData('nodeId') == nodeId);
-    console.assert(!!figStyle, 'figStyle should be found here');
+    //console.assert(!!figStyle, 'figStyle should be found here');
 
-    figStyle.setPluginData('type',     NULL);
-    figStyle.setPluginData('nodeId',   NULL);
-    figStyle.setPluginData('existing', NULL);
+    if (figStyle) // could have been deleted
+    {
+        figStyle.setPluginData('type',     NULL);
+        figStyle.setPluginData('nodeId',   NULL);
+        figStyle.setPluginData('existing', NULL);
 
-    removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
+        removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
+    }
 
     return figStyle;
 }

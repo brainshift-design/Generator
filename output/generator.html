@@ -282,6 +282,13 @@ function removeFromArrayWhere(array, where)
 }
 
 
+
+function localStyleId(styleId)
+{
+    return styleId.split(',')[0] + ',';
+}
+
+
 function rgbHeaderFromType(type, active)
 {
     if (FLOW_TYPES.includes(type))

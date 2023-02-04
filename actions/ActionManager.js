@@ -97,6 +97,15 @@ class ActionManager
 
 
 
+    clear()
+    {
+        this.actions       = [];
+        this.redoActions   = [];
+        this.updateActions = [];
+    }
+
+
+
     doAction(act, redo)
     {
         if (settings.logActions)

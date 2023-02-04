@@ -276,3 +276,10 @@ function removeFromArrayWhere(array, where)
     if (index > -1)
         array.splice(index, 1);
 }
+
+
+
+function localStyleId(styleId)
+{
+    return styleId.split(',')[0] + ',';
+}
