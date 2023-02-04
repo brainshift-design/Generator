@@ -56,7 +56,7 @@ figma.ui.onmessage = msg =>
     }
 
     
-    figPostMessageToUI({
+    figPostMessageToUi({
         cmd:   'uiReturnFigMessage',
         msgCmd: msg.cmd });
 }
@@ -68,7 +68,7 @@ figma.ui.onmessage = msg =>
 // to UI -->
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-function figPostMessageToUI(msg)
+function figPostMessageToUi(msg)
 {
     figma.ui.postMessage(JSON.stringify(msg));
 }
@@ -82,7 +82,7 @@ function figPostMessageToUI(msg)
 
 // function figPostMessageToGenerator(msg)
 // {
-//     figPostMessageToUI({
+//     figPostMessageToUi({
 //         cmd: 'uiForwardToGen',
 //         msg:  msg
 //     });

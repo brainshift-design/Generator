@@ -1,3 +1,7 @@
+var styleChangingFromGenerator = false;
+
+
+
 //function figOnSelectionChange(e)
 //{
     /*  Every time a selection changes, check that all objects in the object table
@@ -33,21 +37,43 @@ function figOnDocumentChange(e)
             //    break;
 
             case 'STYLE_PROPERTY_CHANGE': 
-                figPostMessageToUI({
-                    cmd:       'uiStylePropertyChange',
-                    styleId:    change.id,
-                    properties: change.properties });
-  
+            {
+                if (!styleChangingFromGenerator)
+                {
+                    const msg = {
+                        cmd:       'uiStylePropertyChange',
+                        styleId:    change.id,
+                        properties: change.properties,
+                        name:       '',
+                        paints:     [] };
+    
+
+                    for (const prop of change.properties)
+                    {
+                        switch (prop)
+                        {
+                            case 'name':  msg.name   = change.style.name;   break;
+                            case 'paint': msg.paints = change.style.paints; break;
+                        }
+                    }
+
+
+                    figPostMessageToUi(msg);
+                }
+                
                 break;
-            
+            }
+
             case 'STYLE_DELETE':
-                figPostMessageToUI({
+                figPostMessageToUi({
                     cmd:    'uiStyleDelete',
                     styleId: change.id });
 
                 break;
         }
     }
+
+    styleChangingFromGenerator = false;
 }
 
 

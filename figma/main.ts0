@@ -43,7 +43,7 @@ function figStartGenerator()
         figma.ui.show();
 
         
-        figPostMessageToUI({
+        figPostMessageToUi({
             cmd:        'uiReturnFigStartGenerator',
             currentUser: figma.currentUser,
             productKey:  productKey });

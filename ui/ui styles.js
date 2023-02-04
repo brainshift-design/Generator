@@ -1,19 +1,3 @@
-function uiStyleDelete(msg)
-{
-    const node = graph.nodes.find(n => 
-           n.type == COLOR_STYLE 
-        && n.linkedStyleId == localStyleId(msg.styleId));
-
-
-    if (node)
-    {
-        uiLinkNodeToExistingColorStyle(node, NULL, '', []);
-        actionManager.clear();
-    }
-}
-
-
-
 function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
 {
     node.linkedStyleId   = styleId;
@@ -57,7 +41,61 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
 
 function uiStylePropertyChange(msg)
 {
-    //console.log('msg =', msg);
+    const node = graph.nodes.find(n => 
+           n.type == COLOR_STYLE 
+        && n.linkedStyleId == localStyleId(msg.styleId));
+
+
+    for (const prop of msg.properties)
+    {
+        switch (prop)
+        {
+            case 'name':
+                node.name = msg.name;
+                break;
+
+            case 'paint':
+                if (msg.paints.length > 0)
+                {
+                    const paint = msg.paints[0];
+
+                    if (paint.type == 'SOLID')
+                    {
+                        const c = paint.color;
+
+                        node.paramValue.setValue(ColorValue.fromRgb([
+                            Math.round(c.r * 0xff),
+                            Math.round(c.g * 0xff),
+                            Math.round(c.b * 0xff)]));
+                    }
+                }
+
+                break;
+        }
+    }
+
+
+    if (node)
+    {
+        pushUpdate(null, [node]);
+        actionManager.clear();
+    }
+}
+
+
+
+function uiStyleDelete(msg)
+{
+    const node = graph.nodes.find(n => 
+           n.type == COLOR_STYLE 
+        && n.linkedStyleId == localStyleId(msg.styleId));
+
+
+    if (node)
+    {
+        uiLinkNodeToExistingColorStyle(node, NULL, '', []);
+        actionManager.clear();
+    }
 }
 
 

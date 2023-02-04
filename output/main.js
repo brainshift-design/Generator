@@ -495,6 +495,7 @@ function figDeleteAllObjects() {
         if (!!obj.getPluginData('id'))
             obj.remove();
 }
+var styleChangingFromGenerator = false;
 //function figOnSelectionChange(e)
 //{
 /*  Every time a selection changes, check that all objects in the object table
@@ -519,20 +520,38 @@ function figOnDocumentChange(e) {
             // case STYLE_CREATE: 
             //    break;
             case 'STYLE_PROPERTY_CHANGE':
-                figPostMessageToUI({
-                    cmd: 'uiStylePropertyChange',
-                    styleId: change.id,
-                    properties: change.properties
-                });
-                break;
+                {
+                    if (!styleChangingFromGenerator) {
+                        const msg = {
+                            cmd: 'uiStylePropertyChange',
+                            styleId: change.id,
+                            properties: change.properties,
+                            name: '',
+                            paints: []
+                        };
+                        for (const prop of change.properties) {
+                            switch (prop) {
+                                case 'name':
+                                    msg.name = change.style.name;
+                                    break;
+                                case 'paint':
+                                    msg.paints = change.style.paints;
+                                    break;
+                            }
+                        }
+                        figPostMessageToUi(msg);
+                    }
+                    break;
+                }
             case 'STYLE_DELETE':
-                figPostMessageToUI({
+                figPostMessageToUi({
                     cmd: 'uiStyleDelete',
                     styleId: change.id
                 });
                 break;
         }
     }
+    styleChangingFromGenerator = false;
 }
 function figOnPluginClose() {
     figDeleteAllObjects();
@@ -562,7 +581,7 @@ function figStartGenerator() {
                 wndHeight = 600;
             figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
             figma.ui.show();
-            figPostMessageToUI({
+            figPostMessageToUi({
                 cmd: 'uiReturnFigStartGenerator',
                 currentUser: figma.currentUser,
                 productKey: productKey
@@ -668,7 +687,7 @@ figma.ui.onmessage = msg => {
             break;
         //case 'figDeleteStyles':                     figDeleteStylesFromNodeIds           (msg.nodeIds);                                 break; 
     }
-    figPostMessageToUI({
+    figPostMessageToUi({
         cmd: 'uiReturnFigMessage',
         msgCmd: msg.cmd
     });
@@ -676,7 +695,7 @@ figma.ui.onmessage = msg => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // to UI -->
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-function figPostMessageToUI(msg) {
+function figPostMessageToUi(msg) {
     figma.ui.postMessage(JSON.stringify(msg));
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -684,7 +703,7 @@ function figPostMessageToUI(msg) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 // function figPostMessageToGenerator(msg)
 // {
-//     figPostMessageToUI({
+//     figPostMessageToUi({
 //         cmd: 'uiForwardToGen',
 //         msg:  msg
 //     });
@@ -1020,7 +1039,7 @@ function figLoadLocal(key) {
 function figGetLocalData(key) {
     figma.clientStorage.getAsync(key).then(data => {
         //console.log('getAsync', data);
-        figPostMessageToUI({
+        figPostMessageToUi({
             cmd: 'uiReturnFigGetLocalData',
             key: key,
             value: data
@@ -1040,7 +1059,7 @@ function figClearAllLocalData() {
 function figGetPageData(key, postToUi = true) {
     const data = figma.currentPage.getPluginData(key);
     if (postToUi) {
-        figPostMessageToUI({
+        figPostMessageToUi({
             cmd: 'uiReturnFigGetPageData',
             key: key,
             value: data
@@ -1063,7 +1082,7 @@ function figLoadNodesAndConns(dataMode) {
     const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
     const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
     initPageStyles(nodes);
-    figPostMessageToUI({
+    figPostMessageToUi({
         cmd: 'uiReturnFigLoadNodesAndConns',
         nodeKeys: JSON.stringify(nodeKeys),
         nodeJson: JSON.stringify(nodes),
@@ -1237,7 +1256,7 @@ function figGetAllLocalColorStyles(nodeId, px, py) {
         if (onlyPaint)
             styles.push(style);
     }
-    figPostMessageToUI({
+    figPostMessageToUi({
         cmd: 'uiReturnFigGetAllLocalColorStyles',
         nodeId: nodeId,
         px: px,
@@ -1316,6 +1335,7 @@ function figUpdateStyles(msg) {
         }
         else if (figStyle.getPluginData('type') == genStyle.type) // update existing style
          {
+            styleChangingFromGenerator = true;
             figUpdateColorStyle(localStyle, genStyle);
         }
         else // delete existing style, create new style
@@ -1381,7 +1401,7 @@ function figResizeWindow(width, height) {
     figma.ui.resize(width, height);
     figma.clientStorage.setAsync('windowWidth', width);
     figma.clientStorage.setAsync('windowHeight', height);
-    figPostMessageToUI({ cmd: 'uiReturnFigResizeWindow' });
+    figPostMessageToUi({ cmd: 'uiReturnFigResizeWindow' });
 }
 function figNotify(text, prefix = 'Generator ', delay = 400, error = false) {
     figma.notify(prefix + text, {

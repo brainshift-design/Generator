@@ -45,7 +45,7 @@ function figGetAllLocalColorStyles(nodeId, px, py)
     }
 
 
-    figPostMessageToUI({
+    figPostMessageToUi({
         cmd:   'uiReturnFigGetAllLocalColorStyles',
         nodeId: nodeId,
         px:     px,
@@ -174,6 +174,7 @@ function figUpdateStyles(msg)
         }
         else if (figStyle.getPluginData('type') == genStyle.type) // update existing style
         {
+            styleChangingFromGenerator = true;
             figUpdateColorStyle(localStyle, genStyle);
         }
         else // delete existing style, create new style
