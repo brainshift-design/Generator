@@ -103,14 +103,12 @@ extends OperatorBase
 
     updateParams()
     {
-        const input = this.inputs[0];
-        
-
-        this.paramValue.enableControlText(!input.connected);
+        this.paramValue.enableControlText(
+              !this.existing 
+            || this.linkedStyleId != NULL);
 
         this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         this.paramValue.control.showBar   = !this.isUnknown();
-
 
         this.updateParamControls();
     }

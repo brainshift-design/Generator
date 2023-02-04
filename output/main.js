@@ -1335,19 +1335,24 @@ function figUpdateStyles(msg) {
         if (!isValid(figStyle)
             || !localStyle) // no existing style, create new style
          {
+            console.log('1');
             if (!existing) {
+                console.log('2');
                 styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);
             }
         }
         else if (figStyle.getPluginData('type') == genStyle.type) // update existing style
          {
+            console.log('3');
             styleChangingFromGenerator = true;
             figUpdateColorStyle(localStyle, genStyle);
         }
         else // delete existing style, create new style
          {
+            console.log('4');
             if (!existing) {
+                console.log('5');
                 localStyle.remove();
                 styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);
