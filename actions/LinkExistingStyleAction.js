@@ -24,19 +24,20 @@ extends Action
         this.styleId   = styleId;
         this.styleName = styleName;
 
-        this.paints  = [...paints];
+        this.paints = [...paints];
     }
 
 
 
     do(updateNodes)
     {
-        this.prevStyleId = this.node.linkedStyleId;
-        this.prevPaints  = [this.node.paramValue.value.toRgb()];
+        this.prevStyleId   = this.node.linkedStyleId;
+        this.prevStyleName = this.node.linkedStyleName;
+        this.prevPaints    = [this.node.paramValue.value.toRgb()];
         
         uiLinkNodeToExistingColorStyle(
-            this.node, 
-            this.styleId, 
+            this.node,
+            this.styleId,
             this.styleName,
             [...this.paints]);
 
@@ -50,8 +51,8 @@ extends Action
     undo(updateNodes)
     {
         uiLinkNodeToExistingColorStyle(
-            this.node, 
-            this.prevStyleId, 
+            this.node,
+            this.prevStyleId,
             this.prevStyleName,
             [...this.prevPaints]);
 

@@ -207,8 +207,9 @@ extends OperatorBase
         }
         else
         {
-            this.existing      = false;
-            this.linkedStyleId = NULL;
+            this.existing       = false;
+            this.linkedStyleId  = NULL;
+            this.linkedStyleName = '';
         }
 
 
