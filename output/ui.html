@@ -52552,7 +52552,8 @@ onmessage = e =>
         case 'uiReturnFigResizeWindow':                 uiReturnFigResizeWindow                ();           break;
             
         case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);        break;
-        case 'uiReturnFigLinkNodeToExistingColorStyle': uiReturnFigLinkNodeToExistingColorStyle(msg);        break;
+
+        case 'uiSetStyleId':                            uiSetStyleId                           (msg);        break;
     }
 }    
 
@@ -54807,6 +54808,13 @@ function uiReturnFigGetAllLocalColorStyles(msg)
     initLocalStylesMenu(styles, msg.nodeId);
 
     menuLocalStyles.showAt(msg.px, msg.py);
+}
+
+
+
+function uiSetStyleId(msg)
+{
+    nodeFromId(msg.nodeId).linkedStyleId = msg.styleId;
 }
 
 

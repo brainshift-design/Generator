@@ -111,6 +111,13 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 
 
 
+function uiSetStyleId(msg)
+{
+    nodeFromId(msg.nodeId).linkedStyleId = msg.styleId;
+}
+
+
+
 function initLocalStylesMenu(styles, nodeId)
 {
     const node = nodeFromId(nodeId);

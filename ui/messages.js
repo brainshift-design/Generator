@@ -38,7 +38,8 @@ onmessage = e =>
         case 'uiReturnFigResizeWindow':                 uiReturnFigResizeWindow                ();           break;
             
         case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);        break;
-        case 'uiReturnFigLinkNodeToExistingColorStyle': uiReturnFigLinkNodeToExistingColorStyle(msg);        break;
+
+        case 'uiSetStyleId':                            uiSetStyleId                           (msg);        break;
     }
 }    
 

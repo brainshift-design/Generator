@@ -1304,6 +1304,11 @@ function figCreateColorStyle(styles, genStyle) {
     figStyle.name = genStyle.styleName;
     setStylePaints(figStyle, genStyle);
     styles.push(figStyle);
+    figPostMessageToUi({
+        cmd: 'uiSetStyleId',
+        nodeId: genStyle.nodeId,
+        styleId: figStyle.id
+    });
     return figStyle;
 }
 function figUpdateStyles(msg) {
@@ -1330,8 +1335,10 @@ function figUpdateStyles(msg) {
         if (!isValid(figStyle)
             || !localStyle) // no existing style, create new style
          {
-            if (!existing)
+            if (!existing) {
+                styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);
+            }
         }
         else if (figStyle.getPluginData('type') == genStyle.type) // update existing style
          {
@@ -1342,6 +1349,7 @@ function figUpdateStyles(msg) {
          {
             if (!existing) {
                 localStyle.remove();
+                styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);
             }
         }

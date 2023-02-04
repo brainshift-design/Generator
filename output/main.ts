@@ -2026,11 +2026,14 @@ function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true)
     const figStyle = localStyles.find(s => s.id == styleId);
     console.assert(!!figStyle, 'figStyle should be found here');
 
+
     figStyle.setPluginData('type',     COLOR_STYLE);
     figStyle.setPluginData('nodeId',   nodeId);
     figStyle.setPluginData('existing', boolToString(true));
 
+
     figStyleArrays.push({nodeId: nodeId, styles: [figStyle]});
+
 
     return figStyle;
 }
@@ -2074,6 +2077,12 @@ function figCreateColorStyle(styles, genStyle)
     styles.push(figStyle);
 
 
+    figPostMessageToUi({
+        cmd:    'uiSetStyleId',
+        nodeId:  genStyle.nodeId,
+        styleId: figStyle.id });
+
+        
     return figStyle;
 }
 
@@ -2119,7 +2128,10 @@ function figUpdateStyles(msg)
             || !localStyle) // no existing style, create new style
         {
             if (!existing)
+            {
+                styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);
+            }
         }
         else if (figStyle.getPluginData('type') == genStyle.type) // update existing style
         {
@@ -2131,6 +2143,7 @@ function figUpdateStyles(msg)
             if (!existing)
             {
                 localStyle.remove();
+                styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);
             }
         }
