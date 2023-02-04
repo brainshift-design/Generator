@@ -467,14 +467,16 @@ function logReqNode(node, parse) {
 }
 var figObjectArrays = new Array(); // [ {nodeId, [objects]} ]
 var figStyleArrays = new Array(); // [ {nodeId, [styles]}  ]
-function figDeleteObjectsAndStylesFromNodeIds(nodeIds) {
+function figDeleteObjectsAndStylesFromNodeIds(nodeIds, force) {
     // styles are deleted first
     const paintStyles = figma.getLocalPaintStyles();
     figma.currentPage
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
         .forEach(o => o.remove());
     paintStyles
-        .filter(s => nodeIds.includes(s.getPluginData('nodeId')))
+        .filter(s => nodeIds.includes(s.getPluginData('nodeId'))
+        && (!parseBool(s.getPluginData('existing'))
+            || force))
         .forEach(s => {
         const nodeId = s.getPluginData('nodeId');
         const existing = parseBool(s.getPluginData('existing'));
@@ -488,8 +490,16 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds) {
         }
     });
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a['nodeId']));
-    figStyleArrays = figStyleArrays.filter(a => !nodeIds.includes(a['nodeId']));
+    figStyleArrays = figStyleArrays.filter(a => !nodeIds.includes(a['nodeId'])
+        && (!parseBool(a['existing'])
+            && !force));
 }
+this;
+force;
+stuff;
+is;
+not;
+working;
 function figDeleteAllObjects() {
     for (const obj of figma.currentPage.children)
         if (!!obj.getPluginData('id'))
@@ -683,7 +693,7 @@ figma.ui.onmessage = msg => {
             figUpdateStyles(msg);
             break;
         case 'figDeleteObjectsAndStyles':
-            figDeleteObjectsAndStylesFromNodeIds(msg.nodeIds);
+            figDeleteObjectsAndStylesFromNodeIds(msg.nodeIds, msg.force);
             break;
         //case 'figDeleteStyles':                     figDeleteStylesFromNodeIds           (msg.nodeIds);                                 break; 
     }
@@ -747,8 +757,13 @@ function figUpdateObjects(msg) {
         if (genObj.nodeId != curNodeId) {
             curNodeId = genObj.nodeId;
             figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
-            if (!figObjects)
-                figObjectArrays.push(figObjects = { nodeId: genObj.nodeId, objects: [] });
+            if (!figObjects) {
+                figObjectArrays.push(figObjects = {
+                    nodeId: genObj.nodeId,
+                    existing: genObj.existing,
+                    objects: []
+                });
+            }
         }
         const figObj = figObjects.objects[genObj.objectId];
         if (isValid(figObj)
@@ -1335,24 +1350,19 @@ function figUpdateStyles(msg) {
         if (!isValid(figStyle)
             || !localStyle) // no existing style, create new style
          {
-            console.log('1');
             if (!existing) {
-                console.log('2');
                 styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);
             }
         }
         else if (figStyle.getPluginData('type') == genStyle.type) // update existing style
          {
-            console.log('3');
             styleChangingFromGenerator = true;
             figUpdateColorStyle(localStyle, genStyle);
         }
         else // delete existing style, create new style
          {
-            console.log('4');
             if (!existing) {
-                console.log('5');
                 localStyle.remove();
                 styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);

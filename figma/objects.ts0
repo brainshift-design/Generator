@@ -41,8 +41,13 @@ function figUpdateObjects(msg)
             
             figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
 
-            if (!figObjects) 
-                figObjectArrays.push(figObjects = {nodeId: genObj.nodeId, objects: []});
+            if (!figObjects)
+            {
+                figObjectArrays.push(figObjects = {
+                    nodeId:   genObj.nodeId, 
+                    existing: genObj.existing,
+                    objects:  []});
+            }
         }
 
 

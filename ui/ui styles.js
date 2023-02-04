@@ -173,7 +173,7 @@ function initLocalStylesMenu(styles, nodeId)
         new MenuItem('',     {separator: true}),   
         new MenuItem('None', {
             callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, '', [])),
-            enabled:  node.linkedStyle != NULL})
+            enabled:  node.linkedStyleId != NULL})
     ]);
 }
 

@@ -3,7 +3,7 @@ var figStyleArrays  = new Array(); // [ {nodeId, [styles]}  ]
 
 
 
-function figDeleteObjectsAndStylesFromNodeIds(nodeIds)
+function figDeleteObjectsAndStylesFromNodeIds(nodeIds, force)
 {
     // styles are deleted first
     
@@ -14,7 +14,10 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds)
         .forEach(o => o.remove());
 
     paintStyles
-        .filter(s => nodeIds.includes(s.getPluginData('nodeId')))
+        .filter(s => 
+                nodeIds.includes(s.getPluginData('nodeId')) 
+            && (  !parseBool(s.getPluginData('existing'))
+                || force))
         .forEach(s => 
         {
             const nodeId   = s.getPluginData('nodeId');
@@ -34,13 +37,18 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds)
 
 
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a['nodeId']));
-    figStyleArrays  = figStyleArrays .filter(a => !nodeIds.includes(a['nodeId']));
+
+    figStyleArrays = figStyleArrays.filter(a => 
+           !nodeIds.includes(a['nodeId'])
+        && (   !parseBool(a['existing'])
+            && !force));
 }
 
-
+this force stuff is not working
 
 function figDeleteAllObjects()
 {
     for (const obj of figma.currentPage.children)
-        if (!!obj.getPluginData('id')) obj.remove();
+        if (!!obj.getPluginData('id')) 
+            obj.remove();
 }

@@ -403,16 +403,17 @@ function uiDeleteNodes(nodeIds)
     graph.deleteNodes(nodeIds);
 
     uiRemoveSavedNodesAndConns(nodeIds);
-    uiDeleteObjectsAndStyles(nodeIds);
+    uiDeleteObjectsAndStyles(nodeIds, true);
 }
 
 
 
-function uiDeleteObjectsAndStyles(nodeIds)
+function uiDeleteObjectsAndStyles(nodeIds, force = false)
 {
     uiQueueMessageToFigma({
         cmd:    'figDeleteObjectsAndStyles',
-        nodeIds: nodeIds
+        nodeIds: nodeIds,
+        force:   force
     });
 }
 
