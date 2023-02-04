@@ -33,13 +33,36 @@ function uiError(text, delay = 6000)
 
 
 
-function uiNotify(text, delay = 4000, error = false, prefix = GENERATOR_LOGO + '  ')
+function uiNotify(text, options = {})
 {
+    if (options.delay        == undefined) options.delay        = 4000;
+    if (options.error        == undefined) options.error        = false;
+    if (options.prefix       == undefined) options.prefix       = GENERATOR_LOGO + '  ';
+    if (options.buttonText   == undefined) options.buttonText   = '';
+    if (options.buttonAction == undefined) options.buttonAction = NULL;
+
+
     uiQueueMessageToFigma({ 
-        cmd:   'figNotify',
-        text:   text,
-        prefix: prefix,
-        delay:  delay,
-        error:  error
+        cmd:         'figNotify',
+        text:         text,
+        prefix:       options.prefix,
+        delay:        options.delay,
+        error:        options.error,
+        buttonText:   options.buttonText,
+        buttonAction: options.buttonAction
     });        
+}
+
+
+
+function uiShowClearUndoWarning()
+{
+    if (settings.showClearUndoWarning)
+    {
+        const options = {
+            buttonText:   'Ignore',
+            buttonAction: 'hideClearUndoWarning' };
+
+        uiNotify('Undo has been cleared', options);
+    }
 }

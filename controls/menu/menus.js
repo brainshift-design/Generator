@@ -121,6 +121,7 @@ var menuConnDataConns;
 var menuItemAutoConnectNewNodes;
 var menuItemIncludeLxxColorSpaces;
 var menuItemShowBoolValues;
+var menuItemShowClearUndoWarning;
 var menuItemShowDebugMenu;
 
 var menuItemShowNodeId;
@@ -193,6 +194,7 @@ function initGeneratorMenus()
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',      {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                       }}),
         //menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces',    {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues       ); updateMenuItemShowBoolValues();       }}),
+        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',     {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning );                                       }}),
                                         new MenuItem('',                            {separator: true}),   
         menuItemShowDebugMenu         = new MenuItem('Show debug menu',             {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu        ); updateMenuItemShowDebugMenu();        }})]);
 

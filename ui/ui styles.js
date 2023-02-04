@@ -78,7 +78,9 @@ function uiStylePropertyChange(msg)
     if (node)
     {
         pushUpdate(null, [node]);
+
         actionManager.clear();
+        uiShowClearUndoWarning();
     }
 }
 
@@ -94,7 +96,9 @@ function uiStyleDelete(msg)
     if (node)
     {
         uiLinkNodeToExistingColorStyle(node, NULL, '', []);
+        
         actionManager.clear();
+        uiShowClearUndoWarning();
     }
 }
 
@@ -114,6 +118,16 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 function uiSetStyleId(msg)
 {
     nodeFromId(msg.nodeId).linkedStyleId = msg.styleId;
+}
+
+
+
+function uiHideClearUndoWarning()
+{
+    updateSettingAndMenu(
+        'showClearUndoWarning',  
+         true, 
+        !settings.showClearUndoWarning);
 }
 
 

@@ -40,6 +40,7 @@ onmessage = e =>
         case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);        break;
 
         case 'uiSetStyleId':                            uiSetStyleId                           (msg);        break;
+        case 'uiHideClearUndoWarning':                  uiHideClearUndoWarning                 ();           break;
     }
 }    
 

@@ -6,6 +6,7 @@ const settings =
     autoConnectNewNodes:   true,
     includeLxxColorSpaces: true,
     showBoolValues:        true,
+    showClearUndoWarning:  true,
     showDebugMenu:         false,
 
     showNodeId:            false, // instead of name
@@ -39,6 +40,7 @@ function updateSetting(settingName, value)
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
+        case 'showClearUndoWarning':  settings.showClearUndoWarning  = value;  break;
         case 'showDebugMenu':         settings.showDebugMenu         = value;  break;
         
         case 'showNodeId':            settings.showNodeId            = value;  break;
@@ -72,6 +74,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
+        case 'showClearUndoWarning':  updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning );  break;
         case 'showDebugMenu':         updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu        );  break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
@@ -117,6 +120,7 @@ function updateSettingsMenus()
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
+    menuItemShowClearUndoWarning .setChecked(settings.showClearUndoWarning );
     menuItemShowDebugMenu        .setChecked(settings.showDebugMenu        );
 
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
@@ -196,6 +200,7 @@ function loadLocalSettings()
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
     uiGetLocalData('showBoolValues'       );
+    uiGetLocalData('showClearUndoWarning' );
     uiGetLocalData('showDebugMenu'        );
 
     uiGetLocalData('showNodeId'           );

@@ -971,7 +971,7 @@ figma.ui.onmessage = msg =>
                      
         //case 'figPositionWindow':                   figPositionWindow                    (msg.x, msg.y);                                break; 
         case 'figResizeWindow':                       figResizeWindow                      (msg.width, msg.height);                       break; 
-        case 'figNotify':                             figNotify                            (msg.text, msg.prefix, msg.delay, msg.error);  break;
+        case 'figNotify':                             figNotifyMsg                         (msg);                                         break;
      
         case 'figGetLocalData':                       figGetLocalData                      (msg.key);                                     break;
         case 'figSetLocalData':                       figSetLocalData                      (msg.key, msg.value);                          break;
@@ -2244,14 +2244,39 @@ function figResizeWindow(width, height)
 
 
 
-function figNotify(text, prefix = 'Generator ', delay = 400, error = false)
+function figNotifyMsg(msg)
 {
-    figma.notify(
-        prefix + text, 
+    figNotify(
+        msg.text, 
+        msg.prefix, 
+        msg.delay, 
+        msg.error, 
+        msg.buttonText,
+        msg.buttonAction);
+}
+
+
+
+function figNotify(text, prefix = 'Generator ', delay = 400, error = false, buttonText = '', buttonAction = NULL)
+{
+    const options = {
+        timeout: delay,
+        error:   error
+    };
+
+    if (buttonText != '')
+    {
+        options['button'] = { text: buttonText };
+
+        switch (buttonAction)
         {
-            timeout: delay,
-            error:   error
-        });
+            case 'hideClearUndoWarning':
+                options['button']['action'] = () => figPostMessageToUi({ cmd: 'uiHideClearUndoWarning' });
+                break;
+        }
+    }
+
+    figma.notify(prefix + text, options);
 }
 
 

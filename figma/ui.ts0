@@ -40,12 +40,37 @@ function figResizeWindow(width, height)
 
 
 
-function figNotify(text, prefix = 'Generator ', delay = 400, error = false)
+function figNotifyMsg(msg)
 {
-    figma.notify(
-        prefix + text, 
+    figNotify(
+        msg.text, 
+        msg.prefix, 
+        msg.delay, 
+        msg.error, 
+        msg.buttonText,
+        msg.buttonAction);
+}
+
+
+
+function figNotify(text, prefix = 'Generator ', delay = 400, error = false, buttonText = '', buttonAction = NULL)
+{
+    const options = {
+        timeout: delay,
+        error:   error
+    };
+
+    if (buttonText != '')
+    {
+        options['button'] = { text: buttonText };
+
+        switch (buttonAction)
         {
-            timeout: delay,
-            error:   error
-        });
+            case 'hideClearUndoWarning':
+                options['button']['action'] = () => figPostMessageToUi({ cmd: 'uiHideClearUndoWarning' });
+                break;
+        }
+    }
+
+    figma.notify(prefix + text, options);
 }

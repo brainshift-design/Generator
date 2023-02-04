@@ -602,7 +602,7 @@ figma.ui.onmessage = msg => {
             figResizeWindow(msg.width, msg.height);
             break;
         case 'figNotify':
-            figNotify(msg.text, msg.prefix, msg.delay, msg.error);
+            figNotifyMsg(msg);
             break;
         case 'figGetLocalData':
             figGetLocalData(msg.key);
@@ -1411,11 +1411,23 @@ function figResizeWindow(width, height) {
     figma.clientStorage.setAsync('windowHeight', height);
     figPostMessageToUi({ cmd: 'uiReturnFigResizeWindow' });
 }
-function figNotify(text, prefix = 'Generator ', delay = 400, error = false) {
-    figma.notify(prefix + text, {
+function figNotifyMsg(msg) {
+    figNotify(msg.text, msg.prefix, msg.delay, msg.error, msg.buttonText, msg.buttonAction);
+}
+function figNotify(text, prefix = 'Generator ', delay = 400, error = false, buttonText = '', buttonAction = NULL) {
+    const options = {
         timeout: delay,
         error: error
-    });
+    };
+    if (buttonText != '') {
+        options['button'] = { text: buttonText };
+        switch (buttonAction) {
+            case 'hideClearUndoWarning':
+                options['button']['action'] = () => figPostMessageToUi({ cmd: 'uiHideClearUndoWarning' });
+                break;
+        }
+    }
+    figma.notify(prefix + text, options);
 }
 // function objTypeString(type)
 // {

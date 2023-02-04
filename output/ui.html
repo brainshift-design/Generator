@@ -13333,6 +13333,7 @@ const settings =
     autoConnectNewNodes:   true,
     includeLxxColorSpaces: true,
     showBoolValues:        true,
+    showClearUndoWarning:  true,
     showDebugMenu:         false,
 
     showNodeId:            false, // instead of name
@@ -13366,6 +13367,7 @@ function updateSetting(settingName, value)
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
+        case 'showClearUndoWarning':  settings.showClearUndoWarning  = value;  break;
         case 'showDebugMenu':         settings.showDebugMenu         = value;  break;
         
         case 'showNodeId':            settings.showNodeId            = value;  break;
@@ -13399,6 +13401,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
+        case 'showClearUndoWarning':  updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning );  break;
         case 'showDebugMenu':         updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu        );  break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
@@ -13444,6 +13447,7 @@ function updateSettingsMenus()
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
+    menuItemShowClearUndoWarning .setChecked(settings.showClearUndoWarning );
     menuItemShowDebugMenu        .setChecked(settings.showDebugMenu        );
 
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
@@ -13523,6 +13527,7 @@ function loadLocalSettings()
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
     uiGetLocalData('showBoolValues'       );
+    uiGetLocalData('showClearUndoWarning' );
     uiGetLocalData('showDebugMenu'        );
 
     uiGetLocalData('showNodeId'           );
@@ -30717,6 +30722,7 @@ const settings =
     autoConnectNewNodes:   true,
     includeLxxColorSpaces: true,
     showBoolValues:        true,
+    showClearUndoWarning:  true,
     showDebugMenu:         false,
 
     showNodeId:            false, // instead of name
@@ -30750,6 +30756,7 @@ function updateSetting(settingName, value)
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
+        case 'showClearUndoWarning':  settings.showClearUndoWarning  = value;  break;
         case 'showDebugMenu':         settings.showDebugMenu         = value;  break;
         
         case 'showNodeId':            settings.showNodeId            = value;  break;
@@ -30783,6 +30790,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
         case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
+        case 'showClearUndoWarning':  updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning );  break;
         case 'showDebugMenu':         updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu        );  break;
 
         case 'showNodeId':            updateSettingAndMenu_(valid, settingName, value, menuItemShowNodeId           );  break;
@@ -30828,6 +30836,7 @@ function updateSettingsMenus()
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
+    menuItemShowClearUndoWarning .setChecked(settings.showClearUndoWarning );
     menuItemShowDebugMenu        .setChecked(settings.showDebugMenu        );
 
     menuItemShowNodeId           .setChecked(settings.showNodeId           );
@@ -30907,6 +30916,7 @@ function loadLocalSettings()
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('includeLxxColorSpaces');
     uiGetLocalData('showBoolValues'       );
+    uiGetLocalData('showClearUndoWarning' );
     uiGetLocalData('showDebugMenu'        );
 
     uiGetLocalData('showNodeId'           );
@@ -31919,6 +31929,7 @@ var menuConnDataConns;
 var menuItemAutoConnectNewNodes;
 var menuItemIncludeLxxColorSpaces;
 var menuItemShowBoolValues;
+var menuItemShowClearUndoWarning;
 var menuItemShowDebugMenu;
 
 var menuItemShowNodeId;
@@ -31991,6 +32002,7 @@ function initGeneratorMenus()
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',      {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                       }}),
         //menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces',    {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues       ); updateMenuItemShowBoolValues();       }}),
+        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',     {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning );                                       }}),
                                         new MenuItem('',                            {separator: true}),   
         menuItemShowDebugMenu         = new MenuItem('Show debug menu',             {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu        ); updateMenuItemShowDebugMenu();        }})]);
 
@@ -52554,6 +52566,7 @@ onmessage = e =>
         case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);        break;
 
         case 'uiSetStyleId':                            uiSetStyleId                           (msg);        break;
+        case 'uiHideClearUndoWarning':                  uiHideClearUndoWarning                 ();           break;
     }
 }    
 
@@ -52885,6 +52898,7 @@ function uiReturnFigGetLocalData(msg)
         case 'autoConnectNewNodes':
         case 'includeLxxColorSpaces':
         case 'showBoolValues':
+        case 'showClearUndoWarning':
         case 'showDebugMenu':
 
         case 'showNodeId':       
@@ -54779,7 +54793,9 @@ function uiStylePropertyChange(msg)
     if (node)
     {
         pushUpdate(null, [node]);
+
         actionManager.clear();
+        uiShowClearUndoWarning();
     }
 }
 
@@ -54795,7 +54811,9 @@ function uiStyleDelete(msg)
     if (node)
     {
         uiLinkNodeToExistingColorStyle(node, NULL, '', []);
+        
         actionManager.clear();
+        uiShowClearUndoWarning();
     }
 }
 
@@ -54815,6 +54833,16 @@ function uiReturnFigGetAllLocalColorStyles(msg)
 function uiSetStyleId(msg)
 {
     nodeFromId(msg.nodeId).linkedStyleId = msg.styleId;
+}
+
+
+
+function uiHideClearUndoWarning()
+{
+    updateSettingAndMenu(
+        'showClearUndoWarning',  
+         true, 
+        !settings.showClearUndoWarning);
 }
 
 
@@ -54904,15 +54932,38 @@ function uiError(text, delay = 6000)
 
 
 
-function uiNotify(text, delay = 4000, error = false, prefix = GENERATOR_LOGO + '  ')
+function uiNotify(text, options = {})
 {
+    if (options.delay        == undefined) options.delay        = 4000;
+    if (options.error        == undefined) options.error        = false;
+    if (options.prefix       == undefined) options.prefix       = GENERATOR_LOGO + '  ';
+    if (options.buttonText   == undefined) options.buttonText   = '';
+    if (options.buttonAction == undefined) options.buttonAction = NULL;
+
+
     uiQueueMessageToFigma({ 
-        cmd:   'figNotify',
-        text:   text,
-        prefix: prefix,
-        delay:  delay,
-        error:  error
+        cmd:         'figNotify',
+        text:         text,
+        prefix:       options.prefix,
+        delay:        options.delay,
+        error:        options.error,
+        buttonText:   options.buttonText,
+        buttonAction: options.buttonAction
     });        
+}
+
+
+
+function uiShowClearUndoWarning()
+{
+    if (settings.showClearUndoWarning)
+    {
+        const options = {
+            buttonText:   'Ignore',
+            buttonAction: 'hideClearUndoWarning' };
+
+        uiNotify('Undo has been cleared', options);
+    }
 }
 
 
