@@ -58,6 +58,7 @@ extends EventTarget
     get connected() { return this.connectedOutput != null; }
 
 
+    canConnect         = true; // all connections master switch
     canAutoConnect     = true;
     outputMustBeCached = false;
 
@@ -265,7 +266,8 @@ extends EventTarget
 
     canConnectFrom(output)
     {
-        if (!this.supportsTypes(output.types))
+        if (   !this.canConnect
+            || !this.supportsTypes(output.types))
             return false;
 
         if (    this.outputMustBeCached 

@@ -19,7 +19,9 @@ extends GObjectBase
         const copy = new GColorStyle(this.nodeId, this.options);
 
         copy.style    = this.style.copy();
+        
         copy.existing = this.existing;
+        copy.linked   = this.linked;
 
         return copy;
     }
@@ -35,14 +37,16 @@ extends GObjectBase
         this.value = this.value.eval(parse).toValue();
       
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-
-        if (this.value.isValid())
+        if (   this.value.isValid())
+            // && (  !this.existing
+            //     || this.linked))
         {
             const rgb = this.value.toRgb();
             this.evalStyle({rgb: rgb});
         }
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();

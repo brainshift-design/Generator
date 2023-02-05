@@ -1099,6 +1099,7 @@ function figUpdateObjects(msg)
     let curNodeId  = NULL;
     let figObjects = null;
 
+
     for (const genObj of msg.objects)
     {
         if (genObj.nodeId != curNodeId)
@@ -1146,11 +1147,11 @@ function figUpdateObject(figObj, genObj)
 {
     switch (genObj.type)
     {
-        case RECTANGLE:   figUpdateRect   (figObj, genObj); break;
-        case LINE:        figUpdateLine   (figObj, genObj); break;
-        case ELLIPSE:     figUpdateEllipse(figObj, genObj); break;
-        case POLYGON:     figUpdatePolygon(figObj, genObj); break;
-        case STAR:        figUpdateStar   (figObj, genObj); break;
+        case RECTANGLE:  figUpdateRect   (figObj, genObj);  break;
+        case LINE:       figUpdateLine   (figObj, genObj);  break;
+        case ELLIPSE:    figUpdateEllipse(figObj, genObj);  break;
+        case POLYGON:    figUpdatePolygon(figObj, genObj);  break;
+        case STAR:       figUpdateStar   (figObj, genObj);  break;
     }
 }
 
@@ -2140,6 +2141,7 @@ function figUpdateStyles(msg)
         {
             if (!existing)
             {
+                console.log('1');
                 styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);
             }
@@ -2153,6 +2155,7 @@ function figUpdateStyles(msg)
         {
             if (!existing)
             {
+                console.log('3');
                 localStyle.remove();
                 styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);

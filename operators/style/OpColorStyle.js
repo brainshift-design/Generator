@@ -83,7 +83,9 @@ extends OperatorBase
             paramId: NULL });
 
 
-        const options = (this.existing ? 1 : 0) << 21;
+        const options = 
+            (this.existing              ? 1 : 0) << 21;
+            (this.linkedStyleId != NULL ? 1 : 0) << 22;
 
 
         const [request, ignore] = this.genRequestStart(gen, options);
@@ -103,9 +105,12 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramValue.enableControlText(
+        const enabled =
               !this.existing 
-            || this.linkedStyleId != NULL);
+            || this.linkedStyleId != NULL;
+
+        this.paramValue.enableControlText(enabled);
+        this.paramValue.input.canConnect = enabled;
 
         this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         this.paramValue.control.showBar   = !this.isUnknown();
@@ -123,7 +128,9 @@ extends OperatorBase
         this.header.style.height = '25px';
 
 
-        if (this.paramValue.value.isValid())
+        if (this.paramValue.value.isValid()
+            && (  !this.existing
+                || this.linkedStyleId != NULL))
         {
             const rgb = this.paramValue.value.toRgb();
             
@@ -137,8 +144,6 @@ extends OperatorBase
         }
         else
         {
-            const colors = this.getHeaderColors();
-
             this.circle.style.background = 'transparent';
             this.circle.style.boxShadow  = '0 0 0 1px var(--figma-color-bg-tertiary) inset';
         }
@@ -147,7 +152,7 @@ extends OperatorBase
         this.updateLinkIcon();
     }
 
-
+    
 
     updateLinkIcon()
     {
@@ -158,7 +163,9 @@ extends OperatorBase
             const rgb = this.paramValue.value.toRgb();
             const linkStyle = rgba2style(
                 rgb_a(
-                    this.paramValue.value.isValid()
+                       this.paramValue.value.isValid()
+                    && (  !this.existing
+                        || this.linkedStyleId != NULL)
                     ? (isDark(rgb) ? [1, 1, 1] : [0, 0, 0])
                     : colors.text, 
                     this.circle.over ? 1 : 0.5));

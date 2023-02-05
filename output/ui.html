@@ -13274,7 +13274,9 @@ extends GObjectBase
         const copy = new GColorStyle(this.nodeId, this.options);
 
         copy.style    = this.style.copy();
+        
         copy.existing = this.existing;
+        copy.linked   = this.linked;
 
         return copy;
     }
@@ -13290,14 +13292,16 @@ extends GObjectBase
         this.value = this.value.eval(parse).toValue();
       
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-
-        if (this.value.isValid())
+        if (   this.value.isValid())
+            // && (  !this.existing
+            //     || this.linked))
         {
             const rgb = this.value.toRgb();
             this.evalStyle({rgb: rgb});
         }
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -15663,6 +15667,7 @@ function genParseColorStyle(parse)
     const style = new GColorStyle(nodeId, options);
     
     style.existing = options.existing;
+    style.linked   = options.linked;
 
 
     if (parse.settings.logRequests) 
@@ -15921,7 +15926,8 @@ function genParseNodeOptions(parse)
         enabled:      ((opt >>  2) & 1) != 0,
         cached:       ((opt >>  3) & 1) != 0,
         hasInputs:    ((opt >> 20) & 1) != 0,
-        existing:     ((opt >> 21) & 1) != 0
+        existing:     ((opt >> 21) & 1) != 0,
+        linked:       ((opt >> 22) & 1) != 0
     };
 
     return options;
@@ -30671,7 +30677,9 @@ extends GObjectBase
         const copy = new GColorStyle(this.nodeId, this.options);
 
         copy.style    = this.style.copy();
+        
         copy.existing = this.existing;
+        copy.linked   = this.linked;
 
         return copy;
     }
@@ -30687,14 +30695,16 @@ extends GObjectBase
         this.value = this.value.eval(parse).toValue();
       
 
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-
-        if (this.value.isValid())
+        if (   this.value.isValid())
+            // && (  !this.existing
+            //     || this.linked))
         {
             const rgb = this.value.toRgb();
             this.evalStyle({rgb: rgb});
         }
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 
         this.validate();
@@ -39993,6 +40003,7 @@ extends EventTarget
     get connected() { return this.connectedOutput != null; }
 
 
+    canConnect         = true; // all connections master switch
     canAutoConnect     = true;
     outputMustBeCached = false;
 
@@ -40200,7 +40211,8 @@ extends EventTarget
 
     canConnectFrom(output)
     {
-        if (!this.supportsTypes(output.types))
+        if (   !this.canConnect
+            || !this.supportsTypes(output.types))
             return false;
 
         if (    this.outputMustBeCached 
@@ -49108,7 +49120,9 @@ extends OperatorBase
             paramId: NULL });
 
 
-        const options = (this.existing ? 1 : 0) << 21;
+        const options = 
+            (this.existing              ? 1 : 0) << 21;
+            (this.linkedStyleId != NULL ? 1 : 0) << 22;
 
 
         const [request, ignore] = this.genRequestStart(gen, options);
@@ -49128,9 +49142,12 @@ extends OperatorBase
 
     updateParams()
     {
-        this.paramValue.enableControlText(
+        const enabled =
               !this.existing 
-            || this.linkedStyleId != NULL);
+            || this.linkedStyleId != NULL;
+
+        this.paramValue.enableControlText(enabled);
+        this.paramValue.input.canConnect = enabled;
 
         this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         this.paramValue.control.showBar   = !this.isUnknown();
@@ -49148,7 +49165,9 @@ extends OperatorBase
         this.header.style.height = '25px';
 
 
-        if (this.paramValue.value.isValid())
+        if (this.paramValue.value.isValid()
+            && (  !this.existing
+                || this.linkedStyleId != NULL))
         {
             const rgb = this.paramValue.value.toRgb();
             
@@ -49162,8 +49181,6 @@ extends OperatorBase
         }
         else
         {
-            const colors = this.getHeaderColors();
-
             this.circle.style.background = 'transparent';
             this.circle.style.boxShadow  = '0 0 0 1px var(--figma-color-bg-tertiary) inset';
         }
@@ -49172,7 +49189,7 @@ extends OperatorBase
         this.updateLinkIcon();
     }
 
-
+    
 
     updateLinkIcon()
     {
@@ -49183,7 +49200,9 @@ extends OperatorBase
             const rgb = this.paramValue.value.toRgb();
             const linkStyle = rgba2style(
                 rgb_a(
-                    this.paramValue.value.isValid()
+                       this.paramValue.value.isValid()
+                    && (  !this.existing
+                        || this.linkedStyleId != NULL)
                     ? (isDark(rgb) ? [1, 1, 1] : [0, 0, 0])
                     : colors.text, 
                     this.circle.over ? 1 : 0.5));

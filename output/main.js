@@ -1343,6 +1343,7 @@ function figUpdateStyles(msg) {
             || !localStyle) // no existing style, create new style
          {
             if (!existing) {
+                console.log('1');
                 styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);
             }
@@ -1355,6 +1356,7 @@ function figUpdateStyles(msg) {
         else // delete existing style, create new style
          {
             if (!existing) {
+                console.log('3');
                 localStyle.remove();
                 styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);

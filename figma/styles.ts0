@@ -180,6 +180,7 @@ function figUpdateStyles(msg)
         {
             if (!existing)
             {
+                console.log('1');
                 styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);
             }
@@ -193,6 +194,7 @@ function figUpdateStyles(msg)
         {
             if (!existing)
             {
+                console.log('3');
                 localStyle.remove();
                 styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);
