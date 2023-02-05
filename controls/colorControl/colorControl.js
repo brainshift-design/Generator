@@ -121,10 +121,10 @@ function initColorControl(param, control, width, height, id, name, showName, def
             else
             {
                 control.valueStyleLight =
-                control.valueStyleDark  = 'transparent';
+                control.valueStyleDark  = 'var(--figma-color-bg)';
                 
-                control. textStyleLight = 'black';
-                control. textStyleDark  = 'white';
+                control.textStyleLight = 'black';
+                control.textStyleDark  = 'white';
             }
         }
 
