@@ -42,7 +42,7 @@ function figOnDocumentChange(e)
                 {
                     const msg = {
                         cmd:       'uiStylePropertyChange',
-                        styleId:    change.id,
+                        styleId:    cleanStyleId(change.id),
                         properties: change.properties,
                         name:       '',
                         paints:     [] };

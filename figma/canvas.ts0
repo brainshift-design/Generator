@@ -44,7 +44,7 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds, force)
             && !force));
 }
 
-this force stuff is not working
+
 
 function figDeleteAllObjects()
 {

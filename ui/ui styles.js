@@ -43,9 +43,12 @@ function uiStylePropertyChange(msg)
 {
     const node = graph.nodes.find(n => 
            n.type == COLOR_STYLE 
-        && n.linkedStyleId == localStyleId(msg.styleId));
+        && n.linkedStyleId == cleanStyleId(msg.styleId));
 
-
+    if (!node)
+        return;
+    
+    
     for (const prop of msg.properties)
     {
         switch (prop)
@@ -90,7 +93,7 @@ function uiStyleDelete(msg)
 {
     const node = graph.nodes.find(n => 
            n.type == COLOR_STYLE 
-        && n.linkedStyleId == localStyleId(msg.styleId));
+        && n.linkedStyleId == cleanStyleId(msg.styleId));
 
 
     if (node)

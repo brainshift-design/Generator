@@ -279,7 +279,7 @@ function removeFromArrayWhere(array, where)
 
 
 
-function localStyleId(styleId)
+function cleanStyleId(styleId)
 {
     return styleId.split(',')[0] + ',';
 }

@@ -302,7 +302,7 @@ function removeFromArrayWhere(array, where)
 
 
 
-function localStyleId(styleId)
+function cleanStyleId(styleId)
 {
     return styleId.split(',')[0] + ',';
 }
@@ -814,7 +814,7 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds, force)
             && !force));
 }
 
-this force stuff is not working
+
 
 function figDeleteAllObjects()
 {
@@ -871,7 +871,7 @@ function figOnDocumentChange(e)
                 {
                     const msg = {
                         cmd:       'uiStylePropertyChange',
-                        styleId:    change.id,
+                        styleId:    cleanStyleId(change.id),
                         properties: change.properties,
                         name:       '',
                         paints:     [] };

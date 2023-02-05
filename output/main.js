@@ -159,7 +159,7 @@ function removeFromArrayWhere(array, where) {
     if (index > -1)
         array.splice(index, 1);
 }
-function localStyleId(styleId) {
+function cleanStyleId(styleId) {
     return styleId.split(',')[0] + ',';
 }
 const NAN_CHAR = '?';
@@ -494,12 +494,6 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds, force) {
         && (!parseBool(a['existing'])
             && !force));
 }
-this;
-force;
-stuff;
-is;
-not;
-working;
 function figDeleteAllObjects() {
     for (const obj of figma.currentPage.children)
         if (!!obj.getPluginData('id'))
@@ -534,7 +528,7 @@ function figOnDocumentChange(e) {
                     if (!styleChangingFromGenerator) {
                         const msg = {
                             cmd: 'uiStylePropertyChange',
-                            styleId: change.id,
+                            styleId: cleanStyleId(change.id),
                             properties: change.properties,
                             name: '',
                             paints: []
