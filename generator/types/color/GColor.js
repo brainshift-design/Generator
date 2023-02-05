@@ -60,6 +60,7 @@ extends GColorType
         {
             const input = this.input.eval(parse).toValue();
 
+            console.log('input =', input);
             
             if (input.isValid())
             {
@@ -107,6 +108,7 @@ extends GColorType
                 Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
                 colorSpaceCount(parse)-1);
 
+            console.log('toSpaceIndex =', toSpaceIndex);
             this.value.space.value = toSpaceIndex;
 
             if (    this.convert

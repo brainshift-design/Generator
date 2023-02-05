@@ -181,7 +181,7 @@ function connectAction_cleanup(act)
     nodeIds.push(act.inputActiveNodeIds.filter(id => 
         !act.newActiveNodeIds.includes(id)));
 
-    uiDeleteObjectsAndStyles(nodeIds);
+    //uiDeleteObjectsAndStyles(nodeIds);
 }
 
 

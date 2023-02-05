@@ -467,16 +467,15 @@ function logReqNode(node, parse) {
 }
 var figObjectArrays = new Array(); // [ {nodeId, [objects]} ]
 var figStyleArrays = new Array(); // [ {nodeId, [styles]}  ]
-function figDeleteObjectsAndStylesFromNodeIds(nodeIds, force) {
+function figDeleteObjectsAndStylesFromNodeIds(nodeIds, forceDelete) {
     // styles are deleted first
     const paintStyles = figma.getLocalPaintStyles();
     figma.currentPage
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
         .forEach(o => o.remove());
     paintStyles
-        .filter(s => nodeIds.includes(s.getPluginData('nodeId'))
-        && (!parseBool(s.getPluginData('existing'))
-            || force))
+        .filter(s => nodeIds.includes(s.getPluginData('nodeId')))
+        //            && !parseBool(s.getPluginData('existing')))
         .forEach(s => {
         const nodeId = s.getPluginData('nodeId');
         const existing = parseBool(s.getPluginData('existing'));
@@ -490,9 +489,8 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds, force) {
         }
     });
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a['nodeId']));
-    figStyleArrays = figStyleArrays.filter(a => !nodeIds.includes(a['nodeId'])
-        && (!parseBool(a['existing'])
-            && !force));
+    figStyleArrays = figStyleArrays.filter(a => !nodeIds.includes(a['nodeId']));
+    //        &&    !parseBool(a['existing']));
 }
 function figDeleteAllObjects() {
     for (const obj of figma.currentPage.children)

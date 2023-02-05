@@ -773,7 +773,7 @@ var figStyleArrays  = new Array(); // [ {nodeId, [styles]}  ]
 
 
 
-function figDeleteObjectsAndStylesFromNodeIds(nodeIds, force)
+function figDeleteObjectsAndStylesFromNodeIds(nodeIds, forceDelete)
 {
     // styles are deleted first
     
@@ -785,9 +785,8 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds, force)
 
     paintStyles
         .filter(s => 
-                nodeIds.includes(s.getPluginData('nodeId')) 
-            && (  !parseBool(s.getPluginData('existing'))
-                || force))
+                nodeIds.includes(s.getPluginData('nodeId')))
+//            && !parseBool(s.getPluginData('existing')))
         .forEach(s => 
         {
             const nodeId   = s.getPluginData('nodeId');
@@ -809,9 +808,8 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds, force)
     figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a['nodeId']));
 
     figStyleArrays = figStyleArrays.filter(a => 
-           !nodeIds.includes(a['nodeId'])
-        && (   !parseBool(a['existing'])
-            && !force));
+           !nodeIds.includes(a['nodeId']));
+//        &&    !parseBool(a['existing']));
 }
 
 
