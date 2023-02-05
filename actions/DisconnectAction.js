@@ -21,16 +21,16 @@ extends Action
 
 
 
-    constructor(output, input)
+    constructor(input)
     {
         super('DISCONNECT ' 
-            + output.node.id + '.' + output.id
-            + ' ' + rightArrowChar(output.supportsTypes(LIST_TYPES)) + ' '
+            + input.connectedOutput.node.id + '.' + input.connectedOutput.id
+            + ' ' + rightArrowChar(input.connectedOutput.supportsTypes(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);
 
 
-        this.outputNodeId = output.node.id;
-        this.outputId     = output.id;
+        this.outputNodeId = input.connectedOutput.node.id;
+        this.outputId     = input.connectedOutput.id;
         this.outputOrder  = input.connection.outputOrder;
 
         this.inputNodeId  = input.node.id;

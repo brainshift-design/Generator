@@ -36927,7 +36927,7 @@ graphView.endConnection = pointerId =>
                 actionManager.do(new ConnectAction(output, input));
         }
         else if (savedConnInput) // disconnect old
-            actionManager.do(new DisconnectAction(output, savedConnInput));
+            actionManager.do(new DisconnectAction(savedConnInput));
         
         graphView.cancelConnection(pointerId);
     }
@@ -50396,16 +50396,16 @@ extends Action
 
 
 
-    constructor(output, input)
+    constructor(input)
     {
         super('DISCONNECT ' 
-            + output.node.id + '.' + output.id
-            + ' ' + rightArrowChar(output.supportsTypes(LIST_TYPES)) + ' '
+            + input.connectedOutput.node.id + '.' + input.connectedOutput.id
+            + ' ' + rightArrowChar(input.connectedOutput.supportsTypes(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);
 
 
-        this.outputNodeId = output.node.id;
-        this.outputId     = output.id;
+        this.outputNodeId = input.connectedOutput.node.id;
+        this.outputId     = input.connectedOutput.id;
         this.outputOrder  = input.connection.outputOrder;
 
         this.inputNodeId  = input.node.id;
@@ -54774,6 +54774,9 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
     else
     {
         node.paramValue.setValue(ColorValue.NaN);
+
+        if (node.paramValue.input.connected)
+            actionManager.do(new DisconnectAction(node.paramValue.input), true);
     }
 
 
