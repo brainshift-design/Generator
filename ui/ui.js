@@ -64,9 +64,7 @@ function uiShowClearUndoWarning(deleting)
             buttonAction: 'hideClearUndoWarning',
             delay:        8000 };
 
-        uiNotify(/*'⚠️    */ 'Changing or deleting linked styles in Figma clears undo in Generator', options);
-
-        //updateSettingAndMenu('showClearUndoWarning', true, false);
+        uiNotify('Changing or deleting linked styles in Figma clears undo in Generator', options);
     }
 }
 

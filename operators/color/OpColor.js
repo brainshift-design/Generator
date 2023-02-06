@@ -67,22 +67,6 @@ extends OpColorBase
         this.paramSpace.control.addEventListener('pointerenter', () => { this.header.over = true;  this.updateHeader(); });
         this.paramSpace.control.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
 
-        this.paramSpace.initTooltip = (tooltip, options) =>
-        {
-            let strOptions = '';
-    
-            for (let i = 0; i < options.length; i++)
-            {
-                     if (i == 4 || i == 7) strOptions += ',<br/>';
-                else if (strOptions != '') strOptions += ', ';
-                
-                strOptions += options[i];
-            }
-    
-            tooltip.innerHTML    = strOptions;
-            tooltip.style.height = '43px';
-        };
-
         
         // hex is default, remove default sliders
         this.inner.removeChild(this.param1.div);

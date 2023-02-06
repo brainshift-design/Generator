@@ -60,22 +60,6 @@ extends OpColorBase
 
 
         createTooltip(ttInterpolationSpace);
-
-        this.paramSpace.initTooltip = (tooltip, options) =>
-        {
-            let strOptions = '';
-    
-            for (let i = 1; i < options.length; i++)
-            {
-                     if (i == 4 || i == 7) strOptions += ',<br/>';
-                else if (strOptions != '') strOptions += ', ';
-                
-                strOptions += options[i];
-            }
-    
-            ttInterpolationSpaces.innerHTML = strOptions;
-        };
-
         this.paramSpace.getTooltip = () => ttInterpolationSpace;
     }
 
