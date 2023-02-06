@@ -83,7 +83,10 @@ function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true)
     figStyle.setPluginData('existing', boolToString(true));
 
 
-    figStyleArrays.push({nodeId: nodeId, styles: [figStyle]});
+    figStyleArrays.push({
+        nodeId:   nodeId, 
+        existing: true, 
+        styles:   [figStyle]});
 
 
     return figStyle;
@@ -147,16 +150,19 @@ function figUpdateStyles(msg)
 
     for (const genStyle of msg.styles)
     {
-        console.log('genStyle =', genStyle);
         if (genStyle.nodeId != curNodeId)
         {
             curNodeId = genStyle.nodeId;
             
             figStyles = figStyleArrays.find(a => a.nodeId == genStyle.nodeId);
-console.log('1 figStyles =', figStyles);
+
             if (!figStyles) 
             {
-                figStyles = {nodeId: genStyle.nodeId, styles: []};
+                figStyles = {
+                    nodeId:   genStyle.nodeId, 
+                    existing: genStyle.existing, 
+                    styles:   [] };
+
                 figStyleArrays.push(figStyles);
             }
         }
@@ -174,7 +180,6 @@ console.log('1 figStyles =', figStyles);
         if (    isValid(figStyle)
             && !localStyle) // removed
         {
-            console.log('0');
             removeFrom(figStyles.styles, figStyle);
         }
 
@@ -184,7 +189,6 @@ console.log('1 figStyles =', figStyles);
         {
             if (!existing)
             {
-                console.log('1');
                 styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);
             }
@@ -198,7 +202,6 @@ console.log('1 figStyles =', figStyles);
         {
             if (!existing)
             {
-                console.log('3');
                 localStyle.remove();
                 styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);

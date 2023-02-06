@@ -192,11 +192,13 @@ function initGeneratorMenus()
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',      {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                       }}),
-        //menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces',    {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
+      //menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces',    {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues       ); updateMenuItemShowBoolValues();       }}),
-        //menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',     {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning );                                       }}),
+      //menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',     {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning );                                       }}),
                                         new MenuItem('',                            {separator: true}),   
-        menuItemShowDebugMenu         = new MenuItem('Show debug menu',             {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu        ); updateMenuItemShowDebugMenu();        }})]);
+        menuItemShowDebugMenu         = new MenuItem('Show debug menu',             {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu        ); updateMenuItemShowDebugMenu();        }}),
+                                        new MenuItem('',                            {separator: true}),   
+        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',        {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures); updateMenuItemEnableBetaFeatures();              }})]);
 
     
     menuMainDebug = new Menu('Debug', false);
@@ -249,9 +251,7 @@ function initGeneratorMenus()
     menuMainHelp.addItems([
                                      new MenuItem('Help page',                 {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
                                      new MenuItem('',                          {separator: true}),
-                                     new MenuItem('Enter subscription key...', {callback:  () => showProductKeyDialog()}),
-                                     new MenuItem('',                          {separator: true}),
-        menuItemEnableBetaFeatures = new MenuItem('Enable beta features',      {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures); updateMenuItemEnableBetaFeatures(); }})]);
+                                     new MenuItem('Enter subscription key...', {callback:  () => showProductKeyDialog()})]);
 
 
     menuMain = new Menu('Main menu', false);

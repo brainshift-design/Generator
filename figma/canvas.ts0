@@ -3,7 +3,23 @@ var figStyleArrays  = new Array(); // [ {nodeId, [styles]}  ]
 
 
 
-function figDeleteObjectsAndStylesFromNodeIds(nodeIds, mustDelete)
+function figDeleteObjectsFromNodeIds(nodeIds)
+{
+    figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a.nodeId));
+}
+
+
+
+function figDeleteAllObjects()
+{
+    for (const obj of figma.currentPage.children)
+        if (!!obj.getPluginData('id')) 
+            obj.remove();
+}
+
+
+
+function figDeleteStylesFromNodeIds(nodeIds, mustDelete)
 {
     // styles are deleted first
     
@@ -15,8 +31,8 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds, mustDelete)
 
     paintStyles
         .filter(s => 
-                nodeIds.includes(s.getPluginData('nodeId')))
-//            && !parseBool(s.getPluginData('existing')))
+                nodeIds.includes(s.getPluginData('nodeId'))
+            && !parseBool(s.getPluginData('existing')))
         .forEach(s => 
         {
             const nodeId   = s.getPluginData('nodeId');
@@ -24,12 +40,10 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds, mustDelete)
             
             if (!existing) 
             {
-                console.log('10');
                 s.remove();
             }
             else if (mustDelete)
             {
-                console.log('11');
                 removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
 
                 s.setPluginData('type',     NULL);
@@ -39,18 +53,6 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds, mustDelete)
         });
 
 
-    figObjectArrays = figObjectArrays.filter(a => !nodeIds.includes(a['nodeId']));
-
-    figStyleArrays = figStyleArrays.filter(a => 
-           !nodeIds.includes(a['nodeId']));
-//        &&    !parseBool(a['existing']));
-}
-
-
-
-function figDeleteAllObjects()
-{
-    for (const obj of figma.currentPage.children)
-        if (!!obj.getPluginData('id')) 
-            obj.remove();
+    if (mustDelete)
+        figStyleArrays = figStyleArrays.filter(a => !nodeIds.includes(a.nodeId));
 }

@@ -171,7 +171,7 @@ class Action
         for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
     
-        uiDeleteObjectsAndStyles(this.newActiveNodeIds); 
+        uiDeleteObjectsAndStyles(this.newActiveNodeIds, false); 
     }
 }
 

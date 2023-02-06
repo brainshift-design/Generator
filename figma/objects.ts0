@@ -44,6 +44,7 @@ function figUpdateObjects(msg)
 
             if (!figObjects)
             {
+                console.log('genObj.existing =', genObj.existing);
                 figObjectArrays.push(figObjects = {
                     nodeId:   genObj.nodeId, 
                     existing: genObj.existing,

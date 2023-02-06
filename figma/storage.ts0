@@ -116,7 +116,12 @@ function initPageStyles(nodes)
             });
 
             if (style)
-                figStyleArrays.push({nodeId: node.id, styles: [style]});
+            {
+                figStyleArrays.push({
+                    nodeId:   node.id, 
+                    existing: parseBool(node.existing), 
+                    styles:   [style]});
+            }
         }
     }
 }

@@ -117,7 +117,7 @@ extends Action
         nodeIds.push(this.oldActiveNodeIds.filter(id => 
             !this.newActiveNodeIds.includes(id)));
 
-        uiDeleteObjectsAndStyles(nodeIds);
+        uiDeleteObjectsAndStyles(nodeIds, false);
     }
 
 
@@ -127,7 +127,7 @@ extends Action
         for (const id of this.newActiveNodeIds)
             uiMakeNodePassive(nodeFromId(id));
 
-        uiDeleteObjectsAndStyles(this.newActiveNodeIds);
+        uiDeleteObjectsAndStyles(this.newActiveNodeIds, false);
     }
 
 
