@@ -136,7 +136,7 @@ function figCreateColorStyle(styles, genStyle)
         nodeId:  genStyle.nodeId,
         styleId: figStyle.id });
 
-
+    
     return figStyle;
 }
 
@@ -171,21 +171,27 @@ function figUpdateStyles(msg)
 
 
         const figStyle    = figStyles.styles[0];
-        const existing    = isValid(figStyle) && figStyle.getPluginData('existing');
         
         const localStyles = figma.getLocalPaintStyles();
         const localStyle  = localStyles.find(s => s.getPluginData('nodeId') == genStyle.nodeId);
 
 
         if (    isValid(figStyle)
-            && !localStyle) // removed
+            && !isValid(localStyle)) // removed
         {
+            console.log('removed');
             removeFrom(figStyles.styles, figStyle);
         }
 
 
+        const existing = 
+               isValid(figStyle)
+            && isValid(localStyle)
+            && figStyle.getPluginData('existing');
+
+
         if (   !isValid(figStyle)
-            || !localStyle) // no existing style, create new style
+            || !isValid(localStyle)) // no existing style, create new style
         {
             if (!existing)
             {
@@ -193,7 +199,8 @@ function figUpdateStyles(msg)
                 figCreateColorStyle(figStyles.styles, genStyle);
             }
         }
-        else if (figStyle.getPluginData('type') == genStyle.type) // update existing style
+        else if (isValid(figStyle) 
+              && figStyle.getPluginData('type') == genStyle.type) // update existing style
         {
             styleChangingFromGenerator = true;
             figUpdateColorStyle(localStyle, genStyle);

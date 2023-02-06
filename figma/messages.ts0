@@ -55,7 +55,9 @@ figma.ui.onmessage = msg =>
             figDeleteStylesFromNodeIds(msg.nodeIds, msg.mustDelete); 
             break; 
     
-        //case 'figDeleteStyles':                     figDeleteStylesFromNodeIds           (msg.nodeIds);                                 break; 
+        case 'figCommitUndo':
+            figma.commitUndo();
+            break; 
     }
 
     

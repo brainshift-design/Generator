@@ -2779,8 +2779,8 @@ function boolToString(bool)
 
 function isValid(val)
 {
-    return val != null
-        && val != undefined;
+    return val != undefined
+        && val != null;
 }
 
 
@@ -13924,6 +13924,12 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
             objChunk,
             styleChunk);
     }
+
+
+    genQueueMessageToUI({
+        cmd: 'uiForwardToFigma',
+        msg: {cmd: 'figCommitUndo'}
+    })
 }
 
 
@@ -18559,8 +18565,8 @@ function boolToString(bool)
 
 function isValid(val)
 {
-    return val != null
-        && val != undefined;
+    return val != undefined
+        && val != null;
 }
 
 
@@ -32183,10 +32189,11 @@ function initGeneratorMenus()
         
     menuStyle = new Menu('Styles', true, false);
     menuStyle.addItems([
-        menuItemStyleFill   = new MenuItem('Fill',   {icon: iconFill,   callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
-        menuItemStyleStroke = new MenuItem('Stroke', {icon: iconStroke, callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
-        menuItemStyleSep1   = new MenuItem('',                  {separator: true}),
-                              new MenuItem('Color style',       {icon: iconColorStyle, childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
+        menuItemStyleFill   = new MenuItem('Fill',          {icon: iconFill,       callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
+        menuItemStyleStroke = new MenuItem('Stroke',        {icon: iconStroke,     callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
+        menuItemStyleSep1   = new MenuItem('',              {separator: true}),
+                              new MenuItem('Color style',   {icon: iconColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.shiftKey, existing: true}))})]);
+                            //new MenuItem('Color style',   {icon: iconColorStyle, childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
     
     
     menuShape = new Menu('Shapes', true, false);
@@ -52701,10 +52708,11 @@ generator.onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                 break;
+        case 'uiEndGenMessage':          uiEndGenMessage         ();                                                                                        break;
         case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.actionId, msg.updateNodeId, msg.updateParamId, msg.values, msg.objects, msg.styles);  break;
         case 'uiStartNodeProgress':      uiStartNodeProgress     (msg.nodeId);                                                                              break;
         case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                                                break;
+        case 'uiForwardToFigma':         uiQueueMessageToFigma   (msg.msg);                                                                                 break;
     }
 };
 
@@ -54004,6 +54012,13 @@ function uiDeleteObjectsAndStyles(nodeIds, mustDelete = true)
         nodeIds:    nodeIds,
         mustDelete: mustDelete
     });
+}
+
+
+
+function uiCommitFigmaUndo()
+{
+    uiQueueMessageToFigma({cmd: 'figCommitUndo'});
 }
 
 

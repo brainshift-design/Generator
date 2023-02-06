@@ -127,10 +127,11 @@ generator.onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'uiEndGenMessage':          uiEndGenMessage();                                                                                                 break;
+        case 'uiEndGenMessage':          uiEndGenMessage         ();                                                                                        break;
         case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.actionId, msg.updateNodeId, msg.updateParamId, msg.values, msg.objects, msg.styles);  break;
         case 'uiStartNodeProgress':      uiStartNodeProgress     (msg.nodeId);                                                                              break;
         case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                                                break;
+        case 'uiForwardToFigma':         uiQueueMessageToFigma   (msg.msg);                                                                                 break;
     }
 };
 

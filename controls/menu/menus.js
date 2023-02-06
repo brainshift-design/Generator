@@ -347,10 +347,11 @@ function initGeneratorMenus()
         
     menuStyle = new Menu('Styles', true, false);
     menuStyle.addItems([
-        menuItemStyleFill   = new MenuItem('Fill',   {icon: iconFill,   callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
-        menuItemStyleStroke = new MenuItem('Stroke', {icon: iconStroke, callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
-        menuItemStyleSep1   = new MenuItem('',                  {separator: true}),
-                              new MenuItem('Color style',       {icon: iconColorStyle, childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
+        menuItemStyleFill   = new MenuItem('Fill',          {icon: iconFill,       callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
+        menuItemStyleStroke = new MenuItem('Stroke',        {icon: iconStroke,     callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
+        menuItemStyleSep1   = new MenuItem('',              {separator: true}),
+                              new MenuItem('Color style',   {icon: iconColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.shiftKey, existing: true}))})]);
+                            //new MenuItem('Color style',   {icon: iconColorStyle, childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
     
     
     menuShape = new Menu('Shapes', true, false);

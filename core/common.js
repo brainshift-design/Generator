@@ -172,8 +172,8 @@ function boolToString(bool)
 
 function isValid(val)
 {
-    return val != null
-        && val != undefined;
+    return val != undefined
+        && val != null;
 }
 
 

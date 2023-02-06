@@ -105,8 +105,8 @@ function boolToString(bool) {
     return bool ? 'true' : 'false';
 }
 function isValid(val) {
-    return val != null
-        && val != undefined;
+    return val != undefined
+        && val != null;
 }
 function isEmpty(array) {
     return array.length == 0;
@@ -522,8 +522,15 @@ var styleChangingFromGenerator = false;
 function figOnDocumentChange(e) {
     for (const change of e.documentChanges) {
         switch (change.type) {
-            // case STYLE_CREATE: 
-            //    break;
+            case 'STYLE_CREATE':
+                // this is for undoing style deletion in Figma,
+                // when the style comes back it shouldn't be like before
+                if (!styleChangingFromGenerator) {
+                    change.style.setPluginData('type', NULL);
+                    change.style.setPluginData('nodeId', NULL);
+                    change.style.setPluginData('existing', NULL);
+                }
+                break;
             case 'STYLE_PROPERTY_CHANGE':
                 {
                     if (!styleChangingFromGenerator) {
@@ -691,7 +698,9 @@ figma.ui.onmessage = msg => {
             figDeleteObjectsFromNodeIds(msg.nodeIds);
             figDeleteStylesFromNodeIds(msg.nodeIds, msg.mustDelete);
             break;
-        //case 'figDeleteStyles':                     figDeleteStylesFromNodeIds           (msg.nodeIds);                                 break; 
+        case 'figCommitUndo':
+            figma.commitUndo();
+            break;
     }
     figPostMessageToUi({
         cmd: 'uiReturnFigMessage',
@@ -1351,23 +1360,27 @@ function figUpdateStyles(msg) {
         else
             figStyles = null;
         const figStyle = figStyles.styles[0];
-        const existing = isValid(figStyle) && figStyle.getPluginData('existing');
         const localStyles = figma.getLocalPaintStyles();
         const localStyle = localStyles.find(s => s.getPluginData('nodeId') == genStyle.nodeId);
         if (isValid(figStyle)
-            && !localStyle) // removed
+            && !isValid(localStyle)) // removed
          {
+            console.log('removed');
             removeFrom(figStyles.styles, figStyle);
         }
+        const existing = isValid(figStyle)
+            && isValid(localStyle)
+            && figStyle.getPluginData('existing');
         if (!isValid(figStyle)
-            || !localStyle) // no existing style, create new style
+            || !isValid(localStyle)) // no existing style, create new style
          {
             if (!existing) {
                 styleChangingFromGenerator = true;
                 figCreateColorStyle(figStyles.styles, genStyle);
             }
         }
-        else if (figStyle.getPluginData('type') == genStyle.type) // update existing style
+        else if (isValid(figStyle)
+            && figStyle.getPluginData('type') == genStyle.type) // update existing style
          {
             styleChangingFromGenerator = true;
             figUpdateColorStyle(localStyle, genStyle);

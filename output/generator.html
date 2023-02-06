@@ -176,8 +176,8 @@ function boolToString(bool)
 
 function isValid(val)
 {
-    return val != null
-        && val != undefined;
+    return val != undefined
+        && val != null;
 }
 
 
@@ -11321,6 +11321,12 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
             objChunk,
             styleChunk);
     }
+
+
+    genQueueMessageToUI({
+        cmd: 'uiForwardToFigma',
+        msg: {cmd: 'figCommitUndo'}
+    })
 }
 
 

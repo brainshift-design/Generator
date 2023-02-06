@@ -419,6 +419,13 @@ function uiDeleteObjectsAndStyles(nodeIds, mustDelete = true)
 
 
 
+function uiCommitFigmaUndo()
+{
+    uiQueueMessageToFigma({cmd: 'figCommitUndo'});
+}
+
+
+
 function uiSetNodeId(nodeId, newId)
 {
     const node = nodeFromId(nodeId);

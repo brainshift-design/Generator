@@ -244,6 +244,12 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
             objChunk,
             styleChunk);
     }
+
+
+    genQueueMessageToUI({
+        cmd: 'uiForwardToFigma',
+        msg: {cmd: 'figCommitUndo'}
+    })
 }
 
 
