@@ -4,6 +4,7 @@ extends GObjectBase
     style;
 
     existing;
+    linked;
 
 
 
@@ -37,9 +38,9 @@ extends GObjectBase
         this.value = this.value.eval(parse).toValue();
       
 
-        if (   this.value.isValid())
-            // && (  !this.existing
-            //     || this.linked))
+        if (   this.value.isValid()
+            && (  !this.existing
+                || this.linked))
         {
             const rgb = this.value.toRgb();
             this.evalStyle({rgb: rgb});

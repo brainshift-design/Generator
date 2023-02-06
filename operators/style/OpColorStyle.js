@@ -22,7 +22,9 @@ extends OperatorBase
 
 
         this.addParam(this.paramValue = new ColorParam('value', '', false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
+
         this.paramValue.input.getValuesForUndo = this.input_getValuesForUndo;
+        this.paramValue.input.addEventListener('disconnect', e => OpColorStyle_value_onDisconnectInput(this, e.detail.input));
 
         
         if (!!options.existing)
@@ -85,8 +87,8 @@ extends OperatorBase
 
 
         const options = 
-            (this.existing              ? 1 : 0) << 21;
-            (this.linkedStyleId != NULL ? 1 : 0) << 22;
+              (this.existing              ? 1 : 0) << 21
+            | (this.linkedStyleId != NULL ? 1 : 0) << 22;
 
 
         const [request, ignore] = this.genRequestStart(gen, options);
@@ -220,4 +222,13 @@ extends OperatorBase
 
         super.loadParams(_node, pasting);
     }
+}
+
+
+
+function OpColorStyle_value_onDisconnectInput(node, input)
+{
+    if (   node.existing
+        && node.linkedStyleId == NULL)
+        node.paramValue.setValue(ColorValue.NaN, false, false, false);
 }

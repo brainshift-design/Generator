@@ -13259,6 +13259,7 @@ extends GObjectBase
     style;
 
     existing;
+    linked;
 
 
 
@@ -13292,9 +13293,9 @@ extends GObjectBase
         this.value = this.value.eval(parse).toValue();
       
 
-        if (   this.value.isValid())
-            // && (  !this.existing
-            //     || this.linked))
+        if (   this.value.isValid()
+            && (  !this.existing
+                || this.linked))
         {
             const rgb = this.value.toRgb();
             this.evalStyle({rgb: rgb});
@@ -15665,7 +15666,7 @@ function genParseColorStyle(parse)
 
 
     const style = new GColorStyle(nodeId, options);
-    
+
     style.existing = options.existing;
     style.linked   = options.linked;
 
@@ -30662,6 +30663,7 @@ extends GObjectBase
     style;
 
     existing;
+    linked;
 
 
 
@@ -30695,9 +30697,9 @@ extends GObjectBase
         this.value = this.value.eval(parse).toValue();
       
 
-        if (   this.value.isValid())
-            // && (  !this.existing
-            //     || this.linked))
+        if (   this.value.isValid()
+            && (  !this.existing
+                || this.linked))
         {
             const rgb = this.value.toRgb();
             this.evalStyle({rgb: rgb});
@@ -49061,7 +49063,9 @@ extends OperatorBase
 
 
         this.addParam(this.paramValue = new ColorParam('value', '', false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
+
         this.paramValue.input.getValuesForUndo = this.input_getValuesForUndo;
+        this.paramValue.input.addEventListener('disconnect', e => OpColorStyle_value_onDisconnectInput(this, e.detail.input));
 
         
         if (!!options.existing)
@@ -49124,8 +49128,8 @@ extends OperatorBase
 
 
         const options = 
-            (this.existing              ? 1 : 0) << 21;
-            (this.linkedStyleId != NULL ? 1 : 0) << 22;
+              (this.existing              ? 1 : 0) << 21
+            | (this.linkedStyleId != NULL ? 1 : 0) << 22;
 
 
         const [request, ignore] = this.genRequestStart(gen, options);
@@ -49259,6 +49263,15 @@ extends OperatorBase
 
         super.loadParams(_node, pasting);
     }
+}
+
+
+
+function OpColorStyle_value_onDisconnectInput(node, input)
+{
+    if (   node.existing
+        && node.linkedStyleId == NULL)
+        node.paramValue.setValue(ColorValue.NaN, false, false, false);
 }
 
 
@@ -54777,8 +54790,8 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
     {
         node.paramValue.setValue(ColorValue.NaN);
 
-        if (node.paramValue.input.connected)
-            actionManager.do(new DisconnectAction(node.paramValue.input), true);
+        // if (node.paramValue.input.connected)
+        //     actionManager.do(new DisconnectAction(node.paramValue.input), true);
     }
 
 
@@ -54995,6 +55008,7 @@ function uiShowClearUndoWarning()
         //     buttonAction: 'hideClearUndoWarning' };
 
         uiNotify('⚠️    Changing linked styles in Figma clears Generator\'s undo', {delay: 8000});//Undo has been cleared', options);
+        
         updateSettingAndMenu('showClearUndoWarning', true, false);
     }
 }

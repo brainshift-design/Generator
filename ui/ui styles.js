@@ -26,8 +26,8 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
     {
         node.paramValue.setValue(ColorValue.NaN);
 
-        if (node.paramValue.input.connected)
-            actionManager.do(new DisconnectAction(node.paramValue.input), true);
+        // if (node.paramValue.input.connected)
+        //     actionManager.do(new DisconnectAction(node.paramValue.input), true);
     }
 
 
