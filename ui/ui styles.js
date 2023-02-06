@@ -128,16 +128,6 @@ function uiSetStyleId(msg)
 
 
 
-function uiHideClearUndoWarning()
-{
-    updateSettingAndMenu(
-        'showClearUndoWarning',  
-         true, 
-        !settings.showClearUndoWarning);
-}
-
-
-
 function initLocalStylesMenu(styles, nodeId)
 {
     const node = nodeFromId(nodeId);

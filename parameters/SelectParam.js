@@ -57,43 +57,43 @@ extends NumberParamBase
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });
 
 
-        this.tooltip = createDiv('tooltip');
-        document.body.appendChild(this.tooltip);
+        // this.tooltip = createDiv('tooltip');
+        // document.body.appendChild(this.tooltip);
 
-        createTooltip(this.tooltip);
+        // createTooltip(this.tooltip);
 
-        createTooltipSrc(this.control, this.control, () => 
-        {
-            this.initTooltip(this.tooltip, this.options);
+        // createTooltipSrc(this.control, this.control, () => 
+        // {
+        //     this.initTooltip(this.tooltip, this.options);
 
-            this.control.addEventListener('change', () => 
-            {
-                const tooltip = this.getTooltip();
-                if (tooltip) hideTooltip(tooltip);
-            });
+        //     this.control.addEventListener('change', () => 
+        //     {
+        //         const tooltip = this.getTooltip();
+        //         if (tooltip) hideTooltip(tooltip);
+        //     });
 
-            return this.getTooltip();
-        });
+        //     return this.getTooltip();
+        // });
     }
 
 
 
-    initTooltip = (tooltip, options) =>
-    {
-        let strOptions = '';
+    // initTooltip = (tooltip, options) =>
+    // {
+    //     let strOptions = '';
 
-        for (const option of options)
-        {
-            if (strOptions != '') strOptions += ', ';
-            strOptions += option;
-        }
+    //     for (const option of options)
+    //     {
+    //         if (strOptions != '') strOptions += ', ';
+    //         strOptions += option;
+    //     }
 
-        tooltip.innerHTML = strOptions;
-    };
+    //     tooltip.innerHTML = strOptions;
+    // };
 
 
     
-    getTooltip = () => this.tooltip;
+    // getTooltip = () => this.tooltip;
 
 
 

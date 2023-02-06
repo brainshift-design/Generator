@@ -59,10 +59,21 @@ function uiShowClearUndoWarning()
 {
     if (settings.showClearUndoWarning)
     {
-        const options = {
-            buttonText:   'Ignore',
-            buttonAction: 'hideClearUndoWarning' };
+        // const options = {
+        //     buttonText:   'Ignore',
+        //     buttonAction: 'hideClearUndoWarning' };
 
-        uiNotify('Undo has been cleared', options);
+        uiNotify('⚠️    Changing linked styles in Figma clears Generator\'s undo', {delay: 8000});//Undo has been cleared', options);
+        updateSettingAndMenu('showClearUndoWarning', true, false);
     }
+}
+
+
+
+function uiHideClearUndoWarning()
+{
+    updateSettingAndMenu(
+        'showClearUndoWarning',  
+         true, 
+        !settings.showClearUndoWarning);
 }

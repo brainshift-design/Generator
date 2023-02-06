@@ -111,7 +111,6 @@ extends OperatorBase
             || this.linkedStyleId != NULL;
 
         this.paramValue.enableControlText(enabled);
-        this.paramValue.input.canConnect = enabled;
 
         this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         this.paramValue.control.showBar   = !this.isUnknown();
