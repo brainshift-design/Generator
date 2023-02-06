@@ -50,7 +50,7 @@ figma.ui.onmessage = msg =>
         case 'figUpdateObjects':                      figUpdateObjects                     (msg);                                         break;
         case 'figUpdateStyles':                       figUpdateStyles                      (msg);                                         break;
      
-        case 'figDeleteObjectsAndStyles':             figDeleteObjectsAndStylesFromNodeIds (msg.nodeIds, msg.force);                      break; 
+        case 'figDeleteObjectsAndStyles':             figDeleteObjectsAndStylesFromNodeIds (msg.nodeIds, msg.mustDelete);                 break; 
     
         //case 'figDeleteStyles':                     figDeleteStylesFromNodeIds           (msg.nodeIds);                                 break; 
     }

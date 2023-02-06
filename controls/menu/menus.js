@@ -226,6 +226,8 @@ function initGeneratorMenus()
                              //    new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
                              //    new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
                                    new MenuItem('',                             {separator: true }),
+                                   new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
+                                   new MenuItem('',                             {separator: true }),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',            {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     ), setting: true}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',              {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates ), setting: true}),
         menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',             {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates), setting: true}),

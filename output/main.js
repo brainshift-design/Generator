@@ -467,7 +467,7 @@ function logReqNode(node, parse) {
 }
 var figObjectArrays = new Array(); // [ {nodeId, [objects]} ]
 var figStyleArrays = new Array(); // [ {nodeId, [styles]}  ]
-function figDeleteObjectsAndStylesFromNodeIds(nodeIds, forceDelete) {
+function figDeleteObjectsAndStylesFromNodeIds(nodeIds, mustDelete) {
     // styles are deleted first
     const paintStyles = figma.getLocalPaintStyles();
     figma.currentPage
@@ -479,9 +479,12 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds, forceDelete) {
         .forEach(s => {
         const nodeId = s.getPluginData('nodeId');
         const existing = parseBool(s.getPluginData('existing'));
-        if (!existing)
+        if (!existing) {
+            console.log('10');
             s.remove();
-        else {
+        }
+        else if (mustDelete) {
+            console.log('11');
             removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
             s.setPluginData('type', NULL);
             s.setPluginData('nodeId', NULL);
@@ -685,7 +688,7 @@ figma.ui.onmessage = msg => {
             figUpdateStyles(msg);
             break;
         case 'figDeleteObjectsAndStyles':
-            figDeleteObjectsAndStylesFromNodeIds(msg.nodeIds, msg.force);
+            figDeleteObjectsAndStylesFromNodeIds(msg.nodeIds, msg.mustDelete);
             break;
         //case 'figDeleteStyles':                     figDeleteStylesFromNodeIds           (msg.nodeIds);                                 break; 
     }
@@ -1322,9 +1325,11 @@ function figUpdateStyles(msg) {
     let curNodeId = NULL;
     let figStyles;
     for (const genStyle of msg.styles) {
+        console.log('genStyle =', genStyle);
         if (genStyle.nodeId != curNodeId) {
             curNodeId = genStyle.nodeId;
             figStyles = figStyleArrays.find(a => a.nodeId == genStyle.nodeId);
+            console.log('1 figStyles =', figStyles);
             if (!figStyles) {
                 figStyles = { nodeId: genStyle.nodeId, styles: [] };
                 figStyleArrays.push(figStyles);
@@ -1333,12 +1338,15 @@ function figUpdateStyles(msg) {
         else
             figStyles = null;
         const figStyle = figStyles.styles[0];
-        const existing = figStyle && figStyle.getPluginData('existing');
+        const existing = isValid(figStyle) && figStyle.getPluginData('existing');
         const localStyles = figma.getLocalPaintStyles();
         const localStyle = localStyles.find(s => s.getPluginData('nodeId') == genStyle.nodeId);
         if (isValid(figStyle)
             && !localStyle) // removed
+         {
+            console.log('0');
             removeFrom(figStyles.styles, figStyle);
+        }
         if (!isValid(figStyle)
             || !localStyle) // no existing style, create new style
          {

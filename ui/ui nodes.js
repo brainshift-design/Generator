@@ -408,12 +408,12 @@ function uiDeleteNodes(nodeIds)
 
 
 
-function uiDeleteObjectsAndStyles(nodeIds, force = false)
+function uiDeleteObjectsAndStyles(nodeIds, mustDelete = true)
 {
     uiQueueMessageToFigma({
-        cmd:    'figDeleteObjectsAndStyles',
-        nodeIds: nodeIds,
-        force:   force
+        cmd:       'figDeleteObjectsAndStyles',
+        nodeIds:    nodeIds,
+        mustDelete: mustDelete
     });
 }
 

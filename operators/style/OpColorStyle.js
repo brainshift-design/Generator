@@ -22,8 +22,9 @@ extends OperatorBase
 
 
         this.addParam(this.paramValue = new ColorParam('value', '', false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
+        this.paramValue.input.getValuesForUndo = this.input_getValuesForUndo;
 
-
+        
         if (!!options.existing)
         {
             this.existing = true;

@@ -3,7 +3,7 @@ var figStyleArrays  = new Array(); // [ {nodeId, [styles]}  ]
 
 
 
-function figDeleteObjectsAndStylesFromNodeIds(nodeIds, forceDelete)
+function figDeleteObjectsAndStylesFromNodeIds(nodeIds, mustDelete)
 {
     // styles are deleted first
     
@@ -23,9 +23,13 @@ function figDeleteObjectsAndStylesFromNodeIds(nodeIds, forceDelete)
             const existing = parseBool(s.getPluginData('existing'));
             
             if (!existing) 
-                s.remove();
-            else
             {
+                console.log('10');
+                s.remove();
+            }
+            else if (mustDelete)
+            {
+                console.log('11');
                 removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
 
                 s.setPluginData('type',     NULL);
