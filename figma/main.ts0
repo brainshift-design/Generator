@@ -6,7 +6,6 @@
 //var   maxNodeId   = Number.MIN_SAFE_INTEGER;
 
 
-
 //figma.on('selectionchange', figOnSelectionChange);
 
 figma.on('documentchange', figOnDocumentChange);

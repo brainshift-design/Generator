@@ -482,8 +482,8 @@ function figDeleteStylesFromNodeIds(nodeIds, mustDelete) {
         .findAll(o => nodeIds.includes(o.getPluginData('nodeId')))
         .forEach(o => o.remove());
     paintStyles
-        .filter(s => nodeIds.includes(s.getPluginData('nodeId'))
-        && !parseBool(s.getPluginData('existing')))
+        .filter(s => nodeIds.includes(s.getPluginData('nodeId')))
+        //            && !parseBool(s.getPluginData('existing')))
         .forEach(s => {
         const nodeId = s.getPluginData('nodeId');
         const existing = parseBool(s.getPluginData('existing'));
@@ -1426,6 +1426,8 @@ function setStylePaints(style, src) {
     else
         style.paints = [];
 }
+var notifyNotificationHandler = null;
+var notifyDequeueHandler = () => notifyNotificationHandler = null;
 //function figPositionWindow(x, y)
 //{
 // x = Math.floor(Math.max(0, x ));
@@ -1457,7 +1459,8 @@ function figNotifyMsg(msg) {
 function figNotify(text, prefix = 'Generator ', delay = 400, error = false, buttonText = '', buttonAction = NULL) {
     const options = {
         timeout: delay,
-        error: error
+        error: error,
+        onDequeue: notifyDequeueHandler
     };
     if (buttonText != '') {
         options['button'] = { text: buttonText };
@@ -1467,7 +1470,9 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
                 break;
         }
     }
-    figma.notify(prefix + text, options);
+    if (notifyNotificationHandler)
+        notifyNotificationHandler.cancel();
+    notifyNotificationHandler = figma.notify(prefix + text, options);
 }
 // function objTypeString(type)
 // {

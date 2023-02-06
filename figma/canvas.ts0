@@ -31,8 +31,8 @@ function figDeleteStylesFromNodeIds(nodeIds, mustDelete)
 
     paintStyles
         .filter(s => 
-                nodeIds.includes(s.getPluginData('nodeId'))
-            && !parseBool(s.getPluginData('existing')))
+                nodeIds.includes(s.getPluginData('nodeId')))
+//            && !parseBool(s.getPluginData('existing')))
         .forEach(s => 
         {
             const nodeId   = s.getPluginData('nodeId');

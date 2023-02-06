@@ -59,13 +59,14 @@ function uiShowClearUndoWarning()
 {
     if (settings.showClearUndoWarning)
     {
-        // const options = {
-        //     buttonText:   'Ignore',
-        //     buttonAction: 'hideClearUndoWarning' };
+        const options = {
+            buttonText:   'Ignore',
+            buttonAction: 'hideClearUndoWarning',
+            delay:        5000 };
 
-        uiNotify('⚠️    Changing linked styles in Figma clears Generator\'s undo', {delay: 8000});//Undo has been cleared', options);
-        
-        updateSettingAndMenu('showClearUndoWarning', true, false);
+        uiNotify(/*'⚠️    */ 'Changing linked styles in Figma clears undo in Generator', options);
+
+        //updateSettingAndMenu('showClearUndoWarning', true, false);
     }
 }
 
