@@ -1,7 +1,8 @@
 class   SelectParam
 extends NumberParamBase
 {
-    options = [];
+    options         = [];
+    excludeFromMenu = []; // indices
     
 
 
@@ -116,4 +117,29 @@ extends NumberParamBase
                 this.value.toString(), 
                 this.control.displayDec.toString() ];
     }
+}
+
+
+
+function initSelectParamMenu(param)
+{
+    menuSelectParam.clearItems();
+
+    for (const option of param.options)
+    {
+        const optionIndex = param.options.indexOf(option);
+        
+        if (param.excludeFromMenu.includes(optionIndex))
+            continue;
+
+        menuSelectParam.addItems(
+        [
+
+            new MenuItem(
+                option, 
+                { callback: () => param.setValue(new NumberValue(optionIndex), true) })
+        ]);
+    }
+
+    menuSelectParam.minWidth = 80;
 }

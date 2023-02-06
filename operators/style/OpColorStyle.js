@@ -44,7 +44,8 @@ extends OperatorBase
         { 
             e.stopPropagation();
 
-            if (   e.button == 0
+            if (   (  e.button == 0 
+                   || e.button == 2)
                 && this.existing)
             {
                 hideAllMenus(); 
@@ -55,6 +56,8 @@ extends OperatorBase
                     px:     e.clientX,
                     py:     e.clientY }); 
             }
+            else
+                e.preventDefault();
         });
 
 

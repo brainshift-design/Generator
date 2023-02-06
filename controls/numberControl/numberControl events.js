@@ -89,6 +89,13 @@ function initNumberControlEvents(control)
             e.stopPropagation();
 
             control.buttonDown2 = true;
+
+            if (   control.param
+                && control.options.length > 0)
+            {
+                initSelectParamMenu(control.param);
+                menuSelectParam.showAt(e.clientX, e.clientY);
+            }
         }
     });
 

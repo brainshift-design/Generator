@@ -1199,7 +1199,6 @@ a
 .menuItems
 {
     display:          inline-block;
-    min-width:        200px;
     height:           fit-content;
     /* box-shadow:       0 0 0 1px red inset; */
 }
@@ -11141,7 +11140,7 @@ extends GColorType
 
     constructor(nodeId, options)
     {
-        super(COLOR_INTERPOLATE, nodeId, nodeName, options);
+        super(COLOR_INTERPOLATE, nodeId, options);
     }
 
 
@@ -28551,7 +28550,7 @@ extends GColorType
 
     constructor(nodeId, options)
     {
-        super(COLOR_INTERPOLATE, nodeId, nodeName, options);
+        super(COLOR_INTERPOLATE, nodeId, options);
     }
 
 
@@ -30998,6 +30997,7 @@ class Menu
     items    = [];
     lastItem = null;
 
+    minWidth = 200;
 
     init     = null; // ()
 
@@ -31093,7 +31093,7 @@ class Menu
         }
 
         
-        this.divItems.style.width = Math.max(100, width) + 'px';
+        this.divItems.style.width = Math.max(this.minWidth, width) + 'px';
     }
 
 
@@ -31952,6 +31952,7 @@ var menuNode;
 
 
 var menuLocalStyles;
+var menuSelectParam;
 
 
 var menuNodeData;
@@ -32255,6 +32256,7 @@ function initGeneratorMenus()
 
 
     menuLocalStyles = new Menu('Local styles', true, true);
+    menuSelectParam = new Menu('Select options', false, false);
 
     
     btnMain     = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
@@ -32486,6 +32488,13 @@ function initNumberControlEvents(control)
             e.stopPropagation();
 
             control.buttonDown2 = true;
+
+            if (   control.param
+                && control.options.length > 0)
+            {
+                initSelectParamMenu(control.param);
+                menuSelectParam.showAt(e.clientX, e.clientY);
+            }
         }
     });
 
@@ -33757,6 +33766,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.clientWidth;
     control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.clientHeight;
 }
+
 
 
 function initColorControlEvents(control)
@@ -37846,7 +37856,8 @@ extends NumberParamBase
 class   SelectParam
 extends NumberParamBase
 {
-    options = [];
+    options         = [];
+    excludeFromMenu = []; // indices
     
 
 
@@ -37962,6 +37973,32 @@ extends NumberParamBase
                 this.control.displayDec.toString() ];
     }
 }
+
+
+
+function initSelectParamMenu(param)
+{
+    menuSelectParam.clearItems();
+
+    for (const option of param.options)
+    {
+        const optionIndex = param.options.indexOf(option);
+        
+        if (param.excludeFromMenu.includes(optionIndex))
+            continue;
+
+        menuSelectParam.addItems(
+        [
+
+            new MenuItem(
+                option, 
+                { callback: () => param.setValue(new NumberValue(optionIndex), true) })
+        ]);
+    }
+
+    menuSelectParam.minWidth = 80;
+}
+
 
 
 class   ColorParam
@@ -47781,6 +47818,7 @@ extends OpColorBase
       
         
         this.paramSpace.control.setMin(1);
+        this.paramSpace.excludeFromMenu.push(0);
 
         
         this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
@@ -49092,7 +49130,8 @@ extends OperatorBase
         { 
             e.stopPropagation();
 
-            if (   e.button == 0
+            if (   (  e.button == 0 
+                   || e.button == 2)
                 && this.existing)
             {
                 hideAllMenus(); 
@@ -49103,6 +49142,8 @@ extends OperatorBase
                     px:     e.clientX,
                     py:     e.clientY }); 
             }
+            else
+                e.preventDefault();
         });
 
 

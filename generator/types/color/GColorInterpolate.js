@@ -11,7 +11,7 @@ extends GColorType
 
     constructor(nodeId, options)
     {
-        super(COLOR_INTERPOLATE, nodeId, nodeName, options);
+        super(COLOR_INTERPOLATE, nodeId, options);
     }
 
 

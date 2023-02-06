@@ -21,6 +21,7 @@ class Menu
     items    = [];
     lastItem = null;
 
+    minWidth = 200;
 
     init     = null; // ()
 
@@ -116,7 +117,7 @@ class Menu
         }
 
         
-        this.divItems.style.width = Math.max(100, width) + 'px';
+        this.divItems.style.width = Math.max(this.minWidth, width) + 'px';
     }
 
 

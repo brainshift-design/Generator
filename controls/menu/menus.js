@@ -110,6 +110,7 @@ var menuNode;
 
 
 var menuLocalStyles;
+var menuSelectParam;
 
 
 var menuNodeData;
@@ -413,6 +414,7 @@ function initGeneratorMenus()
 
 
     menuLocalStyles = new Menu('Local styles', true, true);
+    menuSelectParam = new Menu('Select options', false, false);
 
     
     btnMain     = new MenuButton('', menuMain,   {useMenuName: true, highlight: () => currentMenus.includes(menuMain  ), callback: () => updatePanMode(false)});
