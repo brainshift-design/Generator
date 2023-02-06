@@ -165,8 +165,11 @@ function initLocalStylesMenu(styles, nodeId)
     }
 
 
+    if (styles.length > 0)
+        menuLocalStyles.addItems([new MenuItem('', {separator: true})]);
+
+        
     menuLocalStyles.addItems([
-        new MenuItem('',     {separator: true}),   
         new MenuItem('None', {
             callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, '', [])),
             enabled:  node.linkedStyleId != NULL})

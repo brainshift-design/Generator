@@ -55,16 +55,16 @@ function uiNotify(text, options = {})
 
 
 
-function uiShowClearUndoWarning()
+function uiShowClearUndoWarning(deleting)
 {
     if (settings.showClearUndoWarning)
     {
         const options = {
             buttonText:   'Ignore',
             buttonAction: 'hideClearUndoWarning',
-            delay:        5000 };
+            delay:        8000 };
 
-        uiNotify(/*'⚠️    */ 'Changing linked styles in Figma clears undo in Generator', options);
+        uiNotify(/*'⚠️    */ 'Changing or deleting linked styles in Figma clears undo in Generator', options);
 
         //updateSettingAndMenu('showClearUndoWarning', true, false);
     }

@@ -65,14 +65,24 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
     const s3         = s2 + df;
 
 
+    const activeOffset = node.getActiveOffset();
+
     if (rect.width > rw)
     {
-        node.label.style.left = margin - node.labelOffsetFactor * (rect.width - rw - 1) / graphView.zoom;
+        node.label.style.left = 
+              margin 
+            - node.labelOffsetFactor * (rect.width - rw - 1) / graphView.zoom
+            + (node.active ? activeOffset : 0);
+
         node.label.style.transform = 'translateY(calc(-50% - 0.5px))';
     }
     else
     {
-        node.label.style.left = '50%';
+        node.label.style.left = 
+              'calc(50%' 
+            + (node.active ? (' + ' + activeOffset + 'px') : '') 
+            + ')';
+
         node.label.style.transform = 
               'translateX(-50%) '
             + 'translateY(calc(-50% - 0.5px))';

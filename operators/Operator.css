@@ -104,6 +104,7 @@
     pointer-events: none;
     z-index:        10;
     white-space:    nowrap;
+    font-weight:    600;
     /* box-shadow:     0 0 0 1px magenta inset; */
 }
 

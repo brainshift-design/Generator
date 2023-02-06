@@ -870,6 +870,9 @@ function figOnDocumentChange(e)
                 // this is for undoing style deletion in Figma,
                 // when the style comes back it shouldn't be like before
 
+                if (!change.style)
+                    break;
+
                 if (!styleChangingFromGenerator)
                 {
                     change.style.setPluginData('type',     NULL);
@@ -882,6 +885,9 @@ function figOnDocumentChange(e)
 
             case 'STYLE_PROPERTY_CHANGE': 
             {
+                if (!change.style)
+                    break;
+
                 if (!styleChangingFromGenerator)
                 {
                     const msg = {

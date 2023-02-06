@@ -2071,6 +2071,7 @@ a
     pointer-events: none;
     z-index:        10;
     white-space:    nowrap;
+    font-weight:    600;
     /* box-shadow:     0 0 0 1px magenta inset; */
 }
 
@@ -41697,7 +41698,7 @@ class Operator
 
     updateBorder()
     {
-        const colors = this.getHeaderColors();
+        //const colors = this.getHeaderColors();
         
         // this.header.style.boxShadow = 
         //     this.inert
@@ -41767,11 +41768,11 @@ class Operator
     updateHeaderLabel()
     {
         this.labelText.innerHTML = 
-            settings.showNodeId 
-            ? this.id 
-            : this.name;
+              (settings.showNodeId ? this.id : this.name)
+            + (this.active && this.getCanShowActive() ? '  ‣' : '');
         
-        this.label.style.left = '50%';
+
+        this.label.style.left = '50%';//'calc(50% + ' + (this.active ? '30px' : '0px') + ')';
         this.label.style.top  = '50%';
 
         updateHeaderLabelOffset(this);
@@ -41792,12 +41793,12 @@ class Operator
         this.label.style.fontSize   = this.active ? fontSize : 11;
         this.label.style.height     = this.active ? fontSize * 14 / 11 : 14;
 
-        this.label.style.fontWeight = 
-            this.active 
-            && (   this.headerInputs .length > 0
-                || this.headerOutputs.length > 0)
-            ? (graphView.zoom < 1.2 ? '900' : 'bold') 
-            : (graphView.zoom < 1.2 ? '600' : 'normal');
+        // this.label.style.fontWeight = 
+        //     this.active 
+        //     && (   this.headerInputs .length > 0
+        //         || this.headerOutputs.length > 0)
+        //     ? (graphView.zoom < 1.2 ? '900' : 'bold') 
+        //     : (graphView.zoom < 1.2 ? '600' : 'normal');
     }
 
 
@@ -41874,6 +41875,20 @@ class Operator
             input:  colInput,
             output: colOutput,
             wire:   colWire };
+    }
+
+
+
+    getCanShowActive()
+    {
+        return true;    
+    }
+
+
+
+    getActiveOffset()
+    {
+        return 4;
     }
 
 
@@ -43050,14 +43065,24 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
     const s3         = s2 + df;
 
 
+    const activeOffset = node.getActiveOffset();
+
     if (rect.width > rw)
     {
-        node.label.style.left = margin - node.labelOffsetFactor * (rect.width - rw - 1) / graphView.zoom;
+        node.label.style.left = 
+              margin 
+            - node.labelOffsetFactor * (rect.width - rw - 1) / graphView.zoom
+            + (node.active ? activeOffset : 0);
+
         node.label.style.transform = 'translateY(calc(-50% - 0.5px))';
     }
     else
     {
-        node.label.style.left = '50%';
+        node.label.style.left = 
+              'calc(50%' 
+            + (node.active ? (' + ' + activeOffset + 'px') : '') 
+            + ')';
+
         node.label.style.transform = 
               'translateX(-50%) '
             + 'translateY(calc(-50% - 0.5px))';
@@ -49272,6 +49297,20 @@ extends OperatorBase
 
 
 
+    getCanShowActive()
+    {
+        return false;
+    }
+
+
+
+    getActiveOffset()
+    {
+        return -2;
+    }
+
+
+
     paramIsConsideredDefault(param)
     {
         return  param.isDefault()
@@ -54985,8 +55024,11 @@ function initLocalStylesMenu(styles, nodeId)
     }
 
 
+    if (styles.length > 0)
+        menuLocalStyles.addItems([new MenuItem('', {separator: true})]);
+
+        
     menuLocalStyles.addItems([
-        new MenuItem('',     {separator: true}),   
         new MenuItem('None', {
             callback: e => actionManager.do(new LinkExistingStyleAction(nodeId, NULL, '', [])),
             enabled:  node.linkedStyleId != NULL})
@@ -55055,16 +55097,16 @@ function uiNotify(text, options = {})
 
 
 
-function uiShowClearUndoWarning()
+function uiShowClearUndoWarning(deleting)
 {
     if (settings.showClearUndoWarning)
     {
         const options = {
             buttonText:   'Ignore',
             buttonAction: 'hideClearUndoWarning',
-            delay:        5000 };
+            delay:        8000 };
 
-        uiNotify(/*'⚠️    */ 'Changing linked styles in Figma clears undo in Generator', options);
+        uiNotify(/*'⚠️    */ 'Changing or deleting linked styles in Figma clears undo in Generator', options);
 
         //updateSettingAndMenu('showClearUndoWarning', true, false);
     }

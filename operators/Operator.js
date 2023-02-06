@@ -712,7 +712,7 @@ class Operator
 
     updateBorder()
     {
-        const colors = this.getHeaderColors();
+        //const colors = this.getHeaderColors();
         
         // this.header.style.boxShadow = 
         //     this.inert
@@ -782,11 +782,11 @@ class Operator
     updateHeaderLabel()
     {
         this.labelText.innerHTML = 
-            settings.showNodeId 
-            ? this.id 
-            : this.name;
+              (settings.showNodeId ? this.id : this.name)
+            + (this.active && this.getCanShowActive() ? '  ‣' : '');
         
-        this.label.style.left = '50%';
+
+        this.label.style.left = '50%';//'calc(50% + ' + (this.active ? '30px' : '0px') + ')';
         this.label.style.top  = '50%';
 
         updateHeaderLabelOffset(this);
@@ -807,12 +807,12 @@ class Operator
         this.label.style.fontSize   = this.active ? fontSize : 11;
         this.label.style.height     = this.active ? fontSize * 14 / 11 : 14;
 
-        this.label.style.fontWeight = 
-            this.active 
-            && (   this.headerInputs .length > 0
-                || this.headerOutputs.length > 0)
-            ? (graphView.zoom < 1.2 ? '900' : 'bold') 
-            : (graphView.zoom < 1.2 ? '600' : 'normal');
+        // this.label.style.fontWeight = 
+        //     this.active 
+        //     && (   this.headerInputs .length > 0
+        //         || this.headerOutputs.length > 0)
+        //     ? (graphView.zoom < 1.2 ? '900' : 'bold') 
+        //     : (graphView.zoom < 1.2 ? '600' : 'normal');
     }
 
 
@@ -889,6 +889,20 @@ class Operator
             input:  colInput,
             output: colOutput,
             wire:   colWire };
+    }
+
+
+
+    getCanShowActive()
+    {
+        return true;    
+    }
+
+
+
+    getActiveOffset()
+    {
+        return 4;
     }
 
 
