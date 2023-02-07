@@ -1369,7 +1369,6 @@ function figUpdateStyles(msg) {
         if (isValid(figStyle)
             && !isValid(localStyle)) // removed
          {
-            console.log('removed');
             removeFrom(figStyles.styles, figStyle);
         }
         const existing = isValid(figStyle)

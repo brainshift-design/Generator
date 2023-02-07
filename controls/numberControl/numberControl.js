@@ -155,7 +155,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         else
             value = Math.min(Math.max(control.displayMin, value), control.displayMax);
 
-            
+         
         if (    isNaN(value) && !isNaN(oldValue)
             || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)
@@ -319,9 +319,6 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.getValueText = function()
     {
-        // if (control.param.id == 'l')
-        //     console.log('control.valueText =', control.valueText);
-
         if (control.valueText != '')
         {
             return control.valueText;

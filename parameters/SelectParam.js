@@ -83,15 +83,15 @@ extends NumberParamBase
 
     initTooltip = (tooltip, options) =>
     {
-        let strOptions = '';
+        // let strOptions = '';
 
-        for (const option of options)
-        {
-            if (strOptions != '') strOptions += ', ';
-            strOptions += option;
-        }
+        // for (const option of options)
+        // {
+        //     if (strOptions != '') strOptions += ', ';
+        //     strOptions += option;
+        // }
 
-        tooltip.innerHTML = strOptions;
+        // tooltip.innerHTML = strOptions;
     };
 
 

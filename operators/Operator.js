@@ -855,13 +855,23 @@ class Operator
 
     updateValues(actionId, updateParamId, paramIds, values) // virtual
     {
-        // logFunction(this.id + '.Operator.updateValues()');
+        // console.log('2 paramIds =', [...paramIds]);
+        // console.log('this.params =', [...this.params]);
+        // console.log('updateParamId =', updateParamId);
 
-        for (let i = 0, paramIndex; i < paramIds.length; i++)
+        for (let i = 0; i < paramIds.length; i++)
         {
-            if (    paramIds[i] != updateParamId
-                && (paramIndex = this.params.findIndex(p => p.id == paramIds[i])) > -1)
-                this.params[paramIndex].setValue(values[i], false, true, false);
+            const index = this.params.findIndex(p => p.id == paramIds[i]);
+// console.log('i =', i);
+// console.log('values[i] =', values[i]);
+// console.log('index =', index);
+            if (   paramIds[index] != updateParamId
+                && index > -1)
+            {
+                // console.log('this.params[index] =', this.params[index]);
+                // console.log('values[i] =', values[i]);
+                this.params[index].setValue(values[i], false, true, false);
+            }
         }
     }
 
@@ -878,7 +888,7 @@ class Operator
 
         const rgbaText   = isDark(rgbaBack) ? [1, 1, 1, 1] : [0, 0, 0, 1]; 
 
-        const colInput   = this.active ? rgb_a(rgbaText, 0.4)  : rgb_a(rgbSaturateHsv(rgbHeaderFromType(this.type, true), 0.5), 0.8);
+        const colInput   = this.active ? rgb_a(rgbaText, 0.4 ) : rgb_a(rgbSaturateHsv(rgbHeaderFromType(this.type, true), 0.5), 0.8);
         const colOutput  = this.active ? rgb_a(rgbaText, 0.35) : rgb_a(rgbSaturateHsv(rgbHeaderFromType(this.type, true), 0.5), 0.7);
         const colWire    = rgbHeaderFromType(this.type, true);
 

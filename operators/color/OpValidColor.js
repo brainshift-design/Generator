@@ -122,6 +122,8 @@ extends OpColorBase
 
     updateValues(actionId, updateParamId, paramIds, values)
     {
+        //console.log('1 paramIds =', [...paramIds]);
+
         const col = values[paramIds.findIndex(id => id == 'value')];
 
         this._color = 
@@ -136,7 +138,17 @@ extends OpColorBase
 
         
         super.updateValues(actionId, updateParamId, paramIds, values);
-    }
+
+        // const order   = values[paramIds.findIndex(id => id == 'order'  )];
+        // const margin1 = values[paramIds.findIndex(id => id == 'margin1')];
+        // const margin2 = values[paramIds.findIndex(id => id == 'margin2')];
+        // const margin3 = values[paramIds.findIndex(id => id == 'margin3')];
+
+        // if (order  ) this.paramOrder.setValue(order,   false, true, false);
+        // if (margin1) this.param1    .setValue(margin1, false, true, false);
+        // if (margin2) this.param2    .setValue(margin2, false, true, false);
+        // if (margin3) this.param3    .setValue(margin3, false, true, false);
+}
 
 
 
@@ -172,10 +184,10 @@ extends OpColorBase
     {
         if (colorSpace == '')
         {
-            this.paramOrder  .setValue(NumberValue.NaN);
-            this.param1.setValue(NumberValue.NaN);
-            this.param2.setValue(NumberValue.NaN);
-            this.param3.setValue(NumberValue.NaN);
+            this.paramOrder.setValue(NumberValue.NaN);
+            this.param1    .setValue(NumberValue.NaN);
+            this.param2    .setValue(NumberValue.NaN);
+            this.param3    .setValue(NumberValue.NaN);
 
             return;
         }
@@ -293,7 +305,7 @@ extends OpColorBase
         margin.setName('', false);
         margin.control.name = '';
         margin.control.setMin(0);
-        margin.control.setMax(0);
+        margin.control.setMax(Number.MAX_SAFE_INTEGER);
     }
 
 
