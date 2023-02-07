@@ -28,7 +28,12 @@
 
 function uiError(text, delay = 6000)
 {
-    uiNotify(text, delay, true);
+    uiNotify(
+        text, 
+        {
+            delay: delay, 
+            error: true
+        });
 }
 
 
@@ -59,12 +64,13 @@ function uiShowClearUndoWarning(deleting)
 {
     if (settings.showClearUndoWarning)
     {
-        const options = {
-            buttonText:   'Ignore',
-            buttonAction: 'hideClearUndoWarning',
-            delay:        8000 };
-
-        uiNotify('Changing or deleting linked styles in Figma clears undo in Generator', options);
+        uiNotify(
+            'Changing or deleting linked styles in Figma clears undo in Generator', 
+            {
+                buttonText:   'Ignore',
+                buttonAction: 'hideClearUndoWarning',
+                delay:        8000 
+            });
     }
 }
 

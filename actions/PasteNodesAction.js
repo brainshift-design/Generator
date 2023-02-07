@@ -91,6 +91,8 @@ extends Action
         if (pasteConnected)
             action += ' connected';
 
-        uiNotify(action + ' ' + nodes.length + ' ' + countString('node', nodes.length), 2500);
+        uiNotify(
+            action + ' ' + nodes.length + ' ' + countString('node', nodes.length), 
+            {delay: 2500});
     }
 }

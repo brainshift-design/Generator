@@ -68,7 +68,9 @@ productKeyInput.addEventListener('input', () =>
             window.setTimeout(() => 
             {
                 hideProductKeyDialog();
-                uiNotify('✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 6000, false, '');
+                uiNotify(
+                    '✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 
+                    {delay: 6000});
             }, 
             1200);
         }
