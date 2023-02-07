@@ -8977,7 +8977,8 @@ extends GColorType
             closest3 ] = findCorrection(
                 this.nodeId,
                 inputColor, 
-                margin1, margin2, margin3, 
+                order, margin1, margin2, margin3, 
+                this.order   != null,
                 this.margin1 != null, 
                 this.margin2 != null, 
                 this.margin3 != null); 
@@ -9042,15 +9043,15 @@ extends GColorType
 
 function findCorrection(nodeId,
                         color,
-                        margin1, margin2, margin3,
-                        locked1, locked2, locked3) 
+                        order,       margin1, margin2, margin3,
+                        lockedOrder, locked1, locked2, locked3) 
 {
     const refOklab = dataColor2array(dataColor2oklab(color));
 
     
     let closestColor = [...color],
         closestOklab = null, 
-        closestOrder = -1,
+        closestOrder = order ? order.value : -1,
         closest1     = -1,
         closest2     = -1,
         closest3     = -1;
@@ -9067,12 +9068,12 @@ function findCorrection(nodeId,
         let _closestColor = [...closestColor];
 
 
-        for (let order = 0; order < 6; order++)
+        for (let _order = 0; _order < 6; _order++)
         {
             closestColor = [..._closestColor];
 
-            const [min1, min2, min3] = getMinCorrections(color[0], order);
-            const [max1, max2, max3] = getMaxCorrections(color[0], order);
+            const [min1, min2, min3] = getMinCorrections(color[0], _order);
+            const [max1, max2, max3] = getMaxCorrections(color[0], _order);
 
             let start1 = lerp(min1, closest1, 1-d),  end1 = lerp(max1, closest1, 1-d),
                 start2 = lerp(min2, closest2, 1-d),  end2 = lerp(max2, closest2, 1-d),
@@ -9093,8 +9094,8 @@ function findCorrection(nodeId,
             progress ] = findCorrectionInOrder(
                 nodeId,
                 refOklab,
-                order, 
-                locked1,  locked2,  locked3,
+                _order, 
+                lockedOrder, locked1,  locked2,  locked3,
                 closest1, closest2, closest3,
                 start1,   start2,   start3, 
                 end1,     end2,     end3,
@@ -9140,7 +9141,7 @@ function findCorrection(nodeId,
 function findCorrectionInOrder(nodeId,
                                refOklab,
                                order, 
-                               locked1,  locked2,  locked3,
+                               lockedOrder, locked1,  locked2,  locked3,
                                closest1, closest2, closest3,
                                start1,   start2,   start3, 
                                end1,     end2,     end3,
@@ -9171,7 +9172,9 @@ function findCorrectionInOrder(nodeId,
                 {
                     closestColor = _color;
                     closestOklab = _oklab;
-                    closestOrder =  order;
+                    
+                    if (!lockedOrder)
+                        closestOrder = order;
 
                     closest1     = m1;
                     closest2     = m2;
