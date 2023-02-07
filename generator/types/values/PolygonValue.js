@@ -35,7 +35,7 @@ extends ShapeBaseValue
 
     copy()
     {
-        const poly = new PolygonValue(
+        const copy = new PolygonValue(
             this.x      .copy(), 
             this.y      .copy(), 
             this.width  .copy(), 
@@ -44,9 +44,9 @@ extends ShapeBaseValue
             this.round  .copy(), 
             this.corners.copy());
     
-        poly.copyBase(this);
+        copy.copyBase(this);
 
-        return poly;
+        return copy;
     }
 
 

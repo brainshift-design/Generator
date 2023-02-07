@@ -25,6 +25,7 @@ extends OpColorBase
         
         this.paramSpace.control.setMin(1);
         this.paramSpace.excludeFromMenu.push(0);
+        this.paramSpace.input.outputMustBeCached = true;
 
         
         this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow

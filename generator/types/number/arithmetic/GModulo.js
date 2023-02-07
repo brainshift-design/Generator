@@ -10,10 +10,10 @@ extends GArithmetic
     
     copy()
     {
-        const mod = new GModulo(this.nodeId, this.options);
-        mod.copyBase(this);
-        mod.inputs = this.inputs.map(i => i.copy());
-        return mod;
+        const copy = new GModulo(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 

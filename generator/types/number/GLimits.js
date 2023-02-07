@@ -18,19 +18,19 @@ extends GNumberType
     
     copy()
     {
-        const lim = new GLimits(this.nodeId, this.options);
+        const copy = new GLimits(this.nodeId, this.options);
 
-        lim.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            lim.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        lim.min = this.min.copy();
-        lim.max = this.max.copy();
+        copy.min = this.min.copy();
+        copy.max = this.max.copy();
 
         //lim.minMaxPriority = this.minMaxPriority;
 
-        return lim;
+        return copy;
     }
 
 

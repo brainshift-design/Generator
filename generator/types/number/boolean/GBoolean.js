@@ -14,14 +14,14 @@ extends GArithmetic
     
     copy()
     {
-        const bool = new GBoolean(this.nodeId, this.options);
+        const copy = new GBoolean(this.nodeId, this.options);
 
-        bool.copyBase(this);
+        copy.copyBase(this);
 
-        bool.inputs    = this.inputs.map(i => i.copy());
-        bool.operation = this.operation.copy();
+        copy.inputs    = this.inputs.map(i => i.copy());
+        copy.operation = this.operation.copy();
 
-        return bool;
+        return copy;
     }
 
 
@@ -32,7 +32,7 @@ extends GArithmetic
             return this;
 
 
-        const op = this.operation.eval(parse).toValue();
+        const op = this.operation.eval(parse).toValue().toInteger();
 
         op.value = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
 

@@ -26,15 +26,15 @@ extends ShapeBaseValue
 
     copy()
     {
-        const line = new LineValue(
+        const copy = new LineValue(
             this.x    .copy(), 
             this.y    .copy(), 
             this.width.copy(), 
             this.angle.copy());
 
-        line.copyBase(this);
+        copy.copyBase(this);
 
-        return line;
+        return copy;
     }
 
 

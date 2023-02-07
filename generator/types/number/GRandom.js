@@ -18,17 +18,17 @@ extends GNumberType
     
     copy()
     {
-        const rnd = new GRandom(this.nodeId, this.options);
+        const copy = new GRandom(this.nodeId, this.options);
 
-        rnd.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.seed  ) rnd.seed   = this.seed  .copy();
-        if (this.min   ) rnd.min    = this.min   .copy();
-        if (this.max   ) rnd.max    = this.max   .copy();
+        if (this.seed  ) copy.seed   = this.seed  .copy();
+        if (this.min   ) copy.min    = this.min   .copy();
+        if (this.max   ) copy.max    = this.max   .copy();
 
-        if (this.random) rnd.random = this.random.copy();
+        if (this.random) copy.random = this.random.copy();
 
-        return rnd;
+        return copy;
     }
 
 

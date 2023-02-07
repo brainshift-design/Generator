@@ -22,7 +22,7 @@ extends FigmaShape
 
     copy()
     {
-        const line = new FigmaLine(
+        const copy = new FigmaLine(
             this.nodeId,
             this.nodeName,
             this.objectId,
@@ -31,8 +31,8 @@ extends FigmaShape
             this.width,
             this.angle);
 
-        line.copyBase(this);
+        copy.copyBase(this);
 
-        return line;
+        return copy;
     }
 }

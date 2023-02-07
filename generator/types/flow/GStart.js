@@ -14,14 +14,14 @@ extends GOperator
     
     copy()
     {
-        const start = new GStart(this.nodeId, this.options);
+        const copy = new GStart(this.nodeId, this.options);
 
-        start.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input) start.input = this.input.copy();
-        if (this.value) start.value = this.value.copy();
+        if (this.input) copy.input = this.input.copy();
+        if (this.value) copy.value = this.value.copy();
 
-        return start;
+        return copy;
     }
 
 

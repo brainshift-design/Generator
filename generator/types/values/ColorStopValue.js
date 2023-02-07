@@ -21,13 +21,13 @@ extends GValue
     
     copy()
     {
-        const val = new ColorStopValue(
+        const copy = new ColorStopValue(
             this.fill    .copy(),
             this.position.copy());
 
-        val.copyBase(this);
+        copy.copyBase(this);
 
-        return val;
+        return copy;
     }
 
 

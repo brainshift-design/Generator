@@ -42,6 +42,8 @@ extends NumberParamBase
 
         this.setOptions(options);
 
+        this.control.allowEditDecimals = false;
+
         this.control.successOnFocusOut = true;
         this.control.barTop            = 0.8;
 

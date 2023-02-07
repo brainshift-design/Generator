@@ -22,19 +22,19 @@ extends GColorType
     
     copy()
     {
-        const val = new GColorCorrect(this.nodeId, this.options);
+        const copy = new GColorCorrect(this.nodeId, this.options);
 
-        val.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            val.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        val.order   = this.order  .copy();
-        val.margin1 = this.margin1.copy();
-        val.margin2 = this.margin2.copy();
-        val.margin3 = this.margin3.copy();
+        copy.order   = this.order  .copy();
+        copy.margin1 = this.margin1.copy();
+        copy.margin2 = this.margin2.copy();
+        copy.margin3 = this.margin3.copy();
 
-        return val;
+        return copy;
     }
 
 

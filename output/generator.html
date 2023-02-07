@@ -3793,7 +3793,7 @@ extends FigmaShape
 
     copy()
     {
-        const rect = new FigmaRectangle(
+        const copy = new FigmaRectangle(
             this.nodeId,
             this.nodeName,
             this.objectId,
@@ -3804,9 +3804,9 @@ extends FigmaShape
             this.angle,
             this.round);
 
-        rect.copyBase(this);
+        copy.copyBase(this);
 
-        return rect;
+        return copy;
     }
 }
 
@@ -3835,7 +3835,7 @@ extends FigmaShape
 
     copy()
     {
-        const line = new FigmaLine(
+        const copy = new FigmaLine(
             this.nodeId,
             this.nodeName,
             this.objectId,
@@ -3844,9 +3844,9 @@ extends FigmaShape
             this.width,
             this.angle);
 
-        line.copyBase(this);
+        copy.copyBase(this);
 
-        return line;
+        return copy;
     }
 }
 
@@ -3877,7 +3877,7 @@ extends FigmaShape
 
     copy()
     {
-        const ellipse = new FigmaEllipse(
+        const copy = new FigmaEllipse(
             this.nodeId,
             this.nodeName,
             this.objectId,
@@ -3887,9 +3887,9 @@ extends FigmaShape
             this.height,
             this.angle);
 
-        ellipse.copyBase(this);
+        copy.copyBase(this);
 
-        return ellipse;
+        return copy;
     }
 }
 
@@ -3924,7 +3924,7 @@ extends FigmaShape
 
     copy()
     {
-        const poly = new FigmaPolygon(
+        const copy = new FigmaPolygon(
             this.nodeId,
             this.nodeName,
             this.objectId,
@@ -3936,9 +3936,9 @@ extends FigmaShape
             this.round,
             this.corners);
 
-        poly.copyBase(this);
+        copy.copyBase(this);
 
-        return poly;
+        return copy;
     }
 }
 
@@ -3975,7 +3975,7 @@ extends FigmaShape
 
     copy()
     {
-        const star = new FigmaStar(
+        const copy = new FigmaStar(
             this.nodeId,
             this.nodeName,
             this.objectId,
@@ -3988,9 +3988,9 @@ extends FigmaShape
             this.points,
             this.convex);
 
-        star.copyBase(this);
+        copy.copyBase(this);
 
-        return star;
+        return copy;
     }
 }
 
@@ -4267,13 +4267,13 @@ extends GOperator
 
     copy()
     {
-        const param = new GParam(this.nodeId, this.paramId);
+        const copy = new GParam(this.nodeId, this.paramId);
 
-        param.copyBase(this);
+        copy.copyBase(this);
 
-        param.node = this.node;
+        copy.node = this.node;
     
-        return param;
+        return copy;
     }
 
 
@@ -4319,11 +4319,11 @@ extends GValue
 
     copy()
     {
-        const list = new ListValue(this.items);
+        const copy = new ListValue(this.items);
 
-        list.copyBase(this);
+        copy.copyBase(this);
 
-        return list;
+        return copy;
     }
 
 
@@ -4483,13 +4483,13 @@ extends GValue
 
     copy()
     {
-        const val = new NumberValue(
+        const copy = new NumberValue(
             this.value, 
             this.decimals);
 
-        val.copyBase(this);
+        copy.copyBase(this);
 
-        return val;
+        return copy;
     }
 
 
@@ -4514,6 +4514,13 @@ extends GValue
     {
         return !isNaN(this.value)
             && !isNaN(this.decimals);
+    }
+
+
+
+    toInteger()
+    {
+        return new NumberValue(Math.round(this.value));
     }
 
 
@@ -4643,15 +4650,15 @@ extends GValue
 
     copy()
     {
-        const color = new ColorValue(
+        const copy = new ColorValue(
             this.space.copy(), 
             this.c1   .copy(), 
             this.c2   .copy(), 
             this.c3   .copy());
 
-        color.copyBase(this);
+        copy.copyBase(this);
 
-        return color;
+        return copy;
     }
 
 
@@ -4823,13 +4830,13 @@ extends GValue
 
     copy()
     {
-        const fill = new FillValue(
+        const copy = new FillValue(
             this.color  .copy(),
             this.opacity.copy());
 
-        fill.copyBase(this);
+        copy.copyBase(this);
 
-        return fill;
+        return copy;
     }
 
 
@@ -5011,16 +5018,16 @@ extends GValue
 
     copy()
     {
-        const val = new StrokeValue(
+        const copy = new StrokeValue(
             this.fill  .copy(),
             this.weight.copy(),
             this.fit   .copy(),
             this.join  .copy(),
             this.miter .copy());
 
-        val.copyBase(this);
+        copy.copyBase(this);
 
-        return val;
+        return copy;
     }
 
 
@@ -5289,7 +5296,7 @@ extends ShapeBaseValue
 
     copy()
     {
-        const rect = new RectangleValue(
+        const copy = new RectangleValue(
             this.nodeId,
             this.x     .copy(), 
             this.y     .copy(), 
@@ -5298,9 +5305,9 @@ extends ShapeBaseValue
             this.angle .copy(), 
             this.round .copy());
 
-        rect.copyBase(this);
+        copy.copyBase(this);
 
-        return rect;
+        return copy;
     }
 
 
@@ -5436,15 +5443,15 @@ extends ShapeBaseValue
 
     copy()
     {
-        const line = new LineValue(
+        const copy = new LineValue(
             this.x    .copy(), 
             this.y    .copy(), 
             this.width.copy(), 
             this.angle.copy());
 
-        line.copyBase(this);
+        copy.copyBase(this);
 
-        return line;
+        return copy;
     }
 
 
@@ -5550,16 +5557,16 @@ extends ShapeBaseValue
 
     copy()
     {
-        const elps = new EllipseValue(
+        const copy = new EllipseValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
             this.height.copy(), 
             this.angle .copy());
 
-        elps.copyBase(this);
+        copy.copyBase(this);
 
-        return elps;
+        return copy;
     }
 
 
@@ -5669,7 +5676,7 @@ extends ShapeBaseValue
 
     copy()
     {
-        const poly = new PolygonValue(
+        const copy = new PolygonValue(
             this.x      .copy(), 
             this.y      .copy(), 
             this.width  .copy(), 
@@ -5678,9 +5685,9 @@ extends ShapeBaseValue
             this.round  .copy(), 
             this.corners.copy());
     
-        poly.copyBase(this);
+        copy.copyBase(this);
 
-        return poly;
+        return copy;
     }
 
 
@@ -5811,7 +5818,7 @@ extends ShapeBaseValue
 
     copy()
     {
-        const star = new StarValue(
+        const copy = new StarValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -5821,9 +5828,9 @@ extends ShapeBaseValue
             this.points.copy(),
             this.convex.copy());
 
-        star.copyBase(this);
+        copy.copyBase(this);
 
-        return star;
+        return copy;
     }
 
 
@@ -5936,14 +5943,14 @@ extends GOperator
     
     copy()
     {
-        const list = new GList(this.nodeId, this.options);
+        const copy = new GList(this.nodeId, this.options);
 
-        list.copyBase(this);
+        copy.copyBase(this);
 
-        list.inputs = this.inputs.map(i => i.copy());
-        list.value  = this.value.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
+        copy.value  = this.value.copy();
 
-        return list;
+        return copy;
     }
 
 
@@ -6009,21 +6016,21 @@ extends GOperator
 
     copy()
     {
-        const items = new GItems(this.nodeId, this.options);
+        const copy = new GItems(this.nodeId, this.options);
         
-        items.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            items.input = this.input.copy();
+            copy.input = this.input.copy();
         
         for (const key of this.keys())
         {
             if (   key.length > 4
                 && key.substring(0, 4) == 'item')
-                Object.assign(items, {[key]: this[key]});
+                Object.assign(copy, {[key]: this[key]});
         }
 
-        return items;
+        return copy;
     }
 
 
@@ -6104,16 +6111,16 @@ extends GOperator
 
     copy()
     {
-        const sel = new GSelect(this.nodeId, this.options);
+        const copy = new GSelect(this.nodeId, this.options);
         
-        sel.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            sel.input = this.input.copy();
+            copy.input = this.input.copy();
         
-        sel.index = this.index.copy();
+        copy.index = this.index.copy();
 
-        return sel;
+        return copy;
     }
 
 
@@ -6190,15 +6197,15 @@ extends GOperator
     
     copy()
     {
-        const ifElse = new GIfElse(this.nodeId, this.options);
+        const copy = new GIfElse(this.nodeId, this.options);
 
-        ifElse.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input    ) ifElse.input     = this.input    .copy();
-        if (this.condition) ifElse.condition = this.condition.copy();
-        if (this.value    ) ifElse.value     = this.value    .copy();
+        if (this.input    ) copy.input     = this.input    .copy();
+        if (this.condition) copy.condition = this.condition.copy();
+        if (this.value    ) copy.value     = this.value    .copy();
 
-        return ifElse;
+        return copy;
     }
 
 
@@ -6269,14 +6276,14 @@ extends GOperator
     
     copy()
     {
-        const start = new GStart(this.nodeId, this.options);
+        const copy = new GStart(this.nodeId, this.options);
 
-        start.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input) start.input = this.input.copy();
-        if (this.value) start.value = this.value.copy();
+        if (this.input) copy.input = this.input.copy();
+        if (this.value) copy.value = this.value.copy();
 
-        return start;
+        return copy;
     }
 
 
@@ -6325,16 +6332,16 @@ extends GOperator
     
     copy()
     {
-        const rep = new GRepeat(this.nodeId, this.options);
+        const copy = new GRepeat(this.nodeId, this.options);
 
-        rep.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input) rep.input = this.input.copy();
+        if (this.input) copy.input = this.input.copy();
 
-        rep.count = this.count.copy();
-        rep.value = this.value.copy();
+        copy.count = this.count.copy();
+        copy.value = this.value.copy();
 
-        return rep;
+        return copy;
     }
 
 
@@ -6406,14 +6413,14 @@ extends GOperator
     
     copy()
     {
-        const cache = new GCache(this.nodeId, this.options);
+        const copy = new GCache(this.nodeId, this.options);
 
-        cache.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input) cache.input = this.input.copy();
-        if (this.value) cache.value = this.value.copy();
+        if (this.input) copy.input = this.input.copy();
+        if (this.value) copy.value = this.value.copy();
 
-        return cache;
+        return copy;
     }
 
 
@@ -6560,14 +6567,14 @@ extends GArithmetic
     
     copy()
     {
-        const math = new GMath(this.nodeId, this.options);
+        const copy = new GMath(this.nodeId, this.options);
 
-        math.copyBase(this);
+        copy.copyBase(this);
 
-        math.inputs    = this.inputs.map(i => i.copy());
-        math.operation = this.operation.copy();
+        copy.inputs    = this.inputs.map(i => i.copy());
+        copy.operation = this.operation.copy();
 
-        return math;
+        return copy;
     }
 
 
@@ -6578,7 +6585,7 @@ extends GArithmetic
             return this;
 
 
-        const op = this.operation.eval(parse).toValue();
+        const op = this.operation.eval(parse).toValue().toInteger();
 
         op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
 
@@ -6618,10 +6625,10 @@ extends GArithmetic
     
     copy()
     {
-        const add = new GAdd(this.nodeId, this.options);
-        add.copyBase(this);
-        add.inputs = this.inputs.map(i => i.copy());
-        return add;
+        const copy = new GAdd(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 
@@ -6681,10 +6688,10 @@ extends GArithmetic
     
     copy()
     {
-        const sub = new GSubtract(this.nodeId, this.options);
-        sub.copyBase(this);
-        sub.inputs = this.inputs.map(i => i.copy());
-        return sub;
+        const copy = new GSubtract(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 
@@ -6753,10 +6760,10 @@ extends GArithmetic
 
     copy()
     {
-        const mul = new GMultiply(this.nodeId, this.options);
-        mul.copyBase(this);
-        mul.inputs = this.inputs.map(i => i.copy());
-        return mul;
+        const copy = new GMultiply(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
     
@@ -6821,10 +6828,10 @@ extends GArithmetic
     
     copy()
     {
-        const div = new GDivide(this.nodeId, this.options);
-        div.copyBase(this);
-        div.inputs = this.inputs.map(i => i.copy());
-        return div;
+        const copy = new GDivide(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 
@@ -6900,10 +6907,10 @@ extends GArithmetic
     
     copy()
     {
-        const mod = new GModulo(this.nodeId, this.options);
-        mod.copyBase(this);
-        mod.inputs = this.inputs.map(i => i.copy());
-        return mod;
+        const copy = new GModulo(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 
@@ -6979,10 +6986,10 @@ extends GArithmetic
     
     copy()
     {
-        const exp = new GExponent(this.nodeId, this.options);
-        exp.copyBase(this);
-        exp.inputs = this.inputs.map(i => i.copy());
-        return exp;
+        const copy = new GExponent(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 
@@ -7055,14 +7062,14 @@ extends GArithmetic
     
     copy()
     {
-        const bool = new GBoolean(this.nodeId, this.options);
+        const copy = new GBoolean(this.nodeId, this.options);
 
-        bool.copyBase(this);
+        copy.copyBase(this);
 
-        bool.inputs    = this.inputs.map(i => i.copy());
-        bool.operation = this.operation.copy();
+        copy.inputs    = this.inputs.map(i => i.copy());
+        copy.operation = this.operation.copy();
 
-        return bool;
+        return copy;
     }
 
 
@@ -7073,7 +7080,7 @@ extends GArithmetic
             return this;
 
 
-        const op = this.operation.eval(parse).toValue();
+        const op = this.operation.eval(parse).toValue().toInteger();
 
         op.value = Math.min(Math.max(0, op.value), BOOLEAN_OPS.length-1);
 
@@ -7110,10 +7117,10 @@ extends GArithmetic
     
     copy()
     {
-        const not = new GNot(this.nodeId, this.options);
-        not.copyBase(this);
-        not.inputs = this.inputs.map(i => i.copy());
-        return not;
+        const copy = new GNot(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 
@@ -7182,10 +7189,10 @@ extends GArithmetic
     
     copy()
     {
-        const and = new GAnd(this.nodeId, this.options);
-        and.copyBase(this);
-        and.inputs = this.inputs.map(i => i.copy());
-        return and;
+        const copy = new GAnd(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 
@@ -7258,10 +7265,10 @@ extends GArithmetic
     
     copy()
     {
-        const or = new GOr(this.nodeId, this.options);
-        or.copyBase(this);
-        or.inputs = this.inputs.map(i => i.copy());
-        return or;
+        const copy = new GOr(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 
@@ -7334,10 +7341,10 @@ extends GArithmetic
     
     copy()
     {
-        const xor = new GXor(this.nodeId, this.options);
-        xor.copyBase(this);
-        xor.inputs = this.inputs.map(i => i.copy());
-        return xor;
+        const copy = new GXor(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 
@@ -7439,16 +7446,16 @@ extends GNumberType
     
     copy()
     {
-        const cond = new GCondition(this.nodeId, this.options);
+        const copy = new GCondition(this.nodeId, this.options);
 
-        cond.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input0) cond.input0 = this.input0.copy();
-        if (this.input1) cond.input1 = this.input1.copy();
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
 
-        cond.operation = this.operation.copy();
+        copy.operation = this.operation.copy();
 
-        return cond;
+        return copy;
     }
 
 
@@ -7459,7 +7466,7 @@ extends GNumberType
             return this;
 
 
-        const op = this.operation.eval(parse).toValue();
+        const op = this.operation.eval(parse).toValue().toInteger();
 
         op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
@@ -7531,10 +7538,10 @@ extends GConditionBase
     
     copy()
     {
-        const eq = new GEqual(this.nodeId, this.options);
-        eq.copyBase(this);
-        eq.inputs = this.inputs.map(i => i.copy());
-        return eq;
+        const copy = new GEqual(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 
@@ -7584,10 +7591,10 @@ extends GConditionBase
     
     copy()
     {
-        const ne = new GNotEqual(this.nodeId, this.options);
-        ne.copyBase(this);
-        ne.inputs = this.inputs.map(i => i.copy());
-        return ne;
+        const copy = new GNotEqual(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 
@@ -7644,10 +7651,10 @@ extends GConditionBase
     
     copy()
     {
-        const lt = new GLess(this.nodeId, this.options);
-        lt.copyBase(this);
-        lt.inputs = this.inputs.map(i => i.copy());
-        return lt;
+        const copy = new GLess(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 
@@ -7697,10 +7704,10 @@ extends GConditionBase
     
     copy()
     {
-        const le = new GLessOrEqual(this.nodeId, this.options);
-        le.copyBase(this);
-        le.inputs = this.inputs.map(i => i.copy());
-        return le;
+        const copy = new GLessOrEqual(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 
@@ -7750,10 +7757,10 @@ extends GConditionBase
     
     copy()
     {
-        const gt = new GGreater(this.nodeId, this.options);
-        gt.copyBase(this);
-        gt.inputs = this.inputs.map(i => i.copy());
-        return gt;
+        const copy = new GGreater(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 
@@ -7862,16 +7869,16 @@ extends GNumberType
 
     copy()
     {
-        const num = new GNumber(this.nodeId, this.options);
+        const copy = new GNumber(this.nodeId, this.options);
         
-        num.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            num.input = this.input.copy();
+            copy.input = this.input.copy();
         
-        num.value = this.value;
+        copy.value = this.value;
 
-        return num;
+        return copy;
     }
 
 
@@ -7934,17 +7941,17 @@ extends GNumberType
     
     copy()
     {
-        const round = new GRound(this.nodeId, this.options);
+        const copy = new GRound(this.nodeId, this.options);
 
-        round.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            round.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        round.type     = this.type    .copy();
-        round.decimals = this.decimals.copy();
+        copy.type     = this.type    .copy();
+        copy.decimals = this.decimals.copy();
 
-        return round;
+        return copy;
     }
 
 
@@ -8023,19 +8030,19 @@ extends GNumberType
     
     copy()
     {
-        const lim = new GLimits(this.nodeId, this.options);
+        const copy = new GLimits(this.nodeId, this.options);
 
-        lim.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            lim.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        lim.min = this.min.copy();
-        lim.max = this.max.copy();
+        copy.min = this.min.copy();
+        copy.max = this.max.copy();
 
         //lim.minMaxPriority = this.minMaxPriority;
 
-        return lim;
+        return copy;
     }
 
 
@@ -8106,16 +8113,16 @@ extends GNumberType
     
     copy()
     {
-        const series = new GSeries(this.nodeId, this.options);
+        const copy = new GSeries(this.nodeId, this.options);
 
-        series.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.start  ) series.start   = this.start  .copy();
-        if (this.step   ) series.step    = this.step   .copy();
+        if (this.start  ) copy.start   = this.start  .copy();
+        if (this.step   ) copy.step    = this.step   .copy();
 
-        if (this.current) series.current = this.current.copy();
+        if (this.current) copy.current = this.current.copy();
 
-        return series;
+        return copy;
     }
 
 
@@ -8181,17 +8188,17 @@ extends GNumberType
     
     copy()
     {
-        const rnd = new GRandom(this.nodeId, this.options);
+        const copy = new GRandom(this.nodeId, this.options);
 
-        rnd.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.seed  ) rnd.seed   = this.seed  .copy();
-        if (this.min   ) rnd.min    = this.min   .copy();
-        if (this.max   ) rnd.max    = this.max   .copy();
+        if (this.seed  ) copy.seed   = this.seed  .copy();
+        if (this.min   ) copy.min    = this.min   .copy();
+        if (this.max   ) copy.max    = this.max   .copy();
 
-        if (this.random) rnd.random = this.random.copy();
+        if (this.random) copy.random = this.random.copy();
 
-        return rnd;
+        return copy;
     }
 
 
@@ -8256,16 +8263,16 @@ extends GNumberType
     
     copy()
     {
-        const lerp = new GInterpolate(this.nodeId, this.options);
+        const copy = new GInterpolate(this.nodeId, this.options);
 
-        lerp.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input0) lerp.input0 = this.input0.copy();
-        if (this.input1) lerp.input1 = this.input1.copy();
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
 
-        lerp.amount = this.amount.copy();
+        copy.amount = this.amount.copy();
 
-        return lerp;
+        return copy;
     }
 
 
@@ -8361,23 +8368,23 @@ extends GColorType
     
     copy()
     {
-        const col = new GColor(this.nodeId, this.options);
+        const copy = new GColor(this.nodeId, this.options);
 
-        col.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            col.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        col.space = this.space.copy();
+        copy.space = this.space.copy();
 
-        if (this.c1) col.c1 = this.c1.copy();
-        if (this.c2) col.c2 = this.c2.copy();
-        if (this.c3) col.c3 = this.c3.copy();
+        if (this.c1) copy.c1 = this.c1.copy();
+        if (this.c2) copy.c2 = this.c2.copy();
+        if (this.c3) copy.c3 = this.c3.copy();
 
         if (this.convert) 
-            col.convert = this.convert.copy();
+            copy.convert = this.convert.copy();
 
-        return col;
+        return copy;
     }
 
 
@@ -8388,10 +8395,10 @@ extends GColorType
             return this;
 
             
-        const space = this.space ? this.space.eval(parse).toValue() : null; 
-        const c1    = this.c1    ? this.c1   .eval(parse).toValue() : null;
-        const c2    = this.c2    ? this.c2   .eval(parse).toValue() : null;
-        const c3    = this.c3    ? this.c3   .eval(parse).toValue() : null;
+        const space = this.space ? this.space.eval(parse).toValue().toInteger() : null; 
+        const c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
+        const c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
+        const c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
 
 
         if (this.input)
@@ -8545,18 +8552,18 @@ extends GColorType
     
     copy()
     {
-        const lerp = new GColorInterpolate(this.nodeId, this.options);
+        const copy = new GColorInterpolate(this.nodeId, this.options);
 
-        lerp.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input0) lerp.input0 = this.input0.copy();
-        if (this.input1) lerp.input1 = this.input1.copy();
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
 
-        lerp.space  = this.space .copy();
-        lerp.amount = this.amount.copy();
-        lerp.gamma  = this.gamma .copy();
+        copy.space  = this.space .copy();
+        copy.amount = this.amount.copy();
+        copy.gamma  = this.gamma .copy();
 
-        return lerp;
+        return copy;
     }
 
 
@@ -8567,8 +8574,8 @@ extends GColorType
             return this;
 
 
-        const space  = this.space .eval(parse).toValue();
         const amount = this.amount.eval(parse).toValue();
+        const space  = this.space .eval(parse).toValue().toInteger();
         const gamma  = this.gamma .eval(parse).toValue();
 
 
@@ -8685,17 +8692,17 @@ extends GColorType
     
     copy()
     {
-        const cnt = new GColorContrast(this.nodeId, this.options);
+        const copy = new GColorContrast(this.nodeId, this.options);
 
-        cnt.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input0) cnt.input0 = this.input0.copy();
-        if (this.input1) cnt.input1 = this.input1.copy();
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
 
-        cnt.standard = this.standard.copy();
-        cnt.contrast = this.contrast.copy();
+        copy.standard = this.standard.copy();
+        copy.contrast = this.contrast.copy();
 
-        return cnt;
+        return copy;
     }
 
 
@@ -8706,7 +8713,7 @@ extends GColorType
             return this;
 
 
-        const standard = this.standard.eval(parse).toValue();
+        const standard = this.standard.eval(parse).toValue().toInteger();
 
         
         if (standard.isValid())
@@ -8757,9 +8764,7 @@ extends GColorType
         {
             const input0 = this.input0.eval(parse).toValue();
 
-            if (input0.isValid())
-                genPushUpdateValue(parse, this.nodeId, 'text', input0);
-
+            genPushUpdateValue(parse, this.nodeId, 'text', input0.isValid() ? input0 : ColorValue.NaN);
             genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
 
             this.value    = ColorValue.NaN;
@@ -8771,15 +8776,9 @@ extends GColorType
             const input1 = this.input1.eval(parse).toValue();
 
             genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'back', input1.isValid() ? input1 : ColorValue.NaN);
 
-            if (input1.isValid())
-            {
-                this.value = input1;
-                genPushUpdateValue(parse, this.nodeId, 'back', input1);
-            }
-            else
-                this.value = ColorValue.NaN;
-
+            this.value    = input1.isValid() ? input1 : ColorValue.NaN;
             this.contrast = NumberValue.NaN;
         }
 
@@ -8825,18 +8824,18 @@ extends GColorType
     
     copy()
     {
-        const cb = new GColorBlind(this.nodeId, this.options);
+        const copy = new GColorBlind(this.nodeId, this.options);
 
-        cb.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            cb.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        cb.l = this.l.copy();
-        cb.m = this.m.copy();
-        cb.s = this.s.copy();
+        copy.l = this.l.copy();
+        copy.m = this.m.copy();
+        copy.s = this.s.copy();
 
-        return cb;
+        return copy;
     }
 
 
@@ -8925,19 +8924,19 @@ extends GColorType
     
     copy()
     {
-        const val = new GColorCorrect(this.nodeId, this.options);
+        const copy = new GColorCorrect(this.nodeId, this.options);
 
-        val.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            val.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        val.order   = this.order  .copy();
-        val.margin1 = this.margin1.copy();
-        val.margin2 = this.margin2.copy();
-        val.margin3 = this.margin3.copy();
+        copy.order   = this.order  .copy();
+        copy.margin1 = this.margin1.copy();
+        copy.margin2 = this.margin2.copy();
+        copy.margin3 = this.margin3.copy();
 
-        return val;
+        return copy;
     }
 
 
@@ -9491,17 +9490,17 @@ extends GOperator
     
     copy()
     {
-        const stop = new GColorStop(this.nodeId, this.options);
+        const copy = new GColorStop(this.nodeId, this.options);
 
-        stop.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            stop.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.fill    ) stop.fill     = this.fill    .copy();
-        if (this.position) stop.position = this.position.copy();
+        if (this.fill    ) copy.fill     = this.fill    .copy();
+        if (this.position) copy.position = this.position.copy();
 
-        return stop;
+        return copy;
     }
 
 
@@ -9667,21 +9666,21 @@ extends GObjectBase
 
     copy()
     {
-        const rect = new GRectangle(this.nodeId, this.options);
+        const copy = new GRectangle(this.nodeId, this.options);
 
-        rect.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            rect.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.x     ) rect.x      = this.x     .copy();
-        if (this.y     ) rect.y      = this.y     .copy();
-        if (this.width ) rect.width  = this.width .copy();
-        if (this.height) rect.height = this.height.copy();
-        if (this.angle ) rect.angle  = this.angle .copy();
-        if (this.round ) rect.round  = this.round .copy();
+        if (this.x     ) copy.x      = this.x     .copy();
+        if (this.y     ) copy.y      = this.y     .copy();
+        if (this.width ) copy.width  = this.width .copy();
+        if (this.height) copy.height = this.height.copy();
+        if (this.angle ) copy.angle  = this.angle .copy();
+        if (this.round ) copy.round  = this.round .copy();
 
-        return rect;
+        return copy;
     }
 
 
@@ -9809,19 +9808,19 @@ extends GObjectBase
 
     copy()
     {
-        const line = new GLine(this.nodeId, this.options);
+        const copy = new GLine(this.nodeId, this.options);
 
-        line.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            line.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.x     ) line.x      = this.x     .copy();
-        if (this.y     ) line.y      = this.y     .copy();
-        if (this.width ) line.width  = this.width .copy();
-        if (this.angle ) line.angle  = this.angle .copy();
+        if (this.x     ) copy.x      = this.x     .copy();
+        if (this.y     ) copy.y      = this.y     .copy();
+        if (this.width ) copy.width  = this.width .copy();
+        if (this.angle ) copy.angle  = this.angle .copy();
 
-        return line;
+        return copy;
     }
 
 
@@ -9938,20 +9937,20 @@ extends GObjectBase
 
     copy()
     {
-        const ellipse = new GEllipse(this.nodeId, this.options);
+        const copy = new GEllipse(this.nodeId, this.options);
 
-        ellipse.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            ellipse.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.x     ) ellipse.x      = this.x     .copy();
-        if (this.y     ) ellipse.y      = this.y     .copy();
-        if (this.width ) ellipse.width  = this.width .copy();
-        if (this.height) ellipse.height = this.height.copy();
-        if (this.angle ) ellipse.angle  = this.angle .copy();
+        if (this.x     ) copy.x      = this.x     .copy();
+        if (this.y     ) copy.y      = this.y     .copy();
+        if (this.width ) copy.width  = this.width .copy();
+        if (this.height) copy.height = this.height.copy();
+        if (this.angle ) copy.angle  = this.angle .copy();
 
-        return ellipse;
+        return copy;
     }
 
 
@@ -10075,22 +10074,22 @@ extends GObjectBase
 
     copy()
     {
-        const poly = new GPolygon(this.nodeId, this.options);
+        const copy = new GPolygon(this.nodeId, this.options);
 
-        poly.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            poly.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.x      ) poly.x       = this.x      .copy();
-        if (this.y      ) poly.y       = this.y      .copy();
-        if (this.width  ) poly.width   = this.width  .copy();
-        if (this.height ) poly.height  = this.height .copy();
-        if (this.angle  ) poly.angle   = this.angle  .copy();
-        if (this.round  ) poly.round   = this.round  .copy();
-        if (this.corners) poly.corners = this.corners.copy();
+        if (this.x      ) copy.x       = this.x      .copy();
+        if (this.y      ) copy.y       = this.y      .copy();
+        if (this.width  ) copy.width   = this.width  .copy();
+        if (this.height ) copy.height  = this.height .copy();
+        if (this.angle  ) copy.angle   = this.angle  .copy();
+        if (this.round  ) copy.round   = this.round  .copy();
+        if (this.corners) copy.corners = this.corners.copy();
 
-        return poly;
+        return copy;
     }
 
 
@@ -10228,23 +10227,23 @@ extends GObjectBase
 
     copy()
     {
-        const star = new GStar(this.nodeId, this.options);
+        const copy = new GStar(this.nodeId, this.options);
 
-        star.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            star.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.x     ) star.x      = this.x     .copy();
-        if (this.y     ) star.y      = this.y     .copy();
-        if (this.width ) star.width  = this.width .copy();
-        if (this.height) star.height = this.height.copy();
-        if (this.angle ) star.angle  = this.angle .copy();
-        if (this.round ) star.round  = this.round .copy();
-        if (this.points) star.points = this.points.copy();
-        if (this.convex) star.convex = this.convex.copy();
+        if (this.x     ) copy.x      = this.x     .copy();
+        if (this.y     ) copy.y      = this.y     .copy();
+        if (this.width ) copy.width  = this.width .copy();
+        if (this.height) copy.height = this.height.copy();
+        if (this.angle ) copy.angle  = this.angle .copy();
+        if (this.round ) copy.round  = this.round .copy();
+        if (this.points) copy.points = this.points.copy();
+        if (this.convex) copy.convex = this.convex.copy();
 
-        return star;
+        return copy;
     }
 
 
@@ -10382,17 +10381,17 @@ extends GObjectBase
 
     copy()
     {
-        const fill = new GFill(this.nodeId, this.options);
+        const copy = new GFill(this.nodeId, this.options);
 
-        fill.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            fill.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.color  ) fill.color   = this.color  .copy();
-        if (this.opacity) fill.opacity = this.opacity.copy();
+        if (this.color  ) copy.color   = this.color  .copy();
+        if (this.opacity) copy.opacity = this.opacity.copy();
 
-        return fill;
+        return copy;
     }
 
 
@@ -10502,20 +10501,20 @@ extends GObjectBase
 
     copy()
     {
-        const stroke = new GStroke(this.nodeId, this.options);
+        const copy = new GStroke(this.nodeId, this.options);
 
-        stroke.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            stroke.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.fill  ) stroke.fill   = this.fill  .copy();
-        if (this.weight) stroke.weight = this.weight.copy();
-        if (this.fit   ) stroke.fit    = this.fit   .copy();
-        if (this.join  ) stroke.join   = this.join  .copy();
-        if (this.miter ) stroke.miter  = this.miter .copy();
+        if (this.fill  ) copy.fill   = this.fill  .copy();
+        if (this.weight) copy.weight = this.weight.copy();
+        if (this.fit   ) copy.fit    = this.fit   .copy();
+        if (this.join  ) copy.join   = this.join  .copy();
+        if (this.miter ) copy.miter  = this.miter .copy();
 
-        return stroke;
+        return copy;
     }
 
 
@@ -10549,6 +10548,8 @@ extends GObjectBase
             && STROKE_TYPES.includes(this.input.type);   
 
 
+        // TODO: add .toInteger() to miter, join and fit evaluations
+        
         if (this.fill  ) this.fill   = this.fill  .eval(parse).copy(); else if (hasInput) this.fill   = this.input.fill  .copy(); 
         if (this.weight) this.weight = this.weight.eval(parse).copy(); else if (hasInput) this.weight = this.input.weight.copy();
         if (this.fit   ) this.fit    = this.fit   .eval(parse).copy(); else if (hasInput) this.fit    = this.input.fit   .copy();

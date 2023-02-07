@@ -10,10 +10,10 @@ extends GConditionBase
     
     copy()
     {
-        const le = new GLessOrEqual(this.nodeId, this.options);
-        le.copyBase(this);
-        le.inputs = this.inputs.map(i => i.copy());
-        return le;
+        const copy = new GLessOrEqual(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 

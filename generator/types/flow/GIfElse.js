@@ -17,15 +17,15 @@ extends GOperator
     
     copy()
     {
-        const ifElse = new GIfElse(this.nodeId, this.options);
+        const copy = new GIfElse(this.nodeId, this.options);
 
-        ifElse.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input    ) ifElse.input     = this.input    .copy();
-        if (this.condition) ifElse.condition = this.condition.copy();
-        if (this.value    ) ifElse.value     = this.value    .copy();
+        if (this.input    ) copy.input     = this.input    .copy();
+        if (this.condition) copy.condition = this.condition.copy();
+        if (this.value    ) copy.value     = this.value    .copy();
 
-        return ifElse;
+        return copy;
     }
 
 

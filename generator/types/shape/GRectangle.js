@@ -21,21 +21,21 @@ extends GObjectBase
 
     copy()
     {
-        const rect = new GRectangle(this.nodeId, this.options);
+        const copy = new GRectangle(this.nodeId, this.options);
 
-        rect.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            rect.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.x     ) rect.x      = this.x     .copy();
-        if (this.y     ) rect.y      = this.y     .copy();
-        if (this.width ) rect.width  = this.width .copy();
-        if (this.height) rect.height = this.height.copy();
-        if (this.angle ) rect.angle  = this.angle .copy();
-        if (this.round ) rect.round  = this.round .copy();
+        if (this.x     ) copy.x      = this.x     .copy();
+        if (this.y     ) copy.y      = this.y     .copy();
+        if (this.width ) copy.width  = this.width .copy();
+        if (this.height) copy.height = this.height.copy();
+        if (this.angle ) copy.angle  = this.angle .copy();
+        if (this.round ) copy.round  = this.round .copy();
 
-        return rect;
+        return copy;
     }
 
 

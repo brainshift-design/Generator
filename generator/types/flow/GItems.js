@@ -19,21 +19,21 @@ extends GOperator
 
     copy()
     {
-        const items = new GItems(this.nodeId, this.options);
+        const copy = new GItems(this.nodeId, this.options);
         
-        items.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            items.input = this.input.copy();
+            copy.input = this.input.copy();
         
         for (const key of this.keys())
         {
             if (   key.length > 4
                 && key.substring(0, 4) == 'item')
-                Object.assign(items, {[key]: this[key]});
+                Object.assign(copy, {[key]: this[key]});
         }
 
-        return items;
+        return copy;
     }
 
 

@@ -17,16 +17,16 @@ extends GNumberType
     
     copy()
     {
-        const series = new GSeries(this.nodeId, this.options);
+        const copy = new GSeries(this.nodeId, this.options);
 
-        series.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.start  ) series.start   = this.start  .copy();
-        if (this.step   ) series.step    = this.step   .copy();
+        if (this.start  ) copy.start   = this.start  .copy();
+        if (this.step   ) copy.step    = this.step   .copy();
 
-        if (this.current) series.current = this.current.copy();
+        if (this.current) copy.current = this.current.copy();
 
-        return series;
+        return copy;
     }
 
 

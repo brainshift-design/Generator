@@ -10,10 +10,10 @@ extends GArithmetic
     
     copy()
     {
-        const not = new GNot(this.nodeId, this.options);
-        not.copyBase(this);
-        not.inputs = this.inputs.map(i => i.copy());
-        return not;
+        const copy = new GNot(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 

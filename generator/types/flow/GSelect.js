@@ -16,16 +16,16 @@ extends GOperator
 
     copy()
     {
-        const sel = new GSelect(this.nodeId, this.options);
+        const copy = new GSelect(this.nodeId, this.options);
         
-        sel.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            sel.input = this.input.copy();
+            copy.input = this.input.copy();
         
-        sel.index = this.index.copy();
+        copy.index = this.index.copy();
 
-        return sel;
+        return copy;
     }
 
 

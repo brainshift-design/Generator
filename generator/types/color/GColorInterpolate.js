@@ -18,18 +18,18 @@ extends GColorType
     
     copy()
     {
-        const lerp = new GColorInterpolate(this.nodeId, this.options);
+        const copy = new GColorInterpolate(this.nodeId, this.options);
 
-        lerp.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input0) lerp.input0 = this.input0.copy();
-        if (this.input1) lerp.input1 = this.input1.copy();
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
 
-        lerp.space  = this.space .copy();
-        lerp.amount = this.amount.copy();
-        lerp.gamma  = this.gamma .copy();
+        copy.space  = this.space .copy();
+        copy.amount = this.amount.copy();
+        copy.gamma  = this.gamma .copy();
 
-        return lerp;
+        return copy;
     }
 
 
@@ -40,8 +40,8 @@ extends GColorType
             return this;
 
 
-        const space  = this.space .eval(parse).toValue();
         const amount = this.amount.eval(parse).toValue();
+        const space  = this.space .eval(parse).toValue().toInteger();
         const gamma  = this.gamma .eval(parse).toValue();
 
 

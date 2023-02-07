@@ -28,7 +28,7 @@ extends FigmaShape
 
     copy()
     {
-        const poly = new FigmaPolygon(
+        const copy = new FigmaPolygon(
             this.nodeId,
             this.nodeName,
             this.objectId,
@@ -40,8 +40,8 @@ extends FigmaShape
             this.round,
             this.corners);
 
-        poly.copyBase(this);
+        copy.copyBase(this);
 
-        return poly;
+        return copy;
     }
 }

@@ -50,15 +50,15 @@ extends GValue
 
     copy()
     {
-        const color = new ColorValue(
+        const copy = new ColorValue(
             this.space.copy(), 
             this.c1   .copy(), 
             this.c2   .copy(), 
             this.c3   .copy());
 
-        color.copyBase(this);
+        copy.copyBase(this);
 
-        return color;
+        return copy;
     }
 
 

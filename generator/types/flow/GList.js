@@ -16,14 +16,14 @@ extends GOperator
     
     copy()
     {
-        const list = new GList(this.nodeId, this.options);
+        const copy = new GList(this.nodeId, this.options);
 
-        list.copyBase(this);
+        copy.copyBase(this);
 
-        list.inputs = this.inputs.map(i => i.copy());
-        list.value  = this.value.copy();
+        copy.inputs = this.inputs.map(i => i.copy());
+        copy.value  = this.value.copy();
 
-        return list;
+        return copy;
     }
 
 

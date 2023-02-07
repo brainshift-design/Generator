@@ -10,10 +10,10 @@ extends GArithmetic
     
     copy()
     {
-        const xor = new GXor(this.nodeId, this.options);
-        xor.copyBase(this);
-        xor.inputs = this.inputs.map(i => i.copy());
-        return xor;
+        const copy = new GXor(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 

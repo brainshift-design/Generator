@@ -23,23 +23,23 @@ extends GColorType
     
     copy()
     {
-        const col = new GColor(this.nodeId, this.options);
+        const copy = new GColor(this.nodeId, this.options);
 
-        col.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            col.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        col.space = this.space.copy();
+        copy.space = this.space.copy();
 
-        if (this.c1) col.c1 = this.c1.copy();
-        if (this.c2) col.c2 = this.c2.copy();
-        if (this.c3) col.c3 = this.c3.copy();
+        if (this.c1) copy.c1 = this.c1.copy();
+        if (this.c2) copy.c2 = this.c2.copy();
+        if (this.c3) copy.c3 = this.c3.copy();
 
         if (this.convert) 
-            col.convert = this.convert.copy();
+            copy.convert = this.convert.copy();
 
-        return col;
+        return copy;
     }
 
 
@@ -50,10 +50,10 @@ extends GColorType
             return this;
 
             
-        const space = this.space ? this.space.eval(parse).toValue() : null; 
-        const c1    = this.c1    ? this.c1   .eval(parse).toValue() : null;
-        const c2    = this.c2    ? this.c2   .eval(parse).toValue() : null;
-        const c3    = this.c3    ? this.c3   .eval(parse).toValue() : null;
+        const space = this.space ? this.space.eval(parse).toValue().toInteger() : null; 
+        const c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
+        const c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
+        const c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
 
 
         if (this.input)

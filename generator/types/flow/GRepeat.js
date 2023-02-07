@@ -16,16 +16,16 @@ extends GOperator
     
     copy()
     {
-        const rep = new GRepeat(this.nodeId, this.options);
+        const copy = new GRepeat(this.nodeId, this.options);
 
-        rep.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input) rep.input = this.input.copy();
+        if (this.input) copy.input = this.input.copy();
 
-        rep.count = this.count.copy();
-        rep.value = this.value.copy();
+        copy.count = this.count.copy();
+        copy.value = this.value.copy();
 
-        return rep;
+        return copy;
     }
 
 

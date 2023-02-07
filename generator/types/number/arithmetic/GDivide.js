@@ -10,10 +10,10 @@ extends GArithmetic
     
     copy()
     {
-        const div = new GDivide(this.nodeId, this.options);
-        div.copyBase(this);
-        div.inputs = this.inputs.map(i => i.copy());
-        return div;
+        const copy = new GDivide(this.nodeId, this.options);
+        copy.copyBase(this);
+        copy.inputs = this.inputs.map(i => i.copy());
+        return copy;
     }
 
 

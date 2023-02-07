@@ -17,17 +17,17 @@ extends GColorType
     
     copy()
     {
-        const cnt = new GColorContrast(this.nodeId, this.options);
+        const copy = new GColorContrast(this.nodeId, this.options);
 
-        cnt.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input0) cnt.input0 = this.input0.copy();
-        if (this.input1) cnt.input1 = this.input1.copy();
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
 
-        cnt.standard = this.standard.copy();
-        cnt.contrast = this.contrast.copy();
+        copy.standard = this.standard.copy();
+        copy.contrast = this.contrast.copy();
 
-        return cnt;
+        return copy;
     }
 
 
@@ -38,7 +38,7 @@ extends GColorType
             return this;
 
 
-        const standard = this.standard.eval(parse).toValue();
+        const standard = this.standard.eval(parse).toValue().toInteger();
 
         
         if (standard.isValid())
@@ -89,9 +89,7 @@ extends GColorType
         {
             const input0 = this.input0.eval(parse).toValue();
 
-            if (input0.isValid())
-                genPushUpdateValue(parse, this.nodeId, 'text', input0);
-
+            genPushUpdateValue(parse, this.nodeId, 'text', input0.isValid() ? input0 : ColorValue.NaN);
             genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
 
             this.value    = ColorValue.NaN;
@@ -103,15 +101,9 @@ extends GColorType
             const input1 = this.input1.eval(parse).toValue();
 
             genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'back', input1.isValid() ? input1 : ColorValue.NaN);
 
-            if (input1.isValid())
-            {
-                this.value = input1;
-                genPushUpdateValue(parse, this.nodeId, 'back', input1);
-            }
-            else
-                this.value = ColorValue.NaN;
-
+            this.value    = input1.isValid() ? input1 : ColorValue.NaN;
             this.contrast = NumberValue.NaN;
         }
 

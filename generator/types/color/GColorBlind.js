@@ -17,18 +17,18 @@ extends GColorType
     
     copy()
     {
-        const cb = new GColorBlind(this.nodeId, this.options);
+        const copy = new GColorBlind(this.nodeId, this.options);
 
-        cb.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            cb.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        cb.l = this.l.copy();
-        cb.m = this.m.copy();
-        cb.s = this.s.copy();
+        copy.l = this.l.copy();
+        copy.m = this.m.copy();
+        copy.s = this.s.copy();
 
-        return cb;
+        return copy;
     }
 
 

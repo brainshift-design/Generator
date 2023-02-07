@@ -29,16 +29,16 @@ extends ShapeBaseValue
 
     copy()
     {
-        const elps = new EllipseValue(
+        const copy = new EllipseValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
             this.height.copy(), 
             this.angle .copy());
 
-        elps.copyBase(this);
+        copy.copyBase(this);
 
-        return elps;
+        return copy;
     }
 
 

@@ -30,7 +30,7 @@ extends FigmaShape
 
     copy()
     {
-        const star = new FigmaStar(
+        const copy = new FigmaStar(
             this.nodeId,
             this.nodeName,
             this.objectId,
@@ -43,8 +43,8 @@ extends FigmaShape
             this.points,
             this.convex);
 
-        star.copyBase(this);
+        copy.copyBase(this);
 
-        return star;
+        return copy;
     }
 }

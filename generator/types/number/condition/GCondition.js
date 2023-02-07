@@ -17,16 +17,16 @@ extends GNumberType
     
     copy()
     {
-        const cond = new GCondition(this.nodeId, this.options);
+        const copy = new GCondition(this.nodeId, this.options);
 
-        cond.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input0) cond.input0 = this.input0.copy();
-        if (this.input1) cond.input1 = this.input1.copy();
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
 
-        cond.operation = this.operation.copy();
+        copy.operation = this.operation.copy();
 
-        return cond;
+        return copy;
     }
 
 
@@ -37,7 +37,7 @@ extends GNumberType
             return this;
 
 
-        const op = this.operation.eval(parse).toValue();
+        const op = this.operation.eval(parse).toValue().toInteger();
 
         op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 

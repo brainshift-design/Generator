@@ -19,19 +19,19 @@ extends GObjectBase
 
     copy()
     {
-        const line = new GLine(this.nodeId, this.options);
+        const copy = new GLine(this.nodeId, this.options);
 
-        line.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            line.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.x     ) line.x      = this.x     .copy();
-        if (this.y     ) line.y      = this.y     .copy();
-        if (this.width ) line.width  = this.width .copy();
-        if (this.angle ) line.angle  = this.angle .copy();
+        if (this.x     ) copy.x      = this.x     .copy();
+        if (this.y     ) copy.y      = this.y     .copy();
+        if (this.width ) copy.width  = this.width .copy();
+        if (this.angle ) copy.angle  = this.angle .copy();
 
-        return line;
+        return copy;
     }
 
 

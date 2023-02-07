@@ -17,17 +17,17 @@ extends GNumberType
     
     copy()
     {
-        const round = new GRound(this.nodeId, this.options);
+        const copy = new GRound(this.nodeId, this.options);
 
-        round.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            round.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        round.type     = this.type    .copy();
-        round.decimals = this.decimals.copy();
+        copy.type     = this.type    .copy();
+        copy.decimals = this.decimals.copy();
 
-        return round;
+        return copy;
     }
 
 

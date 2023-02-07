@@ -17,17 +17,17 @@ extends GObjectBase
 
     copy()
     {
-        const fill = new GFill(this.nodeId, this.options);
+        const copy = new GFill(this.nodeId, this.options);
 
-        fill.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            fill.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.color  ) fill.color   = this.color  .copy();
-        if (this.opacity) fill.opacity = this.opacity.copy();
+        if (this.color  ) copy.color   = this.color  .copy();
+        if (this.opacity) copy.opacity = this.opacity.copy();
 
-        return fill;
+        return copy;
     }
 
 

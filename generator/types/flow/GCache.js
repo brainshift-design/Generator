@@ -14,14 +14,14 @@ extends GOperator
     
     copy()
     {
-        const cache = new GCache(this.nodeId, this.options);
+        const copy = new GCache(this.nodeId, this.options);
 
-        cache.copyBase(this);
+        copy.copyBase(this);
 
-        if (this.input) cache.input = this.input.copy();
-        if (this.value) cache.value = this.value.copy();
+        if (this.input) copy.input = this.input.copy();
+        if (this.value) copy.value = this.value.copy();
 
-        return cache;
+        return copy;
     }
 
 

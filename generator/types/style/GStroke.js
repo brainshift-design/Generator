@@ -20,20 +20,20 @@ extends GObjectBase
 
     copy()
     {
-        const stroke = new GStroke(this.nodeId, this.options);
+        const copy = new GStroke(this.nodeId, this.options);
 
-        stroke.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            stroke.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.fill  ) stroke.fill   = this.fill  .copy();
-        if (this.weight) stroke.weight = this.weight.copy();
-        if (this.fit   ) stroke.fit    = this.fit   .copy();
-        if (this.join  ) stroke.join   = this.join  .copy();
-        if (this.miter ) stroke.miter  = this.miter .copy();
+        if (this.fill  ) copy.fill   = this.fill  .copy();
+        if (this.weight) copy.weight = this.weight.copy();
+        if (this.fit   ) copy.fit    = this.fit   .copy();
+        if (this.join  ) copy.join   = this.join  .copy();
+        if (this.miter ) copy.miter  = this.miter .copy();
 
-        return stroke;
+        return copy;
     }
 
 
@@ -67,6 +67,8 @@ extends GObjectBase
             && STROKE_TYPES.includes(this.input.type);   
 
 
+        // TODO: add .toInteger() to miter, join and fit evaluations
+        
         if (this.fill  ) this.fill   = this.fill  .eval(parse).copy(); else if (hasInput) this.fill   = this.input.fill  .copy(); 
         if (this.weight) this.weight = this.weight.eval(parse).copy(); else if (hasInput) this.weight = this.input.weight.copy();
         if (this.fit   ) this.fit    = this.fit   .eval(parse).copy(); else if (hasInput) this.fit    = this.input.fit   .copy();

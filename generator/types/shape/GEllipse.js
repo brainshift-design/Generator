@@ -20,20 +20,20 @@ extends GObjectBase
 
     copy()
     {
-        const ellipse = new GEllipse(this.nodeId, this.options);
+        const copy = new GEllipse(this.nodeId, this.options);
 
-        ellipse.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            ellipse.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.x     ) ellipse.x      = this.x     .copy();
-        if (this.y     ) ellipse.y      = this.y     .copy();
-        if (this.width ) ellipse.width  = this.width .copy();
-        if (this.height) ellipse.height = this.height.copy();
-        if (this.angle ) ellipse.angle  = this.angle .copy();
+        if (this.x     ) copy.x      = this.x     .copy();
+        if (this.y     ) copy.y      = this.y     .copy();
+        if (this.width ) copy.width  = this.width .copy();
+        if (this.height) copy.height = this.height.copy();
+        if (this.angle ) copy.angle  = this.angle .copy();
 
-        return ellipse;
+        return copy;
     }
 
 

@@ -24,7 +24,7 @@ extends FigmaShape
 
     copy()
     {
-        const ellipse = new FigmaEllipse(
+        const copy = new FigmaEllipse(
             this.nodeId,
             this.nodeName,
             this.objectId,
@@ -34,8 +34,8 @@ extends FigmaShape
             this.height,
             this.angle);
 
-        ellipse.copyBase(this);
+        copy.copyBase(this);
 
-        return ellipse;
+        return copy;
     }
 }

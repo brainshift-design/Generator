@@ -22,22 +22,22 @@ extends GObjectBase
 
     copy()
     {
-        const poly = new GPolygon(this.nodeId, this.options);
+        const copy = new GPolygon(this.nodeId, this.options);
 
-        poly.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            poly.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.x      ) poly.x       = this.x      .copy();
-        if (this.y      ) poly.y       = this.y      .copy();
-        if (this.width  ) poly.width   = this.width  .copy();
-        if (this.height ) poly.height  = this.height .copy();
-        if (this.angle  ) poly.angle   = this.angle  .copy();
-        if (this.round  ) poly.round   = this.round  .copy();
-        if (this.corners) poly.corners = this.corners.copy();
+        if (this.x      ) copy.x       = this.x      .copy();
+        if (this.y      ) copy.y       = this.y      .copy();
+        if (this.width  ) copy.width   = this.width  .copy();
+        if (this.height ) copy.height  = this.height .copy();
+        if (this.angle  ) copy.angle   = this.angle  .copy();
+        if (this.round  ) copy.round   = this.round  .copy();
+        if (this.corners) copy.corners = this.corners.copy();
 
-        return poly;
+        return copy;
     }
 
 

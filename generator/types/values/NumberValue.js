@@ -22,13 +22,13 @@ extends GValue
 
     copy()
     {
-        const val = new NumberValue(
+        const copy = new NumberValue(
             this.value, 
             this.decimals);
 
-        val.copyBase(this);
+        copy.copyBase(this);
 
-        return val;
+        return copy;
     }
 
 
@@ -53,6 +53,13 @@ extends GValue
     {
         return !isNaN(this.value)
             && !isNaN(this.decimals);
+    }
+
+
+
+    toInteger()
+    {
+        return new NumberValue(Math.round(this.value));
     }
 
 

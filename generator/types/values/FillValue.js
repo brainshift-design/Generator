@@ -47,13 +47,13 @@ extends GValue
 
     copy()
     {
-        const fill = new FillValue(
+        const copy = new FillValue(
             this.color  .copy(),
             this.opacity.copy());
 
-        fill.copyBase(this);
+        copy.copyBase(this);
 
-        return fill;
+        return copy;
     }
 
 

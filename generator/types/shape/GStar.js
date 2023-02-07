@@ -23,23 +23,23 @@ extends GObjectBase
 
     copy()
     {
-        const star = new GStar(this.nodeId, this.options);
+        const copy = new GStar(this.nodeId, this.options);
 
-        star.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            star.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.x     ) star.x      = this.x     .copy();
-        if (this.y     ) star.y      = this.y     .copy();
-        if (this.width ) star.width  = this.width .copy();
-        if (this.height) star.height = this.height.copy();
-        if (this.angle ) star.angle  = this.angle .copy();
-        if (this.round ) star.round  = this.round .copy();
-        if (this.points) star.points = this.points.copy();
-        if (this.convex) star.convex = this.convex.copy();
+        if (this.x     ) copy.x      = this.x     .copy();
+        if (this.y     ) copy.y      = this.y     .copy();
+        if (this.width ) copy.width  = this.width .copy();
+        if (this.height) copy.height = this.height.copy();
+        if (this.angle ) copy.angle  = this.angle .copy();
+        if (this.round ) copy.round  = this.round .copy();
+        if (this.points) copy.points = this.points.copy();
+        if (this.convex) copy.convex = this.convex.copy();
 
-        return star;
+        return copy;
     }
 
 

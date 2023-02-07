@@ -26,7 +26,7 @@ extends FigmaShape
 
     copy()
     {
-        const rect = new FigmaRectangle(
+        const copy = new FigmaRectangle(
             this.nodeId,
             this.nodeName,
             this.objectId,
@@ -37,8 +37,8 @@ extends FigmaShape
             this.angle,
             this.round);
 
-        rect.copyBase(this);
+        copy.copyBase(this);
 
-        return rect;
+        return copy;
     }
 }

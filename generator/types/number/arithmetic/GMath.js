@@ -14,14 +14,14 @@ extends GArithmetic
     
     copy()
     {
-        const math = new GMath(this.nodeId, this.options);
+        const copy = new GMath(this.nodeId, this.options);
 
-        math.copyBase(this);
+        copy.copyBase(this);
 
-        math.inputs    = this.inputs.map(i => i.copy());
-        math.operation = this.operation.copy();
+        copy.inputs    = this.inputs.map(i => i.copy());
+        copy.operation = this.operation.copy();
 
-        return math;
+        return copy;
     }
 
 
@@ -32,7 +32,7 @@ extends GArithmetic
             return this;
 
 
-        const op = this.operation.eval(parse).toValue();
+        const op = this.operation.eval(parse).toValue().toInteger();
 
         op.value = Math.min(Math.max(0, op.value), MATH_OPS.length-1);
 

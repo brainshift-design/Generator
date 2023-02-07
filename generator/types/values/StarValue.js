@@ -38,7 +38,7 @@ extends ShapeBaseValue
 
     copy()
     {
-        const star = new StarValue(
+        const copy = new StarValue(
             this.x     .copy(), 
             this.y     .copy(), 
             this.width .copy(), 
@@ -48,9 +48,9 @@ extends ShapeBaseValue
             this.points.copy(),
             this.convex.copy());
 
-        star.copyBase(this);
+        copy.copyBase(this);
 
-        return star;
+        return copy;
     }
 
 

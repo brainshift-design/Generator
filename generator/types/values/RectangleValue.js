@@ -32,7 +32,7 @@ extends ShapeBaseValue
 
     copy()
     {
-        const rect = new RectangleValue(
+        const copy = new RectangleValue(
             this.nodeId,
             this.x     .copy(), 
             this.y     .copy(), 
@@ -41,9 +41,9 @@ extends ShapeBaseValue
             this.angle .copy(), 
             this.round .copy());
 
-        rect.copyBase(this);
+        copy.copyBase(this);
 
-        return rect;
+        return copy;
     }
 
 

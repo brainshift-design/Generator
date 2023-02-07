@@ -22,11 +22,11 @@ extends GValue
 
     copy()
     {
-        const list = new ListValue(this.items);
+        const copy = new ListValue(this.items);
 
-        list.copyBase(this);
+        copy.copyBase(this);
 
-        return list;
+        return copy;
     }
 
 

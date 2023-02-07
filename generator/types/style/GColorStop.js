@@ -17,17 +17,17 @@ extends GOperator
     
     copy()
     {
-        const stop = new GColorStop(this.nodeId, this.options);
+        const copy = new GColorStop(this.nodeId, this.options);
 
-        stop.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            stop.input = this.input.copy();
+            copy.input = this.input.copy();
 
-        if (this.fill    ) stop.fill     = this.fill    .copy();
-        if (this.position) stop.position = this.position.copy();
+        if (this.fill    ) copy.fill     = this.fill    .copy();
+        if (this.position) copy.position = this.position.copy();
 
-        return stop;
+        return copy;
     }
 
 

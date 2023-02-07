@@ -19,13 +19,13 @@ extends GOperator
 
     copy()
     {
-        const param = new GParam(this.nodeId, this.paramId);
+        const copy = new GParam(this.nodeId, this.paramId);
 
-        param.copyBase(this);
+        copy.copyBase(this);
 
-        param.node = this.node;
+        copy.node = this.node;
     
-        return param;
+        return copy;
     }
 
 

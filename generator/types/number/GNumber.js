@@ -14,16 +14,16 @@ extends GNumberType
 
     copy()
     {
-        const num = new GNumber(this.nodeId, this.options);
+        const copy = new GNumber(this.nodeId, this.options);
         
-        num.copyBase(this);
+        copy.copyBase(this);
 
         if (this.input) 
-            num.input = this.input.copy();
+            copy.input = this.input.copy();
         
-        num.value = this.value;
+        copy.value = this.value;
 
-        return num;
+        return copy;
     }
 
 
