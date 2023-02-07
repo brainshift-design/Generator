@@ -1,13 +1,13 @@
-class GColorCorrect
+class GValidColor
 extends GColorType
 {
-    input = null;
-
-    order;
+    input       = null;
     
-    margin1;
-    margin2;
-    margin3;
+    order       = null;
+        
+    margin1     = null;
+    margin2     = null;
+    margin3     = null;
 
     corrections = [];
 
@@ -15,14 +15,14 @@ extends GColorType
 
     constructor(nodeId, options)
     {
-        super(COLOR_CORRECT, nodeId, options);
+        super(VALID_COLOR, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GColorCorrect(this.nodeId, this.options);
+        const copy = new GValidColor(this.nodeId, this.options);
 
         copy.copyBase(this);
 
@@ -44,13 +44,13 @@ extends GColorType
         if (this.isCached())
             return this;
 
+            
+        const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
+        const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
+        const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
+        const margin3 = this.margin3 ? this.margin3.eval(parse).toValue()             : null;
 
-        const order   = this.order  .eval(parse).toValue();
-        const margin1 = this.margin1.eval(parse).toValue();
-        const margin2 = this.margin2.eval(parse).toValue();
-        const margin3 = this.margin3.eval(parse).toValue();
 
-        
         if (this.input)
         {
             const input = this.input.eval(parse).toValue();
@@ -64,7 +64,6 @@ extends GColorType
                 });
 
 
-            const orderValue = Math.min(Math.max(0, order.value), 5);
             const inputColor = input.toDataColor();
 
 
@@ -77,9 +76,9 @@ extends GColorType
                 this.nodeId,
                 inputColor, 
                 margin1, margin2, margin3, 
-                this.margin1.input, 
-                this.margin2.input, 
-                this.margin3.input); 
+                this.margin1 != null, 
+                this.margin2 != null, 
+                this.margin3 != null); 
 
                 
             if (closestOrder >= 0 && closestOrder < 6)
@@ -116,7 +115,7 @@ extends GColorType
                 genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
                 genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
                 genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue.NaN);
+                genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
             }
         }
         else
@@ -127,7 +126,7 @@ extends GColorType
             genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
             genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
             genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
         }
 
 
@@ -146,7 +145,7 @@ function findCorrection(nodeId,
 {
     const refOklab = dataColor2array(dataColor2oklab(color));
 
-
+    
     let closestColor = [...color],
         closestOklab = null, 
         closestOrder = -1,
@@ -178,9 +177,9 @@ function findCorrection(nodeId,
                 start3 = lerp(min3, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
                
                 
-            if (locked1) { closest1 = margin1; start1 = closest1; end1 = start1+Eps; }
-            if (locked2) { closest2 = margin2; start2 = closest2; end2 = start2+Eps; }
-            if (locked3) { closest3 = margin3; start3 = closest3; end3 = start3+Eps; }
+            if (locked1) { closest1 = margin1.toNumber(); start1 = closest1; end1 = closest1+Eps; }
+            if (locked2) { closest2 = margin2.toNumber(); start2 = closest2; end2 = closest2+Eps; }
+            if (locked3) { closest3 = margin3.toNumber(); start3 = closest3; end3 = closest3+Eps; }
             
 
           [ closestColor,
@@ -270,7 +269,8 @@ function findCorrectionInOrder(nodeId,
                 {
                     closestColor = _color;
                     closestOklab = _oklab;
-                    closestOrder = order;
+                    closestOrder =  order;
+
                     closest1     = m1;
                     closest2     = m2;
                     closest3     = m3;

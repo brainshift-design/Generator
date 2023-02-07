@@ -43,8 +43,8 @@ function logReqColorBlind(cb, parse)
 
 
 
-function logReqColorCorrect(val, parse)
+function logReqValidColor(val, parse)
 {
-    parse.log += parse.tab + COLOR_CORRECT;
+    parse.log += parse.tab + VALID_COLOR;
     parse.log += logReqNodeId(val);
 }

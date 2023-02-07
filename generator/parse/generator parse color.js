@@ -239,38 +239,64 @@ function genParseColorBlind(parse)
 
 
 
-function genParseColorCorrect(parse)
+function genParseValidColor(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const val = new GColorCorrect(nodeId, options);
+    const corr = new GValidColor(nodeId, options);
+
+    corr.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
 
 
     if (parse.settings.logRequests) 
-        logReqColorCorrect(val, parse);
+        logReqValidColor(corr, parse);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, val);
+        genParseNodeEnd(parse, corr);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
 
     parse.nTab++;
 
-    if (COLOR_TYPES.includes(parse.next))
-        val.input = genParse(parse);
 
-    if (parse.next != UNKNOWN_CHAR) val.order   = genParse(parse); else { val.order   = null; parse.move(); }
-    if (parse.next != UNKNOWN_CHAR) val.margin1 = genParse(parse); else { val.margin1 = null; parse.move(); }
-    if (parse.next != UNKNOWN_CHAR) val.margin2 = genParse(parse); else { val.margin2 = null; parse.move(); }
-    if (parse.next != UNKNOWN_CHAR) val.margin3 = genParse(parse); else { val.margin3 = null; parse.move(); }
+    let paramIds;
+
+    if (nInputs == 1)
+        corr.input = genParse(parse);
+
+
+    paramIds = parse.move().split(',');
+
+    parse.inParam = false;
+    
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'order':    corr.order   = genParse(parse); break;
+        case 'margin1':  corr.margin1 = genParse(parse); break;
+        case 'margin2':  corr.margin2 = genParse(parse); break;
+        case 'margin3':  corr.margin3 = genParse(parse); break;
+        }
+    }
+                
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, val);
-    return val;
+    genParseNodeEnd(parse, corr);
+    return corr;
 }

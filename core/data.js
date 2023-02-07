@@ -32,7 +32,7 @@ function rgbHeaderFromType(type, active)
 
         case COLOR:           
         case COLOR_INTERPOLATE:
-        case COLOR_CORRECT:
+        case VALID_COLOR:
         case COLOR_CONTRAST:
         case COLORBLIND:
             return active 

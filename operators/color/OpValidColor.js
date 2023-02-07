@@ -1,4 +1,4 @@
-class OpColorCorrect_Correction
+class OpValidColor_Correction
 {
     name; // 'H', 'C', or 'L'
     max;
@@ -16,14 +16,14 @@ class OpColorCorrect_Correction
 
 
 
-class   OpColorCorrect
+class   OpValidColor
 extends OpColorBase
 {
     paramOrder;
 
-    paramMargin1;
-    paramMargin2;
-    paramMargin3;
+    param1;
+    param2;
+    param3;
 
 
     colorSpaceIndex = -1;
@@ -31,7 +31,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_CORRECT, 'valid', 100, true);
+        super(VALID_COLOR, 'valid', 100, true);
 
 
         this.addInput(new Input(COLOR_TYPES));
@@ -45,13 +45,13 @@ extends OpColorBase
         this.paramOrder.addEventListener('change', () => this.updateCorrections());
         
         
-        this.addParam(this.paramMargin1 = new NumberParam('margin1', '', true, true, true, 0));
-        this.addParam(this.paramMargin2 = new NumberParam('margin2', '', true, true, true, 0));
-        this.addParam(this.paramMargin3 = new NumberParam('margin3', '', true, true, true, 0));
+        this.addParam(this.param1 = new NumberParam('margin1', '', true, true, true, 0));
+        this.addParam(this.param2 = new NumberParam('margin2', '', true, true, true, 0));
+        this.addParam(this.param3 = new NumberParam('margin3', '', true, true, true, 0));
         
-        this.paramMargin1.control.showNaNValueName = false;
-        this.paramMargin2.control.showNaNValueName = false;
-        this.paramMargin3.control.showNaNValueName = false;
+        this.param1.control.showNaNValueName = false;
+        this.param2.control.showNaNValueName = false;
+        this.param3.control.showNaNValueName = false;
 
 
         this.initCorrections('');
@@ -75,20 +75,41 @@ extends OpColorBase
             paramId: NULL });
 
 
-        const [request, ignore] = this.node.genRequestStart(gen);
+        const hasInputs =
+               this.node.param1.input.connected
+            || this.node.param2.input.connected
+            || this.node.param3.input.connected;
+
+        const options = (hasInputs ? 1 : 0) << 20;
+
+
+        const [request, ignore] = this.node.genRequestStart(gen, options);
         if (ignore) return request;
 
 
         const input = this.node.inputs[0];
 
+        request.push(input.connected ? 1 : 0);
+
+
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
 
-        request.push(...this.node.paramOrder  .genRequest(gen));
-        request.push(...this.node.paramMargin1.genRequest(gen));
-        request.push(...this.node.paramMargin2.genRequest(gen));
-        request.push(...this.node.paramMargin3.genRequest(gen));
+        const paramIds = [];
+
+        for (const param of this.node.params)
+            if (   param.input 
+                && param.input.connected)
+                paramIds.push(param.id);
+
+        request.push(paramIds.join(','));
+
+        
+        if (this.node.paramOrder.input.connected) request.push(...this.node.paramOrder.genRequest(gen));
+        if (this.node.param1    .input.connected) request.push(...this.node.param1    .genRequest(gen));
+        if (this.node.param2    .input.connected) request.push(...this.node.param2    .genRequest(gen));
+        if (this.node.param3    .input.connected) request.push(...this.node.param3    .genRequest(gen));
 
 
         gen.scope.pop();
@@ -121,10 +142,10 @@ extends OpColorBase
 
     updateParams()
     {
-        this.paramOrder  .enableControlText(false);
-        this.paramMargin1.enableControlText(false);
-        this.paramMargin2.enableControlText(false);
-        this.paramMargin3.enableControlText(false);
+        this.paramOrder.enableControlText(false);
+        this.param1    .enableControlText(false);
+        this.param2    .enableControlText(false);
+        this.param3    .enableControlText(false);
 
         this.updateCorrections();
 
@@ -152,9 +173,9 @@ extends OpColorBase
         if (colorSpace == '')
         {
             this.paramOrder  .setValue(NumberValue.NaN);
-            this.paramMargin1.setValue(NumberValue.NaN);
-            this.paramMargin2.setValue(NumberValue.NaN);
-            this.paramMargin3.setValue(NumberValue.NaN);
+            this.param1.setValue(NumberValue.NaN);
+            this.param2.setValue(NumberValue.NaN);
+            this.param3.setValue(NumberValue.NaN);
 
             return;
         }
@@ -166,27 +187,27 @@ extends OpColorBase
         case 'rgb':
             this.paramOrder.setOptions(makeOptions('RGB'));
             this.corrections = [
-                new OpColorCorrect_Correction('R', rgbFactor[0]),
-                new OpColorCorrect_Correction('G', rgbFactor[1]),
-                new OpColorCorrect_Correction('B', rgbFactor[2]) ];
+                new OpValidColor_Correction('R', rgbFactor[0]),
+                new OpValidColor_Correction('G', rgbFactor[1]),
+                new OpValidColor_Correction('B', rgbFactor[2]) ];
 
             break;
 
         case 'hsv':
             this.paramOrder.setOptions(makeOptions('HSV'));
             this.corrections = [
-                new OpColorCorrect_Correction('H', hs_Factor[0]/2),
-                new OpColorCorrect_Correction('S', hs_Factor[1]),
-                new OpColorCorrect_Correction('V', hs_Factor[2]) ];
+                new OpValidColor_Correction('H', hs_Factor[0]/2),
+                new OpValidColor_Correction('S', hs_Factor[1]),
+                new OpValidColor_Correction('V', hs_Factor[2]) ];
 
             break;
 
         case 'hsl':
             this.paramOrder.setOptions(makeOptions('HSL'));
             this.corrections = [
-                new OpColorCorrect_Correction('H', hs_Factor[0]/2),
-                new OpColorCorrect_Correction('S', hs_Factor[1]),
-                new OpColorCorrect_Correction('L', hs_Factor[2]) ];
+                new OpValidColor_Correction('H', hs_Factor[0]/2),
+                new OpValidColor_Correction('S', hs_Factor[1]),
+                new OpValidColor_Correction('L', hs_Factor[2]) ];
 
             break;
 
@@ -195,9 +216,9 @@ extends OpColorBase
         case 'hclluv':
             this.paramOrder.setOptions(makeOptions('HCL'));
             this.corrections = [
-                new OpColorCorrect_Correction('H', hclFactor[0]/2),
-                new OpColorCorrect_Correction('C', hclFactor[1]),
-                new OpColorCorrect_Correction('L', hclFactor[2]) ];
+                new OpValidColor_Correction('H', hclFactor[0]/2),
+                new OpValidColor_Correction('C', hclFactor[1]),
+                new OpValidColor_Correction('L', hclFactor[2]) ];
 
             break;
 
@@ -205,18 +226,18 @@ extends OpColorBase
         case 'lab':
             this.paramOrder.setOptions(makeOptions('Lab'));
             this.corrections = [
-                new OpColorCorrect_Correction('L', oppFactor[0]),
-                new OpColorCorrect_Correction('a', oppFactor[1]),
-                new OpColorCorrect_Correction('b', oppFactor[2]) ];
+                new OpValidColor_Correction('L', oppFactor[0]),
+                new OpValidColor_Correction('a', oppFactor[1]),
+                new OpValidColor_Correction('b', oppFactor[2]) ];
 
             break;
 
         case 'luv':
             this.paramOrder.setOptions(makeOptions('Luv'));
             this.corrections = [
-                new OpColorCorrect_Correction('L', oppFactor[0]),
-                new OpColorCorrect_Correction('u', oppFactor[1]),
-                new OpColorCorrect_Correction('v', oppFactor[2]) ];
+                new OpValidColor_Correction('L', oppFactor[0]),
+                new OpValidColor_Correction('u', oppFactor[1]),
+                new OpValidColor_Correction('v', oppFactor[2]) ];
 
             break;
         }
@@ -232,15 +253,15 @@ extends OpColorBase
         {
             const [i1, i2, i3] = getCorrectionsInOrder(this.paramOrder.value.value);
 
-            this.updateMargin(this.paramMargin1, this.corrections[i1]);
-            this.updateMargin(this.paramMargin2, this.corrections[i2]);
-            this.updateMargin(this.paramMargin3, this.corrections[i3]);
+            this.updateMargin(this.param1, this.corrections[i1]);
+            this.updateMargin(this.param2, this.corrections[i2]);
+            this.updateMargin(this.param3, this.corrections[i3]);
         }
         else
         {
-            this.resetMargin(this.paramMargin1);
-            this.resetMargin(this.paramMargin2);
-            this.resetMargin(this.paramMargin3);
+            this.resetMargin(this.param1);
+            this.resetMargin(this.param2);
+            this.resetMargin(this.param3);
         }
     }
 

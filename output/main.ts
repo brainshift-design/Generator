@@ -456,7 +456,7 @@ const STRING_TYPES =
 const COLOR_VALUE       = 'COL#';  
 const COLOR             = 'COL';   
 const COLOR_INTERPOLATE = 'CLERP'; 
-const COLOR_CORRECT     = 'CCOR';  
+const VALID_COLOR     = 'CCOR';  
 const COLOR_CONTRAST    = 'CCNT';  
 const COLORBLIND        = 'BLND';  
 
@@ -466,7 +466,7 @@ const COLOR_TYPES =
     COLOR_VALUE,
     COLOR,
     COLOR_INTERPOLATE,
-    COLOR_CORRECT,
+    VALID_COLOR,
     COLORBLIND
 ];
 
