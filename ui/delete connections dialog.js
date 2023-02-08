@@ -98,6 +98,6 @@ function deleteConnectionsToNodes(str)
 
     uiRemoveConnsToNodes(nodeIds);
 
-    if (nodeIds.length > 0)
+    if (!isEmpty(nodeIds))
         hideDeleteConnectionsDialog();
 }

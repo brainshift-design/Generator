@@ -248,7 +248,7 @@ class MenuItem
             return;
 
 
-        if (currentMenus.length > 0) // this lets the item be selected without its parent menu being involved
+        if (!isEmpty(currentMenus)) // this lets the item be selected without its parent menu being involved
         {
             if (this.parentMenu.button)
                 this.parentMenu.button.update();

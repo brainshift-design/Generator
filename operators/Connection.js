@@ -66,8 +66,8 @@ class Connection
 
             if (this.output)
             {
-                if (this.output.types.length > 0) types.push(...this.output.types);
-                else                              types.push(this.output.node.type);
+                if (!isEmpty(this.output.types)) types.push(...this.output.types);
+                else                             types.push(this.output.node.type);
             }
             else if (this.input)
             {
@@ -76,7 +76,7 @@ class Connection
                     types.push(...graphView.overOutput.types);
                 else
                 {
-                    if (this.input.types.length > 0) types.push(...this.input.types);
+                    if (!isEmpty(this.input.types)) types.push(...this.input.types);
                     else                             types.push(this.input.node.type);
                 }
             }
@@ -84,8 +84,8 @@ class Connection
 
             return     this.output
                    && !rgbIsNaN(this.output.wireColor)
-                 ? this.output.wireColor
-                 : types.length > 0
+                 ?  this.output.wireColor
+                 : !isEmpty(types)
                  ? rgb_a(rgbHeaderFromType(types[0], true), 1)
                  : rgbaInvalid;
         };

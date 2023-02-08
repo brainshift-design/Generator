@@ -260,7 +260,7 @@ function getStylePaints(stylePaints)
 function setStylePaints(style, src)
 {
     if (   !!src.paints
-        &&   src.paints.length > 0)
+        &&  !isEmpty(src.paints))
         style.paints = getStylePaints(src.paints);
     else
         style.paints = [];

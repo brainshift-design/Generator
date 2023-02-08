@@ -129,8 +129,8 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
 
 graphView.endSelection = pointerId =>
 {
-    if (   graphView.selectedNodes    .length > 0
-        || graphView.lastSelectedNodes.length > 0)
+    if (   !isEmpty(graphView.selectedNodes    )
+        || !isEmpty(graphView.lastSelectedNodes))
     {
         actionManager.do(new SelectNodesAction(
             graphView.selectedNodes    .map(n => n.id), 

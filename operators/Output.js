@@ -45,7 +45,7 @@ class Output
     cache      = [];
 
 
-    get connected() { return this.connectedInputs.length > 0; }
+    get connected() { return !isEmpty(this.connectedInputs); }
 
 
 
@@ -192,7 +192,7 @@ class Output
         this.div.style.backgroundColor = colorStyle;
 
         this.div.style.boxShadow = 
-               this.connectedInputs.length > 0
+               !isEmpty(this.connectedInputs)
             ||    graphView.tempConn
                && (   graphView.tempConn.output == this
                    || graphView.overOutput == this)
@@ -205,7 +205,7 @@ class Output
 
 
         const isConnected =
-               this.connectedInputs.length > 0
+               !isEmpty(this.connectedInputs)
             ||     graphView.tempConn
                && (   graphView.tempConn.output == this
                    ||     graphView.overOutput == this

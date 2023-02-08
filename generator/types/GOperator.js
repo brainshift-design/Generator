@@ -9,19 +9,19 @@ extends GNode
 
     value;
 
-    
+   
     
     constructor(type, nodeId, options)
     {
         super(type, options);
 
-        this.nodeId   = nodeId;
-        this.nodeName = options.nodeName;
+        this.nodeId       = nodeId;
+        this.nodeName     = options.nodeName;
 
-        this.valid    = false;
-        this.topLevel = false;
+        this.valid        = false;
+        this.topLevel     = false;
 
-        this.value    = null;
+        this.value        = null;
     }
 
 

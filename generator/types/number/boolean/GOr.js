@@ -37,14 +37,14 @@ extends GArithmetic
 
 function evalOrInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
     const value = new NumberValue();
 
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 

@@ -37,7 +37,7 @@ extends GArithmetic
 
 function evalXorInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
@@ -46,7 +46,7 @@ function evalXorInputs(inputs, parse)
 
     let flipped;
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 

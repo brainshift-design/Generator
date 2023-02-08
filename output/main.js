@@ -1039,14 +1039,14 @@ function getObjectFills(objFills) {
 }
 function setObjectFills(obj, src) {
     if (!!src.fills
-        && src.fills.length > 0)
+        && !isEmpty(src.fills))
         obj.fills = getObjectFills(src.fills);
     else
         obj.fills = [];
 }
 function setObjectStrokes(obj, src) {
     if (src.strokes != null
-        && src.strokes.length > 0) {
+        && !isEmpty(src.strokes)) {
         obj.strokes = getObjectFills(src.strokes);
         obj.strokeWeight = Math.max(0, src.strokeWeight);
         obj.strokeAlign = src.strokeAlign;
@@ -1424,7 +1424,7 @@ function getStylePaints(stylePaints) {
 }
 function setStylePaints(style, src) {
     if (!!src.paints
-        && src.paints.length > 0)
+        && !isEmpty(src.paints))
         style.paints = getStylePaints(src.paints);
     else
         style.paints = [];

@@ -371,7 +371,7 @@ function pasteCopiedNodes(pasteConnected, clientX = Number.NaN, clientY = Number
 
 function duplicateSelectedNodes(pasteConnected)
 {
-    if (graphView.selectedNodes.length > 0)
+    if (!isEmpty(graphView.selectedNodes))
     {
         pasteOffset = point(0, 0);
         actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), pasteConnected, true));
@@ -384,7 +384,7 @@ function deleteSelectedNodes()
 {
     const nodeIds = graphView.selectedNodes.map(n => n.id);
 
-    if (nodeIds.length > 0)
+    if (!isEmpty(nodeIds))
     {
         actionManager.do(new DeleteNodesAction(nodeIds));
         graphView._selected = [];
@@ -397,7 +397,7 @@ function removeSelectedNodes()
 {
     const nodeIds = graphView.selectedNodes.map(n => n.id);
 
-    if (nodeIds.length > 0)
+    if (!isEmpty(nodeIds))
     {
         actionManager.do(new RemoveNodesAction(nodeIds));
         graphView._selected = [];

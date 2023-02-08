@@ -153,7 +153,8 @@ document.addEventListener('keydown', e =>
         if (   graphView.spaceDown
             && getCtrlKey(e))
             setCursor(zoomOutCursor);
-        else if (graphView.overNode)
+        else if (graphView.overNode
+              && isEmpty(currentMenus))
             graphView.soloNode(graphView.overNode);
     }
 

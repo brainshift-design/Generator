@@ -107,7 +107,7 @@ extends OperatorBase
             }
         }
 
-        else if (paramIds.length == 0)
+        else if (isEmpty(paramIds))
             this.removeAllParams();
     
         

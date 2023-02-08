@@ -1,15 +1,15 @@
 class GCorrectColor
 extends GColorType
 {
-    input       = null;
-    
-    order       = null;
-        
-    margin1     = null;
-    margin2     = null;
-    margin3     = null;
-
-    corrections = [];
+    input        = null;
+     
+    order        = null;
+         
+    margin1      = null;
+    margin2      = null;
+    margin3      = null;
+ 
+    corrections  = [];
 
 
 
@@ -75,7 +75,7 @@ extends GColorType
                 if (!rgbIsOk(rgb))
                     genQueueMessageToUI(
                     {
-                        cmd:   'uiStartNodeProgress',
+                        cmd:   'uiInitNodeProgress',
                         nodeId: this.nodeId
                     });
 
@@ -97,34 +97,37 @@ extends GColorType
                     this.margin2 != null, 
                     this.margin3 != null); 
 
-                    
-                if (closestOrder >= 0 && closestOrder < 6)
+                     
+                if (!stopGenerate)
                 {
-                    this._color = correctColor(
-                        inputColor,
-                        closestOrder,
-                        closest1,
-                        closest2,
-                        closest3);
+                    if (closestOrder >= 0 && closestOrder < 6)
+                    {
+                        this._color = correctColor(
+                            inputColor,
+                            closestOrder,
+                            closest1,
+                            closest2,
+                            closest3);
 
-                        
-                    this.value = ColorValue.fromDataColor(this._color);
+                            
+                        this.value = ColorValue.fromDataColor(this._color);
 
-                    genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                    genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
-                    genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
-                    genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
-                    genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-                }
-                else
-                {
-                    this.value = ColorValue.NaN;
+                        genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
+                        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+                    }
+                    else
+                    {
+                        this.value = ColorValue.NaN;
 
-                    genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+                    }
                 }
             }
         }
@@ -141,6 +144,7 @@ extends GColorType
 
 
         this.validate();
+
 
         return this;
     }
@@ -172,11 +176,15 @@ function findCorrection(nodeId,
 
     while (d > 1/1024)
     {
+        if (stopGenerate) break;
+
         let _closestColor = [...closestColor];
 
 
         for (let _order = 0; _order < 6; _order++)
         {
+            if (stopGenerate) break;
+
             closestColor = [..._closestColor];
 
             const [min1, min2, min3] = getMinCorrections(color[0], _order);
@@ -218,21 +226,24 @@ function findCorrection(nodeId,
     }
 
 
-    // reduce closest to necessary minimums
+    if (!stopGenerate)
+    {
+        // reduce closest to necessary minimums
 
-    const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
+        const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
 
-    let c1 = closest1;
-    let c2 = closest2;
-    let c3 = closest3;
+        let c1 = closest1;
+        let c2 = closest2;
+        let c3 = closest3;
 
-    while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
-    while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
-    while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
+        while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
+        while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
+        while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
 
-    closest1 = Math.max(0, c1);
-    closest2 = Math.max(0, c2);
-    closest3 = Math.max(0, c3);
+        closest1 = Math.max(0, c1);
+        closest2 = Math.max(0, c2);
+        closest3 = Math.max(0, c3);
+    }
 
     
     return [
@@ -267,10 +278,16 @@ function findCorrectionInOrder(nodeId,
 
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
+        if (stopGenerate) break;
+
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
+            if (stopGenerate) break;
+
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
+                if (stopGenerate) break;
+
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
                 if (   rgbIsOk(_rgb)
@@ -292,12 +309,13 @@ function findCorrectionInOrder(nodeId,
             }
         }
 
-        genQueueMessageToUI(
-        {
-            cmd:     'uiUpdateNodeProgress',
-            nodeId:   nodeId,
-            progress: progress / total
-        });
+        if (!stopGenerate)
+            genQueueMessageToUI(
+            {
+                cmd:     'uiUpdateNodeProgress',
+                nodeId:   nodeId,
+                progress: progress / total
+            });
     }
 
 

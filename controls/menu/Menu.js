@@ -80,8 +80,8 @@ class Menu
         }
 
 
-        if (  !this.lastItem
-            && this.items.length > 0)
+        if (   !this.lastItem
+            && !isEmpty(this.items))
             this.lastItem = this.items[0];
 
 
@@ -117,7 +117,7 @@ class Menu
                 + (mesShortcut.width > 0 ? 20 : 0));
         }
 
-        
+
         this.divItems.style.width = Math.max(this.minWidth, width) + 'px';
     }
 

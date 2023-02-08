@@ -55,8 +55,8 @@ extends GOperator
             this.value = ListValue.NaN;
 
 
-        if (   this.value.isValid()
-            && this.value.items.length > 0)
+        if (    this.value.isValid()
+            && !isEmpty(this.value.items))
         {
             for (let i = 0; i < this.value.items.length; i++)
             {

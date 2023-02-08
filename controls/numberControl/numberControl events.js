@@ -90,8 +90,8 @@ function initNumberControlEvents(control)
 
             control.buttonDown2 = true;
 
-            if (   control.param
-                && control.options.length > 0)
+            if (    control.param
+                && !isEmpty(control.options))
             {
                 initSelectParamMenu(control.param);
                 menuSelectParam.showAt(e.clientX, e.clientY);

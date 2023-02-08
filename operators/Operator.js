@@ -80,7 +80,9 @@ class Operator
     
     progressWrapper = null;
     progressBar     = null;
+
     hasProgressBar  = false;
+
 
     labelWrapper;
     label;
@@ -116,7 +118,7 @@ class Operator
     get active() { return this._active; }
        
     
-    get headerConnected() { return this.headerInputs.filter(i => i.connected).length > 0; }
+    get headerConnected() { return !isEmpty(this.headerInputs.filter(i => i.connected)); }
 
     get headerInputs () { return this.inputs .filter(i => !i.param); }
     get headerOutputs() { return this.outputs.filter(o => !o.param); }
@@ -208,7 +210,7 @@ class Operator
             if (this.variableInputs)
                 return lastOf(inputs.filter(i => !i.param));
 
-            else if (inputs.length > 0)
+            else if (!isEmpty(inputs))
             {
                 for (const input of inputs)
                 {
@@ -682,7 +684,7 @@ class Operator
         this.updateDisabled();
 
 
-        if (this.params.length > 0)
+        if (!isEmpty(this.params))
         {
             this.div   .style.borderBottomLeftRadius  = '0px';        
             this.inner .style.borderBottomLeftRadius  = '0px';        
@@ -804,8 +806,8 @@ class Operator
 
         // this.label.style.fontWeight = 
         //     this.active 
-        //     && (   this.headerInputs .length > 0
-        //         || this.headerOutputs.length > 0)
+        //     && (   !isEmpty(this.headerInputs )
+        //         || !isEmpty(this.headerOutputs))
         //     ? (graphView.zoom < 1.2 ? '900' : 'bold') 
         //     : (graphView.zoom < 1.2 ? '600' : 'normal');
     }
@@ -914,14 +916,14 @@ class Operator
 
     connectToSelected(selected)
     {
-        console.assert(selected.length > 0);
+        console.assert(!isEmpty(selected));
 
         const node   = selected[0];
         const inputs = this.inputs.filter(i => i.types.includes(node.type));
     
         if (   node
-            && node.outputs.length > 0
-            && inputs.length > 0)
+            && !isEmpty(node.outputs)
+            && !isEmpty(inputs))
             actionManager.do(new ConnectAction(node.outputs[0], inputs[0]), true);
     }
 
@@ -943,7 +945,7 @@ class Operator
 
         const nonDefaultParams = this.params.filter(p => !this.paramIsConsideredDefault(p));
 
-        if (   nonDefaultParams.length > 0 // don't include empty param section
+        if (  !isEmpty(nonDefaultParams) // don't include empty param section
             || this.alwaysSaveParams)
             json += this.paramsToJson(nTab);
 
@@ -1092,7 +1094,7 @@ function pushUpdateFromParam(action, nodes, param)
         const node               = nodes[i];
         const uncachedInputNodes = node.getUncachedInputNodes();
         
-        if (uncachedInputNodes.length > 0)
+        if (!isEmpty(uncachedInputNodes))
         {
             removeFromArray(nodes, node);
 
@@ -1141,6 +1143,15 @@ function pushUpdateFromParam(action, nodes, param)
 
     const progressNodes = [];
     nodes.forEach(n => pushUnique(progressNodes, getProgressNodesAfterNode(n)));
+
+
+    // if (!isEmpty(progressNodes))
+    // {
+    //     uiPostMessageToGenerator({cmd: 'genStopGenerate'});
+
+    //     if (genMessages.length > 2)
+    //         genMessages = [lastOf(genMessages)];
+    // }
 
 
     for (const node of terminals)
@@ -1201,7 +1212,7 @@ function getNodeRequest(node, gen)
     const request = [];
 
 
-    if (node.headerOutputs.length > 0)
+    if (!isEmpty(node.headerOutputs))
     {
         node.headerOutputs
             .forEach(o =>

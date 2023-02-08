@@ -42,7 +42,7 @@ extends Action
 
 
         const insert = 
-               this.prevSelectedIds.length > 0
+               !isEmpty(this.prevSelectedIds)
             && canAutoConnectNode(node);
    
             
@@ -68,7 +68,7 @@ extends Action
 
             const inputs = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
 
-            if (inputs.length > 0)
+            if (!isEmpty(inputs))
             {
                 const newConn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
                 graphView.autoPlaceNewNode(newConn.output, newConn.input);

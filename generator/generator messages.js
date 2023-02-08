@@ -16,10 +16,11 @@ onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'genRequest':       genRequest(msg.request);     break;
+        case 'genRequest':       genRequest      (msg.request); break;
+        case 'genStopGenerate':  genStopGenerate ();            break;
 
-        case 'genEndUiMessage':  genEndUiMessage(msg.msgCmd); break;
-        case 'genEndFigMessage': genEndFigMessage();          break;
+        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);  break;
+        case 'genEndFigMessage': genEndFigMessage();            break;
     }
 
 
@@ -53,15 +54,15 @@ function genQueueMessageToUI(msg)
 
 function genPostNextMessageToUI(msg)
 {
-    if (uiMessages.length > 0)
+    if (!isEmpty(uiMessages))
         //&& !genFigMessagePosted)
     {
         //console.log('yes');
         let msg = uiMessages.shift();
 
-        // while (   uiMessages.length > 0
-        //        && uiMessages[0].cmd     == 'uiUpdateValuesAndObjects'
-        //        && uiMessages[0].chunkId == 0)
+        // while (   !isEmpty(uiMessages)
+        //        &&  uiMessages[0].cmd     == 'uiUpdateValuesAndObjects'
+        //        &&  uiMessages[0].chunkId == 0)
         // {
         //     const nextFirst = uiMessages.find(m => 
         //            m.cmd     == msg.cmd 
@@ -69,11 +70,11 @@ function genPostNextMessageToUI(msg)
 
         //     if (nextFirst)
         //     {
-        //         while (uiMessages.length > 0
-        //             && uiMessages[0].cmd           == msg.cmd
-        //             && uiMessages[0].updateNodeId  == msg.updateNodeId
-        //             && uiMessages[0].updateParamId == msg.updateParamId
-        //             && uiMessages[0].cmd.chunkId   >  0)
+        //         while (!isEmpty(uiMessages)
+        //             &&  uiMessages[0].cmd           == msg.cmd
+        //             &&  uiMessages[0].updateNodeId  == msg.updateNodeId
+        //             &&  uiMessages[0].updateParamId == msg.updateParamId
+        //             &&  uiMessages[0].cmd.chunkId   >  0)
         //             msg = uiMessages.shift();
 
         //         msg = uiMessages.shift();
@@ -100,9 +101,9 @@ function genEndFigMessage()
 
     genFigMessagePosted = false;
     
-    if (   lastUpdateValues .length > 0
-        || lastUpdateObjects.length > 0
-        || lastUpdateStyles .length > 0)
+    if (   !isEmpty(lastUpdateValues .length)
+        || !isEmpty(lastUpdateObjects.length)
+        || !isEmpty(lastUpdateStyles .length))
         genUpdateValuesAndObjects(-1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
 
     genPostNextMessageToUI();

@@ -186,8 +186,8 @@ class Graph
 
         conn.outputOrder = 
             outputOrder > -1
-            ? outputOrder
-            : output.connectedInputs.length > 0
+            ?  outputOrder
+            : !isEmpty(output.connectedInputs)
             ? Math.max(...output.connectedInputs.map(i => i.connection.outputOrder)) + 1
             : 0;
 

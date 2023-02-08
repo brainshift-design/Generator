@@ -68,7 +68,7 @@ function createTooltip(tooltip)
 
 function showTooltip(source, tooltip, bottomArrow)
 {
-    if (currentMenus.length > 0)
+    if (!isEmpty(currentMenus))
         return;
 
     if (currentTooltip)

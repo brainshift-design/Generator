@@ -323,7 +323,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         {
             return control.valueText;
         }
-        else if (   control.options.length > 0
+        else if (  !isEmpty(control.options)
                  && control.displayDec == 0)
         {
             if (   control.value <  0 

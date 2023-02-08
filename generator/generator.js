@@ -4,6 +4,8 @@ var lastUpdateValues  = [];
 var lastUpdateObjects = [];
 var lastUpdateStyles  = [];
 
+var stopGenerate      = false;
+
 
 
 function genRequest(request)
@@ -64,6 +66,16 @@ function genRequest(request)
         parse.updateValues,
         parse.updateObjects,
         parse.updateStyles);
+
+
+    stopGenerate = false;
+}
+
+
+
+function genStopGenerate()
+{
+    stopGenerate = true;
 }
 
 
@@ -231,9 +243,9 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
     }
 
 
-    if (   nodeValChunk.length > 0
-        || objChunk    .length > 0
-        || styleChunk  .length > 0)
+    if (   !isEmpty(nodeValChunk)
+        || !isEmpty(objChunk    )
+        || !isEmpty(styleChunk  ))
     {
         genQueueChunk(
             actionId,
@@ -267,7 +279,7 @@ function genQueueChunk(actionId, updateNodeId, updateParamId, nodeValChunkId, no
         styles:        [...styleChunk]
     });
 
-    if (   objChunk  .length > 0
-        || styleChunk.length > 0)
+    if (   !isEmpty(objChunk  )
+        || !isEmpty(styleChunk))
         genFigMessagePosted = true;
 }

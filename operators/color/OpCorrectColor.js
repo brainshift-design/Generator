@@ -330,7 +330,7 @@ extends OpColorBase
             this._color = parseColorValue(_node.value)[0].toDataColor();
 
         if (!dataColorIsValid(this._color))
-            startNodeProgress(this);
+            uiInitNodeProgress(this.id);
 
         super.loadParams(_node, pasting);
     }

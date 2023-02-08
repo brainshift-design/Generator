@@ -37,14 +37,14 @@ extends GArithmetic
 
 function evalMultiplyInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
     const value = new NumberValue(0);
 
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         value.value = 1;
 

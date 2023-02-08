@@ -155,7 +155,7 @@ function getTerminalsAfterNode(node)
     }
 
 
-    return after.length > 0 ? after : [node];
+    return !isEmpty(after) ? after : [node];
 }
 
 
@@ -172,7 +172,7 @@ function getTerminalsAfterParam(param)
         pushUnique(after, getTerminalsAfterNode(input.node));
 
 
-    return after.length > 0 ? after : [];
+    return !isEmpty(after) ? after : [];
 }
 
 

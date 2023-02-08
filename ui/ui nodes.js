@@ -385,13 +385,13 @@ function canAutoConnectNode(node)
     const selNode = graph.nodes.find(n => n.selected);
 
     if (  !selNode
-        || selNode.headerOutputs.length == 0)
+        || isEmpty(selNode.headerOutputs))
         return false;
 
     const inputs = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
 
-    return inputs.length > 0
-        && node.canAutoConnectFrom(selNode.headerOutputs[0]);
+    return !isEmpty(inputs)
+         && node.canAutoConnectFrom(selNode.headerOutputs[0]);
 }
 
 
@@ -749,7 +749,7 @@ function uiUpdateGraph()
     graph.mutex = false;
 
 
-    if (graph.deferNodeIds.length > 0)
+    if (!isEmpty(graph.deferNodeIds))
     {
         let deferNodes = filterUnique(graph.deferNodeIds);
 
@@ -881,7 +881,7 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
     uiSaveNodes(nodes.map(n => n.id));
     
     
-    if (objects.length > 0)
+    if (!isEmpty(objects))
     {
         if (settings.logObjectUpdates)
             logObjectUpdates([...objects]);
@@ -895,7 +895,7 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
     }
 
     
-    if (styles.length > 0)
+    if (!isEmpty(styles))
     {
         if (settings.logStyleUpdates)
             logStyleUpdates([...styles]);
@@ -940,7 +940,7 @@ function uiSaveNodes(nodeIds)
     for (const id of nodeIds)
         nodeJson.push(nodeFromId(id).toJson());
 
-    if (nodeJson.length > 0)
+    if (!isEmpty(nodeJson))
     {
         if (settings.logRawSaving)
             logSaveNodes(nodeJson.join('\n'));

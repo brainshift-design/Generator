@@ -37,7 +37,7 @@ extends GArithmetic
 
 function evalAddInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 

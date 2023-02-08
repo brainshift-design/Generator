@@ -12,7 +12,7 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
 
     if (styleId != NULL)
     {
-        if (paints.length > 0)
+        if (!isEmpty(paints))
         {
             const c = paints[0];
 
@@ -61,7 +61,7 @@ function uiStylePropertyChange(msg)
                 break;
 
             case 'paint':
-                if (msg.paints.length > 0)
+                if (!isEmpty(msg.paints))
                 {
                     const paint = msg.paints[0];
 
@@ -165,7 +165,7 @@ function initLocalStylesMenu(styles, nodeId)
     }
 
 
-    if (styles.length > 0)
+    if (!isEmpty(styles))
         menuLocalStyles.addItems([new MenuItem('', {separator: true})]);
 
         

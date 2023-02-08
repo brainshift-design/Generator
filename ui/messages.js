@@ -72,7 +72,7 @@ function uiQueueMessageToFigma(msg)
 
 function uiPostNextMessageToFigma()
 {
-    if (    uiFigMessages.length > 0
+    if (   !isEmpty(uiFigMessages)
         && !uiFigMessagePosted)
     {
         let msg = uiFigMessages.shift();
@@ -80,8 +80,8 @@ function uiPostNextMessageToFigma()
         if (msg.cmd == 'figResizeWindow')
         {
             // move along the queue since only the last message is important
-            while (uiFigMessages.length > 0
-                && uiFigMessages[0].cmd == msg.cmd)
+            while (!isEmpty(uiFigMessages)
+                &&  uiFigMessages[0].cmd == msg.cmd)
                 msg = uiFigMessages.shift();
         }
 
@@ -128,9 +128,12 @@ generator.onmessage = function(e)
     switch (msg.cmd)
     {
         case 'uiEndGenMessage':          uiEndGenMessage         ();                                                                                        break;
+        
         case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.actionId, msg.updateNodeId, msg.updateParamId, msg.values, msg.objects, msg.styles);  break;
-        case 'uiStartNodeProgress':      uiStartNodeProgress     (msg.nodeId);                                                                              break;
+        
+        case 'uiInitNodeProgress':       uiInitNodeProgress      (msg.nodeId);                                                                              break;
         case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                                                break;
+        
         case 'uiForwardToFigma':         uiQueueMessageToFigma   (msg.msg);                                                                                 break;
     }
 };
@@ -141,7 +144,7 @@ function uiEndGenMessage()
 {
     genMessagePosted = false;
     
-    if (genMessages.length > 0)
+    if (!isEmpty(genMessages))
         uiPostNextMessageToGenerator();
 }
 
@@ -162,7 +165,7 @@ function uiQueueMessageToGenerator(msg)
 
 function uiPostNextMessageToGenerator()
 {
-    if (genMessages.length > 0)
+    if (!isEmpty(genMessages))
     {
         let msg = genMessages[0];
         

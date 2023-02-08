@@ -83,7 +83,7 @@ extends OperatorBase
         //     ? rgb_a(val.toRgb(), 1)
         //     : null;
 
-        if (this.params.length > 0) 
+        if (!isEmpty(this.params)) 
         {
             this.params[0].setValue(val);
             this.params[0].enableControlText(false);

@@ -339,7 +339,7 @@ function createNodeHeader(node)
                     point(node.div.offsetLeft, node.div.offsetTop),
                     node.div.shiftOnPointerDown ));
             }
-            else if (    graphView.selectedNodes.length > 0
+            else if (   !isEmpty(graphView.selectedNodes)
                      && !node.selected)
             {
                 actionManager.do(new SelectNodesAction(
@@ -466,19 +466,14 @@ function createNodeProgressBar(node)
 
 
 
-function startNodeProgress(node)
+function uiInitNodeProgress(nodeId)
 {
+    const node = nodeFromId(nodeId);
+
     node.progressWrapper.style.display = 'block';
 
     node.progressBar    .style.left    =   '0%';
     node.progressBar    .style.width   = '100%';
-}
-
-
-
-function uiStartNodeProgress(nodeId)
-{
-    startNodeProgress(nodeFromId(nodeId));
 }
 
 

@@ -6790,19 +6790,19 @@ extends GNode
 
     value;
 
-    
+   
     
     constructor(type, nodeId, options)
     {
         super(type, options);
 
-        this.nodeId   = nodeId;
-        this.nodeName = options.nodeName;
+        this.nodeId       = nodeId;
+        this.nodeName     = options.nodeName;
 
-        this.valid    = false;
-        this.topLevel = false;
+        this.valid        = false;
+        this.topLevel     = false;
 
-        this.value    = null;
+        this.value        = null;
     }
 
 
@@ -8681,8 +8681,8 @@ extends GOperator
             this.value = ListValue.NaN;
 
 
-        if (   this.value.isValid()
-            && this.value.items.length > 0)
+        if (    this.value.isValid()
+            && !isEmpty(this.value.items))
         {
             for (let i = 0; i < this.value.items.length; i++)
             {
@@ -9281,7 +9281,7 @@ extends GArithmetic
 
 function evalAddInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
@@ -9344,14 +9344,14 @@ extends GArithmetic
 
 function evalSubtractInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
     const value = new NumberValue(0);
 
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -9416,14 +9416,14 @@ extends GArithmetic
 
 function evalMultiplyInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
     const value = new NumberValue(0);
 
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         value.value = 1;
 
@@ -9484,14 +9484,14 @@ extends GArithmetic
 
 function evalDivideInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
         
     const value = new NumberValue(0);
 
         
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -9563,14 +9563,14 @@ extends GArithmetic
 
 function evalModuloInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
         
     const value = new NumberValue(0);
 
         
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -9642,14 +9642,14 @@ extends GArithmetic
 
 function evalExponentInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
     const value = new NumberValue(0);
 
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -9773,14 +9773,14 @@ extends GArithmetic
 
 function evalNandInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
     const value = new NumberValue();
 
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -9845,14 +9845,14 @@ extends GArithmetic
 
 function evalAndInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
     const value = new NumberValue();
 
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -9921,14 +9921,14 @@ extends GArithmetic
 
 function evalOrInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
     const value = new NumberValue();
 
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -9997,7 +9997,7 @@ extends GArithmetic
 
 function evalXorInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
@@ -10006,7 +10006,7 @@ function evalXorInputs(inputs, parse)
 
     let flipped;
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -11520,15 +11520,15 @@ extends GColorType
 class GCorrectColor
 extends GColorType
 {
-    input       = null;
-    
-    order       = null;
-        
-    margin1     = null;
-    margin2     = null;
-    margin3     = null;
-
-    corrections = [];
+    input        = null;
+     
+    order        = null;
+         
+    margin1      = null;
+    margin2      = null;
+    margin3      = null;
+ 
+    corrections  = [];
 
 
 
@@ -11594,7 +11594,7 @@ extends GColorType
                 if (!rgbIsOk(rgb))
                     genQueueMessageToUI(
                     {
-                        cmd:   'uiStartNodeProgress',
+                        cmd:   'uiInitNodeProgress',
                         nodeId: this.nodeId
                     });
 
@@ -11616,34 +11616,37 @@ extends GColorType
                     this.margin2 != null, 
                     this.margin3 != null); 
 
-                    
-                if (closestOrder >= 0 && closestOrder < 6)
+                     
+                if (!stopGenerate)
                 {
-                    this._color = correctColor(
-                        inputColor,
-                        closestOrder,
-                        closest1,
-                        closest2,
-                        closest3);
+                    if (closestOrder >= 0 && closestOrder < 6)
+                    {
+                        this._color = correctColor(
+                            inputColor,
+                            closestOrder,
+                            closest1,
+                            closest2,
+                            closest3);
 
-                        
-                    this.value = ColorValue.fromDataColor(this._color);
+                            
+                        this.value = ColorValue.fromDataColor(this._color);
 
-                    genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                    genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
-                    genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
-                    genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
-                    genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-                }
-                else
-                {
-                    this.value = ColorValue.NaN;
+                        genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
+                        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+                    }
+                    else
+                    {
+                        this.value = ColorValue.NaN;
 
-                    genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+                    }
                 }
             }
         }
@@ -11660,6 +11663,7 @@ extends GColorType
 
 
         this.validate();
+
 
         return this;
     }
@@ -11691,11 +11695,15 @@ function findCorrection(nodeId,
 
     while (d > 1/1024)
     {
+        if (stopGenerate) break;
+
         let _closestColor = [...closestColor];
 
 
         for (let _order = 0; _order < 6; _order++)
         {
+            if (stopGenerate) break;
+
             closestColor = [..._closestColor];
 
             const [min1, min2, min3] = getMinCorrections(color[0], _order);
@@ -11737,21 +11745,24 @@ function findCorrection(nodeId,
     }
 
 
-    // reduce closest to necessary minimums
+    if (!stopGenerate)
+    {
+        // reduce closest to necessary minimums
 
-    const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
+        const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
 
-    let c1 = closest1;
-    let c2 = closest2;
-    let c3 = closest3;
+        let c1 = closest1;
+        let c2 = closest2;
+        let c3 = closest3;
 
-    while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
-    while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
-    while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
+        while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
+        while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
+        while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
 
-    closest1 = Math.max(0, c1);
-    closest2 = Math.max(0, c2);
-    closest3 = Math.max(0, c3);
+        closest1 = Math.max(0, c1);
+        closest2 = Math.max(0, c2);
+        closest3 = Math.max(0, c3);
+    }
 
     
     return [
@@ -11786,10 +11797,16 @@ function findCorrectionInOrder(nodeId,
 
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
+        if (stopGenerate) break;
+
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
+            if (stopGenerate) break;
+
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
+                if (stopGenerate) break;
+
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
                 if (   rgbIsOk(_rgb)
@@ -11811,12 +11828,13 @@ function findCorrectionInOrder(nodeId,
             }
         }
 
-        genQueueMessageToUI(
-        {
-            cmd:     'uiUpdateNodeProgress',
-            nodeId:   nodeId,
-            progress: progress / total
-        });
+        if (!stopGenerate)
+            genQueueMessageToUI(
+            {
+                cmd:     'uiUpdateNodeProgress',
+                nodeId:   nodeId,
+                progress: progress / total
+            });
     }
 
 
@@ -13610,10 +13628,11 @@ onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'genRequest':       genRequest(msg.request);     break;
+        case 'genRequest':       genRequest      (msg.request); break;
+        case 'genStopGenerate':  genStopGenerate ();            break;
 
-        case 'genEndUiMessage':  genEndUiMessage(msg.msgCmd); break;
-        case 'genEndFigMessage': genEndFigMessage();          break;
+        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);  break;
+        case 'genEndFigMessage': genEndFigMessage();            break;
     }
 
 
@@ -13647,15 +13666,15 @@ function genQueueMessageToUI(msg)
 
 function genPostNextMessageToUI(msg)
 {
-    if (uiMessages.length > 0)
+    if (!isEmpty(uiMessages))
         //&& !genFigMessagePosted)
     {
         //console.log('yes');
         let msg = uiMessages.shift();
 
-        // while (   uiMessages.length > 0
-        //        && uiMessages[0].cmd     == 'uiUpdateValuesAndObjects'
-        //        && uiMessages[0].chunkId == 0)
+        // while (   !isEmpty(uiMessages)
+        //        &&  uiMessages[0].cmd     == 'uiUpdateValuesAndObjects'
+        //        &&  uiMessages[0].chunkId == 0)
         // {
         //     const nextFirst = uiMessages.find(m => 
         //            m.cmd     == msg.cmd 
@@ -13663,11 +13682,11 @@ function genPostNextMessageToUI(msg)
 
         //     if (nextFirst)
         //     {
-        //         while (uiMessages.length > 0
-        //             && uiMessages[0].cmd           == msg.cmd
-        //             && uiMessages[0].updateNodeId  == msg.updateNodeId
-        //             && uiMessages[0].updateParamId == msg.updateParamId
-        //             && uiMessages[0].cmd.chunkId   >  0)
+        //         while (!isEmpty(uiMessages)
+        //             &&  uiMessages[0].cmd           == msg.cmd
+        //             &&  uiMessages[0].updateNodeId  == msg.updateNodeId
+        //             &&  uiMessages[0].updateParamId == msg.updateParamId
+        //             &&  uiMessages[0].cmd.chunkId   >  0)
         //             msg = uiMessages.shift();
 
         //         msg = uiMessages.shift();
@@ -13694,9 +13713,9 @@ function genEndFigMessage()
 
     genFigMessagePosted = false;
     
-    if (   lastUpdateValues .length > 0
-        || lastUpdateObjects.length > 0
-        || lastUpdateStyles .length > 0)
+    if (   !isEmpty(lastUpdateValues .length)
+        || !isEmpty(lastUpdateObjects.length)
+        || !isEmpty(lastUpdateStyles .length))
         genUpdateValuesAndObjects(-1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
 
     genPostNextMessageToUI();
@@ -13710,6 +13729,8 @@ var lastUpdateParamId = NULL;
 var lastUpdateValues  = [];
 var lastUpdateObjects = [];
 var lastUpdateStyles  = [];
+
+var stopGenerate      = false;
 
 
 
@@ -13771,6 +13792,16 @@ function genRequest(request)
         parse.updateValues,
         parse.updateObjects,
         parse.updateStyles);
+
+
+    stopGenerate = false;
+}
+
+
+
+function genStopGenerate()
+{
+    stopGenerate = true;
 }
 
 
@@ -13938,9 +13969,9 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
     }
 
 
-    if (   nodeValChunk.length > 0
-        || objChunk    .length > 0
-        || styleChunk  .length > 0)
+    if (   !isEmpty(nodeValChunk)
+        || !isEmpty(objChunk    )
+        || !isEmpty(styleChunk  ))
     {
         genQueueChunk(
             actionId,
@@ -13974,8 +14005,8 @@ function genQueueChunk(actionId, updateNodeId, updateParamId, nodeValChunkId, no
         styles:        [...styleChunk]
     });
 
-    if (   objChunk  .length > 0
-        || styleChunk.length > 0)
+    if (   !isEmpty(objChunk  )
+        || !isEmpty(styleChunk))
         genFigMessagePosted = true;
 }
 
@@ -24253,19 +24284,19 @@ extends GNode
 
     value;
 
-    
+   
     
     constructor(type, nodeId, options)
     {
         super(type, options);
 
-        this.nodeId   = nodeId;
-        this.nodeName = options.nodeName;
+        this.nodeId       = nodeId;
+        this.nodeName     = options.nodeName;
 
-        this.valid    = false;
-        this.topLevel = false;
+        this.valid        = false;
+        this.topLevel     = false;
 
-        this.value    = null;
+        this.value        = null;
     }
 
 
@@ -26144,8 +26175,8 @@ extends GOperator
             this.value = ListValue.NaN;
 
 
-        if (   this.value.isValid()
-            && this.value.items.length > 0)
+        if (    this.value.isValid()
+            && !isEmpty(this.value.items))
         {
             for (let i = 0; i < this.value.items.length; i++)
             {
@@ -26744,7 +26775,7 @@ extends GArithmetic
 
 function evalAddInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
@@ -26807,14 +26838,14 @@ extends GArithmetic
 
 function evalSubtractInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
     const value = new NumberValue(0);
 
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -26879,14 +26910,14 @@ extends GArithmetic
 
 function evalMultiplyInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
     const value = new NumberValue(0);
 
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         value.value = 1;
 
@@ -26947,14 +26978,14 @@ extends GArithmetic
 
 function evalDivideInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
         
     const value = new NumberValue(0);
 
         
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -27026,14 +27057,14 @@ extends GArithmetic
 
 function evalModuloInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
         
     const value = new NumberValue(0);
 
         
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -27105,14 +27136,14 @@ extends GArithmetic
 
 function evalExponentInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
     const value = new NumberValue(0);
 
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -27236,14 +27267,14 @@ extends GArithmetic
 
 function evalNandInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
     const value = new NumberValue();
 
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -27308,14 +27339,14 @@ extends GArithmetic
 
 function evalAndInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
     const value = new NumberValue();
 
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -27384,14 +27415,14 @@ extends GArithmetic
 
 function evalOrInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
     const value = new NumberValue();
 
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -27460,7 +27491,7 @@ extends GArithmetic
 
 function evalXorInputs(inputs, parse)
 {
-    if (inputs.length == 0)
+    if (isEmpty(inputs))
         return NumberValue.NaN;
 
 
@@ -27469,7 +27500,7 @@ function evalXorInputs(inputs, parse)
 
     let flipped;
 
-    if (inputs.length > 0)
+    if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
 
@@ -28983,15 +29014,15 @@ extends GColorType
 class GCorrectColor
 extends GColorType
 {
-    input       = null;
-    
-    order       = null;
-        
-    margin1     = null;
-    margin2     = null;
-    margin3     = null;
-
-    corrections = [];
+    input        = null;
+     
+    order        = null;
+         
+    margin1      = null;
+    margin2      = null;
+    margin3      = null;
+ 
+    corrections  = [];
 
 
 
@@ -29057,7 +29088,7 @@ extends GColorType
                 if (!rgbIsOk(rgb))
                     genQueueMessageToUI(
                     {
-                        cmd:   'uiStartNodeProgress',
+                        cmd:   'uiInitNodeProgress',
                         nodeId: this.nodeId
                     });
 
@@ -29079,34 +29110,37 @@ extends GColorType
                     this.margin2 != null, 
                     this.margin3 != null); 
 
-                    
-                if (closestOrder >= 0 && closestOrder < 6)
+                     
+                if (!stopGenerate)
                 {
-                    this._color = correctColor(
-                        inputColor,
-                        closestOrder,
-                        closest1,
-                        closest2,
-                        closest3);
+                    if (closestOrder >= 0 && closestOrder < 6)
+                    {
+                        this._color = correctColor(
+                            inputColor,
+                            closestOrder,
+                            closest1,
+                            closest2,
+                            closest3);
 
-                        
-                    this.value = ColorValue.fromDataColor(this._color);
+                            
+                        this.value = ColorValue.fromDataColor(this._color);
 
-                    genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                    genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
-                    genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
-                    genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
-                    genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-                }
-                else
-                {
-                    this.value = ColorValue.NaN;
+                        genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
+                        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+                    }
+                    else
+                    {
+                        this.value = ColorValue.NaN;
 
-                    genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                    genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+                    }
                 }
             }
         }
@@ -29123,6 +29157,7 @@ extends GColorType
 
 
         this.validate();
+
 
         return this;
     }
@@ -29154,11 +29189,15 @@ function findCorrection(nodeId,
 
     while (d > 1/1024)
     {
+        if (stopGenerate) break;
+
         let _closestColor = [...closestColor];
 
 
         for (let _order = 0; _order < 6; _order++)
         {
+            if (stopGenerate) break;
+
             closestColor = [..._closestColor];
 
             const [min1, min2, min3] = getMinCorrections(color[0], _order);
@@ -29200,21 +29239,24 @@ function findCorrection(nodeId,
     }
 
 
-    // reduce closest to necessary minimums
+    if (!stopGenerate)
+    {
+        // reduce closest to necessary minimums
 
-    const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
+        const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
 
-    let c1 = closest1;
-    let c2 = closest2;
-    let c3 = closest3;
+        let c1 = closest1;
+        let c2 = closest2;
+        let c3 = closest3;
 
-    while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
-    while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
-    while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
+        while (c1 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, c1-1, closest2, closest3)[2], closestRgb)) c1--;
+        while (c2 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, c2-1, closest3)[2], closestRgb)) c2--;
+        while (c3 >= 0 && rgbEqual(getCorrectedColor(color, closestOrder, closest1, closest2, c3-1)[2], closestRgb)) c3--;
 
-    closest1 = Math.max(0, c1);
-    closest2 = Math.max(0, c2);
-    closest3 = Math.max(0, c3);
+        closest1 = Math.max(0, c1);
+        closest2 = Math.max(0, c2);
+        closest3 = Math.max(0, c3);
+    }
 
     
     return [
@@ -29249,10 +29291,16 @@ function findCorrectionInOrder(nodeId,
 
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
+        if (stopGenerate) break;
+
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
+            if (stopGenerate) break;
+
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
+                if (stopGenerate) break;
+
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
                 if (   rgbIsOk(_rgb)
@@ -29274,12 +29322,13 @@ function findCorrectionInOrder(nodeId,
             }
         }
 
-        genQueueMessageToUI(
-        {
-            cmd:     'uiUpdateNodeProgress',
-            nodeId:   nodeId,
-            progress: progress / total
-        });
+        if (!stopGenerate)
+            genQueueMessageToUI(
+            {
+                cmd:     'uiUpdateNodeProgress',
+                nodeId:   nodeId,
+                progress: progress / total
+            });
     }
 
 
@@ -31137,8 +31186,8 @@ class Menu
         }
 
 
-        if (  !this.lastItem
-            && this.items.length > 0)
+        if (   !this.lastItem
+            && !isEmpty(this.items))
             this.lastItem = this.items[0];
 
 
@@ -31174,7 +31223,7 @@ class Menu
                 + (mesShortcut.width > 0 ? 20 : 0));
         }
 
-        
+
         this.divItems.style.width = Math.max(this.minWidth, width) + 'px';
     }
 
@@ -31865,7 +31914,7 @@ class MenuItem
             return;
 
 
-        if (currentMenus.length > 0) // this lets the item be selected without its parent menu being involved
+        if (!isEmpty(currentMenus)) // this lets the item be selected without its parent menu being involved
         {
             if (this.parentMenu.button)
                 this.parentMenu.button.update();
@@ -32575,8 +32624,8 @@ function initNumberControlEvents(control)
 
             control.buttonDown2 = true;
 
-            if (   control.param
-                && control.options.length > 0)
+            if (    control.param
+                && !isEmpty(control.options))
             {
                 initSelectParamMenu(control.param);
                 menuSelectParam.showAt(e.clientX, e.clientY);
@@ -33785,7 +33834,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         {
             return control.valueText;
         }
-        else if (   control.options.length > 0
+        else if (  !isEmpty(control.options)
                  && control.displayDec == 0)
         {
             if (   control.value <  0 
@@ -36189,7 +36238,7 @@ function pasteCopiedNodes(pasteConnected, clientX = Number.NaN, clientY = Number
 
 function duplicateSelectedNodes(pasteConnected)
 {
-    if (graphView.selectedNodes.length > 0)
+    if (!isEmpty(graphView.selectedNodes))
     {
         pasteOffset = point(0, 0);
         actionManager.do(new PasteNodesAction(uiCopyNodes(graphView.selectedNodes.map(n => n.id)), pasteConnected, true));
@@ -36202,7 +36251,7 @@ function deleteSelectedNodes()
 {
     const nodeIds = graphView.selectedNodes.map(n => n.id);
 
-    if (nodeIds.length > 0)
+    if (!isEmpty(nodeIds))
     {
         actionManager.do(new DeleteNodesAction(nodeIds));
         graphView._selected = [];
@@ -36215,7 +36264,7 @@ function removeSelectedNodes()
 {
     const nodeIds = graphView.selectedNodes.map(n => n.id);
 
-    if (nodeIds.length > 0)
+    if (!isEmpty(nodeIds))
     {
         actionManager.do(new RemoveNodesAction(nodeIds));
         graphView._selected = [];
@@ -36901,8 +36950,8 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
 
 graphView.endSelection = pointerId =>
 {
-    if (   graphView.selectedNodes    .length > 0
-        || graphView.lastSelectedNodes.length > 0)
+    if (   !isEmpty(graphView.selectedNodes    )
+        || !isEmpty(graphView.lastSelectedNodes))
     {
         actionManager.do(new SelectNodesAction(
             graphView.selectedNodes    .map(n => n.id), 
@@ -39413,8 +39462,8 @@ class Graph
 
         conn.outputOrder = 
             outputOrder > -1
-            ? outputOrder
-            : output.connectedInputs.length > 0
+            ?  outputOrder
+            : !isEmpty(output.connectedInputs)
             ? Math.max(...output.connectedInputs.map(i => i.connection.outputOrder)) + 1
             : 0;
 
@@ -39804,7 +39853,7 @@ function getTerminalsAfterNode(node)
     }
 
 
-    return after.length > 0 ? after : [node];
+    return !isEmpty(after) ? after : [node];
 }
 
 
@@ -39821,7 +39870,7 @@ function getTerminalsAfterParam(param)
         pushUnique(after, getTerminalsAfterNode(input.node));
 
 
-    return after.length > 0 ? after : [];
+    return !isEmpty(after) ? after : [];
 }
 
 
@@ -40417,7 +40466,7 @@ class Output
     cache      = [];
 
 
-    get connected() { return this.connectedInputs.length > 0; }
+    get connected() { return !isEmpty(this.connectedInputs); }
 
 
 
@@ -40564,7 +40613,7 @@ class Output
         this.div.style.backgroundColor = colorStyle;
 
         this.div.style.boxShadow = 
-               this.connectedInputs.length > 0
+               !isEmpty(this.connectedInputs)
             ||    graphView.tempConn
                && (   graphView.tempConn.output == this
                    || graphView.overOutput == this)
@@ -40577,7 +40626,7 @@ class Output
 
 
         const isConnected =
-               this.connectedInputs.length > 0
+               !isEmpty(this.connectedInputs)
             ||     graphView.tempConn
                && (   graphView.tempConn.output == this
                    ||     graphView.overOutput == this
@@ -40692,8 +40741,8 @@ class Connection
 
             if (this.output)
             {
-                if (this.output.types.length > 0) types.push(...this.output.types);
-                else                              types.push(this.output.node.type);
+                if (!isEmpty(this.output.types)) types.push(...this.output.types);
+                else                             types.push(this.output.node.type);
             }
             else if (this.input)
             {
@@ -40702,7 +40751,7 @@ class Connection
                     types.push(...graphView.overOutput.types);
                 else
                 {
-                    if (this.input.types.length > 0) types.push(...this.input.types);
+                    if (!isEmpty(this.input.types)) types.push(...this.input.types);
                     else                             types.push(this.input.node.type);
                 }
             }
@@ -40710,8 +40759,8 @@ class Connection
 
             return     this.output
                    && !rgbIsNaN(this.output.wireColor)
-                 ? this.output.wireColor
-                 : types.length > 0
+                 ?  this.output.wireColor
+                 : !isEmpty(types)
                  ? rgb_a(rgbHeaderFromType(types[0], true), 1)
                  : rgbaInvalid;
         };
@@ -41155,7 +41204,9 @@ class Operator
     
     progressWrapper = null;
     progressBar     = null;
+
     hasProgressBar  = false;
+
 
     labelWrapper;
     label;
@@ -41191,7 +41242,7 @@ class Operator
     get active() { return this._active; }
        
     
-    get headerConnected() { return this.headerInputs.filter(i => i.connected).length > 0; }
+    get headerConnected() { return !isEmpty(this.headerInputs.filter(i => i.connected)); }
 
     get headerInputs () { return this.inputs .filter(i => !i.param); }
     get headerOutputs() { return this.outputs.filter(o => !o.param); }
@@ -41283,7 +41334,7 @@ class Operator
             if (this.variableInputs)
                 return lastOf(inputs.filter(i => !i.param));
 
-            else if (inputs.length > 0)
+            else if (!isEmpty(inputs))
             {
                 for (const input of inputs)
                 {
@@ -41757,7 +41808,7 @@ class Operator
         this.updateDisabled();
 
 
-        if (this.params.length > 0)
+        if (!isEmpty(this.params))
         {
             this.div   .style.borderBottomLeftRadius  = '0px';        
             this.inner .style.borderBottomLeftRadius  = '0px';        
@@ -41879,8 +41930,8 @@ class Operator
 
         // this.label.style.fontWeight = 
         //     this.active 
-        //     && (   this.headerInputs .length > 0
-        //         || this.headerOutputs.length > 0)
+        //     && (   !isEmpty(this.headerInputs )
+        //         || !isEmpty(this.headerOutputs))
         //     ? (graphView.zoom < 1.2 ? '900' : 'bold') 
         //     : (graphView.zoom < 1.2 ? '600' : 'normal');
     }
@@ -41989,14 +42040,14 @@ class Operator
 
     connectToSelected(selected)
     {
-        console.assert(selected.length > 0);
+        console.assert(!isEmpty(selected));
 
         const node   = selected[0];
         const inputs = this.inputs.filter(i => i.types.includes(node.type));
     
         if (   node
-            && node.outputs.length > 0
-            && inputs.length > 0)
+            && !isEmpty(node.outputs)
+            && !isEmpty(inputs))
             actionManager.do(new ConnectAction(node.outputs[0], inputs[0]), true);
     }
 
@@ -42018,7 +42069,7 @@ class Operator
 
         const nonDefaultParams = this.params.filter(p => !this.paramIsConsideredDefault(p));
 
-        if (   nonDefaultParams.length > 0 // don't include empty param section
+        if (  !isEmpty(nonDefaultParams) // don't include empty param section
             || this.alwaysSaveParams)
             json += this.paramsToJson(nTab);
 
@@ -42167,7 +42218,7 @@ function pushUpdateFromParam(action, nodes, param)
         const node               = nodes[i];
         const uncachedInputNodes = node.getUncachedInputNodes();
         
-        if (uncachedInputNodes.length > 0)
+        if (!isEmpty(uncachedInputNodes))
         {
             removeFromArray(nodes, node);
 
@@ -42216,6 +42267,15 @@ function pushUpdateFromParam(action, nodes, param)
 
     const progressNodes = [];
     nodes.forEach(n => pushUnique(progressNodes, getProgressNodesAfterNode(n)));
+
+
+    // if (!isEmpty(progressNodes))
+    // {
+    //     uiPostMessageToGenerator({cmd: 'genStopGenerate'});
+
+    //     if (genMessages.length > 2)
+    //         genMessages = [lastOf(genMessages)];
+    // }
 
 
     for (const node of terminals)
@@ -42276,7 +42336,7 @@ function getNodeRequest(node, gen)
     const request = [];
 
 
-    if (node.headerOutputs.length > 0)
+    if (!isEmpty(node.headerOutputs))
     {
         node.headerOutputs
             .forEach(o =>
@@ -42866,7 +42926,7 @@ function createNodeHeader(node)
                     point(node.div.offsetLeft, node.div.offsetTop),
                     node.div.shiftOnPointerDown ));
             }
-            else if (    graphView.selectedNodes.length > 0
+            else if (   !isEmpty(graphView.selectedNodes)
                      && !node.selected)
             {
                 actionManager.do(new SelectNodesAction(
@@ -42993,19 +43053,14 @@ function createNodeProgressBar(node)
 
 
 
-function startNodeProgress(node)
+function uiInitNodeProgress(nodeId)
 {
+    const node = nodeFromId(nodeId);
+
     node.progressWrapper.style.display = 'block';
 
     node.progressBar    .style.left    =   '0%';
     node.progressBar    .style.width   = '100%';
-}
-
-
-
-function uiStartNodeProgress(nodeId)
-{
-    startNodeProgress(nodeFromId(nodeId));
 }
 
 
@@ -43691,7 +43746,7 @@ extends OperatorBase
             }
         }
 
-        else if (paramIds.length == 0)
+        else if (isEmpty(paramIds))
             this.removeAllParams();
     
         
@@ -44164,7 +44219,7 @@ extends OperatorBase
         //     ? rgb_a(val.toRgb(), 1)
         //     : null;
 
-        if (this.params.length > 0) 
+        if (!isEmpty(this.params)) 
         {
             this.params[0].setValue(val);
             this.params[0].enableControlText(false);
@@ -44315,7 +44370,7 @@ extends OperatorBase
             ? rgb_a(val.toRgb(), 1)
             : null;
 
-        if (this.params.length > 0) 
+        if (!isEmpty(this.params)) 
         {
             this.params[0].setValue(val);
             this.params[0].enableControlText(false);
@@ -47667,7 +47722,7 @@ extends OpColorBase
             this._color = parseColorValue(_node.value)[0].toDataColor();
 
         if (!dataColorIsValid(this._color))
-            startNodeProgress(this);
+            uiInitNodeProgress(this.id);
 
         super.loadParams(_node, pasting);
     }
@@ -48712,14 +48767,14 @@ extends OpColorBase
 
     connectToSelected(selected)
     {
-        console.assert(selected.length > 0);
+        console.assert(!isEmpty(selected));
 
         const node   = selected[0];
         const inputs = this.inputs.filter(i => i.types.includes(node.type));
     
-        if (   node
-            && node.outputs.length > 0
-            && inputs.length > 0)
+        if (    node
+            && !isEmpty(node.outputs)
+            && !isEmpty(inputs))
             actionManager.do(new ConnectAction(node.outputs[0], inputs[0]), true);
     }
 }
@@ -50174,7 +50229,7 @@ extends Action
 
 
         const insert = 
-               this.prevSelectedIds.length > 0
+               !isEmpty(this.prevSelectedIds)
             && canAutoConnectNode(node);
    
             
@@ -50200,7 +50255,7 @@ extends Action
 
             const inputs = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
 
-            if (inputs.length > 0)
+            if (!isEmpty(inputs))
             {
                 const newConn = createNodeAction_connect(this, selNode.outputs[0], node, inputs[0].id);
                 graphView.autoPlaceNewNode(newConn.output, newConn.input);
@@ -50308,9 +50363,9 @@ extends Action
         
 
         const autoConnect = 
-               this.autoConnect
-            && this.prevSelectedIds.length > 0
-            && canAutoConnectNode(this.node);
+                this.autoConnect
+            && !isEmpty(this.prevSelectedIds)
+            &&  canAutoConnectNode(this.node);
 
             
         graph.addNode(this.node, !autoConnect);
@@ -50325,7 +50380,7 @@ extends Action
             const selNode = nodeFromId(this.prevSelectedIds[0]);
             const inputs  = this.node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
             
-            if (inputs.length > 0)
+            if (!isEmpty(inputs))
             {
                 const conn = createNodeAction_connect(this, selNode.outputs[0], this.node, inputs[0].id);
                 graphView.autoPlaceNewNode(conn.output, conn.input);
@@ -52437,7 +52492,7 @@ function deleteConnectionsToNodes(str)
 
     uiRemoveConnsToNodes(nodeIds);
 
-    if (nodeIds.length > 0)
+    if (!isEmpty(nodeIds))
         hideDeleteConnectionsDialog();
 }
 
@@ -52751,7 +52806,8 @@ document.addEventListener('keydown', e =>
         if (   graphView.spaceDown
             && getCtrlKey(e))
             setCursor(zoomOutCursor);
-        else if (graphView.overNode)
+        else if (graphView.overNode
+              && isEmpty(currentMenus))
             graphView.soloNode(graphView.overNode);
     }
 
@@ -52872,7 +52928,7 @@ function uiQueueMessageToFigma(msg)
 
 function uiPostNextMessageToFigma()
 {
-    if (    uiFigMessages.length > 0
+    if (   !isEmpty(uiFigMessages)
         && !uiFigMessagePosted)
     {
         let msg = uiFigMessages.shift();
@@ -52880,8 +52936,8 @@ function uiPostNextMessageToFigma()
         if (msg.cmd == 'figResizeWindow')
         {
             // move along the queue since only the last message is important
-            while (uiFigMessages.length > 0
-                && uiFigMessages[0].cmd == msg.cmd)
+            while (!isEmpty(uiFigMessages)
+                &&  uiFigMessages[0].cmd == msg.cmd)
                 msg = uiFigMessages.shift();
         }
 
@@ -52928,9 +52984,12 @@ generator.onmessage = function(e)
     switch (msg.cmd)
     {
         case 'uiEndGenMessage':          uiEndGenMessage         ();                                                                                        break;
+        
         case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.actionId, msg.updateNodeId, msg.updateParamId, msg.values, msg.objects, msg.styles);  break;
-        case 'uiStartNodeProgress':      uiStartNodeProgress     (msg.nodeId);                                                                              break;
+        
+        case 'uiInitNodeProgress':       uiInitNodeProgress      (msg.nodeId);                                                                              break;
         case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                                                break;
+        
         case 'uiForwardToFigma':         uiQueueMessageToFigma   (msg.msg);                                                                                 break;
     }
 };
@@ -52941,7 +53000,7 @@ function uiEndGenMessage()
 {
     genMessagePosted = false;
     
-    if (genMessages.length > 0)
+    if (!isEmpty(genMessages))
         uiPostNextMessageToGenerator();
 }
 
@@ -52962,7 +53021,7 @@ function uiQueueMessageToGenerator(msg)
 
 function uiPostNextMessageToGenerator()
 {
-    if (genMessages.length > 0)
+    if (!isEmpty(genMessages))
     {
         let msg = genMessages[0];
         
@@ -53704,7 +53763,7 @@ function createTooltip(tooltip)
 
 function showTooltip(source, tooltip, bottomArrow)
 {
-    if (currentMenus.length > 0)
+    if (!isEmpty(currentMenus))
         return;
 
     if (currentTooltip)
@@ -54203,13 +54262,13 @@ function canAutoConnectNode(node)
     const selNode = graph.nodes.find(n => n.selected);
 
     if (  !selNode
-        || selNode.headerOutputs.length == 0)
+        || isEmpty(selNode.headerOutputs))
         return false;
 
     const inputs = node.headerInputs.filter(i => i.canConnectFrom(selNode.headerOutputs[0]));
 
-    return inputs.length > 0
-        && node.canAutoConnectFrom(selNode.headerOutputs[0]);
+    return !isEmpty(inputs)
+         && node.canAutoConnectFrom(selNode.headerOutputs[0]);
 }
 
 
@@ -54567,7 +54626,7 @@ function uiUpdateGraph()
     graph.mutex = false;
 
 
-    if (graph.deferNodeIds.length > 0)
+    if (!isEmpty(graph.deferNodeIds))
     {
         let deferNodes = filterUnique(graph.deferNodeIds);
 
@@ -54699,7 +54758,7 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
     uiSaveNodes(nodes.map(n => n.id));
     
     
-    if (objects.length > 0)
+    if (!isEmpty(objects))
     {
         if (settings.logObjectUpdates)
             logObjectUpdates([...objects]);
@@ -54713,7 +54772,7 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
     }
 
     
-    if (styles.length > 0)
+    if (!isEmpty(styles))
     {
         if (settings.logStyleUpdates)
             logStyleUpdates([...styles]);
@@ -54758,7 +54817,7 @@ function uiSaveNodes(nodeIds)
     for (const id of nodeIds)
         nodeJson.push(nodeFromId(id).toJson());
 
-    if (nodeJson.length > 0)
+    if (!isEmpty(nodeJson))
     {
         if (settings.logRawSaving)
             logSaveNodes(nodeJson.join('\n'));
@@ -55012,7 +55071,7 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
 
     if (styleId != NULL)
     {
-        if (paints.length > 0)
+        if (!isEmpty(paints))
         {
             const c = paints[0];
 
@@ -55061,7 +55120,7 @@ function uiStylePropertyChange(msg)
                 break;
 
             case 'paint':
-                if (msg.paints.length > 0)
+                if (!isEmpty(msg.paints))
                 {
                     const paint = msg.paints[0];
 
@@ -55165,7 +55224,7 @@ function initLocalStylesMenu(styles, nodeId)
     }
 
 
-    if (styles.length > 0)
+    if (!isEmpty(styles))
         menuLocalStyles.addItems([new MenuItem('', {separator: true})]);
 
         
