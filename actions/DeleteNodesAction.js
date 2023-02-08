@@ -141,12 +141,14 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
     uiDisconnect(input);
 
 
-    const activeLeft        = getActiveBeforeNode    (output.node);
-    const activeLeftOnly    = getActiveOnlyBeforeNode(output.node);
-    const activeRight       = getActiveAfterNode     (output.node, true);
-    const activeRightHeader = getActiveAfterNode     (output.node);
+    const activeLeft           = getActiveBeforeNode    (output.node);
+    const activeLeftOnly       = getActiveOnlyBeforeNode(output.node);
+    const activeRight          = getActiveAfterNode     (output.node, true);
+    const activeRightHeader    = getActiveAfterNode     (output.node);
 
+    const terminalsRight       = getTerminalsAfterNode  (input.node);
   
+
     if (  !activeLeftOnly
         && activeLeft != activeRight)
         pushUnique(updateNodes, output.node);
@@ -162,6 +164,9 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
     }
     else
         pushUnique(updateNodes, activeRightHeader);
+
+
+    pushUnique(updateNodes, terminalsRight);
 
     
     return updateNodes;
