@@ -128,7 +128,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate(parse);
     else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND             ) result = genParseColorBlind      (parse);
-    else if (parse.next == VALID_COLOR          ) result = genParseValidColor    (parse);
+    else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor    (parse);
      
     else if (parse.next == FILL_VALUE             ) result = genParseFillValue       (parse);
     else if (parse.next == FILL                   ) result = genParseFill            (parse);
@@ -214,6 +214,7 @@ function genParseNodeOptions(parse)
         beforeActive: ((opt >>  1) & 1) != 0,
         enabled:      ((opt >>  2) & 1) != 0,
         cached:       ((opt >>  3) & 1) != 0,
+        valid:        ((opt >>  4) & 1) != 0,
         hasInputs:    ((opt >> 20) & 1) != 0,
         existing:     ((opt >> 21) & 1) != 0,
         linked:       ((opt >> 22) & 1) != 0

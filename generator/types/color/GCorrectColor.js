@@ -1,4 +1,4 @@
-class GValidColor
+class GCorrectColor
 extends GColorType
 {
     input       = null;
@@ -15,24 +15,24 @@ extends GColorType
 
     constructor(nodeId, options)
     {
-        super(VALID_COLOR, nodeId, options);
+        super(CORRECT_COLOR, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GValidColor(this.nodeId, this.options);
+        const copy = new GCorrectColor(this.nodeId, this.options);
 
         copy.copyBase(this);
 
         if (this.input) 
             copy.input = this.input.copy();
 
-        copy.order   = this.order  .copy();
-        copy.margin1 = this.margin1.copy();
-        copy.margin2 = this.margin2.copy();
-        copy.margin3 = this.margin3.copy();
+        if (this.order  ) copy.order   = this.order  .copy();
+        if (this.margin1) copy.margin1 = this.margin1.copy();
+        if (this.margin2) copy.margin2 = this.margin2.copy();
+        if (this.margin3) copy.margin3 = this.margin3.copy();
 
         return copy;
     }
@@ -44,7 +44,7 @@ extends GColorType
         if (this.isCached())
             return this;
 
-            
+        
         const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
         const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
         const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;

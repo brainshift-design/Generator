@@ -112,8 +112,9 @@ class Menu
                   (item.parentMenu.showChecks ? 32 : 0)
                 + (item.parentMenu.showIcons  ? 32 : 0)
                 + mesName.width 
+                + 30 
                 + mesShortcut.width 
-                + 30);
+                + (mesShortcut.width > 0 ? 20 : 0));
         }
 
         
@@ -196,7 +197,7 @@ class Menu
 
         const margin = 8;
 
-        const left   = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
+        let   left   = Math.min(Math.max(margin, x), graphView.offsetWidth - this.div.offsetWidth - margin) - 6;
         let   top    = y - 4;
 
 
@@ -211,6 +212,7 @@ class Menu
         {
             height = Math.min(height, graphHeight - 16);
             top    = menuBar.offsetHeight + Math.max(8, graphHeight - height);
+            left  += 10; // so it doesn't hit a menu item by accident once the menu appears
         }
 
 

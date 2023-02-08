@@ -155,8 +155,6 @@ extends OpColorBase
         if (ignore) return request;
 
         
-        const paramIds = [];
-
         const input = this.node.inputs[0];
 
 
@@ -167,6 +165,9 @@ extends OpColorBase
         {
             request.push(...pushInputOrParam(input, gen));
             
+
+            const paramIds = [];
+
             paramIds.push(this.node.paramSpace.id);
 
             for (const param of this.node.params.filter(p => p.id != this.node.paramSpace.id))

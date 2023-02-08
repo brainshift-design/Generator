@@ -34,7 +34,7 @@ extends Action
     {
         this.oldValue = this.param.oldValue;
         pushUpdateFromParam(this, [this.param.node], this.param);
-
+        
         uiSaveNodes([this.nodeId]);
     }
 

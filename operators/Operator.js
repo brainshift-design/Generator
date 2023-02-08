@@ -93,7 +93,7 @@ class Operator
     hiddenParamBack;
 
 
-    valid = false;
+    valid;
 
 
 
@@ -602,11 +602,6 @@ class Operator
 
     invalidate()
     {
-        //if (!this.valid) // stops a node with inputs from same output
-        //    return;      // from being invalidated more than once
-    
-        //console.log(this.id + '.Operator.invalidate()');
-
         this.valid        = false;
         this.requestCache = [];
 
@@ -658,11 +653,15 @@ class Operator
             const nextActive   = getActiveAfterNode(this);
             const beforeActive = nextActive && nextActive.follows(this);
 
+            if (this.id == 'valid')
+                console.log('this.active =', this.active);
+
             const options =
                   ((this.active     ? 1 : 0) << 0)
                 | ((beforeActive    ? 1 : 0) << 1)
                 | ((this.enabled    ? 1 : 0) << 2)
                 | ((this.isCached() ? 1 : 0) << 3)
+                | ((this.valid      ? 1 : 0) << 4)
                 | nodeOptions;
 
             request.push(options);

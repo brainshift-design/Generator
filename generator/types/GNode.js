@@ -25,9 +25,6 @@ class GNode
 
     copyBase(src)
     {
-        this.valid    = src.valid;
-        this.topLevel = src.topLevel;
-
         this.options  = clone(src.options);
         this.data     = clone(src.data);
     }

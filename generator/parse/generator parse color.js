@@ -239,12 +239,12 @@ function genParseColorBlind(parse)
 
 
 
-function genParseValidColor(parse)
+function genParseCorrectColor(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
-
-    const corr = new GValidColor(nodeId, options);
+console.log('options =', options);
+    const corr = new GCorrectColor(nodeId, options);
 
     corr.hasInputs = options.hasInputs;
 
@@ -259,7 +259,7 @@ function genParseValidColor(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqValidColor(corr, parse);
+        logReqCorrectColor(corr, nInputs, parse);
 
 
     if (ignore) 
