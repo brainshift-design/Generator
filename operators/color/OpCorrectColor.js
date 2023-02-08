@@ -341,12 +341,12 @@ extends OpColorBase
 function makeOptions(c)
 {
     return ([
-        c[0]+',&thinsp;'+c[1]+',&thinsp;'+c[2], 
-        c[1]+',&thinsp;'+c[0]+',&thinsp;'+c[2], 
-        c[1]+',&thinsp;'+c[2]+',&thinsp;'+c[0], 
-        c[0]+',&thinsp;'+c[2]+',&thinsp;'+c[1], 
-        c[2]+',&thinsp;'+c[0]+',&thinsp;'+c[1], 
-        c[2]+',&thinsp;'+c[1]+',&thinsp;'+c[0]]);
+        c[0]+', '+c[1]+', '+c[2], 
+        c[1]+', '+c[0]+', '+c[2], 
+        c[1]+', '+c[2]+', '+c[0], 
+        c[0]+', '+c[2]+', '+c[1], 
+        c[2]+', '+c[0]+', '+c[1], 
+        c[2]+', '+c[1]+', '+c[0]]);
 }
 
 

@@ -45,7 +45,6 @@ extends GColorType
         if (this.isCached())
             return this;
 
-        console.log('GCorrectColor');
         const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
         const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
         const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
