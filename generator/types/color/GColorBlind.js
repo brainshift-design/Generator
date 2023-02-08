@@ -64,13 +64,7 @@ extends GColorType
                     rgb2dataColor(validRgbCb), 
                     colorSpace(input.space.value));
 
-                const factor = colorSpaceFactor(validCol[0]);
-
-                this.value = ColorValue.create(
-                    input.space.value,
-                    validCol[1] * factor[0],
-                    validCol[2] * factor[1],
-                    validCol[3] * factor[2]);
+                this.value = ColorValue.fromDataColor(validCol);
             }
             else
                 this.value = ColorValue.NaN;

@@ -653,15 +653,11 @@ class Operator
             const nextActive   = getActiveAfterNode(this);
             const beforeActive = nextActive && nextActive.follows(this);
 
-            if (this.id == 'valid')
-                console.log('this.active =', this.active);
-
             const options =
                   ((this.active     ? 1 : 0) << 0)
                 | ((beforeActive    ? 1 : 0) << 1)
                 | ((this.enabled    ? 1 : 0) << 2)
                 | ((this.isCached() ? 1 : 0) << 3)
-                | ((this.valid      ? 1 : 0) << 4)
                 | nodeOptions;
 
             request.push(options);
@@ -983,15 +979,15 @@ class Operator
 
     paramsToJson(nTab = 0)
     {
-        //logFunction('Operator.paramsToJson()');
-        
         let   pos = ' '.repeat(nTab);
         const tab = TAB;
+
 
         let json =
              ',\n'
             + pos + tab + '"params":\n'
             + pos + tab + '[\n';
+        
             
         let first = true;
         for (const param of this.params)
@@ -1004,11 +1000,13 @@ class Operator
             }
         }
 
+
         if (!first)
             json += '\n';
 
         json += pos + tab + ']';
 
+        
         return json;
     }
 

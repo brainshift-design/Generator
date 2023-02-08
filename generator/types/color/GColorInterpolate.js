@@ -58,13 +58,13 @@ extends GColorType
             const f = amount.value / 100;
 
 
-            const spaceValue = Math.min(Math.max(0, space.value), colorSpaceCount()-1);
+            const spaceIndex = Math.min(Math.max(0, space.value), colorSpaceCount()-1);
             const gammaValue = Math.max(0.0001, gamma.value);
 
-            const _space = colorSpace(spaceValue);
+            const _space = colorSpace(spaceIndex);
 
             const col = this.interpolate(
-                spaceValue,
+                spaceIndex,
                 convertDataColorToSpace(input0.toDataColor(), _space),
                 convertDataColorToSpace(input1.toDataColor(), _space),
                 f,
@@ -74,13 +74,7 @@ extends GColorType
             // allow interpolating invalid colors,
             // so no valid color check here
 
-            const factor = colorSpaceFactor(_space);
-
-            this.value = ColorValue.create(
-                spaceValue,
-                col[1] * factor[0],
-                col[2] * factor[1],
-                col[3] * factor[2]);
+            this.value = ColorValue.fromDataColor(col, spaceIndex);
         }
 
         else if (this.input0) 

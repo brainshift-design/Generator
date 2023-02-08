@@ -243,7 +243,7 @@ function genParseCorrectColor(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
-console.log('options =', options);
+
     const corr = new GCorrectColor(nodeId, options);
 
     corr.hasInputs = options.hasInputs;
@@ -290,6 +290,7 @@ console.log('options =', options);
         case 'margin1':  corr.margin1 = genParse(parse); break;
         case 'margin2':  corr.margin2 = genParse(parse); break;
         case 'margin3':  corr.margin3 = genParse(parse); break;
+        case 'value':    corr.value   = genParse(parse); break;
         }
     }
                 

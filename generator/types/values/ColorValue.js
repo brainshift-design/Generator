@@ -48,6 +48,23 @@ extends GValue
 
 
 
+    static fromDataColor(_color, spaceIndex = -1)
+    {
+        if (spaceIndex < 0)
+            spaceIndex = colorSpaceIndex (_color[0]);
+
+        const space  = colorSpace(spaceIndex);
+        const factor = colorSpaceFactor(space);
+
+        return ColorValue.create(
+            spaceIndex,
+            _color[1] * factor[0],
+            _color[2] * factor[1],
+            _color[3] * factor[2]);
+    }
+
+
+
     copy()
     {
         const copy = new ColorValue(

@@ -4656,6 +4656,23 @@ extends GValue
 
 
 
+    static fromDataColor(_color, spaceIndex = -1)
+    {
+        if (spaceIndex < 0)
+            spaceIndex = colorSpaceIndex (_color[0]);
+
+        const space  = colorSpace(spaceIndex);
+        const factor = colorSpaceFactor(space);
+
+        return ColorValue.create(
+            spaceIndex,
+            _color[1] * factor[0],
+            _color[2] * factor[1],
+            _color[3] * factor[2]);
+    }
+
+
+
     copy()
     {
         const copy = new ColorValue(
@@ -8600,13 +8617,13 @@ extends GColorType
             const f = amount.value / 100;
 
 
-            const spaceValue = Math.min(Math.max(0, space.value), colorSpaceCount()-1);
+            const spaceIndex = Math.min(Math.max(0, space.value), colorSpaceCount()-1);
             const gammaValue = Math.max(0.0001, gamma.value);
 
-            const _space = colorSpace(spaceValue);
+            const _space = colorSpace(spaceIndex);
 
             const col = this.interpolate(
-                spaceValue,
+                spaceIndex,
                 convertDataColorToSpace(input0.toDataColor(), _space),
                 convertDataColorToSpace(input1.toDataColor(), _space),
                 f,
@@ -8616,13 +8633,7 @@ extends GColorType
             // allow interpolating invalid colors,
             // so no valid color check here
 
-            const factor = colorSpaceFactor(_space);
-
-            this.value = ColorValue.create(
-                spaceValue,
-                col[1] * factor[0],
-                col[2] * factor[1],
-                col[3] * factor[2]);
+            this.value = ColorValue.fromDataColor(col, spaceIndex);
         }
 
         else if (this.input0) 
@@ -8879,13 +8890,7 @@ extends GColorType
                     rgb2dataColor(validRgbCb), 
                     colorSpace(input.space.value));
 
-                const factor = colorSpaceFactor(validCol[0]);
-
-                this.value = ColorValue.create(
-                    input.space.value,
-                    validCol[1] * factor[0],
-                    validCol[2] * factor[1],
-                    validCol[3] * factor[2]);
+                this.value = ColorValue.fromDataColor(validCol);
             }
             else
                 this.value = ColorValue.NaN;
@@ -8943,6 +8948,7 @@ extends GColorType
         if (this.margin1) copy.margin1 = this.margin1.copy();
         if (this.margin2) copy.margin2 = this.margin2.copy();
         if (this.margin3) copy.margin3 = this.margin3.copy();
+        if (this.value  ) copy.value   = this.value  .copy();
 
         return copy;
     }
@@ -8954,7 +8960,7 @@ extends GColorType
         if (this.isCached())
             return this;
 
-        
+        console.log('GCorrectColor');
         const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
         const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
         const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
@@ -8964,69 +8970,78 @@ extends GColorType
         if (this.input)
         {
             const input = this.input.eval(parse).toValue();
-            const rgb   = input.toRgb();
-            
-            if (!rgbIsOk(rgb))
-                genQueueMessageToUI(
-                {
-                    cmd:   'uiStartNodeProgress',
-                    nodeId: this.nodeId
-                });
 
 
-            const inputColor = input.toDataColor();
-
-
-            const
-          [ closestOklab,
-            closestOrder,
-            closest1,
-            closest2,
-            closest3 ] = findCorrection(
-                this.nodeId,
-                inputColor, 
-                order, margin1, margin2, margin3, 
-                this.order   != null,
-                this.margin1 != null, 
-                this.margin2 != null, 
-                this.margin3 != null); 
-
-                
-            if (closestOrder >= 0 && closestOrder < 6)
+            if (   isValid(this.order  ) && this.order  .isValid()
+                && isValid(this.margin1) && this.margin1.isValid()
+                && isValid(this.margin2) && this.margin2.isValid()
+                && isValid(this.margin3) && this.margin3.isValid()
+                && isValid(this.value  ) && this.value  .isValid())
             {
-                this._color = correctColor(
-                    inputColor,
-                    closestOrder,
-                    closest1,
-                    closest2,
-                    closest3);
-
-                    
-                const spaceIndex = colorSpaceIndex (this._color[0]);
-                const factor     = colorSpaceFactor(this._color[0]);
-
-                this.value = ColorValue.create(
-                    spaceIndex,
-                    this._color[1] * factor[0],
-                    this._color[2] * factor[1],
-                    this._color[3] * factor[2]);
-
-
-                genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
-                genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
-                genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
-                genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+                genPushUpdateValue(parse, this.nodeId, 'order',   this.order  );
+                genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
+                genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
+                genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
+                genPushUpdateValue(parse, this.nodeId, 'value',   this.value  );
             }
             else
             {
-                this.value = ColorValue.NaN;
+                const rgb = input.toRgb();
+                
+                if (!rgbIsOk(rgb))
+                    genQueueMessageToUI(
+                    {
+                        cmd:   'uiStartNodeProgress',
+                        nodeId: this.nodeId
+                    });
 
-                genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+
+                const inputColor = input.toDataColor();
+
+
+                const
+            [ closestOklab,
+                closestOrder,
+                closest1,
+                closest2,
+                closest3 ] = findCorrection(
+                    this.nodeId,
+                    inputColor, 
+                    order, margin1, margin2, margin3, 
+                    this.order   != null,
+                    this.margin1 != null, 
+                    this.margin2 != null, 
+                    this.margin3 != null); 
+
+                    
+                if (closestOrder >= 0 && closestOrder < 6)
+                {
+                    this._color = correctColor(
+                        inputColor,
+                        closestOrder,
+                        closest1,
+                        closest2,
+                        closest3);
+
+                        
+                    this.value = ColorValue.fromDataColor(this._color);
+
+                    genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
+                    genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
+                    genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
+                    genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
+                    genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+                }
+                else
+                {
+                    this.value = ColorValue.NaN;
+
+                    genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+                    genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+                    genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+                    genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+                    genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+                }
             }
         }
         else
@@ -11635,7 +11650,7 @@ function genParseCorrectColor(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
-console.log('options =', options);
+
     const corr = new GCorrectColor(nodeId, options);
 
     corr.hasInputs = options.hasInputs;
@@ -11682,6 +11697,7 @@ console.log('options =', options);
         case 'margin1':  corr.margin1 = genParse(parse); break;
         case 'margin2':  corr.margin2 = genParse(parse); break;
         case 'margin3':  corr.margin3 = genParse(parse); break;
+        case 'value':    corr.value   = genParse(parse); break;
         }
     }
                 
@@ -13367,7 +13383,6 @@ function genParseNodeOptions(parse)
         beforeActive: ((opt >>  1) & 1) != 0,
         enabled:      ((opt >>  2) & 1) != 0,
         cached:       ((opt >>  3) & 1) != 0,
-        valid:        ((opt >>  4) & 1) != 0,
         hasInputs:    ((opt >> 20) & 1) != 0,
         existing:     ((opt >> 21) & 1) != 0,
         linked:       ((opt >> 22) & 1) != 0

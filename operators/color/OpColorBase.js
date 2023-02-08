@@ -26,6 +26,15 @@ extends Operator
 
 
 
+    invalidate()
+    {
+        super.invalidate();
+
+        this._color = dataColor_NaN;
+    }
+
+
+
     // updateValues(actionId, updateParamId, paramIds, values)
     // {
     //     //logFunction('OpColorBase.updateValues()');

@@ -37,8 +37,8 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES));
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
-
-        this.alwaysLoadParams = true;
+        this.alwaysSaveParams = true;
+        //this.alwaysLoadParams = true;
         
         this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [0, 1, 2, 3, 4, 5], 2));
         
@@ -59,9 +59,6 @@ extends OpColorBase
 
 
         this.header.connectionPadding = 18;
-
-
-        startNodeProgress(this);
     }
 
 
@@ -82,8 +79,6 @@ extends OpColorBase
 
         const options = (hasInputs ? 1 : 0) << 20;
 
-        if (this.node.id == 'valid')
-            console.log('this.node.active =', this.node.active);
 
         const [request, ignore] = this.node.genRequestStart(gen, options);
         if (ignore) return request;
@@ -98,21 +93,31 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
 
+        const valid = !dataColorIsNaN(this.node._color);
+
+
         const paramIds = [];
 
         for (const param of this.node.params)
             if (      param.input 
                    && param.input.connected
-                || this.node.valid)
+                || valid)
                 paramIds.push(param.id);
+
+        paramIds.push('value');
 
         request.push(paramIds.join(','));
 
         
-        if (this.node.paramOrder.input.connected || this.node.valid) request.push(...this.node.paramOrder.genRequest(gen));
-        if (this.node.param1    .input.connected || this.node.valid) request.push(...this.node.param1    .genRequest(gen));
-        if (this.node.param2    .input.connected || this.node.valid) request.push(...this.node.param2    .genRequest(gen));
-        if (this.node.param3    .input.connected || this.node.valid) request.push(...this.node.param3    .genRequest(gen));
+        if (this.node.paramOrder.input.connected || valid) request.push(...this.node.paramOrder.genRequest(gen));
+        if (this.node.param1    .input.connected || valid) request.push(...this.node.param1    .genRequest(gen));
+        if (this.node.param2    .input.connected || valid) request.push(...this.node.param2    .genRequest(gen));
+        if (this.node.param3    .input.connected || valid) request.push(...this.node.param3    .genRequest(gen));
+
+        request.push(COLOR_VALUE, (
+            valid
+            ? ColorValue.fromDataColor(this.node._color)
+            : ColorValue.NaN).toString()); // value
 
 
         gen.scope.pop();
@@ -125,8 +130,6 @@ extends OpColorBase
 
     updateValues(actionId, updateParamId, paramIds, values)
     {
-        //console.log('1 paramIds =', [...paramIds]);
-
         const col = values[paramIds.findIndex(id => id == 'value')];
 
         this._color = 
@@ -141,16 +144,6 @@ extends OpColorBase
 
         
         super.updateValues(actionId, updateParamId, paramIds, values);
-
-        // const order   = values[paramIds.findIndex(id => id == 'order'  )];
-        // const margin1 = values[paramIds.findIndex(id => id == 'margin1')];
-        // const margin2 = values[paramIds.findIndex(id => id == 'margin2')];
-        // const margin3 = values[paramIds.findIndex(id => id == 'margin3')];
-
-        // if (order  ) this.paramOrder.setValue(order,   false, true, false);
-        // if (margin1) this.param1    .setValue(margin1, false, true, false);
-        // if (margin2) this.param2    .setValue(margin2, false, true, false);
-        // if (margin3) this.param3    .setValue(margin3, false, true, false);
 }
 
 
@@ -316,6 +309,30 @@ extends OpColorBase
     isConnected()
     {
         return this.inputs[0].connected;
+    }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = TAB;
+
+        return super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"value": "' + ColorValue.fromDataColor(this._color).toString() + '"';
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        if (_node.value != undefined)
+            this._color = parseColorValue(_node.value)[0].toDataColor();
+
+        if (!dataColorIsValid(this._color))
+            startNodeProgress(this);
+
+        super.loadParams(_node, pasting);
     }
 }
 
