@@ -60,18 +60,20 @@ extends NumberParamBase
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });
 
 
-        this.tooltip = createDiv('tooltip');
-        document.body.appendChild(this.tooltip);
+        // this.tooltip = createDiv('tooltip');
+        // document.body.appendChild(this.tooltip);
 
-        createTooltip(this.tooltip);
+        //createTooltip(this.tooltip);
 
         createTooltipSrc(this.control, this.control, () => 
         {
-            this.initTooltip(this.tooltip, this.options);
+            const tooltip = this.getTooltip();
+
+            if (tooltip)
+                this.initTooltip(tooltip, this.options);
 
             this.control.addEventListener('change', () => 
             {
-                const tooltip = this.getTooltip();
                 if (tooltip) hideTooltip(tooltip);
             });
 
@@ -96,7 +98,7 @@ extends NumberParamBase
 
 
     
-    getTooltip = () => this.tooltip;
+    getTooltip = () => null;//this.tooltip;
 
 
 

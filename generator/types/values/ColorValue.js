@@ -194,5 +194,5 @@ function parseColorValue(str, i = -1)
 
     return [
         new ColorValue(space[0], c1[0], c2[0], c3[0]), 
-        i - iStart];
+        i - iStart ];
 }
