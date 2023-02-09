@@ -1033,13 +1033,13 @@ div
 .figma-light .scrollbar 
 { 
     background-color: #0004;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); 
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
 }
 
 .figma-dark .scrollbar 
 { 
     background-color: #0006;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); 
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
 }
 
 
@@ -1059,7 +1059,7 @@ input[type=text]:hover
 input[type=text]:focus
 {
     box-shadow: 0 0 0 2px var(--figma-color-bg-brand);
-    outline: none;
+    outline:    none;
 }
 
 
@@ -17681,19 +17681,19 @@ function switchToSpace(node, space)
 
 
 
-function switchToHex   (node) { switchToTextbox       (node);           }
-function switchToRgb   (node) { switchToRgbControls   (node);           }
+function switchToHex   (node) { switchToRgbControls(node); switchToTextbox(node); }
+function switchToRgb   (node) { switchToRgbControls(node);                        }
 
-function switchToHsv   (node) { switchToHs_Controls   (node, 'V');      }
-function switchToHsl   (node) { switchToHs_Controls   (node, 'L');      }
-
-function switchToHclOkl(node) { switchToHclOklControls(node);           }
-function switchToHclLab(node) { switchToHclLabControls(node);           }
-function switchToHclLuv(node) { switchToHclLuvControls(node);           }
-
-function switchToOklab (node) { switchToOklabControls (node, 'a', 'b'); }
-function switchToLab   (node) { switchToLabControls   (node, 'a', 'b'); }
-function switchToLuv   (node) { switchToLuvControls   (node, 'u', 'v'); }
+function switchToHsv   (node) { switchToHs_Controls   (node, 'V');                }
+function switchToHsl   (node) { switchToHs_Controls   (node, 'L');                }
+          
+function switchToHclOkl(node) { switchToHclOklControls(node);                     }
+function switchToHclLab(node) { switchToHclLabControls(node);                     }
+function switchToHclLuv(node) { switchToHclLuvControls(node);                     }
+          
+function switchToOklab (node) { switchToOklabControls (node, 'a', 'b');           }
+function switchToLab   (node) { switchToLabControls   (node, 'a', 'b');           }
+function switchToLuv   (node) { switchToLuvControls   (node, 'u', 'v');           }
    
 
 
@@ -46079,7 +46079,8 @@ extends OpColorBase
 
         if (space.isValid())
         {
-            if (space) this.paramSpace.setValue(space, false, true, false);
+            if (space) 
+                this.paramSpace.setValue(space, false, true, false);
 
             switchToSpace(this, colorSpace(space.value));
 
@@ -46623,19 +46624,19 @@ function switchToSpace(node, space)
 
 
 
-function switchToHex   (node) { switchToTextbox       (node);           }
-function switchToRgb   (node) { switchToRgbControls   (node);           }
+function switchToHex   (node) { switchToRgbControls(node); switchToTextbox(node); }
+function switchToRgb   (node) { switchToRgbControls(node);                        }
 
-function switchToHsv   (node) { switchToHs_Controls   (node, 'V');      }
-function switchToHsl   (node) { switchToHs_Controls   (node, 'L');      }
-
-function switchToHclOkl(node) { switchToHclOklControls(node);           }
-function switchToHclLab(node) { switchToHclLabControls(node);           }
-function switchToHclLuv(node) { switchToHclLuvControls(node);           }
-
-function switchToOklab (node) { switchToOklabControls (node, 'a', 'b'); }
-function switchToLab   (node) { switchToLabControls   (node, 'a', 'b'); }
-function switchToLuv   (node) { switchToLuvControls   (node, 'u', 'v'); }
+function switchToHsv   (node) { switchToHs_Controls   (node, 'V');                }
+function switchToHsl   (node) { switchToHs_Controls   (node, 'L');                }
+          
+function switchToHclOkl(node) { switchToHclOklControls(node);                     }
+function switchToHclLab(node) { switchToHclLabControls(node);                     }
+function switchToHclLuv(node) { switchToHclLuvControls(node);                     }
+          
+function switchToOklab (node) { switchToOklabControls (node, 'a', 'b');           }
+function switchToLab   (node) { switchToLabControls   (node, 'a', 'b');           }
+function switchToLuv   (node) { switchToLuvControls   (node, 'u', 'v');           }
    
 
 
@@ -47446,7 +47447,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(CORRECT_COLOR, 'correct', 100, true);
+        super(CORRECT_COLOR, 'corrected', 100, true);
 
 
         this.addInput(new Input(COLOR_TYPES));

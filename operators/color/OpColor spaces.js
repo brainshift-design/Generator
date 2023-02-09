@@ -132,19 +132,19 @@ function switchToSpace(node, space)
 
 
 
-function switchToHex   (node) { switchToTextbox       (node);           }
-function switchToRgb   (node) { switchToRgbControls   (node);           }
+function switchToHex   (node) { switchToRgbControls(node); switchToTextbox(node); }
+function switchToRgb   (node) { switchToRgbControls(node);                        }
 
-function switchToHsv   (node) { switchToHs_Controls   (node, 'V');      }
-function switchToHsl   (node) { switchToHs_Controls   (node, 'L');      }
-
-function switchToHclOkl(node) { switchToHclOklControls(node);           }
-function switchToHclLab(node) { switchToHclLabControls(node);           }
-function switchToHclLuv(node) { switchToHclLuvControls(node);           }
-
-function switchToOklab (node) { switchToOklabControls (node, 'a', 'b'); }
-function switchToLab   (node) { switchToLabControls   (node, 'a', 'b'); }
-function switchToLuv   (node) { switchToLuvControls   (node, 'u', 'v'); }
+function switchToHsv   (node) { switchToHs_Controls   (node, 'V');                }
+function switchToHsl   (node) { switchToHs_Controls   (node, 'L');                }
+          
+function switchToHclOkl(node) { switchToHclOklControls(node);                     }
+function switchToHclLab(node) { switchToHclLabControls(node);                     }
+function switchToHclLuv(node) { switchToHclLuvControls(node);                     }
+          
+function switchToOklab (node) { switchToOklabControls (node, 'a', 'b');           }
+function switchToLab   (node) { switchToLabControls   (node, 'a', 'b');           }
+function switchToLuv   (node) { switchToLuvControls   (node, 'u', 'v');           }
    
 
 

@@ -34,13 +34,13 @@
 .figma-light .scrollbar 
 { 
     background-color: #0004;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); 
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
 }
 
 .figma-dark .scrollbar 
 { 
     background-color: #0006;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); 
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
 }
 
 
@@ -60,7 +60,7 @@ input[type=text]:hover
 input[type=text]:focus
 {
     box-shadow: 0 0 0 2px var(--figma-color-bg-brand);
-    outline: none;
+    outline:    none;
 }
 
 

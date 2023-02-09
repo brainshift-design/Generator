@@ -222,7 +222,8 @@ extends OpColorBase
 
         if (space.isValid())
         {
-            if (space) this.paramSpace.setValue(space, false, true, false);
+            if (space) 
+                this.paramSpace.setValue(space, false, true, false);
 
             switchToSpace(this, colorSpace(space.value));
 
