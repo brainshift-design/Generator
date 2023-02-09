@@ -95,12 +95,7 @@ class MenuItem
             this.divExpand.style.visibility = 'visible';
 
 
-        if (this.icon != '')
-        {
-            this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + this.icon + '\')';
-            this.divIcon.style.backgroundPosition = '50% 50%';
-            this.divIcon.style.backgroundRepeat   = 'no-repeat';
-        }
+        this.setIcon(this.icon);
 
     
         this.divShortcut.innerHTML = this.shortcut;
@@ -222,6 +217,20 @@ class MenuItem
             this.enteredDiv    = false;
             this.enteredExpand = false;
         });
+    }
+
+
+
+    setIcon(icon)
+    {
+        if (icon != '')
+        {
+            this.divIcon.style.background         = 'url(\'data:image/svg+xml;utf8,' + icon + '\')';
+            this.divIcon.style.backgroundPosition = '50% 50%';
+            this.divIcon.style.backgroundRepeat   = 'no-repeat';
+        }
+        else
+            this.divIcon.style.background = 'transparent';
     }
 
 

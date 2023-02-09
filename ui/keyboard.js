@@ -1,6 +1,10 @@
+var altPressedInMenu = false;
+
+
+
 document.addEventListener('keydown', e =>
 {
-    let setLastKeyDown = true;
+    //let setLastKeyDown = true;
 
 
     // copy
@@ -153,9 +157,18 @@ document.addEventListener('keydown', e =>
         if (   graphView.spaceDown
             && getCtrlKey(e))
             setCursor(zoomOutCursor);
-        else if (graphView.overNode
-              && isEmpty(currentMenus))
+
+        else if ( graphView.overNode
+              &&  isEmpty(currentMenus)
+              && !altPressedInMenu)
             graphView.soloNode(graphView.overNode);
+
+        else if (currentMenus.length == 1
+              && currentMenus[0] == menuColor)
+        {
+              menuItemColor.setIcon(iconRandomColor);
+              altPressedInMenu = true;
+        }
     }
 
     else if (e.code == 'Tab')
@@ -188,9 +201,17 @@ document.addEventListener('keyup', e =>
                 graphView.zoomSelecting = false;
             }
         }
-        else if (graphView._soloNode)
+        else if (graphView._soloNode
+              && isEmpty(currentMenus))
             graphView.unsoloNode();
-    }
+
+        else if (currentMenus.length == 1
+            && currentMenus[0] == menuColor)
+            menuItemColor.setIcon(iconColor);
+
+            
+        altPressedInMenu = false;
+      }
 
     else if (e.key == 'Control'
           && graphView.spaceDown)
@@ -198,4 +219,5 @@ document.addEventListener('keyup', e =>
         graphView.zoomSelecting = false;
         setCursor(panCursor);
     }
-},false);
+},
+false);

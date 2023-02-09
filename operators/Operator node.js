@@ -31,7 +31,8 @@ function createOperatorNode(node)
         if (    e.altKey
             && !getCtrlKey(e)
             && !e.shiftKey
-            &&  graphView._soloNode != node) 
+            &&  graphView._soloNode != node
+            && !altPressedInMenu) 
             graphView.soloNode(node);
         
         node.updateNode();

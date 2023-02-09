@@ -50,6 +50,7 @@ const iconCorrectColor      = '<svg width="14" height="15" viewBox="0 0 14 15" f
 const iconWebContrast       = '<svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 3H8V4V11V12H10V11H9V4H11V5H12V4V3Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 3H8V4V11V12H10V11H9V4H11V5H12V4V3Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12 3H8V4V11V12H10V11H9V4H11V5H12V4V3Z" fill="white"/><path fill-rule="evenodd" clip-rule="evenodd" d="M8 1H14.5C14.7761 1 15 1.22386 15 1.5V13.5C15 13.7761 14.7761 14 14.5 14H8V12H5.67075V11H7V4H5.09626V5.23481H3.90374V3H8V1ZM0 1.5C0 0.671573 0.671573 0 1.5 0H14.5C15.3284 0 16 0.671573 16 1.5V13.5C16 14.3284 15.3284 15 14.5 15H1.5C0.671573 15 0 14.3284 0 13.5V1.5Z" fill="white"/></svg>';
 const iconColorblind        = '<svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 18.4807C14.4599 18.4807 18.4807 14.4599 18.4807 9.5C18.4807 4.54009 14.4599 0.519287 9.5 0.519287C4.54009 0.519287 0.519283 4.54009 0.519283 9.5C0.519283 14.4599 4.54009 18.4807 9.5 18.4807Z" stroke="white" stroke-width="0.919355" stroke-dasharray="1.84 1.84"/><path d="M9.5 14.5417C12.2844 14.5417 14.5417 12.2844 14.5417 9.5C14.5417 6.71557 12.2844 4.45834 9.5 4.45834C6.71557 4.45834 4.45834 6.71557 4.45834 9.5C4.45834 12.2844 6.71557 14.5417 9.5 14.5417Z" stroke="white" stroke-width="0.919355"/><path d="M9.5 10.918C10.2831 10.918 10.918 10.2831 10.918 9.5C10.918 8.71686 10.2831 8.08199 9.5 8.08199C8.71686 8.08199 8.08199 8.71686 8.08199 9.5C8.08199 10.2831 8.71686 10.918 9.5 10.918Z" fill="white"/></svg>';
 const iconColorInterpolate  = '<svg width="18" height="21" viewBox="0 -1 18 21" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="9.5" cy="2.5" r="2.5" fill="white" fill-opacity="0.1"/><circle cx="9.5" cy="2.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2.5" fill="white" fill-opacity="0.4"/><circle cx="2.5" cy="9.5" r="2" stroke="white" stroke-opacity="0.7"/><circle cx="9.5" cy="16.5" r="2.5" fill="white" fill-opacity="0.8"/><circle cx="9.5" cy="16.5" r="2" stroke="white" stroke-opacity="0.9"/><circle cx="14.5" cy="14.5" r="2" fill="white" stroke="white"/><circle cx="14.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.4"/><circle cx="4.5" cy="14.5" r="2.5" fill="white" fill-opacity="0.6"/><circle cx="4.5" cy="14.5" r="2" stroke="white" stroke-opacity="0.8"/><circle cx="4.5" cy="4.5" r="2.5" fill="white" fill-opacity="0.2"/><circle cx="4.5" cy="4.5" r="2" stroke="white" stroke-opacity="0.6"/></svg>';
+const iconRandomColor       = '<svg width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.9099 3.43385C10.8155 2.2502 9.24936 1.50909 7.51016 1.50909C4.20148 1.50909 1.51926 4.19132 1.51926 7.5C1.51926 10.8087 4.20148 13.4909 7.51016 13.4909C9.24936 13.4909 10.8155 12.7498 11.9099 11.5662" stroke="white" stroke-width="1.2"/><path d="M6.77317 8.80159V8.71763C6.77533 8.32795 6.81193 8.01793 6.88297 7.78757C6.95617 7.55721 7.05951 7.37206 7.19299 7.23212C7.32647 7.09003 7.48902 6.95978 7.68063 6.84137C7.81195 6.75956 7.92929 6.67021 8.03263 6.57333C8.13812 6.4743 8.22101 6.3645 8.28129 6.24393C8.34157 6.12122 8.37171 5.98451 8.37171 5.8338C8.37171 5.66372 8.33188 5.51625 8.25222 5.39138C8.17257 5.26651 8.06492 5.16963 7.92929 5.10074C7.79581 5.03184 7.64618 4.9974 7.4804 4.9974C7.32755 4.9974 7.18223 5.03077 7.04444 5.09751C6.90881 5.16209 6.79578 5.26113 6.70536 5.39461C6.61709 5.52594 6.56757 5.69279 6.55681 5.89516H5.40715C5.41791 5.48611 5.51695 5.14379 5.70425 4.86822C5.89371 4.59265 6.14345 4.38597 6.45347 4.24818C6.76564 4.1104 7.1101 4.0415 7.48686 4.0415C7.89807 4.0415 8.25976 4.11363 8.57193 4.25787C8.88626 4.40212 9.13061 4.60772 9.305 4.87468C9.48154 5.13949 9.56981 5.45381 9.56981 5.81766C9.56981 6.06309 9.52998 6.28269 9.45032 6.47645C9.37281 6.67021 9.26194 6.84244 9.11769 6.99315C8.97345 7.14385 8.80229 7.27841 8.60423 7.39682C8.42984 7.50446 8.28667 7.61642 8.17472 7.73267C8.06492 7.84893 7.98311 7.98564 7.92929 8.1428C7.87762 8.29781 7.85071 8.48942 7.84855 8.71763V8.80159H6.77317Z" fill="white"/><path d="M6.7784 10.8136C6.94344 10.9761 7.14021 11.0574 7.36872 11.0574C7.52106 11.0574 7.65943 11.0205 7.78384 10.9469C7.91079 10.8707 8.01235 10.7692 8.08852 10.6422C8.16723 10.5153 8.20658 10.3744 8.20658 10.2195C8.20658 9.99099 8.1228 9.79549 7.95522 9.63299C7.79019 9.4705 7.59469 9.38925 7.36872 9.38925C7.14021 9.38925 6.94344 9.4705 6.7784 9.63299C6.61337 9.79549 6.53085 9.99099 6.53085 10.2195C6.53085 10.4531 6.61337 10.6511 6.7784 10.8136Z" fill="white"/></svg>';
  
 const iconFill              = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="6" fill="white"/></svg>';
 const iconStroke            = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="6" cy="6" r="5.4" stroke="white" stroke-width="1.2"/></svg>';
@@ -146,6 +147,9 @@ var menuItemCache;
 var menuItemCopy;  
 
 var menuItemSeries;
+
+
+var menuItemColor;
 
 
 var menuItemStyleFill;
@@ -338,17 +342,22 @@ function initGeneratorMenus()
         
     menuColor = new Menu('Colors', true, false);
     menuColor.addItems([
-        new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey, random: e.altKey}))}),
-        new MenuItem('',                  {separator: true}),
-        new MenuItem('Valid sRGB',        {enabled: false, icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('',                  {separator: true}),
-        new MenuItem('Web contrast',      {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
-        new MenuItem('',                  {separator: true}),
-        new MenuItem('Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))})]);
+        menuItemColor = new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey, random: e.altKey}))}),
+                        new MenuItem('',                  {separator: true}),
+                        new MenuItem('Valid sRGB',        {enabled: false, icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, {insert: e.shiftKey}))}),
+                        new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, {insert: e.shiftKey}))}),
+                        new MenuItem('',                  {separator: true}),
+                        new MenuItem('Web contrast',      {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
+                        new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
+                        new MenuItem('',                  {separator: true}),
+                        new MenuItem('Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))})]);
         
-        
+    menuColor.init = () => 
+    {
+        menuItemColor.setIcon(iconColor);
+    };
+
+    
     menuStyle = new Menu('Styles', true, false);
     menuStyle.addItems([
         menuItemStyleFill   = new MenuItem('Fill',          {icon: iconFill,       callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
