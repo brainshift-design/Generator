@@ -2270,31 +2270,20 @@ function setStylePaints(style, src)
 var notifyNotificationHandler = null;
 var notifyDequeueHandler = () => notifyNotificationHandler = null;
 
+var windowDock = ''; // '', 'maximize', 'top', 'left', 'right', 'bottom'
 
+function figRepositionWindow(x, y)
+{
+    x = Math.floor(Math.max(0, x ));
+    y = Math.floor(Math.max(0, y));
 
-//function figPositionWindow(x, y)
-//{
-    // x = Math.floor(Math.max(0, x ));
-    // y = Math.floor(Math.max(0, y));
+    figma.ui.reposition(x, y);
 
-    // figma.ui.resize(x, y);
+    figma.clientStorage.setAsync('windowX', x);
+    figma.clientStorage.setAsync('windowY', y);
 
-    
-    // figma.ui.close();
-    // figma.showUI(
-    //     __html__,
-    //     {
-    //         visible:     false,
-    //         themeColors: true,
-    //         position: {x: x, y: y}
-    //     });
-
-    // figma.clientStorage.setAsync('windowWidth',  x);
-    // figma.clientStorage.setAsync('windowHeight', y);
-
-
-//    figPostMessageToUI({cmd: 'uiEndPositionWindow'});
-//}
+    figPostMessageToUI({cmd: 'uiReturnFigRepositionWindow'});
+}
 
 
 

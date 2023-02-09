@@ -1433,23 +1433,15 @@ function setStylePaints(style, src) {
 }
 var notifyNotificationHandler = null;
 var notifyDequeueHandler = () => notifyNotificationHandler = null;
-//function figPositionWindow(x, y)
-//{
-// x = Math.floor(Math.max(0, x ));
-// y = Math.floor(Math.max(0, y));
-// figma.ui.resize(x, y);
-// figma.ui.close();
-// figma.showUI(
-//     __html__,
-//     {
-//         visible:     false,
-//         themeColors: true,
-//         position: {x: x, y: y}
-//     });
-// figma.clientStorage.setAsync('windowWidth',  x);
-// figma.clientStorage.setAsync('windowHeight', y);
-//    figPostMessageToUI({cmd: 'uiEndPositionWindow'});
-//}
+var windowDock = ''; // '', 'maximize', 'top', 'left', 'right', 'bottom'
+function figRepositionWindow(x, y) {
+    x = Math.floor(Math.max(0, x));
+    y = Math.floor(Math.max(0, y));
+    figma.ui.reposition(x, y);
+    figma.clientStorage.setAsync('windowX', x);
+    figma.clientStorage.setAsync('windowY', y);
+    figPostMessageToUI({ cmd: 'uiReturnFigRepositionWindow' });
+}
 function figResizeWindow(width, height) {
     width = Math.floor(Math.max(0, width));
     height = Math.floor(Math.max(0, height));
