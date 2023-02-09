@@ -21,21 +21,24 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const smallScrollGap =  6;
-const largeScrollGap = 14;
+const generatorVersion = 94;
 
-const MAX_INT32      = 2147483647;
 
-const NULL           = '';
-
-const TAB            = '  ';
-const NL             = '\n';
-
-const GENERATOR_LOGO = '◦ G •';
-const OBJECT_PREFIX  = 'G.';
-
-const nodeTag        = 'G_NODE';
-const connTag        = 'G_CONN';
+const smallScrollGap   =  6;
+const largeScrollGap   = 14;
+  
+const MAX_INT32        = 2147483647;
+  
+const NULL             = '';
+  
+const TAB              = '  ';
+const NL               = '\n';
+  
+const GENERATOR_LOGO   = '◦ G •';
+const OBJECT_PREFIX    = 'G.';
+  
+const nodeTag          = 'G_NODE';
+const connTag          = 'G_CONN';
 
 
 

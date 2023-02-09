@@ -1,13 +1,10 @@
 function initWhatsNewDialog()
 {
     initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);
-    chkHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', boolToString(!chkHideWhatsNew.checked)));
+    chkHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', generatorVersion));
 
 
-    whatsNewBack.addEventListener('pointerdown', e =>
-    {
-        e.preventDefault();
-    });
+    whatsNewBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
 
 
@@ -77,6 +74,9 @@ function initWhatsNewDialog()
         if (whatsNewScrollbarY.moving)
             updateWhatsNewScrollbar(e.clientY);
     });
+
+
+    whatsNewTitleText.innerHTML = 'Version ' + generatorVersion;
 }
 
 

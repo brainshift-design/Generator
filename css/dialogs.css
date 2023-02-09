@@ -451,15 +451,7 @@
 
 #whatsNewScrollbarY
 {
-    background-color: var(--figma-color-text-tertiary);
     width:            6px;
-    border-radius:    3px;
-    position:         absolute;
     z-index:          1;
-    display:          none;
     margin:           6px 0 18px 0;
 }
-
-
-.figma-light #whatsNewScrollbarY { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); }
-.figma-dark  #whatsNewScrollbarY { box-shadow: 0 0 0 1px rgba( 60,  60,  60, 0.25); }

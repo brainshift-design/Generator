@@ -166,14 +166,16 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    updateMenuItemDisplay(btnFlow .div,            settings.enableBetaFeatures);
-    updateMenuItemDisplay(btnShape.div,            settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnFlow .div,             settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnShape.div,             settings.enableBetaFeatures);
 
-    updateMenuItemDisplay(menuItemStyleFill  .div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(menuItemStyleStroke.div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(menuItemStyleSep1  .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemCorrectColor.div, settings.enableBetaFeatures);
 
-    updateMenuItemDisplay(menuItemSeries.div,      settings.enableBetaFeatures);    
+    updateMenuItemDisplay(menuItemStyleFill   .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemStyleStroke .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemStyleSep1   .div, settings.enableBetaFeatures);
+
+    updateMenuItemDisplay(menuItemSeries.div,       settings.enableBetaFeatures);    
 }
 
 

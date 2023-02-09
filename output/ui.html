@@ -633,18 +633,10 @@
 
 #whatsNewScrollbarY
 {
-    background-color: var(--figma-color-text-tertiary);
     width:            6px;
-    border-radius:    3px;
-    position:         absolute;
     z-index:          1;
-    display:          none;
     margin:           6px 0 18px 0;
 }
-
-
-.figma-light #whatsNewScrollbarY { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); }
-.figma-dark  #whatsNewScrollbarY { box-shadow: 0 0 0 1px rgba( 60,  60,  60, 0.25); }
 
 
 #loadingOverlay
@@ -2385,7 +2377,7 @@ a
 <div id='whatsNewDialog'>
     
     <div id='whatsNewTitle'>
-        <div id='whatsNewTitleText'>Version 94</div>
+        <div id='whatsNewTitleText'>Version _</div>
         <div class='panelButton dialogButtonClose' id='whatsNewClose' onclick='whatsNewClose.blur(); hideWhatsNewDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
@@ -2413,7 +2405,7 @@ a
                 <p><div id='chkHideWhatsNew'></div></p>
             </div>
         </div>
-        <div id='whatsNewScrollbarY'></div>
+        <div class='scrollbar' id='whatsNewScrollbarY'></div>
     </div>
 
 </div>
@@ -2610,21 +2602,24 @@ a
 
 
 
-const smallScrollGap =  6;
-const largeScrollGap = 14;
+const generatorVersion = 94;
 
-const MAX_INT32      = 2147483647;
 
-const NULL           = '';
-
-const TAB            = '  ';
-const NL             = '\n';
-
-const GENERATOR_LOGO = '◦ G •';
-const OBJECT_PREFIX  = 'G.';
-
-const nodeTag        = 'G_NODE';
-const connTag        = 'G_CONN';
+const smallScrollGap   =  6;
+const largeScrollGap   = 14;
+  
+const MAX_INT32        = 2147483647;
+  
+const NULL             = '';
+  
+const TAB              = '  ';
+const NL               = '\n';
+  
+const GENERATOR_LOGO   = '◦ G •';
+const OBJECT_PREFIX    = 'G.';
+  
+const nodeTag          = 'G_NODE';
+const connTag          = 'G_CONN';
 
 
 
@@ -13555,14 +13550,16 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    updateMenuItemDisplay(btnFlow .div,            settings.enableBetaFeatures);
-    updateMenuItemDisplay(btnShape.div,            settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnFlow .div,             settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnShape.div,             settings.enableBetaFeatures);
 
-    updateMenuItemDisplay(menuItemStyleFill  .div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(menuItemStyleStroke.div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(menuItemStyleSep1  .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemCorrectColor.div, settings.enableBetaFeatures);
 
-    updateMenuItemDisplay(menuItemSeries.div,      settings.enableBetaFeatures);    
+    updateMenuItemDisplay(menuItemStyleFill   .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemStyleStroke .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemStyleSep1   .div, settings.enableBetaFeatures);
+
+    updateMenuItemDisplay(menuItemSeries.div,       settings.enableBetaFeatures);    
 }
 
 
@@ -18480,21 +18477,24 @@ function convert2hclluv(fromColor)
 ////////////////////////////////////////////////////
 
 
-const smallScrollGap =  6;
-const largeScrollGap = 14;
+const generatorVersion = 94;
 
-const MAX_INT32      = 2147483647;
 
-const NULL           = '';
-
-const TAB            = '  ';
-const NL             = '\n';
-
-const GENERATOR_LOGO = '◦ G •';
-const OBJECT_PREFIX  = 'G.';
-
-const nodeTag        = 'G_NODE';
-const connTag        = 'G_CONN';
+const smallScrollGap   =  6;
+const largeScrollGap   = 14;
+  
+const MAX_INT32        = 2147483647;
+  
+const NULL             = '';
+  
+const TAB              = '  ';
+const NL               = '\n';
+  
+const GENERATOR_LOGO   = '◦ G •';
+const OBJECT_PREFIX    = 'G.';
+  
+const nodeTag          = 'G_NODE';
+const connTag          = 'G_CONN';
 
 
 
@@ -31049,14 +31049,16 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    updateMenuItemDisplay(btnFlow .div,            settings.enableBetaFeatures);
-    updateMenuItemDisplay(btnShape.div,            settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnFlow .div,             settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnShape.div,             settings.enableBetaFeatures);
 
-    updateMenuItemDisplay(menuItemStyleFill  .div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(menuItemStyleStroke.div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(menuItemStyleSep1  .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemCorrectColor.div, settings.enableBetaFeatures);
 
-    updateMenuItemDisplay(menuItemSeries.div,      settings.enableBetaFeatures);    
+    updateMenuItemDisplay(menuItemStyleFill   .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemStyleStroke .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemStyleSep1   .div, settings.enableBetaFeatures);
+
+    updateMenuItemDisplay(menuItemSeries.div,       settings.enableBetaFeatures);    
 }
 
 
@@ -32137,6 +32139,7 @@ var menuItemSeries;
 
 
 var menuItemColor;
+var menuItemCorrectColor;
 
 
 var menuItemStyleFill;
@@ -32191,7 +32194,7 @@ function initGeneratorMenus()
                                         new MenuItem('',                            {separator: true}),   
         menuItemShowDebugMenu         = new MenuItem('Show debug menu',             {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu        ); updateMenuItemShowDebugMenu();        }}),
                                         new MenuItem('',                            {separator: true}),   
-        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',        {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures); updateMenuItemEnableBetaFeatures();              }})]);
+        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',        {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures); updateMenuItemEnableBetaFeatures();            }})]);
 
     
     menuMainDebug = new Menu('Debug', false);
@@ -32329,15 +32332,15 @@ function initGeneratorMenus()
         
     menuColor = new Menu('Colors', true, false);
     menuColor.addItems([
-        menuItemColor = new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey, random: e.altKey}))}),
-                        new MenuItem('',                  {separator: true}),
-                        new MenuItem('Valid sRGB',        {enabled: false, icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, {insert: e.shiftKey}))}),
-                        new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, {insert: e.shiftKey}))}),
-                        new MenuItem('',                  {separator: true}),
-                        new MenuItem('Web contrast',      {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
-                        new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
-                        new MenuItem('',                  {separator: true}),
-                        new MenuItem('Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))})]);
+        menuItemColor        = new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey, random: e.altKey}))}),
+                               new MenuItem('',                  {separator: true}),
+                               new MenuItem('Valid sRGB',        {enabled: false, icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, {insert: e.shiftKey}))}),
+        menuItemCorrectColor = new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, {insert: e.shiftKey}))}),
+                               new MenuItem('',                  {separator: true}),
+                               new MenuItem('Web contrast',      {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
+                               new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
+                               new MenuItem('',                  {separator: true}),
+                               new MenuItem('Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))})]);
         
     menuColor.init = () => 
     {
@@ -52591,6 +52594,7 @@ document.addEventListener('pointerup', function(e)
 });
 
 
+
 var generatorStarted = false;
 
 
@@ -52606,7 +52610,7 @@ var genMessagePosted = false;
 //uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
-//uiSetLocalData('showWhatsNew', 'true');
+//uiSetLocalData('showWhatsNew', generatorVersion);
 //uiClearLocalData('showWhatsNew');
 
 //uiRemoveConnsToNodes(['num3']);
@@ -53326,7 +53330,7 @@ function uiReturnFigGetLocalData(msg)
 
         case 'showWhatsNew':
             if (  !msg.value
-                || parseBool(msg.value))
+                || parseFloat(msg.value) > generatorVersion)
                 showWhatsNewDialog();
 
             break;
@@ -55376,13 +55380,10 @@ function uiHideClearUndoWarning()
 function initWhatsNewDialog()
 {
     initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);
-    chkHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', boolToString(!chkHideWhatsNew.checked)));
+    chkHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', generatorVersion));
 
 
-    whatsNewBack.addEventListener('pointerdown', e =>
-    {
-        e.preventDefault();
-    });
+    whatsNewBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
 
 
@@ -55452,6 +55453,9 @@ function initWhatsNewDialog()
         if (whatsNewScrollbarY.moving)
             updateWhatsNewScrollbar(e.clientY);
     });
+
+
+    whatsNewTitleText.innerHTML = 'Version ' + generatorVersion;
 }
 
 

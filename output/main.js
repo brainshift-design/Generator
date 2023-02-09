@@ -17,6 +17,7 @@ function isNodeKey(key) { return isTagKey(key, nodeTag); }
 function isConnKey(key) { return isTagKey(key, connTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
+const generatorVersion = 94;
 const smallScrollGap = 6;
 const largeScrollGap = 14;
 const MAX_INT32 = 2147483647;

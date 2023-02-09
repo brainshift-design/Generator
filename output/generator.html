@@ -2,21 +2,24 @@
 
 
 
-const smallScrollGap =  6;
-const largeScrollGap = 14;
+const generatorVersion = 94;
 
-const MAX_INT32      = 2147483647;
 
-const NULL           = '';
-
-const TAB            = '  ';
-const NL             = '\n';
-
-const GENERATOR_LOGO = '◦ G •';
-const OBJECT_PREFIX  = 'G.';
-
-const nodeTag        = 'G_NODE';
-const connTag        = 'G_CONN';
+const smallScrollGap   =  6;
+const largeScrollGap   = 14;
+  
+const MAX_INT32        = 2147483647;
+  
+const NULL             = '';
+  
+const TAB              = '  ';
+const NL               = '\n';
+  
+const GENERATOR_LOGO   = '◦ G •';
+const OBJECT_PREFIX    = 'G.';
+  
+const nodeTag          = 'G_NODE';
+const connTag          = 'G_CONN';
 
 
 
@@ -10947,14 +10950,16 @@ function updateMenuItemShowBoolValues()
 
 function updateMenuItemEnableBetaFeatures()
 {
-    updateMenuItemDisplay(btnFlow .div,            settings.enableBetaFeatures);
-    updateMenuItemDisplay(btnShape.div,            settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnFlow .div,             settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnShape.div,             settings.enableBetaFeatures);
 
-    updateMenuItemDisplay(menuItemStyleFill  .div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(menuItemStyleStroke.div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(menuItemStyleSep1  .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemCorrectColor.div, settings.enableBetaFeatures);
 
-    updateMenuItemDisplay(menuItemSeries.div,      settings.enableBetaFeatures);    
+    updateMenuItemDisplay(menuItemStyleFill   .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemStyleStroke .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemStyleSep1   .div, settings.enableBetaFeatures);
+
+    updateMenuItemDisplay(menuItemSeries.div,       settings.enableBetaFeatures);    
 }
 
 

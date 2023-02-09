@@ -1,3 +1,4 @@
+
 var generatorStarted = false;
 
 
@@ -13,7 +14,7 @@ var genMessagePosted = false;
 //uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
-//uiSetLocalData('showWhatsNew', 'true');
+//uiSetLocalData('showWhatsNew', generatorVersion);
 //uiClearLocalData('showWhatsNew');
 
 //uiRemoveConnsToNodes(['num3']);
