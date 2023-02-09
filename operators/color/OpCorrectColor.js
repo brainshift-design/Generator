@@ -25,8 +25,8 @@ extends OpColorBase
     param2;
     param3;
 
-
     colorSpaceIndex = -1;
+
 
 
     constructor()
@@ -94,9 +94,10 @@ extends OpColorBase
 
 
         const valid = 
-            input.connected
-            ? input.node.valid
-            : !dataColorIsNaN(this.node._color);
+            (input.connected
+             ?  input.node.valid
+             : !dataColorIsNaN(this.node._color))
+            || !this.node.enabled;
 
 
         const paramIds = [];
@@ -117,6 +118,7 @@ extends OpColorBase
         if (this.node.param2    .input.connected || valid) request.push(...this.node.param2    .genRequest(gen));
         if (this.node.param3    .input.connected || valid) request.push(...this.node.param3    .genRequest(gen));
 
+        
         request.push(COLOR_VALUE, (
             valid
             ? ColorValue.fromDataColor(this.node._color)
@@ -145,9 +147,9 @@ extends OpColorBase
 
         endNodeProgress(this);
 
-        
+
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-}
+    }
 
 
 

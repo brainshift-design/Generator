@@ -4,11 +4,15 @@ extends GColorType
     input        = null;
      
     order        = null;
-         
     margin1      = null;
     margin2      = null;
     margin3      = null;
- 
+
+    // closestOrder = null;
+    // closest1     = null;
+    // closest2     = null;
+    // closest3     = null;
+
     corrections  = [];
 
 
@@ -57,18 +61,37 @@ extends GColorType
             const input = this.input.eval(parse).toValue();
 
 
+            // console.log('this.closestOrder =',   this.closestOrder);
+            // console.log('this.closest1     =',   this.closest1    );
+            // console.log('this.closest2     =',   this.closest2    );
+            // console.log('this.closest3     =',   this.closest3    );
+            // console.log('this.value =', this.value);
+
             if (   isValid(this.order  ) && this.order  .isValid()
                 && isValid(this.margin1) && this.margin1.isValid()
                 && isValid(this.margin2) && this.margin2.isValid()
                 && isValid(this.margin3) && this.margin3.isValid()
                 && isValid(this.value  ) && this.value  .isValid())
             {
-                genPushUpdateValue(parse, this.nodeId, 'order',   this.order  );
-                genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1);
-                genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2);
-                genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3);
-                genPushUpdateValue(parse, this.nodeId, 'value',   this.value  );
+                genPushUpdateValue(parse, this.nodeId, 'order'  , order     );
+                genPushUpdateValue(parse, this.nodeId, 'margin1', margin1   );
+                genPushUpdateValue(parse, this.nodeId, 'margin2', margin2   );
+                genPushUpdateValue(parse, this.nodeId, 'margin3', margin3   );
+                genPushUpdateValue(parse, this.nodeId, 'value'  , this.value);
             }
+            // else if (!this.options.enabled
+            //       && isValid(this.closestOrder)
+            //       && isValid(this.closest1)
+            //       && isValid(this.closest2)
+            //       && isValid(this.closest3)
+            //       && isValid(this.value) && this.value.isValid())
+            // {
+            //     genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(this.closestOrder));
+            //     genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(this.closest1    ));
+            //     genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(this.closest2    ));
+            //     genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(this.closest3    ));
+            //     genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+            // }
             else
             {
                 const rgb = input.toRgb();
@@ -85,8 +108,7 @@ extends GColorType
 
 
                 const
-            [ closestOklab,
-                closestOrder,
+              [ closestOrder,
                 closest1,
                 closest2,
                 closest3 ] = findCorrection(
@@ -101,7 +123,8 @@ extends GColorType
                      
                 //if (!stopGenerate)
                 //{
-                    if (closestOrder >= 0 && closestOrder < 6)
+                    if (   closestOrder >= 0 
+                        && closestOrder <  6)
                     {
                         this._color = correctColor(
                             inputColor,
@@ -110,7 +133,6 @@ extends GColorType
                             closest2,
                             closest3);
 
-                            
                         this.value = ColorValue.fromDataColor(this._color);
 
                         genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
@@ -174,7 +196,7 @@ function findCorrection(nodeId,
 
     let d = 1;
 
-    dLoop:
+    //dLoop:
     while (d > 1/1024)
     {
         //if (stopGenerate) break dLoop;
@@ -252,7 +274,6 @@ function findCorrection(nodeId,
 
 
     return [
-        closestOklab,
         closestOrder,
         closest1,
         closest2,
