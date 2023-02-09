@@ -369,6 +369,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();    break;
          
         case COLOR:                   node = new OpColor(options);      break;
+        case VALID_COLOR:             node = new OpValidColor();        break;
         case CORRECT_COLOR:           node = new OpCorrectColor();      break;
         case COLOR_CONTRAST:          node = new OpColorContrast();     break;
         case COLORBLIND:              node = new OpColorBlind();        break;

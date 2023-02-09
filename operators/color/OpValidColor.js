@@ -1,35 +1,15 @@
-class OpCorrectColor_Correction
-{
-    name; // 'H', 'C', or 'L'
-    max;
-    value;
-    
-    constructor(name, max, value = 0)//, locked = false)
-    {
-        this.name  = name;
-        this.max   = max;
-        this.value = value;
-    }
-}
-
-
-
-class   OpCorrectColor
+class   OpValidColor
 extends OpColorBase
 {
-    paramOrder;
-
-    param1;
-    param2;
-    param3;
+    paramQuality;
 
     corrections = [];
 
-
+    
 
     constructor()
     {
-        super(CORRECT_COLOR, 'corrected', 100, true);
+        super(VALID_COLOR, 'valid', 100, true);
 
 
         this.addInput(new Input(COLOR_TYPES));
@@ -38,18 +18,7 @@ extends OpColorBase
         this.alwaysSaveParams = true;
 
         
-        this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [0, 1, 2, 3, 4, 5], 2));
-        
-        this.paramOrder.addEventListener('change', () => this.updateCorrections());
-        
-        
-        this.addParam(this.param1 = new NumberParam('margin1', '', true, true, true, 0));
-        this.addParam(this.param2 = new NumberParam('margin2', '', true, true, true, 0));
-        this.addParam(this.param3 = new NumberParam('margin3', '', true, true, true, 0));
-        
-        this.param1.control.showNaNValueName = false;
-        this.param2.control.showNaNValueName = false;
-        this.param3.control.showNaNValueName = false;
+        this.addParam(this.paramQuality = new SelectParam('quality', '', false, true, false, ['simple', 'accurate'], 1));
 
 
         this.initCorrections('');
@@ -70,16 +39,15 @@ extends OpColorBase
             paramId: NULL });
 
 
-        const hasInputs =
-               this.node.paramOrder.input.connected
-            || this.node.param1    .input.connected
-            || this.node.param2    .input.connected
-            || this.node.param3    .input.connected;
+        // const hasInputs =
+        //        this.node.param1.input.connected
+        //     || this.node.param2.input.connected
+        //     || this.node.param3.input.connected;
 
-        const options = (hasInputs ? 1 : 0) << 20;
+        //const options = 0;//(hasInputs ? 1 : 0) << 20;
 
 
-        const [request, ignore] = this.node.genRequestStart(gen, options);
+        const [request, ignore] = this.node.genRequestStart(gen, 0);
         if (ignore) return request;
 
 
@@ -92,32 +60,15 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
 
+        request.push(...this.node.paramQuality.genRequest(gen));
+
+
         const valid = 
             (input.connected
              ?  input.node.valid
              : !dataColorIsNaN(this.node._color))
             || !this.node.enabled;
 
-
-        const paramIds = [];
-
-        for (const param of this.node.params)
-            if (      param.input 
-                   && param.input.connected
-                || valid)
-                paramIds.push(param.id);
-
-        paramIds.push('value');
-
-        request.push(paramIds.join(','));
-
-        
-        if (this.node.paramOrder.input.connected || valid) request.push(...this.node.paramOrder.genRequest(gen));
-        if (this.node.param1    .input.connected || valid) request.push(...this.node.param1    .genRequest(gen));
-        if (this.node.param2    .input.connected || valid) request.push(...this.node.param2    .genRequest(gen));
-        if (this.node.param3    .input.connected || valid) request.push(...this.node.param3    .genRequest(gen));
-
-        
         request.push(COLOR_VALUE, (
             valid
             ? ColorValue.fromDataColor(this.node._color)
@@ -152,20 +103,6 @@ extends OpColorBase
 
 
 
-    updateParams()
-    {
-        this.paramOrder.enableControlText(false);
-        this.param1    .enableControlText(false);
-        this.param2    .enableControlText(false);
-        this.param3    .enableControlText(false);
-
-        this.updateCorrections();
-
-        this.updateParamControls();
-    }
-
-
-
     updateHeader()
     {
         super.updateHeader();
@@ -183,21 +120,13 @@ extends OpColorBase
     initCorrections(colorSpace)
     {
         if (colorSpace == '')
-        {
-            this.paramOrder.setValue(NumberValue.NaN);
-            this.param1    .setValue(NumberValue.NaN);
-            this.param2    .setValue(NumberValue.NaN);
-            this.param3    .setValue(NumberValue.NaN);
-
             return;
-        }
 
 
         switch (colorSpace)
         {
         case 'hex':
         case 'rgb':
-            this.paramOrder.setOptions(makeOptions('RGB'));
             this.corrections = [
                 new OpCorrectColor_Correction('R', rgbFactor[0]),
                 new OpCorrectColor_Correction('G', rgbFactor[1]),
@@ -206,7 +135,6 @@ extends OpColorBase
             break;
 
         case 'hsv':
-            this.paramOrder.setOptions(makeOptions('HSV'));
             this.corrections = [
                 new OpCorrectColor_Correction('H', hs_Factor[0]/2),
                 new OpCorrectColor_Correction('S', hs_Factor[1]),
@@ -215,7 +143,6 @@ extends OpColorBase
             break;
 
         case 'hsl':
-            this.paramOrder.setOptions(makeOptions('HSL'));
             this.corrections = [
                 new OpCorrectColor_Correction('H', hs_Factor[0]/2),
                 new OpCorrectColor_Correction('S', hs_Factor[1]),
@@ -226,7 +153,6 @@ extends OpColorBase
         case 'hclokl':
         case 'hcllab':
         case 'hclluv':
-            this.paramOrder.setOptions(makeOptions('HCL'));
             this.corrections = [
                 new OpCorrectColor_Correction('H', hclFactor[0]/2),
                 new OpCorrectColor_Correction('C', hclFactor[1]),
@@ -236,7 +162,6 @@ extends OpColorBase
 
         case 'oklab': 
         case 'lab':
-            this.paramOrder.setOptions(makeOptions('Lab'));
             this.corrections = [
                 new OpCorrectColor_Correction('L', oppFactor[0]),
                 new OpCorrectColor_Correction('a', oppFactor[1]),
@@ -245,7 +170,6 @@ extends OpColorBase
             break;
 
         case 'luv':
-            this.paramOrder.setOptions(makeOptions('Luv'));
             this.corrections = [
                 new OpCorrectColor_Correction('L', oppFactor[0]),
                 new OpCorrectColor_Correction('u', oppFactor[1]),
@@ -260,21 +184,6 @@ extends OpColorBase
     updateCorrections()
     {
         this.updateColorSpace();
-
-        if (this.paramOrder.value.isValid())
-        {
-            const [i1, i2, i3] = getCorrectionsInOrder(this.paramOrder.value.value);
-
-            this.updateMargin(this.param1, this.corrections[i1]);
-            this.updateMargin(this.param2, this.corrections[i2]);
-            this.updateMargin(this.param3, this.corrections[i3]);
-        }
-        else
-        {
-            this.resetMargin(this.param1);
-            this.resetMargin(this.param2);
-            this.resetMargin(this.param3);
-        }
     }
 
 
@@ -283,29 +192,6 @@ extends OpColorBase
     {
         if (dataColorIsValid(this._color))
             this.initCorrections(this._color[0]);
-    }
-
-
-
-    updateMargin(margin, correction)
-    {
-        const correctionName = '<span style="position: relative; top: -1px; font-weight: 200;">±</span>&thinsp;' + correction.name;
-
-        margin.setName(correctionName, false);
-        margin.control.name = correctionName;
-
-        margin.control.setMin(0);
-        margin.control.setMax(correction.max);
-    }
-
-
-
-    resetMargin(margin)
-    {
-        margin.setName('', false);
-        margin.control.name = '';
-        margin.control.setMin(0);
-        margin.control.setMax(Number.MAX_SAFE_INTEGER);
     }
 
 
@@ -338,17 +224,4 @@ extends OpColorBase
 
         super.loadParams(_node, pasting);
     }
-}
-
-
-
-function makeOptions(c)
-{
-    return ([
-        c[0]+', '+c[1]+', '+c[2], 
-        c[1]+', '+c[0]+', '+c[2], 
-        c[1]+', '+c[2]+', '+c[0], 
-        c[0]+', '+c[2]+', '+c[1], 
-        c[2]+', '+c[0]+', '+c[1], 
-        c[2]+', '+c[1]+', '+c[0]]);
 }

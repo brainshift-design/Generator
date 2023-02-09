@@ -5703,10 +5703,19 @@ function logReqColor(col, nInputs, parse)
 
 
 
-function logReqColorInterpolate(lerp, nInputs, parse)
+function logReqValidColor(val, nInputs, parse)
 {
-    parse.log += parse.tab + COLOR_INTERPOLATE;
-    parse.log += logReqNodeId(lerp);
+    parse.log += parse.tab + VALID_COLOR;
+    parse.log += logReqNodeId(val);
+    parse.log += ' ' + nInputs;
+}
+
+
+
+function logReqCorrectColor(corr, nInputs, parse)
+{
+    parse.log += parse.tab + CORRECT_COLOR;
+    parse.log += logReqNodeId(corr);
     parse.log += ' ' + nInputs;
 }
 
@@ -5732,12 +5741,13 @@ function logReqColorBlind(cb, parse)
 
 
 
-function logReqCorrectColor(val, nInputs, parse)
+function logReqColorInterpolate(lerp, nInputs, parse)
 {
-    parse.log += parse.tab + CORRECT_COLOR;
-    parse.log += logReqNodeId(val);
+    parse.log += parse.tab + COLOR_INTERPOLATE;
+    parse.log += logReqNodeId(lerp);
     parse.log += ' ' + nInputs;
 }
+
 
 
 function logReqFillValue(fill, parse)
@@ -6127,10 +6137,11 @@ const STRING_TYPES =
 
 const COLOR_VALUE       = 'COL#';  
 const COLOR             = 'COL';   
-const COLOR_INTERPOLATE = 'CLERP'; 
+const VALID_COLOR       = 'CVAL';  
 const CORRECT_COLOR     = 'CCOR';  
 const COLOR_CONTRAST    = 'CCNT';  
 const COLORBLIND        = 'BLND';  
+const COLOR_INTERPOLATE = 'CLERP'; 
 
 
 const COLOR_TYPES =
@@ -10948,750 +10959,6 @@ extends GNumberType
 
 
 
-class GColorType
-extends GOperator
-{
-    value;
-    
-
-
-    copyBase(src)
-    {
-        super.copyBase(src);
-
-        if (src.value) this.value = src.value.copy();
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
-
-
-class GColor
-extends GColorType
-{
-    input   = null;
-
-    space   = null;
-    c1      = null;
-    c2      = null;
-    c3      = null;
-
-    convert = null;
-
-    hasInputs;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(COLOR, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GColor(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        copy.space = this.space.copy();
-
-        if (this.c1) copy.c1 = this.c1.copy();
-        if (this.c2) copy.c2 = this.c2.copy();
-        if (this.c3) copy.c3 = this.c3.copy();
-
-        if (this.convert) 
-            copy.convert = this.convert.copy();
-
-        return copy;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-            
-        const space = this.space ? this.space.eval(parse).toValue().toInteger() : null; 
-        const c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
-        const c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
-        const c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
-
-
-        if (this.input)
-        {
-            const input = this.input.eval(parse).toValue();
-
-            
-            if (input.isValid())
-            {
-                this.value = new ColorValue(
-                    input.space,
-                    input.c1, 
-                    input.c2, 
-                    input.c3);
-                    
-
-                const fromSpaceIndex = input.space.value;
-
-                const toSpaceIndex = Math.min(Math.max(
-                    0,
-                    Math.round(space.value)), // round because a value can come in with decimals (TODO fix this)
-                    colorSpaceCount(parse)-1);
-
-
-                this.convertColor(
-                    this.value,
-                    colorSpace(fromSpaceIndex), 
-                    colorSpace(  toSpaceIndex));
-
-                this.value.space.value = toSpaceIndex;
-
-                
-                // fake disabled status by checking for it during param eval (easiest way to do it)
-
-                if (this.options.enabled)
-                {
-                    if (c1) this.value.c1 = c1;
-                    if (c2) this.value.c2 = c2;
-                    if (c3) this.value.c3 = c3;
-                }
-            }
-            else
-                this.value = ColorValue.NaN;
-        }
-        else
-        {
-            this.value = new ColorValue(space, c1, c2, c3);
-
-            const toSpaceIndex = Math.min(Math.max(
-                0,
-                Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
-                colorSpaceCount(parse)-1);
-
-            this.value.space.value = toSpaceIndex;
-
-            if (    this.convert
-                &&  this.convert.isValid()
-                &&  this.convert.value > -1
-                &&  this.value.isValid()
-                && !this.hasInputs)
-            {
-                this.convert.eval(parse);
-
-                this.convertColor(
-                    this.value,
-                    colorSpace(this.convert.value), 
-                    colorSpace(toSpaceIndex));
-            }
-        }
-
-
-        if (!this.value.space.isValid())
-            this.value = new ColorValue(
-                this.space.toValue(),
-                NumberValue.NaN,
-                NumberValue.NaN,
-                NumberValue.NaN);
-
-            
-        // if (this.options.enabled)
-        // {
-            genPushUpdateValue(parse, this.nodeId, 'space', this.value.space, true);
-            genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1         );
-            genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2         );
-            genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3         );
-        // }
-
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    convertColor(color, fromSpace, toSpace)
-    {
-        let col = [
-            fromSpace, 
-            getNormalColorValue(color.c1.value, fromSpace, 0),
-            getNormalColorValue(color.c2.value, fromSpace, 1),
-            getNormalColorValue(color.c3.value, fromSpace, 2)];
-
-        col = getScaledDataColor(convertDataColorToSpace(col, toSpace));
-
-        color.c1.value = col[1];
-        color.c2.value = col[2];
-        color.c3.value = col[3];
-    }
-
-
-
-    isValid()
-    {
-        return this.space.isValid()
-            && this.c1   .isValid()
-            && this.c2   .isValid()
-            && this.c3   .isValid();
-    }
-
-
-
-    // toValue()
-    // {
-    //     return new ColorValue(
-    //         this.space ? this.space.toValue() : NumberValue.NaN,
-    //         this.c1    ? this.c1   .toValue() : NumberValue.NaN,
-    //         this.c2    ? this.c2   .toValue() : NumberValue.NaN,
-    //         this.c3    ? this.c3   .toValue() : NumberValue.NaN);
-    // }
-}
-
-
-class GColorInterpolate
-extends GColorType
-{
-    input0 = null;
-    input1 = null;
-
-    space;
-    amount;
-    gamma;
-
-
-    constructor(nodeId, options)
-    {
-        super(COLOR_INTERPOLATE, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GColorInterpolate(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
-
-        copy.space  = this.space .copy();
-        copy.amount = this.amount.copy();
-        copy.gamma  = this.gamma .copy();
-
-        return copy;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const amount = this.amount.eval(parse).toValue();
-        const space  = this.space .eval(parse).toValue().toInteger();
-        const gamma  = this.gamma .eval(parse).toValue();
-
-
-        if (   this.input0 
-            && this.input1)
-        {
-            const input0 = this.input0.eval(parse).toValue();
-            const input1 = this.input1.eval(parse).toValue();
-
-            console.assert(
-                amount.type == NUMBER_VALUE, 
-                'this.result.type must be NUMBER_VALUE');
-
-            const f = amount.value / 100;
-
-
-            const spaceIndex = Math.min(Math.max(0, space.value), colorSpaceCount()-1);
-            const gammaValue = Math.max(0.0001, gamma.value);
-
-            const _space = colorSpace(spaceIndex);
-
-            const col = this.interpolate(
-                spaceIndex,
-                convertDataColorToSpace(input0.toDataColor(), _space),
-                convertDataColorToSpace(input1.toDataColor(), _space),
-                f,
-                gammaValue);
-
-
-            // allow interpolating invalid colors,
-            // so no valid color check here
-
-            this.value = ColorValue.fromDataColor(col, spaceIndex);
-        }
-
-        else if (this.input0) 
-            this.value = this.input0.eval(parse).toValue();
-
-        else if (this.input1) 
-            this.value = this.input1.eval(parse).toValue();
-            
-        else 
-            this.value = ColorValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'space',  space );
-        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
-        genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-
-
-        this.validate();
-        
-        return this;
-    }
-
-
-
-    interpolate(space, col0, col1, f, gamma)
-    {
-        if (space <= 1) // hex, rgb
-        {
-            const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
-            const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
-            const b0 = Math.pow(col0[3], gamma);  const b1 = Math.pow(col1[3], gamma);
-
-            gamma = Math.max(0.01, gamma);
-
-            return [
-                colorSpace(space),
-                Math.pow(lerp(r0, r1, f), 1/gamma),
-                Math.pow(lerp(g0, g1, f), 1/gamma),
-                Math.pow(lerp(b0, b1, f), 1/gamma) ];
-        }
-        else // hsv/hsl/hcl
-        {
-            const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
-            const c0 = col0[2];        const c1 = col1[2];
-            const l0 = col0[3];        const l1 = col1[3];
-
-            return [
-                colorSpace(space),
-                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
-                lerp(c0, c1, f),
-                lerp(l0, l1, f) ];
-        }
-    }
-}
-
-
-
-class GColorContrast
-extends GColorType
-{
-    input0 = null;
-    input1 = null;
-
-    standard;
-    contrast;
-
-
-    constructor(nodeId, options)
-    {
-        super(COLOR_CONTRAST, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GColorContrast(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
-
-        copy.standard = this.standard.copy();
-        copy.contrast = this.contrast.copy();
-
-        return copy;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const standard = this.standard.eval(parse).toValue().toInteger();
-
-        
-        if (standard.isValid())
-            standard.value = Math.min(Math.max(0, standard.value), 1);
-
-
-        if (   this.input0 
-            && this.input1)
-        {
-            const input0 = this.input0.eval(parse).toValue();
-            const input1 = this.input1.eval(parse).toValue();
-
-
-            if (   input0.isValid()
-                && input1.isValid())
-            {
-                this.value = input1;
-                
-                if (   dataColorIsValid(input0.toDataColor())
-                    && dataColorIsValid(input1.toDataColor()))
-                {
-                    if (standard.value == 0)
-                    {
-                        const value = getContrastRatio2(input0.toRgb(), input1.toRgb());
-                        this.contrast = new NumberValue(value, 2);
-                    }
-                    else
-                    {
-                        const value = getContrastRatio3(input0.toRgb(), input1.toRgb());
-                        this.contrast = new NumberValue(Math.abs(value), 1);
-                    }
-                }
-                else
-                    this.contrast = NumberValue.NaN;
-            }
-            else
-            {
-                this.value    = ColorValue.NaN;
-                this.contrast = NumberValue.NaN;
-            }
-
-
-            genPushUpdateValue(parse, this.nodeId, 'text', input0);
-            genPushUpdateValue(parse, this.nodeId, 'back', input1);
-        }
-
-        else if (this.input0) 
-        {
-            const input0 = this.input0.eval(parse).toValue();
-
-            genPushUpdateValue(parse, this.nodeId, 'text', input0.isValid() ? input0 : ColorValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
-
-            this.value    = ColorValue.NaN;
-            this.contrast = NumberValue.NaN;
-        }
-
-        else if (this.input1) 
-        {
-            const input1 = this.input1.eval(parse).toValue();
-
-            genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'back', input1.isValid() ? input1 : ColorValue.NaN);
-
-            this.value    = input1.isValid() ? input1 : ColorValue.NaN;
-            this.contrast = NumberValue.NaN;
-        }
-
-        else
-        {
-            this.value    = ColorValue.NaN;
-            this.contrast = NumberValue.NaN;
-
-            genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
-        }
-        
-
-
-        genPushUpdateValue(parse, this.nodeId, 'standard', standard);
-        genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GColorBlind
-extends GColorType
-{
-    input = null;
-
-    l;
-    m;
-    s;
-
-
-    constructor(nodeId, options)
-    {
-        super(COLORBLIND, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GColorBlind(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        copy.l = this.l.copy();
-        copy.m = this.m.copy();
-        copy.s = this.s.copy();
-
-        return copy;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const l = this.l.eval(parse).toValue();        
-        const m = this.m.eval(parse).toValue();
-        const s = this.s.eval(parse).toValue();
-
-
-        if (this.input)
-        {
-            const input = this.input.eval(parse).toValue();
-            const rgb   = input.toRgb();
-
-            const rgbCb = rgb2colorblind(
-                rgb,
-                l.value / 2,
-                m.value / 2,
-                s.value / 2);
-
-            if (   !rgbIsNaN(rgb)
-                && !rgbIsNaN(rgbCb))
-            {
-                const validRgbCb = rgbCb;
-            
-                const validCol = convertDataColorToSpace(
-                    rgb2dataColor(validRgbCb), 
-                    colorSpace(input.space.value));
-
-                this.value = ColorValue.fromDataColor(validCol);
-            }
-            else
-                this.value = ColorValue.NaN;
-        }
-        else
-            this.value = ColorValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'l',     l);
-        genPushUpdateValue(parse, this.nodeId, 'm',     m);
-        genPushUpdateValue(parse, this.nodeId, 's',     s);
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GCorrectColor
-extends GColorType
-{
-    input        = null;
-     
-    order        = null;
-    margin1      = null;
-    margin2      = null;
-    margin3      = null;
-
-    // closestOrder = null;
-    // closest1     = null;
-    // closest2     = null;
-    // closest3     = null;
-
-    corrections  = [];
-
-
-
-    constructor(nodeId, options)
-    {
-        super(CORRECT_COLOR, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GCorrectColor(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.order  ) copy.order   = this.order  .copy();
-        if (this.margin1) copy.margin1 = this.margin1.copy();
-        if (this.margin2) copy.margin2 = this.margin2.copy();
-        if (this.margin3) copy.margin3 = this.margin3.copy();
-        if (this.value  ) copy.value   = this.value  .copy();
-
-        return copy;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
-        const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
-        const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
-        const margin3 = this.margin3 ? this.margin3.eval(parse).toValue()             : null;
-
-
-        if (this.input)
-        {
-            const input = this.input.eval(parse).toValue();
-
-
-            // console.log('this.closestOrder =',   this.closestOrder);
-            // console.log('this.closest1     =',   this.closest1    );
-            // console.log('this.closest2     =',   this.closest2    );
-            // console.log('this.closest3     =',   this.closest3    );
-            // console.log('this.value =', this.value);
-
-            if (   isValid(this.order  ) && this.order  .isValid()
-                && isValid(this.margin1) && this.margin1.isValid()
-                && isValid(this.margin2) && this.margin2.isValid()
-                && isValid(this.margin3) && this.margin3.isValid()
-                && isValid(this.value  ) && this.value  .isValid())
-            {
-                genPushUpdateValue(parse, this.nodeId, 'order'  , order     );
-                genPushUpdateValue(parse, this.nodeId, 'margin1', margin1   );
-                genPushUpdateValue(parse, this.nodeId, 'margin2', margin2   );
-                genPushUpdateValue(parse, this.nodeId, 'margin3', margin3   );
-                genPushUpdateValue(parse, this.nodeId, 'value'  , this.value);
-            }
-            // else if (!this.options.enabled
-            //       && isValid(this.closestOrder)
-            //       && isValid(this.closest1)
-            //       && isValid(this.closest2)
-            //       && isValid(this.closest3)
-            //       && isValid(this.value) && this.value.isValid())
-            // {
-            //     genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(this.closestOrder));
-            //     genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(this.closest1    ));
-            //     genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(this.closest2    ));
-            //     genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(this.closest3    ));
-            //     genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            // }
-            else
-            {
-                const rgb = input.toRgb();
-                
-                if (!rgbIsOk(rgb))
-                    genQueueMessageToUI(
-                    {
-                        cmd:   'uiInitNodeProgress',
-                        nodeId: this.nodeId
-                    });
-
-
-                const inputColor = input.toDataColor();
-
-
-                const
-              [ closestOrder,
-                closest1,
-                closest2,
-                closest3 ] = findCorrection(
-                    this.nodeId,
-                    inputColor, 
-                    order, margin1, margin2, margin3, 
-                    this.order   != null,
-                    this.margin1 != null, 
-                    this.margin2 != null, 
-                    this.margin3 != null); 
-
-                     
-                //if (!stopGenerate)
-                //{
-                    if (   closestOrder >= 0 
-                        && closestOrder <  6)
-                    {
-                        this._color = correctColor(
-                            inputColor,
-                            closestOrder,
-                            closest1,
-                            closest2,
-                            closest3);
-
-                        this.value = ColorValue.fromDataColor(this._color);
-
-                        genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                        genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
-                        genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
-                        genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
-                        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-                    }
-                    else
-                    {
-                        this.value = ColorValue.NaN;
-
-                        genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
-                    }
-                //}
-            }
-        }
-        else
-        {
-            this.value = ColorValue.NaN;
-
-            genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
-        }
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
 function findCorrection(nodeId,
                         color,
                         order,       margin1, margin2, margin3,
@@ -12141,6 +11408,852 @@ function reorderCorrection(closestOrder,
         closestOrder,
         c1.closest, c2.closest, c3.closest,
         c1.locked,  c2.locked,  c3.locked ];
+}
+
+
+
+class GColorType
+extends GOperator
+{
+    value;
+    
+
+
+    copyBase(src)
+    {
+        super.copyBase(src);
+
+        if (src.value) this.value = src.value.copy();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+class GColor
+extends GColorType
+{
+    input   = null;
+
+    space   = null;
+    c1      = null;
+    c2      = null;
+    c3      = null;
+
+    convert = null;
+
+    hasInputs;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColor(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.space = this.space.copy();
+
+        if (this.c1) copy.c1 = this.c1.copy();
+        if (this.c2) copy.c2 = this.c2.copy();
+        if (this.c3) copy.c3 = this.c3.copy();
+
+        if (this.convert) 
+            copy.convert = this.convert.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const space = this.space ? this.space.eval(parse).toValue().toInteger() : null; 
+        const c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
+        const c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
+        const c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
+
+
+        if (this.input)
+        {
+            const input = this.input.eval(parse).toValue();
+
+            
+            if (input.isValid())
+            {
+                this.value = new ColorValue(
+                    input.space,
+                    input.c1, 
+                    input.c2, 
+                    input.c3);
+                    
+
+                const fromSpaceIndex = input.space.value;
+
+                const toSpaceIndex = Math.min(Math.max(
+                    0,
+                    Math.round(space.value)), // round because a value can come in with decimals (TODO fix this)
+                    colorSpaceCount(parse)-1);
+
+
+                this.convertColor(
+                    this.value,
+                    colorSpace(fromSpaceIndex), 
+                    colorSpace(  toSpaceIndex));
+
+                this.value.space.value = toSpaceIndex;
+
+                
+                // fake disabled status by checking for it during param eval (easiest way to do it)
+
+                if (this.options.enabled)
+                {
+                    if (c1) this.value.c1 = c1;
+                    if (c2) this.value.c2 = c2;
+                    if (c3) this.value.c3 = c3;
+                }
+            }
+            else
+                this.value = ColorValue.NaN;
+        }
+        else
+        {
+            this.value = new ColorValue(space, c1, c2, c3);
+
+            const toSpaceIndex = Math.min(Math.max(
+                0,
+                Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
+                colorSpaceCount(parse)-1);
+
+            this.value.space.value = toSpaceIndex;
+
+            if (    this.convert
+                &&  this.convert.isValid()
+                &&  this.convert.value > -1
+                &&  this.value.isValid()
+                && !this.hasInputs)
+            {
+                this.convert.eval(parse);
+
+                this.convertColor(
+                    this.value,
+                    colorSpace(this.convert.value), 
+                    colorSpace(toSpaceIndex));
+            }
+        }
+
+
+        if (!this.value.space.isValid())
+            this.value = new ColorValue(
+                this.space.toValue(),
+                NumberValue.NaN,
+                NumberValue.NaN,
+                NumberValue.NaN);
+
+            
+        // if (this.options.enabled)
+        // {
+            genPushUpdateValue(parse, this.nodeId, 'space', this.value.space, true);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1         );
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2         );
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3         );
+        // }
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    convertColor(color, fromSpace, toSpace)
+    {
+        let col = [
+            fromSpace, 
+            getNormalColorValue(color.c1.value, fromSpace, 0),
+            getNormalColorValue(color.c2.value, fromSpace, 1),
+            getNormalColorValue(color.c3.value, fromSpace, 2)];
+
+        col = getScaledDataColor(convertDataColorToSpace(col, toSpace));
+
+        color.c1.value = col[1];
+        color.c2.value = col[2];
+        color.c3.value = col[3];
+    }
+
+
+
+    isValid()
+    {
+        return this.space.isValid()
+            && this.c1   .isValid()
+            && this.c2   .isValid()
+            && this.c3   .isValid();
+    }
+
+
+
+    // toValue()
+    // {
+    //     return new ColorValue(
+    //         this.space ? this.space.toValue() : NumberValue.NaN,
+    //         this.c1    ? this.c1   .toValue() : NumberValue.NaN,
+    //         this.c2    ? this.c2   .toValue() : NumberValue.NaN,
+    //         this.c3    ? this.c3   .toValue() : NumberValue.NaN);
+    // }
+}
+
+
+class GValidColor
+extends GColorType
+{
+    input        = null;
+     
+    quality      = null;
+
+    corrections  = [];
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VALID_COLOR, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GValidColor(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.quality) copy.quality = this.quality.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const quality = this.quality ? this.quality.eval(parse).toValue().toInteger() : null;
+
+
+        if (this.input)
+        {
+            const input = this.input.eval(parse).toValue();
+
+
+            if (   !isValid(this.value) 
+                || !this.value.isValid())
+            {
+                const rgb = input.toRgb();
+
+                if (quality.value == 0)
+                {
+                    console.log('rgb =', rgb);
+                    rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
+                    rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
+                    rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
+                    
+                    this.value = ColorValue.fromRgb(rgb);
+                }
+                else
+                {
+                    if (!rgbIsOk(rgb))
+                        genQueueMessageToUI(
+                        {
+                            cmd:   'uiInitNodeProgress',
+                            nodeId: this.nodeId
+                        });
+
+
+                    const inputColor = input.toDataColor();
+
+
+                    const
+                [ closestOrder,
+                    closest1,
+                    closest2,
+                    closest3 ] = findCorrection(
+                        this.nodeId,
+                        inputColor, 
+                        quality, null,  null,  null, 
+                        false,   false, false, false); 
+
+                        
+                    //if (!stopGenerate)
+                    //{
+                        if (   closestOrder >= 0 
+                            && closestOrder <  6)
+                        {
+                            this._color = correctColor(
+                                inputColor,
+                                closestOrder,
+                                closest1,
+                                closest2,
+                                closest3);
+
+                            this.value = ColorValue.fromDataColor(this._color);
+                        }
+                        else
+                        {
+                            this.value = ColorValue.NaN;
+                        }
+                    //}
+                }
+            }
+        }
+        else
+        {
+            this.value = ColorValue.NaN;
+        }
+
+
+        genPushUpdateValue(parse, this.nodeId, 'quality', quality);
+        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GCorrectColor
+extends GColorType
+{
+    input        = null;
+     
+    order        = null;
+    margin1      = null;
+    margin2      = null;
+    margin3      = null;
+
+    corrections  = [];
+
+
+
+    constructor(nodeId, options)
+    {
+        super(CORRECT_COLOR, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCorrectColor(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.order  ) copy.order   = this.order  .copy();
+        if (this.margin1) copy.margin1 = this.margin1.copy();
+        if (this.margin2) copy.margin2 = this.margin2.copy();
+        if (this.margin3) copy.margin3 = this.margin3.copy();
+        if (this.value  ) copy.value   = this.value  .copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
+        const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
+        const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
+        const margin3 = this.margin3 ? this.margin3.eval(parse).toValue()             : null;
+
+
+        if (this.input)
+        {
+            const input = this.input.eval(parse).toValue();
+
+
+            if (   isValid(this.order  ) && this.order  .isValid()
+                && isValid(this.margin1) && this.margin1.isValid()
+                && isValid(this.margin2) && this.margin2.isValid()
+                && isValid(this.margin3) && this.margin3.isValid()
+                && isValid(this.value  ) && this.value  .isValid())
+            {
+                genPushUpdateValue(parse, this.nodeId, 'order'  , order     );
+                genPushUpdateValue(parse, this.nodeId, 'margin1', margin1   );
+                genPushUpdateValue(parse, this.nodeId, 'margin2', margin2   );
+                genPushUpdateValue(parse, this.nodeId, 'margin3', margin3   );
+                genPushUpdateValue(parse, this.nodeId, 'value'  , this.value);
+            }
+            else
+            {
+                const rgb = input.toRgb();
+                
+                if (!rgbIsOk(rgb))
+                    genQueueMessageToUI(
+                    {
+                        cmd:   'uiInitNodeProgress',
+                        nodeId: this.nodeId
+                    });
+
+
+                const inputColor = input.toDataColor();
+
+
+                const
+              [ closestOrder,
+                closest1,
+                closest2,
+                closest3 ] = findCorrection(
+                    this.nodeId,
+                    inputColor, 
+                    order, margin1, margin2, margin3, 
+                    this.order   != null,
+                    this.margin1 != null, 
+                    this.margin2 != null, 
+                    this.margin3 != null); 
+
+                     
+                //if (!stopGenerate)
+                //{
+                    if (   closestOrder >= 0 
+                        && closestOrder <  6)
+                    {
+                        this._color = correctColor(
+                            inputColor,
+                            closestOrder,
+                            closest1,
+                            closest2,
+                            closest3);
+
+                        this.value = ColorValue.fromDataColor(this._color);
+
+                        genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
+                        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+                    }
+                    else
+                    {
+                        this.value = ColorValue.NaN;
+
+                        genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+                    }
+                //}
+            }
+        }
+        else
+        {
+            this.value = ColorValue.NaN;
+
+            genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+        }
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GColorContrast
+extends GColorType
+{
+    input0 = null;
+    input1 = null;
+
+    standard;
+    contrast;
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_CONTRAST, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColorContrast(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
+
+        copy.standard = this.standard.copy();
+        copy.contrast = this.contrast.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const standard = this.standard.eval(parse).toValue().toInteger();
+
+        
+        if (standard.isValid())
+            standard.value = Math.min(Math.max(0, standard.value), 1);
+
+
+        if (   this.input0 
+            && this.input1)
+        {
+            const input0 = this.input0.eval(parse).toValue();
+            const input1 = this.input1.eval(parse).toValue();
+
+
+            if (   input0.isValid()
+                && input1.isValid())
+            {
+                this.value = input1;
+                
+                if (   dataColorIsValid(input0.toDataColor())
+                    && dataColorIsValid(input1.toDataColor()))
+                {
+                    if (standard.value == 0)
+                    {
+                        const value = getContrastRatio2(input0.toRgb(), input1.toRgb());
+                        this.contrast = new NumberValue(value, 2);
+                    }
+                    else
+                    {
+                        const value = getContrastRatio3(input0.toRgb(), input1.toRgb());
+                        this.contrast = new NumberValue(Math.abs(value), 1);
+                    }
+                }
+                else
+                    this.contrast = NumberValue.NaN;
+            }
+            else
+            {
+                this.value    = ColorValue.NaN;
+                this.contrast = NumberValue.NaN;
+            }
+
+
+            genPushUpdateValue(parse, this.nodeId, 'text', input0);
+            genPushUpdateValue(parse, this.nodeId, 'back', input1);
+        }
+
+        else if (this.input0) 
+        {
+            const input0 = this.input0.eval(parse).toValue();
+
+            genPushUpdateValue(parse, this.nodeId, 'text', input0.isValid() ? input0 : ColorValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
+
+            this.value    = ColorValue.NaN;
+            this.contrast = NumberValue.NaN;
+        }
+
+        else if (this.input1) 
+        {
+            const input1 = this.input1.eval(parse).toValue();
+
+            genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'back', input1.isValid() ? input1 : ColorValue.NaN);
+
+            this.value    = input1.isValid() ? input1 : ColorValue.NaN;
+            this.contrast = NumberValue.NaN;
+        }
+
+        else
+        {
+            this.value    = ColorValue.NaN;
+            this.contrast = NumberValue.NaN;
+
+            genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
+        }
+        
+
+
+        genPushUpdateValue(parse, this.nodeId, 'standard', standard);
+        genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GColorBlind
+extends GColorType
+{
+    input = null;
+
+    l;
+    m;
+    s;
+
+
+    constructor(nodeId, options)
+    {
+        super(COLORBLIND, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColorBlind(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.l = this.l.copy();
+        copy.m = this.m.copy();
+        copy.s = this.s.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const l = this.l.eval(parse).toValue();        
+        const m = this.m.eval(parse).toValue();
+        const s = this.s.eval(parse).toValue();
+
+
+        if (this.input)
+        {
+            const input = this.input.eval(parse).toValue();
+            const rgb   = input.toRgb();
+
+            const rgbCb = rgb2colorblind(
+                rgb,
+                l.value / 2,
+                m.value / 2,
+                s.value / 2);
+
+            if (   !rgbIsNaN(rgb)
+                && !rgbIsNaN(rgbCb))
+            {
+                const validRgbCb = rgbCb;
+            
+                const validCol = convertDataColorToSpace(
+                    rgb2dataColor(validRgbCb), 
+                    colorSpace(input.space.value));
+
+                this.value = ColorValue.fromDataColor(validCol);
+            }
+            else
+                this.value = ColorValue.NaN;
+        }
+        else
+            this.value = ColorValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'l',     l);
+        genPushUpdateValue(parse, this.nodeId, 'm',     m);
+        genPushUpdateValue(parse, this.nodeId, 's',     s);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GColorInterpolate
+extends GColorType
+{
+    input0 = null;
+    input1 = null;
+
+    space;
+    amount;
+    gamma;
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_INTERPOLATE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColorInterpolate(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
+
+        copy.space  = this.space .copy();
+        copy.amount = this.amount.copy();
+        copy.gamma  = this.gamma .copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const amount = this.amount.eval(parse).toValue();
+        const space  = this.space .eval(parse).toValue().toInteger();
+        const gamma  = this.gamma .eval(parse).toValue();
+
+
+        if (   this.input0 
+            && this.input1)
+        {
+            const input0 = this.input0.eval(parse).toValue();
+            const input1 = this.input1.eval(parse).toValue();
+
+            console.assert(
+                amount.type == NUMBER_VALUE, 
+                'this.result.type must be NUMBER_VALUE');
+
+            const f = amount.value / 100;
+
+
+            const spaceIndex = Math.min(Math.max(0, space.value), colorSpaceCount()-1);
+            const gammaValue = Math.max(0.0001, gamma.value);
+
+            const _space = colorSpace(spaceIndex);
+
+            const col = this.interpolate(
+                spaceIndex,
+                convertDataColorToSpace(input0.toDataColor(), _space),
+                convertDataColorToSpace(input1.toDataColor(), _space),
+                f,
+                gammaValue);
+
+
+            // allow interpolating invalid colors,
+            // so no valid color check here
+
+            this.value = ColorValue.fromDataColor(col, spaceIndex);
+        }
+
+        else if (this.input0) 
+            this.value = this.input0.eval(parse).toValue();
+
+        else if (this.input1) 
+            this.value = this.input1.eval(parse).toValue();
+            
+        else 
+            this.value = ColorValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'space',  space );
+        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+        genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+
+
+        this.validate();
+        
+        return this;
+    }
+
+
+
+    interpolate(space, col0, col1, f, gamma)
+    {
+        if (space <= 1) // hex, rgb
+        {
+            const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
+            const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
+            const b0 = Math.pow(col0[3], gamma);  const b1 = Math.pow(col1[3], gamma);
+
+            gamma = Math.max(0.01, gamma);
+
+            return [
+                colorSpace(space),
+                Math.pow(lerp(r0, r1, f), 1/gamma),
+                Math.pow(lerp(g0, g1, f), 1/gamma),
+                Math.pow(lerp(b0, b1, f), 1/gamma) ];
+        }
+        else // hsv/hsl/hcl
+        {
+            const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
+            const c0 = col0[2];        const c1 = col1[2];
+            const l0 = col0[3];        const l1 = col1[3];
+
+            return [
+                colorSpace(space),
+                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
+                lerp(c0, c1, f),
+                lerp(l0, l1, f) ];
+        }
+    }
 }
 
 
@@ -14156,12 +14269,14 @@ function genParseColor(parse)
 
 
 
-function genParseColorInterpolate(parse)
+function genParseValidColor(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const lerp = new GColorInterpolate(nodeId, options);
+    const valid = new GValidColor(nodeId, options);
+
+    //valid.hasInputs = options.hasInputs;
 
 
     let nInputs = -1;
@@ -14169,17 +14284,17 @@ function genParseColorInterpolate(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
-    
+
     if (parse.settings.logRequests) 
-        logReqColorInterpolate(lerp, nInputs, parse);
+        logReqValidColor(valid, nInputs, parse);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, lerp);
+        genParseNodeEnd(parse, valid);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -14187,29 +14302,84 @@ function genParseColorInterpolate(parse)
     parse.nTab++;
 
 
-    if (nInputs == 2)
-    {
-        lerp.input0 = genParse(parse);
-        lerp.input1 = genParse(parse);
-    }
-
-    else if (nInputs == 1)
-        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-
-    else if (nInputs != 0)
-        console.assert(false, 'nInputs must be [0, 2]');
+    if (nInputs == 1)
+        valid.input = genParse(parse);
 
 
-    lerp.space  = genParse(parse);
-    lerp.amount = genParse(parse);
-    lerp.gamma  = genParse(parse);
+    valid.quality = genParse(parse);
+    valid.value   = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, lerp);
-    return lerp;
+    genParseNodeEnd(parse, valid);
+    return valid;
+}
+
+
+
+function genParseCorrectColor(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const corr = new GCorrectColor(nodeId, options);
+
+    corr.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReqCorrectColor(corr, nInputs, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, corr);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+        corr.input = genParse(parse);
+
+
+    paramIds = parse.move().split(',');
+
+    parse.inParam = false;
+    
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'order':    corr.order   = genParse(parse); break;
+        case 'margin1':  corr.margin1 = genParse(parse); break;
+        case 'margin2':  corr.margin2 = genParse(parse); break;
+        case 'margin3':  corr.margin3 = genParse(parse); break;
+        case 'value':    corr.value   = genParse(parse); break;
+        }
+    }
+                
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, corr);
+    return corr;
 }
 
 
@@ -14315,14 +14485,12 @@ function genParseColorBlind(parse)
 
 
 
-function genParseCorrectColor(parse)
+function genParseColorInterpolate(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const corr = new GCorrectColor(nodeId, options);
-
-    corr.hasInputs = options.hasInputs;
+    const lerp = new GColorInterpolate(nodeId, options);
 
 
     let nInputs = -1;
@@ -14330,17 +14498,17 @@ function genParseCorrectColor(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
-
+    
     if (parse.settings.logRequests) 
-        logReqCorrectColor(corr, nInputs, parse);
+        logReqColorInterpolate(lerp, nInputs, parse);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, corr);
+        genParseNodeEnd(parse, lerp);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -14348,34 +14516,29 @@ function genParseCorrectColor(parse)
     parse.nTab++;
 
 
-    let paramIds;
-
-    if (nInputs == 1)
-        corr.input = genParse(parse);
-
-
-    paramIds = parse.move().split(',');
-
-    parse.inParam = false;
-    
-    for (const id of paramIds)
+    if (nInputs == 2)
     {
-        switch (id)
-        {
-        case 'order':    corr.order   = genParse(parse); break;
-        case 'margin1':  corr.margin1 = genParse(parse); break;
-        case 'margin2':  corr.margin2 = genParse(parse); break;
-        case 'margin3':  corr.margin3 = genParse(parse); break;
-        case 'value':    corr.value   = genParse(parse); break;
-        }
+        lerp.input0 = genParse(parse);
+        lerp.input1 = genParse(parse);
     }
-                
+
+    else if (nInputs == 1)
+        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+
+    else if (nInputs != 0)
+        console.assert(false, 'nInputs must be [0, 2]');
+
+
+    lerp.space  = genParse(parse);
+    lerp.amount = genParse(parse);
+    lerp.gamma  = genParse(parse);
+
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, corr);
-    return corr;
+    genParseNodeEnd(parse, lerp);
+    return lerp;
 }
 
 
@@ -15962,11 +16125,11 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR                  ) result = genParseColor           (parse);
-        
-    else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate(parse);
+    else if (parse.next == VALID_COLOR            ) result = genParseValidColor      (parse);
+    else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor    (parse);
     else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND             ) result = genParseColorBlind      (parse);
-    else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor    (parse);
+    else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate(parse);
      
     else if (parse.next == FILL_VALUE             ) result = genParseFillValue       (parse);
     else if (parse.next == FILL                   ) result = genParseFill            (parse);
@@ -21612,10 +21775,19 @@ function logReqColor(col, nInputs, parse)
 
 
 
-function logReqColorInterpolate(lerp, nInputs, parse)
+function logReqValidColor(val, nInputs, parse)
 {
-    parse.log += parse.tab + COLOR_INTERPOLATE;
-    parse.log += logReqNodeId(lerp);
+    parse.log += parse.tab + VALID_COLOR;
+    parse.log += logReqNodeId(val);
+    parse.log += ' ' + nInputs;
+}
+
+
+
+function logReqCorrectColor(corr, nInputs, parse)
+{
+    parse.log += parse.tab + CORRECT_COLOR;
+    parse.log += logReqNodeId(corr);
     parse.log += ' ' + nInputs;
 }
 
@@ -21641,12 +21813,13 @@ function logReqColorBlind(cb, parse)
 
 
 
-function logReqCorrectColor(val, nInputs, parse)
+function logReqColorInterpolate(lerp, nInputs, parse)
 {
-    parse.log += parse.tab + CORRECT_COLOR;
-    parse.log += logReqNodeId(val);
+    parse.log += parse.tab + COLOR_INTERPOLATE;
+    parse.log += logReqNodeId(lerp);
     parse.log += ' ' + nInputs;
 }
+
 
 
 function logReqFillValue(fill, parse)
@@ -23660,10 +23833,11 @@ const STRING_TYPES =
 
 const COLOR_VALUE       = 'COL#';  
 const COLOR             = 'COL';   
-const COLOR_INTERPOLATE = 'CLERP'; 
+const VALID_COLOR       = 'CVAL';  
 const CORRECT_COLOR     = 'CCOR';  
 const COLOR_CONTRAST    = 'CCNT';  
 const COLORBLIND        = 'BLND';  
+const COLOR_INTERPOLATE = 'CLERP'; 
 
 
 const COLOR_TYPES =
@@ -28481,750 +28655,6 @@ extends GNumberType
 
 
 
-class GColorType
-extends GOperator
-{
-    value;
-    
-
-
-    copyBase(src)
-    {
-        super.copyBase(src);
-
-        if (src.value) this.value = src.value.copy();
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
-}
-
-
-class GColor
-extends GColorType
-{
-    input   = null;
-
-    space   = null;
-    c1      = null;
-    c2      = null;
-    c3      = null;
-
-    convert = null;
-
-    hasInputs;
-
-
-
-    constructor(nodeId, options)
-    {
-        super(COLOR, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GColor(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        copy.space = this.space.copy();
-
-        if (this.c1) copy.c1 = this.c1.copy();
-        if (this.c2) copy.c2 = this.c2.copy();
-        if (this.c3) copy.c3 = this.c3.copy();
-
-        if (this.convert) 
-            copy.convert = this.convert.copy();
-
-        return copy;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-            
-        const space = this.space ? this.space.eval(parse).toValue().toInteger() : null; 
-        const c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
-        const c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
-        const c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
-
-
-        if (this.input)
-        {
-            const input = this.input.eval(parse).toValue();
-
-            
-            if (input.isValid())
-            {
-                this.value = new ColorValue(
-                    input.space,
-                    input.c1, 
-                    input.c2, 
-                    input.c3);
-                    
-
-                const fromSpaceIndex = input.space.value;
-
-                const toSpaceIndex = Math.min(Math.max(
-                    0,
-                    Math.round(space.value)), // round because a value can come in with decimals (TODO fix this)
-                    colorSpaceCount(parse)-1);
-
-
-                this.convertColor(
-                    this.value,
-                    colorSpace(fromSpaceIndex), 
-                    colorSpace(  toSpaceIndex));
-
-                this.value.space.value = toSpaceIndex;
-
-                
-                // fake disabled status by checking for it during param eval (easiest way to do it)
-
-                if (this.options.enabled)
-                {
-                    if (c1) this.value.c1 = c1;
-                    if (c2) this.value.c2 = c2;
-                    if (c3) this.value.c3 = c3;
-                }
-            }
-            else
-                this.value = ColorValue.NaN;
-        }
-        else
-        {
-            this.value = new ColorValue(space, c1, c2, c3);
-
-            const toSpaceIndex = Math.min(Math.max(
-                0,
-                Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
-                colorSpaceCount(parse)-1);
-
-            this.value.space.value = toSpaceIndex;
-
-            if (    this.convert
-                &&  this.convert.isValid()
-                &&  this.convert.value > -1
-                &&  this.value.isValid()
-                && !this.hasInputs)
-            {
-                this.convert.eval(parse);
-
-                this.convertColor(
-                    this.value,
-                    colorSpace(this.convert.value), 
-                    colorSpace(toSpaceIndex));
-            }
-        }
-
-
-        if (!this.value.space.isValid())
-            this.value = new ColorValue(
-                this.space.toValue(),
-                NumberValue.NaN,
-                NumberValue.NaN,
-                NumberValue.NaN);
-
-            
-        // if (this.options.enabled)
-        // {
-            genPushUpdateValue(parse, this.nodeId, 'space', this.value.space, true);
-            genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1         );
-            genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2         );
-            genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3         );
-        // }
-
-
-        this.validate();
-
-        return this;
-    }
-
-
-
-    convertColor(color, fromSpace, toSpace)
-    {
-        let col = [
-            fromSpace, 
-            getNormalColorValue(color.c1.value, fromSpace, 0),
-            getNormalColorValue(color.c2.value, fromSpace, 1),
-            getNormalColorValue(color.c3.value, fromSpace, 2)];
-
-        col = getScaledDataColor(convertDataColorToSpace(col, toSpace));
-
-        color.c1.value = col[1];
-        color.c2.value = col[2];
-        color.c3.value = col[3];
-    }
-
-
-
-    isValid()
-    {
-        return this.space.isValid()
-            && this.c1   .isValid()
-            && this.c2   .isValid()
-            && this.c3   .isValid();
-    }
-
-
-
-    // toValue()
-    // {
-    //     return new ColorValue(
-    //         this.space ? this.space.toValue() : NumberValue.NaN,
-    //         this.c1    ? this.c1   .toValue() : NumberValue.NaN,
-    //         this.c2    ? this.c2   .toValue() : NumberValue.NaN,
-    //         this.c3    ? this.c3   .toValue() : NumberValue.NaN);
-    // }
-}
-
-
-class GColorInterpolate
-extends GColorType
-{
-    input0 = null;
-    input1 = null;
-
-    space;
-    amount;
-    gamma;
-
-
-    constructor(nodeId, options)
-    {
-        super(COLOR_INTERPOLATE, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GColorInterpolate(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
-
-        copy.space  = this.space .copy();
-        copy.amount = this.amount.copy();
-        copy.gamma  = this.gamma .copy();
-
-        return copy;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const amount = this.amount.eval(parse).toValue();
-        const space  = this.space .eval(parse).toValue().toInteger();
-        const gamma  = this.gamma .eval(parse).toValue();
-
-
-        if (   this.input0 
-            && this.input1)
-        {
-            const input0 = this.input0.eval(parse).toValue();
-            const input1 = this.input1.eval(parse).toValue();
-
-            console.assert(
-                amount.type == NUMBER_VALUE, 
-                'this.result.type must be NUMBER_VALUE');
-
-            const f = amount.value / 100;
-
-
-            const spaceIndex = Math.min(Math.max(0, space.value), colorSpaceCount()-1);
-            const gammaValue = Math.max(0.0001, gamma.value);
-
-            const _space = colorSpace(spaceIndex);
-
-            const col = this.interpolate(
-                spaceIndex,
-                convertDataColorToSpace(input0.toDataColor(), _space),
-                convertDataColorToSpace(input1.toDataColor(), _space),
-                f,
-                gammaValue);
-
-
-            // allow interpolating invalid colors,
-            // so no valid color check here
-
-            this.value = ColorValue.fromDataColor(col, spaceIndex);
-        }
-
-        else if (this.input0) 
-            this.value = this.input0.eval(parse).toValue();
-
-        else if (this.input1) 
-            this.value = this.input1.eval(parse).toValue();
-            
-        else 
-            this.value = ColorValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'space',  space );
-        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
-        genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
-        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
-
-
-        this.validate();
-        
-        return this;
-    }
-
-
-
-    interpolate(space, col0, col1, f, gamma)
-    {
-        if (space <= 1) // hex, rgb
-        {
-            const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
-            const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
-            const b0 = Math.pow(col0[3], gamma);  const b1 = Math.pow(col1[3], gamma);
-
-            gamma = Math.max(0.01, gamma);
-
-            return [
-                colorSpace(space),
-                Math.pow(lerp(r0, r1, f), 1/gamma),
-                Math.pow(lerp(g0, g1, f), 1/gamma),
-                Math.pow(lerp(b0, b1, f), 1/gamma) ];
-        }
-        else // hsv/hsl/hcl
-        {
-            const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
-            const c0 = col0[2];        const c1 = col1[2];
-            const l0 = col0[3];        const l1 = col1[3];
-
-            return [
-                colorSpace(space),
-                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
-                lerp(c0, c1, f),
-                lerp(l0, l1, f) ];
-        }
-    }
-}
-
-
-
-class GColorContrast
-extends GColorType
-{
-    input0 = null;
-    input1 = null;
-
-    standard;
-    contrast;
-
-
-    constructor(nodeId, options)
-    {
-        super(COLOR_CONTRAST, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GColorContrast(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input0) copy.input0 = this.input0.copy();
-        if (this.input1) copy.input1 = this.input1.copy();
-
-        copy.standard = this.standard.copy();
-        copy.contrast = this.contrast.copy();
-
-        return copy;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const standard = this.standard.eval(parse).toValue().toInteger();
-
-        
-        if (standard.isValid())
-            standard.value = Math.min(Math.max(0, standard.value), 1);
-
-
-        if (   this.input0 
-            && this.input1)
-        {
-            const input0 = this.input0.eval(parse).toValue();
-            const input1 = this.input1.eval(parse).toValue();
-
-
-            if (   input0.isValid()
-                && input1.isValid())
-            {
-                this.value = input1;
-                
-                if (   dataColorIsValid(input0.toDataColor())
-                    && dataColorIsValid(input1.toDataColor()))
-                {
-                    if (standard.value == 0)
-                    {
-                        const value = getContrastRatio2(input0.toRgb(), input1.toRgb());
-                        this.contrast = new NumberValue(value, 2);
-                    }
-                    else
-                    {
-                        const value = getContrastRatio3(input0.toRgb(), input1.toRgb());
-                        this.contrast = new NumberValue(Math.abs(value), 1);
-                    }
-                }
-                else
-                    this.contrast = NumberValue.NaN;
-            }
-            else
-            {
-                this.value    = ColorValue.NaN;
-                this.contrast = NumberValue.NaN;
-            }
-
-
-            genPushUpdateValue(parse, this.nodeId, 'text', input0);
-            genPushUpdateValue(parse, this.nodeId, 'back', input1);
-        }
-
-        else if (this.input0) 
-        {
-            const input0 = this.input0.eval(parse).toValue();
-
-            genPushUpdateValue(parse, this.nodeId, 'text', input0.isValid() ? input0 : ColorValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
-
-            this.value    = ColorValue.NaN;
-            this.contrast = NumberValue.NaN;
-        }
-
-        else if (this.input1) 
-        {
-            const input1 = this.input1.eval(parse).toValue();
-
-            genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'back', input1.isValid() ? input1 : ColorValue.NaN);
-
-            this.value    = input1.isValid() ? input1 : ColorValue.NaN;
-            this.contrast = NumberValue.NaN;
-        }
-
-        else
-        {
-            this.value    = ColorValue.NaN;
-            this.contrast = NumberValue.NaN;
-
-            genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
-        }
-        
-
-
-        genPushUpdateValue(parse, this.nodeId, 'standard', standard);
-        genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GColorBlind
-extends GColorType
-{
-    input = null;
-
-    l;
-    m;
-    s;
-
-
-    constructor(nodeId, options)
-    {
-        super(COLORBLIND, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GColorBlind(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        copy.l = this.l.copy();
-        copy.m = this.m.copy();
-        copy.s = this.s.copy();
-
-        return copy;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const l = this.l.eval(parse).toValue();        
-        const m = this.m.eval(parse).toValue();
-        const s = this.s.eval(parse).toValue();
-
-
-        if (this.input)
-        {
-            const input = this.input.eval(parse).toValue();
-            const rgb   = input.toRgb();
-
-            const rgbCb = rgb2colorblind(
-                rgb,
-                l.value / 2,
-                m.value / 2,
-                s.value / 2);
-
-            if (   !rgbIsNaN(rgb)
-                && !rgbIsNaN(rgbCb))
-            {
-                const validRgbCb = rgbCb;
-            
-                const validCol = convertDataColorToSpace(
-                    rgb2dataColor(validRgbCb), 
-                    colorSpace(input.space.value));
-
-                this.value = ColorValue.fromDataColor(validCol);
-            }
-            else
-                this.value = ColorValue.NaN;
-        }
-        else
-            this.value = ColorValue.NaN;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'l',     l);
-        genPushUpdateValue(parse, this.nodeId, 'm',     m);
-        genPushUpdateValue(parse, this.nodeId, 's',     s);
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
-class GCorrectColor
-extends GColorType
-{
-    input        = null;
-     
-    order        = null;
-    margin1      = null;
-    margin2      = null;
-    margin3      = null;
-
-    // closestOrder = null;
-    // closest1     = null;
-    // closest2     = null;
-    // closest3     = null;
-
-    corrections  = [];
-
-
-
-    constructor(nodeId, options)
-    {
-        super(CORRECT_COLOR, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GCorrectColor(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        if (this.input) 
-            copy.input = this.input.copy();
-
-        if (this.order  ) copy.order   = this.order  .copy();
-        if (this.margin1) copy.margin1 = this.margin1.copy();
-        if (this.margin2) copy.margin2 = this.margin2.copy();
-        if (this.margin3) copy.margin3 = this.margin3.copy();
-        if (this.value  ) copy.value   = this.value  .copy();
-
-        return copy;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
-        const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
-        const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
-        const margin3 = this.margin3 ? this.margin3.eval(parse).toValue()             : null;
-
-
-        if (this.input)
-        {
-            const input = this.input.eval(parse).toValue();
-
-
-            // console.log('this.closestOrder =',   this.closestOrder);
-            // console.log('this.closest1     =',   this.closest1    );
-            // console.log('this.closest2     =',   this.closest2    );
-            // console.log('this.closest3     =',   this.closest3    );
-            // console.log('this.value =', this.value);
-
-            if (   isValid(this.order  ) && this.order  .isValid()
-                && isValid(this.margin1) && this.margin1.isValid()
-                && isValid(this.margin2) && this.margin2.isValid()
-                && isValid(this.margin3) && this.margin3.isValid()
-                && isValid(this.value  ) && this.value  .isValid())
-            {
-                genPushUpdateValue(parse, this.nodeId, 'order'  , order     );
-                genPushUpdateValue(parse, this.nodeId, 'margin1', margin1   );
-                genPushUpdateValue(parse, this.nodeId, 'margin2', margin2   );
-                genPushUpdateValue(parse, this.nodeId, 'margin3', margin3   );
-                genPushUpdateValue(parse, this.nodeId, 'value'  , this.value);
-            }
-            // else if (!this.options.enabled
-            //       && isValid(this.closestOrder)
-            //       && isValid(this.closest1)
-            //       && isValid(this.closest2)
-            //       && isValid(this.closest3)
-            //       && isValid(this.value) && this.value.isValid())
-            // {
-            //     genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(this.closestOrder));
-            //     genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(this.closest1    ));
-            //     genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(this.closest2    ));
-            //     genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(this.closest3    ));
-            //     genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-            // }
-            else
-            {
-                const rgb = input.toRgb();
-                
-                if (!rgbIsOk(rgb))
-                    genQueueMessageToUI(
-                    {
-                        cmd:   'uiInitNodeProgress',
-                        nodeId: this.nodeId
-                    });
-
-
-                const inputColor = input.toDataColor();
-
-
-                const
-              [ closestOrder,
-                closest1,
-                closest2,
-                closest3 ] = findCorrection(
-                    this.nodeId,
-                    inputColor, 
-                    order, margin1, margin2, margin3, 
-                    this.order   != null,
-                    this.margin1 != null, 
-                    this.margin2 != null, 
-                    this.margin3 != null); 
-
-                     
-                //if (!stopGenerate)
-                //{
-                    if (   closestOrder >= 0 
-                        && closestOrder <  6)
-                    {
-                        this._color = correctColor(
-                            inputColor,
-                            closestOrder,
-                            closest1,
-                            closest2,
-                            closest3);
-
-                        this.value = ColorValue.fromDataColor(this._color);
-
-                        genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
-                        genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
-                        genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
-                        genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
-                        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
-                    }
-                    else
-                    {
-                        this.value = ColorValue.NaN;
-
-                        genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-                        genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
-                    }
-                //}
-            }
-        }
-        else
-        {
-            this.value = ColorValue.NaN;
-
-            genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
-            genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
-        }
-
-
-        this.validate();
-
-        return this;
-    }
-}
-
-
-
 function findCorrection(nodeId,
                         color,
                         order,       margin1, margin2, margin3,
@@ -29674,6 +29104,852 @@ function reorderCorrection(closestOrder,
         closestOrder,
         c1.closest, c2.closest, c3.closest,
         c1.locked,  c2.locked,  c3.locked ];
+}
+
+
+
+class GColorType
+extends GOperator
+{
+    value;
+    
+
+
+    copyBase(src)
+    {
+        super.copyBase(src);
+
+        if (src.value) this.value = src.value.copy();
+    }
+
+
+
+    toValue()
+    {
+        return this.value.copy();
+    }
+}
+
+
+class GColor
+extends GColorType
+{
+    input   = null;
+
+    space   = null;
+    c1      = null;
+    c2      = null;
+    c3      = null;
+
+    convert = null;
+
+    hasInputs;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColor(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.space = this.space.copy();
+
+        if (this.c1) copy.c1 = this.c1.copy();
+        if (this.c2) copy.c2 = this.c2.copy();
+        if (this.c3) copy.c3 = this.c3.copy();
+
+        if (this.convert) 
+            copy.convert = this.convert.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        const space = this.space ? this.space.eval(parse).toValue().toInteger() : null; 
+        const c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
+        const c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
+        const c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
+
+
+        if (this.input)
+        {
+            const input = this.input.eval(parse).toValue();
+
+            
+            if (input.isValid())
+            {
+                this.value = new ColorValue(
+                    input.space,
+                    input.c1, 
+                    input.c2, 
+                    input.c3);
+                    
+
+                const fromSpaceIndex = input.space.value;
+
+                const toSpaceIndex = Math.min(Math.max(
+                    0,
+                    Math.round(space.value)), // round because a value can come in with decimals (TODO fix this)
+                    colorSpaceCount(parse)-1);
+
+
+                this.convertColor(
+                    this.value,
+                    colorSpace(fromSpaceIndex), 
+                    colorSpace(  toSpaceIndex));
+
+                this.value.space.value = toSpaceIndex;
+
+                
+                // fake disabled status by checking for it during param eval (easiest way to do it)
+
+                if (this.options.enabled)
+                {
+                    if (c1) this.value.c1 = c1;
+                    if (c2) this.value.c2 = c2;
+                    if (c3) this.value.c3 = c3;
+                }
+            }
+            else
+                this.value = ColorValue.NaN;
+        }
+        else
+        {
+            this.value = new ColorValue(space, c1, c2, c3);
+
+            const toSpaceIndex = Math.min(Math.max(
+                0,
+                Math.round(this.value.space.value)), // round because a value can come in with decimals (TODO fix this)
+                colorSpaceCount(parse)-1);
+
+            this.value.space.value = toSpaceIndex;
+
+            if (    this.convert
+                &&  this.convert.isValid()
+                &&  this.convert.value > -1
+                &&  this.value.isValid()
+                && !this.hasInputs)
+            {
+                this.convert.eval(parse);
+
+                this.convertColor(
+                    this.value,
+                    colorSpace(this.convert.value), 
+                    colorSpace(toSpaceIndex));
+            }
+        }
+
+
+        if (!this.value.space.isValid())
+            this.value = new ColorValue(
+                this.space.toValue(),
+                NumberValue.NaN,
+                NumberValue.NaN,
+                NumberValue.NaN);
+
+            
+        // if (this.options.enabled)
+        // {
+            genPushUpdateValue(parse, this.nodeId, 'space', this.value.space, true);
+            genPushUpdateValue(parse, this.nodeId, 'c1',    this.value.c1         );
+            genPushUpdateValue(parse, this.nodeId, 'c2',    this.value.c2         );
+            genPushUpdateValue(parse, this.nodeId, 'c3',    this.value.c3         );
+        // }
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    convertColor(color, fromSpace, toSpace)
+    {
+        let col = [
+            fromSpace, 
+            getNormalColorValue(color.c1.value, fromSpace, 0),
+            getNormalColorValue(color.c2.value, fromSpace, 1),
+            getNormalColorValue(color.c3.value, fromSpace, 2)];
+
+        col = getScaledDataColor(convertDataColorToSpace(col, toSpace));
+
+        color.c1.value = col[1];
+        color.c2.value = col[2];
+        color.c3.value = col[3];
+    }
+
+
+
+    isValid()
+    {
+        return this.space.isValid()
+            && this.c1   .isValid()
+            && this.c2   .isValid()
+            && this.c3   .isValid();
+    }
+
+
+
+    // toValue()
+    // {
+    //     return new ColorValue(
+    //         this.space ? this.space.toValue() : NumberValue.NaN,
+    //         this.c1    ? this.c1   .toValue() : NumberValue.NaN,
+    //         this.c2    ? this.c2   .toValue() : NumberValue.NaN,
+    //         this.c3    ? this.c3   .toValue() : NumberValue.NaN);
+    // }
+}
+
+
+class GValidColor
+extends GColorType
+{
+    input        = null;
+     
+    quality      = null;
+
+    corrections  = [];
+
+
+
+    constructor(nodeId, options)
+    {
+        super(VALID_COLOR, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GValidColor(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.quality) copy.quality = this.quality.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const quality = this.quality ? this.quality.eval(parse).toValue().toInteger() : null;
+
+
+        if (this.input)
+        {
+            const input = this.input.eval(parse).toValue();
+
+
+            if (   !isValid(this.value) 
+                || !this.value.isValid())
+            {
+                const rgb = input.toRgb();
+
+                if (quality.value == 0)
+                {
+                    console.log('rgb =', rgb);
+                    rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
+                    rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
+                    rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
+                    
+                    this.value = ColorValue.fromRgb(rgb);
+                }
+                else
+                {
+                    if (!rgbIsOk(rgb))
+                        genQueueMessageToUI(
+                        {
+                            cmd:   'uiInitNodeProgress',
+                            nodeId: this.nodeId
+                        });
+
+
+                    const inputColor = input.toDataColor();
+
+
+                    const
+                [ closestOrder,
+                    closest1,
+                    closest2,
+                    closest3 ] = findCorrection(
+                        this.nodeId,
+                        inputColor, 
+                        quality, null,  null,  null, 
+                        false,   false, false, false); 
+
+                        
+                    //if (!stopGenerate)
+                    //{
+                        if (   closestOrder >= 0 
+                            && closestOrder <  6)
+                        {
+                            this._color = correctColor(
+                                inputColor,
+                                closestOrder,
+                                closest1,
+                                closest2,
+                                closest3);
+
+                            this.value = ColorValue.fromDataColor(this._color);
+                        }
+                        else
+                        {
+                            this.value = ColorValue.NaN;
+                        }
+                    //}
+                }
+            }
+        }
+        else
+        {
+            this.value = ColorValue.NaN;
+        }
+
+
+        genPushUpdateValue(parse, this.nodeId, 'quality', quality);
+        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GCorrectColor
+extends GColorType
+{
+    input        = null;
+     
+    order        = null;
+    margin1      = null;
+    margin2      = null;
+    margin3      = null;
+
+    corrections  = [];
+
+
+
+    constructor(nodeId, options)
+    {
+        super(CORRECT_COLOR, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCorrectColor(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        if (this.order  ) copy.order   = this.order  .copy();
+        if (this.margin1) copy.margin1 = this.margin1.copy();
+        if (this.margin2) copy.margin2 = this.margin2.copy();
+        if (this.margin3) copy.margin3 = this.margin3.copy();
+        if (this.value  ) copy.value   = this.value  .copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
+        const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
+        const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
+        const margin3 = this.margin3 ? this.margin3.eval(parse).toValue()             : null;
+
+
+        if (this.input)
+        {
+            const input = this.input.eval(parse).toValue();
+
+
+            if (   isValid(this.order  ) && this.order  .isValid()
+                && isValid(this.margin1) && this.margin1.isValid()
+                && isValid(this.margin2) && this.margin2.isValid()
+                && isValid(this.margin3) && this.margin3.isValid()
+                && isValid(this.value  ) && this.value  .isValid())
+            {
+                genPushUpdateValue(parse, this.nodeId, 'order'  , order     );
+                genPushUpdateValue(parse, this.nodeId, 'margin1', margin1   );
+                genPushUpdateValue(parse, this.nodeId, 'margin2', margin2   );
+                genPushUpdateValue(parse, this.nodeId, 'margin3', margin3   );
+                genPushUpdateValue(parse, this.nodeId, 'value'  , this.value);
+            }
+            else
+            {
+                const rgb = input.toRgb();
+                
+                if (!rgbIsOk(rgb))
+                    genQueueMessageToUI(
+                    {
+                        cmd:   'uiInitNodeProgress',
+                        nodeId: this.nodeId
+                    });
+
+
+                const inputColor = input.toDataColor();
+
+
+                const
+              [ closestOrder,
+                closest1,
+                closest2,
+                closest3 ] = findCorrection(
+                    this.nodeId,
+                    inputColor, 
+                    order, margin1, margin2, margin3, 
+                    this.order   != null,
+                    this.margin1 != null, 
+                    this.margin2 != null, 
+                    this.margin3 != null); 
+
+                     
+                //if (!stopGenerate)
+                //{
+                    if (   closestOrder >= 0 
+                        && closestOrder <  6)
+                    {
+                        this._color = correctColor(
+                            inputColor,
+                            closestOrder,
+                            closest1,
+                            closest2,
+                            closest3);
+
+                        this.value = ColorValue.fromDataColor(this._color);
+
+                        genPushUpdateValue(parse, this.nodeId, 'order',   new NumberValue(closestOrder));
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', new NumberValue(closest1    ));
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', new NumberValue(closest2    ));
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', new NumberValue(closest3    ));
+                        genPushUpdateValue(parse, this.nodeId, 'value',   this.value);
+                    }
+                    else
+                    {
+                        this.value = ColorValue.NaN;
+
+                        genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+                        genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+                    }
+                //}
+            }
+        }
+        else
+        {
+            this.value = ColorValue.NaN;
+
+            genPushUpdateValue(parse, this.nodeId, 'order',   NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin1', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin2', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
+        }
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GColorContrast
+extends GColorType
+{
+    input0 = null;
+    input1 = null;
+
+    standard;
+    contrast;
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_CONTRAST, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColorContrast(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
+
+        copy.standard = this.standard.copy();
+        copy.contrast = this.contrast.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const standard = this.standard.eval(parse).toValue().toInteger();
+
+        
+        if (standard.isValid())
+            standard.value = Math.min(Math.max(0, standard.value), 1);
+
+
+        if (   this.input0 
+            && this.input1)
+        {
+            const input0 = this.input0.eval(parse).toValue();
+            const input1 = this.input1.eval(parse).toValue();
+
+
+            if (   input0.isValid()
+                && input1.isValid())
+            {
+                this.value = input1;
+                
+                if (   dataColorIsValid(input0.toDataColor())
+                    && dataColorIsValid(input1.toDataColor()))
+                {
+                    if (standard.value == 0)
+                    {
+                        const value = getContrastRatio2(input0.toRgb(), input1.toRgb());
+                        this.contrast = new NumberValue(value, 2);
+                    }
+                    else
+                    {
+                        const value = getContrastRatio3(input0.toRgb(), input1.toRgb());
+                        this.contrast = new NumberValue(Math.abs(value), 1);
+                    }
+                }
+                else
+                    this.contrast = NumberValue.NaN;
+            }
+            else
+            {
+                this.value    = ColorValue.NaN;
+                this.contrast = NumberValue.NaN;
+            }
+
+
+            genPushUpdateValue(parse, this.nodeId, 'text', input0);
+            genPushUpdateValue(parse, this.nodeId, 'back', input1);
+        }
+
+        else if (this.input0) 
+        {
+            const input0 = this.input0.eval(parse).toValue();
+
+            genPushUpdateValue(parse, this.nodeId, 'text', input0.isValid() ? input0 : ColorValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
+
+            this.value    = ColorValue.NaN;
+            this.contrast = NumberValue.NaN;
+        }
+
+        else if (this.input1) 
+        {
+            const input1 = this.input1.eval(parse).toValue();
+
+            genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'back', input1.isValid() ? input1 : ColorValue.NaN);
+
+            this.value    = input1.isValid() ? input1 : ColorValue.NaN;
+            this.contrast = NumberValue.NaN;
+        }
+
+        else
+        {
+            this.value    = ColorValue.NaN;
+            this.contrast = NumberValue.NaN;
+
+            genPushUpdateValue(parse, this.nodeId, 'text', ColorValue.NaN);
+            genPushUpdateValue(parse, this.nodeId, 'back', ColorValue.NaN);
+        }
+        
+
+
+        genPushUpdateValue(parse, this.nodeId, 'standard', standard);
+        genPushUpdateValue(parse, this.nodeId, 'contrast', this.contrast);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GColorBlind
+extends GColorType
+{
+    input = null;
+
+    l;
+    m;
+    s;
+
+
+    constructor(nodeId, options)
+    {
+        super(COLORBLIND, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColorBlind(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        copy.l = this.l.copy();
+        copy.m = this.m.copy();
+        copy.s = this.s.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const l = this.l.eval(parse).toValue();        
+        const m = this.m.eval(parse).toValue();
+        const s = this.s.eval(parse).toValue();
+
+
+        if (this.input)
+        {
+            const input = this.input.eval(parse).toValue();
+            const rgb   = input.toRgb();
+
+            const rgbCb = rgb2colorblind(
+                rgb,
+                l.value / 2,
+                m.value / 2,
+                s.value / 2);
+
+            if (   !rgbIsNaN(rgb)
+                && !rgbIsNaN(rgbCb))
+            {
+                const validRgbCb = rgbCb;
+            
+                const validCol = convertDataColorToSpace(
+                    rgb2dataColor(validRgbCb), 
+                    colorSpace(input.space.value));
+
+                this.value = ColorValue.fromDataColor(validCol);
+            }
+            else
+                this.value = ColorValue.NaN;
+        }
+        else
+            this.value = ColorValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'l',     l);
+        genPushUpdateValue(parse, this.nodeId, 'm',     m);
+        genPushUpdateValue(parse, this.nodeId, 's',     s);
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+}
+
+
+
+class GColorInterpolate
+extends GColorType
+{
+    input0 = null;
+    input1 = null;
+
+    space;
+    amount;
+    gamma;
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_INTERPOLATE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GColorInterpolate(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input0) copy.input0 = this.input0.copy();
+        if (this.input1) copy.input1 = this.input1.copy();
+
+        copy.space  = this.space .copy();
+        copy.amount = this.amount.copy();
+        copy.gamma  = this.gamma .copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        const amount = this.amount.eval(parse).toValue();
+        const space  = this.space .eval(parse).toValue().toInteger();
+        const gamma  = this.gamma .eval(parse).toValue();
+
+
+        if (   this.input0 
+            && this.input1)
+        {
+            const input0 = this.input0.eval(parse).toValue();
+            const input1 = this.input1.eval(parse).toValue();
+
+            console.assert(
+                amount.type == NUMBER_VALUE, 
+                'this.result.type must be NUMBER_VALUE');
+
+            const f = amount.value / 100;
+
+
+            const spaceIndex = Math.min(Math.max(0, space.value), colorSpaceCount()-1);
+            const gammaValue = Math.max(0.0001, gamma.value);
+
+            const _space = colorSpace(spaceIndex);
+
+            const col = this.interpolate(
+                spaceIndex,
+                convertDataColorToSpace(input0.toDataColor(), _space),
+                convertDataColorToSpace(input1.toDataColor(), _space),
+                f,
+                gammaValue);
+
+
+            // allow interpolating invalid colors,
+            // so no valid color check here
+
+            this.value = ColorValue.fromDataColor(col, spaceIndex);
+        }
+
+        else if (this.input0) 
+            this.value = this.input0.eval(parse).toValue();
+
+        else if (this.input1) 
+            this.value = this.input1.eval(parse).toValue();
+            
+        else 
+            this.value = ColorValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'space',  space );
+        genPushUpdateValue(parse, this.nodeId, 'amount', amount);
+        genPushUpdateValue(parse, this.nodeId, 'gamma',  gamma );
+        genPushUpdateValue(parse, this.nodeId, 'value',  this.value);
+
+
+        this.validate();
+        
+        return this;
+    }
+
+
+
+    interpolate(space, col0, col1, f, gamma)
+    {
+        if (space <= 1) // hex, rgb
+        {
+            const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
+            const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
+            const b0 = Math.pow(col0[3], gamma);  const b1 = Math.pow(col1[3], gamma);
+
+            gamma = Math.max(0.01, gamma);
+
+            return [
+                colorSpace(space),
+                Math.pow(lerp(r0, r1, f), 1/gamma),
+                Math.pow(lerp(g0, g1, f), 1/gamma),
+                Math.pow(lerp(b0, b1, f), 1/gamma) ];
+        }
+        else // hsv/hsl/hcl
+        {
+            const h0 = col0[1] * Tau;  const h1 = col1[1] * Tau;
+            const c0 = col0[2];        const c1 = col1[2];
+            const l0 = col0[3];        const l1 = col1[3];
+
+            return [
+                colorSpace(space),
+                normalAngle(h0 + angleDiff(h0, h1) * f) / Tau,
+                lerp(c0, c1, f),
+                lerp(l0, l1, f) ];
+        }
+    }
 }
 
 
@@ -32396,7 +32672,7 @@ function initGeneratorMenus()
     menuColor.addItems([
         menuItemColor        = new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey, random: e.altKey}))}),
                                new MenuItem('',                  {separator: true}),
-                               new MenuItem('Valid sRGB',        {enabled: false, icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, {insert: e.shiftKey}))}),
+                               new MenuItem('Valid sRGB',        {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, {insert: e.shiftKey}))}),
         menuItemCorrectColor = new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, {insert: e.shiftKey}))}),
                                new MenuItem('',                  {separator: true}),
                                new MenuItem('Web contrast',      {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
@@ -39732,6 +40008,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();    break;
          
         case COLOR:                   node = new OpColor(options);      break;
+        case VALID_COLOR:             node = new OpValidColor();        break;
         case CORRECT_COLOR:           node = new OpCorrectColor();      break;
         case COLOR_CONTRAST:          node = new OpColorContrast();     break;
         case COLORBLIND:              node = new OpColorBlind();        break;
@@ -47326,19 +47603,246 @@ function convert2hclluv(fromColor)
 }
 
 
+class   OpValidColor
+extends OpColorBase
+{
+    paramQuality;
+
+    corrections = [];
+
+    
+
+    constructor()
+    {
+        super(VALID_COLOR, 'valid', 100, true);
+
+
+        this.addInput(new Input(COLOR_TYPES));
+        this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
+
+        this.alwaysSaveParams = true;
+
+        
+        this.addParam(this.paramQuality = new SelectParam('quality', '', false, true, false, ['simple', 'accurate'], 1));
+
+
+        this.initCorrections('');
+        this.updateCorrections();
+
+
+        this.header.connectionPadding = 18;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+
+        // const hasInputs =
+        //        this.node.param1.input.connected
+        //     || this.node.param2.input.connected
+        //     || this.node.param3.input.connected;
+
+        //const options = 0;//(hasInputs ? 1 : 0) << 20;
+
+
+        const [request, ignore] = this.node.genRequestStart(gen, 0);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+        request.push(input.connected ? 1 : 0);
+
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+
+        request.push(...this.node.paramQuality.genRequest(gen));
+
+
+        const valid = 
+            (input.connected
+             ?  input.node.valid
+             : !dataColorIsNaN(this.node._color))
+            || !this.node.enabled;
+
+        request.push(COLOR_VALUE, (
+            valid
+            ? ColorValue.fromDataColor(this.node._color)
+            : ColorValue.NaN).toString()); // value
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const col = values[paramIds.findIndex(id => id == 'value')];
+
+        this._color = 
+            col
+            ? col.toDataColor()
+            : dataColor_NaN;
+
+
+        this.initCorrections(this._color[0]);
+
+        endNodeProgress(this);
+
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    updateHeader()
+    {
+        super.updateHeader();
+
+        const colors = this.getHeaderColors();
+
+        this.progressBar.style.background = 
+            !rgbIsNaN(colors.back) 
+            ? rgb2style_a(colors.text, 0.5) 
+            : 'var(--figma-color-bg-brand)';
+    }
+
+
+
+    initCorrections(colorSpace)
+    {
+        if (colorSpace == '')
+            return;
+
+
+        switch (colorSpace)
+        {
+        case 'hex':
+        case 'rgb':
+            this.corrections = [
+                new OpCorrectColor_Correction('R', rgbFactor[0]),
+                new OpCorrectColor_Correction('G', rgbFactor[1]),
+                new OpCorrectColor_Correction('B', rgbFactor[2]) ];
+
+            break;
+
+        case 'hsv':
+            this.corrections = [
+                new OpCorrectColor_Correction('H', hs_Factor[0]/2),
+                new OpCorrectColor_Correction('S', hs_Factor[1]),
+                new OpCorrectColor_Correction('V', hs_Factor[2]) ];
+
+            break;
+
+        case 'hsl':
+            this.corrections = [
+                new OpCorrectColor_Correction('H', hs_Factor[0]/2),
+                new OpCorrectColor_Correction('S', hs_Factor[1]),
+                new OpCorrectColor_Correction('L', hs_Factor[2]) ];
+
+            break;
+
+        case 'hclokl':
+        case 'hcllab':
+        case 'hclluv':
+            this.corrections = [
+                new OpCorrectColor_Correction('H', hclFactor[0]/2),
+                new OpCorrectColor_Correction('C', hclFactor[1]),
+                new OpCorrectColor_Correction('L', hclFactor[2]) ];
+
+            break;
+
+        case 'oklab': 
+        case 'lab':
+            this.corrections = [
+                new OpCorrectColor_Correction('L', oppFactor[0]),
+                new OpCorrectColor_Correction('a', oppFactor[1]),
+                new OpCorrectColor_Correction('b', oppFactor[2]) ];
+
+            break;
+
+        case 'luv':
+            this.corrections = [
+                new OpCorrectColor_Correction('L', oppFactor[0]),
+                new OpCorrectColor_Correction('u', oppFactor[1]),
+                new OpCorrectColor_Correction('v', oppFactor[2]) ];
+
+            break;
+        }
+    }
+
+
+
+    updateCorrections()
+    {
+        this.updateColorSpace();
+    }
+
+
+
+    updateColorSpace()
+    {
+        if (dataColorIsValid(this._color))
+            this.initCorrections(this._color[0]);
+    }
+
+
+
+    isConnected()
+    {
+        return this.inputs[0].connected;
+    }
+
+
+
+    toJsonBase(nTab = 0) 
+    {
+        let   pos = ' '.repeat(nTab);
+        const tab = TAB;
+
+        return super.toJsonBase(nTab)
+             + ',\n' + pos + tab + '"value": "' + ColorValue.fromDataColor(this._color).toString() + '"';
+    }
+
+
+
+    loadParams(_node, pasting)
+    {
+        if (_node.value != undefined)
+            this._color = parseColorValue(_node.value)[0].toDataColor();
+
+        if (!dataColorIsValid(this._color))
+            uiInitNodeProgress(this.id);
+
+        super.loadParams(_node, pasting);
+    }
+}
+
+
 class OpCorrectColor_Correction
 {
     name; // 'H', 'C', or 'L'
     max;
     value;
-    //locked;
-
+    
     constructor(name, max, value = 0)//, locked = false)
     {
-        this.name   = name;
-        this.max    = max;
-        this.value  = value;
-        //this.locked = locked;
+        this.name  = name;
+        this.max   = max;
+        this.value = value;
     }
 }
 
@@ -47353,7 +47857,7 @@ extends OpColorBase
     param2;
     param3;
 
-    colorSpaceIndex = -1;
+    corrections = [];
 
 
 
@@ -47366,7 +47870,7 @@ extends OpColorBase
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
         this.alwaysSaveParams = true;
-        //this.alwaysLoadParams = true;
+
         
         this.addParam(this.paramOrder = new SelectParam('order', '', false, true, true, [0, 1, 2, 3, 4, 5], 2));
         
@@ -47401,9 +47905,10 @@ extends OpColorBase
 
 
         const hasInputs =
-               this.node.param1.input.connected
-            || this.node.param2.input.connected
-            || this.node.param3.input.connected;
+               this.node.paramOrder.input.connected
+            || this.node.param1    .input.connected
+            || this.node.param2    .input.connected
+            || this.node.param3    .input.connected;
 
         const options = (hasInputs ? 1 : 0) << 20;
 
@@ -47684,33 +48189,6 @@ function makeOptions(c)
 
 
 
-// function uiEndFindCorrection(nodeId, success, closestOrder, closest1, closest2, closest3)
-// {
-//     // const node = nodeFromId(nodeId);
-
-//     // if (success)
-//     // {
-//     //     node.paramOrder.setValue(closestOrder, true, true, false);
-
-//     //     const [i1, i2, i3] = getCorrectionOrder(closestOrder);
-
-//     //     node.corrections[i1].value = closest1;
-//     //     node.corrections[i2].value = closest2;
-//     //     node.corrections[i3].value = closest3;
-
-//     //     node.updateCorrections();
-//     // }
-
-//     // validateIsFinding = false;
-
-//     // node.findBar.style.display = 'none';
-
-//     //pushUpdate([node]);
-
-//     //uiSaveNodes([nodeId]);
-// }
-
-
 class   OpColorContrast
 extends OpColorBase
 {
@@ -47959,6 +48437,106 @@ extends OpColorBase
 }
 
 
+class   OpColorBlind
+extends OpColorBase
+{
+    paramL;
+    paramM;
+    paramS;
+
+
+
+    constructor()
+    {
+        super(COLORBLIND, 'colorblind', 100);
+
+
+        this.addInput(new Input(COLOR_TYPES));
+        this.addOutput(new Output([COLOR], this.output_genRequest));
+
+
+        this.addParam(this.paramL = new NumberParam('l', 'L', false, true, false, 2, 0, 2, 0, 0.02));
+        this.addParam(this.paramM = new NumberParam('m', 'M', false, true, false, 2, 0, 2, 0, 0.02));
+        this.addParam(this.paramS = new NumberParam('s', 'S', false, true, false, 2, 0, 2, 0, 0.02));
+
+        this.paramL.addEventListener('change', () => this.paramL.control.dragScale = decCount(numToString(this.paramL.value, this.paramL.control.displayDec)) == 0 ? 0.02 : 0.05);
+        this.paramM.addEventListener('change', () => this.paramM.control.dragScale = decCount(numToString(this.paramM.value, this.paramM.control.displayDec)) == 0 ? 0.02 : 0.05);
+        this.paramS.addEventListener('change', () => this.paramS.control.dragScale = decCount(numToString(this.paramS.value, this.paramS.control.displayDec)) == 0 ? 0.02 : 0.05);
+
+
+        this.header.connectionPadding = 18;
+    }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+            
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const input = this.node.inputs[0];
+
+        if (input.connected)
+            request.push(...pushInputOrParam(input, gen));
+
+
+        request.push(...this.node.paramL.genRequest(gen));
+        request.push(...this.node.paramM.genRequest(gen));
+        request.push(...this.node.paramS.genRequest(gen));
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const col = values[paramIds.findIndex(id => id == 'value')];
+
+        this._color = 
+            col
+            ? col.toDataColor()
+            : dataColor_NaN;
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    updateParams()
+    {
+        this.updateParamText(this.paramL, 'L');
+        this.updateParamText(this.paramM, 'M');
+        this.updateParamText(this.paramS, 'S');
+
+        this.updateParamControls();
+    }
+
+
+
+    updateParamText(param, cone)
+    {
+        const v = Math.round(param.value.value);
+
+             if (v == 2) param.control.valueText = cone;
+        else if (v == 1) param.control.valueText = cone + ' weak';
+        else             param.control.valueText = cone + ' blind';
+    }
+}
+
+
 class   OpColorInterpolate
 extends OpColorBase
 {
@@ -48105,106 +48683,6 @@ function showOpColorInterpolateGammaControl(node, show)
         node.inner.removeChild(node.paramGamma.div);
 }
 
-
-
-class   OpColorBlind
-extends OpColorBase
-{
-    paramL;
-    paramM;
-    paramS;
-
-
-
-    constructor()
-    {
-        super(COLORBLIND, 'colorblind', 100);
-
-
-        this.addInput(new Input(COLOR_TYPES));
-        this.addOutput(new Output([COLOR], this.output_genRequest));
-
-
-        this.addParam(this.paramL = new NumberParam('l', 'L', false, true, false, 2, 0, 2, 0, 0.02));
-        this.addParam(this.paramM = new NumberParam('m', 'M', false, true, false, 2, 0, 2, 0, 0.02));
-        this.addParam(this.paramS = new NumberParam('s', 'S', false, true, false, 2, 0, 2, 0, 0.02));
-
-        this.paramL.addEventListener('change', () => this.paramL.control.dragScale = decCount(numToString(this.paramL.value, this.paramL.control.displayDec)) == 0 ? 0.02 : 0.05);
-        this.paramM.addEventListener('change', () => this.paramM.control.dragScale = decCount(numToString(this.paramM.value, this.paramM.control.displayDec)) == 0 ? 0.02 : 0.05);
-        this.paramS.addEventListener('change', () => this.paramS.control.dragScale = decCount(numToString(this.paramS.value, this.paramS.control.displayDec)) == 0 ? 0.02 : 0.05);
-
-
-        this.header.connectionPadding = 18;
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: NULL });
-
-            
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-
-        const input = this.node.inputs[0];
-
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
-
-
-        request.push(...this.node.paramL.genRequest(gen));
-        request.push(...this.node.paramM.genRequest(gen));
-        request.push(...this.node.paramS.genRequest(gen));
-
-
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        const col = values[paramIds.findIndex(id => id == 'value')];
-
-        this._color = 
-            col
-            ? col.toDataColor()
-            : dataColor_NaN;
-
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
-
-
-
-    updateParams()
-    {
-        this.updateParamText(this.paramL, 'L');
-        this.updateParamText(this.paramM, 'M');
-        this.updateParamText(this.paramS, 'S');
-
-        this.updateParamControls();
-    }
-
-
-
-    updateParamText(param, cone)
-    {
-        const v = Math.round(param.value.value);
-
-             if (v == 2) param.control.valueText = cone;
-        else if (v == 1) param.control.valueText = cone + ' weak';
-        else             param.control.valueText = cone + ' blind';
-    }
-}
 
 
 class OpFill

@@ -124,11 +124,11 @@ function genParse(parse, inParam = true)
 
     else if (parse.next == COLOR_VALUE            ) result = genParseColorValue      (parse);
     else if (parse.next == COLOR                  ) result = genParseColor           (parse);
-        
-    else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate(parse);
+    else if (parse.next == VALID_COLOR            ) result = genParseValidColor      (parse);
+    else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor    (parse);
     else if (parse.next == COLOR_CONTRAST         ) result = genParseColorContrast   (parse);
     else if (parse.next == COLORBLIND             ) result = genParseColorBlind      (parse);
-    else if (parse.next == CORRECT_COLOR          ) result = genParseCorrectColor    (parse);
+    else if (parse.next == COLOR_INTERPOLATE      ) result = genParseColorInterpolate(parse);
      
     else if (parse.next == FILL_VALUE             ) result = genParseFillValue       (parse);
     else if (parse.next == FILL                   ) result = genParseFill            (parse);

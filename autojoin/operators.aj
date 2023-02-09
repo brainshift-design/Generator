@@ -74,10 +74,11 @@
 ../operators/color/OpColor.js
 ../operators/color/OpColor spaces.js
 ../operators/color/OpColor convert.js
+../operators/color/OpValidColor.js
 ../operators/color/OpCorrectColor.js
 ../operators/color/OpColorContrast.js
-../operators/color/OpColorInterpolate.js
 ../operators/color/OpColorblind.js
+../operators/color/OpColorInterpolate.js
 
 
 ../operators/style/OpFill.js

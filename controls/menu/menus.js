@@ -345,7 +345,7 @@ function initGeneratorMenus()
     menuColor.addItems([
         menuItemColor        = new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey, random: e.altKey}))}),
                                new MenuItem('',                  {separator: true}),
-                               new MenuItem('Valid sRGB',        {enabled: false, icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, {insert: e.shiftKey}))}),
+                               new MenuItem('Valid sRGB',        {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, {insert: e.shiftKey}))}),
         menuItemCorrectColor = new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, {insert: e.shiftKey}))}),
                                new MenuItem('',                  {separator: true}),
                                new MenuItem('Web contrast',      {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),

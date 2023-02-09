@@ -80,12 +80,14 @@ function genParseColor(parse)
 
 
 
-function genParseColorInterpolate(parse)
+function genParseValidColor(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const lerp = new GColorInterpolate(nodeId, options);
+    const valid = new GValidColor(nodeId, options);
+
+    //valid.hasInputs = options.hasInputs;
 
 
     let nInputs = -1;
@@ -93,17 +95,17 @@ function genParseColorInterpolate(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
     }
 
-    
+
     if (parse.settings.logRequests) 
-        logReqColorInterpolate(lerp, nInputs, parse);
+        logReqValidColor(valid, nInputs, parse);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, lerp);
+        genParseNodeEnd(parse, valid);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -111,29 +113,84 @@ function genParseColorInterpolate(parse)
     parse.nTab++;
 
 
-    if (nInputs == 2)
-    {
-        lerp.input0 = genParse(parse);
-        lerp.input1 = genParse(parse);
-    }
-
-    else if (nInputs == 1)
-        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
-
-    else if (nInputs != 0)
-        console.assert(false, 'nInputs must be [0, 2]');
+    if (nInputs == 1)
+        valid.input = genParse(parse);
 
 
-    lerp.space  = genParse(parse);
-    lerp.amount = genParse(parse);
-    lerp.gamma  = genParse(parse);
+    valid.quality = genParse(parse);
+    valid.value   = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, lerp);
-    return lerp;
+    genParseNodeEnd(parse, valid);
+    return valid;
+}
+
+
+
+function genParseCorrectColor(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const corr = new GCorrectColor(nodeId, options);
+
+    corr.hasInputs = options.hasInputs;
+
+
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
+    if (parse.settings.logRequests) 
+        logReqCorrectColor(corr, nInputs, parse);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, corr);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    let paramIds;
+
+    if (nInputs == 1)
+        corr.input = genParse(parse);
+
+
+    paramIds = parse.move().split(',');
+
+    parse.inParam = false;
+    
+    for (const id of paramIds)
+    {
+        switch (id)
+        {
+        case 'order':    corr.order   = genParse(parse); break;
+        case 'margin1':  corr.margin1 = genParse(parse); break;
+        case 'margin2':  corr.margin2 = genParse(parse); break;
+        case 'margin3':  corr.margin3 = genParse(parse); break;
+        case 'value':    corr.value   = genParse(parse); break;
+        }
+    }
+                
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, corr);
+    return corr;
 }
 
 
@@ -239,14 +296,12 @@ function genParseColorBlind(parse)
 
 
 
-function genParseCorrectColor(parse)
+function genParseColorInterpolate(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const corr = new GCorrectColor(nodeId, options);
-
-    corr.hasInputs = options.hasInputs;
+    const lerp = new GColorInterpolate(nodeId, options);
 
 
     let nInputs = -1;
@@ -254,17 +309,17 @@ function genParseCorrectColor(parse)
     if (!ignore)
     {
         nInputs = parseInt(parse.move());
-        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+        console.assert(nInputs => 0 && nInputs <= 2, 'nInputs must be [0, 2]');
     }
 
-
+    
     if (parse.settings.logRequests) 
-        logReqCorrectColor(corr, nInputs, parse);
+        logReqColorInterpolate(lerp, nInputs, parse);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, corr);
+        genParseNodeEnd(parse, lerp);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -272,32 +327,27 @@ function genParseCorrectColor(parse)
     parse.nTab++;
 
 
-    let paramIds;
-
-    if (nInputs == 1)
-        corr.input = genParse(parse);
-
-
-    paramIds = parse.move().split(',');
-
-    parse.inParam = false;
-    
-    for (const id of paramIds)
+    if (nInputs == 2)
     {
-        switch (id)
-        {
-        case 'order':    corr.order   = genParse(parse); break;
-        case 'margin1':  corr.margin1 = genParse(parse); break;
-        case 'margin2':  corr.margin2 = genParse(parse); break;
-        case 'margin3':  corr.margin3 = genParse(parse); break;
-        case 'value':    corr.value   = genParse(parse); break;
-        }
+        lerp.input0 = genParse(parse);
+        lerp.input1 = genParse(parse);
     }
-                
+
+    else if (nInputs == 1)
+        lerp.input0 = genParse(parse); // doesn't matter if it's input0 or input1, the eval() result will be the same
+
+    else if (nInputs != 0)
+        console.assert(false, 'nInputs must be [0, 2]');
+
+
+    lerp.space  = genParse(parse);
+    lerp.amount = genParse(parse);
+    lerp.gamma  = genParse(parse);
+
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, corr);
-    return corr;
+    genParseNodeEnd(parse, lerp);
+    return lerp;
 }

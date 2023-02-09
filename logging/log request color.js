@@ -14,10 +14,19 @@ function logReqColor(col, nInputs, parse)
 
 
 
-function logReqColorInterpolate(lerp, nInputs, parse)
+function logReqValidColor(val, nInputs, parse)
 {
-    parse.log += parse.tab + COLOR_INTERPOLATE;
-    parse.log += logReqNodeId(lerp);
+    parse.log += parse.tab + VALID_COLOR;
+    parse.log += logReqNodeId(val);
+    parse.log += ' ' + nInputs;
+}
+
+
+
+function logReqCorrectColor(corr, nInputs, parse)
+{
+    parse.log += parse.tab + CORRECT_COLOR;
+    parse.log += logReqNodeId(corr);
     parse.log += ' ' + nInputs;
 }
 
@@ -43,9 +52,9 @@ function logReqColorBlind(cb, parse)
 
 
 
-function logReqCorrectColor(val, nInputs, parse)
+function logReqColorInterpolate(lerp, nInputs, parse)
 {
-    parse.log += parse.tab + CORRECT_COLOR;
-    parse.log += logReqNodeId(val);
+    parse.log += parse.tab + COLOR_INTERPOLATE;
+    parse.log += logReqNodeId(lerp);
     parse.log += ' ' + nInputs;
 }
