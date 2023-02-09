@@ -215,8 +215,6 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        console.log('updating OpColor');
-
         const space = values[paramIds.findIndex(id => id == 'space')];
         const c1    = values[paramIds.findIndex(id => id == 'c1'   )];
         const c2    = values[paramIds.findIndex(id => id == 'c2'   )];

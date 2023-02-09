@@ -4,7 +4,7 @@ var lastUpdateValues   =  [];
 var lastUpdateObjects  =  [];
 var lastUpdateStyles   =  [];
 
-var stopGenerate       =  false;
+//var stopGenerate       =  false;
 
 
 
@@ -70,16 +70,16 @@ function genRequest(request)
         parse.updateStyles);
 
 
-    stopGenerate = false;
+    //stopGenerate = false;
 }
 
 
 
-function genStopGenerate(msg)
-{
-    console.log('%cSTOP', 'color: white; background: #080;');
-    stopGenerate = true;
-}
+// function genStopGenerate(msg)
+// {
+//     console.log('%cSTOP', 'color: white; background: #080;');
+//     stopGenerate = true;
+// }
 
 
 

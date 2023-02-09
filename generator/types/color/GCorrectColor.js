@@ -45,7 +45,7 @@ extends GColorType
         if (this.isCached())
             return this;
 
-            
+
         const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
         const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
         const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
@@ -99,8 +99,8 @@ extends GColorType
                     this.margin3 != null); 
 
                      
-                if (!stopGenerate)
-                {
+                //if (!stopGenerate)
+                //{
                     if (closestOrder >= 0 && closestOrder < 6)
                     {
                         this._color = correctColor(
@@ -129,7 +129,7 @@ extends GColorType
                         genPushUpdateValue(parse, this.nodeId, 'margin3', NumberValue.NaN);
                         genPushUpdateValue(parse, this.nodeId, 'value',   ColorValue .NaN);
                     }
-                }
+                //}
             }
         }
         else
@@ -177,14 +177,14 @@ function findCorrection(nodeId,
     dLoop:
     while (d > 1/1024)
     {
-        if (stopGenerate) break dLoop;
+        //if (stopGenerate) break dLoop;
 
         let _closestColor = [...closestColor];
 
 
         for (let _order = 0; _order < 6; _order++)
         {
-            if (stopGenerate) break dLoop;
+            //if (stopGenerate) break dLoop;
 
             closestColor = [..._closestColor];
 
@@ -228,8 +228,8 @@ function findCorrection(nodeId,
     }
 
 
-    if (!stopGenerate)
-    {
+    //if (!stopGenerate)
+    //{
         // reduce closest to necessary minimums
 
         const closestRgb = getCorrectedColor(color, closestOrder, closest1, closest2, closest3)[2];
@@ -245,10 +245,10 @@ function findCorrection(nodeId,
         closest1 = Math.max(0, c1);
         closest2 = Math.max(0, c2);
         closest3 = Math.max(0, c3);
-    }
+    //}
 
     
-    stopGenerate = false;
+    //stopGenerate = false;
 
 
     return [
@@ -285,15 +285,15 @@ function findCorrectionInOrder(nodeId,
     cLoop:
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
-        if (stopGenerate) break cLoop;
+        //if (stopGenerate) break cLoop;
 
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
-            if (stopGenerate) break cLoop;
+            //if (stopGenerate) break cLoop;
 
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
-                if (stopGenerate) break cLoop;
+                //if (stopGenerate) break cLoop;
 
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
@@ -316,7 +316,7 @@ function findCorrectionInOrder(nodeId,
             }
         }
 
-        if (!stopGenerate)
+        //if (!stopGenerate)
             genQueueMessageToUI(
             {
                 cmd:     'uiUpdateNodeProgress',

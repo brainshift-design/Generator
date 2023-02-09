@@ -483,6 +483,7 @@ function uiInitNodeProgress(nodeId)
 function uiUpdateNodeProgress(nodeId, progress)
 {
     const node = nodeFromId(nodeId);
+    if (!isValid(node)) return;
 
     node.progressBar.style.left  = (   progress  * 100) + '%';
     node.progressBar.style.width = ((1-progress) * 100) + '%';
