@@ -10,34 +10,38 @@
 }
 
 
-#scrollbarX
+.scrollbar
 {
-    background-color: var(--figma-color-text-tertiary);
-    height:           6px;
     border-radius:    3px;
     position:         absolute;
     display:          none;
-    /* box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); */
+}
+
+
+
+#scrollbarX
+{
+    height: 6px;
 }
 
 
 #scrollbarY
 {
-    background-color: var(--figma-color-text-tertiary);
-    width:            6px;
-    border-radius:    3px;
-    position:         absolute;
-    display:          none;
-    /* box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); */
+    width: 6px;
 }
 
 
-.figma-light #scrollbarX { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); }
-.figma-dark  #scrollbarX { box-shadow: 0 0 0 1px rgba( 60,  60,  60, 0.25); }
+.figma-light .scrollbar 
+{ 
+    background-color: #0004;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); 
+}
 
-.figma-light #scrollbarY { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); }
-.figma-dark  #scrollbarY { box-shadow: 0 0 0 1px rgba( 60,  60,  60, 0.25); }
-
+.figma-dark .scrollbar 
+{ 
+    background-color: #0006;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.25); 
+}
 
 
 input[type=text]
