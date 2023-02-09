@@ -13,8 +13,12 @@ class Menu
     div;
     divArrow;
 
-    showIcons;
     showChecks;
+    showIcons;
+
+    showOnLeft = false;
+
+    combineChecksAndIcons = false; // conflicts are resolved in favor of icons
 
     overMenu = false;
 
@@ -107,14 +111,27 @@ class Menu
             const mesName     = utilContext.measureText(item.name);
             const mesShortcut = utilContext.measureText(item.shortcut);
 
-            width = Math.max(
-                width, 
+            let checksAndIcons = 
                   (item.parentMenu.showChecks ? 32 : 0)
                 + (item.parentMenu.showIcons  ? 32 : 0)
+
+            if (this.combineChecksAndIcons)
+                checksAndIcons = Math.min(checksAndIcons, 32);
+
+            width = Math.max(
+                  width, 
+                  checksAndIcons
                 + mesName.width 
                 + 30 
                 + mesShortcut.width 
                 + (mesShortcut.width > 0 ? 20 : 0));
+
+
+            if (this.combineChecksAndIcons)
+            {
+                item.divCheck.style.display = item.icon == NULL ? 'inline-block' : 'none';
+                item.divIcon .style.display = item.icon != NULL ? 'inline-block' : 'none';
+            }
         }
 
 
@@ -153,7 +170,7 @@ class Menu
         this.div.style.left = Math.min(Math.max(
             margin, 
             right
-            ? srcRect.x + srcRect.width 
+            ? (this.showOnLeft ? srcRect.x - this.div.offsetWidth : srcRect.x + srcRect.width)
             : srcRect.x + srcRect.width/2 - this.div.offsetWidth/2),
             graphView.offsetWidth - this.div.offsetWidth - margin);
 

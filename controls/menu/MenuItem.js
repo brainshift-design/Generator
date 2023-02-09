@@ -107,8 +107,10 @@ class MenuItem
         if (!this.separator)
         {
             this.div.appendChild(this.divHighlight);
-            this.div.appendChild(this.divCheck    );
-            this.div.appendChild(this.divIcon     );
+
+            this.div.appendChild(this.divCheck);
+            this.div.appendChild(this.divIcon );
+
             this.div.appendChild(this.divName     );
             this.div.appendChild(this.divExpand   );
             this.div.appendChild(this.divShortcut );
