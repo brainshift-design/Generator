@@ -11563,6 +11563,7 @@ extends GColorType
         if (this.isCached())
             return this;
 
+            
         const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
         const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
         const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
@@ -11663,7 +11664,6 @@ extends GColorType
 
         this.validate();
 
-
         return this;
     }
 }
@@ -11692,16 +11692,17 @@ function findCorrection(nodeId,
 
     let d = 1;
 
+    dLoop:
     while (d > 1/1024)
     {
-        if (stopGenerate) break;
+        if (stopGenerate) break dLoop;
 
         let _closestColor = [...closestColor];
 
 
         for (let _order = 0; _order < 6; _order++)
         {
-            if (stopGenerate) break;
+            if (stopGenerate) break dLoop;
 
             closestColor = [..._closestColor];
 
@@ -11728,7 +11729,8 @@ function findCorrection(nodeId,
                 nodeId,
                 refOklab,
                 _order, 
-                lockedOrder, locked1,  locked2,  locked3,
+                lockedOrder, 
+                locked1,  locked2,  locked3,
                 closest1, closest2, closest3,
                 start1,   start2,   start3, 
                 end1,     end2,     end3,
@@ -11764,6 +11766,9 @@ function findCorrection(nodeId,
     }
 
     
+    stopGenerate = false;
+
+
     return [
         closestOklab,
         closestOrder,
@@ -11777,7 +11782,8 @@ function findCorrection(nodeId,
 function findCorrectionInOrder(nodeId,
                                refOklab,
                                order, 
-                               lockedOrder, locked1,  locked2,  locked3,
+                               lockedOrder, 
+                               locked1,  locked2,  locked3,
                                closest1, closest2, closest3,
                                start1,   start2,   start3, 
                                end1,     end2,     end3,
@@ -11794,17 +11800,18 @@ function findCorrectionInOrder(nodeId,
     let nSteps3 = locked3 ? 1 : 2;
 
 
+    cLoop:
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
-        if (stopGenerate) break;
+        if (stopGenerate) break cLoop;
 
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
-            if (stopGenerate) break;
+            if (stopGenerate) break cLoop;
 
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
-                if (stopGenerate) break;
+                if (stopGenerate) break cLoop;
 
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
@@ -13630,7 +13637,7 @@ onmessage = function(e)
     switch (msg.cmd)
     {
         case 'genRequest':       genRequest      (msg.request); break;
-        case 'genStopGenerate':  genStopGenerate ();            break;
+        case 'genStopGenerate':  genStopGenerate (msg);         break;
 
         case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);  break;
         case 'genEndFigMessage': genEndFigMessage();            break;
@@ -13725,32 +13732,33 @@ function genEndFigMessage()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-var lastUpdateNodeId  = NULL;
-var lastUpdateParamId = NULL;
-var lastUpdateValues  = [];
-var lastUpdateObjects = [];
-var lastUpdateStyles  = [];
+var lastUpdateNodeId   =  NULL;
+var lastUpdateParamId  =  NULL;
+var lastUpdateValues   =  [];
+var lastUpdateObjects  =  [];
+var lastUpdateStyles   =  [];
 
-var stopGenerate      = false;
+var stopGenerate       =  false;
 
 
 
 function genRequest(request)
 {
-    const actionId = parseInt(request[0]);
-    const set      = parseInt(request[1]);
+    const requestId             = parseInt(request[0]);
+    const actionId              = parseInt(request[1]);
+    const set                   = parseInt(request[2]);
 
     const includeLxxColorSpaces = (set >> 0) & 1 != 0;
     const logRequests           = (set >> 1) & 1 != 0;
 
 
-    const updateNodeId  = request[2];
-    const updateParamId = request[3];
+    const updateNodeId          = request[3];
+    const updateParamId         = request[4];
 
 
     const parse = new Parse(
         request, 
-        4,
+        5,
         updateNodeId, 
         updateParamId, 
         includeLxxColorSpaces,
@@ -13787,6 +13795,7 @@ function genRequest(request)
 
 
     genUpdateValuesAndObjects(
+        requestId,
         actionId,
         parse.updateNodeId,
         parse.updateParamId,
@@ -13800,8 +13809,9 @@ function genRequest(request)
 
 
 
-function genStopGenerate()
+function genStopGenerate(msg)
 {
+    console.log('%cSTOP', 'color: white; background: #080;');
     stopGenerate = true;
 }
 
@@ -13860,7 +13870,7 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
+function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
     //console.log('1 updateStyles =', [...updateStyles]);
 
@@ -13955,6 +13965,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
             || sc == styleChunkSize)
         {
             genQueueChunk(
+                requestId,
                 actionId,
                 updateNodeId,
                 updateParamId,
@@ -13975,6 +13986,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         || !isEmpty(styleChunk  ))
     {
         genQueueChunk(
+            requestId,
             actionId,
             updateNodeId,
             updateParamId,
@@ -13993,10 +14005,11 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
 
 
 
-function genQueueChunk(actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk)
+function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk)
 {
     genQueueMessageToUI({
         cmd:          'uiUpdateValuesAndObjects',
+        requestId:     requestId,
         actionId:      actionId,
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
@@ -29062,6 +29075,7 @@ extends GColorType
         if (this.isCached())
             return this;
 
+            
         const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
         const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
         const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
@@ -29162,7 +29176,6 @@ extends GColorType
 
         this.validate();
 
-
         return this;
     }
 }
@@ -29191,16 +29204,17 @@ function findCorrection(nodeId,
 
     let d = 1;
 
+    dLoop:
     while (d > 1/1024)
     {
-        if (stopGenerate) break;
+        if (stopGenerate) break dLoop;
 
         let _closestColor = [...closestColor];
 
 
         for (let _order = 0; _order < 6; _order++)
         {
-            if (stopGenerate) break;
+            if (stopGenerate) break dLoop;
 
             closestColor = [..._closestColor];
 
@@ -29227,7 +29241,8 @@ function findCorrection(nodeId,
                 nodeId,
                 refOklab,
                 _order, 
-                lockedOrder, locked1,  locked2,  locked3,
+                lockedOrder, 
+                locked1,  locked2,  locked3,
                 closest1, closest2, closest3,
                 start1,   start2,   start3, 
                 end1,     end2,     end3,
@@ -29263,6 +29278,9 @@ function findCorrection(nodeId,
     }
 
     
+    stopGenerate = false;
+
+
     return [
         closestOklab,
         closestOrder,
@@ -29276,7 +29294,8 @@ function findCorrection(nodeId,
 function findCorrectionInOrder(nodeId,
                                refOklab,
                                order, 
-                               lockedOrder, locked1,  locked2,  locked3,
+                               lockedOrder, 
+                               locked1,  locked2,  locked3,
                                closest1, closest2, closest3,
                                start1,   start2,   start3, 
                                end1,     end2,     end3,
@@ -29293,17 +29312,18 @@ function findCorrectionInOrder(nodeId,
     let nSteps3 = locked3 ? 1 : 2;
 
 
+    cLoop:
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
-        if (stopGenerate) break;
+        if (stopGenerate) break cLoop;
 
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
-            if (stopGenerate) break;
+            if (stopGenerate) break cLoop;
 
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
-                if (stopGenerate) break;
+                if (stopGenerate) break cLoop;
 
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
@@ -41165,7 +41185,6 @@ function connDataObject(output, input)
 */
 
 
-
 const connectionSize = 9;
 const connectionGap  = 2;
 
@@ -41999,7 +42018,7 @@ class Operator
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values) // virtual
+    updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
     {
         // console.log('2 paramIds =', [...paramIds]);
         // console.log('this.params =', [...this.params]);
@@ -42222,160 +42241,6 @@ function getHeaderConnY(conns, padding, offset)
     }
 
     return [y, height];
-}
-
-
-
-function pushUpdate(action, nodes)
-{
-    pushUpdateFromParam(action, nodes, null);
-}
-
-
-
-function pushUpdateFromParam(action, nodes, param)
-{
-    // first check if any nodes to the left are uncached
-    // and replace in update array as necessary
-
-    for (let i = nodes.length-1; i >= 0; i--)
-    {
-        const node               = nodes[i];
-        const uncachedInputNodes = node.getUncachedInputNodes();
-        
-        if (!isEmpty(uncachedInputNodes))
-        {
-            removeFromArray(nodes, node);
-
-            pushUnique(nodes, uncachedInputNodes);
-
-            for (const uncached of uncachedInputNodes)
-                pushUnique(nodes, getTerminalsAfterNode(uncached));
-
-            param = null;
-        }
-    }
-
-    
-    const set =
-          ((settings.includeLxxColorSpaces ? 1 : 0) << 0)
-        | ((settings.logRequests           ? 1 : 0) << 1);
-
-
-    if (action)
-        actionManager.updateActions.push(action);
-        
-
-    const request = 
-    [
-        action ? action.id : -1,
-        set.toString()
-    ];
-
-
-    if (param) request.push(param.node.id, param.id);
-    else       request.push(NULL, NULL);
-
-
-    const gen = createGenObject(param ? param.node : null);
-
-
-    nodes.forEach(n => n.invalidate());
-
-        
-    const terminals = [];
-    nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
-
-    const uncachedInputNodes = [];
-    terminals.forEach(n => pushUnique(uncachedInputNodes, n.getUncachedInputNodes()));
-    uncachedInputNodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
-
-    const progressNodes = [];
-    nodes.forEach(n => pushUnique(progressNodes, getProgressNodesAfterNode(n)));
-
-
-    // if (!isEmpty(progressNodes))
-    // {
-    //     uiPostMessageToGenerator({cmd: 'genStopGenerate'});
-
-    //     if (genMessages.length > 2)
-    //         genMessages = [lastOf(genMessages)];
-    // }
-
-
-    for (const node of terminals)
-    {
-        if (gen.passedNodes.includes(node))
-            continue;
-
-        request.push(...getNodeRequest(node, gen));
-        pushUnique(gen.passedNodes, node);
-    }
-
-
-    for (const node of gen.paramNodes)
-    {
-        if (   !terminals.includes(node)
-            && !gen.passedNodes.includes(node))
-            request.push(...getNodeRequest(node, gen));
-    }
-
-
-    if (settings.logRawRequests)
-        console.log(
-            '%c%s%s', 
-            'background: #60aa60; color: #cfd', 
-            'raw request = ', 
-            request.toString());
-
-
-    uiQueueMessageToGenerator({
-        cmd:     'genRequest',
-        request:  request
-    });
-}
-
-
-
-function pushInputOrParam(input, gen)
-{
-    if (    input.connectedOutput.param
-        &&  gen.markParams
-        &&  lastOf(gen.scope).nodeId != input.connectedOutput.node.id)
-    {
-        pushUnique(gen.paramNodes, input.connectedOutput.node);
-
-        return[ PARAM,
-                input.connectedOutput.types[0],
-                input.connectedOutput.node.id,
-                input.connectedOutput.param.id ];
-    }
-    else
-        return input.connectedOutput.genRequest(gen);
-}
-
-
-
-function getNodeRequest(node, gen)
-{
-    const request = [];
-
-
-    if (!isEmpty(node.headerOutputs))
-    {
-        node.headerOutputs
-            .forEach(o =>
-            {
-                const _r = o.genRequest(gen);
-                const  r = [..._r];
-                request.push(...r);
-            });
-    }
-    else
-        request.push(...node.genRequest(gen));
-
-
-    return request;
 }
 
 
@@ -43082,6 +42947,7 @@ function createNodeProgressBar(node)
 function uiInitNodeProgress(nodeId)
 {
     const node = nodeFromId(nodeId);
+    if (!isValid(node)) return;
 
     node.progressWrapper.style.display = 'block';
 
@@ -43720,7 +43586,7 @@ extends OperatorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         //logFunction('OpItems.updateValues()');
 
@@ -43776,7 +43642,7 @@ extends OperatorBase
             this.removeAllParams();
     
         
-        super.updateValues(actionId, updateParamId, paramIds, values);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
@@ -43862,7 +43728,7 @@ extends OperatorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const val    = values[paramIds.findIndex(id => id == 'value' )];
         const length = values[paramIds.findIndex(id => id == 'length')];
@@ -43887,7 +43753,7 @@ extends OperatorBase
             : Number.MAX_SAFE_INTEGER);
   
         
-        super.updateValues(actionId, updateParamId, paramIds, values);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
@@ -44131,7 +43997,7 @@ extends OperatorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const count = values[paramIds.findIndex(id => id == 'count')];
         if (count) this.paramCount.setValue(count, false, true, false);
@@ -44236,7 +44102,7 @@ extends OperatorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values) // virtual
+    updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
     {
         const val = values[paramIds.findIndex(id => id == 'value')];
 
@@ -44384,9 +44250,9 @@ extends OperatorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values) // virtual
+    updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
     {
-        //super.updateValues(actionId, updateParamId, paramIds, values);
+        //super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
         const val = values[paramIds.findIndex(id => id == 'copy')];
@@ -45690,16 +45556,16 @@ extends Operator
     {
         super.invalidate();
 
-        this._color = dataColor_NaN;
+        //this._color = dataColor_NaN;
     }
 
 
 
-    // updateValues(actionId, updateParamId, paramIds, values)
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
     // {
     //     //logFunction('OpColorBase.updateValues()');
 
-    //     super.updateValues(actionId, updateParamId, paramIds, values);
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
         
     //     //this.updateHeader();
     // }
@@ -46073,8 +45939,10 @@ extends OpColorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
+        console.log('updating OpColor');
+
         const space = values[paramIds.findIndex(id => id == 'space')];
         const c1    = values[paramIds.findIndex(id => id == 'c1'   )];
         const c2    = values[paramIds.findIndex(id => id == 'c2'   )];
@@ -47512,7 +47380,10 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
 
-        const valid = !dataColorIsNaN(this.node._color);
+        const valid = 
+            input.connected
+            ? input.node.valid
+            : !dataColorIsNaN(this.node._color);
 
 
         const paramIds = [];
@@ -47547,7 +47418,7 @@ extends OpColorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const col = values[paramIds.findIndex(id => id == 'value')];
 
@@ -47562,7 +47433,7 @@ extends OpColorBase
         endNodeProgress(this);
 
         
-        super.updateValues(actionId, updateParamId, paramIds, values);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 }
 
 
@@ -47871,13 +47742,13 @@ extends OpColorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         console.assert(
             paramIds.length == values.length,
             'paramIds.length must equal values.length');
 
-        super.updateValues(actionId, updateParamId, paramIds, values);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
         const colText  = values[paramIds.findIndex(id => id == 'text'    )];
@@ -48154,7 +48025,7 @@ extends OpColorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const col = values[paramIds.findIndex(id => id == 'value')];
 
@@ -48163,7 +48034,7 @@ extends OpColorBase
             ? col.toDataColor()
             : dataColor_NaN;
 
-        super.updateValues(actionId, updateParamId, paramIds, values);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 }
 
@@ -48257,7 +48128,7 @@ extends OpColorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const col = values[paramIds.findIndex(id => id == 'value')];
 
@@ -48266,7 +48137,7 @@ extends OpColorBase
             ? col.toDataColor()
             : dataColor_NaN;
 
-        super.updateValues(actionId, updateParamId, paramIds, values);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
@@ -48379,7 +48250,7 @@ extends OpColorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const color = values[paramIds.findIndex(id => id == 'color')];
 
@@ -48396,7 +48267,7 @@ extends OpColorBase
             : [FILL];
 
 
-        super.updateValues(actionId, updateParamId, paramIds, values);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
@@ -48657,7 +48528,7 @@ extends OpColorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const fill = values[paramIds.findIndex(id => id == 'fill')];
 
@@ -48678,7 +48549,7 @@ extends OpColorBase
         //     && 
         // input.addEventListener('disconnect', () => uiDeleteObjectsAndStyles([this.id]));
 
-        super.updateValues(actionId, updateParamId, paramIds, values);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 
@@ -48865,7 +48736,7 @@ extends OpColorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const stop = values[paramIds.findIndex(id => id == 'value')];
 
@@ -48886,7 +48757,7 @@ extends OpColorBase
         }
 
 
-        super.updateValues(actionId, updateParamId, paramIds, values);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 }
 
@@ -48982,9 +48853,9 @@ extends OperatorBase
 
 
 
-    // updateValues(actionId, updateParamId, paramIds, values)
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
     // {
-    //     super.updateValues(actionId, updateParamId, paramIds, values);
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
     //     if (paramIds.includes('value'))
     //         this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
@@ -52685,7 +52556,7 @@ var altPressedInMenu = false;
 
 document.addEventListener('keydown', e =>
 {
-    //let setLastKeyDown = true;
+    let setLastKeyDown = true;
 
 
     // copy
@@ -52890,7 +52761,7 @@ document.addEventListener('keyup', e =>
             && currentMenus[0] == menuColor)
             menuItemColor.setIcon(iconColor);
 
-            
+
         altPressedInMenu = false;
       }
 
@@ -53033,14 +52904,24 @@ generator.onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'uiEndGenMessage':          uiEndGenMessage         ();                                                                                        break;
+        case 'uiEndGenMessage': uiEndGenMessage(); break;
         
-        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.actionId, msg.updateNodeId, msg.updateParamId, msg.values, msg.objects, msg.styles);  break;
+        case 'uiUpdateValuesAndObjects': 
+            uiUpdateValuesAndObjects(
+                parseInt(msg.requestId), 
+                msg.actionId, 
+                msg.updateNodeId, 
+                msg.updateParamId, 
+                msg.values, 
+                msg.objects, 
+                msg.styles);  
+                
+            break;
         
-        case 'uiInitNodeProgress':       uiInitNodeProgress      (msg.nodeId);                                                                              break;
-        case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                                                break;
+        case 'uiInitNodeProgress':   uiInitNodeProgress(msg.nodeId);                 break;
+        case 'uiUpdateNodeProgress': uiUpdateNodeProgress(msg.nodeId, msg.progress); break;
         
-        case 'uiForwardToFigma':         uiQueueMessageToFigma   (msg.msg);                                                                                 break;
+        case 'uiForwardToFigma':     uiQueueMessageToFigma(msg.msg);                 break;
     }
 };
 
@@ -53049,9 +52930,7 @@ generator.onmessage = function(e)
 function uiEndGenMessage()
 {
     genMessagePosted = false;
-    
-    if (!isEmpty(genMessages))
-        uiPostNextMessageToGenerator();
+    uiPostNextMessageToGenerator();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53071,31 +52950,32 @@ function uiQueueMessageToGenerator(msg)
 
 function uiPostNextMessageToGenerator()
 {
-    if (!isEmpty(genMessages))
-    {
-        let msg = genMessages[0];
-        
-        if (msg.cmd == 'genRequest')
-        {
-            // move along the queue since only the last message is important
-            while (genMessages.length > 1
-                && genMessages[1].cmd        == msg.cmd
-                && genMessages[1].request[2] == msg.request[2]
-                && genMessages[1].request[3] == msg.request[3])
-            {
-                genMessages.shift();
-                msg = genMessages[0];
-            }
-        }
+    if (isEmpty(genMessages))
+        return;
 
-        
-        if (!genMessagePosted)
+
+    let msg = genMessages[0];
+    
+    if (msg.cmd == 'genRequest')
+    {
+        // move along the queue since only the last message is important
+        while (genMessages.length > 1
+            && genMessages[1].cmd        == msg.cmd
+            && genMessages[1].request[2] == msg.request[2]
+            && genMessages[1].request[3] == msg.request[3])
         {
             genMessages.shift();
-            uiPostMessageToGenerator(msg);
-
-            genMessagePosted = true;
+            msg = genMessages[0];
         }
+    }
+
+    
+    if (!genMessagePosted)
+    {
+        genMessages.shift();
+        uiPostMessageToGenerator(msg);
+
+        genMessagePosted = true;
     }
 }
 
@@ -53239,6 +53119,170 @@ function setDefaultProductKeyInput()
     productKeyInput.style.outline   = 'none';
     productKeyInput.style.boxShadow = '0 0 0 2px var(--figma-color-bg-brand)'; 
 }
+
+
+var nextRequestId   = 0;
+var lastRequestedId = -1;
+
+
+
+function pushUpdate(action, nodes)
+{
+    pushUpdateFromParam(action, nodes, null);
+}
+
+
+
+function pushUpdateFromParam(action, nodes, param)
+{
+    // first check if any nodes to the left are uncached
+    // and replace in update array as necessary
+
+    for (let i = nodes.length-1; i >= 0; i--)
+    {
+        const node               = nodes[i];
+        const uncachedInputNodes = node.getUncachedInputNodes();
+        
+        if (!isEmpty(uncachedInputNodes))
+        {
+            removeFromArray(nodes, node);
+
+            pushUnique(nodes, uncachedInputNodes);
+
+            for (const uncached of uncachedInputNodes)
+                pushUnique(nodes, getTerminalsAfterNode(uncached));
+
+            param = null;
+        }
+    }
+
+    
+    const set =
+          ((settings.includeLxxColorSpaces ? 1 : 0) << 0)
+        | ((settings.logRequests           ? 1 : 0) << 1);
+
+
+    if (action)
+        actionManager.updateActions.push(action);
+        
+
+    lastRequestedId = nextRequestId++;
+
+    const request = 
+    [
+        lastRequestedId,
+        action ? action.id : -1,
+        set.toString()
+    ];
+
+
+    if (param) request.push(param.node.id, param.id);
+    else       request.push(NULL, NULL);
+
+
+    const gen = createGenObject(param ? param.node : null);
+
+
+    nodes.forEach(n => n.invalidate());
+
+        
+    const terminals = [];
+    nodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
+
+    const uncachedInputNodes = [];
+    terminals.forEach(n => pushUnique(uncachedInputNodes, n.getUncachedInputNodes()));
+    uncachedInputNodes.forEach(n => pushUnique(terminals, getTerminalsAfterNode(n)));
+
+    const progressNodes = [];
+    nodes.forEach(n => pushUnique(progressNodes, getProgressNodesAfterNode(n)));
+
+
+    // if (!isEmpty(progressNodes))
+    // {
+    //     //genMessages = [];
+    //     uiPostMessageToGenerator({cmd: 'genStopGenerate'});
+    // }
+
+
+    for (const node of terminals)
+    {
+        if (gen.passedNodes.includes(node))
+            continue;
+
+        request.push(...getNodeRequest(node, gen));
+        
+        pushUnique(gen.passedNodes, node);
+    }
+
+
+    for (const node of gen.paramNodes)
+    {
+        if (   !terminals.includes(node)
+            && !gen.passedNodes.includes(node))
+            request.push(...getNodeRequest(node, gen));
+    }
+
+
+    if (settings.logRawRequests)
+        console.log(
+            '%c%s%s', 
+            'background: #60aa60; color: #cfd', 
+            'raw request = ', 
+            request.toString());
+
+
+    uiQueueMessageToGenerator({
+        cmd:     'genRequest',
+        request:  request
+    });
+}
+
+
+
+function pushInputOrParam(input, gen)
+{
+    if (    input.connectedOutput.param
+        &&  gen.markParams
+        &&  lastOf(gen.scope).nodeId != input.connectedOutput.node.id)
+    {
+        pushUnique(gen.paramNodes, input.connectedOutput.node);
+
+        return[ PARAM,
+                input.connectedOutput.types[0],
+                input.connectedOutput.node.id,
+                input.connectedOutput.param.id ];
+    }
+    else
+        return input.connectedOutput.genRequest(gen);
+}
+
+
+
+function getNodeRequest(node, gen)
+{
+    const request = [];
+
+
+    if (!isEmpty(node.headerOutputs))
+    {
+        node.headerOutputs
+            .forEach(o =>
+            {
+                const _r = o.genRequest(gen);
+                const  r = [..._r];
+                request.push(...r);
+            });
+    }
+    else
+        request.push(...node.genRequest(gen));
+
+
+    return request;
+}
+
+
+
+
 
 
 
@@ -54727,8 +54771,14 @@ function findConnectedClusters(nodes)
 
 
 
-function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values, objects, styles)
+function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles)
 {
+    if (requestId < lastRequestedId) 
+        return;
+    
+    lastRequestedId = -1;
+
+        
     if (settings.logRawValues)  
         console.log('raw values = ', values);
 
@@ -54793,6 +54843,7 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
             if (node)
             {
                 node.updateValues( 
+                    requestId,
                     actionId,
                     updateNodeId == nodeId ? updateParamId : '',
                     _ids,

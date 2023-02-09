@@ -56,7 +56,7 @@ extends OpColorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const stop = values[paramIds.findIndex(id => id == 'value')];
 
@@ -77,6 +77,6 @@ extends OpColorBase
         }
 
 
-        super.updateValues(actionId, updateParamId, paramIds, values);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 }

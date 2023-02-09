@@ -71,9 +71,9 @@ extends OperatorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values) // virtual
+    updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
     {
-        //super.updateValues(actionId, updateParamId, paramIds, values);
+        //super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 
 
         const val = values[paramIds.findIndex(id => id == 'copy')];

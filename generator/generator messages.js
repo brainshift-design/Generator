@@ -17,7 +17,7 @@ onmessage = function(e)
     switch (msg.cmd)
     {
         case 'genRequest':       genRequest      (msg.request); break;
-        case 'genStopGenerate':  genStopGenerate ();            break;
+        case 'genStopGenerate':  genStopGenerate (msg);         break;
 
         case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);  break;
         case 'genEndFigMessage': genEndFigMessage();            break;

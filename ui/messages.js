@@ -127,14 +127,24 @@ generator.onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'uiEndGenMessage':          uiEndGenMessage         ();                                                                                        break;
+        case 'uiEndGenMessage': uiEndGenMessage(); break;
         
-        case 'uiUpdateValuesAndObjects': uiUpdateValuesAndObjects(msg.actionId, msg.updateNodeId, msg.updateParamId, msg.values, msg.objects, msg.styles);  break;
+        case 'uiUpdateValuesAndObjects': 
+            uiUpdateValuesAndObjects(
+                parseInt(msg.requestId), 
+                msg.actionId, 
+                msg.updateNodeId, 
+                msg.updateParamId, 
+                msg.values, 
+                msg.objects, 
+                msg.styles);  
+                
+            break;
         
-        case 'uiInitNodeProgress':       uiInitNodeProgress      (msg.nodeId);                                                                              break;
-        case 'uiUpdateNodeProgress':     uiUpdateNodeProgress    (msg.nodeId, msg.progress);                                                                break;
+        case 'uiInitNodeProgress':   uiInitNodeProgress(msg.nodeId);                 break;
+        case 'uiUpdateNodeProgress': uiUpdateNodeProgress(msg.nodeId, msg.progress); break;
         
-        case 'uiForwardToFigma':         uiQueueMessageToFigma   (msg.msg);                                                                                 break;
+        case 'uiForwardToFigma':     uiQueueMessageToFigma(msg.msg);                 break;
     }
 };
 
@@ -143,9 +153,7 @@ generator.onmessage = function(e)
 function uiEndGenMessage()
 {
     genMessagePosted = false;
-    
-    if (!isEmpty(genMessages))
-        uiPostNextMessageToGenerator();
+    uiPostNextMessageToGenerator();
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,31 +173,32 @@ function uiQueueMessageToGenerator(msg)
 
 function uiPostNextMessageToGenerator()
 {
-    if (!isEmpty(genMessages))
-    {
-        let msg = genMessages[0];
-        
-        if (msg.cmd == 'genRequest')
-        {
-            // move along the queue since only the last message is important
-            while (genMessages.length > 1
-                && genMessages[1].cmd        == msg.cmd
-                && genMessages[1].request[2] == msg.request[2]
-                && genMessages[1].request[3] == msg.request[3])
-            {
-                genMessages.shift();
-                msg = genMessages[0];
-            }
-        }
+    if (isEmpty(genMessages))
+        return;
 
-        
-        if (!genMessagePosted)
+
+    let msg = genMessages[0];
+    
+    if (msg.cmd == 'genRequest')
+    {
+        // move along the queue since only the last message is important
+        while (genMessages.length > 1
+            && genMessages[1].cmd        == msg.cmd
+            && genMessages[1].request[2] == msg.request[2]
+            && genMessages[1].request[3] == msg.request[3])
         {
             genMessages.shift();
-            uiPostMessageToGenerator(msg);
-
-            genMessagePosted = true;
+            msg = genMessages[0];
         }
+    }
+
+    
+    if (!genMessagePosted)
+    {
+        genMessages.shift();
+        uiPostMessageToGenerator(msg);
+
+        genMessagePosted = true;
     }
 }
 

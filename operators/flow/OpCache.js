@@ -74,7 +74,7 @@ extends OperatorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values) // virtual
+    updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
     {
         const val = values[paramIds.findIndex(id => id == 'value')];
 

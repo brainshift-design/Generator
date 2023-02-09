@@ -30,16 +30,16 @@ extends Operator
     {
         super.invalidate();
 
-        this._color = dataColor_NaN;
+        //this._color = dataColor_NaN;
     }
 
 
 
-    // updateValues(actionId, updateParamId, paramIds, values)
+    // updateValues(requestId, actionId, updateParamId, paramIds, values)
     // {
     //     //logFunction('OpColorBase.updateValues()');
 
-    //     super.updateValues(actionId, updateParamId, paramIds, values);
+    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
         
     //     //this.updateHeader();
     // }

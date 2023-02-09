@@ -800,8 +800,14 @@ function findConnectedClusters(nodes)
 
 
 
-function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values, objects, styles)
+function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles)
 {
+    if (requestId < lastRequestedId) 
+        return;
+    
+    lastRequestedId = -1;
+
+        
     if (settings.logRawValues)  
         console.log('raw values = ', values);
 
@@ -866,6 +872,7 @@ function uiUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, values,
             if (node)
             {
                 node.updateValues( 
+                    requestId,
                     actionId,
                     updateNodeId == nodeId ? updateParamId : '',
                     _ids,

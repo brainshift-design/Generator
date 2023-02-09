@@ -470,6 +470,7 @@ function createNodeProgressBar(node)
 function uiInitNodeProgress(nodeId)
 {
     const node = nodeFromId(nodeId);
+    if (!isValid(node)) return;
 
     node.progressWrapper.style.display = 'block';
 

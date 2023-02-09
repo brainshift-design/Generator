@@ -93,7 +93,10 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
 
-        const valid = !dataColorIsNaN(this.node._color);
+        const valid = 
+            input.connected
+            ? input.node.valid
+            : !dataColorIsNaN(this.node._color);
 
 
         const paramIds = [];
@@ -128,7 +131,7 @@ extends OpColorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const col = values[paramIds.findIndex(id => id == 'value')];
 
@@ -143,7 +146,7 @@ extends OpColorBase
         endNodeProgress(this);
 
         
-        super.updateValues(actionId, updateParamId, paramIds, values);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
 }
 
 

@@ -69,7 +69,7 @@ extends OperatorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         const val    = values[paramIds.findIndex(id => id == 'value' )];
         const length = values[paramIds.findIndex(id => id == 'length')];
@@ -94,7 +94,7 @@ extends OperatorBase
             : Number.MAX_SAFE_INTEGER);
   
         
-        super.updateValues(actionId, updateParamId, paramIds, values);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 

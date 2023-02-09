@@ -8963,6 +8963,7 @@ extends GColorType
         if (this.isCached())
             return this;
 
+            
         const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
         const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
         const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
@@ -9063,7 +9064,6 @@ extends GColorType
 
         this.validate();
 
-
         return this;
     }
 }
@@ -9092,16 +9092,17 @@ function findCorrection(nodeId,
 
     let d = 1;
 
+    dLoop:
     while (d > 1/1024)
     {
-        if (stopGenerate) break;
+        if (stopGenerate) break dLoop;
 
         let _closestColor = [...closestColor];
 
 
         for (let _order = 0; _order < 6; _order++)
         {
-            if (stopGenerate) break;
+            if (stopGenerate) break dLoop;
 
             closestColor = [..._closestColor];
 
@@ -9128,7 +9129,8 @@ function findCorrection(nodeId,
                 nodeId,
                 refOklab,
                 _order, 
-                lockedOrder, locked1,  locked2,  locked3,
+                lockedOrder, 
+                locked1,  locked2,  locked3,
                 closest1, closest2, closest3,
                 start1,   start2,   start3, 
                 end1,     end2,     end3,
@@ -9164,6 +9166,9 @@ function findCorrection(nodeId,
     }
 
     
+    stopGenerate = false;
+
+
     return [
         closestOklab,
         closestOrder,
@@ -9177,7 +9182,8 @@ function findCorrection(nodeId,
 function findCorrectionInOrder(nodeId,
                                refOklab,
                                order, 
-                               lockedOrder, locked1,  locked2,  locked3,
+                               lockedOrder, 
+                               locked1,  locked2,  locked3,
                                closest1, closest2, closest3,
                                start1,   start2,   start3, 
                                end1,     end2,     end3,
@@ -9194,17 +9200,18 @@ function findCorrectionInOrder(nodeId,
     let nSteps3 = locked3 ? 1 : 2;
 
 
+    cLoop:
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
-        if (stopGenerate) break;
+        if (stopGenerate) break cLoop;
 
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
-            if (stopGenerate) break;
+            if (stopGenerate) break cLoop;
 
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
-                if (stopGenerate) break;
+                if (stopGenerate) break cLoop;
 
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 
@@ -11030,7 +11037,7 @@ onmessage = function(e)
     switch (msg.cmd)
     {
         case 'genRequest':       genRequest      (msg.request); break;
-        case 'genStopGenerate':  genStopGenerate ();            break;
+        case 'genStopGenerate':  genStopGenerate (msg);         break;
 
         case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);  break;
         case 'genEndFigMessage': genEndFigMessage();            break;
@@ -11125,32 +11132,33 @@ function genEndFigMessage()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-var lastUpdateNodeId  = NULL;
-var lastUpdateParamId = NULL;
-var lastUpdateValues  = [];
-var lastUpdateObjects = [];
-var lastUpdateStyles  = [];
+var lastUpdateNodeId   =  NULL;
+var lastUpdateParamId  =  NULL;
+var lastUpdateValues   =  [];
+var lastUpdateObjects  =  [];
+var lastUpdateStyles   =  [];
 
-var stopGenerate      = false;
+var stopGenerate       =  false;
 
 
 
 function genRequest(request)
 {
-    const actionId = parseInt(request[0]);
-    const set      = parseInt(request[1]);
+    const requestId             = parseInt(request[0]);
+    const actionId              = parseInt(request[1]);
+    const set                   = parseInt(request[2]);
 
     const includeLxxColorSpaces = (set >> 0) & 1 != 0;
     const logRequests           = (set >> 1) & 1 != 0;
 
 
-    const updateNodeId  = request[2];
-    const updateParamId = request[3];
+    const updateNodeId          = request[3];
+    const updateParamId         = request[4];
 
 
     const parse = new Parse(
         request, 
-        4,
+        5,
         updateNodeId, 
         updateParamId, 
         includeLxxColorSpaces,
@@ -11187,6 +11195,7 @@ function genRequest(request)
 
 
     genUpdateValuesAndObjects(
+        requestId,
         actionId,
         parse.updateNodeId,
         parse.updateParamId,
@@ -11200,8 +11209,9 @@ function genRequest(request)
 
 
 
-function genStopGenerate()
+function genStopGenerate(msg)
 {
+    console.log('%cSTOP', 'color: white; background: #080;');
     stopGenerate = true;
 }
 
@@ -11260,7 +11270,7 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
+function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
     //console.log('1 updateStyles =', [...updateStyles]);
 
@@ -11355,6 +11365,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
             || sc == styleChunkSize)
         {
             genQueueChunk(
+                requestId,
                 actionId,
                 updateNodeId,
                 updateParamId,
@@ -11375,6 +11386,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         || !isEmpty(styleChunk  ))
     {
         genQueueChunk(
+            requestId,
             actionId,
             updateNodeId,
             updateParamId,
@@ -11393,10 +11405,11 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
 
 
 
-function genQueueChunk(actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk)
+function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk)
 {
     genQueueMessageToUI({
         cmd:          'uiUpdateValuesAndObjects',
+        requestId:     requestId,
         actionId:      actionId,
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,

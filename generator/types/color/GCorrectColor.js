@@ -45,6 +45,7 @@ extends GColorType
         if (this.isCached())
             return this;
 
+            
         const order   = this.order   ? this.order  .eval(parse).toValue().toInteger() : null;
         const margin1 = this.margin1 ? this.margin1.eval(parse).toValue()             : null;
         const margin2 = this.margin2 ? this.margin2.eval(parse).toValue()             : null;
@@ -145,7 +146,6 @@ extends GColorType
 
         this.validate();
 
-
         return this;
     }
 }
@@ -174,16 +174,17 @@ function findCorrection(nodeId,
 
     let d = 1;
 
+    dLoop:
     while (d > 1/1024)
     {
-        if (stopGenerate) break;
+        if (stopGenerate) break dLoop;
 
         let _closestColor = [...closestColor];
 
 
         for (let _order = 0; _order < 6; _order++)
         {
-            if (stopGenerate) break;
+            if (stopGenerate) break dLoop;
 
             closestColor = [..._closestColor];
 
@@ -210,7 +211,8 @@ function findCorrection(nodeId,
                 nodeId,
                 refOklab,
                 _order, 
-                lockedOrder, locked1,  locked2,  locked3,
+                lockedOrder, 
+                locked1,  locked2,  locked3,
                 closest1, closest2, closest3,
                 start1,   start2,   start3, 
                 end1,     end2,     end3,
@@ -246,6 +248,9 @@ function findCorrection(nodeId,
     }
 
     
+    stopGenerate = false;
+
+
     return [
         closestOklab,
         closestOrder,
@@ -259,7 +264,8 @@ function findCorrection(nodeId,
 function findCorrectionInOrder(nodeId,
                                refOklab,
                                order, 
-                               lockedOrder, locked1,  locked2,  locked3,
+                               lockedOrder, 
+                               locked1,  locked2,  locked3,
                                closest1, closest2, closest3,
                                start1,   start2,   start3, 
                                end1,     end2,     end3,
@@ -276,17 +282,18 @@ function findCorrectionInOrder(nodeId,
     let nSteps3 = locked3 ? 1 : 2;
 
 
+    cLoop:
     for (let m1 = start1; m1 < end1; m1 += (end1-start1)/nSteps1)
     {
-        if (stopGenerate) break;
+        if (stopGenerate) break cLoop;
 
         for (let m2 = start2; m2 < end2; m2 += (end2-start2)/nSteps2)
         {
-            if (stopGenerate) break;
+            if (stopGenerate) break cLoop;
 
             for (let m3 = start3; m3 < end3; m3 += (end3-start3)/nSteps3)
             {
-                if (stopGenerate) break;
+                if (stopGenerate) break cLoop;
 
                 const [_color, _oklab, _rgb] = getCorrectedColor(color, order, m1, m2, m3);
 

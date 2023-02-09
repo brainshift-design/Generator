@@ -4,7 +4,7 @@ var altPressedInMenu = false;
 
 document.addEventListener('keydown', e =>
 {
-    //let setLastKeyDown = true;
+    let setLastKeyDown = true;
 
 
     // copy
@@ -209,7 +209,7 @@ document.addEventListener('keyup', e =>
             && currentMenus[0] == menuColor)
             menuItemColor.setIcon(iconColor);
 
-            
+
         altPressedInMenu = false;
       }
 

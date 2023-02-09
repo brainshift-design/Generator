@@ -55,7 +55,7 @@ extends OperatorBase
 
 
 
-    updateValues(actionId, updateParamId, paramIds, values)
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
         //logFunction('OpItems.updateValues()');
 
@@ -111,7 +111,7 @@ extends OperatorBase
             this.removeAllParams();
     
         
-        super.updateValues(actionId, updateParamId, paramIds, values);
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
     }
 
 

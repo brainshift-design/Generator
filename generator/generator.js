@@ -1,29 +1,30 @@
-var lastUpdateNodeId  = NULL;
-var lastUpdateParamId = NULL;
-var lastUpdateValues  = [];
-var lastUpdateObjects = [];
-var lastUpdateStyles  = [];
+var lastUpdateNodeId   =  NULL;
+var lastUpdateParamId  =  NULL;
+var lastUpdateValues   =  [];
+var lastUpdateObjects  =  [];
+var lastUpdateStyles   =  [];
 
-var stopGenerate      = false;
+var stopGenerate       =  false;
 
 
 
 function genRequest(request)
 {
-    const actionId = parseInt(request[0]);
-    const set      = parseInt(request[1]);
+    const requestId             = parseInt(request[0]);
+    const actionId              = parseInt(request[1]);
+    const set                   = parseInt(request[2]);
 
     const includeLxxColorSpaces = (set >> 0) & 1 != 0;
     const logRequests           = (set >> 1) & 1 != 0;
 
 
-    const updateNodeId  = request[2];
-    const updateParamId = request[3];
+    const updateNodeId          = request[3];
+    const updateParamId         = request[4];
 
 
     const parse = new Parse(
         request, 
-        4,
+        5,
         updateNodeId, 
         updateParamId, 
         includeLxxColorSpaces,
@@ -60,6 +61,7 @@ function genRequest(request)
 
 
     genUpdateValuesAndObjects(
+        requestId,
         actionId,
         parse.updateNodeId,
         parse.updateParamId,
@@ -73,8 +75,9 @@ function genRequest(request)
 
 
 
-function genStopGenerate()
+function genStopGenerate(msg)
 {
+    console.log('%cSTOP', 'color: white; background: #080;');
     stopGenerate = true;
 }
 
@@ -133,7 +136,7 @@ function clearLastUpdate()
 
 
 
-function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
+function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
     //console.log('1 updateStyles =', [...updateStyles]);
 
@@ -228,6 +231,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
             || sc == styleChunkSize)
         {
             genQueueChunk(
+                requestId,
                 actionId,
                 updateNodeId,
                 updateParamId,
@@ -248,6 +252,7 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
         || !isEmpty(styleChunk  ))
     {
         genQueueChunk(
+            requestId,
             actionId,
             updateNodeId,
             updateParamId,
@@ -266,10 +271,11 @@ function genUpdateValuesAndObjects(actionId, updateNodeId, updateParamId, update
 
 
 
-function genQueueChunk(actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk)
+function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk)
 {
     genQueueMessageToUI({
         cmd:          'uiUpdateValuesAndObjects',
+        requestId:     requestId,
         actionId:      actionId,
         updateNodeId:  updateNodeId,
         updateParamId: updateParamId,
