@@ -219,8 +219,10 @@ class Menu
 
 
         let height = 0;
+        
         for (const item of this.items)
-            height += item.separator ? 17 : 25;
+            if (item.div.style.display != 'none')
+                height += item.separator ? 17 : 25;
 
 
         const graphHeight = graphView.offsetHeight - menuBar.offsetHeight;
