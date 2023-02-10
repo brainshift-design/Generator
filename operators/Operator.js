@@ -780,7 +780,6 @@ class Operator
         this.labelText.innerHTML = 
               (settings.showNodeId ? this.id : this.name)
             + (this.active && this.getCanShowActive() ? '  ‣' : '');
-        
 
         this.label.style.left = '50%';//'calc(50% + ' + (this.active ? '30px' : '0px') + ')';
         this.label.style.top  = '50%';

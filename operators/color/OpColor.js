@@ -324,8 +324,6 @@ extends OpColorBase
 
     updateHeader()
     {
-        //console.log(this.id + '.OpColor.updateHeader()');
-
         super.updateHeader();
 
         
@@ -333,7 +331,6 @@ extends OpColorBase
 
         
         const colors = this.getHeaderColors();
-
 
         const unknownBackStyle = isDarkMode() ? '#444' : '#ccc';
 

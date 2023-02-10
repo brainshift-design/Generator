@@ -45,9 +45,8 @@ function createNodeLabel(node)
 
 function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
 {
-    //console.log('updateHeaderLabelOffset('+f+')');
-
     node.labelOffsetFactor = Math.min(Math.max(0, f), 1);
+
 
     const margin     = 15;
     const viewMargin = margin * graphView.zoom;
@@ -55,7 +54,7 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
     const wrect      = boundingRect(node.labelWrapper);
     const rect       = boundingRect(node.label);
 
-    const rw         = wrect.width - viewMargin*2;
+    const rw         = wrect.width  - viewMargin*2;
     const sf         = rw / nozero(rect.width);
     const df         = viewMargin / rect.width / 2;
         
@@ -74,7 +73,7 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
             - node.labelOffsetFactor * (rect.width - rw - 1) / graphView.zoom
             + (node.active ? activeOffset : 0);
 
-        node.label.style.transform = 'translateY(calc(-50% - 0.5px))';
+        //node.label.style.transform = 'translateY(-' + Math.round(rect.height/2) + 'px)';
     }
     else
     {
@@ -84,22 +83,25 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
             + ')';
 
         node.label.style.transform = 
-              'translateX(-50%) '
-            + 'translateY(calc(-50% - 0.5px))';
+              'translateX(-50%) ';
+//            + 'translateY(-' + Math.round(rect.height/2) + 'px)';
     }
+
+
+    node.label.style.top = Math.floor(node.labelWrapper.offsetHeight/2 - node.label.offsetHeight/2) + 'px';
 
 
     const color = 
         node.label.style.color.trim() != ''
-        ? node.label.style.color
+        ?  node.label.style.color
         : 'black';
 
     node.label.style.background = 
           'linear-gradient(90deg, '
-        + '#0000 ' + (s0 * 100) + '%, '
-        + color + ' ' + (s1 * 100) + '%, '
-        + color + ' ' + (s2 * 100) + '%, '
-        + '#0000 ' + (s3 * 100) + '%)';
+        + '#0000 '     + (s0 * 100) + '%, '
+        +  color + ' ' + (s1 * 100) + '%, '
+        +  color + ' ' + (s2 * 100) + '%, '
+        + '#0000 '     + (s3 * 100) + '%)';
 
     node.label.style.WebkitBackgroundClip = 'text';
     node.label.style.WebkitTextFillColor  = 'transparent';
