@@ -522,7 +522,10 @@ function setNodePosition(node, x, y, updateTransform = true)
     node.div.style.top  = y;
 
     if (updateTransform)
+    {
+        node.div.style.display = 'block';
         graphView.updateNodeTransform(node);
+    }
 }
 
 

@@ -2397,6 +2397,7 @@ a
                 <p>Dark mode is now fully supported</p>
                 <p>Added context menus</p>
                 <p>Color can be linked directly to Figma's styles (only solid colors for now, opacity etc. will be added later)</p>
+                <p>Invalid color stripes now become colorful to show how far out of sRGB the color is</p>
                 <p>Simple comments can now be added to the graph</p>
                 <p>More features will now be available by subscription</p>
                 <img src="http://www.bourt.com/generator/whatsnew/94/test.jpg" />
@@ -17385,6 +17386,17 @@ function getDefaultWarningStyle(rgb)
 }
 
 
+
+function clipRgb(rgb)
+{
+    rgb[0] = Math.min(Math.max(0, rgb[0]), 1);   
+    rgb[1] = Math.min(Math.max(0, rgb[1]), 1);   
+    rgb[2] = Math.min(Math.max(0, rgb[2]), 1); 
+
+    return rgb;
+}
+
+
 const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
 const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
 const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));
@@ -23016,6 +23028,17 @@ function getDefaultWarningStyle(rgb)
     return !rgbIsNaN(rgb)
          ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
          : (isDarkMode() ? '#ffffff08' : '#00000006'); 
+}
+
+
+
+function clipRgb(rgb)
+{
+    rgb[0] = Math.min(Math.max(0, rgb[0]), 1);   
+    rgb[1] = Math.min(Math.max(0, rgb[1]), 1);   
+    rgb[2] = Math.min(Math.max(0, rgb[2]), 1); 
+
+    return rgb;
 }
 
 
@@ -43405,7 +43428,10 @@ function setNodePosition(node, x, y, updateTransform = true)
     node.div.style.top  = y;
 
     if (updateTransform)
+    {
+        node.div.style.display = 'block';
         graphView.updateNodeTransform(node);
+    }
 }
 
 
@@ -46062,7 +46088,8 @@ extends Operator
             
         const rgbaBorder = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
 
-        const rgbText = getTextColorFromBackColor(rgbBack);
+        const rgbText  = getTextColorFromBackColor(rgbBack);
+        //const rgbLabel = getTextColorFromBackColor(clipRgb(rgbBack));
 
         const rgbaWire = 
             !rgbIsNaN(rgbBack)   
@@ -46073,6 +46100,7 @@ extends Operator
             back:   rgb_a(rgbBack, 1  ), 
             border: rgbaBorder,
             text:   rgb_a(rgbText, 0.9),
+            //label:  rgb_a(rgbLabel, 0.9),
             input:  rgb_a(rgbText, 0.2),
             output: rgb_a(rgbText, 0.2),
             wire:   rgbaWire };
@@ -46519,7 +46547,7 @@ extends OpColorBase
         this.colorBack.style.backgroundRepeat   = 'no-repeat';
 
 
-        this.label.style.color                = rgb2style(colors.text);
+        this.label.style.color = rgba2style(colors.text);
         //this.paramSpace.control.textbox.color = rgb2style(colors.text);
 
         

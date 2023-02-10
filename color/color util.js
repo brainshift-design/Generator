@@ -216,3 +216,14 @@ function getDefaultWarningStyle(rgb)
          ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
          : (isDarkMode() ? '#ffffff08' : '#00000006'); 
 }
+
+
+
+function clipRgb(rgb)
+{
+    rgb[0] = Math.min(Math.max(0, rgb[0]), 1);   
+    rgb[1] = Math.min(Math.max(0, rgb[1]), 1);   
+    rgb[2] = Math.min(Math.max(0, rgb[2]), 1); 
+
+    return rgb;
+}

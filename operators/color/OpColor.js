@@ -351,7 +351,7 @@ extends OpColorBase
         this.colorBack.style.backgroundRepeat   = 'no-repeat';
 
 
-        this.label.style.color                = rgb2style(colors.text);
+        this.label.style.color = rgba2style(colors.text);
         //this.paramSpace.control.textbox.color = rgb2style(colors.text);
 
         

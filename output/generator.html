@@ -14786,6 +14786,17 @@ function getDefaultWarningStyle(rgb)
 }
 
 
+
+function clipRgb(rgb)
+{
+    rgb[0] = Math.min(Math.max(0, rgb[0]), 1);   
+    rgb[1] = Math.min(Math.max(0, rgb[1]), 1);   
+    rgb[2] = Math.min(Math.max(0, rgb[2]), 1); 
+
+    return rgb;
+}
+
+
 const lmsW = xyz2lms(lrgb2xyz([1, 1, 1]));
 const lmsB = xyz2lms(lrgb2xyz([0, 0, 1]));
 const lmsR = xyz2lms(lrgb2xyz([1, 0, 0]));

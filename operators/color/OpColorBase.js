@@ -127,7 +127,8 @@ extends Operator
             
         const rgbaBorder = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
 
-        const rgbText = getTextColorFromBackColor(rgbBack);
+        const rgbText  = getTextColorFromBackColor(rgbBack);
+        //const rgbLabel = getTextColorFromBackColor(clipRgb(rgbBack));
 
         const rgbaWire = 
             !rgbIsNaN(rgbBack)   
@@ -138,6 +139,7 @@ extends Operator
             back:   rgb_a(rgbBack, 1  ), 
             border: rgbaBorder,
             text:   rgb_a(rgbText, 0.9),
+            //label:  rgb_a(rgbLabel, 0.9),
             input:  rgb_a(rgbText, 0.2),
             output: rgb_a(rgbText, 0.2),
             wire:   rgbaWire };
