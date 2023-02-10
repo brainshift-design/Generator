@@ -299,7 +299,7 @@ function createNodeHeader(node)
                     // }
                 }
             }
-            else if (tempConn.input
+            else if ( tempConn.input
                   && !node.isOrFollows(tempConn.input.node))
             {
                 const output = node.getAutoOutput(tempConn.input.types);

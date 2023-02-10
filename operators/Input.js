@@ -23,7 +23,9 @@ extends EventTarget
     colorLight;
     colorDark;
 
-  
+    wireColor;
+
+    
     div;
     hitbox;
     wireBall;
@@ -99,7 +101,7 @@ extends EventTarget
         this.colorLight       = [0, 0, 0, 1];
         this.colorDark        = [1, 1, 1, 1];
 
-        //this.wireColor        = rgbHeaderFromType(this.types[0], true);
+        this.wireColor        = rgbHeaderFromType(this.types[0], true);
 
         
         this.div.appendChild(this.hitbox);

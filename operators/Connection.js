@@ -85,9 +85,12 @@ class Connection
             return     this.output
                    && !rgbIsNaN(this.output.wireColor)
                  ?  this.output.wireColor
-                 : !isEmpty(types)
-                 ? rgb_a(rgbHeaderFromType(types[0], true), 1)
-                 : rgbaInvalid;
+                 :     this.input
+                   && !rgbIsNaN(this.input.wireColor)
+                   ?  this.input.wireColor
+                   : !isEmpty(types)
+                     ? rgb_a(rgbHeaderFromType(types[0], true), 1)
+                     : rgbaInvalid;
         };
     }
 

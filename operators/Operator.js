@@ -189,7 +189,7 @@ class Operator
 
     getAutoInput(output)
     {
-        const inputs = this.inputs.filter(i => 
+        const inputs = this.headerInputs.filter(i => 
                i.canAutoConnect
             && i.canConnectFrom(output));
 
@@ -276,7 +276,7 @@ class Operator
  
     getAutoOutput(inputTypes)
     {
-        const outputs = this.outputs.filter(o => inputTypes.includes(o.type));
+        const outputs = this.headerOutputs.filter(o => arraysIntersect(o.types, inputTypes));
 
         return  outputs.length == 1
             && !this.isOrFollows(graphView.tempConn.input.node)
