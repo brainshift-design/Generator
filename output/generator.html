@@ -14466,6 +14466,16 @@ function rgbLerp(rgb1, rgb2, t)
 
 
 
+function rgbaLerp(rgba1, rgba2, t)
+{
+    return [ lerp(rgba1[0], rgba2[0], t),
+             lerp(rgba1[1], rgba2[1], t),
+             lerp(rgba1[2], rgba2[2], t),
+             lerp(rgba1[3], rgba2[3], t) ];
+}
+
+
+
 function rgbAdd(rgb1, rgb2)
 {
     return [ rgb1[0] + rgb2[0],
@@ -14755,6 +14765,15 @@ function getTextColorFromBackColor(rgb, opacity = 1)
                ? (isDark(rgb)  ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75])
                : (isDarkMode() ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75]))
            : (isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight);
+}
+
+
+
+function getDefaultWarningRgba(rgb)
+{
+    return !rgbIsNaN(rgb)
+         ? (isDark(rgb)  ? [1, 1, 1, 0.133] : [0, 0, 0, 0.161])  
+         : (isDarkMode() ? [1, 1, 1, 0.031] : [0, 0, 0, 0.031]);  
 }
 
 

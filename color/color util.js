@@ -201,6 +201,15 @@ function getTextColorFromBackColor(rgb, opacity = 1)
 
 
 
+function getDefaultWarningRgba(rgb)
+{
+    return !rgbIsNaN(rgb)
+         ? (isDark(rgb)  ? [1, 1, 1, 0.133] : [0, 0, 0, 0.161])  
+         : (isDarkMode() ? [1, 1, 1, 0.031] : [0, 0, 0, 0.031]);  
+}
+
+
+
 function getDefaultWarningStyle(rgb)
 {
     return !rgbIsNaN(rgb)

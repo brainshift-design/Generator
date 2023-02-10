@@ -89,6 +89,16 @@ function rgbLerp(rgb1, rgb2, t)
 
 
 
+function rgbaLerp(rgba1, rgba2, t)
+{
+    return [ lerp(rgba1[0], rgba2[0], t),
+             lerp(rgba1[1], rgba2[1], t),
+             lerp(rgba1[2], rgba2[2], t),
+             lerp(rgba1[3], rgba2[3], t) ];
+}
+
+
+
 function rgbAdd(rgb1, rgb2)
 {
     return [ rgb1[0] + rgb2[0],

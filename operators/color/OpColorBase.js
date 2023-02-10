@@ -184,6 +184,37 @@ extends Operator
             ? this.header.offsetHeight
             : height;
 
+
+        const hsvBack = rgb2hsv(colBack);
+
+        const hsvBack1 = [...hsvBack];
+        const hsvBack2 = [...hsvBack];
+
+        hsvBack1[0] = hsvBack1[0] + 1/3;  if (hsvBack1[0] > 1) hsvBack1[0]--;
+        hsvBack2[0] = hsvBack2[0] + 2/3;  if (hsvBack2[0] > 1) hsvBack2[0]--;
+
+        const altBack1 = rgb_a(hsv2rgb(hsvBack1), 0.5);
+        const altBack2 = rgb_a(hsv2rgb(hsvBack2), 0.5);
+
+        const colWarning = getDefaultWarningRgba(colBack);
+
+
+        let dr, dg, db;
+         
+        if (colBack[0] < 0) dr = -colBack[0]; else if (colBack[0] > 1) dr = colBack[0] - 1; else dr = 0;
+        if (colBack[1] < 0) dg = -colBack[0]; else if (colBack[1] > 1) dg = colBack[1] - 1; else dg = 0;
+        if (colBack[2] < 0) db = -colBack[0]; else if (colBack[2] > 1) db = colBack[2] - 1; else db = 0;
+        
+        const factor = Math.min(Math.max(dr, dg, dg), 1) * 1.5;
+
+
+        const colWarn1 = rgbaLerp(colWarning, altBack1, factor);
+        const colWarn2 = rgbaLerp(colWarning, altBack2, factor);
+        
+        const warnStyle1 = rgba2style(colWarn1); //this.warningStyle;
+        const warnStyle2 = rgba2style(colWarn2); //this.warningStyle;
+
+        
         this._warningOverlay.style.background =
                 rgbIsOk(colBack)
             && !this.forceShowWarning
@@ -191,7 +222,9 @@ extends Operator
             : 'repeating-linear-gradient('
                + '-45deg, '
                + 'transparent 0 7px,'
-               +  this.warningStyle + ' 7px 14px)';
+               +  warnStyle1 + ' 7px 14px,'
+               + 'transparent 14px 21px,'
+               +  warnStyle2 + ' 21px 28px)';
 
         this._warningOverlay.style.display = 'block';
     }
