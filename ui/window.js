@@ -1,8 +1,10 @@
-document.canResizeX = false;
-document.canResizeY = false;
+document.canResizeL = false;
+document.canResizeR = false;
+document.canResizeB = false;
    
-document.resizingX  = false;
-document.resizingY  = false;
+document.resizingL  = false;
+document.resizingR  = false;
+document.resizingB  = false;
 
 document.startRect  = new Rect();
 
@@ -20,14 +22,36 @@ function checkResize(x, y)
 {
     const resizeEdgeWidth = 8;
 
-    document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
-    document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
+    document.canResizeL =                              x <= resizeEdgeWidth;
+    document.canResizeR = document.body.clientWidth  - x <= resizeEdgeWidth;
+    document.canResizeB = document.body.clientHeight - y <= resizeEdgeWidth;
 
-         if (document.canResizeX
-          && document.canResizeY) setCursor('nwse-resize', false); 
-    else if (document.canResizeX) setCursor('ew-resize',   false);   
-    else if (document.canResizeY) setCursor('ns-resize',   false);   
-    else                          setAutoCursor();
+    if (       document.canResizeR
+            && document.canResizeB) setCursor('nwse-resize', false); 
+    else if (  document.canResizeL
+            && document.canResizeB) setCursor('nesw-resize', false); 
+    else if (document.canResizeL
+          || document.canResizeR)   setCursor('ew-resize',   false);   
+    else if (document.canResizeB)   setCursor('ns-resize',   false);   
+    else                            setAutoCursor();
+}
+
+
+
+function uiSetWindowRect(x, y, width, height)
+{
+    console.log('x =',      x);
+    console.log('y =',      y);
+    console.log('width =',  width);
+    console.log('height =', height);
+
+    uiQueueMessageToFigma({ 
+        cmd:   'figSetWindowRect', 
+        x:      x,
+        y:      y,
+        width:  Math.max(500, width),
+        height: height
+    });
 }
 
 
@@ -50,12 +74,6 @@ function uiReturnFigResizeWindow()
         graphView.updatePanAndZoom();
         updateWhatsNewScrollbar(0);
     }
-
-    // btnZoom.style.top  = 0;
-    // btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;
-
-    // btnToggleWires.style.top  = 0;
-    // btnToggleWires.style.left = btnZoom.offsetLeft - btnToggleWires.offsetWidth;
 }
 
 
@@ -77,7 +95,7 @@ function onClassChange(element, callback)
         mutations.forEach((mutation) => 
         {
             if (   mutation.type          == 'attributes' 
-                && mutation.attributeName == 'class') 
+                && mutation.attributeName == 'class'    ) 
                 callback(mutation.target);
         });
     });
@@ -86,3 +104,12 @@ function onClassChange(element, callback)
 
     return observer.disconnect;
 }
+
+
+
+function dockWindowNormal  () { uiQueueMessageToFigma({cmd: 'figDockWindowNormal'  }); }
+function dockWindowMaximize() { uiQueueMessageToFigma({cmd: 'figDockWindowMaximize'}); }
+function dockWindowTop     () { uiQueueMessageToFigma({cmd: 'figDockWindowTop'     }); }
+function dockWindowLeft    () { uiQueueMessageToFigma({cmd: 'figDockWindowLeft'    }); }
+function dockWindowRight   () { uiQueueMessageToFigma({cmd: 'figDockWindowRight'   }); }
+function dockWindowBottom  () { uiQueueMessageToFigma({cmd: 'figDockWindowBottom'  }); }

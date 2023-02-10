@@ -14,7 +14,7 @@ extends NumberParamBase
                 options,
                 defaultValue = 0)
     {
-        super(NUMBER, id, name);
+        super(NUMBER_VALUE, id, name);
 
         this.control        = createDiv();
         
@@ -117,7 +117,7 @@ extends NumberParamBase
 
             ? [ ...pushInputOrParam(this.input, createGenObject()) ]
 
-            : [ NUMBER, 
+            : [ NUMBER_VALUE, 
                 this.value.toString(), 
                 this.control.displayDec.toString() ];
     }

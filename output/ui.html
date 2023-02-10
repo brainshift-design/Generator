@@ -1,7 +1,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> -->
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -2599,6 +2598,8 @@ a
 
 
 <script id='generatorScript' type='javascript/worker'>
+'use strict';
+
 
 
 
@@ -11688,12 +11689,14 @@ extends GColorType
                 else
                 {
                     if (!rgbIsOk(rgb))
+                    {
                         genQueueMessageToUI(
                         {
                             cmd:   'uiInitNodeProgress',
                             nodeId: this.nodeId
                         });
-
+                    }
+                    
 
                     const inputColor = input.toDataColor();
 
@@ -11806,17 +11809,16 @@ extends GColorType
         {
             const input = this.input.eval(parse).toValue();
 
-
             if (   isValid(this.order  ) && this.order  .isValid()
                 && isValid(this.margin1) && this.margin1.isValid()
                 && isValid(this.margin2) && this.margin2.isValid()
                 && isValid(this.margin3) && this.margin3.isValid()
                 && isValid(this.value  ) && this.value  .isValid())
             {
-                genPushUpdateValue(parse, this.nodeId, 'order'  , order     );
-                genPushUpdateValue(parse, this.nodeId, 'margin1', margin1   );
-                genPushUpdateValue(parse, this.nodeId, 'margin2', margin2   );
-                genPushUpdateValue(parse, this.nodeId, 'margin3', margin3   );
+                genPushUpdateValue(parse, this.nodeId, 'order'  , this.order     );
+                genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1   );
+                genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2   );
+                genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3   );
                 genPushUpdateValue(parse, this.nodeId, 'value'  , this.value);
             }
             else
@@ -29383,12 +29385,14 @@ extends GColorType
                 else
                 {
                     if (!rgbIsOk(rgb))
+                    {
                         genQueueMessageToUI(
                         {
                             cmd:   'uiInitNodeProgress',
                             nodeId: this.nodeId
                         });
-
+                    }
+                    
 
                     const inputColor = input.toDataColor();
 
@@ -29501,17 +29505,16 @@ extends GColorType
         {
             const input = this.input.eval(parse).toValue();
 
-
             if (   isValid(this.order  ) && this.order  .isValid()
                 && isValid(this.margin1) && this.margin1.isValid()
                 && isValid(this.margin2) && this.margin2.isValid()
                 && isValid(this.margin3) && this.margin3.isValid()
                 && isValid(this.value  ) && this.value  .isValid())
             {
-                genPushUpdateValue(parse, this.nodeId, 'order'  , order     );
-                genPushUpdateValue(parse, this.nodeId, 'margin1', margin1   );
-                genPushUpdateValue(parse, this.nodeId, 'margin2', margin2   );
-                genPushUpdateValue(parse, this.nodeId, 'margin3', margin3   );
+                genPushUpdateValue(parse, this.nodeId, 'order'  , this.order     );
+                genPushUpdateValue(parse, this.nodeId, 'margin1', this.margin1   );
+                genPushUpdateValue(parse, this.nodeId, 'margin2', this.margin2   );
+                genPushUpdateValue(parse, this.nodeId, 'margin3', this.margin3   );
                 genPushUpdateValue(parse, this.nodeId, 'value'  , this.value);
             }
             else
@@ -32735,12 +32738,12 @@ function initGeneratorMenus()
     menuWindow = new Menu('Window options', true, false);
     menuWindow.showOnLeft = true;
     menuWindow.addItems([
-        menuItemWindowNormal   = new MenuItem('Normal',   {icon: iconWindowNormal,     shortcut: osAlt() + '0'}),
-        menuItemWindowMaximize = new MenuItem('Maximize', {icon: iconWindowMaximize,   shortcut: osAlt() + '8'}),
-        menuItemWindowLeft     = new MenuItem('Left',     {icon: iconWindowDockLeft,   shortcut: osAlt() + '1'}),
-        menuItemWindowTop      = new MenuItem('Top',      {icon: iconWindowDockTop,    shortcut: osAlt() + '5', callback: () => dockWindowTop()}),
-        menuItemWindowRight    = new MenuItem('Right',    {icon: iconWindowDockRight,  shortcut: osAlt() + '3'}),
-        menuItemWindowBottom   = new MenuItem('Bottom',   {icon: iconWindowDockBottom, shortcut: osAlt() + '2', callback: () => dockWindowTop()})]);
+        menuItemWindowNormal   = new MenuItem('Normal',   {icon: iconWindowNormal,     shortcut: osAlt() + '0', callback: () => dockWindowNormal  ()}),
+        menuItemWindowMaximize = new MenuItem('Maximize', {icon: iconWindowMaximize,   shortcut: osAlt() + '8', callback: () => dockWindowMaximize()}),
+        menuItemWindowTop      = new MenuItem('Top',      {icon: iconWindowDockTop,    shortcut: osAlt() + '5', callback: () => dockWindowTop     ()}),
+        menuItemWindowLeft     = new MenuItem('Left',     {icon: iconWindowDockLeft,   shortcut: osAlt() + '1', callback: () => dockWindowLeft    ()}),
+        menuItemWindowRight    = new MenuItem('Right',    {icon: iconWindowDockRight,  shortcut: osAlt() + '3', callback: () => dockWindowRight   ()}),
+        menuItemWindowBottom   = new MenuItem('Bottom',   {icon: iconWindowDockBottom, shortcut: osAlt() + '2', callback: () => dockWindowTop     ()})]);
 
 
     menuZoom = new Menu('Zoom/view options');
@@ -36713,8 +36716,9 @@ graphView.addEventListener('pointerdown', e =>
 
     if (   e.button == 0
         && !graphView.panning
-        && !document.canResizeX
-        && !document.canResizeY
+        && !document.canResizeL
+        && !document.canResizeR
+        && !document.canResizeB
         && !scrollbarX.moving
         && !scrollbarY.moving)
     {
@@ -38401,7 +38405,7 @@ extends NumberParamBase
                 options,
                 defaultValue = 0)
     {
-        super(NUMBER, id, name);
+        super(NUMBER_VALUE, id, name);
 
         this.control        = createDiv();
         
@@ -38504,7 +38508,7 @@ extends NumberParamBase
 
             ? [ ...pushInputOrParam(this.input, createGenObject()) ]
 
-            : [ NUMBER, 
+            : [ NUMBER_VALUE, 
                 this.value.toString(), 
                 this.control.displayDec.toString() ];
     }
@@ -39766,8 +39770,8 @@ class Graph
         
         if (placeNode)
             graphView.placeNewNode(node);
-        
-        node.div.style.zIndex = graph.nodes.length-1;
+
+        node.div.style.zIndex  = graph.nodes.length-1;
 
 
         graphView.putNodeOnTop(node);
@@ -39807,6 +39811,8 @@ class Graph
 
             node.selected = false;
             node.graph    = null;
+
+            node.div.style.display = 'none';
 
             removeFromArray(this.nodes, node);  
             graphView.removeChild(node.div);
@@ -47660,7 +47666,7 @@ extends OpColorBase
         this.alwaysSaveParams = true;
 
         
-        this.addParam(this.paramQuality = new SelectParam('quality', '', false, true, false, ['simple', 'accurate'], 1));
+        this.addParam(this.paramQuality = new SelectParam('quality', '', false, true, false, ['fast', 'accurate'], 1));
 
 
         this.initCorrections('');
@@ -47705,14 +47711,14 @@ extends OpColorBase
         request.push(...this.node.paramQuality.genRequest(gen));
 
 
-        const valid = 
+        const cached = 
             (input.connected
              ?  input.node.valid
              : !dataColorIsNaN(this.node._color))
             || !this.node.enabled;
 
         request.push(COLOR_VALUE, (
-            valid
+            cached
             ? ColorValue.fromDataColor(this.node._color)
             : ColorValue.NaN).toString()); // value
 
@@ -47859,7 +47865,10 @@ extends OpColorBase
     loadParams(_node, pasting)
     {
         if (_node.value != undefined)
+        {
             this._color = parseColorValue(_node.value)[0].toDataColor();
+            this.valid = true;
+        }
 
         if (!dataColorIsValid(this._color))
             uiInitNodeProgress(this.id);
@@ -47963,10 +47972,11 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
 
-        const valid = 
-            (input.connected
-             ?  input.node.valid
-             : !dataColorIsNaN(this.node._color))
+        const cached = 
+               (input.connected
+                ?    input.node.valid
+                  //|| !dataColorIsNaN(this.node._color)
+                : !dataColorIsNaN(this.node._color))
             || !this.node.enabled;
 
 
@@ -47975,7 +47985,7 @@ extends OpColorBase
         for (const param of this.node.params)
             if (      param.input 
                    && param.input.connected
-                || valid)
+                || cached)
                 paramIds.push(param.id);
 
         paramIds.push('value');
@@ -47983,14 +47993,14 @@ extends OpColorBase
         request.push(paramIds.join(','));
 
         
-        if (this.node.paramOrder.input.connected || valid) request.push(...this.node.paramOrder.genRequest(gen));
-        if (this.node.param1    .input.connected || valid) request.push(...this.node.param1    .genRequest(gen));
-        if (this.node.param2    .input.connected || valid) request.push(...this.node.param2    .genRequest(gen));
-        if (this.node.param3    .input.connected || valid) request.push(...this.node.param3    .genRequest(gen));
+        if (this.node.paramOrder.input.connected || cached) request.push(...this.node.paramOrder.genRequest(gen));
+        if (this.node.param1    .input.connected || cached) request.push(...this.node.param1    .genRequest(gen));
+        if (this.node.param2    .input.connected || cached) request.push(...this.node.param2    .genRequest(gen));
+        if (this.node.param3    .input.connected || cached) request.push(...this.node.param3    .genRequest(gen));
 
-        
+ 
         request.push(COLOR_VALUE, (
-            valid
+            cached
             ? ColorValue.fromDataColor(this.node._color)
             : ColorValue.NaN).toString()); // value
 
@@ -48201,13 +48211,16 @@ extends OpColorBase
 
     loadParams(_node, pasting)
     {
+        super.loadParams(_node, pasting);
+
         if (_node.value != undefined)
+        {
             this._color = parseColorValue(_node.value)[0].toDataColor();
+            this.valid = true;
+        }
 
         if (!dataColorIsValid(this._color))
             uiInitNodeProgress(this.id);
-
-        super.loadParams(_node, pasting);
     }
 }
 
@@ -52957,8 +52970,9 @@ document.addEventListener('pointerdown', function(e)
 {
     if (e.button == 0)
     {
-        if (   document.canResizeX
-            || document.canResizeY)
+        if (   document.canResizeL
+            || document.canResizeR
+            || document.canResizeB)
         {
             document.startRect = new Rect(
                 e.clientX,
@@ -52968,8 +52982,9 @@ document.addEventListener('pointerdown', function(e)
 
             document.body.setPointerCapture(e.pointerId);
 
-            document.resizingX = document.canResizeX;
-            document.resizingY = document.canResizeY;
+            document.resizingL = document.canResizeL;
+            document.resizingR = document.canResizeR;
+            document.resizingB = document.canResizeB;
         }
     }
 
@@ -52981,20 +52996,37 @@ document.addEventListener('pointerdown', function(e)
 
 document.addEventListener('pointermove', function(e)
 {
-    if (   document.resizingX
-        && document.resizingY)
+    if (   document.resizingR
+        && document.resizingB)
     {
         uiResizeWindow(
             document.startRect.w + e.clientX - document.startRect.x,
             document.startRect.h + e.clientY - document.startRect.y);
     }
-    else if (document.resizingX)
+    else if (document.resizingL
+          && document.resizingB)
+    {
+        uiSetWindowRect(
+            e.clientX,
+            e.clientY,
+            document.startRect.w - e.clientX + document.startRect.x,
+            document.startRect.h + e.clientY - document.startRect.y);
+    }
+    else if (document.resizingL)
+    {
+        uiSetWindowRect(
+            e.clientX,
+            Number.NaN,
+            document.startRect.w - e.clientX + document.startRect.x,
+            window.innerHeight);
+    }
+    else if (document.resizingR)
     {
         uiResizeWindow(
             document.startRect.w + e.clientX - document.startRect.x,
             window.innerHeight);
     }
-    else if (document.resizingY)
+    else if (document.resizingB)
     {
         uiResizeWindow(
             window.innerWidth,
@@ -53008,15 +53040,17 @@ document.addEventListener('pointermove', function(e)
 
 document.addEventListener('pointerup', function(e)
 {
-     if (   document.resizingX
-         || document.resizingY)
+     if (   document.resizingL
+         || document.resizingR
+         || document.resizingB)
     {
         checkResize(e.clientX, e.clientY);
         document.body.releasePointerCapture(e.pointerId);
     }
 
-    document.resizingX = false;
-    document.resizingY = false;
+    document.resizingL = false;
+    document.resizingR = false;
+    document.resizingB = false;
 
     scrollbarX.moving  = false;
     scrollbarY.moving  = false;
@@ -53741,7 +53775,8 @@ function pushUpdateFromParam(action, nodes, param)
     const gen = createGenObject(param ? param.node : null);
 
 
-    nodes.forEach(n => n.invalidate());
+    if (!graphView.loadingNodes)
+        nodes.forEach(n => n.invalidate());
 
         
     const terminals = [];
@@ -54185,14 +54220,14 @@ function finishLoading()
     clearTimeout(dataModeTimeout);
     dataModeTimeout = null;
 
-    graphView.loadingNodes   = false;
     graphView.canUpdateNodes = true;
 
     graphView.updateShowWires(false);
 
     generatorStarted = true;
 
-    loadingOverlay.style.display = 'none';
+    //graphView.loadingNodes       = false;
+    //loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
 }
 
 
@@ -55337,6 +55372,10 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     lastRequestedId = -1;
 
         
+    graphView.loadingNodes       = false;
+    loadingOverlay.style.display = 'none'; // for loading
+
+
     if (settings.logRawValues)  
         console.log('raw values = ', values);
 
@@ -56160,11 +56199,13 @@ function updateWhatsNewScrollY(x, w, h, bounds, yOffset)
 }
 
 
-document.canResizeX = false;
-document.canResizeY = false;
+document.canResizeL = false;
+document.canResizeR = false;
+document.canResizeB = false;
    
-document.resizingX  = false;
-document.resizingY  = false;
+document.resizingL  = false;
+document.resizingR  = false;
+document.resizingB  = false;
 
 document.startRect  = new Rect();
 
@@ -56182,14 +56223,36 @@ function checkResize(x, y)
 {
     const resizeEdgeWidth = 8;
 
-    document.canResizeX = document.body.clientWidth  - x <= resizeEdgeWidth;
-    document.canResizeY = document.body.clientHeight - y <= resizeEdgeWidth;
+    document.canResizeL =                              x <= resizeEdgeWidth;
+    document.canResizeR = document.body.clientWidth  - x <= resizeEdgeWidth;
+    document.canResizeB = document.body.clientHeight - y <= resizeEdgeWidth;
 
-         if (document.canResizeX
-          && document.canResizeY) setCursor('nwse-resize', false); 
-    else if (document.canResizeX) setCursor('ew-resize',   false);   
-    else if (document.canResizeY) setCursor('ns-resize',   false);   
-    else                          setAutoCursor();
+    if (       document.canResizeR
+            && document.canResizeB) setCursor('nwse-resize', false); 
+    else if (  document.canResizeL
+            && document.canResizeB) setCursor('nesw-resize', false); 
+    else if (document.canResizeL
+          || document.canResizeR)   setCursor('ew-resize',   false);   
+    else if (document.canResizeB)   setCursor('ns-resize',   false);   
+    else                            setAutoCursor();
+}
+
+
+
+function uiSetWindowRect(x, y, width, height)
+{
+    console.log('x =',      x);
+    console.log('y =',      y);
+    console.log('width =',  width);
+    console.log('height =', height);
+
+    uiQueueMessageToFigma({ 
+        cmd:   'figSetWindowRect', 
+        x:      x,
+        y:      y,
+        width:  Math.max(500, width),
+        height: height
+    });
 }
 
 
@@ -56212,12 +56275,6 @@ function uiReturnFigResizeWindow()
         graphView.updatePanAndZoom();
         updateWhatsNewScrollbar(0);
     }
-
-    // btnZoom.style.top  = 0;
-    // btnZoom.style.left = window.innerWidth - btnZoom.offsetWidth;
-
-    // btnToggleWires.style.top  = 0;
-    // btnToggleWires.style.left = btnZoom.offsetLeft - btnToggleWires.offsetWidth;
 }
 
 
@@ -56239,7 +56296,7 @@ function onClassChange(element, callback)
         mutations.forEach((mutation) => 
         {
             if (   mutation.type          == 'attributes' 
-                && mutation.attributeName == 'class') 
+                && mutation.attributeName == 'class'    ) 
                 callback(mutation.target);
         });
     });
@@ -56248,6 +56305,15 @@ function onClassChange(element, callback)
 
     return observer.disconnect;
 }
+
+
+
+function dockWindowNormal  () { uiQueueMessageToFigma({cmd: 'figDockWindowNormal'  }); }
+function dockWindowMaximize() { uiQueueMessageToFigma({cmd: 'figDockWindowMaximize'}); }
+function dockWindowTop     () { uiQueueMessageToFigma({cmd: 'figDockWindowTop'     }); }
+function dockWindowLeft    () { uiQueueMessageToFigma({cmd: 'figDockWindowLeft'    }); }
+function dockWindowRight   () { uiQueueMessageToFigma({cmd: 'figDockWindowRight'   }); }
+function dockWindowBottom  () { uiQueueMessageToFigma({cmd: 'figDockWindowBottom'  }); }
 
 
 const licenseKeys     = createCryptoKeys();

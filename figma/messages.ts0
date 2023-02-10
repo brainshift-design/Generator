@@ -8,9 +8,18 @@ figma.ui.onmessage = msg =>
     switch (msg.cmd)
     {
         case 'figStartGenerator':                     figStartGenerator                    ();                                            break;
-                     
+     
+        case 'figDockWindowNormal':                   figDockWindow                        ('normal');                                    break;
+        case 'figDockWindowMaximize':                 figDockWindow                        ('maximize');                                  break;
+        case 'figDockWindowTop':                      figDockWindow                        ('top');                                       break;
+        case 'figDockWindowLeft':                     figDockWindow                        ('left');                                      break;
+        case 'figDockWindowRight':                    figDockWindow                        ('right');                                     break;
+        case 'figDockWindowBottom':                   figDockWindow                        ('bottom');                                    break;        
+
         //case 'figPositionWindow':                   figPositionWindow                    (msg.x, msg.y);                                break; 
         case 'figResizeWindow':                       figResizeWindow                      (msg.width, msg.height);                       break; 
+        case 'figSetWindowRect':                      figSetWindowRect                     (msg.x, msg.y, msg.width, msg.height);         break;
+
         case 'figNotify':                             figNotifyMsg                         (msg);                                         break;
      
         case 'figGetLocalData':                       figGetLocalData                      (msg.key);                                     break;

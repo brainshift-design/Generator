@@ -337,14 +337,14 @@ function finishLoading()
     clearTimeout(dataModeTimeout);
     dataModeTimeout = null;
 
-    graphView.loadingNodes   = false;
     graphView.canUpdateNodes = true;
 
     graphView.updateShowWires(false);
 
     generatorStarted = true;
 
-    loadingOverlay.style.display = 'none';
+    //graphView.loadingNodes       = false;
+    //loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
 }
 
 

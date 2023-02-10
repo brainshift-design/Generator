@@ -593,10 +593,14 @@ function figStartGenerator() {
                 productKey = '';
             let wndWidth = yield figma.clientStorage.getAsync('windowWidth');
             let wndHeight = yield figma.clientStorage.getAsync('windowHeight');
-            if (wndWidth == null)
+            if (wndWidth == null) {
                 wndWidth = 800;
-            if (wndHeight == null)
+                figma.clientStorage.setAsync('windowWidth', wndWidth);
+            }
+            if (wndHeight == null) {
                 wndHeight = 600;
+                figma.clientStorage.setAsync('windowHeight', wndHeight);
+            }
             figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
             figma.ui.show();
             figPostMessageToUi({
@@ -615,9 +619,30 @@ figma.ui.onmessage = msg => {
         case 'figStartGenerator':
             figStartGenerator();
             break;
+        case 'figDockWindowNormal':
+            figDockWindow('normal');
+            break;
+        case 'figDockWindowMaximize':
+            figDockWindow('maximize');
+            break;
+        case 'figDockWindowTop':
+            figDockWindow('top');
+            break;
+        case 'figDockWindowLeft':
+            figDockWindow('left');
+            break;
+        case 'figDockWindowRight':
+            figDockWindow('right');
+            break;
+        case 'figDockWindowBottom':
+            figDockWindow('bottom');
+            break;
         //case 'figPositionWindow':                   figPositionWindow                    (msg.x, msg.y);                                break; 
         case 'figResizeWindow':
             figResizeWindow(msg.width, msg.height);
+            break;
+        case 'figSetWindowRect':
+            figSetWindowRect(msg.x, msg.y, msg.width, msg.height);
             break;
         case 'figNotify':
             figNotifyMsg(msg);
@@ -1433,22 +1458,169 @@ function setStylePaints(style, src) {
 }
 var notifyNotificationHandler = null;
 var notifyDequeueHandler = () => notifyNotificationHandler = null;
-var windowDock = ''; // '', 'maximize', 'top', 'left', 'right', 'bottom'
-function figRepositionWindow(x, y) {
-    x = Math.floor(Math.max(0, x));
-    y = Math.floor(Math.max(0, y));
-    figma.ui.reposition(x, y);
-    figma.clientStorage.setAsync('windowX', x);
-    figma.clientStorage.setAsync('windowY', y);
-    figPostMessageToUI({ cmd: 'uiReturnFigRepositionWindow' });
+var windowDock = 'normal'; // '', 'maximize', 'top', 'left', 'right', 'bottom'
+function figSetWindowRect(x, y, width, height) {
+    (function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            let position = false;
+            const bounds = figma.viewport.bounds;
+            const rect = {
+                x: x,
+                y: y,
+                width: Math.floor(Math.max(0, width)),
+                height: Math.floor(Math.max(0, height))
+            };
+            if (windowDock != 'normal')
+                position = true;
+            if (isNaN(rect.x))
+                rect.x = yield figma.clientStorage.getAsync('windowX');
+            if (isNaN(rect.y))
+                rect.y = yield figma.clientStorage.getAsync('windowY');
+            switch (windowDock) {
+                case 'normal':
+                    // x      = windowX;
+                    // y      = windowY;
+                    // width  = windowWidth;
+                    // height = windowHeight;
+                    break;
+                case 'maximize':
+                    rect.x = bounds.x;
+                    rect.y = bounds.y;
+                    rect.width = bounds.width;
+                    rect.height = bounds.height;
+                    break;
+                case 'top':
+                    rect.x = bounds.x;
+                    rect.y = bounds.y;
+                    rect.width = bounds.width;
+                    break;
+                case 'left':
+                    rect.x = bounds.x;
+                    rect.y = bounds.y;
+                    rect.height = bounds.height;
+                    break;
+                case 'right':
+                    rect.x = bounds.x + bounds.width - width;
+                    rect.y = bounds.y;
+                    rect.height = bounds.height;
+                    break;
+                case 'bottom':
+                    rect.x = bounds.x;
+                    rect.y = bounds.y + bounds.height - height;
+                    rect.width = bounds.width;
+                    break;
+            }
+            rect.x = Math.round(rect.x);
+            rect.y = Math.round(rect.y);
+            rect.width = Math.round(rect.width);
+            rect.height = Math.round(rect.height);
+            // console.log('_ x =',      rect.x);
+            // console.log('_ y =',      rect.y);
+            // console.log('_ width =',  rect.width);
+            // console.log('_ height =', rect.height);
+            figma.ui.resize(rect.width, rect.height);
+            figma.clientStorage.setAsync('windowWidth', rect.width);
+            figma.clientStorage.setAsync('windowHeight', rect.height);
+            if (position) {
+                //figma.ui.reposition(rect.x, rect.y);
+                figma.clientStorage.setAsync('windowX', rect.x);
+                figma.clientStorage.setAsync('windowY', rect.y);
+            }
+            figPostMessageToUi({ cmd: 'uiReturnFigSetWindowRect' });
+        });
+    })();
 }
+// function figRepositionWindow(x, y)
+// {
+//     figma.ui.reposition(x, y);
+//     figma.clientStorage.setAsync('windowX', x);
+//     figma.clientStorage.setAsync('windowY', y);
+//     figPostMessageToUi({cmd: 'uiReturnFigRepositionWindow'});
+// }
 function figResizeWindow(width, height) {
-    width = Math.floor(Math.max(0, width));
-    height = Math.floor(Math.max(0, height));
-    figma.ui.resize(width, height);
-    figma.clientStorage.setAsync('windowWidth', width);
-    figma.clientStorage.setAsync('windowHeight', height);
-    figPostMessageToUi({ cmd: 'uiReturnFigResizeWindow' });
+    (function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            let x, y;
+            let position = false;
+            const bounds = figma.viewport.bounds;
+            width = Math.floor(Math.max(0, width));
+            height = Math.floor(Math.max(0, height));
+            if (windowDock != 'normal') {
+                figma.clientStorage.setAsync('normalWindowX', yield figma.clientStorage.getAsync('normalWindowX'));
+                figma.clientStorage.setAsync('normalWindowY', yield figma.clientStorage.getAsync('normalWindowY'));
+                figma.clientStorage.setAsync('normalWindowWidth', yield figma.clientStorage.getAsync('normalWindowWidth'));
+                figma.clientStorage.setAsync('normalWindowHeight', yield figma.clientStorage.getAsync('normalWindowHeight'));
+                position = true;
+            }
+            // const windowX = figma.clientStorage.getAsync('windowX');
+            // const windowY = figma.clientStorage.getAsync('windowY');
+            // switch (windowDock)
+            // {
+            //     case 'normal':   
+            //         // x      = windowX;
+            //         // y      = windowY;
+            //         // width  = windowWidth;
+            //         // height = windowHeight;
+            //         break;
+            //     case 'maximize':
+            //         x      = bounds.x;
+            //         y      = bounds.y;
+            //         width  = bounds.width;
+            //         height = bounds.height;        
+            //         break;
+            //     case 'top':      
+            //         x      = bounds.x;
+            //         y      = bounds.y;
+            //         width  = bounds.width;
+            //         break;
+            //     case 'left':     
+            //         x      = bounds.x;
+            //         y      = bounds.y;
+            //         height = bounds.height;        
+            //         break;
+            //     case 'right':    
+            //         x      = bounds.x + bounds.width - width;
+            //         y      = bounds.y;
+            //         height = bounds.height;        
+            //         break;
+            //     case 'bottom':   
+            //         x      = bounds.x;
+            //         y      = bounds.y + bounds.height - height;
+            //         width  = bounds.width;
+            //         break;
+            // }
+            // x      = Math.round(x     );
+            // y      = Math.round(y     );
+            width = Math.round(width);
+            height = Math.round(height);
+            // console.log('width =',  width);
+            // console.log('height =', height);
+            figma.ui.resize(width, height);
+            figma.clientStorage.setAsync('windowWidth', width);
+            figma.clientStorage.setAsync('windowHeight', height);
+            // if (position)
+            // {
+            //     figma.ui.reposition(x, y);
+            //     figma.clientStorage.setAsync('windowX', x);
+            //     figma.clientStorage.setAsync('windowY', y);
+            // }
+            figPostMessageToUi({ cmd: 'uiReturnFigResizeWindow' });
+        });
+    })();
+}
+function figDockWindow(dock) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (dock != 'normal'
+            && windowDock == 'normal') {
+            figma.clientStorage.setAsync('normalWindowX', yield figma.clientStorage.getAsync('normalWindowX'));
+            figma.clientStorage.setAsync('normalWindowY', yield figma.clientStorage.getAsync('normalWindowY'));
+            figma.clientStorage.setAsync('normalWindowWidth', yield figma.clientStorage.getAsync('normalWindowWidth'));
+            figma.clientStorage.setAsync('normalWindowHeight', yield figma.clientStorage.getAsync('normalWindowHeight'));
+        }
+        windowDock = dock;
+        figma.clientStorage.setAsync('windowDock', dock);
+        figResizeWindow(yield figma.clientStorage.getAsync('windowWidth'), yield figma.clientStorage.getAsync('windowHeight'));
+    });
 }
 function figNotifyMsg(msg) {
     figNotify(msg.text, msg.prefix, msg.delay, msg.error, msg.buttonText, msg.buttonAction);

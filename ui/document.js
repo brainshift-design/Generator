@@ -2,8 +2,9 @@ document.addEventListener('pointerdown', function(e)
 {
     if (e.button == 0)
     {
-        if (   document.canResizeX
-            || document.canResizeY)
+        if (   document.canResizeL
+            || document.canResizeR
+            || document.canResizeB)
         {
             document.startRect = new Rect(
                 e.clientX,
@@ -13,8 +14,9 @@ document.addEventListener('pointerdown', function(e)
 
             document.body.setPointerCapture(e.pointerId);
 
-            document.resizingX = document.canResizeX;
-            document.resizingY = document.canResizeY;
+            document.resizingL = document.canResizeL;
+            document.resizingR = document.canResizeR;
+            document.resizingB = document.canResizeB;
         }
     }
 
@@ -26,20 +28,37 @@ document.addEventListener('pointerdown', function(e)
 
 document.addEventListener('pointermove', function(e)
 {
-    if (   document.resizingX
-        && document.resizingY)
+    if (   document.resizingR
+        && document.resizingB)
     {
         uiResizeWindow(
             document.startRect.w + e.clientX - document.startRect.x,
             document.startRect.h + e.clientY - document.startRect.y);
     }
-    else if (document.resizingX)
+    else if (document.resizingL
+          && document.resizingB)
+    {
+        uiSetWindowRect(
+            e.clientX,
+            e.clientY,
+            document.startRect.w - e.clientX + document.startRect.x,
+            document.startRect.h + e.clientY - document.startRect.y);
+    }
+    else if (document.resizingL)
+    {
+        uiSetWindowRect(
+            e.clientX,
+            Number.NaN,
+            document.startRect.w - e.clientX + document.startRect.x,
+            window.innerHeight);
+    }
+    else if (document.resizingR)
     {
         uiResizeWindow(
             document.startRect.w + e.clientX - document.startRect.x,
             window.innerHeight);
     }
-    else if (document.resizingY)
+    else if (document.resizingB)
     {
         uiResizeWindow(
             window.innerWidth,
@@ -53,15 +72,17 @@ document.addEventListener('pointermove', function(e)
 
 document.addEventListener('pointerup', function(e)
 {
-     if (   document.resizingX
-         || document.resizingY)
+     if (   document.resizingL
+         || document.resizingR
+         || document.resizingB)
     {
         checkResize(e.clientX, e.clientY);
         document.body.releasePointerCapture(e.pointerId);
     }
 
-    document.resizingX = false;
-    document.resizingY = false;
+    document.resizingL = false;
+    document.resizingR = false;
+    document.resizingB = false;
 
     scrollbarX.moving  = false;
     scrollbarY.moving  = false;

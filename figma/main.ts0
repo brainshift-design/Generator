@@ -32,9 +32,10 @@ function figStartGenerator()
         let wndWidth  = await figma.clientStorage.getAsync('windowWidth');
         let wndHeight = await figma.clientStorage.getAsync('windowHeight');
 
-        if (wndWidth  == null) wndWidth  = 800;
-        if (wndHeight == null) wndHeight = 600;
+        if (wndWidth  == null) { wndWidth  = 800; figma.clientStorage.setAsync('windowWidth',  wndWidth ); }
+        if (wndHeight == null) { wndHeight = 600; figma.clientStorage.setAsync('windowHeight', wndHeight); }
 
+        
         figma.ui.resize(
             Math.max(0, wndWidth),
             Math.max(0, wndHeight));

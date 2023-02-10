@@ -90,8 +90,8 @@ class Graph
         
         if (placeNode)
             graphView.placeNewNode(node);
-        
-        node.div.style.zIndex = graph.nodes.length-1;
+
+        node.div.style.zIndex  = graph.nodes.length-1;
 
 
         graphView.putNodeOnTop(node);
@@ -131,6 +131,8 @@ class Graph
 
             node.selected = false;
             node.graph    = null;
+
+            node.div.style.display = 'none';
 
             removeFromArray(this.nodes, node);  
             graphView.removeChild(node.div);

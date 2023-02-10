@@ -973,9 +973,10 @@ function figStartGenerator()
         let wndWidth  = await figma.clientStorage.getAsync('windowWidth');
         let wndHeight = await figma.clientStorage.getAsync('windowHeight');
 
-        if (wndWidth  == null) wndWidth  = 800;
-        if (wndHeight == null) wndHeight = 600;
+        if (wndWidth  == null) { wndWidth  = 800; figma.clientStorage.setAsync('windowWidth',  wndWidth ); }
+        if (wndHeight == null) { wndHeight = 600; figma.clientStorage.setAsync('windowHeight', wndHeight); }
 
+        
         figma.ui.resize(
             Math.max(0, wndWidth),
             Math.max(0, wndHeight));
@@ -1001,9 +1002,18 @@ figma.ui.onmessage = msg =>
     switch (msg.cmd)
     {
         case 'figStartGenerator':                     figStartGenerator                    ();                                            break;
-                     
+     
+        case 'figDockWindowNormal':                   figDockWindow                        ('normal');                                    break;
+        case 'figDockWindowMaximize':                 figDockWindow                        ('maximize');                                  break;
+        case 'figDockWindowTop':                      figDockWindow                        ('top');                                       break;
+        case 'figDockWindowLeft':                     figDockWindow                        ('left');                                      break;
+        case 'figDockWindowRight':                    figDockWindow                        ('right');                                     break;
+        case 'figDockWindowBottom':                   figDockWindow                        ('bottom');                                    break;        
+
         //case 'figPositionWindow':                   figPositionWindow                    (msg.x, msg.y);                                break; 
         case 'figResizeWindow':                       figResizeWindow                      (msg.width, msg.height);                       break; 
+        case 'figSetWindowRect':                      figSetWindowRect                     (msg.x, msg.y, msg.width, msg.height);         break;
+
         case 'figNotify':                             figNotifyMsg                         (msg);                                         break;
      
         case 'figGetLocalData':                       figGetLocalData                      (msg.key);                                     break;
@@ -2270,34 +2280,241 @@ function setStylePaints(style, src)
 var notifyNotificationHandler = null;
 var notifyDequeueHandler = () => notifyNotificationHandler = null;
 
-var windowDock = ''; // '', 'maximize', 'top', 'left', 'right', 'bottom'
+var windowDock = 'normal'; // '', 'maximize', 'top', 'left', 'right', 'bottom'
 
-function figRepositionWindow(x, y)
+
+
+function figSetWindowRect(x, y, width, height)
 {
-    x = Math.floor(Math.max(0, x ));
-    y = Math.floor(Math.max(0, y));
+    (async function()
+    {
+        let position = false;
 
-    figma.ui.reposition(x, y);
+        const bounds = figma.viewport.bounds;
 
-    figma.clientStorage.setAsync('windowX', x);
-    figma.clientStorage.setAsync('windowY', y);
+        const rect = {
+            x:      x,
+            y:      y,
+            width:  Math.floor(Math.max(0, width )),
+            height: Math.floor(Math.max(0, height))    
+        };
 
-    figPostMessageToUI({cmd: 'uiReturnFigRepositionWindow'});
+        
+        if (windowDock != 'normal')
+            position = true;
+
+        if (isNaN(rect.x)) rect.x = await figma.clientStorage.getAsync('windowX');
+        if (isNaN(rect.y)) rect.y = await figma.clientStorage.getAsync('windowY');
+
+
+        switch (windowDock)
+        {
+            case 'normal':   
+                // x      = windowX;
+                // y      = windowY;
+                // width  = windowWidth;
+                // height = windowHeight;
+                break;
+                
+            case 'maximize':
+                rect.x      = bounds.x;
+                rect.y      = bounds.y;
+                rect.width  = bounds.width;
+                rect.height = bounds.height;        
+                break;
+
+            case 'top':      
+                rect.x      = bounds.x;
+                rect.y      = bounds.y;
+                rect.width  = bounds.width;
+                break;
+
+            case 'left':     
+                rect.x      = bounds.x;
+                rect.y      = bounds.y;
+                rect.height = bounds.height;        
+                break;
+
+            case 'right':    
+                rect.x      = bounds.x + bounds.width - width;
+                rect.y      = bounds.y;
+                rect.height = bounds.height;        
+                break;
+
+            case 'bottom':   
+                rect.x      = bounds.x;
+                rect.y      = bounds.y + bounds.height - height;
+                rect.width  = bounds.width;
+                break;
+        }
+
+
+        rect.x      = Math.round(rect.x     );
+        rect.y      = Math.round(rect.y     );
+        rect.width  = Math.round(rect.width );
+        rect.height = Math.round(rect.height);
+
+
+        // console.log('_ x =',      rect.x);
+        // console.log('_ y =',      rect.y);
+        // console.log('_ width =',  rect.width);
+        // console.log('_ height =', rect.height);
+
+
+        figma.ui.resize(rect.width, rect.height);
+
+        figma.clientStorage.setAsync('windowWidth',  rect.width);
+        figma.clientStorage.setAsync('windowHeight', rect.height);
+
+
+        if (position)
+        {
+            //figma.ui.reposition(rect.x, rect.y);
+
+            figma.clientStorage.setAsync('windowX', rect.x);
+            figma.clientStorage.setAsync('windowY', rect.y);
+        }
+
+
+        figPostMessageToUi({cmd: 'uiReturnFigSetWindowRect'});
+    })();
 }
+
+
+// function figRepositionWindow(x, y)
+// {
+//     figma.ui.reposition(x, y);
+
+//     figma.clientStorage.setAsync('windowX', x);
+//     figma.clientStorage.setAsync('windowY', y);
+
+//     figPostMessageToUi({cmd: 'uiReturnFigRepositionWindow'});
+// }
 
 
 
 function figResizeWindow(width, height)
 {
-    width  = Math.floor(Math.max(0, width ));
-    height = Math.floor(Math.max(0, height));
+    (async function()
+    {
+        let x, y;
 
-    figma.ui.resize(width, height);
+        let position = false;
 
-    figma.clientStorage.setAsync('windowWidth',  width);
-    figma.clientStorage.setAsync('windowHeight', height);
 
-    figPostMessageToUi({cmd: 'uiReturnFigResizeWindow'});
+        const bounds = figma.viewport.bounds;
+
+
+        width  = Math.floor(Math.max(0, width ));
+        height = Math.floor(Math.max(0, height));
+
+        
+        if (windowDock != 'normal')
+        {
+            figma.clientStorage.setAsync('normalWindowX',      await figma.clientStorage.getAsync('normalWindowX'     ));
+            figma.clientStorage.setAsync('normalWindowY',      await figma.clientStorage.getAsync('normalWindowY'     ));
+            figma.clientStorage.setAsync('normalWindowWidth',  await figma.clientStorage.getAsync('normalWindowWidth' ));
+            figma.clientStorage.setAsync('normalWindowHeight', await figma.clientStorage.getAsync('normalWindowHeight'));
+
+            position = true;
+        }
+
+
+        // const windowX = figma.clientStorage.getAsync('windowX');
+        // const windowY = figma.clientStorage.getAsync('windowY');
+
+
+        // switch (windowDock)
+        // {
+        //     case 'normal':   
+        //         // x      = windowX;
+        //         // y      = windowY;
+        //         // width  = windowWidth;
+        //         // height = windowHeight;
+        //         break;
+                
+        //     case 'maximize':
+        //         x      = bounds.x;
+        //         y      = bounds.y;
+        //         width  = bounds.width;
+        //         height = bounds.height;        
+        //         break;
+
+        //     case 'top':      
+        //         x      = bounds.x;
+        //         y      = bounds.y;
+        //         width  = bounds.width;
+        //         break;
+
+        //     case 'left':     
+        //         x      = bounds.x;
+        //         y      = bounds.y;
+        //         height = bounds.height;        
+        //         break;
+
+        //     case 'right':    
+        //         x      = bounds.x + bounds.width - width;
+        //         y      = bounds.y;
+        //         height = bounds.height;        
+        //         break;
+
+        //     case 'bottom':   
+        //         x      = bounds.x;
+        //         y      = bounds.y + bounds.height - height;
+        //         width  = bounds.width;
+        //         break;
+        // }
+
+
+        // x      = Math.round(x     );
+        // y      = Math.round(y     );
+        width  = Math.round(width );
+        height = Math.round(height);
+
+
+        // console.log('width =',  width);
+        // console.log('height =', height);
+
+        figma.ui.resize(width, height);
+
+        figma.clientStorage.setAsync('windowWidth',  width);
+        figma.clientStorage.setAsync('windowHeight', height);
+
+
+        // if (position)
+        // {
+        //     figma.ui.reposition(x, y);
+
+        //     figma.clientStorage.setAsync('windowX', x);
+        //     figma.clientStorage.setAsync('windowY', y);
+        // }
+
+
+        figPostMessageToUi({cmd: 'uiReturnFigResizeWindow'});
+    })();
+}
+
+
+
+async function figDockWindow(dock) 
+{
+    if (   dock       != 'normal'
+        && windowDock == 'normal')
+    {
+        figma.clientStorage.setAsync('normalWindowX',      await figma.clientStorage.getAsync('normalWindowX'     ));
+        figma.clientStorage.setAsync('normalWindowY',      await figma.clientStorage.getAsync('normalWindowY'     ));
+        figma.clientStorage.setAsync('normalWindowWidth',  await figma.clientStorage.getAsync('normalWindowWidth' ));
+        figma.clientStorage.setAsync('normalWindowHeight', await figma.clientStorage.getAsync('normalWindowHeight'));
+    }
+
+
+    windowDock = dock;
+
+    figma.clientStorage.setAsync('windowDock', dock);
+
+    figResizeWindow(
+        await figma.clientStorage.getAsync('windowWidth' ),
+        await figma.clientStorage.getAsync('windowHeight'));
 }
 
 

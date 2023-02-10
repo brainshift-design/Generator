@@ -808,6 +808,10 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     lastRequestedId = -1;
 
         
+    graphView.loadingNodes       = false;
+    loadingOverlay.style.display = 'none'; // for loading
+
+
     if (settings.logRawValues)  
         console.log('raw values = ', values);
 

@@ -18,7 +18,7 @@ extends OpColorBase
         this.alwaysSaveParams = true;
 
         
-        this.addParam(this.paramQuality = new SelectParam('quality', '', false, true, false, ['simple', 'accurate'], 1));
+        this.addParam(this.paramQuality = new SelectParam('quality', '', false, true, false, ['fast', 'accurate'], 1));
 
 
         this.initCorrections('');
@@ -63,14 +63,14 @@ extends OpColorBase
         request.push(...this.node.paramQuality.genRequest(gen));
 
 
-        const valid = 
+        const cached = 
             (input.connected
              ?  input.node.valid
              : !dataColorIsNaN(this.node._color))
             || !this.node.enabled;
 
         request.push(COLOR_VALUE, (
-            valid
+            cached
             ? ColorValue.fromDataColor(this.node._color)
             : ColorValue.NaN).toString()); // value
 
@@ -217,7 +217,10 @@ extends OpColorBase
     loadParams(_node, pasting)
     {
         if (_node.value != undefined)
+        {
             this._color = parseColorValue(_node.value)[0].toDataColor();
+            this.valid = true;
+        }
 
         if (!dataColorIsValid(this._color))
             uiInitNodeProgress(this.id);

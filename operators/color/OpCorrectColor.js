@@ -92,10 +92,11 @@ extends OpColorBase
             request.push(...pushInputOrParam(input, gen));
 
 
-        const valid = 
-            (input.connected
-             ?  input.node.valid
-             : !dataColorIsNaN(this.node._color))
+        const cached = 
+               (input.connected
+                ?    input.node.valid
+                  //|| !dataColorIsNaN(this.node._color)
+                : !dataColorIsNaN(this.node._color))
             || !this.node.enabled;
 
 
@@ -104,7 +105,7 @@ extends OpColorBase
         for (const param of this.node.params)
             if (      param.input 
                    && param.input.connected
-                || valid)
+                || cached)
                 paramIds.push(param.id);
 
         paramIds.push('value');
@@ -112,14 +113,14 @@ extends OpColorBase
         request.push(paramIds.join(','));
 
         
-        if (this.node.paramOrder.input.connected || valid) request.push(...this.node.paramOrder.genRequest(gen));
-        if (this.node.param1    .input.connected || valid) request.push(...this.node.param1    .genRequest(gen));
-        if (this.node.param2    .input.connected || valid) request.push(...this.node.param2    .genRequest(gen));
-        if (this.node.param3    .input.connected || valid) request.push(...this.node.param3    .genRequest(gen));
+        if (this.node.paramOrder.input.connected || cached) request.push(...this.node.paramOrder.genRequest(gen));
+        if (this.node.param1    .input.connected || cached) request.push(...this.node.param1    .genRequest(gen));
+        if (this.node.param2    .input.connected || cached) request.push(...this.node.param2    .genRequest(gen));
+        if (this.node.param3    .input.connected || cached) request.push(...this.node.param3    .genRequest(gen));
 
-        
+ 
         request.push(COLOR_VALUE, (
-            valid
+            cached
             ? ColorValue.fromDataColor(this.node._color)
             : ColorValue.NaN).toString()); // value
 
@@ -330,13 +331,16 @@ extends OpColorBase
 
     loadParams(_node, pasting)
     {
+        super.loadParams(_node, pasting);
+
         if (_node.value != undefined)
+        {
             this._color = parseColorValue(_node.value)[0].toDataColor();
+            this.valid = true;
+        }
 
         if (!dataColorIsValid(this._color))
             uiInitNodeProgress(this.id);
-
-        super.loadParams(_node, pasting);
     }
 }
 

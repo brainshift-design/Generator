@@ -60,7 +60,8 @@ function pushUpdateFromParam(action, nodes, param)
     const gen = createGenObject(param ? param.node : null);
 
 
-    nodes.forEach(n => n.invalidate());
+    if (!graphView.loadingNodes)
+        nodes.forEach(n => n.invalidate());
 
         
     const terminals = [];
