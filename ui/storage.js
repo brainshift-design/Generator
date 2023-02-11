@@ -339,7 +339,6 @@ function finishLoading(_nodes)
         clearTimeout(dataModeTimeout);
         dataModeTimeout = null;
 
-        graphView.loadingNodes       = false;
         loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
     }
 

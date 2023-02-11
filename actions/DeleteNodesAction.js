@@ -162,13 +162,11 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
         }
     }
     else if (!activeLeft
-          || !activeRightHeader.follows(activeLeft))
+          ||     activeRightHeader
+             && !activeRightHeader.follows(activeLeft))
         pushUnique(updateNodes, activeRightHeader);
 
-console.log('activeLeft =', activeLeft);
-console.log('activeRightHeader =', activeRightHeader);
-console.log('activeRightHeader.follows(activeLeft) =', activeRightHeader.follows(activeLeft));
-console.log('updateNodes =', [...updateNodes]);
+
     pushUnique(updateNodes, terminalsRight);
 
     
@@ -188,6 +186,8 @@ function deleteNodesAction_deleteNodes(act)
 function deleteNodesAction_restoreNodes(act)
 {
     // console.log('act.nodes', act.nodes);
+
+    graphView.restoringNodes = true;
 
     graph.addNodes(act.nodes);
     graphView.putNodeOnTop(lastOf(act.nodes));

@@ -544,6 +544,8 @@ function uiMakeNodesActive(nodes)
 {
     for (const node of nodes)
     {
+        if (node.active) continue;
+
         uiMakeNodePassive(node);
         uiMakeNodeLeftPassive (node);
         uiMakeNodeRightPassive(node);
@@ -551,6 +553,8 @@ function uiMakeNodesActive(nodes)
 
     for (const node of nodes)
     {
+        if (node.active) continue;
+        
         pushUnique(graphView.activeNodes, node);
         node._active = true;
     }
@@ -568,8 +572,6 @@ function uiMakeNodePassive(node)
 
 function uiMakeNodeLeftPassive(node, fromNode = null)
 {
-    //console.log('uiMakeNodeLeftPassive() node =', node);
-
     for (const input of node.headerInputs)
     {
         if (    input.connected
@@ -683,7 +685,6 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
     graphView.selectedNodes = nodes;
 
 
-    graphView.loadingNodes = false;
     finishLoadingNodes(data.nodes, nodes, updateNodes, true);
 
 
@@ -810,10 +811,11 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         
     graphView.pastingNodes       = false;
     graphView.loadingNodes       = false;
+    graphView.restoringNodes     = false;
 
     loadingOverlay.style.display = 'none'; // for loading
 
-    
+
     if (dataModeTimeout)
     {
         clearTimeout(dataModeTimeout);

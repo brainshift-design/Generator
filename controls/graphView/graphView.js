@@ -2,6 +2,7 @@ graphView.wires           = [];
  
 graphView.loadingNodes    = false;
 graphView.pastingNodes    = false;
+graphView.restoringNodes  = false;
 
 
 graphView.canUpdateNodes  = true;

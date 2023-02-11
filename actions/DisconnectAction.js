@@ -69,6 +69,13 @@ extends Action
     saveOldActiveNodes()
     {
         this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
+
+        if (!getActiveFromNode(this.inputNode))
+            this.newActiveNodeIds.push(this.inputNodeId);
+
+        if (   !getActiveOnlyBeforeNode(this.inputNode)
+            && !getActiveAfterNode   (this.inputNode))
+            this.newActiveNodeIds.push(this.inputNodeId);
     }
 
 
@@ -86,14 +93,6 @@ extends Action
 
     activateNewNodes()
     {
-        if (!getActiveFromNode(this.inputNode))
-            this.newActiveNodeIds.push(this.inputNodeId);
-
-        if (   !getActiveOnlyBeforeNode(this.outputNode)
-            && !getActiveAfterNode   (this.outputNode))
-            this.newActiveNodeIds.push(this.outputNodeId);
-
-
         for (const id of this.newActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
     }

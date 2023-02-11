@@ -61,7 +61,8 @@ function pushUpdateFromParam(action, nodes, param)
 
 
     if (   !graphView.loadingNodes
-        && !graphView.pastingNodes)
+        && !graphView.pastingNodes
+        && !graphView.restoringNodes)
         nodes.forEach(n => n.invalidate());
 
         

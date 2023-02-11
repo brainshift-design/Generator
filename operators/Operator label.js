@@ -73,6 +73,8 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
             - node.labelOffsetFactor * (rect.width - rw - 1) / graphView.zoom
             + (node.active ? activeOffset : 0);
 
+        node.label.style.transform = 'none';
+
         //node.label.style.transform = 'translateY(-' + Math.round(rect.height/2) + 'px)';
     }
     else

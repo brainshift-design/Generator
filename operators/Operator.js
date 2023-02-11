@@ -439,8 +439,6 @@ class Operator
 
     makeActive()
     {
-        //console.log(this.id + '.makeActive()');
-        
         this._active = true;
 
         if (    graphView
