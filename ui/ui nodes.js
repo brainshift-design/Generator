@@ -730,35 +730,35 @@ function updateGraphNodes()
 
 
 
-function uiUpdateNodes(nodeIds)
-{
-    if (graph.mutex)
-    {
-        for (const nodeId of nodeIds)
-            graph.deferNodeIds.push(nodeId);
+// function uiUpdateNodes(nodeIds)
+// {
+//     if (graph.mutex)
+//     {
+//         for (const nodeId of nodeIds)
+//             graph.deferNodeIds.push(nodeId);
 
-        return;
-    }
+//         return;
+//     }
 
-    graph.mutex = true;
-}
-
-
-
-function uiUpdateGraph()
-{
-    graph.mutex = false;
+//     graph.mutex = true;
+// }
 
 
-    if (!isEmpty(graph.deferNodeIds))
-    {
-        let deferNodes = filterUnique(graph.deferNodeIds);
 
-        graph.deferNodeIds = [];
+// function uiUpdateGraph()
+// {
+//     graph.mutex = false;
 
-        uiUpdateNodes(deferNodes);
-    }
-}
+
+//     if (!isEmpty(graph.deferNodeIds))
+//     {
+//         let deferNodes = filterUnique(graph.deferNodeIds);
+
+//         graph.deferNodeIds = [];
+
+//         uiUpdateNodes(deferNodes);
+//     }
+// }
 
 
 
@@ -894,13 +894,16 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     _values);
 
                 node.valid = true;
-                node.updateNode();
+                //node.updateNode();
             }
         }
     }
 
 
     uiSaveNodes(nodes.map(n => n.id));
+
+    nodes.forEach(n => n.updateMeasureData());
+    nodes.forEach(n => n.updateNode());
     
     
     if (!isEmpty(objects))

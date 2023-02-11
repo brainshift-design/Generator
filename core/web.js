@@ -111,6 +111,18 @@ function forwardEvent(event, element)
 
 
 
+function offsetRect(element)
+{
+    return {
+        x:      element.offsetLeft,
+        y:      element.offsetTop,
+        width:  element.offsetWidth,
+        height: element.offsetHeight
+    };
+}
+
+
+
 // function triggerMouseEvent(element, event, px, py, button = 0)
 // {
 //     const e = new MouseEvent(event, 

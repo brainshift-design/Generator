@@ -96,6 +96,9 @@ class Operator
 
     valid;
 
+    
+    updateData = null; // collected before the update to avoid forced reflow
+
 
 
     _selected;
@@ -773,6 +776,19 @@ class Operator
 
 
 
+    updateMeasureData()
+    {
+        this.measureData = 
+        {
+            labelWrapperRect:       boundingRect(this.labelWrapper),
+            labelWrapperOffsetRect: offsetRect  (this.labelWrapper),
+            labelRect:              boundingRect(this.label),
+            labelOffsetRect:        offsetRect  (this.label) 
+        };
+    }
+
+
+
     updateHeaderLabel()
     {
         this.labelText.innerHTML = 
@@ -800,12 +816,7 @@ class Operator
         this.label.style.fontSize   = this.active ? fontSize : 11;
         this.label.style.height     = this.active ? fontSize * 14 / 11 : 14;
 
-        // this.label.style.fontWeight = 
-        //     this.active 
-        //     && (   !isEmpty(this.headerInputs )
-        //         || !isEmpty(this.headerOutputs))
-        //     ? (graphView.zoom < 1.2 ? '900' : 'bold') 
-        //     : (graphView.zoom < 1.2 ? '600' : 'normal');
+        this.label.style.fontWeight = graphView.zoom < 1.2 ? '600' : 'normal';
     }
 
 
@@ -848,23 +859,13 @@ class Operator
 
     updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
     {
-        // console.log('2 paramIds =', [...paramIds]);
-        // console.log('this.params =', [...this.params]);
-        // console.log('updateParamId =', updateParamId);
-
         for (let i = 0; i < paramIds.length; i++)
         {
             const index = this.params.findIndex(p => p.id == paramIds[i]);
-// console.log('i =', i);
-// console.log('values[i] =', values[i]);
-// console.log('index =', index);
+
             if (   paramIds[index] != updateParamId
                 && index > -1)
-            {
-                // console.log('this.params[index] =', this.params[index]);
-                // console.log('values[i] =', values[i]);
                 this.params[index].setValue(values[i], false, true, false);
-            }
         }
     }
 

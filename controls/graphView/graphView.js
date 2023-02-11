@@ -49,7 +49,6 @@ scrollbarY.style.zIndex   = MAX_INT32-2;
 graphView.touches         = [];
 
 
-
 graphView.getAllNodeBounds = function()
 {
     let bounds = Rect.NaN;

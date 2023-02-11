@@ -5093,6 +5093,18 @@ function forwardEvent(event, element)
 
 
 
+function offsetRect(element)
+{
+    return {
+        x:      element.offsetLeft,
+        y:      element.offsetTop,
+        width:  element.offsetWidth,
+        height: element.offsetHeight
+    };
+}
+
+
+
 // function triggerMouseEvent(element, event, px, py, button = 0)
 // {
 //     const e = new MouseEvent(event, 
@@ -21268,6 +21280,18 @@ function forwardEvent(event, element)
 
 
 
+function offsetRect(element)
+{
+    return {
+        x:      element.offsetLeft,
+        y:      element.offsetTop,
+        width:  element.offsetWidth,
+        height: element.offsetHeight
+    };
+}
+
+
+
 // function triggerMouseEvent(element, event, px, py, button = 0)
 // {
 //     const e = new MouseEvent(event, 
@@ -36529,7 +36553,6 @@ scrollbarY.style.zIndex   = MAX_INT32-2;
 graphView.touches         = [];
 
 
-
 graphView.getAllNodeBounds = function()
 {
     let bounds = Rect.NaN;
@@ -37330,6 +37353,8 @@ graphView.update = function(nodes = null)
     const bounds = graphView.getAllNodeBounds();
     graphView.updateScroll(x, w, h, bounds, yOffset);
 
+
+    nodes.forEach(n => n.updateMeasureData());
 
     nodes.forEach(n =>
     {
@@ -41846,6 +41871,9 @@ class Operator
 
     valid;
 
+    
+    updateData = null; // collected before the update to avoid forced reflow
+
 
 
     _selected;
@@ -42523,6 +42551,19 @@ class Operator
 
 
 
+    updateMeasureData()
+    {
+        this.measureData = 
+        {
+            labelWrapperRect:       boundingRect(this.labelWrapper),
+            labelWrapperOffsetRect: offsetRect  (this.labelWrapper),
+            labelRect:              boundingRect(this.label),
+            labelOffsetRect:        offsetRect  (this.label) 
+        };
+    }
+
+
+
     updateHeaderLabel()
     {
         this.labelText.innerHTML = 
@@ -42550,12 +42591,7 @@ class Operator
         this.label.style.fontSize   = this.active ? fontSize : 11;
         this.label.style.height     = this.active ? fontSize * 14 / 11 : 14;
 
-        // this.label.style.fontWeight = 
-        //     this.active 
-        //     && (   !isEmpty(this.headerInputs )
-        //         || !isEmpty(this.headerOutputs))
-        //     ? (graphView.zoom < 1.2 ? '900' : 'bold') 
-        //     : (graphView.zoom < 1.2 ? '600' : 'normal');
+        this.label.style.fontWeight = graphView.zoom < 1.2 ? '600' : 'normal';
     }
 
 
@@ -42598,23 +42634,13 @@ class Operator
 
     updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
     {
-        // console.log('2 paramIds =', [...paramIds]);
-        // console.log('this.params =', [...this.params]);
-        // console.log('updateParamId =', updateParamId);
-
         for (let i = 0; i < paramIds.length; i++)
         {
             const index = this.params.findIndex(p => p.id == paramIds[i]);
-// console.log('i =', i);
-// console.log('values[i] =', values[i]);
-// console.log('index =', index);
+
             if (   paramIds[index] != updateParamId
                 && index > -1)
-            {
-                // console.log('this.params[index] =', this.params[index]);
-                // console.log('values[i] =', values[i]);
                 this.params[index].setValue(values[i], false, true, false);
-            }
         }
     }
 
@@ -43648,7 +43674,7 @@ function createNodeLabel(node)
         if (!node.scrollName)
             return;
 
-        const wrect      = boundingRect(node.labelWrapper);
+        const wrect      = node.measureData.labelWrapperRect;//boundingRect(node.labelWrapper);
         const margin     = 14;
         const viewMargin = margin * graphView.zoom;
         
@@ -43675,8 +43701,8 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
     const margin     = 15;
     const viewMargin = margin * graphView.zoom;
 
-    const wrect      = boundingRect(node.labelWrapper);
-    const rect       = boundingRect(node.label);
+    const wrect      = node.measureData.labelWrapperRect; //boundingRect(node.labelWrapper);
+    const rect       = node.measureData.labelRect;        //boundingRect(node.label);
 
     const rw         = wrect.width  - viewMargin*2;
     const sf         = rw / nozero(rect.width);
@@ -43714,7 +43740,7 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
     }
 
 
-    node.label.style.top = Math.floor(node.labelWrapper.offsetHeight/2 - node.label.offsetHeight/2) + 'px';
+    node.label.style.top = Math.floor(node.measureData.labelWrapperOffsetRect.height/2 - node.measureData.labelOffsetHeight/2) + 'px';
 
 
     const color = 
@@ -55477,35 +55503,35 @@ function updateGraphNodes()
 
 
 
-function uiUpdateNodes(nodeIds)
-{
-    if (graph.mutex)
-    {
-        for (const nodeId of nodeIds)
-            graph.deferNodeIds.push(nodeId);
+// function uiUpdateNodes(nodeIds)
+// {
+//     if (graph.mutex)
+//     {
+//         for (const nodeId of nodeIds)
+//             graph.deferNodeIds.push(nodeId);
 
-        return;
-    }
+//         return;
+//     }
 
-    graph.mutex = true;
-}
-
-
-
-function uiUpdateGraph()
-{
-    graph.mutex = false;
+//     graph.mutex = true;
+// }
 
 
-    if (!isEmpty(graph.deferNodeIds))
-    {
-        let deferNodes = filterUnique(graph.deferNodeIds);
 
-        graph.deferNodeIds = [];
+// function uiUpdateGraph()
+// {
+//     graph.mutex = false;
 
-        uiUpdateNodes(deferNodes);
-    }
-}
+
+//     if (!isEmpty(graph.deferNodeIds))
+//     {
+//         let deferNodes = filterUnique(graph.deferNodeIds);
+
+//         graph.deferNodeIds = [];
+
+//         uiUpdateNodes(deferNodes);
+//     }
+// }
 
 
 
@@ -55641,13 +55667,16 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     _values);
 
                 node.valid = true;
-                node.updateNode();
+                //node.updateNode();
             }
         }
     }
 
 
     uiSaveNodes(nodes.map(n => n.id));
+
+    nodes.forEach(n => n.updateMeasureData());
+    nodes.forEach(n => n.updateNode());
     
     
     if (!isEmpty(objects))
