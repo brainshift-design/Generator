@@ -630,7 +630,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
 {
     //console.log(nodesJson);
 
-    graphView.loadingNodes = true;
+    graphView.pastingNodes = true;
 
 
     pasteOffset.x += pasteOffsetDelta.x;
@@ -808,9 +808,12 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     lastRequestedId = -1;
 
         
+    graphView.pastingNodes       = false;
     graphView.loadingNodes       = false;
+
     loadingOverlay.style.display = 'none'; // for loading
 
+    
     if (dataModeTimeout)
     {
         clearTimeout(dataModeTimeout);

@@ -60,7 +60,8 @@ function pushUpdateFromParam(action, nodes, param)
     const gen = createGenObject(param ? param.node : null);
 
 
-    if (!graphView.loadingNodes)
+    if (   !graphView.loadingNodes
+        && !graphView.pastingNodes)
         nodes.forEach(n => n.invalidate());
 
         
