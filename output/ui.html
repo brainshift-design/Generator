@@ -46031,8 +46031,8 @@ extends Operator
         const colors = this.getHeaderColors();
 
         this.header.style.background = 
-            !rgbIsNaN(colors.back) //  rgbIsOk(colors.back)
-            ? rgb2style(colors.back)
+            !rgbIsNaN(colors.stripeBack) //  rgbIsOk(colors.back)
+            ? rgb2style(colors.stripeBack)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
             //: 'transparent';
 
