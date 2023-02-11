@@ -18,8 +18,6 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 const generatorVersion = 94;
-const smallScrollGap = 6;
-const largeScrollGap = 14;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const TAB = '  ';
@@ -28,6 +26,9 @@ const GENERATOR_LOGO = '◦ G •';
 const OBJECT_PREFIX = 'G.';
 const nodeTag = 'G_NODE';
 const connTag = 'G_CONN';
+const smallScrollGap = 6;
+const largeScrollGap = 14;
+const menuBarHeight = 40;
 function leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }

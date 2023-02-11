@@ -36,7 +36,7 @@ Object.defineProperty(graphView, 'zoom',
             window.innerWidth /2,
             window.innerHeight/2);
 
-        pos.y -= menuBar.offsetHeight;
+        pos.y -= menuBarHeight;
 
         const pan = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
 
@@ -52,6 +52,9 @@ graphView.zoomStart = 1;
 graphView.zoomSelecting = false;
 
 
+graphView.panZoomTimer = null;
+
+
 
 graphView.setPanAndZoom = (pan, zoom) =>
 {
@@ -65,9 +68,14 @@ graphView.setPanAndZoom = (pan, zoom) =>
         graphView._zoom = zoom;
         graphView._pan  = pan;
 
-        graphView.updatePanAndZoom();
-
         uiSaveGraphView();
+
+
+        // graphView.panZoomTimer = setTimeout(() => 
+        // {
+            graphView.updatePanAndZoom();
+        //     graphView.panZoomTimer = null;
+        // });
     }
 };
 
@@ -91,18 +99,7 @@ graphView.update = function(nodes = null)
         node = graph.nodes;
         
     graphView.updateNodeTransforms(nodes, false);
-    
-    const x       = graphView.clientLeft;
-    const w       = graphView.clientWidth;
-    const h       = graphView.clientHeight;
-    const yOffset = menuBar.offsetHeight;
-    //let   bounds  = graphView.getAllNodeBounds();
-    
     graphView.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
-
-    const bounds = graphView.getAllNodeBounds();
-    graphView.updateScroll(x, w, h, bounds, yOffset);
-
 
     nodes.forEach(n => n.updateMeasureData());
 
@@ -111,6 +108,14 @@ graphView.update = function(nodes = null)
         n.updateHeader(); 
         n.updateHeaderLabel(); 
     });
+
+
+    const x = graphViewClient.left;
+    const w = graphViewClient.width;
+    const h = graphViewClient.height;
+    
+    const bounds = graphView.getAllNodeBounds();
+    graphView.updateScroll(x, w, h, bounds, menuBarHeight);
 };
 
 
@@ -190,7 +195,7 @@ graphView.endZoomSelection = (pointerId, zoom) =>
         
         let box = {
             x: selection.x,
-            y: selection.y - menuBar.offsetHeight,
+            y: selection.y - menuBarHeight,
             w: selection.w,
             h: selection.h };
             

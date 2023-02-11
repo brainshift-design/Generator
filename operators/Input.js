@@ -139,7 +139,7 @@ extends EventTarget
                 {
                     tc.wire.inputPos = point(
                         rect.x + rect.w/2,
-                        rect.y + rect.h/2 - menuBar.offsetHeight);
+                        rect.y + rect.h/2 - menuBarHeight);
                 }
 
                 this.mouseOver = true;

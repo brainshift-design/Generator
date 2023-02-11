@@ -169,6 +169,13 @@ graphView.addEventListener('pointerup', e =>
         }
 
         graphView.endPan(e.pointerId, false);
+
+
+        if (graphView.panZoomTimer)
+        {
+            clearTimeout(graphView.panZoomTimer); 
+            graphView.panZoomTimer = null;
+        };
     }
 
     else if (e.button == 0
@@ -214,7 +221,7 @@ graphView.addEventListener('wheel', e =>
         || panMode)
     {
         let pos = point(e.clientX, e.clientY);
-        pos.y -= menuBar.offsetHeight;
+        pos.y -= menuBarHeight;
 
         const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (isTouchpad ? 5 : 10)));
         const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
@@ -260,7 +267,7 @@ graphView.addEventListener('gesturechange', e =>
 {
     const p = point(
         graphView.p.x,
-        graphView.p.y - menuBar.offsetHeight);
+        graphView.p.y - menuBarHeight);
 
     const zoom = graphView.zoomStart * e.scale;
     const pan  = subv(graphView.pan, mulvs(subv(p, graphView.pan), zoom / graphView.zoom - 1));

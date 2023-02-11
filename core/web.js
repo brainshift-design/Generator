@@ -123,6 +123,18 @@ function offsetRect(element)
 
 
 
+function clientRect(element)
+{
+    return {
+        x:      element.clientLeft,
+        y:      element.clientTop,
+        width:  element.clientWidth,
+        height: element.clientHeight
+    };
+}
+
+
+
 // function triggerMouseEvent(element, event, px, py, button = 0)
 // {
 //     const e = new MouseEvent(event, 

@@ -225,12 +225,12 @@ class Menu
                 height += item.separator ? 17 : 25;
 
 
-        const graphHeight = graphView.offsetHeight - menuBar.offsetHeight;
+        const graphHeight = graphView.offsetHeight - menuBarHeight;
         
         if (top + height > graphHeight-8)
         {
             height = Math.min(height, graphHeight - 16);
-            top    = menuBar.offsetHeight + Math.max(8, graphHeight - height);
+            top    = menuBarHeight + Math.max(8, graphHeight - height);
             left  += 10; // so it doesn't hit a menu item by accident once the menu appears
         }
 

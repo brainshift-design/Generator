@@ -79,5 +79,7 @@ function uiReturnFigStartGenerator(msg)
     initThemeColors();
     loadLocalSettings();
 
+    graphViewClient = clientRect(graphView);
+    
     uiGetLocalData('showWhatsNew');
 }

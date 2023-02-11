@@ -198,7 +198,7 @@ extends Operator
     {
         this._warningOverlay.style.height = 
             height < 0
-            ? this.header.offsetHeight
+            ? this.measureData.headerOffset.height
             : height;
 
 

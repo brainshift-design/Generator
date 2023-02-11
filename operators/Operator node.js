@@ -210,7 +210,7 @@ function createNodeHeader(node)
             const w       = graphView.clientWidth;
             const h       = graphView.clientHeight;
             const bounds  = graphView.getAllNodeBounds();
-            const yOffset = menuBar.offsetHeight;
+            const yOffset = menuBarHeight;
         
             setNodePositions(
                 graphView.selectedNodes,
@@ -263,7 +263,7 @@ function createNodeHeader(node)
 
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
-                        inputRect.y + inputRect.h/2 - menuBar.offsetHeight);
+                        inputRect.y + inputRect.h/2 - menuBarHeight);
                 }
                 else
                 {
@@ -280,7 +280,7 @@ function createNodeHeader(node)
                     
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
-                        inputRect.y + inputRect.h/2 - menuBar.offsetHeight);
+                        inputRect.y + inputRect.h/2 - menuBarHeight);
 
                     // if (!graphView.tempConnected)
                     // {
@@ -316,7 +316,7 @@ function createNodeHeader(node)
 
                 tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBar.offsetHeight);
+                    rect.y + rect.h/2 - menuBarHeight);
 
 
                 tempConn.input.updateControl();

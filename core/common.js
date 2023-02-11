@@ -1,9 +1,6 @@
 const generatorVersion = 94;
 
 
-const smallScrollGap   =  6;
-const largeScrollGap   = 14;
-  
 const MAX_INT32        = 2147483647;
   
 const NULL             = '';
@@ -17,6 +14,11 @@ const OBJECT_PREFIX    = 'G.';
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
 
+
+const smallScrollGap   =  6;
+const largeScrollGap   = 14;
+  
+const menuBarHeight    = 40;
 
 
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }

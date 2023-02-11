@@ -12,7 +12,7 @@ graphView.updateScrollWithBounds = () =>
         graphView.clientWidth,
         graphView.clientHeight,
         bounds,
-        menuBar.offsetHeight);
+        menuBarHeight);
 };
 
 

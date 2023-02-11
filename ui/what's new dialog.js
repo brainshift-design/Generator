@@ -22,7 +22,7 @@ function initWhatsNewDialog()
 
         whatsNewDialogContent.style.top = Math.min(
             oy,
-            menuBar.offsetHeight);
+            menuBarHeight);
 
 
         updateWhatsNewScroll();
@@ -135,7 +135,7 @@ function updateWhatsNewScrollbar(clientY)
 
     whatsNewDialogContent.style.top = Math.min(
         oy,
-        menuBar.offsetHeight);
+        menuBarHeight);
 
 
     updateWhatsNewScroll();
@@ -148,7 +148,7 @@ function updateWhatsNewScroll()
     const x       = whatsNewDialog.clientLeft;
     const w       = whatsNewDialog.clientWidth;
     const h       = whatsNewDialogContainer.clientHeight;
-    const yOffset = menuBar.offsetHeight;
+    const yOffset = menuBarHeight;
     
     const bounds = whatsNewDialogContent.getBoundingClientRect();
     updateWhatsNewScrollY(x, w, h, bounds, yOffset);

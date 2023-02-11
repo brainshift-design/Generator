@@ -412,8 +412,8 @@ function initGeneratorMenus()
 
     menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
-        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()             + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(false, e.clientX, e.clientY - menuBar.offsetHeight); }}),
-        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrl() + osShift() + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(true,  e.clientX, e.clientY - menuBar.offsetHeight); }})]);
+        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()             + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(false, e.clientX, e.clientY - menuBarHeight); }}),
+        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrl() + osShift() + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(true,  e.clientX, e.clientY - menuBarHeight); }})]);
 
     menuGraph.init = () => 
     {

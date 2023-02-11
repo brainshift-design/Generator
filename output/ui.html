@@ -2607,9 +2607,6 @@ a
 const generatorVersion = 94;
 
 
-const smallScrollGap   =  6;
-const largeScrollGap   = 14;
-  
 const MAX_INT32        = 2147483647;
   
 const NULL             = '';
@@ -2623,6 +2620,11 @@ const OBJECT_PREFIX    = 'G.';
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
 
+
+const smallScrollGap   =  6;
+const largeScrollGap   = 14;
+  
+const menuBarHeight    = 40;
 
 
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
@@ -5100,6 +5102,18 @@ function offsetRect(element)
         y:      element.offsetTop,
         width:  element.offsetWidth,
         height: element.offsetHeight
+    };
+}
+
+
+
+function clientRect(element)
+{
+    return {
+        x:      element.clientLeft,
+        y:      element.clientTop,
+        width:  element.clientWidth,
+        height: element.clientHeight
     };
 }
 
@@ -18794,9 +18808,6 @@ function convert2hclluv(fromColor)
 const generatorVersion = 94;
 
 
-const smallScrollGap   =  6;
-const largeScrollGap   = 14;
-  
 const MAX_INT32        = 2147483647;
   
 const NULL             = '';
@@ -18810,6 +18821,11 @@ const OBJECT_PREFIX    = 'G.';
 const nodeTag          = 'G_NODE';
 const connTag          = 'G_CONN';
 
+
+const smallScrollGap   =  6;
+const largeScrollGap   = 14;
+  
+const menuBarHeight    = 40;
 
 
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
@@ -21287,6 +21303,18 @@ function offsetRect(element)
         y:      element.offsetTop,
         width:  element.offsetWidth,
         height: element.offsetHeight
+    };
+}
+
+
+
+function clientRect(element)
+{
+    return {
+        x:      element.clientLeft,
+        y:      element.clientTop,
+        width:  element.clientWidth,
+        height: element.clientHeight
     };
 }
 
@@ -31908,12 +31936,12 @@ class Menu
                 height += item.separator ? 17 : 25;
 
 
-        const graphHeight = graphView.offsetHeight - menuBar.offsetHeight;
+        const graphHeight = graphView.offsetHeight - menuBarHeight;
         
         if (top + height > graphHeight-8)
         {
             height = Math.min(height, graphHeight - 16);
-            top    = menuBar.offsetHeight + Math.max(8, graphHeight - height);
+            top    = menuBarHeight + Math.max(8, graphHeight - height);
             left  += 10; // so it doesn't hit a menu item by accident once the menu appears
         }
 
@@ -32993,8 +33021,8 @@ function initGeneratorMenus()
 
     menuGraph = new Menu('Graph menu', false, false);
     menuGraph.addItems([
-        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()             + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(false, e.clientX, e.clientY - menuBar.offsetHeight); }}),
-        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrl() + osShift() + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(true,  e.clientX, e.clientY - menuBar.offsetHeight); }})]);
+        menuItemGraphPaste          = new MenuItem('Paste here',      {shortcut: osCtrl()             + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(false, e.clientX, e.clientY - menuBarHeight); }}),
+        menuItemGraphPasteConnected = new MenuItem('Paste connected', {shortcut: osCtrl() + osShift() + 'V', callback: e => { hideAllMenus(); pasteCopiedNodes(true,  e.clientX, e.clientY - menuBarHeight); }})]);
 
     menuGraph.init = () => 
     {
@@ -33414,7 +33442,7 @@ function initNumberControlEvents(control)
 
                 graphView.tempConn.wire.inputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBar.offsetHeight);
+                    rect.y + rect.h/2 - menuBarHeight);
             }
             else if ( graphView.tempConn.input
                   &&  control.param.output
@@ -33431,7 +33459,7 @@ function initNumberControlEvents(control)
 
                 graphView.tempConn.wire .outputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBar.offsetHeight);
+                    rect.y + rect.h/2 - menuBarHeight);
 
 
                 graphView.tempConn.input.updateControl();
@@ -34768,7 +34796,7 @@ function initColorControlEvents(control)
 
                 graphView.tempConn.wire .inputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBar.offsetHeight);
+                    rect.y + rect.h/2 - menuBarHeight);
             }
             else if ( graphView.tempConn.input
                   &&  control.param.output
@@ -34785,7 +34813,7 @@ function initColorControlEvents(control)
 
                 graphView.tempConn.wire .outputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBar.offsetHeight);
+                    rect.y + rect.h/2 - menuBarHeight);
 
 
                 graphView.tempConn.input.updateControl();
@@ -36553,12 +36581,17 @@ scrollbarY.style.zIndex   = MAX_INT32-2;
 graphView.touches         = [];
 
 
+
+var graphViewClient       = null; // rect
+
+
+
 graphView.getAllNodeBounds = function()
 {
     let bounds = Rect.NaN;
 
     for (const node of graph.nodes)
-        bounds = expandRect(bounds, boundingRect(node.div));
+        bounds = expandRect(bounds, node.measureData.divBounds);//boundingRect(node.div));
 
     return bounds;
 };
@@ -36628,7 +36661,7 @@ graphView.placeNewNode = function(node)
     else
     {
         node.div.style.left = (graphView.offsetWidth /2 - graphView.pan.x                       ) / graphView.zoom - nodeRect.width /2;
-        node.div.style.top  = (graphView.offsetHeight/2 - graphView.pan.y - menuBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
+        node.div.style.top  = (graphView.offsetHeight/2 - graphView.pan.y - menuBarHeight) / graphView.zoom - nodeRect.height/2;
     }
 };
 
@@ -37098,6 +37131,13 @@ graphView.addEventListener('pointerup', e =>
         }
 
         graphView.endPan(e.pointerId, false);
+
+
+        if (graphView.panZoomTimer)
+        {
+            clearTimeout(graphView.panZoomTimer); 
+            graphView.panZoomTimer = null;
+        };
     }
 
     else if (e.button == 0
@@ -37143,7 +37183,7 @@ graphView.addEventListener('wheel', e =>
         || panMode)
     {
         let pos = point(e.clientX, e.clientY);
-        pos.y -= menuBar.offsetHeight;
+        pos.y -= menuBarHeight;
 
         const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (isTouchpad ? 5 : 10)));
         const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
@@ -37189,7 +37229,7 @@ graphView.addEventListener('gesturechange', e =>
 {
     const p = point(
         graphView.p.x,
-        graphView.p.y - menuBar.offsetHeight);
+        graphView.p.y - menuBarHeight);
 
     const zoom = graphView.zoomStart * e.scale;
     const pan  = subv(graphView.pan, mulvs(subv(p, graphView.pan), zoom / graphView.zoom - 1));
@@ -37286,7 +37326,7 @@ Object.defineProperty(graphView, 'zoom',
             window.innerWidth /2,
             window.innerHeight/2);
 
-        pos.y -= menuBar.offsetHeight;
+        pos.y -= menuBarHeight;
 
         const pan = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
 
@@ -37302,6 +37342,9 @@ graphView.zoomStart = 1;
 graphView.zoomSelecting = false;
 
 
+graphView.panZoomTimer = null;
+
+
 
 graphView.setPanAndZoom = (pan, zoom) =>
 {
@@ -37315,9 +37358,14 @@ graphView.setPanAndZoom = (pan, zoom) =>
         graphView._zoom = zoom;
         graphView._pan  = pan;
 
-        graphView.updatePanAndZoom();
-
         uiSaveGraphView();
+
+
+        // graphView.panZoomTimer = setTimeout(() => 
+        // {
+            graphView.updatePanAndZoom();
+        //     graphView.panZoomTimer = null;
+        // });
     }
 };
 
@@ -37341,18 +37389,7 @@ graphView.update = function(nodes = null)
         node = graph.nodes;
         
     graphView.updateNodeTransforms(nodes, false);
-    
-    const x       = graphView.clientLeft;
-    const w       = graphView.clientWidth;
-    const h       = graphView.clientHeight;
-    const yOffset = menuBar.offsetHeight;
-    //let   bounds  = graphView.getAllNodeBounds();
-    
     graphView.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
-
-    const bounds = graphView.getAllNodeBounds();
-    graphView.updateScroll(x, w, h, bounds, yOffset);
-
 
     nodes.forEach(n => n.updateMeasureData());
 
@@ -37361,6 +37398,14 @@ graphView.update = function(nodes = null)
         n.updateHeader(); 
         n.updateHeaderLabel(); 
     });
+
+
+    const x = graphViewClient.left;
+    const w = graphViewClient.width;
+    const h = graphViewClient.height;
+    
+    const bounds = graphView.getAllNodeBounds();
+    graphView.updateScroll(x, w, h, bounds, menuBarHeight);
 };
 
 
@@ -37440,7 +37485,7 @@ graphView.endZoomSelection = (pointerId, zoom) =>
         
         let box = {
             x: selection.x,
-            y: selection.y - menuBar.offsetHeight,
+            y: selection.y - menuBarHeight,
             w: selection.w,
             h: selection.h };
             
@@ -37758,7 +37803,7 @@ graphView.updateScrollWithBounds = () =>
         graphView.clientWidth,
         graphView.clientHeight,
         bounds,
-        menuBar.offsetHeight);
+        menuBarHeight);
 };
 
 
@@ -38021,7 +38066,7 @@ graphView.removeWire = function(wire)
 
 function updateWire(wire, x = 0, y = 0)
 {
-    const yOffset = menuBar.offsetHeight;
+    const yOffset = menuBarHeight;
 
     let pOut = point(0, 0),
         pIn  = point(0, 0);
@@ -40012,6 +40057,7 @@ class Graph
 
         node.div.style.zIndex  = graph.nodes.length-1;
 
+        node.updateMeasureData();
 
         graphView.putNodeOnTop(node);
         graphView.updateScrollWithBounds();
@@ -40917,7 +40963,7 @@ extends EventTarget
                 {
                     tc.wire.inputPos = point(
                         rect.x + rect.w/2,
-                        rect.y + rect.h/2 - menuBar.offsetHeight);
+                        rect.y + rect.h/2 - menuBarHeight);
                 }
 
                 this.mouseOver = true;
@@ -41170,7 +41216,7 @@ class Output
                 {
                     graphView.tempConn.wire.outputPos = point(
                         rect.x + rect.w/2,
-                        rect.y + rect.h/2 - menuBar.offsetHeight);
+                        rect.y + rect.h/2 - menuBarHeight);
                 }
 
                 graphView.overOutput = !loop ? this : null;
@@ -42543,7 +42589,7 @@ class Operator
     updateParamBack(headerHeight)
     {
         this.      paramBack.style.height =
-        this.hiddenParamBack.style.height = this.inner.offsetHeight - headerHeight;
+        this.hiddenParamBack.style.height = this.measureData.innerOffset.height - headerHeight;
 
         this.      paramBack.style.top    =
         this.hiddenParamBack.style.top    = headerHeight;
@@ -42555,10 +42601,13 @@ class Operator
     {
         this.measureData = 
         {
-            labelWrapperRect:       boundingRect(this.labelWrapper),
-            labelWrapperOffsetRect: offsetRect  (this.labelWrapper),
-            labelRect:              boundingRect(this.label),
-            labelOffsetRect:        offsetRect  (this.label) 
+            divBounds:          boundingRect(this.div),
+            innerOffset:        offsetRect  (this.inner),
+            headerOffset:       offsetRect  (this.header),
+            labelWrapperBounds: boundingRect(this.labelWrapper),
+            labelWrapperOffset: offsetRect  (this.labelWrapper),
+            labelBounds:        boundingRect(this.label),
+            labelOffset:        offsetRect  (this.label) 
         };
     }
 
@@ -42646,7 +42695,7 @@ class Operator
 
 
 
-    getHeaderColors()
+    getHeaderColors(options = {})
     {
         const rgbaBack = 
             this.inert
@@ -43291,7 +43340,7 @@ function createNodeHeader(node)
             const w       = graphView.clientWidth;
             const h       = graphView.clientHeight;
             const bounds  = graphView.getAllNodeBounds();
-            const yOffset = menuBar.offsetHeight;
+            const yOffset = menuBarHeight;
         
             setNodePositions(
                 graphView.selectedNodes,
@@ -43344,7 +43393,7 @@ function createNodeHeader(node)
 
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
-                        inputRect.y + inputRect.h/2 - menuBar.offsetHeight);
+                        inputRect.y + inputRect.h/2 - menuBarHeight);
                 }
                 else
                 {
@@ -43361,7 +43410,7 @@ function createNodeHeader(node)
                     
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
-                        inputRect.y + inputRect.h/2 - menuBar.offsetHeight);
+                        inputRect.y + inputRect.h/2 - menuBarHeight);
 
                     // if (!graphView.tempConnected)
                     // {
@@ -43397,7 +43446,7 @@ function createNodeHeader(node)
 
                 tempConn.wire.outputPos = point(
                     rect.x + rect.w/2,
-                    rect.y + rect.h/2 - menuBar.offsetHeight);
+                    rect.y + rect.h/2 - menuBarHeight);
 
 
                 tempConn.input.updateControl();
@@ -43674,7 +43723,7 @@ function createNodeLabel(node)
         if (!node.scrollName)
             return;
 
-        const wrect      = node.measureData.labelWrapperRect;//boundingRect(node.labelWrapper);
+        const wrect      = node.measureData.labelWrapperBounds;//boundingRect(node.labelWrapper);
         const margin     = 14;
         const viewMargin = margin * graphView.zoom;
         
@@ -43701,8 +43750,8 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
     const margin     = 15;
     const viewMargin = margin * graphView.zoom;
 
-    const wrect      = node.measureData.labelWrapperRect; //boundingRect(node.labelWrapper);
-    const rect       = node.measureData.labelRect;        //boundingRect(node.label);
+    const wrect      = node.measureData.labelWrapperBounds; //boundingRect(node.labelWrapper);
+    const rect       = node.measureData.labelBounds;        //boundingRect(node.label);
 
     const rw         = wrect.width  - viewMargin*2;
     const sf         = rw / nozero(rect.width);
@@ -43740,7 +43789,7 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
     }
 
 
-    node.label.style.top = Math.floor(node.measureData.labelWrapperOffsetRect.height/2 - node.measureData.labelOffsetHeight/2) + 'px';
+    node.label.style.top = Math.floor(node.measureData.labelWrapperOffset.height/2 - node.measureData.labelOffset.height/2) + 'px';
 
 
     const color = 
@@ -46335,7 +46384,7 @@ extends Operator
     {
         this._warningOverlay.style.height = 
             height < 0
-            ? this.header.offsetHeight
+            ? this.measureData.headerOffset.height
             : height;
 
 
@@ -53342,6 +53391,8 @@ function uiReturnFigStartGenerator(msg)
     initThemeColors();
     loadLocalSettings();
 
+    graphViewClient = clientRect(graphView);
+    
     uiGetLocalData('showWhatsNew');
 }
 
@@ -56272,7 +56323,7 @@ function initWhatsNewDialog()
 
         whatsNewDialogContent.style.top = Math.min(
             oy,
-            menuBar.offsetHeight);
+            menuBarHeight);
 
 
         updateWhatsNewScroll();
@@ -56385,7 +56436,7 @@ function updateWhatsNewScrollbar(clientY)
 
     whatsNewDialogContent.style.top = Math.min(
         oy,
-        menuBar.offsetHeight);
+        menuBarHeight);
 
 
     updateWhatsNewScroll();
@@ -56398,7 +56449,7 @@ function updateWhatsNewScroll()
     const x       = whatsNewDialog.clientLeft;
     const w       = whatsNewDialog.clientWidth;
     const h       = whatsNewDialogContainer.clientHeight;
-    const yOffset = menuBar.offsetHeight;
+    const yOffset = menuBarHeight;
     
     const bounds = whatsNewDialogContent.getBoundingClientRect();
     updateWhatsNewScrollY(x, w, h, bounds, yOffset);
@@ -56502,6 +56553,8 @@ function uiReturnFigResizeWindow()
         graphView.updatePanAndZoom();
         updateWhatsNewScrollbar(0);
     }
+
+    graphViewClient = clientRect(graphView);
 }
 
 

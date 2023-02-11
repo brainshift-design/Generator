@@ -36,7 +36,7 @@ graphView.removeWire = function(wire)
 
 function updateWire(wire, x = 0, y = 0)
 {
-    const yOffset = menuBar.offsetHeight;
+    const yOffset = menuBarHeight;
 
     let pOut = point(0, 0),
         pIn  = point(0, 0);

@@ -49,12 +49,17 @@ scrollbarY.style.zIndex   = MAX_INT32-2;
 graphView.touches         = [];
 
 
+
+var graphViewClient       = null; // rect
+
+
+
 graphView.getAllNodeBounds = function()
 {
     let bounds = Rect.NaN;
 
     for (const node of graph.nodes)
-        bounds = expandRect(bounds, boundingRect(node.div));
+        bounds = expandRect(bounds, node.measureData.divBounds);//boundingRect(node.div));
 
     return bounds;
 };
@@ -124,7 +129,7 @@ graphView.placeNewNode = function(node)
     else
     {
         node.div.style.left = (graphView.offsetWidth /2 - graphView.pan.x                       ) / graphView.zoom - nodeRect.width /2;
-        node.div.style.top  = (graphView.offsetHeight/2 - graphView.pan.y - menuBar.offsetHeight) / graphView.zoom - nodeRect.height/2;
+        node.div.style.top  = (graphView.offsetHeight/2 - graphView.pan.y - menuBarHeight) / graphView.zoom - nodeRect.height/2;
     }
 };
 

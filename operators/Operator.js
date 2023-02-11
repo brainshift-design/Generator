@@ -768,7 +768,7 @@ class Operator
     updateParamBack(headerHeight)
     {
         this.      paramBack.style.height =
-        this.hiddenParamBack.style.height = this.inner.offsetHeight - headerHeight;
+        this.hiddenParamBack.style.height = this.measureData.innerOffset.height - headerHeight;
 
         this.      paramBack.style.top    =
         this.hiddenParamBack.style.top    = headerHeight;
@@ -780,10 +780,13 @@ class Operator
     {
         this.measureData = 
         {
-            labelWrapperRect:       boundingRect(this.labelWrapper),
-            labelWrapperOffsetRect: offsetRect  (this.labelWrapper),
-            labelRect:              boundingRect(this.label),
-            labelOffsetRect:        offsetRect  (this.label) 
+            divBounds:          boundingRect(this.div),
+            innerOffset:        offsetRect  (this.inner),
+            headerOffset:       offsetRect  (this.header),
+            labelWrapperBounds: boundingRect(this.labelWrapper),
+            labelWrapperOffset: offsetRect  (this.labelWrapper),
+            labelBounds:        boundingRect(this.label),
+            labelOffset:        offsetRect  (this.label) 
         };
     }
 
@@ -871,7 +874,7 @@ class Operator
 
 
 
-    getHeaderColors()
+    getHeaderColors(options = {})
     {
         const rgbaBack = 
             this.inert

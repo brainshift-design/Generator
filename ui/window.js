@@ -78,6 +78,8 @@ function uiReturnFigResizeWindow()
         graphView.updatePanAndZoom();
         updateWhatsNewScrollbar(0);
     }
+
+    graphViewClient = clientRect(graphView);
 }
 
 

@@ -24,7 +24,7 @@ function createNodeLabel(node)
         if (!node.scrollName)
             return;
 
-        const wrect      = node.measureData.labelWrapperRect;//boundingRect(node.labelWrapper);
+        const wrect      = node.measureData.labelWrapperBounds;//boundingRect(node.labelWrapper);
         const margin     = 14;
         const viewMargin = margin * graphView.zoom;
         
@@ -51,8 +51,8 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
     const margin     = 15;
     const viewMargin = margin * graphView.zoom;
 
-    const wrect      = node.measureData.labelWrapperRect; //boundingRect(node.labelWrapper);
-    const rect       = node.measureData.labelRect;        //boundingRect(node.label);
+    const wrect      = node.measureData.labelWrapperBounds; //boundingRect(node.labelWrapper);
+    const rect       = node.measureData.labelBounds;        //boundingRect(node.label);
 
     const rw         = wrect.width  - viewMargin*2;
     const sf         = rw / nozero(rect.width);
@@ -90,7 +90,7 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
     }
 
 
-    node.label.style.top = Math.floor(node.measureData.labelWrapperOffsetRect.height/2 - node.measureData.labelOffsetHeight/2) + 'px';
+    node.label.style.top = Math.floor(node.measureData.labelWrapperOffset.height/2 - node.measureData.labelOffset.height/2) + 'px';
 
 
     const color = 
