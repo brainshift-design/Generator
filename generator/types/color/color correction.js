@@ -1,3 +1,19 @@
+class ColorCorrection
+{
+    name; // 'H', 'C', or 'L'
+    max;
+    value;
+    
+    constructor(name = '', max = 0, value = 0)//, locked = false)
+    {
+        this.name  = name;
+        this.max   = max;
+        this.value = value;
+    }
+}
+
+
+
 function findCorrection(nodeId,
                         color,
                         order,       margin1, margin2, margin3,
@@ -447,4 +463,59 @@ function reorderCorrection(closestOrder,
         closestOrder,
         c1.closest, c2.closest, c3.closest,
         c1.locked,  c2.locked,  c3.locked ];
+}
+
+
+
+function getColorCorrections(colorSpace)
+{
+    switch (colorSpace)
+    {
+    case 'hex':
+    case 'rgb':
+        return [
+            new ColorCorrection('R', rgbFactor[0]),
+            new ColorCorrection('G', rgbFactor[1]),
+            new ColorCorrection('B', rgbFactor[2]) ];
+
+    case 'hsv':
+        return [
+            new ColorCorrection('H', hs_Factor[0]/2),
+            new ColorCorrection('S', hs_Factor[1]),
+            new ColorCorrection('V', hs_Factor[2]) ];
+
+    case 'hsl':
+        return [
+            new ColorCorrection('H', hs_Factor[0]/2),
+            new ColorCorrection('S', hs_Factor[1]),
+            new ColorCorrection('L', hs_Factor[2]) ];
+
+    case 'hclokl':
+    case 'hcllab':
+    case 'hclluv':
+        return [
+            new ColorCorrection('H', hclFactor[0]/2),
+            new ColorCorrection('C', hclFactor[1]),
+            new ColorCorrection('L', hclFactor[2]) ];
+
+    case 'oklab': 
+    case 'lab':
+        return [
+            new ColorCorrection('L', oppFactor[0]),
+            new ColorCorrection('a', oppFactor[1]),
+            new ColorCorrection('b', oppFactor[2]) ];
+
+    case 'luv':
+        return [
+            new ColorCorrection('L', oppFactor[0]),
+            new ColorCorrection('u', oppFactor[1]),
+            new ColorCorrection('v', oppFactor[2]) ];
+    }
+
+
+    console.assert(false, 'invalid color space ' + colorSpace);
+    return [
+        new ColorCorrection(),
+        new ColorCorrection(),
+        new ColorCorrection() ];
 }

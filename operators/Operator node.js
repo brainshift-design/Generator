@@ -424,7 +424,7 @@ function createNodeHeader(node)
         e.preventDefault();
 
         
-        const bounds = boundingRect(node.label);
+        //const bounds = boundingRect(node.label);
 
         // if (   e.clientX >= bounds.left && e.clientX < bounds.right
         //     && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
@@ -432,7 +432,6 @@ function createNodeHeader(node)
         // else 
         if (!node.header.ignoreDoubleClick)
             actionManager.do(new MakeActiveNodeAction(node.id));
-
 
         node.header.ignoreDoubleClick = false;
     });

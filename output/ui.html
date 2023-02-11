@@ -10962,6 +10962,22 @@ extends GNumberType
 
 
 
+class ColorCorrection
+{
+    name; // 'H', 'C', or 'L'
+    max;
+    value;
+    
+    constructor(name = '', max = 0, value = 0)//, locked = false)
+    {
+        this.name  = name;
+        this.max   = max;
+        this.value = value;
+    }
+}
+
+
+
 function findCorrection(nodeId,
                         color,
                         order,       margin1, margin2, margin3,
@@ -11413,6 +11429,60 @@ function reorderCorrection(closestOrder,
         c1.locked,  c2.locked,  c3.locked ];
 }
 
+
+
+function getColorCorrections(colorSpace)
+{
+    switch (colorSpace)
+    {
+    case 'hex':
+    case 'rgb':
+        return [
+            new ColorCorrection('R', rgbFactor[0]),
+            new ColorCorrection('G', rgbFactor[1]),
+            new ColorCorrection('B', rgbFactor[2]) ];
+
+    case 'hsv':
+        return [
+            new ColorCorrection('H', hs_Factor[0]/2),
+            new ColorCorrection('S', hs_Factor[1]),
+            new ColorCorrection('V', hs_Factor[2]) ];
+
+    case 'hsl':
+        return [
+            new ColorCorrection('H', hs_Factor[0]/2),
+            new ColorCorrection('S', hs_Factor[1]),
+            new ColorCorrection('L', hs_Factor[2]) ];
+
+    case 'hclokl':
+    case 'hcllab':
+    case 'hclluv':
+        return [
+            new ColorCorrection('H', hclFactor[0]/2),
+            new ColorCorrection('C', hclFactor[1]),
+            new ColorCorrection('L', hclFactor[2]) ];
+
+    case 'oklab': 
+    case 'lab':
+        return [
+            new ColorCorrection('L', oppFactor[0]),
+            new ColorCorrection('a', oppFactor[1]),
+            new ColorCorrection('b', oppFactor[2]) ];
+
+    case 'luv':
+        return [
+            new ColorCorrection('L', oppFactor[0]),
+            new ColorCorrection('u', oppFactor[1]),
+            new ColorCorrection('v', oppFactor[2]) ];
+    }
+
+
+    console.assert(false, 'invalid color space ' + colorSpace);
+    return [
+        new ColorCorrection(),
+        new ColorCorrection(),
+        new ColorCorrection() ];
+}
 
 
 class GColorType
@@ -28724,6 +28794,22 @@ extends GNumberType
 
 
 
+class ColorCorrection
+{
+    name; // 'H', 'C', or 'L'
+    max;
+    value;
+    
+    constructor(name = '', max = 0, value = 0)//, locked = false)
+    {
+        this.name  = name;
+        this.max   = max;
+        this.value = value;
+    }
+}
+
+
+
 function findCorrection(nodeId,
                         color,
                         order,       margin1, margin2, margin3,
@@ -29175,6 +29261,60 @@ function reorderCorrection(closestOrder,
         c1.locked,  c2.locked,  c3.locked ];
 }
 
+
+
+function getColorCorrections(colorSpace)
+{
+    switch (colorSpace)
+    {
+    case 'hex':
+    case 'rgb':
+        return [
+            new ColorCorrection('R', rgbFactor[0]),
+            new ColorCorrection('G', rgbFactor[1]),
+            new ColorCorrection('B', rgbFactor[2]) ];
+
+    case 'hsv':
+        return [
+            new ColorCorrection('H', hs_Factor[0]/2),
+            new ColorCorrection('S', hs_Factor[1]),
+            new ColorCorrection('V', hs_Factor[2]) ];
+
+    case 'hsl':
+        return [
+            new ColorCorrection('H', hs_Factor[0]/2),
+            new ColorCorrection('S', hs_Factor[1]),
+            new ColorCorrection('L', hs_Factor[2]) ];
+
+    case 'hclokl':
+    case 'hcllab':
+    case 'hclluv':
+        return [
+            new ColorCorrection('H', hclFactor[0]/2),
+            new ColorCorrection('C', hclFactor[1]),
+            new ColorCorrection('L', hclFactor[2]) ];
+
+    case 'oklab': 
+    case 'lab':
+        return [
+            new ColorCorrection('L', oppFactor[0]),
+            new ColorCorrection('a', oppFactor[1]),
+            new ColorCorrection('b', oppFactor[2]) ];
+
+    case 'luv':
+        return [
+            new ColorCorrection('L', oppFactor[0]),
+            new ColorCorrection('u', oppFactor[1]),
+            new ColorCorrection('v', oppFactor[2]) ];
+    }
+
+
+    console.assert(false, 'invalid color space ' + colorSpace);
+    return [
+        new ColorCorrection(),
+        new ColorCorrection(),
+        new ColorCorrection() ];
+}
 
 
 class GColorType
@@ -43337,7 +43477,7 @@ function createNodeHeader(node)
         e.preventDefault();
 
         
-        const bounds = boundingRect(node.label);
+        //const bounds = boundingRect(node.label);
 
         // if (   e.clientX >= bounds.left && e.clientX < bounds.right
         //     && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
@@ -43345,7 +43485,6 @@ function createNodeHeader(node)
         // else 
         if (!node.header.ignoreDoubleClick)
             actionManager.do(new MakeActiveNodeAction(node.id));
-
 
         node.header.ignoreDoubleClick = false;
     });
@@ -46114,8 +46253,8 @@ extends Operator
         //const rgbLabel = getTextColorFromBackColor(clipRgb(rgbBack));
 
         const rgbaWire = 
-            !rgbIsNaN(rgbBack)   
-            ? rgbBack 
+            !rgbIsNaN(rgbStripeBack)   
+            ? rgbStripeBack 
             : noColor;
 
         return {
@@ -47835,14 +47974,6 @@ extends OpColorBase
             paramId: NULL });
 
 
-        // const hasInputs =
-        //        this.node.param1.input.connected
-        //     || this.node.param2.input.connected
-        //     || this.node.param3.input.connected;
-
-        //const options = 0;//(hasInputs ? 1 : 0) << 20;
-
-
         const [request, ignore] = this.node.genRequestStart(gen, 0);
         if (ignore) return request;
 
@@ -47918,61 +48049,7 @@ extends OpColorBase
         if (colorSpace == '')
             return;
 
-
-        switch (colorSpace)
-        {
-        case 'hex':
-        case 'rgb':
-            this.corrections = [
-                new OpCorrectColor_Correction('R', rgbFactor[0]),
-                new OpCorrectColor_Correction('G', rgbFactor[1]),
-                new OpCorrectColor_Correction('B', rgbFactor[2]) ];
-
-            break;
-
-        case 'hsv':
-            this.corrections = [
-                new OpCorrectColor_Correction('H', hs_Factor[0]/2),
-                new OpCorrectColor_Correction('S', hs_Factor[1]),
-                new OpCorrectColor_Correction('V', hs_Factor[2]) ];
-
-            break;
-
-        case 'hsl':
-            this.corrections = [
-                new OpCorrectColor_Correction('H', hs_Factor[0]/2),
-                new OpCorrectColor_Correction('S', hs_Factor[1]),
-                new OpCorrectColor_Correction('L', hs_Factor[2]) ];
-
-            break;
-
-        case 'hclokl':
-        case 'hcllab':
-        case 'hclluv':
-            this.corrections = [
-                new OpCorrectColor_Correction('H', hclFactor[0]/2),
-                new OpCorrectColor_Correction('C', hclFactor[1]),
-                new OpCorrectColor_Correction('L', hclFactor[2]) ];
-
-            break;
-
-        case 'oklab': 
-        case 'lab':
-            this.corrections = [
-                new OpCorrectColor_Correction('L', oppFactor[0]),
-                new OpCorrectColor_Correction('a', oppFactor[1]),
-                new OpCorrectColor_Correction('b', oppFactor[2]) ];
-
-            break;
-
-        case 'luv':
-            this.corrections = [
-                new OpCorrectColor_Correction('L', oppFactor[0]),
-                new OpCorrectColor_Correction('u', oppFactor[1]),
-                new OpCorrectColor_Correction('v', oppFactor[2]) ];
-
-            break;
-        }
+        this.corrections = getColorCorrections(colorSpace);
     }
 
 
@@ -48005,16 +48082,16 @@ extends OpColorBase
         const tab = TAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"value": "' + ColorValue.fromDataColor(this._color).toString() + '"';
+             + ',\n' + pos + tab + '"_color": "' + ColorValue.fromDataColor(this._color).toString() + '"';
     }
 
 
 
     loadParams(_node, pasting)
     {
-        if (_node.value != undefined)
+        if (_node._color != undefined)
         {
-            this._color = parseColorValue(_node.value)[0].toDataColor();
+            this._color = parseColorValue(_node._color)[0].toDataColor();
             this.valid = true;
         }
 
@@ -48024,22 +48101,6 @@ extends OpColorBase
         super.loadParams(_node, pasting);
     }
 }
-
-
-class OpCorrectColor_Correction
-{
-    name; // 'H', 'C', or 'L'
-    max;
-    value;
-    
-    constructor(name, max, value = 0)//, locked = false)
-    {
-        this.name  = name;
-        this.max   = max;
-        this.value = value;
-    }
-}
-
 
 
 class   OpCorrectColor
@@ -48225,63 +48286,19 @@ extends OpColorBase
         switch (colorSpace)
         {
         case 'hex':
-        case 'rgb':
-            this.paramOrder.setOptions(makeOptions('RGB'));
-            this.corrections = [
-                new OpCorrectColor_Correction('R', rgbFactor[0]),
-                new OpCorrectColor_Correction('G', rgbFactor[1]),
-                new OpCorrectColor_Correction('B', rgbFactor[2]) ];
-
-            break;
-
-        case 'hsv':
-            this.paramOrder.setOptions(makeOptions('HSV'));
-            this.corrections = [
-                new OpCorrectColor_Correction('H', hs_Factor[0]/2),
-                new OpCorrectColor_Correction('S', hs_Factor[1]),
-                new OpCorrectColor_Correction('V', hs_Factor[2]) ];
-
-            break;
-
-        case 'hsl':
-            this.paramOrder.setOptions(makeOptions('HSL'));
-            this.corrections = [
-                new OpCorrectColor_Correction('H', hs_Factor[0]/2),
-                new OpCorrectColor_Correction('S', hs_Factor[1]),
-                new OpCorrectColor_Correction('L', hs_Factor[2]) ];
-
-            break;
-
+        case 'rgb':    this.paramOrder.setOptions(makeOptions('RGB')); break;
+        case 'hsv':    this.paramOrder.setOptions(makeOptions('HSV')); break;
+        case 'hsl':    this.paramOrder.setOptions(makeOptions('HSL')); break;
         case 'hclokl':
         case 'hcllab':
-        case 'hclluv':
-            this.paramOrder.setOptions(makeOptions('HCL'));
-            this.corrections = [
-                new OpCorrectColor_Correction('H', hclFactor[0]/2),
-                new OpCorrectColor_Correction('C', hclFactor[1]),
-                new OpCorrectColor_Correction('L', hclFactor[2]) ];
-
-            break;
-
-        case 'oklab': 
-        case 'lab':
-            this.paramOrder.setOptions(makeOptions('Lab'));
-            this.corrections = [
-                new OpCorrectColor_Correction('L', oppFactor[0]),
-                new OpCorrectColor_Correction('a', oppFactor[1]),
-                new OpCorrectColor_Correction('b', oppFactor[2]) ];
-
-            break;
-
-        case 'luv':
-            this.paramOrder.setOptions(makeOptions('Luv'));
-            this.corrections = [
-                new OpCorrectColor_Correction('L', oppFactor[0]),
-                new OpCorrectColor_Correction('u', oppFactor[1]),
-                new OpCorrectColor_Correction('v', oppFactor[2]) ];
-
-            break;
+        case 'hclluv': this.paramOrder.setOptions(makeOptions('HCL')); break;
+        case 'oklab':  
+        case 'lab':    this.paramOrder.setOptions(makeOptions('Lab')); break;
+        case 'luv':    this.paramOrder.setOptions(makeOptions('Luv')); break;
         }
+
+
+        this.corrections = getColorCorrections(colorSpace);
     }
 
 
@@ -48352,7 +48369,7 @@ extends OpColorBase
         const tab = TAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"value": "' + ColorValue.fromDataColor(this._color).toString() + '"';
+             + ',\n' + pos + tab + '"_color": "' + ColorValue.fromDataColor(this._color).toString() + '"';
     }
 
 
@@ -48361,9 +48378,9 @@ extends OpColorBase
     {
         super.loadParams(_node, pasting);
 
-        if (_node.value != undefined)
+        if (_node._color != undefined)
         {
-            this._color = parseColorValue(_node.value)[0].toDataColor();
+            this._color = parseColorValue(_node._color)[0].toDataColor();
             this.valid = true;
         }
 
@@ -54355,7 +54372,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
     {
         const updateNodes = [];
         finishLoadingNodes(_nodes, loadedNodes, updateNodes);
-        finishLoading();
+        finishLoading(_nodes);
         
         pushUpdate(null, updateNodes);
     });
@@ -54363,19 +54380,23 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 
 
-function finishLoading()
+function finishLoading(_nodes)
 {
-    clearTimeout(dataModeTimeout);
-    dataModeTimeout = null;
+    if (isEmpty(_nodes))
+    {
+        clearTimeout(dataModeTimeout);
+        dataModeTimeout = null;
+
+        graphView.loadingNodes       = false;
+        loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
+    }
+
 
     graphView.canUpdateNodes = true;
 
     graphView.updateShowWires(false);
 
     generatorStarted = true;
-
-    //graphView.loadingNodes       = false;
-    //loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
 }
 
 
@@ -55522,6 +55543,12 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
         
     graphView.loadingNodes       = false;
     loadingOverlay.style.display = 'none'; // for loading
+
+    if (dataModeTimeout)
+    {
+        clearTimeout(dataModeTimeout);
+        dataModeTimeout = null;
+    }
 
 
     if (settings.logRawValues)  

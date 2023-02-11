@@ -146,8 +146,8 @@ extends Operator
         //const rgbLabel = getTextColorFromBackColor(clipRgb(rgbBack));
 
         const rgbaWire = 
-            !rgbIsNaN(rgbBack)   
-            ? rgbBack 
+            !rgbIsNaN(rgbStripeBack)   
+            ? rgbStripeBack 
             : noColor;
 
         return {

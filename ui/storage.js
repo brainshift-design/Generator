@@ -324,7 +324,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
     {
         const updateNodes = [];
         finishLoadingNodes(_nodes, loadedNodes, updateNodes);
-        finishLoading();
+        finishLoading(_nodes);
         
         pushUpdate(null, updateNodes);
     });
@@ -332,19 +332,23 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
 
 
-function finishLoading()
+function finishLoading(_nodes)
 {
-    clearTimeout(dataModeTimeout);
-    dataModeTimeout = null;
+    if (isEmpty(_nodes))
+    {
+        clearTimeout(dataModeTimeout);
+        dataModeTimeout = null;
+
+        graphView.loadingNodes       = false;
+        loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
+    }
+
 
     graphView.canUpdateNodes = true;
 
     graphView.updateShowWires(false);
 
     generatorStarted = true;
-
-    //graphView.loadingNodes       = false;
-    //loadingOverlay.style.display = 'none'; // uncomment to monitor loading of slow nodes
 }
 
 

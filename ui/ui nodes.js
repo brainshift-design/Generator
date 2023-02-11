@@ -811,6 +811,12 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     graphView.loadingNodes       = false;
     loadingOverlay.style.display = 'none'; // for loading
 
+    if (dataModeTimeout)
+    {
+        clearTimeout(dataModeTimeout);
+        dataModeTimeout = null;
+    }
+
 
     if (settings.logRawValues)  
         console.log('raw values = ', values);

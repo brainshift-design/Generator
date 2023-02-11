@@ -1,19 +1,3 @@
-class OpCorrectColor_Correction
-{
-    name; // 'H', 'C', or 'L'
-    max;
-    value;
-    
-    constructor(name, max, value = 0)//, locked = false)
-    {
-        this.name  = name;
-        this.max   = max;
-        this.value = value;
-    }
-}
-
-
-
 class   OpCorrectColor
 extends OpColorBase
 {
@@ -197,63 +181,19 @@ extends OpColorBase
         switch (colorSpace)
         {
         case 'hex':
-        case 'rgb':
-            this.paramOrder.setOptions(makeOptions('RGB'));
-            this.corrections = [
-                new OpCorrectColor_Correction('R', rgbFactor[0]),
-                new OpCorrectColor_Correction('G', rgbFactor[1]),
-                new OpCorrectColor_Correction('B', rgbFactor[2]) ];
-
-            break;
-
-        case 'hsv':
-            this.paramOrder.setOptions(makeOptions('HSV'));
-            this.corrections = [
-                new OpCorrectColor_Correction('H', hs_Factor[0]/2),
-                new OpCorrectColor_Correction('S', hs_Factor[1]),
-                new OpCorrectColor_Correction('V', hs_Factor[2]) ];
-
-            break;
-
-        case 'hsl':
-            this.paramOrder.setOptions(makeOptions('HSL'));
-            this.corrections = [
-                new OpCorrectColor_Correction('H', hs_Factor[0]/2),
-                new OpCorrectColor_Correction('S', hs_Factor[1]),
-                new OpCorrectColor_Correction('L', hs_Factor[2]) ];
-
-            break;
-
+        case 'rgb':    this.paramOrder.setOptions(makeOptions('RGB')); break;
+        case 'hsv':    this.paramOrder.setOptions(makeOptions('HSV')); break;
+        case 'hsl':    this.paramOrder.setOptions(makeOptions('HSL')); break;
         case 'hclokl':
         case 'hcllab':
-        case 'hclluv':
-            this.paramOrder.setOptions(makeOptions('HCL'));
-            this.corrections = [
-                new OpCorrectColor_Correction('H', hclFactor[0]/2),
-                new OpCorrectColor_Correction('C', hclFactor[1]),
-                new OpCorrectColor_Correction('L', hclFactor[2]) ];
-
-            break;
-
-        case 'oklab': 
-        case 'lab':
-            this.paramOrder.setOptions(makeOptions('Lab'));
-            this.corrections = [
-                new OpCorrectColor_Correction('L', oppFactor[0]),
-                new OpCorrectColor_Correction('a', oppFactor[1]),
-                new OpCorrectColor_Correction('b', oppFactor[2]) ];
-
-            break;
-
-        case 'luv':
-            this.paramOrder.setOptions(makeOptions('Luv'));
-            this.corrections = [
-                new OpCorrectColor_Correction('L', oppFactor[0]),
-                new OpCorrectColor_Correction('u', oppFactor[1]),
-                new OpCorrectColor_Correction('v', oppFactor[2]) ];
-
-            break;
+        case 'hclluv': this.paramOrder.setOptions(makeOptions('HCL')); break;
+        case 'oklab':  
+        case 'lab':    this.paramOrder.setOptions(makeOptions('Lab')); break;
+        case 'luv':    this.paramOrder.setOptions(makeOptions('Luv')); break;
         }
+
+
+        this.corrections = getColorCorrections(colorSpace);
     }
 
 
@@ -324,7 +264,7 @@ extends OpColorBase
         const tab = TAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"value": "' + ColorValue.fromDataColor(this._color).toString() + '"';
+             + ',\n' + pos + tab + '"_color": "' + ColorValue.fromDataColor(this._color).toString() + '"';
     }
 
 
@@ -333,9 +273,9 @@ extends OpColorBase
     {
         super.loadParams(_node, pasting);
 
-        if (_node.value != undefined)
+        if (_node._color != undefined)
         {
-            this._color = parseColorValue(_node.value)[0].toDataColor();
+            this._color = parseColorValue(_node._color)[0].toDataColor();
             this.valid = true;
         }
 

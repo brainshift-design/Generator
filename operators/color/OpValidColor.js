@@ -39,14 +39,6 @@ extends OpColorBase
             paramId: NULL });
 
 
-        // const hasInputs =
-        //        this.node.param1.input.connected
-        //     || this.node.param2.input.connected
-        //     || this.node.param3.input.connected;
-
-        //const options = 0;//(hasInputs ? 1 : 0) << 20;
-
-
         const [request, ignore] = this.node.genRequestStart(gen, 0);
         if (ignore) return request;
 
@@ -122,61 +114,7 @@ extends OpColorBase
         if (colorSpace == '')
             return;
 
-
-        switch (colorSpace)
-        {
-        case 'hex':
-        case 'rgb':
-            this.corrections = [
-                new OpCorrectColor_Correction('R', rgbFactor[0]),
-                new OpCorrectColor_Correction('G', rgbFactor[1]),
-                new OpCorrectColor_Correction('B', rgbFactor[2]) ];
-
-            break;
-
-        case 'hsv':
-            this.corrections = [
-                new OpCorrectColor_Correction('H', hs_Factor[0]/2),
-                new OpCorrectColor_Correction('S', hs_Factor[1]),
-                new OpCorrectColor_Correction('V', hs_Factor[2]) ];
-
-            break;
-
-        case 'hsl':
-            this.corrections = [
-                new OpCorrectColor_Correction('H', hs_Factor[0]/2),
-                new OpCorrectColor_Correction('S', hs_Factor[1]),
-                new OpCorrectColor_Correction('L', hs_Factor[2]) ];
-
-            break;
-
-        case 'hclokl':
-        case 'hcllab':
-        case 'hclluv':
-            this.corrections = [
-                new OpCorrectColor_Correction('H', hclFactor[0]/2),
-                new OpCorrectColor_Correction('C', hclFactor[1]),
-                new OpCorrectColor_Correction('L', hclFactor[2]) ];
-
-            break;
-
-        case 'oklab': 
-        case 'lab':
-            this.corrections = [
-                new OpCorrectColor_Correction('L', oppFactor[0]),
-                new OpCorrectColor_Correction('a', oppFactor[1]),
-                new OpCorrectColor_Correction('b', oppFactor[2]) ];
-
-            break;
-
-        case 'luv':
-            this.corrections = [
-                new OpCorrectColor_Correction('L', oppFactor[0]),
-                new OpCorrectColor_Correction('u', oppFactor[1]),
-                new OpCorrectColor_Correction('v', oppFactor[2]) ];
-
-            break;
-        }
+        this.corrections = getColorCorrections(colorSpace);
     }
 
 
@@ -209,16 +147,16 @@ extends OpColorBase
         const tab = TAB;
 
         return super.toJsonBase(nTab)
-             + ',\n' + pos + tab + '"value": "' + ColorValue.fromDataColor(this._color).toString() + '"';
+             + ',\n' + pos + tab + '"_color": "' + ColorValue.fromDataColor(this._color).toString() + '"';
     }
 
 
 
     loadParams(_node, pasting)
     {
-        if (_node.value != undefined)
+        if (_node._color != undefined)
         {
-            this._color = parseColorValue(_node.value)[0].toDataColor();
+            this._color = parseColorValue(_node._color)[0].toDataColor();
             this.valid = true;
         }
 
