@@ -1,9 +1,9 @@
 function getObjectBounds(objects)
 {
-    var boundsL = Number.MAX_SAFE_INTEGER;
-    var boundsT = Number.MAX_SAFE_INTEGER;
-    var boundsR = Number.MIN_SAFE_INTEGER;
-    var boundsB = Number.MIN_SAFE_INTEGER;
+    let boundsL = Number.MAX_SAFE_INTEGER;
+    let boundsT = Number.MAX_SAFE_INTEGER;
+    let boundsR = Number.MIN_SAFE_INTEGER;
+    let boundsB = Number.MIN_SAFE_INTEGER;
     
     for (const obj of objects)
     {

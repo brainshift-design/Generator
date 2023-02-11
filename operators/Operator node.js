@@ -424,7 +424,7 @@ function createNodeHeader(node)
         e.preventDefault();
 
         
-        var bounds = boundingRect(node.label);
+        const bounds = boundingRect(node.label);
 
         // if (   e.clientX >= bounds.left && e.clientX < bounds.right
         //     && e.clientY >= bounds.top  && e.clientY < bounds.bottom)

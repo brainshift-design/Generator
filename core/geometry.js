@@ -16,14 +16,14 @@ function clipEdge(p, q, t0, t1)
     }
     else if (p < 0)
     {
-        var r = q/p;
+        const r = q/p;
 
              if (r > t1) return null;
         else if (r > t0) t0 = r;
     }
     else if (p > 0)
     {
-        var r = q/p;
+        const r = q/p;
 
              if (r < t0) return null;
         else if (r < t1) t1 = r;
@@ -36,16 +36,16 @@ function clipEdge(p, q, t0, t1)
 
 function clipLine(x1, y1, x2, y2, left, top, right, bottom)
 {
-    var t0 = 0;
-    var t1 = 1;
+    const t0 = 0;
+    const t1 = 1;
 
-    var dx = x2 - x1;
-    var dy = y2 - y1;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
 
-    var cl = clipEdge(-dx, -(left - x1), t0, t1); if (cl != null) { t0 = cl[0]; t1 = cl[1]; } else return null;
-    var cr = clipEdge( dx, right - x1,   t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
-    var ct = clipEdge(-dy, -(top - y1),  t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
-    var cb = clipEdge( dy, bottom - y1,  t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
+    const cl = clipEdge(-dx, -(left - x1), t0, t1); if (cl != null) { t0 = cl[0]; t1 = cl[1]; } else return null;
+    const cr = clipEdge( dx, right - x1,   t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
+    const ct = clipEdge(-dy, -(top - y1),  t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
+    const cb = clipEdge( dy, bottom - y1,  t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
 
     if (t1 < 1)
     {
@@ -72,14 +72,14 @@ function intersectLines(p1, p2, q1, q2, segment)
         || equalv(q1, q2)) 
         return point_NaN; // undefined line
 
-    var v1 = subv(p2, p1);
-    var v2 = subv(q2, q1);
+    const v1 = subv(p2, p1);
+    const v2 = subv(q2, q1);
 
     if (crossv2(v1, v2) == 0) 
         return point_NaN; // parallel lines
 
-    var t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
-    var t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
+    const t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
+    const t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
 
     if ((  0 <= t1 && t1 <= 1
         && 0 <= t2 && t2 <= 1)
@@ -96,7 +96,7 @@ function closestPointOnLine(l0, l1, p, segment)
     if (equalv(p, l0))
         return l0;
         
-    var d = mulvs(
+    const d = mulvs(
         unitv(crossv(subv(l1, l0))), // perpendicular unit vector from p towards the line
         distance(p, l0));            // the distance to any of the two points guarantees intersection with the line
 
@@ -107,9 +107,9 @@ function closestPointOnLine(l0, l1, p, segment)
 
 function signedPosOnLine(p0, p1, p)
 {
-    var cp = closestPointOnLine(p0, p1, p, false);
+    let cp = closestPointOnLine(p0, p1, p, false);
 
-    var xform = mulm3m3(
+    const xform = mulm3m3(
         xmove(-p0),
         xrotate(-anglev(p0, p1)));
 

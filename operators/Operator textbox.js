@@ -43,10 +43,10 @@ function initLabelTextbox(node)
         {
             e.preventDefault();
             
-            var tabs  = document.querySelectorAll('.node, .figmaSelect, .menuSelect #hexValue, button');
-            var index = node.tabIndex;
+            const tabs  = document.querySelectorAll('.node, .figmaSelect, .menuSelect #hexValue, button');
+            const index = node.tabIndex;
 
-            for (var i = 0; i < tabs.length; i++) 
+            for (let i = 0; i < tabs.length; i++) 
             {
                 if (   e.shiftKey && tabs[i].tabIndex == index - 1
                     ||               tabs[i].tabIndex == index + 1) 
@@ -86,7 +86,7 @@ function initLabelTextbox(node)
     {
         e.preventDefault();
 
-        var val = parseFloat(e.clipboardData.getData('text/plain'));
+        let val = parseFloat(e.clipboardData.getData('text/plain'));
         val = Math.min(Math.max(node.min, val), node.max);
 
         node.textbox.value = isNaN(val) ? '' : val;

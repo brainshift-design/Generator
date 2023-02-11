@@ -251,7 +251,7 @@ function moveInArray(array, from, to)
 
 function removeFromArray(array, item)
 {
-    var index = array.indexOf(item);
+    const index = array.indexOf(item);
     
     if (index > -1)
         array.splice(index, 1);
@@ -263,7 +263,7 @@ function removeArrayFromArray(fromArray, array)
 {
     for (const item of array)
     {
-        var index = fromArray.indexOf(item);
+        const index = fromArray.indexOf(item);
         
         if (index > -1)
             fromArray.splice(index, 1);
@@ -274,7 +274,7 @@ function removeArrayFromArray(fromArray, array)
 
 function removeFromArrayWhere(array, where)
 {
-    var index = array.findIndex(where);
+    const index = array.findIndex(where);
     
     if (index > -1)
         array.splice(index, 1);

@@ -2857,7 +2857,7 @@ function moveInArray(array, from, to)
 
 function removeFromArray(array, item)
 {
-    var index = array.indexOf(item);
+    const index = array.indexOf(item);
     
     if (index > -1)
         array.splice(index, 1);
@@ -2869,7 +2869,7 @@ function removeArrayFromArray(fromArray, array)
 {
     for (const item of array)
     {
-        var index = fromArray.indexOf(item);
+        const index = fromArray.indexOf(item);
         
         if (index > -1)
             fromArray.splice(index, 1);
@@ -2880,7 +2880,7 @@ function removeArrayFromArray(fromArray, array)
 
 function removeFromArrayWhere(array, where)
 {
-    var index = array.findIndex(where);
+    const index = array.findIndex(where);
     
     if (index > -1)
         array.splice(index, 1);
@@ -3059,9 +3059,9 @@ function numToString(num, dec, showHex = false)
 
 // function numToString(num, dec)
 // {
-//     var str = Number(num).toFixed(dec).toString();
+//     lst str = Number(num).toFixed(dec).toString();
 
-//     var i = 0;
+//     let i = 0;
 
 //     // find decimal place
 
@@ -3136,8 +3136,8 @@ function arrayToString(bytes)
 
 function getQueryVariable(strVar)
 {
-    var query = window.location.search.substring(1);
-    var vars  = query.split('&');
+    const query = window.location.search.substring(1);
+    const vars  = query.split('&');
 
     for (let i = 0; i < vars.length; i++) 
     {
@@ -3213,8 +3213,8 @@ function nextPow2(x)
 
 function distance(p1, p2)
 {
-    var dx = p2.x - p1.x;
-    var dy = p2.y - p1.y;
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
 
     return Math.sqrt(dx*dx + dy*dy);
 }
@@ -3223,8 +3223,8 @@ function distance(p1, p2)
 
 function distance_(x1, y1, x2, y2)
 {
-    var dx = x2 - x1;
-    var dy = y2 - y1;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
 
     return Math.sqrt(dx*dx + dy*dy);
 }
@@ -3341,10 +3341,10 @@ function anglev(v1, v2)
 
 function anglev_(x1, y1, x2, y2)
 {
-    var dx = x2 - x1;
-    var dy = y2 - y1;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
 
-    var angle = Math.atan2(dy, dx);
+    let angle = Math.atan2(dy, dx);
     if (angle < 0) angle += Tau;
 
     return angle;
@@ -3491,17 +3491,17 @@ function mulv2m3(v, m)
 
 function mulm3m3(m1, m2)
 {
-    var m = [[0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0]];
+    const m = [[0, 0, 0],
+               [0, 0, 0],
+               [0, 0, 0]];
 
-    for (var i = 0; i < 3; i++)
+    for (let i = 0; i < 3; i++)
     {
-        for (var j = 0; j < 3; j++)
+        for (let j = 0; j < 3; j++)
         {
             /*	calculate the dot product of ith row 
                 of this and jth column of m  */
-            for (var k = 0; k < 3; k++)
+            for (let k = 0; k < 3; k++)
                 m[i][j] += m1[i][k] * m2[k][j];
         }
     }
@@ -3590,7 +3590,7 @@ function xrotate(angle)
 
 function gcd(a, b)
 {
-    var temp;
+    let temp;
     while (1)
     {
         temp = a % b;
@@ -3607,7 +3607,7 @@ function gcd(a, b)
 
 // function ipow(n, e)
 // {
-//     var res = 1;
+//     let res = 1;
 
 //     for (;;)
 //     {
@@ -3631,12 +3631,12 @@ const MaxDigits = 100000;
  
 function multRes(x, res, resSize)
 {
-    var carry = 0n;
+    let carry = 0n;
     
     // multiply individual digits of res[] by n
-    for (var i = 0; i < resSize; i++) 
+    for (let i = 0; i < resSize; i++) 
     {
-        var prod = res[i] * x + carry;
+        const prod = res[i] * x + carry;
     
         res[i] = prod % 10n; // store last digit of prod in res[]
         carry  = prod / 10n; // put rest in carry
@@ -3658,7 +3658,7 @@ function multRes(x, res, resSize)
 
 function randomPrime(max = Number.MAX_SAFE_INTEGER/2)
 {
-    var num = Math.floor(Math.random() * max);
+    const num = Math.floor(Math.random() * max);
     return nextPrime(num);
 }
 
@@ -3681,12 +3681,12 @@ function isPrime(n, k = millerRabinIterations) // Miller-Rabin
         return false; // composite
     
     
-    var d = n - 1;     // find d      
+    let d = n - 1;     // find d      
     while (d % 2 == 0) // so that x = 2^d * r + 1 
         d /= 2;        // for r >= 1
     
     
-    for (var i = 0; i < k; i++)    
+    for (let i = 0; i < k; i++)    
         if (!millerTest(d, n))
             return false; // composite
     
@@ -3714,10 +3714,10 @@ function uintFromBuffer(buffer, size)
 
 function uintFromBufferAt(buffer, start, size)
 {
-    var val = 0;
-    var mul = 1;
+    let val = 0;
+    let mul = 1;
 
-    for (var i = start+size-1; i >= start; i--) // little-endian
+    for (let i = start+size-1; i >= start; i--) // little-endian
     {
         val += mul * buffer[i];
         mul <<= 8;
@@ -3737,13 +3737,13 @@ function uintToBuffer(val, buffer, bufferSize)
 
 function uintToBufferAt(val, buffer, start, bufferSize)
 {
-    var size = Math.ceil(bigBitCount(val) / 8);
+    let size = Math.ceil(bigBitCount(val) / 8);
     
     size = Math.min(size, buffer.length - start);
 
     start += bufferSize - size;
 
-    for (var i = start+size-1; i >= start; i--) // little-endian
+    for (let i = start+size-1; i >= start; i--) // little-endian
     {
         buffer[i] = val & 0xFF; 
         val >>= 8;
@@ -3798,14 +3798,14 @@ function clipEdge(p, q, t0, t1)
     }
     else if (p < 0)
     {
-        var r = q/p;
+        const r = q/p;
 
              if (r > t1) return null;
         else if (r > t0) t0 = r;
     }
     else if (p > 0)
     {
-        var r = q/p;
+        const r = q/p;
 
              if (r < t0) return null;
         else if (r < t1) t1 = r;
@@ -3818,16 +3818,16 @@ function clipEdge(p, q, t0, t1)
 
 function clipLine(x1, y1, x2, y2, left, top, right, bottom)
 {
-    var t0 = 0;
-    var t1 = 1;
+    const t0 = 0;
+    const t1 = 1;
 
-    var dx = x2 - x1;
-    var dy = y2 - y1;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
 
-    var cl = clipEdge(-dx, -(left - x1), t0, t1); if (cl != null) { t0 = cl[0]; t1 = cl[1]; } else return null;
-    var cr = clipEdge( dx, right - x1,   t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
-    var ct = clipEdge(-dy, -(top - y1),  t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
-    var cb = clipEdge( dy, bottom - y1,  t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
+    const cl = clipEdge(-dx, -(left - x1), t0, t1); if (cl != null) { t0 = cl[0]; t1 = cl[1]; } else return null;
+    const cr = clipEdge( dx, right - x1,   t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
+    const ct = clipEdge(-dy, -(top - y1),  t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
+    const cb = clipEdge( dy, bottom - y1,  t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
 
     if (t1 < 1)
     {
@@ -3854,14 +3854,14 @@ function intersectLines(p1, p2, q1, q2, segment)
         || equalv(q1, q2)) 
         return point_NaN; // undefined line
 
-    var v1 = subv(p2, p1);
-    var v2 = subv(q2, q1);
+    const v1 = subv(p2, p1);
+    const v2 = subv(q2, q1);
 
     if (crossv2(v1, v2) == 0) 
         return point_NaN; // parallel lines
 
-    var t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
-    var t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
+    const t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
+    const t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
 
     if ((  0 <= t1 && t1 <= 1
         && 0 <= t2 && t2 <= 1)
@@ -3878,7 +3878,7 @@ function closestPointOnLine(l0, l1, p, segment)
     if (equalv(p, l0))
         return l0;
         
-    var d = mulvs(
+    const d = mulvs(
         unitv(crossv(subv(l1, l0))), // perpendicular unit vector from p towards the line
         distance(p, l0));            // the distance to any of the two points guarantees intersection with the line
 
@@ -3889,9 +3889,9 @@ function closestPointOnLine(l0, l1, p, segment)
 
 function signedPosOnLine(p0, p1, p)
 {
-    var cp = closestPointOnLine(p0, p1, p, false);
+    let cp = closestPointOnLine(p0, p1, p, false);
 
-    var xform = mulm3m3(
+    const xform = mulm3m3(
         xmove(-p0),
         xrotate(-anglev(p0, p1)));
 
@@ -4005,7 +4005,7 @@ var bigBuffer = new Uint8Array(2048);
 
 function bigRandom(max = 0)
 {
-    var size = 
+    const size = 
         max > 0
         ? Math.max(1, Math.floor(bigBitCount(max)/8))
         : bigBuffer.length;
@@ -4013,10 +4013,10 @@ function bigRandom(max = 0)
     if (size > bigBuffer.length)
         bigBuffer = new Uint8Array(nextPow2(size));
         
-    for (var i = 0; i < size; i++)
+    for (let i = 0; i < size; i++)
         bigBuffer[i] = toInt(Math.random() * 0x100);
 
-    var rnd = bigFromBufferAt(bigBuffer, 0, size);
+    let rnd = bigFromBufferAt(bigBuffer, 0, size);
 
     if (max > 0)
         rnd = rnd % max;
@@ -4028,7 +4028,7 @@ function bigRandom(max = 0)
 
 function bigPowMod(n, e, m) // n^e % mod
 {
-    var c = 1n;
+    let c = 1n;
 
     while (e > 0n)
     {
@@ -4066,8 +4066,8 @@ function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
         return false;
         
         
-    var d = x - 1n;
-    var s = 0n; 
+    let d = x - 1n;
+    let s = 0n; 
                 
     while (d % 2n == 0n) 
     {
@@ -4076,9 +4076,9 @@ function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
     }
         
 
-    for (var i = 0; i < k; i++)    
+    for (let i = 0; i < k; i++)    
     {
-        var a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
+        const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
 
         if (!bigIsWitness(a, s, d, x))
             return false;        
@@ -4092,12 +4092,12 @@ function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
 
 function bigIsWitness(a, s, d, n)
 {
-    var x = bigPowMod(a, d, n);
+    let x = bigPowMod(a, d, n);
         
     if (x == 1n)
         return true;
 
-    for (var j = 0n; j < s-1n; j++)
+    for (let j = 0n; j < s-1n; j++)
     {
         if (x == n-1n)
             return true;
@@ -4121,10 +4121,10 @@ function bigFromBufferAt(buffer, start, size)
 {
     size = Math.min(size, buffer.length - start);
     
-    var val = 0n;
-    var mul = 1n;
+    let val = 0n;
+    let mul = 1n;
 
-    for (var i = start+size-1; i >= start; i--) // little-endian
+    for (let i = start+size-1; i >= start; i--) // little-endian
     {
         val += mul * BigInt(buffer[i]);
         mul <<= 8n;
@@ -4144,13 +4144,13 @@ function bigToBuffer(n, buffer, bufferSize)
 
 function bigToBufferAt(n, buffer, start, bufferSize)
 {
-    var size = Math.ceil(bigBitCount(n) / 8);
+    let size = Math.ceil(bigBitCount(n) / 8);
     
     size = Math.min(size, buffer.length - start);
 
     start += bufferSize - size;
 
-    for (var i = start+size-1; i >= start; i--) // little-endian
+    for (let i = start+size-1; i >= start; i--) // little-endian
     {
         buffer[i] = Number(n & 0xFFn); 
         n >>= 8n;
@@ -4168,7 +4168,7 @@ function bigBitCount(n)
 
 function bigModInvert(n, m)
 {
-    var gcd = bigGcdExtended(n, m);
+    const gcd = bigGcdExtended(n, m);
 
     if (gcd[0] != 1n) return undefined; // inverse doesn't exist
     else              return (gcd[1] % m + m) % m;
@@ -4181,10 +4181,10 @@ function bigGcdExtended(n, m)
     if (n == 0n)
         return [m, 0n, 1n];
 
-    var gcd = bigGcdExtended(m % n, n);
+    const gcd = bigGcdExtended(m % n, n);
 
-    var x = gcd[1];
-    var y = gcd[2];
+    const x   = gcd[1];
+    const y   = gcd[2];
 
     return [
         gcd[0], 
@@ -4515,7 +4515,7 @@ function filterUnique(array)
 
 function createSvg(element)
 {
-    var svg = document.createElementNS('http://www.w3.org/2000/svg', element);
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', element);
     svg.style.pointerEvents = 'none';
     return svg;
 }
@@ -4566,9 +4566,9 @@ function copyArray(src, dst)
 
 function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
 {
-    var size = Math.min(srcSize, dstSize);
+    const size = Math.min(srcSize, dstSize);
 
-    for (var i = 0; i < size; i++)
+    for (let i = 0; i < size; i++)
         dst[dstStart + i] = src[srcStart + i];
 }
 
@@ -4576,7 +4576,7 @@ function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
 
 function newSizeArrayFrom(array, size) // resizes an array and returns a new array
 {
-    var newArray = new Uint8Array(size);
+    const newArray = new Uint8Array(size);
     copyArray(array, newArray);
     return newArray;
 }
@@ -4588,7 +4588,7 @@ function arraysAreEqual(arr1, arr2)
     if (arr1.length != arr2.length)
         return false;
 
-    for (var i = 0; i < arr1.length; i++)
+    for (let i = 0; i < arr1.length; i++)
     {
         if (arr1[i] != arr2[i])
             return false;
@@ -4652,9 +4652,9 @@ function replaceInStringAt(str, index, replace)
 
 function strFromData(data)
 {
-    var str = '';
+    let str = '';
 
-    for (var i = 0; i < data.length; i++)
+    for (let i = 0; i < data.length; i++)
         str += String.fromCharCode(data[si]);
 
     return str;
@@ -4783,17 +4783,17 @@ function base64toUint6(c)
 
 function base64toArray(str, blocksSize) 
 {
-    var base64 = str.replace(/[^A-Za-z0-9\+\/]/g, "");
-    var inLen  = base64.length;
+    const base64 = str.replace(/[^A-Za-z0-9\+\/]/g, "");
+    const inLen  = base64.length;
 
-    var outLen = 
+    const outLen = 
         blocksSize 
         ? Math.ceil((inLen * 3 + 1 >> 2) / blocksSize) * blocksSize 
         : inLen * 3 + 1 >> 2;
         
-    var bytes = new Uint8Array(outLen);
+    const bytes = new Uint8Array(outLen);
 
-    for (var mod3, 
+    for (let mod3, 
              mod4, 
              uint24 = 0, 
              out    = 0, 
@@ -4838,12 +4838,12 @@ function uint6toBase64(i)
 
 function arrayToBase64(bytes)
 {
-    var mod3   = 2, 
+    let mod3   = 2, 
         base64 = "";
 
-    var length = bytes.length;
+    const length = bytes.length;
 
-    for (var i = 0, uint24 = 0; i < length; i++) 
+    for (let i = 0, uint24 = 0; i < length; i++) 
     {
         mod3 = i % 3;
 
@@ -4874,12 +4874,13 @@ function arrayToBase64(bytes)
 
 function UTF8ArrToStr(bytes) 
 {
-    var str    = "";
-    var length = bytes.length;
+    let   str    = "";
 
-    for (var i = 0; i < length; i++) 
+    const length = bytes.length;
+
+    for (let i = 0; i < length; i++) 
     {
-        var byte = bytes[i];
+        const byte = bytes[i];
 
         str += String.fromCharCode(
                byte > 251 
@@ -4912,26 +4913,26 @@ function UTF8ArrToStr(bytes)
 
 function strToUTF8Arr(str) 
 {
-    var strLen = str.length, 
+    let strLen = str.length, 
         arrLen = 0;
 
 
     // mapping
 
-    for (var i = 0; i < strLen; i++) 
+    for (let i = 0; i < strLen; i++) 
     {
         chr = str.charCodeAt(i);
         arrLen += chr < 0x80 ? 1 : chr < 0x800 ? 2 : chr < 0x10000 ? 3 : chr < 0x200000 ? 4 : chr < 0x4000000 ? 5 : 6;
     }
 
-    var bytes = new Uint8Array(arrLen);
+    const bytes = new Uint8Array(arrLen);
 
 
     // transcription
 
-    for (var i = 0, iChr = 0; i < arrLen; iChr++) 
+    for (let i = 0, iChr = 0; i < arrLen; iChr++) 
     {
-        var chr = str.charCodeAt(iChr);
+        const chr = str.charCodeAt(iChr);
      
         if (chr < 0x80) // one byte
         {
@@ -5069,7 +5070,7 @@ function hasFocus(elem)
 
 function setStyle(id, properties)
 {
-    var elem = document.getElementById(id);
+    const elem = document.getElementById(id);
 
     for (const property of properties)
         elem.style[property] = properties[property];
@@ -5086,7 +5087,7 @@ function containsChild(parent, child)
 
 function forwardEvent(event, element)
 {
-    var e = new event.constructor(event.type, event);
+    const e = new event.constructor(event.type, event);
     element.dispatchEvent(e);
 }
 
@@ -5905,7 +5906,7 @@ class Noise
         //scale = Math.pow(Phi, scale) / Phi;
         scale = Math.max(1, scale);
 
-        var next = this.v1;
+        let next = this.v1;
 
         if (this.step >= 1)
         {
@@ -14163,10 +14164,10 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
 
 function getObjectBounds(objects)
 {
-    var boundsL = Number.MAX_SAFE_INTEGER;
-    var boundsT = Number.MAX_SAFE_INTEGER;
-    var boundsR = Number.MIN_SAFE_INTEGER;
-    var boundsB = Number.MIN_SAFE_INTEGER;
+    let boundsL = Number.MAX_SAFE_INTEGER;
+    let boundsT = Number.MAX_SAFE_INTEGER;
+    let boundsR = Number.MIN_SAFE_INTEGER;
+    let boundsB = Number.MIN_SAFE_INTEGER;
     
     for (const obj of objects)
     {
@@ -17387,8 +17388,10 @@ function getDefaultWarningStyle(rgb)
 
 
 
-function clipRgb(rgb)
+function clipRgb(_rgb)
 {
+    const rgb = [..._rgb];
+    
     rgb[0] = Math.min(Math.max(0, rgb[0]), 1);   
     rgb[1] = Math.min(Math.max(0, rgb[1]), 1);   
     rgb[2] = Math.min(Math.max(0, rgb[2]), 1); 
@@ -18959,7 +18962,7 @@ function moveInArray(array, from, to)
 
 function removeFromArray(array, item)
 {
-    var index = array.indexOf(item);
+    const index = array.indexOf(item);
     
     if (index > -1)
         array.splice(index, 1);
@@ -18971,7 +18974,7 @@ function removeArrayFromArray(fromArray, array)
 {
     for (const item of array)
     {
-        var index = fromArray.indexOf(item);
+        const index = fromArray.indexOf(item);
         
         if (index > -1)
             fromArray.splice(index, 1);
@@ -18982,7 +18985,7 @@ function removeArrayFromArray(fromArray, array)
 
 function removeFromArrayWhere(array, where)
 {
-    var index = array.findIndex(where);
+    const index = array.findIndex(where);
     
     if (index > -1)
         array.splice(index, 1);
@@ -19161,9 +19164,9 @@ function numToString(num, dec, showHex = false)
 
 // function numToString(num, dec)
 // {
-//     var str = Number(num).toFixed(dec).toString();
+//     lst str = Number(num).toFixed(dec).toString();
 
-//     var i = 0;
+//     let i = 0;
 
 //     // find decimal place
 
@@ -19238,8 +19241,8 @@ function arrayToString(bytes)
 
 function getQueryVariable(strVar)
 {
-    var query = window.location.search.substring(1);
-    var vars  = query.split('&');
+    const query = window.location.search.substring(1);
+    const vars  = query.split('&');
 
     for (let i = 0; i < vars.length; i++) 
     {
@@ -19315,8 +19318,8 @@ function nextPow2(x)
 
 function distance(p1, p2)
 {
-    var dx = p2.x - p1.x;
-    var dy = p2.y - p1.y;
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
 
     return Math.sqrt(dx*dx + dy*dy);
 }
@@ -19325,8 +19328,8 @@ function distance(p1, p2)
 
 function distance_(x1, y1, x2, y2)
 {
-    var dx = x2 - x1;
-    var dy = y2 - y1;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
 
     return Math.sqrt(dx*dx + dy*dy);
 }
@@ -19443,10 +19446,10 @@ function anglev(v1, v2)
 
 function anglev_(x1, y1, x2, y2)
 {
-    var dx = x2 - x1;
-    var dy = y2 - y1;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
 
-    var angle = Math.atan2(dy, dx);
+    let angle = Math.atan2(dy, dx);
     if (angle < 0) angle += Tau;
 
     return angle;
@@ -19593,17 +19596,17 @@ function mulv2m3(v, m)
 
 function mulm3m3(m1, m2)
 {
-    var m = [[0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0]];
+    const m = [[0, 0, 0],
+               [0, 0, 0],
+               [0, 0, 0]];
 
-    for (var i = 0; i < 3; i++)
+    for (let i = 0; i < 3; i++)
     {
-        for (var j = 0; j < 3; j++)
+        for (let j = 0; j < 3; j++)
         {
             /*	calculate the dot product of ith row 
                 of this and jth column of m  */
-            for (var k = 0; k < 3; k++)
+            for (let k = 0; k < 3; k++)
                 m[i][j] += m1[i][k] * m2[k][j];
         }
     }
@@ -19692,7 +19695,7 @@ function xrotate(angle)
 
 function gcd(a, b)
 {
-    var temp;
+    let temp;
     while (1)
     {
         temp = a % b;
@@ -19709,7 +19712,7 @@ function gcd(a, b)
 
 // function ipow(n, e)
 // {
-//     var res = 1;
+//     let res = 1;
 
 //     for (;;)
 //     {
@@ -19733,12 +19736,12 @@ const MaxDigits = 100000;
  
 function multRes(x, res, resSize)
 {
-    var carry = 0n;
+    let carry = 0n;
     
     // multiply individual digits of res[] by n
-    for (var i = 0; i < resSize; i++) 
+    for (let i = 0; i < resSize; i++) 
     {
-        var prod = res[i] * x + carry;
+        const prod = res[i] * x + carry;
     
         res[i] = prod % 10n; // store last digit of prod in res[]
         carry  = prod / 10n; // put rest in carry
@@ -19760,7 +19763,7 @@ function multRes(x, res, resSize)
 
 function randomPrime(max = Number.MAX_SAFE_INTEGER/2)
 {
-    var num = Math.floor(Math.random() * max);
+    const num = Math.floor(Math.random() * max);
     return nextPrime(num);
 }
 
@@ -19783,12 +19786,12 @@ function isPrime(n, k = millerRabinIterations) // Miller-Rabin
         return false; // composite
     
     
-    var d = n - 1;     // find d      
+    let d = n - 1;     // find d      
     while (d % 2 == 0) // so that x = 2^d * r + 1 
         d /= 2;        // for r >= 1
     
     
-    for (var i = 0; i < k; i++)    
+    for (let i = 0; i < k; i++)    
         if (!millerTest(d, n))
             return false; // composite
     
@@ -19816,10 +19819,10 @@ function uintFromBuffer(buffer, size)
 
 function uintFromBufferAt(buffer, start, size)
 {
-    var val = 0;
-    var mul = 1;
+    let val = 0;
+    let mul = 1;
 
-    for (var i = start+size-1; i >= start; i--) // little-endian
+    for (let i = start+size-1; i >= start; i--) // little-endian
     {
         val += mul * buffer[i];
         mul <<= 8;
@@ -19839,13 +19842,13 @@ function uintToBuffer(val, buffer, bufferSize)
 
 function uintToBufferAt(val, buffer, start, bufferSize)
 {
-    var size = Math.ceil(bigBitCount(val) / 8);
+    let size = Math.ceil(bigBitCount(val) / 8);
     
     size = Math.min(size, buffer.length - start);
 
     start += bufferSize - size;
 
-    for (var i = start+size-1; i >= start; i--) // little-endian
+    for (let i = start+size-1; i >= start; i--) // little-endian
     {
         buffer[i] = val & 0xFF; 
         val >>= 8;
@@ -19900,14 +19903,14 @@ function clipEdge(p, q, t0, t1)
     }
     else if (p < 0)
     {
-        var r = q/p;
+        const r = q/p;
 
              if (r > t1) return null;
         else if (r > t0) t0 = r;
     }
     else if (p > 0)
     {
-        var r = q/p;
+        const r = q/p;
 
              if (r < t0) return null;
         else if (r < t1) t1 = r;
@@ -19920,16 +19923,16 @@ function clipEdge(p, q, t0, t1)
 
 function clipLine(x1, y1, x2, y2, left, top, right, bottom)
 {
-    var t0 = 0;
-    var t1 = 1;
+    const t0 = 0;
+    const t1 = 1;
 
-    var dx = x2 - x1;
-    var dy = y2 - y1;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
 
-    var cl = clipEdge(-dx, -(left - x1), t0, t1); if (cl != null) { t0 = cl[0]; t1 = cl[1]; } else return null;
-    var cr = clipEdge( dx, right - x1,   t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
-    var ct = clipEdge(-dy, -(top - y1),  t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
-    var cb = clipEdge( dy, bottom - y1,  t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
+    const cl = clipEdge(-dx, -(left - x1), t0, t1); if (cl != null) { t0 = cl[0]; t1 = cl[1]; } else return null;
+    const cr = clipEdge( dx, right - x1,   t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
+    const ct = clipEdge(-dy, -(top - y1),  t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
+    const cb = clipEdge( dy, bottom - y1,  t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
 
     if (t1 < 1)
     {
@@ -19956,14 +19959,14 @@ function intersectLines(p1, p2, q1, q2, segment)
         || equalv(q1, q2)) 
         return point_NaN; // undefined line
 
-    var v1 = subv(p2, p1);
-    var v2 = subv(q2, q1);
+    const v1 = subv(p2, p1);
+    const v2 = subv(q2, q1);
 
     if (crossv2(v1, v2) == 0) 
         return point_NaN; // parallel lines
 
-    var t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
-    var t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
+    const t1 = crossv2(subv(q1, p1), v2) / crossv2(v1, v2);
+    const t2 = crossv2(subv(q1, p1), v1) / crossv2(v1, v2);
 
     if ((  0 <= t1 && t1 <= 1
         && 0 <= t2 && t2 <= 1)
@@ -19980,7 +19983,7 @@ function closestPointOnLine(l0, l1, p, segment)
     if (equalv(p, l0))
         return l0;
         
-    var d = mulvs(
+    const d = mulvs(
         unitv(crossv(subv(l1, l0))), // perpendicular unit vector from p towards the line
         distance(p, l0));            // the distance to any of the two points guarantees intersection with the line
 
@@ -19991,9 +19994,9 @@ function closestPointOnLine(l0, l1, p, segment)
 
 function signedPosOnLine(p0, p1, p)
 {
-    var cp = closestPointOnLine(p0, p1, p, false);
+    let cp = closestPointOnLine(p0, p1, p, false);
 
-    var xform = mulm3m3(
+    const xform = mulm3m3(
         xmove(-p0),
         xrotate(-anglev(p0, p1)));
 
@@ -20107,7 +20110,7 @@ var bigBuffer = new Uint8Array(2048);
 
 function bigRandom(max = 0)
 {
-    var size = 
+    const size = 
         max > 0
         ? Math.max(1, Math.floor(bigBitCount(max)/8))
         : bigBuffer.length;
@@ -20115,10 +20118,10 @@ function bigRandom(max = 0)
     if (size > bigBuffer.length)
         bigBuffer = new Uint8Array(nextPow2(size));
         
-    for (var i = 0; i < size; i++)
+    for (let i = 0; i < size; i++)
         bigBuffer[i] = toInt(Math.random() * 0x100);
 
-    var rnd = bigFromBufferAt(bigBuffer, 0, size);
+    let rnd = bigFromBufferAt(bigBuffer, 0, size);
 
     if (max > 0)
         rnd = rnd % max;
@@ -20130,7 +20133,7 @@ function bigRandom(max = 0)
 
 function bigPowMod(n, e, m) // n^e % mod
 {
-    var c = 1n;
+    let c = 1n;
 
     while (e > 0n)
     {
@@ -20168,8 +20171,8 @@ function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
         return false;
         
         
-    var d = x - 1n;
-    var s = 0n; 
+    let d = x - 1n;
+    let s = 0n; 
                 
     while (d % 2n == 0n) 
     {
@@ -20178,9 +20181,9 @@ function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
     }
         
 
-    for (var i = 0; i < k; i++)    
+    for (let i = 0; i < k; i++)    
     {
-        var a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
+        const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
 
         if (!bigIsWitness(a, s, d, x))
             return false;        
@@ -20194,12 +20197,12 @@ function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
 
 function bigIsWitness(a, s, d, n)
 {
-    var x = bigPowMod(a, d, n);
+    let x = bigPowMod(a, d, n);
         
     if (x == 1n)
         return true;
 
-    for (var j = 0n; j < s-1n; j++)
+    for (let j = 0n; j < s-1n; j++)
     {
         if (x == n-1n)
             return true;
@@ -20223,10 +20226,10 @@ function bigFromBufferAt(buffer, start, size)
 {
     size = Math.min(size, buffer.length - start);
     
-    var val = 0n;
-    var mul = 1n;
+    let val = 0n;
+    let mul = 1n;
 
-    for (var i = start+size-1; i >= start; i--) // little-endian
+    for (let i = start+size-1; i >= start; i--) // little-endian
     {
         val += mul * BigInt(buffer[i]);
         mul <<= 8n;
@@ -20246,13 +20249,13 @@ function bigToBuffer(n, buffer, bufferSize)
 
 function bigToBufferAt(n, buffer, start, bufferSize)
 {
-    var size = Math.ceil(bigBitCount(n) / 8);
+    let size = Math.ceil(bigBitCount(n) / 8);
     
     size = Math.min(size, buffer.length - start);
 
     start += bufferSize - size;
 
-    for (var i = start+size-1; i >= start; i--) // little-endian
+    for (let i = start+size-1; i >= start; i--) // little-endian
     {
         buffer[i] = Number(n & 0xFFn); 
         n >>= 8n;
@@ -20270,7 +20273,7 @@ function bigBitCount(n)
 
 function bigModInvert(n, m)
 {
-    var gcd = bigGcdExtended(n, m);
+    const gcd = bigGcdExtended(n, m);
 
     if (gcd[0] != 1n) return undefined; // inverse doesn't exist
     else              return (gcd[1] % m + m) % m;
@@ -20283,10 +20286,10 @@ function bigGcdExtended(n, m)
     if (n == 0n)
         return [m, 0n, 1n];
 
-    var gcd = bigGcdExtended(m % n, n);
+    const gcd = bigGcdExtended(m % n, n);
 
-    var x = gcd[1];
-    var y = gcd[2];
+    const x   = gcd[1];
+    const y   = gcd[2];
 
     return [
         gcd[0], 
@@ -20617,7 +20620,7 @@ function filterUnique(array)
 
 function createSvg(element)
 {
-    var svg = document.createElementNS('http://www.w3.org/2000/svg', element);
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', element);
     svg.style.pointerEvents = 'none';
     return svg;
 }
@@ -20668,9 +20671,9 @@ function copyArray(src, dst)
 
 function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
 {
-    var size = Math.min(srcSize, dstSize);
+    const size = Math.min(srcSize, dstSize);
 
-    for (var i = 0; i < size; i++)
+    for (let i = 0; i < size; i++)
         dst[dstStart + i] = src[srcStart + i];
 }
 
@@ -20678,7 +20681,7 @@ function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
 
 function newSizeArrayFrom(array, size) // resizes an array and returns a new array
 {
-    var newArray = new Uint8Array(size);
+    const newArray = new Uint8Array(size);
     copyArray(array, newArray);
     return newArray;
 }
@@ -20690,7 +20693,7 @@ function arraysAreEqual(arr1, arr2)
     if (arr1.length != arr2.length)
         return false;
 
-    for (var i = 0; i < arr1.length; i++)
+    for (let i = 0; i < arr1.length; i++)
     {
         if (arr1[i] != arr2[i])
             return false;
@@ -20754,9 +20757,9 @@ function replaceInStringAt(str, index, replace)
 
 function strFromData(data)
 {
-    var str = '';
+    let str = '';
 
-    for (var i = 0; i < data.length; i++)
+    for (let i = 0; i < data.length; i++)
         str += String.fromCharCode(data[si]);
 
     return str;
@@ -20885,17 +20888,17 @@ function base64toUint6(c)
 
 function base64toArray(str, blocksSize) 
 {
-    var base64 = str.replace(/[^A-Za-z0-9\+\/]/g, "");
-    var inLen  = base64.length;
+    const base64 = str.replace(/[^A-Za-z0-9\+\/]/g, "");
+    const inLen  = base64.length;
 
-    var outLen = 
+    const outLen = 
         blocksSize 
         ? Math.ceil((inLen * 3 + 1 >> 2) / blocksSize) * blocksSize 
         : inLen * 3 + 1 >> 2;
         
-    var bytes = new Uint8Array(outLen);
+    const bytes = new Uint8Array(outLen);
 
-    for (var mod3, 
+    for (let mod3, 
              mod4, 
              uint24 = 0, 
              out    = 0, 
@@ -20940,12 +20943,12 @@ function uint6toBase64(i)
 
 function arrayToBase64(bytes)
 {
-    var mod3   = 2, 
+    let mod3   = 2, 
         base64 = "";
 
-    var length = bytes.length;
+    const length = bytes.length;
 
-    for (var i = 0, uint24 = 0; i < length; i++) 
+    for (let i = 0, uint24 = 0; i < length; i++) 
     {
         mod3 = i % 3;
 
@@ -20976,12 +20979,13 @@ function arrayToBase64(bytes)
 
 function UTF8ArrToStr(bytes) 
 {
-    var str    = "";
-    var length = bytes.length;
+    let   str    = "";
 
-    for (var i = 0; i < length; i++) 
+    const length = bytes.length;
+
+    for (let i = 0; i < length; i++) 
     {
-        var byte = bytes[i];
+        const byte = bytes[i];
 
         str += String.fromCharCode(
                byte > 251 
@@ -21014,26 +21018,26 @@ function UTF8ArrToStr(bytes)
 
 function strToUTF8Arr(str) 
 {
-    var strLen = str.length, 
+    let strLen = str.length, 
         arrLen = 0;
 
 
     // mapping
 
-    for (var i = 0; i < strLen; i++) 
+    for (let i = 0; i < strLen; i++) 
     {
         chr = str.charCodeAt(i);
         arrLen += chr < 0x80 ? 1 : chr < 0x800 ? 2 : chr < 0x10000 ? 3 : chr < 0x200000 ? 4 : chr < 0x4000000 ? 5 : 6;
     }
 
-    var bytes = new Uint8Array(arrLen);
+    const bytes = new Uint8Array(arrLen);
 
 
     // transcription
 
-    for (var i = 0, iChr = 0; i < arrLen; iChr++) 
+    for (let i = 0, iChr = 0; i < arrLen; iChr++) 
     {
-        var chr = str.charCodeAt(iChr);
+        const chr = str.charCodeAt(iChr);
      
         if (chr < 0x80) // one byte
         {
@@ -21171,7 +21175,7 @@ function hasFocus(elem)
 
 function setStyle(id, properties)
 {
-    var elem = document.getElementById(id);
+    const elem = document.getElementById(id);
 
     for (const property of properties)
         elem.style[property] = properties[property];
@@ -21188,7 +21192,7 @@ function containsChild(parent, child)
 
 function forwardEvent(event, element)
 {
-    var e = new event.constructor(event.type, event);
+    const e = new event.constructor(event.type, event);
     element.dispatchEvent(e);
 }
 
@@ -23032,8 +23036,10 @@ function getDefaultWarningStyle(rgb)
 
 
 
-function clipRgb(rgb)
+function clipRgb(_rgb)
 {
+    const rgb = [..._rgb];
+    
     rgb[0] = Math.min(Math.max(0, rgb[0]), 1);   
     rgb[1] = Math.min(Math.max(0, rgb[1]), 1);   
     rgb[2] = Math.min(Math.max(0, rgb[2]), 1); 
@@ -23429,7 +23435,7 @@ const cryptoBuffer          = new Uint8Array(cryptoPrimeBufferSize);
 
 function bigCryptoRandom()
 {
-    for (var i = 0; i < cryptoPrimeBufferSize; i++)
+    for (let i = 0; i < cryptoPrimeBufferSize; i++)
         cryptoBuffer[i] = toInt(Math.random() * 0x100);
 
     cryptoBuffer[0]                       |= 0xC0; // set the top bit to ensure a relatively large number
@@ -23454,12 +23460,12 @@ function bigCryptoPrime(e)
 {
     // set p so that gcd(e, p-1) = 1
     
-    var p;
+    let p;
 
     do
     {
-        var rnd = bigCryptoRandom();
-        p       = bigNextCryptoPrime(rnd);
+        const rnd = bigCryptoRandom();
+        p         = bigNextCryptoPrime(rnd);
     }
     while (gcd(p-1n, e) != 1n); 
         
@@ -23470,12 +23476,12 @@ function bigCryptoPrime(e)
 
 function createCryptoKeys()
 {
-    var e = 65537n; // 0x10001
+    const e = 65537n; // 0x10001
 
 
-    // var p = bigCryptoPrime(e);
+    // let p = bigCryptoPrime(e);
     
-    // var q;
+    // let q;
     // do { q = bigCryptoPrime(e); } 
     // while (q == p);
 
@@ -23488,14 +23494,14 @@ function createCryptoKeys()
     // console.log('q: ' + q);
 
 
-    var p = 4131437551n,
-        q = 3567532051n;
+    const p = 4131437551n,
+          q = 3567532051n;
     
 
-    var n   = p * q;
-    var phi = (p-1n) * (q-1n);
+    const  n   = p * q;
+    const _phi = (p-1n) * (q-1n);
 
-    var d = bigModInvert(e, phi);
+    const  d   = bigModInvert(e, _phi);
 
 
     return {
@@ -23521,25 +23527,25 @@ function verify (data, key) { return decryptData(data, key, true); } // but I pr
 function encryptData(data, key, sign)
 {
     // prep array should be a multiple of cryptoBufferSize
-    var prep   = new Uint8Array(Math.ceil((data.length) / cryptoBufferSize) * cryptoBufferSize); 
-    var cipher = new Uint8Array(prep.length);
+    const prep   = new Uint8Array(Math.ceil((data.length) / cryptoBufferSize) * cryptoBufferSize); 
+    const cipher = new Uint8Array(prep.length);
 
 
-    var start = prep.length - data.length;
-    for (var i = 0; i < data.length; i++)
+    const start = prep.length - data.length;
+    for (let i = 0; i < data.length; i++)
         prep[start+i] = data[i];
 
 
-    var length = prep.length;
-    var nBlock = 0;
+    let length = prep.length;
+    let nBlock = 0;
 
     while (length > 0)
     {
-        var blockStart = nBlock * cryptoBufferSize;
-        var blockSize  = Math.min(length, cryptoBufferSize);
+        const blockStart = nBlock * cryptoBufferSize;
+        const blockSize  = Math.min(length, cryptoBufferSize);
         
-        var block = bigFromBufferAt(prep, blockStart, cryptoBufferSize);
-        var enc   = encryptBlock(block, key, sign);
+        const block      = bigFromBufferAt(prep, blockStart, cryptoBufferSize);
+        const enc        = encryptBlock(block, key, sign);
         
         bigToBufferAt(enc, cipher, blockStart, cryptoBufferSize);
         
@@ -23555,19 +23561,20 @@ function encryptData(data, key, sign)
 
 function decryptData(cipher, key, verify)
 {
-    var data = new Uint8Array(cipher.length);
+    const data = new Uint8Array(cipher.length);
     
     
-    var length = cipher.length;
-    var nBlock = 0;
+    let length = cipher.length;
+    let nBlock = 0;
     
     while (length > 0)
     {
-        var blockStart = nBlock * cryptoBufferSize;
-        var blockSize  = Math.min(length, cryptoBufferSize);
+        const blockStart = nBlock * cryptoBufferSize;
+        const blockSize  = Math.min(length, cryptoBufferSize);
 
-        var block = bigFromBufferAt(cipher, blockStart, cryptoBufferSize);
-        var dec   = decryptBlock(block, key, verify);
+        const block      = bigFromBufferAt(cipher, blockStart, cryptoBufferSize);
+        const dec        = decryptBlock(block, key, verify);
+
         bigToBufferAt(dec, data, blockStart, cryptoBufferSize); 
 
         nBlock++;
@@ -23585,21 +23592,21 @@ const base32chars = '12345679ABCDEFGHJKLMNPQRSTUVWXYZ';
 
 function arrayToBase32(array, chars = base32chars)
 {
-    var base32 = '';
+    let base32 = '';
 
     
-    var len = array.length;
-    var i   = 0;
+    let len = array.length;
+    let i   = 0;
 
     while (len > 0)
     {
         if (len >= 5)
         {
-            var a0 = array[i  ],
-                a1 = array[i+1],
-                a2 = array[i+2],
-                a3 = array[i+3],
-                a4 = array[i+4];
+            const a0 = array[i  ],
+                  a1 = array[i+1],
+                  a2 = array[i+2],
+                  a3 = array[i+3],
+                  a4 = array[i+4];
             
             base32 += chars[ (a0 & 0xF8) >>> 3];
             base32 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];
@@ -23612,10 +23619,10 @@ function arrayToBase32(array, chars = base32chars)
         }
         else if (len == 4)
         {
-            var a0 = array[i  ],
-                a1 = array[i+1],
-                a2 = array[i+2],
-                a3 = array[i+3];
+            const a0 = array[i  ],
+                  a1 = array[i+1],
+                  a2 = array[i+2],
+                  a3 = array[i+3];
             
             base32 += chars[ (a0 & 0xF8) >>> 3];
             base32 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];
@@ -23627,9 +23634,9 @@ function arrayToBase32(array, chars = base32chars)
         }
         else if (len == 3)
         {
-            var a0 = array[i  ],
-                a1 = array[i+1],
-                a2 = array[i+2];
+            const a0 = array[i  ],
+                  a1 = array[i+1],
+                  a2 = array[i+2];
             
             base32 += chars[ (a0 & 0xF8) >>> 3];
             base32 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];
@@ -23639,8 +23646,8 @@ function arrayToBase32(array, chars = base32chars)
         }
         else if (len == 2)
         {
-            var a0 = array[i  ],
-                a1 = array[i+1];
+            const a0 = array[i  ],
+                  a1 = array[i+1];
             
             base32 += chars[ (a0 & 0xF8) >>> 3];
             base32 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];
@@ -23649,7 +23656,7 @@ function arrayToBase32(array, chars = base32chars)
         }
         else if (len == 1)
         {
-            var a0 = array[i];
+            const a0 = array[i];
             
             base32 += chars[ (a0 & 0xF8) >>> 3];
             base32 += chars[((a0 & 0x07) <<  2)];
@@ -23668,24 +23675,24 @@ function arrayToBase32(array, chars = base32chars)
 
 function base32toArray(base32, chars = base32chars)
 {
-    var array = [];
+    const array = [];
 
 
-    var len = base32.length;
-    var c   = 0;
+    let len = base32.length;
+    let c   = 0;
 
     while (len > 0)
     {
         if (len >= 8)
         {
-            var c0 = chars.indexOf(base32[c  ]),
-                c1 = chars.indexOf(base32[c+1]),
-                c2 = chars.indexOf(base32[c+2]),
-                c3 = chars.indexOf(base32[c+3]),
-                c4 = chars.indexOf(base32[c+4]),
-                c5 = chars.indexOf(base32[c+5]),
-                c6 = chars.indexOf(base32[c+6]),
-                c7 = chars.indexOf(base32[c+7]);
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]),
+                  c2 = chars.indexOf(base32[c+2]),
+                  c3 = chars.indexOf(base32[c+3]),
+                  c4 = chars.indexOf(base32[c+4]),
+                  c5 = chars.indexOf(base32[c+5]),
+                  c6 = chars.indexOf(base32[c+6]),
+                  c7 = chars.indexOf(base32[c+7]);
 
             array.push( (c0         << 3) | ((c1 & 0x1C) >>> 2));
             array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));
@@ -23695,13 +23702,13 @@ function base32toArray(base32, chars = base32chars)
         }
         else if (len == 7)
         {
-            var c0 = chars.indexOf(base32[c  ]),
-                c1 = chars.indexOf(base32[c+1]),
-                c2 = chars.indexOf(base32[c+2]),
-                c3 = chars.indexOf(base32[c+3]),
-                c4 = chars.indexOf(base32[c+4]),
-                c5 = chars.indexOf(base32[c+5]),
-                c6 = chars.indexOf(base32[c+6]);
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]),
+                  c2 = chars.indexOf(base32[c+2]),
+                  c3 = chars.indexOf(base32[c+3]),
+                  c4 = chars.indexOf(base32[c+4]),
+                  c5 = chars.indexOf(base32[c+5]),
+                  c6 = chars.indexOf(base32[c+6]);
 
             array.push(( c0         << 3) | ((c1 & 0x1C) >>> 2));
             array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));
@@ -23710,11 +23717,11 @@ function base32toArray(base32, chars = base32chars)
         }
         else if (len == 5)
         {
-            var c0 = chars.indexOf(base32[c  ]),
-                c1 = chars.indexOf(base32[c+1]),
-                c2 = chars.indexOf(base32[c+2]),
-                c3 = chars.indexOf(base32[c+3]),
-                c4 = chars.indexOf(base32[c+4]);
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]),
+                  c2 = chars.indexOf(base32[c+2]),
+                  c3 = chars.indexOf(base32[c+3]),
+                  c4 = chars.indexOf(base32[c+4]);
 
             array.push( (c0         << 3) | ((c1 & 0x1C) >>> 2));
             array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));
@@ -23722,18 +23729,18 @@ function base32toArray(base32, chars = base32chars)
         }
         else if (len == 4)
         {
-            var c0 = chars.indexOf(base32[c  ]),
-                c1 = chars.indexOf(base32[c+1]),
-                c2 = chars.indexOf(base32[c+2]),
-                c3 = chars.indexOf(base32[c+3]);
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]),
+                  c2 = chars.indexOf(base32[c+2]),
+                  c3 = chars.indexOf(base32[c+3]);
 
             array.push( (c0         << 3) | ((c1 & 0x1C) >>> 2));
             array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));
         }
         else if (len == 2)
         {
-            var c0 = chars.indexOf(base32[c  ]),
-                c1 = chars.indexOf(base32[c+1]);
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]);
 
             array.push((c0 << 3) | ((c1 & 0x1C) >>> 2));
         }
@@ -32815,9 +32822,9 @@ function initGeneratorMenus()
                                  new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
                                  new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
                                  new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', enabled:  false}),
-        menuItemZoomTo100      = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1}),
-                                 new MenuItem('',             {separator: true}),
-                                 new MenuItem('Window',       {childMenu: menuWindow})]);
+        menuItemZoomTo100      = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);//,
+                                //  new MenuItem('',             {separator: true}),
+                                //  new MenuItem('Window',       {childMenu: menuWindow})]);
 
 
     menuGraph = new Menu('Graph menu', false, false);
@@ -36116,7 +36123,7 @@ function initMenuSelect(select)
             e.preventDefault();
             e.stopPropagation();
 
-            var rect = boundingRect(select);
+            const rect = boundingRect(select);
 
             if (e.clientX > rect.width - 20)
             {
@@ -37665,7 +37672,7 @@ scrollbarX.addEventListener('pointerup', e =>
         scrollbarX.moving = false;
         scrollbarX.releasePointerCapture(e.pointerId);
 
-        var bounds = Rect.NaN;
+        let bounds = Rect.NaN;
 
         for (const node of graph.nodes)
             bounds = expandRect(bounds, boundingRect(node.div));
@@ -37681,10 +37688,10 @@ scrollbarX.addEventListener('pointermove', e =>
 {
     if (scrollbarX.moving)
     {
-        var x = scrollbarX.xStart + e.clientX - scrollbarX.pStart;
+        const x = scrollbarX.xStart + e.clientX - scrollbarX.pStart;
 
-        var l = x;
-        var r = l + scrollbarX.wStart;
+        let   l = x;
+        let   r = l + scrollbarX.wStart;
 
         l = Math.max(smallScrollGap, l);
         r = Math.min(r, graphView.clientWidth - largeScrollGap);
@@ -37770,7 +37777,7 @@ scrollbarY.addEventListener('pointerup', e =>
         scrollbarY.moving = false;
         scrollbarY.releasePointerCapture(e.pointerId);
 
-        var bounds = Rect.NaN;
+        let bounds = Rect.NaN;
 
         for (const node of graph.nodes)
             bounds = expandRect(bounds, boundingRect(node.div));
@@ -37786,10 +37793,10 @@ scrollbarY.addEventListener('pointermove', e =>
 {
     if (scrollbarY.moving)
     {
-        var y = scrollbarY.yStart + e.clientY - scrollbarY.pStart;
+        const y = scrollbarY.yStart + e.clientY - scrollbarY.pStart;
 
-        var t = y;
-        var b = t + scrollbarY.hStart;
+        let   t = y;
+        let   b = t + scrollbarY.hStart;
 
         t = Math.max(smallScrollGap, t);
         b = Math.min(b, graphView.clientHeight - largeScrollGap);
@@ -39960,7 +39967,7 @@ class Graph
 
     disconnect(input)
     {
-        var output = input.connectedOutput;
+        const output = input.connectedOutput;
         if (!output) return false;
 
 
@@ -43330,7 +43337,7 @@ function createNodeHeader(node)
         e.preventDefault();
 
         
-        var bounds = boundingRect(node.label);
+        const bounds = boundingRect(node.label);
 
         // if (   e.clientX >= bounds.left && e.clientX < bounds.right
         //     && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
@@ -43629,10 +43636,10 @@ function initLabelTextbox(node)
         {
             e.preventDefault();
             
-            var tabs  = document.querySelectorAll('.node, .figmaSelect, .menuSelect #hexValue, button');
-            var index = node.tabIndex;
+            const tabs  = document.querySelectorAll('.node, .figmaSelect, .menuSelect #hexValue, button');
+            const index = node.tabIndex;
 
-            for (var i = 0; i < tabs.length; i++) 
+            for (let i = 0; i < tabs.length; i++) 
             {
                 if (   e.shiftKey && tabs[i].tabIndex == index - 1
                     ||               tabs[i].tabIndex == index + 1) 
@@ -43672,7 +43679,7 @@ function initLabelTextbox(node)
     {
         e.preventDefault();
 
-        var val = parseFloat(e.clipboardData.getData('text/plain'));
+        let val = parseFloat(e.clipboardData.getData('text/plain'));
         val = Math.min(Math.max(node.min, val), node.max);
 
         node.textbox.value = isNaN(val) ? '' : val;
@@ -46081,14 +46088,29 @@ extends Operator
             ? rgbNoColorDark
             : rgbNoColorLight;
 
+
         const rgbBack = 
             dataColorIsNaN(this._color)
             ? rgb_NaN
             : dataColor2rgb(this._color);
+
             
+        let rgbStripeBack = [...rgbBack];
+        
+        const factor = this.getWarningFactor(rgbBack);
+
+        if (factor > 0)
+        {
+            const hcl = rgb2hsv(clipRgb(rgbBack));
+            hcl[1] /= 3;
+
+            rgbStripeBack = rgbLerp(rgbBack, hsv2rgb(hcl), factor);
+        }
+
+
         const rgbaBorder = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
 
-        const rgbText  = getTextColorFromBackColor(rgbBack);
+        const rgbText  = getTextColorFromBackColor(rgbStripeBack);
         //const rgbLabel = getTextColorFromBackColor(clipRgb(rgbBack));
 
         const rgbaWire = 
@@ -46097,13 +46119,14 @@ extends Operator
             : noColor;
 
         return {
-            back:   rgb_a(rgbBack, 1  ), 
-            border: rgbaBorder,
-            text:   rgb_a(rgbText, 0.9),
-            //label:  rgb_a(rgbLabel, 0.9),
-            input:  rgb_a(rgbText, 0.2),
-            output: rgb_a(rgbText, 0.2),
-            wire:   rgbaWire };
+            back:       rgb_a(rgbBack, 1), 
+            stripeBack: rgb_a(rgbStripeBack, 1),
+            border:     rgbaBorder,
+            text:       rgb_a(rgbText, 0.9),
+            //label:    rgb_a(rgbLabel, 0.9),
+            input:      rgb_a(rgbText, 0.2),
+            output:     rgb_a(rgbText, 0.2),
+            wire:       rgbaWire };
     }
 
 
@@ -46112,17 +46135,18 @@ extends Operator
     {
         //console.log(this.id + '.updateWarningOverlay()');
 
-        let rgb = dataColor2rgb(this._color);
+        const colors = this.getHeaderColors();
+        
 
-        if (!rgbIsNaN(rgb))
+        if (!rgbIsNaN(colors.back))
         {
-            if (  !rgbIsValid(rgb)
+            if (  !rgbIsValid(colors.back)
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
-                    this.warningStyle = getDefaultWarningStyle(rgb);
+                    this.warningStyle = getDefaultWarningStyle(colors.back);
 
-                this.updateWarningOverlayStyle(rgb);
+                this.updateWarningOverlayStyle(colors.back);
             }
             else
                 this._warningOverlay.style.display = 'none';
@@ -46131,8 +46155,8 @@ extends Operator
         {
             //rgb = rgbDocumentBody;//this.getDefaultBackColor();
 
-            this.warningStyle = getDefaultWarningStyle(rgb);
-            this.updateWarningOverlayStyle(rgb);
+            this.warningStyle = getDefaultWarningStyle(colors.back);
+            this.updateWarningOverlayStyle(colors.back);
         }
     }
 
@@ -46140,42 +46164,32 @@ extends Operator
 
     updateWarningOverlayStyle(colBack, height = -1)
     {
-        //console.log('colBack =', colBack);
-        
         this._warningOverlay.style.height = 
             height < 0
             ? this.header.offsetHeight
             : height;
 
 
-        const hsvBack = rgb2hsv(colBack);
+        const hclBack = rgb2hclokl(colBack);
 
-        const hsvBack1 = [...hsvBack];
-        const hsvBack2 = [...hsvBack];
+        const hclBack1 = [...hclBack];
+        const hclBack2 = [...hclBack];
 
-        hsvBack1[0] = hsvBack1[0] + 1/3;  if (hsvBack1[0] > 1) hsvBack1[0]--;
-        hsvBack2[0] = hsvBack2[0] + 2/3;  if (hsvBack2[0] > 1) hsvBack2[0]--;
+        hclBack1[0] += 1/12;  if (hclBack1[0] > 1) hclBack1[0] -= 1;
+        hclBack2[0] -= 1/12;  if (hclBack2[0] < 0) hclBack2[0] += 1;
 
-        const altBack1 = rgb_a(hsv2rgb(hsvBack1), 0.5);
-        const altBack2 = rgb_a(hsv2rgb(hsvBack2), 0.5);
+
+        const altBack1   = rgb_a(clipRgb(hclokl2rgb(hclBack1)), 0.35);
+        const altBack2   = rgb_a(clipRgb(hclokl2rgb(hclBack2)), 0.35);
 
         const colWarning = getDefaultWarningRgba(colBack);
+        const factor     = this.getWarningFactor(colBack);
 
-
-        let dr, dg, db;
-         
-        if (colBack[0] < 0) dr = -colBack[0]; else if (colBack[0] > 1) dr = colBack[0] - 1; else dr = 0;
-        if (colBack[1] < 0) dg = -colBack[0]; else if (colBack[1] > 1) dg = colBack[1] - 1; else dg = 0;
-        if (colBack[2] < 0) db = -colBack[0]; else if (colBack[2] > 1) db = colBack[2] - 1; else db = 0;
+        const colWarn1   = rgbaLerp(colWarning, altBack1, factor);
+        const colWarn2   = rgbaLerp(colWarning, altBack2, factor);
         
-        const factor = Math.min(Math.max(dr, dg, dg), 1) * 1.5;
-
-
-        const colWarn1 = rgbaLerp(colWarning, altBack1, factor);
-        const colWarn2 = rgbaLerp(colWarning, altBack2, factor);
-        
-        const warnStyle1 = rgba2style(colWarn1); //this.warningStyle;
-        const warnStyle2 = rgba2style(colWarn2); //this.warningStyle;
+        const warnStyle1 = rgba2style(colWarn1);
+        const warnStyle2 = rgba2style(colWarn2);
 
         
         this._warningOverlay.style.background =
@@ -46190,6 +46204,36 @@ extends Operator
                +  warnStyle2 + ' 21px 28px)';
 
         this._warningOverlay.style.display = 'block';
+    }
+
+
+
+    getWarningFactor(colBack)
+    {
+        let dr, dg, db;
+
+        if (colBack[0] < 0) dr = -colBack[0]; else if (colBack[0] > 1) dr = colBack[0] - 1; else dr = 0;
+        if (colBack[1] < 0) dg = -colBack[1]; else if (colBack[1] > 1) dg = colBack[1] - 1; else dg = 0;
+        if (colBack[2] < 0) db = -colBack[2]; else if (colBack[2] > 1) db = colBack[2] - 1; else db = 0;
+        
+        const d   = [dr, dg, db].sort()[1];
+        const avg = (dr + dg + db) / 3;
+
+        const factor = Math.min((d + avg) / 2, 1);
+
+        // if (this.id == 'color')
+        // {
+        //     console.log('colBack =', colBack);
+        //     console.log('dr     =', dr);
+        //     console.log('dg     =', dg);
+        //     console.log('db     =', db);
+        //     console.log('d      =', d);
+        //     console.log('avg    =', avg);
+        //     console.log('factor =', factor);
+        //     console.log('');
+        // }
+
+        return factor;
     }
 }
 
@@ -46534,8 +46578,8 @@ extends OpColorBase
         this.colorBack.style.background = 
             this.isUnknown()
             ? unknownBackStyle
-            : !rgbIsNaN(colors.back)
-            ? rgba2style(colors.back)
+            : !rgbIsNaN(colors.stripeBack)
+            ? rgba2style(colors.stripeBack)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
         this.colorBack.style.backgroundImage = 
@@ -52098,7 +52142,7 @@ extends Action
         const movedIds   = [...this.getMovedIds()];
         const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
-        for (var i = 0; i < movedNodes.length; i++)
+        for (let i = 0; i < movedNodes.length; i++)
         {
             const p = this.to.find(t => t[0] == movedNodes[i].id)[1];
             setNodePosition(movedNodes[i].div.node, p.x, p.y);
@@ -52117,7 +52161,7 @@ extends Action
         const movedIds   = [...this.getMovedIds()];
         const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
-        for (var i = 0; i < movedNodes.length; i++)
+        for (let i = 0; i < movedNodes.length; i++)
         {
             const p = this.from.find(t => t[0] == movedNodes[i].id)[1];
             setNodePosition(movedNodes[i].div.node, p.x, p.y);
@@ -56327,7 +56371,7 @@ function checkResize(x, y)
 {
     const resizeEdgeWidth = 8;
 
-    document.canResizeL =                              x <= resizeEdgeWidth;
+    //document.canResizeL =                              x <= resizeEdgeWidth;
     document.canResizeR = document.body.clientWidth  - x <= resizeEdgeWidth;
     document.canResizeB = document.body.clientHeight - y <= resizeEdgeWidth;
 
@@ -56345,10 +56389,10 @@ function checkResize(x, y)
 
 function uiSetWindowRect(x, y, width, height)
 {
-    console.log('x =',      x);
-    console.log('y =',      y);
-    console.log('width =',  width);
-    console.log('height =', height);
+    // console.log('x =',      x);
+    // console.log('y =',      y);
+    // console.log('width =',  width);
+    // console.log('height =', height);
 
     uiQueueMessageToFigma({ 
         cmd:   'figSetWindowRect', 
@@ -56427,9 +56471,9 @@ const licenseHashSize = 4;
 
 function createProductKey(name)
 {
-    var hash = hashLicenseName(name, licenseHashSize);
-    var enc  = sign(hash, licenseKeys.private);
-    var key  = arrayToBase32(enc);
+    const hash = hashLicenseName(name, licenseHashSize);
+    const enc  = sign(hash, licenseKeys.private);
+    const key  = arrayToBase32(enc);
 
     return key;
 }
@@ -56442,19 +56486,19 @@ function validateProductKey(name, key, rec = false)
     // 1/day, so 365 max, add end day to name
     // check today against last launch date (in private data) to prevent clock tampering
 
-    var arr  = base32toArray(key.toUpperCase());
-    var dec  = verify(arr, licenseKeys.public).subarray(licenseHashSize);
-    var trim = dec.subarray(dec.length - licenseHashSize);
-    var hash = hashLicenseName(name, licenseHashSize);
+    const arr  = base32toArray(key.toUpperCase());
+    const dec  = verify(arr, licenseKeys.public).subarray(licenseHashSize);
+    const trim = dec.subarray(dec.length - licenseHashSize);
+    const hash = hashLicenseName(name, licenseHashSize);
     
-    var valid = arraysEqual(trim, hash);
+    const valid = arraysEqual(trim, hash);
 
     if (valid && !rec)
     {
-        var lowerKey  = key;
+        let lowerKey = key;
 
-        var lastChar  = lastOf(lowerKey);
-        var lastIndex = base32chars.indexOf(lastChar);
+        const lastChar  = lastOf(lowerKey);
+        const lastIndex = base32chars.indexOf(lastChar);
 
         if (lastIndex > 0)
         {
@@ -56474,16 +56518,16 @@ function hashLicenseName(name, nBytes)
 {
     // XOR wrap name around a given number of bytes
 
-    var bytes = stringToArray(name);
+    const bytes = stringToArray(name);
 
     if (bytes.length > nBytes)
     {
-        var pos    = nBytes;
-        var length = bytes.length - nBytes;
+        let pos    = nBytes;
+        let length = bytes.length - nBytes;
         
         while (length > 0)
         {
-            for (var i = 0; i < nBytes; i++)
+            for (let i = 0; i < nBytes; i++)
                 bytes[i] ^= bytes[pos+i];
             
             pos    += nBytes;

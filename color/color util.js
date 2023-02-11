@@ -219,8 +219,10 @@ function getDefaultWarningStyle(rgb)
 
 
 
-function clipRgb(rgb)
+function clipRgb(_rgb)
 {
+    const rgb = [..._rgb];
+    
     rgb[0] = Math.min(Math.max(0, rgb[0]), 1);   
     rgb[1] = Math.min(Math.max(0, rgb[1]), 1);   
     rgb[2] = Math.min(Math.max(0, rgb[2]), 1); 

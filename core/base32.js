@@ -4,21 +4,21 @@ const base32chars = '12345679ABCDEFGHJKLMNPQRSTUVWXYZ';
 
 function arrayToBase32(array, chars = base32chars)
 {
-    var base32 = '';
+    let base32 = '';
 
     
-    var len = array.length;
-    var i   = 0;
+    let len = array.length;
+    let i   = 0;
 
     while (len > 0)
     {
         if (len >= 5)
         {
-            var a0 = array[i  ],
-                a1 = array[i+1],
-                a2 = array[i+2],
-                a3 = array[i+3],
-                a4 = array[i+4];
+            const a0 = array[i  ],
+                  a1 = array[i+1],
+                  a2 = array[i+2],
+                  a3 = array[i+3],
+                  a4 = array[i+4];
             
             base32 += chars[ (a0 & 0xF8) >>> 3];
             base32 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];
@@ -31,10 +31,10 @@ function arrayToBase32(array, chars = base32chars)
         }
         else if (len == 4)
         {
-            var a0 = array[i  ],
-                a1 = array[i+1],
-                a2 = array[i+2],
-                a3 = array[i+3];
+            const a0 = array[i  ],
+                  a1 = array[i+1],
+                  a2 = array[i+2],
+                  a3 = array[i+3];
             
             base32 += chars[ (a0 & 0xF8) >>> 3];
             base32 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];
@@ -46,9 +46,9 @@ function arrayToBase32(array, chars = base32chars)
         }
         else if (len == 3)
         {
-            var a0 = array[i  ],
-                a1 = array[i+1],
-                a2 = array[i+2];
+            const a0 = array[i  ],
+                  a1 = array[i+1],
+                  a2 = array[i+2];
             
             base32 += chars[ (a0 & 0xF8) >>> 3];
             base32 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];
@@ -58,8 +58,8 @@ function arrayToBase32(array, chars = base32chars)
         }
         else if (len == 2)
         {
-            var a0 = array[i  ],
-                a1 = array[i+1];
+            const a0 = array[i  ],
+                  a1 = array[i+1];
             
             base32 += chars[ (a0 & 0xF8) >>> 3];
             base32 += chars[((a0 & 0x07) <<  2) | ((a1 & 0xC0) >>> 6)];
@@ -68,7 +68,7 @@ function arrayToBase32(array, chars = base32chars)
         }
         else if (len == 1)
         {
-            var a0 = array[i];
+            const a0 = array[i];
             
             base32 += chars[ (a0 & 0xF8) >>> 3];
             base32 += chars[((a0 & 0x07) <<  2)];
@@ -87,24 +87,24 @@ function arrayToBase32(array, chars = base32chars)
 
 function base32toArray(base32, chars = base32chars)
 {
-    var array = [];
+    const array = [];
 
 
-    var len = base32.length;
-    var c   = 0;
+    let len = base32.length;
+    let c   = 0;
 
     while (len > 0)
     {
         if (len >= 8)
         {
-            var c0 = chars.indexOf(base32[c  ]),
-                c1 = chars.indexOf(base32[c+1]),
-                c2 = chars.indexOf(base32[c+2]),
-                c3 = chars.indexOf(base32[c+3]),
-                c4 = chars.indexOf(base32[c+4]),
-                c5 = chars.indexOf(base32[c+5]),
-                c6 = chars.indexOf(base32[c+6]),
-                c7 = chars.indexOf(base32[c+7]);
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]),
+                  c2 = chars.indexOf(base32[c+2]),
+                  c3 = chars.indexOf(base32[c+3]),
+                  c4 = chars.indexOf(base32[c+4]),
+                  c5 = chars.indexOf(base32[c+5]),
+                  c6 = chars.indexOf(base32[c+6]),
+                  c7 = chars.indexOf(base32[c+7]);
 
             array.push( (c0         << 3) | ((c1 & 0x1C) >>> 2));
             array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));
@@ -114,13 +114,13 @@ function base32toArray(base32, chars = base32chars)
         }
         else if (len == 7)
         {
-            var c0 = chars.indexOf(base32[c  ]),
-                c1 = chars.indexOf(base32[c+1]),
-                c2 = chars.indexOf(base32[c+2]),
-                c3 = chars.indexOf(base32[c+3]),
-                c4 = chars.indexOf(base32[c+4]),
-                c5 = chars.indexOf(base32[c+5]),
-                c6 = chars.indexOf(base32[c+6]);
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]),
+                  c2 = chars.indexOf(base32[c+2]),
+                  c3 = chars.indexOf(base32[c+3]),
+                  c4 = chars.indexOf(base32[c+4]),
+                  c5 = chars.indexOf(base32[c+5]),
+                  c6 = chars.indexOf(base32[c+6]);
 
             array.push(( c0         << 3) | ((c1 & 0x1C) >>> 2));
             array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));
@@ -129,11 +129,11 @@ function base32toArray(base32, chars = base32chars)
         }
         else if (len == 5)
         {
-            var c0 = chars.indexOf(base32[c  ]),
-                c1 = chars.indexOf(base32[c+1]),
-                c2 = chars.indexOf(base32[c+2]),
-                c3 = chars.indexOf(base32[c+3]),
-                c4 = chars.indexOf(base32[c+4]);
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]),
+                  c2 = chars.indexOf(base32[c+2]),
+                  c3 = chars.indexOf(base32[c+3]),
+                  c4 = chars.indexOf(base32[c+4]);
 
             array.push( (c0         << 3) | ((c1 & 0x1C) >>> 2));
             array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));
@@ -141,18 +141,18 @@ function base32toArray(base32, chars = base32chars)
         }
         else if (len == 4)
         {
-            var c0 = chars.indexOf(base32[c  ]),
-                c1 = chars.indexOf(base32[c+1]),
-                c2 = chars.indexOf(base32[c+2]),
-                c3 = chars.indexOf(base32[c+3]);
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]),
+                  c2 = chars.indexOf(base32[c+2]),
+                  c3 = chars.indexOf(base32[c+3]);
 
             array.push( (c0         << 3) | ((c1 & 0x1C) >>> 2));
             array.push(((c1 & 0x03) << 6) | (c2 << 1) | ((c3 & 0x10) >>> 4));
         }
         else if (len == 2)
         {
-            var c0 = chars.indexOf(base32[c  ]),
-                c1 = chars.indexOf(base32[c+1]);
+            const c0 = chars.indexOf(base32[c  ]),
+                  c1 = chars.indexOf(base32[c+1]);
 
             array.push((c0 << 3) | ((c1 & 0x1C) >>> 2));
         }

@@ -108,9 +108,9 @@ function numToString(num, dec, showHex = false)
 
 // function numToString(num, dec)
 // {
-//     var str = Number(num).toFixed(dec).toString();
+//     lst str = Number(num).toFixed(dec).toString();
 
-//     var i = 0;
+//     let i = 0;
 
 //     // find decimal place
 
@@ -185,8 +185,8 @@ function arrayToString(bytes)
 
 function getQueryVariable(strVar)
 {
-    var query = window.location.search.substring(1);
-    var vars  = query.split('&');
+    const query = window.location.search.substring(1);
+    const vars  = query.split('&');
 
     for (let i = 0; i < vars.length; i++) 
     {

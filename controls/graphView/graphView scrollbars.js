@@ -95,7 +95,7 @@ scrollbarX.addEventListener('pointerup', e =>
         scrollbarX.moving = false;
         scrollbarX.releasePointerCapture(e.pointerId);
 
-        var bounds = Rect.NaN;
+        let bounds = Rect.NaN;
 
         for (const node of graph.nodes)
             bounds = expandRect(bounds, boundingRect(node.div));
@@ -111,10 +111,10 @@ scrollbarX.addEventListener('pointermove', e =>
 {
     if (scrollbarX.moving)
     {
-        var x = scrollbarX.xStart + e.clientX - scrollbarX.pStart;
+        const x = scrollbarX.xStart + e.clientX - scrollbarX.pStart;
 
-        var l = x;
-        var r = l + scrollbarX.wStart;
+        let   l = x;
+        let   r = l + scrollbarX.wStart;
 
         l = Math.max(smallScrollGap, l);
         r = Math.min(r, graphView.clientWidth - largeScrollGap);
@@ -200,7 +200,7 @@ scrollbarY.addEventListener('pointerup', e =>
         scrollbarY.moving = false;
         scrollbarY.releasePointerCapture(e.pointerId);
 
-        var bounds = Rect.NaN;
+        let bounds = Rect.NaN;
 
         for (const node of graph.nodes)
             bounds = expandRect(bounds, boundingRect(node.div));
@@ -216,10 +216,10 @@ scrollbarY.addEventListener('pointermove', e =>
 {
     if (scrollbarY.moving)
     {
-        var y = scrollbarY.yStart + e.clientY - scrollbarY.pStart;
+        const y = scrollbarY.yStart + e.clientY - scrollbarY.pStart;
 
-        var t = y;
-        var b = t + scrollbarY.hStart;
+        let   t = y;
+        let   b = t + scrollbarY.hStart;
 
         t = Math.max(smallScrollGap, t);
         b = Math.min(b, graphView.clientHeight - largeScrollGap);

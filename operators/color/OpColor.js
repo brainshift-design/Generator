@@ -338,8 +338,8 @@ extends OpColorBase
         this.colorBack.style.background = 
             this.isUnknown()
             ? unknownBackStyle
-            : !rgbIsNaN(colors.back)
-            ? rgba2style(colors.back)
+            : !rgbIsNaN(colors.stripeBack)
+            ? rgba2style(colors.stripeBack)
             : rgba2style(rgb_a(rgbDocumentBody, 0.95));
 
         this.colorBack.style.backgroundImage = 

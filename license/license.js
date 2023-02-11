@@ -5,9 +5,9 @@ const licenseHashSize = 4;
 
 function createProductKey(name)
 {
-    var hash = hashLicenseName(name, licenseHashSize);
-    var enc  = sign(hash, licenseKeys.private);
-    var key  = arrayToBase32(enc);
+    const hash = hashLicenseName(name, licenseHashSize);
+    const enc  = sign(hash, licenseKeys.private);
+    const key  = arrayToBase32(enc);
 
     return key;
 }
@@ -20,19 +20,19 @@ function validateProductKey(name, key, rec = false)
     // 1/day, so 365 max, add end day to name
     // check today against last launch date (in private data) to prevent clock tampering
 
-    var arr  = base32toArray(key.toUpperCase());
-    var dec  = verify(arr, licenseKeys.public).subarray(licenseHashSize);
-    var trim = dec.subarray(dec.length - licenseHashSize);
-    var hash = hashLicenseName(name, licenseHashSize);
+    const arr  = base32toArray(key.toUpperCase());
+    const dec  = verify(arr, licenseKeys.public).subarray(licenseHashSize);
+    const trim = dec.subarray(dec.length - licenseHashSize);
+    const hash = hashLicenseName(name, licenseHashSize);
     
-    var valid = arraysEqual(trim, hash);
+    const valid = arraysEqual(trim, hash);
 
     if (valid && !rec)
     {
-        var lowerKey  = key;
+        let lowerKey = key;
 
-        var lastChar  = lastOf(lowerKey);
-        var lastIndex = base32chars.indexOf(lastChar);
+        const lastChar  = lastOf(lowerKey);
+        const lastIndex = base32chars.indexOf(lastChar);
 
         if (lastIndex > 0)
         {
@@ -52,16 +52,16 @@ function hashLicenseName(name, nBytes)
 {
     // XOR wrap name around a given number of bytes
 
-    var bytes = stringToArray(name);
+    const bytes = stringToArray(name);
 
     if (bytes.length > nBytes)
     {
-        var pos    = nBytes;
-        var length = bytes.length - nBytes;
+        let pos    = nBytes;
+        let length = bytes.length - nBytes;
         
         while (length > 0)
         {
-            for (var i = 0; i < nBytes; i++)
+            for (let i = 0; i < nBytes; i++)
                 bytes[i] ^= bytes[pos+i];
             
             pos    += nBytes;

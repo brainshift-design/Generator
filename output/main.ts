@@ -274,7 +274,7 @@ function moveInArray(array, from, to)
 
 function removeFromArray(array, item)
 {
-    var index = array.indexOf(item);
+    const index = array.indexOf(item);
     
     if (index > -1)
         array.splice(index, 1);
@@ -286,7 +286,7 @@ function removeArrayFromArray(fromArray, array)
 {
     for (const item of array)
     {
-        var index = fromArray.indexOf(item);
+        const index = fromArray.indexOf(item);
         
         if (index > -1)
             fromArray.splice(index, 1);
@@ -297,7 +297,7 @@ function removeArrayFromArray(fromArray, array)
 
 function removeFromArrayWhere(array, where)
 {
-    var index = array.findIndex(where);
+    const index = array.findIndex(where);
     
     if (index > -1)
         array.splice(index, 1);
@@ -2290,8 +2290,6 @@ function figSetWindowRect(x, y, width, height)
     {
         let position = false;
 
-        const bounds = figma.viewport.bounds;
-
         const rect = {
             x:      x,
             y:      y,
@@ -2307,46 +2305,10 @@ function figSetWindowRect(x, y, width, height)
         if (isNaN(rect.y)) rect.y = await figma.clientStorage.getAsync('windowY');
 
 
-        switch (windowDock)
-        {
-            case 'normal':   
-                // x      = windowX;
-                // y      = windowY;
-                // width  = windowWidth;
-                // height = windowHeight;
-                break;
-                
-            case 'maximize':
-                rect.x      = bounds.x;
-                rect.y      = bounds.y;
-                rect.width  = bounds.width;
-                rect.height = bounds.height;        
-                break;
-
-            case 'top':      
-                rect.x      = bounds.x;
-                rect.y      = bounds.y;
-                rect.width  = bounds.width;
-                break;
-
-            case 'left':     
-                rect.x      = bounds.x;
-                rect.y      = bounds.y;
-                rect.height = bounds.height;        
-                break;
-
-            case 'right':    
-                rect.x      = bounds.x + bounds.width - width;
-                rect.y      = bounds.y;
-                rect.height = bounds.height;        
-                break;
-
-            case 'bottom':   
-                rect.x      = bounds.x;
-                rect.y      = bounds.y + bounds.height - height;
-                rect.width  = bounds.width;
-                break;
-        }
+        dockWindow(
+            windowDock,
+            rect, 
+            figma.viewport.bounds);
 
 
         rect.x      = Math.round(rect.x     );
@@ -2355,10 +2317,10 @@ function figSetWindowRect(x, y, width, height)
         rect.height = Math.round(rect.height);
 
 
-        // console.log('_ x =',      rect.x);
-        // console.log('_ y =',      rect.y);
-        // console.log('_ width =',  rect.width);
-        // console.log('_ height =', rect.height);
+        console.log('_ x =',      rect.x);
+        console.log('_ y =',      rect.y);
+        console.log('_ width =',  rect.width);
+        console.log('_ height =', rect.height);
 
 
         figma.ui.resize(rect.width, rect.height);
@@ -2379,6 +2341,53 @@ function figSetWindowRect(x, y, width, height)
         figPostMessageToUi({cmd: 'uiReturnFigSetWindowRect'});
     })();
 }
+
+
+
+function dockWindow(dock, rect, bounds)
+{
+    switch (dock)
+    {
+        case 'normal':   
+            // x      = windowX;
+            // y      = windowY;
+            // width  = windowWidth;
+            // height = windowHeight;
+            break;
+            
+        case 'maximize':
+            rect.x      = bounds.x;
+            rect.y      = bounds.y;
+            rect.width  = bounds.width;
+            rect.height = bounds.height;        
+            break;
+
+        case 'top':      
+            rect.x      = bounds.x;
+            rect.y      = bounds.y;
+            rect.width  = bounds.width;
+            break;
+
+        case 'left':     
+            rect.x      = bounds.x;
+            rect.y      = bounds.y;
+            rect.height = bounds.height;        
+            break;
+
+        case 'right':    
+            rect.x      = bounds.x + bounds.width - rect.width;
+            rect.y      = bounds.y;
+            rect.height = bounds.height;        
+            break;
+
+        case 'bottom':   
+            rect.x      = bounds.x;
+            rect.y      = bounds.y + bounds.height - rect.height;
+            rect.width  = bounds.width;
+            break;
+    }
+}
+
 
 
 // function figRepositionWindow(x, y)

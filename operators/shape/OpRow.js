@@ -64,9 +64,9 @@ extends OperatorBase
 
 //         output._data = [];
     
-//         for (var i = 0, x = 0; i < this.#count.value; i++)
+//         for (let i = 0, x = 0; i < this.#count.value; i++)
 //         {
-//             for (var j = 0; j < objects.length; j++)
+//             for (let j = 0; j < objects.length; j++)
 //             {
 //                 const obj = shallowCopy(objects[j]);
 //                 obj.itemId = 'row_' + i + '_' + j;

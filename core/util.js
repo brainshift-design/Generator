@@ -137,7 +137,7 @@ function filterUnique(array)
 
 function createSvg(element)
 {
-    var svg = document.createElementNS('http://www.w3.org/2000/svg', element);
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', element);
     svg.style.pointerEvents = 'none';
     return svg;
 }
@@ -188,9 +188,9 @@ function copyArray(src, dst)
 
 function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
 {
-    var size = Math.min(srcSize, dstSize);
+    const size = Math.min(srcSize, dstSize);
 
-    for (var i = 0; i < size; i++)
+    for (let i = 0; i < size; i++)
         dst[dstStart + i] = src[srcStart + i];
 }
 
@@ -198,7 +198,7 @@ function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
 
 function newSizeArrayFrom(array, size) // resizes an array and returns a new array
 {
-    var newArray = new Uint8Array(size);
+    const newArray = new Uint8Array(size);
     copyArray(array, newArray);
     return newArray;
 }
@@ -210,7 +210,7 @@ function arraysAreEqual(arr1, arr2)
     if (arr1.length != arr2.length)
         return false;
 
-    for (var i = 0; i < arr1.length; i++)
+    for (let i = 0; i < arr1.length; i++)
     {
         if (arr1[i] != arr2[i])
             return false;
@@ -274,9 +274,9 @@ function replaceInStringAt(str, index, replace)
 
 function strFromData(data)
 {
-    var str = '';
+    let str = '';
 
-    for (var i = 0; i < data.length; i++)
+    for (let i = 0; i < data.length; i++)
         str += String.fromCharCode(data[si]);
 
     return str;

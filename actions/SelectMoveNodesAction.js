@@ -69,7 +69,7 @@ extends Action
         const movedIds   = [...this.getMovedIds()];
         const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
-        for (var i = 0; i < movedNodes.length; i++)
+        for (let i = 0; i < movedNodes.length; i++)
         {
             const p = this.to.find(t => t[0] == movedNodes[i].id)[1];
             setNodePosition(movedNodes[i].div.node, p.x, p.y);
@@ -88,7 +88,7 @@ extends Action
         const movedIds   = [...this.getMovedIds()];
         const movedNodes = graph.nodes.filter(n => movedIds.includes(n.id));
 
-        for (var i = 0; i < movedNodes.length; i++)
+        for (let i = 0; i < movedNodes.length; i++)
         {
             const p = this.from.find(t => t[0] == movedNodes[i].id)[1];
             setNodePosition(movedNodes[i].div.node, p.x, p.y);

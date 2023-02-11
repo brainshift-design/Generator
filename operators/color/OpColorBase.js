@@ -120,14 +120,29 @@ extends Operator
             ? rgbNoColorDark
             : rgbNoColorLight;
 
+
         const rgbBack = 
             dataColorIsNaN(this._color)
             ? rgb_NaN
             : dataColor2rgb(this._color);
+
             
+        let rgbStripeBack = [...rgbBack];
+        
+        const factor = this.getWarningFactor(rgbBack);
+
+        if (factor > 0)
+        {
+            const hcl = rgb2hsv(clipRgb(rgbBack));
+            hcl[1] /= 3;
+
+            rgbStripeBack = rgbLerp(rgbBack, hsv2rgb(hcl), factor);
+        }
+
+
         const rgbaBorder = rgb_a(rgbHeaderFromType(this.type, this.active), 0.95);
 
-        const rgbText  = getTextColorFromBackColor(rgbBack);
+        const rgbText  = getTextColorFromBackColor(rgbStripeBack);
         //const rgbLabel = getTextColorFromBackColor(clipRgb(rgbBack));
 
         const rgbaWire = 
@@ -136,13 +151,14 @@ extends Operator
             : noColor;
 
         return {
-            back:   rgb_a(rgbBack, 1  ), 
-            border: rgbaBorder,
-            text:   rgb_a(rgbText, 0.9),
-            //label:  rgb_a(rgbLabel, 0.9),
-            input:  rgb_a(rgbText, 0.2),
-            output: rgb_a(rgbText, 0.2),
-            wire:   rgbaWire };
+            back:       rgb_a(rgbBack, 1), 
+            stripeBack: rgb_a(rgbStripeBack, 1),
+            border:     rgbaBorder,
+            text:       rgb_a(rgbText, 0.9),
+            //label:    rgb_a(rgbLabel, 0.9),
+            input:      rgb_a(rgbText, 0.2),
+            output:     rgb_a(rgbText, 0.2),
+            wire:       rgbaWire };
     }
 
 
@@ -151,17 +167,18 @@ extends Operator
     {
         //console.log(this.id + '.updateWarningOverlay()');
 
-        let rgb = dataColor2rgb(this._color);
+        const colors = this.getHeaderColors();
+        
 
-        if (!rgbIsNaN(rgb))
+        if (!rgbIsNaN(colors.back))
         {
-            if (  !rgbIsValid(rgb)
+            if (  !rgbIsValid(colors.back)
                 || this.forceShowWarning)
             {
                 if (!this.forceShowWarning)
-                    this.warningStyle = getDefaultWarningStyle(rgb);
+                    this.warningStyle = getDefaultWarningStyle(colors.back);
 
-                this.updateWarningOverlayStyle(rgb);
+                this.updateWarningOverlayStyle(colors.back);
             }
             else
                 this._warningOverlay.style.display = 'none';
@@ -170,8 +187,8 @@ extends Operator
         {
             //rgb = rgbDocumentBody;//this.getDefaultBackColor();
 
-            this.warningStyle = getDefaultWarningStyle(rgb);
-            this.updateWarningOverlayStyle(rgb);
+            this.warningStyle = getDefaultWarningStyle(colors.back);
+            this.updateWarningOverlayStyle(colors.back);
         }
     }
 
@@ -179,42 +196,32 @@ extends Operator
 
     updateWarningOverlayStyle(colBack, height = -1)
     {
-        //console.log('colBack =', colBack);
-        
         this._warningOverlay.style.height = 
             height < 0
             ? this.header.offsetHeight
             : height;
 
 
-        const hsvBack = rgb2hsv(colBack);
+        const hclBack = rgb2hclokl(colBack);
 
-        const hsvBack1 = [...hsvBack];
-        const hsvBack2 = [...hsvBack];
+        const hclBack1 = [...hclBack];
+        const hclBack2 = [...hclBack];
 
-        hsvBack1[0] = hsvBack1[0] + 1/3;  if (hsvBack1[0] > 1) hsvBack1[0]--;
-        hsvBack2[0] = hsvBack2[0] + 2/3;  if (hsvBack2[0] > 1) hsvBack2[0]--;
+        hclBack1[0] += 1/12;  if (hclBack1[0] > 1) hclBack1[0] -= 1;
+        hclBack2[0] -= 1/12;  if (hclBack2[0] < 0) hclBack2[0] += 1;
 
-        const altBack1 = rgb_a(hsv2rgb(hsvBack1), 0.5);
-        const altBack2 = rgb_a(hsv2rgb(hsvBack2), 0.5);
+
+        const altBack1   = rgb_a(clipRgb(hclokl2rgb(hclBack1)), 0.35);
+        const altBack2   = rgb_a(clipRgb(hclokl2rgb(hclBack2)), 0.35);
 
         const colWarning = getDefaultWarningRgba(colBack);
+        const factor     = this.getWarningFactor(colBack);
 
-
-        let dr, dg, db;
-         
-        if (colBack[0] < 0) dr = -colBack[0]; else if (colBack[0] > 1) dr = colBack[0] - 1; else dr = 0;
-        if (colBack[1] < 0) dg = -colBack[0]; else if (colBack[1] > 1) dg = colBack[1] - 1; else dg = 0;
-        if (colBack[2] < 0) db = -colBack[0]; else if (colBack[2] > 1) db = colBack[2] - 1; else db = 0;
+        const colWarn1   = rgbaLerp(colWarning, altBack1, factor);
+        const colWarn2   = rgbaLerp(colWarning, altBack2, factor);
         
-        const factor = Math.min(Math.max(dr, dg, dg), 1) * 1.5;
-
-
-        const colWarn1 = rgbaLerp(colWarning, altBack1, factor);
-        const colWarn2 = rgbaLerp(colWarning, altBack2, factor);
-        
-        const warnStyle1 = rgba2style(colWarn1); //this.warningStyle;
-        const warnStyle2 = rgba2style(colWarn2); //this.warningStyle;
+        const warnStyle1 = rgba2style(colWarn1);
+        const warnStyle2 = rgba2style(colWarn2);
 
         
         this._warningOverlay.style.background =
@@ -229,5 +236,35 @@ extends Operator
                +  warnStyle2 + ' 21px 28px)';
 
         this._warningOverlay.style.display = 'block';
+    }
+
+
+
+    getWarningFactor(colBack)
+    {
+        let dr, dg, db;
+
+        if (colBack[0] < 0) dr = -colBack[0]; else if (colBack[0] > 1) dr = colBack[0] - 1; else dr = 0;
+        if (colBack[1] < 0) dg = -colBack[1]; else if (colBack[1] > 1) dg = colBack[1] - 1; else dg = 0;
+        if (colBack[2] < 0) db = -colBack[2]; else if (colBack[2] > 1) db = colBack[2] - 1; else db = 0;
+        
+        const d   = [dr, dg, db].sort()[1];
+        const avg = (dr + dg + db) / 3;
+
+        const factor = Math.min((d + avg) / 2, 1);
+
+        // if (this.id == 'color')
+        // {
+        //     console.log('colBack =', colBack);
+        //     console.log('dr     =', dr);
+        //     console.log('dg     =', dg);
+        //     console.log('db     =', db);
+        //     console.log('d      =', d);
+        //     console.log('avg    =', avg);
+        //     console.log('factor =', factor);
+        //     console.log('');
+        // }
+
+        return factor;
     }
 }

@@ -9,7 +9,7 @@ const cryptoBuffer          = new Uint8Array(cryptoPrimeBufferSize);
 
 function bigCryptoRandom()
 {
-    for (var i = 0; i < cryptoPrimeBufferSize; i++)
+    for (let i = 0; i < cryptoPrimeBufferSize; i++)
         cryptoBuffer[i] = toInt(Math.random() * 0x100);
 
     cryptoBuffer[0]                       |= 0xC0; // set the top bit to ensure a relatively large number
@@ -34,12 +34,12 @@ function bigCryptoPrime(e)
 {
     // set p so that gcd(e, p-1) = 1
     
-    var p;
+    let p;
 
     do
     {
-        var rnd = bigCryptoRandom();
-        p       = bigNextCryptoPrime(rnd);
+        const rnd = bigCryptoRandom();
+        p         = bigNextCryptoPrime(rnd);
     }
     while (gcd(p-1n, e) != 1n); 
         
@@ -50,12 +50,12 @@ function bigCryptoPrime(e)
 
 function createCryptoKeys()
 {
-    var e = 65537n; // 0x10001
+    const e = 65537n; // 0x10001
 
 
-    // var p = bigCryptoPrime(e);
+    // let p = bigCryptoPrime(e);
     
-    // var q;
+    // let q;
     // do { q = bigCryptoPrime(e); } 
     // while (q == p);
 
@@ -68,14 +68,14 @@ function createCryptoKeys()
     // console.log('q: ' + q);
 
 
-    var p = 4131437551n,
-        q = 3567532051n;
+    const p = 4131437551n,
+          q = 3567532051n;
     
 
-    var n   = p * q;
-    var phi = (p-1n) * (q-1n);
+    const  n   = p * q;
+    const _phi = (p-1n) * (q-1n);
 
-    var d = bigModInvert(e, phi);
+    const  d   = bigModInvert(e, _phi);
 
 
     return {
@@ -101,25 +101,25 @@ function verify (data, key) { return decryptData(data, key, true); } // but I pr
 function encryptData(data, key, sign)
 {
     // prep array should be a multiple of cryptoBufferSize
-    var prep   = new Uint8Array(Math.ceil((data.length) / cryptoBufferSize) * cryptoBufferSize); 
-    var cipher = new Uint8Array(prep.length);
+    const prep   = new Uint8Array(Math.ceil((data.length) / cryptoBufferSize) * cryptoBufferSize); 
+    const cipher = new Uint8Array(prep.length);
 
 
-    var start = prep.length - data.length;
-    for (var i = 0; i < data.length; i++)
+    const start = prep.length - data.length;
+    for (let i = 0; i < data.length; i++)
         prep[start+i] = data[i];
 
 
-    var length = prep.length;
-    var nBlock = 0;
+    let length = prep.length;
+    let nBlock = 0;
 
     while (length > 0)
     {
-        var blockStart = nBlock * cryptoBufferSize;
-        var blockSize  = Math.min(length, cryptoBufferSize);
+        const blockStart = nBlock * cryptoBufferSize;
+        const blockSize  = Math.min(length, cryptoBufferSize);
         
-        var block = bigFromBufferAt(prep, blockStart, cryptoBufferSize);
-        var enc   = encryptBlock(block, key, sign);
+        const block      = bigFromBufferAt(prep, blockStart, cryptoBufferSize);
+        const enc        = encryptBlock(block, key, sign);
         
         bigToBufferAt(enc, cipher, blockStart, cryptoBufferSize);
         
@@ -135,19 +135,20 @@ function encryptData(data, key, sign)
 
 function decryptData(cipher, key, verify)
 {
-    var data = new Uint8Array(cipher.length);
+    const data = new Uint8Array(cipher.length);
     
     
-    var length = cipher.length;
-    var nBlock = 0;
+    let length = cipher.length;
+    let nBlock = 0;
     
     while (length > 0)
     {
-        var blockStart = nBlock * cryptoBufferSize;
-        var blockSize  = Math.min(length, cryptoBufferSize);
+        const blockStart = nBlock * cryptoBufferSize;
+        const blockSize  = Math.min(length, cryptoBufferSize);
 
-        var block = bigFromBufferAt(cipher, blockStart, cryptoBufferSize);
-        var dec   = decryptBlock(block, key, verify);
+        const block      = bigFromBufferAt(cipher, blockStart, cryptoBufferSize);
+        const dec        = decryptBlock(block, key, verify);
+
         bigToBufferAt(dec, data, blockStart, cryptoBufferSize); 
 
         nBlock++;

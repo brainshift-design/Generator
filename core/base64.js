@@ -26,17 +26,17 @@ function base64toUint6(c)
 
 function base64toArray(str, blocksSize) 
 {
-    var base64 = str.replace(/[^A-Za-z0-9\+\/]/g, "");
-    var inLen  = base64.length;
+    const base64 = str.replace(/[^A-Za-z0-9\+\/]/g, "");
+    const inLen  = base64.length;
 
-    var outLen = 
+    const outLen = 
         blocksSize 
         ? Math.ceil((inLen * 3 + 1 >> 2) / blocksSize) * blocksSize 
         : inLen * 3 + 1 >> 2;
         
-    var bytes = new Uint8Array(outLen);
+    const bytes = new Uint8Array(outLen);
 
-    for (var mod3, 
+    for (let mod3, 
              mod4, 
              uint24 = 0, 
              out    = 0, 
@@ -81,12 +81,12 @@ function uint6toBase64(i)
 
 function arrayToBase64(bytes)
 {
-    var mod3   = 2, 
+    let mod3   = 2, 
         base64 = "";
 
-    var length = bytes.length;
+    const length = bytes.length;
 
-    for (var i = 0, uint24 = 0; i < length; i++) 
+    for (let i = 0, uint24 = 0; i < length; i++) 
     {
         mod3 = i % 3;
 
@@ -117,12 +117,13 @@ function arrayToBase64(bytes)
 
 function UTF8ArrToStr(bytes) 
 {
-    var str    = "";
-    var length = bytes.length;
+    let   str    = "";
 
-    for (var i = 0; i < length; i++) 
+    const length = bytes.length;
+
+    for (let i = 0; i < length; i++) 
     {
-        var byte = bytes[i];
+        const byte = bytes[i];
 
         str += String.fromCharCode(
                byte > 251 
@@ -155,26 +156,26 @@ function UTF8ArrToStr(bytes)
 
 function strToUTF8Arr(str) 
 {
-    var strLen = str.length, 
+    let strLen = str.length, 
         arrLen = 0;
 
 
     // mapping
 
-    for (var i = 0; i < strLen; i++) 
+    for (let i = 0; i < strLen; i++) 
     {
         chr = str.charCodeAt(i);
         arrLen += chr < 0x80 ? 1 : chr < 0x800 ? 2 : chr < 0x10000 ? 3 : chr < 0x200000 ? 4 : chr < 0x4000000 ? 5 : 6;
     }
 
-    var bytes = new Uint8Array(arrLen);
+    const bytes = new Uint8Array(arrLen);
 
 
     // transcription
 
-    for (var i = 0, iChr = 0; i < arrLen; iChr++) 
+    for (let i = 0, iChr = 0; i < arrLen; iChr++) 
     {
-        var chr = str.charCodeAt(iChr);
+        const chr = str.charCodeAt(iChr);
      
         if (chr < 0x80) // one byte
         {

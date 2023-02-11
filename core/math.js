@@ -60,8 +60,8 @@ function nextPow2(x)
 
 function distance(p1, p2)
 {
-    var dx = p2.x - p1.x;
-    var dy = p2.y - p1.y;
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
 
     return Math.sqrt(dx*dx + dy*dy);
 }
@@ -70,8 +70,8 @@ function distance(p1, p2)
 
 function distance_(x1, y1, x2, y2)
 {
-    var dx = x2 - x1;
-    var dy = y2 - y1;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
 
     return Math.sqrt(dx*dx + dy*dy);
 }
@@ -188,10 +188,10 @@ function anglev(v1, v2)
 
 function anglev_(x1, y1, x2, y2)
 {
-    var dx = x2 - x1;
-    var dy = y2 - y1;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
 
-    var angle = Math.atan2(dy, dx);
+    let angle = Math.atan2(dy, dx);
     if (angle < 0) angle += Tau;
 
     return angle;
@@ -338,17 +338,17 @@ function mulv2m3(v, m)
 
 function mulm3m3(m1, m2)
 {
-    var m = [[0, 0, 0],
-             [0, 0, 0],
-             [0, 0, 0]];
+    const m = [[0, 0, 0],
+               [0, 0, 0],
+               [0, 0, 0]];
 
-    for (var i = 0; i < 3; i++)
+    for (let i = 0; i < 3; i++)
     {
-        for (var j = 0; j < 3; j++)
+        for (let j = 0; j < 3; j++)
         {
             /*	calculate the dot product of ith row 
                 of this and jth column of m  */
-            for (var k = 0; k < 3; k++)
+            for (let k = 0; k < 3; k++)
                 m[i][j] += m1[i][k] * m2[k][j];
         }
     }
@@ -437,7 +437,7 @@ function xrotate(angle)
 
 function gcd(a, b)
 {
-    var temp;
+    let temp;
     while (1)
     {
         temp = a % b;
@@ -454,7 +454,7 @@ function gcd(a, b)
 
 // function ipow(n, e)
 // {
-//     var res = 1;
+//     let res = 1;
 
 //     for (;;)
 //     {
@@ -478,12 +478,12 @@ const MaxDigits = 100000;
  
 function multRes(x, res, resSize)
 {
-    var carry = 0n;
+    let carry = 0n;
     
     // multiply individual digits of res[] by n
-    for (var i = 0; i < resSize; i++) 
+    for (let i = 0; i < resSize; i++) 
     {
-        var prod = res[i] * x + carry;
+        const prod = res[i] * x + carry;
     
         res[i] = prod % 10n; // store last digit of prod in res[]
         carry  = prod / 10n; // put rest in carry
@@ -505,7 +505,7 @@ function multRes(x, res, resSize)
 
 function randomPrime(max = Number.MAX_SAFE_INTEGER/2)
 {
-    var num = Math.floor(Math.random() * max);
+    const num = Math.floor(Math.random() * max);
     return nextPrime(num);
 }
 
@@ -528,12 +528,12 @@ function isPrime(n, k = millerRabinIterations) // Miller-Rabin
         return false; // composite
     
     
-    var d = n - 1;     // find d      
+    let d = n - 1;     // find d      
     while (d % 2 == 0) // so that x = 2^d * r + 1 
         d /= 2;        // for r >= 1
     
     
-    for (var i = 0; i < k; i++)    
+    for (let i = 0; i < k; i++)    
         if (!millerTest(d, n))
             return false; // composite
     
@@ -561,10 +561,10 @@ function uintFromBuffer(buffer, size)
 
 function uintFromBufferAt(buffer, start, size)
 {
-    var val = 0;
-    var mul = 1;
+    let val = 0;
+    let mul = 1;
 
-    for (var i = start+size-1; i >= start; i--) // little-endian
+    for (let i = start+size-1; i >= start; i--) // little-endian
     {
         val += mul * buffer[i];
         mul <<= 8;
@@ -584,13 +584,13 @@ function uintToBuffer(val, buffer, bufferSize)
 
 function uintToBufferAt(val, buffer, start, bufferSize)
 {
-    var size = Math.ceil(bigBitCount(val) / 8);
+    let size = Math.ceil(bigBitCount(val) / 8);
     
     size = Math.min(size, buffer.length - start);
 
     start += bufferSize - size;
 
-    for (var i = start+size-1; i >= start; i--) // little-endian
+    for (let i = start+size-1; i >= start; i--) // little-endian
     {
         buffer[i] = val & 0xFF; 
         val >>= 8;

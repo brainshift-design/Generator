@@ -88,7 +88,7 @@ function hasFocus(elem)
 
 function setStyle(id, properties)
 {
-    var elem = document.getElementById(id);
+    const elem = document.getElementById(id);
 
     for (const property of properties)
         elem.style[property] = properties[property];
@@ -105,7 +105,7 @@ function containsChild(parent, child)
 
 function forwardEvent(event, element)
 {
-    var e = new event.constructor(event.type, event);
+    const e = new event.constructor(event.type, event);
     element.dispatchEvent(e);
 }
 

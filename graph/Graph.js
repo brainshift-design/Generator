@@ -217,7 +217,7 @@ class Graph
 
     disconnect(input)
     {
-        var output = input.connectedOutput;
+        const output = input.connectedOutput;
         if (!output) return false;
 
 

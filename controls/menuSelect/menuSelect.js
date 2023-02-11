@@ -91,7 +91,7 @@ function initMenuSelect(select)
             e.preventDefault();
             e.stopPropagation();
 
-            var rect = boundingRect(select);
+            const rect = boundingRect(select);
 
             if (e.clientX > rect.width - 20)
             {

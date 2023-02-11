@@ -26,17 +26,17 @@
 
     <script>
         
-        var txt = '';
+        let txt = '';
 
 
-        var name = getQueryVariable('name');
+        const name = getQueryVariable('name');
 
         if (name != 'false')
             txt += createProductKey(name);
 
         else
         {
-            var rnd = new Random(1234567);    
+            const rnd = new Random(1234567);    
 
             const firstNames = ['FirstName1', 'FirstName2'];
             const  lastNames = ['LastName1', 'LastName2'];
@@ -44,22 +44,22 @@
 
             const names = [];
 
-            for (var i = 0; i < 30; i++)
+            for (let i = 0; i < 30; i++)
             {
-                const name =
+                const _name =
                       firstNames[Math.floor(rnd.next() * firstNames.length)] + ' '
                     +  lastNames[Math.floor(rnd.next() *  lastNames.length)];  
 
-                names.push(name);    
+                names.push(_name);    
             }    
 
 
-            var maxLen = 
+            const maxLen = 
                   Math.max(...(firstNames.map(n => n.length))) + 1 
                 + Math.max(...( lastNames.map(n => n.length)));  
             
         
-            for (var i = 0; i < names.length; i++)
+            for (let i = 0; i < names.length; i++)
             {
                 const name = names[i];
                 const key  = createProductKey(name);
@@ -72,9 +72,9 @@
             }
 
 
-            var testName = '673258279043070642';
-            var goodKey  = 'R3HQX34MSNXNA';
-            var badKey   = 'R3HQX34MSNXNB';
+            const testName = '673258279043070642';
+            const goodKey  = 'R3HQX34MSNXNA';
+            const badKey   = 'R3HQX34MSNXNB';
 
             txt += '<br/>';
             txt += 'validating ' + testName + ' ' + goodKey + ' ' + (validateProductKey(testName, goodKey) ? '√' : 'X') + '<br/>';

@@ -83,7 +83,7 @@ class Noise
         //scale = Math.pow(Phi, scale) / Phi;
         scale = Math.max(1, scale);
 
-        var next = this.v1;
+        let next = this.v1;
 
         if (this.step >= 1)
         {

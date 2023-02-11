@@ -21,7 +21,7 @@
     
 //     updateData()
 //     {
-//         var input = this.inputs[0];
+//         const input = this.inputs[0];
 
 //         if (   !input.connected
 //             || isEmptyObject(input.connectedOutput.data)) 

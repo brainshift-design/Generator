@@ -22,7 +22,7 @@ function checkResize(x, y)
 {
     const resizeEdgeWidth = 8;
 
-    document.canResizeL =                              x <= resizeEdgeWidth;
+    //document.canResizeL =                              x <= resizeEdgeWidth;
     document.canResizeR = document.body.clientWidth  - x <= resizeEdgeWidth;
     document.canResizeB = document.body.clientHeight - y <= resizeEdgeWidth;
 
@@ -40,10 +40,10 @@ function checkResize(x, y)
 
 function uiSetWindowRect(x, y, width, height)
 {
-    console.log('x =',      x);
-    console.log('y =',      y);
-    console.log('width =',  width);
-    console.log('height =', height);
+    // console.log('x =',      x);
+    // console.log('y =',      y);
+    // console.log('width =',  width);
+    // console.log('height =', height);
 
     uiQueueMessageToFigma({ 
         cmd:   'figSetWindowRect', 
