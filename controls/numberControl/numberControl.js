@@ -271,10 +271,10 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.updateColors = function()
     {
-        control        .style.background = isDarkMode() ? control. backStyleDark : control. backStyleLight;
-        control.bar    .style.background = isDarkMode() ? control.valueStyleDark : control.valueStyleLight;
-        control.text   .style.color      = isDarkMode() ? control. textStyleDark : control. textStyleLight;
-        //control.textbox.style.color      = isDarkMode() ? control. textStyleDark : control. textStyleLight;
+        control        .style.background = darkMode ? control. backStyleDark : control. backStyleLight;
+        control.bar    .style.background = darkMode ? control.valueStyleDark : control.valueStyleLight;
+        control.text   .style.color      = darkMode ? control. textStyleDark : control. textStyleLight;
+      //control.textbox.style.color      = darkMode ? control. textStyleDark : control. textStyleLight;
     };
 
 
@@ -294,7 +294,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
                     || control.showNanValueName))
             {
                 const nameStyle = 
-                    isDarkMode() 
+                    darkMode 
                     ? rgba2style(rgb_a(style2rgba(control.textStyleDark ), 0.4))
                     : rgba2style(rgb_a(style2rgba(control.textStyleLight), 0.6));
 

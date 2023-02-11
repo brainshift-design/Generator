@@ -2,28 +2,28 @@ function rgbHeaderFromType(type, active)
 {
     if (FLOW_TYPES.includes(type))
         return active 
-        ? (isDarkMode() ? rgbActiveFlowDark : rgbActiveFlowLight)
-        : (isDarkMode() ? rgbFlowDark       : rgbFlowLight      );
+        ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
+        : (darkMode ? rgbFlowDark       : rgbFlowLight      );
 
     if (NUMBER_TYPES.includes(type))
         return active 
-        ? (isDarkMode() ? rgbActiveNumberDark : rgbActiveNumberLight)
-        : (isDarkMode() ? rgbNumberDark       : rgbNumberLight      );
+        ? (darkMode ? rgbActiveNumberDark : rgbActiveNumberLight)
+        : (darkMode ? rgbNumberDark       : rgbNumberLight      );
 
     if (STRING_TYPES.includes(type))
         return active 
-        ? (isDarkMode() ? rgbActiveStringDark : rgbActiveStringLight)
-        : (isDarkMode() ? rgbStringDark       : rgbStringLight      );
+        ? (darkMode ? rgbActiveStringDark : rgbActiveStringLight)
+        : (darkMode ? rgbStringDark       : rgbStringLight      );
 
     if (SHAPE_TYPES.includes(type))
         return active 
-        ? (isDarkMode() ? rgbActiveShapeDark : rgbActiveShapeLight)
-        : (isDarkMode() ? rgbShapeDark       : rgbShapeLight      );
+        ? (darkMode ? rgbActiveShapeDark : rgbActiveShapeLight)
+        : (darkMode ? rgbShapeDark       : rgbShapeLight      );
 
     if (type == COLOR_STYLE)//COLOR_STYLE_TYPES.includes(type))
         return active 
-        ? (isDarkMode() ? rgbActiveFlowDark : rgbActiveFlowLight)
-        : (isDarkMode() ? rgbFlowDark       : rgbFlowLight      );
+        ? (darkMode ? rgbActiveFlowDark : rgbActiveFlowLight)
+        : (darkMode ? rgbFlowDark       : rgbFlowLight      );
 
         
     switch (type)

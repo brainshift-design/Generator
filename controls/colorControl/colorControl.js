@@ -169,16 +169,16 @@ function initColorControl(param, control, width, height, id, name, showName, def
         control        .style.background = 
         control.textbox.style.background = 
             control.showColor
-            ? (isDarkMode() 
+            ? (darkMode 
                ? control.valueStyleDark 
                : control.valueStyleLight)
-            : (isDarkMode() 
+            : (darkMode
                ? control.backStyleDark 
                : control.backStyleLight);
 
         control.text   .style.color = 
         control.textbox.style.color = 
-            isDarkMode() 
+            darkMode 
             ? control.textStyleDark 
             : control.textStyleLight;
     };

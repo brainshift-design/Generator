@@ -170,7 +170,7 @@ function rgbEqual(rgb1, rgb2)
 
 
 
-function style2rgba(style) 
+function style2rgba(style) // SLOW
 {
     utilContext.fillStyle = style;
     utilContext.fillRect(0, 0, 1, 1);
@@ -180,7 +180,7 @@ function style2rgba(style)
 
 
 
-function computedStyle2rgba(obj, style) 
+function computedStyle2rgba(obj, style) // SLOW
 {
     utilContext.fillStyle = getStyleValue(obj, style);
     utilContext.fillRect(0, 0, 1, 1);
@@ -195,8 +195,8 @@ function getTextColorFromBackColor(rgb, opacity = 1)
     return !rgbIsNaN(rgb)
            ? (opacity >= 0.5
                ? (isDark(rgb)  ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75])
-               : (isDarkMode() ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75]))
-           : (isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight);
+               : (darkMode ? [1, 1, 1, 0.75] : [0, 0, 0, 0.75]))
+           : (darkMode ? rgbaNoColorTextDark : rgbaNoColorTextLight);
 }
 
 
@@ -205,7 +205,7 @@ function getDefaultWarningRgba(rgb)
 {
     return !rgbIsNaN(rgb)
          ? (isDark(rgb)  ? [1, 1, 1, 0.133] : [0, 0, 0, 0.161])  
-         : (isDarkMode() ? [1, 1, 1, 0.031] : [0, 0, 0, 0.031]);  
+         : (darkMode ? [1, 1, 1, 0.031] : [0, 0, 0, 0.031]);  
 }
 
 
@@ -214,7 +214,7 @@ function getDefaultWarningStyle(rgb)
 {
     return !rgbIsNaN(rgb)
          ? (isDark(rgb)  ? '#ffffff29' : '#00000022')
-         : (isDarkMode() ? '#ffffff08' : '#00000006'); 
+         : (darkMode ? '#ffffff08' : '#00000006'); 
 }
 
 
@@ -222,7 +222,7 @@ function getDefaultWarningStyle(rgb)
 function clipRgb(_rgb)
 {
     const rgb = [..._rgb];
-    
+
     rgb[0] = Math.min(Math.max(0, rgb[0]), 1);   
     rgb[1] = Math.min(Math.max(0, rgb[1]), 1);   
     rgb[2] = Math.min(Math.max(0, rgb[2]), 1); 

@@ -22,7 +22,7 @@ function createToggleButton(width, height)
 
     btn.updateBackground = (enabled) =>
     {
-        const col = isDarkMode() ? 'white' : 'black';
+        const col = darkMode ? 'white' : 'black';
 
         btn.style.background = 
             btn.enabled 
@@ -35,7 +35,7 @@ function createToggleButton(width, height)
         btn.style.backgroundColor = 
                btn.enabled 
             && enabled 
-            ? (isDarkMode() ? '#444' : '#e6e6e6') 
+            ? (darkMode ? '#444' : '#e6e6e6') 
             : 'transparent';
     };
 

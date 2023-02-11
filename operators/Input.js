@@ -191,7 +191,7 @@ extends EventTarget
                      || tc.output.node.isOrFollows(this.node)));
 
         const color =
-            isDarkMode()
+            darkMode
             ? this.colorDark
             : this.colorLight;
                      

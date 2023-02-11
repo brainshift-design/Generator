@@ -266,7 +266,7 @@ extends Parameter
     updateControls()
     {
         // const noColor = 
-        //     isDarkMode()
+        //     darkMode
         //     ? rgbNoColorDark
         //     : rgbNoColorLight;
 
@@ -291,7 +291,7 @@ extends Parameter
         else
         {
             this.div.style.background =
-                isDarkMode()
+                darkMode
                 ? 'rgba(56, 56, 56, 0.95)'
                 : 'rgba(255, 255, 255, 0.95)';
 
@@ -314,14 +314,14 @@ extends Parameter
 
 
         this.checkers.style.background = 
-            isDarkMode()
+            darkMode
             ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
               + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
         this.checkers.style.display            = this.value.isValid() ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
+        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
 
         this.checkers.style.backgroundSize     = '20px 20px';
         this.checkers.style.backgroundPosition = '0 0, 10px 10px';

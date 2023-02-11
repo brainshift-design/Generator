@@ -128,7 +128,7 @@
 //             && this.value.isValid())
 //         {
 //             const noColor = 
-//                 isDarkMode()
+//                 darkMode
 //                 ? rgbNoColorDark
 //                 : rgbNoColorLight;
 
@@ -149,8 +149,8 @@
 //         }
 //         else
 //         {
-//             const noColor  = isDarkMode() ? rgbNoColorDark      : rgbNoColorLight;
-//             const rgbaText = isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight;
+//             const noColor  = darkMode ? rgbNoColorDark      : rgbNoColorLight;
+//             const rgbaText = darkMode ? rgbaNoColorTextDark : rgbaNoColorTextLight;
 
 
 //             //this.input.wireColor           = noColor;
@@ -168,7 +168,7 @@
 //             this.textControl.innerHTML     = 'no style';
             
 //             this.div.style.background =
-//                 isDarkMode()
+//                 darkMode
 //                 ? 'rgba(56, 56, 56, 0.95)'
 //                 : 'rgba(255, 255, 255, 0.95)';
 //         }

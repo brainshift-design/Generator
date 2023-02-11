@@ -131,8 +131,8 @@ function connectAction_updateOldOutput(act, updateNodes)
     act.oldOutput.updateSavedConnectionOrder(act.oldOutputOrder, -1);
 
     pushUnique(updateNodes, act.oldOutputNode);
-    console.log('getActiveFromNode(act.oldOutputNode) =', getActiveFromNode(act.oldOutputNode));
 
+    
     if (!getActiveFromNode(act.oldOutputNode))
     {
         uiMakeNodeActive(act.oldOutputNode);

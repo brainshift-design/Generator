@@ -142,8 +142,8 @@ extends OperatorBase
             this.circle.style.background = rgb2style(rgb);
 
             this.circle.style.boxShadow = 
-                    isDarkMode() &&  isDark(rgb, 0.4)
-                || !isDarkMode() && !isDark(rgb, 0.9)
+                    darkMode &&  isDark(rgb, 0.4)
+                || !darkMode && !isDark(rgb, 0.9)
                 ? '0 0 0 1px var(--figma-color-bg-tertiary) inset'
                 : 'none';
         }

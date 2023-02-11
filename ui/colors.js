@@ -57,7 +57,10 @@ const rgbDefaultFill       = [0xD9, 0xD9, 0xD9];
 var rgbDocumentBody;
 
 
+
 function initThemeColors()
 {
     rgbDocumentBody = computedStyle2rgba(document.body, 'background-color');
+
+    darkMode = isDarkMode();
 }

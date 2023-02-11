@@ -200,7 +200,7 @@ extends Parameter
             && this.value.isValid())
         {
             const noColor = 
-                isDarkMode()
+                darkMode
                 ? rgbNoColorDark
                 : rgbNoColorLight;
 
@@ -218,14 +218,14 @@ extends Parameter
 
 
             this.checkers.style.background =
-                isDarkMode()
+                darkMode
                 ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
                   + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
                 :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
                   + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
             this.checkers.style.display            = 'inline-block';
-            this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
+            this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
 
             this.checkers.style.backgroundSize     = '20px 20px';
             this.checkers.style.backgroundPosition = '0 0, 10px 10px';
@@ -250,8 +250,8 @@ extends Parameter
         }
         else
         {
-            const noColor  = isDarkMode() ? rgbNoColorDark      : rgbNoColorLight;
-            const rgbaText = isDarkMode() ? rgbaNoColorTextDark : rgbaNoColorTextLight;
+            const noColor  = darkMode ? rgbNoColorDark      : rgbNoColorLight;
+            const rgbaText = darkMode ? rgbaNoColorTextDark : rgbaNoColorTextLight;
 
 
             //this.input.wireColor           = noColor;
@@ -272,7 +272,7 @@ extends Parameter
             this.textControl.innerHTML     = 'no stroke';
             
             this.div.style.background =
-                isDarkMode()
+                darkMode
                 ? 'rgba(56, 56, 56, 0.95)'
                 : 'rgba(255, 255, 255, 0.95)';
         }

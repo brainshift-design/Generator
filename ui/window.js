@@ -18,6 +18,10 @@ window.addEventListener('gestureend',    e => e.preventDefault());
 
 
 
+var darkMode;
+
+
+
 function checkResize(x, y)
 {
     const resizeEdgeWidth = 8;

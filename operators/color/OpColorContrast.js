@@ -96,7 +96,7 @@ extends OpColorBase
         this.labelColor = 
             colText.isValid()
             ? colText.toRgb()
-            : [0, 0, 0];
+            : getTextColorFromBackColor(colBack);
 
         this._color = colBack.toDataColor();
 
@@ -189,14 +189,14 @@ extends OpColorBase
           if (   this.inputs[0].connected 
               && this.inputs[1].connected) this.label.style.color = rgb2style(this.labelColor);
         else if (this.inputs[1].connected) this.label.style.color = rgba2style(colors.text);
-        else                               this.label.style.color = isDarkMode() ? 'white' : 'black';
+        else                               this.label.style.color = darkMode ? 'white' : 'black';
     }
 
 
 
     setRanges(standard)
     {
-        if (isDarkMode())
+        if (darkMode)
         {
             if (standard.value == 0)
             {

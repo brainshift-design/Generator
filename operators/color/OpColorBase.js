@@ -116,7 +116,7 @@ extends Operator
     getHeaderColors(options = {})
     {
         const noColor = 
-            isDarkMode()
+            darkMode
             ? rgbNoColorDark
             : rgbNoColorLight;
 

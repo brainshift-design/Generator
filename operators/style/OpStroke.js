@@ -159,14 +159,14 @@ extends OpColorBase
         this.checkers.style.height = this.header.offsetHeight;
 
         this.checkers.style.background =
-            isDarkMode()
+            darkMode
             ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
               + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
             :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
               + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
 
         this.checkers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor    = isDarkMode() ? '#444' : '#fff';
+        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
 
         this.checkers.style.backgroundSize     = '26px 26px';
         this.checkers.style.backgroundPosition = '0 0, 13px 13px';

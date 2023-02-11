@@ -174,7 +174,7 @@ class Output
 
 
         const color = 
-            isDarkMode()
+            darkMode
             ? this.colorDark
             : this.colorLight;
 
