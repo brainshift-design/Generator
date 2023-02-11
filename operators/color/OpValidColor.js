@@ -18,7 +18,7 @@ extends OpColorBase
         this.alwaysSaveParams = true;
 
         
-        this.addParam(this.paramQuality = new SelectParam('quality', '', false, true, false, ['fast', 'accurate'], 1));
+        this.addParam(this.paramQuality = new SelectParam('quality', '', false, true, true, ['fast', 'accurate'], 1));
 
 
         this.initCorrections('');

@@ -47957,7 +47957,7 @@ extends OpColorBase
         this.alwaysSaveParams = true;
 
         
-        this.addParam(this.paramQuality = new SelectParam('quality', '', false, true, false, ['fast', 'accurate'], 1));
+        this.addParam(this.paramQuality = new SelectParam('quality', '', false, true, true, ['fast', 'accurate'], 1));
 
 
         this.initCorrections('');
@@ -48427,7 +48427,7 @@ extends OpColorBase
 
 
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0, 0));
-        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  false, ['WCAG 2', 'WCAG 3'], 1));
+        this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
         createTooltip(ttWcag2);
@@ -50680,19 +50680,23 @@ function connectAction_removeOldOutputConnection(act)
 
 function connectAction_updateOldOutput(act, updateNodes)
 {
-    if (act.oldOutputNode)
-    {
-        act.oldOutput.updateSavedConnectionOrder(act.oldOutputOrder, -1);
+    if (!act.oldOutputNode)
+        return;
 
-        pushUnique(updateNodes, act.oldOutputNode);
         
-        if (!getActiveFromNode(act.oldOutputNode))
-        {
-            uiMakeNodeActive(act.oldOutputNode);
+    act.oldOutput.updateSavedConnectionOrder(act.oldOutputOrder, -1);
 
-            act.newActiveNodeIds.push(act.oldOutputNodeId);
+    pushUnique(updateNodes, act.oldOutputNode);
+    console.log('getActiveFromNode(act.oldOutputNode) =', getActiveFromNode(act.oldOutputNode));
+
+    if (!getActiveFromNode(act.oldOutputNode))
+    {
+        uiMakeNodeActive(act.oldOutputNode);
+
+        act.newActiveNodeIds.push(act.oldOutputNodeId);
+
+        if (act.oldOutputActiveNodeId != NULL)
             pushUnique(updateNodes, nodeFromId(act.oldOutputActiveNodeId));
-        }
     }
 }
 

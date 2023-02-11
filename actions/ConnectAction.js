@@ -124,19 +124,23 @@ function connectAction_removeOldOutputConnection(act)
 
 function connectAction_updateOldOutput(act, updateNodes)
 {
-    if (act.oldOutputNode)
-    {
-        act.oldOutput.updateSavedConnectionOrder(act.oldOutputOrder, -1);
+    if (!act.oldOutputNode)
+        return;
 
-        pushUnique(updateNodes, act.oldOutputNode);
         
-        if (!getActiveFromNode(act.oldOutputNode))
-        {
-            uiMakeNodeActive(act.oldOutputNode);
+    act.oldOutput.updateSavedConnectionOrder(act.oldOutputOrder, -1);
 
-            act.newActiveNodeIds.push(act.oldOutputNodeId);
+    pushUnique(updateNodes, act.oldOutputNode);
+    console.log('getActiveFromNode(act.oldOutputNode) =', getActiveFromNode(act.oldOutputNode));
+
+    if (!getActiveFromNode(act.oldOutputNode))
+    {
+        uiMakeNodeActive(act.oldOutputNode);
+
+        act.newActiveNodeIds.push(act.oldOutputNodeId);
+
+        if (act.oldOutputActiveNodeId != NULL)
             pushUnique(updateNodes, nodeFromId(act.oldOutputActiveNodeId));
-        }
     }
 }
 
