@@ -78,9 +78,9 @@ function updateWires(wires)
     const pOut    = [];
     const pIn     = [];
     
-    const cw      = graphView.clientWidth;
-    const ch      = graphView.clientHeight;
-    const yOffset = menuBar  .offsetHeight;
+    const cw      = graphViewClient.width;
+    const ch      = graphViewClient.height;
+    const yOffset = menuBarHeight;
 
 
     wires.forEach(w => 
@@ -88,8 +88,6 @@ function updateWires(wires)
         const ro = boundingRect(w.connection.output.div);
         const ri = boundingRect(w.connection.input .div);
 
-        // console.log('w.connection.output.div =', w.connection.output.div);
-        // console.log('ro =', ro);
         pOut.push(point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset));
         pIn .push(point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset));
     });
@@ -122,19 +120,13 @@ function updateWires(wires)
 
     for (let i = 0; i < wires.length; i++)
     {
-        const conn   = wires[i].connection;
-        const input  = conn.input;
-        const output = conn.output;
+        const conn = wires[i].connection;
+        const solo = conn != graphView.savedConn;
 
-        // const isSolo = 
-        //         graphView._soloNode
-        //     && (    input.node == graphView._soloNode
-        //         || output.node == graphView._soloNode);
-
-        show(wires[i],       /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
-        show(wires[i].curve, /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
-        show(wires[i].xp1,   /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
-        show(wires[i].xp2,   /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i],       solo);
+        show(wires[i].curve, solo);
+        show(wires[i].xp1,   solo);
+        show(wires[i].xp2,   solo);
 
         if (wires[i].outBall) show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
         if (wires[i]. inBall) show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);

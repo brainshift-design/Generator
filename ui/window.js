@@ -27,8 +27,8 @@ function checkResize(x, y)
     const resizeEdgeWidth = 8;
 
     //document.canResizeL =                              x <= resizeEdgeWidth;
-    document.canResizeR = document.body.clientWidth  - x <= resizeEdgeWidth;
-    document.canResizeB = document.body.clientHeight - y <= resizeEdgeWidth;
+    document.canResizeR = documentBodyClient.width  - x <= resizeEdgeWidth;
+    document.canResizeB = documentBodyClient.height - y <= resizeEdgeWidth;
 
     if (       document.canResizeR
             && document.canResizeB) setCursor('nwse-resize', false); 

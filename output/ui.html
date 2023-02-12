@@ -37377,8 +37377,8 @@ graphView.setPanAndZoom = (pan, zoom) =>
 {
     if ((   pan  != graphView._pan
          || zoom != graphView._zoom)
-        && zoom >=  0.02
-        && zoom <= 50   ) 
+        && zoom >= 0.02
+        && zoom <= 50) 
     {
         graphView.oldZoom = graphView.zoom;
 
@@ -37388,17 +37388,17 @@ graphView.setPanAndZoom = (pan, zoom) =>
         uiSaveGraphView();
 
 
-        // graphView.panZoomTimer = setTimeout(() => 
-        // {
+        graphView.panZoomTimer = setTimeout(() => 
+        {
             graphView.updatePanAndZoom();
-        //     graphView.panZoomTimer = null;
-        // });
+            graphView.panZoomTimer = null;
+        });
     }
 };
 
 
 
-graphView.updatePanAndZoom = () =>
+graphView.updatePanAndZoom = function()
 {
     graphView.update(graph.nodes);
     
@@ -37415,6 +37415,10 @@ graphView.update = function(nodes = null)
     if (!nodes)
         node = graph.nodes;
         
+    
+    documentBodyClient = clientRect(document.body);
+
+
     graphView.updateNodeTransforms(nodes, false);
     graphView.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
 
@@ -37643,8 +37647,8 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
         graphView.selectedNodes = graphView.lastSelectedNodes.concat(selected);
     else if (shiftKey)
         graphView.selectedNodes = graphView.lastSelectedNodes
-                             .filter(node => !selected.includes(node))
-                             .concat(selected.filter(node => !graphView.lastSelectedNodes.includes(node)));
+                                      .filter(node => !selected.includes(node))
+                                      .concat(selected.filter(node => !graphView.lastSelectedNodes.includes(node)));
     else
         graphView.selectedNodes = selected;
     
@@ -38135,9 +38139,9 @@ function updateWires(wires)
     const pOut    = [];
     const pIn     = [];
     
-    const cw      = graphView.clientWidth;
-    const ch      = graphView.clientHeight;
-    const yOffset = menuBar  .offsetHeight;
+    const cw      = graphViewClient.width;
+    const ch      = graphViewClient.height;
+    const yOffset = menuBarHeight;
 
 
     wires.forEach(w => 
@@ -38145,8 +38149,6 @@ function updateWires(wires)
         const ro = boundingRect(w.connection.output.div);
         const ri = boundingRect(w.connection.input .div);
 
-        // console.log('w.connection.output.div =', w.connection.output.div);
-        // console.log('ro =', ro);
         pOut.push(point(ro.x + ro.w/2, ro.y + ro.h/2 - yOffset));
         pIn .push(point(ri.x + ri.w/2, ri.y + ri.h/2 - yOffset));
     });
@@ -38179,19 +38181,13 @@ function updateWires(wires)
 
     for (let i = 0; i < wires.length; i++)
     {
-        const conn   = wires[i].connection;
-        const input  = conn.input;
-        const output = conn.output;
+        const conn = wires[i].connection;
+        const solo = conn != graphView.savedConn;
 
-        // const isSolo = 
-        //         graphView._soloNode
-        //     && (    input.node == graphView._soloNode
-        //         || output.node == graphView._soloNode);
-
-        show(wires[i],       /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
-        show(wires[i].curve, /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
-        show(wires[i].xp1,   /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
-        show(wires[i].xp2,   /*(settings.showWires || isSolo) &&*/ conn != graphView.savedConn);
+        show(wires[i],       solo);
+        show(wires[i].curve, solo);
+        show(wires[i].xp1,   solo);
+        show(wires[i].xp2,   solo);
 
         if (wires[i].outBall) show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
         if (wires[i]. inBall) show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
@@ -53250,6 +53246,15 @@ function deleteConnectionsToNodes(str)
 }
 
 
+var documentBodyClient = {
+    x:      0,
+    y:      0,
+    width:  0,
+    height: 0
+};
+
+
+
 document.addEventListener('pointerdown', function(e)
 {
     if (e.button == 0)
@@ -56533,8 +56538,8 @@ function checkResize(x, y)
     const resizeEdgeWidth = 8;
 
     //document.canResizeL =                              x <= resizeEdgeWidth;
-    document.canResizeR = document.body.clientWidth  - x <= resizeEdgeWidth;
-    document.canResizeB = document.body.clientHeight - y <= resizeEdgeWidth;
+    document.canResizeR = documentBodyClient.width  - x <= resizeEdgeWidth;
+    document.canResizeB = documentBodyClient.height - y <= resizeEdgeWidth;
 
     if (       document.canResizeR
             && document.canResizeB) setCursor('nwse-resize', false); 

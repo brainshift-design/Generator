@@ -107,8 +107,8 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
         graphView.selectedNodes = graphView.lastSelectedNodes.concat(selected);
     else if (shiftKey)
         graphView.selectedNodes = graphView.lastSelectedNodes
-                             .filter(node => !selected.includes(node))
-                             .concat(selected.filter(node => !graphView.lastSelectedNodes.includes(node)));
+                                      .filter(node => !selected.includes(node))
+                                      .concat(selected.filter(node => !graphView.lastSelectedNodes.includes(node)));
     else
         graphView.selectedNodes = selected;
     

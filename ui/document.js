@@ -1,3 +1,12 @@
+var documentBodyClient = {
+    x:      0,
+    y:      0,
+    width:  0,
+    height: 0
+};
+
+
+
 document.addEventListener('pointerdown', function(e)
 {
     if (e.button == 0)

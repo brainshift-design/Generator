@@ -60,8 +60,8 @@ graphView.setPanAndZoom = (pan, zoom) =>
 {
     if ((   pan  != graphView._pan
          || zoom != graphView._zoom)
-        && zoom >=  0.02
-        && zoom <= 50   ) 
+        && zoom >= 0.02
+        && zoom <= 50) 
     {
         graphView.oldZoom = graphView.zoom;
 
@@ -71,17 +71,17 @@ graphView.setPanAndZoom = (pan, zoom) =>
         uiSaveGraphView();
 
 
-        // graphView.panZoomTimer = setTimeout(() => 
-        // {
+        graphView.panZoomTimer = setTimeout(() => 
+        {
             graphView.updatePanAndZoom();
-        //     graphView.panZoomTimer = null;
-        // });
+            graphView.panZoomTimer = null;
+        });
     }
 };
 
 
 
-graphView.updatePanAndZoom = () =>
+graphView.updatePanAndZoom = function()
 {
     graphView.update(graph.nodes);
     
@@ -98,6 +98,10 @@ graphView.update = function(nodes = null)
     if (!nodes)
         node = graph.nodes;
         
+    
+    documentBodyClient = clientRect(document.body);
+
+
     graphView.updateNodeTransforms(nodes, false);
     graphView.updateNodeTransforms(nodes); // this has to be done twice //because getAllNodeBounds() forces a reflow
 
