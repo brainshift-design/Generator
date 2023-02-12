@@ -67,13 +67,18 @@ graphView.updateSelection = (x, y, shiftKey, ctrlKey) =>
     graphView.selectionRect.w = x - graphView.selectionRect.x;
     graphView.selectionRect.h = y - graphView.selectionRect.y;
 
-    graphView.updateSelectBox(shiftKey, ctrlKey);
+    setTimeout(() => graphView.updateSelectBox(shiftKey, ctrlKey));
 };
 
 
 
 graphView.updateSelectBox = function(shiftKey, ctrlKey)
 {
+    if (   isNaN(graphView.selectionRect.w)
+        || isNaN(graphView.selectionRect.h))
+        return;
+
+
     const wndRect = new Rect(
         1,
         menuBarHeight + 1,
@@ -123,6 +128,9 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
 
 
     graphView._prevSelectedNodes = selected;
+
+
+    setTimeout(() => graphView.updateSelectBox(shiftKey, ctrlKey));
 };
 
 
@@ -145,4 +153,8 @@ graphView.endSelection = pointerId =>
     graphView._prevSelectedNodes = [];
 
     selectBox.style.visibility = 'hidden';
+
+
+    graphView.selectionRect.w = Number.NaN;
+    graphView.selectionRect.h = Number.NaN;
 };

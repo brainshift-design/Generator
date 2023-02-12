@@ -37404,7 +37404,7 @@ graphView.updatePanAndZoom = function()
     
     btnZoom.divIcon.innerHTML       = Math.round(graphView.zoom * 100) + '%';
     btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
-    
+
     menuItemZoomTo100.setChecked(equal(graphView.zoom, 1));
 };
 
@@ -37427,7 +37427,8 @@ graphView.update = function(nodes = null)
     nodes.forEach(n =>
     {
         n.updateHeader(); 
-        n.updateHeaderLabel(); 
+        n.updateHeaderLabel();
+        n.updateBorder();
     });
 
 
@@ -37607,13 +37608,18 @@ graphView.updateSelection = (x, y, shiftKey, ctrlKey) =>
     graphView.selectionRect.w = x - graphView.selectionRect.x;
     graphView.selectionRect.h = y - graphView.selectionRect.y;
 
-    graphView.updateSelectBox(shiftKey, ctrlKey);
+    setTimeout(() => graphView.updateSelectBox(shiftKey, ctrlKey));
 };
 
 
 
 graphView.updateSelectBox = function(shiftKey, ctrlKey)
 {
+    if (   isNaN(graphView.selectionRect.w)
+        || isNaN(graphView.selectionRect.h))
+        return;
+
+
     const wndRect = new Rect(
         1,
         menuBarHeight + 1,
@@ -37663,6 +37669,9 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
 
 
     graphView._prevSelectedNodes = selected;
+
+
+    setTimeout(() => graphView.updateSelectBox(shiftKey, ctrlKey));
 };
 
 
@@ -37685,6 +37694,10 @@ graphView.endSelection = pointerId =>
     graphView._prevSelectedNodes = [];
 
     selectBox.style.visibility = 'hidden';
+
+
+    graphView.selectionRect.w = Number.NaN;
+    graphView.selectionRect.h = Number.NaN;
 };
 
 
@@ -42273,10 +42286,7 @@ class Operator
     {
         this._selected = sel;
 
-        this.div.style.boxShadow = 
-            this._selected
-            ? '0 0 0 2px var(--figma-color-bg-brand)'
-            : 'none';
+        this.updateBorder();
 
         if (deleteConnectionsDialogVisible)
             hideDeleteConnectionsDialog();
@@ -42553,12 +42563,15 @@ class Operator
 
     updateBorder()
     {
-        //const colors = this.getHeaderColors();
-        
-        // this.header.style.boxShadow = 
-        //     this.inert
-        //     ? '0 0 0 1px ' + rgb2style_a(colors.border, 0.5) + ' inset'
-        //     : 'none';
+        const scale = 
+            graphView.zoom >= 1
+            ? 3
+            : 3 * (((1 / graphView.zoom - 1) / 2.3) + 1);
+
+        this.div.style.boxShadow = 
+            this._selected
+            ? '0 0 0 ' + scale + 'px var(--figma-color-bg-brand)'
+            : 'none';
     }
 
 

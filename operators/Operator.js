@@ -429,10 +429,7 @@ class Operator
     {
         this._selected = sel;
 
-        this.div.style.boxShadow = 
-            this._selected
-            ? '0 0 0 2px var(--figma-color-bg-brand)'
-            : 'none';
+        this.updateBorder();
 
         if (deleteConnectionsDialogVisible)
             hideDeleteConnectionsDialog();
@@ -709,12 +706,15 @@ class Operator
 
     updateBorder()
     {
-        //const colors = this.getHeaderColors();
-        
-        // this.header.style.boxShadow = 
-        //     this.inert
-        //     ? '0 0 0 1px ' + rgb2style_a(colors.border, 0.5) + ' inset'
-        //     : 'none';
+        const scale = 
+            graphView.zoom >= 1
+            ? 3
+            : 3 * (((1 / graphView.zoom - 1) / 2.3) + 1);
+
+        this.div.style.boxShadow = 
+            this._selected
+            ? '0 0 0 ' + scale + 'px var(--figma-color-bg-brand)'
+            : 'none';
     }
 
 
