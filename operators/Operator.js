@@ -788,6 +788,10 @@ class Operator
             labelBounds:        boundingRect(this.label),
             labelOffset:        offsetRect  (this.label) 
         };
+
+        this.params
+            .filter(p => p.control)
+            .forEach(p => p.control.updateMeasureData());
     }
 
 

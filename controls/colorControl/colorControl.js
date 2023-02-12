@@ -76,6 +76,9 @@ function initColorControl(param, control, width, height, id, name, showName, def
      
     control.valueText         = '';
      
+    control.measureData       = {};
+
+
     control.onstartchange     = new Event('startchange');
     control.onchange          = new Event('change');
     control.onconfirm         = new Event('confirm');
@@ -143,6 +146,17 @@ function initColorControl(param, control, width, height, id, name, showName, def
             control.dispatchEvent(control.onconfirm);
     };
 
+
+
+
+    control.updateMeasureData = function()
+    {
+        control.measureData = 
+        {
+            offsetRect: offsetRect(control),
+            clientRect: clientRect(control)
+        };
+    };
 
 
 
@@ -247,7 +261,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
 
 
-    control.getOffsetLeft   = () => control.cachedOffsetLeft   = control.cachedOffsetLeft   || control.offsetLeft;
-    control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.clientWidth;
-    control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.clientHeight;
+    control.getOffsetLeft   = () => control.cachedOffsetLeft   = control.cachedOffsetLeft   || control.measureData.offsetRect.x;//offsetLeft;
+    control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.measureData.clientRect.width;//clientWidth;
+    control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.measureData.clientRect.height;//clientHeight;
 }

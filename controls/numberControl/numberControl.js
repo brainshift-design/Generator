@@ -104,6 +104,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.rangeDivs              = [];
      
     control.options                = []; // if dec == 0, show named choices instead of a value
+
+    control.measureData            = {};
  
      
     control.onstartchange          = new Event('startchange');
@@ -179,6 +181,17 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
 
 
+    control.updateMeasureData = function()
+    {
+        control.measureData = 
+        {
+            offsetRect: offsetRect(control),
+            clientRect: clientRect(control)
+        };
+    };
+
+
+    
     control.setSuffix = function(suffix, valueCanContainSuffix = false)
     {
         control.suffix                = suffix;

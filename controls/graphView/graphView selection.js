@@ -72,13 +72,13 @@ graphView.updateSelection = (x, y, shiftKey, ctrlKey) =>
 
 
 
-graphView.updateSelectBox = (shiftKey, ctrlKey) =>
+graphView.updateSelectBox = function(shiftKey, ctrlKey)
 {
     const wndRect = new Rect(
         1,
-        menuBar  .offsetHeight + 1,
-        graphView.offsetWidth  - 2,
-        graphView.offsetHeight - 5);
+        menuBarHeight + 1,
+        graphViewClient.width  - 2,
+        graphViewClient.height - 5);
 
     
     let selection = validateRect(graphView.selectionRect);
@@ -97,7 +97,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
     for (const node of graph.nodes)
     {
         if (rectsIntersect(
-                boundingRect(node.div), 
+                node.measureData.divBounds,
                 selection))
             selected.push(node);
     }
@@ -119,7 +119,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
     [...selected,                    
      ...graphView._prevSelectedNodes,
      ...graphView.lastSelectedNodes]
-        .forEach(n => n.updateNode());
+        .forEach(n => n.updateBorder());
 
 
     graphView._prevSelectedNodes = selected;

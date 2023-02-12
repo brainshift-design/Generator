@@ -34280,6 +34280,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.rangeDivs              = [];
      
     control.options                = []; // if dec == 0, show named choices instead of a value
+
+    control.measureData            = {};
  
      
     control.onstartchange          = new Event('startchange');
@@ -34355,6 +34357,17 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
 
 
+    control.updateMeasureData = function()
+    {
+        control.measureData = 
+        {
+            offsetRect: offsetRect(control),
+            clientRect: clientRect(control)
+        };
+    };
+
+
+    
     control.setSuffix = function(suffix, valueCanContainSuffix = false)
     {
         control.suffix                = suffix;
@@ -35431,6 +35444,9 @@ function initColorControl(param, control, width, height, id, name, showName, def
      
     control.valueText         = '';
      
+    control.measureData       = {};
+
+
     control.onstartchange     = new Event('startchange');
     control.onchange          = new Event('change');
     control.onconfirm         = new Event('confirm');
@@ -35498,6 +35514,17 @@ function initColorControl(param, control, width, height, id, name, showName, def
             control.dispatchEvent(control.onconfirm);
     };
 
+
+
+
+    control.updateMeasureData = function()
+    {
+        control.measureData = 
+        {
+            offsetRect: offsetRect(control),
+            clientRect: clientRect(control)
+        };
+    };
 
 
 
@@ -35602,9 +35629,9 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
 
 
-    control.getOffsetLeft   = () => control.cachedOffsetLeft   = control.cachedOffsetLeft   || control.offsetLeft;
-    control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.clientWidth;
-    control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.clientHeight;
+    control.getOffsetLeft   = () => control.cachedOffsetLeft   = control.cachedOffsetLeft   || control.measureData.offsetRect.x;//offsetLeft;
+    control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.measureData.clientRect.width;//clientWidth;
+    control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.measureData.clientRect.height;//clientHeight;
 }
 
 
@@ -37581,13 +37608,13 @@ graphView.updateSelection = (x, y, shiftKey, ctrlKey) =>
 
 
 
-graphView.updateSelectBox = (shiftKey, ctrlKey) =>
+graphView.updateSelectBox = function(shiftKey, ctrlKey)
 {
     const wndRect = new Rect(
         1,
-        menuBar  .offsetHeight + 1,
-        graphView.offsetWidth  - 2,
-        graphView.offsetHeight - 5);
+        menuBarHeight + 1,
+        graphViewClient.width  - 2,
+        graphViewClient.height - 5);
 
     
     let selection = validateRect(graphView.selectionRect);
@@ -37606,7 +37633,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
     for (const node of graph.nodes)
     {
         if (rectsIntersect(
-                boundingRect(node.div), 
+                node.measureData.divBounds,
                 selection))
             selected.push(node);
     }
@@ -37628,7 +37655,7 @@ graphView.updateSelectBox = (shiftKey, ctrlKey) =>
     [...selected,                    
      ...graphView._prevSelectedNodes,
      ...graphView.lastSelectedNodes]
-        .forEach(n => n.updateNode());
+        .forEach(n => n.updateBorder());
 
 
     graphView._prevSelectedNodes = selected;
@@ -42609,6 +42636,10 @@ class Operator
             labelBounds:        boundingRect(this.label),
             labelOffset:        offsetRect  (this.label) 
         };
+
+        this.params
+            .filter(p => p.control)
+            .forEach(p => p.control.updateMeasureData());
     }
 
 
