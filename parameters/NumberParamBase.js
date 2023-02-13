@@ -33,6 +33,7 @@ extends Parameter
     {
         // console.log(this.id + '.setValue() value =', value);
 
+        //console.log('value =', value);
         console.assert(
             value instanceof NumberValue,
             'value must be a NumberValue');

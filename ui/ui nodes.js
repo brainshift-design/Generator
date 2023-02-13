@@ -809,13 +809,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     lastRequestedId = -1;
 
         
-    graphView.pastingNodes       = false;
-    graphView.loadingNodes       = false;
-    graphView.restoringNodes     = false;
-
-    loadingOverlay.style.display = 'none'; // for loading
-
-
     if (dataModeTimeout)
     {
         clearTimeout(dataModeTimeout);
@@ -936,6 +929,13 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     
     graphView.update(nodes);
     graphView.updateScrollWithBounds();
+
+
+    graphView.pastingNodes       = false;
+    graphView.loadingNodes       = false;
+    graphView.restoringNodes     = false;
+
+    loadingOverlay.style.display = 'none'; // for loading
 }
 
 

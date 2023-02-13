@@ -45,6 +45,9 @@ extends OpColorBase
 
         const input = this.node.inputs[0];
 
+        request.push(input.connected ? 1 : 0);
+
+
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
@@ -64,11 +67,17 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
+        const l = values[paramIds.findIndex(id => id == 'l')];
+        const m = values[paramIds.findIndex(id => id == 'm')];
+        const s = values[paramIds.findIndex(id => id == 's')];
 
+        console.log('l =', l);
+        console.log('m =', m);
+        console.log('s =', s);
         this._color = 
-            col
-            ? col.toDataColor()
+            value
+            ? value.toDataColor()
             : dataColor_NaN;
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);

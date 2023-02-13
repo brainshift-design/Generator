@@ -5762,10 +5762,11 @@ function logReqColorContrast(lerp, nInputs, valueIndex, parse)
 
 
 
-function logReqColorBlind(cb, parse)
+function logReqColorBlind(cb, nInputs, parse)
 {
     parse.log += parse.tab + COLORBLIND;
     parse.log += logReqNodeId(cb);
+    parse.log += ' ' + nInputs;
 }
 
 
@@ -14379,8 +14380,6 @@ function genParseValidColor(parse)
 
     const valid = new GValidColor(nodeId, options);
 
-    //valid.hasInputs = options.hasInputs;
-
 
     let nInputs = -1;
 
@@ -14558,8 +14557,17 @@ function genParseColorBlind(parse)
     const cb = new GColorBlind(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
-        logReqColorBlind(cb, parse);
+        logReqColorBlind(cb, nInputs, parse);
 
 
     if (ignore) 
@@ -14572,13 +14580,14 @@ function genParseColorBlind(parse)
     parse.nTab++;
 
 
-    if (COLOR_TYPES.includes(parse.next))
+    if (nInputs == 1)
         cb.input = genParse(parse);
 
     cb.l = genParse(parse);
     cb.m = genParse(parse);
     cb.s = genParse(parse);
 
+    
     parse.nTab--;
 
 
@@ -21967,10 +21976,11 @@ function logReqColorContrast(lerp, nInputs, valueIndex, parse)
 
 
 
-function logReqColorBlind(cb, parse)
+function logReqColorBlind(cb, nInputs, parse)
 {
     parse.log += parse.tab + COLORBLIND;
     parse.log += logReqNodeId(cb);
+    parse.log += ' ' + nInputs;
 }
 
 
@@ -38477,6 +38487,7 @@ extends Parameter
     {
         // console.log(this.id + '.setValue() value =', value);
 
+        //console.log('value =', value);
         console.assert(
             value instanceof NumberValue,
             'value must be a NumberValue');
@@ -46735,7 +46746,10 @@ extends OpColorBase
             if (space) 
                 this.paramSpace.setValue(space, false, true, false);
 
-            if (convert.value != space.value)
+            if (   convert.value != space.value
+                || graphView.pastingNodes
+                || graphView.loadingNodes
+                || graphView.restoringNodes)
                 switchToSpace(this, colorSpace(space.value));
 
             
@@ -48831,6 +48845,9 @@ extends OpColorBase
 
         const input = this.node.inputs[0];
 
+        request.push(input.connected ? 1 : 0);
+
+
         if (input.connected)
             request.push(...pushInputOrParam(input, gen));
 
@@ -48850,11 +48867,17 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const col = values[paramIds.findIndex(id => id == 'value')];
+        const value = values[paramIds.findIndex(id => id == 'value')];
+        const l = values[paramIds.findIndex(id => id == 'l')];
+        const m = values[paramIds.findIndex(id => id == 'm')];
+        const s = values[paramIds.findIndex(id => id == 's')];
 
+        console.log('l =', l);
+        console.log('m =', m);
+        console.log('s =', s);
         this._color = 
-            col
-            ? col.toDataColor()
+            value
+            ? value.toDataColor()
             : dataColor_NaN;
 
         super.updateValues(requestId, actionId, updateParamId, paramIds, values);
@@ -55902,13 +55925,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     lastRequestedId = -1;
 
         
-    graphView.pastingNodes       = false;
-    graphView.loadingNodes       = false;
-    graphView.restoringNodes     = false;
-
-    loadingOverlay.style.display = 'none'; // for loading
-
-
     if (dataModeTimeout)
     {
         clearTimeout(dataModeTimeout);
@@ -56029,6 +56045,13 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     
     graphView.update(nodes);
     graphView.updateScrollWithBounds();
+
+
+    graphView.pastingNodes       = false;
+    graphView.loadingNodes       = false;
+    graphView.restoringNodes     = false;
+
+    loadingOverlay.style.display = 'none'; // for loading
 }
 
 

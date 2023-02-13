@@ -87,8 +87,6 @@ function genParseValidColor(parse)
 
     const valid = new GValidColor(nodeId, options);
 
-    //valid.hasInputs = options.hasInputs;
-
 
     let nInputs = -1;
 
@@ -266,8 +264,17 @@ function genParseColorBlind(parse)
     const cb = new GColorBlind(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
-        logReqColorBlind(cb, parse);
+        logReqColorBlind(cb, nInputs, parse);
 
 
     if (ignore) 
@@ -280,13 +287,14 @@ function genParseColorBlind(parse)
     parse.nTab++;
 
 
-    if (COLOR_TYPES.includes(parse.next))
+    if (nInputs == 1)
         cb.input = genParse(parse);
 
     cb.l = genParse(parse);
     cb.m = genParse(parse);
     cb.s = genParse(parse);
 
+    
     parse.nTab--;
 
 

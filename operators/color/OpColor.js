@@ -226,7 +226,10 @@ extends OpColorBase
             if (space) 
                 this.paramSpace.setValue(space, false, true, false);
 
-            if (convert.value != space.value)
+            if (   convert.value != space.value
+                || graphView.pastingNodes
+                || graphView.loadingNodes
+                || graphView.restoringNodes)
                 switchToSpace(this, colorSpace(space.value));
 
             
