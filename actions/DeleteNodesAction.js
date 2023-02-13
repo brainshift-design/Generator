@@ -197,14 +197,16 @@ function deleteNodesAction_restoreNodes(act)
 
     for (let i = 0; i < act.nodes.length; i++)
     {
+        const node = act.nodes[i];
+        node.id = act.nodeIds[i];
+
         setNodePosition(
-            act.nodes[i], 
+            node, 
             act.nodePos[i].x, 
             act.nodePos[i].y);
-    }
 
-    for (let i = 0; i < act.nodes.length; i++)
-        act.nodes[i].id = act.nodeIds[i];
+        node.updateMeasureData();
+    }
 }
 
 

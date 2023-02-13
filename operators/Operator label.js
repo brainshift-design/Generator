@@ -24,7 +24,7 @@ function createNodeLabel(node)
         if (!node.scrollName)
             return;
 
-        const wrect      = node.measureData.labelWrapperBounds;//boundingRect(node.labelWrapper);
+        const wrect      = boundingRect(node.labelWrapper);
         const margin     = 14;
         const viewMargin = margin * graphView.zoom;
         
@@ -51,8 +51,8 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
     const margin     = 15;
     const viewMargin = margin * graphView.zoom;
 
-    const wrect      = node.measureData.labelWrapperBounds; //boundingRect(node.labelWrapper);
-    const rect       = node.measureData.labelBounds;        //boundingRect(node.label);
+    const wrect      = node.measureData.labelWrapperBounds;
+    const rect       = node.measureData.labelBounds;
 
     const rw         = wrect.width  - viewMargin*2;
     const sf         = rw / nozero(rect.width);
@@ -66,6 +66,7 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
 
     const activeOffset = node.getActiveOffset();
 
+
     if (rect.width > rw)
     {
         node.label.style.left = 
@@ -74,8 +75,6 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
             + (node.active ? activeOffset : 0);
 
         node.label.style.transform = 'none';
-
-        //node.label.style.transform = 'translateY(-' + Math.round(rect.height/2) + 'px)';
     }
     else
     {
@@ -84,9 +83,7 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
             + (node.active ? (' + ' + activeOffset + 'px') : '') 
             + ')';
 
-        node.label.style.transform = 
-              'translateX(-50%) ';
-//            + 'translateY(-' + Math.round(rect.height/2) + 'px)';
+        node.label.style.transform = 'translateX(-50%)';
     }
 
 

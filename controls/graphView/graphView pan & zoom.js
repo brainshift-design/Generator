@@ -127,9 +127,11 @@ graphView.update = function(nodes = null)
 
 graphView.startPan = pointerId =>
 {
+    graphView.setPointerCapture(pointerId);
+
     graphView.panning  = true;
     graphView.panStart = graphView.pan;
-    graphView.setPointerCapture(pointerId);
+
     setCursor(panCursor);
 };
 
@@ -138,6 +140,7 @@ graphView.startPan = pointerId =>
 graphView.endPan = (pointerId, changeCursor) =>
 {
     graphView.panning = false;
+
     graphView.releasePointerCapture(pointerId);
 
     if (changeCursor)
