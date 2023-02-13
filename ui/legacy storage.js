@@ -4,21 +4,8 @@ function legacyLoadGraph(json)
     graphView.canUpdateNodes = false;
 
 
-    graph.clear();
-    
-
-    if (  !json
-        || json == '')
-    {
-        // set defaults
-        //graphView.setPanAndZoom(point(0, 0), 1);
-        finishLoading();
-        return;
-    }
-
-
     const data = JSON.parse(json);
-    //log(json);
+    log('legacy json =', json);
 
 
     const pan = point( 
@@ -36,17 +23,7 @@ function legacyLoadGraph(json)
     graphView.setPanAndZoom(pan, zoom);
 
 
-    graphView.showWires = data.showWires == 'true';
-
-
-    loadNodesAsync(data, legacySetLoadingProgress);
-}
-
-
-
-function legacySetLoadingProgress(progress)
-{
-    //loadingProgress.style.width = (progress * 100) + '%';
+    legacyLoadNodesAsync(data, setLoadingProgress);
 }
 
 
@@ -71,7 +48,7 @@ function legacyLoadNodesAsync(data, setProgress)
                 Math.min(i + chunkSize, data.nodes.length), // exclusive
                 nodes);
 
-            legacySetProgress(i / (data.nodes.length + (data.connections ? data.connections.length : 0)));
+            setProgress(i / (data.nodes.length + (data.connections ? data.connections.length : 0)));
             return res;
         });
     }
@@ -80,13 +57,13 @@ function legacyLoadNodesAsync(data, setProgress)
     promise.then(nodes => 
     {
         graph.addNodes(nodes, false, false);
-        legacyLoadConnectionsAsync(data, nodes, setProgress);    
+        legacyLoadConnectionsAsync(data, nodes, nodes, setProgress);    
     });
 }
 
 
 
-function legacyLoadConnectionsAsync(data, nodes, setProgress)
+function legacyLoadConnectionsAsync(data, nodes, loadedNodes, setProgress)
 {
     let promise = Promise.resolve([]);
 
@@ -104,11 +81,21 @@ function legacyLoadConnectionsAsync(data, nodes, setProgress)
                     Math.min(i + chunkSize, data.connections.length), // exclusive
                     data);
 
-                legacySetProgress((data.nodes.length + i) / nozero(data.nodes.length + data.connections.length * 19/20)); // the proportion is arbitrary
+                setProgress((data.nodes.length + i) / nozero(data.nodes.length + data.connections.length * 19/20)); // the proportion is arbitrary
                 return res;
             });
         }
     }
+
+
+    promise.then(() => 
+    {
+        const updateNodes = [];
+        finishLoadingNodes(nodes, loadedNodes, updateNodes);
+        finishLoading(nodes);
+        
+        pushUpdate(null, updateNodes);
+    });
 }
 
 
@@ -119,7 +106,7 @@ function legacyResolveLoadNodes(_nodes, first, last, nodes)
         requestAnimationFrame(() => 
         {
             for (let i = first; i < last; i++)
-                nodes.push(loadNode(_nodes[i]));
+                nodes.push(legacyLoadNode(_nodes[i]));
 
             resolve(nodes);
         }));
@@ -139,7 +126,7 @@ function legacyResolveLoadConnections(_connections, first, last, data)
                 if (   data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
                     && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp)
                     || loadOutsideConnections)
-                    Connection.parseJson(_conn);
+                    legacyParseConnectionJsonAndConnect(_conn, false);
             }
 
             resolve();
@@ -153,7 +140,7 @@ function legacyLoadNodes(data)
     const nodes = [];
     
     for (let i = 0; i < data.nodes.length; i++)
-        nodes.push(loadNode(data.nodes[i]));
+        nodes.push(legacyLoadNode(data.nodes[i]));
 
     return nodes;
 }
@@ -173,7 +160,7 @@ function legacyLoadNode(_node)
 
     if (  _node.params
         || node.alwaysLoadParams)
-        node.loadParams(_node);
+        node.legacyLoadParams(_node);
 
     setNodePosition(
         node, 
@@ -198,6 +185,6 @@ function legacyLoadConnections(data, loadOutsideConnections, setProgress = null)
             Connection.parseJson(_conn);
 
         if (setProgress)
-            legacySetProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
+            setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
     }
 }

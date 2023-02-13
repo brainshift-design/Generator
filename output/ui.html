@@ -37622,10 +37622,6 @@ graphView.zoomToFit = function()
         x: graphViewClient.width /2 - (offset.x + offset.width /2) * graphView.zoom,
         y: graphViewClient.height/2 - (offset.y + offset.height/2) * graphView.zoom
     };
-
-
-    console.log('FIT offset =', offset);
-    console.log('FIT pan =', graphView.pan);
 };
 
 
@@ -38686,6 +38682,13 @@ extends Parameter
     loadParam(param)
     {
         this.setValue(parseNumberValue(param)[0], true, true, false);
+    }
+
+
+
+    legacyLoadParam(param)
+    {
+        this.setValue(new NumberValue(parseFloat(param), decCount(param)), true, true, false);
     }
 }
 
@@ -40437,19 +40440,28 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case CACHE:                   node = new OpCache();             break;
         case COPY:                    node = new OpCopy();              break;
       
+        case 'number':
         case NUMBER:                  node = new OpNumber();            break;
         case NUMBER_ROUND:            node = new OpRound();             break;
+        case 'minmax':
         case NUMBER_LIMITS:           node = new OpLimits();            break;
         case NUMBER_RANDOM:           node = new OpRandom();            break;
         case NUMBER_SERIES:           node = new OpSeries();            break;
+        case 'interpolate':
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
              
         case NUMBER_MATH:             node = new OpMath();              break;
+        case 'add':
         case NUMBER_ADD:              node = new OpAdd();               break;
+        case 'subtract':
         case NUMBER_SUBTRACT:         node = new OpSubtract();          break;
+        case 'multiply':
         case NUMBER_MULTIPLY:         node = new OpMultiply();          break;
+        case 'divide':
         case NUMBER_DIVIDE:           node = new OpDivide();            break;
+        case 'modulo':
         case NUMBER_MODULO:           node = new OpModulo();            break;
+        case 'exponent':
         case NUMBER_EXPONENT:         node = new OpExponent();          break;
              
         case NUMBER_BOOLEAN:          node = new OpBoolean();           break;
@@ -40466,11 +40478,16 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_GREATER:          node = new OpGreater();           break;
         case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();    break;
          
+        case 'color':
         case COLOR:                   node = new OpColor(options);      break;
         case VALID_COLOR:             node = new OpValidColor();        break;
+        case 'validatecolor':
         case CORRECT_COLOR:           node = new OpCorrectColor();      break;
+        case 'webcontrast':
         case COLOR_CONTRAST:          node = new OpColorContrast();     break;
+        case 'colorblind':
         case COLORBLIND:              node = new OpColorBlind();        break;
+        case 'colorinterpolate':
         case COLOR_INTERPOLATE:       node = new OpColorInterpolate();  break;
              
         case COLOR_STOP:              node = new OpColorStop();         break;
@@ -41685,7 +41702,42 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
         ||  isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
         || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
     {
-        uiError('cannot connect ' + connToString(_conn));
+        uiError('Cannot connect ' + connToString(_conn));
+        return null;
+    }
+    else
+    {
+        const conn = uiVariableConnect(
+            outputNode, isDigit(outputId[0]) ? parseInt(outputId) : outputNode.params.find(p => p.id == outputId).output.id,
+             inputNode, isDigit( inputId[0]) ? parseInt( inputId) :  inputNode.params.find(p => p.id ==  inputId). input.id,
+            pasteConnected ? -1 : outputOrder);
+
+        _conn.outputOrder = conn.outputOrder;
+
+        return conn;
+    }
+}
+
+
+
+function legacyParseConnectionJsonAndConnect(_conn, pasteConnected)
+{
+    const outputNode  =  nodeFromId(_conn.outputOp);
+    const outputId    =  outputNode.outputs[_conn.outputIndex].id;
+    const outputOrder = -1;//parseInt(_conn.outputOrder);
+
+    const inputNode   =  nodeFromId(_conn.inputOp);
+    const inputId     = inputNode.inputs[_conn.inputIndex].id;
+
+
+    if (   !outputNode 
+        ||  isDigit(outputId[0]) &&  parseInt(outputId) >= outputNode.outputs.length
+        || !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
+        || !inputNode  
+        ||  isDigit(inputId[0]) &&  parseInt(inputId) >= inputNode.inputs.length
+        || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
+    {
+        uiError('Cannot connect ' + connToString(_conn));
         return null;
     }
     else
@@ -43002,6 +43054,27 @@ class Operator
             }
 
             this.params[index].loadParam(_param[2]);
+        }
+    }
+
+
+
+    legacyLoadParams(_node, pasting)
+    {
+        if (!_node.params)
+            return;
+
+            for (const _param of _node.params)
+        {
+            let index = this.params.findIndex(p => p.id == _param[0]);
+
+            if (index < 0)
+            {
+                this.addParamByType(NUMBER, _param[0], false, false, true);
+                index = this.params.length-1;
+            }
+
+            this.params[index].legacyLoadParam(_param[1]);
         }
     }
 
@@ -47223,6 +47296,34 @@ extends OpColorBase
         else
             this._color = dataColor_NaN;
     }
+
+
+
+    legacyLoadParams(_node, pasting)
+    {
+        super.legacyLoadParams(_node, pasting);
+
+
+        if (_node.colorBeforeNaN)
+            this._colorBeforeNaN = _node.colorBeforeNaN;
+
+        this.prevSpace = _node.prevSpace;    
+
+
+        if (this.paramSpace.value.isValid())
+        {
+            const space  = colorSpace(Math.max(1, this.paramSpace.value.value));
+            const factor = colorFactor(space);
+
+            this._color = [
+                space,
+                this.param1.value.value / factor[0],
+                this.param2.value.value / factor[1],
+                this.param3.value.value / factor[2]];
+        }
+        else
+            this._color = dataColor_NaN;
+    }
 }
 
 
@@ -48943,9 +49044,6 @@ extends OpColorBase
         const m = values[paramIds.findIndex(id => id == 'm')];
         const s = values[paramIds.findIndex(id => id == 's')];
 
-        console.log('l =', l);
-        console.log('m =', m);
-        console.log('s =', s);
         this._color = 
             value
             ? value.toDataColor()
@@ -53491,7 +53589,7 @@ var genMessagePosted = false;
 //uiRemoveSavedNodesAndConns(['color']);
 //uiRemovePluginDataFromAllLocalStyles();
 
-//uiRemoveAllSavedNodesAndConns();
+uiRemoveAllSavedNodesAndConns();
 
 
 
@@ -53794,21 +53892,8 @@ function legacyLoadGraph(json)
     graphView.canUpdateNodes = false;
 
 
-    graph.clear();
-    
-
-    if (  !json
-        || json == '')
-    {
-        // set defaults
-        //graphView.setPanAndZoom(point(0, 0), 1);
-        finishLoading();
-        return;
-    }
-
-
     const data = JSON.parse(json);
-    //log(json);
+    log('legacy json =', json);
 
 
     const pan = point( 
@@ -53826,17 +53911,7 @@ function legacyLoadGraph(json)
     graphView.setPanAndZoom(pan, zoom);
 
 
-    graphView.showWires = data.showWires == 'true';
-
-
-    loadNodesAsync(data, legacySetLoadingProgress);
-}
-
-
-
-function legacySetLoadingProgress(progress)
-{
-    //loadingProgress.style.width = (progress * 100) + '%';
+    legacyLoadNodesAsync(data, setLoadingProgress);
 }
 
 
@@ -53861,7 +53936,7 @@ function legacyLoadNodesAsync(data, setProgress)
                 Math.min(i + chunkSize, data.nodes.length), // exclusive
                 nodes);
 
-            legacySetProgress(i / (data.nodes.length + (data.connections ? data.connections.length : 0)));
+            setProgress(i / (data.nodes.length + (data.connections ? data.connections.length : 0)));
             return res;
         });
     }
@@ -53870,13 +53945,13 @@ function legacyLoadNodesAsync(data, setProgress)
     promise.then(nodes => 
     {
         graph.addNodes(nodes, false, false);
-        legacyLoadConnectionsAsync(data, nodes, setProgress);    
+        legacyLoadConnectionsAsync(data, nodes, nodes, setProgress);    
     });
 }
 
 
 
-function legacyLoadConnectionsAsync(data, nodes, setProgress)
+function legacyLoadConnectionsAsync(data, nodes, loadedNodes, setProgress)
 {
     let promise = Promise.resolve([]);
 
@@ -53894,11 +53969,21 @@ function legacyLoadConnectionsAsync(data, nodes, setProgress)
                     Math.min(i + chunkSize, data.connections.length), // exclusive
                     data);
 
-                legacySetProgress((data.nodes.length + i) / nozero(data.nodes.length + data.connections.length * 19/20)); // the proportion is arbitrary
+                setProgress((data.nodes.length + i) / nozero(data.nodes.length + data.connections.length * 19/20)); // the proportion is arbitrary
                 return res;
             });
         }
     }
+
+
+    promise.then(() => 
+    {
+        const updateNodes = [];
+        finishLoadingNodes(nodes, loadedNodes, updateNodes);
+        finishLoading(nodes);
+        
+        pushUpdate(null, updateNodes);
+    });
 }
 
 
@@ -53909,7 +53994,7 @@ function legacyResolveLoadNodes(_nodes, first, last, nodes)
         requestAnimationFrame(() => 
         {
             for (let i = first; i < last; i++)
-                nodes.push(loadNode(_nodes[i]));
+                nodes.push(legacyLoadNode(_nodes[i]));
 
             resolve(nodes);
         }));
@@ -53929,7 +54014,7 @@ function legacyResolveLoadConnections(_connections, first, last, data)
                 if (   data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
                     && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp)
                     || loadOutsideConnections)
-                    Connection.parseJson(_conn);
+                    legacyParseConnectionJsonAndConnect(_conn, false);
             }
 
             resolve();
@@ -53943,7 +54028,7 @@ function legacyLoadNodes(data)
     const nodes = [];
     
     for (let i = 0; i < data.nodes.length; i++)
-        nodes.push(loadNode(data.nodes[i]));
+        nodes.push(legacyLoadNode(data.nodes[i]));
 
     return nodes;
 }
@@ -53963,7 +54048,7 @@ function legacyLoadNode(_node)
 
     if (  _node.params
         || node.alwaysLoadParams)
-        node.loadParams(_node);
+        node.legacyLoadParams(_node);
 
     setNodePosition(
         node, 
@@ -53988,7 +54073,7 @@ function legacyLoadConnections(data, loadOutsideConnections, setProgress = null)
             Connection.parseJson(_conn);
 
         if (setProgress)
-            legacySetProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
+            setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
     }
 }
 
@@ -54690,53 +54775,60 @@ function uiLoadGraphView(json)
 
 function uiReturnFigLoadNodesAndConns(msg)
 {
-    if (settings.logRawLoading)
+    if (msg.legacy)
     {
-        console.log(
-            '%cnodes JSON = %s', 
-            'background: #fed',
-            msg.nodesJson
-                .replaceAll('\\n', '\n')
-                .replaceAll('\\"', '\"'));
-
-        console.log(
-            '%cconnections JSON = %s', 
-            'background: #fed',
-            msg.connsJson
-                .replaceAll('\\n', '\n')
-                .replaceAll('\\"', '\"'));
-    }
-
-
-    let _nodeKeys = JSON.parse(msg.nodeKeys);
-    let _nodes    = JSON.parse(msg.nodeJson);
-
-    let _connKeys = JSON.parse(msg.connKeys);
-    let _conns    = JSON.parse(msg.connJson);
-
-    
-    const _n = [];
-    const _c = [];
-
-    for (let i = 0; i < _nodes.length; i++) _n.push({key: _nodeKeys[i], value: _nodes[i]});
-    for (let i = 0; i < _conns.length; i++) _c.push({key: _connKeys[i], value: _conns[i]});
-    
-
-    _n.sort((a, b) => a.value.z - b.value.z);
-
-
-    if (settings.dataMode)
-    {
-        loadNodesAndConnsData(_n, _c);
+        legacyLoadGraph(msg.legacy);
     }
     else
     {
-        _nodes = _nodes.map(n => JSON.parse(n));
-        _conns = _conns.map(c => JSON.parse(c));
-            
-        graph.clear();
+        if (settings.logRawLoading)
+        {
+            console.log(
+                '%cnodes JSON = %s', 
+                'background: #fed',
+                msg.nodesJson
+                    .replaceAll('\\n', '\n')
+                    .replaceAll('\\"', '\"'));
 
-        loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
+            console.log(
+                '%cconnections JSON = %s', 
+                'background: #fed',
+                msg.connsJson
+                    .replaceAll('\\n', '\n')
+                    .replaceAll('\\"', '\"'));
+        }
+
+
+        let _nodeKeys = JSON.parse(msg.nodeKeys);
+        let _nodes    = JSON.parse(msg.nodeJson);
+
+        let _connKeys = JSON.parse(msg.connKeys);
+        let _conns    = JSON.parse(msg.connJson);
+
+        
+        const _n = [];
+        const _c = [];
+
+        for (let i = 0; i < _nodes.length; i++) _n.push({key: _nodeKeys[i], value: _nodes[i]});
+        for (let i = 0; i < _conns.length; i++) _c.push({key: _connKeys[i], value: _conns[i]});
+        
+
+        _n.sort((a, b) => a.value.z - b.value.z);
+
+
+        if (settings.dataMode)
+        {
+            loadNodesAndConnsData(_n, _c);
+        }
+        else
+        {
+            _nodes = _nodes.map(n => JSON.parse(n));
+            _conns = _conns.map(c => JSON.parse(c));
+                
+            graph.clear();
+
+            loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
+        }
     }
 }
 

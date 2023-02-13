@@ -21,7 +21,7 @@ var genMessagePosted = false;
 //uiRemoveSavedNodesAndConns(['color']);
 //uiRemovePluginDataFromAllLocalStyles();
 
-//uiRemoveAllSavedNodesAndConns();
+uiRemoveAllSavedNodesAndConns();
 
 
 

@@ -1753,7 +1753,11 @@ function figLoadNodesAndConns(dataMode)
     initPageStyles(nodes);
 
 
+    const legacy = figma.currentPage.getPluginData('graph');
+
+
     figPostMessageToUi({
+        legacy:   legacy,
         cmd:      'uiReturnFigLoadNodesAndConns',
         nodeKeys: JSON.stringify(nodeKeys),
         nodeJson: JSON.stringify(nodes),

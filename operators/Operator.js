@@ -1055,6 +1055,27 @@ class Operator
 
 
 
+    legacyLoadParams(_node, pasting)
+    {
+        if (!_node.params)
+            return;
+
+            for (const _param of _node.params)
+        {
+            let index = this.params.findIndex(p => p.id == _param[0]);
+
+            if (index < 0)
+            {
+                this.addParamByType(NUMBER, _param[0], false, false, true);
+                index = this.params.length-1;
+            }
+
+            this.params[index].legacyLoadParam(_param[1]);
+        }
+    }
+
+
+
     toString() 
     { 
         // create the generator string here

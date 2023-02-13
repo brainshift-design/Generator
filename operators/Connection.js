@@ -185,7 +185,42 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
         ||  isDigit(inputId[0]) && parseInt(inputId) >= inputNode.inputs.length
         || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
     {
-        uiError('cannot connect ' + connToString(_conn));
+        uiError('Cannot connect ' + connToString(_conn));
+        return null;
+    }
+    else
+    {
+        const conn = uiVariableConnect(
+            outputNode, isDigit(outputId[0]) ? parseInt(outputId) : outputNode.params.find(p => p.id == outputId).output.id,
+             inputNode, isDigit( inputId[0]) ? parseInt( inputId) :  inputNode.params.find(p => p.id ==  inputId). input.id,
+            pasteConnected ? -1 : outputOrder);
+
+        _conn.outputOrder = conn.outputOrder;
+
+        return conn;
+    }
+}
+
+
+
+function legacyParseConnectionJsonAndConnect(_conn, pasteConnected)
+{
+    const outputNode  =  nodeFromId(_conn.outputOp);
+    const outputId    =  outputNode.outputs[_conn.outputIndex].id;
+    const outputOrder = -1;//parseInt(_conn.outputOrder);
+
+    const inputNode   =  nodeFromId(_conn.inputOp);
+    const inputId     = inputNode.inputs[_conn.inputIndex].id;
+
+
+    if (   !outputNode 
+        ||  isDigit(outputId[0]) &&  parseInt(outputId) >= outputNode.outputs.length
+        || !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
+        || !inputNode  
+        ||  isDigit(inputId[0]) &&  parseInt(inputId) >= inputNode.inputs.length
+        || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
+    {
+        uiError('Cannot connect ' + connToString(_conn));
         return null;
     }
     else

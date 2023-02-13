@@ -167,4 +167,11 @@ extends Parameter
     {
         this.setValue(parseNumberValue(param)[0], true, true, false);
     }
+
+
+
+    legacyLoadParam(param)
+    {
+        this.setValue(new NumberValue(parseFloat(param), decCount(param)), true, true, false);
+    }
 }

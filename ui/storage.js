@@ -179,53 +179,60 @@ function uiLoadGraphView(json)
 
 function uiReturnFigLoadNodesAndConns(msg)
 {
-    if (settings.logRawLoading)
+    if (msg.legacy)
     {
-        console.log(
-            '%cnodes JSON = %s', 
-            'background: #fed',
-            msg.nodesJson
-                .replaceAll('\\n', '\n')
-                .replaceAll('\\"', '\"'));
-
-        console.log(
-            '%cconnections JSON = %s', 
-            'background: #fed',
-            msg.connsJson
-                .replaceAll('\\n', '\n')
-                .replaceAll('\\"', '\"'));
-    }
-
-
-    let _nodeKeys = JSON.parse(msg.nodeKeys);
-    let _nodes    = JSON.parse(msg.nodeJson);
-
-    let _connKeys = JSON.parse(msg.connKeys);
-    let _conns    = JSON.parse(msg.connJson);
-
-    
-    const _n = [];
-    const _c = [];
-
-    for (let i = 0; i < _nodes.length; i++) _n.push({key: _nodeKeys[i], value: _nodes[i]});
-    for (let i = 0; i < _conns.length; i++) _c.push({key: _connKeys[i], value: _conns[i]});
-    
-
-    _n.sort((a, b) => a.value.z - b.value.z);
-
-
-    if (settings.dataMode)
-    {
-        loadNodesAndConnsData(_n, _c);
+        legacyLoadGraph(msg.legacy);
     }
     else
     {
-        _nodes = _nodes.map(n => JSON.parse(n));
-        _conns = _conns.map(c => JSON.parse(c));
-            
-        graph.clear();
+        if (settings.logRawLoading)
+        {
+            console.log(
+                '%cnodes JSON = %s', 
+                'background: #fed',
+                msg.nodesJson
+                    .replaceAll('\\n', '\n')
+                    .replaceAll('\\"', '\"'));
 
-        loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
+            console.log(
+                '%cconnections JSON = %s', 
+                'background: #fed',
+                msg.connsJson
+                    .replaceAll('\\n', '\n')
+                    .replaceAll('\\"', '\"'));
+        }
+
+
+        let _nodeKeys = JSON.parse(msg.nodeKeys);
+        let _nodes    = JSON.parse(msg.nodeJson);
+
+        let _connKeys = JSON.parse(msg.connKeys);
+        let _conns    = JSON.parse(msg.connJson);
+
+        
+        const _n = [];
+        const _c = [];
+
+        for (let i = 0; i < _nodes.length; i++) _n.push({key: _nodeKeys[i], value: _nodes[i]});
+        for (let i = 0; i < _conns.length; i++) _c.push({key: _connKeys[i], value: _conns[i]});
+        
+
+        _n.sort((a, b) => a.value.z - b.value.z);
+
+
+        if (settings.dataMode)
+        {
+            loadNodesAndConnsData(_n, _c);
+        }
+        else
+        {
+            _nodes = _nodes.map(n => JSON.parse(n));
+            _conns = _conns.map(c => JSON.parse(c));
+                
+            graph.clear();
+
+            loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
+        }
     }
 }
 

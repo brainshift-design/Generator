@@ -632,4 +632,32 @@ extends OpColorBase
         else
             this._color = dataColor_NaN;
     }
+
+
+
+    legacyLoadParams(_node, pasting)
+    {
+        super.legacyLoadParams(_node, pasting);
+
+
+        if (_node.colorBeforeNaN)
+            this._colorBeforeNaN = _node.colorBeforeNaN;
+
+        this.prevSpace = _node.prevSpace;    
+
+
+        if (this.paramSpace.value.isValid())
+        {
+            const space  = colorSpace(Math.max(1, this.paramSpace.value.value));
+            const factor = colorFactor(space);
+
+            this._color = [
+                space,
+                this.param1.value.value / factor[0],
+                this.param2.value.value / factor[1],
+                this.param3.value.value / factor[2]];
+        }
+        else
+            this._color = dataColor_NaN;
+    }
 }

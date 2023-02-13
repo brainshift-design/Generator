@@ -72,9 +72,6 @@ extends OpColorBase
         const m = values[paramIds.findIndex(id => id == 'm')];
         const s = values[paramIds.findIndex(id => id == 's')];
 
-        console.log('l =', l);
-        console.log('m =', m);
-        console.log('s =', s);
         this._color = 
             value
             ? value.toDataColor()
