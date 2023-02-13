@@ -11637,6 +11637,10 @@ extends GColorType
             }
             else
                 this.value = ColorValue.NaN;
+
+
+            if (!this.convert)
+                this.convert = NumberValue.NaN;
         }
         else
         {
@@ -11675,7 +11679,7 @@ extends GColorType
             
         // if (this.options.enabled)
         // {
-            genPushUpdateValue(parse, this.nodeId, 'convert', this.convert,     true);
+            genPushUpdateValue(parse, this.nodeId, 'convert', this.convert          );
             genPushUpdateValue(parse, this.nodeId, 'space',   this.value.space, true);
             genPushUpdateValue(parse, this.nodeId, 'c1',      this.value.c1         );
             genPushUpdateValue(parse, this.nodeId, 'c2',      this.value.c2         );
@@ -29508,6 +29512,10 @@ extends GColorType
             }
             else
                 this.value = ColorValue.NaN;
+
+
+            if (!this.convert)
+                this.convert = NumberValue.NaN;
         }
         else
         {
@@ -29546,7 +29554,7 @@ extends GColorType
             
         // if (this.options.enabled)
         // {
-            genPushUpdateValue(parse, this.nodeId, 'convert', this.convert,     true);
+            genPushUpdateValue(parse, this.nodeId, 'convert', this.convert          );
             genPushUpdateValue(parse, this.nodeId, 'space',   this.value.space, true);
             genPushUpdateValue(parse, this.nodeId, 'c1',      this.value.c1         );
             genPushUpdateValue(parse, this.nodeId, 'c2',      this.value.c2         );
@@ -32871,7 +32879,7 @@ function initGeneratorMenus()
                              //    new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
                              //    new MenuItem('',                             {separator: true}),   
                              //    new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
-                             //    new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
+                                 new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
                                    new MenuItem('',                             {separator: true }),
                                 //    new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
                                 //    new MenuItem('',                             {separator: true }),
@@ -53301,12 +53309,12 @@ function deleteConnectionsToNodes(str)
 }
 
 
-var documentBodyClient = {
-    x:      0,
-    y:      0,
-    width:  0,
-    height: 0
-};
+var documentBodyClient = null;//{
+//     x:      0,
+//     y:      0,
+//     width:  0,
+//     height: 0
+// };
 
 
 
@@ -56795,12 +56803,20 @@ var darkMode;
 
 function checkResize(x, y)
 {
+    if (!documentBodyClient)
+    {
+        setAutoCursor();
+        return;
+    }
+
+
     const resizeEdgeWidth = 8;
 
-    //document.canResizeL =                              x <= resizeEdgeWidth;
+    document.canResizeL = false; //x <= resizeEdgeWidth;
     document.canResizeR = documentBodyClient.width  - x <= resizeEdgeWidth;
     document.canResizeB = documentBodyClient.height - y <= resizeEdgeWidth;
 
+    
     if (       document.canResizeR
             && document.canResizeB) setCursor('nwse-resize', false); 
     else if (  document.canResizeL
@@ -56815,11 +56831,6 @@ function checkResize(x, y)
 
 function uiSetWindowRect(x, y, width, height)
 {
-    // console.log('x =',      x);
-    // console.log('y =',      y);
-    // console.log('width =',  width);
-    // console.log('height =', height);
-
     uiQueueMessageToFigma({ 
         cmd:   'figSetWindowRect', 
         x:      x,

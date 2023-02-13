@@ -244,7 +244,7 @@ function initGeneratorMenus()
                              //    new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
                              //    new MenuItem('',                             {separator: true}),   
                              //    new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
-                             //    new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
+                                 new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
                                    new MenuItem('',                             {separator: true }),
                                 //    new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
                                 //    new MenuItem('',                             {separator: true }),

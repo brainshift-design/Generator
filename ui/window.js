@@ -24,12 +24,20 @@ var darkMode;
 
 function checkResize(x, y)
 {
+    if (!documentBodyClient)
+    {
+        setAutoCursor();
+        return;
+    }
+
+
     const resizeEdgeWidth = 8;
 
-    //document.canResizeL =                              x <= resizeEdgeWidth;
+    document.canResizeL = false; //x <= resizeEdgeWidth;
     document.canResizeR = documentBodyClient.width  - x <= resizeEdgeWidth;
     document.canResizeB = documentBodyClient.height - y <= resizeEdgeWidth;
 
+    
     if (       document.canResizeR
             && document.canResizeB) setCursor('nwse-resize', false); 
     else if (  document.canResizeL
@@ -44,11 +52,6 @@ function checkResize(x, y)
 
 function uiSetWindowRect(x, y, width, height)
 {
-    // console.log('x =',      x);
-    // console.log('y =',      y);
-    // console.log('width =',  width);
-    // console.log('height =', height);
-
     uiQueueMessageToFigma({ 
         cmd:   'figSetWindowRect', 
         x:      x,

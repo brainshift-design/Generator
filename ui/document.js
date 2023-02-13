@@ -1,9 +1,9 @@
-var documentBodyClient = {
-    x:      0,
-    y:      0,
-    width:  0,
-    height: 0
-};
+var documentBodyClient = null;//{
+//     x:      0,
+//     y:      0,
+//     width:  0,
+//     height: 0
+// };
 
 
 

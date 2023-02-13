@@ -100,6 +100,10 @@ extends GColorType
             }
             else
                 this.value = ColorValue.NaN;
+
+
+            if (!this.convert)
+                this.convert = NumberValue.NaN;
         }
         else
         {
@@ -138,7 +142,7 @@ extends GColorType
             
         // if (this.options.enabled)
         // {
-            genPushUpdateValue(parse, this.nodeId, 'convert', this.convert,     true);
+            genPushUpdateValue(parse, this.nodeId, 'convert', this.convert          );
             genPushUpdateValue(parse, this.nodeId, 'space',   this.value.space, true);
             genPushUpdateValue(parse, this.nodeId, 'c1',      this.value.c1         );
             genPushUpdateValue(parse, this.nodeId, 'c2',      this.value.c2         );
