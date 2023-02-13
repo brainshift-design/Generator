@@ -51,9 +51,9 @@ extends GColorType
 
             
         const space = this.space ? this.space.eval(parse).toValue().toInteger() : null; 
-        const c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
-        const c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
-        const c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
+        let   c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
+        let   c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
+        let   c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
 
 
         if (this.input)
@@ -69,7 +69,6 @@ extends GColorType
                     input.c2, 
                     input.c3);
                     
-
                 const fromSpaceIndex = input.space.value;
 
                 const toSpaceIndex = Math.min(Math.max(
@@ -90,6 +89,10 @@ extends GColorType
 
                 if (this.options.enabled)
                 {
+                    if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
+                    if (!this.c2) { this.c2 = this.value.c2.copy(); c1 = this.c1.toValue(); }
+                    if (!this.c3) { this.c3 = this.value.c3.copy(); c1 = this.c1.toValue(); }
+
                     if (c1) this.value.c1 = c1;
                     if (c2) this.value.c2 = c2;
                     if (c3) this.value.c3 = c3;

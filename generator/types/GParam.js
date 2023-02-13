@@ -36,7 +36,7 @@ extends GOperator
         console.assert(this.node, 'can\'t find parameter node \'' + this.nodeId + '\'');
 
         this.node.eval(parse);
-        
+
         this.param = this.node.getParamFromId(this.paramId);
 
         if (isValid(this.param)) // could have been deleted from OpRepeat for example
