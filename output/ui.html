@@ -5097,24 +5097,22 @@ function forwardEvent(event, element)
 
 function offsetRect(element)
 {
-    return {
-        x:      element.offsetLeft,
-        y:      element.offsetTop,
-        width:  element.offsetWidth,
-        height: element.offsetHeight
-    };
+    return new Rect(
+        element.offsetLeft,
+        element.offsetTop,
+        element.offsetWidth,
+        element.offsetHeight);
 }
 
 
 
 function clientRect(element)
 {
-    return {
-        x:      element.clientLeft,
-        y:      element.clientTop,
-        width:  element.clientWidth,
-        height: element.clientHeight
-    };
+    return new Rect(
+        element.clientLeft,
+        element.clientTop,
+        element.clientWidth,
+        element.clientHeight);
 }
 
 
@@ -21315,24 +21313,22 @@ function forwardEvent(event, element)
 
 function offsetRect(element)
 {
-    return {
-        x:      element.offsetLeft,
-        y:      element.offsetTop,
-        width:  element.offsetWidth,
-        height: element.offsetHeight
-    };
+    return new Rect(
+        element.offsetLeft,
+        element.offsetTop,
+        element.offsetWidth,
+        element.offsetHeight);
 }
 
 
 
 function clientRect(element)
 {
-    return {
-        x:      element.clientLeft,
-        y:      element.clientTop,
-        width:  element.clientWidth,
-        height: element.clientHeight
-    };
+    return new Rect(
+        element.clientLeft,
+        element.clientTop,
+        element.clientWidth,
+        element.clientHeight);
 }
 
 
@@ -33039,7 +33035,7 @@ function initGeneratorMenus()
     menuZoom.addItems([
                             new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
-                            new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', enabled:  false}),
+                            new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', callback: () => graphView.zoomToFit()}),
         menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);//,
                         //  new MenuItem('',             {separator: true}),
                         //  new MenuItem('Window',       {childMenu: menuWindow})]);
@@ -36639,6 +36635,39 @@ var graphViewClient       = null; // rect
 
 
 
+graphView.getAllNodeBounds = function(onlySelected = false)
+{
+    let bounds = Rect.NaN;
+
+    const nodes =
+            onlySelected
+        && !isEmpty(graphView.selectedNodes)
+        ? graphView.selectedNodes
+        : graph.nodes;
+
+    for (const node of nodes)
+        bounds = expandRect(bounds, node.measureData.divBounds);//boundingRect(node.div));
+
+    return bounds;
+};
+
+
+
+graphView.getAllNodeOffsets = function(nodes = null)
+{
+    let bounds = Rect.NaN;
+
+    if (!nodes)
+        nodes = graph.nodes;
+
+    for (const node of nodes)
+        bounds = expandRect(bounds, node.measureData.divOffset);//boundingRect(node.div));
+
+    return bounds;
+};
+
+
+
 graphView.getAllNodeBounds = function()
 {
     let bounds = Rect.NaN;
@@ -37471,7 +37500,7 @@ graphView.update = function(nodes = null, updateNodes = true)
 
 
 
-graphView.startPan = pointerId =>
+graphView.startPan = function(pointerId)
 {
     graphView.setPointerCapture(pointerId);
 
@@ -37495,7 +37524,7 @@ graphView.endPan = (pointerId, changeCursor) =>
 
 
 
-graphView.startZoomSelection = (pointerId, x, y) =>
+graphView.startZoomSelection = function(pointerId, x, y)
 {
     graphView.setPointerCapture(pointerId);
 
@@ -37520,7 +37549,7 @@ graphView.updateZoomSelection = (x, y) =>
 
 
 
-graphView.updateZoomSelectBox = () =>
+graphView.updateZoomSelectBox = function()
 {
     const selection = graphView.selectionRect;
 
@@ -37534,7 +37563,7 @@ graphView.updateZoomSelectBox = () =>
 
 
 
-graphView.endZoomSelection = (pointerId, zoom) =>
+graphView.endZoomSelection = function(pointerId, zoom)
 {
     graphView.releasePointerCapture(pointerId);
 
@@ -37568,6 +37597,35 @@ graphView.endZoomSelection = (pointerId, zoom) =>
     }
 
     graphView.selectionRect = Rect.NaN;
+};
+
+
+
+graphView.zoomToFit = function()
+{
+    const nodes = 
+        !isEmpty(graphView.selectedNodes)
+        ? graphView.selectedNodes
+        : graph.nodes;
+
+    nodes.forEach(n => n.updateMeasureData());
+    const offset = graphView.getAllNodeOffsets(nodes);
+
+
+    const fitMargin = 40;
+
+    graphView.zoom = Math.min(
+        graphViewClient.width  / (offset.width  + fitMargin*2),
+        graphViewClient.height / (offset.height + fitMargin*2));
+
+    graphView.pan = {
+        x: graphViewClient.width /2 - (offset.x + offset.width /2) * graphView.zoom,
+        y: graphViewClient.height/2 - (offset.y + offset.height/2) * graphView.zoom
+    };
+
+
+    console.log('FIT offset =', offset);
+    console.log('FIT pan =', graphView.pan);
 };
 
 
@@ -42675,6 +42733,7 @@ class Operator
         this.measureData = 
         {
             divBounds:          boundingRect(this.div),
+            divOffset:          offsetRect  (this.div),
             innerOffset:        offsetRect  (this.inner),
             headerOffset:       offsetRect  (this.header),
             labelWrapperBounds: boundingRect(this.labelWrapper),
@@ -53615,6 +53674,14 @@ document.addEventListener('keydown', e =>
     {
         graphView.zoom = 1;
         uiNotify('Zoom to 100%');
+    }
+
+    else if ((   e.code == 'Digit1'   // will not insist on shift working here
+              || e.code == 'Numpad1') // by using e.getModifierState('NumLock')
+          && e.shiftKey)              // because Figma doesn't
+    {
+        graphView.zoomToFit();
+        uiNotify('Zoom to fit');
     }
 
     else if (e.code == 'Space'

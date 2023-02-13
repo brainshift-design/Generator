@@ -404,7 +404,7 @@ function initGeneratorMenus()
     menuZoom.addItems([
                             new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
-                            new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', enabled:  false}),
+                            new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', callback: () => graphView.zoomToFit()}),
         menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);//,
                         //  new MenuItem('',             {separator: true}),
                         //  new MenuItem('Window',       {childMenu: menuWindow})]);

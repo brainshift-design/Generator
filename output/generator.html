@@ -2497,24 +2497,22 @@ function forwardEvent(event, element)
 
 function offsetRect(element)
 {
-    return {
-        x:      element.offsetLeft,
-        y:      element.offsetTop,
-        width:  element.offsetWidth,
-        height: element.offsetHeight
-    };
+    return new Rect(
+        element.offsetLeft,
+        element.offsetTop,
+        element.offsetWidth,
+        element.offsetHeight);
 }
 
 
 
 function clientRect(element)
 {
-    return {
-        x:      element.clientLeft,
-        y:      element.clientTop,
-        width:  element.clientWidth,
-        height: element.clientHeight
-    };
+    return new Rect(
+        element.clientLeft,
+        element.clientTop,
+        element.clientWidth,
+        element.clientHeight);
 }
 
 

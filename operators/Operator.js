@@ -781,6 +781,7 @@ class Operator
         this.measureData = 
         {
             divBounds:          boundingRect(this.div),
+            divOffset:          offsetRect  (this.div),
             innerOffset:        offsetRect  (this.inner),
             headerOffset:       offsetRect  (this.header),
             labelWrapperBounds: boundingRect(this.labelWrapper),

@@ -119,6 +119,14 @@ document.addEventListener('keydown', e =>
         uiNotify('Zoom to 100%');
     }
 
+    else if ((   e.code == 'Digit1'   // will not insist on shift working here
+              || e.code == 'Numpad1') // by using e.getModifierState('NumLock')
+          && e.shiftKey)              // because Figma doesn't
+    {
+        graphView.zoomToFit();
+        uiNotify('Zoom to fit');
+    }
+
     else if (e.code == 'Space'
          && !getCtrlKey(e))
     {
