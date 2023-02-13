@@ -215,17 +215,19 @@ extends OpColorBase
 
     updateValues(requestId, actionId, updateParamId, paramIds, values)
     {
-        const space = values[paramIds.findIndex(id => id == 'space')];
-        const c1    = values[paramIds.findIndex(id => id == 'c1'   )];
-        const c2    = values[paramIds.findIndex(id => id == 'c2'   )];
-        const c3    = values[paramIds.findIndex(id => id == 'c3'   )];
+        const convert = values[paramIds.findIndex(id => id == 'convert')];
+        const space   = values[paramIds.findIndex(id => id == 'space'  )];
+        const c1      = values[paramIds.findIndex(id => id == 'c1'     )];
+        const c2      = values[paramIds.findIndex(id => id == 'c2'     )];
+        const c3      = values[paramIds.findIndex(id => id == 'c3'     )];
 
         if (space.isValid())
         {
             if (space) 
                 this.paramSpace.setValue(space, false, true, false);
 
-            switchToSpace(this, colorSpace(space.value));
+            if (convert.value != space.value)
+                switchToSpace(this, colorSpace(space.value));
 
             
             if (c1) this.param1.setValue(c1, false, true, false);

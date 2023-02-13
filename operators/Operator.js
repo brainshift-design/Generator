@@ -709,7 +709,7 @@ class Operator
         const scale = 
             graphView.zoom >= 1
             ? 3
-            : 3 * (((1 / graphView.zoom - 1) / 2.3) + 1);
+            : 3 * (((1 / graphView.zoom - 1) / 2) + 1);
 
         this.div.style.boxShadow = 
             this._selected

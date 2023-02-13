@@ -402,12 +402,12 @@ function initGeneratorMenus()
     menuZoom = new Menu('Zoom/view options');
     menuZoom.combineChecksAndIcons = true;
     menuZoom.addItems([
-                                 new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
-                                 new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
-                                 new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', enabled:  false}),
-        menuItemZoomTo100      = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);//,
-                                //  new MenuItem('',             {separator: true}),
-                                //  new MenuItem('Window',       {childMenu: menuWindow})]);
+                            new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
+                            new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
+                            new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', enabled:  false}),
+        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);//,
+                        //  new MenuItem('',             {separator: true}),
+                        //  new MenuItem('Window',       {childMenu: menuWindow})]);
 
 
     menuGraph = new Menu('Graph menu', false, false);

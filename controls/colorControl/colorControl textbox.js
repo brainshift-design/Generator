@@ -218,7 +218,7 @@ function initColorControlTextbox(control)
             else
                 control.setValue(ColorValue.fromRgb(scaleRgb(savedRgb)));
         }
-         
+
         
         control.textbox.blur();
 

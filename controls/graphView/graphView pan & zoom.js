@@ -73,7 +73,7 @@ graphView.setPanAndZoom = (pan, zoom) =>
 
         graphView.panZoomTimer = setTimeout(() => 
         {
-            graphView.updatePanAndZoom();
+            graphView.updatePanAndZoom(graphView.zoom != graphView.oldZoom);
             graphView.panZoomTimer = null;
         });
     }
@@ -81,9 +81,9 @@ graphView.setPanAndZoom = (pan, zoom) =>
 
 
 
-graphView.updatePanAndZoom = function()
+graphView.updatePanAndZoom = function(updateNodes)
 {
-    graphView.update(graph.nodes);
+    graphView.update(graph.nodes, updateNodes);
     
     btnZoom.divIcon.innerHTML       = Math.round(graphView.zoom * 100) + '%';
     btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
@@ -93,7 +93,7 @@ graphView.updatePanAndZoom = function()
 
 
 
-graphView.update = function(nodes = null)
+graphView.update = function(nodes = null, updateNodes = true)
 {
     if (!nodes)
         node = graph.nodes;
@@ -107,12 +107,15 @@ graphView.update = function(nodes = null)
 
     nodes.forEach(n => n.updateMeasureData());
 
-    nodes.forEach(n =>
+    if (updateNodes)
     {
-        n.updateHeader(); 
-        n.updateHeaderLabel();
-        n.updateBorder();
-    });
+        nodes.forEach(n =>
+        {
+            n.updateHeader(); 
+            n.updateHeaderLabel();
+            n.updateBorder();
+        });
+    }
 
 
     const x = graphViewClient.left;
