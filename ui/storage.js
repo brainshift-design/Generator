@@ -36,7 +36,7 @@ function uiReturnFigGetLocalData(msg)
         case 'debugMode':
 
         case 'autoConnectNewNodes':
-        case 'includeLxxColorSpaces':
+        case 'showAllColorSpaces':
         case 'showBoolValues':
         case 'showClearUndoWarning':
         case 'showDebugMenu':

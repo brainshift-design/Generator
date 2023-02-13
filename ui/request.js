@@ -35,7 +35,7 @@ function pushUpdateFromParam(action, nodes, param)
 
     
     const set =
-          ((settings.includeLxxColorSpaces ? 1 : 0) << 0)
+          ((settings.showAllColorSpaces ? 1 : 0) << 0)
         | ((settings.logRequests           ? 1 : 0) << 1);
 
 

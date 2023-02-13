@@ -4,7 +4,7 @@ const settings =
     debugMode:             false,
 
     autoConnectNewNodes:   true,
-    includeLxxColorSpaces: true,
+    showAllColorSpaces:    false,
     showBoolValues:        true,
     showClearUndoWarning:  true,
     showDebugMenu:         false,
@@ -38,7 +38,7 @@ function updateSetting(settingName, value)
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
-        case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
+        case 'showAllColorSpaces':    settings.showAllColorSpaces    = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
         case 'showClearUndoWarning':  settings.showClearUndoWarning  = value;  break;
         case 'showDebugMenu':         settings.showDebugMenu         = value;  break;
@@ -72,7 +72,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
-        case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
+        case 'showAllColorSpaces':    updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces);  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
         case 'showClearUndoWarning':  updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning );  break;
         case 'showDebugMenu':         updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu        );  break;
@@ -118,7 +118,7 @@ function updateSettingsMenus()
     menuItemDebug                .setVisible(settings.debugMode            );
 
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
-    menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
+    menuItemShowAllColorSpaces   .setChecked(settings.showAllColorSpaces   );
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
     menuItemShowClearUndoWarning .setChecked(settings.showClearUndoWarning );
     menuItemShowDebugMenu        .setChecked(settings.showDebugMenu        );
@@ -144,7 +144,7 @@ function updateSettingsMenus()
 
 
 
-function updateMenuItemIncludeLxxColorSpace()
+function updateMenuItemShowAllColorSpaces()
 {
     graph.nodes
         .filter(n => COLOR_TYPES.includes(n.type))
@@ -200,7 +200,7 @@ function loadLocalSettings()
     uiGetLocalData('debugMode'            );
 
     uiGetLocalData('autoConnectNewNodes'  );
-    uiGetLocalData('includeLxxColorSpaces');
+    uiGetLocalData('showAllColorSpaces');
     uiGetLocalData('showBoolValues'       );
     uiGetLocalData('showClearUndoWarning' );
     uiGetLocalData('showDebugMenu'        );

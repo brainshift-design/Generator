@@ -14,7 +14,7 @@ function genRequest(request)
     const actionId              = parseInt(request[1]);
     const set                   = parseInt(request[2]);
 
-    const includeLxxColorSpaces = (set >> 0) & 1 != 0;
+    const showAllColorSpaces = (set >> 0) & 1 != 0;
     const logRequests           = (set >> 1) & 1 != 0;
 
 
@@ -27,7 +27,7 @@ function genRequest(request)
         5,
         updateNodeId, 
         updateParamId, 
-        includeLxxColorSpaces,
+        showAllColorSpaces,
         logRequests);
 
 

@@ -129,24 +129,28 @@ function initSelectParamMenu(param)
 {
     menuSelectParam.clearItems();
 
-    for (let i = 0; i < param.options.length; i++)
+
+    for (let i = 0; i <= param.control.displayMax; i++)
     {
         const option = param.options[i];
         
         if (param.excludeFromMenu.includes(i))
             continue;
 
+
         const options = { callback: () => param.setValue(new NumberValue(i), true) };
 
         if (param.control.readOnly)
             options['enabled'] = false;
 
+            
         const item = new MenuItem(option, options);
 
         item.setChecked(i == param.value.toNumber());
 
         menuSelectParam.addItems([item]);
     }
+
 
     menuSelectParam.minWidth = 80;
 }

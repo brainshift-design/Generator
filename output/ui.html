@@ -13633,7 +13633,7 @@ const settings =
     debugMode:             false,
 
     autoConnectNewNodes:   true,
-    includeLxxColorSpaces: true,
+    showAllColorSpaces:    false,
     showBoolValues:        true,
     showClearUndoWarning:  true,
     showDebugMenu:         false,
@@ -13667,7 +13667,7 @@ function updateSetting(settingName, value)
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
-        case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
+        case 'showAllColorSpaces':    settings.showAllColorSpaces    = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
         case 'showClearUndoWarning':  settings.showClearUndoWarning  = value;  break;
         case 'showDebugMenu':         settings.showDebugMenu         = value;  break;
@@ -13701,7 +13701,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
-        case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
+        case 'showAllColorSpaces':    updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces);  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
         case 'showClearUndoWarning':  updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning );  break;
         case 'showDebugMenu':         updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu        );  break;
@@ -13747,7 +13747,7 @@ function updateSettingsMenus()
     menuItemDebug                .setVisible(settings.debugMode            );
 
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
-    menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
+    menuItemShowAllColorSpaces   .setChecked(settings.showAllColorSpaces   );
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
     menuItemShowClearUndoWarning .setChecked(settings.showClearUndoWarning );
     menuItemShowDebugMenu        .setChecked(settings.showDebugMenu        );
@@ -13773,7 +13773,7 @@ function updateSettingsMenus()
 
 
 
-function updateMenuItemIncludeLxxColorSpace()
+function updateMenuItemShowAllColorSpaces()
 {
     graph.nodes
         .filter(n => COLOR_TYPES.includes(n.type))
@@ -13829,7 +13829,7 @@ function loadLocalSettings()
     uiGetLocalData('debugMode'            );
 
     uiGetLocalData('autoConnectNewNodes'  );
-    uiGetLocalData('includeLxxColorSpaces');
+    uiGetLocalData('showAllColorSpaces');
     uiGetLocalData('showBoolValues'       );
     uiGetLocalData('showClearUndoWarning' );
     uiGetLocalData('showDebugMenu'        );
@@ -13986,7 +13986,7 @@ function genRequest(request)
     const actionId              = parseInt(request[1]);
     const set                   = parseInt(request[2]);
 
-    const includeLxxColorSpaces = (set >> 0) & 1 != 0;
+    const showAllColorSpaces = (set >> 0) & 1 != 0;
     const logRequests           = (set >> 1) & 1 != 0;
 
 
@@ -13999,7 +13999,7 @@ function genRequest(request)
         5,
         updateNodeId, 
         updateParamId, 
-        includeLxxColorSpaces,
+        showAllColorSpaces,
         logRequests);
 
 
@@ -16156,7 +16156,7 @@ class Parse
 
 
 
-    constructor(request, firstPos, updateNodeId, updateParamId, includeLxxColorSpaces, logRequests)
+    constructor(request, firstPos, updateNodeId, updateParamId, showAllColorSpaces, logRequests)
     {
         this.request       = request;
           
@@ -16167,7 +16167,7 @@ class Parse
         this.updateParamId = updateParamId;
    
         
-        this.settings.includeLxxColorSpaces = includeLxxColorSpaces;
+        this.settings.showAllColorSpaces = showAllColorSpaces;
         this.settings.logRequests           = logRequests;
     }
 
@@ -17908,9 +17908,9 @@ function colorSpaceCount(parse = null)
 { 
     const set = parse ? parse.settings : settings;
 
-    return set.includeLxxColorSpaces 
+    return set.showAllColorSpaces 
            ? OpColorSpaces.length
-        : OpColorSpaces.length - 3; 
+        : OpColorSpaces.length - 5; 
 }
 
 
@@ -31504,7 +31504,7 @@ const settings =
     debugMode:             false,
 
     autoConnectNewNodes:   true,
-    includeLxxColorSpaces: true,
+    showAllColorSpaces:    false,
     showBoolValues:        true,
     showClearUndoWarning:  true,
     showDebugMenu:         false,
@@ -31538,7 +31538,7 @@ function updateSetting(settingName, value)
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
-        case 'includeLxxColorSpaces': settings.includeLxxColorSpaces = value;  break;
+        case 'showAllColorSpaces':    settings.showAllColorSpaces    = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
         case 'showClearUndoWarning':  settings.showClearUndoWarning  = value;  break;
         case 'showDebugMenu':         settings.showDebugMenu         = value;  break;
@@ -31572,7 +31572,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
-        case 'includeLxxColorSpaces': updateSettingAndMenu_(valid, settingName, value, menuItemIncludeLxxColorSpaces);  break;
+        case 'showAllColorSpaces':    updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces);  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
         case 'showClearUndoWarning':  updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning );  break;
         case 'showDebugMenu':         updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu        );  break;
@@ -31618,7 +31618,7 @@ function updateSettingsMenus()
     menuItemDebug                .setVisible(settings.debugMode            );
 
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
-    menuItemIncludeLxxColorSpaces.setChecked(settings.includeLxxColorSpaces);
+    menuItemShowAllColorSpaces   .setChecked(settings.showAllColorSpaces   );
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
     menuItemShowClearUndoWarning .setChecked(settings.showClearUndoWarning );
     menuItemShowDebugMenu        .setChecked(settings.showDebugMenu        );
@@ -31644,7 +31644,7 @@ function updateSettingsMenus()
 
 
 
-function updateMenuItemIncludeLxxColorSpace()
+function updateMenuItemShowAllColorSpaces()
 {
     graph.nodes
         .filter(n => COLOR_TYPES.includes(n.type))
@@ -31700,7 +31700,7 @@ function loadLocalSettings()
     uiGetLocalData('debugMode'            );
 
     uiGetLocalData('autoConnectNewNodes'  );
-    uiGetLocalData('includeLxxColorSpaces');
+    uiGetLocalData('showAllColorSpaces');
     uiGetLocalData('showBoolValues'       );
     uiGetLocalData('showClearUndoWarning' );
     uiGetLocalData('showDebugMenu'        );
@@ -32757,7 +32757,7 @@ var menuConnDataConns;
 
 
 var menuItemAutoConnectNewNodes;
-var menuItemIncludeLxxColorSpaces;
+var menuItemShowAllColorSpaces;
 var menuItemShowBoolValues;
 var menuItemShowClearUndoWarning;
 var menuItemShowDebugMenu;
@@ -32836,14 +32836,14 @@ function initGeneratorMenus()
 {
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
-        menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',      {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes  );                                       }}),
-      //menuItemIncludeLxxColorSpaces = new MenuItem('Include Lxx color spaces',    {checkCallback: () => settings.includeLxxColorSpaces, callback: () => { updateSettingAndMenu('includeLxxColorSpaces', true, !settings.includeLxxColorSpaces); updateMenuItemIncludeLxxColorSpace(); }}),
-        menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues       ); updateMenuItemShowBoolValues();       }}),
-        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',     {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning );                                       }}),
-                                        new MenuItem('',                            {separator: true}),   
-        menuItemShowDebugMenu         = new MenuItem('Show debug menu',             {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu        ); updateMenuItemShowDebugMenu();        }}),
-                                        new MenuItem('',                            {separator: true}),   
-        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',        {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures); updateMenuItemEnableBetaFeatures();            }})]);
+        menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',       {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                       }}),
+        menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',        {checkCallback: () => settings.showAllColorSpaces, callback: () => { updateSettingAndMenu('showAllColorSpaces',       true, !settings.showAllColorSpaces);   updateMenuItemShowAllColorSpaces();  }}),
+        menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);       updateMenuItemShowBoolValues();       }}),
+        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',      {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                       }}),
+                                        new MenuItem('',                             {separator: true}),   
+        menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);        updateMenuItemShowDebugMenu();        }}),
+                                        new MenuItem('',                             {separator: true}),   
+        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures);         updateMenuItemEnableBetaFeatures();            }})]);
 
     
     menuMainDebug = new Menu('Debug', false);
@@ -32873,8 +32873,8 @@ function initGeneratorMenus()
                              //    new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
                              //    new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
                                    new MenuItem('',                             {separator: true }),
-                                   new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
-                                   new MenuItem('',                             {separator: true }),
+                                //    new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
+                                //    new MenuItem('',                             {separator: true }),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',            {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     ), setting: true}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',              {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates ), setting: true}),
         menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',             {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates), setting: true}),
@@ -38865,24 +38865,28 @@ function initSelectParamMenu(param)
 {
     menuSelectParam.clearItems();
 
-    for (let i = 0; i < param.options.length; i++)
+
+    for (let i = 0; i <= param.control.displayMax; i++)
     {
         const option = param.options[i];
         
         if (param.excludeFromMenu.includes(i))
             continue;
 
+
         const options = { callback: () => param.setValue(new NumberValue(i), true) };
 
         if (param.control.readOnly)
             options['enabled'] = false;
 
+            
         const item = new MenuItem(option, options);
 
         item.setChecked(i == param.value.toNumber());
 
         menuSelectParam.addItems([item]);
     }
+
 
     menuSelectParam.minWidth = 80;
 }
@@ -47178,9 +47182,9 @@ function colorSpaceCount(parse = null)
 { 
     const set = parse ? parse.settings : settings;
 
-    return set.includeLxxColorSpaces 
+    return set.showAllColorSpaces 
            ? OpColorSpaces.length
-        : OpColorSpaces.length - 3; 
+        : OpColorSpaces.length - 5; 
 }
 
 
@@ -54297,7 +54301,7 @@ function pushUpdateFromParam(action, nodes, param)
 
     
     const set =
-          ((settings.includeLxxColorSpaces ? 1 : 0) << 0)
+          ((settings.showAllColorSpaces ? 1 : 0) << 0)
         | ((settings.logRequests           ? 1 : 0) << 1);
 
 
@@ -54468,7 +54472,7 @@ function uiReturnFigGetLocalData(msg)
         case 'debugMode':
 
         case 'autoConnectNewNodes':
-        case 'includeLxxColorSpaces':
+        case 'showAllColorSpaces':
         case 'showBoolValues':
         case 'showClearUndoWarning':
         case 'showDebugMenu':

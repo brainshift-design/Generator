@@ -21,9 +21,9 @@ function colorSpaceCount(parse = null)
 { 
     const set = parse ? parse.settings : settings;
 
-    return set.includeLxxColorSpaces 
+    return set.showAllColorSpaces 
            ? OpColorSpaces.length
-        : OpColorSpaces.length - 3; 
+        : OpColorSpaces.length - 5; 
 }
 
 
