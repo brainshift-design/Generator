@@ -1,104 +1,118 @@
-function logReqNumberValue(val, parse)
+function logReqNumberValue(val, parse, ignore)
 {
     parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
 }
 
 
 
-function logReqNumber(num, parse)
+function logReqNumber(num, parse, ignore)
 {
     parse.log += parse.tab + NUMBER;
-    parse.log += logReqNodeId(num);
+    parse.log += logReqNodeId(num, ignore);
 }
 
 
 
-function logReqRound(round, nInputs, parse)
+function logReqRound(round, nInputs, parse, ignore)
 {
     parse.log += parse.tab + NUMBER_ROUND;
-    parse.log += logReqNodeId(round);
+    parse.log += logReqNodeId(round, ignore);
 
-    if (nInputs > -1)
+    if (   !ignore
+        && nInputs > -1)
         parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqLimits(lim, nInputs, parse)
+function logReqLimits(lim, nInputs, parse, ignore)
 {
     parse.log += parse.tab + NUMBER_LIMITS;
-    parse.log += logReqNodeId(lim);
+    parse.log += logReqNodeId(lim, ignore);
 
-    if (nInputs > -1)
+    if (   !ignore
+        && nInputs > -1)
         parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqSeries(series, parse)
+function logReqSeries(series, parse, ignore)
 {
     parse.log += parse.tab + NUMBER_SERIES;
-    parse.log += logReqNodeId(series);
+    parse.log += logReqNodeId(series, ignore);
 }
 
 
 
-function logReqRandom(rnd, parse)
+function logReqRandom(rnd, parse, ignore)
 {
     parse.log += parse.tab + NUMBER_RANDOM;
-    parse.log += logReqNodeId(rnd);
+    parse.log += logReqNodeId(rnd, ignore);
 }
 
 
 
-function logReqMath(math, nInputs, parse)
+function logReqMath(math, nInputs, parse, ignore)
 {
     parse.log += parse.tab + NUMBER_MATH;
-    parse.log += logReqNodeId(math);
-    parse.log += ' ' + nInputs;
+    parse.log += logReqNodeId(math, ignore);
+
+    if (!ignore)
+        parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqArithmetic(arith, type, nInputs, parse)
+function logReqArithmetic(arith, type, nInputs, parse, ignore)
 {
     parse.log += parse.tab + type;
-    parse.log += logReqNodeId(arith);
-    parse.log += ' ' + nInputs;
+    parse.log += logReqNodeId(arith, ignore);
+
+    if (!ignore)
+        parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqInterpolate(lerp, nInputs, parse)
+function logReqInterpolate(lerp, nInputs, parse, ignore)
 {
     parse.log += parse.tab + NUMBER_INTERPOLATE;
-    parse.log += logReqNodeId(lerp);
-    parse.log += ' ' + nInputs;
+    parse.log += logReqNodeId(lerp, ignore);
+
+    if (!ignore)
+        parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqBoolean(bool, nInputs, parse)
+function logReqBoolean(bool, nInputs, parse, ignore)
 {
     parse.log += parse.tab + NUMBER_BOOLEAN;
-    parse.log += logReqNodeId(bool);
-    parse.log += ' ' + nInputs;
+    parse.log += logReqNodeId(bool, ignore);
+
+    if (!ignore)
+        parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqCondition(cond, nInputs, parse)
+function logReqCondition(cond, nInputs, parse, ignore)
 {
     parse.log += parse.tab + NUMBER_CONDITION;
-    parse.log += logReqNodeId(cond);
-    parse.log += ' ' + nInputs;
+    parse.log += logReqNodeId(cond, ignore);
+
+    if (!ignore)
+        parse.log += ' ' + nInputs;
 }
 
 
 
-function logReqConditionBase(cond, type, nInputs, parse)
+function logReqConditionBase(cond, type, nInputs, parse, ignore)
 {
     parse.log += parse.tab + type;
-    parse.log += logReqNodeId(cond);
-    parse.log += ' ' + nInputs;
+    parse.log += logReqNodeId(cond, ignore);
+
+    if (!ignore)
+        parse.log += ' ' + nInputs;
 }

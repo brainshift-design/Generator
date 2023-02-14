@@ -5,7 +5,7 @@ function genParseNumValue(parse)
     const val = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqNumberValue(val, parse);
+        logReqNumberValue(val, parse, false);
 
     return val.indexOf(',') >= 0
          ? parseNumberValue      (val)[0]
@@ -23,7 +23,7 @@ function genParseNumber(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqNumber(num, parse);
+        logReqNumber(num, parse, ignore);
 
 
     if (ignore) 
@@ -68,7 +68,7 @@ function genParseRound(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqRound(round, nInputs, parse);
+        logReqRound(round, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -115,7 +115,7 @@ function genParseLimits(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqLimits(lim, nInputs, parse);
+        logReqLimits(lim, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -159,7 +159,7 @@ function genParseMath(parse, newNode)
 
 
     if (parse.settings.logRequests) 
-        logReqMath(math, nInputs, parse);
+        logReqMath(math, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -202,7 +202,7 @@ function genParseArithmetic(parse, newNode)
 
 
     if (parse.settings.logRequests) 
-        logReqArithmetic(arith, type, nInputs, parse);
+        logReqArithmetic(arith, type, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -235,7 +235,7 @@ function genParseSeries(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqSeries(series, parse);
+        logReqSeries(series, parse, ignore);
 
 
     if (ignore) 
@@ -315,7 +315,7 @@ function genParseInterpolate(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqInterpolate(lerp, nInputs, parse);
+        logReqInterpolate(lerp, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -367,7 +367,7 @@ function genParseBoolean(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqBoolean(bool, nInputs, parse);
+        logReqBoolean(bool, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -413,7 +413,7 @@ function genParseCondition(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqCondition(cond, nInputs, parse);
+        logReqCondition(cond, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -468,7 +468,7 @@ function genParseConditionBase(parse, newNode)
 
     
     if (parse.settings.logRequests) 
-        logReqConditionBase(cond, type, nInputs, parse);
+        logReqConditionBase(cond, type, nInputs, parse, ignore);
 
 
     if (ignore) 

@@ -7,7 +7,7 @@ function genParseRectangle(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqShape(rect, parse);
+        logReqShape(rect, parse, ignore);
 
 
     if (ignore) 
@@ -63,7 +63,7 @@ function genParseLine(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqShape(line, parse);
+        logReqShape(line, parse, ignore);
 
 
     if (ignore) 
@@ -117,7 +117,7 @@ function genParseEllipse(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqShape(ellipse, parse);
+        logReqShape(ellipse, parse, ignore);
 
 
     if (ignore) 
@@ -172,7 +172,7 @@ function genParsePolygon(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqShape(poly, parse);
+        logReqShape(poly, parse, ignore);
 
 
     if (ignore) 
@@ -229,7 +229,7 @@ function genParseStar(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqShape(star, parse);
+        logReqShape(star, parse, ignore);
 
 
     if (ignore) 

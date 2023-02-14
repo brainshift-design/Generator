@@ -436,11 +436,13 @@ function logRequest(parse) {
     log += parse.log;
     console.log('%c%s', 'background: #60aa60; color: #fff', log);
 }
-function logReqNodeId(node) {
+function logReqNodeId(node, ignore = false) {
     return ' '
-        + logReqId(node.nodeId) + ' '
-        + logReqId(node.nodeName)
-        + logReqOptions(node);
+        + logReqId(node.nodeId)
+        + ' ' + logReqId(node.nodeName)
+        + (!ignore
+            ? logReqOptions(node)
+            : '');
 }
 function logReqId(nodeId) {
     return nodeId == '' ? '\'\'' : nodeId;

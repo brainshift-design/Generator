@@ -725,12 +725,14 @@ function logRequest(parse)
 
 
 
-function logReqNodeId(node)
+function logReqNodeId(node, ignore = false)
 {
     return ' ' 
-         + logReqId(node.nodeId) + ' '
-         + logReqId(node.nodeName)
-         + logReqOptions(node);
+         + logReqId(node.nodeId) 
+         + ' ' + logReqId(node.nodeName)
+         + (!ignore
+            ? logReqOptions(node)
+            : '');
 }
 
 

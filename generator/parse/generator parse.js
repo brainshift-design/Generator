@@ -176,7 +176,7 @@ function genParseNodeStart(parse)
 
 
     if (parse.parsedNodes.find(n => n.nodeId == nodeId))
-        return [type, nodeId, false, true];
+        return [type, nodeId, {nodeName: nodeName}, true];
 
 
     const options = genParseNodeOptions(parse);

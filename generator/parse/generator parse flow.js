@@ -5,7 +5,7 @@ function genParseListValue(parse)
     const list = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqListValue(list, parse);
+        logReqListValue(list, parse, ignore);
 
     return parseListValue(list)[0];
 }
@@ -27,7 +27,7 @@ function genParseList(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqList(list, nInputs, parse);
+        logReqList(list, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -71,7 +71,7 @@ function genParseItems(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqItems(items, nInputs, parse);
+        logReqItems(items, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -115,7 +115,7 @@ function genParseSelect(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqSelect(sel, nInputs, parse);
+        logReqSelect(sel, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -167,7 +167,7 @@ function genParseIfElse(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqIfElse(ifElse, nInputs, parse);
+        logReqIfElse(ifElse, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -224,7 +224,7 @@ function genParseStart(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqCache(rep, nInputs, parse);
+        logReqCache(rep, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -268,7 +268,7 @@ function genParseRepeat(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqRepeat(rep, nInputs, parse);
+        logReqRepeat(rep, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -314,7 +314,7 @@ function genParseCache(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqCache(cache, nInputs, parse);
+        logReqCache(cache, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -358,7 +358,7 @@ function genParseCopy(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqCopy(copy, nInputs, parse);
+        logReqCopy(copy, nInputs, parse, ignore);
 
 
     if (ignore) 
