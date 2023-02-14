@@ -232,6 +232,8 @@ function legacyParseConnectionJsonAndConnect(_conn, pasteConnected)
 
         _conn.outputOrder = conn.outputOrder;
 
+        uiSaveConn(conn);
+        
         return conn;
     }
 }

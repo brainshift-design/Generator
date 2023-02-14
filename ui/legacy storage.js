@@ -90,6 +90,8 @@ function legacyLoadConnectionsAsync(data, nodes, loadedNodes, setProgress)
 
     promise.then(() => 
     {
+        uiSaveNodes(loadedNodes.map(n => n.id));
+
         const updateNodes = [];
         finishLoadingNodes(nodes, loadedNodes, updateNodes);
         finishLoading(nodes);

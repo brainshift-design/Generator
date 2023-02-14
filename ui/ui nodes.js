@@ -936,6 +936,9 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     graphView.restoringNodes     = false;
 
     loadingOverlay.style.display = 'none'; // for loading
+
+
+    uiClearPageData('graph');
 }
 
 

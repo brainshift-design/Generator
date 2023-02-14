@@ -41773,6 +41773,8 @@ function legacyParseConnectionJsonAndConnect(_conn, pasteConnected)
 
         _conn.outputOrder = conn.outputOrder;
 
+        uiSaveConn(conn);
+        
         return conn;
     }
 }
@@ -53656,7 +53658,7 @@ var genMessagePosted = false;
 //uiRemoveSavedNodesAndConns(['color']);
 //uiRemovePluginDataFromAllLocalStyles();
 
-uiRemoveAllSavedNodesAndConns();
+//uiRemoveAllSavedNodesAndConns();
 
 
 
@@ -54045,6 +54047,8 @@ function legacyLoadConnectionsAsync(data, nodes, loadedNodes, setProgress)
 
     promise.then(() => 
     {
+        uiSaveNodes(loadedNodes.map(n => n.id));
+
         const updateNodes = [];
         finishLoadingNodes(nodes, loadedNodes, updateNodes);
         finishLoading(nodes);
@@ -56290,6 +56294,9 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     graphView.restoringNodes     = false;
 
     loadingOverlay.style.display = 'none'; // for loading
+
+
+    uiClearPageData('graph');
 }
 
 
