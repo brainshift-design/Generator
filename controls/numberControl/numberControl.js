@@ -121,7 +121,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.setName = function(name)
     {
-        control.name     = name;
+        control.name      = name;
         control.savedName = name;
         
         control.update();
@@ -158,6 +158,13 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             value = Math.min(Math.max(control.displayMin, value), control.displayMax);
 
          
+        if (control.param.node.id == 'color2'
+            && control.param.id == 'c2')
+        {
+            console.log('fullRange =', fullRange);
+            console.log('value =', value);
+        }
+
         if (    isNaN(value) && !isNaN(oldValue)
             || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)
@@ -200,18 +207,18 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     
 
 
-    control.setMin = (min) =>
+    control.setMin = (min, displayMin = min) =>
     {
         control.min        = min;
-        control.displayMin = min;
+        control.displayMin = displayMin;
     };
 
 
 
-    control.setMax = (max) =>
+    control.setMax = (max, displayMax = max) =>
     {
         control.max        = max;
-        control.displayMax = max;
+        control.displayMax = displayMax;
     };
 
 

@@ -637,7 +637,12 @@ extends OpColorBase
 
     legacyLoadParams(_node, pasting)
     {
-        super.legacyLoadParams(_node, pasting);
+        //super.legacyLoadParams(_node, pasting);
+
+        this.legacyLoadParamById(_node, 'space', 0); 
+        this.legacyLoadParamById(_node, 'c1',    128);
+        this.legacyLoadParamById(_node, 'c2',    128);
+        this.legacyLoadParamById(_node, 'c3',    128);
 
 
         if (_node.colorBeforeNaN)

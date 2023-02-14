@@ -5,7 +5,7 @@ function legacyLoadGraph(json)
 
 
     const data = JSON.parse(json);
-    log('legacy json =', json);
+    //log('legacy json =', json);
 
 
     const pan = point( 

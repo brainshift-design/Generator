@@ -17917,24 +17917,25 @@ function colorSpaceCount(parse = null)
 
 
 
-const rgbFactor   = [255, 255, 255];
-const hs_Factor   = [360, 100, 100];
-const hclFactor   = [360, 100, 100];
-const oppFactor   = [100, 100, 100];
-
-
-const rgbScale    = [255, 255, 255];
-
-const hs_Scale    = [360, 100, 100];
-
-const hcloklScale = [360,  51, 100];
-const hcllabScale = [360, 400, 100];
-const hclluvScale = [360, 330, 100];
-
-const oklabScale  = [100,  30,  30];
-const labScale    = [100, 100, 100];
-const luvScale    = [100, 150, 150];
-
+const rgbFactor   = [255, 255, 255];   const rgbDisplayFactor   = [255, 255, 255];
+const hs_Factor   = [360, 100, 100];   const hs_DisplayFactor   = [360, 100, 100];
+const hclFactor   = [360, 100, 100];   const hclDisplayFactor   = [360, 100, 100];
+const oppFactor   = [100, 100, 100];   const oppDisplayFactor   = [100, 100, 100];
+  
+ 
+const rgbScale    = [255, 255, 255];   const rgbDisplayScale    = [255, 255, 255];
+  
+const hs_Scale    = [360, 100, 100];   const hs_DisplayScale    = [360, 100, 100];
+ 
+const hcloklScale = [360, 300, 100];   const hcloklDisplayScale = [360,  51, 100];
+const hcllabScale = [360, 400, 100];   const hcllabDisplayScale = [360, 400, 100];
+const hclluvScale = [360, 330, 100];   const hclluvDisplayScale = [360, 330, 100];
+ 
+ 
+const oklabScale  = [100,  30,  30];   const oklabScale         = [100,  30,  30];
+const labScale    = [100, 100, 100];   const labScale           = [100, 100, 100];
+const luvScale    = [100, 150, 150];   const luvScale           = [100, 150, 150];
+ 
 
 
 function colorFactor(space)
@@ -32872,13 +32873,13 @@ function initGeneratorMenus()
                                            graph.nodes.forEach(n => n.updateNode());
                                        }
                                    }),
-                             //    new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
-                             //    new MenuItem('',                             {separator: true}),   
-                             //    new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
-                                 new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
+                                 //new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
+                                 //new MenuItem('',                             {separator: true}),   
+                                 //new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+                                 //new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
                                    new MenuItem('',                             {separator: true }),
-                                //    new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
-                                //    new MenuItem('',                             {separator: true }),
+                                 //new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
+                                 //new MenuItem('',                             {separator: true }),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',            {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     ), setting: true}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',              {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates ), setting: true}),
         menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',             {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates), setting: true}),
@@ -34319,7 +34320,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.setName = function(name)
     {
-        control.name     = name;
+        control.name      = name;
         control.savedName = name;
         
         control.update();
@@ -34356,6 +34357,13 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             value = Math.min(Math.max(control.displayMin, value), control.displayMax);
 
          
+        if (control.param.node.id == 'color2'
+            && control.param.id == 'c2')
+        {
+            console.log('fullRange =', fullRange);
+            console.log('value =', value);
+        }
+
         if (    isNaN(value) && !isNaN(oldValue)
             || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)
@@ -34398,18 +34406,18 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     
 
 
-    control.setMin = (min) =>
+    control.setMin = (min, displayMin = min) =>
     {
         control.min        = min;
-        control.displayMin = min;
+        control.displayMin = displayMin;
     };
 
 
 
-    control.setMax = (max) =>
+    control.setMax = (max, displayMax = max) =>
     {
         control.max        = max;
-        control.displayMax = max;
+        control.displayMax = displayMax;
     };
 
 
@@ -43064,7 +43072,7 @@ class Operator
         if (!_node.params)
             return;
 
-            for (const _param of _node.params)
+        for (const _param of _node.params)
         {
             let index = this.params.findIndex(p => p.id == _param[0]);
 
@@ -43076,6 +43084,28 @@ class Operator
 
             this.params[index].legacyLoadParam(_param[1]);
         }
+    }
+
+
+
+    legacyLoadParamById(_node, id, defValue)
+    {
+        if (!_node.params)
+            return;
+
+
+        const _param = _node.params.find(p => p[0] == id);
+        
+
+        let index = this.params.findIndex(p => p.id == id);
+
+        if (index < 0)
+        {
+            this.addParamByType(NUMBER, id, false, false, true, false, defValue);
+            index = this.params.length-1;
+        }
+        
+        this.params[index].legacyLoadParam(_param ? _param[1] : defValue.toString());
     }
 
 
@@ -47301,7 +47331,12 @@ extends OpColorBase
 
     legacyLoadParams(_node, pasting)
     {
-        super.legacyLoadParams(_node, pasting);
+        //super.legacyLoadParams(_node, pasting);
+
+        this.legacyLoadParamById(_node, 'space', 0); 
+        this.legacyLoadParamById(_node, 'c1',    128);
+        this.legacyLoadParamById(_node, 'c2',    128);
+        this.legacyLoadParamById(_node, 'c3',    128);
 
 
         if (_node.colorBeforeNaN)
@@ -47357,24 +47392,25 @@ function colorSpaceCount(parse = null)
 
 
 
-const rgbFactor   = [255, 255, 255];
-const hs_Factor   = [360, 100, 100];
-const hclFactor   = [360, 100, 100];
-const oppFactor   = [100, 100, 100];
-
-
-const rgbScale    = [255, 255, 255];
-
-const hs_Scale    = [360, 100, 100];
-
-const hcloklScale = [360,  51, 100];
-const hcllabScale = [360, 400, 100];
-const hclluvScale = [360, 330, 100];
-
-const oklabScale  = [100,  30,  30];
-const labScale    = [100, 100, 100];
-const luvScale    = [100, 150, 150];
-
+const rgbFactor   = [255, 255, 255];   const rgbDisplayFactor   = [255, 255, 255];
+const hs_Factor   = [360, 100, 100];   const hs_DisplayFactor   = [360, 100, 100];
+const hclFactor   = [360, 100, 100];   const hclDisplayFactor   = [360, 100, 100];
+const oppFactor   = [100, 100, 100];   const oppDisplayFactor   = [100, 100, 100];
+  
+ 
+const rgbScale    = [255, 255, 255];   const rgbDisplayScale    = [255, 255, 255];
+  
+const hs_Scale    = [360, 100, 100];   const hs_DisplayScale    = [360, 100, 100];
+ 
+const hcloklScale = [360, 300, 100];   const hcloklDisplayScale = [360,  51, 100];
+const hcllabScale = [360, 400, 100];   const hcllabDisplayScale = [360, 400, 100];
+const hclluvScale = [360, 330, 100];   const hclluvDisplayScale = [360, 330, 100];
+ 
+ 
+const oklabScale  = [100,  30,  30];   const oklabScale         = [100,  30,  30];
+const labScale    = [100, 100, 100];   const labScale           = [100, 100, 100];
+const luvScale    = [100, 150, 150];   const luvScale           = [100, 150, 150];
+ 
 
 
 function colorFactor(space)
@@ -53893,7 +53929,7 @@ function legacyLoadGraph(json)
 
 
     const data = JSON.parse(json);
-    log('legacy json =', json);
+    //log('legacy json =', json);
 
 
     const pan = point( 

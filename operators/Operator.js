@@ -1060,7 +1060,7 @@ class Operator
         if (!_node.params)
             return;
 
-            for (const _param of _node.params)
+        for (const _param of _node.params)
         {
             let index = this.params.findIndex(p => p.id == _param[0]);
 
@@ -1072,6 +1072,28 @@ class Operator
 
             this.params[index].legacyLoadParam(_param[1]);
         }
+    }
+
+
+
+    legacyLoadParamById(_node, id, defValue)
+    {
+        if (!_node.params)
+            return;
+
+
+        const _param = _node.params.find(p => p[0] == id);
+        
+
+        let index = this.params.findIndex(p => p.id == id);
+
+        if (index < 0)
+        {
+            this.addParamByType(NUMBER, id, false, false, true, false, defValue);
+            index = this.params.length-1;
+        }
+        
+        this.params[index].legacyLoadParam(_param ? _param[1] : defValue.toString());
     }
 
 
