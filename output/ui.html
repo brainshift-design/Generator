@@ -902,8 +902,8 @@ div
 
 #ttInterpolationSpace
 {
-    width:  200px;
-    height: 200px;
+    width:  219px;
+    height: 221px;
 }
 
 
@@ -2500,16 +2500,21 @@ a
     <div style="margin-left: 20px;" id="ttInterpolationSpaces">
     </div>
     <div style="margin-left: 20px; margin-top: 14px;">
-        Determines the path<br/>of interpolation.
+        Determines the interpolation path.
     </div>
     <div style="margin-left: 20px; margin-top: 14px;">
-        In RGB it's a straight line,<br/>in spaces with Hue it's a circle.
+        In RGB and linear spaces it's<br/>a straight line,<br/><br/>
+        in spaces with a Hue it's an arc.
     </div>
 
-    <div style="position: absolute; left:  47px; top: 120px;">RGB</div>
-    <div style="position: absolute; left: 152px; top: 120px;">HSV</div>
+    <div style="position: absolute; left:  57px; top: 133px;">Luv</div>
+    <div style="position: absolute; left:  57px; top: 153px;">Lab</div>
+    <div style="position: absolute; left:  55px; top: 183px;">RGB</div>
 
-    <svg width="192" height="88" viewBox="0 0 192 88" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: 15px; margin-left: 4px;">
+    <div style="position: absolute; left: 160px; top: 140px;">HSV</div>
+    <div style="position: absolute; left: 160px; top: 160px;">HCL</div>
+
+    <svg width="192" height="88" viewBox="0 0 192 88" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-top: 18px; margin-left: 13px;">
         <circle cx="43.945" cy="43.6699" r="42.9129" transform="rotate(164.053 43.945 43.6699)" stroke="white"/>
         <circle cx="148.459" cy="43.6699" r="42.9129" transform="rotate(164.053 148.459 43.6699)" stroke="white"/>
         <path d="M177.161 53.8683C175.042 59.8328 171.117 64.9889 165.932 68.6199C160.747 72.2509 154.56 74.1764 148.23 74.1287C141.9 74.081 135.743 72.0626 130.613 68.3539C125.484 64.6453 121.637 59.4307 119.607 53.4349" stroke="white" stroke-width="0.8" stroke-dasharray="2 2"/>
@@ -12278,8 +12283,8 @@ extends GColorType
             return this;
 
 
-        const amount = this.amount.eval(parse).toValue();
         const space  = this.space .eval(parse).toValue().toInteger();
+        const amount = this.amount.eval(parse).toValue();
         const gamma  = this.gamma .eval(parse).toValue();
 
 
@@ -12340,7 +12345,8 @@ extends GColorType
 
     interpolate(space, col0, col1, f, gamma)
     {
-        if (space <= 1) // hex, rgb
+        if (   space <= 1
+            || space >  6) // hex, rgb, okLab, lab, luv
         {
             const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
             const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
@@ -30159,8 +30165,8 @@ extends GColorType
             return this;
 
 
-        const amount = this.amount.eval(parse).toValue();
         const space  = this.space .eval(parse).toValue().toInteger();
+        const amount = this.amount.eval(parse).toValue();
         const gamma  = this.gamma .eval(parse).toValue();
 
 
@@ -30221,7 +30227,8 @@ extends GColorType
 
     interpolate(space, col0, col1, f, gamma)
     {
-        if (space <= 1) // hex, rgb
+        if (   space <= 1
+            || space >  6) // hex, rgb, okLab, lab, luv
         {
             const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
             const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
@@ -49145,7 +49152,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_INTERPOLATE, 'inter', 90);
+        super(COLOR_INTERPOLATE, 'inter', 100);
 
         
         this.addInput(new Input(COLOR_TYPES));
@@ -49154,8 +49161,8 @@ extends OpColorBase
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, false, 50, 0,  100, 0));
         this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, false, OpColorSpaces.map(s => s[1]), 1));
+        this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, false, 50, 0,  100, 0));
         this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, false, 1,  0.01, 4, 2));
       
         

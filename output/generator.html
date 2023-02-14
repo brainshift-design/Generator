@@ -9678,8 +9678,8 @@ extends GColorType
             return this;
 
 
-        const amount = this.amount.eval(parse).toValue();
         const space  = this.space .eval(parse).toValue().toInteger();
+        const amount = this.amount.eval(parse).toValue();
         const gamma  = this.gamma .eval(parse).toValue();
 
 
@@ -9740,7 +9740,8 @@ extends GColorType
 
     interpolate(space, col0, col1, f, gamma)
     {
-        if (space <= 1) // hex, rgb
+        if (   space <= 1
+            || space >  6) // hex, rgb, okLab, lab, luv
         {
             const r0 = Math.pow(col0[1], gamma);  const r1 = Math.pow(col1[1], gamma);
             const g0 = Math.pow(col0[2], gamma);  const g1 = Math.pow(col1[2], gamma);
