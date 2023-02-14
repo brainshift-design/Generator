@@ -135,14 +135,6 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             console.assert(false, 'numberControl.setValue(value) is ' + typeof value + ', must be a number');
 
             
-        if (   control.param.node.id == 'color2'
-            && control.param.id == 'c2')
-        {
-            console.log('value =', value);
-            console.log('control.max =', control.max);
-        }
-
-
         const oldValue = control.value;
 
 
@@ -166,13 +158,6 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             value = Math.min(Math.max(control.displayMin, value), control.displayMax);
 
          
-        if (control.param.node.id == 'color2'
-            && control.param.id == 'c2')
-        {
-            console.log('fullRange =', fullRange);
-            console.log('value =', value);
-        }
-
         if (    isNaN(value) && !isNaN(oldValue)
             || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)

@@ -243,4 +243,12 @@ extends OpColorBase
 
         this.paramContrast.control.update();
     }
+
+
+
+    legacyLoadParams(_node, pasting)
+    {
+        this.legacyLoadParamById(_node, 'contrast', '0'); 
+        this.legacyLoadParamById(_node, 'standard', '1');
+    }
 }

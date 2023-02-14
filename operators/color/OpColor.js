@@ -657,12 +657,12 @@ extends OpColorBase
 
         this.prevSpace = _node.prevSpace;    
 
-console.log('this.paramSpace.value =', this.paramSpace.value);
+
         if (this.paramSpace.value.isValid())
         {
             const space  = colorSpace(Math.max(1, this.paramSpace.value.value));
             const factor = colorFactor(space);
-console.log('space =', space);
+
             this._color = [
                 space,
                 this.param1.value.value / factor[0],
