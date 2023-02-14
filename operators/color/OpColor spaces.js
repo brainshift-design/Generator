@@ -1,15 +1,15 @@
 const OpColorSpaces = 
 [
-    ['hex',    'Hex'   ],
-    ['rgb',    'RGB'   ], 
-    ['hsv',    'HSV'   ], 
-    ['hsl',    'HSL'   ], 
+    ['hex',   'Hex'   ],
+    ['rgb',   'RGB'   ], 
+    ['hsv',   'HSV'   ], 
+    ['hsl',   'HSL'   ], 
     ['hclok', 'HCL/ok'],
     ['hclab', 'HCL/ab'],
     ['hcluv', 'HCL/uv'],
-    ['oklab',  'okLab' ],
-    ['lab',    'Lab'   ],
-    ['luv',    'Luv'   ]
+    ['oklab', 'okLab' ],
+    ['lab',   'Lab'   ],
+    ['luv',   'Luv'   ]
 ];
 
 
@@ -54,10 +54,10 @@ function colorFactor(space)
     switch (space)
     {
         case 'hex':
-        case 'rgb':    return rgbFactor;
+        case 'rgb':   return rgbFactor;
 
         case 'hsv':
-        case 'hsl':    return hs_Factor;
+        case 'hsl':   return hs_Factor;
 
         case 'hclok':
         case 'hclab':
@@ -65,9 +65,9 @@ function colorFactor(space)
 
         case 'oklab':  
         case 'lab':      
-        case 'luv':    return oppFactor;   
+        case 'luv':   return oppFactor;   
         
-        default:       console.assert(false, 'invalid color factor from space \''+space+'\''); break;
+        default:      console.assert(false, 'invalid color factor from space \''+space+'\''); break;
     }
 }
 
@@ -80,18 +80,18 @@ function scaleColor(col, space)
     switch (space)
     {
         case 'hex':    
-        case 'rgb':    scale = rgbScale;    break;
+        case 'rgb':   scale = rgbScale;   break;
 
         case 'hsv':    
-        case 'hsl':    scale = hs_Scale;    break;
+        case 'hsl':   scale = hs_Scale;   break;
 
         case 'hclok': scale = hclokScale; break;
         case 'hclab': scale = hclabScale; break;
         case 'hcluv': scale = hcluvScale; break;
 
-        case 'oklab':  scale = oklabScale;  break;
-        case 'lab':    scale = labScale;    break;
-        case 'luv':    scale = luvScale;    break;
+        case 'oklab': scale = oklabScale; break;
+        case 'lab':   scale = labScale;   break;
+        case 'luv':   scale = luvScale;   break;
     }
 
     return [
@@ -113,19 +113,19 @@ function switchToSpace(node, space)
 {
     switch (space)
     {
-        case 'hex':    switchToHex   (node); break;
-        case 'rgb':    switchToRgb   (node); break;
+        case 'hex':   switchToHex   (node); break;
+        case 'rgb':   switchToRgb   (node); break;
 
-        case 'hsv':    switchToHsv   (node); break;
-        case 'hsl':    switchToHsl   (node); break;
+        case 'hsv':   switchToHsv   (node); break;
+        case 'hsl':   switchToHsl   (node); break;
 
-        case 'hclok': switchToHclOkl(node); break;
-        case 'hclab': switchToHclLab(node); break;
-        case 'hcluv': switchToHclLuv(node); break;
+        case 'hclok': switchToHclok (node); break;
+        case 'hclab': switchToHclab (node); break;
+        case 'hcluv': switchToHcluv (node); break;
 
-        case 'oklab':  switchToOklab (node); break;
-        case 'lab':    switchToLab   (node); break;
-        case 'luv':    switchToLuv   (node); break;
+        case 'oklab': switchToOklab (node); break;
+        case 'lab':   switchToLab   (node); break;
+        case 'luv':   switchToLuv   (node); break;
     }
 
     node.resetAllControlRanges();
@@ -133,19 +133,19 @@ function switchToSpace(node, space)
 
 
 
-function switchToHex   (node) { switchToRgbControls(node); switchToTextbox(node); }
-function switchToRgb   (node) { switchToRgbControls(node);                        }
+function switchToHex  (node) { switchToRgbControls   (node); switchToTextbox(node); }
+function switchToRgb  (node) { switchToRgbControls   (node);                        }
 
-function switchToHsv   (node) { switchToHs_Controls   (node, 'V');                }
-function switchToHsl   (node) { switchToHs_Controls   (node, 'L');                }
-          
-function switchToHclOkl(node) { switchToHclOklControls(node);                     }
-function switchToHclLab(node) { switchToHclLabControls(node);                     }
-function switchToHclLuv(node) { switchToHclLuvControls(node);                     }
-          
-function switchToOklab (node) { switchToOklabControls (node, 'a', 'b');           }
-function switchToLab   (node) { switchToLabControls   (node, 'a', 'b');           }
-function switchToLuv   (node) { switchToLuvControls   (node, 'u', 'v');           }
+function switchToHsv  (node) { switchToHs_Controls   (node, 'V');                   }
+function switchToHsl  (node) { switchToHs_Controls   (node, 'L');                   }
+             
+function switchToHclok(node) { switchToHclOklControls(node);                        }
+function switchToHclab(node) { switchToHclLabControls(node);                        }
+function switchToHcluv(node) { switchToHclLuvControls(node);                        }
+             
+function switchToOklab(node) { switchToOklabControls (node, 'a', 'b');              }
+function switchToLab  (node) { switchToLabControls   (node, 'a', 'b');              }
+function switchToLuv  (node) { switchToLuvControls   (node, 'u', 'v');              }
    
 
 

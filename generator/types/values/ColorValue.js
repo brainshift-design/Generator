@@ -114,7 +114,8 @@ extends GValue
             return dataColor_NaN;
 
         const space = this.space.copy();
-        space.value = Math.round(Math.min(Math.max(0, space.value), colorSpaceCount()-1));
+
+        space.value = Math.round(Math.min(Math.max(0, space.value), OpColorSpaces.length-1));
 
         return makeDataColor(
             space,
