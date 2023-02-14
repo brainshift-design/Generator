@@ -4,9 +4,9 @@ const OpColorSpaces =
     ['rgb',    'RGB'   ], 
     ['hsv',    'HSV'   ], 
     ['hsl',    'HSL'   ], 
-    ['hclokl', 'HCL/ok'],
-    ['hcllab', 'HCL/ab'],
-    ['hclluv', 'HCL/uv'],
+    ['hclok', 'HCL/ok'],
+    ['hclab', 'HCL/ab'],
+    ['hcluv', 'HCL/uv'],
     ['oklab',  'okLab' ],
     ['lab',    'Lab'   ],
     ['luv',    'Luv'   ]
@@ -28,24 +28,24 @@ function colorSpaceCount(parse = null)
 
 
 
-const rgbFactor   = [255, 255, 255];   const rgbDisplayFactor   = [255, 255, 255];
-const hs_Factor   = [360, 100, 100];   const hs_DisplayFactor   = [360, 100, 100];
-const hclFactor   = [360, 100, 100];   const hclDisplayFactor   = [360, 100, 100];
-const oppFactor   = [100, 100, 100];   const oppDisplayFactor   = [100, 100, 100];
+const rgbFactor  = [255, 255, 255];
+const hs_Factor  = [360, 100, 100];
+const hclFactor  = [360, 100, 100];
+const oppFactor  = [100, 100, 100];
   
  
-const rgbScale    = [255, 255, 255];   const rgbDisplayScale    = [255, 255, 255];
+const rgbScale   = [255, 255, 255];
   
-const hs_Scale    = [360, 100, 100];   const hs_DisplayScale    = [360, 100, 100];
+const hs_Scale   = [360, 100, 100];
  
-const hcloklScale = [360, 300, 100];   const hcloklDisplayScale = [360,  51, 100];
-const hcllabScale = [360, 400, 100];   const hcllabDisplayScale = [360, 400, 100];
-const hclluvScale = [360, 330, 100];   const hclluvDisplayScale = [360, 330, 100];
+const hclokScale = [360, 51,  100];
+const hclabScale = [360, 400, 100];
+const hcluvScale = [360, 330, 100];
  
  
-const oklabScale  = [100,  30,  30];   const oklabScale         = [100,  30,  30];
-const labScale    = [100, 100, 100];   const labScale           = [100, 100, 100];
-const luvScale    = [100, 150, 150];   const luvScale           = [100, 150, 150];
+const oklabScale = [100,  30,  30];
+const labScale   = [100, 100, 100];
+const luvScale   = [100, 150, 150];
  
 
 
@@ -59,9 +59,9 @@ function colorFactor(space)
         case 'hsv':
         case 'hsl':    return hs_Factor;
 
-        case 'hclokl':
-        case 'hcllab':
-        case 'hclluv': return hclFactor;
+        case 'hclok':
+        case 'hclab':
+        case 'hcluv': return hclFactor;
 
         case 'oklab':  
         case 'lab':      
@@ -85,9 +85,9 @@ function scaleColor(col, space)
         case 'hsv':    
         case 'hsl':    scale = hs_Scale;    break;
 
-        case 'hclokl': scale = hcloklScale; break;
-        case 'hcllab': scale = hcllabScale; break;
-        case 'hclluv': scale = hclluvScale; break;
+        case 'hclok': scale = hclokScale; break;
+        case 'hclab': scale = hclabScale; break;
+        case 'hcluv': scale = hcluvScale; break;
 
         case 'oklab':  scale = oklabScale;  break;
         case 'lab':    scale = labScale;    break;
@@ -119,9 +119,9 @@ function switchToSpace(node, space)
         case 'hsv':    switchToHsv   (node); break;
         case 'hsl':    switchToHsl   (node); break;
 
-        case 'hclokl': switchToHclOkl(node); break;
-        case 'hcllab': switchToHclLab(node); break;
-        case 'hclluv': switchToHclLuv(node); break;
+        case 'hclok': switchToHclOkl(node); break;
+        case 'hclab': switchToHclLab(node); break;
+        case 'hcluv': switchToHclLuv(node); break;
 
         case 'oklab':  switchToOklab (node); break;
         case 'lab':    switchToLab   (node); break;
@@ -199,9 +199,9 @@ function switchToHclControls(node, scale)
 
 
 
-function switchToHclOklControls(node) { switchToHclControls(node, hcloklScale); }
-function switchToHclLabControls(node) { switchToHclControls(node, hcllabScale); }
-function switchToHclLuvControls(node) { switchToHclControls(node, hclluvScale); }
+function switchToHclOklControls(node) { switchToHclControls(node, hclokScale); }
+function switchToHclLabControls(node) { switchToHclControls(node, hclabScale); }
+function switchToHclLuvControls(node) { switchToHclControls(node, hcluvScale); }
 
 
 
@@ -329,9 +329,9 @@ function getNormalColorValue(value, space, chan)
         case 'hsv':   
         case 'hsl':    return getNormalValueHs_ (value, chan);
 
-        case 'hclokl': 
-        case 'hcllab': 
-        case 'hclluv': return getNormalValueHcl (value, chan);
+        case 'hclok': 
+        case 'hclab': 
+        case 'hcluv': return getNormalValueHcl (value, chan);
 
         case 'oklab':  
         case 'lab':    
@@ -410,9 +410,9 @@ function getNormalColor_(space, c1, c2, c3)
         case 'hsv':   
         case 'hsl':    return getNormalColorHs_(c1, c2, c3);
 
-        case 'hclokl': 
-        case 'hcllab': 
-        case 'hclluv': return getNormalColorHcl(c1, c2, c3);
+        case 'hclok': 
+        case 'hclab': 
+        case 'hcluv': return getNormalColorHcl(c1, c2, c3);
 
         case 'oklab': 
         case 'lab': 
@@ -472,9 +472,9 @@ function getScaledDataColor(color)
         case 'hsv':    return getScaledDataColorHs_('hsv',    color[1], color[2], color[3]);
         case 'hsl':    return getScaledDataColorHs_('hsl',    color[1], color[2], color[3]);
 
-        case 'hclokl': return getScaledDataColorHcl('hclokl', color[1], color[2], color[3]);
-        case 'hcllab': return getScaledDataColorHcl('hcllab', color[1], color[2], color[3]);
-        case 'hclluv': return getScaledDataColorHcl('hclluv', color[1], color[2], color[3]);
+        case 'hclok': return getScaledDataColorHcl('hclok', color[1], color[2], color[3]);
+        case 'hclab': return getScaledDataColorHcl('hclab', color[1], color[2], color[3]);
+        case 'hcluv': return getScaledDataColorHcl('hcluv', color[1], color[2], color[3]);
 
         case 'oklab':  return getScaledDataColorOpp('oklab',  color[1], color[2], color[3]);
         case 'lab':    return getScaledDataColorOpp('lab',    color[1], color[2], color[3]);
@@ -548,9 +548,9 @@ function colorSpaceFactor(space)
         case 'hsv':   
         case 'hsl':    return hs_Factor;
 
-        case 'hclokl': 
-        case 'hcllab': 
-        case 'hclluv': return hclFactor;
+        case 'hclok': 
+        case 'hclab': 
+        case 'hcluv': return hclFactor;
 
         case 'oklab': 
         case 'lab': 
@@ -570,9 +570,9 @@ function getColorSpaceScale(space)
         case 'hsv':   
         case 'hsl':    return hs_Scale;
 
-        case 'hclokl': return hcloklScale;
-        case 'hcllab': return hcllabScale;
-        case 'hclluv': return hclluvScale;
+        case 'hclok': return hclokScale;
+        case 'hclab': return hclabScale;
+        case 'hcluv': return hcluvScale;
 
         case 'oklab':  return oklabScale;
         case 'lab':    return labScale;

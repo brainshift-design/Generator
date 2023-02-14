@@ -332,7 +332,7 @@ function updateWireStyle(wire)
     const color = wire.getColor();
 
 
-    const l = rgb2hclokl(color)[2];
+    const l = rgb2hclok(color)[2];
     
     const bright       = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
     const innerOpacity = Math.round(bright * 44 * Math.min(graphView.zoom, 1)).toString(16).padStart(2, '0');

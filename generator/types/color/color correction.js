@@ -344,9 +344,9 @@ function getMinCorrections(space, order)
         case 'hsv': 
         case 'hsl':    min = [0, 0, 0]; break;
 
-        case 'hclokl':
-        case 'hcllab':
-        case 'hclluv': min = [0, 0, 0]; break;
+        case 'hclok':
+        case 'hclab':
+        case 'hcluv': min = [0, 0, 0]; break;
 
         case 'oklab':
         case 'lab':
@@ -377,9 +377,9 @@ function getMaxCorrections(space, order)
         case 'hsv': 
         case 'hsl':    max = [hs_Factor[0]/2, hs_Factor[1], hs_Factor[2]]; break;
 
-        case 'hclokl':
-        case 'hcllab':
-        case 'hclluv': max = [hclFactor[0]/2, hclFactor[1], hclFactor[2]]; break;
+        case 'hclok':
+        case 'hclab':
+        case 'hcluv': max = [hclFactor[0]/2, hclFactor[1], hclFactor[2]]; break;
 
         case 'oklab':
         case 'lab':
@@ -490,9 +490,9 @@ function getColorCorrections(colorSpace)
             new ColorCorrection('S', hs_Factor[1]),
             new ColorCorrection('L', hs_Factor[2]) ];
 
-    case 'hclokl':
-    case 'hcllab':
-    case 'hclluv':
+    case 'hclok':
+    case 'hclab':
+    case 'hcluv':
         return [
             new ColorCorrection('H', hclFactor[0]/2),
             new ColorCorrection('C', hclFactor[1]),

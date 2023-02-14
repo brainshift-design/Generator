@@ -639,23 +639,30 @@ extends OpColorBase
     {
         //super.legacyLoadParams(_node, pasting);
 
-        this.legacyLoadParamById(_node, 'space', 0); 
-        this.legacyLoadParamById(_node, 'c1',    128);
-        this.legacyLoadParamById(_node, 'c2',    128);
-        this.legacyLoadParamById(_node, 'c3',    128);
+        const _space = _node.params.find(p => p[0] == 'space');
+
+        if (   _space && parseInt(_space[1]) >= colorSpaceCount()
+            && !settings.showAllColorSpaces)
+            updateSettingAndMenu('showAllColorSpaces', true, true);
 
 
+        this.legacyLoadParamById(_node, 'space', '0'); 
+        this.legacyLoadParamById(_node, 'c1',  '128');
+        this.legacyLoadParamById(_node, 'c2',  '128');
+        this.legacyLoadParamById(_node, 'c3',  '128');
+
+        
         if (_node.colorBeforeNaN)
             this._colorBeforeNaN = _node.colorBeforeNaN;
 
         this.prevSpace = _node.prevSpace;    
 
-
+console.log('this.paramSpace.value =', this.paramSpace.value);
         if (this.paramSpace.value.isValid())
         {
             const space  = colorSpace(Math.max(1, this.paramSpace.value.value));
             const factor = colorFactor(space);
-
+console.log('space =', space);
             this._color = [
                 space,
                 this.param1.value.value / factor[0],

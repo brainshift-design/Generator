@@ -184,9 +184,9 @@ extends OpColorBase
         case 'rgb':    this.paramOrder.setOptions(makeOptions('RGB')); break;
         case 'hsv':    this.paramOrder.setOptions(makeOptions('HSV')); break;
         case 'hsl':    this.paramOrder.setOptions(makeOptions('HSL')); break;
-        case 'hclokl':
-        case 'hcllab':
-        case 'hclluv': this.paramOrder.setOptions(makeOptions('HCL')); break;
+        case 'hclok':
+        case 'hclab':
+        case 'hcluv': this.paramOrder.setOptions(makeOptions('HCL')); break;
         case 'oklab':  
         case 'lab':    this.paramOrder.setOptions(makeOptions('Lab')); break;
         case 'luv':    this.paramOrder.setOptions(makeOptions('Luv')); break;

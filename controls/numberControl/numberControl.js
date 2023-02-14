@@ -134,6 +134,14 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         if (typeof value != 'number')
             console.assert(false, 'numberControl.setValue(value) is ' + typeof value + ', must be a number');
 
+            
+        if (   control.param.node.id == 'color2'
+            && control.param.id == 'c2')
+        {
+            console.log('value =', value);
+            console.log('control.max =', control.max);
+        }
+
 
         const oldValue = control.value;
 

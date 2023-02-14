@@ -20,6 +20,15 @@ extends GValue
 
 
 
+    static fromString(str)
+    {
+        return new NumberValue(
+            parseFloat(str),
+            decCount(str));
+    }
+
+
+
     copy()
     {
         const copy = new NumberValue(
@@ -129,9 +138,7 @@ function parseSimpleNumberValue(str)
     const num = 
         str == NAN_CHAR
         ? NumberValue.NaN
-        : new NumberValue(
-              parseFloat(str),
-              decCount(str));
+        : NumberValue.fromString(str);
 
     return [num, 1];
 }

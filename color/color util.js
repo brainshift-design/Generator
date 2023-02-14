@@ -113,7 +113,7 @@ function rgb_a(rgb, a)
 
 function isDark(rgb, threshold = 0.71)
 {
-    return rgb2hclokl(rgb)[2] < threshold;
+    return rgb2hclok(rgb)[2] < threshold;
 }
 
 

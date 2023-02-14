@@ -7131,6 +7131,15 @@ extends GValue
 
 
 
+    static fromString(str)
+    {
+        return new NumberValue(
+            parseFloat(str),
+            decCount(str));
+    }
+
+
+
     copy()
     {
         const copy = new NumberValue(
@@ -7240,9 +7249,7 @@ function parseSimpleNumberValue(str)
     const num = 
         str == NAN_CHAR
         ? NumberValue.NaN
-        : new NumberValue(
-              parseFloat(str),
-              decCount(str));
+        : NumberValue.fromString(str);
 
     return [num, 1];
 }
@@ -11333,9 +11340,9 @@ function getMinCorrections(space, order)
         case 'hsv': 
         case 'hsl':    min = [0, 0, 0]; break;
 
-        case 'hclokl':
-        case 'hcllab':
-        case 'hclluv': min = [0, 0, 0]; break;
+        case 'hclok':
+        case 'hclab':
+        case 'hcluv': min = [0, 0, 0]; break;
 
         case 'oklab':
         case 'lab':
@@ -11366,9 +11373,9 @@ function getMaxCorrections(space, order)
         case 'hsv': 
         case 'hsl':    max = [hs_Factor[0]/2, hs_Factor[1], hs_Factor[2]]; break;
 
-        case 'hclokl':
-        case 'hcllab':
-        case 'hclluv': max = [hclFactor[0]/2, hclFactor[1], hclFactor[2]]; break;
+        case 'hclok':
+        case 'hclab':
+        case 'hcluv': max = [hclFactor[0]/2, hclFactor[1], hclFactor[2]]; break;
 
         case 'oklab':
         case 'lab':
@@ -11479,9 +11486,9 @@ function getColorCorrections(colorSpace)
             new ColorCorrection('S', hs_Factor[1]),
             new ColorCorrection('L', hs_Factor[2]) ];
 
-    case 'hclokl':
-    case 'hcllab':
-    case 'hclluv':
+    case 'hclok':
+    case 'hclab':
+    case 'hcluv':
         return [
             new ColorCorrection('H', hclFactor[0]/2),
             new ColorCorrection('C', hclFactor[1]),
@@ -16989,7 +16996,7 @@ function pol2opp(pol) // polar to opponent
 }
 
 
-function hclokl2rgb(hcl, cs = sRGB)
+function hclok2rgb(hcl, cs = sRGB)
 {
     hcl[0] *= Tau;
     hcl[1] *= hcl[2]; 
@@ -16998,14 +17005,14 @@ function hclokl2rgb(hcl, cs = sRGB)
 
 
 
-function hclokl2rgb_(h, c, l, cs = sRGB)
+function hclok2rgb_(h, c, l, cs = sRGB)
 {
-    return hclokl2rgb_([h, c, l], cs);
+    return hclok2rgb_([h, c, l], cs);
 }    
     
     
     
-function rgb2hclokl(rgb, cs = sRGB)
+function rgb2hclok(rgb, cs = sRGB)
 {
     const hcl = opp2pol(rgb2oklab(rgb, cs));
     hcl[0] /= Tau;
@@ -17015,14 +17022,14 @@ function rgb2hclokl(rgb, cs = sRGB)
 
 
 
-function rgb2hclokl_(r, g, b, cs = sRGB)
+function rgb2hclok_(r, g, b, cs = sRGB)
 {
-    return rgb2hclokl([r, g, b], cs);
+    return rgb2hclok([r, g, b], cs);
 }
 
 
 
-function hcllab2lab(hcl)
+function hclab2lab(hcl)
 {
     hcl[0] *= Tau;
     hcl[1] *= hcl[2];
@@ -17031,14 +17038,14 @@ function hcllab2lab(hcl)
 
 
 
-function hcllab2rgb(hcl, cs = sRGB)
+function hclab2rgb(hcl, cs = sRGB)
 {
-    return lab2rgb(hcllab2lab(hcl), cs);
+    return lab2rgb(hclab2lab(hcl), cs);
 }
 
 
 
-function lab2hcllab(lab)
+function lab2hclab(lab)
 {
     let hcl = opp2pol(lab);
     hcl[0] /= Tau;
@@ -17048,14 +17055,14 @@ function lab2hcllab(lab)
 
 
 
-function rgb2hcllab(rgb, cs = sRGB)
+function rgb2hclab(rgb, cs = sRGB)
 {
-    return lab2hcllab(rgb2lab(rgb, cs));
+    return lab2hclab(rgb2lab(rgb, cs));
 }
 
 
 
-function hclluv2luv(hcl)
+function hcluv2luv(hcl)
 {
     hcl[0] *= Tau;
     hcl[1] *= hcl[2];
@@ -17064,14 +17071,14 @@ function hclluv2luv(hcl)
 
 
 
-function hclluv2rgb(hcl, cs = sRGB)
+function hcluv2rgb(hcl, cs = sRGB)
 {
-    return luv2rgb(hclluv2luv(hcl), cs);
+    return luv2rgb(hcluv2luv(hcl), cs);
 }
 
 
 
-function luv2hclluv(luv)
+function luv2hcluv(luv)
 {
     let hcl = opp2pol(luv);
     hcl[0] /= Tau;
@@ -17081,9 +17088,9 @@ function luv2hclluv(luv)
 
 
 
-function rgb2hclluv(rgb, cs = sRGB)
+function rgb2hcluv(rgb, cs = sRGB)
 {
-    return luv2hclluv(rgb2luv(rgb, cs));
+    return luv2hcluv(rgb2luv(rgb, cs));
 }
 
 
@@ -17393,7 +17400,7 @@ function rgb_a(rgb, a)
 
 function isDark(rgb, threshold = 0.71)
 {
-    return rgb2hclokl(rgb)[2] < threshold;
+    return rgb2hclok(rgb)[2] < threshold;
 }
 
 
@@ -17893,9 +17900,9 @@ const OpColorSpaces =
     ['rgb',    'RGB'   ], 
     ['hsv',    'HSV'   ], 
     ['hsl',    'HSL'   ], 
-    ['hclokl', 'HCL/ok'],
-    ['hcllab', 'HCL/ab'],
-    ['hclluv', 'HCL/uv'],
+    ['hclok', 'HCL/ok'],
+    ['hclab', 'HCL/ab'],
+    ['hcluv', 'HCL/uv'],
     ['oklab',  'okLab' ],
     ['lab',    'Lab'   ],
     ['luv',    'Luv'   ]
@@ -17917,24 +17924,24 @@ function colorSpaceCount(parse = null)
 
 
 
-const rgbFactor   = [255, 255, 255];   const rgbDisplayFactor   = [255, 255, 255];
-const hs_Factor   = [360, 100, 100];   const hs_DisplayFactor   = [360, 100, 100];
-const hclFactor   = [360, 100, 100];   const hclDisplayFactor   = [360, 100, 100];
-const oppFactor   = [100, 100, 100];   const oppDisplayFactor   = [100, 100, 100];
+const rgbFactor  = [255, 255, 255];
+const hs_Factor  = [360, 100, 100];
+const hclFactor  = [360, 100, 100];
+const oppFactor  = [100, 100, 100];
   
  
-const rgbScale    = [255, 255, 255];   const rgbDisplayScale    = [255, 255, 255];
+const rgbScale   = [255, 255, 255];
   
-const hs_Scale    = [360, 100, 100];   const hs_DisplayScale    = [360, 100, 100];
+const hs_Scale   = [360, 100, 100];
  
-const hcloklScale = [360, 300, 100];   const hcloklDisplayScale = [360,  51, 100];
-const hcllabScale = [360, 400, 100];   const hcllabDisplayScale = [360, 400, 100];
-const hclluvScale = [360, 330, 100];   const hclluvDisplayScale = [360, 330, 100];
+const hclokScale = [360, 51,  100];
+const hclabScale = [360, 400, 100];
+const hcluvScale = [360, 330, 100];
  
  
-const oklabScale  = [100,  30,  30];   const oklabScale         = [100,  30,  30];
-const labScale    = [100, 100, 100];   const labScale           = [100, 100, 100];
-const luvScale    = [100, 150, 150];   const luvScale           = [100, 150, 150];
+const oklabScale = [100,  30,  30];
+const labScale   = [100, 100, 100];
+const luvScale   = [100, 150, 150];
  
 
 
@@ -17948,9 +17955,9 @@ function colorFactor(space)
         case 'hsv':
         case 'hsl':    return hs_Factor;
 
-        case 'hclokl':
-        case 'hcllab':
-        case 'hclluv': return hclFactor;
+        case 'hclok':
+        case 'hclab':
+        case 'hcluv': return hclFactor;
 
         case 'oklab':  
         case 'lab':      
@@ -17974,9 +17981,9 @@ function scaleColor(col, space)
         case 'hsv':    
         case 'hsl':    scale = hs_Scale;    break;
 
-        case 'hclokl': scale = hcloklScale; break;
-        case 'hcllab': scale = hcllabScale; break;
-        case 'hclluv': scale = hclluvScale; break;
+        case 'hclok': scale = hclokScale; break;
+        case 'hclab': scale = hclabScale; break;
+        case 'hcluv': scale = hcluvScale; break;
 
         case 'oklab':  scale = oklabScale;  break;
         case 'lab':    scale = labScale;    break;
@@ -18008,9 +18015,9 @@ function switchToSpace(node, space)
         case 'hsv':    switchToHsv   (node); break;
         case 'hsl':    switchToHsl   (node); break;
 
-        case 'hclokl': switchToHclOkl(node); break;
-        case 'hcllab': switchToHclLab(node); break;
-        case 'hclluv': switchToHclLuv(node); break;
+        case 'hclok': switchToHclOkl(node); break;
+        case 'hclab': switchToHclLab(node); break;
+        case 'hcluv': switchToHclLuv(node); break;
 
         case 'oklab':  switchToOklab (node); break;
         case 'lab':    switchToLab   (node); break;
@@ -18088,9 +18095,9 @@ function switchToHclControls(node, scale)
 
 
 
-function switchToHclOklControls(node) { switchToHclControls(node, hcloklScale); }
-function switchToHclLabControls(node) { switchToHclControls(node, hcllabScale); }
-function switchToHclLuvControls(node) { switchToHclControls(node, hclluvScale); }
+function switchToHclOklControls(node) { switchToHclControls(node, hclokScale); }
+function switchToHclLabControls(node) { switchToHclControls(node, hclabScale); }
+function switchToHclLuvControls(node) { switchToHclControls(node, hcluvScale); }
 
 
 
@@ -18218,9 +18225,9 @@ function getNormalColorValue(value, space, chan)
         case 'hsv':   
         case 'hsl':    return getNormalValueHs_ (value, chan);
 
-        case 'hclokl': 
-        case 'hcllab': 
-        case 'hclluv': return getNormalValueHcl (value, chan);
+        case 'hclok': 
+        case 'hclab': 
+        case 'hcluv': return getNormalValueHcl (value, chan);
 
         case 'oklab':  
         case 'lab':    
@@ -18299,9 +18306,9 @@ function getNormalColor_(space, c1, c2, c3)
         case 'hsv':   
         case 'hsl':    return getNormalColorHs_(c1, c2, c3);
 
-        case 'hclokl': 
-        case 'hcllab': 
-        case 'hclluv': return getNormalColorHcl(c1, c2, c3);
+        case 'hclok': 
+        case 'hclab': 
+        case 'hcluv': return getNormalColorHcl(c1, c2, c3);
 
         case 'oklab': 
         case 'lab': 
@@ -18361,9 +18368,9 @@ function getScaledDataColor(color)
         case 'hsv':    return getScaledDataColorHs_('hsv',    color[1], color[2], color[3]);
         case 'hsl':    return getScaledDataColorHs_('hsl',    color[1], color[2], color[3]);
 
-        case 'hclokl': return getScaledDataColorHcl('hclokl', color[1], color[2], color[3]);
-        case 'hcllab': return getScaledDataColorHcl('hcllab', color[1], color[2], color[3]);
-        case 'hclluv': return getScaledDataColorHcl('hclluv', color[1], color[2], color[3]);
+        case 'hclok': return getScaledDataColorHcl('hclok', color[1], color[2], color[3]);
+        case 'hclab': return getScaledDataColorHcl('hclab', color[1], color[2], color[3]);
+        case 'hcluv': return getScaledDataColorHcl('hcluv', color[1], color[2], color[3]);
 
         case 'oklab':  return getScaledDataColorOpp('oklab',  color[1], color[2], color[3]);
         case 'lab':    return getScaledDataColorOpp('lab',    color[1], color[2], color[3]);
@@ -18437,9 +18444,9 @@ function colorSpaceFactor(space)
         case 'hsv':   
         case 'hsl':    return hs_Factor;
 
-        case 'hclokl': 
-        case 'hcllab': 
-        case 'hclluv': return hclFactor;
+        case 'hclok': 
+        case 'hclab': 
+        case 'hcluv': return hclFactor;
 
         case 'oklab': 
         case 'lab': 
@@ -18459,9 +18466,9 @@ function getColorSpaceScale(space)
         case 'hsv':   
         case 'hsl':    return hs_Scale;
 
-        case 'hclokl': return hcloklScale;
-        case 'hcllab': return hcllabScale;
-        case 'hclluv': return hclluvScale;
+        case 'hclok': return hclokScale;
+        case 'hclab': return hclabScale;
+        case 'hcluv': return hcluvScale;
 
         case 'oklab':  return oklabScale;
         case 'lab':    return labScale;
@@ -18492,9 +18499,9 @@ function dataColor2rgb(color)
         case 'hsv':    return hsv2rgb   (col);
         case 'hsl':    return hsl2rgb   (col);
 
-        case 'hclokl': return hclokl2rgb(col);
-        case 'hcllab': return hcllab2rgb(col);
-        case 'hclluv': return hclluv2rgb(col);
+        case 'hclok': return hclok2rgb(col);
+        case 'hclab': return hclab2rgb(col);
+        case 'hcluv': return hcluv2rgb(col);
 
         case 'oklab':  return oklab2rgb (col);
         case 'lab':    return lab2rgb   (col);
@@ -18514,9 +18521,9 @@ function convertDataColorToSpace(color, toSpace)
         case 'hsv':    return convert2hsv   (color);
         case 'hsl':    return convert2hsl   (color);
 
-        case 'hclokl': return convert2hclokl(color);
-        case 'hcllab': return convert2hcllab(color);
-        case 'hclluv': return convert2hclluv(color);
+        case 'hclok': return convert2hclok(color);
+        case 'hclab': return convert2hclab(color);
+        case 'hcluv': return convert2hcluv(color);
 
         case 'oklab':  return dataColor2oklab (color);
         case 'lab':    return convert2lab   (color);
@@ -18540,9 +18547,9 @@ function convert2rgb(fromColor)
         case 'hsv':    rgb = hsv2rgb   (col); break;
         case 'hsl':    rgb = hsl2rgb   (col); break;
 
-        case 'hclokl': rgb = hclokl2rgb(col); break;
-        case 'hcllab': rgb = hcllab2rgb(col); break;
-        case 'hclluv': rgb = hclluv2rgb(col); break;
+        case 'hclok': rgb = hclok2rgb(col); break;
+        case 'hclab': rgb = hclab2rgb(col); break;
+        case 'hcluv': rgb = hcluv2rgb(col); break;
 
         case 'oklab':  rgb = oklab2rgb (col); break;
         case 'lab':    rgb = lab2rgb   (col); break;
@@ -18568,9 +18575,9 @@ function convert2hsv(fromColor)
         case 'hsv':    hsv =                    col;   break;
         case 'hsl':    hsv = rgb2hsv(hsl2rgb   (col)); break;
 
-        case 'hclokl': hsv = rgb2hsv(hclokl2rgb(col)); break;
-        case 'hcllab': hsv = rgb2hsv(hcllab2rgb(col)); break;
-        case 'hclluv': hsv = rgb2hsv(hclluv2rgb(col)); break;
+        case 'hclok': hsv = rgb2hsv(hclok2rgb(col)); break;
+        case 'hclab': hsv = rgb2hsv(hclab2rgb(col)); break;
+        case 'hcluv': hsv = rgb2hsv(hcluv2rgb(col)); break;
 
         case 'oklab':  hsv = rgb2hsv(oklab2rgb (col)); break;
         case 'lab':    hsv = rgb2hsv(lab2rgb   (col)); break;
@@ -18603,9 +18610,9 @@ function convert2hsl(fromColor)
         case 'hsv':    hsl = rgb2hsl(hsv2rgb   (col)); break;
         case 'hsl':    hsl =                    col;   break;
 
-        case 'hclokl': hsl = rgb2hsl(hclokl2rgb(col)); break;
-        case 'hcllab': hsl = rgb2hsl(hcllab2rgb(col)); break;
-        case 'hclluv': hsl = rgb2hsl(hclluv2rgb(col)); break;
+        case 'hclok': hsl = rgb2hsl(hclok2rgb(col)); break;
+        case 'hclab': hsl = rgb2hsl(hclab2rgb(col)); break;
+        case 'hcluv': hsl = rgb2hsl(hcluv2rgb(col)); break;
 
         case 'oklab':  hsl = rgb2hsl(oklab2rgb (col)); break;
         case 'lab':    hsl = rgb2hsl(lab2rgb   (col)); break;
@@ -18635,9 +18642,9 @@ function dataColor2oklab(fromColor)
         case 'hsv':    lab = rgb2oklab(hsv2rgb   (col)); break;
         case 'hsl':    lab = rgb2oklab(hsl2rgb   (col)); break;
 
-        case 'hclokl': lab = rgb2oklab(hclokl2rgb(col)); break;
-        case 'hcllab': lab = rgb2oklab(hcllab2rgb(col)); break;
-        case 'hclluv': lab = rgb2oklab(hclluv2rgb(col)); break;
+        case 'hclok': lab = rgb2oklab(hclok2rgb(col)); break;
+        case 'hclab': lab = rgb2oklab(hclab2rgb(col)); break;
+        case 'hcluv': lab = rgb2oklab(hcluv2rgb(col)); break;
 
         case 'oklab':  lab =                      col;   break;
         case 'lab':    lab = rgb2oklab(lab2rgb   (col)); break;
@@ -18667,9 +18674,9 @@ function convert2lab(fromColor)
         case 'hsv':    lab = rgb2lab(hsv2rgb   (col)); break;
         case 'hsl':    lab = rgb2lab(hsl2rgb   (col)); break;
 
-        case 'hclokl': lab = rgb2lab(hclokl2rgb(col)); break;
-        case 'hcllab': lab =         hcllab2lab(col);  break;
-        case 'hclluv': lab = rgb2lab(hclluv2rgb(col)); break;
+        case 'hclok': lab = rgb2lab(hclok2rgb(col)); break;
+        case 'hclab': lab =         hclab2lab(col);  break;
+        case 'hcluv': lab = rgb2lab(hcluv2rgb(col)); break;
 
         case 'oklab':  lab = rgb2lab(oklab2rgb (col)); break;
         case 'lab':    lab =                    col;   break;
@@ -18699,9 +18706,9 @@ function convert2luv(fromColor)
         case 'hsv':    luv = rgb2luv(hsv2rgb   (col)); break;
         case 'hsl':    luv = rgb2luv(hsl2rgb   (col)); break;
 
-        case 'hclokl': luv = rgb2luv(hclokl2rgb(col)); break;
-        case 'hcllab': luv = rgb2luv(hcllab2rgb(col)); break;
-        case 'hclluv': luv =         hclluv2luv(col);  break;
+        case 'hclok': luv = rgb2luv(hclok2rgb(col)); break;
+        case 'hclab': luv = rgb2luv(hclab2rgb(col)); break;
+        case 'hcluv': luv =         hcluv2luv(col);  break;
 
         case 'oklab':  luv = rgb2luv(oklab2rgb (col)); break;
         case 'lab':    luv = rgb2luv(lab2rgb   (col)); break;
@@ -18717,7 +18724,7 @@ function convert2luv(fromColor)
 
 
 
-function convert2hclokl(fromColor)
+function convert2hclok(fromColor)
 {
     const col = dataColor2array(fromColor);
 
@@ -18726,22 +18733,22 @@ function convert2hclokl(fromColor)
     switch (fromColor[0])
     {
         case 'hex':
-        case 'rgb':    hcl = rgb2hclokl(           col);  break;
+        case 'rgb':    hcl = rgb2hclok(           col);  break;
 
-        case 'hsv':    hcl = rgb2hclokl(hsv2rgb   (col)); break;
-        case 'hsl':    hcl = rgb2hclokl(hsl2rgb   (col)); break;
+        case 'hsv':    hcl = rgb2hclok(hsv2rgb   (col)); break;
+        case 'hsl':    hcl = rgb2hclok(hsl2rgb   (col)); break;
 
-        case 'hclokl': hcl =                       col;   break;
-        case 'hcllab': hcl = rgb2hclokl(hcllab2rgb(col)); break;
-        case 'hclluv': hcl = rgb2hclokl(hclluv2rgb(col)); break;
+        case 'hclok': hcl =                       col;   break;
+        case 'hclab': hcl = rgb2hclok(hclab2rgb(col)); break;
+        case 'hcluv': hcl = rgb2hclok(hcluv2rgb(col)); break;
 
-        case 'oklab':  hcl = rgb2hclokl(oklab2rgb (col)); break;
-        case 'lab':    hcl = rgb2hclokl(lab2rgb   (col)); break;
-        case 'luv':    hcl = rgb2hclokl(luv2rgb   (col)); break;
+        case 'oklab':  hcl = rgb2hclok(oklab2rgb (col)); break;
+        case 'lab':    hcl = rgb2hclok(lab2rgb   (col)); break;
+        case 'luv':    hcl = rgb2hclok(luv2rgb   (col)); break;
     }
 
     return [
-       'hclokl',
+       'hclok',
         hcl[0],
         hcl[1],
         hcl[2] ];
@@ -18749,7 +18756,7 @@ function convert2hclokl(fromColor)
 
 
 
-function convert2hcllab(fromColor)
+function convert2hclab(fromColor)
 {
     const col = dataColor2array(fromColor);
 
@@ -18758,22 +18765,22 @@ function convert2hcllab(fromColor)
     switch (fromColor[0])
     {
         case 'hex':
-        case 'rgb':    hcl = rgb2hcllab(           col) ; break;
+        case 'rgb':    hcl = rgb2hclab(           col) ; break;
         
-        case 'hsv':    hcl = rgb2hcllab(hsv2rgb   (col)); break;
-        case 'hsl':    hcl = rgb2hcllab(hsl2rgb   (col)); break;
+        case 'hsv':    hcl = rgb2hclab(hsv2rgb   (col)); break;
+        case 'hsl':    hcl = rgb2hclab(hsl2rgb   (col)); break;
         
-        case 'hclokl': hcl = rgb2hcllab(hclokl2rgb(col)); break;
-        case 'hcllab': hcl =                       col;   break;
-        case 'hclluv': hcl = rgb2hcllab(hclluv2rgb(col)); break;
+        case 'hclok': hcl = rgb2hclab(hclok2rgb(col)); break;
+        case 'hclab': hcl =                       col;   break;
+        case 'hcluv': hcl = rgb2hclab(hcluv2rgb(col)); break;
         
-        case 'oklab':  hcl = rgb2hcllab(oklab2rgb (col)); break;
-        case 'lab':    hcl = lab2hcllab(           col ); break;
-        case 'luv':    hcl = rgb2hcllab(luv2rgb   (col)); break;
+        case 'oklab':  hcl = rgb2hclab(oklab2rgb (col)); break;
+        case 'lab':    hcl = lab2hclab(           col ); break;
+        case 'luv':    hcl = rgb2hclab(luv2rgb   (col)); break;
     }
 
     return [
-       'hcllab',
+       'hclab',
         hcl[0],
         hcl[1],
         hcl[2] ];
@@ -18781,7 +18788,7 @@ function convert2hcllab(fromColor)
 
 
 
-function convert2hclluv(fromColor)
+function convert2hcluv(fromColor)
 {
     const col = dataColor2array(fromColor);
 
@@ -18790,22 +18797,22 @@ function convert2hclluv(fromColor)
     switch (fromColor[0])
     {
         case 'hex':
-        case 'rgb':    hcl = rgb2hclluv(           col ); break;
+        case 'rgb':    hcl = rgb2hcluv(           col ); break;
 
-        case 'hsv':    hcl = rgb2hclluv(hsv2rgb   (col)); break;
-        case 'hsl':    hcl = rgb2hclluv(hsl2rgb   (col)); break;
+        case 'hsv':    hcl = rgb2hcluv(hsv2rgb   (col)); break;
+        case 'hsl':    hcl = rgb2hcluv(hsl2rgb   (col)); break;
 
-        case 'hcllab': hcl = rgb2hclluv(hcllab2rgb(col)); break;
-        case 'hclluv': hcl =                       col;   break;
-        case 'hclokl': hcl = rgb2hclluv(hclokl2rgb(col)); break;
+        case 'hclab': hcl = rgb2hcluv(hclab2rgb(col)); break;
+        case 'hcluv': hcl =                       col;   break;
+        case 'hclok': hcl = rgb2hcluv(hclok2rgb(col)); break;
 
-        case 'oklab':  hcl = rgb2hclluv(oklab2rgb (col)); break;
-        case 'lab':    hcl = rgb2hclluv(lab2rgb   (col)); break;
-        case 'luv':    hcl = luv2hclluv(           col ); break;
+        case 'oklab':  hcl = rgb2hcluv(oklab2rgb (col)); break;
+        case 'lab':    hcl = rgb2hcluv(lab2rgb   (col)); break;
+        case 'luv':    hcl = luv2hcluv(           col ); break;
     }
 
     return [
-       'hclluv',
+       'hcluv',
         hcl[0],
         hcl[1],
         hcl[2] ];
@@ -22663,7 +22670,7 @@ function pol2opp(pol) // polar to opponent
 }
 
 
-function hclokl2rgb(hcl, cs = sRGB)
+function hclok2rgb(hcl, cs = sRGB)
 {
     hcl[0] *= Tau;
     hcl[1] *= hcl[2]; 
@@ -22672,14 +22679,14 @@ function hclokl2rgb(hcl, cs = sRGB)
 
 
 
-function hclokl2rgb_(h, c, l, cs = sRGB)
+function hclok2rgb_(h, c, l, cs = sRGB)
 {
-    return hclokl2rgb_([h, c, l], cs);
+    return hclok2rgb_([h, c, l], cs);
 }    
     
     
     
-function rgb2hclokl(rgb, cs = sRGB)
+function rgb2hclok(rgb, cs = sRGB)
 {
     const hcl = opp2pol(rgb2oklab(rgb, cs));
     hcl[0] /= Tau;
@@ -22689,14 +22696,14 @@ function rgb2hclokl(rgb, cs = sRGB)
 
 
 
-function rgb2hclokl_(r, g, b, cs = sRGB)
+function rgb2hclok_(r, g, b, cs = sRGB)
 {
-    return rgb2hclokl([r, g, b], cs);
+    return rgb2hclok([r, g, b], cs);
 }
 
 
 
-function hcllab2lab(hcl)
+function hclab2lab(hcl)
 {
     hcl[0] *= Tau;
     hcl[1] *= hcl[2];
@@ -22705,14 +22712,14 @@ function hcllab2lab(hcl)
 
 
 
-function hcllab2rgb(hcl, cs = sRGB)
+function hclab2rgb(hcl, cs = sRGB)
 {
-    return lab2rgb(hcllab2lab(hcl), cs);
+    return lab2rgb(hclab2lab(hcl), cs);
 }
 
 
 
-function lab2hcllab(lab)
+function lab2hclab(lab)
 {
     let hcl = opp2pol(lab);
     hcl[0] /= Tau;
@@ -22722,14 +22729,14 @@ function lab2hcllab(lab)
 
 
 
-function rgb2hcllab(rgb, cs = sRGB)
+function rgb2hclab(rgb, cs = sRGB)
 {
-    return lab2hcllab(rgb2lab(rgb, cs));
+    return lab2hclab(rgb2lab(rgb, cs));
 }
 
 
 
-function hclluv2luv(hcl)
+function hcluv2luv(hcl)
 {
     hcl[0] *= Tau;
     hcl[1] *= hcl[2];
@@ -22738,14 +22745,14 @@ function hclluv2luv(hcl)
 
 
 
-function hclluv2rgb(hcl, cs = sRGB)
+function hcluv2rgb(hcl, cs = sRGB)
 {
-    return luv2rgb(hclluv2luv(hcl), cs);
+    return luv2rgb(hcluv2luv(hcl), cs);
 }
 
 
 
-function luv2hclluv(luv)
+function luv2hcluv(luv)
 {
     let hcl = opp2pol(luv);
     hcl[0] /= Tau;
@@ -22755,9 +22762,9 @@ function luv2hclluv(luv)
 
 
 
-function rgb2hclluv(rgb, cs = sRGB)
+function rgb2hcluv(rgb, cs = sRGB)
 {
-    return luv2hclluv(rgb2luv(rgb, cs));
+    return luv2hcluv(rgb2luv(rgb, cs));
 }
 
 
@@ -23067,7 +23074,7 @@ function rgb_a(rgb, a)
 
 function isDark(rgb, threshold = 0.71)
 {
-    return rgb2hclokl(rgb)[2] < threshold;
+    return rgb2hclok(rgb)[2] < threshold;
 }
 
 
@@ -25005,6 +25012,15 @@ extends GValue
 
 
 
+    static fromString(str)
+    {
+        return new NumberValue(
+            parseFloat(str),
+            decCount(str));
+    }
+
+
+
     copy()
     {
         const copy = new NumberValue(
@@ -25114,9 +25130,7 @@ function parseSimpleNumberValue(str)
     const num = 
         str == NAN_CHAR
         ? NumberValue.NaN
-        : new NumberValue(
-              parseFloat(str),
-              decCount(str));
+        : NumberValue.fromString(str);
 
     return [num, 1];
 }
@@ -29207,9 +29221,9 @@ function getMinCorrections(space, order)
         case 'hsv': 
         case 'hsl':    min = [0, 0, 0]; break;
 
-        case 'hclokl':
-        case 'hcllab':
-        case 'hclluv': min = [0, 0, 0]; break;
+        case 'hclok':
+        case 'hclab':
+        case 'hcluv': min = [0, 0, 0]; break;
 
         case 'oklab':
         case 'lab':
@@ -29240,9 +29254,9 @@ function getMaxCorrections(space, order)
         case 'hsv': 
         case 'hsl':    max = [hs_Factor[0]/2, hs_Factor[1], hs_Factor[2]]; break;
 
-        case 'hclokl':
-        case 'hcllab':
-        case 'hclluv': max = [hclFactor[0]/2, hclFactor[1], hclFactor[2]]; break;
+        case 'hclok':
+        case 'hclab':
+        case 'hcluv': max = [hclFactor[0]/2, hclFactor[1], hclFactor[2]]; break;
 
         case 'oklab':
         case 'lab':
@@ -29353,9 +29367,9 @@ function getColorCorrections(colorSpace)
             new ColorCorrection('S', hs_Factor[1]),
             new ColorCorrection('L', hs_Factor[2]) ];
 
-    case 'hclokl':
-    case 'hcllab':
-    case 'hclluv':
+    case 'hclok':
+    case 'hclab':
+    case 'hcluv':
         return [
             new ColorCorrection('H', hclFactor[0]/2),
             new ColorCorrection('C', hclFactor[1]),
@@ -34333,6 +34347,14 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         if (typeof value != 'number')
             console.assert(false, 'numberControl.setValue(value) is ' + typeof value + ', must be a number');
 
+            
+        if (   control.param.node.id == 'color2'
+            && control.param.id == 'c2')
+        {
+            console.log('value =', value);
+            console.log('control.max =', control.max);
+        }
+
 
         const oldValue = control.value;
 
@@ -38696,7 +38718,7 @@ extends Parameter
 
     legacyLoadParam(param)
     {
-        this.setValue(new NumberValue(parseFloat(param), decCount(param)), true, true, false);
+        this.setValue(NumberValue.fromString(param), true, true, false);
     }
 }
 
@@ -41857,7 +41879,7 @@ function updateWireStyle(wire)
     const color = wire.getColor();
 
 
-    const l = rgb2hclokl(color)[2];
+    const l = rgb2hclok(color)[2];
     
     const bright       = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
     const innerOpacity = Math.round(bright * 44 * Math.min(graphView.zoom, 1)).toString(16).padStart(2, '0');
@@ -43105,7 +43127,7 @@ class Operator
             index = this.params.length-1;
         }
         
-        this.params[index].legacyLoadParam(_param ? _param[1] : defValue.toString());
+        this.params[index].legacyLoadParam(_param ? _param[1] : defValue);
     }
 
 
@@ -46624,7 +46646,7 @@ extends Operator
             : height;
 
 
-        const hclBack = rgb2hclokl(colBack);
+        const hclBack = rgb2hclok(colBack);
 
         const hclBack1 = [...hclBack];
         const hclBack2 = [...hclBack];
@@ -46633,8 +46655,8 @@ extends Operator
         hclBack2[0] -= 1/12;  if (hclBack2[0] < 0) hclBack2[0] += 1;
 
 
-        const altBack1   = rgb_a(clipRgb(hclokl2rgb(hclBack1)), 0.35);
-        const altBack2   = rgb_a(clipRgb(hclokl2rgb(hclBack2)), 0.35);
+        const altBack1   = rgb_a(clipRgb(hclok2rgb(hclBack1)), 0.35);
+        const altBack2   = rgb_a(clipRgb(hclok2rgb(hclBack2)), 0.35);
 
         const colWarning = getDefaultWarningRgba(colBack);
         const factor     = this.getWarningFactor(colBack);
@@ -47333,23 +47355,30 @@ extends OpColorBase
     {
         //super.legacyLoadParams(_node, pasting);
 
-        this.legacyLoadParamById(_node, 'space', 0); 
-        this.legacyLoadParamById(_node, 'c1',    128);
-        this.legacyLoadParamById(_node, 'c2',    128);
-        this.legacyLoadParamById(_node, 'c3',    128);
+        const _space = _node.params.find(p => p[0] == 'space');
+
+        if (   _space && parseInt(_space[1]) >= colorSpaceCount()
+            && !settings.showAllColorSpaces)
+            updateSettingAndMenu('showAllColorSpaces', true, true);
 
 
+        this.legacyLoadParamById(_node, 'space', '0'); 
+        this.legacyLoadParamById(_node, 'c1',  '128');
+        this.legacyLoadParamById(_node, 'c2',  '128');
+        this.legacyLoadParamById(_node, 'c3',  '128');
+
+        
         if (_node.colorBeforeNaN)
             this._colorBeforeNaN = _node.colorBeforeNaN;
 
         this.prevSpace = _node.prevSpace;    
 
-
+console.log('this.paramSpace.value =', this.paramSpace.value);
         if (this.paramSpace.value.isValid())
         {
             const space  = colorSpace(Math.max(1, this.paramSpace.value.value));
             const factor = colorFactor(space);
-
+console.log('space =', space);
             this._color = [
                 space,
                 this.param1.value.value / factor[0],
@@ -47368,9 +47397,9 @@ const OpColorSpaces =
     ['rgb',    'RGB'   ], 
     ['hsv',    'HSV'   ], 
     ['hsl',    'HSL'   ], 
-    ['hclokl', 'HCL/ok'],
-    ['hcllab', 'HCL/ab'],
-    ['hclluv', 'HCL/uv'],
+    ['hclok', 'HCL/ok'],
+    ['hclab', 'HCL/ab'],
+    ['hcluv', 'HCL/uv'],
     ['oklab',  'okLab' ],
     ['lab',    'Lab'   ],
     ['luv',    'Luv'   ]
@@ -47392,24 +47421,24 @@ function colorSpaceCount(parse = null)
 
 
 
-const rgbFactor   = [255, 255, 255];   const rgbDisplayFactor   = [255, 255, 255];
-const hs_Factor   = [360, 100, 100];   const hs_DisplayFactor   = [360, 100, 100];
-const hclFactor   = [360, 100, 100];   const hclDisplayFactor   = [360, 100, 100];
-const oppFactor   = [100, 100, 100];   const oppDisplayFactor   = [100, 100, 100];
+const rgbFactor  = [255, 255, 255];
+const hs_Factor  = [360, 100, 100];
+const hclFactor  = [360, 100, 100];
+const oppFactor  = [100, 100, 100];
   
  
-const rgbScale    = [255, 255, 255];   const rgbDisplayScale    = [255, 255, 255];
+const rgbScale   = [255, 255, 255];
   
-const hs_Scale    = [360, 100, 100];   const hs_DisplayScale    = [360, 100, 100];
+const hs_Scale   = [360, 100, 100];
  
-const hcloklScale = [360, 300, 100];   const hcloklDisplayScale = [360,  51, 100];
-const hcllabScale = [360, 400, 100];   const hcllabDisplayScale = [360, 400, 100];
-const hclluvScale = [360, 330, 100];   const hclluvDisplayScale = [360, 330, 100];
+const hclokScale = [360, 51,  100];
+const hclabScale = [360, 400, 100];
+const hcluvScale = [360, 330, 100];
  
  
-const oklabScale  = [100,  30,  30];   const oklabScale         = [100,  30,  30];
-const labScale    = [100, 100, 100];   const labScale           = [100, 100, 100];
-const luvScale    = [100, 150, 150];   const luvScale           = [100, 150, 150];
+const oklabScale = [100,  30,  30];
+const labScale   = [100, 100, 100];
+const luvScale   = [100, 150, 150];
  
 
 
@@ -47423,9 +47452,9 @@ function colorFactor(space)
         case 'hsv':
         case 'hsl':    return hs_Factor;
 
-        case 'hclokl':
-        case 'hcllab':
-        case 'hclluv': return hclFactor;
+        case 'hclok':
+        case 'hclab':
+        case 'hcluv': return hclFactor;
 
         case 'oklab':  
         case 'lab':      
@@ -47449,9 +47478,9 @@ function scaleColor(col, space)
         case 'hsv':    
         case 'hsl':    scale = hs_Scale;    break;
 
-        case 'hclokl': scale = hcloklScale; break;
-        case 'hcllab': scale = hcllabScale; break;
-        case 'hclluv': scale = hclluvScale; break;
+        case 'hclok': scale = hclokScale; break;
+        case 'hclab': scale = hclabScale; break;
+        case 'hcluv': scale = hcluvScale; break;
 
         case 'oklab':  scale = oklabScale;  break;
         case 'lab':    scale = labScale;    break;
@@ -47483,9 +47512,9 @@ function switchToSpace(node, space)
         case 'hsv':    switchToHsv   (node); break;
         case 'hsl':    switchToHsl   (node); break;
 
-        case 'hclokl': switchToHclOkl(node); break;
-        case 'hcllab': switchToHclLab(node); break;
-        case 'hclluv': switchToHclLuv(node); break;
+        case 'hclok': switchToHclOkl(node); break;
+        case 'hclab': switchToHclLab(node); break;
+        case 'hcluv': switchToHclLuv(node); break;
 
         case 'oklab':  switchToOklab (node); break;
         case 'lab':    switchToLab   (node); break;
@@ -47563,9 +47592,9 @@ function switchToHclControls(node, scale)
 
 
 
-function switchToHclOklControls(node) { switchToHclControls(node, hcloklScale); }
-function switchToHclLabControls(node) { switchToHclControls(node, hcllabScale); }
-function switchToHclLuvControls(node) { switchToHclControls(node, hclluvScale); }
+function switchToHclOklControls(node) { switchToHclControls(node, hclokScale); }
+function switchToHclLabControls(node) { switchToHclControls(node, hclabScale); }
+function switchToHclLuvControls(node) { switchToHclControls(node, hcluvScale); }
 
 
 
@@ -47693,9 +47722,9 @@ function getNormalColorValue(value, space, chan)
         case 'hsv':   
         case 'hsl':    return getNormalValueHs_ (value, chan);
 
-        case 'hclokl': 
-        case 'hcllab': 
-        case 'hclluv': return getNormalValueHcl (value, chan);
+        case 'hclok': 
+        case 'hclab': 
+        case 'hcluv': return getNormalValueHcl (value, chan);
 
         case 'oklab':  
         case 'lab':    
@@ -47774,9 +47803,9 @@ function getNormalColor_(space, c1, c2, c3)
         case 'hsv':   
         case 'hsl':    return getNormalColorHs_(c1, c2, c3);
 
-        case 'hclokl': 
-        case 'hcllab': 
-        case 'hclluv': return getNormalColorHcl(c1, c2, c3);
+        case 'hclok': 
+        case 'hclab': 
+        case 'hcluv': return getNormalColorHcl(c1, c2, c3);
 
         case 'oklab': 
         case 'lab': 
@@ -47836,9 +47865,9 @@ function getScaledDataColor(color)
         case 'hsv':    return getScaledDataColorHs_('hsv',    color[1], color[2], color[3]);
         case 'hsl':    return getScaledDataColorHs_('hsl',    color[1], color[2], color[3]);
 
-        case 'hclokl': return getScaledDataColorHcl('hclokl', color[1], color[2], color[3]);
-        case 'hcllab': return getScaledDataColorHcl('hcllab', color[1], color[2], color[3]);
-        case 'hclluv': return getScaledDataColorHcl('hclluv', color[1], color[2], color[3]);
+        case 'hclok': return getScaledDataColorHcl('hclok', color[1], color[2], color[3]);
+        case 'hclab': return getScaledDataColorHcl('hclab', color[1], color[2], color[3]);
+        case 'hcluv': return getScaledDataColorHcl('hcluv', color[1], color[2], color[3]);
 
         case 'oklab':  return getScaledDataColorOpp('oklab',  color[1], color[2], color[3]);
         case 'lab':    return getScaledDataColorOpp('lab',    color[1], color[2], color[3]);
@@ -47912,9 +47941,9 @@ function colorSpaceFactor(space)
         case 'hsv':   
         case 'hsl':    return hs_Factor;
 
-        case 'hclokl': 
-        case 'hcllab': 
-        case 'hclluv': return hclFactor;
+        case 'hclok': 
+        case 'hclab': 
+        case 'hcluv': return hclFactor;
 
         case 'oklab': 
         case 'lab': 
@@ -47934,9 +47963,9 @@ function getColorSpaceScale(space)
         case 'hsv':   
         case 'hsl':    return hs_Scale;
 
-        case 'hclokl': return hcloklScale;
-        case 'hcllab': return hcllabScale;
-        case 'hclluv': return hclluvScale;
+        case 'hclok': return hclokScale;
+        case 'hclab': return hclabScale;
+        case 'hcluv': return hcluvScale;
 
         case 'oklab':  return oklabScale;
         case 'lab':    return labScale;
@@ -47967,9 +47996,9 @@ function dataColor2rgb(color)
         case 'hsv':    return hsv2rgb   (col);
         case 'hsl':    return hsl2rgb   (col);
 
-        case 'hclokl': return hclokl2rgb(col);
-        case 'hcllab': return hcllab2rgb(col);
-        case 'hclluv': return hclluv2rgb(col);
+        case 'hclok': return hclok2rgb(col);
+        case 'hclab': return hclab2rgb(col);
+        case 'hcluv': return hcluv2rgb(col);
 
         case 'oklab':  return oklab2rgb (col);
         case 'lab':    return lab2rgb   (col);
@@ -47989,9 +48018,9 @@ function convertDataColorToSpace(color, toSpace)
         case 'hsv':    return convert2hsv   (color);
         case 'hsl':    return convert2hsl   (color);
 
-        case 'hclokl': return convert2hclokl(color);
-        case 'hcllab': return convert2hcllab(color);
-        case 'hclluv': return convert2hclluv(color);
+        case 'hclok': return convert2hclok(color);
+        case 'hclab': return convert2hclab(color);
+        case 'hcluv': return convert2hcluv(color);
 
         case 'oklab':  return dataColor2oklab (color);
         case 'lab':    return convert2lab   (color);
@@ -48015,9 +48044,9 @@ function convert2rgb(fromColor)
         case 'hsv':    rgb = hsv2rgb   (col); break;
         case 'hsl':    rgb = hsl2rgb   (col); break;
 
-        case 'hclokl': rgb = hclokl2rgb(col); break;
-        case 'hcllab': rgb = hcllab2rgb(col); break;
-        case 'hclluv': rgb = hclluv2rgb(col); break;
+        case 'hclok': rgb = hclok2rgb(col); break;
+        case 'hclab': rgb = hclab2rgb(col); break;
+        case 'hcluv': rgb = hcluv2rgb(col); break;
 
         case 'oklab':  rgb = oklab2rgb (col); break;
         case 'lab':    rgb = lab2rgb   (col); break;
@@ -48043,9 +48072,9 @@ function convert2hsv(fromColor)
         case 'hsv':    hsv =                    col;   break;
         case 'hsl':    hsv = rgb2hsv(hsl2rgb   (col)); break;
 
-        case 'hclokl': hsv = rgb2hsv(hclokl2rgb(col)); break;
-        case 'hcllab': hsv = rgb2hsv(hcllab2rgb(col)); break;
-        case 'hclluv': hsv = rgb2hsv(hclluv2rgb(col)); break;
+        case 'hclok': hsv = rgb2hsv(hclok2rgb(col)); break;
+        case 'hclab': hsv = rgb2hsv(hclab2rgb(col)); break;
+        case 'hcluv': hsv = rgb2hsv(hcluv2rgb(col)); break;
 
         case 'oklab':  hsv = rgb2hsv(oklab2rgb (col)); break;
         case 'lab':    hsv = rgb2hsv(lab2rgb   (col)); break;
@@ -48078,9 +48107,9 @@ function convert2hsl(fromColor)
         case 'hsv':    hsl = rgb2hsl(hsv2rgb   (col)); break;
         case 'hsl':    hsl =                    col;   break;
 
-        case 'hclokl': hsl = rgb2hsl(hclokl2rgb(col)); break;
-        case 'hcllab': hsl = rgb2hsl(hcllab2rgb(col)); break;
-        case 'hclluv': hsl = rgb2hsl(hclluv2rgb(col)); break;
+        case 'hclok': hsl = rgb2hsl(hclok2rgb(col)); break;
+        case 'hclab': hsl = rgb2hsl(hclab2rgb(col)); break;
+        case 'hcluv': hsl = rgb2hsl(hcluv2rgb(col)); break;
 
         case 'oklab':  hsl = rgb2hsl(oklab2rgb (col)); break;
         case 'lab':    hsl = rgb2hsl(lab2rgb   (col)); break;
@@ -48110,9 +48139,9 @@ function dataColor2oklab(fromColor)
         case 'hsv':    lab = rgb2oklab(hsv2rgb   (col)); break;
         case 'hsl':    lab = rgb2oklab(hsl2rgb   (col)); break;
 
-        case 'hclokl': lab = rgb2oklab(hclokl2rgb(col)); break;
-        case 'hcllab': lab = rgb2oklab(hcllab2rgb(col)); break;
-        case 'hclluv': lab = rgb2oklab(hclluv2rgb(col)); break;
+        case 'hclok': lab = rgb2oklab(hclok2rgb(col)); break;
+        case 'hclab': lab = rgb2oklab(hclab2rgb(col)); break;
+        case 'hcluv': lab = rgb2oklab(hcluv2rgb(col)); break;
 
         case 'oklab':  lab =                      col;   break;
         case 'lab':    lab = rgb2oklab(lab2rgb   (col)); break;
@@ -48142,9 +48171,9 @@ function convert2lab(fromColor)
         case 'hsv':    lab = rgb2lab(hsv2rgb   (col)); break;
         case 'hsl':    lab = rgb2lab(hsl2rgb   (col)); break;
 
-        case 'hclokl': lab = rgb2lab(hclokl2rgb(col)); break;
-        case 'hcllab': lab =         hcllab2lab(col);  break;
-        case 'hclluv': lab = rgb2lab(hclluv2rgb(col)); break;
+        case 'hclok': lab = rgb2lab(hclok2rgb(col)); break;
+        case 'hclab': lab =         hclab2lab(col);  break;
+        case 'hcluv': lab = rgb2lab(hcluv2rgb(col)); break;
 
         case 'oklab':  lab = rgb2lab(oklab2rgb (col)); break;
         case 'lab':    lab =                    col;   break;
@@ -48174,9 +48203,9 @@ function convert2luv(fromColor)
         case 'hsv':    luv = rgb2luv(hsv2rgb   (col)); break;
         case 'hsl':    luv = rgb2luv(hsl2rgb   (col)); break;
 
-        case 'hclokl': luv = rgb2luv(hclokl2rgb(col)); break;
-        case 'hcllab': luv = rgb2luv(hcllab2rgb(col)); break;
-        case 'hclluv': luv =         hclluv2luv(col);  break;
+        case 'hclok': luv = rgb2luv(hclok2rgb(col)); break;
+        case 'hclab': luv = rgb2luv(hclab2rgb(col)); break;
+        case 'hcluv': luv =         hcluv2luv(col);  break;
 
         case 'oklab':  luv = rgb2luv(oklab2rgb (col)); break;
         case 'lab':    luv = rgb2luv(lab2rgb   (col)); break;
@@ -48192,7 +48221,7 @@ function convert2luv(fromColor)
 
 
 
-function convert2hclokl(fromColor)
+function convert2hclok(fromColor)
 {
     const col = dataColor2array(fromColor);
 
@@ -48201,22 +48230,22 @@ function convert2hclokl(fromColor)
     switch (fromColor[0])
     {
         case 'hex':
-        case 'rgb':    hcl = rgb2hclokl(           col);  break;
+        case 'rgb':    hcl = rgb2hclok(           col);  break;
 
-        case 'hsv':    hcl = rgb2hclokl(hsv2rgb   (col)); break;
-        case 'hsl':    hcl = rgb2hclokl(hsl2rgb   (col)); break;
+        case 'hsv':    hcl = rgb2hclok(hsv2rgb   (col)); break;
+        case 'hsl':    hcl = rgb2hclok(hsl2rgb   (col)); break;
 
-        case 'hclokl': hcl =                       col;   break;
-        case 'hcllab': hcl = rgb2hclokl(hcllab2rgb(col)); break;
-        case 'hclluv': hcl = rgb2hclokl(hclluv2rgb(col)); break;
+        case 'hclok': hcl =                       col;   break;
+        case 'hclab': hcl = rgb2hclok(hclab2rgb(col)); break;
+        case 'hcluv': hcl = rgb2hclok(hcluv2rgb(col)); break;
 
-        case 'oklab':  hcl = rgb2hclokl(oklab2rgb (col)); break;
-        case 'lab':    hcl = rgb2hclokl(lab2rgb   (col)); break;
-        case 'luv':    hcl = rgb2hclokl(luv2rgb   (col)); break;
+        case 'oklab':  hcl = rgb2hclok(oklab2rgb (col)); break;
+        case 'lab':    hcl = rgb2hclok(lab2rgb   (col)); break;
+        case 'luv':    hcl = rgb2hclok(luv2rgb   (col)); break;
     }
 
     return [
-       'hclokl',
+       'hclok',
         hcl[0],
         hcl[1],
         hcl[2] ];
@@ -48224,7 +48253,7 @@ function convert2hclokl(fromColor)
 
 
 
-function convert2hcllab(fromColor)
+function convert2hclab(fromColor)
 {
     const col = dataColor2array(fromColor);
 
@@ -48233,22 +48262,22 @@ function convert2hcllab(fromColor)
     switch (fromColor[0])
     {
         case 'hex':
-        case 'rgb':    hcl = rgb2hcllab(           col) ; break;
+        case 'rgb':    hcl = rgb2hclab(           col) ; break;
         
-        case 'hsv':    hcl = rgb2hcllab(hsv2rgb   (col)); break;
-        case 'hsl':    hcl = rgb2hcllab(hsl2rgb   (col)); break;
+        case 'hsv':    hcl = rgb2hclab(hsv2rgb   (col)); break;
+        case 'hsl':    hcl = rgb2hclab(hsl2rgb   (col)); break;
         
-        case 'hclokl': hcl = rgb2hcllab(hclokl2rgb(col)); break;
-        case 'hcllab': hcl =                       col;   break;
-        case 'hclluv': hcl = rgb2hcllab(hclluv2rgb(col)); break;
+        case 'hclok': hcl = rgb2hclab(hclok2rgb(col)); break;
+        case 'hclab': hcl =                       col;   break;
+        case 'hcluv': hcl = rgb2hclab(hcluv2rgb(col)); break;
         
-        case 'oklab':  hcl = rgb2hcllab(oklab2rgb (col)); break;
-        case 'lab':    hcl = lab2hcllab(           col ); break;
-        case 'luv':    hcl = rgb2hcllab(luv2rgb   (col)); break;
+        case 'oklab':  hcl = rgb2hclab(oklab2rgb (col)); break;
+        case 'lab':    hcl = lab2hclab(           col ); break;
+        case 'luv':    hcl = rgb2hclab(luv2rgb   (col)); break;
     }
 
     return [
-       'hcllab',
+       'hclab',
         hcl[0],
         hcl[1],
         hcl[2] ];
@@ -48256,7 +48285,7 @@ function convert2hcllab(fromColor)
 
 
 
-function convert2hclluv(fromColor)
+function convert2hcluv(fromColor)
 {
     const col = dataColor2array(fromColor);
 
@@ -48265,22 +48294,22 @@ function convert2hclluv(fromColor)
     switch (fromColor[0])
     {
         case 'hex':
-        case 'rgb':    hcl = rgb2hclluv(           col ); break;
+        case 'rgb':    hcl = rgb2hcluv(           col ); break;
 
-        case 'hsv':    hcl = rgb2hclluv(hsv2rgb   (col)); break;
-        case 'hsl':    hcl = rgb2hclluv(hsl2rgb   (col)); break;
+        case 'hsv':    hcl = rgb2hcluv(hsv2rgb   (col)); break;
+        case 'hsl':    hcl = rgb2hcluv(hsl2rgb   (col)); break;
 
-        case 'hcllab': hcl = rgb2hclluv(hcllab2rgb(col)); break;
-        case 'hclluv': hcl =                       col;   break;
-        case 'hclokl': hcl = rgb2hclluv(hclokl2rgb(col)); break;
+        case 'hclab': hcl = rgb2hcluv(hclab2rgb(col)); break;
+        case 'hcluv': hcl =                       col;   break;
+        case 'hclok': hcl = rgb2hcluv(hclok2rgb(col)); break;
 
-        case 'oklab':  hcl = rgb2hclluv(oklab2rgb (col)); break;
-        case 'lab':    hcl = rgb2hclluv(lab2rgb   (col)); break;
-        case 'luv':    hcl = luv2hclluv(           col ); break;
+        case 'oklab':  hcl = rgb2hcluv(oklab2rgb (col)); break;
+        case 'lab':    hcl = rgb2hcluv(lab2rgb   (col)); break;
+        case 'luv':    hcl = luv2hcluv(           col ); break;
     }
 
     return [
-       'hclluv',
+       'hcluv',
         hcl[0],
         hcl[1],
         hcl[2] ];
@@ -48643,9 +48672,9 @@ extends OpColorBase
         case 'rgb':    this.paramOrder.setOptions(makeOptions('RGB')); break;
         case 'hsv':    this.paramOrder.setOptions(makeOptions('HSV')); break;
         case 'hsl':    this.paramOrder.setOptions(makeOptions('HSL')); break;
-        case 'hclokl':
-        case 'hcllab':
-        case 'hclluv': this.paramOrder.setOptions(makeOptions('HCL')); break;
+        case 'hclok':
+        case 'hclab':
+        case 'hcluv': this.paramOrder.setOptions(makeOptions('HCL')); break;
         case 'oklab':  
         case 'lab':    this.paramOrder.setOptions(makeOptions('Lab')); break;
         case 'luv':    this.paramOrder.setOptions(makeOptions('Luv')); break;

@@ -1093,7 +1093,7 @@ class Operator
             index = this.params.length-1;
         }
         
-        this.params[index].legacyLoadParam(_param ? _param[1] : defValue.toString());
+        this.params[index].legacyLoadParam(_param ? _param[1] : defValue);
     }
 
 
