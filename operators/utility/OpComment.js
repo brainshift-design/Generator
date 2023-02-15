@@ -25,6 +25,9 @@ extends OperatorBase
 
         this.updateNode();
         graphView.updateNodeTransform(this);
+
+
+        this.labelWrapper.style.overflow = 'visible';
     }
 
 
@@ -52,8 +55,11 @@ extends OperatorBase
             ? this.textbox.value 
             : this.name);
 
-        this.div    .style.width   =
-        this.textbox.style.width   = Math.max(1, mes.width) + 'px';
+
+        const width = Math.max(1, mes.width);
+
+        this.div    .style.width   = 
+        this.textbox.style.width   = width + 'px';
 
         this.textbox.style.height  = this.div.offsetHeight;
         this.textbox.style.padding = '0';

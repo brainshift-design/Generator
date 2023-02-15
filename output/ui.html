@@ -43912,13 +43912,14 @@ function createNodeHeader(node)
         e.preventDefault();
 
         
-        //const bounds = boundingRect(node.label);
+        const bounds = boundingRect(node.label);
 
-        // if (   e.clientX >= bounds.left && e.clientX < bounds.right
-        //     && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
-        //     node.showLabelTextbox();
-        // else 
-        if (!node.header.ignoreDoubleClick)
+        if (  !getCtrlKey(e)
+            && e.clientX >= bounds.left && e.clientX < bounds.right
+            && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
+            node.showLabelTextbox();
+        else if (getCtrlKey(e)
+             && !node.header.ignoreDoubleClick)
             actionManager.do(new MakeActiveNodeAction(node.id));
 
         node.header.ignoreDoubleClick = false;
@@ -43932,6 +43933,7 @@ function createNodeInfo(node)
     node.divDisabled = createDiv();
     node.div.appendChild(node.divDisabled);
 
+    node.divDisabled.style.display       = 'none';
     node.divDisabled.style.position      = 'absolute';
     node.divDisabled.style.width         = 5;
     node.divDisabled.style.height        = 100;
@@ -44378,6 +44380,9 @@ extends OperatorBase
 
         this.updateNode();
         graphView.updateNodeTransform(this);
+
+
+        this.labelWrapper.style.overflow = 'visible';
     }
 
 
@@ -44405,8 +44410,11 @@ extends OperatorBase
             ? this.textbox.value 
             : this.name);
 
-        this.div    .style.width   =
-        this.textbox.style.width   = Math.max(1, mes.width) + 'px';
+
+        const width = Math.max(1, mes.width);
+
+        this.div    .style.width   = 
+        this.textbox.style.width   = width + 'px';
 
         this.textbox.style.height  = this.div.offsetHeight;
         this.textbox.style.padding = '0';
