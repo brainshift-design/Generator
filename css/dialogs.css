@@ -416,6 +416,8 @@
     margin:    0;
     padding:   1px 0 5px 0;
     position:  absolute;
+    pointer-events: all;
+    user-select: text;
     /* box-shadow: 0 0 0 1px blue inset; */
 }
 
@@ -437,14 +439,16 @@
 
 #whatsNewWatermark
 {
-    position:    absolute;
-    left:        40px;
-    top:        -40px;
-    font-size:   500px;
-    font-weight: 600;
-    white-space: nowrap;
-    color:       var(--figma-color-bg-secondary);
-    z-index:     -1;
+    position:       absolute;
+    left:           40px;
+    top:           -40px;
+    font-size:      500px;
+    font-weight:    600;
+    white-space:    nowrap;
+    color:          var(--figma-color-bg-secondary);
+    z-index:        -1;
+    user-select:    none;
+    pointer-events: none;
 }
 
 

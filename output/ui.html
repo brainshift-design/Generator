@@ -597,6 +597,8 @@
     margin:    0;
     padding:   1px 0 5px 0;
     position:  absolute;
+    pointer-events: all;
+    user-select: text;
     /* box-shadow: 0 0 0 1px blue inset; */
 }
 
@@ -618,14 +620,16 @@
 
 #whatsNewWatermark
 {
-    position:    absolute;
-    left:        40px;
-    top:        -40px;
-    font-size:   500px;
-    font-weight: 600;
-    white-space: nowrap;
-    color:       var(--figma-color-bg-secondary);
-    z-index:     -1;
+    position:       absolute;
+    left:           40px;
+    top:           -40px;
+    font-size:      500px;
+    font-weight:    600;
+    white-space:    nowrap;
+    color:          var(--figma-color-bg-secondary);
+    z-index:        -1;
+    user-select:    none;
+    pointer-events: none;
 }
 
 
@@ -2469,19 +2473,18 @@ a
 
             <div id='whatsNewBody'>
                 <h1>What's new in Generator</h1>
-                <p>The back end was rewritten to be robust and scalable, and to provide a responsive UI.</p>
-                <p>Updated menu bar and other UI to completely match Figma</p>
-                <p>Parameters like color space now have dropdown menus</p>
-                <p>New color scheme for nodes</p>
-                <p>Dark mode is now fully supported</p>
-                <p>Added context menus where relevant</p>
-                <p>Color can be linked directly to Figma's styles (only solid colors for now, opacity etc. will be added later)</p>
-                <p>Invalid color stripes now become colorful to show how far out of sRGB the color is</p>
-                <p>Simple comments can now be added to the graph</p>
-                <p>More features will now be available by subscription</p>
-                <img src="http://www.bourt.com/generator/whatsnew/94/test.jpg" />
+                <p>The back end was completely rewritten to be scalable and provide a robust and responsive UI.</p>
+                <p>Color validation was split into two operators: a free one, which is automatic, and one for subscribers, which gives you complete control over the correction result.</p>
+                <p>Invalid color stripes now become colorful to show how far out of sRGB the color is.</p>
+                <p>Colors can now be linked directly to Figma's styles (only solid colors for now, opacity etc. will be added later).</p>
+                <p>Updated all UI to match Figma.</p>
+                <p>Added dropdown menus where relevant.</p>
+                <p>Dark mode is now fully supported.</p>
+                <p>Changed the color scheme for nodes.</p>
+                <p>Simple comments can now be added to the graph.</p>
+                <p>More advanced features coming soon by subscription, which will also open free features that are still in beta (at your own risk, of course 😝).</p>
 
-                <p><div id='chkHideWhatsNew'></div></p>
+                <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
         </div>
         <div class='scrollbar' id='whatsNewScrollbarY'></div>
@@ -42863,9 +42866,9 @@ class Operator
     updateSubscribeStatus(subbed)
     {
         const sub = 
-               (    subbed
-                || !this.subscription)
-            && !this.legacy;
+                subbed
+            || !this.subscription
+            ||  this.legacy;
 
 
         this.subscribeCover.style.display = !sub ? 'block' : 'none';
@@ -43089,6 +43092,7 @@ class Operator
             + pos + tab + '"id": "'      + this.id                        + '",\n'
             + pos + tab + '"name": "'    + this.name.replace('"', '\\\"') + '",\n'
             + pos + tab + '"enabled": "' + boolToString(this.enabled)     + '",\n'
+            + (this.legacy ? (pos + tab + '"legacy": "'  + boolToString(this.legacy) + '",\n') : '')
             + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
             + pos + tab + '"y": "'       + this.div.style.top             + '",\n'
             + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '"';
@@ -43144,6 +43148,9 @@ class Operator
         if (_node.enabled)
             this.enabled = parseBool(_node.enabled);
     
+        if (_node.legacy != undefined)
+            this.legacy = parseBool(_node.legacy);
+
         if (   _node.params
             || this.alwaysLoadParams)
             this.loadParams(_node, pasting);
@@ -54211,7 +54218,8 @@ function legacyLoadNodes(data)
 function legacyLoadNode(_node)
 {
     const node = createNode(_node.type);
-    node.legacy = true;
+
+    node.legacy  = true;
     node.loading = true;
 
     node.id   = _node.id;

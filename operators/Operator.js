@@ -784,9 +784,9 @@ class Operator
     updateSubscribeStatus(subbed)
     {
         const sub = 
-               (    subbed
-                || !this.subscription)
-            && !this.legacy;
+                subbed
+            || !this.subscription
+            ||  this.legacy;
 
 
         this.subscribeCover.style.display = !sub ? 'block' : 'none';
@@ -1010,6 +1010,7 @@ class Operator
             + pos + tab + '"id": "'      + this.id                        + '",\n'
             + pos + tab + '"name": "'    + this.name.replace('"', '\\\"') + '",\n'
             + pos + tab + '"enabled": "' + boolToString(this.enabled)     + '",\n'
+            + (this.legacy ? (pos + tab + '"legacy": "'  + boolToString(this.legacy) + '",\n') : '')
             + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
             + pos + tab + '"y": "'       + this.div.style.top             + '",\n'
             + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '"';
@@ -1065,6 +1066,9 @@ class Operator
         if (_node.enabled)
             this.enabled = parseBool(_node.enabled);
     
+        if (_node.legacy != undefined)
+            this.legacy = parseBool(_node.legacy);
+
         if (   _node.params
             || this.alwaysLoadParams)
             this.loadParams(_node, pasting);
