@@ -761,20 +761,24 @@ class Operator
 
     updateDisabled()
     {
-        //this.inner      .style.opacity = this.enabled ? '100%' : '10%';
+        if (!this.measureData)
+            return;
+        
         this.divDisabled.style.display   = this.enabled ? 'none' : 'inline-block';
-
         this.divDisabled.style.zIndex    = 1000;
+        this.divDisabled.style.transform = 'rotate(45deg)';
         this.divDisabled.style.height    = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 70;
         this.divDisabled.style.left      = (this.measureData.divOffset.width  - this.measureData.disabledOffset.width ) / 2;
         this.divDisabled.style.top       = (this.measureData.divOffset.height - this.measureData.disabledOffset.height) / 2;
-        this.divDisabled.style.transform = 'rotate(45deg)';
     }
 
 
 
     updateSubscribe()
     {
+        if (!this.measureData)
+            return;
+
         this.subscribeCover.style.top    = this.measureData.headerOffset.height;
         this.subscribeCover.style.height = this.measureData.divOffset.height - this.measureData.headerOffset.height;
     }
