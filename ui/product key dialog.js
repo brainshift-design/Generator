@@ -9,7 +9,7 @@ function showProductKeyDialog()
 
 
     //productKeyUserName.innerHTML = currentUser.name;
-    productKeyUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
+    productKeyUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
 
     setDefaultProductKeyInput();
     productKeyInputBack.innerHTML = '•'.repeat(13);
@@ -64,29 +64,30 @@ productKeyInput.addEventListener('input', () =>
         + '•'.repeat(13 - val.length);
 
     
-    if (val.length == 13)
-    {
-        if (validateProductKey(currentUser.id, val))
-        {
-            productKey = val;        
-            uiSetLocalData('productKey', productKey);
+    // if (val.length == 13)
+    // {
+    //     if (validateProductKey(currentUser.id, val))
+    //     {
+    //         productKey = val;        
+    //         uiSetLocalData('productKey', productKey);
             
-            productKeyInput.blur();
-            setGoodProductKeyInput();
+    //         productKeyInput.blur();
+    //         setGoodProductKeyInput();
             
-            window.setTimeout(() => 
-            {
-                hideProductKeyDialog();
-                uiNotify(
-                    '✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 
-                    {delay: 6000});
-            }, 
-            1200);
-        }
-        else
-            setBadProductKeyInput();
-    }
-    else
+    //         window.setTimeout(() => 
+    //         {
+    //             hideProductKeyDialog();
+    //             // TODO uiHappyNotify
+    //             uiNotify(
+    //                 '✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 
+    //                 {delay: 6000});
+    //         }, 
+    //         1200);
+    //     }
+    //     else
+    //         setBadProductKeyInput();
+    // }
+    // else
         setDefaultProductKeyInput();
 });
 

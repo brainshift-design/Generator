@@ -177,57 +177,6 @@ function isVisible(element)
 
 
 
-function copyArray(src, dst)
-{
-    copyArrayAt(
-        src, 0, src.length,
-        dst, 0, dst.length);
-}
-
-
-
-function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
-{
-    const size = Math.min(srcSize, dstSize);
-
-    for (let i = 0; i < size; i++)
-        dst[dstStart + i] = src[srcStart + i];
-}
-
-
-
-function newSizeArrayFrom(array, size) // resizes an array and returns a new array
-{
-    const newArray = new Uint8Array(size);
-    copyArray(array, newArray);
-    return newArray;
-}
-
-
-
-function arraysAreEqual(arr1, arr2)
-{
-    if (arr1.length != arr2.length)
-        return false;
-
-    for (let i = 0; i < arr1.length; i++)
-    {
-        if (arr1[i] != arr2[i])
-            return false;
-    }
-
-    return true;
-}
-
-
-
-function arraysIntersect(array1, array2)
-{
-    return array1.findIndex(i => array2.includes(i)) > -1;
-}
-
-
-
 function isLastInArray(array, item)
 {
     return array.indexOf(item) == array.length-1;

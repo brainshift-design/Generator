@@ -97,6 +97,19 @@ function createOperatorNode(node)
     createNodeHeader(node);
 
     createNodeInfo(node);
+
+
+    node.subscribeCover = createDiv('subscribeCover');
+
+    node.subscribeCover.addEventListener('pointerenter', e => { e.preventDefault(); e.stopImmediatePropagation(); });
+    node.subscribeCover.addEventListener('pointermove',  e => { e.preventDefault(); e.stopImmediatePropagation(); });
+    node.subscribeCover.addEventListener('pointermove',  e => { e.preventDefault(); e.stopImmediatePropagation(); });
+
+    node.subscribeLabel = createDiv('subscribeLabel');
+    node.subscribeLabel.innerHTML = 'SUBSCRIBE';
+
+    node.div.appendChild(node.subscribeCover);
+    node.div.appendChild(node.subscribeLabel);
 }     
 
 

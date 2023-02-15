@@ -2,13 +2,6 @@ const Eps = 0.0000001;
 
 
 
-function toInt(f)
-{
-    return Math.floor(f) | 0;
-}
-
-
-
 function nozero(x)
 {
     return x != 0 ? x : Eps;
@@ -146,39 +139,6 @@ function capitalize(str)
         cap += str.substring(1).toLowerCase();
 
     return cap;
-}
-
-
-
-function toUtf8(str) 
-{
-    return decodeURI(encodeURIComponent(str));
-}
-
-
-
-function fromUtf8(str) 
-{
-    return decodeURIComponent(encodeURI(str));
-}
-
-
-
-function stringToArray(str)
-{
-    return Array.from(fromUtf8(str), c => c.charCodeAt(0));
-}
-
-
-
-function arrayToString(bytes) 
-{
-    let str = '';
-
-    for (let i = 0; i < bytes.length; i++)
-        str += String.fromCharCode(bytes[i]);
-
-    return str;
 }
 
 

@@ -23,6 +23,10 @@ const connectionGap  = 2;
 
 class Operator
 {
+    subscription = false;
+    legacy       = false;
+
+
     graph = null;
     
     
@@ -92,6 +96,9 @@ class Operator
 
     paramBack;
     hiddenParamBack;
+
+    subscribeCover;
+    subscribeLabel;
 
 
     valid;
@@ -679,6 +686,7 @@ class Operator
         this.updateHeader();
         this.updateParams();
         this.updateDisabled();
+        this.updateSubscribe();
 
 
         if (!isEmpty(this.params))
@@ -757,10 +765,38 @@ class Operator
         this.divDisabled.style.display   = this.enabled ? 'none' : 'inline-block';
 
         this.divDisabled.style.zIndex    = 1000;
-        this.divDisabled.style.height    = Math.min(this.div.offsetWidth, this.div.offsetHeight) + 70;
-        this.divDisabled.style.left      = (this.div.offsetWidth  - this.divDisabled.offsetWidth ) / 2;
-        this.divDisabled.style.top       = (this.div.offsetHeight - this.divDisabled.offsetHeight) / 2;
+        this.divDisabled.style.height    = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 70;
+        this.divDisabled.style.left      = (this.measureData.divOffset.width  - this.measureData.disabledOffset.width ) / 2;
+        this.divDisabled.style.top       = (this.measureData.divOffset.height - this.measureData.disabledOffset.height) / 2;
         this.divDisabled.style.transform = 'rotate(45deg)';
+    }
+
+
+
+    updateSubscribe()
+    {
+        this.subscribeCover.style.top    = this.measureData.headerOffset.height;
+        this.subscribeCover.style.height = this.measureData.divOffset.height - this.measureData.headerOffset.height;
+    }
+
+
+
+    updateSubscribeStatus(subbed)
+    {
+        const sub = 
+               (    subbed
+                || !this.subscription)
+            && !this.legacy;
+
+
+        this.subscribeCover.style.display = !sub ? 'block' : 'none';
+        this.subscribeLabel.style.display = !sub ? 'block' : 'none';
+
+        this.inner.style.opacity = !sub ? '50%' : '100%';
+ 
+
+        if (!sub)
+            this.updateSubscribe();
     }
 
 
@@ -787,7 +823,9 @@ class Operator
             labelWrapperBounds: boundingRect(this.labelWrapper),
             labelWrapperOffset: offsetRect  (this.labelWrapper),
             labelBounds:        boundingRect(this.label),
-            labelOffset:        offsetRect  (this.label) 
+            labelOffset:        offsetRect  (this.label),
+            disabledOffset:     offsetRect  (this.divDisabled),
+            subscribeOffset:    offsetRect  (this.subscribeLabel)
         };
 
         this.params

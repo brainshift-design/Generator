@@ -26,6 +26,7 @@ var genMessagePosted = false;
 
 
 var currentUser = '';
+var productKey  = '';
 
 
 

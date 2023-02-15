@@ -27,7 +27,6 @@
     [../autojoin/logging.aj]
     [../autojoin/color.aj]
 
-    ../core/crypto.js
     ../core/base32.js
 
     [../autojoin/types.aj]
@@ -39,6 +38,5 @@
 
     ../actions/*.js
     ../ui/*!(settings).js
-    ../license/*.js
 
 ../html/ui_3.html

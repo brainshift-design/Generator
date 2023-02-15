@@ -40,24 +40,6 @@ function cube(x) { return x*x*x; };
 
 
 
-function nextPow2(x)
-{
-    x = toInt(x);
-
-    x--;
-
-    x |= x >> 1;
-    x |= x >> 2;
-    x |= x >> 4;
-    x |= x >> 8;
-    x |= x >> 16;
-    x |= x >> 32;
-
-    return ++x;
-}
-
-
-
 function distance(p1, p2)
 {
     const dx = p2.x - p1.x;
@@ -431,23 +413,6 @@ function xrotate(angle)
     return [[Math.cos(angle), -Math.sin(angle), 0],
             [Math.sin(angle),  Math.cos(angle), 0],
             [0,                0,               1]];
-}
-
-
-
-function gcd(a, b)
-{
-    let temp;
-    while (1)
-    {
-        temp = a % b;
-
-        if (temp == 0)
-          return b;
-
-        a = b;
-        b = temp;
-    }
 }
 
 

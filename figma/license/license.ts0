@@ -1,13 +1,23 @@
-// const MONTHLY_LICENSE = 'M';
-// const  YEARLY_LICENSE = 'Y';
+const MONTHLY_LICENSE = 'M';
+const  YEARLY_LICENSE = 'Y';
 
 
-// const licenseKeys     = createCryptoKeys();
-// const licenseHashSize = 4;
+//const licenseKeys     = createCryptoKeys();
+//const licenseHashSize = 4;
 
 
 
-// function createProductKey(userId, licenseType, lastYear, lastMonth)
+function figValidateLicense(license)
+{
+    figPostMessageToUi({
+        cmd:   'uiReturnFigValidateLicense',
+        result: false
+    })
+}
+
+
+
+// function createProductKey(userId: string, licenseType: string, lastYear: number, lastMonth: number)
 // {
 //     // how to revoke
     
@@ -37,7 +47,7 @@
 //     const trim = dec.subarray(dec.length - licenseHashSize);
 //     const hash = hashLicenseName(name, licenseHashSize);
     
-//     const valid = arraysEqual(trim, hash);
+//     const valid = arraysAreEqual(trim, hash);
 
 //     if (valid && !rec)
 //     {

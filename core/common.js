@@ -21,6 +21,130 @@ const largeScrollGap   = 14;
 const menuBarHeight    = 40;
 
 
+
+function toInt(f) { return Math.floor(f) | 0; }
+
+
+
+function nextPow2(x)
+{
+    x = toInt(x);
+
+    x--;
+
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    x |= x >> 32;
+
+    return ++x;
+}
+
+
+
+function gcd(a, b)
+{
+    let temp;
+    while (1)
+    {
+        temp = a % b;
+
+        if (temp == 0)
+          return b;
+
+        a = b;
+        b = temp;
+    }
+}
+
+
+
+function toUtf8(str) 
+{
+    return decodeURI(encodeURIComponent(str));
+}
+
+
+
+function fromUtf8(str) 
+{
+    return decodeURIComponent(encodeURI(str));
+}
+
+
+
+function arrayToString(bytes) 
+{
+    let str = '';
+
+    for (let i = 0; i < bytes.length; i++)
+        str += String.fromCharCode(bytes[i]);
+
+    return str;
+}
+
+
+
+function stringToArray(str)
+{
+    return Array.from(fromUtf8(str), c => c.charCodeAt(0));
+}
+
+
+
+function newSizeArrayFrom(array, size) // resizes an array and returns a new array
+{
+    const newArray = new Uint8Array(size);
+    copyArray(array, newArray);
+    return newArray;
+}
+
+
+
+function copyArray(src, dst)
+{
+    copyArrayAt(
+        src, 0, src.length,
+        dst, 0, dst.length);
+}
+
+
+
+function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
+{
+    const size = Math.min(srcSize, dstSize);
+
+    for (let i = 0; i < size; i++)
+        dst[dstStart + i] = src[srcStart + i];
+}
+
+
+
+function arraysAreEqual(arr1, arr2)
+{
+    if (arr1.length != arr2.length)
+        return false;
+
+    for (let i = 0; i < arr1.length; i++)
+    {
+        if (arr1[i] != arr2[i])
+            return false;
+    }
+
+    return true;
+}
+
+
+
+function arraysIntersect(array1, array2)
+{
+    return array1.findIndex(i => array2.includes(i)) > -1;
+}
+
+
+
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 

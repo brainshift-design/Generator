@@ -2,7 +2,7 @@
 
 
 
-// function bigRandom(max = 0)
+// function bigRandom(max: bigint = b0)
 // {
 //     const size = 
 //         max > 0
@@ -18,26 +18,26 @@
 //     let rnd = bigFromBufferAt(bigBuffer, 0, size);
 
 //     if (max > 0)
-//         rnd = rnd % max;
+//         rnd = rnd % BigInt(max);
         
 //     return rnd;
 // }
 
 
 
-// function bigPowMod(n, e, m) // n^e % mod
+// function bigPowMod(n: bigint, e: bigint, m: bigint) // n^e % mod
 // {
-//     let c = 1n;
+//     let c = b1;
 
-//     while (e > 0n)
+//     while (e > b0)
 //     {
-//         if ((e & 1n) != 0n)
+//         if ((e & b1) != b0)
 //         {
 //             c *= n;
 //             c %= m;
 //         }
 
-//         e  >>= 1n;
+//         e >>= b1;
         
 //         n *= n;
 //         n %= m;
@@ -48,7 +48,7 @@
 
 
 
-// function bigNextPrime(n) 
+// function bigNextPrime(n: bigint) 
 // {
 //     while (!bigIsPrime(++n));
 //     return n;
@@ -56,28 +56,28 @@
 
 
 
-// function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
+// function bigIsPrime(x: bigint, k = millerRabinIterations) // Miller-Rabin
 // {
-//     if (x <= 1n) return false; 
-//     if (x <= 3n) return true;
+//     if (x <= b1) return false; 
+//     if (x <= b3) return true;
     
-//     if (x % 2n == 0n) 
+//     if (x % b2 == b0) 
 //         return false;
         
         
-//     let d = x - 1n;
-//     let s = 0n; 
+//     let d = x - b1;
+//     let s = b0; 
                 
-//     while (d % 2n == 0n) 
+//     while (d % b2 == b0) 
 //     {
-//         d /= 2n;         
+//         d /= b2;
 //         s++;
 //     }
         
 
 //     for (let i = 0; i < k; i++)    
 //     {
-//         const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
+//         const a = b2 + bigRandom(x - b1);
 
 //         if (!bigIsWitness(a, s, d, x))
 //             return false;        
@@ -89,22 +89,22 @@
 
     
 
-// function bigIsWitness(a, s, d, n)
+// function bigIsWitness(a: bigint, s: bigint, d: bigint, n: bigint)
 // {
 //     let x = bigPowMod(a, d, n);
         
-//     if (x == 1n)
+//     if (x == b1)
 //         return true;
 
-//     for (let j = 0n; j < s-1n; j++)
+//     for (let j = b0; j < s-b1; j++)
 //     {
-//         if (x == n-1n)
+//         if (x == n-b1)
 //             return true;
         
-//         x = bigPowMod(x, 2n, n);
+//         x = bigPowMod(x, b2, n);
 //     }
 
-//     return x == n-1n;
+//     return x == n-b1;
 // }
 
 
@@ -120,13 +120,13 @@
 // {
 //     size = Math.min(size, buffer.length - start);
     
-//     let val = 0n;
-//     let mul = 1n;
+//     let val = b0;
+//     let mul = b1;
 
 //     for (let i = start+size-1; i >= start; i--) // little-endian
 //     {
 //         val += mul * BigInt(buffer[i]);
-//         mul <<= 8n;
+//         mul <<= b8;
 //     }
 
 //     return val;
@@ -134,14 +134,14 @@
 
 
 
-// function bigToBuffer(n, buffer, bufferSize)
+// function bigToBuffer(n: bigint, buffer, bufferSize)
 // {
 //     bigToBufferAt(n, buffer, 0, bufferSize);
 // }
 
 
 
-// function bigToBufferAt(n, buffer, start, bufferSize)
+// function bigToBufferAt(n: bigint, buffer, start, bufferSize)
 // {
 //     let size = Math.ceil(bigBitCount(n) / 8);
     
@@ -151,34 +151,34 @@
 
 //     for (let i = start+size-1; i >= start; i--) // little-endian
 //     {
-//         buffer[i] = Number(n & 0xFFn); 
-//         n >>= 8n;
+//         buffer[i] = Number(n & bFF); 
+//         n >>= b8;
 //     }
 // }
 
 
 
-// function bigBitCount(n)
+// function bigBitCount(n: bigint)
 // {
 //     return n.toString(2).length;
 // }
 
 
 
-// function bigModInvert(n, m)
+// function bigModInvert(n: bigint, m: bigint)
 // {
 //     const gcd = bigGcdExtended(n, m);
 
-//     if (gcd[0] != 1n) return undefined; // inverse doesn't exist
+//     if (gcd[0] != b1) return undefined; // inverse doesn't exist
 //     else              return (gcd[1] % m + m) % m;
 // }
 
 
 
-// function bigGcdExtended(n, m)
+// function bigGcdExtended(n: bigint, m: bigint)
 // {
-//     if (n == 0n)
-//         return [m, 0n, 1n];
+//     if (n == b0)
+//         return [m, b0, b1];
 
 //     const gcd = bigGcdExtended(m % n, n);
 

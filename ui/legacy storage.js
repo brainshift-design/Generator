@@ -152,6 +152,7 @@ function legacyLoadNodes(data)
 function legacyLoadNode(_node)
 {
     const node = createNode(_node.type);
+    node.legacy = true;
     node.loading = true;
 
     node.id   = _node.id;

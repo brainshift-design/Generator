@@ -179,6 +179,22 @@
 }
 
 
+.dialogButtonClose
+{
+    width:      32px;
+    height:     32px;
+    position:   absolute;
+    left:       calc(100% - 36px);
+    top:        4px;
+}
+
+
+.dialogButtonClose:active
+{
+    box-shadow: none;
+}
+
+
 #productKeyBack
 {
     display:          none;
@@ -210,7 +226,7 @@
                    translateY(-50%);
 
     width:         250px;
-    height:        170px;
+    height:        250px;
     
     color:         var(--figma-color-text);
     background:    var(--figma-color-bg);
@@ -267,22 +283,6 @@
 }
 
 
-.dialogButtonClose
-{
-    width:      32px;
-    height:     32px;
-    position:   absolute;
-    left:       calc(100% - 36px);
-    top:        4px;
-}
-
-
-.dialogButtonClose:active
-{
-    box-shadow: none;
-}
-
-
 #productKeyUserName
 {
     font-size:      11px;
@@ -321,7 +321,7 @@
     left:           50%;
     transform:      translateX(-50%);
 
-    top:            60px;
+    top:            70px;
 
     width:          180px;
 
@@ -329,23 +329,6 @@
 
     overflow:       visible;
     /* box-shadow:     0 0 0 1px green inset; */
-}
-
-
-#productKeyWebsite
-{
-    font-size:      11px;
-    text-align:     center;
-
-    margin-top:     16px;
-    margin-bottom:   8px;
-
-    position:       absolute;
-    left:           50%;
-    top:            120px;
-    transform:      translateX(-50%);
-
-    color:          var(--figma-color-bg-disabled);
 }
 
 
@@ -363,7 +346,7 @@
 
     position:       absolute;
     left:           calc(calc(50% - 4.5em) + 1px);
-    top:            90px;
+    top:            115px;
 
     z-index:        1;
 
@@ -390,11 +373,41 @@
 
     position:       absolute;
     left:           calc(50%);
-    top:            89px;
+    top:            114px;
 
     transform:      translateX(-50%);
 }
 
+
+
+#validateProductKeyButton
+{
+    width:          138px;
+
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
+
+    top:            147px;
+}
+
+
+
+#productKeyWebsite
+{
+    font-size:      11px;
+    text-align:     center;
+
+    margin-top:     16px;
+    margin-bottom:   8px;
+
+    position:       absolute;
+    left:           50%;
+    top:            200px;
+    transform:      translateX(-50%);
+
+    color:          var(--figma-color-bg-disabled);
+}
 
 
 #deleteConnectionsDialog
@@ -2138,6 +2151,36 @@ a
 }
 
 
+.subscribeCover
+{
+    background: transparent;
+    position:   absolute;
+    left:       0;
+    width:      100%;
+    z-index:    100000;
+    display:    none;
+}
+
+
+
+.subscribeLabel
+{
+    font-family:    Inter;
+    font-size:      16px;
+    font-weight:    700;
+    color:          #e88b;
+    position:       absolute;
+    left:           50%;
+    top:            50%;
+    pointer-events: none;
+    z-index:        100000;
+    transform:      translateX(-50%)
+                    translateY(-50%)
+                    rotate(-45deg);
+    display:        none;
+}
+
+
 .operatorSymbol
 {
     font-family:    Inter;
@@ -2378,6 +2421,7 @@ a
         
         <div id='productKeyInputBack'></div>
         <input type='text' spellcheck='false' id='productKeyInput' />
+        <div class='button' id='validateProductKeyButton' onclick='uiValidateLicense(productKeyInput.value);'>Validate</div>
         <div id='productKeyWebsite'><!--<a href='http://www.bourt.com/generator/subscribe' target='_blank'>-->Buy subscription<!--</a>--></div>
     </div>
 
@@ -2665,6 +2709,130 @@ const smallScrollGap   =  6;
 const largeScrollGap   = 14;
   
 const menuBarHeight    = 40;
+
+
+
+function toInt(f) { return Math.floor(f) | 0; }
+
+
+
+function nextPow2(x)
+{
+    x = toInt(x);
+
+    x--;
+
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    x |= x >> 32;
+
+    return ++x;
+}
+
+
+
+function gcd(a, b)
+{
+    let temp;
+    while (1)
+    {
+        temp = a % b;
+
+        if (temp == 0)
+          return b;
+
+        a = b;
+        b = temp;
+    }
+}
+
+
+
+function toUtf8(str) 
+{
+    return decodeURI(encodeURIComponent(str));
+}
+
+
+
+function fromUtf8(str) 
+{
+    return decodeURIComponent(encodeURI(str));
+}
+
+
+
+function arrayToString(bytes) 
+{
+    let str = '';
+
+    for (let i = 0; i < bytes.length; i++)
+        str += String.fromCharCode(bytes[i]);
+
+    return str;
+}
+
+
+
+function stringToArray(str)
+{
+    return Array.from(fromUtf8(str), c => c.charCodeAt(0));
+}
+
+
+
+function newSizeArrayFrom(array, size) // resizes an array and returns a new array
+{
+    const newArray = new Uint8Array(size);
+    copyArray(array, newArray);
+    return newArray;
+}
+
+
+
+function copyArray(src, dst)
+{
+    copyArrayAt(
+        src, 0, src.length,
+        dst, 0, dst.length);
+}
+
+
+
+function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
+{
+    const size = Math.min(srcSize, dstSize);
+
+    for (let i = 0; i < size; i++)
+        dst[dstStart + i] = src[srcStart + i];
+}
+
+
+
+function arraysAreEqual(arr1, arr2)
+{
+    if (arr1.length != arr2.length)
+        return false;
+
+    for (let i = 0; i < arr1.length; i++)
+    {
+        if (arr1[i] != arr2[i])
+            return false;
+    }
+
+    return true;
+}
+
+
+
+function arraysIntersect(array1, array2)
+{
+    return array1.findIndex(i => array2.includes(i)) > -1;
+}
+
 
 
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
@@ -2995,13 +3163,6 @@ const Eps = 0.0000001;
 
 
 
-function toInt(f)
-{
-    return Math.floor(f) | 0;
-}
-
-
-
 function nozero(x)
 {
     return x != 0 ? x : Eps;
@@ -3143,39 +3304,6 @@ function capitalize(str)
 
 
 
-function toUtf8(str) 
-{
-    return decodeURI(encodeURIComponent(str));
-}
-
-
-
-function fromUtf8(str) 
-{
-    return decodeURIComponent(encodeURI(str));
-}
-
-
-
-function stringToArray(str)
-{
-    return Array.from(fromUtf8(str), c => c.charCodeAt(0));
-}
-
-
-
-function arrayToString(bytes) 
-{
-    let str = '';
-
-    for (let i = 0; i < bytes.length; i++)
-        str += String.fromCharCode(bytes[i]);
-
-    return str;
-}
-
-
-
 function getQueryVariable(strVar)
 {
     const query = window.location.search.substring(1);
@@ -3232,24 +3360,6 @@ function ceilTo(x, dec)
 
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
-
-
-
-function nextPow2(x)
-{
-    x = toInt(x);
-
-    x--;
-
-    x |= x >> 1;
-    x |= x >> 2;
-    x |= x >> 4;
-    x |= x >> 8;
-    x |= x >> 16;
-    x |= x >> 32;
-
-    return ++x;
-}
 
 
 
@@ -3626,23 +3736,6 @@ function xrotate(angle)
     return [[Math.cos(angle), -Math.sin(angle), 0],
             [Math.sin(angle),  Math.cos(angle), 0],
             [0,                0,               1]];
-}
-
-
-
-function gcd(a, b)
-{
-    let temp;
-    while (1)
-    {
-        temp = a % b;
-
-        if (temp == 0)
-          return b;
-
-        a = b;
-        b = temp;
-    }
 }
 
 
@@ -4041,198 +4134,198 @@ function boundingRect(elem)
 }
 
 
-var bigBuffer = new Uint8Array(2048);
+// var bigBuffer = new Uint8Array(2048);
 
 
 
-function bigRandom(max = 0)
-{
-    const size = 
-        max > 0
-        ? Math.max(1, Math.floor(bigBitCount(max)/8))
-        : bigBuffer.length;
+// function bigRandom(max = 0)
+// {
+//     const size = 
+//         max > 0
+//         ? Math.max(1, Math.floor(bigBitCount(max)/8))
+//         : bigBuffer.length;
     
-    if (size > bigBuffer.length)
-        bigBuffer = new Uint8Array(nextPow2(size));
+//     if (size > bigBuffer.length)
+//         bigBuffer = new Uint8Array(nextPow2(size));
         
-    for (let i = 0; i < size; i++)
-        bigBuffer[i] = toInt(Math.random() * 0x100);
+//     for (let i = 0; i < size; i++)
+//         bigBuffer[i] = toInt(Math.random() * 0x100);
 
-    let rnd = bigFromBufferAt(bigBuffer, 0, size);
+//     let rnd = bigFromBufferAt(bigBuffer, 0, size);
 
-    if (max > 0)
-        rnd = rnd % max;
+//     if (max > 0)
+//         rnd = rnd % max;
         
-    return rnd;
-}
+//     return rnd;
+// }
 
 
 
-function bigPowMod(n, e, m) // n^e % mod
-{
-    let c = 1n;
+// function bigPowMod(n, e, m) // n^e % mod
+// {
+//     let c = 1n;
 
-    while (e > 0n)
-    {
-        if ((e & 1n) != 0n)
-        {
-            c *= n;
-            c %= m;
-        }
+//     while (e > 0n)
+//     {
+//         if ((e & 1n) != 0n)
+//         {
+//             c *= n;
+//             c %= m;
+//         }
 
-        e  >>= 1n;
+//         e  >>= 1n;
         
-        n *= n;
-        n %= m;
-    }
+//         n *= n;
+//         n %= m;
+//     }
     
-    return c;
-}
+//     return c;
+// }
 
 
 
-function bigNextPrime(n) 
-{
-    while (!bigIsPrime(++n));
-    return n;
-}
+// function bigNextPrime(n) 
+// {
+//     while (!bigIsPrime(++n));
+//     return n;
+// }
 
 
 
-function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
-{
-    if (x <= 1n) return false; 
-    if (x <= 3n) return true;
+// function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
+// {
+//     if (x <= 1n) return false; 
+//     if (x <= 3n) return true;
     
-    if (x % 2n == 0n) 
-        return false;
+//     if (x % 2n == 0n) 
+//         return false;
         
         
-    let d = x - 1n;
-    let s = 0n; 
+//     let d = x - 1n;
+//     let s = 0n; 
                 
-    while (d % 2n == 0n) 
-    {
-        d /= 2n;         
-        s++;
-    }
+//     while (d % 2n == 0n) 
+//     {
+//         d /= 2n;         
+//         s++;
+//     }
         
 
-    for (let i = 0; i < k; i++)    
-    {
-        const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
+//     for (let i = 0; i < k; i++)    
+//     {
+//         const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
 
-        if (!bigIsWitness(a, s, d, x))
-            return false;        
-    }
+//         if (!bigIsWitness(a, s, d, x))
+//             return false;        
+//     }
         
 
-    return true; 
-}    
+//     return true; 
+// }    
 
     
 
-function bigIsWitness(a, s, d, n)
-{
-    let x = bigPowMod(a, d, n);
+// function bigIsWitness(a, s, d, n)
+// {
+//     let x = bigPowMod(a, d, n);
         
-    if (x == 1n)
-        return true;
+//     if (x == 1n)
+//         return true;
 
-    for (let j = 0n; j < s-1n; j++)
-    {
-        if (x == n-1n)
-            return true;
+//     for (let j = 0n; j < s-1n; j++)
+//     {
+//         if (x == n-1n)
+//             return true;
         
-        x = bigPowMod(x, 2n, n);
-    }
+//         x = bigPowMod(x, 2n, n);
+//     }
 
-    return x == n-1n;
-}
-
-
-
-function bigFromBuffer(buffer)
-{
-    return bigFromBufferAt(buffer, 0, buffer.length);
-}
+//     return x == n-1n;
+// }
 
 
 
-function bigFromBufferAt(buffer, start, size)
-{
-    size = Math.min(size, buffer.length - start);
+// function bigFromBuffer(buffer)
+// {
+//     return bigFromBufferAt(buffer, 0, buffer.length);
+// }
+
+
+
+// function bigFromBufferAt(buffer, start, size)
+// {
+//     size = Math.min(size, buffer.length - start);
     
-    let val = 0n;
-    let mul = 1n;
+//     let val = 0n;
+//     let mul = 1n;
 
-    for (let i = start+size-1; i >= start; i--) // little-endian
-    {
-        val += mul * BigInt(buffer[i]);
-        mul <<= 8n;
-    }
+//     for (let i = start+size-1; i >= start; i--) // little-endian
+//     {
+//         val += mul * BigInt(buffer[i]);
+//         mul <<= 8n;
+//     }
 
-    return val;
-}
-
-
-
-function bigToBuffer(n, buffer, bufferSize)
-{
-    bigToBufferAt(n, buffer, 0, bufferSize);
-}
+//     return val;
+// }
 
 
 
-function bigToBufferAt(n, buffer, start, bufferSize)
-{
-    let size = Math.ceil(bigBitCount(n) / 8);
+// function bigToBuffer(n, buffer, bufferSize)
+// {
+//     bigToBufferAt(n, buffer, 0, bufferSize);
+// }
+
+
+
+// function bigToBufferAt(n, buffer, start, bufferSize)
+// {
+//     let size = Math.ceil(bigBitCount(n) / 8);
     
-    size = Math.min(size, buffer.length - start);
+//     size = Math.min(size, buffer.length - start);
 
-    start += bufferSize - size;
+//     start += bufferSize - size;
 
-    for (let i = start+size-1; i >= start; i--) // little-endian
-    {
-        buffer[i] = Number(n & 0xFFn); 
-        n >>= 8n;
-    }
-}
-
-
-
-function bigBitCount(n)
-{
-    return n.toString(2).length;
-}
+//     for (let i = start+size-1; i >= start; i--) // little-endian
+//     {
+//         buffer[i] = Number(n & 0xFFn); 
+//         n >>= 8n;
+//     }
+// }
 
 
 
-function bigModInvert(n, m)
-{
-    const gcd = bigGcdExtended(n, m);
-
-    if (gcd[0] != 1n) return undefined; // inverse doesn't exist
-    else              return (gcd[1] % m + m) % m;
-}
+// function bigBitCount(n)
+// {
+//     return n.toString(2).length;
+// }
 
 
 
-function bigGcdExtended(n, m)
-{
-    if (n == 0n)
-        return [m, 0n, 1n];
+// function bigModInvert(n, m)
+// {
+//     const gcd = bigGcdExtended(n, m);
 
-    const gcd = bigGcdExtended(m % n, n);
+//     if (gcd[0] != 1n) return undefined; // inverse doesn't exist
+//     else              return (gcd[1] % m + m) % m;
+// }
 
-    const x   = gcd[1];
-    const y   = gcd[2];
 
-    return [
-        gcd[0], 
-        y - (m/n)*x,
-        x ];
-}
+
+// function bigGcdExtended(n, m)
+// {
+//     if (n == 0n)
+//         return [m, 0n, 1n];
+
+//     const gcd = bigGcdExtended(m % n, n);
+
+//     const x   = gcd[1];
+//     const y   = gcd[2];
+
+//     return [
+//         gcd[0], 
+//         y - (m/n)*x,
+//         x ];
+// }
 
 
 class Point
@@ -4593,57 +4686,6 @@ function hide(element)
 function isVisible(element)
 { 
     return element.style.visibility == 'visible'; 
-}
-
-
-
-function copyArray(src, dst)
-{
-    copyArrayAt(
-        src, 0, src.length,
-        dst, 0, dst.length);
-}
-
-
-
-function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
-{
-    const size = Math.min(srcSize, dstSize);
-
-    for (let i = 0; i < size; i++)
-        dst[dstStart + i] = src[srcStart + i];
-}
-
-
-
-function newSizeArrayFrom(array, size) // resizes an array and returns a new array
-{
-    const newArray = new Uint8Array(size);
-    copyArray(array, newArray);
-    return newArray;
-}
-
-
-
-function arraysAreEqual(arr1, arr2)
-{
-    if (arr1.length != arr2.length)
-        return false;
-
-    for (let i = 0; i < arr1.length; i++)
-    {
-        if (arr1[i] != arr2[i])
-            return false;
-    }
-
-    return true;
-}
-
-
-
-function arraysIntersect(array1, array2)
-{
-    return array1.findIndex(i => array2.includes(i)) > -1;
 }
 
 
@@ -13909,18 +13951,21 @@ function updateMenuItemShowBoolValues()
 
 
 
-function updateMenuItemEnableBetaFeatures()
+function enableFeatures(sub, beta)
 {
-    updateMenuItemDisplay(btnFlow .div,             settings.enableBetaFeatures);
-    updateMenuItemDisplay(btnShape.div,             settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnFlow .div,             sub && beta);
+    updateMenuItemDisplay(btnShape.div,             sub && beta);
 
-    updateMenuItemDisplay(menuItemCorrectColor.div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemCorrectColor.div, sub);
 
-    updateMenuItemDisplay(menuItemStyleFill   .div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(menuItemStyleStroke .div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(menuItemStyleSep1   .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemStyleFill   .div, sub && beta);
+    updateMenuItemDisplay(menuItemStyleStroke .div, sub && beta);
+    updateMenuItemDisplay(menuItemStyleSep1   .div, sub && beta);
 
-    updateMenuItemDisplay(menuItemSeries.div,       settings.enableBetaFeatures);    
+    updateMenuItemDisplay(menuItemSeries.div,       sub && beta);    
+
+
+    graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
 
@@ -18958,6 +19003,130 @@ const largeScrollGap   = 14;
 const menuBarHeight    = 40;
 
 
+
+function toInt(f) { return Math.floor(f) | 0; }
+
+
+
+function nextPow2(x)
+{
+    x = toInt(x);
+
+    x--;
+
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    x |= x >> 32;
+
+    return ++x;
+}
+
+
+
+function gcd(a, b)
+{
+    let temp;
+    while (1)
+    {
+        temp = a % b;
+
+        if (temp == 0)
+          return b;
+
+        a = b;
+        b = temp;
+    }
+}
+
+
+
+function toUtf8(str) 
+{
+    return decodeURI(encodeURIComponent(str));
+}
+
+
+
+function fromUtf8(str) 
+{
+    return decodeURIComponent(encodeURI(str));
+}
+
+
+
+function arrayToString(bytes) 
+{
+    let str = '';
+
+    for (let i = 0; i < bytes.length; i++)
+        str += String.fromCharCode(bytes[i]);
+
+    return str;
+}
+
+
+
+function stringToArray(str)
+{
+    return Array.from(fromUtf8(str), c => c.charCodeAt(0));
+}
+
+
+
+function newSizeArrayFrom(array, size) // resizes an array and returns a new array
+{
+    const newArray = new Uint8Array(size);
+    copyArray(array, newArray);
+    return newArray;
+}
+
+
+
+function copyArray(src, dst)
+{
+    copyArrayAt(
+        src, 0, src.length,
+        dst, 0, dst.length);
+}
+
+
+
+function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
+{
+    const size = Math.min(srcSize, dstSize);
+
+    for (let i = 0; i < size; i++)
+        dst[dstStart + i] = src[srcStart + i];
+}
+
+
+
+function arraysAreEqual(arr1, arr2)
+{
+    if (arr1.length != arr2.length)
+        return false;
+
+    for (let i = 0; i < arr1.length; i++)
+    {
+        if (arr1[i] != arr2[i])
+            return false;
+    }
+
+    return true;
+}
+
+
+
+function arraysIntersect(array1, array2)
+{
+    return array1.findIndex(i => array2.includes(i)) > -1;
+}
+
+
+
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 
@@ -19286,13 +19455,6 @@ const Eps = 0.0000001;
 
 
 
-function toInt(f)
-{
-    return Math.floor(f) | 0;
-}
-
-
-
 function nozero(x)
 {
     return x != 0 ? x : Eps;
@@ -19434,39 +19596,6 @@ function capitalize(str)
 
 
 
-function toUtf8(str) 
-{
-    return decodeURI(encodeURIComponent(str));
-}
-
-
-
-function fromUtf8(str) 
-{
-    return decodeURIComponent(encodeURI(str));
-}
-
-
-
-function stringToArray(str)
-{
-    return Array.from(fromUtf8(str), c => c.charCodeAt(0));
-}
-
-
-
-function arrayToString(bytes) 
-{
-    let str = '';
-
-    for (let i = 0; i < bytes.length; i++)
-        str += String.fromCharCode(bytes[i]);
-
-    return str;
-}
-
-
-
 function getQueryVariable(strVar)
 {
     const query = window.location.search.substring(1);
@@ -19523,24 +19652,6 @@ function ceilTo(x, dec)
 
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
-
-
-
-function nextPow2(x)
-{
-    x = toInt(x);
-
-    x--;
-
-    x |= x >> 1;
-    x |= x >> 2;
-    x |= x >> 4;
-    x |= x >> 8;
-    x |= x >> 16;
-    x |= x >> 32;
-
-    return ++x;
-}
 
 
 
@@ -19917,23 +20028,6 @@ function xrotate(angle)
     return [[Math.cos(angle), -Math.sin(angle), 0],
             [Math.sin(angle),  Math.cos(angle), 0],
             [0,                0,               1]];
-}
-
-
-
-function gcd(a, b)
-{
-    let temp;
-    while (1)
-    {
-        temp = a % b;
-
-        if (temp == 0)
-          return b;
-
-        a = b;
-        b = temp;
-    }
 }
 
 
@@ -20332,198 +20426,198 @@ function boundingRect(elem)
 }
 
 
-var bigBuffer = new Uint8Array(2048);
+// var bigBuffer = new Uint8Array(2048);
 
 
 
-function bigRandom(max = 0)
-{
-    const size = 
-        max > 0
-        ? Math.max(1, Math.floor(bigBitCount(max)/8))
-        : bigBuffer.length;
+// function bigRandom(max = 0)
+// {
+//     const size = 
+//         max > 0
+//         ? Math.max(1, Math.floor(bigBitCount(max)/8))
+//         : bigBuffer.length;
     
-    if (size > bigBuffer.length)
-        bigBuffer = new Uint8Array(nextPow2(size));
+//     if (size > bigBuffer.length)
+//         bigBuffer = new Uint8Array(nextPow2(size));
         
-    for (let i = 0; i < size; i++)
-        bigBuffer[i] = toInt(Math.random() * 0x100);
+//     for (let i = 0; i < size; i++)
+//         bigBuffer[i] = toInt(Math.random() * 0x100);
 
-    let rnd = bigFromBufferAt(bigBuffer, 0, size);
+//     let rnd = bigFromBufferAt(bigBuffer, 0, size);
 
-    if (max > 0)
-        rnd = rnd % max;
+//     if (max > 0)
+//         rnd = rnd % max;
         
-    return rnd;
-}
+//     return rnd;
+// }
 
 
 
-function bigPowMod(n, e, m) // n^e % mod
-{
-    let c = 1n;
+// function bigPowMod(n, e, m) // n^e % mod
+// {
+//     let c = 1n;
 
-    while (e > 0n)
-    {
-        if ((e & 1n) != 0n)
-        {
-            c *= n;
-            c %= m;
-        }
+//     while (e > 0n)
+//     {
+//         if ((e & 1n) != 0n)
+//         {
+//             c *= n;
+//             c %= m;
+//         }
 
-        e  >>= 1n;
+//         e  >>= 1n;
         
-        n *= n;
-        n %= m;
-    }
+//         n *= n;
+//         n %= m;
+//     }
     
-    return c;
-}
+//     return c;
+// }
 
 
 
-function bigNextPrime(n) 
-{
-    while (!bigIsPrime(++n));
-    return n;
-}
+// function bigNextPrime(n) 
+// {
+//     while (!bigIsPrime(++n));
+//     return n;
+// }
 
 
 
-function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
-{
-    if (x <= 1n) return false; 
-    if (x <= 3n) return true;
+// function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
+// {
+//     if (x <= 1n) return false; 
+//     if (x <= 3n) return true;
     
-    if (x % 2n == 0n) 
-        return false;
+//     if (x % 2n == 0n) 
+//         return false;
         
         
-    let d = x - 1n;
-    let s = 0n; 
+//     let d = x - 1n;
+//     let s = 0n; 
                 
-    while (d % 2n == 0n) 
-    {
-        d /= 2n;         
-        s++;
-    }
+//     while (d % 2n == 0n) 
+//     {
+//         d /= 2n;         
+//         s++;
+//     }
         
 
-    for (let i = 0; i < k; i++)    
-    {
-        const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
+//     for (let i = 0; i < k; i++)    
+//     {
+//         const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
 
-        if (!bigIsWitness(a, s, d, x))
-            return false;        
-    }
+//         if (!bigIsWitness(a, s, d, x))
+//             return false;        
+//     }
         
 
-    return true; 
-}    
+//     return true; 
+// }    
 
     
 
-function bigIsWitness(a, s, d, n)
-{
-    let x = bigPowMod(a, d, n);
+// function bigIsWitness(a, s, d, n)
+// {
+//     let x = bigPowMod(a, d, n);
         
-    if (x == 1n)
-        return true;
+//     if (x == 1n)
+//         return true;
 
-    for (let j = 0n; j < s-1n; j++)
-    {
-        if (x == n-1n)
-            return true;
+//     for (let j = 0n; j < s-1n; j++)
+//     {
+//         if (x == n-1n)
+//             return true;
         
-        x = bigPowMod(x, 2n, n);
-    }
+//         x = bigPowMod(x, 2n, n);
+//     }
 
-    return x == n-1n;
-}
-
-
-
-function bigFromBuffer(buffer)
-{
-    return bigFromBufferAt(buffer, 0, buffer.length);
-}
+//     return x == n-1n;
+// }
 
 
 
-function bigFromBufferAt(buffer, start, size)
-{
-    size = Math.min(size, buffer.length - start);
+// function bigFromBuffer(buffer)
+// {
+//     return bigFromBufferAt(buffer, 0, buffer.length);
+// }
+
+
+
+// function bigFromBufferAt(buffer, start, size)
+// {
+//     size = Math.min(size, buffer.length - start);
     
-    let val = 0n;
-    let mul = 1n;
+//     let val = 0n;
+//     let mul = 1n;
 
-    for (let i = start+size-1; i >= start; i--) // little-endian
-    {
-        val += mul * BigInt(buffer[i]);
-        mul <<= 8n;
-    }
+//     for (let i = start+size-1; i >= start; i--) // little-endian
+//     {
+//         val += mul * BigInt(buffer[i]);
+//         mul <<= 8n;
+//     }
 
-    return val;
-}
-
-
-
-function bigToBuffer(n, buffer, bufferSize)
-{
-    bigToBufferAt(n, buffer, 0, bufferSize);
-}
+//     return val;
+// }
 
 
 
-function bigToBufferAt(n, buffer, start, bufferSize)
-{
-    let size = Math.ceil(bigBitCount(n) / 8);
+// function bigToBuffer(n, buffer, bufferSize)
+// {
+//     bigToBufferAt(n, buffer, 0, bufferSize);
+// }
+
+
+
+// function bigToBufferAt(n, buffer, start, bufferSize)
+// {
+//     let size = Math.ceil(bigBitCount(n) / 8);
     
-    size = Math.min(size, buffer.length - start);
+//     size = Math.min(size, buffer.length - start);
 
-    start += bufferSize - size;
+//     start += bufferSize - size;
 
-    for (let i = start+size-1; i >= start; i--) // little-endian
-    {
-        buffer[i] = Number(n & 0xFFn); 
-        n >>= 8n;
-    }
-}
-
-
-
-function bigBitCount(n)
-{
-    return n.toString(2).length;
-}
+//     for (let i = start+size-1; i >= start; i--) // little-endian
+//     {
+//         buffer[i] = Number(n & 0xFFn); 
+//         n >>= 8n;
+//     }
+// }
 
 
 
-function bigModInvert(n, m)
-{
-    const gcd = bigGcdExtended(n, m);
-
-    if (gcd[0] != 1n) return undefined; // inverse doesn't exist
-    else              return (gcd[1] % m + m) % m;
-}
+// function bigBitCount(n)
+// {
+//     return n.toString(2).length;
+// }
 
 
 
-function bigGcdExtended(n, m)
-{
-    if (n == 0n)
-        return [m, 0n, 1n];
+// function bigModInvert(n, m)
+// {
+//     const gcd = bigGcdExtended(n, m);
 
-    const gcd = bigGcdExtended(m % n, n);
+//     if (gcd[0] != 1n) return undefined; // inverse doesn't exist
+//     else              return (gcd[1] % m + m) % m;
+// }
 
-    const x   = gcd[1];
-    const y   = gcd[2];
 
-    return [
-        gcd[0], 
-        y - (m/n)*x,
-        x ];
-}
+
+// function bigGcdExtended(n, m)
+// {
+//     if (n == 0n)
+//         return [m, 0n, 1n];
+
+//     const gcd = bigGcdExtended(m % n, n);
+
+//     const x   = gcd[1];
+//     const y   = gcd[2];
+
+//     return [
+//         gcd[0], 
+//         y - (m/n)*x,
+//         x ];
+// }
 
 
 class Point
@@ -20884,57 +20978,6 @@ function hide(element)
 function isVisible(element)
 { 
     return element.style.visibility == 'visible'; 
-}
-
-
-
-function copyArray(src, dst)
-{
-    copyArrayAt(
-        src, 0, src.length,
-        dst, 0, dst.length);
-}
-
-
-
-function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
-{
-    const size = Math.min(srcSize, dstSize);
-
-    for (let i = 0; i < size; i++)
-        dst[dstStart + i] = src[srcStart + i];
-}
-
-
-
-function newSizeArrayFrom(array, size) // resizes an array and returns a new array
-{
-    const newArray = new Uint8Array(size);
-    copyArray(array, newArray);
-    return newArray;
-}
-
-
-
-function arraysAreEqual(arr1, arr2)
-{
-    if (arr1.length != arr2.length)
-        return false;
-
-    for (let i = 0; i < arr1.length; i++)
-    {
-        if (arr1[i] != arr2[i])
-            return false;
-    }
-
-    return true;
-}
-
-
-
-function arraysIntersect(array1, array2)
-{
-    return array1.findIndex(i => array2.includes(i)) > -1;
 }
 
 
@@ -23737,168 +23780,6 @@ function APCAcontrast(txtY, bgY)
 
 
     return outputContrast * 100;
-}
-
-
-const cryptoModulusSize     = 64; // to keep the keys short
-const millerRabinIterations = 40;
-
-const cryptoBufferSize      = cryptoModulusSize/8;
-const cryptoPrimeBufferSize = cryptoBufferSize /2;
-     
-const cryptoBuffer          = new Uint8Array(cryptoPrimeBufferSize);
-
-
-function bigCryptoRandom()
-{
-    for (let i = 0; i < cryptoPrimeBufferSize; i++)
-        cryptoBuffer[i] = toInt(Math.random() * 0x100);
-
-    cryptoBuffer[0]                       |= 0xC0; // set the top bit to ensure a relatively large number
-    cryptoBuffer[cryptoPrimeBufferSize-1] |= 0x01; // set low bit to ensure the number is odd
-
-    return bigFromBuffer(cryptoBuffer);
-}
-
-
-
-function bigNextCryptoPrime(n) 
-{
-    while (!bigIsPrime(n))
-        n += 2n;
-    
-    return n;
-}
-
-
-
-function bigCryptoPrime(e)
-{
-    // set p so that gcd(e, p-1) = 1
-    
-    let p;
-
-    do
-    {
-        const rnd = bigCryptoRandom();
-        p         = bigNextCryptoPrime(rnd);
-    }
-    while (gcd(p-1n, e) != 1n); 
-        
-    return p;
-}
-
-
-
-function createCryptoKeys()
-{
-    const e = 65537n; // 0x10001
-
-
-    // let p = bigCryptoPrime(e);
-    
-    // let q;
-    // do { q = bigCryptoPrime(e); } 
-    // while (q == p);
-
-    
-    // if (p < q)
-    //     [p,q] = [q,p];
-
-    
-    // console.log('p: ' + p);
-    // console.log('q: ' + q);
-
-
-    const p = 4131437551n,
-          q = 3567532051n;
-    
-
-    const  n   = p * q;
-    const _phi = (p-1n) * (q-1n);
-
-    const  d   = bigModInvert(e, _phi);
-
-
-    return {
-        public:  {n:n, e:e },
-        private: {n:n, d:d, p:p, q:q} };
-}                        
-
-
-
-function encryptBlock(n, key, sign  ) { return bigPowMod(n, (sign   ? key.d : key.e), key.n); }        
-function decryptBlock(n, key, verify) { return bigPowMod(n, (verify ? key.e : key.d), key.n); }        
-
-
-
-function encrypt(data, key) { return encryptData(data, key, false); }
-function decrypt(data, key) { return decryptData(data, key, false); }
-
-function sign   (data, key) { return encryptData(data, key, true); } // yes I know real sign/verify uses a hash,
-function verify (data, key) { return decryptData(data, key, true); } // but I prefer it this way for what I need
-
-
-
-function encryptData(data, key, sign)
-{
-    // prep array should be a multiple of cryptoBufferSize
-    const prep   = new Uint8Array(Math.ceil((data.length) / cryptoBufferSize) * cryptoBufferSize); 
-    const cipher = new Uint8Array(prep.length);
-
-
-    const start = prep.length - data.length;
-    for (let i = 0; i < data.length; i++)
-        prep[start+i] = data[i];
-
-
-    let length = prep.length;
-    let nBlock = 0;
-
-    while (length > 0)
-    {
-        const blockStart = nBlock * cryptoBufferSize;
-        const blockSize  = Math.min(length, cryptoBufferSize);
-        
-        const block      = bigFromBufferAt(prep, blockStart, cryptoBufferSize);
-        const enc        = encryptBlock(block, key, sign);
-        
-        bigToBufferAt(enc, cipher, blockStart, cryptoBufferSize);
-        
-        nBlock++;
-        length -= blockSize;
-    }
-    
-    
-    return cipher;
-}
-
-
-
-function decryptData(cipher, key, verify)
-{
-    const data = new Uint8Array(cipher.length);
-    
-    
-    let length = cipher.length;
-    let nBlock = 0;
-    
-    while (length > 0)
-    {
-        const blockStart = nBlock * cryptoBufferSize;
-        const blockSize  = Math.min(length, cryptoBufferSize);
-
-        const block      = bigFromBufferAt(cipher, blockStart, cryptoBufferSize);
-        const dec        = decryptBlock(block, key, verify);
-
-        bigToBufferAt(dec, data, blockStart, cryptoBufferSize); 
-
-        nBlock++;
-        length -= blockSize;
-    }    
-
-
-    return data;    
 }
 
 
@@ -31857,18 +31738,21 @@ function updateMenuItemShowBoolValues()
 
 
 
-function updateMenuItemEnableBetaFeatures()
+function enableFeatures(sub, beta)
 {
-    updateMenuItemDisplay(btnFlow .div,             settings.enableBetaFeatures);
-    updateMenuItemDisplay(btnShape.div,             settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnFlow .div,             sub && beta);
+    updateMenuItemDisplay(btnShape.div,             sub && beta);
 
-    updateMenuItemDisplay(menuItemCorrectColor.div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemCorrectColor.div, sub);
 
-    updateMenuItemDisplay(menuItemStyleFill   .div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(menuItemStyleStroke .div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(menuItemStyleSep1   .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemStyleFill   .div, sub && beta);
+    updateMenuItemDisplay(menuItemStyleStroke .div, sub && beta);
+    updateMenuItemDisplay(menuItemStyleSep1   .div, sub && beta);
 
-    updateMenuItemDisplay(menuItemSeries.div,       settings.enableBetaFeatures);    
+    updateMenuItemDisplay(menuItemSeries.div,       sub && beta);    
+
+
+    graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
 
@@ -33031,12 +32915,12 @@ function initGeneratorMenus()
     menuMainPreferences.addItems([
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',       {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                       }}),
         menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',        {checkCallback: () => settings.showAllColorSpaces, callback: () => { updateSettingAndMenu('showAllColorSpaces',       true, !settings.showAllColorSpaces);   updateMenuItemShowAllColorSpaces();  }}),
-        menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);       updateMenuItemShowBoolValues();       }}),
-        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',      {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                       }}),
+        menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);       updateMenuItemShowBoolValues();      }}),
+        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',      {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                      }}),
                                         new MenuItem('',                             {separator: true}),   
-        menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);        updateMenuItemShowDebugMenu();        }}),
-                                        new MenuItem('',                             {separator: true}),   
-        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures);         updateMenuItemEnableBetaFeatures();            }})]);
+        menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);        updateMenuItemShowDebugMenu();       }})]);//,
+        //                                 new MenuItem('',                             {separator: true}),   
+        // menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures);         uiValidateLicense(productKey);       }})]);
 
     
     menuMainDebug = new Menu('Debug', false);
@@ -42218,6 +42102,10 @@ const connectionGap  = 2;
 
 class Operator
 {
+    subscription = false;
+    legacy       = false;
+
+
     graph = null;
     
     
@@ -42287,6 +42175,9 @@ class Operator
 
     paramBack;
     hiddenParamBack;
+
+    subscribeCover;
+    subscribeLabel;
 
 
     valid;
@@ -42874,6 +42765,7 @@ class Operator
         this.updateHeader();
         this.updateParams();
         this.updateDisabled();
+        this.updateSubscribe();
 
 
         if (!isEmpty(this.params))
@@ -42952,10 +42844,38 @@ class Operator
         this.divDisabled.style.display   = this.enabled ? 'none' : 'inline-block';
 
         this.divDisabled.style.zIndex    = 1000;
-        this.divDisabled.style.height    = Math.min(this.div.offsetWidth, this.div.offsetHeight) + 70;
-        this.divDisabled.style.left      = (this.div.offsetWidth  - this.divDisabled.offsetWidth ) / 2;
-        this.divDisabled.style.top       = (this.div.offsetHeight - this.divDisabled.offsetHeight) / 2;
+        this.divDisabled.style.height    = Math.min(this.measureData.divOffset.width, this.measureData.divOffset.height) + 70;
+        this.divDisabled.style.left      = (this.measureData.divOffset.width  - this.measureData.disabledOffset.width ) / 2;
+        this.divDisabled.style.top       = (this.measureData.divOffset.height - this.measureData.disabledOffset.height) / 2;
         this.divDisabled.style.transform = 'rotate(45deg)';
+    }
+
+
+
+    updateSubscribe()
+    {
+        this.subscribeCover.style.top    = this.measureData.headerOffset.height;
+        this.subscribeCover.style.height = this.measureData.divOffset.height - this.measureData.headerOffset.height;
+    }
+
+
+
+    updateSubscribeStatus(subbed)
+    {
+        const sub = 
+               (    subbed
+                || !this.subscription)
+            && !this.legacy;
+
+
+        this.subscribeCover.style.display = !sub ? 'block' : 'none';
+        this.subscribeLabel.style.display = !sub ? 'block' : 'none';
+
+        this.inner.style.opacity = !sub ? '50%' : '100%';
+ 
+
+        if (!sub)
+            this.updateSubscribe();
     }
 
 
@@ -42982,7 +42902,9 @@ class Operator
             labelWrapperBounds: boundingRect(this.labelWrapper),
             labelWrapperOffset: offsetRect  (this.labelWrapper),
             labelBounds:        boundingRect(this.label),
-            labelOffset:        offsetRect  (this.label) 
+            labelOffset:        offsetRect  (this.label),
+            disabledOffset:     offsetRect  (this.divDisabled),
+            subscribeOffset:    offsetRect  (this.subscribeLabel)
         };
 
         this.params
@@ -43649,6 +43571,19 @@ function createOperatorNode(node)
     createNodeHeader(node);
 
     createNodeInfo(node);
+
+
+    node.subscribeCover = createDiv('subscribeCover');
+
+    node.subscribeCover.addEventListener('pointerenter', e => { e.preventDefault(); e.stopImmediatePropagation(); });
+    node.subscribeCover.addEventListener('pointermove',  e => { e.preventDefault(); e.stopImmediatePropagation(); });
+    node.subscribeCover.addEventListener('pointermove',  e => { e.preventDefault(); e.stopImmediatePropagation(); });
+
+    node.subscribeLabel = createDiv('subscribeLabel');
+    node.subscribeLabel.innerHTML = 'SUBSCRIBE';
+
+    node.div.appendChild(node.subscribeCover);
+    node.div.appendChild(node.subscribeLabel);
 }     
 
 
@@ -48663,8 +48598,9 @@ extends OpColorBase
     constructor()
     {
         super(CORRECT_COLOR, 'corrected', 100, true);
+        this.subscription = true;
 
-
+        
         this.addInput(new Input(COLOR_TYPES));
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
@@ -53828,6 +53764,7 @@ var genMessagePosted = false;
 
 
 var currentUser = '';
+var productKey  = '';
 
 
 
@@ -54274,6 +54211,7 @@ function legacyLoadNodes(data)
 function legacyLoadNode(_node)
 {
     const node = createNode(_node.type);
+    node.legacy = true;
     node.loading = true;
 
     node.id   = _node.id;
@@ -54354,6 +54292,10 @@ onmessage = e =>
         case 'uiReturnFigResizeWindow':                 uiReturnFigResizeWindow                ();           break;
             
         case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);        break;
+
+        case 'uiReturnFigValidateLicense':              
+            enableFeatures(msg.result, settings.enableBetaFeatures); 
+            break;
 
         case 'uiSetStyleId':                            uiSetStyleId                           (msg);        break;
         case 'uiHideClearUndoWarning':                  uiHideClearUndoWarning                 ();           break;
@@ -54563,7 +54505,7 @@ function showProductKeyDialog()
 
 
     //productKeyUserName.innerHTML = currentUser.name;
-    productKeyUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
+    productKeyUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
 
     setDefaultProductKeyInput();
     productKeyInputBack.innerHTML = '•'.repeat(13);
@@ -54618,29 +54560,30 @@ productKeyInput.addEventListener('input', () =>
         + '•'.repeat(13 - val.length);
 
     
-    if (val.length == 13)
-    {
-        if (validateProductKey(currentUser.id, val))
-        {
-            productKey = val;        
-            uiSetLocalData('productKey', productKey);
+    // if (val.length == 13)
+    // {
+    //     if (validateProductKey(currentUser.id, val))
+    //     {
+    //         productKey = val;        
+    //         uiSetLocalData('productKey', productKey);
             
-            productKeyInput.blur();
-            setGoodProductKeyInput();
+    //         productKeyInput.blur();
+    //         setGoodProductKeyInput();
             
-            window.setTimeout(() => 
-            {
-                hideProductKeyDialog();
-                uiNotify(
-                    '✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 
-                    {delay: 6000});
-            }, 
-            1200);
-        }
-        else
-            setBadProductKeyInput();
-    }
-    else
+    //         window.setTimeout(() => 
+    //         {
+    //             hideProductKeyDialog();
+    //             // TODO uiHappyNotify
+    //             uiNotify(
+    //                 '✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 
+    //                 {delay: 6000});
+    //         }, 
+    //         1200);
+    //     }
+    //     else
+    //         setBadProductKeyInput();
+    // }
+    // else
         setDefaultProductKeyInput();
 });
 
@@ -54957,7 +54900,7 @@ function uiReturnFigGetLocalData(msg)
     if (!settings.dataMode)
     {
         if (msg.key == 'enableBetaFeatures')
-            updateMenuItemEnableBetaFeatures();
+            uiValidateLicense(productKey);
 
         if (msg.key == 'showDebugMenu')
             updateMenuItemShowDebugMenu();
@@ -55196,6 +55139,9 @@ function finishLoading(_nodes)
     graphView.updateShowWires(false);
 
     generatorStarted = true;
+
+
+    uiValidateLicense(productKey);
 }
 
 
@@ -56740,6 +56686,16 @@ function uiLogAllSavedConns()
 }
 
 
+
+function uiValidateLicense(license)
+{
+    uiQueueMessageToFigma({
+        cmd:    'figValidateLicense',
+        license: license
+    });
+}
+
+
 function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
 {
     node.linkedStyleId   = styleId;
@@ -57308,93 +57264,6 @@ function dockWindowTop     () { uiQueueMessageToFigma({cmd: 'figDockWindowTop'  
 function dockWindowLeft    () { uiQueueMessageToFigma({cmd: 'figDockWindowLeft'    }); }
 function dockWindowRight   () { uiQueueMessageToFigma({cmd: 'figDockWindowRight'   }); }
 function dockWindowBottom  () { uiQueueMessageToFigma({cmd: 'figDockWindowBottom'  }); }
-
-
-const MONTHLY_LICENSE = 'M';
-const  YEARLY_LICENSE = 'Y';
-
-
-const licenseKeys     = createCryptoKeys();
-const licenseHashSize = 4;
-
-
-function createProductKey(userId, licenseType, lastYear, lastMonth)
-{
-    // how to revoke
-    
-    const str = 
-          userId 
-        + licenseType
-        + lastYear .toString() 
-        + lastMonth.toString();
-
-    const hash = hashLicenseName(str, licenseHashSize);
-    const enc  = sign(hash, licenseKeys.private);
-    const key  = arrayToBase32(enc);
-
-    return key;
-}
-
-
-
-function validateProductKey(name, key, rec = false)
-{
-    // TODO: check from today until 1 year from now (max license length)
-    // 1/day, so 365 max, add end day to name
-    // check today against last launch date (in private data) to prevent clock tampering
-
-    const arr  = base32toArray(key.toUpperCase());
-    const dec  = verify(arr, licenseKeys.public).subarray(licenseHashSize);
-    const trim = dec.subarray(dec.length - licenseHashSize);
-    const hash = hashLicenseName(name, licenseHashSize);
-    
-    const valid = arraysEqual(trim, hash);
-
-    if (valid && !rec)
-    {
-        let lowerKey = key;
-
-        const lastChar  = lastOf(lowerKey);
-        const lastIndex = base32chars.indexOf(lastChar);
-
-        if (lastIndex > 0)
-        {
-            lowerKey = replaceInStringAt(lowerKey, lowerKey.length-1, base32chars[lastIndex-1]);
-
-            if (validateProductKey(name, lowerKey, true))
-                return false; // at this scale of product key the last bit needs to be guarded against
-        }
-    }
-
-    return valid;
-}
-
-
-
-function hashLicenseName(name, nBytes)
-{
-    // XOR wrap name around a given number of bytes
-
-    const bytes = stringToArray(name);
-
-    if (bytes.length > nBytes)
-    {
-        let pos    = nBytes;
-        let length = bytes.length - nBytes;
-        
-        while (length > 0)
-        {
-            for (let i = 0; i < nBytes; i++)
-                bytes[i] ^= bytes[pos+i];
-            
-            pos    += nBytes;
-            length -= nBytes;
-        }
-    }
-    
-
-    return newSizeArrayFrom(bytes, nBytes);
-}
 
 
 

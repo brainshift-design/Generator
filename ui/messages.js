@@ -39,6 +39,10 @@ onmessage = e =>
             
         case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);        break;
 
+        case 'uiReturnFigValidateLicense':              
+            enableFeatures(msg.result, settings.enableBetaFeatures); 
+            break;
+
         case 'uiSetStyleId':                            uiSetStyleId                           (msg);        break;
         case 'uiHideClearUndoWarning':                  uiHideClearUndoWarning                 ();           break;
     }

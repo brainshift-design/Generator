@@ -27,6 +27,130 @@ const largeScrollGap   = 14;
 const menuBarHeight    = 40;
 
 
+
+function toInt(f) { return Math.floor(f) | 0; }
+
+
+
+function nextPow2(x)
+{
+    x = toInt(x);
+
+    x--;
+
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    x |= x >> 32;
+
+    return ++x;
+}
+
+
+
+function gcd(a, b)
+{
+    let temp;
+    while (1)
+    {
+        temp = a % b;
+
+        if (temp == 0)
+          return b;
+
+        a = b;
+        b = temp;
+    }
+}
+
+
+
+function toUtf8(str) 
+{
+    return decodeURI(encodeURIComponent(str));
+}
+
+
+
+function fromUtf8(str) 
+{
+    return decodeURIComponent(encodeURI(str));
+}
+
+
+
+function arrayToString(bytes) 
+{
+    let str = '';
+
+    for (let i = 0; i < bytes.length; i++)
+        str += String.fromCharCode(bytes[i]);
+
+    return str;
+}
+
+
+
+function stringToArray(str)
+{
+    return Array.from(fromUtf8(str), c => c.charCodeAt(0));
+}
+
+
+
+function newSizeArrayFrom(array, size) // resizes an array and returns a new array
+{
+    const newArray = new Uint8Array(size);
+    copyArray(array, newArray);
+    return newArray;
+}
+
+
+
+function copyArray(src, dst)
+{
+    copyArrayAt(
+        src, 0, src.length,
+        dst, 0, dst.length);
+}
+
+
+
+function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
+{
+    const size = Math.min(srcSize, dstSize);
+
+    for (let i = 0; i < size; i++)
+        dst[dstStart + i] = src[srcStart + i];
+}
+
+
+
+function arraysAreEqual(arr1, arr2)
+{
+    if (arr1.length != arr2.length)
+        return false;
+
+    for (let i = 0; i < arr1.length; i++)
+    {
+        if (arr1[i] != arr2[i])
+            return false;
+    }
+
+    return true;
+}
+
+
+
+function arraysIntersect(array1, array2)
+{
+    return array1.findIndex(i => array2.includes(i)) > -1;
+}
+
+
+
 function  leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 
@@ -355,13 +479,6 @@ const Eps = 0.0000001;
 
 
 
-function toInt(f)
-{
-    return Math.floor(f) | 0;
-}
-
-
-
 function nozero(x)
 {
     return x != 0 ? x : Eps;
@@ -503,39 +620,6 @@ function capitalize(str)
 
 
 
-function toUtf8(str) 
-{
-    return decodeURI(encodeURIComponent(str));
-}
-
-
-
-function fromUtf8(str) 
-{
-    return decodeURIComponent(encodeURI(str));
-}
-
-
-
-function stringToArray(str)
-{
-    return Array.from(fromUtf8(str), c => c.charCodeAt(0));
-}
-
-
-
-function arrayToString(bytes) 
-{
-    let str = '';
-
-    for (let i = 0; i < bytes.length; i++)
-        str += String.fromCharCode(bytes[i]);
-
-    return str;
-}
-
-
-
 function getQueryVariable(strVar)
 {
     const query = window.location.search.substring(1);
@@ -592,24 +676,6 @@ function ceilTo(x, dec)
 
 function sqr (x) { return x*x;   };
 function cube(x) { return x*x*x; };
-
-
-
-function nextPow2(x)
-{
-    x = toInt(x);
-
-    x--;
-
-    x |= x >> 1;
-    x |= x >> 2;
-    x |= x >> 4;
-    x |= x >> 8;
-    x |= x >> 16;
-    x |= x >> 32;
-
-    return ++x;
-}
 
 
 
@@ -986,23 +1052,6 @@ function xrotate(angle)
     return [[Math.cos(angle), -Math.sin(angle), 0],
             [Math.sin(angle),  Math.cos(angle), 0],
             [0,                0,               1]];
-}
-
-
-
-function gcd(a, b)
-{
-    let temp;
-    while (1)
-    {
-        temp = a % b;
-
-        if (temp == 0)
-          return b;
-
-        a = b;
-        b = temp;
-    }
 }
 
 
@@ -1401,198 +1450,198 @@ function boundingRect(elem)
 }
 
 
-var bigBuffer = new Uint8Array(2048);
+// var bigBuffer = new Uint8Array(2048);
 
 
 
-function bigRandom(max = 0)
-{
-    const size = 
-        max > 0
-        ? Math.max(1, Math.floor(bigBitCount(max)/8))
-        : bigBuffer.length;
+// function bigRandom(max = 0)
+// {
+//     const size = 
+//         max > 0
+//         ? Math.max(1, Math.floor(bigBitCount(max)/8))
+//         : bigBuffer.length;
     
-    if (size > bigBuffer.length)
-        bigBuffer = new Uint8Array(nextPow2(size));
+//     if (size > bigBuffer.length)
+//         bigBuffer = new Uint8Array(nextPow2(size));
         
-    for (let i = 0; i < size; i++)
-        bigBuffer[i] = toInt(Math.random() * 0x100);
+//     for (let i = 0; i < size; i++)
+//         bigBuffer[i] = toInt(Math.random() * 0x100);
 
-    let rnd = bigFromBufferAt(bigBuffer, 0, size);
+//     let rnd = bigFromBufferAt(bigBuffer, 0, size);
 
-    if (max > 0)
-        rnd = rnd % max;
+//     if (max > 0)
+//         rnd = rnd % max;
         
-    return rnd;
-}
+//     return rnd;
+// }
 
 
 
-function bigPowMod(n, e, m) // n^e % mod
-{
-    let c = 1n;
+// function bigPowMod(n, e, m) // n^e % mod
+// {
+//     let c = 1n;
 
-    while (e > 0n)
-    {
-        if ((e & 1n) != 0n)
-        {
-            c *= n;
-            c %= m;
-        }
+//     while (e > 0n)
+//     {
+//         if ((e & 1n) != 0n)
+//         {
+//             c *= n;
+//             c %= m;
+//         }
 
-        e  >>= 1n;
+//         e  >>= 1n;
         
-        n *= n;
-        n %= m;
-    }
+//         n *= n;
+//         n %= m;
+//     }
     
-    return c;
-}
+//     return c;
+// }
 
 
 
-function bigNextPrime(n) 
-{
-    while (!bigIsPrime(++n));
-    return n;
-}
+// function bigNextPrime(n) 
+// {
+//     while (!bigIsPrime(++n));
+//     return n;
+// }
 
 
 
-function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
-{
-    if (x <= 1n) return false; 
-    if (x <= 3n) return true;
+// function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
+// {
+//     if (x <= 1n) return false; 
+//     if (x <= 3n) return true;
     
-    if (x % 2n == 0n) 
-        return false;
+//     if (x % 2n == 0n) 
+//         return false;
         
         
-    let d = x - 1n;
-    let s = 0n; 
+//     let d = x - 1n;
+//     let s = 0n; 
                 
-    while (d % 2n == 0n) 
-    {
-        d /= 2n;         
-        s++;
-    }
+//     while (d % 2n == 0n) 
+//     {
+//         d /= 2n;         
+//         s++;
+//     }
         
 
-    for (let i = 0; i < k; i++)    
-    {
-        const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
+//     for (let i = 0; i < k; i++)    
+//     {
+//         const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
 
-        if (!bigIsWitness(a, s, d, x))
-            return false;        
-    }
+//         if (!bigIsWitness(a, s, d, x))
+//             return false;        
+//     }
         
 
-    return true; 
-}    
+//     return true; 
+// }    
 
     
 
-function bigIsWitness(a, s, d, n)
-{
-    let x = bigPowMod(a, d, n);
+// function bigIsWitness(a, s, d, n)
+// {
+//     let x = bigPowMod(a, d, n);
         
-    if (x == 1n)
-        return true;
+//     if (x == 1n)
+//         return true;
 
-    for (let j = 0n; j < s-1n; j++)
-    {
-        if (x == n-1n)
-            return true;
+//     for (let j = 0n; j < s-1n; j++)
+//     {
+//         if (x == n-1n)
+//             return true;
         
-        x = bigPowMod(x, 2n, n);
-    }
+//         x = bigPowMod(x, 2n, n);
+//     }
 
-    return x == n-1n;
-}
-
-
-
-function bigFromBuffer(buffer)
-{
-    return bigFromBufferAt(buffer, 0, buffer.length);
-}
+//     return x == n-1n;
+// }
 
 
 
-function bigFromBufferAt(buffer, start, size)
-{
-    size = Math.min(size, buffer.length - start);
+// function bigFromBuffer(buffer)
+// {
+//     return bigFromBufferAt(buffer, 0, buffer.length);
+// }
+
+
+
+// function bigFromBufferAt(buffer, start, size)
+// {
+//     size = Math.min(size, buffer.length - start);
     
-    let val = 0n;
-    let mul = 1n;
+//     let val = 0n;
+//     let mul = 1n;
 
-    for (let i = start+size-1; i >= start; i--) // little-endian
-    {
-        val += mul * BigInt(buffer[i]);
-        mul <<= 8n;
-    }
+//     for (let i = start+size-1; i >= start; i--) // little-endian
+//     {
+//         val += mul * BigInt(buffer[i]);
+//         mul <<= 8n;
+//     }
 
-    return val;
-}
-
-
-
-function bigToBuffer(n, buffer, bufferSize)
-{
-    bigToBufferAt(n, buffer, 0, bufferSize);
-}
+//     return val;
+// }
 
 
 
-function bigToBufferAt(n, buffer, start, bufferSize)
-{
-    let size = Math.ceil(bigBitCount(n) / 8);
+// function bigToBuffer(n, buffer, bufferSize)
+// {
+//     bigToBufferAt(n, buffer, 0, bufferSize);
+// }
+
+
+
+// function bigToBufferAt(n, buffer, start, bufferSize)
+// {
+//     let size = Math.ceil(bigBitCount(n) / 8);
     
-    size = Math.min(size, buffer.length - start);
+//     size = Math.min(size, buffer.length - start);
 
-    start += bufferSize - size;
+//     start += bufferSize - size;
 
-    for (let i = start+size-1; i >= start; i--) // little-endian
-    {
-        buffer[i] = Number(n & 0xFFn); 
-        n >>= 8n;
-    }
-}
-
-
-
-function bigBitCount(n)
-{
-    return n.toString(2).length;
-}
+//     for (let i = start+size-1; i >= start; i--) // little-endian
+//     {
+//         buffer[i] = Number(n & 0xFFn); 
+//         n >>= 8n;
+//     }
+// }
 
 
 
-function bigModInvert(n, m)
-{
-    const gcd = bigGcdExtended(n, m);
-
-    if (gcd[0] != 1n) return undefined; // inverse doesn't exist
-    else              return (gcd[1] % m + m) % m;
-}
+// function bigBitCount(n)
+// {
+//     return n.toString(2).length;
+// }
 
 
 
-function bigGcdExtended(n, m)
-{
-    if (n == 0n)
-        return [m, 0n, 1n];
+// function bigModInvert(n, m)
+// {
+//     const gcd = bigGcdExtended(n, m);
 
-    const gcd = bigGcdExtended(m % n, n);
+//     if (gcd[0] != 1n) return undefined; // inverse doesn't exist
+//     else              return (gcd[1] % m + m) % m;
+// }
 
-    const x   = gcd[1];
-    const y   = gcd[2];
 
-    return [
-        gcd[0], 
-        y - (m/n)*x,
-        x ];
-}
+
+// function bigGcdExtended(n, m)
+// {
+//     if (n == 0n)
+//         return [m, 0n, 1n];
+
+//     const gcd = bigGcdExtended(m % n, n);
+
+//     const x   = gcd[1];
+//     const y   = gcd[2];
+
+//     return [
+//         gcd[0], 
+//         y - (m/n)*x,
+//         x ];
+// }
 
 
 class Point
@@ -1953,57 +2002,6 @@ function hide(element)
 function isVisible(element)
 { 
     return element.style.visibility == 'visible'; 
-}
-
-
-
-function copyArray(src, dst)
-{
-    copyArrayAt(
-        src, 0, src.length,
-        dst, 0, dst.length);
-}
-
-
-
-function copyArrayAt(src, srcStart, srcSize, dst, dstStart, dstSize)
-{
-    const size = Math.min(srcSize, dstSize);
-
-    for (let i = 0; i < size; i++)
-        dst[dstStart + i] = src[srcStart + i];
-}
-
-
-
-function newSizeArrayFrom(array, size) // resizes an array and returns a new array
-{
-    const newArray = new Uint8Array(size);
-    copyArray(array, newArray);
-    return newArray;
-}
-
-
-
-function arraysAreEqual(arr1, arr2)
-{
-    if (arr1.length != arr2.length)
-        return false;
-
-    for (let i = 0; i < arr1.length; i++)
-    {
-        if (arr1[i] != arr2[i])
-            return false;
-    }
-
-    return true;
-}
-
-
-
-function arraysIntersect(array1, array2)
-{
-    return array1.findIndex(i => array2.includes(i)) > -1;
 }
 
 
@@ -11269,18 +11267,21 @@ function updateMenuItemShowBoolValues()
 
 
 
-function updateMenuItemEnableBetaFeatures()
+function enableFeatures(sub, beta)
 {
-    updateMenuItemDisplay(btnFlow .div,             settings.enableBetaFeatures);
-    updateMenuItemDisplay(btnShape.div,             settings.enableBetaFeatures);
+    updateMenuItemDisplay(btnFlow .div,             sub && beta);
+    updateMenuItemDisplay(btnShape.div,             sub && beta);
 
-    updateMenuItemDisplay(menuItemCorrectColor.div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemCorrectColor.div, sub);
 
-    updateMenuItemDisplay(menuItemStyleFill   .div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(menuItemStyleStroke .div, settings.enableBetaFeatures);
-    updateMenuItemDisplay(menuItemStyleSep1   .div, settings.enableBetaFeatures);
+    updateMenuItemDisplay(menuItemStyleFill   .div, sub && beta);
+    updateMenuItemDisplay(menuItemStyleStroke .div, sub && beta);
+    updateMenuItemDisplay(menuItemStyleSep1   .div, sub && beta);
 
-    updateMenuItemDisplay(menuItemSeries.div,       settings.enableBetaFeatures);    
+    updateMenuItemDisplay(menuItemSeries.div,       sub && beta);    
+
+
+    graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
 }
 
 

@@ -116,7 +116,7 @@ function uiReturnFigGetLocalData(msg)
     if (!settings.dataMode)
     {
         if (msg.key == 'enableBetaFeatures')
-            updateMenuItemEnableBetaFeatures();
+            uiValidateLicense(productKey);
 
         if (msg.key == 'showDebugMenu')
             updateMenuItemShowDebugMenu();
@@ -355,6 +355,9 @@ function finishLoading(_nodes)
     graphView.updateShowWires(false);
 
     generatorStarted = true;
+
+
+    uiValidateLicense(productKey);
 }
 
 

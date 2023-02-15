@@ -1206,3 +1206,13 @@ function uiLogAllSavedConns()
         settings: settings
     });
 }
+
+
+
+function uiValidateLicense(license)
+{
+    uiQueueMessageToFigma({
+        cmd:    'figValidateLicense',
+        license: license
+    });
+}

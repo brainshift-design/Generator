@@ -1,3 +1,19 @@
+.dialogButtonClose
+{
+    width:      32px;
+    height:     32px;
+    position:   absolute;
+    left:       calc(100% - 36px);
+    top:        4px;
+}
+
+
+.dialogButtonClose:active
+{
+    box-shadow: none;
+}
+
+
 #productKeyBack
 {
     display:          none;
@@ -29,7 +45,7 @@
                    translateY(-50%);
 
     width:         250px;
-    height:        170px;
+    height:        250px;
     
     color:         var(--figma-color-text);
     background:    var(--figma-color-bg);
@@ -86,22 +102,6 @@
 }
 
 
-.dialogButtonClose
-{
-    width:      32px;
-    height:     32px;
-    position:   absolute;
-    left:       calc(100% - 36px);
-    top:        4px;
-}
-
-
-.dialogButtonClose:active
-{
-    box-shadow: none;
-}
-
-
 #productKeyUserName
 {
     font-size:      11px;
@@ -140,7 +140,7 @@
     left:           50%;
     transform:      translateX(-50%);
 
-    top:            60px;
+    top:            70px;
 
     width:          180px;
 
@@ -148,23 +148,6 @@
 
     overflow:       visible;
     /* box-shadow:     0 0 0 1px green inset; */
-}
-
-
-#productKeyWebsite
-{
-    font-size:      11px;
-    text-align:     center;
-
-    margin-top:     16px;
-    margin-bottom:   8px;
-
-    position:       absolute;
-    left:           50%;
-    top:            120px;
-    transform:      translateX(-50%);
-
-    color:          var(--figma-color-bg-disabled);
 }
 
 
@@ -182,7 +165,7 @@
 
     position:       absolute;
     left:           calc(calc(50% - 4.5em) + 1px);
-    top:            90px;
+    top:            115px;
 
     z-index:        1;
 
@@ -209,11 +192,41 @@
 
     position:       absolute;
     left:           calc(50%);
-    top:            89px;
+    top:            114px;
 
     transform:      translateX(-50%);
 }
 
+
+
+#validateProductKeyButton
+{
+    width:          138px;
+
+    position:       absolute;
+    left:           50%;
+    transform:      translateX(-50%);
+
+    top:            147px;
+}
+
+
+
+#productKeyWebsite
+{
+    font-size:      11px;
+    text-align:     center;
+
+    margin-top:     16px;
+    margin-bottom:   8px;
+
+    position:       absolute;
+    left:           50%;
+    top:            200px;
+    transform:      translateX(-50%);
+
+    color:          var(--figma-color-bg-disabled);
+}
 
 
 #deleteConnectionsDialog

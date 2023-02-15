@@ -14,8 +14,9 @@ extends OpColorBase
     constructor()
     {
         super(CORRECT_COLOR, 'corrected', 100, true);
+        this.subscription = true;
 
-
+        
         this.addInput(new Input(COLOR_TYPES));
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
