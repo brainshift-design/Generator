@@ -2530,6 +2530,25 @@ function clientRect(element)
 // }
 
 
+
+function selectElementText(elementId)
+{
+    if (document.selection) // IE
+    {
+        var range = document.body.createTextRange();
+        range.moveToElementText(document.getElementById(elementId));
+        range.select();
+    }
+    else if (window.getSelection) 
+    {
+        var range = document.createRange();
+        range.selectNode(document.getElementById(elementId));
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+    }
+}
+
+
 function writeTextToClipboard(str) 
 {
     if (   navigator.clipboard 
@@ -3155,7 +3174,6 @@ function logReqColorValue(val, parse, ignore)
 
 function logReqColor(col, nInputs, parse, ignore) 
 {
-    console.log('col =', col);
     parse.log += parse.tab + COLOR;
     parse.log += logReqNodeId(col, ignore);
 
@@ -11756,7 +11774,7 @@ function genParseColorValue(parse)
     const col = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqColorValue(col, parse, ignore);
+        logReqColorValue(col, parse, false);
 
     return parseColorValue(col)[0];
 }

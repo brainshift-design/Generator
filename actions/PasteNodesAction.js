@@ -86,10 +86,10 @@ extends Action
 
     notify(nodes, isDuplicate, pasteConnected)
     {
-        let action = isDuplicate ? 'Duplicate' : 'Paste';
+        let action = isDuplicate ? 'Duplicated' : 'Pasted';
 
         if (pasteConnected)
-            action += ' connected';
+            action += ' & connected';
 
         uiNotify(
             action + ' ' + nodes.length + ' ' + countString('node', nodes.length), 

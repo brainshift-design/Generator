@@ -1,11 +1,22 @@
+const MONTHLY_LICENSE = 'M';
+const  YEARLY_LICENSE = 'Y';
+
+
 const licenseKeys     = createCryptoKeys();
 const licenseHashSize = 4;
 
 
-
-function createProductKey(name)
+function createProductKey(userId, licenseType, lastYear, lastMonth)
 {
-    const hash = hashLicenseName(name, licenseHashSize);
+    // how to revoke
+    
+    const str = 
+          userId 
+        + licenseType
+        + lastYear .toString() 
+        + lastMonth.toString();
+
+    const hash = hashLicenseName(str, licenseHashSize);
     const enc  = sign(hash, licenseKeys.private);
     const key  = arrayToBase32(enc);
 

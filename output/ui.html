@@ -208,7 +208,8 @@
     left:          50%;
     transform:     translateX(-50%)
                    translateY(-50%);
-    width:         220px;
+
+    width:         250px;
     height:        170px;
     
     color:         var(--figma-color-text);
@@ -238,7 +239,7 @@
 #productKeyTitle
 {
     height:        40px;
-    border-bottom: 1px solid rgb(0, 0, 0, 0.15);
+    border-bottom:  1px solid rgb(0, 0, 0, 0.15);
     border-top:     1px solid var(--figma-color-bg-tertiary);
     border-bottom:  1px solid var(--figma-color-bg-tertiary);
 }
@@ -290,24 +291,44 @@
     margin-top:     16px;
     margin-bottom:  3px;
 
-    position:       relative;
-    left:           40px;
+    padding-bottom: 5px;
+
+    position:       absolute;
+    left:           50%;
+    top:            70px;
+    transform:      translateX(-50%);
+    border-bottom:  1px solid var(--figma-color-bg-disabled);
+    width:          240;
+
+    overflow:       hidden;
 
     user-select:    text;
+
+    /* box-shadow:     0 0 0 1px red inset; */
 }
 
 
 #productKeyUserId
 {
     font-size:      11px;
+    text-align:     center;
 
     margin-top:     0px;
     margin-bottom:  12px;
 
-    position:       relative;
-    left:           40px;
+    position:       absolute;
+    
+    left:           50%;
+    transform:      translateX(-50%);
+
+    top:            60px;
+
+    width:          180px;
 
     user-select:    text;
+
+    overflow:       visible;
+    /* box-shadow:     0 0 0 1px green inset; */
 }
 
 
@@ -318,6 +339,13 @@
 
     margin-top:     16px;
     margin-bottom:   8px;
+
+    position:       absolute;
+    left:           50%;
+    top:            120px;
+    transform:      translateX(-50%);
+
+    color:          var(--figma-color-bg-disabled);
 }
 
 
@@ -326,15 +354,18 @@
     font-family:   'Roboto Mono';
     font-size:      16px;
     color:          var(--figma-color-bg-disabled);
+    letter-spacing: 1px;
     
-    width:           9em;
-    padding-left:   10px;
+    width:          10em;
+    padding-left:   3px;
     padding-top:    -2px;
     padding-bottom:  2px;
 
     position:       absolute;
     left:           calc(calc(50% - 4.5em) + 1px);
-    top:            60%;
+    top:            90px;
+
+    z-index:        1;
 
     pointer-events: none;
 }
@@ -343,21 +374,25 @@
 
 #productKeyInput
 {
-    font-family:  'Roboto Mono';
-    font-size:     16px;
+    font-family:   'Roboto Mono';
+    font-size:      16px;
+    letter-spacing:  1px;
      
-    width:         calc(9em + 1px);
-    height:        24px;
-    padding-left:  10px;
-    padding-top:   -2px;
-    padding-bottom: 2px;
+    width:          calc(10em + 2px);
+    height:         24px;
+    padding-left:   13px;
+    padding-top:    -2px;
+    padding-bottom:  2px;
 
-    margin-bottom: -3px;
+    margin-bottom:  -3px;
 
-    background:    transparent;
+    background:     transparent;
 
-    position:      relative;
-    left:          calc(50% - 4.5em);
+    position:       absolute;
+    left:           calc(50%);
+    top:            89px;
+
+    transform:      translateX(-50%);
 }
 
 
@@ -2338,12 +2373,12 @@ a
     </div>
     
     <div id='productKeyBody'>
-        <div id='productKeyUserName'></div>
-        <div id='productKeyUserId'></div>
+        <!-- <div id='productKeyUserName'></div> -->
+        <div id='productKeyUserId' ondblclick='copyProductKey()'></div>
         
         <div id='productKeyInputBack'></div>
         <input type='text' spellcheck='false' id='productKeyInput' />
-        <div id='productKeyWebsite'><a href='http://www.bourt.com/generator/subscribe' target='_blank'>Buy subscription</a></div>
+        <div id='productKeyWebsite'><!--<a href='http://www.bourt.com/generator/subscribe' target='_blank'>-->Buy subscription<!--</a>--></div>
     </div>
 
 </div>
@@ -5135,6 +5170,25 @@ function clientRect(element)
 // }
 
 
+
+function selectElementText(elementId)
+{
+    if (document.selection) // IE
+    {
+        var range = document.body.createTextRange();
+        range.moveToElementText(document.getElementById(elementId));
+        range.select();
+    }
+    else if (window.getSelection) 
+    {
+        var range = document.createRange();
+        range.selectNode(document.getElementById(elementId));
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+    }
+}
+
+
 function writeTextToClipboard(str) 
 {
     if (   navigator.clipboard 
@@ -5760,7 +5814,6 @@ function logReqColorValue(val, parse, ignore)
 
 function logReqColor(col, nInputs, parse, ignore) 
 {
-    console.log('col =', col);
     parse.log += parse.tab + COLOR;
     parse.log += logReqNodeId(col, ignore);
 
@@ -14361,7 +14414,7 @@ function genParseColorValue(parse)
     const col = parse.move();
 
     if (parse.settings.logRequests) 
-        logReqColorValue(col, parse, ignore);
+        logReqColorValue(col, parse, false);
 
     return parseColorValue(col)[0];
 }
@@ -21408,6 +21461,25 @@ function clientRect(element)
 // }
 
 
+
+function selectElementText(elementId)
+{
+    if (document.selection) // IE
+    {
+        var range = document.body.createTextRange();
+        range.moveToElementText(document.getElementById(elementId));
+        range.select();
+    }
+    else if (window.getSelection) 
+    {
+        var range = document.createRange();
+        range.selectNode(document.getElementById(elementId));
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+    }
+}
+
+
 function writeTextToClipboard(str) 
 {
     if (   navigator.clipboard 
@@ -22033,7 +22105,6 @@ function logReqColorValue(val, parse, ignore)
 
 function logReqColor(col, nInputs, parse, ignore) 
 {
-    console.log('col =', col);
     parse.log += parse.tab + COLOR;
     parse.log += logReqNodeId(col, ignore);
 
@@ -52145,10 +52216,10 @@ extends Action
 
     notify(nodes, isDuplicate, pasteConnected)
     {
-        let action = isDuplicate ? 'Duplicate' : 'Paste';
+        let action = isDuplicate ? 'Duplicated' : 'Pasted';
 
         if (pasteConnected)
-            action += ' connected';
+            action += ' & connected';
 
         uiNotify(
             action + ' ' + nodes.length + ' ' + countString('node', nodes.length), 
@@ -54491,8 +54562,8 @@ function showProductKeyDialog()
     productKeyDialog.style.display = 'block';
 
 
-    productKeyUserName.innerHTML = currentUser.name;
-    productKeyUserId  .innerHTML = '<span style="user-select: none; color: #aaa;">ID:&nbsp;&nbsp;</span>' + currentUser.id;
+    //productKeyUserName.innerHTML = currentUser.name;
+    productKeyUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
 
     setDefaultProductKeyInput();
     productKeyInputBack.innerHTML = '•'.repeat(13);
@@ -54500,6 +54571,15 @@ function showProductKeyDialog()
 
     
     window.setTimeout(() => document.getElementById('productKeyInput').focus(), 0);
+}
+
+
+
+function copyProductKey()
+{
+    writeTextToClipboard(currentUser.id);
+    selectElementText('productKeyUserId');
+    uiNotify('Copied user ID');
 }
 
 
@@ -57230,14 +57310,25 @@ function dockWindowRight   () { uiQueueMessageToFigma({cmd: 'figDockWindowRight'
 function dockWindowBottom  () { uiQueueMessageToFigma({cmd: 'figDockWindowBottom'  }); }
 
 
+const MONTHLY_LICENSE = 'M';
+const  YEARLY_LICENSE = 'Y';
+
+
 const licenseKeys     = createCryptoKeys();
 const licenseHashSize = 4;
 
 
-
-function createProductKey(name)
+function createProductKey(userId, licenseType, lastYear, lastMonth)
 {
-    const hash = hashLicenseName(name, licenseHashSize);
+    // how to revoke
+    
+    const str = 
+          userId 
+        + licenseType
+        + lastYear .toString() 
+        + lastMonth.toString();
+
+    const hash = hashLicenseName(str, licenseHashSize);
     const enc  = sign(hash, licenseKeys.private);
     const key  = arrayToBase32(enc);
 

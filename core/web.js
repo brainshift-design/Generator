@@ -144,3 +144,22 @@ function clientRect(element)
 //
 //     element.dispatchEvent(e);
 // }
+
+
+
+function selectElementText(elementId)
+{
+    if (document.selection) // IE
+    {
+        var range = document.body.createTextRange();
+        range.moveToElementText(document.getElementById(elementId));
+        range.select();
+    }
+    else if (window.getSelection) 
+    {
+        var range = document.createRange();
+        range.selectNode(document.getElementById(elementId));
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+    }
+}

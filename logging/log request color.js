@@ -7,7 +7,6 @@ function logReqColorValue(val, parse, ignore)
 
 function logReqColor(col, nInputs, parse, ignore) 
 {
-    console.log('col =', col);
     parse.log += parse.tab + COLOR;
     parse.log += logReqNodeId(col, ignore);
 

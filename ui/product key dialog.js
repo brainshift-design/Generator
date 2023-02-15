@@ -8,8 +8,8 @@ function showProductKeyDialog()
     productKeyDialog.style.display = 'block';
 
 
-    productKeyUserName.innerHTML = currentUser.name;
-    productKeyUserId  .innerHTML = '<span style="user-select: none; color: #aaa;">ID:&nbsp;&nbsp;</span>' + currentUser.id;
+    //productKeyUserName.innerHTML = currentUser.name;
+    productKeyUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
 
     setDefaultProductKeyInput();
     productKeyInputBack.innerHTML = '•'.repeat(13);
@@ -17,6 +17,15 @@ function showProductKeyDialog()
 
     
     window.setTimeout(() => document.getElementById('productKeyInput').focus(), 0);
+}
+
+
+
+function copyProductKey()
+{
+    writeTextToClipboard(currentUser.id);
+    selectElementText('productKeyUserId');
+    uiNotify('Copied user ID');
 }
 
 
