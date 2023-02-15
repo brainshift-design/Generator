@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 94;
+const generatorVersion = 96;
 
 
 const MAX_INT32        = 2147483647;
@@ -11439,7 +11439,7 @@ function genEndFigMessage()
     if (   !isEmpty(lastUpdateValues .length)
         || !isEmpty(lastUpdateObjects.length)
         || !isEmpty(lastUpdateStyles .length))
-        genUpdateValuesAndObjects(-1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
+        genUpdateValuesAndObjects(-1, -1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
 
     genPostNextMessageToUI();
 }
@@ -11587,7 +11587,9 @@ function clearLastUpdate()
 
 function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
-    //console.log('1 updateStyles =', [...updateStyles]);
+    console.log('1 updateValues =', [...updateValues]);
+    console.log('1 updateObjects =', [...updateObjects]);
+    console.log('1 updateStyles =', [...updateStyles]);
 
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects)

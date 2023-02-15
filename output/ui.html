@@ -1,6 +1,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -2473,7 +2474,8 @@ a
 
             <div id='whatsNewBody'>
                 <h1>What's new in Generator</h1>
-                <p>The back end was completely rewritten to be scalable and provide a robust and responsive UI.</p>
+
+                <!-- 94 <p>The back end was completely rewritten to be scalable and provide a robust and responsive UI.</p>
                 <p>Color validation was split into two operators: a free one, which is automatic, and one for subscribers, which gives you complete control over the correction result.</p>
                 <p>Invalid color stripes now become colorful to show how far out of sRGB the color is.</p>
                 <p>Colors can now be linked directly to Figma's styles (only solid colors for now, opacity etc. will be added later).</p>
@@ -2482,7 +2484,9 @@ a
                 <p>Dark mode is now fully supported.</p>
                 <p>Changed the color scheme for nodes.</p>
                 <p>Simple comments can now be added to the graph.</p>
-                <p>More advanced features coming soon by subscription, which will also open free features that are still in beta (at your own risk, of course 😝).</p>
+                <p>More advanced features coming soon by subscription, which will also open free features that are still in beta (at your own risk, of course 😝).</p> -->
+
+                <p>Fixed various UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -2691,7 +2695,7 @@ a
 
 
 
-const generatorVersion = 94;
+const generatorVersion = 96;
 
 
 const MAX_INT32        = 2147483647;
@@ -14126,7 +14130,7 @@ function genEndFigMessage()
     if (   !isEmpty(lastUpdateValues .length)
         || !isEmpty(lastUpdateObjects.length)
         || !isEmpty(lastUpdateStyles .length))
-        genUpdateValuesAndObjects(-1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
+        genUpdateValuesAndObjects(-1, -1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
 
     genPostNextMessageToUI();
 }
@@ -14274,7 +14278,9 @@ function clearLastUpdate()
 
 function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
-    //console.log('1 updateStyles =', [...updateStyles]);
+    console.log('1 updateValues =', [...updateValues]);
+    console.log('1 updateObjects =', [...updateObjects]);
+    console.log('1 updateStyles =', [...updateStyles]);
 
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects)
@@ -18983,7 +18989,7 @@ function convert2hcluv(fromColor)
 ////////////////////////////////////////////////////
 
 
-const generatorVersion = 94;
+const generatorVersion = 96;
 
 
 const MAX_INT32        = 2147483647;
@@ -35592,8 +35598,8 @@ function initColorControl(param, control, width, height, id, name, showName, def
                 control.valueStyleLight =
                 control.valueStyleDark  = 'var(--figma-color-bg)';
                 
-                control.textStyleLight = 'black';
-                control.textStyleDark  = 'white';
+                control.textStyleLight  = 'black';
+                control.textStyleDark   = 'white';
             }
         }
 
@@ -35628,8 +35634,9 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
     control.update = function()
     {
-        const sw = control.getClientWidth();
-        const sh = control.getClientHeight();
+        console.log('control.measureData =', control.measureData);
+        const sw = control.measureData.clientRect.width;
+        const sh = control.measureData.clientRect.height;
 
 
         control.updateColors();
@@ -39338,7 +39345,7 @@ extends Parameter
     
     loadParam(param)
     {
-        this.setValue(parseColorValue(param)[0], true, true, false);
+        this.setValue(parseColorValue(param)[0], true, false, false);
     }
 }
 
@@ -56931,7 +56938,7 @@ function uiNotify(text, options = {})
 {
     if (options.delay        == undefined) options.delay        = 4000;
     if (options.error        == undefined) options.error        = false;
-    if (options.prefix       == undefined) options.prefix       = GENERATOR_LOGO + '  ';
+    if (options.prefix       == undefined) options.prefix       = '';//GENERATOR_LOGO + '  ';
     if (options.buttonText   == undefined) options.buttonText   = '';
     if (options.buttonAction == undefined) options.buttonAction = NULL;
 

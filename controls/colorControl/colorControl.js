@@ -126,8 +126,8 @@ function initColorControl(param, control, width, height, id, name, showName, def
                 control.valueStyleLight =
                 control.valueStyleDark  = 'var(--figma-color-bg)';
                 
-                control.textStyleLight = 'black';
-                control.textStyleDark  = 'white';
+                control.textStyleLight  = 'black';
+                control.textStyleDark   = 'white';
             }
         }
 
@@ -162,8 +162,9 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
     control.update = function()
     {
-        const sw = control.getClientWidth();
-        const sh = control.getClientHeight();
+        console.log('control.measureData =', control.measureData);
+        const sw = control.measureData.clientRect.width;
+        const sh = control.measureData.clientRect.height;
 
 
         control.updateColors();

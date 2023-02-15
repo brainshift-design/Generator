@@ -104,7 +104,7 @@ function genEndFigMessage()
     if (   !isEmpty(lastUpdateValues .length)
         || !isEmpty(lastUpdateObjects.length)
         || !isEmpty(lastUpdateStyles .length))
-        genUpdateValuesAndObjects(-1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
+        genUpdateValuesAndObjects(-1, -1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
 
     genPostNextMessageToUI();
 }

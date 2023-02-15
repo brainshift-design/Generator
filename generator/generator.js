@@ -138,7 +138,9 @@ function clearLastUpdate()
 
 function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
-    //console.log('1 updateStyles =', [...updateStyles]);
+    console.log('1 updateValues =', [...updateValues]);
+    console.log('1 updateObjects =', [...updateObjects]);
+    console.log('1 updateStyles =', [...updateStyles]);
 
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects)
