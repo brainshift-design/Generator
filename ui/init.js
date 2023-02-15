@@ -15,7 +15,7 @@ var genMessagePosted = false;
 //uiClearLocalData('productKey');
 
 //uiSetLocalData('showWhatsNew', generatorVersion);
-//uiClearLocalData('showWhatsNew');
+uiClearLocalData('showWhatsNew');
 
 //uiRemoveConnsToNodes(['num3']);
 //uiRemoveSavedNodesAndConns(['color']);

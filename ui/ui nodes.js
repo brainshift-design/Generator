@@ -898,31 +898,20 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     nodes.forEach(n => n.updateMeasureData());
     nodes.forEach(n => n.updateNode());
     
-    
-    if (!isEmpty(objects))
+    // console.log('objects =', [...objects]);
+    // console.log('styles =', [...styles]);
+    if (   !isEmpty(objects)
+        || !isEmpty(styles))
     {
-        if (settings.logObjectUpdates)
-            logObjectUpdates([...objects]);
+        if (settings.logObjectUpdates) logObjectUpdates([...objects]);
+        if (settings.logStyleUpdates)  logStyleUpdates([...styles]);
 
         uiQueueMessageToFigma({
-            cmd:          'figUpdateObjects',
+            cmd:          'figUpdateObjectsAndStyles',
             updateNodeId:  updateNodeId,
             updateParamId: updateParamId,
             nodeIds:       nodes.map(n => n.id),
-            objects:       [...objects]});
-    }
-
-    
-    if (!isEmpty(styles))
-    {
-        if (settings.logStyleUpdates)
-            logStyleUpdates([...styles]);
-
-        uiQueueMessageToFigma({
-            cmd:          'figUpdateStyles',
-            updateNodeId:  updateNodeId,
-            updateParamId: updateParamId,
-            nodeIds:       nodes.map(n => n.id),
+            objects:       [...objects],
             styles:        [...styles]});
     }
 

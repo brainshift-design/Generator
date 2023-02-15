@@ -16,11 +16,11 @@ onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'genRequest':       genRequest      (msg.request); break;
+        case 'genRequest':       genRequest      (msg.request);   break;
         //case 'genStopGenerate':  genStopGenerate (msg);         break;
 
-        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);  break;
-        case 'genEndFigMessage': genEndFigMessage();            break;
+        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);    break;
+        case 'genEndFigMessage': genEndFigMessage();              break;
     }
 
 
@@ -55,7 +55,7 @@ function genQueueMessageToUI(msg)
 function genPostNextMessageToUI(msg)
 {
     if (!isEmpty(uiMessages))
-        //&& !genFigMessagePosted)
+    //    && !genFigMessagePosted)
     {
         //console.log('yes');
         let msg = uiMessages.shift();
@@ -97,14 +97,12 @@ function genEndUiMessage(msgCmd)
 
 function genEndFigMessage()
 {
-    //console.log('next FIG message');
-
     genFigMessagePosted = false;
     
-    if (   !isEmpty(lastUpdateValues .length)
-        || !isEmpty(lastUpdateObjects.length)
-        || !isEmpty(lastUpdateStyles .length))
-        genUpdateValuesAndObjects(-1, -1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
+    if (   !isEmpty(lastUpdateValues )
+        || !isEmpty(lastUpdateObjects)
+        || !isEmpty(lastUpdateStyles ))
+        genUpdateValuesAndObjects(lastRequestId, -1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
 
     genPostNextMessageToUI();
 }

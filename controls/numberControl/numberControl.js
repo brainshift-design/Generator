@@ -229,10 +229,12 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         if (typeof control.value !== 'number')
             console.assert(false, 'numberControl.update() value is ' + typeof control.value + ', must be a number');
 
-
-        const sx =  control.getOffsetLeft();
-        const sw =  control.getClientWidth();
-        const sh =  control.getClientHeight();
+        if (!control.measureData.offsetRect)
+            return;
+            
+        const sx =  control.measureData.offsetRect.x;
+        const sw =  control.measureData.clientRect.width;
+        const sh =  control.measureData.clientRect.height;
 
         const cx = -control.displayMin / (control.displayMax - control.displayMin) * sw;
         const v  =  control.value      / (control.displayMax - control.displayMin);
@@ -243,11 +245,6 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         control.updateFocus(sw, sh);
         
         updateControlRanges(control, sw, sh);
-
-
-        control.cachedOffsetLeft   = null;
-        control.cachedClientWidth  = null;
-        control.cachedClientHeight = null;
     };
 
 
@@ -393,10 +390,4 @@ function initNumberControl(param, control, width, height, id, name, showName, de
              || document.   mozPointerLockElement === control
              || document.webkitPointerLockElement === control);
     }
-
-
-
-    control.getOffsetLeft   = () => control.cachedOffsetLeft   = control.cachedOffsetLeft   || control.offsetLeft;
-    control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.clientWidth;
-    control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.clientHeight;
 }

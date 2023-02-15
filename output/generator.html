@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 96;
+const generatorVersion = 97;
 
 
 const MAX_INT32        = 2147483647;
@@ -11351,11 +11351,11 @@ onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'genRequest':       genRequest      (msg.request); break;
+        case 'genRequest':       genRequest      (msg.request);   break;
         //case 'genStopGenerate':  genStopGenerate (msg);         break;
 
-        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);  break;
-        case 'genEndFigMessage': genEndFigMessage();            break;
+        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);    break;
+        case 'genEndFigMessage': genEndFigMessage();              break;
     }
 
 
@@ -11390,7 +11390,7 @@ function genQueueMessageToUI(msg)
 function genPostNextMessageToUI(msg)
 {
     if (!isEmpty(uiMessages))
-        //&& !genFigMessagePosted)
+    //    && !genFigMessagePosted)
     {
         //console.log('yes');
         let msg = uiMessages.shift();
@@ -11432,14 +11432,12 @@ function genEndUiMessage(msgCmd)
 
 function genEndFigMessage()
 {
-    //console.log('next FIG message');
-
     genFigMessagePosted = false;
     
-    if (   !isEmpty(lastUpdateValues .length)
-        || !isEmpty(lastUpdateObjects.length)
-        || !isEmpty(lastUpdateStyles .length))
-        genUpdateValuesAndObjects(-1, -1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
+    if (   !isEmpty(lastUpdateValues )
+        || !isEmpty(lastUpdateObjects)
+        || !isEmpty(lastUpdateStyles ))
+        genUpdateValuesAndObjects(lastRequestId, -1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
 
     genPostNextMessageToUI();
 }
@@ -11447,6 +11445,7 @@ function genEndFigMessage()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+var lastRequestId      = -1;
 var lastUpdateNodeId   =  NULL;
 var lastUpdateParamId  =  NULL;
 var lastUpdateValues   =  [];
@@ -11575,26 +11574,24 @@ function genPushUpdateStyle(parse, style)
 
 function clearLastUpdate()
 {
-    lastUpdateNodeId  = NULL;
-    lastUpdateParamId = NULL;
+    lastRequestId     = -1;
+    lastUpdateNodeId  =  NULL;
+    lastUpdateParamId =  NULL;
 
-    lastUpdateValues  = [];
-    lastUpdateObjects = [];
-    lastUpdateStyles  = [];
+    lastUpdateValues  =  [];
+    lastUpdateObjects =  [];
+    lastUpdateStyles  =  [];
 }
 
 
 
 function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
-    console.log('1 updateValues =', [...updateValues]);
-    console.log('1 updateObjects =', [...updateObjects]);
-    console.log('1 updateStyles =', [...updateStyles]);
-
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects)
         && isEmpty(updateStyles ))
     {
+        requestId     = lastRequestId;
         updateNodeId  = lastUpdateNodeId;
         updateParamId = lastUpdateParamId;
         
@@ -11606,6 +11603,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     }
     else if (genFigMessagePosted)
     {
+        lastRequestId     = requestId;
         lastUpdateNodeId  = updateNodeId;
         lastUpdateParamId = updateParamId;
 

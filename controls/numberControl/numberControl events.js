@@ -376,7 +376,12 @@ function initNumberControlEvents(control)
 
              if (e.button == 0) control.buttonDown0 = false;
         else if (e.button == 1) control.buttonDown1 = false;
-        else if (e.button == 2) control.buttonDown2 = false;
+
+        else if (e.button == 2) 
+        {
+            e.stop();
+            control.buttonDown2 = false;
+        }
 
         control.buttonDown0_ = false;
     });    

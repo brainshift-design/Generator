@@ -17,7 +17,7 @@ function isNodeKey(key) { return isTagKey(key, nodeTag); }
 function isConnKey(key) { return isTagKey(key, connTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 96;
+const generatorVersion = 97;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const TAB = '  ';
@@ -770,7 +770,7 @@ function figStartGenerator() {
 }
 // from UI <--
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-figma.ui.onmessage = msg => {
+figma.ui.onmessage = function (msg) {
     msg = JSON.parse(msg);
     switch (msg.cmd) {
         case 'figStartGenerator':
@@ -876,10 +876,8 @@ figma.ui.onmessage = msg => {
         case 'figLinkNodeToExistingColorStyle':
             figLinkNodeToExistingColorStyle(msg.nodeId, msg.styleId);
             break;
-        case 'figUpdateObjects':
+        case 'figUpdateObjectsAndStyles':
             figUpdateObjects(msg);
-            break;
-        case 'figUpdateStyles':
             figUpdateStyles(msg);
             break;
         case 'figDeleteObjectsAndStyles':
@@ -894,7 +892,7 @@ figma.ui.onmessage = msg => {
             break;
     }
     figPostMessageToUi({
-        cmd: 'uiReturnFigMessage',
+        cmd: 'uiEndFigMessage',
         msgCmd: msg.cmd
     });
 };

@@ -84,7 +84,7 @@ function uiReturnFigGetLocalData(msg)
 
         case 'showWhatsNew':
             if (  !msg.value
-                || parseFloat(msg.value) > generatorVersion)
+                || parseInt(msg.value) < generatorVersion)
                 showWhatsNewDialog();
 
             break;

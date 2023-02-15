@@ -96,3 +96,7 @@ document.addEventListener('pointerup', function(e)
     scrollbarX.moving  = false;
     scrollbarY.moving  = false;
 });
+
+
+
+document.addEventListener('contextmenu', e => e.preventDefault());

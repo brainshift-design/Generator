@@ -21,7 +21,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 96;
+const generatorVersion = 97;
 
 
 const MAX_INT32        = 2147483647;
@@ -1292,7 +1292,7 @@ function figStartGenerator()
 // from UI <--
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-figma.ui.onmessage = msg => 
+figma.ui.onmessage = function(msg)
 {
     msg = JSON.parse(msg);
     
@@ -1322,7 +1322,7 @@ figma.ui.onmessage = msg =>
         case 'figSetPageData':                        figSetPageData                       (msg.key, msg.value);                          break;
      
         case 'figLoadNodesAndConns':                  figLoadNodesAndConns                 (msg.dataMode);                                break;
-        case 'figSaveNodes':                          figSaveNodes                         (msg.nodeIds, msg.nodeJson);                   break;        
+        case 'figSaveNodes':                          figSaveNodes                         (msg.nodeIds, msg.nodeJson);                   break;
      
         case 'figRemoveConnsToNodes':                 figRemoveConnsToNodes                (msg.nodeIds);                                 break;
         case 'figRemoveSavedNodesAndConns':           figRemoveSavedNodesAndConns          (msg.nodeIds);                                 break;
@@ -1347,8 +1347,10 @@ figma.ui.onmessage = msg =>
         case 'figGetAllLocalColorStyles':             figGetAllLocalColorStyles            (msg.nodeId, msg.px, msg.py);                  break;
         case 'figLinkNodeToExistingColorStyle':       figLinkNodeToExistingColorStyle      (msg.nodeId, msg.styleId);                     break;
      
-        case 'figUpdateObjects':                      figUpdateObjects                     (msg);                                         break;
-        case 'figUpdateStyles':                       figUpdateStyles                      (msg);                                         break;
+        case 'figUpdateObjectsAndStyles':                      
+            figUpdateObjects(msg);
+            figUpdateStyles(msg);
+            break;
      
         case 'figDeleteObjectsAndStyles':             
             figDeleteObjectsFromNodeIds(msg.nodeIds); 
@@ -1364,10 +1366,10 @@ figma.ui.onmessage = msg =>
             break;
     }
 
-    
+
     figPostMessageToUi({
-        cmd:   'uiReturnFigMessage',
-        msgCmd: msg.cmd });
+        cmd:      'uiEndFigMessage',
+        msgCmd:    msg.cmd });
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

@@ -2475,18 +2475,9 @@ a
             <div id='whatsNewBody'>
                 <h1>What's new in Generator</h1>
 
-                <!-- 94 <p>The back end was completely rewritten to be scalable and provide a robust and responsive UI.</p>
-                <p>Color validation was split into two operators: a free one, which is automatic, and one for subscribers, which gives you complete control over the correction result.</p>
-                <p>Invalid color stripes now become colorful to show how far out of sRGB the color is.</p>
-                <p>Colors can now be linked directly to Figma's styles (only solid colors for now, opacity etc. will be added later).</p>
-                <p>Updated all UI to match Figma.</p>
-                <p>Added dropdown menus where relevant.</p>
-                <p>Dark mode is now fully supported.</p>
-                <p>Changed the color scheme for nodes.</p>
-                <p>Simple comments can now be added to the graph.</p>
-                <p>More advanced features coming soon by subscription, which will also open free features that are still in beta (at your own risk, of course 😝).</p> -->
-
-                <p>Fixed various UI issues.</p>
+                <p>Fixed browser context menu showing up on right-click.</p>
+                <p>Fixed node loading and update bugs.</p>
+                <p>Fixed invalid color text entry after loading.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -2695,7 +2686,7 @@ a
 
 
 
-const generatorVersion = 96;
+const generatorVersion = 97;
 
 
 const MAX_INT32        = 2147483647;
@@ -14042,11 +14033,11 @@ onmessage = function(e)
 
     switch (msg.cmd)
     {
-        case 'genRequest':       genRequest      (msg.request); break;
+        case 'genRequest':       genRequest      (msg.request);   break;
         //case 'genStopGenerate':  genStopGenerate (msg);         break;
 
-        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);  break;
-        case 'genEndFigMessage': genEndFigMessage();            break;
+        case 'genEndUiMessage':  genEndUiMessage (msg.msgCmd);    break;
+        case 'genEndFigMessage': genEndFigMessage();              break;
     }
 
 
@@ -14081,7 +14072,7 @@ function genQueueMessageToUI(msg)
 function genPostNextMessageToUI(msg)
 {
     if (!isEmpty(uiMessages))
-        //&& !genFigMessagePosted)
+    //    && !genFigMessagePosted)
     {
         //console.log('yes');
         let msg = uiMessages.shift();
@@ -14123,14 +14114,12 @@ function genEndUiMessage(msgCmd)
 
 function genEndFigMessage()
 {
-    //console.log('next FIG message');
-
     genFigMessagePosted = false;
     
-    if (   !isEmpty(lastUpdateValues .length)
-        || !isEmpty(lastUpdateObjects.length)
-        || !isEmpty(lastUpdateStyles .length))
-        genUpdateValuesAndObjects(-1, -1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
+    if (   !isEmpty(lastUpdateValues )
+        || !isEmpty(lastUpdateObjects)
+        || !isEmpty(lastUpdateStyles ))
+        genUpdateValuesAndObjects(lastRequestId, -1, lastUpdateNodeId, lastUpdateParamId, [], [], []);
 
     genPostNextMessageToUI();
 }
@@ -14138,6 +14127,7 @@ function genEndFigMessage()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+var lastRequestId      = -1;
 var lastUpdateNodeId   =  NULL;
 var lastUpdateParamId  =  NULL;
 var lastUpdateValues   =  [];
@@ -14266,26 +14256,24 @@ function genPushUpdateStyle(parse, style)
 
 function clearLastUpdate()
 {
-    lastUpdateNodeId  = NULL;
-    lastUpdateParamId = NULL;
+    lastRequestId     = -1;
+    lastUpdateNodeId  =  NULL;
+    lastUpdateParamId =  NULL;
 
-    lastUpdateValues  = [];
-    lastUpdateObjects = [];
-    lastUpdateStyles  = [];
+    lastUpdateValues  =  [];
+    lastUpdateObjects =  [];
+    lastUpdateStyles  =  [];
 }
 
 
 
 function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
-    console.log('1 updateValues =', [...updateValues]);
-    console.log('1 updateObjects =', [...updateObjects]);
-    console.log('1 updateStyles =', [...updateStyles]);
-
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects)
         && isEmpty(updateStyles ))
     {
+        requestId     = lastRequestId;
         updateNodeId  = lastUpdateNodeId;
         updateParamId = lastUpdateParamId;
         
@@ -14297,6 +14285,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     }
     else if (genFigMessagePosted)
     {
+        lastRequestId     = requestId;
         lastUpdateNodeId  = updateNodeId;
         lastUpdateParamId = updateParamId;
 
@@ -18989,7 +18978,7 @@ function convert2hcluv(fromColor)
 ////////////////////////////////////////////////////
 
 
-const generatorVersion = 96;
+const generatorVersion = 97;
 
 
 const MAX_INT32        = 2147483647;
@@ -33679,7 +33668,12 @@ function initNumberControlEvents(control)
 
              if (e.button == 0) control.buttonDown0 = false;
         else if (e.button == 1) control.buttonDown1 = false;
-        else if (e.button == 2) control.buttonDown2 = false;
+
+        else if (e.button == 2) 
+        {
+            e.stop();
+            control.buttonDown2 = false;
+        }
 
         control.buttonDown0_ = false;
     });    
@@ -34509,10 +34503,12 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         if (typeof control.value !== 'number')
             console.assert(false, 'numberControl.update() value is ' + typeof control.value + ', must be a number');
 
-
-        const sx =  control.getOffsetLeft();
-        const sw =  control.getClientWidth();
-        const sh =  control.getClientHeight();
+        if (!control.measureData.offsetRect)
+            return;
+            
+        const sx =  control.measureData.offsetRect.x;
+        const sw =  control.measureData.clientRect.width;
+        const sh =  control.measureData.clientRect.height;
 
         const cx = -control.displayMin / (control.displayMax - control.displayMin) * sw;
         const v  =  control.value      / (control.displayMax - control.displayMin);
@@ -34523,11 +34519,6 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         control.updateFocus(sw, sh);
         
         updateControlRanges(control, sw, sh);
-
-
-        control.cachedOffsetLeft   = null;
-        control.cachedClientWidth  = null;
-        control.cachedClientHeight = null;
     };
 
 
@@ -34673,12 +34664,6 @@ function initNumberControl(param, control, width, height, id, name, showName, de
              || document.   mozPointerLockElement === control
              || document.webkitPointerLockElement === control);
     }
-
-
-
-    control.getOffsetLeft   = () => control.cachedOffsetLeft   = control.cachedOffsetLeft   || control.offsetLeft;
-    control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.clientWidth;
-    control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.clientHeight;
 }
 
 
@@ -35394,8 +35379,8 @@ function initColorControlTextbox(control)
         let   value      = control.textbox.value;
         const savedValue = control.textbox.savedValue;
 
-        let rgb      = validHex2rgb(value     );
-        let savedRgb = validHex2rgb(savedValue);
+        
+        let rgb = validHex2rgb(value);
 
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
@@ -35410,6 +35395,8 @@ function initColorControlTextbox(control)
         {
             if (success) 
             {
+                let savedRgb = validHex2rgb(savedValue);
+
                 control.setValue(
                       value.trim() != '' 
                     ? ColorValue.fromRgb(scaleRgb(rgb     )) 
@@ -35462,10 +35449,15 @@ function initColorControlTextbox(control)
 
         control.textbox.value =
             !control.value.isValid()
-            ? UNKNOWN_DISPLAY
-            : rgb2hex(rgb).toUpperCase();
+            ? UNKNOWN_CHAR
+            : rgbIsValid(rgb)
+              ? rgb2hex(rgb).toUpperCase()
+              : UNKNOWN_CHAR;
                            
-        control.textbox.savedValue  = control.textbox.value;
+        
+        if (   rgbIsValid(rgb)
+            && control.textbox.value != UNKNOWN_CHAR)
+            control.textbox.savedValue = control.textbox.value;
     };
 }
 
@@ -35634,19 +35626,15 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
     control.update = function()
     {
-        console.log('control.measureData =', control.measureData);
+        if (!control.measureData.offsetRect)
+            return;
+
         const sw = control.measureData.clientRect.width;
         const sh = control.measureData.clientRect.height;
-
 
         control.updateColors();
         control.updateText();
         control.updateFocus(sw, sh);
-        
-
-        control.cachedOffsetLeft   = null;
-        control.cachedClientWidth  = null;
-        control.cachedClientHeight = null;
     };
 
 
@@ -35731,12 +35719,6 @@ function initColorControl(param, control, width, height, id, name, showName, def
              || document.   mozPointerLockElement === control
              || document.webkitPointerLockElement === control);
     }
-
-
-
-    control.getOffsetLeft   = () => control.cachedOffsetLeft   = control.cachedOffsetLeft   || control.measureData.offsetRect.x;//offsetLeft;
-    control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.measureData.clientRect.width;//clientWidth;
-    control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.measureData.clientRect.height;//clientHeight;
 }
 
 
@@ -53751,6 +53733,10 @@ document.addEventListener('pointerup', function(e)
 
 
 
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+
+
 var generatorStarted = false;
 
 
@@ -53767,7 +53753,7 @@ var genMessagePosted = false;
 //uiClearLocalData('productKey');
 
 //uiSetLocalData('showWhatsNew', generatorVersion);
-//uiClearLocalData('showWhatsNew');
+uiClearLocalData('showWhatsNew');
 
 //uiRemoveConnsToNodes(['num3']);
 //uiRemoveSavedNodesAndConns(['color']);
@@ -54283,37 +54269,37 @@ onmessage = e =>
     {
         let _msg = msg.cmd;
 
-        if (msg.cmd == 'uiReturnFigMessage')
+        if (msg.cmd == 'uiEndFigMessage')
             _msg += ': ' + msg.msgCmd;
 
-            console.log('%cFIG '+_msg+' --► UI', 'background: #08f; color: white;');
+        console.log('%cFIG '+_msg+' --► UI', 'background: #08f; color: white;');
     }
 
 
     switch (msg.cmd)
     {
-        case 'uiStylePropertyChange':                   uiStylePropertyChange                  (msg);        break;
-        case 'uiStyleDelete':                           uiStyleDelete                          (msg);        break;
+        case 'uiStylePropertyChange':                   uiStylePropertyChange                  (msg);                       break;
+        case 'uiStyleDelete':                           uiStyleDelete                          (msg);                       break;
             
-        case 'uiReturnFigMessage':                      uiReturnFigMessage                     (msg.msgCmd); break;
+        case 'uiEndFigMessage':                         uiEndFigMessage                        (msg.msgCmd);                break;
                                     
-        case 'uiReturnFigStartGenerator':               uiReturnFigStartGenerator              (msg);        break;
-                              
-        case 'uiReturnFigLoadNodesAndConns':            uiReturnFigLoadNodesAndConns           (msg);        break;
-                              
-        case 'uiReturnFigGetLocalData':                 uiReturnFigGetLocalData                (msg);        break;
-        case 'uiReturnFigGetPageData':                  uiReturnFigGetPageData                 (msg);        break;
-                                    
-        case 'uiReturnFigResizeWindow':                 uiReturnFigResizeWindow                ();           break;
-            
-        case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);        break;
+        case 'uiReturnFigStartGenerator':               uiReturnFigStartGenerator              (msg);                       break;
+                                             
+        case 'uiReturnFigLoadNodesAndConns':            uiReturnFigLoadNodesAndConns           (msg);                       break;
+                                             
+        case 'uiReturnFigGetLocalData':                 uiReturnFigGetLocalData                (msg);                       break;
+        case 'uiReturnFigGetPageData':                  uiReturnFigGetPageData                 (msg);                       break;
+                                                   
+        case 'uiReturnFigResizeWindow':                 uiReturnFigResizeWindow                ();                          break;
+                           
+        case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);                       break;
 
         case 'uiReturnFigValidateLicense':              
             enableFeatures(msg.result, settings.enableBetaFeatures); 
             break;
 
-        case 'uiSetStyleId':                            uiSetStyleId                           (msg);        break;
-        case 'uiHideClearUndoWarning':                  uiHideClearUndoWarning                 ();           break;
+        case 'uiSetStyleId':                            uiSetStyleId                           (msg);                       break;
+        case 'uiHideClearUndoWarning':                  uiHideClearUndoWarning                 ();                          break;
     }
 }    
 
@@ -54364,15 +54350,16 @@ function uiPostNextMessageToFigma()
 
 
 
-function uiReturnFigMessage(msgCmd)
+function uiEndFigMessage(msgCmd)
 {
     uiFigMessagePosted = false;
 
-    if (   msgCmd == 'figUpdateObjects'
-        || msgCmd == 'figUpdateStyles')
+    //if (msgCmd == 'figUpdateObjectsAndStyles')
+    //{
         uiPostMessageToGenerator({
-            cmd:   'genEndFigMessage',
-            msgCmd: msgCmd});
+            cmd:      'genEndFigMessage',
+            msgCmd:    msgCmd });
+    //}
 
     uiPostNextMessageToFigma();
 }
@@ -54883,7 +54870,7 @@ function uiReturnFigGetLocalData(msg)
 
         case 'showWhatsNew':
             if (  !msg.value
-                || parseFloat(msg.value) > generatorVersion)
+                || parseInt(msg.value) < generatorVersion)
                 showWhatsNewDialog();
 
             break;
@@ -56391,31 +56378,20 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     nodes.forEach(n => n.updateMeasureData());
     nodes.forEach(n => n.updateNode());
     
-    
-    if (!isEmpty(objects))
+    // console.log('objects =', [...objects]);
+    // console.log('styles =', [...styles]);
+    if (   !isEmpty(objects)
+        || !isEmpty(styles))
     {
-        if (settings.logObjectUpdates)
-            logObjectUpdates([...objects]);
+        if (settings.logObjectUpdates) logObjectUpdates([...objects]);
+        if (settings.logStyleUpdates)  logStyleUpdates([...styles]);
 
         uiQueueMessageToFigma({
-            cmd:          'figUpdateObjects',
+            cmd:          'figUpdateObjectsAndStyles',
             updateNodeId:  updateNodeId,
             updateParamId: updateParamId,
             nodeIds:       nodes.map(n => n.id),
-            objects:       [...objects]});
-    }
-
-    
-    if (!isEmpty(styles))
-    {
-        if (settings.logStyleUpdates)
-            logStyleUpdates([...styles]);
-
-        uiQueueMessageToFigma({
-            cmd:          'figUpdateStyles',
-            updateNodeId:  updateNodeId,
-            updateParamId: updateParamId,
-            nodeIds:       nodes.map(n => n.id),
+            objects:       [...objects],
             styles:        [...styles]});
     }
 

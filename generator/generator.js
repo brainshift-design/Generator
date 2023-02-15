@@ -1,3 +1,4 @@
+var lastRequestId      = -1;
 var lastUpdateNodeId   =  NULL;
 var lastUpdateParamId  =  NULL;
 var lastUpdateValues   =  [];
@@ -126,26 +127,24 @@ function genPushUpdateStyle(parse, style)
 
 function clearLastUpdate()
 {
-    lastUpdateNodeId  = NULL;
-    lastUpdateParamId = NULL;
+    lastRequestId     = -1;
+    lastUpdateNodeId  =  NULL;
+    lastUpdateParamId =  NULL;
 
-    lastUpdateValues  = [];
-    lastUpdateObjects = [];
-    lastUpdateStyles  = [];
+    lastUpdateValues  =  [];
+    lastUpdateObjects =  [];
+    lastUpdateStyles  =  [];
 }
 
 
 
 function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, updateValues, updateObjects, updateStyles)
 {
-    console.log('1 updateValues =', [...updateValues]);
-    console.log('1 updateObjects =', [...updateObjects]);
-    console.log('1 updateStyles =', [...updateStyles]);
-
     if (   isEmpty(updateValues )
         && isEmpty(updateObjects)
         && isEmpty(updateStyles ))
     {
+        requestId     = lastRequestId;
         updateNodeId  = lastUpdateNodeId;
         updateParamId = lastUpdateParamId;
         
@@ -157,6 +156,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     }
     else if (genFigMessagePosted)
     {
+        lastRequestId     = requestId;
         lastUpdateNodeId  = updateNodeId;
         lastUpdateParamId = updateParamId;
 

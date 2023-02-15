@@ -14,37 +14,37 @@ onmessage = e =>
     {
         let _msg = msg.cmd;
 
-        if (msg.cmd == 'uiReturnFigMessage')
+        if (msg.cmd == 'uiEndFigMessage')
             _msg += ': ' + msg.msgCmd;
 
-            console.log('%cFIG '+_msg+' --► UI', 'background: #08f; color: white;');
+        console.log('%cFIG '+_msg+' --► UI', 'background: #08f; color: white;');
     }
 
 
     switch (msg.cmd)
     {
-        case 'uiStylePropertyChange':                   uiStylePropertyChange                  (msg);        break;
-        case 'uiStyleDelete':                           uiStyleDelete                          (msg);        break;
+        case 'uiStylePropertyChange':                   uiStylePropertyChange                  (msg);                       break;
+        case 'uiStyleDelete':                           uiStyleDelete                          (msg);                       break;
             
-        case 'uiReturnFigMessage':                      uiReturnFigMessage                     (msg.msgCmd); break;
+        case 'uiEndFigMessage':                         uiEndFigMessage                        (msg.msgCmd);                break;
                                     
-        case 'uiReturnFigStartGenerator':               uiReturnFigStartGenerator              (msg);        break;
-                              
-        case 'uiReturnFigLoadNodesAndConns':            uiReturnFigLoadNodesAndConns           (msg);        break;
-                              
-        case 'uiReturnFigGetLocalData':                 uiReturnFigGetLocalData                (msg);        break;
-        case 'uiReturnFigGetPageData':                  uiReturnFigGetPageData                 (msg);        break;
-                                    
-        case 'uiReturnFigResizeWindow':                 uiReturnFigResizeWindow                ();           break;
-            
-        case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);        break;
+        case 'uiReturnFigStartGenerator':               uiReturnFigStartGenerator              (msg);                       break;
+                                             
+        case 'uiReturnFigLoadNodesAndConns':            uiReturnFigLoadNodesAndConns           (msg);                       break;
+                                             
+        case 'uiReturnFigGetLocalData':                 uiReturnFigGetLocalData                (msg);                       break;
+        case 'uiReturnFigGetPageData':                  uiReturnFigGetPageData                 (msg);                       break;
+                                                   
+        case 'uiReturnFigResizeWindow':                 uiReturnFigResizeWindow                ();                          break;
+                           
+        case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);                       break;
 
         case 'uiReturnFigValidateLicense':              
             enableFeatures(msg.result, settings.enableBetaFeatures); 
             break;
 
-        case 'uiSetStyleId':                            uiSetStyleId                           (msg);        break;
-        case 'uiHideClearUndoWarning':                  uiHideClearUndoWarning                 ();           break;
+        case 'uiSetStyleId':                            uiSetStyleId                           (msg);                       break;
+        case 'uiHideClearUndoWarning':                  uiHideClearUndoWarning                 ();                          break;
     }
 }    
 
@@ -95,15 +95,16 @@ function uiPostNextMessageToFigma()
 
 
 
-function uiReturnFigMessage(msgCmd)
+function uiEndFigMessage(msgCmd)
 {
     uiFigMessagePosted = false;
 
-    if (   msgCmd == 'figUpdateObjects'
-        || msgCmd == 'figUpdateStyles')
+    //if (msgCmd == 'figUpdateObjectsAndStyles')
+    //{
         uiPostMessageToGenerator({
-            cmd:   'genEndFigMessage',
-            msgCmd: msgCmd});
+            cmd:      'genEndFigMessage',
+            msgCmd:    msgCmd });
+    //}
 
     uiPostNextMessageToFigma();
 }

@@ -162,19 +162,15 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
     control.update = function()
     {
-        console.log('control.measureData =', control.measureData);
+        if (!control.measureData.offsetRect)
+            return;
+
         const sw = control.measureData.clientRect.width;
         const sh = control.measureData.clientRect.height;
-
 
         control.updateColors();
         control.updateText();
         control.updateFocus(sw, sh);
-        
-
-        control.cachedOffsetLeft   = null;
-        control.cachedClientWidth  = null;
-        control.cachedClientHeight = null;
     };
 
 
@@ -259,10 +255,4 @@ function initColorControl(param, control, width, height, id, name, showName, def
              || document.   mozPointerLockElement === control
              || document.webkitPointerLockElement === control);
     }
-
-
-
-    control.getOffsetLeft   = () => control.cachedOffsetLeft   = control.cachedOffsetLeft   || control.measureData.offsetRect.x;//offsetLeft;
-    control.getClientWidth  = () => control.cachedClientWidth  = control.cachedClientWidth  || control.measureData.clientRect.width;//clientWidth;
-    control.getClientHeight = () => control.cachedClientHeight = control.cachedClientHeight || control.measureData.clientRect.height;//clientHeight;
 }

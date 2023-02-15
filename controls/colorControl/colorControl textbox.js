@@ -194,8 +194,8 @@ function initColorControlTextbox(control)
         let   value      = control.textbox.value;
         const savedValue = control.textbox.savedValue;
 
-        let rgb      = validHex2rgb(value     );
-        let savedRgb = validHex2rgb(savedValue);
+        
+        let rgb = validHex2rgb(value);
 
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
@@ -210,6 +210,8 @@ function initColorControlTextbox(control)
         {
             if (success) 
             {
+                let savedRgb = validHex2rgb(savedValue);
+
                 control.setValue(
                       value.trim() != '' 
                     ? ColorValue.fromRgb(scaleRgb(rgb     )) 
@@ -262,9 +264,14 @@ function initColorControlTextbox(control)
 
         control.textbox.value =
             !control.value.isValid()
-            ? UNKNOWN_DISPLAY
-            : rgb2hex(rgb).toUpperCase();
+            ? UNKNOWN_CHAR
+            : rgbIsValid(rgb)
+              ? rgb2hex(rgb).toUpperCase()
+              : UNKNOWN_CHAR;
                            
-        control.textbox.savedValue  = control.textbox.value;
+        
+        if (   rgbIsValid(rgb)
+            && control.textbox.value != UNKNOWN_CHAR)
+            control.textbox.savedValue = control.textbox.value;
     };
 }
