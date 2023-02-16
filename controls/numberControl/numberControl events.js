@@ -417,12 +417,9 @@ function initNumberControlEvents(control)
             return;
 
 
-        const isTouchpad = 
-               Math.abs(e.deltaX) < 100
-            && Math.abs(e.deltaY) < 100;
+        const touchpad = isTouchpad(e);
 
-
-        if (isTouchpad)
+        if (touchpad)
         {
             e.preventDefault();
             return;
@@ -450,7 +447,7 @@ function initNumberControlEvents(control)
                 const dec = Math.pow(10, -control.dec);
 
                 const val =
-                    isTouchpad
+                    touchpad
                     ? control.value -  dWheelX               * control.wheelScale * dec
                     : control.value + (dWheelY > 0 ? -1 : 1) * control.wheelScale * dec;
 

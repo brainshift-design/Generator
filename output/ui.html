@@ -2477,8 +2477,7 @@ a
                 <h1>What's new in Generator</h1>
 
                 <p>Fixed some UI bugs.</p>
-                <p>Double click renames nodes again.</p>
-                <p>Fixed some visual bugs.</p>
+                <p>Fixed how hand tool works with touchpads.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5231,11 +5230,10 @@ function selectElementText(elementId)
 
 
 
-function isTouchPad(e)
+function isTouchpad(e)
 {
-    return e.wheelDeltaY 
-         ? e.wheelDeltaY === -3 * e.deltaY 
-         : e.deltaMode === 0;
+    return Math.abs(e.deltaX) < 100
+        && Math.abs(e.deltaY) < 100;
 }
 
 
@@ -21617,11 +21615,10 @@ function selectElementText(elementId)
 
 
 
-function isTouchPad(e)
+function isTouchpad(e)
 {
-    return e.wheelDeltaY 
-         ? e.wheelDeltaY === -3 * e.deltaY 
-         : e.deltaMode === 0;
+    return Math.abs(e.deltaX) < 100
+        && Math.abs(e.deltaY) < 100;
 }
 
 
@@ -32677,10 +32674,10 @@ class MenuItem
                 && this.childMenu)
             {
                 if (e.clientX - rect.x < rect.width - this.arrowWidth)
-                    this.select(e.shiftKey, e.ctrlKey, e.altKey, rect.x, rect.y);
+                    this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
             }
             else if (this.callback)
-                this.select(e.shiftKey, e.ctrlKey, e.altKey, rect.x, rect.y);
+                this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
         });
 
 
@@ -33871,12 +33868,9 @@ function initNumberControlEvents(control)
             return;
 
 
-        const isTouchpad = 
-               Math.abs(e.deltaX) < 100
-            && Math.abs(e.deltaY) < 100;
+        const touchpad = isTouchpad(e);
 
-
-        if (isTouchpad)
+        if (touchpad)
         {
             e.preventDefault();
             return;
@@ -33904,7 +33898,7 @@ function initNumberControlEvents(control)
                 const dec = Math.pow(10, -control.dec);
 
                 const val =
-                    isTouchpad
+                    touchpad
                     ? control.value -  dWheelX               * control.wheelScale * dec
                     : control.value + (dWheelY > 0 ? -1 : 1) * control.wheelScale * dec;
 
@@ -35229,12 +35223,9 @@ function initColorControlEvents(control)
             return;
 
 
-        const isTouchpad = 
-               Math.abs(e.deltaX) < 100
-            && Math.abs(e.deltaY) < 100;
+        const touchpad = isTouchpad(e);
 
-
-        if (isTouchpad)
+        if (touchpad)
         {
             e.preventDefault();
             return;
@@ -35262,7 +35253,7 @@ function initColorControlEvents(control)
                 // const dec = Math.pow(10, -control.dec);
 
                 // const val =
-                //     isTouchpad
+                //     touchpad
                 //     ? control.value -  dWheelX               * control.wheelScale * dec
                 //     : control.value + (dWheelY > 0 ? -1 : 1) * control.wheelScale * dec;
                 
@@ -37476,7 +37467,7 @@ graphView.addEventListener('wheel', e =>
 
     // if button is not pressed wheel pans
     // if button is pressed, wheel does nothing if it's a touchpad
-    //var isTouchPad = e.wheelDeltaY ? e.wheelDeltaY === -3 * e.deltaY : e.deltaMode === 0
+    //vartouchPad = e.wheelDeltaY ? e.wheelDeltaY === -3 * e.deltaY : e.deltaMode === 0
 
     e.preventDefault();
 
@@ -37484,23 +37475,20 @@ graphView.addEventListener('wheel', e =>
     const dZoom = Math.log(graphView.zoom) / Math.log(2);
 
 
-    const isTouchpad =
-           Math.abs(e.deltaX) < 100
-        && Math.abs(e.deltaY) < 100;
+    const touchpad = isTouchpad(e);
+
+    const dWheelX = e.deltaX / (touchpad ? 20 : 100);
+    const dWheelY = e.deltaY / (touchpad ? 20 : 100);
 
 
-    const dWheelX = e.deltaX / (isTouchpad ? 20 : 100);
-    const dWheelY = e.deltaY / (isTouchpad ? 20 : 100);
-
-
-    if (   e.ctrlKey
+    if (   getCtrlKey(e)
         ||     panMode
-           && !isTouchpad(e))
+           && !touchpad)
     {
         let pos = point(e.clientX, e.clientY);
         pos.y -= menuBarHeight;
 
-        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (isTouchpad ? 5 : 10)));
+        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 5 : 10)));
         const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
 
         graphView.setPanAndZoom(pan, zoom);
@@ -37542,7 +37530,6 @@ graphView.addEventListener('gesturestart', e => { graphView.zoomStart = graphVie
 
 graphView.addEventListener('gesturechange', e => 
 {
-    console.log('gesturechange');
     const p = point(
         graphView.p.x,
         graphView.p.y - menuBarHeight);
@@ -44624,10 +44611,10 @@ extends OperatorBase
         }
         else
         {
-            this.label.style.color        = '#666';
+            this.label.style.color        = 'var(--figma-color-bg-disabled-secondary)';
             this.label.style.textShadow   = 'none';
 
-            this.textbox.style.color      = '#666';
+            this.textbox.style.color      = 'var(--figma-color-bg-disabled-secondary)';
             this.textbox.style.textShadow = 'none';
         }
     

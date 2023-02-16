@@ -105,10 +105,10 @@ extends OperatorBase
         }
         else
         {
-            this.label.style.color        = '#666';
+            this.label.style.color        = 'var(--figma-color-bg-disabled-secondary)';
             this.label.style.textShadow   = 'none';
 
-            this.textbox.style.color      = '#666';
+            this.textbox.style.color      = 'var(--figma-color-bg-disabled-secondary)';
             this.textbox.style.textShadow = 'none';
         }
     

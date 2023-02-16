@@ -166,9 +166,8 @@ function selectElementText(elementId)
 
 
 
-function isTouchPad(e)
+function isTouchpad(e)
 {
-    return e.wheelDeltaY 
-         ? e.wheelDeltaY === -3 * e.deltaY 
-         : e.deltaMode === 0;
+    return Math.abs(e.deltaX) < 100
+        && Math.abs(e.deltaY) < 100;
 }

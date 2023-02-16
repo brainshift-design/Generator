@@ -132,10 +132,10 @@ class MenuItem
                 && this.childMenu)
             {
                 if (e.clientX - rect.x < rect.width - this.arrowWidth)
-                    this.select(e.shiftKey, e.ctrlKey, e.altKey, rect.x, rect.y);
+                    this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
             }
             else if (this.callback)
-                this.select(e.shiftKey, e.ctrlKey, e.altKey, rect.x, rect.y);
+                this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
         });
 
 

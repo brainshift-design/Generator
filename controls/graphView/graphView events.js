@@ -204,7 +204,7 @@ graphView.addEventListener('wheel', e =>
 
     // if button is not pressed wheel pans
     // if button is pressed, wheel does nothing if it's a touchpad
-    //var isTouchPad = e.wheelDeltaY ? e.wheelDeltaY === -3 * e.deltaY : e.deltaMode === 0
+    //vartouchPad = e.wheelDeltaY ? e.wheelDeltaY === -3 * e.deltaY : e.deltaMode === 0
 
     e.preventDefault();
 
@@ -212,23 +212,20 @@ graphView.addEventListener('wheel', e =>
     const dZoom = Math.log(graphView.zoom) / Math.log(2);
 
 
-    const isTouchpad =
-           Math.abs(e.deltaX) < 100
-        && Math.abs(e.deltaY) < 100;
+    const touchpad = isTouchpad(e);
+
+    const dWheelX = e.deltaX / (touchpad ? 20 : 100);
+    const dWheelY = e.deltaY / (touchpad ? 20 : 100);
 
 
-    const dWheelX = e.deltaX / (isTouchpad ? 20 : 100);
-    const dWheelY = e.deltaY / (isTouchpad ? 20 : 100);
-
-
-    if (   e.ctrlKey
+    if (   getCtrlKey(e)
         ||     panMode
-           && !isTouchpad(e))
+           && !touchpad)
     {
         let pos = point(e.clientX, e.clientY);
         pos.y -= menuBarHeight;
 
-        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (isTouchpad ? 5 : 10)));
+        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 5 : 10)));
         const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
 
         graphView.setPanAndZoom(pan, zoom);
@@ -270,7 +267,6 @@ graphView.addEventListener('gesturestart', e => { graphView.zoomStart = graphVie
 
 graphView.addEventListener('gesturechange', e => 
 {
-    console.log('gesturechange');
     const p = point(
         graphView.p.x,
         graphView.p.y - menuBarHeight);
