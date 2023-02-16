@@ -20,10 +20,6 @@ extends OperatorBase
             if (this.textbox.value.trim() == '')
                 actionManager.do(new DeleteNodesAction([this.id], false), true);
         });
-
-
-        this.updateNode();
-        graphView.updateNodeTransform(this);
     }
 
 
@@ -31,7 +27,6 @@ extends OperatorBase
     setSelected(sel)
     {
         this._selected = sel;
-        this.div.style.boxShadow = 'none';
     }
 
 
@@ -73,16 +68,14 @@ extends OperatorBase
             : this.name);
 
 
-        const width = Math.max(1, mes.width);
+        const width = Math.max(1, mes.width + 2);
 
         this.div    .style.width   = 
         this.textbox.style.width   = width + 'px';
 
         this.textbox.style.height  = this.div.offsetHeight;
         this.textbox.style.padding = '0';
-        this.textbox.style.margin  = '2px 0 0 0';
-
-        this.textbox.style.boxShadow = 'none';
+        this.textbox.style.margin  = '0';
     }
 
 
