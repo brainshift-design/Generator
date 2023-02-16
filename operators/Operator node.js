@@ -353,8 +353,9 @@ function createNodeHeader(node)
                     point(node.div.offsetLeft, node.div.offsetTop),
                     node.div.shiftOnPointerDown ));
             }
-            else if (   !isEmpty(graphView.selectedNodes)
-                     && !node.selected)
+            else if (!arraysAreEqual(graphView.selectedNodes, graphView.lastSelectedNodes))
+                 //   !isEmpty(graphView.selectedNodes)
+                 //    && !node.selected)
             {
                 actionManager.do(new SelectNodesAction(
                     graphView.selectedNodes    .map(n => n.id), 

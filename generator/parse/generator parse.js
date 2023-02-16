@@ -148,6 +148,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
 
+    else if (parse.next == COMMENT                ) result = genParseComment         (parse);
+
     else console.assert(false, 'unknown parse token \'' + parse.next + '\'');
 
 

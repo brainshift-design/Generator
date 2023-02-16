@@ -5,7 +5,6 @@ extends OperatorBase
     {
         super(COMMENT, 'comment', 0);
 
-
         this.scrollName = false;
 
 
@@ -25,9 +24,6 @@ extends OperatorBase
 
         this.updateNode();
         graphView.updateNodeTransform(this);
-
-
-        this.labelWrapper.style.overflow = 'visible';
     }
 
 
@@ -36,6 +32,27 @@ extends OperatorBase
     {
         this._selected = sel;
         this.div.style.boxShadow = 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // 'this' is the node
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: null });
+
+
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
+
+        return request;
     }
 
 
@@ -87,8 +104,8 @@ extends OperatorBase
 
         if (this.selected)
         {
-            this.label.style.color        = rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
-            this.label.style.textShadow   = '0 0 0 ' + colFigmaBlue;
+            this.label.style.color        = 'var(--figma-color-bg-brand)';//rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
+            this.label.style.textShadow   = '0 0 0 var(--figma-color-bg-brand)';// + colFigmaBlue;
 
             this.textbox.style.color      = rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
             this.textbox.style.textShadow = '0 0 0 ' + colFigmaBlue;
@@ -103,6 +120,8 @@ extends OperatorBase
         }
     
 
+        this.labelWrapper.style.overflow      = 'visible';
+
         this.label.style.background           = 'transparent';
         this.label.style.textAlign            = 'left';
 
@@ -113,5 +132,12 @@ extends OperatorBase
 
         this.label.style.WebkitBackgroundClip = 'inherit';
         this.label.style.WebkitTextFillColor  = 'inherit';
+    }
+
+
+
+    updateBorder()
+    {
+        this.div.style.boxShadow = 'none';
     }
 }

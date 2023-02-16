@@ -1,3 +1,28 @@
+function genParseComment(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cmnt = new GComment(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReqComment(cmnt, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cmnt);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    genParseNodeEnd(parse, cmnt);
+    return cmnt;
+}
+
+
+
 function genParseListValue(parse)
 {
     parse.pos++; // LIST_VALUE

@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 97;
+const generatorVersion = 98;
 
 
 const MAX_INT32        = 2147483647;
@@ -2547,6 +2547,15 @@ function selectElementText(elementId)
 }
 
 
+
+function isTouchPad(e)
+{
+    return e.wheelDeltaY 
+         ? e.wheelDeltaY === -3 * e.deltaY 
+         : e.deltaMode === 0;
+}
+
+
 function writeTextToClipboard(str) 
 {
     if (   navigator.clipboard 
@@ -2947,6 +2956,14 @@ function logReqNode(node, parse)
     parse.log += parse.tab + node.type;
     parse.log += logReqNodeId(node);
 }
+
+
+function logReqComment(cmnt, parse, ignore)
+{
+    parse.log += parse.tab + COMMENT;
+    parse.log += logReqNodeId(cmnt, ignore);
+}
+
 
 
 function logReqListValue(list, parse, ignore)
@@ -6059,6 +6076,56 @@ function parseStarValue(str)
         new NumberValue(parseNumberValue(star[5])),
         new NumberValue(parseNumberValue(star[6])),
         new NumberValue(parseNumberValue(star[7])));
+}
+
+
+
+class GComment
+extends GOperator
+{
+    constructor(nodeId, options)
+    {
+        super(COMMENT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GComment(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = NullValue;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
 }
 
 
@@ -12131,6 +12198,31 @@ function genParseColorInterpolate(parse)
 }
 
 
+function genParseComment(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cmnt = new GComment(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReqComment(cmnt, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cmnt);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    genParseNodeEnd(parse, cmnt);
+    return cmnt;
+}
+
+
+
 function genParseListValue(parse)
 {
     parse.pos++; // LIST_VALUE
@@ -13737,6 +13829,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == ELLIPSE                ) result = genParseEllipse         (parse);
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
+
+    else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
     else console.assert(false, 'unknown parse token \'' + parse.next + '\'');
 

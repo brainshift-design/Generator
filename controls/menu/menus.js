@@ -459,7 +459,7 @@ function initGeneratorMenus()
     btnShape    = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
 
-    btnHand    = new MenuButton('Hand tool', null, {callback: () => 
+    btnHand = new MenuButton('Hand tool', null, {callback: () => 
     { 
         updatePanMode(!panMode);
     }});

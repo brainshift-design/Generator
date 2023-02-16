@@ -32,14 +32,6 @@ graphView.deselectAll = () =>
 graphView.selectByIds = (nodeIds) =>
 {
     graphView.selectedNodes = nodeIds.map(id => nodeFromId(id));
-    // graphView.deselectAll();
-
-    // for (const id of nodeIds)
-    // {
-    //     const node = nodeFromId(id);
-    //     graphView._selectedNodes.push(node);
-    //     node.setSelected(true);
-    // }
 };
 
 
@@ -121,10 +113,13 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
     selectBox.style.zIndex = MAX_INT32-3;
         
         
-    [...selected,                    
-     ...graphView._prevSelectedNodes,
-     ...graphView.lastSelectedNodes]
-        .forEach(n => n.updateBorder());
+    const nodes = [
+        ...selected,                    
+        ...graphView._prevSelectedNodes,
+        ...graphView.lastSelectedNodes];
+
+    nodes.forEach(n => n.updateBorder());
+    updateComments(nodes.map(n => n.id));
 
 
     graphView._prevSelectedNodes = selected;

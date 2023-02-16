@@ -2476,9 +2476,9 @@ a
             <div id='whatsNewBody'>
                 <h1>What's new in Generator</h1>
 
-                <p>Fixed browser context menu showing up on right-click.</p>
-                <p>Fixed node loading and update bugs.</p>
-                <p>Fixed invalid color text entry after loading.</p>
+                <p>Fixed crash when creating comments.</p>
+                <p>Double click renames nodes again.</p>
+                <p>Fixed some visual bugs.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -2687,7 +2687,7 @@ a
 
 
 
-const generatorVersion = 97;
+const generatorVersion = 98;
 
 
 const MAX_INT32        = 2147483647;
@@ -5230,6 +5230,15 @@ function selectElementText(elementId)
 }
 
 
+
+function isTouchPad(e)
+{
+    return e.wheelDeltaY 
+         ? e.wheelDeltaY === -3 * e.deltaY 
+         : e.deltaMode === 0;
+}
+
+
 function writeTextToClipboard(str) 
 {
     if (   navigator.clipboard 
@@ -5630,6 +5639,14 @@ function logReqNode(node, parse)
     parse.log += parse.tab + node.type;
     parse.log += logReqNodeId(node);
 }
+
+
+function logReqComment(cmnt, parse, ignore)
+{
+    parse.log += parse.tab + COMMENT;
+    parse.log += logReqNodeId(cmnt, ignore);
+}
+
 
 
 function logReqListValue(list, parse, ignore)
@@ -8742,6 +8759,56 @@ function parseStarValue(str)
         new NumberValue(parseNumberValue(star[5])),
         new NumberValue(parseNumberValue(star[6])),
         new NumberValue(parseNumberValue(star[7])));
+}
+
+
+
+class GComment
+extends GOperator
+{
+    constructor(nodeId, options)
+    {
+        super(COMMENT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GComment(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = NullValue;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
 }
 
 
@@ -14814,6 +14881,31 @@ function genParseColorInterpolate(parse)
 }
 
 
+function genParseComment(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cmnt = new GComment(nodeId, options);
+
+    
+    if (parse.settings.logRequests) 
+        logReqComment(cmnt, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cmnt);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    genParseNodeEnd(parse, cmnt);
+    return cmnt;
+}
+
+
+
 function genParseListValue(parse)
 {
     parse.pos++; // LIST_VALUE
@@ -16420,6 +16512,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == ELLIPSE                ) result = genParseEllipse         (parse);
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
+
+    else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
     else console.assert(false, 'unknown parse token \'' + parse.next + '\'');
 
@@ -18979,7 +19073,7 @@ function convert2hcluv(fromColor)
 ////////////////////////////////////////////////////
 
 
-const generatorVersion = 97;
+const generatorVersion = 98;
 
 
 const MAX_INT32        = 2147483647;
@@ -21522,6 +21616,15 @@ function selectElementText(elementId)
 }
 
 
+
+function isTouchPad(e)
+{
+    return e.wheelDeltaY 
+         ? e.wheelDeltaY === -3 * e.deltaY 
+         : e.deltaMode === 0;
+}
+
+
 function writeTextToClipboard(str) 
 {
     if (   navigator.clipboard 
@@ -21922,6 +22025,14 @@ function logReqNode(node, parse)
     parse.log += parse.tab + node.type;
     parse.log += logReqNodeId(node);
 }
+
+
+function logReqComment(cmnt, parse, ignore)
+{
+    parse.log += parse.tab + COMMENT;
+    parse.log += logReqNodeId(cmnt, ignore);
+}
+
 
 
 function logReqListValue(list, parse, ignore)
@@ -26529,6 +26640,56 @@ function parseStarValue(str)
         new NumberValue(parseNumberValue(star[5])),
         new NumberValue(parseNumberValue(star[6])),
         new NumberValue(parseNumberValue(star[7])));
+}
+
+
+
+class GComment
+extends GOperator
+{
+    constructor(nodeId, options)
+    {
+        super(COMMENT, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GComment(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        this.value = NullValue;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
 }
 
 
@@ -33162,7 +33323,7 @@ function initGeneratorMenus()
     btnShape    = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
 
-    btnHand    = new MenuButton('Hand tool', null, {callback: () => 
+    btnHand = new MenuButton('Hand tool', null, {callback: () => 
     { 
         updatePanMode(!panMode);
     }});
@@ -36679,6 +36840,7 @@ graphView.selectionRect   = Rect.NaN;
 graphView.btn1down        = false; // this is to help deal with mouse wheels that send X values as
                                    // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
+                                   
 graphView.pan             = point(0, 0);
 graphView.zoom            = 1;
  
@@ -37312,6 +37474,10 @@ graphView.addEventListener('wheel', e =>
         return;
 
 
+    // if button is not pressed wheel pans
+    // if button is pressed, wheel does nothing if it's a touchpad
+    //var isTouchPad = e.wheelDeltaY ? e.wheelDeltaY === -3 * e.deltaY : e.deltaMode === 0
+
     e.preventDefault();
 
 
@@ -37328,7 +37494,8 @@ graphView.addEventListener('wheel', e =>
 
 
     if (   e.ctrlKey
-        || panMode)
+        ||     panMode
+           && !isTouchpad(e))
     {
         let pos = point(e.clientX, e.clientY);
         pos.y -= menuBarHeight;
@@ -37375,6 +37542,7 @@ graphView.addEventListener('gesturestart', e => { graphView.zoomStart = graphVie
 
 graphView.addEventListener('gesturechange', e => 
 {
+    console.log('gesturechange');
     const p = point(
         graphView.p.x,
         graphView.p.y - menuBarHeight);
@@ -37725,14 +37893,6 @@ graphView.deselectAll = () =>
 graphView.selectByIds = (nodeIds) =>
 {
     graphView.selectedNodes = nodeIds.map(id => nodeFromId(id));
-    // graphView.deselectAll();
-
-    // for (const id of nodeIds)
-    // {
-    //     const node = nodeFromId(id);
-    //     graphView._selectedNodes.push(node);
-    //     node.setSelected(true);
-    // }
 };
 
 
@@ -37814,10 +37974,13 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
     selectBox.style.zIndex = MAX_INT32-3;
         
         
-    [...selected,                    
-     ...graphView._prevSelectedNodes,
-     ...graphView.lastSelectedNodes]
-        .forEach(n => n.updateBorder());
+    const nodes = [
+        ...selected,                    
+        ...graphView._prevSelectedNodes,
+        ...graphView.lastSelectedNodes];
+
+    nodes.forEach(n => n.updateBorder());
+    updateComments(nodes.map(n => n.id));
 
 
     graphView._prevSelectedNodes = selected;
@@ -43828,8 +43991,9 @@ function createNodeHeader(node)
                     point(node.div.offsetLeft, node.div.offsetTop),
                     node.div.shiftOnPointerDown ));
             }
-            else if (   !isEmpty(graphView.selectedNodes)
-                     && !node.selected)
+            else if (!arraysAreEqual(graphView.selectedNodes, graphView.lastSelectedNodes))
+                 //   !isEmpty(graphView.selectedNodes)
+                 //    && !node.selected)
             {
                 actionManager.do(new SelectNodesAction(
                     graphView.selectedNodes    .map(n => n.id), 
@@ -44360,7 +44524,6 @@ extends OperatorBase
     {
         super(COMMENT, 'comment', 0);
 
-
         this.scrollName = false;
 
 
@@ -44380,9 +44543,6 @@ extends OperatorBase
 
         this.updateNode();
         graphView.updateNodeTransform(this);
-
-
-        this.labelWrapper.style.overflow = 'visible';
     }
 
 
@@ -44391,6 +44551,27 @@ extends OperatorBase
     {
         this._selected = sel;
         this.div.style.boxShadow = 'none';
+    }
+
+
+
+    genRequest(gen)
+    {
+        // 'this' is the node
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: null });
+
+
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
+
+        return request;
     }
 
 
@@ -44442,8 +44623,8 @@ extends OperatorBase
 
         if (this.selected)
         {
-            this.label.style.color        = rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
-            this.label.style.textShadow   = '0 0 0 ' + colFigmaBlue;
+            this.label.style.color        = 'var(--figma-color-bg-brand)';//rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
+            this.label.style.textShadow   = '0 0 0 var(--figma-color-bg-brand)';// + colFigmaBlue;
 
             this.textbox.style.color      = rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
             this.textbox.style.textShadow = '0 0 0 ' + colFigmaBlue;
@@ -44458,6 +44639,8 @@ extends OperatorBase
         }
     
 
+        this.labelWrapper.style.overflow      = 'visible';
+
         this.label.style.background           = 'transparent';
         this.label.style.textAlign            = 'left';
 
@@ -44468,6 +44651,13 @@ extends OperatorBase
 
         this.label.style.WebkitBackgroundClip = 'inherit';
         this.label.style.WebkitTextFillColor  = 'inherit';
+    }
+
+
+
+    updateBorder()
+    {
+        this.div.style.boxShadow = 'none';
     }
 }
 
@@ -49275,9 +49465,9 @@ extends OpColorBase
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
 
-        this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, false, OpColorSpaces.map(s => s[1]), 1));
-        this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, false, 50, 0,  100, 0));
-        this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, false, 1,  0.01, 4, 2));
+        this.addParam(this.paramSpace  = new SelectParam('space',  '',  false, true, true, OpColorSpaces.map(s => s[1]), 1));
+        this.addParam(this.paramAmount = new NumberParam('amount', '',  true,  true, true, 50, 0,  100, 0));
+        this.addParam(this.paramGamma  = new NumberParam('gamma',  'γ', true,  true, true, 1,  0.01, 4, 2));
       
         
         this.paramSpace.control.setMin(1);
@@ -52739,6 +52929,7 @@ extends Action
     do(updateNodes)
     {
         // this happens in the UI
+        updateComments(this.prevSelectedIds);
     }
 
 
@@ -52746,6 +52937,7 @@ extends Action
     undo(updateNodes)
     {
         graphView.selectByIds(this.prevSelectedIds);
+        updateComments(this.selectedIds);
     }
 
 
@@ -52753,7 +52945,20 @@ extends Action
     redo(updateNodes)
     {
         graphView.selectByIds(this.selectedIds);
+
+        updateComments(this.selectedIds);
+        updateComments(this.prevSelectedIds);
     }
+}
+
+
+
+function updateComments(nodeIds)
+{
+    nodeIds
+        .map(id => nodeFromId(id))
+        .filter(n => n.type == COMMENT)
+        .forEach(n => n.updateNode());
 }
 
 
@@ -54165,6 +54370,7 @@ function legacyLoadConnectionsAsync(data, nodes, loadedNodes, setProgress)
         uiSaveNodes(loadedNodes.map(n => n.id));
 
         const updateNodes = [];
+        
         finishLoadingNodes(nodes, loadedNodes, updateNodes);
         finishLoading(nodes);
         

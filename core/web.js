@@ -163,3 +163,12 @@ function selectElementText(elementId)
         window.getSelection().addRange(range);
     }
 }
+
+
+
+function isTouchPad(e)
+{
+    return e.wheelDeltaY 
+         ? e.wheelDeltaY === -3 * e.deltaY 
+         : e.deltaMode === 0;
+}

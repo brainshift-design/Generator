@@ -1,3 +1,11 @@
+function logReqComment(cmnt, parse, ignore)
+{
+    parse.log += parse.tab + COMMENT;
+    parse.log += logReqNodeId(cmnt, ignore);
+}
+
+
+
 function logReqListValue(list, parse, ignore)
 {
     parse.log += parse.tab + LIST_VALUE + ' ' + displayValue(LIST_VALUE, list);

@@ -25,9 +25,8 @@
 ../operators/Operator label.js
 ../operators/Operator textbox.js
 
-../operators/utility/OpComment.js
 
-
+../operators/flow/OpComment.js
 ../operators/flow/OpList.js
 ../operators/flow/OpItems.js
 ../operators/flow/OpSelect.js
