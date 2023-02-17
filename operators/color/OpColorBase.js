@@ -126,7 +126,7 @@ extends Operator
             ? rgb_NaN
             : dataColor2rgb(this._color);
 
-            
+
         let rgbStripeBack = [...rgbBack];
         
         const factor = this.getWarningFactor(rgbBack);
@@ -202,28 +202,40 @@ extends Operator
             : height;
 
 
-        const hclBack = rgb2hclok(colBack);
-
-        const hclBack1 = [...hclBack];
-        const hclBack2 = [...hclBack];
-
-        hclBack1[0] += 1/12;  if (hclBack1[0] > 1) hclBack1[0] -= 1;
-        hclBack2[0] -= 1/12;  if (hclBack2[0] < 0) hclBack2[0] += 1;
-
-
-        const altBack1   = rgb_a(clipRgb(hclok2rgb(hclBack1)), 0.35);
-        const altBack2   = rgb_a(clipRgb(hclok2rgb(hclBack2)), 0.35);
-
         const colWarning = getDefaultWarningRgba(colBack);
-        const factor     = this.getWarningFactor(colBack);
 
-        const colWarn1   = rgbaLerp(colWarning, altBack1, factor);
-        const colWarn2   = rgbaLerp(colWarning, altBack2, factor);
-        
-        const warnStyle1 = rgba2style(colWarn1);
-        const warnStyle2 = rgba2style(colWarn2);
+        let warnStyle1, warnStyle2;
+           
+            
+        if (!rgbIsNaN(colBack))
+        {
+            const hclBack = rgb2hclok(colBack);
 
-        
+            const hclBack1 = [...hclBack];
+            const hclBack2 = [...hclBack];
+
+            hclBack1[0] += 1/12;  if (hclBack1[0] > 1) hclBack1[0] -= 1;
+            hclBack2[0] -= 1/12;  if (hclBack2[0] < 0) hclBack2[0] += 1;
+
+
+            const altBack1 = rgb_a(clipRgb(hclok2rgb(hclBack1)), 0.35);
+            const altBack2 = rgb_a(clipRgb(hclok2rgb(hclBack2)), 0.35);
+
+            const factor   = this.getWarningFactor(colBack);
+
+            const colWarn1 = rgbaLerp(colWarning, altBack1, factor);
+            const colWarn2 = rgbaLerp(colWarning, altBack2, factor);
+            
+            warnStyle1     = rgba2style(colWarn1);
+            warnStyle2     = rgba2style(colWarn2);
+        }
+        else
+        {
+            warnStyle1 = rgba2style(colWarning);
+            warnStyle2 = rgba2style(colWarning);
+        }
+
+
         this._warningOverlay.style.background =
                 rgbIsOk(colBack)
             && !this.forceShowWarning

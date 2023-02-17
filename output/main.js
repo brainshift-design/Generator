@@ -1640,10 +1640,10 @@ function figSetWindowRect(x, y, width, height) {
             rect.y = Math.round(rect.y);
             rect.width = Math.round(rect.width);
             rect.height = Math.round(rect.height);
-            console.log('_ x =', rect.x);
-            console.log('_ y =', rect.y);
-            console.log('_ width =', rect.width);
-            console.log('_ height =', rect.height);
+            // console.log('_ x =',      rect.x);
+            // console.log('_ y =',      rect.y);
+            // console.log('_ width =',  rect.width);
+            // console.log('_ height =', rect.height);
             figma.ui.resize(rect.width, rect.height);
             figma.clientStorage.setAsync('windowWidth', rect.width);
             figma.clientStorage.setAsync('windowHeight', rect.height);
