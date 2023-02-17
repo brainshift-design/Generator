@@ -43,7 +43,7 @@ function rgbaIsNaN(rgba)
 
 
 
-function rgbIsValid(rgb, lim = Eps)
+function rgbIsValid(rgb, lim = ColorEpsilon)
 {
     return rgb[0] > -lim && rgb[0] < 1 + lim 
         && rgb[1] > -lim && rgb[1] < 1 + lim 
@@ -52,7 +52,7 @@ function rgbIsValid(rgb, lim = Eps)
 
 
 
-function rgbaIsValid(rgba, lim = Eps)
+function rgbaIsValid(rgba, lim = ColorEpsilon)
 {
     return rgba[0] > -lim && rgba[0] < 1 + lim 
         && rgba[1] > -lim && rgba[1] < 1 + lim 
@@ -62,7 +62,7 @@ function rgbaIsValid(rgba, lim = Eps)
 
 
 
-function rgbIsOk(rgb, lim = Eps)
+function rgbIsOk(rgb, lim = ColorEpsilon)
 {
     return !rgbIsNaN  (rgb)
         &&  rgbIsValid(rgb, lim);

@@ -475,13 +475,13 @@ function isDataColorNaN(color)
 }
 
 
-const Eps = 0.0000001;
+const Epsilon = 0.0000001;
 
 
 
 function nozero(x)
 {
-    return x != 0 ? x : Eps;
+    return x != 0 ? x : Epsilon;
 }
 
 
@@ -645,7 +645,7 @@ const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 function equal(a, b)
 {
-    return Math.abs(b - a) < Eps;
+    return Math.abs(b - a) < Epsilon;
 }
 
 
@@ -8604,9 +8604,9 @@ function findCorrection(nodeId,
                 start3 = lerp(min3, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
                
                 
-            if (locked1) { closest1 = margin1.toNumber(); start1 = closest1; end1 = closest1+Eps; }
-            if (locked2) { closest2 = margin2.toNumber(); start2 = closest2; end2 = closest2+Eps; }
-            if (locked3) { closest3 = margin3.toNumber(); start3 = closest3; end3 = closest3+Eps; }
+            if (locked1) { closest1 = margin1.toNumber(); start1 = closest1; end1 = closest1+Epsilon; }
+            if (locked2) { closest2 = margin2.toNumber(); start2 = closest2; end2 = closest2+Epsilon; }
+            if (locked3) { closest3 = margin3.toNumber(); start3 = closest3; end3 = closest3+Epsilon; }
             
 
           [ closestColor,
@@ -8950,9 +8950,9 @@ function reorderCorrection(closestOrder,
     let c2 = { closest: closest2, locked: locked2 };
     let c3 = { closest: closest3, locked: locked3 };
 
-    if (   c1.closest <  Eps
-        && c2.closest <  Eps
-        && c3.closest >= Eps)
+    if (   c1.closest <  Epsilon
+        && c2.closest <  Epsilon
+        && c3.closest >= Epsilon)
     {
         switch (closestOrder)
         {
@@ -8969,8 +8969,8 @@ function reorderCorrection(closestOrder,
         c2 = c1;
         c3 = tmp;
     }
-    else if (c1.closest >= Eps
-          && c2.closest <  Eps)
+    else if (c1.closest >= Epsilon
+          && c2.closest <  Epsilon)
     {
         switch (closestOrder)
         {
@@ -8986,7 +8986,7 @@ function reorderCorrection(closestOrder,
         c2 = c3;
         c3 = tmp;
     }
-    else if (c1.closest < Eps)
+    else if (c1.closest < Epsilon)
     {
         switch (closestOrder)
         {
@@ -14722,7 +14722,7 @@ function rgbaIsNaN(rgba)
 
 
 
-function rgbIsValid(rgb, lim = Eps)
+function rgbIsValid(rgb, lim = ColorEpsilon)
 {
     return rgb[0] > -lim && rgb[0] < 1 + lim 
         && rgb[1] > -lim && rgb[1] < 1 + lim 
@@ -14731,7 +14731,7 @@ function rgbIsValid(rgb, lim = Eps)
 
 
 
-function rgbaIsValid(rgba, lim = Eps)
+function rgbaIsValid(rgba, lim = ColorEpsilon)
 {
     return rgba[0] > -lim && rgba[0] < 1 + lim 
         && rgba[1] > -lim && rgba[1] < 1 + lim 
@@ -14741,7 +14741,7 @@ function rgbaIsValid(rgba, lim = Eps)
 
 
 
-function rgbIsOk(rgb, lim = Eps)
+function rgbIsOk(rgb, lim = ColorEpsilon)
 {
     return !rgbIsNaN  (rgb)
         &&  rgbIsValid(rgb, lim);
@@ -14833,6 +14833,10 @@ function rgbPow(col, p)
 
 
 
+const ColorEpsilon = 0.001;
+
+
+
 function makeDataColor(space, c1, c2, c3)
 {
     const _space = colorSpace(space.value);
@@ -14855,14 +14859,14 @@ function dataColorIsNaN(c)
 
 
 
-function dataColorIsValid(col, lim = Eps)
+function dataColorIsValid(col, lim = ColorEpsilon)
 {
     return rgbIsValid(dataColor2rgb(col), lim);
 }
 
 
 
-function dataColorIsOk(col, lim = Eps)
+function dataColorIsOk(col, lim = ColorEpsilon)
 {
     return rgbIsOk(dataColor2rgb(col), lim);
 }
@@ -15033,9 +15037,9 @@ function maxRgbDistance(col1, col2)
 
 function rgbEqual(rgb1, rgb2)
 {
-    return Math.abs(rgb1[0] - rgb2[0]) < Eps
-        && Math.abs(rgb1[1] - rgb2[1]) < Eps
-        && Math.abs(rgb1[2] - rgb2[2]) < Eps;        
+    return Math.abs(rgb1[0] - rgb2[0]) < ColorEpsilon
+        && Math.abs(rgb1[1] - rgb2[1]) < ColorEpsilon
+        && Math.abs(rgb1[2] - rgb2[2]) < ColorEpsilon;        
 }
 
 

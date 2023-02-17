@@ -36,6 +36,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.displayAbsolute        = false;
     
+    control.epsilon                = Epsilon;
+
     control.acc                    = acc;
      
     control.dec                    =
@@ -164,6 +166,10 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             || !isNaN(value) &&  isNaN(oldValue)
             || Math.abs(value - oldValue) > Number.EPSILON)
         {
+            if (   value > -control.epsilon
+                && value <  0) // guard against -0
+                value = 0;
+
             control.value = value;
 
             control.update();

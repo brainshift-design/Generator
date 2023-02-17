@@ -125,7 +125,7 @@ extends Operator
             dataColorIsNaN(this._color)
             ? rgb_NaN
             : dataColor2rgb(this._color);
-
+            
 
         let rgbStripeBack = [...rgbBack];
         

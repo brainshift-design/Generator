@@ -58,9 +58,9 @@ function findCorrection(nodeId,
                 start3 = lerp(min3, closest3, 1-d),  end3 = lerp(max3, closest3, 1-d);
                
                 
-            if (locked1) { closest1 = margin1.toNumber(); start1 = closest1; end1 = closest1+Eps; }
-            if (locked2) { closest2 = margin2.toNumber(); start2 = closest2; end2 = closest2+Eps; }
-            if (locked3) { closest3 = margin3.toNumber(); start3 = closest3; end3 = closest3+Eps; }
+            if (locked1) { closest1 = margin1.toNumber(); start1 = closest1; end1 = closest1+Epsilon; }
+            if (locked2) { closest2 = margin2.toNumber(); start2 = closest2; end2 = closest2+Epsilon; }
+            if (locked3) { closest3 = margin3.toNumber(); start3 = closest3; end3 = closest3+Epsilon; }
             
 
           [ closestColor,
@@ -404,9 +404,9 @@ function reorderCorrection(closestOrder,
     let c2 = { closest: closest2, locked: locked2 };
     let c3 = { closest: closest3, locked: locked3 };
 
-    if (   c1.closest <  Eps
-        && c2.closest <  Eps
-        && c3.closest >= Eps)
+    if (   c1.closest <  Epsilon
+        && c2.closest <  Epsilon
+        && c3.closest >= Epsilon)
     {
         switch (closestOrder)
         {
@@ -423,8 +423,8 @@ function reorderCorrection(closestOrder,
         c2 = c1;
         c3 = tmp;
     }
-    else if (c1.closest >= Eps
-          && c2.closest <  Eps)
+    else if (c1.closest >= Epsilon
+          && c2.closest <  Epsilon)
     {
         switch (closestOrder)
         {
@@ -440,7 +440,7 @@ function reorderCorrection(closestOrder,
         c2 = c3;
         c3 = tmp;
     }
-    else if (c1.closest < Eps)
+    else if (c1.closest < Epsilon)
     {
         switch (closestOrder)
         {

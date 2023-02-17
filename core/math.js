@@ -6,7 +6,7 @@ const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 function equal(a, b)
 {
-    return Math.abs(b - a) < Eps;
+    return Math.abs(b - a) < Epsilon;
 }
 
 

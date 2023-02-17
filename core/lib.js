@@ -1,10 +1,10 @@
-const Eps = 0.0000001;
+const Epsilon = 0.0000001;
 
 
 
 function nozero(x)
 {
-    return x != 0 ? x : Eps;
+    return x != 0 ? x : Epsilon;
 }
 
 

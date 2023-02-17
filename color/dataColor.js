@@ -1,3 +1,7 @@
+const ColorEpsilon = 0.001;
+
+
+
 function makeDataColor(space, c1, c2, c3)
 {
     const _space = colorSpace(space.value);
@@ -20,14 +24,14 @@ function dataColorIsNaN(c)
 
 
 
-function dataColorIsValid(col, lim = Eps)
+function dataColorIsValid(col, lim = ColorEpsilon)
 {
     return rgbIsValid(dataColor2rgb(col), lim);
 }
 
 
 
-function dataColorIsOk(col, lim = Eps)
+function dataColorIsOk(col, lim = ColorEpsilon)
 {
     return rgbIsOk(dataColor2rgb(col), lim);
 }
