@@ -1,5 +1,8 @@
 function initWhatsNewDialog()
 {
+    whatsNew0.innerHTML = whatsNew0.innerHTML.replace('%CtrlShiftA%', osCtrl() + osShift() + 'A');
+
+
     initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);
     chkHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', generatorVersion));
 
@@ -19,11 +22,7 @@ function initWhatsNewDialog()
         let oy = whatsNewDialogContent.style.top = whatsNewDialogContent.offsetTop - e.deltaY / 3;
 
         oy = Math.max(oy, whatsNewDialogContainer.clientHeight - whatsNewDialogContent.clientHeight + whatsNewTitle.clientHeight);
-
-        whatsNewDialogContent.style.top = Math.min(
-            oy,
-            menuBarHeight);
-
+        whatsNewDialogContent.style.top = Math.min(oy, menuBarHeight);
 
         updateWhatsNewScroll();
     });

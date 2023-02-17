@@ -2477,8 +2477,9 @@ a
                 <h1>What's new in Generator</h1>
 
                 <p>Fixed UI bugs.</p>
-                <p>Fixed how hand tool works with touchpads.</p>
+                <p>Fixed how the hand tool works with touchpads.</p>
                 <p>No longer clipping APCA score to 0..+105, it's -108..106 again.</p>
+                <p id='whatsNew0'>Added %CtrlShiftA% to invert node selection, to match Figma.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -6200,27 +6201,27 @@ function normalizeSeed(x)
 }
 
 
-const NAN_CHAR            = '?';
-const NAN_DISPLAY         = '?';
-
-const UNKNOWN_CHAR        = '?';
-const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
-
-const TRUE_DISPLAY        = '✓';//'true';
-const FALSE_DISPLAY       = '❌';//'false';
-
-const LIST_VALUE          = 'LIST#';
-const LIST                = 'LIST';
-
-const ITEMS               = 'ITEMS';
-const SELECT              = 'SEL';
-const IF_ELSE             = 'IF';
-
-const START               = 'START';
-const REPEAT              = 'REPT';
-
-const CACHE               = 'CACHE';
-const COPY                = 'COPY';
+const NAN_CHAR                = '?';
+const NAN_DISPLAY             = '?';
+    
+const UNKNOWN_CHAR            = '?';
+const UNKNOWN_DISPLAY         = UNKNOWN_CHAR;//'🤷‍♂️';
+    
+const TRUE_DISPLAY            = '✓';//'true';
+const FALSE_DISPLAY           = '❌';//'false';
+    
+const LIST_VALUE              = 'LIST#';
+const LIST                    = 'LIST';
+    
+const ITEMS                   = 'ITEMS';
+const SELECT                  = 'SEL';
+const IF_ELSE                 = 'IF';
+    
+const START                   = 'START';
+const REPEAT                  = 'REPT';
+    
+const CACHE                   = 'CACHE';
+const COPY                    = 'COPY';
 
 
 const LIST_TYPES =
@@ -6232,7 +6233,7 @@ const LIST_TYPES =
 ];
 
 
-const FOREACH             = 'FOR';
+const FOREACH                 = 'FOR';
 
 
 const FLOW_TYPES =
@@ -24102,27 +24103,27 @@ function base32toArray(base32, chars = base32chars)
 }
 
 
-const NAN_CHAR            = '?';
-const NAN_DISPLAY         = '?';
-
-const UNKNOWN_CHAR        = '?';
-const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
-
-const TRUE_DISPLAY        = '✓';//'true';
-const FALSE_DISPLAY       = '❌';//'false';
-
-const LIST_VALUE          = 'LIST#';
-const LIST                = 'LIST';
-
-const ITEMS               = 'ITEMS';
-const SELECT              = 'SEL';
-const IF_ELSE             = 'IF';
-
-const START               = 'START';
-const REPEAT              = 'REPT';
-
-const CACHE               = 'CACHE';
-const COPY                = 'COPY';
+const NAN_CHAR                = '?';
+const NAN_DISPLAY             = '?';
+    
+const UNKNOWN_CHAR            = '?';
+const UNKNOWN_DISPLAY         = UNKNOWN_CHAR;//'🤷‍♂️';
+    
+const TRUE_DISPLAY            = '✓';//'true';
+const FALSE_DISPLAY           = '❌';//'false';
+    
+const LIST_VALUE              = 'LIST#';
+const LIST                    = 'LIST';
+    
+const ITEMS                   = 'ITEMS';
+const SELECT                  = 'SEL';
+const IF_ELSE                 = 'IF';
+    
+const START                   = 'START';
+const REPEAT                  = 'REPT';
+    
+const CACHE                   = 'CACHE';
+const COPY                    = 'COPY';
 
 
 const LIST_TYPES =
@@ -24134,7 +24135,7 @@ const LIST_TYPES =
 ];
 
 
-const FOREACH             = 'FOR';
+const FOREACH                 = 'FOR';
 
 
 const FLOW_TYPES =
@@ -37267,13 +37268,18 @@ graphView.toJson = function()
 
 
 
-function selectAllNodes()
+function selectAllNodes(invert)
 {
-    graphView.selectedNodes = graph.nodes;
+    const lastSelected = [...graphView.selectedNodes];
+
+    graphView.selectedNodes = 
+        invert
+        ? graph.nodes.filter(n => !lastSelected.includes(n))
+        : graph.nodes;
         
     actionManager.do(new SelectNodesAction(
-        graphView.selectedNodes    .map(n => n.id), 
-        graphView.lastSelectedNodes.map(n => n.id)));
+        graphView.selectedNodes.map(n => n.id), 
+        lastSelected           .map(n => n.id)));
 }
 
 
@@ -54218,7 +54224,7 @@ document.addEventListener('keydown', e =>
     // select all
     else if (e.code == 'KeyA'
           && getCtrlKey(e))
-        selectAllNodes();
+        selectAllNodes(e.shiftKey);
 
     // undo/redo
     else if (e.code == 'KeyZ'
@@ -57312,6 +57318,9 @@ function uiHideClearUndoWarning()
 
 function initWhatsNewDialog()
 {
+    whatsNew0.innerHTML = whatsNew0.innerHTML.replace('%CtrlShiftA%', osCtrl() + osShift() + 'A');
+
+
     initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);
     chkHideWhatsNew.addEventListener('change', () => uiSetLocalData('showWhatsNew', generatorVersion));
 
@@ -57331,11 +57340,7 @@ function initWhatsNewDialog()
         let oy = whatsNewDialogContent.style.top = whatsNewDialogContent.offsetTop - e.deltaY / 3;
 
         oy = Math.max(oy, whatsNewDialogContainer.clientHeight - whatsNewDialogContent.clientHeight + whatsNewTitle.clientHeight);
-
-        whatsNewDialogContent.style.top = Math.min(
-            oy,
-            menuBarHeight);
-
+        whatsNewDialogContent.style.top = Math.min(oy, menuBarHeight);
 
         updateWhatsNewScroll();
     });

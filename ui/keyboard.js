@@ -46,7 +46,7 @@ document.addEventListener('keydown', e =>
     // select all
     else if (e.code == 'KeyA'
           && getCtrlKey(e))
-        selectAllNodes();
+        selectAllNodes(e.shiftKey);
 
     // undo/redo
     else if (e.code == 'KeyZ'

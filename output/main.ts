@@ -437,27 +437,27 @@ function cleanStyleId(styleId)
 }
 
 
-const NAN_CHAR            = '?';
-const NAN_DISPLAY         = '?';
-
-const UNKNOWN_CHAR        = '?';
-const UNKNOWN_DISPLAY     = UNKNOWN_CHAR;//'🤷‍♂️';
-
-const TRUE_DISPLAY        = '✓';//'true';
-const FALSE_DISPLAY       = '❌';//'false';
-
-const LIST_VALUE          = 'LIST#';
-const LIST                = 'LIST';
-
-const ITEMS               = 'ITEMS';
-const SELECT              = 'SEL';
-const IF_ELSE             = 'IF';
-
-const START               = 'START';
-const REPEAT              = 'REPT';
-
-const CACHE               = 'CACHE';
-const COPY                = 'COPY';
+const NAN_CHAR                = '?';
+const NAN_DISPLAY             = '?';
+    
+const UNKNOWN_CHAR            = '?';
+const UNKNOWN_DISPLAY         = UNKNOWN_CHAR;//'🤷‍♂️';
+    
+const TRUE_DISPLAY            = '✓';//'true';
+const FALSE_DISPLAY           = '❌';//'false';
+    
+const LIST_VALUE              = 'LIST#';
+const LIST                    = 'LIST';
+    
+const ITEMS                   = 'ITEMS';
+const SELECT                  = 'SEL';
+const IF_ELSE                 = 'IF';
+    
+const START                   = 'START';
+const REPEAT                  = 'REPT';
+    
+const CACHE                   = 'CACHE';
+const COPY                    = 'COPY';
 
 
 const LIST_TYPES =
@@ -469,7 +469,7 @@ const LIST_TYPES =
 ];
 
 
-const FOREACH             = 'FOR';
+const FOREACH                 = 'FOR';
 
 
 const FLOW_TYPES =

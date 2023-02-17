@@ -376,13 +376,18 @@ graphView.toJson = function()
 
 
 
-function selectAllNodes()
+function selectAllNodes(invert)
 {
-    graphView.selectedNodes = graph.nodes;
+    const lastSelected = [...graphView.selectedNodes];
+
+    graphView.selectedNodes = 
+        invert
+        ? graph.nodes.filter(n => !lastSelected.includes(n))
+        : graph.nodes;
         
     actionManager.do(new SelectNodesAction(
-        graphView.selectedNodes    .map(n => n.id), 
-        graphView.lastSelectedNodes.map(n => n.id)));
+        graphView.selectedNodes.map(n => n.id), 
+        lastSelected           .map(n => n.id)));
 }
 
 
