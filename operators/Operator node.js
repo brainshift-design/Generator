@@ -11,7 +11,6 @@ function createOperatorNode(node)
        
     node.div.style.width        = node.defaultWidth + 'px';
            
-    node.div.selectedSet        = false;
     node.div.over               = false;
     node.div.dragging           = false;
     node.div.shiftOnPointerDown = false;
@@ -556,8 +555,7 @@ function setNodePosition(node, x, y, updateTransform = true)
 
 function selectFromClick(node, ctrl, shift, alt)
 {
-    node.div.selectedSet = false;
-    node.div.moved       = false;
+    node.div.moved = false;
 
 
     if (   ctrl
@@ -586,7 +584,9 @@ function selectFromClick(node, ctrl, shift, alt)
     {
         if (shift) node     .selected      = true;
         else       graphView.selectedNodes = [node];
-
-        node.selectedSet = true;
+    }
+    else if (node.selected)
+    {
+        if (shift) node.selected = false;
     }
 }
