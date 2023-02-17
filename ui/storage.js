@@ -179,7 +179,7 @@ function uiLoadGraphView(json)
 
 function uiReturnFigLoadNodesAndConns(msg)
 {
-    if (msg.legacy)
+    if (msg.legacy != NULL)
     {
         legacyLoadGraph(msg.legacy);
     }
@@ -190,14 +190,14 @@ function uiReturnFigLoadNodesAndConns(msg)
             console.log(
                 '%cnodes JSON = %s', 
                 'background: #fed',
-                msg.nodesJson
+                msg.nodeJson
                     .replaceAll('\\n', '\n')
                     .replaceAll('\\"', '\"'));
 
             console.log(
                 '%cconnections JSON = %s', 
                 'background: #fed',
-                msg.connsJson
+                msg.connJson
                     .replaceAll('\\n', '\n')
                     .replaceAll('\\"', '\"'));
         }

@@ -281,7 +281,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
                    : cx + v * sw);
 
             control.bar.style.left   = Math.max(0, x);
-            control.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), control.offsetWidth);
+            control.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), control.measureData.offsetRect.width);
 
             control.bar.style.top    = sh * control.barTop;
             control.bar.style.height = sh * (control.barBottom - control.barTop);

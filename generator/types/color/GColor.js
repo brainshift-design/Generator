@@ -50,10 +50,10 @@ extends GColorType
             return this;
 
             
-        const space = this.space ? this.space.eval(parse).toValue().toInteger() : null; 
-        let   c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
-        let   c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
-        let   c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
+        const space   = this.space   ? this.space  .eval(parse).toValue().toInteger() : null; 
+        let   c1      = this.c1      ? this.c1     .eval(parse).toValue()             : null;
+        let   c2      = this.c2      ? this.c2     .eval(parse).toValue()             : null;
+        let   c3      = this.c3      ? this.c3     .eval(parse).toValue()             : null;
 
 
         if (this.input)
@@ -159,6 +159,10 @@ extends GColorType
 
     convertColor(color, fromSpace, toSpace)
     {
+        console.log('color =', color);
+        console.log('fromSpace =', fromSpace);
+        console.log('toSpace =', toSpace);
+
         let col = [
             fromSpace, 
             getNormalColorValue(color.c1.value, fromSpace, 0),

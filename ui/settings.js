@@ -166,16 +166,18 @@ function updateMenuItemShowBoolValues()
 
 function enableFeatures(sub, beta)
 {
-    updateMenuItemDisplay(btnFlow .div,             sub && beta);
-    updateMenuItemDisplay(btnShape.div,             sub && beta);
+    updateMenuItemDisplay(btnFlow .div,                 sub && beta);
+    updateMenuItemDisplay(btnShape.div,                 sub && beta);
 
-    updateMenuItemDisplay(menuItemCorrectColor.div, sub);
+    updateMenuItemDisplay(menuItemLogObjectUpdates.div, sub && beta);
 
-    updateMenuItemDisplay(menuItemStyleFill   .div, sub && beta);
-    updateMenuItemDisplay(menuItemStyleStroke .div, sub && beta);
-    updateMenuItemDisplay(menuItemStyleSep1   .div, sub && beta);
+    updateMenuItemDisplay(menuItemCorrectColor    .div, sub);
 
-    updateMenuItemDisplay(menuItemSeries.div,       sub && beta);    
+    updateMenuItemDisplay(menuItemStyleFill       .div, sub && beta);
+    updateMenuItemDisplay(menuItemStyleStroke     .div, sub && beta);
+    updateMenuItemDisplay(menuItemStyleSep1       .div, sub && beta);
+
+    updateMenuItemDisplay(menuItemSeries.div,           sub && beta);    
 
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));

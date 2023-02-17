@@ -2478,7 +2478,7 @@ a
 
                 <p>Fixed UI bugs.</p>
                 <p>Fixed how hand tool works with touchpads.</p>
-                <p>APCA is -108..106 again.</p>
+                <p>No longer clipping APCA score to 0..+105, it's -108..106 again.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -11825,10 +11825,10 @@ extends GColorType
             return this;
 
             
-        const space = this.space ? this.space.eval(parse).toValue().toInteger() : null; 
-        let   c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
-        let   c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
-        let   c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
+        const space   = this.space   ? this.space  .eval(parse).toValue().toInteger() : null; 
+        let   c1      = this.c1      ? this.c1     .eval(parse).toValue()             : null;
+        let   c2      = this.c2      ? this.c2     .eval(parse).toValue()             : null;
+        let   c3      = this.c3      ? this.c3     .eval(parse).toValue()             : null;
 
 
         if (this.input)
@@ -11934,6 +11934,10 @@ extends GColorType
 
     convertColor(color, fromSpace, toSpace)
     {
+        console.log('color =', color);
+        console.log('fromSpace =', fromSpace);
+        console.log('toSpace =', toSpace);
+
         let col = [
             fromSpace, 
             getNormalColorValue(color.c1.value, fromSpace, 0),
@@ -14038,16 +14042,18 @@ function updateMenuItemShowBoolValues()
 
 function enableFeatures(sub, beta)
 {
-    updateMenuItemDisplay(btnFlow .div,             sub && beta);
-    updateMenuItemDisplay(btnShape.div,             sub && beta);
+    updateMenuItemDisplay(btnFlow .div,                 sub && beta);
+    updateMenuItemDisplay(btnShape.div,                 sub && beta);
 
-    updateMenuItemDisplay(menuItemCorrectColor.div, sub);
+    updateMenuItemDisplay(menuItemLogObjectUpdates.div, sub && beta);
 
-    updateMenuItemDisplay(menuItemStyleFill   .div, sub && beta);
-    updateMenuItemDisplay(menuItemStyleStroke .div, sub && beta);
-    updateMenuItemDisplay(menuItemStyleSep1   .div, sub && beta);
+    updateMenuItemDisplay(menuItemCorrectColor    .div, sub);
 
-    updateMenuItemDisplay(menuItemSeries.div,       sub && beta);    
+    updateMenuItemDisplay(menuItemStyleFill       .div, sub && beta);
+    updateMenuItemDisplay(menuItemStyleStroke     .div, sub && beta);
+    updateMenuItemDisplay(menuItemStyleSep1       .div, sub && beta);
+
+    updateMenuItemDisplay(menuItemSeries.div,           sub && beta);    
 
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
@@ -29725,10 +29731,10 @@ extends GColorType
             return this;
 
             
-        const space = this.space ? this.space.eval(parse).toValue().toInteger() : null; 
-        let   c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
-        let   c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
-        let   c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
+        const space   = this.space   ? this.space  .eval(parse).toValue().toInteger() : null; 
+        let   c1      = this.c1      ? this.c1     .eval(parse).toValue()             : null;
+        let   c2      = this.c2      ? this.c2     .eval(parse).toValue()             : null;
+        let   c3      = this.c3      ? this.c3     .eval(parse).toValue()             : null;
 
 
         if (this.input)
@@ -29834,6 +29840,10 @@ extends GColorType
 
     convertColor(color, fromSpace, toSpace)
     {
+        console.log('color =', color);
+        console.log('fromSpace =', fromSpace);
+        console.log('toSpace =', toSpace);
+
         let col = [
             fromSpace, 
             getNormalColorValue(color.c1.value, fromSpace, 0),
@@ -31938,16 +31948,18 @@ function updateMenuItemShowBoolValues()
 
 function enableFeatures(sub, beta)
 {
-    updateMenuItemDisplay(btnFlow .div,             sub && beta);
-    updateMenuItemDisplay(btnShape.div,             sub && beta);
+    updateMenuItemDisplay(btnFlow .div,                 sub && beta);
+    updateMenuItemDisplay(btnShape.div,                 sub && beta);
 
-    updateMenuItemDisplay(menuItemCorrectColor.div, sub);
+    updateMenuItemDisplay(menuItemLogObjectUpdates.div, sub && beta);
 
-    updateMenuItemDisplay(menuItemStyleFill   .div, sub && beta);
-    updateMenuItemDisplay(menuItemStyleStroke .div, sub && beta);
-    updateMenuItemDisplay(menuItemStyleSep1   .div, sub && beta);
+    updateMenuItemDisplay(menuItemCorrectColor    .div, sub);
 
-    updateMenuItemDisplay(menuItemSeries.div,       sub && beta);    
+    updateMenuItemDisplay(menuItemStyleFill       .div, sub && beta);
+    updateMenuItemDisplay(menuItemStyleStroke     .div, sub && beta);
+    updateMenuItemDisplay(menuItemStyleSep1       .div, sub && beta);
+
+    updateMenuItemDisplay(menuItemSeries.div,           sub && beta);    
 
 
     graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
@@ -34800,7 +34812,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
                    : cx + v * sw);
 
             control.bar.style.left   = Math.max(0, x);
-            control.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), control.offsetWidth);
+            control.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), control.measureData.offsetRect.width);
 
             control.bar.style.top    = sh * control.barTop;
             control.bar.style.height = sh * (control.barBottom - control.barTop);
@@ -47159,6 +47171,21 @@ extends OpColorBase
         
         this.paramSpace.input.outputMustBeCached = true;
 
+        this.paramSpace.addEventListener('change', () => 
+        {
+            if (this.paramSpace.value.toNumber() == 0)
+            {
+                if (this.param1.output.connected) this.param1.output.connectedInputs.forEach(i => uiDisconnect(i));
+                if (this.param2.output.connected) this.param2.output.connectedInputs.forEach(i => uiDisconnect(i));
+                if (this.param3.output.connected) this.param3.output.connectedInputs.forEach(i => uiDisconnect(i));
+
+                if (this.param1.input.connected) uiDisconnect(this.param1.input);
+                if (this.param2.input.connected) uiDisconnect(this.param2.input);
+                if (this.param3.input.connected) uiDisconnect(this.param3.input);
+            }
+        });
+
+
         this.param1.setValue(new NumberValue(Math.round(this._color[1] * rgbFactor[0])), false, true, false);
         this.param2.setValue(new NumberValue(Math.round(this._color[2] * rgbFactor[1])), false, true, false);
         this.param3.setValue(new NumberValue(Math.round(this._color[3] * rgbFactor[2])), false, true, false);
@@ -55286,7 +55313,7 @@ function uiLoadGraphView(json)
 
 function uiReturnFigLoadNodesAndConns(msg)
 {
-    if (msg.legacy)
+    if (msg.legacy != NULL)
     {
         legacyLoadGraph(msg.legacy);
     }
@@ -55297,14 +55324,14 @@ function uiReturnFigLoadNodesAndConns(msg)
             console.log(
                 '%cnodes JSON = %s', 
                 'background: #fed',
-                msg.nodesJson
+                msg.nodeJson
                     .replaceAll('\\n', '\n')
                     .replaceAll('\\"', '\"'));
 
             console.log(
                 '%cconnections JSON = %s', 
                 'background: #fed',
-                msg.connsJson
+                msg.connJson
                     .replaceAll('\\n', '\n')
                     .replaceAll('\\"', '\"'));
         }

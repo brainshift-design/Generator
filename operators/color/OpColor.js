@@ -51,6 +51,21 @@ extends OpColorBase
         
         this.paramSpace.input.outputMustBeCached = true;
 
+        this.paramSpace.addEventListener('change', () => 
+        {
+            if (this.paramSpace.value.toNumber() == 0)
+            {
+                if (this.param1.output.connected) this.param1.output.connectedInputs.forEach(i => uiDisconnect(i));
+                if (this.param2.output.connected) this.param2.output.connectedInputs.forEach(i => uiDisconnect(i));
+                if (this.param3.output.connected) this.param3.output.connectedInputs.forEach(i => uiDisconnect(i));
+
+                if (this.param1.input.connected) uiDisconnect(this.param1.input);
+                if (this.param2.input.connected) uiDisconnect(this.param2.input);
+                if (this.param3.input.connected) uiDisconnect(this.param3.input);
+            }
+        });
+
+
         this.param1.setValue(new NumberValue(Math.round(this._color[1] * rgbFactor[0])), false, true, false);
         this.param2.setValue(new NumberValue(Math.round(this._color[2] * rgbFactor[1])), false, true, false);
         this.param3.setValue(new NumberValue(Math.round(this._color[3] * rgbFactor[2])), false, true, false);
