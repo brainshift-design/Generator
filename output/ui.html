@@ -2477,10 +2477,7 @@ a
             <div id='whatsNewBody'>
                 <h1>What's new in Generator</h1>
 
-                <p>Fixed UI bugs.</p>
-                <p>Fixed how the hand tool works with touchpads.</p>
-                <p>No longer clipping APCA score to 0..+105, it's -108..106 again.</p>
-                <p id='whatsNew0'>Added %CtrlShiftA% to invert node selection, to match Figma.</p>
+                <p>-</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -2689,7 +2686,7 @@ a
 
 
 
-const generatorVersion = 98;
+const generatorVersion = 100;
 
 
 const MAX_INT32        = 2147483647;
@@ -17518,7 +17515,7 @@ function rgbPow(col, p)
 
 
 
-const ColorEpsilon = 0.001;
+const ColorEpsilon = 0.00001;
 
 
 
@@ -19100,7 +19097,7 @@ function convert2hcluv(fromColor)
 ////////////////////////////////////////////////////
 
 
-const generatorVersion = 98;
+const generatorVersion = 100;
 
 
 const MAX_INT32        = 2147483647;
@@ -23295,7 +23292,7 @@ function rgbPow(col, p)
 
 
 
-const ColorEpsilon = 0.001;
+const ColorEpsilon = 0.00001;
 
 
 
@@ -37488,17 +37485,13 @@ function graphView_onpointermove(e)
             || panMode)
         && graphView.hasPointerCapture(e.pointerId))
     {
-        // TODO this is where the last extra pan step probably comes from on complicated graphs
-        //setTimeout(() =>
-        //{
-            setCursor(panCursor);
+        setCursor(panCursor);
 
-            const dp = subv(graphView.p, graphView.pStart);
+        const dp = subv(graphView.p, graphView.pStart);
 
-            graphView.setPanAndZoom(
-                addv(graphView.panStart, dp), 
-                graphView.zoom);
-        //});
+        graphView.setPanAndZoom(
+            addv(graphView.panStart, dp), 
+            graphView.zoom);
     }
 
     else if (graphView.selecting)
@@ -37581,7 +37574,6 @@ graphView.addEventListener('wheel', e =>
 
     // if button is not pressed wheel pans
     // if button is pressed, wheel does nothing if it's a touchpad
-    //vartouchPad = e.wheelDeltaY ? e.wheelDeltaY === -3 * e.deltaY : e.deltaMode === 0
 
     e.preventDefault();
 
@@ -37595,12 +37587,13 @@ graphView.addEventListener('wheel', e =>
     const dWheelY = e.deltaY / (touchpad ? 20 : 100);
 
 
-    if (   getCtrlKey(e)
+    if (   e.ctrlKey //getCtrlKey(e)
         ||     panMode
            && !touchpad)
     {
-        let pos = point(e.clientX, e.clientY);
-        pos.y -= menuBarHeight;
+        let pos = point(
+            e.clientX, 
+            e.clientY - menuBarHeight);
 
         const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
         const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
@@ -37631,7 +37624,7 @@ graphView.addEventListener('wheel', e =>
                 e.clientX,
                 e.clientY,
                 e.shiftKey);
-        }
+        } 
 
 
         graphView.updateWheelTimer();
@@ -37660,6 +37653,7 @@ graphView.updateWheelTimer = function()
     }, 
     500);
 };
+
 
 
 graphView.addEventListener('gesturestart', e => { console.log('start'); graphView.zoomStart = graphView.zoom; });
@@ -54149,7 +54143,6 @@ var currentUser = '';
 var productKey  = '';
 
 
-
 const graph = new Graph();
 
 const generator = new Worker(
@@ -54168,6 +54161,7 @@ var pasteOffsetDelta    = point(0, 70);
 
 
 clearConsole();
+
 
 initUtilContext();
 
@@ -57303,7 +57297,7 @@ function uiNotify(text, options = {})
 {
     if (options.delay        == undefined) options.delay        = 4000;
     if (options.error        == undefined) options.error        = false;
-    if (options.prefix       == undefined) options.prefix       = '';//GENERATOR_LOGO + '  ';
+    if (options.prefix       == undefined) options.prefix       = '';
     if (options.buttonText   == undefined) options.buttonText   = '';
     if (options.buttonAction == undefined) options.buttonAction = NULL;
 
@@ -57348,7 +57342,7 @@ function uiHideClearUndoWarning()
 
 function initWhatsNewDialog()
 {
-    whatsNew0.innerHTML = whatsNew0.innerHTML.replace('%CtrlShiftA%', osCtrl() + osShift() + 'A');
+    //whatsNew0.innerHTML = whatsNew0.innerHTML.replace('%CtrlShiftA%', osCtrl() + osShift() + 'A');
 
 
     initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);

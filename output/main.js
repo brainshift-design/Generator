@@ -17,7 +17,7 @@ function isNodeKey(key) { return isTagKey(key, nodeTag); }
 function isConnKey(key) { return isTagKey(key, connTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 98;
+const generatorVersion = 100;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const TAB = '  ';
@@ -624,6 +624,339 @@ function logReqNode(node, parse) {
     parse.log += parse.tab + node.type;
     parse.log += logReqNodeId(node);
 }
+// var bigBuffer = new Uint8Array(2048);
+// function bigRandom(max: bigint = b0)
+// {
+//     const size = 
+//         max > 0
+//         ? Math.max(1, Math.floor(bigBitCount(max)/8))
+//         : bigBuffer.length;
+//     if (size > bigBuffer.length)
+//         bigBuffer = new Uint8Array(nextPow2(size));
+//     for (let i = 0; i < size; i++)
+//         bigBuffer[i] = toInt(Math.random() * 0x100);
+//     let rnd = bigFromBufferAt(bigBuffer, 0, size);
+//     if (max > 0)
+//         rnd = rnd % BigInt(max);
+//     return rnd;
+// }
+// function bigPowMod(n: bigint, e: bigint, m: bigint) // n^e % mod
+// {
+//     let c = b1;
+//     while (e > b0)
+//     {
+//         if ((e & b1) != b0)
+//         {
+//             c *= n;
+//             c %= m;
+//         }
+//         e >>= b1;
+//         n *= n;
+//         n %= m;
+//     }
+//     return c;
+// }
+// function bigNextPrime(n: bigint) 
+// {
+//     while (!bigIsPrime(++n));
+//     return n;
+// }
+// function bigIsPrime(x: bigint, k = millerRabinIterations) // Miller-Rabin
+// {
+//     if (x <= b1) return false; 
+//     if (x <= b3) return true;
+//     if (x % b2 == b0) 
+//         return false;
+//     let d = x - b1;
+//     let s = b0; 
+//     while (d % b2 == b0) 
+//     {
+//         d /= b2;
+//         s++;
+//     }
+//     for (let i = 0; i < k; i++)    
+//     {
+//         const a = b2 + bigRandom(x - b1);
+//         if (!bigIsWitness(a, s, d, x))
+//             return false;        
+//     }
+//     return true; 
+// }    
+// function bigIsWitness(a: bigint, s: bigint, d: bigint, n: bigint)
+// {
+//     let x = bigPowMod(a, d, n);
+//     if (x == b1)
+//         return true;
+//     for (let j = b0; j < s-b1; j++)
+//     {
+//         if (x == n-b1)
+//             return true;
+//         x = bigPowMod(x, b2, n);
+//     }
+//     return x == n-b1;
+// }
+// function bigFromBuffer(buffer)
+// {
+//     return bigFromBufferAt(buffer, 0, buffer.length);
+// }
+// function bigFromBufferAt(buffer, start, size)
+// {
+//     size = Math.min(size, buffer.length - start);
+//     let val = b0;
+//     let mul = b1;
+//     for (let i = start+size-1; i >= start; i--) // little-endian
+//     {
+//         val += mul * BigInt(buffer[i]);
+//         mul <<= b8;
+//     }
+//     return val;
+// }
+// function bigToBuffer(n: bigint, buffer, bufferSize)
+// {
+//     bigToBufferAt(n, buffer, 0, bufferSize);
+// }
+// function bigToBufferAt(n: bigint, buffer, start, bufferSize)
+// {
+//     let size = Math.ceil(bigBitCount(n) / 8);
+//     size = Math.min(size, buffer.length - start);
+//     start += bufferSize - size;
+//     for (let i = start+size-1; i >= start; i--) // little-endian
+//     {
+//         buffer[i] = Number(n & bFF); 
+//         n >>= b8;
+//     }
+// }
+// function bigBitCount(n: bigint)
+// {
+//     return n.toString(2).length;
+// }
+// function bigModInvert(n: bigint, m: bigint)
+// {
+//     const gcd = bigGcdExtended(n, m);
+//     if (gcd[0] != b1) return undefined; // inverse doesn't exist
+//     else              return (gcd[1] % m + m) % m;
+// }
+// function bigGcdExtended(n: bigint, m: bigint)
+// {
+//     if (n == b0)
+//         return [m, b0, b1];
+//     const gcd = bigGcdExtended(m % n, n);
+//     const x   = gcd[1];
+//     const y   = gcd[2];
+//     return [
+//         gcd[0], 
+//         y - (m/n)*x,
+//         x ];
+// }
+// // constants because b0 b1 b2 literals aren't allowed for some reason
+// const b0  = BigInt(0);
+// const b1  = BigInt(1);
+// const b2  = BigInt(2);
+// const b3  = BigInt(3);
+// const b8  = BigInt(8);
+// const bFF = BigInt(0xff);
+// const cryptoModulusSize     = 64; // to keep the keys short
+// const millerRabinIterations = 40;
+// const cryptoBufferSize      = cryptoModulusSize/8;
+// const cryptoPrimeBufferSize = cryptoBufferSize /2;
+// const cryptoBuffer          = new Uint8Array(cryptoPrimeBufferSize);
+// function bigCryptoRandom()
+// {
+//     for (let i = 0; i < cryptoPrimeBufferSize; i++)
+//         cryptoBuffer[i] = toInt(Math.random() * 0x100);
+//     cryptoBuffer[0]                       |= 0xC0; // set the top bit to ensure a relatively large number
+//     cryptoBuffer[cryptoPrimeBufferSize-1] |= 0x01; // set low bit to ensure the number is odd
+//     return bigFromBuffer(cryptoBuffer);
+// }
+// function bigNextCryptoPrime(n) 
+// {
+//     while (!bigIsPrime(n))
+//         n += b2;
+//     return n;
+// }
+// function bigCryptoPrime(e)
+// {
+//     // set p so that gcd(e, p-1) = 1
+//     let p;
+//     do
+//     {
+//         const rnd = bigCryptoRandom();
+//         p         = bigNextCryptoPrime(rnd);
+//     }
+//     while (gcd(p-b1, e) != b1); 
+//     return p;
+// }
+// function createCryptoPrimePair(e)
+// {
+//     let p = bigCryptoPrime(e);
+//     let q;
+//     do { q = bigCryptoPrime(e); } 
+//     while (q == p);
+//     if (p < q)
+//         [p,q] = [q,p];
+//     // console.log('p: ' + p);
+//     // console.log('q: ' + q);
+//     return [p, q];
+// }
+// function createCryptoKeys()
+// {
+//     const e = BigInt(65537); // 0x10001
+//     const p = 171015884525198953812766518124105165718653873998956756668025044221872229189000224853283418100843709051461026314124691533908776566252132643262590538651722808414927589080453045207809268132409732602333460056024268701292425924373474424856230484676389948410647363185480527668352208344285098898398427328550005504453,
+//           q = 155609589144550304318321520462261131589420632313724769782511579674112504658012602948864212319636338680003350414119487761858358450704391631375906758644966783345911054968703886354891203894119403383879286405905868259207088334824357002928336613811380509880129563041650203531859521495334731320347454780789832377709;
+//     const  n   = p * q;
+//     const _phi = (p-b1) * (q-b1);
+//     const  d   = bigModInvert(e, _phi);
+//     return {
+//         public:  {n:n, e:e },
+//         private: {n:n, d:d, p:p, q:q} };
+// }                        
+// function encryptBlock(n, key, sign  ) { return bigPowMod(n, (sign   ? key.d : key.e), key.n); }        
+// function decryptBlock(n, key, verify) { return bigPowMod(n, (verify ? key.e : key.d), key.n); }        
+// function encrypt(data, key) { return encryptData(data, key, false); }
+// function decrypt(data, key) { return decryptData(data, key, false); }
+// function sign   (data, key) { return encryptData(data, key, true); } // yes I know real sign/verify uses a hash,
+// function verify (data, key) { return decryptData(data, key, true); } // but I prefer it this way for what I need
+// function encryptData(data, key, sign)
+// {
+//     // prep array should be a multiple of cryptoBufferSize
+//     const prep   = new Uint8Array(Math.ceil((data.length) / cryptoBufferSize) * cryptoBufferSize); 
+//     const cipher = new Uint8Array(prep.length);
+//     const start = prep.length - data.length;
+//     for (let i = 0; i < data.length; i++)
+//         prep[start+i] = data[i];
+//     let length = prep.length;
+//     let nBlock = 0;
+//     while (length > 0)
+//     {
+//         const blockStart = nBlock * cryptoBufferSize;
+//         const blockSize  = Math.min(length, cryptoBufferSize);
+//         const block      = bigFromBufferAt(prep, blockStart, cryptoBufferSize);
+//         const enc        = encryptBlock(block, key, sign);
+//         bigToBufferAt(enc, cipher, blockStart, cryptoBufferSize);
+//         nBlock++;
+//         length -= blockSize;
+//     }
+//     return cipher;
+// }
+// function decryptData(cipher, key, verify)
+// {
+//     const data = new Uint8Array(cipher.length);
+//     let length = cipher.length;
+//     let nBlock = 0;
+//     while (length > 0)
+//     {
+//         const blockStart = nBlock * cryptoBufferSize;
+//         const blockSize  = Math.min(length, cryptoBufferSize);
+//         const block      = bigFromBufferAt(cipher, blockStart, cryptoBufferSize);
+//         const dec        = decryptBlock(block, key, verify);
+//         bigToBufferAt(dec, data, blockStart, cryptoBufferSize); 
+//         nBlock++;
+//         length -= blockSize;
+//     }    
+//     return data;    
+// }
+const MONTHLY_LICENSE = 'M';
+const YEARLY_LICENSE = 'Y';
+//const licenseKeys     = createCryptoKeys();
+//const licenseHashSize = 4;
+function figValidateLicense(license) {
+    figPostMessageToUi({
+        cmd: 'uiReturnFigValidateLicense',
+        result: false
+    });
+}
+// function createProductKey(userId: string, licenseType: string, lastYear: number, lastMonth: number)
+// {
+//     // how to revoke
+//     const str = 
+//           userId 
+//         + licenseType
+//         + lastYear .toString() 
+//         + lastMonth.toString();
+//     const hash = hashLicenseName(str, licenseHashSize);
+//     const enc  = sign(hash, licenseKeys.private);
+//     const key  = arrayToBase32(enc);
+//     return key;
+// }
+// function validateProductKey(name, key, rec = false)
+// {
+//     // TODO: check from today until 1 year from now (max license length)
+//     // 1/day, so 365 max, add end day to name
+//     // check today against last launch date (in private data) to prevent clock tampering
+//     const arr  = base32toArray(key.toUpperCase());
+//     const dec  = verify(arr, licenseKeys.public).subarray(licenseHashSize);
+//     const trim = dec.subarray(dec.length - licenseHashSize);
+//     const hash = hashLicenseName(name, licenseHashSize);
+//     const valid = arraysAreEqual(trim, hash);
+//     if (valid && !rec)
+//     {
+//         let lowerKey = key;
+//         const lastChar  = lastOf(lowerKey);
+//         const lastIndex = base32chars.indexOf(lastChar);
+//         if (lastIndex > 0)
+//         {
+//             lowerKey = replaceInStringAt(lowerKey, lowerKey.length-1, base32chars[lastIndex-1]);
+//             if (validateProductKey(name, lowerKey, true))
+//                 return false; // at this scale of product key the last bit needs to be guarded against
+//         }
+//     }
+//     return valid;
+// }
+// function hashLicenseName(name, nBytes)
+// {
+//     // XOR wrap name around a given number of bytes
+//     const bytes = stringToArray(name);
+//     if (bytes.length > nBytes)
+//     {
+//         let pos    = nBytes;
+//         let length = bytes.length - nBytes;
+//         while (length > 0)
+//         {
+//             for (let i = 0; i < nBytes; i++)
+//                 bytes[i] ^= bytes[pos+i];
+//             pos    += nBytes;
+//             length -= nBytes;
+//         }
+//     }
+//     return newSizeArrayFrom(bytes, nBytes);
+// }
+//const MAX_NODES   = 0x10000;
+//const objNodes    = new Array(MAX_NODES).fill(null);
+//var   minNodeId   = Number.MAX_SAFE_INTEGER;
+//var   maxNodeId   = Number.MIN_SAFE_INTEGER;
+//figma.on('selectionchange', figOnSelectionChange);
+figma.on('documentchange', figOnDocumentChange);
+figma.on('close', figOnPluginClose);
+figma.showUI(__html__, {
+    visible: false,
+    themeColors: true
+});
+function figStartGenerator() {
+    (function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            let productKey = yield figLoadLocal('productKey');
+            if (productKey == null)
+                productKey = '';
+            let wndWidth = yield figma.clientStorage.getAsync('windowWidth');
+            let wndHeight = yield figma.clientStorage.getAsync('windowHeight');
+            if (wndWidth == null) {
+                wndWidth = 800;
+                figma.clientStorage.setAsync('windowWidth', wndWidth);
+            }
+            if (wndHeight == null) {
+                wndHeight = 600;
+                figma.clientStorage.setAsync('windowHeight', wndHeight);
+            }
+            figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
+            figma.ui.show();
+            figPostMessageToUi({
+                cmd: 'uiReturnFigStartGenerator',
+                currentUser: figma.currentUser,
+                productKey: productKey
+            });
+        });
+    })();
+}
 var figObjectArrays = new Array(); // [ {nodeId, [objects]} ]
 var figStyleArrays = new Array(); // [ {nodeId, [styles]}  ]
 function figDeleteObjectsFromNodeIds(nodeIds) {
@@ -730,43 +1063,6 @@ function figOnDocumentChange(e) {
 }
 function figOnPluginClose() {
     figDeleteAllObjects();
-}
-//const MAX_NODES   = 0x10000;
-//const objNodes    = new Array(MAX_NODES).fill(null);
-//var   minNodeId   = Number.MAX_SAFE_INTEGER;
-//var   maxNodeId   = Number.MIN_SAFE_INTEGER;
-//figma.on('selectionchange', figOnSelectionChange);
-figma.on('documentchange', figOnDocumentChange);
-figma.on('close', figOnPluginClose);
-figma.showUI(__html__, {
-    visible: false,
-    themeColors: true
-});
-function figStartGenerator() {
-    (function () {
-        return __awaiter(this, void 0, void 0, function* () {
-            let productKey = yield figLoadLocal('productKey');
-            if (productKey == null)
-                productKey = '';
-            let wndWidth = yield figma.clientStorage.getAsync('windowWidth');
-            let wndHeight = yield figma.clientStorage.getAsync('windowHeight');
-            if (wndWidth == null) {
-                wndWidth = 800;
-                figma.clientStorage.setAsync('windowWidth', wndWidth);
-            }
-            if (wndHeight == null) {
-                wndHeight = 600;
-                figma.clientStorage.setAsync('windowHeight', wndHeight);
-            }
-            figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
-            figma.ui.show();
-            figPostMessageToUi({
-                cmd: 'uiReturnFigStartGenerator',
-                currentUser: figma.currentUser,
-                productKey: productKey
-            });
-        });
-    })();
 }
 // from UI <--
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1241,6 +1537,180 @@ function setObjectStrokes(obj, src) {
     else
         obj.strokes = [];
 }
+function figGetAllLocalColorStyles(nodeId, px, py) {
+    const _styles = figma.getLocalPaintStyles();
+    const styles = new Array();
+    for (const _style of _styles) {
+        const _nodeId = _style.getPluginData('nodeId');
+        const _existing = _style.getPluginData('existing');
+        const existing = !!_existing;
+        const style = {
+            id: _style.id,
+            nodeId: _nodeId,
+            name: _style.name,
+            existing: existing,
+            paints: new Array()
+        };
+        let onlyPaint = true;
+        for (const _paint of _style.paints) {
+            if (_paint.type == 'SOLID') {
+                style.paints.push([
+                    _paint.color.r,
+                    _paint.color.g,
+                    _paint.color.b
+                ]);
+            }
+            else {
+                onlyPaint = false;
+                break;
+            }
+        }
+        if (onlyPaint)
+            styles.push(style);
+    }
+    figPostMessageToUi({
+        cmd: 'uiReturnFigGetAllLocalColorStyles',
+        nodeId: nodeId,
+        px: px,
+        py: py,
+        styles: JSON.stringify(styles)
+    });
+}
+function figLinkNodeToExistingColorStyle(nodeId, styleId) {
+    const localStyles = figma.getLocalPaintStyles();
+    if (styleId != NULL)
+        figLinkColorStyle(localStyles, nodeId, styleId);
+    else
+        figClearColorStyle(localStyles, nodeId);
+}
+function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true) {
+    const figStyles = figStyleArrays.find(a => a.nodeId == nodeId);
+    if (figStyles
+        && clearExisting)
+        figClearColorStyle(localStyles, nodeId);
+    const figStyle = localStyles.find(s => s.id == styleId);
+    console.assert(!!figStyle, 'figStyle should be found here');
+    figStyle.setPluginData('type', COLOR_STYLE);
+    figStyle.setPluginData('nodeId', nodeId);
+    figStyle.setPluginData('existing', boolToString(true));
+    figStyleArrays.push({
+        nodeId: nodeId,
+        existing: true,
+        styles: [figStyle]
+    });
+    return figStyle;
+}
+function figClearColorStyle(localStyles, nodeId) {
+    const figStyle = localStyles.find(s => s.getPluginData('nodeId') == nodeId);
+    //console.assert(!!figStyle, 'figStyle should be found here');
+    if (figStyle) // could have been deleted
+     {
+        figStyle.setPluginData('type', NULL);
+        figStyle.setPluginData('nodeId', NULL);
+        figStyle.setPluginData('existing', NULL);
+        removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
+    }
+    return figStyle;
+}
+function figCreateColorStyle(styles, genStyle) {
+    const figStyle = figma.createPaintStyle();
+    figStyle.setPluginData('type', genStyle.type);
+    figStyle.setPluginData('nodeId', genStyle.nodeId);
+    figStyle.setPluginData('existing', boolToString(genStyle.existing));
+    figStyle.name = genStyle.styleName;
+    setStylePaints(figStyle, genStyle);
+    styles.push(figStyle);
+    figPostMessageToUi({
+        cmd: 'uiSetStyleId',
+        nodeId: genStyle.nodeId,
+        styleId: figStyle.id
+    });
+    return figStyle;
+}
+function figUpdateStyles(msg) {
+    let curNodeId = NULL;
+    let figStyles;
+    for (const genStyle of msg.styles) {
+        if (genStyle.nodeId != curNodeId) {
+            curNodeId = genStyle.nodeId;
+            figStyles = figStyleArrays.find(a => a.nodeId == genStyle.nodeId);
+            if (!figStyles) {
+                figStyles = {
+                    nodeId: genStyle.nodeId,
+                    existing: genStyle.existing,
+                    styles: []
+                };
+                figStyleArrays.push(figStyles);
+            }
+        }
+        else
+            figStyles = null;
+        const figStyle = figStyles.styles[0];
+        const localStyles = figma.getLocalPaintStyles();
+        const localStyle = localStyles.find(s => s.getPluginData('nodeId') == genStyle.nodeId);
+        if (isValid(figStyle)
+            && !isValid(localStyle)) // removed
+         {
+            removeFrom(figStyles.styles, figStyle);
+        }
+        const existing = isValid(figStyle)
+            && isValid(localStyle)
+            && figStyle.getPluginData('existing');
+        if (!isValid(figStyle)
+            || !isValid(localStyle)) // no existing style, create new style
+         {
+            if (!existing) {
+                styleChangingFromGenerator = true;
+                figCreateColorStyle(figStyles.styles, genStyle);
+            }
+        }
+        else if (isValid(figStyle)
+            && figStyle.getPluginData('type') == genStyle.type) // update existing style
+         {
+            styleChangingFromGenerator = true;
+            figUpdateColorStyle(localStyle, genStyle);
+        }
+        else // delete existing style, create new style
+         {
+            if (!existing) {
+                localStyle.remove();
+                styleChangingFromGenerator = true;
+                figCreateColorStyle(figStyles.styles, genStyle);
+            }
+        }
+    }
+}
+function figUpdateColorStyle(figStyle, genStyle) {
+    setStylePaints(figStyle, genStyle);
+    figStyle.name = genStyle.nodeName;
+}
+function getStylePaints(stylePaints) {
+    const paints = new Array();
+    for (const _paint of stylePaints) {
+        const fill = _paint[1].split(' ');
+        switch (_paint[0]) {
+            case 'SOLID':
+                paints.push({
+                    type: 'SOLID',
+                    color: {
+                        r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1),
+                        g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1),
+                        b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1)
+                    },
+                    opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)
+                });
+                break;
+        }
+    }
+    return paints;
+}
+function setStylePaints(style, src) {
+    if (!!src.paints
+        && !isEmpty(src.paints))
+        style.paints = getStylePaints(src.paints);
+    else
+        style.paints = [];
+}
 function figLoadLocal(key) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield figma.clientStorage.getAsync(key);
@@ -1441,180 +1911,6 @@ function figRemovePluginDataFromAllLocalStyles() {
         style.setPluginData('nodeId', '');
         style.setPluginData('existing', '');
     }
-}
-function figGetAllLocalColorStyles(nodeId, px, py) {
-    const _styles = figma.getLocalPaintStyles();
-    const styles = new Array();
-    for (const _style of _styles) {
-        const _nodeId = _style.getPluginData('nodeId');
-        const _existing = _style.getPluginData('existing');
-        const existing = !!_existing;
-        const style = {
-            id: _style.id,
-            nodeId: _nodeId,
-            name: _style.name,
-            existing: existing,
-            paints: new Array()
-        };
-        let onlyPaint = true;
-        for (const _paint of _style.paints) {
-            if (_paint.type == 'SOLID') {
-                style.paints.push([
-                    _paint.color.r,
-                    _paint.color.g,
-                    _paint.color.b
-                ]);
-            }
-            else {
-                onlyPaint = false;
-                break;
-            }
-        }
-        if (onlyPaint)
-            styles.push(style);
-    }
-    figPostMessageToUi({
-        cmd: 'uiReturnFigGetAllLocalColorStyles',
-        nodeId: nodeId,
-        px: px,
-        py: py,
-        styles: JSON.stringify(styles)
-    });
-}
-function figLinkNodeToExistingColorStyle(nodeId, styleId) {
-    const localStyles = figma.getLocalPaintStyles();
-    if (styleId != NULL)
-        figLinkColorStyle(localStyles, nodeId, styleId);
-    else
-        figClearColorStyle(localStyles, nodeId);
-}
-function figLinkColorStyle(localStyles, nodeId, styleId, clearExisting = true) {
-    const figStyles = figStyleArrays.find(a => a.nodeId == nodeId);
-    if (figStyles
-        && clearExisting)
-        figClearColorStyle(localStyles, nodeId);
-    const figStyle = localStyles.find(s => s.id == styleId);
-    console.assert(!!figStyle, 'figStyle should be found here');
-    figStyle.setPluginData('type', COLOR_STYLE);
-    figStyle.setPluginData('nodeId', nodeId);
-    figStyle.setPluginData('existing', boolToString(true));
-    figStyleArrays.push({
-        nodeId: nodeId,
-        existing: true,
-        styles: [figStyle]
-    });
-    return figStyle;
-}
-function figClearColorStyle(localStyles, nodeId) {
-    const figStyle = localStyles.find(s => s.getPluginData('nodeId') == nodeId);
-    //console.assert(!!figStyle, 'figStyle should be found here');
-    if (figStyle) // could have been deleted
-     {
-        figStyle.setPluginData('type', NULL);
-        figStyle.setPluginData('nodeId', NULL);
-        figStyle.setPluginData('existing', NULL);
-        removeFromArrayWhere(figStyleArrays, a => a.nodeId == nodeId);
-    }
-    return figStyle;
-}
-function figCreateColorStyle(styles, genStyle) {
-    const figStyle = figma.createPaintStyle();
-    figStyle.setPluginData('type', genStyle.type);
-    figStyle.setPluginData('nodeId', genStyle.nodeId);
-    figStyle.setPluginData('existing', boolToString(genStyle.existing));
-    figStyle.name = genStyle.styleName;
-    setStylePaints(figStyle, genStyle);
-    styles.push(figStyle);
-    figPostMessageToUi({
-        cmd: 'uiSetStyleId',
-        nodeId: genStyle.nodeId,
-        styleId: figStyle.id
-    });
-    return figStyle;
-}
-function figUpdateStyles(msg) {
-    let curNodeId = NULL;
-    let figStyles;
-    for (const genStyle of msg.styles) {
-        if (genStyle.nodeId != curNodeId) {
-            curNodeId = genStyle.nodeId;
-            figStyles = figStyleArrays.find(a => a.nodeId == genStyle.nodeId);
-            if (!figStyles) {
-                figStyles = {
-                    nodeId: genStyle.nodeId,
-                    existing: genStyle.existing,
-                    styles: []
-                };
-                figStyleArrays.push(figStyles);
-            }
-        }
-        else
-            figStyles = null;
-        const figStyle = figStyles.styles[0];
-        const localStyles = figma.getLocalPaintStyles();
-        const localStyle = localStyles.find(s => s.getPluginData('nodeId') == genStyle.nodeId);
-        if (isValid(figStyle)
-            && !isValid(localStyle)) // removed
-         {
-            removeFrom(figStyles.styles, figStyle);
-        }
-        const existing = isValid(figStyle)
-            && isValid(localStyle)
-            && figStyle.getPluginData('existing');
-        if (!isValid(figStyle)
-            || !isValid(localStyle)) // no existing style, create new style
-         {
-            if (!existing) {
-                styleChangingFromGenerator = true;
-                figCreateColorStyle(figStyles.styles, genStyle);
-            }
-        }
-        else if (isValid(figStyle)
-            && figStyle.getPluginData('type') == genStyle.type) // update existing style
-         {
-            styleChangingFromGenerator = true;
-            figUpdateColorStyle(localStyle, genStyle);
-        }
-        else // delete existing style, create new style
-         {
-            if (!existing) {
-                localStyle.remove();
-                styleChangingFromGenerator = true;
-                figCreateColorStyle(figStyles.styles, genStyle);
-            }
-        }
-    }
-}
-function figUpdateColorStyle(figStyle, genStyle) {
-    setStylePaints(figStyle, genStyle);
-    figStyle.name = genStyle.nodeName;
-}
-function getStylePaints(stylePaints) {
-    const paints = new Array();
-    for (const _paint of stylePaints) {
-        const fill = _paint[1].split(' ');
-        switch (_paint[0]) {
-            case 'SOLID':
-                paints.push({
-                    type: 'SOLID',
-                    color: {
-                        r: Math.min(Math.max(0, parseFloat(fill[0]) / 0xff), 1),
-                        g: Math.min(Math.max(0, parseFloat(fill[1]) / 0xff), 1),
-                        b: Math.min(Math.max(0, parseFloat(fill[2]) / 0xff), 1)
-                    },
-                    opacity: Math.min(Math.max(0, parseFloat(fill[3]) / 100), 1)
-                });
-                break;
-        }
-    }
-    return paints;
-}
-function setStylePaints(style, src) {
-    if (!!src.paints
-        && !isEmpty(src.paints))
-        style.paints = getStylePaints(src.paints);
-    else
-        style.paints = [];
 }
 var notifyNotificationHandler = null;
 var notifyDequeueHandler = () => notifyNotificationHandler = null;
@@ -1819,300 +2115,4 @@ function figNotify(text, prefix = 'Generator ', delay = 400, error = false, butt
 //         // case 'BOOLEAN_OPERATION':
 //     }
 //     return 'ERROR_TYPE';
-// }
-// var bigBuffer = new Uint8Array(2048);
-// function bigRandom(max: bigint = b0)
-// {
-//     const size = 
-//         max > 0
-//         ? Math.max(1, Math.floor(bigBitCount(max)/8))
-//         : bigBuffer.length;
-//     if (size > bigBuffer.length)
-//         bigBuffer = new Uint8Array(nextPow2(size));
-//     for (let i = 0; i < size; i++)
-//         bigBuffer[i] = toInt(Math.random() * 0x100);
-//     let rnd = bigFromBufferAt(bigBuffer, 0, size);
-//     if (max > 0)
-//         rnd = rnd % BigInt(max);
-//     return rnd;
-// }
-// function bigPowMod(n: bigint, e: bigint, m: bigint) // n^e % mod
-// {
-//     let c = b1;
-//     while (e > b0)
-//     {
-//         if ((e & b1) != b0)
-//         {
-//             c *= n;
-//             c %= m;
-//         }
-//         e >>= b1;
-//         n *= n;
-//         n %= m;
-//     }
-//     return c;
-// }
-// function bigNextPrime(n: bigint) 
-// {
-//     while (!bigIsPrime(++n));
-//     return n;
-// }
-// function bigIsPrime(x: bigint, k = millerRabinIterations) // Miller-Rabin
-// {
-//     if (x <= b1) return false; 
-//     if (x <= b3) return true;
-//     if (x % b2 == b0) 
-//         return false;
-//     let d = x - b1;
-//     let s = b0; 
-//     while (d % b2 == b0) 
-//     {
-//         d /= b2;
-//         s++;
-//     }
-//     for (let i = 0; i < k; i++)    
-//     {
-//         const a = b2 + bigRandom(x - b1);
-//         if (!bigIsWitness(a, s, d, x))
-//             return false;        
-//     }
-//     return true; 
-// }    
-// function bigIsWitness(a: bigint, s: bigint, d: bigint, n: bigint)
-// {
-//     let x = bigPowMod(a, d, n);
-//     if (x == b1)
-//         return true;
-//     for (let j = b0; j < s-b1; j++)
-//     {
-//         if (x == n-b1)
-//             return true;
-//         x = bigPowMod(x, b2, n);
-//     }
-//     return x == n-b1;
-// }
-// function bigFromBuffer(buffer)
-// {
-//     return bigFromBufferAt(buffer, 0, buffer.length);
-// }
-// function bigFromBufferAt(buffer, start, size)
-// {
-//     size = Math.min(size, buffer.length - start);
-//     let val = b0;
-//     let mul = b1;
-//     for (let i = start+size-1; i >= start; i--) // little-endian
-//     {
-//         val += mul * BigInt(buffer[i]);
-//         mul <<= b8;
-//     }
-//     return val;
-// }
-// function bigToBuffer(n: bigint, buffer, bufferSize)
-// {
-//     bigToBufferAt(n, buffer, 0, bufferSize);
-// }
-// function bigToBufferAt(n: bigint, buffer, start, bufferSize)
-// {
-//     let size = Math.ceil(bigBitCount(n) / 8);
-//     size = Math.min(size, buffer.length - start);
-//     start += bufferSize - size;
-//     for (let i = start+size-1; i >= start; i--) // little-endian
-//     {
-//         buffer[i] = Number(n & bFF); 
-//         n >>= b8;
-//     }
-// }
-// function bigBitCount(n: bigint)
-// {
-//     return n.toString(2).length;
-// }
-// function bigModInvert(n: bigint, m: bigint)
-// {
-//     const gcd = bigGcdExtended(n, m);
-//     if (gcd[0] != b1) return undefined; // inverse doesn't exist
-//     else              return (gcd[1] % m + m) % m;
-// }
-// function bigGcdExtended(n: bigint, m: bigint)
-// {
-//     if (n == b0)
-//         return [m, b0, b1];
-//     const gcd = bigGcdExtended(m % n, n);
-//     const x   = gcd[1];
-//     const y   = gcd[2];
-//     return [
-//         gcd[0], 
-//         y - (m/n)*x,
-//         x ];
-// }
-// // constants because b0 b1 b2 literals aren't allowed for some reason
-// const b0  = BigInt(0);
-// const b1  = BigInt(1);
-// const b2  = BigInt(2);
-// const b3  = BigInt(3);
-// const b8  = BigInt(8);
-// const bFF = BigInt(0xff);
-// const cryptoModulusSize     = 64; // to keep the keys short
-// const millerRabinIterations = 40;
-// const cryptoBufferSize      = cryptoModulusSize/8;
-// const cryptoPrimeBufferSize = cryptoBufferSize /2;
-// const cryptoBuffer          = new Uint8Array(cryptoPrimeBufferSize);
-// function bigCryptoRandom()
-// {
-//     for (let i = 0; i < cryptoPrimeBufferSize; i++)
-//         cryptoBuffer[i] = toInt(Math.random() * 0x100);
-//     cryptoBuffer[0]                       |= 0xC0; // set the top bit to ensure a relatively large number
-//     cryptoBuffer[cryptoPrimeBufferSize-1] |= 0x01; // set low bit to ensure the number is odd
-//     return bigFromBuffer(cryptoBuffer);
-// }
-// function bigNextCryptoPrime(n) 
-// {
-//     while (!bigIsPrime(n))
-//         n += b2;
-//     return n;
-// }
-// function bigCryptoPrime(e)
-// {
-//     // set p so that gcd(e, p-1) = 1
-//     let p;
-//     do
-//     {
-//         const rnd = bigCryptoRandom();
-//         p         = bigNextCryptoPrime(rnd);
-//     }
-//     while (gcd(p-b1, e) != b1); 
-//     return p;
-// }
-// function createCryptoPrimePair(e)
-// {
-//     let p = bigCryptoPrime(e);
-//     let q;
-//     do { q = bigCryptoPrime(e); } 
-//     while (q == p);
-//     if (p < q)
-//         [p,q] = [q,p];
-//     // console.log('p: ' + p);
-//     // console.log('q: ' + q);
-//     return [p, q];
-// }
-// function createCryptoKeys()
-// {
-//     const e = BigInt(65537); // 0x10001
-//     const p = 171015884525198953812766518124105165718653873998956756668025044221872229189000224853283418100843709051461026314124691533908776566252132643262590538651722808414927589080453045207809268132409732602333460056024268701292425924373474424856230484676389948410647363185480527668352208344285098898398427328550005504453,
-//           q = 155609589144550304318321520462261131589420632313724769782511579674112504658012602948864212319636338680003350414119487761858358450704391631375906758644966783345911054968703886354891203894119403383879286405905868259207088334824357002928336613811380509880129563041650203531859521495334731320347454780789832377709;
-//     const  n   = p * q;
-//     const _phi = (p-b1) * (q-b1);
-//     const  d   = bigModInvert(e, _phi);
-//     return {
-//         public:  {n:n, e:e },
-//         private: {n:n, d:d, p:p, q:q} };
-// }                        
-// function encryptBlock(n, key, sign  ) { return bigPowMod(n, (sign   ? key.d : key.e), key.n); }        
-// function decryptBlock(n, key, verify) { return bigPowMod(n, (verify ? key.e : key.d), key.n); }        
-// function encrypt(data, key) { return encryptData(data, key, false); }
-// function decrypt(data, key) { return decryptData(data, key, false); }
-// function sign   (data, key) { return encryptData(data, key, true); } // yes I know real sign/verify uses a hash,
-// function verify (data, key) { return decryptData(data, key, true); } // but I prefer it this way for what I need
-// function encryptData(data, key, sign)
-// {
-//     // prep array should be a multiple of cryptoBufferSize
-//     const prep   = new Uint8Array(Math.ceil((data.length) / cryptoBufferSize) * cryptoBufferSize); 
-//     const cipher = new Uint8Array(prep.length);
-//     const start = prep.length - data.length;
-//     for (let i = 0; i < data.length; i++)
-//         prep[start+i] = data[i];
-//     let length = prep.length;
-//     let nBlock = 0;
-//     while (length > 0)
-//     {
-//         const blockStart = nBlock * cryptoBufferSize;
-//         const blockSize  = Math.min(length, cryptoBufferSize);
-//         const block      = bigFromBufferAt(prep, blockStart, cryptoBufferSize);
-//         const enc        = encryptBlock(block, key, sign);
-//         bigToBufferAt(enc, cipher, blockStart, cryptoBufferSize);
-//         nBlock++;
-//         length -= blockSize;
-//     }
-//     return cipher;
-// }
-// function decryptData(cipher, key, verify)
-// {
-//     const data = new Uint8Array(cipher.length);
-//     let length = cipher.length;
-//     let nBlock = 0;
-//     while (length > 0)
-//     {
-//         const blockStart = nBlock * cryptoBufferSize;
-//         const blockSize  = Math.min(length, cryptoBufferSize);
-//         const block      = bigFromBufferAt(cipher, blockStart, cryptoBufferSize);
-//         const dec        = decryptBlock(block, key, verify);
-//         bigToBufferAt(dec, data, blockStart, cryptoBufferSize); 
-//         nBlock++;
-//         length -= blockSize;
-//     }    
-//     return data;    
-// }
-const MONTHLY_LICENSE = 'M';
-const YEARLY_LICENSE = 'Y';
-//const licenseKeys     = createCryptoKeys();
-//const licenseHashSize = 4;
-function figValidateLicense(license) {
-    figPostMessageToUi({
-        cmd: 'uiReturnFigValidateLicense',
-        result: false
-    });
-}
-// function createProductKey(userId: string, licenseType: string, lastYear: number, lastMonth: number)
-// {
-//     // how to revoke
-//     const str = 
-//           userId 
-//         + licenseType
-//         + lastYear .toString() 
-//         + lastMonth.toString();
-//     const hash = hashLicenseName(str, licenseHashSize);
-//     const enc  = sign(hash, licenseKeys.private);
-//     const key  = arrayToBase32(enc);
-//     return key;
-// }
-// function validateProductKey(name, key, rec = false)
-// {
-//     // TODO: check from today until 1 year from now (max license length)
-//     // 1/day, so 365 max, add end day to name
-//     // check today against last launch date (in private data) to prevent clock tampering
-//     const arr  = base32toArray(key.toUpperCase());
-//     const dec  = verify(arr, licenseKeys.public).subarray(licenseHashSize);
-//     const trim = dec.subarray(dec.length - licenseHashSize);
-//     const hash = hashLicenseName(name, licenseHashSize);
-//     const valid = arraysAreEqual(trim, hash);
-//     if (valid && !rec)
-//     {
-//         let lowerKey = key;
-//         const lastChar  = lastOf(lowerKey);
-//         const lastIndex = base32chars.indexOf(lastChar);
-//         if (lastIndex > 0)
-//         {
-//             lowerKey = replaceInStringAt(lowerKey, lowerKey.length-1, base32chars[lastIndex-1]);
-//             if (validateProductKey(name, lowerKey, true))
-//                 return false; // at this scale of product key the last bit needs to be guarded against
-//         }
-//     }
-//     return valid;
-// }
-// function hashLicenseName(name, nBytes)
-// {
-//     // XOR wrap name around a given number of bytes
-//     const bytes = stringToArray(name);
-//     if (bytes.length > nBytes)
-//     {
-//         let pos    = nBytes;
-//         let length = bytes.length - nBytes;
-//         while (length > 0)
-//         {
-//             for (let i = 0; i < nBytes; i++)
-//                 bytes[i] ^= bytes[pos+i];
-//             pos    += nBytes;
-//             length -= nBytes;
-//         }
-//     }
-//     return newSizeArrayFrom(bytes, nBytes);
 // }

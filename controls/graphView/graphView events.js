@@ -111,17 +111,13 @@ function graphView_onpointermove(e)
             || panMode)
         && graphView.hasPointerCapture(e.pointerId))
     {
-        // TODO this is where the last extra pan step probably comes from on complicated graphs
-        //setTimeout(() =>
-        //{
-            setCursor(panCursor);
+        setCursor(panCursor);
 
-            const dp = subv(graphView.p, graphView.pStart);
+        const dp = subv(graphView.p, graphView.pStart);
 
-            graphView.setPanAndZoom(
-                addv(graphView.panStart, dp), 
-                graphView.zoom);
-        //});
+        graphView.setPanAndZoom(
+            addv(graphView.panStart, dp), 
+            graphView.zoom);
     }
 
     else if (graphView.selecting)
@@ -204,7 +200,6 @@ graphView.addEventListener('wheel', e =>
 
     // if button is not pressed wheel pans
     // if button is pressed, wheel does nothing if it's a touchpad
-    //vartouchPad = e.wheelDeltaY ? e.wheelDeltaY === -3 * e.deltaY : e.deltaMode === 0
 
     e.preventDefault();
 
@@ -218,12 +213,13 @@ graphView.addEventListener('wheel', e =>
     const dWheelY = e.deltaY / (touchpad ? 20 : 100);
 
 
-    if (   getCtrlKey(e)
+    if (   e.ctrlKey //getCtrlKey(e)
         ||     panMode
            && !touchpad)
     {
-        let pos = point(e.clientX, e.clientY);
-        pos.y -= menuBarHeight;
+        let pos = point(
+            e.clientX, 
+            e.clientY - menuBarHeight);
 
         const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
         const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
@@ -254,7 +250,7 @@ graphView.addEventListener('wheel', e =>
                 e.clientX,
                 e.clientY,
                 e.shiftKey);
-        }
+        } 
 
 
         graphView.updateWheelTimer();
@@ -283,6 +279,7 @@ graphView.updateWheelTimer = function()
     }, 
     500);
 };
+
 
 
 graphView.addEventListener('gesturestart', e => { console.log('start'); graphView.zoomStart = graphView.zoom; });

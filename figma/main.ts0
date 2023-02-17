@@ -28,7 +28,7 @@ function figStartGenerator()
         let productKey = await figLoadLocal('productKey');
         if (productKey == null) productKey = '';
 
-
+        
         let wndWidth  = await figma.clientStorage.getAsync('windowWidth');
         let wndHeight = await figma.clientStorage.getAsync('windowHeight');
 

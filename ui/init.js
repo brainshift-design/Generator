@@ -29,7 +29,6 @@ var currentUser = '';
 var productKey  = '';
 
 
-
 const graph = new Graph();
 
 const generator = new Worker(
@@ -48,6 +47,7 @@ var pasteOffsetDelta    = point(0, 70);
 
 
 clearConsole();
+
 
 initUtilContext();
 
