@@ -334,16 +334,15 @@ function initNumberControlTextbox(control)
 
     control.updateTextbox = function()
     {
-        control.textbox.value = control.getValueText();
-        // control.textbox.value =
-        //     (isNaN(control.value)
-        //      ? NAN_CHAR
-        //      : numToString(
-        //            control.value * control.valueScale, 
-        //            control.displayDec, 
-        //            control.showHex
-        //        ).toUpperCase())
-        //     + (control.valueCanContainSuffix ? control.suffix : '');
+        control.textbox.value =
+            (isNaN(control.value)
+             ? NAN_CHAR
+             : numToString(
+                   control.value * control.valueScale, 
+                   control.displayDec, 
+                   control.showHex
+               ).toUpperCase())
+            + (control.valueCanContainSuffix ? control.suffix : '');
             
         control.textbox.savedValue = control.textbox.value;
     };

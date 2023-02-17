@@ -30,7 +30,7 @@ extends OpColorBase
             ? ['hex', Math.random(), Math.random(), Math.random()]
             : [...defColor];
         
-        this.prevSpace =  'hex';
+        this.prevSpace = 'hex';
 
 
         this.colorBack = createDiv('colorBack');
@@ -238,8 +238,9 @@ extends OpColorBase
 
         if (space.isValid())
         {
-            if (space) 
-                this.paramSpace.setValue(space, false, true, false);
+            this.prevSpace = this.paramSpace.value;
+            this.paramSpace.setValue(space, false, true, false);
+
 
             if (   convert.value != space.value
                 || graphView.pastingNodes
@@ -247,7 +248,7 @@ extends OpColorBase
                 || graphView.restoringNodes)
                 switchToSpace(this, colorSpace(space.value));
 
-            
+
             if (c1) this.param1.setValue(c1, false, true, false);
             if (c2) this.param2.setValue(c2, false, true, false);
             if (c3) this.param3.setValue(c3, false, true, false);
@@ -276,16 +277,12 @@ extends OpColorBase
                     this.isUnknown()
                     ? rgbHeaderFromType(CACHE, true)
                     : dataColor2rgb(this._color);
-
-                this.prevSpace = colorSpace(_space.value);
             }
             else
             {
                 this.paramColor.setValue(ColorValue.NaN, false, true, false);
 
-                this._color    = dataColor_NaN;
-                this.prevSpace = NumberValue.NaN;
-
+                this._color               = dataColor_NaN;
                 this.outputs[0].wireColor = rgb_NaN;
             }
         }
