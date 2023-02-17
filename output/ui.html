@@ -11934,10 +11934,6 @@ extends GColorType
 
     convertColor(color, fromSpace, toSpace)
     {
-        console.log('color =', color);
-        console.log('fromSpace =', fromSpace);
-        console.log('toSpace =', toSpace);
-
         let col = [
             fromSpace, 
             getNormalColorValue(color.c1.value, fromSpace, 0),
@@ -29840,10 +29836,6 @@ extends GColorType
 
     convertColor(color, fromSpace, toSpace)
     {
-        console.log('color =', color);
-        console.log('fromSpace =', fromSpace);
-        console.log('toSpace =', toSpace);
-
         let col = [
             fromSpace, 
             getNormalColorValue(color.c1.value, fromSpace, 0),
@@ -34514,15 +34506,16 @@ function initNumberControlTextbox(control)
 
     control.updateTextbox = function()
     {
-        control.textbox.value =
-            (isNaN(control.value)
-             ? NAN_CHAR
-             : numToString(
-                   control.value * control.valueScale, 
-                   control.displayDec, 
-                   control.showHex
-               ).toUpperCase())
-            + (control.valueCanContainSuffix ? control.suffix : '');
+        control.textbox.value = control.getValueText();
+        // control.textbox.value =
+        //     (isNaN(control.value)
+        //      ? NAN_CHAR
+        //      : numToString(
+        //            control.value * control.valueScale, 
+        //            control.displayDec, 
+        //            control.showHex
+        //        ).toUpperCase())
+        //     + (control.valueCanContainSuffix ? control.suffix : '');
             
         control.textbox.savedValue = control.textbox.value;
     };
@@ -34852,8 +34845,15 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
                 control.text.innerHTML += '<span style="color: ' + nameStyle + ';">' + control.name + "</span>&nbsp;&nbsp;";
             }
+
             
-            control.text.innerHTML += control.getValueText() + control.suffix;
+            const valueText = control.getValueText();
+
+            control.text.innerHTML += 
+                  valueText 
+                + (valueText == UNKNOWN_DISPLAY
+                   ? ''
+                   : control.suffix);
         }
     };
 

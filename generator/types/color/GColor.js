@@ -159,10 +159,6 @@ extends GColorType
 
     convertColor(color, fromSpace, toSpace)
     {
-        console.log('color =', color);
-        console.log('fromSpace =', fromSpace);
-        console.log('toSpace =', toSpace);
-
         let col = [
             fromSpace, 
             getNormalColorValue(color.c1.value, fromSpace, 0),

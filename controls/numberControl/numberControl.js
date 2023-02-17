@@ -321,8 +321,15 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
                 control.text.innerHTML += '<span style="color: ' + nameStyle + ';">' + control.name + "</span>&nbsp;&nbsp;";
             }
+
             
-            control.text.innerHTML += control.getValueText() + control.suffix;
+            const valueText = control.getValueText();
+
+            control.text.innerHTML += 
+                  valueText 
+                + (valueText == UNKNOWN_DISPLAY
+                   ? ''
+                   : control.suffix);
         }
     };
 
