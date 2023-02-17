@@ -186,7 +186,7 @@ function findCorrectionInOrder(nodeId,
             });
     }
 
-
+    
     return [
         closestColor,
         closestOklab,
@@ -202,10 +202,10 @@ function findCorrectionInOrder(nodeId,
 function getCorrectedColor(color, order, m1, m2, m3)
 {
     const _color = correctColor(color, order, m1, m2, m3);
-    const _oklab = dataColor2array(dataColor2oklab(_color));
-    const _rgb   = oklab2rgb(_oklab);
+    const oklab  = dataColor2array(dataColor2oklab(_color));
+    const rgb    = oklab2rgb(oklab);
 
-    return [_color, _oklab, _rgb];
+    return [_color, oklab, rgb];
 }
 
 
@@ -222,6 +222,17 @@ function correctColor(color, order, margin1, margin2, margin3)
     if (!dataColorIsOk(color)) color = correctChannel(color, i2, margin2);
     if (!dataColorIsOk(color)) color = correctChannel(color, i3, margin3);
 
+
+    // clip colors that are reasonably valid but stick over the fence
+    
+    let rgb = dataColor2rgb(color);
+
+    if (rgbIsOk(rgb))
+        rgb = invalid2validRgb(rgb);
+
+    color = rgb2dataColor(rgb);
+
+    
     return color;
 }
 

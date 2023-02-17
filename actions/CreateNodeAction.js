@@ -75,6 +75,10 @@ extends Action
 
         uiMakeNodeActive(this.node);
         pushUnique(updateNodes, this.node);
+
+
+        graphView.updateNodeTransforms([this.node]);
+        this.node.updateNode();
     }
 
 

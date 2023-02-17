@@ -1,4 +1,17 @@
-const ColorEpsilon = 0.00001;
+const ColorEpsilon = 0.0001;
+
+
+
+function rgb2dataColor(rgb)
+{
+    const _space = 'rgb';
+
+    return [
+        _space, 
+        getNormalColorValue(rgb[0], _space, 0), 
+        getNormalColorValue(rgb[1], _space, 1), 
+        getNormalColorValue(rgb[2], _space, 2) ]; 
+}
 
 
 

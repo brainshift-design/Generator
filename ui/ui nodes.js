@@ -664,6 +664,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
 
 
     const nodes = loadNodes(data, true);
+    nodes.forEach(n => n.div.style.display ='none');
 
     
     // get the new names of the nodes after they've been added
@@ -1143,7 +1144,7 @@ function uiRemoveConnsToNodes(nodeIds)
 
                 
     uiQueueMessageToFigma({
-        cmd: 'figRemoveConnsToNodes',
+        cmd:    'figRemoveConnsToNodes',
         nodeIds: nodeIds
     });
 }

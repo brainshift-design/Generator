@@ -118,19 +118,19 @@ function updateWires(wires)
     }
 
 
-    for (let i = 0; i < wires.length; i++)
-    {
-        const conn = wires[i].connection;
-        const solo = conn != graphView.savedConn;
+    // for (let i = 0; i < wires.length; i++)
+    // {
+    //     const conn = wires[i].connection;
+    //     const solo = conn != graphView.savedConn;
 
-        show(wires[i],       solo);
-        show(wires[i].curve, solo);
-        show(wires[i].xp1,   solo);
-        show(wires[i].xp2,   solo);
+    //     show(wires[i],       solo);
+    //     show(wires[i].curve, solo);
+    //     show(wires[i].xp1,   solo);
+    //     show(wires[i].xp2,   solo);
 
-        if (wires[i].outBall) show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
-        if (wires[i]. inBall) show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
-    }
+    //     if (wires[i].outBall) show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
+    //     if (wires[i]. inBall) show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
+    // }
 }
 
 
@@ -335,10 +335,10 @@ function updateWireStyle(wire)
         || isNaN(oldReorderIndex);
 
 
-    show(wire,         (this != graphView.savedConn || isReordering));
-    show(wire.curve,   showCurve && (this != graphView.savedConn || isReordering));
-    show(wire.xp1,     (this != graphView.savedConn || isReordering));
-    show(wire.xp2,     (this != graphView.savedConn || isReordering));
-    show(wire.outBall, (!graphView.tempConn || graphView.tempConn.output));
-    show(wire. inBall, (!graphView.tempConn || graphView.tempConn. input));
+    // show(wire,         (this != graphView.savedConn || isReordering));
+    // show(wire.curve,   showCurve && (this != graphView.savedConn || isReordering));
+    // show(wire.xp1,     (this != graphView.savedConn || isReordering));
+    // show(wire.xp2,     (this != graphView.savedConn || isReordering));
+    // show(wire.outBall, (!graphView.tempConn || graphView.tempConn.output));
+    // show(wire. inBall, (!graphView.tempConn || graphView.tempConn. input));
 }

@@ -91,6 +91,7 @@ class Graph
         if (placeNode)
             graphView.placeNewNode(node);
 
+        node.div.style.display = 'block';
         node.div.style.zIndex  = graph.nodes.length-1;
 
         node.updateMeasureData();

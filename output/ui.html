@@ -2017,7 +2017,7 @@ a
 
 .node
 {
-    display:       block;
+    display:       none;
     position:      absolute;
     height:        auto;
     border-radius: 4px 4px 0 0;
@@ -2477,7 +2477,7 @@ a
             <div id='whatsNewBody'>
                 <h1>What's new in Generator</h1>
 
-                <p>-</p>
+                <p>Fixed double update on wires.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -11414,7 +11414,7 @@ function findCorrectionInOrder(nodeId,
             });
     }
 
-
+    
     return [
         closestColor,
         closestOklab,
@@ -11430,10 +11430,10 @@ function findCorrectionInOrder(nodeId,
 function getCorrectedColor(color, order, m1, m2, m3)
 {
     const _color = correctColor(color, order, m1, m2, m3);
-    const _oklab = dataColor2array(dataColor2oklab(_color));
-    const _rgb   = oklab2rgb(_oklab);
+    const oklab  = dataColor2array(dataColor2oklab(_color));
+    const rgb    = oklab2rgb(oklab);
 
-    return [_color, _oklab, _rgb];
+    return [_color, oklab, rgb];
 }
 
 
@@ -11450,6 +11450,17 @@ function correctColor(color, order, margin1, margin2, margin3)
     if (!dataColorIsOk(color)) color = correctChannel(color, i2, margin2);
     if (!dataColorIsOk(color)) color = correctChannel(color, i3, margin3);
 
+
+    // clip colors that are reasonably valid but stick over the fence
+    
+    let rgb = dataColor2rgb(color);
+
+    if (rgbIsOk(rgb))
+        rgb = invalid2validRgb(rgb);
+
+    color = rgb2dataColor(rgb);
+
+    
     return color;
 }
 
@@ -17515,7 +17526,20 @@ function rgbPow(col, p)
 
 
 
-const ColorEpsilon = 0.00001;
+const ColorEpsilon = 0.0001;
+
+
+
+function rgb2dataColor(rgb)
+{
+    const _space = 'rgb';
+
+    return [
+        _space, 
+        getNormalColorValue(rgb[0], _space, 0), 
+        getNormalColorValue(rgb[1], _space, 1), 
+        getNormalColorValue(rgb[2], _space, 2) ]; 
+}
 
 
 
@@ -23292,7 +23316,20 @@ function rgbPow(col, p)
 
 
 
-const ColorEpsilon = 0.00001;
+const ColorEpsilon = 0.0001;
+
+
+
+function rgb2dataColor(rgb)
+{
+    const _space = 'rgb';
+
+    return [
+        _space, 
+        getNormalColorValue(rgb[0], _space, 0), 
+        getNormalColorValue(rgb[1], _space, 1), 
+        getNormalColorValue(rgb[2], _space, 2) ]; 
+}
 
 
 
@@ -29324,7 +29361,7 @@ function findCorrectionInOrder(nodeId,
             });
     }
 
-
+    
     return [
         closestColor,
         closestOklab,
@@ -29340,10 +29377,10 @@ function findCorrectionInOrder(nodeId,
 function getCorrectedColor(color, order, m1, m2, m3)
 {
     const _color = correctColor(color, order, m1, m2, m3);
-    const _oklab = dataColor2array(dataColor2oklab(_color));
-    const _rgb   = oklab2rgb(_oklab);
+    const oklab  = dataColor2array(dataColor2oklab(_color));
+    const rgb    = oklab2rgb(oklab);
 
-    return [_color, _oklab, _rgb];
+    return [_color, oklab, rgb];
 }
 
 
@@ -29360,6 +29397,17 @@ function correctColor(color, order, margin1, margin2, margin3)
     if (!dataColorIsOk(color)) color = correctChannel(color, i2, margin2);
     if (!dataColorIsOk(color)) color = correctChannel(color, i3, margin3);
 
+
+    // clip colors that are reasonably valid but stick over the fence
+    
+    let rgb = dataColor2rgb(color);
+
+    if (rgbIsOk(rgb))
+        rgb = invalid2validRgb(rgb);
+
+    color = rgb2dataColor(rgb);
+
+    
     return color;
 }
 
@@ -33123,7 +33171,7 @@ function initGeneratorMenus()
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',       {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                       }}),
-        menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',        {checkCallback: () => settings.showAllColorSpaces, callback: () => { updateSettingAndMenu('showAllColorSpaces',       true, !settings.showAllColorSpaces);   updateMenuItemShowAllColorSpaces();  }}),
+        menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',        {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',       true, !settings.showAllColorSpaces);   updateMenuItemShowAllColorSpaces();  }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);       updateMenuItemShowBoolValues();      }}),
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',      {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                      }}),
                                         new MenuItem('',                             {separator: true}),   
@@ -38628,19 +38676,19 @@ function updateWires(wires)
     }
 
 
-    for (let i = 0; i < wires.length; i++)
-    {
-        const conn = wires[i].connection;
-        const solo = conn != graphView.savedConn;
+    // for (let i = 0; i < wires.length; i++)
+    // {
+    //     const conn = wires[i].connection;
+    //     const solo = conn != graphView.savedConn;
 
-        show(wires[i],       solo);
-        show(wires[i].curve, solo);
-        show(wires[i].xp1,   solo);
-        show(wires[i].xp2,   solo);
+    //     show(wires[i],       solo);
+    //     show(wires[i].curve, solo);
+    //     show(wires[i].xp1,   solo);
+    //     show(wires[i].xp2,   solo);
 
-        if (wires[i].outBall) show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
-        if (wires[i]. inBall) show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
-    }
+    //     if (wires[i].outBall) show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
+    //     if (wires[i]. inBall) show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
+    // }
 }
 
 
@@ -38845,12 +38893,12 @@ function updateWireStyle(wire)
         || isNaN(oldReorderIndex);
 
 
-    show(wire,         (this != graphView.savedConn || isReordering));
-    show(wire.curve,   showCurve && (this != graphView.savedConn || isReordering));
-    show(wire.xp1,     (this != graphView.savedConn || isReordering));
-    show(wire.xp2,     (this != graphView.savedConn || isReordering));
-    show(wire.outBall, (!graphView.tempConn || graphView.tempConn.output));
-    show(wire. inBall, (!graphView.tempConn || graphView.tempConn. input));
+    // show(wire,         (this != graphView.savedConn || isReordering));
+    // show(wire.curve,   showCurve && (this != graphView.savedConn || isReordering));
+    // show(wire.xp1,     (this != graphView.savedConn || isReordering));
+    // show(wire.xp2,     (this != graphView.savedConn || isReordering));
+    // show(wire.outBall, (!graphView.tempConn || graphView.tempConn.output));
+    // show(wire. inBall, (!graphView.tempConn || graphView.tempConn. input));
 }
 
 
@@ -40749,6 +40797,7 @@ class Graph
         if (placeNode)
             graphView.placeNewNode(node);
 
+        node.div.style.display = 'block';
         node.div.style.zIndex  = graph.nodes.length-1;
 
         node.updateMeasureData();
@@ -51882,6 +51931,10 @@ extends Action
 
         uiMakeNodeActive(this.node);
         pushUnique(updateNodes, this.node);
+
+
+        graphView.updateNodeTransforms([this.node]);
+        this.node.updateNode();
     }
 
 
@@ -52472,11 +52525,16 @@ extends Action
 
         pushUnique(this.newConnectionData, _conns);
         
+
         for (const conn of _conns)
             uiSaveConnection(
                 conn.outputNodeId, conn.outputId, conn.outputOrder,
                 conn.inputNodeId,  conn.inputId,
                 JSON.stringify(conn));
+
+
+        graphView.updateNodeTransforms(nodes);
+        nodes.forEach(n => n.updateNode());
 
 
         this.pastedNodeIds = nodes.map(n => n.id);
@@ -56522,6 +56580,7 @@ function uiPasteNodes(nodesJson, pasteConnected, x, y, updateNodes)
 
 
     const nodes = loadNodes(data, true);
+    nodes.forEach(n => n.div.style.display ='none');
 
     
     // get the new names of the nodes after they've been added
@@ -57001,7 +57060,7 @@ function uiRemoveConnsToNodes(nodeIds)
 
                 
     uiQueueMessageToFigma({
-        cmd: 'figRemoveConnsToNodes',
+        cmd:    'figRemoveConnsToNodes',
         nodeIds: nodeIds
     });
 }

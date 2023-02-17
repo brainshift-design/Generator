@@ -1,6 +1,6 @@
 .node
 {
-    display:       block;
+    display:       none;
     position:      absolute;
     height:        auto;
     border-radius: 4px 4px 0 0;

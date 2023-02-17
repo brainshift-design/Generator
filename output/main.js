@@ -1818,10 +1818,10 @@ function figRemoveConnsToNodes(nodeIds) {
     }
 }
 function figRemoveSavedNodesAndConns(nodeIds) {
+    figRemoveConnsToNodes(nodeIds);
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k)
         && nodeIds.includes(noNodeTag(k)));
     nodeKeys.forEach(k => figClearPageData(k));
-    figRemoveConnsToNodes(nodeIds);
 }
 function figRemoveAllSavedNodesAndConns() {
     const nodeKeys = figma.currentPage.getPluginDataKeys().filter(k => isNodeKey(k));
