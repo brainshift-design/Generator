@@ -2478,6 +2478,7 @@ a
 
                 <p>Fixed UI bugs.</p>
                 <p>Fixed how hand tool works with touchpads.</p>
+                <p>APCA is -108..106 again.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -12317,7 +12318,7 @@ extends GColorType
                     else
                     {
                         const value = getContrastRatio3(input0.toRgb(), input1.toRgb());
-                        this.contrast = new NumberValue(Math.abs(value), 1);
+                        this.contrast = new NumberValue(value, 1);
                     }
                 }
                 else
@@ -30217,7 +30218,7 @@ extends GColorType
                     else
                     {
                         const value = getContrastRatio3(input0.toRgb(), input1.toRgb());
-                        this.contrast = new NumberValue(Math.abs(value), 1);
+                        this.contrast = new NumberValue(value, 1);
                     }
                 }
                 else
@@ -34552,6 +34553,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.displayMin             = min;
     control.displayMax             = max;
 
+    control.displayAbsolute        = false;
+    
     control.acc                    = acc;
      
     control.dec                    =
@@ -34749,13 +34752,20 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
         if (!control.measureData.offsetRect)
             return;
-            
+
         const sx =  control.measureData.offsetRect.x;
         const sw =  control.measureData.clientRect.width;
         const sh =  control.measureData.clientRect.height;
 
         const cx = -control.displayMin / (control.displayMax - control.displayMin) * sw;
-        const v  =  control.value      / (control.displayMax - control.displayMin);
+
+        const v = 
+            control.displayAbsolute
+            ?   Math.abs(control.value) 
+              / (control.value < 0 
+                 ? (-control.displayMin - Math.max(0, control.displayMin))
+                 : ( control.displayMax - Math.max(0, control.displayMin)))
+            : control.value / (control.displayMax - control.displayMin);
 
         control.updateBar(sx, cx, v, sw, sh);
         control.updateColors();
@@ -34782,10 +34792,12 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         {
             control.bar.style.display = 'block';
 
-            const x = 
-                v >= 0
-                ? cx
-                : cx + v * sw;
+            const x =
+                control.displayAbsolute
+                ? 0
+                : (v >= 0
+                   ? cx
+                   : cx + v * sw);
 
             control.bar.style.left   = Math.max(0, x);
             control.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), control.offsetWidth);
@@ -49186,7 +49198,7 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES));
 
 
-        this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0, 0));
+        this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
@@ -49289,19 +49301,23 @@ extends OpColorBase
 
                 this.paramContrast.control.setDecimals(2);
                 this.paramContrast.control.setSuffix(rating);
+
+                this.paramContrast.control.displayAbsolute = false;
             }
             else
             {
-                this.paramContrast.control.min        = 
-                this.paramContrast.control.displayMin = 0;
+                this.paramContrast.control.min        = -108;
+                this.paramContrast.control.max        =  106;
+                
+                this.paramContrast.control.displayMin = -105;
+                this.paramContrast.control.displayMax =  105;
 
-                this.paramContrast.control.max        = 
-                this.paramContrast.control.displayMax = 105;
+                this.paramContrast.control.displayAbsolute = true;
 
                 this.paramContrast.control.setDecimals(1);
                 this.paramContrast.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
 
-                this.paramContrast.control.setValue(Math.abs(contrast.value), false, false);
+                this.paramContrast.control.setValue(contrast.value, false, false);
             }
 
 

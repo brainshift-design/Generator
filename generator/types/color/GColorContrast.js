@@ -68,7 +68,7 @@ extends GColorType
                     else
                     {
                         const value = getContrastRatio3(input0.toRgb(), input1.toRgb());
-                        this.contrast = new NumberValue(Math.abs(value), 1);
+                        this.contrast = new NumberValue(value, 1);
                     }
                 }
                 else

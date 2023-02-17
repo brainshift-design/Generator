@@ -34,6 +34,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.displayMin             = min;
     control.displayMax             = max;
 
+    control.displayAbsolute        = false;
+    
     control.acc                    = acc;
      
     control.dec                    =
@@ -231,13 +233,20 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
         if (!control.measureData.offsetRect)
             return;
-            
+
         const sx =  control.measureData.offsetRect.x;
         const sw =  control.measureData.clientRect.width;
         const sh =  control.measureData.clientRect.height;
 
         const cx = -control.displayMin / (control.displayMax - control.displayMin) * sw;
-        const v  =  control.value      / (control.displayMax - control.displayMin);
+
+        const v = 
+            control.displayAbsolute
+            ?   Math.abs(control.value) 
+              / (control.value < 0 
+                 ? (-control.displayMin - Math.max(0, control.displayMin))
+                 : ( control.displayMax - Math.max(0, control.displayMin)))
+            : control.value / (control.displayMax - control.displayMin);
 
         control.updateBar(sx, cx, v, sw, sh);
         control.updateColors();
@@ -264,10 +273,12 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         {
             control.bar.style.display = 'block';
 
-            const x = 
-                v >= 0
-                ? cx
-                : cx + v * sw;
+            const x =
+                control.displayAbsolute
+                ? 0
+                : (v >= 0
+                   ? cx
+                   : cx + v * sw);
 
             control.bar.style.left   = Math.max(0, x);
             control.bar.style.width  = Math.min(Math.max(0, Math.round(Math.abs(v) * sw) + Math.min(0, x)), control.offsetWidth);

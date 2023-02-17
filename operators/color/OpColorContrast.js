@@ -16,7 +16,7 @@ extends OpColorBase
         this.addInput(new Input(COLOR_TYPES));
 
 
-        this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0, 0));
+        this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
 
@@ -119,19 +119,23 @@ extends OpColorBase
 
                 this.paramContrast.control.setDecimals(2);
                 this.paramContrast.control.setSuffix(rating);
+
+                this.paramContrast.control.displayAbsolute = false;
             }
             else
             {
-                this.paramContrast.control.min        = 
-                this.paramContrast.control.displayMin = 0;
+                this.paramContrast.control.min        = -108;
+                this.paramContrast.control.max        =  106;
+                
+                this.paramContrast.control.displayMin = -105;
+                this.paramContrast.control.displayMax =  105;
 
-                this.paramContrast.control.max        = 
-                this.paramContrast.control.displayMax = 105;
+                this.paramContrast.control.displayAbsolute = true;
 
                 this.paramContrast.control.setDecimals(1);
                 this.paramContrast.control.setSuffix('<span style="font-size: 5; position: relative; top: -7px; left: 2px;">L</span><span style="font-size: 3; font-weight: bold; position: relative; top: -9px; left: 2px;">c</span>');
 
-                this.paramContrast.control.setValue(Math.abs(contrast.value), false, false);
+                this.paramContrast.control.setValue(contrast.value, false, false);
             }
 
 
