@@ -2155,6 +2155,26 @@ function getCreateNodeAction(type, creatingButton, options)
 }
 
 
+
+function isPanning(e)
+{
+    if (panMode)
+    {
+        e.preventDefault();
+        setCursor(panCursor);
+        return true;
+    }
+
+    if (graphView.spaceDown)
+    {
+        e.preventDefault();
+        return true;
+    }
+
+    return false;
+}
+
+
 "use strict";
 
 // Base64 / binary data / UTF-8 strings utilities

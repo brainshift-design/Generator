@@ -137,11 +137,12 @@ function createNodeHeader(node)
 
     node.header.addEventListener('pointerdown', e =>
     {
+        if (isPanning(e))
+            return;
+
+
         e.preventDefault();
 
-
-        if (graphView.spaceDown)    
-            return;
 
 
         graphView.lastSelectedNodes = [...graphView.selectedNodes];
@@ -209,6 +210,10 @@ function createNodeHeader(node)
 
     node.header.addEventListener('pointermove', e =>
     {
+        if (isPanning(e))
+            return;
+
+
         //console.log(node.id + '.header.pointermove');
 
         const toTheRightOfInputs = e.clientX - boundingRect(node.header).x > 12 * graphView.zoom;
@@ -341,6 +346,10 @@ function createNodeHeader(node)
 
     node.header.addEventListener('pointerup', e =>
     {
+        if (isPanning(e))
+            return;
+
+
         if (   e.button == 0
             && node.div.dragging)
         {

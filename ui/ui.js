@@ -1,3 +1,8 @@
+var overNumberControl = null;
+var overColorControl  = null;
+
+
+
 // function checkAddMenuItemProductKey(menuSelectItems)
 // {
 //     if (!validateProductKey(currentUser.id, productKey))

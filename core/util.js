@@ -324,3 +324,23 @@ function getCreateNodeAction(type, creatingButton, options)
            ? new CreateInsertNodeAction(type, creatingButton, options)
            : new CreateNodeAction      (type, creatingButton, options, settings.autoConnectNewNodes);
 }
+
+
+
+function isPanning(e)
+{
+    if (panMode)
+    {
+        e.preventDefault();
+        setCursor(panCursor);
+        return true;
+    }
+
+    if (graphView.spaceDown)
+    {
+        e.preventDefault();
+        return true;
+    }
+
+    return false;
+}

@@ -131,7 +131,8 @@ document.addEventListener('keydown', e =>
          && !getCtrlKey(e))
     {
         if (   !graphView.selecting
-            && !graphView.spaceDown)
+            && !graphView.spaceDown
+            && !panMode)
         {
             graphView.spaceDown = true;
             setCursor(panCursor);

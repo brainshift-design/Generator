@@ -225,10 +225,12 @@ graphView.addEventListener('wheel', e =>
         let pos = point(e.clientX, e.clientY);
         pos.y -= menuBarHeight;
 
-        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 5 : 10)));
+        const zoom = Math.max(0.0001, Math.pow(2, dZoom - dWheelY / (touchpad ? 4 : 10)));
         const pan  = subv(graphView.pan, mulvs(subv(pos, graphView.pan), zoom / graphView.zoom - 1));
 
         graphView.setPanAndZoom(pan, zoom);
+
+        graphView.updateWheelTimer();
     }
     else
     {
@@ -239,6 +241,7 @@ graphView.addEventListener('wheel', e =>
             graphView.pan.x - dPanX,
             graphView.pan.y - dPanY);
 
+        
         if (graphView.selecting)
         {
             graphView.selectionRect.x -= dPanX;
@@ -252,6 +255,9 @@ graphView.addEventListener('wheel', e =>
                 e.clientY,
                 e.shiftKey);
         }
+
+
+        graphView.updateWheelTimer();
     }
 
 
@@ -261,12 +267,32 @@ graphView.addEventListener('wheel', e =>
 
 
 
-graphView.addEventListener('gesturestart', e => { graphView.zoomStart = graphView.zoom; });
+graphView.updateWheelTimer = function()
+{
+    if (graphView.wheelTimer) 
+        clearTimeout(graphView.wheelTimer);
+
+    graphView.wheelTimer = setTimeout(() => 
+    {
+        graphView.wheelTimer = null;
+
+        if (overNumberControl)
+            overNumberControl.updateCursor();
+
+        setAutoCursor();
+    }, 
+    500);
+};
+
+
+graphView.addEventListener('gesturestart', e => { console.log('start'); graphView.zoomStart = graphView.zoom; });
 
 
 
 graphView.addEventListener('gesturechange', e => 
 {
+    console.log('change'); 
+    
     const p = point(
         graphView.p.x,
         graphView.p.y - menuBarHeight);

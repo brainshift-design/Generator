@@ -50,6 +50,8 @@ scrollbarY.style.zIndex   = MAX_INT32-2;
 graphView.touches         = [];
 
 
+graphView.wheelTimer      = null;
+
 
 var graphViewClient       = null; // rect
 
