@@ -1,7 +1,7 @@
 ../html/generator_0.html
 
     [../autojoin/core.aj]
-    [../autojoin/logging.aj]
+    
     ../core/Noise.js
     
     [../autojoin/types.aj]
@@ -10,6 +10,8 @@
 
     ../generator/*.js
     ../generator/parse/*.js
+
+    [../autojoin/logging.aj]
 
     [../autojoin/color.aj]
     ../operators/color/OpColor spaces.js

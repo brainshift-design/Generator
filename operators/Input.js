@@ -82,14 +82,18 @@ extends EventTarget
 
     getValuesForUndo; // function pointer, return array of [index,value] tuples
 
+    getBackInitValue   = null;
 
 
-    constructor(types, getValuesForUndo = null)
+
+    constructor(types, getValuesForUndo = null, getBackInitValue = null)
     {
         super();
         
         this.types            = [...types];
         this.getValuesForUndo = getValuesForUndo;
+        this.getBackInitValue    = getBackInitValue;
+
 
         this.div              = createDiv('input');
         this.hitbox           = createDiv('inputHitbox');

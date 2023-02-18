@@ -3483,6 +3483,16 @@ function crossv2(v1, v2)
 
 
 
+function angle(v)
+{
+    let angle = Math.atan2(v.y, v.x);
+    if (angle < 0) angle += Tau;
+
+    return angle;
+}
+
+
+
 function anglev(v1, v2)
 {
     return anglev_(v1.x, v1.y, v2.x, v2.y);
@@ -3893,6 +3903,20 @@ function lerp(a, b, t)
 
 
 
+function lerp3(f0, f1, f2, f3, t)
+{
+    const c0  = lerp(f0, f1, t);
+    const c1  = lerp(f1, f2, t);
+    const c2  = lerp(f2, f3, t);
+
+    const c01 = lerp(c0, c1, t);
+    const c12 = lerp(c1, c2, t);
+
+    return lerp(c01, c12, t);
+}
+
+
+
 function normalAngle(angle)
 {
     while (angle <  0  ) angle += Tau;
@@ -3921,6 +3945,36 @@ const point_NaN = point(Number.NaN, Number.NaN);
 function point(x, y) { return {x: x, y: y}; }
 
 function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
+
+
+
+function unit(v)
+{
+    return v.X != 0 
+        || v.Y != 0
+        ? mulvs(v, 1 / lengthv(v))
+        : point(0, 0);
+}
+
+
+
+function lerpv(p0, p1, t)
+{
+    //console.log('p0 =', p0);
+    //console.log('p1 =', p1);
+    return point(
+        lerp(p0.x, p1.x, t),
+        lerp(p0.y, p1.y, t));
+}
+
+
+
+function lerpv3(p0, p1, p2, p3, t)
+{
+    return point(
+        lerp3(p0.x, p1.x, p2.x, p3.x, t),
+        lerp3(p0.y, p1.y, p2.y, p3.y, t));
+}
 
 
 
@@ -3959,9 +4013,9 @@ function clipLine(x1, y1, x2, y2, left, top, right, bottom)
     const dy = y2 - y1;
 
     const cl = clipEdge(-dx, -(left - x1), t0, t1); if (cl != null) { t0 = cl[0]; t1 = cl[1]; } else return null;
-    const cr = clipEdge( dx, right - x1,   t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
-    const ct = clipEdge(-dy, -(top - y1),  t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
-    const cb = clipEdge( dy, bottom - y1,  t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
+    const cr = clipEdge( dx,  right - x1,  t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
+    const ct = clipEdge(-dy,  -(top - y1), t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
+    const cb = clipEdge( dy,  bottom - y1, t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
 
     if (t1 < 1)
     {
@@ -4130,6 +4184,138 @@ function boundingRect(elem)
         bounds.y,
         bounds.width,
         bounds.height);
+}
+
+
+function bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t)
+{
+    const p0 = point(x0, y0);
+    const p1 = point(x1, y1);
+    const p2 = point(x2, y2);
+    const p3 = point(x3, y3);
+
+    return unit(addv(addv(
+        mulvs(subv(p1, p0), 3*sqr(1-t)),
+        mulvs(subv(p2, p1), 6*(1-t)*t)),
+        mulvs(subv(p3, p2), 3*sqr(t))));
+}
+
+
+
+function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
+{
+    const hullLength = 
+          distance(p0, p1) 
+        + distance(p1, p2)
+        + distance(p2, p3);
+
+    if (hullLength == 0)
+        return Number.NAN;
+
+
+    let t = arcLen / hullLength;
+
+    if (t < 0 || t > 1)
+        return Number.NAN;
+
+        
+    let halves = splitSeg(p0, p1, p2, p3, t);
+    let l      = halves[0];
+
+    let length = arcLength(l[0], l[1], l[2], l[3], error);
+
+    while (Math.abs(arcLen - length) > error)
+    {
+        t += (arcLen - length) / hullLength;
+
+        halves = splitSeg(p0, p1, p2, p3, t);
+        l      = halves[0];
+
+        length = arcLength(l[0], l[1], l[2], l[3], error);
+    }
+
+    return t;
+}
+
+
+
+function splitSeg(p0, p1, p2, p3, t)
+{
+    const c0   = lerpv(p0, p1, t);
+    const c1   = lerpv(p1, p2, t);
+    const c2   = lerpv(p2, p3, t);
+                
+    const c01  = lerpv(c0, c1, t);
+    const c12  = lerpv(c1, c2, t);
+
+    const c012 = lerpv(c01, c12, t);
+
+    return [
+        [p0, c0, c01, c012],
+        [c012, c12, c2, p3]];
+}
+
+
+
+// function splitSegments(_p0, _p1, _p2, _p3, ts)
+// {
+//     const segments = [];
+
+
+//     let p0 = _p0, 
+//         p1 = _p1,
+//         p2 = _p2,
+//         p3 = _p3;
+
+//     for (let i = 0; i < ts.length; i++)
+//     {
+//         const parts = split(p0, p1, p2, p3, ts[i]);
+//         const l     = parts[0];
+//         const r     = parts[1];
+
+
+//         segments.push(l);
+
+
+//         if (i < ts.length-1)
+//         {
+//             p0 = r[0];
+//             p1 = r[1];
+//             p2 = r[2];
+//             p3 = r[3];
+
+//             for (let j = i+1; j < ts.length; j++)
+//                 ts[j] = 1 - (1 - ts[j]) / (1 - ts[i]);
+//         }
+//         else segments.push(r);
+//     }
+
+
+//     return segments;
+// }
+
+
+
+function arcLength(p0, p1, p2, p3, error = 0.0000001)
+{
+    const arcLen = 
+          distance(p0, p1)
+        + distance(p1, p2)
+        + distance(p2, p3);
+
+    const chord = distance(p0, p3);
+
+    if ((arcLen - chord) > error)
+    {
+        const halves = splitSeg(p0, p1, p2, p3, 0.5);
+        const l      = halves[0];
+        const r      = halves[1];
+            
+        return arcLength(l[0], l[1], l[2], l[3], error)
+             + arcLength(r[0], r[1], r[2], r[3], error);
+    }
+
+    return arcLen;
 }
 
 
@@ -5354,398 +5540,6 @@ function nodeArrayToString(nodes)
 }
 
 
-class RequestSettings
-{
-    request;
-    pos;
-
-    so            = 0;
-    nTab          = 0;
-  
-    skipNewLine   = false;
-
-    loggedNodeIds = [];
-    
-
-
-    constructor(request, pos)
-    {
-        this.request = request;
-        this.pos     = pos;
-    }
-
-
-    get tab() 
-    { 
-        if (this.skipNewLine)
-        {
-            this.skipNewLine = false;
-            return '';
-        }
-        else 
-            return NL + TAB.repeat(Math.max(0, this.nTab)); 
-    }
-}
-
-
-
-function logFunction(funcName, obj = null)
-{
-    let str = funcName;
-
-    if (obj)
-        str = obj.id + '.' + str;
-
-    console.log(
-        '%c ' + str + ' ', 
-        'background: #fc0; color: #632;');
-}
-
-
-
-function logString(str, color = 'white', background = 'red')
-{
-    console.log(
-        '%c ' + str + ' ', 
-        'background: ' + background + '; color: ' + color + ';');
-}
-
-
-
-function logValueUpdates(updateNodeId, updateParamId, values)
-{
-    //console.log('values = ', values);
-
-    let log     = '';
-    let newLine = true;
-
-    if (   updateNodeId  != '' 
-        || updateParamId != '')
-        log = '↓ ' + logReqId(updateNodeId) + '.' + logReqId(updateParamId);
-    else
-        newLine = false;
-
-          
-    let i    = 0;
-    let nTab = 0;
-
-    while (i < values.length)
-    {
-        const nodeId  = values[i++];
-        const nInputs = parseInt(values[i++]);
-
-        log += 
-              (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
-            + nodeId;// + ' ' + nInputs;
-
-        newLine = true;
-
-        nTab++;
-
-        for (let j = 0; j < nInputs; j++)
-        {
-            const index = values[i++];
-            const type  = values[i++];
-            const value = values[i++];
-
-            log += 
-                  NL + TAB.repeat(Math.max(0, nTab))
-                + index + ' ' + displayValue(type, value);
-        }
-
-        nTab--;
-    }
-
-
-    console.log(
-        '%c%s', 
-        'background: #e70; color: white;', 
-        log);
-}
-
-
-
-function logObjectUpdates(objects)
-{
-    console.log(
-        '%cobjects', 
-        'background: #07e; color: white;', 
-        objects);
-}
-
-
-
-function logStyleUpdates(styles)
-{
-    console.log(
-        '%cstyles', 
-        'background: #b4d; color: white;', 
-        styles);
-}
-
-
-
-function logSaveNodes(nodeJson)
-{
-    console.log('%cSAVING NODES\n' + nodeJson, 'color: black; background: #ddeeff;');
-}
-
-
-
-function logSaveConnections(conns)
-{
-    let log = 'SAVING ' + conns.length + ' ' + countString('CONNECTION', conns.length);
-
-    for (const conn of conns)
-        log += '\n' + conn.toJson();
-
-    console.log(
-        '%c' + log, 
-        'color: black; background: #ddeeff;');
-}
-
-
-
-function logUpdateSavedConnections(conns)
-{
-    let log = 'UPDATING ' + conns.length + ' ' + countString('SAVED CONNECTION', conns.length);
-
-    for (const conn of conns)
-        log += '\n' + conn.toJson();
-
-    console.log(
-        '%c' + log, 
-        'color: black; background: #ddeeff;');
-}
-
-
-function logSavedNode(nodeKey)
-{
-    let log = formatSavedNodeJson(figGetPageData(nodeKey, false));
-
-    console.log(
-        '%c%s\n%c%s', 
-        'background: #fdb', 
-         noNodeTag(nodeKey), 
-        'background: #fed;',    
-         log);
-}
-
-
-
-function formatSavedNodeJson(json)
-{
-    let formJson = json
-        .replace('{\n', '')
-        .replace('\n}', '')
-
-        .replace('[\n' + TAB, '')
-        .replace('\n' + TAB + ']', '')
-
-        .split(TAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
-
-        .split('": "').join(': ')
-        .split('", "').join(': ')
-
-        .split(TAB + '"').join(TAB)
-        .split(TAB + TAB + '["').join(TAB + TAB)
-        
-        .split('",\n').join('\n')
-        .split('"\n').join('\n')
-        
-        .split('"],\n').join('\n');
-
-
-    if (formJson[formJson.length-1] == '"')
-        formJson = formJson.substring(0, formJson.length - 1);
-
-    if (formJson.substring(formJson.length-2) == '"]')    
-        formJson = formJson.substring(0, formJson.length - 2);
-
-    return formJson;
-}
-
-
-
-function formatSavedDataJson(json)
-{
-    let formJson = json
-        .replace('{\n', '')
-        .replace('\n}', '')
-        .replace('[\n' + TAB, '')
-        .replace('\n' + TAB + ']', '');
-
-    return formJson;
-}
-
-
-
-function logSavedConn(conn)
-{
-    const strConn = connToString(conn, true);
-
-    console.log(
-        '%c%s', 
-        'background: #cfc', 
-        strConn); 
-}
-
-
-function logRequest(parse)
-{
-    let log = '';
-
-    if (   parse.updateNodeId  != '' 
-        || parse.updateParamId != '')
-        log = '↓ ' + logReqId(parse.updateNodeId) + '.' + logReqId(parse.updateParamId);
-
-    log += parse.log;
-
-    console.log(
-        '%c%s', 
-        'background: #60aa60; color: #fff', 
-         log);
-}
-
-
-
-function logReq(node, parse, ignore, nInputs = -1)
-{
-    parse.log += parse.tab + node.type;
-    parse.log += logReqNodeId(node, ignore);
-
-    if (    nInputs > -1
-        && !ignore)
-        parse.log += ' ' + nInputs;
-}
-
-
-
-function logReqNodeId(node, ignore = false)
-{
-    return ' ' 
-         + logReqId(node.nodeId) 
-         + ' ' + logReqId(node.nodeName)
-         + (!ignore
-            ? logReqOptions(node)
-            : '');
-}
-
-
-
-function logReqId(nodeId)
-{
-    return nodeId == '' ? '\'\'' : nodeId;
-}
-
-
-
-function logReqOptions(node)
-{
-    let log = '';
-
-    if ( node.options.active      ) log += ' ' + ACTIVE;
-    if ( node.options.beforeActive) log += ' ' + BEFORE_ACTIVE;
-    if (!node.options.enabled     ) log += ' ' + DISABLED;
-    if (!node.options.cached      ) log += ' ' + NOCACHE;
-
-    return log;
-}
-
-
-
-function logReqParam(param, type, parse)
-{
-    parse.log += 
-                parse.tab + PARAM
-        + ' ' + type 
-        + ' ' + logReqId(param.nodeId) 
-        + '.' + logReqId(param.paramId);
-}
-
-
-
-function logReqNode(node, parse)
-{
-    parse.log += parse.tab + node.type;
-    parse.log += logReqNodeId(node);
-}
-
-
-
-function logReqListValue(list, parse, ignore)
-{
-    parse.log += parse.tab + LIST_VALUE + ' ' + displayValue(LIST_VALUE, list);
-}
-
-
-
-function logReqColorValue(val, parse, ignore)
-{
-    parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
-}
-
-
-
-function logReqColorContrast(lerp, nInputs, valueIndex, parse, ignore)
-{
-    parse.log += parse.tab + COLOR_CONTRAST;
-    parse.log += logReqNodeId(lerp, ignore);
-
-    if (!ignore)
-    {
-        parse.log += ' ' + nInputs;
-
-        if (nInputs == 1)
-            parse.log += ' ' + valueIndex;
-    }
-}
-
-
-
-function logReqNumberValue(val, parse, ignore)
-{
-    parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
-}
-
-
-
-function logReqFillValue(fill, parse, ignore)
-{
-    parse.log += parse.tab + FILL_VALUE + ' ' + displayValue(FILL_VALUE, fill);
-}
-
-
-
-function logReqStrokeValue(stroke, parse, ignore)
-{
-    parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
-}
-
-
-
-function logReqColorStopValue(stop, parse, ignore)
-{
-    parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + displayValue(COLOR_STOP_VALUE, stop);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const INTER_STEP   = 0,
       INTER_LINEAR = 1,
       INTER_COSINE = 2,
@@ -6634,32 +6428,6 @@ class GNode
 
 
 
-function displayValue(type, value)
-{
-    if (   type == NUMBER_VALUE
-        && value.indexOf(',') < 0)
-        return value;
-
-
-    switch (type)
-    {
-        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
-        case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
-        case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
-        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
-        case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
-        case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
-        case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
-        case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
-        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
-        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
-    }
-
-
-    console.assert(false, 'cannot display value of type \'' + type + '\'');
-}
-
-
 class GValue
 extends GNode
 {
@@ -6702,16 +6470,16 @@ function displayValue(type, value)
 
     switch (type)
     {
-        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
+        //case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
         case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
         case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
-        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
-        case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
-        case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
-        case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
-        case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
-        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
-        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
+        // case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
+        // case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
+        // case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
+        // case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
+        // case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
+        //case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
+        //case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
     }
 
 
@@ -13767,7 +13535,7 @@ function updateMenuItemShowBoolValues()
 {
     graph.nodes
         .filter(n => 
-               BOOLEAN_TYPES  .includes(n.type)
+                 BOOLEAN_TYPES.includes(n.type)
             || CONDITION_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
 }
@@ -16510,6 +16278,384 @@ function genParseParamId(parse)
         parse.log += parse.tab + paramId;
 
     return paramId;
+}
+
+
+class RequestSettings
+{
+    request;
+    pos;
+
+    so            = 0;
+    nTab          = 0;
+  
+    skipNewLine   = false;
+
+    loggedNodeIds = [];
+    
+
+
+    constructor(request, pos)
+    {
+        this.request = request;
+        this.pos     = pos;
+    }
+
+
+    get tab() 
+    { 
+        if (this.skipNewLine)
+        {
+            this.skipNewLine = false;
+            return '';
+        }
+        else 
+            return NL + TAB.repeat(Math.max(0, this.nTab)); 
+    }
+}
+
+
+
+function logFunction(funcName, obj = null)
+{
+    let str = funcName;
+
+    if (obj)
+        str = obj.id + '.' + str;
+
+    console.log(
+        '%c ' + str + ' ', 
+        'background: #fc0; color: #632;');
+}
+
+
+
+function logString(str, color = 'white', background = 'red')
+{
+    console.log(
+        '%c ' + str + ' ', 
+        'background: ' + background + '; color: ' + color + ';');
+}
+
+
+
+function logValueUpdates(updateNodeId, updateParamId, values)
+{
+    //console.log('values = ', values);
+
+    let log     = '';
+    let newLine = true;
+
+    if (   updateNodeId  != '' 
+        || updateParamId != '')
+        log = '↓ ' + logReqId(updateNodeId) + '.' + logReqId(updateParamId);
+    else
+        newLine = false;
+
+          
+    let i    = 0;
+    let nTab = 0;
+
+    while (i < values.length)
+    {
+        const nodeId  = values[i++];
+        const nInputs = parseInt(values[i++]);
+
+        log += 
+              (newLine ? NL : '') + TAB.repeat(Math.max(0, nTab))
+            + nodeId;// + ' ' + nInputs;
+
+        newLine = true;
+
+        nTab++;
+
+        for (let j = 0; j < nInputs; j++)
+        {
+            const index = values[i++];
+            const type  = values[i++];
+            const value = values[i++];
+
+            log += 
+                  NL + TAB.repeat(Math.max(0, nTab))
+                + index + ' ' + displayValue(type, value);
+        }
+
+        nTab--;
+    }
+
+
+    console.log(
+        '%c%s', 
+        'background: #e70; color: white;', 
+        log);
+}
+
+
+
+function logObjectUpdates(objects)
+{
+    console.log(
+        '%cobjects', 
+        'background: #07e; color: white;', 
+        objects);
+}
+
+
+
+function logStyleUpdates(styles)
+{
+    console.log(
+        '%cstyles', 
+        'background: #b4d; color: white;', 
+        styles);
+}
+
+
+
+function logSaveNodes(nodeJson)
+{
+    console.log('%cSAVING NODES\n' + nodeJson, 'color: black; background: #ddeeff;');
+}
+
+
+
+function logSaveConnections(conns)
+{
+    let log = 'SAVING ' + conns.length + ' ' + countString('CONNECTION', conns.length);
+
+    for (const conn of conns)
+        log += '\n' + conn.toJson();
+
+    console.log(
+        '%c' + log, 
+        'color: black; background: #ddeeff;');
+}
+
+
+
+function logUpdateSavedConnections(conns)
+{
+    let log = 'UPDATING ' + conns.length + ' ' + countString('SAVED CONNECTION', conns.length);
+
+    for (const conn of conns)
+        log += '\n' + conn.toJson();
+
+    console.log(
+        '%c' + log, 
+        'color: black; background: #ddeeff;');
+}
+
+
+
+function logRequest(parse)
+{
+    let log = '';
+
+    if (   parse.updateNodeId  != '' 
+        || parse.updateParamId != '')
+        log = '↓ ' + logReqId(parse.updateNodeId) + '.' + logReqId(parse.updateParamId);
+
+    log += parse.log;
+
+    console.log(
+        '%c%s', 
+        'background: #60aa60; color: #fff', 
+         log);
+}
+
+
+
+function logReq(node, parse, ignore, nInputs = -1)
+{
+    parse.log += parse.tab + node.type;
+    parse.log += logReqNodeId(node, ignore);
+
+    if (    nInputs > -1
+        && !ignore)
+        parse.log += ' ' + nInputs;
+}
+
+
+
+function logReqNodeId(node, ignore = false)
+{
+    return ' ' 
+         + logReqId(node.nodeId) 
+         + ' ' + logReqId(node.nodeName)
+         + (!ignore
+            ? logReqOptions(node)
+            : '');
+}
+
+
+
+function logReqId(nodeId)
+{
+    return nodeId == '' ? '\'\'' : nodeId;
+}
+
+
+
+function logReqOptions(node)
+{
+    let log = '';
+
+    if ( node.options.active      ) log += ' ' + ACTIVE;
+    if ( node.options.beforeActive) log += ' ' + BEFORE_ACTIVE;
+    if (!node.options.enabled     ) log += ' ' + DISABLED;
+    if (!node.options.cached      ) log += ' ' + NOCACHE;
+
+    return log;
+}
+
+
+
+function logReqParam(param, type, parse)
+{
+    parse.log += 
+                parse.tab + PARAM
+        + ' ' + type 
+        + ' ' + logReqId(param.nodeId) 
+        + '.' + logReqId(param.paramId);
+}
+
+
+
+function logReqNode(node, parse)
+{
+    parse.log += parse.tab + node.type;
+    parse.log += logReqNodeId(node);
+}
+
+
+
+function logReqListValue(list, parse, ignore)
+{
+    parse.log += parse.tab + LIST_VALUE + ' ' + displayValue(LIST_VALUE, list);
+}
+
+
+
+function logReqColorValue(val, parse, ignore)
+{
+    parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
+}
+
+
+
+function logReqColorContrast(lerp, nInputs, valueIndex, parse, ignore)
+{
+    parse.log += parse.tab + COLOR_CONTRAST;
+    parse.log += logReqNodeId(lerp, ignore);
+
+    if (!ignore)
+    {
+        parse.log += ' ' + nInputs;
+
+        if (nInputs == 1)
+            parse.log += ' ' + valueIndex;
+    }
+}
+
+
+
+function logReqNumberValue(val, parse, ignore)
+{
+    parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
+}
+
+
+
+function logReqFillValue(fill, parse, ignore)
+{
+//     parse.log += parse.tab + FILL_VALUE + ' ' + displayValue(FILL_VALUE, fill);
+}
+
+
+
+function logReqStrokeValue(stroke, parse, ignore)
+{
+    // parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
+}
+
+
+
+function logReqColorStopValue(stop, parse, ignore)
+{
+    // parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + displayValue(COLOR_STOP_VALUE, stop);
+}
+
+
+
+function logSavedNode(nodeKey)
+{
+    let log = formatSavedNodeJson(figGetPageData(nodeKey, false));
+
+    console.log(
+        '%c%s\n%c%s', 
+        'background: #fdb', 
+         noNodeTag(nodeKey), 
+        'background: #fed;',    
+         log);
+}
+
+
+
+function formatSavedNodeJson(json)
+{
+    let formJson = json
+        .replace('{\n', '')
+        .replace('\n}', '')
+
+        .replace('[\n' + TAB, '')
+        .replace('\n' + TAB + ']', '')
+
+        .split(TAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
+
+        .split('": "').join(': ')
+        .split('", "').join(': ')
+
+        .split(TAB + '"').join(TAB)
+        .split(TAB + TAB + '["').join(TAB + TAB)
+        
+        .split('",\n').join('\n')
+        .split('"\n').join('\n')
+        
+        .split('"],\n').join('\n');
+
+
+    if (formJson[formJson.length-1] == '"')
+        formJson = formJson.substring(0, formJson.length - 1);
+
+    if (formJson.substring(formJson.length-2) == '"]')    
+        formJson = formJson.substring(0, formJson.length - 2);
+
+    return formJson;
+}
+
+
+
+function formatSavedDataJson(json)
+{
+    let formJson = json
+        .replace('{\n', '')
+        .replace('\n}', '')
+        .replace('[\n' + TAB, '')
+        .replace('\n' + TAB + ']', '');
+
+    return formJson;
+}
+
+
+
+function logSavedConn(conn)
+{
+    const strConn = connToString(conn, true);
+
+    console.log(
+        '%c%s', 
+        'background: #cfc', 
+        strConn); 
 }
 
 
@@ -19758,6 +19904,16 @@ function crossv2(v1, v2)
 
 
 
+function angle(v)
+{
+    let angle = Math.atan2(v.y, v.x);
+    if (angle < 0) angle += Tau;
+
+    return angle;
+}
+
+
+
 function anglev(v1, v2)
 {
     return anglev_(v1.x, v1.y, v2.x, v2.y);
@@ -20168,6 +20324,20 @@ function lerp(a, b, t)
 
 
 
+function lerp3(f0, f1, f2, f3, t)
+{
+    const c0  = lerp(f0, f1, t);
+    const c1  = lerp(f1, f2, t);
+    const c2  = lerp(f2, f3, t);
+
+    const c01 = lerp(c0, c1, t);
+    const c12 = lerp(c1, c2, t);
+
+    return lerp(c01, c12, t);
+}
+
+
+
 function normalAngle(angle)
 {
     while (angle <  0  ) angle += Tau;
@@ -20196,6 +20366,36 @@ const point_NaN = point(Number.NaN, Number.NaN);
 function point(x, y) { return {x: x, y: y}; }
 
 function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
+
+
+
+function unit(v)
+{
+    return v.X != 0 
+        || v.Y != 0
+        ? mulvs(v, 1 / lengthv(v))
+        : point(0, 0);
+}
+
+
+
+function lerpv(p0, p1, t)
+{
+    //console.log('p0 =', p0);
+    //console.log('p1 =', p1);
+    return point(
+        lerp(p0.x, p1.x, t),
+        lerp(p0.y, p1.y, t));
+}
+
+
+
+function lerpv3(p0, p1, p2, p3, t)
+{
+    return point(
+        lerp3(p0.x, p1.x, p2.x, p3.x, t),
+        lerp3(p0.y, p1.y, p2.y, p3.y, t));
+}
 
 
 
@@ -20234,9 +20434,9 @@ function clipLine(x1, y1, x2, y2, left, top, right, bottom)
     const dy = y2 - y1;
 
     const cl = clipEdge(-dx, -(left - x1), t0, t1); if (cl != null) { t0 = cl[0]; t1 = cl[1]; } else return null;
-    const cr = clipEdge( dx, right - x1,   t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
-    const ct = clipEdge(-dy, -(top - y1),  t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
-    const cb = clipEdge( dy, bottom - y1,  t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
+    const cr = clipEdge( dx,  right - x1,  t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
+    const ct = clipEdge(-dy,  -(top - y1), t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
+    const cb = clipEdge( dy,  bottom - y1, t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
 
     if (t1 < 1)
     {
@@ -20405,6 +20605,138 @@ function boundingRect(elem)
         bounds.y,
         bounds.width,
         bounds.height);
+}
+
+
+function bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t)
+{
+    const p0 = point(x0, y0);
+    const p1 = point(x1, y1);
+    const p2 = point(x2, y2);
+    const p3 = point(x3, y3);
+
+    return unit(addv(addv(
+        mulvs(subv(p1, p0), 3*sqr(1-t)),
+        mulvs(subv(p2, p1), 6*(1-t)*t)),
+        mulvs(subv(p3, p2), 3*sqr(t))));
+}
+
+
+
+function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
+{
+    const hullLength = 
+          distance(p0, p1) 
+        + distance(p1, p2)
+        + distance(p2, p3);
+
+    if (hullLength == 0)
+        return Number.NAN;
+
+
+    let t = arcLen / hullLength;
+
+    if (t < 0 || t > 1)
+        return Number.NAN;
+
+        
+    let halves = splitSeg(p0, p1, p2, p3, t);
+    let l      = halves[0];
+
+    let length = arcLength(l[0], l[1], l[2], l[3], error);
+
+    while (Math.abs(arcLen - length) > error)
+    {
+        t += (arcLen - length) / hullLength;
+
+        halves = splitSeg(p0, p1, p2, p3, t);
+        l      = halves[0];
+
+        length = arcLength(l[0], l[1], l[2], l[3], error);
+    }
+
+    return t;
+}
+
+
+
+function splitSeg(p0, p1, p2, p3, t)
+{
+    const c0   = lerpv(p0, p1, t);
+    const c1   = lerpv(p1, p2, t);
+    const c2   = lerpv(p2, p3, t);
+                
+    const c01  = lerpv(c0, c1, t);
+    const c12  = lerpv(c1, c2, t);
+
+    const c012 = lerpv(c01, c12, t);
+
+    return [
+        [p0, c0, c01, c012],
+        [c012, c12, c2, p3]];
+}
+
+
+
+// function splitSegments(_p0, _p1, _p2, _p3, ts)
+// {
+//     const segments = [];
+
+
+//     let p0 = _p0, 
+//         p1 = _p1,
+//         p2 = _p2,
+//         p3 = _p3;
+
+//     for (let i = 0; i < ts.length; i++)
+//     {
+//         const parts = split(p0, p1, p2, p3, ts[i]);
+//         const l     = parts[0];
+//         const r     = parts[1];
+
+
+//         segments.push(l);
+
+
+//         if (i < ts.length-1)
+//         {
+//             p0 = r[0];
+//             p1 = r[1];
+//             p2 = r[2];
+//             p3 = r[3];
+
+//             for (let j = i+1; j < ts.length; j++)
+//                 ts[j] = 1 - (1 - ts[j]) / (1 - ts[i]);
+//         }
+//         else segments.push(r);
+//     }
+
+
+//     return segments;
+// }
+
+
+
+function arcLength(p0, p1, p2, p3, error = 0.0000001)
+{
+    const arcLen = 
+          distance(p0, p1)
+        + distance(p1, p2)
+        + distance(p2, p3);
+
+    const chord = distance(p0, p3);
+
+    if ((arcLen - chord) > error)
+    {
+        const halves = splitSeg(p0, p1, p2, p3, 0.5);
+        const l      = halves[0];
+        const r      = halves[1];
+            
+        return arcLength(l[0], l[1], l[2], l[3], error)
+             + arcLength(r[0], r[1], r[2], r[3], error);
+    }
+
+    return arcLen;
 }
 
 
@@ -21794,77 +22126,6 @@ function logUpdateSavedConnections(conns)
 }
 
 
-function logSavedNode(nodeKey)
-{
-    let log = formatSavedNodeJson(figGetPageData(nodeKey, false));
-
-    console.log(
-        '%c%s\n%c%s', 
-        'background: #fdb', 
-         noNodeTag(nodeKey), 
-        'background: #fed;',    
-         log);
-}
-
-
-
-function formatSavedNodeJson(json)
-{
-    let formJson = json
-        .replace('{\n', '')
-        .replace('\n}', '')
-
-        .replace('[\n' + TAB, '')
-        .replace('\n' + TAB + ']', '')
-
-        .split(TAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
-
-        .split('": "').join(': ')
-        .split('", "').join(': ')
-
-        .split(TAB + '"').join(TAB)
-        .split(TAB + TAB + '["').join(TAB + TAB)
-        
-        .split('",\n').join('\n')
-        .split('"\n').join('\n')
-        
-        .split('"],\n').join('\n');
-
-
-    if (formJson[formJson.length-1] == '"')
-        formJson = formJson.substring(0, formJson.length - 1);
-
-    if (formJson.substring(formJson.length-2) == '"]')    
-        formJson = formJson.substring(0, formJson.length - 2);
-
-    return formJson;
-}
-
-
-
-function formatSavedDataJson(json)
-{
-    let formJson = json
-        .replace('{\n', '')
-        .replace('\n}', '')
-        .replace('[\n' + TAB, '')
-        .replace('\n' + TAB + ']', '');
-
-    return formJson;
-}
-
-
-
-function logSavedConn(conn)
-{
-    const strConn = connToString(conn, true);
-
-    console.log(
-        '%c%s', 
-        'background: #cfc', 
-        strConn); 
-}
-
 
 function logRequest(parse)
 {
@@ -21987,38 +22248,95 @@ function logReqNumberValue(val, parse, ignore)
 
 function logReqFillValue(fill, parse, ignore)
 {
-    parse.log += parse.tab + FILL_VALUE + ' ' + displayValue(FILL_VALUE, fill);
+//     parse.log += parse.tab + FILL_VALUE + ' ' + displayValue(FILL_VALUE, fill);
 }
 
 
 
 function logReqStrokeValue(stroke, parse, ignore)
 {
-    parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
+    // parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
 }
 
 
 
 function logReqColorStopValue(stop, parse, ignore)
 {
-    parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + displayValue(COLOR_STOP_VALUE, stop);
+    // parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + displayValue(COLOR_STOP_VALUE, stop);
 }
 
 
 
+function logSavedNode(nodeKey)
+{
+    let log = formatSavedNodeJson(figGetPageData(nodeKey, false));
+
+    console.log(
+        '%c%s\n%c%s', 
+        'background: #fdb', 
+         noNodeTag(nodeKey), 
+        'background: #fed;',    
+         log);
+}
 
 
 
+function formatSavedNodeJson(json)
+{
+    let formJson = json
+        .replace('{\n', '')
+        .replace('\n}', '')
+
+        .replace('[\n' + TAB, '')
+        .replace('\n' + TAB + ']', '')
+
+        .split(TAB + '"params":\n').join('') // have to do .split().join() because there's no .replace() in TS
+
+        .split('": "').join(': ')
+        .split('", "').join(': ')
+
+        .split(TAB + '"').join(TAB)
+        .split(TAB + TAB + '["').join(TAB + TAB)
+        
+        .split('",\n').join('\n')
+        .split('"\n').join('\n')
+        
+        .split('"],\n').join('\n');
+
+
+    if (formJson[formJson.length-1] == '"')
+        formJson = formJson.substring(0, formJson.length - 1);
+
+    if (formJson.substring(formJson.length-2) == '"]')    
+        formJson = formJson.substring(0, formJson.length - 2);
+
+    return formJson;
+}
 
 
 
+function formatSavedDataJson(json)
+{
+    let formJson = json
+        .replace('{\n', '')
+        .replace('\n}', '')
+        .replace('[\n' + TAB, '')
+        .replace('\n' + TAB + ']', '');
+
+    return formJson;
+}
 
 
 
+function logSavedConn(conn)
+{
+    const strConn = connToString(conn, true);
 
-
-
-
+    console.log(
+        '%c%s', 
+        'background: #cfc', 
+        strConn); 
+}
 
 
 // Observer = 2°
@@ -24421,32 +24739,6 @@ class GNode
 
 
 
-function displayValue(type, value)
-{
-    if (   type == NUMBER_VALUE
-        && value.indexOf(',') < 0)
-        return value;
-
-
-    switch (type)
-    {
-        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
-        case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
-        case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
-        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
-        case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
-        case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
-        case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
-        case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
-        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
-        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
-    }
-
-
-    console.assert(false, 'cannot display value of type \'' + type + '\'');
-}
-
-
 class GValue
 extends GNode
 {
@@ -24489,16 +24781,16 @@ function displayValue(type, value)
 
     switch (type)
     {
-        case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
+        //case      LIST_VALUE: return parseListValue     (value)[0].toDisplayString();
         case    NUMBER_VALUE: return parseNumberValue   (value)[0].toDisplayString();
         case     COLOR_VALUE: return parseColorValue    (value)[0].toDisplayString();
-        case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
-        case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
-        case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
-        case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
-        case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
-        case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
-        case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
+        // case RECTANGLE_VALUE: return parseRectangleValue(value)[0].toDisplayString();
+        // case      LINE_VALUE: return parseLineValue     (value)[0].toDisplayString();
+        // case   ELLIPSE_VALUE: return parseEllipseValue  (value)[0].toDisplayString();
+        // case   POLYGON_VALUE: return parsePolygonValue  (value)[0].toDisplayString();
+        // case      STAR_VALUE: return parseStarValue     (value)[0].toDisplayString();
+        //case      FILL_VALUE: return parseFillValue     (value)[0].toDisplayString();
+        //case    STROKE_VALUE: return parseStrokeValue   (value)[0].toDisplayString();
     }
 
 
@@ -31554,7 +31846,7 @@ function updateMenuItemShowBoolValues()
 {
     graph.nodes
         .filter(n => 
-               BOOLEAN_TYPES  .includes(n.type)
+                 BOOLEAN_TYPES.includes(n.type)
             || CONDITION_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
 }
@@ -32753,7 +33045,7 @@ function initGeneratorMenus()
     menuMainPreferences.addItems([
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',       {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                        }}),
         menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',        {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);   updateMenuItemShowAllColorSpaces();   }}),
-        menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓/✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);       updateMenuItemShowBoolValues();       }}),
+        menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);       updateMenuItemShowBoolValues();       }}),
         menuItemShowOperationResults  = new MenuItem('Show operation results',       {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults); updateMenuItemShowOperationResults(); }}),
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',      {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                       }}),
                                         new MenuItem('',                             {separator: true}),    
@@ -37285,7 +37577,7 @@ graphView.updateWheelTimer = function()
 
         setAutoCursor();
     }, 
-    500);
+    450);
 };
 
 
@@ -38180,6 +38472,10 @@ graphView.removeWire = function(wire)
 
 function updateWire(wire, x = 0, y = 0)
 {
+    wire.clientX = x;
+    wire.clientY = y;
+
+
     const yOffset = menuBarHeight;
 
     let pOut = point(0, 0),
@@ -38260,21 +38556,6 @@ function updateWires(wires)
             + ' ' + cw
             + ' ' + ch);
     }
-
-
-    // for (let i = 0; i < wires.length; i++)
-    // {
-    //     const conn = wires[i].connection;
-    //     const solo = conn != graphView.savedConn;
-
-    //     show(wires[i],       solo);
-    //     show(wires[i].curve, solo);
-    //     show(wires[i].xp1,   solo);
-    //     show(wires[i].xp2,   solo);
-
-    //     if (wires[i].outBall) show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
-    //     if (wires[i]. inBall) show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
-    // }
 }
 
 
@@ -38347,6 +38628,9 @@ function updateWireCurve(wire, x1, y1, x2, y2)
     wire.xp2   .setAttribute('d', points);
     wire.curve .setAttribute('d', points);
     wire.curve2.setAttribute('d', points);
+
+
+    updateWireArrow(wire, _x0, _y0, _x1, _y1, _x2, _y2, _x3, _y3);
 }
 
 
@@ -38363,6 +38647,66 @@ function updateWireInBall(wire, x, y)
 {
     wire.inBall.setAttribute('cx', x);
     wire.inBall.setAttribute('cy', y);
+}
+
+
+
+function updateWireArrow(wire, x0, y0, x1, y1, x2, y2, x3, y3)
+{
+    if (!pointIsNaN(wire.outputPos))
+    {
+        x0 = wire.outputPos.x;
+        y0 = wire.outputPos.y;
+    }
+
+    if (!pointIsNaN(wire.inputPos))
+    {
+        x3 = wire.inputPos.x;
+        y3 = wire.inputPos.y;
+    }
+
+
+    const p0 = point(x0, y0);
+    const p1 = point(x1, y1);
+    const p2 = point(x2, y2);
+    const p3 = point(x3, y3); 
+
+
+    const arrowDistance = 30;
+    const arrowSize     = 9;
+
+    const al = arcLength(p0, p1, p2, p3) - arrowDistance * graphView.zoom;
+    const t  = Math.max(0.5, positionOnSegment(p0, p1, p2, p3, al));
+
+    if (isNaN(t))
+    {
+        wire.arrow.setAttribute('display', 'none');
+        return;
+    }
+
+
+    const pt = lerpv3(p0, p1, p2, p3, t);
+
+    const tx = pt.x;;
+    const ty = pt.y;;
+
+    const tw = arrowSize * graphView.zoom;
+    const th = arrowSize * graphView.zoom;
+
+    const points =
+                 (tx - tw/2) + ',' + (ty + th/2)
+        + ' '  + (tx + tw/2) + ',' + (ty + th/2)
+        + ' '  + (tx       ) + ',' + (ty - th/2);
+
+    wire.arrow.setAttribute('points', points);
+    wire.arrow.setAttribute('display', wire.connection.backInit ? 'inline' : 'none');
+
+
+    const ct = bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t);
+
+    wire.arrow.style.transformBox    = 'fill-box';
+    wire.arrow.style.transformOrigin = 'center';
+    wire.arrow.style.transform       = 'rotate(' + (angle(ct) - Tau/4) + 'rad)';
 }
 
 
@@ -38438,13 +38782,14 @@ function updateWireStyle(wire)
             || conn.input.param.affectsHeader);
 
 
-    wire.curve .style.stroke = wireStyle;
-    wire.curve2.style.stroke = rgb2style(rgbDocumentBody);//wireStyle;
+    wire.curve .style.stroke         = wireStyle;
+    wire.curve2.style.stroke         = rgb2style(rgbDocumentBody);
 
     wire.curve.style.strokeDasharray = unknown ? 1.7 * graphView.zoom : 0;
 
-    wire. inBall.style.fill = wireStyle;
-    wire.outBall.style.fill = wireStyle;
+    wire. inBall.style.fill          = wireStyle;
+    wire.outBall.style.fill          = wireStyle;
+    wire.arrow  .style.fill          = wireStyle;
 
 
     if (conn.output) conn.output.wireBall.style.background = wireStyle;
@@ -38474,9 +38819,9 @@ function updateWireStyle(wire)
     wire.style.zIndex    = 1;
 
 
-    const isReordering =   
-           isNaN(newReorderIndex)
-        || isNaN(oldReorderIndex);
+    // const isReordering =   
+    //        isNaN(newReorderIndex)
+    //     || isNaN(oldReorderIndex);
 
 
     // show(wire,         (this != graphView.savedConn || isReordering));
@@ -41251,14 +41596,18 @@ extends EventTarget
 
     getValuesForUndo; // function pointer, return array of [index,value] tuples
 
+    getBackInitValue   = null;
 
 
-    constructor(types, getValuesForUndo = null)
+
+    constructor(types, getValuesForUndo = null, getBackInitValue = null)
     {
         super();
         
         this.types            = [...types];
         this.getValuesForUndo = getValuesForUndo;
+        this.getBackInitValue    = getBackInitValue;
+
 
         this.div              = createDiv('input');
         this.hitbox           = createDiv('inputHitbox');
@@ -41497,23 +41846,28 @@ class Output
 
     mouseOver  = false;
     connecting = false;
-
+ 
     overFactor = 1.7;
-
-
+ 
+ 
     genRequest = null; // function pointer, must be implemented
     cache      = [];
+
+
+    backInit   = null;
 
 
     get connected() { return !isEmpty(this.connectedInputs); }
 
 
 
-    constructor(types, genRequest)
+    constructor(types, genRequest, backInit = null)
     {
         this.types      = [...types];
         this.genRequest = genRequest;
+        this.backInit   = backInit;
 
+        
         this.div        = createDiv('output');
         this.hitbox     = createDiv('outputHitbox');
         this.wireBall   = createDiv('outputBall');
@@ -41529,6 +41883,7 @@ class Output
 
         this.div.appendChild(this.hitbox);
         this.div.appendChild(this.wireBall);
+
 
 
         //        this.updateControl();
@@ -41725,6 +42080,8 @@ class Connection
 
     wire;
 
+    backInit = false; // if true, on connection the value is possibly copied from the input to the output
+
 
 
     constructor(output, input)
@@ -41748,11 +42105,15 @@ class Connection
         this.wire.inBall                 = createSvg('circle');
         this.wire.inBall.style.position  = 'absolute';
 
+        this.wire.arrow                  = createSvg('polygon');
+        this.wire.arrow.style.position   = 'absolute';
+
 
         this.wire.appendChild(this.wire.curve  );
         this.wire.appendChild(this.wire.curve2 );
         this.wire.appendChild(this.wire.xp1    );
         this.wire.appendChild(this.wire.xp2    );
+        this.wire.appendChild(this.wire.arrow  );
         this.wire.appendChild(this.wire.outBall);
         this.wire.appendChild(this.wire.inBall );
 
@@ -41791,7 +42152,7 @@ class Connection
                 else
                 {
                     if (!isEmpty(this.input.types)) types.push(...this.input.types);
-                    else                             types.push(this.input.node.type);
+                    else                            types.push(this.input.node.type);
                 }
             }
 
@@ -41951,29 +42312,6 @@ function legacyParseConnectionJsonAndConnect(_conn, pasteConnected)
         return conn;
     }
 }
-
-
-
-// function connEqual(c1, c2)
-// {
-//     return c1.outputNodeId == c2.outputNodeId
-//         && c1.outputId     == c2.outputId
-//         //&& c1.outputOrder  == c2.outputOrder // irrelevant to equality
-//         && c1.inputNodeId  == c2.inputNodeId
-//         && c1.inputId      == c2.inputId;
-// }
-
-
-
-// function _connEquals(_c, c)
-// {
-
-//     return _c.output.node.id == c.outputNodeId
-//         && _c.output.id      == c.outputId
-//         //&& _c.outputOrder  == c.outputOrder // irrelevant to equality
-//         && _c.input.node.id  == c.inputNodeId
-//         && _c.input.id       == c.inputId;
-// }
 
 
 
@@ -45343,12 +45681,30 @@ extends OperatorBase
     {
         super(NUMBER, 'num');
 
-        this.addInput (new Input (NUMBER_TYPES, this.input_getValuesForUndo));
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        this.addInput (new Input (NUMBER_TYPES, this.input_getValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, this.output_backInit));
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
 
         this.alwaysLoadParams = true;
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.node.paramValue.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        actionManager.do(new SetParamValueAction(this.node.paramValue, value), false, true);
     }
 
 
@@ -51203,6 +51559,10 @@ function connectAction_saveInputActiveNodesAndValues(act)
 {
     act.inputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo() : [];
     act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
+
+    if (   act.output.backInit
+        && act. input.getBackInitValue)
+        act.output.backInit(act.input.getBackInitValue());
 }
 
 
@@ -54073,6 +54433,18 @@ document.addEventListener('keydown', e =>
             if (e.altKey) setCursor(zoomOutCursor);
             else          setCursor(zoomInCursor);
         }
+
+        else if (graphView.tempConn)
+        {
+            graphView.tempConn.backInit = true;
+
+            const tc = graphView.tempConn;
+
+            updateWire(
+                tc.wire, 
+                tc.wire.clientX,
+                tc.wire.clientY);
+        }
     }
 
     else if (    e.key == 'Alt'
@@ -54143,6 +54515,25 @@ document.addEventListener('keyup', e =>
     {
         graphView.zoomSelecting = false;
         setCursor(panCursor);
+    }
+    else if (e.key == 'Control')
+    {
+        if (graphView.spaceDown)
+        {
+            graphView.zoomSelecting = false;
+            setCursor(panCursor);
+        }
+        else if (graphView.tempConn)
+        {
+            graphView.tempConn.backInit = false;
+
+            const tc = graphView.tempConn;
+
+            updateWire(
+                tc.wire, 
+                tc.wire.clientX,
+                tc.wire.clientY);
+        }
     }
 },
 false);

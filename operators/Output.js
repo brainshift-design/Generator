@@ -37,23 +37,28 @@ class Output
 
     mouseOver  = false;
     connecting = false;
-
+ 
     overFactor = 1.7;
-
-
+ 
+ 
     genRequest = null; // function pointer, must be implemented
     cache      = [];
+
+
+    backInit   = null;
 
 
     get connected() { return !isEmpty(this.connectedInputs); }
 
 
 
-    constructor(types, genRequest)
+    constructor(types, genRequest, backInit = null)
     {
         this.types      = [...types];
         this.genRequest = genRequest;
+        this.backInit   = backInit;
 
+        
         this.div        = createDiv('output');
         this.hitbox     = createDiv('outputHitbox');
         this.wireBall   = createDiv('outputBall');
@@ -69,6 +74,7 @@ class Output
 
         this.div.appendChild(this.hitbox);
         this.div.appendChild(this.wireBall);
+
 
 
         //        this.updateControl();

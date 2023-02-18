@@ -9,12 +9,30 @@ extends OperatorBase
     {
         super(NUMBER, 'num');
 
-        this.addInput (new Input (NUMBER_TYPES, this.input_getValuesForUndo));
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
+        this.addInput (new Input (NUMBER_TYPES, this.input_getValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, this.output_backInit));
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
 
         this.alwaysLoadParams = true;
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.node.paramValue.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        actionManager.do(new SetParamValueAction(this.node.paramValue, value), false, true);
     }
 
 

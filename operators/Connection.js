@@ -11,6 +11,8 @@ class Connection
 
     wire;
 
+    backInit = false; // if true, on connection the value is possibly copied from the input to the output
+
 
 
     constructor(output, input)
@@ -34,11 +36,15 @@ class Connection
         this.wire.inBall                 = createSvg('circle');
         this.wire.inBall.style.position  = 'absolute';
 
+        this.wire.arrow                  = createSvg('polygon');
+        this.wire.arrow.style.position   = 'absolute';
+
 
         this.wire.appendChild(this.wire.curve  );
         this.wire.appendChild(this.wire.curve2 );
         this.wire.appendChild(this.wire.xp1    );
         this.wire.appendChild(this.wire.xp2    );
+        this.wire.appendChild(this.wire.arrow  );
         this.wire.appendChild(this.wire.outBall);
         this.wire.appendChild(this.wire.inBall );
 
@@ -77,7 +83,7 @@ class Connection
                 else
                 {
                     if (!isEmpty(this.input.types)) types.push(...this.input.types);
-                    else                             types.push(this.input.node.type);
+                    else                            types.push(this.input.node.type);
                 }
             }
 
@@ -237,29 +243,6 @@ function legacyParseConnectionJsonAndConnect(_conn, pasteConnected)
         return conn;
     }
 }
-
-
-
-// function connEqual(c1, c2)
-// {
-//     return c1.outputNodeId == c2.outputNodeId
-//         && c1.outputId     == c2.outputId
-//         //&& c1.outputOrder  == c2.outputOrder // irrelevant to equality
-//         && c1.inputNodeId  == c2.inputNodeId
-//         && c1.inputId      == c2.inputId;
-// }
-
-
-
-// function _connEquals(_c, c)
-// {
-
-//     return _c.output.node.id == c.outputNodeId
-//         && _c.output.id      == c.outputId
-//         //&& _c.outputOrder  == c.outputOrder // irrelevant to equality
-//         && _c.input.node.id  == c.inputNodeId
-//         && _c.input.id       == c.inputId;
-// }
 
 
 

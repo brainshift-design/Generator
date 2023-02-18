@@ -4,7 +4,7 @@
 ../core/base32.js
 
 ../logging/log nodes.js
-../logging/log request.js
+//../logging/log request.js
 
 ../figma/license/big math.ts0
 ../figma/license/crypto.ts0

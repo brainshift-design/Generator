@@ -277,7 +277,7 @@ graphView.updateWheelTimer = function()
 
         setAutoCursor();
     }, 
-    500);
+    450);
 };
 
 

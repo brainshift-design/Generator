@@ -119,19 +119,19 @@ function logReqNumberValue(val, parse, ignore)
 
 function logReqFillValue(fill, parse, ignore)
 {
-    parse.log += parse.tab + FILL_VALUE + ' ' + displayValue(FILL_VALUE, fill);
+//     parse.log += parse.tab + FILL_VALUE + ' ' + displayValue(FILL_VALUE, fill);
 }
 
 
 
 function logReqStrokeValue(stroke, parse, ignore)
 {
-    parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
+    // parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
 }
 
 
 
 function logReqColorStopValue(stop, parse, ignore)
 {
-    parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + displayValue(COLOR_STOP_VALUE, stop);
+    // parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + displayValue(COLOR_STOP_VALUE, stop);
 }

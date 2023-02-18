@@ -161,6 +161,16 @@ function crossv2(v1, v2)
 
 
 
+function angle(v)
+{
+    let angle = Math.atan2(v.y, v.x);
+    if (angle < 0) angle += Tau;
+
+    return angle;
+}
+
+
+
 function anglev(v1, v2)
 {
     return anglev_(v1.x, v1.y, v2.x, v2.y);
@@ -567,6 +577,20 @@ function uintToBufferAt(val, buffer, start, bufferSize)
 function lerp(a, b, t)
 {
     return a + (b - a) * t;
+}
+
+
+
+function lerp3(f0, f1, f2, f3, t)
+{
+    const c0  = lerp(f0, f1, t);
+    const c1  = lerp(f1, f2, t);
+    const c2  = lerp(f2, f3, t);
+
+    const c01 = lerp(c0, c1, t);
+    const c12 = lerp(c1, c2, t);
+
+    return lerp(c01, c12, t);
 }
 
 

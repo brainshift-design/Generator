@@ -8,6 +8,36 @@ function pointIsNaN(p) { return isNaN(p.x) || isNaN(p.y); }
 
 
 
+function unit(v)
+{
+    return v.X != 0 
+        || v.Y != 0
+        ? mulvs(v, 1 / lengthv(v))
+        : point(0, 0);
+}
+
+
+
+function lerpv(p0, p1, t)
+{
+    //console.log('p0 =', p0);
+    //console.log('p1 =', p1);
+    return point(
+        lerp(p0.x, p1.x, t),
+        lerp(p0.y, p1.y, t));
+}
+
+
+
+function lerpv3(p0, p1, p2, p3, t)
+{
+    return point(
+        lerp3(p0.x, p1.x, p2.x, p3.x, t),
+        lerp3(p0.y, p1.y, p2.y, p3.y, t));
+}
+
+
+
 function clipEdge(p, q, t0, t1)
 {
     if (p == 0 && q < 0)
@@ -43,9 +73,9 @@ function clipLine(x1, y1, x2, y2, left, top, right, bottom)
     const dy = y2 - y1;
 
     const cl = clipEdge(-dx, -(left - x1), t0, t1); if (cl != null) { t0 = cl[0]; t1 = cl[1]; } else return null;
-    const cr = clipEdge( dx, right - x1,   t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
-    const ct = clipEdge(-dy, -(top - y1),  t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
-    const cb = clipEdge( dy, bottom - y1,  t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
+    const cr = clipEdge( dx,  right - x1,  t0, t1); if (cr != null) { t0 = cr[0]; t1 = cr[1]; } else return null;
+    const ct = clipEdge(-dy,  -(top - y1), t0, t1); if (ct != null) { t0 = ct[0]; t1 = ct[1]; } else return null;
+    const cb = clipEdge( dy,  bottom - y1, t0, t1); if (cb != null) { t0 = cb[0]; t1 = cb[1]; } else return null;
 
     if (t1 < 1)
     {

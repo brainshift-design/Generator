@@ -157,6 +157,18 @@ document.addEventListener('keydown', e =>
             if (e.altKey) setCursor(zoomOutCursor);
             else          setCursor(zoomInCursor);
         }
+
+        else if (graphView.tempConn)
+        {
+            graphView.tempConn.backInit = true;
+
+            const tc = graphView.tempConn;
+
+            updateWire(
+                tc.wire, 
+                tc.wire.clientX,
+                tc.wire.clientY);
+        }
     }
 
     else if (    e.key == 'Alt'
@@ -227,6 +239,25 @@ document.addEventListener('keyup', e =>
     {
         graphView.zoomSelecting = false;
         setCursor(panCursor);
+    }
+    else if (e.key == 'Control')
+    {
+        if (graphView.spaceDown)
+        {
+            graphView.zoomSelecting = false;
+            setCursor(panCursor);
+        }
+        else if (graphView.tempConn)
+        {
+            graphView.tempConn.backInit = false;
+
+            const tc = graphView.tempConn;
+
+            updateWire(
+                tc.wire, 
+                tc.wire.clientX,
+                tc.wire.clientY);
+        }
     }
 },
 false);

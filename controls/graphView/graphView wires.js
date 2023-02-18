@@ -36,6 +36,10 @@ graphView.removeWire = function(wire)
 
 function updateWire(wire, x = 0, y = 0)
 {
+    wire.clientX = x;
+    wire.clientY = y;
+
+
     const yOffset = menuBarHeight;
 
     let pOut = point(0, 0),
@@ -116,21 +120,6 @@ function updateWires(wires)
             + ' ' + cw
             + ' ' + ch);
     }
-
-
-    // for (let i = 0; i < wires.length; i++)
-    // {
-    //     const conn = wires[i].connection;
-    //     const solo = conn != graphView.savedConn;
-
-    //     show(wires[i],       solo);
-    //     show(wires[i].curve, solo);
-    //     show(wires[i].xp1,   solo);
-    //     show(wires[i].xp2,   solo);
-
-    //     if (wires[i].outBall) show(wires[i].outBall, !graphView.tempConn || graphView.tempConn.output);
-    //     if (wires[i]. inBall) show(wires[i]. inBall, !graphView.tempConn || graphView.tempConn. input);
-    // }
 }
 
 
@@ -203,6 +192,9 @@ function updateWireCurve(wire, x1, y1, x2, y2)
     wire.xp2   .setAttribute('d', points);
     wire.curve .setAttribute('d', points);
     wire.curve2.setAttribute('d', points);
+
+
+    updateWireArrow(wire, _x0, _y0, _x1, _y1, _x2, _y2, _x3, _y3);
 }
 
 
@@ -219,6 +211,66 @@ function updateWireInBall(wire, x, y)
 {
     wire.inBall.setAttribute('cx', x);
     wire.inBall.setAttribute('cy', y);
+}
+
+
+
+function updateWireArrow(wire, x0, y0, x1, y1, x2, y2, x3, y3)
+{
+    if (!pointIsNaN(wire.outputPos))
+    {
+        x0 = wire.outputPos.x;
+        y0 = wire.outputPos.y;
+    }
+
+    if (!pointIsNaN(wire.inputPos))
+    {
+        x3 = wire.inputPos.x;
+        y3 = wire.inputPos.y;
+    }
+
+
+    const p0 = point(x0, y0);
+    const p1 = point(x1, y1);
+    const p2 = point(x2, y2);
+    const p3 = point(x3, y3); 
+
+
+    const arrowDistance = 30;
+    const arrowSize     = 9;
+
+    const al = arcLength(p0, p1, p2, p3) - arrowDistance * graphView.zoom;
+    const t  = Math.max(0.5, positionOnSegment(p0, p1, p2, p3, al));
+
+    if (isNaN(t))
+    {
+        wire.arrow.setAttribute('display', 'none');
+        return;
+    }
+
+
+    const pt = lerpv3(p0, p1, p2, p3, t);
+
+    const tx = pt.x;;
+    const ty = pt.y;;
+
+    const tw = arrowSize * graphView.zoom;
+    const th = arrowSize * graphView.zoom;
+
+    const points =
+                 (tx - tw/2) + ',' + (ty + th/2)
+        + ' '  + (tx + tw/2) + ',' + (ty + th/2)
+        + ' '  + (tx       ) + ',' + (ty - th/2);
+
+    wire.arrow.setAttribute('points', points);
+    wire.arrow.setAttribute('display', wire.connection.backInit ? 'inline' : 'none');
+
+
+    const ct = bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t);
+
+    wire.arrow.style.transformBox    = 'fill-box';
+    wire.arrow.style.transformOrigin = 'center';
+    wire.arrow.style.transform       = 'rotate(' + (angle(ct) - Tau/4) + 'rad)';
 }
 
 
@@ -294,13 +346,14 @@ function updateWireStyle(wire)
             || conn.input.param.affectsHeader);
 
 
-    wire.curve .style.stroke = wireStyle;
-    wire.curve2.style.stroke = rgb2style(rgbDocumentBody);//wireStyle;
+    wire.curve .style.stroke         = wireStyle;
+    wire.curve2.style.stroke         = rgb2style(rgbDocumentBody);
 
     wire.curve.style.strokeDasharray = unknown ? 1.7 * graphView.zoom : 0;
 
-    wire. inBall.style.fill = wireStyle;
-    wire.outBall.style.fill = wireStyle;
+    wire. inBall.style.fill          = wireStyle;
+    wire.outBall.style.fill          = wireStyle;
+    wire.arrow  .style.fill          = wireStyle;
 
 
     if (conn.output) conn.output.wireBall.style.background = wireStyle;
@@ -330,9 +383,9 @@ function updateWireStyle(wire)
     wire.style.zIndex    = 1;
 
 
-    const isReordering =   
-           isNaN(newReorderIndex)
-        || isNaN(oldReorderIndex);
+    // const isReordering =   
+    //        isNaN(newReorderIndex)
+    //     || isNaN(oldReorderIndex);
 
 
     // show(wire,         (this != graphView.savedConn || isReordering));

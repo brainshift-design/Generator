@@ -98,6 +98,10 @@ function connectAction_saveInputActiveNodesAndValues(act)
 {
     act.inputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo() : [];
     act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
+
+    if (   act.output.backInit
+        && act. input.getBackInitValue)
+        act.output.backInit(act.input.getBackInitValue());
 }
 
 
