@@ -36859,7 +36859,8 @@ graphView.soloNode = function(node)
 
     graph.nodes.forEach(n => 
         n.div.style.opacity = 
-            graphView._soloNode == n 
+               n == graphView._soloNode
+            || n.isConnectedTo(graphView._soloNode)
             ? 1 
             : 0.12);
 
@@ -42497,6 +42498,14 @@ class Operator
     isConnectedUncached()
     {
         return this.inputs.find(i => i.isConnectedUncached());
+    }
+
+
+
+    isConnectedTo(node)
+    {
+        return this. inputs.find(i => i.connected && i.connectedOutput.node == node)
+            || this.outputs.find(o => o.connected && o.connectedInputs.find(i => i.node == node));
     }
 
 

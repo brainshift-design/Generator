@@ -509,6 +509,14 @@ class Operator
 
 
 
+    isConnectedTo(node)
+    {
+        return this. inputs.find(i => i.connected && i.connectedOutput.node == node)
+            || this.outputs.find(o => o.connected && o.connectedInputs.find(i => i.node == node));
+    }
+
+
+
     follows(node) 
     { 
         return this.isOrFollows(node, false); 

@@ -323,7 +323,8 @@ graphView.soloNode = function(node)
 
     graph.nodes.forEach(n => 
         n.div.style.opacity = 
-            graphView._soloNode == n 
+               n == graphView._soloNode
+            || n.isConnectedTo(graphView._soloNode)
             ? 1 
             : 0.12);
 
