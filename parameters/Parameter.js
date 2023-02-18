@@ -26,6 +26,7 @@ extends EventTarget
  
     affectsHeader  = true; // indicates whether the parameter contributes to the header's result data
 
+    isResult       = false;
 
 
     canShow = () => true;

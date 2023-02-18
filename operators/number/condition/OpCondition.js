@@ -14,7 +14,7 @@ extends OperatorWithValue
 
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramValue     = new NumberParam('value',     '', false, false, false, 50, 0, 100, 0));
+        this.addParam(this.paramValue);
         this.addParam(this.paramOperation = new SelectParam('operation', '', false, true,  false, CONDITION_OPS.map(s => s[1]), 1));
     }
 

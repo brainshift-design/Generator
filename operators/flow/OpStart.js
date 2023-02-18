@@ -10,10 +10,6 @@ extends OperatorBase
 
         this.inputs[0].addEventListener('connect',    e => { OpStart_onConnectInput(this); });
         this.inputs[0].addEventListener('disconnect', e => OpStart_onDisconnectInput(this));
-
-        this.div   .style.borderRadius = '4px';        
-        this.inner .style.borderRadius = '4px';        
-        this.header.style.borderRadius = '4px';        
     }
 
 

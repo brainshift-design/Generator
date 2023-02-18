@@ -2989,6 +2989,7 @@ function logReqNode(node, parse)
 }
 
 
+
 function logReqListValue(list, parse, ignore)
 {
     parse.log += parse.tab + LIST_VALUE + ' ' + displayValue(LIST_VALUE, list);
@@ -2996,202 +2997,10 @@ function logReqListValue(list, parse, ignore)
 
 
 
-// function logReqList(list, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + LIST;
-//     parse.log += logReqNodeId(list, ignore);
-
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqItems(items, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + ITEMS;
-//     parse.log += logReqNodeId(items, ignore);
-
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqSelect(sel, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + SELECT;
-//     parse.log += logReqNodeId(sel, ignore);
-    
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqIfElse(ifElse, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + IF_ELSE;
-//     parse.log += logReqNodeId(ifElse, ignore);
-    
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqStart(rep, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + START;
-//     parse.log += logReqNodeId(rep, ignore);
-    
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqRepeat(rep, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + REPEAT;
-//     parse.log += logReqNodeId(rep, ignore);
-    
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqCache(cache, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + CACHE;
-//     parse.log += logReqNodeId(cache, ignore);
-    
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqCopy(copy, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + COPY;
-//     parse.log += logReqNodeId(copy, ignore);
-    
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-function logReqNumberValue(val, parse, ignore)
-{
-    parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
-}
-
-
-
-// function logReqMath(math, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + NUMBER_MATH;
-//     parse.log += logReqNodeId(math, ignore);
-
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqArithmetic(arith, type, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + type;
-//     parse.log += logReqNodeId(arith, ignore);
-
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqInterpolate(lerp, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + NUMBER_INTERPOLATE;
-//     parse.log += logReqNodeId(lerp, ignore);
-
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqBoolean(bool, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + NUMBER_BOOLEAN;
-//     parse.log += logReqNodeId(bool, ignore);
-
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqCondition(cond, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + NUMBER_CONDITION;
-//     parse.log += logReqNodeId(cond, ignore);
-
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqConditionBase(cond, type, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + type;
-//     parse.log += logReqNodeId(cond, ignore);
-
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
 function logReqColorValue(val, parse, ignore)
 {
     parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
 }
-
-
-
-// function logReqColor(col, nInputs, parse, ignore) 
-// {
-//     parse.log += parse.tab + COLOR;
-//     parse.log += logReqNodeId(col, ignore);
-
-//     if (!ignore) 
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqValidColor(val, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + VALID_COLOR;
-//     parse.log += logReqNodeId(val, ignore);
-
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqCorrectColor(corr, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + CORRECT_COLOR;
-//     parse.log += logReqNodeId(corr, ignore);
-
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
 
 
 
@@ -3211,25 +3020,10 @@ function logReqColorContrast(lerp, nInputs, valueIndex, parse, ignore)
 
 
 
-// function logReqColorBlind(cb, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + COLORBLIND;
-//     parse.log += logReqNodeId(cb, ignore);
-    
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
-
-
-
-// function logReqColorInterpolate(lerp, nInputs, parse, ignore)
-// {
-//     parse.log += parse.tab + COLOR_INTERPOLATE;
-//     parse.log += logReqNodeId(lerp, ignore);
-
-//     if (!ignore)
-//         parse.log += ' ' + nInputs;
-// }
+function logReqNumberValue(val, parse, ignore)
+{
+    parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
+}
 
 
 
@@ -3240,26 +3034,10 @@ function logReqFillValue(fill, parse, ignore)
 
 
 
-// function logReqFill(fill, parse, ignore)
-// {
-//     parse.log += parse.tab + fill.type;
-//     parse.log += logReqNodeId(fill, ignore);
-// }
-
-
-
 function logReqStrokeValue(stroke, parse, ignore)
 {
     parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
 }
-
-
-
-// function logReqStroke(stroke, parse)
-// {
-//     parse.log += parse.tab + stroke.type;
-//     parse.log += logReqNodeId(stroke, ignore);
-// }
 
 
 
@@ -3270,34 +3048,18 @@ function logReqColorStopValue(stop, parse, ignore)
 
 
 
-// function logReqColorStop(stop, parse, ignore)
-// {
-//     parse.log += parse.tab + stop.type;
-//     parse.log += logReqNodeId(stop, ignore);
-// }
 
 
 
-// function logReqColorStyleValue(style, parse, ignore)
-// {
-//     parse.log += parse.tab + COLOR_STYLE_VALUE + ' ' + displayValue(COLOR_STYLE_VALUE, style);
-// }
 
 
 
-// function logReqColorStyle(style, parse, ignore)
-// {
-//     parse.log += parse.tab + COLOR_STYLE;
-//     parse.log += logReqNodeId(style, ignore);
-// }
 
 
 
-// function logReqShape(node, parse, ignore)
-// {
-//     parse.log += parse.tab + node.type;
-//     parse.log += logReqNodeId(node, ignore);
-// }
+
+
+
 
 
 
@@ -11167,6 +10929,7 @@ const settings =
     autoConnectNewNodes:   true,
     showAllColorSpaces:    false,
     showBoolValues:        true,
+    showOperationResults:  true,
     showClearUndoWarning:  true,
     showDebugMenu:         false,
 
@@ -11201,6 +10964,7 @@ function updateSetting(settingName, value)
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'showAllColorSpaces':    settings.showAllColorSpaces    = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
+        case 'showOperationResults':  settings.showOperationResults  = value;  break;
         case 'showClearUndoWarning':  settings.showClearUndoWarning  = value;  break;
         case 'showDebugMenu':         settings.showDebugMenu         = value;  break;
         
@@ -11233,8 +10997,9 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
-        case 'showAllColorSpaces':    updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces);  break;
+        case 'showAllColorSpaces':    updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces   );  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
+        case 'showOperationResults':  updateSettingAndMenu_(valid, settingName, value, menuItemShowOperationResults );  break;
         case 'showClearUndoWarning':  updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning );  break;
         case 'showDebugMenu':         updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu        );  break;
 
@@ -11281,6 +11046,7 @@ function updateSettingsMenus()
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemShowAllColorSpaces   .setChecked(settings.showAllColorSpaces   );
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
+    menuItemShowOperationResults .setChecked(settings.showOperationResults );
     menuItemShowClearUndoWarning .setChecked(settings.showClearUndoWarning );
     menuItemShowDebugMenu        .setChecked(settings.showDebugMenu        );
 
@@ -11325,6 +11091,15 @@ function updateMenuItemShowBoolValues()
 
 
 
+function updateMenuItemShowOperationResults()
+{
+    graph.nodes
+        .filter(n => n.params.find(p => p.isResult))
+        .forEach(n => n.updateNode());
+}
+
+
+
 function enableFeatures(sub, beta)
 {
     updateMenuItemDisplay(btnFlow .div,                 sub && beta);
@@ -11362,34 +11137,35 @@ function updateMenuItemDisplay(menuItem, enable)
 
 function loadLocalSettings()
 {
-    uiGetLocalData('dataMode'             );
-    uiGetLocalData('debugMode'            );
+    uiGetLocalData('dataMode'            );
+    uiGetLocalData('debugMode'           );
 
-    uiGetLocalData('autoConnectNewNodes'  );
-    uiGetLocalData('showAllColorSpaces');
-    uiGetLocalData('showBoolValues'       );
-    uiGetLocalData('showClearUndoWarning' );
-    uiGetLocalData('showDebugMenu'        );
+    uiGetLocalData('autoConnectNewNodes' );
+    uiGetLocalData('showAllColorSpaces'  );
+    uiGetLocalData('showBoolValues'      );
+    uiGetLocalData('showOperationResults');
+    uiGetLocalData('showClearUndoWarning');
+    uiGetLocalData('showDebugMenu'       );
 
-    uiGetLocalData('showNodeId'           );
+    uiGetLocalData('showNodeId'          );
 
-    uiGetLocalData('enableBetaFeatures'   );
+    uiGetLocalData('enableBetaFeatures'  );
     
-    uiGetLocalData('logMessages'          );
-    uiGetLocalData('logActions'           );
+    uiGetLocalData('logMessages'         );
+    uiGetLocalData('logActions'          );
     
-    uiGetLocalData('logLoading'           );
-    uiGetLocalData('logRequests'          );
-    uiGetLocalData('logValueUpdates'      );
-    uiGetLocalData('logObjectUpdates'     );
-    uiGetLocalData('logStyleUpdates'      );
+    uiGetLocalData('logLoading'          );
+    uiGetLocalData('logRequests'         );
+    uiGetLocalData('logValueUpdates'     );
+    uiGetLocalData('logObjectUpdates'    );
+    uiGetLocalData('logStyleUpdates'     );
     
-    uiGetLocalData('logRawLoading'        );
-    uiGetLocalData('logRawSaving'         );
-    uiGetLocalData('logRawRequests'       );
-    uiGetLocalData('logRawValues'         );
+    uiGetLocalData('logRawLoading'       );
+    uiGetLocalData('logRawSaving'        );
+    uiGetLocalData('logRawRequests'      );
+    uiGetLocalData('logRawValues'        );
     
-    uiGetLocalData('graphView'            );
+    uiGetLocalData('graphView'           );
 }
 
 

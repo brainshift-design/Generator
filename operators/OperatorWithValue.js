@@ -5,6 +5,16 @@ extends OperatorBase
     
 
 
+    constructor(type, shortName, defWidth = 100, progressBar = false)
+    {
+        super(type, shortName, defWidth, progressBar);
+
+        this.paramValue = new NumberParam('value', '',  false, false, false);
+        this.paramValue.isResult = true;
+    }
+
+
+
     updateValueParam()
     {
         const colors = this.getHeaderColors();

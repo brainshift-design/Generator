@@ -633,6 +633,33 @@ function logReqNode(node, parse) {
     parse.log += parse.tab + node.type;
     parse.log += logReqNodeId(node);
 }
+function logReqListValue(list, parse, ignore) {
+    parse.log += parse.tab + LIST_VALUE + ' ' + displayValue(LIST_VALUE, list);
+}
+function logReqColorValue(val, parse, ignore) {
+    parse.log += parse.tab + COLOR_VALUE + ' ' + displayValue(COLOR_VALUE, val);
+}
+function logReqColorContrast(lerp, nInputs, valueIndex, parse, ignore) {
+    parse.log += parse.tab + COLOR_CONTRAST;
+    parse.log += logReqNodeId(lerp, ignore);
+    if (!ignore) {
+        parse.log += ' ' + nInputs;
+        if (nInputs == 1)
+            parse.log += ' ' + valueIndex;
+    }
+}
+function logReqNumberValue(val, parse, ignore) {
+    parse.log += parse.tab + NUMBER_VALUE + ' ' + displayValue(NUMBER_VALUE, val);
+}
+function logReqFillValue(fill, parse, ignore) {
+    parse.log += parse.tab + FILL_VALUE + ' ' + displayValue(FILL_VALUE, fill);
+}
+function logReqStrokeValue(stroke, parse, ignore) {
+    parse.log += parse.tab + STROKE_VALUE + ' ' + displayValue(STROKE_VALUE, stroke);
+}
+function logReqColorStopValue(stop, parse, ignore) {
+    parse.log += parse.tab + COLOR_STOP_VALUE + ' ' + displayValue(COLOR_STOP_VALUE, stop);
+}
 // var bigBuffer = new Uint8Array(2048);
 // function bigRandom(max: bigint = b0)
 // {

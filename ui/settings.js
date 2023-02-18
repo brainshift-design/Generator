@@ -6,6 +6,7 @@ const settings =
     autoConnectNewNodes:   true,
     showAllColorSpaces:    false,
     showBoolValues:        true,
+    showOperationResults:  true,
     showClearUndoWarning:  true,
     showDebugMenu:         false,
 
@@ -40,6 +41,7 @@ function updateSetting(settingName, value)
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'showAllColorSpaces':    settings.showAllColorSpaces    = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
+        case 'showOperationResults':  settings.showOperationResults  = value;  break;
         case 'showClearUndoWarning':  settings.showClearUndoWarning  = value;  break;
         case 'showDebugMenu':         settings.showDebugMenu         = value;  break;
         
@@ -72,8 +74,9 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
-        case 'showAllColorSpaces':    updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces);  break;
+        case 'showAllColorSpaces':    updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces   );  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
+        case 'showOperationResults':  updateSettingAndMenu_(valid, settingName, value, menuItemShowOperationResults );  break;
         case 'showClearUndoWarning':  updateSettingAndMenu_(valid, settingName, value, menuItemShowClearUndoWarning );  break;
         case 'showDebugMenu':         updateSettingAndMenu_(valid, settingName, value, menuItemShowDebugMenu        );  break;
 
@@ -120,6 +123,7 @@ function updateSettingsMenus()
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
     menuItemShowAllColorSpaces   .setChecked(settings.showAllColorSpaces   );
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
+    menuItemShowOperationResults .setChecked(settings.showOperationResults );
     menuItemShowClearUndoWarning .setChecked(settings.showClearUndoWarning );
     menuItemShowDebugMenu        .setChecked(settings.showDebugMenu        );
 
@@ -164,6 +168,15 @@ function updateMenuItemShowBoolValues()
 
 
 
+function updateMenuItemShowOperationResults()
+{
+    graph.nodes
+        .filter(n => n.params.find(p => p.isResult))
+        .forEach(n => n.updateNode());
+}
+
+
+
 function enableFeatures(sub, beta)
 {
     updateMenuItemDisplay(btnFlow .div,                 sub && beta);
@@ -201,32 +214,33 @@ function updateMenuItemDisplay(menuItem, enable)
 
 function loadLocalSettings()
 {
-    uiGetLocalData('dataMode'             );
-    uiGetLocalData('debugMode'            );
+    uiGetLocalData('dataMode'            );
+    uiGetLocalData('debugMode'           );
 
-    uiGetLocalData('autoConnectNewNodes'  );
-    uiGetLocalData('showAllColorSpaces');
-    uiGetLocalData('showBoolValues'       );
-    uiGetLocalData('showClearUndoWarning' );
-    uiGetLocalData('showDebugMenu'        );
+    uiGetLocalData('autoConnectNewNodes' );
+    uiGetLocalData('showAllColorSpaces'  );
+    uiGetLocalData('showBoolValues'      );
+    uiGetLocalData('showOperationResults');
+    uiGetLocalData('showClearUndoWarning');
+    uiGetLocalData('showDebugMenu'       );
 
-    uiGetLocalData('showNodeId'           );
+    uiGetLocalData('showNodeId'          );
 
-    uiGetLocalData('enableBetaFeatures'   );
+    uiGetLocalData('enableBetaFeatures'  );
     
-    uiGetLocalData('logMessages'          );
-    uiGetLocalData('logActions'           );
+    uiGetLocalData('logMessages'         );
+    uiGetLocalData('logActions'          );
     
-    uiGetLocalData('logLoading'           );
-    uiGetLocalData('logRequests'          );
-    uiGetLocalData('logValueUpdates'      );
-    uiGetLocalData('logObjectUpdates'     );
-    uiGetLocalData('logStyleUpdates'      );
+    uiGetLocalData('logLoading'          );
+    uiGetLocalData('logRequests'         );
+    uiGetLocalData('logValueUpdates'     );
+    uiGetLocalData('logObjectUpdates'    );
+    uiGetLocalData('logStyleUpdates'     );
     
-    uiGetLocalData('logRawLoading'        );
-    uiGetLocalData('logRawSaving'         );
-    uiGetLocalData('logRawRequests'       );
-    uiGetLocalData('logRawValues'         );
+    uiGetLocalData('logRawLoading'       );
+    uiGetLocalData('logRawSaving'        );
+    uiGetLocalData('logRawRequests'      );
+    uiGetLocalData('logRawValues'        );
     
-    uiGetLocalData('graphView'            );
+    uiGetLocalData('graphView'           );
 }

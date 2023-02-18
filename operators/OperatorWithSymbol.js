@@ -8,7 +8,7 @@ extends OperatorWithValue
 
     constructor(type, shortName, symbol)
     {
-        super(type, shortName, 100);
+        super(type, shortName);
 
         
         this._showOnlySymbol  = true;

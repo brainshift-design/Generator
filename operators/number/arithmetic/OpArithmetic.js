@@ -12,7 +12,7 @@ extends OperatorWithSymbol
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
-        this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
+        this.addParam(this.paramValue);
     }
     
     
