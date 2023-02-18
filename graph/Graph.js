@@ -345,6 +345,7 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
       
         case 'number':
         case NUMBER:                  node = new OpNumber();            break;
+        case NUMBER_ABSOLUTE:         node = new OpAbsolute();          break;
         case NUMBER_ROUND:            node = new OpRound();             break;
         case 'minmax':
         case NUMBER_LIMITS:           node = new OpLimits();            break;

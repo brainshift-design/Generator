@@ -7,7 +7,7 @@ function genParseRectangle(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqShape(rect, parse, ignore);
+        logReq(rect, parse, ignore);
 
 
     if (ignore) 

@@ -7,7 +7,7 @@ function genParseComment(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqComment(cmnt, parse, ignore);
+        logReq(cmnt, parse, ignore);
 
 
     if (ignore) 
@@ -52,7 +52,7 @@ function genParseList(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqList(list, nInputs, parse, ignore);
+        logReq(list, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -96,7 +96,7 @@ function genParseItems(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqItems(items, nInputs, parse, ignore);
+        logReq(items, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -140,7 +140,7 @@ function genParseSelect(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqSelect(sel, nInputs, parse, ignore);
+        logReq(sel, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -192,7 +192,7 @@ function genParseIfElse(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqIfElse(ifElse, nInputs, parse, ignore);
+        logReq(ifElse, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -236,7 +236,7 @@ function genParseStart(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const rep = new GStart(nodeId, options);
+    const start = new GStart(nodeId, options);
 
 
     let nInputs = -1;
@@ -249,12 +249,12 @@ function genParseStart(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqCache(rep, nInputs, parse, ignore);
+        logReq(start, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, rep);
+        genParseNodeEnd(parse, start);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -263,14 +263,14 @@ function genParseStart(parse)
 
 
     if (nInputs == 1)
-        rep.input = genParse(parse);
+        start.input = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, rep);
-    return rep;
+    genParseNodeEnd(parse, start);
+    return start;
 }
 
 
@@ -293,7 +293,8 @@ function genParseRepeat(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqRepeat(rep, nInputs, parse, ignore);
+        logReq(rep, parse, ignore, nInputs);
+        // logReqRepeat(rep, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -339,7 +340,8 @@ function genParseCache(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqCache(cache, nInputs, parse, ignore);
+        logReq(cache, parse, ignore, nInputs);
+        //logReqCache(cache, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -383,7 +385,8 @@ function genParseCopy(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqCopy(copy, nInputs, parse, ignore);
+        logReq(copy, parse, ignore, nInputs);
+        //logReqCopy(copy, nInputs, parse, ignore);
 
 
     if (ignore) 

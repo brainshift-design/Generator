@@ -37,6 +37,7 @@
 ../operators/flow/OpCopy.js
 
 ../operators/number/OpNumber.js
+../operators/number/OpAbsolute.js
 ../operators/number/OpRound.js
 ../operators/number/OpLimits.js
 ../operators/number/OpRandom.js

@@ -32,7 +32,7 @@ function genParseColor(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqColor(col, nInputs, parse, ignore);
+        logReq(col, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -98,7 +98,7 @@ function genParseValidColor(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqValidColor(valid, nInputs, parse, ignore);
+        logReq(valid, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -148,7 +148,7 @@ function genParseCorrectColor(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqCorrectColor(corr, nInputs, parse, ignore);
+        logReq(corr, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -274,7 +274,7 @@ function genParseColorBlind(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqColorBlind(cb, nInputs, parse, ignore);
+        logReq(cb, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -322,7 +322,7 @@ function genParseColorInterpolate(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqColorInterpolate(lerp, nInputs, parse, ignore);
+        logReq(lerp, parse, ignore, nInputs);
 
 
     if (ignore) 

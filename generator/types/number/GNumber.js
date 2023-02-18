@@ -57,11 +57,4 @@ extends GNumberType
         return !isNaN(this.value)
             && !isNaN(this.decimals);
     }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
 }

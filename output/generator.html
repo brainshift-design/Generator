@@ -2926,6 +2926,18 @@ function logRequest(parse)
 
 
 
+function logReq(node, parse, ignore, nInputs = -1)
+{
+    parse.log += parse.tab + node.type;
+    parse.log += logReqNodeId(node, ignore);
+
+    if (    nInputs > -1
+        && !ignore)
+        parse.log += ' ' + nInputs;
+}
+
+
+
 function logReqNodeId(node, ignore = false)
 {
     return ' ' 
@@ -2977,14 +2989,6 @@ function logReqNode(node, parse)
 }
 
 
-function logReqComment(cmnt, parse, ignore)
-{
-    parse.log += parse.tab + COMMENT;
-    parse.log += logReqNodeId(cmnt, ignore);
-}
-
-
-
 function logReqListValue(list, parse, ignore)
 {
     parse.log += parse.tab + LIST_VALUE + ' ' + displayValue(LIST_VALUE, list);
@@ -2992,91 +2996,91 @@ function logReqListValue(list, parse, ignore)
 
 
 
-function logReqList(list, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + LIST;
-    parse.log += logReqNodeId(list, ignore);
+// function logReqList(list, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + LIST;
+//     parse.log += logReqNodeId(list, ignore);
 
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
-
-
-
-function logReqItems(items, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + ITEMS;
-    parse.log += logReqNodeId(items, ignore);
-
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
-function logReqSelect(sel, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + SELECT;
-    parse.log += logReqNodeId(sel, ignore);
+// function logReqItems(items, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + ITEMS;
+//     parse.log += logReqNodeId(items, ignore);
+
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
+
+
+
+// function logReqSelect(sel, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + SELECT;
+//     parse.log += logReqNodeId(sel, ignore);
     
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
-function logReqIfElse(ifElse, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + IF_ELSE;
-    parse.log += logReqNodeId(ifElse, ignore);
+// function logReqIfElse(ifElse, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + IF_ELSE;
+//     parse.log += logReqNodeId(ifElse, ignore);
     
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
-function logReqStart(rep, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + START;
-    parse.log += logReqNodeId(rep, ignore);
+// function logReqStart(rep, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + START;
+//     parse.log += logReqNodeId(rep, ignore);
     
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
-function logReqRepeat(rep, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + REPEAT;
-    parse.log += logReqNodeId(rep, ignore);
+// function logReqRepeat(rep, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + REPEAT;
+//     parse.log += logReqNodeId(rep, ignore);
     
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
-function logReqCache(cache, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + CACHE;
-    parse.log += logReqNodeId(cache, ignore);
+// function logReqCache(cache, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + CACHE;
+//     parse.log += logReqNodeId(cache, ignore);
     
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
-function logReqCopy(copy, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + COPY;
-    parse.log += logReqNodeId(copy, ignore);
+// function logReqCopy(copy, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + COPY;
+//     parse.log += logReqNodeId(copy, ignore);
     
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 function logReqNumberValue(val, parse, ignore)
@@ -3086,117 +3090,69 @@ function logReqNumberValue(val, parse, ignore)
 
 
 
-function logReqNumber(num, parse, ignore)
-{
-    parse.log += parse.tab + NUMBER;
-    parse.log += logReqNodeId(num, ignore);
-}
+// function logReqMath(math, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + NUMBER_MATH;
+//     parse.log += logReqNodeId(math, ignore);
+
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
-function logReqRound(round, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + NUMBER_ROUND;
-    parse.log += logReqNodeId(round, ignore);
+// function logReqArithmetic(arith, type, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + type;
+//     parse.log += logReqNodeId(arith, ignore);
 
-    if (   !ignore
-        && nInputs > -1)
-        parse.log += ' ' + nInputs;
-}
-
-
-
-function logReqLimits(lim, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + NUMBER_LIMITS;
-    parse.log += logReqNodeId(lim, ignore);
-
-    if (   !ignore
-        && nInputs > -1)
-        parse.log += ' ' + nInputs;
-}
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
-function logReqSeries(series, parse, ignore)
-{
-    parse.log += parse.tab + NUMBER_SERIES;
-    parse.log += logReqNodeId(series, ignore);
-}
+// function logReqInterpolate(lerp, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + NUMBER_INTERPOLATE;
+//     parse.log += logReqNodeId(lerp, ignore);
+
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
-function logReqRandom(rnd, parse, ignore)
-{
-    parse.log += parse.tab + NUMBER_RANDOM;
-    parse.log += logReqNodeId(rnd, ignore);
-}
+// function logReqBoolean(bool, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + NUMBER_BOOLEAN;
+//     parse.log += logReqNodeId(bool, ignore);
+
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
-function logReqMath(math, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + NUMBER_MATH;
-    parse.log += logReqNodeId(math, ignore);
+// function logReqCondition(cond, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + NUMBER_CONDITION;
+//     parse.log += logReqNodeId(cond, ignore);
 
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
-
-
-
-function logReqArithmetic(arith, type, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + type;
-    parse.log += logReqNodeId(arith, ignore);
-
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
-function logReqInterpolate(lerp, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + NUMBER_INTERPOLATE;
-    parse.log += logReqNodeId(lerp, ignore);
+// function logReqConditionBase(cond, type, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + type;
+//     parse.log += logReqNodeId(cond, ignore);
 
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
-
-
-
-function logReqBoolean(bool, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + NUMBER_BOOLEAN;
-    parse.log += logReqNodeId(bool, ignore);
-
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
-
-
-
-function logReqCondition(cond, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + NUMBER_CONDITION;
-    parse.log += logReqNodeId(cond, ignore);
-
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
-
-
-
-function logReqConditionBase(cond, type, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + type;
-    parse.log += logReqNodeId(cond, ignore);
-
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 function logReqColorValue(val, parse, ignore)
@@ -3206,36 +3162,36 @@ function logReqColorValue(val, parse, ignore)
 
 
 
-function logReqColor(col, nInputs, parse, ignore) 
-{
-    parse.log += parse.tab + COLOR;
-    parse.log += logReqNodeId(col, ignore);
+// function logReqColor(col, nInputs, parse, ignore) 
+// {
+//     parse.log += parse.tab + COLOR;
+//     parse.log += logReqNodeId(col, ignore);
 
-    if (!ignore) 
-        parse.log += ' ' + nInputs;
-}
-
-
-
-function logReqValidColor(val, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + VALID_COLOR;
-    parse.log += logReqNodeId(val, ignore);
-
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
+//     if (!ignore) 
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
-function logReqCorrectColor(corr, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + CORRECT_COLOR;
-    parse.log += logReqNodeId(corr, ignore);
+// function logReqValidColor(val, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + VALID_COLOR;
+//     parse.log += logReqNodeId(val, ignore);
 
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
+
+
+
+// function logReqCorrectColor(corr, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + CORRECT_COLOR;
+//     parse.log += logReqNodeId(corr, ignore);
+
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
@@ -3255,25 +3211,25 @@ function logReqColorContrast(lerp, nInputs, valueIndex, parse, ignore)
 
 
 
-function logReqColorBlind(cb, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + COLORBLIND;
-    parse.log += logReqNodeId(cb, ignore);
+// function logReqColorBlind(cb, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + COLORBLIND;
+//     parse.log += logReqNodeId(cb, ignore);
     
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
-function logReqColorInterpolate(lerp, nInputs, parse, ignore)
-{
-    parse.log += parse.tab + COLOR_INTERPOLATE;
-    parse.log += logReqNodeId(lerp, ignore);
+// function logReqColorInterpolate(lerp, nInputs, parse, ignore)
+// {
+//     parse.log += parse.tab + COLOR_INTERPOLATE;
+//     parse.log += logReqNodeId(lerp, ignore);
 
-    if (!ignore)
-        parse.log += ' ' + nInputs;
-}
+//     if (!ignore)
+//         parse.log += ' ' + nInputs;
+// }
 
 
 
@@ -3284,11 +3240,11 @@ function logReqFillValue(fill, parse, ignore)
 
 
 
-function logReqFill(fill, parse, ignore)
-{
-    parse.log += parse.tab + fill.type;
-    parse.log += logReqNodeId(fill, ignore);
-}
+// function logReqFill(fill, parse, ignore)
+// {
+//     parse.log += parse.tab + fill.type;
+//     parse.log += logReqNodeId(fill, ignore);
+// }
 
 
 
@@ -3299,11 +3255,11 @@ function logReqStrokeValue(stroke, parse, ignore)
 
 
 
-function logReqStroke(stroke, parse)
-{
-    parse.log += parse.tab + stroke.type;
-    parse.log += logReqNodeId(stroke, ignore);
-}
+// function logReqStroke(stroke, parse)
+// {
+//     parse.log += parse.tab + stroke.type;
+//     parse.log += logReqNodeId(stroke, ignore);
+// }
 
 
 
@@ -3314,11 +3270,11 @@ function logReqColorStopValue(stop, parse, ignore)
 
 
 
-function logReqColorStop(stop, parse, ignore)
-{
-    parse.log += parse.tab + stop.type;
-    parse.log += logReqNodeId(stop, ignore);
-}
+// function logReqColorStop(stop, parse, ignore)
+// {
+//     parse.log += parse.tab + stop.type;
+//     parse.log += logReqNodeId(stop, ignore);
+// }
 
 
 
@@ -3329,19 +3285,19 @@ function logReqColorStop(stop, parse, ignore)
 
 
 
-function logReqColorStyle(style, parse, ignore)
-{
-    parse.log += parse.tab + COLOR_STYLE;
-    parse.log += logReqNodeId(style, ignore);
-}
+// function logReqColorStyle(style, parse, ignore)
+// {
+//     parse.log += parse.tab + COLOR_STYLE;
+//     parse.log += logReqNodeId(style, ignore);
+// }
 
 
 
-function logReqShape(node, parse, ignore)
-{
-    parse.log += parse.tab + node.type;
-    parse.log += logReqNodeId(node, ignore);
-}
+// function logReqShape(node, parse, ignore)
+// {
+//     parse.log += parse.tab + node.type;
+//     parse.log += logReqNodeId(node, ignore);
+// }
 
 
 
@@ -3568,6 +3524,7 @@ const FLOW_TYPES =
 
 const NUMBER_VALUE            = 'NUM#';  
 const NUMBER                  = 'NUM';   
+const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_SERIES           = 'SER';  
@@ -3635,6 +3592,7 @@ const NUMBER_TYPES =
 [
     NUMBER_VALUE,
     NUMBER,
+    NUMBER_ABSOLUTE,
     NUMBER_ROUND,
     NUMBER_LIMITS,
     NUMBER_SERIES,
@@ -6760,9 +6718,7 @@ extends GOperator
 
     toValue()
     {
-        return new NumberValue(
-            this.value.value,
-            this.value.decimals);
+        return this.value.copy();
     }
 }
 
@@ -7695,48 +7651,15 @@ extends GNumberType
         op.value = Math.min(Math.max(0, op.value), CONDITION_OPS.length-1);
 
         
-        // if (   this.input0 
-        //     && this.input1)
-        // {
-            // const val0 = this.input0.eval(parse).toValue();
-            // const val1 = this.input1.eval(parse).toValue();
-
-            switch (op.value)
-            {
-                case CONDITION_EQUAL:             this.value = evalEqualInputs         (this.input0, this.input1, parse);  break;
-                case CONDITION_NOT_EQUAL:         this.value = evalNotEqualInputs      (this.input0, this.input1, parse);  break;
-                case CONDITION_LESS:              this.value = evalLessInputs          (this.input0, this.input1, parse);  break;
-                case CONDITION_LESS_OR_EQUAL:     this.value = evalLessOrEqualInputs   (this.input0, this.input1, parse);  break;
-                case CONDITION_GREATER:           this.value = evalGreaterInputs       (this.input0, this.input1, parse);  break;
-                case CONDITION_GREATER_OR_EQUAL:  this.value = evalGreaterOrEqualInputs(this.input0, this.input1, parse);  break;
-            }
-        // }
-        // else if (this.input0)
-        // {
-        //     // this.input0.eval(parse).toValue();
-
-        //     switch (op.value)
-        //     {
-        //         case CONDITION_EQUAL:             
-        //         case CONDITION_LESS_OR_EQUAL:     
-        //         case CONDITION_GREATER_OR_EQUAL: this.value = new NumberValue(1); break;
-        //         default:                         this.value = new NumberValue(0); break;
-        //     }
-        // }
-        // else if (this.input1) 
-        // {
-        //     this.input1.eval(parse).toValue();
-
-        //     switch (op.value)
-        //     {
-        //         case CONDITION_EQUAL:             
-        //         case CONDITION_LESS_OR_EQUAL:     
-        //         case CONDITION_GREATER_OR_EQUAL: this.value = new NumberValue(1); break;
-        //         default:                         this.value = new NumberValue(0); break;
-        //     }
-        // }
-        // else                  
-        //     this.value = NumberValue.NaN;
+        switch (op.value)
+        {
+            case CONDITION_EQUAL:             this.value = evalEqualInputs         (this.input0, this.input1, parse);  break;
+            case CONDITION_NOT_EQUAL:         this.value = evalNotEqualInputs      (this.input0, this.input1, parse);  break;
+            case CONDITION_LESS:              this.value = evalLessInputs          (this.input0, this.input1, parse);  break;
+            case CONDITION_LESS_OR_EQUAL:     this.value = evalLessOrEqualInputs   (this.input0, this.input1, parse);  break;
+            case CONDITION_GREATER:           this.value = evalGreaterInputs       (this.input0, this.input1, parse);  break;
+            case CONDITION_GREATER_OR_EQUAL:  this.value = evalGreaterOrEqualInputs(this.input0, this.input1, parse);  break;
+        }
 
 
         genPushUpdateValue(parse, this.nodeId, 'operation', op);
@@ -8136,13 +8059,6 @@ extends GNumberType
         return !isNaN(this.value)
             && !isNaN(this.decimals);
     }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
-    }
 }
 
 
@@ -8223,12 +8139,64 @@ extends GNumberType
 
         return this;
     }
+}
 
 
 
-    toValue()
+class GAbsolute
+extends GNumberType
+{
+    input = null;
+
+
+
+    constructor(nodeId, options)
     {
-        return this.value.copy();
+        super(NUMBER_ABSOLUTE, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GAbsolute(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        if (this.input) 
+            copy.input = this.input.copy();
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+
+        if (this.input)
+        {
+            this.value = this.input.eval(parse).toValue();
+
+            console.assert(
+                this.value.type == NUMBER_VALUE, 
+                'this.value.type must belong to NUMBER_VALUE');
+
+            this.value.value = Math.abs(this.value.value);
+        }
+        else
+            this.value = NumberValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
     }
 }
 
@@ -8306,13 +8274,6 @@ extends GNumberType
         this.validate();
 
         return this;
-    }
-
-
-
-    toValue()
-    {
-        return this.value.copy();
     }
 }
 
@@ -11950,7 +11911,7 @@ function genParseColor(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqColor(col, nInputs, parse, ignore);
+        logReq(col, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -12016,7 +11977,7 @@ function genParseValidColor(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqValidColor(valid, nInputs, parse, ignore);
+        logReq(valid, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -12066,7 +12027,7 @@ function genParseCorrectColor(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqCorrectColor(corr, nInputs, parse, ignore);
+        logReq(corr, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -12192,7 +12153,7 @@ function genParseColorBlind(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqColorBlind(cb, nInputs, parse, ignore);
+        logReq(cb, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -12240,7 +12201,7 @@ function genParseColorInterpolate(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqColorInterpolate(lerp, nInputs, parse, ignore);
+        logReq(lerp, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -12288,7 +12249,7 @@ function genParseComment(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqComment(cmnt, parse, ignore);
+        logReq(cmnt, parse, ignore);
 
 
     if (ignore) 
@@ -12333,7 +12294,7 @@ function genParseList(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqList(list, nInputs, parse, ignore);
+        logReq(list, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -12377,7 +12338,7 @@ function genParseItems(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqItems(items, nInputs, parse, ignore);
+        logReq(items, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -12421,7 +12382,7 @@ function genParseSelect(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqSelect(sel, nInputs, parse, ignore);
+        logReq(sel, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -12473,7 +12434,7 @@ function genParseIfElse(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqIfElse(ifElse, nInputs, parse, ignore);
+        logReq(ifElse, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -12517,7 +12478,7 @@ function genParseStart(parse)
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
 
 
-    const rep = new GStart(nodeId, options);
+    const start = new GStart(nodeId, options);
 
 
     let nInputs = -1;
@@ -12530,12 +12491,12 @@ function genParseStart(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqCache(rep, nInputs, parse, ignore);
+        logReq(start, parse, ignore, nInputs);
 
 
     if (ignore) 
     {
-        genParseNodeEnd(parse, rep);
+        genParseNodeEnd(parse, start);
         return parse.parsedNodes.find(n => n.nodeId == nodeId);
     }
 
@@ -12544,14 +12505,14 @@ function genParseStart(parse)
 
 
     if (nInputs == 1)
-        rep.input = genParse(parse);
+        start.input = genParse(parse);
 
 
     parse.nTab--;
 
 
-    genParseNodeEnd(parse, rep);
-    return rep;
+    genParseNodeEnd(parse, start);
+    return start;
 }
 
 
@@ -12574,7 +12535,8 @@ function genParseRepeat(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqRepeat(rep, nInputs, parse, ignore);
+        logReq(rep, parse, ignore, nInputs);
+        // logReqRepeat(rep, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -12620,7 +12582,8 @@ function genParseCache(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqCache(cache, nInputs, parse, ignore);
+        logReq(cache, parse, ignore, nInputs);
+        //logReqCache(cache, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -12664,7 +12627,8 @@ function genParseCopy(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqCopy(copy, nInputs, parse, ignore);
+        logReq(copy, parse, ignore, nInputs);
+        //logReqCopy(copy, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -12714,7 +12678,7 @@ function genParseNumber(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqNumber(num, parse, ignore);
+        logReq(num, parse, ignore);
 
 
     if (ignore) 
@@ -12741,6 +12705,50 @@ function genParseNumber(parse)
 
 
 
+function genParseAbsolute(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const round = new GAbsolute(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(round, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, round);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        round.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, round);
+    return round;
+}
+
+
+
 function genParseRound(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -12759,7 +12767,7 @@ function genParseRound(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqRound(round, nInputs, parse, ignore);
+        logReq(round, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -12806,7 +12814,7 @@ function genParseLimits(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqLimits(lim, nInputs, parse, ignore);
+        logReq(lim, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -12850,7 +12858,8 @@ function genParseMath(parse, newNode)
 
 
     if (parse.settings.logRequests) 
-        logReqMath(math, nInputs, parse, ignore);
+        logReq(math, parse, ignore, nInputs);
+        //logReqMath(math, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -12893,7 +12902,8 @@ function genParseArithmetic(parse, newNode)
 
 
     if (parse.settings.logRequests) 
-        logReqArithmetic(arith, type, nInputs, parse, ignore);
+        logReq(arith, parse, ignore, nInputs);
+        //logReqArithmetic(arith, type, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -12926,7 +12936,7 @@ function genParseSeries(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqSeries(series, parse, ignore);
+        logReq(series, parse, ignore);
 
 
     if (ignore) 
@@ -12961,7 +12971,7 @@ function genParseRandom(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqRandom(rnd, parse);
+        logReq(rnd, parse);
 
 
     if (ignore) 
@@ -13006,7 +13016,8 @@ function genParseInterpolate(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqInterpolate(lerp, nInputs, parse, ignore);
+        logReq(lerp, parse, ignore, nInputs);
+        //logReqInterpolate(lerp, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -13058,7 +13069,8 @@ function genParseBoolean(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqBoolean(bool, nInputs, parse, ignore);
+        logReq(bool, parse, ignore, nInputs);
+        //logReqBoolean(bool, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -13104,7 +13116,8 @@ function genParseCondition(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqCondition(cond, nInputs, parse, ignore);
+        logReq(cond, parse, ignore, nInputs);
+        //logReqCondition(cond, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -13158,8 +13171,9 @@ function genParseConditionBase(parse, newNode)
     }
 
     
-    if (parse.settings.logRequests) 
-        logReqConditionBase(cond, type, nInputs, parse, ignore);
+    if (parse.settings.logRequests)
+        logReq(cond, parse, ignore, nInputs); 
+        //logReqConditionBase(cond, type, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -13199,7 +13213,7 @@ function genParseRectangle(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqShape(rect, parse, ignore);
+        logReq(rect, parse, ignore);
 
 
     if (ignore) 
@@ -13492,7 +13506,7 @@ function genParseFill(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqFill(fill, parse, ignore);
+        logReq(fill, parse, ignore);
 
 
     if (ignore)
@@ -13577,7 +13591,7 @@ function genParseStroke(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqStroke(stroke, parse, ignore);
+        logReq(stroke, parse, ignore);
 
 
     if (ignore)
@@ -13666,7 +13680,7 @@ function genParseColorStop(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqColorStop(stop, parse, ignore);
+        logReq(stop, parse, ignore);
 
 
     if (ignore)
@@ -13723,7 +13737,7 @@ function genParseColorStyle(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqColorStyle(style, parse, ignore);
+        logReq(style, parse, ignore);
 
 
     if (ignore) 
@@ -13857,6 +13871,7 @@ function genParse(parse, inParam = true)
     else if (parse.next == NUMBER_VALUE           ) result = genParseNumValue        (parse);
     else if (parse.next == NUMBER                 ) result = genParseNumber          (parse);
     
+    else if (parse.next == NUMBER_ABSOLUTE        ) result = genParseAbsolute        (parse);
     else if (parse.next == NUMBER_ROUND           ) result = genParseRound           (parse);
     else if (parse.next == NUMBER_LIMITS          ) result = genParseLimits          (parse);
     else if (parse.next == NUMBER_RANDOM          ) result = genParseRandom          (parse);

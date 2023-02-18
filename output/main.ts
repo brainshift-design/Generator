@@ -488,6 +488,7 @@ const FLOW_TYPES =
 
 const NUMBER_VALUE            = 'NUM#';  
 const NUMBER                  = 'NUM';   
+const NUMBER_ABSOLUTE         = 'ABS';   
 const NUMBER_ROUND            = 'ROUND';   
 const NUMBER_LIMITS           = 'LIM';   
 const NUMBER_SERIES           = 'SER';  
@@ -555,6 +556,7 @@ const NUMBER_TYPES =
 [
     NUMBER_VALUE,
     NUMBER,
+    NUMBER_ABSOLUTE,
     NUMBER_ROUND,
     NUMBER_LIMITS,
     NUMBER_SERIES,
@@ -1014,6 +1016,18 @@ function logRequest(parse)
         '%c%s', 
         'background: #60aa60; color: #fff', 
          log);
+}
+
+
+
+function logReq(node, parse, ignore, nInputs = -1)
+{
+    parse.log += parse.tab + node.type;
+    parse.log += logReqNodeId(node, ignore);
+
+    if (    nInputs > -1
+        && !ignore)
+        parse.log += ' ' + nInputs;
 }
 
 

@@ -1,34 +1,25 @@
-class GLimits
+class GAbsolute
 extends GNumberType
 {
     input = null;
 
-    min;
-    max;
-
-    //minMaxPriority = -1; 
 
 
     constructor(nodeId, options)
     {
-        super(NUMBER_LIMITS, nodeId, options);
+        super(NUMBER_ABSOLUTE, nodeId, options);
     }
 
 
     
     copy()
     {
-        const copy = new GLimits(this.nodeId, this.options);
+        const copy = new GAbsolute(this.nodeId, this.options);
 
         copy.copyBase(this);
 
         if (this.input) 
             copy.input = this.input.copy();
-
-        copy.min = this.min.copy();
-        copy.max = this.max.copy();
-
-        //lim.minMaxPriority = this.minMaxPriority;
 
         return copy;
     }
@@ -41,10 +32,6 @@ extends GNumberType
             return this;
 
 
-        const min = this.min.eval(parse).toValue();
-        const max = this.max.eval(parse).toValue();
-
-
         if (this.input)
         {
             this.value = this.input.eval(parse).toValue();
@@ -53,17 +40,12 @@ extends GNumberType
                 this.value.type == NUMBER_VALUE, 
                 'this.value.type must belong to NUMBER_VALUE');
 
-            this.value.value = Math.min(Math.max(
-                min.value,
-                this.value.value),
-                max.value);
+            this.value.value = Math.abs(this.value.value);
         }
         else
             this.value = NumberValue.NaN;
 
 
-        genPushUpdateValue(parse, this.nodeId, 'min',   min);
-        genPushUpdateValue(parse, this.nodeId, 'max',   max);
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
 

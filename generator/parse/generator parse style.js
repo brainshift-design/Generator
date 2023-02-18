@@ -21,7 +21,7 @@ function genParseFill(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqFill(fill, parse, ignore);
+        logReq(fill, parse, ignore);
 
 
     if (ignore)
@@ -106,7 +106,7 @@ function genParseStroke(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqStroke(stroke, parse, ignore);
+        logReq(stroke, parse, ignore);
 
 
     if (ignore)
@@ -195,7 +195,7 @@ function genParseColorStop(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqColorStop(stop, parse, ignore);
+        logReq(stop, parse, ignore);
 
 
     if (ignore)
@@ -252,7 +252,7 @@ function genParseColorStyle(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqColorStyle(style, parse, ignore);
+        logReq(style, parse, ignore);
 
 
     if (ignore) 

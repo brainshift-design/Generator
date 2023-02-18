@@ -16,8 +16,6 @@ extends GOperator
 
     toValue()
     {
-        return new NumberValue(
-            this.value.value,
-            this.value.decimals);
+        return this.value.copy();
     }
 }

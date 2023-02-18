@@ -5,11 +5,11 @@ function logReqFillValue(fill, parse, ignore)
 
 
 
-function logReqFill(fill, parse, ignore)
-{
-    parse.log += parse.tab + fill.type;
-    parse.log += logReqNodeId(fill, ignore);
-}
+// function logReqFill(fill, parse, ignore)
+// {
+//     parse.log += parse.tab + fill.type;
+//     parse.log += logReqNodeId(fill, ignore);
+// }
 
 
 
@@ -20,11 +20,11 @@ function logReqStrokeValue(stroke, parse, ignore)
 
 
 
-function logReqStroke(stroke, parse)
-{
-    parse.log += parse.tab + stroke.type;
-    parse.log += logReqNodeId(stroke, ignore);
-}
+// function logReqStroke(stroke, parse)
+// {
+//     parse.log += parse.tab + stroke.type;
+//     parse.log += logReqNodeId(stroke, ignore);
+// }
 
 
 
@@ -35,11 +35,11 @@ function logReqColorStopValue(stop, parse, ignore)
 
 
 
-function logReqColorStop(stop, parse, ignore)
-{
-    parse.log += parse.tab + stop.type;
-    parse.log += logReqNodeId(stop, ignore);
-}
+// function logReqColorStop(stop, parse, ignore)
+// {
+//     parse.log += parse.tab + stop.type;
+//     parse.log += logReqNodeId(stop, ignore);
+// }
 
 
 
@@ -50,8 +50,8 @@ function logReqColorStop(stop, parse, ignore)
 
 
 
-function logReqColorStyle(style, parse, ignore)
-{
-    parse.log += parse.tab + COLOR_STYLE;
-    parse.log += logReqNodeId(style, ignore);
-}
+// function logReqColorStyle(style, parse, ignore)
+// {
+//     parse.log += parse.tab + COLOR_STYLE;
+//     parse.log += logReqNodeId(style, ignore);
+// }

@@ -23,7 +23,7 @@ function genParseNumber(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqNumber(num, parse, ignore);
+        logReq(num, parse, ignore);
 
 
     if (ignore) 
@@ -50,6 +50,50 @@ function genParseNumber(parse)
 
 
 
+function genParseAbsolute(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const round = new GAbsolute(nodeId, options);
+   
+
+    let nInputs = -1;
+    
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    }
+
+    
+    if (parse.settings.logRequests) 
+        logReq(round, parse, ignore);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, round);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    if (nInputs == 1)
+        round.input = genParse(parse);
+
+    
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, round);
+    return round;
+}
+
+
+
 function genParseRound(parse)
 {
     const [, nodeId, options, ignore] = genParseNodeStart(parse);
@@ -68,7 +112,7 @@ function genParseRound(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqRound(round, nInputs, parse, ignore);
+        logReq(round, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -115,7 +159,7 @@ function genParseLimits(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqLimits(lim, nInputs, parse, ignore);
+        logReq(lim, parse, ignore, nInputs);
 
 
     if (ignore) 
@@ -159,7 +203,8 @@ function genParseMath(parse, newNode)
 
 
     if (parse.settings.logRequests) 
-        logReqMath(math, nInputs, parse, ignore);
+        logReq(math, parse, ignore, nInputs);
+        //logReqMath(math, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -202,7 +247,8 @@ function genParseArithmetic(parse, newNode)
 
 
     if (parse.settings.logRequests) 
-        logReqArithmetic(arith, type, nInputs, parse, ignore);
+        logReq(arith, parse, ignore, nInputs);
+        //logReqArithmetic(arith, type, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -235,7 +281,7 @@ function genParseSeries(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqSeries(series, parse, ignore);
+        logReq(series, parse, ignore);
 
 
     if (ignore) 
@@ -270,7 +316,7 @@ function genParseRandom(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqRandom(rnd, parse);
+        logReq(rnd, parse);
 
 
     if (ignore) 
@@ -315,7 +361,8 @@ function genParseInterpolate(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqInterpolate(lerp, nInputs, parse, ignore);
+        logReq(lerp, parse, ignore, nInputs);
+        //logReqInterpolate(lerp, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -367,7 +414,8 @@ function genParseBoolean(parse)
 
 
     if (parse.settings.logRequests) 
-        logReqBoolean(bool, nInputs, parse, ignore);
+        logReq(bool, parse, ignore, nInputs);
+        //logReqBoolean(bool, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -413,7 +461,8 @@ function genParseCondition(parse)
 
     
     if (parse.settings.logRequests) 
-        logReqCondition(cond, nInputs, parse, ignore);
+        logReq(cond, parse, ignore, nInputs);
+        //logReqCondition(cond, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -467,8 +516,9 @@ function genParseConditionBase(parse, newNode)
     }
 
     
-    if (parse.settings.logRequests) 
-        logReqConditionBase(cond, type, nInputs, parse, ignore);
+    if (parse.settings.logRequests)
+        logReq(cond, parse, ignore, nInputs); 
+        //logReqConditionBase(cond, type, nInputs, parse, ignore);
 
 
     if (ignore) 

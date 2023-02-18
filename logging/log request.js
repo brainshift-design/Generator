@@ -16,6 +16,18 @@ function logRequest(parse)
 
 
 
+function logReq(node, parse, ignore, nInputs = -1)
+{
+    parse.log += parse.tab + node.type;
+    parse.log += logReqNodeId(node, ignore);
+
+    if (    nInputs > -1
+        && !ignore)
+        parse.log += ' ' + nInputs;
+}
+
+
+
 function logReqNodeId(node, ignore = false)
 {
     return ' ' 
