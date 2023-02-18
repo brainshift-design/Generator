@@ -2477,7 +2477,7 @@ a
             <div id='whatsNewBody'>
                 <h1>What's new in Generator</h1>
 
-                <p>Fixed double update on wires.</p>
+                <p>Fixed double updates on wires.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -14417,9 +14417,14 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     let sc = 0; // style chunk count
 
 
-    let nodeValChunk   = [],
-        objChunk       = [],
-        styleChunk     = [];
+    let nodeValChunk    = [],
+        objChunk        = [],
+        styleChunk      = [];
+
+    let curNodeValChunk = [],
+        curObjChunk     = [],
+        curStyleChunk   = [];
+
 
     let nodeValChunkId = 0;
         
@@ -14456,10 +14461,33 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
         }
 
 
-        if (   nc >= approxNodeChunkSize
+        const chunkNotEmpty =
+               nc >= approxNodeChunkSize
             || oc == objChunkSize
-            || sc == styleChunkSize)
+            || sc == styleChunkSize;
+
+
+        // if (   !isEmpty(curNodeValChunk)
+        //     || !isEmpty(curObjChunk)
+        //     || !isEmpty(curStyleChunk))
+        //     genQueueChunk(
+        //         requestId,
+        //         actionId,
+        //         updateNodeId,
+        //         updateParamId,
+        //         nodeValChunkId++,
+        //         curNodeValChunk,
+        //         curObjChunk,
+        //         curStyleChunk,
+        //         !chunkNotEmpty);
+
+
+        if (chunkNotEmpty)
         {
+            curNodeValChunk = [...nodeValChunk];
+            curObjChunk     = [...objChunk    ];
+            curStyleChunk   = [...styleChunk  ];
+
             genQueueChunk(
                 requestId,
                 actionId,
@@ -14477,9 +14505,28 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     }
 
 
-    if (   !isEmpty(nodeValChunk)
+    const lastChunkNotEmpty =
+           !isEmpty(nodeValChunk)
         || !isEmpty(objChunk    )
-        || !isEmpty(styleChunk  ))
+        || !isEmpty(styleChunk  );
+
+
+    // if (   !isEmpty(curNodeValChunk)
+    //     || !isEmpty(curObjChunk)
+    //     || !isEmpty(curStyleChunk))
+    //     genQueueChunk(
+    //         requestId,
+    //         actionId,
+    //         updateNodeId,
+    //         updateParamId,
+    //         nodeValChunkId++,
+    //         curNodeValChunk,
+    //         curObjChunk,
+    //         curStyleChunk,
+    //         !lastChunkNotEmpty);
+
+
+    if (lastChunkNotEmpty)
     {
         genQueueChunk(
             requestId,
@@ -14489,7 +14536,8 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
             nodeValChunkId++,
             nodeValChunk,
             objChunk,
-            styleChunk);
+            styleChunk,
+            true);
     }
 
 
@@ -14501,7 +14549,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
 
 
-function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk)
+function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk)//, isLast)
 {
     genQueueMessageToUI({
         cmd:          'uiUpdateValuesAndObjects',
@@ -14512,7 +14560,8 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         chunkId:       nodeValChunkId,
         values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_CHAR),
         objects:       [...objChunk],
-        styles:        [...styleChunk]
+        styles:        [...styleChunk]//,
+        //isLast:        isLast
     });
 
     if (   !isEmpty(objChunk  )
@@ -33162,6 +33211,7 @@ var menuItemNodeSep1;
 var menuItemNodeRename;
 // var menuItemNodeBringToFront;
 // var menuItemNodeSendToBack;
+var menuItemNodeActivate;
 var menuItemNodeEnableDisable;
 
 
@@ -33393,6 +33443,7 @@ function initGeneratorMenus()
     //  menuItemNodeLayout             = new MenuItem('Layout',              {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
         menuItemNodeRename             = new MenuItem('Rename',              {shortcut:  osCtrl() + 'R',              callback: e => { hideAllMenus(); renameSelectedNode(); }}),
                                          new MenuItem('',                    {separator: true}),
+        menuItemNodeActivate           = new MenuItem('Activate',            {callback: () => { if (graphView.selectedNodes.length == 1) actionManager.do(new MakeActiveNodeAction(graphView.selectedNodes[0].id)); }}),
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift() + '⌫',            callback: e => { hideAllMenus(); removeSelectedNodes(true); }})]);
@@ -33401,8 +33452,9 @@ function initGeneratorMenus()
     {
         const single = graphView.selectedNodes.length == 1;
 
-        updateMenuItemDisplay(menuItemNodeSep1  .div, single);
-        updateMenuItemDisplay(menuItemNodeRename.div, single);
+        updateMenuItemDisplay(menuItemNodeSep1      .div, single);
+        updateMenuItemDisplay(menuItemNodeRename    .div, single);
+        updateMenuItemDisplay(menuItemNodeActivate.div, single);
         //updateMenuItemDisplay(menuItemNodeLayout.div, !single);
     };
 
@@ -42451,6 +42503,7 @@ class Operator
     enabled;
     cached;
     inert; // doesn't eval inputs if values exist
+    slow;  // takes a while to finish operation, shows a progress bar
 
     
     inputs           = [];
@@ -42467,6 +42520,8 @@ class Operator
 
     scrollName       = true;
 
+    showActiveArrow  = false;
+    
 
     defaultWidth;
     labelOffsetFactor;
@@ -42550,6 +42605,7 @@ class Operator
         this.enabled           = true;
         this.cached            = true;
         this.inert             = false;
+        this.slow              = false;
 
         this.defShortName      = shortName;
         this.defaultWidth      = defWidth;
@@ -43248,7 +43304,7 @@ class Operator
     {
         this.labelText.innerHTML = 
               (settings.showNodeId ? this.id : this.name)
-            + (this.active && this.getCanShowActive() ? '  ‣' : '');
+            + (this.active && this.showActiveArrow ? '  ‣' : '');
 
         this.label.style.left = '50%';//'calc(50% + ' + (this.active ? '30px' : '0px') + ')';
         this.label.style.top  = '50%';
@@ -43348,13 +43404,6 @@ class Operator
             input:  colInput,
             output: colOutput,
             wire:   colWire };
-    }
-
-
-
-    getCanShowActive()
-    {
-        return true;    
     }
 
 
@@ -44260,8 +44309,7 @@ function createNodeHeader(node)
             && e.clientX >= bounds.left && e.clientX < bounds.right
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             node.showLabelTextbox();
-        else if (getCtrlKey(e)
-             && !node.header.ignoreDoubleClick)
+        else if (!node.header.ignoreDoubleClick)
             actionManager.do(new MakeActiveNodeAction(node.id));
 
         node.header.ignoreDoubleClick = false;
@@ -46925,6 +46973,8 @@ extends Operator
     {
         super(nodeType, shortType, defWidth, progressBar);
 
+        this.showActiveArrow = true;
+        
 
         this._warningOverlay = createDiv('colorWarningOverlay');
         this._warningOverlay.style.zIndex = 1;
@@ -48827,7 +48877,9 @@ extends OpColorBase
     {
         super(VALID_COLOR, 'valid', 100, true);
 
+        this.slow = true;
 
+        
         this.addInput(new Input(COLOR_TYPES));
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
@@ -49000,6 +49052,8 @@ extends OpColorBase
     constructor()
     {
         super(CORRECT_COLOR, 'corrected', 100, true);
+
+        this.slow         = true;
         this.subscription = true;
 
         
@@ -51013,13 +51067,6 @@ extends OperatorBase
         }
         else
             this.link.style.display            = 'none';    
-    }
-
-
-
-    getCanShowActive()
-    {
-        return false;
     }
 
 
@@ -54174,10 +54221,13 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 var generatorStarted = false;
 
 
-var uiFigMessages = []; // messages from UI to Figma
-var genMessages   = []; // messages from UI to Generator
+var uiFigMessages    = []; // messages from UI to Figma
+var genMessages      = []; // messages from UI to Generator
 
 var genMessagePosted = false;
+
+
+var allUpdateNodes   = [];
 
 
 //uiClearAllLocalData();
@@ -54833,7 +54883,8 @@ generator.onmessage = function(e)
                 msg.updateParamId, 
                 msg.values, 
                 msg.objects, 
-                msg.styles);  
+                msg.styles);//,
+                //msg.isLast);  
                 
             break;
         
@@ -55664,6 +55715,7 @@ function loadNodes(data, pasting)
 function loadNode(_node, pasting)
 {
     const node = createNode(_node.type);
+    node.div.style.display = 'none';
 
 
     node.loadFromParsedJson(_node, pasting);

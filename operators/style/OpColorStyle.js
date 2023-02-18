@@ -186,13 +186,6 @@ extends OperatorBase
 
 
 
-    getCanShowActive()
-    {
-        return false;
-    }
-
-
-
     getActiveOffset()
     {
         return -2;

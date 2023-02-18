@@ -189,9 +189,14 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     let sc = 0; // style chunk count
 
 
-    let nodeValChunk   = [],
-        objChunk       = [],
-        styleChunk     = [];
+    let nodeValChunk    = [],
+        objChunk        = [],
+        styleChunk      = [];
+
+    let curNodeValChunk = [],
+        curObjChunk     = [],
+        curStyleChunk   = [];
+
 
     let nodeValChunkId = 0;
         
@@ -228,10 +233,33 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
         }
 
 
-        if (   nc >= approxNodeChunkSize
+        const chunkNotEmpty =
+               nc >= approxNodeChunkSize
             || oc == objChunkSize
-            || sc == styleChunkSize)
+            || sc == styleChunkSize;
+
+
+        // if (   !isEmpty(curNodeValChunk)
+        //     || !isEmpty(curObjChunk)
+        //     || !isEmpty(curStyleChunk))
+        //     genQueueChunk(
+        //         requestId,
+        //         actionId,
+        //         updateNodeId,
+        //         updateParamId,
+        //         nodeValChunkId++,
+        //         curNodeValChunk,
+        //         curObjChunk,
+        //         curStyleChunk,
+        //         !chunkNotEmpty);
+
+
+        if (chunkNotEmpty)
         {
+            curNodeValChunk = [...nodeValChunk];
+            curObjChunk     = [...objChunk    ];
+            curStyleChunk   = [...styleChunk  ];
+
             genQueueChunk(
                 requestId,
                 actionId,
@@ -249,9 +277,28 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
     }
 
 
-    if (   !isEmpty(nodeValChunk)
+    const lastChunkNotEmpty =
+           !isEmpty(nodeValChunk)
         || !isEmpty(objChunk    )
-        || !isEmpty(styleChunk  ))
+        || !isEmpty(styleChunk  );
+
+
+    // if (   !isEmpty(curNodeValChunk)
+    //     || !isEmpty(curObjChunk)
+    //     || !isEmpty(curStyleChunk))
+    //     genQueueChunk(
+    //         requestId,
+    //         actionId,
+    //         updateNodeId,
+    //         updateParamId,
+    //         nodeValChunkId++,
+    //         curNodeValChunk,
+    //         curObjChunk,
+    //         curStyleChunk,
+    //         !lastChunkNotEmpty);
+
+
+    if (lastChunkNotEmpty)
     {
         genQueueChunk(
             requestId,
@@ -261,7 +308,8 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
             nodeValChunkId++,
             nodeValChunk,
             objChunk,
-            styleChunk);
+            styleChunk,
+            true);
     }
 
 
@@ -273,7 +321,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
 
 
-function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk)
+function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk)//, isLast)
 {
     genQueueMessageToUI({
         cmd:          'uiUpdateValuesAndObjects',
@@ -284,7 +332,8 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         chunkId:       nodeValChunkId,
         values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_CHAR),
         objects:       [...objChunk],
-        styles:        [...styleChunk]
+        styles:        [...styleChunk]//,
+        //isLast:        isLast
     });
 
     if (   !isEmpty(objChunk  )

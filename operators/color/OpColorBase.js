@@ -14,6 +14,8 @@ extends Operator
     {
         super(nodeType, shortType, defWidth, progressBar);
 
+        this.showActiveArrow = true;
+        
 
         this._warningOverlay = createDiv('colorWarningOverlay');
         this._warningOverlay.style.zIndex = 1;

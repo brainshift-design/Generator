@@ -442,6 +442,7 @@ function loadNodes(data, pasting)
 function loadNode(_node, pasting)
 {
     const node = createNode(_node.type);
+    node.div.style.display = 'none';
 
 
     node.loadFromParsedJson(_node, pasting);

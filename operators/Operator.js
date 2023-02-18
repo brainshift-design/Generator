@@ -46,6 +46,7 @@ class Operator
     enabled;
     cached;
     inert; // doesn't eval inputs if values exist
+    slow;  // takes a while to finish operation, shows a progress bar
 
     
     inputs           = [];
@@ -62,6 +63,8 @@ class Operator
 
     scrollName       = true;
 
+    showActiveArrow  = false;
+    
 
     defaultWidth;
     labelOffsetFactor;
@@ -145,6 +148,7 @@ class Operator
         this.enabled           = true;
         this.cached            = true;
         this.inert             = false;
+        this.slow              = false;
 
         this.defShortName      = shortName;
         this.defaultWidth      = defWidth;
@@ -843,7 +847,7 @@ class Operator
     {
         this.labelText.innerHTML = 
               (settings.showNodeId ? this.id : this.name)
-            + (this.active && this.getCanShowActive() ? '  ‣' : '');
+            + (this.active && this.showActiveArrow ? '  ‣' : '');
 
         this.label.style.left = '50%';//'calc(50% + ' + (this.active ? '30px' : '0px') + ')';
         this.label.style.top  = '50%';
@@ -943,13 +947,6 @@ class Operator
             input:  colInput,
             output: colOutput,
             wire:   colWire };
-    }
-
-
-
-    getCanShowActive()
-    {
-        return true;    
     }
 
 

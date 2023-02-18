@@ -142,7 +142,8 @@ generator.onmessage = function(e)
                 msg.updateParamId, 
                 msg.values, 
                 msg.objects, 
-                msg.styles);  
+                msg.styles);//,
+                //msg.isLast);  
                 
             break;
         

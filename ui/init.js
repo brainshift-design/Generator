@@ -2,10 +2,13 @@
 var generatorStarted = false;
 
 
-var uiFigMessages = []; // messages from UI to Figma
-var genMessages   = []; // messages from UI to Generator
+var uiFigMessages    = []; // messages from UI to Figma
+var genMessages      = []; // messages from UI to Generator
 
 var genMessagePosted = false;
+
+
+var allUpdateNodes   = [];
 
 
 //uiClearAllLocalData();

@@ -14,6 +14,8 @@ extends OpColorBase
     constructor()
     {
         super(CORRECT_COLOR, 'corrected', 100, true);
+
+        this.slow         = true;
         this.subscription = true;
 
         

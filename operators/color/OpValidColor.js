@@ -11,7 +11,9 @@ extends OpColorBase
     {
         super(VALID_COLOR, 'valid', 100, true);
 
+        this.slow = true;
 
+        
         this.addInput(new Input(COLOR_TYPES));
         this.addOutput(new Output([COLOR_VALUE], this.output_genRequest));
 
