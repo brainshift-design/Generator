@@ -8,14 +8,14 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_ROUND, 'round', 100);
+        super(NUMBER_ROUND, 'round');
 
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramType  = new SelectParam('type',     'type',     false, true,  false, ['floor', 'round', 'ceiling'], 1));
-        this.addParam(this.paramDec   = new NumberParam('decimals', 'decimals', true,  true,  false, 0, 0, 10));
+        this.addParam(this.paramType  = new SelectParam('type',     'type',     false, true,  true, ['floor', 'round', 'ceiling'], 1));
+        this.addParam(this.paramDec   = new NumberParam('decimals', 'decimals', true,  true,  true, 0, 0, 10));
     }
 
 

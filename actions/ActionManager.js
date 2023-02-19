@@ -20,18 +20,21 @@ class ActionManager
    
     
     
-    do(act, linkWithPrevious = false, linkWithNext = false)
+    do(act, linkWithPrevious = false, linkWithNext = false, putBeforeLast = false)
     {
         // this is a fresh new action so any 
         // old redo queue is no longer relevant
         this.redoActions = [];
 
-        this.actions.push(act);
 
         act.id            = this.nextActionId++;
         act.manager       = this;
         act._linkWithNext = linkWithNext;
 
+
+        this.actions.push(act);
+
+        
         if (this.actions.length > 1)
         {
             const before = beforeLastOf(this.actions);

@@ -12,7 +12,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(GRADIENT, 'grad', 90);
+        super(GRADIENT, 'grad');
 
         this.variableInputs = true;
 

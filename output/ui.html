@@ -4224,7 +4224,11 @@ function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
 
     let length = arcLength(l[0], l[1], l[2], l[3], error);
 
-    while (Math.abs(arcLen - length) > error)
+
+    let loopProtect = 1000;
+
+    while (Math.abs(arcLen - length) > error
+        && loopProtect-- > 0)
     {
         t += (arcLen - length) / hullLength;
 
@@ -4233,6 +4237,10 @@ function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
 
         length = arcLength(l[0], l[1], l[2], l[3], error);
     }
+
+    if (loopProtect == 0)
+        console.log('endless loop in positionOnSegment()');
+
 
     return t;
 }
@@ -4252,7 +4260,7 @@ function splitSeg(p0, p1, p2, p3, t)
 
     return [
         [p0, c0, c01, c012],
-        [c012, c12, c2, p3]];
+        [c012, c12, c2, p3] ];
 }
 
 
@@ -20645,7 +20653,11 @@ function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
 
     let length = arcLength(l[0], l[1], l[2], l[3], error);
 
-    while (Math.abs(arcLen - length) > error)
+
+    let loopProtect = 1000;
+
+    while (Math.abs(arcLen - length) > error
+        && loopProtect-- > 0)
     {
         t += (arcLen - length) / hullLength;
 
@@ -20654,6 +20666,10 @@ function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
 
         length = arcLength(l[0], l[1], l[2], l[3], error);
     }
+
+    if (loopProtect == 0)
+        console.log('endless loop in positionOnSegment()');
+
 
     return t;
 }
@@ -20673,7 +20689,7 @@ function splitSeg(p0, p1, p2, p3, t)
 
     return [
         [p0, c0, c01, c012],
-        [c012, c12, c2, p3]];
+        [c012, c12, c2, p3] ];
 }
 
 
@@ -32652,29 +32668,6 @@ class MenuItem
 
 
 
-        // this.div.addEventListener('pointerenter', () =>
-        // {
-        //     if (this.enabled)
-        //     {
-        //         this.divHighlight.style.background = 'var(--figma-color-bg-brand)';
-
-        //         this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
-        //     }
-
-        //     if (this.childMenu)
-        //     {
-        //         if (!currentMenus.includes(this.childMenu))
-        //         {
-        //             hideAllMenusAfter(this.parentMenu);
-        //             this.childMenu.show(this.div, true);
-        //         }
-        //     }
-        //     else
-        //         hideAllMenusAfter(this.parentMenu);
-        // });
-    
-
-    
         this.div.addEventListener('pointermove', e =>
         {
             if (this.enabled)
@@ -32777,7 +32770,7 @@ class MenuItem
                 this.parentMenu.button.update();
         }
 
-        if (!ctrl) 
+        if (!shift) 
             hideAllMenus();
 
 
@@ -33117,63 +33110,63 @@ function initGeneratorMenus()
         
     menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
-                         new MenuItem('List',              {icon: iconList,   callback: e => actionManager.do(getCreateNodeAction(LIST,    btnNumber.div, {insert: e.shiftKey}))}),
+                         new MenuItem('List',              {icon: iconList,   callback: e => actionManager.do(getCreateNodeAction(LIST,    btnNumber.div, {insert: e.ctrlKey}))}),
                          new MenuItem('',                  {separator: true}),
-                         new MenuItem('Items',             {icon: iconItems,  callback: e => actionManager.do(getCreateNodeAction(ITEMS,   btnNumber.div, {insert: e.shiftKey}))}),
-                         new MenuItem('Select',            {icon: iconSelect, callback: e => actionManager.do(getCreateNodeAction(SELECT,  btnNumber.div, {insert: e.shiftKey}))}),
-        menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse, callback: e => actionManager.do(getCreateNodeAction(IF_ELSE, btnNumber.div, {insert: e.shiftKey})), disambiguate: true}),
+                         new MenuItem('Items',             {icon: iconItems,  callback: e => actionManager.do(getCreateNodeAction(ITEMS,   btnNumber.div, {insert: e.ctrlKey}))}),
+                         new MenuItem('Select',            {icon: iconSelect, callback: e => actionManager.do(getCreateNodeAction(SELECT,  btnNumber.div, {insert: e.ctrlKey}))}),
+        menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse, callback: e => actionManager.do(getCreateNodeAction(IF_ELSE, btnNumber.div, {insert: e.ctrlKey})), disambiguate: true}),
         menuSep1       = new MenuItem('',                  {separator: true}),
-        menuItemStart  = new MenuItem('Start',             {icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,   btnNumber.div, {insert: e.shiftKey}))}),
-        menuItemRepeat = new MenuItem('Repeat',            {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT,  btnNumber.div, {insert: e.shiftKey}))}),
+        menuItemStart  = new MenuItem('Start',             {icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,   btnNumber.div, {insert: e.ctrlKey}))}),
+        menuItemRepeat = new MenuItem('Repeat',            {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT,  btnNumber.div, {insert: e.ctrlKey}))}),
         menuSep2       = new MenuItem('',                  {separator: true}),
-        menuItemCache  = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,   btnNumber.div, {insert: e.shiftKey}))}),
-        menuItemCopy   = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,    btnNumber.div, {insert: e.shiftKey}))})]);
+        menuItemCache  = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,   btnNumber.div, {insert: e.ctrlKey}))}),
+        menuItemCopy   = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,    btnNumber.div, {insert: e.ctrlKey}))})]);
     
     
     menuMath = new Menu('Math', true, false);
     menuMath.addItems([
-        new MenuItem('Add',         {icon: iconAdd,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,      btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Subtract',    {icon: iconSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Multiply',    {icon: iconMultiply, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Divide',      {icon: iconDivide,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,   btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Power',       {icon: iconExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Remainder',   {icon: iconModulo,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,   btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Add',         {icon: iconAdd,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_ADD,      btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Subtract',    {icon: iconSubtract, callback: e => actionManager.do(getCreateNodeAction(NUMBER_SUBTRACT, btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Multiply',    {icon: iconMultiply, callback: e => actionManager.do(getCreateNodeAction(NUMBER_MULTIPLY, btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Divide',      {icon: iconDivide,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_DIVIDE,   btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Power',       {icon: iconExponent, callback: e => actionManager.do(getCreateNodeAction(NUMBER_EXPONENT, btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Remainder',   {icon: iconModulo,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_MODULO,   btnNumber.div, {insert: e.ctrlKey}))})]);
         
 
     menuBoolean = new Menu('Boolean', true, false);
     menuBoolean.addItems([
-        new MenuItem('Not', {icon: iconNot, callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('And', {icon: iconAnd, callback: e => actionManager.do(getCreateNodeAction(NUMBER_AND, btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Or',  {icon: iconOr , callback: e => actionManager.do(getCreateNodeAction(NUMBER_OR,  btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Xor', {icon: iconXor, callback: e => actionManager.do(getCreateNodeAction(NUMBER_XOR, btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Not', {icon: iconNot, callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT, btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('And', {icon: iconAnd, callback: e => actionManager.do(getCreateNodeAction(NUMBER_AND, btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Or',  {icon: iconOr , callback: e => actionManager.do(getCreateNodeAction(NUMBER_OR,  btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Xor', {icon: iconXor, callback: e => actionManager.do(getCreateNodeAction(NUMBER_XOR, btnNumber.div, {insert: e.ctrlKey}))})]);
         
     
     menuCondition = new Menu('Conditional', true, false);
     menuCondition.addItems([
-        new MenuItem('Equal',            {icon: iconEqual,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_EQUAL,            btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Not equal',        {icon: iconNotEqual,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT_EQUAL,        btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Less',             {icon: iconLess,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS,             btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Less or equal',    {icon: iconLessOrEqual,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS_OR_EQUAL,    btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Greater',          {icon: iconGreater,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_GREATER,          btnNumber.div, {insert: e.shiftKey}))}),
-        new MenuItem('Greater or equal', {icon: iconGreaterOrEqual, callback: e => actionManager.do(getCreateNodeAction(NUMBER_GREATER_OR_EQUAL, btnNumber.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Equal',            {icon: iconEqual,          callback: e => actionManager.do(getCreateNodeAction(NUMBER_EQUAL,            btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Not equal',        {icon: iconNotEqual,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_NOT_EQUAL,        btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Less',             {icon: iconLess,           callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS,             btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Less or equal',    {icon: iconLessOrEqual,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_LESS_OR_EQUAL,    btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Greater',          {icon: iconGreater,        callback: e => actionManager.do(getCreateNodeAction(NUMBER_GREATER,          btnNumber.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Greater or equal', {icon: iconGreaterOrEqual, callback: e => actionManager.do(getCreateNodeAction(NUMBER_GREATER_OR_EQUAL, btnNumber.div, {insert: e.ctrlKey}))})]);
         
     
     menuNumber = new Menu('Numbers', true, false);
     menuNumber.addItems([
-                         new MenuItem('Number',      {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, {insert: e.shiftKey}))}),
+                         new MenuItem('Number',      {icon: iconNumber,      callback: e => actionManager.do(getCreateNodeAction(NUMBER,             btnNumber.div, {insert: e.ctrlKey}))}),
                          new MenuItem('',            {separator: true}),
-                         new MenuItem('Absolute',    {icon: iconAbsolute,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, {insert: e.shiftKey}))}),
-                         new MenuItem('Round',       {icon: iconRound,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, {insert: e.shiftKey}))}),
-                         new MenuItem('Limits',      {icon: iconLimits,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, {insert: e.shiftKey}))}),
+                         new MenuItem('Absolute',    {icon: iconAbsolute,    callback: e => actionManager.do(getCreateNodeAction(NUMBER_ABSOLUTE,    btnNumber.div, {insert: e.ctrlKey}))}),
+                         new MenuItem('Round',       {icon: iconRound,       callback: e => actionManager.do(getCreateNodeAction(NUMBER_ROUND,       btnNumber.div, {insert: e.ctrlKey}))}),
+                         new MenuItem('Limits',      {icon: iconLimits,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_LIMITS,      btnNumber.div, {insert: e.ctrlKey}))}),
                          new MenuItem('',            {separator: true}),
-                         new MenuItem('Math',        {icon: iconMath,        childMenu: menuMath,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,        btnNumber.div, {insert: e.shiftKey}))}),
-                         new MenuItem('Boolean',     {icon: iconBoolean,     childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, {insert: e.shiftKey}))}),
-                         new MenuItem('Condition',   {icon: iconCondition,   childMenu: menuCondition, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, {insert: e.shiftKey}))}),
+                         new MenuItem('Math',        {icon: iconMath,        childMenu: menuMath,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_MATH,        btnNumber.div, {insert: e.ctrlKey}))}),
+                         new MenuItem('Boolean',     {icon: iconBoolean,     childMenu: menuBoolean,   callback: e => actionManager.do(getCreateNodeAction(NUMBER_BOOLEAN,     btnNumber.div, {insert: e.ctrlKey}))}),
+                         new MenuItem('Condition',   {icon: iconCondition,   childMenu: menuCondition, callback: e => actionManager.do(getCreateNodeAction(NUMBER_CONDITION,   btnNumber.div, {insert: e.ctrlKey}))}),
                          new MenuItem('',            {separator: true}),
-        menuItemSeries = new MenuItem('Series',      {icon: iconSeries,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_SERIES,      btnNumber.div, {insert: e.shiftKey}))}),
-                         new MenuItem('Random',      {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, {insert: e.shiftKey}))}),
+        menuItemSeries = new MenuItem('Series',      {icon: iconSeries,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_SERIES,      btnNumber.div, {insert: e.ctrlKey}))}),
+                         new MenuItem('Random',      {icon: iconRandom,      callback: e => actionManager.do(getCreateNodeAction(NUMBER_RANDOM,      btnNumber.div, {insert: e.ctrlKey}))}),
                          new MenuItem('',            {separator: true}),
-                         new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, {insert: e.shiftKey}))})]);
+                         new MenuItem('Interpolate', {icon: iconInterpolate, callback: e => actionManager.do(getCreateNodeAction(NUMBER_INTERPOLATE, btnNumber.div, {insert: e.ctrlKey}))})]);
         
     
     // menuString = new Menu('String nodes', true, false);
@@ -33185,20 +33178,20 @@ function initGeneratorMenus()
     
     menuColorStyle = new Menu('Color style', true, false);
     menuColorStyle.addItems([
-        new MenuItem('Link existing...', {icon: iconColorStyleReplace, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.shiftKey, existing: true}))})]);
+        new MenuItem('Link existing...', {icon: iconColorStyleReplace, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.ctrlKey, existing: true}))})]);
 
         
     menuColor = new Menu('Colors', true, true);
     menuColor.addItems([
-        menuItemColor        = new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.shiftKey, random: e.altKey}))}),
+        menuItemColor        = new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.ctrlKey, random: e.altKey}))}),
                                new MenuItem('',                  {separator: true}),
-                               new MenuItem('Valid sRGB',        {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, {insert: e.shiftKey}))}),
-        menuItemCorrectColor = new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, {insert: e.shiftKey}))}),
+                               new MenuItem('Valid sRGB',        {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, {insert: e.ctrlKey}))}),
+        menuItemCorrectColor = new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, {insert: e.ctrlKey}))}),
                                new MenuItem('',                  {separator: true}),
-                               new MenuItem('Web contrast',      {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.shiftKey}))}),
-                               new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.shiftKey}))}),
+                               new MenuItem('Web contrast',      {icon: iconWebContrast,      callback: e => actionManager.do(getCreateNodeAction(COLOR_CONTRAST,    btnColor.div, {insert: e.ctrlKey}))}),
+                               new MenuItem('Colorblind',        {icon: iconColorblind,       callback: e => actionManager.do(getCreateNodeAction(COLORBLIND,        btnColor.div, {insert: e.ctrlKey}))}),
                                new MenuItem('',                  {separator: true}),
-                               new MenuItem('Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.shiftKey}))})]);
+                               new MenuItem('Interpolate color', {icon: iconColorInterpolate, callback: e => actionManager.do(getCreateNodeAction(COLOR_INTERPOLATE, btnColor.div, {insert: e.ctrlKey}))})]);
         
     menuColor.init = () => 
     {
@@ -33208,20 +33201,20 @@ function initGeneratorMenus()
     
     menuStyle = new Menu('Styles', true, false);
     menuStyle.addItems([
-        menuItemStyleFill   = new MenuItem('Fill',          {icon: iconFill,       callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, {insert: e.shiftKey}))}),
-        menuItemStyleStroke = new MenuItem('Stroke',        {icon: iconStroke,     callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, {insert: e.shiftKey}))}),
+        menuItemStyleFill   = new MenuItem('Fill',          {icon: iconFill,       callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, {insert: e.ctrlKey}))}),
+        menuItemStyleStroke = new MenuItem('Stroke',        {icon: iconStroke,     callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, {insert: e.ctrlKey}))}),
         menuItemStyleSep1   = new MenuItem('',              {separator: true}),
-                              new MenuItem('Color style',   {icon: iconColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.shiftKey, existing: true}))})]);
-                            //new MenuItem('Color style',   {icon: iconColorStyle, childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.shiftKey}))})]);
+                              new MenuItem('Color style',   {icon: iconColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.ctrlKey, existing: true}))})]);
+                            //new MenuItem('Color style',   {icon: iconColorStyle, childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.ctrlKey}))})]);
     
     
     menuShape = new Menu('Shapes', true, false);
     menuShape.addItems([
-        new MenuItem('Rectangle', {icon: iconRectangle, callback: e => actionManager.do(getCreateNodeAction(RECTANGLE, btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Line',      {icon: iconLine,      callback: e => actionManager.do(getCreateNodeAction(LINE,      btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Ellipse',   {icon: iconEllipse,   callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,   btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Polygon',   {icon: iconPolygon,   callback: e => actionManager.do(getCreateNodeAction(POLYGON,   btnShape.div, {insert: e.shiftKey}))}),
-        new MenuItem('Star',      {icon: iconStar,      callback: e => actionManager.do(getCreateNodeAction(STAR,      btnShape.div, {insert: e.shiftKey}))})]);
+        new MenuItem('Rectangle', {icon: iconRectangle, callback: e => actionManager.do(getCreateNodeAction(RECTANGLE, btnShape.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Line',      {icon: iconLine,      callback: e => actionManager.do(getCreateNodeAction(LINE,      btnShape.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Ellipse',   {icon: iconEllipse,   callback: e => actionManager.do(getCreateNodeAction(ELLIPSE,   btnShape.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Polygon',   {icon: iconPolygon,   callback: e => actionManager.do(getCreateNodeAction(POLYGON,   btnShape.div, {insert: e.ctrlKey}))}),
+        new MenuItem('Star',      {icon: iconStar,      callback: e => actionManager.do(getCreateNodeAction(STAR,      btnShape.div, {insert: e.ctrlKey}))})]);
 
 
     menuWindow = new Menu('Window options', true, false);
@@ -33806,14 +33799,14 @@ function initNumberControlEvents(control)
                 && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 &&  graphView.overInput)
             {
-                graphView.endConnection(e.pointerId);
+                graphView.endConnection(e.pointerId, getCtrlKey(e));
                 graphView.overInput.endConnection();
             }
             else if (graphView.tempConn.input
                 && !control.param.node.isOrFollows(graphView.tempConn.input.node)
                 &&  graphView.overOutput)
             {
-                graphView.endConnection(e.pointerId);
+                graphView.endConnection(e.pointerId, getCtrlKey(e));
                 graphView.overOutput.endConnection();
             }
         }
@@ -35178,14 +35171,14 @@ function initColorControlEvents(control)
                 && !graphView.tempConn.output.node.isOrFollows(control.param.node)
                 &&  graphView.overInput)
             {
-                graphView.endConnection(e.pointerId);
+                graphView.endConnection(e.pointerId, getCtrlKey(e));
                 graphView.overInput.endConnection();
             }
             else if (graphView.tempConn.input
                 && !control.param.node.isOrFollows(graphView.tempConn.input.node)
                 &&  graphView.overOutput)
             {
-                graphView.endConnection(e.pointerId);
+                graphView.endConnection(e.pointerId, getCtrlKey(e));
                 graphView.overOutput.endConnection();
             }
         }
@@ -37480,7 +37473,7 @@ graphView.addEventListener('pointerup', e =>
 
     else if (e.button == 0
           && graphView.tempConn)
-        graphView.endConnection(e.pointerId);
+        graphView.endConnection(e.pointerId, getCtrlKey(e));
 
     else if (e.button == 1
           && graphView.panning)
@@ -38129,7 +38122,7 @@ graphView.cancelConnection = (pointerId) =>
 
 
 
-graphView.endConnection = pointerId =>
+graphView.endConnection = function(pointerId, backInit = false)
 {
     if (graphView.tempConn.output) // FROM OUTPUT
     {
@@ -38171,7 +38164,7 @@ graphView.endConnection = pointerId =>
             else if (   !savedConnInput
                      && (  !input.connected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new
-                actionManager.do(new ConnectAction(output, input));
+                createConnectAction(output, input, backInit);
         }
         else if (savedConnInput) // disconnect old
             actionManager.do(new DisconnectAction(savedConnInput));
@@ -38188,10 +38181,17 @@ graphView.endConnection = pointerId =>
 
         if (   output
             && input.canConnectFrom(output)) // TO OUTPUT
-            actionManager.do(new ConnectAction(output, input));
+            createConnectAction(output, input, backInit);
 
         graphView.cancelConnection(pointerId);
     }
+}
+
+
+
+function createConnectAction(output, input, backInit)
+{
+    actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
 }
 
 
@@ -38675,20 +38675,28 @@ function updateWireArrow(wire, x0, y0, x1, y1, x2, y2, x3, y3)
     const arrowDistance = 30;
     const arrowSize     = 9;
 
-    const al = arcLength(p0, p1, p2, p3) - arrowDistance * graphView.zoom;
-    const t  = Math.max(0.5, positionOnSegment(p0, p1, p2, p3, al));
+    let al = arcLength(p0, p1, p2, p3) - arrowDistance * graphView.zoom;
 
+    if (al <= 0)
+    {
+        wire.arrow.setAttribute('display', 'none');
+        return;
+    }
+    
+
+    let t = positionOnSegment(p0, p1, p2, p3, al);
+    
     if (isNaN(t))
     {
         wire.arrow.setAttribute('display', 'none');
         return;
     }
-
+    
 
     const pt = lerpv3(p0, p1, p2, p3, t);
 
-    const tx = pt.x;;
-    const ty = pt.y;;
+    const tx = pt.x;
+    const ty = pt.y;
 
     const tw = arrowSize * graphView.zoom;
     const th = arrowSize * graphView.zoom;
@@ -39280,8 +39288,8 @@ extends NumberParamBase
         this.div.appendChild(this.control);
 
        
-        if (hasInput)  this.initInput(NUMBER_TYPES);
-        if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest);
+        if (hasInput)  this.initInput(NUMBER_TYPES, null, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, null, this.output_backInit);
 
 
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true, false, true); });
@@ -39339,6 +39347,26 @@ extends NumberParamBase
     {
         super.setName(name, dispatchEvents);
         this.control.setName(name);
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
     }
 }
 
@@ -41606,7 +41634,7 @@ extends EventTarget
         
         this.types            = [...types];
         this.getValuesForUndo = getValuesForUndo;
-        this.getBackInitValue    = getBackInitValue;
+        this.getBackInitValue = getBackInitValue;
 
 
         this.div              = createDiv('input');
@@ -41854,6 +41882,8 @@ class Output
     cache      = [];
 
 
+    getValuesForUndo; // function pointer, return array of [index,value] tuples
+
     backInit   = null;
 
 
@@ -41861,24 +41891,25 @@ class Output
 
 
 
-    constructor(types, genRequest, backInit = null)
+    constructor(types, genRequest, getValuesForUndo = null, backInit = null)
     {
-        this.types      = [...types];
-        this.genRequest = genRequest;
-        this.backInit   = backInit;
+        this.types            = [...types];
+        this.genRequest       = genRequest;
+        this.getValuesForUndo = getValuesForUndo;
+        this.backInit         = backInit;
 
         
-        this.div        = createDiv('output');
-        this.hitbox     = createDiv('outputHitbox');
-        this.wireBall   = createDiv('outputBall');
-        
-        this.div.output = this;
-        
-        
-        this.colorLight = [0, 0, 0, 1];
-        this.colorDark  = [1, 1, 1, 1];
-
-        this.wireColor  = rgb_NaN;//rgbHeaderFromType(this.types[0], true);
+        this.div              = createDiv('output');
+        this.hitbox           = createDiv('outputHitbox');
+        this.wireBall         = createDiv('outputBall');
+              
+        this.div.output       = this;
+              
+              
+        this.colorLight       = [0, 0, 0, 1];
+        this.colorDark        = [1, 1, 1, 1];
+      
+        this.wireColor        = rgb_NaN;//rgbHeaderFromType(this.types[0], true);
         
 
         this.div.appendChild(this.hitbox);
@@ -42966,6 +42997,18 @@ class Operator
 
 
     input_getValuesForUndo()
+    {
+        const values = []; 
+
+        for (const param of this.node.params)
+            values.push(param.getValueForUndo());
+
+        return values;
+    }
+
+
+
+    output_getValuesForUndo()
     {
         const values = []; 
 
@@ -44137,14 +44180,14 @@ function createNodeHeader(node)
                 && !graphView.tempConn.output.node.isOrFollows(node)
                 &&  graphView.overInput)
             {
-                graphView          .endConnection(e.pointerId);
+                graphView          .endConnection(e.pointerId, getCtrlKey(e));
                 graphView.overInput.endConnection();
             }
             else if ( graphView.tempConn.input
                   && !node.isOrFollows(graphView.tempConn.input.node)
                   &&  graphView.overOutput)
             {
-                graphView           .endConnection(e.pointerId);
+                graphView           .endConnection(e.pointerId, getCtrlKey(e));
                 graphView.overOutput.endConnection();
             }
         }
@@ -44430,7 +44473,7 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
     {
         node.label.style.left = 
               'calc(50%' 
-            + (node.active ? (' + ' + activeOffset + 'px') : '') 
+            + (node.active && node.showActiveArrow ? (' + ' + activeOffset + 'px') : '') 
             + ')';
 
         node.label.style.transform = 'translateX(-50%)';
@@ -44787,7 +44830,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(LIST, 'list', 100);
+        super(LIST, 'list');
 
         this.variableInputs = true;
 
@@ -44862,7 +44905,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(ITEMS, 'items', 100);
+        super(ITEMS, 'items');
 
         this.inert = true;
 
@@ -44997,7 +45040,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(SELECT, 'select', 100);
+        super(SELECT, 'select');
 
         this.inert = true;
 
@@ -45114,7 +45157,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(IF_ELSE, 'if/else', 90);
+        super(IF_ELSE, 'if/else');
 
 
         this.addInput (new Input(ALL_TYPES));
@@ -45206,7 +45249,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(START, 'start', 70);
+        super(START, 'start');
 
         this.addInput (new Input (ALL_TYPES));
         this.addOutput(new Output([], this.output_genRequest));
@@ -45276,7 +45319,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(REPEAT, 'repeat', 100);
+        super(REPEAT, 'repeat');
 
         this.addInput (new Input(ALL_TYPES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));
@@ -45361,7 +45404,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(CACHE, 'cache', 90);
+        super(CACHE, 'cache');
 
         this.cached = true;
         
@@ -45512,7 +45555,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(COPY, 'copy', 100);
+        super(COPY, 'copy');
 
         //this.cached = true;
         
@@ -45682,7 +45725,7 @@ extends OperatorBase
         super(NUMBER, 'num');
 
         this.addInput (new Input (NUMBER_TYPES, this.input_getValuesForUndo, this.input_getBackInitValue));
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, this.output_backInit));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, this.output_getValuesForUndo, this.output_backInit));
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
 
@@ -45704,7 +45747,9 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        actionManager.do(new SetParamValueAction(this.node.paramValue, value), false, true);
+        console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
+        
+        this.node.paramValue.setValue(value, false, true, false);
     }
 
 
@@ -45763,7 +45808,7 @@ extends OperatorWithValue
 {
     constructor()
     {
-        super(NUMBER_ABSOLUTE, 'abs', 100);
+        super(NUMBER_ABSOLUTE, 'abs');
 
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
@@ -45821,14 +45866,14 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_ROUND, 'round', 100);
+        super(NUMBER_ROUND, 'round');
 
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramType  = new SelectParam('type',     'type',     false, true,  false, ['floor', 'round', 'ceiling'], 1));
-        this.addParam(this.paramDec   = new NumberParam('decimals', 'decimals', true,  true,  false, 0, 0, 10));
+        this.addParam(this.paramType  = new SelectParam('type',     'type',     false, true,  true, ['floor', 'round', 'ceiling'], 1));
+        this.addParam(this.paramDec   = new NumberParam('decimals', 'decimals', true,  true,  true, 0, 0, 10));
     }
 
 
@@ -45885,14 +45930,14 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_LIMITS, 'lim', 100);
+        super(NUMBER_LIMITS, 'lim');
 
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramMin = new NumberParam('min', 'min', true,  true,  false,    0));
-        this.addParam(this.paramMax = new NumberParam('max', 'max', true,  true,  false, 1000));
+        this.addParam(this.paramMin = new NumberParam('min', 'min', true,  true,  true,    0));
+        this.addParam(this.paramMax = new NumberParam('max', 'max', true,  true,  true, 1000));
     }
 
 
@@ -45951,15 +45996,15 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_RANDOM, 'random', 90);
+        super(NUMBER_RANDOM, 'random');
 
         this.cached = false;
         
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
-        this.addParam(this.paramSeed = new NumberParam('seed', 'seed', true, true, false, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
-        this.addParam(this.paramMin  = new NumberParam('min',  'min',  true, true, false,    0));
-        this.addParam(this.paramMax  = new NumberParam('max',  'max',  true, true, false, 1000));
+        this.addParam(this.paramSeed = new NumberParam('seed', 'seed', true, true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
+        this.addParam(this.paramMin  = new NumberParam('min',  'min',  true, true, true,    0));
+        this.addParam(this.paramMax  = new NumberParam('max',  'max',  true, true, true, 1000));
 
         this.paramSeed.control.allowEditDecimals = false;
         this.paramSeed.isDefault = () => false;
@@ -46002,7 +46047,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(NUMBER_SERIES, 'series', 100);
+        super(NUMBER_SERIES, 'series');
 
         this.cached = false;
         
@@ -46047,7 +46092,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_INTERPOLATE, 'inter', 100);
+        super(NUMBER_INTERPOLATE, 'inter');
 
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));
@@ -46055,7 +46100,7 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  false, 50, 0, 100, 0));
+        this.addParam(this.paramAmount = new NumberParam('amount', '', true, true, true, 50, 0, 100, 0));
 
         
         this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow
@@ -46123,7 +46168,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_MATH, 'math', 100);
+        super(NUMBER_MATH, 'math');
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -46427,7 +46472,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_BOOLEAN, 'bool', 100);
+        super(NUMBER_BOOLEAN, 'bool');
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
@@ -46437,7 +46482,7 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
         this.addParam(this.paramValue);
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, false, BOOLEAN_OPS.map(s => s[1]), 1));
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, BOOLEAN_OPS.map(s => s[1]), 1));
     }
     
     
@@ -46533,7 +46578,7 @@ extends OperatorWithValue
 {
     constructor(type, shortName)
     {
-        super(type, shortName, 100);
+        super(type, shortName);
 
         
         this.variableInputs   = true;
@@ -46694,7 +46739,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_CONDITION, 'cond', 100);
+        super(NUMBER_CONDITION, 'cond');
 
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));
@@ -46702,7 +46747,7 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true,  false, CONDITION_OPS.map(s => s[1]), 1));
+        this.addParam(this.paramOperation = new SelectParam('operation', '', false, true, true, CONDITION_OPS.map(s => s[1]), 1));
     }
 
 
@@ -46931,7 +46976,7 @@ extends Operator
     
 
 
-    constructor(nodeType, shortType, defWidth = 100, progressBar = false)
+    constructor(nodeType, shortType, progressBar = false, defWidth = 100)
     {
         super(nodeType, shortType, defWidth, progressBar);
 
@@ -47244,8 +47289,8 @@ extends OpColorBase
         this.inner.appendChild(this.colorBack);
 
 
-        this.addInput(new Input(COLOR_TYPES, this.input_getValuesForUndo));
-        this.addOutput(new Output([COLOR], this.output_genRequest));
+        this.addInput(new Input(COLOR_TYPES, this.input_getValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([COLOR], this.output_genRequest, this.output_getValuesForUndo, this.output_backInit));
 
         
         this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
@@ -47310,6 +47355,29 @@ extends OpColorBase
             this.param2.setValue(new NumberValue(this._color[2] * rgbFactor[1]), false, true, false);
             this.param3.setValue(new NumberValue(this._color[3] * rgbFactor[2]), false, true, false);
         });
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.node.paramColor.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
+
+        this.node.paramSpace.setValue(value.space, false, true, false);
+        this.node.param1    .setValue(value.c1,    false, true, false);
+        this.node.param2    .setValue(value.c2,    false, true, false);
+        this.node.param3    .setValue(value.c3,    false, true, false);
     }
 
 
@@ -48837,7 +48905,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(VALID_COLOR, 'valid', 100, true);
+        super(VALID_COLOR, 'valid', true);
 
         this.slow = true;
 
@@ -49013,7 +49081,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(CORRECT_COLOR, 'corrected', 100, true);
+        super(CORRECT_COLOR, 'corrected', true);
 
         this.slow         = true;
         this.subscription = true;
@@ -49313,7 +49381,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_CONTRAST, 'contrast', 100);
+        super(COLOR_CONTRAST, 'contrast');
 
 
         this.addInput(new Input(COLOR_TYPES));
@@ -49573,16 +49641,16 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLORBLIND, 'colorblind', 100);
+        super(COLORBLIND, 'colorblind');
 
 
         this.addInput(new Input(COLOR_TYPES));
         this.addOutput(new Output([COLOR], this.output_genRequest));
 
 
-        this.addParam(this.paramL = new NumberParam('l', 'L', false, true, false, 2, 0, 2, 0, 0.02));
-        this.addParam(this.paramM = new NumberParam('m', 'M', false, true, false, 2, 0, 2, 0, 0.02));
-        this.addParam(this.paramS = new NumberParam('s', 'S', false, true, false, 2, 0, 2, 0, 0.02));
+        this.addParam(this.paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0, 0.02));
+        this.addParam(this.paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0, 0.02));
+        this.addParam(this.paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0, 0.02));
 
         this.paramL.addEventListener('change', () => this.paramL.control.dragScale = decCount(numToString(this.paramL.value, this.paramL.control.displayDec)) == 0 ? 0.02 : 0.05);
         this.paramM.addEventListener('change', () => this.paramM.control.dragScale = decCount(numToString(this.paramM.value, this.paramM.control.displayDec)) == 0 ? 0.02 : 0.05);
@@ -49679,7 +49747,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_INTERPOLATE, 'inter', 100);
+        super(COLOR_INTERPOLATE, 'inter');
 
         
         this.addInput(new Input(COLOR_TYPES));
@@ -50315,18 +50383,18 @@ extends OpColorBase
 
 
 
-    connectToSelected(selected)
-    {
-        console.assert(!isEmpty(selected));
+    // connectToSelected(selected)
+    // {
+    //     console.assert(!isEmpty(selected));
 
-        const node   = selected[0];
-        const inputs = this.inputs.filter(i => i.types.includes(node.type));
+    //     const node   = selected[0];
+    //     const inputs = this.inputs.filter(i => i.types.includes(node.type));
     
-        if (    node
-            && !isEmpty(node.outputs)
-            && !isEmpty(inputs))
-            actionManager.do(new ConnectAction(node.outputs[0], inputs[0]), true);
-    }
+    //     if (    node
+    //         && !isEmpty(node.outputs)
+    //         && !isEmpty(inputs))
+    //         actionManager.do(new ConnectAction(node.outputs[0], inputs[0]), true);
+    // }
 }
 
 
@@ -50428,7 +50496,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(GRADIENT, 'grad', 90);
+        super(GRADIENT, 'grad');
 
         this.variableInputs = true;
 
@@ -50680,7 +50748,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(LINE, 'line', 100);
+        super(LINE, 'line');
 
         this.addInput (this.createInputForObjects([LINE, LINE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([LINE], this.output_genRequest));
@@ -50714,7 +50782,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(ELLIPSE, 'ellipse', 100);
+        super(ELLIPSE, 'ellipse');
 
         this.addInput (this.createInputForObjects([ELLIPSE, ELLIPSE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([ELLIPSE], this.output_genRequest));
@@ -50752,7 +50820,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(POLYGON, 'poly', 100);
+        super(POLYGON, 'poly');
 
         this.addInput (this.createInputForObjects([POLYGON, POLYGON_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([POLYGON], this.output_genRequest));
@@ -50805,7 +50873,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(STAR, 'star', 90);
+        super(STAR, 'star');
 
         this.addInput (this.createInputForObjects([STAR, STAR_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([STAR], this.output_genRequest));
@@ -51299,18 +51367,21 @@ class ActionManager
    
     
     
-    do(act, linkWithPrevious = false, linkWithNext = false)
+    do(act, linkWithPrevious = false, linkWithNext = false, putBeforeLast = false)
     {
         // this is a fresh new action so any 
         // old redo queue is no longer relevant
         this.redoActions = [];
 
-        this.actions.push(act);
 
         act.id            = this.nextActionId++;
         act.manager       = this;
         act._linkWithNext = linkWithNext;
 
+
+        this.actions.push(act);
+
+        
         if (this.actions.length > 1)
         {
             const before = beforeLastOf(this.actions);
@@ -51465,6 +51536,7 @@ extends Action
     outputNodeId;
     outputId;
     outputOrder           = -1;
+    outputValues          = []; // in id,value pairs, to be restored on undo
     
     inputNodeId;
     inputId;
@@ -51478,6 +51550,7 @@ extends Action
     oldOutputOrder        = -1;
     oldOutputActiveNodeId = NULL;
     
+    backInit              = false;
    
 
     get outputNode()    { return nodeFromId(this.outputNodeId); }
@@ -51492,7 +51565,7 @@ extends Action
 
 
 
-    constructor(output, input)
+    constructor(output, input, options = {})
     {
         super('CONNECT ' 
             + output.node.id + '.' + output.id
@@ -51510,6 +51583,11 @@ extends Action
         this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : NULL;
         this.oldOutputId     = input.connected ? input.connectedOutput.id      : NULL;
         this.oldOutputOrder  = input.connected ? input.connection.outputOrder  : -1;
+
+
+        if (   options 
+            && isValid(options.backInit))
+            this.backInit = options.backInit;
     }
 
 
@@ -51519,9 +51597,13 @@ extends Action
         this.oldOutputActiveNodeId = NULL;
         this.inputActiveNodeIds    = [];
 
-        connectAction_saveOutputActiveNodes(this);
+
+        connectAction_saveOutputActiveNodesAndValues(this);
         connectAction_saveInputActiveNodesAndValues(this);
         
+        if (this.backInit)
+            connectAction_backInitOutputValue(this);
+
         connectAction_removeOldOutputConnection(this);
         
         connectAction_makeNewConnection(this);
@@ -51538,6 +51620,7 @@ extends Action
     undo(updateNodes)
     {
         connectAction_restoreInputValues(this);
+        connectAction_restoreOutputValues(this);
 
         this.deactivateNewActiveNodes();
         connectAction_activateOldActiveNodes(this, updateNodes); 
@@ -51548,8 +51631,18 @@ extends Action
 
 
 
-function connectAction_saveOutputActiveNodes(act)
+function connectAction_backInitOutputValue(act)
 {
+    if (    act.output.backInit
+        &&  act.input.getBackInitValue)
+        act.output.backInit(act.input.getBackInitValue());
+}
+
+
+
+function connectAction_saveOutputActiveNodesAndValues(act)
+{
+    act.outputValues          = act.output.getValuesForUndo ? act.output.getValuesForUndo() : [];
     act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
 }
 
@@ -51559,10 +51652,6 @@ function connectAction_saveInputActiveNodesAndValues(act)
 {
     act.inputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo() : [];
     act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
-
-    if (   act.output.backInit
-        && act. input.getBackInitValue)
-        act.output.backInit(act.input.getBackInitValue());
 }
 
 
@@ -51687,6 +51776,28 @@ function connectAction_restoreInputValues(act)
     for (const value of act.inputValues)
     {
         const param = act.inputNode.params.find(p => p.id == value.paramId);
+
+        if (param)
+        {
+            if (   value.min != undefined
+                && value.max != undefined)
+            {
+                param.control.setMin(value.min);
+                param.control.setMax(value.max);
+            }
+                
+            param.setValue(value.value, true, true, false);
+        }
+    }
+}
+
+
+
+function connectAction_restoreOutputValues(act)
+{
+    for (const value of act.outputValues)
+    {
+        const param = act.outputNode.params.find(p => p.id == value.paramId);
 
         if (param)
         {
@@ -52598,6 +52709,7 @@ extends Action
     outputNodeId;
     outputId;
     outputOrder            = -1;
+    outputValues           = [];
     
     prevInputNodeId        = NULL;
     prevInputId;
@@ -52617,6 +52729,8 @@ extends Action
     oldOutputOrder;
     oldOutputActiveNodeId  = NULL;
 
+    backInit               = false;
+
     
 
     
@@ -52635,7 +52749,7 @@ extends Action
     
 
 
-    constructor(output, prevInput, input)
+    constructor(output, prevInput, input, options = {})
     {
         super(
              'RECONNECT '
@@ -52660,6 +52774,11 @@ extends Action
         this.oldOutputNodeId      = input.connected ? input.connectedOutput.node.id : NULL;
         this.oldOutputId          = input.connected ? input.connectedOutput.id      : NULL;
         this.oldOutputOrder       = input.connected ? input.connection.outputOrder  : -1;
+
+
+        if (   options 
+            && isValid(options.backInit))
+            this.backInit = options.backInit;
     }
 
 
@@ -52668,9 +52787,12 @@ extends Action
     {
         this.newActiveNodeIds = [];
 
-        connectAction_saveOutputActiveNodes(this);
+        connectAction_saveOutputActiveNodesAndValues(this);
         connectAction_saveInputActiveNodesAndValues(this);
         this.savePrevInputActiveNodesAndValues();
+
+        if (this.backInit)
+            connectAction_backInitOutputValue(this);
 
         connectAction_removeOldOutputConnection(this);
         this.removePrevInputConnection();
@@ -52691,6 +52813,8 @@ extends Action
         connectAction_restoreInputValues(this);
         this.restorePrevInputValues();
 
+        connectAction_restoreOutputValues(this);
+        
         this.deactivateNewActiveNodes();
         connectAction_activateOldActiveNodes(this, updateNodes); 
 

@@ -35,7 +35,11 @@ function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
 
     let length = arcLength(l[0], l[1], l[2], l[3], error);
 
-    while (Math.abs(arcLen - length) > error)
+
+    let loopProtect = 1000;
+
+    while (Math.abs(arcLen - length) > error
+        && loopProtect-- > 0)
     {
         t += (arcLen - length) / hullLength;
 
@@ -44,6 +48,10 @@ function positionOnSegment(p0, p1, p2, p3, arcLen, error = 0.001)
 
         length = arcLength(l[0], l[1], l[2], l[3], error);
     }
+
+    if (loopProtect == 0)
+        console.log('endless loop in positionOnSegment()');
+
 
     return t;
 }
@@ -63,7 +71,7 @@ function splitSeg(p0, p1, p2, p3, t)
 
     return [
         [p0, c0, c01, c012],
-        [c012, c12, c2, p3]];
+        [c012, c12, c2, p3] ];
 }
 
 

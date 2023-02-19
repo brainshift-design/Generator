@@ -243,16 +243,16 @@ extends OpColorBase
 
 
 
-    connectToSelected(selected)
-    {
-        console.assert(!isEmpty(selected));
+    // connectToSelected(selected)
+    // {
+    //     console.assert(!isEmpty(selected));
 
-        const node   = selected[0];
-        const inputs = this.inputs.filter(i => i.types.includes(node.type));
+    //     const node   = selected[0];
+    //     const inputs = this.inputs.filter(i => i.types.includes(node.type));
     
-        if (    node
-            && !isEmpty(node.outputs)
-            && !isEmpty(inputs))
-            actionManager.do(new ConnectAction(node.outputs[0], inputs[0]), true);
-    }
+    //     if (    node
+    //         && !isEmpty(node.outputs)
+    //         && !isEmpty(inputs))
+    //         actionManager.do(new ConnectAction(node.outputs[0], inputs[0]), true);
+    // }
 }

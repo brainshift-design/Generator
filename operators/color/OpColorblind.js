@@ -9,16 +9,16 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLORBLIND, 'colorblind', 100);
+        super(COLORBLIND, 'colorblind');
 
 
         this.addInput(new Input(COLOR_TYPES));
         this.addOutput(new Output([COLOR], this.output_genRequest));
 
 
-        this.addParam(this.paramL = new NumberParam('l', 'L', false, true, false, 2, 0, 2, 0, 0.02));
-        this.addParam(this.paramM = new NumberParam('m', 'M', false, true, false, 2, 0, 2, 0, 0.02));
-        this.addParam(this.paramS = new NumberParam('s', 'S', false, true, false, 2, 0, 2, 0, 0.02));
+        this.addParam(this.paramL = new NumberParam('l', 'L', false, true, true, 2, 0, 2, 0, 0.02));
+        this.addParam(this.paramM = new NumberParam('m', 'M', false, true, true, 2, 0, 2, 0, 0.02));
+        this.addParam(this.paramS = new NumberParam('s', 'S', false, true, true, 2, 0, 2, 0, 0.02));
 
         this.paramL.addEventListener('change', () => this.paramL.control.dragScale = decCount(numToString(this.paramL.value, this.paramL.control.displayDec)) == 0 ? 0.02 : 0.05);
         this.paramM.addEventListener('change', () => this.paramM.control.dragScale = decCount(numToString(this.paramM.value, this.paramM.control.displayDec)) == 0 ? 0.02 : 0.05);

@@ -8,14 +8,14 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_LIMITS, 'lim', 100);
+        super(NUMBER_LIMITS, 'lim');
 
         this.addInput (new Input (NUMBER_TYPES));
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramMin = new NumberParam('min', 'min', true,  true,  false,    0));
-        this.addParam(this.paramMax = new NumberParam('max', 'max', true,  true,  false, 1000));
+        this.addParam(this.paramMin = new NumberParam('min', 'min', true,  true,  true,    0));
+        this.addParam(this.paramMax = new NumberParam('max', 'max', true,  true,  true, 1000));
     }
 
 

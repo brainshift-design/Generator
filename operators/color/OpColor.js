@@ -37,8 +37,8 @@ extends OpColorBase
         this.inner.appendChild(this.colorBack);
 
 
-        this.addInput(new Input(COLOR_TYPES, this.input_getValuesForUndo));
-        this.addOutput(new Output([COLOR], this.output_genRequest));
+        this.addInput(new Input(COLOR_TYPES, this.input_getValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([COLOR], this.output_genRequest, this.output_getValuesForUndo, this.output_backInit));
 
         
         this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
@@ -103,6 +103,29 @@ extends OpColorBase
             this.param2.setValue(new NumberValue(this._color[2] * rgbFactor[1]), false, true, false);
             this.param3.setValue(new NumberValue(this._color[3] * rgbFactor[2]), false, true, false);
         });
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.node.paramColor.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
+
+        this.node.paramSpace.setValue(value.space, false, true, false);
+        this.node.param1    .setValue(value.c1,    false, true, false);
+        this.node.param2    .setValue(value.c2,    false, true, false);
+        this.node.param3    .setValue(value.c3,    false, true, false);
     }
 
 

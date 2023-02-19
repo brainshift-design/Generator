@@ -239,20 +239,28 @@ function updateWireArrow(wire, x0, y0, x1, y1, x2, y2, x3, y3)
     const arrowDistance = 30;
     const arrowSize     = 9;
 
-    const al = arcLength(p0, p1, p2, p3) - arrowDistance * graphView.zoom;
-    const t  = Math.max(0.5, positionOnSegment(p0, p1, p2, p3, al));
+    let al = arcLength(p0, p1, p2, p3) - arrowDistance * graphView.zoom;
 
+    if (al <= 0)
+    {
+        wire.arrow.setAttribute('display', 'none');
+        return;
+    }
+    
+
+    let t = positionOnSegment(p0, p1, p2, p3, al);
+    
     if (isNaN(t))
     {
         wire.arrow.setAttribute('display', 'none');
         return;
     }
-
+    
 
     const pt = lerpv3(p0, p1, p2, p3, t);
 
-    const tx = pt.x;;
-    const ty = pt.y;;
+    const tx = pt.x;
+    const ty = pt.y;
 
     const tw = arrowSize * graphView.zoom;
     const th = arrowSize * graphView.zoom;

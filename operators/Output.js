@@ -45,6 +45,8 @@ class Output
     cache      = [];
 
 
+    getValuesForUndo; // function pointer, return array of [index,value] tuples
+
     backInit   = null;
 
 
@@ -52,24 +54,25 @@ class Output
 
 
 
-    constructor(types, genRequest, backInit = null)
+    constructor(types, genRequest, getValuesForUndo = null, backInit = null)
     {
-        this.types      = [...types];
-        this.genRequest = genRequest;
-        this.backInit   = backInit;
+        this.types            = [...types];
+        this.genRequest       = genRequest;
+        this.getValuesForUndo = getValuesForUndo;
+        this.backInit         = backInit;
 
         
-        this.div        = createDiv('output');
-        this.hitbox     = createDiv('outputHitbox');
-        this.wireBall   = createDiv('outputBall');
-        
-        this.div.output = this;
-        
-        
-        this.colorLight = [0, 0, 0, 1];
-        this.colorDark  = [1, 1, 1, 1];
-
-        this.wireColor  = rgb_NaN;//rgbHeaderFromType(this.types[0], true);
+        this.div              = createDiv('output');
+        this.hitbox           = createDiv('outputHitbox');
+        this.wireBall         = createDiv('outputBall');
+              
+        this.div.output       = this;
+              
+              
+        this.colorLight       = [0, 0, 0, 1];
+        this.colorDark        = [1, 1, 1, 1];
+      
+        this.wireColor        = rgb_NaN;//rgbHeaderFromType(this.types[0], true);
         
 
         this.div.appendChild(this.hitbox);

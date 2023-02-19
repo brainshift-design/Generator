@@ -10,7 +10,7 @@ extends OperatorBase
         super(NUMBER, 'num');
 
         this.addInput (new Input (NUMBER_TYPES, this.input_getValuesForUndo, this.input_getBackInitValue));
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, this.output_backInit));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, this.output_getValuesForUndo, this.output_backInit));
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
 
@@ -32,7 +32,9 @@ extends OperatorBase
     {
         // 'this' is the output
 
-        actionManager.do(new SetParamValueAction(this.node.paramValue, value), false, true);
+        console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
+        
+        this.node.paramValue.setValue(value, false, true, false);
     }
 
 

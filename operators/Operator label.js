@@ -80,7 +80,7 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
     {
         node.label.style.left = 
               'calc(50%' 
-            + (node.active ? (' + ' + activeOffset + 'px') : '') 
+            + (node.active && node.showActiveArrow ? (' + ' + activeOffset + 'px') : '') 
             + ')';
 
         node.label.style.transform = 'translateX(-50%)';

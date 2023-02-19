@@ -3,7 +3,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(ITEMS, 'items', 100);
+        super(ITEMS, 'items');
 
         this.inert = true;
 

@@ -4,6 +4,7 @@ extends Action
     outputNodeId;
     outputId;
     outputOrder           = -1;
+    outputValues          = []; // in id,value pairs, to be restored on undo
     
     inputNodeId;
     inputId;
@@ -17,6 +18,7 @@ extends Action
     oldOutputOrder        = -1;
     oldOutputActiveNodeId = NULL;
     
+    backInit              = false;
    
 
     get outputNode()    { return nodeFromId(this.outputNodeId); }
@@ -31,7 +33,7 @@ extends Action
 
 
 
-    constructor(output, input)
+    constructor(output, input, options = {})
     {
         super('CONNECT ' 
             + output.node.id + '.' + output.id
@@ -49,6 +51,11 @@ extends Action
         this.oldOutputNodeId = input.connected ? input.connectedOutput.node.id : NULL;
         this.oldOutputId     = input.connected ? input.connectedOutput.id      : NULL;
         this.oldOutputOrder  = input.connected ? input.connection.outputOrder  : -1;
+
+
+        if (   options 
+            && isValid(options.backInit))
+            this.backInit = options.backInit;
     }
 
 
@@ -58,9 +65,13 @@ extends Action
         this.oldOutputActiveNodeId = NULL;
         this.inputActiveNodeIds    = [];
 
-        connectAction_saveOutputActiveNodes(this);
+
+        connectAction_saveOutputActiveNodesAndValues(this);
         connectAction_saveInputActiveNodesAndValues(this);
         
+        if (this.backInit)
+            connectAction_backInitOutputValue(this);
+
         connectAction_removeOldOutputConnection(this);
         
         connectAction_makeNewConnection(this);
@@ -77,6 +88,7 @@ extends Action
     undo(updateNodes)
     {
         connectAction_restoreInputValues(this);
+        connectAction_restoreOutputValues(this);
 
         this.deactivateNewActiveNodes();
         connectAction_activateOldActiveNodes(this, updateNodes); 
@@ -87,8 +99,18 @@ extends Action
 
 
 
-function connectAction_saveOutputActiveNodes(act)
+function connectAction_backInitOutputValue(act)
 {
+    if (    act.output.backInit
+        &&  act.input.getBackInitValue)
+        act.output.backInit(act.input.getBackInitValue());
+}
+
+
+
+function connectAction_saveOutputActiveNodesAndValues(act)
+{
+    act.outputValues          = act.output.getValuesForUndo ? act.output.getValuesForUndo() : [];
     act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
 }
 
@@ -98,10 +120,6 @@ function connectAction_saveInputActiveNodesAndValues(act)
 {
     act.inputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo() : [];
     act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
-
-    if (   act.output.backInit
-        && act. input.getBackInitValue)
-        act.output.backInit(act.input.getBackInitValue());
 }
 
 
@@ -226,6 +244,28 @@ function connectAction_restoreInputValues(act)
     for (const value of act.inputValues)
     {
         const param = act.inputNode.params.find(p => p.id == value.paramId);
+
+        if (param)
+        {
+            if (   value.min != undefined
+                && value.max != undefined)
+            {
+                param.control.setMin(value.min);
+                param.control.setMax(value.max);
+            }
+                
+            param.setValue(value.value, true, true, false);
+        }
+    }
+}
+
+
+
+function connectAction_restoreOutputValues(act)
+{
+    for (const value of act.outputValues)
+    {
+        const param = act.outputNode.params.find(p => p.id == value.paramId);
 
         if (param)
         {

@@ -10,7 +10,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(LINE, 'line', 100);
+        super(LINE, 'line');
 
         this.addInput (this.createInputForObjects([LINE, LINE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([LINE], this.output_genRequest));

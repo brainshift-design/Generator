@@ -9,7 +9,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(COLOR_CONTRAST, 'contrast', 100);
+        super(COLOR_CONTRAST, 'contrast');
 
 
         this.addInput(new Input(COLOR_TYPES));

@@ -180,7 +180,7 @@ graphView.addEventListener('pointerup', e =>
 
     else if (e.button == 0
           && graphView.tempConn)
-        graphView.endConnection(e.pointerId);
+        graphView.endConnection(e.pointerId, getCtrlKey(e));
 
     else if (e.button == 1
           && graphView.panning)

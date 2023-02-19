@@ -14,7 +14,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(STAR, 'star', 90);
+        super(STAR, 'star');
 
         this.addInput (this.createInputForObjects([STAR, STAR_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([STAR], this.output_genRequest));

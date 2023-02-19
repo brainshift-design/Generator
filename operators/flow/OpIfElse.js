@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(IF_ELSE, 'if/else', 90);
+        super(IF_ELSE, 'if/else');
 
 
         this.addInput (new Input(ALL_TYPES));

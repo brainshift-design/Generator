@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_INTERPOLATE, 'inter', 100);
+        super(NUMBER_INTERPOLATE, 'inter');
 
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));
@@ -15,7 +15,7 @@ extends OperatorWithValue
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramValue);
-        this.addParam(this.paramAmount = new NumberParam('amount', '', true,  true,  false, 50, 0, 100, 0));
+        this.addParam(this.paramAmount = new NumberParam('amount', '', true, true, true, 50, 0, 100, 0));
 
         
         this.paramAmount.control.min = Number.MIN_SAFE_INTEGER; // allow

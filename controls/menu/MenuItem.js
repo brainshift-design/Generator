@@ -140,29 +140,6 @@ class MenuItem
 
 
 
-        // this.div.addEventListener('pointerenter', () =>
-        // {
-        //     if (this.enabled)
-        //     {
-        //         this.divHighlight.style.background = 'var(--figma-color-bg-brand)';
-
-        //         this.divHighlight.style.width = 'calc(100% - ' + (this.childMenu && this.callback ? this.arrowWidth : 0) + 'px)';
-        //     }
-
-        //     if (this.childMenu)
-        //     {
-        //         if (!currentMenus.includes(this.childMenu))
-        //         {
-        //             hideAllMenusAfter(this.parentMenu);
-        //             this.childMenu.show(this.div, true);
-        //         }
-        //     }
-        //     else
-        //         hideAllMenusAfter(this.parentMenu);
-        // });
-    
-
-    
         this.div.addEventListener('pointermove', e =>
         {
             if (this.enabled)
@@ -265,7 +242,7 @@ class MenuItem
                 this.parentMenu.button.update();
         }
 
-        if (!ctrl) 
+        if (!shift) 
             hideAllMenus();
 
 

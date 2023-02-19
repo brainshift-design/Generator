@@ -646,6 +646,18 @@ class Operator
 
 
 
+    output_getValuesForUndo()
+    {
+        const values = []; 
+
+        for (const param of this.node.params)
+            values.push(param.getValueForUndo());
+
+        return values;
+    }
+
+
+
     genRequest(gen)
     {
         // this function exists because a node without outputs

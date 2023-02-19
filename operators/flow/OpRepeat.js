@@ -7,7 +7,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(REPEAT, 'repeat', 100);
+        super(REPEAT, 'repeat');
 
         this.addInput (new Input(ALL_TYPES));
         this.addOutput(new Output([LIST_VALUE], this.output_genRequest));

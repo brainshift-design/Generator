@@ -4,6 +4,7 @@ extends Action
     outputNodeId;
     outputId;
     outputOrder            = -1;
+    outputValues           = [];
     
     prevInputNodeId        = NULL;
     prevInputId;
@@ -23,6 +24,8 @@ extends Action
     oldOutputOrder;
     oldOutputActiveNodeId  = NULL;
 
+    backInit               = false;
+
     
 
     
@@ -41,7 +44,7 @@ extends Action
     
 
 
-    constructor(output, prevInput, input)
+    constructor(output, prevInput, input, options = {})
     {
         super(
              'RECONNECT '
@@ -66,6 +69,11 @@ extends Action
         this.oldOutputNodeId      = input.connected ? input.connectedOutput.node.id : NULL;
         this.oldOutputId          = input.connected ? input.connectedOutput.id      : NULL;
         this.oldOutputOrder       = input.connected ? input.connection.outputOrder  : -1;
+
+
+        if (   options 
+            && isValid(options.backInit))
+            this.backInit = options.backInit;
     }
 
 
@@ -74,9 +82,12 @@ extends Action
     {
         this.newActiveNodeIds = [];
 
-        connectAction_saveOutputActiveNodes(this);
+        connectAction_saveOutputActiveNodesAndValues(this);
         connectAction_saveInputActiveNodesAndValues(this);
         this.savePrevInputActiveNodesAndValues();
+
+        if (this.backInit)
+            connectAction_backInitOutputValue(this);
 
         connectAction_removeOldOutputConnection(this);
         this.removePrevInputConnection();
@@ -97,6 +108,8 @@ extends Action
         connectAction_restoreInputValues(this);
         this.restorePrevInputValues();
 
+        connectAction_restoreOutputValues(this);
+        
         this.deactivateNewActiveNodes();
         connectAction_activateOldActiveNodes(this, updateNodes); 
 

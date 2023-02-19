@@ -64,7 +64,7 @@ graphView.cancelConnection = (pointerId) =>
 
 
 
-graphView.endConnection = pointerId =>
+graphView.endConnection = function(pointerId, backInit = false)
 {
     if (graphView.tempConn.output) // FROM OUTPUT
     {
@@ -106,7 +106,7 @@ graphView.endConnection = pointerId =>
             else if (   !savedConnInput
                      && (  !input.connected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new
-                actionManager.do(new ConnectAction(output, input));
+                createConnectAction(output, input, backInit);
         }
         else if (savedConnInput) // disconnect old
             actionManager.do(new DisconnectAction(savedConnInput));
@@ -123,8 +123,15 @@ graphView.endConnection = pointerId =>
 
         if (   output
             && input.canConnectFrom(output)) // TO OUTPUT
-            actionManager.do(new ConnectAction(output, input));
+            createConnectAction(output, input, backInit);
 
         graphView.cancelConnection(pointerId);
     }
+}
+
+
+
+function createConnectAction(output, input, backInit)
+{
+    actionManager.do(new ConnectAction(output, input, {backInit: backInit}));
 }

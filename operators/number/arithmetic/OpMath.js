@@ -7,7 +7,7 @@ extends OperatorWithValue
 
     constructor()
     {
-        super(NUMBER_MATH, 'math', 100);
+        super(NUMBER_MATH, 'math');
 
         this.variableInputs   = true;
         this.alwaysLoadParams = true;

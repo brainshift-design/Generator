@@ -92,7 +92,7 @@ extends EventTarget
         
         this.types            = [...types];
         this.getValuesForUndo = getValuesForUndo;
-        this.getBackInitValue    = getBackInitValue;
+        this.getBackInitValue = getBackInitValue;
 
 
         this.div              = createDiv('input');

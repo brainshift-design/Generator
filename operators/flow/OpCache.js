@@ -9,7 +9,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(CACHE, 'cache', 90);
+        super(CACHE, 'cache');
 
         this.cached = true;
         

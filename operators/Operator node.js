@@ -380,14 +380,14 @@ function createNodeHeader(node)
                 && !graphView.tempConn.output.node.isOrFollows(node)
                 &&  graphView.overInput)
             {
-                graphView          .endConnection(e.pointerId);
+                graphView          .endConnection(e.pointerId, getCtrlKey(e));
                 graphView.overInput.endConnection();
             }
             else if ( graphView.tempConn.input
                   && !node.isOrFollows(graphView.tempConn.input.node)
                   &&  graphView.overOutput)
             {
-                graphView           .endConnection(e.pointerId);
+                graphView           .endConnection(e.pointerId, getCtrlKey(e));
                 graphView.overOutput.endConnection();
             }
         }

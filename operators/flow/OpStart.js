@@ -3,7 +3,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(START, 'start', 70);
+        super(START, 'start');
 
         this.addInput (new Input (ALL_TYPES));
         this.addOutput(new Output([], this.output_genRequest));

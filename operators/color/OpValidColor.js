@@ -9,7 +9,7 @@ extends OpColorBase
 
     constructor()
     {
-        super(VALID_COLOR, 'valid', 100, true);
+        super(VALID_COLOR, 'valid', true);
 
         this.slow = true;
 

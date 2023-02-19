@@ -3,7 +3,7 @@ extends OperatorBase
 {
     constructor()
     {
-        super(FOREACH, 'forEach', 100);
+        super(FOREACH, 'forEach');
 
         this.inert = true;
         

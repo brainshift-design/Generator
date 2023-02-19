@@ -10,7 +10,7 @@ extends OperatorBase
 
     constructor()
     {
-        super(SELECT, 'select', 100);
+        super(SELECT, 'select');
 
         this.inert = true;
 

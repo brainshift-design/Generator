@@ -3,7 +3,7 @@ extends OperatorWithValue
 {
     constructor(type, shortName)
     {
-        super(type, shortName, 100);
+        super(type, shortName);
 
         
         this.variableInputs   = true;

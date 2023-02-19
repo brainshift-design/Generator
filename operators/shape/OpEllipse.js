@@ -11,7 +11,7 @@ extends OpShapeBase
     
     constructor()
     {
-        super(ELLIPSE, 'ellipse', 100);
+        super(ELLIPSE, 'ellipse');
 
         this.addInput (this.createInputForObjects([ELLIPSE, ELLIPSE_VALUE], this.input_getValuesForUndo));
         this.addOutput(new Output([ELLIPSE], this.output_genRequest));
