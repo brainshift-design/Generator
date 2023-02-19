@@ -1,9 +1,11 @@
-graphView.startConnectionFromOutput = (pointerId, output, updateTempWire = true) =>
+graphView.startConnectionFromOutput = (pointerId, output, updateTempWire = true, backInit = false) =>
 {
     graphView.connPointerId = pointerId;
 
     graphView.tempConn = new Connection(output, null);
+
     graphView.tempConn.wire.output = output;
+    graphView.tempConn.backInit    = backInit;
 
     //graphView.tempConnected = false;
     graphView.addConnWires(graphView.tempConn, false);
@@ -16,11 +18,12 @@ graphView.startConnectionFromOutput = (pointerId, output, updateTempWire = true)
 
 
 
-graphView.startConnectionFromInput = (pointerId, input) =>
+graphView.startConnectionFromInput = (pointerId, input, backInit = false) =>
 {
     graphView.connPointerId = pointerId;
 
     graphView.tempConn = new Connection(null, input);
+    graphView.tempConn.backInit = backInit;
     
     graphView.addConnWires(graphView.tempConn, false);
 

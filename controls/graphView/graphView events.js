@@ -39,7 +39,7 @@ graphView.addEventListener('pointerdown', e =>
         else if (graphView.overOutput)
         {
             graphView.overOutput.connecting = true;
-            graphView.startConnectionFromOutput(e.pointerId, graphView.overOutput);
+            graphView.startConnectionFromOutput(e.pointerId, graphView.overOutput, true, getCtrlKey(e));
 
             updateWire(graphView.tempConn.wire, sx, sy);
         }
@@ -49,7 +49,7 @@ graphView.addEventListener('pointerdown', e =>
             {
                 oldReorderIndex = graphView.overInput.index;
 
-                graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false);
+                graphView.startConnectionFromOutput(e.pointerId, graphView.overInput.connectedOutput, false, getCtrlKey(e));
 
                 updateWire(graphView.tempConn.wire, sx, sy);
 
@@ -60,7 +60,7 @@ graphView.addEventListener('pointerdown', e =>
             else
             {
                 graphView.overInput.connecting = true;
-                graphView.startConnectionFromInput(e.pointerId, graphView.overInput);
+                graphView.startConnectionFromInput(e.pointerId, graphView.overInput, getCtrlKey(e));
 
                 updateWire(graphView.tempConn.wire, sx, sy);
             }
