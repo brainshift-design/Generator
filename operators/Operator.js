@@ -881,19 +881,16 @@ class Operator
 
     updateHeaderInputsAndOutputs()
     {
-        const inputs          = this.headerInputs;
+        const inputs  = this.headerInputs;
+        const outputs = this.headerOutputs;
 
-        const connectedInputs = inputs.filter(i => i.connected);
-        const outputs         = this.headerOutputs;
-
-        const padding         = this.header.connectionPadding;
+        const padding = this.header.connectionPadding;
             
-        const [ inputY,          inputHeight] = getHeaderConnY(inputs,          padding, 5);
-        const [       , connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
-        const [outputY,         outputHeight] = getHeaderConnY(outputs,         padding, 2);
+        const [ inputY,  inputHeight] = getHeaderConnY(inputs,  padding, 5);
+        const [outputY, outputHeight] = getHeaderConnY(outputs, padding, 2);
 
-             if (connectedInputHeight > outputHeight) for (let i = 0; i < outputs.length; i++) outputY[i] += (connectedInputHeight - outputHeight)/2;
-        else if (        outputHeight > inputHeight ) for (let i = 0; i < inputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
+             if ( inputHeight > outputHeight) for (let i = 0; i < outputs.length; i++) outputY[i] += (inputHeight - outputHeight)/2;
+        else if (outputHeight >  inputHeight) for (let i = 0; i < inputs .length; i++)  inputY[i] += (outputHeight - inputHeight)/2;
 
 
         for (let i = 0; i < inputs.length; i++)

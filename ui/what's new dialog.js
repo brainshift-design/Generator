@@ -1,6 +1,6 @@
 function initWhatsNewDialog()
 {
-    //whatsNew0.innerHTML = whatsNew0.innerHTML.replace('%CtrlShiftA%', osCtrl() + osShift() + 'A');
+    whatsNew0.innerHTML = whatsNew0.innerHTML.replace('%Ctrl%', osCtrl());
 
 
     initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);

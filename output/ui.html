@@ -2479,6 +2479,10 @@ a
 
                 <p>Fixed <i>some</i> double updates on wires.</p>
                 <p>Added [Show operation results] menu setting to reduce info clutter.</p>
+                <p id='whatsNew0'>Added %Ctrl%Connect to copy the input value back to the output, which makes
+                    adjusting existing parameters less cumbersome.
+                </p>
+                <p>Fixed UI bugs.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -43286,19 +43290,16 @@ class Operator
 
     updateHeaderInputsAndOutputs()
     {
-        const inputs          = this.headerInputs;
+        const inputs  = this.headerInputs;
+        const outputs = this.headerOutputs;
 
-        const connectedInputs = inputs.filter(i => i.connected);
-        const outputs         = this.headerOutputs;
-
-        const padding         = this.header.connectionPadding;
+        const padding = this.header.connectionPadding;
             
-        const [ inputY,          inputHeight] = getHeaderConnY(inputs,          padding, 5);
-        const [       , connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
-        const [outputY,         outputHeight] = getHeaderConnY(outputs,         padding, 2);
+        const [ inputY,  inputHeight] = getHeaderConnY(inputs,  padding, 5);
+        const [outputY, outputHeight] = getHeaderConnY(outputs, padding, 2);
 
-             if (connectedInputHeight > outputHeight) for (let i = 0; i < outputs.length; i++) outputY[i] += (connectedInputHeight - outputHeight)/2;
-        else if (        outputHeight > inputHeight ) for (let i = 0; i < inputs .length; i++)  inputY[i] += (outputHeight - inputHeight )/2;
+             if ( inputHeight > outputHeight) for (let i = 0; i < outputs.length; i++) outputY[i] += (inputHeight - outputHeight)/2;
+        else if (outputHeight >  inputHeight) for (let i = 0; i < inputs .length; i++)  inputY[i] += (outputHeight - inputHeight)/2;
 
 
         for (let i = 0; i < inputs.length; i++)
@@ -43785,35 +43786,20 @@ extends OperatorWithValue
         this._symbol.style.left       = 'calc(50% + 1px)';
         
 
-        const padding         = this.header.connectionPadding;
-        const connectedInputs = this.headerInputs.filter(i => i.connected);
+        const padding = this.header.connectionPadding;
+        const inputs  = this.headerInputs;
 
 
-        if (isEmpty(connectedInputs))
+        const [inputY, inputHeight] = getHeaderConnY(inputs, padding, 5);
+
+        if (this._showOnlySymbol)
         {
-            if (this._showOnlySymbol)
-            {
-                this._symbol.style.top = 2;
-            }
-            else
-            {
-                this._symbol.style.top = -1;
-                this.label  .style.top = 'calc(50% + 6px)';
-            }
+            this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 9;
         }
         else
         {
-            const [connectedInputY, connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
-
-            if (this._showOnlySymbol)
-            {
-                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 9;
-            }
-            else
-            {
-                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 6;
-                this.label  .style.top = 'calc(50% + 7px)';
-            }
+            this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 6;
+            this.label  .style.top = 'calc(50% + 7px)';
         }
         
 
@@ -57622,7 +57608,7 @@ function uiHideClearUndoWarning()
 
 function initWhatsNewDialog()
 {
-    //whatsNew0.innerHTML = whatsNew0.innerHTML.replace('%CtrlShiftA%', osCtrl() + osShift() + 'A');
+    whatsNew0.innerHTML = whatsNew0.innerHTML.replace('%Ctrl%', osCtrl());
 
 
     initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);

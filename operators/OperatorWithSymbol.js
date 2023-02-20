@@ -70,35 +70,20 @@ extends OperatorWithValue
         this._symbol.style.left       = 'calc(50% + 1px)';
         
 
-        const padding         = this.header.connectionPadding;
-        const connectedInputs = this.headerInputs.filter(i => i.connected);
+        const padding = this.header.connectionPadding;
+        const inputs  = this.headerInputs;
 
 
-        if (isEmpty(connectedInputs))
+        const [inputY, inputHeight] = getHeaderConnY(inputs, padding, 5);
+
+        if (this._showOnlySymbol)
         {
-            if (this._showOnlySymbol)
-            {
-                this._symbol.style.top = 2;
-            }
-            else
-            {
-                this._symbol.style.top = -1;
-                this.label  .style.top = 'calc(50% + 6px)';
-            }
+            this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 9;
         }
         else
         {
-            const [connectedInputY, connectedInputHeight] = getHeaderConnY(connectedInputs, padding, 5);
-
-            if (this._showOnlySymbol)
-            {
-                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 9;
-            }
-            else
-            {
-                this._symbol.style.top = connectedInputY[0]/2 + connectedInputHeight/2 - 6;
-                this.label  .style.top = 'calc(50% + 7px)';
-            }
+            this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 6;
+            this.label  .style.top = 'calc(50% + 7px)';
         }
         
 
