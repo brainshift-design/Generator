@@ -416,12 +416,12 @@ const NOCACHE = 'NOC';
 const PARAM = 'PARAM'; // nodeId paramId
 const LOG = 'LOG';
 const MATH_OPS = [
-    [NUMBER_SUBTRACT, '-'],
+    [NUMBER_SUBTRACT, '−'],
     [NUMBER_ADD, '+'],
     [NUMBER_DIVIDE, '/'],
     [NUMBER_MULTIPLY, '×'],
     [NUMBER_MODULO, '%'],
-    [NUMBER_EXPONENT, 'eˣ']
+    [NUMBER_EXPONENT, 'e<sup>x</sup>']
 ];
 const BOOLEAN_NOT = 0;
 const BOOLEAN_AND = 1;

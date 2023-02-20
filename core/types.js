@@ -267,12 +267,12 @@ const LOG           = 'LOG';
 
 const MATH_OPS = 
 [   // the order is important for logical keyboard value changes
-    [NUMBER_SUBTRACT, '-' ],
+    [NUMBER_SUBTRACT, '−' ],
     [NUMBER_ADD,      '+' ],
     [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_MULTIPLY, '×' ],
     [NUMBER_MODULO,   '%' ],
-    [NUMBER_EXPONENT, 'eˣ'] 
+    [NUMBER_EXPONENT, 'e<sup>x</sup>'] 
 ];
 
 

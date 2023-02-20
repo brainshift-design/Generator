@@ -188,7 +188,8 @@ function connectAction_updateInputActiveNodes(act, updateNodes)
 
 function connectAction_updateNodes(act, updateNodes)
 {
-    pushUnique(updateNodes, act.inputNode);
+    pushUnique(updateNodes, act.outputNode);
+    pushUnique(updateNodes, act. inputNode);
 
     if (!act.outputNode.cached) 
         pushUnique(updateNodes, act.outputNode.getUncachedInputNodes());
@@ -241,21 +242,10 @@ function connectAction_cleanup(act)
 
 function connectAction_restoreInputValues(act)
 {
-    for (const value of act.inputValues)
+    for (const undoValue of act.inputValues)
     {
-        const param = act.inputNode.params.find(p => p.id == value.paramId);
-
-        if (param)
-        {
-            if (   value.min != undefined
-                && value.max != undefined)
-            {
-                param.control.setMin(value.min);
-                param.control.setMax(value.max);
-            }
-                
-            param.setValue(value.value, true, true, false);
-        }
+        const param = act.inputNode.params.find(p => p.id == undoValue.paramId);
+        if (param) param.node.restoreParamUndoValue(undoValue);
     }
 }
 
@@ -263,21 +253,10 @@ function connectAction_restoreInputValues(act)
 
 function connectAction_restoreOutputValues(act)
 {
-    for (const value of act.outputValues)
+    for (const undoValue of act.outputValues)
     {
-        const param = act.outputNode.params.find(p => p.id == value.paramId);
-
-        if (param)
-        {
-            if (   value.min != undefined
-                && value.max != undefined)
-            {
-                param.control.setMin(value.min);
-                param.control.setMax(value.max);
-            }
-                
-            param.setValue(value.value, true, true, false);
-        }
+        const param = act.outputNode.params.find(p => p.id == undoValue.paramId);
+        if (param) param.node.restoreParamUndoValue(undoValue);
     }
 }
 
@@ -285,6 +264,9 @@ function connectAction_restoreOutputValues(act)
 
 function connectAction_activateOldActiveNodes(act, updateNodes)
 {
+    pushUnique(updateNodes, act.outputNode);
+
+
     for (const id of act.inputActiveNodeIds)
     {
         const oldInputActiveNode = nodeFromId(id);

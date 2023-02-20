@@ -714,18 +714,37 @@ extends OpColorBase
         else
             this._color = dataColor_NaN;
     }
+
+
+
+    restoreParamUndoValue(value)
+    {
+        console.assert(value.paramId == 'color', 'expecting value with paramId \'color\' here');
+
+        super.restoreParamUndoValue({paramId: 'space', value: value.value.space});
+        super.restoreParamUndoValue({paramId: 'c1',    value: value.value.c1   });
+        super.restoreParamUndoValue({paramId: 'c2',    value: value.value.c2   });
+        super.restoreParamUndoValue({paramId: 'c3',    value: value.value.c3   });
+        //super.restoreParamUndoValue({paramId: 'color', value: value.value      });
+    }
 }
 
 
 
 function getColorInputValuesForUndo(input)
 {
-    return [input.node.paramColor.getValueForUndo()];
+    return [{
+        paramId: 'color', 
+        value:   ColorValue.fromDataColor(input.node._color)
+    }];
 }
 
 
 
 function getColorOutputValuesForUndo(output)
 {
-    return [output.node.paramColor.getValueForUndo()];
+    return [{
+        paramId: 'color', 
+        value:   ColorValue.fromDataColor(output.node._color)
+    }];
 }

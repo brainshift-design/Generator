@@ -605,6 +605,22 @@ class Operator
 
 
 
+    restoreParamUndoValue(value)
+    {
+        const param = this.params.find(p => p.id == value.paramId);
+
+        if (   value.min != undefined
+            && value.max != undefined)
+        {
+            param.control.setMin(value.min);
+            param.control.setMax(value.max);
+        }
+            
+        param.setValue(value.value, true, true, false);
+    }
+    
+    
+
     reset() // for the entire generation run
     {
         for (const input of this.inputs)
@@ -1224,3 +1240,25 @@ function getParamOutputValuesForUndo(output)
 {
     return [output.param.getValueForUndo()];
 }
+
+
+
+// function restoreNodeUndoValues(node, values)
+// {
+//     for (const value of values)
+//     {
+//         const param = node.params.find(p => p.id == value.paramId);
+
+//         if (param)
+//         {
+//             if (   value.min != undefined
+//                 && value.max != undefined)
+//             {
+//                 param.control.setMin(value.min);
+//                 param.control.setMax(value.max);
+//             }
+                
+//             param.setValue(value.value, true, true, false);
+//         }
+//     }
+// }

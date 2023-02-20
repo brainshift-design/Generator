@@ -6000,12 +6000,12 @@ const LOG           = 'LOG';
 
 const MATH_OPS = 
 [   // the order is important for logical keyboard value changes
-    [NUMBER_SUBTRACT, '-' ],
+    [NUMBER_SUBTRACT, '−' ],
     [NUMBER_ADD,      '+' ],
     [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_MULTIPLY, '×' ],
     [NUMBER_MODULO,   '%' ],
-    [NUMBER_EXPONENT, 'eˣ'] 
+    [NUMBER_EXPONENT, 'e<sup>x</sup>'] 
 ];
 
 
@@ -24319,12 +24319,12 @@ const LOG           = 'LOG';
 
 const MATH_OPS = 
 [   // the order is important for logical keyboard value changes
-    [NUMBER_SUBTRACT, '-' ],
+    [NUMBER_SUBTRACT, '−' ],
     [NUMBER_ADD,      '+' ],
     [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_MULTIPLY, '×' ],
     [NUMBER_MODULO,   '%' ],
-    [NUMBER_EXPONENT, 'eˣ'] 
+    [NUMBER_EXPONENT, 'e<sup>x</sup>'] 
 ];
 
 
@@ -37333,6 +37333,7 @@ graphView.addEventListener('pointerdown', e =>
 
     if (   e.button == 0
         && !graphView.panning
+        && !graphView.tempConn
         && !document.canResizeL
         && !document.canResizeR
         && !document.canResizeB
@@ -43026,6 +43027,22 @@ class Operator
 
 
 
+    restoreParamUndoValue(value)
+    {
+        const param = this.params.find(p => p.id == value.paramId);
+
+        if (   value.min != undefined
+            && value.max != undefined)
+        {
+            param.control.setMin(value.min);
+            param.control.setMax(value.max);
+        }
+            
+        param.setValue(value.value, true, true, false);
+    }
+    
+    
+
     reset() // for the entire generation run
     {
         for (const input of this.inputs)
@@ -43645,6 +43662,28 @@ function getParamOutputValuesForUndo(output)
 {
     return [output.param.getValueForUndo()];
 }
+
+
+
+// function restoreNodeUndoValues(node, values)
+// {
+//     for (const value of values)
+//     {
+//         const param = node.params.find(p => p.id == value.paramId);
+
+//         if (param)
+//         {
+//             if (   value.min != undefined
+//                 && value.max != undefined)
+//             {
+//                 param.control.setMin(value.min);
+//                 param.control.setMax(value.max);
+//             }
+                
+//             param.setValue(value.value, true, true, false);
+//         }
+//     }
+// }
 
 
 class OperatorBase
@@ -48023,20 +48062,39 @@ extends OpColorBase
         else
             this._color = dataColor_NaN;
     }
+
+
+
+    restoreParamUndoValue(value)
+    {
+        console.assert(value.paramId == 'color', 'expecting value with paramId \'color\' here');
+
+        super.restoreParamUndoValue({paramId: 'space', value: value.value.space});
+        super.restoreParamUndoValue({paramId: 'c1',    value: value.value.c1   });
+        super.restoreParamUndoValue({paramId: 'c2',    value: value.value.c2   });
+        super.restoreParamUndoValue({paramId: 'c3',    value: value.value.c3   });
+        //super.restoreParamUndoValue({paramId: 'color', value: value.value      });
+    }
 }
 
 
 
 function getColorInputValuesForUndo(input)
 {
-    return [input.node.paramColor.getValueForUndo()];
+    return [{
+        paramId: 'color', 
+        value:   ColorValue.fromDataColor(input.node._color)
+    }];
 }
 
 
 
 function getColorOutputValuesForUndo(output)
 {
-    return [output.node.paramColor.getValueForUndo()];
+    return [{
+        paramId: 'color', 
+        value:   ColorValue.fromDataColor(output.node._color)
+    }];
 }
 
 
@@ -51793,7 +51851,8 @@ function connectAction_updateInputActiveNodes(act, updateNodes)
 
 function connectAction_updateNodes(act, updateNodes)
 {
-    pushUnique(updateNodes, act.inputNode);
+    pushUnique(updateNodes, act.outputNode);
+    pushUnique(updateNodes, act. inputNode);
 
     if (!act.outputNode.cached) 
         pushUnique(updateNodes, act.outputNode.getUncachedInputNodes());
@@ -51846,21 +51905,10 @@ function connectAction_cleanup(act)
 
 function connectAction_restoreInputValues(act)
 {
-    for (const value of act.inputValues)
+    for (const undoValue of act.inputValues)
     {
-        const param = act.inputNode.params.find(p => p.id == value.paramId);
-
-        if (param)
-        {
-            if (   value.min != undefined
-                && value.max != undefined)
-            {
-                param.control.setMin(value.min);
-                param.control.setMax(value.max);
-            }
-                
-            param.setValue(value.value, true, true, false);
-        }
+        const param = act.inputNode.params.find(p => p.id == undoValue.paramId);
+        if (param) param.node.restoreParamUndoValue(undoValue);
     }
 }
 
@@ -51868,21 +51916,10 @@ function connectAction_restoreInputValues(act)
 
 function connectAction_restoreOutputValues(act)
 {
-    for (const value of act.outputValues)
+    for (const undoValue of act.outputValues)
     {
-        const param = act.outputNode.params.find(p => p.id == value.paramId);
-
-        if (param)
-        {
-            if (   value.min != undefined
-                && value.max != undefined)
-            {
-                param.control.setMin(value.min);
-                param.control.setMax(value.max);
-            }
-                
-            param.setValue(value.value, true, true, false);
-        }
+        const param = act.outputNode.params.find(p => p.id == undoValue.paramId);
+        if (param) param.node.restoreParamUndoValue(undoValue);
     }
 }
 
@@ -51890,6 +51927,9 @@ function connectAction_restoreOutputValues(act)
 
 function connectAction_activateOldActiveNodes(act, updateNodes)
 {
+    pushUnique(updateNodes, act.outputNode);
+
+
     for (const id of act.inputActiveNodeIds)
     {
         const oldInputActiveNode = nodeFromId(id);

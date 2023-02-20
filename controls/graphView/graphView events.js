@@ -24,6 +24,7 @@ graphView.addEventListener('pointerdown', e =>
 
     if (   e.button == 0
         && !graphView.panning
+        && !graphView.tempConn
         && !document.canResizeL
         && !document.canResizeR
         && !document.canResizeB
