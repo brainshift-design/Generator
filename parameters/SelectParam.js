@@ -53,8 +53,8 @@ extends NumberParamBase
         this.div.appendChild(this.control);
 
 
-        if (hasInput)  this.initInput(NUMBER_TYPES);
-        if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest);
+        if (hasInput)  this.initInput(NUMBER_TYPES, getInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getOutputValuesForUndo, this.output_backInit);
 
             
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });
@@ -106,6 +106,26 @@ extends NumberParamBase
     {
         this        .options = [...options];
         this.control.options = [...options];
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == NUMBER_VALUE, 'expected NUMBER_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
     }
 
 

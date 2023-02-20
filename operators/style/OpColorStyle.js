@@ -23,7 +23,7 @@ extends OperatorBase
 
         this.addParam(this.paramValue = new ColorParam('value', '', false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
 
-        this.paramValue.input.getValuesForUndo = this.input_getValuesForUndo;
+        this.paramValue.input.getValuesForUndo = getInputValuesForUndo;
         this.paramValue.input.addEventListener('disconnect', e => OpColorStyle_value_onDisconnectInput(this, e.detail.input));
 
         

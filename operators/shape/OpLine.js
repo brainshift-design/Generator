@@ -12,7 +12,7 @@ extends OpShapeBase
     {
         super(LINE, 'line');
 
-        this.addInput (this.createInputForObjects([LINE, LINE_VALUE], this.input_getValuesForUndo));
+        this.addInput (this.createInputForObjects([LINE, LINE_VALUE], getInputValuesForUndo));
         this.addOutput(new Output([LINE], this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, false,   0));

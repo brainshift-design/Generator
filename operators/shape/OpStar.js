@@ -16,7 +16,7 @@ extends OpShapeBase
     {
         super(STAR, 'star');
 
-        this.addInput (this.createInputForObjects([STAR, STAR_VALUE], this.input_getValuesForUndo));
+        this.addInput (this.createInputForObjects([STAR, STAR_VALUE], getInputValuesForUndo));
         this.addOutput(new Output([STAR], this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, false,   0));

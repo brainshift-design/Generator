@@ -9,8 +9,8 @@ extends OperatorBase
     {
         super(NUMBER, 'num');
 
-        this.addInput (new Input (NUMBER_TYPES, this.input_getValuesForUndo, this.input_getBackInitValue));
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, this.output_getValuesForUndo, this.output_backInit));
+        this.addInput (new Input (NUMBER_TYPES, getInputValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getOutputValuesForUndo, this.output_backInit));
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
 

@@ -634,30 +634,6 @@ class Operator
 
 
 
-    input_getValuesForUndo()
-    {
-        const values = []; 
-
-        for (const param of this.node.params)
-            values.push(param.getValueForUndo());
-
-        return values;
-    }
-
-
-
-    output_getValuesForUndo()
-    {
-        const values = []; 
-
-        for (const param of this.node.params)
-            values.push(param.getValueForUndo());
-
-        return values;
-    }
-
-
-
     genRequest(gen)
     {
         // this function exists because a node without outputs
@@ -1212,4 +1188,30 @@ function areConnected(node1, node2)
 {
     return node1.isOrFollows(node2)
         || node2.isOrFollows(node1);
+}
+
+
+
+function getInputValuesForUndo(input)
+{
+    console.log('getInputValuesForUndo(' + input + ')');
+    const values = []; 
+
+    for (const param of input.node.params)
+        values.push(param.getValueForUndo());
+
+    return values;
+}
+
+
+
+function getOutputValuesForUndo(output)
+{
+    console.log('getOutputValuesForUndo(' + output + ')');
+    const values = []; 
+
+    for (const param of output.node.params)
+        values.push(param.getValueForUndo());
+
+    return values;
 }

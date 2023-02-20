@@ -37,8 +37,8 @@ extends OpColorBase
         this.inner.appendChild(this.colorBack);
 
 
-        this.addInput(new Input(COLOR_TYPES, this.input_getValuesForUndo, this.input_getBackInitValue));
-        this.addOutput(new Output([COLOR], this.output_genRequest, this.output_getValuesForUndo, this.output_backInit));
+        this.addInput(new Input(COLOR_TYPES, getInputValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([COLOR], this.output_genRequest, getOutputValuesForUndo, this.output_backInit));
 
         
         this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));

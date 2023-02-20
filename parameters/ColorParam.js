@@ -83,8 +83,8 @@ extends Parameter
         this.div.appendChild(this.control );
 
        
-        if (hasInput)  this.initInput(COLOR_TYPES);
-        if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest);
+        if (hasInput)  this.initInput(COLOR_TYPES, getInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getOutputValuesForUndo, this.output_backInit);
 
 
         this.control.addEventListener('confirm', () => 
@@ -107,6 +107,26 @@ extends Parameter
                 e.preventSetValue = true;
             }
         });
+    }
+
+
+
+    input_getBackInitValue()
+    {
+        // 'this' is the input
+
+        return this.param.value;
+    }
+
+
+
+    output_backInit(value)
+    {
+        // 'this' is the output
+
+        console.assert(value.type == COLOR_VALUE, 'expected COLOR_VALUE in backInit()');
+        
+        this.param.setValue(value, false, true, false);
     }
 
 
