@@ -301,12 +301,12 @@ const CONDITION_GREATER_OR_EQUAL = 5;
 
 const CONDITION_OPS = 
 [   
-    [CONDITION_EQUAL,            '='],
-    [CONDITION_NOT_EQUAL,        '≠'],
     [CONDITION_LESS,             '<'],
     [CONDITION_LESS_OR_EQUAL,    '≤'],
-    [CONDITION_GREATER,          '>'],
-    [CONDITION_GREATER_OR_EQUAL, '≥'] 
+    [CONDITION_NOT_EQUAL,        '≠'],
+    [CONDITION_EQUAL,            '='],
+    [CONDITION_GREATER_OR_EQUAL, '≥'],
+    [CONDITION_GREATER,          '>']
 ];
 
 
