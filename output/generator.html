@@ -8846,11 +8846,11 @@ extends GColorType
 
 
             if (   !isValid(this.value) 
-                || !this.value.isValid())
+                || !this.value.isValid()) 
             {
-                const rgb = input.toRgb();
+                let rgb = input.toRgb();
 
-                if (quality.value == 0)
+                if (quality.value == 0) // clip sRGB
                 {
                     rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
                     rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
@@ -8858,7 +8858,29 @@ extends GColorType
                     
                     this.value = ColorValue.fromRgb(rgb);
                 }
-                else
+                else if (quality.value == 1) // clip chroma
+                {
+                    console.log('1 rgb =', rgb);
+                    let hcl = rgb2hclok(rgb);
+                    console.log('1 hcl =', hcl);
+
+                    let loopProtect = 1000;
+
+                    while (  !rgbIsValid(hclok2rgb(hcl))
+                           && hcl[1] > 0.001
+                           && loopProtect-- > 0)
+                        hcl[1] -= 0.01;
+
+                    rgb = hclok2rgb(hcl);
+console.log('2 hcl =', hcl);
+console.log('2 rgb =', rgb);
+                    rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
+                    rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
+                    rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
+                    
+                    this.value = ColorValue.fromRgb(rgb);
+                }
+                else // find corrections
                 {
                     if (!rgbIsOk(rgb))
                     {
@@ -14586,8 +14608,11 @@ function pol2opp(pol) // polar to opponent
 
 function hclok2rgb(hcl, cs = sRGB)
 {
+    hcl = [...hcl];
+
     hcl[0] *= Tau;
     hcl[1] *= hcl[2]; 
+
     return oklab2rgb(pol2opp(hcl), cs);
 }    
 
@@ -14603,8 +14628,10 @@ function hclok2rgb_(h, c, l, cs = sRGB)
 function rgb2hclok(rgb, cs = sRGB)
 {
     const hcl = opp2pol(rgb2oklab(rgb, cs));
+
     hcl[0] /= Tau;
     hcl[1] /= nozero(hcl[2]);
+    
     return hcl;
 }
 
@@ -14619,8 +14646,11 @@ function rgb2hclok_(r, g, b, cs = sRGB)
 
 function hclab2lab(hcl)
 {
+    hcl = [...hcl];
+
     hcl[0] *= Tau;
     hcl[1] *= hcl[2];
+
     return pol2opp(hcl);
 }
 
@@ -14636,8 +14666,10 @@ function hclab2rgb(hcl, cs = sRGB)
 function lab2hclab(lab)
 {
     let hcl = opp2pol(lab);
+
     hcl[0] /= Tau;
     hcl[1] /= hcl[2];
+
     return hcl;
 }
 
@@ -14652,8 +14684,11 @@ function rgb2hclab(rgb, cs = sRGB)
 
 function hcluv2luv(hcl)
 {
+    hcl = [...hcl];
+
     hcl[0] *= Tau;
     hcl[1] *= hcl[2];
+
     return pol2opp(hcl);
 }
 
@@ -14669,8 +14704,10 @@ function hcluv2rgb(hcl, cs = sRGB)
 function luv2hcluv(luv)
 {
     let hcl = opp2pol(luv);
+
     hcl[0] /= Tau;
     hcl[1] /= hcl[2];
+
     return hcl;
 }
 

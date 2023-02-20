@@ -47,11 +47,11 @@ extends GColorType
 
 
             if (   !isValid(this.value) 
-                || !this.value.isValid())
+                || !this.value.isValid()) 
             {
-                const rgb = input.toRgb();
+                let rgb = input.toRgb();
 
-                if (quality.value == 0)
+                if (quality.value == 0) // clip sRGB
                 {
                     rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
                     rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
@@ -59,7 +59,29 @@ extends GColorType
                     
                     this.value = ColorValue.fromRgb(rgb);
                 }
-                else
+                else if (quality.value == 1) // clip chroma
+                {
+                    console.log('1 rgb =', rgb);
+                    let hcl = rgb2hclok(rgb);
+                    console.log('1 hcl =', hcl);
+
+                    let loopProtect = 1000;
+
+                    while (  !rgbIsValid(hclok2rgb(hcl))
+                           && hcl[1] > 0.001
+                           && loopProtect-- > 0)
+                        hcl[1] -= 0.01;
+
+                    rgb = hclok2rgb(hcl);
+console.log('2 hcl =', hcl);
+console.log('2 rgb =', rgb);
+                    rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
+                    rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
+                    rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
+                    
+                    this.value = ColorValue.fromRgb(rgb);
+                }
+                else // find corrections
                 {
                     if (!rgbIsOk(rgb))
                     {
