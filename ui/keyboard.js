@@ -81,7 +81,11 @@ document.addEventListener('keydown', e =>
     // escape
     else if (e.key == 'Escape')
     {
-        if (graphView.tempConn)
+        if (!isEmpty(currentMenus))
+            hideAllMenus();
+
+
+        else if (graphView.tempConn)
         {
             if (graphView.savedConn)
             {

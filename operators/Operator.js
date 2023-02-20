@@ -1191,7 +1191,6 @@ function areConnected(node1, node2)
 
 function getInputValuesForUndo(input)
 {
-    console.log('getInputValuesForUndo(' + input + ')');
     const values = []; 
 
     for (const param of input.node.params)
@@ -1204,7 +1203,6 @@ function getInputValuesForUndo(input)
 
 function getOutputValuesForUndo(output)
 {
-    console.log('getOutputValuesForUndo(' + output + ')');
     const values = []; 
 
     for (const param of output.node.params)

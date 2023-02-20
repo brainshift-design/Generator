@@ -25,6 +25,12 @@ body
 }
 
 
+/* body:active
+{
+    box-shadow: 0 0 0 1px red inset;
+} */
+
+
 .figma-light body { background: var(--figma-color-bg-secondary); }
 .figma-dark  body { background: var(--figma-color-bg);           }
 

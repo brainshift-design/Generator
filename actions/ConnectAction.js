@@ -112,7 +112,6 @@ function connectAction_saveOutputActiveNodesAndValues(act)
 {
     act.outputValues          = act.output.getValuesForUndo ? act.output.getValuesForUndo(act.output) : [];
     act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
-    console.log('act.outputValues =', [...act.outputValues]);
 }
 
 
@@ -121,7 +120,6 @@ function connectAction_saveInputActiveNodesAndValues(act)
 {
     act.inputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo(act.input) : [];
     act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
-    console.log('act.inputValues =', [...act.inputValues]);
 }
 
 

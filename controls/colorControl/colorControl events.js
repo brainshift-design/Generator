@@ -55,6 +55,8 @@ function initColorControlEvents(control)
             return;
 
 
+        window.focus();
+        
         hideAllMenus();
 
 

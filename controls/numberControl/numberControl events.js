@@ -56,6 +56,8 @@ function initNumberControlEvents(control)
             || panMode)
             return;
 
+        
+        window.focus();
             
         hideAllMenus();
 

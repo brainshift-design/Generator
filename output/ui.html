@@ -888,6 +888,12 @@ body
 }
 
 
+/* body:active
+{
+    box-shadow: 0 0 0 1px red inset;
+} */
+
+
 .figma-light body { background: var(--figma-color-bg-secondary); }
 .figma-dark  body { background: var(--figma-color-bg);           }
 
@@ -33481,6 +33487,8 @@ function initNumberControlEvents(control)
             || panMode)
             return;
 
+        
+        window.focus();
             
         hideAllMenus();
 
@@ -34927,6 +34935,8 @@ function initColorControlEvents(control)
             return;
 
 
+        window.focus();
+        
         hideAllMenus();
 
 
@@ -36858,6 +36868,9 @@ graphView.btn1down        = false; // this is to help deal with mouse wheels tha
                                    // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
                                    
+graphView.nodeHeaderDown  = null; // marks a node being handled, to pass through window activation messages to the plugin's iFrame
+
+
 graphView.pan             = point(0, 0);
 graphView.zoom            = 1;
  
@@ -37314,6 +37327,10 @@ graphView.addEventListener('pointerleave', e =>
 
 graphView.addEventListener('pointerdown', e =>
 {
+    // if (graphView.nodeHeaderDown)
+    //     return;
+
+        
     graphView.pStart = point(e.clientX, e.clientY);
 
     const sx = e.clientX;
@@ -43600,7 +43617,6 @@ function areConnected(node1, node2)
 
 function getInputValuesForUndo(input)
 {
-    console.log('getInputValuesForUndo(' + input + ')');
     const values = []; 
 
     for (const param of input.node.params)
@@ -43613,7 +43629,6 @@ function getInputValuesForUndo(input)
 
 function getOutputValuesForUndo(output)
 {
-    console.log('getOutputValuesForUndo(' + output + ')');
     const values = []; 
 
     for (const param of output.node.params)
@@ -43971,8 +43986,11 @@ function createNodeHeader(node)
             return;
 
 
-        e.preventDefault();
+        window.focus();
 
+        
+        e.preventDefault();
+        graphView.nodeHeaderDown = node;
 
 
         graphView.lastSelectedNodes = [...graphView.selectedNodes];
@@ -44223,6 +44241,8 @@ function createNodeHeader(node)
             }
         }
 
+
+        graphView.nodeHeaderDown = null;
 
         node.div.shiftOnPointerDown = false;
     });
@@ -51675,7 +51695,6 @@ function connectAction_saveOutputActiveNodesAndValues(act)
 {
     act.outputValues          = act.output.getValuesForUndo ? act.output.getValuesForUndo(act.output) : [];
     act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
-    console.log('act.outputValues =', [...act.outputValues]);
 }
 
 
@@ -51684,7 +51703,6 @@ function connectAction_saveInputActiveNodesAndValues(act)
 {
     act.inputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo(act.input) : [];
     act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
-    console.log('act.inputValues =', [...act.inputValues]);
 }
 
 
@@ -54514,7 +54532,11 @@ document.addEventListener('keydown', e =>
     // escape
     else if (e.key == 'Escape')
     {
-        if (graphView.tempConn)
+        if (!isEmpty(currentMenus))
+            hideAllMenus();
+
+
+        else if (graphView.tempConn)
         {
             if (graphView.savedConn)
             {
