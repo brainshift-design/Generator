@@ -48153,13 +48153,15 @@ extends OpColorBase
 
     restoreParamUndoValue(value)
     {
-        console.assert(value.paramId == 'color', 'expecting value with paramId \'color\' here');
-
-        super.restoreParamUndoValue({paramId: 'space', value: value.value.space});
-        super.restoreParamUndoValue({paramId: 'c1',    value: value.value.c1   });
-        super.restoreParamUndoValue({paramId: 'c2',    value: value.value.c2   });
-        super.restoreParamUndoValue({paramId: 'c3',    value: value.value.c3   });
-        //super.restoreParamUndoValue({paramId: 'color', value: value.value      });
+        if (value.paramId == 'color')
+        {
+            super.restoreParamUndoValue({paramId: 'space', value: value.value.space});
+            super.restoreParamUndoValue({paramId: 'c1',    value: value.value.c1   });
+            super.restoreParamUndoValue({paramId: 'c2',    value: value.value.c2   });
+            super.restoreParamUndoValue({paramId: 'c3',    value: value.value.c3   });
+        }
+        else
+            super.restoreParamUndoValue(value);
     }
 }
 
