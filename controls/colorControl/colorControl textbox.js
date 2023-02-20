@@ -120,7 +120,6 @@ function initColorControlTextbox(control)
 
             control.textbox.selectionStart = iStart * 2;
             control.textbox.selectionEnd   = iEnd   * 2;
-
         }
         else 
         {
@@ -157,15 +156,9 @@ function initColorControlTextbox(control)
         e.preventDefault();
 
         const str = e.clipboardData.getData('text/plain');
+        const rgb = hex2rgb(str);
 
-        let val = 
-            control.showHex
-            ? parseInt(str, 16)
-            : parseFloat(str);
-
-        val = Math.min(Math.max(control.min, val), control.max);
-
-        control.textbox.value = isNaN(val) ? '' : val;
+        control.textbox.value = rgb2hex(rgb);
     });
 
 
@@ -208,10 +201,10 @@ function initColorControlTextbox(control)
         
         if (!e.preventSetValue)
         {
+            let savedRgb = validHex2rgb(savedValue);
+
             if (success) 
             {
-                let savedRgb = validHex2rgb(savedValue);
-
                 control.setValue(
                       value.trim() != '' 
                     ? ColorValue.fromRgb(scaleRgb(rgb     )) 
