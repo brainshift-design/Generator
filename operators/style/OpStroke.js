@@ -28,7 +28,7 @@ extends OpColorBase
         this.colorBack = createDiv('colorBack');
         this.inner.appendChild(this.colorBack);
 
-        this.addInput (this.createInputForObjects([...STROKE_TYPES, ...SHAPE_TYPES], getInputValuesForUndo));
+        this.addInput (this.createInputForObjects([...STROKE_TYPES, ...SHAPE_TYPES], getNodeInputValuesForUndo));
         this.addOutput(new Output([STROKE], this.output_genRequest));
 
 

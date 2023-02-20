@@ -34494,6 +34494,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.displayMin             = min;
     control.displayMax             = max;
 
+    control.thinMinus              = false;
     control.displayAbsolute        = false;
     
     control.epsilon                = Epsilon;
@@ -34828,15 +34829,22 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         }
         else
         {
-            return isNaN(control.value)
-                   ? NAN_DISPLAY
-                   : Math.abs(control.value * control.valueScale) > 999999
-                     ? (control.value * control.valueScale).toExponential(1)
-                     : numToString(
-                           control.value * control.valueScale, 
-                           control.displayDec, 
-                           control.showHex
-                       ).toUpperCase();
+            if (isNaN(control.value))
+                return NAN_DISPLAY;
+
+            let str = 
+                Math.abs(control.value * control.valueScale) > 999999
+                ? (control.value * control.valueScale).toExponential(1)
+                : numToString(
+                    control.value * control.valueScale, 
+                    control.displayDec, 
+                    control.showHex
+                ).toUpperCase();
+
+            if (control.thinMinus)
+                str = str.replace('-', '<span style="font-weight: 100;">-</span>');
+
+            return str;
         }
     };
 
@@ -36868,9 +36876,6 @@ graphView.btn1down        = false; // this is to help deal with mouse wheels tha
                                    // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
                                    
-graphView.nodeHeaderDown  = null; // marks a node being handled, to pass through window activation messages to the plugin's iFrame
-
-
 graphView.pan             = point(0, 0);
 graphView.zoom            = 1;
  
@@ -37327,10 +37332,6 @@ graphView.addEventListener('pointerleave', e =>
 
 graphView.addEventListener('pointerdown', e =>
 {
-    // if (graphView.nodeHeaderDown)
-    //     return;
-
-        
     graphView.pStart = point(e.clientX, e.clientY);
 
     const sx = e.clientX;
@@ -38931,9 +38932,9 @@ extends EventTarget
 
 
 
-    initInput(types, getInputValuesForUndo = null, getBackInitValue = null)
+    initInput(types, getNodeInputValuesForUndo = null, getBackInitValue = null)
     {
-        this.input = new Input(types, getInputValuesForUndo, getBackInitValue);
+        this.input = new Input(types, getNodeInputValuesForUndo, getBackInitValue);
 
         this.input._param              = this;
 
@@ -38956,9 +38957,9 @@ extends EventTarget
 
 
 
-    initOutput(types, toString, getOutputValuesForUndo = null, backInit = null)
+    initOutput(types, toString, getNodeOutputValuesForUndo = null, backInit = null)
     {
-        this.output = new Output(types, toString, getOutputValuesForUndo, backInit);
+        this.output = new Output(types, toString, getNodeOutputValuesForUndo, backInit);
 
         this.output._param              = this;
 
@@ -39312,8 +39313,8 @@ extends NumberParamBase
         this.div.appendChild(this.control);
 
        
-        if (hasInput)  this.initInput(NUMBER_TYPES, getInputValuesForUndo, this.input_getBackInitValue);
-        if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getOutputValuesForUndo, this.output_backInit);
+        if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true, false, true); });
@@ -39450,8 +39451,8 @@ extends NumberParamBase
         this.div.appendChild(this.control);
 
 
-        if (hasInput)  this.initInput(NUMBER_TYPES, getInputValuesForUndo, this.input_getBackInitValue);
-        if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getOutputValuesForUndo, this.output_backInit);
+        if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
             
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true, true); });
@@ -39659,8 +39660,8 @@ extends Parameter
         this.div.appendChild(this.control );
 
        
-        if (hasInput)  this.initInput(COLOR_TYPES, getInputValuesForUndo, this.input_getBackInitValue);
-        if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getOutputValuesForUndo, this.output_backInit);
+        if (hasInput)  this.initInput(COLOR_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
         this.control.addEventListener('confirm', () => 
@@ -43615,7 +43616,7 @@ function areConnected(node1, node2)
 
 
 
-function getInputValuesForUndo(input)
+function getNodeInputValuesForUndo(input)
 {
     const values = []; 
 
@@ -43627,7 +43628,7 @@ function getInputValuesForUndo(input)
 
 
 
-function getOutputValuesForUndo(output)
+function getNodeOutputValuesForUndo(output)
 {
     const values = []; 
 
@@ -43635,6 +43636,20 @@ function getOutputValuesForUndo(output)
         values.push(param.getValueForUndo());
 
     return values;
+}
+
+
+
+function getParamInputValuesForUndo(input)
+{
+    return [input.param.getValueForUndo()];
+}
+
+
+
+function getParamOutputValuesForUndo(output)
+{
+    return [output.param.getValueForUndo()];
 }
 
 
@@ -43988,9 +44003,8 @@ function createNodeHeader(node)
 
         window.focus();
 
-        
+
         e.preventDefault();
-        graphView.nodeHeaderDown = node;
 
 
         graphView.lastSelectedNodes = [...graphView.selectedNodes];
@@ -44241,8 +44255,6 @@ function createNodeHeader(node)
             }
         }
 
-
-        graphView.nodeHeaderDown = null;
 
         node.div.shiftOnPointerDown = false;
     });
@@ -45096,7 +45108,7 @@ extends OperatorBase
         this.inert = true;
 
 
-        this.addInput(new Input(LIST_TYPES, getInputValuesForUndo));
+        this.addInput(new Input(LIST_TYPES, getNodeInputValuesForUndo));
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
 
@@ -45775,8 +45787,8 @@ extends OperatorBase
     {
         super(NUMBER, 'num');
 
-        this.addInput (new Input (NUMBER_TYPES, getInputValuesForUndo, this.input_getBackInitValue));
-        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getOutputValuesForUndo, this.output_backInit));
+        this.addInput (new Input (NUMBER_TYPES, getNodeInputValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest, getNodeOutputValuesForUndo, this.output_backInit));
 
         this.addParam(this.paramValue = new NumberParam('value', '', false, false, false));
 
@@ -47340,8 +47352,8 @@ extends OpColorBase
         this.inner.appendChild(this.colorBack);
 
 
-        this.addInput(new Input(COLOR_TYPES, getInputValuesForUndo, this.input_getBackInitValue));
-        this.addOutput(new Output([COLOR], this.output_genRequest, getOutputValuesForUndo, this.output_backInit));
+        this.addInput(new Input(COLOR_TYPES, getColorInputValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([COLOR], this.output_genRequest, getColorOutputValuesForUndo, this.output_backInit));
 
         
         this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
@@ -48017,6 +48029,20 @@ extends OpColorBase
         else
             this._color = dataColor_NaN;
     }
+}
+
+
+
+function getColorInputValuesForUndo(input)
+{
+    return [input.node.paramColor.getValueForUndo()];
+}
+
+
+
+function getColorOutputValuesForUndo(output)
+{
+    return [output.node.paramColor.getValueForUndo()];
 }
 
 
@@ -49442,6 +49468,8 @@ extends OpColorBase
         this.addParam(this.paramContrast = new NumberParam('contrast', '', false, false, true, 0));
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
+        this.paramContrast.control.thinMinus = true;
+        
 
         createTooltip(ttWcag2);
         createTooltip(ttWcag3);
@@ -49958,7 +49986,7 @@ extends OpColorBase
         this.inner.insertBefore(this.checkers, this.header);
 
 
-        this.addInput (this.createInputForObjects([...FILL_TYPES, ...SHAPE_TYPES], getInputValuesForUndo));
+        this.addInput (this.createInputForObjects([...FILL_TYPES, ...SHAPE_TYPES], getNodeInputValuesForUndo));
         this.addOutput(new Output([FILL], this.output_genRequest));
 
 
@@ -50219,7 +50247,7 @@ extends OpColorBase
         this.colorBack = createDiv('colorBack');
         this.inner.appendChild(this.colorBack);
 
-        this.addInput (this.createInputForObjects([...STROKE_TYPES, ...SHAPE_TYPES], getInputValuesForUndo));
+        this.addInput (this.createInputForObjects([...STROKE_TYPES, ...SHAPE_TYPES], getNodeInputValuesForUndo));
         this.addOutput(new Output([STROKE], this.output_genRequest));
 
 
@@ -50750,7 +50778,7 @@ extends OpShapeBase
         super(RECTANGLE, 'rect');
 
 
-        this.addInput (this.createInputForObjects([RECTANGLE, RECTANGLE_VALUE], getInputValuesForUndo));
+        this.addInput (this.createInputForObjects([RECTANGLE, RECTANGLE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([RECTANGLE], this.output_genRequest));
 
 
@@ -50801,7 +50829,7 @@ extends OpShapeBase
     {
         super(LINE, 'line');
 
-        this.addInput (this.createInputForObjects([LINE, LINE_VALUE], getInputValuesForUndo));
+        this.addInput (this.createInputForObjects([LINE, LINE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([LINE], this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, false,   0));
@@ -50835,7 +50863,7 @@ extends OpShapeBase
     {
         super(ELLIPSE, 'ellipse');
 
-        this.addInput (this.createInputForObjects([ELLIPSE, ELLIPSE_VALUE], getInputValuesForUndo));
+        this.addInput (this.createInputForObjects([ELLIPSE, ELLIPSE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([ELLIPSE], this.output_genRequest));
 
 
@@ -50873,7 +50901,7 @@ extends OpShapeBase
     {
         super(POLYGON, 'poly');
 
-        this.addInput (this.createInputForObjects([POLYGON, POLYGON_VALUE], getInputValuesForUndo));
+        this.addInput (this.createInputForObjects([POLYGON, POLYGON_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([POLYGON], this.output_genRequest));
 
         this.addParam(this.paramX       = new NumberParam('x',       'x',       true, true, false,   0));
@@ -50926,7 +50954,7 @@ extends OpShapeBase
     {
         super(STAR, 'star');
 
-        this.addInput (this.createInputForObjects([STAR, STAR_VALUE], getInputValuesForUndo));
+        this.addInput (this.createInputForObjects([STAR, STAR_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([STAR], this.output_genRequest));
 
         this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, false,   0));
@@ -50989,7 +51017,7 @@ extends OperatorBase
 
         this.addParam(this.paramValue = new ColorParam('value', '', false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
 
-        this.paramValue.input.getValuesForUndo = getInputValuesForUndo;
+        this.paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
         this.paramValue.input.addEventListener('disconnect', e => OpColorStyle_value_onDisconnectInput(this, e.detail.input));
 
         

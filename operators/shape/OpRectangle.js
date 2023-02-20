@@ -15,7 +15,7 @@ extends OpShapeBase
         super(RECTANGLE, 'rect');
 
 
-        this.addInput (this.createInputForObjects([RECTANGLE, RECTANGLE_VALUE], getInputValuesForUndo));
+        this.addInput (this.createInputForObjects([RECTANGLE, RECTANGLE_VALUE], getNodeInputValuesForUndo));
         this.addOutput(new Output([RECTANGLE], this.output_genRequest));
 
 

@@ -64,9 +64,9 @@ extends EventTarget
 
 
 
-    initInput(types, getInputValuesForUndo = null, getBackInitValue = null)
+    initInput(types, getNodeInputValuesForUndo = null, getBackInitValue = null)
     {
-        this.input = new Input(types, getInputValuesForUndo, getBackInitValue);
+        this.input = new Input(types, getNodeInputValuesForUndo, getBackInitValue);
 
         this.input._param              = this;
 
@@ -89,9 +89,9 @@ extends EventTarget
 
 
 
-    initOutput(types, toString, getOutputValuesForUndo = null, backInit = null)
+    initOutput(types, toString, getNodeOutputValuesForUndo = null, backInit = null)
     {
-        this.output = new Output(types, toString, getOutputValuesForUndo, backInit);
+        this.output = new Output(types, toString, getNodeOutputValuesForUndo, backInit);
 
         this.output._param              = this;
 

@@ -142,9 +142,8 @@ function createNodeHeader(node)
 
         window.focus();
 
-        
+
         e.preventDefault();
-        graphView.nodeHeaderDown = node;
 
 
         graphView.lastSelectedNodes = [...graphView.selectedNodes];
@@ -395,8 +394,6 @@ function createNodeHeader(node)
             }
         }
 
-
-        graphView.nodeHeaderDown = null;
 
         node.div.shiftOnPointerDown = false;
     });

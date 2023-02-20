@@ -21,7 +21,7 @@ extends OpColorBase
         this.inner.insertBefore(this.checkers, this.header);
 
 
-        this.addInput (this.createInputForObjects([...FILL_TYPES, ...SHAPE_TYPES], getInputValuesForUndo));
+        this.addInput (this.createInputForObjects([...FILL_TYPES, ...SHAPE_TYPES], getNodeInputValuesForUndo));
         this.addOutput(new Output([FILL], this.output_genRequest));
 
 

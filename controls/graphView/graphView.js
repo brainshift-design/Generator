@@ -33,9 +33,6 @@ graphView.btn1down        = false; // this is to help deal with mouse wheels tha
                                    // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
                                    
-graphView.nodeHeaderDown  = null; // marks a node being handled, to pass through window activation messages to the plugin's iFrame
-
-
 graphView.pan             = point(0, 0);
 graphView.zoom            = 1;
  

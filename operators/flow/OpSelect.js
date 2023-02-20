@@ -15,7 +15,7 @@ extends OperatorBase
         this.inert = true;
 
 
-        this.addInput(new Input(LIST_TYPES, getInputValuesForUndo));
+        this.addInput(new Input(LIST_TYPES, getNodeInputValuesForUndo));
 
         this.addParam(this.paramIndex = new NumberParam('index', 'index', true, true, false, 0, 0));
 

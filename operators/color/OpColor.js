@@ -37,8 +37,8 @@ extends OpColorBase
         this.inner.appendChild(this.colorBack);
 
 
-        this.addInput(new Input(COLOR_TYPES, getInputValuesForUndo, this.input_getBackInitValue));
-        this.addOutput(new Output([COLOR], this.output_genRequest, getOutputValuesForUndo, this.output_backInit));
+        this.addInput(new Input(COLOR_TYPES, getColorInputValuesForUndo, this.input_getBackInitValue));
+        this.addOutput(new Output([COLOR], this.output_genRequest, getColorOutputValuesForUndo, this.output_backInit));
 
         
         this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
@@ -714,4 +714,18 @@ extends OpColorBase
         else
             this._color = dataColor_NaN;
     }
+}
+
+
+
+function getColorInputValuesForUndo(input)
+{
+    return [input.node.paramColor.getValueForUndo()];
+}
+
+
+
+function getColorOutputValuesForUndo(output)
+{
+    return [output.node.paramColor.getValueForUndo()];
 }

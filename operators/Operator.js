@@ -1189,7 +1189,7 @@ function areConnected(node1, node2)
 
 
 
-function getInputValuesForUndo(input)
+function getNodeInputValuesForUndo(input)
 {
     const values = []; 
 
@@ -1201,7 +1201,7 @@ function getInputValuesForUndo(input)
 
 
 
-function getOutputValuesForUndo(output)
+function getNodeOutputValuesForUndo(output)
 {
     const values = []; 
 
@@ -1209,4 +1209,18 @@ function getOutputValuesForUndo(output)
         values.push(param.getValueForUndo());
 
     return values;
+}
+
+
+
+function getParamInputValuesForUndo(input)
+{
+    return [input.param.getValueForUndo()];
+}
+
+
+
+function getParamOutputValuesForUndo(output)
+{
+    return [output.param.getValueForUndo()];
 }

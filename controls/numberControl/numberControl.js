@@ -34,6 +34,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.displayMin             = min;
     control.displayMax             = max;
 
+    control.thinMinus              = false;
     control.displayAbsolute        = false;
     
     control.epsilon                = Epsilon;
@@ -368,15 +369,22 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         }
         else
         {
-            return isNaN(control.value)
-                   ? NAN_DISPLAY
-                   : Math.abs(control.value * control.valueScale) > 999999
-                     ? (control.value * control.valueScale).toExponential(1)
-                     : numToString(
-                           control.value * control.valueScale, 
-                           control.displayDec, 
-                           control.showHex
-                       ).toUpperCase();
+            if (isNaN(control.value))
+                return NAN_DISPLAY;
+
+            let str = 
+                Math.abs(control.value * control.valueScale) > 999999
+                ? (control.value * control.valueScale).toExponential(1)
+                : numToString(
+                    control.value * control.valueScale, 
+                    control.displayDec, 
+                    control.showHex
+                ).toUpperCase();
+
+            if (control.thinMinus)
+                str = str.replace('-', '<span style="font-weight: 100;">-</span>');
+
+            return str;
         }
     };
 

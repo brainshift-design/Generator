@@ -45,8 +45,8 @@ extends NumberParamBase
         this.div.appendChild(this.control);
 
        
-        if (hasInput)  this.initInput(NUMBER_TYPES, getInputValuesForUndo, this.input_getBackInitValue);
-        if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getOutputValuesForUndo, this.output_backInit);
+        if (hasInput)  this.initInput(NUMBER_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
         this.control.addEventListener('confirm', () => { this.setValue(this.value, true, false, true); });

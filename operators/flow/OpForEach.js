@@ -7,7 +7,7 @@ extends OperatorBase
 
         this.inert = true;
         
-        this.addInput (new Input(LIST_TYPES, getInputValuesForUndo));
+        this.addInput (new Input(LIST_TYPES, getNodeInputValuesForUndo));
         this.addOutput(new Output([], this.output_genRequest));
     }
 

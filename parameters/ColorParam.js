@@ -83,8 +83,8 @@ extends Parameter
         this.div.appendChild(this.control );
 
        
-        if (hasInput)  this.initInput(COLOR_TYPES, getInputValuesForUndo, this.input_getBackInitValue);
-        if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getOutputValuesForUndo, this.output_backInit);
+        if (hasInput)  this.initInput(COLOR_TYPES, getParamInputValuesForUndo, this.input_getBackInitValue);
+        if (hasOutput) this.initOutput([COLOR_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
         this.control.addEventListener('confirm', () => 
