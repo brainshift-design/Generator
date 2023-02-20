@@ -25,6 +25,8 @@ class Menu
     items    = [];
     lastItem = null;
 
+    reverse  = false;
+    
     minWidth = 200;
 
     init     = null; // ()

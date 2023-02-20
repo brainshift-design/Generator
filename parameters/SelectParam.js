@@ -4,6 +4,8 @@ extends NumberParamBase
     options         = [];
     excludeFromMenu = []; // indices
     
+    reverseMenu     = false;
+
 
 
     constructor(id,
@@ -150,7 +152,12 @@ function initSelectParamMenu(param)
     menuSelectParam.clearItems();
 
 
-    for (let i = 0; i <= param.control.displayMax; i++)
+    const s = !param.reverseMenu ? 0 : param.control.displayMax;
+    const c = !param.reverseMenu ? i => i <= param.control.displayMax : i => i >= 0;
+    const d = !param.reverseMenu ? 1 : -1;
+
+
+    for (let i = s; c(i); i += d)
     {
         const option = param.options[i];
         

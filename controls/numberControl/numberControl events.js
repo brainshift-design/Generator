@@ -414,7 +414,7 @@ function initNumberControlEvents(control)
 
         else if (e.button == 2) 
         {
-            e.stop();
+            e.stopPropagation();
             control.buttonDown2 = false;
         }
 
