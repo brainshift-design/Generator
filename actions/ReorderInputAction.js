@@ -24,6 +24,9 @@ extends Action
 
     do(updateNodes)
     {
+        console.log('this.oldIndex =', this.oldIndex);
+        console.log('this.newIndex =', this.newIndex);
+
         // .. already done
 
         this.saveInputConnections();
@@ -36,7 +39,8 @@ extends Action
     undo(updateNodes)
     {
         const node = nodeFromId(this.nodeId);
-
+console.log('this.newIndex =', this.newIndex);
+console.log('this.oldIndex =', this.oldIndex);
         moveInArray(node.inputs, this.newIndex, this.oldIndex);
         uiSaveNodes([this.nodeId]);
         
@@ -69,13 +73,5 @@ extends Action
 
         for (const input of node.inputs.filter(i => i.connected))
             uiSaveConn(input.connection);
-        // {
-        //     const output = input.connectedOutput;
-
-        //     uiSaveConnection(
-        //         output.node.id, output.id, input.connection.outputOrder,
-        //         input.node.id, input.id,
-        //         input.connection.toJson());
-        // }
     }
 }

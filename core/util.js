@@ -144,32 +144,6 @@ function createSvg(element)
 
 
 
-function show(element, show = true) 
-{
-    const showStyle = 'block';
-    const hideStyle = 'none';
-
-    if (  !show
-        && element.style.display != hideStyle)
-        element.oldDisplay = element.style.display;
-
-    element.style.display = 
-        show 
-        ? (   element.style.oldDisplay 
-           && element.style.oldDisplay != hideStyle
-           ? element.style.oldDsplay
-           : showStyle)
-        : hideStyle; 
-}
-
-
-function hide(element)              
-{ 
-    show(element, false); 
-}
-
-
-
 function isVisible(element)
 { 
     return element.style.visibility == 'visible'; 

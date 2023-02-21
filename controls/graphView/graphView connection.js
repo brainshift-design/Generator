@@ -81,6 +81,7 @@ graphView.endConnection = function(pointerId, backInit = false)
 
         output.connecting = false;
         
+
         if (   input
             && input.canConnectFrom(output)) // TO INPUT
         {
@@ -91,29 +92,64 @@ graphView.endConnection = function(pointerId, backInit = false)
                 &&  input.node.variableInputs
                 && !input.param
                 && !isLastInArray(input.node.headerInputs, input))
+            {
+                console.log('1');
                 actionManager.do(new ReorderInputAction(input.node.id, oldReorderIndex, newReorderIndex));
+            }
+            else if (savedConnInput
+                  && savedConnInput.connectedOutput == graphView.tempConn.output
+                  && savedConnInput.index != input.index
+                  && (  !input.node.variableInputs && input.index < input.node.headerInputs.length
+                      || input.node.variableInputs && input.index < input.node.headerInputs.length-1))
+            {
+                console.log('1.1');
+                console.log('input =', input);
+                
+                moveInArray(
+                    input.node.inputs,
+                    input.node.inputs.indexOf(savedConnInput),
+                    input.index);
 
+                //node.updateNode();
+        console.log('oldReorderIdex =', oldReorderIndex);
+        console.log('savedConnInput.index =', savedConnInput.index);
+                actionManager.do(new ReorderInputAction(savedConnInput.node.id, oldReorderIndex, savedConnInput.index));
+            }
             else if (   input == savedConnInput
                      && input.connection) // reconnect old
             {
+                console.log('2');
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
-                updateWire(input.connection.wire);
+                showWire(input.connection.wire, true);
             }
 
             else if (savedConnInput
                   && savedConnInput.connectedOutput == output
-                  && (  !input.node.variableInputs 
-                      || input.index < input.node.headerInputs.length-1))
+                  && (     !input.node.variableInputs 
+                         && input.index < input.node.headerInputs.length
+                      ||    input.node.variableInputs
+                         && input.index < input.node.headerInputs.length-1))
+            {
+                console.log('3');
                 actionManager.do(new ReconnectAction(output, savedConnInput, input));
-
+            }
             else if (   !savedConnInput
                      && (  !input.connected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new
+            {
+                console.log('4');
                 createConnectAction(output, input, backInit);
+            }
         }
         else if (savedConnInput) // disconnect old
+        {
+            console.log('5');
             actionManager.do(new DisconnectAction(savedConnInput));
+        }
         
+        console.log('6');
+
+        if (graphView.savedConn) showWire(graphView.savedConn.wire, true);
         graphView.cancelConnection(pointerId);
     }
     

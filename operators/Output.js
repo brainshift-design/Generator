@@ -223,7 +223,7 @@ class Output
                     && !graphView.tempConn.input.types.includes(this.type));
 
 
-        show(this.wireBall, isConnected);
+        showElement(this.wireBall, isConnected);
     }
 
 

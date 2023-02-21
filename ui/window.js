@@ -122,3 +122,10 @@ function dockWindowTop     () { uiQueueMessageToFigma({cmd: 'figDockWindowTop'  
 function dockWindowLeft    () { uiQueueMessageToFigma({cmd: 'figDockWindowLeft'    }); }
 function dockWindowRight   () { uiQueueMessageToFigma({cmd: 'figDockWindowRight'   }); }
 function dockWindowBottom  () { uiQueueMessageToFigma({cmd: 'figDockWindowBottom'  }); }
+
+
+
+window.addEventListener('error', e =>
+{
+    uiNotify(e.message, {error: true});
+})

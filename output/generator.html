@@ -643,9 +643,9 @@ const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 
 
-function equal(a, b)
+function equal(a, b, eps = Epsilon)
 {
-    return Math.abs(b - a) < Epsilon;
+    return Math.abs(b - a) < eps;
 }
 
 
@@ -2167,32 +2167,6 @@ function createSvg(element)
 
 
 
-function show(element, show = true) 
-{
-    const showStyle = 'block';
-    const hideStyle = 'none';
-
-    if (  !show
-        && element.style.display != hideStyle)
-        element.oldDisplay = element.style.display;
-
-    element.style.display = 
-        show 
-        ? (   element.style.oldDisplay 
-           && element.style.oldDisplay != hideStyle
-           ? element.style.oldDsplay
-           : showStyle)
-        : hideStyle; 
-}
-
-
-function hide(element)              
-{ 
-    show(element, false); 
-}
-
-
-
 function isVisible(element)
 { 
     return element.style.visibility == 'visible'; 
@@ -2766,6 +2740,32 @@ function isTouchpad(e)
 {
     return Math.abs(e.deltaX) < 100
         && Math.abs(e.deltaY) < 100;
+}
+
+
+
+function showElement(element, show = true) 
+{
+    const showStyle = 'block';
+    const hideStyle = 'none';
+
+    if (  !show
+        && element.style.display != hideStyle)
+        element.oldDisplay = element.style.display;
+
+    element.style.display = 
+        show 
+        ? (   element.style.oldDisplay 
+           && element.style.oldDisplay != hideStyle
+           ? element.style.oldDsplay
+           : showStyle)
+        : hideStyle; 
+}
+
+
+function hideElement(element)              
+{ 
+    showElement(element, false); 
 }
 
 
@@ -8860,20 +8860,17 @@ extends GColorType
                 }
                 else if (quality.value == 1) // clip chroma
                 {
-                    console.log('1 rgb =', rgb);
                     let hcl = rgb2hclok(rgb);
-                    console.log('1 hcl =', hcl);
 
-                    let loopProtect = 1000;
+                    let loopProtect = 10000;
 
                     while (  !rgbIsValid(hclok2rgb(hcl))
                            && hcl[1] > 0.001
                            && loopProtect-- > 0)
-                        hcl[1] -= 0.01;
+                        hcl[1] -= 0.001;
 
                     rgb = hclok2rgb(hcl);
-console.log('2 hcl =', hcl);
-console.log('2 rgb =', rgb);
+
                     rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
                     rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
                     rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 

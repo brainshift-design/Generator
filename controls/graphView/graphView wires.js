@@ -389,17 +389,24 @@ function updateWireStyle(wire)
     wire.outBall.style.r = 3 * graphView.zoom;
 
     wire.style.zIndex    = 1;
+}
 
 
+
+function showWire(wire, show, update = true)
+{
     // const isReordering =   
     //        isNaN(newReorderIndex)
     //     || isNaN(oldReorderIndex);
 
+    showElement(wire,         show);//(this != graphView.savedConn || isReordering));
+    showElement(wire.curve,   show);//show && (this != graphView.savedConn || isReordering));
+    showElement(wire.xp1,     show);//(this != graphView.savedConn || isReordering));
+    showElement(wire.xp2,     show);//(this != graphView.savedConn || isReordering));
+    showElement(wire.outBall, show);//(!graphView.tempConn || graphView.tempConn.output));
+    showElement(wire. inBall, show);//(!graphView.tempConn || graphView.tempConn. input));
 
-    // show(wire,         (this != graphView.savedConn || isReordering));
-    // show(wire.curve,   showCurve && (this != graphView.savedConn || isReordering));
-    // show(wire.xp1,     (this != graphView.savedConn || isReordering));
-    // show(wire.xp2,     (this != graphView.savedConn || isReordering));
-    // show(wire.outBall, (!graphView.tempConn || graphView.tempConn.output));
-    // show(wire. inBall, (!graphView.tempConn || graphView.tempConn. input));
+
+    if (update)
+        updateWire(wire);
 }

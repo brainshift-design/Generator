@@ -258,7 +258,7 @@ extends EventTarget
         this.wireBall.style.zIndex = MAX_INT32;
 
 
-        show(this.wireBall, isConnected); 
+        showElement(this.wireBall, isConnected); 
     }
 
 

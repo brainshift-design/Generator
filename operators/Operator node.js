@@ -300,22 +300,6 @@ function createNodeHeader(node)
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
                         inputRect.y + inputRect.h/2 - menuBarHeight);
-
-                    // if (!graphView.tempConnected)
-                    // {
-                    //     node.enterTimer = setTimeout(() =>
-                    //     {
-                    //         actionManager.do(new ConnectAction(tempConn.output, input));
-                            
-                    //         graphView.savedConn = input.connection;
-                    //         graphView.removeConnWires(graphView.tempConn);    
-
-                    //         node.enterTimer = null;
-                    //     },
-                    //     400);
-
-                    //     graphView.tempConnected = true;
-                    // }
                 }
             }
             else if ( tempConn.input

@@ -171,3 +171,29 @@ function isTouchpad(e)
     return Math.abs(e.deltaX) < 100
         && Math.abs(e.deltaY) < 100;
 }
+
+
+
+function showElement(element, show = true) 
+{
+    const showStyle = 'block';
+    const hideStyle = 'none';
+
+    if (  !show
+        && element.style.display != hideStyle)
+        element.oldDisplay = element.style.display;
+
+    element.style.display = 
+        show 
+        ? (   element.style.oldDisplay 
+           && element.style.oldDisplay != hideStyle
+           ? element.style.oldDsplay
+           : showStyle)
+        : hideStyle; 
+}
+
+
+function hideElement(element)              
+{ 
+    showElement(element, false); 
+}

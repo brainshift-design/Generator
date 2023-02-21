@@ -2483,14 +2483,13 @@ a
             <div id='whatsNewBody'>
                 <h1>What's new in Generator</h1>
 
-                <p>Fixed <i>some</i> double updates on wires.</p>
-                <p>Added [Show operation results] menu setting to reduce info clutter.</p>
+                <p>Added <i>Show operation results</i> menu setting to reduce info clutter.</p>
                 <p id='whatsNew0'>Added %Ctrl%Connect to copy the input value back to the output, which makes
                     adjusting existing parameters less cumbersome.
                 </p>
                 <p>Fixed hex pasting.</p>
                 <p>Added <i>clip chroma</i> as a fallback for the color validator.</p>
-                <p>Fixed UI bugs.</p>
+                <p>UI bug fixes and improvements.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -3338,9 +3337,9 @@ const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 
 
-function equal(a, b)
+function equal(a, b, eps = Epsilon)
 {
-    return Math.abs(b - a) < Epsilon;
+    return Math.abs(b - a) < eps;
 }
 
 
@@ -4862,32 +4861,6 @@ function createSvg(element)
 
 
 
-function show(element, show = true) 
-{
-    const showStyle = 'block';
-    const hideStyle = 'none';
-
-    if (  !show
-        && element.style.display != hideStyle)
-        element.oldDisplay = element.style.display;
-
-    element.style.display = 
-        show 
-        ? (   element.style.oldDisplay 
-           && element.style.oldDisplay != hideStyle
-           ? element.style.oldDsplay
-           : showStyle)
-        : hideStyle; 
-}
-
-
-function hide(element)              
-{ 
-    show(element, false); 
-}
-
-
-
 function isVisible(element)
 { 
     return element.style.visibility == 'visible'; 
@@ -5461,6 +5434,32 @@ function isTouchpad(e)
 {
     return Math.abs(e.deltaX) < 100
         && Math.abs(e.deltaY) < 100;
+}
+
+
+
+function showElement(element, show = true) 
+{
+    const showStyle = 'block';
+    const hideStyle = 'none';
+
+    if (  !show
+        && element.style.display != hideStyle)
+        element.oldDisplay = element.style.display;
+
+    element.style.display = 
+        show 
+        ? (   element.style.oldDisplay 
+           && element.style.oldDisplay != hideStyle
+           ? element.style.oldDsplay
+           : showStyle)
+        : hideStyle; 
+}
+
+
+function hideElement(element)              
+{ 
+    showElement(element, false); 
 }
 
 
@@ -11555,20 +11554,17 @@ extends GColorType
                 }
                 else if (quality.value == 1) // clip chroma
                 {
-                    console.log('1 rgb =', rgb);
                     let hcl = rgb2hclok(rgb);
-                    console.log('1 hcl =', hcl);
 
-                    let loopProtect = 1000;
+                    let loopProtect = 10000;
 
                     while (  !rgbIsValid(hclok2rgb(hcl))
                            && hcl[1] > 0.001
                            && loopProtect-- > 0)
-                        hcl[1] -= 0.01;
+                        hcl[1] -= 0.001;
 
                     rgb = hclok2rgb(hcl);
-console.log('2 hcl =', hcl);
-console.log('2 rgb =', rgb);
+
                     rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
                     rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
                     rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
@@ -19804,9 +19800,9 @@ const Phi = (Math.sqrt(5) + 1) / 2; // 1.618
 
 
 
-function equal(a, b)
+function equal(a, b, eps = Epsilon)
 {
-    return Math.abs(b - a) < Epsilon;
+    return Math.abs(b - a) < eps;
 }
 
 
@@ -21328,32 +21324,6 @@ function createSvg(element)
 
 
 
-function show(element, show = true) 
-{
-    const showStyle = 'block';
-    const hideStyle = 'none';
-
-    if (  !show
-        && element.style.display != hideStyle)
-        element.oldDisplay = element.style.display;
-
-    element.style.display = 
-        show 
-        ? (   element.style.oldDisplay 
-           && element.style.oldDisplay != hideStyle
-           ? element.style.oldDsplay
-           : showStyle)
-        : hideStyle; 
-}
-
-
-function hide(element)              
-{ 
-    show(element, false); 
-}
-
-
-
 function isVisible(element)
 { 
     return element.style.visibility == 'visible'; 
@@ -21927,6 +21897,32 @@ function isTouchpad(e)
 {
     return Math.abs(e.deltaX) < 100
         && Math.abs(e.deltaY) < 100;
+}
+
+
+
+function showElement(element, show = true) 
+{
+    const showStyle = 'block';
+    const hideStyle = 'none';
+
+    if (  !show
+        && element.style.display != hideStyle)
+        element.oldDisplay = element.style.display;
+
+    element.style.display = 
+        show 
+        ? (   element.style.oldDisplay 
+           && element.style.oldDisplay != hideStyle
+           ? element.style.oldDsplay
+           : showStyle)
+        : hideStyle; 
+}
+
+
+function hideElement(element)              
+{ 
+    showElement(element, false); 
 }
 
 
@@ -29926,20 +29922,17 @@ extends GColorType
                 }
                 else if (quality.value == 1) // clip chroma
                 {
-                    console.log('1 rgb =', rgb);
                     let hcl = rgb2hclok(rgb);
-                    console.log('1 hcl =', hcl);
 
-                    let loopProtect = 1000;
+                    let loopProtect = 10000;
 
                     while (  !rgbIsValid(hclok2rgb(hcl))
                            && hcl[1] > 0.001
                            && loopProtect-- > 0)
-                        hcl[1] -= 0.01;
+                        hcl[1] -= 0.001;
 
                     rgb = hclok2rgb(hcl);
-console.log('2 hcl =', hcl);
-console.log('2 rgb =', rgb);
+
                     rgb[0] = Math.round(Math.min(Math.max(0, rgb[0]), 1) * 0xff);   
                     rgb[1] = Math.round(Math.min(Math.max(0, rgb[1]), 1) * 0xff);   
                     rgb[2] = Math.round(Math.min(Math.max(0, rgb[2]), 1) * 0xff); 
@@ -37270,7 +37263,7 @@ graphView.unsoloNode = function()
 
 graphView.updateShowWires = function(updateNodes = true)
 {
-    graph.connections.forEach(c => show(c.wire, true));//settings.showWires));
+    graph.connections.forEach(c => showElement(c.wire, true));//settings.showWires));
 
     if (updateNodes) 
         graph.nodes.forEach(n => n.updateNode());
@@ -37442,7 +37435,7 @@ graphView.addEventListener('pointerdown', e =>
 
                 graphView.savedConn = graphView.overInput.connection;
 
-                hide(graphView.savedConn.wire);
+                hideElement(graphView.savedConn.wire);
             }
             else
             {
@@ -37828,7 +37821,7 @@ graphView.updatePanAndZoom = function(updateNodes)
     btnZoom.divIcon.innerHTML       = Math.round(graphView.zoom * 100) + '%';
     btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
 
-    menuItemZoomTo100.setChecked(equal(graphView.zoom, 1));
+    menuItemZoomTo100.setChecked(equal(graphView.zoom, 1, 0.0001));
 };
 
 
@@ -38233,6 +38226,7 @@ graphView.endConnection = function(pointerId, backInit = false)
 
         output.connecting = false;
         
+
         if (   input
             && input.canConnectFrom(output)) // TO INPUT
         {
@@ -38243,29 +38237,64 @@ graphView.endConnection = function(pointerId, backInit = false)
                 &&  input.node.variableInputs
                 && !input.param
                 && !isLastInArray(input.node.headerInputs, input))
+            {
+                console.log('1');
                 actionManager.do(new ReorderInputAction(input.node.id, oldReorderIndex, newReorderIndex));
+            }
+            else if (savedConnInput
+                  && savedConnInput.connectedOutput == graphView.tempConn.output
+                  && savedConnInput.index != input.index
+                  && (  !input.node.variableInputs && input.index < input.node.headerInputs.length
+                      || input.node.variableInputs && input.index < input.node.headerInputs.length-1))
+            {
+                console.log('1.1');
+                console.log('input =', input);
+                
+                moveInArray(
+                    input.node.inputs,
+                    input.node.inputs.indexOf(savedConnInput),
+                    input.index);
 
+                //node.updateNode();
+        console.log('oldReorderIdex =', oldReorderIndex);
+        console.log('savedConnInput.index =', savedConnInput.index);
+                actionManager.do(new ReorderInputAction(savedConnInput.node.id, oldReorderIndex, savedConnInput.index));
+            }
             else if (   input == savedConnInput
                      && input.connection) // reconnect old
             {
+                console.log('2');
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
-                updateWire(input.connection.wire);
+                showWire(input.connection.wire, true);
             }
 
             else if (savedConnInput
                   && savedConnInput.connectedOutput == output
-                  && (  !input.node.variableInputs 
-                      || input.index < input.node.headerInputs.length-1))
+                  && (     !input.node.variableInputs 
+                         && input.index < input.node.headerInputs.length
+                      ||    input.node.variableInputs
+                         && input.index < input.node.headerInputs.length-1))
+            {
+                console.log('3');
                 actionManager.do(new ReconnectAction(output, savedConnInput, input));
-
+            }
             else if (   !savedConnInput
                      && (  !input.connected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new
+            {
+                console.log('4');
                 createConnectAction(output, input, backInit);
+            }
         }
         else if (savedConnInput) // disconnect old
+        {
+            console.log('5');
             actionManager.do(new DisconnectAction(savedConnInput));
+        }
         
+        console.log('6');
+
+        if (graphView.savedConn) showWire(graphView.savedConn.wire, true);
         graphView.cancelConnection(pointerId);
     }
     
@@ -38922,19 +38951,26 @@ function updateWireStyle(wire)
     wire.outBall.style.r = 3 * graphView.zoom;
 
     wire.style.zIndex    = 1;
+}
 
 
+
+function showWire(wire, show, update = true)
+{
     // const isReordering =   
     //        isNaN(newReorderIndex)
     //     || isNaN(oldReorderIndex);
 
+    showElement(wire,         show);//(this != graphView.savedConn || isReordering));
+    showElement(wire.curve,   show);//show && (this != graphView.savedConn || isReordering));
+    showElement(wire.xp1,     show);//(this != graphView.savedConn || isReordering));
+    showElement(wire.xp2,     show);//(this != graphView.savedConn || isReordering));
+    showElement(wire.outBall, show);//(!graphView.tempConn || graphView.tempConn.output));
+    showElement(wire. inBall, show);//(!graphView.tempConn || graphView.tempConn. input));
 
-    // show(wire,         (this != graphView.savedConn || isReordering));
-    // show(wire.curve,   showCurve && (this != graphView.savedConn || isReordering));
-    // show(wire.xp1,     (this != graphView.savedConn || isReordering));
-    // show(wire.xp2,     (this != graphView.savedConn || isReordering));
-    // show(wire.outBall, (!graphView.tempConn || graphView.tempConn.output));
-    // show(wire. inBall, (!graphView.tempConn || graphView.tempConn. input));
+
+    if (update)
+        updateWire(wire);
 }
 
 
@@ -41944,7 +41980,7 @@ extends EventTarget
         this.wireBall.style.zIndex = MAX_INT32;
 
 
-        show(this.wireBall, isConnected); 
+        showElement(this.wireBall, isConnected); 
     }
 
 
@@ -42204,7 +42240,7 @@ class Output
                     && !graphView.tempConn.input.types.includes(this.type));
 
 
-        show(this.wireBall, isConnected);
+        showElement(this.wireBall, isConnected);
     }
 
 
@@ -44289,22 +44325,6 @@ function createNodeHeader(node)
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
                         inputRect.y + inputRect.h/2 - menuBarHeight);
-
-                    // if (!graphView.tempConnected)
-                    // {
-                    //     node.enterTimer = setTimeout(() =>
-                    //     {
-                    //         actionManager.do(new ConnectAction(tempConn.output, input));
-                            
-                    //         graphView.savedConn = input.connection;
-                    //         graphView.removeConnWires(graphView.tempConn);    
-
-                    //         node.enterTimer = null;
-                    //     },
-                    //     400);
-
-                    //     graphView.tempConnected = true;
-                    // }
                 }
             }
             else if ( tempConn.input
@@ -53296,6 +53316,9 @@ extends Action
 
     do(updateNodes)
     {
+        console.log('this.oldIndex =', this.oldIndex);
+        console.log('this.newIndex =', this.newIndex);
+
         // .. already done
 
         this.saveInputConnections();
@@ -53308,7 +53331,8 @@ extends Action
     undo(updateNodes)
     {
         const node = nodeFromId(this.nodeId);
-
+console.log('this.newIndex =', this.newIndex);
+console.log('this.oldIndex =', this.oldIndex);
         moveInArray(node.inputs, this.newIndex, this.oldIndex);
         uiSaveNodes([this.nodeId]);
         
@@ -53341,14 +53365,6 @@ extends Action
 
         for (const input of node.inputs.filter(i => i.connected))
             uiSaveConn(input.connection);
-        // {
-        //     const output = input.connectedOutput;
-
-        //     uiSaveConnection(
-        //         output.node.id, output.id, input.connection.outputOrder,
-        //         input.node.id, input.id,
-        //         input.connection.toJson());
-        // }
     }
 }
 
@@ -58085,6 +58101,13 @@ function dockWindowTop     () { uiQueueMessageToFigma({cmd: 'figDockWindowTop'  
 function dockWindowLeft    () { uiQueueMessageToFigma({cmd: 'figDockWindowLeft'    }); }
 function dockWindowRight   () { uiQueueMessageToFigma({cmd: 'figDockWindowRight'   }); }
 function dockWindowBottom  () { uiQueueMessageToFigma({cmd: 'figDockWindowBottom'  }); }
+
+
+
+window.addEventListener('error', e =>
+{
+    uiNotify(e.message, {error: true});
+})
 
 
 

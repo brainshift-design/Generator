@@ -88,7 +88,7 @@ graphView.updatePanAndZoom = function(updateNodes)
     btnZoom.divIcon.innerHTML       = Math.round(graphView.zoom * 100) + '%';
     btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
 
-    menuItemZoomTo100.setChecked(equal(graphView.zoom, 1));
+    menuItemZoomTo100.setChecked(equal(graphView.zoom, 1, 0.0001));
 };
 
 
