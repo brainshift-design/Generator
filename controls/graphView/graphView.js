@@ -32,7 +32,6 @@ graphView.selectionRect   = Rect.NaN;
 graphView.btn1down        = false; // this is to help deal with mouse wheels that send X values as
                                    // sometimes a MMB press is followed by wheelX as a "deeper" middle-click
 
-                                   
 graphView.pan             = point(0, 0);
 graphView.zoom            = 1;
  

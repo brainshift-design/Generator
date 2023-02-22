@@ -3,7 +3,7 @@ extends Parameter
 {
     control;
 
-    //tooltip = null;
+    showFullPrecision = false;
 
     
     

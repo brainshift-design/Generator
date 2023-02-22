@@ -173,6 +173,21 @@ document.addEventListener('keydown', e =>
                 tc.wire.clientX,
                 tc.wire.clientY);
         }
+
+        else if (overNumberControl
+              && overNumberControl.param)
+        {
+            if (overNumberControlCtrl)
+            {
+                overNumberControlCtrl.param.showFullPrecision = false;
+                overNumberControlCtrl.update();
+            }
+
+            overNumberControlCtrl = overNumberControl;
+
+            overNumberControlCtrl.param.showFullPrecision = true;
+            overNumberControlCtrl.update();
+        }
     }
 
     else if (    e.key == 'Alt'
@@ -237,13 +252,6 @@ document.addEventListener('keyup', e =>
 
         altPressedInMenu = false;
       }
-
-    else if (e.key == 'Control'
-          && graphView.spaceDown)
-    {
-        graphView.zoomSelecting = false;
-        setCursor(panCursor);
-    }
     else if (e.key == 'Control')
     {
         if (graphView.spaceDown)
@@ -261,6 +269,14 @@ document.addEventListener('keyup', e =>
                 tc.wire, 
                 tc.wire.clientX,
                 tc.wire.clientY);
+        }
+        else if (overNumberControlCtrl)
+        {
+            overNumberControlCtrl.param.showFullPrecision = false;
+            overNumberControlCtrl.update();
+            overNumberControlCtrl.updateCursor();
+
+            overNumberControlCtrl = null;
         }
     }
 },

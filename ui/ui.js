@@ -1,6 +1,7 @@
-var overNumberControl = null;
-var overColorControl  = null;
+var overNumberControl     = null;
+var overColorControl      = null;
 
+var overNumberControlCtrl = null;
 
 
 // function checkAddMenuItemProductKey(menuSelectItems)

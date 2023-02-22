@@ -1,3 +1,28 @@
+const rgb2dark1  = [255/255, 112/255,  0/255];
+const rgb2dark2  = [255/255, 255/255,  0/255];
+const rgb2dark3  = [ 64/255, 220/255, 64/255];
+
+const rgb2light1 = [255/255, 112/255,  0/255];
+const rgb2light2 = [255/255, 255/255,  0/255];
+const rgb2light3 = [ 64/255, 220/255, 64/255];
+
+
+const rgb3dark1  = [255/255,  64/255,  96/255];
+const rgb3dark2  = [255/255, 128/255,  24/255];
+const rgb3dark3  = [255/255, 185/255,   0/255];
+const rgb3dark4  = [255/255, 255/255,   0/255];
+const rgb3dark5  = [ 64/255, 255/255,  64/255];
+const rgb3dark6  = [110/255, 128/255, 255/255];
+
+const rgb3light1 = [255/255,   0/255,  64/255];
+const rgb3light2 = [255/255, 112/255,   0/255];
+const rgb3light3 = [255/255, 185/255,   0/255];
+const rgb3light4 = [255/255, 255/255,   0/255];
+const rgb3light5 = [ 0/255,  255/255,   0/255];
+const rgb3light6 = [ 0/255,   64/255, 255/255];
+
+
+
 class   OpColorContrast
 extends OpColorBase
 {
@@ -20,7 +45,7 @@ extends OpColorBase
         this.addParam(this.paramStandard = new SelectParam('standard', '', false, true,  true, ['WCAG 2', 'WCAG 3'], 1));
       
         this.paramContrast.control.thinMinus = true;
-        
+
 
         createTooltip(ttWcag2);
         createTooltip(ttWcag3);
@@ -176,9 +201,66 @@ extends OpColorBase
 
     updateParams()
     {
-        this.paramStandard.enableControlText(true);
+        // let valueBack = 'var(--figma-color-bg)';
+
+
+        // if (dataColorIsValid(this._color))
+        // {
+        //     const contrast = Math.abs(this.paramContrast.value.value / 100);
+        //     const standard = this.paramStandard.value;
+
+
+        //     if (darkMode)
+        //     {
+        //         if (standard.value == 0)
+        //         {
+        //             if (contrast > 0  /21 && contrast <=  3  /21) valueBack = rgb2style(rgb2dark1);
+        //             if (contrast > 3  /21 && contrast <=  4.5/21) valueBack = rgb2style(rgb2dark2);
+        //             if (contrast > 4.5/21 && contrast <=  7  /21) valueBack = rgb2style(rgb2dark3);
+        //             if (contrast > 7  /21 && contrast <= 21  /21) valueBack = 'var(--figma-color-bg)';
+        //         }
+        //         else
+        //         {
+        //             if (contrast >  0/105 && contrast <=  15/105) valueBack = rgb2style(rgb3dark1);
+        //             if (contrast > 15/105 && contrast <=  30/105) valueBack = rgb2style(rgb3dark2);
+        //             if (contrast > 30/105 && contrast <=  45/105) valueBack = rgb2style(rgb3dark3);
+        //             if (contrast > 45/105 && contrast <=  60/105) valueBack = rgb2style(rgb3dark4);
+        //             if (contrast > 60/105 && contrast <=  75/105) valueBack = rgb2style(rgb3dark5);
+        //             if (contrast > 75/105 && contrast <=  90/105) valueBack = rgb2style(rgb3dark6);
+        //             if (contrast > 90/105 && contrast <= 105/105) valueBack = 'var(--figma-color-bg)';
+        //         }
+        //     }
+        //     else
+        //     {
+        //         if (standard.value == 0)
+        //         {
+        //             if (contrast > 0  /21 && contrast <=  3  /21) valueBack = rgb2style(rgb2light1);
+        //             if (contrast > 3  /21 && contrast <=  4.5/21) valueBack = rgb2style(rgb2light2);
+        //             if (contrast > 4.5/21 && contrast <=  7  /21) valueBack = rgb2style(rgb2light3);
+        //             if (contrast > 7  /21 && contrast <= 21  /21) valueBack = 'var(--figma-color-bg)';
+        //         }
+        //         else
+        //         {
+        //             if (contrast >  0/105 && contrast <=  15/105) valueBack = rgb2style(rgb3light1);
+        //             if (contrast > 15/105 && contrast <=  30/105) valueBack = rgb2style(rgb3light2);
+        //             if (contrast > 30/105 && contrast <=  45/105) valueBack = rgb2style(rgb3light3);
+        //             if (contrast > 45/105 && contrast <=  60/105) valueBack = rgb2style(rgb3light4);
+        //             if (contrast > 60/105 && contrast <=  75/105) valueBack = rgb2style(rgb3light5);
+        //             if (contrast > 75/105 && contrast <=  90/105) valueBack = rgb2style(rgb3light6);
+        //             if (contrast > 90/105 && contrast <= 105/105) valueBack = 'var(--figma-color-bg)';
+        //         }
+        //     }
+        // }
+
+
+        // this.paramContrast.control.backStyleLight =
+        // this.paramContrast.control.backStyleDark  = valueBack;
+
+
         this.paramContrast.enableControlText(false);
-            
+        this.paramStandard.enableControlText(true);
+
+
         this.updateParamControls();
     }
 
@@ -190,8 +272,6 @@ extends OpColorBase
 
         const colors = this.getHeaderColors();
 
-        // let textStyle;
-
           if (   this.inputs[0].connected 
               && this.inputs[1].connected) this.label.style.color = rgb2style(this.labelColor);
         else if (this.inputs[1].connected) this.label.style.color = rgba2style(colors.text);
@@ -202,52 +282,67 @@ extends OpColorBase
 
     setRanges(standard)
     {
-        if (darkMode)
+        if (standard.value == 0)
         {
-            if (standard.value == 0)
+            const contrast = Math.abs(this.paramContrast.value.value / 21);
+
+            const is1 = contrast > 0  /21 && contrast <=  3  /21;
+            const is2 = contrast > 3  /21 && contrast <=  4.5/21;
+            const is3 = contrast > 4.5/21 && contrast <=  7  /21;
+            //const is4 = contrast > 7  /21 && contrast <=  7  /21;
+           
+            if (darkMode)
             {
                 this.paramContrast.control.ranges = [ 
-                    new NumberControlRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.2 )', 0.8),
-                    new NumberControlRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.27)', 0.8),
-                    new NumberControlRange(4.5/21,  7  /21, 'rgba(64,  220, 64, 0.27)', 0.8),
+                    new NumberControlRange(0  /21,  3  /21, rgb2style_a(rgb2dark1, is1 ? 1 : 0.2 ), 0.8),
+                    new NumberControlRange(3  /21,  4.5/21, rgb2style_a(rgb2dark2, is2 ? 1 : 0.27), 0.8),
+                    new NumberControlRange(4.5/21,  7  /21, rgb2style_a(rgb2dark3, is3 ? 1 : 0.27), 0.8),
                     new NumberControlRange(7  /21, 21  /21, 'transparent') ];
             }
             else
             {
                 this.paramContrast.control.ranges = [ 
-                    new NumberControlRange( 0/105,  15/105, 'rgba(255,  64,  96, 0.2)', 0.8),
-                    new NumberControlRange(15/105,  30/105, 'rgba(255, 128,  24, 0.2)', 0.8),
-                    new NumberControlRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2)', 0.8),
-                    new NumberControlRange(45/105,  60/105, 'rgba(255, 255,   0, 0.2)', 0.8),
-                    new NumberControlRange(60/105,  75/105, 'rgba( 64, 255,  64, 0.2)', 0.8),
-                    new NumberControlRange(75/105,  90/105, 'rgba(110, 128, 255, 0.4)', 0.8),
-                    new NumberControlRange(90/105, 105/105, 'transparent') ];
+                    new NumberControlRange(0  /21,  3  /21, rgb2style_a(rgb2light1, is1 ? 1 : 0.2 ), 0.8),
+                    new NumberControlRange(3  /21,  4.5/21, rgb2style_a(rgb2light2, is2 ? 1 : 0.27), 0.8),
+                    new NumberControlRange(4.5/21,  7  /21, rgb2style_a(rgb2light3, is3 ? 1 : 0.27), 0.8),
+                    new NumberControlRange(7  /21, 21  /21, 'transparent') ];
             }
         }
         else
         {
-            if (standard.value == 0)
+            const contrast = Math.abs(this.paramContrast.value.value / 100);
+
+            const is1 = contrast >  0/105 && contrast <=  15/105;
+            const is2 = contrast > 15/105 && contrast <=  30/105;
+            const is3 = contrast > 30/105 && contrast <=  45/105;
+            const is4 = contrast > 45/105 && contrast <=  60/105;
+            const is5 = contrast > 60/105 && contrast <=  75/105;
+            const is6 = contrast > 75/105 && contrast <=  90/105;
+            //const is7 = contrast > 90/105;
+
+            if (darkMode)
             {
                 this.paramContrast.control.ranges = [ 
-                    new NumberControlRange(0  /21,  3  /21, 'rgba(255, 112,  0, 0.2 )', 0.8),
-                    new NumberControlRange(3  /21,  4.5/21, 'rgba(255, 255,  0, 0.27)', 0.8),
-                    new NumberControlRange(4.5/21,  7  /21, 'rgba(64,  220, 64, 0.27)', 0.8),
-                    new NumberControlRange(7  /21, 21  /21, 'transparent') ];
+                    new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3dark1, is1 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3dark2, is2 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3dark3, is3 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(45/105,  60/105, rgb2style_a(rgb3dark4, is4 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3dark5, is5 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3dark6, is6 ? 1 : 0.4), 0.8),
+                    new NumberControlRange(90/105, 105/105, 'transparent') ];
             }
             else
             {
                 this.paramContrast.control.ranges = [
-                    new NumberControlRange( 0/105,  15/105, 'rgba(255,   0,  64, 0.2 )', 0.8),
-                    new NumberControlRange(15/105,  30/105, 'rgba(255, 112,   0, 0.2 )', 0.8),
-                    new NumberControlRange(30/105,  45/105, 'rgba(255, 185,   0, 0.2 )', 0.8),
-                    new NumberControlRange(45/105,  60/105, 'rgba(255, 255,   0, 0.2 )', 0.8),
-                    new NumberControlRange(60/105,  75/105, 'rgba(64,  255,  64, 0.2 )', 0.8),
-                    new NumberControlRange(75/105,  90/105, 'rgba(0,     0, 255, 0.07)', 0.8),
+                    new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3light1, is1 ? 1 : 0.2 ), 0.8),
+                    new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3light2, is2 ? 1 : 0.2 ), 0.8),
+                    new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3light3, is3 ? 1 : 0.2 ), 0.8),
+                    new NumberControlRange(45/105,  60/105, rgb2style_a(rgb3light4, is4 ? 1 : 0.2 ), 0.8),
+                    new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3light5, is5 ? 1 : 0.2 ), 0.8),
+                    new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3light6, is6 ? 1 : 0.07), 0.8),
                     new NumberControlRange(90/105, 105/105, 'transparent') ];
             }
         }
-
-        this.paramContrast.control.update();
     }
 
 

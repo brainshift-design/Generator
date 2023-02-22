@@ -1,4 +1,4 @@
-const ColorEpsilon = 0.0001;
+const ColorEpsilon = 0.001;
 
 
 

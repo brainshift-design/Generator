@@ -299,10 +299,9 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.updateColors = function()
     {
-        control        .style.background = darkMode ? control. backStyleDark : control. backStyleLight;
-        control.bar    .style.background = darkMode ? control.valueStyleDark : control.valueStyleLight;
-        control.text   .style.color      = darkMode ? control. textStyleDark : control. textStyleLight;
-      //control.textbox.style.color      = darkMode ? control. textStyleDark : control. textStyleLight;
+        control     .style.background = darkMode ? control. backStyleDark : control. backStyleLight;
+        control.bar .style.background = darkMode ? control.valueStyleDark : control.valueStyleLight;
+        control.text.style.color      = darkMode ? control. textStyleDark : control. textStyleLight;
     };
 
 
@@ -372,17 +371,33 @@ function initNumberControl(param, control, width, height, id, name, showName, de
             if (isNaN(control.value))
                 return NAN_DISPLAY;
 
-            let str = 
-                Math.abs(control.value * control.valueScale) > 999999
-                ? (control.value * control.valueScale).toExponential(1)
-                : numToString(
-                    control.value * control.valueScale, 
-                    control.displayDec, 
-                    control.showHex
-                ).toUpperCase();
+
+            let str;
+          
+
+            if (Math.abs(control.value * control.valueScale) > 999999)
+                str = (control.value * control.valueScale).toExponential(1);
+            else
+            {
+                if (   control.param
+                    && control.param.showFullPrecision)
+                    str = numToString(
+                        control.value * control.valueScale, 
+                        10, 
+                        control.showHex);
+                else
+                    str = numToString(
+                        control.value * control.valueScale, 
+                        control.displayDec, 
+                        control.showHex);
+
+                str = str.toUpperCase();
+            }
+
 
             if (control.thinMinus)
                 str = str.replace('-', '<span style="font-weight: 100;">-</span>');
+
 
             return str;
         }
