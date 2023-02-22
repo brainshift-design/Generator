@@ -274,9 +274,11 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-                                     new MenuItem('Help page',                 {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-                                     new MenuItem('',                          {separator: true}),
-                                     new MenuItem('Enter subscription key...', {callback:  () => showProductKeyDialog()})]);
+        new MenuItem('Enter subscription key...', {callback:  () => showProductKeyDialog()}),
+        new MenuItem('',                          {separator: true}),
+        new MenuItem('Help page',                 {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+        new MenuItem('',                          {separator: true}),
+        new MenuItem('About Generator',           {callback:  () => showAboutDialog()})]);
 
 
     menuMain = new Menu('Main menu', false);

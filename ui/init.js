@@ -56,6 +56,7 @@ initUtilContext();
 
 initDataMode();
 initWhatsNewDialog();
+initAboutDialog();
 
 
 uiQueueMessageToFigma({cmd: 'figStartGenerator'});

@@ -48,11 +48,12 @@ extends Action
         const [nodes, _conns] = uiPasteNodes(this.copiedNodesJson, this.pasteConnected, this.x, this.y, updateNodes);
 
         pushUnique(this.newConnectionData, _conns);
-        
 
-        if (this.pasteConnected)
+        for (const conn of _conns)
         {
-            for (const conn of _conns)
+            if (   this.pasteConnected
+                ||    nodes.find(n => n.id == conn.outputNodeId)
+                   && nodes.find(n => n.id == conn.inputNodeId ))
                 uiSaveConnection(
                     conn.outputNodeId, conn.outputId, conn.outputOrder,
                     conn.inputNodeId,  conn.inputId,
