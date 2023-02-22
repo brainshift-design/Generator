@@ -168,12 +168,6 @@ function initNumberControlEvents(control)
 
 
         control.updateCursor();
-        // control.style.cursor = 
-        //         control.readOnly 
-        //     // || containsChild(control, control.textbox)
-        //     || graphView.wheelTimer 
-        //     ? 'default'
-        //     : 'ew-resize';
 
 
         let rect = boundingRect(control);
@@ -181,7 +175,7 @@ function initNumberControlEvents(control)
         control.mouseOver = 
                e.clientX >= rect.left
             && e.clientX <  rect.right
-            && e.clientY >= rect.top                                     
+            && e.clientY >= rect.top
             && e.clientY <  rect.bottom;
 
 

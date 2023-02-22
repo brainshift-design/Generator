@@ -30,6 +30,9 @@ class Output
     wireBall;
 
 
+    measureData = { divBounds: new Rect(0, 0, 0, 0) };
+
+
     connectedInputs = [];
 
     get connectedHeaderInputs() { return this.connectedInputs.filter(i => !i.param); }
@@ -170,6 +173,16 @@ class Output
 
 
 
+    updateMeasureData()
+    {
+        this.measureData = 
+        {
+            divBounds: clientRect(this.div)
+        };
+    }
+
+
+    
     updateControl()
     {
         const mouseOver =

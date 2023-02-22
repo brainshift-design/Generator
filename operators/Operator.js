@@ -107,7 +107,7 @@ class Operator
     valid;
 
     
-    updateData = null; // collected before the update to avoid forced reflow
+    measureData = { divBounds: new Rect(0, 0, 0, 0) };
 
 
 
@@ -858,7 +858,13 @@ class Operator
 
         this.params
             .filter(p => p.control)
-            .forEach(p => p.control.updateMeasureData());
+            .forEach(p => 
+                {
+                    p.control.updateMeasureData();
+
+                    if (p. input) p. input.updateMeasureData();
+                    if (p.output) p.output.updateMeasureData();
+                });
     }
 
 

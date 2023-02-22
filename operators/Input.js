@@ -31,6 +31,9 @@ extends EventTarget
     wireBall;
   
 
+    measureData = { divBounds: new Rect(0, 0, 0, 0) };
+
+
     _connectedOutput = null;
     
     get connectedOutput() { return this._connectedOutput; }
@@ -181,6 +184,16 @@ extends EventTarget
 
 
 
+    updateMeasureData()
+    {
+        this.measureData = 
+        {
+            divBounds: boundingRect(this.div)
+        };
+    }
+
+
+    
     updateControl()
     {
         const tc = graphView.tempConn;

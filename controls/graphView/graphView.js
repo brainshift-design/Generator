@@ -67,7 +67,7 @@ graphView.getAllNodeBounds = function(onlySelected = false)
         : graph.nodes;
 
     for (const node of nodes)
-        bounds = expandRect(bounds, node.measureData.divBounds);//boundingRect(node.div));
+        bounds = expandRect(bounds, boundingRect(node.div));
 
     return bounds;
 };
@@ -82,7 +82,7 @@ graphView.getAllNodeOffsets = function(nodes = null)
         nodes = graph.nodes;
 
     for (const node of nodes)
-        bounds = expandRect(bounds, node.measureData.divOffset);//boundingRect(node.div));
+        bounds = expandRect(bounds, boundingRect(node.div));
 
     return bounds;
 };
@@ -94,7 +94,7 @@ graphView.getAllNodeBounds = function()
     let bounds = Rect.NaN;
 
     for (const node of graph.nodes)
-        bounds = expandRect(bounds, node.measureData.divBounds);//boundingRect(node.div));
+        bounds = expandRect(bounds, boundingRect(node.div));
 
     return bounds;
 };

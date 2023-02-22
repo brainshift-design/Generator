@@ -896,11 +896,11 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     uiSaveNodes(nodes.map(n => n.id));
 
+
     nodes.forEach(n => n.updateMeasureData());
     nodes.forEach(n => n.updateNode());
     
-    // console.log('objects =', [...objects]);
-    // console.log('styles =', [...styles]);
+
     if (   !isEmpty(objects)
         || !isEmpty(styles))
     {
@@ -919,6 +919,9 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     
     graphView.update(nodes);
     graphView.updateScrollWithBounds();
+
+
+    graphView.updateNodeTransforms(nodes);
 
 
     graphView.pastingNodes       = false;

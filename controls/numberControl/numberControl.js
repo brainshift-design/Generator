@@ -110,7 +110,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
      
     control.options                = []; // if dec == 0, show named choices instead of a value
 
-    control.measureData            = {};
+    control.measureData            = { divBounds: new Rect(0, 0, 0, 0) };
  
      
     control.onstartchange          = new Event('startchange');
@@ -194,6 +194,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     {
         control.measureData = 
         {
+            //divBounds:  boundingRect(control),
             offsetRect: offsetRect(control),
             clientRect: clientRect(control)
         };

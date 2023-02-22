@@ -10,8 +10,8 @@ graphView.addWire = function(wire, updateTransform = true)
     graphView.wires.push(wire);
     wireContainer.appendChild(wire);
 
-    if (updateTransform)
-        updateWire(wire);
+    // if (updateTransform)
+    //     updateWire(wire);
 };
 
 

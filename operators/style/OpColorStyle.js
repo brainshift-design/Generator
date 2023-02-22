@@ -6,7 +6,7 @@ extends OperatorBase
     circle;
     link;
 
-    existing        = false;
+    existing        = true;
 
     linkedStyleId   = NULL;
     linkedStyleName = NULL;
@@ -21,7 +21,7 @@ extends OperatorBase
         this.inert = true;
 
 
-        this.addParam(this.paramValue = new ColorParam('value', '', false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
+        this.addParam(this.paramValue = new ColorParam('value', '', false, true, true, ColorValue.NaN));
 
         this.paramValue.input.getValuesForUndo = getNodeInputValuesForUndo;
         this.paramValue.input.addEventListener('disconnect', e => OpColorStyle_value_onDisconnectInput(this, e.detail.input));
@@ -66,6 +66,9 @@ extends OperatorBase
 
         this.circle.appendChild(this.link);
         this.label.insertBefore(this.circle, this.labelText);
+
+
+        this.updateParams();
     }
 
 
@@ -218,19 +221,18 @@ extends OperatorBase
         if (!pasting)
         {
             if (_node.existing != undefined) 
-                this.existing = isTrue(_node.existing);
+               this.existing = isTrue(_node.existing);
             
             this.linkedStyleId = _node.linkedStyleId;
+     
+            super.loadParams(_node, pasting);
         }
         else
         {
-            this.existing       = false;
-            this.linkedStyleId  = NULL;
+            this.existing        = true;
+            this.linkedStyleId   = NULL;
             this.linkedStyleName = '';
         }
-
-
-        super.loadParams(_node, pasting);
     }
 }
 
