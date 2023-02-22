@@ -46,7 +46,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.isCached())
+        if (this.valid)//this.isCached())
             return this;
 
             

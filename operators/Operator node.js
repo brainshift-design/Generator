@@ -250,7 +250,7 @@ function createNodeHeader(node)
                 if (   node.variableInputs
                     && savedConn)
                 {
-                    const rect    = node.measureData.divBounds;//boundingRect(node.div);
+                    const rect    = boundingRect(node.div);
                     const padding = node.header.connectionPadding;
 
                     const index = Math.min(Math.max(0, Math.round(
@@ -278,7 +278,7 @@ function createNodeHeader(node)
                     graphView.overInput.updateControl();
 
                     
-                    const inputRect = savedConn.input.measureData.divBounds;//boundingRect(savedConn.input.div);
+                    const inputRect = boundingRect(savedConn.input.div);
 
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
@@ -295,7 +295,7 @@ function createNodeHeader(node)
                     input.mouseOver = true;
                     input.updateControl();
 
-                    const inputRect = input.measureData.divBounds;//boundingRect(input.div);
+                    const inputRect = boundingRect(input.div);
                     
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,

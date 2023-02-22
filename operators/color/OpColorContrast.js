@@ -201,62 +201,6 @@ extends OpColorBase
 
     updateParams()
     {
-        // let valueBack = 'var(--figma-color-bg)';
-
-
-        // if (dataColorIsValid(this._color))
-        // {
-        //     const contrast = Math.abs(this.paramContrast.value.value / 100);
-        //     const standard = this.paramStandard.value;
-
-
-        //     if (darkMode)
-        //     {
-        //         if (standard.value == 0)
-        //         {
-        //             if (contrast > 0  /21 && contrast <=  3  /21) valueBack = rgb2style(rgb2dark1);
-        //             if (contrast > 3  /21 && contrast <=  4.5/21) valueBack = rgb2style(rgb2dark2);
-        //             if (contrast > 4.5/21 && contrast <=  7  /21) valueBack = rgb2style(rgb2dark3);
-        //             if (contrast > 7  /21 && contrast <= 21  /21) valueBack = 'var(--figma-color-bg)';
-        //         }
-        //         else
-        //         {
-        //             if (contrast >  0/105 && contrast <=  15/105) valueBack = rgb2style(rgb3dark1);
-        //             if (contrast > 15/105 && contrast <=  30/105) valueBack = rgb2style(rgb3dark2);
-        //             if (contrast > 30/105 && contrast <=  45/105) valueBack = rgb2style(rgb3dark3);
-        //             if (contrast > 45/105 && contrast <=  60/105) valueBack = rgb2style(rgb3dark4);
-        //             if (contrast > 60/105 && contrast <=  75/105) valueBack = rgb2style(rgb3dark5);
-        //             if (contrast > 75/105 && contrast <=  90/105) valueBack = rgb2style(rgb3dark6);
-        //             if (contrast > 90/105 && contrast <= 105/105) valueBack = 'var(--figma-color-bg)';
-        //         }
-        //     }
-        //     else
-        //     {
-        //         if (standard.value == 0)
-        //         {
-        //             if (contrast > 0  /21 && contrast <=  3  /21) valueBack = rgb2style(rgb2light1);
-        //             if (contrast > 3  /21 && contrast <=  4.5/21) valueBack = rgb2style(rgb2light2);
-        //             if (contrast > 4.5/21 && contrast <=  7  /21) valueBack = rgb2style(rgb2light3);
-        //             if (contrast > 7  /21 && contrast <= 21  /21) valueBack = 'var(--figma-color-bg)';
-        //         }
-        //         else
-        //         {
-        //             if (contrast >  0/105 && contrast <=  15/105) valueBack = rgb2style(rgb3light1);
-        //             if (contrast > 15/105 && contrast <=  30/105) valueBack = rgb2style(rgb3light2);
-        //             if (contrast > 30/105 && contrast <=  45/105) valueBack = rgb2style(rgb3light3);
-        //             if (contrast > 45/105 && contrast <=  60/105) valueBack = rgb2style(rgb3light4);
-        //             if (contrast > 60/105 && contrast <=  75/105) valueBack = rgb2style(rgb3light5);
-        //             if (contrast > 75/105 && contrast <=  90/105) valueBack = rgb2style(rgb3light6);
-        //             if (contrast > 90/105 && contrast <= 105/105) valueBack = 'var(--figma-color-bg)';
-        //         }
-        //     }
-        // }
-
-
-        // this.paramContrast.control.backStyleLight =
-        // this.paramContrast.control.backStyleDark  = valueBack;
-
-
         this.paramContrast.enableControlText(false);
         this.paramStandard.enableControlText(true);
 

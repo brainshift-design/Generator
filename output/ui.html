@@ -2483,8 +2483,7 @@ a
             <div id='whatsNewBody'>
                 <h1>What's new in Generator</h1>
 
-                <p>Added tree selection to node context menus.</p>
-                <p>Fixing endless UI bugs. :)</p>
+                <p>-</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -2693,7 +2692,7 @@ a
 
 
 
-const generatorVersion = 101;
+const generatorVersion = 102;
 
 
 const MAX_INT32        = 2147483647;
@@ -11337,7 +11336,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.isCached())
+        if (this.valid)//this.isCached())
             return this;
 
             
@@ -19156,7 +19155,7 @@ function convert2hcluv(fromColor)
 ////////////////////////////////////////////////////
 
 
-const generatorVersion = 101;
+const generatorVersion = 102;
 
 
 const MAX_INT32        = 2147483647;
@@ -29705,7 +29704,7 @@ extends GColorType
 
     eval(parse)
     {
-        if (this.isCached())
+        if (this.valid)//this.isCached())
             return this;
 
             
@@ -34915,13 +34914,13 @@ function initNumberControl(param, control, width, height, id, name, showName, de
                 str = (control.value * control.valueScale).toExponential(1);
             else
             {
-                if (   control.param
-                    && control.param.showFullPrecision)
-                    str = numToString(
-                        control.value * control.valueScale, 
-                        10, 
-                        control.showHex);
-                else
+                // if (   control.param
+                //     && control.param.showFullPrecision)
+                //     str = numToString(
+                //         control.value * control.valueScale, 
+                //         10, 
+                //         control.showHex);
+                // else
                     str = numToString(
                         control.value * control.valueScale, 
                         control.displayDec, 
@@ -34932,7 +34931,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
 
             if (control.thinMinus)
-                str = str.replace('-', '<span style="font-weight: 100;">-</span>');
+                str = str.replace('-', '<span style="font-weight: 300;">-</span>');
 
 
             return str;
@@ -44307,7 +44306,7 @@ function createNodeHeader(node)
                 if (   node.variableInputs
                     && savedConn)
                 {
-                    const rect    = node.measureData.divBounds;//boundingRect(node.div);
+                    const rect    = boundingRect(node.div);
                     const padding = node.header.connectionPadding;
 
                     const index = Math.min(Math.max(0, Math.round(
@@ -44335,7 +44334,7 @@ function createNodeHeader(node)
                     graphView.overInput.updateControl();
 
                     
-                    const inputRect = savedConn.input.measureData.divBounds;//boundingRect(savedConn.input.div);
+                    const inputRect = boundingRect(savedConn.input.div);
 
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
@@ -44352,7 +44351,7 @@ function createNodeHeader(node)
                     input.mouseOver = true;
                     input.updateControl();
 
-                    const inputRect = input.measureData.divBounds;//boundingRect(input.div);
+                    const inputRect = boundingRect(input.div);
                     
                     tempConn.wire.inputPos = point(
                         inputRect.x + inputRect.w/2,
@@ -49855,62 +49854,6 @@ extends OpColorBase
 
     updateParams()
     {
-        // let valueBack = 'var(--figma-color-bg)';
-
-
-        // if (dataColorIsValid(this._color))
-        // {
-        //     const contrast = Math.abs(this.paramContrast.value.value / 100);
-        //     const standard = this.paramStandard.value;
-
-
-        //     if (darkMode)
-        //     {
-        //         if (standard.value == 0)
-        //         {
-        //             if (contrast > 0  /21 && contrast <=  3  /21) valueBack = rgb2style(rgb2dark1);
-        //             if (contrast > 3  /21 && contrast <=  4.5/21) valueBack = rgb2style(rgb2dark2);
-        //             if (contrast > 4.5/21 && contrast <=  7  /21) valueBack = rgb2style(rgb2dark3);
-        //             if (contrast > 7  /21 && contrast <= 21  /21) valueBack = 'var(--figma-color-bg)';
-        //         }
-        //         else
-        //         {
-        //             if (contrast >  0/105 && contrast <=  15/105) valueBack = rgb2style(rgb3dark1);
-        //             if (contrast > 15/105 && contrast <=  30/105) valueBack = rgb2style(rgb3dark2);
-        //             if (contrast > 30/105 && contrast <=  45/105) valueBack = rgb2style(rgb3dark3);
-        //             if (contrast > 45/105 && contrast <=  60/105) valueBack = rgb2style(rgb3dark4);
-        //             if (contrast > 60/105 && contrast <=  75/105) valueBack = rgb2style(rgb3dark5);
-        //             if (contrast > 75/105 && contrast <=  90/105) valueBack = rgb2style(rgb3dark6);
-        //             if (contrast > 90/105 && contrast <= 105/105) valueBack = 'var(--figma-color-bg)';
-        //         }
-        //     }
-        //     else
-        //     {
-        //         if (standard.value == 0)
-        //         {
-        //             if (contrast > 0  /21 && contrast <=  3  /21) valueBack = rgb2style(rgb2light1);
-        //             if (contrast > 3  /21 && contrast <=  4.5/21) valueBack = rgb2style(rgb2light2);
-        //             if (contrast > 4.5/21 && contrast <=  7  /21) valueBack = rgb2style(rgb2light3);
-        //             if (contrast > 7  /21 && contrast <= 21  /21) valueBack = 'var(--figma-color-bg)';
-        //         }
-        //         else
-        //         {
-        //             if (contrast >  0/105 && contrast <=  15/105) valueBack = rgb2style(rgb3light1);
-        //             if (contrast > 15/105 && contrast <=  30/105) valueBack = rgb2style(rgb3light2);
-        //             if (contrast > 30/105 && contrast <=  45/105) valueBack = rgb2style(rgb3light3);
-        //             if (contrast > 45/105 && contrast <=  60/105) valueBack = rgb2style(rgb3light4);
-        //             if (contrast > 60/105 && contrast <=  75/105) valueBack = rgb2style(rgb3light5);
-        //             if (contrast > 75/105 && contrast <=  90/105) valueBack = rgb2style(rgb3light6);
-        //             if (contrast > 90/105 && contrast <= 105/105) valueBack = 'var(--figma-color-bg)';
-        //         }
-        //     }
-        // }
-
-
-        // this.paramContrast.control.backStyleLight =
-        // this.paramContrast.control.backStyleDark  = valueBack;
-
-
         this.paramContrast.enableControlText(false);
         this.paramStandard.enableControlText(true);
 
@@ -58145,6 +58088,13 @@ window.addEventListener('gesturechange', e => e.preventDefault());
 window.addEventListener('gestureend',    e => e.preventDefault());
 
 
+// window.frames[0].onerror = function(msg)
+// {
+//     console.log('msg =', msg);
+//     uiNotify(msg, {error: true});
+// };
+
+
 
 var darkMode;
 
@@ -58250,13 +58200,6 @@ function dockWindowTop     () { uiQueueMessageToFigma({cmd: 'figDockWindowTop'  
 function dockWindowLeft    () { uiQueueMessageToFigma({cmd: 'figDockWindowLeft'    }); }
 function dockWindowRight   () { uiQueueMessageToFigma({cmd: 'figDockWindowRight'   }); }
 function dockWindowBottom  () { uiQueueMessageToFigma({cmd: 'figDockWindowBottom'  }); }
-
-
-
-window.addEventListener('error', e =>
-{
-    uiNotify(e.message, {error: true});
-})
 
 
 

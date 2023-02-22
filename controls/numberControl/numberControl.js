@@ -380,13 +380,13 @@ function initNumberControl(param, control, width, height, id, name, showName, de
                 str = (control.value * control.valueScale).toExponential(1);
             else
             {
-                if (   control.param
-                    && control.param.showFullPrecision)
-                    str = numToString(
-                        control.value * control.valueScale, 
-                        10, 
-                        control.showHex);
-                else
+                // if (   control.param
+                //     && control.param.showFullPrecision)
+                //     str = numToString(
+                //         control.value * control.valueScale, 
+                //         10, 
+                //         control.showHex);
+                // else
                     str = numToString(
                         control.value * control.valueScale, 
                         control.displayDec, 
@@ -397,7 +397,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
 
             if (control.thinMinus)
-                str = str.replace('-', '<span style="font-weight: 100;">-</span>');
+                str = str.replace('-', '<span style="font-weight: 300;">-</span>');
 
 
             return str;
