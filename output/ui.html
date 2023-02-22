@@ -2483,13 +2483,7 @@ a
             <div id='whatsNewBody'>
                 <h1>What's new in Generator</h1>
 
-                <p>Added <i>Show operation results</i> menu setting to reduce info clutter.</p>
-                <p id='whatsNew0'>Added %Ctrl%Connect to copy the input value back to the output, which makes
-                    adjusting existing parameters less cumbersome.
-                </p>
-                <p>Fixed hex pasting.</p>
-                <p>Added <i>clip chroma</i> as a fallback for the color validator.</p>
-                <p>UI bug fixes and improvements.</p>
+                <p>-</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -2698,7 +2692,7 @@ a
 
 
 
-const generatorVersion = 100;
+const generatorVersion = 101;
 
 
 const MAX_INT32        = 2147483647;
@@ -6002,9 +5996,9 @@ const MATH_OPS =
 [   // the order is important for logical keyboard value changes
     [NUMBER_SUBTRACT, '−' ],
     [NUMBER_ADD,      '+' ],
+    [NUMBER_MODULO,   '%' ],
     [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_MULTIPLY, '×' ],
-    [NUMBER_MODULO,   '%' ],
     [NUMBER_EXPONENT, 'e<sup>x</sup>'] 
 ];
 
@@ -9005,9 +8999,9 @@ extends GArithmetic
         {
             case 0: this.value = evalSubtractInputs(this.inputs, parse); break;
             case 1: this.value = evalAddInputs     (this.inputs, parse); break;
-            case 2: this.value = evalDivideInputs  (this.inputs, parse); break;
-            case 3: this.value = evalMultiplyInputs(this.inputs, parse); break;
-            case 4: this.value = evalModuloInputs  (this.inputs, parse); break;
+            case 2: this.value = evalModuloInputs  (this.inputs, parse); break;
+            case 3: this.value = evalDivideInputs  (this.inputs, parse); break;
+            case 4: this.value = evalMultiplyInputs(this.inputs, parse); break;
             case 5: this.value = evalExponentInputs(this.inputs, parse); break;
         }
 
@@ -19161,7 +19155,7 @@ function convert2hcluv(fromColor)
 ////////////////////////////////////////////////////
 
 
-const generatorVersion = 100;
+const generatorVersion = 101;
 
 
 const MAX_INT32        = 2147483647;
@@ -24370,9 +24364,9 @@ const MATH_OPS =
 [   // the order is important for logical keyboard value changes
     [NUMBER_SUBTRACT, '−' ],
     [NUMBER_ADD,      '+' ],
+    [NUMBER_MODULO,   '%' ],
     [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_MULTIPLY, '×' ],
-    [NUMBER_MODULO,   '%' ],
     [NUMBER_EXPONENT, 'e<sup>x</sup>'] 
 ];
 
@@ -27373,9 +27367,9 @@ extends GArithmetic
         {
             case 0: this.value = evalSubtractInputs(this.inputs, parse); break;
             case 1: this.value = evalAddInputs     (this.inputs, parse); break;
-            case 2: this.value = evalDivideInputs  (this.inputs, parse); break;
-            case 3: this.value = evalMultiplyInputs(this.inputs, parse); break;
-            case 4: this.value = evalModuloInputs  (this.inputs, parse); break;
+            case 2: this.value = evalModuloInputs  (this.inputs, parse); break;
+            case 3: this.value = evalDivideInputs  (this.inputs, parse); break;
+            case 4: this.value = evalMultiplyInputs(this.inputs, parse); break;
             case 5: this.value = evalExponentInputs(this.inputs, parse); break;
         }
 
@@ -37662,14 +37656,12 @@ graphView.updateWheelTimer = function()
 
 
 
-graphView.addEventListener('gesturestart', e => { console.log('start'); graphView.zoomStart = graphView.zoom; });
+graphView.addEventListener('gesturestart', e => { graphView.zoomStart = graphView.zoom; });
 
 
 
 graphView.addEventListener('gesturechange', e => 
 {
-    console.log('change'); 
-    
     const p = point(
         graphView.p.x,
         graphView.p.y - menuBarHeight);
@@ -38237,33 +38229,24 @@ graphView.endConnection = function(pointerId, backInit = false)
                 &&  input.node.variableInputs
                 && !input.param
                 && !isLastInArray(input.node.headerInputs, input))
-            {
-                console.log('1');
                 actionManager.do(new ReorderInputAction(input.node.id, oldReorderIndex, newReorderIndex));
-            }
+
             else if (savedConnInput
                   && savedConnInput.connectedOutput == graphView.tempConn.output
                   && savedConnInput.index != input.index
                   && (  !input.node.variableInputs && input.index < input.node.headerInputs.length
                       || input.node.variableInputs && input.index < input.node.headerInputs.length-1))
             {
-                console.log('1.1');
-                console.log('input =', input);
-                
                 moveInArray(
                     input.node.inputs,
                     input.node.inputs.indexOf(savedConnInput),
                     input.index);
 
-                //node.updateNode();
-        console.log('oldReorderIdex =', oldReorderIndex);
-        console.log('savedConnInput.index =', savedConnInput.index);
                 actionManager.do(new ReorderInputAction(savedConnInput.node.id, oldReorderIndex, savedConnInput.index));
             }
             else if (   input == savedConnInput
                      && input.connection) // reconnect old
             {
-                console.log('2');
                 graphView.savedConn = null; // done here to redraw the saved wire correctly
                 showWire(input.connection.wire, true);
             }
@@ -38274,25 +38257,16 @@ graphView.endConnection = function(pointerId, backInit = false)
                          && input.index < input.node.headerInputs.length
                       ||    input.node.variableInputs
                          && input.index < input.node.headerInputs.length-1))
-            {
-                console.log('3');
                 actionManager.do(new ReconnectAction(output, savedConnInput, input));
-            }
+
             else if (   !savedConnInput
                      && (  !input.connected
                          || input.connectedOutput != graphView.tempConn.output)) // connect new
-            {
-                console.log('4');
                 createConnectAction(output, input, backInit);
-            }
         }
         else if (savedConnInput) // disconnect old
-        {
-            console.log('5');
             actionManager.do(new DisconnectAction(savedConnInput));
-        }
         
-        console.log('6');
 
         if (graphView.savedConn) showWire(graphView.savedConn.wire, true);
         graphView.cancelConnection(pointerId);
@@ -53316,9 +53290,6 @@ extends Action
 
     do(updateNodes)
     {
-        console.log('this.oldIndex =', this.oldIndex);
-        console.log('this.newIndex =', this.newIndex);
-
         // .. already done
 
         this.saveInputConnections();
@@ -53331,8 +53302,7 @@ extends Action
     undo(updateNodes)
     {
         const node = nodeFromId(this.nodeId);
-console.log('this.newIndex =', this.newIndex);
-console.log('this.oldIndex =', this.oldIndex);
+
         moveInArray(node.inputs, this.newIndex, this.oldIndex);
         uiSaveNodes([this.nodeId]);
         
@@ -53447,7 +53417,11 @@ extends Action
         }
 
         for (const node of movedNodes)
+        {
+            node.updateMeasureData();
             node.updateNode();
+        }
+
 
         uiSaveNodes(movedIds);
     }
@@ -57806,7 +57780,7 @@ function uiHideClearUndoWarning()
 
 function initWhatsNewDialog()
 {
-    whatsNew0.innerHTML = whatsNew0.innerHTML.replace('%Ctrl%', osCtrl());
+    //whatsNew0.innerHTML = whatsNew0.innerHTML.replace('%Ctrl%', osCtrl());
 
 
     initCheckbox(chkHideWhatsNew, 'Don\'t show again', false);

@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 100;
+const generatorVersion = 101;
 
 
 const MAX_INT32        = 2147483647;
@@ -3308,9 +3308,9 @@ const MATH_OPS =
 [   // the order is important for logical keyboard value changes
     [NUMBER_SUBTRACT, '−' ],
     [NUMBER_ADD,      '+' ],
+    [NUMBER_MODULO,   '%' ],
     [NUMBER_DIVIDE,   '/' ], //'÷' ],
     [NUMBER_MULTIPLY, '×' ],
-    [NUMBER_MODULO,   '%' ],
     [NUMBER_EXPONENT, 'e<sup>x</sup>'] 
 ];
 
@@ -6311,9 +6311,9 @@ extends GArithmetic
         {
             case 0: this.value = evalSubtractInputs(this.inputs, parse); break;
             case 1: this.value = evalAddInputs     (this.inputs, parse); break;
-            case 2: this.value = evalDivideInputs  (this.inputs, parse); break;
-            case 3: this.value = evalMultiplyInputs(this.inputs, parse); break;
-            case 4: this.value = evalModuloInputs  (this.inputs, parse); break;
+            case 2: this.value = evalModuloInputs  (this.inputs, parse); break;
+            case 3: this.value = evalDivideInputs  (this.inputs, parse); break;
+            case 4: this.value = evalMultiplyInputs(this.inputs, parse); break;
             case 5: this.value = evalExponentInputs(this.inputs, parse); break;
         }
 

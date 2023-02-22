@@ -283,14 +283,12 @@ graphView.updateWheelTimer = function()
 
 
 
-graphView.addEventListener('gesturestart', e => { console.log('start'); graphView.zoomStart = graphView.zoom; });
+graphView.addEventListener('gesturestart', e => { graphView.zoomStart = graphView.zoom; });
 
 
 
 graphView.addEventListener('gesturechange', e => 
 {
-    console.log('change'); 
-    
     const p = point(
         graphView.p.x,
         graphView.p.y - menuBarHeight);

@@ -24,9 +24,6 @@ extends Action
 
     do(updateNodes)
     {
-        console.log('this.oldIndex =', this.oldIndex);
-        console.log('this.newIndex =', this.newIndex);
-
         // .. already done
 
         this.saveInputConnections();
@@ -39,8 +36,7 @@ extends Action
     undo(updateNodes)
     {
         const node = nodeFromId(this.nodeId);
-console.log('this.newIndex =', this.newIndex);
-console.log('this.oldIndex =', this.oldIndex);
+
         moveInArray(node.inputs, this.newIndex, this.oldIndex);
         uiSaveNodes([this.nodeId]);
         

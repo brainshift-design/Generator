@@ -76,7 +76,11 @@ extends Action
         }
 
         for (const node of movedNodes)
+        {
+            node.updateMeasureData();
             node.updateNode();
+        }
+
 
         uiSaveNodes(movedIds);
     }

@@ -17,7 +17,7 @@ function isNodeKey(key) { return isTagKey(key, nodeTag); }
 function isConnKey(key) { return isTagKey(key, connTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 100;
+const generatorVersion = 101;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const TAB = '  ';
@@ -418,9 +418,9 @@ const LOG = 'LOG';
 const MATH_OPS = [
     [NUMBER_SUBTRACT, '−'],
     [NUMBER_ADD, '+'],
+    [NUMBER_MODULO, '%'],
     [NUMBER_DIVIDE, '/'],
     [NUMBER_MULTIPLY, '×'],
-    [NUMBER_MODULO, '%'],
     [NUMBER_EXPONENT, 'e<sup>x</sup>']
 ];
 const BOOLEAN_NOT = 0;
@@ -1208,7 +1208,6 @@ function figUpdateObjects(msg) {
             curNodeId = genObj.nodeId;
             figObjects = figObjectArrays.find(a => a.nodeId == genObj.nodeId);
             if (!figObjects) {
-                console.log('genObj.existing =', genObj.existing);
                 figObjectArrays.push(figObjects = {
                     nodeId: genObj.nodeId,
                     existing: genObj.existing,
