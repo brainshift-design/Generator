@@ -34,11 +34,13 @@ graphView.addEventListener('pointerdown', e =>
         if (   graphView.spaceDown
             || panMode)
         {
+            console.log('1');
             if (getCtrlKey(e)) graphView.startZoomSelection(e.pointerId, e.clientX, e.clientY);
             else               graphView.startPan(e.pointerId);
         }
         else if (graphView.overOutput)
         {
+            console.log('2');
             graphView.overOutput.connecting = true;
             graphView.startConnectionFromOutput(e.pointerId, graphView.overOutput, true, getCtrlKey(e));
 
@@ -46,6 +48,7 @@ graphView.addEventListener('pointerdown', e =>
         }
         else if (graphView.overInput)
         {
+            console.log('3');
             if (graphView.overInput.connectedOutput) // begin to disconnect
             {
                 oldReorderIndex = graphView.overInput.index;
@@ -68,6 +71,7 @@ graphView.addEventListener('pointerdown', e =>
         }
         else if (document.activeElement.type != 'text') // selection, unless a textbox is in focus
         {
+            console.log('4');
             graphView.lastSelectedNodes = [...graphView.selectedNodes];
 
             graphView.startSelection(
