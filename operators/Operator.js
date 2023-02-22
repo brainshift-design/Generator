@@ -583,8 +583,9 @@ class Operator
 
     isUnknown()
     {
-        return this.isConnectedUncached()
-            && this.hasMultipliedOutputs();
+        return false;
+        // return this.isConnectedUncached()
+        //     && this.hasMultipliedOutputs();
     }
 
 

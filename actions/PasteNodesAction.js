@@ -50,11 +50,14 @@ extends Action
         pushUnique(this.newConnectionData, _conns);
         
 
-        for (const conn of _conns)
-            uiSaveConnection(
-                conn.outputNodeId, conn.outputId, conn.outputOrder,
-                conn.inputNodeId,  conn.inputId,
-                JSON.stringify(conn));
+        if (this.pasteConnected)
+        {
+            for (const conn of _conns)
+                uiSaveConnection(
+                    conn.outputNodeId, conn.outputId, conn.outputOrder,
+                    conn.inputNodeId,  conn.inputId,
+                    JSON.stringify(conn));
+        }
 
 
         graphView.updateNodeTransforms(nodes);

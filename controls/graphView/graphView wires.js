@@ -345,13 +345,13 @@ function updateWireStyle(wire)
            && !nodeFromId(conn.output.param._nodeId).isCached();
 
 
-    const unknown = 
-           conn.output
-        && isNotCached
-        && conn.input
-        && conn.input.node.isOrFollowedByMultiplier()
-        && (  !conn.input.param 
-            || conn.input.param.affectsHeader);
+    const unknown = false;
+        //    conn.output
+        // && isNotCached
+        // && conn.input
+        // && conn.input.node.isOrFollowedByMultiplier()
+        // && (  !conn.input.param 
+        //     || conn.input.param.affectsHeader);
 
 
     wire.curve .style.stroke         = wireStyle;

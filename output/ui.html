@@ -2483,7 +2483,7 @@ a
             <div id='whatsNewBody'>
                 <h1>What's new in Generator</h1>
 
-                <p>-</p>
+                <p>Re-fixed connection bug. :)</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -2692,7 +2692,7 @@ a
 
 
 
-const generatorVersion = 102;
+const generatorVersion = 103;
 
 
 const MAX_INT32        = 2147483647;
@@ -19155,7 +19155,7 @@ function convert2hcluv(fromColor)
 ////////////////////////////////////////////////////
 
 
-const generatorVersion = 102;
+const generatorVersion = 103;
 
 
 const MAX_INT32        = 2147483647;
@@ -33148,9 +33148,9 @@ function initGeneratorMenus()
                                        }
                                    }),
                                  //new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
-                                 //new MenuItem('',                             {separator: true}),   
-                                 //new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
-                                 //new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
+                                 new MenuItem('',                             {separator: true}),   
+                                 new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+                                 new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
                                    new MenuItem('',                             {separator: true }),
                                  //new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
                                  //new MenuItem('',                             {separator: true }),
@@ -38906,13 +38906,13 @@ function updateWireStyle(wire)
            && !nodeFromId(conn.output.param._nodeId).isCached();
 
 
-    const unknown = 
-           conn.output
-        && isNotCached
-        && conn.input
-        && conn.input.node.isOrFollowedByMultiplier()
-        && (  !conn.input.param 
-            || conn.input.param.affectsHeader);
+    const unknown = false;
+        //    conn.output
+        // && isNotCached
+        // && conn.input
+        // && conn.input.node.isOrFollowedByMultiplier()
+        // && (  !conn.input.param 
+        //     || conn.input.param.affectsHeader);
 
 
     wire.curve .style.stroke         = wireStyle;
@@ -39338,13 +39338,13 @@ extends Parameter
     {
         let unknown = false;
 
-        if (   this.input
-            && this.input.connected)
-        {
-            if (   this.input.isConnectedUncached()
-                && this.node.hasMultipliedOutputs())
-                unknown = true;
-        }
+        // if (   this.input
+        //     && this.input.connected)
+        // {
+        //     if (   this.input.isConnectedUncached()
+        //         && this.node.hasMultipliedOutputs())
+        //         unknown = true;
+        // }
 
 
         if (unknown)
@@ -43150,8 +43150,9 @@ class Operator
 
     isUnknown()
     {
-        return this.isConnectedUncached()
-            && this.hasMultipliedOutputs();
+        return false;
+        // return this.isConnectedUncached()
+        //     && this.hasMultipliedOutputs();
     }
 
 
@@ -46245,8 +46246,8 @@ extends OperatorBase
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
 
         this.addParam(this.paramSeed = new NumberParam('seed', 'seed', true, true, true, Math.floor(Math.random() * 10000), 0, 0x7fffffff));
-        this.addParam(this.paramMin  = new NumberParam('min',  'min',  true, true, true,    0));
-        this.addParam(this.paramMax  = new NumberParam('max',  'max',  true, true, true, 1000));
+        this.addParam(this.paramMin  = new NumberParam('min',  'min',  true, true, true,   0));
+        this.addParam(this.paramMax  = new NumberParam('max',  'max',  true, true, true, 255));
 
         this.paramSeed.control.allowEditDecimals = false;
         this.paramSeed.isDefault = () => false;
@@ -52953,11 +52954,14 @@ extends Action
         pushUnique(this.newConnectionData, _conns);
         
 
-        for (const conn of _conns)
-            uiSaveConnection(
-                conn.outputNodeId, conn.outputId, conn.outputOrder,
-                conn.inputNodeId,  conn.inputId,
-                JSON.stringify(conn));
+        if (this.pasteConnected)
+        {
+            for (const conn of _conns)
+                uiSaveConnection(
+                    conn.outputNodeId, conn.outputId, conn.outputOrder,
+                    conn.inputNodeId,  conn.inputId,
+                    JSON.stringify(conn));
+        }
 
 
         graphView.updateNodeTransforms(nodes);

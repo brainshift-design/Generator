@@ -142,13 +142,13 @@ extends Parameter
     {
         let unknown = false;
 
-        if (   this.input
-            && this.input.connected)
-        {
-            if (   this.input.isConnectedUncached()
-                && this.node.hasMultipliedOutputs())
-                unknown = true;
-        }
+        // if (   this.input
+        //     && this.input.connected)
+        // {
+        //     if (   this.input.isConnectedUncached()
+        //         && this.node.hasMultipliedOutputs())
+        //         unknown = true;
+        // }
 
 
         if (unknown)
