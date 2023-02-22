@@ -118,6 +118,7 @@ var menuWindow;
 
 var menuGraph;
 var menuNode;
+var menuNodeSelect;
 
 
 var menuLocalStyles;
@@ -201,6 +202,8 @@ var menuItemNodeRemove;
 var menuItemNodeLayout;
 var menuItemNodeSep1;
 var menuItemNodeRename;
+var menuItemNodeSep2;
+var menuItemNodeSelect;
 // var menuItemNodeBringToFront;
 // var menuItemNodeSendToBack;
 var menuItemNodeActivate;
@@ -427,6 +430,14 @@ function initGeneratorMenus()
     };
 
 
+    menuNodeSelect = new Menu('Select nodes menu', false, false);
+    menuNodeSelect.addItems([
+        new MenuItem('Select tree',   {shortcut:  isMac ? osShift() + osCtrl() + osAlt() + 'Click' : osShift() + osCtrl() + osAlt() + 'Click', callback: () => graphView.selectedNodes =                                 getAllNodesFromNode(graphView.selectedNodes[0]) }),
+        new MenuItem('Select left',   {shortcut:  isMac ? osShift() + osAlt()            + 'Click' : osShift() + osCtrl()           + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesBeforeNode(graphView.selectedNodes[0])] }),
+        new MenuItem('Select right',  {shortcut:  isMac ? osCtrl() + osShift()           + 'Click' : osShift() + osAlt()            + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAfterNode (graphView.selectedNodes[0])] }),
+        new MenuItem('Select across', {shortcut:  isMac ? osAlt() + osCtrl()             + 'Click' : osCtrl() + osAlt()             + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAcrossNode(graphView.selectedNodes[0])] })]);
+
+
     menuNode = new Menu('Node menu', false, false);
     menuNode.addItems([
         menuItemNodeCopy               = new MenuItem('Copy',                {shortcut:  osCtrl() + 'C',              callback: () => copySelectedNodes() }),
@@ -436,6 +447,8 @@ function initGeneratorMenus()
         menuItemNodeSep1               = new MenuItem('',                    {separator: true}),
     //  menuItemNodeLayout             = new MenuItem('Layout',              {enabled:   false, shortcut: osCtrl() + 'L', callback: e => { hideAllMenus(); layoutSelectedNodes(); }}),
         menuItemNodeRename             = new MenuItem('Rename',              {shortcut:  osCtrl() + 'R',              callback: e => { hideAllMenus(); renameSelectedNode(); }}),
+        menuItemNodeSep2               = new MenuItem('',                    {separator: true}),
+        menuItemNodeSelect             = new MenuItem('Select',              {childMenu: menuNodeSelect}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeActivate           = new MenuItem('Activate',            {callback: () => { if (graphView.selectedNodes.length == 1) actionManager.do(new MakeActiveNodeAction(graphView.selectedNodes[0].id)); }}),
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
@@ -446,10 +459,11 @@ function initGeneratorMenus()
     {
         const single = graphView.selectedNodes.length == 1;
 
-        updateMenuItemDisplay(menuItemNodeSep1      .div, single);
-        updateMenuItemDisplay(menuItemNodeRename    .div, single);
+        updateMenuItemDisplay(menuItemNodeSep1    .div, single);
+        updateMenuItemDisplay(menuItemNodeRename  .div, single);
+        updateMenuItemDisplay(menuItemNodeSep2    .div, single);
+        updateMenuItemDisplay(menuItemNodeSelect  .div, single);
         updateMenuItemDisplay(menuItemNodeActivate.div, single);
-        //updateMenuItemDisplay(menuItemNodeLayout.div, !single);
     };
 
 

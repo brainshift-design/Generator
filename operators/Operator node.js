@@ -552,18 +552,18 @@ function selectFromClick(node, ctrl, shift, alt)
     else if (shift
           && alt)
     {
-        if (isMac) graphView.selectedNodes = getNodesBeforeNode(node);
-        else       graphView.selectedNodes = getNodesAcrossNode(node);
+        if (isMac) graphView.selectedNodes = [node, ...getNodesBeforeNode(node)];
+        else       graphView.selectedNodes = [node, ...getNodesAfterNode(node)];
     }
     else if (ctrl
           && shift)
     {
-        if (isMac) graphView.selectedNodes = getNodesAcrossNode(node);
-        else       graphView.selectedNodes = getNodesBeforeNode(node);
+        if (isMac) graphView.selectedNodes = [node, ...getNodesAfterNode(node)];
+        else       graphView.selectedNodes = [node, ...getNodesBeforeNode(node)];
     }
     else if (ctrl
           && alt)
-        graphView.selectedNodes = getNodesAfterNode(node);
+        graphView.selectedNodes = [node, ...getNodesAcrossNode(node)];
 
     else if (!node.selected)
     {

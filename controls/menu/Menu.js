@@ -228,8 +228,8 @@ class Menu
 
 
         const graphHeight = graphView.offsetHeight - menuBarHeight;
-        
-        if (top + height > graphHeight-8)
+
+        if (top + height > graphView.offsetHeight-8)
         {
             height = Math.min(height, graphHeight - 16);
             top    = menuBarHeight + Math.max(8, graphHeight - height);
