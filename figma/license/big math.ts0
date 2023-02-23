@@ -1,3 +1,12 @@
+// // constants because b0 b1 b2 literals aren't allowed for some reason
+// const b0  = BigInt(0);
+// const b1  = BigInt(1);
+// const b2  = BigInt(2);
+// const b3  = BigInt(3);
+// const b8  = BigInt(8);
+// const bFF = BigInt(0xff);
+
+
 // var bigBuffer = new Uint8Array(2048);
 
 

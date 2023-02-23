@@ -21,7 +21,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 106;
+const generatorVersion = 107;
 
 
 const MAX_INT32        = 2147483647;
@@ -1002,6 +1002,15 @@ function logSavedConn(conn)
 }
 
 
+// // constants because b0 b1 b2 literals aren't allowed for some reason
+// const b0  = BigInt(0);
+// const b1  = BigInt(1);
+// const b2  = BigInt(2);
+// const b3  = BigInt(3);
+// const b8  = BigInt(8);
+// const bFF = BigInt(0xff);
+
+
 // var bigBuffer = new Uint8Array(2048);
 
 
@@ -1194,15 +1203,6 @@ function logSavedConn(conn)
 //         y - (m/n)*x,
 //         x ];
 // }
-
-
-// // constants because b0 b1 b2 literals aren't allowed for some reason
-// const b0  = BigInt(0);
-// const b1  = BigInt(1);
-// const b2  = BigInt(2);
-// const b3  = BigInt(3);
-// const b8  = BigInt(8);
-// const bFF = BigInt(0xff);
 
 
 // const cryptoModulusSize     = 64; // to keep the keys short

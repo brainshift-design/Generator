@@ -245,7 +245,10 @@ function initGeneratorMenus()
                                        callback:      () => 
                                        {
                                            updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
+                                           
                                            graph.nodes.forEach(n => n.updateNode());
+                                           graph.nodes.forEach(n => n.updateMeasureData());
+                                           graph.nodes.forEach(n => updateHeaderLabelOffset(n));
                                        }
                                    }),
                                  //new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),

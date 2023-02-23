@@ -70,10 +70,10 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
     if (rect.width > rw)
     {
         node.label.style.left = 
-              margin 
+            margin 
             - node.labelOffsetFactor * (rect.width - rw - 1) / graphView.zoom
             + (node.active ? activeOffset : 0);
-
+            
         node.label.style.transform = 'none';
     }
     else

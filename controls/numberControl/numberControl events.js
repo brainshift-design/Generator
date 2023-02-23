@@ -565,8 +565,6 @@ function initNumberControlEvents(control)
     
     control.addEventListener('keydown', e =>
     {
-        console.log('e.key =', e.key);
-
         if (   e.code == 'Enter'
             || e.code == 'NumpadEnter')
             control.showTextbox();

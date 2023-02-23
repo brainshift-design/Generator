@@ -3036,7 +3036,7 @@ a
 
 
 
-const generatorVersion = 106;
+const generatorVersion = 107;
 
 
 const MAX_INT32        = 2147483647;
@@ -19514,7 +19514,7 @@ onerror = (event, source, line, pos, error) =>
 
 
 
-const generatorVersion = 106;
+const generatorVersion = 107;
 
 
 const MAX_INT32        = 2147483647;
@@ -33513,7 +33513,10 @@ function initGeneratorMenus()
                                        callback:      () => 
                                        {
                                            updateSettingAndMenu('showNodeId', true, !settings.showNodeId);
+                                           
                                            graph.nodes.forEach(n => n.updateNode());
+                                           graph.nodes.forEach(n => n.updateMeasureData());
+                                           graph.nodes.forEach(n => updateHeaderLabelOffset(n));
                                        }
                                    }),
                                  //new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
@@ -34446,8 +34449,6 @@ function initNumberControlEvents(control)
     
     control.addEventListener('keydown', e =>
     {
-        console.log('e.key =', e.key);
-
         if (   e.code == 'Enter'
             || e.code == 'NumpadEnter')
             control.showTextbox();
@@ -38682,9 +38683,12 @@ graphView.endConnection = function(pointerId, backInit = false)
 
             else if (savedConnInput
                   && savedConnInput.connectedOutput == output
-                  && (     !input.node.variableInputs
-                      ||    input.node.variableInputs
-                         && input.index < input.node.headerInputs.length-1))
+                  && (  !input.node.variableInputs
+                      || input.index >= input.node.headerInputs.length
+                      ||    input.node.headerInputs.length > 1 
+                         && input.index < input.node.headerInputs.length-1
+                      ||    input.node.headerInputs.length == 1 
+                         && input.index == 0))
                 actionManager.do(new ReconnectAction(output, savedConnInput, input));
 
             else if (   !savedConnInput
@@ -45110,10 +45114,10 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
     if (rect.width > rw)
     {
         node.label.style.left = 
-              margin 
+            margin 
             - node.labelOffsetFactor * (rect.width - rw - 1) / graphView.zoom
             + (node.active ? activeOffset : 0);
-
+            
         node.label.style.transform = 'none';
     }
     else
@@ -49614,7 +49618,7 @@ extends OpColorBase
         this.alwaysSaveParams = true;
 
         
-        this.addParam(this.paramQuality = new SelectParam('quality', '', false, true, true, ['clip sRGB', 'clip chroma', 'perceptual'], 1));
+        this.addParam(this.paramQuality = new SelectParam('quality', '', false, true, true, ['clip sRGB', 'clip chroma', 'find closest'], 1));
 
 
         this.initCorrections('');
@@ -57357,7 +57361,6 @@ function uiDeleteNodes(nodeIds)
 
 function uiDeleteObjectsAndStyles(nodeIds, mustDelete = true)
 {
-    console.trace();
     uiQueueMessageToFigma({
         cmd:       'figDeleteObjectsAndStyles',
         nodeIds:    nodeIds,

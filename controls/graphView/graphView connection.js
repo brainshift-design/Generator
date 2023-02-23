@@ -116,9 +116,12 @@ graphView.endConnection = function(pointerId, backInit = false)
 
             else if (savedConnInput
                   && savedConnInput.connectedOutput == output
-                  && (     !input.node.variableInputs
-                      ||    input.node.variableInputs
-                         && input.index < input.node.headerInputs.length-1))
+                  && (  !input.node.variableInputs
+                      || input.index >= input.node.headerInputs.length
+                      ||    input.node.headerInputs.length > 1 
+                         && input.index < input.node.headerInputs.length-1
+                      ||    input.node.headerInputs.length == 1 
+                         && input.index == 0))
                 actionManager.do(new ReconnectAction(output, savedConnInput, input));
 
             else if (   !savedConnInput
