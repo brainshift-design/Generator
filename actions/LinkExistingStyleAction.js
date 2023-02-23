@@ -24,7 +24,7 @@ extends Action
         this.styleId   = styleId;
         this.styleName = styleName;
 
-        this.paints = [...paints];
+        this.paints    = [...paints];
     }
 
 

@@ -229,6 +229,7 @@ extends OperatorBase
         }
         else
         {
+            this.name            = this.defShortName;
             this.existing        = true;
             this.linkedStyleId   = NULL;
             this.linkedStyleName = '';

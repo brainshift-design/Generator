@@ -9,7 +9,7 @@ function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
         ? styleName
         : node.defShortName;
 
-
+        
     if (styleId != NULL)
     {
         if (!isEmpty(paints))

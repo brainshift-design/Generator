@@ -873,7 +873,7 @@ class Operator
     updateHeaderLabel()
     {
         this.labelText.innerHTML = 
-              (settings.showNodeId ? this.id : this.name)
+              (settings.showNodeId ? 'ID: ' + this.id : this.name)
             + (this.active && this.showActiveArrow ? '  ‣' : '');
 
         this.label.style.left = '50%';//'calc(50% + ' + (this.active ? '30px' : '0px') + ')';
