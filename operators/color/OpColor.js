@@ -48,17 +48,6 @@ extends OpColorBase
         
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
-        this.paramSpace.control.canReact = function(e)
-        {
-            if (graphView.zoom >= 0.5)
-                return true;
-
-            e.preventDefault();
-            e.stopPropagation();
-            forwardEvent(e, this.param.node.header);
-            return false;
-        };
-
 
         this.param1.control.epsilon = ColorEpsilon;
         this.param2.control.epsilon = ColorEpsilon;

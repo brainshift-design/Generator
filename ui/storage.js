@@ -33,10 +33,10 @@ function uiReturnFigGetLocalData(msg)
     switch (msg.key)
     {
         case 'dataMode':
-            chkCrashRestart
         case 'debugMode':
 
         case 'autoConnectNewNodes':
+        case 'enableZoomedOutParams':
         case 'showAllColorSpaces':
         case 'showBoolValues':
         case 'showOperationResults':

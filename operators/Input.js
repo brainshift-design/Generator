@@ -117,6 +117,10 @@ extends EventTarget
                 
         this.hitbox.addEventListener('pointerenter', e => 
         {
+            if (!this.canReact(e))
+                return;
+
+
             if (graphView.headerInput)
             {
                 graphView.headerInput.updateControl();
@@ -161,6 +165,15 @@ extends EventTarget
                 graphView.overInput = this;
         });
 
+        
+
+        this.hitbox.addEventListener('pointerdown', e => 
+        { 
+            if (!this.canReact(e)) 
+                return false; 
+        });
+
+
 
         this.hitbox.addEventListener('pointerleave', e => 
         {
@@ -180,6 +193,22 @@ extends EventTarget
         if (   graphView.tempConn
             && graphView.tempConn.output)
             graphView.tempConn.wire.inputPos = point_NaN;
+    }
+
+
+
+    canReact(e)
+    {
+        if (   settings.enableZoomedOutParams
+            || graphView.zoom > 0.33333)
+            return true;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        forwardEvent(e, this.node ? this.node.header : this.param.node.header);
+
+        return false;
     }
 
 
@@ -247,26 +276,6 @@ extends EventTarget
         this.wireBall.style.top  = 'calc(50% - 3px)';
 
         this.wireBall.style.backgroundColor = [255, 0, 255];
-            // this.connected
-            // ? (   graphView.savedConn
-            //    && graphView.savedConn.input == this
-            //    && graphView.overInput != this
-            //    ? 'transparent'
-            //    : rgba2style(toRgba(this.connectedOutput.wireColor)))
-            // : (   tc
-            //    && tc.output
-            //    && this.canConnectFrom(tc.output)
-            //    && graphView.overInput == this
-            //    ? rgba2style(toRgba(tc.output.wireColor))
-            //    : (   tc
-            //       && tc.input
-            //       && tc.input == this)
-            //       ? (graphView.overOutput
-            //          ? rgba2style(toRgba(graphView.overOutput.wireColor))
-            //          : (graphView.headerOutput
-            //             ? rgba2style(toRgba(graphView.headerOutput.wireColor))
-            //             : rgba2style(toRgba(tc.input.wireColor))))
-            //       : colorStyle);
 
         this.wireBall.style.zIndex = MAX_INT32;
 

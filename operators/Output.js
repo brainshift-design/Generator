@@ -91,6 +91,10 @@ class Output
 
         this.hitbox.addEventListener('pointerenter', e => 
         { 
+            if (!this.canReact(e))
+                return false;
+
+
             if (graphView.headerOutput)
             {
                 graphView.headerOutput.updateControl();
@@ -121,6 +125,14 @@ class Output
             }
             else
                 graphView.overOutput = this; 
+        });
+
+
+
+        this.hitbox.addEventListener('pointerdown', e => 
+        { 
+            if (!this.canReact(e)) 
+                return false; 
         });
 
 
@@ -169,6 +181,22 @@ class Output
         const newKeys = afterConns.map(c => getConnKey(c));
 
         uiUpdateSavedConnections(oldKeys, newKeys, afterConns);
+    }
+
+
+
+    canReact(e)
+    {
+        if (   settings.enableZoomedOutParams
+            || graphView.zoom > 0.33333)
+            return true;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        forwardEvent(e, this.node ? this.node.header : this.param.node.header);
+
+        return false;
     }
 
 

@@ -132,6 +132,7 @@ var menuConnDataConns;
 
 
 var menuItemAutoConnectNewNodes;
+var menuItemEnableZoomedOutParams;
 var menuItemShowAllColorSpaces;
 var menuItemShowBoolValues;
 var menuItemShowOperationResults;
@@ -215,15 +216,16 @@ function initGeneratorMenus()
 {
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
-        menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',       {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                        }}),
-        menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',        {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);   updateMenuItemShowAllColorSpaces();   }}),
-        menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);       updateMenuItemShowBoolValues();       }}),
-        menuItemShowOperationResults  = new MenuItem('Show operation results',       {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults); updateMenuItemShowOperationResults(); }}),
-        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',      {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                       }}),
-                                        new MenuItem('',                             {separator: true}),    
-        menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);        updateMenuItemShowDebugMenu();        }})]);//,
-     //                                 new MenuItem('',                             {separator: true}),   
-     // menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures);         uiValidateLicense(productKey);        }})]);
+        menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',            {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                        }}),
+        menuItemEnableZoomedOutParams = new MenuItem('Allow value changes at zoom < 33%', {checkCallback: () => settings.enableZoomedOutParams, callback: () => { updateSettingAndMenu('enableZoomedOutParams', true, !settings.enableZoomedOutParams); }}),
+        menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',             {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
+        menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗',      {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
+        menuItemShowOperationResults  = new MenuItem('Show operation results',            {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
+        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',           {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                       }}),
+                                        new MenuItem('',                                  {separator: true}),    
+        menuItemShowDebugMenu         = new MenuItem('Show debug menu',                   {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }})]);//,
+     //                                 new MenuItem('',                                  {separator: true}),   
+     // menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',              {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures);         uiValidateLicense(productKey);        }})]);
 
     
     menuMainDebug = new Menu('Debug', false);

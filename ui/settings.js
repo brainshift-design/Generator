@@ -4,6 +4,7 @@ const settings =
     debugMode:             false,
 
     autoConnectNewNodes:   true,
+    enableZoomedOutParams: false,
     showAllColorSpaces:    false,
     showBoolValues:        true,
     showOperationResults:  true,
@@ -39,6 +40,7 @@ function updateSetting(settingName, value)
         case 'debugMode':             settings.debugMode             = value;  break;
 
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
+        case 'enableZoomedOutParams': settings.enableZoomedOutParams = value;  break;
         case 'showAllColorSpaces':    settings.showAllColorSpaces    = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
         case 'showOperationResults':  settings.showOperationResults  = value;  break;
@@ -74,6 +76,7 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'debugMode':             updateSettingAndMenu_(valid, settingName, value);                                 break;
 
         case 'autoConnectNewNodes':   updateSettingAndMenu_(valid, settingName, value, menuItemAutoConnectNewNodes  );  break;
+        case 'enableZoomedOutParams': updateSettingAndMenu_(valid, settingName, value, menuItemEnableZoomedOutParams);  break;
         case 'showAllColorSpaces':    updateSettingAndMenu_(valid, settingName, value, menuItemShowAllColorSpaces   );  break;
         case 'showBoolValues':        updateSettingAndMenu_(valid, settingName, value, menuItemShowBoolValues       );  break;
         case 'showOperationResults':  updateSettingAndMenu_(valid, settingName, value, menuItemShowOperationResults );  break;
@@ -121,6 +124,7 @@ function updateSettingsMenus()
     menuItemDebug                .setVisible(settings.debugMode            );
 
     menuItemAutoConnectNewNodes  .setChecked(settings.autoConnectNewNodes  );
+    menuItemEnableZoomedOutParams.setChecked(settings.enableZoomedOutParams);
     menuItemShowAllColorSpaces   .setChecked(settings.showAllColorSpaces   );
     menuItemShowBoolValues       .setChecked(settings.showBoolValues       );
     menuItemShowOperationResults .setChecked(settings.showOperationResults );
@@ -214,33 +218,34 @@ function updateMenuItemDisplay(menuItem, enable)
 
 function loadLocalSettings()
 {
-    uiGetLocalData('dataMode'            );
-    uiGetLocalData('debugMode'           );
+    uiGetLocalData('dataMode'             );
+    uiGetLocalData('debugMode'            );
 
-    uiGetLocalData('autoConnectNewNodes' );
-    uiGetLocalData('showAllColorSpaces'  );
-    uiGetLocalData('showBoolValues'      );
-    uiGetLocalData('showOperationResults');
-    uiGetLocalData('showClearUndoWarning');
-    uiGetLocalData('showDebugMenu'       );
+    uiGetLocalData('autoConnectNewNodes'  );
+    uiGetLocalData('enableZoomedOutParams');
+    uiGetLocalData('showAllColorSpaces'   );
+    uiGetLocalData('showBoolValues'       );
+    uiGetLocalData('showOperationResults' );
+    uiGetLocalData('showClearUndoWarning' );
+    uiGetLocalData('showDebugMenu'        );
 
-    uiGetLocalData('showNodeId'          );
+    uiGetLocalData('showNodeId'           );
 
-    uiGetLocalData('enableBetaFeatures'  );
+    uiGetLocalData('enableBetaFeatures'   );
     
-    uiGetLocalData('logMessages'         );
-    uiGetLocalData('logActions'          );
+    uiGetLocalData('logMessages'          );
+    uiGetLocalData('logActions'           );
     
-    uiGetLocalData('logLoading'          );
-    uiGetLocalData('logRequests'         );
-    uiGetLocalData('logValueUpdates'     );
-    uiGetLocalData('logObjectUpdates'    );
-    uiGetLocalData('logStyleUpdates'     );
+    uiGetLocalData('logLoading'           );
+    uiGetLocalData('logRequests'          );
+    uiGetLocalData('logValueUpdates'      );
+    uiGetLocalData('logObjectUpdates'     );
+    uiGetLocalData('logStyleUpdates'      );
     
-    uiGetLocalData('logRawLoading'       );
-    uiGetLocalData('logRawSaving'        );
-    uiGetLocalData('logRawRequests'      );
-    uiGetLocalData('logRawValues'        );
+    uiGetLocalData('logRawLoading'        );
+    uiGetLocalData('logRawSaving'         );
+    uiGetLocalData('logRawRequests'       );
+    uiGetLocalData('logRawValues'         );
     
-    uiGetLocalData('graphView'           );
+    uiGetLocalData('graphView'            );
 }

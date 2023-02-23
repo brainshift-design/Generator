@@ -90,6 +90,22 @@ function initColorControl(param, control, width, height, id, name, showName, def
 
 
 
+    control.canReact = function(e)
+    {
+        if (   settings.enableZoomedOutParams
+            || graphView.zoom > 0.33333)
+            return true;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        forwardEvent(e, this.param.node.header);
+
+        return false;
+    }
+
+
+
     control.setName = function(name)
     {
         control.name = name;

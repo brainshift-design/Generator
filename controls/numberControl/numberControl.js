@@ -126,7 +126,16 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.canReact = function(e)
     {
-        return true;
+        if (   settings.enableZoomedOutParams
+            || graphView.zoom > 0.33333)
+            return true;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        forwardEvent(e, this.param.node.header);
+
+        return false;
     }
 
 
@@ -269,7 +278,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
         control.updateText();
         control.updateFocus(sw, sh);
         
-        
+
         updateControlRanges(control, sw, sh);
     };
 
