@@ -410,6 +410,7 @@ function uiDeleteNodes(nodeIds)
 
 function uiDeleteObjectsAndStyles(nodeIds, mustDelete = true)
 {
+    console.trace();
     uiQueueMessageToFigma({
         cmd:       'figDeleteObjectsAndStyles',
         nodeIds:    nodeIds,

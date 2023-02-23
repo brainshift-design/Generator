@@ -144,6 +144,10 @@ class Menu
 
     show(srcDiv, right = false)
     {
+        if (graphView._soloNode);
+            graphView.unsoloNode();
+
+
         this.initMenu();
 
 
@@ -201,6 +205,10 @@ class Menu
 
     showAt(x, y, hidePrev = true)
     {
+        if (graphView._soloNode);
+            graphView.unsoloNode();
+
+
         if (hidePrev)
             hideAllMenus();
 

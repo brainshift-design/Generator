@@ -2821,10 +2821,9 @@ a
             <div id='whatsNewWatermark'>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
 
             <div id='whatsNewBody'>
-                <h1>What's new in Generator</h1>
+                <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Generator now properly crashes and shows the error.</p>
-                <p>Color space cannot be changed at zoom levels &lt; 50%, which makes it easier to move color nodes when they're zoomed out and small.</p>
+                <p>-</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -3037,7 +3036,7 @@ a
 
 
 
-const generatorVersion = 105;
+const generatorVersion = 106;
 
 
 const MAX_INT32        = 2147483647;
@@ -19515,7 +19514,7 @@ onerror = (event, source, line, pos, error) =>
 
 
 
-const generatorVersion = 105;
+const generatorVersion = 106;
 
 
 const MAX_INT32        = 2147483647;
@@ -32528,6 +32527,10 @@ class Menu
 
     show(srcDiv, right = false)
     {
+        if (graphView._soloNode);
+            graphView.unsoloNode();
+
+
         this.initMenu();
 
 
@@ -32585,6 +32588,10 @@ class Menu
 
     showAt(x, y, hidePrev = true)
     {
+        if (graphView._soloNode);
+            graphView.unsoloNode();
+
+
         if (hidePrev)
             hideAllMenus();
 
@@ -35185,20 +35192,12 @@ function initNumberControl(param, control, width, height, id, name, showName, de
                  : ( control.displayMax - Math.max(0, control.displayMin)))
             : control.value / (control.displayMax - control.displayMin);
 
-        if (   control.param.node.id == 'color2'
-            && control.param.id == 'c1')
-        {
-            console.log('sx =', sx);
-            console.log('cx =', cx);
-            console.log('v =', v);
-            console.log('sw =', sw);
-            console.log('sh =', sh);
-        }
 
         control.updateBar(sx, cx, v, sw, sh);
         control.updateColors();
         control.updateText();
         control.updateFocus(sw, sh);
+        
         
         updateControlRanges(control, sw, sh);
     };
@@ -52490,9 +52489,12 @@ function connectAction_updateNodes(act, updateNodes)
 
 function connectAction_cleanup(act)
 {
-    const nodeIds = [act.oldOutputActiveNodeId];
+    const nodeIds = 
+        act.oldOutputActiveNodeId != ''
+        ? [act.oldOutputActiveNodeId]
+        : [];
 
-    nodeIds.push(act.inputActiveNodeIds.filter(id => 
+    nodeIds.push(...act.inputActiveNodeIds.filter(id => 
         !act.newActiveNodeIds.includes(id)));
 
     uiDeleteObjectsAndStyles(nodeIds, false);
@@ -57355,6 +57357,7 @@ function uiDeleteNodes(nodeIds)
 
 function uiDeleteObjectsAndStyles(nodeIds, mustDelete = true)
 {
+    console.trace();
     uiQueueMessageToFigma({
         cmd:       'figDeleteObjectsAndStyles',
         nodeIds:    nodeIds,

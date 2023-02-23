@@ -218,9 +218,12 @@ function connectAction_updateNodes(act, updateNodes)
 
 function connectAction_cleanup(act)
 {
-    const nodeIds = [act.oldOutputActiveNodeId];
+    const nodeIds = 
+        act.oldOutputActiveNodeId != ''
+        ? [act.oldOutputActiveNodeId]
+        : [];
 
-    nodeIds.push(act.inputActiveNodeIds.filter(id => 
+    nodeIds.push(...act.inputActiveNodeIds.filter(id => 
         !act.newActiveNodeIds.includes(id)));
 
     uiDeleteObjectsAndStyles(nodeIds, false);
