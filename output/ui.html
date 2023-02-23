@@ -33916,7 +33916,9 @@ function initNumberControlEvents(control)
         if (   !graphView.spaceDown
             &&  control.pointerEvents)
         {
-            if (graphView.tempConn)
+            if (   graphView.tempConn
+                ||   !settings.enableZoomedOutParams
+                   && graphView.zoom <= 0.33333)
                 control.style.cursor = 'default';
             else
                 control.updateCursor();
