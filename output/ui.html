@@ -2823,8 +2823,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Fixed reconnect bug for nodes with variable inputs.</p>
-                <p>Added setting to disable interaction with all parameters at zoom &lt; 33%, allowing small zoomed-out nodes to be grabbed anywhere to move them.</p>
+                <p>Fixed zoomed out wire thickness.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -3037,7 +3036,7 @@ a
 
 
 
-const generatorVersion = 107;
+const generatorVersion = 108;
 
 
 const MAX_INT32        = 2147483647;
@@ -19520,7 +19519,7 @@ onerror = (event, source, line, pos, error) =>
 
 
 
-const generatorVersion = 107;
+const generatorVersion = 108;
 
 
 const MAX_INT32        = 2147483647;
@@ -39048,7 +39047,7 @@ function updateWire(wire, x = 0, y = 0)
     wire.clientY = y;
 
 
-    const yOffset = menuBarHeight;
+    const yOffset = menuBarHeight + 1;
 
     let pOut = point(0, 0),
         pIn  = point(0, 0);
@@ -39092,7 +39091,7 @@ function updateWires(wires)
     
     const cw      = graphViewClient.width;
     const ch      = graphViewClient.height;
-    const yOffset = menuBarHeight;
+    const yOffset = menuBarHeight + 1;
 
 
     wires.forEach(w => 
@@ -39381,10 +39380,16 @@ function updateWireStyle(wire)
         && conn.output.supportsTypes(LIST_TYPES);
 
 
-    let width = 1.6 * graphView.zoom;
+    let width = 
+        graphView.zoom < 1
+        ? Math.pow(2, graphView.zoom - 1)
+        : graphView.zoom;
 
-         if (graphView.zoom < 1/7) width += 1 * (1 - graphView.zoom) * (7 * graphView.zoom);
-    else if (graphView.zoom < 1  ) width += 1 * (1 - graphView.zoom);
+    width *= 1.6;
+
+
+    //      if (graphView.zoom < 1/7) width += 1 * (1 - graphView.zoom) * (7 * graphView.zoom);
+    // else if (graphView.zoom < 1  ) width += 1 * (1 - graphView.zoom);
 
 
     wire.curve .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));

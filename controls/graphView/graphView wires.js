@@ -40,7 +40,7 @@ function updateWire(wire, x = 0, y = 0)
     wire.clientY = y;
 
 
-    const yOffset = menuBarHeight;
+    const yOffset = menuBarHeight + 1;
 
     let pOut = point(0, 0),
         pIn  = point(0, 0);
@@ -84,7 +84,7 @@ function updateWires(wires)
     
     const cw      = graphViewClient.width;
     const ch      = graphViewClient.height;
-    const yOffset = menuBarHeight;
+    const yOffset = menuBarHeight + 1;
 
 
     wires.forEach(w => 
@@ -373,10 +373,16 @@ function updateWireStyle(wire)
         && conn.output.supportsTypes(LIST_TYPES);
 
 
-    let width = 1.6 * graphView.zoom;
+    let width = 
+        graphView.zoom < 1
+        ? Math.pow(2, graphView.zoom - 1)
+        : graphView.zoom;
 
-         if (graphView.zoom < 1/7) width += 1 * (1 - graphView.zoom) * (7 * graphView.zoom);
-    else if (graphView.zoom < 1  ) width += 1 * (1 - graphView.zoom);
+    width *= 1.6;
+
+
+    //      if (graphView.zoom < 1/7) width += 1 * (1 - graphView.zoom) * (7 * graphView.zoom);
+    // else if (graphView.zoom < 1  ) width += 1 * (1 - graphView.zoom);
 
 
     wire.curve .setAttribute('stroke-width', width * (listType ? (unknown ? 3.6 : 3.2) : (unknown ? 1.3 : 1)));
