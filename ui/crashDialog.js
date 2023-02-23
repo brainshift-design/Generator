@@ -1,4 +1,4 @@
-function initCrashDialog(event, error)
+function initCrashDialog(event, error, source)
 {
     crashDetails.innerHTML = error;
 
@@ -13,6 +13,8 @@ function showCrashDialog()
 {
     crashBack  .style.display = 'block';
     crashDialog.style.display = 'block';
+
+    dialogShown = true;
 }
 
 
@@ -21,4 +23,6 @@ function hideCrashDialog()
 {
     crashBack  .style.display = 'none';
     crashDialog.style.display = 'none';
+
+    dialogShown = false;
 }

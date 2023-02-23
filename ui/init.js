@@ -45,7 +45,7 @@ var     copiedNodesJson = '';
 var duplicatedNodesJson = '';
 
 var pasteOffset         = point(0,  0);
-var pasteOffsetDelta    = point(0, 70);
+var pasteOffsetDelta    = point(50, 50);
 
 
 

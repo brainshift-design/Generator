@@ -4,6 +4,12 @@ extends Action
     nodeId;
     get node() { return nodeFromId(this.nodeId) } 
 
+    get  inputNode() { return this.node; } // dummy for ConnectAction_...
+    get outputNode() { return this.node; } // dummy for ConnectAction_...
+
+    get  input() { return this.node.paramValue. input; } // dummy for ConnectAction_...
+    get output() { return this.node.paramValue.output; } // dummy for ConnectAction_...
+
     styleId;
     styleName;
     paints;
@@ -12,6 +18,8 @@ extends Action
     prevStyleName;
     prevPaints;
 
+    outputValues = []; // in id,value pairs, to be restored on undo
+    inputValues  = []; // in id,value pairs, to be restored on undo
 
 
     constructor(nodeId, styleId, styleName, paints)
@@ -35,6 +43,9 @@ extends Action
         this.prevStyleName = this.node.linkedStyleName;
         this.prevPaints    = [this.node.paramValue.value.toRgb()];
         
+        connectAction_saveOutputValues(this);
+        connectAction_saveInputValues(this);
+
         uiLinkNodeToExistingColorStyle(
             this.node,
             this.styleId,
@@ -50,6 +61,9 @@ extends Action
 
     undo(updateNodes)
     {
+        connectAction_restoreInputValues(this);
+        connectAction_restoreOutputValues(this);
+
         uiLinkNodeToExistingColorStyle(
             this.node,
             this.prevStyleId,
@@ -59,5 +73,8 @@ extends Action
         this.node.updateNode();
 
         uiSaveNodes([this.nodeId]);
+
+        if (this.node.paramValue.input.connected)
+            uiTriggerUndo();
     }    
 }

@@ -1140,6 +1140,9 @@ figma.ui.onmessage = function (msg) {
             figDeleteObjectsFromNodeIds(msg.nodeIds);
             figDeleteStylesFromNodeIds(msg.nodeIds, msg.mustDelete);
             break;
+        case 'figTriggerUndo':
+            figma.triggerUndo();
+            break;
         case 'figCommitUndo':
             figma.commitUndo();
             break;

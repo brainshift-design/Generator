@@ -66,8 +66,11 @@ extends Action
         this.inputActiveNodeIds    = [];
 
 
-        connectAction_saveOutputActiveNodesAndValues(this);
-        connectAction_saveInputActiveNodesAndValues(this);
+        connectAction_saveOutputActiveNodes(this);
+        connectAction_saveInputActiveNodes(this);
+
+        connectAction_saveOutputValues(this);
+        connectAction_saveInputValues(this);
         
         if (this.backInit)
             connectAction_backInitOutputValue(this);
@@ -108,18 +111,30 @@ function connectAction_backInitOutputValue(act)
 
 
 
-function connectAction_saveOutputActiveNodesAndValues(act)
+function connectAction_saveOutputActiveNodes(act)
 {
-    act.outputValues          = act.output.getValuesForUndo ? act.output.getValuesForUndo(act.output) : [];
     act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
 }
 
 
 
-function connectAction_saveInputActiveNodesAndValues(act)
+function connectAction_saveInputActiveNodes(act)
 {
-    act.inputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo(act.input) : [];
     act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
+}
+
+
+
+function connectAction_saveOutputValues(act)
+{
+    act.outputValues = act.output.getValuesForUndo ? act.output.getValuesForUndo(act.output) : [];
+}
+
+
+
+function connectAction_saveInputValues(act)
+{
+    act.inputValues = act.input.getValuesForUndo ? act.input.getValuesForUndo(act.input) : [];
 }
 
 

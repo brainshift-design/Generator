@@ -18,7 +18,8 @@ window.addEventListener('gestureend',    e => e.preventDefault());
 
 
 
-var crashed = false;
+var crashed     = false;
+var dialogShown = false;
 
 var darkMode;
 
@@ -35,9 +36,9 @@ function checkResize(x, y)
 
     const resizeEdgeWidth = 8;
 
-    document.canResizeL = !crashed && false; //x <= resizeEdgeWidth;
-    document.canResizeR = !crashed && documentBodyClient.width  - x <= resizeEdgeWidth;
-    document.canResizeB = !crashed && documentBodyClient.height - y <= resizeEdgeWidth;
+    document.canResizeL = !dialogShown && false; //x <= resizeEdgeWidth;
+    document.canResizeR = !dialogShown && documentBodyClient.width  - x <= resizeEdgeWidth;
+    document.canResizeB = !dialogShown && documentBodyClient.height - y <= resizeEdgeWidth;
 
     
     if (       document.canResizeR

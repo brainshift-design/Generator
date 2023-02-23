@@ -236,7 +236,7 @@ function updateWireArrow(wire, x0, y0, x1, y1, x2, y2, x3, y3)
     const p3 = point(x3, y3); 
 
 
-    const arrowDistance = 30;
+    const arrowDistance = 25;
     const arrowSize     = 9;
 
     let al = arcLength(p0, p1, p2, p3) - arrowDistance * graphView.zoom;

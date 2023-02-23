@@ -82,9 +82,13 @@ extends Action
     {
         this.newActiveNodeIds = [];
 
-        connectAction_saveOutputActiveNodesAndValues(this);
-        connectAction_saveInputActiveNodesAndValues(this);
-        this.savePrevInputActiveNodesAndValues();
+        connectAction_saveOutputActiveNodes(this);
+        connectAction_saveInputActiveNodes(this);
+
+        connectAction_saveOutputValues(this);
+        connectAction_saveInputValues(this);
+
+        this.savePrevInputActiveNodes();
 
         if (this.backInit)
             connectAction_backInitOutputValue(this);
@@ -118,7 +122,7 @@ extends Action
 
 
 
-    savePrevInputActiveNodesAndValues()
+    savePrevInputActiveNodes()
     {
         this.prevInputActiveNodeIds = getActiveNodesAfterNodeId(this.prevInputNodeId).map(n => n.id);
     }

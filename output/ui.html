@@ -551,7 +551,7 @@
     width:            100%;
     height:           100%;
     overflow:         auto;
-    pointer-events:   none;
+    pointer-events:   all;
 
     background-color: #0005;
 }
@@ -705,7 +705,7 @@
     width:            100%;
     height:           100%;
     overflow:         auto;
-    pointer-events:   none;
+    pointer-events:   all;
 
     background-color: #0005;
 }
@@ -720,11 +720,12 @@
 
     z-index:       2;
     position:      absolute;
-    top:           58px;
-    left:          calc(50%);
-    transform:     translateX(-50%);
+    top:           50%;
+    left:          50%;
+    transform:     translateX(-50%)
+                   translateY(-50%);
     width:         270px;
-    height:        210px;
+    height:        204px;
 
     overflow:      hidden;
     
@@ -958,7 +959,7 @@
 {
     position: absolute;
     left: 25px;
-    top: calc(100% - 35px);
+    top: calc(100% - 38px);
 }
 
 
@@ -2822,7 +2823,8 @@ a
             <div id='whatsNewBody'>
                 <h1>What's new in Generator</h1>
 
-                <p>Generator properly crashes now and shows the error.</p>
+                <p>Generator now properly crashes and shows the error.</p>
+                <p>Color space cannot be changed at zoom levels &lt; 50%, which makes it easier to move color nodes when they're zoomed out and small.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -13709,6 +13711,8 @@ extends GObjectBase
             const rgb = this.value.toRgb();
             this.evalStyle({rgb: rgb});
         }
+        else
+            this.value = ColorValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
@@ -19499,11 +19503,11 @@ function convert2hcluv(fromColor)
 
 
 
-onerror = (event, src, line, pos, error) =>
+onerror = (event, source, line, pos, error) =>
 {
     crashed = true;
 
-    initCrashDialog(event, error);
+    initCrashDialog(event, error, source);
     showCrashDialog();
 };
 
@@ -32090,6 +32094,8 @@ extends GObjectBase
             const rgb = this.value.toRgb();
             this.evalStyle({rgb: rgb});
         }
+        else
+            this.value = ColorValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
@@ -39186,7 +39192,7 @@ function updateWireArrow(wire, x0, y0, x1, y1, x2, y2, x3, y3)
     const p3 = point(x3, y3); 
 
 
-    const arrowDistance = 30;
+    const arrowDistance = 25;
     const arrowSize     = 9;
 
     let al = arcLength(p0, p1, p2, p3) - arrowDistance * graphView.zoom;
@@ -52322,8 +52328,11 @@ extends Action
         this.inputActiveNodeIds    = [];
 
 
-        connectAction_saveOutputActiveNodesAndValues(this);
-        connectAction_saveInputActiveNodesAndValues(this);
+        connectAction_saveOutputActiveNodes(this);
+        connectAction_saveInputActiveNodes(this);
+
+        connectAction_saveOutputValues(this);
+        connectAction_saveInputValues(this);
         
         if (this.backInit)
             connectAction_backInitOutputValue(this);
@@ -52364,18 +52373,30 @@ function connectAction_backInitOutputValue(act)
 
 
 
-function connectAction_saveOutputActiveNodesAndValues(act)
+function connectAction_saveOutputActiveNodes(act)
 {
-    act.outputValues          = act.output.getValuesForUndo ? act.output.getValuesForUndo(act.output) : [];
     act.oldOutputActiveNodeId = idFromNode(getActiveFromNodeId(act.outputNodeId));
 }
 
 
 
-function connectAction_saveInputActiveNodesAndValues(act)
+function connectAction_saveInputActiveNodes(act)
 {
-    act.inputValues        = act.input.getValuesForUndo ? act.input.getValuesForUndo(act.input) : [];
     act.inputActiveNodeIds = getActiveNodesAfterNodeId(act.inputNodeId).map(n => n.id);
+}
+
+
+
+function connectAction_saveOutputValues(act)
+{
+    act.outputValues = act.output.getValuesForUndo ? act.output.getValuesForUndo(act.output) : [];
+}
+
+
+
+function connectAction_saveInputValues(act)
+{
+    act.inputValues = act.input.getValuesForUndo ? act.input.getValuesForUndo(act.input) : [];
 }
 
 
@@ -53195,6 +53216,12 @@ extends Action
     nodeId;
     get node() { return nodeFromId(this.nodeId) } 
 
+    get  inputNode() { return this.node; } // dummy for ConnectAction_...
+    get outputNode() { return this.node; } // dummy for ConnectAction_...
+
+    get  input() { return this.node.paramValue. input; } // dummy for ConnectAction_...
+    get output() { return this.node.paramValue.output; } // dummy for ConnectAction_...
+
     styleId;
     styleName;
     paints;
@@ -53203,6 +53230,8 @@ extends Action
     prevStyleName;
     prevPaints;
 
+    outputValues = []; // in id,value pairs, to be restored on undo
+    inputValues  = []; // in id,value pairs, to be restored on undo
 
 
     constructor(nodeId, styleId, styleName, paints)
@@ -53226,6 +53255,9 @@ extends Action
         this.prevStyleName = this.node.linkedStyleName;
         this.prevPaints    = [this.node.paramValue.value.toRgb()];
         
+        connectAction_saveOutputValues(this);
+        connectAction_saveInputValues(this);
+
         uiLinkNodeToExistingColorStyle(
             this.node,
             this.styleId,
@@ -53241,6 +53273,9 @@ extends Action
 
     undo(updateNodes)
     {
+        connectAction_restoreInputValues(this);
+        connectAction_restoreOutputValues(this);
+
         uiLinkNodeToExistingColorStyle(
             this.node,
             this.prevStyleId,
@@ -53250,6 +53285,9 @@ extends Action
         this.node.updateNode();
 
         uiSaveNodes([this.nodeId]);
+
+        if (this.node.paramValue.input.connected)
+            uiTriggerUndo();
     }    
 }
 
@@ -53497,9 +53535,13 @@ extends Action
     {
         this.newActiveNodeIds = [];
 
-        connectAction_saveOutputActiveNodesAndValues(this);
-        connectAction_saveInputActiveNodesAndValues(this);
-        this.savePrevInputActiveNodesAndValues();
+        connectAction_saveOutputActiveNodes(this);
+        connectAction_saveInputActiveNodes(this);
+
+        connectAction_saveOutputValues(this);
+        connectAction_saveInputValues(this);
+
+        this.savePrevInputActiveNodes();
 
         if (this.backInit)
             connectAction_backInitOutputValue(this);
@@ -53533,7 +53575,7 @@ extends Action
 
 
 
-    savePrevInputActiveNodesAndValues()
+    savePrevInputActiveNodes()
     {
         this.prevInputActiveNodeIds = getActiveNodesAfterNodeId(this.prevInputNodeId).map(n => n.id);
     }
@@ -54180,6 +54222,8 @@ function showAboutDialog()
 {
     aboutBack  .style.display = 'block';
     aboutDialog.style.display = 'block';
+
+    dialogShown = true;
 }
 
 
@@ -54188,11 +54232,14 @@ function hideAboutDialog()
 {
     aboutBack  .style.display = 'none';
     aboutDialog.style.display = 'none';
+
+    dialogShown = false;
 }
 
 
 
 aboutClose.addEventListener('pointerdown', e => e.stopPropagation());
+aboutBack.addEventListener('pointerdown', () => { hideAboutDialog(); });
 
 
 
@@ -54271,7 +54318,7 @@ function initThemeColors()
 }
 
 
-function initCrashDialog(event, error)
+function initCrashDialog(event, error, source)
 {
     crashDetails.innerHTML = error;
 
@@ -54286,6 +54333,8 @@ function showCrashDialog()
 {
     crashBack  .style.display = 'block';
     crashDialog.style.display = 'block';
+
+    dialogShown = true;
 }
 
 
@@ -54294,6 +54343,8 @@ function hideCrashDialog()
 {
     crashBack  .style.display = 'none';
     crashDialog.style.display = 'none';
+
+    dialogShown = false;
 }
 
 
@@ -55125,7 +55176,7 @@ var     copiedNodesJson = '';
 var duplicatedNodesJson = '';
 
 var pasteOffset         = point(0,  0);
-var pasteOffsetDelta    = point(0, 70);
+var pasteOffsetDelta    = point(50, 50);
 
 
 
@@ -55915,6 +55966,8 @@ function showProductKeyDialog()
 
     
     window.setTimeout(() => document.getElementById('productKeyInput').focus(), 0);
+
+    dialogShown = true;
 }
 
 
@@ -55932,18 +55985,14 @@ function hideProductKeyDialog()
 {
     productKeyBack  .style.display = 'none';
     productKeyDialog.style.display = 'none';
+
+    dialogShown = false;
 }
 
 
 
 productKeyClose.addEventListener('pointerdown', e => e.stopPropagation());
-
-
-
-productKeyBack.addEventListener('pointerdown', () =>
-{
-    hideProductKeyDialog();
-});
+productKeyBack.addEventListener('pointerdown', () => { hideProductKeyDialog(); });
 
 
 
@@ -58097,6 +58146,19 @@ function uiValidateLicense(license)
 }
 
 
+
+function uiTriggerUndo()
+{
+    uiQueueMessageToFigma({
+        cmd: 'figTriggerUndo'
+    });
+}
+
+
+
+
+
+
 function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)
 {
     node.linkedStyleId   = styleId;
@@ -58461,6 +58523,8 @@ function showWhatsNewDialog()
     whatsNewDialog.style.display = 'block';
 
     updateWhatsNewScroll();
+
+    dialogShown = true;
 }
 
 
@@ -58469,6 +58533,8 @@ function hideWhatsNewDialog()
 {
     whatsNewBack  .style.display = 'none';
     whatsNewDialog.style.display = 'none';
+
+    dialogShown = false;
 }
 
 
@@ -58566,7 +58632,8 @@ window.addEventListener('gestureend',    e => e.preventDefault());
 
 
 
-var crashed = false;
+var crashed     = false;
+var dialogShown = false;
 
 var darkMode;
 
@@ -58583,9 +58650,9 @@ function checkResize(x, y)
 
     const resizeEdgeWidth = 8;
 
-    document.canResizeL = !crashed && false; //x <= resizeEdgeWidth;
-    document.canResizeR = !crashed && documentBodyClient.width  - x <= resizeEdgeWidth;
-    document.canResizeB = !crashed && documentBodyClient.height - y <= resizeEdgeWidth;
+    document.canResizeL = !dialogShown && false; //x <= resizeEdgeWidth;
+    document.canResizeR = !dialogShown && documentBodyClient.width  - x <= resizeEdgeWidth;
+    document.canResizeB = !dialogShown && documentBodyClient.height - y <= resizeEdgeWidth;
 
     
     if (       document.canResizeR

@@ -1759,9 +1759,8 @@ figma.ui.onmessage = function(msg)
             figDeleteStylesFromNodeIds(msg.nodeIds, msg.mustDelete); 
             break; 
     
-        case 'figCommitUndo':
-            figma.commitUndo();
-            break; 
+        case 'figTriggerUndo': figma.triggerUndo(); break; 
+        case 'figCommitUndo':  figma.commitUndo();  break; 
 
         case 'figValidateLicense':
             figValidateLicense(msg.license);

@@ -45,6 +45,8 @@ extends GObjectBase
             const rgb = this.value.toRgb();
             this.evalStyle({rgb: rgb});
         }
+        else
+            this.value = ColorValue.NaN;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);

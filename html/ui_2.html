@@ -5,11 +5,11 @@
 
 
 
-onerror = (event, src, line, pos, error) =>
+onerror = (event, source, line, pos, error) =>
 {
     crashed = true;
 
-    initCrashDialog(event, error);
+    initCrashDialog(event, error, source);
     showCrashDialog();
 };
 

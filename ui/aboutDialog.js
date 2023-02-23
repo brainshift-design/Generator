@@ -14,6 +14,8 @@ function showAboutDialog()
 {
     aboutBack  .style.display = 'block';
     aboutDialog.style.display = 'block';
+
+    dialogShown = true;
 }
 
 
@@ -22,11 +24,14 @@ function hideAboutDialog()
 {
     aboutBack  .style.display = 'none';
     aboutDialog.style.display = 'none';
+
+    dialogShown = false;
 }
 
 
 
 aboutClose.addEventListener('pointerdown', e => e.stopPropagation());
+aboutBack.addEventListener('pointerdown', () => { hideAboutDialog(); });
 
 
 

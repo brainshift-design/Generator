@@ -1209,3 +1209,15 @@ function uiValidateLicense(license)
         license: license
     });
 }
+
+
+
+function uiTriggerUndo()
+{
+    uiQueueMessageToFigma({
+        cmd: 'figTriggerUndo'
+    });
+}
+
+
+

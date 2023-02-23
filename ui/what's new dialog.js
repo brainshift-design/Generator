@@ -86,6 +86,8 @@ function showWhatsNewDialog()
     whatsNewDialog.style.display = 'block';
 
     updateWhatsNewScroll();
+
+    dialogShown = true;
 }
 
 
@@ -94,6 +96,8 @@ function hideWhatsNewDialog()
 {
     whatsNewBack  .style.display = 'none';
     whatsNewDialog.style.display = 'none';
+
+    dialogShown = false;
 }
 
 

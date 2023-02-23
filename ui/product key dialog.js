@@ -17,6 +17,8 @@ function showProductKeyDialog()
 
     
     window.setTimeout(() => document.getElementById('productKeyInput').focus(), 0);
+
+    dialogShown = true;
 }
 
 
@@ -34,18 +36,14 @@ function hideProductKeyDialog()
 {
     productKeyBack  .style.display = 'none';
     productKeyDialog.style.display = 'none';
+
+    dialogShown = false;
 }
 
 
 
 productKeyClose.addEventListener('pointerdown', e => e.stopPropagation());
-
-
-
-productKeyBack.addEventListener('pointerdown', () =>
-{
-    hideProductKeyDialog();
-});
+productKeyBack.addEventListener('pointerdown', () => { hideProductKeyDialog(); });
 
 
 
