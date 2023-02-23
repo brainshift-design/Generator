@@ -263,6 +263,16 @@ function initNumberControl(param, control, width, height, id, name, showName, de
                  : ( control.displayMax - Math.max(0, control.displayMin)))
             : control.value / (control.displayMax - control.displayMin);
 
+        if (   control.param.node.id == 'color2'
+            && control.param.id == 'c1')
+        {
+            console.log('sx =', sx);
+            console.log('cx =', cx);
+            console.log('v =', v);
+            console.log('sw =', sw);
+            console.log('sh =', sh);
+        }
+
         control.updateBar(sx, cx, v, sw, sh);
         control.updateColors();
         control.updateText();

@@ -610,11 +610,10 @@ class Operator
     {
         const param = this.params.find(p => p.id == value.paramId);
 
-        if (   value.min != undefined
-            && value.max != undefined)
+        if (value.type == NUMBER_VALUE)
         {
-            param.control.setMin(value.min);
-            param.control.setMax(value.max);
+            param.control.setMin(value.min, value.displayMin);
+            param.control.setMax(value.max, value.displayMax);
         }
             
         param.setValue(value.value, true, true, false);

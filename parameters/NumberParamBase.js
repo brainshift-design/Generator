@@ -68,10 +68,12 @@ extends Parameter
     getValueForUndo()
     {
         return {
-            paramId: this.id, 
-            value:   this.value,
-            min:     this.control.min,
-            max:     this.control.max
+            paramId:    this.id, 
+            value:      this.value,
+            min:        this.control.min,
+            max:        this.control.max,
+            displayMin: this.control.displayMin,
+            displayMax: this.control.displayMax
         };
     }
 
