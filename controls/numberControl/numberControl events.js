@@ -2,6 +2,13 @@ function initNumberControlEvents(control)
 {
     control.addEventListener('pointerenter', function(e)
     {
+        if (control.minZoom > graphView.zoom)
+        {
+            e.preventDefault();
+            return;
+        }
+
+
         overNumberControl = control;
 
 
@@ -52,6 +59,13 @@ function initNumberControlEvents(control)
 
     control.addEventListener('pointerdown', function(e)
     {
+        if (control.minZoom > graphView.zoom)
+        {
+            e.preventDefault();
+            return;
+        }
+
+
         if (   graphView.spaceDown
             || panMode)
             return;
@@ -156,6 +170,12 @@ function initNumberControlEvents(control)
 
     control.addEventListener('pointermove', e =>
     {
+        if (control.minZoom > graphView.zoom)
+        {
+            e.preventDefault();
+            return;
+        }
+
         if (panMode)
         {
             setCursor(panCursor);
@@ -294,6 +314,13 @@ function initNumberControlEvents(control)
     
     control.addEventListener('pointerleave', function(e)
     {
+        if (control.minZoom > graphView.zoom)
+        {
+            e.preventDefault();
+            return;
+        }
+
+
         overNumberControl = null;
 
 
@@ -361,6 +388,13 @@ function initNumberControlEvents(control)
 
     control.addEventListener('pointerup', function(e)
     {
+        if (control.minZoom > graphView.zoom)
+        {
+            e.preventDefault();
+            return;
+        }
+
+
         if (panMode)
             return;
 
@@ -442,6 +476,12 @@ function initNumberControlEvents(control)
     
     control.addEventListener('wheel', e =>
     {
+        if (control.minZoom > graphView.zoom)
+        {
+            e.preventDefault();
+            return;
+        }
+
         if (  !control.pointerEvents
             || panMode
             || graphView.wheelTimer)

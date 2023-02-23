@@ -17,13 +17,8 @@ window.addEventListener('gesturechange', e => e.preventDefault());
 window.addEventListener('gestureend',    e => e.preventDefault());
 
 
-// window.frames[0].onerror = function(msg)
-// {
-//     console.log('msg =', msg);
-//     uiNotify(msg, {error: true});
-// };
 
-
+var crashed = false;
 
 var darkMode;
 
@@ -40,9 +35,9 @@ function checkResize(x, y)
 
     const resizeEdgeWidth = 8;
 
-    document.canResizeL = false; //x <= resizeEdgeWidth;
-    document.canResizeR = documentBodyClient.width  - x <= resizeEdgeWidth;
-    document.canResizeB = documentBodyClient.height - y <= resizeEdgeWidth;
+    document.canResizeL = !crashed && false; //x <= resizeEdgeWidth;
+    document.canResizeR = !crashed && documentBodyClient.width  - x <= resizeEdgeWidth;
+    document.canResizeB = !crashed && documentBodyClient.height - y <= resizeEdgeWidth;
 
     
     if (       document.canResizeR

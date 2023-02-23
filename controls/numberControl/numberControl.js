@@ -96,6 +96,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
      
     control.allowEditDecimals      = true;
     
+    control.minZoom                = 0.0000000001;
     control.valueText              = '';
     control.overrideText           = '';
 

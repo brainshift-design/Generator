@@ -48,6 +48,8 @@ extends OpColorBase
         
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
+        this.paramSpace.control.minZoom = 0.5;
+        
         this.param1.control.epsilon = ColorEpsilon;
         this.param2.control.epsilon = ColorEpsilon;
         this.param3.control.epsilon = ColorEpsilon;

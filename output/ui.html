@@ -848,6 +848,120 @@
 }
 
 
+
+#crashBack
+{
+    display:          none;
+
+    z-index:          1;
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+    pointer-events:   all;
+
+    background-color: #0005;
+}
+
+
+
+#crashDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       2;
+    position:      absolute;
+    top:           50%;
+    left:          50%;
+    transform:     translateX(-50%)
+                   translateY(-50%);
+    width:         400px;
+    height:        200px;
+
+    overflow:      hidden;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+
+    border-radius: 4px;
+}
+
+
+#crashDialogContainer
+{
+    height:   calc(100% - 42px);
+    overflow: hidden;
+    padding:  0;
+    z-index:  1;
+    /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+#crashDialogContent
+{
+    font-size:      12px;
+    margin:         0;
+    padding:        1px 0 5px 0;
+    position:       absolute;
+    pointer-events: all;
+    user-select:    text;
+    width:          100%;
+    /* box-shadow:     0 0 0 1px blue inset; */
+}
+
+
+.figma-light #crashDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #crashDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#crashTitle
+{
+    font-size:     14px;
+    font-weight:   500;
+    margin-top:    20px;
+    margin-bottom: 27px;
+}
+
+
+#crashDetails
+{
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+
+#crashDialogBody
+{
+    margin: 0 25px 0 25px;
+}
+
+
+#chkCrashRestart
+{
+    position: absolute;
+    left: 25px;
+    top: calc(100% - 35px);
+}
+
+
 #loadingOverlay
 {
     position: absolute;
@@ -2682,7 +2796,7 @@ a
                         <path d="M24.548 11.4962C24.1873 10.3924 23.712 9.40339 23.1218 8.52912C22.5426 7.64391 21.8487 6.88985 21.04 6.26693C20.2422 5.64401 19.3351 5.16862 18.3188 4.84077C17.3024 4.51292 16.1877 4.34899 14.9747 4.34899C12.9857 4.34899 11.177 4.86263 9.54871 5.8899C7.92037 6.91717 6.62535 8.43076 5.66365 10.4307C4.70195 12.4306 4.2211 14.884 4.2211 17.791C4.2211 20.6979 4.70742 23.1514 5.68005 25.1513C6.65268 27.1512 7.96955 28.6648 9.63067 29.692C11.2918 30.7193 13.1606 31.2329 15.237 31.2329C17.1604 31.2329 18.8543 30.8231 20.3187 30.0035C21.794 29.1729 22.9415 28.0036 23.7611 26.4955C24.5917 24.9764 25.007 23.1896 25.007 21.1351L26.2528 21.3973H16.1549V17.791H28.9412V21.3973C28.9412 24.1622 28.3511 26.5665 27.1708 28.6101C26.0015 30.6537 24.3841 32.2383 22.3186 33.364C20.264 34.4787 17.9035 35.036 15.237 35.036C12.2644 35.036 9.65253 34.3366 7.40127 32.9378C5.16095 31.5389 3.4124 29.55 2.15563 26.9708C0.909786 24.3917 0.286865 21.3318 0.286865 17.791C0.286865 15.1354 0.642039 12.7475 1.35239 10.6274C2.07366 8.49633 3.09001 6.68221 4.40142 5.18502C5.71283 3.68782 7.26467 2.54034 9.05693 1.74256C10.8492 0.944787 12.8218 0.545898 14.9747 0.545898C16.7451 0.545898 18.3953 0.813644 19.9253 1.34914C21.4662 1.8737 22.8377 2.6223 24.0398 3.59493C25.2529 4.55663 26.2637 5.70958 27.0724 7.05378C27.8812 8.38705 28.4385 9.86785 28.7445 11.4962H24.548Z" fill="white"/>
                         <path d="M44.5514 35.1016C42.1253 35.1016 40.0325 34.5661 38.2731 33.4951C36.5245 32.4132 35.1748 30.9051 34.2241 28.9707C33.2842 27.0255 32.8143 24.7633 32.8143 22.1842C32.8143 19.6051 33.2842 17.332 34.2241 15.3649C35.1748 13.3868 36.4972 11.8459 38.1911 10.7421C39.8959 9.62743 41.8849 9.07008 44.158 9.07008C45.4694 9.07008 46.7644 9.28864 48.0431 9.72578C49.3217 10.1629 50.4856 10.8733 51.5347 11.8568C52.5838 12.8295 53.4199 14.119 54.0428 15.7255C54.6657 17.332 54.9772 19.31 54.9772 21.6596V23.2989H35.5683V19.9548H51.0429C51.0429 18.5341 50.7588 17.2664 50.1905 16.1517C49.6332 15.037 48.8354 14.1573 47.7972 13.5125C46.7699 12.8677 45.5569 12.5453 44.158 12.5453C42.6171 12.5453 41.2838 12.9278 40.1582 13.6928C39.0435 14.4469 38.1856 15.4304 37.5846 16.6435C36.9835 17.8565 36.683 19.157 36.683 20.5449V22.7743C36.683 24.6759 37.0108 26.2878 37.6665 27.6102C38.3332 28.9216 39.2566 29.9215 40.4369 30.61C41.6172 31.2876 42.9887 31.6264 44.5514 31.6264C45.5678 31.6264 46.4858 31.4843 47.3054 31.2001C48.136 30.9051 48.8518 30.4679 49.4528 29.8887C50.0539 29.2986 50.5184 28.5664 50.8462 27.6921L54.5837 28.7412C54.1903 30.0089 53.5291 31.1236 52.6002 32.0853C51.6713 33.0361 50.5238 33.7793 49.1578 34.3148C47.7917 34.8393 46.2563 35.1016 44.5514 35.1016Z" fill="white"/>
                         <path d="M63.3459 19.4302V34.577H59.4773V9.39793H63.2148V13.3322H63.5426C64.1328 12.0535 65.0289 11.0263 66.231 10.2503C67.4332 9.4635 68.985 9.07008 70.8866 9.07008C72.5914 9.07008 74.0831 9.41979 75.3617 10.1192C76.6404 10.8077 77.6349 11.8568 78.3452 13.2666C79.0555 14.6654 79.4107 16.4358 79.4107 18.5778V34.577H75.5421V18.8401C75.5421 16.862 75.0284 15.3211 74.0012 14.2174C72.9739 13.1027 71.5641 12.5453 69.7719 12.5453C68.5369 12.5453 67.4332 12.8131 66.4605 13.3486C65.4988 13.884 64.7393 14.6654 64.182 15.6927C63.6246 16.72 63.3459 17.9658 63.3459 19.4302Z" fill="white"/>
-                        <path d="M95.6521 35.1016C93.226 35.1016 91.1332 34.5661 89.3737 33.4951C87.6251 32.4132 86.2755 30.9051 85.3247 28.9707C84.3849 27.0255 83.9149 24.7633 83.9149 22.1842C83.9149 19.6051 84.3849 17.332 85.3247 15.3649C86.2755 13.3868 87.5978 11.8459 89.2917 10.7421C90.9966 9.62743 92.9855 9.07008 95.2586 9.07008C96.5701 9.07008 97.8651 9.28864 99.1437 9.72578C100.422 10.1629 101.586 10.8733 102.635 11.8568C103.684 12.8295 104.52 14.119 105.143 15.7255C105.766 17.332 106.078 19.31 106.078 21.6596V23.2989H86.6689V19.9548H102.144C102.144 18.5341 101.859 17.2664 101.291 16.1517C100.734 15.037 99.936 14.1573 98.8978 13.5125C97.8705 12.8677 96.6575 12.5453 95.2586 12.5453C93.7177 12.5453 92.3845 12.9278 91.2588 13.6928C90.1441 14.4469 89.2863 15.4304 88.6852 16.6435C88.0841 17.8565 87.7836 19.157 87.7836 20.5449V22.7743C87.7836 24.6759 88.1114 26.2878 88.7672 27.6102C89.4338 28.9216 90.3572 29.9215 91.5375 30.61C92.7178 31.2876 94.0893 31.6264 95.6521 31.6264C96.6684 31.6264 97.5864 31.4843 98.406 31.2001C99.2366 30.9051 99.9524 30.4679 100.553 29.8887C101.155 29.2986 101.619 28.5664 101.947 27.6921L105.684 28.7412C105.291 30.0089 104.63 31.1236 103.701 32.0853C102.772 33.0361 101.624 33.7793 100.258 34.3148C98.8923 34.8393 97.3569 35.1016 95.6521 35.1016Z" fill="white"/>
+          boundingRect              <path d="M95.6521 35.1016C93.226 35.1016 91.1332 34.5661 89.3737 33.4951C87.6251 32.4132 86.2755 30.9051 85.3247 28.9707C84.3849 27.0255 83.9149 24.7633 83.9149 22.1842C83.9149 19.6051 84.3849 17.332 85.3247 15.3649C86.2755 13.3868 87.5978 11.8459 89.2917 10.7421C90.9966 9.62743 92.9855 9.07008 95.2586 9.07008C96.5701 9.07008 97.8651 9.28864 99.1437 9.72578C100.422 10.1629 101.586 10.8733 102.635 11.8568C103.684 12.8295 104.52 14.119 105.143 15.7255C105.766 17.332 106.078 19.31 106.078 21.6596V23.2989H86.6689V19.9548H102.144C102.144 18.5341 101.859 17.2664 101.291 16.1517C100.734 15.037 99.936 14.1573 98.8978 13.5125C97.8705 12.8677 96.6575 12.5453 95.2586 12.5453C93.7177 12.5453 92.3845 12.9278 91.2588 13.6928C90.1441 14.4469 89.2863 15.4304 88.6852 16.6435C88.0841 17.8565 87.7836 19.157 87.7836 20.5449V22.7743C87.7836 24.6759 88.1114 26.2878 88.7672 27.6102C89.4338 28.9216 90.3572 29.9215 91.5375 30.61C92.7178 31.2876 94.0893 31.6264 95.6521 31.6264C96.6684 31.6264 97.5864 31.4843 98.406 31.2001C99.2366 30.9051 99.9524 30.4679 100.553 29.8887C101.155 29.2986 101.619 28.5664 101.947 27.6921L105.684 28.7412C105.291 30.0089 104.63 31.1236 103.701 32.0853C102.772 33.0361 101.624 33.7793 100.258 34.3148C98.8923 34.8393 97.3569 35.1016 95.6521 35.1016Z" fill="white"/>
                         <path d="M110.578 34.577V9.39793H114.315V13.201H114.578C115.037 11.9552 115.867 10.9443 117.069 10.1684C118.272 9.39246 119.627 9.0045 121.135 9.0045C121.419 9.0045 121.774 9.00997 122.2 9.0209C122.626 9.03182 122.949 9.04822 123.167 9.07008V13.0043C123.036 12.9715 122.736 12.9223 122.266 12.8568C121.807 12.7803 121.321 12.742 120.807 12.742C119.583 12.742 118.49 12.9988 117.528 13.5125C116.578 14.0152 115.824 14.7146 115.266 15.6107C114.72 16.4959 114.447 17.5068 114.447 18.6434V34.577H110.578Z" fill="white"/>
                         <path d="M133.778 35.1672C132.182 35.1672 130.734 34.8666 129.434 34.2656C128.133 33.6536 127.101 32.7738 126.336 31.6264C125.571 30.4679 125.188 29.0691 125.188 27.4298C125.188 25.9873 125.472 24.8179 126.041 23.9218C126.609 23.0148 127.368 22.3044 128.319 21.7908C129.27 21.2771 130.319 20.8946 131.467 20.6433C132.625 20.381 133.789 20.1734 134.958 20.0204C136.488 19.8237 137.729 19.6761 138.679 19.5778C139.641 19.4685 140.34 19.2882 140.778 19.0368C141.226 18.7855 141.45 18.3483 141.45 17.7254V17.5943C141.45 15.9768 141.007 14.7201 140.122 13.8239C139.248 12.9278 137.92 12.4797 136.138 12.4797C134.292 12.4797 132.844 12.8841 131.794 13.6928C130.745 14.5015 130.008 15.3649 129.581 16.2828L125.909 14.9714C126.565 13.4414 127.439 12.2502 128.532 11.3978C129.636 10.5345 130.838 9.93342 132.139 9.59464C133.45 9.24493 134.74 9.07008 136.007 9.07008C136.816 9.07008 137.745 9.16843 138.794 9.36514C139.854 9.55092 140.876 9.93889 141.859 10.529C142.854 11.1192 143.679 12.0098 144.335 13.201C144.99 14.3922 145.318 15.9878 145.318 17.9877V34.577H141.45V31.1674H141.253C140.991 31.7138 140.554 32.2985 139.942 32.9214C139.33 33.5443 138.515 34.0743 137.499 34.5115C136.483 34.9486 135.242 35.1672 133.778 35.1672ZM134.368 31.6919C135.898 31.6919 137.188 31.3914 138.237 30.7903C139.297 30.1893 140.095 29.4133 140.63 28.4626C141.176 27.5118 141.45 26.5118 141.45 25.4627V21.9219C141.286 22.1186 140.925 22.2989 140.368 22.4629C139.821 22.6159 139.187 22.7525 138.466 22.8727C137.756 22.982 137.062 23.0803 136.384 23.1677C135.718 23.2442 135.177 23.3098 134.761 23.3645C133.756 23.4956 132.816 23.7087 131.942 24.0038C131.079 24.2879 130.379 24.7196 129.844 25.2988C129.319 25.8671 129.057 26.643 129.057 27.6265C129.057 28.9707 129.554 29.9871 130.549 30.6756C131.554 31.3531 132.827 31.6919 134.368 31.6919Z" fill="white"/>
                         <path d="M161.945 9.39793V12.6765H148.896V9.39793H161.945ZM152.699 3.36543H156.568V27.3643C156.568 28.4571 156.727 29.2767 157.044 29.8232C157.371 30.3587 157.787 30.7193 158.289 30.9051C158.803 31.0799 159.344 31.1674 159.912 31.1674C160.338 31.1674 160.688 31.1455 160.961 31.1018C161.235 31.0472 161.453 31.0034 161.617 30.9706L162.404 34.4459C162.142 34.5442 161.776 34.6426 161.306 34.741C160.836 34.8502 160.24 34.9049 159.519 34.9049C158.426 34.9049 157.355 34.6699 156.306 34.2C155.268 33.7301 154.404 33.0143 153.716 32.0526C153.038 31.0909 152.699 29.8778 152.699 28.4134V3.36543Z" fill="white"/>
@@ -2696,6 +2810,24 @@ a
                 <!-- <p><div id='chkAboutHideWhatsNew'></div></p> -->
             </div>
         </div>
+    </div>
+
+</div>
+
+
+
+<div id='crashBack'></div>
+
+<div id='crashDialog'>
+    
+    <div id='crashDialogContainer'>
+        <div id='crashDialogContent'>
+            <div id='crashDialogBody'>
+                <p id='crashTitle'>Generator has experienced an error</p>
+                <p id='crashDetails'>Error details</p>
+            </div>
+        </div>
+        <div id='chkCrashRestart'></div>
     </div>
 
 </div>
@@ -19362,6 +19494,22 @@ function convert2hcluv(fromColor)
 ////////////////////////////////////////////////////
 
 
+
+onerror = (event, src, line, pos, error) =>
+{
+    console.log('event =', event);
+    console.log('error =', error);
+
+    crashed = true;
+    
+    initCrashDialog(event, error);
+    showCrashDialog();
+};
+
+
+
+
+
 const generatorVersion = 105;
 
 
@@ -33721,6 +33869,13 @@ function initNumberControlEvents(control)
 {
     control.addEventListener('pointerenter', function(e)
     {
+        if (control.minZoom > graphView.zoom)
+        {
+            e.preventDefault();
+            return;
+        }
+
+
         overNumberControl = control;
 
 
@@ -33771,6 +33926,13 @@ function initNumberControlEvents(control)
 
     control.addEventListener('pointerdown', function(e)
     {
+        if (control.minZoom > graphView.zoom)
+        {
+            e.preventDefault();
+            return;
+        }
+
+
         if (   graphView.spaceDown
             || panMode)
             return;
@@ -33875,6 +34037,12 @@ function initNumberControlEvents(control)
 
     control.addEventListener('pointermove', e =>
     {
+        if (control.minZoom > graphView.zoom)
+        {
+            e.preventDefault();
+            return;
+        }
+
         if (panMode)
         {
             setCursor(panCursor);
@@ -34013,6 +34181,13 @@ function initNumberControlEvents(control)
     
     control.addEventListener('pointerleave', function(e)
     {
+        if (control.minZoom > graphView.zoom)
+        {
+            e.preventDefault();
+            return;
+        }
+
+
         overNumberControl = null;
 
 
@@ -34080,6 +34255,13 @@ function initNumberControlEvents(control)
 
     control.addEventListener('pointerup', function(e)
     {
+        if (control.minZoom > graphView.zoom)
+        {
+            e.preventDefault();
+            return;
+        }
+
+
         if (panMode)
             return;
 
@@ -34161,6 +34343,12 @@ function initNumberControlEvents(control)
     
     control.addEventListener('wheel', e =>
     {
+        if (control.minZoom > graphView.zoom)
+        {
+            e.preventDefault();
+            return;
+        }
+
         if (  !control.pointerEvents
             || panMode
             || graphView.wheelTimer)
@@ -34839,6 +35027,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
      
     control.allowEditDecimals      = true;
     
+    control.minZoom                = 0.0000000001;
     control.valueText              = '';
     control.overrideText           = '';
 
@@ -37623,6 +37812,8 @@ graphView.addEventListener('pointerleave', e =>
 
 graphView.addEventListener('pointerdown', e =>
 {
+    throw new Error('test');
+
     graphView.pStart = point(e.clientX, e.clientY);
 
     const sx = e.clientX;
@@ -47756,6 +47947,8 @@ extends OpColorBase
         
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
+        this.paramSpace.control.minZoom = 0.5;
+        
         this.param1.control.epsilon = ColorEpsilon;
         this.param2.control.epsilon = ColorEpsilon;
         this.param3.control.epsilon = ColorEpsilon;
@@ -54078,6 +54271,32 @@ function initThemeColors()
 }
 
 
+function initCrashDialog(event, error)
+{
+    crashDetails.innerHTML = error;
+
+    crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
+
+    chkCrashRestart.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkCrashRestart.checked)));
+}
+
+
+
+function showCrashDialog()
+{
+    crashBack  .style.display = 'block';
+    crashDialog.style.display = 'block';
+}
+
+
+
+function hideCrashDialog()
+{
+    crashBack  .style.display = 'none';
+    crashDialog.style.display = 'none';
+}
+
+
 const panCursor = 
       'url(data:image/svg+xml;base64,'
     + 'PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3Ln'
@@ -56000,6 +56219,7 @@ function uiReturnFigGetLocalData(msg)
     switch (msg.key)
     {
         case 'dataMode':
+            chkCrashRestart
         case 'debugMode':
 
         case 'autoConnectNewNodes':
@@ -56071,6 +56291,9 @@ function uiReturnFigGetLocalData(msg)
             initGeneratorMenus();
      
         
+        initCheckbox(chkCrashRestart, 'Restart in debug mode', settings.dataMode);
+    
+    
         onClassChange(document.childNodes[0], () =>
         { 
             initThemeColors();
@@ -58342,13 +58565,8 @@ window.addEventListener('gesturechange', e => e.preventDefault());
 window.addEventListener('gestureend',    e => e.preventDefault());
 
 
-// window.frames[0].onerror = function(msg)
-// {
-//     console.log('msg =', msg);
-//     uiNotify(msg, {error: true});
-// };
 
-
+var crashed = false;
 
 var darkMode;
 
@@ -58365,9 +58583,9 @@ function checkResize(x, y)
 
     const resizeEdgeWidth = 8;
 
-    document.canResizeL = false; //x <= resizeEdgeWidth;
-    document.canResizeR = documentBodyClient.width  - x <= resizeEdgeWidth;
-    document.canResizeB = documentBodyClient.height - y <= resizeEdgeWidth;
+    document.canResizeL = !crashed && false; //x <= resizeEdgeWidth;
+    document.canResizeR = !crashed && documentBodyClient.width  - x <= resizeEdgeWidth;
+    document.canResizeB = !crashed && documentBodyClient.height - y <= resizeEdgeWidth;
 
     
     if (       document.canResizeR

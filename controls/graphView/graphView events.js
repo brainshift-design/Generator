@@ -17,6 +17,8 @@ graphView.addEventListener('pointerleave', e =>
 
 graphView.addEventListener('pointerdown', e =>
 {
+    throw new Error('test');
+
     graphView.pStart = point(e.clientX, e.clientY);
 
     const sx = e.clientX;

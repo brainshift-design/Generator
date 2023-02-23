@@ -33,6 +33,7 @@ function uiReturnFigGetLocalData(msg)
     switch (msg.key)
     {
         case 'dataMode':
+            chkCrashRestart
         case 'debugMode':
 
         case 'autoConnectNewNodes':
@@ -104,6 +105,9 @@ function uiReturnFigGetLocalData(msg)
             initGeneratorMenus();
      
         
+        initCheckbox(chkCrashRestart, 'Restart in debug mode', settings.dataMode);
+    
+    
         onClassChange(document.childNodes[0], () =>
         { 
             initThemeColors();

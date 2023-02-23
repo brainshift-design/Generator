@@ -2,3 +2,18 @@
 'use strict';
 
 ////////////////////////////////////////////////////
+
+
+
+onerror = (event, src, line, pos, error) =>
+{
+    console.log('event =', event);
+    console.log('error =', error);
+
+    crashed = true;
+    
+    initCrashDialog(event, error);
+    showCrashDialog();
+};
+
+

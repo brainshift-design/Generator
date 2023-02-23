@@ -664,3 +664,117 @@
     position: absolute;
     right:    30;
 }
+
+
+
+#crashBack
+{
+    display:          none;
+
+    z-index:          1;
+    
+    position:         fixed;
+    left:             0;
+    top:              0;
+    width:            100%;
+    height:           100%;
+    overflow:         auto;
+    pointer-events:   all;
+
+    background-color: #0005;
+}
+
+
+
+#crashDialog
+{
+    display:       none;
+
+    font-family:   Inter;
+
+    z-index:       2;
+    position:      absolute;
+    top:           50%;
+    left:          50%;
+    transform:     translateX(-50%)
+                   translateY(-50%);
+    width:         400px;
+    height:        200px;
+
+    overflow:      hidden;
+    
+    color:         var(--figma-color-text);
+    background:    var(--figma-color-bg);
+    
+    border:        0.5px solid rgba(0, 0, 0, 0.2);
+
+    border-radius: 4px;
+}
+
+
+#crashDialogContainer
+{
+    height:   calc(100% - 42px);
+    overflow: hidden;
+    padding:  0;
+    z-index:  1;
+    /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+#crashDialogContent
+{
+    font-size:      12px;
+    margin:         0;
+    padding:        1px 0 5px 0;
+    position:       absolute;
+    pointer-events: all;
+    user-select:    text;
+    width:          100%;
+    /* box-shadow:     0 0 0 1px blue inset; */
+}
+
+
+.figma-light #crashDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.15),
+                0px 5px 17px rgba(0, 0, 0, 0.15);
+}
+
+
+.figma-dark #crashDialog
+{
+    box-shadow: 0px 2px  7px rgba(0, 0, 0, 0.45),
+                0px 5px 25px rgba(0, 0, 0, 0.45),
+                0 0px 2px 0px #fff3 inset;
+}
+
+
+#crashTitle
+{
+    font-size:     14px;
+    font-weight:   500;
+    margin-top:    20px;
+    margin-bottom: 27px;
+}
+
+
+#crashDetails
+{
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+
+#crashDialogBody
+{
+    margin: 0 25px 0 25px;
+}
+
+
+#chkCrashRestart
+{
+    position: absolute;
+    left: 25px;
+    top: calc(100% - 35px);
+}
