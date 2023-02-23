@@ -2,11 +2,8 @@ function initNumberControlEvents(control)
 {
     control.addEventListener('pointerenter', function(e)
     {
-        if (control.minZoom > graphView.zoom)
-        {
-            e.preventDefault();
+        if (!control.canReact(e))
             return;
-        }
 
 
         overNumberControl = control;
@@ -59,11 +56,8 @@ function initNumberControlEvents(control)
 
     control.addEventListener('pointerdown', function(e)
     {
-        if (control.minZoom > graphView.zoom)
-        {
-            e.preventDefault();
+        if (!control.canReact(e))
             return;
-        }
 
 
         if (   graphView.spaceDown
@@ -170,11 +164,9 @@ function initNumberControlEvents(control)
 
     control.addEventListener('pointermove', e =>
     {
-        if (control.minZoom > graphView.zoom)
-        {
-            e.preventDefault();
+        if (!control.canReact(e))
             return;
-        }
+
 
         if (panMode)
         {
@@ -314,11 +306,8 @@ function initNumberControlEvents(control)
     
     control.addEventListener('pointerleave', function(e)
     {
-        if (control.minZoom > graphView.zoom)
-        {
-            e.preventDefault();
+        if (!control.canReact(e))
             return;
-        }
 
 
         overNumberControl = null;
@@ -388,11 +377,8 @@ function initNumberControlEvents(control)
 
     control.addEventListener('pointerup', function(e)
     {
-        if (control.minZoom > graphView.zoom)
-        {
-            e.preventDefault();
+        if (!control.canReact(e))
             return;
-        }
 
 
         if (panMode)
@@ -476,11 +462,9 @@ function initNumberControlEvents(control)
     
     control.addEventListener('wheel', e =>
     {
-        if (control.minZoom > graphView.zoom)
-        {
-            e.preventDefault();
+        if (!control.canReact(e))
             return;
-        }
+
 
         if (  !control.pointerEvents
             || panMode

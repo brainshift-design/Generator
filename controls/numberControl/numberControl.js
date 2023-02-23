@@ -96,7 +96,6 @@ function initNumberControl(param, control, width, height, id, name, showName, de
      
     control.allowEditDecimals      = true;
     
-    control.minZoom                = 0.0000000001;
     control.valueText              = '';
     control.overrideText           = '';
 
@@ -122,6 +121,13 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     initNumberControlChildren(control);    
     initNumberControlTextbox (control);
     initNumberControlEvents  (control);
+
+
+
+    control.canReact = function(e)
+    {
+        return true;
+    }
 
 
 

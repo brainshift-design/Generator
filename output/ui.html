@@ -2732,38 +2732,6 @@ a
 
 
 
-<div id='whatsNewBack'></div>
-
-<div id='whatsNewDialog'>
-    
-    <div id='whatsNewTitle'>
-        <div id='whatsNewTitleText'>Version _</div>
-        <div class='panelButton dialogButtonClose' id='whatsNewClose' onclick='whatsNewClose.blur(); hideWhatsNewDialog();'>
-            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
-            </svg>
-        </div>
-    </div>
-    
-    <div id='whatsNewDialogContainer'>
-        <div id='whatsNewDialogContent'>
-            <div id='whatsNewWatermark'>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
-
-            <div id='whatsNewBody'>
-                <h1>What's new in Generator</h1>
-
-                <p>-</p>
-
-                <p><br/><br/><div id='chkHideWhatsNew'></div></p>
-            </div>
-        </div>
-        <div class='scrollbar' id='whatsNewScrollbarY'></div>
-    </div>
-
-</div>
-
-
-
 <div id='aboutBack'></div>
 
 <div id='aboutDialog'>
@@ -2831,6 +2799,42 @@ a
     </div>
 
 </div>
+
+
+
+<div id='whatsNewBack'></div>
+
+<div id='whatsNewDialog'>
+    
+    <div id='whatsNewTitle'>
+        <div id='whatsNewTitleText'>Version _</div>
+        <div class='panelButton dialogButtonClose' id='whatsNewClose' onclick='whatsNewClose.blur(); hideWhatsNewDialog();'>
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
+            </svg>
+        </div>
+    </div>
+    
+    <div id='whatsNewDialogContainer'>
+        <div id='whatsNewDialogContent'>
+            <div id='whatsNewWatermark'>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
+
+            <div id='whatsNewBody'>
+                <h1>What's new in Generator</h1>
+
+                <p>Generator properly crashes now and shows the error.</p>
+
+                <p><br/><br/><div id='chkHideWhatsNew'></div></p>
+            </div>
+        </div>
+        <div class='scrollbar' id='whatsNewScrollbarY'></div>
+    </div>
+
+</div>
+
+
+
+
 
 
 <span id='tooltipArrow'></span>
@@ -19497,11 +19501,8 @@ function convert2hcluv(fromColor)
 
 onerror = (event, src, line, pos, error) =>
 {
-    console.log('event =', event);
-    console.log('error =', error);
-
     crashed = true;
-    
+
     initCrashDialog(event, error);
     showCrashDialog();
 };
@@ -33869,11 +33870,8 @@ function initNumberControlEvents(control)
 {
     control.addEventListener('pointerenter', function(e)
     {
-        if (control.minZoom > graphView.zoom)
-        {
-            e.preventDefault();
+        if (!control.canReact(e))
             return;
-        }
 
 
         overNumberControl = control;
@@ -33926,11 +33924,8 @@ function initNumberControlEvents(control)
 
     control.addEventListener('pointerdown', function(e)
     {
-        if (control.minZoom > graphView.zoom)
-        {
-            e.preventDefault();
+        if (!control.canReact(e))
             return;
-        }
 
 
         if (   graphView.spaceDown
@@ -34037,11 +34032,9 @@ function initNumberControlEvents(control)
 
     control.addEventListener('pointermove', e =>
     {
-        if (control.minZoom > graphView.zoom)
-        {
-            e.preventDefault();
+        if (!control.canReact(e))
             return;
-        }
+
 
         if (panMode)
         {
@@ -34181,11 +34174,8 @@ function initNumberControlEvents(control)
     
     control.addEventListener('pointerleave', function(e)
     {
-        if (control.minZoom > graphView.zoom)
-        {
-            e.preventDefault();
+        if (!control.canReact(e))
             return;
-        }
 
 
         overNumberControl = null;
@@ -34255,11 +34245,8 @@ function initNumberControlEvents(control)
 
     control.addEventListener('pointerup', function(e)
     {
-        if (control.minZoom > graphView.zoom)
-        {
-            e.preventDefault();
+        if (!control.canReact(e))
             return;
-        }
 
 
         if (panMode)
@@ -34343,11 +34330,9 @@ function initNumberControlEvents(control)
     
     control.addEventListener('wheel', e =>
     {
-        if (control.minZoom > graphView.zoom)
-        {
-            e.preventDefault();
+        if (!control.canReact(e))
             return;
-        }
+
 
         if (  !control.pointerEvents
             || panMode
@@ -35027,7 +35012,6 @@ function initNumberControl(param, control, width, height, id, name, showName, de
      
     control.allowEditDecimals      = true;
     
-    control.minZoom                = 0.0000000001;
     control.valueText              = '';
     control.overrideText           = '';
 
@@ -35053,6 +35037,13 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     initNumberControlChildren(control);    
     initNumberControlTextbox (control);
     initNumberControlEvents  (control);
+
+
+
+    control.canReact = function(e)
+    {
+        return true;
+    }
 
 
 
@@ -37812,8 +37803,6 @@ graphView.addEventListener('pointerleave', e =>
 
 graphView.addEventListener('pointerdown', e =>
 {
-    throw new Error('test');
-
     graphView.pStart = point(e.clientX, e.clientY);
 
     const sx = e.clientX;
@@ -47947,8 +47936,18 @@ extends OpColorBase
         
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
-        this.paramSpace.control.minZoom = 0.5;
-        
+        this.paramSpace.control.canReact = function(e)
+        {
+            if (graphView.zoom >= 0.5)
+                return true;
+
+            e.preventDefault();
+            e.stopPropagation();
+            forwardEvent(e, this.param.node.header);
+            return false;
+        };
+
+
         this.param1.control.epsilon = ColorEpsilon;
         this.param2.control.epsilon = ColorEpsilon;
         this.param3.control.epsilon = ColorEpsilon;
@@ -56841,21 +56840,21 @@ function hideTooltip(tooltip)
 }
 
 
-createTooltip(ttCreateNumber);           createTooltipSrc(btnCreateNumber,           btnCreateNumber,           () => ttCreateNumber);
-createTooltip(ttCreateLimits);           createTooltipSrc(btnCreateLimits,           btnCreateLimits,           () => ttCreateLimits);
-createTooltip(ttCreateAdd);              createTooltipSrc(btnCreateAdd,              btnCreateAdd,              () => ttCreateAdd);
-createTooltip(ttCreateSubtract);         createTooltipSrc(btnCreateSubtract,         btnCreateSubtract,         () => ttCreateSubtract);
-createTooltip(ttCreateMultiply);         createTooltipSrc(btnCreateMultiply,         btnCreateMultiply,         () => ttCreateMultiply);
-createTooltip(ttCreateDivide);           createTooltipSrc(btnCreateDivide,           btnCreateDivide,           () => ttCreateDivide);
-createTooltip(ttCreateModulo);           createTooltipSrc(btnCreateModulo,           btnCreateModulo,           () => ttCreateModulo);
-createTooltip(ttCreateExponent);         createTooltipSrc(btnCreateExponent,         btnCreateExponent,         () => ttCreateExponent);
-createTooltip(ttCreateInterpolate);      createTooltipSrc(btnCreateInterpolate,      btnCreateInterpolate,      () => ttCreateInterpolate);
+// // createTooltip(ttCreateNumber);           createTooltipSrc(btnCreateNumber,           btnCreateNumber,           () => ttCreateNumber);
+// createTooltip(ttCreateLimits);           createTooltipSrc(btnCreateLimits,           btnCreateLimits,           () => ttCreateLimits);
+// createTooltip(ttCreateAdd);              createTooltipSrc(btnCreateAdd,              btnCreateAdd,              () => ttCreateAdd);
+// createTooltip(ttCreateSubtract);         createTooltipSrc(btnCreateSubtract,         btnCreateSubtract,         () => ttCreateSubtract);
+// createTooltip(ttCreateMultiply);         createTooltipSrc(btnCreateMultiply,         btnCreateMultiply,         () => ttCreateMultiply);
+// createTooltip(ttCreateDivide);           createTooltipSrc(btnCreateDivide,           btnCreateDivide,           () => ttCreateDivide);
+// createTooltip(ttCreateModulo);           createTooltipSrc(btnCreateModulo,           btnCreateModulo,           () => ttCreateModulo);
+// createTooltip(ttCreateExponent);         createTooltipSrc(btnCreateExponent,         btnCreateExponent,         () => ttCreateExponent);
+// createTooltip(ttCreateInterpolate);      createTooltipSrc(btnCreateInterpolate,      btnCreateInterpolate,      () => ttCreateInterpolate);
 
-createTooltip(ttCreateColor);            createTooltipSrc(btnCreateColor,            btnCreateColor,            () => ttCreateColor);
-createTooltip(ttCreateColorInterpolate); createTooltipSrc(btnCreateColorInterpolate, btnCreateColorInterpolate, () => ttCreateColorInterpolate);
-createTooltip(ttCreateCorrectColor);     createTooltipSrc(btnCreateCorrectColor,     btnCreateCorrectColor,     () => ttCreateCorrectColor);
-createTooltip(ttCreateColorContrast);    createTooltipSrc(btnCreateColorContrast,    btnCreateColorContrast,    () => ttCreateColorContrast);
-createTooltip(ttCreateColorblind);       createTooltipSrc(btnCreateColorblind,       btnCreateColorblind,       () => ttCreateColorblind);
+// createTooltip(ttCreateColor);            createTooltipSrc(btnCreateColor,            btnCreateColor,            () => ttCreateColor);
+// createTooltip(ttCreateColorInterpolate); createTooltipSrc(btnCreateColorInterpolate, btnCreateColorInterpolate, () => ttCreateColorInterpolate);
+// createTooltip(ttCreateCorrectColor);     createTooltipSrc(btnCreateCorrectColor,     btnCreateCorrectColor,     () => ttCreateCorrectColor);
+// createTooltip(ttCreateColorContrast);    createTooltipSrc(btnCreateColorContrast,    btnCreateColorContrast,    () => ttCreateColorContrast);
+// createTooltip(ttCreateColorblind);       createTooltipSrc(btnCreateColorblind,       btnCreateColorblind,       () => ttCreateColorblind);
 
 // createTooltip(ttToggleWires);            createTooltipSrc(btnToggleWires, btnToggleWires,           () => ttToggleWires);
 
