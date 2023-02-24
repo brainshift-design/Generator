@@ -80,4 +80,9 @@ function uiReturnFigStartGenerator(msg)
     graphViewClient = clientRect(graphView);
     
     uiGetLocalData('showWhatsNew');
+
+    
+    uiQueueMessageToFigma({
+        cmd:     'figLoadNodesAndConns',
+        dataMode: settings.dataMode });
 }

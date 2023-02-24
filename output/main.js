@@ -1728,9 +1728,11 @@ function figLoadNodesAndConns(dataMode) {
     const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
     initPageStyles(nodes);
     const legacy = figma.currentPage.getPluginData('graph');
+    const graphView = figma.currentPage.getPluginData('graphView,' + figma.currentUser.id);
     figPostMessageToUi({
         legacy: legacy,
         cmd: 'uiReturnFigLoadNodesAndConns',
+        graphView: JSON.stringify(graphView),
         nodeKeys: JSON.stringify(nodeKeys),
         nodeJson: JSON.stringify(nodes),
         connKeys: JSON.stringify(connKeys),

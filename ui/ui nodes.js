@@ -888,7 +888,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     _values);
 
                 node.valid = true;
-                //node.updateNode();
             }
         }
     }
@@ -919,9 +918,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     
     graphView.update(nodes);
     graphView.updateScrollWithBounds();
-
-
-    //graphView.updateNodeTransforms(nodes);
 
 
     graphView.pastingNodes       = false;

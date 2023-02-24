@@ -70,20 +70,6 @@ function uiReturnFigGetLocalData(msg)
 
             break;
 
-        case 'graphView':        
-            uiLoadGraphView(msg.value); 
-
-            if (!settings.dataMode)
-                graphView.updatePanAndZoom();
-    
-            window.focus();
-
-            uiQueueMessageToFigma({
-                cmd:     'figLoadNodesAndConns',
-                dataMode: settings.dataMode });
-        
-            break;
-
         case 'showWhatsNew':
             if (  !msg.value
                 || parseInt(msg.value) < generatorVersion)
@@ -134,12 +120,11 @@ function uiReturnFigGetLocalData(msg)
 }
 
 
+
 function uiReturnFigGetPageData(msg)
 {
     // switch (msg.key)
     // {
-    //     case '':
-    //         break;
     // }
 }
 
@@ -178,6 +163,10 @@ function uiLoadGraphView(json)
 
     graphView._zoom = zoom;
     graphView._pan  = pan;
+
+
+    if (!settings.dataMode)
+        graphView.updatePanAndZoom();
 }
 
 
@@ -207,12 +196,15 @@ function uiReturnFigLoadNodesAndConns(msg)
                     .replaceAll('\\"', '\"'));
         }
 
+        
+        uiLoadGraphView(JSON.parse(msg.graphView));
 
-        let _nodeKeys = JSON.parse(msg.nodeKeys);
-        let _nodes    = JSON.parse(msg.nodeJson);
 
-        let _connKeys = JSON.parse(msg.connKeys);
-        let _conns    = JSON.parse(msg.connJson);
+        let   _nodeKeys  = JSON.parse(msg.nodeKeys);
+        let   _nodes     = JSON.parse(msg.nodeJson);
+   
+        let   _connKeys  = JSON.parse(msg.connKeys);
+        let   _conns     = JSON.parse(msg.connJson);
 
         
         const _n = [];
@@ -506,7 +498,7 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
 
 function uiSaveGraphView()
 {
-    uiSetLocalData('graphView', graphView.toJson());
+    uiSetPageData('graphView,' + currentUser.id, graphView.toJson());
 }
 
 

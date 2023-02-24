@@ -246,6 +246,4 @@ function loadLocalSettings()
     uiGetLocalData('logRawSaving'         );
     uiGetLocalData('logRawRequests'       );
     uiGetLocalData('logRawValues'         );
-    
-    uiGetLocalData('graphView'            );
 }

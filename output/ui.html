@@ -2867,6 +2867,8 @@ a
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
                 <p>Added scrolling to debug mode.</p>
+                <p>The preferences menu is now separated. What's above the separator is saved per page, what's below is saved
+                    on the local machine. Zoom and pan are now saved per page per user.</p>
                 <p>Fixed UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -14029,8 +14031,6 @@ function loadLocalSettings()
     uiGetLocalData('logRawSaving'         );
     uiGetLocalData('logRawRequests'       );
     uiGetLocalData('logRawValues'         );
-    
-    uiGetLocalData('graphView'            );
 }
 
 
@@ -32404,8 +32404,6 @@ function loadLocalSettings()
     uiGetLocalData('logRawSaving'         );
     uiGetLocalData('logRawRequests'       );
     uiGetLocalData('logRawValues'         );
-    
-    uiGetLocalData('graphView'            );
 }
 
 
@@ -33512,16 +33510,15 @@ function initGeneratorMenus()
 {
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
-        menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',            {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                        }}),
-        menuItemEnableZoomedOutParams = new MenuItem('Allow value changes at zoom < 33%', {checkCallback: () => settings.enableZoomedOutParams, callback: () => { updateSettingAndMenu('enableZoomedOutParams', true, !settings.enableZoomedOutParams); }}),
         menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',             {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗',      {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
         menuItemShowOperationResults  = new MenuItem('Show operation results',            {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
-        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',           {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                       }}),
                                         new MenuItem('',                                  {separator: true}),    
-        menuItemShowDebugMenu         = new MenuItem('Show debug menu',                   {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }})]);//,
-     //                                 new MenuItem('',                                  {separator: true}),   
-     // menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',              {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures);         uiValidateLicense(productKey);        }})]);
+        menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',            {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                        }}),
+        menuItemEnableZoomedOutParams = new MenuItem('Allow value changes at zoom < 33%', {checkCallback: () => settings.enableZoomedOutParams, callback: () => { updateSettingAndMenu('enableZoomedOutParams', true, !settings.enableZoomedOutParams); }}),
+        menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',           {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                       }}),
+        menuItemShowDebugMenu         = new MenuItem('Show debug menu',                   {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }})]);
+        // menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',              {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures);         uiValidateLicense(productKey);        }})]);
 
     
     menuMainDebug = new Menu('Debug', false);
@@ -38267,7 +38264,7 @@ graphView.panZoomTimer = null;
 
 
 
-graphView.setPanAndZoom = (pan, zoom) =>
+graphView.setPanAndZoom = function(pan, zoom)
 {
     if ((   pan  != graphView._pan
          || zoom != graphView._zoom)
@@ -55331,6 +55328,11 @@ function uiReturnFigStartGenerator(msg)
     graphViewClient = clientRect(graphView);
     
     uiGetLocalData('showWhatsNew');
+
+    
+    uiQueueMessageToFigma({
+        cmd:     'figLoadNodesAndConns',
+        dataMode: settings.dataMode });
 }
 
 
@@ -56418,20 +56420,6 @@ function uiReturnFigGetLocalData(msg)
 
             break;
 
-        case 'graphView':        
-            uiLoadGraphView(msg.value); 
-
-            if (!settings.dataMode)
-                graphView.updatePanAndZoom();
-    
-            window.focus();
-
-            uiQueueMessageToFigma({
-                cmd:     'figLoadNodesAndConns',
-                dataMode: settings.dataMode });
-        
-            break;
-
         case 'showWhatsNew':
             if (  !msg.value
                 || parseInt(msg.value) < generatorVersion)
@@ -56482,12 +56470,11 @@ function uiReturnFigGetLocalData(msg)
 }
 
 
+
 function uiReturnFigGetPageData(msg)
 {
     // switch (msg.key)
     // {
-    //     case '':
-    //         break;
     // }
 }
 
@@ -56526,6 +56513,10 @@ function uiLoadGraphView(json)
 
     graphView._zoom = zoom;
     graphView._pan  = pan;
+
+
+    if (!settings.dataMode)
+        graphView.updatePanAndZoom();
 }
 
 
@@ -56555,12 +56546,15 @@ function uiReturnFigLoadNodesAndConns(msg)
                     .replaceAll('\\"', '\"'));
         }
 
+        
+        uiLoadGraphView(JSON.parse(msg.graphView));
 
-        let _nodeKeys = JSON.parse(msg.nodeKeys);
-        let _nodes    = JSON.parse(msg.nodeJson);
 
-        let _connKeys = JSON.parse(msg.connKeys);
-        let _conns    = JSON.parse(msg.connJson);
+        let   _nodeKeys  = JSON.parse(msg.nodeKeys);
+        let   _nodes     = JSON.parse(msg.nodeJson);
+   
+        let   _connKeys  = JSON.parse(msg.connKeys);
+        let   _conns     = JSON.parse(msg.connJson);
 
         
         const _n = [];
@@ -56854,7 +56848,7 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
 
 function uiSaveGraphView()
 {
-    uiSetLocalData('graphView', graphView.toJson());
+    uiSetPageData('graphView,' + currentUser.id, graphView.toJson());
 }
 
 
@@ -57948,7 +57942,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
                     _values);
 
                 node.valid = true;
-                //node.updateNode();
             }
         }
     }
@@ -57979,9 +57972,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     
     graphView.update(nodes);
     graphView.updateScrollWithBounds();
-
-
-    //graphView.updateNodeTransforms(nodes);
 
 
     graphView.pastingNodes       = false;

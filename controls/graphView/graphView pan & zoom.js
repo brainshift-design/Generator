@@ -56,7 +56,7 @@ graphView.panZoomTimer = null;
 
 
 
-graphView.setPanAndZoom = (pan, zoom) =>
+graphView.setPanAndZoom = function(pan, zoom)
 {
     if ((   pan  != graphView._pan
          || zoom != graphView._zoom)

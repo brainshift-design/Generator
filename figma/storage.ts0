@@ -85,16 +85,18 @@ function figLoadNodesAndConns(dataMode)
     initPageStyles(nodes);
 
 
-    const legacy = figma.currentPage.getPluginData('graph');
+    const legacy    = figma.currentPage.getPluginData('graph');
+    const graphView = figma.currentPage.getPluginData('graphView,' + figma.currentUser.id);
 
 
     figPostMessageToUi({
-        legacy:   legacy,
+        legacy:    legacy,
         cmd:      'uiReturnFigLoadNodesAndConns',
-        nodeKeys: JSON.stringify(nodeKeys),
-        nodeJson: JSON.stringify(nodes),
-        connKeys: JSON.stringify(connKeys),
-        connJson: JSON.stringify(conns)
+        graphView: JSON.stringify(graphView);
+        nodeKeys:  JSON.stringify(nodeKeys),
+        nodeJson:  JSON.stringify(nodes),
+        connKeys:  JSON.stringify(connKeys),
+        connJson:  JSON.stringify(conns)
     });
 }
 
