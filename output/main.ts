@@ -437,6 +437,7 @@ function cleanStyleId(styleId)
 }
 
 
+
 const NAN_CHAR                = '?';
 const NAN_DISPLAY             = '?';
     

@@ -420,6 +420,7 @@ function cleanStyleId(styleId)
 }
 
 
+
 function rgbHeaderFromType(type, active)
 {
     if (FLOW_TYPES.includes(type))
@@ -2849,6 +2850,21 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
+
+
+function nodeIdArrayToString(nodeIds)
+{
+    let str = '';
+
+    for (let i = 0; i < nodeIds.length; i++)
+    {
+        if (i > 0) str += ', ';
+        str += nodeIds[i];
+    }
+
+    return str;
+}
+
 
 
 function nodeArrayToString(nodes)

@@ -516,6 +516,14 @@ class Operator
 
 
 
+    isParallelTo(node)
+    {
+        return !this.follows(node)
+            && !node.follows(this);
+    }
+
+
+
     follows(node) 
     { 
         return this.isOrFollows(node, false); 
@@ -1196,6 +1204,18 @@ function getParamInputValuesForUndo(input)
 function getParamOutputValuesForUndo(output)
 {
     return [output.param.getValueForUndo()];
+}
+
+
+
+function nodesAreParallel(nodes)
+{
+    for (let i = 0; i < nodes.length-1; i++)
+        for (let j = i + 1; j < nodes.length; j++)
+            if (!nodes[i].isParallelTo(nodes[j]))
+                return false;
+
+    return true;
 }
 
 

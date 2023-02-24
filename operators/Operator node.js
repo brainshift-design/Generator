@@ -439,7 +439,7 @@ function createNodeHeader(node)
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             node.showLabelTextbox();
         else if (!node.header.ignoreDoubleClick)
-            actionManager.do(new MakeActiveNodeAction(node.id));
+            actionManager.do(new MakeActiveNodesAction([node.id]));
 
         node.header.ignoreDoubleClick = false;
     });

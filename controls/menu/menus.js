@@ -458,20 +458,21 @@ function initGeneratorMenus()
         menuItemNodeSep2               = new MenuItem('',                    {separator: true}),
         menuItemNodeSelect             = new MenuItem('Select',              {childMenu: menuNodeSelect}),
                                          new MenuItem('',                    {separator: true}),
-        menuItemNodeActivate           = new MenuItem('Activate',            {callback: () => { if (graphView.selectedNodes.length == 1) actionManager.do(new MakeActiveNodeAction(graphView.selectedNodes[0].id)); }}),
+        menuItemNodeActivate           = new MenuItem('Activate',            {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift() + '⌫',            callback: e => { hideAllMenus(); removeSelectedNodes(true); }})]);
 
     menuNode.init = () => 
     {
-        const single = graphView.selectedNodes.length == 1;
+        const single   = graphView.selectedNodes.length == 1;
+        const parallel = nodesAreParallel(graphView.selectedNodes);
 
         updateMenuItemDisplay(menuItemNodeSep1    .div, single);
         updateMenuItemDisplay(menuItemNodeRename  .div, single);
         updateMenuItemDisplay(menuItemNodeSep2    .div, single);
         updateMenuItemDisplay(menuItemNodeSelect  .div, single);
-        updateMenuItemDisplay(menuItemNodeActivate.div, single);
+        updateMenuItemDisplay(menuItemNodeActivate.div, single || parallel);
     };
 
 

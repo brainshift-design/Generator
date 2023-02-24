@@ -3493,6 +3493,7 @@ function cleanStyleId(styleId)
 }
 
 
+
 function rgbHeaderFromType(type, active)
 {
     if (FLOW_TYPES.includes(type))
@@ -5922,6 +5923,21 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
+
+
+function nodeIdArrayToString(nodeIds)
+{
+    let str = '';
+
+    for (let i = 0; i < nodeIds.length; i++)
+    {
+        if (i > 0) str += ', ';
+        str += nodeIds[i];
+    }
+
+    return str;
+}
+
 
 
 function nodeArrayToString(nodes)
@@ -19963,6 +19979,7 @@ function cleanStyleId(styleId)
 }
 
 
+
 function rgbHeaderFromType(type, active)
 {
     if (FLOW_TYPES.includes(type))
@@ -22392,6 +22409,21 @@ function isConnKey(key) { return isTagKey(key, connTag); }
 
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
+
+
+function nodeIdArrayToString(nodeIds)
+{
+    let str = '';
+
+    for (let i = 0; i < nodeIds.length; i++)
+    {
+        if (i > 0) str += ', ';
+        str += nodeIds[i];
+    }
+
+    return str;
+}
+
 
 
 function nodeArrayToString(nodes)
@@ -33751,20 +33783,21 @@ function initGeneratorMenus()
         menuItemNodeSep2               = new MenuItem('',                    {separator: true}),
         menuItemNodeSelect             = new MenuItem('Select',              {childMenu: menuNodeSelect}),
                                          new MenuItem('',                    {separator: true}),
-        menuItemNodeActivate           = new MenuItem('Activate',            {callback: () => { if (graphView.selectedNodes.length == 1) actionManager.do(new MakeActiveNodeAction(graphView.selectedNodes[0].id)); }}),
+        menuItemNodeActivate           = new MenuItem('Activate',            {callback: () => makeSelectedNodesActive()}),
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift() + '⌫',            callback: e => { hideAllMenus(); removeSelectedNodes(true); }})]);
 
     menuNode.init = () => 
     {
-        const single = graphView.selectedNodes.length == 1;
+        const single   = graphView.selectedNodes.length == 1;
+        const parallel = nodesAreParallel(graphView.selectedNodes);
 
         updateMenuItemDisplay(menuItemNodeSep1    .div, single);
         updateMenuItemDisplay(menuItemNodeRename  .div, single);
         updateMenuItemDisplay(menuItemNodeSep2    .div, single);
         updateMenuItemDisplay(menuItemNodeSelect  .div, single);
-        updateMenuItemDisplay(menuItemNodeActivate.div, single);
+        updateMenuItemDisplay(menuItemNodeActivate.div, single || parallel);
     };
 
 
@@ -43591,6 +43624,14 @@ class Operator
 
 
 
+    isParallelTo(node)
+    {
+        return !this.follows(node)
+            && !node.follows(this);
+    }
+
+
+
     follows(node) 
     { 
         return this.isOrFollows(node, false); 
@@ -44275,6 +44316,18 @@ function getParamOutputValuesForUndo(output)
 
 
 
+function nodesAreParallel(nodes)
+{
+    for (let i = 0; i < nodes.length-1; i++)
+        for (let j = i + 1; j < nodes.length; j++)
+            if (!nodes[i].isParallelTo(nodes[j]))
+                return false;
+
+    return true;
+}
+
+
+
 // function restoreNodeUndoValues(node, values)
 // {
 //     for (const value of values)
@@ -44954,7 +45007,7 @@ function createNodeHeader(node)
             && e.clientY >= bounds.top  && e.clientY < bounds.bottom)
             node.showLabelTextbox();
         else if (!node.header.ignoreDoubleClick)
-            actionManager.do(new MakeActiveNodeAction(node.id));
+            actionManager.do(new MakeActiveNodesAction([node.id]));
 
         node.header.ignoreDoubleClick = false;
     });
@@ -53306,21 +53359,20 @@ extends Action
 }
 
 
-class MakeActiveNodeAction
+class MakeActiveNodesAction
 extends Action
 {
-    activeId;
+    newActiveNodeIds = [];
 
     oldActiveNodeIds = [];
 
 
 
-    constructor(activeId)
+    constructor(activeNodeIds)
     {
-        super('MAKE ACTIVE ' + activeId);
+        super('MAKE ACTIVE ' + nodeIdArrayToString(activeNodeIds));
 
-        this.activeId = activeId;
-
+        this.newActiveNodeIds = [...activeNodeIds];
         this.affectsConnections = false;
     }
 
@@ -53328,30 +53380,37 @@ extends Action
 
     do(updateNodes)
     {
-        this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.activeId).map(n => n.id)]; 
+        this.oldActiveNodeIds = [];
+
+        this.newActiveNodeIds.forEach(id =>
+            pushUnique(
+                this.oldActiveNodeIds, 
+                getActiveNodesFromNodeId(id).map(n => n.id))); 
+
         uiDeleteObjectsAndStyles(this.oldActiveNodeIds, false);
 
-        const node = nodeFromId(this.activeId);
+        const newActiveNodes = this.newActiveNodeIds.map(id => nodeFromId(id));
 
-        uiMakeNodeActive(node);
-        pushUnique(updateNodes, node);
+        uiMakeNodesActive(newActiveNodes);
+        pushUnique(updateNodes, newActiveNodes);
 
-        uiSaveNodes(filterUnique([this.activeId, ...this.oldActiveNodeIds]));
+        uiSaveNodes(filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
     }
 
 
 
     undo(updateNodes)
     {
-        if (!this.oldActiveNodeIds.includes(this.activeId));
-            uiMakeNodePassive(nodeFromId(this.activeId));
+        for (const id of this.newActiveNodeIds)
+            if (!this.oldActiveNodeIds.includes(id))
+                uiMakeNodePassive(nodeFromId(id));
 
         for (const id of this.oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
 
         pushUnique(updateNodes, this.oldActiveNodeIds.map(id => nodeFromId(id)));
 
-        uiSaveNodes(filterUnique([this.activeId, ...this.oldActiveNodeIds]));
+        uiSaveNodes(filterUnique([...this.newActiveNodeIds, ...this.oldActiveNodeIds]));
     }
 }
 
@@ -57328,13 +57387,21 @@ function uiUpdateSavedConnectionsToNodeId(nodeId)
 
 
 
+function makeSelectedNodesActive()
+{
+    if (graphView.selectedNodes.find(n => !n.active))
+        actionManager.do(new MakeActiveNodesAction(graphView.selectedNodes.map(n => n.id)));
+}
+
+
+
 function uiMakeNodeActive(node)
 {
     uiMakeNodeLeftPassive (node);
     uiMakeNodeRightPassive(node);
 
     node.makeActive();
-}
+}    
 
 
 
