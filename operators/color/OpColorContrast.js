@@ -193,9 +193,6 @@ extends OpColorBase
             {
                 this.forceShowWarning = false;
             }
-
-
-            this.setRanges(standard);
         }
     }
 
@@ -206,6 +203,7 @@ extends OpColorBase
         this.paramContrast.enableControlText(false);
         this.paramStandard.enableControlText(true);
 
+        this.setRanges(this.paramStandard.value);
 
         this.updateParamControls();
     }
