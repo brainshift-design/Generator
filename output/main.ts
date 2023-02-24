@@ -2728,18 +2728,21 @@ function figLoadNodesAndConns(dataMode)
     initPageStyles(nodes);
 
 
-    const legacy    = figma.currentPage.getPluginData('graph');
-    const graphView = figma.currentPage.getPluginData('graphView,' + figma.currentUser.id);
+    const legacy             = figma.currentPage.getPluginData('graph');
+    const graphView          = figma.currentPage.getPluginData(figma.currentUser.id + ',graphView');
+
+    const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
 
 
     figPostMessageToUi({
-        legacy:    legacy,
-        cmd:      'uiReturnFigLoadNodesAndConns',
-        graphView: JSON.stringify(graphView);
-        nodeKeys:  JSON.stringify(nodeKeys),
-        nodeJson:  JSON.stringify(nodes),
-        connKeys:  JSON.stringify(connKeys),
-        connJson:  JSON.stringify(conns)
+        legacy:             legacy,
+        cmd:               'uiReturnFigLoadNodesAndConns',
+        graphView:          graphView,
+        showAllColorSpaces: showAllColorSpaces,
+        nodeKeys:           nodeKeys,
+        nodeJson:           nodes,
+        connKeys:           connKeys,
+        connJson:           conns
     });
 }
 

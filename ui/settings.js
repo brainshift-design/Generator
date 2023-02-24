@@ -101,7 +101,8 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'logRawValues':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRawValues         );  break;
     } 
 
-    if (save)
+    if (   save
+        && settingName != 'showAllColorSpaces')
         uiSetLocalData(settingName, boolToString(value));
 }
 
@@ -154,6 +155,8 @@ function updateSettingsMenus()
 
 function updateMenuItemShowAllColorSpaces()
 {
+    uiSetPageData('showAllColorSpaces', boolToString(settings.showAllColorSpaces));
+
     graph.nodes
         .filter(n => COLOR_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
@@ -223,7 +226,6 @@ function loadLocalSettings()
 
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('enableZoomedOutParams');
-    uiGetLocalData('showAllColorSpaces'   );
     uiGetLocalData('showBoolValues'       );
     uiGetLocalData('showOperationResults' );
     uiGetLocalData('showClearUndoWarning' );

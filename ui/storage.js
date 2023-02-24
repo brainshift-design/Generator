@@ -37,7 +37,6 @@ function uiReturnFigGetLocalData(msg)
 
         case 'autoConnectNewNodes':
         case 'enableZoomedOutParams':
-        case 'showAllColorSpaces':
         case 'showBoolValues':
         case 'showOperationResults':
         case 'showClearUndoWarning':
@@ -197,14 +196,25 @@ function uiReturnFigLoadNodesAndConns(msg)
         }
 
         
-        uiLoadGraphView(JSON.parse(msg.graphView));
+        const _graphView = msg.graphView;
+
+        const _showAllColorSpaces = msg.showAllColorSpaces;
 
 
-        let   _nodeKeys  = JSON.parse(msg.nodeKeys);
-        let   _nodes     = JSON.parse(msg.nodeJson);
+        uiLoadGraphView(_graphView);
+
+        updateSettingAndMenu(
+            'showAllColorSpaces',
+            _showAllColorSpaces, 
+            _showAllColorSpaces ? parseBool(_showAllColorSpaces) : false,
+            false); 
+
+
+        let   _nodeKeys  = msg.nodeKeys;
+        let   _nodes     = msg.nodeJson;
    
-        let   _connKeys  = JSON.parse(msg.connKeys);
-        let   _conns     = JSON.parse(msg.connJson);
+        let   _connKeys  = msg.connKeys;
+        let   _conns     = msg.connJson;
 
         
         const _n = [];
@@ -498,7 +508,7 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
 
 function uiSaveGraphView()
 {
-    uiSetPageData('graphView,' + currentUser.id, graphView.toJson());
+    uiSetPageData(currentUser.id + ',graphView', graphView.toJson());
 }
 
 

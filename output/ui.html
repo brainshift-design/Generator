@@ -13886,7 +13886,8 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'logRawValues':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRawValues         );  break;
     } 
 
-    if (save)
+    if (   save
+        && settingName != 'showAllColorSpaces')
         uiSetLocalData(settingName, boolToString(value));
 }
 
@@ -13939,6 +13940,8 @@ function updateSettingsMenus()
 
 function updateMenuItemShowAllColorSpaces()
 {
+    uiSetPageData('showAllColorSpaces', boolToString(settings.showAllColorSpaces));
+
     graph.nodes
         .filter(n => COLOR_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
@@ -14008,7 +14011,6 @@ function loadLocalSettings()
 
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('enableZoomedOutParams');
-    uiGetLocalData('showAllColorSpaces'   );
     uiGetLocalData('showBoolValues'       );
     uiGetLocalData('showOperationResults' );
     uiGetLocalData('showClearUndoWarning' );
@@ -32259,7 +32261,8 @@ function updateSettingAndMenu(settingName, valid, value, save = true)
         case 'logRawValues':          updateSettingAndMenu_(valid, settingName, value, menuItemLogRawValues         );  break;
     } 
 
-    if (save)
+    if (   save
+        && settingName != 'showAllColorSpaces')
         uiSetLocalData(settingName, boolToString(value));
 }
 
@@ -32312,6 +32315,8 @@ function updateSettingsMenus()
 
 function updateMenuItemShowAllColorSpaces()
 {
+    uiSetPageData('showAllColorSpaces', boolToString(settings.showAllColorSpaces));
+
     graph.nodes
         .filter(n => COLOR_TYPES.includes(n.type))
         .forEach(n => n.updateNode());
@@ -32381,7 +32386,6 @@ function loadLocalSettings()
 
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('enableZoomedOutParams');
-    uiGetLocalData('showAllColorSpaces'   );
     uiGetLocalData('showBoolValues'       );
     uiGetLocalData('showOperationResults' );
     uiGetLocalData('showClearUndoWarning' );
@@ -33511,11 +33515,11 @@ function initGeneratorMenus()
     menuMainPreferences = new Menu('Preferences', false);
     menuMainPreferences.addItems([
         menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',             {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
+                                        new MenuItem('',                                  {separator: true}),    
+                                        menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',            {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                        }}),
+                                        menuItemEnableZoomedOutParams = new MenuItem('Allow value changes at zoom < 33%', {checkCallback: () => settings.enableZoomedOutParams, callback: () => { updateSettingAndMenu('enableZoomedOutParams', true, !settings.enableZoomedOutParams); }}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗',      {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
         menuItemShowOperationResults  = new MenuItem('Show operation results',            {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
-                                        new MenuItem('',                                  {separator: true}),    
-        menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',            {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                        }}),
-        menuItemEnableZoomedOutParams = new MenuItem('Allow value changes at zoom < 33%', {checkCallback: () => settings.enableZoomedOutParams, callback: () => { updateSettingAndMenu('enableZoomedOutParams', true, !settings.enableZoomedOutParams); }}),
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',           {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                       }}),
         menuItemShowDebugMenu         = new MenuItem('Show debug menu',                   {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }})]);
         // menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',              {checkCallback: () => settings.enableBetaFeatures, callback: () => { updateSettingAndMenu('enableBetaFeatures', true, !settings.enableBetaFeatures);         uiValidateLicense(productKey);        }})]);
@@ -33547,12 +33551,12 @@ function initGeneratorMenus()
                                        }
                                    }),
                                  //new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
-                                 new MenuItem('',                             {separator: true}),   
-                                 new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
-                                 new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
-                                   new MenuItem('',                             {separator: true }),
+                                //  new MenuItem('',                             {separator: true}),   
+                                //  new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
+                                //  new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
+                                //    new MenuItem('',                             {separator: true }),
                                  //new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
-                                 //new MenuItem('',                             {separator: true }),
+                                   new MenuItem('',                             {separator: true }),
         menuItemLogRequests      = new MenuItem('Log\u2008requests',            {checkCallback: () => settings.logRequests     , callback: () => updateSettingAndMenu('logRequests',      true, !settings.logRequests     ), setting: true}),
         menuItemLogValueUpdates  = new MenuItem('Log\u2008values',              {checkCallback: () => settings.logValueUpdates , callback: () => updateSettingAndMenu('logValueUpdates',  true, !settings.logValueUpdates ), setting: true}),
         menuItemLogObjectUpdates = new MenuItem('Log\u2008objects',             {checkCallback: () => settings.logObjectUpdates, callback: () => updateSettingAndMenu('logObjectUpdates', true, !settings.logObjectUpdates), setting: true}),
@@ -56387,7 +56391,6 @@ function uiReturnFigGetLocalData(msg)
 
         case 'autoConnectNewNodes':
         case 'enableZoomedOutParams':
-        case 'showAllColorSpaces':
         case 'showBoolValues':
         case 'showOperationResults':
         case 'showClearUndoWarning':
@@ -56547,14 +56550,25 @@ function uiReturnFigLoadNodesAndConns(msg)
         }
 
         
-        uiLoadGraphView(JSON.parse(msg.graphView));
+        const _graphView = msg.graphView;
+
+        const _showAllColorSpaces = msg.showAllColorSpaces;
 
 
-        let   _nodeKeys  = JSON.parse(msg.nodeKeys);
-        let   _nodes     = JSON.parse(msg.nodeJson);
+        uiLoadGraphView(_graphView);
+
+        updateSettingAndMenu(
+            'showAllColorSpaces',
+            _showAllColorSpaces, 
+            _showAllColorSpaces ? parseBool(_showAllColorSpaces) : false,
+            false); 
+
+
+        let   _nodeKeys  = msg.nodeKeys;
+        let   _nodes     = msg.nodeJson;
    
-        let   _connKeys  = JSON.parse(msg.connKeys);
-        let   _conns     = JSON.parse(msg.connJson);
+        let   _connKeys  = msg.connKeys;
+        let   _conns     = msg.connJson;
 
         
         const _n = [];
@@ -56848,7 +56862,7 @@ function parseConnectionsAndConnect(data, pasteConnected, setProgress = null)
 
 function uiSaveGraphView()
 {
-    uiSetPageData('graphView,' + currentUser.id, graphView.toJson());
+    uiSetPageData(currentUser.id + ',graphView', graphView.toJson());
 }
 
 
