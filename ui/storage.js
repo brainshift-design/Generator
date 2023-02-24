@@ -292,7 +292,19 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 {
     let promise = Promise.resolve([]);
+
     
+    // HACK fix double stringized connections
+    _conns.forEach(c => 
+    {
+        if (typeof c.outputOrder == 'number')
+            c.outputOrder = c.outputOrder.toString();
+
+        console.log('c =', c);
+    });
+    /////////////
+
+
 
     if (_conns)
     {

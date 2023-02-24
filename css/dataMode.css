@@ -23,7 +23,7 @@
 
 #dataModeTitleBar
 {
-    padding:         13px 12px 14px 17px;
+    padding: 13px 12px 14px 17px;
 }
 
 
@@ -50,9 +50,22 @@
 
 #dataModeContent::-webkit-scrollbar-thumb
 {
-    background:    #fff4;
     border-radius: 4px;
 }
+
+
+.figma-dark #dataModeContent::-webkit-scrollbar-thumb
+{ 
+    background:    #fff4;
+    /* background-color: #0006;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);  */
+}
+
+.figma-light #dataModeContent::-webkit-scrollbar-thumb
+{ 
+    background-color: #0004;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
+}    
 
 
 .dataModeRowWrapper

@@ -1,6 +1,6 @@
 function initCrashDialog(event, error, source)
 {
-    crashDetails.innerHTML = error;
+    crashDetails.innerHTML = error ? error : event;
 
     crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 

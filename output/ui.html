@@ -91,7 +91,7 @@
 
 #dataModeTitleBar
 {
-    padding:         13px 12px 14px 17px;
+    padding: 13px 12px 14px 17px;
 }
 
 
@@ -118,9 +118,22 @@
 
 #dataModeContent::-webkit-scrollbar-thumb
 {
-    background:    #fff4;
     border-radius: 4px;
 }
+
+
+.figma-dark #dataModeContent::-webkit-scrollbar-thumb
+{ 
+    background:    #fff4;
+    /* background-color: #0006;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);  */
+}
+
+.figma-light #dataModeContent::-webkit-scrollbar-thumb
+{ 
+    background-color: #0004;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
+}    
 
 
 .dataModeRowWrapper
@@ -2853,6 +2866,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
+                <p>Added scrolling to debug mode.</p>
                 <p>Fixed UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -10990,19 +11004,13 @@ extends GNumberType
 
     eval(parse)
     {
-        //logString('GRandom.eval()');
+        if (this.isCached())
+            return this;
 
-        if (!this.valid)
-        {
-            this.seed.eval(parse);
-            this.min .eval(parse);
-            this.max .eval(parse);
-        }
-
-
-        const seed = this.seed.toValue();
-        const min  = this.min .toValue();
-        const max  = this.max .toValue();
+            
+        const seed = this.seed.eval(parse).toValue();
+        const min  = this.min .eval(parse).toValue();
+        const max  = this.max .eval(parse).toValue();
     
 
         if (!this.valid)
@@ -29378,19 +29386,13 @@ extends GNumberType
 
     eval(parse)
     {
-        //logString('GRandom.eval()');
+        if (this.isCached())
+            return this;
 
-        if (!this.valid)
-        {
-            this.seed.eval(parse);
-            this.min .eval(parse);
-            this.max .eval(parse);
-        }
-
-
-        const seed = this.seed.toValue();
-        const min  = this.min .toValue();
-        const max  = this.max .toValue();
+            
+        const seed = this.seed.eval(parse).toValue();
+        const min  = this.min .eval(parse).toValue();
+        const max  = this.max .eval(parse).toValue();
     
 
         if (!this.valid)
@@ -54437,7 +54439,7 @@ function initThemeColors()
 
 function initCrashDialog(event, error, source)
 {
-    crashDetails.innerHTML = error;
+    crashDetails.innerHTML = error ? error : event;
 
     crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
@@ -55272,18 +55274,24 @@ var genMessagePosted = false;
 var allUpdateNodes   = [];
 
 
+
 //uiClearAllLocalData();
+
 
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
-//uiSetLocalData('showWhatsNew', generatorVersion);
 //uiClearLocalData('showWhatsNew');
+
+//uiSetLocalData('showWhatsNew', generatorVersion);
+//uiSetLocalData('logRawLoading', 'false');
+
 
 //uiRemoveConnsToNodes(['num3']);
 //uiRemoveSavedNodesAndConns(['color']);
 //uiRemovePluginDataFromAllLocalStyles();
+
 
 //uiRemoveAllSavedNodesAndConns();
 
@@ -56644,7 +56652,19 @@ function loadNodesAndConnsAsync(_nodes, _conns, setProgress)
 function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 {
     let promise = Promise.resolve([]);
+
     
+    // HACK fix double stringized connections
+    _conns.forEach(c => 
+    {
+        if (typeof c.outputOrder == 'number')
+            c.outputOrder = c.outputOrder.toString();
+
+        console.log('c =', c);
+    });
+    /////////////
+
+
 
     if (_conns)
     {

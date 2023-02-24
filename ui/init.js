@@ -11,18 +11,24 @@ var genMessagePosted = false;
 var allUpdateNodes   = [];
 
 
+
 //uiClearAllLocalData();
+
 
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');
 //uiClearLocalData('productKey');
 
-//uiSetLocalData('showWhatsNew', generatorVersion);
 //uiClearLocalData('showWhatsNew');
+
+//uiSetLocalData('showWhatsNew', generatorVersion);
+//uiSetLocalData('logRawLoading', 'false');
+
 
 //uiRemoveConnsToNodes(['num3']);
 //uiRemoveSavedNodesAndConns(['color']);
 //uiRemovePluginDataFromAllLocalStyles();
+
 
 //uiRemoveAllSavedNodesAndConns();
 

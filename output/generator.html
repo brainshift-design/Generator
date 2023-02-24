@@ -7928,19 +7928,13 @@ extends GNumberType
 
     eval(parse)
     {
-        //logString('GRandom.eval()');
+        if (this.isCached())
+            return this;
 
-        if (!this.valid)
-        {
-            this.seed.eval(parse);
-            this.min .eval(parse);
-            this.max .eval(parse);
-        }
-
-
-        const seed = this.seed.toValue();
-        const min  = this.min .toValue();
-        const max  = this.max .toValue();
+            
+        const seed = this.seed.eval(parse).toValue();
+        const min  = this.min .eval(parse).toValue();
+        const max  = this.max .eval(parse).toValue();
     
 
         if (!this.valid)
