@@ -27,6 +27,34 @@
 }
 
 
+#dataModeContent
+{
+    overflow-y: scroll;
+    height:     calc(100% - 43px);
+    /* box-shadow: 0 0 0 1px red inset; */
+}
+
+
+#dataModeContent::-webkit-scrollbar
+{
+    background: transparent;
+    width:      6px;
+}
+
+
+#dataModeContent::-webkit-scrollbar-track
+{
+    margin: 6px 6px 6px 0;
+}
+
+
+#dataModeContent::-webkit-scrollbar-thumb
+{
+    background:    #fff4;
+    border-radius: 4px;
+}
+
+
 .dataModeRowWrapper
 {
     padding:         13px 12px 20px 13px;

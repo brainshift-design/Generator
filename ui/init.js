@@ -63,19 +63,6 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 
 
-function initDataMode()
-{
-    initCheckbox(chkDataModeRestart, 'Restart in debug mode', true );
-    initCheckbox(chkLoadingRestart,  'Restart in debug mode', false);
-
-    chkLoadingRestart.style.display = 'none';
-
-    chkDataModeRestart.addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkDataModeRestart.checked)));
-    chkLoadingRestart .addEventListener('change', () => uiSetLocalData('dataMode', boolToString(chkLoadingRestart .checked)));
-}
-
-
-
 function uiReturnFigStartGenerator(msg)
 {
     currentUser = msg.currentUser;
