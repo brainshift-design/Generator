@@ -1011,7 +1011,7 @@
     top:      0;
     width:    100%;
     height:   100%;
-    display:  none;
+    display:  block;
 }
 
 
@@ -33712,7 +33712,7 @@ function initGeneratorMenus()
                             new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', callback: () => graphView.zoomToFit()}),
-        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);//,
+        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.setPanAndZoom(isEmpty(graph.nodes) ? point(0, 0) : graphView.pan, 1)})]);//,
                         //  new MenuItem('',             {separator: true}),
                         //  new MenuItem('Window',       {childMenu: menuWindow})]);
 
@@ -37988,7 +37988,7 @@ function graphView_onpointermove(e)
 
 
 
-graphView.addEventListener('pointerup', e =>
+graphView.addEventListener('pointerup', e => 
 {
     if (   e.button == 0
         && (   graphView.spaceDown
@@ -37999,24 +37999,27 @@ graphView.addEventListener('pointerup', e =>
             if (   graphView.selectionRect.w > 0
                 && graphView.selectionRect.h > 0)
             {
+                graphView.selectionRect.x -= graphView.pan.x / graphView.zoom;
+                graphView.selectionRect.y -= graphView.pan.y / graphView.zoom;
+
                 graphView.endZoomSelection(e.pointerId, true);
             }
             else
             {
-                graphView.endZoomSelection(e.pointerId, false);
+                // graphView.endZoomSelection(e.pointerId, false);
 
-                graphView.oldZoom = graphView.zoom;
+                // graphView.oldZoom = graphView.zoom;
 
-                if (e.altKey) graphView.zoom /= 2;
-                else          graphView.zoom *= 2;
+                // if (e.altKey) graphView.zoom /= 2;
+                // else          graphView.zoom *= 2;
 
-                graphView.pan = subv(
-                    graphView.pan, 
-                    mulvs(
-                        subv(
-                            point(e.clientX, e.clientY), 
-                            graphView.pan), 
-                        graphView.zoom / graphView.oldZoom - 1));
+                // graphView.pan = subv(
+                //     graphView.pan, 
+                //     mulvs(
+                //         subv(
+                //             point(e.clientX, e.clientY), 
+                //             graphView.pan), 
+                //         graphView.zoom / graphView.oldZoom - 1));
             }
         }
 
@@ -38412,24 +38415,30 @@ graphView.endZoomSelection = function(pointerId, zoom)
     {
         // graphView.oldZoom = graphView.zoom;
         
-        let box = {
-            x: selection.x,
-            y: selection.y - menuBarHeight,
-            w: selection.w,
-            h: selection.h };
+        graphView.zoomToRect(new Rect(
+            selection.x,
+            selection.y - menuBarHeight,
+            selection.w,
+            selection.h));
+
+        // let box = {
+        //     x: selection.x,
+        //     y: selection.y - menuBarHeight,
+        //     w: selection.w,
+        //     h: selection.h };
             
-        const wndHeight = graphView.offsetHeight; 
+        // const wndHeight = graphView.offsetHeight; 
 
-        const diff = { w: (window.innerWidth - box.w) / 2,
-                       h: (wndHeight         - box.h) / 2 };
+        // const diff = { w: (window.innerWidth - box.w) / 2,
+        //                h: (wndHeight         - box.h) / 2 };
 
-        graphView.setPanAndZoom(
-            point(
-                -(box.x - diff.w) * graphView.zoom,
-                -(box.y - diff.h) * graphView.zoom),
-            graphView.zoom * Math.min(
-                window.innerWidth / box.w,
-                wndHeight         / box.h));
+        // graphView.setPanAndZoom(
+        //     point(
+        //         -(box.x - diff.w) * graphView.zoom,
+        //         -(box.y - diff.h) * graphView.zoom),
+        //     graphView.zoom * Math.min(
+        //         window.innerWidth / box.w,
+        //         wndHeight         / box.h));
     }
 
     graphView.selectionRect = Rect.NaN;
@@ -38443,25 +38452,33 @@ graphView.zoomToFit = function()
         !isEmpty(graphView.selectedNodes)
         ? graphView.selectedNodes
         : graph.nodes;
-
     
     nodes.forEach(n => n.updateMeasureData());
     const offset = graphView.getAllNodeOffsets(nodes);
 
+    graphView.zoomToRect(offset);
+};
 
-    const fitMargin = 40;
+
+
+graphView.zoomToRect = function(rect, margin = 40)
+{
+    console.log('1 zoom rect =', rect);
+    console.log('1 graphView.pan =', graphView.pan);
+    console.log('1 graphView.zoom =', graphView.zoom);
+
+    margin /= graphView.zoom;
 
     graphView.zoom = Math.min(
-        graphViewClient.width  / (offset.width  + fitMargin*2),
-        graphViewClient.height / (offset.height + fitMargin*2));
+        graphViewClient.width  / (rect.width  + margin*2),
+        graphViewClient.height / (rect.height + margin*2));
 
     graphView.pan = {
-        x: graphViewClient.width /2 - (offset.x + offset.width /2) * graphView.zoom,
-        y: graphViewClient.height/2 - (offset.y + offset.height/2) * graphView.zoom
+        x: graphViewClient.width /2 - (rect.x + rect.width /2) * graphView.zoom,
+        y: graphViewClient.height/2 - (rect.y + rect.height/2) * graphView.zoom
     };
 
-
-    //graphView.updateNodeTransforms(graph.nodes);
+    console.log('2 graphView.pan =', graphView.pan);
 };
 
 
@@ -38550,47 +38567,16 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
     selection = clipRect(selection, wndRect);
 
 
+    graphView.selectionRect.w = selection.width;
+    graphView.selectionRect.h = selection.height;
+
+
     selectBox.style.left   = selection.x;
     selectBox.style.top    = selection.y;
     selectBox.style.width  = selection.width;
     selectBox.style.height = selection.height;
 
-
-    const selected = [];
-
-    for (const node of graph.nodes)
-    {
-        if (rectsIntersect(
-                node.measureData.divBounds,
-                selection))
-            selected.push(node);
-    }
-
-
-    // if (ctrlKey)
-    //     graphView.selectedNodes = graphView.lastSelectedNodes.concat(selected);
-    // else 
-    if (shiftKey)
-        graphView.selectedNodes = graphView.lastSelectedNodes
-                                      .filter(node => !selected.includes(node))
-                                      .concat(selected.filter(node => !graphView.lastSelectedNodes.includes(node)));
-    else
-        graphView.selectedNodes = selected;
-    
-        
     selectBox.style.zIndex = MAX_INT32-3;
-        
-        
-    const nodes = [
-        ...selected,                    
-        ...graphView._prevSelectedNodes,
-        ...graphView.lastSelectedNodes];
-
-    nodes.forEach(n => n.updateBorder());
-    updateComments(nodes.map(n => n.id));
-
-
-    graphView._prevSelectedNodes = selected;
 
 
     setTimeout(() => graphView.updateSelectBox(shiftKey, ctrlKey));
@@ -56995,19 +56981,32 @@ function showTooltip(source, tooltip, bottomArrow)
     tooltipArrow.style.left = srcRect.x + srcRect.width/2;// - tooltipArrow.offsetWidth/2;
 
     
+    const graphHeight = graphView.offsetHeight - menuBarHeight;
+
     if (bottomArrow)
     {
         const ttRect = tooltip.getBoundingClientRect();
 
-        tooltip.style.top = srcRect.y - tooltipArrow.offsetHeight - ttRect.height;
+        let top = srcRect.y;
+
+        if (srcRect.y + tooltip.offsetHeight > graphView.offsetHeight-8)
+            top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
+
+        tooltip.style.top = top - tooltipArrow.offsetHeight - ttRect.height;
 
         tooltipArrow.style.borderColor = '#040404 transparent transparent transparent';
         tooltipArrow.style.top         = srcRect.y - tooltipArrow.offsetHeight;
     }
     else
     {
-        tooltip.style.top = srcRect.y + srcRect.height + tooltipArrow.offsetHeight;
+        let top = srcRect.y;
 
+        if (srcRect.y + tooltip.offsetHeight > graphView.offsetHeight-8)
+            top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
+
+        tooltip.style.top = top + srcRect.height + tooltipArrow.offsetHeight;
+
+        
         const ttRect = tooltip.getBoundingClientRect();
 
         tooltipArrow.style.borderColor = 'transparent transparent #040404 transparent';
@@ -57015,6 +57014,14 @@ function showTooltip(source, tooltip, bottomArrow)
     }
 
 
+    // const graphHeight = graphView.offsetHeight - menuBarHeight;
+
+    // if (top + tooltip.offsetHeight > graphView.offsetHeight-8)
+    //     top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
+
+    // tooltip.style.top = top;
+
+    
     currentTooltip = tooltip;
 }
 

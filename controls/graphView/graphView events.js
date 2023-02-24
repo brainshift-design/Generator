@@ -133,7 +133,7 @@ function graphView_onpointermove(e)
 
 
 
-graphView.addEventListener('pointerup', e =>
+graphView.addEventListener('pointerup', e => 
 {
     if (   e.button == 0
         && (   graphView.spaceDown
@@ -144,24 +144,27 @@ graphView.addEventListener('pointerup', e =>
             if (   graphView.selectionRect.w > 0
                 && graphView.selectionRect.h > 0)
             {
+                graphView.selectionRect.x -= graphView.pan.x / graphView.zoom;
+                graphView.selectionRect.y -= graphView.pan.y / graphView.zoom;
+
                 graphView.endZoomSelection(e.pointerId, true);
             }
             else
             {
-                graphView.endZoomSelection(e.pointerId, false);
+                // graphView.endZoomSelection(e.pointerId, false);
 
-                graphView.oldZoom = graphView.zoom;
+                // graphView.oldZoom = graphView.zoom;
 
-                if (e.altKey) graphView.zoom /= 2;
-                else          graphView.zoom *= 2;
+                // if (e.altKey) graphView.zoom /= 2;
+                // else          graphView.zoom *= 2;
 
-                graphView.pan = subv(
-                    graphView.pan, 
-                    mulvs(
-                        subv(
-                            point(e.clientX, e.clientY), 
-                            graphView.pan), 
-                        graphView.zoom / graphView.oldZoom - 1));
+                // graphView.pan = subv(
+                //     graphView.pan, 
+                //     mulvs(
+                //         subv(
+                //             point(e.clientX, e.clientY), 
+                //             graphView.pan), 
+                //         graphView.zoom / graphView.oldZoom - 1));
             }
         }
 

@@ -83,47 +83,16 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
     selection = clipRect(selection, wndRect);
 
 
+    graphView.selectionRect.w = selection.width;
+    graphView.selectionRect.h = selection.height;
+
+
     selectBox.style.left   = selection.x;
     selectBox.style.top    = selection.y;
     selectBox.style.width  = selection.width;
     selectBox.style.height = selection.height;
 
-
-    const selected = [];
-
-    for (const node of graph.nodes)
-    {
-        if (rectsIntersect(
-                node.measureData.divBounds,
-                selection))
-            selected.push(node);
-    }
-
-
-    // if (ctrlKey)
-    //     graphView.selectedNodes = graphView.lastSelectedNodes.concat(selected);
-    // else 
-    if (shiftKey)
-        graphView.selectedNodes = graphView.lastSelectedNodes
-                                      .filter(node => !selected.includes(node))
-                                      .concat(selected.filter(node => !graphView.lastSelectedNodes.includes(node)));
-    else
-        graphView.selectedNodes = selected;
-    
-        
     selectBox.style.zIndex = MAX_INT32-3;
-        
-        
-    const nodes = [
-        ...selected,                    
-        ...graphView._prevSelectedNodes,
-        ...graphView.lastSelectedNodes];
-
-    nodes.forEach(n => n.updateBorder());
-    updateComments(nodes.map(n => n.id));
-
-
-    graphView._prevSelectedNodes = selected;
 
 
     setTimeout(() => graphView.updateSelectBox(shiftKey, ctrlKey));

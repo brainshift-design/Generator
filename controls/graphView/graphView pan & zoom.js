@@ -205,24 +205,30 @@ graphView.endZoomSelection = function(pointerId, zoom)
     {
         // graphView.oldZoom = graphView.zoom;
         
-        let box = {
-            x: selection.x,
-            y: selection.y - menuBarHeight,
-            w: selection.w,
-            h: selection.h };
+        graphView.zoomToRect(new Rect(
+            selection.x,
+            selection.y - menuBarHeight,
+            selection.w,
+            selection.h));
+
+        // let box = {
+        //     x: selection.x,
+        //     y: selection.y - menuBarHeight,
+        //     w: selection.w,
+        //     h: selection.h };
             
-        const wndHeight = graphView.offsetHeight; 
+        // const wndHeight = graphView.offsetHeight; 
 
-        const diff = { w: (window.innerWidth - box.w) / 2,
-                       h: (wndHeight         - box.h) / 2 };
+        // const diff = { w: (window.innerWidth - box.w) / 2,
+        //                h: (wndHeight         - box.h) / 2 };
 
-        graphView.setPanAndZoom(
-            point(
-                -(box.x - diff.w) * graphView.zoom,
-                -(box.y - diff.h) * graphView.zoom),
-            graphView.zoom * Math.min(
-                window.innerWidth / box.w,
-                wndHeight         / box.h));
+        // graphView.setPanAndZoom(
+        //     point(
+        //         -(box.x - diff.w) * graphView.zoom,
+        //         -(box.y - diff.h) * graphView.zoom),
+        //     graphView.zoom * Math.min(
+        //         window.innerWidth / box.w,
+        //         wndHeight         / box.h));
     }
 
     graphView.selectionRect = Rect.NaN;
@@ -236,23 +242,31 @@ graphView.zoomToFit = function()
         !isEmpty(graphView.selectedNodes)
         ? graphView.selectedNodes
         : graph.nodes;
-
     
     nodes.forEach(n => n.updateMeasureData());
     const offset = graphView.getAllNodeOffsets(nodes);
 
+    graphView.zoomToRect(offset);
+};
 
-    const fitMargin = 40;
+
+
+graphView.zoomToRect = function(rect, margin = 40)
+{
+    console.log('1 zoom rect =', rect);
+    console.log('1 graphView.pan =', graphView.pan);
+    console.log('1 graphView.zoom =', graphView.zoom);
+
+    margin /= graphView.zoom;
 
     graphView.zoom = Math.min(
-        graphViewClient.width  / (offset.width  + fitMargin*2),
-        graphViewClient.height / (offset.height + fitMargin*2));
+        graphViewClient.width  / (rect.width  + margin*2),
+        graphViewClient.height / (rect.height + margin*2));
 
     graphView.pan = {
-        x: graphViewClient.width /2 - (offset.x + offset.width /2) * graphView.zoom,
-        y: graphViewClient.height/2 - (offset.y + offset.height/2) * graphView.zoom
+        x: graphViewClient.width /2 - (rect.x + rect.width /2) * graphView.zoom,
+        y: graphViewClient.height/2 - (rect.y + rect.height/2) * graphView.zoom
     };
 
-
-    //graphView.updateNodeTransforms(graph.nodes);
+    console.log('2 graphView.pan =', graphView.pan);
 };

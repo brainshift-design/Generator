@@ -96,19 +96,32 @@ function showTooltip(source, tooltip, bottomArrow)
     tooltipArrow.style.left = srcRect.x + srcRect.width/2;// - tooltipArrow.offsetWidth/2;
 
     
+    const graphHeight = graphView.offsetHeight - menuBarHeight;
+
     if (bottomArrow)
     {
         const ttRect = tooltip.getBoundingClientRect();
 
-        tooltip.style.top = srcRect.y - tooltipArrow.offsetHeight - ttRect.height;
+        let top = srcRect.y;
+
+        if (srcRect.y + tooltip.offsetHeight > graphView.offsetHeight-8)
+            top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
+
+        tooltip.style.top = top - tooltipArrow.offsetHeight - ttRect.height;
 
         tooltipArrow.style.borderColor = '#040404 transparent transparent transparent';
         tooltipArrow.style.top         = srcRect.y - tooltipArrow.offsetHeight;
     }
     else
     {
-        tooltip.style.top = srcRect.y + srcRect.height + tooltipArrow.offsetHeight;
+        let top = srcRect.y;
 
+        if (srcRect.y + tooltip.offsetHeight > graphView.offsetHeight-8)
+            top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
+
+        tooltip.style.top = top + srcRect.height + tooltipArrow.offsetHeight;
+
+        
         const ttRect = tooltip.getBoundingClientRect();
 
         tooltipArrow.style.borderColor = 'transparent transparent #040404 transparent';
@@ -116,6 +129,14 @@ function showTooltip(source, tooltip, bottomArrow)
     }
 
 
+    // const graphHeight = graphView.offsetHeight - menuBarHeight;
+
+    // if (top + tooltip.offsetHeight > graphView.offsetHeight-8)
+    //     top = menuBarHeight + Math.max(8, graphHeight - tooltip.offsetHeight);
+
+    // tooltip.style.top = top;
+
+    
     currentTooltip = tooltip;
 }
 

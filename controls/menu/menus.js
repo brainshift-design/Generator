@@ -421,7 +421,7 @@ function initGeneratorMenus()
                             new MenuItem('Zoom in',      {shortcut: osCtrl () + '+', callback: () => graphView.zoom *= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom out',     {shortcut: osCtrl () + '-', callback: () => graphView.zoom /= Math.pow(2, 1/2)}),
                             new MenuItem('Zoom to fit',  {shortcut: osShift() + '1', callback: () => graphView.zoomToFit()}),
-        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.zoom = 1})]);//,
+        menuItemZoomTo100 = new MenuItem('Zoom to 100%', {shortcut: osCtrl () + '0', callback: () => graphView.setPanAndZoom(isEmpty(graph.nodes) ? point(0, 0) : graphView.pan, 1)})]);//,
                         //  new MenuItem('',             {separator: true}),
                         //  new MenuItem('Window',       {childMenu: menuWindow})]);
 
