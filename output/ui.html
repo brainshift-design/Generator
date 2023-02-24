@@ -2866,10 +2866,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Added scrolling to debug mode.</p>
-                <p>The preferences menu is now separated. What's above the separator is saved per page, what's below is saved
-                    on the local machine. Zoom and pan are now saved per page per user.</p>
-                <p>Fixed UI issues.</p>
+                <p>-</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -3082,7 +3079,7 @@ a
 
 
 
-const generatorVersion = 108;
+const generatorVersion = 109;
 
 
 const MAX_INT32        = 2147483647;
@@ -19552,7 +19549,7 @@ onerror = (event, source, line, pos, error) =>
 
 
 
-const generatorVersion = 108;
+const generatorVersion = 109;
 
 
 const MAX_INT32        = 2147483647;
@@ -38337,6 +38334,7 @@ graphView.update = function(nodes = null, updateNodes = true)
     const h = graphViewClient.height;
     
     const bounds = graphView.getAllNodeBounds();
+    
     graphView.updateScroll(x, w, h, bounds, menuBarHeight);
 };
 
@@ -39224,7 +39222,10 @@ function updateWireCurve(wire, x1, y1, x2, y2)
     wire.curve2.setAttribute('d', points);
 
 
-    updateWireArrow(wire, _x0, _y0, _x1, _y1, _x2, _y2, _x3, _y3);
+    if (wire.connection.backInit)
+        updateWireArrow(wire, _x0, _y0, _x1, _y1, _x2, _y2, _x3, _y3);
+    else    
+        wire.arrow.setAttribute('display', wire.connection.backInit ? 'inline' : 'none');
 }
 
 
@@ -39301,7 +39302,7 @@ function updateWireArrow(wire, x0, y0, x1, y1, x2, y2, x3, y3)
         + ' '  + (tx       ) + ',' + (ty - th/2);
 
     wire.arrow.setAttribute('points', points);
-    wire.arrow.setAttribute('display', wire.connection.backInit ? 'inline' : 'none');
+    wire.arrow.setAttribute('display', 'inline');
 
 
     const ct = bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t);
@@ -39324,13 +39325,13 @@ function updateWireStyle(wire)
     let bright = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
     if (darkMode) bright = 1-bright;
 
-    const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(graphView.zoom, 1)).toString(16).padStart(2, '0');
+    const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(graphView.zoom, 5)).toString(16).padStart(2, '0');
 
     
     wire.curve.style.filter = 
         darkMode
         ? ( isDark(color, 0.65)
-           ?    'drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ')'
+           ?    'drop-shadow(0px 0px '+(Math.min(Math.max(1, 1/graphView.zoom), 5))+'px #ffffff' + innerOpacity + ')'
            :   ' drop-shadow(0px 0px 1px #000000' + innerOpacity + ')')
         : (!isDark(color)
            ?    'drop-shadow(0px 0px 1px #000000' + innerOpacity + ')'
@@ -39364,15 +39365,15 @@ function updateWireStyle(wire)
 
     const wireStyle = rgba2style(color);
 
-    const isNotCached = 
-               conn.output
-           &&  conn.output.node
-           && !conn.output.node.isCached()
-        ||     conn.output
-           &&  conn.output.param
-           &&  conn.output.param._nodeId != undefined
-           &&  nodeFromId(conn.output.param._nodeId)
-           && !nodeFromId(conn.output.param._nodeId).isCached();
+    // const isNotCached = 
+    //            conn.output
+    //        &&  conn.output.node
+    //        && !conn.output.node.isCached()
+    //     ||     conn.output
+    //        &&  conn.output.param
+    //        &&  conn.output.param._nodeId != undefined
+    //        &&  nodeFromId(conn.output.param._nodeId)
+    //        && !nodeFromId(conn.output.param._nodeId).isCached();
 
 
     const unknown = false;
@@ -50182,8 +50183,8 @@ const rgb2dark1  = [255/255, 112/255,  0/255];
 const rgb2dark2  = [255/255, 255/255,  0/255];
 const rgb2dark3  = [ 64/255, 220/255, 64/255];
 
-const rgb2light1 = [255/255, 112/255,  0/255];
-const rgb2light2 = [255/255, 255/255,  0/255];
+const rgb2light1 = [230/255, 160/255, 20/255];
+const rgb2light2 = [200/255, 195/255,  0/255];
 const rgb2light3 = [ 64/255, 220/255, 64/255];
 
 
@@ -50192,14 +50193,16 @@ const rgb3dark2  = [255/255, 128/255,  24/255];
 const rgb3dark3  = [255/255, 185/255,   0/255];
 const rgb3dark4  = [255/255, 255/255,   0/255];
 const rgb3dark5  = [ 64/255, 255/255,  64/255];
-const rgb3dark6  = [110/255, 128/255, 255/255];
+const rgb3dark6  = [  0/255, 164/255, 255/255];
+const rgb3dark7  = [230/255, 230/255, 230/255];
 
 const rgb3light1 = [255/255,   0/255,  64/255];
 const rgb3light2 = [255/255, 112/255,   0/255];
-const rgb3light3 = [255/255, 185/255,   0/255];
-const rgb3light4 = [255/255, 255/255,   0/255];
-const rgb3light5 = [ 0/255,  255/255,   0/255];
-const rgb3light6 = [ 0/255,   64/255, 255/255];
+const rgb3light3 = [220/255, 170/255,   0/255];
+const rgb3light4 = [210/255, 205/255,   0/255];
+const rgb3light5 = [ 30/255, 220/255,  30/255];
+const rgb3light6 = [128/255, 128/255, 255/255];
+const rgb3light7 = [255/255, 255/255, 255/255];
 
 
 
@@ -50413,7 +50416,6 @@ extends OpColorBase
             const is1 = contrast > 0  /21 && contrast <=  3  /21;
             const is2 = contrast > 3  /21 && contrast <=  4.5/21;
             const is3 = contrast > 4.5/21 && contrast <=  7  /21;
-            //const is4 = contrast > 7  /21 && contrast <=  7  /21;
            
             if (darkMode)
             {
@@ -50436,13 +50438,13 @@ extends OpColorBase
         {
             const contrast = Math.abs(this.paramContrast.value.value / 100);
 
-            const is1 = contrast >  0/105 && contrast <=  15/105;
-            const is2 = contrast > 15/105 && contrast <=  30/105;
-            const is3 = contrast > 30/105 && contrast <=  45/105;
-            const is4 = contrast > 45/105 && contrast <=  60/105;
-            const is5 = contrast > 60/105 && contrast <=  75/105;
-            const is6 = contrast > 75/105 && contrast <=  90/105;
-            //const is7 = contrast > 90/105;
+            const is1 = contrast >=  0/100 && contrast <=  15/100;
+            const is2 = contrast >  15/100 && contrast <=  30/100;
+            const is3 = contrast >  30/100 && contrast <=  45/100;
+            const is4 = contrast >  45/100 && contrast <=  60/100;
+            const is5 = contrast >  60/100 && contrast <=  75/100;
+            const is6 = contrast >  75/100 && contrast <=  90/100;
+            const is7 = contrast >  90/100;
 
             if (darkMode)
             {
@@ -50453,17 +50455,17 @@ extends OpColorBase
                     new NumberControlRange(45/105,  60/105, rgb2style_a(rgb3dark4, is4 ? 1 : 0.2), 0.8),
                     new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3dark5, is5 ? 1 : 0.2), 0.8),
                     new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3dark6, is6 ? 1 : 0.4), 0.8),
-                    new NumberControlRange(90/105, 105/105, 'transparent') ];
+                    new NumberControlRange(90/105, 105/105, rgb2style_a(rgb3dark7, is7 ? 1 : 0  ), 0.8) ];
             }
             else
             {
                 this.paramContrast.control.ranges = [
-                    new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3light1, is1 ? 1 : 0.2 ), 0.8),
-                    new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3light2, is2 ? 1 : 0.2 ), 0.8),
-                    new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3light3, is3 ? 1 : 0.2 ), 0.8),
-                    new NumberControlRange(45/105,  60/105, rgb2style_a(rgb3light4, is4 ? 1 : 0.2 ), 0.8),
-                    new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3light5, is5 ? 1 : 0.2 ), 0.8),
-                    new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3light6, is6 ? 1 : 0.07), 0.8),
+                    new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3light1, is1 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3light2, is2 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3light3, is3 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(45/105,  60/105, rgb2style_a(rgb3light4, is4 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3light5, is5 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3light6, is6 ? 1 : 0.1), 0.8),
                     new NumberControlRange(90/105, 105/105, 'transparent') ];
             }
         }

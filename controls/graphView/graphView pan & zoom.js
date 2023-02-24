@@ -123,6 +123,7 @@ graphView.update = function(nodes = null, updateNodes = true)
     const h = graphViewClient.height;
     
     const bounds = graphView.getAllNodeBounds();
+    
     graphView.updateScroll(x, w, h, bounds, menuBarHeight);
 };
 

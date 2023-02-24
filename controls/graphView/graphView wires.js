@@ -196,7 +196,10 @@ function updateWireCurve(wire, x1, y1, x2, y2)
     wire.curve2.setAttribute('d', points);
 
 
-    updateWireArrow(wire, _x0, _y0, _x1, _y1, _x2, _y2, _x3, _y3);
+    if (wire.connection.backInit)
+        updateWireArrow(wire, _x0, _y0, _x1, _y1, _x2, _y2, _x3, _y3);
+    else    
+        wire.arrow.setAttribute('display', wire.connection.backInit ? 'inline' : 'none');
 }
 
 
@@ -273,7 +276,7 @@ function updateWireArrow(wire, x0, y0, x1, y1, x2, y2, x3, y3)
         + ' '  + (tx       ) + ',' + (ty - th/2);
 
     wire.arrow.setAttribute('points', points);
-    wire.arrow.setAttribute('display', wire.connection.backInit ? 'inline' : 'none');
+    wire.arrow.setAttribute('display', 'inline');
 
 
     const ct = bezierTangent(x0, y0, x1, y1, x2, y2, x3, y3, t);
@@ -296,13 +299,13 @@ function updateWireStyle(wire)
     let bright = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
     if (darkMode) bright = 1-bright;
 
-    const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(graphView.zoom, 1)).toString(16).padStart(2, '0');
+    const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(graphView.zoom, 5)).toString(16).padStart(2, '0');
 
     
     wire.curve.style.filter = 
         darkMode
         ? ( isDark(color, 0.65)
-           ?    'drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ')'
+           ?    'drop-shadow(0px 0px '+(Math.min(Math.max(1, 1/graphView.zoom), 5))+'px #ffffff' + innerOpacity + ')'
            :   ' drop-shadow(0px 0px 1px #000000' + innerOpacity + ')')
         : (!isDark(color)
            ?    'drop-shadow(0px 0px 1px #000000' + innerOpacity + ')'
@@ -336,15 +339,15 @@ function updateWireStyle(wire)
 
     const wireStyle = rgba2style(color);
 
-    const isNotCached = 
-               conn.output
-           &&  conn.output.node
-           && !conn.output.node.isCached()
-        ||     conn.output
-           &&  conn.output.param
-           &&  conn.output.param._nodeId != undefined
-           &&  nodeFromId(conn.output.param._nodeId)
-           && !nodeFromId(conn.output.param._nodeId).isCached();
+    // const isNotCached = 
+    //            conn.output
+    //        &&  conn.output.node
+    //        && !conn.output.node.isCached()
+    //     ||     conn.output
+    //        &&  conn.output.param
+    //        &&  conn.output.param._nodeId != undefined
+    //        &&  nodeFromId(conn.output.param._nodeId)
+    //        && !nodeFromId(conn.output.param._nodeId).isCached();
 
 
     const unknown = false;

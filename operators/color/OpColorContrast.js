@@ -2,8 +2,8 @@ const rgb2dark1  = [255/255, 112/255,  0/255];
 const rgb2dark2  = [255/255, 255/255,  0/255];
 const rgb2dark3  = [ 64/255, 220/255, 64/255];
 
-const rgb2light1 = [255/255, 112/255,  0/255];
-const rgb2light2 = [255/255, 255/255,  0/255];
+const rgb2light1 = [230/255, 160/255, 20/255];
+const rgb2light2 = [200/255, 195/255,  0/255];
 const rgb2light3 = [ 64/255, 220/255, 64/255];
 
 
@@ -12,14 +12,16 @@ const rgb3dark2  = [255/255, 128/255,  24/255];
 const rgb3dark3  = [255/255, 185/255,   0/255];
 const rgb3dark4  = [255/255, 255/255,   0/255];
 const rgb3dark5  = [ 64/255, 255/255,  64/255];
-const rgb3dark6  = [110/255, 128/255, 255/255];
+const rgb3dark6  = [  0/255, 164/255, 255/255];
+const rgb3dark7  = [230/255, 230/255, 230/255];
 
 const rgb3light1 = [255/255,   0/255,  64/255];
 const rgb3light2 = [255/255, 112/255,   0/255];
-const rgb3light3 = [255/255, 185/255,   0/255];
-const rgb3light4 = [255/255, 255/255,   0/255];
-const rgb3light5 = [ 0/255,  255/255,   0/255];
-const rgb3light6 = [ 0/255,   64/255, 255/255];
+const rgb3light3 = [220/255, 170/255,   0/255];
+const rgb3light4 = [210/255, 205/255,   0/255];
+const rgb3light5 = [ 30/255, 220/255,  30/255];
+const rgb3light6 = [128/255, 128/255, 255/255];
+const rgb3light7 = [255/255, 255/255, 255/255];
 
 
 
@@ -233,7 +235,6 @@ extends OpColorBase
             const is1 = contrast > 0  /21 && contrast <=  3  /21;
             const is2 = contrast > 3  /21 && contrast <=  4.5/21;
             const is3 = contrast > 4.5/21 && contrast <=  7  /21;
-            //const is4 = contrast > 7  /21 && contrast <=  7  /21;
            
             if (darkMode)
             {
@@ -256,13 +257,13 @@ extends OpColorBase
         {
             const contrast = Math.abs(this.paramContrast.value.value / 100);
 
-            const is1 = contrast >  0/105 && contrast <=  15/105;
-            const is2 = contrast > 15/105 && contrast <=  30/105;
-            const is3 = contrast > 30/105 && contrast <=  45/105;
-            const is4 = contrast > 45/105 && contrast <=  60/105;
-            const is5 = contrast > 60/105 && contrast <=  75/105;
-            const is6 = contrast > 75/105 && contrast <=  90/105;
-            //const is7 = contrast > 90/105;
+            const is1 = contrast >=  0/100 && contrast <=  15/100;
+            const is2 = contrast >  15/100 && contrast <=  30/100;
+            const is3 = contrast >  30/100 && contrast <=  45/100;
+            const is4 = contrast >  45/100 && contrast <=  60/100;
+            const is5 = contrast >  60/100 && contrast <=  75/100;
+            const is6 = contrast >  75/100 && contrast <=  90/100;
+            const is7 = contrast >  90/100;
 
             if (darkMode)
             {
@@ -273,17 +274,17 @@ extends OpColorBase
                     new NumberControlRange(45/105,  60/105, rgb2style_a(rgb3dark4, is4 ? 1 : 0.2), 0.8),
                     new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3dark5, is5 ? 1 : 0.2), 0.8),
                     new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3dark6, is6 ? 1 : 0.4), 0.8),
-                    new NumberControlRange(90/105, 105/105, 'transparent') ];
+                    new NumberControlRange(90/105, 105/105, rgb2style_a(rgb3dark7, is7 ? 1 : 0  ), 0.8) ];
             }
             else
             {
                 this.paramContrast.control.ranges = [
-                    new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3light1, is1 ? 1 : 0.2 ), 0.8),
-                    new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3light2, is2 ? 1 : 0.2 ), 0.8),
-                    new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3light3, is3 ? 1 : 0.2 ), 0.8),
-                    new NumberControlRange(45/105,  60/105, rgb2style_a(rgb3light4, is4 ? 1 : 0.2 ), 0.8),
-                    new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3light5, is5 ? 1 : 0.2 ), 0.8),
-                    new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3light6, is6 ? 1 : 0.07), 0.8),
+                    new NumberControlRange( 0/105,  15/105, rgb2style_a(rgb3light1, is1 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(15/105,  30/105, rgb2style_a(rgb3light2, is2 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(30/105,  45/105, rgb2style_a(rgb3light3, is3 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(45/105,  60/105, rgb2style_a(rgb3light4, is4 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(60/105,  75/105, rgb2style_a(rgb3light5, is5 ? 1 : 0.2), 0.8),
+                    new NumberControlRange(75/105,  90/105, rgb2style_a(rgb3light6, is6 ? 1 : 0.1), 0.8),
                     new NumberControlRange(90/105, 105/105, 'transparent') ];
             }
         }
