@@ -13,7 +13,7 @@ var allUpdateNodes   = [];
 
 
 //uiClearAllLocalData();
-uiQueueMessageToFigma({cmd: 'figLogAllLocalData'});
+//uiQueueMessageToFigma({cmd: 'figLogAllLocalData'});
 
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');
@@ -81,7 +81,7 @@ function uiReturnFigStartGenerator(msg)
     
     uiGetLocalData('showWhatsNew');
 
-    
+
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });

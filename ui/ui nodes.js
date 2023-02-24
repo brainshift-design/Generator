@@ -1214,6 +1214,3 @@ function uiTriggerUndo()
         cmd: 'figTriggerUndo'
     });
 }
-
-
-

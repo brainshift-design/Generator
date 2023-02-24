@@ -125,5 +125,5 @@ function createInsertNodeAction_savePrevConnections(act)
     const output  = selNode.outputs[0];
 
     for (const input of output.connectedInputs)
-        act.prevConnections.push(input.connection.toDataObject());//connDataObject(output, input));
+        act.prevConnections.push(input.connection.toDataObject());
 }

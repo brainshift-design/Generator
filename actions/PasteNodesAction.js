@@ -57,7 +57,18 @@ extends Action
                 uiSaveConnection(
                     conn.outputNodeId, conn.outputId, conn.outputOrder,
                     conn.inputNodeId,  conn.inputId,
-                    JSON.stringify(conn));
+                    formatConnJson(
+                        '', 
+                        TAB,
+                        conn.outputNodeId,
+                        conn.outputId,
+                        conn.outputOrder,
+                        conn.inputNodeId,
+                        conn.inputId,
+                        boolToString(
+                            nodeFromId(conn.outputNodeId)
+                            .outputFromId(conn.outputId)
+                            .supportsTypes(LIST_TYPES))));
         }
 
 

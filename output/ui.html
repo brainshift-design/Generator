@@ -33550,6 +33550,8 @@ function initGeneratorMenus()
                                            graph.nodes.forEach(n => updateHeaderLabelOffset(n));
                                        }
                                    }),
+                                   new MenuItem('',                             {separator: true}),
+                                   new MenuItem('Re-save all connections',      {callback:      () => uiSaveConnections(graph.connections)}),                                   
                                  //new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
                                 //  new MenuItem('',                             {separator: true}),   
                                 //  new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
@@ -42959,19 +42961,15 @@ class Connection
         let   pos = ' '.repeat(nTab);
         const tab = TAB;
 
-        let json =
-              pos
-            + '{'
-            +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
-            + ',' + NL + pos + tab + '"outputId": "'     + (this.output.param ? this.output.param.id : this.output.index) + '"'
-            + ',' + NL + pos + tab + '"outputOrder": "'  + this.outputOrder + '"'
-            + ',' + NL + pos + tab + '"inputNodeId": "'  + this.input.node.id + '"'
-            + ',' + NL + pos + tab + '"inputId": "'      + (this.input.param ? this.input.param.id : this.input.index) + '"'
-            + ',' + NL + pos + tab + '"list": "'         + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
-            +       NL + pos
-            + '}';
-
-        return json;
+        return formatConnJson(
+            pos, 
+            tab,
+            this.output.node.id,
+            (this.output.param ? this.output.param.id : this.output.index),
+            this.outputOrder,
+            this.input.node.id,
+            (this.input.param ? this.input.param.id : this.input.index),
+            boolToString(this.output.supportsTypes(LIST_TYPES)));
     }
 
 
@@ -43074,6 +43072,22 @@ function connDataObject(output, input)
         inputNodeId:  input.node.id,
         inputId:      input.id
     };
+}
+
+
+
+function formatConnJson(pos, tab, outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
+{
+    return pos
+         + '{'
+         +       NL + pos + tab + '"outputNodeId": "' + outputNodeId + '"'
+         + ',' + NL + pos + tab + '"outputId": "'     + outputId     + '"'
+         + ',' + NL + pos + tab + '"outputOrder": "'  + outputOrder  + '"'
+         + ',' + NL + pos + tab + '"inputNodeId": "'  + inputNodeId  + '"'
+         + ',' + NL + pos + tab + '"inputId": "'      + inputId      + '"'
+         + ',' + NL + pos + tab + '"list": "'         + list         + '"'
+         +       NL + pos
+         + '}';
 }
 
 
@@ -52809,7 +52823,7 @@ function createInsertNodeAction_savePrevConnections(act)
     const output  = selNode.outputs[0];
 
     for (const input of output.connectedInputs)
-        act.prevConnections.push(input.connection.toDataObject());//connDataObject(output, input));
+        act.prevConnections.push(input.connection.toDataObject());
 }
 
 
@@ -53509,7 +53523,18 @@ extends Action
                 uiSaveConnection(
                     conn.outputNodeId, conn.outputId, conn.outputOrder,
                     conn.inputNodeId,  conn.inputId,
-                    JSON.stringify(conn));
+                    formatConnJson(
+                        '', 
+                        TAB,
+                        conn.outputNodeId,
+                        conn.outputId,
+                        conn.outputOrder,
+                        conn.inputNodeId,
+                        conn.inputId,
+                        boolToString(
+                            nodeFromId(conn.outputNodeId)
+                            .outputFromId(conn.outputId)
+                            .supportsTypes(LIST_TYPES))));
         }
 
 
@@ -55265,7 +55290,7 @@ var allUpdateNodes   = [];
 
 
 //uiClearAllLocalData();
-uiQueueMessageToFigma({cmd: 'figLogAllLocalData'});
+//uiQueueMessageToFigma({cmd: 'figLogAllLocalData'});
 
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');
@@ -55333,7 +55358,7 @@ function uiReturnFigStartGenerator(msg)
     
     uiGetLocalData('showWhatsNew');
 
-    
+
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
@@ -56650,18 +56675,6 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
     let promise = Promise.resolve([]);
 
     
-    // HACK fix double stringized connections
-    // _conns.forEach(c => 
-    // {
-    //     if (typeof c.outputOrder == 'number')
-    //         c.outputOrder = c.outputOrder.toString();
-
-    //     console.log('c =', c);
-    // });
-    /////////////
-
-
-
     if (_conns)
     {
         // variable inputs connections must be sorted by input index
@@ -58282,10 +58295,6 @@ function uiTriggerUndo()
         cmd: 'figTriggerUndo'
     });
 }
-
-
-
-
 
 
 function uiLinkNodeToExistingColorStyle(node, styleId, styleName, paints)

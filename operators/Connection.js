@@ -142,19 +142,15 @@ class Connection
         let   pos = ' '.repeat(nTab);
         const tab = TAB;
 
-        let json =
-              pos
-            + '{'
-            +       NL + pos + tab + '"outputNodeId": "' + this.output.node.id + '"'
-            + ',' + NL + pos + tab + '"outputId": "'     + (this.output.param ? this.output.param.id : this.output.index) + '"'
-            + ',' + NL + pos + tab + '"outputOrder": "'  + this.outputOrder + '"'
-            + ',' + NL + pos + tab + '"inputNodeId": "'  + this.input.node.id + '"'
-            + ',' + NL + pos + tab + '"inputId": "'      + (this.input.param ? this.input.param.id : this.input.index) + '"'
-            + ',' + NL + pos + tab + '"list": "'         + boolToString(this.output.supportsTypes(LIST_TYPES)) + '"'
-            +       NL + pos
-            + '}';
-
-        return json;
+        return formatConnJson(
+            pos, 
+            tab,
+            this.output.node.id,
+            (this.output.param ? this.output.param.id : this.output.index),
+            this.outputOrder,
+            this.input.node.id,
+            (this.input.param ? this.input.param.id : this.input.index),
+            boolToString(this.output.supportsTypes(LIST_TYPES)));
     }
 
 
@@ -257,4 +253,20 @@ function connDataObject(output, input)
         inputNodeId:  input.node.id,
         inputId:      input.id
     };
+}
+
+
+
+function formatConnJson(pos, tab, outputNodeId, outputId, outputOrder, inputNodeId, inputId, list)
+{
+    return pos
+         + '{'
+         +       NL + pos + tab + '"outputNodeId": "' + outputNodeId + '"'
+         + ',' + NL + pos + tab + '"outputId": "'     + outputId     + '"'
+         + ',' + NL + pos + tab + '"outputOrder": "'  + outputOrder  + '"'
+         + ',' + NL + pos + tab + '"inputNodeId": "'  + inputNodeId  + '"'
+         + ',' + NL + pos + tab + '"inputId": "'      + inputId      + '"'
+         + ',' + NL + pos + tab + '"list": "'         + list         + '"'
+         +       NL + pos
+         + '}';
 }
