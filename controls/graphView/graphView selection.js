@@ -77,14 +77,14 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
         graphViewClient.width  - 2,
         graphViewClient.height - 5);
 
-    
+
     let selection = validateRect(graphView.selectionRect);
     
     selection = clipRect(selection, wndRect);
 
 
-    graphView.selectionRect.w = selection.width;
-    graphView.selectionRect.h = selection.height;
+    // graphView.selectionRect.w = selection.width;
+    // graphView.selectionRect.h = selection.height;
 
 
     selectBox.style.left   = selection.x;
@@ -95,13 +95,44 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
     selectBox.style.zIndex = MAX_INT32-3;
 
 
-    setTimeout(() => graphView.updateSelectBox(shiftKey, ctrlKey));
-};
+    const selected = [];
+    
+    for (const node of graph.nodes)
+    {
+        if (rectsIntersect(
+                node.measureData.divBounds,
+                selection))
+            selected.push(node);
+    }
+
+
+    if (shiftKey)
+        graphView.selectedNodes = graphView.lastSelectedNodes
+            .filter(node => !selected.includes(node))
+            .concat(selected.filter(node => !graphView.lastSelectedNodes.includes(node)));
+    else
+        graphView.selectedNodes = selected;
+    
+        
+    selectBox.style.zIndex = MAX_INT32-3;
+        
+        
+    const nodes = [
+        ...selected,                    
+        ...graphView._prevSelectedNodes,
+        ...graphView.lastSelectedNodes];
+
+    nodes.forEach(n => n.updateBorder());
+    updateComments(nodes.map(n => n.id));
+
+    graphView._prevSelectedNodes = selected;};
 
 
 
 graphView.endSelection = pointerId =>
 {
+    console.log('graphView.lastSelectedNodes =', graphView.lastSelectedNodes);
+    console.log('graphView.selectedNodes =', graphView.selectedNodes);
     if (   !isEmpty(graphView.selectedNodes    )
         || !isEmpty(graphView.lastSelectedNodes))
     {

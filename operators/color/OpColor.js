@@ -678,46 +678,6 @@ extends OpColorBase
 
 
 
-    legacyLoadParams(_node, pasting)
-    {
-        //super.legacyLoadParams(_node, pasting);
-
-        const _space = _node.params.find(p => p[0] == 'space');
-
-        if (   _space && parseInt(_space[1]) >= colorSpaceCount()
-            && !settings.showAllColorSpaces)
-            updateSettingAndMenu('showAllColorSpaces', true, true);
-
-
-        this.legacyLoadParamById(_node, 'space', '0'); 
-        this.legacyLoadParamById(_node, 'c1',  '128');
-        this.legacyLoadParamById(_node, 'c2',  '128');
-        this.legacyLoadParamById(_node, 'c3',  '128');
-
-        
-        if (_node.colorBeforeNaN)
-            this._colorBeforeNaN = _node.colorBeforeNaN;
-
-        this.prevSpace = _node.prevSpace;    
-
-
-        if (this.paramSpace.value.isValid())
-        {
-            const space  = colorSpace(Math.max(1, this.paramSpace.value.value));
-            const factor = colorFactor(space);
-
-            this._color = [
-                space,
-                this.param1.value.value / factor[0],
-                this.param2.value.value / factor[1],
-                this.param3.value.value / factor[2]];
-        }
-        else
-            this._color = dataColor_NaN;
-    }
-
-
-
     restoreParamUndoValue(value)
     {
         if (value.paramId == 'color')

@@ -2866,6 +2866,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
+                <p>Removed legacy Generator support.</p>
                 <p>Fixed UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -38561,14 +38562,14 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
         graphViewClient.width  - 2,
         graphViewClient.height - 5);
 
-    
+
     let selection = validateRect(graphView.selectionRect);
     
     selection = clipRect(selection, wndRect);
 
 
-    graphView.selectionRect.w = selection.width;
-    graphView.selectionRect.h = selection.height;
+    // graphView.selectionRect.w = selection.width;
+    // graphView.selectionRect.h = selection.height;
 
 
     selectBox.style.left   = selection.x;
@@ -38579,13 +38580,44 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
     selectBox.style.zIndex = MAX_INT32-3;
 
 
-    setTimeout(() => graphView.updateSelectBox(shiftKey, ctrlKey));
-};
+    const selected = [];
+    
+    for (const node of graph.nodes)
+    {
+        if (rectsIntersect(
+                node.measureData.divBounds,
+                selection))
+            selected.push(node);
+    }
+
+
+    if (shiftKey)
+        graphView.selectedNodes = graphView.lastSelectedNodes
+            .filter(node => !selected.includes(node))
+            .concat(selected.filter(node => !graphView.lastSelectedNodes.includes(node)));
+    else
+        graphView.selectedNodes = selected;
+    
+        
+    selectBox.style.zIndex = MAX_INT32-3;
+        
+        
+    const nodes = [
+        ...selected,                    
+        ...graphView._prevSelectedNodes,
+        ...graphView.lastSelectedNodes];
+
+    nodes.forEach(n => n.updateBorder());
+    updateComments(nodes.map(n => n.id));
+
+    graphView._prevSelectedNodes = selected;};
 
 
 
 graphView.endSelection = pointerId =>
 {
+    console.log('graphView.lastSelectedNodes =', graphView.lastSelectedNodes);
+    console.log('graphView.selectedNodes =', graphView.selectedNodes);
     if (   !isEmpty(graphView.selectedNodes    )
         || !isEmpty(graphView.lastSelectedNodes))
     {
@@ -39826,13 +39858,6 @@ extends Parameter
     loadParam(param)
     {
         this.setValue(parseNumberValue(param)[0], true, true, false);
-    }
-
-
-
-    legacyLoadParam(param)
-    {
-        this.setValue(NumberValue.fromString(param), true, true, false);
     }
 }
 
@@ -43011,43 +43036,6 @@ function parseConnectionJsonAndConnect(_conn, pasteConnected)
 
 
 
-function legacyParseConnectionJsonAndConnect(_conn, pasteConnected)
-{
-    const outputNode  =  nodeFromId(_conn.outputOp);
-    const outputId    =  outputNode.outputs[_conn.outputIndex].id;
-    const outputOrder = -1;//parseInt(_conn.outputOrder);
-
-    const inputNode   =  nodeFromId(_conn.inputOp);
-    const inputId     = inputNode.inputs[_conn.inputIndex].id;
-
-
-    if (   !outputNode 
-        ||  isDigit(outputId[0]) &&  parseInt(outputId) >= outputNode.outputs.length
-        || !isDigit(outputId[0]) && !outputNode.params.find(p => p.id == outputId && p.output)
-        || !inputNode  
-        ||  isDigit(inputId[0]) &&  parseInt(inputId) >= inputNode.inputs.length
-        || !isDigit(inputId[0]) && !inputNode.params.find(p => p.id == inputId && p.input))
-    {
-        uiError('Cannot connect ' + connToString(_conn));
-        return null;
-    }
-    else
-    {
-        const conn = uiVariableConnect(
-            outputNode, isDigit(outputId[0]) ? parseInt(outputId) : outputNode.params.find(p => p.id == outputId).output.id,
-             inputNode, isDigit( inputId[0]) ? parseInt( inputId) :  inputNode.params.find(p => p.id ==  inputId). input.id,
-            pasteConnected ? -1 : outputOrder);
-
-        _conn.outputOrder = conn.outputOrder;
-
-        uiSaveConn(conn);
-        
-        return conn;
-    }
-}
-
-
-
 function connDataObject(output, input)
 {
     return {
@@ -43104,7 +43092,6 @@ const connectionGap  = 2;
 class Operator
 {
     subscription = false;
-    legacy       = false;
 
 
     graph = null;
@@ -43893,8 +43880,7 @@ class Operator
     {
         const sub = 
                 subbed
-            || !this.subscription
-            ||  this.legacy;
+            || !this.subscription;
 
 
         this.subscribeCover.style.display = !sub ? 'block' : 'none';
@@ -44114,7 +44100,6 @@ class Operator
             + pos + tab + '"id": "'      + this.id                        + '",\n'
             + pos + tab + '"name": "'    + this.name.replace('"', '\\\"') + '",\n'
             + pos + tab + '"enabled": "' + boolToString(this.enabled)     + '",\n'
-            + (this.legacy ? (pos + tab + '"legacy": "'  + boolToString(this.legacy) + '",\n') : '')
             + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
             + pos + tab + '"y": "'       + this.div.style.top             + '",\n'
             + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '"';
@@ -44170,9 +44155,6 @@ class Operator
         if (_node.enabled)
             this.enabled = parseBool(_node.enabled);
     
-        if (_node.legacy != undefined)
-            this.legacy = parseBool(_node.legacy);
-
         if (   _node.params
             || this.alwaysLoadParams)
             this.loadParams(_node, pasting);
@@ -44197,49 +44179,6 @@ class Operator
 
             this.params[index].loadParam(_param[2]);
         }
-    }
-
-
-
-    legacyLoadParams(_node, pasting)
-    {
-        if (!_node.params)
-            return;
-
-        for (const _param of _node.params)
-        {
-            let index = this.params.findIndex(p => p.id == _param[0]);
-
-            if (index < 0)
-            {
-                this.addParamByType(NUMBER, _param[0], false, false, true);
-                index = this.params.length-1;
-            }
-
-            this.params[index].legacyLoadParam(_param[1]);
-        }
-    }
-
-
-
-    legacyLoadParamById(_node, id, defValue)
-    {
-        if (!_node.params)
-            return;
-
-
-        const _param = _node.params.find(p => p[0] == id);
-        
-
-        let index = this.params.findIndex(p => p.id == id);
-
-        if (index < 0)
-        {
-            this.addParamByType(NUMBER, id, false, false, true, false, defValue);
-            index = this.params.length-1;
-        }
-        
-        this.params[index].legacyLoadParam(_param ? _param[1] : defValue);
     }
 
 
@@ -48689,46 +48628,6 @@ extends OpColorBase
 
 
 
-    legacyLoadParams(_node, pasting)
-    {
-        //super.legacyLoadParams(_node, pasting);
-
-        const _space = _node.params.find(p => p[0] == 'space');
-
-        if (   _space && parseInt(_space[1]) >= colorSpaceCount()
-            && !settings.showAllColorSpaces)
-            updateSettingAndMenu('showAllColorSpaces', true, true);
-
-
-        this.legacyLoadParamById(_node, 'space', '0'); 
-        this.legacyLoadParamById(_node, 'c1',  '128');
-        this.legacyLoadParamById(_node, 'c2',  '128');
-        this.legacyLoadParamById(_node, 'c3',  '128');
-
-        
-        if (_node.colorBeforeNaN)
-            this._colorBeforeNaN = _node.colorBeforeNaN;
-
-        this.prevSpace = _node.prevSpace;    
-
-
-        if (this.paramSpace.value.isValid())
-        {
-            const space  = colorSpace(Math.max(1, this.paramSpace.value.value));
-            const factor = colorFactor(space);
-
-            this._color = [
-                space,
-                this.param1.value.value / factor[0],
-                this.param2.value.value / factor[1],
-                this.param3.value.value / factor[2]];
-        }
-        else
-            this._color = dataColor_NaN;
-    }
-
-
-
     restoreParamUndoValue(value)
     {
         if (value.paramId == 'color')
@@ -50453,14 +50352,6 @@ extends OpColorBase
                     new NumberControlRange(90/105, 105/105, 'transparent') ];
             }
         }
-    }
-
-
-
-    legacyLoadParams(_node, pasting)
-    {
-        this.legacyLoadParamById(_node, 'contrast', '0'); 
-        this.legacyLoadParamById(_node, 'standard', '1');
     }
 }
 
@@ -55636,203 +55527,6 @@ document.addEventListener('keyup', e =>
 false);
 
 
-function legacyLoadGraph(json)
-{
-    graphView.loadingNodes   = true;
-    graphView.canUpdateNodes = false;
-
-
-    const data = JSON.parse(json);
-    //console.log('legacy json =', json);
-
-
-    const pan = point( 
-        parseFloat(data.panx), 
-        parseFloat(data.pany));
-
-    if (isNaN(pan.x)) pan.x = 0;
-    if (isNaN(pan.y)) pan.y = 0;
-
-    
-    const zoom = parseFloat(data.zoom);
-    if (isNaN(zoom)) zoom  = 1;
-
-
-    graphView.setPanAndZoom(pan, zoom);
-
-
-    legacyLoadNodesAsync(data, setLoadingProgress);
-}
-
-
-
-function legacyLoadNodesAsync(data, setProgress)
-{
-    loadingProgress.style.width   = 0;
-    loadingOverlay .style.display = 'block';
-
-
-    let promise = Promise.resolve([]);
-
-
-    const chunkSize = 10; // nodes
-    for (let i = 0; i < data.nodes.length; i += chunkSize)
-    {
-        promise = promise.then(nodes => 
-        {
-            const res = legacyResolveLoadNodes(
-                data.nodes, 
-                i, 
-                Math.min(i + chunkSize, data.nodes.length), // exclusive
-                nodes);
-
-            setProgress(i / (data.nodes.length + (data.connections ? data.connections.length : 0)));
-            return res;
-        });
-    }
-
-
-    promise.then(nodes => 
-    {
-        graph.addNodes(nodes, false, false);
-        legacyLoadConnectionsAsync(data, nodes, nodes, setProgress);    
-    });
-}
-
-
-
-function legacyLoadConnectionsAsync(data, nodes, loadedNodes, setProgress)
-{
-    let promise = Promise.resolve([]);
-
-
-    if (data.connections)
-    {
-        const chunkSize = 10; // connections
-        for (let i = 0; i < data.connections.length; i += chunkSize)
-        {
-            promise = promise.then(() => 
-            {
-                const res = legacyResolveLoadConnections(
-                    data.connections, 
-                    i, 
-                    Math.min(i + chunkSize, data.connections.length), // exclusive
-                    data);
-
-                setProgress((data.nodes.length + i) / nozero(data.nodes.length + data.connections.length * 19/20)); // the proportion is arbitrary
-                return res;
-            });
-        }
-    }
-
-
-    promise.then(() => 
-    {
-        uiSaveNodes(loadedNodes.map(n => n.id));
-
-        const updateNodes = [];
-        
-        finishLoadingNodes(nodes, loadedNodes, updateNodes);
-        finishLoading(nodes);
-        
-        pushUpdate(null, updateNodes);
-    });
-}
-
-
-
-function legacyResolveLoadNodes(_nodes, first, last, nodes)
-{
-    return new Promise(resolve => 
-        requestAnimationFrame(() => 
-        {
-            for (let i = first; i < last; i++)
-                nodes.push(legacyLoadNode(_nodes[i]));
-
-            resolve(nodes);
-        }));
-}
-
-
-
-function legacyResolveLoadConnections(_connections, first, last, data)
-{
-    return new Promise(resolve => 
-        requestAnimationFrame(() => 
-        {
-            for (let i = first; i < last; i++)
-            {
-                const _conn = _connections[i];
-
-                if (   data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
-                    && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp)
-                    || loadOutsideConnections)
-                    legacyParseConnectionJsonAndConnect(_conn, false);
-            }
-
-            resolve();
-        }));
-}
-
-
-
-function legacyLoadNodes(data)
-{
-    const nodes = [];
-    
-    for (let i = 0; i < data.nodes.length; i++)
-        nodes.push(legacyLoadNode(data.nodes[i]));
-
-    return nodes;
-}
-
-
-
-function legacyLoadNode(_node)
-{
-    const node = createNode(_node.type);
-
-    node.legacy  = true;
-    node.loading = true;
-
-    node.id   = _node.id;
-    node.name = _node.name;
-
-    if (_node.labelOffset)
-        node.labelOffsetFactor = parseFloat(_node.labelOffset);
-
-    if (  _node.params
-        || node.alwaysLoadParams)
-        node.legacyLoadParams(_node);
-
-    setNodePosition(
-        node, 
-        parseFloat(_node.x), 
-        parseFloat(_node.y),
-        false);
-
-    return node;
-}
-
-
-
-function legacyLoadConnections(data, loadOutsideConnections, setProgress = null)
-{
-    for (let i = 0; i < data.connections.length; i++)
-    {
-        const _conn = data.connections[i];
-        
-        if (      data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn.outputOp)
-               && data.nodes.find(n => (n.newId ? n.newId : n.id) == _conn. inputOp)
-            || loadOutsideConnections)
-            Connection.parseJson(_conn);
-
-        if (setProgress)
-            setProgress(((data.nodes.length + i) / (data.nodes.length + data.connections.length)));
-    }
-}
-
-
 var uiFigMessagePosted = false;
 
 
@@ -56537,74 +56231,67 @@ function uiLoadGraphView(json)
 
 function uiReturnFigLoadNodesAndConns(msg)
 {
-    if (msg.legacy != NULL)
+    if (settings.logRawLoading)
     {
-        legacyLoadGraph(msg.legacy);
+        console.log(
+            '%cnodes JSON = %s', 
+            'background: #fed',
+            msg.nodeJson
+                .replaceAll('\\n', '\n')
+                .replaceAll('\\"', '\"'));
+
+        console.log(
+            '%cconnections JSON = %s', 
+            'background: #fed',
+            msg.connJson
+                .replaceAll('\\n', '\n')
+                .replaceAll('\\"', '\"'));
+    }
+
+    
+    const _graphView = msg.graphView;
+
+    const _showAllColorSpaces = msg.showAllColorSpaces;
+
+
+    uiLoadGraphView(_graphView);
+
+    updateSettingAndMenu(
+        'showAllColorSpaces',
+        _showAllColorSpaces, 
+        _showAllColorSpaces ? parseBool(_showAllColorSpaces) : false,
+        false); 
+
+
+    let   _nodeKeys  = msg.nodeKeys;
+    let   _nodes     = msg.nodeJson;
+
+    let   _connKeys  = msg.connKeys;
+    let   _conns     = msg.connJson;
+
+    
+    const _n = [];
+    const _c = [];
+
+    for (let i = 0; i < _nodes.length; i++) _n.push({key: _nodeKeys[i], value: _nodes[i]});
+    for (let i = 0; i < _conns.length; i++) _c.push({key: _connKeys[i], value: _conns[i]});
+    
+
+    _n.sort((a, b) => a.value.z - b.value.z);
+
+
+    if (settings.dataMode)
+    {
+        loadNodesAndConnsData(_n, _c);
     }
     else
     {
-        if (settings.logRawLoading)
-        {
-            console.log(
-                '%cnodes JSON = %s', 
-                'background: #fed',
-                msg.nodeJson
-                    .replaceAll('\\n', '\n')
-                    .replaceAll('\\"', '\"'));
+        _nodes = _nodes.map(n => JSON.parse(n));
+        _conns = _conns.map(c => JSON.parse(c));
+            
+        graph.clear();
 
-            console.log(
-                '%cconnections JSON = %s', 
-                'background: #fed',
-                msg.connJson
-                    .replaceAll('\\n', '\n')
-                    .replaceAll('\\"', '\"'));
-        }
-
-        
-        const _graphView = msg.graphView;
-
-        const _showAllColorSpaces = msg.showAllColorSpaces;
-
-
-        uiLoadGraphView(_graphView);
-
-        updateSettingAndMenu(
-            'showAllColorSpaces',
-            _showAllColorSpaces, 
-            _showAllColorSpaces ? parseBool(_showAllColorSpaces) : false,
-            false); 
-
-
-        let   _nodeKeys  = msg.nodeKeys;
-        let   _nodes     = msg.nodeJson;
-   
-        let   _connKeys  = msg.connKeys;
-        let   _conns     = msg.connJson;
-
-        
-        const _n = [];
-        const _c = [];
-
-        for (let i = 0; i < _nodes.length; i++) _n.push({key: _nodeKeys[i], value: _nodes[i]});
-        for (let i = 0; i < _conns.length; i++) _c.push({key: _connKeys[i], value: _conns[i]});
-        
-
-        _n.sort((a, b) => a.value.z - b.value.z);
-
-
-        if (settings.dataMode)
-        {
-            loadNodesAndConnsData(_n, _c);
-        }
-        else
-        {
-            _nodes = _nodes.map(n => JSON.parse(n));
-            _conns = _conns.map(c => JSON.parse(c));
-                
-            graph.clear();
-
-            loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
-        }
+        loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
     }
 }
 

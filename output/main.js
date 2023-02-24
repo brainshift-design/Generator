@@ -1727,11 +1727,9 @@ function figLoadNodesAndConns(dataMode) {
     const nodes = nodeKeys.map(k => figma.currentPage.getPluginData(k));
     const conns = connKeys.map(k => figma.currentPage.getPluginData(k));
     initPageStyles(nodes);
-    const legacy = figma.currentPage.getPluginData('graph');
     const graphView = figma.currentPage.getPluginData(figma.currentUser.id + ',graphView');
     const showAllColorSpaces = figma.currentPage.getPluginData('showAllColorSpaces');
     figPostMessageToUi({
-        legacy: legacy,
         cmd: 'uiReturnFigLoadNodesAndConns',
         graphView: graphView,
         showAllColorSpaces: showAllColorSpaces,

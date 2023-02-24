@@ -24,7 +24,6 @@ const connectionGap  = 2;
 class Operator
 {
     subscription = false;
-    legacy       = false;
 
 
     graph = null;
@@ -813,8 +812,7 @@ class Operator
     {
         const sub = 
                 subbed
-            || !this.subscription
-            ||  this.legacy;
+            || !this.subscription;
 
 
         this.subscribeCover.style.display = !sub ? 'block' : 'none';
@@ -1034,7 +1032,6 @@ class Operator
             + pos + tab + '"id": "'      + this.id                        + '",\n'
             + pos + tab + '"name": "'    + this.name.replace('"', '\\\"') + '",\n'
             + pos + tab + '"enabled": "' + boolToString(this.enabled)     + '",\n'
-            + (this.legacy ? (pos + tab + '"legacy": "'  + boolToString(this.legacy) + '",\n') : '')
             + pos + tab + '"x": "'       + this.div.style.left            + '",\n'
             + pos + tab + '"y": "'       + this.div.style.top             + '",\n'
             + pos + tab + '"z": "'       + this.graph.nodes.indexOf(this) + '"';
@@ -1090,9 +1087,6 @@ class Operator
         if (_node.enabled)
             this.enabled = parseBool(_node.enabled);
     
-        if (_node.legacy != undefined)
-            this.legacy = parseBool(_node.legacy);
-
         if (   _node.params
             || this.alwaysLoadParams)
             this.loadParams(_node, pasting);
@@ -1117,49 +1111,6 @@ class Operator
 
             this.params[index].loadParam(_param[2]);
         }
-    }
-
-
-
-    legacyLoadParams(_node, pasting)
-    {
-        if (!_node.params)
-            return;
-
-        for (const _param of _node.params)
-        {
-            let index = this.params.findIndex(p => p.id == _param[0]);
-
-            if (index < 0)
-            {
-                this.addParamByType(NUMBER, _param[0], false, false, true);
-                index = this.params.length-1;
-            }
-
-            this.params[index].legacyLoadParam(_param[1]);
-        }
-    }
-
-
-
-    legacyLoadParamById(_node, id, defValue)
-    {
-        if (!_node.params)
-            return;
-
-
-        const _param = _node.params.find(p => p[0] == id);
-        
-
-        let index = this.params.findIndex(p => p.id == id);
-
-        if (index < 0)
-        {
-            this.addParamByType(NUMBER, id, false, false, true, false, defValue);
-            index = this.params.length-1;
-        }
-        
-        this.params[index].legacyLoadParam(_param ? _param[1] : defValue);
     }
 
 

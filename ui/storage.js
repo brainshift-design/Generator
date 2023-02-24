@@ -172,74 +172,67 @@ function uiLoadGraphView(json)
 
 function uiReturnFigLoadNodesAndConns(msg)
 {
-    if (msg.legacy != NULL)
+    if (settings.logRawLoading)
     {
-        legacyLoadGraph(msg.legacy);
+        console.log(
+            '%cnodes JSON = %s', 
+            'background: #fed',
+            msg.nodeJson
+                .replaceAll('\\n', '\n')
+                .replaceAll('\\"', '\"'));
+
+        console.log(
+            '%cconnections JSON = %s', 
+            'background: #fed',
+            msg.connJson
+                .replaceAll('\\n', '\n')
+                .replaceAll('\\"', '\"'));
+    }
+
+    
+    const _graphView = msg.graphView;
+
+    const _showAllColorSpaces = msg.showAllColorSpaces;
+
+
+    uiLoadGraphView(_graphView);
+
+    updateSettingAndMenu(
+        'showAllColorSpaces',
+        _showAllColorSpaces, 
+        _showAllColorSpaces ? parseBool(_showAllColorSpaces) : false,
+        false); 
+
+
+    let   _nodeKeys  = msg.nodeKeys;
+    let   _nodes     = msg.nodeJson;
+
+    let   _connKeys  = msg.connKeys;
+    let   _conns     = msg.connJson;
+
+    
+    const _n = [];
+    const _c = [];
+
+    for (let i = 0; i < _nodes.length; i++) _n.push({key: _nodeKeys[i], value: _nodes[i]});
+    for (let i = 0; i < _conns.length; i++) _c.push({key: _connKeys[i], value: _conns[i]});
+    
+
+    _n.sort((a, b) => a.value.z - b.value.z);
+
+
+    if (settings.dataMode)
+    {
+        loadNodesAndConnsData(_n, _c);
     }
     else
     {
-        if (settings.logRawLoading)
-        {
-            console.log(
-                '%cnodes JSON = %s', 
-                'background: #fed',
-                msg.nodeJson
-                    .replaceAll('\\n', '\n')
-                    .replaceAll('\\"', '\"'));
+        _nodes = _nodes.map(n => JSON.parse(n));
+        _conns = _conns.map(c => JSON.parse(c));
+            
+        graph.clear();
 
-            console.log(
-                '%cconnections JSON = %s', 
-                'background: #fed',
-                msg.connJson
-                    .replaceAll('\\n', '\n')
-                    .replaceAll('\\"', '\"'));
-        }
-
-        
-        const _graphView = msg.graphView;
-
-        const _showAllColorSpaces = msg.showAllColorSpaces;
-
-
-        uiLoadGraphView(_graphView);
-
-        updateSettingAndMenu(
-            'showAllColorSpaces',
-            _showAllColorSpaces, 
-            _showAllColorSpaces ? parseBool(_showAllColorSpaces) : false,
-            false); 
-
-
-        let   _nodeKeys  = msg.nodeKeys;
-        let   _nodes     = msg.nodeJson;
-   
-        let   _connKeys  = msg.connKeys;
-        let   _conns     = msg.connJson;
-
-        
-        const _n = [];
-        const _c = [];
-
-        for (let i = 0; i < _nodes.length; i++) _n.push({key: _nodeKeys[i], value: _nodes[i]});
-        for (let i = 0; i < _conns.length; i++) _c.push({key: _connKeys[i], value: _conns[i]});
-        
-
-        _n.sort((a, b) => a.value.z - b.value.z);
-
-
-        if (settings.dataMode)
-        {
-            loadNodesAndConnsData(_n, _c);
-        }
-        else
-        {
-            _nodes = _nodes.map(n => JSON.parse(n));
-            _conns = _conns.map(c => JSON.parse(c));
-                
-            graph.clear();
-
-            loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
-        }
+        loadNodesAndConnsAsync(_nodes, _conns, setLoadingProgress);
     }
 }
 

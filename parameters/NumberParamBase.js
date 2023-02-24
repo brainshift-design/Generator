@@ -169,11 +169,4 @@ extends Parameter
     {
         this.setValue(parseNumberValue(param)[0], true, true, false);
     }
-
-
-
-    legacyLoadParam(param)
-    {
-        this.setValue(NumberValue.fromString(param), true, true, false);
-    }
 }
