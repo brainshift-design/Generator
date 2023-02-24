@@ -1102,6 +1102,9 @@ figma.ui.onmessage = function (msg) {
         case 'figLogAllSavedConnKeys':
             figLogAllSavedConnKeys();
             break;
+        case 'figLogAllLocalData':
+            figLogAllLocalData();
+            break;
         case 'figSaveConnection':
             figSaveConnection(msg.key, msg.json);
             break;
@@ -1824,6 +1827,9 @@ function figLogAllSavedConnKeys() {
     const connKeys = figma.currentPage.getPluginDataKeys()
         .filter(k => isConnKey(k));
     connKeys.forEach(k => console.log('%c' + k, 'background: #dff'));
+}
+function figLogAllLocalData() {
+    figma.clientStorage.keysAsync().then(keys => keys.forEach(k => figma.clientStorage.getAsync(k).then(val => console.log(k + ': ' + val))));
 }
 function figSaveConnection(key, json) {
     figSetPageData(key, json);

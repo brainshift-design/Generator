@@ -48,13 +48,6 @@ extends GNode
 
     isCached()
     {
-        //console.log(this.nodeId + '.options.cached =', this.options.cached);
-        // if (this.nodeId == 'valid')
-        // {
-        //     console.log('this.options =', this.options);
-        //     console.log('this.valid =',   this.valid  );
-        // }
-
         return this.options.cached
             && this.valid;
     }

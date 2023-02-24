@@ -921,7 +921,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     graphView.updateScrollWithBounds();
 
 
-    graphView.updateNodeTransforms(nodes);
+    //graphView.updateNodeTransforms(nodes);
 
 
     graphView.pastingNodes       = false;

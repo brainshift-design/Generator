@@ -6938,13 +6938,6 @@ extends GNode
 
     isCached()
     {
-        //console.log(this.nodeId + '.options.cached =', this.options.cached);
-        // if (this.nodeId == 'valid')
-        // {
-        //     console.log('this.options =', this.options);
-        //     console.log('this.valid =',   this.valid  );
-        // }
-
         return this.options.cached
             && this.valid;
     }
@@ -25320,13 +25313,6 @@ extends GNode
 
     isCached()
     {
-        //console.log(this.nodeId + '.options.cached =', this.options.cached);
-        // if (this.nodeId == 'valid')
-        // {
-        //     console.log('this.options =', this.options);
-        //     console.log('this.valid =',   this.valid  );
-        // }
-
         return this.options.cached
             && this.valid;
     }
@@ -39075,6 +39061,8 @@ graphView.removeWire = function(wire)
 
 function updateWire(wire, x = 0, y = 0)
 {
+    //logFunction('updateWire()');
+    
     wire.clientX = x;
     wire.clientY = y;
 
@@ -39117,7 +39105,7 @@ function updateWires(wires)
 {
     //logFunction('updateWires()');
 
-
+    
     const pOut    = [];
     const pIn     = [];
     
@@ -39414,7 +39402,7 @@ function updateWireStyle(wire)
 
     let width = 
         graphView.zoom < 1
-        ? Math.pow(2, graphView.zoom - 1)
+        ? graphView.zoom + (Math.pow(2, graphView.zoom - 1) - graphView.zoom) * 0.333
         : graphView.zoom;
 
     width *= 1.6;
@@ -43813,7 +43801,7 @@ class Operator
         }
 
 
-        graphView.updateNodeTransform(this);
+        //graphView.updateNodeTransform(this);
     }
 
 
@@ -55276,7 +55264,7 @@ var allUpdateNodes   = [];
 
 
 //uiClearAllLocalData();
-
+uiQueueMessageToFigma({cmd: 'figLogAllLocalData'});
 
 //uiClearLocalData('windowWidth');
 //uiClearLocalData('windowHeight');
@@ -56655,13 +56643,13 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
 
     
     // HACK fix double stringized connections
-    _conns.forEach(c => 
-    {
-        if (typeof c.outputOrder == 'number')
-            c.outputOrder = c.outputOrder.toString();
+    // _conns.forEach(c => 
+    // {
+    //     if (typeof c.outputOrder == 'number')
+    //         c.outputOrder = c.outputOrder.toString();
 
-        console.log('c =', c);
-    });
+    //     console.log('c =', c);
+    // });
     /////////////
 
 
@@ -57993,7 +57981,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     graphView.updateScrollWithBounds();
 
 
-    graphView.updateNodeTransforms(nodes);
+    //graphView.updateNodeTransforms(nodes);
 
 
     graphView.pastingNodes       = false;

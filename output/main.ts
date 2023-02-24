@@ -1730,12 +1730,16 @@ figma.ui.onmessage = function(msg)
         case 'figRemoveSavedNodesAndConns':           figRemoveSavedNodesAndConns          (msg.nodeIds);                                 break;
         case 'figRemoveAllSavedNodesAndConns':        figRemoveAllSavedNodesAndConns       ();                                            break;
      
+
         case 'figLogAllSavedNodesAndConns':           figLogAllSavedNodesAndConns          ();                                            break;
         case 'figLogAllSavedNodes':                   figLogAllSavedNodes                  ();                                            break;
         case 'figLogAllSavedConns':                   figLogAllSavedConns                  ();                                            break;
      
         case 'figLogAllSavedConnKeys':                figLogAllSavedConnKeys               ();                                            break;
+
+        case 'figLogAllLocalData':                    figLogAllLocalData                   ();                                            break;
      
+
         case 'figSaveConnection':                     figSaveConnection                    (msg.key, msg.json);                           break;
         case 'figSaveConnections':                    figSaveConnections                   (msg.keys, msg.json);                          break;
         case 'figUpdateSavedConnections':             figUpdateSavedConnections            (msg.curKeys, msg.newKeys, msg.json);          break;
@@ -2889,6 +2893,15 @@ function figLogAllSavedConnKeys()
         .filter(k => isConnKey(k));
         
     connKeys.forEach(k => console.log('%c'+k, 'background: #dff'));
+}
+
+
+
+function figLogAllLocalData()
+{
+    figma.clientStorage.keysAsync().then(keys =>
+        keys.forEach(k => 
+            figma.clientStorage.getAsync(k).then(val => console.log(k + ': ' + val))));
 }
 
 

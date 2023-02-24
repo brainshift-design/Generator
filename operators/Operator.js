@@ -723,7 +723,7 @@ class Operator
         }
 
 
-        graphView.updateNodeTransform(this);
+        //graphView.updateNodeTransform(this);
     }
 
 

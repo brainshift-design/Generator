@@ -36,6 +36,8 @@ graphView.removeWire = function(wire)
 
 function updateWire(wire, x = 0, y = 0)
 {
+    //logFunction('updateWire()');
+    
     wire.clientX = x;
     wire.clientY = y;
 
@@ -78,7 +80,7 @@ function updateWires(wires)
 {
     //logFunction('updateWires()');
 
-
+    
     const pOut    = [];
     const pIn     = [];
     
@@ -375,7 +377,7 @@ function updateWireStyle(wire)
 
     let width = 
         graphView.zoom < 1
-        ? Math.pow(2, graphView.zoom - 1)
+        ? graphView.zoom + (Math.pow(2, graphView.zoom - 1) - graphView.zoom) * 0.333
         : graphView.zoom;
 
     width *= 1.6;
