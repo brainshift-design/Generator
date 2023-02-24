@@ -34,6 +34,7 @@ extends Action
         deleteNodesAction_getUpdateNodes(this, updateNodes);
         deleteNodesAction_deleteNodes(this);
 
+        console.log('this.newActiveNodeIds =', this.newActiveNodeIds);
         uiSaveNodes(this.newActiveNodeIds);
     }
 
@@ -138,33 +139,48 @@ function deleteNodesAction_disconnect(act, input, ignoreNodeIds = [])
     const updateNodes = [];        
 
 
-    const activeLeft           = getActiveBeforeNode    (input.node);
-    const activeLeftOnly       = getActiveOnlyBeforeNode(input.node);
-    const activeRight          = getActiveAfterNode     (input.node, true);
-    const activeRightHeader    = getActiveAfterNode     (input.node);
+    const activeLeft           = getActiveBeforeNode    (output.node);
+    const activeLeftOnly       = getActiveOnlyBeforeNode(output.node);
+    const activeRight          = getActiveAfterNode     (input.node, true );
+    const activeRightHeader    = getActiveAfterNode     (input.node, false);
     const terminalsRight       = getTerminalsAfterNode  (input.node);
+
+
+    console.log('activeLeft =', activeLeft);
+    console.log('activeLeftOnly =', activeLeftOnly);
+    console.log('activeRight =', activeRight);
+    console.log('activeRightHeader =', activeRightHeader);
+
+    console.log('ignoreNodeIds =', [...ignoreNodeIds]);
 
     
     uiDisconnect(input);
     
     
-    if (  !activeLeftOnly
-        && activeLeft != activeRight)
-        pushUnique(updateNodes, output.node);
+    // if (   !activeLeftOnly
+    //     && !activeLeft)
+    // {
+    //     //if (graph.nodes.includes(output.node))  
+    //     //{
+    //         //pushUnique(act.newActiveNodeIds, output.node.id);
+    //         pushUnique(updateNodes, output.node);
+    //     //}
+    // }
 
-    if (!activeRightHeader)
-    {
-        if (!ignoreNodeIds.includes(input.node.id))
-        {
-            uiMakeNodeActive(input.node);
-            pushUnique(act.newActiveNodeIds, input.node.id);
-            pushUnique(updateNodes, input.node);
-        }
-    }
-    else if (!activeLeft
-          ||     activeRightHeader
-             && !activeRightHeader.follows(activeLeft))
-        pushUnique(updateNodes, activeRightHeader);
+
+    // if (!activeRightHeader)
+    // {
+    //     if (!ignoreNodeIds.includes(input.node.id))
+    //     {
+    //         uiMakeNodeActive(input.node);
+    //         pushUnique(act.newActiveNodeIds, input.node.id);
+    //         pushUnique(updateNodes, input.node);
+    //     }
+    // }
+    // else if (!activeLeft
+    //       ||     activeRightHeader
+    //          && !activeRightHeader.follows(activeLeft))
+    //     pushUnique(updateNodes, activeRightHeader);
 
 
     pushUnique(updateNodes, terminalsRight);

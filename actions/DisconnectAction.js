@@ -46,7 +46,7 @@ extends Action
         this.saveOldActiveNodes();
         this.removeConnection();        
 
-        this.activateNewNodes();
+        DisconnectAction_activateNewNodes(this);
         this.updateNodes(updateNodes);
 
         this.cleanup();
@@ -87,14 +87,6 @@ extends Action
 
 
         this.output.updateSavedConnectionOrder(this.outputOrder, -1);
-    }
-
-
-
-    activateNewNodes()
-    {
-        for (const id of this.newActiveNodeIds)
-            uiMakeNodeActive(nodeFromId(id));
     }
 
 
@@ -141,4 +133,12 @@ extends Action
         for (const id of oldActiveNodeIds)
             uiMakeNodeActive(nodeFromId(id));
     }
+}
+
+
+
+function DisconnectAction_activateNewNodes(act)
+{
+    for (const id of act.newActiveNodeIds)
+        uiMakeNodeActive(nodeFromId(id));
 }

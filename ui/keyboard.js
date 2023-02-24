@@ -4,6 +4,14 @@ var altPressedInMenu = false;
 
 document.addEventListener('keydown', e =>
 {
+    if (crashed)
+    {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+    }
+
+
     let setLastKeyDown = true;
 
 

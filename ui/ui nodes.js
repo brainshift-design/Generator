@@ -598,7 +598,7 @@ function uiMakeNodeRightPassive(node, fromNode = null)
         }
     }
 
-    uiMakeNodeLeftPassive(node, fromNode);//
+    //uiMakeNodeLeftPassive(node, fromNode);//
 }
 
 
