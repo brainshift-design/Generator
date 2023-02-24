@@ -237,6 +237,7 @@ graphView.zoomToFit = function()
         ? graphView.selectedNodes
         : graph.nodes;
 
+    
     nodes.forEach(n => n.updateMeasureData());
     const offset = graphView.getAllNodeOffsets(nodes);
 
@@ -251,4 +252,7 @@ graphView.zoomToFit = function()
         x: graphViewClient.width /2 - (offset.x + offset.width /2) * graphView.zoom,
         y: graphViewClient.height/2 - (offset.y + offset.height/2) * graphView.zoom
     };
+
+
+    //graphView.updateNodeTransforms(graph.nodes);
 };

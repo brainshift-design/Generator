@@ -82,7 +82,7 @@ graphView.getAllNodeOffsets = function(nodes = null)
         nodes = graph.nodes;
 
     for (const node of nodes)
-        bounds = expandRect(bounds, boundingRect(node.div));
+        bounds = expandRect(bounds, offsetRect(node.div));
 
     return bounds;
 };
