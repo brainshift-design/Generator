@@ -83,10 +83,6 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
     selection = clipRect(selection, wndRect);
 
 
-    // graphView.selectionRect.w = selection.width;
-    // graphView.selectionRect.h = selection.height;
-
-
     selectBox.style.left   = selection.x;
     selectBox.style.top    = selection.y;
     selectBox.style.width  = selection.width;
@@ -96,7 +92,7 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
 
 
     const selected = [];
-    
+
     for (const node of graph.nodes)
     {
         if (rectsIntersect(
@@ -131,8 +127,6 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
 
 graphView.endSelection = pointerId =>
 {
-    console.log('graphView.lastSelectedNodes =', graphView.lastSelectedNodes);
-    console.log('graphView.selectedNodes =', graphView.selectedNodes);
     if (   !isEmpty(graphView.selectedNodes    )
         || !isEmpty(graphView.lastSelectedNodes))
     {

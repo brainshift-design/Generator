@@ -36,7 +36,7 @@ function checkResize(x, y)
 
     const resizeEdgeWidth = 8;
 
-    document.canResizeL = !dialogShown && false; //x <= resizeEdgeWidth;
+    document.canResizeL = !dialogShown && false;//x <= resizeEdgeWidth;
     document.canResizeR = !dialogShown && documentBodyClient.width  - x <= resizeEdgeWidth;
     document.canResizeB = !dialogShown && documentBodyClient.height - y <= resizeEdgeWidth;
 

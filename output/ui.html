@@ -38410,18 +38410,30 @@ graphView.endZoomSelection = function(pointerId, zoom)
     graphView.zoomSelecting    = false;
     selectBox.style.visibility = 'hidden';
 
-    const selection = graphView.selectionRect;
+    
+    const wndRect = new Rect(
+        1,
+        menuBarHeight + 1,
+        graphViewClient.width  - 2,
+        graphViewClient.height - 5);
+
+
+    let selection = validateRect(graphView.selectionRect);
+    
+    selection = clipRect(selection, wndRect);
+
 
     if (zoom)
     {
-        // graphView.oldZoom = graphView.zoom;
+        console.log('selection =', selection);
+        graphView.oldZoom = graphView.zoom;
         
         graphView.zoomToRect(new Rect(
             selection.x,
             selection.y - menuBarHeight,
             selection.w,
             selection.h));
-
+ 
         // let box = {
         //     x: selection.x,
         //     y: selection.y - menuBarHeight,
@@ -38568,10 +38580,6 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
     selection = clipRect(selection, wndRect);
 
 
-    // graphView.selectionRect.w = selection.width;
-    // graphView.selectionRect.h = selection.height;
-
-
     selectBox.style.left   = selection.x;
     selectBox.style.top    = selection.y;
     selectBox.style.width  = selection.width;
@@ -38581,7 +38589,7 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
 
 
     const selected = [];
-    
+
     for (const node of graph.nodes)
     {
         if (rectsIntersect(
@@ -38616,8 +38624,6 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
 
 graphView.endSelection = pointerId =>
 {
-    console.log('graphView.lastSelectedNodes =', graphView.lastSelectedNodes);
-    console.log('graphView.selectedNodes =', graphView.selectedNodes);
     if (   !isEmpty(graphView.selectedNodes    )
         || !isEmpty(graphView.lastSelectedNodes))
     {
@@ -53135,11 +53141,11 @@ extends Action
     {
         this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
 
-        if (!getActiveFromNode(this.inputNode))
-            this.newActiveNodeIds.push(this.inputNodeId);
+        if (!getActiveFromNode(this.outputNode, [this.inputNode]))
+            this.newActiveNodeIds.push(this.outputNodeId);
 
         if (   !getActiveOnlyBeforeNode(this.inputNode)
-            && !getActiveAfterNode   (this.inputNode))
+            && !getActiveAfterNode     (this.inputNode))
             this.newActiveNodeIds.push(this.inputNodeId);
     }
 
@@ -58482,7 +58488,7 @@ function checkResize(x, y)
 
     const resizeEdgeWidth = 8;
 
-    document.canResizeL = !dialogShown && false; //x <= resizeEdgeWidth;
+    document.canResizeL = !dialogShown && false;//x <= resizeEdgeWidth;
     document.canResizeR = !dialogShown && documentBodyClient.width  - x <= resizeEdgeWidth;
     document.canResizeB = !dialogShown && documentBodyClient.height - y <= resizeEdgeWidth;
 

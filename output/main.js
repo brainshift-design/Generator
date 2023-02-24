@@ -1886,17 +1886,18 @@ var notifyNotificationHandler = null;
 var notifyDequeueHandler = () => notifyNotificationHandler = null;
 var windowDock = 'normal'; // '', 'maximize', 'top', 'left', 'right', 'bottom'
 function figSetWindowRect(x, y, width, height) {
+    console.log('x =', x);
     (function () {
         return __awaiter(this, void 0, void 0, function* () {
-            let position = false;
+            let position = true;
             const rect = {
                 x: x,
                 y: y,
                 width: Math.floor(Math.max(0, width)),
                 height: Math.floor(Math.max(0, height))
             };
-            if (windowDock != 'normal')
-                position = true;
+            // if (windowDock != 'normal')
+            //     position = true;
             if (isNaN(rect.x))
                 rect.x = yield figma.clientStorage.getAsync('windowX');
             if (isNaN(rect.y))

@@ -70,11 +70,11 @@ extends Action
     {
         this.oldActiveNodeIds = [...getActiveNodesFromNodeId(this.inputNodeId).map(n => n.id)];
 
-        if (!getActiveFromNode(this.inputNode))
-            this.newActiveNodeIds.push(this.inputNodeId);
+        if (!getActiveFromNode(this.outputNode, [this.inputNode]))
+            this.newActiveNodeIds.push(this.outputNodeId);
 
         if (   !getActiveOnlyBeforeNode(this.inputNode)
-            && !getActiveAfterNode   (this.inputNode))
+            && !getActiveAfterNode     (this.inputNode))
             this.newActiveNodeIds.push(this.inputNodeId);
     }
 

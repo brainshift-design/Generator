@@ -199,18 +199,30 @@ graphView.endZoomSelection = function(pointerId, zoom)
     graphView.zoomSelecting    = false;
     selectBox.style.visibility = 'hidden';
 
-    const selection = graphView.selectionRect;
+    
+    const wndRect = new Rect(
+        1,
+        menuBarHeight + 1,
+        graphViewClient.width  - 2,
+        graphViewClient.height - 5);
+
+
+    let selection = validateRect(graphView.selectionRect);
+    
+    selection = clipRect(selection, wndRect);
+
 
     if (zoom)
     {
-        // graphView.oldZoom = graphView.zoom;
+        console.log('selection =', selection);
+        graphView.oldZoom = graphView.zoom;
         
         graphView.zoomToRect(new Rect(
             selection.x,
             selection.y - menuBarHeight,
             selection.w,
             selection.h));
-
+ 
         // let box = {
         //     x: selection.x,
         //     y: selection.y - menuBarHeight,

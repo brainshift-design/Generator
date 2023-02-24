@@ -3008,9 +3008,10 @@ var windowDock = 'normal'; // '', 'maximize', 'top', 'left', 'right', 'bottom'
 
 function figSetWindowRect(x, y, width, height)
 {
+    console.log('x =', x);
     (async function()
     {
-        let position = false;
+        let position = true;
 
         const rect = {
             x:      x,
@@ -3020,8 +3021,8 @@ function figSetWindowRect(x, y, width, height)
         };
 
         
-        if (windowDock != 'normal')
-            position = true;
+        // if (windowDock != 'normal')
+        //     position = true;
 
         if (isNaN(rect.x)) rect.x = await figma.clientStorage.getAsync('windowX');
         if (isNaN(rect.y)) rect.y = await figma.clientStorage.getAsync('windowY');
