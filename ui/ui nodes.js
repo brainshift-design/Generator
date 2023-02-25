@@ -810,7 +810,7 @@ function findConnectedClusters(nodes)
 
 
 
-function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles)
+function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, isLast)
 {
     if (requestId < lastRequestedId) 
         return;
@@ -928,14 +928,14 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     graphView.updateScrollWithBounds();
 
 
-    graphView.pastingNodes       = false;
-    graphView.loadingNodes       = false;
-    graphView.restoringNodes     = false;
+    if (isLast)
+    {
+        graphView.pastingNodes       = false;
+        graphView.loadingNodes       = false;
+        graphView.restoringNodes     = false;
 
-    loadingOverlay.style.display = 'none'; // for loading
-
-
-    uiClearPageData('graph');
+        loadingOverlay.style.display = 'none'; // for loading
+    }
 }
 
 

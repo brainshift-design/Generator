@@ -14471,11 +14471,6 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
         objChunk        = [],
         styleChunk      = [];
 
-    let curNodeValChunk = [],
-        curObjChunk     = [],
-        curStyleChunk   = [];
-
-
     let nodeValChunkId = 0;
         
 
@@ -14517,26 +14512,15 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
             || sc == styleChunkSize;
 
 
-        // if (   !isEmpty(curNodeValChunk)
-        //     || !isEmpty(curObjChunk)
-        //     || !isEmpty(curStyleChunk))
-        //     genQueueChunk(
-        //         requestId,
-        //         actionId,
-        //         updateNodeId,
-        //         updateParamId,
-        //         nodeValChunkId++,
-        //         curNodeValChunk,
-        //         curObjChunk,
-        //         curStyleChunk,
-        //         !chunkNotEmpty);
-
-
         if (chunkNotEmpty)
         {
-            curNodeValChunk = [...nodeValChunk];
-            curObjChunk     = [...objChunk    ];
-            curStyleChunk   = [...styleChunk  ];
+            const isLast =    
+                   n >= nodeIds      .length
+                && o >= updateObjects.length
+                && s >= updateStyles .length
+                && (   !isEmpty(nodeValChunk)
+                    || !isEmpty(objChunk    )
+                    || !isEmpty(styleChunk  ));
 
             genQueueChunk(
                 requestId,
@@ -14546,7 +14530,8 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
                 nodeValChunkId++,
                 nodeValChunk,
                 objChunk,
-                styleChunk);
+                styleChunk,
+                isLast);
 
             nodeValChunk = [];  nc = 0;
             objChunk     = [];  oc = 0;
@@ -14559,21 +14544,6 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
            !isEmpty(nodeValChunk)
         || !isEmpty(objChunk    )
         || !isEmpty(styleChunk  );
-
-
-    // if (   !isEmpty(curNodeValChunk)
-    //     || !isEmpty(curObjChunk)
-    //     || !isEmpty(curStyleChunk))
-    //     genQueueChunk(
-    //         requestId,
-    //         actionId,
-    //         updateNodeId,
-    //         updateParamId,
-    //         nodeValChunkId++,
-    //         curNodeValChunk,
-    //         curObjChunk,
-    //         curStyleChunk,
-    //         !lastChunkNotEmpty);
 
 
     if (lastChunkNotEmpty)
@@ -14599,7 +14569,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
 
 
-function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk)//, isLast)
+function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, isLast)
 {
     genQueueMessageToUI({
         cmd:          'uiUpdateValuesAndObjects',
@@ -14610,8 +14580,8 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         chunkId:       nodeValChunkId,
         values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_CHAR),
         objects:       [...objChunk],
-        styles:        [...styleChunk]//,
-        //isLast:        isLast
+        styles:        [...styleChunk],
+        isLast:        isLast
     });
 
     if (   !isEmpty(objChunk  )
@@ -48423,13 +48393,21 @@ extends OpColorBase
         if (space.isValid())
         {
             this.paramSpace.setValue(space, false, true, false);
- 
+
+            if (this.id == 'color20')
+            {
+                console.log('space.value =', space.value);
+                console.log('graphView.pastingNodes =', graphView.pastingNodes);
+                console.log('graphView.loadingNodes =', graphView.loadingNodes);
+                console.log('graphView.restoringNodes =', graphView.restoringNodes);
+            }
+
             if (   convert.value != space.value
                 || graphView.pastingNodes
                 || graphView.loadingNodes
                 || graphView.restoringNodes)
                 switchToSpace(this, colorSpace(space.value));
-
+            
 
             if (c1) this.param1.setValue(c1, false, true, false);
             if (c2) this.param2.setValue(c2, false, true, false);
@@ -55893,8 +55871,8 @@ generator.onmessage = function(e)
                 msg.updateParamId, 
                 msg.values, 
                 msg.objects, 
-                msg.styles);//,
-                //msg.isLast);  
+                msg.styles,
+                msg.isLast);  
                 
             break;
         
@@ -57807,7 +57785,7 @@ function findConnectedClusters(nodes)
 
 
 
-function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles)
+function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, isLast)
 {
     if (requestId < lastRequestedId) 
         return;
@@ -57925,14 +57903,14 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     graphView.updateScrollWithBounds();
 
 
-    graphView.pastingNodes       = false;
-    graphView.loadingNodes       = false;
-    graphView.restoringNodes     = false;
+    if (isLast)
+    {
+        graphView.pastingNodes       = false;
+        graphView.loadingNodes       = false;
+        graphView.restoringNodes     = false;
 
-    loadingOverlay.style.display = 'none'; // for loading
-
-
-    uiClearPageData('graph');
+        loadingOverlay.style.display = 'none'; // for loading
+    }
 }
 
 
