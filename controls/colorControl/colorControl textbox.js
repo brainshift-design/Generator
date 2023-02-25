@@ -193,17 +193,33 @@ function initColorControlTextbox(control)
             'value':           value,
             'oldValue':        savedValue,
             'preventSetValue': false }});
-
+            
         control.dispatchEvent(e);
+            
+        
+                // const webColor = webColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
 
+                // const rgb = validHex2rgb(webColor ? webColor.color : e.detail.value);
+                // const val = ColorValue.fromRgb(scaleRgb(rgb));
+
+        let rgb      = validHex2rgb(value);
+        let savedRgb = validHex2rgb(savedValue);
+        
 
         if (!e.preventSetValue)
         {
-            let rgb      = validHex2rgb(value);
-            let savedRgb = validHex2rgb(savedValue);
-
-            control.setValue(ColorValue.fromRgb(scaleRgb(success ? rgb : savedRgb)));
+            if (success) 
+            {
+                control.setValue(
+                      value.trim() != '' 
+                    ? ColorValue.fromRgb(scaleRgb(rgb     )) 
+                    : ColorValue.fromRgb(scaleRgb(savedRgb)));
+            }
+            else
+                control.setValue(ColorValue.fromRgb(scaleRgb(savedRgb)));
         }
+        // else
+        //     control.setValue(ColorValue.fromRgb(scaleRgb(savedRgb)));
 
         
         control.textbox.blur();
@@ -254,8 +270,6 @@ function initColorControlTextbox(control)
               : UNKNOWN_CHAR;
                            
         
-        if (   rgbIsValid(rgb)
-            && control.textbox.value != UNKNOWN_CHAR)
-            control.textbox.savedValue = control.textbox.value;
+        control.textbox.savedValue = control.textbox.value;
     };
 }

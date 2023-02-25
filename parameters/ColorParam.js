@@ -98,12 +98,14 @@ extends Parameter
             if (!e.detail.success)
                 return;
 
-            if (e.detail.value != e.detail.oldValue)
+            if (   e.detail.value.trim() != ''
+                && e.detail.value != e.detail.oldValue)
             {
                 const webColor = webColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
+                if (webColor) e.detail.value = webColor.color;
 
-                const rgb = validHex2rgb(webColor ? webColor.color : e.detail.value);
-                const val = ColorValue.fromRgb(scaleRgb(rgb));
+                 const rgb = validHex2rgb(e.detail.value);
+                 const val = ColorValue.fromRgb(scaleRgb(rgb));
 
                 this.setValue(val, true);
                 e.preventSetValue = true;
