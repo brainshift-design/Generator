@@ -143,7 +143,9 @@ generator.onmessage = function(e)
                 msg.values, 
                 msg.objects, 
                 msg.styles,
-                msg.isLast);  
+                msg.updatedNodes,
+                msg.totalNodes,
+                msg.isLastChunk);  
                 
             break;
         

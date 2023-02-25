@@ -240,6 +240,9 @@ function uiReturnFigLoadNodesAndConns(msg)
 
 function setLoadingProgress(progress)
 {
+    if (graphView.loadingNodes) 
+        progress *= 0.7;
+
     loadingProgress.style.width = (progress * 100) + '%';
 }
 

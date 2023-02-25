@@ -236,7 +236,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
         if (chunkNotEmpty)
         {
-            const isLast =    
+            const isLastChunk =    
                    n >= nodeIds      .length
                 && o >= updateObjects.length
                 && s >= updateStyles .length
@@ -253,7 +253,9 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
                 nodeValChunk,
                 objChunk,
                 styleChunk,
-                isLast);
+                n,
+                nodeIds.length,
+                isLastChunk);
 
             nodeValChunk = [];  nc = 0;
             objChunk     = [];  oc = 0;
@@ -279,6 +281,8 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
             nodeValChunk,
             objChunk,
             styleChunk,
+            nodeIds.length,
+            nodeIds.length,
             true);
     }
 
@@ -291,7 +295,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
 
 
-function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, isLast)
+function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isLastChunk)
 {
     genQueueMessageToUI({
         cmd:          'uiUpdateValuesAndObjects',
@@ -303,7 +307,9 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_CHAR),
         objects:       [...objChunk],
         styles:        [...styleChunk],
-        isLast:        isLast
+        updatedNodes:  updatedNodes,
+        totalNodes:    totalNodes,
+        isLastChunk:   isLastChunk
     });
 
     if (   !isEmpty(objChunk  )

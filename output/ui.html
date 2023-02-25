@@ -2756,10 +2756,23 @@ a
 
 
 <div id='dataModeView'>
-    <div class='dataModeRowWrapper' id='dataModeTitleBar'><div id='chkDataModeRestart'></div></div>
+
+    <div class='dataModeRowWrapper' id='dataModeTitleBar'>
+        <div id='chkDataModeRestart'></div>
+    </div>
+
     <div id='dataModeContent'>
-        <div class='dataModeRowWrapper' id='dataModeNodesWrapper'><div class='dataModeRowTitle'>Nodes</div><div id='dataModeNodes'></div></div>
-        <div class='dataModeRowWrapper' id='dataModeConnsWrapper'><div class='dataModeRowTitle'>Connections</div><div id='dataModeConns'></div></div>
+        
+        <div class='dataModeRowWrapper' id='dataModeNodesWrapper'>
+            <div id='dataModeNodesTitle' class='dataModeRowTitle'>Nodes</div>
+            <div id='dataModeNodes'></div>
+        </div>
+        
+        <div class='dataModeRowWrapper' id='dataModeConnsWrapper'>
+            <div id='dataModeConnsTitle' class='dataModeRowTitle'>Connections</div>
+            <div id='dataModeConns'></div>
+        </div>
+
     </div>        
 </div>
 
@@ -2903,6 +2916,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
                 <p>HTML color names can now be typed into color controls instead of hex codes.</p>
+                <p>Fixed update bug, should now work for any number of nodes.</p>
                 <p>Fixed UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -14514,7 +14528,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
         if (chunkNotEmpty)
         {
-            const isLast =    
+            const isLastChunk =    
                    n >= nodeIds      .length
                 && o >= updateObjects.length
                 && s >= updateStyles .length
@@ -14531,7 +14545,9 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
                 nodeValChunk,
                 objChunk,
                 styleChunk,
-                isLast);
+                n,
+                nodeIds.length,
+                isLastChunk);
 
             nodeValChunk = [];  nc = 0;
             objChunk     = [];  oc = 0;
@@ -14557,6 +14573,8 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
             nodeValChunk,
             objChunk,
             styleChunk,
+            nodeIds.length,
+            nodeIds.length,
             true);
     }
 
@@ -14569,7 +14587,7 @@ function genUpdateValuesAndObjects(requestId, actionId, updateNodeId, updatePara
 
 
 
-function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, isLast)
+function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeValChunkId, nodeValChunk, objChunk, styleChunk, updatedNodes, totalNodes, isLastChunk)
 {
     genQueueMessageToUI({
         cmd:          'uiUpdateValuesAndObjects',
@@ -14581,7 +14599,9 @@ function genQueueChunk(requestId, actionId, updateNodeId, updateParamId, nodeVal
         values:        [...nodeValChunk].map(v => v ? v.toString() : NAN_CHAR),
         objects:       [...objChunk],
         styles:        [...styleChunk],
-        isLast:        isLast
+        updatedNodes:  updatedNodes,
+        totalNodes:    totalNodes,
+        isLastChunk:   isLastChunk
     });
 
     if (   !isEmpty(objChunk  )
@@ -54720,6 +54740,17 @@ function loadNodesAndConnsData(_nodes, _conns)
     
     for (const _node of _dataModeNodes) dataModeNodes.appendChild(createNodeDataDiv(_node));
     for (const _conn of _dataModeConns) dataModeConns.appendChild(createConnDataDiv(_conn));
+
+
+    updateDataModeInfo();
+}
+
+
+
+function updateDataModeInfo()
+{
+    dataModeNodesTitle.innerHTML = dataModeNodes.children.length + '&thinsp;&nbsp;' + countString('node',       dataModeNodes.children.length);
+    dataModeConnsTitle.innerHTML = dataModeConns.children.length + '&thinsp;&nbsp;' + countString('connection', dataModeConns.children.length);
 }
 
 
@@ -54983,6 +55014,9 @@ function dataModeDeleteNode(node)
     if (nRemovedConns > 0)
         notice += ' and ' + nRemovedConns + ' ' + countString('connection', nRemovedConns);
 
+
+    updateDataModeInfo();
+
     uiNotify(notice);
 }
 
@@ -55010,6 +55044,9 @@ function dataModeDeleteAllNodes()
     if (nRemovedConns > 0)
         notice += ' and ' + nRemovedConns + ' ' + countString('connection', nRemovedConns);
 
+
+    updateDataModeInfo();
+
     uiNotify(notice);
 }
 
@@ -55025,6 +55062,8 @@ function dataModeDeleteAllConnections()
     for (let i = dataModeConns.children.length-1; i >= 0; i--)
         dataModeConns.removeChild(dataModeConns.children[i]);
 
+
+    updateDataModeInfo();
 
     if (nRemovedConns > 0)
         uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns));
@@ -55053,6 +55092,8 @@ function dataModeDeleteConnectionsToAndFromNode(node)
     }
 
 
+    updateDataModeInfo();
+
     if (nRemovedConns > 0)
         uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to and from \'' + node.id + '\'');
 }
@@ -55078,6 +55119,8 @@ function dataModeDeleteConnectionsFromNode(node)
     }
 
 
+    updateDataModeInfo();
+
     if (nRemovedConns > 0)
         uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' from \'' + node.id + '\'');
 }
@@ -55102,6 +55145,8 @@ function dataModeDeleteConnectionsToNode(node)
         }
     }
 
+
+    updateDataModeInfo();
 
     if (nRemovedConns > 0)
         uiNotify('Deleted ' + nRemovedConns + ' ' + countString('connection', nRemovedConns) + ' to \'' + node.id + '\'');
@@ -55129,6 +55174,8 @@ function dataModeDeleteConnection(conn)
             dataModeConns.removeChild(div);
     }
 
+
+    updateDataModeInfo();
 
     uiNotify('Deleted connection  ' + connToString(conn));
 }
@@ -55872,7 +55919,9 @@ generator.onmessage = function(e)
                 msg.values, 
                 msg.objects, 
                 msg.styles,
-                msg.isLast);  
+                msg.updatedNodes,
+                msg.totalNodes,
+                msg.isLastChunk);  
                 
             break;
         
@@ -56499,6 +56548,9 @@ function uiReturnFigLoadNodesAndConns(msg)
 
 function setLoadingProgress(progress)
 {
+    if (graphView.loadingNodes) 
+        progress *= 0.7;
+
     loadingProgress.style.width = (progress * 100) + '%';
 }
 
@@ -57785,7 +57837,7 @@ function findConnectedClusters(nodes)
 
 
 
-function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, isLast)
+function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isLastChunk)
 {
     if (requestId < lastRequestedId) 
         return;
@@ -57903,7 +57955,11 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     graphView.updateScrollWithBounds();
 
 
-    if (isLast)
+    if (graphView.loadingNodes)
+        setLoadingProgress((0.7 + 0.3 * updatedNodes / totalNodes) / 0.7)
+
+
+    if (isLastChunk)
     {
         graphView.pastingNodes       = false;
         graphView.loadingNodes       = false;

@@ -810,7 +810,7 @@ function findConnectedClusters(nodes)
 
 
 
-function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, isLast)
+function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParamId, values, objects, styles, updatedNodes, totalNodes, isLastChunk)
 {
     if (requestId < lastRequestedId) 
         return;
@@ -928,7 +928,11 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     graphView.updateScrollWithBounds();
 
 
-    if (isLast)
+    if (graphView.loadingNodes)
+        setLoadingProgress((0.7 + 0.3 * updatedNodes / totalNodes) / 0.7)
+
+
+    if (isLastChunk)
     {
         graphView.pastingNodes       = false;
         graphView.loadingNodes       = false;
