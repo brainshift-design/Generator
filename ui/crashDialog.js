@@ -1,6 +1,17 @@
-function initCrashDialog(event, error, source)
+function initCrashDialog(event, error)
 {
-    crashDetails.innerHTML = error ? error : event;
+    const regex = /\(?data[a-zA-Z0-9/,;:=]*\)?/g;
+
+    
+    let stack = error.stack;
+
+    stack = stack.replaceAll('.<', '<');
+    stack = stack.replaceAll(regex, '');
+    stack = stack.replaceAll('at \n', '');
+    stack = stack.replaceAll('at ', '<br/>&nbsp;&nbsp;&nbsp;&nbsp;at ');
+
+    crashDetails.innerHTML = stack;
+
 
     crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 

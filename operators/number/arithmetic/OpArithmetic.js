@@ -8,7 +8,7 @@ extends OperatorWithSymbol
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
 
-        
+
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
@@ -22,8 +22,8 @@ extends OperatorWithSymbol
         const newInput = new Input(NUMBER_TYPES);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { OpArithmetic_onConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => OpArithmetic_onDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
 
         this.addInput(newInput);
 
@@ -79,19 +79,4 @@ extends OperatorWithSymbol
     {
         return '';
     }
-}
-
-
-
-function OpArithmetic_onConnectInput(node)
-{
-    node.addNewInput();
-}
-
-
-
-function OpArithmetic_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
 }

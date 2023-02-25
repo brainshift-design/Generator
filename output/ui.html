@@ -922,8 +922,8 @@
     left:          50%;
     transform:     translateX(-50%)
                    translateY(-50%);
-    width:         400px;
-    height:        200px;
+    width:         440px;
+    height:        300px;
 
     overflow:      hidden;
     
@@ -985,9 +985,45 @@
 
 #crashDetails
 {
-    font-weight: bold;
+    /* font-weight: bold; */
+    height:        176px;
     margin-bottom: 30px;
+    overflow-y:    scroll;
+    /* box-shadow:    0 0 0 1px red inset; */
 }
+
+
+#crashDetails::-webkit-scrollbar
+{
+    background: transparent;
+    width:      6px;
+}
+
+
+#crashDetails::-webkit-scrollbar-track
+{
+    margin: 6px 6px 6px 0;
+}
+
+
+#crashDetails::-webkit-scrollbar-thumb
+{
+    border-radius: 4px;
+}
+
+
+.figma-dark #crashDetails::-webkit-scrollbar-thumb
+{ 
+    background:    #fff4;
+    /* background-color: #0006;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);  */
+}
+
+.figma-light #crashDetails::-webkit-scrollbar-thumb
+{ 
+    background-color: #0004;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
+}    
 
 
 #crashDialogBody
@@ -19476,7 +19512,7 @@ onerror = (event, source, line, pos, error) =>
 {
     crashed = true;
 
-    initCrashDialog(event, error, source);
+    initCrashDialog(event, error);
     showCrashDialog();
 };
 
@@ -44133,6 +44169,21 @@ function areConnected(node1, node2)
 
 
 
+function onVariableConnectInput(node)
+{
+    node.addNewInput();
+}
+
+
+
+function onVariableDisconnectInput(node, input)
+{
+    removeFromArray(node.inputs, input);
+    node.inputControls.removeChild(input.div);
+}
+
+
+
 function getNodeInputValuesForUndo(input)
 {
     const values = []; 
@@ -45454,8 +45505,8 @@ extends OperatorBase
         const newInput = new Input(ALL_TYPES);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { OpList_onConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => OpList_onDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
 
         this.addInput(newInput);
 
@@ -45492,20 +45543,6 @@ extends OperatorBase
     }
 }
 
-
-
-function OpList_onConnectInput(node)
-{
-    node.addNewInput();
-}
-
-
-
-function OpList_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
-}
 
 
 class   OpItems
@@ -46851,20 +46888,6 @@ extends OperatorWithValue
 
 
 
-function OpList_onConnectInput(node)
-{
-    node.addNewInput();
-}
-
-
-
-function OpList_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
-}
-
-
 class   OpArithmetic
 extends OperatorWithSymbol
 {
@@ -46875,7 +46898,7 @@ extends OperatorWithSymbol
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
 
-        
+
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         
@@ -46889,8 +46912,8 @@ extends OperatorWithSymbol
         const newInput = new Input(NUMBER_TYPES);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { OpArithmetic_onConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => OpArithmetic_onDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
 
         this.addInput(newInput);
 
@@ -46948,20 +46971,6 @@ extends OperatorWithSymbol
     }
 }
 
-
-
-function OpArithmetic_onConnectInput(node)
-{
-    node.addNewInput();
-}
-
-
-
-function OpArithmetic_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
-}
 
 
 class   OpAdd
@@ -47102,8 +47111,8 @@ extends OperatorWithValue
         const newInput = new Input(NUMBER_TYPES);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { OpList_onConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => OpList_onDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
 
         this.addInput(newInput);
 
@@ -47155,7 +47164,7 @@ extends OperatorWithValue
             ? 'normal' 
             : 'italic';
 
-            
+
         const v = Math.round(this.paramValue.value.value);
 
              if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
@@ -47170,21 +47179,6 @@ extends OperatorWithValue
 
         this.updateParamControls();
     }
-}
-
-
-
-function OpList_onConnectInput(node)
-{
-    node.addNewInput();
-}
-
-
-
-function OpList_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
 }
 
 
@@ -47289,20 +47283,6 @@ extends OperatorWithValue
     }
 }
 
-
-
-function OpArithmetic_onConnectInput(node)
-{
-    node.addNewInput();
-}
-
-
-
-function OpArithmetic_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
-}
 
 
 class   OpNot
@@ -51170,8 +51150,8 @@ extends OperatorBase
         const input = new Input([COLOR_TYPES]);
         input.isNew = true;
 
-        input.addEventListener('connect',    () => { OpGradient_onConnectInput(this); input.isNew = false; });
-        input.addEventListener('disconnect', () => OpGradient_onDisconnectInput(this, input));
+        input.addEventListener('connect',    () => { onVariableConnectInput(this); input.isNew = false; });
+        input.addEventListener('disconnect', () => onVariableDisconnectInput(this, input));
 
         this.addInput(input);
 
@@ -51231,22 +51211,6 @@ extends OperatorBase
     // }
 }
 
-
-
-function OpGradient_onConnectInput(node)
-{
-    node.addNewInput();
-    //node.updateNode();
-}
-
-
-
-function OpGradient_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
-    //node.updateNode();
-}
 
 
 class   OpShapeBase
@@ -54268,9 +54232,20 @@ function initThemeColors()
 }
 
 
-function initCrashDialog(event, error, source)
+function initCrashDialog(event, error)
 {
-    crashDetails.innerHTML = error ? error : event;
+    const regex = /\(?data[a-zA-Z0-9/,;:=]*\)?/g;
+
+    
+    let stack = error.stack;
+
+    stack = stack.replaceAll('.<', '<');
+    stack = stack.replaceAll(regex, '');
+    stack = stack.replaceAll('at \n', '');
+    stack = stack.replaceAll('at ', '<br/>&nbsp;&nbsp;&nbsp;&nbsp;at ');
+
+    crashDetails.innerHTML = stack;
+
 
     crashBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 

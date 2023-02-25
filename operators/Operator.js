@@ -1178,6 +1178,21 @@ function areConnected(node1, node2)
 
 
 
+function onVariableConnectInput(node)
+{
+    node.addNewInput();
+}
+
+
+
+function onVariableDisconnectInput(node, input)
+{
+    removeFromArray(node.inputs, input);
+    node.inputControls.removeChild(input.div);
+}
+
+
+
 function getNodeInputValuesForUndo(input)
 {
     const values = []; 

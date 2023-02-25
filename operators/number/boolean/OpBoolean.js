@@ -27,8 +27,8 @@ extends OperatorWithValue
         const newInput = new Input(NUMBER_TYPES);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { OpList_onConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => OpList_onDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
 
         this.addInput(newInput);
 
@@ -80,7 +80,7 @@ extends OperatorWithValue
             ? 'normal' 
             : 'italic';
 
-            
+
         const v = Math.round(this.paramValue.value.value);
 
              if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
@@ -95,19 +95,4 @@ extends OperatorWithValue
 
         this.updateParamControls();
     }
-}
-
-
-
-function OpList_onConnectInput(node)
-{
-    node.addNewInput();
-}
-
-
-
-function OpList_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
 }

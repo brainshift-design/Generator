@@ -79,18 +79,3 @@ extends OperatorWithValue
         this.updateParamControls();
     }
 }
-
-
-
-function OpList_onConnectInput(node)
-{
-    node.addNewInput();
-}
-
-
-
-function OpList_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
-}

@@ -699,8 +699,8 @@
     left:          50%;
     transform:     translateX(-50%)
                    translateY(-50%);
-    width:         400px;
-    height:        200px;
+    width:         440px;
+    height:        300px;
 
     overflow:      hidden;
     
@@ -762,9 +762,45 @@
 
 #crashDetails
 {
-    font-weight: bold;
+    /* font-weight: bold; */
+    height:        176px;
     margin-bottom: 30px;
+    overflow-y:    scroll;
+    /* box-shadow:    0 0 0 1px red inset; */
 }
+
+
+#crashDetails::-webkit-scrollbar
+{
+    background: transparent;
+    width:      6px;
+}
+
+
+#crashDetails::-webkit-scrollbar-track
+{
+    margin: 6px 6px 6px 0;
+}
+
+
+#crashDetails::-webkit-scrollbar-thumb
+{
+    border-radius: 4px;
+}
+
+
+.figma-dark #crashDetails::-webkit-scrollbar-thumb
+{ 
+    background:    #fff4;
+    /* background-color: #0006;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);  */
+}
+
+.figma-light #crashDetails::-webkit-scrollbar-thumb
+{ 
+    background-color: #0004;
+    box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
+}    
 
 
 #crashDialogBody

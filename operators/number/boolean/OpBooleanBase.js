@@ -98,18 +98,3 @@ extends OperatorWithValue
         return '';
     }
 }
-
-
-
-function OpArithmetic_onConnectInput(node)
-{
-    node.addNewInput();
-}
-
-
-
-function OpArithmetic_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
-}

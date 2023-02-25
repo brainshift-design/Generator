@@ -19,8 +19,8 @@ extends OperatorBase
         const newInput = new Input(ALL_TYPES);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { OpList_onConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => OpList_onDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
 
         this.addInput(newInput);
 
@@ -55,19 +55,4 @@ extends OperatorBase
 
         return request;
     }
-}
-
-
-
-function OpList_onConnectInput(node)
-{
-    node.addNewInput();
-}
-
-
-
-function OpList_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
 }

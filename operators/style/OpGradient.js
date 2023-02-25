@@ -37,8 +37,8 @@ extends OperatorBase
         const input = new Input([COLOR_TYPES]);
         input.isNew = true;
 
-        input.addEventListener('connect',    () => { OpGradient_onConnectInput(this); input.isNew = false; });
-        input.addEventListener('disconnect', () => OpGradient_onDisconnectInput(this, input));
+        input.addEventListener('connect',    () => { onVariableConnectInput(this); input.isNew = false; });
+        input.addEventListener('disconnect', () => onVariableDisconnectInput(this, input));
 
         this.addInput(input);
 
@@ -96,21 +96,4 @@ extends OperatorBase
     //     if (paramIds.includes('value'))
     //         this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
     // }
-}
-
-
-
-function OpGradient_onConnectInput(node)
-{
-    node.addNewInput();
-    //node.updateNode();
-}
-
-
-
-function OpGradient_onDisconnectInput(node, input)
-{
-    removeFromArray(node.inputs, input);
-    node.inputControls.removeChild(input.div);
-    //node.updateNode();
 }
