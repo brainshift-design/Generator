@@ -94,7 +94,7 @@ extends Action
             connectAction_backInitOutputValue(this);
 
         connectAction_removeOldOutputConnection(this);
-        this.removePrevInputConnection();
+        this.removePrevInputConnection(updateNodes);
 
         connectAction_makeNewConnection(this);
 
@@ -129,10 +129,12 @@ extends Action
     
     
     
-    removePrevInputConnection()
+    removePrevInputConnection(updateNodes)
     {
         uiDeleteSavedConn(this.prevInput.connection);
         uiDisconnect(this.prevInput);
+
+        pushUnique(updateNodes, this.prevInput.node);
     }
     
     
