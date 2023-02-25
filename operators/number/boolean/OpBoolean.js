@@ -71,11 +71,16 @@ extends OperatorWithValue
 
     updateParams()
     {
+        this.paramValue    .enableControlText(false);
         this.paramOperation.enableControlText(true);
 
-        this.paramValue.enableControlText(false);
-        this.paramValue.control.text.style.fontStyle = settings.showBoolValues ? 'normal' : 'italic';
+        this.paramValue.control.text.style.fontStyle = 
+               settings.showBoolValues 
+            && this.paramValue.value.isValid()
+            ? 'normal' 
+            : 'italic';
 
+            
         const v = Math.round(this.paramValue.value.value);
 
              if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;

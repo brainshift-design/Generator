@@ -47,6 +47,7 @@ function evalNandInputs(inputs, parse)
     if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
+        if (!val0.isValid()) return NumberValue.NaN;
 
         value.value = val0.toNumber() != 0 ? 0 : 1;
 
@@ -54,6 +55,7 @@ function evalNandInputs(inputs, parse)
         for (let i = 1; i < inputs.length; i++)
         {
             const val = inputs[i].eval(parse).toValue();
+            if (!val.isValid()) return NumberValue.NaN;
 
             console.assert(
                 val.type == NUMBER_VALUE, 

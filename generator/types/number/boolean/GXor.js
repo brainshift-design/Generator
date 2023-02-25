@@ -49,9 +49,7 @@ function evalXorInputs(inputs, parse)
     if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
-
-        //value.value = val0.toNumber();
-        //value.decimals = val0.decimals;
+        if (!val0.isValid()) return NumberValue.NaN;
 
         flipped = val0.toNumber() != 0;
 
@@ -59,28 +57,19 @@ function evalXorInputs(inputs, parse)
         for (let i = 1; i < inputs.length; i++)
         {
             const val = inputs[i].eval(parse).toValue();
+            if (!val.isValid()) return NumberValue.NaN;
 
             console.assert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
             if (val.toNumber() != 0)
-            {
-                //value.value    = val.value;
-                //value.decimals = val.decimals;
-
                 flipped++;
-            }
         }
 
 
         value.value = flipped == 1 ? 1 : 0;
     }
-
-
-    // if (   value.value != 0
-    //     && flipped > 1)
-    //     value.value = 0;
 
 
     return value;

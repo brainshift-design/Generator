@@ -47,21 +47,21 @@ function evalAndInputs(inputs, parse)
     if (!isEmpty(inputs))
     {
         const val0 = inputs[0].eval(parse).toValue();
+        if (!val0.isValid()) return NumberValue.NaN;
 
         value.value = val0.toNumber();
-        // value.decimals = val0.decimals;
 
 
         for (let i = 1; i < inputs.length; i++)
         {
             const val = inputs[i].eval(parse).toValue();
+            if (!val.isValid()) return NumberValue.NaN;
 
             console.assert(
                 val.type == NUMBER_VALUE, 
                 'val.type must be NUMBER_VALUE');
                 
             value.value = Math.min(value.value, val.toNumber());
-            // value.decimals = Math.max(value.decimals, val.decimals);
         }
 
         

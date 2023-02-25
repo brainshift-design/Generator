@@ -78,7 +78,7 @@ extends OperatorWithValue
 
         this.paramValue.control.text.style.fontStyle = 
                settings.showBoolValues 
-            && this.paramValue.control.valueText != UNKNOWN_DISPLAY
+            && this.paramValue.value.isValid()
             ? 'normal' 
             : 'italic';
 
