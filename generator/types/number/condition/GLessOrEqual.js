@@ -23,28 +23,16 @@ extends GConditionBase
         if (this.isCached())
             return this;
 
-        this.value = evalLessOrEqualInputs(this.input0, this.input1, parse);
-        
+            this.value = evalConditionInputs(
+                this.input0, 
+                this.input1, 
+                (a, b) => a <= b, 
+                parse);
+            
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
 
         this.validate();
 
         return this;
     }
-}
-
-
-
-function evalLessOrEqualInputs(input0, input1, parse) 
-{
-    if (   input0 
-        && input1)
-    {
-        const val0 = input0.eval(parse).toValue();
-        const val1 = input1.eval(parse).toValue();
-
-        return new NumberValue(val0.toNumber() <= val1.toNumber() ? 1 : 0);
-    }
-    else                  
-        return NumberValue.NaN;
 }

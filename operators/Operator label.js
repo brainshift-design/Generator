@@ -45,7 +45,7 @@ function createNodeLabel(node)
 
 function updateHeaderLabelOffsetX(node, f = node.labelOffsetFactor)
 {
-    console.log('updateHeaderLabelOffsetX()');
+    //console.log('updateHeaderLabelOffsetX()');
 
     node.labelOffsetFactor = Math.min(Math.max(0, f), 1);
 

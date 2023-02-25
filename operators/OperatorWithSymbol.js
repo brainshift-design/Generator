@@ -56,7 +56,7 @@ extends OperatorWithValue
     
     updateHeaderLabel()
     {
-        console.log('OperatorWithSymbol.updateHeaderLabel()');
+        //console.log('OperatorWithSymbol.updateHeaderLabel()');
         
         super.updateHeaderLabel();
 
@@ -83,7 +83,7 @@ extends OperatorWithValue
         else
         {
             this._symbol.style.top = inputY[0]/2 + inputHeight/2 - 13;
-            this.label  .style.top = 'calc(50% - 3px)';
+            this.label  .style.top = 'calc(50% - 2px)';
         }
         
 

@@ -433,12 +433,12 @@ const BOOLEAN_OPS = [
     [BOOLEAN_OR, 'or'],
     [BOOLEAN_XOR, 'xor']
 ];
-const CONDITION_EQUAL = 0;
-const CONDITION_NOT_EQUAL = 1;
-const CONDITION_LESS = 2;
-const CONDITION_LESS_OR_EQUAL = 3;
-const CONDITION_GREATER = 4;
-const CONDITION_GREATER_OR_EQUAL = 5;
+const CONDITION_LESS = 0;
+const CONDITION_LESS_OR_EQUAL = 1;
+const CONDITION_NOT_EQUAL = 2;
+const CONDITION_EQUAL = 3;
+const CONDITION_GREATER_OR_EQUAL = 4;
+const CONDITION_GREATER = 5;
 const CONDITION_OPS = [
     [CONDITION_LESS, '<'],
     [CONDITION_LESS_OR_EQUAL, '≤'],
@@ -1886,7 +1886,6 @@ var notifyNotificationHandler = null;
 var notifyDequeueHandler = () => notifyNotificationHandler = null;
 var windowDock = 'normal'; // '', 'maximize', 'top', 'left', 'right', 'bottom'
 function figSetWindowRect(x, y, width, height) {
-    console.log('x =', x);
     (function () {
         return __awaiter(this, void 0, void 0, function* () {
             let position = true;

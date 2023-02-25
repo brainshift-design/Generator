@@ -44,12 +44,12 @@ extends GNumberType
         
         switch (op.value)
         {
-            case CONDITION_EQUAL:             this.value = evalEqualInputs         (this.input0, this.input1, parse);  break;
-            case CONDITION_NOT_EQUAL:         this.value = evalNotEqualInputs      (this.input0, this.input1, parse);  break;
-            case CONDITION_LESS:              this.value = evalLessInputs          (this.input0, this.input1, parse);  break;
-            case CONDITION_LESS_OR_EQUAL:     this.value = evalLessOrEqualInputs   (this.input0, this.input1, parse);  break;
-            case CONDITION_GREATER:           this.value = evalGreaterInputs       (this.input0, this.input1, parse);  break;
-            case CONDITION_GREATER_OR_EQUAL:  this.value = evalGreaterOrEqualInputs(this.input0, this.input1, parse);  break;
+            case CONDITION_LESS:              this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a <  b), parse);  break;
+            case CONDITION_LESS_OR_EQUAL:     this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a <= b), parse);  break;
+            case CONDITION_NOT_EQUAL:         this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a != b), parse);  break;
+            case CONDITION_EQUAL:             this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a == b), parse);  break;
+            case CONDITION_GREATER_OR_EQUAL:  this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a >= b), parse);  break;
+            case CONDITION_GREATER:           this.value = evalConditionInputs(this.input0, this.input1, ((a, b) => a >  b), parse);  break;
         }
 
 

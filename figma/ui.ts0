@@ -7,7 +7,6 @@ var windowDock = 'normal'; // '', 'maximize', 'top', 'left', 'right', 'bottom'
 
 function figSetWindowRect(x, y, width, height)
 {
-    console.log('x =', x);
     (async function()
     {
         let position = true;

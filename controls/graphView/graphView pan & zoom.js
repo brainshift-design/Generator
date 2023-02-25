@@ -214,7 +214,7 @@ graphView.endZoomSelection = function(pointerId, zoom)
 
     if (zoom)
     {
-        console.log('selection =', selection);
+        //console.log('selection =', selection);
         graphView.oldZoom = graphView.zoom;
         
         graphView.zoomToRect(new Rect(
@@ -265,9 +265,9 @@ graphView.zoomToFit = function()
 
 graphView.zoomToRect = function(rect, margin = 40)
 {
-    console.log('1 zoom rect =', rect);
-    console.log('1 graphView.pan =', graphView.pan);
-    console.log('1 graphView.zoom =', graphView.zoom);
+    // console.log('1 zoom rect =', rect);
+    // console.log('1 graphView.pan =', graphView.pan);
+    // console.log('1 graphView.zoom =', graphView.zoom);
 
     margin /= graphView.zoom;
 
@@ -280,5 +280,5 @@ graphView.zoomToRect = function(rect, margin = 40)
         y: graphViewClient.height/2 - (rect.y + rect.height/2) * graphView.zoom
     };
 
-    console.log('2 graphView.pan =', graphView.pan);
+    // console.log('2 graphView.pan =', graphView.pan);
 };

@@ -292,12 +292,12 @@ const BOOLEAN_OPS =
 
 
 
-const CONDITION_EQUAL            = 0;
-const CONDITION_NOT_EQUAL        = 1;
-const CONDITION_LESS             = 2;
-const CONDITION_LESS_OR_EQUAL    = 3;
-const CONDITION_GREATER          = 4;
-const CONDITION_GREATER_OR_EQUAL = 5;
+const CONDITION_LESS             = 0;
+const CONDITION_LESS_OR_EQUAL    = 1;
+const CONDITION_NOT_EQUAL        = 2;
+const CONDITION_EQUAL            = 3;
+const CONDITION_GREATER_OR_EQUAL = 4;
+const CONDITION_GREATER          = 5;
 
 const CONDITION_OPS = 
 [   
