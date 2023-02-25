@@ -5,6 +5,7 @@ const settings =
 
     autoConnectNewNodes:   true,
     enableZoomedOutParams: false,
+    minZoomForParams:      0.35,
     showAllColorSpaces:    false,
     showBoolValues:        true,
     showOperationResults:  true,
@@ -41,6 +42,7 @@ function updateSetting(settingName, value)
 
         case 'autoConnectNewNodes':   settings.autoConnectNewNodes   = value;  break;
         case 'enableZoomedOutParams': settings.enableZoomedOutParams = value;  break;
+        case 'minZoomForParams':      settings.minZoomForParams      = value;  break;
         case 'showAllColorSpaces':    settings.showAllColorSpaces    = value;  break;
         case 'showBoolValues':        settings.showBoolValues        = value;  break;
         case 'showOperationResults':  settings.showOperationResults  = value;  break;
@@ -226,6 +228,7 @@ function loadLocalSettings()
 
     uiGetLocalData('autoConnectNewNodes'  );
     uiGetLocalData('enableZoomedOutParams');
+    uiGetLocalData('minZoomForParams'     );
     uiGetLocalData('showBoolValues'       );
     uiGetLocalData('showOperationResults' );
     uiGetLocalData('showClearUndoWarning' );

@@ -89,8 +89,9 @@ class MenuItem
         this.div.style.pointerEvents = this.separator ? 'none' : 'all';
 
 
-        this.divName.innerHTML = this.name;
+        this.setName(this.name);
 
+        
         if (this.childMenu)
             this.divExpand.style.visibility = 'visible';
 
@@ -199,6 +200,14 @@ class MenuItem
             this.enteredDiv    = false;
             this.enteredExpand = false;
         });
+    }
+
+
+
+    setName(name)
+    {
+        this.name              = name;
+        this.divName.innerHTML = name;
     }
 
 

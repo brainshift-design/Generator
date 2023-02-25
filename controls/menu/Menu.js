@@ -114,8 +114,9 @@ class Menu
             const mesShortcut = utilContext.measureText(item.shortcut);
 
             let checksAndIcons = 
-                  (item.parentMenu.showChecks ? 32 : 0)
-                + (item.parentMenu.showIcons  ? 32 : 0)
+                  (item.parentMenu.showChecks  ? 32 : 0)
+                + (item.parentMenu.showIcons   ? 32 : 0)
+                + (item.childMenu != undefined ? 32 : 0);
 
             if (this.combineChecksAndIcons)
                 checksAndIcons = Math.min(checksAndIcons, 32);

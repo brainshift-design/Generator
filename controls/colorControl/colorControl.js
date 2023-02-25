@@ -93,7 +93,7 @@ function initColorControl(param, control, width, height, id, name, showName, def
     control.canReact = function(e)
     {
         if (   settings.enableZoomedOutParams
-            || graphView.zoom > 0.33333)
+            || graphView.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();

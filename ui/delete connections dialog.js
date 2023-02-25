@@ -1,103 +1,103 @@
-var deleteConnectionsDialogVisible = false;
+// var deleteConnectionsDialogVisible = false;
 
 
 
-function showDeleteConnectionsDialog()
-{
-    deleteConnectionsDialog.style.left      = '50%';
-    deleteConnectionsDialog.style.top       = '50%';
-    deleteConnectionsDialog.style.transform = 'translateX(-50%) translateY(-50%)';
+// function showDeleteConnectionsDialog()
+// {
+//     deleteConnectionsDialog.style.left      = '50%';
+//     deleteConnectionsDialog.style.top       = '50%';
+//     deleteConnectionsDialog.style.transform = 'translateX(-50%) translateY(-50%)';
 
-    deleteConnectionsDialog.style.display   = 'block';
-    deleteConnectionsDialogVisible          = true;
+//     deleteConnectionsDialog.style.display   = 'block';
+//     deleteConnectionsDialogVisible          = true;
   
-    deleteConnectionsTitle.buttonDown0      = false;
+//     deleteConnectionsTitle.buttonDown0      = false;
        
-    deleteConnectionsTitle.moveStart        = point_NaN;
-    deleteConnectionsTitle.pStart           = point_NaN;
+//     deleteConnectionsTitle.moveStart        = point_NaN;
+//     deleteConnectionsTitle.pStart           = point_NaN;
     
-    deleteConnectionsInput.value            = '';
+//     deleteConnectionsInput.value            = '';
 
-    updateDeleteConnectionsInputBack();
-
-
-    window.setTimeout(() => document.getElementById('deleteConnectionsInput').focus(), 0);
-}
+//     updateDeleteConnectionsInputBack();
 
 
-
-function hideDeleteConnectionsDialog()
-{
-    deleteConnectionsDialog.style.display = 'none';
-    deleteConnectionsDialogVisible        = false;
-}
+//     window.setTimeout(() => document.getElementById('deleteConnectionsInput').focus(), 0);
+// }
 
 
 
-deleteConnectionsClose.addEventListener('pointerdown', e => e.stopPropagation());
+// function hideDeleteConnectionsDialog()
+// {
+//     deleteConnectionsDialog.style.display = 'none';
+//     deleteConnectionsDialogVisible        = false;
+// }
 
 
 
-deleteConnectionsTitle.addEventListener('pointerdown', e => 
-{
-    deleteConnectionsTitle.setPointerCapture(e.pointerId);
-    deleteConnectionsTitle.buttonDown0 = true;
-
-    deleteConnectionsTitle.moveStart = point(deleteConnectionsDialog.offsetLeft, deleteConnectionsDialog.offsetTop);
-    deleteConnectionsTitle.pStart    = point(e.clientX, e.clientY);
-});
+// deleteConnectionsClose.addEventListener('pointerdown', e => e.stopPropagation());
 
 
 
-deleteConnectionsTitle.addEventListener('pointermove', e =>
-{
-    if (deleteConnectionsTitle.buttonDown0)
-    {
-        deleteConnectionsDialog.style.left = (deleteConnectionsTitle.moveStart.x + (e.clientX - deleteConnectionsTitle.pStart.x)) + 'px';
-        deleteConnectionsDialog.style.top  = (deleteConnectionsTitle.moveStart.y + (e.clientY - deleteConnectionsTitle.pStart.y)) + 'px';
-    }
-});
+// deleteConnectionsTitle.addEventListener('pointerdown', e => 
+// {
+//     deleteConnectionsTitle.setPointerCapture(e.pointerId);
+//     deleteConnectionsTitle.buttonDown0 = true;
+
+//     deleteConnectionsTitle.moveStart = point(deleteConnectionsDialog.offsetLeft, deleteConnectionsDialog.offsetTop);
+//     deleteConnectionsTitle.pStart    = point(e.clientX, e.clientY);
+// });
 
 
 
-deleteConnectionsTitle.addEventListener('pointerup', e =>
-{
-    deleteConnectionsTitle.buttonDown0 = false;
-    deleteConnectionsTitle.releasePointerCapture(e.pointerId);
-});
+// deleteConnectionsTitle.addEventListener('pointermove', e =>
+// {
+//     if (deleteConnectionsTitle.buttonDown0)
+//     {
+//         deleteConnectionsDialog.style.left = (deleteConnectionsTitle.moveStart.x + (e.clientX - deleteConnectionsTitle.pStart.x)) + 'px';
+//         deleteConnectionsDialog.style.top  = (deleteConnectionsTitle.moveStart.y + (e.clientY - deleteConnectionsTitle.pStart.y)) + 'px';
+//     }
+// });
 
 
 
-deleteConnectionsInput.addEventListener('input', () =>
-{
-    updateDeleteConnectionsInputBack();
-});
+// deleteConnectionsTitle.addEventListener('pointerup', e =>
+// {
+//     deleteConnectionsTitle.buttonDown0 = false;
+//     deleteConnectionsTitle.releasePointerCapture(e.pointerId);
+// });
 
 
 
-function updateDeleteConnectionsInputBack()
-{
-    deleteConnectionsInputBack.innerHTML          = deleteConnectionsInput.value == '' ? 'Node IDs' : '';
-    deleteConnectionsInputBack.style.borderBottom = deleteConnectionsInput.value == '' ? '1px solid var(--figma-color-bg-tertiary)' : 'none';
-}
+// deleteConnectionsInput.addEventListener('input', () =>
+// {
+//     updateDeleteConnectionsInputBack();
+// });
 
 
 
-deleteConnectionsInput.addEventListener('pointerup', () =>
-{
-    deleteConnectionsInput.select();
-});
+// function updateDeleteConnectionsInputBack()
+// {
+//     deleteConnectionsInputBack.innerHTML          = deleteConnectionsInput.value == '' ? 'Node IDs' : '';
+//     deleteConnectionsInputBack.style.borderBottom = deleteConnectionsInput.value == '' ? '1px solid var(--figma-color-bg-tertiary)' : 'none';
+// }
 
 
 
-function deleteConnectionsToNodes(str)
-{
-    str = str.replace(',', ' ');
+// deleteConnectionsInput.addEventListener('pointerup', () =>
+// {
+//     deleteConnectionsInput.select();
+// });
+
+
+
+// function deleteConnectionsToNodes(str)
+// {
+//     str = str.replace(',', ' ');
     
-    const nodeIds = str.split(' ').filter(i => i);
+//     const nodeIds = str.split(' ').filter(i => i);
 
-    uiRemoveConnsToNodes(nodeIds);
+//     uiRemoveConnsToNodes(nodeIds);
 
-    if (!isEmpty(nodeIds))
-        hideDeleteConnectionsDialog();
-}
+//     if (!isEmpty(nodeIds))
+//         hideDeleteConnectionsDialog();
+// }

@@ -200,7 +200,7 @@ extends EventTarget
     canReact(e)
     {
         if (   settings.enableZoomedOutParams
-            || graphView.zoom > 0.33333)
+            || graphView.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();

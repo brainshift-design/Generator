@@ -441,7 +441,8 @@ class Operator
 
         this.updateBorder();
 
-        if (deleteConnectionsDialogVisible)
+        //if (deleteConnectionsDialogVisible)
+        if (minZoomDialogVisible)
             hideDeleteConnectionsDialog();
     }
     

@@ -10,7 +10,7 @@ document.startRect  = new Rect();
 
 
 
-window.addEventListener('keydown',       e => e.preventDefault());
+//window.addEventListener('keydown',       e => e.preventDefault());
 
 window.addEventListener('gesturestart',  e => e.preventDefault());
 window.addEventListener('gesturechange', e => e.preventDefault());

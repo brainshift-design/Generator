@@ -127,7 +127,7 @@ function initNumberControl(param, control, width, height, id, name, showName, de
     control.canReact = function(e)
     {
         if (   settings.enableZoomedOutParams
-            || graphView.zoom > 0.33333)
+            || graphView.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();

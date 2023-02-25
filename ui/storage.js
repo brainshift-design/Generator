@@ -32,6 +32,10 @@ function uiReturnFigGetLocalData(msg)
 {
     switch (msg.key)
     {
+        case 'minZoomForParams':
+            updateSetting(msg.key, parseFloat(msg.value));
+            break;
+            
         case 'dataMode':
         case 'debugMode':
 

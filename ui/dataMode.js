@@ -51,8 +51,8 @@ function loadNodesAndConnsData(_nodes, _conns)
 
     _dataModeNodes.sort((n1, n2) => 
     {
-        if (n1.y != n2.y ) return floatParse(n1.value.y) - floatParse(n2.value.y);
-        if (n1.x != n2.x ) return floatParse(n1.value.x) - floatParse(n2.value.x);
+        if (n1.y != n2.y ) return parseFloat(n1.value.y) - parseFloat(n2.value.y);
+        if (n1.x != n2.x ) return parseFloat(n1.value.x) - parseFloat(n2.value.x);
         return 0;
     });
 

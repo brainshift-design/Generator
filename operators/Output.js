@@ -75,18 +75,12 @@ class Output
         this.colorLight       = [0, 0, 0, 1];
         this.colorDark        = [1, 1, 1, 1];
       
-        this.wireColor        = rgb_NaN;//rgbHeaderFromType(this.types[0], true);
+        this.wireColor        = rgb_NaN;
         
 
         this.div.appendChild(this.hitbox);
         this.div.appendChild(this.wireBall);
 
-
-
-        //        this.updateControl();
-
-        
-        //this.hitbox.addEventListener('pointerdown', e => e.preventDefault());
 
 
         this.hitbox.addEventListener('pointerenter', e => 
@@ -152,12 +146,6 @@ class Output
         this.mouseOver = false;
         this.updateControl();
 
-        // if (graphView.tempConn)
-        // {
-        //     console.log('graphView.tempConn.output =', graphView.tempConn.output);
-        //     console.log('graphView.tempConn.input =', graphView.tempConn.input);
-        // }
-
         if (   graphView.tempConn
             && graphView.tempConn.input)
             graphView.tempConn.wire.outputPos = point_NaN;
@@ -188,7 +176,7 @@ class Output
     canReact(e)
     {
         if (   settings.enableZoomedOutParams
-            || graphView.zoom > 0.33333)
+            || graphView.zoom > settings.minZoomForParams)
             return true;
 
         e.preventDefault();
@@ -229,16 +217,13 @@ class Output
             : this.colorLight;
 
         const colorStyle = 
-            //settings.showWires
-            //? 
             rgba2style(rgb_a(
                 color, 
                 mouseOver 
                 ? Math.min(color[3] * this.overFactor, 1) 
                 : color[3]));
-            //: 'transparent';
 
-        this.div.style.pointerEvents   = 'auto';//settings.showWires ? 'auto' : 'none';
+        this.div.style.pointerEvents   = 'auto';
         this.div.style.backgroundColor = colorStyle;
 
         this.div.style.boxShadow = 
@@ -249,7 +234,6 @@ class Output
             ? '0 0 0 1px ' + colorStyle
             : 'none';
 
-        //this.wireBall.style.backgroundColor = rgba2style(toRgba(this.wireColor));
 
         this.wireBall.style.zIndex = MAX_INT32;
 
