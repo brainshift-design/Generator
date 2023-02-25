@@ -16,6 +16,13 @@ function noNaN(x, replace)
 
 
 
+function isSimpleLatinLetter(c)
+{
+    return c >= 'a' && c <= 'z'
+        || c >= 'A' && c <= 'Z';
+}
+
+
 function getDigitCount(i)
 {
     let l = Math.floor(Math.log10(Math.abs(i))); // the minus sign doesn't count as a digit;

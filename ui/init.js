@@ -21,7 +21,7 @@ var allUpdateNodes   = [];
 
 //uiClearLocalData('showWhatsNew');
 
-//uiSetLocalData('showWhatsNew', generatorVersion);
+//uiSetLocalData('enableBetaFeatures', "true");
 //uiSetLocalData('logRawLoading', 'false');
 
 

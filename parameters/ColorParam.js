@@ -100,7 +100,9 @@ extends Parameter
 
             if (e.detail.value != e.detail.oldValue)
             {
-                const rgb = validHex2rgb(e.detail.value);
+                const webColor = webColors.find(wc => wc.name.toLowerCase() == e.detail.value.toLowerCase());
+
+                const rgb = validHex2rgb(webColor ? webColor.color : e.detail.value);
                 const val = ColorValue.fromRgb(scaleRgb(rgb));
 
                 this.setValue(val, true);
