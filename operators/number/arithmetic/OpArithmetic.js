@@ -4,11 +4,11 @@ extends OperatorWithSymbol
     constructor(type, shortName, symbol)
     {
         super(type, shortName, symbol);
-
         
         this.variableInputs   = true;
         this.alwaysLoadParams = true;
 
+        
         this.addNewInput();
         this.addOutput(new Output([NUMBER_VALUE], this.output_genRequest));
         

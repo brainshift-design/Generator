@@ -877,14 +877,13 @@ class Operator
 
     updateHeaderLabel()
     {
-        this.labelText.innerHTML = 
-              (settings.showNodeId ? 'ID: ' + this.id : this.name)
-            + (this.active && this.showActiveArrow ? '  ‣' : '');
+        this.updateHeaderLabelText();
 
-        this.label.style.left = '50%';//'calc(50% + ' + (this.active ? '30px' : '0px') + ')';
-        this.label.style.top  = '50%';
+        
+        this.label.style.top = Math.floor(this.measureData.labelWrapperOffset.height/2 - this.measureData.labelOffset.height/2) + 'px';
 
-        updateHeaderLabelOffset(this);
+
+        updateHeaderLabelOffsetX(this);
 
 
         const colors = this.getHeaderColors();
@@ -903,6 +902,15 @@ class Operator
         this.label.style.height     = this.active ? fontSize * 14 / 11 : 14;
 
         this.label.style.fontWeight = graphView.zoom < 1.2 ? '600' : 'normal';
+    }
+
+
+
+    updateHeaderLabelText()
+    {
+        this.labelText.innerHTML = 
+              (settings.showNodeId ? 'ID: ' + this.id : this.name)
+            + (this.active && this.showActiveArrow ? '  ‣' : '');
     }
 
 

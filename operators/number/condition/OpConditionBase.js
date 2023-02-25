@@ -5,7 +5,9 @@ extends OperatorWithSymbol
     {
         super(type, shortName, symbol);
 
+        this.alwaysLoadParams = true;
 
+        
         this.addInput(new Input(NUMBER_TYPES));
         this.addInput(new Input(NUMBER_TYPES));
 

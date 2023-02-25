@@ -249,7 +249,7 @@ function initGeneratorMenus()
                                            
                                            graph.nodes.forEach(n => n.updateNode());
                                            graph.nodes.forEach(n => n.updateMeasureData());
-                                           graph.nodes.forEach(n => updateHeaderLabelOffset(n));
+                                           graph.nodes.forEach(n => updateHeaderLabelOffsetX(n));
                                        }
                                    }),
                                    new MenuItem('',                             {separator: true}),

@@ -126,16 +126,19 @@ class MenuItem
 
         this.div.addEventListener('pointerup', e => 
         {
-            const rect = boundingRect(this.div);
-
-            if (   this.callback
-                && this.childMenu)
+            if (e.button == 0)
             {
-                if (e.clientX - rect.x < rect.width - this.arrowWidth)
+                const rect = boundingRect(this.div);
+
+                if (   this.callback
+                    && this.childMenu)
+                {
+                    if (e.clientX - rect.x < rect.width - this.arrowWidth)
+                        this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
+                }
+                else if (this.callback)
                     this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
             }
-            else if (this.callback)
-                this.select(e.shiftKey, getCtrlKey(e), e.altKey, rect.x, rect.y);
         });
 
 

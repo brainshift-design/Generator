@@ -948,8 +948,11 @@ function uiToggleDisableNodes(nodes)
     {
         n.enabled = !n.enabled;
 
-        if (!n.enabled)
-            pushUnique(update, n.id);
+        //if (!n.enabled)
+        n.updateMeasureData();
+        n.updateNode();
+
+        pushUnique(update, n.id);
     });
 
 

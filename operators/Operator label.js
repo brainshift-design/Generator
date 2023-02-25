@@ -30,11 +30,11 @@ function createNodeLabel(node)
         
         const x          = e.clientX - wrect.x;
 
-             if (x <  viewMargin)               updateHeaderLabelOffset(node, 0);
-        else if (x >= wrect.width - viewMargin) updateHeaderLabelOffset(node, 1);
+             if (x <  viewMargin)               updateHeaderLabelOffsetX(node, 0);
+        else if (x >= wrect.width - viewMargin) updateHeaderLabelOffsetX(node, 1);
         else if (x >= viewMargin
-              && x <  wrect.width - viewMargin) updateHeaderLabelOffset(node, (x - viewMargin) / (wrect.width - viewMargin*2));
-        else                                    updateHeaderLabelOffset(node);
+              && x <  wrect.width - viewMargin) updateHeaderLabelOffsetX(node, (x - viewMargin) / (wrect.width - viewMargin*2));
+        else                                    updateHeaderLabelOffsetX(node);
     });
 
 
@@ -43,8 +43,10 @@ function createNodeLabel(node)
 
 
 
-function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
+function updateHeaderLabelOffsetX(node, f = node.labelOffsetFactor)
 {
+    console.log('updateHeaderLabelOffsetX()');
+
     node.labelOffsetFactor = Math.min(Math.max(0, f), 1);
 
 
@@ -85,9 +87,6 @@ function updateHeaderLabelOffset(node, f = node.labelOffsetFactor)
 
         node.label.style.transform = 'translateX(-50%)';
     }
-
-
-    node.label.style.top = Math.floor(node.measureData.labelWrapperOffset.height/2 - node.measureData.labelOffset.height/2) + 'px';
 
 
     const color = 
