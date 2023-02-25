@@ -1,12 +1,9 @@
 function initCrashDialog(event, error)
 {
-    const regex = /\(?data[a-zA-Z0-9/,;:=]*\)?/g;
-
-    
     let stack = error.stack;
 
     stack = stack.replaceAll('.<', '<');
-    stack = stack.replaceAll(regex, '');
+    stack = stack.replaceAll(/\(?data[a-zA-Z0-9/,;:=]*\)?/g, '');
     stack = stack.replaceAll('at \n', '');
     stack = stack.replaceAll('at ', '<br/>&nbsp;&nbsp;&nbsp;&nbsp;at ');
 

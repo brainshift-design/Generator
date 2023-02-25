@@ -18,6 +18,7 @@ function createOperatorNode(node)
     
     node.enterTimer             = null;
 
+
     node.inner = createDiv('nodeInner');
     node.div.appendChild(node.inner);
 
@@ -53,44 +54,8 @@ function createOperatorNode(node)
     });
 
     
-    node.paramBack = createDiv('nodeParamBack');
-    //node.inner.appendChild(node.paramBack);
-    
-    
-    //node.separator = createDiv('paramSeparator');
-    //node.inner.appendChild(node.separator);
-    
-    // node.separator.addEventListener('click', () =>
-    // {
-    //     if (node.showAllParams)
-    //     {
-    //         node.showAllParams = !node.showAllParams;
-    //         // TODO: save nodecd  here?
-    //     }
-    // });
-
-
-
+    node.paramBack       = createDiv('nodeParamBack');
     node.hiddenParamBack = createDiv('nodeHiddenParamBack');
-    //node.inner.appendChild(node.hiddenParamBack);
-    
-
-    // node.div.addEventListener('pointermove', e =>
-    // {
-    //     const rect = boundingRect(node.div);
-    
-    //     let y = 
-    //         + (e.clientY - rect.y) / graphView.zoom 
-    //         - node.header.offsetHeight;
-
-    //     const paramHeight = 20;
-
-    //     y = Math.floor(y / paramHeight) * paramHeight;
-
-    //     log(y);
-        
-    //     node.dragParam.style.top = node.header.offsetHeight + y + paramHeight/2 - 5.5;
-    // });
 
 
     createNodeHeader(node);
@@ -248,16 +213,18 @@ function createNodeHeader(node)
                 && !tempConn.output.node.isOrFollows(node))
             {
                 if (   node.variableInputs
-                    && savedConn)
+                    && savedConn
+                    && node == savedConn.input.node)
                 {
                     const rect    = boundingRect(node.div);
                     const padding = node.header.connectionPadding;
 
+
                     const index = Math.min(Math.max(0, Math.round(
                           ((e.clientY - rect.y) / graphView.zoom - padding - (connectionSize + connectionGap)/2) 
                         / (connectionSize + connectionGap))),
-                        node.headerInputs.length-2);
-                    
+                        node.headerInputs.length-(node.headerInputs.length > 1 ? 2 : 1));
+
                     if (index != prevReorderIndex)
                     {
                         newReorderIndex = index;
@@ -272,6 +239,7 @@ function createNodeHeader(node)
                         prevReorderIndex = newReorderIndex;
                     }
 
+                    
                     graphView.overInput   = savedConn.input;
                     graphView.headerInput = savedConn.input;
 

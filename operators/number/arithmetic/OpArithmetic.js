@@ -65,10 +65,9 @@ extends OperatorWithSymbol
     updateParams()
     {
         this.paramValue.enableControlText(false);
-        
-        this.paramValue.control.valueText = this.isUnknown() ? UNKNOWN_DISPLAY : '';
+                
+        this.paramValue.control.valueText =  this.isUnknown() ? UNKNOWN_DISPLAY : '';
         this.paramValue.control.showBar   = !this.isUnknown();
-
 
         this.updateParamControls();
     }
