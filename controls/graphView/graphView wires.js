@@ -303,13 +303,15 @@ function updateWireStyle(wire)
 
     
     wire.curve.style.filter = 
-        darkMode
-        ? ( isDark(color, 0.65)
-           ?    'drop-shadow(0px 0px '+(Math.min(Math.max(1, 1/graphView.zoom), 5))+'px #ffffff' + innerOpacity + ')'
-           :   ' drop-shadow(0px 0px 1px #000000' + innerOpacity + ')')
-        : (!isDark(color)
-           ?    'drop-shadow(0px 0px 1px #000000' + innerOpacity + ')'
-           :   ' drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ')');
+        wire.needsFilter
+        ? darkMode
+            ? ( isDark(color, 0.65)
+                ?    'drop-shadow(0px 0px '+(Math.min(Math.max(1, 1/graphView.zoom), 5))+'px #ffffff' + innerOpacity + ')'
+                :   ' drop-shadow(0px 0px 1px #000000' + innerOpacity + ')')
+            : (!isDark(color)
+                ?    'drop-shadow(0px 0px 1px #000000' + innerOpacity + ')'
+                :   ' drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ')')
+        : 'none';
 
      
     let showCurve = true;

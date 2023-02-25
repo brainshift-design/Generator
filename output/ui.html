@@ -2903,6 +2903,7 @@ a
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
                 <p>HTML color names can now be typed into color controls instead of hex codes.</p>
+                <p>Fixed UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -33778,8 +33779,8 @@ function initGeneratorMenus()
                                            graph.nodes.forEach(n => updateHeaderLabelOffsetX(n));
                                        }
                                    }),
-                                   new MenuItem('',                             {separator: true}),
-                                   new MenuItem('Re-save all connections',      {callback:      () => uiSaveConnections(graph.connections)}),                                   
+                                //    new MenuItem('',                             {separator: true}),
+                                //    new MenuItem('Re-save all connections',      {callback:      () => uiSaveConnections(graph.connections)}),                                   
                                  //new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
                                 //  new MenuItem('',                             {separator: true}),   
                                 //  new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
@@ -39593,13 +39594,15 @@ function updateWireStyle(wire)
 
     
     wire.curve.style.filter = 
-        darkMode
-        ? ( isDark(color, 0.65)
-           ?    'drop-shadow(0px 0px '+(Math.min(Math.max(1, 1/graphView.zoom), 5))+'px #ffffff' + innerOpacity + ')'
-           :   ' drop-shadow(0px 0px 1px #000000' + innerOpacity + ')')
-        : (!isDark(color)
-           ?    'drop-shadow(0px 0px 1px #000000' + innerOpacity + ')'
-           :   ' drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ')');
+        wire.needsFilter
+        ? darkMode
+            ? ( isDark(color, 0.65)
+                ?    'drop-shadow(0px 0px '+(Math.min(Math.max(1, 1/graphView.zoom), 5))+'px #ffffff' + innerOpacity + ')'
+                :   ' drop-shadow(0px 0px 1px #000000' + innerOpacity + ')')
+            : (!isDark(color)
+                ?    'drop-shadow(0px 0px 1px #000000' + innerOpacity + ')'
+                :   ' drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ')')
+        : 'none';
 
      
     let showCurve = true;
@@ -43119,6 +43122,9 @@ class Connection
 
         this.wire.arrow                  = createSvg('polygon');
         this.wire.arrow.style.position   = 'absolute';
+
+
+        this.wire.needsFilter = arraysIntersect(output.types, COLOR_TYPES);
 
 
         this.wire.appendChild(this.wire.curve  );

@@ -40,6 +40,9 @@ class Connection
         this.wire.arrow.style.position   = 'absolute';
 
 
+        this.wire.needsFilter = arraysIntersect(output.types, COLOR_TYPES);
+
+
         this.wire.appendChild(this.wire.curve  );
         this.wire.appendChild(this.wire.curve2 );
         this.wire.appendChild(this.wire.xp1    );

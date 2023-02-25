@@ -252,8 +252,8 @@ function initGeneratorMenus()
                                            graph.nodes.forEach(n => updateHeaderLabelOffsetX(n));
                                        }
                                    }),
-                                   new MenuItem('',                             {separator: true}),
-                                   new MenuItem('Re-save all connections',      {callback:      () => uiSaveConnections(graph.connections)}),                                   
+                                //    new MenuItem('',                             {separator: true}),
+                                //    new MenuItem('Re-save all connections',      {callback:      () => uiSaveConnections(graph.connections)}),                                   
                                  //new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
                                 //  new MenuItem('',                             {separator: true}),   
                                 //  new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
