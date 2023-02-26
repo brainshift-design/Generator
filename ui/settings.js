@@ -5,7 +5,7 @@ const settings =
 
     autoConnectNewNodes:   true,
     enableZoomedOutParams: false,
-    minZoomForParams:      0.35,
+    minZoomForParams:      0.5,
     showAllColorSpaces:    false,
     showBoolValues:        true,
     showOperationResults:  true,

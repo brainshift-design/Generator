@@ -35,7 +35,7 @@ function uiReturnFigGetLocalData(msg)
         case 'minZoomForParams':
             updateSetting(msg.key, parseFloat(msg.value));
             break;
-            
+
         case 'dataMode':
         case 'debugMode':
 
@@ -358,13 +358,15 @@ function finishLoading(_nodes)
 
 
     graphView.canUpdateNodes = true;
-
     graphView.updateShowWires(false);
 
     generatorStarted = true;
 
 
     uiValidateLicense(productKey);
+
+
+    window.focus();
 }
 
 

@@ -230,7 +230,18 @@ graphView.updateNodeTransforms = function(nodes, _updateWires = true)
     const nodeTop  = nodes.map(n => n.div.offsetTop);
     const nodeRect = nodes.map(n => graphView.getNodeOffsetRect(n.div));
     
+    for (let i = 0; i < nodes.length; i++)
+        graphView.setNodeTransform(nodes[i], nodeLeft[i], nodeTop[i], nodeRect[i]);
 
+
+    if (_updateWires)
+        graphView.updateNodeWireTransforms(nodes);
+};
+
+
+
+graphView.updateNodeWireTransforms = function(nodes)
+{
     const wires = [];
 
     for (const node of nodes)
@@ -249,13 +260,8 @@ graphView.updateNodeTransforms = function(nodes, _updateWires = true)
     }
 
 
-    for (let i = 0; i < nodes.length; i++)
-        graphView.setNodeTransform(nodes[i], nodeLeft[i], nodeTop[i], nodeRect[i]);
-
-
-    if (_updateWires)
-        updateWires(wires);
-};
+    updateWires(wires);
+}
 
 
 
@@ -265,7 +271,14 @@ graphView.updateNodeTransform = function(node)
     const nodeTop  = node.div.offsetTop;
     const nodeRect = graphView.getNodeOffsetRect(node.div);
     
+    graphView.setNodeTransform(node, nodeLeft, nodeTop, nodeRect);
+    graphView.updateNodeWireTransform(node);
+};
 
+
+
+graphView.updateNodeWireTransform = function(node)
+{
     const wires = [];
 
     for (const input of node.inputs)
@@ -278,10 +291,8 @@ graphView.updateNodeTransform = function(node)
             if (connInput.connection)
                 wires.push(connInput.connection.wire);
 
-    graphView.setNodeTransform(node, nodeLeft, nodeTop, nodeRect);
-
     updateWires(wires);
-};
+}
 
 
 

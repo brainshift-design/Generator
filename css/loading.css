@@ -15,6 +15,7 @@
 
 #loadingGraphic
 {
+    display:     none;
     font-family: Inter;
     font-size:   26;
     font-weight: 800;

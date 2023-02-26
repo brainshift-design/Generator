@@ -77,6 +77,8 @@ graphView.setPanAndZoom = function(pan, zoom)
             graphView.panZoomTimer = null;
         });
     }
+
+    // console.log('pan = {%s, %s}, zoom = %s', pan.x, pan.y, zoom);
 };
 
 
@@ -161,6 +163,7 @@ graphView.startZoomSelection = function(pointerId, x, y)
     graphView.selectionRect = new Rect(x, y, 0, 0);
     
     selectBox.style.visibility = 'visible';
+    
     graphView.updateZoomSelectBox();
 };
 
@@ -194,12 +197,6 @@ graphView.updateZoomSelectBox = function()
 
 graphView.endZoomSelection = function(pointerId, zoom)
 {
-    graphView.releasePointerCapture(pointerId);
-
-    graphView.zoomSelecting    = false;
-    selectBox.style.visibility = 'hidden';
-
-    
     const wndRect = new Rect(
         1,
         menuBarHeight + 1,
@@ -214,36 +211,60 @@ graphView.endZoomSelection = function(pointerId, zoom)
 
     if (zoom)
     {
-        //console.log('selection =', selection);
-        graphView.oldZoom = graphView.zoom;
+        // graphView.oldZoom = graphView.zoom;
         
-        graphView.zoomToRect(new Rect(
-            selection.x,
-            selection.y - menuBarHeight,
-            selection.w,
-            selection.h));
- 
-        // let box = {
-        //     x: selection.x,
-        //     y: selection.y - menuBarHeight,
-        //     w: selection.w,
-        //     h: selection.h };
+        let box = {
+            x: selection.x,
+            y: selection.y - menuBarHeight,
+            w: selection.w,
+            h: selection.h };
             
-        // const wndHeight = graphView.offsetHeight; 
+        const wndHeight = graphView.offsetHeight; 
 
-        // const diff = { w: (window.innerWidth - box.w) / 2,
-        //                h: (wndHeight         - box.h) / 2 };
+        const diff = { w: (window.innerWidth - box.w) / 2,
+                       h: (wndHeight         - box.h) / 2 };
+console.log('diff =', diff);
+        graphView.setPanAndZoom(
+            point(
+                -(box.x - diff.w) * graphView.zoom,
+                -(box.y - diff.h) * graphView.zoom),
+            graphView.zoom * Math.min(
+                window.innerWidth / box.w,
+                wndHeight         / box.h));
 
-        // graphView.setPanAndZoom(
-        //     point(
-        //         -(box.x - diff.w) * graphView.zoom,
-        //         -(box.y - diff.h) * graphView.zoom),
-        //     graphView.zoom * Math.min(
-        //         window.innerWidth / box.w,
-        //         wndHeight         / box.h));
+
+        // graphView.oldZoom = graphView.zoom;
+
+
+        // const wndRect = new Rect(
+        //     1,
+        //     menuBarHeight + 1,
+        //     graphViewClient.width  - 2,
+        //     graphViewClient.height - 5);
+
+        // const dZoom = 
+        //       Math.min(graphView.selectionRect.w, graphView.selectionRect.h)
+        //     / Math.max(wndRect.w, wndRect.h);
+
+        // let x = graphView.selectionRect.x;
+        // let y = graphView.selectionRect.y;
+        // let w = graphView.selectionRect.w;
+        // let h = graphView.selectionRect.h;
+
+        // w *= dZoom;
+        // h *= dZoom;
+
+        // graphView.zoomToRect(new Rect(x, y, w, h));
     }
 
+
     graphView.selectionRect = Rect.NaN;
+
+
+    graphView.releasePointerCapture(pointerId);
+
+    graphView.zoomSelecting    = false;
+    selectBox.style.visibility = 'hidden';
 };
 
 
@@ -268,10 +289,6 @@ graphView.zoomToFit = function()
 
 graphView.zoomToRect = function(rect, margin = 40)
 {
-    // console.log('1 zoom rect =', rect);
-    // console.log('1 graphView.pan =', graphView.pan);
-    // console.log('1 graphView.zoom =', graphView.zoom);
-
     margin /= graphView.zoom;
 
     graphView.zoom = Math.min(
@@ -282,6 +299,4 @@ graphView.zoomToRect = function(rect, margin = 40)
         x: graphViewClient.width /2 - (rect.x + rect.width /2) * graphView.zoom,
         y: graphViewClient.height/2 - (rect.y + rect.height/2) * graphView.zoom
     };
-
-    // console.log('2 graphView.pan =', graphView.pan);
 };

@@ -82,6 +82,8 @@ function uiReturnFigStartGenerator(msg)
     uiGetLocalData('showWhatsNew');
 
 
+    setTimeout(() => loadingGraphic.style.display = 'block', 300);
+
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });

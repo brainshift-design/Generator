@@ -1138,6 +1138,7 @@
 
 #loadingGraphic
 {
+    display:     none;
     font-family: Inter;
     font-size:   26;
     font-weight: 800;
@@ -2819,6 +2820,7 @@ a
     <div class='scrollbar' id='scrollbarY'></div>
 </div>
 
+
 <div id='selectBox'></div>
 
 
@@ -3010,12 +3012,13 @@ a
     
     <div id='whatsNewDialogContainer'>
         <div id='whatsNewDialogContent'>
-            <div id='whatsNewWatermark'>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
+            <div id='whatsNewWatermark '>◦<span style="font-weight: 700; position: relative; top: 0.06em;">G</span>•</div>
 
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Fixed connection bug.</p>
+                <p>Fixed connection bugs.</p>
+                <p>Set default smallest adjustment zoom to 50%.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -14030,7 +14033,7 @@ const settings =
 
     autoConnectNewNodes:   true,
     enableZoomedOutParams: false,
-    minZoomForParams:      0.35,
+    minZoomForParams:      0.5,
     showAllColorSpaces:    false,
     showBoolValues:        true,
     showOperationResults:  true,
@@ -32482,7 +32485,7 @@ const settings =
 
     autoConnectNewNodes:   true,
     enableZoomedOutParams: false,
-    minZoomForParams:      0.35,
+    minZoomForParams:      0.5,
     showAllColorSpaces:    false,
     showBoolValues:        true,
     showOperationResults:  true,
@@ -33857,15 +33860,15 @@ function initGeneratorMenus()
         menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',        {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
                                         new MenuItem('',                             {separator: true}),    
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',       {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                         }}),
-        //menuItemEnableZoomedOutParams = new MenuItem('',                             {checkCallback: () => settings.enableZoomedOutParams, callback: () => { updateSettingAndMenu('enableZoomedOutParams', true, !settings.enableZoomedOutParams); }, childMenu: menuMainMinZoomForParams}),
-        menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
+      //menuItemEnableZoomedOutParams = new MenuItem('',                             {checkCallback: () => settings.enableZoomedOutParams, callback: () => { updateSettingAndMenu('enableZoomedOutParams', true, !settings.enableZoomedOutParams); }, childMenu: menuMainMinZoomForParams}),
         menuItemShowOperationResults  = new MenuItem('Show operation results',       {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
+        menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',      {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
                                         new MenuItem('',                             {separator: true}),    
         menuItemMinZoomForParams      = new MenuItem('Smallest adjustment zoom...',  {callback: () => showMinZoomDialog()}),
                                         new MenuItem('',                             {separator: true}),    
         menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }})]);
-        //menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);  /*uiValidateLicense(productKey);*/      }})]);
+      //menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);  /*uiValidateLicense(productKey);*/      }})]);
 
     // menuMainPreferences.init = () => 
     // {
@@ -37976,7 +37979,18 @@ graphView.updateNodeTransforms = function(nodes, _updateWires = true)
     const nodeTop  = nodes.map(n => n.div.offsetTop);
     const nodeRect = nodes.map(n => graphView.getNodeOffsetRect(n.div));
     
+    for (let i = 0; i < nodes.length; i++)
+        graphView.setNodeTransform(nodes[i], nodeLeft[i], nodeTop[i], nodeRect[i]);
 
+
+    if (_updateWires)
+        graphView.updateNodeWireTransforms(nodes);
+};
+
+
+
+graphView.updateNodeWireTransforms = function(nodes)
+{
     const wires = [];
 
     for (const node of nodes)
@@ -37995,13 +38009,8 @@ graphView.updateNodeTransforms = function(nodes, _updateWires = true)
     }
 
 
-    for (let i = 0; i < nodes.length; i++)
-        graphView.setNodeTransform(nodes[i], nodeLeft[i], nodeTop[i], nodeRect[i]);
-
-
-    if (_updateWires)
-        updateWires(wires);
-};
+    updateWires(wires);
+}
 
 
 
@@ -38011,7 +38020,14 @@ graphView.updateNodeTransform = function(node)
     const nodeTop  = node.div.offsetTop;
     const nodeRect = graphView.getNodeOffsetRect(node.div);
     
+    graphView.setNodeTransform(node, nodeLeft, nodeTop, nodeRect);
+    graphView.updateNodeWireTransform(node);
+};
 
+
+
+graphView.updateNodeWireTransform = function(node)
+{
     const wires = [];
 
     for (const input of node.inputs)
@@ -38024,10 +38040,8 @@ graphView.updateNodeTransform = function(node)
             if (connInput.connection)
                 wires.push(connInput.connection.wire);
 
-    graphView.setNodeTransform(node, nodeLeft, nodeTop, nodeRect);
-
     updateWires(wires);
-};
+}
 
 
 
@@ -38649,6 +38663,8 @@ graphView.setPanAndZoom = function(pan, zoom)
             graphView.panZoomTimer = null;
         });
     }
+
+    // console.log('pan = {%s, %s}, zoom = %s', pan.x, pan.y, zoom);
 };
 
 
@@ -38733,6 +38749,7 @@ graphView.startZoomSelection = function(pointerId, x, y)
     graphView.selectionRect = new Rect(x, y, 0, 0);
     
     selectBox.style.visibility = 'visible';
+    
     graphView.updateZoomSelectBox();
 };
 
@@ -38766,12 +38783,6 @@ graphView.updateZoomSelectBox = function()
 
 graphView.endZoomSelection = function(pointerId, zoom)
 {
-    graphView.releasePointerCapture(pointerId);
-
-    graphView.zoomSelecting    = false;
-    selectBox.style.visibility = 'hidden';
-
-    
     const wndRect = new Rect(
         1,
         menuBarHeight + 1,
@@ -38786,36 +38797,60 @@ graphView.endZoomSelection = function(pointerId, zoom)
 
     if (zoom)
     {
-        //console.log('selection =', selection);
-        graphView.oldZoom = graphView.zoom;
+        // graphView.oldZoom = graphView.zoom;
         
-        graphView.zoomToRect(new Rect(
-            selection.x,
-            selection.y - menuBarHeight,
-            selection.w,
-            selection.h));
- 
-        // let box = {
-        //     x: selection.x,
-        //     y: selection.y - menuBarHeight,
-        //     w: selection.w,
-        //     h: selection.h };
+        let box = {
+            x: selection.x,
+            y: selection.y - menuBarHeight,
+            w: selection.w,
+            h: selection.h };
             
-        // const wndHeight = graphView.offsetHeight; 
+        const wndHeight = graphView.offsetHeight; 
 
-        // const diff = { w: (window.innerWidth - box.w) / 2,
-        //                h: (wndHeight         - box.h) / 2 };
+        const diff = { w: (window.innerWidth - box.w) / 2,
+                       h: (wndHeight         - box.h) / 2 };
+console.log('diff =', diff);
+        graphView.setPanAndZoom(
+            point(
+                -(box.x - diff.w) * graphView.zoom,
+                -(box.y - diff.h) * graphView.zoom),
+            graphView.zoom * Math.min(
+                window.innerWidth / box.w,
+                wndHeight         / box.h));
 
-        // graphView.setPanAndZoom(
-        //     point(
-        //         -(box.x - diff.w) * graphView.zoom,
-        //         -(box.y - diff.h) * graphView.zoom),
-        //     graphView.zoom * Math.min(
-        //         window.innerWidth / box.w,
-        //         wndHeight         / box.h));
+
+        // graphView.oldZoom = graphView.zoom;
+
+
+        // const wndRect = new Rect(
+        //     1,
+        //     menuBarHeight + 1,
+        //     graphViewClient.width  - 2,
+        //     graphViewClient.height - 5);
+
+        // const dZoom = 
+        //       Math.min(graphView.selectionRect.w, graphView.selectionRect.h)
+        //     / Math.max(wndRect.w, wndRect.h);
+
+        // let x = graphView.selectionRect.x;
+        // let y = graphView.selectionRect.y;
+        // let w = graphView.selectionRect.w;
+        // let h = graphView.selectionRect.h;
+
+        // w *= dZoom;
+        // h *= dZoom;
+
+        // graphView.zoomToRect(new Rect(x, y, w, h));
     }
 
+
     graphView.selectionRect = Rect.NaN;
+
+
+    graphView.releasePointerCapture(pointerId);
+
+    graphView.zoomSelecting    = false;
+    selectBox.style.visibility = 'hidden';
 };
 
 
@@ -38840,10 +38875,6 @@ graphView.zoomToFit = function()
 
 graphView.zoomToRect = function(rect, margin = 40)
 {
-    // console.log('1 zoom rect =', rect);
-    // console.log('1 graphView.pan =', graphView.pan);
-    // console.log('1 graphView.zoom =', graphView.zoom);
-
     margin /= graphView.zoom;
 
     graphView.zoom = Math.min(
@@ -38854,8 +38885,6 @@ graphView.zoomToRect = function(rect, margin = 40)
         x: graphViewClient.width /2 - (rect.x + rect.width /2) * graphView.zoom,
         y: graphViewClient.height/2 - (rect.y + rect.height/2) * graphView.zoom
     };
-
-    // console.log('2 graphView.pan =', graphView.pan);
 };
 
 
@@ -55598,6 +55627,8 @@ function uiReturnFigStartGenerator(msg)
     uiGetLocalData('showWhatsNew');
 
 
+    setTimeout(() => loadingGraphic.style.display = 'block', 300);
+
     uiQueueMessageToFigma({
         cmd:     'figLoadNodesAndConns',
         dataMode: settings.dataMode });
@@ -56576,7 +56607,7 @@ function uiReturnFigGetLocalData(msg)
         case 'minZoomForParams':
             updateSetting(msg.key, parseFloat(msg.value));
             break;
-            
+
         case 'dataMode':
         case 'debugMode':
 
@@ -56899,13 +56930,15 @@ function finishLoading(_nodes)
 
 
     graphView.canUpdateNodes = true;
-
     graphView.updateShowWires(false);
 
     generatorStarted = true;
 
 
     uiValidateLicense(productKey);
+
+
+    window.focus();
 }
 
 
