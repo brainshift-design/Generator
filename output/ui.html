@@ -33989,13 +33989,13 @@ function initGeneratorMenus()
                                            graph.nodes.forEach(n => updateHeaderLabelOffsetX(n));
                                        }
                                    }),
-                                    new MenuItem('',                             {separator: true}),
+                                    // new MenuItem('',                             {separator: true}),
                                 //    new MenuItem('Re-save all connections',      {callback:      () => uiSaveConnections(graph.connections)}),                                   
                                  //new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
                                 //  new MenuItem('',                             {separator: true}),   
                                 //  new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
-                                   new MenuItem('Log all local data',           {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData'}); }}),
-                                   new MenuItem('Clear all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
+                                //    new MenuItem('Log all local data',           {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData'}); }}),
+                                //    new MenuItem('Clear all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
                                 //  new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
                                 //    new MenuItem('',                             {separator: true }),
                                  //new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
@@ -34807,16 +34807,12 @@ function initNumberControlEvents(control)
             control.unlockPointer(e.pointerId);
 
             control.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
-
-            // if (    control.value != control.oldValue
-            //     && !control.readOnly)
-            //     control.dispatchEvent(control.onconfirm);
         }
-        // else if (   e.button == 1
-        //     && control.buttonDown1)
-        // {
-        //     control.buttonDown1 = false;            
-        // }
+        else if (   e.button == 1
+            && control.buttonDown1)
+        {
+            control.buttonDown1 = false;            
+        }
     });
 
 

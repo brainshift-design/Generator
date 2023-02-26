@@ -1683,7 +1683,6 @@ function figLoadLocal(key) {
 }
 function figGetLocalData(key) {
     figma.clientStorage.getAsync(key).then(data => {
-        //console.log('getAsync', data);
         figPostMessageToUi({
             cmd: 'uiReturnFigGetLocalData',
             key: key,

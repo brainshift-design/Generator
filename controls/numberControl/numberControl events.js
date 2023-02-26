@@ -448,16 +448,12 @@ function initNumberControlEvents(control)
             control.unlockPointer(e.pointerId);
 
             control.focus.style.boxShadow = '0 0 0 1px rgba(0, 0, 0, 0.1) inset';
-
-            // if (    control.value != control.oldValue
-            //     && !control.readOnly)
-            //     control.dispatchEvent(control.onconfirm);
         }
-        // else if (   e.button == 1
-        //     && control.buttonDown1)
-        // {
-        //     control.buttonDown1 = false;            
-        // }
+        else if (   e.button == 1
+            && control.buttonDown1)
+        {
+            control.buttonDown1 = false;            
+        }
     });
 
 
