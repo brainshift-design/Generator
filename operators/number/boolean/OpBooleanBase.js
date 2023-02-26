@@ -23,8 +23,8 @@ extends OperatorWithValue
         const newInput = new Input(NUMBER_TYPES);
         newInput.isNew = true;
 
-        newInput.addEventListener('connect',    e => { OpArithmetic_onConnectInput(this); e.detail.input.isNew = false; });
-        newInput.addEventListener('disconnect', e => OpArithmetic_onDisconnectInput(this, e.detail.input));
+        newInput.addEventListener('connect',    e => { onVariableConnectInput(this); e.detail.input.isNew = false; });
+        newInput.addEventListener('disconnect', e => onVariableDisconnectInput(this, e.detail.input));
 
         this.addInput(newInput);
 

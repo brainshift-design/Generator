@@ -255,10 +255,13 @@ graphView.zoomToFit = function()
         ? graphView.selectedNodes
         : graph.nodes;
     
-    nodes.forEach(n => n.updateMeasureData());
-    const offset = graphView.getAllNodeOffsets(nodes);
-
-    graphView.zoomToRect(offset);
+    for (let i = 0; i < 4; i++)
+    {
+        nodes.forEach(n => n.updateMeasureData());
+        const offset = graphView.getAllNodeOffsets(nodes);
+        
+        graphView.zoomToRect(offset);
+    }
 };
 
 

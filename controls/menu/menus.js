@@ -216,9 +216,9 @@ var menuItemNodeEnableDisable;
 
 function initGeneratorMenus()
 {
-    menuMainMinZoomForParams = new Menu('Min zoom for params', false);
-    menuMainMinZoomForParams.addItems([
-        menuItemMinZoomForParams = new MenuItem('Smallest adjustment zoom...', {callback: () => showMinZoomDialog()})]);
+    // menuMainMinZoomForParams = new Menu('Min zoom for params', false);
+    // menuMainMinZoomForParams.addItems([
+    //     menuItemMinZoomForParams = new MenuItem('Smallest adjustment zoom...', {callback: () => showMinZoomDialog()})]);
 
 
     menuMainPreferences = new Menu('Preferences', false);
@@ -226,17 +226,20 @@ function initGeneratorMenus()
         menuItemShowAllColorSpaces    = new MenuItem('Show all color spaces',        {checkCallback: () => settings.showAllColorSpaces,    callback: () => { updateSettingAndMenu('showAllColorSpaces',    true, !settings.showAllColorSpaces);    updateMenuItemShowAllColorSpaces();   }}),
                                         new MenuItem('',                             {separator: true}),    
         menuItemAutoConnectNewNodes   = new MenuItem('Auto-connect new nodes',       {checkCallback: () => settings.autoConnectNewNodes,   callback: () => { updateSettingAndMenu('autoConnectNewNodes',   true, !settings.autoConnectNewNodes);                                         }}),
-        menuItemEnableZoomedOutParams = new MenuItem('',                             {checkCallback: () => settings.enableZoomedOutParams, callback: () => { updateSettingAndMenu('enableZoomedOutParams', true, !settings.enableZoomedOutParams); }, childMenu: menuMainMinZoomForParams}),
+        //menuItemEnableZoomedOutParams = new MenuItem('',                             {checkCallback: () => settings.enableZoomedOutParams, callback: () => { updateSettingAndMenu('enableZoomedOutParams', true, !settings.enableZoomedOutParams); }, childMenu: menuMainMinZoomForParams}),
         menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
         menuItemShowOperationResults  = new MenuItem('Show operation results',       {checkCallback: () => settings.showOperationResults,  callback: () => { updateSettingAndMenu('showOperationResults',  true, !settings.showOperationResults);  updateMenuItemShowOperationResults(); }}),
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',      {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
+                                        new MenuItem('',                             {separator: true}),    
+        menuItemMinZoomForParams      = new MenuItem('Smallest adjustment zoom...',  {callback: () => showMinZoomDialog()}),
+                                        new MenuItem('',                             {separator: true}),    
         menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }})]);
         //menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);  /*uiValidateLicense(productKey);*/      }})]);
 
-    menuMainPreferences.init = () => 
-    {
-        menuItemEnableZoomedOutParams.setName('Adjust values at zoom  <  ' + numToString(settings.minZoomForParams * 100, 0) + '%');
-    };
+    // menuMainPreferences.init = () => 
+    // {
+    //     menuItemEnableZoomedOutParams.setName('Adjust values at zoom  <  ' + numToString(settings.minZoomForParams * 100, 0) + '%');
+    // };
         
 
     menuMainDebug = new Menu('Debug', false);
