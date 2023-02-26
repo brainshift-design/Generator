@@ -33,8 +33,9 @@ function uiReturnFigGetLocalData(msg)
     switch (msg.key)
     {
         case 'minZoomForParams':
-            console.log('msg =', msg);
-            updateSetting(msg.key, parseFloat(msg.value));
+            if (!isNaN(msg.value))
+                updateSetting(msg.key, parseFloat(msg.value));
+    
             break;
 
         case 'dataMode':

@@ -56360,7 +56360,7 @@ minZoomInput.addEventListener('keydown', e =>
             if (!isNaN(minZoom))
             {
                 updateSetting('minZoomForParams', minZoom / 100);
-                uiSetLocalData('minZoomForParams', settings.minZoomForParams.toString());
+                uiSetLocalData('minZoomForParams', settings.minZoomForParams);
             }
 
             hideMinZoomDialog();
@@ -56713,8 +56713,9 @@ function uiReturnFigGetLocalData(msg)
     switch (msg.key)
     {
         case 'minZoomForParams':
-            console.log('msg =', msg);
-            updateSetting(msg.key, parseFloat(msg.value));
+            if (!isNaN(msg.value))
+                updateSetting(msg.key, parseFloat(msg.value));
+    
             break;
 
         case 'dataMode':
