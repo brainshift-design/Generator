@@ -9,7 +9,9 @@ function setCursor(cursor, forceAsync = true)
 function setAutoCursor()
 {
     if (graphView.zoomSelecting)
-        setCursor(zoomInCursor);
+        setCursor(graphView.altDown 
+                ? zoomOutCursor 
+                : zoomInCursor);
     else if (graphView.spaceDown
           || panMode
           || graphView.panning)

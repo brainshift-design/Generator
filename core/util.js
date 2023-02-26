@@ -330,11 +330,31 @@ function point2screen(p)
 
 
 
-// function rect2screen(rect)
-// {
-//     return new Rect(
-//         (rect.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
-//         (rect.y + graphView.pan.y / graphView.zoom) * graphView.zoom,
-//         rect.w / graphView.zoom,
-//         rect.h / graphView.zoom);
-// }
+function screen2point(p)
+{
+    return point(
+        p.x / graphView.zoom - graphView.pan.x / graphView.zoom,
+        p.y / graphView.zoom - graphView.pan.y / graphView.zoom);
+}
+
+
+
+function rect2screen(rect)
+{
+    return new Rect(
+        (rect.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
+        (rect.y + graphView.pan.y / graphView.zoom) * graphView.zoom,
+        rect.width  * graphView.zoom,
+        rect.height * graphView.zoom);
+}
+
+
+
+function screen2rect(rect)
+{
+    return new Rect(
+        rect.x / graphView.zoom - graphView.pan.x / graphView.zoom,
+        rect.y / graphView.zoom - graphView.pan.y / graphView.zoom,
+        rect.width  / graphView.zoom,
+        rect.height / graphView.zoom);
+}

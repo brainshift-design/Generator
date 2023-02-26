@@ -165,6 +165,7 @@ document.addEventListener('keydown', e =>
         if (graphView.spaceDown)
         {
             graphView.zoomSelecting = true;
+            graphView.altDown = e.altKey;
 
             if (e.altKey) setCursor(zoomOutCursor);
             else          setCursor(zoomInCursor);
@@ -202,11 +203,7 @@ document.addEventListener('keydown', e =>
              && !e.shiftKey
              && !getCtrlKey(e))
     {
-        if (   graphView.spaceDown
-            && getCtrlKey(e))
-            setCursor(zoomOutCursor);
-
-        else if ( graphView.overNode
+        if ( graphView.overNode
               &&  isEmpty(currentMenus)
               && !altPressedInMenu)
             graphView.soloNode(graphView.overNode);
@@ -218,6 +215,14 @@ document.addEventListener('keydown', e =>
               altPressedInMenu = true;
         }
     }
+    else if (    e.key == 'Alt'
+             && !e.shiftKey
+             &&  graphView.spaceDown
+             &&  getCtrlKey(e))
+    {
+        setCursor(zoomOutCursor);
+        graphView.altDown = true;
+    }
 
     else if (e.code == 'Tab')
         e.preventDefault();
@@ -227,6 +232,9 @@ document.addEventListener('keydown', e =>
 
 document.addEventListener('keyup', e =>
 {
+    graphView.altDown = false;
+
+
     if (e.code == 'Space')
     {
         if (graphView.spaceDown)
@@ -259,7 +267,7 @@ document.addEventListener('keyup', e =>
 
 
         altPressedInMenu = false;
-      }
+    }
     else if (e.key == 'Control')
     {
         if (graphView.spaceDown)

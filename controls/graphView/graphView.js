@@ -35,6 +35,8 @@ graphView.btn1down        = false; // this is to help deal with mouse wheels tha
 graphView.pan             = point(0, 0);
 graphView.zoom            = 1;
  
+graphView.altDown         = false;
+
 graphView.panning         = false;
  
 graphView.pViewport; 

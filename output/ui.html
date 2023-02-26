@@ -1135,24 +1135,6 @@
 }
 
 
-.dot
-{
-    position:         absolute;
-    width:            10px;
-    height:           10px;
-    border-radius:    5px;
-    transform:        translateX(-50%) 
-                      translateY(calc(-50%));
-}
-
-
-
-#dot1 { background-color: blue; }
-#dot2 { background-color: yellow; }
-#dot3 { background-color: green; }
-#dot4 { background-color: red; }
-
-
 #loadingOverlay
 {
     position: absolute;
@@ -2850,10 +2832,6 @@ a
     <div id='wireContainer'></div>
     <div class='scrollbar' id='scrollbarX'></div>
     <div class='scrollbar' id='scrollbarY'></div>
-    <!-- <div class='dot' id='dot1'></div>
-    <div class='dot' id='dot2'></div>
-    <div class='dot' id='dot3'></div>
-    <div class='dot' id='dot4'></div> -->
 </div>
 
 
@@ -3057,7 +3035,8 @@ a
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
                 <p>Window size is now saved per page per user (in the future position also, when figma.ui.reposition() becomes available).</p>
-                <p>Fixed various issues.</p>
+                <p>Zoom to selection now works like in Figma.</p>
+                <p>Fixed various UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -5621,14 +5600,34 @@ function point2screen(p)
 
 
 
-// function rect2screen(rect)
-// {
-//     return new Rect(
-//         (rect.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
-//         (rect.y + graphView.pan.y / graphView.zoom) * graphView.zoom,
-//         rect.w / graphView.zoom,
-//         rect.h / graphView.zoom);
-// }
+function screen2point(p)
+{
+    return point(
+        p.x / graphView.zoom - graphView.pan.x / graphView.zoom,
+        p.y / graphView.zoom - graphView.pan.y / graphView.zoom);
+}
+
+
+
+function rect2screen(rect)
+{
+    return new Rect(
+        (rect.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
+        (rect.y + graphView.pan.y / graphView.zoom) * graphView.zoom,
+        rect.width  * graphView.zoom,
+        rect.height * graphView.zoom);
+}
+
+
+
+function screen2rect(rect)
+{
+    return new Rect(
+        rect.x / graphView.zoom - graphView.pan.x / graphView.zoom,
+        rect.y / graphView.zoom - graphView.pan.y / graphView.zoom,
+        rect.width  / graphView.zoom,
+        rect.height / graphView.zoom);
+}
 
 
 "use strict";
@@ -22193,14 +22192,34 @@ function point2screen(p)
 
 
 
-// function rect2screen(rect)
-// {
-//     return new Rect(
-//         (rect.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
-//         (rect.y + graphView.pan.y / graphView.zoom) * graphView.zoom,
-//         rect.w / graphView.zoom,
-//         rect.h / graphView.zoom);
-// }
+function screen2point(p)
+{
+    return point(
+        p.x / graphView.zoom - graphView.pan.x / graphView.zoom,
+        p.y / graphView.zoom - graphView.pan.y / graphView.zoom);
+}
+
+
+
+function rect2screen(rect)
+{
+    return new Rect(
+        (rect.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
+        (rect.y + graphView.pan.y / graphView.zoom) * graphView.zoom,
+        rect.width  * graphView.zoom,
+        rect.height * graphView.zoom);
+}
+
+
+
+function screen2rect(rect)
+{
+    return new Rect(
+        rect.x / graphView.zoom - graphView.pan.x / graphView.zoom,
+        rect.y / graphView.zoom - graphView.pan.y / graphView.zoom,
+        rect.width  / graphView.zoom,
+        rect.height / graphView.zoom);
+}
 
 
 "use strict";
@@ -37870,6 +37889,8 @@ graphView.btn1down        = false; // this is to help deal with mouse wheels tha
 graphView.pan             = point(0, 0);
 graphView.zoom            = 1;
  
+graphView.altDown         = false;
+
 graphView.panning         = false;
  
 graphView.pViewport; 
@@ -38422,23 +38443,6 @@ graphView.addEventListener('pointermove', graphView_onpointermove);
 
 function graphView_onpointermove(e)
 {
-    // const p1 = point2screen(point(0, 0));//point(e.clientX, e.clientY);
-    // dot1.style.left = p1.x;
-    // dot1.style.top  = p1.y;
-
-    // const p2 = point2screen(point(100, 0));//point(e.clientX, e.clientY);
-    // dot2.style.left = p2.x;
-    // dot2.style.top  = p2.y;
-
-    // const p3 = point2screen(point(0, 100));//point(e.clientX, e.clientY);
-    // dot3.style.left = p3.x;
-    // dot3.style.top  = p3.y;
-
-    // const p4 = point2screen(point(100, 100));//point(e.clientX, e.clientY);
-    // dot4.style.left = p4.x;
-    // dot4.style.top  = p4.y;
-
-
     graphView.p = point(e.clientX, e.clientY);
 
 
@@ -38475,31 +38479,38 @@ graphView.addEventListener('pointerup', e =>
     {
         if (getCtrlKey(e))
         {
-            if (   graphView.selectionRect.w > 0
-                && graphView.selectionRect.h > 0)
+            if (    graphView.selectionRect.w > 0
+                &&  graphView.selectionRect.h > 0
+                && !graphView.altDown)
             {
-                // graphView.selectionRect.x -= graphView.pan.x / graphView.zoom;
-                // graphView.selectionRect.y -= graphView.pan.y / graphView.zoom;
-
+                graphView.oldZoom = graphView.zoom;
                 graphView.endZoomSelection(e.pointerId, true);
             }
-            else
+            else if (graphView.altDown)
             {
-                // graphView.endZoomSelection(e.pointerId, false);
+                const wndRect = new Rect(
+                    1,
+                    menuBarHeight + 1,
+                    graphViewClient.width  - 2,
+                    graphViewClient.height - 5);
 
-                // graphView.oldZoom = graphView.zoom;
+                const selection = Rect.fromTypical(graphView.selectionRect);
 
-                // if (e.altKey) graphView.zoom /= 2;
-                // else          graphView.zoom *= 2;
 
-                // graphView.pan = subv(
-                //     graphView.pan, 
-                //     mulvs(
-                //         subv(
-                //             point(e.clientX, e.clientY), 
-                //             graphView.pan), 
-                //         graphView.zoom / graphView.oldZoom - 1));
+                graphView.oldZoom = graphView.zoom;
+                graphView.endZoomSelection(e.pointerId, false);
+
+                graphView.zoom /= 2;
+                
+                
+                graphView.pan.x += wndRect.c - selection.c;
+                graphView.pan.y += wndRect.m - selection.m;
+
+
+                graphView.update();
             }
+            else
+               graphView.endZoomSelection(e.pointerId, false);
         }
 
         graphView.endPan(e.pointerId, false);
@@ -38778,27 +38789,6 @@ graphView.updatePanAndZoom = function(updateNodes)
     btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
 
     menuItemZoomTo100.setChecked(equal(graphView.zoom, 1, 0.0001));
-
-    // log(
-    //     'selection =' + JSON.stringify(graphView.selectionRect)
-    //   + '<br/>pan =' + JSON.stringify(graphView.pan)
-    //   + '<br/>zoom =' + JSON.stringify(graphView.zoom));
-
-    // const p1 = point2screen(point(0, 0));//point(e.clientX, e.clientY);
-    // dot1.style.left = p1.x;
-    // dot1.style.top  = p1.y;
-
-    // const p2 = point2screen(point(100, 0));//point(e.clientX, e.clientY);
-    // dot2.style.left = p2.x;
-    // dot2.style.top  = p2.y;
-
-    // const p3 = point2screen(point(0, 100));//point(e.clientX, e.clientY);
-    // dot3.style.left = p3.x;
-    // dot3.style.top  = p3.y;
-
-    // const p4 = point2screen(point(100, 100));//point(e.clientX, e.clientY);
-    // dot4.style.left = p4.x;
-    // dot4.style.top  = p4.y;
 };
 
 
@@ -38806,7 +38796,7 @@ graphView.updatePanAndZoom = function(updateNodes)
 graphView.update = function(nodes = null, updateNodes = true)
 {
     if (!nodes)
-        node = graph.nodes;
+        nodes = graph.nodes;
         
     
     documentBodyClient = clientRect(document.body);
@@ -38884,8 +38874,6 @@ graphView.updateZoomSelection = (x, y) =>
     graphView.selectionRect.w = x - graphView.selectionRect.x;
     graphView.selectionRect.h = y - graphView.selectionRect.y;
 
-    //console.log('graphView.selectionRect =', graphView.selectionRect);
-
     graphView.updateZoomSelectBox();
 };
 
@@ -38901,54 +38889,33 @@ graphView.updateZoomSelectBox = function()
     selectBox.style.height = Math.abs(selection.h);
 
     selectBox.style.zIndex = MAX_INT32-3;
-
-
-    // selection.x -= graphView.pan.x * graphView.zoom;
-    // selection.y -= graphView.pan.y * graphView.zoom;
-    // selection.w *= graphView.zoom;
-    // selection.h *= graphView.zoom;
 };
 
 
 
 graphView.endZoomSelection = function(pointerId, zoom)
 {
-    const wndRect = new Rect(
-        1,
-        menuBarHeight + 1,
-        graphViewClient.width  - 2,
-        graphViewClient.height - 5);
-
-    // console.log('XX graphView.selectionRect =', graphView.selectionRect);
-    let selection = validateRect(graphView.selectionRect);
-
-    // console.log('selection =', selection);
-
-    selection = clipRect(selection, wndRect);
-
-    // console.log('selection.x =', selection.x);
-    // console.log('selection.y =', selection.y);
-    // console.log('selection.w =', selection.w);
-    // console.log('selection.h =', selection.h);
-    // console.log('graphView.zoom =', graphView.zoom);
-
     if (zoom)
     {
         graphView.oldZoom = graphView.zoom;
 
-        // graphView.pan = point(
-        //     selection.x - graphView.pan.x / graphView.zoom,
-        //     selection.y - graphView.pan.y / graphView.zoom);
-        // selection.w *= graphView.zoom;
-        // selection.h *= graphView.zoom;
+
+        const wndRect = new Rect(
+            1,
+            menuBarHeight + 1,
+            graphViewClient.width  - 2,
+            graphViewClient.height - 5);
+    
+        let selection = validateRect(graphView.selectionRect);
+        selection = clipRect(selection, wndRect);
+    
+        selection.y -= menuBarHeight;
 
 
-        // log(
-        //     'selection = ' + JSON.stringify(selection) 
-        //   + '<br/>pan = '  + JSON.stringify(graphView.pan)
-        //   + '<br/>zoom = ' + JSON.stringify(graphView.zoom));
-     
-        //graphView.zoomToRect(rect2screen(selection));
+        const rect = screen2rect(selection);
+
+        for (let i = 0; i < 5; i++)
+            graphView.zoomToRect(rect);
     }
 
 
@@ -38970,19 +38937,11 @@ graphView.zoomToFit = function()
         ? graphView.selectedNodes
         : graph.nodes;
     
-    for (let i = 0; i < 4; i++) // need to do it a few times
-    {
-        nodes.forEach(n => n.updateMeasureData());
-        const offset = graphView.getAllNodeOffsets(nodes);
-        
+    nodes.forEach(n => n.updateMeasureData());
+    const offset = graphView.getAllNodeOffsets(nodes);
+
+    for (let i = 0; i < 5; i++) // need to do it a few times
         graphView.zoomToRect(offset);
-    }
-
-    // const offset = graphView.getAllNodeOffsets(nodes);
-
-    // console.log('pan =', graphView.pan);
-    // console.log('zoom =', graphView.zoom);
-    // console.log('offset =', offset);
 };
 
 
@@ -38992,8 +38951,8 @@ graphView.zoomToRect = function(rect, margin = 40)
     margin /= graphView.zoom;
 
     graphView.zoom = Math.min(
-        graphViewClient.width  / (rect.width  + margin*2),
-        graphViewClient.height / (rect.height + margin*2));
+          Math.max(graphViewClient.width, graphViewClient.height)
+        / Math.max(rect.width + margin*2, rect.height + margin*2));
 
     graphView.pan = {
         x: graphViewClient.width /2 - (rect.x + rect.width /2) * graphView.zoom,
@@ -55913,6 +55872,7 @@ document.addEventListener('keydown', e =>
         if (graphView.spaceDown)
         {
             graphView.zoomSelecting = true;
+            graphView.altDown = e.altKey;
 
             if (e.altKey) setCursor(zoomOutCursor);
             else          setCursor(zoomInCursor);
@@ -55950,11 +55910,7 @@ document.addEventListener('keydown', e =>
              && !e.shiftKey
              && !getCtrlKey(e))
     {
-        if (   graphView.spaceDown
-            && getCtrlKey(e))
-            setCursor(zoomOutCursor);
-
-        else if ( graphView.overNode
+        if ( graphView.overNode
               &&  isEmpty(currentMenus)
               && !altPressedInMenu)
             graphView.soloNode(graphView.overNode);
@@ -55966,6 +55922,14 @@ document.addEventListener('keydown', e =>
               altPressedInMenu = true;
         }
     }
+    else if (    e.key == 'Alt'
+             && !e.shiftKey
+             &&  graphView.spaceDown
+             &&  getCtrlKey(e))
+    {
+        setCursor(zoomOutCursor);
+        graphView.altDown = true;
+    }
 
     else if (e.code == 'Tab')
         e.preventDefault();
@@ -55975,6 +55939,9 @@ document.addEventListener('keydown', e =>
 
 document.addEventListener('keyup', e =>
 {
+    graphView.altDown = false;
+
+
     if (e.code == 'Space')
     {
         if (graphView.spaceDown)
@@ -56007,7 +55974,7 @@ document.addEventListener('keyup', e =>
 
 
         altPressedInMenu = false;
-      }
+    }
     else if (e.key == 'Control')
     {
         if (graphView.spaceDown)
@@ -56379,7 +56346,9 @@ function setCursor(cursor, forceAsync = true)
 function setAutoCursor()
 {
     if (graphView.zoomSelecting)
-        setCursor(zoomInCursor);
+        setCursor(graphView.altDown 
+                ? zoomOutCursor 
+                : zoomInCursor);
     else if (graphView.spaceDown
           || panMode
           || graphView.panning)
