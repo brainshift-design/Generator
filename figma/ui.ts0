@@ -207,8 +207,8 @@ function figResizeWindow(width, height)
 
         figma.ui.resize(width, height);
 
-        figma.clientStorage.setAsync('windowWidth',  width);
-        figma.clientStorage.setAsync('windowHeight', height);
+        figma.currentPage.setPluginData(figma.currentUser.id+',windowWidth',  width .toString());
+        figma.currentPage.setPluginData(figma.currentUser.id+',windowHeight', height.toString());
 
 
         // if (position)

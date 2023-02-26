@@ -1503,11 +1503,11 @@ function figStartGenerator()
         if (productKey == null) productKey = '';
 
         
-        let wndWidth  = await figma.clientStorage.getAsync('windowWidth');
-        let wndHeight = await figma.clientStorage.getAsync('windowHeight');
+        let wndWidth  = await figma.currentPage.getPluginData(figma.currentUser.id+',windowWidth');
+        let wndHeight = await figma.currentPage.getPluginData(figma.currentUser.id+',windowHeight');
 
-        if (wndWidth  == null) { wndWidth  = 800; figma.clientStorage.setAsync('windowWidth',  wndWidth ); }
-        if (wndHeight == null) { wndHeight = 600; figma.clientStorage.setAsync('windowHeight', wndHeight); }
+        if (wndWidth  === NULL) { wndWidth  = 800; figma.currentPage.setPluginData(figma.currentUser.id+',windowWidth',  wndWidth .toString()); } else wndWidth  = parseInt(wndWidth );
+        if (wndHeight === NULL) { wndHeight = 600; figma.currentPage.setPluginData(figma.currentUser.id+',windowHeight', wndHeight.toString()); } else wndHeight = parseInt(wndHeight);
 
         
         figma.ui.resize(
@@ -3208,8 +3208,8 @@ function figResizeWindow(width, height)
 
         figma.ui.resize(width, height);
 
-        figma.clientStorage.setAsync('windowWidth',  width);
-        figma.clientStorage.setAsync('windowHeight', height);
+        figma.currentPage.setPluginData(figma.currentUser.id+',windowWidth',  width .toString());
+        figma.currentPage.setPluginData(figma.currentUser.id+',windowHeight', height.toString());
 
 
         // if (position)

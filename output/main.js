@@ -897,16 +897,20 @@ function figStartGenerator() {
             let productKey = yield figLoadLocal('productKey');
             if (productKey == null)
                 productKey = '';
-            let wndWidth = yield figma.clientStorage.getAsync('windowWidth');
-            let wndHeight = yield figma.clientStorage.getAsync('windowHeight');
-            if (wndWidth == null) {
+            let wndWidth = yield figma.currentPage.getPluginData(figma.currentUser.id + ',windowWidth');
+            let wndHeight = yield figma.currentPage.getPluginData(figma.currentUser.id + ',windowHeight');
+            if (wndWidth === NULL) {
                 wndWidth = 800;
-                figma.clientStorage.setAsync('windowWidth', wndWidth);
+                figma.currentPage.setPluginData(figma.currentUser.id + ',windowWidth', wndWidth.toString());
             }
-            if (wndHeight == null) {
+            else
+                wndWidth = parseInt(wndWidth);
+            if (wndHeight === NULL) {
                 wndHeight = 600;
-                figma.clientStorage.setAsync('windowHeight', wndHeight);
+                figma.currentPage.setPluginData(figma.currentUser.id + ',windowHeight', wndHeight.toString());
             }
+            else
+                wndHeight = parseInt(wndHeight);
             figma.ui.resize(Math.max(0, wndWidth), Math.max(0, wndHeight));
             figma.ui.show();
             figPostMessageToUi({
@@ -2023,8 +2027,8 @@ function figResizeWindow(width, height) {
             // console.log('width =',  width);
             // console.log('height =', height);
             figma.ui.resize(width, height);
-            figma.clientStorage.setAsync('windowWidth', width);
-            figma.clientStorage.setAsync('windowHeight', height);
+            figma.currentPage.setPluginData(figma.currentUser.id + ',windowWidth', width.toString());
+            figma.currentPage.setPluginData(figma.currentUser.id + ',windowHeight', height.toString());
             // if (position)
             // {
             //     figma.ui.reposition(x, y);
