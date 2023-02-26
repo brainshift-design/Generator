@@ -255,7 +255,7 @@ graphView.zoomToFit = function()
         ? graphView.selectedNodes
         : graph.nodes;
     
-    for (let i = 0; i < 4; i++)
+    for (let i = 0; i < 3; i++) // need to do it a few times
     {
         nodes.forEach(n => n.updateMeasureData());
         const offset = graphView.getAllNodeOffsets(nodes);
