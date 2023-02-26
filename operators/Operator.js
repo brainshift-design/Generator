@@ -476,6 +476,10 @@ class Operator
     setName(newName, options = {})
     {
         this._name = newName;
+
+        this.updateMeasureData();
+        updateHeaderLabelOffsetX(this);
+
         return true;
     }
 

@@ -3034,9 +3034,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Window size is now saved per page per user (in the future position also, when figma.ui.reposition() becomes available).</p>
-                <p>Zoom to selection now works like in Figma.</p>
-                <p>Fixed various UI issues.</p>
+                <p>Fixed UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -3245,7 +3243,7 @@ a
 
 
 
-const generatorVersion = 113;
+const generatorVersion = 114;
 
 
 const MAX_INT32        = 2147483647;
@@ -19837,7 +19835,7 @@ onerror = (event, source, line, pos, error) =>
 
 
 
-const generatorVersion = 113;
+const generatorVersion = 114;
 
 
 const MAX_INT32        = 2147483647;
@@ -44018,6 +44016,10 @@ class Operator
     setName(newName, options = {})
     {
         this._name = newName;
+
+        this.updateMeasureData();
+        updateHeaderLabelOffsetX(this);
+
         return true;
     }
 
