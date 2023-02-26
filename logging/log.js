@@ -33,6 +33,13 @@ class RequestSettings
 
 
 
+function log(str)
+{
+    debugInfo.innerHTML = str;
+}
+
+
+
 function logFunction(funcName, obj = null)
 {
     let str = funcName;

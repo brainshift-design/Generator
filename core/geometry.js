@@ -20,8 +20,6 @@ function unit(v)
 
 function lerpv(p0, p1, t)
 {
-    //console.log('p0 =', p0);
-    //console.log('p1 =', p1);
     return point(
         lerp(p0.x, p1.x, t),
         lerp(p0.y, p1.y, t));

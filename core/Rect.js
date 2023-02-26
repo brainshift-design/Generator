@@ -6,36 +6,36 @@ class Rect
     h;
 
 
-    get l() { return this.x;            }
-    get c() { return this.x + this.w/2; }
-    get r() { return this.x + this.w;   }
-
-    get t() { return this.y;            }
-    get m() { return this.y + this.h/2  }
-    get b() { return this.y + this.h;   }
-
-    get tl() { return point(this.l, this.t); }
-    get tc() { return point(this.c, this.t); }
-    get tr() { return point(this.r, this.t); }
-    get ml() { return point(this.l, this.m); }
-    get mc() { return point(this.c, this.m); }
-    get cm() { return point(this.c, this.m); }
-    get mr() { return point(this.r, this.m); }
-    get bl() { return point(this.l, this.b); }
-    get bc() { return point(this.c, this.b); }
-    get br() { return point(this.r, this.b); }
-
-
-    get width()  { return this.w; }
-    get height() { return this.h; }
-
-    get left()   { return this.l; }
-    get center() { return this.c; }
-    get right()  { return this.r; }
-    
-    get top()    { return this.t; }
-    get middle() { return this.m; }
-    get bottom() { return this.b; }
+    get l()            { return this.x;            }
+    get c()            { return this.x + this.w/2; }
+    get r()            { return this.x + this.w;   }
+           
+    get t()            { return this.y;            }
+    get m()            { return this.y + this.h/2  }
+    get b()            { return this.y + this.h;   }
+          
+    get tl()           { return point(this.l, this.t); }
+    get tc()           { return point(this.c, this.t); }
+    get tr()           { return point(this.r, this.t); }
+    get ml()           { return point(this.l, this.m); }
+    get mc()           { return point(this.c, this.m); }
+    get cm()           { return point(this.c, this.m); }
+    get mr()           { return point(this.r, this.m); }
+    get bl()           { return point(this.l, this.b); }
+    get bc()           { return point(this.c, this.b); }
+    get br()           { return point(this.r, this.b); }
+      
+      
+    get width()        { return this.w; }
+    get height()       { return this.h; }
+      
+    get left()         { return this.l; }
+    get center()       { return this.c; }
+    get right()        { return this.r; }
+          
+    get top()          { return this.t; }
+    get middle()       { return this.m; }
+    get bottom()       { return this.b; }
 
     get topLeft()      { return this.tl; }
     get topCenter()    { return this.tc; }

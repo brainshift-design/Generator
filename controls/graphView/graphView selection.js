@@ -59,10 +59,14 @@ graphView.updateSelection = (x, y, shiftKey, ctrlKey) =>
     graphView.selectionRect.w = x - graphView.selectionRect.x;
     graphView.selectionRect.h = y - graphView.selectionRect.y;
 
+    log(
+          'selection =' + JSON.stringify(graphView.selectionRect)
+        + '<br/>pan =' + JSON.stringify(graphView.pan));
+
     setTimeout(() => graphView.updateSelectBox(shiftKey, ctrlKey));
 };
 
-
+ 
 
 graphView.updateSelectBox = function(shiftKey, ctrlKey)
 {
@@ -77,11 +81,10 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
         graphViewClient.width  - 2,
         graphViewClient.height - 5);
 
-
     let selection = validateRect(graphView.selectionRect);
     
     selection = clipRect(selection, wndRect);
-
+    
 
     selectBox.style.left   = selection.x;
     selectBox.style.top    = selection.y;
@@ -121,7 +124,8 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
     nodes.forEach(n => n.updateBorder());
     updateComments(nodes.map(n => n.id));
 
-    graphView._prevSelectedNodes = selected;};
+    graphView._prevSelectedNodes = selected;
+};
 
 
 

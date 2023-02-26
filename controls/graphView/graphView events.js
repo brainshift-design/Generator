@@ -105,6 +105,23 @@ graphView.addEventListener('pointermove', graphView_onpointermove);
 
 function graphView_onpointermove(e)
 {
+    const p1 = point2screen(point(0, 0));//point(e.clientX, e.clientY);
+    dot1.style.left = p1.x;
+    dot1.style.top  = p1.y;
+
+    const p2 = point2screen(point(100, 0));//point(e.clientX, e.clientY);
+    dot2.style.left = p2.x;
+    dot2.style.top  = p2.y;
+
+    const p3 = point2screen(point(0, 100));//point(e.clientX, e.clientY);
+    dot3.style.left = p3.x;
+    dot3.style.top  = p3.y;
+
+    const p4 = point2screen(point(100, 100));//point(e.clientX, e.clientY);
+    dot4.style.left = p4.x;
+    dot4.style.top  = p4.y;
+
+
     graphView.p = point(e.clientX, e.clientY);
 
 
@@ -144,8 +161,8 @@ graphView.addEventListener('pointerup', e =>
             if (   graphView.selectionRect.w > 0
                 && graphView.selectionRect.h > 0)
             {
-                graphView.selectionRect.x -= graphView.pan.x / graphView.zoom;
-                graphView.selectionRect.y -= graphView.pan.y / graphView.zoom;
+                // graphView.selectionRect.x -= graphView.pan.x / graphView.zoom;
+                // graphView.selectionRect.y -= graphView.pan.y / graphView.zoom;
 
                 graphView.endZoomSelection(e.pointerId, true);
             }

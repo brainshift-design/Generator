@@ -896,3 +896,35 @@
     left: 25px;
     top: calc(100% - 38px);
 }
+
+
+#debugInfo
+{
+    color:            var(--figma-color-text);
+    position:         absolute;
+    left:             0;
+    top:              40px;
+    width:            100%; 
+    height:           calc(100% - 40px);
+    z-index:          100000;
+    /* background-color: blue; */
+    pointer-events:   none;
+}
+
+
+.dot
+{
+    position:         absolute;
+    width:            10px;
+    height:           10px;
+    border-radius:    5px;
+    transform:        translateX(-50%) 
+                      translateY(calc(-50%));
+}
+
+
+
+#dot1 { background-color: blue; }
+#dot2 { background-color: yellow; }
+#dot3 { background-color: green; }
+#dot4 { background-color: red; }

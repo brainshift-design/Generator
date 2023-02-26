@@ -1121,6 +1121,38 @@
 }
 
 
+#debugInfo
+{
+    color:            var(--figma-color-text);
+    position:         absolute;
+    left:             0;
+    top:              40px;
+    width:            100%; 
+    height:           calc(100% - 40px);
+    z-index:          100000;
+    /* background-color: blue; */
+    pointer-events:   none;
+}
+
+
+.dot
+{
+    position:         absolute;
+    width:            10px;
+    height:           10px;
+    border-radius:    5px;
+    transform:        translateX(-50%) 
+                      translateY(calc(-50%));
+}
+
+
+
+#dot1 { background-color: blue; }
+#dot2 { background-color: yellow; }
+#dot3 { background-color: green; }
+#dot4 { background-color: red; }
+
+
 #loadingOverlay
 {
     position: absolute;
@@ -2818,6 +2850,10 @@ a
     <div id='wireContainer'></div>
     <div class='scrollbar' id='scrollbarX'></div>
     <div class='scrollbar' id='scrollbarY'></div>
+    <div class='dot' id='dot1'></div>
+    <div class='dot' id='dot2'></div>
+    <div class='dot' id='dot3'></div>
+    <div class='dot' id='dot4'></div>
 </div>
 
 
@@ -2858,6 +2894,9 @@ a
 
     </div>        
 </div>
+
+
+<div id='debugInfo'></div>
 
 
 <div id='productKeyBack'></div>
@@ -3017,8 +3056,9 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
+                <p>The default smallest adjustment zoom is now 50%.</p>
                 <p>Fixed connection bugs.</p>
-                <p>Set default smallest adjustment zoom to 50%.</p>
+                <p>Fixed UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -4508,8 +4548,6 @@ function unit(v)
 
 function lerpv(p0, p1, t)
 {
-    //console.log('p0 =', p0);
-    //console.log('p1 =', p1);
     return point(
         lerp(p0.x, p1.x, t),
         lerp(p0.y, p1.y, t));
@@ -5090,36 +5128,36 @@ class Rect
     h;
 
 
-    get l() { return this.x;            }
-    get c() { return this.x + this.w/2; }
-    get r() { return this.x + this.w;   }
-
-    get t() { return this.y;            }
-    get m() { return this.y + this.h/2  }
-    get b() { return this.y + this.h;   }
-
-    get tl() { return point(this.l, this.t); }
-    get tc() { return point(this.c, this.t); }
-    get tr() { return point(this.r, this.t); }
-    get ml() { return point(this.l, this.m); }
-    get mc() { return point(this.c, this.m); }
-    get cm() { return point(this.c, this.m); }
-    get mr() { return point(this.r, this.m); }
-    get bl() { return point(this.l, this.b); }
-    get bc() { return point(this.c, this.b); }
-    get br() { return point(this.r, this.b); }
-
-
-    get width()  { return this.w; }
-    get height() { return this.h; }
-
-    get left()   { return this.l; }
-    get center() { return this.c; }
-    get right()  { return this.r; }
-    
-    get top()    { return this.t; }
-    get middle() { return this.m; }
-    get bottom() { return this.b; }
+    get l()            { return this.x;            }
+    get c()            { return this.x + this.w/2; }
+    get r()            { return this.x + this.w;   }
+           
+    get t()            { return this.y;            }
+    get m()            { return this.y + this.h/2  }
+    get b()            { return this.y + this.h;   }
+          
+    get tl()           { return point(this.l, this.t); }
+    get tc()           { return point(this.c, this.t); }
+    get tr()           { return point(this.r, this.t); }
+    get ml()           { return point(this.l, this.m); }
+    get mc()           { return point(this.c, this.m); }
+    get cm()           { return point(this.c, this.m); }
+    get mr()           { return point(this.r, this.m); }
+    get bl()           { return point(this.l, this.b); }
+    get bc()           { return point(this.c, this.b); }
+    get br()           { return point(this.r, this.b); }
+      
+      
+    get width()        { return this.w; }
+    get height()       { return this.h; }
+      
+    get left()         { return this.l; }
+    get center()       { return this.c; }
+    get right()        { return this.r; }
+          
+    get top()          { return this.t; }
+    get middle()       { return this.m; }
+    get bottom()       { return this.b; }
 
     get topLeft()      { return this.tl; }
     get topCenter()    { return this.tc; }
@@ -5571,6 +5609,26 @@ function isPanning(e)
     }
 
     return false;
+}
+
+
+
+function point2screen(p)
+{
+    return point(
+        (p.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
+        (p.y + graphView.pan.y / graphView.zoom) * graphView.zoom);
+}
+
+
+
+function rect2screen(rect)
+{
+    return new Rect(
+        (rect.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
+        (rect.y + graphView.pan.y / graphView.zoom) * graphView.zoom,
+        rect.w / graphView.zoom,
+        rect.h / graphView.zoom);
 }
 
 
@@ -16954,6 +17012,13 @@ class RequestSettings
 
 
 
+function log(str)
+{
+    debugInfo.innerHTML = str;
+}
+
+
+
 function logFunction(funcName, obj = null)
 {
     let str = funcName;
@@ -21055,8 +21120,6 @@ function unit(v)
 
 function lerpv(p0, p1, t)
 {
-    //console.log('p0 =', p0);
-    //console.log('p1 =', p1);
     return point(
         lerp(p0.x, p1.x, t),
         lerp(p0.y, p1.y, t));
@@ -21637,36 +21700,36 @@ class Rect
     h;
 
 
-    get l() { return this.x;            }
-    get c() { return this.x + this.w/2; }
-    get r() { return this.x + this.w;   }
-
-    get t() { return this.y;            }
-    get m() { return this.y + this.h/2  }
-    get b() { return this.y + this.h;   }
-
-    get tl() { return point(this.l, this.t); }
-    get tc() { return point(this.c, this.t); }
-    get tr() { return point(this.r, this.t); }
-    get ml() { return point(this.l, this.m); }
-    get mc() { return point(this.c, this.m); }
-    get cm() { return point(this.c, this.m); }
-    get mr() { return point(this.r, this.m); }
-    get bl() { return point(this.l, this.b); }
-    get bc() { return point(this.c, this.b); }
-    get br() { return point(this.r, this.b); }
-
-
-    get width()  { return this.w; }
-    get height() { return this.h; }
-
-    get left()   { return this.l; }
-    get center() { return this.c; }
-    get right()  { return this.r; }
-    
-    get top()    { return this.t; }
-    get middle() { return this.m; }
-    get bottom() { return this.b; }
+    get l()            { return this.x;            }
+    get c()            { return this.x + this.w/2; }
+    get r()            { return this.x + this.w;   }
+           
+    get t()            { return this.y;            }
+    get m()            { return this.y + this.h/2  }
+    get b()            { return this.y + this.h;   }
+          
+    get tl()           { return point(this.l, this.t); }
+    get tc()           { return point(this.c, this.t); }
+    get tr()           { return point(this.r, this.t); }
+    get ml()           { return point(this.l, this.m); }
+    get mc()           { return point(this.c, this.m); }
+    get cm()           { return point(this.c, this.m); }
+    get mr()           { return point(this.r, this.m); }
+    get bl()           { return point(this.l, this.b); }
+    get bc()           { return point(this.c, this.b); }
+    get br()           { return point(this.r, this.b); }
+      
+      
+    get width()        { return this.w; }
+    get height()       { return this.h; }
+      
+    get left()         { return this.l; }
+    get center()       { return this.c; }
+    get right()        { return this.r; }
+          
+    get top()          { return this.t; }
+    get middle()       { return this.m; }
+    get bottom()       { return this.b; }
 
     get topLeft()      { return this.tl; }
     get topCenter()    { return this.tc; }
@@ -22118,6 +22181,26 @@ function isPanning(e)
     }
 
     return false;
+}
+
+
+
+function point2screen(p)
+{
+    return point(
+        (p.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
+        (p.y + graphView.pan.y / graphView.zoom) * graphView.zoom);
+}
+
+
+
+function rect2screen(rect)
+{
+    return new Rect(
+        (rect.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
+        (rect.y + graphView.pan.y / graphView.zoom) * graphView.zoom,
+        rect.w / graphView.zoom,
+        rect.h / graphView.zoom);
 }
 
 
@@ -22841,6 +22924,13 @@ class RequestSettings
         else 
             return NL + TAB.repeat(Math.max(0, this.nTab)); 
     }
+}
+
+
+
+function log(str)
+{
+    debugInfo.innerHTML = str;
 }
 
 
@@ -38336,6 +38426,23 @@ graphView.addEventListener('pointermove', graphView_onpointermove);
 
 function graphView_onpointermove(e)
 {
+    const p1 = point2screen(point(0, 0));//point(e.clientX, e.clientY);
+    dot1.style.left = p1.x;
+    dot1.style.top  = p1.y;
+
+    const p2 = point2screen(point(100, 0));//point(e.clientX, e.clientY);
+    dot2.style.left = p2.x;
+    dot2.style.top  = p2.y;
+
+    const p3 = point2screen(point(0, 100));//point(e.clientX, e.clientY);
+    dot3.style.left = p3.x;
+    dot3.style.top  = p3.y;
+
+    const p4 = point2screen(point(100, 100));//point(e.clientX, e.clientY);
+    dot4.style.left = p4.x;
+    dot4.style.top  = p4.y;
+
+
     graphView.p = point(e.clientX, e.clientY);
 
 
@@ -38375,8 +38482,8 @@ graphView.addEventListener('pointerup', e =>
             if (   graphView.selectionRect.w > 0
                 && graphView.selectionRect.h > 0)
             {
-                graphView.selectionRect.x -= graphView.pan.x / graphView.zoom;
-                graphView.selectionRect.y -= graphView.pan.y / graphView.zoom;
+                // graphView.selectionRect.x -= graphView.pan.x / graphView.zoom;
+                // graphView.selectionRect.y -= graphView.pan.y / graphView.zoom;
 
                 graphView.endZoomSelection(e.pointerId, true);
             }
@@ -38656,15 +38763,13 @@ graphView.setPanAndZoom = function(pan, zoom)
 
         uiSaveGraphView();
 
-
+  
         graphView.panZoomTimer = setTimeout(() => 
         {
             graphView.updatePanAndZoom(graphView.zoom != graphView.oldZoom);
             graphView.panZoomTimer = null;
         });
     }
-
-    // console.log('pan = {%s, %s}, zoom = %s', pan.x, pan.y, zoom);
 };
 
 
@@ -38677,6 +38782,27 @@ graphView.updatePanAndZoom = function(updateNodes)
     btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
 
     menuItemZoomTo100.setChecked(equal(graphView.zoom, 1, 0.0001));
+
+    log(
+        'selection =' + JSON.stringify(graphView.selectionRect)
+      + '<br/>pan =' + JSON.stringify(graphView.pan)
+      + '<br/>zoom =' + JSON.stringify(graphView.zoom));
+
+    const p1 = point2screen(point(0, 0));//point(e.clientX, e.clientY);
+    dot1.style.left = p1.x;
+    dot1.style.top  = p1.y;
+
+    const p2 = point2screen(point(100, 0));//point(e.clientX, e.clientY);
+    dot2.style.left = p2.x;
+    dot2.style.top  = p2.y;
+
+    const p3 = point2screen(point(0, 100));//point(e.clientX, e.clientY);
+    dot3.style.left = p3.x;
+    dot3.style.top  = p3.y;
+
+    const p4 = point2screen(point(100, 100));//point(e.clientX, e.clientY);
+    dot4.style.left = p4.x;
+    dot4.style.top  = p4.y;
 };
 
 
@@ -38762,6 +38888,8 @@ graphView.updateZoomSelection = (x, y) =>
     graphView.selectionRect.w = x - graphView.selectionRect.x;
     graphView.selectionRect.h = y - graphView.selectionRect.y;
 
+    //console.log('graphView.selectionRect =', graphView.selectionRect);
+
     graphView.updateZoomSelectBox();
 };
 
@@ -38769,7 +38897,7 @@ graphView.updateZoomSelection = (x, y) =>
 
 graphView.updateZoomSelectBox = function()
 {
-    const selection = graphView.selectionRect;
+    const selection = Rect.fromTypical(graphView.selectionRect);
 
     selectBox.style.left   = selection.x + Math.min(selection.w, 0);
     selectBox.style.top    = selection.y + Math.min(selection.h, 0);
@@ -38777,6 +38905,12 @@ graphView.updateZoomSelectBox = function()
     selectBox.style.height = Math.abs(selection.h);
 
     selectBox.style.zIndex = MAX_INT32-3;
+
+
+    // selection.x -= graphView.pan.x * graphView.zoom;
+    // selection.y -= graphView.pan.y * graphView.zoom;
+    // selection.w *= graphView.zoom;
+    // selection.h *= graphView.zoom;
 };
 
 
@@ -38789,58 +38923,36 @@ graphView.endZoomSelection = function(pointerId, zoom)
         graphViewClient.width  - 2,
         graphViewClient.height - 5);
 
-
+    // console.log('XX graphView.selectionRect =', graphView.selectionRect);
     let selection = validateRect(graphView.selectionRect);
-    
+
+    // console.log('selection =', selection);
+
     selection = clipRect(selection, wndRect);
 
+    // console.log('selection.x =', selection.x);
+    // console.log('selection.y =', selection.y);
+    // console.log('selection.w =', selection.w);
+    // console.log('selection.h =', selection.h);
+    // console.log('graphView.zoom =', graphView.zoom);
 
     if (zoom)
     {
-        // graphView.oldZoom = graphView.zoom;
-        
-        let box = {
-            x: selection.x,
-            y: selection.y - menuBarHeight,
-            w: selection.w,
-            h: selection.h };
-            
-        const wndHeight = graphView.offsetHeight; 
+        graphView.oldZoom = graphView.zoom;
 
-        const diff = { w: (window.innerWidth - box.w) / 2,
-                       h: (wndHeight         - box.h) / 2 };
-console.log('diff =', diff);
-        graphView.setPanAndZoom(
-            point(
-                -(box.x - diff.w) * graphView.zoom,
-                -(box.y - diff.h) * graphView.zoom),
-            graphView.zoom * Math.min(
-                window.innerWidth / box.w,
-                wndHeight         / box.h));
+        // graphView.pan = point(
+        //     selection.x - graphView.pan.x / graphView.zoom,
+        //     selection.y - graphView.pan.y / graphView.zoom);
+        // selection.w *= graphView.zoom;
+        // selection.h *= graphView.zoom;
 
 
-        // graphView.oldZoom = graphView.zoom;
-
-
-        // const wndRect = new Rect(
-        //     1,
-        //     menuBarHeight + 1,
-        //     graphViewClient.width  - 2,
-        //     graphViewClient.height - 5);
-
-        // const dZoom = 
-        //       Math.min(graphView.selectionRect.w, graphView.selectionRect.h)
-        //     / Math.max(wndRect.w, wndRect.h);
-
-        // let x = graphView.selectionRect.x;
-        // let y = graphView.selectionRect.y;
-        // let w = graphView.selectionRect.w;
-        // let h = graphView.selectionRect.h;
-
-        // w *= dZoom;
-        // h *= dZoom;
-
-        // graphView.zoomToRect(new Rect(x, y, w, h));
+        // log(
+        //     'selection = ' + JSON.stringify(selection) 
+        //   + '<br/>pan = '  + JSON.stringify(graphView.pan)
+        //   + '<br/>zoom = ' + JSON.stringify(graphView.zoom));
+     
+        //graphView.zoomToRect(rect2screen(selection));
     }
 
 
@@ -38862,13 +38974,19 @@ graphView.zoomToFit = function()
         ? graphView.selectedNodes
         : graph.nodes;
     
-    for (let i = 0; i < 3; i++) // need to do it a few times
+    for (let i = 0; i < 4; i++) // need to do it a few times
     {
         nodes.forEach(n => n.updateMeasureData());
         const offset = graphView.getAllNodeOffsets(nodes);
         
         graphView.zoomToRect(offset);
     }
+
+    const offset = graphView.getAllNodeOffsets(nodes);
+
+    console.log('pan =', graphView.pan);
+    console.log('zoom =', graphView.zoom);
+    console.log('offset =', offset);
 };
 
 
@@ -38949,10 +39067,14 @@ graphView.updateSelection = (x, y, shiftKey, ctrlKey) =>
     graphView.selectionRect.w = x - graphView.selectionRect.x;
     graphView.selectionRect.h = y - graphView.selectionRect.y;
 
+    log(
+          'selection =' + JSON.stringify(graphView.selectionRect)
+        + '<br/>pan =' + JSON.stringify(graphView.pan));
+
     setTimeout(() => graphView.updateSelectBox(shiftKey, ctrlKey));
 };
 
-
+ 
 
 graphView.updateSelectBox = function(shiftKey, ctrlKey)
 {
@@ -38967,11 +39089,10 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
         graphViewClient.width  - 2,
         graphViewClient.height - 5);
 
-
     let selection = validateRect(graphView.selectionRect);
     
     selection = clipRect(selection, wndRect);
-
+    
 
     selectBox.style.left   = selection.x;
     selectBox.style.top    = selection.y;
@@ -39011,7 +39132,8 @@ graphView.updateSelectBox = function(shiftKey, ctrlKey)
     nodes.forEach(n => n.updateBorder());
     updateComments(nodes.map(n => n.id));
 
-    graphView._prevSelectedNodes = selected;};
+    graphView._prevSelectedNodes = selected;
+};
 
 
 
