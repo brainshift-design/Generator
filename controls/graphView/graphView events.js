@@ -141,8 +141,8 @@ graphView.addEventListener('pointerup', e =>
     {
         if (getCtrlKey(e))
         {
-            if (    graphView.selectionRect.w > 0
-                &&  graphView.selectionRect.h > 0
+            if (    graphView.selectionRect.w != 0
+                &&  graphView.selectionRect.h != 0
                 && !graphView.altDown)
             {
                 graphView.oldZoom = graphView.zoom;

@@ -210,7 +210,7 @@ graphView.endZoomSelection = function(pointerId, zoom)
         selection = clipRect(selection, wndRect);
     
         selection.y -= menuBarHeight;
-
+console.log('selection =', selection);
 
         const rect = screen2rect(selection);
 

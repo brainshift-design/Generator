@@ -647,6 +647,21 @@
 }
 
 
+#aboutDialogWatermark
+{
+    position:       absolute;
+    left:          -50px;
+    top:           -87px;
+    font-size:      250px;
+    font-weight:    600;
+    white-space:    nowrap;
+    color:          var(--figma-color-bg-secondary);
+    z-index:        -1;
+    user-select:    none;
+    pointer-events: none;
+}
+
+
 #aboutDialogContent
 {
     font-size: 12px;
@@ -723,6 +738,8 @@
 #aboutLogo
 {
     margin-top: 30px;
+    position:   relative;
+    left:       2px;
 }
 
 
@@ -737,6 +754,8 @@
 {
     display:     inline;
     margin-left: auto;
+    position:   relative;
+    left:       4px;
 }
 
 

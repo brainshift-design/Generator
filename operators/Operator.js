@@ -705,8 +705,6 @@ class Operator
 
     updateNode() 
     {
-        //console.log(this.id + '.Operator.updateNode()');
-
         this.      paramBack.style.backgroundColor = darkMode ? '#363636' : 'white';
         this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
 

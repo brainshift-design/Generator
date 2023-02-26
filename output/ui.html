@@ -870,6 +870,21 @@
 }
 
 
+#aboutDialogWatermark
+{
+    position:       absolute;
+    left:          -50px;
+    top:           -87px;
+    font-size:      250px;
+    font-weight:    600;
+    white-space:    nowrap;
+    color:          var(--figma-color-bg-secondary);
+    z-index:        -1;
+    user-select:    none;
+    pointer-events: none;
+}
+
+
 #aboutDialogContent
 {
     font-size: 12px;
@@ -946,6 +961,8 @@
 #aboutLogo
 {
     margin-top: 30px;
+    position:   relative;
+    left:       2px;
 }
 
 
@@ -960,6 +977,8 @@
 {
     display:     inline;
     margin-left: auto;
+    position:   relative;
+    left:       4px;
 }
 
 
@@ -2959,6 +2978,7 @@ a
     
     <div id='aboutDialogContainer'>
         <div id='aboutDialogContent'>
+            <!-- <div id='aboutDialogWatermark'>◦<span style="font-weight: 700; position: relative; left: 0.025em; top: 0.06em;">G</span><span style="position: relative; left: -0.01em; top: -0.035em;">•</span></div> -->
             <div id='aboutDialogBody'>
                 <div id='aboutLogo'>
                     <svg width="205" height="60" viewBox="0 0 205 60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -38477,8 +38497,8 @@ graphView.addEventListener('pointerup', e =>
     {
         if (getCtrlKey(e))
         {
-            if (    graphView.selectionRect.w > 0
-                &&  graphView.selectionRect.h > 0
+            if (    graphView.selectionRect.w != 0
+                &&  graphView.selectionRect.h != 0
                 && !graphView.altDown)
             {
                 graphView.oldZoom = graphView.zoom;
@@ -38908,7 +38928,7 @@ graphView.endZoomSelection = function(pointerId, zoom)
         selection = clipRect(selection, wndRect);
     
         selection.y -= menuBarHeight;
-
+console.log('selection =', selection);
 
         const rect = screen2rect(selection);
 
@@ -44245,8 +44265,6 @@ class Operator
 
     updateNode() 
     {
-        //console.log(this.id + '.Operator.updateNode()');
-
         this.      paramBack.style.backgroundColor = darkMode ? '#363636' : 'white';
         this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
 
@@ -53195,8 +53213,8 @@ extends Action
         pushUnique(updateNodes, this.node);
 
 
-        graphView.updateNodeTransforms([this.node]);
-        this.node.updateNode();
+        //graphView.updateNodeTransforms([this.node]);
+        //this.node.updateNode();
     }
 
 

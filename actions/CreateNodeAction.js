@@ -77,8 +77,8 @@ extends Action
         pushUnique(updateNodes, this.node);
 
 
-        graphView.updateNodeTransforms([this.node]);
-        this.node.updateNode();
+        //graphView.updateNodeTransforms([this.node]);
+        //this.node.updateNode();
     }
 
 
