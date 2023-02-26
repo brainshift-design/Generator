@@ -268,13 +268,6 @@ extends OpColorBase
         {
             this.paramSpace.setValue(space, false, true, false);
 
-            if (this.id == 'color20')
-            {
-                console.log('space.value =', space.value);
-                console.log('graphView.pastingNodes =', graphView.pastingNodes);
-                console.log('graphView.loadingNodes =', graphView.loadingNodes);
-                console.log('graphView.restoringNodes =', graphView.restoringNodes);
-            }
 
             if (   convert.value != space.value
                 || graphView.pastingNodes

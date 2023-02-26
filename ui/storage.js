@@ -33,6 +33,7 @@ function uiReturnFigGetLocalData(msg)
     switch (msg.key)
     {
         case 'minZoomForParams':
+            console.log('msg =', msg);
             updateSetting(msg.key, parseFloat(msg.value));
             break;
 

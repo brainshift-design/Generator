@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 112;
+const generatorVersion = 113;
 
 
 const MAX_INT32        = 2147483647;
@@ -2359,14 +2359,14 @@ function point2screen(p)
 
 
 
-function rect2screen(rect)
-{
-    return new Rect(
-        (rect.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
-        (rect.y + graphView.pan.y / graphView.zoom) * graphView.zoom,
-        rect.w / graphView.zoom,
-        rect.h / graphView.zoom);
-}
+// function rect2screen(rect)
+// {
+//     return new Rect(
+//         (rect.x + graphView.pan.x / graphView.zoom) * graphView.zoom,
+//         (rect.y + graphView.pan.y / graphView.zoom) * graphView.zoom,
+//         rect.w / graphView.zoom,
+//         rect.h / graphView.zoom);
+// }
 
 
 "use strict";
@@ -10828,7 +10828,7 @@ const settings =
 
     autoConnectNewNodes:   true,
     enableZoomedOutParams: false,
-    minZoomForParams:      0.5,
+    minZoomForParams:      0.35,
     showAllColorSpaces:    false,
     showBoolValues:        true,
     showOperationResults:  true,

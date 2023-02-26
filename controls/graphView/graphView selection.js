@@ -59,9 +59,9 @@ graphView.updateSelection = (x, y, shiftKey, ctrlKey) =>
     graphView.selectionRect.w = x - graphView.selectionRect.x;
     graphView.selectionRect.h = y - graphView.selectionRect.y;
 
-    log(
-          'selection =' + JSON.stringify(graphView.selectionRect)
-        + '<br/>pan =' + JSON.stringify(graphView.pan));
+    // log(
+    //       'selection =' + JSON.stringify(graphView.selectionRect)
+    //     + '<br/>pan =' + JSON.stringify(graphView.pan));
 
     setTimeout(() => graphView.updateSelectBox(shiftKey, ctrlKey));
 };
