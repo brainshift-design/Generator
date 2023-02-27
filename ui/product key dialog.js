@@ -1,4 +1,24 @@
-var productKey = '';
+var productKey = NULL;
+
+
+
+function onValidateClick(key)
+{
+    if (productKeyInput.disabled)
+    {
+        validateProductKeyButton.innerHTML = 'Validate';
+
+        productKeyInput.disabled = false
+        setDefaultProductKeyInput();
+
+        productKeyInput.focus();
+        productKeyInput.select();
+    }
+    else
+    {
+        tryValidateLicense(key);
+    }
+}
 
 
 
@@ -8,13 +28,21 @@ function showProductKeyDialog()
     productKeyDialog.style.display = 'block';
 
 
-    //productKeyUserName.innerHTML = currentUser.name;
     productKeyUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
     setDefaultProductKeyInput();
+    
+    
+    const subscribed = productKey != NULL;
 
-    productKeyInputBack.innerHTML = '•'.repeat(13);
-    productKeyInput.value = '';
+    productKeyInputBack.innerHTML = subscribed ? '' : '•'.repeat(13);
 
+    productKeyInput.value    = productKey;
+    productKeyInput.disabled = subscribed;
+    
+    validateProductKeyButton.innerHTML = subscribed ? 'Edit' : 'Validate';
+
+    if (subscribed) setDisabledProductKeyInput();
+    else            setDefaultProductKeyInput();
     
     window.setTimeout(() => document.getElementById('productKeyInput').focus(), 0);
 
@@ -45,7 +73,7 @@ function hideProductKeyDialog()
 productKeyClose.addEventListener('pointerdown', e => e.stopPropagation());
 productKeyBack.addEventListener('pointerdown', () => { hideProductKeyDialog(); });
 
-productKeyInput.addEventListener('pointerdown', () => { setDefaultProductKeyInput(); });
+productKeyInput.addEventListener('pointerdown', () => { if (!productKeyInput.disabled) setDefaultProductKeyInput(); });
 
 productKeyInput.addEventListener('keydown', e =>
 {
@@ -91,6 +119,14 @@ function setDefaultProductKeyInput()
 {
     productKeyInput.style.outline   = 'none';
     productKeyInput.style.boxShadow = '0 0 0 2px var(--figma-color-bg-brand)'; 
+}
+
+
+
+function setDisabledProductKeyInput()
+{
+    productKeyInput.style.outline   = 'none';
+    productKeyInput.style.boxShadow = 'none';//0 0 0 1px var(--figma-color-bg-tertiary)'; 
 }
 
 

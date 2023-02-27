@@ -198,6 +198,11 @@
 }
 
 
+#productKeyInput:disabled
+{
+    color: var(--figma-color-bg-disabled);
+}
+
 
 #validateProductKeyButton
 {
