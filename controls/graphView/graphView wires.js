@@ -300,13 +300,13 @@ function updateWireStyle(wire)
     if (darkMode) bright = 1-bright;
 
     const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(graphView.zoom, 5)).toString(16).padStart(2, '0');
-
+    //'+(Math.min(Math.max(1, 1/graphView.zoom), 5))+'
     
     wire.curve.style.filter = 
         wire.needsFilter
         ? darkMode
-            ? ( isDark(color, 0.65)
-                ?    'drop-shadow(0px 0px '+(Math.min(Math.max(1, 1/graphView.zoom), 5))+'px #ffffff' + innerOpacity + ')'
+            ? (isDark(color, 0.65)
+                ?    'drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ')'
                 :   ' drop-shadow(0px 0px 1px #000000' + innerOpacity + ')')
             : (!isDark(color)
                 ?    'drop-shadow(0px 0px 1px #000000' + innerOpacity + ')'

@@ -186,23 +186,25 @@ function updateMenuItemShowOperationResults()
 
 
 
-function enableFeatures(sub, beta)
+function enableFeatures(subscription, beta)
 {
-    updateMenuItemDisplay(btnFlow .div,                 sub && beta);
-    updateMenuItemDisplay(btnShape.div,                 sub && beta);
+    updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
-    updateMenuItemDisplay(menuItemLogObjectUpdates.div, sub && beta);
+    updateMenuItemDisplay(btnFlow .div,                 subscription && beta);
+    updateMenuItemDisplay(btnShape.div,                 subscription && beta);
 
-    updateMenuItemDisplay(menuItemCorrectColor    .div, sub);
+    updateMenuItemDisplay(menuItemLogObjectUpdates.div, subscription && beta);
 
-    updateMenuItemDisplay(menuItemStyleFill       .div, sub && beta);
-    updateMenuItemDisplay(menuItemStyleStroke     .div, sub && beta);
-    updateMenuItemDisplay(menuItemStyleSep1       .div, sub && beta);
+    updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
 
-    updateMenuItemDisplay(menuItemSeries.div,           sub && beta);    
+    // updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
+    // updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
+    // updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
+
+    updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
 
 
-    graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
+    graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
 }
 
 

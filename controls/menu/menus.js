@@ -233,8 +233,8 @@ function initGeneratorMenus()
                                         new MenuItem('',                             {separator: true}),    
         menuItemMinZoomForParams      = new MenuItem('Smallest adjustment zoom...',  {callback: () => showMinZoomDialog()}),
                                         new MenuItem('',                             {separator: true}),    
-        menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }})]);
-      //menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);  /*uiValidateLicense(productKey);*/      }})]);
+        menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
+        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }})]);
 
     // menuMainPreferences.init = () => 
     // {
@@ -267,13 +267,13 @@ function initGeneratorMenus()
                                            graph.nodes.forEach(n => updateHeaderLabelOffsetX(n));
                                        }
                                    }),
-                                    // new MenuItem('',                             {separator: true}),
+                                    new MenuItem('',                             {separator: true}),
                                 //    new MenuItem('Re-save all connections',      {callback:      () => uiSaveConnections(graph.connections)}),                                   
                                  //new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
                                 //  new MenuItem('',                             {separator: true}),   
                                 //  new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
-                                //    new MenuItem('Log all local data',           {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData'}); }}),
-                                //    new MenuItem('Clear all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
+                                   new MenuItem('Log all local data',           {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData'}); }}),
+                                   new MenuItem('Clear all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
                                 //  new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
                                 //    new MenuItem('',                             {separator: true }),
                                  //new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
@@ -405,9 +405,9 @@ function initGeneratorMenus()
     
     menuStyle = new Menu('Styles', true, false);
     menuStyle.addItems([
-        menuItemStyleFill   = new MenuItem('Fill',          {icon: iconFill,       callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, {insert: e.ctrlKey}))}),
-        menuItemStyleStroke = new MenuItem('Stroke',        {icon: iconStroke,     callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, {insert: e.ctrlKey}))}),
-        menuItemStyleSep1   = new MenuItem('',              {separator: true}),
+        // menuItemStyleFill   = new MenuItem('Fill',          {icon: iconFill,       callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, {insert: e.ctrlKey}))}),
+        // menuItemStyleStroke = new MenuItem('Stroke',        {icon: iconStroke,     callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, {insert: e.ctrlKey}))}),
+        // menuItemStyleSep1   = new MenuItem('',              {separator: true}),
                               new MenuItem('Color style',   {icon: iconColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.ctrlKey, existing: true}))})]);
                             //new MenuItem('Color style',   {icon: iconColorStyle, childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.ctrlKey}))})]);
     

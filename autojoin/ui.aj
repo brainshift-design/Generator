@@ -28,6 +28,8 @@
     [../autojoin/color.aj]
 
     ../core/base32.js
+    
+    ../license/*.js
 
     [../autojoin/types.aj]
 

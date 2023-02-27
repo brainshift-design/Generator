@@ -112,7 +112,7 @@ function uiReturnFigGetLocalData(msg)
     if (!settings.dataMode)
     {
         if (msg.key == 'enableBetaFeatures')
-            uiValidateLicense(productKey);
+            enableFeatures(true, settings.enableBetaFeatures); 
 
         if (msg.key == 'showDebugMenu')
             updateMenuItemShowDebugMenu();
@@ -339,6 +339,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
     promise.then(() => 
     {
         const updateNodes = [];
+        
         finishLoadingNodes(_nodes, loadedNodes, updateNodes);
         finishLoading(_nodes);
         
@@ -365,7 +366,7 @@ function finishLoading(_nodes)
     generatorStarted = true;
 
 
-    uiValidateLicense(productKey);
+    enableFeatures(productKey != NULL, settings.enableBetaFeatures); 
 
 
     window.focus();

@@ -95,7 +95,10 @@ function leftArrowChar(list) { return list ? '⟸' : '⟵'; }
 function rightArrowChar(list) { return list ? '⟹' : '⟶'; }
 function nodeNameForStorage(nodeId) { return nodeTag + ' ' + nodeId; }
 function connNameForStorage(name) { return connTag + ' ' + name; }
-function parseBool(str) { return str === 'true'; }
+function parseBool(str) {
+    return str.toLowerCase() == 'true'
+        || str == '1';
+}
 function connToString(_conn, logSpace = false) {
     return getConnectionString(_conn.outputNodeId, _conn.outputId, _conn.outputOrder, _conn.inputNodeId, _conn.inputId, _conn.list, logSpace);
 }
@@ -815,16 +818,17 @@ function logSavedConn(conn) {
 //     }    
 //     return data;    
 // }
-const MONTHLY_LICENSE = 'M';
-const YEARLY_LICENSE = 'Y';
+// const MONTHLY_LICENSE = 'M';
+// const  YEARLY_LICENSE = 'Y';
 //const licenseKeys     = createCryptoKeys();
 //const licenseHashSize = 4;
-function figValidateLicense(license) {
-    figPostMessageToUi({
-        cmd: 'uiReturnFigValidateLicense',
-        result: false
-    });
-}
+// function figValidateLicense(license)
+// {
+//     figPostMessageToUi({
+//         cmd:   'uiReturnFigValidateLicense',
+//         result: false
+//     })
+// }
 // function createProductKey(userId: string, licenseType: string, lastYear: number, lastMonth: number)
 // {
 //     // how to revoke
@@ -1153,9 +1157,9 @@ figma.ui.onmessage = function (msg) {
         case 'figCommitUndo':
             figma.commitUndo();
             break;
-        case 'figValidateLicense':
-            figValidateLicense(msg.license);
-            break;
+        // case 'figValidateLicense':
+        //     figValidateLicense(msg.license);
+        //     break;
     }
     figPostMessageToUi({
         cmd: 'uiEndFigMessage',

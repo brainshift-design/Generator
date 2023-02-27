@@ -1,5 +1,5 @@
-const MONTHLY_LICENSE = 'M';
-const  YEARLY_LICENSE = 'Y';
+// const MONTHLY_LICENSE = 'M';
+// const  YEARLY_LICENSE = 'Y';
 
 
 //const licenseKeys     = createCryptoKeys();
@@ -7,13 +7,13 @@ const  YEARLY_LICENSE = 'Y';
 
 
 
-function figValidateLicense(license)
-{
-    figPostMessageToUi({
-        cmd:   'uiReturnFigValidateLicense',
-        result: false
-    })
-}
+// function figValidateLicense(license)
+// {
+//     figPostMessageToUi({
+//         cmd:   'uiReturnFigValidateLicense',
+//         result: false
+//     })
+// }
 
 
 

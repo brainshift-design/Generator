@@ -153,7 +153,11 @@ function connNameForStorage(name)   { return connTag + ' ' + name;   }
 
 
 
-function parseBool(str) { return str === 'true'; }
+function parseBool(str) 
+{ 
+    return str.toLowerCase() == 'true'
+        || str == '1';
+}
 
 
 

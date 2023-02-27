@@ -1213,13 +1213,13 @@ function uiLogAllSavedConns()
 
 
 
-function uiValidateLicense(license)
-{
-    uiQueueMessageToFigma({
-        cmd:    'figValidateLicense',
-        license: license
-    });
-}
+// function uiValidateLicense(license)
+// {
+//     uiQueueMessageToFigma({
+//         cmd:    'figValidateLicense',
+//         license: license
+//     });
+// }
 
 
 

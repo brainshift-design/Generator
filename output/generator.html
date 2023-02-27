@@ -159,7 +159,11 @@ function connNameForStorage(name)   { return connTag + ' ' + name;   }
 
 
 
-function parseBool(str) { return str === 'true'; }
+function parseBool(str) 
+{ 
+    return str.toLowerCase() == 'true'
+        || str == '1';
+}
 
 
 
@@ -1650,198 +1654,198 @@ function arcLength(p0, p1, p2, p3, error = 0.0000001)
 }
 
 
-// var bigBuffer = new Uint8Array(2048);
+var bigBuffer = new Uint8Array(2048);
 
 
 
-// function bigRandom(max = 0)
-// {
-//     const size = 
-//         max > 0
-//         ? Math.max(1, Math.floor(bigBitCount(max)/8))
-//         : bigBuffer.length;
+function bigRandom(max = 0)
+{
+    const size = 
+        max > 0
+        ? Math.max(1, Math.floor(bigBitCount(max)/8))
+        : bigBuffer.length;
     
-//     if (size > bigBuffer.length)
-//         bigBuffer = new Uint8Array(nextPow2(size));
+    if (size > bigBuffer.length)
+        bigBuffer = new Uint8Array(nextPow2(size));
         
-//     for (let i = 0; i < size; i++)
-//         bigBuffer[i] = toInt(Math.random() * 0x100);
+    for (let i = 0; i < size; i++)
+        bigBuffer[i] = toInt(Math.random() * 0x100);
 
-//     let rnd = bigFromBufferAt(bigBuffer, 0, size);
+    let rnd = bigFromBufferAt(bigBuffer, 0, size);
 
-//     if (max > 0)
-//         rnd = rnd % max;
+    if (max > 0)
+        rnd = rnd % max;
         
-//     return rnd;
-// }
+    return rnd;
+}
 
 
 
-// function bigPowMod(n, e, m) // n^e % mod
-// {
-//     let c = 1n;
+function bigPowMod(n, e, m) // n^e % mod
+{
+    let c = 1n;
 
-//     while (e > 0n)
-//     {
-//         if ((e & 1n) != 0n)
-//         {
-//             c *= n;
-//             c %= m;
-//         }
+    while (e > 0n)
+    {
+        if ((e & 1n) != 0n)
+        {
+            c *= n;
+            c %= m;
+        }
 
-//         e  >>= 1n;
+        e  >>= 1n;
         
-//         n *= n;
-//         n %= m;
-//     }
+        n *= n;
+        n %= m;
+    }
     
-//     return c;
-// }
+    return c;
+}
 
 
 
-// function bigNextPrime(n) 
-// {
-//     while (!bigIsPrime(++n));
-//     return n;
-// }
+function bigNextPrime(n) 
+{
+    while (!bigIsPrime(++n));
+    return n;
+}
 
 
 
-// function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
-// {
-//     if (x <= 1n) return false; 
-//     if (x <= 3n) return true;
+function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
+{
+    if (x <= 1n) return false; 
+    if (x <= 3n) return true;
     
-//     if (x % 2n == 0n) 
-//         return false;
+    if (x % 2n == 0n) 
+        return false;
         
         
-//     let d = x - 1n;
-//     let s = 0n; 
+    let d = x - 1n;
+    let s = 0n; 
                 
-//     while (d % 2n == 0n) 
-//     {
-//         d /= 2n;         
-//         s++;
-//     }
+    while (d % 2n == 0n) 
+    {
+        d /= 2n;         
+        s++;
+    }
         
 
-//     for (let i = 0; i < k; i++)    
-//     {
-//         const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
+    for (let i = 0; i < k; i++)    
+    {
+        const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
 
-//         if (!bigIsWitness(a, s, d, x))
-//             return false;        
-//     }
+        if (!bigIsWitness(a, s, d, x))
+            return false;        
+    }
         
 
-//     return true; 
-// }    
+    return true; 
+}    
 
     
 
-// function bigIsWitness(a, s, d, n)
-// {
-//     let x = bigPowMod(a, d, n);
+function bigIsWitness(a, s, d, n)
+{
+    let x = bigPowMod(a, d, n);
         
-//     if (x == 1n)
-//         return true;
+    if (x == 1n)
+        return true;
 
-//     for (let j = 0n; j < s-1n; j++)
-//     {
-//         if (x == n-1n)
-//             return true;
+    for (let j = 0n; j < s-1n; j++)
+    {
+        if (x == n-1n)
+            return true;
         
-//         x = bigPowMod(x, 2n, n);
-//     }
+        x = bigPowMod(x, 2n, n);
+    }
 
-//     return x == n-1n;
-// }
-
-
-
-// function bigFromBuffer(buffer)
-// {
-//     return bigFromBufferAt(buffer, 0, buffer.length);
-// }
+    return x == n-1n;
+}
 
 
 
-// function bigFromBufferAt(buffer, start, size)
-// {
-//     size = Math.min(size, buffer.length - start);
+function bigFromBuffer(buffer)
+{
+    return bigFromBufferAt(buffer, 0, buffer.length);
+}
+
+
+
+function bigFromBufferAt(buffer, start, size)
+{
+    size = Math.min(size, buffer.length - start);
     
-//     let val = 0n;
-//     let mul = 1n;
+    let val = 0n;
+    let mul = 1n;
 
-//     for (let i = start+size-1; i >= start; i--) // little-endian
-//     {
-//         val += mul * BigInt(buffer[i]);
-//         mul <<= 8n;
-//     }
+    for (let i = start+size-1; i >= start; i--) // little-endian
+    {
+        val += mul * BigInt(buffer[i]);
+        mul <<= 8n;
+    }
 
-//     return val;
-// }
-
-
-
-// function bigToBuffer(n, buffer, bufferSize)
-// {
-//     bigToBufferAt(n, buffer, 0, bufferSize);
-// }
+    return val;
+}
 
 
 
-// function bigToBufferAt(n, buffer, start, bufferSize)
-// {
-//     let size = Math.ceil(bigBitCount(n) / 8);
+function bigToBuffer(n, buffer, bufferSize)
+{
+    bigToBufferAt(n, buffer, 0, bufferSize);
+}
+
+
+
+function bigToBufferAt(n, buffer, start, bufferSize)
+{
+    let size = Math.ceil(bigBitCount(n) / 8);
     
-//     size = Math.min(size, buffer.length - start);
+    size = Math.min(size, buffer.length - start);
 
-//     start += bufferSize - size;
+    start += bufferSize - size;
 
-//     for (let i = start+size-1; i >= start; i--) // little-endian
-//     {
-//         buffer[i] = Number(n & 0xFFn); 
-//         n >>= 8n;
-//     }
-// }
-
-
-
-// function bigBitCount(n)
-// {
-//     return n.toString(2).length;
-// }
+    for (let i = start+size-1; i >= start; i--) // little-endian
+    {
+        buffer[i] = Number(n & 0xFFn); 
+        n >>= 8n;
+    }
+}
 
 
 
-// function bigModInvert(n, m)
-// {
-//     const gcd = bigGcdExtended(n, m);
-
-//     if (gcd[0] != 1n) return undefined; // inverse doesn't exist
-//     else              return (gcd[1] % m + m) % m;
-// }
+function bigBitCount(n)
+{
+    return n.toString(2).length;
+}
 
 
 
-// function bigGcdExtended(n, m)
-// {
-//     if (n == 0n)
-//         return [m, 0n, 1n];
+function bigModInvert(n, m)
+{
+    const gcd = bigGcdExtended(n, m);
 
-//     const gcd = bigGcdExtended(m % n, n);
+    if (gcd[0] != 1n) return undefined; // inverse doesn't exist
+    else              return (gcd[1] % m + m) % m;
+}
 
-//     const x   = gcd[1];
-//     const y   = gcd[2];
 
-//     return [
-//         gcd[0], 
-//         y - (m/n)*x,
-//         x ];
-// }
+
+function bigGcdExtended(n, m)
+{
+    if (n == 0n)
+        return [m, 0n, 1n];
+
+    const gcd = bigGcdExtended(m % n, n);
+
+    const x   = gcd[1];
+    const y   = gcd[2];
+
+    return [
+        gcd[0], 
+        y - (m/n)*x,
+        x ];
+}
 
 
 class Point
@@ -11029,23 +11033,25 @@ function updateMenuItemShowOperationResults()
 
 
 
-function enableFeatures(sub, beta)
+function enableFeatures(subscription, beta)
 {
-    updateMenuItemDisplay(btnFlow .div,                 sub && beta);
-    updateMenuItemDisplay(btnShape.div,                 sub && beta);
+    updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
-    updateMenuItemDisplay(menuItemLogObjectUpdates.div, sub && beta);
+    updateMenuItemDisplay(btnFlow .div,                 subscription && beta);
+    updateMenuItemDisplay(btnShape.div,                 subscription && beta);
 
-    updateMenuItemDisplay(menuItemCorrectColor    .div, sub);
+    updateMenuItemDisplay(menuItemLogObjectUpdates.div, subscription && beta);
 
-    updateMenuItemDisplay(menuItemStyleFill       .div, sub && beta);
-    updateMenuItemDisplay(menuItemStyleStroke     .div, sub && beta);
-    updateMenuItemDisplay(menuItemStyleSep1       .div, sub && beta);
+    updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
 
-    updateMenuItemDisplay(menuItemSeries.div,           sub && beta);    
+    // updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
+    // updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
+    // updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
+
+    updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
 
 
-    graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
+    graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
 }
 
 

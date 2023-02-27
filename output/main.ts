@@ -176,7 +176,11 @@ function connNameForStorage(name)   { return connTag + ' ' + name;   }
 
 
 
-function parseBool(str) { return str === 'true'; }
+function parseBool(str) 
+{ 
+    return str.toLowerCase() == 'true'
+        || str == '1';
+}
 
 
 
@@ -1374,8 +1378,8 @@ function logSavedConn(conn)
 // }
 
 
-const MONTHLY_LICENSE = 'M';
-const  YEARLY_LICENSE = 'Y';
+// const MONTHLY_LICENSE = 'M';
+// const  YEARLY_LICENSE = 'Y';
 
 
 //const licenseKeys     = createCryptoKeys();
@@ -1383,13 +1387,13 @@ const  YEARLY_LICENSE = 'Y';
 
 
 
-function figValidateLicense(license)
-{
-    figPostMessageToUi({
-        cmd:   'uiReturnFigValidateLicense',
-        result: false
-    })
-}
+// function figValidateLicense(license)
+// {
+//     figPostMessageToUi({
+//         cmd:   'uiReturnFigValidateLicense',
+//         result: false
+//     })
+// }
 
 
 
@@ -1767,9 +1771,9 @@ figma.ui.onmessage = function(msg)
         case 'figTriggerUndo': figma.triggerUndo(); break; 
         case 'figCommitUndo':  figma.commitUndo();  break; 
 
-        case 'figValidateLicense':
-            figValidateLicense(msg.license);
-            break;
+        // case 'figValidateLicense':
+        //     figValidateLicense(msg.license);
+        //     break;
     }
 
 

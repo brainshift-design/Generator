@@ -2915,7 +2915,7 @@ a
         
         <div id='productKeyInputBack'></div>
         <input type='text' spellcheck='false' id='productKeyInput' />
-        <div class='button' id='validateProductKeyButton' onclick='uiValidateLicense(productKeyInput.value);'>Validate</div>
+        <div class='button' id='validateProductKeyButton' onclick='tryValidateLicense(productKeyInput.value);'>Validate</div>
         <div id='productKeyWebsite'><!--<a href='http://www.bourt.com/generator/subscribe' target='_blank'>-->Buy subscription<!--</a>--></div>
     </div>
 
@@ -3054,7 +3054,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Fixed UI issues.</p>
+                <p>-</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -3418,7 +3418,11 @@ function connNameForStorage(name)   { return connTag + ' ' + name;   }
 
 
 
-function parseBool(str) { return str === 'true'; }
+function parseBool(str) 
+{ 
+    return str.toLowerCase() == 'true'
+        || str == '1';
+}
 
 
 
@@ -4909,198 +4913,198 @@ function arcLength(p0, p1, p2, p3, error = 0.0000001)
 }
 
 
-// var bigBuffer = new Uint8Array(2048);
+var bigBuffer = new Uint8Array(2048);
 
 
 
-// function bigRandom(max = 0)
-// {
-//     const size = 
-//         max > 0
-//         ? Math.max(1, Math.floor(bigBitCount(max)/8))
-//         : bigBuffer.length;
+function bigRandom(max = 0)
+{
+    const size = 
+        max > 0
+        ? Math.max(1, Math.floor(bigBitCount(max)/8))
+        : bigBuffer.length;
     
-//     if (size > bigBuffer.length)
-//         bigBuffer = new Uint8Array(nextPow2(size));
+    if (size > bigBuffer.length)
+        bigBuffer = new Uint8Array(nextPow2(size));
         
-//     for (let i = 0; i < size; i++)
-//         bigBuffer[i] = toInt(Math.random() * 0x100);
+    for (let i = 0; i < size; i++)
+        bigBuffer[i] = toInt(Math.random() * 0x100);
 
-//     let rnd = bigFromBufferAt(bigBuffer, 0, size);
+    let rnd = bigFromBufferAt(bigBuffer, 0, size);
 
-//     if (max > 0)
-//         rnd = rnd % max;
+    if (max > 0)
+        rnd = rnd % max;
         
-//     return rnd;
-// }
+    return rnd;
+}
 
 
 
-// function bigPowMod(n, e, m) // n^e % mod
-// {
-//     let c = 1n;
+function bigPowMod(n, e, m) // n^e % mod
+{
+    let c = 1n;
 
-//     while (e > 0n)
-//     {
-//         if ((e & 1n) != 0n)
-//         {
-//             c *= n;
-//             c %= m;
-//         }
+    while (e > 0n)
+    {
+        if ((e & 1n) != 0n)
+        {
+            c *= n;
+            c %= m;
+        }
 
-//         e  >>= 1n;
+        e  >>= 1n;
         
-//         n *= n;
-//         n %= m;
-//     }
+        n *= n;
+        n %= m;
+    }
     
-//     return c;
-// }
+    return c;
+}
 
 
 
-// function bigNextPrime(n) 
-// {
-//     while (!bigIsPrime(++n));
-//     return n;
-// }
+function bigNextPrime(n) 
+{
+    while (!bigIsPrime(++n));
+    return n;
+}
 
 
 
-// function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
-// {
-//     if (x <= 1n) return false; 
-//     if (x <= 3n) return true;
+function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
+{
+    if (x <= 1n) return false; 
+    if (x <= 3n) return true;
     
-//     if (x % 2n == 0n) 
-//         return false;
+    if (x % 2n == 0n) 
+        return false;
         
         
-//     let d = x - 1n;
-//     let s = 0n; 
+    let d = x - 1n;
+    let s = 0n; 
                 
-//     while (d % 2n == 0n) 
-//     {
-//         d /= 2n;         
-//         s++;
-//     }
+    while (d % 2n == 0n) 
+    {
+        d /= 2n;         
+        s++;
+    }
         
 
-//     for (let i = 0; i < k; i++)    
-//     {
-//         const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
+    for (let i = 0; i < k; i++)    
+    {
+        const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
 
-//         if (!bigIsWitness(a, s, d, x))
-//             return false;        
-//     }
+        if (!bigIsWitness(a, s, d, x))
+            return false;        
+    }
         
 
-//     return true; 
-// }    
+    return true; 
+}    
 
     
 
-// function bigIsWitness(a, s, d, n)
-// {
-//     let x = bigPowMod(a, d, n);
+function bigIsWitness(a, s, d, n)
+{
+    let x = bigPowMod(a, d, n);
         
-//     if (x == 1n)
-//         return true;
+    if (x == 1n)
+        return true;
 
-//     for (let j = 0n; j < s-1n; j++)
-//     {
-//         if (x == n-1n)
-//             return true;
+    for (let j = 0n; j < s-1n; j++)
+    {
+        if (x == n-1n)
+            return true;
         
-//         x = bigPowMod(x, 2n, n);
-//     }
+        x = bigPowMod(x, 2n, n);
+    }
 
-//     return x == n-1n;
-// }
-
-
-
-// function bigFromBuffer(buffer)
-// {
-//     return bigFromBufferAt(buffer, 0, buffer.length);
-// }
+    return x == n-1n;
+}
 
 
 
-// function bigFromBufferAt(buffer, start, size)
-// {
-//     size = Math.min(size, buffer.length - start);
+function bigFromBuffer(buffer)
+{
+    return bigFromBufferAt(buffer, 0, buffer.length);
+}
+
+
+
+function bigFromBufferAt(buffer, start, size)
+{
+    size = Math.min(size, buffer.length - start);
     
-//     let val = 0n;
-//     let mul = 1n;
+    let val = 0n;
+    let mul = 1n;
 
-//     for (let i = start+size-1; i >= start; i--) // little-endian
-//     {
-//         val += mul * BigInt(buffer[i]);
-//         mul <<= 8n;
-//     }
+    for (let i = start+size-1; i >= start; i--) // little-endian
+    {
+        val += mul * BigInt(buffer[i]);
+        mul <<= 8n;
+    }
 
-//     return val;
-// }
-
-
-
-// function bigToBuffer(n, buffer, bufferSize)
-// {
-//     bigToBufferAt(n, buffer, 0, bufferSize);
-// }
+    return val;
+}
 
 
 
-// function bigToBufferAt(n, buffer, start, bufferSize)
-// {
-//     let size = Math.ceil(bigBitCount(n) / 8);
+function bigToBuffer(n, buffer, bufferSize)
+{
+    bigToBufferAt(n, buffer, 0, bufferSize);
+}
+
+
+
+function bigToBufferAt(n, buffer, start, bufferSize)
+{
+    let size = Math.ceil(bigBitCount(n) / 8);
     
-//     size = Math.min(size, buffer.length - start);
+    size = Math.min(size, buffer.length - start);
 
-//     start += bufferSize - size;
+    start += bufferSize - size;
 
-//     for (let i = start+size-1; i >= start; i--) // little-endian
-//     {
-//         buffer[i] = Number(n & 0xFFn); 
-//         n >>= 8n;
-//     }
-// }
-
-
-
-// function bigBitCount(n)
-// {
-//     return n.toString(2).length;
-// }
+    for (let i = start+size-1; i >= start; i--) // little-endian
+    {
+        buffer[i] = Number(n & 0xFFn); 
+        n >>= 8n;
+    }
+}
 
 
 
-// function bigModInvert(n, m)
-// {
-//     const gcd = bigGcdExtended(n, m);
-
-//     if (gcd[0] != 1n) return undefined; // inverse doesn't exist
-//     else              return (gcd[1] % m + m) % m;
-// }
+function bigBitCount(n)
+{
+    return n.toString(2).length;
+}
 
 
 
-// function bigGcdExtended(n, m)
-// {
-//     if (n == 0n)
-//         return [m, 0n, 1n];
+function bigModInvert(n, m)
+{
+    const gcd = bigGcdExtended(n, m);
 
-//     const gcd = bigGcdExtended(m % n, n);
+    if (gcd[0] != 1n) return undefined; // inverse doesn't exist
+    else              return (gcd[1] % m + m) % m;
+}
 
-//     const x   = gcd[1];
-//     const y   = gcd[2];
 
-//     return [
-//         gcd[0], 
-//         y - (m/n)*x,
-//         x ];
-// }
+
+function bigGcdExtended(n, m)
+{
+    if (n == 0n)
+        return [m, 0n, 1n];
+
+    const gcd = bigGcdExtended(m % n, n);
+
+    const x   = gcd[1];
+    const y   = gcd[2];
+
+    return [
+        gcd[0], 
+        y - (m/n)*x,
+        x ];
+}
 
 
 class Point
@@ -14288,23 +14292,25 @@ function updateMenuItemShowOperationResults()
 
 
 
-function enableFeatures(sub, beta)
+function enableFeatures(subscription, beta)
 {
-    updateMenuItemDisplay(btnFlow .div,                 sub && beta);
-    updateMenuItemDisplay(btnShape.div,                 sub && beta);
+    updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
-    updateMenuItemDisplay(menuItemLogObjectUpdates.div, sub && beta);
+    updateMenuItemDisplay(btnFlow .div,                 subscription && beta);
+    updateMenuItemDisplay(btnShape.div,                 subscription && beta);
 
-    updateMenuItemDisplay(menuItemCorrectColor    .div, sub);
+    updateMenuItemDisplay(menuItemLogObjectUpdates.div, subscription && beta);
 
-    updateMenuItemDisplay(menuItemStyleFill       .div, sub && beta);
-    updateMenuItemDisplay(menuItemStyleStroke     .div, sub && beta);
-    updateMenuItemDisplay(menuItemStyleSep1       .div, sub && beta);
+    updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
 
-    updateMenuItemDisplay(menuItemSeries.div,           sub && beta);    
+    // updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
+    // updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
+    // updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
+
+    updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
 
 
-    graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
+    graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
 }
 
 
@@ -20010,7 +20016,11 @@ function connNameForStorage(name)   { return connTag + ' ' + name;   }
 
 
 
-function parseBool(str) { return str === 'true'; }
+function parseBool(str) 
+{ 
+    return str.toLowerCase() == 'true'
+        || str == '1';
+}
 
 
 
@@ -21501,198 +21511,198 @@ function arcLength(p0, p1, p2, p3, error = 0.0000001)
 }
 
 
-// var bigBuffer = new Uint8Array(2048);
+var bigBuffer = new Uint8Array(2048);
 
 
 
-// function bigRandom(max = 0)
-// {
-//     const size = 
-//         max > 0
-//         ? Math.max(1, Math.floor(bigBitCount(max)/8))
-//         : bigBuffer.length;
+function bigRandom(max = 0)
+{
+    const size = 
+        max > 0
+        ? Math.max(1, Math.floor(bigBitCount(max)/8))
+        : bigBuffer.length;
     
-//     if (size > bigBuffer.length)
-//         bigBuffer = new Uint8Array(nextPow2(size));
+    if (size > bigBuffer.length)
+        bigBuffer = new Uint8Array(nextPow2(size));
         
-//     for (let i = 0; i < size; i++)
-//         bigBuffer[i] = toInt(Math.random() * 0x100);
+    for (let i = 0; i < size; i++)
+        bigBuffer[i] = toInt(Math.random() * 0x100);
 
-//     let rnd = bigFromBufferAt(bigBuffer, 0, size);
+    let rnd = bigFromBufferAt(bigBuffer, 0, size);
 
-//     if (max > 0)
-//         rnd = rnd % max;
+    if (max > 0)
+        rnd = rnd % max;
         
-//     return rnd;
-// }
+    return rnd;
+}
 
 
 
-// function bigPowMod(n, e, m) // n^e % mod
-// {
-//     let c = 1n;
+function bigPowMod(n, e, m) // n^e % mod
+{
+    let c = 1n;
 
-//     while (e > 0n)
-//     {
-//         if ((e & 1n) != 0n)
-//         {
-//             c *= n;
-//             c %= m;
-//         }
+    while (e > 0n)
+    {
+        if ((e & 1n) != 0n)
+        {
+            c *= n;
+            c %= m;
+        }
 
-//         e  >>= 1n;
+        e  >>= 1n;
         
-//         n *= n;
-//         n %= m;
-//     }
+        n *= n;
+        n %= m;
+    }
     
-//     return c;
-// }
+    return c;
+}
 
 
 
-// function bigNextPrime(n) 
-// {
-//     while (!bigIsPrime(++n));
-//     return n;
-// }
+function bigNextPrime(n) 
+{
+    while (!bigIsPrime(++n));
+    return n;
+}
 
 
 
-// function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
-// {
-//     if (x <= 1n) return false; 
-//     if (x <= 3n) return true;
+function bigIsPrime(x, k = millerRabinIterations) // Miller-Rabin
+{
+    if (x <= 1n) return false; 
+    if (x <= 3n) return true;
     
-//     if (x % 2n == 0n) 
-//         return false;
+    if (x % 2n == 0n) 
+        return false;
         
         
-//     let d = x - 1n;
-//     let s = 0n; 
+    let d = x - 1n;
+    let s = 0n; 
                 
-//     while (d % 2n == 0n) 
-//     {
-//         d /= 2n;         
-//         s++;
-//     }
+    while (d % 2n == 0n) 
+    {
+        d /= 2n;         
+        s++;
+    }
         
 
-//     for (let i = 0; i < k; i++)    
-//     {
-//         const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
+    for (let i = 0; i < k; i++)    
+    {
+        const a = 2n + bigRandom(x - 1n);//bigMult(n - 3n, Math.random()); // -3 = -4 + 1 because random() doesn't include 1.0
 
-//         if (!bigIsWitness(a, s, d, x))
-//             return false;        
-//     }
+        if (!bigIsWitness(a, s, d, x))
+            return false;        
+    }
         
 
-//     return true; 
-// }    
+    return true; 
+}    
 
     
 
-// function bigIsWitness(a, s, d, n)
-// {
-//     let x = bigPowMod(a, d, n);
+function bigIsWitness(a, s, d, n)
+{
+    let x = bigPowMod(a, d, n);
         
-//     if (x == 1n)
-//         return true;
+    if (x == 1n)
+        return true;
 
-//     for (let j = 0n; j < s-1n; j++)
-//     {
-//         if (x == n-1n)
-//             return true;
+    for (let j = 0n; j < s-1n; j++)
+    {
+        if (x == n-1n)
+            return true;
         
-//         x = bigPowMod(x, 2n, n);
-//     }
+        x = bigPowMod(x, 2n, n);
+    }
 
-//     return x == n-1n;
-// }
-
-
-
-// function bigFromBuffer(buffer)
-// {
-//     return bigFromBufferAt(buffer, 0, buffer.length);
-// }
+    return x == n-1n;
+}
 
 
 
-// function bigFromBufferAt(buffer, start, size)
-// {
-//     size = Math.min(size, buffer.length - start);
+function bigFromBuffer(buffer)
+{
+    return bigFromBufferAt(buffer, 0, buffer.length);
+}
+
+
+
+function bigFromBufferAt(buffer, start, size)
+{
+    size = Math.min(size, buffer.length - start);
     
-//     let val = 0n;
-//     let mul = 1n;
+    let val = 0n;
+    let mul = 1n;
 
-//     for (let i = start+size-1; i >= start; i--) // little-endian
-//     {
-//         val += mul * BigInt(buffer[i]);
-//         mul <<= 8n;
-//     }
+    for (let i = start+size-1; i >= start; i--) // little-endian
+    {
+        val += mul * BigInt(buffer[i]);
+        mul <<= 8n;
+    }
 
-//     return val;
-// }
-
-
-
-// function bigToBuffer(n, buffer, bufferSize)
-// {
-//     bigToBufferAt(n, buffer, 0, bufferSize);
-// }
+    return val;
+}
 
 
 
-// function bigToBufferAt(n, buffer, start, bufferSize)
-// {
-//     let size = Math.ceil(bigBitCount(n) / 8);
+function bigToBuffer(n, buffer, bufferSize)
+{
+    bigToBufferAt(n, buffer, 0, bufferSize);
+}
+
+
+
+function bigToBufferAt(n, buffer, start, bufferSize)
+{
+    let size = Math.ceil(bigBitCount(n) / 8);
     
-//     size = Math.min(size, buffer.length - start);
+    size = Math.min(size, buffer.length - start);
 
-//     start += bufferSize - size;
+    start += bufferSize - size;
 
-//     for (let i = start+size-1; i >= start; i--) // little-endian
-//     {
-//         buffer[i] = Number(n & 0xFFn); 
-//         n >>= 8n;
-//     }
-// }
-
-
-
-// function bigBitCount(n)
-// {
-//     return n.toString(2).length;
-// }
+    for (let i = start+size-1; i >= start; i--) // little-endian
+    {
+        buffer[i] = Number(n & 0xFFn); 
+        n >>= 8n;
+    }
+}
 
 
 
-// function bigModInvert(n, m)
-// {
-//     const gcd = bigGcdExtended(n, m);
-
-//     if (gcd[0] != 1n) return undefined; // inverse doesn't exist
-//     else              return (gcd[1] % m + m) % m;
-// }
+function bigBitCount(n)
+{
+    return n.toString(2).length;
+}
 
 
 
-// function bigGcdExtended(n, m)
-// {
-//     if (n == 0n)
-//         return [m, 0n, 1n];
+function bigModInvert(n, m)
+{
+    const gcd = bigGcdExtended(n, m);
 
-//     const gcd = bigGcdExtended(m % n, n);
+    if (gcd[0] != 1n) return undefined; // inverse doesn't exist
+    else              return (gcd[1] % m + m) % m;
+}
 
-//     const x   = gcd[1];
-//     const y   = gcd[2];
 
-//     return [
-//         gcd[0], 
-//         y - (m/n)*x,
-//         x ];
-// }
+
+function bigGcdExtended(n, m)
+{
+    if (n == 0n)
+        return [m, 0n, 1n];
+
+    const gcd = bigGcdExtended(m % n, n);
+
+    const x   = gcd[1];
+    const y   = gcd[2];
+
+    return [
+        gcd[0], 
+        y - (m/n)*x,
+        x ];
+}
 
 
 class Point
@@ -25010,6 +25020,297 @@ function base32toArray(base32, chars = base32chars)
 
 
     return array;
+}
+
+
+const cryptoModulusSize     = 64; // to keep the keys short
+const millerRabinIterations = 40;
+
+const cryptoBufferSize      = cryptoModulusSize/8;
+const cryptoPrimeBufferSize = cryptoBufferSize /2;
+     
+const cryptoBuffer          = new Uint8Array(cryptoPrimeBufferSize);
+
+
+function bigCryptoRandom()
+{
+    for (let i = 0; i < cryptoPrimeBufferSize; i++)
+        cryptoBuffer[i] = toInt(Math.random() * 0x100);
+
+    cryptoBuffer[0]                       |= 0xC0; // set the top bit to ensure a relatively large number
+    cryptoBuffer[cryptoPrimeBufferSize-1] |= 0x01; // set low bit to ensure the number is odd
+
+    return bigFromBuffer(cryptoBuffer);
+}
+
+
+
+function bigNextCryptoPrime(n) 
+{
+    while (!bigIsPrime(n))
+        n += 2n;
+    
+    return n;
+}
+
+
+
+function bigCryptoPrime(e)
+{
+    // set p so that gcd(e, p-1) = 1
+    
+    let p;
+
+    do
+    {
+        const rnd = bigCryptoRandom();
+        p         = bigNextCryptoPrime(rnd);
+    }
+    while (gcd(p-1n, e) != 1n); 
+        
+    return p;
+}
+
+
+
+function createCryptoPrimePair(e)
+{
+    let p = bigCryptoPrime(e);
+    
+    let q;
+    do { q = bigCryptoPrime(e); } 
+    while (q == p);
+
+    if (p < q)
+        [p,q] = [q,p];
+
+    return [p, q];
+}
+
+
+
+function createCryptoKeys(e = 65537n) 
+{
+    const  p   = 4131437551n,
+           q   = 3567532051n;
+    
+    const  n   = p * q;
+    const _phi = (p-1n) * (q-1n);
+
+    const  d   = bigModInvert(e, _phi);
+
+    return {
+        public:  {n:n, e:e },
+        private: {n:n, d:d, p:p, q:q} };
+}                        
+
+
+
+function encryptBlock(n, key, sign  ) { return bigPowMod(n, (sign   ? key.d : key.e), key.n); }        
+function decryptBlock(n, key, verify) { return bigPowMod(n, (verify ? key.e : key.d), key.n); }        
+
+
+
+function encrypt(data, key) { return encryptData(data, key, false); }
+function decrypt(data, key) { return decryptData(data, key, false); }
+
+function sign   (data, key) { return encryptData(data, key, true); } // yes I know real sign/verify uses a hash,
+function verify (data, key) { return decryptData(data, key, true); } // but I prefer it this way for what I need
+
+
+
+function encryptData(data, key, sign)
+{
+    // prep array should be a multiple of cryptoBufferSize
+    const prep   = new Uint8Array(Math.ceil((data.length) / cryptoBufferSize) * cryptoBufferSize); 
+    const cipher = new Uint8Array(prep.length);
+
+
+    const start = prep.length - data.length;
+    for (let i = 0; i < data.length; i++)
+        prep[start+i] = data[i];
+
+
+    let length = prep.length;
+    let nBlock = 0;
+
+    while (length > 0)
+    {
+        const blockStart = nBlock * cryptoBufferSize;
+        const blockSize  = Math.min(length, cryptoBufferSize);
+        
+        const block = bigFromBufferAt(prep, blockStart, cryptoBufferSize);
+        const enc   = encryptBlock(block, key, sign);
+        
+        bigToBufferAt(enc, cipher, blockStart, cryptoBufferSize);
+        
+        nBlock++;
+        length -= blockSize;
+    }
+    
+    
+    return cipher;
+}
+
+
+
+function decryptData(cipher, key, verify)
+{
+    const data = new Uint8Array(cipher.length);
+    
+    
+    let length = cipher.length;
+    let nBlock = 0;
+    
+    while (length > 0)
+    {
+        var blockStart = nBlock * cryptoBufferSize;
+        var blockSize  = Math.min(length, cryptoBufferSize);
+
+        var block = bigFromBufferAt(cipher, blockStart, cryptoBufferSize);
+        var dec   = decryptBlock(block, key, verify);
+        bigToBufferAt(dec, data, blockStart, cryptoBufferSize); 
+
+        nBlock++;
+        length -= blockSize;
+    }    
+
+
+    return data;    
+}
+
+
+const licenseKeys     = createCryptoKeys();
+const licenseHashSize = 4;
+
+
+
+function validateLicense(userId, key)
+{
+    const now = new Date(Date.now());
+
+    const license = 
+    {
+        userId:    userId,
+        lastDay:   now.getDate(),
+        lastMonth: now.getMonth() + 1,
+        lastYear:  now.getFullYear()
+    };  
+
+
+    let   curCheck  = 0;
+    const maxCheck  = 31 * 12;
+
+
+    while (curCheck++ < maxCheck)
+    {
+        if (validateProductKey(license, key))
+            return true;
+
+        license.lastDay++;
+
+        if (license.lastDay   > 31) { license.lastMonth++; license.lastDay   = 1; }
+        if (license.lastMonth > 12) { license.lastYear ++; license.lastMonth = 1; }
+    }
+
+
+    return false;
+}
+
+
+
+function validateProductKey(license, key, rec = false)
+{
+    const str   = createLicenseString(license);
+    const hash  = hashLicenseString(str, licenseHashSize);
+    
+    const arr   = base32toArray(key.toUpperCase());
+    const dec   = verify(arr, licenseKeys.public).subarray(licenseHashSize);
+    const trim  = dec.subarray(dec.length - licenseHashSize);
+    
+    const valid = arraysAreEqual(hash, trim);
+
+
+    if (valid && !rec)
+    {
+        let lowerKey = key;
+
+        const lastChar  = lastOf(lowerKey);
+        const lastIndex = base32chars.indexOf(lastChar);
+
+        if (lastIndex > 0)
+        {
+            lowerKey = replaceInStringAt(lowerKey, lowerKey.length-1, base32chars[lastIndex-1]);
+
+            if (validateProductKey(license, lowerKey, true))
+                return false; // guard against the last bit
+        }
+    }
+
+
+    return valid;
+}
+
+
+
+function createProductKey(license)
+{
+    const str  = createLicenseString(license);
+    const hash = hashLicenseString(str, licenseHashSize);
+    const enc  = sign(hash, licenseKeys.private);
+    const key  = arrayToBase32(enc);
+
+    return key;
+}
+
+
+
+function createLicense(userId, strDate) // DDMMYYYY
+{
+    return {
+        userId:    userId,
+        lastDay:   parseInt(strDate.substring(0, 2)),
+        lastMonth: parseInt(strDate.substring(2, 4)),
+        lastYear:  parseInt(strDate.substring(4))
+    };
+}
+
+
+
+function createLicenseString(license)
+{
+    return license.userId
+         + license.lastDay  .toString().padStart(2, '0') 
+         + license.lastMonth.toString().padStart(2, '0')
+         + license.lastYear .toString(); 
+}
+
+
+
+function hashLicenseString(str, nBytes)
+{
+    // XOR wrap name around a given number of bytes
+
+    const bytes = stringToArray(str);
+
+
+    if (bytes.length > nBytes)
+    {
+        let pos    = nBytes;
+        let length = bytes.length - nBytes;
+        
+        while (length > 0)
+        {
+            for (let i = 0; i < nBytes; i++)
+                bytes[i] ^= bytes[pos+i];
+            
+            pos    += nBytes;
+            length -= nBytes;
+        }
+    }
+    
+
+    return newSizeArrayFrom(bytes, nBytes);
 }
 
 
@@ -32792,23 +33093,25 @@ function updateMenuItemShowOperationResults()
 
 
 
-function enableFeatures(sub, beta)
+function enableFeatures(subscription, beta)
 {
-    updateMenuItemDisplay(btnFlow .div,                 sub && beta);
-    updateMenuItemDisplay(btnShape.div,                 sub && beta);
+    updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
-    updateMenuItemDisplay(menuItemLogObjectUpdates.div, sub && beta);
+    updateMenuItemDisplay(btnFlow .div,                 subscription && beta);
+    updateMenuItemDisplay(btnShape.div,                 subscription && beta);
 
-    updateMenuItemDisplay(menuItemCorrectColor    .div, sub);
+    updateMenuItemDisplay(menuItemLogObjectUpdates.div, subscription && beta);
 
-    updateMenuItemDisplay(menuItemStyleFill       .div, sub && beta);
-    updateMenuItemDisplay(menuItemStyleStroke     .div, sub && beta);
-    updateMenuItemDisplay(menuItemStyleSep1       .div, sub && beta);
+    updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
 
-    updateMenuItemDisplay(menuItemSeries.div,           sub && beta);    
+    // updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
+    // updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
+    // updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
+
+    updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
 
 
-    graph.nodes.forEach(n => n.updateSubscribeStatus(sub));
+    graph.nodes.forEach(n => n.updateSubscribeStatus(subscription));
 }
 
 
@@ -33993,8 +34296,8 @@ function initGeneratorMenus()
                                         new MenuItem('',                             {separator: true}),    
         menuItemMinZoomForParams      = new MenuItem('Smallest adjustment zoom...',  {callback: () => showMinZoomDialog()}),
                                         new MenuItem('',                             {separator: true}),    
-        menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }})]);
-      //menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);  /*uiValidateLicense(productKey);*/      }})]);
+        menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
+        menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }})]);
 
     // menuMainPreferences.init = () => 
     // {
@@ -34027,13 +34330,13 @@ function initGeneratorMenus()
                                            graph.nodes.forEach(n => updateHeaderLabelOffsetX(n));
                                        }
                                    }),
-                                    // new MenuItem('',                             {separator: true}),
+                                    new MenuItem('',                             {separator: true}),
                                 //    new MenuItem('Re-save all connections',      {callback:      () => uiSaveConnections(graph.connections)}),                                   
                                  //new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
                                 //  new MenuItem('',                             {separator: true}),   
                                 //  new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
-                                //    new MenuItem('Log all local data',           {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData'}); }}),
-                                //    new MenuItem('Clear all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
+                                   new MenuItem('Log all local data',           {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData'}); }}),
+                                   new MenuItem('Clear all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
                                 //  new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
                                 //    new MenuItem('',                             {separator: true }),
                                  //new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
@@ -34165,9 +34468,9 @@ function initGeneratorMenus()
     
     menuStyle = new Menu('Styles', true, false);
     menuStyle.addItems([
-        menuItemStyleFill   = new MenuItem('Fill',          {icon: iconFill,       callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, {insert: e.ctrlKey}))}),
-        menuItemStyleStroke = new MenuItem('Stroke',        {icon: iconStroke,     callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, {insert: e.ctrlKey}))}),
-        menuItemStyleSep1   = new MenuItem('',              {separator: true}),
+        // menuItemStyleFill   = new MenuItem('Fill',          {icon: iconFill,       callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, {insert: e.ctrlKey}))}),
+        // menuItemStyleStroke = new MenuItem('Stroke',        {icon: iconStroke,     callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, {insert: e.ctrlKey}))}),
+        // menuItemStyleSep1   = new MenuItem('',              {separator: true}),
                               new MenuItem('Color style',   {icon: iconColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.ctrlKey, existing: true}))})]);
                             //new MenuItem('Color style',   {icon: iconColorStyle, childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.ctrlKey}))})]);
     
@@ -39838,13 +40141,13 @@ function updateWireStyle(wire)
     if (darkMode) bright = 1-bright;
 
     const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(graphView.zoom, 5)).toString(16).padStart(2, '0');
-
+    //'+(Math.min(Math.max(1, 1/graphView.zoom), 5))+'
     
     wire.curve.style.filter = 
         wire.needsFilter
         ? darkMode
-            ? ( isDark(color, 0.65)
-                ?    'drop-shadow(0px 0px '+(Math.min(Math.max(1, 1/graphView.zoom), 5))+'px #ffffff' + innerOpacity + ')'
+            ? (isDark(color, 0.65)
+                ?    'drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ')'
                 :   ' drop-shadow(0px 0px 1px #000000' + innerOpacity + ')')
             : (!isDark(color)
                 ?    'drop-shadow(0px 0px 1px #000000' + innerOpacity + ')'
@@ -55669,8 +55972,8 @@ var allUpdateNodes   = [];
 
 
 
-var currentUser = '';
-var productKey  = '';
+var currentUser = null;
+var productKey  = NULL;
 
 
 const graph = new Graph();
@@ -55706,15 +56009,19 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 function uiReturnFigStartGenerator(msg)
 {
-    currentUser = msg.currentUser;
-    productKey  = msg.productKey;
-
     initThemeColors();
     loadLocalSettings();
 
     graphViewClient = clientRect(graphView);
     
     uiGetLocalData('showWhatsNew');
+
+
+    currentUser = msg.currentUser;
+    productKey  = msg.productKey;
+
+    startupValidateLicense();
+    // enableFeatures() is called when loading is done
 
 
     setTimeout(() => loadingGraphic.style.display = 'block', 300);
@@ -56067,9 +56374,9 @@ onmessage = e =>
                            
         case 'uiReturnFigGetAllLocalColorStyles':       uiReturnFigGetAllLocalColorStyles      (msg);                       break;
 
-        case 'uiReturnFigValidateLicense':              
-            enableFeatures(msg.result, settings.enableBetaFeatures); 
-            break;
+        // case 'uiReturnFigValidateLicense':              
+        //     enableFeatures(msg.result, settings.enableBetaFeatures); 
+        //     break;
 
         case 'uiSetStyleId':                            uiSetStyleId                           (msg);                       break;
         case 'uiHideClearUndoWarning':                  uiHideClearUndoWarning                 ();                          break;
@@ -56390,8 +56697,8 @@ function showProductKeyDialog()
 
     //productKeyUserName.innerHTML = currentUser.name;
     productKeyUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
-
     setDefaultProductKeyInput();
+
     productKeyInputBack.innerHTML = '•'.repeat(13);
     productKeyInput.value = '';
 
@@ -56425,6 +56732,13 @@ function hideProductKeyDialog()
 productKeyClose.addEventListener('pointerdown', e => e.stopPropagation());
 productKeyBack.addEventListener('pointerdown', () => { hideProductKeyDialog(); });
 
+productKeyInput.addEventListener('pointerdown', () => { setDefaultProductKeyInput(); });
+
+productKeyInput.addEventListener('keydown', e =>
+{
+    e.stopPropagation();
+});
+
 
 
 productKeyInput.addEventListener('input', () =>
@@ -56440,33 +56754,6 @@ productKeyInput.addEventListener('input', () =>
     productKeyInputBack.innerHTML = 
           '&nbsp;'.repeat(val.length)
         + '•'.repeat(13 - val.length);
-
-    
-    // if (val.length == 13)
-    // {
-    //     if (validateProductKey(currentUser.id, val))
-    //     {
-    //         productKey = val;        
-    //         uiSetLocalData('productKey', productKey);
-            
-    //         productKeyInput.blur();
-    //         setGoodProductKeyInput();
-            
-    //         window.setTimeout(() => 
-    //         {
-    //             hideProductKeyDialog();
-    //             // TODO uiHappyNotify
-    //             uiNotify(
-    //                 '✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 
-    //                 {delay: 6000});
-    //         }, 
-    //         1200);
-    //     }
-    //     else
-    //         setBadProductKeyInput();
-    // }
-    // else
-        setDefaultProductKeyInput();
 });
 
 
@@ -56491,6 +56778,38 @@ function setDefaultProductKeyInput()
 {
     productKeyInput.style.outline   = 'none';
     productKeyInput.style.boxShadow = '0 0 0 2px var(--figma-color-bg-brand)'; 
+}
+
+
+
+function tryValidateLicense(key)
+{
+    if (validateLicense(currentUser.id, key))
+    {
+        productKey = key;
+        uiSetLocalData('productKey', key);
+
+        enableFeatures(productKey != NULL, settings.enableBetaFeatures);
+
+        hideProductKeyDialog();
+
+        uiNotify('✨ Thank you for subscribing to Generator! ✨', {delay: 6000});
+    }
+    else
+    {
+        setBadProductKeyInput();
+    }
+}
+
+
+
+function startupValidateLicense()
+{
+    if (!validateLicense(currentUser.id, productKey))
+    {
+        productKey = NULL;
+        uiSetLocalData('productKey', NULL);
+    }
 }
 
 
@@ -56778,7 +57097,7 @@ function uiReturnFigGetLocalData(msg)
     if (!settings.dataMode)
     {
         if (msg.key == 'enableBetaFeatures')
-            uiValidateLicense(productKey);
+            enableFeatures(true, settings.enableBetaFeatures); 
 
         if (msg.key == 'showDebugMenu')
             updateMenuItemShowDebugMenu();
@@ -57005,6 +57324,7 @@ function loadConnectionsAsync(_nodes, _conns, loadedNodes, setProgress)
     promise.then(() => 
     {
         const updateNodes = [];
+        
         finishLoadingNodes(_nodes, loadedNodes, updateNodes);
         finishLoading(_nodes);
         
@@ -57031,7 +57351,7 @@ function finishLoading(_nodes)
     generatorStarted = true;
 
 
-    uiValidateLicense(productKey);
+    enableFeatures(productKey != NULL, settings.enableBetaFeatures); 
 
 
     window.focus();
@@ -58606,13 +58926,13 @@ function uiLogAllSavedConns()
 
 
 
-function uiValidateLicense(license)
-{
-    uiQueueMessageToFigma({
-        cmd:    'figValidateLicense',
-        license: license
-    });
-}
+// function uiValidateLicense(license)
+// {
+//     uiQueueMessageToFigma({
+//         cmd:    'figValidateLicense',
+//         license: license
+//     });
+// }
 
 
 

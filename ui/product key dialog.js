@@ -10,8 +10,8 @@ function showProductKeyDialog()
 
     //productKeyUserName.innerHTML = currentUser.name;
     productKeyUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
-
     setDefaultProductKeyInput();
+
     productKeyInputBack.innerHTML = '•'.repeat(13);
     productKeyInput.value = '';
 
@@ -45,6 +45,13 @@ function hideProductKeyDialog()
 productKeyClose.addEventListener('pointerdown', e => e.stopPropagation());
 productKeyBack.addEventListener('pointerdown', () => { hideProductKeyDialog(); });
 
+productKeyInput.addEventListener('pointerdown', () => { setDefaultProductKeyInput(); });
+
+productKeyInput.addEventListener('keydown', e =>
+{
+    e.stopPropagation();
+});
+
 
 
 productKeyInput.addEventListener('input', () =>
@@ -60,33 +67,6 @@ productKeyInput.addEventListener('input', () =>
     productKeyInputBack.innerHTML = 
           '&nbsp;'.repeat(val.length)
         + '•'.repeat(13 - val.length);
-
-    
-    // if (val.length == 13)
-    // {
-    //     if (validateProductKey(currentUser.id, val))
-    //     {
-    //         productKey = val;        
-    //         uiSetLocalData('productKey', productKey);
-            
-    //         productKeyInput.blur();
-    //         setGoodProductKeyInput();
-            
-    //         window.setTimeout(() => 
-    //         {
-    //             hideProductKeyDialog();
-    //             // TODO uiHappyNotify
-    //             uiNotify(
-    //                 '✨ ' + GENERATOR_LOGO + '  Thank you for subscribing to Generator! ✨', 
-    //                 {delay: 6000});
-    //         }, 
-    //         1200);
-    //     }
-    //     else
-    //         setBadProductKeyInput();
-    // }
-    // else
-        setDefaultProductKeyInput();
 });
 
 
@@ -111,4 +91,36 @@ function setDefaultProductKeyInput()
 {
     productKeyInput.style.outline   = 'none';
     productKeyInput.style.boxShadow = '0 0 0 2px var(--figma-color-bg-brand)'; 
+}
+
+
+
+function tryValidateLicense(key)
+{
+    if (validateLicense(currentUser.id, key))
+    {
+        productKey = key;
+        uiSetLocalData('productKey', key);
+
+        enableFeatures(productKey != NULL, settings.enableBetaFeatures);
+
+        hideProductKeyDialog();
+
+        uiNotify('✨ Thank you for subscribing to Generator! ✨', {delay: 6000});
+    }
+    else
+    {
+        setBadProductKeyInput();
+    }
+}
+
+
+
+function startupValidateLicense()
+{
+    if (!validateLicense(currentUser.id, productKey))
+    {
+        productKey = NULL;
+        uiSetLocalData('productKey', NULL);
+    }
 }

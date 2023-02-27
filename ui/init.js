@@ -34,8 +34,8 @@ var allUpdateNodes   = [];
 
 
 
-var currentUser = '';
-var productKey  = '';
+var currentUser = null;
+var productKey  = NULL;
 
 
 const graph = new Graph();
@@ -71,15 +71,19 @@ uiQueueMessageToFigma({cmd: 'figStartGenerator'});
 
 function uiReturnFigStartGenerator(msg)
 {
-    currentUser = msg.currentUser;
-    productKey  = msg.productKey;
-
     initThemeColors();
     loadLocalSettings();
 
     graphViewClient = clientRect(graphView);
     
     uiGetLocalData('showWhatsNew');
+
+
+    currentUser = msg.currentUser;
+    productKey  = msg.productKey;
+
+    startupValidateLicense();
+    // enableFeatures() is called when loading is done
 
 
     setTimeout(() => loadingGraphic.style.display = 'block', 300);
