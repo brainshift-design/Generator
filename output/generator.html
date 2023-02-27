@@ -2819,6 +2819,13 @@ function hideElement(element)
 }
 
 
+
+function isVisible(element)
+{
+    return element.offsetParent !== null;
+}
+
+
 const webColors = [
     {name: 'AliceBlue',            color: 'f0f8ff'},
     {name: 'AntiqueWhite',         color: 'faebd7'},

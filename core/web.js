@@ -197,3 +197,10 @@ function hideElement(element)
 { 
     showElement(element, false); 
 }
+
+
+
+function isVisible(element)
+{
+    return element.offsetParent !== null;
+}

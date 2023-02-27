@@ -15,7 +15,7 @@ function initWhatsNewDialog()
 
     whatsNewDialog.addEventListener('pointerenter', e => { whatsNewDialog.mouseOver = true;  updateWhatsNewScroll(); });
     whatsNewDialog.addEventListener('pointerleave', e => { whatsNewDialog.mouseOver = false; updateWhatsNewScroll(); });
-
+    
 
     whatsNewDialogContainer.addEventListener('wheel', e =>
     {    

@@ -108,6 +108,12 @@ document.addEventListener('keydown', e =>
 
             graphView.cancelConnection(graphView.connPointerId);
         }
+
+
+        else if (isVisible(whatsNewDialog  )) hideWhatsNewDialog();
+        else if (isVisible(minZoomDialog   )) hideMinZoomDialog();
+        else if (isVisible(productKeyDialog)) hideProductKeyDialog();
+        else if (isVisible(aboutDialog     )) hideAboutDialog();
     }
 
     //
