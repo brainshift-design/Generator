@@ -10,15 +10,6 @@
 }
 
 
-.scrollbar
-{
-    border-radius:    4px;
-    position:         absolute;
-    display:          none;
-}
-
-
-
 #scrollbarX
 {
     height: 6px;
@@ -31,16 +22,46 @@
 }
 
 
+.scrollbar
+{
+    border-radius:    4px;
+    position:         absolute;
+    display:          none;
+}
+
+
 .figma-light .scrollbar 
 { 
     background-color: #0004;
     box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
 }
 
+
 .figma-dark .scrollbar 
 { 
     background-color: #0006;
     box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
+}
+
+
+.dialogScrollbar
+{
+    border-radius:    4px;
+    position:         absolute;
+    display:          none;
+}
+
+
+.figma-light .dialogScrollbar 
+{ 
+    background-color: var(--figma-color-text-tertiary);
+    /* box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);  */
+}
+
+.figma-dark .dialogScrollbar 
+{ 
+    background-color: var(--figma-color-text-tertiary);
+    /* box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);  */
 }
 
 

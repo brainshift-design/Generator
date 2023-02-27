@@ -842,9 +842,10 @@
 
 #whatsNewScrollbarY
 {
-    width:            6px;
-    z-index:          1;
-    margin:           6px 0 18px 0;
+    width:   6px;
+    z-index: 1;
+    margin:  6px 0 18px 0;
+    display: none;
 }
 
 
@@ -1556,15 +1557,6 @@ div
 }
 
 
-.scrollbar
-{
-    border-radius:    4px;
-    position:         absolute;
-    display:          none;
-}
-
-
-
 #scrollbarX
 {
     height: 6px;
@@ -1577,16 +1569,46 @@ div
 }
 
 
+.scrollbar
+{
+    border-radius:    4px;
+    position:         absolute;
+    display:          none;
+}
+
+
 .figma-light .scrollbar 
 { 
     background-color: #0004;
     box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
 }
 
+
 .figma-dark .scrollbar 
 { 
     background-color: #0006;
     box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25); 
+}
+
+
+.dialogScrollbar
+{
+    border-radius:    4px;
+    position:         absolute;
+    display:          none;
+}
+
+
+.figma-light .dialogScrollbar 
+{ 
+    background-color: var(--figma-color-text-tertiary);
+    /* box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);  */
+}
+
+.figma-dark .dialogScrollbar 
+{ 
+    background-color: var(--figma-color-text-tertiary);
+    /* box-shadow:       0 0 0 1px rgba(255, 255, 255, 0.25);  */
 }
 
 
@@ -3090,11 +3112,32 @@ a
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
                 <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
+                <p>-</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
         </div>
-        <div class='scrollbar' id='whatsNewScrollbarY'></div>
+        <div class='dialogScrollbar' id='whatsNewScrollbarY'></div>
     </div>
 
 </div>
@@ -59376,6 +59419,12 @@ function initWhatsNewDialog()
     whatsNewBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
 
+    whatsNewDialog.mouseOver = false;
+
+
+    whatsNewDialog.addEventListener('pointerenter', e => { whatsNewDialog.mouseOver = true;  updateWhatsNewScroll(); });
+    whatsNewDialog.addEventListener('pointerleave', e => { whatsNewDialog.mouseOver = false; updateWhatsNewScroll(); });
+
 
     whatsNewDialogContainer.addEventListener('wheel', e =>
     {    
@@ -59520,6 +59569,7 @@ function updateWhatsNewScroll()
     const yOffset = menuBarHeight;
     
     const bounds = whatsNewDialogContent.getBoundingClientRect();
+    
     updateWhatsNewScrollY(x, w, h, bounds, yOffset);
 }
 
@@ -59527,7 +59577,8 @@ function updateWhatsNewScroll()
 
 function updateWhatsNewScrollY(x, w, h, bounds, yOffset)
 {
-    if (bounds.bottom - bounds.top > h)
+    if (   whatsNewDialog.mouseOver
+        && bounds.bottom - bounds.top > h)
     {
         const height = sqr(h) / bounds.height - 2*smallScrollGap;
 

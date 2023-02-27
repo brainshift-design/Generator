@@ -619,9 +619,10 @@
 
 #whatsNewScrollbarY
 {
-    width:            6px;
-    z-index:          1;
-    margin:           6px 0 18px 0;
+    width:   6px;
+    z-index: 1;
+    margin:  6px 0 18px 0;
+    display: none;
 }
 
 

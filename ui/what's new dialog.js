@@ -10,6 +10,12 @@ function initWhatsNewDialog()
     whatsNewBack.addEventListener('pointerdown', e => { e.preventDefault(); });
 
 
+    whatsNewDialog.mouseOver = false;
+
+
+    whatsNewDialog.addEventListener('pointerenter', e => { whatsNewDialog.mouseOver = true;  updateWhatsNewScroll(); });
+    whatsNewDialog.addEventListener('pointerleave', e => { whatsNewDialog.mouseOver = false; updateWhatsNewScroll(); });
+
 
     whatsNewDialogContainer.addEventListener('wheel', e =>
     {    
@@ -154,6 +160,7 @@ function updateWhatsNewScroll()
     const yOffset = menuBarHeight;
     
     const bounds = whatsNewDialogContent.getBoundingClientRect();
+    
     updateWhatsNewScrollY(x, w, h, bounds, yOffset);
 }
 
@@ -161,7 +168,8 @@ function updateWhatsNewScroll()
 
 function updateWhatsNewScrollY(x, w, h, bounds, yOffset)
 {
-    if (bounds.bottom - bounds.top > h)
+    if (   whatsNewDialog.mouseOver
+        && bounds.bottom - bounds.top > h)
     {
         const height = sqr(h) / bounds.height - 2*smallScrollGap;
 
