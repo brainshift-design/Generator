@@ -121,6 +121,9 @@ productKeyInput.addEventListener('pointerdown', e =>
 
 productKeyInput.addEventListener('keydown', e =>
 {
+    if (e.code == 'Escape')
+        productKeyInput.blur();
+        
     e.stopPropagation();
 });
 
@@ -206,12 +209,21 @@ function tryValidateLicense(key)
 
 function updateLicenseInfo(license)
 {
+    const strPrep =
+                license.lastYear
+        + '-' + license.lastMonth.toString().padStart(2, '0')
+        + '-' + license.lastDay  .toString().padStart(2, '0');
+
+    const date = new Date(Date.parse(strPrep));
+
+    const strDate = date.toLocaleString('en-UK', //navigator.language, 
+    {
+        dateStyle: 'medium'
+    });
+
     licenseInfo.innerHTML = 
         license
-        ?  'Expires on <span style="font-weight: 600">' 
-          + license.lastDay  .toString().padStart(2, '0') + '&hairsp;/&hairsp;'
-          + license.lastMonth.toString().padStart(2, '0') + '&hairsp;/&hairsp;'
-          + license.lastYear + '</span>'
+        ?  'Expires on: <span style="font-weight: 600">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>'
         : '';
 }
 
