@@ -208,7 +208,7 @@ function updateLicenseInfo(license)
 {
     licenseInfo.innerHTML = 
         license
-        ?  'Valid until <span style="font-weight: 600">' 
+        ?  'Expires on <span style="font-weight: 600">' 
           + license.lastDay  .toString().padStart(2, '0') + '&hairsp;/&hairsp;'
           + license.lastMonth.toString().padStart(2, '0') + '&hairsp;/&hairsp;'
           + license.lastYear + '</span>'

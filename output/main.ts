@@ -1507,11 +1507,14 @@ function figStartGenerator()
         if (productKey == null) productKey = '';
 
         
-        let wndWidth  = await figma.currentPage.getPluginData(figma.currentUser.id+',windowWidth');
-        let wndHeight = await figma.currentPage.getPluginData(figma.currentUser.id+',windowHeight');
+        let _wndWidth  = await figma.currentPage.getPluginData(figma.currentUser.id+',windowWidth');
+        let _wndHeight = await figma.currentPage.getPluginData(figma.currentUser.id+',windowHeight');
 
-        if (wndWidth  === NULL) { wndWidth  = 800; figma.currentPage.setPluginData(figma.currentUser.id+',windowWidth',  wndWidth .toString()); } else wndWidth  = parseInt(wndWidth );
-        if (wndHeight === NULL) { wndHeight = 600; figma.currentPage.setPluginData(figma.currentUser.id+',windowHeight', wndHeight.toString()); } else wndHeight = parseInt(wndHeight);
+        let wndWidth;
+        let wndHeight;
+
+        if (_wndWidth  === NULL) { wndWidth  = 800; figma.currentPage.setPluginData(figma.currentUser.id+',windowWidth',  _wndWidth .toString()); } else wndWidth  = parseInt(_wndWidth );
+        if (_wndHeight === NULL) { wndHeight = 600; figma.currentPage.setPluginData(figma.currentUser.id+',windowHeight', _wndHeight.toString()); } else wndHeight = parseInt(_wndHeight);
 
         
         figma.ui.resize(
