@@ -23,7 +23,7 @@ function validateLicense(userId, key)
     while (curCheck++ < maxCheck)
     {
         if (validateProductKey(license, key))
-            return true;
+            return license;
 
         license.lastDay++;
 
@@ -32,7 +32,7 @@ function validateLicense(userId, key)
     }
 
 
-    return false;
+    return null;
 }
 
 

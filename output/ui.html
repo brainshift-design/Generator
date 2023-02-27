@@ -421,6 +421,35 @@
 }
 
 
+#licenseInfo
+{
+    font-family:   'Inter';
+    font-size:      11px;
+    font-weight:    400;
+
+    width:          150px;
+    height:         24px;
+    padding-top:    4px;
+    padding-bottom: 0;
+
+    margin-bottom:  -3px;
+
+    background:     transparent;
+
+    position:       absolute;
+    left:           calc(50%);
+    top:            114px;
+
+    transform:      translateX(-50%);
+
+    pointer-events: none;
+
+    text-align:     center;
+
+    /* box-shadow:     0 0 0 1px red inset; */
+}
+
+
 #productKeyInput:disabled
 {
     color: var(--figma-color-bg-disabled);
@@ -2906,7 +2935,7 @@ a
 <div id='productKeyDialog'>
 
     <div id='productKeyTitle'>
-        <div id='productKeyTitleText'>Enter subscription key</div>
+        <div id='productKeyTitleText'>Subscription</div>
         <div class='panelButton dialogButtonClose' id='productKeyClose' onclick='productKeyClose.blur(); hideProductKeyDialog();'>
             <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M16 15.293L20.6465 10.6465L21.3536 11.3536L16.7071 16.0001L21.3536 20.6465L20.6465 21.3536L16 16.7072L11.3536 21.3536L10.6465 20.6465L15.2929 16.0001L10.6465 11.3537L11.3536 10.6466L16 15.293Z" fill="var(--figma-color-text)" fill-opacity="0.8"/>
@@ -2920,6 +2949,7 @@ a
         
         <div id='productKeyInputBack'></div>
         <input type='text' spellcheck='false' id='productKeyInput' />
+        <div id='licenseInfo'></div>
         <div class='button' id='validateProductKeyButton' onclick='onValidateClick(productKeyInput.value);'>Validate</div>
         <div id='productKeyWebsite'><!--<a href='http://www.bourt.com/generator/subscribe' target='_blank'>-->Buy subscription<!--</a>--></div>
     </div>
@@ -25210,7 +25240,7 @@ function validateLicense(userId, key)
     while (curCheck++ < maxCheck)
     {
         if (validateProductKey(license, key))
-            return true;
+            return license;
 
         license.lastDay++;
 
@@ -25219,7 +25249,7 @@ function validateLicense(userId, key)
     }
 
 
-    return false;
+    return null;
 }
 
 
@@ -34193,6 +34223,8 @@ var menuNodeSelect;
 var menuLocalStyles;
 var menuSelectParam;
 
+var menuRemoveLicense;
+
 
 var menuNodeData;
 var menuNodeDataNodes;
@@ -34365,11 +34397,11 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-        new MenuItem('Enter subscription key...', {callback:  () => showProductKeyDialog()}),
-        new MenuItem('',                          {separator: true}),
-        new MenuItem('Help page',                 {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-        new MenuItem('',                          {separator: true}),
-        new MenuItem('About Generator',           {callback:  () => showAboutDialog()})]);
+        new MenuItem('Help page',    {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+        //new MenuItem('',           {separator: true}),
+        new MenuItem('Subscription', {callback:  () => showProductKeyDialog()}),
+        //new MenuItem('',           {separator: true}),
+        new MenuItem('About',        {callback:  () => showAboutDialog()})]);
 
 
     menuMain = new Menu('Main menu', false);
@@ -34525,10 +34557,10 @@ function initGeneratorMenus()
 
     menuNodeSelect = new Menu('Select nodes menu', false, false);
     menuNodeSelect.addItems([
-        new MenuItem('Select tree',   {shortcut:  isMac ? osShift() + osCtrl() + osAlt() + 'Click' : osShift() + osCtrl() + osAlt() + 'Click', callback: () => graphView.selectedNodes =                                 getAllNodesFromNode(graphView.selectedNodes[0]) }),
-        new MenuItem('Select left',   {shortcut:  isMac ? osShift() + osAlt()            + 'Click' : osShift() + osCtrl()           + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesBeforeNode(graphView.selectedNodes[0])] }),
-        new MenuItem('Select right',  {shortcut:  isMac ? osCtrl() + osShift()           + 'Click' : osShift() + osAlt()            + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAfterNode (graphView.selectedNodes[0])] }),
-        new MenuItem('Select across', {shortcut:  isMac ? osAlt() + osCtrl()             + 'Click' : osCtrl() + osAlt()             + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAcrossNode(graphView.selectedNodes[0])] })]);
+        new MenuItem('Select tree',   {shortcut:  isMac ? osShift() + osCtrl () + osAlt() + 'Click' : osShift() + osCtrl() + osAlt() + 'Click', callback: () => graphView.selectedNodes =                                 getAllNodesFromNode(graphView.selectedNodes[0]) }),
+        new MenuItem('Select left',   {shortcut:  isMac ? osShift() + osAlt  ()           + 'Click' : osShift() + osCtrl()           + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesBeforeNode(graphView.selectedNodes[0])] }),
+        new MenuItem('Select right',  {shortcut:  isMac ? osCtrl () + osShift()           + 'Click' : osShift() + osAlt()            + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAfterNode (graphView.selectedNodes[0])] }),
+        new MenuItem('Select across', {shortcut:  isMac ? osAlt  () + osCtrl ()           + 'Click' : osCtrl() + osAlt()             + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAcrossNode(graphView.selectedNodes[0])] })]);
 
 
     menuNode = new Menu('Node menu', false, false);
@@ -34547,6 +34579,12 @@ function initGeneratorMenus()
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift() + '⌫',            callback: e => { hideAllMenus(); removeSelectedNodes(true); }})]);
+
+
+    menuRemoveLicense = new Menu('Remove license', false, false);
+    menuRemoveLicense.addItems([
+        new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
+
 
     menuNode.init = () => 
     {
@@ -56701,6 +56739,10 @@ function onValidateClick(key)
         validateProductKeyButton.innerHTML = 'Validate';
 
         productKeyInput.disabled = false
+        productKeyInput.style.display = 'inline-block';
+
+        licenseInfo.innerHTML = '';
+
         setDefaultProductKeyInput();
 
         productKeyInput.focus();
@@ -56710,6 +56752,19 @@ function onValidateClick(key)
     {
         tryValidateLicense(key);
     }
+}
+
+
+
+function removeLicense()
+{
+    productKey = NULL;
+    uiSetLocalData('productKey', NULL);
+
+    productKeyInputBack.innerHTML = '•'.repeat(13);
+    productKeyInput.value         = '';
+
+    enableFeatures(false, settings.enableBetaFeatures);
 }
 
 
@@ -56724,17 +56779,26 @@ function showProductKeyDialog()
     setDefaultProductKeyInput();
     
     
-    const subscribed = productKey != NULL;
+    const license = 
+        productKey != NULL
+        ? validateLicense(currentUser.id, productKey)
+        : null;
 
-    productKeyInputBack.innerHTML = subscribed ? '' : '•'.repeat(13);
-
-    productKeyInput.value    = productKey;
-    productKeyInput.disabled = subscribed;
     
-    validateProductKeyButton.innerHTML = subscribed ? 'Edit' : 'Validate';
+    productKeyInputBack.innerHTML = license ? '' : '•'.repeat(13);
+    
+    productKeyInput.value         = productKey;
+    productKeyInput.disabled      = license;
+    
+    productKeyInput.style.display = license ? 'none' : 'inline-block'
 
-    if (subscribed) setDisabledProductKeyInput();
-    else            setDefaultProductKeyInput();
+    updateLicenseInfo(license);
+    
+
+    validateProductKeyButton.innerHTML = license ? 'Edit' : 'Validate';
+
+    if (license) setDisabledProductKeyInput();
+    else         setDefaultProductKeyInput();
     
     window.setTimeout(() => document.getElementById('productKeyInput').focus(), 0);
 
@@ -56765,7 +56829,25 @@ function hideProductKeyDialog()
 productKeyClose.addEventListener('pointerdown', e => e.stopPropagation());
 productKeyBack.addEventListener('pointerdown', () => { hideProductKeyDialog(); });
 
-productKeyInput.addEventListener('pointerdown', () => { if (!productKeyInput.disabled) setDefaultProductKeyInput(); });
+productKeyInput.addEventListener('pointerdown', e => 
+{ 
+    if (!productKeyInput.disabled)
+    {
+        setDefaultProductKeyInput(); 
+
+        if (   e.button == 2
+            && productKey != NULL
+            && productKeyInput.value == productKey)
+        {
+            e.preventDefault();
+            e.stopPropagation();
+
+            productKeyInput.select();
+
+            menuRemoveLicense.showAt(e.clientX, e.clientY, false);
+        }
+    }
+});
 
 productKeyInput.addEventListener('keydown', e =>
 {
@@ -56825,14 +56907,22 @@ function setDisabledProductKeyInput()
 
 function tryValidateLicense(key)
 {
-    if (validateLicense(currentUser.id, key))
+    let license;
+
+    if (license = validateLicense(currentUser.id, key))
     {
         productKey = key;
         uiSetLocalData('productKey', key);
 
         enableFeatures(productKey != NULL, settings.enableBetaFeatures);
+        
+        setDisabledProductKeyInput();
+        updateLicenseInfo(license);
 
-        hideProductKeyDialog();
+        productKeyInput.disabled      = true;
+        productKeyInput.style.display = 'none';
+
+        validateProductKeyButton.innerHTML = 'Edit';
 
         uiNotify('✨ Thank you for subscribing to Generator! ✨', {delay: 6000});
     }
@@ -56840,6 +56930,19 @@ function tryValidateLicense(key)
     {
         setBadProductKeyInput();
     }
+}
+
+
+
+function updateLicenseInfo(license)
+{
+    licenseInfo.innerHTML = 
+        license
+        ?  'Valid until <span style="font-weight: 600">' 
+          + license.lastDay  .toString().padStart(2, '0') + '&hairsp;/&hairsp;'
+          + license.lastMonth.toString().padStart(2, '0') + '&hairsp;/&hairsp;'
+          + license.lastYear + '</span>'
+        : '';
 }
 
 

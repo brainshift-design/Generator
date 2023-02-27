@@ -125,6 +125,8 @@ var menuNodeSelect;
 var menuLocalStyles;
 var menuSelectParam;
 
+var menuRemoveLicense;
+
 
 var menuNodeData;
 var menuNodeDataNodes;
@@ -297,11 +299,11 @@ function initGeneratorMenus()
 
     menuMainHelp = new Menu('Help and subscription', false);
     menuMainHelp.addItems([
-        new MenuItem('Enter subscription key...', {callback:  () => showProductKeyDialog()}),
-        new MenuItem('',                          {separator: true}),
-        new MenuItem('Help page',                 {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
-        new MenuItem('',                          {separator: true}),
-        new MenuItem('About Generator',           {callback:  () => showAboutDialog()})]);
+        new MenuItem('Help page',    {callback:  () => window.open('http://www.bourt.com/generator/help', '_blank')}),
+        //new MenuItem('',           {separator: true}),
+        new MenuItem('Subscription', {callback:  () => showProductKeyDialog()}),
+        //new MenuItem('',           {separator: true}),
+        new MenuItem('About',        {callback:  () => showAboutDialog()})]);
 
 
     menuMain = new Menu('Main menu', false);
@@ -457,10 +459,10 @@ function initGeneratorMenus()
 
     menuNodeSelect = new Menu('Select nodes menu', false, false);
     menuNodeSelect.addItems([
-        new MenuItem('Select tree',   {shortcut:  isMac ? osShift() + osCtrl() + osAlt() + 'Click' : osShift() + osCtrl() + osAlt() + 'Click', callback: () => graphView.selectedNodes =                                 getAllNodesFromNode(graphView.selectedNodes[0]) }),
-        new MenuItem('Select left',   {shortcut:  isMac ? osShift() + osAlt()            + 'Click' : osShift() + osCtrl()           + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesBeforeNode(graphView.selectedNodes[0])] }),
-        new MenuItem('Select right',  {shortcut:  isMac ? osCtrl() + osShift()           + 'Click' : osShift() + osAlt()            + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAfterNode (graphView.selectedNodes[0])] }),
-        new MenuItem('Select across', {shortcut:  isMac ? osAlt() + osCtrl()             + 'Click' : osCtrl() + osAlt()             + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAcrossNode(graphView.selectedNodes[0])] })]);
+        new MenuItem('Select tree',   {shortcut:  isMac ? osShift() + osCtrl () + osAlt() + 'Click' : osShift() + osCtrl() + osAlt() + 'Click', callback: () => graphView.selectedNodes =                                 getAllNodesFromNode(graphView.selectedNodes[0]) }),
+        new MenuItem('Select left',   {shortcut:  isMac ? osShift() + osAlt  ()           + 'Click' : osShift() + osCtrl()           + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesBeforeNode(graphView.selectedNodes[0])] }),
+        new MenuItem('Select right',  {shortcut:  isMac ? osCtrl () + osShift()           + 'Click' : osShift() + osAlt()            + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAfterNode (graphView.selectedNodes[0])] }),
+        new MenuItem('Select across', {shortcut:  isMac ? osAlt  () + osCtrl ()           + 'Click' : osCtrl() + osAlt()             + 'Click', callback: () => graphView.selectedNodes = [graphView.selectedNodes[0], ...getNodesAcrossNode(graphView.selectedNodes[0])] })]);
 
 
     menuNode = new Menu('Node menu', false, false);
@@ -479,6 +481,12 @@ function initGeneratorMenus()
         menuItemNodeEnableDisable      = new MenuItem('Enable/Disable',      {shortcut:  osCtrl() + osShift() + 'E',  callback: () => actionManager.do(new ToggleDisableNodesAction(graphView.selectedNodes.map(n => n.id)))}),
                                          new MenuItem('',                    {separator: true}),
         menuItemNodeRemove             = new MenuItem('Remove',              {shortcut:  osShift() + '⌫',            callback: e => { hideAllMenus(); removeSelectedNodes(true); }})]);
+
+
+    menuRemoveLicense = new Menu('Remove license', false, false);
+    menuRemoveLicense.addItems([
+        new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
+
 
     menuNode.init = () => 
     {

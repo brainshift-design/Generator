@@ -198,6 +198,35 @@
 }
 
 
+#licenseInfo
+{
+    font-family:   'Inter';
+    font-size:      11px;
+    font-weight:    400;
+
+    width:          150px;
+    height:         24px;
+    padding-top:    4px;
+    padding-bottom: 0;
+
+    margin-bottom:  -3px;
+
+    background:     transparent;
+
+    position:       absolute;
+    left:           calc(50%);
+    top:            114px;
+
+    transform:      translateX(-50%);
+
+    pointer-events: none;
+
+    text-align:     center;
+
+    /* box-shadow:     0 0 0 1px red inset; */
+}
+
+
 #productKeyInput:disabled
 {
     color: var(--figma-color-bg-disabled);
