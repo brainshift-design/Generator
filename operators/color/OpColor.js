@@ -78,16 +78,16 @@ extends OpColorBase
 
         this.paramSpace.control.barTop = 0.8;
 
+        this.paramSpace.control.addEventListener('pointerenter', () => { this.header.over = true;  this.updateHeader(); });
+        this.paramSpace.control.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
+
+
         this.paramSpace.control.wheelScale = 1;
         this.param1    .control.wheelScale = 1;
         this.param2    .control.wheelScale = 1;
         this.param3    .control.wheelScale = 1;
 
 
-        this.paramSpace.control.addEventListener('pointerenter', () => { this.header.over = true;  this.updateHeader(); });
-        this.paramSpace.control.addEventListener('pointerleave', () => { this.header.over = false; this.updateHeader(); });
-
-        
         // hex is default, remove default sliders
         this.inner.removeChild(this.param1.div);
         this.inner.removeChild(this.param2.div);

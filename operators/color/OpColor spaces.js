@@ -194,6 +194,12 @@ function switchToHclControls(node, scale)
         'C', 0, scale[1], 
         'L', 0, scale[2]);  
 
+    node.param2.control.min = 
+    node.param3.control.min = Number.MIN_SAFE_INTEGER; // allow extrapolation
+
+    node.param2.control.max = 
+    node.param3.control.max = Number.MAX_SAFE_INTEGER; // allow extrapolation
+
     showRgbControlHex(node, false); 
 }
 
@@ -324,10 +330,10 @@ function getNormalColorValue(value, space, chan)
     switch (space)
     {
         case 'hex':
-        case 'rgb':    return getNormalValueRgb_(value, chan);
+        case 'rgb':   return getNormalValueRgb_(value, chan);
 
         case 'hsv':   
-        case 'hsl':    return getNormalValueHs_ (value, chan);
+        case 'hsl':   return getNormalValueHs_ (value, chan);
 
         case 'hclok': 
         case 'hclab': 
@@ -335,7 +341,7 @@ function getNormalColorValue(value, space, chan)
 
         case 'oklab':  
         case 'lab':    
-        case 'luv':    return getNormalValueOpp (value, chan);
+        case 'luv':   return getNormalValueOpp (value, chan);
     }
 }
 
@@ -405,10 +411,10 @@ function getNormalColor_(space, c1, c2, c3)
     switch (space)
     {
         case 'hex':
-        case 'rgb':    return getNormalColorRgb_(c1, c2, c3);
+        case 'rgb':   return getNormalColorRgb_(c1, c2, c3);
 
         case 'hsv':   
-        case 'hsl':    return getNormalColorHs_(c1, c2, c3);
+        case 'hsl':   return getNormalColorHs_(c1, c2, c3);
 
         case 'hclok': 
         case 'hclab': 
@@ -416,7 +422,7 @@ function getNormalColor_(space, c1, c2, c3)
 
         case 'oklab': 
         case 'lab': 
-        case 'luv':    return getNormalColorOpp(c1, c2, c3);
+        case 'luv':   return getNormalColorOpp(c1, c2, c3);
     }
 }
 
@@ -467,18 +473,18 @@ function getScaledDataColor(color)
     switch (color[0])
     {
         case 'hex':
-        case 'rgb':    return getScaledDataColorRgb(          color[1], color[2], color[3]);
+        case 'rgb':   return getScaledDataColorRgb(          color[1], color[2], color[3]);
 
-        case 'hsv':    return getScaledDataColorHs_('hsv',    color[1], color[2], color[3]);
-        case 'hsl':    return getScaledDataColorHs_('hsl',    color[1], color[2], color[3]);
+        case 'hsv':   return getScaledDataColorHs_('hsv',    color[1], color[2], color[3]);
+        case 'hsl':   return getScaledDataColorHs_('hsl',    color[1], color[2], color[3]);
 
         case 'hclok': return getScaledDataColorHcl('hclok', color[1], color[2], color[3]);
         case 'hclab': return getScaledDataColorHcl('hclab', color[1], color[2], color[3]);
         case 'hcluv': return getScaledDataColorHcl('hcluv', color[1], color[2], color[3]);
 
-        case 'oklab':  return getScaledDataColorOpp('oklab',  color[1], color[2], color[3]);
-        case 'lab':    return getScaledDataColorOpp('lab',    color[1], color[2], color[3]);
-        case 'luv':    return getScaledDataColorOpp('luv',    color[1], color[2], color[3]);
+        case 'oklab': return getScaledDataColorOpp('oklab',  color[1], color[2], color[3]);
+        case 'lab':   return getScaledDataColorOpp('lab',    color[1], color[2], color[3]);
+        case 'luv':   return getScaledDataColorOpp('luv',    color[1], color[2], color[3]);
     }
 }
 
@@ -543,10 +549,10 @@ function colorSpaceFactor(space)
     switch (space)
     {
         case 'hex':
-        case 'rgb':    return rgbFactor;
+        case 'rgb':   return rgbFactor;
 
         case 'hsv':   
-        case 'hsl':    return hs_Factor;
+        case 'hsl':   return hs_Factor;
 
         case 'hclok': 
         case 'hclab': 
@@ -554,7 +560,7 @@ function colorSpaceFactor(space)
 
         case 'oklab': 
         case 'lab': 
-        case 'luv':    return oppFactor;
+        case 'luv':   return oppFactor;
     }    
 }
 
@@ -565,17 +571,17 @@ function getColorSpaceScale(space)
     switch (space)
     {
         case 'hex':
-        case 'rgb':    return rgbScale;
+        case 'rgb':   return rgbScale;
 
         case 'hsv':   
-        case 'hsl':    return hs_Scale;
+        case 'hsl':   return hs_Scale;
 
         case 'hclok': return hclokScale;
         case 'hclab': return hclabScale;
         case 'hcluv': return hcluvScale;
 
-        case 'oklab':  return oklabScale;
-        case 'lab':    return labScale;
-        case 'luv':    return luvScale;
+        case 'oklab': return oklabScale;
+        case 'lab':   return labScale;
+        case 'luv':   return luvScale;
     }    
 }

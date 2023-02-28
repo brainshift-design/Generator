@@ -50,10 +50,10 @@ extends GColorType
             return this;
 
             
-        const space   = this.space   ? this.space  .eval(parse).toValue().toInteger() : null; 
-        let   c1      = this.c1      ? this.c1     .eval(parse).toValue()             : null;
-        let   c2      = this.c2      ? this.c2     .eval(parse).toValue()             : null;
-        let   c3      = this.c3      ? this.c3     .eval(parse).toValue()             : null;
+        const space = this.space ? this.space.eval(parse).toValue().toInteger() : null; 
+        let   c1    = this.c1    ? this.c1   .eval(parse).toValue()             : null;
+        let   c2    = this.c2    ? this.c2   .eval(parse).toValue()             : null;
+        let   c3    = this.c3    ? this.c3   .eval(parse).toValue()             : null;
 
 
         if (this.input)
@@ -84,10 +84,17 @@ extends GColorType
 
                 this.value.space.value = toSpaceIndex;
 
-                this.updateColor(
-                    this.value.c1, 
-                    this.value.c2, 
-                    this.value.c3);
+
+                if (this.options.enabled)
+                {
+                    if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
+                    if (!this.c2) { this.c2 = this.value.c2.copy(); c2 = this.c2.toValue(); }
+                    if (!this.c3) { this.c3 = this.value.c3.copy(); c3 = this.c3.toValue(); }
+                
+                    if (c1) this.value.c1 = c1;
+                    if (c2) this.value.c2 = c2;
+                    if (c3) this.value.c3 = c3;
+                }
             }
             else
                 this.value = ColorValue.NaN;
@@ -153,22 +160,6 @@ extends GColorType
         this.validate();
 
         return this;
-    }
-
-
-
-    updateColor(c1, c2, c3)
-    {
-        if (this.options.enabled)
-        {
-            if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
-            if (!this.c2) { this.c2 = this.value.c2.copy(); c1 = this.c1.toValue(); }
-            if (!this.c3) { this.c3 = this.value.c3.copy(); c1 = this.c1.toValue(); }
-        
-            if (c1) this.value.c1 = c1;
-            if (c2) this.value.c2 = c2;
-            if (c3) this.value.c3 = c3;
-        }
     }
 
 

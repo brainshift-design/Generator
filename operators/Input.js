@@ -63,7 +63,7 @@ extends EventTarget
     get connected() { return this.connectedOutput != null; }
 
 
-    canConnect         = true; // all connections master switch
+    canConnect         = true; // all connections master switch for minimum zoom
     canAutoConnect     = true;
     outputMustBeCached = false;
 
