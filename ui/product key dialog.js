@@ -59,12 +59,13 @@ function showProductKeyDialog()
     productKeyInput.value         = productKey;
     productKeyInput.disabled      = license;
     
-    productKeyInput.style.display = license ? 'none' : 'inline-block'
+    productKeyInput.style.display = license ? 'none' : 'inline'
 
     updateLicenseInfo(license);
     
-
+    productKeyTextBack.style.display   = license ? 'none' : 'inline';
     validateProductKeyButton.innerHTML = license ? 'Edit' : 'Validate';
+
 
     if (license) setDisabledProductKeyInput();
     else         setDefaultProductKeyInput();

@@ -139,7 +139,7 @@ extends GColorType
                 NumberValue.NaN,
                 NumberValue.NaN);
 
-            
+
         // if (this.options.enabled)
         // {
             genPushUpdateValue(parse, this.nodeId, 'convert', this.convert          );

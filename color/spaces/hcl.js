@@ -23,7 +23,10 @@ function rgb2hclok(rgb, cs = sRGB)
 
     hcl[0] /= Tau;
     hcl[1] /= nozero(hcl[2]);
-    
+
+    while (hcl[0] < 0) hcl[0] += 1;
+    while (hcl[0] > 1) hcl[0] -= 1;
+
     return hcl;
 }
 
@@ -62,6 +65,9 @@ function lab2hclab(lab)
     hcl[0] /= Tau;
     hcl[1] /= hcl[2];
 
+    while (hcl[0] < 0) hcl[0] += 1;
+    while (hcl[0] > 1) hcl[0] -= 1;
+
     return hcl;
 }
 
@@ -99,6 +105,9 @@ function luv2hcluv(luv)
 
     hcl[0] /= Tau;
     hcl[1] /= hcl[2];
+
+    while (hcl[0] < 0) hcl[0] += 1;
+    while (hcl[0] > 1) hcl[0] -= 1;
 
     return hcl;
 }

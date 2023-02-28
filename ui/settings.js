@@ -190,8 +190,9 @@ function enableFeatures(subscription, beta)
 {
     updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
-    updateMenuItemDisplay(btnFlow .div,                 subscription && beta);
-    updateMenuItemDisplay(btnShape.div,                 subscription && beta);
+    updateMenuItemDisplay(btnFlow  .div,                subscription && beta);
+    updateMenuItemDisplay(btnShape .div,                subscription && beta);
+    updateMenuItemDisplay(btnCustom.div,                subscription && beta);
 
     updateMenuItemDisplay(menuItemLogObjectUpdates.div, subscription && beta);
 
