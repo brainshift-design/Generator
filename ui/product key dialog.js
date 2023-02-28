@@ -6,12 +6,12 @@ function onValidateClick(key)
 {
     if (productKeyInput.disabled)
     {
+        licenseInfo.innerHTML = '';
+
         validateProductKeyButton.innerHTML = 'Validate';
 
         productKeyInput.disabled = false
         productKeyInput.style.display = 'inline-block';
-
-        licenseInfo.innerHTML = '';
 
         setDefaultProductKeyInput();
 
@@ -46,7 +46,6 @@ function showProductKeyDialog()
 
 
     productKeyUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
-    setDefaultProductKeyInput();
     
     
     const license = 
@@ -105,14 +104,19 @@ productKeyInput.addEventListener('pointerdown', e =>
     {
         setDefaultProductKeyInput(); 
 
-        if (   e.button == 2
-            && productKey != NULL
-            && productKeyInput.value == productKey)
+        const subscribed = 
+               productKey != NULL
+            && (      productKeyInput.selectionStart == productKeyInput.selectionEnd
+                   && productKeyInput.value == productKey
+                || getSelectedText(productKeyInput) == productKey);
+
+        if (e.button == 2)
         {
             e.preventDefault();
             e.stopPropagation();
 
-            productKeyInput.select();
+            updateMenuItemDisplay(menuItemLicenseSep1  .div, subscribed);
+            updateMenuItemDisplay(menuItemLicenseRemove.div, subscribed);
 
             menuRemoveLicense.showAt(e.clientX, e.clientY, false);
         }
@@ -123,7 +127,7 @@ productKeyInput.addEventListener('keydown', e =>
 {
     if (e.code == 'Escape')
         productKeyInput.blur();
-        
+
     e.stopPropagation();
 });
 
@@ -149,23 +153,15 @@ productKeyInput.addEventListener('input', () =>
 function setBadProductKeyInput()
 {
     productKeyInput.style.outline   = '2px dashed #e00';        
-    productKeyInput.style.boxShadow = 'none';
-}
-
-
-
-function setGoodProductKeyInput()
-{
-    productKeyInput.style.outline   = 'none';
-    productKeyInput.style.boxShadow = '0 0 0 2px #0b0';
+    productKeyTextBack.style.display = 'none';
 }
 
 
 
 function setDefaultProductKeyInput()
 {
-    productKeyInput.style.outline   = 'none';
-    productKeyInput.style.boxShadow = '0 0 0 2px var(--figma-color-bg-brand)'; 
+    productKeyInput.style.outline    = 'none';
+    productKeyTextBack.style.display = 'inline';
 }
 
 
@@ -173,7 +169,6 @@ function setDefaultProductKeyInput()
 function setDisabledProductKeyInput()
 {
     productKeyInput.style.outline   = 'none';
-    productKeyInput.style.boxShadow = 'none';//0 0 0 1px var(--figma-color-bg-tertiary)'; 
 }
 
 
@@ -192,12 +187,13 @@ function tryValidateLicense(key)
         setDisabledProductKeyInput();
         updateLicenseInfo(license);
 
-        productKeyInput.disabled      = true;
-        productKeyInput.style.display = 'none';
+        productKeyInput.disabled         = true;
+        productKeyTextBack.style.display = 'none';
+        productKeyInput   .style.display = 'none';
 
         validateProductKeyButton.innerHTML = 'Edit';
 
-        uiNotify('✨ Thank you for subscribing to Generator! ✨', {delay: 6000});
+        uiNotify('✨ Thank you for subscribing to Generator ! ✨', {delay: 6000});
     }
     else
     {
@@ -209,22 +205,22 @@ function tryValidateLicense(key)
 
 function updateLicenseInfo(license)
 {
-    const strPrep =
-                license.lastYear
-        + '-' + license.lastMonth.toString().padStart(2, '0')
-        + '-' + license.lastDay  .toString().padStart(2, '0');
-
-    const date = new Date(Date.parse(strPrep));
-
-    const strDate = date.toLocaleString('en-UK', //navigator.language, 
+    if (license)
     {
-        dateStyle: 'medium'
-    });
+        const strPrep =
+                    license.lastYear
+            + '-' + license.lastMonth.toString().padStart(2, '0')
+            + '-' + license.lastDay  .toString().padStart(2, '0');
 
-    licenseInfo.innerHTML = 
-        license
-        ?  'Expires on: <span style="font-weight: 600">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>'
-        : '';
+        const date    = new Date(Date.parse(strPrep));
+        const strDate = date.toLocaleString('en-UK', {dateStyle: 'medium'});
+
+        licenseInfo.innerHTML = 'Expires on: <span style="font-weight: 600">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
+    }
+    else
+    {
+        licenseInfo.innerHTML = '';
+    }
 }
 
 

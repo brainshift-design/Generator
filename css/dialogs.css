@@ -147,8 +147,32 @@
     user-select:    text;
 
     overflow:       visible;
+
     /* box-shadow:  0 0 0 1px green inset; */
 }
+
+
+#productKeyTextBack
+{
+    display:        none;
+    
+    position:       absolute;
+    left:           50%;
+    top:            113px;
+    width:          138px;
+    height:         25px;
+
+    transform:      translateX(-50%);
+
+    z-index:        0;
+
+    pointer-events: none;
+
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+
+    /* box-shadow:  0 0 0 1px red inset; */
+}
+
 
 
 #productKeyInputBack
@@ -170,6 +194,8 @@
     z-index:        1;
 
     pointer-events: none;
+
+    /* box-shadow:  0 0 0 1px red inset; */
 }
 
 

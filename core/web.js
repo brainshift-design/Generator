@@ -204,3 +204,17 @@ function isVisible(element)
 {
     return element.offsetParent !== null;
 }
+
+
+
+function getSelectedText(element) // only allow input[type=text] & textarea
+{ 
+    if (   element.tagName === 'TEXTAREA' 
+        || (   element.tagName === 'INPUT' 
+            && element.type === 'text')) 
+    {
+        return element.value.substring(
+            element.selectionStart,
+            element.selectionEnd);
+    }
+}

@@ -370,8 +370,32 @@
     user-select:    text;
 
     overflow:       visible;
+
     /* box-shadow:  0 0 0 1px green inset; */
 }
+
+
+#productKeyTextBack
+{
+    display:        none;
+    
+    position:       absolute;
+    left:           50%;
+    top:            113px;
+    width:          138px;
+    height:         25px;
+
+    transform:      translateX(-50%);
+
+    z-index:        0;
+
+    pointer-events: none;
+
+    border-bottom:  1px solid var(--figma-color-bg-tertiary);
+
+    /* box-shadow:  0 0 0 1px red inset; */
+}
+
 
 
 #productKeyInputBack
@@ -393,6 +417,8 @@
     z-index:        1;
 
     pointer-events: none;
+
+    /* box-shadow:  0 0 0 1px red inset; */
 }
 
 
@@ -2968,7 +2994,7 @@ a
     <div id='productKeyBody'>
         <!-- <div id='productKeyUserName'></div> -->
         <div id='productKeyUserId' ondblclick='copyProductKey()'></div>
-        
+        <div id='productKeyTextBack'></div>
         <div id='productKeyInputBack'></div>
         <input type='text' spellcheck='false' id='productKeyInput' />
         <div id='licenseInfo'></div>
@@ -6140,6 +6166,20 @@ function hideElement(element)
 function isVisible(element)
 {
     return element.offsetParent !== null;
+}
+
+
+
+function getSelectedText(element) // only allow input[type=text] & textarea
+{ 
+    if (   element.tagName === 'TEXTAREA' 
+        || (   element.tagName === 'INPUT' 
+            && element.type === 'text')) 
+    {
+        return element.value.substring(
+            element.selectionStart,
+            element.selectionEnd);
+    }
 }
 
 
@@ -22748,6 +22788,20 @@ function isVisible(element)
 }
 
 
+
+function getSelectedText(element) // only allow input[type=text] & textarea
+{ 
+    if (   element.tagName === 'TEXTAREA' 
+        || (   element.tagName === 'INPUT' 
+            && element.type === 'text')) 
+    {
+        return element.value.substring(
+            element.selectionStart,
+            element.selectionEnd);
+    }
+}
+
+
 const webColors = [
     {name: 'AliceBlue',            color: 'f0f8ff'},
     {name: 'AntiqueWhite',         color: 'faebd7'},
@@ -34349,6 +34403,9 @@ var menuItemNodeSelect;
 var menuItemNodeActivate;
 var menuItemNodeEnableDisable;
 
+var menuItemLicenseSep1;
+var menuItemLicenseRemove;
+
 
 
 function initGeneratorMenus()
@@ -34404,13 +34461,13 @@ function initGeneratorMenus()
                                            graph.nodes.forEach(n => updateHeaderLabelOffsetX(n));
                                        }
                                    }),
-                                    // new MenuItem('',                             {separator: true}),
+                                    new MenuItem('',                             {separator: true}),
                                 //    new MenuItem('Re-save all connections',      {callback:      () => uiSaveConnections(graph.connections)}),                                   
                                  //new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
                                 //  new MenuItem('',                             {separator: true}),   
                                 //  new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
-                                //    new MenuItem('Log all local data',           {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData'}); }}),
-                                //    new MenuItem('Clear all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
+                                   new MenuItem('Log all local data',           {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData'}); }}),
+                                   new MenuItem('Clear all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
                                 //  new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
                                 //    new MenuItem('',                             {separator: true }),
                                  //new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
@@ -34620,7 +34677,10 @@ function initGeneratorMenus()
 
     menuRemoveLicense = new Menu('Remove license', false, false);
     menuRemoveLicense.addItems([
-        new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
+                                new MenuItem('Copy',  {callback: () => { hideAllMenus(); writeTextToClipboard(getSelectedText(productKeyInput)); }}),
+                                new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
+        menuItemLicenseSep1   = new MenuItem('', {separator: true}),
+        menuItemLicenseRemove = new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
 
 
     menuNode.init = () => 
@@ -56779,12 +56839,12 @@ function onValidateClick(key)
 {
     if (productKeyInput.disabled)
     {
+        licenseInfo.innerHTML = '';
+
         validateProductKeyButton.innerHTML = 'Validate';
 
         productKeyInput.disabled = false
         productKeyInput.style.display = 'inline-block';
-
-        licenseInfo.innerHTML = '';
 
         setDefaultProductKeyInput();
 
@@ -56819,7 +56879,6 @@ function showProductKeyDialog()
 
 
     productKeyUserId.innerHTML = '<span style="user-select: none; color: var(--figma-color-bg-disabled-secondary);">User ID:&nbsp;&nbsp;</span>' + currentUser.id;
-    setDefaultProductKeyInput();
     
     
     const license = 
@@ -56878,14 +56937,19 @@ productKeyInput.addEventListener('pointerdown', e =>
     {
         setDefaultProductKeyInput(); 
 
-        if (   e.button == 2
-            && productKey != NULL
-            && productKeyInput.value == productKey)
+        const subscribed = 
+               productKey != NULL
+            && (      productKeyInput.selectionStart == productKeyInput.selectionEnd
+                   && productKeyInput.value == productKey
+                || getSelectedText(productKeyInput) == productKey);
+
+        if (e.button == 2)
         {
             e.preventDefault();
             e.stopPropagation();
 
-            productKeyInput.select();
+            updateMenuItemDisplay(menuItemLicenseSep1  .div, subscribed);
+            updateMenuItemDisplay(menuItemLicenseRemove.div, subscribed);
 
             menuRemoveLicense.showAt(e.clientX, e.clientY, false);
         }
@@ -56896,7 +56960,7 @@ productKeyInput.addEventListener('keydown', e =>
 {
     if (e.code == 'Escape')
         productKeyInput.blur();
-        
+
     e.stopPropagation();
 });
 
@@ -56922,23 +56986,15 @@ productKeyInput.addEventListener('input', () =>
 function setBadProductKeyInput()
 {
     productKeyInput.style.outline   = '2px dashed #e00';        
-    productKeyInput.style.boxShadow = 'none';
-}
-
-
-
-function setGoodProductKeyInput()
-{
-    productKeyInput.style.outline   = 'none';
-    productKeyInput.style.boxShadow = '0 0 0 2px #0b0';
+    productKeyTextBack.style.display = 'none';
 }
 
 
 
 function setDefaultProductKeyInput()
 {
-    productKeyInput.style.outline   = 'none';
-    productKeyInput.style.boxShadow = '0 0 0 2px var(--figma-color-bg-brand)'; 
+    productKeyInput.style.outline    = 'none';
+    productKeyTextBack.style.display = 'inline';
 }
 
 
@@ -56946,7 +57002,6 @@ function setDefaultProductKeyInput()
 function setDisabledProductKeyInput()
 {
     productKeyInput.style.outline   = 'none';
-    productKeyInput.style.boxShadow = 'none';//0 0 0 1px var(--figma-color-bg-tertiary)'; 
 }
 
 
@@ -56965,12 +57020,13 @@ function tryValidateLicense(key)
         setDisabledProductKeyInput();
         updateLicenseInfo(license);
 
-        productKeyInput.disabled      = true;
-        productKeyInput.style.display = 'none';
+        productKeyInput.disabled         = true;
+        productKeyTextBack.style.display = 'none';
+        productKeyInput   .style.display = 'none';
 
         validateProductKeyButton.innerHTML = 'Edit';
 
-        uiNotify('✨ Thank you for subscribing to Generator! ✨', {delay: 6000});
+        uiNotify('✨ Thank you for subscribing to Generator ! ✨', {delay: 6000});
     }
     else
     {
@@ -56982,22 +57038,22 @@ function tryValidateLicense(key)
 
 function updateLicenseInfo(license)
 {
-    const strPrep =
-                license.lastYear
-        + '-' + license.lastMonth.toString().padStart(2, '0')
-        + '-' + license.lastDay  .toString().padStart(2, '0');
-
-    const date = new Date(Date.parse(strPrep));
-
-    const strDate = date.toLocaleString('en-UK', //navigator.language, 
+    if (license)
     {
-        dateStyle: 'medium'
-    });
+        const strPrep =
+                    license.lastYear
+            + '-' + license.lastMonth.toString().padStart(2, '0')
+            + '-' + license.lastDay  .toString().padStart(2, '0');
 
-    licenseInfo.innerHTML = 
-        license
-        ?  'Expires on: <span style="font-weight: 600">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>'
-        : '';
+        const date    = new Date(Date.parse(strPrep));
+        const strDate = date.toLocaleString('en-UK', {dateStyle: 'medium'});
+
+        licenseInfo.innerHTML = 'Expires on: <span style="font-weight: 600">' + strDate.replaceAll('/', '&hairsp;/&hairsp;') + '</span>';
+    }
+    else
+    {
+        licenseInfo.innerHTML = '';
+    }
 }
 
 
@@ -57010,6 +57066,7 @@ function startupValidateLicense()
         uiSetLocalData('productKey', NULL);
     }
 }
+
 
 
 var nextRequestId   = 0;

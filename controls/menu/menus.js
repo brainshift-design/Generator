@@ -214,6 +214,9 @@ var menuItemNodeSelect;
 var menuItemNodeActivate;
 var menuItemNodeEnableDisable;
 
+var menuItemLicenseSep1;
+var menuItemLicenseRemove;
+
 
 
 function initGeneratorMenus()
@@ -269,13 +272,13 @@ function initGeneratorMenus()
                                            graph.nodes.forEach(n => updateHeaderLabelOffsetX(n));
                                        }
                                    }),
-                                    // new MenuItem('',                             {separator: true}),
+                                    new MenuItem('',                             {separator: true}),
                                 //    new MenuItem('Re-save all connections',      {callback:      () => uiSaveConnections(graph.connections)}),                                   
                                  //new MenuItem('Delete connections to...',     {callback:      () => showDeleteConnectionsDialog()}),                                   new MenuItem('',                           {separator: true}),
                                 //  new MenuItem('',                             {separator: true}),   
                                 //  new MenuItem('Log all connection keys',      {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
-                                //    new MenuItem('Log all local data',           {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData'}); }}),
-                                //    new MenuItem('Clear all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
+                                   new MenuItem('Log all local data',           {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllLocalData'}); }}),
+                                   new MenuItem('Clear all local data',         {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figClearAllLocalData'}); }}),
                                 //  new MenuItem('Delete all saved connections', {callback:      () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figRemoveAllSavedConnections'}); }}),
                                 //    new MenuItem('',                             {separator: true }),
                                  //new MenuItem('Delete all style links',       {callback:      () => { hideAllMenus(); uiRemovePluginDataFromAllLocalStyles(); }}),
@@ -485,7 +488,10 @@ function initGeneratorMenus()
 
     menuRemoveLicense = new Menu('Remove license', false, false);
     menuRemoveLicense.addItems([
-        new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
+                                new MenuItem('Copy',  {callback: () => { hideAllMenus(); writeTextToClipboard(getSelectedText(productKeyInput)); }}),
+                                new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
+        menuItemLicenseSep1   = new MenuItem('', {separator: true}),
+        menuItemLicenseRemove = new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
 
 
     menuNode.init = () => 
