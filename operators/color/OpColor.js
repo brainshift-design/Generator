@@ -42,9 +42,9 @@ extends OpColorBase
 
         
         this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
-        this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true,  true,  Math.round(defColor[1] * rgbFactor[0])));
-        this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true,  true,  Math.round(defColor[2] * rgbFactor[1])));
-        this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true,  Math.round(defColor[3] * rgbFactor[2])));
+        this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true,  true));//Math.round(defColor[1] * rgbFactor[0])));
+        this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true,  true));//Math.round(defColor[2] * rgbFactor[1])));
+        this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true));//Math.round(defColor[3] * rgbFactor[2])));
         
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
@@ -71,9 +71,9 @@ extends OpColorBase
         });
 
 
-        this.param1.setValue(new NumberValue(Math.round(this._color[1] * rgbFactor[0])), false, true, false);
-        this.param2.setValue(new NumberValue(Math.round(this._color[2] * rgbFactor[1])), false, true, false);
-        this.param3.setValue(new NumberValue(Math.round(this._color[3] * rgbFactor[2])), false, true, false);
+        this.param1.setValue(new NumberValue(roundTo(this._color[1] * rgbFactor[0], this.param1.control.dec)), false, true, false);
+        this.param2.setValue(new NumberValue(roundTo(this._color[2] * rgbFactor[1], this.param2.control.dec)), false, true, false);
+        this.param3.setValue(new NumberValue(roundTo(this._color[3] * rgbFactor[2], this.param3.control.dec)), false, true, false);
 
 
         this.paramSpace.control.barTop = 0.8;

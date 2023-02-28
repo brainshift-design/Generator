@@ -3137,7 +3137,8 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>-</p>
+                <p>Fixed color node evaluation issue.</p>
+                <p>Fixed decimal places bug for parameters with a suffix.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -35866,7 +35867,9 @@ function initNumberControlTextbox(control)
         let savedVal = 
             savedValue.trim() == NAN_CHAR  
             ? Number.NaN 
-            : (control.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
+            : (control.showHex 
+               ? parseInt(savedValue, 16) 
+               : parseFloat(savedValue));
 
         
         if (!isNaN(val))
@@ -35875,8 +35878,8 @@ function initNumberControlTextbox(control)
        
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
-            'value':           value,
-            'oldValue':        savedValue,
+            'value':           value     .replace(control.suffix, ''),
+            'oldValue':        savedValue.replace(control.suffix, ''),
             'preventSetValue': false }});
 
         control.dispatchEvent(e);
@@ -36110,18 +36113,14 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
             
         const oldValue = control.value;
-
-
-        // const dec = Math.pow(10, Math.abs(control.dec));
-
-        //value = Math.round(value * dec) / dec;
-
+//console.log('control.value =', control.value);
 
         if (control.wrapValue)
         {
             const range = control.displayMax - control.displayMin;
 
             value %= range;
+
             while (value < control.displayMin) value += range;
         }
 
@@ -40780,7 +40779,6 @@ extends Parameter
     {
         // console.log(this.id + '.setValue() value =', value);
 
-        //console.log('value =', value);
         console.assert(
             value instanceof NumberValue,
             'value must be a NumberValue');
@@ -40852,7 +40850,7 @@ extends Parameter
             &&  gen.passedNodes.includes(this.node))
             return this.output.cache;
 
-
+            
         const request = [];
 
 
@@ -41007,7 +41005,7 @@ extends NumberParamBase
             {
                 if (Math.abs(parseFloat(e.detail.value) - parseFloat(e.detail.oldValue)) <= Number.EPSILON)
                     dec += Math.log10(this.control.valueScale);
-                else 
+                else
                     dec = oldDec;
 
                 this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);
@@ -49049,9 +49047,9 @@ extends OpColorBase
 
         
         this.addParam(this.paramSpace = new SelectParam('space', 'space', false, true,  true,  OpColorSpaces.map(s => s[1]), 0));
-        this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true,  true,  Math.round(defColor[1] * rgbFactor[0])));
-        this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true,  true,  Math.round(defColor[2] * rgbFactor[1])));
-        this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true,  Math.round(defColor[3] * rgbFactor[2])));
+        this.addParam(this.param1     = new NumberParam('c1',    '',      true,  true,  true));//Math.round(defColor[1] * rgbFactor[0])));
+        this.addParam(this.param2     = new NumberParam('c2',    '',      true,  true,  true));//Math.round(defColor[2] * rgbFactor[1])));
+        this.addParam(this.param3     = new NumberParam('c3',    '',      true,  true,  true));//Math.round(defColor[3] * rgbFactor[2])));
         
         this.addParam(this.paramColor = new ColorParam ('color', '',      false, false, false, ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color)))));
 
@@ -49078,9 +49076,9 @@ extends OpColorBase
         });
 
 
-        this.param1.setValue(new NumberValue(Math.round(this._color[1] * rgbFactor[0])), false, true, false);
-        this.param2.setValue(new NumberValue(Math.round(this._color[2] * rgbFactor[1])), false, true, false);
-        this.param3.setValue(new NumberValue(Math.round(this._color[3] * rgbFactor[2])), false, true, false);
+        this.param1.setValue(new NumberValue(roundTo(this._color[1] * rgbFactor[0], this.param1.control.dec)), false, true, false);
+        this.param2.setValue(new NumberValue(roundTo(this._color[2] * rgbFactor[1], this.param2.control.dec)), false, true, false);
+        this.param3.setValue(new NumberValue(roundTo(this._color[3] * rgbFactor[2], this.param3.control.dec)), false, true, false);
 
 
         this.paramSpace.control.barTop = 0.8;

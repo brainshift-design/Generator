@@ -33,7 +33,6 @@ extends Parameter
     {
         // console.log(this.id + '.setValue() value =', value);
 
-        //console.log('value =', value);
         console.assert(
             value instanceof NumberValue,
             'value must be a NumberValue');
@@ -105,7 +104,7 @@ extends Parameter
             &&  gen.passedNodes.includes(this.node))
             return this.output.cache;
 
-
+            
         const request = [];
 
 

@@ -72,7 +72,7 @@ extends NumberParamBase
             {
                 if (Math.abs(parseFloat(e.detail.value) - parseFloat(e.detail.oldValue)) <= Number.EPSILON)
                     dec += Math.log10(this.control.valueScale);
-                else 
+                else
                     dec = oldDec;
 
                 this.setValue(new NumberValue(parseFloat(e.detail.value), dec), true);

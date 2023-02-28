@@ -264,7 +264,9 @@ function initNumberControlTextbox(control)
         let savedVal = 
             savedValue.trim() == NAN_CHAR  
             ? Number.NaN 
-            : (control.showHex ? parseInt(savedValue, 16) : parseFloat(savedValue));
+            : (control.showHex 
+               ? parseInt(savedValue, 16) 
+               : parseFloat(savedValue));
 
         
         if (!isNaN(val))
@@ -273,8 +275,8 @@ function initNumberControlTextbox(control)
        
         const e = new CustomEvent('finishedit', { 'detail': {
             'success':         success,
-            'value':           value,
-            'oldValue':        savedValue,
+            'value':           value     .replace(control.suffix, ''),
+            'oldValue':        savedValue.replace(control.suffix, ''),
             'preventSetValue': false }});
 
         control.dispatchEvent(e);
