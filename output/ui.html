@@ -12176,19 +12176,10 @@ extends GColorType
 
                 this.value.space.value = toSpaceIndex;
 
-                
-                // fake disabled status by checking for it during param eval (easiest way to do it)
-
-                if (this.options.enabled)
-                {
-                    if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
-                    if (!this.c2) { this.c2 = this.value.c2.copy(); c1 = this.c1.toValue(); }
-                    if (!this.c3) { this.c3 = this.value.c3.copy(); c1 = this.c1.toValue(); }
-
-                    if (c1) this.value.c1 = c1;
-                    if (c2) this.value.c2 = c2;
-                    if (c3) this.value.c3 = c3;
-                }
+                this.updateColor(
+                    this.value.c1, 
+                    this.value.c2, 
+                    this.value.c3);
             }
             else
                 this.value = ColorValue.NaN;
@@ -12200,6 +12191,7 @@ extends GColorType
         else
         {
             this.value = new ColorValue(space, c1, c2, c3);
+
 
             const toSpaceIndex = Math.min(Math.max(
                 0,
@@ -12220,6 +12212,14 @@ extends GColorType
                     this.value,
                     colorSpace(this.convert.value), 
                     colorSpace(toSpaceIndex));
+            }
+
+
+            if (this.options.enabled)
+            {
+                this.c1 = this.value.c1.copy();
+                this.c2 = this.value.c2.copy();
+                this.c3 = this.value.c3.copy();
             }
         }
 
@@ -12245,6 +12245,22 @@ extends GColorType
         this.validate();
 
         return this;
+    }
+
+
+
+    updateColor(c1, c2, c3)
+    {
+        if (this.options.enabled)
+        {
+            if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
+            if (!this.c2) { this.c2 = this.value.c2.copy(); c1 = this.c1.toValue(); }
+            if (!this.c3) { this.c3 = this.value.c3.copy(); c1 = this.c1.toValue(); }
+        
+            if (c1) this.value.c1 = c1;
+            if (c2) this.value.c2 = c2;
+            if (c3) this.value.c3 = c3;
+        }
     }
 
 
@@ -31031,19 +31047,10 @@ extends GColorType
 
                 this.value.space.value = toSpaceIndex;
 
-                
-                // fake disabled status by checking for it during param eval (easiest way to do it)
-
-                if (this.options.enabled)
-                {
-                    if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
-                    if (!this.c2) { this.c2 = this.value.c2.copy(); c1 = this.c1.toValue(); }
-                    if (!this.c3) { this.c3 = this.value.c3.copy(); c1 = this.c1.toValue(); }
-
-                    if (c1) this.value.c1 = c1;
-                    if (c2) this.value.c2 = c2;
-                    if (c3) this.value.c3 = c3;
-                }
+                this.updateColor(
+                    this.value.c1, 
+                    this.value.c2, 
+                    this.value.c3);
             }
             else
                 this.value = ColorValue.NaN;
@@ -31055,6 +31062,7 @@ extends GColorType
         else
         {
             this.value = new ColorValue(space, c1, c2, c3);
+
 
             const toSpaceIndex = Math.min(Math.max(
                 0,
@@ -31075,6 +31083,14 @@ extends GColorType
                     this.value,
                     colorSpace(this.convert.value), 
                     colorSpace(toSpaceIndex));
+            }
+
+
+            if (this.options.enabled)
+            {
+                this.c1 = this.value.c1.copy();
+                this.c2 = this.value.c2.copy();
+                this.c3 = this.value.c3.copy();
             }
         }
 
@@ -31100,6 +31116,22 @@ extends GColorType
         this.validate();
 
         return this;
+    }
+
+
+
+    updateColor(c1, c2, c3)
+    {
+        if (this.options.enabled)
+        {
+            if (!this.c1) { this.c1 = this.value.c1.copy(); c1 = this.c1.toValue(); }
+            if (!this.c2) { this.c2 = this.value.c2.copy(); c1 = this.c1.toValue(); }
+            if (!this.c3) { this.c3 = this.value.c3.copy(); c1 = this.c1.toValue(); }
+        
+            if (c1) this.value.c1 = c1;
+            if (c2) this.value.c2 = c2;
+            if (c3) this.value.c3 = c3;
+        }
     }
 
 
