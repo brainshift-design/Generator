@@ -381,7 +381,7 @@ function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false
         .map(_n => nodeFromId(duplicates ? _n.newId : _n.id))
         .forEach(n => n.makeActive());
 
-    graphView.updateNodeTransforms(loadedNodes);
+    //graphView.updateNodeTransforms(loadedNodes);
 
     updateTerminalsAfterNodes(loadedNodes, updateNodes);
 }

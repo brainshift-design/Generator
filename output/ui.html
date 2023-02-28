@@ -3137,7 +3137,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Fixed UI issues.</p>
+                <p>-</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -3346,7 +3346,7 @@ a
 
 
 
-const generatorVersion = 114;
+const generatorVersion = 116;
 
 
 const MAX_INT32        = 2147483647;
@@ -16554,6 +16554,15 @@ function genParseFill(parse)
     const fill = new GFill(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(fill, parse, ignore);
 
@@ -16568,10 +16577,8 @@ function genParseFill(parse)
     parse.nTab++;
 
 
-    if (OBJECT_TYPES.includes(parse.next))
+    if (nInputs == 1)
         fill.input = genParse(parse);
-    // ||    parse.next == PARAM
-    //    && FILL_TYPES.includes(parse.afterNext))
 
 
     const nParamIds = genParseParamCount(parse);
@@ -16595,7 +16602,7 @@ function genParseFill(parse)
     }
 
     
-    parse.inParam = false;
+    //parse.inParam = false;
     parse.nTab--;
 
 
@@ -16639,6 +16646,15 @@ function genParseStroke(parse)
     const stroke = new GStroke(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(stroke, parse, ignore);
 
@@ -16653,10 +16669,8 @@ function genParseStroke(parse)
     parse.nTab++;
 
 
-    if (OBJECT_TYPES.includes(parse.next))
+    if (nInputs == 1)
         stroke.input = genParse(parse);
-        //   parse.next == PARAM
-        //   && STROKE_TYPES.includes(parse.afterNext))
 
 
     const nParamIds = genParseParamCount(parse);
@@ -19965,7 +19979,7 @@ onerror = (event, source, line, pos, error) =>
 
 
 
-const generatorVersion = 114;
+const generatorVersion = 116;
 
 
 const MAX_INT32        = 2147483647;
@@ -34254,8 +34268,10 @@ const iconEllipse           = '<svg width="16" height="16" viewBox="0 0 16 16" f
 const iconPolygon           = '<svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.82238 15.4885L10.0496 1.23853L18.2769 15.4885H1.82238Z" stroke="white"/></svg>';
 const iconStar              = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.8156 2.24924L10.4021 7.13198L10.5144 7.47747H10.8776H16.0116L11.8581 10.4952L11.5642 10.7087L11.6765 11.0542L13.263 15.9369L9.10949 12.9192L8.8156 12.7057L8.5217 12.9192L4.3682 15.9369L5.9547 11.0542L6.06695 10.7087L5.77306 10.4952L1.61955 7.47747H6.75357H7.11684L7.2291 7.13198L8.8156 2.24924Z" stroke="white"/></svg>';
  
+const iconCustom            = '<svg width="19" height="13" viewBox="0 0 19 13" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="17" cy="2" r="1.5" stroke="white"/><circle cx="2" cy="6" r="2" fill="white"/><circle cx="17" cy="11" r="1.5" stroke="white"/><path d="M15.0923 1.95343C10.0923 1.95343 9.8737 5.94712 3.8737 5.94712C9.8737 5.94712 10.0923 11.03 15.0923 11.03" stroke="white"/></svg>';
+
 const iconHand              = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.85653 12.2494L1.8554 12.2484C1.32015 11.771 1.2929 10.8911 1.7976 10.3815C2.3023 9.87193 3.1824 9.89065 3.665 10.4213L3.67129 10.4282L3.67773 10.435L4.27294 11.0653L5.99999 12.8943V10.3788V4C5.99999 3.46423 6.46423 3 6.99999 3C7.16906 3 7.33572 3.04789 7.48718 3.13836L7.99999 3.44469V9H8.99999V4.04203V3V2.27986V2C8.99999 1.46423 9.46423 1 9.99999 1C10.4142 1 10.807 1.27942 10.9437 1.66905L11.0597 2H11V9H12V2.4661L12.4437 2.16905C12.6058 2.06052 12.804 2 13 2C13.5358 2 14 2.46423 14 3V4V4.27549V6.02711V9H15V5.43676L15.5084 5.13662C15.6583 5.04814 15.8261 5 16 5C16.5358 5 17 5.46423 17 6V13.5C17 15.6001 15.7227 17.6052 13.812 18.4904C11.8955 19.3783 9.56768 19.0654 7.95351 17.7039L1.85653 12.2494ZM15 4.27549V4V3.17508V3C15 1.91195 14.088 1 13 1C12.9434 1 12.8868 1.00246 12.8304 1.00733C12.4943 1.03638 12.1668 1.15099 11.8873 1.3381C11.7759 1.02046 11.5846 0.741833 11.341 0.522228C10.9792 0.195965 10.5019 0 9.99999 0C9.18005 0 8.46014 0.517876 8.15511 1.23874C8.05538 1.47446 7.99999 1.73188 7.99999 2V2.27986C7.70403 2.10307 7.36184 2.00018 7.00094 2H6.99999C5.91195 2 4.99999 2.91195 4.99999 4V8.92652V9.18641V9.20713V10.3788L4.40481 9.74846C4.2821 9.61355 4.14593 9.49706 3.99999 9.39906C3.11355 8.80379 1.86654 8.89082 1.08709 9.67785C0.179345 10.5944 0.227074 12.136 1.18978 12.9947L7.2972 18.4585C9.20886 20.0788 11.9586 20.4512 14.2324 19.3978C16.4971 18.3486 18 15.989 18 13.5V6C18 4.91195 17.088 4 16 4C15.6382 4 15.2958 4.10085 15 4.27549Z" fill="white"/></svg>';
- 
+
 const iconComment           = '<svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M3.92701 11.5375L3.6897 11.045C3.24801 10.1283 3 9.09994 3 8.01086C3 4.14487 6.13401 1.01086 10 1.01086C13.866 1.01086 17 4.14487 17 8.01086C17 11.8769 13.866 15.0109 10 15.0109C8.89526 15.0109 7.85296 14.7557 6.92628 14.302L6.65842 14.1708L6.36249 14.2078L1.94388 14.7601L3.64047 12.0032L3.92701 11.5375ZM0.671856 14.9191L0 16.0109L1.27203 15.8519L6.48652 15.2001C7.5471 15.7194 8.73951 16.0109 10 16.0109C14.4183 16.0109 18 12.4292 18 8.01086C18 3.59258 14.4183 0.0108643 10 0.0108643C5.58172 0.0108643 2 3.59258 2 8.01086C2 9.25344 2.28329 10.4299 2.78881 11.4791L0.671856 14.9191Z" fill="white"/></svg>';
 
 const iconWindowNormal      = '<svg width="15" height="12" viewBox="0 0 15 12" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="14" height="11" stroke="white"/><rect x="4" y="4" width="7" height="4" fill="white"/></svg>';
@@ -34274,9 +34290,9 @@ var btnString;
 var btnColor;
 var btnStyle;
 var btnShape;
+var btnCustom;
 var btnHand;
 var btnComment;
-
 var btnZoom;
 
 
@@ -34513,7 +34529,7 @@ function initGeneratorMenus()
                          new MenuItem('Select',            {icon: iconSelect, callback: e => actionManager.do(getCreateNodeAction(SELECT,  btnNumber.div, {insert: e.ctrlKey}))}),
         menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse, callback: e => actionManager.do(getCreateNodeAction(IF_ELSE, btnNumber.div, {insert: e.ctrlKey})), disambiguate: true}),
         menuSep1       = new MenuItem('',                  {separator: true}),
-        menuItemStart  = new MenuItem('Start',             {icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,   btnNumber.div, {insert: e.ctrlKey}))}),
+        // menuItemStart  = new MenuItem('Start',             {icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,   btnNumber.div, {insert: e.ctrlKey}))}),
         menuItemRepeat = new MenuItem('Repeat',            {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT,  btnNumber.div, {insert: e.ctrlKey}))}),
         menuSep2       = new MenuItem('',                  {separator: true}),
         menuItemCache  = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,   btnNumber.div, {insert: e.ctrlKey}))}),
@@ -34580,7 +34596,7 @@ function initGeneratorMenus()
         
     menuColor = new Menu('Colors', true, true);
     menuColor.addItems([
-        menuItemColor        = new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.ctrlKey, random: e.altKey}))}),
+        menuItemColor        = new MenuItem('Color',             {icon: iconColor,            callback: e => actionManager.do(getCreateNodeAction(COLOR,             btnColor.div, {insert: e.ctrlKey, random: e.altKey, autoConnect: !e.altKey}))}),
                                new MenuItem('',                  {separator: true}),
                                new MenuItem('Valid sRGB',        {icon: iconValidColor,       callback: e => actionManager.do(getCreateNodeAction(VALID_COLOR,       btnColor.div, {insert: e.ctrlKey}))}),
         menuItemCorrectColor = new MenuItem('Correct color',     {icon: iconCorrectColor,     callback: e => actionManager.do(getCreateNodeAction(CORRECT_COLOR,     btnColor.div, {insert: e.ctrlKey}))}),
@@ -34598,9 +34614,9 @@ function initGeneratorMenus()
     
     menuStyle = new Menu('Styles', true, false);
     menuStyle.addItems([
-        // menuItemStyleFill   = new MenuItem('Fill',          {icon: iconFill,       callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, {insert: e.ctrlKey}))}),
-        // menuItemStyleStroke = new MenuItem('Stroke',        {icon: iconStroke,     callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, {insert: e.ctrlKey}))}),
-        // menuItemStyleSep1   = new MenuItem('',              {separator: true}),
+        menuItemStyleFill   = new MenuItem('Fill',          {icon: iconFill,       callback: e => actionManager.do(getCreateNodeAction(FILL,   btnColor.div, {insert: e.ctrlKey}))}),
+        menuItemStyleStroke = new MenuItem('Stroke',        {icon: iconStroke,     callback: e => actionManager.do(getCreateNodeAction(STROKE, btnColor.div, {insert: e.ctrlKey}))}),
+        menuItemStyleSep1   = new MenuItem('',              {separator: true}),
                               new MenuItem('Color style',   {icon: iconColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.ctrlKey, existing: true}))})]);
                             //new MenuItem('Color style',   {icon: iconColorStyle, childMenu: menuColorStyle, callback: e => actionManager.do(getCreateNodeAction(COLOR_STYLE,  btnColor.div, {insert: e.ctrlKey}))})]);
     
@@ -34707,7 +34723,17 @@ function initGeneratorMenus()
     btnStyle    = new MenuButton('', menuStyle,  {useMenuName: true, highlight: () => currentMenus.includes(menuStyle ), callback: () => updatePanMode(false)});
     btnShape    = new MenuButton('', menuShape,  {useMenuName: true, highlight: () => currentMenus.includes(menuShape ), callback: () => updatePanMode(false)});
 
+    btnCustom   = new MenuButton('Custom nodes', null, {callback: () => 
+    {
+        const create = new CreateNodeAction(CUSTOM, btnCustom.div);
+        actionManager.do(create);
 
+        graphView.update([create.node]);
+        graphView.updateScrollWithBounds();
+
+        updatePanMode(false);
+    }});
+    
     btnHand = new MenuButton('Hand tool', null, {callback: () => 
     { 
         updatePanMode(!panMode);
@@ -34741,6 +34767,7 @@ function initGeneratorMenus()
 
 
     btnMain   .setIcon(iconGenerator);
+    btnCustom .setIcon(iconCustom);
     btnHand   .setIcon(iconHand);
     btnComment.setIcon(iconComment);
 }
@@ -40542,13 +40569,27 @@ extends EventTarget
 
 
     
+    isVisible()
+    {
+        return false;
+    }
+
+
+
+    resetControls()
+    {
+        
+    }
+
+
+
     getValueForUndo()
     {
         return {
             paramId: this.id, 
             value:   this.value
-        };
-    }
+        };    
+    }    
 
 
 
@@ -40561,6 +40602,8 @@ extends EventTarget
 
     updateControls()
     {
+        checkControlVisible(this, this.control);
+
         this.control.update();
         
         if (this.input ) this.input .updateControl();
@@ -40648,6 +40691,17 @@ function setParamValue(param, value, updateParamId = '')
 }
 
 
+
+function checkControlVisible(param, control)
+{
+    control.style.display = 
+          !param.isResult
+        || settings.showOperationResults
+        ? 'inline-block'
+        : 'none';
+}
+
+
 class   NumberParamBase
 extends Parameter
 {
@@ -40711,6 +40765,20 @@ extends Parameter
     {
         this.control.showValue = show;
         this.control.update();
+    }
+
+
+
+    isVisible()
+    {
+        return this.control.style.display != 'none';
+    }
+
+
+
+    resetControls()
+    {
+        this.control.valueText = '';
     }
 
 
@@ -41287,6 +41355,20 @@ extends Parameter
 
 
 
+    isVisible()
+    {
+        return this.control.style.display != 'none';
+    }
+
+
+
+    resetControls()
+    {
+        this.control.valueText = '';
+    }
+
+
+
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         console.assert(
@@ -41686,6 +41768,22 @@ extends Parameter
 
 
 
+    isVisible()
+    {
+        return this.colorControl  .style.display != 'none'
+            || this.opacityControl.style.display != 'none';
+    }
+
+
+
+    resetControls()
+    {
+        this.colorControl  .valueText = '';
+        this.opacityControl.valueText = '';
+    }
+
+
+
     genRequest(gen)
     {
         // this function exists because a parameter without an output
@@ -41734,6 +41832,10 @@ extends Parameter
 
     updateControls()
     {
+        checkControlVisible(this, this.colorControl);
+        checkControlVisible(this, this.opacityControl);
+
+
         // const noColor = 
         //     darkMode
         //     ? rgbNoColorDark
@@ -42544,7 +42646,7 @@ class Graph
 
 
         if (input.param)
-            input.param.control.valueText = '';
+            input.param.resetControls();
 
 
         return true;
@@ -44739,7 +44841,7 @@ class Operator
         this.updateSubscribe();
 
 
-        if (!isEmpty(this.params.filter(p => p.control.style.display != 'none')))
+        if (!isEmpty(this.params.filter(p => p.isVisible())))
         {
             this.div   .style.borderBottomLeftRadius  = '0px';        
             this.inner .style.borderBottomLeftRadius  = '0px';        
@@ -44804,15 +44906,7 @@ class Operator
     updateParamControls()
     {
         for (const param of this.params)
-        {
-            param.control.style.display = 
-                  !param.isResult
-                || settings.showOperationResults
-                ? 'inline-block'
-                : 'none';
-
             param.updateControls();
-        }
     }
 
 
@@ -46872,6 +46966,8 @@ extends OperatorBase
     {
         this.paramCondition.enableControlText(true);
 
+        updateParamConditionText(this.paramCondition, this.isUnknown());
+
         this.updateParamControls();
     }
 }
@@ -48395,27 +48491,35 @@ extends OperatorWithValue
         this.paramValue    .enableControlText(false);
         this.paramOperation.enableControlText(true);
 
-        this.paramValue.control.text.style.fontStyle = 
-               settings.showBoolValues 
-            && this.paramValue.value.isValid()
-            ? 'normal' 
-            : 'italic';
 
-
-        const v = Math.round(this.paramValue.value.value);
-
-             if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
-        else if (settings.showBoolValues
-              && !isNaN(v))               this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
-        else                              this.paramValue.control.valueText = '';
-
-        this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
-
-        this.paramValue.control.showBar = !this.isUnknown();
+        updateParamConditionText(this.paramValue, this.isUnknown());
 
 
         this.updateParamControls();
     }
+}
+
+
+
+function updateParamConditionText(param, unknown)
+{
+    param.control.text.style.fontStyle = 
+           settings.showBoolValues 
+        && param.value.isValid()
+        ? 'normal' 
+        : 'italic';
+
+
+    const v = Math.round(param.value.value);
+
+         if (unknown)        param.controllueText = UNKNOWN_DISPLAY;
+    else if (settings.showBoolValues
+            && !isNaN(v))    param.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+    else                     param.control.valueText = '';
+
+    //param.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
+
+    param.control.showBar = unknown;
 }
 
 
@@ -48592,6 +48696,7 @@ extends Operator
 
         this._warningOverlay = createDiv('colorWarningOverlay');
         this._warningOverlay.style.zIndex = 1;
+        
         this.inner.appendChild(this._warningOverlay);
 
 
@@ -51540,13 +51645,12 @@ extends OpColorBase
         this.inner.insertBefore(this.checkers, this.header);
 
 
-        this.addInput (this.createInputForObjects([...FILL_TYPES, ...SHAPE_TYPES], getNodeInputValuesForUndo));
-        this.addOutput(new Output([FILL], this.output_genRequest));
+        this.addInput (new Input(FILL_TYPES, getNodeInputValuesForUndo));
+        this.addOutput(new Output([FILL], this.output_genRequest, getNodeOutputValuesForUndo));
 
 
-        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, false, ColorValue.fromRgb(rgbDefaultFill)));
-        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, false, 100, 0, 100));
-
+        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
+        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
         this.paramOpacity.control.suffix = '%';
     }
@@ -51570,6 +51674,10 @@ extends OpColorBase
 
         const input = this.node.inputs[0];
 
+
+        request.push(input.connected ? 1 : 0);
+
+
         if (input.connected)
         {
             request.push(...pushInputOrParam(input, gen));
@@ -51578,7 +51686,7 @@ extends OpColorBase
                 if (      param.input 
                        && param.input.connected
                        && param.canShow()
-                    || input.connectedOutput.supportsTypes(OBJECT_TYPES)) 
+                    || input.connectedOutput.supportsTypes(FILL_TYPES)) 
                     paramIds.push(param.id);
         }
         else
@@ -51801,15 +51909,15 @@ extends OpColorBase
         this.colorBack = createDiv('colorBack');
         this.inner.appendChild(this.colorBack);
 
-        this.addInput (this.createInputForObjects([...STROKE_TYPES, ...SHAPE_TYPES], getNodeInputValuesForUndo));
+        this.addInput (new Input(STROKE_TYPES, getNodeInputValuesForUndo));
         this.addOutput(new Output([STROKE], this.output_genRequest));
 
 
-        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, false, FillValue.create(0, 0, 0, 100)));
-        this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, false, 1, 0));
-        this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, false, ['inside', 'center', 'outside'], 0));
-        this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, false, ['miter', 'bevel', 'round'], 0));
-        this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, false, 28.96, 0, 180, 2));
+        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
+        this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
+        this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 0));
+        this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
 
         this.paramMiter.control.setSuffix('°', true);
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
@@ -51821,11 +51929,11 @@ extends OpColorBase
     
     
     
-    canAutoConnectFrom(output)
-    {
-        return output.supportsTypes(OBJECT_TYPES)
-            || output.supportsTypes( COLOR_TYPES);
-    }
+    // canAutoConnectFrom(output)
+    // {
+    //     return output.supportsTypes(FILL_TYPES)
+    //         || output.supportsTypes(COLOR_TYPES);
+    // }
 
 
 
@@ -51845,6 +51953,10 @@ extends OpColorBase
 
         
         const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
 
         if (input.connected)
         {
@@ -53647,7 +53759,8 @@ extends Action
         const autoConnect = 
                 this.autoConnect
             && !isEmpty(this.prevSelectedIds)
-            &&  canAutoConnectNode(this.node);
+            &&  canAutoConnectNode(this.node)
+            && !!this.options.autoConnect;
 
             
         graph.addNode(this.node, !autoConnect);
@@ -56742,7 +56855,6 @@ function showMinZoomDialog()
        
     minZoomTitle.moveStart        = point_NaN;
     minZoomTitle.pStart           = point_NaN;
-    console.log('settings =', settings);
     
     minZoomInput.value = numToString(settings.minZoomForParams * 100, -1) + '%';
     minZoomInput.select();
@@ -57643,7 +57755,7 @@ function finishLoadingNodes(_nodes, loadedNodes, updateNodes, duplicates = false
         .map(_n => nodeFromId(duplicates ? _n.newId : _n.id))
         .forEach(n => n.makeActive());
 
-    graphView.updateNodeTransforms(loadedNodes);
+    //graphView.updateNodeTransforms(loadedNodes);
 
     updateTerminalsAfterNodes(loadedNodes, updateNodes);
 }

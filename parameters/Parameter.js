@@ -113,13 +113,27 @@ extends EventTarget
 
 
     
+    isVisible()
+    {
+        return false;
+    }
+
+
+
+    resetControls()
+    {
+        
+    }
+
+
+
     getValueForUndo()
     {
         return {
             paramId: this.id, 
             value:   this.value
-        };
-    }
+        };    
+    }    
 
 
 
@@ -132,6 +146,8 @@ extends EventTarget
 
     updateControls()
     {
+        checkControlVisible(this, this.control);
+
         this.control.update();
         
         if (this.input ) this.input .updateControl();
@@ -216,4 +232,15 @@ function setParamValue(param, value, updateParamId = '')
 {
     if (param.id != updateParamId)
         param.setValue(value, false, true, false);
+}
+
+
+
+function checkControlVisible(param, control)
+{
+    control.style.display = 
+          !param.isResult
+        || settings.showOperationResults
+        ? 'inline-block'
+        : 'none';
 }

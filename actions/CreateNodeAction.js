@@ -47,7 +47,8 @@ extends Action
         const autoConnect = 
                 this.autoConnect
             && !isEmpty(this.prevSelectedIds)
-            &&  canAutoConnectNode(this.node);
+            &&  canAutoConnectNode(this.node)
+            && !!this.options.autoConnect;
 
             
         graph.addNode(this.node, !autoConnect);

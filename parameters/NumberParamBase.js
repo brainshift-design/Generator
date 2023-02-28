@@ -65,6 +65,20 @@ extends Parameter
 
 
 
+    isVisible()
+    {
+        return this.control.style.display != 'none';
+    }
+
+
+
+    resetControls()
+    {
+        this.control.valueText = '';
+    }
+
+
+
     getValueForUndo()
     {
         return {

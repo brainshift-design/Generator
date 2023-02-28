@@ -20,6 +20,15 @@ function genParseFill(parse)
     const fill = new GFill(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(fill, parse, ignore);
 
@@ -34,10 +43,8 @@ function genParseFill(parse)
     parse.nTab++;
 
 
-    if (OBJECT_TYPES.includes(parse.next))
+    if (nInputs == 1)
         fill.input = genParse(parse);
-    // ||    parse.next == PARAM
-    //    && FILL_TYPES.includes(parse.afterNext))
 
 
     const nParamIds = genParseParamCount(parse);
@@ -61,7 +68,7 @@ function genParseFill(parse)
     }
 
     
-    parse.inParam = false;
+    //parse.inParam = false;
     parse.nTab--;
 
 
@@ -105,6 +112,15 @@ function genParseStroke(parse)
     const stroke = new GStroke(nodeId, options);
 
 
+    let nInputs = -1;
+
+    if (!ignore)
+    {
+        nInputs = parseInt(parse.move());
+        console.assert(nInputs => 0 && nInputs <= 1, 'nInputs must be [0, 1]');
+    }
+
+
     if (parse.settings.logRequests) 
         logReq(stroke, parse, ignore);
 
@@ -119,10 +135,8 @@ function genParseStroke(parse)
     parse.nTab++;
 
 
-    if (OBJECT_TYPES.includes(parse.next))
+    if (nInputs == 1)
         stroke.input = genParse(parse);
-        //   parse.next == PARAM
-        //   && STROKE_TYPES.includes(parse.afterNext))
 
 
     const nParamIds = genParseParamCount(parse);

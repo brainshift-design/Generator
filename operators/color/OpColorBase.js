@@ -19,6 +19,7 @@ extends Operator
 
         this._warningOverlay = createDiv('colorWarningOverlay');
         this._warningOverlay.style.zIndex = 1;
+        
         this.inner.appendChild(this._warningOverlay);
 
 

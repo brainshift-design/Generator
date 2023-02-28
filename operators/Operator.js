@@ -715,7 +715,7 @@ class Operator
         this.updateSubscribe();
 
 
-        if (!isEmpty(this.params.filter(p => p.control.style.display != 'none')))
+        if (!isEmpty(this.params.filter(p => p.isVisible())))
         {
             this.div   .style.borderBottomLeftRadius  = '0px';        
             this.inner .style.borderBottomLeftRadius  = '0px';        
@@ -780,15 +780,7 @@ class Operator
     updateParamControls()
     {
         for (const param of this.params)
-        {
-            param.control.style.display = 
-                  !param.isResult
-                || settings.showOperationResults
-                ? 'inline-block'
-                : 'none';
-
             param.updateControls();
-        }
     }
 
 

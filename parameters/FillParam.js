@@ -217,6 +217,22 @@ extends Parameter
 
 
 
+    isVisible()
+    {
+        return this.colorControl  .style.display != 'none'
+            || this.opacityControl.style.display != 'none';
+    }
+
+
+
+    resetControls()
+    {
+        this.colorControl  .valueText = '';
+        this.opacityControl.valueText = '';
+    }
+
+
+
     genRequest(gen)
     {
         // this function exists because a parameter without an output
@@ -265,6 +281,10 @@ extends Parameter
 
     updateControls()
     {
+        checkControlVisible(this, this.colorControl);
+        checkControlVisible(this, this.opacityControl);
+
+
         // const noColor = 
         //     darkMode
         //     ? rgbNoColorDark

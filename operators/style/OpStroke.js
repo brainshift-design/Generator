@@ -28,15 +28,15 @@ extends OpColorBase
         this.colorBack = createDiv('colorBack');
         this.inner.appendChild(this.colorBack);
 
-        this.addInput (this.createInputForObjects([...STROKE_TYPES, ...SHAPE_TYPES], getNodeInputValuesForUndo));
+        this.addInput (new Input(STROKE_TYPES, getNodeInputValuesForUndo));
         this.addOutput(new Output([STROKE], this.output_genRequest));
 
 
-        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, false, FillValue.create(0, 0, 0, 100)));
-        this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, false, 1, 0));
-        this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, false, ['inside', 'center', 'outside'], 0));
-        this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, false, ['miter', 'bevel', 'round'], 0));
-        this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, false, 28.96, 0, 180, 2));
+        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
+        this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
+        this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 0));
+        this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
 
         this.paramMiter.control.setSuffix('°', true);
         this.paramMiter.canShow = () => this.paramJoin.value == 0;
@@ -48,11 +48,11 @@ extends OpColorBase
     
     
     
-    canAutoConnectFrom(output)
-    {
-        return output.supportsTypes(OBJECT_TYPES)
-            || output.supportsTypes( COLOR_TYPES);
-    }
+    // canAutoConnectFrom(output)
+    // {
+    //     return output.supportsTypes(FILL_TYPES)
+    //         || output.supportsTypes(COLOR_TYPES);
+    // }
 
 
 
@@ -72,6 +72,10 @@ extends OpColorBase
 
         
         const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
 
         if (input.connected)
         {

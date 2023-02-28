@@ -246,7 +246,7 @@ class Graph
 
 
         if (input.param)
-            input.param.control.valueText = '';
+            input.param.resetControls();
 
 
         return true;

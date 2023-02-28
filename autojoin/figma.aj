@@ -6,10 +6,6 @@
 ../logging/log nodes.js
 //../logging/log request.js
 
-../figma/license/big math.ts0
-../figma/license/crypto.ts0
-../figma/license/license.ts0
-
 ../figma/main.ts0
 ../figma/debug.ts0
 ../figma/canvas.ts0

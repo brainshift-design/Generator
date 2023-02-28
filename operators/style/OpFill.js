@@ -21,13 +21,12 @@ extends OpColorBase
         this.inner.insertBefore(this.checkers, this.header);
 
 
-        this.addInput (this.createInputForObjects([...FILL_TYPES, ...SHAPE_TYPES], getNodeInputValuesForUndo));
-        this.addOutput(new Output([FILL], this.output_genRequest));
+        this.addInput (new Input(FILL_TYPES, getNodeInputValuesForUndo));
+        this.addOutput(new Output([FILL], this.output_genRequest, getNodeOutputValuesForUndo));
 
 
-        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, false, ColorValue.fromRgb(rgbDefaultFill)));
-        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, false, 100, 0, 100));
-
+        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
+        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
 
         this.paramOpacity.control.suffix = '%';
     }
@@ -51,6 +50,10 @@ extends OpColorBase
 
         const input = this.node.inputs[0];
 
+
+        request.push(input.connected ? 1 : 0);
+
+
         if (input.connected)
         {
             request.push(...pushInputOrParam(input, gen));
@@ -59,7 +62,7 @@ extends OpColorBase
                 if (      param.input 
                        && param.input.connected
                        && param.canShow()
-                    || input.connectedOutput.supportsTypes(OBJECT_TYPES)) 
+                    || input.connectedOutput.supportsTypes(FILL_TYPES)) 
                     paramIds.push(param.id);
         }
         else

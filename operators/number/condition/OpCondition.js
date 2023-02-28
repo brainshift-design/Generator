@@ -65,25 +65,33 @@ extends OperatorWithValue
         this.paramValue    .enableControlText(false);
         this.paramOperation.enableControlText(true);
 
-        this.paramValue.control.text.style.fontStyle = 
-               settings.showBoolValues 
-            && this.paramValue.value.isValid()
-            ? 'normal' 
-            : 'italic';
 
-
-        const v = Math.round(this.paramValue.value.value);
-
-             if (this.isUnknown())        this.paramValue.control.valueText = UNKNOWN_DISPLAY;
-        else if (settings.showBoolValues
-              && !isNaN(v))               this.paramValue.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
-        else                              this.paramValue.control.valueText = '';
-
-        this.paramValue.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
-
-        this.paramValue.control.showBar = !this.isUnknown();
+        updateParamConditionText(this.paramValue, this.isUnknown());
 
 
         this.updateParamControls();
     }
+}
+
+
+
+function updateParamConditionText(param, unknown)
+{
+    param.control.text.style.fontStyle = 
+           settings.showBoolValues 
+        && param.value.isValid()
+        ? 'normal' 
+        : 'italic';
+
+
+    const v = Math.round(param.value.value);
+
+         if (unknown)        param.controllueText = UNKNOWN_DISPLAY;
+    else if (settings.showBoolValues
+            && !isNaN(v))    param.control.valueText = v != 0 ? TRUE_DISPLAY : FALSE_DISPLAY;
+    else                     param.control.valueText = '';
+
+    //param.control.text.style.letterSpacing = settings.showBoolValues ? '0.1em' : 0;
+
+    param.control.showBar = unknown;
 }

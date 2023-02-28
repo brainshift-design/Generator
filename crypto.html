@@ -43,14 +43,14 @@
         // const lic = createLicense('673258279043070641', '27022023');
         // const str = createLicenseString(lic);
 
-        const userId  = '673258279043070642';
+        // const userId  = '673258279043070642';
 
         const goodKey = key; //createProductKey(str);
         const badKey  = goodKey.substring(0, goodKey.length-1) + 'E';
 
         txt += '<br/>';
-        txt += 'validating ' + goodKey + ' ' + (validateLicense(userId, goodKey) ? '√' : 'X') + '<br/>';
-        txt += 'validating ' +  badKey + ' ' + (validateLicense(userId, badKey ) ? '√' : 'X');
+        txt += 'validating ' + goodKey + ' ' + (validateLicense(id, goodKey) ? '√' : 'X') + '<br/>';
+        txt += 'validating ' +  badKey + ' ' + (validateLicense(id, badKey ) ? '√' : 'X');
 
 
         text.innerHTML = txt;

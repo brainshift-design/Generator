@@ -15,7 +15,6 @@ function showMinZoomDialog()
        
     minZoomTitle.moveStart        = point_NaN;
     minZoomTitle.pStart           = point_NaN;
-    console.log('settings =', settings);
     
     minZoomInput.value = numToString(settings.minZoomForParams * 100, -1) + '%';
     minZoomInput.select();

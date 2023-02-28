@@ -147,6 +147,20 @@ extends Parameter
 
 
 
+    isVisible()
+    {
+        return this.control.style.display != 'none';
+    }
+
+
+
+    resetControls()
+    {
+        this.control.valueText = '';
+    }
+
+
+
     setValue(value, createAction, updateControl = true, dispatchEvents = true) 
     {
         console.assert(
