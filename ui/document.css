@@ -30,7 +30,7 @@ body
 } */
 
 
-.figma-light body { background: var(--figma-color-bg); }
+.figma-light body { background: #ffffff;    }
 .figma-dark  body { background: #252524; }
 
 

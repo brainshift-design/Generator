@@ -291,7 +291,7 @@ function updateWireArrow(wire, x0, y0, x1, y1, x2, y2, x3, y3)
 function updateWireStyle(wire)
 {
     const conn  = wire.connection;
-    const color = wire.getColor();
+    let   color = wire.getColor();
 
 
     const l = rgb2hclok(color)[2];
@@ -299,19 +299,19 @@ function updateWireStyle(wire)
     let bright = Math.min(Math.max(0, (l-0.6) / 0.4), 1);
     if (darkMode) bright = 1-bright;
 
-    const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(graphView.zoom, 5)).toString(16).padStart(2, '0');
+    // const innerOpacity = Math.round(bright * (darkMode ? 88 : 66) * Math.min(graphView.zoom, 5)).toString(16).padStart(2, '0');
     //'+(Math.min(Math.max(1, 1/graphView.zoom), 5))+'
     
-    wire.curve.style.filter = 
-        wire.needsFilter
-        ? darkMode
-            ? (isDark(color, 0.65)
-                ?    'drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ')'
-                :   ' drop-shadow(0px 0px 1px #000000' + innerOpacity + ')')
-            : (!isDark(color)
-                ?    'drop-shadow(0px 0px 1px #000000' + innerOpacity + ')'
-                :   ' drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ')')
-        : 'none';
+    // wire.curve.style.filter = 
+    //     wire.needsFilter
+    //     ? darkMode
+    //         ? (isDark(color, 0.65)
+    //             ?    'drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ')'
+    //             :   ' drop-shadow(0px 0px 1px #000000' + innerOpacity + ')')
+    //         : (!isDark(color)
+    //             ?    'drop-shadow(0px 0px 1px #000000' + innerOpacity + ')'
+    //             :   ' drop-shadow(0px 0px 1px #ffffff' + innerOpacity + ')')
+    //     : 'none';
 
      
     let showCurve = true;
@@ -336,6 +336,28 @@ function updateWireStyle(wire)
     {
         wire.xp1.style.display = 'none';
         wire.xp2.style.display = 'none';
+    }
+
+
+    if (darkMode)
+    {
+        const hcl = rgb2hclok(color);
+
+        let dl = 0.05;
+
+        dl /= Math.min(1 - (1 - graphView.zoom) / 1.75, 1);
+
+        if (hcl[2] > 0.27 - dl && hcl[2] <= 0.27)
+            color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], 0.27 - dl]));
+        if (hcl[2] > 0.27 && hcl[2] < 0.27 + dl)
+            color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], 0.27 + dl]));
+    }
+    else
+    {
+        const hcl = rgb2hclok(color);
+
+        if (hcl[2] > 0.97)
+            color = invalid2validRgb(hclok2rgb([hcl[0], hcl[1], 0.97]));
     }
 
 
