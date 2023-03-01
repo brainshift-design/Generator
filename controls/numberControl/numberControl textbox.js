@@ -25,7 +25,15 @@ function initNumberControlTextbox(control)
         e.stopPropagation();
 
 
-        if (   e.code == 'KeyC'
+        if (   e.code == 'KeyX'
+            && getCtrlKey(e))
+        {
+            e.preventDefault();
+            document.execCommand('copy');
+            clearSelectedText(control.textbox);
+        }
+
+        else if (   e.code == 'KeyC'
             && getCtrlKey(e))
         {
             e.preventDefault();
@@ -229,16 +237,16 @@ function initNumberControlTextbox(control)
 
     control.textbox.addEventListener('focusout', function()
     {
-        //console.log('control.successOnFocusOut', control.successOnFocusOut);
-
-        if (!control.textbox.keyBlur) control.textbox.finish(true);
+        if (!control.textbox.keyBlur) control.textbox.finish(control.textbox.value.trim() != '');
         else                          control.textbox.keyBlur = false;
+
 
         if (control.savedSuccessOnFocusOut != null)
         {
             control.successOnFocusOut      = control.savedSuccessOnFocusOut;
             control.savedSuccessOnFocusOut = null;
         }
+
 
         control.parentNode.removeChild(control.textbox);
         control.clicked = false;

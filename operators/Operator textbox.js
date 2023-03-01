@@ -85,11 +85,7 @@ function initLabelTextbox(node)
     node.textbox.addEventListener('paste', function(e)
     {
         e.preventDefault();
-
-        let val = parseFloat(e.clipboardData.getData('text/plain'));
-        val = Math.min(Math.max(node.min, val), node.max);
-
-        node.textbox.value = isNaN(val) ? '' : val;
+        node.textbox.value = e.clipboardData.getData('text/plain');
     });
 
     

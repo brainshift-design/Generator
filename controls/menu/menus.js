@@ -46,6 +46,8 @@ var menuSelectParam;
 
 var menuRemoveLicense;
 
+var menuText
+
 
 var menuNodeData;
 var menuNodeDataNodes;
@@ -411,6 +413,13 @@ function initGeneratorMenus()
                                 new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
         menuItemLicenseSep1   = new MenuItem('', {separator: true}),
         menuItemLicenseRemove = new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
+
+
+    menuText = new Menu('Text menu', false, false);
+    // menuText.addItems([
+    //     new MenuItem('Cut',   {callback: () => { hideAllMenus(); writeTextToClipboard(getSelectedText(productKeyInput)); }}),
+    //     new MenuItem('Copy',  {callback: () => { hideAllMenus(); writeTextToClipboard(getSelectedText(productKeyInput)); }}),
+    //     new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 
 
     menuNode.init = () => 

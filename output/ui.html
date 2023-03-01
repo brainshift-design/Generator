@@ -6187,6 +6187,22 @@ function getSelectedText(element) // only allow input[type=text] & textarea
 }
 
 
+
+function clearSelectedText(element)
+{
+    if (   element.tagName === 'TEXTAREA' 
+        || (   element.tagName === 'INPUT' 
+            && element.type === 'text')) 
+    {
+        const str = element.value;
+
+        element.value = 
+              str.slice(0, element.selectionStart) 
+            + str.slice(element.selectionEnd)
+    }
+}
+
+
 const webColors = [
     {name: 'AliceBlue',            color: 'f0f8ff'},
     {name: 'AntiqueWhite',         color: 'faebd7'},
@@ -22953,6 +22969,22 @@ function getSelectedText(element) // only allow input[type=text] & textarea
 }
 
 
+
+function clearSelectedText(element)
+{
+    if (   element.tagName === 'TEXTAREA' 
+        || (   element.tagName === 'INPUT' 
+            && element.type === 'text')) 
+    {
+        const str = element.value;
+
+        element.value = 
+              str.slice(0, element.selectionStart) 
+            + str.slice(element.selectionEnd)
+    }
+}
+
+
 const webColors = [
     {name: 'AliceBlue',            color: 'f0f8ff'},
     {name: 'AntiqueWhite',         color: 'faebd7'},
@@ -34555,6 +34587,8 @@ var menuSelectParam;
 
 var menuRemoveLicense;
 
+var menuText
+
 
 var menuNodeData;
 var menuNodeDataNodes;
@@ -34920,6 +34954,13 @@ function initGeneratorMenus()
                                 new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
         menuItemLicenseSep1   = new MenuItem('', {separator: true}),
         menuItemLicenseRemove = new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
+
+
+    menuText = new Menu('Text menu', false, false);
+    // menuText.addItems([
+    //     new MenuItem('Cut',   {callback: () => { hideAllMenus(); writeTextToClipboard(getSelectedText(productKeyInput)); }}),
+    //     new MenuItem('Copy',  {callback: () => { hideAllMenus(); writeTextToClipboard(getSelectedText(productKeyInput)); }}),
+    //     new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 
 
     menuNode.init = () => 
@@ -35809,7 +35850,15 @@ function initNumberControlTextbox(control)
         e.stopPropagation();
 
 
-        if (   e.code == 'KeyC'
+        if (   e.code == 'KeyX'
+            && getCtrlKey(e))
+        {
+            e.preventDefault();
+            document.execCommand('copy');
+            clearSelectedText(control.textbox);
+        }
+
+        else if (   e.code == 'KeyC'
             && getCtrlKey(e))
         {
             e.preventDefault();
@@ -36013,16 +36062,16 @@ function initNumberControlTextbox(control)
 
     control.textbox.addEventListener('focusout', function()
     {
-        //console.log('control.successOnFocusOut', control.successOnFocusOut);
-
-        if (!control.textbox.keyBlur) control.textbox.finish(true);
+        if (!control.textbox.keyBlur) control.textbox.finish(control.textbox.value.trim() != '');
         else                          control.textbox.keyBlur = false;
+
 
         if (control.savedSuccessOnFocusOut != null)
         {
             control.successOnFocusOut      = control.savedSuccessOnFocusOut;
             control.savedSuccessOnFocusOut = null;
         }
+
 
         control.parentNode.removeChild(control.textbox);
         control.clicked = false;
@@ -36294,8 +36343,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
             
         const oldValue = control.value;
-//console.log('control.value =', control.value);
 
+        
         if (control.wrapValue)
         {
             const range = control.displayMax - control.displayMin;
@@ -46565,11 +46614,7 @@ function initLabelTextbox(node)
     node.textbox.addEventListener('paste', function(e)
     {
         e.preventDefault();
-
-        let val = parseFloat(e.clipboardData.getData('text/plain'));
-        val = Math.min(Math.max(node.min, val), node.max);
-
-        node.textbox.value = isNaN(val) ? '' : val;
+        node.textbox.value = e.clipboardData.getData('text/plain');
     });
 
     

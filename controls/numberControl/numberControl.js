@@ -157,8 +157,8 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
             
         const oldValue = control.value;
-//console.log('control.value =', control.value);
 
+        
         if (control.wrapValue)
         {
             const range = control.displayMax - control.displayMin;

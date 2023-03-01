@@ -218,3 +218,19 @@ function getSelectedText(element) // only allow input[type=text] & textarea
             element.selectionEnd);
     }
 }
+
+
+
+function clearSelectedText(element)
+{
+    if (   element.tagName === 'TEXTAREA' 
+        || (   element.tagName === 'INPUT' 
+            && element.type === 'text')) 
+    {
+        const str = element.value;
+
+        element.value = 
+              str.slice(0, element.selectionStart) 
+            + str.slice(element.selectionEnd)
+    }
+}
