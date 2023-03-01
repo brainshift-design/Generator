@@ -901,13 +901,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
 
-    uiSaveNodes(nodes.map(n => n.id));
-
-
-    nodes.forEach(n => n.updateMeasureData());
-    nodes.forEach(n => n.updateNode());
-    
-
     if (   !isEmpty(objects)
         || !isEmpty(styles))
     {
@@ -924,6 +917,13 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
     
+    uiSaveNodes(nodes.map(n => n.id));
+
+
+    nodes.forEach(n => n.updateMeasureData());
+    nodes.forEach(n => n.updateNode());
+    
+
     graphView.update(nodes);
     graphView.updateScrollWithBounds();
 
@@ -953,10 +953,10 @@ function uiToggleDisableNodes(nodes)
         n.enabled = !n.enabled;
 
         //if (!n.enabled)
-        n.updateMeasureData();
-        n.updateNode();
+        // n.updateMeasureData();
+        // n.updateNode();
 
-        pushUnique(update, n.id);
+        //pushUnique(update, n.id);
     });
 
 

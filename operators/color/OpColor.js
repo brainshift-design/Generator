@@ -331,8 +331,6 @@ extends OpColorBase
 
     updateNode()
     {
-        //console.log(this.id + '.OpColor.updateNode()');
-        
         if (!hasFocus(this.paramColor.control))
             this.paramColor.setValue(ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color))), false, true, false);// = 
         
@@ -401,9 +399,8 @@ extends OpColorBase
 
 
         this.label.style.color = rgba2style(colors.text);
-        //this.paramSpace.control.textbox.color = rgb2style(colors.text);
 
-        
+         
         this. inputs[0].colorLight =
         this. inputs[0].colorDark  = colors.input;
 

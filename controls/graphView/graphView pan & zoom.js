@@ -118,6 +118,7 @@ graphView.update = function(nodes = null, updateNodes = true)
             n.updateHeader(); 
             n.updateHeaderLabel();
             n.updateBorder();
+            n.updateDisabled();
         });
     }
 

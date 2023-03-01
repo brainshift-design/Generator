@@ -39528,6 +39528,7 @@ graphView.update = function(nodes = null, updateNodes = true)
             n.updateHeader(); 
             n.updateHeaderLabel();
             n.updateBorder();
+            n.updateDisabled();
         });
     }
 
@@ -45053,8 +45054,9 @@ class Operator
         this.      paramBack.style.backgroundColor = darkMode ? '#363636' : 'white';
         this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
 
-        this.updateBorder();
         this.updateHeader();
+        this.updateHeaderLabel();
+        this.updateBorder();
         this.updateParams();
         this.updateDisabled();
         this.updateSubscribe();
@@ -45134,7 +45136,7 @@ class Operator
     {
         if (!this.measureData)
             return;
-        
+
         this.divDisabled.style.display   = this.enabled ? 'none' : 'inline-block';
         this.divDisabled.style.zIndex    = 1000;
         this.divDisabled.style.transform = 'rotate(45deg)';
@@ -49376,8 +49378,6 @@ extends OpColorBase
 
     updateNode()
     {
-        //console.log(this.id + '.OpColor.updateNode()');
-        
         if (!hasFocus(this.paramColor.control))
             this.paramColor.setValue(ColorValue.fromRgb(scaleRgb(dataColor2rgb(this._color))), false, true, false);// = 
         
@@ -49446,9 +49446,8 @@ extends OpColorBase
 
 
         this.label.style.color = rgba2style(colors.text);
-        //this.paramSpace.control.textbox.color = rgb2style(colors.text);
 
-        
+         
         this. inputs[0].colorLight =
         this. inputs[0].colorDark  = colors.input;
 
@@ -59095,13 +59094,6 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
 
-    uiSaveNodes(nodes.map(n => n.id));
-
-
-    nodes.forEach(n => n.updateMeasureData());
-    nodes.forEach(n => n.updateNode());
-    
-
     if (   !isEmpty(objects)
         || !isEmpty(styles))
     {
@@ -59118,6 +59110,13 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     }
 
     
+    uiSaveNodes(nodes.map(n => n.id));
+
+
+    nodes.forEach(n => n.updateMeasureData());
+    nodes.forEach(n => n.updateNode());
+    
+
     graphView.update(nodes);
     graphView.updateScrollWithBounds();
 
@@ -59147,10 +59146,10 @@ function uiToggleDisableNodes(nodes)
         n.enabled = !n.enabled;
 
         //if (!n.enabled)
-        n.updateMeasureData();
-        n.updateNode();
+        // n.updateMeasureData();
+        // n.updateNode();
 
-        pushUnique(update, n.id);
+        //pushUnique(update, n.id);
     });
 
 

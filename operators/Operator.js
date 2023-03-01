@@ -708,8 +708,9 @@ class Operator
         this.      paramBack.style.backgroundColor = darkMode ? '#363636' : 'white';
         this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
 
-        this.updateBorder();
         this.updateHeader();
+        this.updateHeaderLabel();
+        this.updateBorder();
         this.updateParams();
         this.updateDisabled();
         this.updateSubscribe();
@@ -789,7 +790,7 @@ class Operator
     {
         if (!this.measureData)
             return;
-        
+
         this.divDisabled.style.display   = this.enabled ? 'none' : 'inline-block';
         this.divDisabled.style.zIndex    = 1000;
         this.divDisabled.style.transform = 'rotate(45deg)';
