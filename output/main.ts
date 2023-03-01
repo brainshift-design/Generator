@@ -21,7 +21,7 @@ function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
 
 
-const generatorVersion = 116;
+const generatorVersion = 120;
 
 
 const MAX_INT32        = 2147483647;
@@ -691,7 +691,7 @@ const ALL_TYPES =
 ];
 
 
-const GROUP         = 'GRP';   // ???? count O...
+const CUSTOM        = 'CUST';   // ???? count O...
 
 
 const COMMENT       = 'CMNT';

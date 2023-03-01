@@ -341,7 +341,6 @@ function genParseCache(parse)
 
     if (parse.settings.logRequests) 
         logReq(cache, parse, ignore, nInputs);
-        //logReqCache(cache, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -386,7 +385,6 @@ function genParseCopy(parse)
 
     if (parse.settings.logRequests) 
         logReq(copy, parse, ignore, nInputs);
-        //logReqCopy(copy, nInputs, parse, ignore);
 
 
     if (ignore) 

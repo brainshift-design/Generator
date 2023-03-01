@@ -1,7 +1,3 @@
-const okLabScale = 5.8209716167;
-
-
-
 function rgb2oklab(rgb, cs = sRGB)
 {
     return rgb2oklab_(rgb[0], rgb[1], rgb[2], cs);
@@ -69,12 +65,12 @@ function oklab2oklms(lab)
 
 
 
-function oklab2oklms_(l_, a_, b_) 
+function oklab2oklms_(l, a, b) 
 {
     return [
-        l_ + 0.3963377774 * a_ + 0.2158037573 * b_,
-        l_ - 0.1055613458 * a_ - 0.0638541728 * b_,
-        l_ - 0.0894841775 * a_ - 1.2914855480 * b_ ];
+        l + 0.3963377774 * a + 0.2158037573 * b,
+        l - 0.1055613458 * a - 0.0638541728 * b,
+        l - 0.0894841775 * a - 1.2914855480 * b ];
 }
 
 

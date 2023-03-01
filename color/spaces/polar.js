@@ -1,3 +1,6 @@
+const hclok_C_scale = 0.89;
+
+
 function opp2pol(opp) // opponent to polar
 {
     // either lab or luv, 

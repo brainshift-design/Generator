@@ -25,9 +25,9 @@ function xyz2lab(xyz, W = sRGB.W)
     let yw = y / W[1];
     let zw = z / W[2];
 
-    xw = xw > e ? Math.cbrt(xw) : (k * xw + 0.16)/1.16;
-    yw = yw > e ? Math.cbrt(yw) : (k * yw + 0.16)/1.16;
-    zw = zw > e ? Math.cbrt(zw) : (k * zw + 0.16)/1.16;
+    xw = xw > e ? Math.cbrt(xw) : (k * xw + 0.16) / 1.16;
+    yw = yw > e ? Math.cbrt(yw) : (k * yw + 0.16) / 1.16;
+    zw = zw > e ? Math.cbrt(zw) : (k * zw + 0.16) / 1.16;
 
     const l = (1.16 * yw) - 0.16;
     const a = 5 * (xw - yw);
@@ -51,9 +51,9 @@ function lab2xyz(lab, W = sRGB.W)
     const xw = a/5 + yw;
     const zw = yw - b/2;
 
-    let x = cube(xw) > e ? cube(xw) : (1.16*xw - 0.16)/k;
-    let y = cube(yw) > e ? cube(yw) : (1.16*yw - 0.16)/k;
-    let z = cube(zw) > e ? cube(zw) : (1.16*zw - 0.16)/k;
+    let x = cube(xw) > e ? cube(xw) : (1.16*xw - 0.16) / k;
+    let y = cube(yw) > e ? cube(yw) : (1.16*yw - 0.16) / k;
+    let z = cube(zw) > e ? cube(zw) : (1.16*zw - 0.16) / k;
 
     x *= W[0];
     y *= W[1];

@@ -757,7 +757,7 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateHeader()');
         
-        const height = this.updateHeaderInputsAndOutputs();
+        const height = Math.max(25, this.updateHeaderInputsAndOutputs());
 
         this.header.style.height = height;
         this.updateParamBack(height);

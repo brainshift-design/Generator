@@ -38,6 +38,11 @@ function rgbHeaderFromType(type, active)
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
+
+        case CUSTOM:
+            return active 
+                 ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
+                 : (darkMode ? rgbCustomDark       : rgbCustomLight      );
     }
 
     return 'magenta';

@@ -26,7 +26,6 @@
 ../operators/Operator textbox.js
 
 
-../operators/flow/OpComment.js
 ../operators/flow/OpList.js
 ../operators/flow/OpItems.js
 ../operators/flow/OpSelect.js
@@ -81,13 +80,6 @@
 ../operators/color/OpColorInterpolate.js
 
 
-../operators/style/OpFill.js
-../operators/style/OpStroke.js
-
-../operators/style/OpColorStop.js
-../operators/style/OpGradient.js
-
-
 ../operators/shape/OpShapeBase.js
 ../operators/shape/OpRectangle.js
 ../operators/shape/OpLine.js
@@ -97,9 +89,16 @@
 
 
 ../operators/style/OpColorStyle.js
+../operators/style/OpFill.js
+../operators/style/OpStroke.js
 
 
-//../operators/shape/OpColorStroke.js
+//../operators/style/OpColorStop.js
+//../operators/style/OpGradient.js
 
-//../operators/shape/OpColumn.js
-//../operators/shape/UOpSpread.js
+
+
+../operators/OpCustom.js
+
+
+../operators/OpComment.js

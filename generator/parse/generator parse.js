@@ -140,7 +140,6 @@ function genParse(parse, inParam = true)
     else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue  (parse);
     else if (parse.next == COLOR_STOP             ) result = genParseColorStop       (parse);
      
-    //else if (parse.next == COLOR_STYLE_VALUE      ) result = genParseStyleValue      (parse);
     else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle      (parse);
      
     else if (parse.next == RECTANGLE              ) result = genParseRectangle       (parse);
@@ -148,6 +147,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == ELLIPSE                ) result = genParseEllipse         (parse);
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
+
+    else if (parse.next == CUSTOM                 ) result = genParseCustom          (parse);
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
@@ -274,4 +275,48 @@ function genParseParamId(parse)
         parse.log += parse.tab + paramId;
 
     return paramId;
+}
+
+
+
+function genParseCustom(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cache = new GCustom(nodeId, options);
+
+
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
+    if (parse.settings.logRequests) 
+        logReq(cache, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cache);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    // if (nInputs == 1)
+    //     cache.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cache);
+    return cache;
 }

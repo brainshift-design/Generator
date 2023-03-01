@@ -17,7 +17,7 @@ function isNodeKey(key) { return isTagKey(key, nodeTag); }
 function isConnKey(key) { return isTagKey(key, connTag); }
 function noNodeTag(key) { return noTag(key, nodeTag); }
 function noConnTag(key) { return noTag(key, connTag); }
-const generatorVersion = 116;
+const generatorVersion = 120;
 const MAX_INT32 = 2147483647;
 const NULL = '';
 const TAB = '  ';
@@ -410,7 +410,7 @@ const ALL_TYPES = [
     COLOR_STYLE,
     ...SHAPE_TYPES
 ];
-const GROUP = 'GRP'; // ???? count O...
+const CUSTOM = 'CUST'; // ???? count O...
 const COMMENT = 'CMNT';
 const ACTIVE = 'ACT';
 const BEFORE_ACTIVE = 'BEF';

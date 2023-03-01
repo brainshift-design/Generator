@@ -18,6 +18,7 @@ function createColorSpace(R, G, B, Y, W, gamma, degamma, regamma, luminance)
         xyz2lin:   inverse(rgbMatrix(R, G, B, W)),
 
         gamma:     gamma,
+        
         degamma:   degamma,
         regamma:   regamma,
         

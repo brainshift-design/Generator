@@ -4,7 +4,7 @@
 
 
 
-const generatorVersion = 116;
+const generatorVersion = 120;
 
 
 const MAX_INT32        = 2147483647;
@@ -465,6 +465,11 @@ function rgbHeaderFromType(type, active)
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
+
+        case CUSTOM:
+            return active 
+                 ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
+                 : (darkMode ? rgbCustomDark       : rgbCustomLight      );
     }
 
     return 'magenta';
@@ -3524,7 +3529,7 @@ const ALL_TYPES =
 ];
 
 
-const GROUP         = 'GRP';   // ???? count O...
+const CUSTOM        = 'CUST';   // ???? count O...
 
 
 const COMMENT       = 'CMNT';
@@ -5822,56 +5827,6 @@ function parseStarValue(str)
         new NumberValue(parseNumberValue(star[5])),
         new NumberValue(parseNumberValue(star[6])),
         new NumberValue(parseNumberValue(star[7])));
-}
-
-
-
-class GComment
-extends GOperator
-{
-    constructor(nodeId, options)
-    {
-        super(COMMENT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GComment(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        return copy;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = NullValue;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        
-        
-        this.validate();
-
-        return this;
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy() 
-             : null;
-    }
 }
 
 
@@ -10497,6 +10452,93 @@ extends GObjectBase
 }
 
 
+class GColorStyle
+extends GObjectBase
+{
+    style;
+
+    existing;
+    linked;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_STYLE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GColorStyle(this.nodeId, this.options);
+
+        copy.style    = this.style.copy();
+        
+        copy.existing = this.existing;
+        copy.linked   = this.linked;
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        this.value = this.value.eval(parse).toValue();
+      
+
+        if (   this.value.isValid()
+            && (  !this.existing
+                || this.linked))
+        {
+            const rgb = this.value.toRgb();
+            this.evalStyle({rgb: rgb});
+        }
+        else
+            this.value = ColorValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalStyle(options = {})
+    {
+        if (!this.options.enabled)
+            return;
+
+            
+        const style = new FigmaColorStyle(this.nodeId, this.nodeName);
+
+        style.existing = this.existing;
+
+
+        style.paints = 
+        [
+            [ 'SOLID', 
+                      0xff * options.rgb[0]
+              + ' ' + 0xff * options.rgb[1]
+              + ' ' + 0xff * options.rgb[2]
+              + ' ' + 0xff ]
+        ];
+
+
+        this.style = style;
+    }
+}
+
+
 class GFill
 extends GObjectBase
 {
@@ -10786,31 +10828,81 @@ extends GObjectBase
 }
 
 
-class GColorStyle
-extends GObjectBase
+class GCustom
+extends GOperator
 {
-    style;
-
-    existing;
-    linked;
+    // input = null;
 
 
 
     constructor(nodeId, options)
     {
-        super(COLOR_STYLE, nodeId, options);
+        super(CUSTOM, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCustom(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        // if (this.input) copy.input = this.input.copy();
+        // if (this.value) copy.value = this.value.copy();
+
+        return copy;
     }
 
 
 
+    eval(parse)
+    {
+        if (this.valid)//isCached())
+            return this;
+
+
+        this.value = NullValue;
+        //     this.input
+        //     ? this.input.eval(parse).toValue()
+        //     : NullValue;
+
+
+         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
+}
+
+
+
+class GComment
+extends GOperator
+{
+    constructor(nodeId, options)
+    {
+        super(COMMENT, nodeId, options);
+    }
+
+
+    
     copy()
     {
-        const copy = new GColorStyle(this.nodeId, this.options);
+        const copy = new GComment(this.nodeId, this.options);
 
-        copy.style    = this.style.copy();
-        
-        copy.existing = this.existing;
-        copy.linked   = this.linked;
+        copy.copyBase(this);
 
         return copy;
     }
@@ -10822,24 +10914,13 @@ extends GObjectBase
         if (this.isCached())
             return this;
 
-            
-        this.value = this.value.eval(parse).toValue();
-      
 
-        if (   this.value.isValid()
-            && (  !this.existing
-                || this.linked))
-        {
-            const rgb = this.value.toRgb();
-            this.evalStyle({rgb: rgb});
-        }
-        else
-            this.value = ColorValue.NaN;
+        this.value = NullValue;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-
+        
+        
         this.validate();
 
         return this;
@@ -10847,30 +10928,14 @@ extends GObjectBase
 
 
 
-    evalStyle(options = {})
+    toValue()
     {
-        if (!this.options.enabled)
-            return;
-
-            
-        const style = new FigmaColorStyle(this.nodeId, this.nodeName);
-
-        style.existing = this.existing;
-
-
-        style.paints = 
-        [
-            [ 'SOLID', 
-                      0xff * options.rgb[0]
-              + ' ' + 0xff * options.rgb[1]
-              + ' ' + 0xff * options.rgb[2]
-              + ' ' + 0xff ]
-        ];
-
-
-        this.style = style;
+        return this.value
+             ? this.value.copy() 
+             : null;
     }
 }
+
 
 
 const settings =
@@ -11073,9 +11138,9 @@ function enableFeatures(subscription, beta)
 
     updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
 
-    // updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
-    // updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
-    // updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
 
     updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
 
@@ -12298,7 +12363,6 @@ function genParseCache(parse)
 
     if (parse.settings.logRequests) 
         logReq(cache, parse, ignore, nInputs);
-        //logReqCache(cache, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -12343,7 +12407,6 @@ function genParseCopy(parse)
 
     if (parse.settings.logRequests) 
         logReq(copy, parse, ignore, nInputs);
-        //logReqCopy(copy, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -12574,7 +12637,6 @@ function genParseMath(parse, newNode)
 
     if (parse.settings.logRequests) 
         logReq(math, parse, ignore, nInputs);
-        //logReqMath(math, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -12618,7 +12680,6 @@ function genParseArithmetic(parse, newNode)
 
     if (parse.settings.logRequests) 
         logReq(arith, parse, ignore, nInputs);
-        //logReqArithmetic(arith, type, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -12732,7 +12793,6 @@ function genParseInterpolate(parse)
     
     if (parse.settings.logRequests) 
         logReq(lerp, parse, ignore, nInputs);
-        //logReqInterpolate(lerp, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -12785,7 +12845,6 @@ function genParseBoolean(parse)
 
     if (parse.settings.logRequests) 
         logReq(bool, parse, ignore, nInputs);
-        //logReqBoolean(bool, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -12832,7 +12891,6 @@ function genParseCondition(parse)
     
     if (parse.settings.logRequests) 
         logReq(cond, parse, ignore, nInputs);
-        //logReqCondition(cond, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -12888,7 +12946,6 @@ function genParseConditionBase(parse, newNode)
     
     if (parse.settings.logRequests)
         logReq(cond, parse, ignore, nInputs); 
-        //logReqConditionBase(cond, type, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -13646,7 +13703,6 @@ function genParse(parse, inParam = true)
     else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue  (parse);
     else if (parse.next == COLOR_STOP             ) result = genParseColorStop       (parse);
      
-    //else if (parse.next == COLOR_STYLE_VALUE      ) result = genParseStyleValue      (parse);
     else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle      (parse);
      
     else if (parse.next == RECTANGLE              ) result = genParseRectangle       (parse);
@@ -13654,6 +13710,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == ELLIPSE                ) result = genParseEllipse         (parse);
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
+
+    else if (parse.next == CUSTOM                 ) result = genParseCustom          (parse);
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
@@ -13781,6 +13839,51 @@ function genParseParamId(parse)
 
     return paramId;
 }
+
+
+
+function genParseCustom(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cache = new GCustom(nodeId, options);
+
+
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
+    if (parse.settings.logRequests) 
+        logReq(cache, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cache);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    // if (nInputs == 1)
+    //     cache.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cache);
+    return cache;
+}
+
 
 
 class RequestSettings
@@ -14188,6 +14291,7 @@ function createColorSpace(R, G, B, Y, W, gamma, degamma, regamma, luminance)
         xyz2lin:   inverse(rgbMatrix(R, G, B, W)),
 
         gamma:     gamma,
+        
         degamma:   degamma,
         regamma:   regamma,
         
@@ -14242,7 +14346,7 @@ const sRGB = createColorSpace
 
     function(v) // degamma
     {
-        return v > 0.04045
+        return v >= 0.04045
                ? Math.pow((v + 0.055) / 1.055, this.gamma)
                : v / 12.92;
     },
@@ -14599,9 +14703,9 @@ function xyz2lab(xyz, W = sRGB.W)
     let yw = y / W[1];
     let zw = z / W[2];
 
-    xw = xw > e ? Math.cbrt(xw) : (k * xw + 0.16)/1.16;
-    yw = yw > e ? Math.cbrt(yw) : (k * yw + 0.16)/1.16;
-    zw = zw > e ? Math.cbrt(zw) : (k * zw + 0.16)/1.16;
+    xw = xw > e ? Math.cbrt(xw) : (k * xw + 0.16) / 1.16;
+    yw = yw > e ? Math.cbrt(yw) : (k * yw + 0.16) / 1.16;
+    zw = zw > e ? Math.cbrt(zw) : (k * zw + 0.16) / 1.16;
 
     const l = (1.16 * yw) - 0.16;
     const a = 5 * (xw - yw);
@@ -14625,9 +14729,9 @@ function lab2xyz(lab, W = sRGB.W)
     const xw = a/5 + yw;
     const zw = yw - b/2;
 
-    let x = cube(xw) > e ? cube(xw) : (1.16*xw - 0.16)/k;
-    let y = cube(yw) > e ? cube(yw) : (1.16*yw - 0.16)/k;
-    let z = cube(zw) > e ? cube(zw) : (1.16*zw - 0.16)/k;
+    let x = cube(xw) > e ? cube(xw) : (1.16*xw - 0.16) / k;
+    let y = cube(yw) > e ? cube(yw) : (1.16*yw - 0.16) / k;
+    let z = cube(zw) > e ? cube(zw) : (1.16*zw - 0.16) / k;
 
     x *= W[0];
     y *= W[1];
@@ -14635,10 +14739,6 @@ function lab2xyz(lab, W = sRGB.W)
  
     return [x, y, z];
 }
-
-
-const okLabScale = 5.8209716167;
-
 
 
 function rgb2oklab(rgb, cs = sRGB)
@@ -14708,12 +14808,12 @@ function oklab2oklms(lab)
 
 
 
-function oklab2oklms_(l_, a_, b_) 
+function oklab2oklms_(l, a, b) 
 {
     return [
-        l_ + 0.3963377774 * a_ + 0.2158037573 * b_,
-        l_ - 0.1055613458 * a_ - 0.0638541728 * b_,
-        l_ - 0.0894841775 * a_ - 1.2914855480 * b_ ];
+        l + 0.3963377774 * a + 0.2158037573 * b,
+        l - 0.1055613458 * a - 0.0638541728 * b,
+        l - 0.0894841775 * a - 1.2914855480 * b ];
 }
 
 
@@ -14733,6 +14833,9 @@ function oklms2rgb(lms, cs = sRGB)
         cs.regamma(g),
         cs.regamma(b) ];
 }
+
+
+const hclok_C_scale = 0.89;
 
 
 function opp2pol(opp) // opponent to polar
@@ -14904,6 +15007,13 @@ const CAT = [[ 0.7328, 0.4296, -0.1624],
              [ 0.0030, 0.0136,  0.9834]];
 
 const invCAT = inverse(CAT);
+
+
+const M1 = [[ 0.8189330101, 0.3618667424, -0.1288597137 ],
+            [ 0.0329845436, 0.9293118715,  0.0361456387 ],
+            [ 0.0482003018, 0.2643662691,  0.6338517070 ]];
+
+const invM1 = inverse(M1);
 
 
 
@@ -15747,7 +15857,7 @@ const rgbScale   = [255, 255, 255];
   
 const hs_Scale   = [360, 100, 100];
  
-const hclokScale = [360, 51,  100];
+const hclokScale = [360, 50,  100];
 const hclabScale = [360, 400, 100];
 const hcluvScale = [360, 330, 100];
  
@@ -16182,18 +16292,18 @@ function getScaledDataColor(color)
     switch (color[0])
     {
         case 'hex':
-        case 'rgb':   return getScaledDataColorRgb(          color[1], color[2], color[3]);
+        case 'rgb':   return getScaledDataColorRgb(         color[1], color[2], color[3]);
 
-        case 'hsv':   return getScaledDataColorHs_('hsv',    color[1], color[2], color[3]);
-        case 'hsl':   return getScaledDataColorHs_('hsl',    color[1], color[2], color[3]);
+        case 'hsv':   return getScaledDataColorHs_('hsv',   color[1], color[2], color[3]);
+        case 'hsl':   return getScaledDataColorHs_('hsl',   color[1], color[2], color[3]);
 
         case 'hclok': return getScaledDataColorHcl('hclok', color[1], color[2], color[3]);
         case 'hclab': return getScaledDataColorHcl('hclab', color[1], color[2], color[3]);
         case 'hcluv': return getScaledDataColorHcl('hcluv', color[1], color[2], color[3]);
 
-        case 'oklab': return getScaledDataColorOpp('oklab',  color[1], color[2], color[3]);
-        case 'lab':   return getScaledDataColorOpp('lab',    color[1], color[2], color[3]);
-        case 'luv':   return getScaledDataColorOpp('luv',    color[1], color[2], color[3]);
+        case 'oklab': return getScaledDataColorOpp('oklab', color[1], color[2], color[3]);
+        case 'lab':   return getScaledDataColorOpp('lab',   color[1], color[2], color[3]);
+        case 'luv':   return getScaledDataColorOpp('luv',   color[1], color[2], color[3]);
     }
 }
 

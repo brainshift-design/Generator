@@ -198,9 +198,9 @@ function enableFeatures(subscription, beta)
 
     updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
 
-    // updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
-    // updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
-    // updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
 
     updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
 

@@ -3137,8 +3137,7 @@ a
             <div id='whatsNewBody'>
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
-                <p>Fixed color node evaluation issue.</p>
-                <p>Fixed decimal places bug for parameters with a suffix.</p>
+                <p>Fixed zoom to fit.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -3347,7 +3346,7 @@ a
 
 
 
-const generatorVersion = 116;
+const generatorVersion = 120;
 
 
 const MAX_INT32        = 2147483647;
@@ -3808,6 +3807,11 @@ function rgbHeaderFromType(type, active)
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
+
+        case CUSTOM:
+            return active 
+                 ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
+                 : (darkMode ? rgbCustomDark       : rgbCustomLight      );
     }
 
     return 'magenta';
@@ -6867,7 +6871,7 @@ const ALL_TYPES =
 ];
 
 
-const GROUP         = 'GRP';   // ???? count O...
+const CUSTOM        = 'CUST';   // ???? count O...
 
 
 const COMMENT       = 'CMNT';
@@ -9165,56 +9169,6 @@ function parseStarValue(str)
         new NumberValue(parseNumberValue(star[5])),
         new NumberValue(parseNumberValue(star[6])),
         new NumberValue(parseNumberValue(star[7])));
-}
-
-
-
-class GComment
-extends GOperator
-{
-    constructor(nodeId, options)
-    {
-        super(COMMENT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GComment(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        return copy;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = NullValue;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        
-        
-        this.validate();
-
-        return this;
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy() 
-             : null;
-    }
 }
 
 
@@ -13840,6 +13794,93 @@ extends GObjectBase
 }
 
 
+class GColorStyle
+extends GObjectBase
+{
+    style;
+
+    existing;
+    linked;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_STYLE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GColorStyle(this.nodeId, this.options);
+
+        copy.style    = this.style.copy();
+        
+        copy.existing = this.existing;
+        copy.linked   = this.linked;
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        this.value = this.value.eval(parse).toValue();
+      
+
+        if (   this.value.isValid()
+            && (  !this.existing
+                || this.linked))
+        {
+            const rgb = this.value.toRgb();
+            this.evalStyle({rgb: rgb});
+        }
+        else
+            this.value = ColorValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalStyle(options = {})
+    {
+        if (!this.options.enabled)
+            return;
+
+            
+        const style = new FigmaColorStyle(this.nodeId, this.nodeName);
+
+        style.existing = this.existing;
+
+
+        style.paints = 
+        [
+            [ 'SOLID', 
+                      0xff * options.rgb[0]
+              + ' ' + 0xff * options.rgb[1]
+              + ' ' + 0xff * options.rgb[2]
+              + ' ' + 0xff ]
+        ];
+
+
+        this.style = style;
+    }
+}
+
+
 class GFill
 extends GObjectBase
 {
@@ -14129,31 +14170,81 @@ extends GObjectBase
 }
 
 
-class GColorStyle
-extends GObjectBase
+class GCustom
+extends GOperator
 {
-    style;
-
-    existing;
-    linked;
+    // input = null;
 
 
 
     constructor(nodeId, options)
     {
-        super(COLOR_STYLE, nodeId, options);
+        super(CUSTOM, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCustom(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        // if (this.input) copy.input = this.input.copy();
+        // if (this.value) copy.value = this.value.copy();
+
+        return copy;
     }
 
 
 
+    eval(parse)
+    {
+        if (this.valid)//isCached())
+            return this;
+
+
+        this.value = NullValue;
+        //     this.input
+        //     ? this.input.eval(parse).toValue()
+        //     : NullValue;
+
+
+         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
+}
+
+
+
+class GComment
+extends GOperator
+{
+    constructor(nodeId, options)
+    {
+        super(COMMENT, nodeId, options);
+    }
+
+
+    
     copy()
     {
-        const copy = new GColorStyle(this.nodeId, this.options);
+        const copy = new GComment(this.nodeId, this.options);
 
-        copy.style    = this.style.copy();
-        
-        copy.existing = this.existing;
-        copy.linked   = this.linked;
+        copy.copyBase(this);
 
         return copy;
     }
@@ -14165,24 +14256,13 @@ extends GObjectBase
         if (this.isCached())
             return this;
 
-            
-        this.value = this.value.eval(parse).toValue();
-      
 
-        if (   this.value.isValid()
-            && (  !this.existing
-                || this.linked))
-        {
-            const rgb = this.value.toRgb();
-            this.evalStyle({rgb: rgb});
-        }
-        else
-            this.value = ColorValue.NaN;
+        this.value = NullValue;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-
+        
+        
         this.validate();
 
         return this;
@@ -14190,30 +14270,14 @@ extends GObjectBase
 
 
 
-    evalStyle(options = {})
+    toValue()
     {
-        if (!this.options.enabled)
-            return;
-
-            
-        const style = new FigmaColorStyle(this.nodeId, this.nodeName);
-
-        style.existing = this.existing;
-
-
-        style.paints = 
-        [
-            [ 'SOLID', 
-                      0xff * options.rgb[0]
-              + ' ' + 0xff * options.rgb[1]
-              + ' ' + 0xff * options.rgb[2]
-              + ' ' + 0xff ]
-        ];
-
-
-        this.style = style;
+        return this.value
+             ? this.value.copy() 
+             : null;
     }
 }
+
 
 
 const settings =
@@ -14416,9 +14480,9 @@ function enableFeatures(subscription, beta)
 
     updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
 
-    // updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
-    // updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
-    // updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
 
     updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
 
@@ -15641,7 +15705,6 @@ function genParseCache(parse)
 
     if (parse.settings.logRequests) 
         logReq(cache, parse, ignore, nInputs);
-        //logReqCache(cache, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -15686,7 +15749,6 @@ function genParseCopy(parse)
 
     if (parse.settings.logRequests) 
         logReq(copy, parse, ignore, nInputs);
-        //logReqCopy(copy, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -15917,7 +15979,6 @@ function genParseMath(parse, newNode)
 
     if (parse.settings.logRequests) 
         logReq(math, parse, ignore, nInputs);
-        //logReqMath(math, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -15961,7 +16022,6 @@ function genParseArithmetic(parse, newNode)
 
     if (parse.settings.logRequests) 
         logReq(arith, parse, ignore, nInputs);
-        //logReqArithmetic(arith, type, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -16075,7 +16135,6 @@ function genParseInterpolate(parse)
     
     if (parse.settings.logRequests) 
         logReq(lerp, parse, ignore, nInputs);
-        //logReqInterpolate(lerp, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -16128,7 +16187,6 @@ function genParseBoolean(parse)
 
     if (parse.settings.logRequests) 
         logReq(bool, parse, ignore, nInputs);
-        //logReqBoolean(bool, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -16175,7 +16233,6 @@ function genParseCondition(parse)
     
     if (parse.settings.logRequests) 
         logReq(cond, parse, ignore, nInputs);
-        //logReqCondition(cond, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -16231,7 +16288,6 @@ function genParseConditionBase(parse, newNode)
     
     if (parse.settings.logRequests)
         logReq(cond, parse, ignore, nInputs); 
-        //logReqConditionBase(cond, type, nInputs, parse, ignore);
 
 
     if (ignore) 
@@ -16989,7 +17045,6 @@ function genParse(parse, inParam = true)
     else if (parse.next == COLOR_STOP_VALUE       ) result = genParseColorStopValue  (parse);
     else if (parse.next == COLOR_STOP             ) result = genParseColorStop       (parse);
      
-    //else if (parse.next == COLOR_STYLE_VALUE      ) result = genParseStyleValue      (parse);
     else if (parse.next == COLOR_STYLE            ) result = genParseColorStyle      (parse);
      
     else if (parse.next == RECTANGLE              ) result = genParseRectangle       (parse);
@@ -16997,6 +17052,8 @@ function genParse(parse, inParam = true)
     else if (parse.next == ELLIPSE                ) result = genParseEllipse         (parse);
     else if (parse.next == POLYGON                ) result = genParsePolygon         (parse);
     else if (parse.next == STAR                   ) result = genParseStar            (parse);
+
+    else if (parse.next == CUSTOM                 ) result = genParseCustom          (parse);
 
     else if (parse.next == COMMENT                ) result = genParseComment         (parse);
 
@@ -17124,6 +17181,51 @@ function genParseParamId(parse)
 
     return paramId;
 }
+
+
+
+function genParseCustom(parse)
+{
+    const [, nodeId, options, ignore] = genParseNodeStart(parse);
+
+
+    const cache = new GCustom(nodeId, options);
+
+
+    // let nInputs = -1;
+    
+    // if (!ignore)
+    // {
+    //     nInputs = parseInt(parse.move());
+    //     console.assert(nInputs == 0 || nInputs == 1, 'nInputs must be [0, 1]');
+    // }
+
+
+    if (parse.settings.logRequests) 
+        logReq(cache, parse, ignore, nInputs);
+
+
+    if (ignore) 
+    {
+        genParseNodeEnd(parse, cache);
+        return parse.parsedNodes.find(n => n.nodeId == nodeId);
+    }
+
+
+    parse.nTab++;
+
+
+    // if (nInputs == 1)
+    //     cache.input = genParse(parse);
+
+
+    parse.nTab--;
+
+
+    genParseNodeEnd(parse, cache);
+    return cache;
+}
+
 
 
 class RequestSettings
@@ -17531,6 +17633,7 @@ function createColorSpace(R, G, B, Y, W, gamma, degamma, regamma, luminance)
         xyz2lin:   inverse(rgbMatrix(R, G, B, W)),
 
         gamma:     gamma,
+        
         degamma:   degamma,
         regamma:   regamma,
         
@@ -17585,7 +17688,7 @@ const sRGB = createColorSpace
 
     function(v) // degamma
     {
-        return v > 0.04045
+        return v >= 0.04045
                ? Math.pow((v + 0.055) / 1.055, this.gamma)
                : v / 12.92;
     },
@@ -17942,9 +18045,9 @@ function xyz2lab(xyz, W = sRGB.W)
     let yw = y / W[1];
     let zw = z / W[2];
 
-    xw = xw > e ? Math.cbrt(xw) : (k * xw + 0.16)/1.16;
-    yw = yw > e ? Math.cbrt(yw) : (k * yw + 0.16)/1.16;
-    zw = zw > e ? Math.cbrt(zw) : (k * zw + 0.16)/1.16;
+    xw = xw > e ? Math.cbrt(xw) : (k * xw + 0.16) / 1.16;
+    yw = yw > e ? Math.cbrt(yw) : (k * yw + 0.16) / 1.16;
+    zw = zw > e ? Math.cbrt(zw) : (k * zw + 0.16) / 1.16;
 
     const l = (1.16 * yw) - 0.16;
     const a = 5 * (xw - yw);
@@ -17968,9 +18071,9 @@ function lab2xyz(lab, W = sRGB.W)
     const xw = a/5 + yw;
     const zw = yw - b/2;
 
-    let x = cube(xw) > e ? cube(xw) : (1.16*xw - 0.16)/k;
-    let y = cube(yw) > e ? cube(yw) : (1.16*yw - 0.16)/k;
-    let z = cube(zw) > e ? cube(zw) : (1.16*zw - 0.16)/k;
+    let x = cube(xw) > e ? cube(xw) : (1.16*xw - 0.16) / k;
+    let y = cube(yw) > e ? cube(yw) : (1.16*yw - 0.16) / k;
+    let z = cube(zw) > e ? cube(zw) : (1.16*zw - 0.16) / k;
 
     x *= W[0];
     y *= W[1];
@@ -17978,10 +18081,6 @@ function lab2xyz(lab, W = sRGB.W)
  
     return [x, y, z];
 }
-
-
-const okLabScale = 5.8209716167;
-
 
 
 function rgb2oklab(rgb, cs = sRGB)
@@ -18051,12 +18150,12 @@ function oklab2oklms(lab)
 
 
 
-function oklab2oklms_(l_, a_, b_) 
+function oklab2oklms_(l, a, b) 
 {
     return [
-        l_ + 0.3963377774 * a_ + 0.2158037573 * b_,
-        l_ - 0.1055613458 * a_ - 0.0638541728 * b_,
-        l_ - 0.0894841775 * a_ - 1.2914855480 * b_ ];
+        l + 0.3963377774 * a + 0.2158037573 * b,
+        l - 0.1055613458 * a - 0.0638541728 * b,
+        l - 0.0894841775 * a - 1.2914855480 * b ];
 }
 
 
@@ -18076,6 +18175,9 @@ function oklms2rgb(lms, cs = sRGB)
         cs.regamma(g),
         cs.regamma(b) ];
 }
+
+
+const hclok_C_scale = 0.89;
 
 
 function opp2pol(opp) // opponent to polar
@@ -18247,6 +18349,13 @@ const CAT = [[ 0.7328, 0.4296, -0.1624],
              [ 0.0030, 0.0136,  0.9834]];
 
 const invCAT = inverse(CAT);
+
+
+const M1 = [[ 0.8189330101, 0.3618667424, -0.1288597137 ],
+            [ 0.0329845436, 0.9293118715,  0.0361456387 ],
+            [ 0.0482003018, 0.2643662691,  0.6338517070 ]];
+
+const invM1 = inverse(M1);
 
 
 
@@ -19090,7 +19199,7 @@ const rgbScale   = [255, 255, 255];
   
 const hs_Scale   = [360, 100, 100];
  
-const hclokScale = [360, 51,  100];
+const hclokScale = [360, 50,  100];
 const hclabScale = [360, 400, 100];
 const hcluvScale = [360, 330, 100];
  
@@ -19525,18 +19634,18 @@ function getScaledDataColor(color)
     switch (color[0])
     {
         case 'hex':
-        case 'rgb':   return getScaledDataColorRgb(          color[1], color[2], color[3]);
+        case 'rgb':   return getScaledDataColorRgb(         color[1], color[2], color[3]);
 
-        case 'hsv':   return getScaledDataColorHs_('hsv',    color[1], color[2], color[3]);
-        case 'hsl':   return getScaledDataColorHs_('hsl',    color[1], color[2], color[3]);
+        case 'hsv':   return getScaledDataColorHs_('hsv',   color[1], color[2], color[3]);
+        case 'hsl':   return getScaledDataColorHs_('hsl',   color[1], color[2], color[3]);
 
         case 'hclok': return getScaledDataColorHcl('hclok', color[1], color[2], color[3]);
         case 'hclab': return getScaledDataColorHcl('hclab', color[1], color[2], color[3]);
         case 'hcluv': return getScaledDataColorHcl('hcluv', color[1], color[2], color[3]);
 
-        case 'oklab': return getScaledDataColorOpp('oklab',  color[1], color[2], color[3]);
-        case 'lab':   return getScaledDataColorOpp('lab',    color[1], color[2], color[3]);
-        case 'luv':   return getScaledDataColorOpp('luv',    color[1], color[2], color[3]);
+        case 'oklab': return getScaledDataColorOpp('oklab', color[1], color[2], color[3]);
+        case 'lab':   return getScaledDataColorOpp('lab',   color[1], color[2], color[3]);
+        case 'luv':   return getScaledDataColorOpp('luv',   color[1], color[2], color[3]);
     }
 }
 
@@ -20003,7 +20112,7 @@ onerror = (event, source, line, pos, error) =>
 
 
 
-const generatorVersion = 116;
+const generatorVersion = 120;
 
 
 const MAX_INT32        = 2147483647;
@@ -20464,6 +20573,11 @@ function rgbHeaderFromType(type, active)
             return active 
                  ? rgbActiveColor  
                  : rgbColor;
+
+        case CUSTOM:
+            return active 
+                 ? (darkMode ? rgbActiveCustomDark : rgbActiveCustomLight)
+                 : (darkMode ? rgbCustomDark       : rgbCustomLight      );
     }
 
     return 'magenta';
@@ -23507,6 +23621,7 @@ function createColorSpace(R, G, B, Y, W, gamma, degamma, regamma, luminance)
         xyz2lin:   inverse(rgbMatrix(R, G, B, W)),
 
         gamma:     gamma,
+        
         degamma:   degamma,
         regamma:   regamma,
         
@@ -23561,7 +23676,7 @@ const sRGB = createColorSpace
 
     function(v) // degamma
     {
-        return v > 0.04045
+        return v >= 0.04045
                ? Math.pow((v + 0.055) / 1.055, this.gamma)
                : v / 12.92;
     },
@@ -23918,9 +24033,9 @@ function xyz2lab(xyz, W = sRGB.W)
     let yw = y / W[1];
     let zw = z / W[2];
 
-    xw = xw > e ? Math.cbrt(xw) : (k * xw + 0.16)/1.16;
-    yw = yw > e ? Math.cbrt(yw) : (k * yw + 0.16)/1.16;
-    zw = zw > e ? Math.cbrt(zw) : (k * zw + 0.16)/1.16;
+    xw = xw > e ? Math.cbrt(xw) : (k * xw + 0.16) / 1.16;
+    yw = yw > e ? Math.cbrt(yw) : (k * yw + 0.16) / 1.16;
+    zw = zw > e ? Math.cbrt(zw) : (k * zw + 0.16) / 1.16;
 
     const l = (1.16 * yw) - 0.16;
     const a = 5 * (xw - yw);
@@ -23944,9 +24059,9 @@ function lab2xyz(lab, W = sRGB.W)
     const xw = a/5 + yw;
     const zw = yw - b/2;
 
-    let x = cube(xw) > e ? cube(xw) : (1.16*xw - 0.16)/k;
-    let y = cube(yw) > e ? cube(yw) : (1.16*yw - 0.16)/k;
-    let z = cube(zw) > e ? cube(zw) : (1.16*zw - 0.16)/k;
+    let x = cube(xw) > e ? cube(xw) : (1.16*xw - 0.16) / k;
+    let y = cube(yw) > e ? cube(yw) : (1.16*yw - 0.16) / k;
+    let z = cube(zw) > e ? cube(zw) : (1.16*zw - 0.16) / k;
 
     x *= W[0];
     y *= W[1];
@@ -23954,10 +24069,6 @@ function lab2xyz(lab, W = sRGB.W)
  
     return [x, y, z];
 }
-
-
-const okLabScale = 5.8209716167;
-
 
 
 function rgb2oklab(rgb, cs = sRGB)
@@ -24027,12 +24138,12 @@ function oklab2oklms(lab)
 
 
 
-function oklab2oklms_(l_, a_, b_) 
+function oklab2oklms_(l, a, b) 
 {
     return [
-        l_ + 0.3963377774 * a_ + 0.2158037573 * b_,
-        l_ - 0.1055613458 * a_ - 0.0638541728 * b_,
-        l_ - 0.0894841775 * a_ - 1.2914855480 * b_ ];
+        l + 0.3963377774 * a + 0.2158037573 * b,
+        l - 0.1055613458 * a - 0.0638541728 * b,
+        l - 0.0894841775 * a - 1.2914855480 * b ];
 }
 
 
@@ -24052,6 +24163,9 @@ function oklms2rgb(lms, cs = sRGB)
         cs.regamma(g),
         cs.regamma(b) ];
 }
+
+
+const hclok_C_scale = 0.89;
 
 
 function opp2pol(opp) // opponent to polar
@@ -24223,6 +24337,13 @@ const CAT = [[ 0.7328, 0.4296, -0.1624],
              [ 0.0030, 0.0136,  0.9834]];
 
 const invCAT = inverse(CAT);
+
+
+const M1 = [[ 0.8189330101, 0.3618667424, -0.1288597137 ],
+            [ 0.0329845436, 0.9293118715,  0.0361456387 ],
+            [ 0.0482003018, 0.2643662691,  0.6338517070 ]];
+
+const invM1 = inverse(M1);
 
 
 
@@ -25735,7 +25856,7 @@ const ALL_TYPES =
 ];
 
 
-const GROUP         = 'GRP';   // ???? count O...
+const CUSTOM        = 'CUST';   // ???? count O...
 
 
 const COMMENT       = 'CMNT';
@@ -28033,56 +28154,6 @@ function parseStarValue(str)
         new NumberValue(parseNumberValue(star[5])),
         new NumberValue(parseNumberValue(star[6])),
         new NumberValue(parseNumberValue(star[7])));
-}
-
-
-
-class GComment
-extends GOperator
-{
-    constructor(nodeId, options)
-    {
-        super(COMMENT, nodeId, options);
-    }
-
-
-    
-    copy()
-    {
-        const copy = new GComment(this.nodeId, this.options);
-
-        copy.copyBase(this);
-
-        return copy;
-    }
-
-
-
-    eval(parse)
-    {
-        if (this.isCached())
-            return this;
-
-
-        this.value = NullValue;
-
-
-        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-        
-        
-        this.validate();
-
-        return this;
-    }
-
-
-
-    toValue()
-    {
-        return this.value
-             ? this.value.copy() 
-             : null;
-    }
 }
 
 
@@ -32708,6 +32779,93 @@ extends GObjectBase
 }
 
 
+class GColorStyle
+extends GObjectBase
+{
+    style;
+
+    existing;
+    linked;
+
+
+
+    constructor(nodeId, options)
+    {
+        super(COLOR_STYLE, nodeId, options);
+    }
+
+
+
+    copy()
+    {
+        const copy = new GColorStyle(this.nodeId, this.options);
+
+        copy.style    = this.style.copy();
+        
+        copy.existing = this.existing;
+        copy.linked   = this.linked;
+
+        return copy;
+    }
+
+
+
+    eval(parse)
+    {
+        if (this.isCached())
+            return this;
+
+            
+        this.value = this.value.eval(parse).toValue();
+      
+
+        if (   this.value.isValid()
+            && (  !this.existing
+                || this.linked))
+        {
+            const rgb = this.value.toRgb();
+            this.evalStyle({rgb: rgb});
+        }
+        else
+            this.value = ColorValue.NaN;
+
+
+        genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+
+
+        this.validate();
+
+        return this;
+    }
+
+
+
+    evalStyle(options = {})
+    {
+        if (!this.options.enabled)
+            return;
+
+            
+        const style = new FigmaColorStyle(this.nodeId, this.nodeName);
+
+        style.existing = this.existing;
+
+
+        style.paints = 
+        [
+            [ 'SOLID', 
+                      0xff * options.rgb[0]
+              + ' ' + 0xff * options.rgb[1]
+              + ' ' + 0xff * options.rgb[2]
+              + ' ' + 0xff ]
+        ];
+
+
+        this.style = style;
+    }
+}
+
+
 class GFill
 extends GObjectBase
 {
@@ -32997,31 +33155,81 @@ extends GObjectBase
 }
 
 
-class GColorStyle
-extends GObjectBase
+class GCustom
+extends GOperator
 {
-    style;
-
-    existing;
-    linked;
+    // input = null;
 
 
 
     constructor(nodeId, options)
     {
-        super(COLOR_STYLE, nodeId, options);
+        super(CUSTOM, nodeId, options);
+    }
+
+
+    
+    copy()
+    {
+        const copy = new GCustom(this.nodeId, this.options);
+
+        copy.copyBase(this);
+
+        // if (this.input) copy.input = this.input.copy();
+        // if (this.value) copy.value = this.value.copy();
+
+        return copy;
     }
 
 
 
+    eval(parse)
+    {
+        if (this.valid)//isCached())
+            return this;
+
+
+        this.value = NullValue;
+        //     this.input
+        //     ? this.input.eval(parse).toValue()
+        //     : NullValue;
+
+
+         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
+        
+        
+        this.validate();
+
+        return this;
+    }
+
+
+
+    toValue()
+    {
+        return this.value
+             ? this.value.copy() 
+             : null;
+    }
+}
+
+
+
+class GComment
+extends GOperator
+{
+    constructor(nodeId, options)
+    {
+        super(COMMENT, nodeId, options);
+    }
+
+
+    
     copy()
     {
-        const copy = new GColorStyle(this.nodeId, this.options);
+        const copy = new GComment(this.nodeId, this.options);
 
-        copy.style    = this.style.copy();
-        
-        copy.existing = this.existing;
-        copy.linked   = this.linked;
+        copy.copyBase(this);
 
         return copy;
     }
@@ -33033,24 +33241,13 @@ extends GObjectBase
         if (this.isCached())
             return this;
 
-            
-        this.value = this.value.eval(parse).toValue();
-      
 
-        if (   this.value.isValid()
-            && (  !this.existing
-                || this.linked))
-        {
-            const rgb = this.value.toRgb();
-            this.evalStyle({rgb: rgb});
-        }
-        else
-            this.value = ColorValue.NaN;
+        this.value = NullValue;
 
 
         genPushUpdateValue(parse, this.nodeId, 'value', this.value);
-
-
+        
+        
         this.validate();
 
         return this;
@@ -33058,30 +33255,14 @@ extends GObjectBase
 
 
 
-    evalStyle(options = {})
+    toValue()
     {
-        if (!this.options.enabled)
-            return;
-
-            
-        const style = new FigmaColorStyle(this.nodeId, this.nodeName);
-
-        style.existing = this.existing;
-
-
-        style.paints = 
-        [
-            [ 'SOLID', 
-                      0xff * options.rgb[0]
-              + ' ' + 0xff * options.rgb[1]
-              + ' ' + 0xff * options.rgb[2]
-              + ' ' + 0xff ]
-        ];
-
-
-        this.style = style;
+        return this.value
+             ? this.value.copy() 
+             : null;
     }
 }
+
 
 
 const settings =
@@ -33284,9 +33465,9 @@ function enableFeatures(subscription, beta)
 
     updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
 
-    // updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
-    // updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
-    // updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleStroke     .div, subscription && beta);
+    updateMenuItemDisplay(menuItemStyleSep1       .div, subscription && beta);
 
     updateMenuItemDisplay(menuItemSeries.div,           subscription && beta);    
 
@@ -33405,7 +33586,7 @@ const iconStyle             = '<svg width="12" height="9"  viewBox="0 0 12 9"  f
 const iconColorStyle        = '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.53553 9.53552C8.63071 10.4403 7.38071 11 6 11C3.23858 11 1 8.76141 1 6C1 4.61929 1.55965 3.36929 2.46447 2.46448L6 6L9.53553 9.53552ZM12 6C12 9.31372 9.31371 12 6 12C2.68629 12 0 9.31372 0 6C0 4.34314 0.67157 2.84314 1.75735 1.75735C1.77346 1.74124 1.78965 1.72525 1.80592 1.70935C2.88722 0.652252 4.36652 0.000518799 5.99803 0C5.99869 0 5.99934 0 6 0C9.31305 0 11.9989 2.68521 12 5.99802C12 5.99869 12 5.99933 12 6Z" fill="white"/></svg>';
 const iconColorStyleReplace = '<svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.18718 13.3189L7.83883 10.6673L8.54594 11.3744L5.89429 14.026C4.62509 15.2952 2.5673 15.2952 1.2981 14.026C0.0288918 12.7568 0.0288916 10.699 1.2981 9.42982L3.94975 6.77817L4.65685 7.48528L2.0052 10.1369C1.12652 11.0156 1.12652 12.4402 2.0052 13.3189C2.88388 14.1976 4.3085 14.1976 5.18718 13.3189ZM11.3744 8.54594L10.6673 7.83883L13.3189 5.18718C14.1976 4.3085 14.1976 2.88388 13.3189 2.0052C12.4402 1.12652 11.0156 1.12652 10.1369 2.0052L7.48528 4.65685L6.77817 3.94975L9.42982 1.2981C10.699 0.0288935 12.7568 0.0288931 14.026 1.2981C15.2952 2.5673 15.2952 4.62509 14.026 5.89429L11.3744 8.54594ZM5.92375 10.1664L10.1664 5.92375L9.40036 5.15772L5.15772 9.40036L5.92375 10.1664Z" fill="white"/></svg>';
 
-const iconShapes            = '<svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.53844" y="1.49869" width="5" height="5" stroke="white"/><circle cx="12.8668" cy="3.99869" r="3" stroke="white"/><line x1="0.933922" y1="16.7012" x2="7.26322" y2="10.3719" stroke="white"/><path d="M9.61918 15.709L12.8668 10.084L16.1144 15.709H9.61918Z" stroke="white"/></svg>';
+const iconShapes            = '<svg width="17" height="19" viewBox="0 -1 17 19" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.53844" y="1.49869" width="5" height="5" stroke="white"/><circle cx="12.8668" cy="3.99869" r="3" stroke="white"/><line x1="0.933922" y1="16.7012" x2="7.26322" y2="10.3719" stroke="white"/><path d="M9.61918 15.709L12.8668 10.084L16.1144 15.709H9.61918Z" stroke="white"/></svg>';
 
 const iconRectangle         = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="0.5" y="0.5" width="15" height="15" stroke="white"/></svg>';
 const iconLine              = '<svg width="17" height="17" viewBox="0 1 17 18" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="0.772299" y1="15.9778" x2="15.6598" y2="1.09027" stroke="white" stroke-width="1.3"/></svg>';
@@ -33413,7 +33594,7 @@ const iconEllipse           = '<svg width="16" height="16" viewBox="0 0 16 16" f
 const iconPolygon           = '<svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.82238 15.4885L10.0496 1.23853L18.2769 15.4885H1.82238Z" stroke="white"/></svg>';
 const iconStar              = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.8156 2.24924L10.4021 7.13198L10.5144 7.47747H10.8776H16.0116L11.8581 10.4952L11.5642 10.7087L11.6765 11.0542L13.263 15.9369L9.10949 12.9192L8.8156 12.7057L8.5217 12.9192L4.3682 15.9369L5.9547 11.0542L6.06695 10.7087L5.77306 10.4952L1.61955 7.47747H6.75357H7.11684L7.2291 7.13198L8.8156 2.24924Z" stroke="white"/></svg>';
  
-const iconCustom            = '<svg width="19" height="16" viewBox="0 0 19 16" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="13.5" cy="7.5" r="1" stroke="white"/><circle cx="5.5" cy="5.5" r="1.5" fill="white"/><circle cx="5.5" cy="10.5" r="1.5" fill="white"/><path d="M6.5 5.5C9.29122 5.5 9.55053 7.5 12.5 7.5C9.55053 7.5 9.29122 10.5 6.5 10.5" stroke="white"/><path d="M3 0.5H16C17.3807 0.5 18.5 1.61929 18.5 3V15.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/></svg>';
+const iconCustom            = '<svg width="19" height="15" viewBox="0 0 19 15" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="13.5" cy="7.5" r="1" stroke="white"/><circle cx="5.5" cy="4.5" r="1.5" fill="white"/><circle cx="5.5" cy="10.5" r="1.5" fill="white"/><path d="M6.5 4.5C9.29122 4.5 9.55053 7.5 12.5 7.5C9.55053 7.5 9.29122 10.5 6.5 10.5" stroke="white"/><path d="M3 0.5H16C17.3807 0.5 18.5 1.61929 18.5 3V14.5H0.5V3C0.5 1.61929 1.61929 0.5 3 0.5Z" stroke="white"/></svg>';
 
 const iconHand              = '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.85653 12.2494L1.8554 12.2484C1.32015 11.771 1.2929 10.8911 1.7976 10.3815C2.3023 9.87193 3.1824 9.89065 3.665 10.4213L3.67129 10.4282L3.67773 10.435L4.27294 11.0653L5.99999 12.8943V10.3788V4C5.99999 3.46423 6.46423 3 6.99999 3C7.16906 3 7.33572 3.04789 7.48718 3.13836L7.99999 3.44469V9H8.99999V4.04203V3V2.27986V2C8.99999 1.46423 9.46423 1 9.99999 1C10.4142 1 10.807 1.27942 10.9437 1.66905L11.0597 2H11V9H12V2.4661L12.4437 2.16905C12.6058 2.06052 12.804 2 13 2C13.5358 2 14 2.46423 14 3V4V4.27549V6.02711V9H15V5.43676L15.5084 5.13662C15.6583 5.04814 15.8261 5 16 5C16.5358 5 17 5.46423 17 6V13.5C17 15.6001 15.7227 17.6052 13.812 18.4904C11.8955 19.3783 9.56768 19.0654 7.95351 17.7039L1.85653 12.2494ZM15 4.27549V4V3.17508V3C15 1.91195 14.088 1 13 1C12.9434 1 12.8868 1.00246 12.8304 1.00733C12.4943 1.03638 12.1668 1.15099 11.8873 1.3381C11.7759 1.02046 11.5846 0.741833 11.341 0.522228C10.9792 0.195965 10.5019 0 9.99999 0C9.18005 0 8.46014 0.517876 8.15511 1.23874C8.05538 1.47446 7.99999 1.73188 7.99999 2V2.27986C7.70403 2.10307 7.36184 2.00018 7.00094 2H6.99999C5.91195 2 4.99999 2.91195 4.99999 4V8.92652V9.18641V9.20713V10.3788L4.40481 9.74846C4.2821 9.61355 4.14593 9.49706 3.99999 9.39906C3.11355 8.80379 1.86654 8.89082 1.08709 9.67785C0.179345 10.5944 0.227074 12.136 1.18978 12.9947L7.2972 18.4585C9.20886 20.0788 11.9586 20.4512 14.2324 19.3978C16.4971 18.3486 18 15.989 18 13.5V6C18 4.91195 17.088 4 16 4C15.6382 4 15.2958 4.10085 15 4.27549Z" fill="white"/></svg>';
 
@@ -39314,10 +39495,14 @@ graphView.updatePanAndZoom = function(updateNodes)
 {
     graphView.update(graph.nodes, updateNodes);
     
-    btnZoom.divIcon.innerHTML       = Math.round(graphView.zoom * 100) + '%';
-    btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
+    setTimeout(() =>
+    {
+        btnZoom.divIcon.innerHTML       = Math.round(graphView.zoom * 100) + '%';
+        btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
 
-    menuItemZoomTo100.setChecked(equal(graphView.zoom, 1, 0.0001));
+        menuItemZoomTo100.setChecked(equal(graphView.zoom, 1, 0.0001));
+    });
+    
 };
 
 
@@ -39439,8 +39624,8 @@ graphView.endZoomSelection = function(pointerId, zoom)
         selection = clipRect(selection, wndRect);
     
         selection.y -= menuBarHeight;
-console.log('selection =', selection);
 
+        
         const rect = screen2rect(selection);
 
         for (let i = 0; i < 5; i++)
@@ -39461,16 +39646,21 @@ console.log('selection =', selection);
 
 graphView.zoomToFit = function()
 {
-    const nodes = 
-        !isEmpty(graphView.selectedNodes)
-        ? graphView.selectedNodes
-        : graph.nodes;
-    
-    nodes.forEach(n => n.updateMeasureData());
-    const offset = graphView.getAllNodeOffsets(nodes);
+    if (!isEmpty(graph.nodes))
+    {
+        const nodes = 
+            !isEmpty(graphView.selectedNodes)
+            ? graphView.selectedNodes
+            : graph.nodes;
+        
+        nodes.forEach(n => n.updateMeasureData());
+        const offset = graphView.getAllNodeOffsets(nodes);
 
-    for (let i = 0; i < 5; i++) // need to do it a few times
-        graphView.zoomToRect(offset);
+        for (let i = 0; i < 5; i++) // need to do it a few times
+            graphView.zoomToRect(offset);
+    }
+    else
+        graphView.setPanAndZoom(point(0, 0), 1);
 };
 
 
@@ -39480,7 +39670,7 @@ graphView.zoomToRect = function(rect, margin = 40)
     margin /= graphView.zoom;
 
     graphView.zoom = Math.min(
-          Math.max(graphViewClient.width, graphViewClient.height)
+          Math.min(graphViewClient.width, graphViewClient.height)
         / Math.max(rect.width + margin*2, rect.height + margin*2));
 
     graphView.pan = {
@@ -42784,29 +42974,20 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case CACHE:                   node = new OpCache();             break;
         case COPY:                    node = new OpCopy();              break;
       
-        case 'number':
         case NUMBER:                  node = new OpNumber();            break;
         case NUMBER_ABSOLUTE:         node = new OpAbsolute();          break;
         case NUMBER_ROUND:            node = new OpRound();             break;
-        case 'minmax':
         case NUMBER_LIMITS:           node = new OpLimits();            break;
         case NUMBER_RANDOM:           node = new OpRandom();            break;
         case NUMBER_SERIES:           node = new OpSeries();            break;
-        case 'interpolate':
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
              
         case NUMBER_MATH:             node = new OpMath();              break;
-        case 'add':
         case NUMBER_ADD:              node = new OpAdd();               break;
-        case 'subtract':
         case NUMBER_SUBTRACT:         node = new OpSubtract();          break;
-        case 'multiply':
         case NUMBER_MULTIPLY:         node = new OpMultiply();          break;
-        case 'divide':
         case NUMBER_DIVIDE:           node = new OpDivide();            break;
-        case 'modulo':
         case NUMBER_MODULO:           node = new OpModulo();            break;
-        case 'exponent':
         case NUMBER_EXPONENT:         node = new OpExponent();          break;
              
         case NUMBER_BOOLEAN:          node = new OpBoolean();           break;
@@ -42823,16 +43004,11 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_GREATER:          node = new OpGreater();           break;
         case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();    break;
          
-        case 'color':
         case COLOR:                   node = new OpColor(options);      break;
         case VALID_COLOR:             node = new OpValidColor();        break;
-        case 'validatecolor':
         case CORRECT_COLOR:           node = new OpCorrectColor();      break;
-        case 'webcontrast':
         case COLOR_CONTRAST:          node = new OpColorContrast();     break;
-        case 'colorblind':
         case COLORBLIND:              node = new OpColorBlind();        break;
-        case 'colorinterpolate':
         case COLOR_INTERPOLATE:       node = new OpColorInterpolate();  break;
              
         case COLOR_STOP:              node = new OpColorStop();         break;
@@ -42849,6 +43025,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
       
+        case CUSTOM:                  node = new OpCustom();            break;
+
         case COMMENT:                 node = new OpComment();           break;
      
         default:                      console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);
@@ -44924,7 +45102,7 @@ class Operator
     {
         //console.log(this.id + '.Operator.updateHeader()');
         
-        const height = this.updateHeaderInputsAndOutputs();
+        const height = Math.max(25, this.updateHeaderInputsAndOutputs());
 
         this.header.style.height = height;
         this.updateParamBack(height);
@@ -46481,144 +46659,6 @@ function initLabelTextbox(node)
         
         node.textbox.focus();
         node.textbox.select();
-    }
-}
-
-
-class   OpComment
-extends OperatorBase
-{
-    constructor()
-    {
-        super(COMMENT, 'comment', 0);
-
-        this.scrollName = false;
-
-
-        this.textbox.addEventListener('input', e =>
-        {
-            this.updateNode();
-            graphView.updateNodeTransform(this);
-        });
-
-
-        this.textbox.addEventListener('change', e =>
-        {
-            if (this.textbox.value.trim() == '')
-                actionManager.do(new DeleteNodesAction([this.id], false), true);
-        });
-    }
-
-
-
-    setSelected(sel)
-    {
-        this._selected = sel;
-    }
-
-
-
-    genRequest(gen)
-    {
-        // 'this' is the node
-
-        gen.scope.push({
-            nodeId:  this.id, 
-            paramId: null });
-
-
-        const [request, ignore] = this.genRequestStart(gen);
-        if (ignore) return request;
-
-
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this);
-
-        return request;
-    }
-
-
-
-    updateNode()
-    {
-        super.updateNode();
-
-
-        this.inner.style.boxShadow = 'none';
-
-
-        utilContext.font = '11px Inter';
-        
-        const mes = utilContext.measureText(
-            hasFocus(this.textbox) 
-            ? this.textbox.value 
-            : this.name);
-
-
-        const width = Math.max(1, mes.width + 2);
-
-        this.div    .style.width   = 
-        this.textbox.style.width   = width + 'px';
-
-        this.textbox.style.height  = this.div.offsetHeight;
-        this.textbox.style.padding = '0';
-        this.textbox.style.margin  = '0';
-    }
-
-
-
-    updateHeader()
-    {
-        this.header.style.overflow   = 'visible';
-        this.header.style.background = 'transparent';
-       
-        this.updateHeaderLabel();
-    }
-
-
-
-    updateHeaderLabel()
-    {
-        this.labelText.innerHTML = this.name;
-
-
-        if (this.selected)
-        {
-            this.label.style.color        = 'var(--figma-color-bg-brand)';//rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
-            this.label.style.textShadow   = '0 0 0 var(--figma-color-bg-brand)';// + colFigmaBlue;
-
-            this.textbox.style.color      = rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
-            this.textbox.style.textShadow = '0 0 0 ' + colFigmaBlue;
-        }
-        else
-        {
-            this.label.style.color        = 'var(--figma-color-bg-disabled-secondary)';
-            this.label.style.textShadow   = 'none';
-
-            this.textbox.style.color      = 'var(--figma-color-bg-disabled-secondary)';
-            this.textbox.style.textShadow = 'none';
-        }
-    
-
-        this.labelWrapper.style.overflow      = 'visible';
-
-        this.label.style.background           = 'transparent';
-        this.label.style.textAlign            = 'left';
-
-        this.label.style.left                 = '0';
-        this.label.style.top                  = '0';
-
-        this.label.style.transform            = 'none';
-
-        this.label.style.WebkitBackgroundClip = 'inherit';
-        this.label.style.WebkitTextFillColor  = 'inherit';
-    }
-
-
-
-    updateBorder()
-    {
-        this.div.style.boxShadow = 'none';
     }
 }
 
@@ -49759,7 +49799,7 @@ const rgbScale   = [255, 255, 255];
   
 const hs_Scale   = [360, 100, 100];
  
-const hclokScale = [360, 51,  100];
+const hclokScale = [360, 50,  100];
 const hclabScale = [360, 400, 100];
 const hcluvScale = [360, 330, 100];
  
@@ -50194,18 +50234,18 @@ function getScaledDataColor(color)
     switch (color[0])
     {
         case 'hex':
-        case 'rgb':   return getScaledDataColorRgb(          color[1], color[2], color[3]);
+        case 'rgb':   return getScaledDataColorRgb(         color[1], color[2], color[3]);
 
-        case 'hsv':   return getScaledDataColorHs_('hsv',    color[1], color[2], color[3]);
-        case 'hsl':   return getScaledDataColorHs_('hsl',    color[1], color[2], color[3]);
+        case 'hsv':   return getScaledDataColorHs_('hsv',   color[1], color[2], color[3]);
+        case 'hsl':   return getScaledDataColorHs_('hsl',   color[1], color[2], color[3]);
 
         case 'hclok': return getScaledDataColorHcl('hclok', color[1], color[2], color[3]);
         case 'hclab': return getScaledDataColorHcl('hclab', color[1], color[2], color[3]);
         case 'hcluv': return getScaledDataColorHcl('hcluv', color[1], color[2], color[3]);
 
-        case 'oklab': return getScaledDataColorOpp('oklab',  color[1], color[2], color[3]);
-        case 'lab':   return getScaledDataColorOpp('lab',    color[1], color[2], color[3]);
-        case 'luv':   return getScaledDataColorOpp('luv',    color[1], color[2], color[3]);
+        case 'oklab': return getScaledDataColorOpp('oklab', color[1], color[2], color[3]);
+        case 'lab':   return getScaledDataColorOpp('lab',   color[1], color[2], color[3]);
+        case 'luv':   return getScaledDataColorOpp('luv',   color[1], color[2], color[3]);
     }
 }
 
@@ -51669,713 +51709,6 @@ function showOpColorInterpolateGammaControl(node, show)
 
 
 
-class OpFill
-extends OpColorBase
-{
-    paramColor;
-    paramOpacity;
-
-    checkers;
-    colorBack;
-
-
-
-    constructor()
-    {
-        super(FILL, 'fill');
-
-
-        this.colorBack = createDiv('colorBack');
-        this.checkers  = createDiv('nodeHeaderCheckers');
-
-        //this.inner.appendChild(this.colorBack);
-        this.inner.insertBefore(this.checkers, this.header);
-
-
-        this.addInput (new Input(FILL_TYPES, getNodeInputValuesForUndo));
-        this.addOutput(new Output([FILL], this.output_genRequest, getNodeOutputValuesForUndo));
-
-
-        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
-        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
-
-        this.paramOpacity.control.suffix = '%';
-    }
-    
-    
-    
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: NULL });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-
-        const paramIds = [];
-
-
-        const input = this.node.inputs[0];
-
-
-        request.push(input.connected ? 1 : 0);
-
-
-        if (input.connected)
-        {
-            request.push(...pushInputOrParam(input, gen));
-
-            for (const param of this.node.params)
-                if (      param.input 
-                       && param.input.connected
-                       && param.canShow()
-                    || input.connectedOutput.supportsTypes(FILL_TYPES)) 
-                    paramIds.push(param.id);
-        }
-        else
-        {
-            for (const param of this.node.params)
-                if (param.canShow())
-                    paramIds.push(param.id);
-        }
-
-        
-        request.push(paramIds.length);
-
-        for (const paramId of paramIds)
-            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
-
-
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        const color = values[paramIds.findIndex(id => id == 'color')];
-
-        this._color = 
-            color.isValid()
-            ? color.toDataColor()
-            : dataColor_NaN;
-
-
-        this.outputs[0].types =
-               this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
-            ? [...this.inputs[0].connectedOutput.types, FILL]
-            : [FILL];
-
-
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
-
-
-
-    updateColorControl()
-    {
-        const colors = this.getHeaderColors({color: true});
-
-        colors.text   = getTextColorFromBackColor(colors.back, this.inputIsShape ? colors.back[3] : 1);
-        colors.input  = rgb_a(colors.text, 0.2);
-        colors.output = rgb_a(colors.text, 0.2);
-
-
-        this.paramColor.checkers.style.display = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
-
-        if (this.paramOpacity.value.isValid())
-            this.paramColor.checkers.style.opacity = 
-                this.inputIsShape 
-                ? (100 - this.paramOpacity.value.toNumber()) + '%'
-                : 0;
-
-
-        this.paramColor.control. backStyleLight = 
-        this.paramColor.control. backStyleDark  = 
-        this.paramColor.control.valueStyleLight = 
-        this.paramColor.control.valueStyleDark  = rgba2style(rgb_a(colors.back, 1));
-
-        this.paramColor.control.textStyleLight  = 
-        this.paramColor.control.textStyleDark   = rgba2style(colors.text);
-
-        this.paramColor. input.colorLight       =
-        this.paramColor. input.colorDark        = colors.input;
-        
-        this.paramColor.output.colorLight       =
-        this.paramColor.output.colorDark        = colors.output;
-        
-        //this.paramColor. input.wireColor        = rgb_a(colors.wire, 1);
-        //this.paramColor.output.wireColor        = rgb_a(colors.wire, 1);
-    }
-
-
-
-    updateNode()
-    {
-        this.updateColorControl();
-
-        super.updateNode();
-    }
-
-
-
-    updateHeader()
-    {
-        //console.log(this.id + '.OpFill.updateHeader()');
-        
-        Operator.prototype.updateHeader.call(this);
-
-
-        const colors =
-              this.inputIsShape
-            ? OperatorBase.prototype.getHeaderColors.call(this)
-            : this.getHeaderColors();
-
-
-        this.header.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgba2style(colors.back) 
-            : 'transparent';
-
-        this.colorBack.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgb2style(colors.back)
-            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
-
-
-        this.checkers.style.height = this.header.offsetHeight;
-
-        this.checkers.style.background =
-            darkMode
-            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
-
-        this.checkers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
-
-        this.checkers.style.backgroundSize     = '26px 26px';
-        this.checkers.style.backgroundPosition = '0 0, 13px 13px';
-                        
-
-        this.inputs[0] .colorLight = 
-        this.inputs[0] .colorDark  = colors.input;
-        //this.inputs[0] .wireColor  = colors.wire;
-
-        this.outputs[0].colorLight =
-        this.outputs[0].colorDark  = colors.output;
-        //this.outputs[0].wireColor  = colors.wire;
-
-
-        this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
-    }
-
-
-
-    updateHeaderLabel()
-    {
-        super.updateHeaderLabel();
-        
-        const colors = this.getHeaderColors();
-        this.label.style.color = rgba2style(colors.text);
-    }
-
-
-
-    getHeaderColors(options = {})
-    {
-        if (    this.inputIsShape
-            && !options.color)
-            return Operator.prototype.getHeaderColors.call(this);
-
-            
-        const colors  = super.getHeaderColors();
-
-        colors.back   = rgb_a(colors.back, this.paramOpacity.value.value/100);
-        colors.text   = getTextColorFromBackColor(colors.back, colors.back[3]);
-        colors.input  = rgb_a(colors.text, 0.2);
-        colors.output = rgb_a(colors.text, 0.2);
-        colors.wire   = colors.back;
-        
-        return colors;
-    }
-
-
-
-    updateParams()
-    {
-        const enable = 
-              !this.inputs[0].connected
-            || this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
-
-        this.paramColor  .enableControlText(enable);
-        this.paramOpacity.enableControlText(enable);
-
-        this.updateParamControls();
-    }
-}
-
-
-class OpStroke
-extends OpColorBase
-{
-    paramFill;
-    paramWeight;
-    paramFit;
-    paramJoin;
-    paramMiter;
-
-    checkers;
-    colorBack;
-
-
-    
-    get inputIsShape() 
-    {
-        return this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
-    }
-
-
-
-    constructor()
-    {
-        super(STROKE, 'stroke');
-
-
-        this.colorBack = createDiv('colorBack');
-        this.inner.appendChild(this.colorBack);
-
-        this.addInput (new Input(STROKE_TYPES, getNodeInputValuesForUndo));
-        this.addOutput(new Output([STROKE], this.output_genRequest));
-
-
-        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
-        this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
-        this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 0));
-        this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
-        this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
-
-        this.paramMiter.control.setSuffix('°', true);
-        this.paramMiter.canShow = () => this.paramJoin.value == 0;
-
-
-        this.checkers = createDiv('nodeHeaderCheckers');
-        this.inner.insertBefore(this.checkers, this.header);
-    }
-    
-    
-    
-    // canAutoConnectFrom(output)
-    // {
-    //     return output.supportsTypes(FILL_TYPES)
-    //         || output.supportsTypes(COLOR_TYPES);
-    // }
-
-
-
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: NULL });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-        
-        const paramIds = [];
-
-        
-        const input = this.node.inputs[0];
-
-
-        request.push(input.connected ? 1 : 0);
-
-
-        if (input.connected)
-        {
-            request.push(...pushInputOrParam(input, gen));
-
-            for (const param of this.node.params)
-                if (      (      param.input 
-                              && param.input.connected
-                              && param.canShow()
-                           || input.connectedOutput.supportsTypes(OBJECT_TYPES)
-                       && !input.connectedOutput.supportsTypes(STROKE_TYPES))
-                    || param.id == 'fill')
-                    paramIds.push(param.id);
-        }
-        else
-        {
-            for (const param of this.node.params)
-                if (param.canShow())
-                    paramIds.push(param.id);
-        }
-
-
-        request.push(paramIds.length);
-
-        for (const paramId of paramIds)
-            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
-
-
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        const fill = values[paramIds.findIndex(id => id == 'fill')];
-
-        this._color = 
-               fill
-            && fill.isValid()
-            ? fill.color.toDataColor()
-            : dataColor_NaN;
-
-            
-        this.outputs[0].types =
-               this.inputs[0].connected
-            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
-            ? [...this.inputs[0].connectedOutput.types, STROKE]
-            : [STROKE];
-
-        // if (!this.inputs[0].connected
-        //     && 
-        // input.addEventListener('disconnect', () => uiDeleteObjectsAndStyles([this.id]));
-
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
-
-
-
-    updateHeader()
-    {
-        //console.log(this.id + '.OpStroke.updateHeader()');
-
-
-        const colors =
-              this.inputIsShape
-            ? OperatorBase.prototype.getHeaderColors.call(this)
-            : this.getHeaderColors();
-
-
-        this.header.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgba2style(colors.back) 
-            : 'transparent';
-
-        this.colorBack.style.background = 
-            rgbIsOk(colors.back) //!rgbIsNaN(colors.back)
-            ? rgb2style(colors.back)
-            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
-
-              
-        this.checkers.style.height = this.header.offsetHeight;
-
-        this.checkers.style.background =
-            darkMode
-            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
-              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
-            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
-              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
-
-        this.checkers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
-        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
-
-        this.checkers.style.backgroundSize     = '26px 26px';
-        this.checkers.style.backgroundPosition = '0 0, 13px 13px';
-                        
-
-        this.header.style.background = 
-            !rgbIsNaN(colors.back)
-            ? rgba2style(colors.back) 
-            : 'transparent';
-
-
-        this.inputs[0] .colorLight = 
-        this.inputs[0] .colorDark  = colors.input;
-        //this.inputs[0] .wireColor  = colors.wire;
-
-        this.outputs[0].colorLight =
-        this.outputs[0].colorDark  = colors.output;
-        //this.outputs[0].wireColor  = colors.wire;
-
-
-        this.updateWarningOverlay();
-        this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
-
-
-        Operator.prototype.updateHeader.call(this);
-    }
-
-
-
-    updateHeaderLabel()
-    {
-        super.updateHeaderLabel();
-        
-        const colors = this.getHeaderColors();
-        this.label.style.color = rgba2style(colors.text);
-    }
-
-
-
-    updateParams()
-    {
-        const enableFill = !this.paramFill.input.connected;
- 
-        const enable = 
-               !this.inputs[0].connected
-            //|| !this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
-            || !this.inputs[0].connectedOutput.supportsTypes(STROKE_TYPES);
-
-        this.paramFill  .enableControlText(enableFill);
-        this.paramWeight.enableControlText(enable);
-        this.paramFit   .enableControlText(enable);
-        this.paramJoin  .enableControlText(enable);
-        this.paramMiter .enableControlText(enable);
-
-        this.updateParamControls();
-    }
-
-    
-
-    getHeaderColors(options = {})
-    {
-        if (    this.inputIsShape
-            && !options.color)
-            return Operator.prototype.getHeaderColors.call(this);
- 
-
-        const colors = super.getHeaderColors();
-
-        colors.back = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
-        colors.text = getTextColorFromBackColor(colors.back, this.paramFill.value.opacity.value/100);
-
-        return colors;
-    }
-
-
-
-    // connectToSelected(selected)
-    // {
-    //     console.assert(!isEmpty(selected));
-
-    //     const node   = selected[0];
-    //     const inputs = this.inputs.filter(i => i.types.includes(node.type));
-    
-    //     if (    node
-    //         && !isEmpty(node.outputs)
-    //         && !isEmpty(inputs))
-    //         actionManager.do(new ConnectAction(node.outputs[0], inputs[0]), true);
-    // }
-}
-
-
-class   OpColorStop
-extends OpColorBase
-{
-    paramFill;
-    paramPosition;
-
-    
-    constructor()
-    {
-        super(COLOR_STOP, 'stop');
-
-
-        this.addInput(new Input([COLOR_STOP, COLOR_STOP_VALUE]));
-        this.addOutput(new Output([COLOR_STOP], this.output_genRequest));
-
-        this.addParam(this.paramFill     = new FillParam ('fill',     '',         false, true, true));
-        this.addParam(this.paramPosition = new NumberParam('position', 'position', true,  true, true, 100, 0, 100));
-
-        //this.paramFill.setValue([FillValue.default], false, true, false);
-        
-        this.paramPosition.control.suffix = '%';
-    }
-    
-    
-    
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: NULL });
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-
-        
-        const input = this.node.inputs[0];
-
-        if (input.connected)
-            request.push(...pushInputOrParam(input, gen));
-
-        request.push(...this.node.paramFill    .genRequest(gen));
-        request.push(...this.node.paramPosition.genRequest(gen));
-
-
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-
-        return request;
-    }
-
-
-
-    updateValues(requestId, actionId, updateParamId, paramIds, values)
-    {
-        const stop = values[paramIds.findIndex(id => id == 'value')];
-
-        
-        if (stop.isValid())
-        {
-            this.paramFill    .setValue([stop.fill],   false, true, false);
-            this.paramPosition.setValue(stop.position, false, true, false);
-
-            // this._color = stop.color.toDataColor();
-        }
-        else
-        {
-            this.paramFill    .setValue([FillValue.NaN], false, true, false);
-            this.paramPosition.setValue( NumberValue   .NaN,  false, true, false);
-            
-            this._color = dataColor_NaN;
-        }
-
-
-        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-    }
-}
-
-
-class   OpGradient
-extends OperatorBase
-{
-    paramType;
-
-    paramX;
-    paramY;
-    paramWidth;
-    paramHeight;
-    paramAngle;
-
-
-    constructor()
-    {
-        super(GRADIENT, 'grad');
-
-        this.variableInputs = true;
-
-
-        this.addNewInput();
-        this.addOutput(new Output([GRADIENT], this.output_genRequest));
-        
-
-        this.addParam(this.paramType   = new SelectParam('type', '', false, true, true, ['linear', 'radial', 'angular', 'diamond'], 0));
-
-        this.addParam(this.paramX      = new NumberParam('x',      'x',      true, true, true, 0));
-        this.addParam(this.paramY      = new NumberParam('y',      'y',      true, true, true, 0));
-        this.addParam(this.paramWidth  = new NumberParam('width',  'width',  true, true, true, 1));
-        this.addParam(this.paramHeight = new NumberParam('height', 'height', true, true, true, 1));
-        this.addParam(this.paramAngle  = new NumberParam('angle',  'angle',  true, true, true, 0));
-    }
-    
-    
-    
-    addNewInput()
-    {
-        const input = new Input([COLOR_TYPES]);
-        input.isNew = true;
-
-        input.addEventListener('connect',    () => { onVariableConnectInput(this); input.isNew = false; });
-        input.addEventListener('disconnect', () => onVariableDisconnectInput(this, input));
-
-        this.addInput(input);
-
-        return input;
-    }
-
-
-
-    output_genRequest(gen)
-    {
-        // 'this' is the output
-
-        // if (!isEmpty(this.cache))
-        //     return this.cache;
-
-
-        gen.scope.push({
-            nodeId:  this.node.id, 
-            paramId: NULL });
-
-
-        const [request, ignore] = this.node.genRequestStart(gen);
-        if (ignore) return request;
-            
-
-        const connectedInputs = this.node.inputs.filter(i => i.connected);
-
-
-        request.push(connectedInputs.length); // utility values like param count are stored as numbers
-        
-        connectedInputs.forEach(input => 
-            request.push(...pushInputOrParam(input, gen)));
-
-            
-        request.push(
-            ...this.node.paramX     .genRequest(gen),
-            ...this.node.paramY     .genRequest(gen),
-            ...this.node.paramWidth .genRequest(gen),
-            ...this.node.paramHeight.genRequest(gen),
-            ...this.node.paramAngle .genRequest(gen));
-
-            
-        gen.scope.pop();
-        pushUnique(gen.passedNodes, this.node);
-        
-        return request;
-    }
-
-
-
-    // updateValues(requestId, actionId, updateParamId, paramIds, values)
-    // {
-    //     super.updateValues(requestId, actionId, updateParamId, paramIds, values);
-
-    //     if (paramIds.includes('value'))
-    //         this.outputs[0].cache = [NUMBER_VALUE, values[0].toString()];
-    // }
-}
-
-
-
 class   OpShapeBase
 extends OperatorBase
 {
@@ -52935,6 +52268,719 @@ function OpColorStyle_value_onDisconnectInput(node, input)
     if (   node.existing
         && node.linkedStyleId == NULL)
         node.paramValue.setValue(ColorValue.NaN, false, false, false);
+}
+
+
+class OpFill
+extends OpColorBase
+{
+    paramColor;
+    paramOpacity;
+
+    checkers;
+    colorBack;
+
+
+
+    constructor()
+    {
+        super(FILL, 'fill');
+
+
+        this.colorBack = createDiv('colorBack');
+        this.checkers  = createDiv('nodeHeaderCheckers');
+
+        //this.inner.appendChild(this.colorBack);
+        this.inner.insertBefore(this.checkers, this.header);
+
+
+        this.addInput (new Input(FILL_TYPES, getNodeInputValuesForUndo));
+        this.addOutput(new Output([FILL], this.output_genRequest, getNodeOutputValuesForUndo));
+
+
+        this.addParam(this.paramColor   = new ColorParam ('color',   '',        false, true, true, ColorValue.fromRgb(rgbDefaultFill)));
+        this.addParam(this.paramOpacity = new NumberParam('opacity', 'opacity', true,  true, true, 100, 0, 100));
+
+        this.paramOpacity.control.suffix = '%';
+    }
+    
+    
+    
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        const paramIds = [];
+
+
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+
+        if (input.connected)
+        {
+            request.push(...pushInputOrParam(input, gen));
+
+            for (const param of this.node.params)
+                if (      param.input 
+                       && param.input.connected
+                       && param.canShow()
+                    || input.connectedOutput.supportsTypes(FILL_TYPES)) 
+                    paramIds.push(param.id);
+        }
+        else
+        {
+            for (const param of this.node.params)
+                if (param.canShow())
+                    paramIds.push(param.id);
+        }
+
+        
+        request.push(paramIds.length);
+
+        for (const paramId of paramIds)
+            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const color = values[paramIds.findIndex(id => id == 'color')];
+
+        this._color = 
+            color.isValid()
+            ? color.toDataColor()
+            : dataColor_NaN;
+
+
+        this.outputs[0].types =
+               this.inputs[0].connected
+            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
+            ? [...this.inputs[0].connectedOutput.types, FILL]
+            : [FILL];
+
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    updateColorControl()
+    {
+        const colors = this.getHeaderColors({color: true});
+
+        colors.text   = getTextColorFromBackColor(colors.back, this.inputIsShape ? colors.back[3] : 1);
+        colors.input  = rgb_a(colors.text, 0.2);
+        colors.output = rgb_a(colors.text, 0.2);
+
+
+        this.paramColor.checkers.style.display = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
+
+        if (this.paramOpacity.value.isValid())
+            this.paramColor.checkers.style.opacity = 
+                this.inputIsShape 
+                ? (100 - this.paramOpacity.value.toNumber()) + '%'
+                : 0;
+
+
+        this.paramColor.control. backStyleLight = 
+        this.paramColor.control. backStyleDark  = 
+        this.paramColor.control.valueStyleLight = 
+        this.paramColor.control.valueStyleDark  = rgba2style(rgb_a(colors.back, 1));
+
+        this.paramColor.control.textStyleLight  = 
+        this.paramColor.control.textStyleDark   = rgba2style(colors.text);
+
+        this.paramColor. input.colorLight       =
+        this.paramColor. input.colorDark        = colors.input;
+        
+        this.paramColor.output.colorLight       =
+        this.paramColor.output.colorDark        = colors.output;
+        
+        //this.paramColor. input.wireColor        = rgb_a(colors.wire, 1);
+        //this.paramColor.output.wireColor        = rgb_a(colors.wire, 1);
+    }
+
+
+
+    updateNode()
+    {
+        this.updateColorControl();
+
+        super.updateNode();
+    }
+
+
+
+    updateHeader()
+    {
+        //console.log(this.id + '.OpFill.updateHeader()');
+        
+        Operator.prototype.updateHeader.call(this);
+
+
+        const colors =
+              this.inputIsShape
+            ? OperatorBase.prototype.getHeaderColors.call(this)
+            : this.getHeaderColors();
+
+
+        this.header.style.background = 
+            !rgbIsNaN(colors.back)
+            ? rgba2style(colors.back) 
+            : 'transparent';
+
+        this.colorBack.style.background = 
+            !rgbIsNaN(colors.back)
+            ? rgb2style(colors.back)
+            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+
+
+        this.checkers.style.height = this.header.offsetHeight;
+
+        this.checkers.style.background =
+            darkMode
+            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+        this.checkers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
+
+        this.checkers.style.backgroundSize     = '26px 26px';
+        this.checkers.style.backgroundPosition = '0 0, 13px 13px';
+                        
+
+        this.inputs[0] .colorLight = 
+        this.inputs[0] .colorDark  = colors.input;
+        //this.inputs[0] .wireColor  = colors.wire;
+
+        this.outputs[0].colorLight =
+        this.outputs[0].colorDark  = colors.output;
+        //this.outputs[0].wireColor  = colors.wire;
+
+
+        this.updateWarningOverlay();
+        this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        super.updateHeaderLabel();
+        
+        const colors = this.getHeaderColors();
+        this.label.style.color = rgba2style(colors.text);
+    }
+
+
+
+    getHeaderColors(options = {})
+    {
+        if (    this.inputIsShape
+            && !options.color)
+            return Operator.prototype.getHeaderColors.call(this);
+
+            
+        const colors  = super.getHeaderColors();
+
+        colors.back   = rgb_a(colors.back, this.paramOpacity.value.value/100);
+        colors.text   = getTextColorFromBackColor(colors.back, colors.back[3]);
+        colors.input  = rgb_a(colors.text, 0.2);
+        colors.output = rgb_a(colors.text, 0.2);
+        colors.wire   = colors.back;
+        
+        return colors;
+    }
+
+
+
+    updateParams()
+    {
+        const enable = 
+              !this.inputs[0].connected
+            || this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
+
+        this.paramColor  .enableControlText(enable);
+        this.paramOpacity.enableControlText(enable);
+
+        this.updateParamControls();
+    }
+}
+
+
+class OpStroke
+extends OpColorBase
+{
+    paramFill;
+    paramWeight;
+    paramFit;
+    paramJoin;
+    paramMiter;
+
+    checkers;
+    colorBack;
+
+
+    
+    get inputIsShape() 
+    {
+        return this.inputs[0].connected
+            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES);
+    }
+
+
+
+    constructor()
+    {
+        super(STROKE, 'stroke');
+
+
+        this.colorBack = createDiv('colorBack');
+        this.inner.appendChild(this.colorBack);
+
+        this.addInput (new Input(STROKE_TYPES, getNodeInputValuesForUndo));
+        this.addOutput(new Output([STROKE], this.output_genRequest));
+
+
+        this.addParam(this.paramFill   = new FillParam  ('fill',   'fill',   false, true, true, FillValue.create(0, 0, 0, 100)));
+        this.addParam(this.paramWeight = new NumberParam('weight', 'weight', true,  true, true, 1, 0));
+        this.addParam(this.paramFit    = new SelectParam('fit',    'align',  true,  true, true, ['inside', 'center', 'outside'], 0));
+        this.addParam(this.paramJoin   = new SelectParam('join',   'join',   true,  true, true, ['miter', 'bevel', 'round'], 0));
+        this.addParam(this.paramMiter  = new NumberParam('miter',  'miter',  true,  true, true, 28.96, 0, 180, 2));
+
+        this.paramMiter.control.setSuffix('°', true);
+        this.paramMiter.canShow = () => this.paramJoin.value == 0;
+
+
+        this.checkers = createDiv('nodeHeaderCheckers');
+        this.inner.insertBefore(this.checkers, this.header);
+    }
+    
+    
+    
+    // canAutoConnectFrom(output)
+    // {
+    //     return output.supportsTypes(FILL_TYPES)
+    //         || output.supportsTypes(COLOR_TYPES);
+    // }
+
+
+
+    output_genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.node.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.node.genRequestStart(gen);
+        if (ignore) return request;
+
+        
+        const paramIds = [];
+
+        
+        const input = this.node.inputs[0];
+
+
+        request.push(input.connected ? 1 : 0);
+
+
+        if (input.connected)
+        {
+            request.push(...pushInputOrParam(input, gen));
+
+            for (const param of this.node.params)
+                if (      (      param.input 
+                              && param.input.connected
+                              && param.canShow()
+                           || input.connectedOutput.supportsTypes(OBJECT_TYPES)
+                       && !input.connectedOutput.supportsTypes(STROKE_TYPES))
+                    || param.id == 'fill')
+                    paramIds.push(param.id);
+        }
+        else
+        {
+            for (const param of this.node.params)
+                if (param.canShow())
+                    paramIds.push(param.id);
+        }
+
+
+        request.push(paramIds.length);
+
+        for (const paramId of paramIds)
+            request.push(paramId, ...this.node.params.find(p => p.id == paramId).genRequest(gen));            
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this.node);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values)
+    {
+        const fill = values[paramIds.findIndex(id => id == 'fill')];
+
+        this._color = 
+               fill
+            && fill.isValid()
+            ? fill.color.toDataColor()
+            : dataColor_NaN;
+
+            
+        this.outputs[0].types =
+               this.inputs[0].connected
+            && this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
+            ? [...this.inputs[0].connectedOutput.types, STROKE]
+            : [STROKE];
+
+        // if (!this.inputs[0].connected
+        //     && 
+        // input.addEventListener('disconnect', () => uiDeleteObjectsAndStyles([this.id]));
+
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    updateHeader()
+    {
+        //console.log(this.id + '.OpStroke.updateHeader()');
+
+
+        const colors =
+              this.inputIsShape
+            ? OperatorBase.prototype.getHeaderColors.call(this)
+            : this.getHeaderColors();
+
+
+        this.header.style.background = 
+            !rgbIsNaN(colors.back)
+            ? rgba2style(colors.back) 
+            : 'transparent';
+
+        this.colorBack.style.background = 
+            rgbIsOk(colors.back) //!rgbIsNaN(colors.back)
+            ? rgb2style(colors.back)
+            : rgba2style(rgb_a(rgbDocumentBody, 0.95));
+
+              
+        this.checkers.style.height = this.header.offsetHeight;
+
+        this.checkers.style.background =
+            darkMode
+            ?   'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%), '
+              + 'linear-gradient(45deg, #222 25%, transparent 25%, transparent 75%, #222 75%)'
+            :   'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%), '
+              + 'linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%)';
+
+        this.checkers.style.display            = !rgbIsNaN(colors.back) ? 'inline-block' : 'none';
+        this.checkers.style.backgroundColor    = darkMode ? '#444' : '#fff';
+
+        this.checkers.style.backgroundSize     = '26px 26px';
+        this.checkers.style.backgroundPosition = '0 0, 13px 13px';
+                        
+
+        this.header.style.background = 
+            !rgbIsNaN(colors.back)
+            ? rgba2style(colors.back) 
+            : 'transparent';
+
+
+        this.inputs[0] .colorLight = 
+        this.inputs[0] .colorDark  = colors.input;
+        //this.inputs[0] .wireColor  = colors.wire;
+
+        this.outputs[0].colorLight =
+        this.outputs[0].colorDark  = colors.output;
+        //this.outputs[0].wireColor  = colors.wire;
+
+
+        this.updateWarningOverlay();
+        this.updateWarningOverlayStyle(colors.back, this.inputIsShape ? -1 : 45);
+
+
+        Operator.prototype.updateHeader.call(this);
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        super.updateHeaderLabel();
+        
+        const colors = this.getHeaderColors();
+        this.label.style.color = rgba2style(colors.text);
+    }
+
+
+
+    updateParams()
+    {
+        const enableFill = !this.paramFill.input.connected;
+ 
+        const enable = 
+               !this.inputs[0].connected
+            //|| !this.inputs[0].connectedOutput.supportsTypes(SHAPE_TYPES)
+            || !this.inputs[0].connectedOutput.supportsTypes(STROKE_TYPES);
+
+        this.paramFill  .enableControlText(enableFill);
+        this.paramWeight.enableControlText(enable);
+        this.paramFit   .enableControlText(enable);
+        this.paramJoin  .enableControlText(enable);
+        this.paramMiter .enableControlText(enable);
+
+        this.updateParamControls();
+    }
+
+    
+
+    getHeaderColors(options = {})
+    {
+        if (    this.inputIsShape
+            && !options.color)
+            return Operator.prototype.getHeaderColors.call(this);
+ 
+
+        const colors = super.getHeaderColors();
+
+        colors.back = rgb_a(colors.back, this.paramFill.value.opacity.value/100);
+        colors.text = getTextColorFromBackColor(colors.back, this.paramFill.value.opacity.value/100);
+
+        return colors;
+    }
+
+
+
+    // connectToSelected(selected)
+    // {
+    //     console.assert(!isEmpty(selected));
+
+    //     const node   = selected[0];
+    //     const inputs = this.inputs.filter(i => i.types.includes(node.type));
+    
+    //     if (    node
+    //         && !isEmpty(node.outputs)
+    //         && !isEmpty(inputs))
+    //         actionManager.do(new ConnectAction(node.outputs[0], inputs[0]), true);
+    // }
+}
+
+
+class   OpCustom
+extends OperatorBase
+{
+    constructor()
+    {
+        super(CUSTOM, 'custom');
+    }
+    
+    
+
+    genRequest(gen)
+    {
+        // 'this' is the output
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: NULL });
+
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        // const input = this.inputs[0];
+
+
+        // request.push(input.connected ? 1 : 0);
+
+        // if (input.connected)
+        //     request.push(...pushInputOrParam(input, gen));
+
+        
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
+
+        return request;
+    }
+
+
+
+    updateValues(requestId, actionId, updateParamId, paramIds, values) // virtual
+    {
+        super.updateValues(requestId, actionId, updateParamId, paramIds, values);
+    }
+
+
+
+    paramsToJson(nTab = 0)
+    {
+        return '';
+    }
+}
+
+
+
+class   OpComment
+extends OperatorBase
+{
+    constructor()
+    {
+        super(COMMENT, 'comment', 0);
+
+        this.scrollName = false;
+
+
+        this.textbox.addEventListener('input', e =>
+        {
+            this.updateNode();
+            graphView.updateNodeTransform(this);
+        });
+
+
+        this.textbox.addEventListener('change', e =>
+        {
+            if (this.textbox.value.trim() == '')
+                actionManager.do(new DeleteNodesAction([this.id], false), true);
+        });
+    }
+
+
+
+    setSelected(sel)
+    {
+        this._selected = sel;
+    }
+
+
+
+    genRequest(gen)
+    {
+        // 'this' is the node
+
+        gen.scope.push({
+            nodeId:  this.id, 
+            paramId: null });
+
+
+        const [request, ignore] = this.genRequestStart(gen);
+        if (ignore) return request;
+
+
+        gen.scope.pop();
+        pushUnique(gen.passedNodes, this);
+
+        return request;
+    }
+
+
+
+    updateNode()
+    {
+        super.updateNode();
+
+
+        this.inner.style.boxShadow = 'none';
+
+
+        utilContext.font = '11px Inter';
+        
+        const mes = utilContext.measureText(
+            hasFocus(this.textbox) 
+            ? this.textbox.value 
+            : this.name);
+
+
+        const width = Math.max(1, mes.width + 2);
+
+        this.div    .style.width   = 
+        this.textbox.style.width   = width + 'px';
+
+        this.textbox.style.height  = this.div.offsetHeight;
+        this.textbox.style.padding = '0';
+        this.textbox.style.margin  = '0';
+    }
+
+
+
+    updateHeader()
+    {
+        this.header.style.overflow   = 'visible';
+        this.header.style.background = 'transparent';
+       
+        this.updateHeaderLabel();
+    }
+
+
+
+    updateHeaderLabel()
+    {
+        this.labelText.innerHTML = this.name;
+
+
+        if (this.selected)
+        {
+            this.label.style.color        = 'var(--figma-color-bg-brand)';//rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
+            this.label.style.textShadow   = '0 0 0 var(--figma-color-bg-brand)';// + colFigmaBlue;
+
+            this.textbox.style.color      = rgb2style_a(hex2rgb(colFigmaBlue), 0.7);
+            this.textbox.style.textShadow = '0 0 0 ' + colFigmaBlue;
+        }
+        else
+        {
+            this.label.style.color        = 'var(--figma-color-bg-disabled-secondary)';
+            this.label.style.textShadow   = 'none';
+
+            this.textbox.style.color      = 'var(--figma-color-bg-disabled-secondary)';
+            this.textbox.style.textShadow = 'none';
+        }
+    
+
+        this.labelWrapper.style.overflow      = 'visible';
+
+        this.label.style.background           = 'transparent';
+        this.label.style.textAlign            = 'left';
+
+        this.label.style.left                 = '0';
+        this.label.style.top                  = '0';
+
+        this.label.style.transform            = 'none';
+
+        this.label.style.WebkitBackgroundClip = 'inherit';
+        this.label.style.WebkitTextFillColor  = 'inherit';
+    }
+
+
+
+    updateBorder()
+    {
+        this.div.style.boxShadow = 'none';
+    }
 }
 
 
@@ -55348,11 +55394,11 @@ const rgbNumberDark        = hex2rgb('#426287');
 const rgbActiveNumberDark  = hex2rgb('#1785CE');
 
 
-const rgbStringLight       = hex2rgb('#C3EBD3');
-const rgbActiveStringLight = hex2rgb('#42C266');
-
-const rgbStringDark        = hex2rgb('#365E41');
-const rgbActiveStringDark  = hex2rgb('#33AD55');
+const rgbStringLight       = hex2rgb('#ECE0B8');
+const rgbActiveStringLight = hex2rgb('#F6C953');
+ 
+const rgbStringDark        = hex2rgb('#5F5437');
+const rgbActiveStringDark  = hex2rgb('#F6C953');
 
 
 const rgbColor             = hex2rgb('#c38fc5');   
@@ -55366,13 +55412,11 @@ const rgbShapeDark         = hex2rgb('#5E4436');
 const rgbActiveShapeDark   = hex2rgb('#E1765F');
 
 
+const rgbCustomLight       = hex2rgb('#C3EBD3');
+const rgbActiveCustomLight = hex2rgb('#42C266');
 
-const rgbCustomLight       = hex2rgb('#ECE0B8');
-const rgbActiveCustomLight = hex2rgb('#F6C953');
- 
-const rgbCustomDark        = hex2rgb('#5F5437');
-const rgbActiveCustomDark  = hex2rgb('#F6C953');
-
+const rgbCustomDark        = hex2rgb('#365E41');
+const rgbActiveCustomDark  = hex2rgb('#33AD55');
 
 
 const rgbNoColorLight      = [0.95, 0.95, 0.95];

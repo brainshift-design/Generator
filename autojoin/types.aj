@@ -36,7 +36,6 @@
 ../generator/types/values/StarValue.js
 
 
-../generator/types/flow/GComment.js
 ../generator/types/flow/GList.js
 ../generator/types/flow/GItems.js
 ../generator/types/flow/GSelect.js
@@ -103,8 +102,13 @@
 ../generator/types/shape/GPolygon.js
 ../generator/types/shape/GStar.js
 
+
+../generator/types/style/GColorStyle.js
 ../generator/types/style/GFill.js
 ../generator/types/style/GStroke.js
 
 
-../generator/types/style/GColorStyle.js
+../generator/types/GCustom.js
+
+
+../generator/types/GComment.js

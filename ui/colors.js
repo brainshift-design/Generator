@@ -16,11 +16,11 @@ const rgbNumberDark        = hex2rgb('#426287');
 const rgbActiveNumberDark  = hex2rgb('#1785CE');
 
 
-const rgbStringLight       = hex2rgb('#C3EBD3');
-const rgbActiveStringLight = hex2rgb('#42C266');
-
-const rgbStringDark        = hex2rgb('#365E41');
-const rgbActiveStringDark  = hex2rgb('#33AD55');
+const rgbStringLight       = hex2rgb('#ECE0B8');
+const rgbActiveStringLight = hex2rgb('#F6C953');
+ 
+const rgbStringDark        = hex2rgb('#5F5437');
+const rgbActiveStringDark  = hex2rgb('#F6C953');
 
 
 const rgbColor             = hex2rgb('#c38fc5');   
@@ -34,13 +34,11 @@ const rgbShapeDark         = hex2rgb('#5E4436');
 const rgbActiveShapeDark   = hex2rgb('#E1765F');
 
 
+const rgbCustomLight       = hex2rgb('#C3EBD3');
+const rgbActiveCustomLight = hex2rgb('#42C266');
 
-const rgbCustomLight       = hex2rgb('#ECE0B8');
-const rgbActiveCustomLight = hex2rgb('#F6C953');
- 
-const rgbCustomDark        = hex2rgb('#5F5437');
-const rgbActiveCustomDark  = hex2rgb('#F6C953');
-
+const rgbCustomDark        = hex2rgb('#365E41');
+const rgbActiveCustomDark  = hex2rgb('#33AD55');
 
 
 const rgbNoColorLight      = [0.95, 0.95, 0.95];

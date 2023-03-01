@@ -38,7 +38,7 @@ const rgbScale   = [255, 255, 255];
   
 const hs_Scale   = [360, 100, 100];
  
-const hclokScale = [360, 51,  100];
+const hclokScale = [360, 50,  100];
 const hclabScale = [360, 400, 100];
 const hcluvScale = [360, 330, 100];
  
@@ -473,18 +473,18 @@ function getScaledDataColor(color)
     switch (color[0])
     {
         case 'hex':
-        case 'rgb':   return getScaledDataColorRgb(          color[1], color[2], color[3]);
+        case 'rgb':   return getScaledDataColorRgb(         color[1], color[2], color[3]);
 
-        case 'hsv':   return getScaledDataColorHs_('hsv',    color[1], color[2], color[3]);
-        case 'hsl':   return getScaledDataColorHs_('hsl',    color[1], color[2], color[3]);
+        case 'hsv':   return getScaledDataColorHs_('hsv',   color[1], color[2], color[3]);
+        case 'hsl':   return getScaledDataColorHs_('hsl',   color[1], color[2], color[3]);
 
         case 'hclok': return getScaledDataColorHcl('hclok', color[1], color[2], color[3]);
         case 'hclab': return getScaledDataColorHcl('hclab', color[1], color[2], color[3]);
         case 'hcluv': return getScaledDataColorHcl('hcluv', color[1], color[2], color[3]);
 
-        case 'oklab': return getScaledDataColorOpp('oklab',  color[1], color[2], color[3]);
-        case 'lab':   return getScaledDataColorOpp('lab',    color[1], color[2], color[3]);
-        case 'luv':   return getScaledDataColorOpp('luv',    color[1], color[2], color[3]);
+        case 'oklab': return getScaledDataColorOpp('oklab', color[1], color[2], color[3]);
+        case 'lab':   return getScaledDataColorOpp('lab',   color[1], color[2], color[3]);
+        case 'luv':   return getScaledDataColorOpp('luv',   color[1], color[2], color[3]);
     }
 }
 

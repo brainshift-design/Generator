@@ -85,10 +85,14 @@ graphView.updatePanAndZoom = function(updateNodes)
 {
     graphView.update(graph.nodes, updateNodes);
     
-    btnZoom.divIcon.innerHTML       = Math.round(graphView.zoom * 100) + '%';
-    btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
+    setTimeout(() =>
+    {
+        btnZoom.divIcon.innerHTML       = Math.round(graphView.zoom * 100) + '%';
+        btnZoom.divIcon.style.transform = 'translateX(2px) translateY(-16px)';
 
-    menuItemZoomTo100.setChecked(equal(graphView.zoom, 1, 0.0001));
+        menuItemZoomTo100.setChecked(equal(graphView.zoom, 1, 0.0001));
+    });
+    
 };
 
 
@@ -210,8 +214,8 @@ graphView.endZoomSelection = function(pointerId, zoom)
         selection = clipRect(selection, wndRect);
     
         selection.y -= menuBarHeight;
-console.log('selection =', selection);
 
+        
         const rect = screen2rect(selection);
 
         for (let i = 0; i < 5; i++)
@@ -232,16 +236,21 @@ console.log('selection =', selection);
 
 graphView.zoomToFit = function()
 {
-    const nodes = 
-        !isEmpty(graphView.selectedNodes)
-        ? graphView.selectedNodes
-        : graph.nodes;
-    
-    nodes.forEach(n => n.updateMeasureData());
-    const offset = graphView.getAllNodeOffsets(nodes);
+    if (!isEmpty(graph.nodes))
+    {
+        const nodes = 
+            !isEmpty(graphView.selectedNodes)
+            ? graphView.selectedNodes
+            : graph.nodes;
+        
+        nodes.forEach(n => n.updateMeasureData());
+        const offset = graphView.getAllNodeOffsets(nodes);
 
-    for (let i = 0; i < 5; i++) // need to do it a few times
-        graphView.zoomToRect(offset);
+        for (let i = 0; i < 5; i++) // need to do it a few times
+            graphView.zoomToRect(offset);
+    }
+    else
+        graphView.setPanAndZoom(point(0, 0), 1);
 };
 
 
@@ -251,7 +260,7 @@ graphView.zoomToRect = function(rect, margin = 40)
     margin /= graphView.zoom;
 
     graphView.zoom = Math.min(
-          Math.max(graphViewClient.width, graphViewClient.height)
+          Math.min(graphViewClient.width, graphViewClient.height)
         / Math.max(rect.width + margin*2, rect.height + margin*2));
 
     graphView.pan = {

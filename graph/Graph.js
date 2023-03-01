@@ -343,29 +343,20 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case CACHE:                   node = new OpCache();             break;
         case COPY:                    node = new OpCopy();              break;
       
-        case 'number':
         case NUMBER:                  node = new OpNumber();            break;
         case NUMBER_ABSOLUTE:         node = new OpAbsolute();          break;
         case NUMBER_ROUND:            node = new OpRound();             break;
-        case 'minmax':
         case NUMBER_LIMITS:           node = new OpLimits();            break;
         case NUMBER_RANDOM:           node = new OpRandom();            break;
         case NUMBER_SERIES:           node = new OpSeries();            break;
-        case 'interpolate':
         case NUMBER_INTERPOLATE:      node = new OpInterpolate();       break;
              
         case NUMBER_MATH:             node = new OpMath();              break;
-        case 'add':
         case NUMBER_ADD:              node = new OpAdd();               break;
-        case 'subtract':
         case NUMBER_SUBTRACT:         node = new OpSubtract();          break;
-        case 'multiply':
         case NUMBER_MULTIPLY:         node = new OpMultiply();          break;
-        case 'divide':
         case NUMBER_DIVIDE:           node = new OpDivide();            break;
-        case 'modulo':
         case NUMBER_MODULO:           node = new OpModulo();            break;
-        case 'exponent':
         case NUMBER_EXPONENT:         node = new OpExponent();          break;
              
         case NUMBER_BOOLEAN:          node = new OpBoolean();           break;
@@ -382,16 +373,11 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case NUMBER_GREATER:          node = new OpGreater();           break;
         case NUMBER_GREATER_OR_EQUAL: node = new OpGreaterOrEqual();    break;
          
-        case 'color':
         case COLOR:                   node = new OpColor(options);      break;
         case VALID_COLOR:             node = new OpValidColor();        break;
-        case 'validatecolor':
         case CORRECT_COLOR:           node = new OpCorrectColor();      break;
-        case 'webcontrast':
         case COLOR_CONTRAST:          node = new OpColorContrast();     break;
-        case 'colorblind':
         case COLORBLIND:              node = new OpColorBlind();        break;
-        case 'colorinterpolate':
         case COLOR_INTERPOLATE:       node = new OpColorInterpolate();  break;
              
         case COLOR_STOP:              node = new OpColorStop();         break;
@@ -408,6 +394,8 @@ function createNode(nodeType, creatingButton = null, createdNodeId = -1, options
         case POLYGON:                 node = new OpPolygon();           break;
         case STAR:                    node = new OpStar();              break;
       
+        case CUSTOM:                  node = new OpCustom();            break;
+
         case COMMENT:                 node = new OpComment();           break;
      
         default:                      console.assert(false, 'Graph.js/createNode() cannot create type ' + nodeType);

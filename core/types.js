@@ -247,7 +247,7 @@ const ALL_TYPES =
 ];
 
 
-const GROUP         = 'GRP';   // ???? count O...
+const CUSTOM        = 'CUST';   // ???? count O...
 
 
 const COMMENT       = 'CMNT';
