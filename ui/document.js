@@ -26,7 +26,7 @@ document.addEventListener('pointerdown', function(e)
             document.resizingL = document.canResizeL;
             document.resizingR = document.canResizeR;
             document.resizingB = document.canResizeB;
-        }
+       }
     }
 
 

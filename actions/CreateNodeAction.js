@@ -41,6 +41,8 @@ extends Action
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
 
+        graphView.creatingNodes = true;
+        
         this.node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
         
 

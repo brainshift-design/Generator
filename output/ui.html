@@ -38669,6 +38669,8 @@ function initCheckbox(checkbox, name, defaultChecked)
 
 graphView.wires           = [];
  
+
+graphView.creatingNodes   = false;
 graphView.loadingNodes    = false;
 graphView.pastingNodes    = false;
 graphView.restoringNodes  = false;
@@ -39525,7 +39527,7 @@ Object.defineProperty(graphView, 'pan',
         graphView._pan = pan;
         
         uiSaveGraphView();
-        graphView.updatePanAndZoom();
+        graphView.updatePanAndZoom(true);
     }
 });
 
@@ -53846,6 +53848,8 @@ extends Action
         createInsertNodeAction_savePrevConnections(this);
 
 
+        graphView.creatingNodes = true;
+
         const node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
 
 
@@ -53980,6 +53984,8 @@ extends Action
         this.prevSelectedIds = graphView.selectedNodes.map(n => n.id);
 
 
+        graphView.creatingNodes = true;
+        
         this.node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
         
 
@@ -56360,7 +56366,7 @@ document.addEventListener('pointerdown', function(e)
             document.resizingL = document.canResizeL;
             document.resizingR = document.canResizeR;
             document.resizingB = document.canResizeB;
-        }
+       }
     }
 
 
@@ -57792,7 +57798,7 @@ function uiLoadGraphView(json)
 
 
     if (!settings.dataMode)
-        graphView.updatePanAndZoom();
+        graphView.updatePanAndZoom(true);
 }
 
 
@@ -59271,7 +59277,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     for (const node of nodes)
     {
-        if (   graphView.loadingNodes
+        if (   graphView.creatingNodes
+            || graphView.loadingNodes
             || graphView.pastingNodes
             || graphView.restoringNodes)
             node.div.style.display = 'block';
@@ -59291,6 +59298,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     if (isLastChunk)
     {
+        graphView.creatingNodes      = false;
         graphView.pastingNodes       = false;
         graphView.loadingNodes       = false;
         graphView.restoringNodes     = false;
@@ -60132,7 +60140,7 @@ function uiReturnFigResizeWindow()
 {
     if (!settings.dataMode)
     {
-        graphView.updatePanAndZoom();
+        graphView.updatePanAndZoom(false);
         graphView.updateScrollWithBounds();
 
         updateWhatsNewScrollbar(0);

@@ -81,7 +81,7 @@ function uiReturnFigResizeWindow()
 {
     if (!settings.dataMode)
     {
-        graphView.updatePanAndZoom();
+        graphView.updatePanAndZoom(false);
         graphView.updateScrollWithBounds();
 
         updateWhatsNewScrollbar(0);

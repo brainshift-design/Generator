@@ -922,7 +922,8 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     for (const node of nodes)
     {
-        if (   graphView.loadingNodes
+        if (   graphView.creatingNodes
+            || graphView.loadingNodes
             || graphView.pastingNodes
             || graphView.restoringNodes)
             node.div.style.display = 'block';
@@ -942,6 +943,7 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
 
     if (isLastChunk)
     {
+        graphView.creatingNodes      = false;
         graphView.pastingNodes       = false;
         graphView.loadingNodes       = false;
         graphView.restoringNodes     = false;

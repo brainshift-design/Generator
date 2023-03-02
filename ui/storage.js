@@ -171,7 +171,7 @@ function uiLoadGraphView(json)
 
 
     if (!settings.dataMode)
-        graphView.updatePanAndZoom();
+        graphView.updatePanAndZoom(true);
 }
 
 

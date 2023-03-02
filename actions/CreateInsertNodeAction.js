@@ -38,6 +38,8 @@ extends Action
         createInsertNodeAction_savePrevConnections(this);
 
 
+        graphView.creatingNodes = true;
+
         const node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
 
 

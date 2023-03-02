@@ -10,7 +10,7 @@ Object.defineProperty(graphView, 'pan',
         graphView._pan = pan;
         
         uiSaveGraphView();
-        graphView.updatePanAndZoom();
+        graphView.updatePanAndZoom(true);
     }
 });
 

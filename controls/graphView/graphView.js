@@ -1,5 +1,7 @@
 graphView.wires           = [];
  
+
+graphView.creatingNodes   = false;
 graphView.loadingNodes    = false;
 graphView.pastingNodes    = false;
 graphView.restoringNodes  = false;
