@@ -94,7 +94,6 @@ class Graph
         node.div.style.zIndex = graph.nodes.length-1;
         graphView.putNodeOnTop(node);
 
-        //node.updateMeasureData();
 
         graphView.updateScrollWithBounds();
     }

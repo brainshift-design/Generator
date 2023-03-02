@@ -705,9 +705,6 @@ class Operator
 
     updateNode() 
     {
-        logFunction('updateNode()');
-        console.trace();
-        
         this.      paramBack.style.backgroundColor = darkMode ? '#363636' : 'white';
         this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
 
@@ -735,9 +732,6 @@ class Operator
             this.inner .style.borderRadius = '4px';        
             this.header.style.borderRadius = '4px';        
         }
-
-
-        //graphView.updateNodeTransform(this);
     }
 
 

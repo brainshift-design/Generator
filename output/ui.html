@@ -3138,6 +3138,8 @@ a
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
                 <p>Fixed zoom to fit.</p>
+                <p>Added copy/paste menu to all textboxes.</p>
+                <p>Fixed UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
             </div>
@@ -34708,7 +34710,7 @@ function initGeneratorMenus()
         menuItemShowBoolValues        = new MenuItem('Show boolean values as  ✓ ✗', {checkCallback: () => settings.showBoolValues,        callback: () => { updateSettingAndMenu('showBoolValues',        true, !settings.showBoolValues);        updateMenuItemShowBoolValues();       }}),
         menuItemShowClearUndoWarning  = new MenuItem('Show clear undo warning',      {checkCallback: () => settings.showClearUndoWarning,  callback: () => { updateSettingAndMenu('showClearUndoWarning',  true, !settings.showClearUndoWarning);                                        }}),
                                         new MenuItem('',                             {separator: true}),    
-        menuItemMinZoomForParams      = new MenuItem('Smallest adjustment zoom...',  {callback: () => showMinZoomDialog()}),
+        menuItemMinZoomForParams      = new MenuItem('Min. zoom to adjust values...',  {callback: () => showMinZoomDialog()}),
                                         new MenuItem('',                             {separator: true}),    
         menuItemShowDebugMenu         = new MenuItem('Show debug menu',              {checkCallback: () => settings.showDebugMenu,         callback: () => { updateSettingAndMenu('showDebugMenu',         true, !settings.showDebugMenu);         updateMenuItemShowDebugMenu();        }}),
         menuItemEnableBetaFeatures    = new MenuItem('Enable beta features',         {checkCallback: () => settings.enableBetaFeatures,    callback: () => { updateSettingAndMenu('enableBetaFeatures',    true, !settings.enableBetaFeatures);    enableFeatures(true, settings.enableBetaFeatures); }})]);
@@ -42825,7 +42827,6 @@ class Graph
         node.div.style.zIndex = graph.nodes.length-1;
         graphView.putNodeOnTop(node);
 
-        //node.updateMeasureData();
 
         graphView.updateScrollWithBounds();
     }
@@ -45149,9 +45150,6 @@ class Operator
 
     updateNode() 
     {
-        logFunction('updateNode()');
-        console.trace();
-        
         this.      paramBack.style.backgroundColor = darkMode ? '#363636' : 'white';
         this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
 
@@ -45179,9 +45177,6 @@ class Operator
             this.inner .style.borderRadius = '4px';        
             this.header.style.borderRadius = '4px';        
         }
-
-
-        //graphView.updateNodeTransform(this);
     }
 
 
