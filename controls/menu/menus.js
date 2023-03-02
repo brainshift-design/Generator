@@ -75,13 +75,17 @@ var menuItemHelp;
 var menuItemEnableBetaFeatures;
 
 
+var menuItemList;  
+var menuFlowSep1;
+var menuItemItems;
+var menuItemSelect;
 var menuItemIfElse;
-var menuSep1;      
-var menuItemStart; 
+var menuFlowSep2;
+var menuItemStart;
 var menuItemRepeat;
-var menuSep2;      
-var menuItemCache; 
-var menuItemCopy;  
+var menuFlowSep3;
+var menuItemCache;
+var menuItemCopy;
 
 var menuItemSeries;
 
@@ -240,15 +244,15 @@ function initGeneratorMenus()
         
     menuFlow = new Menu('Flow', true, false);
     menuFlow.addItems([
-                         new MenuItem('List',              {icon: iconList,   callback: e => actionManager.do(getCreateNodeAction(LIST,    btnNumber.div, {insert: e.ctrlKey}))}),
-                         new MenuItem('',                  {separator: true}),
-                         new MenuItem('Items',             {icon: iconItems,  callback: e => actionManager.do(getCreateNodeAction(ITEMS,   btnNumber.div, {insert: e.ctrlKey}))}),
-                         new MenuItem('Select',            {icon: iconSelect, callback: e => actionManager.do(getCreateNodeAction(SELECT,  btnNumber.div, {insert: e.ctrlKey}))}),
+        menuItemList   = new MenuItem('List',              {icon: iconList,   callback: e => actionManager.do(getCreateNodeAction(LIST,    btnNumber.div, {insert: e.ctrlKey}))}),
+        menuFlowSep1   = new MenuItem('',                  {separator: true}),
+        menuItemItems  = new MenuItem('Items',             {icon: iconItems,  callback: e => actionManager.do(getCreateNodeAction(ITEMS,   btnNumber.div, {insert: e.ctrlKey}))}),
+        menuItemSelect = new MenuItem('Select',            {icon: iconSelect, callback: e => actionManager.do(getCreateNodeAction(SELECT,  btnNumber.div, {insert: e.ctrlKey}))}),
         menuItemIfElse = new MenuItem('I&hairsp;f / else', {icon: iconIfElse, callback: e => actionManager.do(getCreateNodeAction(IF_ELSE, btnNumber.div, {insert: e.ctrlKey})), disambiguate: true}),
-        menuSep1       = new MenuItem('',                  {separator: true}),
-        // menuItemStart  = new MenuItem('Start',             {icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,   btnNumber.div, {insert: e.ctrlKey}))}),
+        menuFlowSep2   = new MenuItem('',                  {separator: true}),
+      //menuItemStart  = new MenuItem('Start',             {icon: iconStart,  callback: e => actionManager.do(getCreateNodeAction(START,   btnNumber.div, {insert: e.ctrlKey}))}),
         menuItemRepeat = new MenuItem('Repeat',            {icon: iconRepeat, callback: e => actionManager.do(getCreateNodeAction(REPEAT,  btnNumber.div, {insert: e.ctrlKey}))}),
-        menuSep2       = new MenuItem('',                  {separator: true}),
+        menuFlowSep3   = new MenuItem('',                  {separator: true}),
         menuItemCache  = new MenuItem('Cache',             {icon: iconCache,  callback: e => actionManager.do(getCreateNodeAction(CACHE,   btnNumber.div, {insert: e.ctrlKey}))}),
         menuItemCopy   = new MenuItem('Copy',              {icon: iconCopy,   callback: e => actionManager.do(getCreateNodeAction(COPY,    btnNumber.div, {insert: e.ctrlKey}))})]);
     

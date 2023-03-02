@@ -11157,12 +11157,22 @@ function enableFeatures(subscription, beta)
 {
     updateMenuItemDisplay(menuItemEnableBetaFeatures.div, subscription);
 
-    updateMenuItemDisplay(btnFlow  .div,                subscription && beta);
+    updateMenuItemDisplay(btnFlow  .div,                subscription);
     updateMenuItemDisplay(btnShape .div,                subscription && beta);
     updateMenuItemDisplay(btnCustom.div,                subscription && beta);
 
     updateMenuItemDisplay(menuItemLogObjectUpdates.div, subscription && beta);
-
+    
+    updateMenuItemDisplay(menuItemList.div,             subscription && beta);
+    updateMenuItemDisplay(menuFlowSep1.div,             subscription && beta);
+    updateMenuItemDisplay(menuItemItems.div,            subscription && beta);
+    updateMenuItemDisplay(menuItemSelect.div,           subscription && beta);
+    updateMenuItemDisplay(menuFlowSep2.div,             subscription && beta);
+    updateMenuItemDisplay(menuItemRepeat.div,           subscription && beta);
+    updateMenuItemDisplay(menuFlowSep3.div,             subscription && beta);
+    updateMenuItemDisplay(menuItemCache.div,            subscription && beta);
+    updateMenuItemDisplay(menuItemCopy.div,             subscription && beta);
+    
     updateMenuItemDisplay(menuItemCorrectColor    .div, subscription);
 
     updateMenuItemDisplay(menuItemStyleFill       .div, subscription && beta);
