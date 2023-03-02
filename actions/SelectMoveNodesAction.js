@@ -17,8 +17,9 @@ extends Action
     constructor(prevSelectedIds, newSelectedIds, fromPos, toPos, shiftPressed)
     {
         super(
-            'SELECT MOVE ' + newSelectedIds.length 
-          + ' ' + countString('node', newSelectedIds.length));
+            SELECT_MOVE_ACTION,
+              'SELECT MOVE ' + newSelectedIds.length 
+            + ' ' + countString('node', newSelectedIds.length));
 
         this.affectsConnections = false;
 

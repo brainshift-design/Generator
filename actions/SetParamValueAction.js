@@ -18,7 +18,9 @@ extends Action
 
     constructor(param, value)
     {
-        super('SET VALUE ' + param.node.id + '.' + param.id + ' = ' + value.toDisplayString());
+        super(
+            SET_VALUE_ACTION,
+            'SET VALUE ' + param.node.id + '.' + param.id + ' = ' + value.toDisplayString());
 
         this.nodeId     = param.node.id;
         this.paramId    = param.id;

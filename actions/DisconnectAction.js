@@ -23,7 +23,9 @@ extends Action
 
     constructor(input)
     {
-        super('DISCONNECT ' 
+        super(
+            DISCONNECT_ACTION, 
+             'DISCONNECT ' 
             + input.connectedOutput.node.id + '.' + input.connectedOutput.id
             + ' ' + rightArrowChar(input.connectedOutput.supportsTypes(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);

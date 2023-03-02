@@ -8,6 +8,7 @@ extends Action
     constructor(selectedIds)
     {
         super(
+            TOGGLE_DISABLE_ACTION,
               'TOGGLE DISABLE ' + selectedIds.length 
             + ' ' + countString('node', selectedIds.length));
 

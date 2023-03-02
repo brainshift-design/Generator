@@ -220,7 +220,7 @@ function initNumberControlEvents(control)
                     control.setValue(
                         Math.round(val / grain) * grain, 
                         true, 
-                        true,
+                        false,
                         e.shiftKey);
 
 
@@ -390,6 +390,16 @@ function initNumberControlEvents(control)
         clearTimeout(control.clickTimer);
 
 
+        if (control.isPointerLocked())
+        {
+            control.setValue(
+                control.value,
+                false, 
+                true,
+                e.shiftKey);
+        }
+
+
         if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
@@ -408,8 +418,8 @@ function initNumberControlEvents(control)
             }
         }
         
-        else if (   control.moved
-            || document.menuHadFocus)
+        else if (control.moved
+              || document.menuHadFocus)
         {
             control.unlockPointer(e.pointerId);
 
@@ -425,6 +435,7 @@ function initNumberControlEvents(control)
             control.showTextbox();
         }
 
+
              if (e.button == 0) control.buttonDown0 = false;
         else if (e.button == 1) control.buttonDown1 = false;
 
@@ -433,6 +444,7 @@ function initNumberControlEvents(control)
             e.stopPropagation();
             control.buttonDown2 = false;
         }
+
 
         control.buttonDown0_ = false;
     });    
@@ -504,7 +516,17 @@ function initNumberControlEvents(control)
                     ? control.value -  dWheelX               * control.wheelScale * dec
                     : control.value + (dWheelY > 0 ? -1 : 1) * control.wheelScale * dec;
 
-                control.setValue(val, true, true, false);
+
+                control.setValue(val, true, false, false);
+
+                if (control.confirmTimer) 
+                    clearTimeout(control.confirmTimer);
+
+                control.confirmTimer = setTimeout(() =>
+                {
+                    control.confirmTimer = null;
+                    control.setValue(control.value, false, true, false);
+                }, 400);
             }
         }
     });

@@ -47,6 +47,7 @@ extends Action
     constructor(output, prevInput, input, options = {})
     {
         super(
+            RECONNECT_ACTION,
              'RECONNECT '
             + output.node.id + '.' + output.id
             + ' (' + leftArrowChar(prevInput.supportsTypes(LIST_TYPES)) + ' '

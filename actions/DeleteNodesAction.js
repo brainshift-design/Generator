@@ -14,7 +14,9 @@ extends Action
 
     constructor(nodeIds)
     {
-        super('DELETE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
+        super(
+            DELETE_ACTION, 
+            'DELETE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
 
         this.nodeIds         = [...nodeIds];
         this.nodes           = nodeIds.map(id => nodeFromId(id));

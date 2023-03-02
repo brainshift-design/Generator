@@ -24,7 +24,9 @@ extends Action
 
     constructor(nodeType, creatingButton, options, autoConnect)
     {
-        super('CREATE \'' + nodeType + '\'');
+        super(
+            CREATE_ACTION, 
+            'CREATE \'' + nodeType + '\'');
         
         this.nodeType       = nodeType;
         this.creatingButton = creatingButton;
@@ -42,7 +44,7 @@ extends Action
 
 
         graphView.creatingNodes = true;
-        
+
         this.node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
         
 

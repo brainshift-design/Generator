@@ -21,7 +21,9 @@ extends Action
     {
         const data = JSON.parse(copiedNodesJson);
 
-        super('PASTE ' + data.nodes.length + ' ' + countString('node', data.nodes.length));
+        super(
+            PASTE_ACTION,
+            'PASTE ' + data.nodes.length + ' ' + countString('node', data.nodes.length));
 
         this.copiedNodesJson = copiedNodesJson;
         this.pasteConnected  = pasteConnected;
@@ -49,7 +51,7 @@ extends Action
 
         pushUnique(this.newConnectionData, _conns);
 
-        
+
         for (const conn of _conns)
         {
             if (   this.pasteConnected

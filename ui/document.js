@@ -1,9 +1,15 @@
-var documentBodyClient = null;//{
-//     x:      0,
-//     y:      0,
-//     width:  0,
-//     height: 0
-// };
+var documentBodyClient = null;
+var enteredDragging    = false;
+
+
+
+document.addEventListener('pointerenter', function(e)
+{
+    if (   e.buttons[0] 
+        || e.buttons[1] 
+        || e.buttons[2])
+        enteredDragging = true;
+});
 
 
 
@@ -37,6 +43,13 @@ document.addEventListener('pointerdown', function(e)
 
 document.addEventListener('pointermove', function(e)
 {
+    if (enteredDragging)
+    {
+        e.preventDefault();
+        return false;
+    }
+
+
     if (   document.resizingR
         && document.resizingB)
     {
@@ -81,6 +94,8 @@ document.addEventListener('pointermove', function(e)
 
 document.addEventListener('pointerup', function(e)
 {
+    enteredDragging = false;
+
      if (   document.resizingL
          || document.resizingR
          || document.resizingB)

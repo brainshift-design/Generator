@@ -3146,7 +3146,9 @@ a
                 <h1 style='margin-top: 20px;'>What's new in Generator</h1>
 
                 <p>Fixed zoom to fit.</p>
+                <p>Added min. zoom indicator to zoom botton.</p>
                 <p>Added copy/paste menu to all textboxes.</p>
+                <p>Consolidated value change undo into a single action.</p>
                 <p>Fixed UI issues.</p>
 
                 <p><br/><br/><div id='chkHideWhatsNew'></div></p>
@@ -6962,15 +6964,25 @@ const CONDITION_OPS =
 
 
 
-/*
+const EMPTY_ACTION          = 'EMPTY';
+const CONNECT_ACTION        = 'CONNECT';
+const CREATE_ACTION         = 'CREATE';
+const CREATE_INSERT_ACTION  = 'CREATE_INSERT';
+const DELETE_ACTION         = 'DELETE';
+const DISCONNECT_ACTION     = 'DISCONNECT';
+const LINK_STYLE_ACTION     = 'LINK_STYLE';
+const MAKE_ACTIVE_ACTION    = 'MAKE_ACTIVE';
+const PASTE_ACTION          = 'PASTE';
+const RECONNECT_ACTION      = 'RECONNECT';
+const REMOVE_ACTION         = 'REMOVE';
+const RENAME_ACTION         = 'RENAME';
+const REORDER_ACTION        = 'REORDER';
+const SELECT_ACTION         = 'SELECT';
+const SELECT_MOVE_ACTION    = 'SELECT_MOVE';
+const SET_VALUE_ACTION      = 'SET_VALUE';
+const TOGGLE_DISABLE_ACTION = 'TOGGLE_DISABLE';
+const TOGGLE_SYMBOL_ACTION  = 'TOGGLE_SYMBOL';
 
-FRAME       F
-IMAGE       I
-SLICE       /
-TEXT        T
-VECTOR      V
-
-*/
 
 
 class FigmaObject
@@ -25964,15 +25976,25 @@ const CONDITION_OPS =
 
 
 
-/*
+const EMPTY_ACTION          = 'EMPTY';
+const CONNECT_ACTION        = 'CONNECT';
+const CREATE_ACTION         = 'CREATE';
+const CREATE_INSERT_ACTION  = 'CREATE_INSERT';
+const DELETE_ACTION         = 'DELETE';
+const DISCONNECT_ACTION     = 'DISCONNECT';
+const LINK_STYLE_ACTION     = 'LINK_STYLE';
+const MAKE_ACTIVE_ACTION    = 'MAKE_ACTIVE';
+const PASTE_ACTION          = 'PASTE';
+const RECONNECT_ACTION      = 'RECONNECT';
+const REMOVE_ACTION         = 'REMOVE';
+const RENAME_ACTION         = 'RENAME';
+const REORDER_ACTION        = 'REORDER';
+const SELECT_ACTION         = 'SELECT';
+const SELECT_MOVE_ACTION    = 'SELECT_MOVE';
+const SET_VALUE_ACTION      = 'SET_VALUE';
+const TOGGLE_DISABLE_ACTION = 'TOGGLE_DISABLE';
+const TOGGLE_SYMBOL_ACTION  = 'TOGGLE_SYMBOL';
 
-FRAME       F
-IMAGE       I
-SLICE       /
-TEXT        T
-VECTOR      V
-
-*/
 
 
 class FigmaObject
@@ -35377,7 +35399,7 @@ function initNumberControlEvents(control)
                     control.setValue(
                         Math.round(val / grain) * grain, 
                         true, 
-                        true,
+                        false,
                         e.shiftKey);
 
 
@@ -35547,6 +35569,16 @@ function initNumberControlEvents(control)
         clearTimeout(control.clickTimer);
 
 
+        if (control.isPointerLocked())
+        {
+            control.setValue(
+                control.value,
+                false, 
+                true,
+                e.shiftKey);
+        }
+
+
         if (graphView.tempConn)
         {
             if (    graphView.tempConn.output
@@ -35565,8 +35597,8 @@ function initNumberControlEvents(control)
             }
         }
         
-        else if (   control.moved
-            || document.menuHadFocus)
+        else if (control.moved
+              || document.menuHadFocus)
         {
             control.unlockPointer(e.pointerId);
 
@@ -35582,6 +35614,7 @@ function initNumberControlEvents(control)
             control.showTextbox();
         }
 
+
              if (e.button == 0) control.buttonDown0 = false;
         else if (e.button == 1) control.buttonDown1 = false;
 
@@ -35590,6 +35623,7 @@ function initNumberControlEvents(control)
             e.stopPropagation();
             control.buttonDown2 = false;
         }
+
 
         control.buttonDown0_ = false;
     });    
@@ -35661,7 +35695,17 @@ function initNumberControlEvents(control)
                     ? control.value -  dWheelX               * control.wheelScale * dec
                     : control.value + (dWheelY > 0 ? -1 : 1) * control.wheelScale * dec;
 
-                control.setValue(val, true, true, false);
+
+                control.setValue(val, true, false, false);
+
+                if (control.confirmTimer) 
+                    clearTimeout(control.confirmTimer);
+
+                control.confirmTimer = setTimeout(() =>
+                {
+                    control.confirmTimer = null;
+                    control.setValue(control.value, false, true, false);
+                }, 400);
             }
         }
     });
@@ -36336,6 +36380,9 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.measureData            = { divBounds: new Rect(0, 0, 0, 0) };
  
+
+    control.confirmTimer           = null;
+
      
     control.onstartchange          = new Event('startchange');
     control.onchange               = new Event('change');
@@ -36415,12 +36462,12 @@ function initNumberControl(param, control, width, height, id, name, showName, de
                 && control.enableChangeEvent
                 && value != control.prevValue)
                 control.dispatchEvent(control.onchange);
-
-            if (   confirm
-                && control.enableChangeEvent
-                && value != oldValue)
-                control.dispatchEvent(control.onconfirm);
         }
+
+
+        if (   confirm
+            && control.enableChangeEvent)
+            control.dispatchEvent(control.onconfirm);
     };
 
 
@@ -41000,7 +41047,11 @@ extends EventTarget
                 
                 if (createAction)
                 {
-                    actionManager.do(new SetParamValueAction(this, value));
+                    actionManager.do(
+                        new SetParamValueAction(this, value), 
+                          !isEmpty(actionManager.actions)
+                        && lastOf(actionManager.actions).type == SET_VALUE_ACTION);
+
                     this.dispatchEvent(this.onconfirm);
                 }
             }
@@ -41306,7 +41357,16 @@ extends NumberParamBase
         if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
-        this.control.addEventListener('confirm', () => { this.setValue(this.value, true, false, true); });
+        this.control.addEventListener('change', () => 
+        { 
+            this.setValue(this.value, true, false, true); 
+        });
+
+
+        this.control.addEventListener('confirm', () => 
+        { 
+            actionManager.do(new EmptyAction(), true);
+        });
 
 
         this.control.addEventListener('finishedit', e =>
@@ -53125,6 +53185,7 @@ class Action
     manager;
  
     id;
+    type;
     name;
   
     prevAction; // these are used to link actions into sequences
@@ -53153,8 +53214,9 @@ class Action
 
 
 
-    constructor(name)
+    constructor(type, name)
     {
+        this.type = type;
         this.name = name;
 
         console.assert(
@@ -53528,7 +53590,9 @@ extends Action
 
     constructor(output, input, options = {})
     {
-        super('CONNECT ' 
+        super(
+            CONNECT_ACTION,
+             'CONNECT ' 
             + output.node.id + '.' + output.id
             + ' ' + rightArrowChar(output.supportsTypes(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);
@@ -53831,7 +53895,9 @@ extends Action
 
     constructor(nodeType, creatingButton, options)
     {
-        super('CREATE / INSERT \'' + nodeType + '\'');
+        super(
+            CREATE_INSERT_ACTION, 
+            'CREATE / INSERT \'' + nodeType + '\'');
         
         this.nodeType       = nodeType;
         this.creatingButton = creatingButton;
@@ -53967,7 +54033,9 @@ extends Action
 
     constructor(nodeType, creatingButton, options, autoConnect)
     {
-        super('CREATE \'' + nodeType + '\'');
+        super(
+            CREATE_ACTION, 
+            'CREATE \'' + nodeType + '\'');
         
         this.nodeType       = nodeType;
         this.creatingButton = creatingButton;
@@ -53985,7 +54053,7 @@ extends Action
 
 
         graphView.creatingNodes = true;
-        
+
         this.node = createNode(this.nodeType, this.creatingButton, this.createdId, this.options);
         
 
@@ -54087,7 +54155,9 @@ extends Action
 
     constructor(nodeIds)
     {
-        super('DELETE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
+        super(
+            DELETE_ACTION, 
+            'DELETE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
 
         this.nodeIds         = [...nodeIds];
         this.nodes           = nodeIds.map(id => nodeFromId(id));
@@ -54336,7 +54406,9 @@ extends Action
 
     constructor(input)
     {
-        super('DISCONNECT ' 
+        super(
+            DISCONNECT_ACTION, 
+             'DISCONNECT ' 
             + input.connectedOutput.node.id + '.' + input.connectedOutput.id
             + ' ' + rightArrowChar(input.connectedOutput.supportsTypes(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);
@@ -54457,6 +54529,19 @@ function DisconnectAction_activateNewNodes(act)
 }
 
 
+class EmptyAction
+extends Action
+{
+    constructor()
+    {
+        super(EMPTY_ACTION, 'DO NOTHING');
+
+        this.affectsConnections = false;
+    }
+}
+
+
+
 class LinkExistingStyleAction
 extends Action
 {
@@ -54483,7 +54568,9 @@ extends Action
 
     constructor(nodeId, styleId, styleName, paints)
     {
-        super('LINK STYLE \'' + nodeId + ' ⟶ ' + styleName + ')');
+        super(
+            LINK_STYLE_ACTION, 
+            'LINK STYLE \'' + nodeId + ' ⟶ ' + styleName + ')');
         
         this.affectsConnections = false;
 
@@ -54550,7 +54637,9 @@ extends Action
 
     constructor(activeNodeIds)
     {
-        super('MAKE ACTIVE ' + nodeIdArrayToString(activeNodeIds));
+        super(
+            MAKE_ACTIVE_ACTION, 
+            'MAKE ACTIVE ' + nodeIdArrayToString(activeNodeIds));
 
         this.newActiveNodeIds = [...activeNodeIds];
         this.affectsConnections = false;
@@ -54618,7 +54707,9 @@ extends Action
     {
         const data = JSON.parse(copiedNodesJson);
 
-        super('PASTE ' + data.nodes.length + ' ' + countString('node', data.nodes.length));
+        super(
+            PASTE_ACTION,
+            'PASTE ' + data.nodes.length + ' ' + countString('node', data.nodes.length));
 
         this.copiedNodesJson = copiedNodesJson;
         this.pasteConnected  = pasteConnected;
@@ -54646,7 +54737,7 @@ extends Action
 
         pushUnique(this.newConnectionData, _conns);
 
-        
+
         for (const conn of _conns)
         {
             if (   this.pasteConnected
@@ -54765,6 +54856,7 @@ extends Action
     constructor(output, prevInput, input, options = {})
     {
         super(
+            RECONNECT_ACTION,
              'RECONNECT '
             + output.node.id + '.' + output.id
             + ' (' + leftArrowChar(prevInput.supportsTypes(LIST_TYPES)) + ' '
@@ -54900,7 +54992,9 @@ extends Action
 
     constructor(nodeIds)
     {
-        super('REMOVE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
+        super(
+            REMOVE_ACTION,
+            'REMOVE ' + nodeIds.length + ' ' + countString('node', nodeIds.length));
 
         this.nodeIds         = [...nodeIds];
         this.nodes           = nodeIds.map(id => nodeFromId(id));
@@ -55038,7 +55132,9 @@ extends Action
 
     constructor(nodeId, newName)
     {
-        super('RENAME ' + nodeId + ' to \'' + newName + '\'');
+        super(
+            RENAME_ACTION,
+            'RENAME ' + nodeId + ' to \'' + newName + '\'');
 
         this.affectsConnections = false;
 
@@ -55091,6 +55187,7 @@ extends Action
     constructor(nodeId, oldIndex, newIndex)
     {
         super(
+            REORDER_ACTION,
               'REORDER ' + nodeFromId(nodeId).id 
             + '.' + oldIndex
             + ' to .' + newIndex);
@@ -55172,8 +55269,9 @@ extends Action
     constructor(prevSelectedIds, newSelectedIds, fromPos, toPos, shiftPressed)
     {
         super(
-            'SELECT MOVE ' + newSelectedIds.length 
-          + ' ' + countString('node', newSelectedIds.length));
+            SELECT_MOVE_ACTION,
+              'SELECT MOVE ' + newSelectedIds.length 
+            + ' ' + countString('node', newSelectedIds.length));
 
         this.affectsConnections = false;
 
@@ -55283,6 +55381,7 @@ extends Action
     constructor(selectedIds, prevSelectedIds)
     {
         super(
+            SELECT_ACTION,
               'SELECT ' + selectedIds.length 
             + ' ' + countString('node', selectedIds.length));
 
@@ -55350,7 +55449,9 @@ extends Action
 
     constructor(param, value)
     {
-        super('SET VALUE ' + param.node.id + '.' + param.id + ' = ' + value.toDisplayString());
+        super(
+            SET_VALUE_ACTION,
+            'SET VALUE ' + param.node.id + '.' + param.id + ' = ' + value.toDisplayString());
 
         this.nodeId     = param.node.id;
         this.paramId    = param.id;
@@ -55402,6 +55503,7 @@ extends Action
     constructor(selectedIds)
     {
         super(
+            TOGGLE_DISABLE_ACTION,
               'TOGGLE DISABLE ' + selectedIds.length 
             + ' ' + countString('node', selectedIds.length));
 
@@ -55441,7 +55543,9 @@ extends Action
 
     constructor(nodeId, showOnlySymbol)
     {
-        super('TOGGLE MATH SYMBOL ' + boolToString(showOnlySymbol));
+        super(
+            TOGGLE_SYMBOL,
+            'TOGGLE MATH SYMBOL ' + boolToString(showOnlySymbol));
         
         this.affectsConnections = false;
 
@@ -56338,12 +56442,18 @@ function dataModeDeleteConnection(conn)
 // }
 
 
-var documentBodyClient = null;//{
-//     x:      0,
-//     y:      0,
-//     width:  0,
-//     height: 0
-// };
+var documentBodyClient = null;
+var enteredDragging    = false;
+
+
+
+document.addEventListener('pointerenter', function(e)
+{
+    if (   e.buttons[0] 
+        || e.buttons[1] 
+        || e.buttons[2])
+        enteredDragging = true;
+});
 
 
 
@@ -56377,6 +56487,13 @@ document.addEventListener('pointerdown', function(e)
 
 document.addEventListener('pointermove', function(e)
 {
+    if (enteredDragging)
+    {
+        e.preventDefault();
+        return false;
+    }
+
+
     if (   document.resizingR
         && document.resizingB)
     {
@@ -56421,6 +56538,8 @@ document.addEventListener('pointermove', function(e)
 
 document.addEventListener('pointerup', function(e)
 {
+    enteredDragging = false;
+
      if (   document.resizingL
          || document.resizingR
          || document.resizingB)

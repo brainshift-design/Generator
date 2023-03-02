@@ -9,7 +9,9 @@ extends Action
 
     constructor(activeNodeIds)
     {
-        super('MAKE ACTIVE ' + nodeIdArrayToString(activeNodeIds));
+        super(
+            MAKE_ACTIVE_ACTION, 
+            'MAKE ACTIVE ' + nodeIdArrayToString(activeNodeIds));
 
         this.newActiveNodeIds = [...activeNodeIds];
         this.affectsConnections = false;

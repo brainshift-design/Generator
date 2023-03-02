@@ -21,7 +21,9 @@ extends Action
 
     constructor(nodeType, creatingButton, options)
     {
-        super('CREATE / INSERT \'' + nodeType + '\'');
+        super(
+            CREATE_INSERT_ACTION, 
+            'CREATE / INSERT \'' + nodeType + '\'');
         
         this.nodeType       = nodeType;
         this.creatingButton = creatingButton;

@@ -49,7 +49,16 @@ extends NumberParamBase
         if (hasOutput) this.initOutput([NUMBER_VALUE], this.output_genRequest, getParamOutputValuesForUndo, this.output_backInit);
 
 
-        this.control.addEventListener('confirm', () => { this.setValue(this.value, true, false, true); });
+        this.control.addEventListener('change', () => 
+        { 
+            this.setValue(this.value, true, false, true); 
+        });
+
+
+        this.control.addEventListener('confirm', () => 
+        { 
+            actionManager.do(new EmptyAction(), true);
+        });
 
 
         this.control.addEventListener('finishedit', e =>

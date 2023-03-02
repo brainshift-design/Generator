@@ -3,6 +3,7 @@ class Action
     manager;
  
     id;
+    type;
     name;
   
     prevAction; // these are used to link actions into sequences
@@ -31,8 +32,9 @@ class Action
 
 
 
-    constructor(name)
+    constructor(type, name)
     {
+        this.type = type;
         this.name = name;
 
         console.assert(

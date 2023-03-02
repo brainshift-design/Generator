@@ -112,6 +112,9 @@ function initNumberControl(param, control, width, height, id, name, showName, de
 
     control.measureData            = { divBounds: new Rect(0, 0, 0, 0) };
  
+
+    control.confirmTimer           = null;
+
      
     control.onstartchange          = new Event('startchange');
     control.onchange               = new Event('change');
@@ -191,12 +194,12 @@ function initNumberControl(param, control, width, height, id, name, showName, de
                 && control.enableChangeEvent
                 && value != control.prevValue)
                 control.dispatchEvent(control.onchange);
-
-            if (   confirm
-                && control.enableChangeEvent
-                && value != oldValue)
-                control.dispatchEvent(control.onconfirm);
         }
+
+
+        if (   confirm
+            && control.enableChangeEvent)
+            control.dispatchEvent(control.onconfirm);
     };
 
 

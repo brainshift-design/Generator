@@ -178,7 +178,11 @@ extends EventTarget
                 
                 if (createAction)
                 {
-                    actionManager.do(new SetParamValueAction(this, value));
+                    actionManager.do(
+                        new SetParamValueAction(this, value), 
+                          !isEmpty(actionManager.actions)
+                        && lastOf(actionManager.actions).type == SET_VALUE_ACTION);
+
                     this.dispatchEvent(this.onconfirm);
                 }
             }

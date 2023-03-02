@@ -35,7 +35,9 @@ extends Action
 
     constructor(output, input, options = {})
     {
-        super('CONNECT ' 
+        super(
+            CONNECT_ACTION,
+             'CONNECT ' 
             + output.node.id + '.' + output.id
             + ' ' + rightArrowChar(output.supportsTypes(LIST_TYPES)) + ' '
             + input.node.id + '.' + input.id);

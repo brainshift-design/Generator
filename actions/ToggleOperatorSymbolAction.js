@@ -10,7 +10,9 @@ extends Action
 
     constructor(nodeId, showOnlySymbol)
     {
-        super('TOGGLE MATH SYMBOL ' + boolToString(showOnlySymbol));
+        super(
+            TOGGLE_SYMBOL,
+            'TOGGLE MATH SYMBOL ' + boolToString(showOnlySymbol));
         
         this.affectsConnections = false;
 

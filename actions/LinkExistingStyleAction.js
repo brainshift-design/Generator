@@ -24,7 +24,9 @@ extends Action
 
     constructor(nodeId, styleId, styleName, paints)
     {
-        super('LINK STYLE \'' + nodeId + ' ⟶ ' + styleName + ')');
+        super(
+            LINK_STYLE_ACTION, 
+            'LINK STYLE \'' + nodeId + ' ⟶ ' + styleName + ')');
         
         this.affectsConnections = false;
 

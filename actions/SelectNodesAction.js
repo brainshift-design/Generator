@@ -9,6 +9,7 @@ extends Action
     constructor(selectedIds, prevSelectedIds)
     {
         super(
+            SELECT_ACTION,
               'SELECT ' + selectedIds.length 
             + ' ' + countString('node', selectedIds.length));
 
