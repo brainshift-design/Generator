@@ -98,3 +98,16 @@ minZoomInput.addEventListener('keydown', e =>
         }
     }
 });
+
+
+
+minZoomInput.addEventListener('pointerup', e =>
+{
+    e.stopPropagation();
+
+    if (e.button == 2)
+    {
+        initTextMenu(minZoomInput);
+        menuText.showAt(e.clientX, e.clientY, false);
+    }
+});

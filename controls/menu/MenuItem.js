@@ -112,21 +112,29 @@ class MenuItem
             this.div.appendChild(this.divCheck);
             this.div.appendChild(this.divIcon );
 
-            this.div.appendChild(this.divName     );
-            this.div.appendChild(this.divExpand   );
-            this.div.appendChild(this.divShortcut );
+            this.div.appendChild(this.divName    );
+            this.div.appendChild(this.divExpand  );
+            this.div.appendChild(this.divShortcut);
         }
         else
             this.div.appendChild(this.divSeparator);
 
 
 
-        this.div.addEventListener('pointerdown', e => e.stopPropagation());
+        this.div.addEventListener('pointerdown', e => 
+        {
+            e.stopPropagation();
+            e.preventDefault();
+        });
 
 
 
         this.div.addEventListener('pointerup', e => 
         {
+            e.stopPropagation();
+            e.preventDefault();
+
+
             if (e.button == 0)
             {
                 const rect = boundingRect(this.div);

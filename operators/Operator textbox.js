@@ -82,6 +82,19 @@ function initLabelTextbox(node)
 
 
 
+    node.textbox.addEventListener('pointerup', e =>
+    {
+        e.stopPropagation();
+
+        if (e.button == 2)
+        {
+            initTextMenu(node.textbox);
+            menuText.showAt(e.clientX, e.clientY, false);
+        }
+    });
+
+
+
     node.textbox.addEventListener('paste', function(e)
     {
         e.preventDefault();

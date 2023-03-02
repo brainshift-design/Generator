@@ -6,7 +6,8 @@ function writeTextToClipboard(str)
 
     else 
     {
-        let textArea = document.createElement('textarea');
+        const prevActive = document.activeElement;
+        const textArea   = document.createElement('textarea');
 
         textArea.value = str;
 

@@ -9,6 +9,19 @@ function initNumberControlTextbox(control)
     {
         e.stopPropagation();
     });
+    
+    
+    
+    control.textbox.addEventListener('pointerup', e =>
+    {
+        e.stopPropagation();
+
+        if (e.button == 2)
+        {
+            initTextMenu(control.textbox);
+            menuText.showAt(e.clientX, e.clientY, false);
+        }
+    });
 
 
 

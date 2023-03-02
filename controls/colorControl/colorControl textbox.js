@@ -12,6 +12,19 @@ function initColorControlTextbox(control)
 
 
 
+    control.textbox.addEventListener('pointerup', e =>
+    {
+        e.stopPropagation();
+
+        if (e.button == 2)
+        {
+            initTextMenu(control.textbox);
+            menuText.showAt(e.clientX, e.clientY, false);
+        }
+    });
+
+
+
     control.textbox.addEventListener('pointermove', e =>
     {
         e.stopPropagation();

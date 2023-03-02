@@ -50,6 +50,9 @@ function initColorControlEvents(control)
 
     control.addEventListener('pointerdown', function(e)
     {
+        e.stopPropagation();
+    
+    
         if (   graphView.spaceDown
             || panMode)
             return;
@@ -80,7 +83,6 @@ function initColorControlEvents(control)
 
 
             e.preventDefault(); // this is fine since I lock the pointer anyway
-            e.stopPropagation();
                 
             control.buttonDown0  = true;
             control.buttonDown0_ = true;
@@ -345,6 +347,9 @@ function initColorControlEvents(control)
 
     document.addEventListener('pointerup', function(e)
     {
+        e.stopPropagation();
+
+
         if (panMode)
             return;
 

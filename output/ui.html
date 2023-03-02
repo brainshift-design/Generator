@@ -6363,7 +6363,8 @@ function writeTextToClipboard(str)
 
     else 
     {
-        let textArea = document.createElement('textarea');
+        const prevActive = document.activeElement;
+        const textArea   = document.createElement('textarea');
 
         textArea.value = str;
 
@@ -23145,7 +23146,8 @@ function writeTextToClipboard(str)
 
     else 
     {
-        let textArea = document.createElement('textarea');
+        const prevActive = document.activeElement;
+        const textArea   = document.createElement('textarea');
 
         textArea.value = str;
 
@@ -34345,21 +34347,29 @@ class MenuItem
             this.div.appendChild(this.divCheck);
             this.div.appendChild(this.divIcon );
 
-            this.div.appendChild(this.divName     );
-            this.div.appendChild(this.divExpand   );
-            this.div.appendChild(this.divShortcut );
+            this.div.appendChild(this.divName    );
+            this.div.appendChild(this.divExpand  );
+            this.div.appendChild(this.divShortcut);
         }
         else
             this.div.appendChild(this.divSeparator);
 
 
 
-        this.div.addEventListener('pointerdown', e => e.stopPropagation());
+        this.div.addEventListener('pointerdown', e => 
+        {
+            e.stopPropagation();
+            e.preventDefault();
+        });
 
 
 
         this.div.addEventListener('pointerup', e => 
         {
+            e.stopPropagation();
+            e.preventDefault();
+
+
             if (e.button == 0)
             {
                 const rect = boundingRect(this.div);
@@ -34587,7 +34597,7 @@ var menuSelectParam;
 
 var menuRemoveLicense;
 
-var menuText
+var menuText;
 
 
 var menuNodeData;
@@ -34950,17 +34960,14 @@ function initGeneratorMenus()
 
     menuRemoveLicense = new Menu('Remove license', false, false);
     menuRemoveLicense.addItems([
-                                new MenuItem('Copy',  {callback: () => { hideAllMenus(); writeTextToClipboard(getSelectedText(productKeyInput)); }}),
+                                new MenuItem('Cut',   {callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(productKeyInput); updateProductKeyDots(); }}),
+                                new MenuItem('Copy',  {callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
                                 new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
         menuItemLicenseSep1   = new MenuItem('', {separator: true}),
         menuItemLicenseRemove = new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
 
 
     menuText = new Menu('Text menu', false, false);
-    // menuText.addItems([
-    //     new MenuItem('Cut',   {callback: () => { hideAllMenus(); writeTextToClipboard(getSelectedText(productKeyInput)); }}),
-    //     new MenuItem('Copy',  {callback: () => { hideAllMenus(); writeTextToClipboard(getSelectedText(productKeyInput)); }}),
-    //     new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 
 
     menuNode.init = () => 
@@ -35072,6 +35079,18 @@ function initDataModeMenus()
         // new MenuItem('List all connection keys', { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
         // new MenuItem('',                         { separator: true }),
         new MenuItem('Delete all connections',   { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
+}
+
+
+
+function initTextMenu(textbox)
+{
+    menuText.clearItems();
+
+    menuText.addItems([
+        new MenuItem('Cut',   {callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(textbox); }}),
+        new MenuItem('Copy',  {callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 }
 
 
@@ -35833,6 +35852,19 @@ function initNumberControlTextbox(control)
     control.textbox.addEventListener('pointerdown', e =>
     {
         e.stopPropagation();
+    });
+    
+    
+    
+    control.textbox.addEventListener('pointerup', e =>
+    {
+        e.stopPropagation();
+
+        if (e.button == 2)
+        {
+            initTextMenu(control.textbox);
+            menuText.showAt(e.clientX, e.clientY, false);
+        }
     });
 
 
@@ -36694,6 +36726,9 @@ function initColorControlEvents(control)
 
     control.addEventListener('pointerdown', function(e)
     {
+        e.stopPropagation();
+    
+    
         if (   graphView.spaceDown
             || panMode)
             return;
@@ -36724,7 +36759,6 @@ function initColorControlEvents(control)
 
 
             e.preventDefault(); // this is fine since I lock the pointer anyway
-            e.stopPropagation();
                 
             control.buttonDown0  = true;
             control.buttonDown0_ = true;
@@ -36989,6 +37023,9 @@ function initColorControlEvents(control)
 
     document.addEventListener('pointerup', function(e)
     {
+        e.stopPropagation();
+
+
         if (panMode)
             return;
 
@@ -37146,6 +37183,19 @@ function initColorControlTextbox(control)
     control.textbox.addEventListener('pointerdown', e =>
     {
         e.stopPropagation();
+    });
+
+
+
+    control.textbox.addEventListener('pointerup', e =>
+    {
+        e.stopPropagation();
+
+        if (e.button == 2)
+        {
+            initTextMenu(control.textbox);
+            menuText.showAt(e.clientX, e.clientY, false);
+        }
     });
 
 
@@ -46608,6 +46658,19 @@ function initLabelTextbox(node)
 
     node.textbox.addEventListener('pointerdown', e => e.stopPropagation());
     node.textbox.addEventListener('pointermove', e => node.textbox.style.cursor = 'default');
+
+
+
+    node.textbox.addEventListener('pointerup', e =>
+    {
+        e.stopPropagation();
+
+        if (e.button == 2)
+        {
+            initTextMenu(node.textbox);
+            menuText.showAt(e.clientX, e.clientY, false);
+        }
+    });
 
 
 
@@ -57076,6 +57139,19 @@ minZoomInput.addEventListener('keydown', e =>
 
 
 
+minZoomInput.addEventListener('pointerup', e =>
+{
+    e.stopPropagation();
+
+    if (e.button == 2)
+    {
+        initTextMenu(minZoomInput);
+        menuText.showAt(e.clientX, e.clientY, false);
+    }
+});
+
+
+
 function setCursor(cursor, forceAsync = true)
 {
     document.body.style.cursor = cursor;
@@ -57178,7 +57254,7 @@ function showProductKeyDialog()
 
 
 
-function copyProductKey()
+function copyUserId()
 {
     writeTextToClipboard(currentUser.id);
     selectElementText('productKeyUserId');
@@ -57245,10 +57321,17 @@ productKeyInput.addEventListener('input', () =>
     
     productKeyInput.value = val;
 
-    productKeyInputBack.innerHTML = 
-          '&nbsp;'.repeat(val.length)
-        + '•'.repeat(13 - val.length);
+    updateProductKeyDots();
 });
+
+
+
+function updateProductKeyDots()
+{
+    productKeyInputBack.innerHTML = 
+          '&nbsp;'.repeat(productKeyInput.value.length)
+        + '•'.repeat(13 - productKeyInput.value.length);
+}
 
 
 

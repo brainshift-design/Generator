@@ -46,7 +46,7 @@ var menuSelectParam;
 
 var menuRemoveLicense;
 
-var menuText
+var menuText;
 
 
 var menuNodeData;
@@ -409,17 +409,14 @@ function initGeneratorMenus()
 
     menuRemoveLicense = new Menu('Remove license', false, false);
     menuRemoveLicense.addItems([
-                                new MenuItem('Copy',  {callback: () => { hideAllMenus(); writeTextToClipboard(getSelectedText(productKeyInput)); }}),
+                                new MenuItem('Cut',   {callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(productKeyInput); updateProductKeyDots(); }}),
+                                new MenuItem('Copy',  {callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
                                 new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }}),
         menuItemLicenseSep1   = new MenuItem('', {separator: true}),
         menuItemLicenseRemove = new MenuItem('Remove from this computer', {callback: () => { hideAllMenus(); removeLicense(); }})]);
 
 
     menuText = new Menu('Text menu', false, false);
-    // menuText.addItems([
-    //     new MenuItem('Cut',   {callback: () => { hideAllMenus(); writeTextToClipboard(getSelectedText(productKeyInput)); }}),
-    //     new MenuItem('Copy',  {callback: () => { hideAllMenus(); writeTextToClipboard(getSelectedText(productKeyInput)); }}),
-    //     new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 
 
     menuNode.init = () => 
@@ -531,6 +528,18 @@ function initDataModeMenus()
         // new MenuItem('List all connection keys', { callback: () => { hideAllMenus(); uiQueueMessageToFigma({cmd: 'figLogAllSavedConnKeys'}); }}),
         // new MenuItem('',                         { separator: true }),
         new MenuItem('Delete all connections',   { callback: e => { hideAllMenus(); dataModeDeleteAllConnections(); }})]);
+}
+
+
+
+function initTextMenu(textbox)
+{
+    menuText.clearItems();
+
+    menuText.addItems([
+        new MenuItem('Cut',   {callback: () => { hideAllMenus(); document.execCommand('copy'); clearSelectedText(textbox); }}),
+        new MenuItem('Copy',  {callback: () => { hideAllMenus(); document.execCommand('copy'); }}),
+        new MenuItem('Paste', {callback: () => { hideAllMenus(); document.execCommand('paste'); }})]);
 }
 
 

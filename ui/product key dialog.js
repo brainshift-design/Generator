@@ -77,7 +77,7 @@ function showProductKeyDialog()
 
 
 
-function copyProductKey()
+function copyUserId()
 {
     writeTextToClipboard(currentUser.id);
     selectElementText('productKeyUserId');
@@ -144,10 +144,17 @@ productKeyInput.addEventListener('input', () =>
     
     productKeyInput.value = val;
 
-    productKeyInputBack.innerHTML = 
-          '&nbsp;'.repeat(val.length)
-        + '•'.repeat(13 - val.length);
+    updateProductKeyDots();
 });
+
+
+
+function updateProductKeyDots()
+{
+    productKeyInputBack.innerHTML = 
+          '&nbsp;'.repeat(productKeyInput.value.length)
+        + '•'.repeat(13 - productKeyInput.value.length);
+}
 
 
 
