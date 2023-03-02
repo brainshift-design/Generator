@@ -49,6 +49,7 @@ extends Action
 
         pushUnique(this.newConnectionData, _conns);
 
+        
         for (const conn of _conns)
         {
             if (   this.pasteConnected
@@ -72,8 +73,8 @@ extends Action
         }
 
 
-        graphView.updateNodeTransforms(nodes);
-        nodes.forEach(n => n.updateNode());
+        //graphView.updateNodeTransforms(nodes);
+        //nodes.forEach(n => n.updateNode());
 
 
         this.pastedNodeIds = nodes.map(n => n.id);

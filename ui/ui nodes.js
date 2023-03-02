@@ -920,9 +920,17 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     uiSaveNodes(nodes.map(n => n.id));
 
 
-    nodes.forEach(n => n.updateMeasureData());
-    nodes.forEach(n => n.updateNode());
-    
+    for (const node of nodes)
+    {
+        if (   graphView.loadingNodes
+            || graphView.pastingNodes
+            || graphView.restoringNodes)
+            node.div.style.display = 'block';
+
+        node.updateMeasureData();
+        node.updateNode();
+    }
+
 
     graphView.update(nodes);
     graphView.updateScrollWithBounds();

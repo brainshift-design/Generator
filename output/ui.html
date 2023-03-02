@@ -42822,12 +42822,11 @@ class Graph
         if (placeNode)
             graphView.placeNewNode(node);
 
-        node.div.style.display = 'block';
-        node.div.style.zIndex  = graph.nodes.length-1;
-
-        node.updateMeasureData();
-
+        node.div.style.zIndex = graph.nodes.length-1;
         graphView.putNodeOnTop(node);
+
+        //node.updateMeasureData();
+
         graphView.updateScrollWithBounds();
     }
     
@@ -45150,6 +45149,9 @@ class Operator
 
     updateNode() 
     {
+        logFunction('updateNode()');
+        console.trace();
+        
         this.      paramBack.style.backgroundColor = darkMode ? '#363636' : 'white';
         this.hiddenParamBack.style.backgroundColor = darkMode ? '#363636' : 'white';
 
@@ -54613,6 +54615,7 @@ extends Action
 
         pushUnique(this.newConnectionData, _conns);
 
+        
         for (const conn of _conns)
         {
             if (   this.pasteConnected
@@ -54636,8 +54639,8 @@ extends Action
         }
 
 
-        graphView.updateNodeTransforms(nodes);
-        nodes.forEach(n => n.updateNode());
+        //graphView.updateNodeTransforms(nodes);
+        //nodes.forEach(n => n.updateNode());
 
 
         this.pastedNodeIds = nodes.map(n => n.id);
@@ -59241,9 +59244,17 @@ function uiUpdateValuesAndObjects(requestId, actionId, updateNodeId, updateParam
     uiSaveNodes(nodes.map(n => n.id));
 
 
-    nodes.forEach(n => n.updateMeasureData());
-    nodes.forEach(n => n.updateNode());
-    
+    for (const node of nodes)
+    {
+        if (   graphView.loadingNodes
+            || graphView.pastingNodes
+            || graphView.restoringNodes)
+            node.div.style.display = 'block';
+
+        node.updateMeasureData();
+        node.updateNode();
+    }
+
 
     graphView.update(nodes);
     graphView.updateScrollWithBounds();

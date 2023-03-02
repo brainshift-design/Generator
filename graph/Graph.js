@@ -91,12 +91,11 @@ class Graph
         if (placeNode)
             graphView.placeNewNode(node);
 
-        node.div.style.display = 'block';
-        node.div.style.zIndex  = graph.nodes.length-1;
-
-        node.updateMeasureData();
-
+        node.div.style.zIndex = graph.nodes.length-1;
         graphView.putNodeOnTop(node);
+
+        //node.updateMeasureData();
+
         graphView.updateScrollWithBounds();
     }
     
